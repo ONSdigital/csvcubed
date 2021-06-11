@@ -1,0 +1,192 @@
+"""
+TODO: implement CLI interface
+"""
+import json
+import re
+from pathlib import Path
+
+import pandas as pd
+import rdflib
+from rdflib import Graph, URIRef
+from rdflib.query import Result
+from typing import List, Tuple, Any, Dict, Set, NamedTuple
+import csvw
+from uritemplate import expand
+
+from .models.csvwithcolumndefinitions import CsvWithColumnDefinitions
+from models.rdf import dcat
+from models.rdf import skos
+
+
+def generate_date_time_code_lists(csv_metadata_file: Path) -> None:
+    # todo: Implement
+    return _get_dimensions_to_generate_code_lists_for(csv_metadata_file)
+
+
+def _get_dimensions_to_generate_code_lists_for(csv_metadata_file: Path) -> List[Tuple[str, str, str]]:
+    metadata_graph = Graph().parse(str(csv_metadata_file), format='json-ld')
+
+    result: Result = metadata_graph.query("""
+        PREFIX qb: <http://purl.org/linked-data/cube#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX sdmxd:  <http://purl.org/linked-data/sdmx/2009/dimension#>
+        
+        SELECT DISTINCT ?dimension ?dimensionLabel ?codeList
+        WHERE {
+           [] a qb:DataSet;
+              qb:structure/qb:component/qb:dimension ?dimension.
+          
+          ?dimension 
+            rdfs:subPropertyOf sdmxd:refPeriod;
+            rdfs:label ?dimensionLabel;
+            qb:codeList ?codeList. 
+        }    
+    """)
+    return list([(str(dim), str(label), str(code_list)) for dim, label, code_list in result])
+
+
+def _get_csv_columns_for_dimension(csv_metadata_file: Path, dimension: str) -> \
+        Dict[CsvWithColumnDefinitions, List[str]]:
+    """
+    Return the CSV file URLs with column numbers which contain values in a given dimension (URI).
+
+    N.B. the index is zero-based.
+    :param csv_metadata_file:
+    :param dimension:
+    :return:
+    """
+    table_group = csvw.TableGroup.from_file(csv_metadata_file)
+    tables: List[csvw.Table] = table_group.tables
+    map_path_to_csv_mapping: Dict[Path, CsvWithColumnDefinitions] = {}
+    map_csv_to_column_names: Dict[CsvWithColumnDefinitions, List[str]] = {}
+
+    for table in tables:
+        # N.B. this assumes that the CSV file is located relative to the metadata file.
+        # This doesn't work if the CSV is specified as a URL.
+        csv_path = csv_metadata_file.parent / Path(str(table.url))
+        columns: List[csvw.Column] = table.tableSchema.columns
+        for column in columns:
+            if column.propertyUrl == dimension and not column.virtual:
+                if csv_path not in map_path_to_csv_mapping:
+                    csv_file_info = CsvWithColumnDefinitions(csv_path, columns)
+
+                    map_path_to_csv_mapping[csv_path] = csv_file_info
+                    map_csv_to_column_names[csv_file_info] = []
+
+                csv_mappings = map_path_to_csv_mapping[csv_path]
+
+                map_csv_to_column_names[csv_mappings].append(str(column.name))
+
+    return map_csv_to_column_names
+
+
+def _get_unique_values_from_columns(csv_col_mappings: Dict[CsvWithColumnDefinitions, List[str]]) -> Set[Any]:
+    unique_values: Set[Any] = set()
+    for csv in csv_col_mappings.keys():
+        data = pd.read_csv(csv.csv_path)
+        column_names_with_values = csv_col_mappings[csv]
+        columns_with_values = [col for col in csv.columns if col.name in column_names_with_values]
+
+        # Rename column headers to match the CSV-W's `name` property to make lookup easier.
+        data.columns = [col.name for col in csv.columns if not col.virtual]
+
+        for row_tuple in data.itertuples():
+            row_tuple: NamedTuple
+            row = row_tuple._asdict()
+            for column in columns_with_values:
+                column_value_for_row = expand(str(column.valueUrl), row)
+                unique_values.add(column_value_for_row)
+    return unique_values
+
+
+def _create_code_list_for_dimension(csv_metadata_file: Path, dimension_uri: str, label: str,
+                                    code_list_uri: str) -> Path:
+    """
+    :param csv_metadata_file:
+    :param dimension_uri:
+    :param label:
+    :param code_list_uri:
+    :return: Path of the CSV-Metadata file generated
+    """
+    columns = _get_csv_columns_for_dimension(csv_metadata_file, dimension_uri)
+    unique_values = _get_unique_values_from_columns(columns)
+
+    code_list_csv_file_name = re.sub("[^A-Za-z0-9]+", "-", label) + ".csv"
+    code_list_metadata_file_name = f"{code_list_csv_file_name}-metadata.json"
+
+    code_list_metadata = _generate_date_time_code_list_metadata(code_list_csv_file_name, code_list_uri, label)
+
+    code_list_data = pd.DataFrame({
+        "URI": list(sorted(unique_values)),
+        "Sort Priority": range(0, len(unique_values))
+    })
+
+    code_list_metadata_out = csv_metadata_file.parent / code_list_metadata_file_name
+    code_list_csv_out = csv_metadata_file.parent / code_list_csv_file_name
+
+    with open(code_list_metadata_out, "w+") as f:
+        json.dump(code_list_metadata, f, indent=4)
+
+    code_list_data.to_csv(code_list_csv_out, index=False)
+
+    return code_list_metadata_out
+
+
+def _generate_date_time_code_list_metadata(code_list_csv_file_name: str, code_list_uri: str, label: str) -> dict:
+    # Do I want to re-use the models defined in gss-utils?
+    # if so, should we have a separate module/package just for those modules so it can easily be re-used?
+    # how do we want to organise this?
+    code_list_metadata = {
+        "@context": "http://www.w3.org/ns/csvw",
+        "@id": code_list_uri,
+        "url": code_list_csv_file_name,
+        "tableSchema": {
+            "columns": [
+                {
+                    "titles": "URI",
+                    "name": "uri",
+                    "suppressOutput": True
+                },
+                {
+                    "titles": "Sort Priority",
+                    "name": "sort_priority",
+                    "datatype": "integer",
+                    "propertyUrl": "http://www.w3.org/ns/ui#sortPriority"
+                },
+                {
+                    "virtual": True,
+                    "propertyUrl": "rdf:type",
+                    "valueUrl": "skos:Concept"
+                },
+                {
+                    "virtual": True,
+                    "propertyUrl": "skos:inScheme",
+                    "valueUrl": code_list_uri
+                },
+                {
+                    "virtual": True,
+                    "aboutUrl": code_list_uri,
+                    "propertyUrl": "skos:hasTopConcept",
+                    "valueUrl": "{+uri}"
+                }
+            ],
+            "aboutUrl": "{+uri}"
+        }
+    }
+
+    dcat_dataset = dcat.Dataset(URIRef(f"{code_list_uri}/catalog/dataset"))
+    dcat_dataset.label = dcat_dataset.title = label
+    dcat_dataset.comment = f"{label} Codelist containing date/time concepts."
+
+    skos_concept_scheme = skos.ConceptScheme(URIRef(code_list_uri))
+    skos_concept_scheme.title = skos_concept_scheme.label = label
+    skos_concept_scheme.comment = f"{label} Codelist containing date/time concepts."
+    skos_concept_scheme.dcat_dataset = dcat_dataset
+
+    additional_metadata_graph = rdflib.Graph()
+    skos_concept_scheme.to_graph(additional_metadata_graph)
+
+    rdf_metadata = json.loads(additional_metadata_graph.serialize(format="json-ld"))
+    code_list_metadata["rdfs:seeAlso"] = rdf_metadata
+
+    return code_list_metadata

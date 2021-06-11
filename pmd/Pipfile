@@ -1,0 +1,19 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+rdflib = "*"
+rdflib-jsonld = "*"
+requests = "*"
+csvw = "*"
+pandas = "*"
+uritemplate = "*"
+pmd = {editable = true,path = "."}
+models = {editable = true,path = "./../models"}
+
+[requires]
+python_version = "3.9"
