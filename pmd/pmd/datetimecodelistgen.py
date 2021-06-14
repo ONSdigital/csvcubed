@@ -4,6 +4,7 @@ TODO: implement CLI interface
 import json
 import re
 from pathlib import Path
+from datetime import datetime
 
 import pandas as pd
 import rdflib
@@ -14,13 +15,13 @@ import csvw
 from uritemplate import expand
 
 from .models.csvwithcolumndefinitions import CsvWithColumnDefinitions
-from models.rdf import dcat
-from models.rdf import skos
+from .models.rdf import pmdcat
+from .config import pmdconfig
 
 
-def generate_date_time_code_lists(csv_metadata_file: Path) -> None:
-    # todo: Implement
-    return _get_dimensions_to_generate_code_lists_for(csv_metadata_file)
+# def generate_date_time_code_lists(csv_metadata_file: Path) -> None:
+#     # todo: Implement
+#     return _get_dimensions_to_generate_code_lists_for(csv_metadata_file)
 
 
 def _get_dimensions_to_generate_code_lists_for(csv_metadata_file: Path) -> List[Tuple[str, str, str]]:
@@ -174,17 +175,37 @@ def _generate_date_time_code_list_metadata(code_list_csv_file_name: str, code_li
         }
     }
 
-    dcat_dataset = dcat.Dataset(URIRef(f"{code_list_uri}/catalog/dataset"))
-    dcat_dataset.label = dcat_dataset.title = label
-    dcat_dataset.comment = f"{label} Codelist containing date/time concepts."
+    dataset_uri_ref = URIRef(f"{code_list_uri}/catalog/dataset")
+    code_list_uri_ref = URIRef(code_list_uri)
+    catalog_record_uri = URIRef(f"{code_list_uri}/catalog/record")
+    generic_comment = f"{label} code list containing date/time concepts."
+    catalog_metadata_graph_uri = f"{code_list_uri}/catalog-metadata-graph"  # todo: correct this
 
-    skos_concept_scheme = skos.ConceptScheme(URIRef(code_list_uri))
-    skos_concept_scheme.title = skos_concept_scheme.label = label
-    skos_concept_scheme.comment = f"{label} Codelist containing date/time concepts."
-    skos_concept_scheme.dcat_dataset = dcat_dataset
+    # Catalog -(dcat:record)-> Catalog Record -(foaf:primaryTopic)-> Dataset <-(prov:wasDerivedFrom)- Concept Scheme
+
+    catalog_record = pmdcat.CatalogRecord(catalog_record_uri, pmdconfig.CODE_LIST_CATALOG_URI)
+    catalog_record.title = catalog_record.label = label
+    catalog_record.description = catalog_record.comment = generic_comment
+    catalog_record.issued = catalog_record.modified = datetime.now()
+    catalog_record.metadata_graph = catalog_metadata_graph_uri
+    dcat_dataset = catalog_record.primary_topic = pmdcat.Dataset(dataset_uri_ref)
+
+    dcat_dataset.label = dcat_dataset.title = label
+    dcat_dataset.comment = generic_comment
+    dcat_dataset.metadata_graph = catalog_metadata_graph_uri
+    # The codelist is stored inside a graph with URI exactly matching the codelist's URI
+    dcat_dataset.pmdcat_graph = code_list_uri
+    dcat_dataset.sparql_endpoint = pmdconfig.SPARQL_ENDPOINT
+
+    concept_scheme = pmdcat.ConceptScheme(code_list_uri_ref)
+    concept_scheme.title = concept_scheme.label = label
+    concept_scheme.comment = generic_comment
+
+    concept_scheme.dcat_dataset = dcat_dataset
+    dcat_dataset.dataset_contents = concept_scheme
 
     additional_metadata_graph = rdflib.Graph()
-    skos_concept_scheme.to_graph(additional_metadata_graph)
+    catalog_record.to_graph(additional_metadata_graph)
 
     rdf_metadata = json.loads(additional_metadata_graph.serialize(format="json-ld"))
     code_list_metadata["rdfs:seeAlso"] = rdf_metadata
