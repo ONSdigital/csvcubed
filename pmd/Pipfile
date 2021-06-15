@@ -14,7 +14,7 @@ csvw = "*"
 pandas = "*"
 uritemplate = "*"
 pmd = {editable = true,path = "."}
-models = {editable = true,path = "./../models"}
+sharedmodels = {editable = true,path = "./../sharedmodels"}
 
 [requires]
 python_version = "3.9"

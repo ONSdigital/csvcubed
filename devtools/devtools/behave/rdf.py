@@ -29,7 +29,7 @@ def step_impl(context):
 
 @step("the ask query '{query_file}' should return {expected_query_result}")
 def step_impl(context, query_file: str, expected_query_result: str):
-    query_file = Path('features') / 'fixtures' / query_file
+    query_file = Path(query_file)
     with open(query_file) as f:
         query = f.read()
     g = Graph().parse(format='turtle', data=context.turtle)
@@ -37,9 +37,3 @@ def step_impl(context, query_file: str, expected_query_result: str):
     ask_result = results[0]
     expected_ask_result = bool(distutils.util.strtobool(expected_query_result))
     assert(ask_result == expected_ask_result)
-
-"""
-
-TODO: ROB!!! CONTINUE CREATING THESE BEHAVE TOOLS!
-
-"""

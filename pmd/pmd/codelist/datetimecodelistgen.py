@@ -14,14 +14,19 @@ from typing import List, Tuple, Any, Dict, Set, NamedTuple
 import csvw
 from uritemplate import expand
 
-from .models.csvwithcolumndefinitions import CsvWithColumnDefinitions
-from .models.rdf import pmdcat
-from .config import pmdconfig
+from pmd.models.csvwithcolumndefinitions import CsvWithColumnDefinitions
+from pmd.models.rdf import pmdcat
+from pmd.config import pmdconfig
 
 
-# def generate_date_time_code_lists(csv_metadata_file: Path) -> None:
-#     # todo: Implement
-#     return _get_dimensions_to_generate_code_lists_for(csv_metadata_file)
+def generate_date_time_code_lists_for_csvw_metadata_file(metadata_file: Path) -> List[Path]:
+    date_time_dimensions = _get_dimensions_to_generate_code_lists_for(metadata_file)
+    files_created: List[Path] = []
+    for (dimension, label, code_list_uri) in date_time_dimensions:
+        file_created = _create_code_list_for_dimension(metadata_file, dimension, label, code_list_uri)
+        files_created.append(file_created)
+
+    return files_created
 
 
 def _get_dimensions_to_generate_code_lists_for(csv_metadata_file: Path) -> List[Tuple[str, str, str]]:

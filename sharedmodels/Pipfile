@@ -8,7 +8,7 @@ devtools = {editable = true,path = "./../devtools"}
 
 [packages]
 rdflib = "*"
-models = {editable = true,path = "."}
+sharedmodels = {editable = true,path = "."}
 
 [requires]
 python_version = "3.9"

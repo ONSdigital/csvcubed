@@ -3,11 +3,10 @@ from typing import Annotated
 from abc import ABC
 from datetime import datetime
 
-
-from models.rdf.triple import Triple, InverseTriple, PropertyStatus
-from models.rdf.rdfresource import RdfMetadataResource, map_str_to_markdown, map_entity_to_uri
-from models.rdf import dcat
-from models.rdf import skos
+from sharedmodels.rdf.triple import Triple, InverseTriple, PropertyStatus
+from sharedmodels.rdf.rdfresource import RdfMetadataResource, map_str_to_markdown, map_entity_to_uri
+from sharedmodels.rdf import dcat
+from sharedmodels.rdf import skos
 
 
 PMDCAT = Namespace("http://publishmydata.com/pmdcat#")
