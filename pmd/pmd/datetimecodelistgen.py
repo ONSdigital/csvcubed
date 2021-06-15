@@ -175,13 +175,14 @@ def _generate_date_time_code_list_metadata(code_list_csv_file_name: str, code_li
         }
     }
 
-    dataset_uri_ref = URIRef(f"{code_list_uri}/catalog/dataset")
+    dataset_uri_ref = URIRef(f"{code_list_uri}/dataset")
     code_list_uri_ref = URIRef(code_list_uri)
-    catalog_record_uri = URIRef(f"{code_list_uri}/catalog/record")
-    generic_comment = f"{label} code list containing date/time concepts."
-    catalog_metadata_graph_uri = f"{code_list_uri}/catalog-metadata-graph"  # todo: correct this
+    catalog_record_uri = URIRef(f"{code_list_uri}/catalog-record")
+    catalog_metadata_graph_uri = code_list_uri
 
-    # Catalog -(dcat:record)-> Catalog Record -(foaf:primaryTopic)-> Dataset <-(prov:wasDerivedFrom)- Concept Scheme
+    generic_comment = f"{label} code list containing date/time concepts."
+
+    # Catalog -(dcat:record)-> Catalog Record -(foaf:primaryTopic)-> Dataset -(pmdcat:datasetContents)-> Concept Scheme
 
     catalog_record = pmdcat.CatalogRecord(catalog_record_uri, pmdconfig.CODE_LIST_CATALOG_URI)
     catalog_record.title = catalog_record.label = label

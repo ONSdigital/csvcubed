@@ -1,5 +1,5 @@
 from rdflib import  Literal, URIRef, DCAT, DCTERMS, XSD, PROV, ODRL2, FOAF
-from typing import Annotated as Ann
+from typing import Annotated as Ann, Set
 from datetime import datetime
 
 
@@ -74,8 +74,10 @@ class Catalog(Dataset):
     dataset: Ann[str, Triple(DCAT.dataset, PropertyStatus.recommended, URIRef)]
     service: Ann[str, Triple(DCAT.service, PropertyStatus.recommended, URIRef)]
     catalog: Ann[str, Triple(DCAT.catalog, PropertyStatus.optional, URIRef)]
-    record: Ann[CatalogRecord, Triple(DCAT.record, PropertyStatus.recommended, map_entity_to_uri)]
+    records: Ann[Set[CatalogRecord], Triple(DCAT.record, PropertyStatus.recommended, map_entity_to_uri)]
 
     def __init__(self, uri: str):
         Dataset.__init__(self, uri)
         self.rdf_types.add(DCAT.Catalog)
+
+        self.records = set()

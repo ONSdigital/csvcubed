@@ -52,7 +52,6 @@ class Triple(AbstractTriple):
 class InverseTriple(AbstractTriple):
     """
         Class representing the triple `<property_to_uri_mapper(property_value)> <predicate> <entity_uri>`.
-
     """
 
     map_to_uri: Callable[[Any], URIRef]

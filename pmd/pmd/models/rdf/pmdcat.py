@@ -43,8 +43,10 @@ class Dataset(dcat.Dataset):
     pmdcat_graph: Annotated[str, Triple(PMDCAT.graph, PropertyStatus.mandatory, URIRef)]
     """Graph where the pmdcat:datasetContents is stored."""
 
-    dataset_contents: Annotated[DatasetContents, Triple(PMDCAT.datasetContents, PropertyStatus.mandatory, map_entity_to_uri)]
-    markdown_description: Annotated[str, Triple(PMDCAT.markdownDescription, PropertyStatus.recommended, map_str_to_markdown)]
+    dataset_contents: Annotated[DatasetContents, Triple(PMDCAT.datasetContents, PropertyStatus.mandatory,
+                                                        map_entity_to_uri)]
+    markdown_description: Annotated[str, Triple(PMDCAT.markdownDescription, PropertyStatus.recommended,
+                                                map_str_to_markdown)]
     sparql_endpoint: Annotated[str, Triple(VOID.sparqlEndpoint, PropertyStatus.mandatory, URIRef)]
     family: Annotated[str, Triple(GDP.family, PropertyStatus.recommended, GDP.term)]
     update_due_on: Annotated[datetime, Triple(GDP.updateDueOn, PropertyStatus.recommended, Literal)]

@@ -1,9 +1,10 @@
 import rdflib
-from rdflib import URIRef
+from rdflib import URIRef, Graph, RDFS, RDF
 from rdflib.term import Literal
-from typing import Annotated, List, get_type_hints, get_args, Set
+from typing import Annotated, List, get_type_hints, get_args, Set, Any
 from abc import ABC
-from rdflib import RDFS, RDF
+from collections.abc import Iterable
+
 
 from .triple import AbstractTriple, Triple, PropertyStatus
 
@@ -29,9 +30,9 @@ class RdfResource(ABC):
 
     def to_graph(self, graph: rdflib.Graph, objects_already_processed: Set[object] = set()) -> rdflib.Graph:
         """
-        Serialises the current object into a new RDF Graph.
+        Serialises the current object into an RDF Graph.
 
-        Raises an exception where properties marked as RdfPropertyStatus.mandatory have not been provided.
+        Raises an exception where properties marked as PropertyStatus.mandatory have not been provided.
         """
         if self in objects_already_processed:
             # Cyclic reference, we have already processed this object.
@@ -44,7 +45,7 @@ class RdfResource(ABC):
 
         """
         The following code depends on all RDF properties being defined using the typing.Annotation class.
-        e.g. `label: Annotated[str, RdfPropertyMap(RDFS.label, RdfPropertyStatus.mandatory, map_str_to_en_literal)]`
+        e.g. `label: Annotated[str, Triple(RDFS.label, PropertyStatus.mandatory, map_str_to_en_literal)]`
         """
 
         type_hints_list_of_lists = [get_type_hints(c, include_extras=True).items() for c in self.__class__.mro()]
@@ -54,22 +55,39 @@ class RdfResource(ABC):
             type_hints = get_args(typing_hint)
             triple_mappings: List[AbstractTriple] = [th for th in type_hints if isinstance(th, AbstractTriple)]
             for triple in triple_mappings:
-                property_value_is_empty = property_value is None or property_value == ""
-                if triple.status == PropertyStatus.mandatory and property_value_is_empty:
-                    raise Exception(f"Mandatory RDF property '{triple.predicate}' " +
-                                    f"({type(self).__name__}.{property_key}) has not been provided.")
-                if not property_value_is_empty:
-                    try:
-                        triple.add_to_graph(graph, self.uri, property_value)
-                    except Exception as e:
-                        raise Exception(f"Error adding RDF property '{triple.predicate}' "
-                                        f" ({type(self).__name__}.{property_key}).") from e
-
-            # If this resource links to another one, then we should make sure that is serialised too.
-            if isinstance(property_value, RdfResource):
-                property_value.to_graph(graph, objects_already_processed)
+                # Ensure we can cope with one-to-many relationships
+                self._add_triple_to_graph(graph, property_key, property_value, triple, objects_already_processed)
 
         return graph
+
+    def _add_triple_to_graph(self, graph: Graph, property_key: str, property_value: Any, triple: AbstractTriple,
+                             objects_already_processed: Set[object]):
+        value_is_iterable = isinstance(property_value, Iterable) and not isinstance(property_value, str)
+        if value_is_iterable:
+            all_values = list(property_value)
+            value_is_empty_iterable = len(all_values) == 0
+        else:
+            value_is_empty_iterable = False
+            all_values = [property_value]
+
+        property_value_is_empty = property_value is None or property_value == "" or value_is_empty_iterable
+
+        if property_value_is_empty:
+            if triple.status == PropertyStatus.mandatory:
+                raise Exception(f"Mandatory RDF property '{triple.predicate}' " +
+                                f"({type(self).__name__}.{property_key}) has not been provided.")
+        else:
+            try:
+                for val in all_values:
+                    triple.add_to_graph(graph, self.uri, val)
+
+                    # If this resource links to another one, then we should make sure that is serialised too.
+                    if isinstance(val, RdfResource):
+                        val.to_graph(graph, objects_already_processed)
+
+            except Exception as e:
+                raise Exception(f"Error adding RDF property '{triple.predicate}' "
+                                f" ({type(self).__name__}.{property_key}).") from e
 
 
 def map_str_to_en_literal(s: str) -> Literal:

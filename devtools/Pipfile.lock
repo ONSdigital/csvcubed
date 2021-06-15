@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "f930a1b32f639fdb299ecf04a615cf5862a508c92f0803efe09427d0592bdfe2"
+            "sha256": "8398e79186d024e295e7495f4d0038f4b16d0bf6a5619c0eda12e4a4f2450ada"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -35,6 +35,7 @@
                 "sha256:b9662327aa53294c1351b0a9c369093ccec1d21026f050c3bd9b3e5cccf81a86",
                 "sha256:ebda1a6c9e5bfe95c5f9f0a2794e01c7098b3dde86c10a95d8621c5907ff6f1c"
             ],
+            "index": "pypi",
             "version": "==1.2.6"
         },
         "black": {
@@ -86,10 +87,6 @@
             ],
             "version": "==0.4.4"
         },
-        "csvwlib-devtools": {
-            "editable": true,
-            "path": "./../devtools"
-        },
         "distlib": {
             "hashes": [
                 "sha256:106fef6dc37dd8c0e2c0a60d3fca3e77460a48907f335fa28420463a6f799736",
@@ -102,6 +99,7 @@
                 "sha256:3e8bc47534e0ca9331d72c32f2881bb13b93ded0bcdeab3c833fb7cf61c0a9a5",
                 "sha256:fc961d622160e8021c10d1bcabc388c57d55fb1f917175afbe24af442e6879bd"
             ],
+            "index": "pypi",
             "version": "==5.0.0"
         },
         "idna": {
@@ -118,16 +116,13 @@
             ],
             "version": "==0.6.0"
         },
-        "models": {
-            "editable": true,
-            "path": "."
-        },
         "nose": {
             "hashes": [
                 "sha256:9ff7c6cc443f8c51994b34a667bbcf45afd6d945be7477b52e97516fd17c53ac",
                 "sha256:dadcddc0aefbf99eea214e0f1232b94f2fa9bd98fa8353711dacb112bfcbbb2a",
                 "sha256:f1bffef9cbc82628f6e7d7b40d7e255aefaa1adb6a1b1d26c69a8b79e6208a98"
             ],
+            "index": "pypi",
             "version": "==1.3.7"
         },
         "orderedmultidict": {
@@ -183,6 +178,7 @@
                 "sha256:8a439aff7b16e18d7e07702c9186fc5fe86156679eace90e10c2578a43bd7af1",
                 "sha256:e1bfd55c1152024e762f1c17f6189fcb073166509e7c0228870f7ea160355648"
             ],
+            "index": "pypi",
             "version": "==3.1.1"
         },
         "pipfile": {
@@ -213,6 +209,7 @@
                 "sha256:73ebfe9dbf22e832286dafa60473e4cd239f8592f699aa5adaf10050e6e1823c",
                 "sha256:75bb3f31ea686f1197762692a9ee6a7550b59fc6ca3a1f4b5d7e32fb98e2da2a"
             ],
+            "index": "pypi",
             "version": "==2.8.1"
         },
         "rdflib": {

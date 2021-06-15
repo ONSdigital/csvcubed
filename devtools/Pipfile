@@ -4,11 +4,14 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-devtools = {editable = true,path = "./../devtools"}
 
 [packages]
+docker = "*"
+behave = "*"
 rdflib = "*"
-models = {editable = true,path = "."}
+nose = "*"
+python-dateutil = "*"
+pipenv-setup = "*"
 
 [requires]
 python_version = "3.9"
