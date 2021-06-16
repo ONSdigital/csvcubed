@@ -15,17 +15,18 @@ def _run_csv2rdf(metadata_file_path: Path) -> Tuple[int, str, Optional[str]]:
         client = docker.from_env()
         csv2rdf = client.containers.create(
             'gsscogs/csv2rdf',
-            command=f'csv2rdf -u /workspace/{metadata_file_path.name} -o /output/csv2rdf.ttl',
-            volumes={
-                str(metadata_file_path.parent.absolute()): {
-                    "bind": "/workspace",
-                    "mode": "ro"
-                },
-                tmp_dir: {
-                    "bind": "/output",
-                    "mode": "rw"
-                }
-            }
+            command=f'csv2rdf -u /workspace/{metadata_file_path.name} -o /output/csv2rdf.ttl'
+            # ,
+            # volumes={
+            #     str(metadata_file_path.parent.absolute()): {
+            #         "bind": "/workspace",
+            #         "mode": "ro"
+            #     },
+            #     tmp_dir: {
+            #         "bind": "/output",
+            #         "mode": "rw"
+            #     }
+            # }
         )
         csv2rdf.start()
         response: dict = csv2rdf.wait()

@@ -13,13 +13,14 @@ def _run_csvlint(metadata_file_path: Path) -> Tuple[int, str]:
     client = docker.from_env()
     csvlint = client.containers.create(
         'gsscogs/csvlint',
-        command=f'csvlint -s /workspace/{metadata_file_path.name}',
-        volumes={
-            str(metadata_file_path.parent.absolute()): {
-                "bind": "/workspace",
-                "mode": "ro"
-            }
-        }
+        command=f'csvlint -s /workspace/{metadata_file_path.name}'
+        # ,
+        # volumes={
+        #     str(metadata_file_path.parent.absolute()): {
+        #         "bind": "/workspace",
+        #         "mode": "ro"
+        #     }
+        # }
     )
     csvlint.start()
     response: dict = csvlint.wait()
