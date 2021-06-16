@@ -1,6 +1,3 @@
-"""
-TODO: implement CLI interface
-"""
 import json
 import re
 from pathlib import Path

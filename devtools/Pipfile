@@ -12,6 +12,7 @@ rdflib = "*"
 nose = "*"
 python-dateutil = "*"
 pipenv-setup = "*"
+csvw = "*"
 
 [requires]
 python_version = "3.9"

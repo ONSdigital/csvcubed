@@ -15,8 +15,8 @@ def _run_csvlint(metadata_file_path: Path) -> Tuple[int, str]:
         'gsscogs/csvlint',
         command=f'csvlint -s /workspace/{metadata_file_path.name}',
         volumes={
-            "/workspace": {
-                "bind": str(metadata_file_path.parent.absolute()),
+            str(metadata_file_path.parent.absolute()): {
+                "bind": "/workspace",
                 "mode": "ro"
             }
         }
@@ -28,14 +28,14 @@ def _run_csvlint(metadata_file_path: Path) -> Tuple[int, str]:
     return exit_code, csvlint.logs().decode('utf-8')
 
 
-@step("csvlint validates ok")
-def step_impl(context):
-    exit_code, logs = _run_csvlint(context)
+@step("csvlint validation of \"{file}\" should succeed")
+def step_impl(context, file: str):
+    exit_code, logs = _run_csvlint(Path(file))
     assert_equal(exit_code, 0)
 
 
-@step('csvlint should fail with "{expected}"')
-def step_impl(context, expected):
-    exit_code, logs = _run_csvlint(context)
+@step('csvlint validation of \"{file}\" should fail with "{expected}"')
+def step_impl(context, file: str, expected: str):
+    exit_code, logs = _run_csvlint(Path(file))
     assert_equal(exit_code, 1)
     assert expected in logs
