@@ -17,7 +17,7 @@ pipeline {
     }
     post {
         always {
-            cucumber 'pmd/test-results.json'
+            cucumber fileIncludePattern: 'pmd/test-results.json'
             junit allowEmptyResults: true, testResults: 'pmd/reports/*.xml'
         }
     }
