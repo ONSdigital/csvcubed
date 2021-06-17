@@ -10,14 +10,15 @@ pipeline {
             steps {
                 dir("pmd") {
                     sh "pipenv sync --dev"
-                    sh "pipenv run behave pmd/tests/behaviour -D record_mode=none --tags=-skip -o test-results.json"
+                    sh "pipenv run behave pmd/tests/behaviour -D record_mode=none --tags=-skip -o test-results.cucumber --junit"
                 }
             }
         }
     }
     post {
         always {
-            cucumber 'test-results.json'
+            cucumber 'pmd/test-results.cucumber'
+            junit allowEmptyResults: true, testResults: 'pmd/reports/*.xml'
         }
     }
 }

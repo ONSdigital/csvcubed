@@ -10,31 +10,26 @@ from typing import Tuple, Optional
 from tempfile import TemporaryDirectory
 
 
+from devtools.helpers.tar import dir_to_tar, extract_tar
+
+
 def _run_csv2rdf(metadata_file_path: Path) -> Tuple[int, str, Optional[str]]:
     with TemporaryDirectory() as tmp_dir:
         client = docker.from_env()
         csv2rdf = client.containers.create(
             'gsscogs/csv2rdf',
-            command=f'csv2rdf -u /workspace/{metadata_file_path.name} -o /output/csv2rdf.ttl'
-            # ,
-            # volumes={
-            #     str(metadata_file_path.parent.absolute()): {
-            #         "bind": "/workspace",
-            #         "mode": "ro"
-            #     },
-            #     tmp_dir: {
-            #         "bind": "/output",
-            #         "mode": "rw"
-            #     }
-            # }
+            command=f'csv2rdf -u /tmp/{metadata_file_path.name} -o /tmp/csv2rdf.ttl'
         )
+        csv2rdf.put_archive("/tmp", dir_to_tar(metadata_file_path.parent))
+
         csv2rdf.start()
         response: dict = csv2rdf.wait()
         exit_code = response["StatusCode"]
         sys.stdout.write(csv2rdf.logs().decode('utf-8'))
 
-        tmp_dir_path = Path(str(tmp_dir))
-        maybe_output_file = tmp_dir_path / "csv2rdf.ttl"
+        output_stream, output_stat = csv2rdf.get_archive('/tmp/csv2rdf.ttl')
+        extract_tar(output_stream, tmp_dir)
+        maybe_output_file = Path(tmp_dir) / "csv2rdf.ttl"
         if maybe_output_file.exists():
             with open(maybe_output_file, "r") as f:
                 ttl_out = f.read()

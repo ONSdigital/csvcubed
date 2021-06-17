@@ -19,9 +19,6 @@ RUN apt-get update
 
 RUN apt-get install -y docker-ce docker-ce-cli containerd.io
 
-# Install python stuff
-# RUN apt-get install -y python3 python3-pip
-
 RUN python3 -m pip install pipenv
 RUN mkdir /workspace
 WORKDIR /workspace

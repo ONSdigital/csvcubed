@@ -8,20 +8,16 @@ import docker
 import sys
 from typing import Tuple
 
+from devtools.helpers.tar import dir_to_tar
+
 
 def _run_csvlint(metadata_file_path: Path) -> Tuple[int, str]:
     client = docker.from_env()
-    csvlint = client.containers.create(
+    csvlint  = client.containers.create(
         'gsscogs/csvlint',
-        command=f'csvlint -s /workspace/{metadata_file_path.name}'
-        # ,
-        # volumes={
-        #     str(metadata_file_path.parent.absolute()): {
-        #         "bind": "/workspace",
-        #         "mode": "ro"
-        #     }
-        # }
+        command=f"csvlint -s '/tmp/{metadata_file_path.name}'"
     )
+    csvlint.put_archive("/tmp", dir_to_tar(metadata_file_path.parent))
     csvlint.start()
     response: dict = csvlint.wait()
     exit_code = response["StatusCode"]
