@@ -19,8 +19,8 @@ pipeline {
     }
     post {
         always {
-            cucumber 'pmd/pmd/tests/behaviour/test-results.json'
-            junit allowEmptyResults: true, testResults: 'pmd/pmd/tests/behaviour/reports/*.xml'
+            cucumber '**/test-results.json'
+            junit allowEmptyResults: true, testResults: '**/reports/*.xml'
         }
     }
 }
