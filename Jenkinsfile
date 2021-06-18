@@ -41,11 +41,11 @@ pipeline {
                     args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
                     reuseNode true
                 }
-                steps {
-                    dir("pmd") {
-                        sh "pipenv run python setup.py bdist_wheel --universal"
-                        archiveArtifacts artifacts: 'dist/*.whl', fingerprint: true
-                    }
+            }
+            steps {
+                dir("pmd") {
+                    sh "pipenv run python setup.py bdist_wheel --universal"
+                    archiveArtifacts artifacts: 'dist/*.whl', fingerprint: true
                 }
             }
         }
@@ -55,11 +55,11 @@ pipeline {
                     args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
                     reuseNode true
                 }
-                steps {
-                    // remove everything before next build (we have permissions problems since this stage is run as root)
-                    sh "rm -rf *" 
-                }
-        }
+            }
+            steps {
+                // remove everything before next build (we have permissions problems since this stage is run as root)
+                sh "rm -rf *" 
+            }
     }
     post {
         always {
