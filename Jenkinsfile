@@ -17,7 +17,7 @@ pipeline {
 
                     stash name: "test-results", includes: "**/test-results.json,**/reports/*.xml"
                 }
-                sh "rm -rf *" // remove everything before next build (we have permissions problems since this functionality is run as root)
+                sh "rm -rf *" // remove everything before next build (we have permissions problems since this stage is run as root)
             }
         }
     }
@@ -25,7 +25,7 @@ pipeline {
         always {
             try {
                 unstash name: "test-results"
-            } catch {
+            } catch (Exception e) {
                 echo "Stash does not exist"
             }
 
