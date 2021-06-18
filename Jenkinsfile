@@ -9,7 +9,7 @@ pipeline {
             }
             steps {
                 dir("pmd") {
-                    sh "export PIPENV_PIPFILE=\"$(pwd)/Pipfile\""
+                    sh "export PIPENV_PIPFILE=\"\$(pwd)/Pipfile\""
                     sh "pipenv sync --dev"
                     sh "pipenv run behave pmd/tests/behaviour --tags=-skip -f json -o pmd/tests/behaviour/test-results.json --junit"
                     dir("pmd/tests/unit") {
