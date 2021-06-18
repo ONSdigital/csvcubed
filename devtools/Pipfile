@@ -1,0 +1,19 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+docker = "*"
+behave = "*"
+rdflib = "*"
+nose = "*"
+python-dateutil = "*"
+pipenv-setup = "*"
+csvw = "*"
+unittest-xml-reporting = "*"
+
+[requires]
+python_version = "3.9"

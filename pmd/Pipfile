@@ -1,0 +1,20 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+devtools = {editable = true,path = "./../devtools"}
+
+[packages]
+rdflib = "*"
+rdflib-jsonld = "*"
+requests = "*"
+csvw = "*"
+pandas = "*"
+uritemplate = "*"
+pmd = {editable = true,path = "."}
+sharedmodels = {editable = true,path = "./../sharedmodels"}
+
+[requires]
+python_version = "3.9"
