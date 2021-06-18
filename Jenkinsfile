@@ -11,10 +11,10 @@ pipeline {
                 dir("pmd") {
                     sh "pipenv sync --dev"
                     sh "pipenv run behave pmd/tests/behaviour --tags=-skip -f json -o pmd/tests/behaviour/test-results.json --junit"
-                    cucumber fileIncludePattern: 'pmd/tests/behaviour/test-results.json'
+                    sh "chmod -R 644 pmd/tests/behaviour/test-results.json"
                     dir("pmd/tests/unit") {
                         sh "PIPENV_PIPFILE='../../../Pipfile' pipenv run python -m xmlrunner -o reports *.py"
-                        junit allowEmptyResults: false, testResults: 'reports/*.xml'
+                        sh "chmod -R 644 reports"
                     }
                 }
             }
