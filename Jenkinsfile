@@ -1,6 +1,11 @@
 pipeline {
     agent any
     stages {
+        stage('Clean') {
+            steps {
+                sh "git clean -fxd"
+            }
+        }
         stage('Test') {
             agent {
                 dockerfile {
