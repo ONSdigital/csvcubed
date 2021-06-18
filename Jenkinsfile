@@ -12,8 +12,12 @@ pipeline {
                 dir("pmd") {
                     sh "pipenv sync --dev"
                     // Patch behave so that it can output the correct format for the Jenkins cucumber tool.
-                    sh "patch -d \"\$(pipenv --venv)/lib/python3.9/site-packages/behave/formatter\" -p1 < /cucumber-format.patch"
+                    def venv_location = sh "pipenv --venv", returnStdout: true
+                    sh "patch -d \"${venv_location}/lib/python3.9/site-packages/behave/formatter\" -p1 < /cucumber-format.patch"
+                    
+                    stash name: "pmd-venv", includes: "${venv_location}/**/*"
                 }
+
             }
         }
         stage('Test') {
@@ -25,6 +29,8 @@ pipeline {
             }
             steps {
                 dir("pmd") {
+                    unstash name: "pmd-venv"
+
                     sh "pipenv run behave pmd/tests/behaviour --tags=-skip -f json.cucumber -o pmd/tests/behaviour/test-results.json"
                     dir("pmd/tests/unit") {
                         sh "PIPENV_PIPFILE='../../../Pipfile' pipenv run python -m xmlrunner -o reports *.py"
@@ -42,8 +48,10 @@ pipeline {
                     reuseNode true
                 }
             }
-            steps {
+            steps {               
                 dir("pmd") {
+                    unstash name: "pmd-venv"
+
                     sh "pipenv run python setup.py bdist_wheel --universal"
                     archiveArtifacts artifacts: 'dist/*.whl', fingerprint: true
                 }
