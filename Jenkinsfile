@@ -8,7 +8,6 @@ pipeline {
                 }
             }
             steps {
-                deleteDir()
                 dir("pmd") {
                     sh "pipenv sync --dev"
                     sh "pipenv run behave pmd/tests/behaviour --tags=-skip -f json -o pmd/tests/behaviour/test-results.json --junit"
