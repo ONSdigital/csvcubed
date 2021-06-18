@@ -10,7 +10,7 @@ pipeline {
             steps {
                 dir("pmd") {
                     sh "pipenv sync --dev"
-                    sh "pipenv run behave pmd/tests/behaviour --tags=-skip -f json -o pmd/tests/behaviour/test-results.json --junit"
+                    sh "pipenv run behave pmd/tests/behaviour --tags=-skip -f json -o pmd/tests/behaviour/test-results.json"
                     dir("pmd/tests/unit") {
                         sh "PIPENV_PIPFILE='../../../Pipfile' pipenv run python -m xmlrunner -o reports *.py"
                     }
@@ -23,7 +23,12 @@ pipeline {
     }
     post {
         always {
-            unstash name: "test-results"
+            try {
+                unstash name: "test-results"
+            } catch {
+                echo "Stash does not exist"
+            }
+
             cucumber fileIncludePattern: '**/test-results.json'
             junit allowEmptyResults: true, testResults: '**/reports/*.xml'
         }
