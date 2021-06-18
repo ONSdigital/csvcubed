@@ -49,7 +49,7 @@ pipeline {
                 }
             }
         }
-        state('Clean Up') {
+        stage('Clean Up') {
             agent {
                 dockerfile {
                     args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
@@ -60,6 +60,7 @@ pipeline {
                 // remove everything before next build (we have permissions problems since this stage is run as root)
                 sh "rm -rf *" 
             }
+        }
     }
     post {
         always {
