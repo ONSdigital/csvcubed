@@ -1,11 +1,6 @@
 pipeline {
     agent any
     stages {
-        stage('Clean') {
-            steps {
-                sh "rm -rf"
-            }
-        }
         stage('Test') {
             agent {
                 dockerfile {
@@ -13,7 +8,7 @@ pipeline {
                 }
             }
             steps {
-                sh "rm -rf"
+                deleteDir()
                 dir("pmd") {
                     sh "pipenv sync --dev"
                     sh "pipenv run behave pmd/tests/behaviour --tags=-skip -f json -o pmd/tests/behaviour/test-results.json --junit"
