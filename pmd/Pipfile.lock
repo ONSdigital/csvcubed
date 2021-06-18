@@ -793,6 +793,13 @@
             ],
             "version": "==1.4.3"
         },
+        "unittest-xml-reporting": {
+            "hashes": [
+                "sha256:7bf515ea8cb244255a25100cd29db611a73f8d3d0aaf672ed3266307e14cc1ca",
+                "sha256:984cebba69e889401bfe3adb9088ca376b3a1f923f0590d005126c1bffd1a695"
+            ],
+            "version": "==3.0.4"
+        },
         "uritemplate": {
             "hashes": [
                 "sha256:07620c3f3f8eed1f12600845892b0e036a2420acf513c53f7de0abd911a5894f",

@@ -1,12 +1,7 @@
-import datetime
-import json
 import unittest
 from pathlib import Path
+import xmlrunner
 
-import pandas as pd
-import rdflib
-
-import pmd.models.rdf.pmdcat
 from pmd.codelist.datetimecodelistgen import \
     _get_dimensions_to_generate_code_lists_for, _get_csv_columns_for_dimension, _get_unique_values_from_columns, \
     _create_code_list_for_dimension, generate_date_time_code_lists_for_csvw_metadata_file
@@ -55,5 +50,5 @@ class TestDateTimeCodeListGeneration(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(testRunner=xmlrunner.XMLTestRunner(output="test-reports"))
 
