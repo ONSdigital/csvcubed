@@ -13,7 +13,7 @@ pipeline {
                     sh "pipenv sync --dev"
                     sh "pipenv run behave pmd/tests/behaviour --tags=-skip -f json -o pmd/tests/behaviour/test-results.json --junit"
                     dir("pmd/tests/unit") {
-                        sh "pipenv run python -m xmlrunner *.py"
+                        sh "pipenv run python -m xmlrunner -o reports *.py"
                     }
                 }
             }
