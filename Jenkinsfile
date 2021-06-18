@@ -9,15 +9,16 @@ pipeline {
                 }
             }
             steps {
-                dir("pmd") {
-                    sh "pipenv sync --dev"
-                    // Patch behave so that it can output the correct format for the Jenkins cucumber tool.
-                    def venv_location = sh "pipenv --venv", returnStdout: true
-                    sh "patch -d \"${venv_location}/lib/python3.9/site-packages/behave/formatter\" -p1 < /cucumber-format.patch"
-                    
-                    stash name: "pmd-venv", includes: "${venv_location}/**/*"
-                }
+                script {
+                    dir("pmd") {
+                        sh "pipenv sync --dev"
+                        // Patch behave so that it can output the correct format for the Jenkins cucumber tool.
+                        def venv_location = sh "pipenv --venv", returnStdout: true
+                        sh "patch -d \"${venv_location}/lib/python3.9/site-packages/behave/formatter\" -p1 < /cucumber-format.patch"
 
+                        stash name: "pmd-venv", includes: "${venv_location}/**/*"
+                    }
+                }
             }
         }
         stage('Test') {
