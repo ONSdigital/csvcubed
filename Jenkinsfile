@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Clean') {
             steps {
-                sh "git clean -fxd"
+                sh "rm -rf *"
             }
         }
         stage('Test') {
