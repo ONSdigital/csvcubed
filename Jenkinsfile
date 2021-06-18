@@ -58,18 +58,6 @@ pipeline {
                 }
             }
         }
-        stage('Clean Up') {
-            agent {
-                dockerfile {
-                    args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
-                    reuseNode true
-                }
-            }
-            steps {
-                // remove everything before next build (we have permissions problems since this stage is run as root)
-                sh "rm -rf *" 
-            }
-        }
     }
     post {
         always {
@@ -82,7 +70,18 @@ pipeline {
                 cucumber fileIncludePattern: '**/test-results.json'
                 junit allowEmptyResults: true, testResults: '**/reports/*.xml'
             }
-
+        }
+        cleanup {
+            agent {
+                dockerfile {
+                    args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
+                    reuseNode true
+                }
+            }
+            steps {
+                // remove everything before next build (we have permissions problems since this stage is run as root)
+                sh "rm -rf *" 
+            }
         }
     }
 }
