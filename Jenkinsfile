@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Clean') {
             steps {
-                sh "rm -rf *"
+                sh "git clean -fxd"
             }
         }
         stage('Test') {
@@ -13,6 +13,7 @@ pipeline {
                 }
             }
             steps {
+                sh "git clean -fxd"
                 dir("pmd") {
                     sh "pipenv sync --dev"
                     sh "pipenv run behave pmd/tests/behaviour --tags=-skip -f json -o pmd/tests/behaviour/test-results.json --junit"
