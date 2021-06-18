@@ -10,6 +10,7 @@ pipeline {
             }
             steps {
                 script {
+                    sh "git clean -fxd"
                     dir("pmd") {
                         sh "pipenv sync --dev"
                         // Patch behave so that it can output the correct format for the Jenkins cucumber tool.
@@ -69,22 +70,6 @@ pipeline {
                 }
                 cucumber fileIncludePattern: '**/test-results.json'
                 junit allowEmptyResults: true, testResults: '**/reports/*.xml'
-            }
-        }
-        cleanup {
-            node(null) {
-                step {
-                    agent {
-                        dockerfile {
-                            args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
-                            reuseNode true
-                        }
-                    }
-                    steps {
-                        // remove everything before next build (we have permissions problems since this stage is run as root)
-                        sh "rm -rf *" 
-                    }
-                }
             }
         }
     }
