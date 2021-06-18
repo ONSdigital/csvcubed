@@ -23,7 +23,7 @@ pipeline {
     }
     post {
         always {
-            steps {
+            script {
                 try {
                     unstash name: "test-results"
                 } catch (Exception e) {
