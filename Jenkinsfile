@@ -17,6 +17,7 @@ pipeline {
 
                     stash name: "test-results", includes: "**/test-results.json,**/reports/*.xml"
                 }
+                sh "rm -rf ." // remove everything before next build (we have permissions problems since this functionality is run as root)
             }
         }
     }
