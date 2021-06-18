@@ -23,5 +23,7 @@ RUN python3 -m pip install pipenv
 
 ADD https://raw.githubusercontent.com/GSS-Cogs/gss-utils/master/cucumber-format.patch /
 
+RUN apt-get install -y git
+
 RUN mkdir /workspace
 WORKDIR /workspace
