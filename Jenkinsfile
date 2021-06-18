@@ -23,16 +23,16 @@ pipeline {
     }
     post {
         always {
-            step {
+            steps {
                 try {
                     unstash name: "test-results"
                 } catch (Exception e) {
                     echo "Stash does not exist"
                 }
+                cucumber fileIncludePattern: '**/test-results.json'
+                junit allowEmptyResults: true, testResults: '**/reports/*.xml'
             }
 
-            cucumber fileIncludePattern: '**/test-results.json'
-            junit allowEmptyResults: true, testResults: '**/reports/*.xml'
         }
     }
 }
