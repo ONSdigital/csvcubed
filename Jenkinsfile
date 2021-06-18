@@ -23,10 +23,12 @@ pipeline {
     }
     post {
         always {
-            try {
-                unstash name: "test-results"
-            } catch (Exception e) {
-                echo "Stash does not exist"
+            step {
+                try {
+                    unstash name: "test-results"
+                } catch (Exception e) {
+                    echo "Stash does not exist"
+                }
             }
 
             cucumber fileIncludePattern: '**/test-results.json'
