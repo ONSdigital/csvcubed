@@ -1,15 +1,13 @@
-import json
 import unittest
 from pathlib import Path
+import xmlrunner
 
-import pandas as pd
-
-from ..datetimecodelistgen import \
+from pmd.codelist.datetimecodelistgen import \
     _get_dimensions_to_generate_code_lists_for, _get_csv_columns_for_dimension, _get_unique_values_from_columns, \
-    _create_code_list_for_dimension
+    _create_code_list_for_dimension, generate_date_time_code_lists_for_csvw_metadata_file
 
-TESTS_ROOT_PATH = Path("./pmd/tests/")
-TEST_CASES_PATH = TESTS_ROOT_PATH / "test-cases"
+TESTS_ROOT_PATH = Path(".")
+TEST_CASES_PATH = TESTS_ROOT_PATH / ".." / "test-cases"
 
 HMRC_OTS_CN8_CSV = TEST_CASES_PATH / "hmrc-overseas-trade-statistics-cn8.csv"
 HMRC_OTS_CN8_METADATA_JSON = TEST_CASES_PATH / "hmrc-overseas-trade-statistics-cn8.csv-metadata.json"
@@ -21,7 +19,7 @@ EXPECTED_MONTH_CSV_OUT = TEST_CASES_PATH / "Month.csv"
 EXPECTED_MONTH_METADATA_OUT = TEST_CASES_PATH / "Month.csv-metadata.json"
 
 
-class MyTestCase(unittest.TestCase):
+class TestDateTimeCodeListGeneration(unittest.TestCase):
     def test_extracting_date_time_dimensions_from_metadata(self):
         date_time_dimensions = _get_dimensions_to_generate_code_lists_for(HMRC_OTS_CN8_METADATA_JSON)
         self.assertTrue(len(date_time_dimensions) == 1)
@@ -50,18 +48,7 @@ class MyTestCase(unittest.TestCase):
         self.assertTrue("http://reference.data.gov.uk/id/month/2020-10" in unique_values)
         self.assertTrue("http://reference.data.gov.uk/id/month/2020-11" in unique_values)
 
-    def test_code_lists_generated(self):
-        date_time_dimensions = _get_dimensions_to_generate_code_lists_for(HMRC_OTS_CN8_METADATA_JSON)
-        for (dimension, label, code_list_uri) in date_time_dimensions:
-            _create_code_list_for_dimension(HMRC_OTS_CN8_METADATA_JSON, dimension, label, code_list_uri)
-
-        codelist_out = pd.read_csv(EXPECTED_MONTH_CSV_OUT)
-        with open(EXPECTED_MONTH_METADATA_OUT, "r") as f:
-            codelist_metadata_out = json.load(f)
-
-        # todo: Need some more thorough tests which ensure the validity of the CSV-W metadata + CSV outputted.
-        self.assertTrue(False)
-
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(testRunner=xmlrunner.XMLTestRunner(output="test-reports"))
+

@@ -8,13 +8,7 @@ devtools = {editable = true,path = "./../devtools"}
 
 [packages]
 rdflib = "*"
-rdflib-jsonld = "*"
-requests = "*"
-csvw = "*"
-pandas = "*"
-uritemplate = "*"
-pmd = {editable = true,path = "."}
-sharedmodels = {editable = true,path = "./../sharedmodels"}
+sharedmodels = {editable = true,path = "."}
 
 [requires]
 python_version = "3.9"
