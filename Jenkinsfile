@@ -73,15 +73,17 @@ pipeline {
         }
         cleanup {
             node(null) {
-                agent {
-                    dockerfile {
-                        args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
-                        reuseNode true
+                step {
+                    agent {
+                        dockerfile {
+                            args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
+                            reuseNode true
+                        }
                     }
-                }
-                steps {
-                    // remove everything before next build (we have permissions problems since this stage is run as root)
-                    sh "rm -rf *" 
+                    steps {
+                        // remove everything before next build (we have permissions problems since this stage is run as root)
+                        sh "rm -rf *" 
+                    }
                 }
             }
         }
