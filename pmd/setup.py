@@ -1,6 +1,7 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
+    version="0.0.1",
     install_requires=[
         "attrs==21.2.0",
         "certifi==2021.5.30",
@@ -22,4 +23,5 @@ setup(
         "urllib3==1.26.5",
     ],
     name="csvwlib-pmd",
+    packages=find_packages(exclude=["tests"])
 )
