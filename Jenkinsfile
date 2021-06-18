@@ -9,11 +9,11 @@ pipeline {
             }
             steps {
                 dir("pmd") {
+                    sh "export PIPENV_PIPFILE=\"$(pwd)/Pipfile\""
                     sh "pipenv sync --dev"
-                    sh "pipenv shell"
-                    sh "behave pmd/tests/behaviour --tags=-skip -f json -o pmd/tests/behaviour/test-results.json --junit"
+                    sh "pipenv run behave pmd/tests/behaviour --tags=-skip -f json -o pmd/tests/behaviour/test-results.json --junit"
                     dir("pmd/tests/unit") {
-                        sh "python -m xmlrunner *.py"
+                        sh "pipenv run python -m xmlrunner *.py"
                     }
                 }
             }
