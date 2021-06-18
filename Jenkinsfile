@@ -72,7 +72,7 @@ pipeline {
             }
         }
         cleanup {
-            node {
+            node(null) {
                 agent {
                     dockerfile {
                         args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
