@@ -22,7 +22,6 @@ RUN apt-get install -y docker-ce docker-ce-cli containerd.io
 RUN python3 -m pip install pipenv
 
 ADD https://raw.githubusercontent.com/GSS-Cogs/gss-utils/master/cucumber-format.patch /
-RUN patch -d /usr/local/lib/python*/site-packages/behave/formatter -p1 < /cucumber-format.patch
 
 RUN mkdir /workspace
 WORKDIR /workspace
