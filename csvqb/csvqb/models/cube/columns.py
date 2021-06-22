@@ -1,6 +1,9 @@
 from abc import ABC, abstractmethod
 import pandas as pd
-from typing import Optional
+from typing import Optional, List
+
+
+from csvqb.models.validationerror import ValidationError
 
 
 class CsvColumn(ABC):
@@ -10,7 +13,7 @@ class CsvColumn(ABC):
         self.csv_column_title = csv_column_title
 
     @abstractmethod
-    def validate(self, column_data: Optional[pd.Series]) -> bool:
+    def validate(self, column_data: Optional[pd.Series]) -> List[ValidationError]:
         pass
 
 
@@ -22,5 +25,5 @@ class SuppressedCsvColumn(CsvColumn):
     def __init__(self, csv_column_title: str):
         CsvColumn.__init__(self, csv_column_title)
 
-    def validate(self, column_data: pd.Series) -> bool:
-        return True
+    def validate(self, column_data: pd.Series) -> List[ValidationError]:
+        return []

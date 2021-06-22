@@ -5,6 +5,7 @@ import pandas as pd
 
 from .component import QbMetaComponent, QbComponent
 from .dimension import QbDimension, ExistingQbDimension
+from csvqb.models.validationerror import ValidationError
 
 
 class QbMeasure(QbDimension, ABC):
@@ -19,10 +20,10 @@ class ExistingQbMeasure(QbMeasure):
         QbMeasure.__init__(self)
         self.measure_uri = measure_uri
 
-    def validate(self) -> bool:
+    def validate(self) -> List[ValidationError]:
         raise Exception("Not implemented yet")
 
-    def validate_data(self, data: pd.Series) -> bool:
+    def validate_data(self, data: pd.Series) -> List[ValidationError]:
         raise Exception("Not implemented yet")
 
 
@@ -43,14 +44,14 @@ class NewQbMeasure(QbMeasure):
         self.parent_measure_uri = parent_measure_uri
         self.source_uri = source_uri
 
-    def validate(self) -> bool:
+    def validate(self) -> List[ValidationError]:
         raise Exception("Not implemented yet")
 
-    def validate_data(self, data: pd.Series) -> bool:
+    def validate_data(self, data: pd.Series) -> List[ValidationError]:
         raise Exception("Not implemented yet")
 
 
-class QbMeasureTypes(QbMetaComponent):
+class QbMultiMeasureTypes(QbMetaComponent):
     """
         Represents the measure types permitted in a multi-measure cubes.
     """
@@ -60,14 +61,16 @@ class QbMeasureTypes(QbMetaComponent):
     def __init__(self, measures: List[QbMeasure]):
         self.measures = measures
 
-    def validate(self) -> bool:
+    def validate(self) -> List[ValidationError]:
         raise Exception("Not implemented yet")
 
-    def validate_data(self, data: pd.Series) -> bool:
+    def validate_data(self, data: pd.Series) -> List[ValidationError]:
         raise Exception("Not implemented yet")
 
     def get_qb_components(self) -> List[QbComponent]:
-        return [QbMeasureTypeDimension] + self.measures
+        components: List[QbComponent] = [QbMeasureTypeDimension]
+        components += self.measures
+        return components
 
 
 QbMeasureTypeDimension = ExistingQbDimension("http://purl.org/linked-data/cube#measureType",

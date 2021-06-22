@@ -1,10 +1,11 @@
-from typing import Optional
+from typing import Optional, List
 from abc import ABC
 
 import pandas as pd
 
 from .component import QbComponent
 from ..codelist import QbCodeList, ExistingQbCodeList
+from csvqb.models.validationerror import ValidationError
 
 
 class QbDimension(QbComponent, ABC):
@@ -26,10 +27,10 @@ class ExistingQbDimension(QbDimension):
         self.dimension_uri = dimension_uri
         self.range_uri = range_uri
 
-    def validate(self) -> bool:
+    def validate(self) -> List[ValidationError]:
         raise Exception("Not implemented yet")
 
-    def validate_data(self, data: pd.Series) -> bool:
+    def validate_data(self, data: pd.Series) -> List[ValidationError]:
         raise Exception("Not implemented yet")
 
 
@@ -51,10 +52,10 @@ class NewQbDimension(QbDimension):
         self.parent_dimension_uri = parent_dimension_uri
         self.source_uri = source_uri
 
-    def validate(self) -> bool:
+    def validate(self) -> List[ValidationError]:
         raise Exception("Not implemented yet")
 
-    def validate_data(self, data: pd.Series) -> bool:
+    def validate_data(self, data: pd.Series) -> List[ValidationError]:
         raise Exception("Not implemented yet")
 
 

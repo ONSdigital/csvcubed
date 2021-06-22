@@ -3,6 +3,9 @@ import pandas as pd
 from typing import List
 
 
+from csvqb.models.validationerror import ValidationError
+
+
 class QbComponent(ABC):
     """
         Base class for entities holding information necessary to generate one or many qb DataStructureDefinition (DSD)
@@ -10,12 +13,12 @@ class QbComponent(ABC):
     """
 
     @abstractmethod
-    def validate(self) -> bool:
+    def validate(self) -> List[ValidationError]:
         """Validate this component's metadata."""
         pass
 
     @abstractmethod
-    def validate_data(self, data: pd.Series) -> bool:
+    def validate_data(self, data: pd.Series) -> List[ValidationError]:
         """Validate some data against this component's definition."""
         pass
 

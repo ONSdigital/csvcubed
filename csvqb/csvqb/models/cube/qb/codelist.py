@@ -1,11 +1,14 @@
-from typing import Set, Optional
+from typing import Set, Optional, List
 from abc import ABC, abstractmethod
+
+
+from csvqb.models.validationerror import ValidationError
 
 
 class QbCodeList(ABC):
 
     @abstractmethod
-    def validate(self, code_to_ensure_exist: Set[str]) -> bool:
+    def validate(self, code_to_ensure_exist: Set[str]) -> List[ValidationError]:
         """
         Validates a CodeList and ensures that the given codes are defined within.
         :param code_to_ensure_exist:
@@ -23,7 +26,7 @@ class ExistingQbCodeList(QbCodeList):
     def __init__(self, concept_scheme_uri: str):
         self.concept_scheme_uri = concept_scheme_uri
 
-    def validate(self, code_to_ensure_exist: Set[str]) -> bool:
+    def validate(self, code_to_ensure_exist: Set[str]) -> List[ValidationError]:
         """
         TODO: Probably want to fetch the existing concept scheme from PMD (and verify that it exists).
         We should then check that all of the values in `data` are defined in the concept scheme, if not,
@@ -57,7 +60,7 @@ class NewQbCodeList(QbCodeList):
     def __init__(self, concepts: Set[NewQbConcept]):
         self.concepts = concepts
 
-    def validate(self, code_to_ensure_exist: Set[str]) -> bool:
+    def validate(self, code_to_ensure_exist: Set[str]) -> List[ValidationError]:
         """
         TODO: Seems sensible to check that all of the values live within the concept scheme we're defining locally.
         TODO: Ensure all of the other metadata is correctly configured

@@ -14,14 +14,14 @@ from csvqb.models.cube.qb.components.observedvalue import QbObservationValue, Qb
     QbMultiMeasureObservationValue
 from csvqb.models.cube.qb.components.dimension import QbMeasureDimension, NewQbDimension, ExistingQbDimension, \
     QbDimension
-from csvqb.models.cube.qb.components.measure import ExistingQbMeasure, QbMeasureTypes
+from csvqb.models.cube.qb.components.measure import ExistingQbMeasure, QbMultiMeasureTypes
 from csvqb.models.cube.qb.components.attribute import ExistingQbAttribute, QbUnitAttribute
 
 from csvqb.models.cube.qb.codelist import ExistingQbCodeList, NewQbCodeList, NewQbConcept
 from csvqb.utils.dict import get_from_dict_ensure_exists
 
 
-def get_cube_from_info_json(info_json: Path, cube_id: str):
+def get_cube_from_info_json(info_json: Path, cube_id: str, data: pd.DataFrame):
     with open(info_json, "r") as f:
         config = json.load(f)
 
@@ -29,7 +29,7 @@ def get_cube_from_info_json(info_json: Path, cube_id: str):
     if config is None:
         raise Exception(f"Config not found for cube with id '{cube_id}'")
 
-    cube = _from_info_json_dict(config)
+    cube = _from_info_json_dict(config, data)
     _validate_csv_qb(cube)
     return cube
 
@@ -67,7 +67,7 @@ def _from_info_json_dict(d: Dict, data: pd.DataFrame):
 
 
 def _validate_csv_qb(cube: Cube):
-    dimension_columns = _get_columns_of_type(cube.columns, QbDimension)
+    dimension_columns = cube.get_columns_of_type(QbDimension)
     if len(dimension_columns) == 0:
         raise Exception("At least one dimension must be defined.")
 
@@ -81,8 +81,6 @@ def _columns_from_info_json(column_mappings: Dict[str, Any], data: pd.DataFrame)
         column_unique_values: Set[str] = set(data[col_title])
         maybe_config = column_mappings.get(col_title)
         defined_columns.append(_get_column_for_metadata_config(col_title, maybe_config, column_unique_values))
-
-    _set_observation_measure_uri_if_none(defined_columns)
 
     return defined_columns
 
@@ -103,7 +101,11 @@ def _get_column_for_metadata_config(col_name: str, col_config: Optional[Union[di
         if dimension_uri is not None and property_value_url is not None:
             if dimension_uri == "http://purl.org/linked-data/cube#measureType":
                 # multi-measure cube
-                measures = QbMeasureTypes([ExistingQbMeasure(t) for t in set(col_config.get("types"))])
+                defined_measure_types: List[str] = col_config.get("types", [])
+                if len(defined_measure_types) == 0:
+                    raise Exception(f"Property 'types' was not defined in measure types column '{col_name}'.")
+
+                measures = QbMultiMeasureTypes([ExistingQbMeasure(t) for t in defined_measure_types])
                 return QbColumn(measures, col_name, property_value_url)
             else:
                 return QbColumn(ExistingQbDimension(dimension_uri), col_name, property_value_url)
@@ -112,7 +114,6 @@ def _get_column_for_metadata_config(col_name: str, col_config: Optional[Union[di
             new_dimension = NewQbDimension(col_name,
                                            description=description,
                                            parent_dimension_uri=parent_uri,
-                                           value_uri=property_value_url,
                                            source_uri=col_config.get("source"),
                                            code_list=code_list)
             return QbColumn(new_dimension, col_name, property_value_url)
@@ -157,29 +158,3 @@ def _get_code_list(maybe_code_list: Optional[Union[bool, str]], unique_column_va
     else:
         code_list = _get_new_code_list_for_column(unique_column_values)
     return code_list
-
-
-def _set_observation_measure_uri_if_none(csv_columns: List[CsvColumn]):
-    observed_value_columns = _get_columns_of_type(csv_columns, QbObservationValue)
-
-    # assert validation specific to csv-qb
-    # we only currently support one shape of multi-measure input. And that leaves us with oen
-    if len(observed_value_columns) != 1:
-        raise Exception(f"Found {len(observed_value_columns)} observation value columns. Expected 1.")
-
-    observed_value_column = observed_value_columns[0]
-
-    if observed_value_column.measure is None:
-        measure_type_columns = [c for c in csv_columns.values() if isinstance(c, QbMeasureTypeColumn)]
-        if len(measure_type_columns) != 1:
-            raise Exception(f"Found {len(measure_type_columns)} measure type columns. Expected 1.")
-        measure_type_column = measure_type_columns[0]
-
-        observed_value_column.measure = measure_type_column.value_template
-
-
-ComponentType = typing.TypeVar("ComponentType", bound=QbComponent)
-
-
-def _get_columns_of_type(csv_columns: List[CsvColumn], t: Type[ComponentType]) -> List[ComponentType]:
-    return [c for c in csv_columns.values() if isinstance(c, QbColumn) and isinstance(c.component, t)]
