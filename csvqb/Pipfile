@@ -9,6 +9,7 @@ csvwlib-devtools = {path = "./../devtools"}
 [packages]
 csvqb = {editable = true,path = "."}
 pandas = "*"
+unidecode = "*"
 
 [requires]
 python_version = "3.9"

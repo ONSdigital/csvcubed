@@ -3,7 +3,8 @@ from abc import ABC
 
 import pandas as pd
 
-from .component import QbMetaComponent, QbComponent
+from csvqb.utils.uri import uri_safe
+from .datastructuredefinition import MultiQbDataStructureDefinition, QbDataStructureDefinition
 from .dimension import QbDimension, ExistingQbDimension
 from csvqb.models.validationerror import ValidationError
 
@@ -21,14 +22,15 @@ class ExistingQbMeasure(QbMeasure):
         self.measure_uri = measure_uri
 
     def validate(self) -> List[ValidationError]:
-        raise Exception("Not implemented yet")
+        return []  # TODO: implement this
 
     def validate_data(self, data: pd.Series) -> List[ValidationError]:
-        raise Exception("Not implemented yet")
+        return []  # TODO: implement this
 
 
 class NewQbMeasure(QbMeasure):
     label: str
+    uri_safe_identifier: str
     description: Optional[str]
     parent_measure_uri: Optional[str]
     source_uri: Optional[str]
@@ -36,22 +38,24 @@ class NewQbMeasure(QbMeasure):
     def __init__(self,
                  label: str,
                  description: Optional[str] = None,
+                 uri_safe_identifier: Optional[str] = None,
                  parent_measure_uri: Optional[str] = None,
                  source_uri: Optional[str] = None):
         QbMeasure.__init__(self)
         self.label = label
         self.description = description
+        self.uri_safe_identifier = uri_safe_identifier if uri_safe_identifier is not None else uri_safe(label)
         self.parent_measure_uri = parent_measure_uri
         self.source_uri = source_uri
 
     def validate(self) -> List[ValidationError]:
-        raise Exception("Not implemented yet")
+        return []  # TODO: implement this
 
     def validate_data(self, data: pd.Series) -> List[ValidationError]:
-        raise Exception("Not implemented yet")
+        return []  # TODO: implement this
 
 
-class QbMultiMeasureTypes(QbMetaComponent):
+class QbMultiMeasureTypes(MultiQbDataStructureDefinition):
     """
         Represents the measure types permitted in a multi-measure cubes.
     """
@@ -62,13 +66,13 @@ class QbMultiMeasureTypes(QbMetaComponent):
         self.measures = measures
 
     def validate(self) -> List[ValidationError]:
-        raise Exception("Not implemented yet")
+        return []  # TODO: implement this
 
     def validate_data(self, data: pd.Series) -> List[ValidationError]:
-        raise Exception("Not implemented yet")
+        return []  # TODO: implement this
 
-    def get_qb_components(self) -> List[QbComponent]:
-        components: List[QbComponent] = [QbMeasureTypeDimension]
+    def get_qb_components(self) -> List[QbDataStructureDefinition]:
+        components: List[QbDataStructureDefinition] = [QbMeasureTypeDimension]
         components += self.measures
         return components
 

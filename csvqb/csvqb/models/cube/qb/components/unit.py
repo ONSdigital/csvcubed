@@ -1,52 +1,54 @@
 from typing import Optional, List
 from abc import ABC
-
 import pandas as pd
 
+
 from csvqb.utils.uri import uri_safe
-from .datastructuredefinition import QbDataStructureDefinition
 from csvqb.models.validationerror import ValidationError
+from .attribute import ExistingQbAttribute
 
 
-class QbAttribute(QbDataStructureDefinition, ABC):
-    pass
+class QbUnit(ExistingQbAttribute, ABC):
+    def __init__(self):
+        ExistingQbAttribute.__init__(self, "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure")
 
 
-class ExistingQbAttribute(QbAttribute):
-    attribute_uri: str
+class ExistingQbUnit(QbUnit):
+    unit_uri: str
 
-    def __init__(self, uri: str):
-        self.attribute_uri = uri
+    def __init__(self, unit_uri: str):
+        QbUnit.__init__(self)
+        self.unit_uri = unit_uri
 
     def validate(self) -> List[ValidationError]:
-        return []  # TODO: implement this
+        return ExistingQbAttribute.validate(self)  # todo: Add more validation here.
 
     def validate_data(self, data: pd.Series) -> List[ValidationError]:
-        return []  # TODO: implement this
+        return ExistingQbAttribute.validate_data(self, data)  # todo: Add more validation here.
 
 
-class NewQbAttribute(QbAttribute):
+class NewQbUnit(QbUnit):
     label: str
     uri_safe_identifier: str
     description: Optional[str]
-    parent_attribute_uri: Optional[str]
+    parent_unit_uri: Optional[str]
     source_uri: Optional[str]
 
     def __init__(self,
                  label: str,
                  uri_safe_identifier: Optional[str] = None,
                  description: Optional[str] = None,
-                 parent_attribute_uri: Optional[str] = None,
+                 parent_unit_uri: Optional[str] = None,
                  source_uri: Optional[str] = None):
+        QbUnit.__init__(self)
         self.label = label
         self.uri_safe_identifier = uri_safe_identifier if uri_safe_identifier is not None else uri_safe(label)
         self.description = description
-        self.parent_attribute_uri = parent_attribute_uri
+        self.parent_unit_uri = parent_unit_uri
         self.source_uri = source_uri
 
     def validate(self) -> List[ValidationError]:
-        return []  # TODO: implement this
+        return ExistingQbAttribute.validate(self)  # todo: Add more validation here.
 
     def validate_data(self, data: pd.Series) -> List[ValidationError]:
-        return []  # TODO: implement this
-
+        return ExistingQbAttribute.validate_data(self, data)  # todo: Add more validation here.

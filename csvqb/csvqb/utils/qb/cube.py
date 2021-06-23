@@ -8,17 +8,17 @@ from csvqb.models.cube.qb.components.dimension import QbDimension
 from csvqb.models.cube.qb.components.measure import QbMultiMeasureTypes
 from csvqb.models.cube.qb.components.observedvalue import QbObservationValue, QbMultiMeasureObservationValue, \
     QbSingleMeasureObservationValue
-from csvqb.models.cube.qb.components.component import QbComponent
+from csvqb.models.cube.qb.components.datastructuredefinition import QbDataStructureDefinition
 
 
-QbComponentType = TypeVar("QbComponentType", bound=QbComponent)
+QbDsdType = TypeVar("QbDsdType", bound=QbDataStructureDefinition)
 
 
-def get_columns_of_component_type(cube: Cube, t: Type[QbComponentType]) -> List[QbColumn[QbComponentType]]:
+def get_columns_of_dsd_type(cube: Cube, t: Type[QbDsdType]) -> List[QbColumn[QbDsdType]]:
     return [c for c in cube.columns if isinstance(c, QbColumn) and isinstance(c.component, t)]
 
 
-def validate_cube_qb_constraints(cube: Cube) -> List[ValidationError]:
+def validate_qb_component_constraints(cube: Cube) -> List[ValidationError]:
     # assert validation specific to a cube-qb
     errors = _validate_dimensions(cube)
     errors += _validate_observation_value_constraints(cube)
@@ -27,7 +27,7 @@ def validate_cube_qb_constraints(cube: Cube) -> List[ValidationError]:
 
 def _validate_dimensions(cube: Cube) -> List[ValidationError]:
     errors: List[ValidationError] = []
-    dimension_columns = get_columns_of_component_type(cube, QbDimension)
+    dimension_columns = get_columns_of_dsd_type(cube, QbDimension)
     if len(dimension_columns) == 0:
         errors.append(ValidationError("At least one dimension must be defined."))
     return errors
@@ -35,14 +35,14 @@ def _validate_dimensions(cube: Cube) -> List[ValidationError]:
 
 def _validate_observation_value_constraints(cube: Cube) -> List[ValidationError]:
     errors: List[ValidationError] = []
-    observed_value_columns = get_columns_of_component_type(cube, QbObservationValue)
+    observed_value_columns = get_columns_of_dsd_type(cube, QbObservationValue)
     if len(observed_value_columns) != 1:
         errors.append(
             ValidationError(f"Found {len(observed_value_columns)} observation value columns. Expected 1."))
     else:
-        single_measure_obs_val_columns = get_columns_of_component_type(cube, QbSingleMeasureObservationValue)
-        multi_measure_obs_val_columns = get_columns_of_component_type(cube, QbMultiMeasureObservationValue)
-        multi_measure_types_columns = get_columns_of_component_type(cube, QbMultiMeasureTypes)
+        single_measure_obs_val_columns = get_columns_of_dsd_type(cube, QbSingleMeasureObservationValue)
+        multi_measure_obs_val_columns = get_columns_of_dsd_type(cube, QbMultiMeasureObservationValue)
+        multi_measure_types_columns = get_columns_of_dsd_type(cube, QbMultiMeasureTypes)
         if len(multi_measure_obs_val_columns) == 1:
             if len(multi_measure_types_columns) == 0:
                 errors.append(ValidationError(

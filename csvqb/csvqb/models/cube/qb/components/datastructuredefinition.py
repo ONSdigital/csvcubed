@@ -6,7 +6,7 @@ from typing import List
 from csvqb.models.validationerror import ValidationError
 
 
-class QbComponent(ABC):
+class QbDataStructureDefinition(ABC):
     """
         Base class for entities holding information necessary to generate one or many qb DataStructureDefinition (DSD)
         components.
@@ -23,11 +23,11 @@ class QbComponent(ABC):
         pass
 
 
-class QbMetaComponent(QbComponent, ABC):
+class MultiQbDataStructureDefinition(QbDataStructureDefinition, ABC):
     """
-        Base class representing an entity which defines a group of `QbComponent`s
+        Base class representing an entity which defines a group of `QbDataStructureDefinition`s
     """
 
     @abstractmethod
-    def get_qb_components(self) -> List[QbComponent]:
+    def get_qb_components(self) -> List[QbDataStructureDefinition]:
         pass

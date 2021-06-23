@@ -12,11 +12,12 @@ from csvqb.models.cube.qb.components.observedvalue import QbSingleMeasureObserva
     QbMultiMeasureObservationValue
 from csvqb.models.cube.qb.components.dimension import NewQbDimension, ExistingQbDimension
 from csvqb.models.cube.qb.components.measure import ExistingQbMeasure, QbMultiMeasureTypes
-from csvqb.models.cube.qb.components.attribute import ExistingQbAttribute, QbUnitAttribute
+from csvqb.models.cube.qb.components.attribute import ExistingQbAttribute
+from csvqb.models.cube.qb.components.unit import ExistingQbUnit
 
-from csvqb.models.cube.qb.codelist import ExistingQbCodeList, NewQbCodeList, NewQbConcept
+from csvqb.models.cube.qb.components.codelist import ExistingQbCodeList, NewQbCodeList, NewQbConcept
 from csvqb.utils.dict import get_from_dict_ensure_exists
-from csvqb.utils.qb.cube import validate_cube_qb_constraints
+from csvqb.utils.qb.cube import validate_qb_component_constraints
 
 
 def get_cube_from_info_json(info_json: Path, data: pd.DataFrame, cube_id: Optional[str] = None) -> Cube:
@@ -30,7 +31,7 @@ def get_cube_from_info_json(info_json: Path, data: pd.DataFrame, cube_id: Option
         raise Exception(f"Config not found for cube with id '{cube_id}'")
 
     cube = _from_info_json_dict(config, data)
-    validation_errors = validate_cube_qb_constraints(cube)
+    validation_errors = validate_qb_component_constraints(cube)
     for error in validation_errors:
         # todo: Do something better with errors?
         print(f"ERROR: {error.message}")
@@ -62,7 +63,7 @@ def _override_config_for_cube_id(config: dict, cube_id: str) -> Optional[dict]:
 
 
 def _from_info_json_dict(d: Dict, data: pd.DataFrame):
-    metadata = CubeMetadata(d)
+    metadata = CubeMetadata.from_dict(d)
     metadata.dataset_identifier = get_from_dict_ensure_exists(d, "id")
     metadata.base_uri = d.get("baseUri", "http://gss-data.org.uk/")
     transform_section = d.get("transform", {})
@@ -103,9 +104,9 @@ def _get_column_for_metadata_config(col_name: str, col_config: Optional[Union[di
                     raise Exception(f"Property 'types' was not defined in measure types column '{col_name}'.")
 
                 measures = QbMultiMeasureTypes([ExistingQbMeasure(t) for t in defined_measure_types])
-                return QbColumn(measures, col_name, property_value_url)
+                return QbColumn(col_name, measures, property_value_url)
             else:
-                return QbColumn(ExistingQbDimension(dimension_uri), col_name, property_value_url)
+                return QbColumn(col_name, ExistingQbDimension(dimension_uri), property_value_url)
         elif parent_uri is not None or description is not None or label is not None:
             code_list = _get_code_list(col_config.get("codelist"), column_unique_codes)
             new_dimension = NewQbDimension(col_name,
@@ -113,16 +114,16 @@ def _get_column_for_metadata_config(col_name: str, col_config: Optional[Union[di
                                            parent_dimension_uri=parent_uri,
                                            source_uri=col_config.get("source"),
                                            code_list=code_list)
-            return QbColumn(new_dimension, col_name, property_value_url)
+            return QbColumn(col_name, new_dimension, property_value_url)
         elif attribute_uri is not None and property_value_url is not None:
-            return QbColumn(ExistingQbAttribute(attribute_uri), col_name)
+            return QbColumn(col_name, ExistingQbAttribute(attribute_uri))
         elif unit_uri is not None and measure_uri is not None:
             measure_component = ExistingQbMeasure(measure_uri)
-            unit_component = QbUnitAttribute(unit_uri)
+            unit_component = ExistingQbUnit(unit_uri)
             observation_value = QbSingleMeasureObservationValue(measure_component, unit_component, data_type)
-            return QbColumn(observation_value, col_name)
+            return QbColumn(col_name, observation_value)
         elif data_type is not None:
-            return QbColumn(QbMultiMeasureObservationValue(data_type), col_name)
+            return QbColumn(col_name, QbMultiMeasureObservationValue(data_type))
         else:
             raise Exception(f"Unmatched column definition: {col_config}")
     elif isinstance(col_config, bool) and col_config:
@@ -136,7 +137,7 @@ def _get_column_for_metadata_config(col_name: str, col_config: Optional[Union[di
         new_dimension = NewQbDimension(col_name,
                                        description=maybe_description,
                                        code_list=_get_new_code_list_for_column(column_unique_codes))
-        return QbColumn(new_dimension, col_name)
+        return QbColumn(col_name, new_dimension)
 
 
 def _get_new_code_list_for_column(unique_column_values: Set[str]):

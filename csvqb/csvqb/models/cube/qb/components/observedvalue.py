@@ -3,13 +3,13 @@ import pandas as pd
 from abc import ABC
 
 
-from .component import QbMetaComponent, QbComponent
+from .datastructuredefinition import MultiQbDataStructureDefinition, QbDataStructureDefinition
 from .measure import QbMeasure, QbMeasureTypeDimension
-from .attribute import QbUnitAttribute
+from .unit import QbUnit
 from csvqb.models.validationerror import ValidationError
 
 
-class QbObservationValue(QbMetaComponent, ABC):
+class QbObservationValue(MultiQbDataStructureDefinition, ABC):
     data_type: str
 
     def __init__(self, data_type: Optional[str]):
@@ -21,12 +21,12 @@ class QbMultiMeasureObservationValue(QbObservationValue):
         QbObservationValue.__init__(self, data_type)
 
     def validate(self) -> List[ValidationError]:
-        raise Exception("Not implemented yet")
+        return []  # TODO: implement this
 
     def validate_data(self, data: pd.Series) -> List[ValidationError]:
-        raise Exception("Not implemented yet")
+        return []  # TODO: implement this
 
-    def get_qb_components(self) -> List[QbComponent]:
+    def get_qb_components(self) -> List[QbDataStructureDefinition]:
         return []
 
 
@@ -38,21 +38,21 @@ class QbSingleMeasureObservationValue(QbObservationValue):
     """
 
     measure: QbMeasure
-    unit_uri: QbUnitAttribute
+    unit: QbUnit
 
     def __init__(self,
                  measure: QbMeasure,
-                 unit_uri: QbUnitAttribute,
+                 unit: QbUnit,
                  data_type: Optional[str] = None):
         QbObservationValue.__init__(self, data_type)
         self.measure = measure
-        self.unit_uri = unit_uri
+        self.unit = unit
 
     def validate(self) -> List[ValidationError]:
-        raise Exception("Not implemented yet")
+        return []  # TODO: implement this
 
     def validate_data(self, data: pd.Series) -> List[ValidationError]:
-        raise Exception("Not implemented yet")
+        return []  # TODO: implement this
 
-    def get_qb_components(self) -> List[QbComponent]:
-        return [self.measure, QbMeasureTypeDimension, self.unit_uri]
+    def get_qb_components(self) -> List[QbDataStructureDefinition]:
+        return [self.measure, QbMeasureTypeDimension, self.unit]

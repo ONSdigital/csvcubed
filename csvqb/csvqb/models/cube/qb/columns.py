@@ -2,12 +2,12 @@ from typing import Optional, TypeVar, Generic, Set, List
 import pandas as pd
 
 
-from .components.component import QbComponent
+from .components.datastructuredefinition import QbDataStructureDefinition
 from csvqb.models.validationerror import ValidationError
 from csvqb.models.cube.columns import CsvColumn
 
 
-QbComponentType = TypeVar("QbComponentType", bound=QbComponent)
+QbComponentType = TypeVar("QbComponentType", bound=QbDataStructureDefinition)
 
 
 class QbColumn(CsvColumn, Generic[QbComponentType]):
@@ -20,8 +20,12 @@ class QbColumn(CsvColumn, Generic[QbComponentType]):
     value_template: Optional[str]
     """The formatted string that maps the raw column value to a CSV-W `propertyUrl`."""
 
-    def __init__(self, component: QbComponentType, csv_column_title: str,
-                 value_template: Optional[str] = None):
+    def __init__(self,
+                 csv_column_title: str,
+                 component: QbComponentType,
+                 value_template: Optional[str] = None,
+                 uri_safe_identifier: Optional[str] = None):
+        CsvColumn.__init__(self, csv_column_title, uri_safe_identifier)
         self.component = component
         self.csv_column_title = csv_column_title
         self.value_template = value_template
