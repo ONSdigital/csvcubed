@@ -1,5 +1,6 @@
 import unittest
 import pandas as pd
+from typing import List
 
 
 from csvqb.models.cube import *
@@ -34,7 +35,7 @@ class InternalApiLoaderTests(unittest.TestCase):
         data = pd.DataFrame()
 
         metadata = CubeMetadata(URI("http://example.com/some/dataset"), "Some Dataset")
-        columns = [
+        columns: List[CsvColumn] = [
             SuppressedCsvColumn("Some Column Title")
         ]
         cube = Cube(metadata, data, columns)

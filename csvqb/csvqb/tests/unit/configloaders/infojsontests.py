@@ -28,12 +28,17 @@ class InfoJsonLoaderTests(unittest.TestCase):
 
         matching_columns = [c for c in cube.columns if c.csv_column_title == "Undefined Column"]
         self.assertEqual(1, len(matching_columns))
-        undefined_column_assumed_definition = matching_columns[0]
-        self.assertIsInstance(undefined_column_assumed_definition, QbColumn)
+        undefined_column_assumed_definition: CsvColumn = matching_columns[0]
+
+        if not isinstance(undefined_column_assumed_definition, QbColumn):
+            raise Exception("Incorrect type")
+
         self.assertIsInstance(undefined_column_assumed_definition.component, NewQbDimension)
-        new_dimension = undefined_column_assumed_definition.component
+        new_dimension: NewQbDimension = undefined_column_assumed_definition.component
         self.assertIsNotNone(new_dimension.code_list)
-        self.assertIsInstance(new_dimension.code_list, NewQbCodeList)
+
+        if not isinstance(new_dimension.code_list, NewQbCodeList):
+            raise Exception("Incorrect type")
 
         newly_defined_concepts = new_dimension.code_list.concepts
 
