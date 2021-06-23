@@ -15,6 +15,18 @@ class QbDimension(QbDataStructureDefinition, ABC):
     def __init__(self, code_list: Optional[QbCodeList]):
         self.code_list = code_list
 
+    def validate(self) -> List[ValidationError]:
+        if self.code_list is not None:
+            return self.code_list.validate()
+
+        return []
+
+    def validate_data(self, data: pd.Series) -> List[ValidationError]:
+        if self.code_list is not None:
+            return self.code_list.validate_data(data)
+
+        return []
+
 
 class ExistingQbDimension(QbDimension):
     dimension_uri: str
@@ -29,10 +41,10 @@ class ExistingQbDimension(QbDimension):
         self.range_uri = range_uri
 
     def validate(self) -> List[ValidationError]:
-        return []  # TODO: implement this
+        return QbDimension.validate(self)  # TODO: add more validation checks
 
     def validate_data(self, data: pd.Series) -> List[ValidationError]:
-        return []  # TODO: implement this
+        return QbDimension.validate_data(self, data)  # TODO: add more validation checks
 
 
 class NewQbDimension(QbDimension):
@@ -72,7 +84,7 @@ class NewQbDimension(QbDimension):
                               source_uri=source_uri)
 
     def validate(self) -> List[ValidationError]:
-        return []  # TODO: implement this
+        return QbDimension.validate(self)  # TODO: add more validation checks
 
     def validate_data(self, data: pd.Series) -> List[ValidationError]:
-        return []  # TODO: implement this
+        return QbDimension.validate_data(self, data)  # TODO: add more validation checks
