@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Optional, NewType, Set, TypeVar, Type, Any, Callable
+from typing import List, Optional, NewType, Set
 import pandas as pd
 from dateutil import parser
 
@@ -7,15 +7,9 @@ from dateutil import parser
 from csvqb.utils.dict import get_from_dict_ensure_exists, get_with_func_or_none
 from csvqb.models.validationerror import ValidationError
 from .columns import CsvColumn
-from .qb.columns import QbColumn
-from .qb.components.component import QbComponent
-from .qb.components.measure import QbMultiMeasureTypes
-from .qb.components.observedvalue import QbObservationValue, QbSingleMeasureObservationValue, \
-    QbMultiMeasureObservationValue
 
 
 URI = NewType('URI', str)
-ComponentType = TypeVar("ComponentType", bound=QbComponent)
 
 
 class CubeMetadata:
@@ -36,8 +30,8 @@ class CubeMetadata:
     public_contact_point: Optional[URI]
 
     def __init__(self, config: dict = {}):
-        self.base_uri = get_from_dict_ensure_exists(config, "baseUri")  # todo: check
-        self.dataset_identifier = get_from_dict_ensure_exists(config, "datasetIdentifier")  # todo: check
+        self.base_uri = config.get("baseUri", "http://gss-data")  # todo: check
+        self.dataset_identifier = get_from_dict_ensure_exists(config, "id")
 
         self.title = get_from_dict_ensure_exists(config, "title")
         self.summary = config.get("summary")
@@ -75,32 +69,6 @@ class Cube:
     def _validate_columns(self) -> List[ValidationError]:
         # todo: If no columns are defined give a warning?
         errors = self._validate_columns_unique_and_in_data()
-        errors += self._validate_observation_value_constraints()
-
-        return errors
-
-    def _validate_observation_value_constraints(self) -> List[ValidationError]:
-        errors: List[ValidationError] = []
-        observed_value_columns = self.get_columns_of_type(QbObservationValue)
-        # assert validation specific to csv-qb
-        # we only currently support one shape of multi-measure input. And that leaves us with oen
-        if len(observed_value_columns) != 1:
-            errors.append(
-                ValidationError(f"Found {len(observed_value_columns)} observation value columns. Expected 1."))
-        else:
-            single_measure_obs_val_columns = self.get_columns_of_type(QbSingleMeasureObservationValue)
-            multi_measure_obs_val_columns = self.get_columns_of_type(QbMultiMeasureObservationValue)
-            if len(single_measure_obs_val_columns) == 1:
-                pass
-            elif len(multi_measure_obs_val_columns) == 1:
-                multi_measure_types_columns = self.get_columns_of_type(QbMultiMeasureTypes)
-                if len(multi_measure_types_columns) == 0:
-                    errors.append(ValidationError(
-                        f"Cube is defined as multi-measure but measure type column has not been specified."
-                    ))
-                elif len(multi_measure_types_columns) > 1:
-                    errors.append(ValidationError("Multiple measure type columns have been defined."))
-
         return errors
 
     def _validate_columns_unique_and_in_data(self):
@@ -118,6 +86,3 @@ class Cube:
 
             errors += col.validate(column_data)
         return errors
-
-    def get_columns_of_type(self, t: Type[ComponentType]) -> List[CsvColumn[ComponentType]]:
-        return [c for c in self.columns if isinstance(c, QbColumn) and isinstance(c.component, t)]

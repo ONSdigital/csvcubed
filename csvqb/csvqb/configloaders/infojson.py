@@ -1,5 +1,4 @@
-import typing
-from typing import Dict, List, Any, Optional, Type, Union, Set
+from typing import Dict, List, Any, Optional, Union, Set
 from pathlib import Path
 import json
 import copy
@@ -9,28 +8,33 @@ import pandas as pd
 from csvqb.models.cube.cube import Cube, CubeMetadata
 from csvqb.models.cube.columns import CsvColumn, SuppressedCsvColumn
 from csvqb.models.cube.qb.columns import QbColumn
-from csvqb.models.cube.qb.components.component import QbComponent
-from csvqb.models.cube.qb.components.observedvalue import QbObservationValue, QbSingleMeasureObservationValue, \
+from csvqb.models.cube.qb.components.observedvalue import QbSingleMeasureObservationValue, \
     QbMultiMeasureObservationValue
-from csvqb.models.cube.qb.components.dimension import QbMeasureDimension, NewQbDimension, ExistingQbDimension, \
-    QbDimension
+from csvqb.models.cube.qb.components.dimension import NewQbDimension, ExistingQbDimension
 from csvqb.models.cube.qb.components.measure import ExistingQbMeasure, QbMultiMeasureTypes
 from csvqb.models.cube.qb.components.attribute import ExistingQbAttribute, QbUnitAttribute
 
 from csvqb.models.cube.qb.codelist import ExistingQbCodeList, NewQbCodeList, NewQbConcept
 from csvqb.utils.dict import get_from_dict_ensure_exists
+from csvqb.utils.qb.cube import validate_cube_qb_constraints
 
 
-def get_cube_from_info_json(info_json: Path, cube_id: str, data: pd.DataFrame):
+def get_cube_from_info_json(info_json: Path, data: pd.DataFrame, cube_id: Optional[str] = None) -> Cube:
     with open(info_json, "r") as f:
         config = json.load(f)
 
-    config = _override_config_for_cube_id(config, cube_id)
+    if cube_id is not None:
+        config = _override_config_for_cube_id(config, cube_id)
+
     if config is None:
         raise Exception(f"Config not found for cube with id '{cube_id}'")
 
     cube = _from_info_json_dict(config, data)
-    _validate_csv_qb(cube)
+    validation_errors = validate_cube_qb_constraints(cube)
+    for error in validation_errors:
+        # todo: Do something better with errors?
+        print(f"ERROR: {error.message}")
+
     return cube
 
 
@@ -61,17 +65,10 @@ def _from_info_json_dict(d: Dict, data: pd.DataFrame):
     metadata = CubeMetadata(d)
     metadata.dataset_identifier = get_from_dict_ensure_exists(d, "id")
     metadata.base_uri = d.get("baseUri", "http://gss-data.org.uk/")
-    columns = _columns_from_info_json(d.get("columns", []), data)
+    transform_section = d.get("transform", {})
+    columns = _columns_from_info_json(transform_section.get("columns", []), data)
 
     return Cube(metadata, data, columns)
-
-
-def _validate_csv_qb(cube: Cube):
-    dimension_columns = cube.get_columns_of_type(QbDimension)
-    if len(dimension_columns) == 0:
-        raise Exception("At least one dimension must be defined.")
-
-    cube.validate()
 
 
 def _columns_from_info_json(column_mappings: Dict[str, Any], data: pd.DataFrame) -> List[CsvColumn]:

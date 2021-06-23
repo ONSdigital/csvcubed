@@ -57,7 +57,3 @@ class NewQbDimension(QbDimension):
 
     def validate_data(self, data: pd.Series) -> List[ValidationError]:
         raise Exception("Not implemented yet")
-
-
-QbMeasureDimension = ExistingQbDimension("http://purl.org/linked-data/cube#measureType")
-
