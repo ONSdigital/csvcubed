@@ -8,7 +8,7 @@ from csvqb.utils.qb.cube import validate_qb_component_constraints
 
 
 class InternalApiLoaderTests(unittest.TestCase):
-    def test_something(self):
+    def test_basic_qb_definition(self):
         data = pd.DataFrame({
             "Existing Dimension": ["A", "B", "C"],
             "Local Dimension": ["D", "E", "F"],
@@ -29,7 +29,7 @@ class InternalApiLoaderTests(unittest.TestCase):
         validation_errors = cube.validate()
         validation_errors += validate_qb_component_constraints(cube)
 
-        self.assertTrue(cube is not None)
+        self.assertEqual(0, len(validation_errors))
 
 
 if __name__ == '__main__':

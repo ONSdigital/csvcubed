@@ -45,12 +45,7 @@
                 "unit": "http://gss-data.org.uk/def/concept/measurement-units/gbp-million",
                 "measure": "http://gss-data.org.uk/def/measure/trade",
                 "datatype": "double"
-            },
-          "Chicken": {
-            "dimension": "http://purl.org/linked-data/cube#measureType",
-            "types": ["Nothing"],
-            "value": "http://example.org/{chicken}"
-          }
+            }
         }
     },
     "sizingNotes": "",

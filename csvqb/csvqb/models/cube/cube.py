@@ -95,22 +95,24 @@ class Cube:
         return errors
 
     def _validate_columns(self) -> List[ValidationError]:
-        # todo: If no columns are defined give a warning?
-        errors = self._validate_columns_unique_and_in_data()
-        return errors
-
-    def _validate_columns_unique_and_in_data(self):
         errors: List[ValidationError] = []
         existing_col_titles: Set[str] = set()
         for col in self.columns:
             if col.csv_column_title in existing_col_titles:
                 errors.append(ValidationError(f"Duplicate column title '{col.csv_column_title}'"))
 
-            column_data = None
+            maybe_column_data = None
             if self.data is not None:
-                if col.csv_column_title not in self.data.columns:
+                if col.csv_column_title in self.data.columns:
+                    maybe_column_data = self.data[col.csv_column_title]
+                else:
                     errors.append(ValidationError(f"Column '{col.csv_column_title}' not found in data provided."))
-                column_data = self.data[col.csv_column_title]
 
-            errors += col.validate(column_data)
+            errors += col.validate(maybe_column_data)
+
+        defined_column_titles = [c.csv_column_title for c in self.columns]
+        for column in self.data.columns:
+            if column not in defined_column_titles:
+                errors.append(ValidationError(f"Column '{column}' does not have a mapping defined."))
+
         return errors
