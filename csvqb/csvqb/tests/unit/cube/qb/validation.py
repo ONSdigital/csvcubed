@@ -5,9 +5,10 @@ import pandas as pd
 from csvqb.models.cube import *
 from csvqb.models.rdf import URI
 from csvqb.utils.qb.cube import validate_qb_component_constraints
+from csvqb.tests.unit.unittestbase import UnitTestBase
 
 
-class InternalApiLoaderTests(unittest.TestCase):
+class InternalApiLoaderTests(UnitTestBase):
     def test_single_measure_qb_definition(self):
         data = pd.DataFrame({
             "Existing Dimension": ["A", "B", "C"],
@@ -22,14 +23,15 @@ class InternalApiLoaderTests(unittest.TestCase):
             QbColumn("Value",
                      QbSingleMeasureObservationValue(
                          ExistingQbMeasure("http://example.com/measures/existing_measure"),
-                         NewQbUnit("Some new unit.")))
+                         NewQbUnit("some new unit")
+                     )),
         ]
 
         cube = Cube(metadata, data, columns)
         validation_errors = cube.validate()
         validation_errors += validate_qb_component_constraints(cube)
 
-        self.assertEqual(0, len(validation_errors))
+        self.assert_no_validation_errors(validation_errors)
 
     def test_multi_measure_qb_definition(self):
         data = pd.DataFrame({
@@ -51,7 +53,7 @@ class InternalApiLoaderTests(unittest.TestCase):
         validation_errors = cube.validate()
         validation_errors += validate_qb_component_constraints(cube)
 
-        self.assertEqual(0, len(validation_errors))
+        self.assert_no_validation_errors(validation_errors)
 
 
 if __name__ == '__main__':

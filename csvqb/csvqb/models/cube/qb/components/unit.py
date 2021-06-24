@@ -79,6 +79,8 @@ class QbMultiUnits(MultiQbDataStructureDefinition):
         """
         return QbMultiUnits([NewQbUnit(u) for u in set(data)])
 
+    # todo: Add existing_units_from_data function?
+
     def validate(self) -> List[ValidationError]:
         return []  # TODO: implement this
 
@@ -86,4 +88,9 @@ class QbMultiUnits(MultiQbDataStructureDefinition):
         return []  # TODO: implement this
 
     def get_qb_components(self) -> List[QbDataStructureDefinition]:
-        return [u for u in self.units]
+        components: List[QbDataStructureDefinition] = [QbUnitAttribute]
+        components += self.units
+        return components
+
+
+QbUnitAttribute = ExistingQbAttribute("http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure")

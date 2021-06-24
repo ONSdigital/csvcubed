@@ -1,12 +1,12 @@
 import unittest
 from pathlib import Path
 import pandas as pd
-import json
 
 
 from csvqb.configloaders.infojson import get_cube_from_info_json
 from csvqb.utils.qb.cube import validate_qb_component_constraints
 from csvqb.models.cube import *
+from csvqb.tests.unit.unittestbase import UnitTestBase
 
 
 CWD = Path(".")
@@ -15,7 +15,7 @@ INFO_JSON_PATH = TEST_CASES_DIR / "info.json"
 DATA_CSV_PATH = TEST_CASES_DIR / "data.csv"
 
 
-class InfoJsonLoaderTests(unittest.TestCase):
+class InfoJsonLoaderTests(UnitTestBase):
     def test_csv_cols_assumed_dimensions(self):
         """
             Assume that if a column isn't defined in the info.json `transform.columns` section, then it is a
@@ -50,8 +50,7 @@ class InfoJsonLoaderTests(unittest.TestCase):
         errors = cube.validate()
         errors += validate_qb_component_constraints(cube)
 
-        if len(errors) > 0:
-            raise Exception(json.dumps([error.__dict__ for error in errors], indent=4))
+        self.assert_no_validation_errors(errors)
 
 
 if __name__ == '__main__':

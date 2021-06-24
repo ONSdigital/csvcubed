@@ -5,9 +5,10 @@ from typing import List
 
 from csvqb.models.cube import *
 from csvqb.models.rdf import URI
+from csvqb.tests.unit.unittestbase import UnitTestBase
 
 
-class InternalApiLoaderTests(unittest.TestCase):
+class InternalApiLoaderTests(UnitTestBase):
 
     def test_column_not_configured_error(self):
         """
