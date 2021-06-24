@@ -11,20 +11,6 @@ from ..rdf import URI
 
 
 class CubeMetadata:
-    dataset_identifier: str
-    title: str
-    base_uri: str
-    summary: Optional[str]
-    description: Optional[str]
-    creator: Optional[URI]
-    publisher: Optional[URI]
-    issued: Optional[datetime]
-    # modified: datetime # Should modified be in here or be automatically updated by the script?
-    themes: List[str]
-    keywords: List[str]
-    landing_page: Optional[URI]
-    license: Optional[URI]
-    public_contact_point: Optional[URI]
 
     def __init__(self,
                  dataset_identifier: URI,
@@ -40,19 +26,19 @@ class CubeMetadata:
                  landing_page: Optional[URI] = None,
                  license: Optional[URI] = None,
                  public_contact_point: Optional[URI] = None):
-        self.base_uri = "http://gss-data.org.uk/" if base_uri is None else base_uri
-        self.dataset_identifier = dataset_identifier
-        self.title = title
-        self.summary = summary
-        self.description = description
-        self.creator = creator
-        self.publisher = publisher
-        self.issued = issued
-        self.themes = themes
-        self.keywords = keywords
-        self.landing_page = landing_page
-        self.license = license
-        self.public_contact_point = public_contact_point
+        self.base_uri: str = "http://gss-data.org.uk/" if base_uri is None else base_uri
+        self.dataset_identifier: URI = dataset_identifier
+        self.title: str = title
+        self.summary: Optional[str] = summary
+        self.description: Optional[str] = description
+        self.creator: Optional[URI] = creator
+        self.publisher: Optional[URI] = publisher
+        self.issued: Optional[datetime] = issued
+        self.themes: List[str] = themes
+        self.keywords: List[str] = keywords
+        self.landing_page: Optional[URI] = landing_page
+        self.license: Optional[URI] = license
+        self.public_contact_point: Optional[URI] = public_contact_point
 
     @staticmethod
     def from_dict(config: dict) -> "CubeMetadata":
@@ -77,17 +63,14 @@ class CubeMetadata:
 
 
 class Cube:
-    metadata: CubeMetadata
-    columns: List[CsvColumn]
-    data: Optional[pd.DataFrame]
 
     def __init__(self,
                  metadata: CubeMetadata,
                  data: Optional[pd.DataFrame] = None,
                  columns: List[CsvColumn] = []):
-        self.metadata = metadata
-        self.data = data
-        self.columns = columns
+        self.metadata: CubeMetadata = metadata
+        self.data: Optional[pd.DataFrame] = data
+        self.columns: List[CsvColumn] = columns
 
     def validate(self) -> List[ValidationError]:
         errors = self.metadata.validate()

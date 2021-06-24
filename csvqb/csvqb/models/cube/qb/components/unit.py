@@ -6,49 +6,84 @@ import pandas as pd
 from csvqb.utils.uri import uri_safe
 from csvqb.models.validationerror import ValidationError
 from .attribute import ExistingQbAttribute
+from .datastructuredefinition import QbDataStructureDefinition, MultiQbDataStructureDefinition
 
 
-class QbUnit(ExistingQbAttribute, ABC):
-    def __init__(self):
-        ExistingQbAttribute.__init__(self, "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure")
+class QbUnit(QbDataStructureDefinition, ABC):
+
+    def __init__(self, unit_multiplier: Optional[int]):
+        self.unit_multiplier: Optional[int] = unit_multiplier
 
 
 class ExistingQbUnit(QbUnit):
-    unit_uri: str
 
-    def __init__(self, unit_uri: str):
-        QbUnit.__init__(self)
-        self.unit_uri = unit_uri
+    def __init__(self, unit_uri: str, unit_multiplier: Optional[int] = None):
+        QbUnit.__init__(self, unit_multiplier)
+        self.unit_uri: str = unit_uri
+
+    def __str__(self) -> str:
+        unit_multiplier_str = "" if self.unit_multiplier is None else f", 10^{self.unit_multiplier}"
+        return f"ExistingQbUnit('{self.unit_uri}'{unit_multiplier_str})"
 
     def validate(self) -> List[ValidationError]:
-        return ExistingQbAttribute.validate(self)  # todo: Add more validation here.
+        return super(ExistingQbAttribute).validate()  # todo: Add more validation here.
 
     def validate_data(self, data: pd.Series) -> List[ValidationError]:
-        return ExistingQbAttribute.validate_data(self, data)  # todo: Add more validation here.
+        return super(ExistingQbAttribute).validate_data(data)  # todo: Add more validation here.
 
 
 class NewQbUnit(QbUnit):
-    label: str
-    uri_safe_identifier: str
-    description: Optional[str]
-    parent_unit_uri: Optional[str]
-    source_uri: Optional[str]
 
     def __init__(self,
                  label: str,
                  uri_safe_identifier: Optional[str] = None,
+                 unit_multiplier: Optional[int] = None,
                  description: Optional[str] = None,
                  parent_unit_uri: Optional[str] = None,
                  source_uri: Optional[str] = None):
-        QbUnit.__init__(self)
-        self.label = label
-        self.uri_safe_identifier = uri_safe_identifier if uri_safe_identifier is not None else uri_safe(label)
-        self.description = description
-        self.parent_unit_uri = parent_unit_uri
-        self.source_uri = source_uri
+        QbUnit.__init__(self, unit_multiplier)
+        self.label: str = label
+        self.uri_safe_identifier: str = uri_safe_identifier if uri_safe_identifier is not None else uri_safe(label)
+        self.description: Optional[str] = description
+        self.parent_unit_uri: Optional[str] = parent_unit_uri
+        self.source_uri: Optional[str] = source_uri
+
+    def __str__(self) -> str:
+        return f"NewQbUnit('{self.label}')"
 
     def validate(self) -> List[ValidationError]:
-        return ExistingQbAttribute.validate(self)  # todo: Add more validation here.
+        return super(ExistingQbAttribute).validate()  # todo: Add more validation here.
 
     def validate_data(self, data: pd.Series) -> List[ValidationError]:
-        return ExistingQbAttribute.validate_data(self, data)  # todo: Add more validation here.
+        return super(ExistingQbAttribute).validate_data(data)  # todo: Add more validation here.
+
+
+class QbMultiUnits(MultiQbDataStructureDefinition):
+    """
+        Represents multiple units used/defined in a cube, typically used in multi-measure cubes.
+    """
+
+    def __init__(self, units: List[QbUnit]):
+        self.units: List[QbUnit] = units
+
+    def __str__(self) -> str:
+        units_str = ",".join([str(u) for u in self.units])
+        return f"QbMultiUnits({units_str})"
+
+    @staticmethod
+    def new_units_from_data(data: pd.Series) -> "QbMultiUnits":
+        """
+            Automatically generates new units from a units column.
+        :param data: The data column defining the full list of available units.
+        :return: QbMultiUnits
+        """
+        return QbMultiUnits([NewQbUnit(u) for u in set(data)])
+
+    def validate(self) -> List[ValidationError]:
+        return []  # TODO: implement this
+
+    def validate_data(self, data: pd.Series) -> List[ValidationError]:
+        return []  # TODO: implement this
+
+    def get_qb_components(self) -> List[QbDataStructureDefinition]:
+        return [u for u in self.units]

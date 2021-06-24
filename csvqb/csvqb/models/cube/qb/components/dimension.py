@@ -4,16 +4,15 @@ from abc import ABC
 import pandas as pd
 
 from csvqb.utils.uri import uri_safe
-from .datastructuredefinition import QbDataStructureDefinition
+from .datastructuredefinition import ColumnarQbDataStructureDefinition
 from csvqb.models.cube.qb.components.codelist import QbCodeList, ExistingQbCodeList, NewQbCodeList, NewQbConcept
 from csvqb.models.validationerror import ValidationError
 
 
-class QbDimension(QbDataStructureDefinition, ABC):
-    code_list: Optional[QbCodeList]
+class QbDimension(ColumnarQbDataStructureDefinition, ABC):
 
     def __init__(self, code_list: Optional[QbCodeList]):
-        self.code_list = code_list
+        self.code_list: Optional[QbCodeList] = code_list
 
     def validate(self) -> List[ValidationError]:
         if self.code_list is not None:
@@ -29,16 +28,17 @@ class QbDimension(QbDataStructureDefinition, ABC):
 
 
 class ExistingQbDimension(QbDimension):
-    dimension_uri: str
-    range_uri: Optional[str]
 
     def __init__(self,
                  dimension_uri: str,
                  code_list: Optional[ExistingQbCodeList] = None,
                  range_uri: Optional[str] = None):
         QbDimension.__init__(self, code_list)
-        self.dimension_uri = dimension_uri
-        self.range_uri = range_uri
+        self.dimension_uri: str = dimension_uri
+        self.range_uri: Optional[str] = range_uri
+
+    def __str__(self) -> str:
+        return f"ExistingQbDimension('{self.dimension_uri}')"
 
     def validate(self) -> List[ValidationError]:
         return QbDimension.validate(self)  # TODO: add more validation checks
@@ -48,11 +48,6 @@ class ExistingQbDimension(QbDimension):
 
 
 class NewQbDimension(QbDimension):
-    label: str
-    uri_safe_identifier: str
-    description: Optional[str]
-    parent_dimension_uri: Optional[str]
-    source_uri: Optional[str]
 
     def __init__(self,
                  label: str,
@@ -62,11 +57,14 @@ class NewQbDimension(QbDimension):
                  parent_dimension_uri: Optional[str] = None,
                  source_uri: Optional[str] = None):
         QbDimension.__init__(self, code_list)
-        self.label = label
-        self.description = description
-        self.uri_safe_identifier = uri_safe_identifier if uri_safe_identifier is not None else uri_safe(label)
-        self.parent_dimension_uri = parent_dimension_uri
-        self.source_uri = source_uri
+        self.label: str = label
+        self.description: Optional[str] = description
+        self.uri_safe_identifier: str = uri_safe_identifier if uri_safe_identifier is not None else uri_safe(label)
+        self.parent_dimension_uri: Optional[str] = parent_dimension_uri
+        self.source_uri: Optional[str] = source_uri
+
+    def __str__(self) -> str:
+        return f"NewQbDimension('{self.label}')"
 
     @staticmethod
     def from_data(label: str,
@@ -75,11 +73,20 @@ class NewQbDimension(QbDimension):
                   uri_safe_identifier: Optional[str] = None,
                   parent_dimension_uri: Optional[str] = None,
                   source_uri: Optional[str] = None) -> "NewQbDimension":
-        concepts = {NewQbConcept(c, c) for c in set(data)}
+        """
+            Creates a new dimension and code list from the columnar data provided.
+        :param label:
+        :param data:
+        :param description:
+        :param uri_safe_identifier:
+        :param parent_dimension_uri:
+        :param source_uri:
+        :return: NewQbDimension
+        """
         return NewQbDimension(label,
                               description=description,
                               uri_safe_identifier=uri_safe_identifier,
-                              code_list=NewQbCodeList(concepts),
+                              code_list=NewQbCodeList.from_data(label, data),
                               parent_dimension_uri=parent_dimension_uri,
                               source_uri=source_uri)
 

@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 import pandas as pd
-from typing import List
+from typing import List, Optional, Dict, Any
 
 
 from csvqb.models.validationerror import ValidationError
@@ -22,8 +22,20 @@ class QbDataStructureDefinition(ABC):
         """Validate some data against this component's definition."""
         pass
 
+    @abstractmethod
+    def __str__(self) -> str:
+        """Ensure that descendents implement the to string method to help users debug their data."""
+        pass
 
-class MultiQbDataStructureDefinition(QbDataStructureDefinition, ABC):
+
+class ColumnarQbDataStructureDefinition(QbDataStructureDefinition, ABC):
+    """
+        Base class representing Qb Data Structure Definitions which can be directly attached to a pd.DataFrame column.
+    """
+    pass
+
+
+class MultiQbDataStructureDefinition(ColumnarQbDataStructureDefinition, ABC):
     """
         Base class representing an entity which defines a group of `QbDataStructureDefinition`s
     """

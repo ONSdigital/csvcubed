@@ -5,16 +5,16 @@ from csvqb.models.validationerror import ValidationError
 from csvqb.models.cube.cube import Cube
 from csvqb.models.cube.qb.columns import QbColumn
 from csvqb.models.cube.qb.components.dimension import QbDimension
-from csvqb.models.cube.qb.components.measure import QbMultiMeasureTypes
+from csvqb.models.cube.qb.components.measure import QbMultiMeasureDimension
 from csvqb.models.cube.qb.components.observedvalue import QbObservationValue, QbMultiMeasureObservationValue, \
     QbSingleMeasureObservationValue
-from csvqb.models.cube.qb.components.datastructuredefinition import QbDataStructureDefinition
+from csvqb.models.cube.qb.components.datastructuredefinition import ColumnarQbDataStructureDefinition
 
 
-QbDsdType = TypeVar("QbDsdType", bound=QbDataStructureDefinition)
+QbColumnarDsdType = TypeVar("QbColumnarDsdType", bound=ColumnarQbDataStructureDefinition)
 
 
-def get_columns_of_dsd_type(cube: Cube, t: Type[QbDsdType]) -> List[QbColumn[QbDsdType]]:
+def get_columns_of_dsd_type(cube: Cube, t: Type[QbColumnarDsdType]) -> List[QbColumn[QbColumnarDsdType]]:
     return [c for c in cube.columns if isinstance(c, QbColumn) and isinstance(c.component, t)]
 
 
@@ -42,7 +42,7 @@ def _validate_observation_value_constraints(cube: Cube) -> List[ValidationError]
     else:
         single_measure_obs_val_columns = get_columns_of_dsd_type(cube, QbSingleMeasureObservationValue)
         multi_measure_obs_val_columns = get_columns_of_dsd_type(cube, QbMultiMeasureObservationValue)
-        multi_measure_types_columns = get_columns_of_dsd_type(cube, QbMultiMeasureTypes)
+        multi_measure_types_columns = get_columns_of_dsd_type(cube, QbMultiMeasureDimension)
         if len(multi_measure_obs_val_columns) == 1:
             if len(multi_measure_types_columns) == 0:
                 errors.append(ValidationError(

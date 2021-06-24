@@ -1,34 +1,33 @@
-from typing import Optional, TypeVar, Generic, Set, List
+from typing import Optional, TypeVar, Generic, List
 import pandas as pd
 
 
-from .components.datastructuredefinition import QbDataStructureDefinition
+from .components.datastructuredefinition import ColumnarQbDataStructureDefinition
 from csvqb.models.validationerror import ValidationError
 from csvqb.models.cube.columns import CsvColumn
 
 
-QbComponentType = TypeVar("QbComponentType", bound=QbDataStructureDefinition)
+QbColumnarDsdType = TypeVar("QbColumnarDsdType", bound=ColumnarQbDataStructureDefinition)
 
 
-class QbColumn(CsvColumn, Generic[QbComponentType]):
+class QbColumn(CsvColumn, Generic[QbColumnarDsdType]):
     """
         A CSV column and the qb components it relates to.
     """
 
-    component: QbComponentType
-    """The qb components defined by this column."""
-    value_template: Optional[str]
-    """The formatted string that maps the raw column value to a CSV-W `propertyUrl`."""
-
     def __init__(self,
                  csv_column_title: str,
-                 component: QbComponentType,
-                 value_template: Optional[str] = None,
+                 component: QbColumnarDsdType,
+                 output_uri_template: Optional[str] = None,
                  uri_safe_identifier: Optional[str] = None):
         CsvColumn.__init__(self, csv_column_title, uri_safe_identifier)
-        self.component = component
-        self.csv_column_title = csv_column_title
-        self.value_template = value_template
+        if not isinstance(component, ColumnarQbDataStructureDefinition):
+            raise Exception(f"{component} of type {type(component)} is not a valid columnar component.")
+        self.component: QbColumnarDsdType = component
+        self.output_uri_template: Optional[str] = output_uri_template
+
+    def __str__(self) -> str:
+        return f"QbColumn('{self.csv_column_title}', {self.component})"
 
     def validate(self, column_data: Optional[pd.Series]) -> List[ValidationError]:
         errors = self.component.validate()

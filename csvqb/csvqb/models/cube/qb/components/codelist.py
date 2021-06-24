@@ -1,10 +1,11 @@
 from typing import Set, Optional, List
-from abc import ABC, abstractmethod
-
+from abc import ABC
 import pandas as pd
+
 
 from .datastructuredefinition import QbDataStructureDefinition
 from csvqb.models.validationerror import ValidationError
+from csvqb.utils.uri import uri_safe
 
 
 class QbCodeList(QbDataStructureDefinition, ABC):
@@ -15,10 +16,12 @@ class ExistingQbCodeList(QbCodeList):
     """
     Contains metadata necessary to link a dimension to an existing skos:ConceptScheme.
     """
-    concept_scheme_uri: str
 
     def __init__(self, concept_scheme_uri: str):
-        self.concept_scheme_uri = concept_scheme_uri
+        self.concept_scheme_uri: str = concept_scheme_uri
+
+    def __str__(self) -> str:
+        return f"ExistingQbCodeList('{self.concept_scheme_uri}')"
 
     def validate(self) -> List[ValidationError]:
         return []  # TODO: implement this.
@@ -28,14 +31,14 @@ class ExistingQbCodeList(QbCodeList):
 
 
 class NewQbConcept:
-    code: str
-    label: str
-    parent_code: Optional[str]
 
     def __init__(self, code: str, label: str, parent_code: Optional[str] = None):
-        self.code = code
-        self.label = label
-        self.parent_code = parent_code
+        self.code: str = code
+        self.label: str = label
+        self.parent_code: Optional[str] = parent_code
+
+    def __str__(self) -> str:
+        return f"NewQbConcept('{self.code}', '{self.label}')"
 
     def __hash__(self):
         return self.code.__hash__()
@@ -45,10 +48,31 @@ class NewQbCodeList(QbCodeList):
     """
     Contains the metadata necessary to create a new skos:ConceptScheme which is local to a dataset.
     """
-    concepts: Set[NewQbConcept]
 
-    def __init__(self, concepts: Set[NewQbConcept]):
-        self.concepts = concepts
+    def __init__(self,
+                 label: str,
+                 concepts: List[NewQbConcept],
+                 description: Optional[str] = None,
+                 variant_of_uris: List[str] = [],
+                 source_uri: Optional[str] = None):
+        self.label: str = label
+        self.concepts: List[NewQbConcept] = concepts
+        self.description: Optional[str] = description
+        self.variant_of_uris: List[str] = variant_of_uris  # For xkos:variant usage.
+        self.source_uri: Optional[str] = source_uri
+
+    def __str__(self) -> str:
+        return f"NewQbCodeList('{self.label}')"
+
+    @staticmethod
+    def from_data(label: str,
+                  data: pd.Series,
+                  description: Optional[str] = None,
+                  variant_of_uris: List[str] = [],
+                  source_uri: Optional[str] = None) -> "NewQbCodeList":
+
+        concepts = [NewQbConcept(uri_safe(c), c) for c in sorted(set(data))]
+        return NewQbCodeList(label, concepts, description, variant_of_uris, source_uri)
 
     def validate(self) -> List[ValidationError]:
         return []  # TODO: implement this.

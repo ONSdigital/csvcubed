@@ -10,15 +10,17 @@ from csvqb.models.validationerror import ValidationError
 
 
 class QbObservationValue(MultiQbDataStructureDefinition, ABC):
-    data_type: str
 
     def __init__(self, data_type: Optional[str]):
-        self.data_type = data_type if data_type is not None else "number"
+        self.data_type: str = data_type if data_type is not None else "number"
 
 
 class QbMultiMeasureObservationValue(QbObservationValue):
     def __init__(self, data_type: Optional[str] = None):
         QbObservationValue.__init__(self, data_type)
+
+    def __str__(self) -> str:
+        return f"QbMultiMeasureObservationValue('{self.data_type}')"
 
     def validate(self) -> List[ValidationError]:
         return []  # TODO: implement this
@@ -37,16 +39,16 @@ class QbSingleMeasureObservationValue(QbObservationValue):
         N.B. Requires `virt_unit` and `virt_measure` columns to be added to CSV-W metadata
     """
 
-    measure: QbMeasure
-    unit: QbUnit
-
     def __init__(self,
                  measure: QbMeasure,
                  unit: QbUnit,
                  data_type: Optional[str] = None):
         QbObservationValue.__init__(self, data_type)
-        self.measure = measure
-        self.unit = unit
+        self.measure: QbMeasure = measure
+        self.unit: QbUnit = unit
+
+    def __str__(self) -> str:
+        return f"QbMultiMeasureObservationValue({self.measure}, {self.unit})"
 
     def validate(self) -> List[ValidationError]:
         return []  # TODO: implement this
