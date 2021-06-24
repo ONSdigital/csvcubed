@@ -40,11 +40,11 @@ class InfoJsonLoaderTests(UnitTestBase):
         if not isinstance(new_dimension.code_list, NewQbCodeList):
             raise Exception("Incorrect type")
 
-        newly_defined_concepts = new_dimension.code_list.concepts
+        newly_defined_concepts = list(new_dimension.code_list.concepts)
 
         self.assertTrue(1, len(newly_defined_concepts))
 
-        new_concept = newly_defined_concepts.pop()
+        new_concept = newly_defined_concepts[0]
         self.assertEqual("Undefined Column Value", new_concept.label)
 
         errors = cube.validate()

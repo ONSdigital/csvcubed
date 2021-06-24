@@ -7,7 +7,7 @@ from csvqb.models.validationerror import ValidationError
 from csvqb.models.cube.columns import CsvColumn
 
 
-QbColumnarDsdType = TypeVar("QbColumnarDsdType", bound=ColumnarQbDataStructureDefinition)
+QbColumnarDsdType = TypeVar("QbColumnarDsdType", bound=ColumnarQbDataStructureDefinition, covariant=True)
 
 
 class QbColumn(CsvColumn, Generic[QbColumnarDsdType]):
