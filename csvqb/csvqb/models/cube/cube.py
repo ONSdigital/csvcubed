@@ -93,9 +93,10 @@ class Cube:
 
             errors += col.validate(maybe_column_data)
 
-        defined_column_titles = [c.csv_column_title for c in self.columns]
-        for column in self.data.columns:
-            if column not in defined_column_titles:
-                errors.append(ValidationError(f"Column '{column}' does not have a mapping defined."))
+        if self.data is not None:
+            defined_column_titles = [c.csv_column_title for c in self.columns]
+            for column in self.data.columns:
+                if column not in defined_column_titles:
+                    errors.append(ValidationError(f"Column '{column}' does not have a mapping defined."))
 
         return errors
