@@ -16,7 +16,7 @@ pipeline {
                     dir("sharedmodels") {
                         sh "PIPENV_VENV_IN_PROJECT=true pipenv sync --dev"
 
-                        sh "pyright ."
+                        sh "pipenv run pyright ."
                     }
 
                     dir("pmd") {
@@ -26,7 +26,7 @@ pipeline {
                         venv_location = venv_location.trim()
                         sh "patch -d \"${venv_location}/lib/python3.9/site-packages/behave/formatter\" -p1 < /cucumber-format.patch"
 
-                        sh "pyright ."
+                        sh "pipenv run pyright ."
                     }
 
                     dir("csvqb") {
@@ -36,7 +36,7 @@ pipeline {
                         venv_location = venv_location.trim()
                         sh "patch -d \"${venv_location}/lib/python3.9/site-packages/behave/formatter\" -p1 < /cucumber-format.patch"
 
-                        sh "pyright ."
+                        sh "pipenv run pyright ."
                     }
                 }
             }
