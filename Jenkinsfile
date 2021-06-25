@@ -15,8 +15,6 @@ pipeline {
 
                     dir("sharedmodels") {
                         sh "PIPENV_VENV_IN_PROJECT=true pipenv sync --dev"
-
-                        sh "pipenv run pyright ."
                     }
 
                     dir("pmd") {
@@ -25,8 +23,6 @@ pipeline {
                         def venv_location = sh script: "pipenv --venv", returnStdout: true
                         venv_location = venv_location.trim()
                         sh "patch -d \"${venv_location}/lib/python3.9/site-packages/behave/formatter\" -p1 < /cucumber-format.patch"
-
-                        sh "pipenv run pyright ."
                     }
 
                     dir("csvqb") {
@@ -35,10 +31,29 @@ pipeline {
                         def venv_location = sh script: "pipenv --venv", returnStdout: true
                         venv_location = venv_location.trim()
                         sh "patch -d \"${venv_location}/lib/python3.9/site-packages/behave/formatter\" -p1 < /cucumber-format.patch"
-
-                        sh "pipenv run pyright ."
                     }
                 }
+            }
+        }
+        stage('Pyright') {
+            agent {
+                dockerfile {
+                    args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
+                    reuseNode true
+                }
+            }
+            steps {
+                    dir("sharedmodels") {
+                        sh "pipenv run pyright ."
+                    }
+
+                    dir("pmd") {
+                        sh "pipenv run pyright ."
+                    }
+
+                    dir("csvqb") {
+                        sh "pipenv run pyright ."
+                    }
             }
         }
         stage('Test') {
