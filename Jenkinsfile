@@ -75,7 +75,7 @@ pipeline {
                 dir("pmd") {
                     sh "pipenv run behave pmd/tests/behaviour --tags=-skip -f json.cucumber -o pmd/tests/behaviour/test-results.json"
                     dir("pmd/tests/unit") {
-                        sh "PIPENV_PIPFILE='../../../Pipfile' pipenv run python -m xmlrunner -o reports **/*.py"
+                        sh "PIPENV_PIPFILE='../../../Pipfile' pipenv run python -m xmlrunner -o reports *.py"
                     }
                 }
 
