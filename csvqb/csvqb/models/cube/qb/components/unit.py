@@ -10,7 +10,6 @@ from .datastructuredefinition import QbDataStructureDefinition, MultiQbDataStruc
 
 
 class QbUnit(QbDataStructureDefinition, ABC):
-
     def __init__(self, unit_multiplier: Optional[int]):
         self.unit_multiplier: Optional[int] = unit_multiplier
 

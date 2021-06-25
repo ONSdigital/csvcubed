@@ -10,6 +10,9 @@ from csvqb.tests.unit.unittestbase import UnitTestBase
 
 class InternalApiLoaderTests(UnitTestBase):
     def test_single_measure_qb_definition(self):
+        """
+            Single-measure Qbs can be defined.
+        """
         data = pd.DataFrame({
             "Existing Dimension": ["A", "B", "C"],
             "Local Dimension": ["D", "E", "F"],
@@ -34,6 +37,9 @@ class InternalApiLoaderTests(UnitTestBase):
         self.assert_no_validation_errors(validation_errors)
 
     def test_multi_measure_qb_definition(self):
+        """
+            Multi-measure Qbs can be defined.
+        """
         data = pd.DataFrame({
             "Existing Dimension": ["A", "B", "C"],
             "Value": [2, 2, 2],

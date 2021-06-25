@@ -9,22 +9,18 @@ from csvqb.models.cube import *
 from csvqb.tests.unit.unittestbase import UnitTestBase
 
 
-CWD = Path(".")
-TEST_CASES_DIR = CWD / ".." / ".." / "test-cases" / "configloaders"
-INFO_JSON_PATH = TEST_CASES_DIR / "info.json"
-DATA_CSV_PATH = TEST_CASES_DIR / "data.csv"
-
-
 class InfoJsonLoaderTests(UnitTestBase):
     def test_csv_cols_assumed_dimensions(self):
         """
+            If a column isn't defined, assume it is a new local dimension.
+
             Assume that if a column isn't defined in the info.json `transform.columns` section, then it is a
             new locally defined dimension.
 
             Assert that the newly defined dimension has a codelist created from the values in the CSV.
         """
-        data = pd.read_csv(DATA_CSV_PATH)
-        cube = get_cube_from_info_json(INFO_JSON_PATH, data)
+        data = pd.read_csv(self.get_test_cases_dir() / "configloaders" / "data.csv")
+        cube = get_cube_from_info_json(self.get_test_cases_dir() / "configloaders" / "info.json", data)
 
         matching_columns = [c for c in cube.columns if c.csv_column_title == "Undefined Column"]
         self.assertEqual(1, len(matching_columns))
