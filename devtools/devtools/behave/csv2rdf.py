@@ -1,8 +1,8 @@
 """
 behave functionality to run csv-lint on some output
 """
-from behave import *
-from nose.tools import *
+from behave import step
+import nose.tools as nose
 from pathlib import Path
 import docker
 import sys
@@ -15,6 +15,7 @@ from devtools.helpers.tar import dir_to_tar, extract_tar
 
 def _run_csv2rdf(metadata_file_path: Path) -> Tuple[int, str, Optional[str]]:
     with TemporaryDirectory() as tmp_dir:
+        tmp_dir = Path(tmp_dir)
         client = docker.from_env()
         csv2rdf = client.containers.create(
             'gsscogs/csv2rdf',
@@ -29,7 +30,7 @@ def _run_csv2rdf(metadata_file_path: Path) -> Tuple[int, str, Optional[str]]:
 
         output_stream, output_stat = csv2rdf.get_archive('/tmp/csv2rdf.ttl')
         extract_tar(output_stream, tmp_dir)
-        maybe_output_file = Path(tmp_dir) / "csv2rdf.ttl"
+        maybe_output_file = tmp_dir / "csv2rdf.ttl"
         if maybe_output_file.exists():
             with open(maybe_output_file, "r") as f:
                 ttl_out = f.read()
@@ -42,7 +43,7 @@ def _run_csv2rdf(metadata_file_path: Path) -> Tuple[int, str, Optional[str]]:
 @step("csv2rdf on \"{file}\" should succeed")
 def step_impl(context, file: str):
     exit_code, logs, ttl_out = _run_csv2rdf(Path(file))
-    assert_equal(exit_code, 0)
+    nose.assert_equal(exit_code, 0)
 
     context.turtle = ttl_out
 
@@ -50,7 +51,7 @@ def step_impl(context, file: str):
 @step('csv2rdf on \"{file}\" should fail with "{expected}"')
 def step_impl(context, file: str, expected: str):
     exit_code, logs, ttl_out = _run_csv2rdf(Path(file))
-    assert_equal(exit_code, 1)
+    nose.assert_equal(exit_code, 1)
     assert expected in logs
 
     context.turtle = ttl_out
