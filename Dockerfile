@@ -25,5 +25,7 @@ ADD https://raw.githubusercontent.com/GSS-Cogs/gss-utils/master/cucumber-format.
 
 RUN apt-get install -y git npm
 
+RUN npm install -g pyright
+
 RUN mkdir /workspace
 WORKDIR /workspace
