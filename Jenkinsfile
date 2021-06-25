@@ -13,6 +13,10 @@ pipeline {
                     // Clean up any files lying about after the previous build. Jenkins has trouble deleting files given that our containers run as root.
                     sh "git clean -fxd" 
 
+                    dir("devtools") {
+                        sh "PIPENV_VENV_IN_PROJECT=true pipenv sync --dev"
+                    }
+
                     dir("sharedmodels") {
                         sh "PIPENV_VENV_IN_PROJECT=true pipenv sync --dev"
                     }
@@ -43,6 +47,10 @@ pipeline {
                 }
             }
             steps {
+                    dir("devtools") {
+                        sh "pipenv run pyright ."                       
+                    }
+
                     dir("sharedmodels") {
                         sh "pipenv run pyright ."
                     }

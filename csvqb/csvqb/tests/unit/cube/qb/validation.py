@@ -24,7 +24,7 @@ class InternalApiLoaderTests(UnitTestBase):
                      QbSingleMeasureObservationValue(
                          ExistingQbMeasure("http://example.com/measures/existing_measure"),
                          NewQbUnit("some new unit")
-                     )),
+                     ))
         ]
 
         cube = Cube(metadata, data, columns)
