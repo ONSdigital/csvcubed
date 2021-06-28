@@ -64,8 +64,6 @@ def _override_config_for_cube_id(config: dict, cube_id: str) -> Optional[dict]:
 
 def _from_info_json_dict(d: Dict, data: pd.DataFrame):
     metadata = CubeMetadata.from_dict(d)
-    metadata.dataset_identifier = get_from_dict_ensure_exists(d, "id")
-    metadata.base_uri = d.get("baseUri", "http://gss-data.org.uk/")
     transform_section = d.get("transform", {})
     columns = _columns_from_info_json(transform_section.get("columns", []), data)
 
