@@ -1,5 +1,6 @@
 from setuptools import setup, find_packages
 
+
 setup(
     install_requires=[
         "numpy==1.21.0; python_version >= '3.7'",
