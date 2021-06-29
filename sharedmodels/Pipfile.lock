@@ -121,6 +121,13 @@
             ],
             "version": "==0.4.4"
         },
+        "csvw": {
+            "hashes": [
+                "sha256:243825391308f2568593415364868dda5e50f608fc2bb307fbd79d534af52fd5",
+                "sha256:c156466fab3331861e0cf3cbe0c4538705800bfac98819149cd70ecbe6f152eb"
+            ],
+            "version": "==1.11.0"
+        },
         "devtools": {
             "editable": true,
             "path": "./../devtools"
@@ -314,6 +321,13 @@
             ],
             "version": "==1.5.16"
         },
+        "rfc3986": {
+            "hashes": [
+                "sha256:270aaf10d87d0d4e095063c65bf3ddbc6ee3d0b226328ce21e036f946e421835",
+                "sha256:a86d6e1f5b1dc238b218b012df0aa79409667bb209e58da56d0b94704e712a97"
+            ],
+            "version": "==1.5.0"
+        },
         "six": {
             "hashes": [
                 "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926",
@@ -369,6 +383,20 @@
                 "sha256:fb1bbeac803adea29cedd70781399c99138358c26d05fcbd23c13016b7f5ec65"
             ],
             "version": "==1.4.3"
+        },
+        "unittest-xml-reporting": {
+            "hashes": [
+                "sha256:7bf515ea8cb244255a25100cd29db611a73f8d3d0aaf672ed3266307e14cc1ca",
+                "sha256:984cebba69e889401bfe3adb9088ca376b3a1f923f0590d005126c1bffd1a695"
+            ],
+            "version": "==3.0.4"
+        },
+        "uritemplate": {
+            "hashes": [
+                "sha256:07620c3f3f8eed1f12600845892b0e036a2420acf513c53f7de0abd911a5894f",
+                "sha256:5af8ad10cec94f215e3f48112de2022e1d5a37ed427fbd88652fa908f2ab7cae"
+            ],
+            "version": "==3.0.1"
         },
         "urllib3": {
             "hashes": [

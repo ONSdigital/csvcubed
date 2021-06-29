@@ -7,9 +7,7 @@ from collections.abc import Iterable
 
 
 from .triple import AbstractTriple, Triple, PropertyStatus
-
-
-MARKDOWN = URIRef('https://www.w3.org/ns/iana/media-types/text/markdown#Resource')
+from .datatypes import MARKDOWN
 
 
 class RdfResource(ABC):
