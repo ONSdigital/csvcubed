@@ -4,3 +4,8 @@ from .dcat import *
 from .skos import *
 from .triple import *
 from .rdfresource import *
+from .rdfs import *
+from .rdf import *
+from .qb import *
+from .namespaces import *
+from .datatypes import *

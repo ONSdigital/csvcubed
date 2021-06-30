@@ -1,12 +1,13 @@
 from typing import Optional, List
 from abc import ABC
-
 import pandas as pd
+
 
 from csvqb.utils.uri import uri_safe
 from .datastructuredefinition import MultiQbDataStructureDefinition, QbDataStructureDefinition
 from .dimension import ExistingQbDimension
 from csvqb.models.validationerror import ValidationError
+from csvqb.inputs import PandasDataTypes, pandas_input_to_columnar_str
 
 
 class QbMeasure(QbDataStructureDefinition, ABC):
@@ -64,8 +65,9 @@ class QbMultiMeasureDimension(MultiQbDataStructureDefinition):
         return f"QbMultiMeasureDimension({measures_str})"
 
     @staticmethod
-    def new_measures_from_data(data: pd.Series) -> "QbMultiMeasureDimension":
-        return QbMultiMeasureDimension([NewQbMeasure(m) for m in sorted(set(data))])
+    def new_measures_from_data(data: PandasDataTypes) -> "QbMultiMeasureDimension":
+        columnar_data = pandas_input_to_columnar_str(data)
+        return QbMultiMeasureDimension([NewQbMeasure(m) for m in sorted(set(columnar_data))])
 
     def validate(self) -> List[ValidationError]:
         return []  # TODO: implement this

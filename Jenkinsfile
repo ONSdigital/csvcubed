@@ -48,19 +48,19 @@ pipeline {
             }
             steps {
                     dir("devtools") {
-                        sh "pipenv run pyright ."                       
+                        sh "pipenv run pyright . --lib"                       
                     }
 
                     dir("sharedmodels") {
-                        sh "pipenv run pyright ."
+                        sh "pipenv run pyright . --lib"
                     }
 
                     dir("pmd") {
-                        sh "pipenv run pyright ."
+                        sh "pipenv run pyright . --lib"
                     }
 
                     dir("csvqb") {
-                        sh "pipenv run pyright ."
+                        sh "pipenv run pyright . --lib"
                     }
             }
         }

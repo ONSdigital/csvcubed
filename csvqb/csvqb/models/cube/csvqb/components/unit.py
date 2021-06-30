@@ -7,6 +7,7 @@ from csvqb.utils.uri import uri_safe
 from csvqb.models.validationerror import ValidationError
 from .attribute import ExistingQbAttribute
 from .datastructuredefinition import QbDataStructureDefinition, MultiQbDataStructureDefinition
+from csvqb.inputs import pandas_input_to_columnar_str, PandasDataTypes
 
 
 class QbUnit(QbDataStructureDefinition, ABC):
@@ -70,13 +71,13 @@ class QbMultiUnits(MultiQbDataStructureDefinition):
         return f"QbMultiUnits({units_str})"
 
     @staticmethod
-    def new_units_from_data(data: pd.Series) -> "QbMultiUnits":
+    def new_units_from_data(data: PandasDataTypes) -> "QbMultiUnits":
         """
             Automatically generates new units from a units column.
         :param data: The data column defining the full list of available units.
         :return: QbMultiUnits
         """
-        return QbMultiUnits([NewQbUnit(u) for u in set(data)])
+        return QbMultiUnits([NewQbUnit(u) for u in set(pandas_input_to_columnar_str(data))])
 
     # todo: Add existing_units_from_data function?
 

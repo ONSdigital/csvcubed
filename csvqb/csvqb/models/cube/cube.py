@@ -9,6 +9,7 @@ from csvqb.utils.uri import uri_safe
 from csvqb.models.validationerror import ValidationError
 from .columns import CsvColumn
 from ..rdf import URI
+from csvqb.inputs import pandas_input_to_columnar
 
 
 
@@ -65,7 +66,6 @@ class CubeMetadata:
 
 
 class Cube:
-
     def __init__(self,
                  metadata: CubeMetadata,
                  data: Optional[pd.DataFrame] = None,
@@ -93,11 +93,11 @@ class Cube:
                 else:
                     errors.append(ValidationError(f"Column '{col.csv_column_title}' not found in data provided."))
 
-            errors += col.validate(maybe_column_data)
+            errors += col.validate(pandas_input_to_columnar(maybe_column_data))
 
         if self.data is not None:
             defined_column_titles = [c.csv_column_title for c in self.columns]
-            for column in self.data.columns:
+            for column in list(self.data.columns):
                 if column not in defined_column_titles:
                     errors.append(ValidationError(f"Column '{column}' does not have a mapping defined."))
 

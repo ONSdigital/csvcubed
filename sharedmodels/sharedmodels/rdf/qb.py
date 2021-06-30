@@ -6,7 +6,7 @@ from rdflib import Literal, URIRef, RDFS
 import sharedmodels.rdf.rdf as rdf
 import sharedmodels.rdf.rdfs as rdfs
 import sharedmodels.rdf.skos as skos
-from sharedmodels.rdf.rdfresource import RdfResource, map_entity_to_uri
+from sharedmodels.rdf.rdfresource import RdfResource, map_resource_to_uri, Resource, ExistingResource
 from sharedmodels.rdf.triple import Triple, PropertyStatus
 from sharedmodels.rdf.namespaces import QB
 
@@ -14,8 +14,10 @@ from sharedmodels.rdf.namespaces import QB
 class ComponentProperty(rdf.PropertyWithMetadata):
     """Component property (abstract) - Abstract super-property of all properties representing dimensions, attributes
     or measures"""
-    concept: Annotated[skos.Concept, Triple(QB.concept, PropertyStatus.recommended, map_entity_to_uri)]
+    concept: Annotated[Resource[skos.Concept], Triple(QB.concept, PropertyStatus.recommended, map_resource_to_uri)]
     """concept - gives the concept which is being measured or indicated by a ComponentProperty"""
+
+    source: Annotated[ExistingResource, Triple(RDFS.isDefinedBy, PropertyStatus.optional, map_resource_to_uri)]
 
     def __init__(self, uri: str):
         rdf.Property.__init__(self, uri)
@@ -36,8 +38,8 @@ class MeasureProperty(ComponentProperty):
 
 class CodedProperty(ComponentProperty):
     """Coded property - Superclass of all coded ComponentProperties"""
-    code_list: Annotated[Union[skos.ConceptScheme, skos.Collection, "HierarchicalCodeList"],
-                         Triple(QB.codeList, PropertyStatus.recommended, map_entity_to_uri)]
+    code_list: Annotated[Resource[Union[skos.ConceptScheme, skos.Collection, "HierarchicalCodeList"]],
+                         Triple(QB.codeList, PropertyStatus.recommended, map_resource_to_uri)]
     """code list - gives the code list associated with a CodedProperty"""
 
     def __init__(self, uri: str):
@@ -63,8 +65,8 @@ class HierarchicalCodeList(RdfResource):
     hierarchy is defined by one or more roots together with a property which relates concepts in the hierarchy to
     thier child concept .  The same concepts may be members of multiple hierarchies provided that different
     qb:parentChildProperty values are used for each hierarchy."""
-    parentChildProperty: Annotated[rdf.Property, Triple(QB.parentChildProperty, PropertyStatus.recommended,
-                                                        map_entity_to_uri)]
+    parentChildProperty: Annotated[Resource[rdf.Property], Triple(QB.parentChildProperty, PropertyStatus.recommended,
+                                                                  map_resource_to_uri)]
     """parent-child property - Specifies a property which relates a parent concept in the hierarchy to a child 
     concept."""
 
@@ -83,8 +85,9 @@ class Attachable(RdfResource, ABC):
 
 class ComponentSet(RdfResource, ABC):
     """Component set - Abstract class of things which reference one or more ComponentProperties"""
-    componentProperties: Annotated[Set[ComponentProperty], Triple(QB.componentProperties,
-                                                                  PropertyStatus.recommended, map_entity_to_uri)]
+    componentProperties: Annotated[Set[Resource[ComponentProperty]], Triple(QB.componentProperties,
+                                                                            PropertyStatus.recommended,
+                                                                            map_resource_to_uri)]
     """component - indicates a ComponentProperty (i.e. attribute/dimension) expected on a DataSet, or a dimension 
     fixed in a SliceKey"""
 
@@ -118,8 +121,8 @@ class ComponentSpecification(ComponentSet, ABC):
 class AttributeComponentSpecification(ComponentSpecification):
     """See https://www.w3.org/TR/vocab-data-cube/#dsd-dsd - manually defined, not normative Qb spec."""
 
-    componentAttachment: Annotated[rdfs.Class, Triple(QB.componentAttachment, PropertyStatus.recommended,
-                                                      map_entity_to_uri)]
+    componentAttachment: Annotated[Resource[rdfs.Class], Triple(QB.componentAttachment, PropertyStatus.recommended,
+                                                                map_resource_to_uri)]
     """component attachment - Indicates the level at which the component property should be attached, this might an 
     qb:DataSet, qb:Slice or qb:Observation, or a qb:MeasureProperty."""
 
@@ -127,8 +130,8 @@ class AttributeComponentSpecification(ComponentSpecification):
     """component required - Indicates whether a component property is required (true) or optional (false) in the 
     context of a DSD. Only applicable to components correspond to an attribute. Defaults to false (optional)."""
 
-    attribute: Annotated[AttributeProperty, Triple(QB.attribute, PropertyStatus.recommended,
-                                                   map_entity_to_uri)]
+    attribute: Annotated[Resource[AttributeProperty], Triple(QB.attribute, PropertyStatus.recommended,
+                                                             map_resource_to_uri)]
     """See https://www.w3.org/TR/vocab-data-cube/#dsd-dsd"""
 
     def __init__(self, uri: str):
@@ -138,8 +141,8 @@ class AttributeComponentSpecification(ComponentSpecification):
 class DimensionComponentSpecification(ComponentSpecification):
     """See https://www.w3.org/TR/vocab-data-cube/#dsd-dsd - manually defined, not normative Qb spec."""
 
-    dimension: Annotated[DimensionProperty, Triple(QB.dimension, PropertyStatus.recommended,
-                                                   map_entity_to_uri)]
+    dimension: Annotated[Resource[DimensionProperty], Triple(QB.dimension, PropertyStatus.recommended,
+                                                             map_resource_to_uri)]
     """See https://www.w3.org/TR/vocab-data-cube/#dsd-dsd"""
 
     def __init__(self, uri: str):
@@ -149,8 +152,8 @@ class DimensionComponentSpecification(ComponentSpecification):
 class MeasureComponentSpecification(ComponentSpecification):
     """See https://www.w3.org/TR/vocab-data-cube/#dsd-dsd - manually defined, not normative Qb spec."""
 
-    dimension: Annotated[MeasureProperty, Triple(QB.measure, PropertyStatus.recommended,
-                                                 map_entity_to_uri)]
+    dimension: Annotated[Resource[MeasureProperty], Triple(QB.measure, PropertyStatus.recommended,
+                                                           map_resource_to_uri)]
     """See https://www.w3.org/TR/vocab-data-cube/#dsd-dsd"""
 
     def __init__(self, uri: str):
@@ -168,12 +171,12 @@ class SliceKey(ComponentSet):
 
 class DataStructureDefinition(ComponentSet):
     """Data structure definition - Defines the structure of a DataSet or slice"""
-    components: Annotated[Set[ComponentSpecification],
-                          Triple(QB.component, PropertyStatus.recommended, map_entity_to_uri)]
+    components: Annotated[Set[Resource[ComponentSpecification]],
+                          Triple(QB.component, PropertyStatus.recommended, map_resource_to_uri)]
     """component specification - indicates a component specification which is included in the structure of the 
     dataset"""
 
-    sliceKey: Annotated[SliceKey, Triple(QB.sliceKey, PropertyStatus.recommended, map_entity_to_uri)]
+    sliceKey: Annotated[Resource[SliceKey], Triple(QB.sliceKey, PropertyStatus.recommended, map_resource_to_uri)]
     """slice key - indicates a slice key which is used for slices in this dataset"""
 
     def __init__(self, uri: str):
@@ -184,7 +187,7 @@ class DataStructureDefinition(ComponentSet):
 
 class Observation(Attachable):
     """Observation - A single observation in the cube, may have one or more associated measured values"""
-    dataSet: Annotated["DataSet", Triple(QB.dataSet, PropertyStatus.recommended, map_entity_to_uri)]
+    dataSet: Annotated[Resource["DataSet"], Triple(QB.dataSet, PropertyStatus.recommended, map_resource_to_uri)]
     """data set - indicates the data set of which this observation is a part"""
 
     def __init__(self, uri: str):
@@ -195,11 +198,11 @@ class Observation(Attachable):
 class DataSet(Attachable):
     """Data set - Represents a collection of observations, possibly organized into various slices, conforming to some
     common dimensional structure."""
-    slices: Annotated[Set["Slice"], Triple(QB.slice, PropertyStatus.recommended, map_entity_to_uri)]
+    slices: Annotated[Set[Resource["Slice"]], Triple(QB.slice, PropertyStatus.recommended, map_resource_to_uri)]
     """slice - Indicates a subset of a DataSet defined by fixing a subset of the dimensional values"""
 
-    structure: Annotated["DataStructureDefinition", Triple(QB.structure, PropertyStatus.recommended,
-                                                           map_entity_to_uri)]
+    structure: Annotated[Resource["DataStructureDefinition"], Triple(QB.structure, PropertyStatus.recommended,
+                                                                     map_resource_to_uri)]
     """structure - indicates the structure to which this data set conforms"""
 
     def __init__(self, uri: str):
@@ -210,8 +213,8 @@ class DataSet(Attachable):
 
 class ObservationGroup(RdfResource):
     """Observation Group - A, possibly arbitrary, group of observations."""
-    observations: Annotated[Set["Observation"], Triple(QB.observation, PropertyStatus.recommended,
-                                                       map_entity_to_uri)]
+    observations: Annotated[Set[Resource["Observation"]], Triple(QB.observation, PropertyStatus.recommended,
+                                                                 map_resource_to_uri)]
     """observation - indicates a observation contained within this slice of the data set"""
 
     def __init__(self, uri: str):
@@ -223,8 +226,8 @@ class ObservationGroup(RdfResource):
 class Slice(Attachable, ObservationGroup):
     """Slice - Denotes a subset of a DataSet defined by fixing a subset of the dimensional values, component
     properties on the Slice"""
-    sliceStructure: Annotated["SliceKey", Triple(QB.sliceStructure, PropertyStatus.recommended,
-                                                 map_entity_to_uri)]
+    sliceStructure: Annotated[Resource["SliceKey"], Triple(QB.sliceStructure, PropertyStatus.recommended,
+                                                           map_resource_to_uri)]
     """slice structure - indicates the sub-key corresponding to this slice"""
 
     def __init__(self, uri: str):

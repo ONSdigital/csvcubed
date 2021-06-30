@@ -1,5 +1,3 @@
 class ValidationError:
-    message: str
-
     def __init__(self, message: str):
-        self.message = message
+        self.message: str = message

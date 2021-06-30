@@ -3,13 +3,13 @@ from typing import List, TypeVar, Type
 
 from csvqb.models.validationerror import ValidationError
 from csvqb.models.cube.cube import Cube
-from csvqb.models.cube.qb.columns import QbColumn
-from csvqb.models.cube.qb.components.dimension import QbDimension
-from csvqb.models.cube.qb.components.measure import QbMultiMeasureDimension
-from csvqb.models.cube.qb.components.unit import QbMultiUnits
-from csvqb.models.cube.qb.components.observedvalue import QbObservationValue, QbMultiMeasureObservationValue, \
+from csvqb.models.cube.csvqb.columns import QbColumn
+from csvqb.models.cube.csvqb.components.dimension import QbDimension
+from csvqb.models.cube.csvqb.components.measure import QbMultiMeasureDimension
+from csvqb.models.cube.csvqb.components.unit import QbMultiUnits
+from csvqb.models.cube.csvqb.components.observedvalue import QbObservationValue, QbMultiMeasureObservationValue, \
     QbSingleMeasureObservationValue
-from csvqb.models.cube.qb.components.datastructuredefinition import ColumnarQbDataStructureDefinition
+from csvqb.models.cube.csvqb.components.datastructuredefinition import ColumnarQbDataStructureDefinition
 
 
 QbColumnarDsdType = TypeVar("QbColumnarDsdType", bound=ColumnarQbDataStructureDefinition)

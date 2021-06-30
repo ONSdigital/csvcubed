@@ -4,12 +4,14 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-csvwlib-devtools = {editable = true, path = "./../devtools"}
+csvwlib-devtools = {editable = true,path = "./../devtools"}
 
 [packages]
 csvqb = {editable = true,path = "."}
 pandas = "*"
 unidecode = "*"
+csvwlib-models = {editable = true,path = "./../sharedmodels"}
+rdflib-jsonld = "*"
 
 [requires]
 python_version = "3.9"

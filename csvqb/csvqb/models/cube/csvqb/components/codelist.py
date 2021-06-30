@@ -6,6 +6,7 @@ import pandas as pd
 from .datastructuredefinition import QbDataStructureDefinition
 from csvqb.models.validationerror import ValidationError
 from csvqb.utils.uri import uri_safe
+from csvqb.inputs import PandasDataTypes, pandas_input_to_columnar_str
 
 
 class QbCodeList(QbDataStructureDefinition, ABC):
@@ -68,13 +69,13 @@ class NewQbCodeList(QbCodeList):
 
     @staticmethod
     def from_data(label: str,
-                  data: pd.Series,
+                  data: PandasDataTypes,
                   uri_safe_identifier: Optional[str] = None,
                   description: Optional[str] = None,
                   variant_of_uris: List[str] = [],
                   source_uri: Optional[str] = None) -> "NewQbCodeList":
-
-        concepts = [NewQbConcept(uri_safe(c), c) for c in sorted(set(data))]
+        columnar_data = pandas_input_to_columnar_str(data)
+        concepts = [NewQbConcept(uri_safe(c), c) for c in sorted(set(columnar_data))]
         return NewQbCodeList(label,
                              concepts,
                              uri_safe_identifier=uri_safe_identifier,

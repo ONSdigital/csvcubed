@@ -5,8 +5,9 @@ import pandas as pd
 
 from csvqb.utils.uri import uri_safe
 from .datastructuredefinition import ColumnarQbDataStructureDefinition
-from csvqb.models.cube.qb.components.codelist import QbCodeList, NewQbCodeList
+from .codelist import QbCodeList, NewQbCodeList
 from csvqb.models.validationerror import ValidationError
+from csvqb.inputs import PandasDataTypes
 
 
 class QbDimension(ColumnarQbDataStructureDefinition, ABC):
@@ -57,7 +58,7 @@ class NewQbDimension(QbDimension):
 
     @staticmethod
     def from_data(label: str,
-                  data: pd.Series,
+                  data: PandasDataTypes,
                   description: Optional[str] = None,
                   uri_safe_identifier: Optional[str] = None,
                   parent_dimension_uri: Optional[str] = None,

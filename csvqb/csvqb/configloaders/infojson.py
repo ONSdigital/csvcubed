@@ -7,16 +7,16 @@ import pandas as pd
 
 from csvqb.models.cube.cube import Cube, CubeMetadata
 from csvqb.models.cube.columns import CsvColumn, SuppressedCsvColumn
-from csvqb.models.cube.qb.columns import QbColumn
-from csvqb.models.cube.qb.components.observedvalue import QbSingleMeasureObservationValue, \
+from csvqb.models.cube.csvqb.columns import QbColumn
+from csvqb.models.cube.csvqb.components.observedvalue import QbSingleMeasureObservationValue, \
     QbMultiMeasureObservationValue
-from csvqb.models.cube.qb.components.dimension import NewQbDimension, ExistingQbDimension
-from csvqb.models.cube.qb.components.measure import ExistingQbMeasure, QbMultiMeasureDimension
-from csvqb.models.cube.qb.components.attribute import ExistingQbAttribute
-from csvqb.models.cube.qb.components.unit import ExistingQbUnit
-
-from csvqb.models.cube.qb.components.codelist import ExistingQbCodeList, NewQbCodeList
+from csvqb.models.cube.csvqb.components.dimension import NewQbDimension, ExistingQbDimension
+from csvqb.models.cube.csvqb.components.measure import ExistingQbMeasure, QbMultiMeasureDimension
+from csvqb.models.cube.csvqb.components.attribute import ExistingQbAttribute
+from csvqb.models.cube.csvqb.components.unit import ExistingQbUnit
+from csvqb.models.cube.csvqb.components.codelist import ExistingQbCodeList, NewQbCodeList
 from csvqb.utils.qb.cube import validate_qb_component_constraints
+from csvqb.inputs import PandasDataTypes
 
 
 def get_cube_from_info_json(info_json: Path, data: pd.DataFrame, cube_id: Optional[str] = None) -> Cube:
@@ -72,7 +72,8 @@ def _from_info_json_dict(d: Dict, data: pd.DataFrame):
 def _columns_from_info_json(column_mappings: Dict[str, Any], data: pd.DataFrame) -> List[CsvColumn]:
     defined_columns: List[CsvColumn] = []
 
-    for col_title in data.columns:
+    for col_title in list(data.columns):
+        col_title = str(col_title)
         maybe_config = column_mappings.get(col_title)
         defined_columns.append(_get_column_for_metadata_config(col_title, maybe_config, data[col_title]))
 
@@ -80,7 +81,7 @@ def _columns_from_info_json(column_mappings: Dict[str, Any], data: pd.DataFrame)
 
 
 def _get_column_for_metadata_config(column_name: str, col_config: Optional[Union[dict, bool]],
-                                    column_data: pd.Series) -> CsvColumn:
+                                    column_data: PandasDataTypes) -> CsvColumn:
     if isinstance(col_config, dict):
         maybe_dimension_uri = col_config.get("dimension")
         maybe_property_value_url = col_config.get("value")
@@ -135,7 +136,7 @@ def _get_column_for_metadata_config(column_name: str, col_config: Optional[Union
         return QbColumn(column_name, new_dimension)
 
 
-def _get_code_list(column_label: str, maybe_code_list: Optional[Union[bool, str]], column_data: pd.Series):
+def _get_code_list(column_label: str, maybe_code_list: Optional[Union[bool, str]], column_data: PandasDataTypes):
     if maybe_code_list is not None:
         if isinstance(maybe_code_list, bool):
             code_list = None

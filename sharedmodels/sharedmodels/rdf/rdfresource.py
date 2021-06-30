@@ -1,7 +1,7 @@
 import rdflib
 from rdflib import URIRef, Graph, RDFS, RDF
 from rdflib.term import Literal, Identifier
-from typing import Annotated, List, get_type_hints, get_args, Set, Any, Dict
+from typing import Annotated, List, get_type_hints, get_args, Set, Any, Dict, TypeVar, Union, Optional
 from abc import ABC
 from collections.abc import Iterable
 
@@ -37,7 +37,7 @@ class RdfResource(ABC):
         """
         if self in objects_already_processed:
             # Cyclic reference, we have already processed this object.
-            return
+            return graph
 
         objects_already_processed.add(self)
 
@@ -99,7 +99,7 @@ def map_str_to_en_literal(s: str) -> Literal:
     return Literal(s, 'en')
 
 
-def map_entity_to_uri(entity: RdfResource) -> URIRef:
+def map_resource_to_uri(entity: RdfResource) -> URIRef:
     return entity.uri
 
 
@@ -112,4 +112,22 @@ class RdfMetadataResource(RdfResource, ABC):
     comment: Annotated[str, Triple(RDFS.comment, PropertyStatus.mandatory, map_str_to_en_literal)]
 
 
+class ExistingResource(RdfResource):
+    """Node - represents an existing node which we don't want to redefine. Just specify its URI."""
+    def __init__(self, uri: str):
+        RdfResource.__init__(self, uri)
 
+
+def maybe_existing(uri: Optional[str]) -> Optional[ExistingResource]:
+    if uri is None:
+        return None
+
+    return ExistingResource(uri)
+
+
+RdfResourceType = TypeVar("RdfResourceType", covariant=True)
+Resource = Union[RdfResourceType, ExistingResource]
+"""Represents an RdfResource OR an ExistingNode"""
+
+MaybeEntity = Optional[Union[RdfResourceType, ExistingResource]]
+"""Represents an RdfResource OR an ExistingNode OR None"""
