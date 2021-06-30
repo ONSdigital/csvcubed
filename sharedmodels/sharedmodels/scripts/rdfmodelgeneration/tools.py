@@ -1,26 +1,19 @@
-"""
-    Some rough-and-ready code to generate a class hierarchy from the QB RDFS/OWL structure defined at
-    `http://purl.org/linked-data/cube`
-"""
 from rdflib import Graph, URIRef
 from typing import Optional, List, Dict
-from pathlib import Path
 import re
 
 
-from sharedmodels.rdf.rdfresource import RdfResource
-
 literal_types = ["str", "bool", "int"]
-map_uri_to_type = {
+
+built_in_type_mappings = {
     "RdfResource": "RdfResource",
     "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property": "rdf.Property",
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#List": "list",
     "http://www.w3.org/2000/01/rdf-schema#Class": "rdfs.Class",
-    "http://www.w3.org/2004/02/skos/core#ConceptScheme": "skos.ConceptScheme",
-    "http://www.w3.org/2004/02/skos/core#Collection": "skos.Collection",
-    "http://www.w3.org/2004/02/skos/core#Concept": "skos.Concept",
     "http://www.w3.org/2001/XMLSchema#boolean": "bool",
     "http://www.w3.org/2001/XMLSchema#int": "int"
 }
+
 
 hash_uri_regex = re.compile("#(.*?)$")
 slash_uri_regex = re.compile("/(.*?)$")
@@ -44,18 +37,22 @@ class RdfResource:
         return self.uri
 
 
-def generate_python_models_for_rdfs_ontology(rdf_source_path: str, map_uri_to_type: Dict[URIRef, str]) -> str:
-    class RdfClassInfo(RdfResource):
-        def __init__(self, uri: URIRef, label: str, comment: Optional[str], parent_classes_uris: Optional[str]):
-            RdfResource.__init__(self, uri)
-            self.label: str = label
-            self.comment: Optional[str] = comment
-            self.parent_class_uris: List[str] = [] if str(parent_classes_uris) == "" else parent_classes_uris.split(",")
+class RdfClassInfo(RdfResource):
+    def __init__(self, uri: URIRef, label: Optional[str], comment: Optional[str], parent_classes_uris: Optional[str]):
+        RdfResource.__init__(self, uri)
+        self.label: Optional[str] = label
+        self.comment: Optional[str] = comment
+        self.parent_class_uris: List[str] = [] if str(parent_classes_uris) == "" else parent_classes_uris.split(",")
 
+
+def generate_python_models_for_rdfs_ontology(rdf_source_path: str,
+                                             map_uri_to_type: Dict[URIRef, str] = built_in_type_mappings,
+                                             format: Optional[str] = None,
+                                             py_imports: str = "") -> str:
     class RdfPropertyInfo(RdfResource):
-        def __init__(self, uri: URIRef, label: str, comment: Optional[str], range_uri: URIRef):
+        def __init__(self, uri: URIRef, label: Optional[str], comment: Optional[str], range_uri: URIRef):
             RdfResource.__init__(self, uri)
-            self.label: str = label
+            self.label: Optional[str] = label
             self.comment: Optional[str] = comment
             self.range_uri: str = str(range_uri)
 
@@ -69,18 +66,46 @@ def generate_python_models_for_rdfs_ontology(rdf_source_path: str, map_uri_to_ty
             return f"Annotated[{property_type}, Triple(URIRef(\"{self.uri}\"), PropertyStatus.recommended, {mapper_function})]"
 
     g: Graph = Graph()
-    g.load(rdf_source_path, format="turtle")
+    g.load(rdf_source_path, format=format)
+
+    # todo: Add more automatic support in for owl:unionOf functionality.
+    # owl_union_results = g.query("""
+    #     PREFIX rdf:            <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    #     PREFIX rdfs:           <http://www.w3.org/2000/01/rdf-schema#>
+    #     PREFIX owl:            <http://www.w3.org/2002/07/owl#>
+    #     PREFIX xsd:            <http://www.w3.org/2001/XMLSchema#>
+    #
+    #     SELECT DISTINCT ?unionType ?unionTypeLabel ?unionTypeComment (GROUP_CONCAT(?type; separator=",") as ?types)
+    #     WHERE {
+    #         ?unionType a owl:Class;
+    #                    owl:unionOf [ rdf:rest*/rdf:first ?type ]
+    #
+    #         OPTIONAL { ?unionType rdfs:label ?unionTypeLabel. }
+    #         OPTIONAL { ?unionType rdfs:comment ?unionTypeComment. }
+    #     }
+    #     GROUP BY ?unionType ?unionTypeLabel ?unionTypeComment
+    # """)
+    # for result in owl_union_results:
+    #     union_type = result["union_type"]
+    #
+    #     map_uri_to_type[]
+
     class_query_results = g.query("""
     PREFIX rdf:            <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX rdfs:           <http://www.w3.org/2000/01/rdf-schema#>
     PREFIX owl:            <http://www.w3.org/2002/07/owl#>
     PREFIX xsd:            <http://www.w3.org/2001/XMLSchema#>
-    
+
     SELECT DISTINCT ?class ?classLabel ?classComment (GROUP_CONCAT(?parent; separator=",") as ?parentClasses)
     WHERE {
-        ?class a rdfs:Class;
-               rdfs:label ?classLabel.
-        
+        {
+            SELECT DISTINCT ?class
+            WHERE {
+                { ?class a rdfs:Class. } UNION { ?class a owl:Class. }
+            }
+        }
+
+        OPTIONAL { ?class rdfs:label ?classLabel. }
         OPTIONAL { ?class rdfs:subClassOf ?parent. }
         OPTIONAL { ?class rdfs:comment ?classComment. }
     }
@@ -104,14 +129,15 @@ def generate_python_models_for_rdfs_ontology(rdf_source_path: str, map_uri_to_ty
             PREFIX rdfs:           <http://www.w3.org/2000/01/rdf-schema#>
             PREFIX owl:            <http://www.w3.org/2002/07/owl#>
             PREFIX xsd:            <http://www.w3.org/2001/XMLSchema#>
-    
+
             SELECT DISTINCT ?property ?propertyLabel ?propertyComment ?range
             WHERE {{
-                ?property a rdf:Property;
-                          rdfs:domain <{class_info.uri}>;
-                          rdfs:label ?propertyLabel;
+                {{ ?property a rdfs:Property. }} UNION {{  ?property a owl:ObjectProperty. }}
+
+                ?property rdfs:domain <{class_info.uri}>;
                           rdfs:range ?range.
-    
+
+                OPTIONAL {{ ?property rdfs:label ?propertyLabel. }}
                 OPTIONAL {{ ?property rdfs:comment ?propertyComment. }}
             }}
             """)
@@ -152,7 +178,7 @@ def generate_python_models_for_rdfs_ontology(rdf_source_path: str, map_uri_to_ty
         properties_str = f"\n{new_line_with_indent}".join(
             [f"{p.get_identifier()}: {p.to_property_type_annotation(should_quote_type_name)}" +
              new_line_with_indent +
-             f"\"\"\"{p.label} - {p.comment}\"\"\"" for p in properties]
+             f"\"\"\"{p.label or ''} - {p.comment or ''}\"\"\"" for p in properties]
         )
 
         if properties_str is None:
@@ -165,25 +191,14 @@ def generate_python_models_for_rdfs_ontology(rdf_source_path: str, map_uri_to_ty
 
         types_already_defined.add(class_info.uri)
         return f"""
-    
+
 class {class_info.get_identifier()}({base_classes_str}):
-    \"""{class_info.label} - {class_info.comment}\"""{properties_str}
+    \"""{class_info.label or ''} - {class_info.comment or ''}\"""{properties_str}
     def __init__(self, uri: str): 
         {parent_constructor_calls}    
         """
 
-    output_str = """
-from rdflib import Literal, URIRef
-from typing import Annotated, Union
-
-
-from sharedmodels.rdf.rdfresource import RdfResource, map_entity_to_uri
-from sharedmodels.rdf.triple import Triple, PropertyStatus
-import sharedmodels.rdf.skos as skos
-import sharedmodels.rdf.rdfs as rdfs
-import sharedmodels.rdf.rdf as rdf
-    """
-
+    output_str = py_imports
     queue = [c for c in classes]
     treat_property_types_as_dependencies = True
     while len(queue) > 0:
@@ -202,12 +217,3 @@ import sharedmodels.rdf.rdf as rdf
             output_str += class_py_str
 
     return output_str
-
-
-python_code_str = generate_python_models_for_rdfs_ontology(
-    "http://purl.org/linked-data/cube",
-    map_uri_to_type | {"ub1bL305C17": "Union[skos.ConceptScheme, skos.Collection, HierarchicalCodeList]"}
-)
-output_file = Path(".") / ".." / "rdf" / "qb.py"
-with open(output_file, "w+") as f:
-    f.write(python_code_str)
