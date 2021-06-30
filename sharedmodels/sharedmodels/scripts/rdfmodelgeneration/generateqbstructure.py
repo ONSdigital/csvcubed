@@ -18,6 +18,7 @@ from sharedmodels.rdf.rdfresource import RdfResource, map_entity_to_uri
 from sharedmodels.rdf.triple import Triple, PropertyStatus
 import sharedmodels.rdf.skos as skos
 import sharedmodels.rdf.rdf as rdf
+import sharedmodels.rdf.rdfs as rdfs
     """
 
 python_code_str = generate_python_models_for_rdfs_ontology(

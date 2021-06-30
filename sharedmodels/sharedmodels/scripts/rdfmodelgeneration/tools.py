@@ -132,7 +132,14 @@ def generate_python_models_for_rdfs_ontology(rdf_source_path: str,
 
             SELECT DISTINCT ?property ?propertyLabel ?propertyComment ?range
             WHERE {{
-                {{ ?property a rdfs:Property. }} UNION {{  ?property a owl:ObjectProperty. }}
+                {{
+                    SELECT DISTINCT ?property
+                    WHERE {{
+                        {{ ?property a rdf:Property. }} 
+                        UNION {{ ?property a owl:ObjectProperty. }}
+                        UNION {{ ?property a owl:DatatypeProperty. }}
+                    }}
+                }}
 
                 ?property rdfs:domain <{class_info.uri}>;
                           rdfs:range ?range.
@@ -195,7 +202,8 @@ def generate_python_models_for_rdfs_ontology(rdf_source_path: str,
 class {class_info.get_identifier()}({base_classes_str}):
     \"""{class_info.label or ''} - {class_info.comment or ''}\"""{properties_str}
     def __init__(self, uri: str): 
-        {parent_constructor_calls}    
+        {parent_constructor_calls}
+        self.rdf_types.add(URIRef("{class_info.uri}"))    
         """
 
     output_str = py_imports

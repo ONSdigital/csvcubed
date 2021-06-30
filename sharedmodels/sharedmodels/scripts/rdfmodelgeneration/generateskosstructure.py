@@ -23,6 +23,6 @@ python_code_str = generate_python_models_for_rdfs_ontology(
     "https://www.w3.org/2009/08/skos-reference/skos.rdf",
     py_imports=py_imports
 )
-output_file = Path("..") / "rdf" / "skos.py"
+output_file = Path("..") / ".." / "rdf" / "skos.py"
 with open(output_file, "w+") as f:
     f.write(python_code_str)

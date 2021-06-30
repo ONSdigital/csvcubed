@@ -1,5 +1,7 @@
+from rdflib import RDF
+
+
 from .rdfresource import RdfResource
-from sharedmodels.rdf.namespaces import RDF
 
 
 class Class(RdfResource):
