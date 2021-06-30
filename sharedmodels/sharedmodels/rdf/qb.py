@@ -83,14 +83,15 @@ class Attachable(RdfResource, ABC):
 
 class ComponentSet(RdfResource, ABC):
     """Component set - Abstract class of things which reference one or more ComponentProperties"""
-    componentProperty: Annotated[ComponentProperty, Triple(QB.componentProperty,
-                                                           PropertyStatus.recommended, map_entity_to_uri)]
+    componentProperties: Annotated[Set[ComponentProperty], Triple(QB.componentProperties,
+                                                                  PropertyStatus.recommended, map_entity_to_uri)]
     """component - indicates a ComponentProperty (i.e. attribute/dimension) expected on a DataSet, or a dimension 
     fixed in a SliceKey"""
 
     def __init__(self, uri: str):
         RdfResource.__init__(self, uri)
         self.rdf_types.add(QB.ComponentSet)
+        self.componentProperties = set()
 
 
 class AttributeProperty(ComponentProperty):

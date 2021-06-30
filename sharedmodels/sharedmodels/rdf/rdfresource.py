@@ -1,7 +1,7 @@
 import rdflib
 from rdflib import URIRef, Graph, RDFS, RDF
-from rdflib.term import Literal
-from typing import Annotated, List, get_type_hints, get_args, Set, Any
+from rdflib.term import Literal, Identifier
+from typing import Annotated, List, get_type_hints, get_args, Set, Any, Dict
 from abc import ABC
 from collections.abc import Iterable
 
@@ -13,10 +13,13 @@ from .datatypes import MARKDOWN
 class RdfResource(ABC):
     uri: URIRef
     rdf_types: Set[URIRef]
+    additional_rdf: Dict[Identifier, Identifier]
+    """A place for arbitrary RDF attached to this subject/entity."""
 
     def __init__(self, uri: str):
         self.uri = URIRef(uri)
         self.rdf_types = set()
+        self.additional_rdf = {}
 
     @property
     def uri_str(self) -> str:
@@ -55,6 +58,10 @@ class RdfResource(ABC):
             for triple in triple_mappings:
                 # Ensure we can cope with one-to-many relationships
                 self._add_triple_to_graph(graph, property_key, property_value, triple, objects_already_processed)
+
+        for (key, value) in self.additional_rdf.items():
+            # Add arbitrary RDF to the graph.
+            graph.add((self.uri, key, value))
 
         return graph
 
