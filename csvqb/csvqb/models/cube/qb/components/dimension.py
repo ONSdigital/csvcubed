@@ -39,6 +39,7 @@ class NewQbDimension(QbDimension):
                  label: str,
                  description: Optional[str] = None,
                  uri_safe_identifier: Optional[str] = None,
+                 # todo: Ensure we link the code-list to the qb column component somehow
                  code_list: Optional[QbCodeList] = None,
                  parent_dimension_uri: Optional[str] = None,
                  source_uri: Optional[str] = None,

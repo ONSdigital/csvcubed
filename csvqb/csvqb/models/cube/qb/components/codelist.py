@@ -52,11 +52,13 @@ class NewQbCodeList(QbCodeList):
     def __init__(self,
                  label: str,
                  concepts: List[NewQbConcept],
+                 uri_safe_identifier: Optional[str] = None,
                  description: Optional[str] = None,
                  variant_of_uris: List[str] = [],
                  source_uri: Optional[str] = None):
         self.label: str = label
         self.concepts: List[NewQbConcept] = concepts
+        self.uri_safe_identifier: str = uri_safe(label) if uri_safe_identifier is None else uri_safe_identifier
         self.description: Optional[str] = description
         self.variant_of_uris: List[str] = variant_of_uris  # For xkos:variant usage.
         self.source_uri: Optional[str] = source_uri
@@ -67,12 +69,18 @@ class NewQbCodeList(QbCodeList):
     @staticmethod
     def from_data(label: str,
                   data: pd.Series,
+                  uri_safe_identifier: Optional[str] = None,
                   description: Optional[str] = None,
                   variant_of_uris: List[str] = [],
                   source_uri: Optional[str] = None) -> "NewQbCodeList":
 
         concepts = [NewQbConcept(uri_safe(c), c) for c in sorted(set(data))]
-        return NewQbCodeList(label, concepts, description, variant_of_uris, source_uri)
+        return NewQbCodeList(label,
+                             concepts,
+                             uri_safe_identifier=uri_safe_identifier,
+                             description=description,
+                             variant_of_uris=variant_of_uris,
+                             source_uri=source_uri)
 
     def validate(self) -> List[ValidationError]:
         return []  # TODO: implement this.
