@@ -1,12 +1,14 @@
-from typing import Annotated, Union, Set
+from typing import Annotated, Union, Set, Optional
 from abc import ABC
+
+import rdflib
 from rdflib import Literal, URIRef, RDFS
 
 
 import sharedmodels.rdf.rdf as rdf
 import sharedmodels.rdf.rdfs as rdfs
 import sharedmodels.rdf.skos as skos
-from sharedmodels.rdf.rdfresource import RdfResource, map_resource_to_uri, Resource, ExistingResource
+from sharedmodels.rdf.resource import NewResource, map_resource_to_uri, Resource, MaybeResource, ExistingResource
 from sharedmodels.rdf.triple import Triple, PropertyStatus
 from sharedmodels.rdf.namespaces import QB
 
@@ -17,7 +19,8 @@ class ComponentProperty(rdf.PropertyWithMetadata):
     concept: Annotated[Resource[skos.Concept], Triple(QB.concept, PropertyStatus.recommended, map_resource_to_uri)]
     """concept - gives the concept which is being measured or indicated by a ComponentProperty"""
 
-    source: Annotated[ExistingResource, Triple(RDFS.isDefinedBy, PropertyStatus.optional, map_resource_to_uri)]
+    source: Annotated[Optional[ExistingResource], Triple(RDFS.isDefinedBy, PropertyStatus.optional,
+                                                         map_resource_to_uri)]
 
     def __init__(self, uri: str):
         rdf.Property.__init__(self, uri)
@@ -27,7 +30,7 @@ class ComponentProperty(rdf.PropertyWithMetadata):
 class MeasureProperty(ComponentProperty):
     """Measure property - The class of components which represent the measured value of the phenomenon being observed"""
 
-    range: Annotated[str, Triple(RDFS.range, PropertyStatus.mandatory, URIRef)]
+    range: Annotated[Resource[rdfs.Class], Triple(RDFS.range, PropertyStatus.mandatory, URIRef)]
     """range - the `rdfs:range` associated with this measure property. i.e. the value types the measured values can 
     range over."""
 
@@ -38,7 +41,7 @@ class MeasureProperty(ComponentProperty):
 
 class CodedProperty(ComponentProperty):
     """Coded property - Superclass of all coded ComponentProperties"""
-    code_list: Annotated[Resource[Union[skos.ConceptScheme, skos.Collection, "HierarchicalCodeList"]],
+    code_list: Annotated[MaybeResource[Union[skos.ConceptScheme, skos.Collection, "HierarchicalCodeList"]],
                          Triple(QB.codeList, PropertyStatus.recommended, map_resource_to_uri)]
     """code list - gives the code list associated with a CodedProperty"""
 
@@ -50,7 +53,7 @@ class CodedProperty(ComponentProperty):
 class DimensionProperty(CodedProperty):
     """Dimension property - The class of components which represent the dimensions of the cube"""
 
-    range: Annotated[str, Triple(RDFS.range, PropertyStatus.mandatory, URIRef)]
+    range: Annotated[Resource[rdfs.Class], Triple(RDFS.range, PropertyStatus.mandatory, map_resource_to_uri)]
     """range - the `rdfs:range` associated with this measure property. i.e. the value types the measured values can 
     range over."""
 
@@ -60,7 +63,7 @@ class DimensionProperty(CodedProperty):
         self.rdf_types.add(QB.DimensionProperty)
 
 
-class HierarchicalCodeList(RdfResource):
+class HierarchicalCodeList(NewResource):
     """Hierarchical Code List - Represents a generalized hierarchy of concepts which can be used for coding. The
     hierarchy is defined by one or more roots together with a property which relates concepts in the hierarchy to
     thier child concept .  The same concepts may be members of multiple hierarchies provided that different
@@ -71,28 +74,28 @@ class HierarchicalCodeList(RdfResource):
     concept."""
 
     def __init__(self, uri: str):
-        RdfResource.__init__(self, uri)
+        NewResource.__init__(self, uri)
         self.rdf_types.add(QB.HierarchicalCodeList)
 
 
-class Attachable(RdfResource, ABC):
+class Attachable(NewResource, ABC):
     """Attachable (abstract) - Abstract superclass for everything that can have attributes and dimensions"""
 
     def __init__(self, uri: str):
-        RdfResource.__init__(self, uri)
+        NewResource.__init__(self, uri)
         self.rdf_types.add(QB.Attachable)
 
 
-class ComponentSet(RdfResource, ABC):
+class ComponentSet(NewResource, ABC):
     """Component set - Abstract class of things which reference one or more ComponentProperties"""
-    componentProperties: Annotated[Set[Resource[ComponentProperty]], Triple(QB.componentProperties,
+    componentProperties: Annotated[Set[Resource[ComponentProperty]], Triple(QB.componentProperty,
                                                                             PropertyStatus.recommended,
                                                                             map_resource_to_uri)]
     """component - indicates a ComponentProperty (i.e. attribute/dimension) expected on a DataSet, or a dimension 
     fixed in a SliceKey"""
 
     def __init__(self, uri: str):
-        RdfResource.__init__(self, uri)
+        NewResource.__init__(self, uri)
         self.rdf_types.add(QB.ComponentSet)
         self.componentProperties = set()
 
@@ -152,8 +155,8 @@ class DimensionComponentSpecification(ComponentSpecification):
 class MeasureComponentSpecification(ComponentSpecification):
     """See https://www.w3.org/TR/vocab-data-cube/#dsd-dsd - manually defined, not normative Qb spec."""
 
-    dimension: Annotated[Resource[MeasureProperty], Triple(QB.measure, PropertyStatus.recommended,
-                                                           map_resource_to_uri)]
+    measure: Annotated[Resource[MeasureProperty], Triple(QB.measure, PropertyStatus.recommended,
+                                                         map_resource_to_uri)]
     """See https://www.w3.org/TR/vocab-data-cube/#dsd-dsd"""
 
     def __init__(self, uri: str):
@@ -211,14 +214,14 @@ class DataSet(Attachable):
         self.slices = set()
 
 
-class ObservationGroup(RdfResource):
+class ObservationGroup(NewResource):
     """Observation Group - A, possibly arbitrary, group of observations."""
     observations: Annotated[Set[Resource["Observation"]], Triple(QB.observation, PropertyStatus.recommended,
                                                                  map_resource_to_uri)]
     """observation - indicates a observation contained within this slice of the data set"""
 
     def __init__(self, uri: str):
-        RdfResource.__init__(self, uri)
+        NewResource.__init__(self, uri)
         self.rdf_types.add(QB.ObservationGroup)
         self.observations = set()
 

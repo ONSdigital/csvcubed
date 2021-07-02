@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional, List, ClassVar
 import pandas as pd
 from abc import ABC
 
@@ -10,7 +10,6 @@ from csvqb.models.validationerror import ValidationError
 
 
 class QbObservationValue(MultiQbDataStructureDefinition, ABC):
-
     def __init__(self, data_type: Optional[str], unit: Optional[QbUnit]):
         self.data_type: str = data_type if data_type is not None else "number"
         self.unit: Optional[QbUnit] = unit
@@ -45,7 +44,6 @@ class QbSingleMeasureObservationValue(QbObservationValue):
 
         N.B. Requires `virt_unit` and `virt_measure` columns to be added to CSV-W metadata
     """
-
     def __init__(self,
                  measure: QbMeasure,
                  unit: Optional[QbUnit] = None,

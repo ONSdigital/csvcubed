@@ -1,8 +1,7 @@
 import unittest
-from pathlib import Path
 import pandas as pd
 
-import csvqb.writers.qbwriter
+from csvqb.writers.qbwriter import write_metadata
 from csvqb.configloaders.infojson import get_cube_from_info_json
 from csvqb.utils.qb.cube import validate_qb_component_constraints
 from csvqb.models.cube import *
@@ -48,7 +47,7 @@ class InfoJsonLoaderTests(UnitTestBase):
 
         self.assert_no_validation_errors(errors)
 
-        csvqb.writers.qbwriter.write_metadata(cube, self.get_test_cases_dir() / "output.csv-metadata.json")
+        write_metadata(cube, self.get_test_cases_dir() / "output.csv-metadata.json")
 
 
 if __name__ == '__main__':

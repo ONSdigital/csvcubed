@@ -3,11 +3,11 @@ from typing import Annotated as Ann, Set
 from datetime import datetime
 
 
-from .triple import Triple, PropertyStatus
-from .rdfresource import RdfMetadataResource, map_str_to_en_literal, map_resource_to_uri
+from .triple import Triple, PropertyStatus, InverseTriple
+from .resource import NewMetadataResource, map_str_to_en_literal, map_resource_to_uri
 
 
-class Resource(RdfMetadataResource):
+class Resource(NewMetadataResource):
 
     access_rights: Ann[str, Triple(DCTERMS.accessRights, PropertyStatus.recommended, URIRef)]
     contact_point: Ann[str, Triple(DCAT.contactPoint, PropertyStatus.recommended, URIRef)]  # Todo: VCARD
@@ -32,7 +32,7 @@ class Resource(RdfMetadataResource):
     is_referenced_by: Ann[str, Triple(DCTERMS.isReferencedBy, PropertyStatus.recommended, URIRef)]
 
     def __init__(self, uri: str):
-        RdfMetadataResource.__init__(self, uri)
+        NewMetadataResource.__init__(self, uri)
         self.rdf_types.add(DCAT.Resource)
 
 
@@ -53,7 +53,7 @@ class Dataset(Resource):
         self.rdf_types.add(DCAT.Dataset)
 
 
-class CatalogRecord(RdfMetadataResource):
+class CatalogRecord(NewMetadataResource):
 
     title: Ann[str, Triple(DCTERMS.title, PropertyStatus.mandatory, map_str_to_en_literal)]
     description: Ann[str, Triple(DCTERMS.description, PropertyStatus.mandatory, map_str_to_en_literal)]
@@ -63,7 +63,7 @@ class CatalogRecord(RdfMetadataResource):
     conforms_to: Ann[str, Triple(DCTERMS.conformsTo, PropertyStatus.recommended, URIRef)]
 
     def __init__(self, uri: str):
-        RdfMetadataResource.__init__(self, uri)
+        NewMetadataResource.__init__(self, uri)
         self.rdf_types.add(DCAT.CatalogRecord)
 
 

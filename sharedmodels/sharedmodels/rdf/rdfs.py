@@ -1,10 +1,10 @@
-from rdflib import RDF
+from rdflib import RDFS
 
 
-from .rdfresource import RdfResource
+from .resource import NewResource
 
 
-class Class(RdfResource):
+class Class(NewResource):
     def __init__(self, uri: str):
-        RdfResource.__init__(self, uri)
-        self.rdf_types.add(RDF.Class)
+        NewResource.__init__(self, uri)
+        self.rdf_types.add(RDFS.Class)

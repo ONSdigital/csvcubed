@@ -7,7 +7,7 @@ from csvqb.utils.uri import uri_safe
 from .datastructuredefinition import ColumnarQbDataStructureDefinition
 from .codelist import QbCodeList, NewQbCodeList
 from csvqb.models.validationerror import ValidationError
-from csvqb.inputs import PandasDataTypes, pandas_input_to_columnar_str
+from csvqb.inputs import PandasDataTypes
 
 
 class QbAttribute(ColumnarQbDataStructureDefinition, ABC):

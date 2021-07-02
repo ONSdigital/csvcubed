@@ -2,12 +2,16 @@
 import json
 import re
 from pathlib import Path
-from typing import Optional, Tuple, Dict, Any
-
+from typing import Optional, Tuple, Dict, Any, List, Iterable
 import rdflib
+
+
 from csvqb.models.cube import *
-from sharedmodels.rdf import qb
-from sharedmodels.rdf.rdfresource import ExistingResource, maybe_existing
+from csvqb.utils.uri import get_last_uri_part, csvw_column_name_safe
+from sharedmodels.rdf import qb, rdfs, skos
+from sharedmodels.rdf.resource import Resource, ExistingResource, maybe_existing_resource
+
+VIRT_UNIT_COLUMN_NAME = "virt_unit"
 
 
 def write_metadata(cube: Cube, output_file: Path) -> None:
@@ -15,10 +19,15 @@ def write_metadata(cube: Cube, output_file: Path) -> None:
         {
             "url": "output.csv",  # todo
             "tableSchema": {
-                "columns": [_generate_csvqb_column(c) for c in cube.columns]
+                "columns": _generate_csvw_columns_for_cube(cube)
             }
         }
     ]
+
+    # todo: Need to generate local code-lists
+    # todo: Need to add CSV-W Foreign Key constraints to the columns associated with code-lists
+    # todo: Local units haven't been defined anywhere yet!
+    # todo: Add `aboutUrl` mapping based on all of dimensions (in some consistent ordering).
 
     dataset_definition = _generate_cube_rdf_definition(cube)
 
@@ -26,7 +35,7 @@ def write_metadata(cube: Cube, output_file: Path) -> None:
 
     csvw_metadata = {
         "@context": "http://www.w3.org/ns/csvw",
-        "@id": _document_relative_uri("dataset"),
+        "@id": _doc_rel_uri("dataset"),
         "tables": tables,
         "rdfs:label": cube.metadata.title,
         "dc:title": cube.metadata.title,
@@ -39,15 +48,50 @@ def write_metadata(cube: Cube, output_file: Path) -> None:
         json.dump(csvw_metadata, f, indent=4)
 
 
-def _generate_cube_rdf_definition(cube: Cube) -> dict:
-    dataset = qb.DataSet(_document_relative_uri("dataset"))
-    dataset.structure = qb.DataStructureDefinition(_document_relative_uri("structure"))
+def _generate_csvw_columns_for_cube(cube: Cube) -> List[Dict[str, Any]]:
+    columns = [_generate_csvqb_column(c) for c in cube.columns]
+    virtual_columns = _generate_virtual_columns_for_cube(cube)
+    return columns + virtual_columns
+
+
+def _generate_virtual_columns_for_cube(cube: Cube) -> List[Dict[str, Any]]:
+    virtual_columns = []
     for column in cube.columns:
         if isinstance(column, QbColumn):
-            component_spec = _get_qb_component_specification(column.uri_safe_identifier, column.component)
-            # todo: Figure out which one to add to, both?
-            # dataset.structure.componentProperties.add()
-            dataset.structure.components.add(component_spec)
+            if isinstance(column.component, QbObservationValue):
+                virtual_columns += _generate_virtual_columns_for_obs_val(column.component)
+
+    return virtual_columns
+
+
+def _generate_virtual_columns_for_obs_val(obs_val: QbObservationValue) -> List[Dict[str, Any]]:
+    virtual_columns: List[dict] = []
+    if obs_val.unit is not None:
+        virtual_columns.append({
+            "name": VIRT_UNIT_COLUMN_NAME,
+            "virtual": True,
+            "propertyUrl": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
+            "valueUrl": _get_unit_uri(obs_val.unit)
+        })
+    if isinstance(obs_val, QbSingleMeasureObservationValue):
+        virtual_columns.append({
+            "name": "virt_measure",
+            "virtual": True,
+            "propertyUrl": "http://purl.org/linked-data/cube#measureType",
+            "valueUrl": _get_measure_uri(obs_val.measure)
+        })
+    return virtual_columns
+
+
+def _generate_cube_rdf_definition(cube: Cube) -> dict:
+    dataset = qb.DataSet(_doc_rel_uri("dataset"))
+    dataset.structure = qb.DataStructureDefinition(_doc_rel_uri("structure"))
+    for column in cube.columns:
+        if isinstance(column, QbColumn):
+            component_specs_for_col = _get_qb_component_specs_for_col(column.uri_safe_identifier, column.component)
+            component_properties_for_col = [p for s in component_specs_for_col for p in s.componentProperties]
+            dataset.structure.componentProperties |= set(component_properties_for_col)
+            dataset.structure.components |= set(component_specs_for_col)
 
     # Serialise to json-ld then de-serialise it to add to the dictionary we are building.
     g = rdflib.Graph()
@@ -55,57 +99,148 @@ def _generate_cube_rdf_definition(cube: Cube) -> dict:
     return json.loads(g.serialize(format="json-ld") or "{}")
 
 
-def _get_qb_component_specification(column_name_uri_safe: str,
-                                    component: QbDataStructureDefinition) -> qb.ComponentSpecification:
-    # todo: complete me!
+def _get_qb_component_specs_for_col(column_name_uri_safe: str,
+                                    component: QbDataStructureDefinition) -> Iterable[qb.ComponentSpecification]:
     if isinstance(component, QbDimension):
-        pass
+        return [_get_qb_dimension_specification(column_name_uri_safe, component)]
     elif isinstance(component, QbAttribute):
-        return _get_qb_attribute_specification(column_name_uri_safe, component)
+        return [_get_qb_attribute_specification(column_name_uri_safe, component)]
     elif isinstance(component, QbMultiUnits):
-        pass
+        return [_get_qb_units_column_specification(column_name_uri_safe)]
     elif isinstance(component, QbMultiMeasureDimension):
-        pass
+        return _get_qb_measure_dimension_specifications(component)
     elif isinstance(component, QbObservationValue):
-        pass
+        return _get_qb_obs_val_specifications(component)
     else:
         raise Exception(f"Unhandled component type {type(component)}")
 
-    raise Exception("Not implemented yet")
+
+def _get_qb_units_column_specification(column_name_uri_safe: str) -> qb.AttributeComponentSpecification:
+    component = qb.AttributeComponentSpecification(_doc_rel_uri(f"component/{column_name_uri_safe}"))
+    component.componentRequired = True
+    component.attribute = ExistingResource("http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure")
+    component.componentProperties.add(component.attribute)
+
+    return component
+
+
+def _get_qb_obs_val_specifications(observation_value: QbObservationValue) -> \
+        List[qb.ComponentSpecification]:
+    specs: List[qb.ComponentSpecification] = []
+
+    if observation_value.unit is not None:
+        specs.append(_get_qb_units_column_specification(VIRT_UNIT_COLUMN_NAME))
+
+    if isinstance(observation_value, QbSingleMeasureObservationValue):
+        specs.append(_get_qb_measure_component_specification(observation_value.measure))
+    elif isinstance(observation_value, QbMultiMeasureObservationValue):
+        pass
+    else:
+        raise Exception(f"Unmatched Observation value component of type {type(observation_value)}.")
+
+    return specs
+
+
+def _get_qb_measure_dimension_specifications(measure_dimension: QbMultiMeasureDimension) -> \
+        List[qb.MeasureComponentSpecification]:
+    measure_specs: List[qb.MeasureComponentSpecification] = []
+    for measure in measure_dimension.measures:
+        measure_specs.append(_get_qb_measure_component_specification(measure))
+
+    return measure_specs
+
+
+def _get_qb_measure_component_specification(measure: QbMeasure) -> qb.MeasureComponentSpecification:
+    if isinstance(measure, ExistingQbMeasure):
+        # todo: ideally we would find the dimension's definition and pull its label through here,
+        #  however, we want to support offline-only working too. Offline-first is a good approach.
+        component_uri = _doc_rel_uri(f"component/{get_last_uri_part(measure.measure_uri)}")
+        component = qb.MeasureComponentSpecification(component_uri)
+        component.measure = ExistingResource(measure.measure_uri)
+        component.componentProperties.add(component.measure)
+        return component
+    elif isinstance(measure, NewQbMeasure):
+        component = qb.MeasureComponentSpecification(_doc_rel_uri(f"component/{measure.uri_safe_identifier}"))
+        component.measure = qb.MeasureProperty(_doc_rel_uri(f"measure/{measure.uri_safe_identifier}"))
+        component.measure.label = measure.label
+        component.measure.comment = measure.description
+        component.measure.subPropertyOf = maybe_existing_resource(measure.parent_measure_uri)
+        component.measure.source = maybe_existing_resource(measure.source_uri)
+        component.componentProperties.add(component.measure)
+        return component
+    else:
+        raise Exception(f"Unhandled measure type {type(measure)}")
+
+
+def _get_qb_dimension_specification(column_name_uri_safe: str,
+                                    dimension: QbDimension) -> qb.DimensionComponentSpecification:
+    if isinstance(dimension, ExistingQbDimension):
+        component = qb.DimensionComponentSpecification(_doc_rel_uri(f"component/{column_name_uri_safe}"))
+        component.dimension = ExistingResource(dimension.dimension_uri)
+        # todo: How do we set the range against an externally-defined dimension? Does it make sense to do this?
+        # component.dimension.range = rdfs.Class(dimension.range_uri or _doc_rel_uri(f"class/{column_name_uri_safe}"))
+    elif isinstance(dimension, NewQbDimension):
+        component = qb.DimensionComponentSpecification(_doc_rel_uri(f"component/{dimension.uri_safe_identifier}"))
+        component.dimension = qb.DimensionProperty(_doc_rel_uri(f"dimension/{dimension.uri_safe_identifier}"))
+        component.dimension.label = dimension.label
+        component.dimension.comment = dimension.description
+        component.dimension.subPropertyOf = maybe_existing_resource(dimension.parent_dimension_uri)
+        component.dimension.source = maybe_existing_resource(dimension.source_uri)
+        component.dimension.range = \
+            rdfs.Class(dimension.range_uri or _doc_rel_uri(f"class/{dimension.uri_safe_identifier}"))
+
+        if dimension.code_list is not None:
+            component.dimension.code_list = _get_code_list_resource(dimension.code_list)
+
+    else:
+        raise Exception(f"Unhandled dimension component type {type(dimension)}.")
+
+    component.componentProperties.add(component.dimension)
+
+    return component
+
+
+def _get_code_list_resource(code_list: QbCodeList) -> Resource[skos.ConceptScheme]:
+    if isinstance(code_list, ExistingQbCodeList):
+        return ExistingResource(code_list.concept_scheme_uri)
+    elif isinstance(code_list, NewQbCodeList):
+        # The resource is created elsewhere. There is a separate CSV-W definition for the code-list
+        return ExistingResource(_get_new_code_list_scheme_uri(code_list))
+    else:
+        raise Exception(f"Unhandled code list type {type(code_list)}")
 
 
 def _get_qb_attribute_specification(column_name_uri_safe: str,
                                     attribute: QbAttribute) -> qb.AttributeComponentSpecification:
     if isinstance(attribute, ExistingQbAttribute):
-        attribute_component_uri = _document_relative_uri(f"component/{column_name_uri_safe}")
-        attribute_component = qb.AttributeComponentSpecification(attribute_component_uri)
-        attribute_component.attribute = ExistingResource(attribute.attribute_uri)
+        component = qb.AttributeComponentSpecification(_doc_rel_uri(f"component/{column_name_uri_safe}"))
+        component.attribute = ExistingResource(attribute.attribute_uri)
     elif isinstance(attribute, NewQbAttribute):
-        attribute_component = qb.AttributeComponentSpecification(
-            _document_relative_uri(f"component/{attribute.uri_safe_identifier}"))
-        attribute_component.attribute = qb.AttributeProperty(
-            _document_relative_uri(f"attribute/{attribute.uri_safe_identifier}"))
-        attribute_component.attribute.label = attribute.label
-        attribute_component.attribute.comment = attribute.description
-        attribute_component.attribute.subPropertyOf = maybe_existing(attribute.parent_attribute_uri)
-        # todo: Find some way to link the codelist we have to the ComponentProperty?
-        # todo: Implement sourceUri on all of our ComponentProperties.
+        component = qb.AttributeComponentSpecification(_doc_rel_uri(f"component/{attribute.uri_safe_identifier}"))
+        component.attribute = qb.AttributeProperty(_doc_rel_uri(f"attribute/{attribute.uri_safe_identifier}"))
+        component.attribute.label = attribute.label
+        component.attribute.comment = attribute.description
+        component.attribute.subPropertyOf = maybe_existing_resource(attribute.parent_attribute_uri)
+        component.attribute.source = maybe_existing_resource(attribute.source_uri)
+        # todo: Find some way to link the codelist we have to the
+        #  ComponentProperty?
     else:
         raise Exception(f"Unhandled attribute component type {type(attribute)}.")
 
-    attribute_component.componentRequired = attribute.is_required
-    attribute_component.componentProperties.add(attribute_component.attribute)
-    return attribute_component
+    component.componentRequired = attribute.is_required
+    component.componentProperties.add(component.attribute)
+
+    return component
 
 
-def _document_relative_uri(uri_fragment: str) -> str:
+def _doc_rel_uri(uri_fragment: str) -> str:
     return f"#{uri_fragment}"
 
 
 def _generate_csvqb_column(column: CsvColumn) -> Dict[str, Any]:
     csvw_col: Dict[str, Any] = {
         "titles": column.csv_column_title,
-        "name": column.uri_safe_identifier
+        "name": csvw_column_name_safe(column.uri_safe_identifier)
     }
 
     if isinstance(column, SuppressedCsvColumn):
@@ -142,13 +277,12 @@ def _get_default_property_value_uris_for_column(column: QbColumn) -> \
     elif isinstance(column.component, QbMultiUnits):
         # todo: How do we deal with the situation where the user wants to specify a mixture of local
         #  and remote units in the same column?
-        local_unit_value_uri = _document_relative_uri(f"unit/{_get_column_uri_template_fragment(column)}")
+        local_unit_value_uri = _doc_rel_uri(f"unit/{_get_column_uri_template_fragment(column)}")
         return "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure", local_unit_value_uri
     elif isinstance(column.component, QbMultiMeasureDimension):
         # todo: How do we deal with the situation where the user wants to specify a mixture of local
         #  and remote measures in the same column?
-        local_measure_value_uri = _document_relative_uri(
-            f"measure/{_get_column_uri_template_fragment(column)}")
+        local_measure_value_uri = _doc_rel_uri(f"measure/{_get_column_uri_template_fragment(column)}")
         return "http://purl.org/linked-data/cube#measureType", local_measure_value_uri
     elif isinstance(column.component, QbObservationValue):
         return None, None
@@ -164,7 +298,7 @@ def _get_default_property_value_uris_for_dimension(column: QbColumn[QbDimension]
         #  should look like at this point.
         return dimension.dimension_uri, None
     elif isinstance(dimension, NewQbDimension):
-        local_dimension_uri = _document_relative_uri(f"dimension/{dimension.uri_safe_identifier}")
+        local_dimension_uri = _doc_rel_uri(f"dimension/{dimension.uri_safe_identifier}")
         value_uri = _get_column_uri_template_fragment(column)
         if dimension.code_list is not None:
             value_uri = _get_default_value_uri_for_code_list_concepts(column, dimension.code_list)
@@ -179,7 +313,7 @@ def _get_default_property_value_uris_for_attribute(column: QbColumn[QbAttribute]
     if isinstance(attribute, ExistingQbAttribute):
         return attribute.attribute_uri, _get_column_uri_template_fragment(column)
     elif isinstance(attribute, NewQbAttribute):
-        local_attribute_uri = _document_relative_uri(f"attribute/{attribute.uri_safe_identifier}")
+        local_attribute_uri = _doc_rel_uri(f"attribute/{attribute.uri_safe_identifier}")
         value_uri = _get_column_uri_template_fragment(column)
         if attribute.code_list is not None:
             value_uri = _get_default_value_uri_for_code_list_concepts(column, attribute.code_list)
@@ -192,13 +326,13 @@ def _get_default_property_value_uris_for_attribute(column: QbColumn[QbAttribute]
 
 def _get_column_uri_template_fragment(column: CsvColumn, escape_value: bool = False) -> str:
     if escape_value:
-        return "{" + column.uri_safe_identifier + "}"
+        return "{" + csvw_column_name_safe(column.uri_safe_identifier) + "}"
 
-    return "{+" + column.uri_safe_identifier + "}"
+    return "{+" + csvw_column_name_safe(column.uri_safe_identifier) + "}"
 
 
 def _get_new_code_list_scheme_uri(code_list: NewQbCodeList) -> str:
-    return _document_relative_uri(f"scheme/{code_list.uri_safe_identifier}")
+    return _doc_rel_uri(f"scheme/{code_list.uri_safe_identifier}")
 
 
 external_code_list_pattern = re.compile("^(.*)/concept-scheme/(.*)$")
@@ -229,6 +363,24 @@ def _get_default_value_uri_for_code_list_concepts(column: QbColumn, code_list: Q
             return column_uri_fragment
 
     elif isinstance(code_list, NewQbCodeList):
-        return _document_relative_uri(f"concept/{code_list.uri_safe_identifier}/{column_uri_fragment}")
+        return _doc_rel_uri(f"concept/{code_list.uri_safe_identifier}/{column_uri_fragment}")
     else:
         raise Exception(f"Unhandled codelist type {type(code_list)}")
+
+
+def _get_unit_uri(unit: QbUnit) -> str:
+    if isinstance(unit, ExistingQbUnit):
+        return unit.unit_uri
+    elif isinstance(unit, NewQbUnit):
+        return _doc_rel_uri(f"unit/{unit.uri_safe_identifier}")
+    else:
+        raise Exception(f"Unmatched unit type {type(unit)}")
+
+
+def _get_measure_uri(measure: QbMeasure) -> str:
+    if isinstance(measure, ExistingQbMeasure):
+        return measure.measure_uri
+    elif isinstance(measure, NewQbMeasure):
+        return _doc_rel_uri(f"measure/{measure.uri_safe_identifier}")
+    else:
+        raise Exception(f"Unmatched unit type {type(unit)}")

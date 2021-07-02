@@ -3,13 +3,13 @@ from typing import Annotated, Set, Union
 
 from rdflib import URIRef
 
-from sharedmodels.rdf.rdfresource import RdfResource, Resource, map_resource_to_uri
+from sharedmodels.rdf.resource import NewResource, NewResourceWithLabel, MaybeResource, Resource, map_resource_to_uri
 from sharedmodels.rdf.triple import Triple, PropertyStatus
 
 CollectionMemberType = Union["Concept", "Collection"]
 
 
-class Collection(RdfResource):
+class Collection(NewResource):
     """Collection - """
     members: Annotated[Set[Resource[CollectionMemberType]],
                        Triple(URIRef("http://www.w3.org/2004/02/skos/core#member"), PropertyStatus.recommended,
@@ -17,7 +17,7 @@ class Collection(RdfResource):
     """has member - """
 
     def __init__(self, uri: str):
-        RdfResource.__init__(self, uri)
+        NewResource.__init__(self, uri)
         self.rdf_types.add(URIRef("http://www.w3.org/2004/02/skos/core#Collection"))
         self.members = set()
 
@@ -35,28 +35,29 @@ class OrderedCollection(Collection):
         self.memberList = []
 
 
-class ConceptScheme(RdfResource):
+class ConceptScheme(NewResourceWithLabel):
     """Concept Scheme - """
     hasTopConcepts: Annotated[Set["Concept"], Triple(URIRef("http://www.w3.org/2004/02/skos/core#hasTopConcept"),
                                                      PropertyStatus.recommended, map_resource_to_uri)]
     """has top concept - """
 
     def __init__(self, uri: str):
-        RdfResource.__init__(self, uri)
+        NewResource.__init__(self, uri)
         self.rdf_types.add(URIRef("http://www.w3.org/2004/02/skos/core#ConceptScheme"))
         self.hasTopConcepts = set()
 
 
-class Concept(RdfResource):
+class Concept(NewResourceWithLabel):
     """Concept - """
     topConceptOf: Annotated["ConceptScheme", Triple(URIRef("http://www.w3.org/2004/02/skos/core#topConceptOf"),
                                                     PropertyStatus.recommended, map_resource_to_uri)]
     """is top concept in scheme - """
 
-    semanticRelation: Annotated["Concept", Triple(URIRef("http://www.w3.org/2004/02/skos/core#semanticRelation"),
-                                                  PropertyStatus.recommended, map_resource_to_uri)]
+    semanticRelation: Annotated[MaybeResource["Concept"],
+                                Triple(URIRef("http://www.w3.org/2004/02/skos/core#semanticRelation"),
+                                       PropertyStatus.recommended, map_resource_to_uri)]
     """is in semantic relation with - """
 
     def __init__(self, uri: str):
-        RdfResource.__init__(self, uri)
+        NewResource.__init__(self, uri)
         self.rdf_types.add(URIRef("http://www.w3.org/2004/02/skos/core#Concept"))
