@@ -28,8 +28,9 @@ def write_metadata(cube: Cube, output_file: Path) -> None:
     # todo: Need to add CSV-W Foreign Key constraints to the columns associated with code-lists
     # todo: Local units haven't been defined anywhere yet!
     # todo: Add `aboutUrl` mapping based on all of dimensions (in some consistent ordering).
+    # todo: Unit multiplier functionality hasn't been output.
 
-    dataset_definition = _generate_cube_rdf_definition(cube)
+    dataset_definition = _generate_qb_metadata_dict(cube)
 
     # todo: Need to decide on the catalogue metadata's structure and add it to `rdfs:seeAlso` below.
 
@@ -73,6 +74,8 @@ def _generate_virtual_columns_for_obs_val(obs_val: QbObservationValue) -> List[D
             "propertyUrl": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
             "valueUrl": _get_unit_uri(obs_val.unit)
         })
+        # todo: We can't do the same thing with unti multipler unfortunately. Perhaps we should attach the unit
+        #  measure to the qb:DataSet as per the normalised standard and then de-normalise it when we upload to PMD?
     if isinstance(obs_val, QbSingleMeasureObservationValue):
         virtual_columns.append({
             "name": "virt_measure",
@@ -83,7 +86,16 @@ def _generate_virtual_columns_for_obs_val(obs_val: QbObservationValue) -> List[D
     return virtual_columns
 
 
-def _generate_cube_rdf_definition(cube: Cube) -> dict:
+def _generate_qb_metadata_dict(cube: Cube) -> dict:
+    dataset = _generate_qb_dataset_dsd_definitions(cube)
+
+    # Serialise to json-ld then de-serialise it to add to the dictionary we are building.
+    g = rdflib.Graph()
+    dataset.to_graph(g)
+    return json.loads(g.serialize(format="json-ld") or "{}")
+
+
+def _generate_qb_dataset_dsd_definitions(cube):
     dataset = qb.DataSet(_doc_rel_uri("dataset"))
     dataset.structure = qb.DataStructureDefinition(_doc_rel_uri("structure"))
     for column in cube.columns:
@@ -92,11 +104,7 @@ def _generate_cube_rdf_definition(cube: Cube) -> dict:
             component_properties_for_col = [p for s in component_specs_for_col for p in s.componentProperties]
             dataset.structure.componentProperties |= set(component_properties_for_col)
             dataset.structure.components |= set(component_specs_for_col)
-
-    # Serialise to json-ld then de-serialise it to add to the dictionary we are building.
-    g = rdflib.Graph()
-    dataset.to_graph(g)
-    return json.loads(g.serialize(format="json-ld") or "{}")
+    return dataset
 
 
 def _get_qb_component_specs_for_col(column_name_uri_safe: str,
@@ -129,7 +137,8 @@ def _get_qb_obs_val_specifications(observation_value: QbObservationValue) -> \
     specs: List[qb.ComponentSpecification] = []
 
     if observation_value.unit is not None:
-        specs.append(_get_qb_units_column_specification(VIRT_UNIT_COLUMN_NAME))
+        unit_uri_safe_identifier = _get_unit_uri_safe_identifier(observation_value.unit)
+        specs.append(_get_qb_units_column_specification(unit_uri_safe_identifier))
 
     if isinstance(observation_value, QbSingleMeasureObservationValue):
         specs.append(_get_qb_measure_component_specification(observation_value.measure))
@@ -139,6 +148,15 @@ def _get_qb_obs_val_specifications(observation_value: QbObservationValue) -> \
         raise Exception(f"Unmatched Observation value component of type {type(observation_value)}.")
 
     return specs
+
+
+def _get_unit_uri_safe_identifier(unit: QbUnit) -> str:
+    if isinstance(unit, ExistingQbUnit):
+        return get_last_uri_part(unit.unit_uri)
+    elif isinstance(unit, NewQbUnit):
+        return unit.uri_safe_identifier
+    else:
+        raise Exception(f"Unhandled unit type {type(unit)}")
 
 
 def _get_qb_measure_dimension_specifications(measure_dimension: QbMultiMeasureDimension) -> \
@@ -152,8 +170,8 @@ def _get_qb_measure_dimension_specifications(measure_dimension: QbMultiMeasureDi
 
 def _get_qb_measure_component_specification(measure: QbMeasure) -> qb.MeasureComponentSpecification:
     if isinstance(measure, ExistingQbMeasure):
-        # todo: ideally we would find the dimension's definition and pull its label through here,
-        #  however, we want to support offline-only working too. Offline-first is a good approach.
+        # todo: ideally we would find the measures's label, however, we want to support offline-only working too.
+        #  Offline-first is a good approach.
         component_uri = _doc_rel_uri(f"component/{get_last_uri_part(measure.measure_uri)}")
         component = qb.MeasureComponentSpecification(component_uri)
         component.measure = ExistingResource(measure.measure_uri)

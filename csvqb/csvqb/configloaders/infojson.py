@@ -4,6 +4,7 @@ import json
 import copy
 
 import pandas as pd
+import uritemplate
 
 from csvqb.models.cube.cube import Cube, CubeMetadata
 from csvqb.models.cube.columns import CsvColumn, SuppressedCsvColumn
@@ -13,9 +14,11 @@ from csvqb.models.cube.csvqb.components.observedvalue import QbSingleMeasureObse
 from csvqb.models.cube.csvqb.components.dimension import NewQbDimension, ExistingQbDimension
 from csvqb.models.cube.csvqb.components.measure import ExistingQbMeasure, QbMultiMeasureDimension
 from csvqb.models.cube.csvqb.components.attribute import ExistingQbAttribute
-from csvqb.models.cube.csvqb.components.unit import ExistingQbUnit
+from csvqb.models.cube.csvqb.components.unit import ExistingQbUnit, QbMultiUnits
 from csvqb.models.cube.csvqb.components.codelist import ExistingQbCodeList, NewQbCodeList
 from csvqb.utils.qb.cube import validate_qb_component_constraints
+from csvqb.utils.uri import csvw_column_name_safe
+from csvqb.inputs import pandas_input_to_columnar_str
 from csvqb.inputs import PandasDataTypes
 
 
@@ -82,6 +85,7 @@ def _columns_from_info_json(column_mappings: Dict[str, Any], data: pd.DataFrame)
 
 def _get_column_for_metadata_config(column_name: str, col_config: Optional[Union[dict, bool]],
                                     column_data: PandasDataTypes) -> CsvColumn:
+    csv_safe_column_name = csvw_column_name_safe(column_name)
     if isinstance(col_config, dict):
         maybe_dimension_uri = col_config.get("dimension")
         maybe_property_value_url = col_config.get("value")
@@ -97,6 +101,10 @@ def _get_column_for_metadata_config(column_name: str, col_config: Optional[Union
             if maybe_dimension_uri == "http://purl.org/linked-data/cube#measureType":
                 # multi-measure cube
                 defined_measure_types: List[str] = col_config.get("types", [])
+                if maybe_property_value_url is not None:
+                    defined_measure_types = [uritemplate.expand(maybe_property_value_url, {csv_safe_column_name: d})
+                                             for d in defined_measure_types]
+
                 if len(defined_measure_types) == 0:
                     raise Exception(f"Property 'types' was not defined in measure types column '{column_name}'.")
 
@@ -114,7 +122,14 @@ def _get_column_for_metadata_config(column_name: str, col_config: Optional[Union
                                            code_list=code_list)
             return QbColumn(column_name, new_dimension, maybe_property_value_url)
         elif maybe_attribute_uri is not None and maybe_property_value_url is not None:
-            return QbColumn(column_name, ExistingQbAttribute(maybe_attribute_uri))
+            if maybe_attribute_uri == "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure":
+                distinct_unit_uris = [uritemplate.expand(maybe_property_value_url, {csv_safe_column_name: u})
+                                      for u in set(pandas_input_to_columnar_str(column_data))]
+                dsd_component = QbMultiUnits([ExistingQbUnit(u) for u in distinct_unit_uris])
+            else:
+                dsd_component = ExistingQbAttribute(maybe_attribute_uri)
+
+            return QbColumn(column_name, dsd_component)
         elif maybe_unit_uri is not None and maybe_measure_uri is not None:
             measure_component = ExistingQbMeasure(maybe_measure_uri)
             unit_component = ExistingQbUnit(maybe_unit_uri)

@@ -79,8 +79,6 @@ class QbMultiUnits(MultiQbDataStructureDefinition):
         """
         return QbMultiUnits([NewQbUnit(u) for u in set(pandas_input_to_columnar_str(data))])
 
-    # todo: Add existing_units_from_data function?
-
     def validate(self) -> List[ValidationError]:
         return []  # TODO: implement this
 

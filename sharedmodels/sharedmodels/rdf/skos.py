@@ -1,4 +1,3 @@
-import typing
 from typing import Annotated, Set, Union
 
 from rdflib import URIRef
