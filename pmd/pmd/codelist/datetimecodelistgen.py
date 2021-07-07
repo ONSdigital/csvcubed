@@ -1,5 +1,6 @@
 import json
 import re
+import typing
 from pathlib import Path
 from datetime import datetime
 
@@ -100,7 +101,7 @@ def _get_unique_values_from_columns(csv_col_mappings: Dict[CsvWithColumnDefiniti
         data.columns = pd.Index([col.name for col in csv.columns if not col.virtual])
 
         for row_tuple in data.itertuples():
-            row = row_tuple._asdict()
+            row = row_tuple._asdict()  # type: ignore
             for column in columns_with_values:
                 column_value_for_row = expand(str(column.valueUrl), row)
                 unique_values.add(column_value_for_row)
@@ -215,7 +216,7 @@ def _generate_date_time_code_list_metadata(code_list_csv_file_name: str, code_li
     additional_metadata_graph = rdflib.Graph()
     catalog_record.to_graph(additional_metadata_graph)
 
-    rdf_metadata = json.loads(additional_metadata_graph.serialize(format="json-ld"))
+    rdf_metadata = json.loads(additional_metadata_graph.serialize(format="json-ld") or "[]")
     code_list_metadata["rdfs:seeAlso"] = rdf_metadata
 
     return code_list_metadata
