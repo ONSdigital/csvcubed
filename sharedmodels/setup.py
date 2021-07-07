@@ -9,8 +9,5 @@ setup(
     ],
     name="sharedmodels",
     version="0.0.1",
-    packages=find_packages(exclude=[
-        "sharedmodels/scripts",
-        "**/build"
-    ])
+    packages=find_packages(exclude=["sharedmodels/scripts", "**/build"]),
 )
