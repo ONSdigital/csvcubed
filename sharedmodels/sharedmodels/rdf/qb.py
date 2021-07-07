@@ -63,6 +63,16 @@ class DimensionProperty(CodedProperty):
         self.rdf_types.add(QB.DimensionProperty)
 
 
+class ExistingDimensionPropertyWithRange(NewResource):
+    """A bit of a hack to allow setting the range against an existing qb:DimensionProperty without
+    re-defining anything about it."""
+    range: Annotated[Resource[rdfs.Class], Triple(RDFS.range, PropertyStatus.mandatory, map_resource_to_uri)]
+
+    def __init__(self, uri: str, range: Resource[rdfs.Class]):
+        NewResource.__init__(self, uri)
+        self.range = range
+
+
 class HierarchicalCodeList(NewResource):
     """Hierarchical Code List - Represents a generalized hierarchy of concepts which can be used for coding. The
     hierarchy is defined by one or more roots together with a property which relates concepts in the hierarchy to

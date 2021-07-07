@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import List
 import csvw
 
 
@@ -12,8 +11,10 @@ def delete_csvw(metadata_file: Path):
     """
     table_group = csvw.TableGroup.from_file(metadata_file)
 
-    tables: List[csvw.Table] = table_group.tables
+    tables = table_group.tables
+    assert isinstance(tables, list)
     for table in tables:
+        assert isinstance(table, csvw.Table)
         if table.url is not None and str(table.url).strip() != "":
             csv_file: Path = metadata_file.parent / str(table.url)
             csv_file.unlink()

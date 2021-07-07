@@ -8,7 +8,7 @@ import rdflib
 
 from csvqb.models.cube import *
 from csvqb.utils.uri import get_last_uri_part, csvw_column_name_safe
-from sharedmodels.rdf import qb, rdfs, skos
+from sharedmodels.rdf import qb, rdfs, skos, namespaces
 from sharedmodels.rdf.resource import Resource, ExistingResource, maybe_existing_resource
 
 VIRT_UNIT_COLUMN_NAME = "virt_unit"
@@ -195,8 +195,6 @@ def _get_qb_dimension_specification(column_name_uri_safe: str,
     if isinstance(dimension, ExistingQbDimension):
         component = qb.DimensionComponentSpecification(_doc_rel_uri(f"component/{column_name_uri_safe}"))
         component.dimension = ExistingResource(dimension.dimension_uri)
-        # todo: How do we set the range against an externally-defined dimension? Does it make sense to do this?
-        # component.dimension.range = rdfs.Class(dimension.range_uri or _doc_rel_uri(f"class/{column_name_uri_safe}"))
     elif isinstance(dimension, NewQbDimension):
         component = qb.DimensionComponentSpecification(_doc_rel_uri(f"component/{dimension.uri_safe_identifier}"))
         component.dimension = qb.DimensionProperty(_doc_rel_uri(f"dimension/{dimension.uri_safe_identifier}"))
@@ -204,8 +202,7 @@ def _get_qb_dimension_specification(column_name_uri_safe: str,
         component.dimension.comment = dimension.description
         component.dimension.subPropertyOf = maybe_existing_resource(dimension.parent_dimension_uri)
         component.dimension.source = maybe_existing_resource(dimension.source_uri)
-        component.dimension.range = \
-            rdfs.Class(dimension.range_uri or _doc_rel_uri(f"class/{dimension.uri_safe_identifier}"))
+        component.dimension.range = ExistingResource(namespaces.SKOS.Concept)
 
         if dimension.code_list is not None:
             component.dimension.code_list = _get_code_list_resource(dimension.code_list)
