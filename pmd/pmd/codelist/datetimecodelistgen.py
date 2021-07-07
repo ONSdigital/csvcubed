@@ -1,13 +1,13 @@
 import json
 import re
+import typing
 from pathlib import Path
 from datetime import datetime
 
 import pandas as pd
 import rdflib
 from rdflib import Graph, URIRef
-from rdflib.query import Result
-from typing import List, Tuple, Any, Dict, Set, NamedTuple
+from typing import List, Tuple, Any, Dict, Set
 import csvw
 from uritemplate import expand
 
@@ -29,7 +29,7 @@ def generate_date_time_code_lists_for_csvw_metadata_file(metadata_file: Path) ->
 def _get_dimensions_to_generate_code_lists_for(csv_metadata_file: Path) -> List[Tuple[str, str, str]]:
     metadata_graph = Graph().parse(str(csv_metadata_file), format='json-ld')
 
-    result: Result = metadata_graph.query("""
+    result = metadata_graph.query("""
         PREFIX qb: <http://purl.org/linked-data/cube#>
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX sdmxd:  <http://purl.org/linked-data/sdmx/2009/dimension#>
@@ -45,7 +45,7 @@ def _get_dimensions_to_generate_code_lists_for(csv_metadata_file: Path) -> List[
             qb:codeList ?codeList. 
         }    
     """)
-    return list([(str(dim), str(label), str(code_list)) for dim, label, code_list in result])
+    return [(str(dim), str(label), str(code_list)) for dim, label, code_list in result]
 
 
 def _get_csv_columns_for_dimension(csv_metadata_file: Path, dimension: str) -> \
@@ -59,16 +59,22 @@ def _get_csv_columns_for_dimension(csv_metadata_file: Path, dimension: str) -> \
     :return:
     """
     table_group = csvw.TableGroup.from_file(csv_metadata_file)
-    tables: List[csvw.Table] = table_group.tables
+    tables = table_group.tables
+    assert isinstance(tables, list)
     map_path_to_csv_mapping: Dict[Path, CsvWithColumnDefinitions] = {}
     map_csv_to_column_names: Dict[CsvWithColumnDefinitions, List[str]] = {}
 
     for table in tables:
+        assert isinstance(table, csvw.Table)
         # N.B. this assumes that the CSV file is located relative to the metadata file.
         # This doesn't work if the CSV is specified as a URL.
         csv_path = csv_metadata_file.parent / Path(str(table.url))
-        columns: List[csvw.Column] = table.tableSchema.columns
+        schema = table.tableSchema
+        assert isinstance(schema, csvw.metadata.Schema)
+        columns = schema.columns
+        assert isinstance(columns, list)
         for column in columns:
+            assert isinstance(column, csvw.Column)
             if column.propertyUrl == dimension and not column.virtual:
                 if csv_path not in map_path_to_csv_mapping:
                     csv_file_info = CsvWithColumnDefinitions(csv_path, columns)
@@ -87,15 +93,15 @@ def _get_unique_values_from_columns(csv_col_mappings: Dict[CsvWithColumnDefiniti
     unique_values: Set[Any] = set()
     for csv in csv_col_mappings.keys():
         data = pd.read_csv(csv.csv_path)
+        assert isinstance(data, pd.DataFrame)
         column_names_with_values = csv_col_mappings[csv]
         columns_with_values = [col for col in csv.columns if col.name in column_names_with_values]
 
         # Rename column headers to match the CSV-W's `name` property to make lookup easier.
-        data.columns = [col.name for col in csv.columns if not col.virtual]
+        data.columns = pd.Index([col.name for col in csv.columns if not col.virtual])
 
         for row_tuple in data.itertuples():
-            row_tuple: NamedTuple
-            row = row_tuple._asdict()
+            row = row_tuple._asdict()  # type: ignore
             for column in columns_with_values:
                 column_value_for_row = expand(str(column.valueUrl), row)
                 unique_values.add(column_value_for_row)
@@ -210,7 +216,7 @@ def _generate_date_time_code_list_metadata(code_list_csv_file_name: str, code_li
     additional_metadata_graph = rdflib.Graph()
     catalog_record.to_graph(additional_metadata_graph)
 
-    rdf_metadata = json.loads(additional_metadata_graph.serialize(format="json-ld"))
+    rdf_metadata = json.loads(additional_metadata_graph.serialize(format="json-ld") or "[]")
     code_list_metadata["rdfs:seeAlso"] = rdf_metadata
 
     return code_list_metadata

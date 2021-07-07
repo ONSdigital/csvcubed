@@ -1,24 +1,45 @@
 import rdflib
 from rdflib import URIRef, Graph, RDFS, RDF
-from rdflib.term import Literal
-from typing import Annotated, List, get_type_hints, get_args, Set, Any
+from rdflib.term import Literal, Identifier
+from typing import Annotated, List, get_type_hints, get_args, Set, Any, Dict, TypeVar, Union, Optional
 from abc import ABC
 from collections.abc import Iterable
 
 
 from .triple import AbstractTriple, Triple, PropertyStatus
-
-
-MARKDOWN = URIRef('https://www.w3.org/ns/iana/media-types/text/markdown#Resource')
+from .datatypes import MARKDOWN
 
 
 class RdfResource(ABC):
     uri: URIRef
-    rdf_types: Set[URIRef]
 
     def __init__(self, uri: str):
         self.uri = URIRef(uri)
+
+
+class ExistingResource(RdfResource):
+    """Node - represents an existing node which we don't want to redefine. Just specify its URI."""
+    def __init__(self, uri: str):
+        RdfResource.__init__(self, uri)
+
+
+RdfResourceType = TypeVar("RdfResourceType", covariant=True)
+Resource = Union[RdfResourceType, ExistingResource]
+"""Represents an RdfResource OR an ExistingNode"""
+
+MaybeResource = Union[RdfResourceType, ExistingResource, None]
+"""Represents an RdfResource OR an ExistingNode OR None"""
+
+
+class NewResource(RdfResource, ABC):
+    rdf_types: Set[URIRef]
+    additional_rdf: Dict[Identifier, Identifier]
+    """A place for arbitrary RDF attached to this subject/entity."""
+
+    def __init__(self, uri: str):
+        RdfResource.__init__(self, uri)
         self.rdf_types = set()
+        self.additional_rdf = {}
 
     @property
     def uri_str(self) -> str:
@@ -36,7 +57,7 @@ class RdfResource(ABC):
         """
         if self in objects_already_processed:
             # Cyclic reference, we have already processed this object.
-            return
+            return graph
 
         objects_already_processed.add(self)
 
@@ -57,6 +78,10 @@ class RdfResource(ABC):
             for triple in triple_mappings:
                 # Ensure we can cope with one-to-many relationships
                 self._add_triple_to_graph(graph, property_key, property_value, triple, objects_already_processed)
+
+        for (key, value) in self.additional_rdf.items():
+            # Add arbitrary RDF to the graph.
+            graph.add((self.uri, key, value))
 
         return graph
 
@@ -82,7 +107,7 @@ class RdfResource(ABC):
                     triple.add_to_graph(graph, self.uri, val)
 
                     # If this resource links to another one, then we should make sure that is serialised too.
-                    if isinstance(val, RdfResource):
+                    if isinstance(val, NewResource):
                         val.to_graph(graph, objects_already_processed)
 
             except Exception as e:
@@ -94,7 +119,7 @@ def map_str_to_en_literal(s: str) -> Literal:
     return Literal(s, 'en')
 
 
-def map_entity_to_uri(entity: RdfResource) -> URIRef:
+def map_resource_to_uri(entity: RdfResource) -> URIRef:
     return entity.uri
 
 
@@ -102,9 +127,16 @@ def map_str_to_markdown(s: str) -> Literal:
     return Literal(s, MARKDOWN)
 
 
-class RdfMetadataResource(RdfResource, ABC):
+class NewResourceWithLabel(NewResource, ABC):
     label: Annotated[str, Triple(RDFS.label, PropertyStatus.mandatory, map_str_to_en_literal)]
+
+
+class NewMetadataResource(NewResourceWithLabel, ABC):
     comment: Annotated[str, Triple(RDFS.comment, PropertyStatus.mandatory, map_str_to_en_literal)]
 
 
+def maybe_existing_resource(maybe_resource_uri: Optional[str]) -> Optional[ExistingResource]:
+    if maybe_resource_uri is None:
+        return None
 
+    return ExistingResource(maybe_resource_uri)

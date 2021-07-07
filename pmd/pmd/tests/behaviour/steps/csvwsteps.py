@@ -1,4 +1,4 @@
-from behave import *
+from behave import Given, When
 from pathlib import Path
 
 

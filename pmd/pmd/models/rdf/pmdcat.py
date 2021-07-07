@@ -1,10 +1,12 @@
+import rdflib
 from rdflib import DCAT, VOID, Namespace, URIRef, Literal
 from typing import Annotated
 from abc import ABC
 from datetime import datetime
 
 from sharedmodels.rdf.triple import Triple, InverseTriple, PropertyStatus
-from sharedmodels.rdf.rdfresource import RdfMetadataResource, map_str_to_markdown, map_entity_to_uri
+from sharedmodels.rdf.resource import NewMetadataResource, Resource, map_str_to_markdown, map_resource_to_uri, \
+    map_str_to_en_literal
 from sharedmodels.rdf import dcat
 from sharedmodels.rdf import skos
 
@@ -13,13 +15,18 @@ PMDCAT = Namespace("http://publishmydata.com/pmdcat#")
 GDP = Namespace("http://gss-data.org.uk/def/gdp#")
 
 
-class DatasetContents(RdfMetadataResource, ABC):
+class DatasetContents(NewMetadataResource, ABC):
     def __init__(self, uri: str):
-        RdfMetadataResource.__init__(self, uri)
+        NewMetadataResource.__init__(self, uri)
         self.rdf_types.add(PMDCAT.DatasetContents)
 
 
 class ConceptScheme(DatasetContents, skos.ConceptScheme):
+    title: Annotated[str, Triple(rdflib.DCTERMS.title, PropertyStatus.mandatory, map_str_to_en_literal)]
+
+    dcat_dataset: Annotated[dcat.Dataset, InverseTriple(PMDCAT.datasetContents, PropertyStatus.mandatory,
+                                                        map_resource_to_uri)]
+
     def __init__(self, uri: str):
         DatasetContents.__init__(self, uri)
         skos.ConceptScheme.__init__(self, uri)
@@ -42,8 +49,8 @@ class Dataset(dcat.Dataset):
     pmdcat_graph: Annotated[str, Triple(PMDCAT.graph, PropertyStatus.mandatory, URIRef)]
     """Graph where the pmdcat:datasetContents is stored."""
 
-    dataset_contents: Annotated[DatasetContents, Triple(PMDCAT.datasetContents, PropertyStatus.mandatory,
-                                                        map_entity_to_uri)]
+    dataset_contents: Annotated[Resource[DatasetContents], Triple(PMDCAT.datasetContents, PropertyStatus.mandatory,
+                                                                  map_resource_to_uri)]
     markdown_description: Annotated[str, Triple(PMDCAT.markdownDescription, PropertyStatus.recommended,
                                                 map_str_to_markdown)]
     sparql_endpoint: Annotated[str, Triple(VOID.sparqlEndpoint, PropertyStatus.mandatory, URIRef)]

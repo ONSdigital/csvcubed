@@ -46,5 +46,5 @@ setup(
         "websocket-client==1.1.0",
         "wheel==0.36.2",
     ],
-    name="csvwlib-devtools",
+    name="devtools",
 )

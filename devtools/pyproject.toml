@@ -1,3 +1,10 @@
 [build-system]
 requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta:__legacy__"
+
+[tool.pyright]
+pythonVersion="3.9"
+exclude = [
+    ".venv",
+    "devtools/behave"
+]

@@ -1,15 +1,62 @@
-from rdflib import SKOS, URIRef, DCTERMS, PROV
-from typing import Annotated as Ann
+from typing import Annotated, Set, Union
 
-from .rdfresource import RdfMetadataResource, map_str_to_en_literal, map_entity_to_uri
-from .triple import Triple, PropertyStatus
-from .dcat import Dataset
+from rdflib import URIRef
+
+from sharedmodels.rdf.resource import NewResource, NewResourceWithLabel, MaybeResource, Resource, map_resource_to_uri
+from sharedmodels.rdf.triple import Triple, PropertyStatus
+
+CollectionMemberType = Union["Concept", "Collection"]
 
 
-class ConceptScheme(RdfMetadataResource):
-    title: Ann[str, Triple(DCTERMS.title, PropertyStatus.recommended, map_str_to_en_literal)]
-    dcat_dataset: Ann[Dataset, Triple(PROV.wasDerivedFrom, PropertyStatus.mandatory, map_entity_to_uri)]
+class Collection(NewResource):
+    """Collection - """
+    members: Annotated[Set[Resource[CollectionMemberType]],
+                       Triple(URIRef("http://www.w3.org/2004/02/skos/core#member"), PropertyStatus.recommended,
+                              map_resource_to_uri)]
+    """has member - """
 
-    def __init__(self, uri: URIRef):
-        RdfMetadataResource.__init__(self, uri)
-        self.rdf_types.add(SKOS.ConceptScheme)
+    def __init__(self, uri: str):
+        NewResource.__init__(self, uri)
+        self.rdf_types.add(URIRef("http://www.w3.org/2004/02/skos/core#Collection"))
+        self.members = set()
+
+
+class OrderedCollection(Collection):
+    """Ordered Collection - """
+    memberList: Annotated[list, Triple(URIRef("http://www.w3.org/2004/02/skos/core#memberList"),
+                                       PropertyStatus.recommended, map_resource_to_uri)]
+    """has member list - For any resource, every item in the list given as the value of the
+      skos:memberList property is also a value of the skos:member property."""
+
+    def __init__(self, uri: str):
+        Collection.__init__(self, uri)
+        self.rdf_types.add(URIRef("http://www.w3.org/2004/02/skos/core#OrderedCollection"))
+        self.memberList = []
+
+
+class ConceptScheme(NewResourceWithLabel):
+    """Concept Scheme - """
+    hasTopConcepts: Annotated[Set["Concept"], Triple(URIRef("http://www.w3.org/2004/02/skos/core#hasTopConcept"),
+                                                     PropertyStatus.recommended, map_resource_to_uri)]
+    """has top concept - """
+
+    def __init__(self, uri: str):
+        NewResource.__init__(self, uri)
+        self.rdf_types.add(URIRef("http://www.w3.org/2004/02/skos/core#ConceptScheme"))
+        self.hasTopConcepts = set()
+
+
+class Concept(NewResourceWithLabel):
+    """Concept - """
+    topConceptOf: Annotated["ConceptScheme", Triple(URIRef("http://www.w3.org/2004/02/skos/core#topConceptOf"),
+                                                    PropertyStatus.recommended, map_resource_to_uri)]
+    """is top concept in scheme - """
+
+    semanticRelation: Annotated[MaybeResource["Concept"],
+                                Triple(URIRef("http://www.w3.org/2004/02/skos/core#semanticRelation"),
+                                       PropertyStatus.recommended, map_resource_to_uri)]
+    """is in semantic relation with - """
+
+    def __init__(self, uri: str):
+        NewResource.__init__(self, uri)
+        self.rdf_types.add(URIRef("http://www.w3.org/2004/02/skos/core#Concept"))
