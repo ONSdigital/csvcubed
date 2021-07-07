@@ -6,8 +6,7 @@ from datetime import datetime
 import pandas as pd
 import rdflib
 from rdflib import Graph, URIRef
-from rdflib.query import Result
-from typing import List, Tuple, Any, Dict, Set, NamedTuple, Iterable
+from typing import List, Tuple, Any, Dict, Set
 import csvw
 from uritemplate import expand
 
@@ -101,7 +100,6 @@ def _get_unique_values_from_columns(csv_col_mappings: Dict[CsvWithColumnDefiniti
         data.columns = pd.Index([col.name for col in csv.columns if not col.virtual])
 
         for row_tuple in data.itertuples():
-            assert isinstance(row_tuple, NamedTuple)
             row = row_tuple._asdict()
             for column in columns_with_values:
                 column_value_for_row = expand(str(column.valueUrl), row)
@@ -217,9 +215,7 @@ def _generate_date_time_code_list_metadata(code_list_csv_file_name: str, code_li
     additional_metadata_graph = rdflib.Graph()
     catalog_record.to_graph(additional_metadata_graph)
 
-    maybe_json = additional_metadata_graph.serialize(format="json-ld")
-    if isinstance(maybe_json, str):
-        rdf_metadata = json.loads(maybe_json)
-        code_list_metadata["rdfs:seeAlso"] = rdf_metadata
+    rdf_metadata = json.loads(additional_metadata_graph.serialize(format="json-ld"))
+    code_list_metadata["rdfs:seeAlso"] = rdf_metadata
 
     return code_list_metadata

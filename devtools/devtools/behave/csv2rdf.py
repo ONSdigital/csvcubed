@@ -19,7 +19,7 @@ def _run_csv2rdf(metadata_file_path: Path) -> Tuple[int, str, Optional[str]]:
         client = docker.from_env()
         csv2rdf = client.containers.create(
             'gsscogs/csv2rdf',
-            command=f'csv2rdf -u /tmp/{metadata_file_path.name} -o /tmp/csv2rdf.ttl'
+            command=f'csv2rdf -u /tmp/{metadata_file_path.name} -o /tmp/csv2rdf.ttl -m annotated'
         )
         csv2rdf.put_archive("/tmp", dir_to_tar(metadata_file_path.parent))
 
