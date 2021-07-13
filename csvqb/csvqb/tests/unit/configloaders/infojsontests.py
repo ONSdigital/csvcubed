@@ -119,7 +119,7 @@ class InfoJsonLoaderTests(UnitTestBase):
         actual_keywords = cube.metadata.keywords
         self.assertEqual(expected_keywords, actual_keywords)
 
-        # landingpage - Fail
+        # landingpage - pass
 
         expected_landingpage = "https://www.gov.uk/government/statistics/bottles-bulletin"
         actual_landingpage = cube.metadata.landing_page
@@ -176,7 +176,7 @@ class InfoJsonLoaderTests(UnitTestBase):
         self.assert_no_validation_errors(errors)
 
 
-#        write_metadata(cube, self.get_test_cases_dir() / "output.csv-metadata.json")
+       write_metadata(cube, self.get_test_cases_dir() / "output.csv-metadata.json")
 
 
 if __name__ == '__main__':
