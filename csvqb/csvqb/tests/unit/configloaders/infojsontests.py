@@ -176,7 +176,7 @@ class InfoJsonLoaderTests(UnitTestBase):
         self.assert_no_validation_errors(errors)
 
 
-       write_metadata(cube, self.get_test_cases_dir() / "output.csv-metadata.json")
+       # write_metadata(cube, self.get_test_cases_dir() / "output.csv-metadata.json")
 
 
 if __name__ == '__main__':
