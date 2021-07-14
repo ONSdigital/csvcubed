@@ -283,6 +283,41 @@ def _define_csvw_column_for_qb_column(csvw_col: dict, column: QbColumn) -> None:
         csvw_col["datatype"] = column.component.data_type
 
 
+def _get_default_property_value_uris_for_multi_units(column: QbColumn, multi_units: QbMultiUnits) -> Tuple[str, str]:
+    column_template_fragment = _get_column_uri_template_fragment(column)
+    all_units_new = all([isinstance(u, NewQbUnit) for u in multi_units.units])
+    all_units_existing = all([isinstance(u, ExistingQbUnit) for u in multi_units.units])
+
+    unit_value_uri: str
+    if all_units_new:
+        unit_value_uri = _doc_rel_uri(f"unit/{column_template_fragment}")
+    elif all_units_existing:
+        unit_value_uri = column_template_fragment
+    else:
+        # todo: Come up with a solution for this!
+        raise Exception("Cannot handle a mix of new units and existing defined units.")
+
+    return "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure", unit_value_uri
+
+
+def _get_default_property_value_uris_for_multi_measure(column: QbColumn,
+                                                       measure_dimension: QbMultiMeasureDimension) -> Tuple[str, str]:
+    column_template_fragment = _get_column_uri_template_fragment(column)
+    all_measures_new = all([isinstance(m, NewQbMeasure) for m in measure_dimension.measures])
+    all_measures_existing = all([isinstance(m, ExistingQbMeasure) for m in measure_dimension.measures])
+
+    measure_value_uri: str
+    if all_measures_new:
+        measure_value_uri = _doc_rel_uri(f"measure/{column_template_fragment}")
+    elif all_measures_existing:
+        measure_value_uri = column_template_fragment
+    else:
+        # todo: Come up with a solution for this!
+        raise Exception("Cannot handle a mix of new measures and existing defined measures.")
+
+    return "http://purl.org/linked-data/cube#measureType", measure_value_uri
+
+
 def _get_default_property_value_uris_for_column(column: QbColumn) -> \
         Tuple[Optional[str], Optional[str]]:
     if isinstance(column.component, QbDimension):
@@ -290,15 +325,9 @@ def _get_default_property_value_uris_for_column(column: QbColumn) -> \
     elif isinstance(column.component, QbAttribute):
         return _get_default_property_value_uris_for_attribute(column)
     elif isinstance(column.component, QbMultiUnits):
-        # todo: How do we deal with the situation where the user wants to specify a mixture of local
-        #  and remote units in the same column?
-        local_unit_value_uri = _doc_rel_uri(f"unit/{_get_column_uri_template_fragment(column)}")
-        return "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure", local_unit_value_uri
+        return _get_default_property_value_uris_for_multi_units(column, column.component)
     elif isinstance(column.component, QbMultiMeasureDimension):
-        # todo: How do we deal with the situation where the user wants to specify a mixture of local
-        #  and remote measures in the same column?
-        local_measure_value_uri = _doc_rel_uri(f"measure/{_get_column_uri_template_fragment(column)}")
-        return "http://purl.org/linked-data/cube#measureType", local_measure_value_uri
+        return _get_default_property_value_uris_for_multi_measure(column, column.component)
     elif isinstance(column.component, QbObservationValue):
         return None, None
     else:
@@ -308,10 +337,7 @@ def _get_default_property_value_uris_for_column(column: QbColumn) -> \
 def _get_default_property_value_uris_for_dimension(column: QbColumn[QbDimension]) -> Tuple[str, Optional[str]]:
     dimension = column.component
     if isinstance(dimension, ExistingQbDimension):
-        # todo: If we have an ExistingQbDimension without a `column.output_uri_template` specified, ensure
-        #  we get a validation error before getting here. We can't look-up what the code-list's URI template
-        #  should look like at this point.
-        return dimension.dimension_uri, None
+        return dimension.dimension_uri, _get_column_uri_template_fragment(column)
     elif isinstance(dimension, NewQbDimension):
         local_dimension_uri = _doc_rel_uri(f"dimension/{dimension.uri_safe_identifier}")
         value_uri = _get_column_uri_template_fragment(column)
@@ -330,11 +356,7 @@ def _get_default_property_value_uris_for_attribute(column: QbColumn[QbAttribute]
     elif isinstance(attribute, NewQbAttribute):
         local_attribute_uri = _doc_rel_uri(f"attribute/{attribute.uri_safe_identifier}")
         value_uri = _get_column_uri_template_fragment(column)
-        if attribute.code_list is not None:
-            value_uri = _get_default_value_uri_for_code_list_concepts(column, attribute.code_list)
-
         return local_attribute_uri, value_uri
-
     else:
         raise Exception(f"Unhandled attribute type {type(attribute)}")
 
@@ -354,7 +376,7 @@ external_code_list_pattern = re.compile("^(.*)/concept-scheme/(.*)$")
 dataset_local_code_list_pattern = re.compile("^(.*)#scheme/(.*)$")
 
 
-def _get_default_value_uri_for_code_list_concepts(column: QbColumn, code_list: QbCodeList) -> str:
+def _get_default_value_uri_for_code_list_concepts(column: CsvColumn, code_list: QbCodeList) -> str:
     column_uri_fragment = _get_column_uri_template_fragment(column)
     if isinstance(code_list, ExistingQbCodeList):
         external_match = external_code_list_pattern.match(code_list.concept_scheme_uri)
