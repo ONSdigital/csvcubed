@@ -23,33 +23,33 @@ class InfoJsonLoaderTests(UnitTestBase):
         data = pd.read_csv(self.get_test_cases_dir() / "configloaders" / "data.csv")
         cube = get_cube_from_info_json(self.get_test_cases_dir() / "configloaders" / "info.json", data)
 
-        # matching_columns = [c for c in cube.columns if c.csv_column_title == "Undefined Column"]
-        # self.assertEqual(1, len(matching_columns))
-        # undefined_column_assumed_definition: CsvColumn = matching_columns[0]
-        #
-        # if not isinstance(undefined_column_assumed_definition, QbColumn):
-        #     raise Exception("Incorrect type")
-        #
-        # self.assertIsInstance(undefined_column_assumed_definition.component, NewQbDimension)
-        # new_dimension: NewQbDimension = undefined_column_assumed_definition.component
-        # self.assertIsNotNone(new_dimension.code_list)
-        #
-        # if not isinstance(new_dimension.code_list, NewQbCodeList):
-        #     raise Exception("Incorrect type")
-        #
-        # newly_defined_concepts = list(new_dimension.code_list.concepts)
-        #
-        # self.assertTrue(1, len(newly_defined_concepts))
-        #
-        # new_concept = newly_defined_concepts[0]
-        # self.assertEqual("Undefined Column Value", new_concept.label)
+        matching_columns = [c for c in cube.columns if c.csv_column_title == "Undefined Column"]
+        self.assertEqual(1, len(matching_columns))
+        undefined_column_assumed_definition: CsvColumn = matching_columns[0]
+
+        if not isinstance(undefined_column_assumed_definition, QbColumn):
+            raise Exception("Incorrect type")
+
+        self.assertIsInstance(undefined_column_assumed_definition.component, NewQbDimension)
+        new_dimension: NewQbDimension = undefined_column_assumed_definition.component
+        self.assertIsNotNone(new_dimension.code_list)
+
+        if not isinstance(new_dimension.code_list, NewQbCodeList):
+            raise Exception("Incorrect type")
+
+        newly_defined_concepts = list(new_dimension.code_list.concepts)
+
+        self.assertTrue(1, len(newly_defined_concepts))
+
+        new_concept = newly_defined_concepts[0]
+        self.assertEqual("Undefined Column Value", new_concept.label)
 
         errors = cube.validate()
         errors += validate_qb_component_constraints(cube)
 
         self.assert_no_validation_errors(errors)
 
-    def test_csv_bottles_assumed_dimensions(self):
+    def test_multiple_measures_and_units_loaded_in_uri_template(self):
         """
         bottles-data.csv has multiple measures and multiple units
 
@@ -90,9 +90,21 @@ class InfoJsonLoaderTests(UnitTestBase):
         actual_unit_uris = [x.unit_uri for x in unit_column.component.units]
         self.assertCountEqual(expected_unit_uris, actual_unit_uris)
 
+        errors = cube.validate()
+        errors += validate_qb_component_constraints(cube)
+
+        self.assert_no_validation_errors(errors)
+
+    def test_cube_metadata_extracted_from_info_json(self):
+
         """Metadata - ['base_uri', 'creator', 'description', 'from_dict', 'issued', 'keywords', 'landing_page', 
         'license', 'public_contact_point', 'publisher', 'summary', 'themes', 'title', 
         'uri_safe_identifier', 'validate']"""
+
+        data = pd.read_csv(self.get_test_cases_dir() / "configloaders" / "bottles-test-files" / "bottles-data.csv")
+        cube = get_cube_from_info_json(
+            self.get_test_cases_dir() / "configloaders" / "bottles-test-files" / "bottles-info.json",
+            data)
 
         # Creator - pass
 
@@ -152,7 +164,7 @@ class InfoJsonLoaderTests(UnitTestBase):
         self.assertEqual(expected_summary, actual_summary)
 
         # themes - pass
-        # The info.json schema doesn't allow a themes property just yet
+        # It's the families property
 
         expected_themes = ["Trade"]
         actual_themes = cube.metadata.themes
@@ -174,10 +186,6 @@ class InfoJsonLoaderTests(UnitTestBase):
         errors += validate_qb_component_constraints(cube)
 
         self.assert_no_validation_errors(errors)
-
-
-       # write_metadata(cube, self.get_test_cases_dir() / "output.csv-metadata.json")
-
 
 if __name__ == '__main__':
     unittest.main()
