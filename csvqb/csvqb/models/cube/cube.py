@@ -18,7 +18,6 @@ class CubeMetadata:
     def __init__(self,
                  title: str,
                  uri_safe_identifier: Optional[str] = None,
-                 base_uri: Optional[str] = None,
                  summary: Optional[str] = None,
                  description: Optional[str] = None,
                  creator: Optional[URI] = None,
@@ -29,7 +28,6 @@ class CubeMetadata:
                  landing_page: Optional[URI] = None,
                  license: Optional[URI] = None,
                  public_contact_point: Optional[URI] = None):
-        self.base_uri: str = "http://gss-data.org.uk/" if base_uri is None else base_uri
         self.title: str = title
         self.uri_safe_identifier: str = uri_safe(title) if uri_safe_identifier is None else uri_safe_identifier
         self.summary: Optional[str] = summary
@@ -45,14 +43,14 @@ class CubeMetadata:
 
     @staticmethod
     def from_dict(config: dict) -> "CubeMetadata":
+        publisher = get_with_func_or_none(config, "publisher", URI)
         return CubeMetadata(
             get_from_dict_ensure_exists(config, "title"),
             uri_safe_identifier=get_from_dict_ensure_exists(config, "id"),
-            base_uri=config.get("baseUri"),
             summary=config.get("summary"),
             description=config.get("description"),
-            creator=get_with_func_or_none(config, "creator", URI),
-            publisher=get_with_func_or_none(config, "publisher", URI),
+            creator=publisher,
+            publisher=publisher,
             issued=get_with_func_or_none(config, "published", parser.parse),
             themes=config.get("families", []),
             keywords=config.get("keywords", []),
