@@ -1,16 +1,13 @@
 from datetime import datetime
 from typing import List, Optional, Set
 import pandas as pd
-from dateutil import parser
 
 
-from csvqb.utils.dict import get_from_dict_ensure_exists, get_with_func_or_none
 from csvqb.utils.uri import uri_safe
 from csvqb.models.validationerror import ValidationError
 from .columns import CsvColumn
 from ..rdf import URI
 from csvqb.inputs import pandas_input_to_columnar
-
 
 
 class CubeMetadata:
@@ -40,24 +37,6 @@ class CubeMetadata:
         self.landing_page: Optional[URI] = landing_page
         self.license: Optional[URI] = license
         self.public_contact_point: Optional[URI] = public_contact_point
-
-    @staticmethod
-    def from_dict(config: dict) -> "CubeMetadata":
-        publisher = get_with_func_or_none(config, "publisher", URI)
-        return CubeMetadata(
-            get_from_dict_ensure_exists(config, "title"),
-            uri_safe_identifier=get_from_dict_ensure_exists(config, "id"),
-            summary=config.get("summary"),
-            description=config.get("description"),
-            creator=publisher,
-            publisher=publisher,
-            issued=get_with_func_or_none(config, "published", parser.parse),
-            themes=config.get("families", []),
-            keywords=config.get("keywords", []),
-            landing_page=get_with_func_or_none(config, "landingPage", URI),
-            license=config.get("license"),
-            public_contact_point=get_with_func_or_none(config, "contactUri", URI)
-        )
 
     def validate(self) -> List[ValidationError]:
         return []  # TODO: implement this
