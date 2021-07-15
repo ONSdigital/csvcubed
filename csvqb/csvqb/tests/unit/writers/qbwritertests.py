@@ -222,3 +222,49 @@ class QbWriterTests(UnitTestBase):
         default_property_uri, default_value_uri = qbwriter._get_default_property_value_uris_for_column(column)
         self.assertIsNone(default_property_uri)
         self.assertIsNone(default_value_uri)
+
+    def test_csv_col_definition_default_property_value_urls(self):
+        """
+            When configuring a CSV-W column definition, if the user has not specified an `output_uri_template`
+            against the `QbColumn` then the `propertyUrl` and `valueUrl`s should both be populated by the default
+            values inferred from the component.
+        """
+        column = QbColumn("Some Column", QbMultiUnits([NewQbUnit("Some Unit")]))
+        csv_col = qbwriter._generate_csvqb_column(column)
+        self.assertEqual("http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure", csv_col["propertyUrl"])
+        self.assertEqual("#unit/{+some_column}", csv_col["valueUrl"])
+
+    def test_csv_col_definition_output_uri_template_override(self):
+        """
+            When configuring a CSV-W column definition, if the user has specified an `output_uri_template` against the
+            `QbColumn` then this should end up as the resulting CSV-W column's `valueUrl`.
+        """
+        column = QbColumn("Some Column", ExistingQbDimension("http://base-uri/dimensions/some-dimension"),
+                          output_uri_template="http://base-uri/some-alternative-output-uri/{+some_column}")
+        csv_col = qbwriter._generate_csvqb_column(column)
+        self.assertEqual("http://base-uri/dimensions/some-dimension", csv_col["propertyUrl"])
+        self.assertEqual("http://base-uri/some-alternative-output-uri/{+some_column}", csv_col["valueUrl"])
+
+    def test_csv_col_definition(self):
+        """
+            Test basic configuration of a CSV-W column definition.
+        """
+        column = QbColumn("Some Column", ExistingQbDimension("http://base-uri/dimensions/some-dimension"))
+        csv_col = qbwriter._generate_csvqb_column(column)
+        self.assertFalse("suppressOutput" in csv_col)
+        self.assertEqual("Some Column", csv_col["titles"])
+        self.assertEqual("some_column", csv_col["name"])
+        self.assertEqual("http://base-uri/dimensions/some-dimension", csv_col["propertyUrl"])
+        self.assertEqual("{+some_column}", csv_col["valueUrl"])
+
+    def test_csv_col_definition_suppressed(self):
+        """
+            Test basic configuration of a *suppressed* CSV-W column definition.
+        """
+        column = SuppressedCsvColumn("Some Column")
+        csv_col = qbwriter._generate_csvqb_column(column)
+        self.assertTrue(csv_col["suppressOutput"])
+        self.assertEqual("Some Column", csv_col["titles"])
+        self.assertEqual("some_column", csv_col["name"])
+        self.assertFalse("propertyUrl" in csv_col)
+        self.assertFalse("valueUrl" in csv_col)
