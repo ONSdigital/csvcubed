@@ -268,3 +268,37 @@ class QbWriterTests(UnitTestBase):
         self.assertEqual("some_column", csv_col["name"])
         self.assertFalse("propertyUrl" in csv_col)
         self.assertFalse("valueUrl" in csv_col)
+
+    def test_virtual_columns_generated_for_single_obs_val(self):
+        """
+            Ensure that the virtual columns generated for a `QbSingleMeasureObservationValue`'s unit and measure are
+            correct.
+        """
+        obs_val = QbSingleMeasureObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit"))
+        virtual_columns = qbwriter._generate_virtual_columns_for_obs_val(obs_val)
+
+        virt_unit = first(virtual_columns, lambda x: x["name"] == "virt_unit")
+        self.assertIsNotNone(virt_unit)
+        self.assertTrue(virt_unit["virtual"])
+        self.assertEqual("http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure", virt_unit["propertyUrl"])
+        self.assertEqual("#unit/some-unit", virt_unit["valueUrl"])
+
+        virt_measure = first(virtual_columns, lambda x: x["name"] == "virt_measure")
+        self.assertIsNotNone(virt_measure)
+        self.assertTrue(virt_measure["virtual"])
+        self.assertEqual("http://purl.org/linked-data/cube#measureType", virt_measure["propertyUrl"])
+        self.assertEqual("#measure/some-measure", virt_measure["valueUrl"])
+
+    def test_virtual_columns_generated_for_multi_meas_obs_val(self):
+        """
+            Ensure that the virtual column generated for a `QbMultiMeasureObservationValue`'s unit and measure are
+            correct.
+        """
+        obs_val = QbMultiMeasureObservationValue(unit=NewQbUnit("Some Unit"))
+        virtual_columns = qbwriter._generate_virtual_columns_for_obs_val(obs_val)
+
+        virt_unit = first(virtual_columns, lambda x: x["name"] == "virt_unit")
+        self.assertIsNotNone(virt_unit)
+        self.assertTrue(virt_unit["virtual"])
+        self.assertEqual("http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure", virt_unit["propertyUrl"])
+        self.assertEqual("#unit/some-unit", virt_unit["valueUrl"])
