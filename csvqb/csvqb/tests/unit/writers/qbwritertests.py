@@ -1,6 +1,6 @@
+import unittest
 from copy import deepcopy
 from typing import List
-
 import pandas as pd
 from sharedmodels.rdf import qb
 
@@ -302,3 +302,7 @@ class QbWriterTests(UnitTestBase):
         self.assertTrue(virt_unit["virtual"])
         self.assertEqual("http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure", virt_unit["propertyUrl"])
         self.assertEqual("#unit/some-unit", virt_unit["valueUrl"])
+
+
+if __name__ == '__main__':
+    unittest.main()
