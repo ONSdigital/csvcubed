@@ -5,7 +5,9 @@ import copy
 
 import pandas as pd
 import uritemplate
+from dateutil import parser
 
+from csvqb.models.rdf import URI
 from csvqb.models.cube.cube import Cube, CubeMetadata
 from csvqb.models.cube.columns import CsvColumn, SuppressedCsvColumn
 from csvqb.models.cube.csvqb.columns import QbColumn
@@ -18,8 +20,8 @@ from csvqb.models.cube.csvqb.components.unit import ExistingQbUnit, QbMultiUnits
 from csvqb.models.cube.csvqb.components.codelist import ExistingQbCodeList, NewQbCodeList
 from csvqb.utils.qb.cube import validate_qb_component_constraints
 from csvqb.utils.uri import csvw_column_name_safe
-from csvqb.inputs import pandas_input_to_columnar_str
-from csvqb.inputs import PandasDataTypes
+from csvqb.utils.dict import get_from_dict_ensure_exists, get_with_func_or_none
+from csvqb.inputs import pandas_input_to_columnar_str, PandasDataTypes
 
 
 def get_cube_from_info_json(info_json: Path, data: pd.DataFrame, cube_id: Optional[str] = None) -> Cube:
@@ -65,11 +67,29 @@ def _override_config_for_cube_id(config: dict, cube_id: str) -> Optional[dict]:
 
 
 def _from_info_json_dict(d: Dict, data: pd.DataFrame):
-    metadata = CubeMetadata.from_dict(d)
+    metadata = _metadata_from_dict(d)
     transform_section = d.get("transform", {})
     columns = _columns_from_info_json(transform_section.get("columns", []), data)
 
     return Cube(metadata, data, columns)
+
+
+def _metadata_from_dict(config: dict) -> "CubeMetadata":
+    publisher = get_with_func_or_none(config, "publisher", URI)
+    return CubeMetadata(
+        get_from_dict_ensure_exists(config, "title"),
+        uri_safe_identifier=get_from_dict_ensure_exists(config, "id"),
+        summary=config.get("summary"),
+        description=config.get("description"),
+        creator=publisher,
+        publisher=publisher,
+        issued=get_with_func_or_none(config, "published", parser.parse),
+        themes=config.get("families", []),
+        keywords=config.get("keywords", []),
+        landing_page=get_with_func_or_none(config, "landingPage", URI),
+        license=config.get("license"),
+        public_contact_point=get_with_func_or_none(config, "contactUri", URI)
+    )
 
 
 def _columns_from_info_json(column_mappings: Dict[str, Any], data: pd.DataFrame) -> List[CsvColumn]:
