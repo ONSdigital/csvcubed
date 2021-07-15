@@ -32,7 +32,7 @@ def _validate_dimensions(cube: Cube) -> List[ValidationError]:
     dimension_columns = get_columns_of_dsd_type(cube, QbDimension)
 
     for c in cube.columns:
-        if isinstance(c.component, ExistingQbDimension):
+        if isinstance(c, QbColumn) and isinstance(c.component, ExistingQbDimension):
             if c.output_uri_template is None:
                 errors.append(
                     ValidationError(f"'{c.csv_column_title}' - an ExistingQbDimension must have an output_uri_template "
