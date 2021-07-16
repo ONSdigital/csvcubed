@@ -4,7 +4,7 @@ from typing import List, TypeVar, Type
 from csvqb.models.validationerror import ValidationError
 from csvqb.models.cube.cube import Cube
 from csvqb.models.cube.csvqb.columns import QbColumn
-from csvqb.models.cube.csvqb.components.dimension import QbDimension
+from csvqb.models.cube.csvqb.components.dimension import QbDimension, ExistingQbDimension
 from csvqb.models.cube.csvqb.components.measure import QbMultiMeasureDimension
 from csvqb.models.cube.csvqb.components.unit import QbMultiUnits
 from csvqb.models.cube.csvqb.components.observedvalue import QbObservationValue, QbMultiMeasureObservationValue, \
@@ -21,6 +21,7 @@ def get_columns_of_dsd_type(cube: Cube, t: Type[QbColumnarDsdType]) -> List[QbCo
 
 def validate_qb_component_constraints(cube: Cube) -> List[ValidationError]:
     # assert validation specific to a cube-qb
+
     errors = _validate_dimensions(cube)
     errors += _validate_observation_value_constraints(cube)
     return errors
@@ -29,6 +30,14 @@ def validate_qb_component_constraints(cube: Cube) -> List[ValidationError]:
 def _validate_dimensions(cube: Cube) -> List[ValidationError]:
     errors: List[ValidationError] = []
     dimension_columns = get_columns_of_dsd_type(cube, QbDimension)
+
+    for c in cube.columns:
+        if isinstance(c, QbColumn) and isinstance(c.component, ExistingQbDimension):
+            if c.output_uri_template is None:
+                errors.append(
+                    ValidationError(f"'{c.csv_column_title}' - an ExistingQbDimension must have an output_uri_template "
+                                    "defined."))
+
     if len(dimension_columns) == 0:
         errors.append(ValidationError("At least one dimension must be defined."))
     return errors
