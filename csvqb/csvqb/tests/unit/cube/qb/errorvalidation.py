@@ -1,10 +1,11 @@
 import unittest
+
 import pandas as pd
 
 from csvqb.models.cube import *
 from csvqb.models.rdf import URI
-from csvqb.utils.qb.cube import validate_qb_component_constraints
 from csvqb.tests.unit.unittestbase import UnitTestBase
+from csvqb.utils.qb.cube import validate_qb_component_constraints
 
 
 class InternalApiLoaderTests(UnitTestBase):
@@ -83,6 +84,10 @@ class InternalApiLoaderTests(UnitTestBase):
         errors += validate_qb_component_constraints(cube)
 
         self.assertEqual(1, len(errors))
+        validation_errors = errors[0]
+        self.assertTrue(
+            "'Existing Dimension' - an ExistingQbDimension must have an output_uri_template defined."
+                        in validation_errors.message)
 
 
 if __name__ == '__main__':
