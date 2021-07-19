@@ -1,11 +1,12 @@
-from typing import Dict, List, Any, Optional, Union, Set
+from typing import Dict, List, Any, Optional, Union
 from pathlib import Path
 import json
 import copy
-
 import pandas as pd
 import uritemplate
 from dateutil import parser
+from sharedmodels.rdf.namespaces import GOV
+
 
 from csvqb.models.rdf import URI
 from csvqb.models.cube.cube import Cube, CubeMetadata
@@ -19,7 +20,7 @@ from csvqb.models.cube.csvqb.components.attribute import ExistingQbAttribute
 from csvqb.models.cube.csvqb.components.unit import ExistingQbUnit, QbMultiUnits
 from csvqb.models.cube.csvqb.components.codelist import ExistingQbCodeList, NewQbCodeList
 from csvqb.utils.qb.cube import validate_qb_component_constraints
-from csvqb.utils.uri import csvw_column_name_safe
+from csvqb.utils.uri import csvw_column_name_safe, uri_safe
 from csvqb.utils.dict import get_from_dict_ensure_exists, get_with_func_or_none
 from csvqb.inputs import pandas_input_to_columnar_str, PandasDataTypes
 
@@ -75,7 +76,7 @@ def _from_info_json_dict(d: Dict, data: pd.DataFrame):
 
 
 def _metadata_from_dict(config: dict) -> "CubeMetadata":
-    publisher = get_with_func_or_none(config, "publisher", URI)
+    publisher = get_with_func_or_none(config, "publisher", lambda p: URI(str(GOV[uri_safe(p)])))
     return CubeMetadata(
         get_from_dict_ensure_exists(config, "title"),
         uri_safe_identifier=get_from_dict_ensure_exists(config, "id"),

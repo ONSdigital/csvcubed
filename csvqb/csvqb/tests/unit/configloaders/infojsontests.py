@@ -3,7 +3,6 @@ import pandas as pd
 from dateutil import parser
 
 
-from csvqb.writers.qbwriter import write_metadata
 from csvqb.configloaders.infojson import get_cube_from_info_json
 from csvqb.utils.qb.cube import validate_qb_component_constraints
 from csvqb.models.cube import *
@@ -108,7 +107,7 @@ class InfoJsonLoaderTests(UnitTestBase):
 
         # Creator - pass
 
-        expected_creator = "HM Revenue & Customs"
+        expected_creator = "https://www.gov.uk/government/organisations/hm-revenue-customs"
         actual_creator = cube.metadata.creator
         self.assertEqual(expected_creator, actual_creator)
 
@@ -152,7 +151,7 @@ class InfoJsonLoaderTests(UnitTestBase):
 
         # publisher - pass
 
-        expected_publisher = "HM Revenue & Customs"
+        expected_publisher = "https://www.gov.uk/government/organisations/hm-revenue-customs"
         actual_publisher = cube.metadata.publisher
         self.assertEqual(expected_publisher, actual_publisher)
 
