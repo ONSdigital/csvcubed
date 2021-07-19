@@ -16,7 +16,7 @@ class CatalogMetadata(CatalogMetadataBase):
                  creator_uri: Optional[str] = None,
                  publisher_uri: Optional[str] = None,
                  issued: Optional[datetime] = None,
-                 themes: List[str] = [],
+                 theme_uris: List[str] = [],
                  keywords: List[str] = [],
                  landing_page: Optional[str] = None,
                  license_uri: Optional[str] = None,
@@ -26,7 +26,7 @@ class CatalogMetadata(CatalogMetadataBase):
         self.summary: Optional[str] = summary
         self.creator: Optional[str] = creator_uri
         self.publisher: Optional[str] = publisher_uri
-        self.themes: List[str] = themes
+        self.theme_uris: List[str] = theme_uris
         self.keywords: List[str] = keywords
         self.landing_page: Optional[str] = landing_page
         self.license: Optional[str] = license_uri

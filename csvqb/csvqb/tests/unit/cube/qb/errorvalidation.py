@@ -3,7 +3,6 @@ import unittest
 import pandas as pd
 
 from csvqb.models.cube import *
-from csvqb.models.rdf import URI
 from csvqb.tests.unit.unittestbase import UnitTestBase
 from csvqb.utils.qb.cube import validate_qb_component_constraints
 
@@ -19,7 +18,7 @@ class InternalApiLoaderTests(UnitTestBase):
             "Value": [2, 2, 2]
         })
 
-        metadata = CatalogMetadata(URI("http://example.com/some/dataset"), "Some Dataset")
+        metadata = CatalogMetadata("Some Dataset")
         columns = [
             QbColumn("Existing Dimension", ExistingQbDimension("https://example.org/dimensions/existing_dimension"),
                      output_uri_template="https://example.org/concept-scheme/existing_scheme/{+existing_dimension}"),
@@ -48,7 +47,7 @@ class InternalApiLoaderTests(UnitTestBase):
             "Units": ["Percent", "People", "People"]
         })
 
-        metadata = CatalogMetadata(URI("http://example.com/some/dataset"), "Some Dataset")
+        metadata = CatalogMetadata("Some Dataset")
         columns = [
             QbColumn("Existing Dimension", ExistingQbDimension("https://example.org/dimensions/existing_dimension"),
                      output_uri_template="https://example.org/concept-scheme/existing_scheme/{+existing_dimension}"),

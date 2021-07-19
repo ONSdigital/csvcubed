@@ -165,9 +165,9 @@ class InfoJsonLoaderTests(UnitTestBase):
         # themes - pass
         # It's the families property
 
-        expected_themes = ["Trade"]
-        actual_themes = cube.metadata.themes
-        self.assertEqual(expected_themes, actual_themes)
+        expected_themes = ["http://gss-data.org.uk/def/gdp#Trade"]
+        actual_themes = [str(t) for t in cube.metadata.theme_uris]
+        self.assertCountEqual(expected_themes, actual_themes)
 
         # title - pass
 

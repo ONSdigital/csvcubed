@@ -81,7 +81,7 @@ class NewResource(RdfResource, ABC):
             triple_mappings: List[AbstractTriple] = [th for th in type_hints if isinstance(th, AbstractTriple)]
             for triple in triple_mappings:
                 # Ensure we can cope with one-to-many relationships
-                self._add_triple_to_graph(graph, property_key, property_value, triple, objects_already_processed)
+                self._add_triples_to_graph(graph, property_key, property_value, triple, objects_already_processed)
 
         for (key, value) in self.additional_rdf.items():
             # Add arbitrary RDF to the graph.
@@ -89,8 +89,8 @@ class NewResource(RdfResource, ABC):
 
         return graph
 
-    def _add_triple_to_graph(self, graph: Graph, property_key: str, property_value: Any, triple: AbstractTriple,
-                             objects_already_processed: Set[object]):
+    def _add_triples_to_graph(self, graph: Graph, property_key: str, property_value: Any, triple: AbstractTriple,
+                              objects_already_processed: Set[object]):
         value_is_iterable = isinstance(property_value, Iterable) and not isinstance(property_value, str)
         if value_is_iterable:
             all_values = list(property_value)
@@ -117,12 +117,6 @@ class NewResource(RdfResource, ABC):
             except Exception as e:
                 raise Exception(f"Error adding RDF property '{triple.predicate}' "
                                 f" ({type(self).__name__}.{property_key}).") from e
-
-
-class NewResourceWithType(NewResource):
-    def __init__(self, uri: str, type_uri: str):
-        NewResource.__init__(uri)
-        self.rdf_types.add(URIRef(type_uri))
 
 
 def map_str_to_en_literal(s: str) -> Literal:

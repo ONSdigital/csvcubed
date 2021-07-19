@@ -9,6 +9,7 @@ import sys
 from typing import Tuple
 
 from devtools.helpers.tar import dir_to_tar
+from devtools.behave.temporarydirectory import get_context_temp_dir_path
 
 
 def _run_csvlint(metadata_file_path: Path) -> Tuple[int, str]:
@@ -27,12 +28,14 @@ def _run_csvlint(metadata_file_path: Path) -> Tuple[int, str]:
 
 @step("csvlint validation of \"{file}\" should succeed")
 def step_impl(context, file: str):
-    exit_code, logs = _run_csvlint(Path(file))
+    temp_dir = get_context_temp_dir_path(context)
+    exit_code, logs = _run_csvlint(temp_dir / file)
     assert_equal(exit_code, 0)
 
 
 @step('csvlint validation of \"{file}\" should fail with "{expected}"')
 def step_impl(context, file: str, expected: str):
-    exit_code, logs = _run_csvlint(Path(file))
+    temp_dir = get_context_temp_dir_path(context)
+    exit_code, logs = _run_csvlint(temp_dir / file)
     assert_equal(exit_code, 1)
     assert expected in logs

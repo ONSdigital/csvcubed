@@ -6,9 +6,7 @@ import json
 from pathlib import Path
 from typing import Tuple
 import pandas as pd
-from rdflib import FOAF, SKOS
 from sharedmodels.rdf import dcat
-from sharedmodels.rdf.resource import NewResourceWithType
 
 
 from csvqb.models.cube.csvqb.components.codelist import NewQbCodeList
@@ -20,52 +18,92 @@ def _doc_rel_uri(fragment: str) -> str:
     return f"#{fragment}"
 
 
-def new_code_list_to_csvw(new_code_list: NewQbCodeList, code_list_directory: Path) -> None:
+def new_code_list_to_csvw(new_code_list: NewQbCodeList, output_directory: Path) -> None:
     csv_file_name = f"{new_code_list.metadata.uri_safe_identifier}.csv"
 
-    csv_file_path = (code_list_directory / csv_file_name).absolute()
-    metadata_file_path = (code_list_directory / f"{csv_file_name}-metadata.json").absolute()
+    csv_file_path = (output_directory / csv_file_name).absolute()
+    metadata_file_path = (output_directory / f"{csv_file_name}-metadata.json").absolute()
 
-    csvw_metadata, data = _new_code_list_to_csvw_parts(new_code_list)
+    csvw_metadata, data = _new_code_list_to_csvw_parts(new_code_list, csv_file_name)
 
-    with open(str(csv_file_path), "w+") as f:
-        json.dump(csvw_metadata, f)
+    with open(str(metadata_file_path), "w+") as f:
+        json.dump(csvw_metadata, f, indent=4)
 
-    data.to_csv(str(metadata_file_path), index=False)
+    data.to_csv(str(csv_file_path), index=False)
 
 
-def _new_code_list_to_csvw_parts(new_code_list: NewQbCodeList) -> Tuple[dict, pd.DataFrame]:
-    csvw_metadata = _get_csvw_metadata(new_code_list)
+def _new_code_list_to_csvw_parts(new_code_list: NewQbCodeList, csv_file_name: str) -> Tuple[dict, pd.DataFrame]:
+    csvw_metadata = _get_csvw_metadata(new_code_list, csv_file_name)
     data = _get_code_list_data(new_code_list)
 
-    return data, csvw_metadata
+    return csvw_metadata, data
 
 
-def _get_csvw_metadata(new_code_list: NewQbCodeList) -> dict:
+def _get_csvw_metadata(new_code_list: NewQbCodeList, csv_file_name: str) -> dict:
 
     additional_metadata = _get_catalog_metadata(new_code_list)
+
+    csvw_columns = [
+        {
+            "titles": "Label",
+            "name": "label",
+            "required": True,
+            "propertyUrl": "rdfs:label"
+        },
+        {
+            "titles": "Notation",
+            "name": "notation",
+            "required": True,
+            "propertyUrl": "skos:notation"
+        },
+        {
+            "titles": "Parent Notation",
+            "name": "parent_notation",
+            "required": False,
+            "propertyUrl": "skos:broader",
+            "valueUrl": _doc_rel_uri("concept/{+parent_notation}")
+        },
+        {
+            "titles": "Sort Priority",
+            "name": "sort_priority",
+            "required": False,
+            "datatype": "integer",
+            "propertyUrl": "http://www.w3.org/ns/ui#sortPriority"
+        },
+        {
+            "titles": "Description",
+            "name": "description",
+            "required": False,
+            "propertyUrl": "rdfs:comment"
+        },
+        {
+            "virtual": True,
+            "name": "virt_inScheme",
+            "required": False,
+            "propertyUrl": "skos:inScheme",
+            "valueUrl": _doc_rel_uri("scheme")
+        }
+    ]
 
     csvw_metadata = {
         "@context": "http://www.w3.org/ns/csvw",
         "@id": _doc_rel_uri("scheme"),
-        "rdfs:label": new_code_list.metadata.title,
-        "dct:title": new_code_list.metadata.title,
+        "url": csv_file_name,
+        "tableSchema": {
+            "columns": csvw_columns,
+            "aboutUrl": _doc_rel_uri("concept/{+notation}")
+        },
         "rdfs:seeAlso": rdf_resource_to_json_ld_dict(additional_metadata)
     }
 
     return csvw_metadata
 
 
-def _get_catalog_metadata(new_code_list: NewQbCodeList) -> dcat.CatalogRecord:
+def _get_catalog_metadata(new_code_list: NewQbCodeList) -> ConceptSchemeInCatalog:
     dt_now = datetime.datetime.now()
     metadata = new_code_list.metadata
 
-    catalog_record = dcat.CatalogRecord(_doc_rel_uri("catalog-record"))
-    catalog_record.label = catalog_record.title = metadata.title
-    catalog_record.comment = catalog_record.description = metadata.description
-    catalog_record.issued = catalog_record.modified = dt_now
-
-    concept_scheme = catalog_record.primary_topic = ConceptSchemeInCatalog(_doc_rel_uri("scheme"))
+    concept_scheme = ConceptSchemeInCatalog(_doc_rel_uri("scheme"))
     concept_scheme.label = concept_scheme.title = metadata.title
     concept_scheme.issued = metadata.issued or dt_now
     concept_scheme.modified = dt_now
@@ -74,10 +112,10 @@ def _get_catalog_metadata(new_code_list: NewQbCodeList) -> dcat.CatalogRecord:
     concept_scheme.license = metadata.license
     concept_scheme.publisher = metadata.publisher
     concept_scheme.landing_page = metadata.landing_page
-    concept_scheme.themes = set(metadata.themes)
+    concept_scheme.themes = set(metadata.theme_uris)
     concept_scheme.keywords = set(metadata.keywords)
 
-    return catalog_record
+    return concept_scheme
 
 
 def _get_code_list_data(new_code_list: NewQbCodeList) -> pd.DataFrame:

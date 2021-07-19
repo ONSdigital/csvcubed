@@ -37,9 +37,6 @@ class CodeListWriterTests(UnitTestBase):
         self.assertEqual(20, second_concept["Sort Priority"])
         self.assertIsNone(second_concept.get("Description"))
 
-    def test_something_else(self):
-        data, metadata = codelistwriter._new_code_list_to_csvw_parts(basic_code_list)
-        self.assertTrue(False)
 
 if __name__ == "__main__":
     unittest.main()

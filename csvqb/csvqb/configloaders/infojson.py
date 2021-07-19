@@ -5,7 +5,7 @@ import copy
 import pandas as pd
 import uritemplate
 from dateutil import parser
-from sharedmodels.rdf.namespaces import GOV
+from sharedmodels.rdf.namespaces import GOV, GDP
 
 
 from csvqb.models.cube.cube import Cube
@@ -77,6 +77,7 @@ def _from_info_json_dict(d: Dict, data: pd.DataFrame):
 
 def _metadata_from_dict(config: dict) -> "CatalogMetadata":
     publisher = get_with_func_or_none(config, "publisher", lambda p: str(GOV[uri_safe(p)]))
+    theme_uris = [str(GDP.term(t)) for t in config.get("families", [])]
     return CatalogMetadata(
         get_from_dict_ensure_exists(config, "title"),
         uri_safe_identifier=get_from_dict_ensure_exists(config, "id"),
@@ -85,7 +86,7 @@ def _metadata_from_dict(config: dict) -> "CatalogMetadata":
         creator_uri=publisher,
         publisher_uri=publisher,
         issued=get_with_func_or_none(config, "published", parser.parse),
-        themes=config.get("families", []),
+        theme_uris=theme_uris,
         keywords=config.get("keywords", []),
         landing_page=config.get("landingPage"),
         license_uri=config.get("license"),
