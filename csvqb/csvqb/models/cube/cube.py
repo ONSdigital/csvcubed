@@ -1,53 +1,20 @@
-from datetime import datetime
-from typing import List, Optional, Set
+from typing import List, Optional, Set, TypeVar, Generic
 import pandas as pd
 
-
-from csvqb.utils.uri import uri_safe
 from csvqb.models.validationerror import ValidationError
 from .columns import CsvColumn
-from ..rdf import URI
+from csvqb.models.cube.catalog import CatalogMetadataBase
 from csvqb.inputs import pandas_input_to_columnar
 
+TMetadata = TypeVar("TMetadata", bound=CatalogMetadataBase, covariant=True)
 
-class CubeMetadata:
 
+class Cube(Generic[TMetadata]):
     def __init__(self,
-                 title: str,
-                 uri_safe_identifier: Optional[str] = None,
-                 summary: Optional[str] = None,
-                 description: Optional[str] = None,
-                 creator: Optional[URI] = None,
-                 publisher: Optional[URI] = None,
-                 issued: Optional[datetime] = None,
-                 themes: List[str] = [],
-                 keywords: List[str] = [],
-                 landing_page: Optional[URI] = None,
-                 license: Optional[URI] = None,
-                 public_contact_point: Optional[URI] = None):
-        self.title: str = title
-        self.uri_safe_identifier: str = uri_safe(title) if uri_safe_identifier is None else uri_safe_identifier
-        self.summary: Optional[str] = summary
-        self.description: Optional[str] = description
-        self.creator: Optional[URI] = creator
-        self.publisher: Optional[URI] = publisher
-        self.issued: Optional[datetime] = issued
-        self.themes: List[str] = themes
-        self.keywords: List[str] = keywords
-        self.landing_page: Optional[URI] = landing_page
-        self.license: Optional[URI] = license
-        self.public_contact_point: Optional[URI] = public_contact_point
-
-    def validate(self) -> List[ValidationError]:
-        return []  # TODO: implement this
-
-
-class Cube:
-    def __init__(self,
-                 metadata: CubeMetadata,
+                 metadata: TMetadata,
                  data: Optional[pd.DataFrame] = None,
                  columns: List[CsvColumn] = []):
-        self.metadata: CubeMetadata = metadata
+        self.metadata: TMetadata = metadata
         self.data: Optional[pd.DataFrame] = data
         self.columns: List[CsvColumn] = columns
 

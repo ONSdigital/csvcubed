@@ -8,6 +8,7 @@ from .datastructuredefinition import ColumnarQbDataStructureDefinition
 from .codelist import QbCodeList, NewQbCodeList
 from csvqb.models.validationerror import ValidationError
 from csvqb.inputs import PandasDataTypes
+from ..catalog import CatalogMetadata
 
 
 class QbDimension(ColumnarQbDataStructureDefinition, ABC):
@@ -78,7 +79,7 @@ class NewQbDimension(QbDimension):
         return NewQbDimension(label,
                               description=description,
                               uri_safe_identifier=uri_safe_identifier,
-                              code_list=NewQbCodeList.from_data(label, data),
+                              code_list=NewQbCodeList.from_data(CatalogMetadata(label), data),
                               parent_dimension_uri=parent_dimension_uri,
                               source_uri=source_uri,
                               range_uri=range_uri)

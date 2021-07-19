@@ -202,7 +202,7 @@ def _get_qb_dimension_specification(column_name_uri_safe: str,
         component.dimension.comment = dimension.description
         component.dimension.subPropertyOf = maybe_existing_resource(dimension.parent_dimension_uri)
         component.dimension.source = maybe_existing_resource(dimension.source_uri)
-        component.dimension.range = ExistingResource(namespaces.SKOS.Concept)
+        component.dimension.range = ExistingResource(rdflib.SKOS.Concept)
 
         if dimension.code_list is not None:
             component.dimension.code_list = _get_code_list_resource(dimension.code_list)
@@ -369,7 +369,7 @@ def _get_column_uri_template_fragment(column: CsvColumn, escape_value: bool = Fa
 
 
 def _get_new_code_list_scheme_uri(code_list: NewQbCodeList) -> str:
-    return _doc_rel_uri(f"scheme/{code_list.uri_safe_identifier}")
+    return _doc_rel_uri(f"scheme/{code_list.metadata.uri_safe_identifier}")
 
 
 external_code_list_pattern = re.compile("^(.*)/concept-scheme/(.*)$")
@@ -400,7 +400,7 @@ def _get_default_value_uri_for_code_list_concepts(column: CsvColumn, code_list: 
             return column_uri_fragment
 
     elif isinstance(code_list, NewQbCodeList):
-        return _doc_rel_uri(f"concept/{code_list.uri_safe_identifier}/{column_uri_fragment}")
+        return _doc_rel_uri(f"concept/{code_list.metadata.uri_safe_identifier}/{column_uri_fragment}")
     else:
         raise Exception(f"Unhandled codelist type {type(code_list)}")
 

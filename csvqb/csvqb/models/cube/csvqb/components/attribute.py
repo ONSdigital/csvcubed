@@ -8,6 +8,7 @@ from .datastructuredefinition import ColumnarQbDataStructureDefinition
 from .codelist import QbCodeList, NewQbCodeList
 from csvqb.models.validationerror import ValidationError
 from csvqb.inputs import PandasDataTypes
+from csvqb.models.cube.csvqb.catalog import CatalogMetadata
 
 
 class QbAttribute(ColumnarQbDataStructureDefinition, ABC):
@@ -61,7 +62,7 @@ class NewQbAttribute(QbAttribute):
         return NewQbAttribute(label,
                               uri_safe_identifier=uri_safe_identifier,
                               description=description,
-                              code_list=NewQbCodeList.from_data(label, data),
+                              code_list=NewQbCodeList.from_data(CatalogMetadata(label), data),
                               parent_attribute_uri=parent_attribute_uri,
                               source_uri=source_uri,
                               is_required=is_required)

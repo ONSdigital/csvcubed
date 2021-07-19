@@ -8,8 +8,8 @@ from dateutil import parser
 from sharedmodels.rdf.namespaces import GOV
 
 
-from csvqb.models.rdf import URI
-from csvqb.models.cube.cube import Cube, CubeMetadata
+from csvqb.models.cube.cube import Cube
+from csvqb.models.cube.csvqb.catalog import CatalogMetadata
 from csvqb.models.cube.columns import CsvColumn, SuppressedCsvColumn
 from csvqb.models.cube.csvqb.columns import QbColumn
 from csvqb.models.cube.csvqb.components.observedvalue import QbSingleMeasureObservationValue, \
@@ -75,21 +75,21 @@ def _from_info_json_dict(d: Dict, data: pd.DataFrame):
     return Cube(metadata, data, columns)
 
 
-def _metadata_from_dict(config: dict) -> "CubeMetadata":
-    publisher = get_with_func_or_none(config, "publisher", lambda p: URI(str(GOV[uri_safe(p)])))
-    return CubeMetadata(
+def _metadata_from_dict(config: dict) -> "CatalogMetadata":
+    publisher = get_with_func_or_none(config, "publisher", lambda p: str(GOV[uri_safe(p)]))
+    return CatalogMetadata(
         get_from_dict_ensure_exists(config, "title"),
         uri_safe_identifier=get_from_dict_ensure_exists(config, "id"),
         summary=config.get("summary"),
         description=config.get("description"),
-        creator=publisher,
-        publisher=publisher,
+        creator_uri=publisher,
+        publisher_uri=publisher,
         issued=get_with_func_or_none(config, "published", parser.parse),
         themes=config.get("families", []),
         keywords=config.get("keywords", []),
-        landing_page=get_with_func_or_none(config, "landingPage", URI),
-        license=config.get("license"),
-        public_contact_point=get_with_func_or_none(config, "contactUri", URI)
+        landing_page=config.get("landingPage"),
+        license_uri=config.get("license"),
+        public_contact_point_uri=config.get("contactUri")
     )
 
 
@@ -181,5 +181,5 @@ def _get_code_list(column_label: str, maybe_code_list: Optional[Union[bool, str]
         else:
             raise Exception(f"Unexpected codelist value '{maybe_code_list}'")
     else:
-        code_list = NewQbCodeList.from_data(column_label, column_data)
+        code_list = NewQbCodeList.from_data(CatalogMetadata(column_label), column_data)
     return code_list

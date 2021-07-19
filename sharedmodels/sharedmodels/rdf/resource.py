@@ -38,8 +38,12 @@ class NewResource(RdfResource, ABC):
 
     def __init__(self, uri: str):
         RdfResource.__init__(self, uri)
-        self.rdf_types = set()
-        self.additional_rdf = {}
+        if not hasattr(self, "rdf_types"):
+            # Multiple-inheritance safeguard
+            self.rdf_types = set()
+        if not hasattr(self, "additional_rdf"):
+            # Multiple-inheritance safeguard
+            self.additional_rdf = {}
 
     @property
     def uri_str(self) -> str:
@@ -115,6 +119,12 @@ class NewResource(RdfResource, ABC):
                                 f" ({type(self).__name__}.{property_key}).") from e
 
 
+class NewResourceWithType(NewResource):
+    def __init__(self, uri: str, type_uri: str):
+        NewResource.__init__(uri)
+        self.rdf_types.add(URIRef(type_uri))
+
+
 def map_str_to_en_literal(s: str) -> Literal:
     return Literal(s, 'en')
 
@@ -132,7 +142,7 @@ class NewResourceWithLabel(NewResource, ABC):
 
 
 class NewMetadataResource(NewResourceWithLabel, ABC):
-    comment: Annotated[str, Triple(RDFS.comment, PropertyStatus.mandatory, map_str_to_en_literal)]
+    comment: Annotated[Optional[str], Triple(RDFS.comment, PropertyStatus.recommended, map_str_to_en_literal)]
 
 
 def maybe_existing_resource(maybe_resource_uri: Optional[str]) -> Optional[ExistingResource]:

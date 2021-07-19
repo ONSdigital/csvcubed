@@ -16,7 +16,7 @@ def _get_standard_cube_for_columns(columns: List[CsvColumn]) -> Cube:
         "Observed Value": [101.5, 56.2, 12.4, 77.8],
         "Marker": ["Provisional", "Provisional", "Provisional", "Provisional"]
     })
-    metadata: CubeMetadata = CubeMetadata("Some qube")
+    metadata: CatalogMetadata = CatalogMetadata("Some qube")
 
     return Cube(deepcopy(metadata), data.copy(deep=True), columns)
 
