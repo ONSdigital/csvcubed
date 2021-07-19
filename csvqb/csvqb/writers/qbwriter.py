@@ -4,12 +4,14 @@ import re
 from pathlib import Path
 from typing import Optional, Tuple, Dict, Any, List, Iterable
 import rdflib
+from sharedmodels.rdf import qb, skos
+from sharedmodels.rdf.resource import Resource, ExistingResource, maybe_existing_resource
 
 
 from csvqb.models.cube import *
 from csvqb.utils.uri import get_last_uri_part, csvw_column_name_safe
-from sharedmodels.rdf import qb, rdfs, skos, namespaces
-from sharedmodels.rdf.resource import Resource, ExistingResource, maybe_existing_resource
+from csvqb.utils.qb.cube import get_columns_of_dsd_type
+from .skoscodelistwriter import new_code_list_to_csvw
 
 VIRT_UNIT_COLUMN_NAME = "virt_unit"
 
@@ -24,7 +26,9 @@ def write_metadata(cube: Cube, output_file: Path) -> None:
         }
     ]
 
-    # todo: Need to generate local code-lists
+    for column in get_columns_of_dsd_type(cube, NewQbCodeList):
+        new_code_list_to_csvw(column.component, output_file.parent)
+
     # todo: Need to add CSV-W Foreign Key constraints to the columns associated with code-lists
     # todo: Local units haven't been defined anywhere yet!
     # todo: Add `aboutUrl` mapping based on all of dimensions (in some consistent ordering).
