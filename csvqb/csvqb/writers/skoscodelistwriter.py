@@ -47,7 +47,7 @@ class SkosCodeListWriter(WriterBase):
 
         return csvw_metadata, data
 
-    def _get_csvw_metadata(self, ) -> dict:
+    def _get_csvw_metadata(self) -> dict:
         additional_metadata = self._get_catalog_metadata()
 
         csvw_columns = [
