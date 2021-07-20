@@ -26,8 +26,9 @@ def write_metadata(cube: Cube, output_file: Path) -> None:
         }
     ]
 
-    for column in get_columns_of_dsd_type(cube, NewQbCodeList):
-        new_code_list_to_csvw(column.component, output_file.parent)
+    for column in get_columns_of_dsd_type(cube, NewQbDimension):
+        if isinstance(column.component.code_list, NewQbCodeList):
+            new_code_list_to_csvw(column.component.code_list, output_file.parent)
 
     # todo: Need to add CSV-W Foreign Key constraints to the columns associated with code-lists
     # todo: Local units haven't been defined anywhere yet!

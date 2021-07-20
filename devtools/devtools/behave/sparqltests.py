@@ -1,5 +1,5 @@
 """
-behave functionality to run csv-lint on some output
+behave functionality to run sparql tests on RDF
 """
 from behave import step
 import nose.tools as nose
