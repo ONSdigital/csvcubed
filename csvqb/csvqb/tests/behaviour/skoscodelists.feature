@@ -21,7 +21,7 @@ Feature: Test outputting CSV-Ws containing `SKOS:ConceptScheme`s.
           <http://www.w3.org/2000/01/rdf-schema#seeAlso> <file:/tmp/basic-code-list.csv-metadata.json#scheme>;
           <http://www.w3.org/ns/dcat#keyword> "Key word one"@en, "Key word two"@en;
           <http://www.w3.org/ns/dcat#landingPage> <http://example.org/landing-page>;
-          <http://www.w3.org/ns/dcat#theme> <http://gss-data.org.uk/dev/gdp#some-test-theme> .
+          <http://www.w3.org/ns/dcat#theme> <http://gss-data.org.uk/def/gdp#some-test-theme> .
 
         <file:/tmp/basic-code-list.csv#concept/1st-concept> <http://www.w3.org/2000/01/rdf-schema#comment>
             "This is the first concept.";
