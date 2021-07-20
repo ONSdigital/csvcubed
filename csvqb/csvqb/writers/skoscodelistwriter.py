@@ -6,7 +6,6 @@ import json
 from pathlib import Path
 from typing import Tuple
 import pandas as pd
-from sharedmodels.rdf import dcat
 
 
 from csvqb.models.cube.csvqb.components.codelist import NewQbCodeList
@@ -14,8 +13,8 @@ from csvqb.utils.dict import rdf_resource_to_json_ld_dict
 from csvqb.models.rdf.conceptschemeincatalog import ConceptSchemeInCatalog
 
 
-def _doc_rel_uri(fragment: str) -> str:
-    return f"#{fragment}"
+def _doc_rel_uri(csv_file_name: str, fragment: str) -> str:
+    return f"./{csv_file_name}#{fragment}"
 
 
 def new_code_list_to_csvw(new_code_list: NewQbCodeList, output_directory: Path) -> None:
@@ -41,7 +40,7 @@ def _new_code_list_to_csvw_parts(new_code_list: NewQbCodeList, csv_file_name: st
 
 def _get_csvw_metadata(new_code_list: NewQbCodeList, csv_file_name: str) -> dict:
 
-    additional_metadata = _get_catalog_metadata(new_code_list)
+    additional_metadata = _get_catalog_metadata(csv_file_name, new_code_list)
 
     csvw_columns = [
         {
@@ -61,7 +60,7 @@ def _get_csvw_metadata(new_code_list: NewQbCodeList, csv_file_name: str) -> dict
             "name": "parent_notation",
             "required": False,
             "propertyUrl": "skos:broader",
-            "valueUrl": _doc_rel_uri("concept/{+parent_notation}")
+            "valueUrl": _doc_rel_uri(csv_file_name, "concept/{+parent_notation}")
         },
         {
             "titles": "Sort Priority",
@@ -81,17 +80,17 @@ def _get_csvw_metadata(new_code_list: NewQbCodeList, csv_file_name: str) -> dict
             "name": "virt_inScheme",
             "required": False,
             "propertyUrl": "skos:inScheme",
-            "valueUrl": _doc_rel_uri("scheme")
+            "valueUrl": _doc_rel_uri(csv_file_name, "scheme")
         }
     ]
 
     csvw_metadata = {
         "@context": "http://www.w3.org/ns/csvw",
-        "@id": _doc_rel_uri("scheme"),
+        "@id": _doc_rel_uri(csv_file_name, "scheme"),
         "url": csv_file_name,
         "tableSchema": {
             "columns": csvw_columns,
-            "aboutUrl": _doc_rel_uri("concept/{+notation}")
+            "aboutUrl": _doc_rel_uri(csv_file_name, "concept/{+notation}")
         },
         "rdfs:seeAlso": rdf_resource_to_json_ld_dict(additional_metadata)
     }
@@ -99,11 +98,11 @@ def _get_csvw_metadata(new_code_list: NewQbCodeList, csv_file_name: str) -> dict
     return csvw_metadata
 
 
-def _get_catalog_metadata(new_code_list: NewQbCodeList) -> ConceptSchemeInCatalog:
+def _get_catalog_metadata(csv_file_name: str, new_code_list: NewQbCodeList) -> ConceptSchemeInCatalog:
     dt_now = datetime.datetime.now()
     metadata = new_code_list.metadata
 
-    concept_scheme = ConceptSchemeInCatalog(_doc_rel_uri("scheme"))
+    concept_scheme = ConceptSchemeInCatalog(_doc_rel_uri(csv_file_name, "scheme"))
     concept_scheme.label = concept_scheme.title = metadata.title
     concept_scheme.issued = metadata.issued or dt_now
     concept_scheme.modified = dt_now
