@@ -108,7 +108,7 @@ class InfoJsonLoaderTests(UnitTestBase):
         # Creator - pass
 
         expected_creator = "https://www.gov.uk/government/organisations/hm-revenue-customs"
-        actual_creator = cube.metadata.creator
+        actual_creator = cube.metadata.creator_uri
         self.assertEqual(expected_creator, actual_creator)
 
         # Description - pass
@@ -133,26 +133,26 @@ class InfoJsonLoaderTests(UnitTestBase):
         # landingpage - pass
 
         expected_landingpage = "https://www.gov.uk/government/statistics/bottles-bulletin"
-        actual_landingpage = cube.metadata.landing_page
+        actual_landingpage = cube.metadata.landing_page_uri
         self.assertEqual(expected_landingpage, actual_landingpage)
 
         # license - pass
         # Surprisingly the info.json schema doesn't allow a licence property just yet.
         expected_license = None
-        actual_license = cube.metadata.license
+        actual_license = cube.metadata.license_uri
         self.assertEqual(expected_license, actual_license)
 
         # public_contact_point - pass
         # The info.json schema doesn't allow a public_contact_point property just yet
 
         expected_public_contact_point = None
-        actual_public_contact_point = cube.metadata.public_contact_point
+        actual_public_contact_point = cube.metadata.public_contact_point_uri
         self.assertEqual(expected_public_contact_point, actual_public_contact_point)
 
         # publisher - pass
 
         expected_publisher = "https://www.gov.uk/government/organisations/hm-revenue-customs"
-        actual_publisher = cube.metadata.publisher
+        actual_publisher = cube.metadata.publisher_uri
         self.assertEqual(expected_publisher, actual_publisher)
 
         # summary - pass
