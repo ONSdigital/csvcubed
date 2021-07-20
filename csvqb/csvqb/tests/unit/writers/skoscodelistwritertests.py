@@ -4,7 +4,7 @@ from typing import Dict, Any
 
 from csvqb.models.cube import *
 from csvqb.tests.unit.unittestbase import UnitTestBase
-from csvqb.writers import skoscodelistwriter as codelistwriter
+from csvqb.writers.skoscodelistwriter import SkosCodeListWriter
 
 basic_code_list = NewQbCodeList(CatalogMetadata("Some CodeList"), [
     NewQbConcept("First Concept", code="1st-concept", description="This is the first concept."),
@@ -18,7 +18,8 @@ class CodeListWriterTests(UnitTestBase):
         """
             Test that a `pd.DataFrame` containing the codes is correctly generated from a `NewQbCodeList`.
         """
-        data = codelistwriter._get_code_list_data(basic_code_list)
+        writer = SkosCodeListWriter(basic_code_list)
+        data = writer._get_code_list_data()
         actual_column_names = list(data.columns)
         self.assertCountEqual(["Label", "Notation", "Parent Notation", "Sort Priority", "Description"],
                               actual_column_names)

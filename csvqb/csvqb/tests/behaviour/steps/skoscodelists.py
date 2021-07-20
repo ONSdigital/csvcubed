@@ -2,7 +2,7 @@ from behave import Given, When
 
 
 from csvqb.models.cube import *
-from csvqb.writers import skoscodelistwriter as codelistwriter
+from csvqb.writers.skoscodelistwriter import SkosCodeListWriter
 from devtools.behave.file import get_context_temp_dir_path
 
 
@@ -29,5 +29,6 @@ def step_impl(context, code_list_name: str):
 
 @When("the code list is serialised to CSV-W")
 def step_impl(context):
+    writer = SkosCodeListWriter(context.code_list)
     temp_dir = get_context_temp_dir_path(context)
-    codelistwriter.new_code_list_to_csvw(context.code_list, temp_dir)
+    writer.write(temp_dir)
