@@ -62,6 +62,13 @@ class QbWriter(WriterBase):
             json.dump(csvw_metadata, f, indent=4)
 
     def _doc_rel_uri(self, uri_fragment: str) -> str:
+        """
+            URIs declared in the `columns` section of the CSV-W are relative to the CSV's location.
+            URIs declared in the JSON-LD metadata section of the CSV-W are relative to the metadata file's location.
+
+            This function makes both point to the same base location - the CSV file's location. This ensures that we
+            can talk about the same resources in the `columns` section and the JSON-LD metadata section.
+        """
         return f"./{self.csv_file_name}#{uri_fragment}"
 
     def _output_new_code_list_csvws(self, output_folder: Path) -> None:
