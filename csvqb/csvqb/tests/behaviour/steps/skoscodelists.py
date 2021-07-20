@@ -16,7 +16,7 @@ def step_impl(context, code_list_name: str):
         publisher_uri="https://www.gov.uk/government/organisations/office-for-national-statistics",
         theme_uris=["http://gss-data.org.uk/def/gdp#some-test-theme"],
         keywords=["Key word one", "Key word two"],
-        landing_page="http://example.org/landing-page",
+        landing_page_uri="http://example.org/landing-page",
         license_uri="http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
         public_contact_point_uri="something@example.org"
     )

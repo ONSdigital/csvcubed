@@ -109,9 +109,9 @@ def _get_catalog_metadata(new_code_list: NewQbCodeList) -> ConceptSchemeInCatalo
     concept_scheme.modified = dt_now
     concept_scheme.comment = metadata.summary
     concept_scheme.description = metadata.description
-    concept_scheme.license = metadata.license
-    concept_scheme.publisher = metadata.publisher
-    concept_scheme.landing_page = metadata.landing_page
+    concept_scheme.license = metadata.license_uri
+    concept_scheme.publisher = metadata.publisher_uri
+    concept_scheme.landing_page = metadata.landing_page_uri
     concept_scheme.themes = set(metadata.theme_uris)
     concept_scheme.keywords = set(metadata.keywords)
 

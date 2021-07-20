@@ -88,7 +88,7 @@ def _metadata_from_dict(config: dict) -> "CatalogMetadata":
         issued=get_with_func_or_none(config, "published", parser.parse),
         theme_uris=theme_uris,
         keywords=config.get("keywords", []),
-        landing_page=config.get("landingPage"),
+        landing_page_uri=config.get("landingPage"),
         license_uri=config.get("license"),
         public_contact_point_uri=config.get("contactUri")
     )

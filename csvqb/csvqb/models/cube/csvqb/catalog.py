@@ -18,19 +18,19 @@ class CatalogMetadata(CatalogMetadataBase):
                  issued: Optional[datetime] = None,
                  theme_uris: List[str] = [],
                  keywords: List[str] = [],
-                 landing_page: Optional[str] = None,
+                 landing_page_uri: Optional[str] = None,
                  license_uri: Optional[str] = None,
                  public_contact_point_uri: Optional[str] = None):
         CatalogMetadataBase.__init__(self, title, description=description, issued=issued)
         self.uri_safe_identifier: str = uri_safe_identifier or uri_safe(title)
         self.summary: Optional[str] = summary
-        self.creator: Optional[str] = creator_uri
-        self.publisher: Optional[str] = publisher_uri
+        self.creator_uri: Optional[str] = creator_uri
+        self.publisher_uri: Optional[str] = publisher_uri
         self.theme_uris: List[str] = theme_uris
         self.keywords: List[str] = keywords
-        self.landing_page: Optional[str] = landing_page
-        self.license: Optional[str] = license_uri
-        self.public_contact_point: Optional[str] = public_contact_point_uri
+        self.landing_page_uri: Optional[str] = landing_page_uri
+        self.license_uri: Optional[str] = license_uri
+        self.public_contact_point_uri: Optional[str] = public_contact_point_uri
 
     def validate(self) -> List[ValidationError]:
         return CatalogMetadataBase.validate(self) \
