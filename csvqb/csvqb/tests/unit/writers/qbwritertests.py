@@ -303,6 +303,66 @@ class QbWriterTests(UnitTestBase):
         self.assertEqual("http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure", virt_unit["propertyUrl"])
         self.assertEqual("#unit/some-unit", virt_unit["valueUrl"])
 
+    def test_about_url_generation(self):
+        """
+            Ensuring that when an aboutUrl is defined for a non-multimeasure cube, the resulting URL
+            is built in the order in which dimensions appear in the cube.
+        """
+        data = pd.DataFrame({
+            "Existing Dimension": ["A", "B", "C"],
+            "Local Dimension": ["D", "E", "F"],
+            "Value": [2, 2, 2]
+        })
+
+        metadata = CubeMetadata("Some Dataset")
+        columns = [
+            QbColumn("Existing Dimension",
+                     ExistingQbDimension("https://example.org/dimensions/existing_dimension")),
+            QbColumn("Local Dimension", 
+                     NewQbDimension.from_data("Name of New Dimension", 
+                     data["Local Dimension"])),
+            QbColumn("Value", 
+                     QbSingleMeasureObservationValue(ExistingQbMeasure("http://example.com/measures/existing_measure"), 
+                     NewQbUnit("New Unit")))
+            
+        ]
+
+        cube = Cube(metadata, data, columns)
+
+        actual_about_url = qbwriter._get_about_url(cube)
+        expected_about_url = "#obs/{+existing-dimension}/{+local-dimension}"
+        assert actual_about_url == expected_about_url
+
+    def test_about_url_generation_with_multiple_measures(self):
+        """
+            Ensuring that when an aboutUrl is defined for a multimeasure cube, the resulting URL
+            is built in the order in which dimensions appear in the cube except for the multi-measure
+            dimensions which are appended to the end of the URL.
+        """
+        data = pd.DataFrame({
+            "Existing Dimension": ["A", "B", "C"],
+            "Value": [2, 2, 2],
+            "Local Dimension": ["D", "E", "F"],
+            "Measure": ["People", "Children", "Adults"],
+            "Units": ["Percent", "People", "People"]
+        })
+
+        metadata = CubeMetadata("Some Dataset")
+        columns = [
+            QbColumn("Existing Dimension", ExistingQbDimension("https://example.org/dimensions/existing_dimension")),
+            QbColumn("Local Dimension", NewQbDimension.from_data("Name of New Dimension", data["Local Dimension"])),
+            QbColumn("Value", QbMultiMeasureObservationValue("number")),
+            QbColumn("Measure", QbMultiMeasureDimension.new_measures_from_data(data["Measure"])),
+            QbColumn("Units", QbMultiUnits.new_units_from_data(data["Units"]))
+    
+        ]
+
+        cube = Cube(metadata, data, columns)
+
+        actual_about_url = qbwriter._get_about_url(cube)
+        expected_about_url = "#obs/{+existing-dimension}/{+local-dimension}/{+measure}"
+        assert actual_about_url == expected_about_url
+
 
 if __name__ == '__main__':
     unittest.main()

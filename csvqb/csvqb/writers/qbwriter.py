@@ -8,6 +8,7 @@ import rdflib
 
 from csvqb.models.cube import *
 from csvqb.utils.uri import get_last_uri_part, csvw_column_name_safe
+from csvqb.utils.qb.cube import get_columns_of_dsd_type
 from sharedmodels.rdf import qb, rdfs, skos, namespaces
 from sharedmodels.rdf.resource import Resource, ExistingResource, maybe_existing_resource
 
@@ -421,3 +422,25 @@ def _get_measure_uri(measure: QbMeasure) -> str:
         return _doc_rel_uri(f"measure/{measure.uri_safe_identifier}")
     else:
         raise Exception(f"Unmatched unit type {type(unit)}")
+
+
+def _get_about_url(cube: Cube) -> str:
+    # Todo: Dimensions are currently appended in the order in which the appear in the cube.
+    #       We may want to alter this in the future so that the ordering is from
+    #       least entropic dimension -> most entropic.
+    #       E.g. http://base-uri/observations/male/1996/all-males-1996
+    multi_measure_cols = []
+    aboutUrl = "#obs"
+    for c in cube.columns:
+        if isinstance(c, QbColumn):
+            c: QbColumn
+            if isinstance(c.component, QbDimension):
+                aboutUrl = aboutUrl + f"/{{+{c.uri_safe_identifier}}}"
+            elif isinstance(c.component, QbMultiMeasureDimension):
+                multi_measure_cols.append(c.uri_safe_identifier)
+            else: 
+                pass
+    if len(multi_measure_cols) != 0:
+        for m in multi_measure_cols:
+            aboutUrl = aboutUrl + f"/{{+{m}}}"
+    return aboutUrl
