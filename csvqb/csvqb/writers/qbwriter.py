@@ -433,7 +433,6 @@ def _get_about_url(cube: Cube) -> str:
     aboutUrl = "#obs"
     for c in cube.columns:
         if isinstance(c, QbColumn):
-            c: QbColumn
             if isinstance(c.component, QbDimension):
                 aboutUrl = aboutUrl + f"/{{+{c.uri_safe_identifier}}}"
             elif isinstance(c.component, QbMultiMeasureDimension):
