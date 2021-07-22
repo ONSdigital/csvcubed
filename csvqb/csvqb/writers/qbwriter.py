@@ -429,17 +429,16 @@ def _get_about_url(cube: Cube) -> str:
     #       We may want to alter this in the future so that the ordering is from
     #       least entropic dimension -> most entropic.
     #       E.g. http://base-uri/observations/male/1996/all-males-1996
-    multi_measure_cols = []
     aboutUrl = "#obs"
+    multi_measure_col = ""
     for c in cube.columns:
         if isinstance(c, QbColumn):
             if isinstance(c.component, QbDimension):
-                aboutUrl = aboutUrl + f"/{{+{c.uri_safe_identifier}}}"
+                aboutUrl = aboutUrl + f"/{{+{csvw_column_name_safe(c.uri_safe_identifier)}}}"
             elif isinstance(c.component, QbMultiMeasureDimension):
-                multi_measure_cols.append(c.uri_safe_identifier)
+                multi_measure_col = csvw_column_name_safe(c.uri_safe_identifier)
             else: 
                 pass
-    if len(multi_measure_cols) != 0:
-        for m in multi_measure_cols:
-            aboutUrl = aboutUrl + f"/{{+{m}}}"
+    if len(multi_measure_col) != 0:
+        aboutUrl = aboutUrl + f"/{{+{multi_measure_col}}}"
     return aboutUrl

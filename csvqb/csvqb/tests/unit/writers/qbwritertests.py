@@ -330,7 +330,7 @@ class QbWriterTests(UnitTestBase):
         cube = Cube(metadata, data, columns)
 
         actual_about_url = qbwriter._get_about_url(cube)
-        expected_about_url = "#obs/{+existing-dimension}/{+local-dimension}"
+        expected_about_url = "#obs/{+existing_dimension}/{+local_dimension}"
         assert actual_about_url == expected_about_url
 
     def test_about_url_generation_with_multiple_measures(self):
@@ -360,7 +360,7 @@ class QbWriterTests(UnitTestBase):
         cube = Cube(metadata, data, columns)
 
         actual_about_url = qbwriter._get_about_url(cube)
-        expected_about_url = "#obs/{+existing-dimension}/{+local-dimension}/{+measure}"
+        expected_about_url = "#obs/{+existing_dimension}/{+local_dimension}/{+measure}"
         assert actual_about_url == expected_about_url
 
 

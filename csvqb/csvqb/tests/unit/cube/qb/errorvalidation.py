@@ -19,7 +19,7 @@ class InternalApiLoaderTests(UnitTestBase):
             "Value": [2, 2, 2]
         })
 
-        metadata = CubeMetadata("Some Dataset")
+        metadata = CubeMetadata(URI("http://example.com/some/dataset"), "Some Dataset")
         columns = [
             QbColumn("Existing Dimension", ExistingQbDimension("https://example.org/dimensions/existing_dimension"),
                      output_uri_template="https://example.org/concept-scheme/existing_scheme/{+existing_dimension}"),
