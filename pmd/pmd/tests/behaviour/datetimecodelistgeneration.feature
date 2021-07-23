@@ -3,9 +3,9 @@ Feature: Date/Time Code List Generation from CSV-W
   Scenario: Generation of Month code list from HMRC Overseas Trade Statistics
     Given a CSV-qb "pmd/tests/test-cases/hmrc-overseas-trade-statistics-cn8.csv-metadata.json"
     When a date/time code lists is generated from the CSV-qb
-    Then the file at "pmd/tests/test-cases/Month.csv-metadata.json" should exist
-    And csvlint validation of "pmd/tests/test-cases/Month.csv-metadata.json" should succeed
-    And csv2rdf on "pmd/tests/test-cases/Month.csv-metadata.json" should succeed
+    Then the file at "Month.csv-metadata.json" should exist
+    And csvlint validation of "Month.csv-metadata.json" should succeed
+    And csv2rdf on "Month.csv-metadata.json" should succeed
     And the RDF should contain
     """
       <http://gss-data.org.uk/data/gss_data/trade/hmrc-overseas-trade-statistics/hmrc-overseas-trade-statistics-cn8#scheme/period>

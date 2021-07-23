@@ -11,9 +11,10 @@ from tempfile import TemporaryDirectory
 
 
 from devtools.helpers.tar import dir_to_tar, extract_tar
+from devtools.behave.temporarydirectory import get_context_temp_dir_path
 
 
-def _run_csv2rdf(metadata_file_path: Path) -> Tuple[int, str, Optional[str]]:
+def _run_csv2rdf(context, metadata_file_path: Path) -> Tuple[int, str, Optional[str]]:
     with TemporaryDirectory() as tmp_dir:
         tmp_dir = Path(tmp_dir)
         client = docker.from_env()
@@ -37,12 +38,15 @@ def _run_csv2rdf(metadata_file_path: Path) -> Tuple[int, str, Optional[str]]:
         else:
             ttl_out = ""
 
+        context.turtle = ttl_out
+
     return exit_code, csv2rdf.logs().decode('utf-8'), ttl_out
 
 
 @step("csv2rdf on \"{file}\" should succeed")
 def step_impl(context, file: str):
-    exit_code, logs, ttl_out = _run_csv2rdf(Path(file))
+    temp_dir = get_context_temp_dir_path(context)
+    exit_code, logs, ttl_out = _run_csv2rdf(context, temp_dir / file)
     nose.assert_equal(exit_code, 0)
 
     context.turtle = ttl_out
@@ -50,7 +54,8 @@ def step_impl(context, file: str):
 
 @step('csv2rdf on \"{file}\" should fail with "{expected}"')
 def step_impl(context, file: str, expected: str):
-    exit_code, logs, ttl_out = _run_csv2rdf(Path(file))
+    temp_dir = get_context_temp_dir_path(context)
+    exit_code, logs, ttl_out = _run_csv2rdf(context, temp_dir / file)
     nose.assert_equal(exit_code, 1)
     assert expected in logs
 

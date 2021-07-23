@@ -80,6 +80,7 @@ pipeline {
                 }
 
                 dir("csvqb") {
+                    sh "pipenv run behave csvqb/tests/behaviour --tags=-skip -f json.cucumber -o csvqb/tests/behaviour/test-results.json"
                     dir("csvqb/tests/unit") {
                         sh "PIPENV_PIPFILE='../../../Pipfile' pipenv run python -m xmlrunner -o reports **/*.py"
                     }

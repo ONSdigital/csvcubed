@@ -2,9 +2,7 @@ import unittest
 import pandas as pd
 from typing import List
 
-
 from csvqb.models.cube import *
-from csvqb.models.rdf import URI
 from csvqb.tests.unit.unittestbase import UnitTestBase
 
 
@@ -19,7 +17,7 @@ class InternalApiLoaderTests(UnitTestBase):
             "Some Dimension": ["A", "B", "C"]
         })
 
-        metadata = CubeMetadata(URI("http://example.com/some/dataset"), "Some Dataset")
+        metadata = CatalogMetadata("Some Dataset")
         columns = []
         cube = Cube(metadata, data, columns)
         validation_errors = cube.validate()
@@ -35,7 +33,7 @@ class InternalApiLoaderTests(UnitTestBase):
 
         data = pd.DataFrame()
 
-        metadata = CubeMetadata(URI("http://example.com/some/dataset"), "Some Dataset")
+        metadata = CatalogMetadata("Some Dataset")
         columns: List[CsvColumn] = [
             SuppressedCsvColumn("Some Column Title")
         ]

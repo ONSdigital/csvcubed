@@ -3,7 +3,6 @@ import unittest
 import pandas as pd
 
 from csvqb.models.cube import *
-from csvqb.models.rdf import URI
 from csvqb.tests.unit.unittestbase import UnitTestBase
 from csvqb.utils.qb.cube import validate_qb_component_constraints
 
@@ -19,7 +18,7 @@ class InternalApiLoaderTests(UnitTestBase):
             "Value": [2, 2, 2]
         })
 
-        metadata = CubeMetadata(URI("http://example.com/some/dataset"), "Some Dataset")
+        metadata = CatalogMetadata("Some Dataset")
         columns = [
             QbColumn("Existing Dimension", ExistingQbDimension("https://example.org/dimensions/existing_dimension"),
                      output_uri_template="https://example.org/concept-scheme/existing_scheme/{+existing_dimension}"),
@@ -48,7 +47,7 @@ class InternalApiLoaderTests(UnitTestBase):
             "Units": ["Percent", "People", "People"]
         })
 
-        metadata = CubeMetadata(URI("http://example.com/some/dataset"), "Some Dataset")
+        metadata = CatalogMetadata("Some Dataset")
         columns = [
             QbColumn("Existing Dimension", ExistingQbDimension("https://example.org/dimensions/existing_dimension"),
                      output_uri_template="https://example.org/concept-scheme/existing_scheme/{+existing_dimension}"),
@@ -73,7 +72,7 @@ class InternalApiLoaderTests(UnitTestBase):
             "Existing Dimension": ["A", "B", "C"],
             "Value": [1, 2, 3]
         })
-        cube = Cube(CubeMetadata("Cube's name"), data, [
+        cube = Cube(CatalogMetadata("Cube's name"), data, [
             QbColumn("Existing Dimension", ExistingQbDimension("http://example.org/dimensions/location")),
             QbColumn("Value",
                      QbSingleMeasureObservationValue(ExistingQbUnit("http://some/unit"),

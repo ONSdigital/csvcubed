@@ -3,11 +3,10 @@ import re
 import typing
 from pathlib import Path
 from datetime import datetime
-
 import pandas as pd
 import rdflib
 from rdflib import Graph, URIRef
-from typing import List, Tuple, Any, Dict, Set
+from typing import List, Tuple, Any, Dict, Set, Optional
 import csvw
 from uritemplate import expand
 
@@ -16,11 +15,13 @@ from pmd.models.rdf import pmdcat
 from pmd.config import pmdconfig
 
 
-def generate_date_time_code_lists_for_csvw_metadata_file(metadata_file: Path) -> List[Path]:
+def generate_date_time_code_lists_for_csvw_metadata_file(metadata_file: Path,
+                                                         output_directory: Optional[Path] = None) -> List[Path]:
+    output_directory = output_directory or metadata_file.parent
     date_time_dimensions = _get_dimensions_to_generate_code_lists_for(metadata_file)
     files_created: List[Path] = []
     for (dimension, label, code_list_uri) in date_time_dimensions:
-        file_created = _create_code_list_for_dimension(metadata_file, dimension, label, code_list_uri)
+        file_created = _create_code_list_for_dimension(metadata_file, dimension, label, code_list_uri, output_directory)
         files_created.append(file_created)
 
     return files_created
@@ -109,7 +110,7 @@ def _get_unique_values_from_columns(csv_col_mappings: Dict[CsvWithColumnDefiniti
 
 
 def _create_code_list_for_dimension(csv_metadata_file: Path, dimension_uri: str, label: str,
-                                    code_list_uri: str) -> Path:
+                                    code_list_uri: str, output_directory: Path) -> Path:
     """
     :param csv_metadata_file:
     :param dimension_uri:
@@ -130,8 +131,8 @@ def _create_code_list_for_dimension(csv_metadata_file: Path, dimension_uri: str,
         "Sort Priority": range(0, len(unique_values))
     })
 
-    code_list_metadata_out = csv_metadata_file.parent / code_list_metadata_file_name
-    code_list_csv_out = csv_metadata_file.parent / code_list_csv_file_name
+    code_list_metadata_out = output_directory / code_list_metadata_file_name
+    code_list_csv_out = output_directory / code_list_csv_file_name
 
     with open(code_list_metadata_out, "w+") as f:
         json.dump(code_list_metadata, f, indent=4)

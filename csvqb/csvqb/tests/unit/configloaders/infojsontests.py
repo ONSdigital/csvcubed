@@ -3,7 +3,6 @@ import pandas as pd
 from dateutil import parser
 
 
-from csvqb.writers.qbwriter import write_metadata
 from csvqb.configloaders.infojson import get_cube_from_info_json
 from csvqb.utils.qb.cube import validate_qb_component_constraints
 from csvqb.models.cube import *
@@ -108,8 +107,8 @@ class InfoJsonLoaderTests(UnitTestBase):
 
         # Creator - pass
 
-        expected_creator = "HM Revenue & Customs"
-        actual_creator = cube.metadata.creator
+        expected_creator = "https://www.gov.uk/government/organisations/hm-revenue-customs"
+        actual_creator = cube.metadata.creator_uri
         self.assertEqual(expected_creator, actual_creator)
 
         # Description - pass
@@ -134,26 +133,26 @@ class InfoJsonLoaderTests(UnitTestBase):
         # landingpage - pass
 
         expected_landingpage = "https://www.gov.uk/government/statistics/bottles-bulletin"
-        actual_landingpage = cube.metadata.landing_page
+        actual_landingpage = cube.metadata.landing_page_uri
         self.assertEqual(expected_landingpage, actual_landingpage)
 
         # license - pass
         # Surprisingly the info.json schema doesn't allow a licence property just yet.
         expected_license = None
-        actual_license = cube.metadata.license
+        actual_license = cube.metadata.license_uri
         self.assertEqual(expected_license, actual_license)
 
         # public_contact_point - pass
         # The info.json schema doesn't allow a public_contact_point property just yet
 
         expected_public_contact_point = None
-        actual_public_contact_point = cube.metadata.public_contact_point
+        actual_public_contact_point = cube.metadata.public_contact_point_uri
         self.assertEqual(expected_public_contact_point, actual_public_contact_point)
 
         # publisher - pass
 
-        expected_publisher = "HM Revenue & Customs"
-        actual_publisher = cube.metadata.publisher
+        expected_publisher = "https://www.gov.uk/government/organisations/hm-revenue-customs"
+        actual_publisher = cube.metadata.publisher_uri
         self.assertEqual(expected_publisher, actual_publisher)
 
         # summary - pass
@@ -166,9 +165,9 @@ class InfoJsonLoaderTests(UnitTestBase):
         # themes - pass
         # It's the families property
 
-        expected_themes = ["Trade"]
-        actual_themes = cube.metadata.themes
-        self.assertEqual(expected_themes, actual_themes)
+        expected_themes = ["http://gss-data.org.uk/def/gdp#Trade"]
+        actual_themes = [str(t) for t in cube.metadata.theme_uris]
+        self.assertCountEqual(expected_themes, actual_themes)
 
         # title - pass
 
