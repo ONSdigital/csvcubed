@@ -8,8 +8,8 @@ from csvqb.models.validationerror import ValidationError
 
 class QbDataStructureDefinition(ABC):
     """
-        Base class for entities holding information necessary to generate one or many qb DataStructureDefinition (DSD)
-        components.
+    Base class for entities holding information necessary to generate one or many qb DataStructureDefinition (DSD)
+    components.
     """
 
     @abstractmethod
@@ -30,14 +30,15 @@ class QbDataStructureDefinition(ABC):
 
 class ColumnarQbDataStructureDefinition(QbDataStructureDefinition, ABC):
     """
-        Base class representing Qb Data Structure Definitions which can be directly attached to a pd.DataFrame column.
+    Base class representing Qb Data Structure Definitions which can be directly attached to a pd.DataFrame column.
     """
+
     pass
 
 
 class MultiQbDataStructureDefinition(ColumnarQbDataStructureDefinition, ABC):
     """
-        Base class representing an entity which defines a group of `QbDataStructureDefinition`s
+    Base class representing an entity which defines a group of `QbDataStructureDefinition`s
     """
 
     @abstractmethod

@@ -3,7 +3,10 @@ import pandas as pd
 from abc import ABC
 
 
-from .datastructuredefinition import MultiQbDataStructureDefinition, QbDataStructureDefinition
+from .datastructuredefinition import (
+    MultiQbDataStructureDefinition,
+    QbDataStructureDefinition,
+)
 from .measure import QbMeasure, QbMeasureTypeDimension
 from .unit import QbUnit, QbUnitAttribute
 from csvqb.models.validationerror import ValidationError
@@ -40,14 +43,17 @@ class QbMultiMeasureObservationValue(QbObservationValue):
 
 class QbSingleMeasureObservationValue(QbObservationValue):
     """
-        Represents the unit/measure/datatype components necessary to define a simple qb:Observation.
+    Represents the unit/measure/datatype components necessary to define a simple qb:Observation.
 
-        N.B. Requires `virt_unit` and `virt_measure` columns to be added to CSV-W metadata
+    N.B. Requires `virt_unit` and `virt_measure` columns to be added to CSV-W metadata
     """
-    def __init__(self,
-                 measure: QbMeasure,
-                 unit: Optional[QbUnit] = None,
-                 data_type: Optional[str] = None):
+
+    def __init__(
+        self,
+        measure: QbMeasure,
+        unit: Optional[QbUnit] = None,
+        data_type: Optional[str] = None,
+    ):
         QbObservationValue.__init__(self, data_type, unit)
         self.measure: QbMeasure = measure
 

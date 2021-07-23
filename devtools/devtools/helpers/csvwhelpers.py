@@ -24,4 +24,3 @@ def delete_csvw(metadata_file: Path):
         csv_file.unlink()
 
     metadata_file.unlink()
-

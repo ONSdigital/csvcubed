@@ -4,7 +4,10 @@ import pandas as pd
 
 
 from csvqb.utils.uri import uri_safe
-from .datastructuredefinition import MultiQbDataStructureDefinition, QbDataStructureDefinition
+from .datastructuredefinition import (
+    MultiQbDataStructureDefinition,
+    QbDataStructureDefinition,
+)
 from .dimension import ExistingQbDimension
 from csvqb.models.validationerror import ValidationError
 from csvqb.inputs import PandasDataTypes, pandas_input_to_columnar_str
@@ -30,16 +33,20 @@ class ExistingQbMeasure(QbMeasure):
 
 
 class NewQbMeasure(QbMeasure):
-    def __init__(self,
-                 label: str,
-                 description: Optional[str] = None,
-                 uri_safe_identifier: Optional[str] = None,
-                 parent_measure_uri: Optional[str] = None,
-                 source_uri: Optional[str] = None):
+    def __init__(
+        self,
+        label: str,
+        description: Optional[str] = None,
+        uri_safe_identifier: Optional[str] = None,
+        parent_measure_uri: Optional[str] = None,
+        source_uri: Optional[str] = None,
+    ):
         QbMeasure.__init__(self)
         self.label: str = label
         self.description: Optional[str] = description
-        self.uri_safe_identifier: str = uri_safe_identifier if uri_safe_identifier is not None else uri_safe(label)
+        self.uri_safe_identifier: str = (
+            uri_safe_identifier if uri_safe_identifier is not None else uri_safe(label)
+        )
         self.parent_measure_uri: Optional[str] = parent_measure_uri
         self.source_uri: Optional[str] = source_uri
 
@@ -55,8 +62,9 @@ class NewQbMeasure(QbMeasure):
 
 class QbMultiMeasureDimension(MultiQbDataStructureDefinition):
     """
-        Represents the measure types permitted in a multi-measure cube.
+    Represents the measure types permitted in a multi-measure cube.
     """
+
     def __init__(self, measures: List[QbMeasure]):
         self.measures: List[QbMeasure] = measures
 
@@ -67,7 +75,9 @@ class QbMultiMeasureDimension(MultiQbDataStructureDefinition):
     @staticmethod
     def new_measures_from_data(data: PandasDataTypes) -> "QbMultiMeasureDimension":
         columnar_data = pandas_input_to_columnar_str(data)
-        return QbMultiMeasureDimension([NewQbMeasure(m) for m in sorted(set(columnar_data))])
+        return QbMultiMeasureDimension(
+            [NewQbMeasure(m) for m in sorted(set(columnar_data))]
+        )
 
     def validate(self) -> List[ValidationError]:
         return []  # TODO: implement this
@@ -81,5 +91,7 @@ class QbMultiMeasureDimension(MultiQbDataStructureDefinition):
         return components
 
 
-QbMeasureTypeDimension = ExistingQbDimension("http://purl.org/linked-data/cube#measureType",
-                                             range_uri="http://purl.org/linked-data/cube#MeasureProperty")
+QbMeasureTypeDimension = ExistingQbDimension(
+    "http://purl.org/linked-data/cube#measureType",
+    range_uri="http://purl.org/linked-data/cube#MeasureProperty",
+)

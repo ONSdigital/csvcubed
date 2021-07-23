@@ -7,21 +7,24 @@ from csvqb.models.cube.catalog import CatalogMetadataBase
 
 
 class CatalogMetadata(CatalogMetadataBase):
-
-    def __init__(self,
-                 title: str,
-                 uri_safe_identifier: Optional[str] = None,
-                 summary: Optional[str] = None,
-                 description: Optional[str] = None,
-                 creator_uri: Optional[str] = None,
-                 publisher_uri: Optional[str] = None,
-                 issued: Optional[datetime] = None,
-                 theme_uris: List[str] = [],
-                 keywords: List[str] = [],
-                 landing_page_uri: Optional[str] = None,
-                 license_uri: Optional[str] = None,
-                 public_contact_point_uri: Optional[str] = None):
-        CatalogMetadataBase.__init__(self, title, description=description, issued=issued)
+    def __init__(
+        self,
+        title: str,
+        uri_safe_identifier: Optional[str] = None,
+        summary: Optional[str] = None,
+        description: Optional[str] = None,
+        creator_uri: Optional[str] = None,
+        publisher_uri: Optional[str] = None,
+        issued: Optional[datetime] = None,
+        theme_uris: List[str] = [],
+        keywords: List[str] = [],
+        landing_page_uri: Optional[str] = None,
+        license_uri: Optional[str] = None,
+        public_contact_point_uri: Optional[str] = None,
+    ):
+        CatalogMetadataBase.__init__(
+            self, title, description=description, issued=issued
+        )
         self.uri_safe_identifier: str = uri_safe_identifier or uri_safe(title)
         self.summary: Optional[str] = summary
         self.creator_uri: Optional[str] = creator_uri
@@ -33,5 +36,4 @@ class CatalogMetadata(CatalogMetadataBase):
         self.public_contact_point_uri: Optional[str] = public_contact_point_uri
 
     def validate(self) -> List[ValidationError]:
-        return CatalogMetadataBase.validate(self) \
-               + []  # TODO: augment this
+        return CatalogMetadataBase.validate(self) + []  # TODO: augment this

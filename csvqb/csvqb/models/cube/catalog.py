@@ -6,11 +6,12 @@ from csvqb.models.validationerror import ValidationError
 
 
 class CatalogMetadataBase(ABC):
-
-    def __init__(self,
-                 title: str,
-                 description: Optional[str] = None,
-                 issued: Optional[datetime] = None):
+    def __init__(
+        self,
+        title: str,
+        description: Optional[str] = None,
+        issued: Optional[datetime] = None,
+    ):
         self.title: str = title
         self.description: Optional[str] = description
         self.issued: Optional[datetime] = issued
