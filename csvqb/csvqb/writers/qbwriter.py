@@ -436,9 +436,7 @@ def _get_about_url(cube: Cube) -> str:
             if isinstance(c.component, QbDimension):
                 aboutUrl = aboutUrl + f"/{{+{csvw_column_name_safe(c.uri_safe_identifier)}}}"
             elif isinstance(c.component, QbMultiMeasureDimension):
-                multi_measure_col = csvw_column_name_safe(c.uri_safe_identifier)
-            else: 
-                pass
+                multi_measure_col = csvw_column_name_safe(c.uri_safe_identifier) 
     if len(multi_measure_col) != 0:
         aboutUrl = aboutUrl + f"/{{+{multi_measure_col}}}"
     return aboutUrl

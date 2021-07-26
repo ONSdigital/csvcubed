@@ -340,19 +340,19 @@ class QbWriterTests(UnitTestBase):
             dimensions which are appended to the end of the URL.
         """
         data = pd.DataFrame({
+            "Measure": ["People", "Children", "Adults"],
             "Existing Dimension": ["A", "B", "C"],
             "Value": [2, 2, 2],
             "Local Dimension": ["D", "E", "F"],
-            "Measure": ["People", "Children", "Adults"],
             "Units": ["Percent", "People", "People"]
         })
 
         metadata = CubeMetadata("Some Dataset")
         columns = [
+            QbColumn("Measure", QbMultiMeasureDimension.new_measures_from_data(data["Measure"])),
             QbColumn("Existing Dimension", ExistingQbDimension("https://example.org/dimensions/existing_dimension")),
             QbColumn("Local Dimension", NewQbDimension.from_data("Name of New Dimension", data["Local Dimension"])),
             QbColumn("Value", QbMultiMeasureObservationValue("number")),
-            QbColumn("Measure", QbMultiMeasureDimension.new_measures_from_data(data["Measure"])),
             QbColumn("Units", QbMultiUnits.new_units_from_data(data["Units"]))
     
         ]
