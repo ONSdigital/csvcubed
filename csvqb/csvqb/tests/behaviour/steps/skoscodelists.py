@@ -6,7 +6,7 @@ from csvqb.writers.skoscodelistwriter import SkosCodeListWriter
 from devtools.behave.file import get_context_temp_dir_path
 
 
-@Given("a NewQbCodeList named \"{code_list_name}\"")
+@Given('a NewQbCodeList named "{code_list_name}"')
 def step_impl(context, code_list_name: str):
     metadata = CatalogMetadata(
         code_list_name,
@@ -18,13 +18,20 @@ def step_impl(context, code_list_name: str):
         keywords=["Key word one", "Key word two"],
         landing_page_uri="http://example.org/landing-page",
         license_uri="http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
-        public_contact_point_uri="something@example.org"
+        public_contact_point_uri="something@example.org",
     )
 
-    context.code_list = NewQbCodeList(metadata, [
-        NewQbConcept("First Concept", code="1st-concept", description="This is the first concept."),
-        NewQbConcept("Second Concept", parent_code="1st-concept", sort_order=20)
-    ])
+    context.code_list = NewQbCodeList(
+        metadata,
+        [
+            NewQbConcept(
+                "First Concept",
+                code="1st-concept",
+                description="This is the first concept.",
+            ),
+            NewQbConcept("Second Concept", parent_code="1st-concept", sort_order=20),
+        ],
+    )
 
 
 @When("the code list is serialised to CSV-W")

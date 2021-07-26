@@ -33,13 +33,14 @@ class ExistingQbCodeList(QbCodeList):
 
 
 class NewQbConcept:
-
-    def __init__(self,
-                 label: str,
-                 code: Optional[str] = None,
-                 parent_code: Optional[str] = None,
-                 sort_order: Optional[int] = None,
-                 description: Optional[str] = None):
+    def __init__(
+        self,
+        label: str,
+        code: Optional[str] = None,
+        parent_code: Optional[str] = None,
+        sort_order: Optional[int] = None,
+        description: Optional[str] = None,
+    ):
         self.label: str = label
         self.code: str = code or uri_safe(label)
         self.parent_code: Optional[str] = parent_code
@@ -58,10 +59,12 @@ class NewQbCodeList(QbCodeList):
     Contains the metadata necessary to create a new skos:ConceptScheme which is local to a dataset.
     """
 
-    def __init__(self,
-                 metadata: CatalogMetadata,
-                 concepts: List[NewQbConcept],
-                 variant_of_uris: List[str] = []):
+    def __init__(
+        self,
+        metadata: CatalogMetadata,
+        concepts: List[NewQbConcept],
+        variant_of_uris: List[str] = [],
+    ):
         self.metadata: CatalogMetadata = metadata
         self.concepts: List[NewQbConcept] = concepts
         self.variant_of_uris: List[str] = variant_of_uris  # For xkos:variant usage.
@@ -70,18 +73,17 @@ class NewQbCodeList(QbCodeList):
         return f"NewQbCodeList('{self.metadata.title}')"
 
     @staticmethod
-    def from_data(metadata: CatalogMetadata,
-                  data: PandasDataTypes,
-                  variant_of_uris: List[str] = []) -> "NewQbCodeList":
+    def from_data(
+        metadata: CatalogMetadata,
+        data: PandasDataTypes,
+        variant_of_uris: List[str] = [],
+    ) -> "NewQbCodeList":
         columnar_data = pandas_input_to_columnar_str(data)
         concepts = [NewQbConcept(c) for c in sorted(set(columnar_data))]
-        return NewQbCodeList(metadata,
-                             concepts,
-                             variant_of_uris=variant_of_uris)
+        return NewQbCodeList(metadata, concepts, variant_of_uris=variant_of_uris)
 
     def validate(self) -> List[ValidationError]:
-        return self.metadata.validate() \
-               + []  # TODO: augment this.
+        return self.metadata.validate() + []  # TODO: augment this.
 
     def validate_data(self, data: pd.Series) -> List[ValidationError]:
         return []  # TODO: implement this.

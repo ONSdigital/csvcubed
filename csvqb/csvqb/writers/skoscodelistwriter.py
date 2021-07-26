@@ -15,14 +15,15 @@ from csvqb.writers.writerbase import WriterBase
 
 
 class SkosCodeListWriter(WriterBase):
-
     def __init__(self, new_code_list: NewQbCodeList):
         self.csv_file_name = f"{new_code_list.metadata.uri_safe_identifier}.csv"
         self.new_code_list: NewQbCodeList = new_code_list
 
     def write(self, output_directory: Path) -> None:
         csv_file_path = (output_directory / self.csv_file_name).absolute()
-        metadata_file_path = (output_directory / f"{self.csv_file_name}-metadata.json").absolute()
+        metadata_file_path = (
+            output_directory / f"{self.csv_file_name}-metadata.json"
+        ).absolute()
 
         csvw_metadata, data = self._new_code_list_to_csvw_parts()
 
@@ -33,11 +34,11 @@ class SkosCodeListWriter(WriterBase):
 
     def _doc_rel_uri(self, fragment: str) -> str:
         """
-            URIs declared in the `columns` section of the CSV-W are relative to the CSV's location.
-            URIs declared in the JSON-LD metadata section of the CSV-W are relative to the metadata file's location.
+        URIs declared in the `columns` section of the CSV-W are relative to the CSV's location.
+        URIs declared in the JSON-LD metadata section of the CSV-W are relative to the metadata file's location.
 
-            This function makes both point to the same base location - the CSV file's location. This ensures that we
-            can talk about the same resources in the `columns` section and the JSON-LD metadata section.
+        This function makes both point to the same base location - the CSV file's location. This ensures that we
+        can talk about the same resources in the `columns` section and the JSON-LD metadata section.
         """
         return f"./{self.csv_file_name}#{fragment}"
 
@@ -55,41 +56,41 @@ class SkosCodeListWriter(WriterBase):
                 "titles": "Label",
                 "name": "label",
                 "required": True,
-                "propertyUrl": "rdfs:label"
+                "propertyUrl": "rdfs:label",
             },
             {
                 "titles": "Notation",
                 "name": "notation",
                 "required": True,
-                "propertyUrl": "skos:notation"
+                "propertyUrl": "skos:notation",
             },
             {
                 "titles": "Parent Notation",
                 "name": "parent_notation",
                 "required": False,
                 "propertyUrl": "skos:broader",
-                "valueUrl": self._doc_rel_uri("concept/{+parent_notation}")
+                "valueUrl": self._doc_rel_uri("concept/{+parent_notation}"),
             },
             {
                 "titles": "Sort Priority",
                 "name": "sort_priority",
                 "required": False,
                 "datatype": "integer",
-                "propertyUrl": "http://www.w3.org/ns/ui#sortPriority"
+                "propertyUrl": "http://www.w3.org/ns/ui#sortPriority",
             },
             {
                 "titles": "Description",
                 "name": "description",
                 "required": False,
-                "propertyUrl": "rdfs:comment"
+                "propertyUrl": "rdfs:comment",
             },
             {
                 "virtual": True,
                 "name": "virt_inScheme",
                 "required": False,
                 "propertyUrl": "skos:inScheme",
-                "valueUrl": self._doc_rel_uri("scheme")
-            }
+                "valueUrl": self._doc_rel_uri("scheme"),
+            },
         ]
 
         csvw_metadata = {
@@ -98,9 +99,9 @@ class SkosCodeListWriter(WriterBase):
             "url": self.csv_file_name,
             "tableSchema": {
                 "columns": csvw_columns,
-                "aboutUrl": self._doc_rel_uri("concept/{+notation}")
+                "aboutUrl": self._doc_rel_uri("concept/{+notation}"),
             },
-            "rdfs:seeAlso": rdf_resource_to_json_ld_dict(additional_metadata)
+            "rdfs:seeAlso": rdf_resource_to_json_ld_dict(additional_metadata),
         }
 
         return csvw_metadata
@@ -124,10 +125,14 @@ class SkosCodeListWriter(WriterBase):
         return concept_scheme
 
     def _get_code_list_data(self) -> pd.DataFrame:
-        return pd.DataFrame({
-            "Label": [c.label for c in self.new_code_list.concepts],
-            "Notation": [c.code for c in self.new_code_list.concepts],
-            "Parent Notation": [c.parent_code for c in self.new_code_list.concepts],
-            "Sort Priority": [c.sort_order or i for i, c in enumerate(self.new_code_list.concepts)],
-            "Description": [c.description for c in self.new_code_list.concepts]
-        })
+        return pd.DataFrame(
+            {
+                "Label": [c.label for c in self.new_code_list.concepts],
+                "Notation": [c.code for c in self.new_code_list.concepts],
+                "Parent Notation": [c.parent_code for c in self.new_code_list.concepts],
+                "Sort Priority": [
+                    c.sort_order or i for i, c in enumerate(self.new_code_list.concepts)
+                ],
+                "Description": [c.description for c in self.new_code_list.concepts],
+            }
+        )
