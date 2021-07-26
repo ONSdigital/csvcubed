@@ -30,7 +30,7 @@ class ComponentProperty(rdf.PropertyWithMetadata):
 class MeasureProperty(ComponentProperty):
     """Measure property - The class of components which represent the measured value of the phenomenon being observed"""
 
-    range: Annotated[Resource[rdfs.Class], Triple(RDFS.range, PropertyStatus.mandatory, URIRef)]
+    range: Annotated[Resource[rdfs.Class], Triple(RDFS.range, PropertyStatus.mandatory, map_resource_to_uri)]
     """range - the `rdfs:range` associated with this measure property. i.e. the value types the measured values can 
     range over."""
 
