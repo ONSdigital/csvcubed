@@ -1,11 +1,11 @@
-import unittest
+import pytest
 from copy import deepcopy
 from typing import List
 import pandas as pd
 from sharedmodels.rdf import qb
 
 from csvqb.models.cube import *
-from csvqb.tests.unit.unittestbase import UnitTestBase
+from csvqb.tests.unit.test_baseunit import *
 from csvqb.utils.iterables import first
 from csvqb.writers import qbwriter
 
@@ -33,7 +33,7 @@ def _assert_component_property_defined(component: qb.ComponentSpecification, pro
     return property
 
 
-class QbWriterTests(UnitTestBase):
+class QbWriterTests:
     def test_structure_defined(self):
         cube = _get_standard_cube_for_columns([
             QbColumn("Country", ExistingQbDimension("http://example.org/dimensions/country")),
@@ -305,4 +305,4 @@ class QbWriterTests(UnitTestBase):
 
 
 if __name__ == '__main__':
-    unittest.main()
+    pytest.main()

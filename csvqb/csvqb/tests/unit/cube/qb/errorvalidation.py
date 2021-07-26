@@ -4,11 +4,11 @@ import pandas as pd
 
 from csvqb.models.cube import *
 from csvqb.models.rdf import URI
-from csvqb.tests.unit.unittestbase import UnitTestBase
+from csvqb.tests.unit.TestBaseUnit import TestBaseUnit
 from csvqb.utils.qb.cube import validate_qb_component_constraints
 
 
-class InternalApiLoaderTests(UnitTestBase):
+class InternalApiLoaderTests(TestBaseUnit):
     def test_single_measure_qb_definition(self):
         """
             Single-measure Qbs can be defined.

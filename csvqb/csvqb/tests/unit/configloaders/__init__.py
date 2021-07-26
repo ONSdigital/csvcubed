@@ -1,1 +1,1 @@
-from .infojsontests import *
+from .test_infojsontests import *
