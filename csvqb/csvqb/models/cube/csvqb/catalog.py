@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import Optional, List
+from sharedmodels.rdf import dcat
 
 from csvqb.models.validationerror import ValidationError
 from csvqb.utils.uri import uri_safe
@@ -37,3 +38,16 @@ class CatalogMetadata(CatalogMetadataBase):
 
     def validate(self) -> List[ValidationError]:
         return CatalogMetadataBase.validate(self) + []  # TODO: augment this
+
+    def configure_dcat_dataset(self, dataset: dcat.Dataset) -> None:
+        dt_now = datetime.now()
+        dataset.label = dataset.title = self.title
+        dataset.issued = self.issued or dt_now
+        dataset.modified = dt_now
+        dataset.comment = self.summary
+        dataset.description = self.description
+        dataset.license = self.license_uri
+        dataset.publisher = self.publisher_uri
+        dataset.landing_page = self.landing_page_uri
+        dataset.themes = set(self.theme_uris)
+        dataset.keywords = set(self.keywords)

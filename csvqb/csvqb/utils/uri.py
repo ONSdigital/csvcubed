@@ -1,5 +1,6 @@
 import re
 from unidecode import unidecode
+from urllib.parse import urlparse
 
 
 multiple_non_word_chars_regex = re.compile(r"[^\w]+")
@@ -27,3 +28,8 @@ def get_last_uri_part(uri: str) -> str:
         return maybe_match.group(1)
 
     raise Exception("Could not match last URI part")
+
+
+def looks_like_uri(maybe_uri: str) -> bool:
+    parse_result = urlparse(maybe_uri)
+    return parse_result.scheme != ""

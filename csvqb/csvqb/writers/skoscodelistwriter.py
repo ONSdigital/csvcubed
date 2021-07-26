@@ -9,7 +9,7 @@ import pandas as pd
 
 
 from csvqb.models.cube.csvqb.components.codelist import NewQbCodeList
-from csvqb.utils.dict import rdf_resource_to_json_ld_dict
+from csvqb.utils.dict import rdf_resource_to_json_ld
 from csvqb.models.rdf.conceptschemeincatalog import ConceptSchemeInCatalog
 from csvqb.writers.writerbase import WriterBase
 
@@ -101,28 +101,17 @@ class SkosCodeListWriter(WriterBase):
                 "columns": csvw_columns,
                 "aboutUrl": self._doc_rel_uri("concept/{+notation}"),
             },
-            "rdfs:seeAlso": rdf_resource_to_json_ld_dict(additional_metadata),
+            "rdfs:seeAlso": rdf_resource_to_json_ld(additional_metadata),
         }
 
         return csvw_metadata
 
     def _get_catalog_metadata(self) -> ConceptSchemeInCatalog:
-        dt_now = datetime.datetime.now()
-        metadata = self.new_code_list.metadata
-
-        concept_scheme = ConceptSchemeInCatalog(self._doc_rel_uri("scheme"))
-        concept_scheme.label = concept_scheme.title = metadata.title
-        concept_scheme.issued = metadata.issued or dt_now
-        concept_scheme.modified = dt_now
-        concept_scheme.comment = metadata.summary
-        concept_scheme.description = metadata.description
-        concept_scheme.license = metadata.license_uri
-        concept_scheme.publisher = metadata.publisher_uri
-        concept_scheme.landing_page = metadata.landing_page_uri
-        concept_scheme.themes = set(metadata.theme_uris)
-        concept_scheme.keywords = set(metadata.keywords)
-
-        return concept_scheme
+        concept_scheme_with_metadata = ConceptSchemeInCatalog(
+            self._doc_rel_uri("scheme")
+        )
+        self.new_code_list.metadata.configure_dcat_dataset(concept_scheme_with_metadata)
+        return concept_scheme_with_metadata
 
     def _get_code_list_data(self) -> pd.DataFrame:
         return pd.DataFrame(

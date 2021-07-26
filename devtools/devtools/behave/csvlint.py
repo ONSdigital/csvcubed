@@ -24,6 +24,14 @@ def _run_csvlint(metadata_file_path: Path) -> Tuple[int, str]:
     return exit_code, csvlint.logs().decode("utf-8")
 
 
+@step("csvlint validation of all CSV-Ws should succeed")
+def step_impl(context):
+    temp_dir = get_context_temp_dir_path(context)
+    for file in temp_dir.rglob("*.csv-metadata.json"):
+        exit_code, logs = _run_csvlint(temp_dir / file)
+        assert exit_code == 0
+
+
 @step('csvlint validation of "{file}" should succeed')
 def step_impl(context, file: str):
     temp_dir = get_context_temp_dir_path(context)
