@@ -18,7 +18,7 @@ def _get_standard_cube_for_columns(columns: List[CsvColumn]) -> Cube:
             "Marker": ["Provisional", "Provisional", "Provisional", "Provisional"],
         }
     )
-    metadata: CubeMetadata = CubeMetadata("Some qube")
+    metadata: CatalogMetadata = CatalogMetadata("Cube Name")
 
     return Cube(deepcopy(metadata), data.copy(deep=True), columns)
 
@@ -27,7 +27,7 @@ def _assert_component_defined(
     dataset: qb.DataSet, name: str
 ) -> qb.ComponentSpecification:
     component = first(
-        dataset.structure.components, lambda x: str(x.uri) == f"#component/{name}"
+        dataset.structure.components, lambda x: str(x.uri) == f"./cube-name.csv#component/{name}"
     )
     assert component is not None
     return component
@@ -68,7 +68,8 @@ def test_structure_defined():
         ]
     )
 
-    dataset = QbWriter._generate_qb_dataset_dsd_definitions(cube)
+    qbwriter = QbWriter(cube)
+    dataset = qbwriter._generate_qb_dataset_dsd_definitions()
 
     assert dataset is not None
 

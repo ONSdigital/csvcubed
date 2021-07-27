@@ -4,7 +4,6 @@ from dateutil import parser
 from pathlib import Path
 
 
-from csvqb.writers.qbwriter import write_metadata
 from csvqb.configloaders.infojson import get_cube_from_info_json
 from csvqb.utils.qb.cube import validate_qb_component_constraints
 from csvqb.models.cube import *
@@ -12,6 +11,7 @@ from csvqb.tests.unit.test_baseunit import *
 
 
 def test_csv_cols_assumed_dimensions():
+
     """
     If a column isn't defined, assume it is a new local dimension.
 
@@ -139,8 +139,10 @@ def test_cube_metadata_extracted_from_info_json():
 
     # Creator - pass
 
-    expected_creator = "HM Revenue & Customs"
-    actual_creator = cube.metadata.creator
+    expected_creator = (
+        "https://www.gov.uk/government/organisations/hm-revenue-customs"
+    )
+    actual_creator = cube.metadata.creator_uri
     assert expected_creator == actual_creator
 
     # Description - pass
@@ -168,7 +170,7 @@ def test_cube_metadata_extracted_from_info_json():
     # landingpage - pass
 
     expected_landingpage = "https://www.gov.uk/government/statistics/bottles-bulletin"
-    actual_landingpage = cube.metadata.landing_page
+    actual_landingpage = cube.metadata.landing_page_uri
     assert expected_landingpage == actual_landingpage
 
     # license - pass
