@@ -2,7 +2,6 @@
 behave functionality to run sparql tests on RDF
 """
 from behave import step
-import nose.tools as nose
 import docker
 import sys
 from typing import Tuple, List

@@ -2,7 +2,6 @@
 behave functionality to run csv-lint on some output
 """
 from behave import *
-from nose.tools import *
 from pathlib import Path
 import docker
 import sys
@@ -29,12 +28,12 @@ def _run_csvlint(metadata_file_path: Path) -> Tuple[int, str]:
 def step_impl(context, file: str):
     temp_dir = get_context_temp_dir_path(context)
     exit_code, logs = _run_csvlint(temp_dir / file)
-    assert_equal(exit_code, 0)
+    assert exit_code == 0
 
 
 @step('csvlint validation of "{file}" should fail with "{expected}"')
 def step_impl(context, file: str, expected: str):
     temp_dir = get_context_temp_dir_path(context)
     exit_code, logs = _run_csvlint(temp_dir / file)
-    assert_equal(exit_code, 1)
+    assert exit_code == 1
     assert expected in logs
