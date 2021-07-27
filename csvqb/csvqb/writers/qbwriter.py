@@ -13,15 +13,14 @@ from sharedmodels.rdf.resource import (
 
 
 from csvqb.models.cube import *
-from csvqb.utils.uri import get_last_uri_part, csvw_column_name_safe
+from csvqb.utils.uri import get_last_uri_part, csvw_column_name_safe, looks_like_uri
 from csvqb.utils.qb.cube import get_columns_of_dsd_type
-from csvqb.utils.dict import rdf_resource_to_json_ld_dict
+from csvqb.utils.dict import rdf_resource_to_json_ld
 from .skoscodelistwriter import SkosCodeListWriter
 from .writerbase import WriterBase
+from ..models.rdf.qbdatasetincatalog import QbDataSetInCatalog
 
 VIRT_UNIT_COLUMN_NAME = "virt_unit"
-
-MkDocRelUri = Callable[[str], str]
 
 
 class QbWriter(WriterBase):
@@ -44,23 +43,20 @@ class QbWriter(WriterBase):
         # todo: Add `aboutUrl` mapping based on all of dimensions (in some consistent ordering).
         # todo: Unit multiplier functionality hasn't been output.
 
-        dataset_definition = self._generate_qb_metadata_dict()
-
-        # todo: Need to decide on the catalogue metadata's structure and add it to `rdfs:seeAlso` below.
-
         csvw_metadata = {
             "@context": "http://www.w3.org/ns/csvw",
             "@id": self._doc_rel_uri("dataset"),
             "tables": tables,
-            "rdfs:label": self.cube.metadata.title,
-            "dc:title": self.cube.metadata.title,
-            "rdfs:comment": self.cube.metadata.summary,
-            "dc:description": self.cube.metadata.description,
-            "rdfs:seeAlso": dataset_definition,
+            "rdfs:seeAlso": rdf_resource_to_json_ld(
+                self._generate_qb_dataset_dsd_definitions()
+            ),
         }
 
         with open(output_folder / f"{self.csv_file_name}-metadata.json", "w+") as f:
             json.dump(csvw_metadata, f, indent=4)
+
+        if self.cube.data is not None:
+            self.cube.data.to_csv(output_folder / self.csv_file_name, index=False)
 
     def _doc_rel_uri(self, uri_fragment: str) -> str:
         """
@@ -120,12 +116,13 @@ class QbWriter(WriterBase):
             )
         return virtual_columns
 
-    def _generate_qb_metadata_dict(self) -> dict:
-        dataset = self._generate_qb_dataset_dsd_definitions()
-        return rdf_resource_to_json_ld_dict(dataset)
+    def _get_qb_dataset_with_catalog_metadata(self) -> QbDataSetInCatalog:
+        qb_dataset_with_metadata = QbDataSetInCatalog(self._doc_rel_uri("dataset"))
+        self.cube.metadata.configure_dcat_dataset(qb_dataset_with_metadata)
+        return qb_dataset_with_metadata
 
     def _generate_qb_dataset_dsd_definitions(self):
-        dataset = qb.DataSet(self._doc_rel_uri("dataset"))
+        dataset = self._get_qb_dataset_with_catalog_metadata()
         dataset.structure = qb.DataStructureDefinition(self._doc_rel_uri("structure"))
         for column in self.cube.columns:
             if isinstance(column, QbColumn):
@@ -139,6 +136,7 @@ class QbWriter(WriterBase):
                     component_properties_for_col
                 )
                 dataset.structure.components |= set(component_specs_for_col)
+
         return dataset
 
     def _get_qb_component_specs_for_col(
@@ -160,6 +158,21 @@ class QbWriter(WriterBase):
             return self._get_qb_obs_val_specifications(component)
         else:
             raise Exception(f"Unhandled component type {type(component)}")
+
+    def _get_obs_val_data_type(self) -> str:
+        observation_value_columns = get_columns_of_dsd_type(
+            self.cube, QbObservationValue
+        )
+        # Given the data shapes we accept as input, there should always be one (and only one) Observation Value
+        # column in a cube.
+        observation_value_column = observation_value_columns[0]
+        data_type = observation_value_column.component.data_type
+        if looks_like_uri(data_type):
+            # is already a full URI
+            return data_type
+        else:
+            # Is not a URI so it should be xsd:`data_type`.
+            return str(rdflib.XSD[data_type])
 
     def _get_qb_units_column_specification(
         self, column_name_uri_safe: str
@@ -245,6 +258,7 @@ class QbWriter(WriterBase):
                 measure.parent_measure_uri
             )
             component.measure.source = maybe_existing_resource(measure.source_uri)
+            component.measure.range = ExistingResource(self._get_obs_val_data_type())
             component.componentProperties.add(component.measure)
             return component
         else:
@@ -480,7 +494,7 @@ class QbWriter(WriterBase):
         return "{+" + csvw_column_name_safe(column.uri_safe_identifier) + "}"
 
     def _get_new_code_list_scheme_uri(self, code_list: NewQbCodeList) -> str:
-        return self._doc_rel_uri(f"scheme/{code_list.metadata.uri_safe_identifier}")
+        return f"./{code_list.metadata.uri_safe_identifier}.csv#scheme/{code_list.metadata.uri_safe_identifier}"
 
     external_code_list_pattern = re.compile("^(.*)/concept-scheme/(.*)$")
     dataset_local_code_list_pattern = re.compile("^(.*)#scheme/(.*)$")
