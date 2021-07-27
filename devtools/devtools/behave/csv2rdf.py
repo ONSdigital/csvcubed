@@ -57,7 +57,7 @@ def step_impl(context):
 
     for file in csvw_metadata_files:
         exit_code, logs, ttl_out = _run_csv2rdf(context, temp_dir / file)
-        nose.assert_equal(exit_code, 0)
+        assert exit_code == 0
 
         context.turtle += ttl_out
 
