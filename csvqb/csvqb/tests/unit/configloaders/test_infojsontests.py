@@ -139,9 +139,7 @@ def test_cube_metadata_extracted_from_info_json():
 
     # Creator - pass
 
-    expected_creator = (
-        "https://www.gov.uk/government/organisations/hm-revenue-customs"
-    )
+    expected_creator = "https://www.gov.uk/government/organisations/hm-revenue-customs"
     actual_creator = cube.metadata.creator_uri
     assert expected_creator == actual_creator
 

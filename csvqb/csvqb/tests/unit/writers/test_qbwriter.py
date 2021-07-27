@@ -27,7 +27,8 @@ def _assert_component_defined(
     dataset: qb.DataSet, name: str
 ) -> qb.ComponentSpecification:
     component = first(
-        dataset.structure.components, lambda x: str(x.uri) == f"./cube-name.csv#component/{name}"
+        dataset.structure.components,
+        lambda x: str(x.uri) == f"./cube-name.csv#component/{name}",
     )
     assert component is not None
     return component
