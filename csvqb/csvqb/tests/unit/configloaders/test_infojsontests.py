@@ -11,6 +11,50 @@ from csvqb.models.cube import *
 from csvqb.tests.unit.test_baseunit import *
 
 
+def test_csv_cols_assumed_dimensions():
+    """
+    If a column isn't defined, assume it is a new local dimension.
+
+    Assume that if a column isn't defined in the info.json `transform.columns` section, then it is a
+    new locally defined dimension.
+
+    Assert that the newly defined dimension has a codelist created from the values in the CSV.
+    """
+    data = pd.read_csv(get_test_cases_dir() / "configloaders" / "data.csv")
+    cube = get_cube_from_info_json(
+        get_test_cases_dir() / "configloaders" / "info.json", data
+    )
+
+    matching_columns = [
+        c for c in cube.columns if c.csv_column_title == "Undefined Column"
+    ]
+    assert len(matching_columns) == 1
+    undefined_column_assumed_definition: CsvColumn = matching_columns[0]
+
+    if not isinstance(undefined_column_assumed_definition, QbColumn):
+        raise Exception("Incorrect type")
+
+    assert type(undefined_column_assumed_definition.component) == NewQbDimension
+
+    new_dimension: NewQbDimension = undefined_column_assumed_definition.component
+    assert new_dimension.code_list is not None
+
+    if not isinstance(new_dimension.code_list, NewQbCodeList):
+        raise Exception("Incorrect type")
+
+    newly_defined_concepts = list(new_dimension.code_list.concepts)
+
+    assert len(newly_defined_concepts) == 1
+
+    new_concept = newly_defined_concepts[0]
+    assert "Undefined Column Value" == new_concept.label
+
+    errors = cube.validate()
+    errors += validate_qb_component_constraints(cube)
+
+    assert len(errors) == 0
+
+
 def test_multiple_measures_and_units_loaded_in_uri_template():
     """
     bottles-data.csv has multiple measures and multiple units
@@ -49,7 +93,7 @@ def test_multiple_measures_and_units_loaded_in_uri_template():
 
     actual_measure_uris = [x.measure_uri for x in measure_column.component.measures]
     assert len(expected_measure_uris) == len(actual_measure_uris)
-    assert set(expected_measure_uris) == set(actual_measure_uris)
+    assert not (set(expected_measure_uris) ^ set(actual_measure_uris))
 
     # """Unit URI"""
 
@@ -65,7 +109,7 @@ def test_multiple_measures_and_units_loaded_in_uri_template():
 
     actual_unit_uris = [x.unit_uri for x in unit_column.component.units]
     assert len(expected_unit_uris) == len(actual_unit_uris)
-    assert set(expected_unit_uris) == set(actual_unit_uris)
+    assert not (set(expected_unit_uris) ^ set(actual_unit_uris))
 
     errors = cube.validate()
     errors += validate_qb_component_constraints(cube)
@@ -119,7 +163,7 @@ def test_cube_metadata_extracted_from_info_json():
     expected_keywords = []
     actual_keywords = cube.metadata.keywords
     assert len(expected_keywords) == len(actual_keywords)
-    assert set(expected_keywords) == set(actual_keywords)
+    assert not (set(expected_keywords) ^ set(actual_keywords))
 
     # landingpage - pass
 
@@ -130,20 +174,22 @@ def test_cube_metadata_extracted_from_info_json():
     # license - pass
     # Surprisingly the info.json schema doesn't allow a licence property just yet.
     expected_license = None
-    actual_license = cube.metadata.license
+    actual_license = cube.metadata.license_uri
     assert expected_license == actual_license
 
     # public_contact_point - pass
     # The info.json schema doesn't allow a public_contact_point property just yet
 
     expected_public_contact_point = None
-    actual_public_contact_point = cube.metadata.public_contact_point
+    actual_public_contact_point = cube.metadata.public_contact_point_uri
     assert expected_public_contact_point == actual_public_contact_point
 
     # publisher - pass
 
-    expected_publisher = "HM Revenue & Customs"
-    actual_publisher = cube.metadata.publisher
+    expected_publisher = (
+        "https://www.gov.uk/government/organisations/hm-revenue-customs"
+    )
+    actual_publisher = cube.metadata.publisher_uri
     assert expected_publisher == actual_publisher
 
     # summary - pass
@@ -156,10 +202,10 @@ def test_cube_metadata_extracted_from_info_json():
     # themes - pass
     # It's the families property
 
-    expected_themes = ["Trade"]
-    actual_themes = cube.metadata.themes
+    expected_themes = ["http://gss-data.org.uk/def/gdp#Trade"]
+    actual_themes = [str(t) for t in cube.metadata.theme_uris]
     assert len(expected_themes) == len(actual_themes)
-    assert set(expected_themes) == set(actual_themes)
+    assert not (set(expected_themes) ^ set(actual_themes))
 
     # title - pass
 

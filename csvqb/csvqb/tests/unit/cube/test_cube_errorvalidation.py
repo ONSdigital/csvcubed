@@ -2,9 +2,7 @@ import pytest
 import pandas as pd
 from typing import List
 
-
 from csvqb.models.cube import *
-from csvqb.models.rdf import URI
 
 
 def test_column_not_configured_error():
@@ -14,7 +12,7 @@ def test_column_not_configured_error():
 
     data = pd.DataFrame({"Some Dimension": ["A", "B", "C"]})
 
-    metadata = CubeMetadata(URI("http://example.com/some/dataset"), "Some Dataset")
+    metadata = CatalogMetadata("Some Dataset")
     columns = []
     cube = Cube(metadata, data, columns)
     validation_errors = cube.validate()
@@ -31,7 +29,7 @@ def test_column_title_wrong_error():
 
     data = pd.DataFrame()
 
-    metadata = CubeMetadata(URI("http://example.com/some/dataset"), "Some Dataset")
+    metadata = CatalogMetadata("Some Dataset")
     columns: List[CsvColumn] = [SuppressedCsvColumn("Some Column Title")]
     cube = Cube(metadata, data, columns)
     validation_errors = cube.validate()

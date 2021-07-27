@@ -7,7 +7,7 @@ from sharedmodels.rdf import qb
 from csvqb.models.cube import *
 from csvqb.tests.unit.test_baseunit import *
 from csvqb.utils.iterables import first
-from csvqb.writers import qbwriter
+from csvqb.writers.qbwriter import QbWriter
 
 
 def _get_standard_cube_for_columns(columns: List[CsvColumn]) -> Cube:
@@ -43,6 +43,10 @@ def _assert_component_property_defined(
     return property
 
 
+empty_cube = Cube(CatalogMetadata("Cube Name"), pd.DataFrame, [])
+empty_qbwriter = QbWriter(empty_cube)
+
+
 def test_structure_defined():
     cube = _get_standard_cube_for_columns(
         [
@@ -64,7 +68,7 @@ def test_structure_defined():
         ]
     )
 
-    dataset = qbwriter._generate_qb_dataset_dsd_definitions(cube)
+    dataset = QbWriter._generate_qb_dataset_dsd_definitions(cube)
 
     assert dataset is not None
 
@@ -90,7 +94,7 @@ def test_generating_concept_uri_template_from_global_concept_scheme_uri():
     )
 
     actual_concept_template_uri = (
-        qbwriter._get_default_value_uri_for_code_list_concepts(column, code_list)
+        empty_qbwriter._get_default_value_uri_for_code_list_concepts(column, code_list)
     )
     assert (
         "http://base-uri/concept-scheme/this-concept-scheme-name/{+some_column}"
@@ -109,7 +113,7 @@ def test_generating_concept_uri_template_from_local_concept_scheme_uri():
     )
 
     actual_concept_template_uri = (
-        qbwriter._get_default_value_uri_for_code_list_concepts(column, code_list)
+        empty_qbwriter._get_default_value_uri_for_code_list_concepts(column, code_list)
     )
     assert (
         "http://base-uri/dataset-name#concept/that-concept-scheme-name/{+some_column}"
@@ -128,7 +132,7 @@ def test_generating_concept_uri_template_from_unexpected_concept_scheme_uri():
     )
 
     actual_concept_template_uri = (
-        qbwriter._get_default_value_uri_for_code_list_concepts(column, code_list)
+        empty_qbwriter._get_default_value_uri_for_code_list_concepts(column, code_list)
     )
     assert "{+some_column}" == actual_concept_template_uri
 
@@ -144,7 +148,7 @@ def test_default_property_value_uris_existing_dimension_column():
     (
         default_property_uri,
         default_value_uri,
-    ) = qbwriter._get_default_property_value_uris_for_column(column)
+    ) = empty_qbwriter._get_default_property_value_uris_for_column(column)
     assert "http://base-uri/dimensions/existing-dimension" == default_property_uri
     assert "{+some_column}" == default_value_uri
 
@@ -158,8 +162,8 @@ def test_default_property_value_uris_new_dimension_column_without_code_list():
     (
         default_property_uri,
         default_value_uri,
-    ) = qbwriter._get_default_property_value_uris_for_column(column)
-    assert "#dimension/some-new-dimension" == default_property_uri
+    ) = empty_qbwriter._get_default_property_value_uris_for_column(column)
+    assert "./cube-name.csv#dimension/some-new-dimension" == default_property_uri
     assert "{+some_column}" == default_value_uri
 
 
@@ -177,8 +181,8 @@ def test_default_property_value_uris_new_dimension_column_with_code_list():
     (
         default_property_uri,
         default_value_uri,
-    ) = qbwriter._get_default_property_value_uris_for_column(column)
-    assert "#dimension/some-new-dimension" == default_property_uri
+    ) = empty_qbwriter._get_default_property_value_uris_for_column(column)
+    assert "./cube-name.csv#dimension/some-new-dimension" == default_property_uri
     assert (
         "http://base-uri/concept-scheme/this-scheme/{+some_column}" == default_value_uri
     )
@@ -195,7 +199,7 @@ def test_default_property_value_uris_existing_attribute_column():
     (
         default_property_uri,
         default_value_uri,
-    ) = qbwriter._get_default_property_value_uris_for_column(column)
+    ) = empty_qbwriter._get_default_property_value_uris_for_column(column)
     assert "http://base-uri/attributes/existing-attribute" == default_property_uri
     assert "{+some_column}" == default_value_uri
 
@@ -208,8 +212,8 @@ def test_default_property_value_uris_existing_attribute_column():
     (
         default_property_uri,
         default_value_uri,
-    ) = qbwriter._get_default_property_value_uris_for_column(column)
-    assert "#attribute/this-new-attribute" == default_property_uri
+    ) = empty_qbwriter._get_default_property_value_uris_for_column(column)
+    assert "./cube-name.csv#attribute/this-new-attribute" == default_property_uri
     assert "{+some_column}" == default_value_uri
 
 
@@ -222,12 +226,12 @@ def test_default_property_value_uris_multi_units_all_new():
     (
         default_property_uri,
         default_value_uri,
-    ) = qbwriter._get_default_property_value_uris_for_column(column)
+    ) = empty_qbwriter._get_default_property_value_uris_for_column(column)
     assert (
         "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
         == default_property_uri
     )
-    assert "#unit/{+some_column}" == default_value_uri
+    assert "./cube-name.csv#unit/{+some_column}" == default_value_uri
 
 
 def test_default_property_value_uris_multi_units_all_existing():
@@ -242,7 +246,7 @@ def test_default_property_value_uris_multi_units_all_existing():
     (
         default_property_uri,
         default_value_uri,
-    ) = qbwriter._get_default_property_value_uris_for_column(column)
+    ) = empty_qbwriter._get_default_property_value_uris_for_column(column)
     assert (
         "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
         == default_property_uri
@@ -269,7 +273,7 @@ def test_default_property_value_uris_multi_units_local_and_existing():
     with pytest.raises(Exception) as exception:
 
         def fetch_exception():
-            qbwriter._get_default_property_value_uris_for_column(column)
+            empty_qbwriter._get_default_property_value_uris_for_column(column)
 
         fetch_exception()
 
@@ -285,9 +289,9 @@ def test_default_property_value_uris_multi_measure_all_new():
     (
         default_property_uri,
         default_value_uri,
-    ) = qbwriter._get_default_property_value_uris_for_column(column)
+    ) = empty_qbwriter._get_default_property_value_uris_for_column(column)
     assert "http://purl.org/linked-data/cube#measureType", default_property_uri
-    assert "#measure/{+some_column}", default_value_uri
+    assert "./cube-name.csv#measure/{+some_column}", default_value_uri
 
 
 def test_default_property_value_uris_multi_measure_all_existing():
@@ -304,7 +308,7 @@ def test_default_property_value_uris_multi_measure_all_existing():
     (
         default_property_uri,
         default_value_uri,
-    ) = qbwriter._get_default_property_value_uris_for_column(column)
+    ) = empty_qbwriter._get_default_property_value_uris_for_column(column)
     assert "http://purl.org/linked-data/cube#measureType" == default_property_uri
     assert "{+some_column}" == default_value_uri
 
@@ -329,7 +333,7 @@ def test_default_property_value_uris_multi_measure_local_and_existing():
     with pytest.raises(Exception) as exception:
 
         def fetch_exception():
-            qbwriter._get_default_property_value_uris_for_column(column)
+            empty_qbwriter._get_default_property_value_uris_for_column(column)
 
         fetch_exception()
 
@@ -347,7 +351,7 @@ def test_default_property_value_uris_single_measure_obs_val():
     (
         default_property_uri,
         default_value_uri,
-    ) = qbwriter._get_default_property_value_uris_for_column(column)
+    ) = empty_qbwriter._get_default_property_value_uris_for_column(column)
     assert default_property_uri is None
     assert default_value_uri is None
 
@@ -360,7 +364,7 @@ def test_default_property_value_uris_multi_measure_obs_val():
     (
         default_property_uri,
         default_value_uri,
-    ) = qbwriter._get_default_property_value_uris_for_column(column)
+    ) = empty_qbwriter._get_default_property_value_uris_for_column(column)
     assert default_property_uri is None
     assert default_value_uri is None
 
@@ -372,12 +376,12 @@ def test_csv_col_definition_default_property_value_urls():
     values inferred from the component.
     """
     column = QbColumn("Some Column", QbMultiUnits([NewQbUnit("Some Unit")]))
-    csv_col = qbwriter._generate_csvqb_column(column)
+    csv_col = empty_qbwriter._generate_csvqb_column(column)
     assert (
         "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
         == csv_col["propertyUrl"]
     )
-    assert "#unit/{+some_column}" == csv_col["valueUrl"]
+    assert "./cube-name.csv#unit/{+some_column}" == csv_col["valueUrl"]
 
 
 def test_csv_col_definition_output_uri_template_override():
@@ -390,7 +394,7 @@ def test_csv_col_definition_output_uri_template_override():
         ExistingQbDimension("http://base-uri/dimensions/some-dimension"),
         output_uri_template="http://base-uri/some-alternative-output-uri/{+some_column}",
     )
-    csv_col = qbwriter._generate_csvqb_column(column)
+    csv_col = empty_qbwriter._generate_csvqb_column(column)
     assert "http://base-uri/dimensions/some-dimension" == csv_col["propertyUrl"]
     assert (
         "http://base-uri/some-alternative-output-uri/{+some_column}"
@@ -406,7 +410,7 @@ def test_csv_col_definition():
         "Some Column",
         ExistingQbDimension("http://base-uri/dimensions/some-dimension"),
     )
-    csv_col = qbwriter._generate_csvqb_column(column)
+    csv_col = empty_qbwriter._generate_csvqb_column(column)
     assert "suppressOutput" not in csv_col
     assert "Some Column" == csv_col["titles"]
     assert "some_column" == csv_col["name"]
@@ -419,7 +423,7 @@ def test_csv_col_definition_suppressed():
     Test basic configuration of a *suppressed* CSV-W column definition.
     """
     column = SuppressedCsvColumn("Some Column")
-    csv_col = qbwriter._generate_csvqb_column(column)
+    csv_col = empty_qbwriter._generate_csvqb_column(column)
     assert csv_col["suppressOutput"]
     assert "Some Column" == csv_col["titles"]
     assert "some_column" == csv_col["name"]
@@ -435,7 +439,7 @@ def test_virtual_columns_generated_for_single_obs_val():
     obs_val = QbSingleMeasureObservationValue(
         NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
     )
-    virtual_columns = qbwriter._generate_virtual_columns_for_obs_val(obs_val)
+    virtual_columns = empty_qbwriter._generate_virtual_columns_for_obs_val(obs_val)
 
     virt_unit = first(virtual_columns, lambda x: x["name"] == "virt_unit")
     assert virt_unit is not None
@@ -444,13 +448,13 @@ def test_virtual_columns_generated_for_single_obs_val():
         "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
         == virt_unit["propertyUrl"]
     )
-    assert "#unit/some-unit" == virt_unit["valueUrl"]
+    assert "./cube-name.csv#unit/some-unit" == virt_unit["valueUrl"]
 
     virt_measure = first(virtual_columns, lambda x: x["name"] == "virt_measure")
     assert virt_measure is not None
     assert virt_measure["virtual"]
     assert "http://purl.org/linked-data/cube#measureType" == virt_measure["propertyUrl"]
-    assert "#measure/some-measure" == virt_measure["valueUrl"]
+    assert "./cube-name.csv#measure/some-measure" == virt_measure["valueUrl"]
 
 
 def test_virtual_columns_generated_for_multi_meas_obs_val():
@@ -459,7 +463,7 @@ def test_virtual_columns_generated_for_multi_meas_obs_val():
     correct.
     """
     obs_val = QbMultiMeasureObservationValue(unit=NewQbUnit("Some Unit"))
-    virtual_columns = qbwriter._generate_virtual_columns_for_obs_val(obs_val)
+    virtual_columns = empty_qbwriter._generate_virtual_columns_for_obs_val(obs_val)
 
     virt_unit = first(virtual_columns, lambda x: x["name"] == "virt_unit")
     assert virt_unit is not None
@@ -468,7 +472,7 @@ def test_virtual_columns_generated_for_multi_meas_obs_val():
         "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
         == virt_unit["propertyUrl"]
     )
-    assert "#unit/some-unit" == virt_unit["valueUrl"]
+    assert "./cube-name.csv#unit/some-unit" == virt_unit["valueUrl"]
 
 
 if __name__ == "__main__":

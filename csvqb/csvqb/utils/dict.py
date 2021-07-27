@@ -1,4 +1,8 @@
 from typing import Any, Optional, Callable
+import rdflib
+import json
+
+from sharedmodels.rdf.resource import NewResource
 
 
 def get_from_dict_ensure_exists(config: dict, key: str) -> Any:
@@ -8,5 +12,16 @@ def get_from_dict_ensure_exists(config: dict, key: str) -> Any:
     return val
 
 
-def get_with_func_or_none(d: dict, prop_name: str, func: Callable[[Any], Any]) -> Optional[Any]:
+def get_with_func_or_none(
+    d: dict, prop_name: str, func: Callable[[Any], Any]
+) -> Optional[Any]:
     return func(d[prop_name]) if d.get(prop_name) is not None else None
+
+
+def rdf_resource_to_json_ld_dict(resource: NewResource) -> dict:
+    """
+    Converts a `NewResource` RDF model into a dictionary containing json-ld
+    """
+    g = rdflib.Graph()
+    resource.to_graph(g)
+    return json.loads(g.serialize(format="json-ld") or "{}")

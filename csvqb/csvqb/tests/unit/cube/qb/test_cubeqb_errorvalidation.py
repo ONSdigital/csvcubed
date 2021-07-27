@@ -3,7 +3,6 @@ import pytest
 import pandas as pd
 
 from csvqb.models.cube import *
-from csvqb.models.rdf import URI
 from csvqb.tests.unit.test_baseunit import *
 from csvqb.utils.qb.cube import validate_qb_component_constraints
 
@@ -20,7 +19,7 @@ def test_single_measure_qb_definition():
         }
     )
 
-    metadata = CubeMetadata(URI("http://example.com/some/dataset"), "Some Dataset")
+    metadata = CatalogMetadata("Some Dataset")
     columns = [
         QbColumn(
             "Existing Dimension",
@@ -60,7 +59,7 @@ def test_multi_measure_qb_definition():
         }
     )
 
-    metadata = CubeMetadata(URI("http://example.com/some/dataset"), "Some Dataset")
+    metadata = CatalogMetadata("Some Dataset")
     columns = [
         QbColumn(
             "Existing Dimension",
@@ -69,7 +68,8 @@ def test_multi_measure_qb_definition():
         ),
         QbColumn("Value", QbMultiMeasureObservationValue("number")),
         QbColumn(
-            "Measure", QbMultiMeasureDimension.new_measures_from_data(data["Measure"])
+            "Measure",
+            QbMultiMeasureDimension.new_measures_from_data(data["Measure"]),
         ),
         QbColumn("Units", QbMultiUnits.new_units_from_data(data["Units"])),
     ]
@@ -89,7 +89,7 @@ def test_existing_dimension_output_uri_template():
 
     data = pd.DataFrame({"Existing Dimension": ["A", "B", "C"], "Value": [1, 2, 3]})
     cube = Cube(
-        CubeMetadata("Cube's name"),
+        CatalogMetadata("Cube's name"),
         data,
         [
             QbColumn(

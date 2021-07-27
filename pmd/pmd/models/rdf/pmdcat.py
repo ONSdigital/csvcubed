@@ -9,10 +9,9 @@ from sharedmodels.rdf.resource import NewMetadataResource, Resource, map_str_to_
     map_str_to_en_literal
 from sharedmodels.rdf import dcat
 from sharedmodels.rdf import skos
-
+from sharedmodels.rdf.namespaces import GDP
 
 PMDCAT = Namespace("http://publishmydata.com/pmdcat#")
-GDP = Namespace("http://gss-data.org.uk/def/gdp#")
 
 
 class DatasetContents(NewMetadataResource, ABC):
