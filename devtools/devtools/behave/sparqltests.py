@@ -42,11 +42,11 @@ def _run_sparql_tests(context, tests_to_run: List[str] = []) -> Tuple[int, str]:
 @step('the RDF should pass "{test_types}" SPARQL tests')
 def step_impl(context, test_types: str):
     exit_code, logs = _run_sparql_tests(context, test_types.split(", "))
-    nose.assert_equal(exit_code, 0)
+    assert exit_code == 0
 
 
 @step('the RDF should fail "{test_types}" SPARQL tests with "{expected}"')
 def step_impl(context, test_types: str, expected: str):
     exit_code, logs = _run_sparql_tests(context, test_types.split(", "))
-    nose.assert_equal(exit_code, 1)
+    assert exit_code == 1
     assert expected in logs

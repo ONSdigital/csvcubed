@@ -1,6 +1,6 @@
 from pathlib import Path
 from behave import *
-from nose.tools import *
+import pytest
 from rdflib.compare import to_isomorphic, graph_diff
 from rdflib import Graph
 import distutils.util
