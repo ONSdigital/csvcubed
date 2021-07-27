@@ -3,7 +3,6 @@ import pandas as pd
 from dateutil import parser
 
 
-from csvqb.writers.qbwriter import write_metadata
 from csvqb.configloaders.infojson import get_cube_from_info_json
 from csvqb.utils.qb.cube import validate_qb_component_constraints
 from csvqb.models.cube import *
@@ -13,24 +12,30 @@ from csvqb.tests.unit.unittestbase import UnitTestBase
 class InfoJsonLoaderTests(UnitTestBase):
     def test_csv_cols_assumed_dimensions(self):
         """
-            If a column isn't defined, assume it is a new local dimension.
+        If a column isn't defined, assume it is a new local dimension.
 
-            Assume that if a column isn't defined in the info.json `transform.columns` section, then it is a
-            new locally defined dimension.
+        Assume that if a column isn't defined in the info.json `transform.columns` section, then it is a
+        new locally defined dimension.
 
-            Assert that the newly defined dimension has a codelist created from the values in the CSV.
+        Assert that the newly defined dimension has a codelist created from the values in the CSV.
         """
         data = pd.read_csv(self.get_test_cases_dir() / "configloaders" / "data.csv")
-        cube = get_cube_from_info_json(self.get_test_cases_dir() / "configloaders" / "info.json", data)
+        cube = get_cube_from_info_json(
+            self.get_test_cases_dir() / "configloaders" / "info.json", data
+        )
 
-        matching_columns = [c for c in cube.columns if c.csv_column_title == "Undefined Column"]
+        matching_columns = [
+            c for c in cube.columns if c.csv_column_title == "Undefined Column"
+        ]
         self.assertEqual(1, len(matching_columns))
         undefined_column_assumed_definition: CsvColumn = matching_columns[0]
 
         if not isinstance(undefined_column_assumed_definition, QbColumn):
             raise Exception("Incorrect type")
 
-        self.assertIsInstance(undefined_column_assumed_definition.component, NewQbDimension)
+        self.assertIsInstance(
+            undefined_column_assumed_definition.component, NewQbDimension
+        )
         new_dimension: NewQbDimension = undefined_column_assumed_definition.component
         self.assertIsNotNone(new_dimension.code_list)
 
@@ -57,16 +62,27 @@ class InfoJsonLoaderTests(UnitTestBase):
         to be found at <https://github.com/GSS-Cogs/family-schemas/blob/main/dataset-schema.json>.
         """
 
-        data = pd.read_csv(self.get_test_cases_dir() / "configloaders" / "bottles-test-files" / "bottles-data.csv")
+        data = pd.read_csv(
+            self.get_test_cases_dir()
+            / "configloaders"
+            / "bottles-test-files"
+            / "bottles-data.csv"
+        )
         cube = get_cube_from_info_json(
-            self.get_test_cases_dir() / "configloaders" / "bottles-test-files" / "bottles-info.json",
-            data)
+            self.get_test_cases_dir()
+            / "configloaders"
+            / "bottles-test-files"
+            / "bottles-info.json",
+            data,
+        )
 
         """Measure URI"""
 
-        expected_measure_uris = ['http://gss-data.org.uk/def/x/one-litre-and-less',
-                                 'http://gss-data.org.uk/def/x/more-than-one-litre',
-                                 'http://gss-data.org.uk/def/x/number-of-bottles']
+        expected_measure_uris = [
+            "http://gss-data.org.uk/def/x/one-litre-and-less",
+            "http://gss-data.org.uk/def/x/more-than-one-litre",
+            "http://gss-data.org.uk/def/x/number-of-bottles",
+        ]
         measure_column = cube.columns[1]
 
         self.assertIsInstance(measure_column, QbColumn)
@@ -84,8 +100,10 @@ class InfoJsonLoaderTests(UnitTestBase):
         self.assertIsInstance(unit_column, QbColumn)
         self.assertIsInstance(unit_column.component, QbMultiUnits)
 
-        expected_unit_uris = ['http://gss-data.org.uk/def/concept/measurement-units/count',
-                              'http://gss-data.org.uk/def/concept/measurement-units/percentage']
+        expected_unit_uris = [
+            "http://gss-data.org.uk/def/concept/measurement-units/count",
+            "http://gss-data.org.uk/def/concept/measurement-units/percentage",
+        ]
 
         actual_unit_uris = [x.unit_uri for x in unit_column.component.units]
         self.assertCountEqual(expected_unit_uris, actual_unit_uris)
@@ -97,25 +115,38 @@ class InfoJsonLoaderTests(UnitTestBase):
 
     def test_cube_metadata_extracted_from_info_json(self):
 
-        """Metadata - ['base_uri', 'creator', 'description', 'from_dict', 'issued', 'keywords', 'landing_page', 
-        'license', 'public_contact_point', 'publisher', 'summary', 'themes', 'title', 
+        """Metadata - ['base_uri', 'creator', 'description', 'from_dict', 'issued', 'keywords', 'landing_page',
+        'license', 'public_contact_point', 'publisher', 'summary', 'themes', 'title',
         'uri_safe_identifier', 'validate']"""
 
-        data = pd.read_csv(self.get_test_cases_dir() / "configloaders" / "bottles-test-files" / "bottles-data.csv")
+        data = pd.read_csv(
+            self.get_test_cases_dir()
+            / "configloaders"
+            / "bottles-test-files"
+            / "bottles-data.csv"
+        )
         cube = get_cube_from_info_json(
-            self.get_test_cases_dir() / "configloaders" / "bottles-test-files" / "bottles-info.json",
-            data)
+            self.get_test_cases_dir()
+            / "configloaders"
+            / "bottles-test-files"
+            / "bottles-info.json",
+            data,
+        )
 
         # Creator - pass
 
-        expected_creator = "HM Revenue & Customs"
-        actual_creator = cube.metadata.creator
+        expected_creator = (
+            "https://www.gov.uk/government/organisations/hm-revenue-customs"
+        )
+        actual_creator = cube.metadata.creator_uri
         self.assertEqual(expected_creator, actual_creator)
 
         # Description - pass
 
-        expected_description = "All bulletins provide details on percentage of one litre or less & more than " \
-                               "one litre bottles. This information is provided on a yearly basis."
+        expected_description = (
+            "All bulletins provide details on percentage of one litre or less & more than "
+            "one litre bottles. This information is provided on a yearly basis."
+        )
         actual_description = cube.metadata.description
         self.assertEqual(expected_description, actual_description)
 
@@ -133,27 +164,31 @@ class InfoJsonLoaderTests(UnitTestBase):
 
         # landingpage - pass
 
-        expected_landingpage = "https://www.gov.uk/government/statistics/bottles-bulletin"
-        actual_landingpage = cube.metadata.landing_page
+        expected_landingpage = (
+            "https://www.gov.uk/government/statistics/bottles-bulletin"
+        )
+        actual_landingpage = cube.metadata.landing_page_uri
         self.assertEqual(expected_landingpage, actual_landingpage)
 
         # license - pass
         # Surprisingly the info.json schema doesn't allow a licence property just yet.
         expected_license = None
-        actual_license = cube.metadata.license
+        actual_license = cube.metadata.license_uri
         self.assertEqual(expected_license, actual_license)
 
         # public_contact_point - pass
         # The info.json schema doesn't allow a public_contact_point property just yet
 
         expected_public_contact_point = None
-        actual_public_contact_point = cube.metadata.public_contact_point
+        actual_public_contact_point = cube.metadata.public_contact_point_uri
         self.assertEqual(expected_public_contact_point, actual_public_contact_point)
 
         # publisher - pass
 
-        expected_publisher = "HM Revenue & Customs"
-        actual_publisher = cube.metadata.publisher
+        expected_publisher = (
+            "https://www.gov.uk/government/organisations/hm-revenue-customs"
+        )
+        actual_publisher = cube.metadata.publisher_uri
         self.assertEqual(expected_publisher, actual_publisher)
 
         # summary - pass
@@ -166,9 +201,9 @@ class InfoJsonLoaderTests(UnitTestBase):
         # themes - pass
         # It's the families property
 
-        expected_themes = ["Trade"]
-        actual_themes = cube.metadata.themes
-        self.assertEqual(expected_themes, actual_themes)
+        expected_themes = ["http://gss-data.org.uk/def/gdp#Trade"]
+        actual_themes = [str(t) for t in cube.metadata.theme_uris]
+        self.assertCountEqual(expected_themes, actual_themes)
 
         # title - pass
 
@@ -187,5 +222,6 @@ class InfoJsonLoaderTests(UnitTestBase):
 
         self.assert_no_validation_errors(errors)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

@@ -38,8 +38,12 @@ class NewResource(RdfResource, ABC):
 
     def __init__(self, uri: str):
         RdfResource.__init__(self, uri)
-        self.rdf_types = set()
-        self.additional_rdf = {}
+        if not hasattr(self, "rdf_types"):
+            # Multiple-inheritance safeguard
+            self.rdf_types = set()
+        if not hasattr(self, "additional_rdf"):
+            # Multiple-inheritance safeguard
+            self.additional_rdf = {}
 
     @property
     def uri_str(self) -> str:
@@ -77,7 +81,7 @@ class NewResource(RdfResource, ABC):
             triple_mappings: List[AbstractTriple] = [th for th in type_hints if isinstance(th, AbstractTriple)]
             for triple in triple_mappings:
                 # Ensure we can cope with one-to-many relationships
-                self._add_triple_to_graph(graph, property_key, property_value, triple, objects_already_processed)
+                self._add_triples_to_graph(graph, property_key, property_value, triple, objects_already_processed)
 
         for (key, value) in self.additional_rdf.items():
             # Add arbitrary RDF to the graph.
@@ -85,8 +89,8 @@ class NewResource(RdfResource, ABC):
 
         return graph
 
-    def _add_triple_to_graph(self, graph: Graph, property_key: str, property_value: Any, triple: AbstractTriple,
-                             objects_already_processed: Set[object]):
+    def _add_triples_to_graph(self, graph: Graph, property_key: str, property_value: Any, triple: AbstractTriple,
+                              objects_already_processed: Set[object]):
         value_is_iterable = isinstance(property_value, Iterable) and not isinstance(property_value, str)
         if value_is_iterable:
             all_values = list(property_value)
@@ -132,7 +136,7 @@ class NewResourceWithLabel(NewResource, ABC):
 
 
 class NewMetadataResource(NewResourceWithLabel, ABC):
-    comment: Annotated[str, Triple(RDFS.comment, PropertyStatus.mandatory, map_str_to_en_literal)]
+    comment: Annotated[Optional[str], Triple(RDFS.comment, PropertyStatus.recommended, map_str_to_en_literal)]
 
 
 def maybe_existing_resource(maybe_resource_uri: Optional[str]) -> Optional[ExistingResource]:

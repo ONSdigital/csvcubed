@@ -27,6 +27,5 @@ def extract_tar(output_stream: Iterable[bytes], output_directory: Path) -> None:
     for line in output_stream:
         output_archive.write(line)
     output_archive.seek(0)
-    with TarFile(fileobj=output_archive, mode='r') as t:
+    with TarFile(fileobj=output_archive, mode="r") as t:
         t.extractall(path=output_directory)
-

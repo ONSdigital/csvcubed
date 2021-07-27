@@ -2,24 +2,19 @@ import unittest
 import pandas as pd
 from typing import List
 
-
 from csvqb.models.cube import *
-from csvqb.models.rdf import URI
 from csvqb.tests.unit.unittestbase import UnitTestBase
 
 
 class InternalApiLoaderTests(UnitTestBase):
-
     def test_column_not_configured_error(self):
         """
-            If the CSV data contains a column which is not defined, we get an error.
+        If the CSV data contains a column which is not defined, we get an error.
         """
 
-        data = pd.DataFrame({
-            "Some Dimension": ["A", "B", "C"]
-        })
+        data = pd.DataFrame({"Some Dimension": ["A", "B", "C"]})
 
-        metadata = CubeMetadata(URI("http://example.com/some/dataset"), "Some Dataset")
+        metadata = CatalogMetadata("Some Dataset")
         columns = []
         cube = Cube(metadata, data, columns)
         validation_errors = cube.validate()
@@ -30,15 +25,13 @@ class InternalApiLoaderTests(UnitTestBase):
 
     def test_column_title_wrong_error(self):
         """
-            If the Cube object contains a column title which is not defined in the CSV data, we get an error.
+        If the Cube object contains a column title which is not defined in the CSV data, we get an error.
         """
 
         data = pd.DataFrame()
 
-        metadata = CubeMetadata(URI("http://example.com/some/dataset"), "Some Dataset")
-        columns: List[CsvColumn] = [
-            SuppressedCsvColumn("Some Column Title")
-        ]
+        metadata = CatalogMetadata("Some Dataset")
+        columns: List[CsvColumn] = [SuppressedCsvColumn("Some Column Title")]
         cube = Cube(metadata, data, columns)
         validation_errors = cube.validate()
 
@@ -47,5 +40,5 @@ class InternalApiLoaderTests(UnitTestBase):
         self.assertTrue("Some Column Title" in error.message)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
