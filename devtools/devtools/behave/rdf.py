@@ -12,16 +12,15 @@ def test_graph_diff(g1, g2):
     )
     only_in_first.namespace_manager = g1.namespace_manager
     only_in_second.namespace_manager = g2.namespace_manager
-    ok_(
-        len(only_in_second) == 0,
-        f"""
-<<<
-{only_in_first.serialize(format='n3').decode('utf-8')}
-===
-{only_in_second.serialize(format='n3').decode('utf-8')}
->>>
-""",
-    )
+    assert (
+        len(only_in_second) == 0
+    ), f"""
+        <<<
+        {only_in_first.serialize(format='n3').decode('utf-8')}
+        ===
+        {only_in_second.serialize(format='n3').decode('utf-8')}
+        >>>
+        """
 
 
 @step("the RDF should contain")

@@ -1,7 +1,8 @@
 Feature: Date/Time Code List Generation from CSV-W
 
   Scenario: Generation of Month code list from HMRC Overseas Trade Statistics
-    Given a CSV-qb "../test-cases/hmrc-overseas-trade-statistics-cn8.csv-metadata.json"
+    Given the existing test-case files "hmrc-overseas-trade-statistics-cn8.*"
+    And a CSV-qb "hmrc-overseas-trade-statistics-cn8.csv-metadata.json"
     When a date/time code lists is generated from the CSV-qb
     Then the file at "Month.csv-metadata.json" should exist
     And csvlint validation of "Month.csv-metadata.json" should succeed
