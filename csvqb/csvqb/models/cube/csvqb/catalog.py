@@ -47,7 +47,9 @@ class CatalogMetadata(CatalogMetadataBase):
         dataset.comment = self.summary
         dataset.description = self.description
         dataset.license = self.license_uri
+        dataset.creator = self.creator_uri
         dataset.publisher = self.publisher_uri
         dataset.landing_page = self.landing_page_uri
         dataset.themes = set(self.theme_uris)
         dataset.keywords = set(self.keywords)
+        dataset.contact_point = self.public_contact_point_uri

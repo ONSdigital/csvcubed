@@ -37,8 +37,6 @@ def _run_csv2rdf(context, metadata_file_path: Path) -> Tuple[int, str, Optional[
         else:
             ttl_out = ""
 
-        context.turtle = ttl_out
-
     return exit_code, csv2rdf.logs().decode("utf-8"), ttl_out
 
 

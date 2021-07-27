@@ -494,7 +494,7 @@ class QbWriter(WriterBase):
         return "{+" + csvw_column_name_safe(column.uri_safe_identifier) + "}"
 
     def _get_new_code_list_scheme_uri(self, code_list: NewQbCodeList) -> str:
-        return self._doc_rel_uri(f"scheme/{code_list.metadata.uri_safe_identifier}")
+        return f"./{code_list.metadata.uri_safe_identifier}.csv#scheme/{code_list.metadata.uri_safe_identifier}"
 
     external_code_list_pattern = re.compile("^(.*)/concept-scheme/(.*)$")
     dataset_local_code_list_pattern = re.compile("^(.*)#scheme/(.*)$")

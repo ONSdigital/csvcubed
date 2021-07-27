@@ -18,7 +18,7 @@ def step_impl(context, code_list_name: str):
         keywords=["Key word one", "Key word two"],
         landing_page_uri="http://example.org/landing-page",
         license_uri="http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
-        public_contact_point_uri="something@example.org",
+        public_contact_point_uri="mailto:something@example.org",
     )
 
     context.code_list = NewQbCodeList(

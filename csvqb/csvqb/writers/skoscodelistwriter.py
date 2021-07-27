@@ -49,8 +49,13 @@ class SkosCodeListWriter(WriterBase):
         return csvw_metadata, data
 
     def _get_csvw_metadata(self) -> dict:
-        additional_metadata = self._get_catalog_metadata()
-
+        scheme_uri = self._doc_rel_uri(
+            f"scheme/{self.new_code_list.metadata.uri_safe_identifier}"
+        )
+        additional_metadata = self._get_catalog_metadata(scheme_uri)
+        concept_base_uri = self._doc_rel_uri(
+            f"concept/{self.new_code_list.metadata.uri_safe_identifier}/"
+        )
         csvw_columns = [
             {
                 "titles": "Label",
@@ -69,7 +74,7 @@ class SkosCodeListWriter(WriterBase):
                 "name": "parent_notation",
                 "required": False,
                 "propertyUrl": "skos:broader",
-                "valueUrl": self._doc_rel_uri("concept/{+parent_notation}"),
+                "valueUrl": concept_base_uri + "{+parent_notation}",
             },
             {
                 "titles": "Sort Priority",
@@ -89,27 +94,25 @@ class SkosCodeListWriter(WriterBase):
                 "name": "virt_inScheme",
                 "required": False,
                 "propertyUrl": "skos:inScheme",
-                "valueUrl": self._doc_rel_uri("scheme"),
+                "valueUrl": scheme_uri,
             },
         ]
 
         csvw_metadata = {
             "@context": "http://www.w3.org/ns/csvw",
-            "@id": self._doc_rel_uri("scheme"),
+            "@id": scheme_uri,
             "url": self.csv_file_name,
             "tableSchema": {
                 "columns": csvw_columns,
-                "aboutUrl": self._doc_rel_uri("concept/{+notation}"),
+                "aboutUrl": concept_base_uri + "{+notation}",
             },
             "rdfs:seeAlso": rdf_resource_to_json_ld(additional_metadata),
         }
 
         return csvw_metadata
 
-    def _get_catalog_metadata(self) -> ConceptSchemeInCatalog:
-        concept_scheme_with_metadata = ConceptSchemeInCatalog(
-            self._doc_rel_uri("scheme")
-        )
+    def _get_catalog_metadata(self, scheme_uri: str) -> ConceptSchemeInCatalog:
+        concept_scheme_with_metadata = ConceptSchemeInCatalog(scheme_uri)
         self.new_code_list.metadata.configure_dcat_dataset(concept_scheme_with_metadata)
         return concept_scheme_with_metadata
 
