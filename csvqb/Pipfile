@@ -13,7 +13,6 @@ pandas = "*"
 unidecode = "*"
 csvwlib-models = {editable = true,path = "./../sharedmodels"}
 rdflib-jsonld = "*"
-black = "*"
 
 [requires]
 python_version = "3.9"

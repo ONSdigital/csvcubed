@@ -12,11 +12,9 @@ docker = "*"
 behave = "*"
 pytest = "*"
 rdflib = "*"
-nose = "*"
 python-dateutil = "*"
 pipenv-setup = "*"
 csvw = "*"
-unittest-xml-reporting = "*"
 
 [requires]
 python_version = "3.9"
