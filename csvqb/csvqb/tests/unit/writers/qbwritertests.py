@@ -496,7 +496,7 @@ class QbWriterTests(UnitTestBase):
             "Value": [2, 2, 2]
         })
 
-        metadata = CubeMetadata("Some Dataset")
+        metadata = CatalogMetadata("Some Dataset")
         columns = [
             QbColumn("Existing Dimension",
                      ExistingQbDimension("https://example.org/dimensions/existing_dimension")),
@@ -511,8 +511,8 @@ class QbWriterTests(UnitTestBase):
 
         cube = Cube(metadata, data, columns)
 
-        actual_about_url = qbwriter._get_about_url(cube)
-        expected_about_url = "#obs/{+existing_dimension}/{+local_dimension}"
+        actual_about_url = QbWriter(cube)._get_about_url()
+        expected_about_url = "./some-dataset.csv#obs/{+existing_dimension}/{+local_dimension}"
         assert actual_about_url == expected_about_url
 
     def test_about_url_generation_with_multiple_measures(self):
@@ -529,7 +529,7 @@ class QbWriterTests(UnitTestBase):
             "Units": ["Percent", "People", "People"]
         })
 
-        metadata = CubeMetadata("Some Dataset")
+        metadata = CatalogMetadata("Some Dataset")
         columns = [
             QbColumn("Measure", QbMultiMeasureDimension.new_measures_from_data(data["Measure"])),
             QbColumn("Existing Dimension", ExistingQbDimension("https://example.org/dimensions/existing_dimension")),
@@ -541,8 +541,8 @@ class QbWriterTests(UnitTestBase):
 
         cube = Cube(metadata, data, columns)
 
-        actual_about_url = qbwriter._get_about_url(cube)
-        expected_about_url = "#obs/{+existing_dimension}/{+local_dimension}/{+measure}"
+        actual_about_url = QbWriter(cube)._get_about_url()
+        expected_about_url = "./some-dataset.csv#obs/{+existing_dimension}/{+local_dimension}/{+measure}"
         assert actual_about_url == expected_about_url
 
 
