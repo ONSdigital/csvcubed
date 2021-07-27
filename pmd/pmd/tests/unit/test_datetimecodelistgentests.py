@@ -20,7 +20,7 @@ EXPECTED_MONTH_METADATA_OUT = TEST_CASES_PATH / "Month.csv-metadata.json"
 
 def test_extracting_date_time_dimensions_from_metadata():
     date_time_dimensions = _get_dimensions_to_generate_code_lists_for(HMRC_OTS_CN8_METADATA_JSON)
-    1 == len(date_time_dimensions)
+    assert 1 == len(date_time_dimensions)
     (dimension, label, code_list) = date_time_dimensions[0]
     assert HMRC_OTS_CN8_TIME_DIMENSION == dimension
     assert "Month" == label
