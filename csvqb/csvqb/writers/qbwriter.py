@@ -4,13 +4,12 @@ import re
 from pathlib import Path
 from typing import Optional, Tuple, Dict, Any, List, Iterable, Callable
 import rdflib
-from sharedmodels.rdf import qb, skos
+from sharedmodels.rdf import qb, rdfs, skos, namespaces
 from sharedmodels.rdf.resource import (
     Resource,
     ExistingResource,
     maybe_existing_resource,
 )
-
 
 from csvqb.models.cube import *
 from csvqb.utils.uri import get_last_uri_part, csvw_column_name_safe, looks_like_uri
@@ -19,6 +18,7 @@ from csvqb.utils.dict import rdf_resource_to_json_ld
 from .skoscodelistwriter import SkosCodeListWriter
 from .writerbase import WriterBase
 from ..models.rdf.qbdatasetincatalog import QbDataSetInCatalog
+
 
 VIRT_UNIT_COLUMN_NAME = "virt_unit"
 
@@ -549,4 +549,21 @@ class QbWriter(WriterBase):
         elif isinstance(measure, NewQbMeasure):
             return self._doc_rel_uri(f"measure/{measure.uri_safe_identifier}")
         else:
-            raise Exception(f"Unmatched unit type {type(unit)}")
+            raise Exception(f"Unmatched measure type {type(measure)}")
+
+    def _get_about_url(self) -> str:
+        # Todo: Dimensions are currently appended in the order in which the appear in the cube.
+        #       We may want to alter this in the future so that the ordering is from
+        #       least entropic dimension -> most entropic.
+        #       E.g. http://base-uri/observations/male/1996/all-males-1996
+        aboutUrl = self._doc_rel_uri("obs")
+        multi_measure_col = ""
+        for c in self.cube.columns:
+            if isinstance(c, QbColumn):
+                if isinstance(c.component, QbDimension):
+                    aboutUrl = aboutUrl + f"/{{+{csvw_column_name_safe(c.uri_safe_identifier)}}}"
+                elif isinstance(c.component, QbMultiMeasureDimension):
+                    multi_measure_col = csvw_column_name_safe(c.uri_safe_identifier) 
+        if len(multi_measure_col) != 0:
+            aboutUrl = aboutUrl + f"/{{+{multi_measure_col}}}"
+        return aboutUrl
