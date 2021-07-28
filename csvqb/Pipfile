@@ -5,6 +5,7 @@ verify_ssl = true
 
 [dev-packages]
 csvwlib-devtools = {editable = true,path = "./../devtools"}
+ipykernel = "*"
 
 [packages]
 csvqb = {editable = true,path = "."}
@@ -15,3 +16,6 @@ rdflib-jsonld = "*"
 
 [requires]
 python_version = "3.9"
+
+[pipenv]
+allow_prereleases = true

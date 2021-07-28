@@ -14,7 +14,7 @@ from csvqb.models.validationerror import ValidationError
 
 class QbObservationValue(MultiQbDataStructureDefinition, ABC):
     def __init__(self, data_type: Optional[str], unit: Optional[QbUnit]):
-        self.data_type: str = data_type if data_type is not None else "number"
+        self.data_type: str = data_type if data_type is not None else "decimal"
         self.unit: Optional[QbUnit] = unit
 
 

@@ -2,7 +2,6 @@
 behave functionality to run csv-lint on some output
 """
 from behave import step
-import nose.tools as nose
 from pathlib import Path
 import docker
 import sys
@@ -38,8 +37,6 @@ def _run_csv2rdf(context, metadata_file_path: Path) -> Tuple[int, str, Optional[
         else:
             ttl_out = ""
 
-        context.turtle = ttl_out
-
     return exit_code, csv2rdf.logs().decode("utf-8"), ttl_out
 
 
@@ -47,16 +44,29 @@ def _run_csv2rdf(context, metadata_file_path: Path) -> Tuple[int, str, Optional[
 def step_impl(context, file: str):
     temp_dir = get_context_temp_dir_path(context)
     exit_code, logs, ttl_out = _run_csv2rdf(context, temp_dir / file)
-    nose.assert_equal(exit_code, 0)
+    assert exit_code == 0
 
     context.turtle = ttl_out
+
+
+@step("csv2rdf on all CSV-Ws should succeed")
+def step_impl(context):
+    temp_dir = get_context_temp_dir_path(context)
+    csvw_metadata_files = temp_dir.rglob("*.csv-metadata.json")
+    context.turtle = ""
+
+    for file in csvw_metadata_files:
+        exit_code, logs, ttl_out = _run_csv2rdf(context, temp_dir / file)
+        assert exit_code == 0
+
+        context.turtle += ttl_out
 
 
 @step('csv2rdf on "{file}" should fail with "{expected}"')
 def step_impl(context, file: str, expected: str):
     temp_dir = get_context_temp_dir_path(context)
     exit_code, logs, ttl_out = _run_csv2rdf(context, temp_dir / file)
-    nose.assert_equal(exit_code, 1)
+    assert exit_code == 1
     assert expected in logs
 
     context.turtle = ttl_out

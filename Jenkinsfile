@@ -75,18 +75,17 @@ pipeline {
                 dir("pmd") {
                     sh "pipenv run behave pmd/tests/behaviour --tags=-skip -f json.cucumber -o pmd/tests/behaviour/test-results.json"
                     dir("pmd/tests/unit") {
-                        sh "PIPENV_PIPFILE='../../../Pipfile' pipenv run python -m xmlrunner -o reports *.py"
+                        sh "PIPENV_PIPFILE='../../../Pipfile' pipenv run pytest --junitxml=pytest_results_pmd.xml"
                     }
                 }
-
                 dir("csvqb") {
                     sh "pipenv run behave csvqb/tests/behaviour --tags=-skip -f json.cucumber -o csvqb/tests/behaviour/test-results.json"
                     dir("csvqb/tests/unit") {
-                        sh "PIPENV_PIPFILE='../../../Pipfile' pipenv run python -m xmlrunner -o reports **/*.py"
+                        sh "PIPENV_PIPFILE='../../../Pipfile' pipenv run pytest --junitxml=pytest_results_csvqb.xml"
                     }
                 }
 
-                stash name: "test-results", includes: "**/test-results.json,**/reports/*.xml" // Ensure test reports are available to be reported on.
+                stash name: "test-results", includes: "**/test-results.json,**/*results*.xml" // Ensure test reports are available to be reported on.
             }
         }
         stage('Package') {
@@ -124,7 +123,7 @@ pipeline {
 
 
                 cucumber fileIncludePattern: '**/test-results.json'
-                junit allowEmptyResults: true, testResults: '**/reports/*.xml'
+                junit allowEmptyResults: true, testResults: '**/*results*.xml'
 
                 try {
                     unstash name: "wheels"

@@ -1,15 +1,16 @@
+import pandas as pd
 from behave import Given, When
 
 
 from csvqb.models.cube import *
-from csvqb.writers.skoscodelistwriter import SkosCodeListWriter
+from csvqb.writers.qbwriter import QbWriter
 from devtools.behave.file import get_context_temp_dir_path
 
 
-@Given('a NewQbCodeList named "{code_list_name}"')
-def step_impl(context, code_list_name: str):
+@Given('a single-measure QbCube named "{cube_name}"')
+def step_impl(context, cube_name: str):
     metadata = CatalogMetadata(
-        code_list_name,
+        cube_name,
         summary="Summary",
         description="Description",
         creator_uri="https://www.gov.uk/government/organisations/office-for-national-statistics",
@@ -21,21 +22,26 @@ def step_impl(context, code_list_name: str):
         public_contact_point_uri="mailto:something@example.org",
     )
 
-    context.code_list = NewQbCodeList(
-        metadata,
-        [
-            NewQbConcept(
-                "First Concept",
-                code="1st-concept",
-                description="This is the first concept.",
-            ),
-            NewQbConcept("Second Concept", parent_code="1st-concept", sort_order=20),
-        ],
+    data = pd.DataFrame(
+        {"A": ["a", "b", "c"], "D": ["e", "f", "g"], "Value": [1, 2, 3]}
     )
 
+    columns = [
+        QbColumn("A", NewQbDimension.from_data("A code list", data["A"])),
+        QbColumn("D", NewQbDimension.from_data("D code list", data["D"])),
+        QbColumn(
+            "Value",
+            QbSingleMeasureObservationValue(
+                NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
+            ),
+        ),
+    ]
 
-@When("the code list is serialised to CSV-W")
+    context.cube = Cube(metadata, data, columns)
+
+
+@When("the cube is serialised to CSV-W")
 def step_impl(context):
-    writer = SkosCodeListWriter(context.code_list)
+    writer = QbWriter(context.cube)
     temp_dir = get_context_temp_dir_path(context)
     writer.write(temp_dir)

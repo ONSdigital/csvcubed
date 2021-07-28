@@ -1,6 +1,8 @@
 import pytest
 
-from csvqb.utils.uri import get_last_uri_part, csvw_column_name_safe, looks_like_uri
+
+from csvqb.tests.unit.test_baseunit import *
+from csvqb.utils.uri import get_last_uri_part, csvw_column_name_safe
 
 
 def test_uri_last_part():
@@ -14,15 +16,6 @@ def test_csvw_column_name():
         "Some Random Column //+Name"
     )
     assert "something_else" == csvw_column_name_safe("Something-else")
-
-
-def test_looks_like_uri():
-    assert looks_like_uri("https://some-domain.org")
-    assert looks_like_uri("http://some-domain.org/some-stuff/other-stuff")
-    assert looks_like_uri("ftp://some-domain.org")
-    assert looks_like_uri("somescheme:somevalue")
-
-    assert not looks_like_uri("somevalue/cheese")
 
 
 if __name__ == "__main__":

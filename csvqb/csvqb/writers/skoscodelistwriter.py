@@ -9,7 +9,7 @@ import pandas as pd
 
 
 from csvqb.models.cube.csvqb.components.codelist import NewQbCodeList
-from csvqb.utils.dict import rdf_resource_to_json_ld_dict
+from csvqb.utils.dict import rdf_resource_to_json_ld
 from csvqb.models.rdf.conceptschemeincatalog import ConceptSchemeInCatalog
 from csvqb.writers.writerbase import WriterBase
 
@@ -49,8 +49,13 @@ class SkosCodeListWriter(WriterBase):
         return csvw_metadata, data
 
     def _get_csvw_metadata(self) -> dict:
-        additional_metadata = self._get_catalog_metadata()
-
+        scheme_uri = self._doc_rel_uri(
+            f"scheme/{self.new_code_list.metadata.uri_safe_identifier}"
+        )
+        additional_metadata = self._get_catalog_metadata(scheme_uri)
+        concept_base_uri = self._doc_rel_uri(
+            f"concept/{self.new_code_list.metadata.uri_safe_identifier}/"
+        )
         csvw_columns = [
             {
                 "titles": "Label",
@@ -69,7 +74,7 @@ class SkosCodeListWriter(WriterBase):
                 "name": "parent_notation",
                 "required": False,
                 "propertyUrl": "skos:broader",
-                "valueUrl": self._doc_rel_uri("concept/{+parent_notation}"),
+                "valueUrl": concept_base_uri + "{+parent_notation}",
             },
             {
                 "titles": "Sort Priority",
@@ -89,40 +94,27 @@ class SkosCodeListWriter(WriterBase):
                 "name": "virt_inScheme",
                 "required": False,
                 "propertyUrl": "skos:inScheme",
-                "valueUrl": self._doc_rel_uri("scheme"),
+                "valueUrl": scheme_uri,
             },
         ]
 
         csvw_metadata = {
             "@context": "http://www.w3.org/ns/csvw",
-            "@id": self._doc_rel_uri("scheme"),
+            "@id": scheme_uri,
             "url": self.csv_file_name,
             "tableSchema": {
                 "columns": csvw_columns,
-                "aboutUrl": self._doc_rel_uri("concept/{+notation}"),
+                "aboutUrl": concept_base_uri + "{+notation}",
             },
-            "rdfs:seeAlso": rdf_resource_to_json_ld_dict(additional_metadata),
+            "rdfs:seeAlso": rdf_resource_to_json_ld(additional_metadata),
         }
 
         return csvw_metadata
 
-    def _get_catalog_metadata(self) -> ConceptSchemeInCatalog:
-        dt_now = datetime.datetime.now()
-        metadata = self.new_code_list.metadata
-
-        concept_scheme = ConceptSchemeInCatalog(self._doc_rel_uri("scheme"))
-        concept_scheme.label = concept_scheme.title = metadata.title
-        concept_scheme.issued = metadata.issued or dt_now
-        concept_scheme.modified = dt_now
-        concept_scheme.comment = metadata.summary
-        concept_scheme.description = metadata.description
-        concept_scheme.license = metadata.license_uri
-        concept_scheme.publisher = metadata.publisher_uri
-        concept_scheme.landing_page = metadata.landing_page_uri
-        concept_scheme.themes = set(metadata.theme_uris)
-        concept_scheme.keywords = set(metadata.keywords)
-
-        return concept_scheme
+    def _get_catalog_metadata(self, scheme_uri: str) -> ConceptSchemeInCatalog:
+        concept_scheme_with_metadata = ConceptSchemeInCatalog(scheme_uri)
+        self.new_code_list.metadata.configure_dcat_dataset(concept_scheme_with_metadata)
+        return concept_scheme_with_metadata
 
     def _get_code_list_data(self) -> pd.DataFrame:
         return pd.DataFrame(

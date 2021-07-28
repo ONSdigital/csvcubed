@@ -1,4 +1,4 @@
-from typing import Any, Optional, Callable
+from typing import Any, Optional, Callable, List, Dict
 import rdflib
 import json
 
@@ -18,10 +18,10 @@ def get_with_func_or_none(
     return func(d[prop_name]) if d.get(prop_name) is not None else None
 
 
-def rdf_resource_to_json_ld_dict(resource: NewResource) -> dict:
+def rdf_resource_to_json_ld(resource: NewResource) -> List[Dict[str, Any]]:
     """
-    Converts a `NewResource` RDF model into a dictionary containing json-ld
+    Converts a `NewResource` RDF model into a list of dictionaries containing json-ld
     """
     g = rdflib.Graph()
     resource.to_graph(g)
-    return json.loads(g.serialize(format="json-ld") or "{}")
+    return json.loads(g.serialize(format="json-ld") or "[]")
