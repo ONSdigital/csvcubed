@@ -19,7 +19,7 @@ def test_column_not_configured_error():
 
     assert len(validation_errors) == 1
     error = validation_errors[0]
-    assert "Some Dimension" in error.message
+    assert "Column 'Some Dimension'" in error.message
 
 
 def test_column_title_wrong_error():
@@ -36,7 +36,32 @@ def test_column_title_wrong_error():
 
     assert len(validation_errors) == 1
     error = validation_errors[0]
-    assert "Some Column Title" in error.message
+    assert "Column 'Some Column Title'" in error.message
+
+# Define a cube with two columns with the same title. Test that a suitable error message is generated on validation.
+
+
+def test_two_column_same_title():
+    """
+    If cube with two columns with the same title is defined, we get an error
+    """
+    data = pd.DataFrame({
+        "Some Dimension": ["A", "B", "C"],
+        "Some Dimension": ["A", "B", "C"]
+    })
+
+    columns: List[CsvColumn] = [
+        SuppressedCsvColumn("Some Dimension"),
+        SuppressedCsvColumn("Some Dimension")
+    ]
+
+    metadata = CatalogMetadata("Some Dataset")
+    cube = Cube(metadata, data, columns)
+    validation_errors = cube.validate()
+
+    assert len(validation_errors) == 1
+    error = validation_errors[0]
+    assert "Duplicate column title 'Some Dimension'" == error.message
 
 
 if __name__ == "__main__":
