@@ -1,4 +1,5 @@
 """Output writer for CSV-qb"""
+import itertools
 import json
 import re
 from pathlib import Path
@@ -621,8 +622,9 @@ class QbWriter(WriterBase):
         return about_url
 
     def _get_primary_key_columns(self) -> List[str]:
-        dimension_columns: List[QbColumn] = get_columns_of_dsd_type(
-            self.cube, QbDimension
-        ) + get_columns_of_dsd_type(self.cube, QbMultiMeasureDimension)
+        dimension_columns: Iterable[QbColumn] = itertools.chain(
+            get_columns_of_dsd_type(self.cube, QbDimension),
+            get_columns_of_dsd_type(self.cube, QbMultiMeasureDimension),
+        )
 
         return [csvw_column_name_safe(c.csv_column_title) for c in dimension_columns]
