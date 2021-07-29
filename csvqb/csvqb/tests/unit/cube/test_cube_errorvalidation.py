@@ -1,6 +1,7 @@
-import pytest
-import pandas as pd
 from typing import List
+
+import pandas as pd
+import pytest
 
 from csvqb.models.cube import *
 
@@ -38,8 +39,6 @@ def test_column_title_wrong_error():
     error = validation_errors[0]
     assert "Column 'Some Column Title'" in error.message
 
-# Define a cube with two columns with the same title. Test that a suitable error message is generated on validation.
-
 
 def test_two_column_same_title():
     """
@@ -50,12 +49,12 @@ def test_two_column_same_title():
         "Some Dimension": ["A", "B", "C"]
     })
 
+    metadata = CatalogMetadata("Some Dataset")
     columns: List[CsvColumn] = [
         SuppressedCsvColumn("Some Dimension"),
         SuppressedCsvColumn("Some Dimension")
     ]
 
-    metadata = CatalogMetadata("Some Dataset")
     cube = Cube(metadata, data, columns)
     validation_errors = cube.validate()
 
