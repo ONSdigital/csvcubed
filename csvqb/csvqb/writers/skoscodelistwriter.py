@@ -13,6 +13,8 @@ from csvqb.utils.dict import rdf_resource_to_json_ld
 from csvqb.models.rdf.conceptschemeincatalog import ConceptSchemeInCatalog
 from csvqb.writers.writerbase import WriterBase
 
+CODE_LIST_NOTATION_NAME = "notation"
+
 
 class SkosCodeListWriter(WriterBase):
     def __init__(self, new_code_list: NewQbCodeList):
@@ -24,11 +26,20 @@ class SkosCodeListWriter(WriterBase):
         metadata_file_path = (
             output_directory / f"{self.csv_file_name}-metadata.json"
         ).absolute()
+        table_json_schema_file_path = (
+            output_directory
+            / f"{self.new_code_list.metadata.uri_safe_identifier}.table.json"
+        ).absolute()
 
-        csvw_metadata, data = self._new_code_list_to_csvw_parts()
+        csvw_metadata = self._get_csvw_metadata()
+        table_schema = self._get_csvw_table_schema()
+        data = self._get_code_list_data()
 
         with open(str(metadata_file_path), "w+") as f:
             json.dump(csvw_metadata, f, indent=4)
+
+        with open(str(table_json_schema_file_path), "w+") as f:
+            json.dump(table_schema, f, indent=4)
 
         data.to_csv(str(csv_file_path), index=False)
 
@@ -42,20 +53,11 @@ class SkosCodeListWriter(WriterBase):
         """
         return f"./{self.csv_file_name}#{fragment}"
 
-    def _new_code_list_to_csvw_parts(self) -> Tuple[dict, pd.DataFrame]:
-        csvw_metadata = self._get_csvw_metadata()
-        data = self._get_code_list_data()
-
-        return csvw_metadata, data
-
-    def _get_csvw_metadata(self) -> dict:
-        scheme_uri = self._doc_rel_uri(
-            f"scheme/{self.new_code_list.metadata.uri_safe_identifier}"
-        )
-        additional_metadata = self._get_catalog_metadata(scheme_uri)
+    def _get_csvw_table_schema(self) -> dict:
         concept_base_uri = self._doc_rel_uri(
             f"concept/{self.new_code_list.metadata.uri_safe_identifier}/"
         )
+
         csvw_columns = [
             {
                 "titles": "Label",
@@ -65,7 +67,7 @@ class SkosCodeListWriter(WriterBase):
             },
             {
                 "titles": "Notation",
-                "name": "notation",
+                "name": CODE_LIST_NOTATION_NAME,
                 "required": True,
                 "propertyUrl": "skos:notation",
             },
@@ -94,22 +96,31 @@ class SkosCodeListWriter(WriterBase):
                 "name": "virt_inScheme",
                 "required": False,
                 "propertyUrl": "skos:inScheme",
-                "valueUrl": scheme_uri,
+                "valueUrl": self._get_concept_scheme_uri(),
             },
         ]
 
-        csvw_metadata = {
+        return {
+            "columns": csvw_columns,
+            "aboutUrl": concept_base_uri + "{+notation}",
+        }
+
+    def _get_concept_scheme_uri(self) -> str:
+        return self._doc_rel_uri(
+            f"scheme/{self.new_code_list.metadata.uri_safe_identifier}"
+        )
+
+    def _get_csvw_metadata(self) -> dict:
+        scheme_uri = self._get_concept_scheme_uri()
+        additional_metadata = self._get_catalog_metadata(scheme_uri)
+
+        return {
             "@context": "http://www.w3.org/ns/csvw",
             "@id": scheme_uri,
             "url": self.csv_file_name,
-            "tableSchema": {
-                "columns": csvw_columns,
-                "aboutUrl": concept_base_uri + "{+notation}",
-            },
+            "tableSchema": f"{self.new_code_list.metadata.uri_safe_identifier}.table.json",
             "rdfs:seeAlso": rdf_resource_to_json_ld(additional_metadata),
         }
-
-        return csvw_metadata
 
     def _get_catalog_metadata(self, scheme_uri: str) -> ConceptSchemeInCatalog:
         concept_scheme_with_metadata = ConceptSchemeInCatalog(scheme_uri)

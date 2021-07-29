@@ -5,6 +5,7 @@ Feature: Test outputting CSV-Ws containing `SKOS:ConceptScheme`s.
     When the code list is serialised to CSV-W
     Then the file at "basic-code-list.csv" should exist
     And the file at "basic-code-list.csv-metadata.json" should exist
+    And the file at "basic-code-list.table.json" should exist
     And csvlint validation of "basic-code-list.csv-metadata.json" should succeed
     And csv2rdf on "basic-code-list.csv-metadata.json" should succeed
     And the RDF should pass "skos" SPARQL tests

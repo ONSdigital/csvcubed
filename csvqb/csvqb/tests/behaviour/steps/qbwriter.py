@@ -7,10 +7,9 @@ from csvqb.writers.qbwriter import QbWriter
 from devtools.behave.file import get_context_temp_dir_path
 
 
-@Given('a single-measure QbCube named "{cube_name}"')
-def step_impl(context, cube_name: str):
-    metadata = CatalogMetadata(
-        cube_name,
+def _get_standard_catalog_metadata_for_name(name: str) -> CatalogMetadata:
+    return CatalogMetadata(
+        name,
         summary="Summary",
         description="Description",
         creator_uri="https://www.gov.uk/government/organisations/office-for-national-statistics",
@@ -22,13 +21,17 @@ def step_impl(context, cube_name: str):
         public_contact_point_uri="mailto:something@example.org",
     )
 
-    data = pd.DataFrame(
-        {"A": ["a", "b", "c"], "D": ["e", "f", "g"], "Value": [1, 2, 3]}
-    )
 
+_standard_data = pd.DataFrame(
+    {"A": ["a", "b", "c"], "D": ["e", "f", "g"], "Value": [1, 2, 3]}
+)
+
+
+@Given('a single-measure QbCube named "{cube_name}"')
+def step_impl(context, cube_name: str):
     columns = [
-        QbColumn("A", NewQbDimension.from_data("A code list", data["A"])),
-        QbColumn("D", NewQbDimension.from_data("D code list", data["D"])),
+        QbColumn("A", NewQbDimension.from_data("A code list", _standard_data["A"])),
+        QbColumn("D", NewQbDimension.from_data("D code list", _standard_data["D"])),
         QbColumn(
             "Value",
             QbSingleMeasureObservationValue(
@@ -37,7 +40,64 @@ def step_impl(context, cube_name: str):
         ),
     ]
 
-    context.cube = Cube(metadata, data, columns)
+    context.cube = Cube(
+        _get_standard_catalog_metadata_for_name(cube_name), _standard_data, columns
+    )
+
+
+@Given('a single-measure QbCube named "{cube_name}" with existing dimensions')
+def step_impl(context, cube_name: str):
+    columns = [
+        QbColumn(
+            "A",
+            ExistingQbDimension("http://example.org/some/dimension/a"),
+            output_uri_template="http://example.org/some/codelist/a",
+        ),
+        QbColumn(
+            "D",
+            ExistingQbDimension("http://example.org/some/dimension/d"),
+            output_uri_template="http://example.org/some/codelist/d",
+        ),
+        QbColumn(
+            "Value",
+            QbSingleMeasureObservationValue(
+                NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
+            ),
+        ),
+    ]
+
+    context.cube = Cube(
+        _get_standard_catalog_metadata_for_name(cube_name), _standard_data, columns
+    )
+
+
+@Given(
+    'a single-measure QbCube named "{cube_name}" with codes not defined in the code-list'
+)
+def step_impl(context, cube_name: str):
+    columns = [
+        QbColumn(
+            "A",
+            NewQbDimension(
+                "A code list",
+                code_list=NewQbCodeList(
+                    _get_standard_catalog_metadata_for_name("A code list"),
+                    [NewQbConcept("a"), NewQbConcept("b")],  # Deliberately missing "c"
+                ),
+            ),
+        ),
+        QbColumn("D", NewQbDimension.from_data("D code list", _standard_data["D"])),
+        QbColumn(
+            "Value",
+            QbSingleMeasureObservationValue(
+                NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
+            ),
+        ),
+    ]
+
+    context.cube = Cube(
+        _get_standard_catalog_metadata_for_name(cube_name), _standard_data, columns
+    )
 
 
 @When("the cube is serialised to CSV-W")
