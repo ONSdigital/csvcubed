@@ -118,6 +118,56 @@ def step_impl(context, cube_name: str):
     )
 
 
+@Given('a multi-measure QbCube named "{cube_name}"')
+def step_impl(context, cube_name: str):
+    data = pd.DataFrame(
+        {
+            "A": ["a_height", "a_length"],
+            "Measure": ["height", "length"],
+            "Value": [1, 20],
+        }
+    )
+    columns = [
+        QbColumn("A", NewQbDimension.from_data("A Dimension", data["A"])),
+        QbColumn(
+            "Measure", QbMultiMeasureDimension.new_measures_from_data(data["Measure"])
+        ),
+        QbColumn(
+            "Value",
+            QbMultiMeasureObservationValue(unit=NewQbUnit("meters")),
+        ),
+    ]
+
+    context.cube = Cube(
+        get_standard_catalog_metadata_for_name(cube_name), data, columns
+    )
+
+
+@Given('a multi-measure QbCube named "{cube_name}" with duplicate rows')
+def step_impl(context, cube_name: str):
+    data = pd.DataFrame(
+        {
+            "A": ["a_height", "a_height", "a_length"],
+            "Measure": ["height", "height", "length"],
+            "Value": [1, 1, 20],
+        }
+    )
+    columns = [
+        QbColumn("A", NewQbDimension.from_data("A Dimension", data["A"])),
+        QbColumn(
+            "Measure", QbMultiMeasureDimension.new_measures_from_data(data["Measure"])
+        ),
+        QbColumn(
+            "Value",
+            QbMultiMeasureObservationValue(unit=NewQbUnit("meters")),
+        ),
+    ]
+
+    context.cube = Cube(
+        get_standard_catalog_metadata_for_name(cube_name), data, columns
+    )
+
+
 @When("the cube is serialised to CSV-W")
 def step_impl(context):
     writer = QbWriter(context.cube)

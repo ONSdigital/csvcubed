@@ -42,7 +42,18 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     When the cube is serialised to CSV-W
     Then csvlint validation of "some-qube.csv-metadata.json" should succeed
 
-  Scenario: A QbCube with duplicate rows should fail validation
+  Scenario: A single-measure QbCube with duplicate rows should fail validation
     Given a single-measure QbCube named "Duplicate Qube" with duplicate rows
+    When the cube is serialised to CSV-W
+    Then csvlint validation of "duplicate-qube.csv-metadata.json" should fail with "duplicate_key"
+
+  Scenario: A multi-measure QbCube should pass validation
+    Given a multi-measure QbCube named "Duplicate Qube"
+    When the cube is serialised to CSV-W
+    Then csvlint validation of "duplicate-qube.csv-metadata.json" should succeed
+    # todo: complete me in Issue #65
+
+  Scenario: A multi-measure QbCube with duplicate rows should fail validation
+    Given a multi-measure QbCube named "Duplicate Qube" with duplicate rows
     When the cube is serialised to CSV-W
     Then csvlint validation of "duplicate-qube.csv-metadata.json" should fail with "duplicate_key"
