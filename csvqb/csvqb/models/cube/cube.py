@@ -33,6 +33,8 @@ class Cube(Generic[TMetadata]):
                 errors.append(
                     ValidationError(f"Duplicate column title '{col.csv_column_title}'")
                 )
+            else:
+                existing_col_titles.add(col.csv_column_title)
 
             maybe_column_data = None
             if self.data is not None:
