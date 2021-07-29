@@ -13,7 +13,7 @@ from csvqb.utils.dict import rdf_resource_to_json_ld
 from csvqb.models.rdf.conceptschemeincatalog import ConceptSchemeInCatalog
 from csvqb.writers.writerbase import WriterBase
 
-CODE_LIST_NOTATION_NAME = "notation"
+CODE_LIST_NOTATION_COLUMN_NAME = "notation"
 
 
 class SkosCodeListWriter(WriterBase):
@@ -67,7 +67,7 @@ class SkosCodeListWriter(WriterBase):
             },
             {
                 "titles": "Notation",
-                "name": CODE_LIST_NOTATION_NAME,
+                "name": CODE_LIST_NOTATION_COLUMN_NAME,
                 "required": True,
                 "propertyUrl": "skos:notation",
             },
@@ -103,6 +103,7 @@ class SkosCodeListWriter(WriterBase):
         return {
             "columns": csvw_columns,
             "aboutUrl": concept_base_uri + "{+notation}",
+            "primaryKey": CODE_LIST_NOTATION_COLUMN_NAME,
         }
 
     def _get_concept_scheme_uri(self) -> str:

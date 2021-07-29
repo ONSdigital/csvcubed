@@ -15,7 +15,7 @@ from csvqb.models.cube import *
 from csvqb.utils.uri import get_last_uri_part, csvw_column_name_safe, looks_like_uri
 from csvqb.utils.qb.cube import get_columns_of_dsd_type
 from csvqb.utils.dict import rdf_resource_to_json_ld
-from .skoscodelistwriter import SkosCodeListWriter, CODE_LIST_NOTATION_NAME
+from .skoscodelistwriter import SkosCodeListWriter, CODE_LIST_NOTATION_COLUMN_NAME
 from .writerbase import WriterBase
 from ..models.rdf.qbdatasetincatalog import QbDataSetInCatalog
 
@@ -35,6 +35,8 @@ class QbWriter(WriterBase):
                 "tableSchema": {
                     "columns": self._generate_csvw_columns_for_cube(),
                     "foreignKeys": self._generate_foreign_keys_for_cube(),
+                    "primaryKey": self._get_primary_key_columns(),
+                    "aboutUrl": self._get_about_url(),
                 },
             }
         ]
@@ -102,6 +104,7 @@ class QbWriter(WriterBase):
                 {
                     "url": f"{code_list.metadata.uri_safe_identifier}.csv",
                     "tableSchema": f"{code_list.metadata.uri_safe_identifier}.table.json",
+                    "suppressOutput": True,
                 }
             )
 
@@ -118,7 +121,7 @@ class QbWriter(WriterBase):
                     "columnReference": csvw_column_name_safe(col.uri_safe_identifier),
                     "reference": {
                         "resource": f"{code_list.metadata.uri_safe_identifier}.csv",
-                        "columnReference": CODE_LIST_NOTATION_NAME,
+                        "columnReference": CODE_LIST_NOTATION_COLUMN_NAME,
                     },
                 }
             )
@@ -616,3 +619,10 @@ class QbWriter(WriterBase):
         if len(multi_measure_col) != 0:
             about_url = about_url + f"/{{+{multi_measure_col}}}"
         return about_url
+
+    def _get_primary_key_columns(self) -> List[str]:
+        dimension_columns: List[QbColumn] = get_columns_of_dsd_type(
+            self.cube, QbDimension
+        ) + get_columns_of_dsd_type(self.cube, QbMultiMeasureDimension)
+
+        return [csvw_column_name_safe(c.csv_column_title) for c in dimension_columns]

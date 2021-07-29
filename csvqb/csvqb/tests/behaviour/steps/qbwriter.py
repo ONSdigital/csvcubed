@@ -7,7 +7,7 @@ from csvqb.writers.qbwriter import QbWriter
 from devtools.behave.file import get_context_temp_dir_path
 
 
-def _get_standard_catalog_metadata_for_name(name: str) -> CatalogMetadata:
+def get_standard_catalog_metadata_for_name(name: str) -> CatalogMetadata:
     return CatalogMetadata(
         name,
         summary="Summary",
@@ -41,7 +41,7 @@ def step_impl(context, cube_name: str):
     ]
 
     context.cube = Cube(
-        _get_standard_catalog_metadata_for_name(cube_name), _standard_data, columns
+        get_standard_catalog_metadata_for_name(cube_name), _standard_data, columns
     )
 
 
@@ -67,7 +67,25 @@ def step_impl(context, cube_name: str):
     ]
 
     context.cube = Cube(
-        _get_standard_catalog_metadata_for_name(cube_name), _standard_data, columns
+        get_standard_catalog_metadata_for_name(cube_name), _standard_data, columns
+    )
+
+
+@Given('a single-measure QbCube named "{cube_name}" with duplicate rows')
+def step_impl(context, cube_name: str):
+    data = pd.DataFrame({"A": ["a", "a"], "Value": [1, 1]})
+    columns = [
+        QbColumn("A", NewQbDimension.from_data("A Dimension", data["A"])),
+        QbColumn(
+            "Value",
+            QbSingleMeasureObservationValue(
+                NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
+            ),
+        ),
+    ]
+
+    context.cube = Cube(
+        get_standard_catalog_metadata_for_name(cube_name), data, columns
     )
 
 
@@ -81,7 +99,7 @@ def step_impl(context, cube_name: str):
             NewQbDimension(
                 "A code list",
                 code_list=NewQbCodeList(
-                    _get_standard_catalog_metadata_for_name("A code list"),
+                    get_standard_catalog_metadata_for_name("A code list"),
                     [NewQbConcept("a"), NewQbConcept("b")],  # Deliberately missing "c"
                 ),
             ),
@@ -96,7 +114,7 @@ def step_impl(context, cube_name: str):
     ]
 
     context.cube = Cube(
-        _get_standard_catalog_metadata_for_name(cube_name), _standard_data, columns
+        get_standard_catalog_metadata_for_name(cube_name), _standard_data, columns
     )
 
 

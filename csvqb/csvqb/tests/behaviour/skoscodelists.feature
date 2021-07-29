@@ -39,3 +39,8 @@ Feature: Test outputting CSV-Ws containing `SKOS:ConceptScheme`s.
         <http://www.w3.org/2004/02/skos/core#notation> "second-concept";
         <http://www.w3.org/ns/ui#sortPriority> 20 .
       """
+
+  Scenario: A code list with duplicate notations fails validation.
+    Given a NewQbCodeList named "Contains Duplicates" containing duplicates
+    When the code list is serialised to CSV-W
+    Then csvlint validation of "contains-duplicates.csv-metadata.json" should fail with "duplicate_key"
