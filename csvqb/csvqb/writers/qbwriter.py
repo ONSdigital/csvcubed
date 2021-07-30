@@ -1,10 +1,11 @@
 """Output writer for CSV-qb"""
+import itertools
 import json
 import re
 from pathlib import Path
-from typing import Optional, Tuple, Dict, Any, List, Iterable, Callable
+from typing import Optional, Tuple, Dict, Any, List, Iterable, Set
 import rdflib
-from sharedmodels.rdf import qb, rdfs, skos, namespaces
+from sharedmodels.rdf import qb, skos
 from sharedmodels.rdf.resource import (
     Resource,
     ExistingResource,
@@ -15,7 +16,7 @@ from csvqb.models.cube import *
 from csvqb.utils.uri import get_last_uri_part, csvw_column_name_safe, looks_like_uri
 from csvqb.utils.qb.cube import get_columns_of_dsd_type
 from csvqb.utils.dict import rdf_resource_to_json_ld
-from .skoscodelistwriter import SkosCodeListWriter
+from .skoscodelistwriter import SkosCodeListWriter, CODE_LIST_NOTATION_COLUMN_NAME
 from .writerbase import WriterBase
 from ..models.rdf.qbdatasetincatalog import QbDataSetInCatalog
 
@@ -32,15 +33,20 @@ class QbWriter(WriterBase):
         tables = [
             {
                 "url": self.csv_file_name,
-                "tableSchema": {"columns": self._generate_csvw_columns_for_cube()},
+                "tableSchema": {
+                    "columns": self._generate_csvw_columns_for_cube(),
+                    "foreignKeys": self._generate_foreign_keys_for_cube(),
+                    "primaryKey": self._get_primary_key_columns(),
+                    "aboutUrl": self._get_about_url(),
+                },
             }
         ]
 
+        tables += self._get_table_references_needed_for_foreign_keys()
+
         self._output_new_code_list_csvws(output_folder)
 
-        # todo: Need to add CSV-W Foreign Key constraints to the columns associated with code-lists
         # todo: Local units haven't been defined anywhere yet!
-        # todo: Add `aboutUrl` mapping based on all of dimensions (in some consistent ordering).
         # todo: Unit multiplier functionality hasn't been output.
 
         csvw_metadata = {
@@ -66,7 +72,7 @@ class QbWriter(WriterBase):
         This function makes both point to the same base location - the CSV file's location. This ensures that we
         can talk about the same resources in the `columns` section and the JSON-LD metadata section.
         """
-        return f"./{self.csv_file_name}#{uri_fragment}"
+        return f"{self.csv_file_name}#{uri_fragment}"
 
     def _output_new_code_list_csvws(self, output_folder: Path) -> None:
         for column in get_columns_of_dsd_type(self.cube, NewQbDimension):
@@ -78,6 +84,50 @@ class QbWriter(WriterBase):
         columns = [self._generate_csvqb_column(c) for c in self.cube.columns]
         virtual_columns = self._generate_virtual_columns_for_cube()
         return columns + virtual_columns
+
+    def _get_columns_for_foreign_keys(self) -> List[QbColumn[NewQbDimension]]:
+        columns = []
+        for col in get_columns_of_dsd_type(self.cube, NewQbDimension):
+            if col.component.code_list is not None and isinstance(
+                col.component.code_list, NewQbCodeList
+            ):
+                columns.append(col)
+
+        return columns
+
+    def _get_table_references_needed_for_foreign_keys(self) -> List[dict]:
+        tables = []
+        for col in self._get_columns_for_foreign_keys():
+            code_list = col.component.code_list
+            assert isinstance(code_list, NewQbCodeList)
+
+            tables.append(
+                {
+                    "url": f"{code_list.metadata.uri_safe_identifier}.csv",
+                    "tableSchema": f"{code_list.metadata.uri_safe_identifier}.table.json",
+                    "suppressOutput": True,
+                }
+            )
+
+        return tables
+
+    def _generate_foreign_keys_for_cube(self) -> List[dict]:
+        foreign_keys: List[dict] = []
+        for col in self._get_columns_for_foreign_keys():
+            code_list = col.component.code_list
+            assert isinstance(code_list, NewQbCodeList)
+
+            foreign_keys.append(
+                {
+                    "columnReference": csvw_column_name_safe(col.uri_safe_identifier),
+                    "reference": {
+                        "resource": f"{code_list.metadata.uri_safe_identifier}.csv",
+                        "columnReference": CODE_LIST_NOTATION_COLUMN_NAME,
+                    },
+                }
+            )
+
+        return foreign_keys
 
     def _generate_virtual_columns_for_cube(self) -> List[Dict[str, Any]]:
         virtual_columns = []
@@ -494,7 +544,7 @@ class QbWriter(WriterBase):
         return "{+" + csvw_column_name_safe(column.uri_safe_identifier) + "}"
 
     def _get_new_code_list_scheme_uri(self, code_list: NewQbCodeList) -> str:
-        return f"./{code_list.metadata.uri_safe_identifier}.csv#scheme/{code_list.metadata.uri_safe_identifier}"
+        return f"{code_list.metadata.uri_safe_identifier}.csv#scheme/{code_list.metadata.uri_safe_identifier}"
 
     external_code_list_pattern = re.compile("^(.*)/concept-scheme/(.*)$")
     dataset_local_code_list_pattern = re.compile("^(.*)#scheme/(.*)$")
@@ -556,14 +606,25 @@ class QbWriter(WriterBase):
         #       We may want to alter this in the future so that the ordering is from
         #       least entropic dimension -> most entropic.
         #       E.g. http://base-uri/observations/male/1996/all-males-1996
-        aboutUrl = self._doc_rel_uri("obs")
+        about_url = self._doc_rel_uri("obs")
         multi_measure_col = ""
         for c in self.cube.columns:
             if isinstance(c, QbColumn):
                 if isinstance(c.component, QbDimension):
-                    aboutUrl = aboutUrl + f"/{{+{csvw_column_name_safe(c.uri_safe_identifier)}}}"
+                    about_url = (
+                        about_url
+                        + f"/{{+{csvw_column_name_safe(c.uri_safe_identifier)}}}"
+                    )
                 elif isinstance(c.component, QbMultiMeasureDimension):
-                    multi_measure_col = csvw_column_name_safe(c.uri_safe_identifier) 
+                    multi_measure_col = csvw_column_name_safe(c.uri_safe_identifier)
         if len(multi_measure_col) != 0:
-            aboutUrl = aboutUrl + f"/{{+{multi_measure_col}}}"
-        return aboutUrl
+            about_url = about_url + f"/{{+{multi_measure_col}}}"
+        return about_url
+
+    def _get_primary_key_columns(self) -> List[str]:
+        dimension_columns: Iterable[QbColumn] = itertools.chain(
+            get_columns_of_dsd_type(self.cube, QbDimension),
+            get_columns_of_dsd_type(self.cube, QbMultiMeasureDimension),
+        )
+
+        return [csvw_column_name_safe(c.csv_column_title) for c in dimension_columns]
