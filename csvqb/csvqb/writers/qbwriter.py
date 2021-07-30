@@ -561,12 +561,9 @@ class QbWriter(WriterBase):
         for c in self.cube.columns:
             if isinstance(c, QbColumn):
                 if isinstance(c.component, QbDimension):
-                    aboutUrl = (
-                        aboutUrl
-                        + f"/{{+{csvw_column_name_safe(c.uri_safe_identifier)}}}"
-                    )
+                    aboutUrl = aboutUrl + f"/{{+{csvw_column_name_safe(c.uri_safe_identifier)}}}"
                 elif isinstance(c.component, QbMultiMeasureDimension):
-                    multi_measure_col = csvw_column_name_safe(c.uri_safe_identifier)
+                    multi_measure_col = csvw_column_name_safe(c.uri_safe_identifier) 
         if len(multi_measure_col) != 0:
             aboutUrl = aboutUrl + f"/{{+{multi_measure_col}}}"
         return aboutUrl

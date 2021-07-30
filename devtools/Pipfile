@@ -4,6 +4,7 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+black = "21.7b0"
 flake8 = "*"
 
 [packages]
@@ -12,12 +13,8 @@ behave = "*"
 pytest = "*"
 rdflib = "*"
 python-dateutil = "*"
-csvw = "*"
-sphinx = "*"
-sphinx-book-theme = "*"
 pipenv-setup = "*"
-chardet = "*"
-black = "*"
+csvw = "*"
 
 [requires]
 python_version = "3.9"

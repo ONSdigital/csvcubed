@@ -476,89 +476,65 @@ def test_virtual_columns_generated_for_multi_meas_obs_val():
     )
     assert "./cube-name.csv#unit/some-unit" == virt_unit["valueUrl"]
 
-
 def test_about_url_generation():
     """
-    Ensuring that when an aboutUrl is defined for a non-multimeasure cube, the resulting URL
-    is built in the order in which dimensions appear in the cube.
+        Ensuring that when an aboutUrl is defined for a non-multimeasure cube, the resulting URL
+        is built in the order in which dimensions appear in the cube.
     """
-    data = pd.DataFrame(
-        {
-            "Existing Dimension": ["A", "B", "C"],
-            "Local Dimension": ["D", "E", "F"],
-            "Value": [2, 2, 2],
-        }
-    )
+    data = pd.DataFrame({
+        "Existing Dimension": ["A", "B", "C"],
+        "Local Dimension": ["D", "E", "F"],
+        "Value": [2, 2, 2]
+    })
 
     metadata = CatalogMetadata("Some Dataset")
     columns = [
-        QbColumn(
-            "Existing Dimension",
-            ExistingQbDimension("https://example.org/dimensions/existing_dimension"),
-        ),
-        QbColumn(
-            "Local Dimension",
-            NewQbDimension.from_data("Name of New Dimension", data["Local Dimension"]),
-        ),
-        QbColumn(
-            "Value",
-            QbSingleMeasureObservationValue(
-                ExistingQbMeasure("http://example.com/measures/existing_measure"),
-                NewQbUnit("New Unit"),
-            ),
-        ),
+        QbColumn("Existing Dimension",
+                    ExistingQbDimension("https://example.org/dimensions/existing_dimension")),
+        QbColumn("Local Dimension", 
+                    NewQbDimension.from_data("Name of New Dimension", 
+                    data["Local Dimension"])),
+        QbColumn("Value", 
+                    QbSingleMeasureObservationValue(ExistingQbMeasure("http://example.com/measures/existing_measure"), 
+                    NewQbUnit("New Unit")))
+        
     ]
 
     cube = Cube(metadata, data, columns)
 
     actual_about_url = QbWriter(cube)._get_about_url()
-    expected_about_url = (
-        "./some-dataset.csv#obs/{+existing_dimension}/{+local_dimension}"
-    )
+    expected_about_url = "./some-dataset.csv#obs/{+existing_dimension}/{+local_dimension}"
     assert actual_about_url == expected_about_url
-
 
 def test_about_url_generation_with_multiple_measures():
     """
-    Ensuring that when an aboutUrl is defined for a multimeasure cube, the resulting URL
-    is built in the order in which dimensions appear in the cube except for the multi-measure
-    dimensions which are appended to the end of the URL.
+        Ensuring that when an aboutUrl is defined for a multimeasure cube, the resulting URL
+        is built in the order in which dimensions appear in the cube except for the multi-measure
+        dimensions which are appended to the end of the URL.
     """
-    data = pd.DataFrame(
-        {
-            "Measure": ["People", "Children", "Adults"],
-            "Existing Dimension": ["A", "B", "C"],
-            "Value": [2, 2, 2],
-            "Local Dimension": ["D", "E", "F"],
-            "Units": ["Percent", "People", "People"],
-        }
-    )
+    data = pd.DataFrame({
+        "Measure": ["People", "Children", "Adults"],
+        "Existing Dimension": ["A", "B", "C"],
+        "Value": [2, 2, 2],
+        "Local Dimension": ["D", "E", "F"],
+        "Units": ["Percent", "People", "People"]
+    })
 
     metadata = CatalogMetadata("Some Dataset")
     columns = [
-        QbColumn(
-            "Measure", QbMultiMeasureDimension.new_measures_from_data(data["Measure"])
-        ),
-        QbColumn(
-            "Existing Dimension",
-            ExistingQbDimension("https://example.org/dimensions/existing_dimension"),
-        ),
-        QbColumn(
-            "Local Dimension",
-            NewQbDimension.from_data("Name of New Dimension", data["Local Dimension"]),
-        ),
+        QbColumn("Measure", QbMultiMeasureDimension.new_measures_from_data(data["Measure"])),
+        QbColumn("Existing Dimension", ExistingQbDimension("https://example.org/dimensions/existing_dimension")),
+        QbColumn("Local Dimension", NewQbDimension.from_data("Name of New Dimension", data["Local Dimension"])),
         QbColumn("Value", QbMultiMeasureObservationValue("number")),
-        QbColumn("Units", QbMultiUnits.new_units_from_data(data["Units"])),
+        QbColumn("Units", QbMultiUnits.new_units_from_data(data["Units"]))
+
     ]
 
     cube = Cube(metadata, data, columns)
 
     actual_about_url = QbWriter(cube)._get_about_url()
-    expected_about_url = (
-        "./some-dataset.csv#obs/{+existing_dimension}/{+local_dimension}/{+measure}"
-    )
+    expected_about_url = "./some-dataset.csv#obs/{+existing_dimension}/{+local_dimension}/{+measure}"
     assert actual_about_url == expected_about_url
-
 
 if __name__ == "__main__":
     pytest.main()
