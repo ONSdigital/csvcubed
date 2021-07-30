@@ -140,7 +140,7 @@ pipeline {
                         sh "pipenv run sphinx-build -W -b html docs docs/_build/html"
                     }
                     
-                    stash name: "docs", includes: "**/docs/_build/html/*"
+                    stash name: "docs", includes: "**/docs/_build/html/**/*"
                 }
             }
         }
@@ -172,7 +172,7 @@ pipeline {
                 }
 
 
-                archiveArtifacts artifacts: '**/dist/*.whl, **/docs/_build/html/*', fingerprint: true
+                archiveArtifacts artifacts: '**/dist/*.whl, **/docs/_build/html/**/*', fingerprint: true
             }
         }
     }
