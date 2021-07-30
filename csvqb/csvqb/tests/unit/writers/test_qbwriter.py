@@ -476,6 +476,7 @@ def test_virtual_columns_generated_for_multi_meas_obs_val():
     assert "cube-name.csv#unit/some-unit" == virt_unit["valueUrl"]
 
 
+
 def test_about_url_generation():
     """
     Ensuring that when an aboutUrl is defined for a non-multimeasure cube, the resulting URL
@@ -511,7 +512,13 @@ def test_about_url_generation():
     cube = Cube(metadata, data, columns)
 
     actual_about_url = QbWriter(cube)._get_about_url()
+<<<<<<< HEAD
     expected_about_url = "some-dataset.csv#obs/{+existing_dimension}/{+local_dimension}"
+=======
+    expected_about_url = (
+        "./some-dataset.csv#obs/{+existing_dimension}/{+local_dimension}"
+    )
+>>>>>>> 0a071ad (Revert "Revert "Issue #110 - Made some changes which *should* result in the API documentation being generated for all projects."")
     assert actual_about_url == expected_about_url
 
 

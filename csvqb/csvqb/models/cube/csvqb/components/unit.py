@@ -84,9 +84,7 @@ class QbMultiUnits(MultiQbDataStructureDefinition):
     @staticmethod
     def new_units_from_data(data: PandasDataTypes) -> "QbMultiUnits":
         """
-            Automatically generates new units from a units column.
-        :param data: The data column defining the full list of available units.
-        :return: QbMultiUnits
+        Automatically generates new units from a units column.
         """
         return QbMultiUnits(
             [NewQbUnit(u) for u in set(pandas_input_to_columnar_str(data))]
