@@ -1,5 +1,5 @@
 """
-behave functionality to run csv-lint on some output
+behave functionality to run csv2rdf on some output
 """
 from behave import step
 from pathlib import Path
@@ -42,6 +42,7 @@ def _run_csv2rdf(context, metadata_file_path: Path) -> Tuple[int, str, Optional[
 
 @step('csv2rdf on "{file}" should succeed')
 def step_impl(context, file: str):
+    """csv2rdf on "{file}" should succeed"""
     temp_dir = get_context_temp_dir_path(context)
     exit_code, logs, ttl_out = _run_csv2rdf(context, temp_dir / file)
     assert exit_code == 0
@@ -51,6 +52,7 @@ def step_impl(context, file: str):
 
 @step("csv2rdf on all CSV-Ws should succeed")
 def step_impl(context):
+    """csv2rdf on all CSV-Ws should succeed"""
     temp_dir = get_context_temp_dir_path(context)
     csvw_metadata_files = temp_dir.rglob("*.csv-metadata.json")
     context.turtle = ""
@@ -64,6 +66,7 @@ def step_impl(context):
 
 @step('csv2rdf on "{file}" should fail with "{expected}"')
 def step_impl(context, file: str, expected: str):
+    """csv2rdf on \"{file}\" should fail with \"{expected}\" """
     temp_dir = get_context_temp_dir_path(context)
     exit_code, logs, ttl_out = _run_csv2rdf(context, temp_dir / file)
     assert exit_code == 1

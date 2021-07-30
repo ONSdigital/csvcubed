@@ -237,8 +237,10 @@ class ObservationGroup(NewResource):
 
 
 class Slice(Attachable, ObservationGroup):
-    """Slice - Denotes a subset of a DataSet defined by fixing a subset of the dimensional values, component
-    properties on the Slice"""
+    """
+    Slice - Denotes a subset of a DataSet defined by fixing a subset of the dimensional values, component
+    properties on the Slice
+    """
     sliceStructure: Annotated[Resource["SliceKey"], Triple(QB.sliceStructure, PropertyStatus.recommended,
                                                            map_resource_to_uri)]
     """slice structure - indicates the sub-key corresponding to this slice"""

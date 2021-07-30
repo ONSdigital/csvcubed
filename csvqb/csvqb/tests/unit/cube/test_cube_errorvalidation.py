@@ -44,15 +44,14 @@ def test_two_column_same_title():
     """
     If cube with two columns with the same title is defined, we get an error
     """
-    data = pd.DataFrame({
-        "Some Dimension": ["A", "B", "C"],
-        "Some Dimension": ["A", "B", "C"]
-    })
+    data = pd.DataFrame(
+        {"Some Dimension": ["A", "B", "C"], "Some Dimension": ["A", "B", "C"]}
+    )
 
     metadata = CatalogMetadata("Some Dataset")
     columns: List[CsvColumn] = [
         SuppressedCsvColumn("Some Dimension"),
-        SuppressedCsvColumn("Some Dimension")
+        SuppressedCsvColumn("Some Dimension"),
     ]
 
     cube = Cube(metadata, data, columns)
