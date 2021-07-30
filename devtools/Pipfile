@@ -18,6 +18,7 @@ sphinx-book-theme = "*"
 pipenv-setup = "*"
 chardet = "*"
 black = "*"
+devtools = {editable = true,path = "."}
 
 [requires]
 python_version = "3.9"
