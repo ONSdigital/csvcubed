@@ -121,22 +121,22 @@ pipeline {
             steps {
                 script {
                     dir("devtools") {
-                        sh "pipenv run sphinx-apidoc -F -M -a -P --tocfile index.rst -d 10 -E -o docs -o docs devtools \"setup*\""                        
+                        sh "pipenv run sphinx-apidoc -F -M -a -P --tocfile index.rst -d 10 -E -o docs --implicit-namespaces -o docs devtools \"setup*\""                        
                         sh "pipenv run sphinx-build -W -b html docs docs/_build/html"
                     }
 
                     dir("sharedmodels") {
-                        sh "pipenv run sphinx-apidoc -F -M -a -P --tocfile index.rst -d 10 -E -o docs sharedmodels \"setup*\" \"sharedmodels/scripts\""                        
+                        sh "pipenv run sphinx-apidoc -F -M -a -P --tocfile index.rst -d 10 -E --implicit-namespaces -o docs sharedmodels \"setup*\" \"sharedmodels/scripts\""                        
                         sh "pipenv run sphinx-build -W -b html docs docs/_build/html"
                     }
 
                     dir("pmd") {
-                        sh "pipenv run sphinx-apidoc -F -M -a -P --tocfile index.rst -d 10 -E -o docs pmd \"setup*\" \"pmd/tests\""                        
+                        sh "pipenv run sphinx-apidoc -F -M -a -P --tocfile index.rst -d 10 -E --implicit-namespaces -o docs  pmd \"setup*\" \"pmd/tests\""                        
                         sh "pipenv run sphinx-build -W -b html docs docs/_build/html"
                     }
 
                     dir("csvqb") {
-                        sh "pipenv run sphinx-apidoc -F -M -a -P --tocfile index.rst -d 10 -E -o docs csvqb \"setup*\" \"csvqb/tests\""                        
+                        sh "pipenv run sphinx-apidoc -F -M -a -P --tocfile index.rst -d 10 -E --implicit-namespaces -o docs csvqb \"setup*\" \"csvqb/tests\""                        
                         sh "pipenv run sphinx-build -W -b html docs docs/_build/html"
                     }
                     
