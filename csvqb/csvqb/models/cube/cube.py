@@ -9,11 +9,12 @@ from csvqb.models.validationerror import ValidationError
 from .columns import CsvColumn
 from csvqb.models.cube.catalog import CatalogMetadataBase
 from csvqb.inputs import pandas_input_to_columnar
+from ..pydanticmodel import PydanticModel
 
 TMetadata = TypeVar("TMetadata", bound=CatalogMetadataBase, covariant=True)
 
 
-class Cube(Generic[TMetadata]):
+class Cube(Generic[TMetadata], PydanticModel):
     def __init__(
         self,
         metadata: TMetadata,
@@ -25,7 +26,7 @@ class Cube(Generic[TMetadata]):
         self.columns: List[CsvColumn] = columns
 
     def validate(self) -> List[ValidationError]:
-        errors = self.metadata.validate()
+        errors = self.pydantic_validation()
         errors += self._validate_columns()
         return errors
 
@@ -51,7 +52,7 @@ class Cube(Generic[TMetadata]):
                         )
                     )
 
-            errors += col.validate(pandas_input_to_columnar(maybe_column_data))
+            errors += col.validate_data(maybe_column_data)
 
         if self.data is not None:
             defined_column_titles = [c.csv_column_title for c in self.columns]

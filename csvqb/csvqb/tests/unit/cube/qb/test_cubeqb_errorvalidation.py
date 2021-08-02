@@ -66,7 +66,7 @@ def test_multi_measure_qb_definition():
             ExistingQbDimension("https://example.org/dimensions/existing_dimension"),
             output_uri_template="https://example.org/concept-scheme/existing_scheme/{+existing_dimension}",
         ),
-        QbColumn("Value", QbMultiMeasureObservationValue("number")),
+        QbColumn("Value", QbMultiMeasureObservationValue(data_type="number")),
         QbColumn(
             "Measure",
             QbMultiMeasureDimension.new_measures_from_data(data["Measure"]),

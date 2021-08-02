@@ -2,46 +2,40 @@
 Catalog Metadata (DCAT)
 -----------------------
 """
+from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Optional, List
+from typing import Optional
 from sharedmodels.rdf import dcat
 
-from csvqb.models.validationerror import ValidationError
-from csvqb.utils.uri import uri_safe
 from csvqb.models.cube.catalog import CatalogMetadataBase
+from csvqb.models.uriidentifiable import UriIdentifiable
 
 
-class CatalogMetadata(CatalogMetadataBase):
-    def __init__(
-        self,
-        title: str,
-        uri_safe_identifier: Optional[str] = None,
-        summary: Optional[str] = None,
-        description: Optional[str] = None,
-        creator_uri: Optional[str] = None,
-        publisher_uri: Optional[str] = None,
-        issued: Optional[datetime] = None,
-        theme_uris: List[str] = [],
-        keywords: List[str] = [],
-        landing_page_uri: Optional[str] = None,
-        license_uri: Optional[str] = None,
-        public_contact_point_uri: Optional[str] = None,
-    ):
-        CatalogMetadataBase.__init__(
-            self, title, description=description, issued=issued
-        )
-        self.uri_safe_identifier: str = uri_safe_identifier or uri_safe(title)
-        self.summary: Optional[str] = summary
-        self.creator_uri: Optional[str] = creator_uri
-        self.publisher_uri: Optional[str] = publisher_uri
-        self.theme_uris: List[str] = theme_uris
-        self.keywords: List[str] = keywords
-        self.landing_page_uri: Optional[str] = landing_page_uri
-        self.license_uri: Optional[str] = license_uri
-        self.public_contact_point_uri: Optional[str] = public_contact_point_uri
+@dataclass
+class CatalogMetadata(CatalogMetadataBase, UriIdentifiable):
+    theme_uris: list[str] = field(default_factory=list, repr=False)
+    keywords: list[str] = field(default_factory=list, repr=False)
+    issued: datetime = field(default_factory=lambda: datetime.now(), repr=False)
+    summary: Optional[str] = field(default=None, repr=False)
+    description: Optional[str] = field(default=None, repr=False)
+    creator_uri: Optional[str] = field(default=None, repr=False)
+    publisher_uri: Optional[str] = field(default=None, repr=False)
+    landing_page_uri: Optional[str] = field(default=None, repr=False)
+    license_uri: Optional[str] = field(default=None, repr=False)
+    public_contact_point_uri: Optional[str] = field(default=None, repr=False)
+    uri_safe_identifier_override: Optional[str] = field(default=None, repr=False)
 
-    def validate(self) -> List[ValidationError]:
-        return CatalogMetadataBase.validate(self) + []  # TODO: augment this
+    def __post_init__(self):
+        print("Hello.")
+
+    def get_issued(self) -> datetime:
+        return self.issued
+
+    def get_description(self) -> Optional[str]:
+        return self.description
+
+    def get_identifier(self) -> str:
+        return self.title
 
     def configure_dcat_dataset(self, dataset: dcat.Dataset) -> None:
         dt_now = datetime.now()

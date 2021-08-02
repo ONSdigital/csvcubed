@@ -2,41 +2,29 @@
 Data Structure Definitions
 --------------------------
 """
+from dataclasses import dataclass
 from abc import ABC, abstractmethod
-import pandas as pd
 from typing import List
 
+from csvqb.inputs import PandasDataTypes
+from csvqb.models.pydanticmodel import PydanticModel
 from csvqb.models.validationerror import ValidationError
 
 
-class QbDataStructureDefinition(ABC):
+@dataclass
+class QbDataStructureDefinition(PydanticModel, ABC):
     """
     Base class for entities holding information necessary to generate one or many qb DataStructureDefinition (DSD)
     components.
     """
 
     @abstractmethod
-    def validate(self) -> List[ValidationError]:
-        """
-        Validate this component's metadata.
-        """
-        pass
-
-    @abstractmethod
-    def validate_data(self, data: pd.Series) -> List[ValidationError]:
-        """
-        Validate some data against this component's definition.
-        """
-        pass
-
-    @abstractmethod
-    def __str__(self) -> str:
-        """
-        Ensure that descendents implement the to string method to help users debug their data.
-        """
+    def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
+        """Validate some data against this component's definition."""
         pass
 
 
+@dataclass
 class ColumnarQbDataStructureDefinition(QbDataStructureDefinition, ABC):
     """
     Base class representing Qb Data Structure Definitions which can be directly attached to a `pd.DataFrame` column.
@@ -45,11 +33,8 @@ class ColumnarQbDataStructureDefinition(QbDataStructureDefinition, ABC):
     pass
 
 
+@dataclass
 class MultiQbDataStructureDefinition(ColumnarQbDataStructureDefinition, ABC):
     """
     Base class representing an entity which defines a group of `QbDataStructureDefinition` s.
     """
-
-    @abstractmethod
-    def get_qb_components(self) -> List[QbDataStructureDefinition]:
-        pass
