@@ -1,8 +1,11 @@
 """
- A loader for the info.json file format.
+Info.json Loader
+----------------
 
- N.B. this should **not** be used by external users and should be moved into the gss-utils package in Issue #101:
- https://github.com/GSS-Cogs/csvwlib/issues/101
+A loader for the info.json file format.
+
+N.B. this should **not** be used by external users and should be moved into the gss-utils package in Issue #101:
+https://github.com/GSS-Cogs/csvwlib/issues/101
 """
 
 from typing import Dict, List, Any, Optional, Union

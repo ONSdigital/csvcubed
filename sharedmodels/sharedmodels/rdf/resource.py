@@ -1,3 +1,7 @@
+"""
+Resources
+---------
+"""
 import rdflib
 from rdflib import URIRef, Graph, RDFS, RDF
 from rdflib.term import Literal, Identifier

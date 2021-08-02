@@ -1,3 +1,7 @@
+"""
+Dimensions
+----------
+"""
 from typing import Optional, List
 from abc import ABC
 

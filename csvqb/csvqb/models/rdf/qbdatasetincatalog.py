@@ -1,3 +1,7 @@
+"""
+qb:DataSet in Catalog
+---------------------
+"""
 from sharedmodels.rdf import dcat, qb
 
 

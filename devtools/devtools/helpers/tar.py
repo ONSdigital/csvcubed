@@ -1,3 +1,7 @@
+"""
+Tar Archives
+------------
+"""
 from io import BytesIO
 from pathlib import Path
 from tarfile import TarFile

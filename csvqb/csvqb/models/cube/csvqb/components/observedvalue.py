@@ -1,4 +1,8 @@
-from typing import Optional, List, ClassVar
+"""
+Observed Values
+---------------
+"""
+from typing import Optional, List
 import pandas as pd
 from abc import ABC
 

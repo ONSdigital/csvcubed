@@ -1,3 +1,7 @@
+"""
+Catalog Metadata (base)
+-----------------------
+"""
 from datetime import datetime
 from typing import Optional, List
 from abc import ABC

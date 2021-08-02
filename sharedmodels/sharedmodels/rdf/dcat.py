@@ -1,3 +1,7 @@
+"""
+DCAT
+----
+"""
 from rdflib import Literal, URIRef, DCAT, DCTERMS, XSD, PROV, ODRL2, FOAF
 from typing import Annotated as Ann, Set, Optional
 from datetime import datetime

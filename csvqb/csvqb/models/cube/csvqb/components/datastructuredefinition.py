@@ -1,4 +1,7 @@
-"""Data Structure Definitions"""
+"""
+Data Structure Definitions
+--------------------------
+"""
 from abc import ABC, abstractmethod
 import pandas as pd
 from typing import List

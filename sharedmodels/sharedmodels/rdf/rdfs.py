@@ -1,3 +1,7 @@
+"""
+RDFS
+--------------
+"""
 from rdflib import RDFS
 
 

@@ -1,4 +1,9 @@
-"""Holds metadata necessary to configure catalogue metadata in PMD."""
+"""
+PMD Config
+----------
+
+Holds metadata necessary to configure catalogue metadata in PMD.
+"""
 from os import getenv
 
 
