@@ -2,9 +2,9 @@ import pytest
 from copy import deepcopy
 import pandas as pd
 from sharedmodels.rdf import qb
+from typing import List
 
 from csvqb.models.cube import *
-from csvqb.tests.unit.test_baseunit import *
 from csvqb.utils.iterables import first
 from csvqb.writers.qbwriter import QbWriter
 
@@ -512,13 +512,7 @@ def test_about_url_generation():
     cube = Cube(metadata, data, columns)
 
     actual_about_url = QbWriter(cube)._get_about_url()
-<<<<<<< HEAD
     expected_about_url = "some-dataset.csv#obs/{+existing_dimension}/{+local_dimension}"
-=======
-    expected_about_url = (
-        "./some-dataset.csv#obs/{+existing_dimension}/{+local_dimension}"
-    )
->>>>>>> 0a071ad (Revert "Revert "Issue #110 - Made some changes which *should* result in the API documentation being generated for all projects."")
     assert actual_about_url == expected_about_url
 
 
