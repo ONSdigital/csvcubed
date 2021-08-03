@@ -97,9 +97,7 @@ def value_is_list_of_or_single_pydantic_dataclass(value: Any) -> bool:
     value_is_iterable = isinstance(value, Iterable) and not isinstance(value, str)
     if value_is_iterable:
         # Only copy iterables if all of their items can be copied.
-        return not any(
-            [value_is_list_of_or_single_pydantic_dataclass(v) for v in value]
-        )
+        return any([value_is_list_of_or_single_pydantic_dataclass(v) for v in value])
     elif isinstance(value, object):
         cls = value.__class__
         return is_dataclass(cls) and (

@@ -40,7 +40,6 @@ class ExistingQbDimension(QbDimension):
 class NewQbDimension(QbDimension, UriIdentifiable):
     label: str
     description: Optional[str] = field(default=None, repr=False)
-    # todo: Ensure we link the code-list to the qb column component somehow
     code_list: Optional[QbCodeList] = field(default=None, repr=False)
     parent_dimension_uri: Optional[str] = field(default=None, repr=False)
     source_uri: Optional[str] = field(default=None, repr=False)
