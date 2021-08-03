@@ -13,14 +13,14 @@ from csvqb.models.uriidentifiable import UriIdentifiable
 
 @dataclass
 class CatalogMetadata(CatalogMetadataBase, UriIdentifiable):
-    theme_uris: list[str] = field(default_factory=list, repr=False)
-    keywords: list[str] = field(default_factory=list, repr=False)
-    issued: datetime = field(default_factory=lambda: datetime.now(), repr=False)
     summary: Optional[str] = field(default=None, repr=False)
     description: Optional[str] = field(default=None, repr=False)
     creator_uri: Optional[str] = field(default=None, repr=False)
     publisher_uri: Optional[str] = field(default=None, repr=False)
     landing_page_uri: Optional[str] = field(default=None, repr=False)
+    theme_uris: list[str] = field(default_factory=list, repr=False)
+    keywords: list[str] = field(default_factory=list, repr=False)
+    issued: datetime = field(default_factory=lambda: datetime.now(), repr=False)
     license_uri: Optional[str] = field(default=None, repr=False)
     public_contact_point_uri: Optional[str] = field(default=None, repr=False)
     uri_safe_identifier_override: Optional[str] = field(default=None, repr=False)

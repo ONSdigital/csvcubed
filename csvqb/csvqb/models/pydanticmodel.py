@@ -1,13 +1,16 @@
-import datetime
+import dataclasses
 from dataclasses import dataclass, asdict, fields, is_dataclass
 import pydantic
 import pydantic.dataclasses
 from pydantic import BaseConfig
-from typing import ClassVar, Dict, Type, List, Iterable, Optional, Tuple
+from typing import ClassVar, Dict, Type, List, Iterable, Union
 from abc import ABC
 
 
 from .validationerror import ValidationError
+
+_map_class_to_pydantic_constructor: ClassVar[Dict[Type, Type]] = dict()
+"""_map_class_to_pydantic_constructor - Cache of pydantic constructor corresponding to a given class."""
 
 
 @dataclass
@@ -19,9 +22,6 @@ class PydanticModel(ABC):
     validation until the `validate` method is called.
     """
 
-    _map_class_to_pydantic_constructor: ClassVar[Dict[Type, Type]] = dict()
-    """_map_class_to_pydantic_constructor - Cache of pydantic constructor corresponding to a given class."""
-
     class Config(BaseConfig):
         """pydantic Configuration - see https://pydantic-docs.helpmanual.io/usage/model_config/"""
 
@@ -31,58 +31,52 @@ class PydanticModel(ABC):
 
     @classmethod
     def _get_pydantic_constructor(cls) -> Type:
-        if cls not in PydanticModel._map_class_to_pydantic_constructor:
-            new_cls = type(
-                f"{cls.__name__}_pydanticmodel_{datetime.datetime.now().timestamp()}",
-                (object,),
-                dict([(f.name, f) for f in fields(cls)]),
+        if cls not in _map_class_to_pydantic_constructor:
+            _map_class_to_pydantic_constructor[cls] = pydantic.dataclasses.dataclass(
+                cls,
+                config=PydanticModel.Config,
             )
-
-            # Annotations need to be built up from all base classes, but overridden as per inheritence.
-            annotations = {}
-            for c in reversed(cls.mro()):
-                annotations_to_add = getattr(c, "__annotations__", {})
-                annotations = dict(annotations, **annotations_to_add)
-
-            setattr(new_cls, "__annotations__", annotations)
-            PydanticModel._map_class_to_pydantic_constructor[
-                cls
-            ] = pydantic.dataclasses.dataclass(new_cls, config=PydanticModel.Config)
-        return PydanticModel._map_class_to_pydantic_constructor[cls]
+        return _map_class_to_pydantic_constructor[cls]
 
     def as_dict(self) -> dict:
         """Use python dataclasses method to return this model as a dictionary."""
         return asdict(self)
 
-    def as_shallow_dict(self) -> dict:
+    def _as_shallow_dict(self) -> dict:
         return dict([(f.name, getattr(self, f.name)) for f in fields(self)])
 
-    def pydantic_validation(self) -> List[ValidationError]:
-        """
-        Validate this model using pydantic.
-        Checks that all model attributes match the expected annotated data type. **Coerces values** where possible.
-        """
-
+    def _to_pydantic_dataclass_or_validation_errors(
+        self,
+    ) -> Union[object, List[ValidationError]]:
         pydantic_class_constructor = self.__class__._get_pydantic_constructor()
-
         try:
-            thingy = self.as_shallow_dict()
-            validated_model = pydantic_class_constructor(**thingy)
+            validated_model = pydantic_class_constructor(**self._as_shallow_dict())
         except pydantic.ValidationError as error:
             return [
                 ValidationError(f"{self} - {e['loc']} - {e['msg']}")
                 for e in error.errors()
             ]
 
-        if validated_model is not None:
+        return validated_model
+
+    def pydantic_validation(self) -> List[ValidationError]:
+        """
+        Validate this model using pydantic.
+        Checks that all model attributes match the expected annotated data type. **Coerces values** where possible.
+        """
+        validated_model_or_errors = self._to_pydantic_dataclass_or_validation_errors()
+        if dataclasses.is_dataclass(validated_model_or_errors):
+            validated_model = validated_model_or_errors
             #  Update this model's values with pydantic's coerced values
             for field in fields(self):
                 field_value = getattr(validated_model, field.name)
 
                 if value_does_not_contain_pydantic_dataclasses(field_value):
                     setattr(self, field.name, field_value)
+            return []
 
-        return []
+        # Else we have validation errors
+        return validated_model_or_errors
 
 
 def value_does_not_contain_pydantic_dataclasses(value) -> bool:
