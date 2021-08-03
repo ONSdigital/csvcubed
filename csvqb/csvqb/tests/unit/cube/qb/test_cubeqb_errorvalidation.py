@@ -99,8 +99,8 @@ def test_existing_dimension_output_uri_template():
             QbColumn(
                 "Value",
                 QbSingleMeasureObservationValue(
-                    ExistingQbUnit("http://some/unit"),
                     ExistingQbMeasure("http://some/measure"),
+                    ExistingQbUnit("http://some/unit"),
                 ),
             ),
         ],
@@ -109,7 +109,7 @@ def test_existing_dimension_output_uri_template():
     errors = cube.validate()
     errors += validate_qb_component_constraints(cube)
 
-    assert len(errors) == 1
+    assert_num_validation_errors(errors, 1)
     validation_errors = errors[0]
     assert (
         "'Existing Dimension' - an ExistingQbDimension must have an output_uri_template defined."

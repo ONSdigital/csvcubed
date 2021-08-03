@@ -2,6 +2,7 @@
 Cube
 ----
 """
+from dataclasses import dataclass, field
 from typing import List, Optional, Set, TypeVar, Generic
 import pandas as pd
 
@@ -14,16 +15,11 @@ from ..pydanticmodel import PydanticModel
 TMetadata = TypeVar("TMetadata", bound=CatalogMetadataBase, covariant=True)
 
 
+@dataclass
 class Cube(Generic[TMetadata], PydanticModel):
-    def __init__(
-        self,
-        metadata: TMetadata,
-        data: Optional[pd.DataFrame] = None,
-        columns: List[CsvColumn] = [],
-    ):
-        self.metadata: TMetadata = metadata
-        self.data: Optional[pd.DataFrame] = data
-        self.columns: List[CsvColumn] = columns
+    metadata: TMetadata
+    data: Optional[pd.DataFrame] = field(default=None, repr=False)
+    columns: List[CsvColumn] = field(default_factory=lambda: [], repr=False)
 
     def validate(self) -> List[ValidationError]:
         errors = self.pydantic_validation()

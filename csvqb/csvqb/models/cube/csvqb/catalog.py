@@ -25,9 +25,6 @@ class CatalogMetadata(CatalogMetadataBase, UriIdentifiable):
     public_contact_point_uri: Optional[str] = field(default=None, repr=False)
     uri_safe_identifier_override: Optional[str] = field(default=None, repr=False)
 
-    def __post_init__(self):
-        print("Hello.")
-
     def get_issued(self) -> datetime:
         return self.issued
 

@@ -52,7 +52,7 @@ def test_csv_cols_assumed_dimensions():
     errors = cube.validate()
     errors += validate_qb_component_constraints(cube)
 
-    assert len(errors) == 0
+    assert_num_validation_errors(errors, 0)
 
 
 def test_multiple_measures_and_units_loaded_in_uri_template():
@@ -114,7 +114,7 @@ def test_multiple_measures_and_units_loaded_in_uri_template():
     errors = cube.validate()
     errors += validate_qb_component_constraints(cube)
 
-    assert len(errors) == 0
+    assert_num_validation_errors(errors, 0)
 
 
 def test_cube_metadata_extracted_from_info_json():
@@ -222,7 +222,7 @@ def test_cube_metadata_extracted_from_info_json():
     errors = cube.validate()
     errors += validate_qb_component_constraints(cube)
 
-    assert len(errors) == 0
+    assert_num_validation_errors(errors, 0)
 
 
 if __name__ == "__main__":

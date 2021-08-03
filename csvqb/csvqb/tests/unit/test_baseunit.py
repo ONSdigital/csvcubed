@@ -1,4 +1,7 @@
 from pathlib import Path
+from typing import List
+
+from csvqb.models.validationerror import ValidationError
 
 
 def get_test_base_dir() -> Path:
@@ -10,3 +13,9 @@ def get_test_base_dir() -> Path:
 
 def get_test_cases_dir() -> Path:
     return get_test_base_dir() / "test-cases"
+
+
+def assert_num_validation_errors(
+    errors: List[ValidationError], num_errors_expected: int
+):
+    assert num_errors_expected == len(errors), ", ".join([e.message for e in errors])

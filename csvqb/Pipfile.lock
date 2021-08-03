@@ -91,7 +91,7 @@
         "pydantic": {
             "editable": true,
             "git": "https://github.com/robons/pydantic.git",
-            "ref": "8db068b1d22a91365bd1a3c6b6636ac8711199cd"
+            "ref": "9d8be23e7b43bcf87f10475c50278bf429e1c214"
         },
         "pyparsing": {
             "hashes": [
