@@ -105,4 +105,4 @@ def value_is_list_of_or_single_pydantic_dataclass(value: Any) -> bool:
         )
 
     # Anything else should be fine.
-    return True
+    return False
