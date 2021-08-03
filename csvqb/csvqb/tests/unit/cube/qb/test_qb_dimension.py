@@ -30,8 +30,13 @@ def test_newqbdimension_extracts_newqbcodelist_newqbconcept():
     assert "E" in concept_labels
     assert "G" in concept_labels
 
-    # assert parent_code is None
-    assert new_dimension.code_list.concepts[0].parent_code is None
+    # assert parent is None for distinct list of concepts
+    parent_code_var = [c.parent_code for c in new_dimension.code_list.concepts]
+    assert parent_code_var[0] is None
+    assert parent_code_var[1] is None
+    assert parent_code_var[2] is None
+    assert parent_code_var[3] is None
+    assert parent_code_var[4] is None
 
     # assert if all the concept label is converted into something that can be used in a URI path segment (pathify).
     code = [c.code for c in new_dimension.code_list.concepts]
