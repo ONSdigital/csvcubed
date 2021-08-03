@@ -3,7 +3,7 @@ from dataclasses import dataclass, asdict, fields, is_dataclass
 import pydantic
 import pydantic.dataclasses
 from pydantic import BaseConfig
-from typing import ClassVar, Dict, Type, List, Iterable, Union
+from typing import ClassVar, Dict, Type, List, Iterable, Union, Any
 from abc import ABC
 
 
@@ -31,6 +31,7 @@ class PydanticModel(ABC):
 
     @classmethod
     def _get_pydantic_constructor(cls) -> Type:
+        """Returns a constructor for creating an instance of this model which is a *pydantic* dataclass."""
         if cls not in _map_class_to_pydantic_constructor:
             _map_class_to_pydantic_constructor[cls] = pydantic.dataclasses.dataclass(
                 cls,
@@ -43,11 +44,17 @@ class PydanticModel(ABC):
         return asdict(self)
 
     def _as_shallow_dict(self) -> dict:
+        """Returns a dictionary which is essentially a shallow copy of this dataclass."""
         return dict([(f.name, getattr(self, f.name)) for f in fields(self)])
 
     def _to_pydantic_dataclass_or_validation_errors(
         self,
     ) -> Union[object, List[ValidationError]]:
+        """
+        Converts this model to a pydantic dataclass. Captures any validation errors in the process.
+
+        Returns: Either a pydantic dataclass is validation was successful **OTHERWISE** it returns a list of errors.
+        """
         pydantic_class_constructor = self.__class__._get_pydantic_constructor()
         try:
             validated_model = pydantic_class_constructor(**self._as_shallow_dict())
@@ -62,6 +69,7 @@ class PydanticModel(ABC):
     def pydantic_validation(self) -> List[ValidationError]:
         """
         Validate this model using pydantic.
+
         Checks that all model attributes match the expected annotated data type. **Coerces values** where possible.
         """
         validated_model_or_errors = self._to_pydantic_dataclass_or_validation_errors()
@@ -71,7 +79,9 @@ class PydanticModel(ABC):
             for field in fields(self):
                 field_value = getattr(validated_model, field.name)
 
-                if value_does_not_contain_pydantic_dataclasses(field_value):
+                if not value_is_list_of_or_single_pydantic_dataclass(field_value):
+                    # Don't copy objects which have been cast to pydantic dataclasses
+                    # They will bring their validation functionality with them.
                     setattr(self, field.name, field_value)
             return []
         else:
@@ -80,16 +90,20 @@ class PydanticModel(ABC):
             return validated_model_or_errors
 
 
-def value_does_not_contain_pydantic_dataclasses(value) -> bool:
+def value_is_list_of_or_single_pydantic_dataclass(value: Any) -> bool:
+    """
+    Informs the caller whether the given `value` is a pydantic dataclass, or if it is a list of pydantic dataclasses.
+    """
     value_is_iterable = isinstance(value, Iterable) and not isinstance(value, str)
     if value_is_iterable:
         # Only copy iterables if all of their items can be copied.
-        return all([value_does_not_contain_pydantic_dataclasses(v) for v in value])
+        return not any(
+            [value_is_list_of_or_single_pydantic_dataclass(v) for v in value]
+        )
     elif isinstance(value, object):
-        # Don't copy object which have been cast to pydantic dataclasses
         cls = value.__class__
-        return (not is_dataclass(cls)) or pydantic.dataclasses.is_builtin_dataclass(
-            value.__class__
+        return is_dataclass(cls) and (
+            not pydantic.dataclasses.is_builtin_dataclass(cls)
         )
 
     # Anything else should be fine.

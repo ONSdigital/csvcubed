@@ -7,7 +7,13 @@ from csvqb.utils.uri import uri_safe
 
 @dataclasses.dataclass
 class UriIdentifiable(ABC):
-    """Requires that implementing classes provide callers with a way of overriding the uri_safe_identifier property."""
+    """
+    Mixin which allows a class to represent something which is URI addressable.
+
+    It allows the user to provide a `uri_safe_identifier_override` or neglect to provide one. If an override is not
+    provided, then the string identifier returned by the abstract method `get_identifier` is turned into a URI-safe
+    token which is returned by the `uri_safe_identifier` property.
+    """
 
     @abstractmethod
     def get_identifier(self) -> str:
@@ -19,6 +25,7 @@ class UriIdentifiable(ABC):
     @property
     @abstractmethod
     def uri_safe_identifier_override(self) -> Optional[str]:
+        """An override for the URI-safe string which should be used to identify this object."""
         pass
 
     @uri_safe_identifier_override.setter
@@ -28,6 +35,7 @@ class UriIdentifiable(ABC):
 
     @property
     def uri_safe_identifier(self) -> str:
+        """A URI-safe string which should be used to identify this object."""
         return self.uri_safe_identifier_override or uri_safe(self.get_identifier())
 
     @uri_safe_identifier.setter
