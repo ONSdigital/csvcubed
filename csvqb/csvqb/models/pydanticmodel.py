@@ -74,9 +74,10 @@ class PydanticModel(ABC):
                 if value_does_not_contain_pydantic_dataclasses(field_value):
                     setattr(self, field.name, field_value)
             return []
-
-        # Else we have validation errors
-        return validated_model_or_errors
+        else:
+            assert isinstance(validated_model_or_errors, list)
+            # Else we have validation errors
+            return validated_model_or_errors
 
 
 def value_does_not_contain_pydantic_dataclasses(value) -> bool:

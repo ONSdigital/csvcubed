@@ -23,7 +23,11 @@ class Cube(Generic[TMetadata], PydanticModel):
 
     def validate(self) -> List[ValidationError]:
         errors = self.pydantic_validation()
-        errors += self._validate_columns()
+        try:
+            errors += self._validate_columns()
+        except Exception as e:
+            errors.append(ValidationError(str(e)))
+
         return errors
 
     def _validate_columns(self) -> List[ValidationError]:
