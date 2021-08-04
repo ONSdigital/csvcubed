@@ -1,4 +1,9 @@
-"""Output writer for CSV-qb"""
+"""
+CSV-qb Writer
+-------------
+
+Output writer for CSV-qb
+"""
 import itertools
 import json
 import re

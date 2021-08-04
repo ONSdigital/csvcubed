@@ -1,3 +1,7 @@
+"""
+Catalog Metadata (DCAT)
+-----------------------
+"""
 from datetime import datetime
 from typing import Optional, List
 from sharedmodels.rdf import dcat

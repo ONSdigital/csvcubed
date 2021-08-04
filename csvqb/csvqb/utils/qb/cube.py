@@ -1,3 +1,7 @@
+"""
+QbCube
+------
+"""
 from typing import List, TypeVar, Type
 
 

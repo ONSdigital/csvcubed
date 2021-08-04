@@ -1,4 +1,7 @@
 """
+csvlint
+-------
+
 behave functionality to run csv-lint on some output
 """
 from behave import *

@@ -1,3 +1,7 @@
+"""
+RDF Data Types
+--------------
+"""
 from rdflib import URIRef
 
 

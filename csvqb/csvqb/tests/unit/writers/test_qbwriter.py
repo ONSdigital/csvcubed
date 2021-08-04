@@ -2,9 +2,9 @@ import pytest
 from copy import deepcopy
 import pandas as pd
 from sharedmodels.rdf import qb
+from typing import List
 
 from csvqb.models.cube import *
-from csvqb.tests.unit.test_baseunit import *
 from csvqb.utils.iterables import first
 from csvqb.writers.qbwriter import QbWriter
 
@@ -474,6 +474,7 @@ def test_virtual_columns_generated_for_multi_meas_obs_val():
         == virt_unit["propertyUrl"]
     )
     assert "cube-name.csv#unit/some-unit" == virt_unit["valueUrl"]
+
 
 
 def test_about_url_generation():

@@ -1,3 +1,7 @@
+"""
+Columns with qb Components
+--------------------------
+"""
 from typing import Optional, TypeVar, Generic, List
 import pandas as pd
 

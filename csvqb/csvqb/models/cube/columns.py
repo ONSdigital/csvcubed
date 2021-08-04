@@ -1,3 +1,7 @@
+"""
+CSV Column Definitions
+----------------------
+"""
 from abc import ABC, abstractmethod
 import pandas as pd
 from typing import Optional, List

@@ -1,3 +1,7 @@
+"""
+Dimensions
+----------
+"""
 from typing import Optional, List
 from abc import ABC
 
@@ -68,15 +72,7 @@ class NewQbDimension(QbDimension):
         range_uri: Optional[str] = None,
     ) -> "NewQbDimension":
         """
-            Creates a new dimension and code list from the columnar data provided.
-        :param label:
-        :param data:
-        :param description:
-        :param uri_safe_identifier:
-        :param parent_dimension_uri:
-        :param source_uri:
-        :param range_uri:
-        :return: NewQbDimension
+        Creates a new dimension and code list from the columnar data provided.
         """
         return NewQbDimension(
             label,

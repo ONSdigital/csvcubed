@@ -1,5 +1,8 @@
 """
-    Write `NewQbCodeList`s to CSV-Ws as `skos:ConceptScheme`s with DCAT2 metadata.
+CodeList Writer
+---------------
+
+Write `NewQbCodeList`s to CSV-Ws as `skos:ConceptScheme` s with DCAT2 metadata.
 """
 import datetime
 import json

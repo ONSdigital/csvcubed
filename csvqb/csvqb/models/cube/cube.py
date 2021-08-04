@@ -1,3 +1,7 @@
+"""
+Cube
+----
+"""
 from typing import List, Optional, Set, TypeVar, Generic
 import pandas as pd
 

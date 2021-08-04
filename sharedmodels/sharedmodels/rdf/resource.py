@@ -1,3 +1,7 @@
+"""
+Resources
+---------
+"""
 import rdflib
 from rdflib import URIRef, Graph, RDFS, RDF
 from rdflib.term import Literal, Identifier
@@ -38,12 +42,10 @@ class NewResource(RdfResource, ABC):
 
     def __init__(self, uri: str):
         RdfResource.__init__(self, uri)
-        if not hasattr(self, "rdf_types"):
-            # Multiple-inheritance safeguard
-            self.rdf_types = set()
-        if not hasattr(self, "additional_rdf"):
-            # Multiple-inheritance safeguard
-            self.additional_rdf = {}
+        # Multiple-inheritance safeguard
+        self.rdf_types = getattr(self, "rdf_types", set())
+        # Multiple-inheritance safeguard
+        self.additional_rdf = getattr(self, "additional_rdf", {})
 
     @property
     def uri_str(self) -> str:
