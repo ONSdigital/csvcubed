@@ -38,6 +38,6 @@ def test_newqbdimension_extracts_newqbcodelist_newqbconcept():
     code = [c.code for c in new_dimension.code_list.concepts]
     assert "a" in code
     assert "c" in code
-    assert "c" in code
+    assert "d" in code
     assert "e" in code
     assert "g" in code
