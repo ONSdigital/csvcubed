@@ -245,6 +245,8 @@ def test_inverse_triple_serialisation():
 
 
 def test_mandatory_properties_are_required():
+    """Test that we get an exception if a mandatory property has not been provided."""
+
     class A(NewResource):
         p: Annotated[
             str,
