@@ -72,6 +72,11 @@ pipeline {
                 }
             }
             steps {
+                dir("sharedmodels") {
+                    dir("sharedmodels/tests/unit") {
+                        sh "PIPENV_PIPFILE='../../../Pipfile' pipenv run pytest --junitxml=pytest_results_sharedmodels.xml"
+                    }
+                }
                 dir("pmd") {
                     sh "pipenv run behave pmd/tests/behaviour --tags=-skip -f json.cucumber -o pmd/tests/behaviour/test-results.json"
                     dir("pmd/tests/unit") {
@@ -96,6 +101,10 @@ pipeline {
                 }
             }
             steps {               
+                dir("devtools") {
+                    sh "pipenv run python setup.py bdist_wheel --universal"
+                }
+
                 dir("sharedmodels") {
                     sh "pipenv run python setup.py bdist_wheel --universal"
                 }
@@ -126,7 +135,7 @@ pipeline {
                     }
 
                     dir("sharedmodels") {
-                        sh "pipenv run sphinx-apidoc -F -M -a -P --tocfile index.rst -d 10 -E --implicit-namespaces -o docs sharedmodels \"setup*\" \"sharedmodels/scripts\""                        
+                        sh "pipenv run sphinx-apidoc -F -M -a -P --tocfile index.rst -d 10 -E --implicit-namespaces -o docs sharedmodels \"setup*\" \"sharedmodels/scripts\" \"sharedmodels/tests\""                        
                         sh "pipenv run sphinx-build -W -b html docs docs/_build/html"
                     }
 
@@ -155,7 +164,6 @@ pipeline {
                     echo "test-results stash does not exist"
                 }
 
-
                 cucumber fileIncludePattern: '**/test-results.json'
                 junit allowEmptyResults: true, testResults: '**/*results*.xml'
 
@@ -170,7 +178,6 @@ pipeline {
                 } catch (Exception e) {
                     echo "docs stash does not exist"
                 }
-
 
                 archiveArtifacts artifacts: '**/dist/*.whl, **/docs/_build/html/**/*', fingerprint: true
             }
