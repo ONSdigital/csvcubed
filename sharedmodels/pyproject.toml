@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta:__legacy__"
 pythonVersion="3.9"
 exclude = [
     ".venv",
-    "**/tests/behaviour/steps",
+    "**/tests",
     "sharedmodels/scripts",
     "**/build"
 ]
