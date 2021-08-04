@@ -5,6 +5,7 @@ verify_ssl = true
 
 [dev-packages]
 flake8 = "*"
+devtools = {editable = true,path = "."}
 
 [packages]
 docker = "*"
@@ -18,7 +19,6 @@ sphinx-book-theme = "*"
 pipenv-setup = "*"
 chardet = "*"
 black = "*"
-devtools = {editable = true,path = "."}
 
 [requires]
 python_version = "3.9"
