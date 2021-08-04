@@ -149,13 +149,14 @@ class QbWriter(WriterBase):
         self, obs_val: QbObservationValue
     ) -> List[Dict[str, Any]]:
         virtual_columns: List[dict] = []
-        if obs_val.unit is not None:
+        unit = obs_val.unit
+        if unit is not None:
             virtual_columns.append(
                 {
                     "name": VIRT_UNIT_COLUMN_NAME,
                     "virtual": True,
                     "propertyUrl": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
-                    "valueUrl": self._get_unit_uri(obs_val.unit),
+                    "valueUrl": self._get_unit_uri(unit),
                 }
             )
             # todo: We can't do the same thing with unti multipler unfortunately. Perhaps we should attach the unit
@@ -247,11 +248,9 @@ class QbWriter(WriterBase):
         self, observation_value: QbObservationValue
     ) -> List[qb.ComponentSpecification]:
         specs: List[qb.ComponentSpecification] = []
-
-        if observation_value.unit is not None:
-            unit_uri_safe_identifier = self._get_unit_uri_safe_identifier(
-                observation_value.unit
-            )
+        unit = observation_value.unit
+        if unit is not None:
+            unit_uri_safe_identifier = self._get_unit_uri_safe_identifier(unit)
             specs.append(
                 self._get_qb_units_column_specification(unit_uri_safe_identifier)
             )

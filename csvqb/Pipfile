@@ -13,6 +13,7 @@ pandas = "*"
 unidecode = "*"
 csvwlib-models = {editable = true,path = "./../sharedmodels"}
 rdflib-jsonld = "*"
+pydantic = {editable = true,git = "https://github.com/robons/pydantic.git"}
 
 [requires]
 python_version = "3.9"

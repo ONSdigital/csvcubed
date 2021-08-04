@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "1c0fe18ad491693dd768f3187189e266cbc526c5490a03755d05a121b6f983e4"
+            "sha256": "f6eb3499ca20ed4219f6a4bb3ef6b3977ac6a0c8f1f1cbab0ed95eeb696a87d5"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -88,6 +88,11 @@
             "index": "pypi",
             "version": "==1.2.5"
         },
+        "pydantic": {
+            "editable": true,
+            "git": "https://github.com/robons/pydantic.git",
+            "ref": "f0339d2178634bee95d9cc6d4e925415881f9f27"
+        },
         "pyparsing": {
             "hashes": [
                 "sha256:c203ec8783bf771a155b207279b9bccb8dea02d8f0c9e5f8ead507bc3246ecc1",
@@ -130,6 +135,14 @@
             ],
             "version": "==1.16.0"
         },
+        "typing-extensions": {
+            "hashes": [
+                "sha256:0ac0f89795dd19de6b97debb0c6af1c70987fd80a2d62d1958f7e56fcc31b497",
+                "sha256:50b6f157849174217d0656f99dc82fe932884fb250826c18350e159ec6cdf342",
+                "sha256:779383f6086d90c99ae41cf0ff39aac8a7937a9283ce0a414e5dd782f4c94a84"
+            ],
+            "version": "==3.10.0.0"
+        },
         "unidecode": {
             "hashes": [
                 "sha256:12435ef2fc4cdfd9cf1035a1db7e98b6b047fe591892e81f34e94959591fad00",
@@ -159,7 +172,7 @@
                 "sha256:93aa393e9d6c54c5cd570ccadd8edad61ea0c4b9ea7a01409020c9aa019eb442",
                 "sha256:dd83cd4b5b460958838f6eb3000c660b1f9caf2a5b1de4264e941512f603258a"
             ],
-            "markers": "platform_system == 'Darwin'",
+            "markers": "sys_platform == 'darwin'",
             "version": "==0.1.2"
         },
         "attrs": {

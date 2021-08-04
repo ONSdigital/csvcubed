@@ -7,7 +7,7 @@ A loader for the info.json file format.
 N.B. this should **not** be used by external users and should be moved into the gss-utils package in Issue #101:
 https://github.com/GSS-Cogs/csvwlib/issues/101
 """
-
+import datetime
 from typing import Dict, List, Any, Optional, Union
 from pathlib import Path
 import json
@@ -103,19 +103,20 @@ def _metadata_from_dict(config: dict) -> "CatalogMetadata":
         config, "publisher", lambda p: str(GOV[uri_safe(p)])
     )
     theme_uris = [str(GDP.term(t)) for t in config.get("families", [])]
+    dt_issued = get_with_func_or_none(config, "published", parser.parse) or datetime.datetime.now()
     return CatalogMetadata(
-        get_from_dict_ensure_exists(config, "title"),
-        uri_safe_identifier=get_from_dict_ensure_exists(config, "id"),
+        title=get_from_dict_ensure_exists(config, "title"),
         summary=config.get("summary"),
         description=config.get("description"),
         creator_uri=publisher,
         publisher_uri=publisher,
-        issued=get_with_func_or_none(config, "published", parser.parse),
+        issued=dt_issued,
         theme_uris=theme_uris,
         keywords=config.get("keywords", []),
         landing_page_uri=config.get("landingPage"),
         license_uri=config.get("license"),
         public_contact_point_uri=config.get("contactUri"),
+        uri_safe_identifier_override=get_from_dict_ensure_exists(config, "id"),
     )
 
 
@@ -215,7 +216,9 @@ def _get_column_for_metadata_config(
             measure_component = ExistingQbMeasure(maybe_measure_uri)
             unit_component = ExistingQbUnit(maybe_unit_uri)
             observation_value = QbSingleMeasureObservationValue(
-                measure_component, unit_component, maybe_data_type
+                measure=measure_component,
+                unit=unit_component,
+                data_type=maybe_data_type or "decimal"
             )
             return QbColumn(column_name, observation_value)
         elif maybe_data_type is not None:
