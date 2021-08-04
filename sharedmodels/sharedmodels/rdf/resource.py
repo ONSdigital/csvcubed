@@ -75,9 +75,9 @@ class NewResource(RdfResource, ABC):
         e.g. `label: Annotated[str, Triple(RDFS.label, PropertyStatus.mandatory, map_str_to_en_literal)]`
         """
 
-        type_hints_list_of_lists = [get_type_hints(c, include_extras=True).items() for c in self.__class__.mro()]
-        type_hints = [th for th_list in type_hints_list_of_lists for th in th_list]
-        for property_key, typing_hint in type_hints:
+        type_hints = self._get_type_hints()
+
+        for property_key, typing_hint in type_hints.items():
             property_value = getattr(self, property_key, None)
             type_hints = get_args(typing_hint)
             triple_mappings: List[AbstractTriple] = [th for th in type_hints if isinstance(th, AbstractTriple)]
@@ -90,6 +90,19 @@ class NewResource(RdfResource, ABC):
             graph.add((self.uri, key, value))
 
         return graph
+
+    def _get_type_hints(self) -> dict:
+        """
+        Fetches type hints associated with this class.
+
+        Ensures that overridden properties have their type hints overridden too.
+        """
+
+        type_hints = {}
+        for c in reversed(self.__class__.mro()):
+            type_hints = dict(type_hints, **get_type_hints(c, include_extras=True))
+
+        return type_hints
 
     def _add_triples_to_graph(self, graph: Graph, property_key: str, property_value: Any, triple: AbstractTriple,
                               objects_already_processed: Set[object]):
