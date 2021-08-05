@@ -5,9 +5,8 @@ import pandas as pd
 
 from csvqb.utils.uri import uri_safe
 from .datastructuredefinition import ColumnarQbDataStructureDefinition
-from .codelist import QbCodeList, NewQbCodeList
 from csvqb.models.validationerror import ValidationError
-from csvqb.inputs import PandasDataTypes
+from csvqb.inputs import PandasDataTypes, pandas_input_to_columnar_str
 from csvqb.models.cube.csvqb.catalog import CatalogMetadata
 
 
@@ -31,13 +30,24 @@ class ExistingQbAttribute(QbAttribute):
         return []  # TODO: implement this
 
 
+class NewQbAttributeValue:
+    def __init__(
+        self, label: str, description: Optional[str] = None,
+    ):
+        self.label: str = label
+        self.description: Optional[str] = description
+
+    def __str__(self) -> str:
+        return f"NewQbAttributeValue('{self.label}')"
+
+
 class NewQbAttribute(QbAttribute):
     def __init__(
         self,
         label: str,
         uri_safe_identifier: Optional[str] = None,
         description: Optional[str] = None,
-        code_list: Optional[QbCodeList] = None,
+        new_attribute_values: List[NewQbAttributeValue] = [],
         parent_attribute_uri: Optional[str] = None,
         source_uri: Optional[str] = None,
         is_required: bool = False,
@@ -48,7 +58,7 @@ class NewQbAttribute(QbAttribute):
             uri_safe_identifier if uri_safe_identifier is not None else uri_safe(label)
         )
         self.description: Optional[str] = description
-        self.code_list: Optional[QbCodeList] = code_list
+        self.new_attribute_values: List[NewQbAttributeValue] = new_attribute_values
         self.parent_attribute_uri: Optional[str] = parent_attribute_uri
         self.source_uri: Optional[str] = source_uri
 
@@ -61,13 +71,18 @@ class NewQbAttribute(QbAttribute):
         parent_attribute_uri: Optional[str] = None,
         source_uri: Optional[str] = None,
         is_required: bool = False,
-    ):
+    ) -> "NewQbAttribute":
+
+        columnar_data = pandas_input_to_columnar_str(data)
+        new_attribute_values_from_column = [
+            NewQbAttributeValue(v) for v in sorted(set(columnar_data))
+        ]
 
         return NewQbAttribute(
             label,
             uri_safe_identifier=uri_safe_identifier,
             description=description,
-            code_list=NewQbCodeList.from_data(CatalogMetadata(label), data),
+            new_attribute_values=new_attribute_values_from_column,  # TODO
             parent_attribute_uri=parent_attribute_uri,
             source_uri=source_uri,
             is_required=is_required,
