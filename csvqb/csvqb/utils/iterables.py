@@ -1,3 +1,7 @@
+"""
+Iterables
+---------
+"""
 from typing import Iterable, Callable, TypeVar, Optional
 
 T = TypeVar("T")

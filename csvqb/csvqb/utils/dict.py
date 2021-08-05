@@ -1,3 +1,7 @@
+"""
+Dictionary
+----------
+"""
 from typing import Any, Optional, Callable, List, Dict
 import rdflib
 import json

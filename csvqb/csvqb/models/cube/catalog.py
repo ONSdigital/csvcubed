@@ -1,20 +1,23 @@
+"""
+Catalog Metadata (base)
+-----------------------
+"""
+from dataclasses import dataclass
 from datetime import datetime
-from typing import Optional, List
-from abc import ABC
+from typing import Optional
+from abc import ABC, abstractmethod
 
-from csvqb.models.validationerror import ValidationError
+from csvqb.models.pydanticmodel import PydanticModel
 
 
-class CatalogMetadataBase(ABC):
-    def __init__(
-        self,
-        title: str,
-        description: Optional[str] = None,
-        issued: Optional[datetime] = None,
-    ):
-        self.title: str = title
-        self.description: Optional[str] = description
-        self.issued: Optional[datetime] = issued
+@dataclass
+class CatalogMetadataBase(PydanticModel, ABC):
+    title: str
 
-    def validate(self) -> List[ValidationError]:
-        return []  # TODO: implement this
+    @abstractmethod
+    def get_description(self) -> Optional[str]:
+        pass
+
+    @abstractmethod
+    def get_issued(self) -> datetime:
+        pass

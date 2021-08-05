@@ -111,6 +111,40 @@ pipeline {
                 stash name: "wheels", includes: "**/dist/*.whl"
             }
         }
+        stage('Documentation') {
+            agent {
+                dockerfile {
+                    args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
+                    reuseNode true
+                }
+            }
+            steps {
+                script {
+                    dir("devtools") {
+                        sh "pipenv run sphinx-apidoc -F -M -a -P --tocfile index.rst -d 10 -E -o docs --implicit-namespaces -o docs devtools \"setup*\""                        
+                        sh "pipenv run sphinx-build -W -b html docs docs/_build/html"
+                    }
+
+                    dir("sharedmodels") {
+                        sh "pipenv run sphinx-apidoc -F -M -a -P --tocfile index.rst -d 10 -E --implicit-namespaces -o docs sharedmodels \"setup*\" \"sharedmodels/scripts\""                        
+                        sh "pipenv run sphinx-build -W -b html docs docs/_build/html"
+                    }
+
+                    dir("pmd") {
+                        sh "pipenv run sphinx-apidoc -F -M -a -P --tocfile index.rst -d 10 -E --implicit-namespaces -o docs  pmd \"setup*\" \"pmd/tests\""                        
+                        sh "pipenv run sphinx-build -W -b html docs docs/_build/html"
+                    }
+
+                    dir("csvqb") {
+                        sh "pipenv run sphinx-apidoc -F -M -a -P --tocfile index.rst -d 10 -E --implicit-namespaces -o docs csvqb \"setup*\" \"csvqb/tests\""                        
+                        sh "pipenv run sphinx-build -W -b html docs docs/_build/html"
+                    }
+                    
+                    stash name: "docs", includes: "**/docs/_build/html/**/*"
+                }
+            }
+        }
+
     }
     post {
         always {
@@ -131,7 +165,14 @@ pipeline {
                     echo "wheels stash does not exist"
                 }
 
-                archiveArtifacts artifacts: '**/dist/*.whl', fingerprint: true
+                try {
+                    unstash name: "docs"
+                } catch (Exception e) {
+                    echo "docs stash does not exist"
+                }
+
+
+                archiveArtifacts artifacts: '**/dist/*.whl, **/docs/_build/html/**/*', fingerprint: true
             }
         }
     }

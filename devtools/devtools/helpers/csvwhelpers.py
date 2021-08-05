@@ -1,3 +1,7 @@
+"""
+CSV-W Helpers
+-------------
+"""
 from pathlib import Path
 import csvw
 

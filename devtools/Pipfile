@@ -4,8 +4,8 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-black = "21.7b0"
 flake8 = "*"
+devtools = {editable = true,path = "."}
 
 [packages]
 docker = "*"
@@ -13,8 +13,12 @@ behave = "*"
 pytest = "*"
 rdflib = "*"
 python-dateutil = "*"
-pipenv-setup = "*"
 csvw = "*"
+sphinx = "*"
+sphinx-book-theme = "*"
+pipenv-setup = "*"
+chardet = "*"
+black = "*"
 
 [requires]
 python_version = "3.9"

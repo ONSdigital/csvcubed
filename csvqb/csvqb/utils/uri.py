@@ -1,3 +1,7 @@
+"""
+URI
+---
+"""
 import re
 from unidecode import unidecode
 from urllib.parse import urlparse

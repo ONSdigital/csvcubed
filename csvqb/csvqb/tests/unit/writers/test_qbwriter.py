@@ -1,11 +1,10 @@
 import pytest
 from copy import deepcopy
-from typing import List
 import pandas as pd
 from sharedmodels.rdf import qb
+from typing import List
 
 from csvqb.models.cube import *
-from csvqb.tests.unit.test_baseunit import *
 from csvqb.utils.iterables import first
 from csvqb.writers.qbwriter import QbWriter
 
@@ -28,7 +27,7 @@ def _assert_component_defined(
 ) -> qb.ComponentSpecification:
     component = first(
         dataset.structure.components,
-        lambda x: str(x.uri) == f"./cube-name.csv#component/{name}",
+        lambda x: str(x.uri) == f"cube-name.csv#component/{name}",
     )
     assert component is not None
     return component
@@ -165,7 +164,7 @@ def test_default_property_value_uris_new_dimension_column_without_code_list():
         default_property_uri,
         default_value_uri,
     ) = empty_qbwriter._get_default_property_value_uris_for_column(column)
-    assert "./cube-name.csv#dimension/some-new-dimension" == default_property_uri
+    assert "cube-name.csv#dimension/some-new-dimension" == default_property_uri
     assert "{+some_column}" == default_value_uri
 
 
@@ -184,7 +183,7 @@ def test_default_property_value_uris_new_dimension_column_with_code_list():
         default_property_uri,
         default_value_uri,
     ) = empty_qbwriter._get_default_property_value_uris_for_column(column)
-    assert "./cube-name.csv#dimension/some-new-dimension" == default_property_uri
+    assert "cube-name.csv#dimension/some-new-dimension" == default_property_uri
     assert (
         "http://base-uri/concept-scheme/this-scheme/{+some_column}" == default_value_uri
     )
@@ -215,7 +214,7 @@ def test_default_property_value_uris_existing_attribute_column():
         default_property_uri,
         default_value_uri,
     ) = empty_qbwriter._get_default_property_value_uris_for_column(column)
-    assert "./cube-name.csv#attribute/this-new-attribute" == default_property_uri
+    assert "cube-name.csv#attribute/this-new-attribute" == default_property_uri
     assert "{+some_column}" == default_value_uri
 
 
@@ -233,7 +232,7 @@ def test_default_property_value_uris_multi_units_all_new():
         "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
         == default_property_uri
     )
-    assert "./cube-name.csv#unit/{+some_column}" == default_value_uri
+    assert "cube-name.csv#unit/{+some_column}" == default_value_uri
 
 
 def test_default_property_value_uris_multi_units_all_existing():
@@ -292,8 +291,8 @@ def test_default_property_value_uris_multi_measure_all_new():
         default_property_uri,
         default_value_uri,
     ) = empty_qbwriter._get_default_property_value_uris_for_column(column)
-    assert "http://purl.org/linked-data/cube#measureType", default_property_uri
-    assert "./cube-name.csv#measure/{+some_column}", default_value_uri
+    assert "http://purl.org/linked-data/cube#measureType" == default_property_uri
+    assert "cube-name.csv#measure/{+some_column}" == default_value_uri
 
 
 def test_default_property_value_uris_multi_measure_all_existing():
@@ -383,7 +382,7 @@ def test_csv_col_definition_default_property_value_urls():
         "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
         == csv_col["propertyUrl"]
     )
-    assert "./cube-name.csv#unit/{+some_column}" == csv_col["valueUrl"]
+    assert "cube-name.csv#unit/{+some_column}" == csv_col["valueUrl"]
 
 
 def test_csv_col_definition_output_uri_template_override():
@@ -450,13 +449,13 @@ def test_virtual_columns_generated_for_single_obs_val():
         "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
         == virt_unit["propertyUrl"]
     )
-    assert "./cube-name.csv#unit/some-unit" == virt_unit["valueUrl"]
+    assert "cube-name.csv#unit/some-unit" == virt_unit["valueUrl"]
 
     virt_measure = first(virtual_columns, lambda x: x["name"] == "virt_measure")
     assert virt_measure is not None
     assert virt_measure["virtual"]
     assert "http://purl.org/linked-data/cube#measureType" == virt_measure["propertyUrl"]
-    assert "./cube-name.csv#measure/some-measure" == virt_measure["valueUrl"]
+    assert "cube-name.csv#measure/some-measure" == virt_measure["valueUrl"]
 
 
 def test_virtual_columns_generated_for_multi_meas_obs_val():
@@ -474,7 +473,89 @@ def test_virtual_columns_generated_for_multi_meas_obs_val():
         "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
         == virt_unit["propertyUrl"]
     )
-    assert "./cube-name.csv#unit/some-unit" == virt_unit["valueUrl"]
+    assert "cube-name.csv#unit/some-unit" == virt_unit["valueUrl"]
+
+
+
+def test_about_url_generation():
+    """
+    Ensuring that when an aboutUrl is defined for a non-multimeasure cube, the resulting URL
+    is built in the order in which dimensions appear in the cube.
+    """
+    data = pd.DataFrame(
+        {
+            "Existing Dimension": ["A", "B", "C"],
+            "Local Dimension": ["D", "E", "F"],
+            "Value": [2, 2, 2],
+        }
+    )
+
+    metadata = CatalogMetadata("Some Dataset")
+    columns = [
+        QbColumn(
+            "Existing Dimension",
+            ExistingQbDimension("https://example.org/dimensions/existing_dimension"),
+        ),
+        QbColumn(
+            "Local Dimension",
+            NewQbDimension.from_data("Name of New Dimension", data["Local Dimension"]),
+        ),
+        QbColumn(
+            "Value",
+            QbSingleMeasureObservationValue(
+                ExistingQbMeasure("http://example.com/measures/existing_measure"),
+                NewQbUnit("New Unit"),
+            ),
+        ),
+    ]
+
+    cube = Cube(metadata, data, columns)
+
+    actual_about_url = QbWriter(cube)._get_about_url()
+    expected_about_url = "some-dataset.csv#obs/{+existing_dimension}/{+local_dimension}"
+    assert actual_about_url == expected_about_url
+
+
+def test_about_url_generation_with_multiple_measures():
+    """
+    Ensuring that when an aboutUrl is defined for a multimeasure cube, the resulting URL
+    is built in the order in which dimensions appear in the cube except for the multi-measure
+    dimensions which are appended to the end of the URL.
+    """
+    data = pd.DataFrame(
+        {
+            "Measure": ["People", "Children", "Adults"],
+            "Existing Dimension": ["A", "B", "C"],
+            "Value": [2, 2, 2],
+            "Local Dimension": ["D", "E", "F"],
+            "Units": ["Percent", "People", "People"],
+        }
+    )
+
+    metadata = CatalogMetadata("Some Dataset")
+    columns = [
+        QbColumn(
+            "Measure", QbMultiMeasureDimension.new_measures_from_data(data["Measure"])
+        ),
+        QbColumn(
+            "Existing Dimension",
+            ExistingQbDimension("https://example.org/dimensions/existing_dimension"),
+        ),
+        QbColumn(
+            "Local Dimension",
+            NewQbDimension.from_data("Name of New Dimension", data["Local Dimension"]),
+        ),
+        QbColumn("Value", QbMultiMeasureObservationValue("number")),
+        QbColumn("Units", QbMultiUnits.new_units_from_data(data["Units"])),
+    ]
+
+    cube = Cube(metadata, data, columns)
+
+    actual_about_url = QbWriter(cube)._get_about_url()
+    expected_about_url = (
+        "some-dataset.csv#obs/{+existing_dimension}/{+local_dimension}/{+measure}"
+    )
+    assert actual_about_url == expected_about_url
 
 
 if __name__ == "__main__":

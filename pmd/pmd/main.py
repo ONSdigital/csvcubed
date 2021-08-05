@@ -1,3 +1,7 @@
+"""
+PMD Tools CLI
+-------------
+"""
 import argparse
 
 

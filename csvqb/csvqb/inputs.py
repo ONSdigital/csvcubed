@@ -1,3 +1,7 @@
+"""
+Pandas Inputs
+-------------
+"""
 from typing import Union, Iterable, Optional
 import pandas as pd
 

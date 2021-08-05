@@ -143,3 +143,5 @@ cython_debug/
 .jython_cache
 
 .vscode
+
+docs

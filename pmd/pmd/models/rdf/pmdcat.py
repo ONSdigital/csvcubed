@@ -1,3 +1,7 @@
+"""
+PMDCAT
+------
+"""
 import rdflib
 from rdflib import DCAT, VOID, Namespace, URIRef, Literal
 from typing import Annotated

@@ -1,3 +1,7 @@
+"""
+Namespaces
+----------
+"""
 from rdflib import Namespace
 
 

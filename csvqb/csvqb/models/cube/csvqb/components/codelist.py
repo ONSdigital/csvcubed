@@ -1,8 +1,12 @@
+"""
+Code Lists
+----------
+"""
+from dataclasses import dataclass, field
 from typing import Optional, List
 from abc import ABC
-import pandas as pd
 
-
+from csvqb.models.uriidentifiable import UriIdentifiable
 from .datastructuredefinition import QbDataStructureDefinition
 from csvqb.models.cube.csvqb.catalog import CatalogMetadata
 from csvqb.models.validationerror import ValidationError
@@ -10,67 +14,53 @@ from csvqb.utils.uri import uri_safe
 from csvqb.inputs import PandasDataTypes, pandas_input_to_columnar_str
 
 
+@dataclass
 class QbCodeList(QbDataStructureDefinition, ABC):
     pass
 
 
+@dataclass
 class ExistingQbCodeList(QbCodeList):
     """
     Contains metadata necessary to link a dimension to an existing skos:ConceptScheme.
     """
+    concept_scheme_uri: str
 
-    def __init__(self, concept_scheme_uri: str):
-        self.concept_scheme_uri: str = concept_scheme_uri
-
-    def __str__(self) -> str:
-        return f"ExistingQbCodeList('{self.concept_scheme_uri}')"
-
-    def validate(self) -> List[ValidationError]:
-        return []  # TODO: implement this.
-
-    def validate_data(self, data: pd.Series) -> List[ValidationError]:
+    def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
         return []  # TODO: implement this.
 
 
-class NewQbConcept:
-    def __init__(
-        self,
-        label: str,
-        code: Optional[str] = None,
-        parent_code: Optional[str] = None,
-        sort_order: Optional[int] = None,
-        description: Optional[str] = None,
-    ):
-        self.label: str = label
-        self.code: str = code or uri_safe(label)
-        self.parent_code: Optional[str] = parent_code
-        self.sort_order: Optional[int] = sort_order
-        self.description: Optional[str] = description
+@dataclass(eq=False, unsafe_hash=False)
+class NewQbConcept(UriIdentifiable):
+    label: str
+    code: str = field(default="")
+    parent_code: Optional[str] = field(default=None, repr=False)
+    sort_order: Optional[int] = field(default=None, repr=False)
+    description: Optional[str] = field(default=None, repr=False)
+    uri_safe_identifier_override: Optional[str] = field(default=None, repr=False)
 
-    def __str__(self) -> str:
-        return f"NewQbConcept('{self.code}', '{self.label}')"
+    def get_identifier(self) -> str:
+        return self.code
+
+    def __post_init__(self):
+        if self.code.strip() == "":
+            self.code = uri_safe(self.label)
+
+    def __eq__(self, other):
+        return isinstance(other, NewQbConcept) and self.code == other.code
 
     def __hash__(self):
         return self.code.__hash__()
 
 
+@dataclass
 class NewQbCodeList(QbCodeList):
     """
     Contains the metadata necessary to create a new skos:ConceptScheme which is local to a dataset.
     """
-
-    def __init__(
-        self,
-        metadata: CatalogMetadata,
-        concepts: List[NewQbConcept],
-        variant_of_uris: List[str] = [],
-    ):
-        self.metadata: CatalogMetadata = metadata
-        self.concepts: List[NewQbConcept] = concepts
-        self.variant_of_uris: List[str] = variant_of_uris  # For xkos:variant usage.
-
-    def __str__(self) -> str:
-        return f"NewQbCodeList('{self.metadata.title}')"
+    metadata: CatalogMetadata
+    concepts: List[NewQbConcept]
+    variant_of_uris: List[str] = field(default_factory=list)
 
     @staticmethod
     def from_data(
@@ -82,8 +72,5 @@ class NewQbCodeList(QbCodeList):
         concepts = [NewQbConcept(c) for c in sorted(set(columnar_data))]
         return NewQbCodeList(metadata, concepts, variant_of_uris=variant_of_uris)
 
-    def validate(self) -> List[ValidationError]:
-        return self.metadata.validate() + []  # TODO: augment this.
-
-    def validate_data(self, data: pd.Series) -> List[ValidationError]:
+    def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
         return []  # TODO: implement this.

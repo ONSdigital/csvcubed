@@ -1,3 +1,7 @@
+"""
+Concept Scheme In Catalog
+-------------------------
+"""
 from sharedmodels.rdf import dcat, skos
 
 

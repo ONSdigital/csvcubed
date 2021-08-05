@@ -1,3 +1,7 @@
+"""
+RDF Properties
+--------------
+"""
 from typing import Annotated, Optional
 from rdflib import RDFS, RDF
 

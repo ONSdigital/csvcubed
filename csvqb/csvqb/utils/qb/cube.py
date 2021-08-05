@@ -1,3 +1,7 @@
+"""
+QbCube
+------
+"""
 from typing import List, TypeVar, Type
 
 
@@ -13,7 +17,7 @@ from csvqb.models.cube.csvqb.components.attribute import (
     QbAttribute,
 )
 from csvqb.models.cube.csvqb.components.measure import QbMultiMeasureDimension
-from csvqb.models.cube.csvqb.components.unit import QbMultiUnits, QbUnitAttribute
+from csvqb.models.cube.csvqb.components.unit import QbMultiUnits
 from csvqb.models.cube.csvqb.components.observedvalue import (
     QbObservationValue,
     QbMultiMeasureObservationValue,

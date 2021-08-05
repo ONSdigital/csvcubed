@@ -1,3 +1,7 @@
+"""
+RDF Test Steps
+--------------
+"""
 from pathlib import Path
 from behave import *
 from rdflib.compare import to_isomorphic, graph_diff
@@ -30,13 +34,26 @@ def step_impl(context):
     )
 
 
-@step("the ask query '{query_file}' should return {expected_query_result}")
-def step_impl(context, query_file: str, expected_query_result: str):
-    query_file = Path(query_file)
-    with open(query_file) as f:
-        query = f.read()
-    g = Graph().parse(format="turtle", data=context.turtle)
-    results = list(g.query(query))
-    ask_result = results[0]
+@step("the ask query should return {expected_query_result}")
+def step_impl(context, expected_query_result: str):
     expected_ask_result = bool(distutils.util.strtobool(expected_query_result))
+    assert_ask(context, context.text, expected_ask_result)
+
+
+def assert_ask(context, ask_query: str, expected_ask_result: bool):
+    g = Graph().parse(format="turtle", data=context.turtle)
+    results = list(g.query(ask_query))
+    ask_result = results[0]
     assert ask_result == expected_ask_result
+
+
+@step('the RDF should not contain any instances of "{entity_type}"')
+def step_impl(context, entity_type: str):
+    query = f"""
+        ASK
+        WHERE {{
+         [] a <{entity_type}>.
+        }}
+    """
+
+    assert_ask(context, query, False)
