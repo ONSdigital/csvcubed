@@ -30,9 +30,18 @@ class ExistingQbAttribute(QbAttribute):
 
 
 @dataclass
-class NewQbAttributeValue:
+class NewQbAttributeValue(UriIdentifiable):
     label: str
     description: Optional[str] = field(default=None, repr=False)
+    uri_safe_identifier_override: Optional[str] = field(default=None, repr=False)
+    source_uri: Optional[str] = field(default=None, repr=False)
+    parent_attribute_uri: Optional[str] = field(default=None, repr=False)
+
+    def get_identifier(self) -> str:
+        return self.label
+
+    def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
+        return []  # TODO: implement this
 
 
 @dataclass
