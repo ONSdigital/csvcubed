@@ -11,7 +11,7 @@ from csvqb.models.validationerror import SpecificValidationError
 ComponentTypeDescription = Union[str, Type[QbDataStructureDefinition]]
 
 
-def get_description_for_component(t: ComponentTypeDescription) -> str:
+def _get_description_for_component(t: ComponentTypeDescription) -> str:
     if isinstance(t, str):
         return t
 
@@ -30,7 +30,7 @@ class OutputUriTemplateMissingError(SpecificValidationError):
 
     def __post_init__(self):
         self.message = (
-            f"'{self.csv_column_name}' - a {get_description_for_component(self.component_type)} must have an "
+            f"'{self.csv_column_name}' - a {_get_description_for_component(self.component_type)} must have an "
             + "output_uri_template defined."
         )
 
@@ -49,7 +49,7 @@ class MaxNumComponentsExceededError(SpecificValidationError):
 
     def __post_init__(self):
         self.message = (
-            f"Found {self.actual_number} of {get_description_for_component(self.component_type)}s. "
+            f"Found {self.actual_number} of {_get_description_for_component(self.component_type)}s. "
             + f"Expected a maximum of {self.maximum_number}."
         )
         if self.additional_explanation is not None:
@@ -69,7 +69,7 @@ class MinNumComponentsNotSatisfiedError(SpecificValidationError):
 
     def __post_init__(self):
         self.message = (
-            f"At least {self.minimum_number} {get_description_for_component(self.component_type)}s must be defined."
+            f"At least {self.minimum_number} {_get_description_for_component(self.component_type)}s must be defined."
             + f" Found {self.actual_number}."
         )
         if self.additional_explanation is not None:
@@ -89,7 +89,7 @@ class WrongNumberComponentsError(SpecificValidationError):
 
     def __post_init__(self):
         self.message = (
-            f"Found {self.actual_number} {get_description_for_component(self.component_type)}s."
+            f"Found {self.actual_number} {_get_description_for_component(self.component_type)}s."
             + f" Expected exactly {self.expected_number}."
         )
         if self.additional_explanation is not None:
@@ -108,8 +108,8 @@ class NeitherDefinedError(SpecificValidationError):
 
     def __post_init__(self):
         self.message = (
-            f"Found neither {get_description_for_component(self.component_one)} "
-            + f"nor {get_description_for_component(self.component_two)} defined. "
+            f"Found neither {_get_description_for_component(self.component_one)} "
+            + f"nor {_get_description_for_component(self.component_two)} defined. "
             + "One of these must be defined."
         )
 
@@ -137,8 +137,8 @@ class IncompatibleComponentsError(SpecificValidationError):
 
     def __post_init__(self):
         self.message = (
-            f"Both {get_description_for_component(self.component_one)} "
-            + f"and {get_description_for_component(self.component_two)} have been defined. "
+            f"Both {_get_description_for_component(self.component_one)} "
+            + f"and {_get_description_for_component(self.component_two)} have been defined. "
             + f"These components cannot be used together."
         )
 
