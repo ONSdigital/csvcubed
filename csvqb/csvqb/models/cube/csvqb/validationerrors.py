@@ -1,3 +1,8 @@
+"""
+Qb-Cube Validation Errors
+-------------------------
+"""
+
 from dataclasses import dataclass
 from typing import Optional, Type, Union
 
@@ -112,6 +117,8 @@ class NeitherDefinedError(SpecificValidationError):
             + f"nor {_get_description_for_component(self.component_two)} defined. "
             + "One of these must be defined."
         )
+        if self.additional_explanation is not None:
+            self.message += " " + self.additional_explanation
 
 
 @dataclass
@@ -141,6 +148,8 @@ class IncompatibleComponentsError(SpecificValidationError):
             + f"and {_get_description_for_component(self.component_two)} have been defined. "
             + f"These components cannot be used together."
         )
+        if self.additional_explanation is not None:
+            self.message += " " + self.additional_explanation
 
 
 @dataclass

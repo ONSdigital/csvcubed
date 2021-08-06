@@ -1,3 +1,7 @@
+"""
+Cube Validation Errors
+----------------------
+"""
 from dataclasses import dataclass
 
 from csvqb.models.validationerror import SpecificValidationError
