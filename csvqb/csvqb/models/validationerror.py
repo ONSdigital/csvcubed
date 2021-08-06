@@ -2,11 +2,19 @@
 ValidationError
 ---------------
 """
+from dataclasses import dataclass, field
+from abc import ABC
 
 
+@dataclass
 class ValidationError:
-    def __init__(self, message: str):
-        self.message: str = message
+    """Class representing an error validating a model."""
 
-    def __repr__(self) -> str:
-        return f"{self.__class__.__name__}({self.message})"
+    message: str
+
+
+@dataclass
+class SpecificValidationError(ValidationError, ABC):
+    """Abstract base class to represent ValidationErrors which are more specific and so can be interpreted by code."""
+
+    message: str = field(init=False)
