@@ -55,6 +55,7 @@ class Cube(Generic[TMetadata], PydanticModel):
         if self.data is not None:
             defined_column_titles = [c.csv_column_title for c in self.columns]
             for column in list(self.data.columns):
+                column = str(column)
                 if column not in defined_column_titles:
                     errors.append(MissingColumnDefinitionError(column))
 
