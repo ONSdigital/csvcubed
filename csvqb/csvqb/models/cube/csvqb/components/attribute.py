@@ -10,23 +10,6 @@ from csvqb.models.uriidentifiable import UriIdentifiable
 from .datastructuredefinition import ColumnarQbDataStructureDefinition
 from csvqb.models.validationerror import ValidationError
 from csvqb.inputs import PandasDataTypes, pandas_input_to_columnar_str
-from csvqb.models.cube.csvqb.catalog import CatalogMetadata
-
-
-@dataclass
-class QbAttribute(ColumnarQbDataStructureDefinition, ABC):
-    @abstractmethod
-    def is_required(self) -> bool:
-        pass
-
-
-@dataclass
-class ExistingQbAttribute(QbAttribute):
-    attribute_uri: str
-    is_required: bool = field(default=False, repr=False)
-
-    def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
-        return []  # TODO: implement this
 
 
 @dataclass
@@ -35,10 +18,33 @@ class NewQbAttributeValue(UriIdentifiable):
     description: Optional[str] = field(default=None, repr=False)
     uri_safe_identifier_override: Optional[str] = field(default=None, repr=False)
     source_uri: Optional[str] = field(default=None, repr=False)
-    parent_attribute_uri: Optional[str] = field(default=None, repr=False)
+    parent_attribute_value_uri: Optional[str] = field(default=None, repr=False)
 
     def get_identifier(self) -> str:
         return self.label
+
+    def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
+        return []  # TODO: implement this
+
+
+@dataclass
+class QbAttribute(ColumnarQbDataStructureDefinition, ABC):
+    @abstractmethod
+    def is_required(self) -> bool:
+        pass
+
+    @abstractmethod
+    def new_attribute_values(self) -> List[NewQbAttributeValue]:
+        pass
+
+
+@dataclass
+class ExistingQbAttribute(QbAttribute):
+    attribute_uri: str
+    new_attribute_values: List[NewQbAttributeValue] = field(
+        default_factory=list, repr=False
+    )
+    is_required: bool = field(default=False, repr=False)
 
     def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
         return []  # TODO: implement this
