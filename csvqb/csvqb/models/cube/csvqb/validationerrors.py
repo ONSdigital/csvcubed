@@ -1,30 +1,21 @@
-from abc import ABC
-from dataclasses import dataclass, field
-from typing import Type, Optional, Union
+from dataclasses import dataclass
+from typing import Optional, Type, Union
 
-from csvqb.models.cube import (
-    QbDataStructureDefinition,
+from csvqb.models.cube.csvqb.components import (
     QbObservationValue,
     QbMultiUnits,
+    QbDataStructureDefinition,
 )
-from csvqb.models.validationerror import ValidationError
-
+from csvqb.models.validationerror import SpecificValidationError
 
 ComponentTypeDescription = Union[str, Type[QbDataStructureDefinition]]
 
 
-def _get_component_type_description(t: ComponentTypeDescription) -> str:
+def get_description_for_component(t: ComponentTypeDescription) -> str:
     if isinstance(t, str):
         return t
 
     return t.__name__
-
-
-@dataclass
-class SpecificValidationError(ValidationError, ABC):
-    """Abstract base class to represent ValidationErrors which are more specific and so can be interpreted by code."""
-
-    message: str = field(init=False)
 
 
 @dataclass
@@ -39,13 +30,13 @@ class OutputUriTemplateMissingError(SpecificValidationError):
 
     def __post_init__(self):
         self.message = (
-            f"'{self.csv_column_name}' - an {_get_component_type_description(self.component_type)} must have an "
+            f"'{self.csv_column_name}' - a {get_description_for_component(self.component_type)} must have an "
             + "output_uri_template defined."
         )
 
 
 @dataclass
-class MaximumNumberOfComponentsError(SpecificValidationError):
+class MaxNumComponentsExceededError(SpecificValidationError):
     """
     Represents an error where the user can define a maximum number of components of a given type, but has defined
     too many.
@@ -58,15 +49,15 @@ class MaximumNumberOfComponentsError(SpecificValidationError):
 
     def __post_init__(self):
         self.message = (
-            f"Found {self.actual_number} of {_get_component_type_description(self.component_type)}s. "
-            + f"Expected maximum {self.maximum_number}."
+            f"Found {self.actual_number} of {get_description_for_component(self.component_type)}s. "
+            + f"Expected a maximum of {self.maximum_number}."
         )
         if self.additional_explanation is not None:
             self.message += " " + self.additional_explanation
 
 
 @dataclass
-class MinimumNumberOfComponentsError(SpecificValidationError):
+class MinNumComponentsNotSatisfiedError(SpecificValidationError):
     """
     Represents an error where the user must define a minimum number of components of a given type, but has not done so.
     """
@@ -78,7 +69,7 @@ class MinimumNumberOfComponentsError(SpecificValidationError):
 
     def __post_init__(self):
         self.message = (
-            f"At least {self.minimum_number} {_get_component_type_description(self.component_type)}s must be defined."
+            f"At least {self.minimum_number} {get_description_for_component(self.component_type)}s must be defined."
             + f" Found {self.actual_number}."
         )
         if self.additional_explanation is not None:
@@ -98,8 +89,8 @@ class WrongNumberComponentsError(SpecificValidationError):
 
     def __post_init__(self):
         self.message = (
-            f"Found {self.actual_number} {_get_component_type_description(self.component_type)}s."
-            + f" Expected {self.expected_number}."
+            f"Found {self.actual_number} {get_description_for_component(self.component_type)}s."
+            + f" Expected exactly {self.expected_number}."
         )
         if self.additional_explanation is not None:
             self.message += " " + self.additional_explanation
@@ -117,8 +108,8 @@ class NeitherDefinedError(SpecificValidationError):
 
     def __post_init__(self):
         self.message = (
-            f"Found neither {_get_component_type_description(self.component_one)} "
-            + f"nor {_get_component_type_description(self.component_two)} defined. "
+            f"Found neither {get_description_for_component(self.component_one)} "
+            + f"nor {get_description_for_component(self.component_two)} defined. "
             + "One of these must be defined."
         )
 
@@ -146,8 +137,8 @@ class IncompatibleComponentsError(SpecificValidationError):
 
     def __post_init__(self):
         self.message = (
-            f"Both {_get_component_type_description(self.component_one)} "
-            + f"and {_get_component_type_description(self.component_two)} have been defined. "
+            f"Both {get_description_for_component(self.component_one)} "
+            + f"and {get_description_for_component(self.component_two)} have been defined. "
             + f"These components cannot be used together."
         )
 

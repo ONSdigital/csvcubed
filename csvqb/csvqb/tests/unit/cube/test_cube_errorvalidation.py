@@ -20,6 +20,8 @@ def test_column_not_configured_error():
 
     assert len(validation_errors) == 1
     error = validation_errors[0]
+    assert isinstance(error, MissingColumnDefinitionError)
+    assert error.csv_column_title == "Some Dimension"
     assert "Column 'Some Dimension'" in error.message
 
 
@@ -37,6 +39,8 @@ def test_column_title_wrong_error():
 
     assert len(validation_errors) == 1
     error = validation_errors[0]
+    assert isinstance(error, ColumnNotFoundInDataError)
+    assert error.csv_column_title == "Some Column Title"
     assert "Column 'Some Column Title'" in error.message
 
 
@@ -59,6 +63,8 @@ def test_two_column_same_title():
 
     assert len(validation_errors) == 1
     error = validation_errors[0]
+    assert isinstance(error, DuplicateColumnTitleError)
+    assert error.csv_column_title == "Some Dimension"
     assert "Duplicate column title 'Some Dimension'" == error.message
 
 

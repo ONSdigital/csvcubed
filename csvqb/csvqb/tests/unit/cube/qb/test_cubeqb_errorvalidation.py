@@ -7,10 +7,10 @@ import pandas as pd
 from csvqb.models.cube import *
 from csvqb.models.cube.csvqb.validationerrors import (
     OutputUriTemplateMissingError,
-    MinimumNumberOfComponentsError,
+    MinNumComponentsNotSatisfiedError,
     UnitsNotDefinedError,
     BothUnitTypesDefinedError,
-    MaximumNumberOfComponentsError,
+    MaxNumComponentsExceededError,
     WrongNumberComponentsError,
     IncompatibleComponentsError,
 )
@@ -148,7 +148,7 @@ def test_no_dimensions_validation_error():
 
     assert_num_validation_errors(errors, 1)
     error = errors[0]
-    assert isinstance(error, MinimumNumberOfComponentsError)
+    assert isinstance(error, MinNumComponentsNotSatisfiedError)
     assert error.component_type == QbDimension
     assert error.minimum_number == 1
     assert error.actual_number == 0
@@ -258,7 +258,7 @@ def test_multiple_units_columns():
 
     assert_num_validation_errors(errors, 1)
     error = errors[0]
-    assert isinstance(error, MaximumNumberOfComponentsError)
+    assert isinstance(error, MaxNumComponentsExceededError)
     assert error.component_type == QbMultiUnits
     assert error.maximum_number == 1
     assert error.actual_number == 2
@@ -393,7 +393,7 @@ def test_multi_measure_obs_val_with_multiple_measure_dimensions():
 
     assert_num_validation_errors(errors, 1)
     error = errors[0]
-    assert isinstance(error, MaximumNumberOfComponentsError)
+    assert isinstance(error, MaxNumComponentsExceededError)
     assert error.component_type == QbMultiMeasureDimension
     assert error.maximum_number == 1
     assert error.actual_number == 2
@@ -442,7 +442,7 @@ def test_measure_dimension_with_single_measure_obs_val():
     assert error.component_two == QbMultiMeasureDimension
     assert (
         error.additional_explanation
-        == "A single measure cube cannot have a measure dimension."
+        == "A single-measure cube cannot have a measure dimension."
     )
 
 

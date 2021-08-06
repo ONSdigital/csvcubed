@@ -6,8 +6,8 @@ from typing import List, TypeVar, Type
 
 from csvqb.models.cube.csvqb.validationerrors import (
     OutputUriTemplateMissingError,
-    MinimumNumberOfComponentsError,
-    MaximumNumberOfComponentsError,
+    MinNumComponentsNotSatisfiedError,
+    MaxNumComponentsExceededError,
     WrongNumberComponentsError,
     UnitsNotDefinedError,
     BothUnitTypesDefinedError,
@@ -74,7 +74,7 @@ def _validate_dimensions(cube: Cube) -> List[ValidationError]:
                 )
 
     if len(dimension_columns) == 0:
-        errors.append(MinimumNumberOfComponentsError(QbDimension, 1, 0))
+        errors.append(MinNumComponentsNotSatisfiedError(QbDimension, 1, 0))
     return errors
 
 
@@ -104,7 +104,7 @@ def _validate_observation_value_constraints(cube: Cube) -> List[ValidationError]
 
     if len(multi_units_columns) > 1:
         errors.append(
-            MaximumNumberOfComponentsError(QbMultiUnits, 1, len(multi_units_columns))
+            MaxNumComponentsExceededError(QbMultiUnits, 1, len(multi_units_columns))
         )
 
     if len(observed_value_columns) != 1:
@@ -149,7 +149,7 @@ def _validate_multi_measure_cube(
         )
     elif len(multi_measure_columns) > 1:
         errors.append(
-            MaximumNumberOfComponentsError(
+            MaxNumComponentsExceededError(
                 QbMultiMeasureDimension, 1, len(multi_measure_columns)
             )
         )
@@ -168,7 +168,7 @@ def _validate_single_measure_cube(
             IncompatibleComponentsError(
                 QbSingleMeasureObservationValue,
                 QbMultiMeasureDimension,
-                additional_explanation="A single measure cube cannot have a measure dimension.",
+                additional_explanation="A single-measure cube cannot have a measure dimension.",
             )
         )
 
