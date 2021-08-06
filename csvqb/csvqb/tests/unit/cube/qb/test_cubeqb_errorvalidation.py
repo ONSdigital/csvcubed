@@ -1,3 +1,5 @@
+from csvqb.inputs import PandasDataTypes
+from csvqb.models.cube.csvqb.components.attribute import NewQbAttributeValue
 import pytest
 
 import pandas as pd
@@ -84,7 +86,6 @@ def test_multi_measure_qb_definition():
 def test_existing_dimension_output_uri_template():
     """
     An ExistingQbDimension must have an output_uri_template defined by the user if not it's an error
-
     """
 
     data = pd.DataFrame({"Existing Dimension": ["A", "B", "C"], "Value": [1, 2, 3]})
@@ -115,6 +116,148 @@ def test_existing_dimension_output_uri_template():
         "'Existing Dimension' - an ExistingQbDimension must have an output_uri_template defined."
         in validation_errors.message
     )
+
+
+def test_existing_attribute_output_uri_template_required():
+    """
+    An ExistingQbAttribute using Existing Attribute Values must have an output_uri_template defined by the user,
+     if not it's an error
+    """
+
+    data = pd.DataFrame(
+        {
+            "Existing Dimension": ["A", "B", "C"],
+            "Existing Attribute 1": ["Val1", "Val2", "Val3"],
+            "Existing Attribute 2": ["Val4", "Val5", "Val6"],
+            "Obs": [6, 7, 8],
+        }
+    )
+    cube = Cube(
+        CatalogMetadata("Cube's name"),
+        data,
+        [
+            QbColumn(
+                "Existing Dimension",
+                ExistingQbDimension("http://example.org/dimensions/location"),
+                output_uri_template="https://example.org/concept-scheme/existing_scheme/{+existing_dimension}",
+            ),
+            QbColumn(
+                "Existing Attribute 1",
+                ExistingQbAttribute("http://example.org/attributes/example"),
+                # No NewQbAttributeValues - so output_uri_template is *required*
+            ),
+            QbColumn(
+                "Existing Attribute 2",
+                ExistingQbAttribute(
+                    "http://example.org/attributes/example",
+                    new_attribute_values=[NewQbAttributeValue("Some Attribute Value")],
+                ),
+                # NewQbAttributeValues defined - so output_uri_template is **not** required
+            ),
+            QbColumn(
+                "Obs",
+                QbSingleMeasureObservationValue(
+                    ExistingQbMeasure("http://example.org/single/measure/example"),
+                    NewQbUnit("GBP"),
+                ),
+            ),
+        ],
+    )
+
+    errors = cube.validate()
+    errors += validate_qb_component_constraints(cube)
+
+    assert_num_validation_errors(errors, 1)
+    validation_errors = errors[0]
+    assert (
+        "'Existing Attribute 1' - a QbAttribute using existing attribute values "
+        + "must have an output_uri_template defined."
+        in validation_errors.message
+    )
+
+
+def test_new_attribute_output_uri_template_required():
+    """
+    A NewQbAttribute using existing attribute vluaes must have an output_uri_template defined by the user,
+     if not it's an error
+    """
+
+    data = pd.DataFrame(
+        {
+            "Existing Dimension": ["A", "B", "C"],
+            "New Attribute 1": ["Val1", "Val2", "Val3"],
+            "New Attribute 2": ["Val4", "Val5", "Val6"],
+            "Obs": [6, 7, 8],
+        }
+    )
+    cube = Cube(
+        CatalogMetadata("Cube's name"),
+        data,
+        [
+            QbColumn(
+                "Existing Dimension",
+                ExistingQbDimension("http://example.org/dimensions/location"),
+                output_uri_template="https://example.org/concept-scheme/existing_scheme/{+existing_dimension}",
+            ),
+            QbColumn(
+                "New Attribute 1",
+                NewQbAttribute("http://example.org/attributes/example"),
+                # No NewQbAttributeValues - so output_uri_template is *required*
+            ),
+            QbColumn(
+                "New Attribute 2",
+                NewQbAttribute(
+                    "http://example.org/attributes/example",
+                    new_attribute_values=[
+                        NewQbAttributeValue("Some New Attribute Value")
+                    ],
+                ),
+                # NewQbAttributeValues defined - so output_uri_template is **not** required
+            ),
+            QbColumn(
+                "Obs",
+                QbSingleMeasureObservationValue(
+                    ExistingQbMeasure("http://example.org/single/measure/example"),
+                    NewQbUnit("GBP"),
+                ),
+            ),
+        ],
+    )
+
+    errors = cube.validate()
+    errors += validate_qb_component_constraints(cube)
+
+    assert_num_validation_errors(errors, 1)
+    validation_errors = errors[0]
+    assert (
+        "'New Attribute 1' - a QbAttribute using existing attribute values must have an output_uri_template defined."
+        in validation_errors.message
+    )
+
+
+def test_new_qb_attribute_generation():
+    """
+    When a new attribute value is defined from the dataframe, ensure that only unique attribute values are generated.
+    """
+
+    data = pd.DataFrame(
+        {
+            "Year": [2020, 2019, 2018],
+            "Value": [5.6, 2.8, 4.4],
+            "Marker": ["Provisional", "Final", "Final"],
+        }
+    )
+
+    marker_attribute = NewQbAttribute.from_data(label="Status", data=data["Marker"])
+
+    assert len(marker_attribute.new_attribute_values) == 2
+
+    new_value_set = {
+        new_attribute_value.label
+        for new_attribute_value in marker_attribute.new_attribute_values
+    }
+
+    assert new_value_set == {"Provisional", "Final"}
 
 
 if __name__ == "__main__":

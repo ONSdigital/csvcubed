@@ -103,7 +103,10 @@ def _metadata_from_dict(config: dict) -> "CatalogMetadata":
         config, "publisher", lambda p: str(GOV[uri_safe(p)])
     )
     theme_uris = [str(GDP.term(t)) for t in config.get("families", [])]
-    dt_issued = get_with_func_or_none(config, "published", parser.parse) or datetime.datetime.now()
+    dt_issued = (
+        get_with_func_or_none(config, "published", parser.parse)
+        or datetime.datetime.now()
+    )
     return CatalogMetadata(
         title=get_from_dict_ensure_exists(config, "title"),
         summary=config.get("summary"),
@@ -211,14 +214,14 @@ def _get_column_for_metadata_config(
             else:
                 dsd_component = ExistingQbAttribute(maybe_attribute_uri)
 
-            return QbColumn(column_name, dsd_component)
+            return QbColumn(column_name, dsd_component, maybe_property_value_url)
         elif maybe_unit_uri is not None and maybe_measure_uri is not None:
             measure_component = ExistingQbMeasure(maybe_measure_uri)
             unit_component = ExistingQbUnit(maybe_unit_uri)
             observation_value = QbSingleMeasureObservationValue(
                 measure=measure_component,
                 unit=unit_component,
-                data_type=maybe_data_type or "decimal"
+                data_type=maybe_data_type or "decimal",
             )
             return QbColumn(column_name, observation_value)
         elif maybe_data_type is not None:

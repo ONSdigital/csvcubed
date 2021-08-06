@@ -12,6 +12,10 @@ from csvqb.models.cube.csvqb.components.dimension import (
     QbDimension,
     ExistingQbDimension,
 )
+from csvqb.models.cube.csvqb.components.attribute import (
+    ExistingQbAttribute,
+    QbAttribute,
+)
 from csvqb.models.cube.csvqb.components.measure import QbMultiMeasureDimension
 from csvqb.models.cube.csvqb.components.unit import QbMultiUnits
 from csvqb.models.cube.csvqb.components.observedvalue import (
@@ -43,6 +47,7 @@ def validate_qb_component_constraints(cube: Cube) -> List[ValidationError]:
     # assert validation specific to a cube-qb
 
     errors = _validate_dimensions(cube)
+    errors += _validate_attributes(cube)
     errors += _validate_observation_value_constraints(cube)
     return errors
 
@@ -63,6 +68,25 @@ def _validate_dimensions(cube: Cube) -> List[ValidationError]:
 
     if len(dimension_columns) == 0:
         errors.append(ValidationError("At least one dimension must be defined."))
+    return errors
+
+
+def _validate_attributes(cube: Cube) -> List[ValidationError]:
+    errors: List[ValidationError] = []
+
+    for c in cube.columns:
+        if isinstance(c, QbColumn) and isinstance(c.component, QbAttribute):
+            if (
+                c.output_uri_template is None
+                and len(c.component.new_attribute_values) == 0  # type: ignore
+            ):
+                errors.append(
+                    ValidationError(
+                        f"'{c.csv_column_title}' - a QbAttribute using existing attribute values must have an "
+                        f"output_uri_template defined."
+                    )
+                )
+
     return errors
 
 

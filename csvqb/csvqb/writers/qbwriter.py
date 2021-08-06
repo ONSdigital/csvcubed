@@ -526,15 +526,32 @@ class QbWriter(WriterBase):
         self, column: QbColumn[QbAttribute]
     ) -> Tuple[str, str]:
         attribute = column.component
+        column_uri_fragment = self._get_column_uri_template_fragment(column)
+        value_uri = self._get_column_uri_template_fragment(column)
         if isinstance(attribute, ExistingQbAttribute):
-            return attribute.attribute_uri, self._get_column_uri_template_fragment(
-                column
-            )
+            if len(attribute.new_attribute_values) > 0:
+                # NewQbAttributeValues defined here.
+                value_uri = self._doc_rel_uri(
+                    f"attribute/{column.uri_safe_identifier}/{column_uri_fragment}"
+                )
+            # Else: Existing attribute values defined elsewhere. The user *should* have defined an output_uri_template.
+            # N.B. We can't do mix-and-match New/Existing attribute values.
+
+            return attribute.attribute_uri, value_uri
         elif isinstance(attribute, NewQbAttribute):
             local_attribute_uri = self._doc_rel_uri(
                 f"attribute/{attribute.uri_safe_identifier}"
             )
-            value_uri = self._get_column_uri_template_fragment(column)
+
+            if len(attribute.new_attribute_values) > 0:
+                # NewQbAttributeValues defined here.
+                value_uri = self._doc_rel_uri(
+                    f"attribute/{attribute.uri_safe_identifier}/{column_uri_fragment}"
+                )
+            # Else: Existing attribute values defined elsewhere. The user *should* have defined an
+            # output_uri_template.
+            # N.B. We can't do mix-and-match New/Existing attribute values.
+
             return local_attribute_uri, value_uri
         else:
             raise Exception(f"Unhandled attribute type {type(attribute)}")

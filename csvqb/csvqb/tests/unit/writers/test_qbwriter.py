@@ -189,7 +189,7 @@ def test_default_property_value_uris_new_dimension_column_with_code_list():
     )
 
 
-def test_default_property_value_uris_existing_attribute_column():
+def test_default_property_value_uris_existing_attribute_existing_values():
     """
     When an existing attribute is used, we can provide the `propertyUrl`, but we cannot guess the `valueUrl`.
     """
@@ -205,7 +205,26 @@ def test_default_property_value_uris_existing_attribute_column():
     assert "{+some_column}" == default_value_uri
 
 
-def test_default_property_value_uris_existing_attribute_column():
+def test_default_property_value_uris_existing_attribute_new_values():
+    """
+    When an existing attribute is used, we can provide the `propertyUrl`, but we cannot guess the `valueUrl`.
+    """
+    column = QbColumn(
+        "Some Column",
+        ExistingQbAttribute(
+            "http://base-uri/attributes/existing-attribute",
+            new_attribute_values=[NewQbAttributeValue("Some Attribute Value")],
+        ),
+    )
+    (
+        default_property_uri,
+        default_value_uri,
+    ) = empty_qbwriter._get_default_property_value_uris_for_column(column)
+    assert "http://base-uri/attributes/existing-attribute" == default_property_uri
+    assert "cube-name.csv#attribute/some-column/{+some_column}" == default_value_uri
+
+
+def test_default_property_value_uris_new_attribute_existing_values():
     """
     When a new attribute is defined, we can provide the `propertyUrl`, but we cannot guess the `valueUrl`.
     """
@@ -216,6 +235,27 @@ def test_default_property_value_uris_existing_attribute_column():
     ) = empty_qbwriter._get_default_property_value_uris_for_column(column)
     assert "cube-name.csv#attribute/this-new-attribute" == default_property_uri
     assert "{+some_column}" == default_value_uri
+
+
+def test_default_property_value_uris_new_attribute_new_values():
+    """
+    When a new attribute is defined, we can provide the `propertyUrl`, but we cannot guess the `valueUrl`.
+    """
+    column = QbColumn(
+        "Some Column",
+        NewQbAttribute(
+            "This New Attribute",
+            new_attribute_values=[NewQbAttributeValue("Something")],
+        ),
+    )
+    (
+        default_property_uri,
+        default_value_uri,
+    ) = empty_qbwriter._get_default_property_value_uris_for_column(column)
+    assert "cube-name.csv#attribute/this-new-attribute" == default_property_uri
+    assert (
+        "cube-name.csv#attribute/this-new-attribute/{+some_column}" == default_value_uri
+    )
 
 
 def test_default_property_value_uris_multi_units_all_new():
@@ -474,7 +514,6 @@ def test_virtual_columns_generated_for_multi_meas_obs_val():
         == virt_unit["propertyUrl"]
     )
     assert "cube-name.csv#unit/some-unit" == virt_unit["valueUrl"]
-
 
 
 def test_about_url_generation():
