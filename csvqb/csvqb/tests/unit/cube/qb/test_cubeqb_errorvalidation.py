@@ -496,12 +496,10 @@ def test_existing_attribute_output_uri_template_required():
     errors += validate_qb_component_constraints(cube)
 
     assert_num_validation_errors(errors, 1)
-    validation_errors = errors[0]
-    assert (
-        "'Existing Attribute 1' - a QbAttribute using existing attribute values "
-        + "must have an output_uri_template defined."
-        in validation_errors.message
-    )
+    error = errors[0]
+    assert isinstance(error, OutputUriTemplateMissingError)
+    assert error.csv_column_name == "Existing Attribute 1"
+    assert error.component_type == "ExistingQbAttribute using existing attribute values"
 
 
 def test_new_attribute_output_uri_template_required():
@@ -556,11 +554,10 @@ def test_new_attribute_output_uri_template_required():
     errors += validate_qb_component_constraints(cube)
 
     assert_num_validation_errors(errors, 1)
-    validation_errors = errors[0]
-    assert (
-        "'New Attribute 1' - a QbAttribute using existing attribute values must have an output_uri_template defined."
-        in validation_errors.message
-    )
+    error = errors[0]
+    assert isinstance(error, OutputUriTemplateMissingError)
+    assert error.csv_column_name == "New Attribute 1"
+    assert error.component_type == "NewQbAttribute using existing attribute values"
 
 
 def test_new_qb_attribute_generation():

@@ -88,9 +88,9 @@ def _validate_attributes(cube: Cube) -> List[ValidationError]:
                 and len(c.component.new_attribute_values) == 0  # type: ignore
             ):
                 errors.append(
-                    ValidationError(
-                        f"'{c.csv_column_title}' - a QbAttribute using existing attribute values must have an "
-                        f"output_uri_template defined."
+                    OutputUriTemplateMissingError(
+                        c.csv_column_title,
+                        f"{c.component.__class__.__name__} using existing attribute values",
                     )
                 )
 
