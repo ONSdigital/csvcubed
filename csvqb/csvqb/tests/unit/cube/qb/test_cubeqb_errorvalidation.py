@@ -86,7 +86,6 @@ def test_multi_measure_qb_definition():
 def test_existing_dimension_output_uri_template():
     """
     An ExistingQbDimension must have an output_uri_template defined by the user if not it's an error
-
     """
 
     data = pd.DataFrame({"Existing Dimension": ["A", "B", "C"], "Value": [1, 2, 3]})
@@ -121,7 +120,8 @@ def test_existing_dimension_output_uri_template():
 
 def test_existing_attribute_output_uri_template_required():
     """
-    An ExistingQbAttribute must have an output_uri_template defined by the user if not it's an error
+    An ExistingQbAttribute using Existing Attribute Values must have an output_uri_template defined by the user,
+     if not it's an error
     """
 
     data = pd.DataFrame(
@@ -178,7 +178,8 @@ def test_existing_attribute_output_uri_template_required():
 
 def test_new_attribute_output_uri_template_required():
     """
-    An ExistingQbAttribute must have an output_uri_template defined by the user if not it's an error
+    A NewQbAttribute using existing attribute vluaes must have an output_uri_template defined by the user,
+     if not it's an error
     """
 
     data = pd.DataFrame(
