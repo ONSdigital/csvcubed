@@ -3,22 +3,35 @@ Attributes
 ----------
 """
 from dataclasses import dataclass, field
-from typing import Optional, List
+from typing import Optional, List, Set
 from abc import ABC, abstractmethod
 
 from csvqb.models.uriidentifiable import UriIdentifiable
+from .arbitraryrdfrelations import (
+    ArbitraryRdfRelations,
+    TripleFragmentBase,
+    ResourceSerialisationHint,
+)
 from .datastructuredefinition import ColumnarQbDataStructureDefinition
 from csvqb.models.validationerror import ValidationError
 from csvqb.inputs import PandasDataTypes, pandas_input_to_columnar_str
 
 
 @dataclass
-class NewQbAttributeValue(UriIdentifiable):
+class NewQbAttributeValue(UriIdentifiable, ArbitraryRdfRelations):
+
     label: str
     description: Optional[str] = field(default=None, repr=False)
     uri_safe_identifier_override: Optional[str] = field(default=None, repr=False)
     source_uri: Optional[str] = field(default=None, repr=False)
     parent_attribute_value_uri: Optional[str] = field(default=None, repr=False)
+    arbitrary_rdf: Set[TripleFragmentBase] = field(default_factory=set, repr=False)
+
+    def get_permitted_rdf_fragment_hints(self) -> Set[ResourceSerialisationHint]:
+        return {
+            # The default node is the attribute value node itself.
+            ResourceSerialisationHint.DefaultNode
+        }
 
     def get_identifier(self) -> str:
         return self.label
@@ -28,7 +41,7 @@ class NewQbAttributeValue(UriIdentifiable):
 
 
 @dataclass
-class QbAttribute(ColumnarQbDataStructureDefinition, ABC):
+class QbAttribute(ColumnarQbDataStructureDefinition, ArbitraryRdfRelations, ABC):
     @abstractmethod
     def is_required(self) -> bool:
         pass
@@ -45,6 +58,15 @@ class ExistingQbAttribute(QbAttribute):
         default_factory=list, repr=False
     )
     is_required: bool = field(default=False, repr=False)
+    arbitrary_rdf: Set[TripleFragmentBase] = field(default_factory=set, repr=False)
+
+    def get_permitted_rdf_fragment_hints(self) -> Set[ResourceSerialisationHint]:
+        return {
+            # The default node in this case is the component. We cannot write to the property as it is defined
+            # elsewhere.
+            ResourceSerialisationHint.DefaultNode,
+            ResourceSerialisationHint.Component,
+        }
 
     def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
         return []  # TODO: implement this
@@ -64,6 +86,14 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
 
     def get_identifier(self) -> str:
         return self.label
+
+    def get_permitted_rdf_fragment_hints(self) -> Set[ResourceSerialisationHint]:
+        return {
+            # The default node is the `rdf:Property`.
+            ResourceSerialisationHint.DefaultNode,
+            ResourceSerialisationHint.Property,
+            ResourceSerialisationHint.Component,
+        }
 
     @staticmethod
     def from_data(

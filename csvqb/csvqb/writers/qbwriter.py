@@ -8,7 +8,7 @@ import itertools
 import json
 import re
 from pathlib import Path
-from typing import Optional, Tuple, Dict, Any, List, Iterable, Set
+from typing import Tuple, Dict, Any, List, Iterable
 import rdflib
 from sharedmodels.rdf import qb, skos
 from sharedmodels.rdf.resource import (
@@ -23,6 +23,9 @@ from csvqb.utils.qb.cube import get_columns_of_dsd_type
 from csvqb.utils.dict import rdf_resource_to_json_ld
 from .skoscodelistwriter import SkosCodeListWriter, CODE_LIST_NOTATION_COLUMN_NAME
 from .writerbase import WriterBase
+from ..models.cube.csvqb.components.arbitraryrdfrelations import (
+    ResourceSerialisationHint,
+)
 from ..models.rdf.qbdatasetincatalog import QbDataSetInCatalog
 
 
@@ -372,6 +375,13 @@ class QbWriter(WriterBase):
                 self._doc_rel_uri(f"component/{column_name_uri_safe}")
             )
             component.attribute = ExistingResource(attribute.attribute_uri)
+
+            attribute.copy_arbitrary_triple_fragments_to_resources(
+                {
+                    ResourceSerialisationHint.DefaultNode: component,
+                    ResourceSerialisationHint.Component: component,
+                }
+            )
         elif isinstance(attribute, NewQbAttribute):
             component = qb.AttributeComponentSpecification(
                 self._doc_rel_uri(f"component/{attribute.uri_safe_identifier}")
