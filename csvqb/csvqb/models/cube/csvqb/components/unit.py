@@ -48,7 +48,7 @@ class NewQbUnit(QbUnit, UriIdentifiable, ArbitraryRdf):
         return {RdfSerialisationHint.Unit}
 
     def get_default_node_serialisation_hint(self) -> RdfSerialisationHint:
-        RdfSerialisationHint.Unit
+        return RdfSerialisationHint.Unit
 
     def get_identifier(self) -> str:
         return self.label

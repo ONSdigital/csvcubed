@@ -7,7 +7,7 @@ Defines a mixin permitting arbitrary RDF to be added to a qb component.
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from enum import Enum
-from typing import Set, Dict, Union, List
+from typing import Set, Dict, Union, List, Tuple
 from rdflib.term import Identifier, URIRef, Literal
 from sharedmodels.rdf import NewResource, InversePredicate
 
@@ -130,8 +130,9 @@ class ArbitraryRdf(ABC):
                         if isinstance(fragment.predicate, URIRef)
                         else URIRef(fragment.predicate)
                     )
-                    object = fragment.object
-                    if not isinstance(fragment.object, Identifier):
+                    if isinstance(fragment.object, Identifier):
+                        object = fragment.object
+                    else:
                         if looks_like_uri(fragment.object):
                             object = Identifier(fragment.object)
                         else:
