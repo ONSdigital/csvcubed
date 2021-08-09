@@ -9,7 +9,7 @@ from abc import ABC
 
 from .validationerror import ValidationError
 
-_map_class_to_pydantic_constructor: ClassVar[Dict[Type, Type]] = dict()
+_map_class_to_pydantic_constructor: Dict[Type, Type] = dict()
 """_map_class_to_pydantic_constructor - Cache of pydantic constructor corresponding to a given class."""
 
 
