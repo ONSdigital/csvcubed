@@ -75,7 +75,6 @@ def test_arbitrary_rdf_serialisation_new_code_list():
     dataset = skos_writer._get_catalog_metadata("http://some-scheme-uri")
     graph = dataset.to_graph(Graph())
 
-    print(json.dumps(list(graph), indent=4))
     assert (
         URIRef("http://some-scheme-uri"),
         RDFS.label,
