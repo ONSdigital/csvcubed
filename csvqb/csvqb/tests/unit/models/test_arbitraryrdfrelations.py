@@ -6,9 +6,9 @@ from dataclasses import dataclass, field
 from typing import Set
 
 import pytest
-from rdflib import RDFS
+from rdflib import RDFS, FOAF
 from rdflib.term import Identifier, URIRef, Literal
-from sharedmodels.rdf import NewResource
+from sharedmodels.rdf import NewResource, InversePredicate
 
 from csvqb.models.cube.csvqb.components.arbitraryrdfrelations import (
     ArbitraryRdfRelations,
@@ -82,7 +82,7 @@ def test_inverse_triple_fragment_serialised():
     a = SomeQbComponent(
         arbitrary_rdf={
             InverseTripleFragment(
-                "foaf:primaryContents", "http://resource-with-primary-contents"
+                FOAF.primaryTopic, "http://resource-with-primary-contents"
             ),
         }
     )
@@ -94,7 +94,7 @@ def test_inverse_triple_fragment_serialised():
     )
 
     assert (
-        URIRef("^foaf:primaryContents"),
+        InversePredicate(FOAF.primaryTopic),
         URIRef("http://resource-with-primary-contents"),
     ) in a_resource.additional_rdf.items()
 
@@ -167,7 +167,7 @@ def test_rdflib_identifier_supported():
         Literal("Rhywbeth neis iawn", "cy"),
     ) in a_resource.additional_rdf.items()
     assert (
-        URIRef(f"^{RDFS.subPropertyOf}"),
+        InversePredicate(RDFS.subPropertyOf),
         URIRef("http://some-child-resource"),
     ) in a_resource.additional_rdf.items()
 

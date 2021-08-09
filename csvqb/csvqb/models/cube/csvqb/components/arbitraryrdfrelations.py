@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Set, Dict, Union
 from rdflib.term import Identifier, URIRef
-from sharedmodels.rdf import NewResource
+from sharedmodels.rdf import NewResource, InversePredicate
 
 from csvqb.models.pydanticmodel import PydanticModel
 
@@ -98,7 +98,7 @@ class ArbitraryRdfRelations(ABC):
 
                 if fragment.subject_hint in map_target_hint_to_resource:
                     resource = map_target_hint_to_resource[fragment.subject_hint]
-                    inverse_predicate = (
+                    predicate = (
                         fragment.predicate
                         if isinstance(fragment.predicate, URIRef)
                         else URIRef(fragment.predicate)
@@ -108,7 +108,7 @@ class ArbitraryRdfRelations(ABC):
                         if isinstance(fragment.object, Identifier)
                         else Identifier(fragment.object)
                     )
-                    resource.additional_rdf[inverse_predicate] = object
+                    resource.additional_rdf[predicate] = object
                 else:
                     raise Exception(
                         f"Unhandled fragment hint type {fragment.subject_hint}"
@@ -121,7 +121,7 @@ class ArbitraryRdfRelations(ABC):
 
                 if fragment.object_hint in map_target_hint_to_resource:
                     resource = map_target_hint_to_resource[fragment.object_hint]
-                    inverse_predicate = URIRef(f"^{fragment.predicate}")
+                    inverse_predicate = InversePredicate(fragment.predicate)
                     subject = (
                         fragment.subject
                         if isinstance(fragment.subject, Identifier)

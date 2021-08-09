@@ -1,13 +1,15 @@
 from typing import Annotated
 
 import pytest
-from rdflib import URIRef, Graph, Literal
+from rdflib import URIRef, Graph, Literal, RDFS, FOAF
+
 from sharedmodels.rdf.resource import (
     NewResource,
     map_str_to_en_literal,
     map_resource_to_uri,
     Resource,
     ExistingResource,
+    InversePredicate,
 )
 from sharedmodels.rdf.triple import Triple, InverseTriple, PropertyStatus
 
@@ -99,7 +101,8 @@ def test_resource_serialised_for_new_resource():
 
 
 def test_resource_serialised_for_existing_resource():
-    """Ensure that we can use an `ExistingResource` inplace of a `NewResource` when providing a `Resource` for serialisation."""
+    """Ensure that we can use an `ExistingResource` inplace of a `NewResource` when providing a `Resource` for
+    serialisation."""
 
     class A(NewResource):
         p_a: Annotated[
@@ -262,6 +265,32 @@ def test_mandatory_properties_are_required():
     with pytest.raises(Exception) as ex:
         a.to_graph(Graph())
     assert "Mandatory RDF property" in str(ex.value)
+
+
+def test_arbitrary_rdf_triple_serialisation():
+    """Test that arbitrary RDF gets serialised properly."""
+
+    class A(NewResource):
+        pass
+
+    a = A("http://some-entity-uri")
+    a.additional_rdf[RDFS.label] = Literal("Hello, world.", "en")
+    a.additional_rdf[InversePredicate(FOAF.primaryTopic)] = URIRef(
+        "http://some-resource-with-primary-topic"
+    )
+
+    graph = a.to_graph(Graph())
+
+    assert (
+        URIRef("http://some-entity-uri"),
+        RDFS.label,
+        Literal("Hello, world.", "en"),
+    ) in graph
+    assert (
+        URIRef("http://some-resource-with-primary-topic"),
+        FOAF.primaryTopic,
+        URIRef("http://some-entity-uri"),
+    ) in graph
 
 
 if __name__ == "__main__":

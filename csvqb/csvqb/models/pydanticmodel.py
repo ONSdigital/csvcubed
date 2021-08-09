@@ -3,7 +3,7 @@ from dataclasses import dataclass, asdict, fields, is_dataclass
 import pydantic
 import pydantic.dataclasses
 from pydantic import BaseConfig
-from typing import ClassVar, Dict, Type, List, Iterable, Union, Any
+from typing import Dict, Type, List, Iterable, Union, Any
 from abc import ABC
 
 
