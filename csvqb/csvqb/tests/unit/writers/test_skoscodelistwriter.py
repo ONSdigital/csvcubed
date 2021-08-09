@@ -57,7 +57,7 @@ def test_code_list_data_mapping():
 
 def test_arbitrary_rdf_serialisation_new_code_list():
     """
-    Test that when arbitrary RDF is specified against a new measure, it is serialised correctly.
+    Test that when arbitrary RDF is specified against a new code list, it is serialised correctly.
     """
     code_list = NewQbCodeList(
         CatalogMetadata("Some Code List"),
