@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Tuple
 import pandas as pd
 
-
+from csvqb.models.cube.csvqb.components.arbitraryrdf import RdfSerialisationHint
 from csvqb.models.cube.csvqb.components.codelist import NewQbCodeList
 from csvqb.utils.dict import rdf_resource_to_json_ld
 from csvqb.models.rdf.conceptschemeincatalog import ConceptSchemeInCatalog
@@ -129,6 +129,12 @@ class SkosCodeListWriter(WriterBase):
     def _get_catalog_metadata(self, scheme_uri: str) -> ConceptSchemeInCatalog:
         concept_scheme_with_metadata = ConceptSchemeInCatalog(scheme_uri)
         self.new_code_list.metadata.configure_dcat_dataset(concept_scheme_with_metadata)
+        self.new_code_list.copy_arbitrary_triple_fragments_to_resources(
+            {
+                RdfSerialisationHint.CatalogDataset: concept_scheme_with_metadata,
+                RdfSerialisationHint.ConceptScheme: concept_scheme_with_metadata,
+            }
+        )
         return concept_scheme_with_metadata
 
     def _get_code_list_data(self) -> pd.DataFrame:

@@ -11,10 +11,10 @@ from typing import (
     get_args,
     Set,
     Any,
-    Dict,
     TypeVar,
     Union,
     Optional,
+    Tuple,
 )
 
 import rdflib
@@ -55,7 +55,7 @@ MaybeResource = Union[RdfResourceType, ExistingResource, None]
 
 class NewResource(RdfResource, ABC):
     rdf_types: Set[URIRef]
-    additional_rdf: Dict[Identifier, Identifier]
+    additional_rdf: Set[Tuple[Identifier, Identifier]]
     """A place for arbitrary RDF attached to this subject/entity."""
 
     def __init__(self, uri: str):
@@ -63,7 +63,7 @@ class NewResource(RdfResource, ABC):
         # Multiple-inheritance safeguard
         self.rdf_types = getattr(self, "rdf_types", set())
         # Multiple-inheritance safeguard
-        self.additional_rdf = getattr(self, "additional_rdf", {})
+        self.additional_rdf = getattr(self, "additional_rdf", set())
 
     @property
     def uri_str(self) -> str:
@@ -113,7 +113,7 @@ class NewResource(RdfResource, ABC):
                     objects_already_processed,
                 )
 
-        for (key, value) in self.additional_rdf.items():
+        for (key, value) in self.additional_rdf:
             # Add arbitrary RDF to the graph.
             if isinstance(key, InversePredicate):
                 graph.add((value, URIRef(str(key)), self.uri))

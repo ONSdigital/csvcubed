@@ -7,30 +7,30 @@ from typing import Set
 
 import pytest
 from rdflib import RDFS, FOAF
-from rdflib.term import Identifier, URIRef, Literal
+from rdflib.term import URIRef, Literal
 from sharedmodels.rdf import NewResource, InversePredicate
 
-from csvqb.models.cube.csvqb.components.arbitraryrdfrelations import (
-    ArbitraryRdfRelations,
+from csvqb.models.cube.csvqb.components.arbitraryrdf import (
+    ArbitraryRdf,
     TripleFragmentBase,
-    ResourceSerialisationHint,
+    RdfSerialisationHint,
     TripleFragment,
     InverseTripleFragment,
 )
 
 
 @dataclass
-class SomeQbComponent(ArbitraryRdfRelations):
+class SomeQbComponent(ArbitraryRdf):
     arbitrary_rdf: Set[TripleFragmentBase] = field(default_factory=set)
 
-    def get_permitted_rdf_fragment_hints(self) -> Set[ResourceSerialisationHint]:
-        return {
-            ResourceSerialisationHint.DefaultNode,
-            ResourceSerialisationHint.Component,
-        }
+    def get_default_node_serialisation_hint(self) -> RdfSerialisationHint:
+        return RdfSerialisationHint.Property
+
+    def get_permitted_rdf_fragment_hints(self) -> Set[RdfSerialisationHint]:
+        return {RdfSerialisationHint.Component, RdfSerialisationHint.Property}
 
 
-class AResource(NewResource):
+class AProperty(NewResource):
     def __init__(self, uri: str):
         NewResource.__init__(self, uri)
 
@@ -46,32 +46,32 @@ def test_triple_fragment_serialised():
     """
     a = SomeQbComponent(
         arbitrary_rdf={
-            TripleFragment("rdfs:label", "Some Default Node Label"),
+            TripleFragment("rdfs:label", "Some Default Property Label"),
             TripleFragment(
                 "rdfs:label",
                 "Some Component Label",
-                ResourceSerialisationHint.Component,
+                RdfSerialisationHint.Component,
             ),
         }
     )
 
-    a_resource = AResource("http://some-resource")
+    a_property = AProperty("http://some-resource-property")
     a_component = AComponent("http://some-component-resource")
 
     a.copy_arbitrary_triple_fragments_to_resources(
         {
-            ResourceSerialisationHint.DefaultNode: a_resource,
-            ResourceSerialisationHint.Component: a_component,
+            RdfSerialisationHint.Property: a_property,
+            RdfSerialisationHint.Component: a_component,
         }
     )
 
     assert (
         URIRef("rdfs:label"),
-        Identifier("Some Default Node Label"),
-    ) in a_resource.additional_rdf.items()
+        Literal("Some Default Property Label"),
+    ) in a_property.additional_rdf.items()
     assert (
         URIRef("rdfs:label"),
-        Identifier("Some Component Label"),
+        Literal("Some Component Label"),
     ) in a_component.additional_rdf.items()
 
 
@@ -87,16 +87,16 @@ def test_inverse_triple_fragment_serialised():
         }
     )
 
-    a_resource = AResource("http://some-resource")
+    a_property = AProperty("http://some-resource")
 
     a.copy_arbitrary_triple_fragments_to_resources(
-        {ResourceSerialisationHint.DefaultNode: a_resource}
+        {RdfSerialisationHint.Property: a_property}
     )
 
     assert (
         InversePredicate(FOAF.primaryTopic),
         URIRef("http://resource-with-primary-contents"),
-    ) in a_resource.additional_rdf.items()
+    ) in a_property.additional_rdf.items()
 
 
 def test_hint_not_permitted_exception():
@@ -106,17 +106,15 @@ def test_hint_not_permitted_exception():
     """
     a = SomeQbComponent(
         arbitrary_rdf={
-            TripleFragment(
-                "rdfs:label", "Some Label", ResourceSerialisationHint.Property
-            ),
+            TripleFragment("rdfs:label", "Some Label", RdfSerialisationHint.Unit),
         }
     )
 
-    a_resource = AResource("http://some-resource")
+    a_property = AProperty("http://some-resource")
 
     with pytest.raises(Exception) as ex:
         a.copy_arbitrary_triple_fragments_to_resources(
-            {ResourceSerialisationHint.DefaultNode: a_resource}
+            {RdfSerialisationHint.Property: a_property}
         )
     assert "not permitted" in str(ex)
 
@@ -127,17 +125,15 @@ def test_hint_not_mapped_exception():
     """
     a = SomeQbComponent(
         arbitrary_rdf={
-            TripleFragment(
-                "rdfs:label", "Some Label", ResourceSerialisationHint.Component
-            ),
+            TripleFragment("rdfs:label", "Some Label", RdfSerialisationHint.Component),
         }
     )
 
-    a_resource = AResource("http://some-resource")
+    a_property = AProperty("http://some-resource")
 
     with pytest.raises(Exception) as ex:
         a.copy_arbitrary_triple_fragments_to_resources(
-            {ResourceSerialisationHint.DefaultNode: a_resource}
+            {RdfSerialisationHint.Property: a_property}
         )
     assert "Unhandled fragment hint type" in str(ex)
 
@@ -156,20 +152,20 @@ def test_rdflib_identifier_supported():
         }
     )
 
-    a_resource = AResource("http://some-resource")
+    a_property = AProperty("http://some-resource")
 
     a.copy_arbitrary_triple_fragments_to_resources(
-        {ResourceSerialisationHint.DefaultNode: a_resource}
+        {RdfSerialisationHint.Property: a_property}
     )
 
     assert (
         RDFS.label,
         Literal("Rhywbeth neis iawn", "cy"),
-    ) in a_resource.additional_rdf.items()
+    ) in a_property.additional_rdf.items()
     assert (
         InversePredicate(RDFS.subPropertyOf),
         URIRef("http://some-child-resource"),
-    ) in a_resource.additional_rdf.items()
+    ) in a_property.additional_rdf.items()
 
 
 if __name__ == "__main__":

@@ -274,9 +274,12 @@ def test_arbitrary_rdf_triple_serialisation():
         pass
 
     a = A("http://some-entity-uri")
-    a.additional_rdf[RDFS.label] = Literal("Hello, world.", "en")
-    a.additional_rdf[InversePredicate(FOAF.primaryTopic)] = URIRef(
-        "http://some-resource-with-primary-topic"
+    a.additional_rdf.add((RDFS.label, Literal("Hello, world.", "en")))
+    a.additional_rdf.add(
+        (
+            InversePredicate(FOAF.primaryTopic),
+            URIRef("http://some-resource-with-primary-topic"),
+        )
     )
 
     graph = a.to_graph(Graph())

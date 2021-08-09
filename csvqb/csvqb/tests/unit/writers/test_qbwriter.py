@@ -1,10 +1,15 @@
 import pytest
 from copy import deepcopy
 import pandas as pd
+from rdflib import RDFS, Graph, URIRef, Literal
 from sharedmodels.rdf import qb
 from typing import List
 
 from csvqb.models.cube import *
+from csvqb.models.cube.csvqb.components.arbitraryrdf import (
+    TripleFragment,
+    RdfSerialisationHint,
+)
 from csvqb.utils.iterables import first
 from csvqb.writers.qbwriter import QbWriter
 
@@ -557,7 +562,7 @@ def test_about_url_generation():
 
 def test_about_url_generation_with_multiple_measures():
     """
-    Ensuring that when an aboutUrl is defined for a multimeasure cube, the resulting URL
+    Ensuring that when an aboutUrl is defined for a multi-measure cube, the resulting URL
     is built in the order in which dimensions appear in the cube except for the multi-measure
     dimensions which are appended to the end of the URL.
     """
@@ -596,6 +601,317 @@ def test_about_url_generation_with_multiple_measures():
     )
     assert actual_about_url == expected_about_url
 
+
+def test_arbitrary_rdf_serialisation_existing_attribute():
+    """
+    Test that when arbitrary RDF is specified against an Existing Attribute, it is serialised correctly.
+    """
+    data = pd.DataFrame(
+        {
+            "Existing Dimension": ["A", "B", "C"],
+            "Value": [1, 2, 3],
+            "Existing Attribute": ["Provisional", "Final", "Provisional"],
+        }
+    )
+
+    cube = Cube(
+        CatalogMetadata("Some Dataset"),
+        data,
+        [
+            QbColumn(
+                "Existing Dimension",
+                ExistingQbDimension(
+                    "https://example.org/dimensions/existing_dimension"
+                ),
+            ),
+            QbColumn(
+                "Value",
+                QbSingleMeasureObservationValue(
+                    NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
+                ),
+            ),
+            QbColumn(
+                "Existing Attribute",
+                ExistingQbAttribute(
+                    "http://some-existing-attribute-uri",
+                    arbitrary_rdf=[
+                        TripleFragment(RDFS.label, "Existing Attribute Component")
+                    ],
+                ),
+            ),
+        ],
+    )
+
+    qb_writer = QbWriter(cube)
+    dataset = qb_writer._generate_qb_dataset_dsd_definitions()
+    graph = dataset.to_graph(Graph())
+
+    assert (
+        URIRef("some-dataset.csv#component/existing-attribute"),
+        RDFS.label,
+        Literal("Existing Attribute Component"),
+    ) in graph
+
+
+def test_arbitrary_rdf_serialisation_new_attribute():
+    """
+    Test that when arbitrary RDF is specified against a New Attribute, it is serialised correctly.
+    """
+    data = pd.DataFrame(
+        {
+            "Existing Dimension": ["A", "B", "C"],
+            "Value": [1, 2, 3],
+            "New Attribute": ["Provisional", "Final", "Provisional"],
+        }
+    )
+
+    cube = Cube(
+        CatalogMetadata("Some Dataset"),
+        data,
+        [
+            QbColumn(
+                "Existing Dimension",
+                ExistingQbDimension(
+                    "https://example.org/dimensions/existing_dimension"
+                ),
+            ),
+            QbColumn(
+                "Value",
+                QbSingleMeasureObservationValue(
+                    NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
+                ),
+            ),
+            QbColumn(
+                "Existing Attribute",
+                NewQbAttribute.from_data(
+                    "New Attribute",
+                    data["New Attribute"],
+                    arbitrary_rdf=[
+                        TripleFragment(RDFS.label, "New Attribute Property"),
+                        TripleFragment(
+                            RDFS.label,
+                            "New Attribute Component",
+                            RdfSerialisationHint.Component,
+                        ),
+                    ],
+                ),
+            ),
+        ],
+    )
+
+    qb_writer = QbWriter(cube)
+    dataset = qb_writer._generate_qb_dataset_dsd_definitions()
+    graph = dataset.to_graph(Graph())
+
+    assert (
+        URIRef("some-dataset.csv#attribute/new-attribute"),
+        RDFS.label,
+        Literal("New Attribute Property"),
+    ) in graph
+
+    assert (
+        URIRef("some-dataset.csv#component/new-attribute"),
+        RDFS.label,
+        Literal("New Attribute Component"),
+    ) in graph
+
+
+def test_arbitrary_rdf_serialisation_existing_dimension():
+    """
+    Test that when arbitrary RDF is specified against an Existing Dimension, it is serialised correctly.
+    """
+    data = pd.DataFrame(
+        {
+            "Existing Dimension": ["A", "B", "C"],
+            "Value": [1, 2, 3],
+            "Existing Attribute": ["Provisional", "Final", "Provisional"],
+        }
+    )
+
+    cube = Cube(
+        CatalogMetadata("Some Dataset"),
+        data,
+        [
+            QbColumn(
+                "Existing Dimension",
+                ExistingQbDimension(
+                    "https://example.org/dimensions/existing_dimension",
+                    arbitrary_rdf=[
+                        TripleFragment(RDFS.label, "Existing Dimension Component")
+                    ],
+                ),
+            ),
+            QbColumn(
+                "Value",
+                QbSingleMeasureObservationValue(
+                    NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
+                ),
+            ),
+        ],
+    )
+
+    qb_writer = QbWriter(cube)
+    dataset = qb_writer._generate_qb_dataset_dsd_definitions()
+    graph = dataset.to_graph(Graph())
+
+    assert (
+        URIRef("some-dataset.csv#component/existing-dimension"),
+        RDFS.label,
+        Literal("Existing Dimension Component"),
+    ) in graph
+
+
+def test_arbitrary_rdf_serialisation_new_dimension():
+    """
+    Test that when arbitrary RDF is specified against a new dimension, it is serialised correctly.
+    """
+    data = pd.DataFrame({"New Dimension": ["A", "B", "C"], "Value": [1, 2, 3]})
+
+    cube = Cube(
+        CatalogMetadata("Some Dataset"),
+        data,
+        [
+            QbColumn(
+                "New Dimension",
+                NewQbDimension.from_data(
+                    "Some Dimension",
+                    data["New Dimension"],
+                    arbitrary_rdf=[
+                        TripleFragment(RDFS.label, "New Dimension Property"),
+                        TripleFragment(
+                            RDFS.label,
+                            "New Dimension Component",
+                            RdfSerialisationHint.Component,
+                        ),
+                    ],
+                ),
+            ),
+            QbColumn(
+                "Value",
+                QbSingleMeasureObservationValue(
+                    NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
+                ),
+            ),
+        ],
+    )
+
+    qb_writer = QbWriter(cube)
+    dataset = qb_writer._generate_qb_dataset_dsd_definitions()
+    graph = dataset.to_graph(Graph())
+
+    assert (
+        URIRef("some-dataset.csv#dimension/some-dimension"),
+        RDFS.label,
+        Literal("New Dimension Property"),
+    ) in graph
+
+    assert (
+        URIRef("some-dataset.csv#component/some-dimension"),
+        RDFS.label,
+        Literal("New Dimension Component"),
+    ) in graph
+
+
+def test_arbitrary_rdf_serialisation_existing_dimension():
+    """
+    Test that when arbitrary RDF is specified against an Existing Dimension, it is serialised correctly.
+    """
+    data = pd.DataFrame(
+        {
+            "Existing Dimension": ["A", "B", "C"],
+            "Value": [1, 2, 3],
+            "Existing Attribute": ["Provisional", "Final", "Provisional"],
+        }
+    )
+
+    cube = Cube(
+        CatalogMetadata("Some Dataset"),
+        data,
+        [
+            QbColumn(
+                "Existing Dimension",
+                NewQbDimension.from_data(
+                    "Existing Dimension", data["Existing Dimension"]
+                ),
+            ),
+            QbColumn(
+                "Value",
+                QbSingleMeasureObservationValue(
+                    ExistingQbMeasure(
+                        "http://some/uri/existing-measure-uri",
+                        arbitrary_rdf=[
+                            TripleFragment(RDFS.label, "Existing Measure Component")
+                        ],
+                    ),
+                    NewQbUnit("Some Unit"),
+                ),
+            ),
+        ],
+    )
+
+    qb_writer = QbWriter(cube)
+    dataset = qb_writer._generate_qb_dataset_dsd_definitions()
+    graph = dataset.to_graph(Graph())
+
+    assert (
+        URIRef("some-dataset.csv#component/existing-measure-uri"),
+        RDFS.label,
+        Literal("Existing Measure Component"),
+    ) in graph
+
+
+def test_arbitrary_rdf_serialisation_new_measure():
+    """
+    Test that when arbitrary RDF is specified against a new measure, it is serialised correctly.
+    """
+    data = pd.DataFrame({"New Dimension": ["A", "B", "C"], "Value": [1, 2, 3]})
+
+    cube = Cube(
+        CatalogMetadata("Some Dataset"),
+        data,
+        [
+            QbColumn(
+                "New Dimension",
+                NewQbDimension.from_data("Some Dimension", data["New Dimension"]),
+            ),
+            QbColumn(
+                "Value",
+                QbSingleMeasureObservationValue(
+                    NewQbMeasure(
+                        "Some Measure",
+                        arbitrary_rdf=[
+                            TripleFragment(RDFS.label, "New Measure Property"),
+                            TripleFragment(
+                                RDFS.label,
+                                "New Measure Component",
+                                RdfSerialisationHint.Component,
+                            ),
+                        ],
+                    ),
+                    NewQbUnit("Some Unit"),
+                ),
+            ),
+        ],
+    )
+
+    qb_writer = QbWriter(cube)
+    dataset = qb_writer._generate_qb_dataset_dsd_definitions()
+    graph = dataset.to_graph(Graph())
+
+    assert (
+        URIRef("some-dataset.csv#measure/some-measure"),
+        RDFS.label,
+        Literal("New Measure Property"),
+    ) in graph
+
+    assert (
+        URIRef("some-dataset.csv#component/some-measure"),
+        RDFS.label,
+        Literal("New Measure Component"),
+    ) in graph
+
+
+# TODO: Add attribute and unit RDF serialisation tests here in Issue #79.
 
 if __name__ == "__main__":
     pytest.main()
