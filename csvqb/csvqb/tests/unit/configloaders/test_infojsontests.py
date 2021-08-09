@@ -1,11 +1,13 @@
 import pytest
 import pandas as pd
 from dateutil import parser
-from pathlib import Path
 
 
 from csvqb.configloaders.infojson import get_cube_from_info_json
-from csvqb.utils.qb.cube import validate_qb_component_constraints
+from csvqb.utils.qb.cube import (
+    validate_qb_component_constraints,
+    get_columns_of_dsd_type,
+)
 from csvqb.models.cube import *
 from csvqb.tests.unit.test_baseunit import *
 
@@ -223,6 +225,36 @@ def test_cube_metadata_extracted_from_info_json():
     errors += validate_qb_component_constraints(cube)
 
     assert_num_validation_errors(errors, 0)
+
+
+def test_single_measure_obs_val_unit_measure_data_type():
+    """
+    Test that the datatype, unit & measure are correctly extracted from a single-measure dataset's info.json file
+    """
+    data = pd.read_csv(get_test_cases_dir() / "configloaders" / "data.csv")
+    cube = get_cube_from_info_json(
+        get_test_cases_dir() / "configloaders" / "info.json", data
+    )
+
+    obs_val_cols = get_columns_of_dsd_type(cube, QbSingleMeasureObservationValue)
+    assert len(obs_val_cols) == 1
+    obs_val = obs_val_cols[0].component
+    assert isinstance(obs_val, QbSingleMeasureObservationValue)
+
+    unit = obs_val.unit
+    assert unit is not None
+    assert isinstance(unit, ExistingQbUnit)
+    assert (
+        unit.unit_uri
+        == "http://gss-data.org.uk/def/concept/measurement-units/gbp-million"
+    )
+    assert unit.unit_multiplier is None
+
+    measure = obs_val.measure
+    assert isinstance(measure, ExistingQbMeasure)
+    assert measure.measure_uri == "http://gss-data.org.uk/def/measure/trade"
+
+    assert obs_val.data_type == "double"
 
 
 if __name__ == "__main__":
