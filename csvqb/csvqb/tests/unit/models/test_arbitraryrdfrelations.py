@@ -68,11 +68,11 @@ def test_triple_fragment_serialised():
     assert (
         URIRef("rdfs:label"),
         Literal("Some Default Property Label"),
-    ) in a_property.additional_rdf.items()
+    ) in a_property.additional_rdf
     assert (
         URIRef("rdfs:label"),
         Literal("Some Component Label"),
-    ) in a_component.additional_rdf.items()
+    ) in a_component.additional_rdf
 
 
 def test_inverse_triple_fragment_serialised():
@@ -96,7 +96,7 @@ def test_inverse_triple_fragment_serialised():
     assert (
         InversePredicate(FOAF.primaryTopic),
         URIRef("http://resource-with-primary-contents"),
-    ) in a_property.additional_rdf.items()
+    ) in a_property.additional_rdf
 
 
 def test_hint_not_permitted_exception():
@@ -161,11 +161,11 @@ def test_rdflib_identifier_supported():
     assert (
         RDFS.label,
         Literal("Rhywbeth neis iawn", "cy"),
-    ) in a_property.additional_rdf.items()
+    ) in a_property.additional_rdf
     assert (
         InversePredicate(RDFS.subPropertyOf),
         URIRef("http://some-child-resource"),
-    ) in a_property.additional_rdf.items()
+    ) in a_property.additional_rdf
 
 
 if __name__ == "__main__":
