@@ -13,6 +13,14 @@ _map_class_to_pydantic_constructor: Dict[Type, Type] = dict()
 """_map_class_to_pydantic_constructor - Cache of pydantic constructor corresponding to a given class."""
 
 
+class Config(BaseConfig):
+    """pydantic Configuration - see https://pydantic-docs.helpmanual.io/usage/model_config/"""
+
+    extra = "forbid"
+    arbitrary_types_allowed = True
+    validate_all = True
+
+
 @dataclass
 class PydanticModel(ABC):
     """
@@ -22,20 +30,13 @@ class PydanticModel(ABC):
     validation until the `validate` method is called.
     """
 
-    class Config(BaseConfig):
-        """pydantic Configuration - see https://pydantic-docs.helpmanual.io/usage/model_config/"""
-
-        extra = "forbid"
-        arbitrary_types_allowed = True
-        validate_all = True
-
     @classmethod
     def _get_pydantic_constructor(cls) -> Type:
         """Returns a constructor for creating an instance of this model which is a *pydantic* dataclass."""
         if cls not in _map_class_to_pydantic_constructor:
             _map_class_to_pydantic_constructor[cls] = pydantic.dataclasses.dataclass(
                 cls,
-                config=PydanticModel.Config,
+                config=getattr(PydanticModel, "Config", Config),
             )
         return _map_class_to_pydantic_constructor[cls]
 
