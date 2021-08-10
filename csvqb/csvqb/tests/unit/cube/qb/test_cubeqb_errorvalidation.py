@@ -585,5 +585,11 @@ def test_new_qb_attribute_generation():
     assert new_value_set == {"Provisional", "Final"}
 
 
+# Literal tests go here
+def test_new_attribute_is_literal():
+    pass
+
+def test_existing_attribute 
+
 if __name__ == "__main__":
     pytest.main()

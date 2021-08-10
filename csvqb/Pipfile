@@ -6,6 +6,8 @@ verify_ssl = true
 [dev-packages]
 csvwlib-devtools = {editable = true,path = "./../devtools"}
 ipykernel = "*"
+pytest = "*"
+black = "*"
 
 [packages]
 csvqb = {editable = true,path = "."}

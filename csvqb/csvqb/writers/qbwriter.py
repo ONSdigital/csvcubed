@@ -9,6 +9,8 @@ import json
 import re
 from pathlib import Path
 from typing import Optional, Tuple, Dict, Any, List, Iterable, Set
+from attr import attr
+from pandas.core.algorithms import isin
 import rdflib
 from sharedmodels.rdf import qb, skos
 from sharedmodels.rdf.resource import (
@@ -18,7 +20,7 @@ from sharedmodels.rdf.resource import (
 )
 
 from csvqb.models.cube import *
-from csvqb.utils.uri import get_last_uri_part, csvw_column_name_safe, looks_like_uri
+from csvqb.utils.uri import get_last_uri_part, csvw_column_name_safe, looks_like_uri, get_data_type_uri_from_str
 from csvqb.utils.qb.cube import get_columns_of_dsd_type
 from csvqb.utils.dict import rdf_resource_to_json_ld
 from .skoscodelistwriter import SkosCodeListWriter, CODE_LIST_NOTATION_COLUMN_NAME
@@ -367,12 +369,12 @@ class QbWriter(WriterBase):
     def _get_qb_attribute_specification(
         self, column_name_uri_safe: str, attribute: QbAttribute
     ) -> qb.AttributeComponentSpecification:
-        if isinstance(attribute, ExistingQbAttribute):
+        if isinstance(attribute, ExistingQbAttribute) or isinstance(attribute, ExistingQbAttributeLiteral):
             component = qb.AttributeComponentSpecification(
                 self._doc_rel_uri(f"component/{column_name_uri_safe}")
             )
             component.attribute = ExistingResource(attribute.attribute_uri)
-        elif isinstance(attribute, NewQbAttribute):
+        elif isinstance(attribute, NewQbAttribute) or isinstance(attribute, NewQbAttributeLiteral):
             component = qb.AttributeComponentSpecification(
                 self._doc_rel_uri(f"component/{attribute.uri_safe_identifier}")
             )
@@ -389,6 +391,9 @@ class QbWriter(WriterBase):
             #  ComponentProperty?
         else:
             raise Exception(f"Unhandled attribute component type {type(attribute)}.")
+
+        if isinstance(attribute, QbAttributeLiteral):
+            component.attribute.range = get_data_type_uri_from_str(attribute.data_type)
 
         component.componentRequired = attribute.is_required
         component.componentProperties.add(component.attribute)
@@ -428,7 +433,9 @@ class QbWriter(WriterBase):
         elif default_value_url is not None:
             csvw_col["valueUrl"] = default_value_url
 
-        if isinstance(column.component, QbObservationValue):
+        if isinstance(column.component, QbObservationValue): 
+            csvw_col["datatype"] = column.component.data_type
+        elif isinstance(column.component, QbAttributeLiteral):
             csvw_col["datatype"] = column.component.data_type
 
     def _get_default_property_value_uris_for_multi_units(

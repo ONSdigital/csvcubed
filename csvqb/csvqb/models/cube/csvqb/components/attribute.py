@@ -7,6 +7,7 @@ from typing import Optional, List
 from abc import ABC, abstractmethod
 
 from csvqb.models.uriidentifiable import UriIdentifiable
+from sharedmodels.rdf.namespaces import QB
 from .datastructuredefinition import ColumnarQbDataStructureDefinition
 from csvqb.models.validationerror import ValidationError
 from csvqb.inputs import PandasDataTypes, pandas_input_to_columnar_str
@@ -39,6 +40,12 @@ class QbAttribute(ColumnarQbDataStructureDefinition, ABC):
 
 
 @dataclass
+class QbAttributeLiteral(QbAttribute, ABC):
+    data_type: Optional[str] = field(default="string", repr=False)
+
+
+
+@dataclass
 class ExistingQbAttribute(QbAttribute):
     attribute_uri: str
     new_attribute_values: List[NewQbAttributeValue] = field(
@@ -49,6 +56,10 @@ class ExistingQbAttribute(QbAttribute):
     def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
         return []  # TODO: implement this
 
+@dataclass
+class ExistingQbAttributeLiteral(ExistingQbAttribute, QbAttributeLiteral):
+    pass
+    
 
 @dataclass
 class NewQbAttribute(QbAttribute, UriIdentifiable):
@@ -92,3 +103,7 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
 
     def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
         return []  # TODO: implement this
+
+@dataclass
+class NewQbAttributeLiteral(NewQbAttribute, QbAttributeLiteral):
+    pass
