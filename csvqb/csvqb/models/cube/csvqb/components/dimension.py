@@ -6,12 +6,14 @@ from dataclasses import dataclass, field
 from typing import Optional, List, Set
 from abc import ABC, abstractmethod
 
+import pandas as pd
+
 from csvqb.models.uriidentifiable import UriIdentifiable
 from .arbitraryrdf import ArbitraryRdf, RdfSerialisationHint, TripleFragmentBase
 from .datastructuredefinition import ColumnarQbDataStructureDefinition
 from .codelist import QbCodeList, NewQbCodeList
 from csvqb.models.validationerror import ValidationError
-from csvqb.inputs import PandasDataTypes
+from csvqb.inputs import PandasDataTypes, pandas_input_to_columnar_list
 from ..catalog import CatalogMetadata
 
 
@@ -90,9 +92,14 @@ class NewQbDimension(QbDimension, UriIdentifiable):
     def get_identifier(self) -> str:
         return self.label
 
-    def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
+    def validate_data(self, data: pd.Series) -> List[ValidationError]:
         # todo: Add more validation checks
-        if self.code_list is not None:
-            return self.code_list.validate_data(data)
+        errors = []
 
-        return []
+        colmnar_data = pandas_input_to_columnar_list(data)
+        colmnar_data
+
+        if self.code_list is not None:
+            errors += self.code_list.validate_data(data)
+
+        return errors

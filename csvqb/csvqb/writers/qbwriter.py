@@ -602,18 +602,18 @@ class QbWriter(WriterBase):
     def _get_new_code_list_scheme_uri(self, code_list: NewQbCodeList) -> str:
         return f"{code_list.metadata.uri_safe_identifier}.csv#scheme/{code_list.metadata.uri_safe_identifier}"
 
-    external_code_list_pattern = re.compile("^(.*)/concept-scheme/(.*)$")
-    dataset_local_code_list_pattern = re.compile("^(.*)#scheme/(.*)$")
+    _external_code_list_pattern = re.compile("^(.*)/concept-scheme/(.*)$")
+    _dataset_local_code_list_pattern = re.compile("^(.*)#scheme/(.*)$")
 
     def _get_default_value_uri_for_code_list_concepts(
         self, column: CsvColumn, code_list: QbCodeList
     ) -> str:
         column_uri_fragment = self._get_column_uri_template_fragment(column)
         if isinstance(code_list, ExistingQbCodeList):
-            external_match = self.external_code_list_pattern.match(
+            external_match = self._external_code_list_pattern.match(
                 code_list.concept_scheme_uri
             )
-            local_match = self.dataset_local_code_list_pattern.match(
+            local_match = self._dataset_local_code_list_pattern.match(
                 code_list.concept_scheme_uri
             )
             if external_match:

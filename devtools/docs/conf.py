@@ -68,8 +68,8 @@ html_theme = "sphinx_book_theme"
 
 autodoc_default_options = {
     "members": True,
-    "member-order": "bysource",
-    "private-members": True,
+    "member-order": "groupwise",
+    "private-members": False,
     "inherited-members": True,
     "show-inheritance": True,
     "special-members": "__init__",

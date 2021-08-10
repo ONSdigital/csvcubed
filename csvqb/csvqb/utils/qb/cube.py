@@ -21,7 +21,6 @@ from csvqb.models.cube.csvqb.components.dimension import (
     ExistingQbDimension,
 )
 from csvqb.models.cube.csvqb.components.attribute import (
-    ExistingQbAttribute,
     QbAttribute,
 )
 from csvqb.models.cube.csvqb.components.measure import QbMultiMeasureDimension
@@ -39,11 +38,19 @@ from csvqb.models.cube.csvqb.components.datastructuredefinition import (
 QbColumnarDsdType = TypeVar(
     "QbColumnarDsdType", bound=ColumnarQbDataStructureDefinition
 )
+"""Anything which inherits from :class:`ColumnarQbDataStructureDefinition 
+    <csvqb.models.cube.csvqb.components.datastructuredefinition.ColumnarQbDataStructureDefinition>`."""
 
 
 def get_columns_of_dsd_type(
     cube: Cube, t: Type[QbColumnarDsdType]
 ) -> List[QbColumn[QbColumnarDsdType]]:
+    """
+    e.g. `get_columns_of_dsd_type(cube, QbDimension)`
+
+    :return: The :class:`QbColumn <csvqb.models.cube.csvqb.columns.QbColumn>` s in :obj:`cube` which have
+        :attr:`components` of the requested type :obj:`t`.
+    """
     return [
         c
         for c in cube.columns
@@ -52,7 +59,11 @@ def get_columns_of_dsd_type(
 
 
 def validate_qb_component_constraints(cube: Cube) -> List[ValidationError]:
-    # assert validation specific to a cube-qb
+    """
+    Validate a :class:`QbCube` to highlight errors in configuration.
+
+    :return: A list of :class:`ValidationError <csvqb.models.validationerror.ValidationError>` s.
+    """
 
     errors = _validate_dimensions(cube)
     errors += _validate_attributes(cube)

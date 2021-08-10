@@ -5,8 +5,8 @@ Data Structure Definitions
 from dataclasses import dataclass
 from abc import ABC, abstractmethod
 from typing import List
+import pandas as pd
 
-from csvqb.inputs import PandasDataTypes
 from csvqb.models.pydanticmodel import PydanticModel
 from csvqb.models.validationerror import ValidationError
 
@@ -19,7 +19,7 @@ class QbDataStructureDefinition(PydanticModel, ABC):
     """
 
     @abstractmethod
-    def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
+    def validate_data(self, data: pd.Series) -> List[ValidationError]:
         """Validate some data against this component's definition."""
         pass
 
