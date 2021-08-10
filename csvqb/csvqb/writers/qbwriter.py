@@ -12,6 +12,7 @@ from typing import Optional, Tuple, Dict, Any, List, Iterable, Set
 import rdflib
 from sharedmodels.rdf import qb, skos
 from sharedmodels.rdf.resource import (
+    NewMetadataResource,
     Resource,
     ExistingResource,
     maybe_existing_resource,
@@ -54,13 +55,16 @@ class QbWriter(WriterBase):
         # todo: Local units haven't been defined anywhere yet!
         # todo: Unit multiplier functionality hasn't been output.
 
+        see_also = rdf_resource_to_json_ld(self._generate_qb_dataset_dsd_definitions())
+        for x in self._serialise_attribute_values():
+            see_also += rdf_resource_to_json_ld(x)
+
         csvw_metadata = {
             "@context": "http://www.w3.org/ns/csvw",
             "@id": self._doc_rel_uri("dataset"),
             "tables": tables,
-            "rdfs:seeAlso": rdf_resource_to_json_ld(
-                self._generate_qb_dataset_dsd_definitions()
-            ),
+            # "rdfs:seeAlso": [dataset, components, dimensions, properties, etc, units-definitions, attribute-definitions, attribute-value-definitions]
+            "rdfs:seeAlso": see_also,
         }
 
         with open(output_folder / f"{self.csv_file_name}-metadata.json", "w+") as f:
@@ -177,7 +181,7 @@ class QbWriter(WriterBase):
         self.cube.metadata.configure_dcat_dataset(qb_dataset_with_metadata)
         return qb_dataset_with_metadata
 
-    def _generate_qb_dataset_dsd_definitions(self):
+    def _generate_qb_dataset_dsd_definitions(self) -> QbDataSetInCatalog:
         dataset = self._get_qb_dataset_with_catalog_metadata()
         dataset.structure = qb.DataStructureDefinition(self._doc_rel_uri("structure"))
         for column in self.cube.columns:
@@ -395,6 +399,37 @@ class QbWriter(WriterBase):
 
         return component
 
+    def _serialise_attribute_values(self) -> List[NewMetadataResource]:
+        """
+        Serialise Unit and (Attribute Values) alongside qb:DSD in CSV-W#79
+        Using abstract common model...
+
+        1) Iterate through NewQbAttributes, NewQbUnit
+        2) Serialise and add json to RDFS:seeAlso portion of the csvw. 
+
+        "rdfs:seeAlso": rdf_resource_to_json_ld(
+                self._generate_qb_dataset_dsd_definitions()
+        """
+        new_attribute_values_list = []
+        attribute_columns = get_columns_of_dsd_type(self.cube, QbAttribute)
+        for column in attribute_columns:
+            if isinstance(column.component, NewQbAttribute):
+                column_identifier = column.component.uri_safe_identifier
+            else:
+                column_identifier = column.uri_safe_identifier
+
+            for value in column.component.new_attribute_values:
+                assert isinstance(value, NewQbAttributeValue)
+
+                attribute_value_uri = self._doc_rel_uri(f"attribute/{column_identifier}/{value.uri_safe_identifier}")
+                new_attribute_value_resource = NewMetadataResource(attribute_value_uri)
+                new_attribute_value_resource.label = value.label
+                new_attribute_value_resource.comment = value.description
+
+                new_attribute_values_list.append(new_attribute_value_resource)
+        
+        return new_attribute_values_list
+
     def _generate_csvqb_column(self, column: CsvColumn) -> Dict[str, Any]:
         csvw_col: Dict[str, Any] = {
             "titles": column.csv_column_title,
@@ -505,8 +540,9 @@ class QbWriter(WriterBase):
     ) -> Tuple[str, Optional[str]]:
         dimension = column.component
         if isinstance(dimension, ExistingQbDimension):
-            return dimension.dimension_uri, self._get_column_uri_template_fragment(
-                column
+            return (
+                dimension.dimension_uri,
+                self._get_column_uri_template_fragment(column),
             )
         elif isinstance(dimension, NewQbDimension):
             local_dimension_uri = self._doc_rel_uri(

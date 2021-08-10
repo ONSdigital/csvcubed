@@ -1,3 +1,5 @@
+from re import L
+from numpy import newaxis
 import pytest
 from copy import deepcopy
 import pandas as pd
@@ -51,12 +53,10 @@ def test_structure_defined():
     cube = _get_standard_cube_for_columns(
         [
             QbColumn(
-                "Country",
-                ExistingQbDimension("http://example.org/dimensions/country"),
+                "Country", ExistingQbDimension("http://example.org/dimensions/country"),
             ),
             QbColumn(
-                "Marker",
-                ExistingQbAttribute("http://example.org/attributes/marker"),
+                "Marker", ExistingQbAttribute("http://example.org/attributes/marker"),
             ),
             QbColumn(
                 "Observed Value",
@@ -94,8 +94,8 @@ def test_generating_concept_uri_template_from_global_concept_scheme_uri():
         "http://base-uri/concept-scheme/this-concept-scheme-name"
     )
 
-    actual_concept_template_uri = (
-        empty_qbwriter._get_default_value_uri_for_code_list_concepts(column, code_list)
+    actual_concept_template_uri = empty_qbwriter._get_default_value_uri_for_code_list_concepts(
+        column, code_list
     )
     assert (
         "http://base-uri/concept-scheme/this-concept-scheme-name/{+some_column}"
@@ -113,8 +113,8 @@ def test_generating_concept_uri_template_from_local_concept_scheme_uri():
         "http://base-uri/dataset-name#scheme/that-concept-scheme-name"
     )
 
-    actual_concept_template_uri = (
-        empty_qbwriter._get_default_value_uri_for_code_list_concepts(column, code_list)
+    actual_concept_template_uri = empty_qbwriter._get_default_value_uri_for_code_list_concepts(
+        column, code_list
     )
     assert (
         "http://base-uri/dataset-name#concept/that-concept-scheme-name/{+some_column}"
@@ -132,8 +132,8 @@ def test_generating_concept_uri_template_from_unexpected_concept_scheme_uri():
         "http://base-uri/dataset-name#codes/that-concept-scheme-name"
     )
 
-    actual_concept_template_uri = (
-        empty_qbwriter._get_default_value_uri_for_code_list_concepts(column, code_list)
+    actual_concept_template_uri = empty_qbwriter._get_default_value_uri_for_code_list_concepts(
+        column, code_list
     )
     assert "{+some_column}" == actual_concept_template_uri
 
@@ -448,8 +448,7 @@ def test_csv_col_definition():
     Test basic configuration of a CSV-W column definition.
     """
     column = QbColumn(
-        "Some Column",
-        ExistingQbDimension("http://base-uri/dimensions/some-dimension"),
+        "Some Column", ExistingQbDimension("http://base-uri/dimensions/some-dimension"),
     )
     csv_col = empty_qbwriter._generate_csvqb_column(column)
     assert "suppressOutput" not in csv_col
@@ -595,6 +594,84 @@ def test_about_url_generation_with_multiple_measures():
         "some-dataset.csv#obs/{+existing_dimension}/{+local_dimension}/{+measure}"
     )
     assert actual_about_url == expected_about_url
+
+
+def test_serialise_new_attribute_values():
+    """
+    When new attribute values are serialised, a list of new metadata resources should be returned.
+    """
+
+    data = pd.DataFrame(
+        {
+            "Existing Dimension": ["A", "B", "C"],
+            "Value": [2, 2, 2],
+            "New Attribute": ["Pending", "Final", "In Review"],
+            "Existing Attribute": ["D", "E", "F"],
+        }
+    )
+
+    metadata = CatalogMetadata("Some Dataset")
+    columns = [
+        QbColumn(
+            "Existing Dimension",
+            ExistingQbDimension("https://example.org/dimensions/existing_dimension"),
+        ),
+        QbColumn(
+            "Value",
+            QbSingleMeasureObservationValue(
+                ExistingQbMeasure("http://example.org/existing/measure"),
+                ExistingQbUnit("http://example.org/some/existing/unit"),
+            ),
+        ),
+        QbColumn(
+            "New Attribute",
+            NewQbAttribute.from_data("New Attribute", data["New Attribute"]),
+        ),
+        QbColumn(
+            "Existing Attribute",
+            ExistingQbAttribute(
+                "http://example.org/some/existing/attribute",
+                new_attribute_values=[
+                    NewQbAttributeValue("D"),
+                    NewQbAttributeValue("E"),
+                    NewQbAttributeValue("F"),
+                ],
+            ),
+        ),
+    ]
+
+    cube = Cube(metadata, data, columns)
+
+    qbwriter = QbWriter(cube)
+    list_of_new_metadata_resources = qbwriter._serialise_attribute_values()
+    pending_value = first(
+        list_of_new_metadata_resources, lambda x: x.label == "Pending"
+    )
+    assert pending_value is not None
+    assert pending_value.uri_str == "some-dataset.csv#attribute/new-attribute/pending"
+    # assert pending_value.label == "Pending"
+
+    pending_value = first(list_of_new_metadata_resources, lambda x: x.label == "Final")
+    assert pending_value is not None
+    assert pending_value.uri_str == "some-dataset.csv#attribute/new-attribute/final"
+
+    pending_value = first(
+        list_of_new_metadata_resources, lambda x: x.label == "In Review"
+    )
+    assert pending_value is not None
+    assert pending_value.uri_str == "some-dataset.csv#attribute/new-attribute/in-review"
+
+    pending_value = first(list_of_new_metadata_resources, lambda x: x.label == "D")
+    assert pending_value is not None
+    assert pending_value.uri_str == "some-dataset.csv#attribute/existing-attribute/d"
+
+    pending_value = first(list_of_new_metadata_resources, lambda x: x.label == "E")
+    assert pending_value is not None
+    assert pending_value.uri_str == "some-dataset.csv#attribute/existing-attribute/e"
+
+    pending_value = first(list_of_new_metadata_resources, lambda x: x.label == "F")
+    assert pending_value is not None
+    assert pending_value.uri_str == "some-dataset.csv#attribute/existing-attribute/f"
 
 
 if __name__ == "__main__":
