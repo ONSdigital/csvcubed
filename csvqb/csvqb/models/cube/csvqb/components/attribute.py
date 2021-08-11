@@ -41,7 +41,7 @@ class QbAttribute(ColumnarQbDataStructureDefinition, ABC):
 
 @dataclass
 class QbAttributeLiteral(QbAttribute, ABC):
-    data_type: Optional[str] = field(default="string", repr=False)
+    data_type: str = field(default="string", repr=False)
 
     def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
         accepted_data_types =  ["anyURI", "boolean", "date", "dateTime", "dateTimeStamp", "decimal", "integer", "long",
@@ -55,7 +55,8 @@ class QbAttributeLiteral(QbAttribute, ABC):
 
         if self.data_type not in accepted_data_types:
             errors += [UnsupportedDataTypeError()]
-            return errors
+        
+        return errors
 
 @dataclass
 class ExistingQbAttribute(QbAttribute):

@@ -13,7 +13,7 @@ from rdflib import Literal, URIRef, RDFS
 import sharedmodels.rdf.rdf as rdf
 import sharedmodels.rdf.rdfs as rdfs
 import sharedmodels.rdf.skos as skos
-from sharedmodels.rdf.resource import NewResource, map_resource_to_uri, Resource, MaybeResource, ExistingResource
+from sharedmodels.rdf.resource import NewResource, map_resource_to_uri, Resource, MaybeResource, ExistingResource, ExistingResourceWithLiteral
 from sharedmodels.rdf.triple import Triple, PropertyStatus
 from sharedmodels.rdf.namespaces import QB
 

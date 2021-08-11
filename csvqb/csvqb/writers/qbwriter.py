@@ -14,6 +14,7 @@ from pandas.core.algorithms import isin
 import rdflib
 from sharedmodels.rdf import qb, skos
 from sharedmodels.rdf.resource import (
+    ExistingResourceWithLiteral,
     Resource,
     ExistingResource,
     maybe_existing_resource,
@@ -369,12 +370,16 @@ class QbWriter(WriterBase):
     def _get_qb_attribute_specification(
         self, column_name_uri_safe: str, attribute: QbAttribute
     ) -> qb.AttributeComponentSpecification:
-        if isinstance(attribute, ExistingQbAttribute) or isinstance(attribute, ExistingQbAttributeLiteral):
+        if isinstance(attribute, ExistingQbAttribute):
             component = qb.AttributeComponentSpecification(
                 self._doc_rel_uri(f"component/{column_name_uri_safe}")
             )
-            component.attribute = ExistingResource(attribute.attribute_uri)
-        elif isinstance(attribute, NewQbAttribute) or isinstance(attribute, NewQbAttributeLiteral):
+            if isinstance(attribute, QbAttributeLiteral):
+                component.attribute = ExistingResourceWithLiteral(attribute.attribute_uri)
+                component.attribute.range = ExistingResource(get_data_type_uri_from_str(attribute.data_type))
+            else:
+                component.attribute = ExistingResource(attribute.attribute_uri)
+        elif isinstance(attribute, NewQbAttribute):
             component = qb.AttributeComponentSpecification(
                 self._doc_rel_uri(f"component/{attribute.uri_safe_identifier}")
             )
@@ -389,11 +394,11 @@ class QbWriter(WriterBase):
             component.attribute.source = maybe_existing_resource(attribute.source_uri)
             # todo: Find some way to link the codelist we have to the
             #  ComponentProperty?
+
+            if isinstance(attribute, QbAttributeLiteral):
+                component.attribute.range = ExistingResource(get_data_type_uri_from_str(attribute.data_type))
         else:
             raise Exception(f"Unhandled attribute component type {type(attribute)}.")
-
-        if isinstance(attribute, QbAttributeLiteral):
-            component.attribute.range = get_data_type_uri_from_str(attribute.data_type)
 
         component.componentRequired = attribute.is_required
         component.componentProperties.add(component.attribute)

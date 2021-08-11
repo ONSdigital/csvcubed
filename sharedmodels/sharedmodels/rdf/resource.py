@@ -2,6 +2,7 @@
 Resources
 ---------
 """
+from models.cube.csvqb.components.attribute import ExistingQbAttribute
 import rdflib
 from rdflib import URIRef, Graph, RDFS, RDF
 from rdflib.term import Literal, Identifier
@@ -25,6 +26,10 @@ class ExistingResource(RdfResource):
     """Node - represents an existing node which we don't want to redefine. Just specify its URI."""
     def __init__(self, uri: str):
         RdfResource.__init__(self, uri)
+
+class ExistingResourceWithLiteral(ExistingQbAttribute):
+    """Due to the way we intend to allow for existing resources which are literals, we need a range here."""
+    range: Union[RdfResource, ExistingResource]
 
 
 RdfResourceType = TypeVar("RdfResourceType", covariant=True)
