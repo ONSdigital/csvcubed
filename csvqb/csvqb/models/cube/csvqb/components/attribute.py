@@ -9,7 +9,7 @@ from abc import ABC, abstractmethod
 from csvqb.models.uriidentifiable import UriIdentifiable
 from sharedmodels.rdf.namespaces import QB
 from .datastructuredefinition import ColumnarQbDataStructureDefinition
-from csvqb.models.validationerror import ValidationError
+from csvqb.models.validationerror import ValidationError, UnsupportedDataTypeError
 from csvqb.inputs import PandasDataTypes, pandas_input_to_columnar_str
 
 
@@ -43,7 +43,19 @@ class QbAttribute(ColumnarQbDataStructureDefinition, ABC):
 class QbAttributeLiteral(QbAttribute, ABC):
     data_type: Optional[str] = field(default="string", repr=False)
 
+    def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
+        accepted_data_types =  ["anyURI", "boolean", "date", "dateTime", "dateTimeStamp", "decimal", "integer", "long",
+                                "int", "short", "nonNegativeInteger", "positiveInteger", "unsignedLong", "unsignedInt",
+                                "unsignedShort","nonPositiveInteger", "negativeInteger", "double", "duration",
+                                "dayTimeDuration", "yearMonthDuration", "float", "gDay", "gMonth", "gMonthDay", "gYear",
+                                "gYearMonth", "QName", "string", "normalizedString", "token", "language", "Name",
+                                "NMTOKEN", "time"]
 
+        errors = []
+
+        if self.data_type not in accepted_data_types:
+            errors += [UnsupportedDataTypeError()]
+            return errors
 
 @dataclass
 class ExistingQbAttribute(QbAttribute):
@@ -56,9 +68,17 @@ class ExistingQbAttribute(QbAttribute):
     def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
         return []  # TODO: implement this
 
+
 @dataclass
 class ExistingQbAttributeLiteral(ExistingQbAttribute, QbAttributeLiteral):
-    pass
+
+    def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
+        errors = []
+
+        errors.append(*[ExistingQbAttribute.validate_data(self, data)])
+        errors.append(*[ExistingQbAttributeLiteral.validate_data(self, data)])
+
+        return errors
     
 
 @dataclass
@@ -104,6 +124,13 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
     def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
         return []  # TODO: implement this
 
+
 @dataclass
 class NewQbAttributeLiteral(NewQbAttribute, QbAttributeLiteral):
-    pass
+    def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
+        errors = []
+
+        errors.append(*[NewQbAttribute.validate_data(self, data)])
+        errors.append(*[NewQbAttributeLiteral.validate_data(self, data)])
+
+        return errors

@@ -57,3 +57,22 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     Given a multi-measure QbCube named "Duplicate Qube" with duplicate rows
     When the cube is serialised to CSV-W
     Then csvlint validation of "duplicate-qube.csv-metadata.json" should fail with "duplicate_key"
+
+  Scenario: A QbCube should validate successfully when using certain literal attributes
+    Given a single-measure QbCube named "Some Qube" with new dimensions
+    And for each of the following types:
+    | xml_dtype         | pandas_dtype    |
+    | dateTime          | DatetimeTZDtype |
+    | time              | DatetimeTZDtype |
+    | date              | DatetimeTZDtype |
+    | duration          | PeriodDtype     |
+    | dayTimeDuration   | PeriodDtype     |
+    | yearMonthDuration | PeriodDtype     |
+    | gDay              | IntervalDtype   |
+    | gMonth            | IntervalDtype   |
+    | gMonthDay         | IntervalDtype   |
+    | gYear             | IntervalDtype   |
+    | gYearMonth        | IntervalDtype   |
+    | string            | StringDtype     |
+    | boolean           | BooleanDtype    |
+    | anyURL            | StringDtype     |
