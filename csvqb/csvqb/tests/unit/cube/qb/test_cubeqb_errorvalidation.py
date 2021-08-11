@@ -589,7 +589,8 @@ def test_new_qb_attribute_generation():
 def test_new_attribute_is_literal():
     pass
 
-def test_existing_attribute 
+def test_existing_attribute():
+    pass 
 
 if __name__ == "__main__":
     pytest.main()

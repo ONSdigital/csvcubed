@@ -120,7 +120,7 @@ class AttributeProperty(ComponentProperty):
     e.g. unit of measurement"""
 
     range: Annotated[MaybeResource[rdfs.Class], Triple(RDFS.range, PropertyStatus.optional, map_resource_to_uri)]
-     """range - the `rdfs:range` associated with this attribute property."""
+    """range - the `rdfs:range` associated with this attribute property."""
 
     def __init__(self, uri: str):
         ComponentProperty.__init__(self, uri)
