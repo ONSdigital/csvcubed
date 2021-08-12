@@ -2,7 +2,6 @@
 URI
 ---
 """
-from _typeshed import ReadableBuffer
 import re
 from unidecode import unidecode
 from urllib.parse import urlparse

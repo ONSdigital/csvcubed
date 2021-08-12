@@ -41,15 +41,13 @@ class QbAttribute(ColumnarQbDataStructureDefinition, ABC):
 
 @dataclass
 class QbAttributeLiteral(QbAttribute, ABC):
-    data_type: str = field(default="string", repr=False)
+    data_type: str = field(repr=False)
 
     def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
         accepted_data_types =  ["anyURI", "boolean", "date", "dateTime", "dateTimeStamp", "decimal", "integer", "long",
                                 "int", "short", "nonNegativeInteger", "positiveInteger", "unsignedLong", "unsignedInt",
-                                "unsignedShort","nonPositiveInteger", "negativeInteger", "double", "duration",
-                                "dayTimeDuration", "yearMonthDuration", "float", "gDay", "gMonth", "gMonthDay", "gYear",
-                                "gYearMonth", "QName", "string", "normalizedString", "token", "language", "Name",
-                                "NMTOKEN", "time"]
+                                "unsignedShort","nonPositiveInteger", "negativeInteger", "double", "float", "string", 
+                                "language", "time"]
 
         errors = []
 
@@ -77,7 +75,6 @@ class ExistingQbAttributeLiteral(ExistingQbAttribute, QbAttributeLiteral):
         errors = []
 
         errors.append(*[ExistingQbAttribute.validate_data(self, data)])
-        errors.append(*[ExistingQbAttributeLiteral.validate_data(self, data)])
 
         return errors
     
@@ -132,6 +129,5 @@ class NewQbAttributeLiteral(NewQbAttribute, QbAttributeLiteral):
         errors = []
 
         errors.append(*[NewQbAttribute.validate_data(self, data)])
-        errors.append(*[NewQbAttributeLiteral.validate_data(self, data)])
 
         return errors
