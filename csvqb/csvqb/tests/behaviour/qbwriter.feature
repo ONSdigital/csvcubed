@@ -58,6 +58,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     When the cube is serialised to CSV-W
     Then csvlint validation of "duplicate-qube.csv-metadata.json" should fail with "duplicate_key"
 
+  @skip
   Scenario: A QbCube should validate successfully when using certain literal attributes
     Given a single-measure QbCube named "Some Qube" with new dimensions
     And for each of the following types:
