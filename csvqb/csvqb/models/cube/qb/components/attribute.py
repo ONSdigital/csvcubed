@@ -56,9 +56,9 @@ class QbAttribute(ColumnarQbDataStructureDefinition, ArbitraryRdf, ABC):
         """
         Validate that all of the values in :obj`data` are defined in :attr:`new_attribute_values` if values are defined.
         """
-        if len(self.new_attribute_values) > 0:
+        if len(self.new_attribute_values) > 0:  # type: ignore
             expected_values = {
-                av.uri_safe_identifier for av in self.new_attribute_values
+                av.uri_safe_identifier for av in self.new_attribute_values  # type: ignore
             }
             actual_values = {uri_safe(v) for v in set(data.unique().flatten())}
             undefined_values = expected_values - actual_values

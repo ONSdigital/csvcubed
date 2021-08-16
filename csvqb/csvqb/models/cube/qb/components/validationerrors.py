@@ -29,10 +29,10 @@ class UndefinedValuesError(SpecificValidationError):
     undefined_values: Set[str]
 
     def __post_init__(self):
-        unique_values_to_display = (
-            self.undefined_values[:4]
+        unique_values_to_display: str = (
+            f"{list(self.undefined_values)[:4]}..."
             if len(self.undefined_values) > 5
-            else self.undefined_values
+            else str(self.undefined_values)
         )
         self.message = (
             f'Found undefined value(s) for "{self.location}" of {self.component}. '
