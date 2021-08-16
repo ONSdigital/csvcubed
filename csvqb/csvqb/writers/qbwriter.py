@@ -24,6 +24,7 @@ from csvqb.utils.qb.cube import get_columns_of_dsd_type
 from csvqb.utils.dict import rdf_resource_to_json_ld
 from .skoscodelistwriter import SkosCodeListWriter, CODE_LIST_NOTATION_COLUMN_NAME
 from .writerbase import WriterBase
+from ..models.rdf.newattributevalue import NewAttributeValue
 from ..models.rdf.qbdatasetincatalog import QbDataSetInCatalog
 
 
@@ -31,6 +32,7 @@ VIRT_UNIT_COLUMN_NAME = "virt_unit"
 
 
 class QbWriter(WriterBase):
+
     def __init__(self, cube: QbCube):
         self.cube: QbCube = cube
         self.csv_file_name: str = f"{cube.metadata.uri_safe_identifier}.csv"
@@ -399,16 +401,9 @@ class QbWriter(WriterBase):
 
         return component
 
-    def _serialise_attribute_values(self) -> List[NewMetadataResource]:
+    def _serialise_attribute_values(self) -> List[NewAttributeValue]:
         """
-        Serialise Unit and (Attribute Values) alongside qb:DSD in CSV-W#79
-        Using abstract common model...
-
-        1) Iterate through NewQbAttributes, NewQbUnit
-        2) Serialise and add json to RDFS:seeAlso portion of the csvw. 
-
-        "rdfs:seeAlso": rdf_resource_to_json_ld(
-                self._generate_qb_dataset_dsd_definitions()
+        Serialise Attribute Values
         """
         new_attribute_values_list = []
         attribute_columns = get_columns_of_dsd_type(self.cube, QbAttribute)
@@ -418,17 +413,39 @@ class QbWriter(WriterBase):
             else:
                 column_identifier = column.uri_safe_identifier
 
-            for value in column.component.new_attribute_values:
+            for value in column.component.new_attribute_values:  # type: ignore
                 assert isinstance(value, NewQbAttributeValue)
 
                 attribute_value_uri = self._doc_rel_uri(f"attribute/{column_identifier}/{value.uri_safe_identifier}")
-                new_attribute_value_resource = NewMetadataResource(attribute_value_uri)
+                new_attribute_value_resource = NewAttributeValue(attribute_value_uri)
                 new_attribute_value_resource.label = value.label
                 new_attribute_value_resource.comment = value.description
-
+                new_attribute_value_resource.source_uri = maybe_existing_resource(value.source_uri)
+                new_attribute_value_resource.parent_attribute_value_uri = maybe_existing_resource(value.parent_attribute_value_uri)
                 new_attribute_values_list.append(new_attribute_value_resource)
         
         return new_attribute_values_list
+
+    def _serialise_unit(self) -> List[NewAttributeValue]:
+        """
+        Serialise Unit
+        """
+        new_units_list = []
+        unit_columns = get_columns_of_dsd_type(self.cube, QbMultiUnits)
+        for column in unit_columns:
+            for value in column.component.units:  # type: ignore
+                assert isinstance(value, NewQbUnit)
+
+                unit_uri = self._get_unit_uri(value)
+                new_unit_resource = NewAttributeValue(unit_uri)
+                new_unit_resource.label = value.label
+                new_unit_resource.comment = value.description
+                new_unit_resource.source_uri = maybe_existing_resource(value.source_uri)
+                new_unit_resource.parent_attribute_value_uri = maybe_existing_resource(
+                    value.parent_unit_uri)
+                new_units_list.append(new_unit_resource)
+
+        return new_units_list
 
     def _generate_csvqb_column(self, column: CsvColumn) -> Dict[str, Any]:
         csvw_col: Dict[str, Any] = {

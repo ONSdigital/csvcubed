@@ -632,8 +632,8 @@ def test_serialise_new_attribute_values():
             ExistingQbAttribute(
                 "http://example.org/some/existing/attribute",
                 new_attribute_values=[
-                    NewQbAttributeValue("D"),
-                    NewQbAttributeValue("E"),
+                    NewQbAttributeValue("D", description="real value", parent_attribute_value_uri="http://parent-uri"),
+                    NewQbAttributeValue("E", source_uri="http://source-uri"),
                     NewQbAttributeValue("F"),
                 ],
             ),
@@ -644,35 +644,157 @@ def test_serialise_new_attribute_values():
 
     qbwriter = QbWriter(cube)
     list_of_new_metadata_resources = qbwriter._serialise_attribute_values()
-    pending_value = first(
-        list_of_new_metadata_resources, lambda x: x.label == "Pending"
+
+    map_label_to_uri = {
+        "Pending": {
+            "uri": "some-dataset.csv#attribute/new-attribute/pending",
+            "description": None,
+            "parent_attribute_value_uri": None,
+            "source_uri": None
+        },
+        "Final": {
+            "uri": "some-dataset.csv#attribute/new-attribute/final",
+            "description": None,
+            "parent_attribute_value_uri": None,
+            "source_uri": None
+        },
+        "In Review": {
+            "uri": "some-dataset.csv#attribute/new-attribute/in-review",
+            "description": None,
+            "parent_attribute_value_uri": None,
+            "source_uri": None
+        },
+        "D": {
+            "uri": "some-dataset.csv#attribute/existing-attribute/d",
+            "description": "real value",
+            "parent_attribute_value_uri": "http://parent-uri",
+            "source_uri": None
+        },
+        "E": {
+            "uri": "some-dataset.csv#attribute/existing-attribute/e",
+            "description": None,
+            "parent_attribute_value_uri": None,
+            "source_uri": "http://source-uri"
+        },
+        "F": {
+            "uri": "some-dataset.csv#attribute/existing-attribute/f",
+            "description": None,
+            "parent_attribute_value_uri": None,
+            "source_uri": None
+        }
+    }
+
+    for (label, expected_config) in map_label_to_uri.items():
+        new_attribute_value = first(list_of_new_metadata_resources, lambda x: x.label == label)
+        assert new_attribute_value is not None
+        assert new_attribute_value.uri_str == expected_config["uri"]
+        assert new_attribute_value.comment == expected_config["description"]
+
+        assert (expected_config["parent_attribute_value_uri"] is None and new_attribute_value.parent_attribute_value_uri is None) \
+               or str(new_attribute_value.parent_attribute_value_uri.uri) == expected_config["parent_attribute_value_uri"]
+
+        assert (expected_config["source_uri"] is None and new_attribute_value.source_uri is None)\
+               or str(new_attribute_value.source_uri.uri) == expected_config["source_uri"]
+
+
+def test_serialise_unit():
+    """
+    When new units are serialised, a list of new metadata resources should be returned.
+    """
+
+    data = pd.DataFrame(
+        {
+            "Existing Dimension": ["A", "B", "C"],
+            "Value": [2, 2, 2],
+            "New Attribute": ["Pending", "Final", "In Review"],
+            "Units": ["Percent", "People", "People"]
+
+        }
     )
-    assert pending_value is not None
-    assert pending_value.uri_str == "some-dataset.csv#attribute/new-attribute/pending"
-    # assert pending_value.label == "Pending"
 
-    pending_value = first(list_of_new_metadata_resources, lambda x: x.label == "Final")
-    assert pending_value is not None
-    assert pending_value.uri_str == "some-dataset.csv#attribute/new-attribute/final"
+    metadata = CatalogMetadata("Some Dataset")
+    columns = [
+        QbColumn(
+            "Existing Dimension",
+            ExistingQbDimension("https://example.org/dimensions/existing_dimension"),
+        ),
+        QbColumn(
+            "Value",
+            QbSingleMeasureObservationValue(
+                ExistingQbMeasure("http://example.org/existing/measure"),
+                ExistingQbUnit("http://example.org/some/existing/unit"),
+            ),
+        ),
+        QbColumn(
+            "New Attribute",
+            NewQbAttribute.from_data("New Attribute", data["New Attribute"]),
+        ),
+        QbColumn(
+            "Units",
+            QbMultiUnits(
+                [
+                NewQbUnit("Percent", description="unit", parent_unit_uri="http://parent-uri"),
+                NewQbUnit("People", source_uri="http://source-uri")
+                ],
+            ),
+        ),
+    ]
 
-    pending_value = first(
-        list_of_new_metadata_resources, lambda x: x.label == "In Review"
-    )
-    assert pending_value is not None
-    assert pending_value.uri_str == "some-dataset.csv#attribute/new-attribute/in-review"
+    cube = Cube(metadata, data, columns)
 
-    pending_value = first(list_of_new_metadata_resources, lambda x: x.label == "D")
-    assert pending_value is not None
-    assert pending_value.uri_str == "some-dataset.csv#attribute/existing-attribute/d"
+    qbwriter = QbWriter(cube)
+    list_of_new_unit_resources = qbwriter._serialise_unit()
 
-    pending_value = first(list_of_new_metadata_resources, lambda x: x.label == "E")
-    assert pending_value is not None
-    assert pending_value.uri_str == "some-dataset.csv#attribute/existing-attribute/e"
+    mapped_uri = {
+        "Pending": {
+            "uri": "some-dataset.csv#attribute/new-attribute/pending",
+            "description": None,
+            "parent_attribute_value_uri": None,
+            "source_uri": None
+        },
 
-    pending_value = first(list_of_new_metadata_resources, lambda x: x.label == "F")
-    assert pending_value is not None
-    assert pending_value.uri_str == "some-dataset.csv#attribute/existing-attribute/f"
+        "In Review": {
+            "uri": "some-dataset.csv#attribute/new-attribute/in-review",
+            "description": None,
+            "parent_attribute_value_uri": None,
+            "source_uri": None
+        },
+        "Final": {
+            "uri": "some-dataset.csv#attribute/new-attribute/final",
+            "description": None,
+            "parent_attribute_value_uri": None,
+            "source_uri": None
+        },
+        "Percent": {
+            "uri": "some-dataset.csv#unit/percent",
+            "description": "unit",
+            "parent_unit_uri": "http://parent-uri",
+            "source_uri": None
+        },
+        "People": {
+            "uri": "some-dataset.csv#unit/people",
+            "description": None,
+            "parent_unit_uri": None,
+            "source_uri": "http://source-uri"
+        },
+    }
+    for (label, expected_config) in mapped_uri.items():
+        new_attribute_value = first(list_of_new_unit_resources, lambda x: x.label == label)
+        if label in ("Percent", "People"):
+            assert new_attribute_value is not None
+            assert new_attribute_value.uri_str == expected_config["uri"]
+            assert new_attribute_value.comment == expected_config["description"]
+            assert (expected_config["source_uri"] is None and new_attribute_value.source_uri is None) \
+                   or str(new_attribute_value.source_uri.uri) == expected_config["source_uri"]
+            assert (expected_config[
+                        "parent_unit_uri"] is None and new_attribute_value.parent_attribute_value_uri is None) \
+                   or str(new_attribute_value.parent_attribute_value_uri.uri) == expected_config[
+                       "parent_unit_uri"]
+        else:
+            assert new_attribute_value is None
 
 
 if __name__ == "__main__":
     pytest.main()
+
+
