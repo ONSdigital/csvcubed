@@ -33,17 +33,6 @@ class NewQbAttributeValue(UriIdentifiable):
 
 
 @dataclass
-class NewQbAttributeValueLiteral(ABC):
-    value: Union[str, int]
-
-    def get_identifier(self) -> Union[str, int]:
-        return self.value
-
-    def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
-        return []  # TODO: Good luck
-
-
-@dataclass
 class QbAttribute(ColumnarQbDataStructureDefinition, ABC):
     @abstractmethod
     def is_required(self) -> bool:
@@ -160,7 +149,7 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
 
 @dataclass
 class NewQbAttributeLiteral(NewQbAttribute, QbAttributeLiteral):
-    new_attribute_values: List[NewQbAttributeValueLiteral] = field(
+    new_attribute_values: List[NewQbAttributeValue] = field(
         default_factory=list, repr=False
     )
 

@@ -58,27 +58,53 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     When the cube is serialised to CSV-W
     Then csvlint validation of "duplicate-qube.csv-metadata.json" should fail with "duplicate_key"
 
-  @skip
   Scenario: A QbCube with string literal attributes should validate successfully
-    Given a single-measure QbCube named "Qube with string literals" with a "xs:string" attribute
+    Given a single-measure QbCube named "Qube with string literals" with a "string" attribute
     When the cube is serialised to CSV-W
     Then csvlint validation of "qube-with-string-literals.csv-metadata.json" should succeed
     And csv2rdf on all CSV-Ws should succeed
-    And the literals are propertly encoded with "xs:string" when csv2rdf is run
+    And turtle should be written to "output.ttl"
+    And the RDF should contain
+      """
+      <file:/tmp/qube-with-string-literals.csv#obs/uss-cerritos> <file:/tmp/qube-with-string-literals.csv#attribute/first-captain>
+      "William Riker".
+      """
+    And the RDF should contain
+      """
+      <file:/tmp/qube-with-string-literals.csv#obs/uss-titan> <file:/tmp/qube-with-string-literals.csv#attribute/first-captain>
+      "Carol Freeman".
+      """
 
-  @skip
   Scenario: A QbCube with numeric literal attributes should validate successfully
     Given a single-measure QbCube named "Qube with int literals" with a "int" attribute
     When the cube is serialised to CSV-W
     Then csvlint validation of "qube-with-int-literals.csv-metadata.json" should succeed
     And csv2rdf on all CSV-Ws should succeed
-    And turtle should be written to "output.ttl"
-    And the literals are propertly encoded with "xs:int" when csv2rdf is run
+    # And turtle should be written to "output.ttl"
+    And the RDF should contain
+      """
+      <file:/tmp/qube-with-int-literals.csv#obs/uss-cerritos> <file:/tmp/qube-with-int-literals.csv#attribute/reg>
+      "75567"^^<http://www.w3.org/2001/XMLSchema#int>.
+      """
+    And the RDF should contain
+      """
+      <file:/tmp/qube-with-int-literals.csv#obs/uss-titan> <file:/tmp/qube-with-int-literals.csv#attribute/reg>
+      "80102"^^<http://www.w3.org/2001/XMLSchema#int>.
+      """
 
-  @skip
   Scenario: A QbCube with date literal attributes should validate successfully
-    Given a single-measure QbCube named "Qube with date literals" with a "xs:date" attribute
+    Given a single-measure QbCube named "Qube with date literals" with a "date" attribute
     When the cube is serialised to CSV-W
-    Then csvlint validation of "literal-attributes.csv-metadata.json" should succeed
+    Then csvlint validation of "qube-with-date-literals.csv-metadata.json" should succeed
     And csv2rdf on all CSV-Ws should succeed
-    And the literals are propertly encoded with "xs:date" when csv2rdf is run
+    # And turtle should be written to "output.ttl"
+    And the RDF should contain
+      """
+      <file:/tmp/qube-with-date-literals.csv#obs/uss-cerritos> <file:/tmp/qube-with-date-literals.csv#attribute/appeared>
+      "2020-08-06"^^<http://www.w3.org/2001/XMLSchema#date>.
+      """
+    And the RDF should contain
+      """
+      <file:/tmp/qube-with-date-literals.csv#obs/uss-titan> <file:/tmp/qube-with-date-literals.csv#attribute/appeared>
+      "2020-10-08"^^<http://www.w3.org/2001/XMLSchema#date>.
+      """

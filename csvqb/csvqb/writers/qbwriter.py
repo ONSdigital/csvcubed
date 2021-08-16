@@ -441,6 +441,8 @@ class QbWriter(WriterBase):
         if column.output_uri_template is not None:
             # User-specified value overrides our default guess.
             csvw_col["valueUrl"] = column.output_uri_template
+        elif isinstance(column.component, QbAttributeLiteral):
+            pass
         elif default_value_url is not None:
             csvw_col["valueUrl"] = default_value_url
 

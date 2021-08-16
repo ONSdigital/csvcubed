@@ -6,6 +6,7 @@ from behave import Given, When, Then
 from csvqb.models.cube import *
 from csvqb.writers.qbwriter import QbWriter
 from devtools.behave.file import get_context_temp_dir_path
+from sharedmodels.rdf.namespaces import QB
 
 
 def get_standard_catalog_metadata_for_name(name: str) -> CatalogMetadata:
@@ -181,7 +182,13 @@ def step_impl(context):
 @Given('a single-measure QbCube named "{cube_name}" with a "{data_type}" attribute')
 def step_impl(context, cube_name: str, data_type: str):
     data = pd.DataFrame(
-        {"A": ["uss-cerritos", "uss-titan"], "Value": [1, 1], "Reg": [75567, 80102]}
+        {
+            "A": ["uss-cerritos", "uss-titan"],
+            "Value": [1, 1],
+            "Reg": [75567, 80102],
+            "Appeared": ["2020-08-06", "2020-10-08"],
+            "First_Captain": ["William Riker", "Carol Freeman"],
+        }
     )
     dim = QbColumn("A", NewQbDimension.from_data("A Dimension", data["A"]))
     val = QbColumn(
@@ -192,9 +199,26 @@ def step_impl(context, cube_name: str, data_type: str):
     )
     if data_type == "int":
         att = QbColumn("Reg", NewQbAttributeLiteral(data_type="int", label="Reg"),)
-
-    columns = [dim, val, att]
+        sp1 = SuppressedCsvColumn("Appeared")
+        sp2 = SuppressedCsvColumn("First_Captain")
+        columns = [dim, val, att, sp1, sp2]
+    elif data_type == "date":
+        sp1 = SuppressedCsvColumn("Reg")
+        att = QbColumn(
+            "Appeared", NewQbAttributeLiteral(data_type="date", label="Appeared")
+        )
+        sp2 = SuppressedCsvColumn("First_Captain")
+        columns = [dim, val, sp1, att, sp2]
+    elif data_type == "string":
+        sp1 = SuppressedCsvColumn("Reg")
+        sp2 = SuppressedCsvColumn("Appeared")
+        att = QbColumn(
+            "First_Captain",
+            NewQbAttributeLiteral(data_type="string", label="First Captain"),
+        )
+        columns = [dim, val, sp1, sp2, att]
 
     context.cube = Cube(
         get_standard_catalog_metadata_for_name(cube_name), data, columns
     )
+
