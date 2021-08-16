@@ -1,6 +1,6 @@
 """
 Component Validation Errors
------------------
+---------------------------
 
 :obj:`ValidationError <csvqb.models.validationerror.ValidationError>` models specific to :mod:`components`.
 """

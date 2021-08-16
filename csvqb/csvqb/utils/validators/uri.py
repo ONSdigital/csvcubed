@@ -4,6 +4,7 @@ URI
 
 pydantic validators for URIs.
 """
+
 from pydantic import validator
 
 from ..uri import ensure_looks_like_uri
@@ -15,11 +16,11 @@ def validate_uri(attr_name: str) -> classmethod:
 
     example usage:
 
-    ```python
-    class C(PydanticModel):
-        some_uri: str
+    .. code-block:: python
 
-        _some_uri_validator = validate_uri("some_uri")
-    ```
+        class SomeModel(PydanticModel):
+            some_uri: str
+
+            _some_uri_validator = validate_uri("some_uri")
     """
     return validator(attr_name, allow_reuse=True, always=True)(ensure_looks_like_uri)
