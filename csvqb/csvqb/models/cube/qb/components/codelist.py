@@ -13,6 +13,7 @@ from .datastructuredefinition import QbDataStructureDefinition
 from csvqb.models.cube.qb.catalog import CatalogMetadata
 from csvqb.utils.uri import uri_safe, ensure_looks_like_uri
 from csvqb.inputs import PandasDataTypes, pandas_input_to_columnar_str
+from csvqb.models.validationerror import ValidationError
 
 
 @dataclass

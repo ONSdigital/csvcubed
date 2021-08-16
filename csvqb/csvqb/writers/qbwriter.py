@@ -24,10 +24,8 @@ from csvqb.utils.qb.cube import get_columns_of_dsd_type
 from csvqb.utils.dict import rdf_resource_to_json_ld
 from .skoscodelistwriter import SkosCodeListWriter, CODE_LIST_NOTATION_COLUMN_NAME
 from .writerbase import WriterBase
-from ..models.cube.csvqb.components.arbitraryrdf import (
-    RdfSerialisationHint,
-)
-from ..models.rdf.qbdatasetincatalog import QbDataSetInCatalog
+from csvqb.models.cube.qb.components.arbitraryrdf import RdfSerialisationHint
+from csvqb.models.rdf.qbdatasetincatalog import QbDataSetInCatalog
 
 
 VIRT_UNIT_COLUMN_NAME = "virt_unit"
