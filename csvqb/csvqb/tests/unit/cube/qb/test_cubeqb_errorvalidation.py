@@ -54,7 +54,7 @@ def test_single_measure_qb_definition():
     validation_errors = cube.validate()
     validation_errors += validate_qb_component_constraints(cube)
 
-    assert len(validation_errors) == 0
+    assert_num_validation_errors(validation_errors, 0)
 
 
 def test_multi_measure_qb_definition():
@@ -89,7 +89,7 @@ def test_multi_measure_qb_definition():
     validation_errors = cube.validate()
     validation_errors += validate_qb_component_constraints(cube)
 
-    assert len(validation_errors) == 0
+    assert_num_validation_errors(validation_errors, 0)
 
 
 def test_existing_dimension_output_uri_template():
@@ -478,7 +478,11 @@ def test_existing_attribute_output_uri_template_required():
                 "Existing Attribute 2",
                 ExistingQbAttribute(
                     "http://example.org/attributes/example",
-                    new_attribute_values=[NewQbAttributeValue("Some Attribute Value")],
+                    new_attribute_values=[
+                        NewQbAttributeValue("Val4"),
+                        NewQbAttributeValue("Val5"),
+                        NewQbAttributeValue("Val6"),
+                    ],
                 ),
                 # NewQbAttributeValues defined - so output_uri_template is **not** required
             ),
@@ -527,15 +531,17 @@ def test_new_attribute_output_uri_template_required():
             ),
             QbColumn(
                 "New Attribute 1",
-                NewQbAttribute("http://example.org/attributes/example"),
+                NewQbAttribute("Some New Attribute 1"),
                 # No NewQbAttributeValues - so output_uri_template is *required*
             ),
             QbColumn(
                 "New Attribute 2",
                 NewQbAttribute(
-                    "http://example.org/attributes/example",
+                    "Some New Attribute 2",
                     new_attribute_values=[
-                        NewQbAttributeValue("Some New Attribute Value")
+                        NewQbAttributeValue("Val4"),
+                        NewQbAttributeValue("Val5"),
+                        NewQbAttributeValue("Val6"),
                     ],
                 ),
                 # NewQbAttributeValues defined - so output_uri_template is **not** required

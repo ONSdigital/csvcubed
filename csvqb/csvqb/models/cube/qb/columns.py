@@ -32,7 +32,7 @@ class QbColumn(CsvColumn, Generic[QbColumnarDsdType]):
         # but it's good enough for us to ensure values match correctly now.
         column_variable_name = csvw_column_name_safe(self.uri_safe_identifier)
         output_uri_template = (
-            self.output_uri_template or "+{" + column_variable_name + "}"
+            self.output_uri_template or "{+" + column_variable_name + "}"
         )
         return self.component.validate_data(
             pandas_input_to_columnar(data), column_variable_name, output_uri_template

@@ -21,6 +21,11 @@ class UndefinedValuesError(SpecificValidationError):
     """
 
     component: QbDataStructureDefinition
+    """The component where the undefined values were found."""
+
+    location: str
+    """The property or location where the undefined values were found."""
+
     undefined_values: Set[str]
 
     def __post_init__(self):
@@ -30,6 +35,6 @@ class UndefinedValuesError(SpecificValidationError):
             else self.undefined_values
         )
         self.message = (
-            f"Found undefined value(s) against {self.component}. "
+            f'Found undefined value(s) for "{self.location}" of {self.component}. '
             + f"Undefined values: {unique_values_to_display}"
         )

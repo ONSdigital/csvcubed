@@ -3,9 +3,10 @@ Attributes
 ----------
 """
 from dataclasses import dataclass, field
-from typing import Optional, List, Set
+from typing import Optional, List, Set, Any
 from abc import ABC, abstractmethod
 import pandas as pd
+from pydantic import validator
 
 from csvqb.models.uriidentifiable import UriIdentifiable
 from .arbitraryrdf import (
@@ -17,6 +18,7 @@ from .datastructuredefinition import ColumnarQbDataStructureDefinition
 from csvqb.models.validationerror import ValidationError
 from csvqb.inputs import PandasDataTypes, pandas_input_to_columnar_str
 from .validationerrors import UndefinedValuesError
+from csvqb.utils.uri import looks_like_uri, uri_safe
 
 
 @dataclass
@@ -58,11 +60,15 @@ class QbAttribute(ColumnarQbDataStructureDefinition, ArbitraryRdf, ABC):
             expected_values = {
                 av.uri_safe_identifier for av in self.new_attribute_values
             }
-            actual_values = set(data.unique().flatten())
+            actual_values = {uri_safe(v) for v in set(data.unique().flatten())}
             undefined_values = expected_values - actual_values
 
             if len(undefined_values) > 0:
-                return [UndefinedValuesError(self, undefined_values)]
+                return [
+                    UndefinedValuesError(
+                        self, "new attribute value URI", undefined_values
+                    )
+                ]
 
         return []
 
@@ -81,6 +87,11 @@ class ExistingQbAttribute(QbAttribute):
 
     def get_permitted_rdf_fragment_hints(self) -> Set[RdfSerialisationHint]:
         return {RdfSerialisationHint.Component}
+
+    @validator("attribute_uri", always=True)
+    def validate_attribute_uri(cls, value: str):
+        if not looks_like_uri(value):
+            raise ValueError(f"'{value}' does not look like a URI.")
 
     def validate_data(
         self, data: pd.Series, column_csvw_name: str, output_uri_template: str

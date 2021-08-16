@@ -19,7 +19,7 @@ from .dimension import ExistingQbDimension
 from csvqb.models.validationerror import ValidationError
 from csvqb.inputs import PandasDataTypes, pandas_input_to_columnar_str
 from .validationerrors import UndefinedValuesError
-from csvqb.utils.uri import csvw_column_name_safe
+from csvqb.utils.uri import csvw_column_name_safe, uri_safe
 
 
 @dataclass
@@ -77,7 +77,7 @@ class QbMultiMeasureDimension(MultiQbDataStructureDefinition):
         self, data: pd.Series, csvw_column_name: str, output_uri_template: str
     ) -> List[ValidationError]:
         if len(self.measures) > 0:
-            unique_values = set(data.unique().flatten())
+            unique_values = {uri_safe(v) for v in set(data.unique().flatten())}
             unique_expanded_uris = {
                 uritemplate.expand(output_uri_template, {csvw_column_name: s})
                 for s in unique_values
@@ -93,7 +93,7 @@ class QbMultiMeasureDimension(MultiQbDataStructureDefinition):
 
             undefined_uris = unique_expanded_uris - expected_uris
             if len(undefined_uris) > 0:
-                return [UndefinedValuesError(self, undefined_uris)]
+                return [UndefinedValuesError(self, "measure URI", undefined_uris)]
 
         return []
 

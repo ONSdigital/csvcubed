@@ -18,6 +18,7 @@ from .datastructuredefinition import (
 )
 from csvqb.inputs import pandas_input_to_columnar_str, PandasDataTypes
 from .validationerrors import UndefinedValuesError
+from csvqb.utils.uri import uri_safe
 
 
 @dataclass
@@ -74,7 +75,7 @@ class QbMultiUnits(MultiQbDataStructureDefinition):
         self, data: pd.Series, csvw_column_name: str, output_uri_template: str
     ) -> List[ValidationError]:
         if len(self.units) > 0:
-            unique_values = set(data.unique().flatten())
+            unique_values = {uri_safe(v) for v in set(data.unique().flatten())}
             unique_expanded_uris = {
                 uritemplate.expand(output_uri_template, {csvw_column_name: s})
                 for s in unique_values
@@ -90,7 +91,7 @@ class QbMultiUnits(MultiQbDataStructureDefinition):
 
             undefined_uris = unique_expanded_uris - expected_uris
             if len(undefined_uris) > 0:
-                return [UndefinedValuesError(self, undefined_uris)]
+                return [UndefinedValuesError(self, "unit URI", undefined_uris)]
 
         return []
 
