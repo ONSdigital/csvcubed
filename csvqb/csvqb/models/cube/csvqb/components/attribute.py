@@ -3,14 +3,18 @@ Attributes
 ----------
 """
 from dataclasses import dataclass, field
-from typing import Optional, List
+from typing import Optional, List, Union
 from abc import ABC, abstractmethod
 
 from csvqb.models.uriidentifiable import UriIdentifiable
 from sharedmodels.rdf.namespaces import QB
 from .datastructuredefinition import ColumnarQbDataStructureDefinition
 from csvqb.models.validationerror import ValidationError, UnsupportedDataTypeError
-from csvqb.inputs import PandasDataTypes, pandas_input_to_columnar_str
+from csvqb.inputs import (
+    PandasDataTypes,
+    pandas_input_to_columnar_str,
+    pandas_input_to_columnar,
+)
 
 
 @dataclass
@@ -29,6 +33,17 @@ class NewQbAttributeValue(UriIdentifiable):
 
 
 @dataclass
+class NewQbAttributeValueLiteral(ABC):
+    value: Union[str, int]
+
+    def get_identifier(self) -> Union[str, int]:
+        return self.value
+
+    def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
+        return []  # TODO: Good luck
+
+
+@dataclass
 class QbAttribute(ColumnarQbDataStructureDefinition, ABC):
     @abstractmethod
     def is_required(self) -> bool:
@@ -44,17 +59,38 @@ class QbAttributeLiteral(QbAttribute, ABC):
     data_type: str = field(repr=False)
 
     def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
-        accepted_data_types =  ["anyURI", "boolean", "date", "dateTime", "dateTimeStamp", "decimal", "integer", "long",
-                                "int", "short", "nonNegativeInteger", "positiveInteger", "unsignedLong", "unsignedInt",
-                                "unsignedShort","nonPositiveInteger", "negativeInteger", "double", "float", "string", 
-                                "language", "time"]
+        accepted_data_types = [
+            "anyURI",
+            "boolean",
+            "date",
+            "dateTime",
+            "dateTimeStamp",
+            "decimal",
+            "integer",
+            "long",
+            "int",
+            "short",
+            "nonNegativeInteger",
+            "positiveInteger",
+            "unsignedLong",
+            "unsignedInt",
+            "unsignedShort",
+            "nonPositiveInteger",
+            "negativeInteger",
+            "double",
+            "float",
+            "string",
+            "language",
+            "time",
+        ]
 
         errors = []
 
         if self.data_type not in accepted_data_types:
             errors += [UnsupportedDataTypeError()]
-        
+
         return errors
+
 
 @dataclass
 class ExistingQbAttribute(QbAttribute):
@@ -70,14 +106,13 @@ class ExistingQbAttribute(QbAttribute):
 
 @dataclass
 class ExistingQbAttributeLiteral(ExistingQbAttribute, QbAttributeLiteral):
-
     def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
         errors = []
 
         errors.append(*[ExistingQbAttribute.validate_data(self, data)])
 
         return errors
-    
+
 
 @dataclass
 class NewQbAttribute(QbAttribute, UriIdentifiable):
@@ -125,6 +160,10 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
 
 @dataclass
 class NewQbAttributeLiteral(NewQbAttribute, QbAttributeLiteral):
+    new_attribute_values: List[NewQbAttributeValueLiteral] = field(
+        default_factory=list, repr=False
+    )
+
     def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
         errors = []
 

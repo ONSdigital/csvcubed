@@ -21,7 +21,12 @@ from sharedmodels.rdf.resource import (
 )
 
 from csvqb.models.cube import *
-from csvqb.utils.uri import get_last_uri_part, csvw_column_name_safe, looks_like_uri, get_data_type_uri_from_str
+from csvqb.utils.uri import (
+    get_last_uri_part,
+    csvw_column_name_safe,
+    looks_like_uri,
+    get_data_type_uri_from_str,
+)
 from csvqb.utils.qb.cube import get_columns_of_dsd_type
 from csvqb.utils.dict import rdf_resource_to_json_ld
 from .skoscodelistwriter import SkosCodeListWriter, CODE_LIST_NOTATION_COLUMN_NAME
@@ -226,12 +231,7 @@ class QbWriter(WriterBase):
         # column in a cube.
         observation_value_column = observation_value_columns[0]
         data_type = observation_value_column.component.data_type
-        if looks_like_uri(data_type):
-            # is already a full URI
-            return data_type
-        else:
-            # Is not a URI so it should be xsd:`data_type`.
-            return str(rdflib.XSD[data_type])
+        return get_data_type_uri_from_str(data_type)
 
     def _get_qb_units_column_specification(
         self, column_name_uri_safe: str
@@ -375,8 +375,12 @@ class QbWriter(WriterBase):
                 self._doc_rel_uri(f"component/{column_name_uri_safe}")
             )
             if isinstance(attribute, QbAttributeLiteral):
-                component.attribute = ExistingResourceWithLiteral(attribute.attribute_uri)
-                component.attribute.range = ExistingResource(get_data_type_uri_from_str(attribute.data_type))
+                component.attribute = ExistingResourceWithLiteral(
+                    attribute.attribute_uri
+                )
+                component.attribute.range = ExistingResource(
+                    get_data_type_uri_from_str(attribute.data_type)
+                )
             else:
                 component.attribute = ExistingResource(attribute.attribute_uri)
         elif isinstance(attribute, NewQbAttribute):
@@ -396,7 +400,9 @@ class QbWriter(WriterBase):
             #  ComponentProperty?
 
             if isinstance(attribute, QbAttributeLiteral):
-                component.attribute.range = ExistingResource(get_data_type_uri_from_str(attribute.data_type))
+                component.attribute.range = ExistingResource(
+                    get_data_type_uri_from_str(attribute.data_type)
+                )
         else:
             raise Exception(f"Unhandled attribute component type {type(attribute)}.")
 
@@ -438,7 +444,7 @@ class QbWriter(WriterBase):
         elif default_value_url is not None:
             csvw_col["valueUrl"] = default_value_url
 
-        if isinstance(column.component, QbObservationValue): 
+        if isinstance(column.component, QbObservationValue):
             csvw_col["datatype"] = column.component.data_type
         elif isinstance(column.component, QbAttributeLiteral):
             csvw_col["datatype"] = column.component.data_type
@@ -517,8 +523,9 @@ class QbWriter(WriterBase):
     ) -> Tuple[str, Optional[str]]:
         dimension = column.component
         if isinstance(dimension, ExistingQbDimension):
-            return dimension.dimension_uri, self._get_column_uri_template_fragment(
-                column
+            return (
+                dimension.dimension_uri,
+                self._get_column_uri_template_fragment(column),
             )
         elif isinstance(dimension, NewQbDimension):
             local_dimension_uri = self._doc_rel_uri(

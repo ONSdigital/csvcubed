@@ -9,18 +9,18 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should contain
       """
-        <file:/tmp/some-qube.csv#dataset> a <http://www.w3.org/ns/dcat#Dataset>;
-          <http://purl.org/dc/terms/description> "Description"@en;
-          <http://purl.org/dc/terms/license> <http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/>;
-          <http://purl.org/dc/terms/creator> <https://www.gov.uk/government/organisations/office-for-national-statistics>;
-          <http://purl.org/dc/terms/publisher> <https://www.gov.uk/government/organisations/office-for-national-statistics>;
-          <http://purl.org/dc/terms/title> "Some Qube"@en;
-          <http://www.w3.org/2000/01/rdf-schema#comment> "Summary"@en;
-          <http://www.w3.org/2000/01/rdf-schema#label> "Some Qube"@en;
-          <http://www.w3.org/ns/dcat#keyword> "Key word one"@en, "Key word two"@en;
-          <http://www.w3.org/ns/dcat#landingPage> <http://example.org/landing-page>;
-          <http://www.w3.org/ns/dcat#theme> <http://gss-data.org.uk/def/gdp#some-test-theme>;
-          <http://www.w3.org/ns/dcat#contactPoint> <mailto:something@example.org>.
+      <file:/tmp/some-qube.csv#dataset> a <http://www.w3.org/ns/dcat#Dataset>;
+      <http://purl.org/dc/terms/description> "Description"@en;
+      <http://purl.org/dc/terms/license> <http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/>;
+      <http://purl.org/dc/terms/creator> <https://www.gov.uk/government/organisations/office-for-national-statistics>;
+      <http://purl.org/dc/terms/publisher> <https://www.gov.uk/government/organisations/office-for-national-statistics>;
+      <http://purl.org/dc/terms/title> "Some Qube"@en;
+      <http://www.w3.org/2000/01/rdf-schema#comment> "Summary"@en;
+      <http://www.w3.org/2000/01/rdf-schema#label> "Some Qube"@en;
+      <http://www.w3.org/ns/dcat#keyword> "Key word one"@en, "Key word two"@en;
+      <http://www.w3.org/ns/dcat#landingPage> <http://example.org/landing-page>;
+      <http://www.w3.org/ns/dcat#theme> <http://gss-data.org.uk/def/gdp#some-test-theme>;
+      <http://www.w3.org/ns/dcat#contactPoint> <mailto:something@example.org>.
       """
 
   Scenario: A QbCube should validate successfully where foreign key constraints are met.
@@ -51,7 +51,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     Given a multi-measure QbCube named "Duplicate Qube"
     When the cube is serialised to CSV-W
     Then csvlint validation of "duplicate-qube.csv-metadata.json" should succeed
-    # todo: complete me in Issue #65
+  # todo: complete me in Issue #65
 
   Scenario: A multi-measure QbCube with duplicate rows should fail validation
     Given a multi-measure QbCube named "Duplicate Qube" with duplicate rows
@@ -59,21 +59,26 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     Then csvlint validation of "duplicate-qube.csv-metadata.json" should fail with "duplicate_key"
 
   @skip
-  Scenario: A QbCube should validate successfully when using certain literal attributes
-    Given a single-measure QbCube named "Some Qube" with new dimensions
-    And for each of the following types:
-    | xml_dtype         | pandas_dtype    |
-    | dateTime          | DatetimeTZDtype |
-    | time              | DatetimeTZDtype |
-    | date              | DatetimeTZDtype |
-    | duration          | PeriodDtype     |
-    | dayTimeDuration   | PeriodDtype     |
-    | yearMonthDuration | PeriodDtype     |
-    | gDay              | IntervalDtype   |
-    | gMonth            | IntervalDtype   |
-    | gMonthDay         | IntervalDtype   |
-    | gYear             | IntervalDtype   |
-    | gYearMonth        | IntervalDtype   |
-    | string            | StringDtype     |
-    | boolean           | BooleanDtype    |
-    | anyURL            | StringDtype     |
+  Scenario: A QbCube with string literal attributes should validate successfully
+    Given a single-measure QbCube named "Qube with string literals" with a "xs:string" attribute
+    When the cube is serialised to CSV-W
+    Then csvlint validation of "qube-with-string-literals.csv-metadata.json" should succeed
+    And csv2rdf on all CSV-Ws should succeed
+    And the literals are propertly encoded with "xs:string" when csv2rdf is run
+
+  @skip
+  Scenario: A QbCube with numeric literal attributes should validate successfully
+    Given a single-measure QbCube named "Qube with int literals" with a "int" attribute
+    When the cube is serialised to CSV-W
+    Then csvlint validation of "qube-with-int-literals.csv-metadata.json" should succeed
+    And csv2rdf on all CSV-Ws should succeed
+    And turtle should be written to "output.ttl"
+    And the literals are propertly encoded with "xs:int" when csv2rdf is run
+
+  @skip
+  Scenario: A QbCube with date literal attributes should validate successfully
+    Given a single-measure QbCube named "Qube with date literals" with a "xs:date" attribute
+    When the cube is serialised to CSV-W
+    Then csvlint validation of "literal-attributes.csv-metadata.json" should succeed
+    And csv2rdf on all CSV-Ws should succeed
+    And the literals are propertly encoded with "xs:date" when csv2rdf is run
