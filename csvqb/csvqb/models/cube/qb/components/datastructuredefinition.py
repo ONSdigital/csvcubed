@@ -29,7 +29,7 @@ class ColumnarQbDataStructureDefinition(QbDataStructureDefinition, ABC):
 
     @abstractmethod
     def validate_data(
-        self, data: pd.Series, column_title: str, output_uri_template: Optional[str]
+        self, data: pd.Series, column_csvw_name: str, output_uri_template: Optional[str]
     ) -> List[ValidationError]:
         """Validate a columns of data against this component's definition."""
         pass

@@ -74,12 +74,12 @@ class QbMultiMeasureDimension(MultiQbDataStructureDefinition):
         )
 
     def validate_data(
-        self, data: pd.Series, csv_column_name: str, output_uri_template: str
+        self, data: pd.Series, csvw_column_name: str, output_uri_template: str
     ) -> List[ValidationError]:
         if len(self.measures) > 0:
             unique_values = set(data.unique().flatten())
             unique_expanded_uris = {
-                uritemplate.expand(output_uri_template, {csv_column_name: s})
+                uritemplate.expand(output_uri_template, {csvw_column_name: s})
                 for s in unique_values
             }
             expected_uris = set()

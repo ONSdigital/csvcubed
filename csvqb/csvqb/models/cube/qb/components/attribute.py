@@ -83,7 +83,7 @@ class ExistingQbAttribute(QbAttribute):
         return {RdfSerialisationHint.Component}
 
     def validate_data(
-        self, data: pd.Series, column_title: str, output_uri_template: str
+        self, data: pd.Series, column_csvw_name: str, output_uri_template: str
     ) -> List[ValidationError]:
         return self._validate_data_new_attribute_values(data)
 
@@ -141,6 +141,6 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
         )
 
     def validate_data(
-        self, data: pd.Series, column_title: str, output_uri_template: str
+        self, data: pd.Series, column_csvw_name: str, output_uri_template: str
     ) -> List[ValidationError]:
         return self._validate_data_new_attribute_values(data)

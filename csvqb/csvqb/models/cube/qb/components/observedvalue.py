@@ -42,7 +42,7 @@ class QbMultiMeasureObservationValue(QbObservationValue):
     unit: Optional[QbUnit] = None
 
     def validate_data(
-        self, data: pd.Series, column_title: str, output_uri_template: str
+        self, data: pd.Series, column_csvw_name: str, output_uri_template: str
     ) -> List[ValidationError]:
         return []  # TODO: implement this
 
@@ -60,6 +60,6 @@ class QbSingleMeasureObservationValue(QbObservationValue):
     data_type: str = field(default="decimal", repr=False)
 
     def validate_data(
-        self, data: pd.Series, column_title: str, output_uri_template: str
+        self, data: pd.Series, column_csvw_name: str, output_uri_template: str
     ) -> List[ValidationError]:
         return []  # TODO: implement this
