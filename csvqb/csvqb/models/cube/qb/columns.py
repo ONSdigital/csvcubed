@@ -34,7 +34,7 @@ class QbColumn(CsvColumn, Generic[QbColumnarDsdType]):
         output_uri_template = (
             self.output_uri_template or "{+" + column_variable_name + "}"
         )
-        columnar_data = pandas_input_to_columnar(data)
+        columnar_data = pandas_input_to_columnar(data, False)
         assert columnar_data is not None
 
         return self.component.validate_data(
