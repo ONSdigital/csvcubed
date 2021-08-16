@@ -6,7 +6,6 @@ from dataclasses import dataclass, field
 from typing import Optional, List, Set
 from abc import ABC, abstractmethod
 import pandas as pd
-from pydantic import validator
 
 from csvqb.inputs import PandasDataTypes
 from csvqb.models.uriidentifiable import UriIdentifiable
@@ -15,7 +14,7 @@ from .datastructuredefinition import ColumnarQbDataStructureDefinition
 from .codelist import QbCodeList, NewQbCodeList
 from csvqb.models.validationerror import ValidationError
 from ..catalog import CatalogMetadata
-from csvqb.utils.uri import ensure_looks_like_uri
+from csvqb.utils.validators.uri import validate_uri
 
 
 @dataclass
@@ -44,13 +43,9 @@ class ExistingQbDimension(QbDimension):
     def get_default_node_serialisation_hint(self) -> RdfSerialisationHint:
         return RdfSerialisationHint.Component
 
-    _dimension_uri_validator = validator(
-        "dimension_uri", allow_reuse=True, always=True
-    )(ensure_looks_like_uri)
+    _dimension_uri_validator = validate_uri("dimension_uri")
 
-    _range_uri_validator = validator("range_uri", allow_reuse=True, always=True)(
-        ensure_looks_like_uri
-    )
+    _range_uri_validator = validate_uri("range_uri")
 
     def validate_data(
         self, data: pd.Series, column_csvw_name: str, output_uri_template: str

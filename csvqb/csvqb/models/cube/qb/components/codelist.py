@@ -5,13 +5,13 @@ Code Lists
 from dataclasses import dataclass, field
 from typing import Optional, List, Set
 from abc import ABC
-from pydantic import validator
 
 from csvqb.models.uriidentifiable import UriIdentifiable
 from .arbitraryrdf import ArbitraryRdf, RdfSerialisationHint, TripleFragmentBase
 from .datastructuredefinition import QbDataStructureDefinition
 from csvqb.models.cube.qb.catalog import CatalogMetadata
-from csvqb.utils.uri import uri_safe, ensure_looks_like_uri
+from csvqb.utils.uri import uri_safe
+from csvqb.utils.validators.uri import validate_uri
 from csvqb.inputs import PandasDataTypes, pandas_input_to_columnar_str
 from csvqb.models.validationerror import ValidationError
 
@@ -29,9 +29,7 @@ class ExistingQbCodeList(QbCodeList):
 
     concept_scheme_uri: str
 
-    _concept_scheme_uri_validator = validator(
-        "concept_scheme_uri", allow_reuse=True, always=True
-    )(ensure_looks_like_uri)
+    _concept_scheme_uri_validator = validate_uri("concept_scheme_uri")
 
 
 @dataclass(eq=False, unsafe_hash=False)
