@@ -7,6 +7,7 @@ from typing import Optional, List, Set
 from abc import ABC, abstractmethod
 import pandas as pd
 import uritemplate
+from pydantic import validator
 
 from csvqb.models.uriidentifiable import UriIdentifiable
 from csvqb.models.validationerror import ValidationError
@@ -18,7 +19,7 @@ from .datastructuredefinition import (
 )
 from csvqb.inputs import pandas_input_to_columnar_str, PandasDataTypes
 from .validationerrors import UndefinedValuesError
-from csvqb.utils.uri import uri_safe
+from csvqb.utils.uri import uri_safe, ensure_looks_like_uri
 
 
 @dataclass
@@ -32,6 +33,10 @@ class QbUnit(QbDataStructureDefinition, ABC):
 class ExistingQbUnit(QbUnit):
     unit_uri: str
     unit_multiplier: Optional[int] = field(default=None, repr=False)
+
+    _unit_uri_validator = validator("unit_uri", allow_reuse=True, always=True)(
+        ensure_looks_like_uri
+    )
 
 
 @dataclass

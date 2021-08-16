@@ -18,7 +18,7 @@ from .datastructuredefinition import ColumnarQbDataStructureDefinition
 from csvqb.models.validationerror import ValidationError
 from csvqb.inputs import PandasDataTypes, pandas_input_to_columnar_str
 from .validationerrors import UndefinedValuesError
-from csvqb.utils.uri import looks_like_uri, uri_safe
+from csvqb.utils.uri import looks_like_uri, uri_safe, ensure_looks_like_uri
 
 
 @dataclass
@@ -88,10 +88,9 @@ class ExistingQbAttribute(QbAttribute):
     def get_permitted_rdf_fragment_hints(self) -> Set[RdfSerialisationHint]:
         return {RdfSerialisationHint.Component}
 
-    @validator("attribute_uri", always=True)
-    def validate_attribute_uri(cls, value: str):
-        if not looks_like_uri(value):
-            raise ValueError(f"'{value}' does not look like a URI.")
+    _attribute_uri_validator = validator(
+        "attribute_uri", allow_reuse=True, always=True
+    )(ensure_looks_like_uri)
 
     def validate_data(
         self, data: pd.Series, column_csvw_name: str, output_uri_template: str

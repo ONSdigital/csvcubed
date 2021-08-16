@@ -5,9 +5,9 @@ Measures
 from dataclasses import dataclass, field
 from typing import Optional, List, Set
 from abc import ABC
-
 import pandas as pd
 import uritemplate
+from pydantic import validator
 
 from csvqb.models.uriidentifiable import UriIdentifiable
 from .arbitraryrdf import ArbitraryRdf, RdfSerialisationHint, TripleFragmentBase
@@ -19,7 +19,7 @@ from .dimension import ExistingQbDimension
 from csvqb.models.validationerror import ValidationError
 from csvqb.inputs import PandasDataTypes, pandas_input_to_columnar_str
 from .validationerrors import UndefinedValuesError
-from csvqb.utils.uri import csvw_column_name_safe, uri_safe
+from csvqb.utils.uri import csvw_column_name_safe, uri_safe, ensure_looks_like_uri
 
 
 @dataclass
@@ -37,6 +37,10 @@ class ExistingQbMeasure(QbMeasure):
 
     def get_default_node_serialisation_hint(self) -> RdfSerialisationHint:
         return RdfSerialisationHint.Component
+
+    _measure_uri_validator = validator("measure_uri", allow_reuse=True, always=True)(
+        ensure_looks_like_uri
+    )
 
 
 @dataclass

@@ -55,3 +55,13 @@ def looks_like_uri(maybe_uri: str) -> bool:
     """
     parse_result = urlparse(maybe_uri)
     return parse_result.scheme != ""
+
+
+def ensure_looks_like_uri(value: str) -> None:
+    """
+    Ensure that :obj:`value` looks like a URI.
+
+    :raises ValueError: when :obj:`value` does not look like a URI.
+    """
+    if not looks_like_uri(value):
+        raise ValueError(f"'{value}' does not look like a URI.")
