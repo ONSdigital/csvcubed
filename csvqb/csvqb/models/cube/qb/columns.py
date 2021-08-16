@@ -14,12 +14,15 @@ from ...validationerror import ValidationError
 QbColumnarDsdType = TypeVar(
     "QbColumnarDsdType", bound=ColumnarQbDataStructureDefinition, covariant=True
 )
+"""
+An instance of a class which inherits from :obj:`~.components.datastructuredefinition.ColumnarQbDataStructureDefinition`.
+"""
 
 
 @dataclass
 class QbColumn(CsvColumn, Generic[QbColumnarDsdType]):
     """
-    A CSV column and the qb components it relates to.
+    A CSV column and the qb component it relates to.
     """
 
     csv_column_title: str
