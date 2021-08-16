@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from typing import Optional, List, Set
 from abc import ABC, abstractmethod
 import pandas as pd
+import uritemplate
 
 from csvqb.models.uriidentifiable import UriIdentifiable
 from csvqb.models.validationerror import ValidationError
@@ -16,6 +17,7 @@ from .datastructuredefinition import (
     MultiQbDataStructureDefinition,
 )
 from csvqb.inputs import pandas_input_to_columnar_str, PandasDataTypes
+from .validationerrors import UndefinedValuesError
 
 
 @dataclass
@@ -69,10 +71,28 @@ class QbMultiUnits(MultiQbDataStructureDefinition):
         )
 
     def validate_data(
-        self, data: pd.Series, column_title: str, output_uri_template: str
+        self, data: pd.Series, csv_column_name: str, output_uri_template: str
     ) -> List[ValidationError]:
-        # todo: really need to move this check up a level since it may be necessary to consider output_uri_template too.
-        return []  # TODO: implement this
+        if len(self.units) > 0:
+            unique_values = set(data.unique().flatten())
+            unique_expanded_uris = {
+                uritemplate.expand(output_uri_template, {csv_column_name: s})
+                for s in unique_values
+            }
+            expected_uris = set()
+            for unit in self.units:
+                if isinstance(unit, ExistingQbUnit):
+                    expected_uris.add(unit.unit_uri)
+                elif isinstance(unit, NewQbUnit):
+                    expected_uris.add(unit.uri_safe_identifier)
+                else:
+                    raise Exception(f"Unhandled unit type {type(unit)}")
+
+            undefined_uris = unique_expanded_uris - expected_uris
+            if len(undefined_uris) > 0:
+                return [UndefinedValuesError(self, undefined_uris)]
+
+        return []
 
 
 QbUnitAttribute = ExistingQbAttribute(

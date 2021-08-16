@@ -10,11 +10,6 @@ from csvqb.models.cube import (
 from csvqb.models.cube.qb.components.validationerrors import UndefinedValuesError
 from csvqb.tests.unit.test_baseunit import assert_num_validation_errors
 
-"""
-todo: Need to do the mappings which convert the input (label) version into the output uri-safe version of
- measures/units/attributes/dimensions/etc.
-"""
-
 
 def test_known_new_measures_defined():
     """Ensure that we don't get any errors raised when newly defined measures are used."""
