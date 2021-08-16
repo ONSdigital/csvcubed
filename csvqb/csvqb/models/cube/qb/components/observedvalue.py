@@ -2,22 +2,11 @@
 Observed Values
 ---------------
 """
-from typing import Optional, List
-import pandas as pd
-from abc import ABC
-
-
-from .datastructuredefinition import (
-    MultiQbDataStructureDefinition,
-    QbDataStructureDefinition,
-)
-from .measure import QbMeasure, QbMeasureTypeDimension
-from .unit import QbUnit, QbUnitAttribute
 from dataclasses import dataclass, field
 from typing import Optional, List
 from abc import ABC, abstractmethod
+import pandas as pd
 
-from csvqb.inputs import PandasDataTypes
 from .datastructuredefinition import MultiQbDataStructureDefinition
 from .measure import QbMeasure
 from .unit import QbUnit
@@ -52,7 +41,9 @@ class QbMultiMeasureObservationValue(QbObservationValue):
     data_type: str = field(default="decimal", repr=False)
     unit: Optional[QbUnit] = None
 
-    def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
+    def validate_data(
+        self, data: pd.Series, column_title: str, output_uri_template: str
+    ) -> List[ValidationError]:
         return []  # TODO: implement this
 
 
@@ -63,9 +54,12 @@ class QbSingleMeasureObservationValue(QbObservationValue):
 
     N.B. Requires `virt_unit` and `virt_measure` columns to be added to CSV-W metadata
     """
+
     measure: QbMeasure
     unit: Optional[QbUnit] = None
     data_type: str = field(default="decimal", repr=False)
 
-    def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
+    def validate_data(
+        self, data: pd.Series, column_title: str, output_uri_template: str
+    ) -> List[ValidationError]:
         return []  # TODO: implement this

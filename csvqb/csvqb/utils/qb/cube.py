@@ -4,7 +4,7 @@ QbCube
 """
 from typing import List, TypeVar, Type
 
-from csvqb.models.cube.csvqb.validationerrors import (
+from csvqb.models.cube.qb.validationerrors import (
     OutputUriTemplateMissingError,
     MinNumComponentsNotSatisfiedError,
     MaxNumComponentsExceededError,
@@ -15,22 +15,22 @@ from csvqb.models.cube.csvqb.validationerrors import (
 )
 from csvqb.models.validationerror import ValidationError
 from csvqb.models.cube.cube import Cube
-from csvqb.models.cube.csvqb.columns import QbColumn
-from csvqb.models.cube.csvqb.components.dimension import (
+from csvqb.models.cube.qb.columns import QbColumn
+from csvqb.models.cube.qb.components.dimension import (
     QbDimension,
     ExistingQbDimension,
 )
-from csvqb.models.cube.csvqb.components.attribute import (
+from csvqb.models.cube.qb.components.attribute import (
     QbAttribute,
 )
-from csvqb.models.cube.csvqb.components.measure import QbMultiMeasureDimension
-from csvqb.models.cube.csvqb.components.unit import QbMultiUnits
-from csvqb.models.cube.csvqb.components.observedvalue import (
+from csvqb.models.cube.qb.components.measure import QbMultiMeasureDimension
+from csvqb.models.cube.qb.components.unit import QbMultiUnits
+from csvqb.models.cube.qb.components.observedvalue import (
     QbObservationValue,
     QbMultiMeasureObservationValue,
     QbSingleMeasureObservationValue,
 )
-from csvqb.models.cube.csvqb.components.datastructuredefinition import (
+from csvqb.models.cube.qb.components.datastructuredefinition import (
     ColumnarQbDataStructureDefinition,
 )
 
@@ -39,7 +39,7 @@ QbColumnarDsdType = TypeVar(
     "QbColumnarDsdType", bound=ColumnarQbDataStructureDefinition
 )
 """Anything which inherits from :class:`ColumnarQbDataStructureDefinition 
-    <csvqb.models.cube.csvqb.components.datastructuredefinition.ColumnarQbDataStructureDefinition>`."""
+    <csvqb.models.cube.qb.components.datastructuredefinition.ColumnarQbDataStructureDefinition>`."""
 
 
 def get_columns_of_dsd_type(
@@ -48,7 +48,7 @@ def get_columns_of_dsd_type(
     """
     e.g. `get_columns_of_dsd_type(cube, QbDimension)`
 
-    :return: The :class:`QbColumn <csvqb.models.cube.csvqb.columns.QbColumn>` s in :obj:`cube` which have
+    :return: The :class:`QbColumn <csvqb.models.cube.qb.columns.QbColumn>` s in :obj:`cube` which have
         :attr:`components` of the requested type :obj:`t`.
     """
     return [

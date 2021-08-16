@@ -4,7 +4,7 @@ Data Structure Definitions
 """
 from dataclasses import dataclass
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Optional
 import pandas as pd
 
 from csvqb.models.pydanticmodel import PydanticModel
@@ -18,10 +18,7 @@ class QbDataStructureDefinition(PydanticModel, ABC):
     components.
     """
 
-    @abstractmethod
-    def validate_data(self, data: pd.Series) -> List[ValidationError]:
-        """Validate some data against this component's definition."""
-        pass
+    pass
 
 
 @dataclass
@@ -30,7 +27,12 @@ class ColumnarQbDataStructureDefinition(QbDataStructureDefinition, ABC):
     Base class representing Qb Data Structure Definitions which can be directly attached to a `pd.DataFrame` column.
     """
 
-    pass
+    @abstractmethod
+    def validate_data(
+        self, data: pd.Series, column_title: str, output_uri_template: Optional[str]
+    ) -> List[ValidationError]:
+        """Validate a columns of data against this component's definition."""
+        pass
 
 
 @dataclass

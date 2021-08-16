@@ -1,11 +1,11 @@
 from csvqb.inputs import PandasDataTypes
-from csvqb.models.cube.csvqb.components.attribute import NewQbAttributeValue
+from csvqb.models.cube.qb.components.attribute import NewQbAttributeValue
 import pytest
 
 import pandas as pd
 
 from csvqb.models.cube import *
-from csvqb.models.cube.csvqb.validationerrors import (
+from csvqb.models.cube.qb.validationerrors import (
     OutputUriTemplateMissingError,
     MinNumComponentsNotSatisfiedError,
     UnitsNotDefinedError,

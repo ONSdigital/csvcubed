@@ -2,11 +2,11 @@ import pytest
 from copy import deepcopy
 import pandas as pd
 from rdflib import RDFS, Graph, URIRef, Literal
-from sharedmodels.rdf import qb
+from sharedmodels import rdf
 from typing import List
 
 from csvqb.models.cube import *
-from csvqb.models.cube.csvqb.components.arbitraryrdf import (
+from csvqb.models.cube.qb.components.arbitraryrdf import (
     TripleFragment,
     RdfSerialisationHint,
 )
@@ -28,8 +28,8 @@ def _get_standard_cube_for_columns(columns: List[CsvColumn]) -> Cube:
 
 
 def _assert_component_defined(
-    dataset: qb.DataSet, name: str
-) -> qb.ComponentSpecification:
+    dataset: rdf.qb.DataSet, name: str
+) -> rdf.qb.ComponentSpecification:
     component = first(
         dataset.structure.components,
         lambda x: str(x.uri) == f"cube-name.csv#component/{name}",
@@ -39,7 +39,7 @@ def _assert_component_defined(
 
 
 def _assert_component_property_defined(
-    component: qb.ComponentSpecification, property_uri: str
+    component: rdf.qb.ComponentSpecification, property_uri: str
 ) -> None:
     property = first(
         component.componentProperties, lambda x: str(x.uri) == property_uri
@@ -79,7 +79,7 @@ def test_structure_defined():
     assert dataset is not None
 
     assert dataset.structure is not None
-    assert type(dataset.structure) == qb.DataStructureDefinition
+    assert type(dataset.structure) == rdf.qb.DataStructureDefinition
 
     assert dataset.structure.componentProperties is not None
 
@@ -458,10 +458,50 @@ def test_csv_col_definition():
     )
     csv_col = empty_qbwriter._generate_csvqb_column(column)
     assert "suppressOutput" not in csv_col
-    assert "Some Column" == csv_col["titles"]
-    assert "some_column" == csv_col["name"]
-    assert "http://base-uri/dimensions/some-dimension" == csv_col["propertyUrl"]
-    assert "{+some_column}" == csv_col["valueUrl"]
+    assert csv_col["titles"] == "Some Column"
+    assert csv_col["name"] == "some_column"
+    assert csv_col["propertyUrl"] == "http://base-uri/dimensions/some-dimension"
+    assert csv_col["valueUrl"] == "{+some_column}"
+    assert csv_col["required"]
+
+
+def test_csv_col_required():
+    """Test that the :attr:`required` key is set correctly for various different component types."""
+    required_columns = [
+        QbColumn(
+            "Some Dimension",
+            ExistingQbDimension("http://base-uri/dimensions/some-dimension"),
+        ),
+        QbColumn(
+            "Some Required Attribute",
+            NewQbAttribute("Some Attribute", is_required=True),
+        ),
+        QbColumn("Some Multi Units", QbMultiUnits([])),
+        QbColumn("Some Measure Dimension", QbMultiMeasureDimension([])),
+        QbColumn(
+            "Some Obs Val",
+            QbSingleMeasureObservationValue(NewQbMeasure("Some Measure")),
+        ),
+    ]
+
+    optional_columns = [
+        QbColumn(
+            "Some Optional Attribute",
+            NewQbAttribute("Some Attribute", is_required=False),
+        )
+    ]
+
+    for col in required_columns:
+        csv_col = empty_qbwriter._generate_csvqb_column(col)
+        required = csv_col["required"]
+        assert isinstance(required, bool)
+        assert required
+
+    for col in optional_columns:
+        csv_col = empty_qbwriter._generate_csvqb_column(col)
+        required = csv_col["required"]
+        assert isinstance(required, bool)
+        assert not required
 
 
 def test_csv_col_definition_suppressed():

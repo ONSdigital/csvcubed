@@ -8,12 +8,12 @@ from abc import ABC, abstractmethod
 
 import pandas as pd
 
+from csvqb.inputs import PandasDataTypes
 from csvqb.models.uriidentifiable import UriIdentifiable
 from .arbitraryrdf import ArbitraryRdf, RdfSerialisationHint, TripleFragmentBase
 from .datastructuredefinition import ColumnarQbDataStructureDefinition
 from .codelist import QbCodeList, NewQbCodeList
 from csvqb.models.validationerror import ValidationError
-from csvqb.inputs import PandasDataTypes, pandas_input_to_columnar_list
 from ..catalog import CatalogMetadata
 
 
@@ -43,8 +43,11 @@ class ExistingQbDimension(QbDimension):
     def get_default_node_serialisation_hint(self) -> RdfSerialisationHint:
         return RdfSerialisationHint.Component
 
-    def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
-        return []  # TODO: add more validation checks
+    def validate_data(
+        self, data: pd.Series, column_title: str, output_uri_template: str
+    ) -> List[ValidationError]:
+        # No validation possible since we don't have the dimensions' code-list locally.
+        return []
 
 
 @dataclass
@@ -92,14 +95,8 @@ class NewQbDimension(QbDimension, UriIdentifiable):
     def get_identifier(self) -> str:
         return self.label
 
-    def validate_data(self, data: pd.Series) -> List[ValidationError]:
-        # todo: Add more validation checks
-        errors = []
-
-        colmnar_data = pandas_input_to_columnar_list(data)
-        colmnar_data
-
-        if self.code_list is not None:
-            errors += self.code_list.validate_data(data)
-
-        return errors
+    def validate_data(
+        self, data: pd.Series, column_title: str, output_uri_template: str
+    ) -> List[ValidationError]:
+        # Leave csv-lint to do the validation here. It will enforce Foreign Key constraints on code lists.
+        return []

@@ -5,6 +5,7 @@ Attributes
 from dataclasses import dataclass, field
 from typing import Optional, List, Set
 from abc import ABC, abstractmethod
+import pandas as pd
 
 from csvqb.models.uriidentifiable import UriIdentifiable
 from .arbitraryrdf import (
@@ -15,6 +16,7 @@ from .arbitraryrdf import (
 from .datastructuredefinition import ColumnarQbDataStructureDefinition
 from csvqb.models.validationerror import ValidationError
 from csvqb.inputs import PandasDataTypes, pandas_input_to_columnar_str
+from .validationerrors import UndefinedValuesError
 
 
 @dataclass
@@ -35,9 +37,6 @@ class NewQbAttributeValue(UriIdentifiable, ArbitraryRdf):
     def get_identifier(self) -> str:
         return self.label
 
-    def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
-        return []  # TODO: implement this
-
 
 @dataclass
 class QbAttribute(ColumnarQbDataStructureDefinition, ArbitraryRdf, ABC):
@@ -48,6 +47,24 @@ class QbAttribute(ColumnarQbDataStructureDefinition, ArbitraryRdf, ABC):
     @abstractmethod
     def new_attribute_values(self) -> List[NewQbAttributeValue]:
         pass
+
+    def _validate_data_new_attribute_values(
+        self, data: pd.Series
+    ) -> List[ValidationError]:
+        """
+        Validate that all of the values in :obj`data` are defined in :attr:`new_attribute_values` if values are defined.
+        """
+        if len(self.new_attribute_values) > 0:
+            expected_values = {
+                av.uri_safe_identifier for av in self.new_attribute_values
+            }
+            actual_values = set(data.unique().flatten())
+            undefined_values = expected_values - actual_values
+
+            if len(undefined_values) > 0:
+                return [UndefinedValuesError(self, undefined_values)]
+
+        return []
 
 
 @dataclass
@@ -65,8 +82,10 @@ class ExistingQbAttribute(QbAttribute):
     def get_permitted_rdf_fragment_hints(self) -> Set[RdfSerialisationHint]:
         return {RdfSerialisationHint.Component}
 
-    def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
-        return []  # TODO: implement this
+    def validate_data(
+        self, data: pd.Series, column_title: str, output_uri_template: str
+    ) -> List[ValidationError]:
+        return self._validate_data_new_attribute_values(data)
 
 
 @dataclass
@@ -121,5 +140,7 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
             arbitrary_rdf=arbitrary_rdf,
         )
 
-    def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
-        return []  # TODO: implement this
+    def validate_data(
+        self, data: pd.Series, column_title: str, output_uri_template: str
+    ) -> List[ValidationError]:
+        return self._validate_data_new_attribute_values(data)

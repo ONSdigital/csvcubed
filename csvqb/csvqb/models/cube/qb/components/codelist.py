@@ -9,8 +9,7 @@ from abc import ABC
 from csvqb.models.uriidentifiable import UriIdentifiable
 from .arbitraryrdf import ArbitraryRdf, RdfSerialisationHint, TripleFragmentBase
 from .datastructuredefinition import QbDataStructureDefinition
-from csvqb.models.cube.csvqb.catalog import CatalogMetadata
-from csvqb.models.validationerror import ValidationError
+from csvqb.models.cube.qb.catalog import CatalogMetadata
 from csvqb.utils.uri import uri_safe
 from csvqb.inputs import PandasDataTypes, pandas_input_to_columnar_str
 
@@ -27,9 +26,6 @@ class ExistingQbCodeList(QbCodeList):
     """
 
     concept_scheme_uri: str
-
-    def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
-        return []  # TODO: implement this.
 
 
 @dataclass(eq=False, unsafe_hash=False)

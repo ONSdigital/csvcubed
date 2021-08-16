@@ -10,6 +10,7 @@ import re
 from pathlib import Path
 from typing import Tuple, Dict, Any, List, Iterable
 import rdflib
+from sharedmodels import rdf
 from sharedmodels.rdf import qb, skos
 from sharedmodels.rdf.resource import (
     Resource,
@@ -182,7 +183,9 @@ class QbWriter(WriterBase):
 
     def _generate_qb_dataset_dsd_definitions(self) -> QbDataSetInCatalog:
         dataset = self._get_qb_dataset_with_catalog_metadata()
-        dataset.structure = qb.DataStructureDefinition(self._doc_rel_uri("structure"))
+        dataset.structure = rdf.qb.DataStructureDefinition(
+            self._doc_rel_uri("structure")
+        )
         for column in self.cube.columns:
             if isinstance(column, QbColumn):
                 component_specs_for_col = self._get_qb_component_specs_for_col(
@@ -200,7 +203,7 @@ class QbWriter(WriterBase):
 
     def _get_qb_component_specs_for_col(
         self, column_name_uri_safe: str, component: QbDataStructureDefinition
-    ) -> Iterable[qb.ComponentSpecification]:
+    ) -> Iterable[rdf.qb.ComponentSpecification]:
         if isinstance(component, QbDimension):
             return [
                 self._get_qb_dimension_specification(column_name_uri_safe, component)
@@ -235,8 +238,8 @@ class QbWriter(WriterBase):
 
     def _get_qb_units_column_specification(
         self, column_name_uri_safe: str
-    ) -> qb.AttributeComponentSpecification:
-        component = qb.AttributeComponentSpecification(
+    ) -> rdf.qb.AttributeComponentSpecification:
+        component = rdf.qb.AttributeComponentSpecification(
             self._doc_rel_uri(f"component/{column_name_uri_safe}")
         )
         component.componentRequired = True
@@ -249,8 +252,8 @@ class QbWriter(WriterBase):
 
     def _get_qb_obs_val_specifications(
         self, observation_value: QbObservationValue
-    ) -> List[qb.ComponentSpecification]:
-        specs: List[qb.ComponentSpecification] = []
+    ) -> List[rdf.qb.ComponentSpecification]:
+        specs: List[rdf.qb.ComponentSpecification] = []
         unit = observation_value.unit
         if unit is not None:
             unit_uri_safe_identifier = self._get_unit_uri_safe_identifier(unit)
@@ -282,8 +285,8 @@ class QbWriter(WriterBase):
 
     def _get_qb_measure_dimension_specifications(
         self, measure_dimension: QbMultiMeasureDimension
-    ) -> List[qb.MeasureComponentSpecification]:
-        measure_specs: List[qb.MeasureComponentSpecification] = []
+    ) -> List[rdf.qb.MeasureComponentSpecification]:
+        measure_specs: List[rdf.qb.MeasureComponentSpecification] = []
         for measure in measure_dimension.measures:
             measure_specs.append(self._get_qb_measure_component_specification(measure))
 
@@ -291,12 +294,12 @@ class QbWriter(WriterBase):
 
     def _get_qb_measure_component_specification(
         self, measure: QbMeasure
-    ) -> qb.MeasureComponentSpecification:
+    ) -> rdf.qb.MeasureComponentSpecification:
         if isinstance(measure, ExistingQbMeasure):
             component_uri = self._doc_rel_uri(
                 f"component/{get_last_uri_part(measure.measure_uri)}"
             )
-            component = qb.MeasureComponentSpecification(component_uri)
+            component = rdf.qb.MeasureComponentSpecification(component_uri)
             component.measure = ExistingResource(measure.measure_uri)
             component.componentProperties.add(component.measure)
 
@@ -306,10 +309,10 @@ class QbWriter(WriterBase):
 
             return component
         elif isinstance(measure, NewQbMeasure):
-            component = qb.MeasureComponentSpecification(
+            component = rdf.qb.MeasureComponentSpecification(
                 self._doc_rel_uri(f"component/{measure.uri_safe_identifier}")
             )
-            component.measure = qb.MeasureProperty(
+            component.measure = rdf.qb.MeasureProperty(
                 self._doc_rel_uri(f"measure/{measure.uri_safe_identifier}")
             )
             component.measure.label = measure.label
@@ -334,9 +337,9 @@ class QbWriter(WriterBase):
 
     def _get_qb_dimension_specification(
         self, column_name_uri_safe: str, dimension: QbDimension
-    ) -> qb.DimensionComponentSpecification:
+    ) -> rdf.qb.DimensionComponentSpecification:
         if isinstance(dimension, ExistingQbDimension):
-            component = qb.DimensionComponentSpecification(
+            component = rdf.qb.DimensionComponentSpecification(
                 self._doc_rel_uri(f"component/{column_name_uri_safe}")
             )
             component.dimension = ExistingResource(dimension.dimension_uri)
@@ -344,10 +347,10 @@ class QbWriter(WriterBase):
                 {RdfSerialisationHint.Component: component}
             )
         elif isinstance(dimension, NewQbDimension):
-            component = qb.DimensionComponentSpecification(
+            component = rdf.qb.DimensionComponentSpecification(
                 self._doc_rel_uri(f"component/{dimension.uri_safe_identifier}")
             )
-            component.dimension = qb.DimensionProperty(
+            component.dimension = rdf.qb.DimensionProperty(
                 self._doc_rel_uri(f"dimension/{dimension.uri_safe_identifier}")
             )
             component.dimension.label = dimension.label
@@ -390,9 +393,9 @@ class QbWriter(WriterBase):
 
     def _get_qb_attribute_specification(
         self, column_name_uri_safe: str, attribute: QbAttribute
-    ) -> qb.AttributeComponentSpecification:
+    ) -> rdf.qb.AttributeComponentSpecification:
         if isinstance(attribute, ExistingQbAttribute):
-            component = qb.AttributeComponentSpecification(
+            component = rdf.qb.AttributeComponentSpecification(
                 self._doc_rel_uri(f"component/{column_name_uri_safe}")
             )
             component.attribute = ExistingResource(attribute.attribute_uri)
@@ -401,10 +404,10 @@ class QbWriter(WriterBase):
                 {RdfSerialisationHint.Component: component}
             )
         elif isinstance(attribute, NewQbAttribute):
-            component = qb.AttributeComponentSpecification(
+            component = rdf.qb.AttributeComponentSpecification(
                 self._doc_rel_uri(f"component/{attribute.uri_safe_identifier}")
             )
-            component.attribute = qb.AttributeProperty(
+            component.attribute = rdf.qb.AttributeProperty(
                 self._doc_rel_uri(f"attribute/{attribute.uri_safe_identifier}")
             )
             component.attribute.label = attribute.label
@@ -465,6 +468,17 @@ class QbWriter(WriterBase):
 
         if isinstance(column.component, QbObservationValue):
             csvw_col["datatype"] = column.component.data_type
+
+        csvw_col["required"] = (
+            isinstance(column.component, QbDimension)
+            or isinstance(column.component, QbObservationValue)
+            or isinstance(column.component, QbMultiUnits)
+            or isinstance(column.component, QbMultiMeasureDimension)
+            or (
+                isinstance(column.component, QbAttribute)
+                and column.component.is_required
+            )
+        )
 
     def _get_default_property_value_uris_for_multi_units(
         self, column: QbColumn, multi_units: QbMultiUnits

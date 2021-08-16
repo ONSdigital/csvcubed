@@ -30,9 +30,6 @@ class ExistingQbUnit(QbUnit):
     unit_uri: str
     unit_multiplier: Optional[int] = field(default=None, repr=False)
 
-    def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
-        return []  # todo: Add more validation here.
-
 
 @dataclass
 class NewQbUnit(QbUnit, UriIdentifiable, ArbitraryRdf):
@@ -53,9 +50,6 @@ class NewQbUnit(QbUnit, UriIdentifiable, ArbitraryRdf):
     def get_identifier(self) -> str:
         return self.label
 
-    def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
-        return []  # todo: Add more validation here.
-
 
 @dataclass
 class QbMultiUnits(MultiQbDataStructureDefinition):
@@ -74,7 +68,10 @@ class QbMultiUnits(MultiQbDataStructureDefinition):
             [NewQbUnit(u) for u in set(pandas_input_to_columnar_str(data))]
         )
 
-    def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
+    def validate_data(
+        self, data: pd.Series, column_title: str, output_uri_template: str
+    ) -> List[ValidationError]:
+        # todo: really need to move this check up a level since it may be necessary to consider output_uri_template too.
         return []  # TODO: implement this
 
 
