@@ -9,6 +9,10 @@ devtools = {editable = true,path = "./../devtools"}
 [packages]
 rdflib = "*"
 sharedmodels = {editable = true,path = "."}
+unidecode = "*"
 
 [requires]
 python_version = "3.9"
+
+[pipenv]
+allow_prereleases = true
