@@ -706,7 +706,6 @@ def test_serialise_unit():
         {
             "Existing Dimension": ["A", "B", "C"],
             "Value": [2, 2, 2],
-            "New Attribute": ["Pending", "Final", "In Review"],
             "Units": ["Percent", "People", "People"]
 
         }
@@ -726,10 +725,6 @@ def test_serialise_unit():
             ),
         ),
         QbColumn(
-            "New Attribute",
-            NewQbAttribute.from_data("New Attribute", data["New Attribute"]),
-        ),
-        QbColumn(
             "Units",
             QbMultiUnits(
                 [
@@ -746,25 +741,6 @@ def test_serialise_unit():
     list_of_new_unit_resources = qbwriter._serialise_unit()
 
     mapped_uri = {
-        "Pending": {
-            "uri": "some-dataset.csv#attribute/new-attribute/pending",
-            "description": None,
-            "parent_attribute_value_uri": None,
-            "source_uri": None
-        },
-
-        "In Review": {
-            "uri": "some-dataset.csv#attribute/new-attribute/in-review",
-            "description": None,
-            "parent_attribute_value_uri": None,
-            "source_uri": None
-        },
-        "Final": {
-            "uri": "some-dataset.csv#attribute/new-attribute/final",
-            "description": None,
-            "parent_attribute_value_uri": None,
-            "source_uri": None
-        },
         "Percent": {
             "uri": "some-dataset.csv#unit/percent",
             "description": "unit",
@@ -780,18 +756,15 @@ def test_serialise_unit():
     }
     for (label, expected_config) in mapped_uri.items():
         new_attribute_value = first(list_of_new_unit_resources, lambda x: x.label == label)
-        if label in ("Percent", "People"):
-            assert new_attribute_value is not None
-            assert new_attribute_value.uri_str == expected_config["uri"]
-            assert new_attribute_value.comment == expected_config["description"]
-            assert (expected_config["source_uri"] is None and new_attribute_value.source_uri is None) \
+        assert new_attribute_value is not None
+        assert new_attribute_value.uri_str == expected_config["uri"]
+        assert new_attribute_value.comment == expected_config["description"]
+        assert (expected_config["source_uri"] is None and new_attribute_value.source_uri is None) \
                    or str(new_attribute_value.source_uri.uri) == expected_config["source_uri"]
-            assert (expected_config[
+        assert (expected_config[
                         "parent_unit_uri"] is None and new_attribute_value.parent_attribute_value_uri is None) \
                    or str(new_attribute_value.parent_attribute_value_uri.uri) == expected_config[
                        "parent_unit_uri"]
-        else:
-            assert new_attribute_value is None
 
 
 if __name__ == "__main__":

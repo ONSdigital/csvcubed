@@ -61,6 +61,9 @@ class QbWriter(WriterBase):
         for x in self._serialise_attribute_values():
             see_also += rdf_resource_to_json_ld(x)
 
+        for x in self._serialise_unit():
+            see_also += rdf_resource_to_json_ld(x)
+
         csvw_metadata = {
             "@context": "http://www.w3.org/ns/csvw",
             "@id": self._doc_rel_uri("dataset"),
