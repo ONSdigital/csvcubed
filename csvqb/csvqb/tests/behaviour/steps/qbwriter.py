@@ -179,8 +179,10 @@ def step_impl(context):
     writer.write(temp_dir)
 
 
-@Given('a single-measure QbCube named "{cube_name}" with a "{data_type}" attribute')
-def step_impl(context, cube_name: str, data_type: str):
+@Given(
+    'a single-measure QbCube named "{cube_name}" with "{type}" "{data_type}" attribute'
+)
+def step_impl(context, cube_name: str, type: str, data_type: str):
     data = pd.DataFrame(
         {
             "A": ["uss-cerritos", "uss-titan"],
@@ -198,24 +200,48 @@ def step_impl(context, cube_name: str, data_type: str):
         ),
     )
     if data_type == "int":
-        att = QbColumn("Reg", NewQbAttributeLiteral(data_type="int", label="Reg"),)
+        if type == "new":
+            att = QbColumn("Reg", NewQbAttributeLiteral(data_type="int", label="Reg"),)
+        else:
+            att = QbColumn(
+                "Reg",
+                ExistingQbAttributeLiteral(
+                    data_type="int", attribute_uri="http://some-uri"
+                ),
+            )
         sp1 = SuppressedCsvColumn("Appeared")
         sp2 = SuppressedCsvColumn("First_Captain")
         columns = [dim, val, att, sp1, sp2]
     elif data_type == "date":
         sp1 = SuppressedCsvColumn("Reg")
-        att = QbColumn(
-            "Appeared", NewQbAttributeLiteral(data_type="date", label="Appeared")
-        )
+        if type == "new":
+            att = QbColumn(
+                "Appeared", NewQbAttributeLiteral(data_type="date", label="Appeared")
+            )
+        else:
+            att = QbColumn(
+                "Appeared",
+                ExistingQbAttributeLiteral(
+                    data_type="date", attribute_uri="http://some-uri"
+                ),
+            )
         sp2 = SuppressedCsvColumn("First_Captain")
         columns = [dim, val, sp1, att, sp2]
     elif data_type == "string":
         sp1 = SuppressedCsvColumn("Reg")
         sp2 = SuppressedCsvColumn("Appeared")
-        att = QbColumn(
-            "First_Captain",
-            NewQbAttributeLiteral(data_type="string", label="First Captain"),
-        )
+        if type == "new":
+            att = QbColumn(
+                "First_Captain",
+                NewQbAttributeLiteral(data_type="string", label="First Captain"),
+            )
+        else:
+            att = QbColumn(
+                "First_Captain",
+                ExistingQbAttributeLiteral(
+                    data_type="string", attribute_uri="http://some-uri"
+                ),
+            )
         columns = [dim, val, sp1, sp2, att]
 
     context.cube = Cube(

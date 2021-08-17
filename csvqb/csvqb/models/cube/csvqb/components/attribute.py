@@ -5,6 +5,8 @@ Attributes
 from dataclasses import dataclass, field
 from typing import Optional, List, Set, Union
 from abc import ABC, abstractmethod
+from pydantic import validator
+
 
 from csvqb.models.uriidentifiable import UriIdentifiable
 from .arbitraryrdf import (
@@ -62,7 +64,8 @@ class QbAttributeLiteral(QbAttribute, ABC):
 
     data_type: str = field(repr=False)
 
-    def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
+    @validator("data_type", pre=True, always=True)
+    def validate_data_type_choices(cls, data_type) -> List[ValidationError]:
         accepted_data_types = [
             "anyURI",
             "boolean",
@@ -88,12 +91,7 @@ class QbAttributeLiteral(QbAttribute, ABC):
             "time",
         ]
 
-        errors = []
-
-        if self.data_type not in accepted_data_types:
-            errors += UnsupportedDataTypeError()
-
-        return errors
+        assert data_type in accepted_data_types
 
 
 @dataclass
@@ -117,6 +115,9 @@ class ExistingQbAttribute(QbAttribute):
 
 @dataclass
 class ExistingQbAttributeLiteral(ExistingQbAttribute, QbAttributeLiteral):
+    new_attribute_values = None
+    arbitrary_rdf = None
+
     def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
         errors = []
 
