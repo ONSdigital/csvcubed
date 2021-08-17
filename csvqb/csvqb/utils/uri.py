@@ -7,6 +7,7 @@ Functions to help when working with URIs.
 import re
 from unidecode import unidecode
 from urllib.parse import urlparse
+import rdflib
 
 
 _multiple_non_word_chars_regex = re.compile(r"[^\w]+")
@@ -55,6 +56,17 @@ def looks_like_uri(maybe_uri: str) -> bool:
     """
     parse_result = urlparse(maybe_uri)
     return parse_result.scheme != ""
+
+
+def get_data_type_uri_from_str(data_type: str) -> str:
+    """
+    Is it a uri? Find out, and return one.
+    """
+    if looks_like_uri(data_type):
+        # It's already a full URI
+        return data_type
+    else:
+        return str(rdflib.XSD[data_type])
 
 
 def ensure_looks_like_uri(value: str) -> None:

@@ -4,6 +4,7 @@ qb
 """
 from typing import Annotated, Union, Set, Optional
 from abc import ABC
+from utils.uri import get_data_type_uri_from_str
 
 import rdflib
 from rdflib import Literal, URIRef, RDFS
@@ -12,7 +13,7 @@ from rdflib import Literal, URIRef, RDFS
 import sharedmodels.rdf.rdf as rdf
 import sharedmodels.rdf.rdfs as rdfs
 import sharedmodels.rdf.skos as skos
-from sharedmodels.rdf.resource import NewResource, map_resource_to_uri, Resource, MaybeResource, ExistingResource
+from sharedmodels.rdf.resource import NewResource, map_resource_to_uri, Resource, MaybeResource, ExistingResource, ExistingResourceWithLiteral
 from sharedmodels.rdf.triple import Triple, PropertyStatus
 from sharedmodels.rdf.namespaces import QB
 
@@ -117,6 +118,9 @@ class ComponentSet(NewResource, ABC):
 class AttributeProperty(ComponentProperty):
     """Attribute property - The class of components which represent attributes of observations in the cube,
     e.g. unit of measurement"""
+
+    range: Annotated[MaybeResource[rdfs.Class], Triple(RDFS.range, PropertyStatus.optional, map_resource_to_uri)]
+    """range - the `rdfs:range` associated with this attribute property."""
 
     def __init__(self, uri: str):
         ComponentProperty.__init__(self, uri)

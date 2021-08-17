@@ -11,20 +11,25 @@ from pathlib import Path
 from typing import Tuple, Dict, Any, List, Iterable
 import rdflib
 from sharedmodels import rdf
-from sharedmodels.rdf import qb, skos
+from sharedmodels.rdf import skos
 from sharedmodels.rdf.resource import (
+    ExistingResourceWithLiteral,
     Resource,
     ExistingResource,
     maybe_existing_resource,
 )
 
 from csvqb.models.cube import *
-from csvqb.utils.uri import get_last_uri_part, csvw_column_name_safe, looks_like_uri
+from csvqb.utils.uri import (
+    get_last_uri_part,
+    csvw_column_name_safe,
+    get_data_type_uri_from_str,
+)
 from csvqb.utils.qb.cube import get_columns_of_dsd_type
 from csvqb.utils.dict import rdf_resource_to_json_ld
 from .skoscodelistwriter import SkosCodeListWriter, CODE_LIST_NOTATION_COLUMN_NAME
 from .writerbase import WriterBase
-from csvqb.models.cube.qb.components.arbitraryrdf import RdfSerialisationHint
+from ..models.cube.qb.components.arbitraryrdf import RdfSerialisationHint
 from csvqb.models.rdf.qbdatasetincatalog import QbDataSetInCatalog
 
 
@@ -227,12 +232,7 @@ class QbWriter(WriterBase):
         # column in a cube.
         observation_value_column = observation_value_columns[0]
         data_type = observation_value_column.component.data_type
-        if looks_like_uri(data_type):
-            # is already a full URI
-            return data_type
-        else:
-            # Is not a URI so it should be xsd:`data_type`.
-            return str(rdflib.XSD[data_type])
+        return get_data_type_uri_from_str(data_type)
 
     def _get_qb_units_column_specification(
         self, column_name_uri_safe: str
@@ -396,7 +396,15 @@ class QbWriter(WriterBase):
             component = rdf.qb.AttributeComponentSpecification(
                 self._doc_rel_uri(f"component/{column_name_uri_safe}")
             )
-            component.attribute = ExistingResource(attribute.attribute_uri)
+            if isinstance(attribute, QbAttributeLiteral):
+                component.attribute = ExistingResourceWithLiteral(
+                    attribute.attribute_uri
+                )
+                component.attribute.range = ExistingResource(
+                    get_data_type_uri_from_str(attribute.data_type)
+                )
+            else:
+                component.attribute = ExistingResource(attribute.attribute_uri)
 
             attribute.copy_arbitrary_triple_fragments_to_resources(
                 {RdfSerialisationHint.Component: component}
@@ -417,6 +425,10 @@ class QbWriter(WriterBase):
             # todo: Find some way to link the codelist we have to the
             #  ComponentProperty?
 
+            if isinstance(attribute, QbAttributeLiteral):
+                component.attribute.range = ExistingResource(
+                    get_data_type_uri_from_str(attribute.data_type)
+                )
             attribute.copy_arbitrary_triple_fragments_to_resources(
                 {
                     RdfSerialisationHint.Component: component,
@@ -461,10 +473,14 @@ class QbWriter(WriterBase):
         if column.output_uri_template is not None:
             # User-specified value overrides our default guess.
             csvw_col["valueUrl"] = column.output_uri_template
+        elif isinstance(column.component, QbAttributeLiteral):
+            pass
         elif default_value_url is not None:
             csvw_col["valueUrl"] = default_value_url
 
         if isinstance(column.component, QbObservationValue):
+            csvw_col["datatype"] = column.component.data_type
+        elif isinstance(column.component, QbAttributeLiteral):
             csvw_col["datatype"] = column.component.data_type
 
         csvw_col["required"] = (
@@ -552,8 +568,9 @@ class QbWriter(WriterBase):
     ) -> Tuple[str, Optional[str]]:
         dimension = column.component
         if isinstance(dimension, ExistingQbDimension):
-            return dimension.dimension_uri, self._get_column_uri_template_fragment(
-                column
+            return (
+                dimension.dimension_uri,
+                self._get_column_uri_template_fragment(column),
             )
         elif isinstance(dimension, NewQbDimension):
             local_dimension_uri = self._doc_rel_uri(

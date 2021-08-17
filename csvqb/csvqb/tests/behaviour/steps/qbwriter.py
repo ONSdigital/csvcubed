@@ -1,10 +1,12 @@
 import pandas as pd
-from behave import Given, When
+from pathlib import Path
+from behave import Given, When, Then
 
 
 from csvqb.models.cube import *
 from csvqb.writers.qbwriter import QbWriter
 from devtools.behave.file import get_context_temp_dir_path
+from sharedmodels.rdf.namespaces import QB
 
 
 def get_standard_catalog_metadata_for_name(name: str) -> CatalogMetadata:
@@ -132,10 +134,7 @@ def step_impl(context, cube_name: str):
         QbColumn(
             "Measure", QbMultiMeasureDimension.new_measures_from_data(data["Measure"])
         ),
-        QbColumn(
-            "Value",
-            QbMultiMeasureObservationValue(unit=NewQbUnit("meters")),
-        ),
+        QbColumn("Value", QbMultiMeasureObservationValue(unit=NewQbUnit("meters")),),
     ]
 
     context.cube = Cube(
@@ -157,10 +156,7 @@ def step_impl(context, cube_name: str):
         QbColumn(
             "Measure", QbMultiMeasureDimension.new_measures_from_data(data["Measure"])
         ),
-        QbColumn(
-            "Value",
-            QbMultiMeasureObservationValue(unit=NewQbUnit("meters")),
-        ),
+        QbColumn("Value", QbMultiMeasureObservationValue(unit=NewQbUnit("meters")),),
     ]
 
     context.cube = Cube(
@@ -168,8 +164,87 @@ def step_impl(context, cube_name: str):
     )
 
 
+@Then('turtle should be written to "{file}"')
+def step_impl(context, file: str):
+    temp_dir = get_context_temp_dir_path(context)
+
+    with open(Path(temp_dir / file), "w") as ttl_file:
+        ttl_file.write(context.turtle)
+
+
 @When("the cube is serialised to CSV-W")
 def step_impl(context):
     writer = QbWriter(context.cube)
     temp_dir = get_context_temp_dir_path(context)
     writer.write(temp_dir)
+
+
+@Given(
+    'a single-measure QbCube named "{cube_name}" with "{type}" "{data_type}" attribute'
+)
+def step_impl(context, cube_name: str, type: str, data_type: str):
+    data = pd.DataFrame(
+        {
+            "A": ["uss-cerritos", "uss-titan"],
+            "Value": [1, 1],
+            "Reg": [75567, 80102],
+            "Appeared": ["2020-08-06", "2020-10-08"],
+            "First_Captain": ["William Riker", "Carol Freeman"],
+        }
+    )
+    dim = QbColumn("A", NewQbDimension.from_data("A Dimension", data["A"]))
+    val = QbColumn(
+        "Value",
+        QbSingleMeasureObservationValue(
+            NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
+        ),
+    )
+    if data_type == "int":
+        if type == "new":
+            att = QbColumn("Reg", NewQbAttributeLiteral(data_type="int", label="Reg"),)
+        else:
+            att = QbColumn(
+                "Reg",
+                ExistingQbAttributeLiteral(
+                    data_type="int", attribute_uri="http://some-uri"
+                ),
+            )
+        sp1 = SuppressedCsvColumn("Appeared")
+        sp2 = SuppressedCsvColumn("First_Captain")
+        columns = [dim, val, att, sp1, sp2]
+    elif data_type == "date":
+        sp1 = SuppressedCsvColumn("Reg")
+        if type == "new":
+            att = QbColumn(
+                "Appeared", NewQbAttributeLiteral(data_type="date", label="Appeared")
+            )
+        else:
+            att = QbColumn(
+                "Appeared",
+                ExistingQbAttributeLiteral(
+                    data_type="date", attribute_uri="http://some-uri"
+                ),
+            )
+        sp2 = SuppressedCsvColumn("First_Captain")
+        columns = [dim, val, sp1, att, sp2]
+    elif data_type == "string":
+        sp1 = SuppressedCsvColumn("Reg")
+        sp2 = SuppressedCsvColumn("Appeared")
+        if type == "new":
+            att = QbColumn(
+                "First_Captain",
+                NewQbAttributeLiteral(data_type="string", label="First Captain"),
+            )
+        else:
+            att = QbColumn(
+                "First_Captain",
+                ExistingQbAttributeLiteral(
+                    data_type="string", attribute_uri="http://some-uri"
+                ),
+            )
+        columns = [dim, val, sp1, sp2, att]
+
+    context.cube = Cube(
+        get_standard_catalog_metadata_for_name(cube_name), data, columns
+    )
+

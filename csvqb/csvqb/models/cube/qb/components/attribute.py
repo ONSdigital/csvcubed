@@ -3,8 +3,9 @@ Attributes
 ----------
 """
 from dataclasses import dataclass, field
-from typing import Optional, List, Set, Any
+from typing import Optional, List, Set, Union, Any
 from abc import ABC, abstractmethod
+from pydantic import validator
 import pandas as pd
 
 from csvqb.models.uriidentifiable import UriIdentifiable
@@ -15,8 +16,13 @@ from .arbitraryrdf import (
 )
 from .datastructuredefinition import ColumnarQbDataStructureDefinition
 from csvqb.models.validationerror import ValidationError
-from csvqb.inputs import PandasDataTypes, pandas_input_to_columnar_str
 from .validationerrors import UndefinedValuesError
+from csvqb.inputs import (
+    PandasDataTypes,
+    pandas_input_to_columnar_str,
+    pandas_input_to_columnar,
+)
+
 from csvqb.utils.uri import looks_like_uri, uri_safe
 from csvqb.utils.validators.uri import validate_uri
 
@@ -73,6 +79,46 @@ class QbAttribute(ColumnarQbDataStructureDefinition, ArbitraryRdf, ABC):
         return []
 
 
+accepted_data_types = {
+    "anyURI",
+    "boolean",
+    "date",
+    "dateTime",
+    "dateTimeStamp",
+    "decimal",
+    "integer",
+    "long",
+    "int",
+    "short",
+    "nonNegativeInteger",
+    "positiveInteger",
+    "unsignedLong",
+    "unsignedInt",
+    "unsignedShort",
+    "nonPositiveInteger",
+    "negativeInteger",
+    "double",
+    "float",
+    "string",
+    "language",
+    "time",
+}
+
+
+@dataclass
+class QbAttributeLiteral(QbAttribute, ABC):
+    """A literal attribute allows for a non-uri-based resource to be referenced in attributes. Acceptable types
+    are numeric, dates, times, and strings.
+    """
+
+    data_type: str = field(repr=False)
+
+    @validator("data_type", pre=True, always=True)
+    def validate_data_type_choices(cls, data_type) -> None:
+        if data_type not in accepted_data_types:
+            raise ValueError(f"Literal type '{data_type}' not supported")
+
+
 @dataclass
 class ExistingQbAttribute(QbAttribute):
     attribute_uri: str
@@ -94,6 +140,18 @@ class ExistingQbAttribute(QbAttribute):
         self, data: pd.Series, column_csvw_name: str, output_uri_template: str
     ) -> List[ValidationError]:
         return self._validate_data_new_attribute_values(data)
+
+
+@dataclass
+class ExistingQbAttributeLiteral(ExistingQbAttribute, QbAttributeLiteral):
+    new_attribute_values = None
+    arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
+
+    def validate_data(
+        self, data: pd.Series, column_csvw_name: str, output_uri_template: str
+    ) -> List[ValidationError]:
+        # csv-validation will check that all literals match the expected data type.
+        return []
 
 
 @dataclass
@@ -152,3 +210,15 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
         self, data: pd.Series, column_csvw_name: str, output_uri_template: str
     ) -> List[ValidationError]:
         return self._validate_data_new_attribute_values(data)
+
+
+@dataclass
+class NewQbAttributeLiteral(NewQbAttribute, QbAttributeLiteral):
+    new_attribute_values = None
+    arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
+
+    def validate_data(
+        self, data: pd.Series, column_csvw_name: str, output_uri_template: str
+    ) -> List[ValidationError]:
+        # csv-validation will check that all literals match the expected data type.
+        return []

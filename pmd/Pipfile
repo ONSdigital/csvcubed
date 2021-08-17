@@ -15,6 +15,7 @@ pandas = "*"
 uritemplate = "*"
 pmd = {editable = true,path = "."}
 sharedmodels = {editable = true,path = "./../sharedmodels"}
+unidecode = "*"
 
 [requires]
 python_version = "3.9"

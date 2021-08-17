@@ -38,6 +38,10 @@ class ExistingResource(RdfResource):
     def __init__(self, uri: str):
         RdfResource.__init__(self, uri)
 
+class ExistingResourceWithLiteral(ExistingResource):
+    """Due to the way we intend to allow for existing resources which are literals, we need a range here."""
+    range: Union[RdfResource, ExistingResource]
+
 
 class InversePredicate(URIRef):
     """An rdflib identifier which represents a predicate where the subject/object are reversed."""

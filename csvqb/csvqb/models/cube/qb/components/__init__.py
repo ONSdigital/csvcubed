@@ -1,8 +1,11 @@
 from .attribute import (
     QbAttribute,
+    QbAttributeLiteral,
     NewQbAttribute,
     ExistingQbAttribute,
     NewQbAttributeValue,
+    NewQbAttributeLiteral,
+    ExistingQbAttributeLiteral,
 )
 from .datastructuredefinition import (
     QbDataStructureDefinition,

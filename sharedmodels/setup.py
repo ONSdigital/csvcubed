@@ -6,6 +6,7 @@ setup(
         "pyparsing==2.4.7",
         "rdflib==5.0.0",
         "six==1.16.0",
+        "unidecode==1.2.0",
     ],
     name="sharedmodels",
     version="0.0.1",

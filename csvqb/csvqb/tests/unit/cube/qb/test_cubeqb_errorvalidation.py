@@ -79,8 +79,7 @@ def test_multi_measure_qb_definition():
         ),
         QbColumn("Value", QbMultiMeasureObservationValue(data_type="number")),
         QbColumn(
-            "Measure",
-            QbMultiMeasureDimension.new_measures_from_data(data["Measure"]),
+            "Measure", QbMultiMeasureDimension.new_measures_from_data(data["Measure"]),
         ),
         QbColumn("Units", QbMultiUnits.new_units_from_data(data["Units"])),
     ]
@@ -194,12 +193,7 @@ def test_no_unit_defined():
     """
     Ensure that when we don't define a unit, we get an error message.
     """
-    data = pd.DataFrame(
-        {
-            "Some Dimension": ["a", "b", "c"],
-            "Value": [1, 2, 3],
-        }
-    )
+    data = pd.DataFrame({"Some Dimension": ["a", "b", "c"], "Value": [1, 2, 3],})
 
     cube = Cube(
         CatalogMetadata("Some Qube"),
@@ -271,11 +265,7 @@ def test_multiple_obs_val_columns():
     We only currently accept the `MeasureDimension` style of multi-measure datasets.
     """
     data = pd.DataFrame(
-        {
-            "Some Dimension": ["a", "b", "c"],
-            "Value1": [3, 2, 1],
-            "Value2": [1, 2, 3],
-        }
+        {"Some Dimension": ["a", "b", "c"], "Value1": [3, 2, 1], "Value2": [1, 2, 3],}
     )
 
     cube = Cube(
@@ -315,12 +305,7 @@ def test_multi_measure_obs_val_without_measure_dimension():
     Ensure that when a user defines a multi-measure observation valuer, we get a warning if they haven't defined a
     measure dimension.
     """
-    data = pd.DataFrame(
-        {
-            "Some Dimension": ["a", "b", "c"],
-            "Value": [1, 2, 3],
-        }
-    )
+    data = pd.DataFrame({"Some Dimension": ["a", "b", "c"], "Value": [1, 2, 3],})
 
     cube = Cube(
         CatalogMetadata("Some Qube"),
@@ -590,6 +575,8 @@ def test_new_qb_attribute_generation():
 
     assert new_value_set == {"Provisional", "Final"}
 
+
+# Literal tests go here
 
 if __name__ == "__main__":
     pytest.main()
