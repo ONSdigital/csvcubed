@@ -183,6 +183,9 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
 
 @dataclass
 class NewQbAttributeLiteral(NewQbAttribute, QbAttributeLiteral):
+    new_attribute_values = None
+    arbitrary_rdf = None
+
     def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
         errors = []
 
