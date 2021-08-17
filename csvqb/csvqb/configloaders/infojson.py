@@ -19,24 +19,24 @@ from sharedmodels.rdf.namespaces import GOV, GDP
 
 
 from csvqb.models.cube.cube import Cube
-from csvqb.models.cube.csvqb.catalog import CatalogMetadata
+from csvqb.models.cube.qb.catalog import CatalogMetadata
 from csvqb.models.cube.columns import CsvColumn, SuppressedCsvColumn
-from csvqb.models.cube.csvqb.columns import QbColumn
-from csvqb.models.cube.csvqb.components.observedvalue import (
+from csvqb.models.cube.qb.columns import QbColumn
+from csvqb.models.cube.qb.components.observedvalue import (
     QbSingleMeasureObservationValue,
     QbMultiMeasureObservationValue,
 )
-from csvqb.models.cube.csvqb.components.dimension import (
+from csvqb.models.cube.qb.components.dimension import (
     NewQbDimension,
     ExistingQbDimension,
 )
-from csvqb.models.cube.csvqb.components.measure import (
+from csvqb.models.cube.qb.components.measure import (
     ExistingQbMeasure,
     QbMultiMeasureDimension,
 )
-from csvqb.models.cube.csvqb.components.attribute import ExistingQbAttribute
-from csvqb.models.cube.csvqb.components.unit import ExistingQbUnit, QbMultiUnits
-from csvqb.models.cube.csvqb.components.codelist import (
+from csvqb.models.cube.qb.components.attribute import ExistingQbAttribute
+from csvqb.models.cube.qb.components.unit import ExistingQbUnit, QbMultiUnits
+from csvqb.models.cube.qb.components.codelist import (
     ExistingQbCodeList,
     NewQbCodeList,
 )

@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from typing import Optional, List, Set
 from abc import ABC, abstractmethod
 import pandas as pd
+import uritemplate
 
 from csvqb.models.uriidentifiable import UriIdentifiable
 from csvqb.models.validationerror import ValidationError
@@ -16,6 +17,9 @@ from .datastructuredefinition import (
     MultiQbDataStructureDefinition,
 )
 from csvqb.inputs import pandas_input_to_columnar_str, PandasDataTypes
+from .validationerrors import UndefinedValuesError
+from csvqb.utils.uri import uri_safe
+from csvqb.utils.validators.uri import validate_uri
 
 
 @dataclass
@@ -30,8 +34,7 @@ class ExistingQbUnit(QbUnit):
     unit_uri: str
     unit_multiplier: Optional[int] = field(default=None, repr=False)
 
-    def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
-        return []  # todo: Add more validation here.
+    _unit_uri_validator = validate_uri("unit_uri")
 
 
 @dataclass
@@ -53,9 +56,6 @@ class NewQbUnit(QbUnit, UriIdentifiable, ArbitraryRdf):
     def get_identifier(self) -> str:
         return self.label
 
-    def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
-        return []  # todo: Add more validation here.
-
 
 @dataclass
 class QbMultiUnits(MultiQbDataStructureDefinition):
@@ -74,8 +74,29 @@ class QbMultiUnits(MultiQbDataStructureDefinition):
             [NewQbUnit(u) for u in set(pandas_input_to_columnar_str(data))]
         )
 
-    def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
-        return []  # TODO: implement this
+    def validate_data(
+        self, data: pd.Series, csvw_column_name: str, output_uri_template: str
+    ) -> List[ValidationError]:
+        if len(self.units) > 0:
+            unique_values = {uri_safe(v) for v in set(data.unique().flatten())}
+            unique_expanded_uris = {
+                uritemplate.expand(output_uri_template, {csvw_column_name: s})
+                for s in unique_values
+            }
+            expected_uris = set()
+            for unit in self.units:
+                if isinstance(unit, ExistingQbUnit):
+                    expected_uris.add(unit.unit_uri)
+                elif isinstance(unit, NewQbUnit):
+                    expected_uris.add(unit.uri_safe_identifier)
+                else:
+                    raise Exception(f"Unhandled unit type {type(unit)}")
+
+            undefined_uris = unique_expanded_uris - expected_uris
+            if len(undefined_uris) > 0:
+                return [UndefinedValuesError(self, "unit URI", undefined_uris)]
+
+        return []
 
 
 QbUnitAttribute = ExistingQbAttribute(

@@ -10,8 +10,8 @@ from pathlib import Path
 from typing import Tuple
 import pandas as pd
 
-from csvqb.models.cube.csvqb.components.arbitraryrdf import RdfSerialisationHint
-from csvqb.models.cube.csvqb.components.codelist import NewQbCodeList
+from csvqb.models.cube.qb.components.arbitraryrdf import RdfSerialisationHint
+from csvqb.models.cube.qb.components.codelist import NewQbCodeList
 from csvqb.utils.dict import rdf_resource_to_json_ld
 from csvqb.models.rdf.conceptschemeincatalog import ConceptSchemeInCatalog
 from csvqb.writers.writerbase import WriterBase

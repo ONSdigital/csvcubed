@@ -5,6 +5,8 @@ Measures
 from dataclasses import dataclass, field
 from typing import Optional, List, Set
 from abc import ABC
+import pandas as pd
+import uritemplate
 
 from csvqb.models.uriidentifiable import UriIdentifiable
 from .arbitraryrdf import ArbitraryRdf, RdfSerialisationHint, TripleFragmentBase
@@ -15,6 +17,9 @@ from .datastructuredefinition import (
 from .dimension import ExistingQbDimension
 from csvqb.models.validationerror import ValidationError
 from csvqb.inputs import PandasDataTypes, pandas_input_to_columnar_str
+from .validationerrors import UndefinedValuesError
+from csvqb.utils.uri import csvw_column_name_safe, uri_safe
+from csvqb.utils.validators.uri import validate_uri
 
 
 @dataclass
@@ -33,8 +38,7 @@ class ExistingQbMeasure(QbMeasure):
     def get_default_node_serialisation_hint(self) -> RdfSerialisationHint:
         return RdfSerialisationHint.Component
 
-    def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
-        return []  # TODO: implement this
+    _measure_uri_validator = validate_uri("measure_uri")
 
 
 @dataclass
@@ -55,9 +59,6 @@ class NewQbMeasure(QbMeasure, UriIdentifiable):
     def get_identifier(self) -> str:
         return self.label
 
-    def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
-        return []  # TODO: implement this
-
 
 @dataclass
 class QbMultiMeasureDimension(MultiQbDataStructureDefinition):
@@ -74,8 +75,29 @@ class QbMultiMeasureDimension(MultiQbDataStructureDefinition):
             [NewQbMeasure(m) for m in sorted(set(columnar_data))]
         )
 
-    def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
-        return []  # TODO: implement this
+    def validate_data(
+        self, data: pd.Series, csvw_column_name: str, output_uri_template: str
+    ) -> List[ValidationError]:
+        if len(self.measures) > 0:
+            unique_values = {uri_safe(v) for v in set(data.unique().flatten())}
+            unique_expanded_uris = {
+                uritemplate.expand(output_uri_template, {csvw_column_name: s})
+                for s in unique_values
+            }
+            expected_uris = set()
+            for measure in self.measures:
+                if isinstance(measure, ExistingQbMeasure):
+                    expected_uris.add(measure.measure_uri)
+                elif isinstance(measure, NewQbMeasure):
+                    expected_uris.add(measure.uri_safe_identifier)
+                else:
+                    raise Exception(f"Unhandled measure type {type(measure)}")
+
+            undefined_uris = unique_expanded_uris - expected_uris
+            if len(undefined_uris) > 0:
+                return [UndefinedValuesError(self, "measure URI", undefined_uris)]
+
+        return []
 
 
 QbMeasureTypeDimension = ExistingQbDimension(

@@ -22,7 +22,7 @@ class PydanticModel(ABC):
     validation until the `validate` method is called.
     """
 
-    class Config(BaseConfig):
+    class _DefaultConfig(BaseConfig):
         """pydantic Configuration - see https://pydantic-docs.helpmanual.io/usage/model_config/"""
 
         extra = "forbid"
@@ -35,7 +35,7 @@ class PydanticModel(ABC):
         if cls not in _map_class_to_pydantic_constructor:
             _map_class_to_pydantic_constructor[cls] = pydantic.dataclasses.dataclass(
                 cls,
-                config=PydanticModel.Config,
+                config=getattr(PydanticModel, "Config", PydanticModel._DefaultConfig),
             )
         return _map_class_to_pydantic_constructor[cls]
 
@@ -79,7 +79,7 @@ class PydanticModel(ABC):
             for field in fields(self):
                 field_value = getattr(validated_model, field.name)
 
-                if not value_is_list_of_or_single_pydantic_dataclass(field_value):
+                if not _value_is_list_of_or_single_pydantic_dataclass(field_value):
                     # Don't copy objects which have been cast to pydantic dataclasses
                     # They will bring their validation functionality with them.
                     setattr(self, field.name, field_value)
@@ -90,14 +90,14 @@ class PydanticModel(ABC):
             return validated_model_or_errors
 
 
-def value_is_list_of_or_single_pydantic_dataclass(value: Any) -> bool:
+def _value_is_list_of_or_single_pydantic_dataclass(value: Any) -> bool:
     """
     Informs the caller whether the given `value` is a pydantic dataclass, or if it is a list of pydantic dataclasses.
     """
     value_is_iterable = isinstance(value, Iterable) and not isinstance(value, str)
     if value_is_iterable:
         # Only copy iterables if all of their items can be copied.
-        return any([value_is_list_of_or_single_pydantic_dataclass(v) for v in value])
+        return any([_value_is_list_of_or_single_pydantic_dataclass(v) for v in value])
     elif isinstance(value, object):
         cls = value.__class__
         return is_dataclass(cls) and (

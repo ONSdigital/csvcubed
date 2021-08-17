@@ -47,5 +47,39 @@ def test_attribute_property_validation():
     )
 
 
+def test_deep_custom_validator():
+    """Testing that the pydantic custom validation functions work, even when doing deep validation."""
+    metadata = CatalogMetadata("Some Qube")
+    data = pd.DataFrame(
+        {
+            "New Dimension": ["a", "b", "c"],
+            "Existing Attribute": ["d", "e", "f"],
+            "Value": [1, 2, 3],
+        }
+    )
+    columns = [
+        QbColumn(
+            "New Dimension",
+            NewQbDimension.from_data("Some New Dimension", data["New Dimension"]),
+        ),
+        QbColumn(
+            "Existing Attribute", ExistingQbAttribute("this-should-not-look-like-a-uri")
+        ),
+        QbColumn(
+            "Value",
+            QbSingleMeasureObservationValue(
+                NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
+            ),
+        ),
+    ]
+
+    cube = Cube(metadata, data, columns)
+    errors = cube.validate()
+    assert_num_validation_errors(errors, 1)
+
+    error = errors[0]
+    assert "does not look like a URI" in error.message
+
+
 if __name__ == "__main__":
     pytest.main()
