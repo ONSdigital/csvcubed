@@ -15,12 +15,14 @@ from .arbitraryrdf import (
     RdfSerialisationHint,
 )
 from .datastructuredefinition import ColumnarQbDataStructureDefinition
-from csvqb.models.validationerror import ValidationError, UnsupportedDataTypeError
+from csvqb.models.validationerror import ValidationError
 from csvqb.inputs import (
     PandasDataTypes,
     pandas_input_to_columnar_str,
     pandas_input_to_columnar,
 )
+
+from csvqb.models.cube.csvqb.components import arbitraryrdf
 
 
 @dataclass
@@ -56,6 +58,32 @@ class QbAttribute(ColumnarQbDataStructureDefinition, ArbitraryRdf, ABC):
         pass
 
 
+accepted_data_types = {
+    "anyURI",
+    "boolean",
+    "date",
+    "dateTime",
+    "dateTimeStamp",
+    "decimal",
+    "integer",
+    "long",
+    "int",
+    "short",
+    "nonNegativeInteger",
+    "positiveInteger",
+    "unsignedLong",
+    "unsignedInt",
+    "unsignedShort",
+    "nonPositiveInteger",
+    "negativeInteger",
+    "double",
+    "float",
+    "string",
+    "language",
+    "time",
+}
+
+
 @dataclass
 class QbAttributeLiteral(QbAttribute, ABC):
     """ A literal attribute allows for a non-uri-based resource to be referenced in attributes. Acceptable types
@@ -65,33 +93,9 @@ class QbAttributeLiteral(QbAttribute, ABC):
     data_type: str = field(repr=False)
 
     @validator("data_type", pre=True, always=True)
-    def validate_data_type_choices(cls, data_type) -> List[ValidationError]:
-        accepted_data_types = [
-            "anyURI",
-            "boolean",
-            "date",
-            "dateTime",
-            "dateTimeStamp",
-            "decimal",
-            "integer",
-            "long",
-            "int",
-            "short",
-            "nonNegativeInteger",
-            "positiveInteger",
-            "unsignedLong",
-            "unsignedInt",
-            "unsignedShort",
-            "nonPositiveInteger",
-            "negativeInteger",
-            "double",
-            "float",
-            "string",
-            "language",
-            "time",
-        ]
-
-        assert data_type in accepted_data_types
+    def validate_data_type_choices(cls, data_type) -> None:
+        if data_type not in accepted_data_types:
+            raise ValueError(f"Literal type '{data_type}' not supported")
 
 
 @dataclass
@@ -116,7 +120,7 @@ class ExistingQbAttribute(QbAttribute):
 @dataclass
 class ExistingQbAttributeLiteral(ExistingQbAttribute, QbAttributeLiteral):
     new_attribute_values = None
-    arbitrary_rdf = None
+    arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
 
     def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
         errors = []
@@ -185,7 +189,7 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
 @dataclass
 class NewQbAttributeLiteral(NewQbAttribute, QbAttributeLiteral):
     new_attribute_values = None
-    arbitrary_rdf = None
+    arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
 
     def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
         errors = []
