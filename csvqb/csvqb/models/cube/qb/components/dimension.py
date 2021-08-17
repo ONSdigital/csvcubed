@@ -5,14 +5,16 @@ Dimensions
 from dataclasses import dataclass, field
 from typing import Optional, List, Set
 from abc import ABC, abstractmethod
+import pandas as pd
 
+from csvqb.inputs import PandasDataTypes
 from csvqb.models.uriidentifiable import UriIdentifiable
 from .arbitraryrdf import ArbitraryRdf, RdfSerialisationHint, TripleFragmentBase
 from .datastructuredefinition import ColumnarQbDataStructureDefinition
 from .codelist import QbCodeList, NewQbCodeList
 from csvqb.models.validationerror import ValidationError
-from csvqb.inputs import PandasDataTypes
 from ..catalog import CatalogMetadata
+from csvqb.utils.validators.uri import validate_uri
 
 
 @dataclass
@@ -41,8 +43,15 @@ class ExistingQbDimension(QbDimension):
     def get_default_node_serialisation_hint(self) -> RdfSerialisationHint:
         return RdfSerialisationHint.Component
 
-    def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
-        return []  # TODO: add more validation checks
+    _dimension_uri_validator = validate_uri("dimension_uri")
+
+    _range_uri_validator = validate_uri("range_uri")
+
+    def validate_data(
+        self, data: pd.Series, column_csvw_name: str, output_uri_template: str
+    ) -> List[ValidationError]:
+        # No validation possible since we don't have the dimensions' code-list locally.
+        return []
 
 
 @dataclass
@@ -90,9 +99,8 @@ class NewQbDimension(QbDimension, UriIdentifiable):
     def get_identifier(self) -> str:
         return self.label
 
-    def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
-        # todo: Add more validation checks
-        if self.code_list is not None:
-            return self.code_list.validate_data(data)
-
+    def validate_data(
+        self, data: pd.Series, column_csvw_name: str, output_uri_template: str
+    ) -> List[ValidationError]:
+        # Leave csv-lint to do the validation here. It will enforce Foreign Key constraints on code lists.
         return []

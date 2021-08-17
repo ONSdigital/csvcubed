@@ -10,7 +10,7 @@ from rdflib import RDFS, FOAF
 from rdflib.term import URIRef, Literal
 from sharedmodels.rdf import NewResource, InversePredicate
 
-from csvqb.models.cube.csvqb.components.arbitraryrdf import (
+from csvqb.models.cube.qb.components.arbitraryrdf import (
     ArbitraryRdf,
     TripleFragmentBase,
     RdfSerialisationHint,
