@@ -3,12 +3,13 @@ Units
 -----
 """
 from dataclasses import dataclass, field
-from typing import Optional, List
+from typing import Optional, List, Set
 from abc import ABC, abstractmethod
 import pandas as pd
 
 from csvqb.models.uriidentifiable import UriIdentifiable
 from csvqb.models.validationerror import ValidationError
+from .arbitraryrdf import ArbitraryRdf, TripleFragmentBase, RdfSerialisationHint
 from .attribute import ExistingQbAttribute
 from .datastructuredefinition import (
     QbDataStructureDefinition,
@@ -34,13 +35,20 @@ class ExistingQbUnit(QbUnit):
 
 
 @dataclass
-class NewQbUnit(QbUnit, UriIdentifiable):
+class NewQbUnit(QbUnit, UriIdentifiable, ArbitraryRdf):
     label: str
     description: Optional[str] = field(default=None, repr=False)
     unit_multiplier: Optional[int] = field(default=None, repr=False)
     parent_unit_uri: Optional[str] = field(default=None, repr=False)
     source_uri: Optional[str] = field(default=None, repr=False)
     uri_safe_identifier_override: Optional[str] = field(default=None, repr=False)
+    arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
+
+    def get_permitted_rdf_fragment_hints(self) -> Set[RdfSerialisationHint]:
+        return {RdfSerialisationHint.Unit}
+
+    def get_default_node_serialisation_hint(self) -> RdfSerialisationHint:
+        return RdfSerialisationHint.Unit
 
     def get_identifier(self) -> str:
         return self.label
@@ -54,6 +62,7 @@ class QbMultiUnits(MultiQbDataStructureDefinition):
     """
     Represents multiple units used/defined in a cube, typically used in multi-measure cubes.
     """
+
     units: List[QbUnit]
 
     @staticmethod

@@ -3,11 +3,15 @@ Attributes
 ----------
 """
 from dataclasses import dataclass, field
-from typing import Optional, List, Union
+from typing import Optional, List, Set, Union
 from abc import ABC, abstractmethod
 
 from csvqb.models.uriidentifiable import UriIdentifiable
-from sharedmodels.rdf.namespaces import QB
+from .arbitraryrdf import (
+    ArbitraryRdf,
+    TripleFragmentBase,
+    RdfSerialisationHint,
+)
 from .datastructuredefinition import ColumnarQbDataStructureDefinition
 from csvqb.models.validationerror import ValidationError, UnsupportedDataTypeError
 from csvqb.inputs import (
@@ -18,12 +22,19 @@ from csvqb.inputs import (
 
 
 @dataclass
-class NewQbAttributeValue(UriIdentifiable):
+class NewQbAttributeValue(UriIdentifiable, ArbitraryRdf):
     label: str
     description: Optional[str] = field(default=None, repr=False)
     uri_safe_identifier_override: Optional[str] = field(default=None, repr=False)
     source_uri: Optional[str] = field(default=None, repr=False)
     parent_attribute_value_uri: Optional[str] = field(default=None, repr=False)
+    arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
+
+    def get_default_node_serialisation_hint(self) -> RdfSerialisationHint:
+        return RdfSerialisationHint.AttributeValue
+
+    def get_permitted_rdf_fragment_hints(self) -> Set[RdfSerialisationHint]:
+        return {RdfSerialisationHint.AttributeValue}
 
     def get_identifier(self) -> str:
         return self.label
@@ -33,7 +44,7 @@ class NewQbAttributeValue(UriIdentifiable):
 
 
 @dataclass
-class QbAttribute(ColumnarQbDataStructureDefinition, ABC):
+class QbAttribute(ColumnarQbDataStructureDefinition, ArbitraryRdf, ABC):
     @abstractmethod
     def is_required(self) -> bool:
         pass
@@ -45,6 +56,10 @@ class QbAttribute(ColumnarQbDataStructureDefinition, ABC):
 
 @dataclass
 class QbAttributeLiteral(QbAttribute, ABC):
+    """ A literal attribute allows for a non-uri-based resource to be referenced in attributes. Acceptable types
+    are numeric, dates, times, and strings.
+    """
+
     data_type: str = field(repr=False)
 
     def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
@@ -76,7 +91,7 @@ class QbAttributeLiteral(QbAttribute, ABC):
         errors = []
 
         if self.data_type not in accepted_data_types:
-            errors += [UnsupportedDataTypeError()]
+            errors += UnsupportedDataTypeError()
 
         return errors
 
@@ -88,6 +103,13 @@ class ExistingQbAttribute(QbAttribute):
         default_factory=list, repr=False
     )
     is_required: bool = field(default=False, repr=False)
+    arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
+
+    def get_default_node_serialisation_hint(self) -> RdfSerialisationHint:
+        return RdfSerialisationHint.Component
+
+    def get_permitted_rdf_fragment_hints(self) -> Set[RdfSerialisationHint]:
+        return {RdfSerialisationHint.Component}
 
     def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
         return []  # TODO: implement this
@@ -105,7 +127,7 @@ class ExistingQbAttributeLiteral(ExistingQbAttribute, QbAttributeLiteral):
 
 @dataclass
 class NewQbAttribute(QbAttribute, UriIdentifiable):
-    label: str  # NewQbAttribute(label="Whatever you label is")
+    label: str
     description: Optional[str] = field(default=None, repr=False)
     new_attribute_values: List[NewQbAttributeValue] = field(
         default_factory=list, repr=False
@@ -114,6 +136,16 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
     source_uri: Optional[str] = field(default=None, repr=False)
     is_required: bool = field(default=False, repr=False)
     uri_safe_identifier_override: Optional[str] = field(default=None, repr=False)
+    arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
+
+    def get_default_node_serialisation_hint(self) -> RdfSerialisationHint:
+        return RdfSerialisationHint.Property
+
+    def get_permitted_rdf_fragment_hints(self) -> Set[RdfSerialisationHint]:
+        return {
+            RdfSerialisationHint.Property,
+            RdfSerialisationHint.Component,
+        }
 
     def get_identifier(self) -> str:
         return self.label
@@ -127,6 +159,7 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
         source_uri: Optional[str] = None,
         is_required: bool = False,
         uri_safe_identifier_override: Optional[str] = None,
+        arbitrary_rdf: List[TripleFragmentBase] = list(),
     ) -> "NewQbAttribute":
         columnar_data = pandas_input_to_columnar_str(data)
         new_attribute_values_from_column = [
@@ -141,6 +174,7 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
             source_uri=source_uri,
             is_required=is_required,
             uri_safe_identifier_override=uri_safe_identifier_override,
+            arbitrary_rdf=arbitrary_rdf,
         )
 
     def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
@@ -149,13 +183,9 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
 
 @dataclass
 class NewQbAttributeLiteral(NewQbAttribute, QbAttributeLiteral):
-    new_attribute_values: List[NewQbAttributeValue] = field(
-        default_factory=list, repr=False
-    )
-
     def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
         errors = []
 
-        errors.append(*[NewQbAttribute.validate_data(self, data)])
+        errors.append(NewQbAttribute.validate_data(self, data))
 
         return errors

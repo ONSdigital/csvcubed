@@ -9,7 +9,6 @@ import json
 import re
 from pathlib import Path
 from typing import Optional, Tuple, Dict, Any, List, Iterable, Set
-from attr import attr
 from pandas.core.algorithms import isin
 import rdflib
 from sharedmodels.rdf import qb, skos
@@ -31,6 +30,7 @@ from csvqb.utils.qb.cube import get_columns_of_dsd_type
 from csvqb.utils.dict import rdf_resource_to_json_ld
 from .skoscodelistwriter import SkosCodeListWriter, CODE_LIST_NOTATION_COLUMN_NAME
 from .writerbase import WriterBase
+from ..models.cube.csvqb.components.arbitraryrdf import RdfSerialisationHint
 from ..models.rdf.qbdatasetincatalog import QbDataSetInCatalog
 
 
@@ -185,7 +185,7 @@ class QbWriter(WriterBase):
         self.cube.metadata.configure_dcat_dataset(qb_dataset_with_metadata)
         return qb_dataset_with_metadata
 
-    def _generate_qb_dataset_dsd_definitions(self):
+    def _generate_qb_dataset_dsd_definitions(self) -> QbDataSetInCatalog:
         dataset = self._get_qb_dataset_with_catalog_metadata()
         dataset.structure = qb.DataStructureDefinition(self._doc_rel_uri("structure"))
         for column in self.cube.columns:
@@ -293,14 +293,17 @@ class QbWriter(WriterBase):
         self, measure: QbMeasure
     ) -> qb.MeasureComponentSpecification:
         if isinstance(measure, ExistingQbMeasure):
-            # todo: ideally we would find the measures's label, however, we want to support offline-only working too.
-            #  Offline-first is a good approach.
             component_uri = self._doc_rel_uri(
                 f"component/{get_last_uri_part(measure.measure_uri)}"
             )
             component = qb.MeasureComponentSpecification(component_uri)
             component.measure = ExistingResource(measure.measure_uri)
             component.componentProperties.add(component.measure)
+
+            measure.copy_arbitrary_triple_fragments_to_resources(
+                {RdfSerialisationHint.Component: component}
+            )
+
             return component
         elif isinstance(measure, NewQbMeasure):
             component = qb.MeasureComponentSpecification(
@@ -317,6 +320,14 @@ class QbWriter(WriterBase):
             component.measure.source = maybe_existing_resource(measure.source_uri)
             component.measure.range = ExistingResource(self._get_obs_val_data_type())
             component.componentProperties.add(component.measure)
+
+            measure.copy_arbitrary_triple_fragments_to_resources(
+                {
+                    RdfSerialisationHint.Component: component,
+                    RdfSerialisationHint.Property: component.measure,
+                }
+            )
+
             return component
         else:
             raise Exception(f"Unhandled measure type {type(measure)}")
@@ -329,6 +340,9 @@ class QbWriter(WriterBase):
                 self._doc_rel_uri(f"component/{column_name_uri_safe}")
             )
             component.dimension = ExistingResource(dimension.dimension_uri)
+            dimension.copy_arbitrary_triple_fragments_to_resources(
+                {RdfSerialisationHint.Component: component}
+            )
         elif isinstance(dimension, NewQbDimension):
             component = qb.DimensionComponentSpecification(
                 self._doc_rel_uri(f"component/{dimension.uri_safe_identifier}")
@@ -343,6 +357,13 @@ class QbWriter(WriterBase):
             )
             component.dimension.source = maybe_existing_resource(dimension.source_uri)
             component.dimension.range = ExistingResource(rdflib.SKOS.Concept)
+
+            dimension.copy_arbitrary_triple_fragments_to_resources(
+                {
+                    RdfSerialisationHint.Component: component,
+                    RdfSerialisationHint.Property: component.dimension,
+                }
+            )
 
             if dimension.code_list is not None:
                 component.dimension.code_list = self._get_code_list_resource(
@@ -383,6 +404,10 @@ class QbWriter(WriterBase):
                 )
             else:
                 component.attribute = ExistingResource(attribute.attribute_uri)
+
+            attribute.copy_arbitrary_triple_fragments_to_resources(
+                {RdfSerialisationHint.Component: component}
+            )
         elif isinstance(attribute, NewQbAttribute):
             component = qb.AttributeComponentSpecification(
                 self._doc_rel_uri(f"component/{attribute.uri_safe_identifier}")
@@ -403,6 +428,12 @@ class QbWriter(WriterBase):
                 component.attribute.range = ExistingResource(
                     get_data_type_uri_from_str(attribute.data_type)
                 )
+            attribute.copy_arbitrary_triple_fragments_to_resources(
+                {
+                    RdfSerialisationHint.Component: component,
+                    RdfSerialisationHint.Property: component.attribute,
+                }
+            )
         else:
             raise Exception(f"Unhandled attribute component type {type(attribute)}.")
 

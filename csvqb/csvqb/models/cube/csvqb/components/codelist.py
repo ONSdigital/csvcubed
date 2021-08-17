@@ -3,10 +3,11 @@ Code Lists
 ----------
 """
 from dataclasses import dataclass, field
-from typing import Optional, List
+from typing import Optional, List, Set
 from abc import ABC
 
 from csvqb.models.uriidentifiable import UriIdentifiable
+from .arbitraryrdf import ArbitraryRdf, RdfSerialisationHint, TripleFragmentBase
 from .datastructuredefinition import QbDataStructureDefinition
 from csvqb.models.cube.csvqb.catalog import CatalogMetadata
 from csvqb.models.validationerror import ValidationError
@@ -24,6 +25,7 @@ class ExistingQbCodeList(QbCodeList):
     """
     Contains metadata necessary to link a dimension to an existing skos:ConceptScheme.
     """
+
     concept_scheme_uri: str
 
     def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
@@ -32,6 +34,7 @@ class ExistingQbCodeList(QbCodeList):
 
 @dataclass(eq=False, unsafe_hash=False)
 class NewQbConcept(UriIdentifiable):
+
     label: str
     code: str = field(default="")
     parent_code: Optional[str] = field(default=None, repr=False)
@@ -54,13 +57,15 @@ class NewQbConcept(UriIdentifiable):
 
 
 @dataclass
-class NewQbCodeList(QbCodeList):
+class NewQbCodeList(QbCodeList, ArbitraryRdf):
     """
     Contains the metadata necessary to create a new skos:ConceptScheme which is local to a dataset.
     """
+
     metadata: CatalogMetadata
     concepts: List[NewQbConcept]
     variant_of_uris: List[str] = field(default_factory=list)
+    arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
 
     @staticmethod
     def from_data(
@@ -71,6 +76,15 @@ class NewQbCodeList(QbCodeList):
         columnar_data = pandas_input_to_columnar_str(data)
         concepts = [NewQbConcept(c) for c in sorted(set(columnar_data))]
         return NewQbCodeList(metadata, concepts, variant_of_uris=variant_of_uris)
+
+    def get_permitted_rdf_fragment_hints(self) -> Set[RdfSerialisationHint]:
+        return {
+            RdfSerialisationHint.CatalogDataset,
+            RdfSerialisationHint.ConceptScheme,
+        }
+
+    def get_default_node_serialisation_hint(self) -> RdfSerialisationHint:
+        return RdfSerialisationHint.ConceptScheme
 
     def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
         return []  # TODO: implement this.
