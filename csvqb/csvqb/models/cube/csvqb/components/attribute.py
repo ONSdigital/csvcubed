@@ -120,7 +120,7 @@ class ExistingQbAttributeLiteral(ExistingQbAttribute, QbAttributeLiteral):
     def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
         errors = []
 
-        errors.append(*[ExistingQbAttribute.validate_data(self, data)])
+        errors.append(ExistingQbAttribute.validate_data(self, data))
 
         return errors
 

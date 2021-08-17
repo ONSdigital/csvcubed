@@ -19,10 +19,11 @@ class SpecificValidationError(ValidationError, ABC):
 
     message: str = field(init=False)
 
+
 class UnsupportedDataTypeError(SpecificValidationError):
     """Validation class where end user has opted to use a class we will not support."""
 
     data_type: str
 
     def __post_init__(self):
-        self.message = f"Literate type '{self.data_type}' not supported"
+        self.message = f"Literal type '{self.data_type}' not supported"
