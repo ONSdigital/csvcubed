@@ -738,7 +738,7 @@ def test_serialise_unit():
     cube = Cube(metadata, data, columns)
 
     qbwriter = QbWriter(cube)
-    list_of_new_unit_resources = qbwriter._serialise_unit()
+    list_of_new_unit_resources = qbwriter._serialise_units()
 
     mapped_uri = {
         "Percent": {
@@ -762,8 +762,8 @@ def test_serialise_unit():
         assert (expected_config["source_uri"] is None and new_attribute_value.source_uri is None) \
                    or str(new_attribute_value.source_uri.uri) == expected_config["source_uri"]
         assert (expected_config[
-                        "parent_unit_uri"] is None and new_attribute_value.parent_attribute_value_uri is None) \
-                   or str(new_attribute_value.parent_attribute_value_uri.uri) == expected_config[
+                        "parent_unit_uri"] is None and new_attribute_value.parent_unit_uri is None) \
+                   or str(new_attribute_value.parent_unit_uri.uri) == expected_config[
                        "parent_unit_uri"]
 
 

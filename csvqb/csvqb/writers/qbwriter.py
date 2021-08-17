@@ -25,6 +25,7 @@ from csvqb.utils.dict import rdf_resource_to_json_ld
 from .skoscodelistwriter import SkosCodeListWriter, CODE_LIST_NOTATION_COLUMN_NAME
 from .writerbase import WriterBase
 from ..models.rdf.newattributevalue import NewAttributeValue
+from ..models.rdf.newunit import NewUnit
 from ..models.rdf.qbdatasetincatalog import QbDataSetInCatalog
 
 
@@ -58,17 +59,16 @@ class QbWriter(WriterBase):
         # todo: Unit multiplier functionality hasn't been output.
 
         see_also = rdf_resource_to_json_ld(self._generate_qb_dataset_dsd_definitions())
-        for x in self._serialise_attribute_values():
-            see_also += rdf_resource_to_json_ld(x)
+        for attribute_value in self._serialise_attribute_values():
+            see_also += rdf_resource_to_json_ld(attribute_value)
 
-        for x in self._serialise_unit():
-            see_also += rdf_resource_to_json_ld(x)
+        for unit in self._serialise_units():
+            see_also += rdf_resource_to_json_ld(unit)
 
         csvw_metadata = {
             "@context": "http://www.w3.org/ns/csvw",
             "@id": self._doc_rel_uri("dataset"),
             "tables": tables,
-            # "rdfs:seeAlso": [dataset, components, dimensions, properties, etc, units-definitions, attribute-definitions, attribute-value-definitions]
             "rdfs:seeAlso": see_also,
         }
 
@@ -429,24 +429,33 @@ class QbWriter(WriterBase):
         
         return new_attribute_values_list
 
-    def _serialise_unit(self) -> List[NewAttributeValue]:
+    def _serialise_units(self) -> List[NewUnit]:
         """
         Serialise Unit
         """
         new_units_list = []
-        unit_columns = get_columns_of_dsd_type(self.cube, QbMultiUnits)
-        for column in unit_columns:
-            for value in column.component.units:  # type: ignore
-                assert isinstance(value, NewQbUnit)
+        units: List[QbUnit] = [
+            u
+            for col in get_columns_of_dsd_type(self.cube, QbMultiUnits)
+            for u in col.component.units # type: ignore
+        ]
 
-                unit_uri = self._get_unit_uri(value)
-                new_unit_resource = NewAttributeValue(unit_uri)
-                new_unit_resource.label = value.label
-                new_unit_resource.comment = value.description
-                new_unit_resource.source_uri = maybe_existing_resource(value.source_uri)
-                new_unit_resource.parent_attribute_value_uri = maybe_existing_resource(
-                    value.parent_unit_uri)
-                new_units_list.append(new_unit_resource)
+        units += [
+            col.component.unit
+            for col in
+            get_columns_of_dsd_type(self.cube, QbObservationValue)
+        ]
+
+        new_units: List[NewQbUnit] = [u for u in units if isinstance(u, NewQbUnit)]
+
+        for unit in new_units:
+            unit_uri = self._get_unit_uri(unit)
+            new_unit_resource = NewUnit(unit_uri)
+            new_unit_resource.label = unit.label
+            new_unit_resource.comment = unit.description
+            new_unit_resource.source_uri = maybe_existing_resource(unit.source_uri)
+            new_unit_resource.parent_unit_uri = maybe_existing_resource(unit.parent_unit_uri)
+            new_units_list.append(new_unit_resource)
 
         return new_units_list
 
