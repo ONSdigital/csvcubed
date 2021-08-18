@@ -8,10 +8,13 @@ from csvqb.writers.qbwriter import QbWriter
 from devtools.behave.file import get_context_temp_dir_path
 
 
-def get_standard_catalog_metadata_for_name(name: str) -> CatalogMetadata:
+def get_standard_catalog_metadata_for_name(
+    name: str, identifier: Optional[str] = None
+) -> CatalogMetadata:
     return CatalogMetadata(
         name,
         summary="Summary",
+        identifier=identifier,
         description="Description",
         creator_uri="https://www.gov.uk/government/organisations/office-for-national-statistics",
         publisher_uri="https://www.gov.uk/government/organisations/office-for-national-statistics",
@@ -30,6 +33,15 @@ _standard_data = pd.DataFrame(
 
 @Given('a single-measure QbCube named "{cube_name}"')
 def step_impl(context, cube_name: str):
+    context.cube = _get_single_measure_cube_with_name_and_id(cube_name, None)
+
+
+@Given('a single-measure QbCube with identifier "{cube_id}" named "{cube_name}"')
+def step_impl(context, cube_name: str, cube_id: str):
+    context.cube = _get_single_measure_cube_with_name_and_id(cube_name, cube_id)
+
+
+def _get_single_measure_cube_with_name_and_id(cube_name: str, cube_id: str) -> Cube:
     columns = [
         QbColumn("A", NewQbDimension.from_data("A code list", _standard_data["A"])),
         QbColumn("D", NewQbDimension.from_data("D code list", _standard_data["D"])),
@@ -41,8 +53,10 @@ def step_impl(context, cube_name: str):
         ),
     ]
 
-    context.cube = Cube(
-        get_standard_catalog_metadata_for_name(cube_name), _standard_data, columns
+    return Cube(
+        get_standard_catalog_metadata_for_name(cube_name, cube_id),
+        _standard_data,
+        columns,
     )
 
 
