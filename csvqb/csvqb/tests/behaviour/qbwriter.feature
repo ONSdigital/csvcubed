@@ -58,6 +58,35 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     When the cube is serialised to CSV-W
     Then csvlint validation of "duplicate-qube.csv-metadata.json" should fail with "duplicate_key"
 
+  Scenario: QbCube new attribute values and units should be serialised
+    Given a single-measure QbCube named "Some Qube" with new attribute values and units
+    When the cube is serialised to CSV-W
+    Then the file at "some-qube.csv" should exist
+    And the file at "some-qube.csv-metadata.json" should exist
+    And csvlint validation of all CSV-Ws should succeed
+    And csv2rdf on all CSV-Ws should succeed
+    And the RDF should contain
+    """
+      @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+      @prefix qudt: <http://qudt.org/schema/qudt/>.
+
+      <file:/tmp/some-qube.csv#attribute/new-attribute/pending>
+        a rdfs:Class;
+        rdfs:label "pending"@en.
+
+      <file:/tmp/some-qube.csv#attribute/new-attribute/final>
+        a rdfs:Class;
+        rdfs:label "final"@en.
+
+      <file:/tmp/some-qube.csv#attribute/new-attribute/in-review>
+        a rdfs:Class;
+        rdfs:label "in-review"@en.
+
+      <file:/tmp/some-qube.csv#unit/some-unit>
+        a qudt:Unit, rdfs:Class;
+        rdfs:label "Some Unit"@en.
+    """
+
   Scenario: A QbCube with string literal new attributes should validate successfully
     Given a single-measure QbCube named "Qube with string literals" with "new" "string" attribute
     When the cube is serialised to CSV-W
@@ -139,7 +168,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
       <file:/tmp/qube-with-int-literals.csv#obs/uss-titan> <http://some-uri> "80102"^^<http://www.w3.org/2001/XMLSchema#int>.
       """
 
-  Scenario: A QbCube with date literal eisting attributes should validate successfully
+  Scenario: A QbCube with date literal existing attributes should validate successfully
     Given a single-measure QbCube named "Qube with date literals" with "existing" "date" attribute
     When the cube is serialised to CSV-W
     Then csvlint validation of "qube-with-date-literals.csv-metadata.json" should succeed

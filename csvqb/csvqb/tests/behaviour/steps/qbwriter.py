@@ -6,7 +6,6 @@ from behave import Given, When, Then
 from csvqb.models.cube import *
 from csvqb.writers.qbwriter import QbWriter
 from devtools.behave.file import get_context_temp_dir_path
-from sharedmodels.rdf.namespaces import QB
 
 
 def get_standard_catalog_metadata_for_name(name: str) -> CatalogMetadata:
@@ -134,7 +133,10 @@ def step_impl(context, cube_name: str):
         QbColumn(
             "Measure", QbMultiMeasureDimension.new_measures_from_data(data["Measure"])
         ),
-        QbColumn("Value", QbMultiMeasureObservationValue(unit=NewQbUnit("meters")),),
+        QbColumn(
+            "Value",
+            QbMultiMeasureObservationValue(unit=NewQbUnit("meters")),
+        ),
     ]
 
     context.cube = Cube(
@@ -156,7 +158,42 @@ def step_impl(context, cube_name: str):
         QbColumn(
             "Measure", QbMultiMeasureDimension.new_measures_from_data(data["Measure"])
         ),
-        QbColumn("Value", QbMultiMeasureObservationValue(unit=NewQbUnit("meters")),),
+        QbColumn(
+            "Value",
+            QbMultiMeasureObservationValue(unit=NewQbUnit("meters")),
+        ),
+    ]
+
+    context.cube = Cube(
+        get_standard_catalog_metadata_for_name(cube_name), data, columns
+    )
+
+
+@Given(
+    'a single-measure QbCube named "{cube_name}" with new attribute values and units'
+)
+def step_impl(context, cube_name: str):
+    data = pd.DataFrame(
+        {
+            "Existing Dimension": ["a", "b", "c"],
+            "New Attribute": ["pending", "final", "in-review"],
+            "Value": [2, 2, 2],
+        }
+    )
+    columns = [
+        QbColumn(
+            "Existing Dimension", ExistingQbDimension("http://existing-dimension")
+        ),
+        QbColumn(
+            "New Attribute",
+            NewQbAttribute.from_data("New Attribute", data["New Attribute"]),
+        ),
+        QbColumn(
+            "Value",
+            QbSingleMeasureObservationValue(
+                NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
+            ),
+        ),
     ]
 
     context.cube = Cube(
@@ -201,7 +238,10 @@ def step_impl(context, cube_name: str, type: str, data_type: str):
     )
     if data_type == "int":
         if type == "new":
-            att = QbColumn("Reg", NewQbAttributeLiteral(data_type="int", label="Reg"),)
+            att = QbColumn(
+                "Reg",
+                NewQbAttributeLiteral(data_type="int", label="Reg"),
+            )
         else:
             att = QbColumn(
                 "Reg",
@@ -247,4 +287,3 @@ def step_impl(context, cube_name: str, type: str, data_type: str):
     context.cube = Cube(
         get_standard_catalog_metadata_for_name(cube_name), data, columns
     )
-

@@ -6,6 +6,7 @@ from rdflib import Namespace
 
 
 QB = Namespace("http://purl.org/linked-data/cube#")
+QUDT = Namespace("http://qudt.org/schema/qudt/")
 
 SDMX_Concept = Namespace("http://purl.org/linked-data/sdmx/2009/concept#")
 SDMX_Code = Namespace("http://purl.org/linked-data/sdmx/2009/code#")

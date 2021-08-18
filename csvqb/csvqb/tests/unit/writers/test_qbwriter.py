@@ -642,6 +642,197 @@ def test_about_url_generation_with_multiple_measures():
     assert actual_about_url == expected_about_url
 
 
+def test_serialise_new_attribute_values():
+    """
+    When new attribute values are serialised, a list of new metadata resources should be returned.
+    """
+
+    data = pd.DataFrame(
+        {
+            "Existing Dimension": ["A", "B", "C"],
+            "Value": [2, 2, 2],
+            "New Attribute": ["Pending", "Final", "In Review"],
+            "Existing Attribute": ["D", "E", "F"],
+        }
+    )
+
+    metadata = CatalogMetadata("Some Dataset")
+    columns = [
+        QbColumn(
+            "Existing Dimension",
+            ExistingQbDimension("https://example.org/dimensions/existing_dimension"),
+        ),
+        QbColumn(
+            "Value",
+            QbSingleMeasureObservationValue(
+                ExistingQbMeasure("http://example.org/existing/measure"),
+                ExistingQbUnit("http://example.org/some/existing/unit"),
+            ),
+        ),
+        QbColumn(
+            "New Attribute",
+            NewQbAttribute.from_data("New Attribute", data["New Attribute"]),
+        ),
+        QbColumn(
+            "Existing Attribute",
+            ExistingQbAttribute(
+                "http://example.org/some/existing/attribute",
+                new_attribute_values=[
+                    NewQbAttributeValue(
+                        "D",
+                        description="real value",
+                        parent_attribute_value_uri="http://parent-uri",
+                    ),
+                    NewQbAttributeValue("E", source_uri="http://source-uri"),
+                    NewQbAttributeValue("F"),
+                ],
+            ),
+        ),
+    ]
+
+    cube = Cube(metadata, data, columns)
+
+    qbwriter = QbWriter(cube)
+    list_of_new_attribute_values = qbwriter._get_new_attribute_value_resources()
+
+    map_label_to_expected_config = {
+        "Pending": {
+            "uri": "some-dataset.csv#attribute/new-attribute/pending",
+            "description": None,
+            "parent_attribute_value_uri": None,
+            "source_uri": None,
+        },
+        "Final": {
+            "uri": "some-dataset.csv#attribute/new-attribute/final",
+            "description": None,
+            "parent_attribute_value_uri": None,
+            "source_uri": None,
+        },
+        "In Review": {
+            "uri": "some-dataset.csv#attribute/new-attribute/in-review",
+            "description": None,
+            "parent_attribute_value_uri": None,
+            "source_uri": None,
+        },
+        "D": {
+            "uri": "some-dataset.csv#attribute/existing-attribute/d",
+            "description": "real value",
+            "parent_attribute_value_uri": "http://parent-uri",
+            "source_uri": None,
+        },
+        "E": {
+            "uri": "some-dataset.csv#attribute/existing-attribute/e",
+            "description": None,
+            "parent_attribute_value_uri": None,
+            "source_uri": "http://source-uri",
+        },
+        "F": {
+            "uri": "some-dataset.csv#attribute/existing-attribute/f",
+            "description": None,
+            "parent_attribute_value_uri": None,
+            "source_uri": None,
+        },
+    }
+
+    for (label, expected_config) in map_label_to_expected_config.items():
+        new_attribute_value = first(
+            list_of_new_attribute_values, lambda x: x.label == label
+        )
+        assert new_attribute_value is not None
+        assert new_attribute_value.uri_str == expected_config["uri"]
+        assert new_attribute_value.comment == expected_config["description"]
+
+        assert (
+            expected_config["parent_attribute_value_uri"] is None
+            and new_attribute_value.parent_attribute_value_uri is None
+        ) or str(new_attribute_value.parent_attribute_value_uri.uri) == expected_config[
+            "parent_attribute_value_uri"
+        ]
+
+        assert (
+            expected_config["source_uri"] is None
+            and new_attribute_value.source_uri is None
+        ) or str(new_attribute_value.source_uri.uri) == expected_config["source_uri"]
+
+
+def test_serialise_unit():
+    """
+    When new units are serialised, a list of new metadata resources should be returned.
+    """
+
+    data = pd.DataFrame(
+        {
+            "Existing Dimension": ["A", "B", "C"],
+            "Value": [2, 2, 2],
+            "Units": ["Percent", "People", "People"],
+        }
+    )
+
+    metadata = CatalogMetadata("Some Dataset")
+    columns = [
+        QbColumn(
+            "Existing Dimension",
+            ExistingQbDimension("https://example.org/dimensions/existing_dimension"),
+        ),
+        QbColumn(
+            "Value",
+            QbSingleMeasureObservationValue(
+                ExistingQbMeasure("http://example.org/existing/measure")
+            ),
+        ),
+        QbColumn(
+            "Units",
+            QbMultiUnits(
+                [
+                    NewQbUnit(
+                        "Percent",
+                        description="unit",
+                        parent_unit_uri="http://parent-uri",
+                    ),
+                    NewQbUnit("People", source_uri="http://source-uri"),
+                ],
+            ),
+        ),
+    ]
+
+    cube = Cube(metadata, data, columns)
+
+    qbwriter = QbWriter(cube)
+    list_of_new_unit_resources = qbwriter._get_new_unit_resources()
+
+    map_label_to_expected_config = {
+        "Percent": {
+            "uri": "some-dataset.csv#unit/percent",
+            "description": "unit",
+            "parent_unit_uri": "http://parent-uri",
+            "source_uri": None,
+        },
+        "People": {
+            "uri": "some-dataset.csv#unit/people",
+            "description": None,
+            "parent_unit_uri": None,
+            "source_uri": "http://source-uri",
+        },
+    }
+    for (label, expected_config) in map_label_to_expected_config.items():
+        new_attribute_value = first(
+            list_of_new_unit_resources, lambda x: x.label == label
+        )
+        assert new_attribute_value is not None
+        assert new_attribute_value.uri_str == expected_config["uri"]
+        assert new_attribute_value.comment == expected_config["description"]
+        assert (
+            expected_config["source_uri"] is None
+            and new_attribute_value.source_uri is None
+        ) or str(new_attribute_value.source_uri.uri) == expected_config["source_uri"]
+        assert (
+            expected_config["parent_unit_uri"] is None
+            and new_attribute_value.parent_unit_uri is None
+        ) or str(new_attribute_value.parent_unit_uri.uri) == expected_config[
+            "parent_unit_uri"
+        ]
+
+
 def test_arbitrary_rdf_serialisation_existing_attribute():
     """
     Test that when arbitrary RDF is specified against an Existing Attribute, it is serialised correctly.
@@ -950,8 +1141,6 @@ def test_arbitrary_rdf_serialisation_new_measure():
         Literal("New Measure Component"),
     ) in graph
 
-
-# TODO: Add attribute and unit RDF serialisation tests here in Issue #79.
 
 if __name__ == "__main__":
     pytest.main()
