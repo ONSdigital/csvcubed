@@ -9,8 +9,6 @@ from tempfile import TemporaryDirectory
 import shutil
 from behave.model import Scenario
 
-from csvqb.utils.uri import uri_safe
-
 
 def get_context_temp_dir_path(context) -> Path:
     if not hasattr(context, "temp_dir"):
@@ -35,3 +33,14 @@ def get_context_temp_dir_path(context) -> Path:
             context.add_cleanup(lambda: copy_temp_files_to_dir(output_dir))
 
     return Path(context.temp_dir.name)
+
+
+def _uri_safe(label: str) -> str:
+    """
+    Convert a label into something that can be used in a URI path segment.
+
+    The function formerly known as :func:`pathify`.
+    """
+    return re.sub(
+        r"-$", "", re.sub(r"-+", "-", re.sub(r"[^\w/]", "-", unidecode(label).lower()))
+    )
