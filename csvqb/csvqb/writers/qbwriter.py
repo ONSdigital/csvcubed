@@ -60,21 +60,13 @@ class QbWriter(WriterBase):
 
         self._output_new_code_list_csvws(output_folder)
 
-        # todo: Local units haven't been defined anywhere yet!
         # todo: Unit multiplier functionality hasn't been output.
-
-        see_also = rdf_resource_to_json_ld(self._generate_qb_dataset_dsd_definitions())
-        for attribute_value in self._serialise_attribute_values():
-            see_also += rdf_resource_to_json_ld(attribute_value)
-
-        for unit in self._serialise_units():
-            see_also += rdf_resource_to_json_ld(unit)
 
         csvw_metadata = {
             "@context": "http://www.w3.org/ns/csvw",
             "@id": self._doc_rel_uri("dataset"),
             "tables": tables,
-            "rdfs:seeAlso": see_also,
+            "rdfs:seeAlso": self._get_additional_rdf_metadata(),
         }
 
         with open(output_folder / f"{self.csv_file_name}-metadata.json", "w+") as f:
@@ -82,6 +74,20 @@ class QbWriter(WriterBase):
 
         if self.cube.data is not None:
             self.cube.data.to_csv(output_folder / self.csv_file_name, index=False)
+
+    def _get_additional_rdf_metadata(self) -> List[dict]:
+        """
+        :return: the additional RDF metadata to be serialised in the CSV-W.
+        """
+        see_also = rdf_resource_to_json_ld(self._generate_qb_dataset_dsd_definitions())
+
+        for attribute_value in self._get_new_attribute_value_resources():
+            see_also += rdf_resource_to_json_ld(attribute_value)
+
+        for unit in self._get_new_unit_resources():
+            see_also += rdf_resource_to_json_ld(unit)
+
+        return see_also
 
     def _doc_rel_uri(self, uri_fragment: str) -> str:
         """
@@ -450,11 +456,11 @@ class QbWriter(WriterBase):
 
         return component
 
-    def _serialise_attribute_values(self) -> List[NewAttributeValue]:
+    def _get_new_attribute_value_resources(self) -> List[NewAttributeValue]:
         """
-        Serialise Attribute Values
+        :return: RDF resource models to define New Attribute Values
         """
-        new_attribute_values_list = []
+        new_attribute_value_resources: List[NewAttributeValue] = []
         attribute_columns = get_columns_of_dsd_type(self.cube, QbAttribute)
         for column in attribute_columns:
             if isinstance(column.component, NewQbAttribute):
@@ -477,15 +483,14 @@ class QbWriter(WriterBase):
                 new_attribute_value_resource.parent_attribute_value_uri = (
                     maybe_existing_resource(value.parent_attribute_value_uri)
                 )
-                new_attribute_values_list.append(new_attribute_value_resource)
+                new_attribute_value_resources.append(new_attribute_value_resource)
 
-        return new_attribute_values_list
+        return new_attribute_value_resources
 
-    def _serialise_units(self) -> List[NewUnit]:
+    def _get_new_unit_resources(self) -> List[NewUnit]:
         """
-        Serialise Unit
+        :return: RDF Resources to defined new units
         """
-        new_units_list = []
         units: List[QbUnit] = [
             u
             for col in get_columns_of_dsd_type(self.cube, QbMultiUnits)
@@ -497,9 +502,9 @@ class QbWriter(WriterBase):
             for col in get_columns_of_dsd_type(self.cube, QbObservationValue)
             if col.component.unit is not None
         ]
-
         new_units: List[NewQbUnit] = [u for u in units if isinstance(u, NewQbUnit)]
 
+        new_unit_resources: List[NewUnit] = []
         for unit in new_units:
             unit_uri = self._get_unit_uri(unit)
             new_unit_resource = NewUnit(unit_uri)
@@ -509,9 +514,9 @@ class QbWriter(WriterBase):
             new_unit_resource.parent_unit_uri = maybe_existing_resource(
                 unit.parent_unit_uri
             )
-            new_units_list.append(new_unit_resource)
+            new_unit_resources.append(new_unit_resource)
 
-        return new_units_list
+        return new_unit_resources
 
     def _generate_csvqb_column(self, column: CsvColumn) -> Dict[str, Any]:
         csvw_col: Dict[str, Any] = {

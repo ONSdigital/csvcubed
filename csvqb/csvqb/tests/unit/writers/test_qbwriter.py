@@ -1,5 +1,3 @@
-from re import L
-from numpy import newaxis
 import pytest
 from copy import deepcopy
 import pandas as pd
@@ -695,9 +693,9 @@ def test_serialise_new_attribute_values():
     cube = Cube(metadata, data, columns)
 
     qbwriter = QbWriter(cube)
-    list_of_new_metadata_resources = qbwriter._serialise_attribute_values()
+    list_of_new_attribute_values = qbwriter._get_new_attribute_value_resources()
 
-    map_label_to_uri = {
+    map_label_to_expected_config = {
         "Pending": {
             "uri": "some-dataset.csv#attribute/new-attribute/pending",
             "description": None,
@@ -736,9 +734,9 @@ def test_serialise_new_attribute_values():
         },
     }
 
-    for (label, expected_config) in map_label_to_uri.items():
+    for (label, expected_config) in map_label_to_expected_config.items():
         new_attribute_value = first(
-            list_of_new_metadata_resources, lambda x: x.label == label
+            list_of_new_attribute_values, lambda x: x.label == label
         )
         assert new_attribute_value is not None
         assert new_attribute_value.uri_str == expected_config["uri"]
@@ -779,8 +777,7 @@ def test_serialise_unit():
         QbColumn(
             "Value",
             QbSingleMeasureObservationValue(
-                ExistingQbMeasure("http://example.org/existing/measure"),
-                ExistingQbUnit("http://example.org/some/existing/unit"),
+                ExistingQbMeasure("http://example.org/existing/measure")
             ),
         ),
         QbColumn(
@@ -801,9 +798,9 @@ def test_serialise_unit():
     cube = Cube(metadata, data, columns)
 
     qbwriter = QbWriter(cube)
-    list_of_new_unit_resources = qbwriter._serialise_units()
+    list_of_new_unit_resources = qbwriter._get_new_unit_resources()
 
-    mapped_uri = {
+    map_label_to_expected_config = {
         "Percent": {
             "uri": "some-dataset.csv#unit/percent",
             "description": "unit",
@@ -817,7 +814,7 @@ def test_serialise_unit():
             "source_uri": "http://source-uri",
         },
     }
-    for (label, expected_config) in mapped_uri.items():
+    for (label, expected_config) in map_label_to_expected_config.items():
         new_attribute_value = first(
             list_of_new_unit_resources, lambda x: x.label == label
         )

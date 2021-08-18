@@ -83,7 +83,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
         rdfs:label "in-review"@en.
 
       <file:/tmp/some-qube.csv#unit/some-unit>
-        a qudt:Unit;
+        a qudt:Unit, rdfs:Class;
         rdfs:label "Some Unit"@en.
     """
 
@@ -168,7 +168,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
       <file:/tmp/qube-with-int-literals.csv#obs/uss-titan> <http://some-uri> "80102"^^<http://www.w3.org/2001/XMLSchema#int>.
       """
 
-  Scenario: A QbCube with date literal eisting attributes should validate successfully
+  Scenario: A QbCube with date literal existing attributes should validate successfully
     Given a single-measure QbCube named "Qube with date literals" with "existing" "date" attribute
     When the cube is serialised to CSV-W
     Then csvlint validation of "qube-with-date-literals.csv-metadata.json" should succeed
