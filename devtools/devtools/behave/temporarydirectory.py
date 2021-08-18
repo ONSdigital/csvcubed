@@ -8,6 +8,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 import shutil
 from behave.model import Scenario
+import re
 
 
 def get_context_temp_dir_path(context) -> Path:
@@ -29,18 +30,11 @@ def get_context_temp_dir_path(context) -> Path:
                     shutil.move(file, dir)
 
             scenario: Scenario = context.scenario
-            output_dir = Path.home() / "last_run_behave" / uri_safe(scenario.name)
+            output_dir = Path.home() / "last_run_behave" / _file_safe(scenario.name)
             context.add_cleanup(lambda: copy_temp_files_to_dir(output_dir))
 
     return Path(context.temp_dir.name)
 
 
-def _uri_safe(label: str) -> str:
-    """
-    Convert a label into something that can be used in a URI path segment.
-
-    The function formerly known as :func:`pathify`.
-    """
-    return re.sub(
-        r"-$", "", re.sub(r"-+", "-", re.sub(r"[^\w/]", "-", unidecode(label).lower()))
-    )
+def _file_safe(label: str) -> str:
+    return re.sub("[^A-Za-z0-9]+", "-", label)
