@@ -264,7 +264,12 @@ class QbWriter(WriterBase):
     def _get_qb_obs_val_specifications(
         self, observation_value: QbObservationValue
     ) -> List[rdf.qb.ComponentSpecification]:
-        specs: List[rdf.qb.ComponentSpecification] = []
+        specs: List[rdf.qb.ComponentSpecification] = [
+            # We always output the measure-dimension style of the QB spec.
+            # so each observation need to have a dimension specifying the measure type.
+            self._get_measure_type_dimension_component_spec()
+        ]
+
         unit = observation_value.unit
         if unit is not None:
             unit_uri_safe_identifier = self._get_unit_uri_safe_identifier(unit)
@@ -284,6 +289,18 @@ class QbWriter(WriterBase):
             )
 
         return specs
+
+    def _get_measure_type_dimension_component_spec(
+        self,
+    ) -> rdf.qb.DimensionComponentSpecification:
+        measure_dimension_spec = rdf.qb.DimensionComponentSpecification(
+            self._doc_rel_uri("component/measure-type")
+        )
+        measure_dimension_spec.dimension = ExistingResource(
+            "http://purl.org/linked-data/cube#measureType"
+        )
+        measure_dimension_spec.componentProperties.add(measure_dimension_spec.dimension)
+        return measure_dimension_spec
 
     @staticmethod
     def _get_unit_uri_safe_identifier(unit: QbUnit) -> str:

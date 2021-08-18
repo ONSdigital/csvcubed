@@ -14,8 +14,9 @@ def get_context_temp_dir_path(context) -> Path:
 
         context.add_cleanup(lambda: context.temp_dir.cleanup())
 
+
         context.add_cleanup(
-            lambda: shutil.move(context.temp_dir.name, "/root/last_run_behave")
+            lambda: shutil.move(context.temp_dir.name, Path.home() /  "last_run_behave")
         )
 
     return Path(context.temp_dir.name)
