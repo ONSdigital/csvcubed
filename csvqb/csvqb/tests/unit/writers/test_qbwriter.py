@@ -3,10 +3,15 @@ from numpy import newaxis
 import pytest
 from copy import deepcopy
 import pandas as pd
-from sharedmodels.rdf import qb
+from rdflib import RDFS, Graph, URIRef, Literal
+from sharedmodels import rdf
 from typing import List
 
 from csvqb.models.cube import *
+from csvqb.models.cube.qb.components.arbitraryrdf import (
+    TripleFragment,
+    RdfSerialisationHint,
+)
 from csvqb.utils.iterables import first
 from csvqb.writers.qbwriter import QbWriter
 
@@ -25,8 +30,8 @@ def _get_standard_cube_for_columns(columns: List[CsvColumn]) -> Cube:
 
 
 def _assert_component_defined(
-    dataset: qb.DataSet, name: str
-) -> qb.ComponentSpecification:
+    dataset: rdf.qb.DataSet, name: str
+) -> rdf.qb.ComponentSpecification:
     component = first(
         dataset.structure.components,
         lambda x: str(x.uri) == f"cube-name.csv#component/{name}",
@@ -36,7 +41,7 @@ def _assert_component_defined(
 
 
 def _assert_component_property_defined(
-    component: qb.ComponentSpecification, property_uri: str
+    component: rdf.qb.ComponentSpecification, property_uri: str
 ) -> None:
     property = first(
         component.componentProperties, lambda x: str(x.uri) == property_uri
@@ -53,10 +58,12 @@ def test_structure_defined():
     cube = _get_standard_cube_for_columns(
         [
             QbColumn(
-                "Country", ExistingQbDimension("http://example.org/dimensions/country"),
+                "Country",
+                ExistingQbDimension("http://example.org/dimensions/country"),
             ),
             QbColumn(
-                "Marker", ExistingQbAttribute("http://example.org/attributes/marker"),
+                "Marker",
+                ExistingQbAttribute("http://example.org/attributes/marker"),
             ),
             QbColumn(
                 "Observed Value",
@@ -74,7 +81,7 @@ def test_structure_defined():
     assert dataset is not None
 
     assert dataset.structure is not None
-    assert type(dataset.structure) == qb.DataStructureDefinition
+    assert type(dataset.structure) == rdf.qb.DataStructureDefinition
 
     assert dataset.structure.componentProperties is not None
 
@@ -94,8 +101,8 @@ def test_generating_concept_uri_template_from_global_concept_scheme_uri():
         "http://base-uri/concept-scheme/this-concept-scheme-name"
     )
 
-    actual_concept_template_uri = empty_qbwriter._get_default_value_uri_for_code_list_concepts(
-        column, code_list
+    actual_concept_template_uri = (
+        empty_qbwriter._get_default_value_uri_for_code_list_concepts(column, code_list)
     )
     assert (
         "http://base-uri/concept-scheme/this-concept-scheme-name/{+some_column}"
@@ -113,8 +120,8 @@ def test_generating_concept_uri_template_from_local_concept_scheme_uri():
         "http://base-uri/dataset-name#scheme/that-concept-scheme-name"
     )
 
-    actual_concept_template_uri = empty_qbwriter._get_default_value_uri_for_code_list_concepts(
-        column, code_list
+    actual_concept_template_uri = (
+        empty_qbwriter._get_default_value_uri_for_code_list_concepts(column, code_list)
     )
     assert (
         "http://base-uri/dataset-name#concept/that-concept-scheme-name/{+some_column}"
@@ -132,8 +139,8 @@ def test_generating_concept_uri_template_from_unexpected_concept_scheme_uri():
         "http://base-uri/dataset-name#codes/that-concept-scheme-name"
     )
 
-    actual_concept_template_uri = empty_qbwriter._get_default_value_uri_for_code_list_concepts(
-        column, code_list
+    actual_concept_template_uri = (
+        empty_qbwriter._get_default_value_uri_for_code_list_concepts(column, code_list)
     )
     assert "{+some_column}" == actual_concept_template_uri
 
@@ -448,14 +455,55 @@ def test_csv_col_definition():
     Test basic configuration of a CSV-W column definition.
     """
     column = QbColumn(
-        "Some Column", ExistingQbDimension("http://base-uri/dimensions/some-dimension"),
+        "Some Column",
+        ExistingQbDimension("http://base-uri/dimensions/some-dimension"),
     )
     csv_col = empty_qbwriter._generate_csvqb_column(column)
     assert "suppressOutput" not in csv_col
-    assert "Some Column" == csv_col["titles"]
-    assert "some_column" == csv_col["name"]
-    assert "http://base-uri/dimensions/some-dimension" == csv_col["propertyUrl"]
-    assert "{+some_column}" == csv_col["valueUrl"]
+    assert csv_col["titles"] == "Some Column"
+    assert csv_col["name"] == "some_column"
+    assert csv_col["propertyUrl"] == "http://base-uri/dimensions/some-dimension"
+    assert csv_col["valueUrl"] == "{+some_column}"
+    assert csv_col["required"]
+
+
+def test_csv_col_required():
+    """Test that the :attr:`required` key is set correctly for various different component types."""
+    required_columns = [
+        QbColumn(
+            "Some Dimension",
+            ExistingQbDimension("http://base-uri/dimensions/some-dimension"),
+        ),
+        QbColumn(
+            "Some Required Attribute",
+            NewQbAttribute("Some Attribute", is_required=True),
+        ),
+        QbColumn("Some Multi Units", QbMultiUnits([])),
+        QbColumn("Some Measure Dimension", QbMultiMeasureDimension([])),
+        QbColumn(
+            "Some Obs Val",
+            QbSingleMeasureObservationValue(NewQbMeasure("Some Measure")),
+        ),
+    ]
+
+    optional_columns = [
+        QbColumn(
+            "Some Optional Attribute",
+            NewQbAttribute("Some Attribute", is_required=False),
+        )
+    ]
+
+    for col in required_columns:
+        csv_col = empty_qbwriter._generate_csvqb_column(col)
+        required = csv_col["required"]
+        assert isinstance(required, bool)
+        assert required
+
+    for col in optional_columns:
+        csv_col = empty_qbwriter._generate_csvqb_column(col)
+        required = csv_col["required"]
+        assert isinstance(required, bool)
+        assert not required
 
 
 def test_csv_col_definition_suppressed():
@@ -556,7 +604,7 @@ def test_about_url_generation():
 
 def test_about_url_generation_with_multiple_measures():
     """
-    Ensuring that when an aboutUrl is defined for a multimeasure cube, the resulting URL
+    Ensuring that when an aboutUrl is defined for a multi-measure cube, the resulting URL
     is built in the order in which dimensions appear in the cube except for the multi-measure
     dimensions which are appended to the end of the URL.
     """
@@ -632,7 +680,11 @@ def test_serialise_new_attribute_values():
             ExistingQbAttribute(
                 "http://example.org/some/existing/attribute",
                 new_attribute_values=[
-                    NewQbAttributeValue("D", description="real value", parent_attribute_value_uri="http://parent-uri"),
+                    NewQbAttributeValue(
+                        "D",
+                        description="real value",
+                        parent_attribute_value_uri="http://parent-uri",
+                    ),
                     NewQbAttributeValue("E", source_uri="http://source-uri"),
                     NewQbAttributeValue("F"),
                 ],
@@ -650,51 +702,59 @@ def test_serialise_new_attribute_values():
             "uri": "some-dataset.csv#attribute/new-attribute/pending",
             "description": None,
             "parent_attribute_value_uri": None,
-            "source_uri": None
+            "source_uri": None,
         },
         "Final": {
             "uri": "some-dataset.csv#attribute/new-attribute/final",
             "description": None,
             "parent_attribute_value_uri": None,
-            "source_uri": None
+            "source_uri": None,
         },
         "In Review": {
             "uri": "some-dataset.csv#attribute/new-attribute/in-review",
             "description": None,
             "parent_attribute_value_uri": None,
-            "source_uri": None
+            "source_uri": None,
         },
         "D": {
             "uri": "some-dataset.csv#attribute/existing-attribute/d",
             "description": "real value",
             "parent_attribute_value_uri": "http://parent-uri",
-            "source_uri": None
+            "source_uri": None,
         },
         "E": {
             "uri": "some-dataset.csv#attribute/existing-attribute/e",
             "description": None,
             "parent_attribute_value_uri": None,
-            "source_uri": "http://source-uri"
+            "source_uri": "http://source-uri",
         },
         "F": {
             "uri": "some-dataset.csv#attribute/existing-attribute/f",
             "description": None,
             "parent_attribute_value_uri": None,
-            "source_uri": None
-        }
+            "source_uri": None,
+        },
     }
 
     for (label, expected_config) in map_label_to_uri.items():
-        new_attribute_value = first(list_of_new_metadata_resources, lambda x: x.label == label)
+        new_attribute_value = first(
+            list_of_new_metadata_resources, lambda x: x.label == label
+        )
         assert new_attribute_value is not None
         assert new_attribute_value.uri_str == expected_config["uri"]
         assert new_attribute_value.comment == expected_config["description"]
 
-        assert (expected_config["parent_attribute_value_uri"] is None and new_attribute_value.parent_attribute_value_uri is None) \
-               or str(new_attribute_value.parent_attribute_value_uri.uri) == expected_config["parent_attribute_value_uri"]
+        assert (
+            expected_config["parent_attribute_value_uri"] is None
+            and new_attribute_value.parent_attribute_value_uri is None
+        ) or str(new_attribute_value.parent_attribute_value_uri.uri) == expected_config[
+            "parent_attribute_value_uri"
+        ]
 
-        assert (expected_config["source_uri"] is None and new_attribute_value.source_uri is None)\
-               or str(new_attribute_value.source_uri.uri) == expected_config["source_uri"]
+        assert (
+            expected_config["source_uri"] is None
+            and new_attribute_value.source_uri is None
+        ) or str(new_attribute_value.source_uri.uri) == expected_config["source_uri"]
 
 
 def test_serialise_unit():
@@ -706,8 +766,7 @@ def test_serialise_unit():
         {
             "Existing Dimension": ["A", "B", "C"],
             "Value": [2, 2, 2],
-            "Units": ["Percent", "People", "People"]
-
+            "Units": ["Percent", "People", "People"],
         }
     )
 
@@ -728,8 +787,12 @@ def test_serialise_unit():
             "Units",
             QbMultiUnits(
                 [
-                NewQbUnit("Percent", description="unit", parent_unit_uri="http://parent-uri"),
-                NewQbUnit("People", source_uri="http://source-uri")
+                    NewQbUnit(
+                        "Percent",
+                        description="unit",
+                        parent_unit_uri="http://parent-uri",
+                    ),
+                    NewQbUnit("People", source_uri="http://source-uri"),
                 ],
             ),
         ),
@@ -745,29 +808,342 @@ def test_serialise_unit():
             "uri": "some-dataset.csv#unit/percent",
             "description": "unit",
             "parent_unit_uri": "http://parent-uri",
-            "source_uri": None
+            "source_uri": None,
         },
         "People": {
             "uri": "some-dataset.csv#unit/people",
             "description": None,
             "parent_unit_uri": None,
-            "source_uri": "http://source-uri"
+            "source_uri": "http://source-uri",
         },
     }
     for (label, expected_config) in mapped_uri.items():
-        new_attribute_value = first(list_of_new_unit_resources, lambda x: x.label == label)
+        new_attribute_value = first(
+            list_of_new_unit_resources, lambda x: x.label == label
+        )
         assert new_attribute_value is not None
         assert new_attribute_value.uri_str == expected_config["uri"]
         assert new_attribute_value.comment == expected_config["description"]
-        assert (expected_config["source_uri"] is None and new_attribute_value.source_uri is None) \
-                   or str(new_attribute_value.source_uri.uri) == expected_config["source_uri"]
-        assert (expected_config[
-                        "parent_unit_uri"] is None and new_attribute_value.parent_unit_uri is None) \
-                   or str(new_attribute_value.parent_unit_uri.uri) == expected_config[
-                       "parent_unit_uri"]
+        assert (
+            expected_config["source_uri"] is None
+            and new_attribute_value.source_uri is None
+        ) or str(new_attribute_value.source_uri.uri) == expected_config["source_uri"]
+        assert (
+            expected_config["parent_unit_uri"] is None
+            and new_attribute_value.parent_unit_uri is None
+        ) or str(new_attribute_value.parent_unit_uri.uri) == expected_config[
+            "parent_unit_uri"
+        ]
+
+
+def test_arbitrary_rdf_serialisation_existing_attribute():
+    """
+    Test that when arbitrary RDF is specified against an Existing Attribute, it is serialised correctly.
+    """
+    data = pd.DataFrame(
+        {
+            "Existing Dimension": ["A", "B", "C"],
+            "Value": [1, 2, 3],
+            "Existing Attribute": ["Provisional", "Final", "Provisional"],
+        }
+    )
+
+    cube = Cube(
+        CatalogMetadata("Some Dataset"),
+        data,
+        [
+            QbColumn(
+                "Existing Dimension",
+                ExistingQbDimension(
+                    "https://example.org/dimensions/existing_dimension"
+                ),
+            ),
+            QbColumn(
+                "Value",
+                QbSingleMeasureObservationValue(
+                    NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
+                ),
+            ),
+            QbColumn(
+                "Existing Attribute",
+                ExistingQbAttribute(
+                    "http://some-existing-attribute-uri",
+                    arbitrary_rdf=[
+                        TripleFragment(RDFS.label, "Existing Attribute Component")
+                    ],
+                ),
+            ),
+        ],
+    )
+
+    qb_writer = QbWriter(cube)
+    dataset = qb_writer._generate_qb_dataset_dsd_definitions()
+    graph = dataset.to_graph(Graph())
+
+    assert (
+        URIRef("some-dataset.csv#component/existing-attribute"),
+        RDFS.label,
+        Literal("Existing Attribute Component"),
+    ) in graph
+
+
+def test_arbitrary_rdf_serialisation_new_attribute():
+    """
+    Test that when arbitrary RDF is specified against a New Attribute, it is serialised correctly.
+    """
+    data = pd.DataFrame(
+        {
+            "Existing Dimension": ["A", "B", "C"],
+            "Value": [1, 2, 3],
+            "New Attribute": ["Provisional", "Final", "Provisional"],
+        }
+    )
+
+    cube = Cube(
+        CatalogMetadata("Some Dataset"),
+        data,
+        [
+            QbColumn(
+                "Existing Dimension",
+                ExistingQbDimension(
+                    "https://example.org/dimensions/existing_dimension"
+                ),
+            ),
+            QbColumn(
+                "Value",
+                QbSingleMeasureObservationValue(
+                    NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
+                ),
+            ),
+            QbColumn(
+                "Existing Attribute",
+                NewQbAttribute.from_data(
+                    "New Attribute",
+                    data["New Attribute"],
+                    arbitrary_rdf=[
+                        TripleFragment(RDFS.label, "New Attribute Property"),
+                        TripleFragment(
+                            RDFS.label,
+                            "New Attribute Component",
+                            RdfSerialisationHint.Component,
+                        ),
+                    ],
+                ),
+            ),
+        ],
+    )
+
+    qb_writer = QbWriter(cube)
+    dataset = qb_writer._generate_qb_dataset_dsd_definitions()
+    graph = dataset.to_graph(Graph())
+
+    assert (
+        URIRef("some-dataset.csv#attribute/new-attribute"),
+        RDFS.label,
+        Literal("New Attribute Property"),
+    ) in graph
+
+    assert (
+        URIRef("some-dataset.csv#component/new-attribute"),
+        RDFS.label,
+        Literal("New Attribute Component"),
+    ) in graph
+
+
+def test_arbitrary_rdf_serialisation_existing_dimension():
+    """
+    Test that when arbitrary RDF is specified against an Existing Dimension, it is serialised correctly.
+    """
+    data = pd.DataFrame(
+        {
+            "Existing Dimension": ["A", "B", "C"],
+            "Value": [1, 2, 3],
+            "Existing Attribute": ["Provisional", "Final", "Provisional"],
+        }
+    )
+
+    cube = Cube(
+        CatalogMetadata("Some Dataset"),
+        data,
+        [
+            QbColumn(
+                "Existing Dimension",
+                ExistingQbDimension(
+                    "https://example.org/dimensions/existing_dimension",
+                    arbitrary_rdf=[
+                        TripleFragment(RDFS.label, "Existing Dimension Component")
+                    ],
+                ),
+            ),
+            QbColumn(
+                "Value",
+                QbSingleMeasureObservationValue(
+                    NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
+                ),
+            ),
+        ],
+    )
+
+    qb_writer = QbWriter(cube)
+    dataset = qb_writer._generate_qb_dataset_dsd_definitions()
+    graph = dataset.to_graph(Graph())
+
+    assert (
+        URIRef("some-dataset.csv#component/existing-dimension"),
+        RDFS.label,
+        Literal("Existing Dimension Component"),
+    ) in graph
+
+
+def test_arbitrary_rdf_serialisation_new_dimension():
+    """
+    Test that when arbitrary RDF is specified against a new dimension, it is serialised correctly.
+    """
+    data = pd.DataFrame({"New Dimension": ["A", "B", "C"], "Value": [1, 2, 3]})
+
+    cube = Cube(
+        CatalogMetadata("Some Dataset"),
+        data,
+        [
+            QbColumn(
+                "New Dimension",
+                NewQbDimension.from_data(
+                    "Some Dimension",
+                    data["New Dimension"],
+                    arbitrary_rdf=[
+                        TripleFragment(RDFS.label, "New Dimension Property"),
+                        TripleFragment(
+                            RDFS.label,
+                            "New Dimension Component",
+                            RdfSerialisationHint.Component,
+                        ),
+                    ],
+                ),
+            ),
+            QbColumn(
+                "Value",
+                QbSingleMeasureObservationValue(
+                    NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
+                ),
+            ),
+        ],
+    )
+
+    qb_writer = QbWriter(cube)
+    dataset = qb_writer._generate_qb_dataset_dsd_definitions()
+    graph = dataset.to_graph(Graph())
+
+    assert (
+        URIRef("some-dataset.csv#dimension/some-dimension"),
+        RDFS.label,
+        Literal("New Dimension Property"),
+    ) in graph
+
+    assert (
+        URIRef("some-dataset.csv#component/some-dimension"),
+        RDFS.label,
+        Literal("New Dimension Component"),
+    ) in graph
+
+
+def test_arbitrary_rdf_serialisation_existing_dimension():
+    """
+    Test that when arbitrary RDF is specified against an Existing Dimension, it is serialised correctly.
+    """
+    data = pd.DataFrame(
+        {
+            "Existing Dimension": ["A", "B", "C"],
+            "Value": [1, 2, 3],
+            "Existing Attribute": ["Provisional", "Final", "Provisional"],
+        }
+    )
+
+    cube = Cube(
+        CatalogMetadata("Some Dataset"),
+        data,
+        [
+            QbColumn(
+                "Existing Dimension",
+                NewQbDimension.from_data(
+                    "Existing Dimension", data["Existing Dimension"]
+                ),
+            ),
+            QbColumn(
+                "Value",
+                QbSingleMeasureObservationValue(
+                    ExistingQbMeasure(
+                        "http://some/uri/existing-measure-uri",
+                        arbitrary_rdf=[
+                            TripleFragment(RDFS.label, "Existing Measure Component")
+                        ],
+                    ),
+                    NewQbUnit("Some Unit"),
+                ),
+            ),
+        ],
+    )
+
+    qb_writer = QbWriter(cube)
+    dataset = qb_writer._generate_qb_dataset_dsd_definitions()
+    graph = dataset.to_graph(Graph())
+
+    assert (
+        URIRef("some-dataset.csv#component/existing-measure-uri"),
+        RDFS.label,
+        Literal("Existing Measure Component"),
+    ) in graph
+
+
+def test_arbitrary_rdf_serialisation_new_measure():
+    """
+    Test that when arbitrary RDF is specified against a new measure, it is serialised correctly.
+    """
+    data = pd.DataFrame({"New Dimension": ["A", "B", "C"], "Value": [1, 2, 3]})
+
+    cube = Cube(
+        CatalogMetadata("Some Dataset"),
+        data,
+        [
+            QbColumn(
+                "New Dimension",
+                NewQbDimension.from_data("Some Dimension", data["New Dimension"]),
+            ),
+            QbColumn(
+                "Value",
+                QbSingleMeasureObservationValue(
+                    NewQbMeasure(
+                        "Some Measure",
+                        arbitrary_rdf=[
+                            TripleFragment(RDFS.label, "New Measure Property"),
+                            TripleFragment(
+                                RDFS.label,
+                                "New Measure Component",
+                                RdfSerialisationHint.Component,
+                            ),
+                        ],
+                    ),
+                    NewQbUnit("Some Unit"),
+                ),
+            ),
+        ],
+    )
+
+    qb_writer = QbWriter(cube)
+    dataset = qb_writer._generate_qb_dataset_dsd_definitions()
+    graph = dataset.to_graph(Graph())
+
+    assert (
+        URIRef("some-dataset.csv#measure/some-measure"),
+        RDFS.label,
+        Literal("New Measure Property"),
+    ) in graph
+
+    assert (
+        URIRef("some-dataset.csv#component/some-measure"),
+        RDFS.label,
+        Literal("New Measure Component"),
+    ) in graph
 
 
 if __name__ == "__main__":
     pytest.main()
-
-

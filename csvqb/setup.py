@@ -2,6 +2,9 @@ from setuptools import setup, find_packages
 
 
 setup(
+    dependency_links=[
+        "git+https://github.com/robons/pydantic.git@f0339d2178634bee95d9cc6d4e925415881f9f27#egg=pydantic"
+    ],
     install_requires=[
         "isodate==0.6.0",
         "numpy==1.21.0",
@@ -12,6 +15,7 @@ setup(
         "rdflib==5.0.0",
         "rdflib-jsonld==0.5.0",
         "six==1.16.0",
+        "typing-extensions==3.10.0.0",
         "unidecode==1.2.0",
     ],
     version="0.0.1",

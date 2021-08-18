@@ -1,11 +1,11 @@
 from csvqb.inputs import PandasDataTypes
-from csvqb.models.cube.csvqb.components.attribute import NewQbAttributeValue
+from csvqb.models.cube.qb.components.attribute import NewQbAttributeValue
 import pytest
 
 import pandas as pd
 
 from csvqb.models.cube import *
-from csvqb.models.cube.csvqb.validationerrors import (
+from csvqb.models.cube.qb.validationerrors import (
     OutputUriTemplateMissingError,
     MinNumComponentsNotSatisfiedError,
     UnitsNotDefinedError,
@@ -54,7 +54,7 @@ def test_single_measure_qb_definition():
     validation_errors = cube.validate()
     validation_errors += validate_qb_component_constraints(cube)
 
-    assert len(validation_errors) == 0
+    assert_num_validation_errors(validation_errors, 0)
 
 
 def test_multi_measure_qb_definition():
@@ -79,8 +79,7 @@ def test_multi_measure_qb_definition():
         ),
         QbColumn("Value", QbMultiMeasureObservationValue(data_type="number")),
         QbColumn(
-            "Measure",
-            QbMultiMeasureDimension.new_measures_from_data(data["Measure"]),
+            "Measure", QbMultiMeasureDimension.new_measures_from_data(data["Measure"]),
         ),
         QbColumn("Units", QbMultiUnits.new_units_from_data(data["Units"])),
     ]
@@ -89,7 +88,7 @@ def test_multi_measure_qb_definition():
     validation_errors = cube.validate()
     validation_errors += validate_qb_component_constraints(cube)
 
-    assert len(validation_errors) == 0
+    assert_num_validation_errors(validation_errors, 0)
 
 
 def test_existing_dimension_output_uri_template():
@@ -194,12 +193,7 @@ def test_no_unit_defined():
     """
     Ensure that when we don't define a unit, we get an error message.
     """
-    data = pd.DataFrame(
-        {
-            "Some Dimension": ["a", "b", "c"],
-            "Value": [1, 2, 3],
-        }
-    )
+    data = pd.DataFrame({"Some Dimension": ["a", "b", "c"], "Value": [1, 2, 3],})
 
     cube = Cube(
         CatalogMetadata("Some Qube"),
@@ -271,11 +265,7 @@ def test_multiple_obs_val_columns():
     We only currently accept the `MeasureDimension` style of multi-measure datasets.
     """
     data = pd.DataFrame(
-        {
-            "Some Dimension": ["a", "b", "c"],
-            "Value1": [3, 2, 1],
-            "Value2": [1, 2, 3],
-        }
+        {"Some Dimension": ["a", "b", "c"], "Value1": [3, 2, 1], "Value2": [1, 2, 3],}
     )
 
     cube = Cube(
@@ -315,12 +305,7 @@ def test_multi_measure_obs_val_without_measure_dimension():
     Ensure that when a user defines a multi-measure observation valuer, we get a warning if they haven't defined a
     measure dimension.
     """
-    data = pd.DataFrame(
-        {
-            "Some Dimension": ["a", "b", "c"],
-            "Value": [1, 2, 3],
-        }
-    )
+    data = pd.DataFrame({"Some Dimension": ["a", "b", "c"], "Value": [1, 2, 3],})
 
     cube = Cube(
         CatalogMetadata("Some Qube"),
@@ -478,7 +463,11 @@ def test_existing_attribute_output_uri_template_required():
                 "Existing Attribute 2",
                 ExistingQbAttribute(
                     "http://example.org/attributes/example",
-                    new_attribute_values=[NewQbAttributeValue("Some Attribute Value")],
+                    new_attribute_values=[
+                        NewQbAttributeValue("Val4"),
+                        NewQbAttributeValue("Val5"),
+                        NewQbAttributeValue("Val6"),
+                    ],
                 ),
                 # NewQbAttributeValues defined - so output_uri_template is **not** required
             ),
@@ -527,15 +516,17 @@ def test_new_attribute_output_uri_template_required():
             ),
             QbColumn(
                 "New Attribute 1",
-                NewQbAttribute("http://example.org/attributes/example"),
+                NewQbAttribute("Some New Attribute 1"),
                 # No NewQbAttributeValues - so output_uri_template is *required*
             ),
             QbColumn(
                 "New Attribute 2",
                 NewQbAttribute(
-                    "http://example.org/attributes/example",
+                    "Some New Attribute 2",
                     new_attribute_values=[
-                        NewQbAttributeValue("Some New Attribute Value")
+                        NewQbAttributeValue("Val4"),
+                        NewQbAttributeValue("Val5"),
+                        NewQbAttributeValue("Val6"),
                     ],
                 ),
                 # NewQbAttributeValues defined - so output_uri_template is **not** required
@@ -584,6 +575,8 @@ def test_new_qb_attribute_generation():
 
     assert new_value_set == {"Provisional", "Final"}
 
+
+# Literal tests go here
 
 if __name__ == "__main__":
     pytest.main()

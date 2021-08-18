@@ -44,6 +44,7 @@ setup(
         "toml==0.10.2",
         "tomlkit==0.7.2",
         "typed-ast==1.4.3",
+        "unidecode==1.2.0",
         "uritemplate==3.0.1",
         "urllib3==1.26.5",
         "vistir==0.5.2",

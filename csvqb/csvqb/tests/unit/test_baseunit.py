@@ -6,8 +6,12 @@ from csvqb.models.validationerror import ValidationError
 
 def get_test_base_dir() -> Path:
     path_parts = Path(".").absolute().parts
-    test_index = path_parts.index("tests")
-    test_root_path = Path(*path_parts[0 : test_index + 1])
+    if "tests" in path_parts:
+        test_index = path_parts.index("tests")
+        test_root_path = Path(*path_parts[0 : test_index + 1])
+    else:  # Fine Rob, you win.
+        csvwlib_index = path_parts.index("csvwlib")
+        test_root_path = Path(*path_parts[0: csvwlib_index + 1], "csvqb", "csvqb", "tests")
     return test_root_path
 
 

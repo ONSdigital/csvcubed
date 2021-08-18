@@ -1,5 +1,5 @@
 import pandas as pd
-from csvqb.models.cube.csvqb.components.dimension import NewQbDimension, NewQbCodeList
+from csvqb.models.cube.qb.components.dimension import NewQbDimension, NewQbCodeList
 
 
 def test_newqbdimension_extracts_newqbcodelist_newqbconcept():
@@ -7,11 +7,7 @@ def test_newqbdimension_extracts_newqbcodelist_newqbconcept():
     To test a NewQbDimension correctly extracts and creates a valid NewQbCodeList & NewQbConcept
     """
     # New dimension with some repeated & distinct values
-    data = pd.DataFrame(
-        {
-            "New Dimension": ["A", "A", "C", "D", "E", "G", "G"]
-        }
-    )
+    data = pd.DataFrame({"New Dimension": ["A", "A", "C", "D", "E", "G", "G"]})
 
     new_dimension = NewQbDimension.from_data("Some Dataset", data["New Dimension"])
 
