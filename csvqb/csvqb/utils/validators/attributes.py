@@ -4,7 +4,7 @@ Attributes
 
 pydantic validators for class attributes.
 """
-from typing import Any, Dict, List, Callable
+from typing import Any, Dict, List
 from pydantic import root_validator
 
 
