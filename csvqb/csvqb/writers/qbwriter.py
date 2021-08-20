@@ -507,7 +507,10 @@ class QbWriter(WriterBase):
                 and u.base_unit is not None
                 and isinstance(u.base_unit, NewQbUnit)
             ):
-                return {u.base_unit} | get_new_base_units(u.base_unit)
+                new_base_units = get_new_base_units(u.base_unit)
+                new_base_units.add(u.base_unit)
+
+                return new_base_units
 
             return set()
 

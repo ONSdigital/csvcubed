@@ -4,7 +4,7 @@ Attributes
 
 pydantic validators for class attributes.
 """
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Callable
 from pydantic import root_validator
 
 
@@ -16,7 +16,7 @@ def enforce_optional_attribute_dependencies(
     provided at all.
     """
 
-    def ensure_dependencies_present(cls, values: Dict[str, Any]):
+    def ensure_dependencies_present(cls, values: Dict[str, Any]) -> Dict[str, Any]:
         for (
             attribute_name,
             dependent_attribute_names,
@@ -38,4 +38,4 @@ def enforce_optional_attribute_dependencies(
 
         return values
 
-    return root_validator(ensure_dependencies_present, allow_reuse=True)
+    return root_validator(ensure_dependencies_present, allow_reuse=True)  # type: ignore
