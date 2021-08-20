@@ -787,7 +787,7 @@ def test_serialise_unit():
                     NewQbUnit(
                         "Percent",
                         description="unit",
-                        parent_unit_uri="http://parent-uri",
+                        base_unit=ExistingQbUnit("http://parent-uri"),
                     ),
                     NewQbUnit("People", source_uri="http://source-uri"),
                 ],
@@ -827,8 +827,8 @@ def test_serialise_unit():
         ) or str(new_attribute_value.source_uri.uri) == expected_config["source_uri"]
         assert (
             expected_config["parent_unit_uri"] is None
-            and new_attribute_value.parent_unit_uri is None
-        ) or str(new_attribute_value.parent_unit_uri.uri) == expected_config[
+            and new_attribute_value.base_unit_uri is None
+        ) or str(new_attribute_value.base_unit_uri.uri) == expected_config[
             "parent_unit_uri"
         ]
 

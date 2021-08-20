@@ -201,6 +201,39 @@ def step_impl(context, cube_name: str):
     )
 
 
+@Given(
+    'a single-measure QbCube named "{cube_name}" with one new unit extending another new unit'
+)
+def step_impl(context, cube_name: str):
+    columns = [
+        QbColumn(
+            "A",
+            ExistingQbDimension("http://example.org/some/dimension/a"),
+            output_uri_template="http://example.org/some/codelist/a",
+        ),
+        QbColumn(
+            "D",
+            ExistingQbDimension("http://example.org/some/dimension/d"),
+            output_uri_template="http://example.org/some/codelist/d",
+        ),
+        QbColumn(
+            "Value",
+            QbSingleMeasureObservationValue(
+                NewQbMeasure("Some Measure"),
+                NewQbUnit(
+                    "Some Extending Unit",
+                    base_unit=NewQbUnit("Some Base Unit"),
+                    base_unit_scaling_factor=1000,
+                ),
+            ),
+        ),
+    ]
+
+    context.cube = Cube(
+        get_standard_catalog_metadata_for_name(cube_name), _standard_data, columns
+    )
+
+
 @Then('turtle should be written to "{file}"')
 def step_impl(context, file: str):
     temp_dir = get_context_temp_dir_path(context)

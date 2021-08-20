@@ -8,7 +8,7 @@ import itertools
 import json
 import re
 from pathlib import Path
-from typing import Tuple, Dict, Any, List, Iterable
+from typing import Tuple, Dict, Any, List, Iterable, Set
 import rdflib
 from sharedmodels import rdf
 from sharedmodels.rdf import skos
@@ -29,8 +29,8 @@ from csvqb.utils.qb.cube import get_columns_of_dsd_type
 from csvqb.utils.dict import rdf_resource_to_json_ld
 from .skoscodelistwriter import SkosCodeListWriter, CODE_LIST_NOTATION_COLUMN_NAME
 from .writerbase import WriterBase
-from ..models.rdf.newattributevalue import NewAttributeValue
-from ..models.rdf.newunit import NewUnit
+from ..models.rdf.newattributevalueresource import NewAttributeValueResource
+from ..models.rdf.newunitresource import NewUnitResource
 from ..models.cube.qb.components.arbitraryrdf import RdfSerialisationHint
 from csvqb.models.rdf.qbdatasetincatalog import QbDataSetInCatalog
 
@@ -59,8 +59,6 @@ class QbWriter(WriterBase):
         tables += self._get_table_references_needed_for_foreign_keys()
 
         self._output_new_code_list_csvws(output_folder)
-
-        # todo: Unit multiplier functionality hasn't been output.
 
         csvw_metadata = {
             "@context": "http://www.w3.org/ns/csvw",
@@ -179,8 +177,6 @@ class QbWriter(WriterBase):
                     "valueUrl": self._get_unit_uri(unit),
                 }
             )
-            # todo: We can't do the same thing with unti multipler unfortunately. Perhaps we should attach the unit
-            #  measure to the qb:DataSet as per the normalised standard and then de-normalise it when we upload to PMD?
         if isinstance(obs_val, QbSingleMeasureObservationValue):
             virtual_columns.append(
                 {
@@ -456,11 +452,11 @@ class QbWriter(WriterBase):
 
         return component
 
-    def _get_new_attribute_value_resources(self) -> List[NewAttributeValue]:
+    def _get_new_attribute_value_resources(self) -> List[NewAttributeValueResource]:
         """
         :return: RDF resource models to define New Attribute Values
         """
-        new_attribute_value_resources: List[NewAttributeValue] = []
+        new_attribute_value_resources: List[NewAttributeValueResource] = []
         attribute_columns = get_columns_of_dsd_type(self.cube, QbAttribute)
         for column in attribute_columns:
             if isinstance(column.component, NewQbAttribute):
@@ -474,7 +470,9 @@ class QbWriter(WriterBase):
                 attribute_value_uri = self._doc_rel_uri(
                     f"attribute/{column_identifier}/{value.uri_safe_identifier}"
                 )
-                new_attribute_value_resource = NewAttributeValue(attribute_value_uri)
+                new_attribute_value_resource = NewAttributeValueResource(
+                    attribute_value_uri
+                )
                 new_attribute_value_resource.label = value.label
                 new_attribute_value_resource.comment = value.description
                 new_attribute_value_resource.source_uri = maybe_existing_resource(
@@ -487,33 +485,50 @@ class QbWriter(WriterBase):
 
         return new_attribute_value_resources
 
-    def _get_new_unit_resources(self) -> List[NewUnit]:
+    def _get_new_unit_resources(self) -> List[NewUnitResource]:
         """
         :return: RDF Resources to defined new units
         """
-        units: List[QbUnit] = [
+        units: Set[QbUnit] = {
             u
             for col in get_columns_of_dsd_type(self.cube, QbMultiUnits)
             for u in col.component.units  # type: ignore
-        ]
+        }
 
-        units += [
+        units |= {
             col.component.unit
             for col in get_columns_of_dsd_type(self.cube, QbObservationValue)
             if col.component.unit is not None
-        ]
-        new_units: List[NewQbUnit] = [u for u in units if isinstance(u, NewQbUnit)]
+        }
 
-        new_unit_resources: List[NewUnit] = []
+        def get_new_base_units(u: QbUnit) -> Set[QbUnit]:
+            if (
+                isinstance(u, NewQbUnit)
+                and u.base_unit is not None
+                and isinstance(u.base_unit, NewQbUnit)
+            ):
+                return {u.base_unit} | get_new_base_units(u.base_unit)
+
+            return set()
+
+        units |= {base_unit for u in units for base_unit in get_new_base_units(u)}
+
+        new_units: Set[NewQbUnit] = {u for u in units if isinstance(u, NewQbUnit)}
+
+        new_unit_resources: List[NewUnitResource] = []
         for unit in new_units:
             unit_uri = self._get_unit_uri(unit)
-            new_unit_resource = NewUnit(unit_uri)
+            new_unit_resource = NewUnitResource(unit_uri)
             new_unit_resource.label = unit.label
             new_unit_resource.comment = unit.description
             new_unit_resource.source_uri = maybe_existing_resource(unit.source_uri)
-            new_unit_resource.parent_unit_uri = maybe_existing_resource(
-                unit.parent_unit_uri
+
+            maybe_unit_uri = (
+                None if unit.base_unit is None else self._get_unit_uri(unit.base_unit)
             )
+            new_unit_resource.base_unit_uri = maybe_existing_resource(maybe_unit_uri)
+            new_unit_resource.base_unit_scaling_factor = unit.base_unit_scaling_factor
+
             new_unit_resources.append(new_unit_resource)
 
         return new_unit_resources
