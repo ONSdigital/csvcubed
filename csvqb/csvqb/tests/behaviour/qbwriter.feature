@@ -1,15 +1,15 @@
 Feature: Test outputting CSV-Ws with Qb flavouring.
 
   Scenario: A QbCube should generate appropriate DCAT Metadata
-    Given a single-measure QbCube named "Some Qube"
+    Given a single-measure QbCube with identifier "qb-id-10002" named "Some Qube"
     When the cube is serialised to CSV-W
-    Then the file at "some-qube.csv" should exist
-    And the file at "some-qube.csv-metadata.json" should exist
+    Then the file at "qb-id-10002.csv" should exist
+    And the file at "qb-id-10002.csv-metadata.json" should exist
     And csvlint validation of all CSV-Ws should succeed
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should contain
       """
-      <file:/tmp/some-qube.csv#dataset> a <http://www.w3.org/ns/dcat#Dataset>;
+      <file:/tmp/qb-id-10002.csv#dataset> a <http://www.w3.org/ns/dcat#Dataset>;
       <http://purl.org/dc/terms/description> "Description"@en;
       <http://purl.org/dc/terms/license> <http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/>;
       <http://purl.org/dc/terms/creator> <https://www.gov.uk/government/organisations/office-for-national-statistics>;
@@ -20,7 +20,8 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
       <http://www.w3.org/ns/dcat#keyword> "Key word one"@en, "Key word two"@en;
       <http://www.w3.org/ns/dcat#landingPage> <http://example.org/landing-page>;
       <http://www.w3.org/ns/dcat#theme> <http://gss-data.org.uk/def/gdp#some-test-theme>;
-      <http://www.w3.org/ns/dcat#contactPoint> <mailto:something@example.org>.
+      <http://www.w3.org/ns/dcat#contactPoint> <mailto:something@example.org>;
+      <http://purl.org/dc/terms/identifier> "qb-id-10002".
       """
 
   Scenario: A QbCube should validate successfully where foreign key constraints are met.
@@ -143,7 +144,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     When the cube is serialised to CSV-W
     Then csvlint validation of "qube-with-string-literals.csv-metadata.json" should succeed
     And csv2rdf on all CSV-Ws should succeed
-    And turtle should be written to "output.ttl"
+    # And turtle should be written to "output.ttl"
     And the RDF should contain
       """
       <file:/tmp/qube-with-string-literals.csv#obs/uss-cerritos> <http://some-uri> "William Riker".
@@ -158,7 +159,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     When the cube is serialised to CSV-W
     Then csvlint validation of "qube-with-int-literals.csv-metadata.json" should succeed
     And csv2rdf on all CSV-Ws should succeed
-    And turtle should be written to "output.ttl"
+    # And turtle should be written to "output.ttl"
     And the RDF should contain
       """
       <file:/tmp/qube-with-int-literals.csv#obs/uss-cerritos> <http://some-uri> "75567"^^<http://www.w3.org/2001/XMLSchema#int>.
@@ -173,7 +174,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     When the cube is serialised to CSV-W
     Then csvlint validation of "qube-with-date-literals.csv-metadata.json" should succeed
     And csv2rdf on all CSV-Ws should succeed
-    And turtle should be written to "output.ttl"
+    # And turtle should be written to "output.ttl"
     And the RDF should contain
       """
       <file:/tmp/qube-with-date-literals.csv#obs/uss-cerritos> <http://some-uri> "2020-08-06"^^<http://www.w3.org/2001/XMLSchema#date>.
@@ -182,3 +183,21 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
       """
       <file:/tmp/qube-with-date-literals.csv#obs/uss-titan> <http://some-uri> "2020-10-08"^^<http://www.w3.org/2001/XMLSchema#date>.
       """
+
+  Scenario: A single-measure QbCube should pass skos+qb SPARQL test constraints
+    Given a single-measure QbCube named "Some Qube"
+    When the cube is serialised to CSV-W
+    Then csvlint validation of all CSV-Ws should succeed
+    And csv2rdf on all CSV-Ws should succeed
+    And the RDF should pass "skos, qb" SPARQL tests
+    # PMD test constraints won't pass because the CSV-W we're outputting needs to pass
+    # through Jenkins to pick up PMD-specific augmentation.
+
+  Scenario: A multi-measure QbCube should pass skos+qb SPARQL test constraints
+    Given a multi-measure QbCube named "Some Qube"
+    When the cube is serialised to CSV-W
+    Then csvlint validation of all CSV-Ws should succeed
+    And csv2rdf on all CSV-Ws should succeed
+    And the RDF should pass "skos, qb" SPARQL tests
+    # PMD test constraints won't pass because the CSV-W we're outputting needs to pass
+    # through Jenkins to pick up PMD-specific augmentation.

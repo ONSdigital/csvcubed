@@ -13,6 +13,7 @@ from csvqb.models.uriidentifiable import UriIdentifiable
 
 @dataclass
 class CatalogMetadata(CatalogMetadataBase, UriIdentifiable):
+    identifier: Optional[str] = None
     summary: Optional[str] = field(default=None, repr=False)
     description: Optional[str] = field(default=None, repr=False)
     creator_uri: Optional[str] = field(default=None, repr=False)
@@ -32,7 +33,7 @@ class CatalogMetadata(CatalogMetadataBase, UriIdentifiable):
         return self.description
 
     def get_identifier(self) -> str:
-        return self.title
+        return self.identifier or self.title
 
     def configure_dcat_dataset(self, dataset: dcat.Dataset) -> None:
         dt_now = datetime.now()
@@ -48,3 +49,4 @@ class CatalogMetadata(CatalogMetadataBase, UriIdentifiable):
         dataset.themes = set(self.theme_uris)
         dataset.keywords = set(self.keywords)
         dataset.contact_point = self.public_contact_point_uri
+        dataset.identifier = self.get_identifier()
