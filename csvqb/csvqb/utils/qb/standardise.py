@@ -19,7 +19,10 @@ from csvqb.models.cube.qb.components.measure import (
 
 
 def ensure_qbcube_data_is_categorical(cube: QbCube) -> None:
-    """Convert each of the appropriate columns in a QbCube's dataframe to categorical data. Does the change in-place."""
+    """Convert each of the appropriate coumns in a QbCube's dataframe to categorical data. Does the change in-place."""
+    if cube.data is None:
+        return
+
     for column in cube.columns:
         is_categorical_column = (
             isinstance(column, QbColumn)
@@ -32,6 +35,7 @@ def ensure_qbcube_data_is_categorical(cube: QbCube) -> None:
 
         if is_categorical_column:
             column_data = cube.data[column.csv_column_title]
+            assert column_data is not None
             if not isinstance(column_data.values, Categorical):
                 cube.data[column.csv_column_title] = column_data.astype("category")
 
@@ -120,8 +124,12 @@ def _overwrite_labels_for_columns(
     map_unit_label_to_new_value: Dict[str, str],
     raise_missing_values_exceptions: bool,
 ) -> None:
+    if cube.data is None:
+        return
+
     for column in affected_columns:
         column_data = cube.data[column.csv_column_title]
+        assert column_data is not None
         column_values = column_data.values
         assert isinstance(column_values, Categorical)
         new_category_labels: List[str] = []

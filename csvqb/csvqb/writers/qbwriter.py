@@ -42,7 +42,7 @@ VIRT_UNIT_COLUMN_NAME = "virt_unit"
 
 @dataclass
 class QbWriter(WriterBase):
-    cube: QbCube = cube
+    cube: QbCube
     csv_file_name: str = field(init=False)
     raise_missing_uri_safe_value_exceptions: bool = field(default=True, repr=False)
 
