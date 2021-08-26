@@ -1,11 +1,11 @@
 import pandas as pd
 from pathlib import Path
 from behave import Given, When, Then
-
+from devtools.behave.file import get_context_temp_dir_path
 
 from csvqb.models.cube import *
 from csvqb.writers.qbwriter import QbWriter
-from devtools.behave.file import get_context_temp_dir_path
+from csvqb.utils.qb.cube import validate_qb_component_constraints
 
 
 def get_standard_catalog_metadata_for_name(
@@ -301,3 +301,205 @@ def step_impl(context, cube_name: str, type: str, data_type: str):
     context.cube = Cube(
         get_standard_catalog_metadata_for_name(cube_name), data, columns
     )
+
+
+@Given(
+    'a single-measure QbCube named "{cube_name}" with all new units/measures/dimensions/attributes/codelists'
+)
+def step_impl(context, cube_name: str):
+    data = pd.DataFrame(
+        {
+            "New Dimension": ["a", "b", "c"],
+            "New Attribute": ["university", "students", "masters"],
+            "Observed Value": [1, 2, 3],
+        }
+    )
+
+    columns = [
+        QbColumn(
+            "New Dimension",
+            NewQbDimension(
+                "a new codelist",
+                code_list=NewQbCodeList(
+                    get_standard_catalog_metadata_for_name("a new codelist"),
+                    [NewQbConcept("a"), NewQbConcept("b"), NewQbConcept("c")],
+                ),
+            ),
+        ),
+        QbColumn(
+            "New Attribute",
+            NewQbAttribute.from_data("new_Qb_attribute", data["New Attribute"]),
+        ),
+        QbColumn(
+            "Observed Value",
+            QbSingleMeasureObservationValue(
+                NewQbMeasure("Part-time"), NewQbUnit("Num of Students")
+            ),
+        ),
+    ]
+
+    cube = Cube(get_standard_catalog_metadata_for_name(cube_name), data, columns)
+
+    errors = cube.validate()
+    errors += validate_qb_component_constraints(cube)
+
+    assert len(errors) == 0, [e.message for e in errors]
+
+    context.cube = cube
+
+
+@Given(
+    'a multi-measure QbCube named "{cube_name}" with all new units/measures/dimensions/attributes/codelists'
+)
+def step_impl(context, cube_name: str):
+    data = pd.DataFrame(
+        {
+            "New Dimension": ["a", "b", "c"],
+            "New Attribute": ["university", "students", "masters"],
+            "Observed Value": [1, 2, 3],
+            "Measure": ["part-time", "full-time", "flex-time"],
+        }
+    )
+
+    columns = [
+        QbColumn(
+            "New Dimension",
+            NewQbDimension(
+                "a new codelist",
+                code_list=NewQbCodeList(
+                    get_standard_catalog_metadata_for_name("a new codelist"),
+                    [NewQbConcept("a"), NewQbConcept("b"), NewQbConcept("c")],
+                ),
+            ),
+        ),
+        QbColumn(
+            "New Attribute",
+            NewQbAttribute.from_data("new_Qb_attribute", data["New Attribute"]),
+        ),
+        QbColumn(
+            "Observed Value",
+            QbMultiMeasureObservationValue(unit=NewQbUnit("Num of students")),
+        ),
+        QbColumn(
+            "Measure", QbMultiMeasureDimension.new_measures_from_data(data["Measure"])
+        ),
+    ]
+
+    cube = Cube(get_standard_catalog_metadata_for_name(cube_name), data, columns)
+
+    errors = cube.validate()
+    errors += validate_qb_component_constraints(cube)
+
+    assert len(errors) == 0, [e.message for e in errors]
+
+    context.cube = cube
+
+
+@Given(
+    'a single measure QbCube named "{cube_name}" with existing units/measure/dimensions/attribute/codelists'
+)
+def step_impl(context, cube_name: str):
+    data = pd.DataFrame(
+        {
+            "Existing Dimension": ["a", "b", "c"],
+            "Existing Attribute": ["university", "students", "masters"],
+            "Observed Value": [1, 2, 3],
+        }
+    )
+
+    columns = [
+        QbColumn(
+            csv_column_title="Existing Dimension",
+            component=ExistingQbDimension("http://existing/dimension"),
+            output_uri_template="http://existing/dimension/{+existing_dimension}",
+        ),
+        QbColumn(
+            csv_column_title="Existing Attribute",
+            component=ExistingQbAttribute("http://existing/attribute"),
+            output_uri_template="http://existing/attribute/{+existing_attribute}",
+        ),
+        QbColumn(
+            csv_column_title="Observed Value",
+            component=QbSingleMeasureObservationValue(
+                ExistingQbMeasure("http://existing/measure"),
+                ExistingQbUnit("http://exisiting/unit"),
+            ),
+        ),
+    ]
+
+    cube = Cube(get_standard_catalog_metadata_for_name(cube_name), data, columns)
+
+    errors = cube.validate()
+    errors += validate_qb_component_constraints(cube)
+
+    assert len(errors) == 0, [e.message for e in errors]
+
+    context.cube = cube
+
+
+@Given(
+    'a multi measure QbCube named "{cube_name}" with existing units/measure/dimensions/attribute/codelists'
+)
+def step_impl(context, cube_name: str):
+    data = pd.DataFrame(
+        {
+            "Existing Dimension": ["a", "b", "c"],
+            "Existing Attribute": ["university", "students", "masters"],
+            "Observed Value": [1, 2, 3],
+            "Units": ["gbp", "count", "count"],
+            "Existing Measures": ["part-time", "full-time", "flex-time"],
+        }
+    )
+
+    columns = [
+        QbColumn(
+            "Existing Dimension",
+            ExistingQbDimension("http://existing/dimension"),
+            output_uri_template="http://existing/dimension/{+existing_dimension}",
+        ),
+        QbColumn(
+            csv_column_title="Existing Attribute",
+            component=ExistingQbAttribute("http://existing/attribute"),
+            output_uri_template="http://existing/attribute/{+existing_attribute}",
+        ),
+        QbColumn(
+            "Observed Value",
+            QbMultiMeasureObservationValue("number"),
+        ),
+        QbColumn(
+            "Units",
+            QbMultiUnits(
+                [
+                    ExistingQbUnit("http://existing/unit/gbp"),
+                    ExistingQbUnit("http://existing/unit/count"),
+                ]
+            ),
+            output_uri_template="http://existing/unit/{+units}",
+        ),
+        QbColumn(
+            "Existing Measures",
+            QbMultiMeasureDimension(
+                [
+                    ExistingQbMeasure("http://existing/measure/part-time"),
+                    ExistingQbMeasure("http://existing/measure/full-time"),
+                    ExistingQbMeasure("http://existing/measure/flex-time"),
+                ]
+            ),
+            output_uri_template="http://existing/measure/{+existing_measures}",
+        ),
+    ]
+
+    cube = Cube(get_standard_catalog_metadata_for_name(cube_name), data, columns)
+
+    errors = cube.validate()
+    errors += validate_qb_component_constraints(cube)
+
+    assert len(errors) == 0, [e.message for e in errors]
+
+    context.cube = cube
+
+
+@Then("some additional turtle is appended to the resulting RDF")
+def step_impl(context):
+    rdf_to_add = context.text
+    context.turtle += rdf_to_add
