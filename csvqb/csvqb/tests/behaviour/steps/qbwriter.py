@@ -66,12 +66,12 @@ def step_impl(context, cube_name: str):
         QbColumn(
             "A",
             ExistingQbDimension("http://example.org/some/dimension/a"),
-            output_uri_template="http://example.org/some/codelist/a",
+            csv_column_uri_template="http://example.org/some/codelist/a",
         ),
         QbColumn(
             "D",
             ExistingQbDimension("http://example.org/some/dimension/d"),
-            output_uri_template="http://example.org/some/codelist/d",
+            csv_column_uri_template="http://example.org/some/codelist/d",
         ),
         QbColumn(
             "Value",
@@ -365,7 +365,7 @@ def step_impl(context, cube_name: str):
         QbColumn(
             "New Dimension",
             NewQbDimension(
-                "a new codelist",
+                "existing codelist",
                 code_list=NewQbCodeList(
                     get_standard_catalog_metadata_for_name("a new codelist"),
                     [NewQbConcept("a"), NewQbConcept("b"), NewQbConcept("c")],
@@ -402,6 +402,7 @@ def step_impl(context, cube_name: str):
     data = pd.DataFrame(
         {
             "Existing Dimension": ["a", "b", "c"],
+            "New Dimension": ["d", "e", "f"],
             "Existing Attribute": ["university", "students", "masters"],
             "Observed Value": [1, 2, 3],
         }
@@ -411,12 +412,21 @@ def step_impl(context, cube_name: str):
         QbColumn(
             csv_column_title="Existing Dimension",
             component=ExistingQbDimension("http://existing/dimension"),
-            output_uri_template="http://existing/dimension/{+existing_dimension}",
+            csv_column_uri_template="http://existing/dimension/{+existing_dimension}",
+        ),
+        QbColumn(
+            csv_column_title="New Dimension",
+            component=NewQbDimension(
+                label="existing codelist",
+                code_list=ExistingQbCodeList(
+                    concept_scheme_uri="http://existing/concept/scheme/uri"
+                ),
+            ),
         ),
         QbColumn(
             csv_column_title="Existing Attribute",
             component=ExistingQbAttribute("http://existing/attribute"),
-            output_uri_template="http://existing/attribute/{+existing_attribute}",
+            csv_column_uri_template="http://existing/attribute/{+existing_attribute}",
         ),
         QbColumn(
             csv_column_title="Observed Value",
@@ -444,6 +454,7 @@ def step_impl(context, cube_name: str):
     data = pd.DataFrame(
         {
             "Existing Dimension": ["a", "b", "c"],
+            "New Dimension": ["d", "e", "f"],
             "Existing Attribute": ["university", "students", "masters"],
             "Observed Value": [1, 2, 3],
             "Units": ["gbp", "count", "count"],
@@ -455,12 +466,21 @@ def step_impl(context, cube_name: str):
         QbColumn(
             "Existing Dimension",
             ExistingQbDimension("http://existing/dimension"),
-            output_uri_template="http://existing/dimension/{+existing_dimension}",
+            csv_column_uri_template="http://existing/dimension/{+existing_dimension}",
+        ),
+        QbColumn(
+            csv_column_title="New Dimension",
+            component=NewQbDimension(
+                label="existing codelist",
+                code_list=ExistingQbCodeList(
+                    concept_scheme_uri="http://existing/concept/scheme/uri"
+                ),
+            ),
         ),
         QbColumn(
             csv_column_title="Existing Attribute",
             component=ExistingQbAttribute("http://existing/attribute"),
-            output_uri_template="http://existing/attribute/{+existing_attribute}",
+            csv_column_uri_template="http://existing/attribute/{+existing_attribute}",
         ),
         QbColumn(
             "Observed Value",
@@ -474,7 +494,7 @@ def step_impl(context, cube_name: str):
                     ExistingQbUnit("http://existing/unit/count"),
                 ]
             ),
-            output_uri_template="http://existing/unit/{+units}",
+            csv_column_uri_template="http://existing/unit/{+units}",
         ),
         QbColumn(
             "Existing Measures",
@@ -485,7 +505,7 @@ def step_impl(context, cube_name: str):
                     ExistingQbMeasure("http://existing/measure/flex-time"),
                 ]
             ),
-            output_uri_template="http://existing/measure/{+existing_measures}",
+            csv_column_uri_template="http://existing/measure/{+existing_measures}",
         ),
     ]
 

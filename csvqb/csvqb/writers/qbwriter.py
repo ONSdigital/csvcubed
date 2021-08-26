@@ -562,9 +562,9 @@ class QbWriter(WriterBase):
         if property_url is not None:
             csvw_col["propertyUrl"] = property_url
 
-        if column.output_uri_template is not None:
+        if column.csv_column_uri_template is not None:
             # User-specified value overrides our default guess.
-            csvw_col["valueUrl"] = column.output_uri_template
+            csvw_col["valueUrl"] = column.csv_column_uri_template
         elif isinstance(column.component, QbAttributeLiteral):
             pass
         elif default_value_url is not None:

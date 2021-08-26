@@ -77,7 +77,7 @@ def _validate_dimensions(cube: Cube) -> List[ValidationError]:
 
     for c in cube.columns:
         if isinstance(c, QbColumn) and isinstance(c.component, ExistingQbDimension):
-            if c.output_uri_template is None:
+            if c.csv_column_uri_template is None:
                 errors.append(
                     OutputUriTemplateMissingError(
                         c.csv_column_title, ExistingQbDimension
@@ -95,7 +95,7 @@ def _validate_attributes(cube: Cube) -> List[ValidationError]:
     for c in cube.columns:
         if isinstance(c, QbColumn) and isinstance(c.component, QbAttribute):
             if (
-                c.output_uri_template is None
+                c.csv_column_uri_template is None
                 and len(c.component.new_attribute_values) == 0  # type: ignore
             ):
                 errors.append(
