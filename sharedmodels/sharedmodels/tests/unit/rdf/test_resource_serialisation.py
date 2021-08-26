@@ -1,7 +1,7 @@
 from typing import Annotated
 
 import pytest
-from rdflib import URIRef, Graph, Literal, RDFS, FOAF
+from rdflib import URIRef, Graph, Literal, RDFS, FOAF, RDF
 
 from sharedmodels.rdf.resource import (
     NewResource,
@@ -42,17 +42,24 @@ def test_overriding_attribute_annotations():
 
     graph = b.to_graph(Graph())
 
-    assert 1 == len(graph)
+    assert len(graph) == 2
     assert (
         URIRef("http://some-b-uri"),
         URIRef("http://replacement-uri"),
         Literal("Hello, World", "en"),
     ) in graph
+
     assert (
         URIRef("http://some-b-uri"),
         URIRef("http://original-uri"),
         Literal("Hello, World", "en"),
     ) not in graph
+
+    assert (
+        URIRef("http://some-b-uri"),
+        RDF.type,
+        RDFS.Resource,
+    ) in graph
 
 
 def test_resource_serialised_for_new_resource():
@@ -207,7 +214,7 @@ def test_multiple_triples_same_attr_serialised():
     a.p = "Hello, World"
     graph = a.to_graph(Graph())
 
-    assert 2 == len(graph)
+    assert len(graph) == 3
 
     assert (
         URIRef("http://some-uri-a"),
@@ -219,6 +226,12 @@ def test_multiple_triples_same_attr_serialised():
         URIRef("http://some-uri-a"),
         URIRef("http://second-predicate-uri"),
         Literal("Hello, World", "en"),
+    ) in graph
+
+    assert (
+        URIRef("http://some-uri-a"),
+        RDF.type,
+        RDFS.Resource,
     ) in graph
 
 
@@ -239,12 +252,18 @@ def test_inverse_triple_serialisation():
     a.p = ExistingResource("http://some-existing-resource-p")
     graph = a.to_graph(Graph())
 
-    assert 1 == len(graph)
+    assert len(graph) == 2
     assert (
         URIRef("http://some-existing-resource-p"),
         URIRef("http://some-predicate-uri"),
         URIRef("http://some-uri-a"),
-    )
+    ) in graph
+
+    assert (
+        URIRef("http://some-uri-a"),
+        RDF.type,
+        RDFS.Resource,
+    ) in graph
 
 
 def test_mandatory_properties_are_required():
