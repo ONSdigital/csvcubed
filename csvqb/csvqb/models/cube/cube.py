@@ -31,6 +31,9 @@ class Cube(Generic[TMetadata], PydanticModel):
             errors += self._validate_columns()
         except Exception as e:
             errors.append(ValidationError(str(e)))
+            errors.append(
+                ValidationError("An error occurred and validation Failed to Complete")
+            )
 
         return errors
 
@@ -50,7 +53,8 @@ class Cube(Generic[TMetadata], PydanticModel):
                 else:
                     errors.append(ColumnNotFoundInDataError(col.csv_column_title))
 
-            errors += col.validate_data(maybe_column_data)
+            if maybe_column_data is not None:
+                errors += col.validate_data(maybe_column_data)
 
         if self.data is not None:
             defined_column_titles = [c.csv_column_title for c in self.columns]

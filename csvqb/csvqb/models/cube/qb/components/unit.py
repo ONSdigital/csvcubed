@@ -53,13 +53,13 @@ class NewQbUnit(QbUnit, UriIdentifiable, ArbitraryRdf):
     """
     The unit that this new unit is based on.
     
-    Codependent with base_unit_scaling_factor.
+    Codependent with :attr:`base_unit_scaling_factor`.
     """
     base_unit_scaling_factor: Optional[float] = field(default=None, repr=False)
     """
     How to scale the value associated with this unit to map back to the base unit.
     
-    Codependent with base_unit.
+    Codependent with :attr:`base_unit`.
     
     e.g. if the base unit is *meters* and this unit (*kilometers*) has a scaling factor of **1,000**, then you multiply 
     the value in *kilometers* by **1,000** to get the value in *meters*.    
@@ -69,7 +69,7 @@ class NewQbUnit(QbUnit, UriIdentifiable, ArbitraryRdf):
     """
     The URI of the `qudt:QuantityKind` family to which this unit belongs.
     
-    Codependent with si_base_unit_conversion_multiplier. 
+    Codependent with :attr:`si_base_unit_conversion_multiplier`. 
     """
     si_base_unit_conversion_multiplier: Optional[float] = field(
         default=None, repr=False
@@ -77,7 +77,7 @@ class NewQbUnit(QbUnit, UriIdentifiable, ArbitraryRdf):
     """
     Multiply a value by this number to convert between this unit and its corresponding **SI unit**.
 
-    Codependent with qudt_quantity_kind_uri. 
+    Codependent with :attr:`qudt_quantity_kind_uri`. 
        
     See https://github.com/qudt/qudt-public-repo/wiki/User-Guide-for-QUDT#4-conversion-multipliers-in-qudt to understand
     the role of `qudt:conversionMultiplier` before using this. *It may not represent what you think it does.*
@@ -93,6 +93,8 @@ class NewQbUnit(QbUnit, UriIdentifiable, ArbitraryRdf):
             "qudt_quantity_kind_uri": ["si_base_unit_conversion_multiplier"],
         }
     )
+
+    _qudt_quantity_kind_uri_validation = validate_uri("qudt_quantity_kind_uri")
 
     def get_permitted_rdf_fragment_hints(self) -> Set[RdfSerialisationHint]:
         return {RdfSerialisationHint.Unit}
