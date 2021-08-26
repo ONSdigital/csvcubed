@@ -7,6 +7,7 @@ Output writer for CSV-qb
 import itertools
 import json
 import re
+from dataclasses import field, dataclass
 from pathlib import Path
 from typing import Tuple, Dict, Any, List, Iterable, Set
 import rdflib
@@ -27,6 +28,7 @@ from csvqb.utils.uri import (
 )
 from csvqb.utils.qb.cube import get_columns_of_dsd_type
 from csvqb.utils.dict import rdf_resource_to_json_ld
+from csvqb.utils.qb.standardise import convert_data_values_to_uri_safe_values
 from .skoscodelistwriter import SkosCodeListWriter, CODE_LIST_NOTATION_COLUMN_NAME
 from .writerbase import WriterBase
 from ..models.rdf.newattributevalueresource import NewAttributeValueResource
@@ -38,12 +40,22 @@ from csvqb.models.rdf.qbdatasetincatalog import QbDataSetInCatalog
 VIRT_UNIT_COLUMN_NAME = "virt_unit"
 
 
+@dataclass
 class QbWriter(WriterBase):
-    def __init__(self, cube: QbCube):
-        self.cube: QbCube = cube
-        self.csv_file_name: str = f"{cube.metadata.uri_safe_identifier}.csv"
+    cube: QbCube = cube
+    csv_file_name: str = field(init=False)
+    raise_missing_uri_safe_value_exceptions: bool = field(default=True, repr=False)
+
+    def __post_init__(self):
+        self.csv_file_name = f"{self.cube.metadata.uri_safe_identifier}.csv"
 
     def write(self, output_folder: Path):
+        # Map all labels to their corresponding URI-safe-values, where possible.
+        # Also converts all appropriate columns to the pandas categorical format.
+        convert_data_values_to_uri_safe_values(
+            self.cube, self.raise_missing_uri_safe_value_exceptions
+        )
+
         tables = [
             {
                 "url": self.csv_file_name,

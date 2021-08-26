@@ -4,7 +4,7 @@ Units
 """
 from dataclasses import dataclass, field
 from typing import Optional, List, Set
-from abc import ABC, abstractmethod
+from abc import ABC
 import pandas as pd
 import uritemplate
 
@@ -96,6 +96,28 @@ class NewQbUnit(QbUnit, UriIdentifiable, ArbitraryRdf):
 
     _qudt_quantity_kind_uri_validation = validate_uri("qudt_quantity_kind_uri")
 
+    def _get_identifiable_state(self) -> tuple:
+        """
+        Used in hash calculation and equality comparisons.
+
+        :return: The properties which make this unit unique.
+        """
+        return (
+            self.label,
+            self.description,
+            self.parent_unit_uri,
+            self.uri_safe_identifier,
+        )
+
+    def __eq__(self, other):
+        return (
+            isinstance(other, NewQbUnit)
+            and self._get_identifiable_state() == other._get_identifiable_state()
+        )
+
+    def __hash__(self):
+        return self._get_identifiable_state().__hash__()
+
     def get_permitted_rdf_fragment_hints(self) -> Set[RdfSerialisationHint]:
         return {RdfSerialisationHint.Unit}
 
@@ -104,24 +126,6 @@ class NewQbUnit(QbUnit, UriIdentifiable, ArbitraryRdf):
 
     def get_identifier(self) -> str:
         return self.label
-
-    def _get_hashable_equatable_identifier(self) -> tuple:
-        """
-        Used in hash calculation and equality comparisons.
-
-        :return: The properties which make this unit unique.
-        """
-        return self.label, self.uri_safe_identifier, self.description, self.base_unit
-
-    def __eq__(self, other):
-        return (
-            isinstance(other, NewQbUnit)
-            and self._get_hashable_equatable_identifier()
-            == other._get_hashable_equatable_identifier()
-        )
-
-    def __hash__(self):
-        return self._get_hashable_equatable_identifier().__hash__()
 
 
 @dataclass
