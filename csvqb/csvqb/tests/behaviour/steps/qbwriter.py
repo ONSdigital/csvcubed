@@ -224,6 +224,8 @@ def step_impl(context, cube_name: str):
                     "Some Extending Unit",
                     base_unit=NewQbUnit("Some Base Unit"),
                     base_unit_scaling_factor=1000,
+                    qudt_quantity_kind_uri="http://some-quantity-kind",
+                    si_base_unit_conversion_multiplier=25.123123,
                 ),
             ),
         ),

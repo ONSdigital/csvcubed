@@ -44,6 +44,20 @@ class NewUnitResource(NewMetadataResource):
         ),
     ]
 
+    has_qudt_quantity_kind: Annotated[
+        Optional[ExistingResource],
+        Triple(QUDT.hasQuantityKind, PropertyStatus.optional, map_resource_to_uri),
+    ]
+
+    qudt_conversion_multiplier: Annotated[
+        Optional[float],
+        Triple(
+            QUDT.conversionMultiplier,
+            PropertyStatus.optional,
+            map_to_literal_with_datatype(XSD.float),
+        ),
+    ]
+
     def __init__(self, uri: str):
         NewMetadataResource.__init__(self, uri)
         self.rdf_types.add(OM2.Unit)

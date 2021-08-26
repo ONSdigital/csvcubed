@@ -48,20 +48,49 @@ class NewQbUnit(QbUnit, UriIdentifiable, ArbitraryRdf):
     source_uri: Optional[str] = field(default=None, repr=False)
     uri_safe_identifier_override: Optional[str] = field(default=None, repr=False)
     arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
+
     base_unit: Optional[QbUnit] = field(default=None, repr=False)
-    """The unit that this new unit is based on."""
+    """
+    The unit that this new unit is based on.
+    
+    Codependent with base_unit_scaling_factor.
+    """
     base_unit_scaling_factor: Optional[float] = field(default=None, repr=False)
     """
     How to scale the value associated with this unit to map back to the base unit.
     
+    Codependent with base_unit.
+    
     e.g. if the base unit is *meters* and this unit (*kilometers*) has a scaling factor of **1,000**, then you multiply 
     the value in *kilometers* by **1,000** to get the value in *meters*.    
+    """
+
+    qudt_quantity_kind_uri: Optional[str] = field(default=None, repr=False)
+    """
+    The URI of the `qudt:QuantityKind` family to which this unit belongs.
+    
+    Codependent with si_base_unit_conversion_multiplier. 
+    """
+    si_base_unit_conversion_multiplier: Optional[float] = field(
+        default=None, repr=False
+    )
+    """
+    Multiply a value by this number to convert between this unit and its corresponding **SI unit**.
+
+    Codependent with qudt_quantity_kind_uri. 
+       
+    See https://github.com/qudt/qudt-public-repo/wiki/User-Guide-for-QUDT#4-conversion-multipliers-in-qudt to understand
+    the role of `qudt:conversionMultiplier` before using this. *It may not represent what you think it does.*
+    
+    SI - https://en.wikipedia.org/wiki/International_System_of_Units 
     """
 
     optional_attribute_dependencies = enforce_optional_attribute_dependencies(
         {
             "base_unit": ["base_unit_scaling_factor"],
             "base_unit_scaling_factor": ["base_unit"],
+            "si_base_unit_conversion_multiplier": ["qudt_quantity_kind_uri"],
+            "qudt_quantity_kind_uri": ["si_base_unit_conversion_multiplier"],
         }
     )
 

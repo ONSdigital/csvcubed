@@ -108,6 +108,8 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
       <file:/tmp/some-qube.csv#unit/some-extending-unit>
         a qudt:Unit, om2:Unit;
         qudt:isScalingOf <file:/tmp/some-qube.csv#unit/some-base-unit>;
+        qudt:hasQuantityKind <http://some-quantity-kind>;
+        qudt:conversionMultiplier "25.123123"^^xsd:float;
         om2:hasUnit <file:/tmp/some-qube.csv#unit/some-base-unit>;
         om2:hasFactor "1000.0"^^xsd:float;
         rdfs:label "Some Extending Unit"@en.

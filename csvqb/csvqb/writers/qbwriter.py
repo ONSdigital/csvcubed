@@ -529,8 +529,16 @@ class QbWriter(WriterBase):
             maybe_unit_uri = (
                 None if unit.base_unit is None else self._get_unit_uri(unit.base_unit)
             )
+
             new_unit_resource.base_unit_uri = maybe_existing_resource(maybe_unit_uri)
             new_unit_resource.base_unit_scaling_factor = unit.base_unit_scaling_factor
+
+            new_unit_resource.has_qudt_quantity_kind = maybe_existing_resource(
+                unit.qudt_quantity_kind_uri
+            )
+            new_unit_resource.qudt_conversion_multiplier = (
+                unit.si_base_unit_conversion_multiplier
+            )
 
             new_unit_resources.append(new_unit_resource)
 
