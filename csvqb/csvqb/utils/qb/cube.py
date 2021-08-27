@@ -5,7 +5,7 @@ QbCube
 from typing import List, TypeVar, Type
 
 from csvqb.models.cube.qb.validationerrors import (
-    OutputUriTemplateMissingError,
+    CsvColumnUriTemplateMissingError,
     MinNumComponentsNotSatisfiedError,
     MaxNumComponentsExceededError,
     WrongNumberComponentsError,
@@ -79,7 +79,7 @@ def _validate_dimensions(cube: Cube) -> List[ValidationError]:
         if isinstance(c, QbColumn) and isinstance(c.component, ExistingQbDimension):
             if c.csv_column_uri_template is None:
                 errors.append(
-                    OutputUriTemplateMissingError(
+                    CsvColumnUriTemplateMissingError(
                         c.csv_column_title, ExistingQbDimension
                     )
                 )
@@ -99,7 +99,7 @@ def _validate_attributes(cube: Cube) -> List[ValidationError]:
                 and len(c.component.new_attribute_values) == 0  # type: ignore
             ):
                 errors.append(
-                    OutputUriTemplateMissingError(
+                    CsvColumnUriTemplateMissingError(
                         c.csv_column_title,
                         f"{c.component.__class__.__name__} using existing attribute values",
                     )

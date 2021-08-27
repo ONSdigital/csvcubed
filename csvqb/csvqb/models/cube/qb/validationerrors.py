@@ -26,7 +26,7 @@ def _get_description_for_component(t: ComponentTypeDescription) -> str:
 
 
 @dataclass
-class OutputUriTemplateMissingError(SpecificValidationError):
+class CsvColumnUriTemplateMissingError(SpecificValidationError):
     """
     Represents an error where the user has defined a component which cannot infer its own csv_column_uri_template without
     manually specifying an csv_column_uri_template.
