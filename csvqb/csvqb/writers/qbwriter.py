@@ -716,7 +716,7 @@ class QbWriter(WriterBase):
                 value_uri = self._doc_rel_uri(
                     f"attribute/{column.uri_safe_identifier}/{column_uri_fragment}"
                 )
-            # Else: Existing attribute values defined elsewhere. The user *should* have defined an output_uri_template.
+            # Else: Existing attribute values defined elsewhere. The user *should* have defined an csv_column_uri_template.
             # N.B. We can't do mix-and-match New/Existing attribute values.
 
             return attribute.attribute_uri, value_uri
@@ -731,7 +731,7 @@ class QbWriter(WriterBase):
                     f"attribute/{attribute.uri_safe_identifier}/{column_uri_fragment}"
                 )
             # Else: Existing attribute values defined elsewhere. The user *should* have defined an
-            # output_uri_template.
+            # csv_column_uri_template.
             # N.B. We can't do mix-and-match New/Existing attribute values.
 
             return local_attribute_uri, value_uri
