@@ -48,7 +48,7 @@ class ExistingQbDimension(QbDimension):
     _range_uri_validator = validate_uri("range_uri")
 
     def validate_data(
-        self, data: pd.Series, column_csvw_name: str, output_uri_template: str
+        self, data: pd.Series, column_csvw_name: str, csv_column_uri_template: str
     ) -> List[ValidationError]:
         # No validation possible since we don't have the dimensions' code-list locally.
         return []
@@ -100,7 +100,7 @@ class NewQbDimension(QbDimension, UriIdentifiable):
         return self.label
 
     def validate_data(
-        self, data: pd.Series, column_csvw_name: str, output_uri_template: str
+        self, data: pd.Series, column_csvw_name: str, csv_column_uri_template: str
     ) -> List[ValidationError]:
         # Leave csv-lint to do the validation here. It will enforce Foreign Key constraints on code lists.
         return []
