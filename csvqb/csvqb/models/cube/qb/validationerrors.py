@@ -26,10 +26,10 @@ def _get_description_for_component(t: ComponentTypeDescription) -> str:
 
 
 @dataclass
-class OutputUriTemplateMissingError(SpecificValidationError):
+class CsvColumnUriTemplateMissingError(SpecificValidationError):
     """
-    Represents an error where the user has defined a component which cannot infer its own output_uri_template without
-    manually specifying an output_uri_template.
+    Represents an error where the user has defined a component which cannot infer its own csv_column_uri_template without
+    manually specifying an csv_column_uri_template.
     """
 
     csv_column_name: str
@@ -38,7 +38,7 @@ class OutputUriTemplateMissingError(SpecificValidationError):
     def __post_init__(self):
         self.message = (
             f"'{self.csv_column_name}' - a {_get_description_for_component(self.component_type)} must have an "
-            + "output_uri_template defined."
+            + "csv_column_uri_template defined."
         )
 
 

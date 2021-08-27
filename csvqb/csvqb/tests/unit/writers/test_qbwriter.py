@@ -417,7 +417,7 @@ def test_default_property_value_uris_multi_measure_obs_val():
 
 def test_csv_col_definition_default_property_value_urls():
     """
-    When configuring a CSV-W column definition, if the user has not specified an `output_uri_template`
+    When configuring a CSV-W column definition, if the user has not specified an `csv_column_uri_template`
     against the `QbColumn` then the `propertyUrl` and `valueUrl`s should both be populated by the default
     values inferred from the component.
     """
@@ -430,15 +430,15 @@ def test_csv_col_definition_default_property_value_urls():
     assert "cube-name.csv#unit/{+some_column}" == csv_col["valueUrl"]
 
 
-def test_csv_col_definition_output_uri_template_override():
+def test_csv_col_definition_csv_column_uri_template_override():
     """
-    When configuring a CSV-W column definition, if the user has specified an `output_uri_template` against the
+    When configuring a CSV-W column definition, if the user has specified an `csv_column_uri_template` against the
     `QbColumn` then this should end up as the resulting CSV-W column's `valueUrl`.
     """
     column = QbColumn(
         "Some Column",
         ExistingQbDimension("http://base-uri/dimensions/some-dimension"),
-        output_uri_template="http://base-uri/some-alternative-output-uri/{+some_column}",
+        csv_column_uri_template="http://base-uri/some-alternative-output-uri/{+some_column}",
     )
     csv_col = empty_qbwriter._generate_csvqb_column(column)
     assert "http://base-uri/dimensions/some-dimension" == csv_col["propertyUrl"]

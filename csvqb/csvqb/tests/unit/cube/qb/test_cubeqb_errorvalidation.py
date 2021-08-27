@@ -6,7 +6,7 @@ import pandas as pd
 
 from csvqb.models.cube import *
 from csvqb.models.cube.qb.validationerrors import (
-    OutputUriTemplateMissingError,
+    CsvColumnUriTemplateMissingError,
     MinNumComponentsNotSatisfiedError,
     UnitsNotDefinedError,
     BothUnitTypesDefinedError,
@@ -35,7 +35,7 @@ def test_single_measure_qb_definition():
         QbColumn(
             "Existing Dimension",
             ExistingQbDimension("https://example.org/dimensions/existing_dimension"),
-            output_uri_template="https://example.org/concept-scheme/existing_scheme/{+existing_dimension}",
+            csv_column_uri_template="https://example.org/concept-scheme/existing_scheme/{+existing_dimension}",
         ),
         QbColumn(
             "Local Dimension",
@@ -75,11 +75,12 @@ def test_multi_measure_qb_definition():
         QbColumn(
             "Existing Dimension",
             ExistingQbDimension("https://example.org/dimensions/existing_dimension"),
-            output_uri_template="https://example.org/concept-scheme/existing_scheme/{+existing_dimension}",
+            csv_column_uri_template="https://example.org/concept-scheme/existing_scheme/{+existing_dimension}",
         ),
         QbColumn("Value", QbMultiMeasureObservationValue(data_type="number")),
         QbColumn(
-            "Measure", QbMultiMeasureDimension.new_measures_from_data(data["Measure"]),
+            "Measure",
+            QbMultiMeasureDimension.new_measures_from_data(data["Measure"]),
         ),
         QbColumn("Units", QbMultiUnits.new_units_from_data(data["Units"])),
     ]
@@ -91,9 +92,9 @@ def test_multi_measure_qb_definition():
     assert_num_validation_errors(validation_errors, 0)
 
 
-def test_existing_dimension_output_uri_template():
+def test_existing_dimension_csv_column_uri_template():
     """
-    An ExistingQbDimension must have an output_uri_template defined by the user if not it's an error
+    An ExistingQbDimension must have an csv_column_uri_template defined by the user if not it's an error
     """
 
     data = pd.DataFrame({"Existing Dimension": ["A", "B", "C"], "Value": [1, 2, 3]})
@@ -120,7 +121,7 @@ def test_existing_dimension_output_uri_template():
 
     assert_num_validation_errors(errors, 1)
     validation_error = errors[0]
-    assert isinstance(validation_error, OutputUriTemplateMissingError)
+    assert isinstance(validation_error, CsvColumnUriTemplateMissingError)
     assert validation_error.csv_column_name == "Existing Dimension"
 
 
@@ -193,7 +194,12 @@ def test_no_unit_defined():
     """
     Ensure that when we don't define a unit, we get an error message.
     """
-    data = pd.DataFrame({"Some Dimension": ["a", "b", "c"], "Value": [1, 2, 3],})
+    data = pd.DataFrame(
+        {
+            "Some Dimension": ["a", "b", "c"],
+            "Value": [1, 2, 3],
+        }
+    )
 
     cube = Cube(
         CatalogMetadata("Some Qube"),
@@ -265,7 +271,11 @@ def test_multiple_obs_val_columns():
     We only currently accept the `MeasureDimension` style of multi-measure datasets.
     """
     data = pd.DataFrame(
-        {"Some Dimension": ["a", "b", "c"], "Value1": [3, 2, 1], "Value2": [1, 2, 3],}
+        {
+            "Some Dimension": ["a", "b", "c"],
+            "Value1": [3, 2, 1],
+            "Value2": [1, 2, 3],
+        }
     )
 
     cube = Cube(
@@ -305,7 +315,12 @@ def test_multi_measure_obs_val_without_measure_dimension():
     Ensure that when a user defines a multi-measure observation valuer, we get a warning if they haven't defined a
     measure dimension.
     """
-    data = pd.DataFrame({"Some Dimension": ["a", "b", "c"], "Value": [1, 2, 3],})
+    data = pd.DataFrame(
+        {
+            "Some Dimension": ["a", "b", "c"],
+            "Value": [1, 2, 3],
+        }
+    )
 
     cube = Cube(
         CatalogMetadata("Some Qube"),
@@ -431,9 +446,9 @@ def test_measure_dimension_with_single_measure_obs_val():
     )
 
 
-def test_existing_attribute_output_uri_template_required():
+def test_existing_attribute_csv_column_uri_template_required():
     """
-    An ExistingQbAttribute using Existing Attribute Values must have an output_uri_template defined by the user,
+    An ExistingQbAttribute using Existing Attribute Values must have an csv_column_uri_template defined by the user,
      if not it's an error
     """
 
@@ -452,12 +467,12 @@ def test_existing_attribute_output_uri_template_required():
             QbColumn(
                 "Existing Dimension",
                 ExistingQbDimension("http://example.org/dimensions/location"),
-                output_uri_template="https://example.org/concept-scheme/existing_scheme/{+existing_dimension}",
+                csv_column_uri_template="https://example.org/concept-scheme/existing_scheme/{+existing_dimension}",
             ),
             QbColumn(
                 "Existing Attribute 1",
                 ExistingQbAttribute("http://example.org/attributes/example"),
-                # No NewQbAttributeValues - so output_uri_template is *required*
+                # No NewQbAttributeValues - so csv_column_uri_template is *required*
             ),
             QbColumn(
                 "Existing Attribute 2",
@@ -469,7 +484,7 @@ def test_existing_attribute_output_uri_template_required():
                         NewQbAttributeValue("Val6"),
                     ],
                 ),
-                # NewQbAttributeValues defined - so output_uri_template is **not** required
+                # NewQbAttributeValues defined - so csv_column_uri_template is **not** required
             ),
             QbColumn(
                 "Obs",
@@ -486,14 +501,14 @@ def test_existing_attribute_output_uri_template_required():
 
     assert_num_validation_errors(errors, 1)
     error = errors[0]
-    assert isinstance(error, OutputUriTemplateMissingError)
+    assert isinstance(error, CsvColumnUriTemplateMissingError)
     assert error.csv_column_name == "Existing Attribute 1"
     assert error.component_type == "ExistingQbAttribute using existing attribute values"
 
 
-def test_new_attribute_output_uri_template_required():
+def test_new_attribute_csv_column_uri_template_required():
     """
-    A NewQbAttribute using existing attribute vluaes must have an output_uri_template defined by the user,
+    A NewQbAttribute using existing attribute vluaes must have an csv_column_uri_template defined by the user,
      if not it's an error
     """
 
@@ -512,12 +527,12 @@ def test_new_attribute_output_uri_template_required():
             QbColumn(
                 "Existing Dimension",
                 ExistingQbDimension("http://example.org/dimensions/location"),
-                output_uri_template="https://example.org/concept-scheme/existing_scheme/{+existing_dimension}",
+                csv_column_uri_template="https://example.org/concept-scheme/existing_scheme/{+existing_dimension}",
             ),
             QbColumn(
                 "New Attribute 1",
                 NewQbAttribute("Some New Attribute 1"),
-                # No NewQbAttributeValues - so output_uri_template is *required*
+                # No NewQbAttributeValues - so csv_column_uri_template is *required*
             ),
             QbColumn(
                 "New Attribute 2",
@@ -529,7 +544,7 @@ def test_new_attribute_output_uri_template_required():
                         NewQbAttributeValue("Val6"),
                     ],
                 ),
-                # NewQbAttributeValues defined - so output_uri_template is **not** required
+                # NewQbAttributeValues defined - so csv_column_uri_template is **not** required
             ),
             QbColumn(
                 "Obs",
@@ -546,7 +561,7 @@ def test_new_attribute_output_uri_template_required():
 
     assert_num_validation_errors(errors, 1)
     error = errors[0]
-    assert isinstance(error, OutputUriTemplateMissingError)
+    assert isinstance(error, CsvColumnUriTemplateMissingError)
     assert error.csv_column_name == "New Attribute 1"
     assert error.component_type == "NewQbAttribute using existing attribute values"
 

@@ -229,3 +229,96 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     And the RDF should pass "skos, qb" SPARQL tests
     # PMD test constraints won't pass because the CSV-W we're outputting needs to pass
     # through Jenkins to pick up PMD-specific augmentation.
+
+  Scenario: A locally defined single-measure dataset (with code-lists) can be serialised to a standard CSV-qb
+    Given a single-measure QbCube named "single-measure qube with new definitions" with all new units/measures/dimensions/attributes/codelists
+    When the cube is serialised to CSV-W
+    Then csvlint validation of "single-measure-qube-with-new-definitions.csv-metadata.json" should succeed
+    And csv2rdf on all CSV-Ws should succeed
+    And the RDF should pass "skos, qb" SPARQL tests
+
+  Scenario: A locally defined multi-measure dataset (with code-lists) can be serialised to a standard CSV-qb
+    Given a multi-measure QbCube named "multi-measure qube with new definitions" with all new units/measures/dimensions/attributes/codelists
+    When the cube is serialised to CSV-W
+    Then csvlint validation of "multi-measure-qube-with-new-definitions.csv-metadata.json" should succeed
+    And csv2rdf on all CSV-Ws should succeed
+    And the RDF should pass "skos, qb" SPARQL tests
+
+  Scenario: A single-measure dataset (with code-list) having existing resources can be serialised to a standard CSV-qb
+    Given a single measure QbCube named "single-measure qube with existing resources" with existing units/measure/dimensions/attribute/codelists
+    When the cube is serialised to CSV-W
+    Then csvlint validation of "single-measure-qube-with-existing-resources.csv-metadata.json" should succeed
+    And csv2rdf on all CSV-Ws should succeed
+    And some additional turtle is appended to the resulting RDF
+    """
+      @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+      @prefix qb: <http://purl.org/linked-data/cube#>.
+      @prefix skos: <http://www.w3.org/2004/02/skos/core#>.
+      @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+
+      <http://existing/dimension>
+          rdfs:label "Some Existing Dimension"@en;
+          a qb:DimensionProperty;
+          qb:codeList <http://existing/dimension/code-list>;
+          rdfs:range <http://some/range/thingy>.
+
+      <http://existing/dimension/code-list> a skos:ConceptScheme;
+        skos:hasTopConcept <http://existing/dimension/code-list/all>.
+
+      <http://existing/dimension/code-list/all> a skos:Concept;
+        rdfs:label "All possible things"@en.
+
+      <http://existing/attribute> a qb:AttributeProperty;
+          rdfs:label "Some existing attribute property"@en.
+
+      <http://existing/measure> a qb:MeasureProperty;
+          rdfs:label "Some existing measure property"@en;
+          rdfs:range xsd:decimal.
+
+      <http://existing/unit> rdfs:label "Some Existing Unit"@en.
+    """
+    And the RDF should pass "skos, qb" SPARQL tests
+
+  Scenario: A multi-measure dataset (with code-list) having existing resources can be serialised to a standard CSV-qb
+    Given a multi measure QbCube named "multi-measure qube with existing resources" with existing units/measure/dimensions/attribute/codelists
+    When the cube is serialised to CSV-W
+    Then csvlint validation of "multi-measure-qube-with-existing-resources.csv-metadata.json" should succeed
+    And csv2rdf on all CSV-Ws should succeed
+    And some additional turtle is appended to the resulting RDF
+    """
+      @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+      @prefix qb: <http://purl.org/linked-data/cube#>.
+      @prefix skos: <http://www.w3.org/2004/02/skos/core#>.
+      @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+
+      <http://existing/dimension>
+          rdfs:label "Some Existing Dimension"@en;
+          a qb:DimensionProperty;
+          qb:codeList <http://existing/dimension/code-list>;
+          rdfs:range <http://some/range/thingy>.
+
+      <http://existing/dimension/code-list> a skos:ConceptScheme;
+        skos:hasTopConcept <http://existing/dimension/code-list/all>.
+
+      <http://existing/dimension/code-list/all> a skos:Concept;
+        rdfs:label "All possible things"@en.
+
+      <http://existing/attribute> a qb:AttributeProperty;
+          rdfs:label "Some existing attribute property"@en.
+
+      <http://existing/measure/part-time> a qb:MeasureProperty;
+          rdfs:label "Part-time"@en;
+          rdfs:range xsd:decimal.
+
+      <http://existing/measure/full-time> a qb:MeasureProperty;
+          rdfs:label "Full-time"@en;
+          rdfs:range xsd:decimal.
+
+      <http://existing/measure/flex-time> a qb:MeasureProperty;
+          rdfs:label "Flex-time"@en;
+          rdfs:range xsd:decimal.
+
+      <http://existing/unit/gbp> rdfs:label "Pounds Sterling"@en.
+      <http://existing/unit/count> rdfs:label "Count"@en.
+    """
+    And the RDF should pass "skos, qb" SPARQL tests
