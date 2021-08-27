@@ -27,6 +27,7 @@ def build(
     print(f"{Style.DIM}CSV: {csv_path.absolute()}")
     print(f"{Style.DIM}info.json: {info_json.absolute()}")
     data = pd.read_csv(csv_path)
+    assert isinstance(data, pd.DataFrame)
     cube = get_cube_from_info_json(info_json, data)
 
     errors = cube.validate()

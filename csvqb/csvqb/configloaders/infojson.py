@@ -122,7 +122,9 @@ def _columns_from_info_json(
 ) -> List[CsvColumn]:
     defined_columns: List[CsvColumn] = []
 
-    column_titles_in_data: List[str] = [str(title) for title in data.columns]
+    column_titles_in_data: List[str] = [
+        str(title) for title in data.columns  # type: ignore
+    ]
     for col_title in column_titles_in_data:
         maybe_config = column_mappings.get(col_title)
         defined_columns.append(
