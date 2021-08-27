@@ -7,6 +7,7 @@ setup(
     ],
     install_requires=[
         "click==8.0.1",
+        "colorama==0.4.4",
         "isodate==0.6.0",
         "numpy==1.21.0",
         "pandas==1.2.5",
