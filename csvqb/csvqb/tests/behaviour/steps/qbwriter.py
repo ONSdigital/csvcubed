@@ -223,12 +223,12 @@ def step_impl(context, cube_name: str):
         QbColumn(
             "A",
             ExistingQbDimension("http://example.org/some/dimension/a"),
-            output_uri_template="http://example.org/some/codelist/a",
+            csv_column_uri_template="http://example.org/some/codelist/a",
         ),
         QbColumn(
             "D",
             ExistingQbDimension("http://example.org/some/dimension/d"),
-            output_uri_template="http://example.org/some/codelist/d",
+            csv_column_uri_template="http://example.org/some/codelist/d",
         ),
         QbColumn(
             "Value",
