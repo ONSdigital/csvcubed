@@ -248,7 +248,6 @@ def test_single_measure_obs_val_unit_measure_data_type():
         unit.unit_uri
         == "http://gss-data.org.uk/def/concept/measurement-units/gbp-million"
     )
-    assert unit.unit_multiplier is None
 
     measure = obs_val.measure
     assert isinstance(measure, ExistingQbMeasure)

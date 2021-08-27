@@ -1,11 +1,10 @@
 """
-New Unit
---------
+New Attribute Value
+-------------------
 """
 from typing import Annotated, Optional
 
-from rdflib import RDFS
-from sharedmodels.rdf.namespaces import QUDT
+from rdflib import RDFS, SKOS
 from sharedmodels.rdf import (
     NewMetadataResource,
     Triple,
@@ -16,9 +15,9 @@ from sharedmodels.rdf import (
 )
 
 
-class NewUnit(NewMetadataResource):
+class NewAttributeValueResource(NewMetadataResource):
     """
-    New RDF Resource representing a unit.
+    New RDF Resource representing a value that an attribute can take.
     """
 
     source_uri: Annotated[
@@ -26,12 +25,11 @@ class NewUnit(NewMetadataResource):
         Triple(RDFS.isDefinedBy, PropertyStatus.recommended, map_resource_to_uri),
     ]
 
-    parent_unit_uri: Annotated[
-        MaybeResource["NewUnit"],
-        Triple(RDFS.subClassOf, PropertyStatus.recommended, map_resource_to_uri),
+    parent_attribute_value_uri: Annotated[
+        MaybeResource["NewAttributeValueResource"],
+        Triple(SKOS.broader, PropertyStatus.recommended, map_resource_to_uri),
     ]
 
     def __init__(self, uri: str):
         NewMetadataResource.__init__(self, uri)
-        self.rdf_types.add(RDFS.Class)
-        self.rdf_types.add(QUDT.Unit)
+        self.rdf_types.add(SKOS.Concept)

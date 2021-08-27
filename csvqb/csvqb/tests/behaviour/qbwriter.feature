@@ -69,23 +69,51 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     And the RDF should contain
     """
       @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+      @prefix skos: <http://www.w3.org/2004/02/skos/core#>.
       @prefix qudt: <http://qudt.org/schema/qudt/>.
+      @prefix om2: <http://www.ontology-of-units-of-measure.org/resource/om-2/>.
 
       <file:/tmp/some-qube.csv#attribute/new-attribute/pending>
-        a rdfs:Class;
+        a skos:Concept;
         rdfs:label "pending"@en.
 
       <file:/tmp/some-qube.csv#attribute/new-attribute/final>
-        a rdfs:Class;
+        a skos:Concept;
         rdfs:label "final"@en.
 
       <file:/tmp/some-qube.csv#attribute/new-attribute/in-review>
-        a rdfs:Class;
+        a skos:Concept;
         rdfs:label "in-review"@en.
 
       <file:/tmp/some-qube.csv#unit/some-unit>
-        a qudt:Unit, rdfs:Class;
+        a qudt:Unit, om2:Unit;
         rdfs:label "Some Unit"@en.
+    """
+
+  Scenario: QbCube extended units (and new base units) should be serialised correctly.
+    Given a single-measure QbCube named "Some Qube" with one new unit extending another new unit
+    When the cube is serialised to CSV-W
+    Then csvlint validation of all CSV-Ws should succeed
+    And csv2rdf on all CSV-Ws should succeed
+    And the RDF should contain
+    """
+      @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+      @prefix qudt: <http://qudt.org/schema/qudt/>.
+      @prefix om2: <http://www.ontology-of-units-of-measure.org/resource/om-2/>.
+      @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+
+      <file:/tmp/some-qube.csv#unit/some-base-unit>
+        a qudt:Unit, om2:Unit;
+        rdfs:label "Some Base Unit"@en.
+
+      <file:/tmp/some-qube.csv#unit/some-extending-unit>
+        a qudt:Unit, om2:Unit;
+        qudt:isScalingOf <file:/tmp/some-qube.csv#unit/some-base-unit>;
+        qudt:hasQuantityKind <http://some-quantity-kind>;
+        qudt:conversionMultiplier "25.123123"^^xsd:float;
+        om2:hasUnit <file:/tmp/some-qube.csv#unit/some-base-unit>;
+        om2:hasFactor "1000.0"^^xsd:float;
+        rdfs:label "Some Extending Unit"@en.
     """
 
   Scenario: A QbCube with string literal new attributes should validate successfully

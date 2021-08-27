@@ -15,6 +15,7 @@ from typing import (
     Union,
     Optional,
     Tuple,
+    Callable,
 )
 
 import rdflib
@@ -38,8 +39,10 @@ class ExistingResource(RdfResource):
     def __init__(self, uri: str):
         RdfResource.__init__(self, uri)
 
+
 class ExistingResourceWithLiteral(ExistingResource):
     """Due to the way we intend to allow for existing resources which are literals, we need a range here."""
+
     range: Union[RdfResource, ExistingResource]
 
 
@@ -65,7 +68,7 @@ class NewResource(RdfResource, ABC):
     def __init__(self, uri: str):
         RdfResource.__init__(self, uri)
         # Multiple-inheritance safeguard
-        self.rdf_types = getattr(self, "rdf_types", set())
+        self.rdf_types = getattr(self, "rdf_types", {RDFS.Resource})
         # Multiple-inheritance safeguard
         self.additional_rdf = getattr(self, "additional_rdf", set())
 
@@ -189,6 +192,10 @@ def map_str_to_en_literal(s: str) -> Literal:
 
 def map_resource_to_uri(entity: RdfResource) -> URIRef:
     return entity.uri
+
+
+def map_to_literal_with_datatype(datatype: URIRef) -> Callable[[Any], Literal]:
+    return lambda val: Literal(val, datatype=datatype)
 
 
 def map_str_to_markdown(s: str) -> Literal:

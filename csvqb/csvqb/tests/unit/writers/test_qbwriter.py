@@ -787,9 +787,14 @@ def test_serialise_unit():
                     NewQbUnit(
                         "Percent",
                         description="unit",
-                        parent_unit_uri="http://parent-uri",
+                        base_unit=ExistingQbUnit("http://parent-uri"),
                     ),
-                    NewQbUnit("People", source_uri="http://source-uri"),
+                    NewQbUnit(
+                        "People",
+                        source_uri="http://source-uri",
+                        si_base_unit_conversion_multiplier=25.1364568,
+                        qudt_quantity_kind_uri="http://some-quantity-kind-family",
+                    ),
                 ],
             ),
         ),
@@ -806,12 +811,16 @@ def test_serialise_unit():
             "description": "unit",
             "parent_unit_uri": "http://parent-uri",
             "source_uri": None,
+            "qudt_quantity_kind_family": None,
+            "qudt_conversion_multiplier": None,
         },
         "People": {
             "uri": "some-dataset.csv#unit/people",
             "description": None,
             "parent_unit_uri": None,
             "source_uri": "http://source-uri",
+            "qudt_quantity_kind_family": "http://some-quantity-kind-family",
+            "qudt_conversion_multiplier": 25.1364568,
         },
     }
     for (label, expected_config) in map_label_to_expected_config.items():
@@ -827,9 +836,22 @@ def test_serialise_unit():
         ) or str(new_attribute_value.source_uri.uri) == expected_config["source_uri"]
         assert (
             expected_config["parent_unit_uri"] is None
-            and new_attribute_value.parent_unit_uri is None
-        ) or str(new_attribute_value.parent_unit_uri.uri) == expected_config[
+            and new_attribute_value.base_unit_uri is None
+        ) or str(new_attribute_value.base_unit_uri.uri) == expected_config[
             "parent_unit_uri"
+        ]
+
+        assert (
+            expected_config["qudt_conversion_multiplier"] is None
+            and new_attribute_value.qudt_conversion_multiplier is None
+        ) or new_attribute_value.qudt_conversion_multiplier == expected_config[
+            "qudt_conversion_multiplier"
+        ]
+        assert (
+            expected_config["qudt_quantity_kind_family"] is None
+            and new_attribute_value.has_qudt_quantity_kind is None
+        ) or str(new_attribute_value.has_qudt_quantity_kind.uri) == expected_config[
+            "qudt_quantity_kind_family"
         ]
 
 
