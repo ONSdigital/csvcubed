@@ -36,9 +36,9 @@ def _ensure_directory_hierarchy_exists(directory: Path):
 def step_impl(context, files_glob: str):
     test_cases_dir = _get_test_cases_dir()
 
-    matching_files = list(test_cases_dir.rglob(f"**/{file}"))
+    matching_files = list(test_cases_dir.rglob(f"**/{files_glob}"))
     if len(matching_files) == 0:
-        raise Exception(f"Could not find test-case file {file}")
+        raise Exception(f"Could not find test-case file(s) {files_glob}")
 
     temp_dir = get_context_temp_dir_path(context)
     for file in matching_files:
