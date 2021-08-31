@@ -13,7 +13,6 @@ from csvqb.tests.unit.test_baseunit import *
 
 
 def test_csv_cols_assumed_dimensions():
-
     """
     If a column isn't defined, assume it is a new local dimension.
 
@@ -254,6 +253,38 @@ def test_single_measure_obs_val_unit_measure_data_type():
     assert measure.measure_uri == "http://gss-data.org.uk/def/measure/trade"
 
     assert obs_val.data_type == "double"
+
+
+def test_definitions_loaded_for_columns_not_in_data():
+    """
+    Ensure that column definitions from an info.json file as loaded even if the column isn't defined in the initial
+    loaded data.
+
+    This is primarily to ensure that cube validation highlights that they've defined columns which aren't in the data.
+    """
+    data = pd.read_csv(
+        get_test_cases_dir()
+        / "configloaders"
+        / "bottles-test-files"
+        / "bottles-data.csv"
+    )
+
+    del data["Unit"]  # delete a column from the data
+
+    cube = get_cube_from_info_json(
+        get_test_cases_dir()
+        / "configloaders"
+        / "bottles-test-files"
+        / "bottles-info.json",
+        data,
+    )
+
+    errors = cube.validate()
+
+    assert_num_validation_errors(errors, 1)
+    error = errors[0]
+    assert isinstance(error, ColumnNotFoundInDataError)
+    assert error.csv_column_title == "Unit"
 
 
 if __name__ == "__main__":

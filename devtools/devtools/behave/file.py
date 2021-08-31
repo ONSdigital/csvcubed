@@ -10,13 +10,35 @@ import shutil
 from .temporarydirectory import get_context_temp_dir_path
 
 
-@Given('the existing test-case files "{file}"')
+@Given('the existing test-case file "{file}"')
 def step_impl(context, file):
     test_cases_dir = _get_test_cases_dir()
+    test_case_file = test_cases_dir / file
 
-    matching_files = list(test_cases_dir.rglob(f"**/{file}"))
-    if len(matching_files) == 0:
+    if not test_case_file.exists():
         raise Exception(f"Could not find test-case file {file}")
+
+    temp_dir = get_context_temp_dir_path(context)
+    output_file_path = temp_dir.joinpath(test_case_file.relative_to(test_cases_dir))
+
+    _ensure_directory_hierarchy_exists(output_file_path.parent)
+
+    shutil.copy(test_case_file, output_file_path)
+
+
+def _ensure_directory_hierarchy_exists(directory: Path):
+    if not directory.exists():
+        _ensure_directory_hierarchy_exists(directory.parent)
+        directory.mkdir()
+
+
+@Given('the existing test-case files "{files_glob}"')
+def step_impl(context, files_glob: str):
+    test_cases_dir = _get_test_cases_dir()
+
+    matching_files = list(test_cases_dir.rglob(f"**/{files_glob}"))
+    if len(matching_files) == 0:
+        raise Exception(f"Could not find test-case file(s) {files_glob}")
 
     temp_dir = get_context_temp_dir_path(context)
     for file in matching_files:
@@ -32,7 +54,7 @@ def step_impl(context, file):
 @then('the file at "{file}" should exist')
 def step_impl(context, file):
     temp_dir = get_context_temp_dir_path(context)
-    assert (temp_dir / file).exists()
+    assert (temp_dir / file).exists(), file
 
 
 def _get_test_cases_dir(start_dir: Path = Path(".")):

@@ -58,13 +58,7 @@ def get_cube_from_info_json(
     if config is None:
         raise Exception(f"Config not found for cube with id '{cube_id}'")
 
-    cube = _from_info_json_dict(config, data)
-    validation_errors = validate_qb_component_constraints(cube)
-    for error in validation_errors:
-        # todo: Do something better with errors?
-        print(f"ERROR: {error.message}")
-
-    return cube
+    return _from_info_json_dict(config, data)
 
 
 def _override_config_for_cube_id(config: dict, cube_id: str) -> Optional[dict]:
@@ -128,11 +122,20 @@ def _columns_from_info_json(
 ) -> List[CsvColumn]:
     defined_columns: List[CsvColumn] = []
 
-    for col_title in list(data.columns):
-        col_title = str(col_title)
+    column_titles_in_data: List[str] = [
+        str(title) for title in data.columns  # type: ignore
+    ]
+    for col_title in column_titles_in_data:
         maybe_config = column_mappings.get(col_title)
         defined_columns.append(
             _get_column_for_metadata_config(col_title, maybe_config, data[col_title])
+        )
+
+    columns_missing_in_data = set(column_mappings.keys()) - set(column_titles_in_data)
+    for col_title in columns_missing_in_data:
+        config = column_mappings[col_title]
+        defined_columns.append(
+            _get_column_for_metadata_config(col_title, config, pd.Series([1]))
         )
 
     return defined_columns
