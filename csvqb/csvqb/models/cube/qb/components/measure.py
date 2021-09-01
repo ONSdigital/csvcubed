@@ -101,6 +101,20 @@ class QbMultiMeasureDimension(MultiQbDataStructureDefinition):
             [NewQbMeasure(m) for m in sorted(set(columnar_data))]
         )
 
+    @staticmethod
+    def existing_measures_from_data(
+        data: PandasDataTypes, csvw_column_name: str, csv_column_uri_template: str
+    ) -> "QbMultiMeasureDimension":
+        columnar_data = pandas_input_to_columnar_str(data)
+        return QbMultiMeasureDimension(
+            [
+                ExistingQbMeasure(
+                    uritemplate.expand(csv_column_uri_template, {csvw_column_name: m})
+                )
+                for m in sorted(set(columnar_data))
+            ]
+        )
+
     def validate_data(
         self, data: pd.Series, csvw_column_name: str, csv_column_uri_template: str
     ) -> List[ValidationError]:
