@@ -1,0 +1,133 @@
+{
+    "$schema": "file://FILL_THIS_IN_FOR_IT_TO_WORK/dataset-schema.json",
+    "transform": {
+        "columns": {
+            "New Dimension with nothing specified": {
+                "type": "dimension",
+                "new": true
+            },
+            "New Dimension with new local code-list": {
+                "type": "dimension",
+                "new": {
+                    "label": "Some New Dimension",
+                    "codelist": "./some/file.csv-metadata.json"
+                }
+            },
+            "New Dimension using existing code-list": {
+                "type": "dimension",
+                "new": {
+                    "label": "Some New Dimension",
+                    "codelist": "http://data.europa.eu/nuts/scheme/2016"
+                }
+            },
+            "New Dimension with No Code List": {
+                "type": "dimension",
+                "new": {
+                    "label": "Some New Dimension",
+                    "codelist": false
+                }
+            },
+            "Existing Dimension": {
+                "type": "dimension",
+                "uri": "http://gss-data.org.uk/def/climate-change/property/dimension/local-authority-code",
+                "value": "http://example.com/dimension/existing-dimension/code-list/{+existing_dimension}"
+            },
+            "New Attribute": {
+                "type": "attribute",
+                "new": {
+                    "path": "some-new-attribute",
+                    "label": "Some New Attribute",
+                    "subPropertyOf": "http://gss-data.org.uk/def/trade/property/attribute/marker",
+                    "isDefinedBy": "http://example.com/attribute/some-explanation.pdf",
+                    "newAttributeValues": true
+                }
+            },
+            "New Attribute with nothing specified": {
+                "type": "attribute",
+                "new": true
+            },
+            "Existing Attribute": {
+                "type": "attribute",
+                "uri": "http://gss-data.org.uk/def/trade/property/attribute/marker",
+                "value": "http://example.com/attributes/marker/{+existing_attribute}"
+            },
+            "Existing Attribute with new Attribute Values": {
+                "type": "attribute",
+                "uri": "http://gss-data.org.uk/def/trade/property/attribute/marker",
+                "newAttributeValues": [
+                    {
+                        "label": "1st New Attribute Value"
+                    },
+                    {
+                        "label": "2nd New Attribute Value",
+                        "comment": "This is the second one we're creating."
+                    }
+                ]
+            },
+            "New Units": {
+                "type": "units",
+                "new": [
+                    {
+                        "path": "some-unit-1",
+                        "label": "Some Unit 1"
+                    },
+                    {
+                        "path": "some-unit-2",
+                        "label": "Some Unit 2",
+                        "comment": "This is the second unit"
+                    }
+                ]
+            },
+            "New Units with nothing specified": {
+                "type": "units",
+                "new": true
+            },
+            "Existing Units": {
+                "type": "units",
+                "value": "http://example.com/units/{+existing_units}"
+            },
+            "New Measures": {
+                "type": "measures",
+                "new": [
+                    {
+                        "label": "New Measure 1",
+                        "path": "new-measure-1"
+                    },
+                    {
+                        "label": "New Measure 2",
+                        "isDefinedBy": "http://example.com/measures/some-description.pdf"
+                    }
+                ]
+            },
+            "New Measures with nothing specified": {
+                "type": "measures",
+                "new": true
+            },
+            "Existing Measures": {
+                "type": "measures",
+                "value": "http://example.com/measures/{+existing_measures}"
+            },
+            "Observation Value with existing measure and unit": {
+                "type": "observation",
+                "datatype": "decimal",
+                "measure": "http://gss-data.org.uk/def/measure/area",
+                "unit": "http://gss-data.org.uk/def/concept/measurement-units/thousand-toe"
+            },
+            "Observation Value with new measure and unit": {
+                "type": "observation",
+                "measure": {
+                    "label": "Some new measure",
+                    "comment": "Some really cool new measure"
+                },
+                "unit": {
+                    "label": "Some new unit",
+                    "comment": "Some really cool new unit"
+                }
+            },
+            "Multi-measure Observation Value Column": {
+                "type": "observation"
+            }
+        },
+        "airtable": "rec0000000000000000"
+    }
+}
