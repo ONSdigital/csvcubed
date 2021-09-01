@@ -49,9 +49,7 @@ def map_column_to_qb_component(
     elif isinstance(schema_mapping, schema.ExistingUnits):
         return QbColumn(
             column_title,
-            schema_mapping.map_to_qb_multi_units(
-                data, column_title, schema_mapping.value
-            ),
+            schema_mapping.map_to_qb_multi_units(data, column_title),
             schema_mapping.value,
         )
     elif isinstance(schema_mapping, schema.NewMeasures):
