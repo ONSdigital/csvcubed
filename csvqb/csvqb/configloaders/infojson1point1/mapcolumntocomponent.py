@@ -4,46 +4,11 @@ Mapping
 
 Map info.json V1.1 definitions to QB column components
 """
-from .columnschema import (
-    NewDimension,
-    ExistingDimension,
-    NewAttribute,
-    ExistingAttribute,
-    NewUnits,
-    ExistingUnits,
-    NewMeasures,
-    ExistingMeasures,
-    ObservationValue,
-    NewAttributeValue,
-    NewAttributeProperty,
-    NewResource,
-)
-from csvqb.models.cube.qb.components.datastructuredefinition import (
-    QbDataStructureDefinition,
-)
+from typing import Union
+
+import csvqb.configloaders.infojson1point1.columnschema as schema
 from csvqb.models.cube.qb.columns import QbColumn
-from csvqb.models.cube.qb.components import (
-    NewQbDimension,
-    ExistingQbDimension,
-    NewQbAttribute,
-    NewQbAttributeValue,
-    ExistingQbAttribute,
-    NewQbUnit,
-    ExistingQbUnit,
-    QbUnit,
-    QbMultiUnits,
-    QbMultiMeasureDimension,
-    QbMultiMeasureObservationValue,
-    QbSingleMeasureObservationValue,
-    NewQbCodeList,
-    ExistingQbCodeList,
-    QbAttribute,
-    QbMeasure,
-    ExistingQbMeasure,
-    NewQbMeasure,
-)
 from csvqb.inputs import PandasDataTypes
-from csvqb.utils.uri import looks_like_uri, csvw_column_name_safe
 
 
 def map_column_to_qb_component(
@@ -53,66 +18,70 @@ def map_column_to_qb_component(
     Takes an info.json v1.1 column mapping and, if valid,
     returns a :obj:`~csvqb.models.cube.qb.components.datastructuredefinition.QbDataStructureDefinition`.
     """
-    schema_mapping = _from_column_dict_to_model(column)
+    schema_mapping = _from_column_dict_to_schema_model(column)
 
-    if isinstance(schema_mapping, NewDimension):
+    if isinstance(schema_mapping, schema.NewDimension):
         return QbColumn(
             column_title,
-            schema_mapping.map_to_new_qb_dimension(),
+            schema_mapping.map_to_new_qb_dimension(column_title, data),
             csv_column_uri_template=schema_mapping.value,
         )
-    elif isinstance(schema_mapping, ExistingDimension):
+    elif isinstance(schema_mapping, schema.ExistingDimension):
         return QbColumn(
             column_title,
             schema_mapping.map_to_existing_qb_dimension(),
             csv_column_uri_template=schema_mapping.value,
         )
-    elif isinstance(schema_mapping, NewAttribute):
+    elif isinstance(schema_mapping, schema.NewAttribute):
         return QbColumn(
             column_title,
-            schema_mapping.map_to_new_qb_attribute(),
+            schema_mapping.map_to_new_qb_attribute(column_title, data),
             csv_column_uri_template=schema_mapping.value,
         )
-    elif isinstance(schema_mapping, ExistingAttribute):
+    elif isinstance(schema_mapping, schema.ExistingAttribute):
         return QbColumn(
             column_title,
-            schema_mapping.map_to_existing_qb_attribute(),
+            schema_mapping.map_to_existing_qb_attribute(data),
             csv_column_uri_template=schema_mapping.value,
         )
-    if isinstance(schema_mapping, NewUnits):
-        return QbColumn(column_title, schema_mapping.map_to_qb_multi_units())
-    elif isinstance(schema_mapping, ExistingUnits):
+    if isinstance(schema_mapping, schema.NewUnits):
+        return QbColumn(column_title, schema_mapping.map_to_qb_multi_units(data))
+    elif isinstance(schema_mapping, schema.ExistingUnits):
         return QbColumn(
             column_title,
-            schema_mapping.map_to_qb_multi_units(column_title, schema_mapping.value),
+            schema_mapping.map_to_qb_multi_units(
+                data, column_title, schema_mapping.value
+            ),
             schema_mapping.value,
         )
-    elif isinstance(schema_mapping, NewMeasures):
-        return QbColumn(column_title, schema_mapping.map_to_multi_measure_dimension())
-    elif isinstance(schema_mapping, ExistingMeasures):
+    elif isinstance(schema_mapping, schema.NewMeasures):
+        return QbColumn(
+            column_title, schema_mapping.map_to_multi_measure_dimension(data)
+        )
+    elif isinstance(schema_mapping, schema.ExistingMeasures):
         return QbColumn(
             column_title,
             schema_mapping.map_to_multi_measure_dimension(column_title, data),
             schema_mapping.value,
         )
-    elif isinstance(schema_mapping, ObservationValue):
+    elif isinstance(schema_mapping, schema.ObservationValue):
         return QbColumn(column_title, schema_mapping.map_to_qb_observation())
     else:
         raise ValueError(f"Unmatched schema model type {type(schema_mapping)}")
 
 
-def _from_column_dict_to_model(
+def _from_column_dict_to_schema_model(
     column: dict,
 ) -> Union[
-    NewDimension,
-    ExistingDimension,
-    NewAttribute,
-    ExistingAttribute,
-    NewUnits,
-    ExistingUnits,
-    NewMeasures,
-    ExistingMeasures,
-    ObservationValue,
+    schema.NewDimension,
+    schema.ExistingDimension,
+    schema.NewAttribute,
+    schema.ExistingAttribute,
+    schema.NewUnits,
+    schema.ExistingUnits,
+    schema.NewMeasures,
+    schema.ExistingMeasures,
+    schema.ObservationValue,
 ]:
     column_type = column.get("type")
     new_value = column.get("new")
@@ -120,25 +89,25 @@ def _from_column_dict_to_model(
         raise ValueError("Type of column not specified.")
     elif column_type == "dimension":
         if new_value is not None:
-            return NewDimension.from_dict(column)
+            return schema.NewDimension.from_dict(column)
         else:
-            return ExistingDimension.from_dict(column)
+            return schema.ExistingDimension.from_dict(column)
     elif column_type == "attribute":
         if new_value is not None:
-            return NewAttribute.from_dict(column)
+            return schema.NewAttribute.from_dict(column)
         else:
-            return ExistingAttribute.from_dict(column)
+            return schema.ExistingAttribute.from_dict(column)
     elif column_type == "units":
         if new_value is not None:
-            return NewUnits.from_dict(column)
+            return schema.NewUnits.from_dict(column)
         else:
-            return ExistingUnits.from_dict(column)
+            return schema.ExistingUnits.from_dict(column)
     elif column_type == "measure":
         if new_value is not None:
-            return NewMeasures.from_dict(column)
+            return schema.NewMeasures.from_dict(column)
         else:
-            return ExistingMeasures.from_dict(column)
+            return schema.ExistingMeasures.from_dict(column)
     elif column_type == "observation":
-        return ObservationValue.from_dict(column)
+        return schema.ObservationValue.from_dict(column)
     else:
         raise ValueError(f"Type of column '{column_type}' not handled.")

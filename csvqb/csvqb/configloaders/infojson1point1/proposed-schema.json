@@ -447,6 +447,10 @@
               "new": {
                 "$ref": "#/definitions/v1.1/new/attribute_property"
               },
+              "value": {
+                "$comment": "If the user doesn't specify new attribute values, then we don't know what the URIs for the attribute values should be. The user must provide a template.",
+                "$ref": "#/definitions/v1.1/column/props/value"
+              },
               "isRequired": {
                 "$ref": "#/definitions/v1.1/column/props/attrIsRequired"
               }

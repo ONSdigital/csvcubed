@@ -5,8 +5,9 @@ Models
 info.json V1.1 column mapping models.
 """
 from dataclasses import dataclass, fields, Field
-from typing import Any, List, Union, Optional, Type, TypeVar
+from typing import List, Union, Optional, Type, TypeVar
 
+from csvqb.inputs import pandas_input_to_columnar_str
 from csvqb.models.cube.qb.components import (
     NewQbDimension,
     ExistingQbDimension,
@@ -15,15 +16,11 @@ from csvqb.models.cube.qb.components import (
     ExistingQbAttribute,
     NewQbUnit,
     ExistingQbUnit,
-    QbUnit,
     QbMultiUnits,
     QbMultiMeasureDimension,
     QbMultiMeasureObservationValue,
     QbSingleMeasureObservationValue,
-    NewQbCodeList,
     ExistingQbCodeList,
-    QbAttribute,
-    QbMeasure,
     ExistingQbMeasure,
     NewQbMeasure,
     QbObservationValue,
@@ -40,11 +37,12 @@ def _from_dict(cls: Type[T], d: dict) -> T:
         assert isinstance(field, Field)
         if field.name in d.keys():
             setattr(instance, field.name, d[field.name])
+    return instance
 
 
 @dataclass
 class NewDimensionProperty:
-    codelist: Union[str, False]
+    codelist: Union[str, bool]
     path: Optional[str] = None
     label: Optional[str] = None
     comment: Optional[str] = None
@@ -58,39 +56,43 @@ class NewDimensionProperty:
 
 @dataclass
 class NewDimension:
-    new: Union[NewDimensionProperty, True]
+    new: Union[NewDimensionProperty, bool]
     value: Optional[str]
 
     @classmethod
-    def from_dict(cls, d: dict) -> "NewDimensionProperty":
+    def from_dict(cls, d: dict) -> "NewDimension":
         instance = _from_dict(cls, d)
         if isinstance(instance.new, dict):
-            instance.new = NewDimensionProperty.from_dict(instance.new)
+            instance.new = NewDimensionProperty.from_dict(instance.new)  # type: ignore
         return instance
 
-    def map_to_new_qb_dimension(self) -> NewQbDimension:
-        new_dimension = NewQbDimension.from_data(
-            label=self.new.label,
-            data=data,
-            description=self.new.comment,
-            parent_dimension_uri=self.new.subPropertyOf,
-            source_uri=self.new.isDefinedBy,
-            uri_safe_identifier_override=self.new.path,
-        )
-        codelist = False
-        if isinstance(self.new.codelist, str):
-            if looks_like_uri(self.new.codelist):
-                new_dimension.code_list = ExistingQbCodeList(self.new.codelist)
-            else:
-                # todo: Need a new type to represent an existing CSV-W codelist file.
-                pass
-        elif isinstance(self.new.codelist, bool):
-            if not self.new.codelist:
+    def map_to_new_qb_dimension(
+        self, column_title: str, data: PandasDataTypes
+    ) -> NewQbDimension:
+        if isinstance(self.new, bool) and self.new:
+            return NewQbDimension.from_data(label=column_title, data=data)
+        elif isinstance(self.new, NewDimensionProperty):
+            new_dimension = NewQbDimension.from_data(
+                label=self.new.label or column_title,
+                data=data,
+                description=self.new.comment,
+                parent_dimension_uri=self.new.subPropertyOf,
+                source_uri=self.new.isDefinedBy,
+                uri_safe_identifier_override=self.new.path,
+            )
+            if isinstance(self.new.codelist, str):
+                if looks_like_uri(self.new.codelist):
+                    new_dimension.code_list = ExistingQbCodeList(self.new.codelist)
+                else:
+                    # todo: Need a new type to represent an existing CSV-W codelist file.
+                    pass
+            elif isinstance(self.new.codelist, bool) and not self.new.codelist:
                 new_dimension.code_list = None
+            else:
+                raise ValueError(f"Unmatched code_list value {self.new.codelist}")
+            return new_dimension
         else:
-            raise ValueError(f"Unmatched code_list value {new.codelist}")
-
-        return new_dimension
+            raise ValueError(f"Unexpected 'new' value: {self.new}")
 
 
 @dataclass
@@ -125,44 +127,48 @@ class NewAttributeProperty:
     comment: Optional[str] = None
     isDefinedBy: Optional[str] = None
     subPropertyOf: Optional[str] = None
-    newAttributeValues: Union[None, True, List[NewAttributeValue]] = None
+    newAttributeValues: Union[None, bool, List[NewAttributeValue]] = None
 
     @classmethod
-    def from_dict(cls, d: dict) -> "ExistingDimension":
+    def from_dict(cls, d: dict) -> "NewAttributeProperty":
         instance = _from_dict(cls, d)
         if isinstance(instance.newAttributeValues, list):
-            instance.newAttributeValues = [
-                NewDimensionProperty.from_dict(attr_val)
+            new_attr_values: List[NewAttributeValue] = [
+                NewDimensionProperty.from_dict(attr_val)  # type: ignore
                 for attr_val in instance.newAttributeValues
             ]
+            instance.newAttributeValues = new_attr_values
         return instance
 
 
 @dataclass
 class NewAttribute:
-    new: Union[True, NewAttributeProperty]
+    new: Union[bool, NewAttributeProperty]
     isRequired: Optional[bool] = True
+    value: Optional[str] = None
 
     @classmethod
     def from_dict(cls, d: dict) -> "NewAttribute":
         instance = _from_dict(cls, d)
         if isinstance(instance.new, dict):
-            instance.new = NewAttributeProperty.from_dict(instance.new)
+            instance.new = NewAttributeProperty.from_dict(instance.new)  # type: ignore
         return instance
 
-    def map_to_new_qb_attribute(self) -> NewQbAttribute:
+    def map_to_new_qb_attribute(
+        self, column_title: str, data: PandasDataTypes
+    ) -> NewQbAttribute:
         if isinstance(self.new, bool) and self.new:
             return NewQbAttribute.from_data(label=column_title, data=data)
         elif isinstance(self.new, NewAttributeProperty):
             return NewQbAttribute(
-                label=self.new.label,
+                label=self.new.label or column_title,
                 description=self.new.comment,
                 new_attribute_values=_get_new_attribute_values(
                     data, self.new.newAttributeValues
                 ),
                 parent_attribute_uri=self.new.subPropertyOf,
                 source_uri=self.new.isDefinedBy,
-                is_required=self.isRequired,
+                is_required=self.isRequired or False,
                 uri_safe_identifier_override=self.new.path,
             )
         else:
@@ -173,7 +179,7 @@ class NewAttribute:
 class ExistingAttribute:
     uri: str
     value: Optional[str] = None
-    newAttributeValues: Union[None, True, List[NewAttributeValue]] = None
+    newAttributeValues: Union[None, bool, List[NewAttributeValue]] = None
     isRequired: Optional[bool] = True
 
     @classmethod
@@ -181,18 +187,20 @@ class ExistingAttribute:
         instance = _from_dict(cls, d)
         if isinstance(instance.newAttributeValues, list):
             instance.newAttributeValues = [
-                NewAttributeValue.from_dict(attr_val)
+                NewAttributeValue.from_dict(attr_val)  # type: ignore
                 for attr_val in instance.newAttributeValues
             ]
         return instance
 
-    def map_to_existing_qb_attribute(self) -> ExistingQbAttribute:
+    def map_to_existing_qb_attribute(
+        self, data: PandasDataTypes
+    ) -> ExistingQbAttribute:
         return ExistingQbAttribute(
             self.uri,
             new_attribute_values=_get_new_attribute_values(
                 data, self.newAttributeValues
             ),
-            is_required=self.isRequired,
+            is_required=self.isRequired or False,
         )
 
 
@@ -210,18 +218,18 @@ class NewResource:
 
 @dataclass
 class NewUnits:
-    new: Union[True, List[NewResource]]
+    new: Union[bool, List[NewResource]]
 
     @classmethod
     def from_dict(cls, d: dict) -> "NewUnits":
         instance = _from_dict(cls, d)
         if isinstance(instance.new, list):
             instance.new = [
-                NewResource.from_dict(attr_val) for attr_val in instance.new
+                NewResource.from_dict(attr_val) for attr_val in instance.new  # type: ignore
             ]
         return instance
 
-    def map_to_qb_multi_units(self) -> QbMultiUnits:
+    def map_to_qb_multi_units(self, data: PandasDataTypes) -> QbMultiUnits:
         if isinstance(self.new, bool) and self.new:
             return QbMultiUnits.new_units_from_data(data)
         elif isinstance(self.new, list):
@@ -254,18 +262,20 @@ class ExistingUnits:
 
 @dataclass
 class NewMeasures:
-    new: Union[True, List[NewResource]]
+    new: Union[bool, List[NewResource]]
 
     @classmethod
     def from_dict(cls, d: dict) -> "NewMeasures":
         instance = _from_dict(cls, d)
         if isinstance(instance.new, list):
             instance.new = [
-                NewResource.from_dict(attr_val) for attr_val in instance.new
+                NewResource.from_dict(attr_val) for attr_val in instance.new  # type: ignore
             ]
         return instance
 
-    def map_to_multi_measure_dimension(self) -> QbMultiMeasureDimension:
+    def map_to_multi_measure_dimension(
+        self, data: PandasDataTypes
+    ) -> QbMultiMeasureDimension:
         if isinstance(self.new, bool) and self.new:
             return QbMultiMeasureDimension.new_measures_from_data(data)
         elif isinstance(self.new, list):
@@ -305,10 +315,10 @@ class ObservationValue:
     @classmethod
     def from_dict(cls, d: dict) -> "ObservationValue":
         instance = _from_dict(cls, d)
-        if isinstance(instance.new, dict):
-            instance.unit = NewResource.from_dict(instance.unit)
+        if isinstance(instance.unit, dict):
+            instance.unit = NewResource.from_dict(instance.unit)  # type: ignore
         if isinstance(instance.measure, dict):
-            instance.measure = NewResource.from_dict(instance.measure)
+            instance.measure = NewResource.from_dict(instance.measure)  # type: ignore
 
         return instance
 
@@ -323,7 +333,9 @@ class ObservationValue:
 
         if self.measure is None:
             # Multi-measure cube
-            return QbMultiMeasureObservationValue(data_type=self.datatype, unit=unit)
+            return QbMultiMeasureObservationValue(
+                data_type=self.datatype or "decimal", unit=unit
+            )
         else:
             # Single measure qb
             measure = None
@@ -335,7 +347,7 @@ class ObservationValue:
                 raise ValueError(f"Unhandled measure type: {self.measure}")
 
             return QbSingleMeasureObservationValue(
-                measure=measure, unit=unit, data_type=self.datatype
+                measure=measure, unit=unit, data_type=self.datatype or "decimal"
             )
 
 
@@ -358,10 +370,10 @@ def _map_new_resource_to_measure(resource: NewResource) -> NewQbMeasure:
 
 
 def _map_attribute_values(
-    schema_model: Union[ExistingAttribute, NewAttribute]
+    new_attribute_values_from_schema: List[NewAttributeValue],
 ) -> List[NewQbAttributeValue]:
     new_attribute_values = []
-    for attr_val in schema_model.newAttributeValues:
+    for attr_val in new_attribute_values_from_schema:
         if not isinstance(attr_val, NewAttributeValue):
             raise ValueError(f"Found unexpected attribute value {attr_val}")
 
@@ -378,16 +390,16 @@ def _map_attribute_values(
 
 def _get_new_attribute_values(
     data: PandasDataTypes,
-    newAttributeValues: Union[None, True, List[NewAttributeValue]],
-) -> Optional[List[NewQbAttributeValue]]:
-    if isinstance(newAttributeValues, bool) and newAttributeValues:
+    new_attribute_values: Union[None, bool, List[NewAttributeValue]],
+) -> List[NewQbAttributeValue]:
+    if isinstance(new_attribute_values, bool) and new_attribute_values:
         columnar_data = pandas_input_to_columnar_str(data)
         return [NewQbAttributeValue(v) for v in sorted(set(columnar_data))]
-    elif isinstance(newAttributeValues, list) and len(newAttributeValues) > 0:
-        return _map_attribute_values(newAttributeValues)
-    elif newAttributeValues is not None:
+    elif isinstance(new_attribute_values, list) and len(new_attribute_values) > 0:
+        return _map_attribute_values(new_attribute_values)
+    elif new_attribute_values is not None:
         raise ValueError(
-            f"Unexpected value for 'newAttributeValues': {newAttributeValues}"
+            f"Unexpected value for 'newAttributeValues': {new_attribute_values}"
         )
 
-    return None
+    return []
