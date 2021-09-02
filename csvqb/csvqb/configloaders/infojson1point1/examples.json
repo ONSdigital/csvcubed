@@ -108,13 +108,13 @@
                 "value": "http://example.com/measures/{+existing_measures}"
             },
             "Observation Value with existing measure and unit": {
-                "type": "observation",
+                "type": "observations",
                 "datatype": "decimal",
                 "measure": "http://gss-data.org.uk/def/measure/area",
                 "unit": "http://gss-data.org.uk/def/concept/measurement-units/thousand-toe"
             },
             "Observation Value with new measure and unit": {
-                "type": "observation",
+                "type": "observations",
                 "measure": {
                     "label": "Some new measure",
                     "comment": "Some really cool new measure"
@@ -125,7 +125,7 @@
                 }
             },
             "Multi-measure Observation Value Column": {
-                "type": "observation"
+                "type": "observations"
             }
         },
         "airtable": "rec0000000000000000"

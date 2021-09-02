@@ -42,7 +42,9 @@ def _from_dict(cls: Type[T], d: dict) -> T:
         elif not isinstance(field.default_factory, _MISSING_TYPE):
             values[field.name] = field.default_factory()
         else:
-            raise ValueError(f"Missing required field '{field.name}' on {cls}.")
+            raise ValueError(
+                f"Missing required field '{field.name}' on {cls}. Values provided: {d}."
+            )
     return cls(**values)  # type: ignore
 
 

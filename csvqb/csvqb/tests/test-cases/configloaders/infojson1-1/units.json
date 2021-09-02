@@ -46,7 +46,7 @@
                 ]
             },
             "Value": {
-                "type": "observation",
+                "type": "observations",
                 "measure": "http://gss-data.org.uk/def/measure/trade",
                 "datatype": "double"
             }

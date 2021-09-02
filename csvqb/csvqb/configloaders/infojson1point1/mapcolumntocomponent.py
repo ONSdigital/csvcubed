@@ -50,7 +50,7 @@ def map_column_to_qb_component(
         return QbColumn(
             column_title,
             schema_mapping.map_to_qb_multi_units(data, column_title),
-            schema_mapping.value,
+            csv_column_uri_template=schema_mapping.value,
         )
     elif isinstance(schema_mapping, schema.NewMeasures):
         return QbColumn(
@@ -60,7 +60,7 @@ def map_column_to_qb_component(
         return QbColumn(
             column_title,
             schema_mapping.map_to_multi_measure_dimension(column_title, data),
-            schema_mapping.value,
+            csv_column_uri_template=schema_mapping.value,
         )
     elif isinstance(schema_mapping, schema.ObservationValue):
         return QbColumn(column_title, schema_mapping.map_to_qb_observation())

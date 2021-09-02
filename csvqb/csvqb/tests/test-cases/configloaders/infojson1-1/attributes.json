@@ -84,7 +84,7 @@
                 "value": "http://example.org/attributes/new-marker-4/{+new_marker_4}"
             },
             "Value": {
-                "type": "observation",
+                "type": "observations",
                 "unit": "http://gss-data.org.uk/def/concept/measurement-units/gbp-million",
                 "measure": "http://gss-data.org.uk/def/measure/trade",
                 "datatype": "double"

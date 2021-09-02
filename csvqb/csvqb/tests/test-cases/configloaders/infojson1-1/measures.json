@@ -46,7 +46,7 @@
                 ]
             },
             "Value": {
-                "type": "observation",
+                "type": "observations",
                 "unit": "http://gss-data.org.uk/def/concept/measurement-units/gbp-million",
                 "datatype": "double"
             }
