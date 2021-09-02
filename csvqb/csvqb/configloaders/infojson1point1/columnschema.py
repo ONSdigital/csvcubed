@@ -6,6 +6,7 @@ info.json V1.1 column mapping models.
 """
 from dataclasses import dataclass, fields, Field, _MISSING_TYPE
 from typing import List, Union, Optional, Type, TypeVar
+from pathlib import Path
 
 from csvqb.inputs import pandas_input_to_columnar_str
 from csvqb.models.cube.qb.components import (
@@ -24,6 +25,7 @@ from csvqb.models.cube.qb.components import (
     ExistingQbMeasure,
     NewQbMeasure,
     QbObservationValue,
+    NewQbCodeListInCsvW,
 )
 from csvqb.inputs import PandasDataTypes
 from csvqb.utils.uri import looks_like_uri, csvw_column_name_safe
@@ -75,7 +77,7 @@ class NewDimension:
         return instance
 
     def map_to_new_qb_dimension(
-        self, column_title: str, data: PandasDataTypes
+        self, column_title: str, data: PandasDataTypes, info_json_parent_dir: Path
     ) -> NewQbDimension:
         if isinstance(self.new, bool) and self.new:
             return NewQbDimension.from_data(label=column_title, data=data)
@@ -92,8 +94,13 @@ class NewDimension:
                 if looks_like_uri(self.new.codelist):
                     new_dimension.code_list = ExistingQbCodeList(self.new.codelist)
                 else:
-                    # todo: Need a new type to represent an existing CSV-W codelist file.
-                    pass
+                    code_list_path = Path(self.new.codelist)
+                    if code_list_path.is_absolute():
+                        new_dimension.code_list = NewQbCodeListInCsvW(code_list_path)
+                    else:
+                        new_dimension.code_list = NewQbCodeListInCsvW(
+                            info_json_parent_dir / self.new.codelist
+                        )
             elif isinstance(self.new.codelist, bool):
                 if not self.new.codelist:
                     new_dimension.code_list = None

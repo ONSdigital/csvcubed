@@ -5,6 +5,7 @@ Mapping
 Map info.json V1.1 definitions to QB column components
 """
 from typing import Union
+from pathlib import Path
 
 import csvqb.configloaders.infojson1point1.columnschema as schema
 from csvqb.models.cube.qb.columns import QbColumn
@@ -12,7 +13,7 @@ from csvqb.inputs import PandasDataTypes
 
 
 def map_column_to_qb_component(
-    column_title: str, column: dict, data: PandasDataTypes
+    column_title: str, column: dict, data: PandasDataTypes, info_json_parent_dir: Path
 ) -> QbColumn:
     """
     Takes an info.json v1.1 column mapping and, if valid,
@@ -23,7 +24,9 @@ def map_column_to_qb_component(
     if isinstance(schema_mapping, schema.NewDimension):
         return QbColumn(
             column_title,
-            schema_mapping.map_to_new_qb_dimension(column_title, data),
+            schema_mapping.map_to_new_qb_dimension(
+                column_title, data, info_json_parent_dir
+            ),
             csv_column_uri_template=schema_mapping.value,
         )
     elif isinstance(schema_mapping, schema.ExistingDimension):

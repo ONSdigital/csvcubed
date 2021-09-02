@@ -2,6 +2,7 @@
 Code Lists
 ----------
 """
+from pathlib import Path
 from dataclasses import dataclass, field
 from typing import Optional, List, Set
 from abc import ABC
@@ -14,6 +15,7 @@ from csvqb.utils.uri import uri_safe
 from csvqb.utils.validators.uri import validate_uri
 from csvqb.inputs import PandasDataTypes, pandas_input_to_columnar_str
 from csvqb.models.validationerror import ValidationError
+from csvqb.utils.csvw import get_dependent_local_files
 
 
 @dataclass
@@ -54,6 +56,15 @@ class NewQbConcept(UriIdentifiable):
 
     def __hash__(self):
         return self.code.__hash__()
+
+
+@dataclass
+class NewQbCodeListInCsvW(QbCodeList):
+    """
+    Contains the reference to an existing skos:ConceptScheme defined in a CSV-W.
+    """
+
+    schema_metadata_file_path: Path
 
 
 @dataclass

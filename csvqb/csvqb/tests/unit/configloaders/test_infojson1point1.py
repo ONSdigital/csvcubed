@@ -6,6 +6,8 @@ from csvqb.configloaders.infojson import get_cube_from_info_json
 from csvqb.utils.iterables import first
 from csvqb.models.cube import *
 
+info_json_1_1_test_cases_dir = get_test_cases_dir() / "configloaders" / "infojson1-1"
+
 
 def test_units_loading():
     """
@@ -108,11 +110,9 @@ def test_observation_value_loading():
     Test that single and multi-measure observation value columns can be successfully loaded using the new
     info.json v1.1 syntax using all possible configuration types.
     """
-    data = pd.read_csv(
-        get_test_cases_dir() / "configloaders" / "infojson1-1" / "observations.csv"
-    )
+    data = pd.read_csv(info_json_1_1_test_cases_dir / "observations.csv")
     cube = get_cube_from_info_json(
-        get_test_cases_dir() / "configloaders" / "infojson1-1" / "observations.json",
+        info_json_1_1_test_cases_dir / "observations.json",
         data,
     )
 
@@ -167,11 +167,9 @@ def test_dimension_loading():
     Test that existing and new dimensions can be successfully loaded using the new info.json v1.1 syntax using all
     possible configuration types.
     """
-    data = pd.read_csv(
-        get_test_cases_dir() / "configloaders" / "infojson1-1" / "dimensions.csv"
-    )
+    data = pd.read_csv(info_json_1_1_test_cases_dir / "dimensions.csv")
     cube = get_cube_from_info_json(
-        get_test_cases_dir() / "configloaders" / "infojson1-1" / "dimensions.json",
+        info_json_1_1_test_cases_dir / "dimensions.json",
         data,
     )
 
@@ -240,12 +238,13 @@ def test_dimension_loading():
     assert new_dimension_5 is not None
     assert isinstance(new_dimension_5.component, NewQbDimension)
     assert new_dimension_5.component.label == "New Dimension 5"
-    # todo: FIX this when you've added the `NewQbCodeListFromCsvW` class.
-    # assert isinstance(new_dimension_5.component.code_list, ExistingQbCodeList)
-    # assert (
-    #     new_dimension_5.component.code_list.concept_scheme_uri
-    #     == "codelists/new-dimension-5.csv-metadata.json"
-    # )
+    assert isinstance(new_dimension_5.component.code_list, NewQbCodeListInCsvW)
+    assert (
+        new_dimension_5.component.code_list.schema_metadata_file_path
+        == info_json_1_1_test_cases_dir
+        / "codelists"
+        / "new-dimension-5.csv-metadata.json"
+    )
     assert new_dimension_5.csv_column_uri_template is None
 
 
@@ -254,11 +253,9 @@ def test_attribute_loading():
     Test that existing and new attributes can be successfully loaded using the new info.json v1.1 syntax using all
     possible configuration types.
     """
-    data = pd.read_csv(
-        get_test_cases_dir() / "configloaders" / "infojson1-1" / "attributes.csv"
-    )
+    data = pd.read_csv(info_json_1_1_test_cases_dir / "attributes.csv")
     cube = get_cube_from_info_json(
-        get_test_cases_dir() / "configloaders" / "infojson1-1" / "attributes.json",
+        info_json_1_1_test_cases_dir / "attributes.json",
         data,
     )
 

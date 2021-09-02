@@ -11,7 +11,13 @@ from .datastructuredefinition import (
     QbDataStructureDefinition,
     MultiQbDataStructureDefinition,
 )
-from .codelist import QbCodeList, NewQbCodeList, NewQbConcept, ExistingQbCodeList
+from .codelist import (
+    QbCodeList,
+    NewQbCodeList,
+    NewQbConcept,
+    ExistingQbCodeList,
+    NewQbCodeListInCsvW,
+)
 from .dimension import QbDimension, NewQbDimension, ExistingQbDimension
 from .measure import QbMeasure, NewQbMeasure, ExistingQbMeasure, QbMultiMeasureDimension
 from .observedvalue import (

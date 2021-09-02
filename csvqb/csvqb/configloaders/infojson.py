@@ -59,7 +59,7 @@ def get_cube_from_info_json(
     if config is None:
         raise Exception(f"Config not found for cube with id '{cube_id}'")
 
-    return _from_info_json_dict(config, data)
+    return _from_info_json_dict(config, data, info_json.parent.absolute())
 
 
 def _override_config_for_cube_id(config: dict, cube_id: str) -> Optional[dict]:
@@ -85,10 +85,12 @@ def _override_config_for_cube_id(config: dict, cube_id: str) -> Optional[dict]:
         return None
 
 
-def _from_info_json_dict(d: Dict, data: pd.DataFrame):
+def _from_info_json_dict(d: Dict, data: pd.DataFrame, info_json_parent_dir: Path):
     metadata = _metadata_from_dict(d)
     transform_section = d.get("transform", {})
-    columns = _columns_from_info_json(transform_section.get("columns", []), data)
+    columns = _columns_from_info_json(
+        transform_section.get("columns", []), data, info_json_parent_dir
+    )
 
     return Cube(metadata, data, columns)
 
@@ -119,7 +121,7 @@ def _metadata_from_dict(config: dict) -> "CatalogMetadata":
 
 
 def _columns_from_info_json(
-    column_mappings: Dict[str, Any], data: pd.DataFrame
+    column_mappings: Dict[str, Any], data: pd.DataFrame, info_json_parent_dir: Path
 ) -> List[CsvColumn]:
     defined_columns: List[CsvColumn] = []
 
@@ -129,7 +131,9 @@ def _columns_from_info_json(
     for col_title in column_titles_in_data:
         maybe_config = column_mappings.get(col_title)
         defined_columns.append(
-            _get_column_for_metadata_config(col_title, maybe_config, data[col_title])
+            _get_column_for_metadata_config(
+                col_title, maybe_config, data[col_title], info_json_parent_dir
+            )
         )
 
     columns_missing_in_data = set(column_mappings.keys()) - set(column_titles_in_data)
@@ -146,11 +150,12 @@ def _get_column_for_metadata_config(
     column_name: str,
     col_config: Optional[Union[dict, bool]],
     column_data: PandasDataTypes,
+    info_json_parent_dir: Path,
 ) -> CsvColumn:
     if isinstance(col_config, dict):
         if col_config.get("type") is not None:
             return v1point1.map_column_to_qb_component(
-                column_name, col_config, column_data
+                column_name, col_config, column_data, info_json_parent_dir
             )
         csv_safe_column_name = csvw_column_name_safe(column_name)
 
