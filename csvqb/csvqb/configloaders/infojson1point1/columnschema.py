@@ -43,7 +43,7 @@ def _from_dict(cls: Type[T], d: dict) -> T:
             values[field.name] = field.default_factory()
         else:
             raise ValueError(f"Missing required field '{field.name}' on {cls}.")
-    return cls(**values)
+    return cls(**values)  # type: ignore
 
 
 @dataclass
