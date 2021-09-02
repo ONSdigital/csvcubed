@@ -344,6 +344,10 @@
                       "$ref": "http://gss-cogs.github.io/family-schemas/external.json#/definitions/cs_ext_uri"
                     },
                     {
+                      "description": "This dimension should have an automatically generated codelist.",
+                      "const": true
+                    },
+                    {
                       "description": "This dimension should not have a codelist.",
                       "const": false
                     }
@@ -590,7 +594,7 @@
           "type": "object",
           "properties": {
             "type": {
-              "const": "observation"
+              "const": "observations"
             },
             "datatype": {
               "$ref": "#/definitions/datatype"

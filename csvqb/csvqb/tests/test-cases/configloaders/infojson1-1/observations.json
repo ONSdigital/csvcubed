@@ -1,0 +1,57 @@
+{
+    "$schema": "file:///Users/HA9WF3CZ/Documents/dataset-schema.json",
+    "id": "ons-international-trade-in-services-by-subnational-areas-of-the-uk",
+    "title": "International trade in services by subnational areas of the UK",
+    "publisher": "Office for National Statistics",
+    "description": "Experimental estimated value of exports and imports of services for 2018 for NUTS1, NUTS2, NUTS3 and 15 city regions, including industry and non-EU and EU split.",
+    "landingPage": "https://www.ons.gov.uk/businessindustryandtrade/internationaltrade/datasets/internationaltradeinservicesbysubnationalareasoftheuk",
+    "datasetNotes": [
+        "On landing page"
+    ],
+    "published": "2020-09-10",
+    "families": [
+        "Trade"
+    ],
+    "extract": {
+        "source": "XLS"
+    },
+    "transform": {
+        "airtable": "reccWyv9zlS3Qx6ZC",
+        "stage": [
+            "To Do"
+        ],
+        "main_issue": 84,
+        "columns": {
+            "Some Dimension": {
+                "type": "dimension",
+                "new": true
+            },
+            "Single Measure Value": {
+                "type": "observations",
+                "unit": "http://gss-data.org.uk/def/concept/measurement-units/gbp-million",
+                "measure": "http://gss-data.org.uk/def/measure/trade",
+                "datatype": "double"
+            },
+            "Single Measure Value 2": {
+                "type": "observations",
+                "unit": {
+                    "label": "New Unit 2"
+                },
+                "measure": {
+                    "label": "New Measure 2"
+                }
+            },
+            "Multi Measure Value": {
+                "type": "observations",
+                "unit": "http://gss-data.org.uk/def/concept/measurement-units/gbp-billions"
+            },
+            
+            "Multi Measure Value 2": {
+                "type": "observations",
+                "datatype": "short"
+            }
+        }
+    },
+    "sizingNotes": "",
+    "notes": ""
+}

@@ -1,0 +1,96 @@
+{
+    "$schema": "file:///Users/HA9WF3CZ/Documents/dataset-schema.json",
+    "id": "ons-international-trade-in-services-by-subnational-areas-of-the-uk",
+    "title": "International trade in services by subnational areas of the UK",
+    "publisher": "Office for National Statistics",
+    "description": "Experimental estimated value of exports and imports of services for 2018 for NUTS1, NUTS2, NUTS3 and 15 city regions, including industry and non-EU and EU split.",
+    "landingPage": "https://www.ons.gov.uk/businessindustryandtrade/internationaltrade/datasets/internationaltradeinservicesbysubnationalareasoftheuk",
+    "datasetNotes": [
+        "On landing page"
+    ],
+    "published": "2020-09-10",
+    "families": [
+        "Trade"
+    ],
+    "extract": {
+        "source": "XLS"
+    },
+    "transform": {
+        "airtable": "reccWyv9zlS3Qx6ZC",
+        "stage": [
+            "To Do"
+        ],
+        "main_issue": 84,
+        "columns": {
+            "Period": {
+                "type": "dimension",
+                "new": {
+                    "subPropertyOf": "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod",
+                    "codelist": false
+                },
+                "value": "http://reference.data.gov.uk/id/{period}"
+            },
+            "Existing Marker": {
+                "type": "attribute",
+                "uri": "http://purl.org/linked-data/sdmx/2009/attribute#obsStatus",
+                "value": "http://gss-data.org.uk/def/concept/cogs-markers/{marker}",
+                "isRequired": true
+            },
+            "Existing Marker 2": {
+                "type": "attribute",
+                "uri": "http://purl.org/linked-data/sdmx/2009/attribute#obsStatus",
+                "newAttributeValues": true
+            },
+            "Existing Marker 3": {
+                "type": "attribute",
+                "uri": "http://purl.org/linked-data/sdmx/2009/attribute#obsStatus",
+                "newAttributeValues": [
+                    {
+                        "label": "Some Incorrect Marker Value"
+                    }
+                ]
+            },
+            "New Marker": {
+                "type": "attribute",
+                "new": true,
+                "isRequired": true
+            },
+            "New Marker 2": {
+                "type": "attribute",
+                "new": {
+                    "path": "new-marker-2",
+                    "label": "New Marker 2",
+                    "comment": "This is new marker 2",
+                    "subPropertyOf": "http://gss-data.org.uk/def/trade/property/attribute/marker",
+                    "isDefinedBy": "http://example.org/attributes/markers/new-marker-2",
+                    "newAttributeValues": true
+                }
+            },
+            "New Marker 3": {
+                "type": "attribute",
+                "new": {
+                    "newAttributeValues": [
+                        {
+                            "label": "Some Incorrect Marker Value"
+                        }
+                    ]
+                }
+            },
+            "New Marker 4": {
+                "type": "attribute",
+                "new": {
+                    "label": "New Marker 4"
+                },
+                "value": "http://example.org/attributes/new-marker-4/{+new_marker_4}"
+            },
+            "Value": {
+                "type": "observation",
+                "unit": "http://gss-data.org.uk/def/concept/measurement-units/gbp-million",
+                "measure": "http://gss-data.org.uk/def/measure/trade",
+                "datatype": "double"
+            }
+        }
+    },
+    "sizingNotes": "",
+    "notes": ""
+}

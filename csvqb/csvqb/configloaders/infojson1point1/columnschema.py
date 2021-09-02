@@ -4,7 +4,7 @@ Models
 
 info.json V1.1 column mapping models.
 """
-from dataclasses import dataclass, fields, Field
+from dataclasses import dataclass, fields, Field, _MISSING_TYPE
 from typing import List, Union, Optional, Type, TypeVar
 
 from csvqb.inputs import pandas_input_to_columnar_str
@@ -32,12 +32,18 @@ T = TypeVar("T", bound=object)
 
 
 def _from_dict(cls: Type[T], d: dict) -> T:
-    instance = cls()
-    for field in fields(instance):
+    values = {}
+    for field in fields(cls):
         assert isinstance(field, Field)
         if field.name in d.keys():
-            setattr(instance, field.name, d[field.name])
-    return instance
+            values[field.name] = d[field.name]
+        elif not isinstance(field.default, _MISSING_TYPE):
+            values[field.name] = field.default
+        elif not isinstance(field.default_factory, _MISSING_TYPE):
+            values[field.name] = field.default_factory()
+        else:
+            raise ValueError(f"Missing required field '{field.name}' on {cls}.")
+    return cls(**values)
 
 
 @dataclass
@@ -57,7 +63,7 @@ class NewDimensionProperty:
 @dataclass
 class NewDimension:
     new: Union[NewDimensionProperty, bool]
-    value: Optional[str]
+    value: Optional[str] = None
 
     @classmethod
     def from_dict(cls, d: dict) -> "NewDimension":
@@ -86,8 +92,10 @@ class NewDimension:
                 else:
                     # todo: Need a new type to represent an existing CSV-W codelist file.
                     pass
-            elif isinstance(self.new.codelist, bool) and not self.new.codelist:
-                new_dimension.code_list = None
+            elif isinstance(self.new.codelist, bool):
+                if not self.new.codelist:
+                    new_dimension.code_list = None
+                # else, the user wants a codelist to be automatically generated
             else:
                 raise ValueError(f"Unmatched code_list value {self.new.codelist}")
             return new_dimension
@@ -134,7 +142,7 @@ class NewAttributeProperty:
         instance = _from_dict(cls, d)
         if isinstance(instance.newAttributeValues, list):
             new_attr_values: List[NewAttributeValue] = [
-                NewDimensionProperty.from_dict(attr_val)  # type: ignore
+                NewAttributeValue.from_dict(attr_val)  # type: ignore
                 for attr_val in instance.newAttributeValues
             ]
             instance.newAttributeValues = new_attr_values
@@ -144,7 +152,7 @@ class NewAttributeProperty:
 @dataclass
 class NewAttribute:
     new: Union[bool, NewAttributeProperty]
-    isRequired: Optional[bool] = True
+    isRequired: bool = False
     value: Optional[str] = None
 
     @classmethod
@@ -158,7 +166,9 @@ class NewAttribute:
         self, column_title: str, data: PandasDataTypes
     ) -> NewQbAttribute:
         if isinstance(self.new, bool) and self.new:
-            return NewQbAttribute.from_data(label=column_title, data=data)
+            return NewQbAttribute.from_data(
+                label=column_title, data=data, is_required=self.isRequired
+            )
         elif isinstance(self.new, NewAttributeProperty):
             return NewQbAttribute(
                 label=self.new.label or column_title,
@@ -168,7 +178,7 @@ class NewAttribute:
                 ),
                 parent_attribute_uri=self.new.subPropertyOf,
                 source_uri=self.new.isDefinedBy,
-                is_required=self.isRequired or False,
+                is_required=self.isRequired,
                 uri_safe_identifier_override=self.new.path,
             )
         else:
@@ -180,7 +190,7 @@ class ExistingAttribute:
     uri: str
     value: Optional[str] = None
     newAttributeValues: Union[None, bool, List[NewAttributeValue]] = None
-    isRequired: Optional[bool] = True
+    isRequired: bool = False
 
     @classmethod
     def from_dict(cls, d: dict) -> "ExistingAttribute":
@@ -200,7 +210,7 @@ class ExistingAttribute:
             new_attribute_values=_get_new_attribute_values(
                 data, self.newAttributeValues
             ),
-            is_required=self.isRequired or False,
+            is_required=self.isRequired,
         )
 
 
@@ -308,7 +318,7 @@ class ExistingMeasures:
 
 @dataclass
 class ObservationValue:
-    datatype: Optional[str]
+    datatype: Optional[str] = None
     unit: Union[None, str, NewResource] = None
     measure: Union[None, str, NewResource] = None
 

@@ -100,12 +100,12 @@ def _from_column_dict_to_schema_model(
             return schema.NewUnits.from_dict(column)
         else:
             return schema.ExistingUnits.from_dict(column)
-    elif column_type == "measure":
+    elif column_type == "measures":
         if new_value is not None:
             return schema.NewMeasures.from_dict(column)
         else:
             return schema.ExistingMeasures.from_dict(column)
-    elif column_type == "observation":
+    elif column_type == "observations":
         return schema.ObservationValue.from_dict(column)
     else:
         raise ValueError(f"Type of column '{column_type}' not handled.")
