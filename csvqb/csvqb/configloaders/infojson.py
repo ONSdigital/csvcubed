@@ -140,7 +140,9 @@ def _columns_from_info_json(
     for col_title in columns_missing_in_data:
         config = column_mappings[col_title]
         defined_columns.append(
-            _get_column_for_metadata_config(col_title, config, pd.Series([]))
+            _get_column_for_metadata_config(
+                col_title, config, pd.Series([]), info_json_parent_dir
+            )
         )
 
     return defined_columns
