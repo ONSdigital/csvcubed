@@ -1,0 +1,10 @@
+{
+  "@context": "http://www.w3.org/ns/csvw",
+  "tables": [{
+    "url": "code-list.csv",
+    "tableSchema": "https://gss-cogs.github.io/family-schemas/codelist-schema.json"
+  }, {
+    "url": "another-data-file.csv",
+    "tableSchema": "another-table-schema.json"
+  }]
+}

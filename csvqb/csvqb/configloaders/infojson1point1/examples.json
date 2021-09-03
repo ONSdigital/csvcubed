@@ -1,5 +1,5 @@
 {
-    "$schema": "file://FILL_THIS_IN_FOR_IT_TO_WORK/dataset-schema.json",
+    "$schema": "file:///Users/HA9WF3CZ/Documents/dataset-schema.json",
     "transform": {
         "columns": {
             "New Dimension with nothing specified": {

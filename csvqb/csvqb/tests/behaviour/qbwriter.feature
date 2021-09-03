@@ -322,3 +322,17 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
       <http://existing/unit/count> rdfs:label "Count"@en.
     """
     And the RDF should pass "skos, qb" SPARQL tests
+
+  Scenario: A codelist defined in a CSV-W should be copied to the output directory
+    Given the existing test-case file "qbwriter/code-list.csv-metadata.json"
+    And the existing test-case file "qbwriter/code-list.table.json"
+    And the existing test-case file "qbwriter/code-list.csv"
+    And a QbCube named "Some Qube" with code-list defined in an existing CSV-W "qbwriter/code-list.csv-metadata.json"
+#    Then the CSVqb should pass all validations
+    When the cube is serialised to CSV-W
+    Then the file at "code-list.csv-metadata.json" should exist
+    And the file at "code-list.table.json" should exist
+    And the file at "code-list.csv" should exist
+    And csvlint validation of all CSV-Ws should succeed
+    And csv2rdf on all CSV-Ws should succeed
+    And the RDF should pass "skos, qb" SPARQL tests
