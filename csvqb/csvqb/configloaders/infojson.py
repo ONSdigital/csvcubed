@@ -275,10 +275,9 @@ def _get_code_list(
             return ExistingQbCodeList(maybe_code_list)
         else:
             raise Exception(f"Unexpected codelist value '{maybe_code_list}'")
-    else:
-        code_list = NewQbCodeListInCsvW(
-            info_json_parent_dir
-            / "codelists"
-            / f"{uri_safe(column_label)}.csv-metadata.json"
-        )
-    return code_list
+
+    return NewQbCodeListInCsvW(
+        info_json_parent_dir
+        / "codelists"
+        / f"{uri_safe(column_label)}.csv-metadata.json"
+    )

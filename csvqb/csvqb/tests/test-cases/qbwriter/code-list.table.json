@@ -26,7 +26,7 @@
             },
             "required": false,
             "propertyUrl": "skos:broader",
-            "valueUrl": "http://gss-data.org.uk/def/trade/concept/age-of-business/{+parent_notation}"
+            "valueUrl": "code-list.csv#/concept/age-of-business/{+parent_notation}"
         },
         {
             "titles": "Sort Priority",
@@ -50,9 +50,9 @@
         {
             "virtual": true,
             "propertyUrl": "skos:inScheme",
-            "valueUrl": "http://gss-data.org.uk/def/trade/concept-scheme/age-of-business"
+            "valueUrl": "code-list.csv#/scheme/age-of-business"
         }
     ],
     "primaryKey": "notation",
-    "aboutUrl": "http://gss-data.org.uk/def/trade/concept/age-of-business/{+notation}"
+    "aboutUrl": "code-list.csv#/concept/age-of-business/{+notation}"
 }

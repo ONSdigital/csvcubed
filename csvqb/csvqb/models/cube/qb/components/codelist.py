@@ -20,7 +20,6 @@ from csvqb.utils.validators.uri import validate_uri
 from csvqb.utils.validators.file import validate_file_exists
 from csvqb.inputs import PandasDataTypes, pandas_input_to_columnar_str
 from csvqb.models.validationerror import ValidationError
-from csvqb.utils.csvw import get_dependent_local_files
 
 
 @dataclass
