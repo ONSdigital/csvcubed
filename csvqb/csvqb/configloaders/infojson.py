@@ -39,8 +39,9 @@ from csvqb.models.cube.qb.components.unit import ExistingQbUnit, QbMultiUnits
 from csvqb.models.cube.qb.components.codelist import (
     ExistingQbCodeList,
     NewQbCodeList,
+    NewQbCodeListInCsvW,
+    QbCodeList,
 )
-from csvqb.utils.qb.cube import validate_qb_component_constraints
 from csvqb.utils.uri import csvw_column_name_safe, uri_safe
 from csvqb.utils.dict import get_from_dict_ensure_exists, get_with_func_or_none
 from csvqb.inputs import pandas_input_to_columnar_str, PandasDataTypes
@@ -204,7 +205,9 @@ def _get_column_for_metadata_config(
             or maybe_label is not None
         ):
             label: str = column_name if maybe_label is None else maybe_label
-            code_list = _get_code_list(label, col_config.get("codelist"), column_data)
+            code_list = _get_code_list(
+                label, col_config.get("codelist"), info_json_parent_dir
+            )
             new_dimension = NewQbDimension(
                 label,
                 description=maybe_description,
@@ -263,15 +266,19 @@ def _get_column_for_metadata_config(
 def _get_code_list(
     column_label: str,
     maybe_code_list: Optional[Union[bool, str]],
-    column_data: PandasDataTypes,
-):
+    info_json_parent_dir: Path,
+) -> Optional[QbCodeList]:
     if maybe_code_list is not None:
-        if isinstance(maybe_code_list, bool):
-            code_list = None
+        if isinstance(maybe_code_list, bool) and not maybe_code_list:
+            return None
         elif isinstance(maybe_code_list, str):
-            code_list = ExistingQbCodeList(maybe_code_list)
+            return ExistingQbCodeList(maybe_code_list)
         else:
             raise Exception(f"Unexpected codelist value '{maybe_code_list}'")
     else:
-        code_list = NewQbCodeList.from_data(CatalogMetadata(column_label), column_data)
+        code_list = NewQbCodeListInCsvW(
+            info_json_parent_dir
+            / "codelists"
+            / f"{uri_safe(column_label)}.csv-metadata.json"
+        )
     return code_list

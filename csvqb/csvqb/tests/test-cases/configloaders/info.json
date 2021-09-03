@@ -23,19 +23,23 @@
         "columns": {
             "Period": {
                 "parent": "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod",
-                "value": "http://reference.data.gov.uk/id/{period}"
+                "value": "http://reference.data.gov.uk/id/{period}",
+                "codelist": false
             },
             "Location": {
                 "parent": "http://purl.org/linked-data/sdmx/2009/dimension#refArea",
                 "description": "NUTS1, NUTS2, and NUTS3 codes and descriptions",
-                "value": "{location}"
+                "value": "{location}",
+                "codelist": false
             },
             "Flow": {
                 "dimension": "http://gss-data.org.uk/def/trade/property/dimension/flow-directions",
-                "value": "http://gss-data.org.uk/def/trade/concept/flow-directions/{flow}"
+                "value": "http://gss-data.org.uk/def/trade/concept/flow-directions/{flow}",
+                "codelist": false
             },
             "Industry Grouping": {
-                "parent": "http://gss-data.org.uk/def/trade/property/dimension/product"
+                "parent": "http://gss-data.org.uk/def/trade/property/dimension/product",
+                "codelist": false
             },
             "Marker": {
                 "attribute": "http://purl.org/linked-data/sdmx/2009/attribute#obsStatus",

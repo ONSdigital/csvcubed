@@ -20,7 +20,8 @@
         "columns": {
             "Period": {
                 "parent": "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod",
-                "value": "http://reference.data.gov.uk/id/{+period}"
+                "value": "http://reference.data.gov.uk/id/{+period}",
+                "codelist": false
             },
             "Measure Type": {
                 "dimension": "http://purl.org/linked-data/cube#measureType",

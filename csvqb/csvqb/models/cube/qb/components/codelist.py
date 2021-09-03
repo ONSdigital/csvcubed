@@ -80,7 +80,7 @@ class NewQbCodeListInCsvW(QbCodeList):
 
     @root_validator(pre=True)
     def _csvw_contains_sufficient_information_validator(cls, values: dict) -> None:
-        csv_path = values.get("csv_file_relative_path")
+        csv_path = values.get("csv_file_relative_path_or_uri")
         cs_uri = values.get("concept_scheme_uri")
         c_template_uri = values.get("concept_template_uri")
         if csv_path is None or cs_uri is None or c_template_uri is None:
@@ -90,9 +90,10 @@ class NewQbCodeListInCsvW(QbCodeList):
 
             # if there's no exception but the values aren't set, something weird has happened.
             raise ValueError(
-                f"'csv_file_relative_path', 'concept_scheme_uri' or 'concept_template_uri' values are missing, "
+                f"'csv_file_relative_path_or_uri', 'concept_scheme_uri' or 'concept_template_uri' values are missing, "
                 f"however the CSV-W seems to contain the relevant information."
             )
+        return values
 
     def __post_init__(self):
         try:

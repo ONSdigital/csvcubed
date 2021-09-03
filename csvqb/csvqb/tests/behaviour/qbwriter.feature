@@ -328,7 +328,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     And the existing test-case file "qbwriter/code-list.table.json"
     And the existing test-case file "qbwriter/code-list.csv"
     And a QbCube named "Some Qube" with code-list defined in an existing CSV-W "qbwriter/code-list.csv-metadata.json"
-#    Then the CSVqb should pass all validations
+    Then the CSVqb should pass all validations
     When the cube is serialised to CSV-W
     Then the file at "code-list.csv-metadata.json" should exist
     And the file at "code-list.table.json" should exist
