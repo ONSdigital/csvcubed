@@ -45,7 +45,7 @@ def extract_code_list_concept_scheme_info(
     if about_url is None:
         raise ValueError(f"{code_list_csvw_path} is missing `aboutUrl` property.")
 
-    variables_in_about_url: Set[str] = variables(about_url)
+    variables_in_about_url: Set[str] = {v for v in variables(about_url)}
     if len(variables_in_about_url) != 1:
         raise ValueError(
             "Unexpected number of variables in aboutUrl Template. "

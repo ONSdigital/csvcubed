@@ -131,5 +131,4 @@ def _get_base_path(preliminary_base_path: Path, table_group: dict) -> Union[Path
                 return base_path
             else:
                 return preliminary_base_path / base
-    else:
-        return preliminary_base_path
+    return preliminary_base_path

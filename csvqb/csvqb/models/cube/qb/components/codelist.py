@@ -106,9 +106,9 @@ class NewQbCodeListInCsvW(QbCodeList):
             self.concept_template_uri = concept_template_uri
         except Exception:
             # Validation errors will be highlighted later in custom validation function.
-            self.csv_file_relative_path_or_uri = None
-            self.concept_scheme_uri = None
-            self.concept_template_uri = None
+            self.csv_file_relative_path_or_uri = None  # type: ignore
+            self.concept_scheme_uri = None  # type: ignore
+            self.concept_template_uri = None  # type: ignore
 
 
 @dataclass
