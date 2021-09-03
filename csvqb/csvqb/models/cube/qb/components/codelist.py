@@ -79,7 +79,7 @@ class NewQbCodeListInCsvW(QbCodeList):
     )
 
     @root_validator(pre=True)
-    def _csvw_contains_sufficient_information_validator(cls, values: dict) -> None:
+    def _csvw_contains_sufficient_information_validator(cls, values: dict) -> dict:
         csv_path = values.get("csv_file_relative_path_or_uri")
         cs_uri = values.get("concept_scheme_uri")
         c_template_uri = values.get("concept_template_uri")
