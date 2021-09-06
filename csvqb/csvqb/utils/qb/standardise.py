@@ -76,7 +76,7 @@ def convert_data_values_to_uri_safe_values(
     multi_measure_dimension_columns_defining_new_measures = [
         meas
         for meas in get_columns_of_dsd_type(cube, QbMultiMeasureDimension)
-        if all([isinstance(m, NewQbUnit) for m in meas.component.measures])
+        if all([isinstance(m, NewQbMeasure) for m in meas.component.measures])
     ]
     _overwrite_labels_for_columns(
         cube,
