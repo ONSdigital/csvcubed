@@ -39,11 +39,13 @@ from csvqb.models.cube.qb.components.unit import ExistingQbUnit, QbMultiUnits
 from csvqb.models.cube.qb.components.codelist import (
     ExistingQbCodeList,
     NewQbCodeList,
+    NewQbCodeListInCsvW,
+    QbCodeList,
 )
-from csvqb.utils.qb.cube import validate_qb_component_constraints
 from csvqb.utils.uri import csvw_column_name_safe, uri_safe
 from csvqb.utils.dict import get_from_dict_ensure_exists, get_with_func_or_none
 from csvqb.inputs import pandas_input_to_columnar_str, PandasDataTypes
+import csvqb.configloaders.infojson1point1.mapcolumntocomponent as v1point1
 
 
 def get_cube_from_info_json(
@@ -58,7 +60,7 @@ def get_cube_from_info_json(
     if config is None:
         raise Exception(f"Config not found for cube with id '{cube_id}'")
 
-    return _from_info_json_dict(config, data)
+    return _from_info_json_dict(config, data, info_json.parent.absolute())
 
 
 def _override_config_for_cube_id(config: dict, cube_id: str) -> Optional[dict]:
@@ -84,10 +86,12 @@ def _override_config_for_cube_id(config: dict, cube_id: str) -> Optional[dict]:
         return None
 
 
-def _from_info_json_dict(d: Dict, data: pd.DataFrame):
+def _from_info_json_dict(d: Dict, data: pd.DataFrame, info_json_parent_dir: Path):
     metadata = _metadata_from_dict(d)
     transform_section = d.get("transform", {})
-    columns = _columns_from_info_json(transform_section.get("columns", []), data)
+    columns = _columns_from_info_json(
+        transform_section.get("columns", []), data, info_json_parent_dir
+    )
 
     return Cube(metadata, data, columns)
 
@@ -118,7 +122,7 @@ def _metadata_from_dict(config: dict) -> "CatalogMetadata":
 
 
 def _columns_from_info_json(
-    column_mappings: Dict[str, Any], data: pd.DataFrame
+    column_mappings: Dict[str, Any], data: pd.DataFrame, info_json_parent_dir: Path
 ) -> List[CsvColumn]:
     defined_columns: List[CsvColumn] = []
 
@@ -128,14 +132,18 @@ def _columns_from_info_json(
     for col_title in column_titles_in_data:
         maybe_config = column_mappings.get(col_title)
         defined_columns.append(
-            _get_column_for_metadata_config(col_title, maybe_config, data[col_title])
+            _get_column_for_metadata_config(
+                col_title, maybe_config, data[col_title], info_json_parent_dir
+            )
         )
 
     columns_missing_in_data = set(column_mappings.keys()) - set(column_titles_in_data)
     for col_title in columns_missing_in_data:
         config = column_mappings[col_title]
         defined_columns.append(
-            _get_column_for_metadata_config(col_title, config, pd.Series([1]))
+            _get_column_for_metadata_config(
+                col_title, config, pd.Series([]), info_json_parent_dir
+            )
         )
 
     return defined_columns
@@ -145,9 +153,15 @@ def _get_column_for_metadata_config(
     column_name: str,
     col_config: Optional[Union[dict, bool]],
     column_data: PandasDataTypes,
+    info_json_parent_dir: Path,
 ) -> CsvColumn:
-    csv_safe_column_name = csvw_column_name_safe(column_name)
     if isinstance(col_config, dict):
+        if col_config.get("type") is not None:
+            return v1point1.map_column_to_qb_component(
+                column_name, col_config, column_data, info_json_parent_dir
+            )
+        csv_safe_column_name = csvw_column_name_safe(column_name)
+
         maybe_dimension_uri = col_config.get("dimension")
         maybe_property_value_url = col_config.get("value")
         maybe_parent_uri = col_config.get("parent")
@@ -191,7 +205,9 @@ def _get_column_for_metadata_config(
             or maybe_label is not None
         ):
             label: str = column_name if maybe_label is None else maybe_label
-            code_list = _get_code_list(label, col_config.get("codelist"), column_data)
+            code_list = _get_code_list(
+                label, col_config.get("codelist"), info_json_parent_dir
+            )
             new_dimension = NewQbDimension(
                 label,
                 description=maybe_description,
@@ -250,15 +266,18 @@ def _get_column_for_metadata_config(
 def _get_code_list(
     column_label: str,
     maybe_code_list: Optional[Union[bool, str]],
-    column_data: PandasDataTypes,
-):
+    info_json_parent_dir: Path,
+) -> Optional[QbCodeList]:
     if maybe_code_list is not None:
-        if isinstance(maybe_code_list, bool):
-            code_list = None
+        if isinstance(maybe_code_list, bool) and not maybe_code_list:
+            return None
         elif isinstance(maybe_code_list, str):
-            code_list = ExistingQbCodeList(maybe_code_list)
+            return ExistingQbCodeList(maybe_code_list)
         else:
             raise Exception(f"Unexpected codelist value '{maybe_code_list}'")
-    else:
-        code_list = NewQbCodeList.from_data(CatalogMetadata(column_label), column_data)
-    return code_list
+
+    return NewQbCodeListInCsvW(
+        info_json_parent_dir
+        / "codelists"
+        / f"{uri_safe(column_label)}.csv-metadata.json"
+    )

@@ -1,0 +1,893 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "http://gss-cogs.github.io/family-schemas/dataset-schema-1.1.0.json",
+  "title": "Dataset",
+  "description": "Info about a dataset / transformation",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "description": "The schema/version this file uses.",
+      "type": "string",
+      "format": "uri",
+      "const": "http://gss-cogs.github.io/family-schemas/dataset-schema-1.1.0.json"
+    },
+    "id": {
+      "description": "The unique ID for this dataset",
+      "type": "string"
+    },
+    "title": {
+      "description": "The dataset title",
+      "type": "string"
+    },
+    "publisher": {
+      "description": "The dataset publisher",
+      "type": "string"
+    },
+    "description": {
+      "description": "The dataset description",
+      "type": "string"
+    },
+    "landingPage": {
+      "description": "The initial URL(s) the scraper starts from",
+      "oneOf": [
+        {
+          "type": "string",
+          "format": "uri"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uri"
+          }
+        }
+      ]
+    },
+    "dataURL": {
+      "description": "Provide a temporary direct download URL when there's no scraper available",
+      "type": "string",
+      "format": "uri"
+    },
+    "datasetNotes": {
+      "description": "Notes about how to find the data from the landing page and what to do with it",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "published": {
+      "description": "Date that the dataset was published",
+      "type": "string"
+    },
+    "families": {
+      "description": "Dataset families this dataset belongs to",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "extract": {
+      "description": "Information about the extraction part of the process.",
+      "type": "object",
+      "properties": {
+        "source": {
+          "description": "Format of the source data",
+          "type": "string"
+        },
+        "stage": {
+          "description": "The analysis stage of this dataset within the dataset family landscape analysis.",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "transform": {
+      "description": "Information about the transformation part of the process.",
+      "type": "object",
+      "properties": {
+        "airtable": {
+          "description": "Airtable record ID(s)",
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "rec[0-9a-zA-Z]{14}"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "rec[0-9a-zA-Z]{14}"
+              }
+            }
+          ]
+        },
+        "main_issue": {
+          "description": "GitHub issue number",
+          "type": "integer"
+        },
+        "stage": {
+          "description": "The transformation stage of this dataset.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "columns": {
+          "description": "The mapping from column names to data cube components",
+          "type": "object",
+          "additionalProperties": {
+            "description": "A column name to component mapping",
+            "oneOf": [
+              {
+                "description": "Skip this column",
+                "type": "boolean",
+                "const": false
+              },
+              {
+                "$ref": "#/definitions/dim_desc"
+              },
+              {
+                "$ref": "#/definitions/dim_local"
+              },
+              {
+                "$ref": "#/definitions/dim_ref"
+              },
+              {
+                "$ref": "#/definitions/attr_ref"
+              },
+              {
+                "$ref": "#/definitions/single_measure"
+              },
+              {
+                "$ref": "#/definitions/measure_type_col"
+              },
+              {
+                "$ref": "#/definitions/value_of_measure"
+              },
+              {
+                "$ref": "#/definitions/v1.1/column/dimension/new"
+              },
+              {
+                "$ref": "#/definitions/v1.1/column/dimension/existing"
+              },
+              {
+                "$ref": "#/definitions/v1.1/column/attribute/new"
+              },
+              {
+                "$ref": "#/definitions/v1.1/column/attribute/existing"
+              },
+              {
+                "$ref": "#/definitions/v1.1/column/units/new"
+              },
+              {
+                "$ref": "#/definitions/v1.1/column/units/existing"
+              },
+              {
+                "$ref": "#/definitions/v1.1/column/measures/new"
+              },
+              {
+                "$ref": "#/definitions/v1.1/column/measures/existing"
+              },
+              {
+                "$ref": "#/definitions/v1.1/column/observation_value"
+              }
+            ]
+          }
+        }
+      },
+      "required": [
+        "airtable"
+      ],
+      "additionalProperties": false
+    },
+    "load": {
+      "description": "Information about the loading part of the process.",
+      "type": "object",
+      "properties": {
+        "publish": {
+          "description": "Whether to publish the dataset at the end of the pipeline, defaults to false.",
+          "type": "boolean"
+        },
+        "accretiveUpload": {
+          "description": "Whether to upload the dataset to PMD in an accretive/additative fashion. If false or unset, results in the drop-and-replace upload style.",
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "sizingNotes": {
+      "description": "Hints about the complexity and size of the dataset",
+      "type": "string"
+    },
+    "notes": {
+      "description": "General notes about the dataset.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "publisher",
+    "families"
+  ],
+  "additionalProperties": false,
+  "definitions": {
+    "v1.1": {
+      "new": {
+        "props": {
+          "path": {
+            "description": "A URI-safe path/identifier for this distinct resource. Used when building URIs.",
+            "type": "string"
+          },
+          "label": {
+            "description": "A URI-safe path/identifier for this distinct resource. Used when building URIs. (rdfs:label)",
+            "type": "string"
+          },
+          "comment": {
+            "description": "A URI-safe path/identifier for this distinct resource. Used when building URIs. (rdfs:comment)",
+            "type": "string"
+          },
+          "isDefinedBy": {
+            "description": "A URI which defines what the resource property means (rdfs:isDefinedBy).",
+            "type": "string"
+          },
+          "subPropertyOf": {
+            "description": "The parent property of this component's property. (rdfs:subPropertyOf)",
+            "type": "string"
+          },
+          "newAttributeValues": {
+            "description": "Whether new attribute values should be created, or existing attribute values should be re-used.",
+            "oneOf": [
+              {
+                "description": "New attribute values should be created for each unique value in the column.",
+                "const": true
+              },
+              {
+                "description": "The new attribute values which should be created for the column.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/v1.1/new/attribute_value"
+                }
+              }
+            ]
+          }
+        },
+        "measure": {
+          "description": "The properties available to define a new measure",
+          "type": "object",
+          "properties": {
+            "path": {
+              "$ref": "#/definitions/v1.1/new/props/path"
+            },
+            "label": {
+              "$ref": "#/definitions/v1.1/new/props/label"
+            },
+            "comment": {
+              "$ref": "#/definitions/v1.1/new/props/comment"
+            },
+            "isDefinedBy": {
+              "$ref": "#/definitions/v1.1/new/props/isDefinedBy"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "label"
+          ]
+        },
+        "unit": {
+          "description": "The properties available to define a new unit",
+          "type": "object",
+          "properties": {
+            "path": {
+              "$ref": "#/definitions/v1.1/new/props/path"
+            },
+            "label": {
+              "$ref": "#/definitions/v1.1/new/props/label"
+            },
+            "comment": {
+              "$ref": "#/definitions/v1.1/new/props/comment"
+            },
+            "isDefinedBy": {
+              "$ref": "#/definitions/v1.1/new/props/isDefinedBy"
+            },
+            "baseUnit": {
+              "description": "The unit that this one is related to. Requires that `baseUnitScalingFactor` is defined.",
+              "$ref": "http://gss-cogs.github.io/family-schemas/external.json#/definitions/unit_ext_uri"
+            },
+            "baseUnitScalingFactor": {
+              "description": "The multiplying factor necessary to convert values from this unit to `baseUnit`. Requires that `baseUnit` is defined.",
+              "type": "number"
+            },
+            "qudtQuantityKind": {
+              "description": "The `qudt:QuantityKind` family that this unit fits into. Requires that `siBaseUnitConversionMultiplier` is defined.",
+              "type": "string"
+            },
+            "siBaseUnitConversionMultiplier": {
+              "description": "The multiplying factor necessary to convert values into the quantityKind's SI base unit. Requires that `qudtQuantityKind` is defined.",
+              "type": "number"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "label"
+          ]
+        },
+        "attribute_property": {
+          "description": "This attribute property should be `new`, i.e. local to this dataset.",
+          "oneOf": [
+            {
+              "$comment": "The user is just specifying here that they want the attribute property to be new without filling in any of the information.",
+              "const": true
+            },
+            {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "$ref": "#/definitions/v1.1/new/props/path"
+                },
+                "label": {
+                  "$ref": "#/definitions/v1.1/new/props/label"
+                },
+                "comment": {
+                  "$ref": "#/definitions/v1.1/new/props/comment"
+                },
+                "isDefinedBy": {
+                  "$ref": "#/definitions/v1.1/new/props/isDefinedBy"
+                },
+                "subPropertyOf": {
+                  "$ref": "http://gss-cogs.github.io/family-schemas/external.json#/definitions/attr_ext_uri"
+                },
+                "newAttributeValues": {
+                  "$ref": "#/definitions/v1.1/new/props/newAttributeValues"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "dimension_property": {
+          "description": "This dimension property should be `new`, i.e. local to this dataset.",
+          "oneOf": [
+            {
+              "$comment": "The user is just specifying here that they want the dimension property to be new without filling in any of the information.",
+              "const": true
+            },
+            {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "$ref": "#/definitions/v1.1/new/props/path"
+                },
+                "label": {
+                  "$ref": "#/definitions/v1.1/new/props/label"
+                },
+                "comment": {
+                  "$ref": "#/definitions/v1.1/new/props/comment"
+                },
+                "isDefinedBy": {
+                  "$ref": "#/definitions/v1.1/new/props/isDefinedBy"
+                },
+                "subPropertyOf": {
+                  "$ref": "http://gss-cogs.github.io/family-schemas/external.json#/definitions/dim_ext_uri"
+                },
+                "codelist": {
+                  "description": "The URI of the codelist associated with the dimension *OR* the relative file path to the codelist's local definition. (qb:codeList)",
+                  "anyOf": [
+                    {
+                      "description": "The relative file path to the codelist's local definition",
+                      "type": "string"
+                    },
+                    {
+                      "description": "The URI of the codelist associated with the dimension.",
+                      "$ref": "http://gss-cogs.github.io/family-schemas/external.json#/definitions/cs_ext_uri"
+                    },
+                    {
+                      "description": "This dimension should have an automatically generated codelist.",
+                      "const": true
+                    },
+                    {
+                      "description": "This dimension should not have a codelist.",
+                      "const": false
+                    }
+                  ]
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "codelist"
+              ]
+            }
+          ]
+        },
+        "attribute_value": {
+          "description": "A new attribute value which should be created locally to this dataset.",
+          "type": "object",
+          "properties": {
+            "path": {
+              "$ref": "#/definitions/v1.1/new/props/path"
+            },
+            "label": {
+              "$ref": "#/definitions/v1.1/new/props/label"
+            },
+            "comment": {
+              "$ref": "#/definitions/v1.1/new/props/comment"
+            },
+            "isDefinedBy": {
+              "$ref": "#/definitions/v1.1/new/props/isDefinedBy"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "label"
+          ]
+        }
+      },
+      "column": {
+        "props": {
+          "value": {
+            "description": "The CSV-W column's valueUrl template. Defines how CSV column values map to URIs.",
+            "type": "string"
+          },
+          "attrIsRequired": {
+            "description": "Whether every observation is required to have a value for this attribute.",
+            "type": "boolean"
+          }
+        },
+        "dimension": {
+          "new": {
+            "description": "Defines a qb component referring to a new dimension property.",
+            "type": "object",
+            "properties": {
+              "type": {
+                "const": "dimension"
+              },
+              "new": {
+                "$ref": "#/definitions/v1.1/new/dimension_property"
+              },
+              "value": {
+                "$comment": "If the user provides a codelist that isn't local, we can't necessarily figure out what the concept URIs should look like.",
+                "$ref": "#/definitions/v1.1/column/props/value"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "type"
+            ]
+          },
+          "existing": {
+            "description": "Defines a qb component referring to an existing dimension.",
+            "type": "object",
+            "properties": {
+              "type": {
+                "const": "dimension"
+              },
+              "uri": {
+                "description": "The URI for this dimension.",
+                "$ref": "http://gss-cogs.github.io/family-schemas/external.json#/definitions/dim_ext_uri"
+              },
+              "value": {
+                "$ref": "#/definitions/v1.1/column/props/value"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "type",
+              "uri",
+              "value"
+            ]
+          }
+        },
+        "attribute": {
+          "new": {
+            "description": "Defines a qb component referring to a new attribute property.",
+            "type": "object",
+            "properties": {
+              "type": {
+                "const": "attribute"
+              },
+              "new": {
+                "$ref": "#/definitions/v1.1/new/attribute_property"
+              },
+              "value": {
+                "$comment": "If the user doesn't specify new attribute values, then we don't know what the URIs for the attribute values should be. The user must provide a template.",
+                "$ref": "#/definitions/v1.1/column/props/value"
+              },
+              "isRequired": {
+                "$ref": "#/definitions/v1.1/column/props/attrIsRequired"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "type"
+            ]
+          },
+          "existing": {
+            "description": "Defines a qb component referring to an existing attribute property.",
+            "type": "object",
+            "properties": {
+              "type": {
+                "const": "attribute"
+              },
+              "uri": {
+                "description": "The URI for this attribute.",
+                "$ref": "http://gss-cogs.github.io/family-schemas/external.json#/definitions/attr_ext_uri"
+              },
+              "value": {
+                "$ref": "#/definitions/v1.1/column/props/value"
+              },
+              "newAttributeValues": {
+                "$ref": "#/definitions/v1.1/new/props/newAttributeValues"
+              },
+              "isRequired": {
+                "$ref": "#/definitions/v1.1/column/props/attrIsRequired"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "type",
+              "uri"
+            ]
+          }
+        },
+        "units": {
+          "new": {
+            "description": "Defines a qb component which specifies each observation's unit. Each unit is defined locally to this dataset.",
+            "type": "object",
+            "properties": {
+              "type": {
+                "const": "units"
+              },
+              "new": {
+                "description": "The new units to be defined. Should contain all new units used in the column.",
+                "oneOf": [
+                  {
+                    "description": "New units should be defined for each unique value in the column.",
+                    "const": true
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/v1.1/new/unit"
+                    }
+                  }
+                ]
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "type"
+            ]
+          },
+          "existing": {
+            "description": "Defines a qb component which specifies each observation's unit. Each unit must already be defined externally.",
+            "type": "object",
+            "properties": {
+              "type": {
+                "const": "units"
+              },
+              "value": {
+                "$ref": "#/definitions/v1.1/column/props/value"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "type",
+              "value"
+            ]
+          }
+        },
+        "measures": {
+          "new": {
+            "description": "Defines a qb component which specifies each observation's measure. Each measure is defined locally to this dataset.",
+            "type": "object",
+            "properties": {
+              "type": {
+                "const": "measures"
+              },
+              "new": {
+                "description": "The new measures to be defined. Should contain all measures used in the column.",
+                "oneOf": [
+                  {
+                    "description": "New measures should be defined for each unique value in the column.",
+                    "const": true
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/v1.1/new/measure"
+                    }
+                  }
+                ]
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "type"
+            ]
+          },
+          "existing": {
+            "description": "Defines a qb component which specifies each observation's measure. Each measure must already be defined externally.",
+            "type": "object",
+            "properties": {
+              "type": {
+                "const": "measures"
+              },
+              "value": {
+                "$ref": "#/definitions/v1.1/column/props/value"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "type",
+              "value"
+            ]
+          }
+        },
+        "observation_value": {
+          "description": "The column represents a qb observation value.",
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "observations"
+            },
+            "datatype": {
+              "$ref": "#/definitions/datatype"
+            },
+            "unit": {
+              "description": "The unit for all observations.",
+              "oneOf": [
+                {
+                  "description": "The URI of the measurement units for this measure.",
+                  "$ref": "http://gss-cogs.github.io/family-schemas/external.json#/definitions/unit_ext_uri"
+                },
+                {
+                  "description": "A new unit",
+                  "$ref": "#/definitions/v1.1/new/unit"
+                }
+              ]
+            },
+            "measure": {
+              "description": "The measure for all observations.",
+              "oneOf": [
+                {
+                  "description": "The URI of the measure.",
+                  "$ref": "http://gss-cogs.github.io/family-schemas/external.json#/definitions/meas_ext_uri"
+                },
+                {
+                  "$ref": "#/definitions/v1.1/new/measure"
+                }
+              ]
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "type"
+          ]
+        }
+      }
+    },
+    "dim_ref": {
+      "description": "Reference to an existing dimension",
+      "type": "object",
+      "properties": {
+        "dimension": {
+          "$ref": "#/definitions/dim_uri"
+        },
+        "value": {
+          "$ref": "#/definitions/value"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "dimension",
+        "value"
+      ]
+    },
+    "dim_local": {
+      "description": "A dataset-local dimension.",
+      "type": "object",
+      "properties": {
+        "label": {
+          "$ref": "#/definitions/dim_label"
+        },
+        "description": {
+          "$ref": "#/definitions/dim_desc"
+        },
+        "source": {
+          "$ref": "#/definitions/source"
+        },
+        "parent": {
+          "$ref": "#/definitions/parent_uri"
+        },
+        "value": {
+          "$ref": "#/definitions/value"
+        },
+        "codelist": {
+          "$ref": "#/definitions/codelist"
+        }
+      },
+      "additionalProperties": false
+    },
+    "measure_type_col": {
+      "description": "Measure type column",
+      "type": "object",
+      "properties": {
+        "dimension": {
+          "type": "string",
+          "format": "uri",
+          "const": "http://purl.org/linked-data/cube#measureType"
+        },
+        "value": {
+          "$ref": "#/definitions/value"
+        },
+        "types": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "dimension",
+        "value"
+      ]
+    },
+    "value_of_measure": {
+      "description": "Value of measure (all measure types)",
+      "type": "object",
+      "properties": {
+        "datatype": {
+          "$ref": "#/definitions/datatype"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "datatype"
+      ]
+    },
+    "single_measure": {
+      "description": "A single measure column",
+      "type": "object",
+      "properties": {
+        "unit": {
+          "$ref": "#/definitions/unit_uri"
+        },
+        "measure": {
+          "$ref": "#/definitions/measure_uri"
+        },
+        "datatype": {
+          "$ref": "#/definitions/datatype"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "measure",
+        "unit"
+      ]
+    },
+    "attr_ref": {
+      "description": "Reference to an existing attribute",
+      "type": "object",
+      "properties": {
+        "attribute": {
+          "$ref": "#/definitions/attr_uri"
+        },
+        "value": {
+          "$ref": "#/definitions/value"
+        },
+        "datatype": {
+          "$ref": "#/definitions/datatype"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "attribute"
+      ]
+    },
+    "source": {
+      "type": "string",
+      "format": "uri",
+      "description": "Source (URL) of the definition of this dimension."
+    },
+    "dim_desc": {
+      "type": "string",
+      "description": "Definition of this dataset-local dimension",
+      "minLength": 1
+    },
+    "dim_label": {
+      "type": "string",
+      "description": "Label for this dataset-local dimension",
+      "minLength": 1
+    },
+    "dim_uri": {
+      "description": "The URI for this dimension.",
+      "$ref": "http://gss-cogs.github.io/family-schemas/external.json#/definitions/dim_ext_uri"
+    },
+    "parent_uri": {
+      "description": "The URI of a parent dimension.",
+      "$ref": "http://gss-cogs.github.io/family-schemas/external.json#/definitions/dim_ext_uri"
+    },
+    "measure_uri": {
+      "description": "The URI of the measure.",
+      "$ref": "http://gss-cogs.github.io/family-schemas/external.json#/definitions/meas_ext_uri"
+    },
+    "unit_uri": {
+      "description": "The URI of the measurement units for this measure.",
+      "$ref": "http://gss-cogs.github.io/family-schemas/external.json#/definitions/unit_ext_uri"
+    },
+    "value": {
+      "description": "The URI template for values in this column.",
+      "type": "string",
+      "format": "uri-template"
+    },
+    "attr_uri": {
+      "description": "The URI for this attribute.",
+      "$ref": "http://gss-cogs.github.io/family-schemas/external.json#/definitions/attr_ext_uri"
+    },
+    "codelist": {
+      "description": "The URI of the codelist or false for no codelist.",
+      "oneOf": [
+        {
+          "$ref": "http://gss-cogs.github.io/family-schemas/external.json#/definitions/cs_ext_uri"
+        },
+        {
+          "type": "boolean",
+          "const": false
+        }
+      ]
+    },
+    "datatype": {
+      "description": "The data type for this measure.",
+      "type": "string",
+      "enum": [
+        "number",
+        "binary",
+        "datetime",
+        "any",
+        "xml",
+        "html",
+        "json",
+        "anyAtomicType",
+        "anyURI",
+        "base64Binary",
+        "boolean",
+        "date",
+        "dateTime",
+        "dateTimeStamp",
+        "decimal",
+        "integer",
+        "long",
+        "int",
+        "short",
+        "byte",
+        "nonNegativeInteger",
+        "positiveInteger",
+        "unsignedLong",
+        "unsignedInt",
+        "unsignedShort",
+        "unsignedByte",
+        "nonPositiveInteger",
+        "negativeInteger",
+        "double",
+        "duration",
+        "dayTimeDuration",
+        "yearMonthDuration",
+        "float",
+        "gDay",
+        "gMonth",
+        "gYear",
+        "gYearMonth",
+        "hexBinary",
+        "QName",
+        "string",
+        "normalizedString",
+        "token",
+        "language",
+        "Name",
+        "NMTOKEN",
+        "time"
+      ]
+    }
+  }
+}

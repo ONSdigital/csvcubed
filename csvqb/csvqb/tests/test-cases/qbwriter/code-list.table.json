@@ -1,0 +1,58 @@
+{
+    "columns": [
+        {
+            "titles": "Label",
+            "name": "label",
+            "datatype": "string",
+            "required": true,
+            "propertyUrl": "rdfs:label"
+        },
+        {
+            "titles": "Notation",
+            "name": "notation",
+            "datatype": {
+                "base": "string",
+                "format": "^-?[\\w\\.\\/\\+]+(-[\\w\\.\\/\\+]+)*$"
+            },
+            "required": true,
+            "propertyUrl": "skos:notation"
+        },
+        {
+            "titles": "Parent Notation",
+            "name": "parent_notation",
+            "datatype": {
+                "base": "string",
+                "format": "^(-?[\\w\\.\\/\\+]+(-[\\w\\.\\/\\+]+)*|)$"
+            },
+            "required": false,
+            "propertyUrl": "skos:broader",
+            "valueUrl": "code-list.csv#/concept/age-of-business/{+parent_notation}"
+        },
+        {
+            "titles": "Sort Priority",
+            "name": "sort",
+            "datatype": "integer",
+            "required": false,
+            "propertyUrl": "http://www.w3.org/ns/ui#sortPriority"
+        },
+        {
+            "titles": "Description",
+            "name": "description",
+            "datatype": "string",
+            "required": false,
+            "propertyUrl": "rdfs:comment"
+        },
+        {
+            "virtual": true,
+            "propertyUrl": "rdf:type",
+            "valueUrl": "skos:Concept"
+        },
+        {
+            "virtual": true,
+            "propertyUrl": "skos:inScheme",
+            "valueUrl": "code-list.csv#/scheme/age-of-business"
+        }
+    ],
+    "primaryKey": "notation",
+    "aboutUrl": "code-list.csv#/concept/age-of-business/{+notation}"
+}

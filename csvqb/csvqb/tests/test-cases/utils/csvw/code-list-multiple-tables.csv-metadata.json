@@ -1,0 +1,10 @@
+{
+  "@context": "http://www.w3.org/ns/csvw",
+  "tables": [{
+    "url": "code-list.csv",
+    "tableSchema": "code-list.table.json"
+  }, {
+    "url": "another-data-file.csv",
+    "tableSchema": "another-table-schema.json"
+  }]
+}

@@ -7,7 +7,7 @@ Output writer for CSV-qb
 import itertools
 import json
 import re
-from dataclasses import field, dataclass
+from dataclasses import field
 from pathlib import Path
 from typing import Tuple, Dict, Any, List, Iterable, Set
 import rdflib
@@ -26,9 +26,11 @@ from csvqb.utils.uri import (
     csvw_column_name_safe,
     get_data_type_uri_from_str,
 )
+from csvqb.utils.csvw import get_dependent_local_files
 from csvqb.utils.qb.cube import get_columns_of_dsd_type
 from csvqb.utils.dict import rdf_resource_to_json_ld
 from csvqb.utils.qb.standardise import convert_data_values_to_uri_safe_values
+from csvqb.utils.file import copy_files_to_directory_with_structure
 from .skoscodelistwriter import SkosCodeListWriter, CODE_LIST_NOTATION_COLUMN_NAME
 from .writerbase import WriterBase
 from ..models.rdf.newattributevalueresource import NewAttributeValueResource
@@ -111,9 +113,21 @@ class QbWriter(WriterBase):
 
     def _output_new_code_list_csvws(self, output_folder: Path) -> None:
         for column in get_columns_of_dsd_type(self.cube, NewQbDimension):
-            if isinstance(column.component.code_list, NewQbCodeList):
-                code_list_writer = SkosCodeListWriter(column.component.code_list)
+            code_list = column.component.code_list
+            if isinstance(code_list, NewQbCodeList):
+                code_list_writer = SkosCodeListWriter(code_list)
                 code_list_writer.write(output_folder)
+            elif isinstance(code_list, NewQbCodeListInCsvW):
+                # find the CSV-W codelist and all dependent relative files and copy them into the output_folder
+                dependent_files = get_dependent_local_files(
+                    code_list.schema_metadata_file_path
+                )
+                files_relative_to = code_list.schema_metadata_file_path.parent
+                copy_files_to_directory_with_structure(
+                    [code_list.schema_metadata_file_path] + list(dependent_files),
+                    files_relative_to,
+                    output_folder,
+                )
 
     def _generate_csvw_columns_for_cube(self) -> List[Dict[str, Any]]:
         columns = [self._generate_csvqb_column(c) for c in self.cube.columns]
@@ -124,7 +138,7 @@ class QbWriter(WriterBase):
         columns = []
         for col in get_columns_of_dsd_type(self.cube, NewQbDimension):
             if col.component.code_list is not None and isinstance(
-                col.component.code_list, NewQbCodeList
+                col.component.code_list, (NewQbCodeList, NewQbCodeListInCsvW)
             ):
                 columns.append(col)
 
@@ -134,15 +148,24 @@ class QbWriter(WriterBase):
         tables = []
         for col in self._get_columns_for_foreign_keys():
             code_list = col.component.code_list
-            assert isinstance(code_list, NewQbCodeList)
-
-            tables.append(
-                {
-                    "url": f"{code_list.metadata.uri_safe_identifier}.csv",
-                    "tableSchema": f"{code_list.metadata.uri_safe_identifier}.table.json",
-                    "suppressOutput": True,
-                }
-            )
+            if isinstance(code_list, NewQbCodeList):
+                tables.append(
+                    {
+                        "url": f"{code_list.metadata.uri_safe_identifier}.csv",
+                        "tableSchema": f"{code_list.metadata.uri_safe_identifier}.table.json",
+                        "suppressOutput": True,
+                    }
+                )
+            elif isinstance(code_list, NewQbCodeListInCsvW):
+                tables.append(
+                    {
+                        "url": code_list.csv_file_relative_path_or_uri,
+                        "tableSchema": "https://gss-cogs.github.io/family-schemas/codelist-schema.json",
+                        "suppressOutput": True,
+                    }
+                )
+            else:
+                raise ValueError(f"Unmatched codelist type {type(code_list)}")
 
         return tables
 
@@ -150,17 +173,32 @@ class QbWriter(WriterBase):
         foreign_keys: List[dict] = []
         for col in self._get_columns_for_foreign_keys():
             code_list = col.component.code_list
-            assert isinstance(code_list, NewQbCodeList)
-
-            foreign_keys.append(
-                {
-                    "columnReference": csvw_column_name_safe(col.uri_safe_identifier),
-                    "reference": {
-                        "resource": f"{code_list.metadata.uri_safe_identifier}.csv",
-                        "columnReference": CODE_LIST_NOTATION_COLUMN_NAME,
-                    },
-                }
-            )
+            if isinstance(code_list, NewQbCodeList):
+                foreign_keys.append(
+                    {
+                        "columnReference": csvw_column_name_safe(
+                            col.uri_safe_identifier
+                        ),
+                        "reference": {
+                            "resource": f"{code_list.metadata.uri_safe_identifier}.csv",
+                            "columnReference": CODE_LIST_NOTATION_COLUMN_NAME,
+                        },
+                    }
+                )
+            elif isinstance(code_list, NewQbCodeListInCsvW):
+                foreign_keys.append(
+                    {
+                        "columnReference": csvw_column_name_safe(
+                            col.uri_safe_identifier
+                        ),
+                        "reference": {
+                            "resource": code_list.csv_file_relative_path_or_uri,
+                            "columnReference": CODE_LIST_NOTATION_COLUMN_NAME,
+                        },
+                    }
+                )
+            else:
+                raise ValueError(f"Unmatched codelist type {type(code_list)}")
 
         return foreign_keys
 
@@ -424,8 +462,10 @@ class QbWriter(WriterBase):
         elif isinstance(code_list, NewQbCodeList):
             # The resource is created elsewhere. There is a separate CSV-W definition for the code-list
             return ExistingResource(self._get_new_code_list_scheme_uri(code_list))
+        elif isinstance(code_list, NewQbCodeListInCsvW):
+            return ExistingResource(code_list.concept_scheme_uri)
         else:
-            raise Exception(f"Unhandled code list type {type(code_list)}")
+            raise Exception(f"Unhandled codelist type {type(code_list)}")
 
     def _get_qb_attribute_specification(
         self, column_name_uri_safe: str, attribute: QbAttribute
@@ -796,6 +836,10 @@ class QbWriter(WriterBase):
         elif isinstance(code_list, NewQbCodeList):
             return self._doc_rel_uri(
                 f"concept/{code_list.metadata.uri_safe_identifier}/{column_uri_fragment}"
+            )
+        elif isinstance(code_list, NewQbCodeListInCsvW):
+            return re.sub(
+                r"\{.?notation\}", column_uri_fragment, code_list.concept_template_uri
             )
         else:
             raise Exception(f"Unhandled codelist type {type(code_list)}")

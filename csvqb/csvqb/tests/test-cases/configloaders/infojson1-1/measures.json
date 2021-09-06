@@ -1,4 +1,5 @@
 {
+    "$schema": "file:///Users/HA9WF3CZ/Documents/dataset-schema.json",
     "id": "ons-international-trade-in-services-by-subnational-areas-of-the-uk",
     "title": "International trade in services by subnational areas of the UK",
     "publisher": "Office for National Statistics",
@@ -21,33 +22,35 @@
         ],
         "main_issue": 84,
         "columns": {
-            "Period": {
-                "parent": "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod",
-                "value": "http://reference.data.gov.uk/id/{period}",
-                "codelist": false
+            "Some Dimension": {
+                "type": "dimension",
+                "new": true
             },
-            "Location": {
-                "parent": "http://purl.org/linked-data/sdmx/2009/dimension#refArea",
-                "description": "NUTS1, NUTS2, and NUTS3 codes and descriptions",
-                "value": "{location}",
-                "codelist": false
+            "Existing Measures": {
+                "type": "measures",
+                "value": "http://example.com/measures/{+existing_measures}"
             },
-            "Flow": {
-                "dimension": "http://gss-data.org.uk/def/trade/property/dimension/flow-directions",
-                "value": "http://gss-data.org.uk/def/trade/concept/flow-directions/{flow}",
-                "codelist": false
+            "New Measures": {
+                "type": "measures",
+                "new": true
             },
-            "Industry Grouping": {
-                "parent": "http://gss-data.org.uk/def/trade/property/dimension/product",
-                "codelist": false
+            "New Measures 2": {
+                "type": "measures",
+                "new": [
+                    {
+                        "label": "Some Measure 2",
+                        "path": "some-measure-2",
+                        "comment": "Some Measure 2 Comment",
+                        "isDefinedBy": "http://example.com/measures/defs/some-measure-2"
+                    }
+                ]
             },
-            "Marker": {
-                "attribute": "http://purl.org/linked-data/sdmx/2009/attribute#obsStatus",
-                "value": "http://gss-data.org.uk/def/concept/cogs-markers/{marker}"
+            "New Measures 3": {
+                "type": "measures"
             },
             "Value": {
+                "type": "observations",
                 "unit": "http://gss-data.org.uk/def/concept/measurement-units/gbp-million",
-                "measure": "http://gss-data.org.uk/def/measure/trade",
                 "datatype": "double"
             }
         }

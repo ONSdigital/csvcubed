@@ -1,11 +1,12 @@
 import pandas as pd
 from pathlib import Path
-from behave import Given, When, Then
+from behave import Given, When, Then, Step
 from devtools.behave.file import get_context_temp_dir_path
 
 from csvqb.models.cube import *
 from csvqb.writers.qbwriter import QbWriter
 from csvqb.utils.qb.cube import validate_qb_component_constraints
+from csvqb.utils.csvw import get_first_table_schema
 
 
 def get_standard_catalog_metadata_for_name(
@@ -34,6 +35,37 @@ _standard_data = pd.DataFrame(
 @Given('a single-measure QbCube named "{cube_name}"')
 def step_impl(context, cube_name: str):
     context.cube = _get_single_measure_cube_with_name_and_id(cube_name, None)
+
+
+@Given(
+    'a QbCube named "{cube_name}" with code-list defined in an existing CSV-W "{csvw_file_path}"'
+)
+def step_impl(context, cube_name: str, csvw_file_path: str):
+    tmp_dir = get_context_temp_dir_path(context)
+    csvw_path = tmp_dir / csvw_file_path
+    columns = [
+        QbColumn("A", NewQbDimension.from_data("A code list", _standard_data["A"])),
+        QbColumn(
+            "D",
+            NewQbDimension("D code list", code_list=NewQbCodeListInCsvW(csvw_path)),
+        ),
+        QbColumn(
+            "Value",
+            QbSingleMeasureObservationValue(
+                NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
+            ),
+        ),
+    ]
+
+    csv_path, _ = get_first_table_schema(csvw_path)
+    code_list_data = pd.read_csv(csvw_path.parent / csv_path)
+    code_list_values = code_list_data["Notation"].sample(3)
+
+    context.cube = Cube(
+        get_standard_catalog_metadata_for_name(cube_name, None),
+        pd.DataFrame({"A": ["a", "b", "c"], "D": code_list_values, "Value": [1, 2, 3]}),
+        columns,
+    )
 
 
 @Given('a single-measure QbCube with identifier "{cube_id}" named "{cube_name}"')
@@ -270,6 +302,14 @@ def step_impl(context):
     writer = QbWriter(context.cube, raise_missing_uri_safe_value_exceptions=False)
     temp_dir = get_context_temp_dir_path(context)
     writer.write(temp_dir)
+
+
+@Step("the CSVqb should pass all validations")
+def step_impl(context):
+    cube: Cube = context.cube
+    errors = cube.validate()
+    errors += validate_qb_component_constraints(context.cube)
+    assert len(errors) == 0, [e.message for e in errors]
 
 
 @Given(
