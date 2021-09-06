@@ -39,9 +39,13 @@
                 "new": [
                     {
                         "label": "New Unit 2",
-                        "path": "new-unit-2",
+                        "path": "newunit-2",
                         "comment": "New Unit 2 Comment",
-                        "isDefinedBy": "http://example.com/units/defs/new-unit-2"
+                        "isDefinedBy": "http://example.com/units/defs/new-unit-2",
+                        "baseUnit": "http://gss-data.org.uk/def/concept/measurement-units/some-unit",
+                        "baseUnitScalingFactor": 7,
+                        "qudtQuantityKind": "http://qudt.org/vocab/quantitykind/AbsoluteHumidity",
+                        "siBaseUnitConversionMultiplier": 200
                     }
                 ]
             },

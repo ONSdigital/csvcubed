@@ -35,7 +35,9 @@
             "Single Measure Value 2": {
                 "type": "observations",
                 "unit": {
-                    "label": "New Unit 2"
+                    "label": "New Unit 2",
+                    "baseUnit": "http://gss-data.org.uk/def/concept/measurement-units/some-unit",
+                    "baseUnitScalingFactor": 7
                 },
                 "measure": {
                     "label": "New Measure 2"

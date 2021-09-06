@@ -114,7 +114,7 @@ def _from_column_dict_to_schema_model(
             return schema.NewMeasures.from_dict(column)
     elif column_type == "observations":
         return schema.ObservationValue.from_dict(column)
-    else:
-        raise ValueError(
-            f"Column '{column_title}' with type '{column_type}' could not be understood."
-        )
+
+    raise ValueError(
+        f"Column '{column_title}' with type '{column_type}' could not be understood."
+    )

@@ -52,9 +52,20 @@ def test_units_loading():
     unit = new_units_2.component.units[0]
     assert isinstance(unit, NewQbUnit)
     assert unit.label == "New Unit 2"
-    assert unit.uri_safe_identifier_override == "new-unit-2"
+    assert unit.uri_safe_identifier_override == "newunit-2"
     assert unit.description == "New Unit 2 Comment"
     assert unit.source_uri == "http://example.com/units/defs/new-unit-2"
+    assert isinstance(unit.base_unit, ExistingQbUnit)
+    assert (
+        unit.base_unit.unit_uri
+        == "http://gss-data.org.uk/def/concept/measurement-units/some-unit"
+    )
+    assert unit.base_unit_scaling_factor == 7
+    assert (
+        unit.qudt_quantity_kind_uri
+        == "http://qudt.org/vocab/quantitykind/AbsoluteHumidity"
+    )
+    assert unit.si_base_unit_conversion_multiplier == 200
     assert new_units_2.csv_column_uri_template is None
 
     assert new_units_3 is not None
@@ -160,6 +171,12 @@ def test_observation_value_loading():
     assert single_measure_2.component.measure.label == "New Measure 2"
     assert isinstance(single_measure_2.component.unit, NewQbUnit)
     assert single_measure_2.component.unit.label == "New Unit 2"
+    assert isinstance(single_measure_2.component.unit.base_unit, ExistingQbUnit)
+    assert (
+        single_measure_2.component.unit.base_unit.unit_uri
+        == "http://gss-data.org.uk/def/concept/measurement-units/some-unit"
+    )
+    assert single_measure_2.component.unit.base_unit_scaling_factor == 7
     assert single_measure_2.component.data_type == "decimal"
     assert single_measure_2.csv_column_uri_template is None
 

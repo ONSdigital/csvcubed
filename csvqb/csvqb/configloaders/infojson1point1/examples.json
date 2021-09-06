@@ -1,5 +1,5 @@
 {
-    "$schema": "file:///SET_CORRECT_LOCATION_TO_MAKE_THIS_WORK/dataset-schema.json",
+    "$schema": "file:///Users/HA9WF3CZ/Documents/dataset-schema.json",
     "transform": {
         "columns": {
             "New Dimension": {
@@ -132,8 +132,10 @@
                     "comment": "Some really cool new measure"
                 },
                 "unit": {
-                    "label": "Some new unit",
-                    "comment": "Some really cool new unit"
+                    "label": "Weeks",
+                    "comment": "Some really cool new unit",
+                    "baseUnit": "http://gss-data.org.uk/def/concept/measurement-units/days",
+                    "baseUnitScalingFactor": 7
                 }
             },
             "Multi-measure Observation Value Column": {

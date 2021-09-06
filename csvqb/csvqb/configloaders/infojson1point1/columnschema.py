@@ -237,27 +237,43 @@ class ExistingAttribute(SchemaBaseClass):
 
 
 @dataclass
-class NewResource(SchemaBaseClass):
+class NewMeasure(SchemaBaseClass):
     label: str
     path: Optional[str] = None
     comment: Optional[str] = None
     isDefinedBy: Optional[str] = None
 
     @classmethod
-    def from_dict(cls, d: dict) -> "NewResource":
+    def from_dict(cls, d: dict) -> "NewMeasure":
+        return _from_dict(cls, d)
+
+
+@dataclass
+class NewUnit(SchemaBaseClass):
+    label: str
+    path: Optional[str] = None
+    comment: Optional[str] = None
+    isDefinedBy: Optional[str] = None
+    baseUnit: Optional[str] = None
+    baseUnitScalingFactor: Optional[float] = None
+    qudtQuantityKind: Optional[str] = None
+    siBaseUnitConversionMultiplier: Optional[float] = None
+
+    @classmethod
+    def from_dict(cls, d: dict) -> "NewUnit":
         return _from_dict(cls, d)
 
 
 @dataclass
 class NewUnits(SchemaBaseClass):
-    new: Union[bool, List[NewResource]] = True
+    new: Union[bool, List[NewUnit]] = True
 
     @classmethod
     def from_dict(cls, d: dict) -> "NewUnits":
         instance = _from_dict(cls, d)
         if isinstance(instance.new, list):
             instance.new = [
-                NewResource.from_dict(attr_val) for attr_val in instance.new  # type: ignore
+                NewUnit.from_dict(attr_val) for attr_val in instance.new  # type: ignore
             ]
         return instance
 
@@ -267,9 +283,9 @@ class NewUnits(SchemaBaseClass):
         elif isinstance(self.new, list):
             units = []
             for unit in self.new:
-                if not isinstance(unit, NewResource):
+                if not isinstance(unit, NewUnit):
                     raise ValueError(f"Unexpected unit value: {unit}")
-                units.append(_map_new_resource_to_unit(unit))
+                units.append(_map_unit(unit))
 
             return QbMultiUnits(units)
         else:
@@ -294,14 +310,14 @@ class ExistingUnits(SchemaBaseClass):
 
 @dataclass
 class NewMeasures(SchemaBaseClass):
-    new: Union[bool, List[NewResource]] = True
+    new: Union[bool, List[NewMeasure]] = True
 
     @classmethod
     def from_dict(cls, d: dict) -> "NewMeasures":
         instance = _from_dict(cls, d)
         if isinstance(instance.new, list):
             instance.new = [
-                NewResource.from_dict(attr_val) for attr_val in instance.new  # type: ignore
+                NewMeasure.from_dict(attr_val) for attr_val in instance.new  # type: ignore
             ]
         return instance
 
@@ -313,9 +329,9 @@ class NewMeasures(SchemaBaseClass):
         elif isinstance(self.new, list):
             new_measures = []
             for new_measure in self.new:
-                if not isinstance(new_measure, NewResource):
+                if not isinstance(new_measure, NewMeasure):
                     raise ValueError(f"Unexpected measure: {new_measure}")
-                new_measures.append(_map_new_resource_to_measure(new_measure))
+                new_measures.append(_map_measure(new_measure))
             return QbMultiMeasureDimension(new_measures)
         else:
             raise ValueError(f"Unexpected 'new' value: {self.new}")
@@ -341,16 +357,16 @@ class ExistingMeasures(SchemaBaseClass):
 @dataclass
 class ObservationValue(SchemaBaseClass):
     datatype: Optional[str] = None
-    unit: Union[None, str, NewResource] = None
-    measure: Union[None, str, NewResource] = None
+    unit: Union[None, str, NewUnit] = None
+    measure: Union[None, str, NewMeasure] = None
 
     @classmethod
     def from_dict(cls, d: dict) -> "ObservationValue":
         instance = _from_dict(cls, d)
         if isinstance(instance.unit, dict):
-            instance.unit = NewResource.from_dict(instance.unit)  # type: ignore
+            instance.unit = NewUnit.from_dict(instance.unit)  # type: ignore
         if isinstance(instance.measure, dict):
-            instance.measure = NewResource.from_dict(instance.measure)  # type: ignore
+            instance.measure = NewMeasure.from_dict(instance.measure)  # type: ignore
 
         return instance
 
@@ -358,8 +374,8 @@ class ObservationValue(SchemaBaseClass):
         unit = None
         if isinstance(self.unit, str):
             unit = ExistingQbUnit(unit_uri=self.unit)
-        elif isinstance(self.unit, NewResource):
-            unit = _map_new_resource_to_unit(self.unit)
+        elif isinstance(self.unit, NewUnit):
+            unit = _map_unit(self.unit)
         elif self.unit is not None:
             raise ValueError(f"Unexpected unit: {self.unit}")
 
@@ -373,8 +389,8 @@ class ObservationValue(SchemaBaseClass):
             measure = None
             if isinstance(self.measure, str):
                 measure = ExistingQbMeasure(self.measure)
-            elif isinstance(self.measure, NewResource):
-                measure = _map_new_resource_to_measure(self.measure)
+            elif isinstance(self.measure, NewMeasure):
+                measure = _map_measure(self.measure)
             else:
                 raise ValueError(f"Unhandled measure type: {self.measure}")
 
@@ -383,16 +399,22 @@ class ObservationValue(SchemaBaseClass):
             )
 
 
-def _map_new_resource_to_unit(resource: NewResource) -> NewQbUnit:
+def _map_unit(resource: NewUnit) -> NewQbUnit:
     return NewQbUnit(
         label=resource.label,
         description=resource.comment,
         source_uri=resource.isDefinedBy,
         uri_safe_identifier_override=resource.path,
+        base_unit=None
+        if resource.baseUnit is None
+        else ExistingQbUnit(resource.baseUnit),
+        base_unit_scaling_factor=resource.baseUnitScalingFactor,
+        qudt_quantity_kind_uri=resource.qudtQuantityKind,
+        si_base_unit_conversion_multiplier=resource.siBaseUnitConversionMultiplier,
     )
 
 
-def _map_new_resource_to_measure(resource: NewResource) -> NewQbMeasure:
+def _map_measure(resource: NewMeasure) -> NewQbMeasure:
     return NewQbMeasure(
         label=resource.label,
         description=resource.comment,
