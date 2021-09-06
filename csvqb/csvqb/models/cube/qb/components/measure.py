@@ -32,6 +32,15 @@ class ExistingQbMeasure(QbMeasure):
     measure_uri: str
     arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
 
+    def __eq__(self, other):
+        return (
+            isinstance(other, ExistingQbMeasure)
+            and self.measure_uri == other.measure_uri
+        )
+
+    def __hash__(self):
+        return self.measure_uri.__hash__()
+
     def get_permitted_rdf_fragment_hints(self) -> Set[RdfSerialisationHint]:
         return {RdfSerialisationHint.Component}
 
@@ -49,6 +58,23 @@ class NewQbMeasure(QbMeasure, UriIdentifiable):
     source_uri: Optional[str] = field(default=None, repr=False)
     uri_safe_identifier_override: Optional[str] = field(default=None, repr=False)
     arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
+
+    def _get_identifiable_state(self) -> tuple:
+        return (
+            self.label,
+            self.description,
+            self.parent_measure_uri,
+            self.uri_safe_identifier,
+        )
+
+    def __eq__(self, other):
+        return (
+            isinstance(other, NewQbMeasure)
+            and self._get_identifiable_state() == other._get_identifiable_state()
+        )
+
+    def __hash__(self):
+        return self._get_identifiable_state().__hash__()
 
     def get_permitted_rdf_fragment_hints(self) -> Set[RdfSerialisationHint]:
         return {RdfSerialisationHint.Component, RdfSerialisationHint.Property}

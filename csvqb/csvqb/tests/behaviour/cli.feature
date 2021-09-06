@@ -16,7 +16,7 @@ Feature: Test the csvqb Command Line Interface.
     When the csvqb CLI is run with "build --config configloaders/validation-error/info.json configloaders/validation-error/data.csv"
     Then the csvqb CLI should fail with status code 1
     And the csvqb CLI should print "Validation Error"
-    And the csvqb CLI should print "Column 'Measure Type' not found in data provided"
+    And the csvqb CLI should print "Found neither QbObservationValue.unit nor QbMultiUnits defined. One of these must be defined."
     And the file at "out/validation-error-output.csv" should not exist
     And the file at "out/validation-error-output.csv-metadata.json" should not exist
     And the file at "out/validation-errors.json" should not exist
@@ -29,7 +29,7 @@ Feature: Test the csvqb Command Line Interface.
     And the file at "out/validation-errors.json" should exist
     And the validation-errors.json file in the "out" directory should contain
     """
-      Column 'Measure Type' not found in data provided
+      Found neither QbObservationValue.unit nor QbMultiUnits defined. One of these must be defined.
     """
 
   Scenario: The csvqb build command should still output CSV-Ws if the user overrides validation errors

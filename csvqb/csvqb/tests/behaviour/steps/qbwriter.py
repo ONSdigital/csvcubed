@@ -265,6 +265,13 @@ def step_impl(context):
     writer.write(temp_dir)
 
 
+@When("the cube is serialised to CSV-W (suppressing missing uri value exceptions)")
+def step_impl(context):
+    writer = QbWriter(context.cube, raise_missing_uri_safe_value_exceptions=False)
+    temp_dir = get_context_temp_dir_path(context)
+    writer.write(temp_dir)
+
+
 @Given(
     'a single-measure QbCube named "{cube_name}" with "{type}" "{data_type}" attribute'
 )

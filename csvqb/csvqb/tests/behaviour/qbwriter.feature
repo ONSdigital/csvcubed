@@ -34,7 +34,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
 
   Scenario: A QbCube should fail to validate where foreign key constraints are not met.
     Given a single-measure QbCube named "Some Qube" with codes not defined in the code-list
-    When the cube is serialised to CSV-W
+    When the cube is serialised to CSV-W (suppressing missing uri value exceptions)
     Then the file at "a-code-list.csv-metadata.json" should exist
     And csvlint validation of "some-qube.csv-metadata.json" should fail with "unmatched_foreign_key_reference"
 

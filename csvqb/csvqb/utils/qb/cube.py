@@ -2,7 +2,7 @@
 QbCube
 ------
 """
-from typing import List, TypeVar, Type
+from typing import List, TypeVar, Type, Set
 
 from csvqb.models.cube.qb.validationerrors import (
     CsvColumnUriTemplateMissingError,
@@ -23,8 +23,8 @@ from csvqb.models.cube.qb.components.dimension import (
 from csvqb.models.cube.qb.components.attribute import (
     QbAttribute,
 )
-from csvqb.models.cube.qb.components.measure import QbMultiMeasureDimension
-from csvqb.models.cube.qb.components.unit import QbMultiUnits
+from csvqb.models.cube.qb.components.measure import QbMultiMeasureDimension, QbMeasure
+from csvqb.models.cube.qb.components.unit import QbMultiUnits, QbUnit
 from csvqb.models.cube.qb.components.observedvalue import (
     QbObservationValue,
     QbMultiMeasureObservationValue,
@@ -199,3 +199,37 @@ def _validate_observation_value(
             errors.append(BothUnitTypesDefinedError())
 
     return errors
+
+
+def get_all_measures(cube: Cube) -> Set[QbMeasure]:
+    """
+    :return: The :obj:`set` of :class:`~csvqb.models.cube.qb.components.measure.QbMeasure` instances defined against the
+      cube's columns.
+    """
+    multi_measure_dimension_columns = get_columns_of_dsd_type(
+        cube, QbMultiMeasureDimension
+    )
+    single_meas_obs_val_columns = get_columns_of_dsd_type(
+        cube, QbSingleMeasureObservationValue
+    )
+    measures = {
+        meas
+        for dim in multi_measure_dimension_columns
+        for meas in dim.component.measures
+    }
+    measures |= {x.component.measure for x in single_meas_obs_val_columns}
+
+    return measures
+
+
+def get_all_units(cube: Cube) -> Set[QbUnit]:
+    """
+    :return: The :obj:`set` of :class:`~csvqb.models.cube.qb.components.unit.QbUnit` instances defined against the
+      cube's columns.
+    """
+    multi_units_columns = get_columns_of_dsd_type(cube, QbMultiUnits)
+    obs_val_columns = get_columns_of_dsd_type(cube, QbObservationValue)
+    units = {unit for dim in multi_units_columns for unit in dim.component.units}
+    units |= {x.component.unit for x in obs_val_columns if x.component.unit is not None}
+
+    return units
