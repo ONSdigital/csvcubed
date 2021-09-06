@@ -22,14 +22,10 @@
                 "parent": "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod",
                 "value": "http://reference.data.gov.uk/id/{+period}"
             },
-            "Measure Type": {
-                "dimension": "http://purl.org/linked-data/cube#measureType",
-                "value": "http://gss-data.org.uk/def/x/{+measure_type}",
-                "types": ["one-litre-and-less", "more-than-one-litre", "number-of-bottles"]
-            },
-            "Unit": {
-                "attribute": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
-                "value": "http://gss-data.org.uk/def/concept/measurement-units/{+unit}"
+            "Period": {
+                "label": "Period",
+                "value": "http://reference.data.gov.uk/id/{+period}",
+                "codelist": false
             },
             "Value": {
                 "datatype": "integer"

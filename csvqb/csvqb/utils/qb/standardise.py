@@ -57,10 +57,14 @@ def convert_data_values_to_uri_safe_values(
     map_unit_label_to_uri_identifier = {
         u.label: u.uri_safe_identifier for u in new_units
     }
-    multi_units_columns = get_columns_of_dsd_type(cube, QbMultiUnits)
+    multi_units_columns_with_new_units = [
+        c
+        for c in get_columns_of_dsd_type(cube, QbMultiUnits)
+        if all([isinstance(u, NewQbUnit) for u in c.component.units])
+    ]
     _overwrite_labels_for_columns(
         cube,
-        multi_units_columns,
+        multi_units_columns_with_new_units,
         map_unit_label_to_uri_identifier,
         raise_missing_value_exceptions,
     )
@@ -69,12 +73,14 @@ def convert_data_values_to_uri_safe_values(
     map_measure_label_to_uri_identifier = {
         m.label: m.uri_safe_identifier for m in new_measures
     }
-    multi_measure_dimension_columns = get_columns_of_dsd_type(
-        cube, QbMultiMeasureDimension
-    )
+    multi_measure_dimension_columns_defining_new_measures = [
+        meas
+        for meas in get_columns_of_dsd_type(cube, QbMultiMeasureDimension)
+        if all([isinstance(m, NewQbUnit) for m in meas.component.measures])
+    ]
     _overwrite_labels_for_columns(
         cube,
-        multi_measure_dimension_columns,
+        multi_measure_dimension_columns_defining_new_measures,
         map_measure_label_to_uri_identifier,
         raise_missing_value_exceptions,
     )
