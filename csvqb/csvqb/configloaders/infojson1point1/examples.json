@@ -135,7 +135,9 @@
                     "label": "Weeks",
                     "comment": "Some really cool new unit",
                     "baseUnit": "http://gss-data.org.uk/def/concept/measurement-units/days",
-                    "baseUnitScalingFactor": 7
+                    "baseUnitScalingFactor": 7,
+                    "qudtQuantityKind": "woof",
+                    "siBaseUnitConversionMultiplier": 200
                 }
             },
             "Multi-measure Observation Value Column": {

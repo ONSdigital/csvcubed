@@ -252,8 +252,8 @@
             ]
           }
         },
-        "resource": {
-          "description": "The properties available to define a new resource",
+        "measure": {
+          "description": "The properties available to define a new measure",
           "type": "object",
           "properties": {
             "path": {
@@ -267,6 +267,44 @@
             },
             "isDefinedBy": {
               "$ref": "#/definitions/v1.1/new/props/isDefinedBy"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "label"
+          ]
+        },
+        "unit": {
+          "description": "The properties available to define a new unit",
+          "type": "object",
+          "properties": {
+            "path": {
+              "$ref": "#/definitions/v1.1/new/props/path"
+            },
+            "label": {
+              "$ref": "#/definitions/v1.1/new/props/label"
+            },
+            "comment": {
+              "$ref": "#/definitions/v1.1/new/props/comment"
+            },
+            "isDefinedBy": {
+              "$ref": "#/definitions/v1.1/new/props/isDefinedBy"
+            },
+            "baseUnit": {
+              "description": "The unit that this one is related to. Requires that `baseUnitScalingFactor` is defined.",
+              "$ref": "http://gss-cogs.github.io/family-schemas/external.json#/definitions/unit_ext_uri"
+            },
+            "baseUnitScalingFactor": {
+              "description": "The multiplying factor necessary to convert values from this unit to `baseUnit`. Requires that `baseUnit` is defined.",
+              "type": "number"
+            },
+            "qudtQuantityKind": {
+              "description": "The `qudt:QuantityKind` family that this unit fits into. Requires that `siBaseUnitConversionMultiplier` is defined.",
+              "type": "string"
+            },
+            "siBaseUnitConversionMultiplier": {
+              "description": "The multiplying factor necessary to convert values into the quantityKind's SI base unit. Requires that `qudtQuantityKind` is defined.",
+              "type": "number"
             }
           },
           "additionalProperties": false,
@@ -509,7 +547,7 @@
                   {
                     "type": "array",
                     "items": {
-                      "$ref": "#/definitions/v1.1/new/resource"
+                      "$ref": "#/definitions/v1.1/new/unit"
                     }
                   }
                 ]
@@ -556,7 +594,7 @@
                   {
                     "type": "array",
                     "items": {
-                      "$ref": "#/definitions/v1.1/new/resource"
+                      "$ref": "#/definitions/v1.1/new/measure"
                     }
                   }
                 ]
@@ -604,7 +642,7 @@
                 },
                 {
                   "description": "A new unit",
-                  "$ref": "#/definitions/v1.1/new/resource"
+                  "$ref": "#/definitions/v1.1/new/unit"
                 }
               ]
             },
@@ -616,7 +654,7 @@
                   "$ref": "http://gss-cogs.github.io/family-schemas/external.json#/definitions/meas_ext_uri"
                 },
                 {
-                  "$ref": "#/definitions/v1.1/new/resource"
+                  "$ref": "#/definitions/v1.1/new/measure"
                 }
               ]
             }
