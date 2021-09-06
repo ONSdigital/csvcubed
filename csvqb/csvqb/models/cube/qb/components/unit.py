@@ -105,7 +105,7 @@ class NewQbUnit(QbUnit, UriIdentifiable, ArbitraryRdf):
         return (
             self.label,
             self.description,
-            self.parent_unit_uri,
+            self.base_unit,
             self.uri_safe_identifier,
         )
 
