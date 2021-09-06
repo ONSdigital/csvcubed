@@ -1,8 +1,8 @@
 """
-URI
+File
 ---
 
-pydantic validators for URIs.
+pydantic validators for files.
 """
 
 from pydantic import validator

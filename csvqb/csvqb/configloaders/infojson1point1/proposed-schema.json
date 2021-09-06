@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "http://gss-cogs.github.io/family-schemas/dataset-schema-1-1-0.json",
+  "$id": "http://gss-cogs.github.io/family-schemas/dataset-schema-1.1.0.json",
   "title": "Dataset",
   "description": "Info about a dataset / transformation",
   "type": "object",
@@ -9,7 +9,7 @@
       "description": "The schema/version this file uses.",
       "type": "string",
       "format": "uri",
-      "const": "http://gss-cogs.github.io/family-schemas/dataset-schema-1-1-0.json"
+      "const": "http://gss-cogs.github.io/family-schemas/dataset-schema-1.1.0.json"
     },
     "id": {
       "description": "The unique ID for this dataset",
