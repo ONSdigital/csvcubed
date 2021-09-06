@@ -47,7 +47,7 @@ def map_column_to_qb_component(
             schema_mapping.map_to_existing_qb_attribute(data),
             csv_column_uri_template=schema_mapping.value,
         )
-    if isinstance(schema_mapping, schema.NewUnits):
+    elif isinstance(schema_mapping, schema.NewUnits):
         return QbColumn(column_title, schema_mapping.map_to_qb_multi_units(data))
     elif isinstance(schema_mapping, schema.ExistingUnits):
         return QbColumn(
