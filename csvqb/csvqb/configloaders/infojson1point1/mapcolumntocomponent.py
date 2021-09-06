@@ -19,7 +19,7 @@ def map_column_to_qb_component(
     Takes an info.json v1.1 column mapping and, if valid,
     returns a :obj:`~csvqb.models.cube.qb.components.datastructuredefinition.QbDataStructureDefinition`.
     """
-    schema_mapping = _from_column_dict_to_schema_model(column)
+    schema_mapping = _from_column_dict_to_schema_model(column_title, column)
 
     if isinstance(schema_mapping, schema.NewDimension):
         return QbColumn(
@@ -72,6 +72,7 @@ def map_column_to_qb_component(
 
 
 def _from_column_dict_to_schema_model(
+    column_title: str,
     column: dict,
 ) -> Union[
     schema.NewDimension,
@@ -84,31 +85,36 @@ def _from_column_dict_to_schema_model(
     schema.ExistingMeasures,
     schema.ObservationValue,
 ]:
+    """
+    N.B. when using the :method:`dict_has_required_fields` method, we need to ensure that we check for types with
+    required properties *before* types without required properties.
+    """
     column_type = column.get("type")
-    new_value = column.get("new")
     if column_type is None:
         raise ValueError("Type of column not specified.")
     elif column_type == "dimension":
-        if new_value is not None:
-            return schema.NewDimension.from_dict(column)
-        else:
+        if schema.ExistingDimension.dict_has_required_fields(column):
             return schema.ExistingDimension.from_dict(column)
+        elif schema.NewDimension.dict_has_required_fields(column):
+            return schema.NewDimension.from_dict(column)
     elif column_type == "attribute":
-        if new_value is not None:
-            return schema.NewAttribute.from_dict(column)
-        else:
+        if schema.ExistingAttribute.dict_has_required_fields(column):
             return schema.ExistingAttribute.from_dict(column)
+        elif schema.NewAttribute.dict_has_required_fields(column):
+            return schema.NewAttribute.from_dict(column)
     elif column_type == "units":
-        if new_value is not None:
-            return schema.NewUnits.from_dict(column)
-        else:
+        if schema.ExistingUnits.dict_has_required_fields(column):
             return schema.ExistingUnits.from_dict(column)
+        elif schema.NewUnits.dict_has_required_fields(column):
+            return schema.NewUnits.from_dict(column)
     elif column_type == "measures":
-        if new_value is not None:
-            return schema.NewMeasures.from_dict(column)
-        else:
+        if schema.ExistingMeasures.dict_has_required_fields(column):
             return schema.ExistingMeasures.from_dict(column)
+        elif schema.NewMeasures.dict_has_required_fields(column):
+            return schema.NewMeasures.from_dict(column)
     elif column_type == "observations":
         return schema.ObservationValue.from_dict(column)
     else:
-        raise ValueError(f"Type of column '{column_type}' not handled.")
+        raise ValueError(
+            f"Column '{column_title}' with type '{column_type}' could not be understood."
+        )

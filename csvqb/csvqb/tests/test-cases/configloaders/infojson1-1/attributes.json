@@ -83,6 +83,9 @@
                 },
                 "value": "http://example.org/attributes/new-marker-4/{+new_marker_4}"
             },
+            "New Marker 5": {
+                "type": "attribute"
+            },
             "Value": {
                 "type": "observations",
                 "unit": "http://gss-data.org.uk/def/concept/measurement-units/gbp-million",

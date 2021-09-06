@@ -1,7 +1,10 @@
 {
-    "$schema": "file:///Users/HA9WF3CZ/Documents/dataset-schema.json",
+    "$schema": "file:///SET_CORRECT_LOCATION_TO_MAKE_THIS_WORK/dataset-schema.json",
     "transform": {
         "columns": {
+            "New Dimension": {
+                "type": "dimension"
+            },
             "New Dimension with nothing specified": {
                 "type": "dimension",
                 "new": true
@@ -43,6 +46,9 @@
                 }
             },
             "New Attribute with nothing specified": {
+                "type": "attribute"
+            },
+            "New Attribute with new specified": {
                 "type": "attribute",
                 "new": true
             },
@@ -79,6 +85,9 @@
                 ]
             },
             "New Units with nothing specified": {
+                "type": "units"
+            },
+            "New Units with new specified": {
                 "type": "units",
                 "new": true
             },
@@ -100,6 +109,9 @@
                 ]
             },
             "New Measures with nothing specified": {
+                "type": "measures"
+            },
+            "New Measures with new specified": {
                 "type": "measures",
                 "new": true
             },

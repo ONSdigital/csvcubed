@@ -45,6 +45,9 @@
                     }
                 ]
             },
+            "New Units 3": {
+                "type": "units"
+            },
             "Value": {
                 "type": "observations",
                 "measure": "http://gss-data.org.uk/def/measure/trade",

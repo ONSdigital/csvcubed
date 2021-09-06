@@ -45,6 +45,9 @@
                     }
                 ]
             },
+            "New Measures 3": {
+                "type": "measures"
+            },
             "Value": {
                 "type": "observations",
                 "unit": "http://gss-data.org.uk/def/concept/measurement-units/gbp-million",

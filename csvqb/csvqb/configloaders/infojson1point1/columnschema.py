@@ -51,7 +51,20 @@ def _from_dict(cls: Type[T], d: dict) -> T:
 
 
 @dataclass
-class NewDimensionProperty:
+class SchemaBaseClass:
+    @classmethod
+    def dict_has_required_fields(cls: Type, d: dict) -> bool:
+        required_fields: List[Field] = [
+            f
+            for f in fields(cls)
+            if isinstance(f.default, _MISSING_TYPE)
+            and isinstance(f.default_factory, _MISSING_TYPE)
+        ]
+        return all([f.name in d.keys() for f in required_fields])
+
+
+@dataclass
+class NewDimensionProperty(SchemaBaseClass):
     codelist: Union[str, bool]
     path: Optional[str] = None
     label: Optional[str] = None
@@ -65,8 +78,8 @@ class NewDimensionProperty:
 
 
 @dataclass
-class NewDimension:
-    new: Union[NewDimensionProperty, bool]
+class NewDimension(SchemaBaseClass):
+    new: Union[NewDimensionProperty, bool] = True
     value: Optional[str] = None
 
     @classmethod
@@ -113,7 +126,7 @@ class NewDimension:
 
 
 @dataclass
-class ExistingDimension:
+class ExistingDimension(SchemaBaseClass):
     uri: str
     value: str
 
@@ -126,7 +139,7 @@ class ExistingDimension:
 
 
 @dataclass
-class NewAttributeValue:
+class NewAttributeValue(SchemaBaseClass):
     label: str
     path: Optional[str] = None
     comment: Optional[str] = None
@@ -138,7 +151,7 @@ class NewAttributeValue:
 
 
 @dataclass
-class NewAttributeProperty:
+class NewAttributeProperty(SchemaBaseClass):
     path: Optional[str] = None
     label: Optional[str] = None
     comment: Optional[str] = None
@@ -159,8 +172,8 @@ class NewAttributeProperty:
 
 
 @dataclass
-class NewAttribute:
-    new: Union[bool, NewAttributeProperty]
+class NewAttribute(SchemaBaseClass):
+    new: Union[bool, NewAttributeProperty] = True
     isRequired: bool = False
     value: Optional[str] = None
 
@@ -195,7 +208,7 @@ class NewAttribute:
 
 
 @dataclass
-class ExistingAttribute:
+class ExistingAttribute(SchemaBaseClass):
     uri: str
     value: Optional[str] = None
     newAttributeValues: Union[None, bool, List[NewAttributeValue]] = None
@@ -224,7 +237,7 @@ class ExistingAttribute:
 
 
 @dataclass
-class NewResource:
+class NewResource(SchemaBaseClass):
     label: str
     path: Optional[str] = None
     comment: Optional[str] = None
@@ -236,8 +249,8 @@ class NewResource:
 
 
 @dataclass
-class NewUnits:
-    new: Union[bool, List[NewResource]]
+class NewUnits(SchemaBaseClass):
+    new: Union[bool, List[NewResource]] = True
 
     @classmethod
     def from_dict(cls, d: dict) -> "NewUnits":
@@ -264,7 +277,7 @@ class NewUnits:
 
 
 @dataclass
-class ExistingUnits:
+class ExistingUnits(SchemaBaseClass):
     value: str
 
     @classmethod
@@ -280,8 +293,8 @@ class ExistingUnits:
 
 
 @dataclass
-class NewMeasures:
-    new: Union[bool, List[NewResource]]
+class NewMeasures(SchemaBaseClass):
+    new: Union[bool, List[NewResource]] = True
 
     @classmethod
     def from_dict(cls, d: dict) -> "NewMeasures":
@@ -309,7 +322,7 @@ class NewMeasures:
 
 
 @dataclass
-class ExistingMeasures:
+class ExistingMeasures(SchemaBaseClass):
     value: str
 
     @classmethod
@@ -326,7 +339,7 @@ class ExistingMeasures:
 
 
 @dataclass
-class ObservationValue:
+class ObservationValue(SchemaBaseClass):
     datatype: Optional[str] = None
     unit: Union[None, str, NewResource] = None
     measure: Union[None, str, NewResource] = None

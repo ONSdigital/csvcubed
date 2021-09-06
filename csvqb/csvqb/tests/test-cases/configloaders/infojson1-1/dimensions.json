@@ -62,6 +62,9 @@
                     "codelist": "codelists/new-dimension-5.csv-metadata.json"
                 }
             },
+            "New Dimension 6": {
+                "type": "dimension"
+            },
             "Value": {
                 "type": "observations",
                 "unit": "http://gss-data.org.uk/def/concept/measurement-units/gbp-million",

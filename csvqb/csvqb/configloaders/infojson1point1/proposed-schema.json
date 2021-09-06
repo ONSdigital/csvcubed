@@ -413,8 +413,7 @@
             },
             "additionalProperties": false,
             "required": [
-              "type",
-              "new"
+              "type"
             ]
           },
           "existing": {
@@ -461,8 +460,7 @@
             },
             "additionalProperties": false,
             "required": [
-              "type",
-              "new"
+              "type"
             ]
           },
           "existing": {
@@ -519,8 +517,7 @@
             },
             "additionalProperties": false,
             "required": [
-              "type",
-              "new"
+              "type"
             ]
           },
           "existing": {
@@ -567,8 +564,7 @@
             },
             "additionalProperties": false,
             "required": [
-              "type",
-              "new"
+              "type"
             ]
           },
           "existing": {

@@ -25,6 +25,7 @@ def test_units_loading():
     existing_units = _get_column_definition(cube, "Existing Units")
     new_units = _get_column_definition(cube, "New Units")
     new_units_2 = _get_column_definition(cube, "New Units 2")
+    new_units_3 = _get_column_definition(cube, "New Units 3")
 
     assert existing_units is not None
     assert isinstance(existing_units.component, QbMultiUnits)
@@ -56,6 +57,14 @@ def test_units_loading():
     assert unit.source_uri == "http://example.com/units/defs/new-unit-2"
     assert new_units_2.csv_column_uri_template is None
 
+    assert new_units_3 is not None
+    assert isinstance(new_units_3.component, QbMultiUnits)
+    assert len(new_units_3.component.units) == 1
+    unit = new_units_3.component.units[0]
+    assert isinstance(unit, NewQbUnit)
+    assert unit.label == "New Unit 3"
+    assert new_units_3.csv_column_uri_template is None
+
 
 def test_measures_loading():
     """
@@ -73,6 +82,7 @@ def test_measures_loading():
     existing_measures = _get_column_definition(cube, "Existing Measures")
     new_measures = _get_column_definition(cube, "New Measures")
     new_measures_2 = _get_column_definition(cube, "New Measures 2")
+    new_measures_3 = _get_column_definition(cube, "New Measures 3")
 
     assert existing_measures is not None
     assert isinstance(existing_measures.component, QbMultiMeasureDimension)
@@ -103,6 +113,14 @@ def test_measures_loading():
     assert measure.uri_safe_identifier_override == "some-measure-2"
     assert measure.source_uri == "http://example.com/measures/defs/some-measure-2"
     assert new_measures_2.csv_column_uri_template is None
+
+    assert new_measures_3 is not None
+    assert isinstance(new_measures_3.component, QbMultiMeasureDimension)
+    assert len(new_measures_3.component.measures) == 1
+    measure = new_measures_3.component.measures[0]
+    assert isinstance(measure, NewQbMeasure)
+    assert measure.label == "Some Measure 3"
+    assert new_measures_3.csv_column_uri_template is None
 
 
 def test_observation_value_loading():
@@ -179,6 +197,7 @@ def test_dimension_loading():
     new_dimension_3 = _get_column_definition(cube, "New Dimension 3")
     new_dimension_4 = _get_column_definition(cube, "New Dimension 4")
     new_dimension_5 = _get_column_definition(cube, "New Dimension 5")
+    new_dimension_6 = _get_column_definition(cube, "New Dimension 6")
 
     assert existing_dimension is not None
     assert isinstance(existing_dimension.component, ExistingQbDimension)
@@ -247,6 +266,14 @@ def test_dimension_loading():
     )
     assert new_dimension_5.csv_column_uri_template is None
 
+    assert new_dimension_6 is not None
+    assert isinstance(new_dimension_6.component, NewQbDimension)
+    assert new_dimension_6.component.label == "New Dimension 6"
+    assert isinstance(new_dimension_6.component.code_list, NewQbCodeList)
+    assert len(new_dimension_6.component.code_list.concepts) == 1
+    assert new_dimension_6.component.code_list.concepts[0].label == "Some Value"
+    assert new_dimension_6.csv_column_uri_template is None
+
 
 def test_attribute_loading():
     """
@@ -266,6 +293,7 @@ def test_attribute_loading():
     new_marker_2 = _get_column_definition(cube, "New Marker 2")
     new_marker_3 = _get_column_definition(cube, "New Marker 3")
     new_marker_4 = _get_column_definition(cube, "New Marker 4")
+    new_marker_5 = _get_column_definition(cube, "New Marker 5")
 
     assert existing_marker is not None
     assert isinstance(existing_marker.component, ExistingQbAttribute)
@@ -353,6 +381,14 @@ def test_attribute_loading():
         new_marker_4.csv_column_uri_template
         == "http://example.org/attributes/new-marker-4/{+new_marker_4}"
     )
+
+    assert new_marker_5 is not None
+    assert isinstance(new_marker_5.component, NewQbAttribute)
+    assert new_marker_5.component.label == "New Marker 5"
+    assert len(new_marker_5.component.new_attribute_values) == 1
+    assert new_marker_5.component.new_attribute_values[0].label == "Some Marker Value"
+    assert not new_marker_5.component.is_required
+    assert new_marker_5.csv_column_uri_template is None
 
 
 def _get_column_definition(cube: Cube, column_title: str) -> QbColumn:
