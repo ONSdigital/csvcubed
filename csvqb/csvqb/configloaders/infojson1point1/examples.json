@@ -136,8 +136,8 @@
                     "comment": "Some really cool new unit",
                     "baseUnit": "http://gss-data.org.uk/def/concept/measurement-units/days",
                     "baseUnitScalingFactor": 7,
-                    "qudtQuantityKind": "woof",
-                    "siBaseUnitConversionMultiplier": 200
+                    "qudtQuantityKind": "http://qudt.org/vocab/quantitykind/Time",
+                    "siBaseUnitConversionMultiplier": 604800
                 }
             },
             "Multi-measure Observation Value Column": {
