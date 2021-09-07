@@ -67,7 +67,7 @@ def test_structure_defined():
                 "Observed Value",
                 QbSingleMeasureObservationValue(
                     ExistingQbMeasure("http://example.org/units/some-existing-measure"),
-                    ExistingQbUnit("http://example.org/units/some-existing-unit"),
+                    ExistingQbUnit("http://example.org/units/some-exisiting-unit"),
                 ),
             ),
         ]
@@ -85,7 +85,7 @@ def test_structure_defined():
 
     _assert_component_defined(dataset, "country")
     _assert_component_defined(dataset, "marker")
-    _assert_component_defined(dataset, "some-existing-unit")
+    _assert_component_defined(dataset, "unit")
     _assert_component_defined(dataset, "some-existing-measure")
 
 
