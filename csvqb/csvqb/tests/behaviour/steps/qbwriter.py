@@ -7,6 +7,7 @@ from csvqb.models.cube import *
 from csvqb.writers.qbwriter import QbWriter
 from csvqb.utils.qb.cube import validate_qb_component_constraints
 from csvqb.utils.csvw import get_first_table_schema
+import csvqb.configloaders.infojson as infojsonloader
 
 
 def get_standard_catalog_metadata_for_name(
@@ -605,3 +606,16 @@ def step_impl(context, cube_name: str):
 def step_impl(context):
     rdf_to_add = context.text
     context.turtle += rdf_to_add
+
+
+@Step(
+    'we load a cube using the info.json from "{some_json}" with CSV from "{some_csv}"'
+)
+def step_impl(context, some_json, some_csv):
+    tmp_dir = get_context_temp_dir_path(context)
+    data = pd.read_csv(tmp_dir / some_csv)
+
+    context.cube = infojsonloader.get_cube_from_info_json(
+        tmp_dir / some_json,
+        data,
+    )

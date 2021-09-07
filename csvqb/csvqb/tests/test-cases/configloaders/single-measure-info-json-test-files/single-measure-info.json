@@ -1,0 +1,45 @@
+{
+    "id": "single-measure-bulletin",
+    "title": "single-measure-bottles-bulletin",
+    "publisher": "HM Revenue & Customs",
+    "description": "All bulletins provide details on percentage of one litre or less bottles. This information is provided on a yearly basis.",
+    "landingPage": "https://www.gov.uk/government/statistics/bottles-bulletin",
+    "datasetNotes": [
+        "\"UK bottles-bulletin Tables\" Excel file, latest version on page"
+    ],
+    "published": "2019-02-28",
+    "families": [
+        "Trade"
+    ],
+    "extract": {
+        "source": "XLS",
+        "stage": "Done"
+    },
+    "transform": {
+        "airtable": "recys4OhEtE0gE14P",
+        "columns": {
+            "Period": {
+                "type": "dimension",
+                "new": {
+                    "subPropertyOf": "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod",
+                    "codelist": false
+                },
+                "value": "http://reference.data.gov.uk/id/{+period}"
+            },
+            "Marker": {
+                "type": "attribute"
+            },
+            "Value": {
+                "type": "observations",
+                "datatype": "integer",
+                "measure": {
+                    "label": "One litre and less"
+                },
+                "unit": "http://gss-data.org.uk/def/concept/measurement-units/percentage"
+            }
+        },
+        "main_issue": 67
+    },
+    "sizingNotes": "",
+    "notes": ""
+}
