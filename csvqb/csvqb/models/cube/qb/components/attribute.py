@@ -17,13 +17,9 @@ from .arbitraryrdf import (
 from .datastructuredefinition import ColumnarQbDataStructureDefinition
 from csvqb.models.validationerror import ValidationError
 from .validationerrors import UndefinedValuesError
-from csvqb.inputs import (
-    PandasDataTypes,
-    pandas_input_to_columnar_optional_str,
-    pandas_input_to_columnar,
-)
+from csvqb.inputs import PandasDataTypes, pandas_input_to_columnar_optional_str
 
-from csvqb.utils.uri import looks_like_uri, uri_safe
+from csvqb.utils.uri import uri_safe
 from csvqb.utils.validators.uri import validate_uri
 
 
@@ -146,7 +142,9 @@ class ExistingQbAttribute(QbAttribute):
 
 @dataclass
 class ExistingQbAttributeLiteral(ExistingQbAttribute, QbAttributeLiteral):
-    new_attribute_values = None
+    new_attribute_values: List[NewQbAttributeValue] = field(
+        default_factory=list, init=False, repr=False
+    )
     arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
 
     def validate_data(
@@ -217,7 +215,9 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
 
 @dataclass
 class NewQbAttributeLiteral(NewQbAttribute, QbAttributeLiteral):
-    new_attribute_values = None
+    new_attribute_values: List[NewQbAttributeValue] = field(
+        default_factory=list, init=False, repr=False
+    )
     arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
 
     def validate_data(
