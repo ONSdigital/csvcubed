@@ -9,8 +9,7 @@ import json
 import re
 from dataclasses import field
 from pathlib import Path
-from typing import Tuple, Dict, Any, List, Iterable, Set, TypeVar
-import rdflib
+from typing import Tuple, Dict, Any, List, Iterable, Set
 from sharedmodels import rdf
 from sharedmodels.rdf import skos, rdfs
 from sharedmodels.rdf.resource import (
