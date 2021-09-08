@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Tuple, Dict, Any, List, Iterable, Set
 import rdflib
 from sharedmodels import rdf
-from sharedmodels.rdf import skos
+from sharedmodels.rdf import skos, rdfs
 from sharedmodels.rdf.resource import (
     ExistingResourceWithLiteral,
     Resource,
@@ -318,10 +318,7 @@ class QbWriter(WriterBase):
 
         unit = observation_value.unit
         if unit is not None:
-            unit_uri_safe_identifier = self._get_unit_uri_safe_identifier(unit)
-            specs.append(
-                self._get_qb_units_column_specification(unit_uri_safe_identifier)
-            )
+            specs.append(self._get_qb_units_column_specification("unit"))
 
         if isinstance(observation_value, QbSingleMeasureObservationValue):
             specs.append(
@@ -433,7 +430,9 @@ class QbWriter(WriterBase):
                 dimension.parent_dimension_uri
             )
             component.dimension.source = maybe_existing_resource(dimension.source_uri)
-            component.dimension.range = ExistingResource(rdflib.SKOS.Concept)
+            component.dimension.range = rdfs.Class(
+                self._doc_rel_uri(f"class/{dimension.uri_safe_identifier}")
+            )
 
             dimension.copy_arbitrary_triple_fragments_to_resources(
                 {
