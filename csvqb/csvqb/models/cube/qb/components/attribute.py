@@ -2,9 +2,8 @@
 Attributes
 ----------
 """
-import math
 from dataclasses import dataclass, field
-from typing import Optional, List, Set, Union, Any
+from typing import Optional, List, Set
 from abc import ABC, abstractmethod
 from pydantic import validator
 import pandas as pd
