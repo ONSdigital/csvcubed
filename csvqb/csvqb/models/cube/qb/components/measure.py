@@ -18,7 +18,7 @@ from .dimension import ExistingQbDimension
 from csvqb.models.validationerror import ValidationError
 from csvqb.inputs import PandasDataTypes, pandas_input_to_columnar_str
 from .validationerrors import UndefinedValuesError
-from csvqb.utils.uri import csvw_column_name_safe, uri_safe
+from csvqb.utils.uri import uri_safe
 from csvqb.utils.validators.uri import validate_uri
 
 

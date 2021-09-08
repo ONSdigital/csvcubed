@@ -2,6 +2,7 @@
 Attributes
 ----------
 """
+import math
 from dataclasses import dataclass, field
 from typing import Optional, List, Set, Union, Any
 from abc import ABC, abstractmethod
@@ -19,7 +20,7 @@ from csvqb.models.validationerror import ValidationError
 from .validationerrors import UndefinedValuesError
 from csvqb.inputs import (
     PandasDataTypes,
-    pandas_input_to_columnar_str,
+    pandas_input_to_columnar_optional_str,
     pandas_input_to_columnar,
 )
 
@@ -66,7 +67,9 @@ class QbAttribute(ColumnarQbDataStructureDefinition, ArbitraryRdf, ABC):
             expected_values = {
                 av.uri_safe_identifier for av in self.new_attribute_values  # type: ignore
             }
-            actual_values = {uri_safe(v) for v in set(data.unique().flatten())}
+            actual_values = {
+                uri_safe(v) for v in set(data.unique().flatten()) if not pd.isna(v)
+            }
             undefined_values = expected_values - actual_values
 
             if len(undefined_values) > 0:
@@ -190,9 +193,10 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
         uri_safe_identifier_override: Optional[str] = None,
         arbitrary_rdf: List[TripleFragmentBase] = list(),
     ) -> "NewQbAttribute":
-        columnar_data = pandas_input_to_columnar_str(data)
+        columnar_data = pandas_input_to_columnar_optional_str(data)
         new_attribute_values_from_column = [
-            NewQbAttributeValue(v) for v in sorted(set(columnar_data))
+            NewQbAttributeValue(v)
+            for v in sorted(set([d for d in columnar_data if d is not None]))
         ]
 
         return NewQbAttribute(

@@ -8,7 +8,7 @@ from dataclasses import dataclass, fields, Field, _MISSING_TYPE
 from typing import List, Union, Optional, Type, TypeVar
 from pathlib import Path
 
-from csvqb.inputs import pandas_input_to_columnar_str
+from csvqb.inputs import pandas_input_to_columnar_optional_str
 from csvqb.models.cube.qb.components import (
     NewQbDimension,
     ExistingQbDimension,
@@ -447,7 +447,9 @@ def _get_new_attribute_values(
     new_attribute_values: Union[None, bool, List[NewAttributeValue]],
 ) -> List[NewQbAttributeValue]:
     if isinstance(new_attribute_values, bool) and new_attribute_values:
-        columnar_data = pandas_input_to_columnar_str(data)
+        columnar_data: List[str] = [
+            v for v in pandas_input_to_columnar_optional_str(data) if v is not None
+        ]
         return [NewQbAttributeValue(v) for v in sorted(set(columnar_data))]
     elif isinstance(new_attribute_values, list) and len(new_attribute_values) > 0:
         return _map_attribute_values(new_attribute_values)

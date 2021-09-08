@@ -5,6 +5,7 @@ Cube
 from dataclasses import dataclass, field
 from typing import List, Optional, Set, TypeVar, Generic
 import pandas as pd
+import traceback
 
 from csvqb.models.validationerror import ValidationError
 from .validationerrors import (
@@ -31,6 +32,8 @@ class Cube(Generic[TMetadata], PydanticModel):
             errors += self._validate_columns()
         except Exception as e:
             errors.append(ValidationError(str(e)))
+            # todo: Put this in debug logging when we get to that issue.
+            traceback.print_exception(type(e), e, e.__traceback__)
             errors.append(
                 ValidationError("An error occurred and validation Failed to Complete")
             )

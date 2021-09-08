@@ -44,7 +44,7 @@ from csvqb.models.cube.qb.components.codelist import (
 )
 from csvqb.utils.uri import csvw_column_name_safe, uri_safe
 from csvqb.utils.dict import get_from_dict_ensure_exists, get_with_func_or_none
-from csvqb.inputs import pandas_input_to_columnar_str, PandasDataTypes
+from csvqb.inputs import pandas_input_to_columnar_optional_str, PandasDataTypes
 import csvqb.configloaders.infojson1point1.mapcolumntocomponent as v1point1
 
 
@@ -225,7 +225,7 @@ def _get_column_for_metadata_config(
                     uritemplate.expand(
                         maybe_property_value_url, {csv_safe_column_name: u}
                     )
-                    for u in set(pandas_input_to_columnar_str(column_data))
+                    for u in set(pandas_input_to_columnar_optional_str(column_data))
                 ]
                 dsd_component = QbMultiUnits(
                     [ExistingQbUnit(u) for u in distinct_unit_uris]

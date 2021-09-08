@@ -421,3 +421,8 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
 
     """
 
+  Scenario: An cube with an option attribute which has missing data values should validate successfully
+    Given a single-measure QbCube named "Some Qube" with optional attribute values missing
+    Then the CSVqb should pass all validations
+    When the cube is serialised to CSV-W
+    Then csvlint validation of all CSV-Ws should succeed

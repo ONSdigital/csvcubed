@@ -9,7 +9,7 @@ import json
 import re
 from dataclasses import field
 from pathlib import Path
-from typing import Tuple, Dict, Any, List, Iterable, Set
+from typing import Tuple, Dict, Any, List, Iterable, Set, TypeVar
 import rdflib
 from sharedmodels import rdf
 from sharedmodels.rdf import skos, rdfs
@@ -27,7 +27,7 @@ from csvqb.utils.uri import (
     get_data_type_uri_from_str,
 )
 from csvqb.utils.csvw import get_dependent_local_files
-from csvqb.utils.qb.cube import get_columns_of_dsd_type
+from csvqb.utils.qb.cube import get_columns_of_dsd_type, QbColumnarDsdType
 from csvqb.utils.dict import rdf_resource_to_json_ld
 from csvqb.utils.qb.standardise import convert_data_values_to_uri_safe_values
 from csvqb.utils.file import copy_files_to_directory_with_structure
@@ -691,7 +691,17 @@ class QbWriter(WriterBase):
     def _get_default_property_value_uris_for_multi_measure(
         self, column: QbColumn, measure_dimension: QbMultiMeasureDimension
     ) -> Tuple[str, str]:
-        column_template_fragment = self._get_column_uri_template_fragment(column)
+        measure_value_uri = self._get_measure_dimension_column_measure_template_uri(
+            column, measure_dimension
+        )
+
+        return "http://purl.org/linked-data/cube#measureType", measure_value_uri
+
+    def _get_measure_dimension_column_measure_template_uri(
+        self,
+        column: QbColumn[QbMultiMeasureDimension],
+        measure_dimension: QbMultiMeasureDimension,
+    ):
         all_measures_new = all(
             [isinstance(m, NewQbMeasure) for m in measure_dimension.measures]
         )
@@ -699,18 +709,16 @@ class QbWriter(WriterBase):
             [isinstance(m, ExistingQbMeasure) for m in measure_dimension.measures]
         )
 
-        measure_value_uri: str
+        column_template_fragment = self._get_column_uri_template_fragment(column)
         if all_measures_new:
-            measure_value_uri = self._doc_rel_uri(f"measure/{column_template_fragment}")
+            return self._doc_rel_uri(f"measure/{column_template_fragment}")
         elif all_measures_existing:
-            measure_value_uri = column_template_fragment
+            return column_template_fragment
         else:
             # todo: Come up with a solution for this!
             raise Exception(
                 "Cannot handle a mix of new measures and existing defined measures."
             )
-
-        return "http://purl.org/linked-data/cube#measureType", measure_value_uri
 
     def _get_default_property_value_uris_for_column(
         self, column: QbColumn
@@ -728,9 +736,42 @@ class QbWriter(WriterBase):
                 column, column.component
             )
         elif isinstance(column.component, QbObservationValue):
-            return None, None
+            return self._get_default_property_value_uris_for_observation_value(
+                column.component
+            )
         else:
             raise Exception(f"Unhandled component type {type(column.component)}")
+
+    def _get_default_property_value_uris_for_observation_value(
+        self,
+        observation_value: QbObservationValue,
+    ):
+        if isinstance(observation_value, QbSingleMeasureObservationValue):
+            return self._get_measure_uri(observation_value.measure), None
+        elif isinstance(observation_value, QbMultiMeasureObservationValue):
+            multi_measure_dimension = self._get_single_column_of_type(
+                QbMultiMeasureDimension
+            )
+            measure_uri_template = (
+                self._get_measure_dimension_column_measure_template_uri(
+                    multi_measure_dimension, multi_measure_dimension.component
+                )
+            )
+            return measure_uri_template, None
+        else:
+            raise ValueError(
+                f"Unmatched Observation Value type {type(observation_value)}"
+            )
+
+    def _get_single_column_of_type(
+        self, t: Type[QbColumnarDsdType]
+    ) -> QbColumn[QbColumnarDsdType]:
+        cols = get_columns_of_dsd_type(self.cube, t)
+        if len(cols) != 1:
+            raise ValueError(
+                f"Found {len(cols)} columns with component type {t} in cube. Expected 1."
+            )
+        return cols[0]
 
     def _get_default_property_value_uris_for_dimension(
         self, column: QbColumn[QbDimension]
