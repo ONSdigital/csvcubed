@@ -11,7 +11,7 @@ pipeline {
             steps {
                 script {
                     // Clean up any files lying about after the previous build. Jenkins has trouble deleting files given that our containers run as root.
-                    // sh "git clean -fxd" 
+                    sh "git clean -fxd" 
 
                     dir("devtools") {
                         sh "PIPENV_VENV_IN_PROJECT=true pipenv sync --dev"
@@ -102,7 +102,7 @@ pipeline {
             }
             steps {               
                 dir("devtools") {
-                    sh "cd"
+                    sh "pipenv run python setup.py bdist_wheel --universal"
                 }
 
                 dir("sharedmodels") {
@@ -180,11 +180,6 @@ pipeline {
                 }
 
                 archiveArtifacts artifacts: '**/dist/*.whl, **/docs/_build/html/**/*', fingerprint: true
-            }
-        }
-        success {
-            script {
-                cleanWs deleteDirs: true, patterns: [[pattern: '*', type: 'INCLUDE'], [pattern: '**/.venv', type: 'EXCLUDE']]
             }
         }
     }
