@@ -15,11 +15,13 @@ from tempfile import TemporaryDirectory
 from devtools.helpers.tar import dir_to_tar, extract_tar
 from devtools.behave.temporarydirectory import get_context_temp_dir_path
 
+client = docker.from_env()
+client.images.pull("gsscogs/csv2rdf")
+
 
 def _run_csv2rdf(context, metadata_file_path: Path) -> Tuple[int, str, Optional[str]]:
     with TemporaryDirectory() as tmp_dir:
         tmp_dir = Path(tmp_dir)
-        client = docker.from_env()
         csv2rdf = client.containers.create(
             "gsscogs/csv2rdf",
             command=f"csv2rdf -u /tmp/{metadata_file_path.name} -o /tmp/csv2rdf.ttl -m annotated",
