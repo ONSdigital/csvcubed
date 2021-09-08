@@ -67,7 +67,7 @@ def test_structure_defined():
                 "Observed Value",
                 QbSingleMeasureObservationValue(
                     ExistingQbMeasure("http://example.org/units/some-existing-measure"),
-                    ExistingQbUnit("http://example.org/units/some-exisiting-unit"),
+                    ExistingQbUnit("http://example.org/units/some-existing-unit"),
                 ),
             ),
         ]
