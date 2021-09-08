@@ -391,14 +391,14 @@ def test_default_property_value_uris_single_measure_obs_val():
     column = QbColumn(
         "Some Column",
         QbSingleMeasureObservationValue(
-            NewQbUnit("New Unit"), NewQbMeasure("New Qb Measure")
+            unit=NewQbUnit("New Unit"), measure=NewQbMeasure("New Qb Measure")
         ),
     )
     (
         default_property_uri,
         default_value_uri,
     ) = empty_qbwriter._get_default_property_value_uris_for_column(column)
-    assert default_property_uri is None
+    assert default_property_uri == "cube-name.csv#measure/new-qb-measure"
     assert default_value_uri is None
 
 
@@ -407,11 +407,19 @@ def test_default_property_value_uris_multi_measure_obs_val():
     There should be no `propertyUrl` or `valueUrl` for a `QbMultiMeasureObservationValue`.
     """
     column = QbColumn("Some Column", QbMultiMeasureObservationValue())
+
+    cube = Cube(
+        CatalogMetadata("Cube Name"),
+        pd.DataFrame({"Measure": ["kg"]}),
+        [QbColumn("Measure", QbMultiMeasureDimension([NewQbMeasure("kg")]))],
+    )
+    writer = QbWriter(cube)
+
     (
         default_property_uri,
         default_value_uri,
-    ) = empty_qbwriter._get_default_property_value_uris_for_column(column)
-    assert default_property_uri is None
+    ) = writer._get_default_property_value_uris_for_column(column)
+    assert default_property_uri == "cube-name.csv#measure/{+measure}"
     assert default_value_uri is None
 
 

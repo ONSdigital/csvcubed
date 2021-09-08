@@ -166,6 +166,39 @@ def step_impl(context, cube_name: str):
     )
 
 
+@Given(
+    'a single-measure QbCube named "{cube_name}" with optional attribute values missing'
+)
+def step_impl(context, cube_name: str):
+    data = pd.DataFrame(
+        {
+            "Some Dimension": ["a", "b", "c"],
+            "Some Attribute": ["attr-a", float("nan"), "attr-c"],
+            "Value": [1, 2, 3],
+        }
+    )
+    columns = [
+        QbColumn(
+            "Some Dimension",
+            NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
+        ),
+        QbColumn(
+            "Some Attribute",
+            NewQbAttribute.from_data("Some Attribute", data["Some Attribute"]),
+        ),
+        QbColumn(
+            "Value",
+            QbSingleMeasureObservationValue(
+                NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
+            ),
+        ),
+    ]
+
+    context.cube = Cube(
+        get_standard_catalog_metadata_for_name(cube_name), data, columns
+    )
+
+
 @Given('a multi-measure QbCube named "{cube_name}"')
 def step_impl(context, cube_name: str):
     data = pd.DataFrame(

@@ -28,6 +28,9 @@
                 "value": "http://reference.data.gov.uk/id/{+period}",
                 "codelist": false
             },
+            "Measure Type": {
+                "type": "measures"
+            },
             "Value": {
                 "datatype": "integer"
             }

@@ -13,9 +13,11 @@ from typing import Tuple
 from devtools.helpers.tar import dir_to_tar
 from devtools.behave.temporarydirectory import get_context_temp_dir_path
 
+client = docker.from_env()
+client.images.pull("gsscogs/csvlint")
+
 
 def _run_csvlint(metadata_file_path: Path) -> Tuple[int, str]:
-    client = docker.from_env()
     csvlint = client.containers.create(
         "gsscogs/csvlint", command=f"csvlint -s '/tmp/{metadata_file_path.name}'"
     )

@@ -38,7 +38,6 @@ from csvqb.models.cube.qb.components.attribute import ExistingQbAttribute
 from csvqb.models.cube.qb.components.unit import ExistingQbUnit, QbMultiUnits
 from csvqb.models.cube.qb.components.codelist import (
     ExistingQbCodeList,
-    NewQbCodeList,
     NewQbCodeListInCsvW,
     QbCodeList,
 )
