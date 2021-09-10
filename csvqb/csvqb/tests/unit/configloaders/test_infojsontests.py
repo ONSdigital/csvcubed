@@ -156,7 +156,7 @@ def test_cube_metadata_extracted_from_info_json():
     # issue_date - pass
 
     expected_issued_date = parser.parse("2019-02-28")
-    actual_issued_date = cube.metadata.issued
+    actual_issued_date = cube.metadata.dataset_issued
     assert actual_issued_date == expected_issued_date
 
     # keywords - pass

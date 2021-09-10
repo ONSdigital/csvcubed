@@ -1,11 +1,12 @@
 import dataclasses
-from dataclasses import dataclass, asdict, fields, is_dataclass
+from dataclasses import dataclass, fields, is_dataclass
 import pydantic
 import pydantic.dataclasses
 from pydantic import BaseConfig
 from typing import Dict, Type, List, Iterable, Union, Any
 from abc import ABC
 
+from sharedmodels.dataclassbase import DataClassBase
 
 from .validationerror import ValidationError
 
@@ -14,7 +15,7 @@ _map_class_to_pydantic_constructor: Dict[Type, Type] = dict()
 
 
 @dataclass
-class PydanticModel(ABC):
+class PydanticModel(DataClassBase, ABC):
     """
     ValidatedModel - an abstract base class to be inherited by models which want a `validate` method which verifies
     that the model's attributes agree with the corresponding type annotations.
@@ -38,14 +39,6 @@ class PydanticModel(ABC):
                 config=getattr(PydanticModel, "Config", PydanticModel._DefaultConfig),
             )
         return _map_class_to_pydantic_constructor[cls]
-
-    def as_dict(self) -> dict:
-        """Use python dataclasses method to return this model as a dictionary."""
-        return asdict(self)
-
-    def _as_shallow_dict(self) -> dict:
-        """Returns a dictionary which is essentially a shallow copy of this dataclass."""
-        return dict([(f.name, getattr(self, f.name)) for f in fields(self)])
 
     def _to_pydantic_dataclass_or_validation_errors(
         self,

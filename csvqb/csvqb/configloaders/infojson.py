@@ -110,7 +110,7 @@ def _metadata_from_dict(config: dict) -> "CatalogMetadata":
         description=config.get("description"),
         creator_uri=publisher,
         publisher_uri=publisher,
-        issued=dt_issued,
+        dataset_issued=dt_issued,
         theme_uris=theme_uris,
         keywords=config.get("keywords", []),
         landing_page_uri=config.get("landingPage"),
