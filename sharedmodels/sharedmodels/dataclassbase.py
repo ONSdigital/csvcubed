@@ -6,6 +6,9 @@ Provides some utilities to help with serialisation/deserialisation
 """
 import collections
 import copy
+import datetime
+import json
+import re
 import typing
 from abc import ABC
 from dataclasses import Field, _MISSING_TYPE, fields, asdict, dataclass
@@ -32,13 +35,27 @@ TDataClassBase = typing.TypeVar("TDataClassBase", bound="DataClassBase")
 
 @dataclass
 class DataClassBase(ABC):
+    """
+    Provides functionality to go to/from dictionary or JSON representations of this class.
+
+    N.B. This requires that all subclasses have the :obj:`@dataclass` attribute.
+    """
+
     def as_dict(self) -> dict:
         """Use python dataclasses method to return this model as a dictionary."""
         return asdict(self)
 
-    def _as_shallow_dict(self) -> dict:
-        """Returns a dictionary which is essentially a shallow copy of this dataclass."""
-        return dict([(f.name, getattr(self, f.name)) for f in fields(self)])
+    def as_json_dict(self) -> str:
+        """
+        :return: a dict suitable for JSON serialisation containing a representation of this object.
+        """
+        return replace_with_json_serialisable_types(self.as_dict())
+
+    def as_json(self) -> str:
+        """
+        :return: the JSON serialisation containing a representation of this object.
+        """
+        return json.dumps(self.as_json_dict())
 
     @classmethod
     def dict_fields_match_class(cls: typing.Type, d: dict) -> bool:
@@ -59,17 +76,14 @@ class DataClassBase(ABC):
         return all_required_fields_present and not dict_keys_undefined_in_class
 
     @classmethod
-    def _get_type_hints(cls) -> dict:
-        """
-        Fetches type hints associated with this class.
+    def from_json(cls: Type[TDataClassBase], j: str) -> TDataClassBase:
+        d = json.loads(j)
+        if not isinstance(d, dict):
+            raise ValueError(
+                f"Unhandled input JSON structure {type(d)}. Expected dictionary/map for {cls.__name__}"
+            )
 
-        Ensures that overridden properties have their type hints overridden too.
-        """
-        type_hints = {}
-        for c in reversed(cls.mro()):
-            type_hints = dict(type_hints, **get_type_hints(c, include_extras=True))
-
-        return type_hints
+        return cls.from_dict(d)
 
     @classmethod
     def from_dict(cls: Type[TDataClassBase], d: dict) -> TDataClassBase:
@@ -156,6 +170,9 @@ class DataClassBase(ABC):
                 return typing_hint(val)  # type: ignore
             except:
                 ...
+        elif isinstance(val, str) and issubclass(typing_hint, datetime.datetime):
+            # ISO-8601 conversion.
+            return datetime.datetime.fromisoformat(val)
 
         raise DataClassFromDictValueError(
             f"Could not match {val} with static type {typing_hint}"
@@ -178,7 +195,7 @@ class DataClassBase(ABC):
             )
 
         typing_args_contain_subclass_dataclassbase = (
-            cls._get_generic_type_arg_subclassing_dataclassbase(generic_type_args)
+            cls._get_generic_type_args_subclassing_dataclassbase(generic_type_args)
         )
 
         if len(typing_args_contain_subclass_dataclassbase) > 0:
@@ -196,7 +213,7 @@ class DataClassBase(ABC):
         return val
 
     @classmethod
-    def _get_generic_type_arg_subclassing_dataclassbase(
+    def _get_generic_type_args_subclassing_dataclassbase(
         cls, generic_type_args: collections.Iterable
     ) -> Set:
         args_subclassing_dataclassbase = {
@@ -208,7 +225,7 @@ class DataClassBase(ABC):
         for a in generic_type_args:
             args = typing.get_args(a)
             # recursive search down the type tree to see if we can find anything subclassing DataClassBase.
-            if len(cls._get_generic_type_arg_subclassing_dataclassbase(args)) > 0:
+            if len(cls._get_generic_type_args_subclassing_dataclassbase(args)) > 0:
                 args_subclassing_dataclassbase.add(a)
 
         return args_subclassing_dataclassbase
@@ -230,3 +247,47 @@ class DataClassBase(ABC):
         raise DataClassFromDictValueError(
             f"Could not find matching type in union {union_typing_hint} to represent {val}"
         )
+
+    def _as_shallow_dict(self) -> dict:
+        """Returns a dictionary which is essentially a shallow copy of this dataclass."""
+        return dict([(f.name, getattr(self, f.name)) for f in fields(self)])
+
+    @classmethod
+    def _get_type_hints(cls) -> dict:
+        """
+        Fetches type hints associated with this class.
+
+        Ensures that overridden properties have their type hints overridden too.
+        """
+        type_hints = {}
+        for c in reversed(cls.mro()):
+            type_hints = dict(type_hints, **get_type_hints(c, include_extras=True))
+
+        return type_hints
+
+
+T = typing.TypeVar("T")
+
+
+def replace_with_json_serialisable_types(val: T) -> typing.Union[T, str]:
+    """
+    :return: A replacement of built-in types which are not JSON serialisable with ones which are.
+
+    e.g. :obj:`~datetime.datetime`s get replaced with ISO-8601 strings.
+
+    Its inverse is :func:`replace_serialised_types_with_builtin_types`.
+    """
+
+    if isinstance(val, datetime.datetime):
+        return val.isoformat()
+    elif isinstance(val, dict):
+        return dict(
+            [
+                (key, replace_with_json_serialisable_types(value))
+                for key, value in val.items()
+            ]
+        )
+    elif isinstance(val, list):
+        return [replace_with_json_serialisable_types(item) for item in val]
+
+    return val

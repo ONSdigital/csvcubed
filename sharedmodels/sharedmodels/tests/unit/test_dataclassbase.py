@@ -1,3 +1,4 @@
+import datetime
 from dataclasses import dataclass, field
 from typing import List, Set, Dict, TypeVar, Generic, Union
 
@@ -324,6 +325,19 @@ def test_inflate_from_list_of_sets_deep():
     first_item = first_item.pop()
     assert isinstance(first_item, A)
     assert first_item.a_1 == "Hello from A"
+
+
+def test_datetime_json_serialisation():
+    @dataclass
+    class A(DataClassBase):
+        some_datetime: datetime.datetime
+
+    dt = datetime.datetime.now()
+
+    a = A(dt)
+    reinflated_a = a.from_json(a.as_json())
+    assert isinstance(reinflated_a, A)
+    assert reinflated_a.some_datetime == dt
 
 
 if __name__ == "__main__":

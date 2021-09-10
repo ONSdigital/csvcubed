@@ -2,10 +2,12 @@
 Catalog Metadata (DCAT)
 -----------------------
 """
+import json
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Optional
 from sharedmodels.rdf import dcat
+from pathlib import Path
 
 from csvqb.models.cube.catalog import CatalogMetadataBase
 from csvqb.models.uriidentifiable import UriIdentifiable
@@ -35,6 +37,17 @@ class CatalogMetadata(CatalogMetadataBase, UriIdentifiable):
     _public_contact_point_uri_validator = validate_uri(
         "public_contact_point_uri", is_optional=True
     )
+
+    def to_json_file(self, file_path: Path) -> None:
+        with open(file_path, "w+") as f:
+            json.dump(self.as_json_dict(), f, indent=4)
+
+    @classmethod
+    def from_json_file(cls, file_path: Path) -> "CatalogMetadata":
+        with open(file_path, "r") as f:
+            dict_structure = json.load(f)
+
+        return cls.from_dict(dict_structure)
 
     def get_issued(self) -> Optional[datetime]:
         return self.dataset_issued
