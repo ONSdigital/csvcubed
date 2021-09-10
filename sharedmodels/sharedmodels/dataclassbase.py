@@ -296,7 +296,7 @@ def replace_with_json_serialisable_types(val: Any) -> Any:
     """
     :return: A replacement of built-in types which are not JSON serialisable with ones which are.
 
-    e.g. :obj:`~datetime.datetime`s get replaced with ISO-8601 strings.
+    e.g. :obj:`~datetime.datetime` instances get replaced with ISO-8601 strings.
 
     Its inverse is :func:`replace_serialised_types_with_builtin_types`.
     """
