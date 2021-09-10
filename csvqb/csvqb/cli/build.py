@@ -69,5 +69,6 @@ def _override_catalog_metadata_state(
         catalog_metadata_dict: dict = json.load(f)
     overriding_catalog_metadata = CatalogMetadata.from_dict(catalog_metadata_dict)
     cube.metadata.override_with(
-        overriding_catalog_metadata, overriding_keys=catalog_metadata_dict.keys()
+        overriding_catalog_metadata,
+        overriding_keys={k for k in catalog_metadata_dict.keys()},
     )

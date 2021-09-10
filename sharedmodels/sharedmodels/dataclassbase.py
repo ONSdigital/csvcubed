@@ -45,11 +45,13 @@ class DataClassBase(ABC):
         """Use python dataclasses method to return this model as a dictionary."""
         return asdict(self)
 
-    def as_json_dict(self) -> str:
+    def as_json_dict(self) -> dict:
         """
         :return: a dict suitable for JSON serialisation containing a representation of this object.
         """
-        return replace_with_json_serialisable_types(self.as_dict())
+        d = replace_with_json_serialisable_types(self.as_dict())
+        assert isinstance(d, dict)
+        return d
 
     def as_json(self) -> str:
         """
@@ -290,10 +292,7 @@ class DataClassBase(ABC):
         return type_hints
 
 
-T = typing.TypeVar("T")
-
-
-def replace_with_json_serialisable_types(val: T) -> typing.Union[T, str]:
+def replace_with_json_serialisable_types(val: Any) -> Any:
     """
     :return: A replacement of built-in types which are not JSON serialisable with ones which are.
 
