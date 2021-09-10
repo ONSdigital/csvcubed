@@ -9,9 +9,6 @@ pipeline {
         stage('Setup') {
             steps {
                 script {
-                    sh 'chmod -R ugo+rw .'
-                    cleanWs deleteDirs: true, patterns: [[pattern: "**/.venv", type: "EXCLUDE"]]
-
                     // Clean up any files lying about after the previous build. Jenkins has trouble deleting files given that our containers run as root.
                     // sh "git clean -fxd" 
 
@@ -142,7 +139,7 @@ pipeline {
     post {
         always {
             script {
-                sh 'find . -user root -name \'*\' | xargs chmod ugo+rw'
+                sh 'chmod -R ugo+rw .'
 
                 try {
                     unstash name: "test-results"
@@ -170,9 +167,9 @@ pipeline {
         }
         success {
             script {
-                sh 'find . -user root -name \'*\' | xargs chmod ugo+rw'
-                // cleanWs deleteDirs: true, patterns: [[pattern: '.', type: 'INCLUDE'], [pattern: ".venv", type: "EXCLUDE"]]
-            }
+                sh 'chmod -R ugo+rw .'
+                cleanWs deleteDirs: true, patterns: [[pattern: "**/.venv", type: "EXCLUDE"]]
+           }
         }
     }
 }
