@@ -1,13 +1,12 @@
 pipeline {
-    agent any
+    agent {
+        dockerfile {
+            args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
+            reuseNode true
+        }
+    }
     stages {
         stage('Setup') {
-            agent {
-                dockerfile {
-                    args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
-                    reuseNode true
-                }
-            }
             steps {
                 script {
                     // Clean up any files lying about after the previous build. Jenkins has trouble deleting files given that our containers run as root.
@@ -65,12 +64,6 @@ pipeline {
             }
         }
         stage('Test') {
-            agent {
-                dockerfile {
-                    args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
-                    reuseNode true
-                }
-            }
             steps {
                 dir("sharedmodels") {
                     dir("sharedmodels/tests/unit") {
@@ -94,12 +87,6 @@ pipeline {
             }
         }
         stage('Package') {
-            agent {
-                dockerfile {
-                    args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
-                    reuseNode true
-                }
-            }
             steps {               
                 dir("devtools") {
                     sh "pipenv run python setup.py bdist_wheel --universal"
@@ -121,12 +108,6 @@ pipeline {
             }
         }
         stage('Documentation') {
-            agent {
-                dockerfile {
-                    args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
-                    reuseNode true
-                }
-            }
             steps {
                 script {
                     dir("devtools") {
@@ -158,6 +139,8 @@ pipeline {
     post {
         always {
             script {
+                sh 'find . -user root -name \'*\' | xargs chmod ugo+rw'
+
                 try {
                     unstash name: "test-results"
                 } catch (Exception e) {
@@ -180,6 +163,12 @@ pipeline {
                 }
 
                 archiveArtifacts artifacts: '**/dist/*.whl, **/docs/_build/html/**/*', fingerprint: true
+            }
+        }
+        success {
+            script {
+                sh 'find . -user root -name \'*\' | xargs chmod ugo+rw'
+                cleanWs deleteDirs: true, patterns: [[pattern: '.', type: 'INCLUDE'] [pattern: ".venv", type: "EXCLUDE"]]
             }
         }
     }
