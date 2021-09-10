@@ -14,7 +14,7 @@ def step_impl(context, arguments: str):
 @then("the csvqb CLI should succeed")
 def step_impl(context):
     (status_code, response) = context.csvqb_cli_result
-    assert status_code == 0, status_code
+    assert status_code == 0, (status_code, response)
     assert "Build Complete" in response, response
 
 

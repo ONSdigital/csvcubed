@@ -19,6 +19,7 @@ from sharedmodels.rdf.namespaces import GOV, GDP
 
 
 from csvqb.models.cube.cube import Cube
+from csvqb.models.cube.qb import QbCube
 from csvqb.models.cube.qb.catalog import CatalogMetadata
 from csvqb.models.cube.columns import CsvColumn, SuppressedCsvColumn
 from csvqb.models.cube.qb.columns import QbColumn
@@ -49,7 +50,7 @@ import csvqb.configloaders.infojson1point1.mapcolumntocomponent as v1point1
 
 def get_cube_from_info_json(
     info_json: Path, data: pd.DataFrame, cube_id: Optional[str] = None
-) -> Cube:
+) -> QbCube:
     with open(info_json, "r") as f:
         config = json.load(f)
 
@@ -85,7 +86,9 @@ def _override_config_for_cube_id(config: dict, cube_id: str) -> Optional[dict]:
         return None
 
 
-def _from_info_json_dict(d: Dict, data: pd.DataFrame, info_json_parent_dir: Path):
+def _from_info_json_dict(
+    d: Dict, data: pd.DataFrame, info_json_parent_dir: Path
+) -> QbCube:
     metadata = _metadata_from_dict(d)
     transform_section = d.get("transform", {})
     columns = _columns_from_info_json(

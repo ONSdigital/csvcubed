@@ -29,6 +29,17 @@ def entry_point():
     metavar="CONFIG_PATH",
 )
 @click.option(
+    "--catalog-metadata",
+    "-m",
+    help=(
+        "Location of a JSON file containing the Catalog Metadata for this qube. "
+        "If present, this overrides any configuration found in the info.json."
+    ),
+    type=click.Path(exists=True, path_type=Path, file_okay=True, dir_okay=False),
+    required=False,
+    metavar="CATALOG_METADATA_PATH",
+)
+@click.option(
     "--out",
     "-o",
     help="Location of the CSV-W outputs.",
@@ -56,6 +67,7 @@ def entry_point():
 )
 def build_command(
     config: Path,
+    catalog_metadata: Path,
     out: Path,
     csv: Path,
     fail_when_validation_error: bool,
@@ -65,4 +77,11 @@ def build_command(
     validation_errors_file_out = (
         out / "validation-errors.json" if validation_errors_to_file else None
     )
-    build(config, out, csv, fail_when_validation_error, validation_errors_file_out)
+    build(
+        config,
+        catalog_metadata,
+        out,
+        csv,
+        fail_when_validation_error,
+        validation_errors_file_out,
+    )

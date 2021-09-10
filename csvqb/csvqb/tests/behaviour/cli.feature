@@ -39,3 +39,14 @@ Feature: Test the csvqb Command Line Interface.
     Then the csvqb CLI should succeed
     And the file at "out/validation-error-output.csv" should exist
     And the file at "out/validation-error-output.csv-metadata.json" should exist
+
+
+  Scenario: The csvqb build command should accept an optional catalog-metadata.json which overrides the info.json configuration
+    Given the existing test-case file "configloaders/data.csv"
+    And the existing test-case file "configloaders/info.json"
+    And the existing test-case file "configloaders/catalog-metadata.json"
+    When the csvqb CLI is run with "build --config configloaders/info.json --catalog-metadata configloaders/catalog-metadata.json configloaders/data.csv"
+    Then the csvqb CLI should succeed
+    And the file at "out/some-dataset.csv" should exist
+    And the file at "out/some-dataset.csv-metadata.json" should exist
+    But the file at "out/ons-international-trade-in-services-by-subnational-areas-of-the-uk.csv" should not exist

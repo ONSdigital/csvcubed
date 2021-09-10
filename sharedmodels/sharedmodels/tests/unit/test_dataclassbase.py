@@ -1,6 +1,6 @@
 import datetime
 from dataclasses import dataclass, field
-from typing import List, Set, Dict, TypeVar, Generic, Union
+from typing import List, Set, Dict, TypeVar, Generic, Union, Optional
 
 import pytest
 
@@ -338,6 +338,49 @@ def test_datetime_json_serialisation():
     reinflated_a = a.from_json(a.as_json())
     assert isinstance(reinflated_a, A)
     assert reinflated_a.some_datetime == dt
+
+
+def test_override_values():
+    @dataclass
+    class A(DataClassBase):
+        some_optional_value: Optional[str] = None
+
+    a = A("Hello, World")
+    a_override = A()
+
+    a.override_with(a_override)
+
+    assert a.some_optional_value is None
+
+
+def test_overriding_nothing():
+    @dataclass
+    class A(DataClassBase):
+        some_optional_value: Optional[str] = None
+
+    a = A("Hello, World")
+    a_override = A()
+
+    a.override_with(a_override, overriding_keys=set())
+
+    assert a.some_optional_value == "Hello, World"
+
+
+def test_overriding_specific_property():
+    @dataclass
+    class A(DataClassBase):
+        some_value: str
+        some_optional_value: Optional[str] = None
+
+    a = A("Hello, world", "This is optional")
+    a_override = A("Hello, overriding world.")
+
+    a.override_with(a_override, overriding_keys={"some_value"})
+
+    assert a.some_value == "Hello, overriding world."
+
+    # But some_optional_value doesn't get overridden since it isn't in `overriding_keys`.
+    assert a.some_optional_value == "This is optional"
 
 
 if __name__ == "__main__":

@@ -15,10 +15,13 @@ from typing import Optional
 from csvqb.configloaders.infojson import get_cube_from_info_json
 from csvqb.writers.qbwriter import QbWriter
 from csvqb.utils.qb.cube import validate_qb_component_constraints
+from csvqb.models.cube.qb import QbCube
+from csvqb.models.cube.qb.catalog import CatalogMetadata
 
 
 def build(
     info_json: Path,
+    catalog_metadata_json_file: Optional[Path],
     output_directory: Path,
     csv_path: Path,
     fail_when_validation_error_occurs: bool,
@@ -29,6 +32,9 @@ def build(
     data = pd.read_csv(csv_path)
     assert isinstance(data, pd.DataFrame)
     cube = get_cube_from_info_json(info_json, data)
+
+    if catalog_metadata_json_file is not None:
+        _override_catalog_metadata_state(catalog_metadata_json_file, cube)
 
     errors = cube.validate()
     errors += validate_qb_component_constraints(cube)
@@ -54,3 +60,14 @@ def build(
     qb_writer.write(output_directory)
 
     print(f"{Fore.GREEN + Style.BRIGHT}Build Complete")
+
+
+def _override_catalog_metadata_state(
+    catalog_metadata_json_file: Path, cube: QbCube
+) -> None:
+    with open(catalog_metadata_json_file, "r") as f:
+        catalog_metadata_dict: dict = json.load(f)
+    overriding_catalog_metadata = CatalogMetadata.from_dict(catalog_metadata_dict)
+    cube.metadata.override_with(
+        overriding_catalog_metadata, overriding_keys=catalog_metadata_dict.keys()
+    )

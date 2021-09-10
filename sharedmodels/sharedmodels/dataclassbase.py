@@ -57,6 +57,30 @@ class DataClassBase(ABC):
         """
         return json.dumps(self.as_json_dict())
 
+    def override_with(
+        self: TDataClassBase,
+        overriding_values: TDataClassBase,
+        overriding_keys: typing.Optional[Set[str]] = None,
+    ):
+        """
+        Allows you to override specific attributes of this instance with values from another instance.
+        """
+        if not isinstance(overriding_values, self.__class__):
+            raise ValueError(
+                f"overriding_values is not an instance of {self.__class__}"
+            )
+
+        for field in fields(self):
+            if overriding_keys is not None and field.name not in overriding_keys:
+                continue
+
+            self_val = getattr(self, field.name)
+            overriding_val = getattr(overriding_values, field.name)
+            if self_val == overriding_val:
+                continue
+
+            setattr(self, field.name, overriding_val)
+
     @classmethod
     def dict_fields_match_class(cls: typing.Type, d: dict) -> bool:
         fields_in_class = fields(cls)
@@ -134,7 +158,7 @@ class DataClassBase(ABC):
 
     @classmethod
     def _get_value_for_typed_field(
-        cls, val: Any, field: Field, typing_hint: Any, allow_coercion: bool = True
+        cls, val: Any, field: Field, typing_hint: Any
     ) -> Any:
         generic_type_args = typing.get_args(typing_hint)
         value_type = type(val)
@@ -165,7 +189,7 @@ class DataClassBase(ABC):
                 raise DataClassFromDictValueError(
                     f"Unable to inflate generic type {typing_hint} from dictionary."
                 )
-        elif allow_coercion and _type_coercion_permitted(value_type, typing_hint):
+        elif _type_coercion_permitted(value_type, typing_hint):
             try:
                 return typing_hint(val)  # type: ignore
             except:
