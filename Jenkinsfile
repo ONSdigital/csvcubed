@@ -168,7 +168,7 @@ pipeline {
         success {
             script {
                 sh 'find . -user root -name \'*\' | xargs chmod ugo+rw'
-                cleanWs deleteDirs: true, patterns: [[pattern: '.', type: 'INCLUDE'] [pattern: ".venv", type: "EXCLUDE"]]
+                cleanWs deleteDirs: true, patterns: [[pattern: '.', type: 'INCLUDE'], [pattern: ".venv", type: "EXCLUDE"]]
             }
         }
     }
