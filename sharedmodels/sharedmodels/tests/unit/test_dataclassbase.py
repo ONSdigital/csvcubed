@@ -340,6 +340,19 @@ def test_datetime_json_serialisation():
     assert reinflated_a.some_datetime == dt
 
 
+def test_date_json_serialisation():
+    @dataclass
+    class A(DataClassBase):
+        some_datetime: datetime.date
+
+    date = datetime.date.today()
+
+    a = A(date)
+    reinflated_a = a.from_json(a.as_json())
+    assert isinstance(reinflated_a, A)
+    assert reinflated_a.some_datetime == date
+
+
 def test_override_values():
     @dataclass
     class A(DataClassBase):
