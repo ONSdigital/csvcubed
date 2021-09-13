@@ -10,7 +10,7 @@ pipeline {
             steps {
                 script {
                     // Clean up any files lying about after the previous build. Jenkins has trouble deleting files given that our containers run as root.
-                    // sh "git clean -fxd" 
+                    sh "git clean -fxd --exclude='.venv'"
 
                     dir("devtools") {
                         sh "PIPENV_VENV_IN_PROJECT=true pipenv sync --dev"
@@ -139,8 +139,6 @@ pipeline {
     post {
         always {
             script {
-                sh 'chmod -R ugo+rw .'
-
                 try {
                     unstash name: "test-results"
                 } catch (Exception e) {
@@ -163,13 +161,10 @@ pipeline {
                 }
 
                 archiveArtifacts artifacts: '**/dist/*.whl, **/docs/_build/html/**/*', fingerprint: true
-            }
-        }
-        success {
-            script {
+                
                 sh 'chmod -R ugo+rw .'
-                cleanWs patterns: [[pattern: "**/.venv/*", type: "EXCLUDE"], [pattern: "**/.venv/**", type: "EXCLUDE"], [pattern: "**/.venv/**/*", type: "EXCLUDE"]]
-           }
+                sh "git clean -fxd --exclude='.venv'"
+            }
         }
     }
 }
