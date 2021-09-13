@@ -25,7 +25,7 @@ pipeline {
                         // Patch behave so that it can output the correct format for the Jenkins cucumber tool.
                         def venv_location = sh script: "pipenv --venv", returnStdout: true
                         venv_location = venv_location.trim()
-                        sh "patch -N -d \"${venv_location}/lib/python3.9/site-packages/behave/formatter\" -p1 < /cucumber-format.patch"
+                        sh "patch -Nf -d \"${venv_location}/lib/python3.9/site-packages/behave/formatter\" -p1 < /cucumber-format.patch"
                     }
 
                     dir("csvqb") {
@@ -33,7 +33,7 @@ pipeline {
                         // Patch behave so that it can output the correct format for the Jenkins cucumber tool.
                         def venv_location = sh script: "pipenv --venv", returnStdout: true
                         venv_location = venv_location.trim()
-                        sh "patch -N -d \"${venv_location}/lib/python3.9/site-packages/behave/formatter\" -p1 < /cucumber-format.patch"
+                        sh "patch -Nf -d \"${venv_location}/lib/python3.9/site-packages/behave/formatter\" -p1 < /cucumber-format.patch"
                     }
                 }
             }
