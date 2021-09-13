@@ -9,7 +9,7 @@ pipeline {
         stage('Setup') {
             steps {
                 script {
-                    // Clean up any files lying about after the previous build. Jenkins has trouble deleting files given that our containers run as root.
+                    // Clean up any unwanted files lying about after the previous build.
                     sh "git clean -fxd --exclude='.venv'"
 
                     dir("devtools") {
@@ -161,8 +161,10 @@ pipeline {
                 }
 
                 archiveArtifacts artifacts: '**/dist/*.whl, **/docs/_build/html/**/*', fingerprint: true
-                
+
+                // Set more permissive permissions on all files so future processes/Jenkins can easily delete them.
                 sh 'chmod -R ugo+rw .'
+                // Clean up any unwanted files lying about.
                 sh "git clean -fxd --exclude='.venv'"
             }
         }
