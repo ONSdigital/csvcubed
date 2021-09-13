@@ -1,17 +1,16 @@
 pipeline {
-    agent any
+    agent {
+        dockerfile {
+            args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
+            reuseNode true
+        }
+    }
     stages {
         stage('Setup') {
-            agent {
-                dockerfile {
-                    args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
-                    reuseNode true
-                }
-            }
             steps {
                 script {
-                    // Clean up any files lying about after the previous build. Jenkins has trouble deleting files given that our containers run as root.
-                    sh "git clean -fxd" 
+                    // Clean up any unwanted files lying about after the previous build.
+                    sh "git clean -fxd --exclude='.venv'"
 
                     dir("devtools") {
                         sh "PIPENV_VENV_IN_PROJECT=true pipenv sync --dev"
@@ -26,7 +25,7 @@ pipeline {
                         // Patch behave so that it can output the correct format for the Jenkins cucumber tool.
                         def venv_location = sh script: "pipenv --venv", returnStdout: true
                         venv_location = venv_location.trim()
-                        sh "patch -d \"${venv_location}/lib/python3.9/site-packages/behave/formatter\" -p1 < /cucumber-format.patch"
+                        sh "patch -f -d \"${venv_location}/lib/python3.9/site-packages/behave/formatter\" -p1 < /cucumber-format.patch"
                     }
 
                     dir("csvqb") {
@@ -34,7 +33,7 @@ pipeline {
                         // Patch behave so that it can output the correct format for the Jenkins cucumber tool.
                         def venv_location = sh script: "pipenv --venv", returnStdout: true
                         venv_location = venv_location.trim()
-                        sh "patch -d \"${venv_location}/lib/python3.9/site-packages/behave/formatter\" -p1 < /cucumber-format.patch"
+                        sh "patch -f -d \"${venv_location}/lib/python3.9/site-packages/behave/formatter\" -p1 < /cucumber-format.patch"
                     }
                 }
             }
@@ -65,12 +64,6 @@ pipeline {
             }
         }
         stage('Test') {
-            agent {
-                dockerfile {
-                    args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
-                    reuseNode true
-                }
-            }
             steps {
                 dir("sharedmodels") {
                     dir("sharedmodels/tests/unit") {
@@ -94,12 +87,6 @@ pipeline {
             }
         }
         stage('Package') {
-            agent {
-                dockerfile {
-                    args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
-                    reuseNode true
-                }
-            }
             steps {               
                 dir("devtools") {
                     sh "pipenv run python setup.py bdist_wheel --universal"
@@ -121,12 +108,6 @@ pipeline {
             }
         }
         stage('Documentation') {
-            agent {
-                dockerfile {
-                    args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
-                    reuseNode true
-                }
-            }
             steps {
                 script {
                     dir("devtools") {
@@ -180,6 +161,11 @@ pipeline {
                 }
 
                 archiveArtifacts artifacts: '**/dist/*.whl, **/docs/_build/html/**/*', fingerprint: true
+
+                // Set more permissive permissions on all files so future processes/Jenkins can easily delete them.
+                sh 'chmod -R ugo+rw .'
+                // Clean up any unwanted files lying about.
+                sh "git clean -fxd --exclude='.venv'"
             }
         }
     }

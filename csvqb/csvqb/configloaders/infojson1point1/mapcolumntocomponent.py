@@ -4,6 +4,7 @@ Mapping
 
 Map info.json V1.1 definitions to QB column components
 """
+import copy
 from typing import Union
 from pathlib import Path
 
@@ -86,31 +87,34 @@ def _from_column_dict_to_schema_model(
     schema.ObservationValue,
 ]:
     """
-    N.B. when using the :method:`dict_has_required_fields` method, we need to ensure that we check for types with
+    N.B. when using the :method:`dict_fields_match_class` method, we need to ensure that we check for types with
     required properties *before* types without required properties.
     """
     column_type = column.get("type")
+    column_without_type = copy.deepcopy(column)
+    del column_without_type["type"]
+
     if column_type is None:
         raise ValueError("Type of column not specified.")
     elif column_type == "dimension":
-        if schema.ExistingDimension.dict_has_required_fields(column):
+        if schema.ExistingDimension.dict_fields_match_class(column_without_type):
             return schema.ExistingDimension.from_dict(column)
-        elif schema.NewDimension.dict_has_required_fields(column):
+        elif schema.NewDimension.dict_fields_match_class(column_without_type):
             return schema.NewDimension.from_dict(column)
     elif column_type == "attribute":
-        if schema.ExistingAttribute.dict_has_required_fields(column):
+        if schema.ExistingAttribute.dict_fields_match_class(column_without_type):
             return schema.ExistingAttribute.from_dict(column)
-        elif schema.NewAttribute.dict_has_required_fields(column):
+        elif schema.NewAttribute.dict_fields_match_class(column_without_type):
             return schema.NewAttribute.from_dict(column)
     elif column_type == "units":
-        if schema.ExistingUnits.dict_has_required_fields(column):
+        if schema.ExistingUnits.dict_fields_match_class(column_without_type):
             return schema.ExistingUnits.from_dict(column)
-        elif schema.NewUnits.dict_has_required_fields(column):
+        elif schema.NewUnits.dict_fields_match_class(column_without_type):
             return schema.NewUnits.from_dict(column)
     elif column_type == "measures":
-        if schema.ExistingMeasures.dict_has_required_fields(column):
+        if schema.ExistingMeasures.dict_fields_match_class(column_without_type):
             return schema.ExistingMeasures.from_dict(column)
-        elif schema.NewMeasures.dict_has_required_fields(column):
+        elif schema.NewMeasures.dict_fields_match_class(column_without_type):
             return schema.NewMeasures.from_dict(column)
     elif column_type == "observations":
         return schema.ObservationValue.from_dict(column)

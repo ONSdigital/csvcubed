@@ -19,5 +19,5 @@ class CatalogMetadataBase(PydanticModel, ABC):
         pass
 
     @abstractmethod
-    def get_issued(self) -> datetime:
+    def get_issued(self) -> Optional[datetime]:
         pass
