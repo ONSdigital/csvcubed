@@ -168,7 +168,7 @@ pipeline {
         success {
             script {
                 sh 'chmod -R ugo+rw .'
-                cleanWs deleteDirs: true, patterns: [[pattern: "**/.venv/*", type: "EXCLUDE"]]
+                cleanWs deleteDirs: true, patterns: [[pattern: "**/.venv/*", type: "EXCLUDE"], [pattern: "**/.venv/**", type: "EXCLUDE"], [pattern: "**/.venv/**/*", type: "EXCLUDE"]]
            }
         }
     }
