@@ -196,9 +196,11 @@ class DataClassBase(ABC):
                 return typing_hint(val)  # type: ignore
             except:
                 ...
-        elif isinstance(val, str) and issubclass(typing_hint, datetime.datetime):
+        elif isinstance(val, str) and issubclass(typing_hint, datetime.date):
             # ISO-8601 conversion.
-            return datetime.datetime.fromisoformat(val)
+            if issubclass(typing_hint, datetime.datetime):
+                return datetime.datetime.fromisoformat(val)
+            return datetime.date.fromisoformat(val)
 
         raise DataClassFromDictValueError(
             f"Could not match {val} with static type {typing_hint}"
@@ -301,7 +303,7 @@ def replace_with_json_serialisable_types(val: Any) -> Any:
     Its inverse is :func:`replace_serialised_types_with_builtin_types`.
     """
 
-    if isinstance(val, datetime.datetime):
+    if isinstance(val, datetime.date):
         return val.isoformat()
     elif isinstance(val, dict):
         return dict(
