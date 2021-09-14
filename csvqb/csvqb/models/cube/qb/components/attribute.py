@@ -63,7 +63,9 @@ class QbAttribute(ColumnarQbDataStructureDefinition, ArbitraryRdf, ABC):
                 av.uri_safe_identifier for av in self.new_attribute_values  # type: ignore
             }
             actual_values = {
-                uri_safe(v) for v in set(data.unique().flatten()) if not pd.isna(v)
+                uri_safe(v)
+                for v in set(data.unique().astype(object).flatten())
+                if not pd.isna(v)
             }
             undefined_values = expected_values - actual_values
 
