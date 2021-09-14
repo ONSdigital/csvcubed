@@ -8,6 +8,7 @@ setup(
         "rdflib-jsonld~=0.5.0",
         "click~=8.0.1",
         "colorama~=0.4.4",
+        "pyparsing~=2.4.7",
     ],
     classifiers=[
         "Programming Language :: Python :: 3",
