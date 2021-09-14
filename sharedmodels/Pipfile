@@ -9,7 +9,7 @@ devtools = {editable = true,path = "./../devtools"}
 [packages]
 unidecode = "*"
 sharedmodels = {editable = true,path = "."}
-rdflib = ">=5.0.0"
+rdflib = "~=5.0.0"
 
 [requires]
 python_version = "3.9"
