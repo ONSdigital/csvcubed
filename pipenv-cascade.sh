@@ -8,7 +8,7 @@ function pipenv_update_setup_sync () {
     echo "====================== $1"
     cd $1
     pipenv update --pre --dev
-    pipenv run pipenv-setup sync
+    pipenv run pipenv-setup sync --pipfile
     cd ..
 }
 
