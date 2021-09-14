@@ -8,12 +8,12 @@ csvwlib-devtools = {editable = true,path = "./../devtools"}
 
 [packages]
 csvqb = {editable = true,path = "."}
-pandas = "*"
+pandas = "~=1.2.5"
 csvwlib-models = {editable = true,path = "./../sharedmodels"}
-rdflib-jsonld = "*"
+rdflib-jsonld = "~=0.5.0"
 pydantic = {editable = true,git = "https://github.com/robons/pydantic.git"}
-click = "*"
-colorama = "*"
+click = "~=8.0.1"
+colorama = "~=0.4.4"
 
 [requires]
 python_version = "3.9"

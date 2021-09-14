@@ -7,9 +7,9 @@ verify_ssl = true
 devtools = {editable = true,path = "./../devtools"}
 
 [packages]
-rdflib = "*"
 unidecode = "*"
 sharedmodels = {editable = true,path = "."}
+rdflib = ">=5.0.0"
 
 [requires]
 python_version = "3.9"
