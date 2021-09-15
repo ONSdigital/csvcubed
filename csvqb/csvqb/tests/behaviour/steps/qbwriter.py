@@ -652,3 +652,8 @@ def step_impl(context, some_json, some_csv):
         tmp_dir / some_json,
         data,
     )
+
+
+@Then("any errors are presented to the user")
+def step_impl(context):
+    raise NotImplementedError("not here yet")

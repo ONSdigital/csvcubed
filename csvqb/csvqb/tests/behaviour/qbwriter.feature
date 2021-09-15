@@ -426,3 +426,18 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     Then the CSVqb should pass all validations
     When the cube is serialised to CSV-W
     Then csvlint validation of all CSV-Ws should succeed
+
+#  We define an info.json schema (currently here - but will be updated in issue #158).
+#When we import an info.json file we don't perform any checks to ensure that the JSON adhered to the schema.
+# This task is to ensure that when we load an info.json schema, we feed back any errors to the user.
+#N.B. An info.json file failing the schema validation shouldn't stop a user from using the file,
+# the information will only be there to help the user diagnose why the application crashed or
+# why they didn't get the output they were expecting.
+#When running the CLI (issue #108), this information should be serialised to the console out with suitable warning colours.
+#Ideally we'd have a behaviour test which ensures that some validation errors are output as part of the CLI process.
+
+  Scenario: Schema validation occurs when an info.json is imported but errors are only presented not the cause of a halt.
+    Given the existing test-case file "configloaders/multi-measure-info-json-test-files/multi-measure-data.csv"
+    And the existing test-case file "configloaders/multi-measure-info-json-test-files/multi-measure-info.json"
+    And we load a cube using the info.json from "configloaders/multi-measure-info-json-test-files/multi-measure-info.json" with CSV from "configloaders/multi-measure-info-json-test-files/multi-measure-data.csv"
+    Then any errors are presented to the user

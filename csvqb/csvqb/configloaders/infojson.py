@@ -16,6 +16,7 @@ import pandas as pd
 import uritemplate
 from dateutil import parser
 from sharedmodels.rdf.namespaces import GOV, GDP
+import jsonschema
 
 
 from csvqb.models.cube.cube import Cube
@@ -46,6 +47,11 @@ from csvqb.utils.uri import csvw_column_name_safe, uri_safe
 from csvqb.utils.dict import get_from_dict_ensure_exists, get_with_func_or_none
 from csvqb.inputs import pandas_input_to_columnar_str, PandasDataTypes
 import csvqb.configloaders.infojson1point1.mapcolumntocomponent as v1point1
+
+# https://python-jsonschema.readthedocs.io/en/stable/
+# https://github.com/GSS-Cogs/family-schemas/blob/main/dataset-schema-1.1.0.json
+
+jsonschema.validate()
 
 
 def get_cube_from_info_json(

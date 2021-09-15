@@ -15,6 +15,7 @@ pydantic = {editable = true,git = "https://github.com/robons/pydantic.git"}
 click = "~=8.0.1"
 colorama = "~=0.4.4"
 pyparsing = "~=2.4.7" # Fixed to help rdflib since it doesn't lock the version and v3.0.0-RC1 has breaking changes.
+jsonschema = "~=3.2.0"
 
 [requires]
 python_version = "3.9"
