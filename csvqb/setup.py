@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 setup(
     dependency_links=["git+https://github.com/robons/pydantic.git#egg=pydantic"],
     install_requires=[
-        "pandas~=1.2.5",
+        "pandas~=1.3.3",
         "rdflib-jsonld~=0.5.0",
         "click~=8.0.1",
         "colorama~=0.4.4",
