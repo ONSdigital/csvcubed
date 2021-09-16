@@ -16,7 +16,6 @@ import pandas as pd
 import uritemplate
 from dateutil import parser
 from sharedmodels.rdf.namespaces import GOV, GDP
-import jsonschema
 
 
 from csvqb.models.cube.cube import Cube
@@ -45,20 +44,33 @@ from csvqb.models.cube.qb.components.codelist import (
 )
 from csvqb.utils.uri import csvw_column_name_safe, uri_safe
 from csvqb.utils.dict import get_from_dict_ensure_exists, get_with_func_or_none
+from csvqb.utils.jsonschemavalidation import validate_dict_against_schema_url
 from csvqb.inputs import pandas_input_to_columnar_str, PandasDataTypes
 import csvqb.configloaders.infojson1point1.mapcolumntocomponent as v1point1
+from jsonschema.exceptions import ValidationError
 
-# https://python-jsonschema.readthedocs.io/en/stable/
-# https://github.com/GSS-Cogs/family-schemas/blob/main/dataset-schema-1.1.0.json
 
-jsonschema.validate()
+def get_schema_errors(info_json: Path):
+    with open(info_json, "r") as f:
+
+        schema_errors = validate_dict_against_schema_url(
+            f,
+            "https://raw.githubusercontent.com/GSS-Cogs/family-schemas/main/dataset-schema-1.1.0.json",
+        )
+    return schema_errors
 
 
 def get_cube_from_info_json(
     info_json: Path, data: pd.DataFrame, cube_id: Optional[str] = None
-) -> QbCube:
+) -> Union[QbCube, List[ValidationError]]:
     with open(info_json, "r") as f:
         config = json.load(f)
+
+    info_json_schema_url = "https://raw.githubusercontent.com/GSS-Cogs/family-schemas/main/dataset-schema-1.1.0.json"
+
+    errors = validate_dict_against_schema_url(
+        value=config, schema_url=info_json_schema_url
+    )
 
     if cube_id is not None:
         config = _override_config_for_cube_id(config, cube_id)
@@ -66,7 +78,10 @@ def get_cube_from_info_json(
     if config is None:
         raise Exception(f"Config not found for cube with id '{cube_id}'")
 
-    return _from_info_json_dict(config, data, info_json.parent.absolute())
+    if len(errors) != 0:
+        return errors
+    else:
+        return _from_info_json_dict(config, data, info_json.parent.absolute())
 
 
 def _override_config_for_cube_id(config: dict, cube_id: str) -> Optional[dict]:

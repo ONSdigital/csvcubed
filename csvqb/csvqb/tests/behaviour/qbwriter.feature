@@ -440,4 +440,6 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     Given the existing test-case file "configloaders/multi-measure-info-json-test-files/multi-measure-data.csv"
     And the existing test-case file "configloaders/multi-measure-info-json-test-files/multi-measure-info.json"
     And we load a cube using the info.json from "configloaders/multi-measure-info-json-test-files/multi-measure-info.json" with CSV from "configloaders/multi-measure-info-json-test-files/multi-measure-data.csv"
-    Then any errors are presented to the user
+    Then any errors are presented to the user from using "configloaders/multi-measure-info-json-test-files/multi-measure-info.json"
+#    And when using "{some_json}", the "0" error is "not a string"
+#    And when using "{some_json}", the "1" error is "duplicate key"
