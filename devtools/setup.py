@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     install_requires=[
@@ -14,5 +14,6 @@ setup(
         "chardet",
         "black",
     ],
+    packages=find_packages(),
     name="devtools",
 )
