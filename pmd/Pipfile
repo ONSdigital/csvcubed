@@ -8,7 +8,7 @@ devtools = {editable = true,path = "./../devtools"}
 
 [packages]
 rdflib = "*"
-rdflib-jsonld = "*"
+rdflib-jsonld = "==0.6.1"
 requests = "*"
 csvw = "*"
 pandas = "*"
@@ -16,6 +16,7 @@ uritemplate = "*"
 pmd = {editable = true,path = "."}
 sharedmodels = {editable = true,path = "./../sharedmodels"}
 unidecode = "*"
+pyparsing = "~=2.4.7" # Fixed to help rdflib since it doesn't lock the version and v3.0.0-RC1 has breaking changes.
 
 [requires]
 python_version = "3.9"

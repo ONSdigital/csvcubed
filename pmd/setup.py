@@ -4,7 +4,7 @@ setup(
     version="0.0.1",
     install_requires=[
         "rdflib",
-        "rdflib-jsonld",
+        "rdflib-jsonld==0.6.1",
         "requests",
         "csvw",
         "pandas",

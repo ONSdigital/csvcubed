@@ -5,7 +5,7 @@ setup(
     dependency_links=["git+https://github.com/robons/pydantic.git#egg=pydantic"],
     install_requires=[
         "pandas~=1.3.3",
-        "rdflib-jsonld~=0.5.0",
+        "rdflib-jsonld==0.6.1",
         "click~=8.0.1",
         "colorama~=0.4.4",
         "pyparsing~=2.4.7",
