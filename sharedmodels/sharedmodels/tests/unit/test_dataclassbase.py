@@ -396,5 +396,18 @@ def test_overriding_specific_property():
     assert a.some_optional_value == "This is optional"
 
 
+def test_serialise_class_type():
+    @dataclass
+    class A(DataClassBase):
+        some_value: type
+
+    a = A(str)
+    a_json_dict = a.as_json_dict()
+
+    assert a_json_dict["some_value"] == "str"
+
+    assert a.as_json() is not None
+
+
 if __name__ == "__main__":
     pytest.main()

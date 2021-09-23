@@ -18,5 +18,5 @@ setup(
     version="0.0.1",
     name="csvqb",
     packages=find_packages(exclude=["csvqb.tests", "csvqb.tests.*"]),
-    entry_points={"console_scripts": ["csvqb=csvqb.cli.entrypoint:entry_point"]},
+    # entry_points={"console_scripts": ["csvqb=csvqb.cli.entrypoint:entry_point"]},
 )

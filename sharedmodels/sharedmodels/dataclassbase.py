@@ -314,5 +314,7 @@ def replace_with_json_serialisable_types(val: Any) -> Any:
         )
     elif isinstance(val, list):
         return [replace_with_json_serialisable_types(item) for item in val]
+    elif isinstance(val, type):
+        return val.__name__
 
     return val
