@@ -22,7 +22,7 @@ def test_csv_cols_assumed_dimensions():
     Assert that the newly defined dimension has a codelist created from the values in the CSV.
     """
     data = pd.read_csv(get_test_cases_dir() / "configloaders" / "data.csv")
-    cube = get_cube_from_info_json(
+    cube, json_schema_validation_error = get_cube_from_info_json(
         get_test_cases_dir() / "configloaders" / "info.json", data
     )
 
@@ -58,7 +58,7 @@ def test_csv_cols_assumed_dimensions():
 
 def test_multiple_measures_and_units_loaded_in_uri_template():
     """
-    bottles-data.csv has multiple measures and multiple units
+    multi-measure-unit-data.csv has multiple measures and multiple units
 
     The JSON schema for the info.json files which defines all of the possible properties an info.json can have is
     to be found at <https://github.com/GSS-Cogs/family-schemas/blob/main/dataset-schema.json>.
@@ -67,14 +67,14 @@ def test_multiple_measures_and_units_loaded_in_uri_template():
     data = pd.read_csv(
         get_test_cases_dir()
         / "configloaders"
-        / "bottles-test-files"
-        / "bottles-data.csv"
+        / "multi-measure-multi-unit-test-files"
+        / "multi-measure-unit-data.csv"
     )
-    cube = get_cube_from_info_json(
+    cube, json_schema_validation_error = get_cube_from_info_json(
         get_test_cases_dir()
         / "configloaders"
-        / "bottles-test-files"
-        / "bottles-info.json",
+        / "multi-measure-multi-unit-test-files"
+        / "multi-measure-unit-info.json",
         data,
     )
 
@@ -127,14 +127,14 @@ def test_cube_metadata_extracted_from_info_json():
     data = pd.read_csv(
         get_test_cases_dir()
         / "configloaders"
-        / "bottles-test-files"
-        / "bottles-data.csv"
+        / "multi-measure-multi-unit-test-files"
+        / "multi-measure-unit-data.csv"
     )
-    cube = get_cube_from_info_json(
+    cube, json_schema_validation_error = get_cube_from_info_json(
         get_test_cases_dir()
         / "configloaders"
-        / "bottles-test-files"
-        / "bottles-info.json",
+        / "multi-measure-multi-unit-test-files"
+        / "multi-measure-unit-info.json",
         data,
     )
 
@@ -231,7 +231,7 @@ def test_single_measure_obs_val_unit_measure_data_type():
     Test that the datatype, unit & measure are correctly extracted from a single-measure dataset's info.json file
     """
     data = pd.read_csv(get_test_cases_dir() / "configloaders" / "data.csv")
-    cube = get_cube_from_info_json(
+    cube, json_schema_validation_error = get_cube_from_info_json(
         get_test_cases_dir() / "configloaders" / "info.json", data
     )
 
@@ -265,17 +265,17 @@ def test_definitions_loaded_for_columns_not_in_data():
     data = pd.read_csv(
         get_test_cases_dir()
         / "configloaders"
-        / "bottles-test-files"
-        / "bottles-data.csv"
+        / "multi-measure-multi-unit-test-files"
+        / "multi-measure-unit-data.csv"
     )
 
     del data["Unit"]  # delete a column from the data
 
-    cube = get_cube_from_info_json(
+    cube, json_schema_validation_error = get_cube_from_info_json(
         get_test_cases_dir()
         / "configloaders"
-        / "bottles-test-files"
-        / "bottles-info.json",
+        / "multi-measure-multi-unit-test-files"
+        / "multi-measure-unit-info.json",
         data,
     )
 

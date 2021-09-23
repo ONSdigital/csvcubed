@@ -36,7 +36,7 @@ def test_json_schema_validation_fails():
     schema_url = "https://raw.githubusercontent.com/GSS-Cogs/family-schemas/main/dataset-schema-1.1.0.json"
 
     assert len(validate_dict_against_schema_url(value, schema_url)) == 1
-    assert str(
-        validate_dict_against_schema_url(value, schema_url)[0]
+    assert (
+        validate_dict_against_schema_url(value, schema_url)[0].message
         == "3728 is not of type 'string'"
     )

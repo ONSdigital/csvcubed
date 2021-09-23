@@ -8,7 +8,7 @@ N.B. this should **not** be used by external users and should be moved into the 
 https://github.com/GSS-Cogs/csvwlib/issues/101
 """
 import datetime
-from typing import Dict, List, Any, Optional, Union
+from typing import Dict, List, Any, Optional, Union, Tuple
 from pathlib import Path
 import json
 import copy
@@ -50,19 +50,26 @@ import csvqb.configloaders.infojson1point1.mapcolumntocomponent as v1point1
 from jsonschema.exceptions import ValidationError
 
 
-def get_schema_errors(info_json: Path):
+def get_schema_errors(info_json: Path) -> List[ValidationError]:
     with open(info_json, "r") as f:
+        info_json_contents = json.load(f)
 
-        schema_errors = validate_dict_against_schema_url(
-            f,
-            "https://raw.githubusercontent.com/GSS-Cogs/family-schemas/main/dataset-schema-1.1.0.json",
-        )
+    schema_errors = validate_dict_against_schema_url(
+        info_json_contents,
+        "https://raw.githubusercontent.com/GSS-Cogs/family-schemas/main/dataset-schema-1.1.0.json",
+    )
     return schema_errors
 
 
 def get_cube_from_info_json(
     info_json: Path, data: pd.DataFrame, cube_id: Optional[str] = None
-) -> Union[QbCube, List[ValidationError]]:
+) -> Tuple[QbCube, List[ValidationError]]:
+    """
+    Generates a QbCube structure from an info.json input.
+
+    :return: tuple of cube and json schema errors (if any)
+    """
+
     with open(info_json, "r") as f:
         config = json.load(f)
 
@@ -78,10 +85,7 @@ def get_cube_from_info_json(
     if config is None:
         raise Exception(f"Config not found for cube with id '{cube_id}'")
 
-    if len(errors) != 0:
-        return errors
-    else:
-        return _from_info_json_dict(config, data, info_json.parent.absolute())
+    return _from_info_json_dict(config, data, info_json.parent.absolute()), errors
 
 
 def _override_config_for_cube_id(config: dict, cube_id: str) -> Optional[dict]:

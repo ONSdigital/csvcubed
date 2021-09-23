@@ -17,7 +17,7 @@ def test_units_loading():
     data = pd.read_csv(
         get_test_cases_dir() / "configloaders" / "infojson1-1" / "units.csv"
     )
-    cube = get_cube_from_info_json(
+    cube, json_schema_validation_error = get_cube_from_info_json(
         get_test_cases_dir() / "configloaders" / "infojson1-1" / "units.json",
         data,
     )
@@ -85,7 +85,7 @@ def test_measures_loading():
     data = pd.read_csv(
         get_test_cases_dir() / "configloaders" / "infojson1-1" / "measures.csv"
     )
-    cube = get_cube_from_info_json(
+    cube, json_schema_validation_error = get_cube_from_info_json(
         get_test_cases_dir() / "configloaders" / "infojson1-1" / "measures.json",
         data,
     )
@@ -140,7 +140,7 @@ def test_observation_value_loading():
     info.json v1.1 syntax using all possible configuration types.
     """
     data = pd.read_csv(info_json_1_1_test_cases_dir / "observations.csv")
-    cube = get_cube_from_info_json(
+    cube, json_schema_validation_error = get_cube_from_info_json(
         info_json_1_1_test_cases_dir / "observations.json",
         data,
     )
@@ -203,7 +203,7 @@ def test_dimension_loading():
     possible configuration types.
     """
     data = pd.read_csv(info_json_1_1_test_cases_dir / "dimensions.csv")
-    cube = get_cube_from_info_json(
+    cube, json_schema_validation_error = get_cube_from_info_json(
         info_json_1_1_test_cases_dir / "dimensions.json",
         data,
     )
@@ -298,7 +298,7 @@ def test_attribute_loading():
     possible configuration types.
     """
     data = pd.read_csv(info_json_1_1_test_cases_dir / "attributes.csv")
-    cube = get_cube_from_info_json(
+    cube, json_schema_validation_error = get_cube_from_info_json(
         info_json_1_1_test_cases_dir / "attributes.json",
         data,
     )

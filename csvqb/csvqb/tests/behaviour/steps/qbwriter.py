@@ -648,30 +648,23 @@ def step_impl(context, some_json, some_csv):
     tmp_dir = get_context_temp_dir_path(context)
     data = pd.read_csv(tmp_dir / some_csv)
 
-    context.cube = infojsonloader.get_cube_from_info_json(
+    cube_value, json_schema_errors = infojsonloader.get_cube_from_info_json(
         tmp_dir / some_json,
         data,
     )
+    context.cube = cube_value
+    context.json_schema_errors = json_schema_errors
 
 
-@Then('any errors are presented to the user from using "{some_json}"')
-def step_impl(context, some_json):
-    tmp_dir = get_context_temp_dir_path(context)
-    errors = infojsonloader.get_schema_errors(tmp_dir / some_json)
-    assert len(errors) == 0
-    # assert len(errors) == 0, [e.message for e in errors]
-
-    # errors = context.get_cube_from_info_json()
-    # if errors == 0:
-    #     return cube
-    # else:
-    #     return errors
+@Then("there are no JSON schema validation errors")
+def step_impl(context):
+    assert len(context.json_schema_errors) == 0, [
+        e.message for e in context.json_schema_errors
+    ]
 
 
-@Then('when using "{some_json}", the "{error_number}" error is "{error_value}"')
-def step_impl(context, some_json, error_number, error_value):
-    tmp_dir = get_context_temp_dir_path(context)
-    errors = infojsonloader.get_schema_errors(tmp_dir / some_json)
-
-    for e in errors:
-        assert e[0] == "some error"
+@Then("there is the following JSON schema validation error")
+def step_impl(context):
+    actual_errors: list[str] = [e.message for e in context.json_schema_errors]
+    expected_error: str = context.text.strip()
+    assert expected_error in actual_errors

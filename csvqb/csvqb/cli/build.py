@@ -31,7 +31,7 @@ def build(
     print(f"{Style.DIM}info.json: {info_json.absolute()}")
     data = pd.read_csv(csv_path)
     assert isinstance(data, pd.DataFrame)
-    cube = get_cube_from_info_json(info_json, data)
+    cube, json_schema_errors = get_cube_from_info_json(info_json, data)
 
     if catalog_metadata_json_file is not None:
         _override_catalog_metadata_state(catalog_metadata_json_file, cube)
@@ -47,6 +47,12 @@ def build(
         for error in errors:
             print(
                 f"{Fore.RED + Style.BRIGHT}Validation Error: {Style.NORMAL + error.message}"
+            )
+
+    if len(json_schema_errors) > 0:
+        for err in json_schema_errors:
+            print(
+                f"{Fore.LIGHTRED_EX + Style.BRIGHT}Validation Error: {Style.NORMAL + err.message}"
             )
 
         if validation_errors_file_out is not None:
