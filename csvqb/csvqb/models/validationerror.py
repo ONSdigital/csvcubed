@@ -5,9 +5,11 @@ ValidationError
 from dataclasses import dataclass, field
 from abc import ABC
 
+from sharedmodels.dataclassbase import DataClassBase
+
 
 @dataclass
-class ValidationError:
+class ValidationError(DataClassBase):
     """Class representing an error validating a model."""
 
     message: str
