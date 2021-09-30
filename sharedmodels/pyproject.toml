@@ -1,12 +1,18 @@
-[build-system]
-requires = ["setuptools", "wheel"]
-build-backend = "setuptools.build_meta:__legacy__"
+[tool.poetry]
+name = "sharedmodels"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+license = "OGLv3"
 
-[tool.pyright]
-pythonVersion="3.9"
-exclude = [
-    ".venv",
-    "**/tests",
-    "sharedmodels/scripts",
-    "**/build"
-]
+[tool.poetry.dependencies]
+python = "^3.9"
+unidecode = "*"
+rdflib = "~=5.0.0"
+
+[tool.poetry.dev-dependencies]
+devtools = {path = "./../devtools", develop = true}
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

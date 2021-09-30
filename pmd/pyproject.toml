@@ -1,11 +1,15 @@
-[build-system]
-requires = ["setuptools", "wheel"]
-build-backend = "setuptools.build_meta:__legacy__"
+[tool.poetry]
+name = "pmd"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+license = "OGLv3"
 
-[tool.pyright]
-pythonVersion="3.9"
-exclude = [
-    ".venv",
-    "**/tests/behaviour/steps"
-]
-reportWildcardImportFromLibrary = false
+[tool.poetry.dependencies]
+python = "^3.9"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

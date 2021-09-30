@@ -1,10 +1,27 @@
-[build-system]
-requires = ["setuptools", "wheel"]
-build-backend = "setuptools.build_meta:__legacy__"
+[tool.poetry]
+name = "devtools"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+license = "OGLv3"
 
-[tool.pyright]
-pythonVersion="3.9"
-exclude = [
-    ".venv",
-    "devtools/behave"
-]
+[tool.poetry.dependencies]
+python = "^3.9"
+docker = "*"
+behave = "*"
+pytest = "*"
+rdflib = "*"
+python-dateutil = "*"
+csvw = "*"
+sphinx = "*"
+sphinx-book-theme = "*"
+pipenv-setup = "*"
+chardet = "*"
+black = "*"
+
+[tool.poetry.dev-dependencies]
+flake8 = "*"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
