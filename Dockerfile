@@ -19,7 +19,7 @@ RUN apt-get update
 
 RUN apt-get install -y docker-ce docker-ce-cli containerd.io
 
-RUN python3 -m pip install pipenv
+RUN python3 -m pip install poetry
 
 ADD https://raw.githubusercontent.com/GSS-Cogs/gss-utils/master/cucumber-format.patch /
 
