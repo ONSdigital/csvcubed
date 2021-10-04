@@ -83,7 +83,7 @@ pipeline {
                 dir('csvqb') {
                     sh 'poetry run behave csvqb/tests/behaviour --tags=-skip -f json.cucumber -o csvqb/tests/behaviour/test-results.json'
                     dir('csvqb/tests/unit') {
-                        sh "poetry pipenv run pytest --junitxml=pytest_results_csvqb.xml"
+                        sh "poetry run pytest --junitxml=pytest_results_csvqb.xml"
                     }
                 }
 
