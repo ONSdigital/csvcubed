@@ -21,5 +21,7 @@ build-backend = "poetry.core.masonry.api"
 pythonVersion="3.9"
 exclude = [
     ".venv",
-    "devtools/behave"
+    "**/tests",
+    "sharedmodels/scripts",
+    "**/build"
 ]
