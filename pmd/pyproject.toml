@@ -7,8 +7,18 @@ license = "OGLv3"
 
 [tool.poetry.dependencies]
 python = "^3.9"
+rdflib = "*"
+rdflib-jsonld = "==0.6.1"
+requests = "*"
+csvw = "*"
+pandas = "*"
+uritemplate = "*"
+sharedmodels = {path = "./../sharedmodels", develop = true}
+unidecode = "*"
+pyparsing = "~=2.4.7" 
 
 [tool.poetry.dev-dependencies]
+devtools = {path = "./../devtools", develop = true}
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
