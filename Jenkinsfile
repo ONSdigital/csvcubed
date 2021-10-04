@@ -75,7 +75,7 @@ pipeline {
                     }
                 }
                 dir('pmd') {
-                    sh 'poetry behave pmd/tests/behaviour --tags=-skip -f json.cucumber -o pmd/tests/behaviour/test-results.json'
+                    sh 'poetry run behave pmd/tests/behaviour --tags=-skip -f json.cucumber -o pmd/tests/behaviour/test-results.json'
                     dir('pmd/tests/unit') {
                         sh "poetry run pytest --junitxml=pytest_results_pmd.xml"
                     }
