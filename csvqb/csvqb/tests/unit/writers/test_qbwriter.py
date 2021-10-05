@@ -1206,16 +1206,18 @@ def test_qb_order_of_components():
         Literal(1),
     ) in graph
 
-    assert (
-        URIRef("some-dataset.csv#component/some-measure"),
-        rdf.QB.order,
-        Literal(4),
-    ) in graph
+    assert (URIRef("some-dataset.csv#component/measure-type"), rdf.QB.order, Literal(2))
 
     assert (
         URIRef("some-dataset.csv#component/unit"),
         rdf.QB.order,
         Literal(3),
+    ) in graph
+
+    assert (
+        URIRef("some-dataset.csv#component/some-measure"),
+        rdf.QB.order,
+        Literal(4),
     ) in graph
 
 
