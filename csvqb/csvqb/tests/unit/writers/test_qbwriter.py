@@ -1172,5 +1172,52 @@ def test_arbitrary_rdf_serialisation_new_measure():
     ) in graph
 
 
+def test_qb_order_of_components():
+    """
+    Test that when components are created they have a qb:order value.
+    """
+    data = pd.DataFrame({"New Dimension": ["A", "B", "C"], "Value": [1, 2, 3]})
+
+    cube = Cube(
+        CatalogMetadata("Some Dataset"),
+        data,
+        [
+            QbColumn(
+                "New Dimension",
+                NewQbDimension.from_data("Some Dimension", data["New Dimension"]),
+            ),
+            QbColumn(
+                "Value",
+                QbSingleMeasureObservationValue(
+                    NewQbMeasure("Some Measure"),
+                    NewQbUnit("Some Unit"),
+                ),
+            ),
+        ],
+    )
+
+    qb_writer = QbWriter(cube)
+    dataset = qb_writer._generate_qb_dataset_dsd_definitions()
+    graph = dataset.to_graph(Graph())
+
+    assert (
+        URIRef("some-dataset.csv#component/some-dimension"),
+        rdf.QB.order,
+        Literal(1),
+    ) in graph
+
+    assert (
+        URIRef("some-dataset.csv#component/some-measure"),
+        rdf.QB.order,
+        Literal(4),
+    ) in graph
+
+    assert (
+        URIRef("some-dataset.csv#component/unit"),
+        rdf.QB.order,
+        Literal(3),
+    ) in graph
+
+
 if __name__ == "__main__":
     pytest.main()
