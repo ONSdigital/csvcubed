@@ -1,6 +1,22 @@
+[tool.poetry]
+name = "sharedmodels"
+version = "0.1.0"
+description = "Models and RDF serialisation functionality useful to the csvwlib family of tools."
+authors = ["Integrated Data Service - Dissemination <example@example.com>"]
+license = "Apache-2.0"
+exclude = ["docs/*", "sharedmodels/tests/*"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+unidecode = "*"
+rdflib = "~=5.0.0"
+
+[tool.poetry.dev-dependencies]
+devtools = {path = "./../devtools", develop = true}
+
 [build-system]
-requires = ["setuptools", "wheel"]
-build-backend = "setuptools.build_meta:__legacy__"
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
 
 [tool.pyright]
 pythonVersion="3.9"
