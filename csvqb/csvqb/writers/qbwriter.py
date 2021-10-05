@@ -247,6 +247,7 @@ class QbWriter(WriterBase):
         dataset.structure = rdf.qb.DataStructureDefinition(
             self._doc_rel_uri("structure")
         )
+        component_oridinal = 1
         for column in self.cube.columns:
             if isinstance(column, QbColumn):
                 component_specs_for_col = self._get_qb_component_specs_for_col(
@@ -258,6 +259,10 @@ class QbWriter(WriterBase):
                 dataset.structure.componentProperties |= set(
                     component_properties_for_col
                 )
+                for component in component_specs_for_col:
+                    component.order = component_oridinal
+                    component_oridinal += 1
+
                 dataset.structure.components |= set(component_specs_for_col)
 
         return dataset
@@ -376,7 +381,6 @@ class QbWriter(WriterBase):
             measure.copy_arbitrary_triple_fragments_to_resources(
                 {RdfSerialisationHint.Component: component}
             )
-
             return component
         elif isinstance(measure, NewQbMeasure):
             component = rdf.qb.MeasureComponentSpecification(
