@@ -1,9 +1,10 @@
 [tool.poetry]
 name = "sharedmodels"
 version = "0.1.0"
-description = ""
-authors = ["Your Name <you@example.com>"]
-license = "OGLv3"
+description = "Models and RDF serialisation functionality useful to the csvwlib family of tools."
+authors = ["Integrated Data Service - Dissemination <example@example.com>"]
+license = "Apache-2.0"
+exclude = ["docs/*", "sharedmodels/tests/*"]
 
 [tool.poetry.dependencies]
 python = "^3.9"

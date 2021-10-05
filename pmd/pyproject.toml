@@ -1,9 +1,10 @@
 [tool.poetry]
 name = "pmd"
 version = "0.1.0"
-description = ""
-authors = ["Your Name <you@example.com>"]
-license = "OGLv3"
+description = "Provides functionality necessary to transform RDF Data Cube style CSV-Ws into a format compatible with the Publish My Data platform. Part of the csvwlib family."
+authors = ["Integrated Data Service - Dissemination <example@example.com>"]
+license = "Apache-2.0"
+exclude = ["docs/*", "pmd/tests/*"]
 
 [tool.poetry.dependencies]
 python = "^3.9"

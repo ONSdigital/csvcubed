@@ -1,9 +1,11 @@
 [tool.poetry]
 name = "csvqb"
 version = "0.1.0"
-description = ""
-authors = ["Your Name <you@example.com>"]
-license = "OGLv3"
+description = "A tool to generate RDF Data Cube style CSV-W cubes from tidy CSV files. Part of the csvwlib family."
+authors = ["Integrated Data Service - Dissemination <example@example.com>"]
+license = "Apache-2.0"
+readme="csvqb/README.md"
+exclude = ["docs/*", "csvqb/tests/*"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
