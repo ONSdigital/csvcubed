@@ -138,7 +138,7 @@ This project uses both *unit* and *behaviour* forms of testing. We use unit test
 
 [Pytest](https://docs.pytest.org) is used as the *unit* testing framework. All unit tests should be inside the [PackageName/PackageName/test/unit](#directory-structure) folder.
 
-[Behave](https://behave.readthedocs.io) is used as our *behaviour* testing framework in which test scripts are written using the cucumber/gherkin syntax. All *behaviour* tests should be inside the [PackageName/PackageName/test/behaveiour](#directory-structure) folder. Generally speaking,  tests involving the use of *docker* (to run post-processing or validation of outputs) are written as behaviour tests.
+[Behave](https://behave.readthedocs.io) is used as our *behaviour* testing framework in which test scripts are written using the cucumber/gherkin syntax. All *behaviour* tests should be inside the [PackageName/PackageName/test/behaviour](#directory-structure) folder. Generally speaking,  tests involving the use of *docker* (to run post-processing or validation of outputs) are written as behaviour tests.
 
 If any additional test files are required (for either *unit* or *behaviour* testing), they should be stored inside the [PackageName/PackageName/test/test-cases](#directory-structure) folder.
 
