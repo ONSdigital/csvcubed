@@ -172,7 +172,7 @@ some_instance = SomeClass("Csvw", "Lib")
 some_other_instance = SomeClass("Rdf", "Lib")
 ```
 
-We can see demonstrate some of the helpful functionality we now have:
+We can see some of the helpful functionality we now have:
 
 ```python
 # Testing equality
@@ -191,7 +191,7 @@ SomeClass.from_json('{"first_name": "Ronald", "surname": "Burgermeister"}')
 
 ### Pydantic
 
-We are using [pydantic] in an atypical fashion. It is designed to be a tool which parses & validates input against the static type annotations, however it typically does this validation *when the class is instantiated*. This prescriptive approach therefore restrictis how you build you model  up. You're required to pass all *required* variables to the `__init__` function; you cannot simply instantiate the class and then verify that it's valid later once you've finished making assignments.
+We are using [pydantic](https://pydantic-docs.helpmanual.io/) in an atypical fashion. It is designed to be a tool which parses & validates input against the static type annotations, however it typically does this validation *when the class is instantiated*. This prescriptive approach therefore restrictis how you build you model  up. You're required to pass all *required* variables to the `__init__` function; you cannot simply instantiate the class and then verify that it's valid later once you've finished making assignments.
 
 ```python
 # With mainstream pydantic, you are forced to take this approach
