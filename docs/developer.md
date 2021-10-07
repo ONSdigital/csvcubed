@@ -69,7 +69,7 @@ PackageName (e.g. csvqb)
 
 [Poetry](https://python-poetry.org/) - We use poetry to manage the packages we install via pip. It does the same job as [pipenv](https://pipenv.pypa.io/en/latest/) and the commands are fairly similar, however we've measured poetry at being ~8x faster than pipenv when performing comparable tasks. Using poetry, we can make use of the [PEP517](https://www.python.org/dev/peps/pep-0517/) pyproject.toml file so that we no longer need a [setup.py](https://docs.python.org/3/distutils/setupscript.html) file.
 
-[Jenkins](https://ci.floop.org.uk/job/GSS_data/job/csvwlib/) - We use Jenkins as the build & test server for the whole project. There is a single [Jenkinsfile](../Jenkinsfile) which builds, tests, packages and generated API documentation for each project in a consistant fashion. Each Jenkins build produces one wheel per project. These wheels are what will eventually be uploaded to [pypi](https://pypi.org/) but [can be installed manually with pip](https://pip.pypa.io/en/stable/user_guide/#installing-from-wheels).
+[Jenkins](https://ci.floop.org.uk/job/GSS_data/job/csvwlib/) - We use Jenkins as the build & test server for the whole project. There is a single [Jenkinsfile](../Jenkinsfile) which builds, tests, packages and generates API documentation for each project in a consistant fashion. Each Jenkins build produces one wheel per project. These wheels are what will eventually be uploaded to [pypi](https://pypi.org/) but [can be installed manually with pip](https://pip.pypa.io/en/stable/user_guide/#installing-from-wheels).
 
 ### Code Style
 
