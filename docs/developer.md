@@ -45,7 +45,7 @@ More information about each individual package can be found here:
 * [sharedmodels](../sharedmodels/sharedmodels/README.md)
 * [devtools](../devtools/devtools/README.md)
 
-### File Structure
+### Directory Structure
 
 Each package has the following file/directory structure:
 
@@ -77,7 +77,7 @@ Layout - In terms of layour of code, we use the [black](https://black.readthedoc
 
 #### Static Types
 
-[Static type annotations](https://docs.python.org/3/library/typing.html) have been supported in python, since version 3.5, as defined in [PEP484](https://www.python.org/dev/peps/pep-0484/). Static type annotations *should* be added to **all** functions to specify the datatypes of all input parameters and the function's return type. Static types are a great addition to python which help us uncover bugs and ship more reliable software.
+[Static type annotations](https://docs.python.org/3/library/typing.html) have been supported in python, since version 3.5, as defined in [PEP484](https://www.python.org/dev/peps/pep-0484/). Static types are a great addition to python which help us uncover bugs and ship more reliable software. Static type annotations *should* be added to **all** functions to specify the datatypes of all input parameters and the function's return type.
 
 Every Jenkins build runs [pyright](https://github.com/Microsoft/pyright) which inspects all type annotations and **enforces** agreement - i.e. it will ensure that your build fails when you pass the wrong datatype to a function. You can install pyright locally to fix any problems before you commit to source control.
 
@@ -99,8 +99,8 @@ We use [sphinx](https://www.sphinx-doc.org/) with [sphinx-apidoc](https://www.sp
 In order to support sphinx as well as to provide helpful documentation when using an IDE's intellisense, **you should follow the following rules when writing code**:
 
 * each new module (python file) **must** have a title and *should* have a suitable description.
-* each class *should* have a docstring description what its purpose is.
-* every function and method *should* have a docstring descripting what it does and *may* describe its return type using the `:return:` annotation.
+* each class *should* have a docstring description of what its purpose is.
+* every function and method *should* have a docstring describing what it does and *may* describe its return type using the `:return:` annotation.
 * use the [sphinx-autodoc annotations](https://www.sphinx-doc.org/en/master/usage/restructuredtext/domains.html#cross-referencing-python-objects) when talking about another class, module, method, function or variable; this creates deep-links to the appropriate section of documentation.
 
 ```python
@@ -130,29 +130,121 @@ class SomeClass:
 
 Obviously, none of these rules need to be followed when writing tests, however you should still write a sensible docstring describing what each test checks for.
 
-Intersphinx mapping - this project uses [intersphinx](https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html) to create deep-links to the documentation from other projects like [rdflib](https://rdflib.readthedocs.io/) which use sphinx to generate their docs. This helps provide deep-linking between the documentation for different projects inside csvwlib.
+Intersphinx mapping - this project uses [intersphinx](https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html) to create deep-links to the documentation from other projects like [rdflib](https://rdflib.readthedocs.io/) which use sphinx to generate their docs. This helps provide deep-linking between the documentation for different parts of csvwlib.
 
 ### Unit and Integration Testing
 
-* pytest
-* behave tests
-  * Need to have docker installed for this
+This project uses both *unit* and *behaviour* forms of testing. We use unit testing for relatively small modular pieces of functionality with little integration between modules, and we use *behaviour* testing as a form of integration testing.
+
+[Pytest](https://docs.pytest.org) is used as the *unit* testing framework. All unit tests should be inside the [PackageName/PackageName/test/unit](#directory-structure) folder.
+
+[Behave](https://behave.readthedocs.io) is used as our *behaviour* testing framework in which test scripts are written using the cucumber/gherkin syntax. All *behaviour* tests should be inside the [PackageName/PackageName/test/behaveiour](#directory-structure) folder. Generally speaking,  tests involving the use of *docker* (to run post-processing or validation of outputs) are written as behaviour tests.
+
+If any additional test files are required (for either *unit* or *behaviour* testing), they should be stored inside the [PackageName/PackageName/test/test-cases](#directory-structure) folder.
 
 ## Packages & Patterns of Note
 
-* discuss use of the python dataclasses functionality
-  * Discuss functionality offered by `DataClassBase` in sharedmodels
-* pydantic
-  * discuss how we're using it in an a-typical way and why we're doing that.
-  * discuss why we install it from a fork & how the upstream project may fix the underlying issue
-* pandas - for supporting data input + writing to CSV
-* rdflib
-* briefly mention serialisation of metadata to RDF (real documentation to be done at a later point in time.) (NewResource, Annotated, etc.)
+Some of the key packages we make use of include:
 
-## Other Links
+* [pydantic](https://pydantic-docs.helpmanual.io/) - Adds validation to selected models allowing us to correct the user where they provide us with invalid or missing configuration.
+* [rdflib](https://rdflib.readthedocs.io) -  Allows us to read and write RDF in various formats as well as query it with SPARQL.
+* [pandas](https://pandas.pydata.org/) - Used mainly as a tool for input of tabular data and for writing to CSV.
 
-* CSV-W W3C documentation
-* XSD data types documentation W3C
-* RDF Data Cube W3C
-* csvw-lint
-* csv2rdf
+Below we'll explore how we're using some of these libraries along with some key features built in to python that we're making use of in csvwlib.
+
+### Dataclasses
+
+Python's [dataclasses module](https://docs.python.org/3/library/dataclasses.html) was added to python 3.7 as per [PEP557](https://www.python.org/dev/peps/pep-0557/). It provides some key functionality that reduces the amount of boiler-plate code that it is necessary to write when defining a class. If you annotate a class as a `@dataclass`, then you simply have to define the below code and you no longer need to write an `__init__` function and get free sensible defaults for `__eq__`, `__str__` and `__repr__` too (among others). Importantly, the functionality brings with it the ability to more easily reflect over the fields defined inside a class which makes it easier to do things like serialising to/from JSON.
+
+If we write the following class using the `@dataclass` decorator and extending from [sharedmodels.dataclassbase.DataClassBase](https://github.com/GSS-Cogs/csvwlib/blob/main/sharedmodels/sharedmodels/dataclassbase.py):
+
+```python
+from dataclasses import dataclass
+from sharedmodels.dataclassbase import DataClassBase
+
+@dataclass
+class SomeClass(DataClassBase):
+    first_name: str
+    surname: str
+
+# Notice that we didn't have to define an __init__ function!
+some_instance = SomeClass("Csvw", "Lib")
+some_other_instance = SomeClass("Rdf", "Lib")
+```
+
+We can see demonstrate some of the helpful functionality we now have:
+
+```python
+# Testing equality
+some_instance == some_other_instance 
+>>> False
+# Testing string __repr__
+some_instance 
+>>> SomeClass(first_name='Csvw', surname='Lib')
+# Testing JSON serialisation
+some_instance.as_json() 
+>>> '{"first_name": "Csvw", "surname": "Lib"}'
+# Testing json deserialisation.
+SomeClass.from_json('{"first_name": "Ronald", "surname": "Burgermeister"}') 
+>>> SomeClass(first_name='Ronald', surname='Burgermeister')
+```
+
+### Pydantic
+
+We are using [pydantic] in an atypical fashion. It is designed to be a tool which parses & validates input against the static type annotations, however it typically does this validation *when the class is instantiated*. This prescriptive approach therefore restrictis how you build you model  up. You're required to pass all *required* variables to the `__init__` function; you cannot simply instantiate the class and then verify that it's valid later once you've finished making assignments.
+
+```python
+# With mainstream pydantic, you are forced to take this approach
+some_instance = SomeClassUsingPydantic(first_arg="value", second_arg="other value")
+
+# With mainstream pydantic, you can't use this approach
+some_instance = SomeClassUsingPydantic()
+some_instance.first_arg = "value"
+some_instance.second_arg = "other value"
+```
+
+This may not seem that tricky with a small class like this, but when models accumulate more and more fields, it's often nice to be able to take the latter approach to keep your code a bit easier to understand. Most importantly, it doesn't give out end-user the flexibility to write python in the style that's familiar to them; we don't want to make their life more difficult than is strictly necessary.
+
+So, in [csvqb.models.pydanticmodel.PydanticModel](https://github.com/GSS-Cogs/csvwlib/blob/b3e99d2fffd49a9f314e7d6a13e07ef04c27e7e8/csvqb/csvqb/models/pydanticmodel.py), we have taken an approach that only validates properties when the `pydantic_validation` function is called, when the user says they're ready to check. Ensure that your models extend from `PydanticModel`, that they have the [@dataclasses](#dataclasses) attribute and that you have used [static type annotations](#static-types) on all fields and you model can have `pydantic_validation` too!
+
+**N.B. due to some bugs in the mainstream version of pydantic, we are currently relying on [a custom fork](https://github.com/robons/pydantic/).**
+
+### Serialisation to RDF
+
+Since version 3.9, python has had an `Annotated` datatype, as described by [PEP593](https://www.python.org/dev/peps/pep-0593/) which allows us to hold additional information about a class' fields. It allows us to write code like the following which holds information as to how the field/property should be serialised to RDF:
+
+```python
+from typing import Annotated
+from rdflib import RDFS, Graph
+
+from sharedmodels.rdf.resource import NewResource, PropertyStatus, map_str_to_en_literal, Triple
+
+
+class NewResourceWithLabel(NewResource):
+    label: Annotated[
+        str, Triple(RDFS.label, PropertyStatus.mandatory, map_str_to_en_literal)
+    ]
+```
+
+Here we see that the `label` property is mapped to the `rdfs:label` predicate which means that when serialised we get a triple of the form `<http://uri/of/this/entity> rdfs:label "The label's value for this entity"@en`
+
+When you inherit from [sharedmodels.models.resource.NewResource](https://github.com/GSS-Cogs/csvwlib/blob/main/sharedmodels/sharedmodels/rdf/resource.py), you gain the functionality to easily serialise your model into an rdflib graph:
+
+```python
+thing = NewResourceWithLabel("http://uri/of/this/entity")
+thing.label = "The label's value for this entity"
+graph = thing.to_graph(Graph())
+graph.serialize(format="turtle")
+>>> """@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+       <http://uri/of/this/entity> a rdfs:Resource ;
+                                   rdfs:label "The label for this entity"@en .
+    """
+```
+
+## Useful Links
+
+* [W3C CSV-W specification](https://www.w3.org/TR/tabular-metadata/)
+* [W3C XSD data types](https://www.w3.org/TR/xmlschema11-2/)
+* [W3C RDF Data Cube](https://www.w3.org/TR/vocab-data-cube/)
+* [csvlint.rb](https://github.com/Data-Liberation-Front/csvlint.rb) - a tool to help validate CSV-W files
+* [csv2rdf](https://github.com/Swirrl/csv2rdf) - a tool to convert CSV-W files into RDF.
