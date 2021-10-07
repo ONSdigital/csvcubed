@@ -5,8 +5,8 @@
 This package contains functionality to:
 
 * Support serialisation of python models to RDF
-* Provide models for relevant RDF ontology such as [SKOS](http://www.w3.org/TR/skos-primer), [qb](https://www.w3.org/TR/vocab-data-cube/) and [DCAT]((https://www.w3.org/TR/vocab-dcat-2/)).
-* Enable deserialisation of JSON to python dataclass instances
+* Provide models for relevant RDF ontologies such as [SKOS](http://www.w3.org/TR/skos-primer), [qb](https://www.w3.org/TR/vocab-data-cube/) and [DCAT](https://www.w3.org/TR/vocab-dcat-2/).
+* Enable deserialisation of JSON to instances of python dataclasses.
 
 ## API Documentation
 

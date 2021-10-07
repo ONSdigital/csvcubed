@@ -34,11 +34,11 @@ csvwlib
 
 > Why are there multiple packages in the same git repository?
 
-We keep multiple packages in the same repository because it makes it easier to keep each package's dependencies in-sync with the others and ensures that it's simple for us to move functionality from one package to another if/when we decide that it's in the wrong place. This is a temporary step to make life easier whilst we're building up the project's foundations. It's likely that we'll restructure the packages in iterative process to find what the optimal package structure looks like. Once the project matures, we are likely to split these packages out in to separate repositories.
+We keep multiple packages in the same repository because it makes it easier to keep each package's dependencies in-sync with the others and ensures that it's simple for us to move functionality from one package to another if/when we decide that it's in the wrong place. This is a temporary step to make life easier whilst we're building up the project's foundations. It's likely that we'll restructure the packages in an iterative process to find what the best package structure looks like. Once the project matures, we are likely to split these packages out in to separate repositories.
 
 **N.B. you should only open one package at a time in your IDE/code editor.** Each package has its own poetry-driven virtual environment.
 
-For more information about each individual package:
+More information about each individual package can be found here:
 
 * [csvqb](../csvqb/csvqb/README.md)
 * [pmd](../pmd/pmd/README.md)
@@ -63,41 +63,74 @@ PackageName (e.g. csvqb)
 └── pyproject.toml - Specifies all dependant packages and configures project's output wheel.
 ```
 
-* What packages do we have? What's their purpose?
-* What's sharedmodels for?
-* What's devtools for and what should I install in there?
-* What's the pmd tool for?
-* Discuss standard project directory structure (tests folder, etc.)
-* Discuss complications when working inside the `.devcontainer` (specifically in vscode)
-
 ## Developer Tooling
 
 ### Build & Dependency Management
 
-* poetry - for build dependency management
-  * making use of PEP517 (pyproject.toml) for listing dependencies
-  * no use of setup.py in sight!
-* why it's an improvement over pipenv.
-* Provide a link to the builds on Jenkins, and to the build file.
-* Discuss the integration of the csvwlib project into gss-utils and hence databaker-docker.
+[Poetry](https://python-poetry.org/) - We use poetry to manage the packages we install via pip. It does the same job as [pipenv](https://pipenv.pypa.io/en/latest/) and the commands are fairly similar, however we've measured poetry at being ~8x faster than pipenv when performing comparable tasks. Using poetry, we can make use of the [PEP517](https://www.python.org/dev/peps/pep-0517/) pyproject.toml file so that we no longer need a [setup.py](https://docs.python.org/3/distutils/setupscript.html) file.
+
+[Jenkins](https://ci.floop.org.uk/job/GSS_data/job/csvwlib/) - We use Jenkins as the build & test server for the whole project. There is a single [Jenkinsfile](../Jenkinsfile) which builds, tests, packages and generated API documentation for each project in a consistant fashion. Each Jenkins build produces one wheel per project. These wheels are what will eventually be uploaded to [pypi](https://pypi.org/) but [can be installed manually with pip](https://pip.pypa.io/en/stable/user_guide/#installing-from-wheels).
 
 ### Code Style
 
-* discuss use of the black formatter here.
-* heavy use of object orientated programming?
+Layout - In terms of layour of code, we use the [black](https://black.readthedocs.io/en/stable/) formatter. This formatter can be installed in both [pycharm](https://black.readthedocs.io/en/stable/integrations/editors.html#pycharm-intellij-idea) and [vscode](https://black.readthedocs.io/en/stable/integrations/editors.html#visual-studio-code). All files should be formatted with black before being committed to source control.
 
-### Static Type Checking
+#### Static Types
 
-* what is static type checking and why should I care?
-* pyright
+[Static type annotations](https://docs.python.org/3/library/typing.html) have been supported in python, since version 3.5, as defined in [PEP484](https://www.python.org/dev/peps/pep-0484/). Static type annotations *should* be added to **all** functions to specify the datatypes of all input parameters and the function's return type. Static types are a great addition to python which help us uncover bugs and ship more reliable software.
+
+Every Jenkins build runs [pyright](https://github.com/Microsoft/pyright) which inspects all type annotations and **enforces** agreement - i.e. it will ensure that your build fails when you pass the wrong datatype to a function. You can install pyright locally to fix any problems before you commit to source control.
+
+```bash
+brew install node && npm install -g pyright
+```
+
+See the python [typing documentation](https://docs.python.org/3/library/typing.html) for more information on static types.
 
 ### API Documentation
 
-* sphinx - discuss use thereof
-* Discuss what needs documentation and what style it should have. e.g. titles for every module
-* Provide link to those helpful patterns like `:obj:module.path.to.obj`
-* Discuss use of intersphinx mapping.
-* Provide links to the latest API documentation generated on Jenkins.
+>* [csvqb docs](https://ci.floop.org.uk/job/GSS_data/job/csvwlib/job/main/lastSuccessfulBuild/artifact/csvqb/docs/_build/html/index.html)
+>* [sharedmodels docs](https://ci.floop.org.uk/job/GSS_data/job/csvwlib/job/main/lastSuccessfulBuild/artifact/sharedmodels/docs/_build/html/index.html)
+>* [pmd docs](https://ci.floop.org.uk/job/GSS_data/job/csvwlib/job/main/lastSuccessfulBuild/artifact/pmd/docs/_build/html/index.html)
+>* [devtools docs](https://ci.floop.org.uk/job/GSS_data/job/csvwlib/job/main/lastSuccessfulBuild/artifact/devtools/docs/_build/html/index.html)
+
+We use [sphinx](https://www.sphinx-doc.org/) with [sphinx-apidoc](https://www.sphinx-doc.org/en/master/man/sphinx-apidoc.html) and [sphinx.ext.autodoc](https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html) to automatically generate API documentation for each of our projects. This is meant to provide a searchable and browsable set of documentation for the entire code-base excluding tests.
+
+In order to support sphinx as well as to provide helpful documentation when using an IDE's intellisense, **you should follow the following rules when writing code**:
+
+* each new module (python file) **must** have a title and *should* have a suitable description.
+* each class *should* have a docstring description what its purpose is.
+* every function and method *should* have a docstring descripting what it does and *may* describe its return type using the `:return:` annotation.
+* use the [sphinx-autodoc annotations](https://www.sphinx-doc.org/en/master/usage/restructuredtext/domains.html#cross-referencing-python-objects) when talking about another class, module, method, function or variable; this creates deep-links to the appropriate section of documentation.
+
+```python
+"""
+New Module Title
+----------------
+
+This is a description of what this module/python file is for.
+
+N.B. The dashes under the title are required by sphinx and should exactly match the title's length.
+"""
+
+class SomeClass:
+    """
+    Some Description of what this class represents.
+    """
+
+    def do_something(some_input: str) -> int:
+        """
+        Some description of what this method does.
+
+        I'm a member of :class:`~path.to.class.SomeClass` - this annotation creates a deep link to the class!
+
+        :return: Optional description of what it returns, if not clear from context/description.
+        """
+```
+
+Obviously, none of these rules need to be followed when writing tests, however you should still write a sensible docstring describing what each test checks for.
+
+Intersphinx mapping - this project uses [intersphinx](https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html) to create deep-links to the documentation from other projects like [rdflib](https://rdflib.readthedocs.io/) which use sphinx to generate their docs. This helps provide deep-linking between the documentation for different projects inside csvwlib.
 
 ### Unit and Integration Testing
 
