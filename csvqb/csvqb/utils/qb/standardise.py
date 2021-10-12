@@ -140,7 +140,7 @@ def _overwrite_labels_for_columns(
         assert isinstance(column_values, Categorical)
         new_category_labels: List[str] = []
         for c in column_values.categories:
-            assert isinstance(c, str)
+            c = str(c)
             new_category_label = map_unit_label_to_new_value.get(c)
             if new_category_label is None:
                 if raise_missing_values_exceptions:

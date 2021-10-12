@@ -167,5 +167,46 @@ def test_convert_data_values_to_uri_safe_values_missing_value_mapping():
     )
 
 
+def test_qbcube_catagorical_numberic():
+    """
+    Ensure that when we convert a QbCube's dataframe columns to categorical, and it works for numeric
+    """
+    data = pd.DataFrame(
+        {"Some Dimension": [2014, 2015, 2016], "Observed Value": [1, 2, 3]}
+    )
+    cube = Cube(
+        CatalogMetadata("Some Qube"),
+        data,
+        [
+            QbColumn(
+                "Some Dimension",
+                NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
+            ),
+            QbColumn(
+                "Observed Value",
+                QbSingleMeasureObservationValue(
+                    NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
+                ),
+            ),
+        ],
+    )
+
+    ensure_qbcube_data_is_categorical(cube)
+
+    map_col_to_expected_categories = {
+        "Some Dimension": {2014, 2015, 2016},
+    }
+    expected_non_categorical_columns = {"Observed Value"}
+
+    for (column_name, expected_categories) in map_col_to_expected_categories.items():
+        values = cube.data[column_name].values
+        assert isinstance(values, Categorical)
+        assert set(values.categories) == expected_categories
+
+    for column_name in expected_non_categorical_columns:
+        values = cube.data[column_name].values
+        assert not isinstance(values, Categorical)
+
+
 if __name__ == "__main__":
     pytest.main()
