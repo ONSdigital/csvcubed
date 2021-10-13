@@ -4,9 +4,11 @@ pipeline{
         stage('Setup'){
             steps{
                 script{
-                    echo "External documentation work in progress"
-                    sh "pwd"
-                    sh "ls -la"
+                    dir ('external-docs'){
+                        echo "External documentation work in progress"
+                        sh "pwd"
+                        sh "ls -la"
+                    }
                 }
             }
         }
