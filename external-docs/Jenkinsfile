@@ -6,6 +6,7 @@ pipeline{
                 script{
                     echo "External documentation work in progress"
                     sh "pwd"
+                    sh "ls -la"
                 }
             }
         }
