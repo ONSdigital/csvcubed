@@ -13,6 +13,8 @@ pipeline{
                         echo "External documentation work in progress"
                         sh "pwd"
                         sh "ls -la"
+                        echo "Setting up poetry"
+                        sh "poetry install"
                     }
                 }
             }
