@@ -22,9 +22,11 @@ pipeline{
         stage('Documentation'){
             steps{
                 script{
-                        sh "poetry run sphinx-apidoc -F -M -a -P --tocfile index.rst -d 10 -E -o docs --implicit-namespaces -o docs external-docs \"setup*\" \"csvwlib/external-docs/my-project/source/documentation\""
+                    dir ('external-docs'){
+                        sh "poetry run sphinx-apidoc -F -M -a -P --tocfile index.rst -d 10 -E -o docs --implicit-namespaces -o docs ./ \"setup*\" \"csvwlib/external-docs/my-project/source/documentation\""
                         sh 'poetry run sphinx-build -W -b html docs/_build/html'
                     }
+                }
                 stash name: 'docs', includes: '**/docs/_build/html/**/*'
             }
         }
