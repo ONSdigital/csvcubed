@@ -1,0 +1,28 @@
+pipeline{
+    agent any
+    stages{
+        stage('Setup'){
+            steps{
+                script{
+                    dir ('external-docs'){
+                        echo "External documentation work in progress"
+                        sh "pwd"
+                        sh "ls -la"
+                    }
+                }
+            }
+        }
+    }
+}
+stage('Documentation'){
+    steps{
+        script{
+            dir('external-docs'){
+                sh "poetry run sphinx-apidoc -F -M -a -P --tocfile index.rst -d 10 -E -o docs --implicit-namespaces -o docs external-docs \"setup*\" \"csvwlib/external-docs/my-project/source/documentation\""
+                sh 'poetry run sphinx-build -W -b html docs/_build/html'
+            }
+
+            stash name: 'docs', includes: '**/docs/_build/html/**/*'
+        }
+    }
+}
