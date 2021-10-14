@@ -1,36 +1,16 @@
 [tool.poetry]
-name = "devtools"
+name = "external-docs"
 version = "0.1.0"
-description = "Development tools and dependencies for use in the csvwlib tooling."
-authors = ["Integrated Data Service - Dissemination <example@example.com>"]
-license = "Apache-2.0"
-exclude = ["docs/*"]
+description = "External documentation generator"
+authors = ["Your Name <you@example.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
-docker = "*"
-behave = "*"
-pytest = "*"
-rdflib = "*"
-python-dateutil = "*"
-csvw = "*"
-sphinx = "*"
-sphinx-book-theme = "*"
-pipenv-setup = "*"
-chardet = "*"
-black = "*"
+Sphinx = "^4.2.0"
 sphinxcontrib-apidoc = "^0.3.0"
 
 [tool.poetry.dev-dependencies]
-flake8 = "*"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
-
-[tool.pyright]
-pythonVersion="3.9"
-exclude = [
-    ".venv",
-    "devtools/behave"
-]
