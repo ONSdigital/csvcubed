@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "external-docs"
+version = "0.1.0"
+description = "External documentation generator"
+authors = ["Your Name <you@example.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+Sphinx = "^4.2.0"
+sphinxcontrib-apidoc = "^0.3.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
