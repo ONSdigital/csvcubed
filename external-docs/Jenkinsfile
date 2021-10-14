@@ -26,7 +26,6 @@ pipeline{
                         sh 'poetry run sphinx-build -W -b html docs/_build/html'
                     }
                 stash name: 'docs', includes: '**/docs/_build/html/**/*'
-                }
             }
         }
     }
