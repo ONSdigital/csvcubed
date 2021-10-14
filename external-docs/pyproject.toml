@@ -19,6 +19,7 @@ sphinx-book-theme = "*"
 pipenv-setup = "*"
 chardet = "*"
 black = "*"
+sphinxcontrib-apidoc = "^0.3.0"
 
 [tool.poetry.dev-dependencies]
 flake8 = "*"
