@@ -1,10 +1,8 @@
 pipeline{
     agent {
-        dockerfile {
-            args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
-            reuseNode true
+        docker { image 'hashicorp/middleman-hashicorp'}
+        args
         }
-    }
     stages{
         stage('Setup'){
             steps{
@@ -15,6 +13,7 @@ pipeline{
                         sh "ls -la"
                         echo "Setting up poetry"
                         sh "poetry install"
+                        sh "poetry middleman build"
                     }
                 }
             }
@@ -23,11 +22,11 @@ pipeline{
             steps{
                 script{
                     dir ('external-docs'){
-                        sh "poetry run sphinx-apidoc -F -M -a -P --tocfile index.rst -d 10 -E -o docs --implicit-namespaces -o docs ./ \"setup*\" \"csvwlib/external-docs/my-project/source/documentation\""
-                        sh 'poetry run sphinx-build -W -b html docs/_build/html'
+                        sh "poetry middleman deploy ./ \"setup*\" \"csvwlib/external-docs/my-project\""
+                        }
                     }
+                    stash name: 'docs', includes: '**/docs/_build/html/**/*'
                 }
-                stash name: 'docs', includes: '**/docs/_build/html/**/*'
             }
         }
     }
