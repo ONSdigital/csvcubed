@@ -17,8 +17,8 @@ pipeline{
         stage('Documentation'){
             steps{
                 script{
-                    dir ('external-docs'){
-                        sh NO_CONTRACTS=true 'bundle exec middleman build html docs docs/_build/html' [--clean]
+                        dir ('external-docs/my-project'){
+                            sh 'NO_CONTRACTS=true bundle exec middleman build'
                         }
                     }
                     stash name: 'docs', includes: '**/docs/_build/html/**/*'
