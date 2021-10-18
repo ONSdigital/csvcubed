@@ -11,9 +11,6 @@ pipeline{
                         echo "External documentation work in progress"
                         sh "pwd"
                         sh "ls -la"
-                        echo "Setting up poetry"
-                        sh "poetry install"
-                        sh "poetry middleman build"
                     }
                 }
             }
@@ -22,7 +19,7 @@ pipeline{
             steps{
                 script{
                     dir ('external-docs'){
-                        sh "poetry middleman deploy ./ \"setup*\" \"csvwlib/external-docs/my-project\""
+                        sh "bundle exec middleman server"
                         }
                     }
                     stash name: 'docs', includes: '**/docs/_build/html/**/*'
