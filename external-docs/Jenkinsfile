@@ -19,7 +19,7 @@ pipeline{
             steps{
                 script{
                     dir ('external-docs'){
-                        sh "bundle exec middleman build ./ \"setup*\" \"csvwlib/external-docs/my-project\""
+                        sh "bundle exec middleman server ./ \"setup*\" \"csvwlib/external-docs/my-project\""
                         }
                     }
                     stash name: 'docs', includes: '**/docs/_build/html/**/*'
@@ -27,4 +27,3 @@ pipeline{
             }
         }
     }
-}
