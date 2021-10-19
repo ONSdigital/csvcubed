@@ -14,8 +14,26 @@ pipeline {
                             sh 'bundle install'
                             sh 'bundle exec middleman build'
                         }
-                        stash name: 'docs', includes: '**/build/**'
+                        stash name: 'docs', includes: 'external-docs/build/**/*'
                 }
+            }
+        }
+    }
+     post {
+        always {
+            script {
+                try {
+                    unstash name: 'docs'
+                } catch (Exception e) {
+                    echo 'docs stash does not exist'
+                }
+
+                archiveArtifacts artifacts: 'external-docs/build/**/*', fingerprint: true
+
+                // Set more permissive permissions on all files so future processes/Jenkins can easily delete them.
+                sh 'chmod -R ugo+rw .'
+                // Clean up any unwanted files lying about.
+                sh "git clean -fxd"
             }
         }
     }
