@@ -2,6 +2,7 @@ pipeline {
     agent {
         dockerfile { 
             dir 'external-docs'
+            args '-u root'
             reuseNode true
         }
     }
