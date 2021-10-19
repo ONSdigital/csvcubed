@@ -1,28 +1,20 @@
-pipeline{
+pipeline {
     agent {
-        docker { image 'hashicorp/middleman-hashicorp'}
+        dockerfile { 
+            reuseNode true
         }
-    stages{
-        stage('Setup'){
-            steps{
-                script{
-                    dir ('external-docs'){
-                        echo "External documentation work in progress"
-                        sh "pwd"
-                        sh "ls -la"
-                    }
-                }
-            }
-        }
-        stage('Documentation'){
-            steps{
-                script{
-                        dir ('external-docs/my-project'){
-                            sh 'NO_CONTRACTS=true bundle exec middleman build'
+    }
+    stages {
+        stage('Documentation') {
+            steps {
+                script {
+                        dir ('external-docs'){
+                            sh 'bundle install'
+                            sh 'bundle exec middleman build'
                         }
-                    }
-                    stash name: 'docs', includes: '**/docs/_build/html/**/*'
+                        stash name: 'docs', includes: '**/docs/_build/html/**/*'
                 }
             }
         }
     }
+}
