@@ -2,7 +2,6 @@ pipeline {
     agent {
         dockerfile { 
             dir 'external-docs'
-            args '-u root'
             reuseNode true
         }
     }
@@ -14,7 +13,7 @@ pipeline {
                             sh 'bundle install'
                             sh 'bundle exec middleman build'
                         }
-                        stash name: 'docs', includes: '**/docs/_build/html/**/*'
+                        stash name: 'docs', includes: '**/build/**'
                 }
             }
         }
