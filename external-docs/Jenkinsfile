@@ -19,7 +19,7 @@ pipeline {
                             // Get rid of the host information, because apparently middleman can't handle that.
                             buildUrl = buildUrl.replace(JENKINS_URL, "/jenkins")
 
-                            sh "HTTP_PREFIX='' bundle exec middleman build"
+                            sh "HTTP_PREFIX='${buildUrl}' bundle exec middleman build"
                         }
                         stash name: 'docs', includes: 'external-docs/build/**/*'
                 }
