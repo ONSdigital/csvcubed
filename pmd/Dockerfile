@@ -12,8 +12,8 @@ WORKDIR /workspace
 COPY . /workspace/
 
 # Set up pip, poetry, and install dependencies
-RUN pip install poetry || exit 1
-RUN cd /workspace/sharedmodels && pip install . || exit 1
-RUN cd /workspace/pmd && poetry export --format requirements.txt --without-hashes | grep -v 'sharedmodels' > requirements.txt || exit 1
-RUN pip install --requirement /workspace/pmd/requirements.txt || exit 1
-RUN pip install --no-deps --use-feature=in-tree-build /workspace/pmd/. || exit 1
+RUN pip install poetry
+RUN cd /workspace/sharedmodels && pip install .
+RUN cd /workspace/pmd && poetry export --format requirements.txt --without-hashes | grep -v 'sharedmodels' > requirements.txt
+RUN pip install --requirement /workspace/pmd/requirements.txt
+RUN pip install --no-deps --use-feature=in-tree-build /workspace/pmd/.

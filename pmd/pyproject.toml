@@ -14,12 +14,12 @@ python = "^3.9"
 rdflib = "*"
 rdflib-jsonld = "==0.6.1"
 requests = "*"
-sharedmodels = {url = "https://ci.floop.org.uk/job/GSS_data/job/csvwlib/job/main/lastSuccessfulBuild/artifact/sharedmodels/dist/sharedmodels-0.1.0-py3-none-any.whl"}
+sharedmodels = {url = "./../sharedmodels"}
 unidecode = "*"
 uritemplate = "*"
 
 [tool.poetry.dev-dependencies]
-devtools = {url = "https://ci.floop.org.uk/job/GSS_data/job/csvwlib/job/main/lastSuccessfulBuild/artifact/devtools/dist/devtools-0.1.0-py3-none-any.whl"}
+sharedmodels = {path = "./../sharedmodels", develop = true}
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
