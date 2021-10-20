@@ -4,15 +4,16 @@ A refactored version of the functionality required to build *CSV-qb*s along with
 
 ## Packages
 
-| Name                                                  | Description                                                                         |
-|:------------------------------------------------------|:------------------------------------------------------------------------------------|
-| [csvqb](./csvqb/csvqb/README.md)                      | The key library helping to transform tidy-data into qb-flavoured CSV-W cubes.       |
-| [sharedmodels](./sharedmodels/sharedmodels/README.md) | Models and RDF serialisation functionality required by the csvqb and pmd packages.  |
-| [pmd](./pmd/pmd/README.md)                            | Transforms a CSV-qb into RDF which is compatible with the Publish My Data platform. |
-| [devtools](./devtools/devtools/README.md)             | Shared test functionality & dev dependencies which are commonly required.           |
+| Name     | Description                                                                                                                                          |
+|:---------|:-----------------------------------------------------------------------------------------------------------------------------------------------------|
+| models   | Contains some models shared by the other libraries. Functionality in here should be kept to an absolute minimum.                                     |
+| pmd      | Contains functionality relating to PMD. i.e. this is functionality run as part of Jenkins build pipeline.                                            |
+| devtools | Tooling used in the development and maintenance of the csvwlib tooling. Currently contains tooling necessary to standardise testing across packages. |
 
-We're currently keeping all of the packages in one repository to make life easier whilst we break apart and refactor the existing code we have in [GSS-utils](https://github.com/GSS-Cogs/gss-utils). Once we're confident in how our packages look (and they're stable), it's likely that each individual package will be moved to its own independent repository.
+We're currently keeping all of the packages in one repository to make life easier whilst we break apart and refactor the existing code we have in [GSS-utils](https://github.com/GSS-Cogs/gss-utils). Once we're confident in how our packages look (and they're stable), it's likely that each individual package will be moved to its own independent repository. 
 
-## Developer Documentation
+## Synchronising Pipfile with Setup.py
 
-More detailed developer documentation for this project can be found [here](./docs/developer.md).
+Since we're creating python packages here, we need to use the setup.py to specify all of the package's dependencies so that whoever installs our package ensures they install the dependencies too. There's a tool called `pipenv-sync` that will help us with this task by looking at the Pipenv file and setting the corresponding dependencies in the `setup.py` file.
+
+Simply navigate to the package's directory, run `pipenv shell` and then run `pipenv-setup sync` inside the package's pipenv environment. This should automatically update `setup.py` with any new non-dev packages that you've installed.

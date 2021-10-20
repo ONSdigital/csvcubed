@@ -4,7 +4,7 @@
 # Header-related options
 show_govuk_logo: false
 service_name: Integrated Data Service - csvwlib
-service_link: https://www.github.com/GSS-Cogs/csvwlib
+service_link: .
 phase: Alpha
 
 # Links to show on right-hand-side of header
