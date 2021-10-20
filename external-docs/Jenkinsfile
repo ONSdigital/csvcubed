@@ -41,6 +41,7 @@ pipeline {
                 sh 'chmod -R ugo+rw .'
                 // Clean up any unwanted files lying about.
                 sh "git clean -fxd"
-       }
+           }
+        }
     }
 }
