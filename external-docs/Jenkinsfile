@@ -17,7 +17,7 @@ pipeline {
                             // This does mean that what we build here isn't portable & if we deploy it anywhere, we'll need to alter this `HTTP_PREFIX`.
                             String buildUrl = "${BUILD_URL}artifact/external-docs/build/"
                             // Get rid of the host information, because apparently middleman can't handle that.
-                            buildUrl = buildUrl.replace(JENKINS_URL, "/jenkins")
+                            buildUrl = buildUrl.replace(JENKINS_URL, "/jenkins/")
 
                             sh "HTTP_PREFIX='${buildUrl}' bundle exec middleman build"
                         }
