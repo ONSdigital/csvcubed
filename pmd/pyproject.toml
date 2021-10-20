@@ -19,7 +19,7 @@ unidecode = "*"
 uritemplate = "*"
 
 [tool.poetry.dev-dependencies]
-sharedmodels = {path = "./../sharedmodels", develop = true}
+devtools = {path = "./../devtools", develop = true}
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
