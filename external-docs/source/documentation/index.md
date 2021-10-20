@@ -1,4 +1,11 @@
-# Index
+---
+title: Index
+weight: 10
+---
+
+# Something
+
+There's something here.
 
 ## W3C
 

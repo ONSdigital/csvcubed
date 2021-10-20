@@ -1,5 +1,8 @@
 require 'govuk_tech_docs'
 
-activate :relative_assets
-
 GovukTechDocs.configure(self)
+
+configure :build do
+    set :http_prefix, (ENV["HTTP_PREFIX"] || Dir.pwd)
+end
+

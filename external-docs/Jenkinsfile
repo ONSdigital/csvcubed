@@ -12,7 +12,10 @@ pipeline {
                 script {
                         dir ('external-docs'){
                             sh 'bundle install'
-                            sh 'bundle exec middleman build'
+                            // Unfortunately, the alphagov/tech-docs-template isn't very flexible when it comes to URLs, so we need to tell it exactly
+                            // where on the server it lives so it can get all of its URLs in order.
+                            // This does mean that what we build here isn't portable & if we deploy it anywhere, we'll need to alter this `HTTP_PREFIX`.
+                            sh "HTTP_PREFIX='${BUILD_URL}artifact/external-docs/build/' bundle exec middleman build"
                         }
                         stash name: 'docs', includes: 'external-docs/build/**/*'
                 }
