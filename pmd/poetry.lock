@@ -186,7 +186,8 @@ version = "0.1.0"
 description = "Development tools and dependencies for use in the csvwlib tooling."
 category = "dev"
 optional = false
-python-versions = ">=3.9,<4.0"
+python-versions = "^3.9"
+develop = true
 
 [package.dependencies]
 behave = "*"
@@ -202,8 +203,9 @@ sphinx = "*"
 sphinx-book-theme = "*"
 
 [package.source]
-type = "url"
-url = "https://ci.floop.org.uk/job/GSS_data/job/csvwlib/job/main/lastSuccessfulBuild/artifact/devtools/dist/devtools-0.1.0-py3-none-any.whl"
+type = "directory"
+url = "../devtools"
+
 [[package]]
 name = "distlib"
 version = "0.3.3"
@@ -671,15 +673,17 @@ version = "0.1.0"
 description = "Models and RDF serialisation functionality useful to the csvwlib family of tools."
 category = "main"
 optional = false
-python-versions = ">=3.9,<4.0"
+python-versions = "^3.9"
+develop = false
 
 [package.dependencies]
-rdflib = ">=5.0.0,<5.1.0"
+rdflib = "~=5.0.0"
 unidecode = "*"
 
 [package.source]
-type = "url"
-url = "https://ci.floop.org.uk/job/GSS_data/job/csvwlib/job/main/lastSuccessfulBuild/artifact/sharedmodels/dist/sharedmodels-0.1.0-py3-none-any.whl"
+type = "directory"
+url = "../sharedmodels"
+
 [[package]]
 name = "six"
 version = "1.16.0"
@@ -923,7 +927,7 @@ test = ["websockets"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "6a11635908a466a34a9e502a8073018fb8fdef0d785bce85607f528632788e68"
+content-hash = "b1325732ebdddc9bdf0fdfde33cb5e7507165ef70dc8a67f865dcd5fc50ce63b"
 
 [metadata.files]
 alabaster = [
@@ -1343,7 +1347,7 @@ requests = [
 ]
 requirementslib = [
     {file = "requirementslib-1.5.16-py2.py3-none-any.whl", hash = "sha256:50d20f27e4515a2393695b0d886219598302163438ae054253147b2bad9b4a44"},
-    {file = "requirementpslib-1.5.16.tar.gz", hash = "sha256:9c1e8666ca4512724cdd1739adcc7df19ec7ad2ed21f0e748f9631ad6b54f321"},
+    {file = "requirementslib-1.5.16.tar.gz", hash = "sha256:9c1e8666ca4512724cdd1739adcc7df19ec7ad2ed21f0e748f9631ad6b54f321"},
 ]
 rfc3986 = [
     {file = "rfc3986-1.5.0-py2.py3-none-any.whl", hash = "sha256:a86d6e1f5b1dc238b218b012df0aa79409667bb209e58da56d0b94704e712a97"},

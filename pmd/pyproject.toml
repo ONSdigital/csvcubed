@@ -14,7 +14,7 @@ python = "^3.9"
 rdflib = "*"
 rdflib-jsonld = "==0.6.1"
 requests = "*"
-sharedmodels = {url = "./../sharedmodels"}
+sharedmodels = {path = "./../sharedmodels"}
 unidecode = "*"
 uritemplate = "*"
 
