@@ -7,10 +7,13 @@ ENV PYTHONDONTWRITEBYTECODE=1
 # Turns off buffering for easier container logging
 ENV PYTHONUNBUFFERED=1
 
-# Install pip requirements
+# Configure Working Directory
 WORKDIR /workspace
-ADD . /workspace
-RUN pip install poetry
-RUN poetry export --without-hashes --format requirements.txt > requirements.txt
-RUN pip install --requirement requirements.txt
-RUN pip install --no-deps . 
+COPY . /workspace/
+
+# Set up pip, poetry, and install dependencies
+RUN pip install poetry || exit 1
+RUN cd /workspace/sharedmodels && pip install . || exit 1
+RUN cd /workspace/pmd && poetry export --format requirements.txt --without-hashes | grep -v 'sharedmodels' > requirements.txt || exit 1
+RUN pip install --requirement /workspace/pmd/requirements.txt || exit 1
+RUN pip install --no-deps --use-feature=in-tree-build /workspace/pmd/. || exit 1
