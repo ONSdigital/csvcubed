@@ -14,12 +14,16 @@ python = "^3.9"
 rdflib = "*"
 rdflib-jsonld = "==0.6.1"
 requests = "*"
-sharedmodels = {path = "./../sharedmodels"}
 unidecode = "*"
 uritemplate = "*"
 
 [tool.poetry.dev-dependencies]
 devtools = {path = "./../devtools", develop = true}
+# The sharedmodels library is currently listed as a dev dependency so that we can reference it by its relative
+# path and continue to edit code side-by-side
+# The sharedmodels dependency is to become a regular dependency when the packages are split out into separate
+# repositories in Issue #205
+sharedmodels = {path = "./../sharedmodels", develop = true}
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
