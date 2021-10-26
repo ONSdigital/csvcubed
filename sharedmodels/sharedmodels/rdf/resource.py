@@ -3,7 +3,7 @@ Resources
 ---------
 """
 from abc import ABC
-from collections.abc import Iterable
+from collections import Iterable
 from typing import (
     Annotated,
     List,
