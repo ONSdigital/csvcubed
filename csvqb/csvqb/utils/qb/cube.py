@@ -106,7 +106,7 @@ def _validate_attributes(cube: Cube) -> List[ValidationError]:
                         f"{c.component.__class__.__name__} using existing attribute values",
                     )
                 )
-        if isinstance(c.component, QbAttributeLiteral):
+        if isinstance(c, QbColumn) and isinstance(c.component, QbAttributeLiteral):
             if c.csv_column_uri_template is not None:
                 errors.append(
                     CsvColumnLiteralWithUriTemplate(

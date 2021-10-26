@@ -1,3 +1,4 @@
+from re import M
 from csvqb.inputs import PandasDataTypes
 from csvqb.models.cube.qb.components.attribute import NewQbAttributeValue
 import pytest
@@ -606,10 +607,10 @@ def _create_simple_frame_with_literals(data_type: str):
     
     return df
 
-def test_qb_attribute_literal_new_string():
+def test_new_qb_attribute_literal_int():
     qube = Cube(
         metadata=CatalogMetadata("Some Qube"),
-        data=_create_simple_frame_with_literals("str"),
+        data=_create_simple_frame_with_literals("int"),
         columns=[
             QbColumn(
                 "Some Dimension",
@@ -625,16 +626,44 @@ def test_qb_attribute_literal_new_string():
             QbColumn(
                 "Some Attribute",
                 NewQbAttributeLiteral(
-                    data_type="string",
+                    data_type="int",
                     label="Some Attribute"
                 )
             )
         ]
     )
 
-    errors = qube.validate()
+    assert len(qube.validate()) == 0
 
-    assert len(errors) == 0
+
+def test_existing_qb_attribute_literal_date():
+    qube = Cube(
+        metadata=CatalogMetadata("Some Qube"),
+        data=_create_simple_frame_with_literals("date"),
+        columns=[
+            QbColumn(
+                "Some Dimension",
+                NewQbDimension(label="Some Dimension")
+            ),
+            QbColumn(
+                "Values",
+                QbSingleMeasureObservationValue(
+                    NewQbMeasure("Some Measure"),
+                    NewQbUnit("Some Unit"),                   
+                )
+            ),
+            QbColumn(
+                "Some Attribute",
+                ExistingQbAttributeLiteral(
+                    data_type="date",
+                    attribute_uri="https://example.org/attribute/date"
+                )
+            )
+        ]
+    )
+
+    assert len(qube.validate()) == 0
+
 
 if __name__ == "__main__":
     pytest.main()
