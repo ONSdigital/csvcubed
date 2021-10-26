@@ -112,7 +112,7 @@ def _validate_attributes(cube: Cube) -> List[ValidationError]:
                     CsvColumnLiteralWithUriTemplate(
                         c.csv_column_title,
                         f"{c.component.__class__.__name__} "
-                        + "cannot have a uri_tempate as it is a literal",
+                        + "cannot have a uri_tempate as it holds literal values",
                     )
                 )
 

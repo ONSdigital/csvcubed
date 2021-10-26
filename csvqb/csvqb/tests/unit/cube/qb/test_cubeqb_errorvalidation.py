@@ -1,4 +1,3 @@
-from re import M
 from csvqb.inputs import PandasDataTypes
 from csvqb.models.cube.qb.components.attribute import NewQbAttributeValue
 import pytest

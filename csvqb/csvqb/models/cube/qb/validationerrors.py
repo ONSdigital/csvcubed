@@ -52,7 +52,7 @@ class CsvColumnLiteralWithUriTemplate(SpecificValidationError):
 
     def __post_init__(self):
         self.message = (
-            f"'{self.csv_column_name}' - a {_get_description_for_component(self.component_type)} cannot have an "
+            f"'{self.csv_column_name}' - a {_get_description_for_component(self.component_type)} cannot have a "
             + "csv_column_uri_template defined."
         )
 
