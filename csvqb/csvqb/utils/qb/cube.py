@@ -5,6 +5,7 @@ QbCube
 from typing import List, TypeVar, Type, Set
 
 from csvqb.models.cube.qb.validationerrors import (
+    CsvColumnLiteralWithUriTemplate,
     CsvColumnUriTemplateMissingError,
     MinNumComponentsNotSatisfiedError,
     MaxNumComponentsExceededError,
@@ -22,6 +23,7 @@ from csvqb.models.cube.qb.components.dimension import (
 )
 from csvqb.models.cube.qb.components.attribute import (
     QbAttribute,
+    QbAttributeLiteral,
 )
 from csvqb.models.cube.qb.components.measure import QbMultiMeasureDimension, QbMeasure
 from csvqb.models.cube.qb.components.unit import QbMultiUnits, QbUnit
@@ -102,6 +104,15 @@ def _validate_attributes(cube: Cube) -> List[ValidationError]:
                     CsvColumnUriTemplateMissingError(
                         c.csv_column_title,
                         f"{c.component.__class__.__name__} using existing attribute values",
+                    )
+                )
+        if isinstance(c, QbColumn) and isinstance(c.component, QbAttributeLiteral):
+            if c.csv_column_uri_template is not None:
+                errors.append(
+                    CsvColumnLiteralWithUriTemplate(
+                        c.csv_column_title,
+                        f"{c.component.__class__.__name__} "
+                        + "cannot have a uri_tempate as it holds literal values",
                     )
                 )
 

@@ -113,10 +113,11 @@ class QbAttributeLiteral(QbAttribute, ABC):
 
     data_type: str = field(repr=False)
 
-    @validator("data_type", pre=True, always=True)
-    def validate_data_type_choices(cls, data_type) -> None:
+    @validator("data_type", pre=True, always=False)
+    def data_type_value(cls, data_type):
         if data_type not in accepted_data_types:
             raise ValueError(f"Literal type '{data_type}' not supported")
+        return data_type
 
 
 @dataclass

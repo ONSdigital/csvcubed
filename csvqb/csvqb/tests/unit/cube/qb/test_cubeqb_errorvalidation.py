@@ -592,6 +592,77 @@ def test_new_qb_attribute_generation():
 
 
 # Literal tests go here
+def _create_simple_frame_with_literals(data_type: str):
+    df = pd.DataFrame({
+        "Some Dimension": ["a", "b", "c"],
+        "Values": [1, 2, 3]
+    })
+    if data_type in ("string", "str"):
+        df["Some Attribute"] = ["one", "two", "three"]
+    elif data_type in ("int"):
+        df["Some Attribute"] = [11, 12, 13]
+    elif data_type in ("date"):
+        df["Some Attribute"] = ["2020-10-01", "2010-10-10", "2112-12-21"]
+    
+    return df
+
+def test_new_qb_attribute_literal_int():
+    qube = Cube(
+        metadata=CatalogMetadata("Some Qube"),
+        data=_create_simple_frame_with_literals("int"),
+        columns=[
+            QbColumn(
+                "Some Dimension",
+                NewQbDimension(label="Some Dimension")
+            ),
+            QbColumn(
+                "Values",
+                QbSingleMeasureObservationValue(
+                    NewQbMeasure("Some Measure"),
+                    NewQbUnit("Some Unit"),                   
+                )
+            ),
+            QbColumn(
+                "Some Attribute",
+                NewQbAttributeLiteral(
+                    data_type="int",
+                    label="Some Attribute"
+                )
+            )
+        ]
+    )
+
+    assert len(qube.validate()) == 0
+
+
+def test_existing_qb_attribute_literal_date():
+    qube = Cube(
+        metadata=CatalogMetadata("Some Qube"),
+        data=_create_simple_frame_with_literals("date"),
+        columns=[
+            QbColumn(
+                "Some Dimension",
+                NewQbDimension(label="Some Dimension")
+            ),
+            QbColumn(
+                "Values",
+                QbSingleMeasureObservationValue(
+                    NewQbMeasure("Some Measure"),
+                    NewQbUnit("Some Unit"),                   
+                )
+            ),
+            QbColumn(
+                "Some Attribute",
+                ExistingQbAttributeLiteral(
+                    data_type="date",
+                    attribute_uri="https://example.org/attribute/date"
+                )
+            )
+        ]
+    )
+
+    assert len(qube.validate()) == 0
+
 
 if __name__ == "__main__":
     pytest.main()

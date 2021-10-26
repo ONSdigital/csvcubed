@@ -41,6 +41,21 @@ class CsvColumnUriTemplateMissingError(SpecificValidationError):
             + "csv_column_uri_template defined."
         )
 
+@dataclass
+class CsvColumnLiteralWithUriTemplate(SpecificValidationError):
+    """
+    Represents an error where the user has defined a literal with a csv_column_uri_template.
+    """
+
+    csv_column_name: str
+    component_type: ComponentTypeDescription
+
+    def __post_init__(self):
+        self.message = (
+            f"'{self.csv_column_name}' - a {_get_description_for_component(self.component_type)} cannot have a "
+            + "csv_column_uri_template defined."
+        )
+
 
 @dataclass
 class MaxNumComponentsExceededError(SpecificValidationError):
