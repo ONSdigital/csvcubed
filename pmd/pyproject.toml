@@ -1,9 +1,9 @@
 [tool.poetry]
 authors = ["Integrated Data Service - Dissemination <example@example.com>"]
-description = "Provides functionality necessary to transform RDF Data Cube style CSV-Ws into a format compatible with the Publish My Data platform. Part of the csvwlib family."
+description = "Provides functionality necessary to transform RDF Data Cube style CSV-Ws into a format compatible with the Publish My Data platform. Part of the csvcubed family."
 exclude = ["docs/*", "pmd/tests/*"]
 license = "Apache-2.0"
-name = "pmd"
+name = "csvcubed-pmd"
 version = "0.1.0"
 
 [tool.poetry.dependencies]

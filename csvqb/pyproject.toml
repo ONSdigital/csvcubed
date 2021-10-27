@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "csvqb"
 version = "0.1.0"
-description = "A tool to generate RDF Data Cube style CSV-W cubes from tidy CSV files. Part of the csvwlib family."
+description = "A tool to generate RDF Data Cube style CSV-W cubes from tidy CSV files. Part of the csvcubed family."
 authors = ["Integrated Data Service - Dissemination <example@example.com>"]
 license = "Apache-2.0"
 readme="csvqb/README.md"

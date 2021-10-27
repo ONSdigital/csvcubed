@@ -1,4 +1,4 @@
-# csvwlib
+# csvcubed
 
 A refactored version of the functionality required to build *CSV-qb*s along with the functionality necessary to convert said *CSV-qb*s into RDF compatible with the PMD platform.
 
@@ -7,7 +7,7 @@ A refactored version of the functionality required to build *CSV-qb*s along with
 | Name                                                  | Description                                                                         |
 |:------------------------------------------------------|:------------------------------------------------------------------------------------|
 | [csvqb](./csvqb/csvqb/README.md)                      | The key library helping to transform tidy-data into qb-flavoured CSV-W cubes.       |
-| [sharedmodels](./sharedmodels/sharedmodels/README.md) | Models and RDF serialisation functionality required by the csvqb and pmd packages.  |
+| [models](./sharedmodels/sharedmodels/README.md)       | Models and RDF serialisation functionality required by the csvqb and pmd packages.  |
 | [pmd](./pmd/pmd/README.md)                            | Transforms a CSV-qb into RDF which is compatible with the Publish My Data platform. |
 | [devtools](./devtools/devtools/README.md)             | Shared test functionality & dev dependencies which are commonly required.           |
 

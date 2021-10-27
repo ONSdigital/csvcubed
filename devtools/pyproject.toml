@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "devtools"
+name = "csvcubed-devtools"
 version = "0.1.0"
-description = "Development tools and dependencies for use in the csvwlib tooling."
+description = "Development tools and dependencies for use in the csvcubed tooling."
 authors = ["Integrated Data Service - Dissemination <example@example.com>"]
 license = "Apache-2.0"
 exclude = ["docs/*"]
