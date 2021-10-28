@@ -71,7 +71,7 @@ pipeline {
             steps {
                 dir('csvcubed-models') {
                     dir('csvcubedmodels/tests/unit') {
-                        sh "poetry run pytest --junitxml=pytest_results_sharedmodels.xml"
+                        sh "poetry run pytest --junitxml=pytest_results_models.xml"
                     }
                 }
                 dir('csvcubed-pmd') {
@@ -82,12 +82,10 @@ pipeline {
                         }
                     }
                 }
-                dir('csvcubed') {
-                    dir('csvcubed') {
-                        sh 'poetry run behave tests/behaviour --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json'
-                        dir('tests/unit') {
-                            sh "poetry run pytest --junitxml=pytest_results_csvqb.xml"
-                        }
+                dir('csvcubed/csvcubed') {
+                    sh 'poetry run behave tests/behaviour --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json'
+                    dir('tests/unit') {
+                        sh "poetry run pytest --junitxml=pytest_results_csvcubed.xml"
                     }
                 }
 
