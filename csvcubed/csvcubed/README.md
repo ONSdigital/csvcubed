@@ -6,7 +6,7 @@ The `csvcubed` package is a library which generates qb-flavoured CSV-W files and
 
 ## Future Plans
 
-It is anticipated that csvqb will soon have a command line interface which accepts some form of JSON/YAML configuration file along with a [tidy-data](https://doi.org/10.18637/jss.v059.i10) CSV and generates skos and qb-flavoured CSV-W outputs. This will be the initial user interface most suited to more advanced statistical producers.
+It is anticipated that csvcubed will soon have a command line interface which accepts some form of JSON/YAML configuration file along with a [tidy-data](https://doi.org/10.18637/jss.v059.i10) CSV and generates skos and qb-flavoured CSV-W outputs. This will be the initial user interface most suited to more advanced statistical producers.
 
 ## API Documentation
 
