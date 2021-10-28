@@ -70,19 +70,19 @@ pipeline {
         stage('Test') {
             steps {
                 dir('csvcubed-models') {
-                    dir('tests/unit') {
+                    dir('csvcubedmodels/tests/unit') {
                         sh "poetry run pytest --junitxml=pytest_results_sharedmodels.xml"
                     }
                 }
                 dir('csvcubed-pmd') {
                     sh 'poetry run behave tests/behaviour --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json'
-                    dir('pmd/tests/unit') {
+                    dir('csvcubedpmd/tests/unit') {
                         sh "poetry run pytest --junitxml=pytest_results_pmd.xml"
                     }
                 }
                 dir('csvcubed') {
                     sh 'poetry run behave tests/behaviour --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json'
-                    dir('tests/unit') {
+                    dir('csvcubed/tests/unit') {
                         sh "poetry run pytest --junitxml=pytest_results_csvqb.xml"
                     }
                 }
