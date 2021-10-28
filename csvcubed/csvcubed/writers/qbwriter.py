@@ -129,7 +129,7 @@ class QbWriter(WriterBase):
                 )
 
     def _generate_csvw_columns_for_cube(self) -> List[Dict[str, Any]]:
-        columns = [self._generate_csvcubed_column(c) for c in self.cube.columns]
+        columns = [self._generate_csvqb_column(c) for c in self.cube.columns]
         virtual_columns = self._generate_virtual_columns_for_cube()
         return columns + virtual_columns
 

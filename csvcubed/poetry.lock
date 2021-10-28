@@ -160,7 +160,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [[package]]
 name = "csvcubed-devtools"
-version = "0.1.3"
+version = "0.1.3.1"
 description = "Development tools and dependencies for use in the csvcubed tooling."
 category = "dev"
 optional = false
@@ -1020,8 +1020,8 @@ colorama = [
     {file = "colorama-0.4.4.tar.gz", hash = "sha256:5941b2b48a20143d2267e95b1c2a7603ce057ee39fd88e7329b0c292aa16869b"},
 ]
 csvcubed-devtools = [
-    {file = "csvcubed-devtools-0.1.3.tar.gz", hash = "sha256:36dbfd498c03c737e97fd5173019d897394b7e3de62025b7b50851f97c5db84d"},
-    {file = "csvcubed_devtools-0.1.3-py3-none-any.whl", hash = "sha256:095181cd1b17afb912e4a90db5dfb7f04836e5f0ee7b672a5d7ef7a106086802"},
+    {file = "csvcubed-devtools-0.1.3.1.tar.gz", hash = "sha256:42580df5d8603f484602a837d1c2a95b2cf65abc642f47b5a71ed4c927618541"},
+    {file = "csvcubed_devtools-0.1.3.1-py3-none-any.whl", hash = "sha256:fe6259b1eb91b7eb10f4bc2354cab7ac7e14ef98e070a9de3941600beaa78fcf"},
 ]
 csvcubed-models = [
     {file = "csvcubed-models-0.1.0.tar.gz", hash = "sha256:ce526da06eecc5d9b4ce8f2c783b528cc5e2b9159abfee309ac6fe55d40174b8"},
