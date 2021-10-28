@@ -12,17 +12,17 @@ pipeline {
                     // Clean up any unwanted files lying about after the previous build.
                     sh "git clean -fxd --exclude='.venv'"
 
-                    dir('devtools') {
+                    dir('csvcubed-devtools') {
                         sh 'poetry config virtualenvs.in-project true'
                         sh 'poetry install'
                     }
 
-                    dir('sharedmodels') {
+                    dir('csvcubed-models') {
                         sh 'poetry config virtualenvs.in-project true'
                         sh 'poetry install'
                     }
 
-                    dir('pmd') {
+                    dir('csvcubed-pmd') {
                         sh 'poetry config virtualenvs.in-project true'
                         sh 'poetry install'
                         // Patch behave so that it can output the correct format for the Jenkins cucumber tool.
@@ -31,7 +31,7 @@ pipeline {
                         sh "patch -Nf -d \"${venv_location}/lib/python3.9/site-packages/behave/formatter\" -p1 < /cucumber-format.patch || true"
                     }
 
-                    dir('csvqb') {
+                    dir('csvcubed') {
                         sh 'poetry config virtualenvs.in-project true'
                         sh 'poetry install'
                         // Patch behave so that it can output the correct format for the Jenkins cucumber tool.
