@@ -6,8 +6,8 @@ from typing import Annotated, Set, Union
 
 from rdflib import URIRef
 
-from csvcubed_models.rdf.resource import NewResource, NewResourceWithLabel, MaybeResource, Resource, map_resource_to_uri
-from csvcubed_models.rdf.triple import Triple, PropertyStatus
+from csvcubedmodels.rdf.resource import NewResource, NewResourceWithLabel, MaybeResource, Resource, map_resource_to_uri
+from csvcubedmodels.rdf.triple import Triple, PropertyStatus
 
 CollectionMemberType = Union["Concept", "Collection"]
 
