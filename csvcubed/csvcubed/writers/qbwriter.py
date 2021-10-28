@@ -10,32 +10,32 @@ import re
 from dataclasses import field
 from pathlib import Path
 from typing import Tuple, Dict, Any, List, Iterable, Set
-from sharedmodels import rdf
-from sharedmodels.rdf import skos, rdfs
-from sharedmodels.rdf.resource import (
+from csvcubedmodels import rdf
+from csvcubedmodels.rdf import skos, rdfs
+from csvcubedmodels.rdf.resource import (
     ExistingResourceWithLiteral,
     Resource,
     ExistingResource,
     maybe_existing_resource,
 )
 
-from csvqb.models.cube import *
-from csvqb.utils.uri import (
+from csvcubed.models.cube import *
+from csvcubed.utils.uri import (
     get_last_uri_part,
     csvw_column_name_safe,
     get_data_type_uri_from_str,
 )
-from csvqb.utils.csvw import get_dependent_local_files
-from csvqb.utils.qb.cube import get_columns_of_dsd_type, QbColumnarDsdType
-from csvqb.utils.dict import rdf_resource_to_json_ld
-from csvqb.utils.qb.standardise import convert_data_values_to_uri_safe_values
-from csvqb.utils.file import copy_files_to_directory_with_structure
+from csvcubed.utils.csvw import get_dependent_local_files
+from csvcubed.utils.qb.cube import get_columns_of_dsd_type, QbColumnarDsdType
+from csvcubed.utils.dict import rdf_resource_to_json_ld
+from csvcubed.utils.qb.standardise import convert_data_values_to_uri_safe_values
+from csvcubed.utils.file import copy_files_to_directory_with_structure
 from .skoscodelistwriter import SkosCodeListWriter, CODE_LIST_NOTATION_COLUMN_NAME
 from .writerbase import WriterBase
 from ..models.rdf.newattributevalueresource import NewAttributeValueResource
 from ..models.rdf.newunitresource import NewUnitResource
 from ..models.cube.qb.components.arbitraryrdf import RdfSerialisationHint
-from csvqb.models.rdf.qbdatasetincatalog import QbDataSetInCatalog
+from csvcubed.models.rdf.qbdatasetincatalog import QbDataSetInCatalog
 
 
 VIRT_UNIT_COLUMN_NAME = "virt_unit"
@@ -129,7 +129,7 @@ class QbWriter(WriterBase):
                 )
 
     def _generate_csvw_columns_for_cube(self) -> List[Dict[str, Any]]:
-        columns = [self._generate_csvqb_column(c) for c in self.cube.columns]
+        columns = [self._generate_csvcubed_column(c) for c in self.cube.columns]
         virtual_columns = self._generate_virtual_columns_for_cube()
         return columns + virtual_columns
 

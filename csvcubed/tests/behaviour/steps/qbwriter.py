@@ -3,10 +3,10 @@ from pathlib import Path
 from behave import Given, When, Then, Step
 from devtools.behave.file import get_context_temp_dir_path
 
-from csvqb.models.cube import *
-from csvqb.writers.qbwriter import QbWriter
-from csvqb.utils.qb.cube import validate_qb_component_constraints
-from csvqb.utils.csvw import get_first_table_schema
+from csvcubed.models.cube import *
+from csvcubed.writers.qbwriter import QbWriter
+from csvcubed.utils.qb.cube import validate_qb_component_constraints
+from csvcubed.utils.csvw import get_first_table_schema
 
 
 def get_standard_catalog_metadata_for_name(

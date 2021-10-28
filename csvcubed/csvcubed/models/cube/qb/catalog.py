@@ -6,12 +6,12 @@ import json
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Optional
-from sharedmodels.rdf import dcat
+from csvcubedmodels.rdf import dcat
 from pathlib import Path
 
-from csvqb.models.cube.catalog import CatalogMetadataBase
-from csvqb.models.uriidentifiable import UriIdentifiable
-from csvqb.utils.validators.uri import validate_uri
+from csvcubed.models.cube.catalog import CatalogMetadataBase
+from csvcubed.models.uriidentifiable import UriIdentifiable
+from csvcubed.utils.validators.uri import validate_uri
 
 
 @dataclass

@@ -10,7 +10,7 @@ import pandas as pd
 from .datastructuredefinition import MultiQbDataStructureDefinition
 from .measure import QbMeasure
 from .unit import QbUnit
-from csvqb.models.validationerror import ValidationError
+from csvcubed.models.validationerror import ValidationError
 
 
 @dataclass

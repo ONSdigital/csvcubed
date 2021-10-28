@@ -5,8 +5,8 @@ New Unit
 from typing import Annotated, Optional
 
 from rdflib import RDFS, XSD
-from sharedmodels.rdf.namespaces import OM2, QUDT
-from sharedmodels.rdf import (
+from csvcubedmodels.rdf.namespaces import OM2, QUDT
+from csvcubedmodels.rdf import (
     NewMetadataResource,
     Triple,
     PropertyStatus,

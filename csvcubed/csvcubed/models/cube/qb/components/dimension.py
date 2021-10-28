@@ -7,14 +7,14 @@ from typing import Optional, List, Set
 from abc import ABC, abstractmethod
 import pandas as pd
 
-from csvqb.inputs import PandasDataTypes
-from csvqb.models.uriidentifiable import UriIdentifiable
+from csvcubed.inputs import PandasDataTypes
+from csvcubed.models.uriidentifiable import UriIdentifiable
 from .arbitraryrdf import ArbitraryRdf, RdfSerialisationHint, TripleFragmentBase
 from .datastructuredefinition import ColumnarQbDataStructureDefinition
 from .codelist import QbCodeList, NewQbCodeList
-from csvqb.models.validationerror import ValidationError
+from csvcubed.models.validationerror import ValidationError
 from ..catalog import CatalogMetadata
-from csvqb.utils.validators.uri import validate_uri
+from csvcubed.utils.validators.uri import validate_uri
 
 
 @dataclass

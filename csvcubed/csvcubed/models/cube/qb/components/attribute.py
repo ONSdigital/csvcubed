@@ -8,19 +8,19 @@ from abc import ABC, abstractmethod
 from pydantic import validator
 import pandas as pd
 
-from csvqb.models.uriidentifiable import UriIdentifiable
+from csvcubed.models.uriidentifiable import UriIdentifiable
 from .arbitraryrdf import (
     ArbitraryRdf,
     TripleFragmentBase,
     RdfSerialisationHint,
 )
 from .datastructuredefinition import ColumnarQbDataStructureDefinition
-from csvqb.models.validationerror import ValidationError
+from csvcubed.models.validationerror import ValidationError
 from .validationerrors import UndefinedValuesError
-from csvqb.inputs import PandasDataTypes, pandas_input_to_columnar_optional_str
+from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_optional_str
 
-from csvqb.utils.uri import uri_safe
-from csvqb.utils.validators.uri import validate_uri
+from csvcubed.utils.uri import uri_safe
+from csvcubed.utils.validators.uri import validate_uri
 
 
 @dataclass

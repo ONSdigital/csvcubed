@@ -10,11 +10,11 @@ from pathlib import Path
 from typing import Tuple
 import pandas as pd
 
-from csvqb.models.cube.qb.components.arbitraryrdf import RdfSerialisationHint
-from csvqb.models.cube.qb.components.codelist import NewQbCodeList
-from csvqb.utils.dict import rdf_resource_to_json_ld
-from csvqb.models.rdf.conceptschemeincatalog import ConceptSchemeInCatalog
-from csvqb.writers.writerbase import WriterBase
+from csvcubed.models.cube.qb.components.arbitraryrdf import RdfSerialisationHint
+from csvcubed.models.cube.qb.components.codelist import NewQbCodeList
+from csvcubed.utils.dict import rdf_resource_to_json_ld
+from csvcubed.models.rdf.conceptschemeincatalog import ConceptSchemeInCatalog
+from csvcubed.writers.writerbase import WriterBase
 
 CODE_LIST_NOTATION_COLUMN_NAME = "notation"
 

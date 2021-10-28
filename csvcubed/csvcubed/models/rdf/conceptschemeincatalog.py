@@ -2,7 +2,7 @@
 Concept Scheme In Catalog
 -------------------------
 """
-from sharedmodels.rdf import dcat, skos
+from csvcubedmodels.rdf import dcat, skos
 
 
 class ConceptSchemeInCatalog(skos.ConceptScheme, dcat.Dataset):

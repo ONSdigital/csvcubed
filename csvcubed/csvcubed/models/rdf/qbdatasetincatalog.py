@@ -2,7 +2,7 @@
 qb:DataSet in Catalog
 ---------------------
 """
-from sharedmodels.rdf import dcat, qb
+from csvcubedmodels.rdf import dcat, qb
 
 
 class QbDataSetInCatalog(qb.DataSet, dcat.Dataset):

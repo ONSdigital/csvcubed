@@ -8,7 +8,7 @@ from typing import Any, Optional, Callable, List, Dict
 import rdflib
 import json
 
-from sharedmodels.rdf.resource import NewResource
+from csvcubedmodels.rdf.resource import NewResource
 
 
 def get_from_dict_ensure_exists(config: dict, key: str) -> Any:
@@ -38,7 +38,7 @@ def get_with_func_or_none(
 
 def rdf_resource_to_json_ld(resource: NewResource) -> List[Dict[str, Any]]:
     """
-    Converts a :class:`~sharedmodels.rdf.resource.NewResource` RDF model into a list of dictionaries containing json-ld
+    Converts a :class:`~csvcubedmodels.rdf.resource.NewResource` RDF model into a list of dictionaries containing json-ld
     """
     g = rdflib.Graph()
     resource.to_graph(g)

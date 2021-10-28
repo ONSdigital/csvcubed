@@ -2,7 +2,7 @@ import pytest
 from tempfile import TemporaryDirectory
 from pathlib import Path
 
-from csvqb.utils.file import copy_files_to_directory_with_structure
+from csvcubed.utils.file import copy_files_to_directory_with_structure
 
 
 def test_copying_files_with_dir_structure():

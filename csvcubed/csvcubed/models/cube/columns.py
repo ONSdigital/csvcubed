@@ -6,10 +6,10 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Optional, List
 
-from csvqb.inputs import PandasDataTypes
-from csvqb.models.pydanticmodel import PydanticModel
-from csvqb.models.uriidentifiable import UriIdentifiable
-from csvqb.models.validationerror import ValidationError
+from csvcubed.inputs import PandasDataTypes
+from csvcubed.models.pydanticmodel import PydanticModel
+from csvcubed.models.uriidentifiable import UriIdentifiable
+from csvcubed.models.validationerror import ValidationError
 
 
 @dataclass

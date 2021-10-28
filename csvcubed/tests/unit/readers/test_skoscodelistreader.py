@@ -1,9 +1,9 @@
 import pytest
 
-from csvqb.readers.skoscodelistreader import (
+from csvcubed.readers.skoscodelistreader import (
     extract_code_list_concept_scheme_info,
 )
-from csvqb.tests.unit.test_baseunit import get_test_cases_dir
+from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir()
 _skos_codelist_reader_test_cases = (

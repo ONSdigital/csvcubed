@@ -1,3 +1,3 @@
 """
-General utility functions for the :mod:`csvqb` project.
+General utility functions for the :mod:`csvcubed` project.
 """

@@ -4,7 +4,7 @@ import pytest
 from tempfile import TemporaryDirectory
 from pathlib import Path
 
-from csvqb.models.cube.qb.catalog import CatalogMetadata
+from csvcubed.models.cube.qb.catalog import CatalogMetadata
 
 
 def test_serialise_and_load_json():

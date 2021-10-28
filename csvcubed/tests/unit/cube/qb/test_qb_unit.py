@@ -1,7 +1,7 @@
 import pytest
 
-from csvqb.models.cube import NewQbUnit, ExistingQbUnit
-from csvqb.tests.unit.test_baseunit import assert_num_validation_errors
+from csvcubed.models.cube import NewQbUnit, ExistingQbUnit
+from tests.unit.test_baseunit import assert_num_validation_errors
 
 
 def test_new_unit_base_unit_validation():

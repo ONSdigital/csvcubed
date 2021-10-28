@@ -4,12 +4,12 @@ import pytest
 from typing import Dict, Any
 from rdflib import RDFS, Literal, URIRef, Graph
 
-from csvqb.models.cube import *
-from csvqb.models.cube.qb.components.arbitraryrdf import (
+from csvcubed.models.cube import *
+from csvcubed.models.cube.qb.components.arbitraryrdf import (
     RdfSerialisationHint,
     TripleFragment,
 )
-from csvqb.writers.skoscodelistwriter import SkosCodeListWriter
+from csvcubed.writers.skoscodelistwriter import SkosCodeListWriter
 
 
 basic_code_list = NewQbCodeList(

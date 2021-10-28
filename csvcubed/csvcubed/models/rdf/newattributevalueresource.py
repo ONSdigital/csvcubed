@@ -5,7 +5,7 @@ New Attribute Value
 from typing import Annotated, Optional
 
 from rdflib import RDFS, SKOS
-from sharedmodels.rdf import (
+from csvcubedmodels.rdf import (
     NewMetadataResource,
     Triple,
     PropertyStatus,

@@ -1,11 +1,11 @@
-from csvqb.inputs import PandasDataTypes
-from csvqb.models.cube.qb.components.attribute import NewQbAttributeValue
+from csvcubed.inputs import PandasDataTypes
+from csvcubed.models.cube.qb.components.attribute import NewQbAttributeValue
 import pytest
 
 import pandas as pd
 
-from csvqb.models.cube import *
-from csvqb.models.cube.qb.validationerrors import (
+from csvcubed.models.cube import *
+from csvcubed.models.cube.qb.validationerrors import (
     CsvColumnUriTemplateMissingError,
     MinNumComponentsNotSatisfiedError,
     UnitsNotDefinedError,
@@ -14,8 +14,8 @@ from csvqb.models.cube.qb.validationerrors import (
     WrongNumberComponentsError,
     IncompatibleComponentsError,
 )
-from csvqb.tests.unit.test_baseunit import *
-from csvqb.utils.qb.cube import validate_qb_component_constraints
+from tests.unit.test_baseunit import *
+from csvcubed.utils.qb.cube import validate_qb_component_constraints
 
 
 def test_single_measure_qb_definition():

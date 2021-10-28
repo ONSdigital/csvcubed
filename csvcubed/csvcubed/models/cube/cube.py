@@ -7,7 +7,7 @@ from typing import List, Optional, Set, TypeVar, Generic
 import pandas as pd
 import traceback
 
-from csvqb.models.validationerror import ValidationError
+from csvcubed.models.validationerror import ValidationError
 from .validationerrors import (
     DuplicateColumnTitleError,
     ColumnNotFoundInDataError,

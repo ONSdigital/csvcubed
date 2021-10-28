@@ -2,18 +2,18 @@
 Qb-Cube Validation Errors
 -------------------------
 
-:obj:`ValidationError <csvqb.models.validationerror.ValidationError>` models specific to :mod:`qb`.
+:obj:`ValidationError <csvcubed.models.validationerror.ValidationError>` models specific to :mod:`qb`.
 """
 
 from dataclasses import dataclass
 from typing import Optional, Type, Union
 
-from csvqb.models.cube.qb.components import (
+from csvcubed.models.cube.qb.components import (
     QbObservationValue,
     QbMultiUnits,
     QbDataStructureDefinition,
 )
-from csvqb.models.validationerror import SpecificValidationError
+from csvcubed.models.validationerror import SpecificValidationError
 
 ComponentTypeDescription = Union[str, Type[QbDataStructureDefinition]]
 

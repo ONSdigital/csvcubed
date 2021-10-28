@@ -10,9 +10,9 @@ from pandas.core.arrays.categorical import Categorical
 
 
 from .cube import get_all_units, get_all_measures, get_columns_of_dsd_type
-from csvqb.models.cube.qb import *
-from csvqb.models.cube.qb.components.unit import NewQbUnit, QbMultiUnits
-from csvqb.models.cube.qb.components.measure import (
+from csvcubed.models.cube.qb import *
+from csvcubed.models.cube.qb.components.unit import NewQbUnit, QbMultiUnits
+from csvcubed.models.cube.qb.components.measure import (
     NewQbMeasure,
     QbMultiMeasureDimension,
 )
@@ -44,7 +44,7 @@ def convert_data_values_to_uri_safe_values(
     cube: QbCube, raise_missing_value_exceptions: bool = True
 ) -> None:
     """
-    Given a :obj:`~csvqb.models.cube.qb.QbCube`, **replace** all of the text-values which should be represented by URIs
+    Given a :obj:`~csvcubed.models.cube.qb.QbCube`, **replace** all of the text-values which should be represented by URIs
     in the CSV-W output with the appropriate URIs.
 
     Also converts all appropriate columns to the pandas categorical format.

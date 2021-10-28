@@ -9,10 +9,10 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Set, Dict, Union, List, Tuple
 from rdflib.term import Identifier, URIRef, Literal
-from sharedmodels.rdf import NewResource, InversePredicate
+from csvcubedmodels.rdf import NewResource, InversePredicate
 
-from csvqb.models.pydanticmodel import PydanticModel
-from csvqb.utils.uri import looks_like_uri
+from csvcubed.models.pydanticmodel import PydanticModel
+from csvcubed.utils.uri import looks_like_uri
 
 
 class RdfSerialisationHint(Enum):

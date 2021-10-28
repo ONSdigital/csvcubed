@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import List
 
-from csvqb.models.validationerror import ValidationError
+from csvcubed.models.validationerror import ValidationError
 
 
 def get_test_base_dir() -> Path:
@@ -11,7 +11,7 @@ def get_test_base_dir() -> Path:
         test_root_path = Path(*path_parts[0 : test_index + 1])
     else:  # Fine Rob, you win.
         csvwlib_index = path_parts.index("csvwlib")
-        test_root_path = Path(*path_parts[0: csvwlib_index + 1], "csvqb", "csvqb", "tests")
+        test_root_path = Path(*path_parts[0: csvwlib_index + 1], "csvcubed", "tests")
     return test_root_path
 
 

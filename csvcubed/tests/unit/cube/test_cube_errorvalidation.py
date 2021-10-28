@@ -3,7 +3,7 @@ from typing import List
 import pandas as pd
 import pytest
 
-from csvqb.models.cube import *
+from csvcubed.models.cube import *
 
 
 def test_column_not_configured_error():

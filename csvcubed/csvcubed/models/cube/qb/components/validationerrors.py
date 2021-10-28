@@ -2,14 +2,14 @@
 Component Validation Errors
 ---------------------------
 
-:obj:`ValidationError <csvqb.models.validationerror.ValidationError>` models specific to :mod:`components`.
+:obj:`ValidationError <csvcubed.models.validationerror.ValidationError>` models specific to :mod:`components`.
 """
 
 from dataclasses import dataclass
 from typing import Set
 
 from .datastructuredefinition import QbDataStructureDefinition
-from csvqb.models.validationerror import SpecificValidationError
+from csvcubed.models.validationerror import SpecificValidationError
 
 
 @dataclass

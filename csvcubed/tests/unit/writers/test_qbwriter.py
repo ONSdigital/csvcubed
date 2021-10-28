@@ -2,16 +2,16 @@ import pytest
 from copy import deepcopy
 import pandas as pd
 from rdflib import RDFS, Graph, URIRef, Literal
-from sharedmodels import rdf
+from csvcubedmodels import rdf
 from typing import List
 
-from csvqb.models.cube import *
-from csvqb.models.cube.qb.components.arbitraryrdf import (
+from csvcubed.models.cube import *
+from csvcubed.models.cube.qb.components.arbitraryrdf import (
     TripleFragment,
     RdfSerialisationHint,
 )
-from csvqb.utils.iterables import first
-from csvqb.writers.qbwriter import QbWriter
+from csvcubed.utils.iterables import first
+from csvcubed.writers.qbwriter import QbWriter
 
 
 def _get_standard_cube_for_columns(columns: List[CsvColumn]) -> Cube:

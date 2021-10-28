@@ -5,10 +5,10 @@ Columns with qb Components
 from dataclasses import field, dataclass
 from typing import Optional, TypeVar, Generic, List
 
-from csvqb.inputs import PandasDataTypes, pandas_input_to_columnar
-from csvqb.utils.uri import csvw_column_name_safe
+from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar
+from csvcubed.utils.uri import csvw_column_name_safe
 from .components.datastructuredefinition import ColumnarQbDataStructureDefinition
-from csvqb.models.cube.columns import CsvColumn
+from csvcubed.models.cube.columns import CsvColumn
 from ...validationerror import ValidationError
 
 QbColumnarDsdType = TypeVar(

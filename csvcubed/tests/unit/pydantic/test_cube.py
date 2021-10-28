@@ -1,8 +1,8 @@
 import pandas as pd
 import pytest
 
-from csvqb.models.cube import *
-from csvqb.tests.unit.test_baseunit import assert_num_validation_errors
+from csvcubed.models.cube import *
+from tests.unit.test_baseunit import assert_num_validation_errors
 
 
 def test_attribute_property_validation():

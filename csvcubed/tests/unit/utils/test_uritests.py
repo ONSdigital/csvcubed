@@ -1,6 +1,6 @@
 import pytest
 
-from csvqb.utils.uri import (
+from csvcubed.utils.uri import (
     get_last_uri_part,
     csvw_column_name_safe,
     looks_like_uri,

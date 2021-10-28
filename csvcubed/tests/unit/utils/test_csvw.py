@@ -1,7 +1,7 @@
 import pytest
 
-from csvqb.tests.unit.test_baseunit import get_test_cases_dir
-from csvqb.utils.csvw import get_dependent_local_files, get_first_table_schema
+from tests.unit.test_baseunit import get_test_cases_dir
+from csvcubed.utils.csvw import get_dependent_local_files, get_first_table_schema
 
 csvw_utils_test_cases = get_test_cases_dir() / "utils" / "csvw"
 

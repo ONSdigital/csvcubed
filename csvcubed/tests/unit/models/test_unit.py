@@ -1,14 +1,14 @@
 import pandas as pd
 import pytest
 
-from csvqb.models.cube import (
+from csvcubed.models.cube import (
     NewQbUnit,
     QbColumn,
     ExistingQbUnit,
     QbMultiUnits,
 )
-from csvqb.models.cube.qb.components.validationerrors import UndefinedValuesError
-from csvqb.tests.unit.test_baseunit import assert_num_validation_errors
+from csvcubed.models.cube.qb.components.validationerrors import UndefinedValuesError
+from tests.unit.test_baseunit import assert_num_validation_errors
 
 
 def test_known_new_units_defined():

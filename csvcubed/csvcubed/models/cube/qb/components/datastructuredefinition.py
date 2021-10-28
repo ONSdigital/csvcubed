@@ -7,8 +7,8 @@ from abc import ABC, abstractmethod
 from typing import List, Optional
 import pandas as pd
 
-from csvqb.models.pydanticmodel import PydanticModel
-from csvqb.models.validationerror import ValidationError
+from csvcubed.models.pydanticmodel import PydanticModel
+from csvcubed.models.validationerror import ValidationError
 
 
 @dataclass

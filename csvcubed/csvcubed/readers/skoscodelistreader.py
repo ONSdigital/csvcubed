@@ -8,8 +8,8 @@ from pathlib import Path
 from typing import Tuple, Set
 from uritemplate import variables
 
-from csvqb.utils.csvw import get_first_table_schema
-from csvqb.utils.iterables import first
+from csvcubed.utils.csvw import get_first_table_schema
+from csvcubed.utils.iterables import first
 
 
 def extract_code_list_concept_scheme_info(

@@ -7,7 +7,7 @@ from datetime import datetime
 from typing import Optional
 from abc import ABC, abstractmethod
 
-from csvqb.models.pydanticmodel import PydanticModel
+from csvcubed.models.pydanticmodel import PydanticModel
 
 
 @dataclass

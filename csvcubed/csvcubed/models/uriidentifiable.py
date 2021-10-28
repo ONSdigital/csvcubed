@@ -2,7 +2,7 @@ import dataclasses
 from typing import Optional
 from abc import ABC, abstractmethod
 
-from csvqb.utils.uri import uri_safe
+from csvcubed.utils.uri import uri_safe
 
 
 @dataclasses.dataclass

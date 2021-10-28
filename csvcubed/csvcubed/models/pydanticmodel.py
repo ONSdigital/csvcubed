@@ -6,7 +6,7 @@ from pydantic import BaseConfig
 from typing import Dict, Type, List, Iterable, Union, Any
 from abc import ABC
 
-from sharedmodels.dataclassbase import DataClassBase
+from csvcubedmodels.dataclassbase import DataClassBase
 
 from .validationerror import ValidationError
 

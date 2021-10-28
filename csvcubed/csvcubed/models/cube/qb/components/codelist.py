@@ -8,18 +8,18 @@ from typing import Optional, List, Set
 from abc import ABC
 from pydantic import root_validator
 
-from csvqb.models.uriidentifiable import UriIdentifiable
-from csvqb.readers.skoscodelistreader import (
+from csvcubed.models.uriidentifiable import UriIdentifiable
+from csvcubed.readers.skoscodelistreader import (
     extract_code_list_concept_scheme_info,
 )
 from .arbitraryrdf import ArbitraryRdf, RdfSerialisationHint, TripleFragmentBase
 from .datastructuredefinition import QbDataStructureDefinition
-from csvqb.models.cube.qb.catalog import CatalogMetadata
-from csvqb.utils.uri import uri_safe
-from csvqb.utils.validators.uri import validate_uri
-from csvqb.utils.validators.file import validate_file_exists
-from csvqb.inputs import PandasDataTypes, pandas_input_to_columnar_str
-from csvqb.models.validationerror import ValidationError
+from csvcubed.models.cube.qb.catalog import CatalogMetadata
+from csvcubed.utils.uri import uri_safe
+from csvcubed.utils.validators.uri import validate_uri
+from csvcubed.utils.validators.file import validate_file_exists
+from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_str
+from csvcubed.models.validationerror import ValidationError
 
 
 @dataclass

@@ -1,8 +1,8 @@
 from behave import Given, When
 
 
-from csvqb.models.cube import *
-from csvqb.writers.skoscodelistwriter import SkosCodeListWriter
+from csvcubed.models.cube import *
+from csvcubed.writers.skoscodelistwriter import SkosCodeListWriter
 from devtools.behave.file import get_context_temp_dir_path
 
 

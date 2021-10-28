@@ -4,7 +4,7 @@ QbCube
 """
 from typing import List, TypeVar, Type, Set
 
-from csvqb.models.cube.qb.validationerrors import (
+from csvcubed.models.cube.qb.validationerrors import (
     CsvColumnLiteralWithUriTemplate,
     CsvColumnUriTemplateMissingError,
     MinNumComponentsNotSatisfiedError,
@@ -14,25 +14,25 @@ from csvqb.models.cube.qb.validationerrors import (
     BothUnitTypesDefinedError,
     IncompatibleComponentsError,
 )
-from csvqb.models.validationerror import ValidationError
-from csvqb.models.cube.cube import Cube
-from csvqb.models.cube.qb.columns import QbColumn
-from csvqb.models.cube.qb.components.dimension import (
+from csvcubed.models.validationerror import ValidationError
+from csvcubed.models.cube.cube import Cube
+from csvcubed.models.cube.qb.columns import QbColumn
+from csvcubed.models.cube.qb.components.dimension import (
     QbDimension,
     ExistingQbDimension,
 )
-from csvqb.models.cube.qb.components.attribute import (
+from csvcubed.models.cube.qb.components.attribute import (
     QbAttribute,
     QbAttributeLiteral,
 )
-from csvqb.models.cube.qb.components.measure import QbMultiMeasureDimension, QbMeasure
-from csvqb.models.cube.qb.components.unit import QbMultiUnits, QbUnit
-from csvqb.models.cube.qb.components.observedvalue import (
+from csvcubed.models.cube.qb.components.measure import QbMultiMeasureDimension, QbMeasure
+from csvcubed.models.cube.qb.components.unit import QbMultiUnits, QbUnit
+from csvcubed.models.cube.qb.components.observedvalue import (
     QbObservationValue,
     QbMultiMeasureObservationValue,
     QbSingleMeasureObservationValue,
 )
-from csvqb.models.cube.qb.components.datastructuredefinition import (
+from csvcubed.models.cube.qb.components.datastructuredefinition import (
     ColumnarQbDataStructureDefinition,
 )
 
@@ -41,7 +41,7 @@ QbColumnarDsdType = TypeVar(
     "QbColumnarDsdType", bound=ColumnarQbDataStructureDefinition
 )
 """Anything which inherits from :class:`ColumnarQbDataStructureDefinition 
-    <csvqb.models.cube.qb.components.datastructuredefinition.ColumnarQbDataStructureDefinition>`."""
+    <csvcubed.models.cube.qb.components.datastructuredefinition.ColumnarQbDataStructureDefinition>`."""
 
 
 def get_columns_of_dsd_type(
@@ -50,7 +50,7 @@ def get_columns_of_dsd_type(
     """
     e.g. `get_columns_of_dsd_type(cube, QbDimension)`
 
-    :return: The :class:`QbColumn <csvqb.models.cube.qb.columns.QbColumn>` s in :obj:`cube` which have
+    :return: The :class:`QbColumn <csvcubed.models.cube.qb.columns.QbColumn>` s in :obj:`cube` which have
         :attr:`components` of the requested type :obj:`t`.
     """
     return [
@@ -64,7 +64,7 @@ def validate_qb_component_constraints(cube: Cube) -> List[ValidationError]:
     """
     Validate a :class:`QbCube` to highlight errors in configuration.
 
-    :return: A list of :class:`ValidationError <csvqb.models.validationerror.ValidationError>` s.
+    :return: A list of :class:`ValidationError <csvcubed.models.validationerror.ValidationError>` s.
     """
 
     errors = _validate_dimensions(cube)
@@ -214,7 +214,7 @@ def _validate_observation_value(
 
 def get_all_measures(cube: Cube) -> Set[QbMeasure]:
     """
-    :return: The :obj:`set` of :class:`~csvqb.models.cube.qb.components.measure.QbMeasure` instances defined against the
+    :return: The :obj:`set` of :class:`~csvcubed.models.cube.qb.components.measure.QbMeasure` instances defined against the
       cube's columns.
     """
     multi_measure_dimension_columns = get_columns_of_dsd_type(
@@ -235,7 +235,7 @@ def get_all_measures(cube: Cube) -> Set[QbMeasure]:
 
 def get_all_units(cube: Cube) -> Set[QbUnit]:
     """
-    :return: The :obj:`set` of :class:`~csvqb.models.cube.qb.components.unit.QbUnit` instances defined against the
+    :return: The :obj:`set` of :class:`~csvcubed.models.cube.qb.components.unit.QbUnit` instances defined against the
       cube's columns.
     """
     multi_units_columns = get_columns_of_dsd_type(cube, QbMultiUnits)

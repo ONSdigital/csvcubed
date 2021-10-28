@@ -8,19 +8,19 @@ from abc import ABC
 import pandas as pd
 import uritemplate
 
-from csvqb.models.uriidentifiable import UriIdentifiable
-from csvqb.models.validationerror import ValidationError
-from csvqb.utils.validators.attributes import enforce_optional_attribute_dependencies
+from csvcubed.models.uriidentifiable import UriIdentifiable
+from csvcubed.models.validationerror import ValidationError
+from csvcubed.utils.validators.attributes import enforce_optional_attribute_dependencies
 from .arbitraryrdf import ArbitraryRdf, TripleFragmentBase, RdfSerialisationHint
 from .attribute import ExistingQbAttribute
 from .datastructuredefinition import (
     QbDataStructureDefinition,
     MultiQbDataStructureDefinition,
 )
-from csvqb.inputs import pandas_input_to_columnar_str, PandasDataTypes
+from csvcubed.inputs import pandas_input_to_columnar_str, PandasDataTypes
 from .validationerrors import UndefinedValuesError
-from csvqb.utils.uri import uri_safe
-from csvqb.utils.validators.uri import validate_uri
+from csvcubed.utils.uri import uri_safe
+from csvcubed.utils.validators.uri import validate_uri
 
 
 @dataclass

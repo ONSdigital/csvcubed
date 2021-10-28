@@ -1,7 +1,7 @@
 import pytest
 
-from csvqb.models.cube import *
-from csvqb.utils.qb.cube import get_all_units, get_all_measures, validate_qb_component_constraints
+from csvcubed.models.cube import *
+from csvcubed.utils.qb.cube import get_all_units, get_all_measures, validate_qb_component_constraints
 
 
 def test_get_all_units():
