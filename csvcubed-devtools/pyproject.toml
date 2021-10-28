@@ -1,10 +1,13 @@
 [tool.poetry]
 name = "csvcubed-devtools"
-version = "0.1.0"
+version = "0.1.1"
 description = "Development tools and dependencies for use in the csvcubed tooling."
-authors = ["Integrated Data Service - Dissemination <example@example.com>"]
+authors = ["Integrated Data Service - Dissemination <sharedcustomercontactcentre@ons.gov.uk>"]
 license = "Apache-2.0"
 exclude = ["docs/*"]
+packages = [
+    { include = "csvcubeddevtools" }
+]
 
 [tool.poetry.dependencies]
 python = "^3.9"
@@ -33,3 +36,4 @@ exclude = [
     ".venv",
     "devtools/behave"
 ]
+

@@ -2,17 +2,25 @@
 name = "csvcubed-models"
 version = "0.1.0"
 description = "Models and RDF serialisation functionality useful to the csvcubed family of tools."
-authors = ["Integrated Data Service - Dissemination <example@example.com>"]
+authors = ["Integrated Data Service - Dissemination <sharedcustomercontactcentre@ons.gov.uk>"]
 license = "Apache-2.0"
-exclude = ["docs/*", "sharedmodels/tests/*"]
+exclude = ["docs/*"]
+packages = [
+    { include = "csvcubedmodels"}
+]
 
 [tool.poetry.dependencies]
 python = "^3.9"
 unidecode = "*"
 rdflib = "~=5.0.0"
 
+[[tool.poetry.source]]
+name = 'test-pypi'
+url = 'https://test.pypi.org/simple/'
+secondary = true
+
 [tool.poetry.dev-dependencies]
-devtools = {path = "./../devtools", develop = true}
+csvcubed-devtools = "*"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -23,6 +31,5 @@ pythonVersion="3.9"
 exclude = [
     ".venv",
     "**/tests",
-    "sharedmodels/scripts",
     "**/build"
 ]

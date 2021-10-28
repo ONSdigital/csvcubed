@@ -5,7 +5,10 @@ description = "A tool to generate RDF Data Cube style CSV-W cubes from tidy CSV 
 authors = ["Integrated Data Service - Dissemination <example@example.com>"]
 license = "Apache-2.0"
 readme="csvqb/README.md"
-exclude = ["docs/*", "csvqb/tests/*"]
+exclude = ["docs/*", "tests/*"]
+packages = [
+    { include = "src" }
+]
 
 [tool.poetry.dependencies]
 python = "^3.9"

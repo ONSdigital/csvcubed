@@ -4,7 +4,7 @@ from typing import List, Set, Dict, TypeVar, Generic, Union, Optional
 
 import pytest
 
-from sharedmodels.dataclassbase import DataClassBase
+from csvcubed_models.dataclassbase import DataClassBase
 
 
 def test_write_to_deep_dict():

@@ -7,18 +7,18 @@ from abc import ABC
 from rdflib import Literal, RDFS
 
 
-import sharedmodels.rdf.rdf as rdf
-import sharedmodels.rdf.rdfs as rdfs
-import sharedmodels.rdf.skos as skos
-from sharedmodels.rdf.resource import (
+import csvcubed_models.rdf.rdf as rdf
+import csvcubed_models.rdf.rdfs as rdfs
+import csvcubed_models.rdf.skos as skos
+from csvcubed_models.rdf.resource import (
     NewResource,
     map_resource_to_uri,
     Resource,
     MaybeResource,
     ExistingResource,
 )
-from sharedmodels.rdf.triple import Triple, PropertyStatus
-from sharedmodels.rdf.namespaces import QB
+from csvcubed_models.rdf.triple import Triple, PropertyStatus
+from csvcubed_models.rdf.namespaces import QB
 
 
 class ComponentProperty(rdf.PropertyWithMetadata):

@@ -10,4 +10,4 @@ This package contains functionality to:
 
 ## API Documentation
 
-The latest API Documentation for the package can be found [here](https://ci.floop.org.uk/job/GSS_data/job/csvwlib/job/main/lastSuccessfulBuild/artifact/sharedmodels/docs/_build/html/index.html).
+The latest API Documentation for the package can be found [here](https://ci.floop.org.uk/job/GSS_data/job/csvwlib/job/main/lastSuccessfulBuild/artifact/csvcubed_models/docs/_build/html/index.html).

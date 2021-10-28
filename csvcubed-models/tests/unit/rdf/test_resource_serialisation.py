@@ -3,7 +3,7 @@ from typing import Annotated
 import pytest
 from rdflib import URIRef, Graph, Literal, RDFS, FOAF, RDF
 
-from sharedmodels.rdf.resource import (
+from csvcubed_models.rdf.resource import (
     NewResource,
     map_str_to_en_literal,
     map_resource_to_uri,
@@ -11,7 +11,7 @@ from sharedmodels.rdf.resource import (
     ExistingResource,
     InversePredicate,
 )
-from sharedmodels.rdf.triple import Triple, InverseTriple, PropertyStatus
+from csvcubed_models.rdf.triple import Triple, InverseTriple, PropertyStatus
 
 
 def test_overriding_attribute_annotations():
