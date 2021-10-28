@@ -17,4 +17,3 @@ poetry_update_setup_sync "csvcubed-devtools"
 poetry_update_setup_sync "csvcubed-models"
 poetry_update_setup_sync "csvcubed-pmd"
 poetry_update_setup_sync "csvcubed"
-~
