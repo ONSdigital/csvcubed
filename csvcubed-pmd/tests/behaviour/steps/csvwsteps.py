@@ -2,8 +2,8 @@ from behave import Given, When
 from pathlib import Path
 
 
-from pmd.codelist.datetimecodelistgen import generate_date_time_code_lists_for_csvw_metadata_file
-from devtools.behave.file import get_context_temp_dir_path
+from csvcubedpmd.codelist.datetimecodelistgen import generate_date_time_code_lists_for_csvw_metadata_file
+from csvcubeddevtools.behave.file import get_context_temp_dir_path
 
 
 @Given("a CSV-qb \"{file}\"")

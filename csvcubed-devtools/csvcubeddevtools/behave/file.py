@@ -70,4 +70,4 @@ def _get_test_cases_dir(start_dir: Path = Path(".")):
             f"Found multiple child test-case directories: {', '.join([str(d) for d in child_test_cases_dirs])}"
         )
 
-    return _get_test_cases_dir(start_dir.parent)
+    return _get_test_cases_dir(start_dir.absolute().parent)

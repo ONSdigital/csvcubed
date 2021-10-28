@@ -22,7 +22,7 @@ unidecode = "*"
 uritemplate = "*"
 
 [tool.poetry.dev-dependencies]
-devtools = {path = "./../devtools", develop = true}
+csvcubed-devtools = "*"
 
 [[tool.poetry.source]]
 name = 'test-pypi'

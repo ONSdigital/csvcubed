@@ -1,12 +1,12 @@
 import pytest
 from pathlib import Path
 
-from pmd.codelist.datetimecodelistgen import \
+from csvcubedpmd.codelist.datetimecodelistgen import \
     _get_dimensions_to_generate_code_lists_for, _get_csv_columns_for_dimension, _get_unique_values_from_columns, \
     _create_code_list_for_dimension, generate_date_time_code_lists_for_csvw_metadata_file
 
-TESTS_ROOT_PATH = Path(".")
-TEST_CASES_PATH = TESTS_ROOT_PATH / ".." / "test-cases"
+TESTS_ROOT_PATH = Path("tests")
+TEST_CASES_PATH = TESTS_ROOT_PATH / "test-cases"
 
 HMRC_OTS_CN8_CSV = TEST_CASES_PATH / "hmrc-overseas-trade-statistics-cn8.csv"
 HMRC_OTS_CN8_METADATA_JSON = TEST_CASES_PATH / "hmrc-overseas-trade-statistics-cn8.csv-metadata.json"

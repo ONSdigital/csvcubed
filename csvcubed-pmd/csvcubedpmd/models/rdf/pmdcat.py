@@ -8,12 +8,12 @@ from typing import Annotated
 from abc import ABC
 from datetime import datetime
 
-from sharedmodels.rdf.triple import Triple, InverseTriple, PropertyStatus
-from sharedmodels.rdf.resource import NewMetadataResource, Resource, map_str_to_markdown, map_resource_to_uri, \
+from csvcubedmodels.rdf.triple import Triple, InverseTriple, PropertyStatus
+from csvcubedmodels.rdf.resource import NewMetadataResource, Resource, map_str_to_markdown, map_resource_to_uri, \
     map_str_to_en_literal
-from sharedmodels.rdf import dcat
-from sharedmodels.rdf import skos
-from sharedmodels.rdf.namespaces import GDP
+from csvcubedmodels.rdf import dcat
+from csvcubedmodels.rdf import skos
+from csvcubedmodels.rdf.namespaces import GDP
 
 PMDCAT = Namespace("http://publishmydata.com/pmdcat#")
 

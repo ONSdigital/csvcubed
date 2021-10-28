@@ -13,9 +13,9 @@ from typing import List, Tuple, Any, Dict, Set, Optional
 import csvw
 from uritemplate import expand
 
-from pmd.models.csvwithcolumndefinitions import CsvWithColumnDefinitions
-from pmd.models.rdf import pmdcat
-from pmd.config import pmdconfig
+from csvcubedpmd.models.csvwithcolumndefinitions import CsvWithColumnDefinitions
+from csvcubedpmd.models.rdf import pmdcat
+from csvcubedpmd.config import pmdconfig
 
 
 def generate_date_time_code_lists_for_csvw_metadata_file(metadata_file: Path,

@@ -16,6 +16,7 @@ pydantic = {git = "https://github.com/robons/pydantic.git", develop = true}
 python = "~=3.9"
 rdflib-jsonld = "==0.6.1"
 csvcubed-models = "*"
+pyparsing = "==2.4.7"
 
 [tool.poetry.dev-dependencies]
 csvcubed-devtools = "*"
