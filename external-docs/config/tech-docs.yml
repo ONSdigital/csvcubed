@@ -3,7 +3,7 @@
 
 # Header-related options
 show_govuk_logo: false
-service_name: Integrated Data Service - csvwlib
+service_name: Integrated Data Service - csvcubed
 service_link: .
 phase: Alpha
 

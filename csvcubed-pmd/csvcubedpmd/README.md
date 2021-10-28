@@ -1,4 +1,4 @@
-# csvwlib - PMD
+# csvcubed - PMD
 
 > Tools to transform a CSV-qb into RDF which is compatible with the [Publish My Data](https://publishmydata.com) platform.
 

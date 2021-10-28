@@ -1,4 +1,4 @@
-# csvwlib - Shared Models
+# csvcubed - Shared Models
 
 > Models and RDF serialisation functionality required by the csvqb and pmd packages.
 
