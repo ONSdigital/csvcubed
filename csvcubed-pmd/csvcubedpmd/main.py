@@ -5,7 +5,7 @@ PMD Tools CLI
 import argparse
 
 
-from pmd import codelist
+from csvcubedpmd import codelist
 
 
 def main():
