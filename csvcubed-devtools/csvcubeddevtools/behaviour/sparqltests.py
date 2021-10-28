@@ -11,7 +11,7 @@ from typing import Tuple, List
 
 
 from csvcubeddevtools.helpers.tar import dir_to_tar
-from csvcubeddevtools.behave.temporarydirectory import get_context_temp_dir_path
+from csvcubeddevtools.behaviour.temporarydirectory import get_context_temp_dir_path
 
 client = docker.from_env()
 client.images.pull("gsscogs/gdp-sparql-tests")

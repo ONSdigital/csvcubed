@@ -4,7 +4,7 @@ from pathlib import Path
 from csvcubedpmd.codelist.datetimecodelistgen import \
     _get_dimensions_to_generate_code_lists_for, _get_csv_columns_for_dimension, _get_unique_values_from_columns
 
-from csvcubeddevtools.behave.file import _get_test_cases_dir
+from csvcubeddevtools.behaviour.file import _get_test_cases_dir
 
 TEST_CASES_PATH = _get_test_cases_dir()
 

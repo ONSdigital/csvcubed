@@ -1,7 +1,7 @@
 import pandas as pd
 from pathlib import Path
 from behave import Given, When, Then, Step
-from csvcubeddevtools.behave.file import get_context_temp_dir_path
+from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
 
 from csvcubed.models.cube import *
 from csvcubed.writers.qbwriter import QbWriter

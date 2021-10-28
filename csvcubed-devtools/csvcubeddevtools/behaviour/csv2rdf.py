@@ -13,7 +13,7 @@ from tempfile import TemporaryDirectory
 
 
 from csvcubeddevtools.helpers.tar import dir_to_tar, extract_tar
-from csvcubeddevtools.behave.temporarydirectory import get_context_temp_dir_path
+from csvcubeddevtools.behaviour.temporarydirectory import get_context_temp_dir_path
 
 client = docker.from_env()
 client.images.pull("gsscogs/csv2rdf")
