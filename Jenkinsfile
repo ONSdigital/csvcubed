@@ -74,7 +74,7 @@ pipeline {
                         sh "poetry run pytest --junitxml=pytest_results_sharedmodels.xml"
                     }
                 }
-                dir('csvcubed-models') {
+                dir('csvcubed-pmd') {
                     sh 'poetry run behave tests/behaviour --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json'
                     dir('pmd/tests/unit') {
                         sh "poetry run pytest --junitxml=pytest_results_pmd.xml"
