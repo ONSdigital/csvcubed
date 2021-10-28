@@ -10,7 +10,6 @@ packages = [
 version = "0.1.0"
 
 [tool.poetry.dependencies]
-csvcubed-models = "*"
 csvw = "*"
 pandas = "*"
 pyparsing = "~=2.4.7"
@@ -22,12 +21,12 @@ unidecode = "*"
 uritemplate = "*"
 
 [tool.poetry.dev-dependencies]
-csvcubed-devtools = "*"
-
-[[tool.poetry.source]]
-name = 'test-pypi'
-secondary = true
-url = 'https://test.pypi.org/simple/'
+# The -models library is currently listed as a dev dependency so that we can reference it by its relative
+# path and continue to edit code side-by-side within the repo.
+# The dependency is to become a regular dependency when the packages are split out into separate repositories in
+# Issue #205
+csvcubed-models = {path = "./../csvcubed-models", develop = true}
+csvcubed-devtools = {path = "./../csvcubed-devtools", develop = true}
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

@@ -15,12 +15,7 @@ rdflib = "~=5.0.0"
 unidecode = "*"
 
 [tool.poetry.dev-dependencies]
-csvcubed-devtools = "*"
-
-[[tool.poetry.source]]
-name = 'test-pypi'
-secondary = true
-url = 'https://test.pypi.org/simple/'
+csvcubed-devtools = {path = "./../csvcubed-devtools", develop = true}
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
