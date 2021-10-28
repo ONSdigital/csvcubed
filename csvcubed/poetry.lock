@@ -177,6 +177,7 @@ chardet = "*"
 csvw = "*"
 docker = "*"
 pipenv-setup = "*"
+pyparsing = "==2.4.7"
 pytest = "*"
 python-dateutil = "*"
 rdflib = "*"
@@ -957,7 +958,7 @@ test = ["websockets"]
 [metadata]
 lock-version = "1.1"
 python-versions = "~=3.9"
-content-hash = "97898af6083a710c92f7f4d14874b0c0338dd1a290c8bf8daa1ba157fb2f3ba6"
+content-hash = "7a99d267bdf321803259227b8ddfeb76e347fd303b3cfdf040ac1260a0350d10"
 
 [metadata.files]
 alabaster = [

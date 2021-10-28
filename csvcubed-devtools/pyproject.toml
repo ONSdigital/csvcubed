@@ -22,6 +22,7 @@ python-dateutil = "*"
 rdflib = "*"
 sphinx = "*"
 sphinx-book-theme = "*"
+pyparsing = "==2.4.7"
 
 [tool.poetry.dev-dependencies]
 flake8 = "*"
