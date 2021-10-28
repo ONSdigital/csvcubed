@@ -69,20 +69,20 @@ pipeline {
         }
         stage('Test') {
             steps {
-                dir('sharedmodels') {
-                    dir('sharedmodels/tests/unit') {
+                dir('csvcubed-models') {
+                    dir('tests/unit') {
                         sh "poetry run pytest --junitxml=pytest_results_sharedmodels.xml"
                     }
                 }
-                dir('pmd') {
-                    sh 'poetry run behave pmd/tests/behaviour --tags=-skip -f json.cucumber -o pmd/tests/behaviour/test-results.json'
+                dir('csvcubed-models') {
+                    sh 'poetry run behave tests/behaviour --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json'
                     dir('pmd/tests/unit') {
                         sh "poetry run pytest --junitxml=pytest_results_pmd.xml"
                     }
                 }
-                dir('csvqb') {
-                    sh 'poetry run behave csvqb/tests/behaviour --tags=-skip -f json.cucumber -o csvqb/tests/behaviour/test-results.json'
-                    dir('csvqb/tests/unit') {
+                dir('csvcubed') {
+                    sh 'poetry run behave tests/behaviour --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json'
+                    dir('tests/unit') {
                         sh "poetry run pytest --junitxml=pytest_results_csvqb.xml"
                     }
                 }
@@ -92,19 +92,19 @@ pipeline {
         }
         stage('Package') {
             steps {
-                dir('devtools') {
+                dir('csvcubed-devtools') {
                     sh 'poetry build'
                 }
 
-                dir('sharedmodels') {
+                dir('csvcubed-models') {
                     sh 'poetry build'
                 }
 
-                dir('pmd') {
+                dir('csvcubed-pmd') {
                     sh 'poetry build'
                 }
 
-                dir('csvqb') {
+                dir('csvcubed') {
                     sh 'poetry build'
                 }
 
@@ -114,23 +114,23 @@ pipeline {
         stage('Documentation') {
             steps {
                 script {
-                    dir('devtools') {
-                        sh "poetry run sphinx-apidoc -F -M -a -P --tocfile index.rst -d 10 -E -o docs --implicit-namespaces -o docs devtools \"setup*\""
+                    dir('csvcubed-devtools') {
+                        sh "poetry run sphinx-apidoc -F -M -a -P --tocfile index.rst -d 10 -E -o docs --implicit-namespaces -o docs csvcubed-devtools \"setup*\""
                         sh 'poetry run sphinx-build -W -b html docs docs/_build/html'
                     }
 
-                    dir('sharedmodels') {
-                        sh "poetry run sphinx-apidoc -F -M -a -P --tocfile index.rst -d 10 -E --implicit-namespaces -o docs sharedmodels \"setup*\" \"sharedmodels/scripts\" \"sharedmodels/tests\""
+                    dir('csvcubed-models') {
+                        sh "poetry run sphinx-apidoc -F -M -a -P --tocfile index.rst -d 10 -E --implicit-namespaces -o docs csvcubed-models \"setup*\" \"csvcubedmodels/scripts\" \"/tests\""
                         sh 'poetry run sphinx-build -W -b html docs docs/_build/html'
                     }
 
-                    dir('pmd') {
-                        sh "poetry run sphinx-apidoc -F -M -a -P --tocfile index.rst -d 10 -E --implicit-namespaces -o docs  pmd \"setup*\" \"pmd/tests\""
+                    dir('csvcubed-pmd') {
+                        sh "poetry run sphinx-apidoc -F -M -a -P --tocfile index.rst -d 10 -E --implicit-namespaces -o docs  csvcubed-pmd \"setup*\" \"tests\""
                         sh 'poetry run sphinx-build -W -b html docs docs/_build/html'
                     }
 
-                    dir('csvqb') {
-                        sh "poetry run sphinx-apidoc -F -M -a -P --tocfile index.rst -d 10 -E --implicit-namespaces -o docs csvqb \"setup*\" \"csvqb/tests\""
+                    dir('csvcubed') {
+                        sh "poetry run sphinx-apidoc -F -M -a -P --tocfile index.rst -d 10 -E --implicit-namespaces -o docs csvcubed \"setup*\" \"tests\""
                         sh 'poetry run sphinx-build -W -b html docs docs/_build/html'
                     }
 
