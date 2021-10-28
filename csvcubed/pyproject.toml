@@ -1,20 +1,20 @@
 [tool.poetry]
-name = "csvqb"
-version = "0.1.0"
-description = "A tool to generate RDF Data Cube style CSV-W cubes from tidy CSV files. Part of the csvcubed family."
 authors = ["Integrated Data Service - Dissemination <example@example.com>"]
+description = "A tool to generate RDF Data Cube style CSV-W cubes from tidy CSV files. Part of the csvcubed family."
+exclude = ["docs/*"]
 license = "Apache-2.0"
-readme="csvqb/README.md"
-exclude = ["docs/*", "tests/*"]
+name = "csvqb"
 packages = [
-    { include = "src" }
+  {include = "csvcubed"},
 ]
+readme = "csvqb/README.md"
+version = "0.1.0"
 
 [tool.poetry.dependencies]
-python = "^3.9"
 pandas = "~=1.3.3"
-rdflib-jsonld = "==0.6.1"
 pydantic = {git = "https://github.com/robons/pydantic.git", develop = true}
+python = "^3.9"
+rdflib-jsonld = "==0.6.1"
 
 [tool.poetry.dev-dependencies]
 devtools = {path = "./../devtools", develop = true}
@@ -24,13 +24,18 @@ devtools = {path = "./../devtools", develop = true}
 # repositories in Issue #205
 sharedmodels = {path = "./../sharedmodels", develop = true}
 
+[[tool.poetry.source]]
+name = 'test-pypi'
+secondary = true
+url = 'https://test.pypi.org/simple/'
+
 [build-system]
-requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core>=1.0.0"]
 
 [tool.pyright]
-pythonVersion="3.9"
 exclude = [
-    ".venv",
-    "**/tests"
+  ".venv",
+  "**/tests",
 ]
+pythonVersion = "3.9"

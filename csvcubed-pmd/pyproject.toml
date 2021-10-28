@@ -1,12 +1,16 @@
 [tool.poetry]
-authors = ["Integrated Data Service - Dissemination <example@example.com>"]
+authors = ["Integrated Data Service - Dissemination <sharedcustomercontactcentre@ons.gov.uk>"]
 description = "Provides functionality necessary to transform RDF Data Cube style CSV-Ws into a format compatible with the Publish My Data platform. Part of the csvcubed family."
-exclude = ["docs/*", "pmd/tests/*"]
+exclude = ["docs/*"]
 license = "Apache-2.0"
 name = "csvcubed-pmd"
+packages = [
+  {include = "csvcubedpmd"},
+]
 version = "0.1.0"
 
 [tool.poetry.dependencies]
+csvcubed-models = "*"
 csvw = "*"
 pandas = "*"
 pyparsing = "~=2.4.7"
@@ -19,11 +23,11 @@ uritemplate = "*"
 
 [tool.poetry.dev-dependencies]
 devtools = {path = "./../devtools", develop = true}
-# The sharedmodels library is currently listed as a dev dependency so that we can reference it by its relative
-# path and continue to edit code side-by-side
-# The sharedmodels dependency is to become a regular dependency when the packages are split out into separate
-# repositories in Issue #205
-sharedmodels = {path = "./../sharedmodels", develop = true}
+
+[[tool.poetry.source]]
+name = 'test-pypi'
+secondary = true
+url = 'https://test.pypi.org/simple/'
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
@@ -37,4 +41,4 @@ exclude = [
 pythonVersion = "3.9"
 
 [tool.poetry.scripts]
-pmdutils = 'pmd.main:main'
+pmdutils = 'csvcubedpmd.main:main'

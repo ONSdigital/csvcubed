@@ -14,6 +14,11 @@ It also contains shared functionality to support testing, e.g. common *behave* t
 
 This package should be installed as a [dev dependency](https://python-poetry.org/docs/cli#options-3) to ensure that end-users of *csvwlib* are not required to install development tools such as docker.
 
+### Usage
+```python
+from csvcubeddevtools import behave as qbbehave
+```
+
 ## API Documentation
 
 The latest API Documentation for the package can be found [here](https://ci.floop.org.uk/job/GSS_data/job/csvwlib/job/main/lastSuccessfulBuild/artifact/devtools/docs/_build/html/index.html).
