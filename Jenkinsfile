@@ -50,19 +50,19 @@ pipeline {
                 }
             }
             steps {
-                    dir('devtools') {
+                    dir('csvcubed-devtools') {
                         sh 'poetry run pyright . --lib'
                     }
 
-                    dir('sharedmodels') {
+                    dir('csvcubed-models') {
                         sh 'poetry run pyright . --lib'
                     }
 
-                    dir('pmd') {
+                    dir('csvcubed-pmd') {
                         sh 'poetry run pyright . --lib'
                     }
 
-                    dir('csvqb') {
+                    dir('csvcubed') {
                         sh 'poetry run pyright . --lib'
                     }
             }
