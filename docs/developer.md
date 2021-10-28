@@ -52,11 +52,11 @@ Each package has the following file/directory structure:
 ```text
 PackageName (e.g. csvqb)
 ├── PackageName - (e.g. csvqb) all project python files go inside here.
-│   ├── tests
-│   │   ├── behaviour - Behave/cucumber tests go in here.
-│   │   ├── test-cases - Test case example files go in here
-│   │   └── unit - pytest unit tests go in here.
 │   └── README.md - (optional) README file providing a summary of the package.
+├── tests
+│   ├── behaviour - Behave/cucumber tests go in here.
+│   ├── test-cases - Test case example files go in here
+│   └── unit - pytest unit tests go in here.
 ├── docs
 │   └── conf.py - Configures the API Documentation generated.
 ├── poetry.lock - Locks all dependant packages (and transitive dependencies).
