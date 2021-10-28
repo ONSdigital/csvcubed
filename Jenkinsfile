@@ -75,15 +75,19 @@ pipeline {
                     }
                 }
                 dir('csvcubed-pmd') {
-                    sh 'poetry run behave tests/behaviour --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json'
-                    dir('csvcubedpmd/tests/unit') {
-                        sh "poetry run pytest --junitxml=pytest_results_pmd.xml"
+                    dir('csvcubedpmd'){
+                        sh 'poetry run behave tests/behaviour --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json'
+                        dir('tests/unit') {
+                            sh "poetry run pytest --junitxml=pytest_results_pmd.xml"
+                        }
                     }
                 }
                 dir('csvcubed') {
-                    sh 'poetry run behave tests/behaviour --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json'
-                    dir('csvcubed/tests/unit') {
-                        sh "poetry run pytest --junitxml=pytest_results_csvqb.xml"
+                    dir('csvcubed') {
+                        sh 'poetry run behave tests/behaviour --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json'
+                        dir('tests/unit') {
+                            sh "poetry run pytest --junitxml=pytest_results_csvqb.xml"
+                        }
                     }
                 }
 
