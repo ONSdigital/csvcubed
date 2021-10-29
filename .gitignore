@@ -137,11 +137,10 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
-#Intellij idea
+# IDE ignores
 .idea
-
 .jython_cache
-
 .vscode
 
+# Ignore docs folders
 docs

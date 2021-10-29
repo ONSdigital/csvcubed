@@ -12,17 +12,17 @@ pipeline {
                     // Clean up any unwanted files lying about after the previous build.
                     sh "git clean -fxd --exclude='.venv'"
 
-                    dir('devtools') {
+                    dir('csvcubed-devtools') {
                         sh 'poetry config virtualenvs.in-project true'
                         sh 'poetry install'
                     }
 
-                    dir('sharedmodels') {
+                    dir('csvcubed-models') {
                         sh 'poetry config virtualenvs.in-project true'
                         sh 'poetry install'
                     }
 
-                    dir('pmd') {
+                    dir('csvcubed-pmd') {
                         sh 'poetry config virtualenvs.in-project true'
                         sh 'poetry install'
                         // Patch behave so that it can output the correct format for the Jenkins cucumber tool.
@@ -31,7 +31,7 @@ pipeline {
                         sh "patch -Nf -d \"${venv_location}/lib/python3.9/site-packages/behave/formatter\" -p1 < /cucumber-format.patch || true"
                     }
 
-                    dir('csvqb') {
+                    dir('csvcubed') {
                         sh 'poetry config virtualenvs.in-project true'
                         sh 'poetry install'
                         // Patch behave so that it can output the correct format for the Jenkins cucumber tool.
@@ -50,40 +50,38 @@ pipeline {
                 }
             }
             steps {
-                    dir('devtools') {
+                    dir('csvcubed-devtools') {
                         sh 'poetry run pyright . --lib'
                     }
 
-                    dir('sharedmodels') {
+                    dir('csvcubed-models') {
                         sh 'poetry run pyright . --lib'
                     }
 
-                    dir('pmd') {
+                    dir('csvcubed-pmd') {
                         sh 'poetry run pyright . --lib'
                     }
 
-                    dir('csvqb') {
+                    dir('csvcubed') {
                         sh 'poetry run pyright . --lib'
                     }
             }
         }
         stage('Test') {
             steps {
-                dir('sharedmodels') {
-                    dir('sharedmodels/tests/unit') {
-                        sh "poetry run pytest --junitxml=pytest_results_sharedmodels.xml"
-                    }
+                dir('csvcubed-models/tests/unit') {
+                    sh "poetry run pytest --junitxml=pytest_results_models.xml"
                 }
-                dir('pmd') {
-                    sh 'poetry run behave pmd/tests/behaviour --tags=-skip -f json.cucumber -o pmd/tests/behaviour/test-results.json'
-                    dir('pmd/tests/unit') {
+                dir('csvcubed-pmd') {
+                    sh 'poetry run behave tests/behaviour --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json'
+                    dir('tests/unit') {
                         sh "poetry run pytest --junitxml=pytest_results_pmd.xml"
                     }
                 }
-                dir('csvqb') {
-                    sh 'poetry run behave csvqb/tests/behaviour --tags=-skip -f json.cucumber -o csvqb/tests/behaviour/test-results.json'
-                    dir('csvqb/tests/unit') {
-                        sh "poetry run pytest --junitxml=pytest_results_csvqb.xml"
+                dir('csvcubed') {
+                    sh 'poetry run behave tests/behaviour --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json'
+                    dir('tests/unit') {
+                        sh "poetry run pytest --junitxml=pytest_results_csvcubed.xml"
                     }
                 }
 
@@ -92,19 +90,19 @@ pipeline {
         }
         stage('Package') {
             steps {
-                dir('devtools') {
+                dir('csvcubed-devtools') {
                     sh 'poetry build'
                 }
 
-                dir('sharedmodels') {
+                dir('csvcubed-models') {
                     sh 'poetry build'
                 }
 
-                dir('pmd') {
+                dir('csvcubed-pmd') {
                     sh 'poetry build'
                 }
 
-                dir('csvqb') {
+                dir('csvcubed') {
                     sh 'poetry build'
                 }
 
@@ -114,23 +112,23 @@ pipeline {
         stage('Documentation') {
             steps {
                 script {
-                    dir('devtools') {
-                        sh "poetry run sphinx-apidoc -F -M -a -P --tocfile index.rst -d 10 -E -o docs --implicit-namespaces -o docs devtools \"setup*\""
+                    dir('csvcubed-devtools') {
+                        sh "poetry run sphinx-apidoc -F -M -a -P --tocfile index.rst -d 10 -E -o docs --implicit-namespaces -o docs csvcubeddevtools \"setup*\""
                         sh 'poetry run sphinx-build -W -b html docs docs/_build/html'
                     }
 
-                    dir('sharedmodels') {
-                        sh "poetry run sphinx-apidoc -F -M -a -P --tocfile index.rst -d 10 -E --implicit-namespaces -o docs sharedmodels \"setup*\" \"sharedmodels/scripts\" \"sharedmodels/tests\""
+                    dir('csvcubed-models') {
+                        sh "poetry run sphinx-apidoc -F -M -a -P --tocfile index.rst -d 10 -E --implicit-namespaces -o docs csvcubedmodels \"setup*\" \"csvcubedmodels/scripts\" \"/tests\""
                         sh 'poetry run sphinx-build -W -b html docs docs/_build/html'
                     }
 
-                    dir('pmd') {
-                        sh "poetry run sphinx-apidoc -F -M -a -P --tocfile index.rst -d 10 -E --implicit-namespaces -o docs  pmd \"setup*\" \"pmd/tests\""
+                    dir('csvcubed-pmd') {
+                        sh "poetry run sphinx-apidoc -F -M -a -P --tocfile index.rst -d 10 -E --implicit-namespaces -o docs  csvcubedpmd \"setup*\" \"tests\""
                         sh 'poetry run sphinx-build -W -b html docs docs/_build/html'
                     }
 
-                    dir('csvqb') {
-                        sh "poetry run sphinx-apidoc -F -M -a -P --tocfile index.rst -d 10 -E --implicit-namespaces -o docs csvqb \"setup*\" \"csvqb/tests\""
+                    dir('csvcubed') {
+                        sh "poetry run sphinx-apidoc -F -M -a -P --tocfile index.rst -d 10 -E --implicit-namespaces -o docs csvcubed \"setup*\" \"tests\""
                         sh 'poetry run sphinx-build -W -b html docs docs/_build/html'
                     }
 

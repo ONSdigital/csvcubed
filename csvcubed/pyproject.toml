@@ -1,0 +1,37 @@
+[tool.poetry]
+authors = ["Integrated Data Service - Dissemination <example@example.com>"]
+description = "A tool to generate RDF Data Cube style CSV-W cubes from tidy CSV files. Part of the csvcubed family."
+exclude = ["docs/*"]
+license = "Apache-2.0"
+name = "csvcubed"
+packages = [
+  {include = "csvcubed"},
+]
+readme = "csvcubed/README.md"
+version = "0.0.1"
+
+[tool.poetry.dependencies]
+pandas = "~=1.3.3"
+pydantic = {git = "https://github.com/robons/pydantic.git", develop = true}
+python = "~=3.9"
+rdflib-jsonld = "==0.6.1"
+pyparsing = "==2.4.7"
+
+[tool.poetry.dev-dependencies]
+# The -models library is currently listed as a dev dependency so that we can reference it by its relative
+# path and continue to edit code side-by-side within the repo.
+# The dependency is to become a regular dependency when the packages are split out into separate repositories in
+# Issue #205
+csvcubed-models = {path = "./../csvcubed-models", develop = true}
+csvcubed-devtools = {path = "./../csvcubed-devtools", develop = true}
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core>=1.0.0"]
+
+[tool.pyright]
+exclude = [
+  ".venv",
+  "**/tests",
+]
+pythonVersion = "3.9"

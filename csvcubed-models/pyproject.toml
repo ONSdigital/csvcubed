@@ -1,0 +1,30 @@
+[tool.poetry]
+authors = ["Integrated Data Service - Dissemination <sharedcustomercontactcentre@ons.gov.uk>"]
+description = "Models and RDF serialisation functionality useful to the csvcubed family of tools."
+exclude = ["docs/*"]
+license = "Apache-2.0"
+name = "csvcubed-models"
+packages = [
+  {include = "csvcubedmodels"},
+]
+version = "0.0.1"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+rdflib = "~=5.0.0"
+unidecode = "*"
+
+[tool.poetry.dev-dependencies]
+csvcubed-devtools = {path = "./../csvcubed-devtools", develop = true}
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core>=1.0.0"]
+
+[tool.pyright]
+exclude = [
+  ".venv",
+  "**/tests",
+  "**/build",
+]
+pythonVersion = "3.9"

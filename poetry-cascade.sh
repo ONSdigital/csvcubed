@@ -13,8 +13,7 @@ function poetry_update_setup_sync () {
 }
 
 # N.B. the order below here ensures that packages which are dependencies of other packages are updated first.
-poetry_update_setup_sync "devtools"
-poetry_update_setup_sync "sharedmodels"
-poetry_update_setup_sync "pmd"
-poetry_update_setup_sync "csvqb"
-~
+poetry_update_setup_sync "csvcubed-devtools"
+poetry_update_setup_sync "csvcubed-models"
+poetry_update_setup_sync "csvcubed-pmd"
+poetry_update_setup_sync "csvcubed"

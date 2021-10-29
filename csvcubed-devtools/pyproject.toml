@@ -1,0 +1,39 @@
+[tool.poetry]
+authors = ["Integrated Data Service - Dissemination <sharedcustomercontactcentre@ons.gov.uk>"]
+description = "Development tools and dependencies for use in the csvcubed tooling."
+exclude = ["docs/*"]
+license = "Apache-2.0"
+name = "csvcubed-devtools"
+packages = [
+  {include = "csvcubeddevtools"},
+]
+version = "0.0.1"
+
+[tool.poetry.dependencies]
+behave = "*"
+black = "*"
+chardet = "*"
+csvw = "*"
+docker = "*"
+pipenv-setup = "*"
+pytest = "*"
+python = "^3.9"
+python-dateutil = "*"
+rdflib = "*"
+sphinx = "*"
+sphinx-book-theme = "*"
+pyparsing = "==2.4.7"
+
+[tool.poetry.dev-dependencies]
+flake8 = "*"
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core>=1.0.0"]
+
+[tool.pyright]
+exclude = [
+  ".venv",
+  "csvcubeddevtools/behaviour",
+]
+pythonVersion = "3.9"

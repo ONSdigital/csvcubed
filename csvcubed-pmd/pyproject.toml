@@ -1,0 +1,43 @@
+[tool.poetry]
+authors = ["Integrated Data Service - Dissemination <sharedcustomercontactcentre@ons.gov.uk>"]
+description = "Provides functionality necessary to transform RDF Data Cube style CSV-Ws into a format compatible with the Publish My Data platform. Part of the csvcubed family."
+exclude = ["docs/*"]
+license = "Apache-2.0"
+name = "csvcubed-pmd"
+packages = [
+  {include = "csvcubedpmd"},
+]
+version = "0.0.1"
+
+[tool.poetry.dependencies]
+csvw = "*"
+pandas = "*"
+pyparsing = "~=2.4.7"
+python = "^3.9"
+rdflib = "*"
+rdflib-jsonld = "==0.6.1"
+requests = "*"
+unidecode = "*"
+uritemplate = "*"
+
+[tool.poetry.dev-dependencies]
+# The -models library is currently listed as a dev dependency so that we can reference it by its relative
+# path and continue to edit code side-by-side within the repo.
+# The dependency is to become a regular dependency when the packages are split out into separate repositories in
+# Issue #205
+csvcubed-models = {path = "./../csvcubed-models", develop = true}
+csvcubed-devtools = {path = "./../csvcubed-devtools", develop = true}
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core>=1.0.0"]
+
+[tool.pyright]
+exclude = [
+  ".venv",
+  "**/tests",
+]
+pythonVersion = "3.9"
+
+[tool.poetry.scripts]
+pmdutils = 'csvcubedpmd.main:main'
