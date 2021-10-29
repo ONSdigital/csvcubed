@@ -1,6 +1,6 @@
 # csvcubed - Shared Models
 
-> Models and RDF serialisation functionality required by the csvqb and pmd packages.
+> Models and RDF serialisation functionality required by the csvcubed and pmd packages.
 
 This package contains functionality to:
 
