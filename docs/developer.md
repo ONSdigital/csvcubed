@@ -1,12 +1,12 @@
 # Developer Documentation
 
-This document hopes to provide a central reference point for developers who plan to contribute towards the csvwlib project.
+This document hopes to provide a central reference point for developers who plan to contribute towards the csvqubed project.
 
 ## Purpose
 
-The csvwlib project aims to provide libraries and utilities which make it simple to turn a CSV into [5* linked data](https://5stardata.info/en/). We want to make it easier for data producers to annotate their existing data with the metadata required to ensure that each dataset is discoverable, comparable and analysable by automated tools.
+The csvcubed project aims to provide libraries and utilities which make it simple to turn a CSV into [5* linked data](https://5stardata.info/en/). We want to make it easier for data producers to annotate their existing data with the metadata required to ensure that each dataset is discoverable, comparable and analysable by automated tools.
 
-There are a number of ways that you could approach this problem. The csvwlib catalogue of tools help to deliver this vision in an opinionated fashion. Our tools output [data cubes](https://en.wikipedia.org/wiki/Data_cube) using the [CSV on the web (CSV-W)](https://www.w3.org/TR/tabular-metadata/) file format. Within these CSV-W files we describe what the data represents using a combination of the following ontologies:
+There are a number of ways that you could approach this problem. The csvcubed catalogue of tools help to deliver this vision in an opinionated fashion. Our tools output [data cubes](https://en.wikipedia.org/wiki/Data_cube) using the [CSV on the web (CSV-W)](https://www.w3.org/TR/tabular-metadata/) file format. Within these CSV-W files we describe what the data represents using a combination of the following ontologies:
 
 * [RDF Data Cube (qb)](https://www.w3.org/TR/vocab-data-cube/)
 * [Simple Knowledge Organization System (SKOS)](http://www.w3.org/TR/skos-primer)
@@ -14,22 +14,22 @@ There are a number of ways that you could approach this problem. The csvwlib cat
 
 > Is this a library or a set of applications?
 
-csvwlib is *initially* planned to be a series of command line applications which help users transform their data into qb-flavoured CSV-Ws with configuration provided by some form of declarative JSON/YAML file. This approach makes it easy for us to quickly deliver the tools that advanced users need, with the flexibility of configuration that will be necessary, without having to worry too much about providing a detailed user interface.
+csvcubed is *initially* planned to be a series of command line applications which help users transform their data into qb-flavoured CSV-Ws with configuration provided by some form of declarative JSON/YAML file. This approach helps us quickly deliver the tools that advanced users need, with the flexibility of configuration that will be necessary, without having to worry too much about providing a detailed user interface.
 
 However, it's understandable that only a small number of users will be comfortable using command line applications which require hand-written JSON/YAML files, so it is envisioned that the project will act more as a set of libraries which can help more specialised tools generate valid qb-flavoured CSV-Ws.
 
-In summary, csvwlib is a set of libraries which happen to contain some basic command line interfaces to help advanced users transform CSV data into qb-flavoured CSV-Ws.
+In summary, csvcubed is a set of libraries which happen to contain some basic command line interfaces to help advanced users transform CSV data into qb-flavoured CSV-Ws.
 
 ## Python Packages
 
-There are currently four individual packages which can be found inside the csvwlib repository. Each of these directories represents an independent python package in its own right:
+There are currently four individual packages which can be found inside the csvcubed repository. Each of these directories represents an independent python package in its own right:
 
 ```text
-csvwlib
-├── csvqb - The key library helping to transform tidy-data into qb-flavoured CSV-W cubes.
-├── devtools - Shared test functionality & dev dependencies which are commonly required.
-├── pmd - Transforms a CSV-qb into RDF which is compatible with the Publish My Data platform.
-└── sharedmodels - Models and RDF serialisation functionality required by the csvqb and pmd packages.
+csvcubed
+├── csvcubed - The key library helping to transform tidy-data into qb-flavoured CSV-W cubes.
+├── csvcubed-devtools - Shared test functionality & dev dependencies which are commonly required.
+├── csvcubed-pmd - Transforms a CSV-qb into RDF which is compatible with the Publish My Data platform.
+└── csvcubed-models - Models and RDF serialisation functionality required by the csvqb and pmd packages.
 ```
 
 > Why are there multiple packages in the same git repository?
@@ -40,18 +40,18 @@ We keep multiple packages in the same repository because it makes it easier to k
 
 More information about each individual package can be found here:
 
-* [csvqb](../csvqb/csvqb/README.md)
-* [pmd](../pmd/pmd/README.md)
-* [sharedmodels](../sharedmodels/sharedmodels/README.md)
-* [devtools](../devtools/devtools/README.md)
+* [csvcubed](../csvcubed/csvcubed/README.md)
+* [csvcubed-pmd](../csvcubed-pmd/csvcubedpmd/README.md)
+* [csvcubed-models](../csvcubed-models/csvcubedmodels/README.md)
+* [csvcubed-devtools](../csvcubed-devtools/csvcubeddevtools/README.md)
 
 ### Directory Structure
 
 Each package has the following file/directory structure:
 
 ```text
-PackageName (e.g. csvqb)
-├── PackageName - (e.g. csvqb) all project python files go inside here.
+PackageName (e.g. csvcubed)
+├── PackageName - (e.g. csvcubed) all project python files go inside here.
 │   └── README.md - (optional) README file providing a summary of the package.
 ├── tests
 │   ├── behaviour - Behave/cucumber tests go in here.
@@ -94,6 +94,8 @@ See the python [typing documentation](https://docs.python.org/3/library/typing.h
 >* [pmd docs](https://ci.floop.org.uk/job/GSS_data/job/csvwlib/job/main/lastSuccessfulBuild/artifact/pmd/docs/_build/html/index.html)
 >* [devtools docs](https://ci.floop.org.uk/job/GSS_data/job/csvwlib/job/main/lastSuccessfulBuild/artifact/devtools/docs/_build/html/index.html)
 
+TODO: #220 Update the links to the build docs in developer.md
+
 We use [sphinx](https://www.sphinx-doc.org/) with [sphinx-apidoc](https://www.sphinx-doc.org/en/master/man/sphinx-apidoc.html) and [sphinx.ext.autodoc](https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html) to automatically generate API documentation for each of our projects. This is meant to provide a searchable and browsable set of documentation for the entire code-base excluding tests.
 
 In order to support sphinx as well as to provide helpful documentation when using an IDE's intellisense, **you should follow the following rules when writing code**:
@@ -128,9 +130,9 @@ class SomeClass:
         """
 ```
 
-Obviously, none of these rules need to be followed when writing tests, however you should still write a sensible docstring describing what each test checks for.
+None of these rules need to be followed when writing tests, however you should still write a sensible docstring describing what each test checks for.
 
-Intersphinx mapping - this project uses [intersphinx](https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html) to create deep-links to the documentation from other projects like [rdflib](https://rdflib.readthedocs.io/) which use sphinx to generate their docs. This helps provide deep-linking between the documentation for different parts of csvwlib.
+Intersphinx mapping - this project uses [intersphinx](https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html) to create deep-links to the documentation from other projects like [rdflib](https://rdflib.readthedocs.io/) which use sphinx to generate their docs. This helps provide deep-linking between the documentation for different parts of csvcubed.
 
 ### Unit and Integration Testing
 
@@ -150,11 +152,11 @@ Some of the key packages we make use of include:
 * [rdflib](https://rdflib.readthedocs.io) -  Allows us to read and write RDF in various formats as well as query it with SPARQL.
 * [pandas](https://pandas.pydata.org/) - Used mainly as a tool for input of tabular data and for writing to CSV.
 
-Below we'll explore how we're using some of these libraries along with some key features built in to python that we're making use of in csvwlib.
+Below we'll explore how we're using some of these libraries along with some key features built in to python that we're making use of in csvcubed.
 
 ### Dataclasses
 
-Python's [dataclasses module](https://docs.python.org/3/library/dataclasses.html) was added to python 3.7 as per [PEP557](https://www.python.org/dev/peps/pep-0557/). It provides some key functionality that reduces the amount of boiler-plate code that it is necessary to write when defining a class. If you annotate a class as a `@dataclass`, then you simply have to define the below code and you no longer need to write an `__init__` function and get free sensible defaults for `__eq__`, `__str__` and `__repr__` too (among others). Importantly, the functionality brings with it the ability to more easily reflect over the fields defined inside a class which makes it easier to do things like serialising to/from JSON.
+Python's [dataclasses module](https://docs.python.org/3/library/dataclasses.html) was added to python 3.7 as per [PEP557](https://www.python.org/dev/peps/pep-0557/). It provides some key functionality that reduces the amount of boiler-plate code that it is necessary to write when defining a class. If you annotate a class as a `@dataclass`, then you only have to define the below code and you no longer need to write an `__init__` function and get free sensible defaults for `__eq__`, `__str__` and `__repr__` too (among others). Importantly, the functionality brings with it the ability to more easily reflect over the fields defined inside a class which makes it easier to do things like serialising to/from JSON.
 
 If we write the following class using the `@dataclass` decorator and extending from [sharedmodels.dataclassbase.DataClassBase](https://github.com/GSS-Cogs/csvwlib/blob/main/sharedmodels/sharedmodels/dataclassbase.py):
 
@@ -191,7 +193,7 @@ SomeClass.from_json('{"first_name": "Ronald", "surname": "Burgermeister"}')
 
 ### Pydantic
 
-We are using [pydantic](https://pydantic-docs.helpmanual.io/) in an atypical fashion. It is designed to be a tool which parses & validates input against the static type annotations, however it typically does this validation *when the class is instantiated*. This prescriptive approach therefore restrictis how you build you model  up. You're required to pass all *required* variables to the `__init__` function; you cannot simply instantiate the class and then verify that it's valid later once you've finished making assignments.
+We are using [pydantic](https://pydantic-docs.helpmanual.io/) in an atypical fashion. It is designed to be a tool which parses & validates input against the static type annotations, however it typically does this validation *when the class is instantiated*. This prescriptive approach therefore restrictis how you build you model  up. You're required to pass all *required* variables to the `__init__` function; you cannot only instantiate the class and then verify that it's valid later once you've finished making assignments.
 
 ```python
 # With mainstream pydantic, you are forced to take this approach
