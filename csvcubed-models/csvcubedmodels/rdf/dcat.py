@@ -17,7 +17,7 @@ class Resource(NewMetadataResource):
     contact_point: Ann[Optional[str], Triple(DCAT.contactPoint, PropertyStatus.recommended, URIRef)]  # Todo: VCARD
     creator: Ann[Optional[str], Triple(DCTERMS.creator, PropertyStatus.recommended, URIRef)]
     description: Ann[Optional[str], Triple(DCTERMS.description, PropertyStatus.recommended, map_str_to_en_literal)]
-    title: Ann[str, Triple(DCTERMS.term("title"), PropertyStatus.recommended, map_str_to_en_literal)]
+    title: Ann[str, Triple(DCTERMS.title, PropertyStatus.recommended, map_str_to_en_literal)]
     issued: Ann[datetime, Triple(DCTERMS.issued, PropertyStatus.recommended, Literal)]  # date/time
     modified: Ann[datetime, Triple(DCTERMS.modified, PropertyStatus.recommended, Literal)]
     language: Ann[str, Triple(DCTERMS.language, PropertyStatus.recommended, Literal)]
