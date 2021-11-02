@@ -19,6 +19,8 @@ rdflib-jsonld = "==0.6.1"
 requests = "*"
 unidecode = "*"
 uritemplate = "*"
+colorama = "^0.4.4"
+click = "^8.0.3"
 
 [tool.poetry.dev-dependencies]
 # The -models library is currently listed as a dev dependency so that we can reference it by its relative
@@ -40,4 +42,4 @@ exclude = [
 pythonVersion = "3.9"
 
 [tool.poetry.scripts]
-pmdutils = 'csvcubedpmd.main:main'
+pmdutils = 'csvcubedpmd.main:entry_point'
