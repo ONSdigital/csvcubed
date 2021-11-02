@@ -5,4 +5,4 @@ services:
     image: pmdutils
     build:
       context: ../
-      dockerfile: ./csvcubedpmd/Dockerfile
+      dockerfile: ./csvcubed-pmd/Dockerfile
