@@ -27,7 +27,7 @@ jobs:
         id: docker_build_dev
         with:
           context: .
-          file: pmd/Dockerfile
+          file: csvcubed-pmd/Dockerfile
           push: true
           build-args: dev=true
           tags: |
