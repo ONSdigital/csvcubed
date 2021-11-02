@@ -2,27 +2,13 @@
 PMD Tools CLI
 -------------
 """
-import argparse
+import click
 
 
-from csvcubedpmd import codelist
+from csvcubedpmd import codelistcli, csvwcli
 
-
-def main():
-    parser = argparse.ArgumentParser()
-    parser.set_defaults(func=lambda _: ())
-    subparsers = parser.add_subparsers(help="sub-commands")
-
-    codelist.configure_argument_parser(
-        subparsers.add_parser("codelist")
-    )
-
-    args = parser.parse_args()
-
-    # Call the `set_defaults` function specified in the sub-parser.
-    # This will handle execution of whatever needed to be done.
-    args.func(args)
-
-
-if __name__ == "__main__":
-    main()
+entry_point = click.Group(
+    commands=[codelistcli.codelist_group, csvwcli.csvw_group],
+    help="pmdutils - Utils for helping convert CSV-Ws to PMD-compatible RDF.",
+    context_settings=dict(help_option_names=["-h", "--help"]),
+)
