@@ -1,6 +1,6 @@
 from behave import Given, When
 
-from csvcubedpmd.codelist.datetimecodelistgen import (
+from csvcubedpmd.codelistcli.datetimecodelistgen import (
     generate_date_time_code_lists_for_csvw_metadata_file,
 )
 from csvcubeddevtools.behaviour.file import get_context_temp_dir_path

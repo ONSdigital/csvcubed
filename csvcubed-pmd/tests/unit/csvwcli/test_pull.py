@@ -1,7 +1,7 @@
 import pytest
 from csvcubeddevtools.helpers.file import get_test_cases_dir
 
-from csvcubedpmd.csvw.pull import (
+from csvcubedpmd.csvwcli.pull import (
     _get_csvw_dependencies_absolute,
     _get_csvw_dependencies_relative,
 )

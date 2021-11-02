@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import Any
 import click
 
-import csvcubedpmd.csvw.pull as pull
+import csvcubedpmd.csvwcli.pull as pull
 
 
 @click.group("csvw")
