@@ -30,24 +30,31 @@ jobs:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0
-    # Step 4.
-    - name: Print stuff
-      run: |
-          echo $GIT_REF | sed -e 's/^.*\/v\(.*\)/v\1/'
-          echo $GIT_REF | sed -e 's/^.*\/v\(.*\)/\1/'
-          echo "Change detected!"
-    - name: Install poetry
-      run: python3 -m pip install poetry
-    - name: Update pyproject.toml version from latest tag
-      run: poetry version $(echo $GIT_REF | sed -e 's/^.*\/v\(.*\)/\1/')
-    - name: Tell git who we are
-      run: |
-          git config --global user.email "none@none.com"
-          git config --global user.name "Auto-version-incrementer"
-    - name: Commit auto-incrementer changes to existing tag
-      run: |
-        git add pyproject.toml
-        git commit -m "Updating the release version in pyproject.toml"
-        git tag -f $(echo $GIT_REF | sed -e 's/^.*\/v\(.*\)/v\1/')
-    - name: Push tag changes back to origin
-      run: git push -f origin $(echo $GIT_REF | sed -e 's/^.*\/v\(.*\)/v\1/')
+    - uses: test-room-7/action-update-file@v1
+      with:
+        file-path: |
+          csvcubed-devtools/pyproject.toml
+          csvcubed-models/pyproject.toml
+          csvcubed-pmd/pyproject.toml
+          csvcubed/pyproject.toml
+      # Step 4.
+      - name: Print stuff
+        run: |
+            echo $GIT_REF | sed -e 's/^.*\/v\(.*\)/v\1/'
+            echo $GIT_REF | sed -e 's/^.*\/v\(.*\)/\1/'
+            echo "Change detected!"
+      - name: Install poetry
+        run: python3 -m pip install poetry
+      - name: Update pyproject.toml version from latest tag
+        run: poetry version $(echo $GIT_REF | sed -e 's/^.*\/v\(.*\)/\1/')
+      - name: Tell git who we are
+        run: |
+            git config --global user.email "none@none.com"
+            git config --global user.name "Auto-version-incrementer"
+      - name: Commit auto-incrementer changes to existing tag
+        run: |
+          git add pyproject.toml
+          git commit -m "Updating the release version in pyproject.toml"
+          git tag -f $(echo $GIT_REF | sed -e 's/^.*\/v\(.*\)/v\1/')
+      - name: Push tag changes back to origin
+        run: git push -f origin $(echo $GIT_REF | sed -e 's/^.*\/v\(.*\)/v\1/')
