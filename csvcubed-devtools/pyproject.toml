@@ -23,6 +23,7 @@ rdflib = "*"
 sphinx = "*"
 sphinx-book-theme = "*"
 pyparsing = "==2.4.7"
+tox = "^3.24.4"
 
 [tool.poetry.dev-dependencies]
 flake8 = "*"
