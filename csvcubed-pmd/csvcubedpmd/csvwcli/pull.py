@@ -110,17 +110,17 @@ def pull(csvw_metadata_url: str, output_dir: Path) -> None:
     """
     Pull all of the relative dependencies of a CSV-W metadata file down to the :obj:`output_dir`.
     """
-    if not output_dir.exists():
-        output_dir.mkdir()
-
     csvw_metadata_file_name = _get_file_name_from_url(csvw_metadata_url)
+    _ensure_dir_structure_exists(output_dir)
     _download_to_file(csvw_metadata_url, output_dir / csvw_metadata_file_name)
 
     relative_dependencies = _get_csvw_dependencies_relative(csvw_metadata_url)
     for relative_dependency_path in relative_dependencies:
+        output_file = output_dir / relative_dependency_path
+        _ensure_dir_structure_exists(output_file.parent)
         _download_to_file(
             urljoin(csvw_metadata_url, relative_dependency_path),
-            output_dir / relative_dependency_path,
+            output_file,
         )
 
 
@@ -133,3 +133,9 @@ def _download_to_file(rel_dep_url: str, output_file: Path) -> None:
         response = requests.get(rel_dep_url)
         for chunk in response.iter_content(chunk_size=1024):
             f.write(chunk)
+
+
+def _ensure_dir_structure_exists(dir_path: Path) -> None:
+    if not dir_path.exists():
+        _ensure_dir_structure_exists(dir_path.parent)
+        dir_path.mkdir()
