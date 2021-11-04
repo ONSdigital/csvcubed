@@ -29,14 +29,7 @@ jobs:
     # Step 3. Check-out repository so we can access its contents
     - uses: actions/checkout@v2
       with:
-        #fetch-depth: 0
-    #- uses: test-room-7/action-update-file@v1
-      #with:
-        path: |
-          csvcubed-devtools/pyproject.toml
-          csvcubed-models/pyproject.toml
-          csvcubed-pmd/pyproject.toml
-          csvcubed/pyproject.toml
+        fetch-depth: 0
     # Step 4.
     - name: Print stuff
       run: |
