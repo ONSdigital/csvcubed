@@ -29,7 +29,7 @@ jobs:
     # Step 3. Check-out repository so we can access its contents
     - uses: actions/checkout@v2
       with:
-        fetch-depth: 0
+        fetch-depth: 1
     # Step 4.
     - name: Print stuff
       run: |
