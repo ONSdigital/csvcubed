@@ -4,18 +4,7 @@ on:
     tags:
     
 jobs:
-  something:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-    - name: print stuff
-      run: |
-          echo '${{ github.ref }}'
-          git describe --tags --abbrev=0
-          echo "Change detected!"
-  cd:
+  increment_versions:
     env:
       GIT_REF: ${{ github.ref }}
     if: startsWith(github.ref, 'refs/tags/v')
