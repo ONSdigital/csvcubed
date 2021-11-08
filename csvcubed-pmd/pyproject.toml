@@ -28,8 +28,6 @@ click = "^8.0.3"
 # The dependency is to become a regular dependency when the packages are split out into separate repositories in
 # Issue #205
 csvcubed-models = {path = "./../csvcubed-models", develop = true}
-# Issue #205 - The csvcubed dependency needs to become a proper dependency too.
-csvcubed = {path = "./../csvcubed", develop = true}
 csvcubed-devtools = {path = "./../csvcubed-devtools", develop = true}
 
 [build-system]
