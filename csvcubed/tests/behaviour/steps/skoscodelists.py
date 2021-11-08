@@ -38,6 +38,36 @@ def step_impl(context, code_list_name: str):
     )
 
 
+@Given('a CompositeQbCodeList named "{code_list_name}"')
+def step_impl(context, code_list_name: str):
+    metadata = get_standard_catalog_metadata_for_name(code_list_name)
+
+    context.code_list = CompositeQbCodeList(
+        metadata,
+        [
+            DuplicatedQbConcept(
+                existing_concept_uri="http://data.europa.eu/nuts/code/UKL",
+                label="Wales",
+                code="wales",
+            ),
+            DuplicatedQbConcept(
+                existing_concept_uri="http://data.europa.eu/nuts/code/UKM",
+                label="Scotland",
+                code="scotland",
+            ),
+            DuplicatedQbConcept(
+                existing_concept_uri="http://statistics.data.gov.uk/id/statistical-geography/E92000001",
+                label="England",
+                code="england",
+            ),
+        ],
+        variant_of_uris=[
+            "http://data.europa.eu/nuts/scheme/2016",
+            "http://gss-data.org.uk/def/concept-scheme/geography-hierarchy/administrative",
+        ],
+    )
+
+
 @Given('a NewQbCodeList named "{code_list_name}" containing duplicates')
 def step_impl(context, code_list_name: str):
     metadata = get_standard_catalog_metadata_for_name(code_list_name)

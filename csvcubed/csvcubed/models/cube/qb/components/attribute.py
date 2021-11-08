@@ -200,7 +200,7 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
         ]
 
         return NewQbAttribute(
-            label,
+            label=label,
             description=description,
             new_attribute_values=new_attribute_values_from_column,
             parent_attribute_uri=parent_attribute_uri,

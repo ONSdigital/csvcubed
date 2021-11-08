@@ -6,12 +6,17 @@ Write `NewQbCodeList`s to CSV-Ws as `skos:ConceptScheme` s with DCAT2 metadata.
 """
 import datetime
 import json
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Tuple
 import pandas as pd
+from csvcubedmodels.rdf import ExistingResource
 
 from csvcubed.models.cube.qb.components.arbitraryrdf import RdfSerialisationHint
-from csvcubed.models.cube.qb.components.codelist import NewQbCodeList
+from csvcubed.models.cube.qb.components.codelist import (
+    NewQbCodeList,
+    CompositeQbCodeList,
+)
 from csvcubed.utils.dict import rdf_resource_to_json_ld
 from csvcubed.models.rdf.conceptschemeincatalog import ConceptSchemeInCatalog
 from csvcubed.writers.writerbase import WriterBase
@@ -19,10 +24,13 @@ from csvcubed.writers.writerbase import WriterBase
 CODE_LIST_NOTATION_COLUMN_NAME = "notation"
 
 
+@dataclass
 class SkosCodeListWriter(WriterBase):
-    def __init__(self, new_code_list: NewQbCodeList):
-        self.csv_file_name = f"{new_code_list.metadata.uri_safe_identifier}.csv"
-        self.new_code_list: NewQbCodeList = new_code_list
+    new_code_list: NewQbCodeList
+    csv_file_name: str = field(init=False)
+
+    def __post_init__(self):
+        self.csv_file_name = f"{self.new_code_list.metadata.uri_safe_identifier}.csv"
 
     def write(self, output_directory: Path) -> None:
         csv_file_path = (output_directory / self.csv_file_name).absolute()
@@ -94,15 +102,38 @@ class SkosCodeListWriter(WriterBase):
                 "required": False,
                 "propertyUrl": "rdfs:comment",
             },
+        ]
+
+        if isinstance(self.new_code_list, CompositeQbCodeList):
+            csvw_columns.append(
+                {
+                    "titles": "Original Concept URI",
+                    "name": "uri",
+                    "required": True,
+                    "propertyUrl": "owl:sameAs",
+                    "valueUrl": "{+uri}",
+                }
+            )
+
+        csvw_columns.append(
             {
                 "virtual": True,
                 "name": "virt_inScheme",
-                "required": False,
+                "required": True,
                 "propertyUrl": "skos:inScheme",
                 "valueUrl": self._get_concept_scheme_uri(),
-            },
-        ]
+            }
+        )
 
+        csvw_columns.append(
+            {
+                "virtual": True,
+                "name": "virt_type",
+                "required": True,
+                "propertyUrl": "rdf:type",
+                "valueUrl": "skos:Concept",
+            }
+        )
         return {
             "columns": csvw_columns,
             "aboutUrl": concept_base_uri + "{+notation}",
@@ -128,6 +159,10 @@ class SkosCodeListWriter(WriterBase):
 
     def _get_catalog_metadata(self, scheme_uri: str) -> ConceptSchemeInCatalog:
         concept_scheme_with_metadata = ConceptSchemeInCatalog(scheme_uri)
+        if isinstance(self.new_code_list, CompositeQbCodeList):
+            for variant_uri in self.new_code_list.variant_of_uris:
+                concept_scheme_with_metadata.variant.add(ExistingResource(variant_uri))
+
         self.new_code_list.metadata.configure_dcat_dataset(concept_scheme_with_metadata)
         self.new_code_list.copy_arbitrary_triple_fragments_to_resources(
             {
@@ -138,7 +173,7 @@ class SkosCodeListWriter(WriterBase):
         return concept_scheme_with_metadata
 
     def _get_code_list_data(self) -> pd.DataFrame:
-        return pd.DataFrame(
+        data_frame = pd.DataFrame(
             {
                 "Label": [c.label for c in self.new_code_list.concepts],
                 "Notation": [c.code for c in self.new_code_list.concepts],
@@ -149,3 +184,10 @@ class SkosCodeListWriter(WriterBase):
                 "Description": [c.description for c in self.new_code_list.concepts],
             }
         )
+
+        if isinstance(self.new_code_list, CompositeQbCodeList):
+            data_frame["Original Concept URI"] = [
+                c.existing_concept_uri for c in self.new_code_list.concepts
+            ]
+
+        return data_frame
