@@ -1,0 +1,173 @@
+
+<file:/tmp/qb-id-10002.csv#dataset> a <http://purl.org/linked-data/cube#Attachable>,
+    <http://purl.org/linked-data/cube#DataSet>, <http://www.w3.org/2000/01/rdf-schema#Resource>,
+    <http://www.w3.org/ns/dcat#Dataset>, <http://www.w3.org/ns/dcat#Resource>;
+  <http://purl.org/dc/terms/creator> <https://www.gov.uk/government/organisations/office-for-national-statistics>;
+  <http://purl.org/dc/terms/description> "Description"@en;
+  <http://purl.org/dc/terms/identifier> "qb-id-10002";
+  <http://purl.org/dc/terms/issued> "2021-11-08T10:39:58.035684"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/terms/license> <http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/>;
+  <http://purl.org/dc/terms/modified> "2021-11-08T10:39:58.035684"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/terms/publisher> <https://www.gov.uk/government/organisations/office-for-national-statistics>;
+  <http://purl.org/dc/terms/title> "Some Qube"@en;
+  <http://purl.org/linked-data/cube#structure> <file:/tmp/qb-id-10002.csv#structure>;
+  <http://www.w3.org/2000/01/rdf-schema#comment> "Summary"@en;
+  <http://www.w3.org/2000/01/rdf-schema#label> "Some Qube"@en;
+  <http://www.w3.org/2000/01/rdf-schema#seeAlso> <file:/tmp/qb-id-10002.csv#class/a-code-list>,
+    <file:/tmp/qb-id-10002.csv#class/d-code-list>, <file:/tmp/qb-id-10002.csv#component/a-code-list>,
+    <file:/tmp/qb-id-10002.csv#component/d-code-list>, <file:/tmp/qb-id-10002.csv#component/measure-type>,
+    <file:/tmp/qb-id-10002.csv#component/some-measure>, <file:/tmp/qb-id-10002.csv#component/unit>,
+    <file:/tmp/qb-id-10002.csv#dataset>, <file:/tmp/qb-id-10002.csv#dimension/a-code-list>,
+    <file:/tmp/qb-id-10002.csv#dimension/d-code-list>, <file:/tmp/qb-id-10002.csv#measure/some-measure>,
+    <file:/tmp/qb-id-10002.csv#structure>, <file:/tmp/qb-id-10002.csv#unit/some-unit>;
+  <http://www.w3.org/ns/dcat#contactPoint> <mailto:something@example.org>;
+  <http://www.w3.org/ns/dcat#keyword> "Key word one"@en, "Key word two"@en;
+  <http://www.w3.org/ns/dcat#landingPage> <http://example.org/landing-page>;
+  <http://www.w3.org/ns/dcat#theme> <http://gss-data.org.uk/def/gdp#some-test-theme> .
+
+<file:/tmp/qb-id-10002.csv#component/a-code-list> a <http://purl.org/linked-data/cube#ComponentSet>,
+    <http://purl.org/linked-data/cube#ComponentSpecification>, <http://www.w3.org/2000/01/rdf-schema#Resource>;
+  <http://purl.org/linked-data/cube#componentProperty> <file:/tmp/qb-id-10002.csv#dimension/a-code-list>;
+  <http://purl.org/linked-data/cube#dimension> <file:/tmp/qb-id-10002.csv#dimension/a-code-list>;
+  <http://purl.org/linked-data/cube#order> "1" .
+
+<file:/tmp/qb-id-10002.csv#component/some-measure> a <http://purl.org/linked-data/cube#ComponentSet>,
+    <http://purl.org/linked-data/cube#ComponentSpecification>, <http://www.w3.org/2000/01/rdf-schema#Resource>;
+  <http://purl.org/linked-data/cube#componentProperty> <file:/tmp/qb-id-10002.csv#measure/some-measure>;
+  <http://purl.org/linked-data/cube#measure> <file:/tmp/qb-id-10002.csv#measure/some-measure>;
+  <http://purl.org/linked-data/cube#order> "5" .
+
+<file:/tmp/qb-id-10002.csv#component/unit> a <http://purl.org/linked-data/cube#ComponentSet>,
+    <http://purl.org/linked-data/cube#ComponentSpecification>, <http://www.w3.org/2000/01/rdf-schema#Resource>;
+  <http://purl.org/linked-data/cube#attribute> <http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure>;
+  <http://purl.org/linked-data/cube#componentProperty> <http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure>;
+  <http://purl.org/linked-data/cube#componentRequired> "true";
+  <http://purl.org/linked-data/cube#order> "4" .
+
+<file:/tmp/qb-id-10002.csv#measure/some-measure> a <http://purl.org/linked-data/cube#ComponentProperty>,
+    <http://purl.org/linked-data/cube#MeasureProperty>, <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property>,
+    <http://www.w3.org/2000/01/rdf-schema#Resource>;
+  <http://www.w3.org/2000/01/rdf-schema#label> "Some Measure"@en;
+  <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#decimal> .
+
+<file:/tmp/qb-id-10002.csv#component/d-code-list> a <http://purl.org/linked-data/cube#ComponentSet>,
+    <http://purl.org/linked-data/cube#ComponentSpecification>, <http://www.w3.org/2000/01/rdf-schema#Resource>;
+  <http://purl.org/linked-data/cube#componentProperty> <file:/tmp/qb-id-10002.csv#dimension/d-code-list>;
+  <http://purl.org/linked-data/cube#dimension> <file:/tmp/qb-id-10002.csv#dimension/d-code-list>;
+  <http://purl.org/linked-data/cube#order> "2" .
+
+<file:/tmp/qb-id-10002.csv#dimension/a-code-list> a <http://purl.org/linked-data/cube#CodedProperty>,
+    <http://purl.org/linked-data/cube#ComponentProperty>, <http://purl.org/linked-data/cube#DimensionProperty>,
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property>, <http://www.w3.org/2000/01/rdf-schema#Resource>;
+  <http://purl.org/linked-data/cube#codeList> <file:/tmp/a-code-list.csv#scheme/a-code-list>;
+  <http://www.w3.org/2000/01/rdf-schema#label> "A code list"@en;
+  <http://www.w3.org/2000/01/rdf-schema#range> <file:/tmp/qb-id-10002.csv#class/a-code-list> .
+
+<file:/tmp/qb-id-10002.csv#component/measure-type> a <http://purl.org/linked-data/cube#ComponentSet>,
+    <http://purl.org/linked-data/cube#ComponentSpecification>, <http://www.w3.org/2000/01/rdf-schema#Resource>;
+  <http://purl.org/linked-data/cube#componentProperty> <http://purl.org/linked-data/cube#measureType>;
+  <http://purl.org/linked-data/cube#dimension> <http://purl.org/linked-data/cube#measureType>;
+  <http://purl.org/linked-data/cube#order> "3" .
+
+<file:/tmp/qb-id-10002.csv#class/a-code-list> a <http://www.w3.org/2000/01/rdf-schema#Class>,
+    <http://www.w3.org/2000/01/rdf-schema#Resource> .
+
+<file:/tmp/qb-id-10002.csv#class/d-code-list> a <http://www.w3.org/2000/01/rdf-schema#Class>,
+    <http://www.w3.org/2000/01/rdf-schema#Resource> .
+
+<file:/tmp/qb-id-10002.csv#dimension/d-code-list> a <http://purl.org/linked-data/cube#CodedProperty>,
+    <http://purl.org/linked-data/cube#ComponentProperty>, <http://purl.org/linked-data/cube#DimensionProperty>,
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property>, <http://www.w3.org/2000/01/rdf-schema#Resource>;
+  <http://purl.org/linked-data/cube#codeList> <file:/tmp/d-code-list.csv#scheme/d-code-list>;
+  <http://www.w3.org/2000/01/rdf-schema#label> "D code list"@en;
+  <http://www.w3.org/2000/01/rdf-schema#range> <file:/tmp/qb-id-10002.csv#class/d-code-list> .
+
+<file:/tmp/qb-id-10002.csv#structure> a <http://purl.org/linked-data/cube#ComponentSet>,
+    <http://purl.org/linked-data/cube#DataStructureDefinition>, <http://www.w3.org/2000/01/rdf-schema#Resource>;
+  <http://purl.org/linked-data/cube#component> <file:/tmp/qb-id-10002.csv#component/a-code-list>,
+    <file:/tmp/qb-id-10002.csv#component/d-code-list>, <file:/tmp/qb-id-10002.csv#component/measure-type>,
+    <file:/tmp/qb-id-10002.csv#component/some-measure>, <file:/tmp/qb-id-10002.csv#component/unit>;
+  <http://purl.org/linked-data/cube#componentProperty> <file:/tmp/qb-id-10002.csv#dimension/a-code-list>,
+    <file:/tmp/qb-id-10002.csv#dimension/d-code-list>, <file:/tmp/qb-id-10002.csv#measure/some-measure>,
+    <http://purl.org/linked-data/cube#measureType>, <http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure> .
+
+<file:/tmp/qb-id-10002.csv#unit/some-unit> a <http://qudt.org/schema/qudt/Unit>, <http://www.ontology-of-units-of-measure.org/resource/om-2/Unit>,
+    <http://www.w3.org/2000/01/rdf-schema#Resource>;
+  <http://www.w3.org/2000/01/rdf-schema#label> "Some Unit"@en .
+
+<file:/tmp/qb-id-10002.csv#obs/a/e> <file:/tmp/qb-id-10002.csv#dimension/a-code-list>
+    <file:/tmp/qb-id-10002.csv#concept/a-code-list/a>;
+  <file:/tmp/qb-id-10002.csv#dimension/d-code-list> <file:/tmp/qb-id-10002.csv#concept/d-code-list/e>;
+  <file:/tmp/qb-id-10002.csv#measure/some-measure> 1.0;
+  <http://purl.org/linked-data/cube#measureType> <file:/tmp/qb-id-10002.csv#measure/some-measure>;
+  <http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure> <file:/tmp/qb-id-10002.csv#unit/some-unit> .
+
+<file:/tmp/qb-id-10002.csv#obs/b/f> <file:/tmp/qb-id-10002.csv#dimension/a-code-list>
+    <file:/tmp/qb-id-10002.csv#concept/a-code-list/b>;
+  <file:/tmp/qb-id-10002.csv#dimension/d-code-list> <file:/tmp/qb-id-10002.csv#concept/d-code-list/f>;
+  <file:/tmp/qb-id-10002.csv#measure/some-measure> 2.0;
+  <http://purl.org/linked-data/cube#measureType> <file:/tmp/qb-id-10002.csv#measure/some-measure>;
+  <http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure> <file:/tmp/qb-id-10002.csv#unit/some-unit> .
+
+<file:/tmp/qb-id-10002.csv#obs/c/g> <file:/tmp/qb-id-10002.csv#dimension/a-code-list>
+    <file:/tmp/qb-id-10002.csv#concept/a-code-list/c>;
+  <file:/tmp/qb-id-10002.csv#dimension/d-code-list> <file:/tmp/qb-id-10002.csv#concept/d-code-list/g>;
+  <file:/tmp/qb-id-10002.csv#measure/some-measure> 3.0;
+  <http://purl.org/linked-data/cube#measureType> <file:/tmp/qb-id-10002.csv#measure/some-measure>;
+  <http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure> <file:/tmp/qb-id-10002.csv#unit/some-unit> .
+
+<file:/tmp/d-code-list.csv#scheme/d-code-list> a <http://www.w3.org/2000/01/rdf-schema#Resource>,
+    <http://www.w3.org/2004/02/skos/core#ConceptScheme>, <http://www.w3.org/ns/dcat#Dataset>,
+    <http://www.w3.org/ns/dcat#Resource>;
+  <http://purl.org/dc/terms/identifier> "D code list";
+  <http://purl.org/dc/terms/issued> "2021-11-08T10:39:58.023266"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/terms/modified> "2021-11-08T10:39:58.023266"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/terms/title> "D code list"@en;
+  <http://www.w3.org/2000/01/rdf-schema#label> "D code list"@en;
+  <http://www.w3.org/2000/01/rdf-schema#seeAlso> <file:/tmp/d-code-list.csv#scheme/d-code-list> .
+
+<file:/tmp/d-code-list.csv#concept/d-code-list/e> <http://www.w3.org/2000/01/rdf-schema#label>
+    "e";
+  <http://www.w3.org/2004/02/skos/core#inScheme> <file:/tmp/d-code-list.csv#scheme/d-code-list>;
+  <http://www.w3.org/2004/02/skos/core#notation> "e";
+  <http://www.w3.org/ns/ui#sortPriority> 0 .
+
+<file:/tmp/d-code-list.csv#concept/d-code-list/f> <http://www.w3.org/2000/01/rdf-schema#label>
+    "f";
+  <http://www.w3.org/2004/02/skos/core#inScheme> <file:/tmp/d-code-list.csv#scheme/d-code-list>;
+  <http://www.w3.org/2004/02/skos/core#notation> "f";
+  <http://www.w3.org/ns/ui#sortPriority> 1 .
+
+<file:/tmp/d-code-list.csv#concept/d-code-list/g> <http://www.w3.org/2000/01/rdf-schema#label>
+    "g";
+  <http://www.w3.org/2004/02/skos/core#inScheme> <file:/tmp/d-code-list.csv#scheme/d-code-list>;
+  <http://www.w3.org/2004/02/skos/core#notation> "g";
+  <http://www.w3.org/ns/ui#sortPriority> 2 .
+
+<file:/tmp/a-code-list.csv#scheme/a-code-list> a <http://www.w3.org/2000/01/rdf-schema#Resource>,
+    <http://www.w3.org/2004/02/skos/core#ConceptScheme>, <http://www.w3.org/ns/dcat#Dataset>,
+    <http://www.w3.org/ns/dcat#Resource>;
+  <http://purl.org/dc/terms/identifier> "A code list";
+  <http://purl.org/dc/terms/issued> "2021-11-08T10:39:57.932377"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/terms/modified> "2021-11-08T10:39:57.932377"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/terms/title> "A code list"@en;
+  <http://www.w3.org/2000/01/rdf-schema#label> "A code list"@en;
+  <http://www.w3.org/2000/01/rdf-schema#seeAlso> <file:/tmp/a-code-list.csv#scheme/a-code-list> .
+
+<file:/tmp/a-code-list.csv#concept/a-code-list/a> <http://www.w3.org/2000/01/rdf-schema#label>
+    "a";
+  <http://www.w3.org/2004/02/skos/core#inScheme> <file:/tmp/a-code-list.csv#scheme/a-code-list>;
+  <http://www.w3.org/2004/02/skos/core#notation> "a";
+  <http://www.w3.org/ns/ui#sortPriority> 0 .
+
+<file:/tmp/a-code-list.csv#concept/a-code-list/b> <http://www.w3.org/2000/01/rdf-schema#label>
+    "b";
+  <http://www.w3.org/2004/02/skos/core#inScheme> <file:/tmp/a-code-list.csv#scheme/a-code-list>;
+  <http://www.w3.org/2004/02/skos/core#notation> "b";
+  <http://www.w3.org/ns/ui#sortPriority> 1 .
+
+<file:/tmp/a-code-list.csv#concept/a-code-list/c> <http://www.w3.org/2000/01/rdf-schema#label>
+    "c";
+  <http://www.w3.org/2004/02/skos/core#inScheme> <file:/tmp/a-code-list.csv#scheme/a-code-list>;
+  <http://www.w3.org/2004/02/skos/core#notation> "c";
+  <http://www.w3.org/ns/ui#sortPriority> 2 .
