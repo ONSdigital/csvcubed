@@ -4,18 +4,7 @@ on:
     tags:
     
 jobs:
-  something:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-    - name: print stuff
-      run: |
-          echo '${{ github.ref }}'
-          git describe --tags --abbrev=0
-          echo "Change detected!"
-  cd:
+  incrementing_versions:
     env:
       GIT_REF: ${{ github.ref }}
     if: startsWith(github.ref, 'refs/tags/v')
@@ -31,11 +20,6 @@ jobs:
       with:
         fetch-depth: 0
     # Step 4.
-    - name: Print stuff
-      run: |
-          echo $GIT_REF | sed -e 's/^.*\/v\(.*\)/v\1/'
-          echo $GIT_REF | sed -e 's/^.*\/v\(.*\)/\1/'
-          echo "Change detected!"
     - name: Install poetry
       run: python3 -m pip install poetry
     - name: Update pyproject.toml version from latest tag
