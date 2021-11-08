@@ -80,7 +80,7 @@ class NewQbDimension(QbDimension, UriIdentifiable):
         Creates a new dimension and code list from the columnar data provided.
         """
         return NewQbDimension(
-            label,
+            label=label,
             description=description,
             code_list=NewQbCodeList.from_data(CatalogMetadata(label), data),
             parent_dimension_uri=parent_dimension_uri,

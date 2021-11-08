@@ -142,7 +142,7 @@ class QbMultiUnits(MultiQbDataStructureDefinition):
         Automatically generates new units from a units column.
         """
         return QbMultiUnits(
-            [NewQbUnit(u) for u in set(pandas_input_to_columnar_str(data))]
+            [NewQbUnit(label=u) for u in set(pandas_input_to_columnar_str(data))]
         )
 
     @staticmethod
