@@ -80,7 +80,7 @@ class ConceptScheme(NewResourceWithLabel):
             map_resource_to_uri,
         ),
     ]
-    """xkos:variant - `ConceptScheme`s from which this scheme derives."""
+    """xkos:variant - `ConceptScheme` s from which this scheme derives."""
 
     def __init__(self, uri: str):
         NewResource.__init__(self, uri)
