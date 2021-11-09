@@ -52,7 +52,6 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     Given a multi-measure QbCube named "Duplicate Qube"
     When the cube is serialised to CSV-W
     Then csvlint validation of "duplicate-qube.csv-metadata.json" should succeed
-  # todo: complete me in Issue #65
 
   Scenario: A multi-measure QbCube with duplicate rows should fail validation
     Given a multi-measure QbCube named "Duplicate Qube" with duplicate rows
@@ -243,6 +242,16 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     Then csvlint validation of "multi-measure-qube-with-new-definitions.csv-metadata.json" should succeed
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should pass "skos, qb" SPARQL tests
+    And the RDF should contain
+    """
+      <file:/tmp/multi-measure-qube-with-new-definitions.csv#structure> <http://purl.org/linked-data/cube#component> <file:/tmp/multi-measure-qube-with-new-definitions.csv#component/new-dimension>.
+      <file:/tmp/multi-measure-qube-with-new-definitions.csv#dimension/new-dimension> <http://purl.org/linked-data/cube#codeList> <file:/tmp/a-new-codelist.csv#scheme/a-new-codelist>.
+
+      <file:/tmp/multi-measure-qube-with-new-definitions.csv#obs/a/part-time> <file:/tmp/multi-measure-qube-with-new-definitions.csv#dimension/new-dimension> <file:/tmp/a-new-codelist.csv#concept/a-new-codelist/a>.
+
+      <file:/tmp/a-new-codelist.csv#scheme/a-new-codelist> a <http://www.w3.org/2004/02/skos/core#ConceptScheme>.
+      <file:/tmp/a-new-codelist.csv#concept/a-new-codelist/a> a <http://www.w3.org/2004/02/skos/core#Concept>.
+    """
 
   Scenario: A single-measure dataset (with code-list) having existing resources can be serialised to a standard CSV-qb
     Given a single measure QbCube named "single-measure qube with existing resources" with existing units/measure/dimensions/attribute/codelists
@@ -336,8 +345,20 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     And csvlint validation of all CSV-Ws should succeed
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should pass "skos, qb" SPARQL tests
+    And the RDF should contain
+    """
+      <file:/tmp/some-qube.csv#structure> <http://purl.org/linked-data/cube#component> <file:/tmp/some-qube.csv#component/d-code-list>.
+      <file:/tmp/some-qube.csv#component/d-code-list> <http://purl.org/linked-data/cube#dimension> <file:/tmp/some-qube.csv#dimension/d-code-list>.
+      <file:/tmp/some-qube.csv#dimension/d-code-list> <http://purl.org/linked-data/cube#codeList> <http://gss-data.org.uk/def/trade/concept-scheme/age-of-business>.
+
+      <file:/tmp/some-qube.csv#obs/a/10-20> <file:/tmp/some-qube.csv#dimension/d-code-list> <http://gss-data.org.uk/def/trade/concept/age-of-business/10-20>.
+
+      <http://gss-data.org.uk/def/trade/concept-scheme/age-of-business> a <http://www.w3.org/2004/02/skos/core#ConceptScheme>.
+      <http://gss-data.org.uk/def/trade/concept/age-of-business/10-20> a <http://www.w3.org/2004/02/skos/core#Concept>;
+        <http://www.w3.org/2004/02/skos/core#inScheme> <http://gss-data.org.uk/def/trade/concept-scheme/age-of-business>.
+    """
   
-  Scenario: An cube with an option attribute which has missing data values should validate successfully
+  Scenario: A cube with an option attribute which has missing data values should validate successfully
     Given a single-measure QbCube named "Some Qube" with optional attribute values missing
     Then the CSVqb should pass all validations
     When the cube is serialised to CSV-W
