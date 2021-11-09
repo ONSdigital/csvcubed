@@ -1,0 +1,41 @@
+name: Increment Versions
+on:
+  create:
+    tags:
+    
+jobs:
+  incrementing_versions:
+    env:
+      GIT_REF: ${{ github.ref }}
+    if: startsWith(github.ref, 'refs/tags/v')
+    # Step 1. Set up operating system
+    runs-on: ubuntu-latest
+    steps:
+    # Step 2. Set up Python 3.9
+    - uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    # Step 3. Check-out repository so we can access its contents
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    # Step 4.
+    - name: Install poetry
+      run: python3 -m pip install poetry
+    - name: Update pyproject.toml version from latest tag
+      run: |
+        cd csvcubed-devtools && poetry version $(echo $GIT_REF | sed -e 's/^.*\/v\(.*\)/\1/')
+        cd ../csvcubed-models && poetry version $(echo $GIT_REF | sed -e 's/^.*\/v\(.*\)/\1/')
+        cd ../csvcubed-pmd && poetry version $(echo $GIT_REF | sed -e 's/^.*\/v\(.*\)/\1/')
+        cd ../csvcubed && poetry version $(echo $GIT_REF | sed -e 's/^.*\/v\(.*\)/\1/')
+    - name: Tell git who we are
+      run: |
+          git config --global user.email "none@none.com"
+          git config --global user.name "Auto-version-incrementer"
+    - name: Commit auto-incrementer changes to existing tag
+      run: |
+        git add csvcubed-devtools/pyproject.toml csvcubed-models/pyproject.toml csvcubed-pmd/pyproject.toml csvcubed/pyproject.toml
+        git commit -m "Updating the release version in pyproject.toml"
+        git tag -f $(echo $GIT_REF | sed -e 's/^.*\/v\(.*\)/v\1/')
+    - name: Push tag changes back to origin
+      run: git push -f origin $(echo $GIT_REF | sed -e 's/^.*\/v\(.*\)/v\1/')
