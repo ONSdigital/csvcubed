@@ -877,9 +877,7 @@ class QbWriter(WriterBase):
                 return column_uri_fragment
 
         elif isinstance(code_list, NewQbCodeList):
-            return self._doc_rel_uri(
-                f"concept/{code_list.metadata.uri_safe_identifier}/{column_uri_fragment}"
-            )
+            return f"{code_list.metadata.uri_safe_identifier}.csv#concept/{code_list.metadata.uri_safe_identifier}/{column_uri_fragment}"
         elif isinstance(code_list, NewQbCodeListInCsvW):
             return re.sub(
                 r"\{.?notation\}", column_uri_fragment, code_list.concept_template_uri
