@@ -5,5 +5,3 @@ import click
 def echo(src):
     """Print value of SRC environment variable."""
     click.echo(src.read())
-
-echo("hello")
