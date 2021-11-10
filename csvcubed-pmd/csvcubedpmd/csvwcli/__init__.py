@@ -43,7 +43,7 @@ def uri_group():
     pass
 
 
-@uri_group.command("pull")
+@uri_group.command("inout")
 @click.option(
     "--out",
     "-o",
