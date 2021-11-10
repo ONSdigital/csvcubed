@@ -6,6 +6,7 @@ import click
 
 
 from csvcubedpmd import csvwcli
+from csvcubedpmd.csvwcli import URI_replacement__init__
 
 entry_point = click.Group(
     commands=[csvwcli.csvw_group],
@@ -14,7 +15,7 @@ entry_point = click.Group(
 )
 
 entry_point2 = click.Group(
-    commands=[csvwcli.uri_group],
+    commands=[URI_replacement__init__.uri_group],
     help="find and replece URIs in ttl files.",
     context_settings=dict(help_option_names=["-h", "--help"]),
 )
