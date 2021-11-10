@@ -1,6 +1,6 @@
 import click
 
-(class) click.File(mode='r', encoding=None, errors='strict', lazy=None, atomic=False)
+click.File(mode='r', encoding=None, errors='strict', lazy=None, atomic=False)
     @click.command()
     @click.argument('input', type=click.File('rb'))
     @click.argument('output', type=click.File('wb'))
