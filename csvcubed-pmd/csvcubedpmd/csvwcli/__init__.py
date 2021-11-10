@@ -3,7 +3,7 @@ from typing import Any
 import click
 
 import csvcubedpmd.csvwcli.pull as pull
-
+import csvcubedpmd.csvwcli.URI_replecment as URI_replecment
 
 @click.group("csvw")
 def csvw_group():
