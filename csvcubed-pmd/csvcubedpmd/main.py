@@ -14,7 +14,7 @@ entry_point = click.Group(
 )
 
 entry_point2 = click.Group(
-    commands=[csvwcli.csvw_group],
+    commands=[csvwcli.uri_group],
     help="find and replece URIs in ttl files.",
     context_settings=dict(help_option_names=["-h", "--help"]),
 )
