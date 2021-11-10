@@ -22,4 +22,13 @@ def uri_group():
     show_default=True,
     metavar="OUT_DIR",
 )
-
+@click.argument(
+    "csvw_url",
+    type=click.STRING,
+    metavar="CSVW_METADATA_URL",
+)
+def _pull(out: Path, csvw_url: str):
+    """
+    Pull a uri and all relative dependencies to the local filesystem.
+    """
+    pull.pull(csvw_url, out.absolute())
