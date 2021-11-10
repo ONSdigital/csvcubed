@@ -12,3 +12,9 @@ entry_point = click.Group(
     help="pmdutils - Utils for helping convert CSV-Ws to PMD-compatible RDF.",
     context_settings=dict(help_option_names=["-h", "--help"]),
 )
+
+entry_point2 = click.Group(
+    commands=[csvwcli.csvw_group],
+    help="find and replece URIs in ttl files.",
+    context_settings=dict(help_option_names=["-h", "--help"]),
+)
