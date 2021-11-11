@@ -1,6 +1,4 @@
 import click
-#csvcubed_pmd =  __import__('csvcubed-pmd')
-#from csvcubed_pmd.tests import turle_test_file
 
 def replace():
     pass
