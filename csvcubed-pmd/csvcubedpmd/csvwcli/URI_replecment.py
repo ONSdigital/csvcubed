@@ -5,13 +5,8 @@ import click
 def replace():
     pass
 
-@click.command()
-@click.argument('turtle_test_file.ttl', type=click.Path(exists=True))
-def touch(filename):
-    """Print FILENAME if the file exists."""
-    click.echo(click.format_filename(filename))
 
-class click.File(mode='r', encoding=None, errors='strict', lazy=None, atomic=False)
+class click:File(mode='r', encoding=None, errors='strict', lazy=None, atomic=False)
 @click.command()
 @click.argument('input', type=click.File('rb'))
 @click.argument('output', type=click.File('wb'))
