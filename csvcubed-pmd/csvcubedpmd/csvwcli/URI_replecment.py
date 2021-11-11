@@ -5,7 +5,7 @@ import click
 def replace():
     pass
 
-File = __import__('turle_test_file.ttl')
+File = __import__('/workspaces/csvwlib/csvcubed-pmd/tests/turle_test_file.ttl')
 class click:File(mode='r', encoding=None, errors='strict', lazy=None, atomic=False)
 @click.command()
 @click.argument('input', type=click.File('rb'))
