@@ -12,7 +12,7 @@ def uri_group():
     pass
 
 
-@uri_group.command()
+#@uri_group.command()
 @click.option(
     "--out",
     "-o",
