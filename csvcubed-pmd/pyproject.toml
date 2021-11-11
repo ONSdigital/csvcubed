@@ -43,4 +43,3 @@ pythonVersion = "3.9"
 
 [tool.poetry.scripts]
 pmdutils = 'csvcubedpmd.main:entry_point'
-pmdutils2 = 'csvcubedpmd.main2:entry_point2'
