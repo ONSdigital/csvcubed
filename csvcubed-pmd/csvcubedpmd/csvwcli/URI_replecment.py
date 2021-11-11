@@ -1,5 +1,5 @@
 import click
-import /workspaces/csvwlib/csvcubed-pmd/tests/turle_test_file.ttl
+import (csvcubed-pmd).tests.turle_test_file
 
 def replace():
     pass
