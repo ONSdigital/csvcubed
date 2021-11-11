@@ -3,7 +3,7 @@ from typing import Any
 import click
 
 import csvcubedpmd.urireplacement.urireplacement as urireplacement
-File = "/workspaces/csvwlib/csvcubed-pmd/tests/TurleTestFile.ttl"
+#File = "/workspaces/csvwlib/csvcubed-pmd/tests/TurleTestFile.ttl"
 
 @click.group("uri")
 def uri_group():
@@ -16,13 +16,15 @@ def uri_group():
 @uri_group.command('replace')
 @click.argument('input', type=click.File('rb'))
 @click.argument('output', type=click.File('wb'))
-def inout(input, output):
-    """Copy contents of INPUT to OUTPUT."""
-    while True:
-        chunk = input.read(1024)
-        if not chunk:
-            break
-        output.write(chunk)
+# def inout(input, output):
+#     """Copy contents of INPUT to OUTPUT."""
+#     urireplacement.replace(input, output)
+    # while True:
+    #     chunk = input.read(1024)
+    #     if not chunk:
+    #         break
+    #     output.write(chunk)
+    #     print(chunk)
 # @click.option(
 #     "--out",
 #     "-o",
@@ -37,9 +39,9 @@ def inout(input, output):
 #     type=click.STRING,
 #     metavar="CSVW_METADATA_URL",
 # )
-def _pull():
+def _pull(input, output):
     """
     Pull a uri and all relative dependencies to the local filesystem.
     """
-    urireplacement.replace()
+    urireplacement.replace(input, output)
 

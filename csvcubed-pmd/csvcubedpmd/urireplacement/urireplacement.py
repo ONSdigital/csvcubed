@@ -1,15 +1,8 @@
-def replace():
+def replace(input, output):
     print("Hello, world.")
-
-# File = "/workspaces/csvwlib/csvcubed-pmd/tests/turle_test_file.ttl"
-# click:File(mode='r', encoding=None, errors='strict', lazy=None, atomic=False)
-# @click.command()
-# @click.argument('input', type=click.File('rb'))
-# @click.argument('output', type=click.File('wb'))
-# def inout(input, output):
-#     """Copy contents of INPUT to OUTPUT."""
-#     while True:
-#         chunk = input.read(1024)
-#         if not chunk:
-#             break
-#         output.write(chunk) 
+    while True:
+        chunk = input.read(512)
+        if not chunk:
+            break
+        output.write(chunk)
+        print(chunk)
