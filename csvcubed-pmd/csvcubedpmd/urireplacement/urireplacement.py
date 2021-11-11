@@ -1,7 +1,7 @@
 def replace(input, output):
     print("Hello, world.")
     while True:
-        chunk = input.read(512)
+        chunk = input.readline()
         if not chunk:
             break
         output.write(chunk)
