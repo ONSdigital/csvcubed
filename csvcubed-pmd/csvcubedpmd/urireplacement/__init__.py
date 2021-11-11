@@ -16,6 +16,8 @@ def uri_group():
 @uri_group.command('replace')
 @click.argument('input', type=click.File('rb'))
 @click.argument('output', type=click.File('wb'))
+@click.option('inputuri','-i', multiple=True)
+@click.option('outputuri','-o', multiple=True)
 # def inout(input, output):
 #     """Copy contents of INPUT to OUTPUT."""
 #     urireplacement.replace(input, output)
@@ -39,9 +41,9 @@ def uri_group():
 #     type=click.STRING,
 #     metavar="CSVW_METADATA_URL",
 # )
-def _pull(input, output):
+def _pull(input, output, inputuri, outputuri):
     """
     Pull a uri and all relative dependencies to the local filesystem.
     """
-    urireplacement.replace(input, output)
+    urireplacement.replace(input, output, inputuri, outputuri)
 
