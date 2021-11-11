@@ -3,6 +3,7 @@ from typing import Any
 import click
 
 import csvcubedpmd.urireplacement.urireplacement as urireplacement
+File = "/workspaces/csvwlib/csvcubed-pmd/tests/TurleTestFile.ttl"
 
 @click.group("uri")
 def uri_group():
@@ -13,6 +14,15 @@ def uri_group():
 
 
 @uri_group.command('replace')
+@click.argument('input', type=click.File('rb'))
+@click.argument('output', type=click.File('wb'))
+def inout(input, output):
+    """Copy contents of INPUT to OUTPUT."""
+    while True:
+        chunk = input.read(1024)
+        if not chunk:
+            break
+        output.write(chunk)
 # @click.option(
 #     "--out",
 #     "-o",
