@@ -7,7 +7,7 @@ name = "csvcubed-devtools"
 packages = [
   {include = "csvcubeddevtools"},
 ]
-version = "0.0.1"
+version = "0.1.0-rc1"
 
 [tool.poetry.dependencies]
 behave = "*"
