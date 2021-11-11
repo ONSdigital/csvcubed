@@ -1,7 +1,9 @@
 import click
+import /workspaces/csvwlib/csvcubed-pmd/tests/turle_test_file.ttl
 
 def replace():
     pass
+
 class click.File(mode='r', encoding=None, errors='strict', lazy=None, atomic=False)
 @click.command()
 @click.argument('input', type=click.File('rb'))
