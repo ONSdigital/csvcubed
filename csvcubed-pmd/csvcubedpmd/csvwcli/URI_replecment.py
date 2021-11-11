@@ -1,6 +1,7 @@
 import click
 
 def replace():
+    pass
 class click.File(mode='r', encoding=None, errors='strict', lazy=None, atomic=False)
 @click.command()
 @click.argument('input', type=click.File('rb'))
