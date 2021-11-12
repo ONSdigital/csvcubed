@@ -3,7 +3,9 @@ from typing import Any
 import click
 
 import csvcubedpmd.urireplacement.urireplacement as urireplacement
-#File = "/workspaces/csvwlib/csvcubed-pmd/tests/TurleTestFile.ttl"
+
+# File = "/workspaces/csvwlib/csvcubed-pmd/tests/TurleTestFile.ttl"
+
 
 @click.group("uri")
 def uri_group():
@@ -13,37 +15,12 @@ def uri_group():
     pass
 
 
-@uri_group.command('replace')
-@click.argument('input', type=click.File('rb'))
-@click.argument('output', type=click.File('wb'))
-@click.option('inputuri','-i', multiple=True)
-@click.option('outputuri','-o', multiple=True)
-# def inout(input, output):
-#     """Copy contents of INPUT to OUTPUT."""
-#     urireplacement.replace(input, output)
-    # while True:
-    #     chunk = input.read(1024)
-    #     if not chunk:
-    #         break
-    #     output.write(chunk)
-    #     print(chunk)
-# @click.option(
-#     "--out",
-#     "-o",
-#     help="Output directory in which to place the uri and its relative dependencies",
-#     type=click.Path(exists=False, path_type=Path, file_okay=False, dir_okay=True),
-#     default="./out",
-#     show_default=True,
-#     metavar="OUT_DIR",
-# )
-# @click.argument(
-#     "csvw_url",
-#     type=click.STRING,
-#     metavar="CSVW_METADATA_URL",
-# )
-def _pull(input, output, inputuri, outputuri):
+@uri_group.command("replace")
+@click.argument("input", type=click.File("rb"))
+@click.argument("output", type=click.File("wb"))
+@click.option("--value", "-v", nargs=2, multiple=True)
+def _replace(input, output, value):
     """
-    Pull a uri and all relative dependencies to the local filesystem.
+    Replace instances of values with other values across a given file.
     """
-    urireplacement.replace(input, output, inputuri, outputuri)
-
+    urireplacement._replace(input=input, output=output, values=value)
