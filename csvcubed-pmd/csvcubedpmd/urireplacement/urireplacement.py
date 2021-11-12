@@ -33,13 +33,13 @@ def _replace(input: click.File, output: click.File, values: tuple[tuple[str, str
     "Get character encoding type as a variable"
     while True:
         chunk = input.readline()
-        line = (input.readline()).decode('utf-8')
+        line = (input.readline()).decode()
         "Add reading the line and decoding as one statement - it's no longer a chunk, maybe try would work here?"
         if not line:
             break
         _line_replace(line,values)
         "encode it back to that bytestream"
-        line = line.encode('utf-8')
+        line = line.encode()
         output.write(line)
         print(line)
         print(type(values))
