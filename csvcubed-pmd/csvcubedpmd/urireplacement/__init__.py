@@ -4,8 +4,6 @@ import click
 
 import csvcubedpmd.urireplacement.urireplacement as urireplacement
 
-# File = "/workspaces/csvwlib/csvcubed-pmd/tests/TurleTestFile.ttl"
-
 
 @click.group("uri")
 def uri_group():
