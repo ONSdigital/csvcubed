@@ -7,7 +7,7 @@ name = "csvcubed-pmd"
 packages = [
   {include = "csvcubedpmd"},
 ]
-version = "0.0.1"
+version = "0.1.0"
 
 [tool.poetry.dependencies]
 csvw = "*"
