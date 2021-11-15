@@ -7,7 +7,7 @@ name = "csvcubed-models"
 packages = [
   {include = "csvcubedmodels"},
 ]
-readme = "csvcubedpmd/README.md"
+readme = "csvcubedmodels/README.md"
 version = "0.1.0"
 
 [tool.poetry.dependencies]
