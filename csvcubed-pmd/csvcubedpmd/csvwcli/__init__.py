@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import Any
 import click
 
 import csvcubedpmd.csvwcli.pull as pull
