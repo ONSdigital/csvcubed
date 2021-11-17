@@ -1,5 +1,5 @@
 [tool.poetry]
-authors = ["Integrated Data Service - Dissemination <sharedcustomercontactcentre@ons.gov.uk>"]
+authors = ["Integrated Data Service - Dissemination <csvcubed@gsscogs.uk>"]
 description = "Models and RDF serialisation functionality useful to the csvcubed family of tools."
 exclude = ["docs/*"]
 license = "Apache-2.0"
