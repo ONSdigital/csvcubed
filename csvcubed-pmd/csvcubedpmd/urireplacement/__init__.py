@@ -14,8 +14,8 @@ def uri_group():
 
 
 @uri_group.command("replace")
-@click.argument("input", type=click.File("rb"))
-@click.argument("output", type=click.File("wb"))
+@click.argument("input", type=click.Path())
+@click.argument("output", type=click.Path())
 @click.option("--value", "-v", nargs=2, multiple=True)
 def _replace(input, output, value):
     """

@@ -3,57 +3,81 @@ import urllib.request
 from chardet.universaldetector import UniversalDetector
 import logging
 
-def _line_check(line: str) -> bool:
+logging.basicConfig(level=logging.INFO)
+
+def _file_in_line(line: str) -> bool:
     """
-    Returns true if line has no file:/ in it
+    Returns true if line has file:/ in it
     """
-    return not "file:/" in line
+    return "file:/" in line
 
 
 def _line_replace(line: str, values: tuple[tuple[str, str]]) -> str:
     """
     Replaces given value pairs in line, returns result
     """
-    print(f"Original line: {line}")
+    logging.debug(f"Original line: {line}")
     for find, replace in values:
-        print(f"replacing [{find}] with [{replace}]")
+        logging.debug(f"replacing [{find}] with [{replace}]")
         line = line.replace(find, replace)
-    print(f"New line: {line}")
-    _line_check(line)
+    logging.debug(f"New line: {line}")
+    #_line_check(line)
     
     return line
 
-def _chardet(input: click.File):
+def _chardet(input: click.Path):
     detector = UniversalDetector()
-    for line in input.readlines():
-        detector.feed(line)
-        if detector.done: break
-    detector.close()
-    print(detector.result)
-    encodingtype = detector.result['encoding']
+    with open(input, 'rb') as inputfile:
+        for line in inputfile.readlines():
+            logging.debug(line)
+            detector.feed(line)
+            if detector.done: break
+        detector.close()
+        logging.info(detector.result)
+        encodingtype = detector.result['encoding']
+
+    # usock = urllib.request.urlopen('http://yahoo.co.jp/')
+    # detector = UniversalDetector()
+    # for line in usock.readlines():
+    #     detector.feed(line)
+    #     if detector.done: break
+    # detector.close()
+    # usock.close()
+    # print(detector.result)
     return encodingtype
 
-def _replace(input: click.File, output: click.File, values: tuple[tuple[str, str]]) -> None:
+def _replace(input: click.Path, output: click.Path, values: tuple[tuple[str, str]]) -> None:
     """
     Docstring goes here
     """
-    encodingtype = _chardet(input)
-    print(encodingtype)
-    
+
     "Get character encoding type as a variable"
-    #while True:
-    for index, line in enumerate(input):
-        line = (input.readline()).decode(encodingtype)
-        "Add reading the line and decoding as one statement - it's no longer a chunk, maybe try would work here?"
-        if not line:
-            break
-        _line_replace(line,values)
-        if _line_check(line):
-            logging.warning(f"remiaining 'file:/' URIs found on line {index}: {line}")
-        "encode it back to that bytestream"
-        line = line.encode(encodingtype)
-        output.write(line)
-        print(line)
-        print(type(values))
+    encodingtype = _chardet(input)
+    logging.info(encodingtype)
+
+    # Show people what you're doing if you want to see it
     for value in values:
-        print(f"Replace [{value[0]}] with [{value[1]}]")
+        logging.info(f"Replace [{value[0]}] with [{value[1]}]")
+
+    # while True:
+    with open(input, 'rb') as inputfile:
+        #with open(output, "wb") as outputfile:
+        for index, line in enumerate(inputfile, 1):
+
+            #line = (input.readline()).decode(encodingtype)
+            line = line.decode(encodingtype)
+            logging.debug(index, line)
+            "Add reading the line and decoding as one statement - it's no longer a chunk, maybe try would work here?"
+            #if not line:
+            #    break
+            line = _line_replace(line,values)
+            if _file_in_line(line):
+                logging.warning(f"remiaining 'file:/' URIs found on line {index}: {line}")
+            else:
+                logging.debug(f"\"file:/\" not found on line {index}")
+            #line = line.encode(encodingtype)
+            with open(output, "wb") as outputfile:
+                outputfile.write(line.encode(encodingtype))
+            logging.debug(line)
+            logging.debug(type(values))
+
