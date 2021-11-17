@@ -36,14 +36,6 @@ def _chardet(input: click.Path):
         logging.info(detector.result)
         encodingtype = detector.result['encoding']
 
-    # usock = urllib.request.urlopen('http://yahoo.co.jp/')
-    # detector = UniversalDetector()
-    # for line in usock.readlines():
-    #     detector.feed(line)
-    #     if detector.done: break
-    # detector.close()
-    # usock.close()
-    # print(detector.result)
     return encodingtype
 
 def _replace(input: click.Path, output: click.Path, values: tuple[tuple[str, str]]) -> None:
@@ -59,25 +51,21 @@ def _replace(input: click.Path, output: click.Path, values: tuple[tuple[str, str
     for value in values:
         logging.info(f"Replace [{value[0]}] with [{value[1]}]")
 
-    # while True:
-    with open(input, 'rb') as inputfile:
-        #with open(output, "wb") as outputfile:
-        for index, line in enumerate(inputfile, 1):
 
-            #line = (input.readline()).decode(encodingtype)
-            line = line.decode(encodingtype)
-            logging.debug(index, line)
-            "Add reading the line and decoding as one statement - it's no longer a chunk, maybe try would work here?"
-            #if not line:
-            #    break
-            line = _line_replace(line,values)
-            if _file_in_line(line):
-                logging.warning(f"remiaining 'file:/' URIs found on line {index}: {line}")
-            else:
-                logging.debug(f"\"file:/\" not found on line {index}")
-            #line = line.encode(encodingtype)
-            with open(output, "wb") as outputfile:
+    with open(input, 'rb') as inputfile:
+        with open(output, "wb") as outputfile:
+            for index, line in enumerate(inputfile, 1):
+
+                line = line.decode(encodingtype)
+                logging.debug(index, line)
+                "Add reading the line and decoding as one statement - it's no longer a chunk, maybe try would work here?"
+
+                line = _line_replace(line,values)
+                if _file_in_line(line):
+                    logging.warning(f"remiaining 'file:/' URIs found on line {index}: {line}")
+                else:
+                    logging.debug(f"\"file:/\" not found on line {index}")
                 outputfile.write(line.encode(encodingtype))
-            logging.debug(line)
-            logging.debug(type(values))
+                logging.debug(line)
+                logging.debug(type(values))
 
