@@ -1,5 +1,5 @@
 import click
-import urllib.request
+#import urllib.request
 from chardet.universaldetector import UniversalDetector
 import logging
 
@@ -21,7 +21,6 @@ def _line_replace(line: str, values: tuple[tuple[str, str]]) -> str:
         logging.debug(f"replacing [{find}] with [{replace}]")
         line = line.replace(find, replace)
     logging.debug(f"New line: {line}")
-    #_line_check(line)
     
     return line
 
@@ -38,7 +37,7 @@ def _chardet(input: click.Path):
 
     return encodingtype
 
-def _replace(input: click.Path, output: click.Path, values: tuple[tuple[str, str]]) -> None:
+def _replace(input: click.Path, output: click.Path, values: tuple[tuple[str, str]],disableuriwarning: bool) -> None:
     """
     Docstring goes here
     """
@@ -63,6 +62,9 @@ def _replace(input: click.Path, output: click.Path, values: tuple[tuple[str, str
                 line = _line_replace(line,values)
                 if _file_in_line(line):
                     logging.warning(f"remiaining 'file:/' URIs found on line {index}: {line}")
+                    if disableuriwarning == True:
+                        logging.debug("CLI program stop running")
+                        break
                 else:
                     logging.debug(f"\"file:/\" not found on line {index}")
                 outputfile.write(line.encode(encodingtype))
