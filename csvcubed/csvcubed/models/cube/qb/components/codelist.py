@@ -9,9 +9,7 @@ from abc import ABC
 from pydantic import root_validator
 
 from csvcubed.models.uriidentifiable import UriIdentifiable
-from csvcubed.readers.skoscodelistreader import (
-    extract_code_list_concept_scheme_info,
-)
+from csvcubed.readers.skoscodelistreader import extract_code_list_concept_scheme_info
 from .arbitraryrdf import ArbitraryRdf, RdfSerialisationHint, TripleFragmentBase
 from .datastructuredefinition import QbDataStructureDefinition
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
@@ -160,7 +158,39 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
         return RdfSerialisationHint.ConceptScheme
 
     def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
-        return []  # TODO: implement this.
+        """
+        Validate the data held in the codelists, assuming case insensitivity
+        """
+
+        errors = List[ValidationError]
+        unique_keys = dict(list)
+
+        # Create a dict of all uri-safe values with the originals as a list
+        for k, v in {value: uri_safe(value) for value in data.unique()}.items():
+            unique_keys[k].setdefault(v, []).append(k)
+
+        # Check for collisions, raise a Validation error
+        for k, v in unique_keys:
+            if len(v) > 1:
+                errors.append(ValidationError(f"Labels \"{v}\" collide as single uri-safe value \"{k}\""))
+
+        # {
+        #     "A": "a",
+        #     "a": "a",
+        #     "b": "b",
+        #     "c": "c"
+        # }
+
+        # {
+        #     "a": ["A", "a"],
+        #     "b": ["b"],
+        #     "c": ["c"]
+        # }
+        # for a, b in dict:
+        #     if len(b) > 1:
+        #         error
+
+        return errors
 
 
 @dataclass

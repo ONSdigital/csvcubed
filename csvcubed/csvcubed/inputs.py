@@ -45,12 +45,13 @@ def pandas_input_to_columnar_optional_str(
     if series is None:
         return []
 
-    return [None if pd.isna(d) else str(d) for d in series.tolist()]
+    return [None if pd.isna(d) else str(d).lower() for d in series.tolist()]
 
 
 def pandas_input_to_columnar_str(
     maybe_columnar_data: PandasDataTypes,
     allow_no_data_at_all: bool = True,
+    case_sensitive: bool = False
 ) -> Iterable[str]:
     """
     Convert pandas data to an iterable of strings. Ensure no values are missing.
@@ -63,4 +64,7 @@ def pandas_input_to_columnar_str(
     ):
         if value is None:
             raise ValueError("Missing value found in data.")
-        yield value
+        if not case_sensitive:
+            yield value.lower()
+        else:
+            raise NotImplementedError("case sensitivity not implemented")

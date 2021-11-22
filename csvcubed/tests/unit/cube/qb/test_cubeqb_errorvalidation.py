@@ -12,10 +12,11 @@ from csvcubed.models.cube.qb.validationerrors import (
     BothUnitTypesDefinedError,
     MaxNumComponentsExceededError,
     WrongNumberComponentsError,
-    IncompatibleComponentsError,
+    IncompatibleComponentsError
 )
 from tests.unit.test_baseunit import *
 from csvcubed.utils.qb.cube import validate_qb_component_constraints
+from csvcubed.utils.qb.standardise import convert_data_values_to_uri_safe_values
 
 
 def test_single_measure_qb_definition():
@@ -663,6 +664,22 @@ def test_existing_qb_attribute_literal_date():
 
     assert len(qube.validate()) == 0
 
+def test_case_insensitivity_code_collisions():
+    obs = pd.DataFrame({
+        "Some Dimension": ["a", "b", "A"],
+        "Value": [1, 2, 3]
+    })
+    cube = Cube(
+        CatalogMetadata("Some Cube"),
+        obs,
+        [
+            QbColumn("Some Dimension", NewQbDimension.from_data("Some Dimension", obs["Some Dimension"])),
+            QbColumn("Value",
+                     QbSingleMeasureObservationValue(measure=NewQbMeasure("Some Measure"), unit=NewQbUnit("Some Unit"))
+                     )
+        ]
+    )
+    convert_data_values_to_uri_safe_values(cube)
 
 if __name__ == "__main__":
     pytest.main()
