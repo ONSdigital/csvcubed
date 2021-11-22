@@ -17,9 +17,9 @@ def uri_group():
 @click.argument("input", type=click.Path())
 @click.argument("output", type=click.Path())
 @click.option("--value", "-v", nargs=2, multiple=True)
-@click.option("--disableuriwarning", "-d",default = False)
-def _replace(input, output, value, disableuriwarning):
+@click.option("--force",is_flag = True) # TODO: Convert to flag
+def _replace(input, output, value, force):
     """
     Replace instances of values with other values across a given file.
     """
-    urireplacement._replace(input=input, output=output, values=value, disableuriwarning=disableuriwarning)
+    urireplacement._replace(input=input, output=output, values=value, force=force)

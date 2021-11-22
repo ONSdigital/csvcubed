@@ -16,6 +16,7 @@ def _line_replace(line: str, values: tuple[tuple[str, str]]) -> str:
     """
     Replaces given value pairs in line, returns result
     """
+    print(len(values)) 
     logging.debug(f"Original line: {line}")
     for find, replace in values:
         logging.debug(f"replacing [{find}] with [{replace}]")
@@ -37,7 +38,7 @@ def _chardet(input: click.Path):
 
     return encodingtype
 
-def _replace(input: click.Path, output: click.Path, values: tuple[tuple[str, str]],disableuriwarning: bool) -> None:
+def _replace(input: click.Path, output: click.Path, values: tuple[tuple[str, str]],force: bool) -> None:
     """
     Docstring goes here
     """
@@ -62,7 +63,7 @@ def _replace(input: click.Path, output: click.Path, values: tuple[tuple[str, str
                 line = _line_replace(line,values)
                 if _file_in_line(line):
                     logging.warning(f"remiaining 'file:/' URIs found on line {index}: {line}")
-                    if disableuriwarning == True:
+                    if not force:
                         logging.debug("CLI program stop running")
                         break
                 else:
