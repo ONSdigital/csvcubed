@@ -17,7 +17,7 @@ Feature: Testing the csvw command group in the CLI
     When the pmdutils command CLI is run with "dcat pmdify single-measure-bulletin.csv-metadata.json http://base-uri http://data-graph-uri http://catalog-metadata-graph-uri"
     Then the CLI should succeed
     And the file at "single-measure-bulletin.csv-metadata.json.nq" should exist
-    Given the RDF contained in "single-measure-bulletin.csv-metadata.json.nq"
+    Given the N-Quads contained in "single-measure-bulletin.csv-metadata.json.nq"
     Then the RDF should contain
     """
       @prefix dcat: <http://www.w3.org/ns/dcat#> .
@@ -61,7 +61,7 @@ Feature: Testing the csvw command group in the CLI
     When the pmdutils command CLI is run with "dcat pmdify single-measure-bulletin.csv-metadata.json http://base-uri http://data-graph-uri http://catalog-metadata-graph-uri"
     Then the CLI should succeed
     And the file at "single-measure-bulletin.csv-metadata.json.nq" should exist
-    Given the RDF contained in "single-measure-bulletin.csv-metadata.json.nq"
+    Given the N-Quads contained in "single-measure-bulletin.csv-metadata.json.nq"
     Then the RDF should contain
     """
       @prefix dcat: <http://www.w3.org/ns/dcat#> .
@@ -74,7 +74,7 @@ Feature: Testing the csvw command group in the CLI
     When the pmdutils command CLI is run with "dcat pmdify period.csv-metadata.json http://base-uri http://data-graph-uri http://catalog-metadata-graph-uri"
     Then the CLI should succeed
     And the file at "period.csv-metadata.json.nq" should exist
-    Given the RDF contained in "period.csv-metadata.json.nq"
+    Given the N-Quads contained in "period.csv-metadata.json.nq"
     Then the RDF should contain
     """
       @prefix dcat: <http://www.w3.org/ns/dcat#> .

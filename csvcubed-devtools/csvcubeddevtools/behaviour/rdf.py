@@ -2,10 +2,9 @@
 RDF Test Steps
 --------------
 """
-from pathlib import Path
 from behave import *
 from rdflib.compare import to_isomorphic, graph_diff
-from rdflib import Graph, Dataset, ConjunctiveGraph
+from rdflib import Graph, ConjunctiveGraph
 import distutils.util
 from .temporarydirectory import get_context_temp_dir_path
 
@@ -48,7 +47,7 @@ def assert_ask(context, ask_query: str, expected_ask_result: bool):
     assert ask_result == expected_ask_result
 
 
-@given('the RDF contained in "{rdf_file}"')
+@given('the N-Quads contained in "{rdf_file}"')
 def step_impl(context, rdf_file: str):
     rdf_file_path = get_context_temp_dir_path(context) / rdf_file
     graph = ConjunctiveGraph()

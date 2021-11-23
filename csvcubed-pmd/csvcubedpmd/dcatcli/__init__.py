@@ -40,7 +40,9 @@ def _pmdify(
     catalog_metadata_graph_uri: str,
 ) -> None:
     """
-    Given a local CSV-W metadata file, re-work the DCATv2 metadata such that it ends up in the format required for PMD
+    Given a local CSV-W metadata file, re-work the DCATv2 metadata such that it ends up in the format required for PMD.
+
+    Outputs an N-Quads file containing PMDCAT metadata at <CSVW_METADATA_FILE>.nq
     """
     pmdify_dcat(
         csvw_metadata_file, base_uri, data_graph_uri, catalog_metadata_graph_uri
