@@ -11,15 +11,6 @@ from csvcubedpmd.models.CsvCubedOutputType import CsvCubedOutputType
 _TEST_CASES_DIR = get_test_cases_dir() / "dcatcli"
 
 
-def test_thingy():
-    pmdify.pmdify_dcat(
-        _TEST_CASES_DIR / "single-measure-bulletin.csv-metadata.json",
-        "http://base-url",
-        "http://something",
-        "http://something-else",
-    )
-
-
 def test_extracting_metadata():
     """
     Test we can successfully extract the metadata from a `dcat:Dataset` inside a CSV-W.
