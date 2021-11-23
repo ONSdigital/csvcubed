@@ -7,7 +7,7 @@ from .pmdify import pmdify_dcat
 @click.group("dcat")
 def dcat_group():
     """
-    Work with CSV-Ws.
+    Work with DCAT metadata.
     """
     pass
 
