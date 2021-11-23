@@ -5,8 +5,9 @@ RDF Test Steps
 from pathlib import Path
 from behave import *
 from rdflib.compare import to_isomorphic, graph_diff
-from rdflib import Graph
+from rdflib import Graph, Dataset, ConjunctiveGraph
 import distutils.util
+from .temporarydirectory import get_context_temp_dir_path
 
 
 def test_graph_diff(g1, g2):
@@ -45,6 +46,16 @@ def assert_ask(context, ask_query: str, expected_ask_result: bool):
     results = list(g.query(ask_query))
     ask_result = results[0]
     assert ask_result == expected_ask_result
+
+
+@given('the RDF contained in "{rdf_file}"')
+def step_impl(context, rdf_file: str):
+    rdf_file_path = get_context_temp_dir_path(context) / rdf_file
+    graph = ConjunctiveGraph()
+    graph.parse(str(rdf_file_path), format="nquads")
+    context.turtle = getattr(context, "turtle", "") + graph.serialize(
+        format="turtle"
+    ).decode("utf-8")
 
 
 @step('the RDF should not contain any instances of "{entity_type}"')

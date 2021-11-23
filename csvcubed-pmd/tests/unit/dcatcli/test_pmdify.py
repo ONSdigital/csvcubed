@@ -11,6 +11,15 @@ from csvcubedpmd.models.CsvCubedOutputType import CsvCubedOutputType
 _TEST_CASES_DIR = get_test_cases_dir() / "dcatcli"
 
 
+def test_thingy():
+    pmdify.pmdify_dcat(
+        _TEST_CASES_DIR / "single-measure-bulletin.csv-metadata.json",
+        "http://base-url",
+        "http://something",
+        "http://something-else",
+    )
+
+
 def test_extracting_metadata():
     """
     Test we can successfully extract the metadata from a `dcat:Dataset` inside a CSV-W.
@@ -74,6 +83,7 @@ def test_delete_dcat_metadata():
 
 
 def test_identification_of_csvcubed_output_type():
+    # Test `qb:DataSet` can be correctly identified.
     csvw_graph = Graph()
     csvw_graph.parse(
         str(_TEST_CASES_DIR / "single-measure-bulletin.csv-metadata.json"),
@@ -83,7 +93,15 @@ def test_identification_of_csvcubed_output_type():
 
     assert actual_output_type == CsvCubedOutputType.QbDataSet
 
-    # todo: Need to test a skos:ConceptScheme here too
+    # Test `skos:ConceptScheme` can be correctly identified.
+    csvw_graph = Graph()
+    csvw_graph.parse(
+        str(_TEST_CASES_DIR / "period.csv-metadata.json"),
+        format="json-ld",
+    )
+    actual_output_type = pmdify._get_csv_cubed_output_type(csvw_graph)
+
+    assert actual_output_type == CsvCubedOutputType.SkosConceptScheme
 
 
 def test_catalog_uris_for_csvcubed_output_types():

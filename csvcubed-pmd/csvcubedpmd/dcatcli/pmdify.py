@@ -5,22 +5,29 @@ PMDify DCAT Metadata
 Functionality to convert a CSV-W's DCATv2 metadata into the structure necessary for PMD.
 """
 import json
+import re
 from datetime import datetime
 from pathlib import Path
-from typing import Optional, Any, Callable
+from typing import Optional, Any, Callable, Tuple
+from urllib.parse import urlparse, urljoin
 
-import dateutil
+import dateutil.parser
 import rdflib
 from csvcubedmodels.rdf import ExistingResource
+from csvcubedmodels.utils.uri import looks_like_uri
 from rdflib import Graph, Literal, URIRef
+from rdflib.term import Identifier
 
 from csvcubedpmd.config import pmdconfig
 from csvcubedpmd.models.CsvCubedOutputType import CsvCubedOutputType
 from csvcubedpmd.models.rdf import pmdcat
 
+_TEMP_PREFIX_URI = URIRef("http://temporary")
+
 
 def pmdify_dcat(
     csvw_metadata_file_path: Path,
+    base_uri: str,
     data_graph_uri: str,
     catalog_metadata_graph_uri: str,
 ) -> None:
@@ -29,14 +36,17 @@ def pmdify_dcat(
 
     Adds a new file located at `csvw_metadata_file_path`.nq containing the catalogue metadata in quad form.
     """
-
-    csvw_rdf_graph = Graph()
+    csvw_metadata_file_path = csvw_metadata_file_path.absolute()
+    csvw_rdf_graph = Graph(base=_TEMP_PREFIX_URI)
     with open(csvw_metadata_file_path, "r") as f:
         csvw_file_contents_json = json.load(f)
 
     rdf_metadata = csvw_file_contents_json["rdfs:seeAlso"]
-    csvw_rdf_graph.parse(rdf_metadata, format="json-ld")
+    rdf_metadata_json = json.dumps(rdf_metadata)
 
+    csvw_rdf_graph.parse(
+        data=rdf_metadata_json, publicID=_TEMP_PREFIX_URI, format="json-ld"
+    )
     csvw_type = _get_csv_cubed_output_type(csvw_rdf_graph)
 
     catalog_entry = _get_catalog_entry_from_dcat_dataset(csvw_rdf_graph)
@@ -46,19 +56,57 @@ def pmdify_dcat(
 
     _delete_existing_dcat_dataset_metadata(csvw_rdf_graph)
 
+    _replace_uri_substring_in_graph(csvw_rdf_graph, str(_TEMP_PREFIX_URI), base_uri)
     csvw_file_contents_json["rdfs:seeAlso"] = json.loads(
-        csvw_rdf_graph.serialize(format="json-ld") or "[]"
+        csvw_rdf_graph.serialize(format="json-ld").decode("UTF-8")
     )
+
+    initial_id = csvw_file_contents_json.get("@id", "")
+    if not looks_like_uri(initial_id):
+        initial_id_parsed = urlparse(initial_id)
+        csvw_file_contents_json["@id"] = urljoin(base_uri, initial_id_parsed.path)
 
     # Write removal of dcat metadata from CSV-W to disk.
     with open(csvw_metadata_file_path, "w") as f:
-        json.dump(f, csvw_file_contents_json, indent=4)
+        json.dump(csvw_file_contents_json, f, indent=4)
 
     # Write separate N-Quads file containing pmdified catalogue metadata.
     catalog_metadata_quads_file_path = Path(f"{csvw_metadata_file_path.absolute()}.nq")
     _write_catalog_metadata_to_quads(
-        catalog_record, catalog_metadata_quads_file_path, catalog_metadata_graph_uri
+        catalog_record,
+        catalog_metadata_quads_file_path,
+        catalog_metadata_graph_uri,
+        base_uri,
     )
+
+
+def _replace_uri_substring_in_graph(
+    csvw_rdf_graph: Graph, value_to_replace: str, replacement_value: str
+) -> None:
+    def replace_uri_in_triple(
+        triple: Tuple[Identifier, Identifier, Identifier]
+    ) -> Tuple[Identifier, Identifier, Identifier]:
+        def replace_uri_in_identifier(identifier: Identifier) -> Identifier:
+            if isinstance(identifier, URIRef):
+                return URIRef(
+                    str(identifier).replace(value_to_replace, replacement_value)
+                )
+            else:
+                return identifier
+
+        s, p, o = triple
+        return (
+            replace_uri_in_identifier(s),
+            replace_uri_in_identifier(p),
+            replace_uri_in_identifier(o),
+        )
+
+    triples = [
+        replace_uri_in_triple(t) for t in csvw_rdf_graph.triples((None, None, None))
+    ]
+    csvw_rdf_graph.remove((None, None, None))
+    for triple in triples:
+        csvw_rdf_graph.add(triple)
 
 
 def _generate_pmd_catalog_record(
@@ -70,8 +118,8 @@ def _generate_pmd_catalog_record(
     catalog_entry.dataset_contents = ExistingResource(catalog_entry.uri)
 
     # N.B. assumes that all URIs are hash URIs, this may not always be the case.
-    catalog_entry_uri = catalog_entry.uri.replace("#.*?$", "#catalog-entry")
-    catalog_record_uri = catalog_entry.uri.replace("#.*?$", "#catalog-record")
+    catalog_entry_uri = re.sub("#.*?$", "#catalog-entry", str(catalog_entry.uri))
+    catalog_record_uri = re.sub("#.*?$", "#catalog-record", str(catalog_entry.uri))
     catalog_entry.uri = URIRef(catalog_entry_uri)
 
     # Catalog -(dcat:record)-> Catalog Record -(foaf:primaryTopic)-> Dataset -(pmdcat:datasetContents)->
@@ -110,13 +158,20 @@ def _write_catalog_metadata_to_quads(
     catalog_record: pmdcat.Dataset,
     catalog_metadata_quads_file_path: Path,
     catalog_metadata_graph_uri: str,
+    base_uri: str,
 ) -> None:
     catalog_metadata_ds = rdflib.Dataset()
     catalog_metadata_graph = catalog_record.to_graph(
-        catalog_metadata_ds.graph(catalog_metadata_graph_uri)
+        catalog_metadata_ds.graph(catalog_metadata_graph_uri, base=_TEMP_PREFIX_URI)
     )
     catalog_record.to_graph(catalog_metadata_graph)
-    catalog_metadata_graph.serialize(catalog_metadata_quads_file_path, format="nq")
+    _replace_uri_substring_in_graph(
+        catalog_metadata_graph, str(_TEMP_PREFIX_URI), base_uri
+    )
+
+    catalog_metadata_ds.serialize(
+        str(catalog_metadata_quads_file_path), format="nquads"
+    )
 
 
 def _delete_existing_dcat_dataset_metadata(csvw_graph: Graph) -> None:
@@ -131,6 +186,7 @@ def _delete_existing_dcat_dataset_metadata(csvw_graph: Graph) -> None:
 
         DELETE {
             ?dataset a dcat:Dataset;
+                a dcat:Resource;
                 dcterms:issued ?issued;
                 dcterms:modified ?modified;
                 rdfs:comment ?comment;

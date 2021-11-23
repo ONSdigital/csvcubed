@@ -57,6 +57,7 @@ Feature: Testing the csvw command group in the CLI
     And the file at "out/junior-roles.csv" should exist
     And the file at "out/gov.uk/schema/junior-roles.json" should exist
 
+
     Scenario: The `pull` command should fail when the CSV-W file cannot be found.
     When the pmdutils command CLI is run with "csvw pull https://example.com/non-existant-file.csv-metadata.json"
     Then the CLI should fail with status code -1

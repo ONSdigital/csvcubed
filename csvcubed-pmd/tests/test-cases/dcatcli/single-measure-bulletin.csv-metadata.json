@@ -131,17 +131,7 @@
                     "@id": "http://gss-data.org.uk/def/gdp#Trade"
                 }
             ],
-            "rdfs:comment": {
-                "@language": "en",
-                "@value": "some comment goes here"
-            },
-            "http://purl.org/dc/terms/license": {
-                "@id": "http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
-            },
-            "http://www.w3.org/ns/dcat#contactPoint": {
-                "@id": "mailto:something@example.com"
-            },
-            "http://www.w3.org/ns/dcat#keyword": ["keyword 1", "keyword 2"]
+            "http://www.w3.org/ns/dcat#keyword": [ "keyword1", "keyword2"]
         },
         {
             "@id": "single-measure-bulletin.csv#component/period",
