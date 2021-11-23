@@ -16,11 +16,15 @@ def _line_replace(line: str, values: tuple[tuple[str, str]]) -> str:
     """
     Replaces given value pairs in line, returns result
     """
-    print(len(values)) 
+    
     logging.debug(f"Original line: {line}")
-    for find, replace in values:
-        logging.debug(f"replacing [{find}] with [{replace}]")
-        line = line.replace(find, replace)
+    if type(values[0]) == str:
+        logging.debug(f"replacing [{values[0]}] with [{values[1]}]")
+        line = line.replace(values[0], values[1])
+    else:
+        for find, replace in values:
+            logging.debug(f"replacing [{find}] with [{replace}]")
+            line = line.replace(find, replace)
     logging.debug(f"New line: {line}")
     
     return line
@@ -63,7 +67,7 @@ def _replace(input: click.Path, output: click.Path, values: tuple[tuple[str, str
                 line = _line_replace(line,values)
                 if _file_in_line(line):
                     logging.warning(f"remiaining 'file:/' URIs found on line {index}: {line}")
-                    if not force:
+                    if force:
                         logging.debug("CLI program stop running")
                         break
                 else:

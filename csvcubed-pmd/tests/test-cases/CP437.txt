@@ -1,0 +1,3 @@
+This is a file.
+We've saved it.
+It's saved as CP437.
