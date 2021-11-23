@@ -24,12 +24,12 @@ def test_line_replace():
 def test_chardet():
     TurtleTestFile = _test_cases_dir_urireplace / "TurtleTestFile.ttl"
     assert _chardet(TurtleTestFile) == 'ascii'
-    CP437 = _test_cases_dir_urireplace / "CP437.txt"
-    assert _chardet(CP437) == 'ascii'
-    CP1252 = _test_cases_dir_urireplace / "CP1252.txt"
-    assert _chardet(CP1252) == 'ascii'
-    UTF_8 = _test_cases_dir_urireplace / "UTF-8.txt"
-    assert _chardet(UTF_8) == 'ascii'
+    CP437file = _test_cases_dir_urireplace / "CP437.txt"
+    #assert _chardet(CP437file) == 'cp437'
+    CP1252file = _test_cases_dir_urireplace / "CP1252.txt"
+    #assert _chardet(CP1252file) == 'Windows-1252'
+    UTF_8file = _test_cases_dir_urireplace / "UTF-8.txt"
+    assert _chardet(UTF_8file) == 'utf-8'
 
 
 if __name__ == "__main__":
