@@ -4,9 +4,11 @@ Standardise
 
 Utilities for standardising cubes and their corresponding data values.
 """
-from typing import Optional, List, Dict
+from typing import DefaultDict, Optional, List, Dict
 import pandas as pd
 from pandas.core.arrays.categorical import Categorical
+
+from csvcubed.inputs import PandasDataTypes
 
 
 from .cube import get_all_units, get_all_measures, get_columns_of_dsd_type
@@ -16,6 +18,29 @@ from csvcubed.models.cube.qb.components.measure import (
     NewQbMeasure,
     QbMultiMeasureDimension,
 )
+from csvcubed.utils.uri import uri_safe
+
+
+def standardise_categoricals(data: pd.Series) -> pd.Series:
+    """Standardise categorical data assuming case insensitivity along highest sorted() instance of uri_safe result"""
+    if len(data.cat.categories.map(lambda x: uri_safe(x)).unique()) != len(
+        data.cat.categories
+    ):
+        unique_keys = DefaultDict(list)
+
+        # generate all uri_safe values
+        for k, v in {value: uri_safe(value) for value in data.cat.categories}.items():
+            unique_keys[v].append(k)
+
+        cat_map = dict(str())
+
+        for k, v in unique_keys.items():
+            for f in v:
+                cat_map[f] = sorted(v)[0]
+
+        return data.map(cat_map).astype("category")
+    else:
+        return data
 
 
 def ensure_qbcube_data_is_categorical(cube: QbCube) -> None:
@@ -38,6 +63,11 @@ def ensure_qbcube_data_is_categorical(cube: QbCube) -> None:
             assert column_data is not None
             if not isinstance(column_data.values, Categorical):
                 cube.data[column.csv_column_title] = column_data.astype("category")
+
+            # TODO: When addressing ticket #250, this is the start of the process.
+            cube.data[column.csv_column_title] = standardise_categoricals(
+                cube.data[column.csv_column_title]
+            )
 
 
 def convert_data_values_to_uri_safe_values(

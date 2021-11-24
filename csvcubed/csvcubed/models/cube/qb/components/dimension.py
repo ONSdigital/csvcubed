@@ -3,7 +3,7 @@ Dimensions
 ----------
 """
 from dataclasses import dataclass, field
-from typing import Optional, List, Set
+from typing import Optional, List, Set, DefaultDict
 from abc import ABC, abstractmethod
 import pandas as pd
 
