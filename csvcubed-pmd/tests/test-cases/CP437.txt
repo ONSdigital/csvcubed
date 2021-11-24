@@ -1,25 +1,3 @@
 This is a file.
 We've saved it.
 It's saved as CP437.
-
-
-The code page used by PC DOS and MS- DOS 437, short CP437, also known as DOS -US or OEM -US, the original character set of the IBM PC in 1981 and contains the following characters: ( The number below the symbol is the Unicode value in hexadecimal notation )
-
-The character set is ASCII based, with the following changes and additions:
-
-The character 7C, the " vertical line ", is in almost all graphics cards as Unicode characters A6 hex = "|", the broken line is displayed.
-The control character area are 00hex - 1Fhex different, with the exception of paragraph character is not assigned to ? printable graphic characters that can be used to control the one in their actual function, which can be generated in DOS by typing the command line echo Spacebar Ctrl G Enter characters 07hex about to issue a beep (even still in the DOS emulation of Vista and Windows 7), on the other, to be displayed with suitable text editors on the screen to be. The graphic symbols used in this field are very different from the smiley face over playing cards colors to musical notes.
-The code 7Fhex is also called for a control character DEL reserved - its screen display is a graph showing a small house.
-Some European characters (Latin vowels with accents, etc.) in no particular order and insufficient for most European languages ??, further block graphic characters, mathematical symbols and some Greek letters, of which the small beta at the same time: the range 80hex to FFhex, different symbols are assigned must serve also as a German á.
-The portion of C0hex to DFhex was thereby used exclusively for graphics characters ( frame characters, English box drawing characters), as the MDA graphics cards of the first IBM PC ( and later the VGA cards ) treated separately these characters: In text mode, namely, each character to represented the distance between the characters and thus to increase the readability of 9 pixels wide, while the fonts themselves contain only 8 pixels wide characters, the ninth column of pixels is therefore normally just drawn in the background color. In the context of character but this would have unsightly gaps between characters, for which reason they took care using a special register in the graphics card, that with all frame characters having to right -looking lines of communication, the ninth column of pixels displayed as a repetition of the 8 pixel column and these characters will be grouped together for easier management in the field of C0hex to DFhex.
-The repertoire of CP437 was borrowed from the character set of the Wang word-processing machines, which also expressly Bill Gates and Paul Allen admitted in an article published on October 2, 1995 in Fortune Magazine interview of him:
-
-" We were fascinated by the special word processing systems from the house of Wang, because we believed that general-purpose machines could solve these tasks as well. For this reason we also, when the time came to design the keyboard from the IBM PC, packed the funny Wang character set in the machine - you know, Smiley Faces and boxes and triangles and so'n stuff. We thought we would one day like to write even a clone of Wang word processing software. "
-
-
- 
-The character encoding CP437 missing characters that are necessary for many Western European languages ??; such as accented uppercase in French. Also, it contains only a few Greek characters. Later MS -DOS character sets, such as code page 850 ( DOS Latin-1 and their Euro - variant code page 858), Code Page 852 (DOS Central European ) and Code Page 737 (DOS Greek), filled the gaps for international use, with it so far to the code page 437 remained compatible than they (except some of the block graphic characters, and mathematical symbols ) retained most of the characters.
-
-All characters from CP437 are today (and thus in most fonts on Microsoft Windows ) included in the Unicode character set as well as in Microsoft's WGL4 character set, further in VGA font under Linux and the ISO - 10646 fonts for X11. A genuine representation of texts that were created on CP437 -based computers, so namely all older DOS text, is on modern Windows systems only with the separately to install Microsoft font MS LineDraw (see below ) is possible, further ( with the exception of some characters) with the system font terminal.
-
-CP437 used for some similar-looking characters the same assignment: Code E1hex stands for the German á (U 00 DF) as well as for the small ? (U 03 B2 ); the apostrophe is 27hex used as acute.
