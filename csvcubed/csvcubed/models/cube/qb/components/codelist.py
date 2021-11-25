@@ -157,38 +157,26 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
     def get_default_node_serialisation_hint(self) -> RdfSerialisationHint:
         return RdfSerialisationHint.ConceptScheme
 
-    def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
+    def validate_data(self, data: PandasDataTypes) -> list[Optional[ValidationError]]:
         """
         Validate the data held in the codelists, assuming case insensitivity
         """
 
-        errors = List[ValidationError]
-        unique_keys = dict(list)
+        errors = list()
 
-        # Create a dict of all uri-safe values with the originals as a list
-        for k, v in {value: uri_safe(value) for value in data.unique()}.items():
-            unique_keys[k].setdefault(v, []).append(k)
+        if data is not None:
+            unique_keys = dict(list)
 
-        # Check for collisions, raise a Validation error
-        for k, v in unique_keys:
-            if len(v) > 1:
-                errors.append(ValidationError(f"Labels \"{v}\" collide as single uri-safe value \"{k}\""))
+            # Create a dict of all uri-safe values with the originals as a list
+            for k, v in {value: uri_safe(value) for value in data.unique()}.items():
+                unique_keys[k].setdefault(v, []).append(k)
 
-        # {
-        #     "A": "a",
-        #     "a": "a",
-        #     "b": "b",
-        #     "c": "c"
-        # }
-
-        # {
-        #     "a": ["A", "a"],
-        #     "b": ["b"],
-        #     "c": ["c"]
-        # }
-        # for a, b in dict:
-        #     if len(b) > 1:
-        #         error
+            # Check for collisions, raise a Validation error
+            for k, v in unique_keys:
+                if len(v) > 1:
+                    errors += ValidationError(
+                        message=f'Labels "{v}" collide as single uri-safe value "{k}"'
+                    )
 
         return errors
 
