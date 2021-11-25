@@ -121,17 +121,27 @@
                     "@value": "single-measure-bottles-bulletin"
                 }
             ],
+            "http://www.w3.org/2000/01/rdf-schema#comment": {
+                "@language": "en",
+                "@value": "some comment goes here"
+            },
             "http://www.w3.org/ns/dcat#landingPage": [
                 {
                     "@id": "https://www.gov.uk/government/statistics/bottles-bulletin"
                 }
             ],
+            "http://purl.org/dc/terms/license": {
+                "@id": "http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+            },
             "http://www.w3.org/ns/dcat#theme": [
                 {
                     "@id": "http://gss-data.org.uk/def/gdp#Trade"
                 }
             ],
-            "http://www.w3.org/ns/dcat#keyword": [ "keyword1", "keyword2"]
+            "http://www.w3.org/ns/dcat#keyword": [ "keyword1", "keyword2"],
+            "http://www.w3.org/ns/dcat#contactPoint": {
+                "@id": "mailto:something@example.com"
+            }
         },
         {
             "@id": "single-measure-bulletin.csv#component/period",

@@ -58,7 +58,7 @@ def pmdify_dcat(
 
     _replace_uri_substring_in_graph(csvw_rdf_graph, str(_TEMP_PREFIX_URI), base_uri)
     csvw_file_contents_json["rdfs:seeAlso"] = json.loads(
-        csvw_rdf_graph.serialize(format="json-ld").decode("UTF-8")
+        csvw_rdf_graph.serialize(format="json-ld").decode("UTF-8")  # type: ignore
     )
 
     initial_id = csvw_file_contents_json.get("@id", "")
@@ -155,15 +155,18 @@ def _get_catalog_uri_to_add_to(csv_cubed_output_type: CsvCubedOutputType) -> str
 
 
 def _write_catalog_metadata_to_quads(
-    catalog_record: pmdcat.Dataset,
+    catalog_record: pmdcat.CatalogRecord,
     catalog_metadata_quads_file_path: Path,
     catalog_metadata_graph_uri: str,
     base_uri: str,
 ) -> None:
     catalog_metadata_ds = rdflib.Dataset()
-    catalog_metadata_graph = catalog_record.to_graph(
-        catalog_metadata_ds.graph(catalog_metadata_graph_uri, base=_TEMP_PREFIX_URI)
+    catalog_metadata_graph = catalog_metadata_ds.graph(
+        catalog_metadata_graph_uri, base=_TEMP_PREFIX_URI
     )
+    assert catalog_metadata_graph is not None
+
+    catalog_metadata_graph = catalog_record.to_graph(catalog_metadata_graph)
     catalog_record.to_graph(catalog_metadata_graph)
     _replace_uri_substring_in_graph(
         catalog_metadata_graph, str(_TEMP_PREFIX_URI), base_uri
@@ -269,8 +272,8 @@ def _get_catalog_entry_from_dcat_dataset(csvw_graph: Graph) -> pmdcat.Dataset:
     record = results[0]
 
     pmdcat_dataset = pmdcat.Dataset(record["dataset"])
-    pmdcat_dataset.title = _none_or_map(record["title"], str)
-    pmdcat_dataset.label = _none_or_map(record["label"], str)
+    pmdcat_dataset.title = str(record["title"])
+    pmdcat_dataset.label = str(record["label"])
     pmdcat_dataset.issued = dateutil.parser.isoparse(record["issued"])
     pmdcat_dataset.modified = dateutil.parser.isoparse(record["modified"])
     pmdcat_dataset.comment = _none_or_map(record["comment"], str)

@@ -51,7 +51,7 @@ def test_extracting_metadata():
         == "https://www.gov.uk/government/statistics/bottles-bulletin"
     )
     assert existing_dcat_dataset.themes == {"http://gss-data.org.uk/def/gdp#Trade"}
-    assert existing_dcat_dataset.keywords == {"keyword 1", "keyword 2"}
+    assert existing_dcat_dataset.keywords == {"keyword1", "keyword2"}
     assert existing_dcat_dataset.contact_point == "mailto:something@example.com"
     assert existing_dcat_dataset.identifier == "single-measure-bottles-bulletin"
 
