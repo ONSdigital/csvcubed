@@ -51,7 +51,6 @@ def pandas_input_to_columnar_optional_str(
 def pandas_input_to_columnar_str(
     maybe_columnar_data: PandasDataTypes,
     allow_no_data_at_all: bool = True,
-    case_sensitive: bool = False
 ) -> Iterable[str]:
     """
     Convert pandas data to an iterable of strings. Ensure no values are missing.
