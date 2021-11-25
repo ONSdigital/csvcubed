@@ -60,3 +60,8 @@ Feature: Testing the csvw command group in the CLI
     Scenario: The `pull` command should fail when the CSV-W file cannot be found.
     When the pmdutils command CLI is run with "csvw pull https://example.com/non-existant-file.csv-metadata.json"
     Then the CLI should fail with status code -1
+
+#Feature: Testing the urireplace command group in the CLI
+ Senario: "the 'uri replace' command should get and read in a ttl file and find and replace uri of user's choosing"
+ When the pmdutils command CLI is run with "pmdutils uri replace /workspaces/csvwlib/csvcubed-pmd/tests/test-cases/TurtleTestFile.ttl /workspaces/csvwlib/csvcubed-pmd/tests/test-cases/TurtleOutputFile.ttl -v file:/tmp/qb-id-10002.csv http://example.com/some-dataset"
+ Then the CLI should succeed
