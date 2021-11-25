@@ -17,7 +17,7 @@ def uri_group():
 @click.argument("input", type=click.Path())
 @click.argument("output", type=click.Path())
 @click.option("--value", "-v", nargs=2, multiple=True)
-@click.option("--force",is_flag = True) # TODO: Convert to flag
+@click.option("--force", is_flag=True, default=False)  # TODO: Convert to flag
 def _replace(input, output, value, force):
     """
     Replace instances of values with other values across a given file.

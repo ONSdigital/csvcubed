@@ -75,7 +75,7 @@ def _replace(
                     logging.warning(
                         f"remiaining 'file:/' URIs found on line {index}: {line}"
                     )
-                    if force:
+                    if not force:
                         logging.debug("CLI program stop running")
                         break
                 else:
