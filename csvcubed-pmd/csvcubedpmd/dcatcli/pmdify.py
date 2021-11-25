@@ -291,7 +291,7 @@ def _get_catalog_entry_from_dcat_dataset(csvw_graph: Graph) -> pmdcat.Dataset:
         else set(str(record["keywords"]).split("|"))
     )
     pmdcat_dataset.contact_point = _none_or_map(record["contactPoint"], str)
-    pmdcat_dataset.identifier = _none_or_map(record["identifier"], str)
+    pmdcat_dataset.identifier = str(record["identifier"])
 
     return pmdcat_dataset
 
