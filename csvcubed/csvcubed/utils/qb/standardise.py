@@ -8,6 +8,7 @@ from typing import DefaultDict, Optional, List, Dict
 import pandas as pd
 from pandas.core.arrays.categorical import Categorical
 
+
 from csvcubed.inputs import PandasDataTypes
 
 
@@ -23,9 +24,16 @@ from csvcubed.utils.uri import uri_safe
 
 def standardise_categoricals(data: pd.Series) -> pd.Series:
     """Standardise categorical data assuming case insensitivity along highest sorted() instance of uri_safe result"""
-    if len(data.cat.categories.map(lambda x: uri_safe(x)).unique()) != len(
+    if data.cat.categories.dtype != 'O':
+        # If it's not a string, it's not going to be a problem 
+        return data
+    if len(data.cat.categories.map(lambda x: uri_safe(x)).unique()) == len(
         data.cat.categories
     ):
+        # There is a 1:1 relationship between categories and uri_safe categoies
+        return data
+    else:
+        # There is a *:1 relationship between categories and uri_safe categories
         unique_keys = DefaultDict(list)
 
         # generate all uri_safe values
@@ -39,8 +47,6 @@ def standardise_categoricals(data: pd.Series) -> pd.Series:
                 cat_map[f] = sorted(v)[0]
 
         return data.map(cat_map).astype("category")
-    else:
-        return data
 
 
 def ensure_qbcube_data_is_categorical(cube: QbCube) -> None:
