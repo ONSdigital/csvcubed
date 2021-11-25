@@ -1,2 +1,2 @@
-The file "_ude_2.txt" was used from https://github.com/chardet/chardet in the "tests/windows-1252/_ude_2.txt" directory, for unit testing purposes.
-In this instance it is used to test the '_chardet' function in "/workspaces/csvwlib/csvcubed-pmd/csvcubedpmd/urireplacement/urireplacement.py", to test to see if the function detects 'Windows-1252' encoding types. 
+The file "_ude_2.txt" and "bom-utf-16-be.srt" was used from https://github.com/chardet/chardet in the "tests/windows-1252/" and "tests/UTF-16/" directories repectively, for unit testing purposes.
+In this instance they are used to test the '_chardet' function in "/workspaces/csvwlib/csvcubed-pmd/csvcubedpmd/urireplacement/urireplacement.py", to test to see if the function detects 'Windows-1252' and "UTF-16" encoding types. 
