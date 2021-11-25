@@ -6,7 +6,7 @@ Utilities for standardising cubes and their corresponding data values.
 """
 from typing import DefaultDict, Optional, List, Dict
 import pandas as pd
-import logging
+from warnings import warn
 from pandas.core.arrays.categorical import Categorical
 
 
@@ -42,8 +42,8 @@ def standardise_categoricals(data: pd.Series) -> pd.Series:
 
         for k, v in unique_keys.items():
             if len(v) > 1:
-                logging.warning(
-                    f'Labels "{v}" collide as single uri-safe value "{k}" in column {data.name}'
+                warn(
+                    message=f'Labels "{v}" collide as single uri-safe value "{k}" in column "{data.name}" and were consolidated'
                 )
 
             for f in v:
