@@ -6,8 +6,11 @@ Functions to help when working with pandas dtypes.
 """
 
 from typing import DefaultDict, Optional, Union
+import math
 from pandas import Series
+from pandas.api.types import is_string_dtype
 from warnings import warn
+import logging
 
 from csvcubed.utils.uri import uri_safe
 
@@ -16,7 +19,11 @@ def uri_safe_ios(data: Series) -> dict[str, list[str]]:
     """Generate a dictionary of uri_safe values and """
     uri_safe_ios = DefaultDict()
 
-    for original, safe in {value: uri_safe(value) for value in data.unique()}.items():
+    for original, safe in {
+        value: uri_safe(value)
+        for value in data.unique()
+        if not isinstance(value, float) or not math.isnan(value)
+    }.items():
         uri_safe_ios.setdefault(safe, []).append(original)
 
     return uri_safe_ios
@@ -56,7 +63,7 @@ def coalesce_on_uri_safe(data: Series) -> Series:
     i.e. 'canada' and 'Canada' categories will replace 'canada' with 'Canada'
     """
 
-    if data.cat.categories.dtype != "O":
+    if not is_string_dtype(data.cat.categories):
         return data
 
     uri_safe_ios_dict = uri_safe_ios(data)
@@ -67,7 +74,7 @@ def coalesce_on_uri_safe(data: Series) -> Series:
         # There is a 1:1 relationship between categories and uri_safe categoies
         return data
     else:
-        
+
         cat_map = DefaultDict(str)
 
         for k, v in uri_safe_ios_dict.items():
