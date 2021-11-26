@@ -11,7 +11,6 @@ from csvcubed.inputs import PandasDataTypes
 from csvcubed.models.pydanticmodel import PydanticModel
 from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.models.validationerror import ValidationError
-from csvcubed.utils.uri import uri_safe
 
 @dataclass
 class CsvColumn(PydanticModel, UriIdentifiable, ABC):
