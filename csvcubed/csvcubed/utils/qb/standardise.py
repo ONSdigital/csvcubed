@@ -9,6 +9,8 @@ import pandas as pd
 from warnings import warn
 from pandas.core.arrays.categorical import Categorical
 
+from csvcubed.utils.pandas import coalesce_on_uri_safe, ensure_no_uri_safe_collision, uri_safe_ios
+
 
 from .cube import get_all_units, get_all_measures, get_columns_of_dsd_type
 from csvcubed.models.cube.qb import *
@@ -18,38 +20,6 @@ from csvcubed.models.cube.qb.components.measure import (
     QbMultiMeasureDimension,
 )
 from csvcubed.utils.uri import uri_safe
-
-
-def standardise_categoricals(data: pd.Series) -> pd.Series:
-    """Standardise categorical data assuming case insensitivity along highest sorted() instance of uri_safe result"""
-    if data.cat.categories.dtype != "O":
-        # If it's not a string, it's not going to be a problem
-        return data
-    if len(data.cat.categories.map(lambda x: uri_safe(x)).unique()) == len(
-        data.cat.categories
-    ):
-        # There is a 1:1 relationship between categories and uri_safe categoies
-        return data
-    else:
-        # There is a *:1 relationship between categories and uri_safe categories
-        unique_keys = DefaultDict(list)
-
-        # generate all uri_safe values
-        for k, v in {value: uri_safe(value) for value in data.cat.categories}.items():
-            unique_keys[v].append(k)
-
-        cat_map = DefaultDict(str)
-
-        for k, v in unique_keys.items():
-            if len(v) > 1:
-                warn(
-                    message=f'Labels "{v}" collide as single uri-safe value "{k}" in column "{data.name}" and were consolidated'
-                )
-
-            for f in v:
-                cat_map[f] = sorted(v)[0]
-
-        return data.map(cat_map).astype("category")
 
 
 def ensure_qbcube_data_is_categorical(cube: QbCube) -> None:
@@ -74,7 +44,7 @@ def ensure_qbcube_data_is_categorical(cube: QbCube) -> None:
                 cube.data[column.csv_column_title] = column_data.astype("category")
 
             # TODO: When addressing ticket #250, this is the start of the process.
-            cube.data[column.csv_column_title] = standardise_categoricals(
+            cube.data[column.csv_column_title] = coalesce_on_uri_safe(
                 cube.data[column.csv_column_title]
             )
 
