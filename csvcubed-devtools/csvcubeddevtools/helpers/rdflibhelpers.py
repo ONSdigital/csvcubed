@@ -4,13 +4,11 @@ RDF-Lib Utilities
 
 Utilities to help when working with rdflib.
 """
-import json
 from typing import Optional
-
 from rdflib import Graph
 
 
-def serialise_to_string(graph: Graph, format: Optional[str] = None) -> str:
+def serialise_to_string(graph: Graph, format: str = "turtle") -> str:
     """
     Safely serialise an :class:`rdflib.Graph` to a string without worrying about differences between
     rdflib 5.0.0 and 6.0.0.
