@@ -1,7 +1,7 @@
 from pathlib import Path
 import click
 
-import csvcubedpmd.csvwcli.pull as pull
+from csvcubedpmd.csvwcli import pull, findwhere
 
 
 @click.group("csvw")
@@ -32,3 +32,28 @@ def _pull(out: Path, csvw_url: str):
     Pull a CSV-W and all relative dependencies to the local filesystem.
     """
     pull.pull(csvw_url, out.absolute())
+
+
+@csvw_group.command("find-where")
+@click.option(
+    "--inside",
+    "-i",
+    help="Directory in which to search for CSV-W Metadata Files",
+    type=click.Path(exists=True, path_type=Path, file_okay=False, dir_okay=True),
+    default=".",
+    show_default=True,
+    metavar="SEARCH_DIR",
+)
+@click.option(
+    "--negate", "-n", help="Negate the result of running the ASK query.", is_flag=True
+)
+@click.argument(
+    "ask_query",
+    type=click.STRING,
+    metavar="ASK_QUERY",
+)
+def _find_where(inside: Path, negate: bool, ask_query: str):
+    """
+    Find all CSV-W metadata files within a given directory which match an ASK query.
+    """
+    findwhere.find_where(inside, ask_query, negate)
