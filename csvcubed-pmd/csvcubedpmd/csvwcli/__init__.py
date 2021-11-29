@@ -54,6 +54,6 @@ def _pull(out: Path, csvw_url: str):
 )
 def _find_where(inside: Path, negate: bool, ask_query: str):
     """
-    Find all CSV-W metadata files in within a given directory which match an ASK query.
+    Find all CSV-W metadata files within a given directory which match an ASK query.
     """
     findwhere.find_where(inside, ask_query, negate)
