@@ -34,6 +34,9 @@ def _line_replace(line: str, values: tuple[tuple[str, str]]) -> str:
 
 
 def _chardet(input: click.Path):
+    """
+    Detects the encoding type of a file and returns result
+    """
     detector = UniversalDetector()
     with open(input, "rb") as inputfile:
         for line in inputfile.readlines():
@@ -52,7 +55,7 @@ def _replace(
     input: click.Path, output: click.Path, values: tuple[tuple[str, str]], force: bool
 ) -> None:
     """
-    Docstring goes here
+    Streams in a ttl file line by line, finds and replaces all instances of specified URIs begining with 'file:/' with 'http://...'
     """
 
     # Get character encoding type as a variable
