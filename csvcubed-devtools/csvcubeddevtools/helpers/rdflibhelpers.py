@@ -4,7 +4,6 @@ RDF-Lib Utilities
 
 Utilities to help when working with rdflib.
 """
-from typing import Optional
 from rdflib import Graph
 
 

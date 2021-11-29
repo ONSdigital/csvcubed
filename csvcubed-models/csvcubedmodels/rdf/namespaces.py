@@ -4,7 +4,6 @@ Namespaces
 """
 from rdflib import Namespace
 
-
 QB = Namespace("http://purl.org/linked-data/cube#")
 
 QUDT = Namespace("http://qudt.org/schema/qudt/")

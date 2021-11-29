@@ -19,7 +19,8 @@ from typing import (
 )
 
 import rdflib
-from rdflib import URIRef, Graph, RDFS, RDF
+from rdflib import URIRef, Graph
+from rdflib.namespace import RDF, RDFS  # type: ignore
 from rdflib.term import Literal, Identifier
 
 from .datatypes import MARKDOWN

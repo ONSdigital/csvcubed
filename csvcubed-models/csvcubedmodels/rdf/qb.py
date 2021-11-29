@@ -4,7 +4,8 @@ qb
 """
 from typing import Annotated, Union, Set, Optional
 from abc import ABC
-from rdflib import Literal, RDFS
+from rdflib import Literal
+from rdflib.namespace import RDFS  # type: ignore
 
 
 import csvcubedmodels.rdf.rdf as rdf

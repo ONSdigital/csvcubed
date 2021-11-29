@@ -5,8 +5,6 @@ RDF-Lib Utilities
 Utilities to help when working with rdflib.
 """
 import json
-from typing import Optional
-
 from rdflib import Graph
 
 

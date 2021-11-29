@@ -2,7 +2,7 @@
 RDFS
 --------------
 """
-from rdflib import RDFS
+from rdflib.namespace import RDFS  # type: ignore
 
 
 from .resource import NewResource
