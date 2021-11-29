@@ -17,7 +17,7 @@ def serialise_to_json_ld(graph: Graph) -> dict:
     return json.loads(serialise_to_string(graph, format="json-ld"))
 
 
-def serialise_to_string(graph: Graph, format: Optional[str] = None) -> str:
+def serialise_to_string(graph: Graph, format: str = "turtle") -> str:
     """
     Safely serialise an :class:`rdflib.Graph` to a string without worrying about differences between
     rdflib 5.0.0 and 6.0.0.
