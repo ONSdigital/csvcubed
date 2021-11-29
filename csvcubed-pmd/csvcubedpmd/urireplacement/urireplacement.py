@@ -1,6 +1,7 @@
 import click
+import sys
+import os
 
-# import urllib.request
 from chardet.universaldetector import UniversalDetector
 import logging
 
@@ -54,32 +55,33 @@ def _replace(
     Docstring goes here
     """
 
-    "Get character encoding type as a variable"
+    # Get character encoding type as a variable
     encodingtype = _chardet(input)
     logging.info(encodingtype)
 
-    # Show people what you're doing if you want to see it
+    # If one pair of uri values are entered into the command line
     for value in values:
         logging.info(f"Replace [{value[0]}] with [{value[1]}]")
 
-    with open(input, "rb") as inputfile:
-        with open(output, "wb") as outputfile:
-            for index, line in enumerate(inputfile, 1):
+    # Otherwise if multiple pair of uri values where entered into the command line
+    with open(input, "rb") as inputfile, open(output, "wb") as outputfile:
+        for index, line in enumerate(inputfile, 1):
 
-                line = line.decode(encodingtype)
-                logging.debug(index, line)
-                "Add reading the line and decoding as one statement - it's no longer a chunk, maybe try would work here?"
+            line = line.decode(encodingtype)
+            logging.debug(index, line)
 
-                line = _line_replace(line, values)
-                if _file_in_line(line):
-                    logging.warning(
-                        f"remiaining 'file:/' URIs found on line {index}: {line}"
-                    )
-                    if not force:
-                        logging.debug("CLI program stop running")
-                        break
-                else:
-                    logging.debug(f'"file:/" not found on line {index}')
-                outputfile.write(line.encode(encodingtype))
-                logging.debug(line)
-                logging.debug(type(values))
+            line = _line_replace(line, values)
+            if _file_in_line(line):
+                logging.warning(
+                    f"remaining 'file:/' URIs found on line {index}: {line}"
+                )
+                if not force:
+                    logging.debug("CLI program stop running")
+                    # delete output file
+                    os.remove(output)
+                    sys.exit(1)
+            else:
+                logging.debug(f'"file:/" not found on line {index}')
+            outputfile.write(line.encode(encodingtype))
+            logging.debug(line)
+            logging.debug(type(values))
