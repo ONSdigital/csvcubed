@@ -21,6 +21,7 @@ from rdflib.term import Identifier
 from csvcubedpmd.config import pmdconfig
 from csvcubedpmd.models.CsvCubedOutputType import CsvCubedOutputType
 from csvcubedpmd.models.rdf import pmdcat
+from csvcubedpmd.utils.sparql import ask
 
 _TEMP_PREFIX_URI = URIRef("http://temporary")
 
@@ -304,7 +305,7 @@ def _none_or_map(val: Optional[Any], map_func: Callable[[Any], Any]) -> Optional
 
 
 def _get_csv_cubed_output_type(csvw_rdf_graph: Graph) -> CsvCubedOutputType:
-    is_concept_scheme = _ask_query(
+    is_concept_scheme = ask(
         """
         ASK 
         WHERE {
@@ -317,7 +318,7 @@ def _get_csv_cubed_output_type(csvw_rdf_graph: Graph) -> CsvCubedOutputType:
     if is_concept_scheme:
         return CsvCubedOutputType.SkosConceptScheme
 
-    is_qb_dataset = _ask_query(
+    is_qb_dataset = ask(
         """
         ASK 
         WHERE {
@@ -333,16 +334,3 @@ def _get_csv_cubed_output_type(csvw_rdf_graph: Graph) -> CsvCubedOutputType:
     raise Exception(
         f"Could not determine {CsvCubedOutputType.__name__} for input CSV-W graph."
     )
-
-
-def _ask_query(query: str, graph: Graph) -> bool:
-    results = list(graph.query(query))
-
-    if len(results) == 1:
-        result = results[0]
-        if isinstance(result, bool):
-            return result
-        else:
-            raise Exception(f"Unexpected ASK query response type {type(result)}")
-    else:
-        raise Exception(f"Unexpected number of results for ASK query {len(results)}.")
