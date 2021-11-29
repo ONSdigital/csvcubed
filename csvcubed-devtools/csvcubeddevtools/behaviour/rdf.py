@@ -8,6 +8,8 @@ from rdflib import Graph, ConjunctiveGraph
 import distutils.util
 from .temporarydirectory import get_context_temp_dir_path
 
+from csvcubeddevtools.helpers import rdflibhelpers
+
 
 def test_graph_diff(g1, g2):
     in_both, only_in_first, only_in_second = graph_diff(
@@ -52,9 +54,9 @@ def step_impl(context, rdf_file: str):
     rdf_file_path = get_context_temp_dir_path(context) / rdf_file
     graph = ConjunctiveGraph()
     graph.parse(str(rdf_file_path), format="nquads")
-    context.turtle = getattr(context, "turtle", "") + graph.serialize(
-        format="turtle"
-    ).decode("utf-8")
+    context.turtle = getattr(context, "turtle", "") + rdflibhelpers.serialise_to_string(
+        graph, format="turtle"
+    )
 
 
 @step('the RDF should not contain any instances of "{entity_type}"')
