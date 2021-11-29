@@ -5,8 +5,6 @@ qb
 from typing import Annotated, Union, Set, Optional
 from abc import ABC
 from rdflib import Literal
-from rdflib.namespace import RDFS  # type: ignore
-
 
 import csvcubedmodels.rdf.rdf as rdf
 import csvcubedmodels.rdf.rdfs as rdfs
@@ -19,7 +17,7 @@ from csvcubedmodels.rdf.resource import (
     ExistingResource,
 )
 from csvcubedmodels.rdf.triple import Triple, PropertyStatus
-from csvcubedmodels.rdf.namespaces import QB
+from csvcubedmodels.rdf.namespaces import QB, RDFS
 
 
 class ComponentProperty(rdf.PropertyWithMetadata):

@@ -3,7 +3,6 @@ DCAT
 ----
 """
 from rdflib import Literal, URIRef
-from rdflib.namespace import DCAT, DCTERMS, XSD, PROV, ODRL2, FOAF  # type: ignore
 from typing import Annotated as Ann, Set, Optional
 from datetime import datetime
 
@@ -15,6 +14,7 @@ from .resource import (
     map_resource_to_uri,
     Resource as RdfResource,
 )
+from csvcubedmodels.rdf.namespaces import DCAT, DCTERMS, XSD, PROV, ODRL2, FOAF
 
 
 class Resource(NewMetadataResource):

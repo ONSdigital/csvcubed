@@ -2,8 +2,7 @@
 RDFS
 --------------
 """
-from rdflib.namespace import RDFS  # type: ignore
-
+from csvcubedmodels.rdf.namespaces import RDFS
 
 from .resource import NewResource
 

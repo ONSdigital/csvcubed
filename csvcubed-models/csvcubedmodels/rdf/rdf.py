@@ -3,8 +3,6 @@ RDF Properties
 --------------
 """
 from typing import Annotated, Optional
-from rdflib.namespace import RDF, RDFS  # type: ignore
-
 
 from .resource import (
     NewResource,
@@ -14,6 +12,7 @@ from .resource import (
     map_resource_to_uri,
 )
 from .triple import Triple
+from csvcubedmodels.rdf.namespaces import RDF, RDFS
 
 
 class Property(NewResource):
