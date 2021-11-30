@@ -1,3 +1,10 @@
+"""
+REPLACE URI
+-----------
+
+Functionality to read in ttl files, to find and replace uris.
+"""
+from typing import Optional, Union
 import click
 import sys
 import os
@@ -5,7 +12,7 @@ import os
 from chardet.universaldetector import UniversalDetector
 import logging
 
-logging.basicConfig(level=logging.INFO)
+from click.types import Path
 
 
 def _file_in_line(line: str) -> bool:
@@ -15,7 +22,7 @@ def _file_in_line(line: str) -> bool:
     return "file:/" in line
 
 
-def _line_replace(line: str, values: tuple[tuple[str, str]]) -> str:
+def _line_replace(line: str, values: list[tuple[str, str]]) -> str:
     """
     Replaces given value pairs in line, returns result
     """
@@ -23,22 +30,22 @@ def _line_replace(line: str, values: tuple[tuple[str, str]]) -> str:
     logging.debug(f"Original line: {line}")
     if type(values[0]) == str:
         logging.debug(f"replacing [{values[0]}] with [{values[1]}]")
-        line = line.replace(values[0], values[1])
+        line = line.replace(str(values[0]), str(values[1]))
     else:
         for find, replace in values:
             logging.debug(f"replacing [{find}] with [{replace}]")
             line = line.replace(find, replace)
-    logging.debug(f"New line: {line}")
+        logging.debug(f"New line: {line}")
 
     return line
 
 
-def _chardet(input: click.Path):
+def _chardet(input: click.Path) -> str:
     """
     Detects the encoding type of a file and returns result
     """
     detector = UniversalDetector()
-    with open(input, "rb") as inputfile:
+    with open(str(input), "rb") as inputfile:
         for line in inputfile.readlines():
             logging.debug(line)
             detector.feed(line)
@@ -48,30 +55,33 @@ def _chardet(input: click.Path):
         logging.info(detector.result)
         encodingtype = detector.result["encoding"]
 
+    if encodingtype is None:
+        encodingtype = "UTF-8"
+
     return encodingtype
 
 
 def _replace(
-    input: click.Path, output: click.Path, values: tuple[tuple[str, str]], force: bool
+    input: click.Path, output: click.Path, values: list[tuple[str, str]], force: bool
 ) -> None:
     """
     Streams in a ttl file line by line, finds and replaces all instances of specified URIs begining with 'file:/' with 'http://...'
     """
+    logging.basicConfig(level=logging.INFO)
 
     # Get character encoding type as a variable
     encodingtype = _chardet(input)
     logging.info(encodingtype)
 
     # If one pair of uri values are entered into the command line
-    for value in values:
-        logging.info(f"Replace [{value[0]}] with [{value[1]}]")
+    for (find, replacement) in values: logging.info(f"Replacing {find} with {replacement}")
 
     # Otherwise if multiple pair of uri values where entered into the command line
-    with open(input, "rb") as inputfile, open(output, "wb") as outputfile:
+    with open(str(input), "rb") as inputfile, open(str(output), "wb") as outputfile:
         for index, line in enumerate(inputfile, 1):
 
             line = line.decode(encodingtype)
-            logging.debug(index, line)
+            #logging.debug(index, line)
 
             line = _line_replace(line, values)
             if _file_in_line(line):
@@ -79,12 +89,8 @@ def _replace(
                     f"remaining 'file:/' URIs found on line {index}: {line}"
                 )
                 if not force:
-                    logging.debug("CLI program stop running")
                     # delete output file
-                    os.remove(output)
+                    os.remove(str(output))
                     sys.exit(1)
-            else:
-                logging.debug(f'"file:/" not found on line {index}')
+                    
             outputfile.write(line.encode(encodingtype))
-            logging.debug(line)
-            logging.debug(type(values))
