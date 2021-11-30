@@ -12,7 +12,7 @@ version = "0.1.0"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-rdflib = "~=5.0.0"
+rdflib = ">=6.0.0"
 unidecode = "*"
 
 [tool.poetry.dev-dependencies]

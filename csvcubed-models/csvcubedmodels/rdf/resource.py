@@ -3,7 +3,7 @@ Resources
 ---------
 """
 from abc import ABC
-from collections import Iterable
+from collections.abc import Iterable
 from typing import (
     Annotated,
     List,
@@ -19,11 +19,12 @@ from typing import (
 )
 
 import rdflib
-from rdflib import URIRef, Graph, RDFS, RDF
+from rdflib import URIRef, Graph
 from rdflib.term import Literal, Identifier
 
 from .datatypes import MARKDOWN
 from .triple import AbstractTriple, Triple, PropertyStatus
+from csvcubedmodels.rdf.namespaces import RDF, RDFS
 
 
 class RdfResource(ABC):

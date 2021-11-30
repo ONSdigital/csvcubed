@@ -21,6 +21,7 @@ from rdflib.term import Identifier
 from csvcubedpmd.config import pmdconfig
 from csvcubedpmd.models.CsvCubedOutputType import CsvCubedOutputType
 from csvcubedpmd.models.rdf import pmdcat
+from csvcubedpmd.utils import rdflibutils
 from csvcubedpmd.utils.sparql import ask
 
 _TEMP_PREFIX_URI = URIRef("http://temporary")
@@ -58,8 +59,8 @@ def pmdify_dcat(
     _delete_existing_dcat_dataset_metadata(csvw_rdf_graph)
 
     _replace_uri_substring_in_graph(csvw_rdf_graph, str(_TEMP_PREFIX_URI), base_uri)
-    csvw_file_contents_json["rdfs:seeAlso"] = json.loads(
-        csvw_rdf_graph.serialize(format="json-ld").decode("UTF-8")  # type: ignore
+    csvw_file_contents_json["rdfs:seeAlso"] = rdflibutils.serialise_to_json_ld(
+        csvw_rdf_graph
     )
 
     initial_id = csvw_file_contents_json.get("@id", "")
