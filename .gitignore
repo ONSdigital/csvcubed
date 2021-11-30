@@ -144,3 +144,4 @@ cython_debug/
 
 # Ignore docs folders
 docs
+.DS_Store

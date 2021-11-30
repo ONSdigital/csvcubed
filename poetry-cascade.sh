@@ -9,6 +9,7 @@ function poetry_update_setup_sync () {
     echo "====================== $1"
     cd $1
     poetry lock
+    poetry install
     cd ..
 }
 

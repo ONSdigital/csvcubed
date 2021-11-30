@@ -1,5 +1,5 @@
 [tool.poetry]
-authors = ["Integrated Data Service - Dissemination <sharedcustomercontactcentre@ons.gov.uk>"]
+authors = ["Integrated Data Service - Dissemination <csvcubed@gsscogs.uk>"]
 description = "Provides functionality necessary to transform RDF Data Cube style CSV-Ws into a format compatible with the Publish My Data platform. Part of the csvcubed family."
 exclude = ["docs/*"]
 license = "Apache-2.0"
@@ -7,7 +7,8 @@ name = "csvcubed-pmd"
 packages = [
   {include = "csvcubedpmd"},
 ]
-version = "0.0.1"
+readme = "csvcubedpmd/README.md"
+version = "0.1.0"
 
 [tool.poetry.dependencies]
 csvw = "*"
@@ -15,7 +16,6 @@ pandas = "*"
 pyparsing = "~=2.4.7"
 python = "^3.9"
 rdflib = "*"
-rdflib-jsonld = "==0.6.1"
 requests = "*"
 unidecode = "*"
 uritemplate = "*"

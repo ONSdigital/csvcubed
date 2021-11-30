@@ -3,56 +3,57 @@
         {
             "titles": "Label",
             "name": "label",
-            "datatype": "string",
             "required": true,
             "propertyUrl": "rdfs:label"
         },
         {
             "titles": "Notation",
             "name": "notation",
-            "datatype": {
-                "base": "string",
-                "format": "^-?[\\w\\.\\/\\+]+(-[\\w\\.\\/\\+]+)*$"
-            },
             "required": true,
             "propertyUrl": "skos:notation"
         },
         {
             "titles": "Parent Notation",
             "name": "parent_notation",
-            "datatype": {
-                "base": "string",
-                "format": "^(-?[\\w\\.\\/\\+]+(-[\\w\\.\\/\\+]+)*|)$"
-            },
             "required": false,
             "propertyUrl": "skos:broader",
-            "valueUrl": "http://gss-data.org.uk/def/trade/concept/age-of-business/{+parent_notation}"
+            "valueUrl": "./period.csv#concept/period/{+parent_notation}"
         },
         {
             "titles": "Sort Priority",
-            "name": "sort",
-            "datatype": "integer",
+            "name": "sort_priority",
             "required": false,
+            "datatype": "integer",
             "propertyUrl": "http://www.w3.org/ns/ui#sortPriority"
         },
         {
             "titles": "Description",
             "name": "description",
-            "datatype": "string",
             "required": false,
             "propertyUrl": "rdfs:comment"
         },
         {
-            "virtual": true,
-            "propertyUrl": "rdf:type",
-            "valueUrl": "skos:Concept"
+            "titles": "Original Concept URI",
+            "name": "uri",
+            "required": true,
+            "propertyUrl": "owl:sameAs",
+            "valueUrl": "{+uri}"
         },
         {
             "virtual": true,
+            "name": "virt_inScheme",
+            "required": true,
             "propertyUrl": "skos:inScheme",
-            "valueUrl": "http://gss-data.org.uk/def/trade/concept-scheme/age-of-business"
+            "valueUrl": "./period.csv#scheme/period"
+        },
+        {
+            "virtual": true,
+            "name": "virt_type",
+            "required": true,
+            "propertyUrl": "rdf:type",
+            "valueUrl": "skos:Concept"
         }
     ],
-    "primaryKey": "notation",
-    "aboutUrl": "http://gss-data.org.uk/def/trade/concept/age-of-business/{+notation}"
+    "aboutUrl": "./period.csv#concept/period/{+notation}",
+    "primaryKey": "notation"
 }

@@ -59,7 +59,7 @@ def step_impl(context, cube_name: str, csvw_file_path: str):
 
     csv_path, _ = get_first_table_schema(csvw_path)
     code_list_data = pd.read_csv(csvw_path.parent / csv_path)
-    code_list_values = code_list_data["Notation"].sample(3)
+    code_list_values = code_list_data["Notation"].sample(3, random_state=1)
 
     context.cube = Cube(
         get_standard_catalog_metadata_for_name(cube_name, None),
@@ -480,7 +480,7 @@ def step_impl(context, cube_name: str):
         QbColumn(
             "New Dimension",
             NewQbDimension(
-                "existing codelist",
+                "New Dimension",
                 code_list=NewQbCodeList(
                     get_standard_catalog_metadata_for_name("a new codelist"),
                     [NewQbConcept("a"), NewQbConcept("b"), NewQbConcept("c")],
@@ -489,7 +489,7 @@ def step_impl(context, cube_name: str):
         ),
         QbColumn(
             "New Attribute",
-            NewQbAttribute.from_data("new_Qb_attribute", data["New Attribute"]),
+            NewQbAttribute.from_data("New Attribute", data["New Attribute"]),
         ),
         QbColumn(
             "Observed Value",

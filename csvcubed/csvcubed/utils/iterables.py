@@ -5,7 +5,7 @@ Iterables
 Function to help when working with lists/iterables.
 """
 from typing import Callable, TypeVar, Optional
-from collections import Iterable
+from collections.abc import Iterable
 
 T = TypeVar("T")
 
