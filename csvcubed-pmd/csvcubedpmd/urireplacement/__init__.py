@@ -1,6 +1,6 @@
 """
-__INIT__
---------
+__INIT__ URI REPLACE
+--------------------
 
 Functionality to use the command line to specify what ttl files need uris replaced, and which uris are to be found and replaced with.
 """
