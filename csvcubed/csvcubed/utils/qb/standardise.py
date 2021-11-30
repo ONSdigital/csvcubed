@@ -9,7 +9,7 @@ import pandas as pd
 from warnings import warn
 from pandas.core.arrays.categorical import Categorical
 
-from csvcubed.utils.pandas import coalesce_on_uri_safe, ensure_no_uri_safe_collision, uri_safe_ios
+from csvcubed.utils.pandas import coalesce_on_uri_safe
 
 
 from .cube import get_all_units, get_all_measures, get_columns_of_dsd_type
@@ -19,7 +19,6 @@ from csvcubed.models.cube.qb.components.measure import (
     NewQbMeasure,
     QbMultiMeasureDimension,
 )
-from csvcubed.utils.uri import uri_safe
 
 
 def ensure_qbcube_data_is_categorical(cube: QbCube) -> None:

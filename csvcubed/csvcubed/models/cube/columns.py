@@ -2,7 +2,6 @@
 CSV Column Definitions
 ----------------------
 """
-import logging
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Optional, List
@@ -11,6 +10,7 @@ from csvcubed.inputs import PandasDataTypes
 from csvcubed.models.pydanticmodel import PydanticModel
 from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.models.validationerror import ValidationError
+
 
 @dataclass
 class CsvColumn(PydanticModel, UriIdentifiable, ABC):
@@ -21,7 +21,6 @@ class CsvColumn(PydanticModel, UriIdentifiable, ABC):
 
     @abstractmethod
     def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
-
         pass
 
 

@@ -6,7 +6,7 @@ from pathlib import Path
 from dataclasses import dataclass, field
 from typing import Optional, List, Set, Generic, TypeVar
 from abc import ABC
-from pandas.core.series import Series
+from pandas import Series, DataFrame
 from pydantic import root_validator
 
 from csvcubed.models.uriidentifiable import UriIdentifiable
@@ -168,6 +168,8 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
 
         if isinstance(data, Series):
             errors += ensure_no_uri_safe_collision(data=data, series_name=None)
+        elif isinstance(data, DataFrame):
+            errors += ensure_no_uri_safe_collision(data.squeeze(), series_name=None)
 
         return errors
 

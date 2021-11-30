@@ -8,7 +8,6 @@ import re
 from unidecode import unidecode
 from urllib.parse import urlparse
 import rdflib
-import pandas as pd
 
 
 _multiple_non_word_chars_regex = re.compile(r"[^\w]+")
