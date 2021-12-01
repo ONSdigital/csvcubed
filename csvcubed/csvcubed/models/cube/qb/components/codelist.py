@@ -6,12 +6,12 @@ from pathlib import Path
 from dataclasses import dataclass, field
 from typing import Optional, List, Set, Generic, TypeVar
 from abc import ABC
+from pandas import Series, DataFrame
 from pydantic import root_validator
 
 from csvcubed.models.uriidentifiable import UriIdentifiable
-from csvcubed.readers.skoscodelistreader import (
-    extract_code_list_concept_scheme_info,
-)
+from csvcubed.readers.skoscodelistreader import extract_code_list_concept_scheme_info
+from csvcubed.utils.pandas import ensure_no_uri_safe_collision
 from .arbitraryrdf import ArbitraryRdf, RdfSerialisationHint, TripleFragmentBase
 from .datastructuredefinition import QbDataStructureDefinition
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
@@ -159,8 +159,19 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
     def get_default_node_serialisation_hint(self) -> RdfSerialisationHint:
         return RdfSerialisationHint.ConceptScheme
 
-    def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
-        return []  # TODO: implement this.
+    def validate_data(self, data: PandasDataTypes) -> list[Optional[ValidationError]]:
+        """
+        Validate the data held in the codelists, assuming case insensitivity
+        """
+
+        errors = list()
+
+        if isinstance(data, Series):
+            errors += ensure_no_uri_safe_collision(data=data, series_name=None)
+        elif isinstance(data, DataFrame):
+            errors += ensure_no_uri_safe_collision(data.squeeze(), series_name=None)
+
+        return errors
 
 
 @dataclass

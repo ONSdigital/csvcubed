@@ -10,7 +10,7 @@ def get_test_base_dir() -> Path:
         test_index = path_parts.index("tests")
         test_root_path = Path(*path_parts[0 : test_index + 1])
     else:  # Fine Rob, you win.
-        csvwlib_index = path_parts.index("csvwlib")
+        csvwlib_index = path_parts.index("csvcubed")
         test_root_path = Path(*path_parts[0: csvwlib_index + 1], "csvcubed", "tests")
     return test_root_path
 

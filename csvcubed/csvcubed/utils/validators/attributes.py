@@ -32,7 +32,7 @@ def enforce_optional_attribute_dependencies(
                 if len(missing_values) > 0:
                     missing_values_str = ", ".join([f"'{v}'" for v in missing_values])
                     raise ValueError(
-                        f"'{attribute_name}' has been specifies, but the following is missing and must be "
+                        f"'{attribute_name}' has been specified, but the following is missing and must be "
                         f"provided: {missing_values_str}."
                     )
 

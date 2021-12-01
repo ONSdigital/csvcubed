@@ -4,9 +4,12 @@ Standardise
 
 Utilities for standardising cubes and their corresponding data values.
 """
-from typing import Optional, List, Dict
+from typing import DefaultDict, Optional, List, Dict
 import pandas as pd
+from warnings import warn
 from pandas.core.arrays.categorical import Categorical
+
+from csvcubed.utils.pandas import coalesce_on_uri_safe
 
 
 from .cube import get_all_units, get_all_measures, get_columns_of_dsd_type
@@ -38,6 +41,11 @@ def ensure_qbcube_data_is_categorical(cube: QbCube) -> None:
             assert column_data is not None
             if not isinstance(column_data.values, Categorical):
                 cube.data[column.csv_column_title] = column_data.astype("category")
+
+            # TODO: When addressing ticket #250, this is the start of the process.
+            cube.data[column.csv_column_title] = coalesce_on_uri_safe(
+                cube.data[column.csv_column_title]
+            )
 
 
 def convert_data_values_to_uri_safe_values(
