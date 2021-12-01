@@ -920,11 +920,7 @@ test = ["websockets"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-<<<<<<< HEAD
-content-hash = "04fb3310c5d3bfc0b130d2e4a9a882ae83fb5244b65e4338dc44b05983379748"
-=======
 content-hash = "11d06b20b957b2c60ff8c1e3aa6388921924683dacdd43172ebf0afc74ccfea1"
->>>>>>> origin/main
 
 [metadata.files]
 alabaster = [
