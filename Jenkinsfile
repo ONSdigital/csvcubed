@@ -88,6 +88,25 @@ pipeline {
                 stash name: 'test-results', includes: '**/test-results.json,**/*results*.xml' // Ensure test reports are available to be reported on.
             }
         }
+        stage('Tox'){
+            steps {
+                 dir('csvcubed-devtools') {
+                    sh 'tox'
+                }
+
+                dir('csvcubed-models') {
+                    sh 'tox'
+                }
+
+                dir('csvcubed-pmd') {
+                    sh 'tox'
+                }
+
+                dir('csvcubed') {
+                    sh 'tox'
+                }               
+            }
+        }
         stage('Package') {
             steps {
                 dir('csvcubed-devtools') {
