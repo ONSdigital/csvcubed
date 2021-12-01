@@ -91,19 +91,19 @@ pipeline {
         stage('Tox'){
             steps {
                  dir('csvcubed-devtools') {
-                    sh 'tox'
+                    sh 'poetry run tox'
                 }
 
                 dir('csvcubed-models') {
-                    sh 'tox'
+                    sh 'poetry run tox'
                 }
 
                 dir('csvcubed-pmd') {
-                    sh 'tox'
+                    sh 'poetry run tox'
                 }
 
                 dir('csvcubed') {
-                    sh 'tox'
+                    sh 'poetry run tox'
                 }               
             }
         }
