@@ -5,7 +5,7 @@ Pandas
 Functions to help when working with pandas dtypes.
 """
 
-from typing import DefaultDict, Optional, Union
+from typing import Any, DefaultDict, Optional, Union
 import math
 from pandas import Series, DataFrame
 from pandas.api.types import is_string_dtype
@@ -16,44 +16,56 @@ from csvcubed.utils.uri import uri_safe
 from csvcubed.inputs import PandasDataTypes
 
 
-def uri_safe_ios(data: PandasDataTypes) -> Optional[dict[str, list[str]]]:
-    """Generate a dictionary of uri_safe values and """
-    uri_safe_ios = dict[str, list[str]]
+def uri_safe_ios(data: PandasDataTypes) -> dict[str, list[str]]:
+    """
+    Generate a dictionary of uri_safe values
+
+    You must ensure that :obj:`data` represents categorical data where all 
+    categories are string types.
+    """
+    uri_safe_ios: dict[str, list[str]] = {}
 
     if data is not None:
-
         if isinstance(data, DataFrame):
             data = data.squeeze()
             if data is None:
                 raise Exception("This should never happen.")
-            return_to_dataframe = True
-        elif isinstance(data, Series):
-            return_to_dataframe = False
 
-        for original, safe in {
-            value: uri_safe(value)
-            for value in data.unique()
-            if not isinstance(value, float) or not math.isnan(value)
-        }.items():
-            uri_safe_ios.get(safe).append(original)
+        original_safe_dict: dict[str, str] = {}
 
-        return uri_safe_ios if not return_to_dataframe else data.to_frame()
-    else:
-        return None
+        for value in data.cat.categories:
+            assert isinstance(value, str)
+            original_safe_dict[value] = uri_safe(value)
+
+        for original, safe in original_safe_dict.items():
+            if original is None:
+                raise Exception("This should also never happen.")
+            # assert original is not None
+            originals_list = uri_safe_ios.get(safe, [])
+            originals_list.append(original)
+            uri_safe_ios[safe] = originals_list
+
+    return uri_safe_ios
 
 
 def ensure_no_uri_safe_collision(
     data: Union[dict[str, list], PandasDataTypes], series_name: Optional[str]
 ) -> list[ValueError]:
-    """Validate that a categorical Pandas Series() has no uri_safe collisions (i.e. many values to one uri_safe result)"""
+    """Validate that a categorical Pandas Series() has no uri_safe collisions
+    (i.e. many values to one uri_safe result).
+    
+    You must ensure that :obj:`data` represents categorical data where all 
+    categories are string types.
+    """
     uri_safe_ios_dict: Union[dict[str, list[str]], None]
     if isinstance(data, dict):
         uri_safe_ios_dict = data
-    elif isinstance(data, Series):
-        uri_safe_ios_dict = uri_safe_ios(data)
-        series_name = str(data.name)
-    elif isinstance(data, DataFrame):
-        uri_safe_ios_dict = uri_safe_ios(data)
+    elif isinstance(data, (Series, DataFrame)) and is_string_dtype(data.cat.categories):
+        if isinstance(data, Series):
+            uri_safe_ios_dict = uri_safe_ios(data)
+            series_name = str(data.name)
+        elif isinstance(data, DataFrame):
+            uri_safe_ios_dict = uri_safe_ios(data)
     else:
         raise TypeError(
             "Unexpected type: received {type(data)} expected pd.Series or dict"
@@ -61,7 +73,7 @@ def ensure_no_uri_safe_collision(
     errors = list()
 
     if uri_safe_ios_dict is None:
-        return
+        return errors
 
     # Check for collisions, raise a Validation error
     for k, v in uri_safe_ios_dict.items():
@@ -81,27 +93,32 @@ def coalesce_on_uri_safe(data: PandasDataTypes) -> PandasDataTypes:
     i.e. 'canada' and 'Canada' categories will replace 'canada' with 'Canada'
     """
 
-    if not is_string_dtype(data.cat.categories) or data is None:
-        return data
-
-    uri_safe_ios_dict = uri_safe_ios(data)
-    if (
-        len(ensure_no_uri_safe_collision(uri_safe_ios_dict, series_name=str(data.name)))
-        == 0
-    ):
-        # There is a 1:1 relationship between categories and uri_safe categoies
+    if data is None or not is_string_dtype(data.cat.categories):
         return data
     else:
 
-        cat_map = DefaultDict(str)
-
-        for k, v in uri_safe_ios_dict.items():
-            if len(v) > 1:
-                warn(
-                    message=f'Labels "{v}" collide as single uri-safe value "{k}" in column "{data.name}" and were consolidated'
+        uri_safe_ios_dict = uri_safe_ios(data)
+        if (
+            len(
+                ensure_no_uri_safe_collision(
+                    uri_safe_ios_dict, series_name=str(data.name)
                 )
+            )
+            == 0
+        ):
+            # There is a 1:1 relationship between categories and uri_safe categoies
+            return data
+        else:
 
-            for f in v:
-                cat_map[f] = sorted(v)[0]
+            cat_map = DefaultDict(str)
 
-    return data.map(cat_map).astype("category")
+            for k, v in uri_safe_ios_dict.items():
+                if len(v) > 1:
+                    warn(
+                        message=f'Labels "{v}" collide as single uri-safe value "{k}" in column "{data.name}" and were consolidated'
+                    )
+
+                for f in v:
+                    cat_map[f] = sorted(v)[0]
+
+            return data.map(cat_map).astype("category")
