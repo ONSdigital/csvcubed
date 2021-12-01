@@ -3,7 +3,6 @@ import click
 
 from csvcubedpmd.csvwcli import pull, findwhere
 
-
 @click.group("csvw")
 def csvw_group():
     """
