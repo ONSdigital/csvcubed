@@ -16,15 +16,13 @@ def test_file_in_line():
 
 def test_line_replace():
     line = "example line from a ttl file"
-    values = (
+    values = [
         ("finduri1", "replaceuri1"),
         ("finduri2", "replaceuri2"),
         ("finduri3", "replaceuri3"),
-    )
+    ]
     assert _line_replace(line, values)
-    values = (("finduri1", "replaceuri1"), ("finduri2", "replaceuri2"))
-    assert _line_replace(line, values)
-    values = ("finduri1", "replaceuri1")
+    values = [("finduri1", "replaceuri1"), ("finduri2", "replaceuri2")]
     assert _line_replace(line, values)
 
 

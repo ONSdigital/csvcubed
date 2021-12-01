@@ -28,14 +28,10 @@ def _line_replace(line: str, values: list[tuple[str, str]]) -> str:
     """
 
     logging.debug(f"Original line: {line}")
-    if type(values[0]) == str:
-        logging.debug(f"replacing [{values[0]}] with [{values[1]}]")
-        line = line.replace(str(values[0]), str(values[1]))
-    else:
-        for find, replace in values:
-            logging.debug(f"replacing [{find}] with [{replace}]")
-            line = line.replace(find, replace)
-        logging.debug(f"New line: {line}")
+    for find, replace in values:
+        logging.debug(f"replacing [{find}] with [{replace}]")
+        line = line.replace(find, replace)
+    logging.debug(f"New line: {line}")
 
     return line
 
@@ -74,14 +70,15 @@ def _replace(
     logging.info(encodingtype)
 
     # If one pair of uri values are entered into the command line
-    for (find, replacement) in values: logging.info(f"Replacing {find} with {replacement}")
+    for (find, replacement) in values:
+        logging.info(f"Replacing {find} with {replacement}")
 
     # Otherwise if multiple pair of uri values where entered into the command line
     with open(str(input), "rb") as inputfile, open(str(output), "wb") as outputfile:
         for index, line in enumerate(inputfile, 1):
 
             line = line.decode(encodingtype)
-            #logging.debug(index, line)
+            # logging.debug(index, line)
 
             line = _line_replace(line, values)
             if _file_in_line(line):
@@ -92,5 +89,5 @@ def _replace(
                     # delete output file
                     os.remove(str(output))
                     sys.exit(1)
-                    
+
             outputfile.write(line.encode(encodingtype))
