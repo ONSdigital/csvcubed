@@ -87,6 +87,7 @@ class Resource(NewMetadataResource):
         self.rdf_types.add(DCAT.Resource)
         self.themes = set()
         self.keywords = set()
+        self.landing_page = set()
 
 
 class Dataset(Resource):
