@@ -91,25 +91,25 @@ pipeline {
         stage('Tox'){
             agent {
                 dockerfile {
-                    filename 'Dockerfile.build'
+                    filename 'Dockerfile'
                     dir 'pythonversiontesting'
                 }
             }
             steps {
                  dir('csvcubed-devtools') {
-                    sh 'poetry run tox'
+                    sh 'tox'
                 }
 
                 dir('csvcubed-models') {
-                    sh 'poetry run tox'
+                    sh 'tox'
                 }
 
                 dir('csvcubed-pmd') {
-                    sh 'poetry run tox'
+                    sh 'tox'
                 }
 
                 dir('csvcubed') {
-                    sh 'poetry run tox'
+                    sh 'tox'
                 }               
             }
         }
