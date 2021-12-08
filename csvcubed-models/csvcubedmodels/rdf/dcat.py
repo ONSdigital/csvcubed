@@ -63,8 +63,8 @@ class Resource(NewMetadataResource):
         Triple(DCAT.keyword, PropertyStatus.recommended, map_str_to_en_literal),
     ]
     landing_page: Ann[
-        Set[list[str]], Triple(DCAT.landingPage, PropertyStatus.recommended, URIRef)
-    ]  # todo: Enable support for multiple landing pages here, using a Set.
+        Set[str], Triple(DCAT.landingPage, PropertyStatus.recommended, URIRef)
+    ]
     qualified_attribution: Ann[
         str, Triple(PROV.qualifiedAttribution, PropertyStatus.recommended, URIRef)
     ]
