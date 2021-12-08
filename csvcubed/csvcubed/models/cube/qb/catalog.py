@@ -5,7 +5,7 @@ Catalog Metadata (DCAT)
 import json
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Union
 from csvcubedmodels.rdf import dcat
 from pathlib import Path
 
@@ -21,7 +21,7 @@ class CatalogMetadata(CatalogMetadataBase, UriIdentifiable):
     description: Optional[str] = field(default=None, repr=False)
     creator_uri: Optional[str] = field(default=None, repr=False)
     publisher_uri: Optional[str] = field(default=None, repr=False)
-    landing_page_uri: Optional[str] = field(default=None, repr=False)
+    landing_page_uri: Union[str, list[str], None] = field(default_factory=list, repr=False) # todo: fix type on left hand side
     theme_uris: list[str] = field(default_factory=list, repr=False)
     keywords: list[str] = field(default_factory=list, repr=False)
     dataset_issued: Optional[datetime] = field(default=None, repr=False)
@@ -32,7 +32,7 @@ class CatalogMetadata(CatalogMetadataBase, UriIdentifiable):
 
     _creator_uri_validator = validate_uri("creator_uri", is_optional=True)
     _publisher_uri_validator = validate_uri("publisher_uri", is_optional=True)
-    _landing_page_uri_validator = validate_uri("landing_page_uri", is_optional=True)
+    _landing_page_uri_validator = validate_uri("landing_page_uri", is_optional=True) # todo: Make this validation work with it being a list[str]
     _license_uri_validator = validate_uri("license_uri", is_optional=True)
     _public_contact_point_uri_validator = validate_uri(
         "public_contact_point_uri", is_optional=True
@@ -70,7 +70,7 @@ class CatalogMetadata(CatalogMetadataBase, UriIdentifiable):
         dataset.license = self.license_uri
         dataset.creator = self.creator_uri
         dataset.publisher = self.publisher_uri
-        dataset.landing_page = self.landing_page_uri
+        dataset.landing_page = self.landing_page_uri ########################################
         dataset.themes = set(self.theme_uris)
         dataset.keywords = set(self.keywords)
         dataset.contact_point = self.public_contact_point_uri
