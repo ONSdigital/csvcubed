@@ -236,7 +236,8 @@ def _get_catalog_entry_from_dcat_dataset(csvw_graph: Graph) -> pmdcat.Dataset:
         PREFIX dcterms: <http://purl.org/dc/terms/>
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     
-        SELECT ?dataset ?title ?label ?issued ?modified ?comment ?description ?license ?creator ?publisher ?landingPage 
+        SELECT ?dataset ?title ?label ?issued ?modified ?comment ?description ?license ?creator ?publisher 
+            (GROUP_CONCAT(?landingPage ; separator='|') as ?landingPages) 
             (GROUP_CONCAT(?theme; separator='|') as ?themes) 
             (GROUP_CONCAT(?keyword; separator='|') as ?keywords) 
             ?contactPoint ?identifier
@@ -283,7 +284,9 @@ def _get_catalog_entry_from_dcat_dataset(csvw_graph: Graph) -> pmdcat.Dataset:
     pmdcat_dataset.license = _none_or_map(record["license"], str)
     pmdcat_dataset.creator = _none_or_map(record["creator"], str)
     pmdcat_dataset.publisher = _none_or_map(record["publisher"], str)
-    pmdcat_dataset.landing_page = _none_or_map(record["landingPage"], str)
+    pmdcat_dataset.landing_page = (
+        set() if len(record["landingPages"]) == 0 else set(str(record["landingPages"]).split("|"))
+    )
     pmdcat_dataset.themes = (
         set() if len(record["themes"]) == 0 else set(str(record["themes"]).split("|"))
     )
