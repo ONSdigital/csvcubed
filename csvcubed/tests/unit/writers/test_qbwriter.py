@@ -350,13 +350,14 @@ def test_default_property_value_uris_multi_measure_all_existing():
         QbMultiMeasureDimension(
             [ExistingQbMeasure("http://base-uri/measures/existing-measure")]
         ),
+        csv_column_uri_template="http://base-uri/measures/{+some_column}",
     )
     (
         default_property_uri,
         default_value_uri,
     ) = empty_qbwriter._get_default_property_value_uris_for_column(column)
     assert "http://purl.org/linked-data/cube#measureType" == default_property_uri
-    assert "{+some_column}" == default_value_uri
+    assert "http://base-uri/measures/{+some_column}" == default_value_uri
 
 
 def test_default_property_value_uris_multi_measure_local_and_existing():
@@ -404,7 +405,7 @@ def test_default_property_value_uris_single_measure_obs_val():
 
 def test_default_property_value_uris_multi_measure_obs_val():
     """
-    There should be no `propertyUrl` or `valueUrl` for a `QbMultiMeasureObservationValue`.
+    There should be no `valueUrl` for a `QbMultiMeasureObservationValue`.
     """
     column = QbColumn("Some Column", QbMultiMeasureObservationValue())
 
@@ -420,6 +421,36 @@ def test_default_property_value_uris_multi_measure_obs_val():
         default_value_uri,
     ) = writer._get_default_property_value_uris_for_column(column)
     assert default_property_uri == "cube-name.csv#measure/{+measure}"
+    assert default_value_uri is None
+
+
+def test_default_property_value_uris_multi_existing_measure_obs_val():
+    """
+    The `propertyUrl` for a multi-existing-measure observation value should match the measure column's
+    value URI template.
+    """
+    column = QbColumn("Some Column", QbMultiMeasureObservationValue())
+
+    cube = Cube(
+        CatalogMetadata("Cube Name"),
+        pd.DataFrame({"Measure": ["kg"]}),
+        [
+            QbColumn(
+                "Measure",
+                QbMultiMeasureDimension(
+                    [ExistingQbMeasure("http://some-existing-measures/kg")]
+                ),
+                csv_column_uri_template="http://some-existing-measures/{+measure}",
+            )
+        ],
+    )
+    writer = QbWriter(cube)
+
+    (
+        default_property_uri,
+        default_value_uri,
+    ) = writer._get_default_property_value_uris_for_column(column)
+    assert default_property_uri == "http://some-existing-measures/{+measure}"
     assert default_value_uri is None
 
 
