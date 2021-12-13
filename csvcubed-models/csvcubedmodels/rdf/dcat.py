@@ -63,7 +63,7 @@ class Resource(NewMetadataResource):
         Triple(DCAT.keyword, PropertyStatus.recommended, map_str_to_en_literal),
     ]
     landing_page: Ann[
-        Optional[str], Triple(DCAT.landingPage, PropertyStatus.recommended, URIRef)
+        Set[str], Triple(DCAT.landingPage, PropertyStatus.recommended, URIRef)
     ]
     qualified_attribution: Ann[
         str, Triple(PROV.qualifiedAttribution, PropertyStatus.recommended, URIRef)
@@ -87,6 +87,7 @@ class Resource(NewMetadataResource):
         self.rdf_types.add(DCAT.Resource)
         self.themes = set()
         self.keywords = set()
+        self.landing_page = set()
 
 
 class Dataset(Resource):

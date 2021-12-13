@@ -48,7 +48,7 @@ def test_extracting_metadata():
     )
     assert (
         existing_dcat_dataset.landing_page
-        == "https://www.gov.uk/government/statistics/bottles-bulletin"
+        == {"https://www.gov.uk/government/statistics/bottles-bulletin"}
     )
     assert existing_dcat_dataset.themes == {"http://gss-data.org.uk/def/gdp#Trade"}
     assert existing_dcat_dataset.keywords == {"keyword1", "keyword2"}

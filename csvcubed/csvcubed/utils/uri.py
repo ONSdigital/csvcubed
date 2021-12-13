@@ -77,3 +77,14 @@ def ensure_looks_like_uri(value: str) -> None:
     """
     if not looks_like_uri(value):
         raise ValueError(f"'{value}' does not look like a URI.")
+        
+
+def ensure_looks_like_uris(values: list[str]) -> None:
+    """
+    Ensure that :obj:`value` looks like a URI.
+
+    :raises ValueError: when :obj:`value` does not look like a URI.
+    """
+    for value in values:
+        if not looks_like_uri(value):
+            raise ValueError(f"'{value}' does not look like a URI.")

@@ -21,9 +21,9 @@ def test_graph_diff(g1, g2):
         len(only_in_second) == 0
     ), f"""
         <<<
-        {only_in_first.serialize(format='n3').decode('utf-8')}
+        {rdflibhelpers.serialise_to_string(only_in_first, format='n3')}
         ===
-        {only_in_second.serialize(format='n3').decode('utf-8')}
+        {rdflibhelpers.serialise_to_string(only_in_second, format='n3')}
         >>>
         """
 
