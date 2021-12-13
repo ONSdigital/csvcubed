@@ -58,6 +58,8 @@ def pmdify_dcat(
 
     _delete_existing_dcat_dataset_metadata(csvw_rdf_graph)
 
+    _set_pmdcat_type_on_dataset_contents(csvw_rdf_graph, csvw_type)
+
     _replace_uri_substring_in_graph(csvw_rdf_graph, str(_TEMP_PREFIX_URI), base_uri)
     csvw_file_contents_json["rdfs:seeAlso"] = rdflibutils.serialise_to_json_ld(
         csvw_rdf_graph
@@ -80,6 +82,31 @@ def pmdify_dcat(
         catalog_metadata_graph_uri,
         base_uri,
     )
+
+
+def _set_pmdcat_type_on_dataset_contents(
+    csvw_rdf_graph: Graph, csvw_type: CsvCubedOutputType
+) -> None:
+    if csvw_type == CsvCubedOutputType.QbDataSet:
+        csvw_rdf_graph.update(
+            """           
+            PREFIX qb:      <http://purl.org/linked-data/cube#>
+            PREFIX pmdcat:  <http://publishmydata.com/pmdcat#>
+
+            INSERT { ?dataset a pmdcat:Dataset. } WHERE { ?dataset a qb:DataSet. }
+            """
+        )
+    elif csvw_type == CsvCubedOutputType.SkosConceptScheme:
+        csvw_rdf_graph.update(
+            """
+            PREFIX skos:    <http://www.w3.org/2004/02/skos/core#>
+            PREFIX pmdcat:  <http://publishmydata.com/pmdcat#>
+
+            INSERT { ?dataset a pmdcat:ConceptScheme. } WHERE { ?dataset a skos:ConceptScheme. }
+            """
+        )
+    else:
+        raise Exception(f"Unmatched CSV-W type '{csvw_type}'")
 
 
 def _replace_uri_substring_in_graph(
