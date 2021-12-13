@@ -84,7 +84,9 @@ def pmdify_dcat(
     )
 
 
-def _set_pmdcat_type_on_dataset_contents(csvw_rdf_graph, csvw_type):
+def _set_pmdcat_type_on_dataset_contents(
+    csvw_rdf_graph: Graph, csvw_type: CsvCubedOutputType
+) -> None:
     if csvw_type == CsvCubedOutputType.QbDataSet:
         csvw_rdf_graph.update(
             """           
