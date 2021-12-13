@@ -37,6 +37,7 @@ from ..models.rdf.newunitresource import NewUnitResource
 from ..models.cube.qb.components.arbitraryrdf import RdfSerialisationHint
 from csvcubed.models.rdf.qbdatasetincatalog import QbDataSetInCatalog
 
+DATASET_RELATIVE_PATH = "dataset"
 
 VIRT_UNIT_COLUMN_NAME = "virt_unit"
 
@@ -75,7 +76,7 @@ class QbWriter(WriterBase):
 
         csvw_metadata = {
             "@context": "http://www.w3.org/ns/csvw",
-            "@id": self._doc_rel_uri("dataset"),
+            "@id": self._doc_rel_uri(DATASET_RELATIVE_PATH),
             "tables": tables,
             "rdfs:seeAlso": self._get_additional_rdf_metadata(),
         }
@@ -215,7 +216,20 @@ class QbWriter(WriterBase):
     def _generate_virtual_columns_for_obs_val(
         self, obs_val: QbObservationValue
     ) -> List[Dict[str, Any]]:
-        virtual_columns: List[dict] = []
+        virtual_columns: List[dict] = [
+            {
+                "name": "virt_type",
+                "virtual": True,
+                "propertyUrl": "rdf:type",
+                "valueUrl": "http://purl.org/linked-data/cube#Observation",
+            },
+            {
+                "name": "virt_dataset",
+                "virtual": True,
+                "propertyUrl": "http://purl.org/linked-data/cube#dataSet",
+                "valueUrl": self._doc_rel_uri(DATASET_RELATIVE_PATH),
+            },
+        ]
         unit = obs_val.unit
         if unit is not None:
             virtual_columns.append(
@@ -238,7 +252,9 @@ class QbWriter(WriterBase):
         return virtual_columns
 
     def _get_qb_dataset_with_catalog_metadata(self) -> QbDataSetInCatalog:
-        qb_dataset_with_metadata = QbDataSetInCatalog(self._doc_rel_uri("dataset"))
+        qb_dataset_with_metadata = QbDataSetInCatalog(
+            self._doc_rel_uri(DATASET_RELATIVE_PATH)
+        )
         self.cube.metadata.configure_dcat_dataset(qb_dataset_with_metadata)
         return qb_dataset_with_metadata
 
@@ -692,31 +708,33 @@ class QbWriter(WriterBase):
         )
 
     def _get_default_property_value_uris_for_multi_measure(
-        self, column: QbColumn, measure_dimension: QbMultiMeasureDimension
+        self, column: QbColumn[QbMultiMeasureDimension]
     ) -> Tuple[str, str]:
         measure_value_uri = self._get_measure_dimension_column_measure_template_uri(
-            column, measure_dimension
+            column
         )
 
         return "http://purl.org/linked-data/cube#measureType", measure_value_uri
 
     def _get_measure_dimension_column_measure_template_uri(
-        self,
-        column: QbColumn[QbMultiMeasureDimension],
-        measure_dimension: QbMultiMeasureDimension,
+        self, column: QbColumn[QbMultiMeasureDimension]
     ):
         all_measures_new = all(
-            [isinstance(m, NewQbMeasure) for m in measure_dimension.measures]
+            [isinstance(m, NewQbMeasure) for m in column.component.measures]
         )
         all_measures_existing = all(
-            [isinstance(m, ExistingQbMeasure) for m in measure_dimension.measures]
+            [isinstance(m, ExistingQbMeasure) for m in column.component.measures]
         )
 
         column_template_fragment = self._get_column_uri_template_fragment(column)
         if all_measures_new:
             return self._doc_rel_uri(f"measure/{column_template_fragment}")
         elif all_measures_existing:
-            return column_template_fragment
+            if column.csv_column_uri_template is None:
+                raise ValueError(
+                    "A URI value template must be defined when a measures column reuses existing measures."
+                )
+            return column.csv_column_uri_template
         else:
             # todo: Come up with a solution for this!
             raise Exception(
@@ -735,9 +753,7 @@ class QbWriter(WriterBase):
                 column, column.component
             )
         elif isinstance(column.component, QbMultiMeasureDimension):
-            return self._get_default_property_value_uris_for_multi_measure(
-                column, column.component
-            )
+            return self._get_default_property_value_uris_for_multi_measure(column)
         elif isinstance(column.component, QbObservationValue):
             return self._get_default_property_value_uris_for_observation_value(
                 column.component
@@ -757,7 +773,7 @@ class QbWriter(WriterBase):
             )
             measure_uri_template = (
                 self._get_measure_dimension_column_measure_template_uri(
-                    multi_measure_dimension, multi_measure_dimension.component
+                    multi_measure_dimension
                 )
             )
             return measure_uri_template, None

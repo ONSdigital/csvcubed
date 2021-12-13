@@ -120,7 +120,6 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     When the cube is serialised to CSV-W
     Then csvlint validation of "qube-with-string-literals.csv-metadata.json" should succeed
     And csv2rdf on all CSV-Ws should succeed
-    # And turtle should be written to "output.ttl"
     And the RDF should contain
       """
       <file:/tmp/qube-with-string-literals.csv#obs/uss-cerritos> <file:/tmp/qube-with-string-literals.csv#attribute/first-captain>
@@ -137,7 +136,6 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     When the cube is serialised to CSV-W
     Then csvlint validation of "qube-with-int-literals.csv-metadata.json" should succeed
     And csv2rdf on all CSV-Ws should succeed
-    # And turtle should be written to "output.ttl"
     And the RDF should contain
       """
       <file:/tmp/qube-with-int-literals.csv#obs/uss-cerritos> <file:/tmp/qube-with-int-literals.csv#attribute/reg>
@@ -154,7 +152,6 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     When the cube is serialised to CSV-W
     Then csvlint validation of "qube-with-date-literals.csv-metadata.json" should succeed
     And csv2rdf on all CSV-Ws should succeed
-    # And turtle should be written to "output.ttl"
     And the RDF should contain
       """
       <file:/tmp/qube-with-date-literals.csv#obs/uss-cerritos> <file:/tmp/qube-with-date-literals.csv#attribute/appeared>
@@ -171,7 +168,6 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     When the cube is serialised to CSV-W
     Then csvlint validation of "qube-with-string-literals.csv-metadata.json" should succeed
     And csv2rdf on all CSV-Ws should succeed
-    # And turtle should be written to "output.ttl"
     And the RDF should contain
       """
       <file:/tmp/qube-with-string-literals.csv#obs/uss-cerritos> <http://some-uri> "William Riker".
@@ -186,7 +182,6 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     When the cube is serialised to CSV-W
     Then csvlint validation of "qube-with-int-literals.csv-metadata.json" should succeed
     And csv2rdf on all CSV-Ws should succeed
-    # And turtle should be written to "output.ttl"
     And the RDF should contain
       """
       <file:/tmp/qube-with-int-literals.csv#obs/uss-cerritos> <http://some-uri> "75567"^^<http://www.w3.org/2001/XMLSchema#int>.
@@ -201,7 +196,6 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     When the cube is serialised to CSV-W
     Then csvlint validation of "qube-with-date-literals.csv-metadata.json" should succeed
     And csv2rdf on all CSV-Ws should succeed
-    # And turtle should be written to "output.ttl"
     And the RDF should contain
       """
       <file:/tmp/qube-with-date-literals.csv#obs/uss-cerritos> <http://some-uri> "2020-08-06"^^<http://www.w3.org/2001/XMLSchema#date>.
@@ -247,7 +241,8 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
       <file:/tmp/multi-measure-qube-with-new-definitions.csv#structure> <http://purl.org/linked-data/cube#component> <file:/tmp/multi-measure-qube-with-new-definitions.csv#component/new-dimension>.
       <file:/tmp/multi-measure-qube-with-new-definitions.csv#dimension/new-dimension> <http://purl.org/linked-data/cube#codeList> <file:/tmp/a-new-codelist.csv#scheme/a-new-codelist>.
 
-      <file:/tmp/multi-measure-qube-with-new-definitions.csv#obs/a/part-time> <file:/tmp/multi-measure-qube-with-new-definitions.csv#dimension/new-dimension> <file:/tmp/a-new-codelist.csv#concept/a-new-codelist/a>.
+      <file:/tmp/multi-measure-qube-with-new-definitions.csv#obs/a/part-time> a <http://purl.org/linked-data/cube#Observation>;
+        <file:/tmp/multi-measure-qube-with-new-definitions.csv#dimension/new-dimension> <file:/tmp/a-new-codelist.csv#concept/a-new-codelist/a>.
 
       <file:/tmp/a-new-codelist.csv#scheme/a-new-codelist> a <http://www.w3.org/2004/02/skos/core#ConceptScheme>.
       <file:/tmp/a-new-codelist.csv#concept/a-new-codelist/a> a <http://www.w3.org/2004/02/skos/core#Concept>.
@@ -275,7 +270,23 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
         skos:hasTopConcept <http://existing/dimension/code-list/all>.
 
       <http://existing/dimension/code-list/all> a skos:Concept;
-        rdfs:label "All possible things"@en.
+        rdfs:label "All possible things"@en;
+        skos:inScheme <http://existing/dimension/code-list>.
+
+      <http://existing/dimension/code-list/a> a skos:Concept;
+        rdfs:label "A"@en;
+        skos:inScheme <http://existing/dimension/code-list>;
+        skos:broader <http://existing/dimension/code-list/all>.
+
+      <http://existing/dimension/code-list/b> a skos:Concept;
+        rdfs:label "B"@en;
+        skos:inScheme <http://existing/dimension/code-list>;
+        skos:broader <http://existing/dimension/code-list/all>.
+
+      <http://existing/dimension/code-list/c> a skos:Concept;
+        rdfs:label "C"@en;
+        skos:inScheme <http://existing/dimension/code-list>;
+        skos:broader <http://existing/dimension/code-list/all>.
 
       <http://existing/attribute> a qb:AttributeProperty;
           rdfs:label "Some existing attribute property"@en.
@@ -306,11 +317,49 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
           qb:codeList <http://existing/dimension/code-list>;
           rdfs:range <http://some/range/thingy>.
 
+    <http://gss-data.org.uk/def/concept-scheme/some-existing-codelist> a skos:ConceptScheme;
+        skos:hasTopConcept <http://gss-data.org.uk/def/concept-scheme/some-existing-codelist/all>.
+
+      <http://gss-data.org.uk/def/concept-scheme/some-existing-codelist/all> a skos:Concept;
+        rdfs:label "All possible things"@en;
+        skos:inScheme <http://gss-data.org.uk/def/concept-scheme/some-existing-codelist>.
+
+      <http://gss-data.org.uk/def/concept-scheme/some-existing-codelist/d> a skos:Concept;
+        rdfs:label "D"@en;
+        skos:inScheme <http://gss-data.org.uk/def/concept-scheme/some-existing-codelist>;
+        skos:broader <http://gss-data.org.uk/def/concept-scheme/some-existing-codelist/all>.
+
+      <http://gss-data.org.uk/def/concept-scheme/some-existing-codelist/e> a skos:Concept;
+        rdfs:label "E"@en;
+        skos:inScheme <http://gss-data.org.uk/def/concept-scheme/some-existing-codelist>;
+        skos:broader <http://gss-data.org.uk/def/concept-scheme/some-existing-codelist/all>.
+
+      <http://gss-data.org.uk/def/concept-scheme/some-existing-codelist/f> a skos:Concept;
+        rdfs:label "F"@en;
+        skos:inScheme <http://gss-data.org.uk/def/concept-scheme/some-existing-codelist>;
+        skos:broader <http://gss-data.org.uk/def/concept-scheme/some-existing-codelist/all>.
+
       <http://existing/dimension/code-list> a skos:ConceptScheme;
         skos:hasTopConcept <http://existing/dimension/code-list/all>.
 
       <http://existing/dimension/code-list/all> a skos:Concept;
-        rdfs:label "All possible things"@en.
+        rdfs:label "All possible things"@en;
+        skos:inScheme <http://existing/dimension/code-list>.
+
+      <http://existing/dimension/code-list/a> a skos:Concept;
+        rdfs:label "A"@en;
+        skos:inScheme <http://existing/dimension/code-list>;
+        skos:broader <http://existing/dimension/code-list/all>.
+
+      <http://existing/dimension/code-list/b> a skos:Concept;
+        rdfs:label "B"@en;
+        skos:inScheme <http://existing/dimension/code-list>;
+        skos:broader <http://existing/dimension/code-list/all>.
+
+      <http://existing/dimension/code-list/c> a skos:Concept;
+        rdfs:label "C"@en;
+        skos:inScheme <http://existing/dimension/code-list>;
+        skos:broader <http://existing/dimension/code-list/all>.
 
       <http://existing/attribute> a qb:AttributeProperty;
           rdfs:label "Some existing attribute property"@en.
@@ -363,3 +412,20 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     Then the CSVqb should pass all validations
     When the cube is serialised to CSV-W
     Then csvlint validation of all CSV-Ws should succeed
+
+  Scenario: Each Observation should have Type http://purl.org/linked-data/cube#Observation and be part of the dataset
+    Given a single-measure QbCube named "Some Qube"
+    Then the CSVqb should pass all validations
+    When the cube is serialised to CSV-W
+    Then csv2rdf on "some-qube.csv-metadata.json" should succeed
+    And the RDF should contain
+    """
+       @prefix qb: <http://purl.org/linked-data/cube#>.
+
+       <file:/tmp/some-qube.csv#obs/a/e> a qb:Observation;
+                                         qb:dataSet <file:/tmp/some-qube.csv#dataset>.
+       <file:/tmp/some-qube.csv#obs/b/f> a qb:Observation;
+                                         qb:dataSet <file:/tmp/some-qube.csv#dataset>.
+       <file:/tmp/some-qube.csv#obs/c/g> a qb:Observation;
+                                         qb:dataSet <file:/tmp/some-qube.csv#dataset>.
+    """
