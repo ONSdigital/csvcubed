@@ -21,7 +21,7 @@ def test_serialise_and_load_json():
             dataset_issued=datetime.datetime(2010, 1, 1, 1, 1, 1, 1),
             dataset_modified=datetime.datetime(2010, 1, 1, 2, 1, 1, 1),
             theme_uris=["http://some-theme-uri"],
-            license_uri="http://some-license-uri",
+            license_uris=["http://some-license-uri"],
             keywords=["Some key word"],
             creator_uri="http://some-creator-uri",
             publisher_uri="http://some-publisher-uri",
