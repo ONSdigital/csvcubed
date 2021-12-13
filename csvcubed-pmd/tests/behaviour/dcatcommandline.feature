@@ -12,7 +12,7 @@ Feature: Testing the csvw command group in the CLI
       <http://base-uri/single-measure-bulletin.csv#dataset> a <http://purl.org/linked-data/cube#DataSet>,
                                                               # the qb:Dataset needs to be a pmdcat:Dataset too since
                                                               # it's referenced by a catalog record.
-                                                              <http://publishmydata.com/pmdcat#Dataset>.
+                                                              <http://publishmydata.com/pmdcat#DataCube>.
     """
 
   Scenario: The `pmdify` command should add the `pmdcat:Dataset` type to `qb:DataSet`s
@@ -22,7 +22,7 @@ Feature: Testing the csvw command group in the CLI
     And csv2rdf on "single-measure-bulletin.csv-metadata.json" should succeed
     And the RDF should contain
     """
-      <http://base-uri/single-measure-bulletin.csv#dataset> a <http://publishmydata.com/pmdcat#Dataset>.
+      <http://base-uri/single-measure-bulletin.csv#dataset> a <http://publishmydata.com/pmdcat#DataCube>.
     """
 
   Scenario: The `pmdify` command should add the `pmdcat:ConceptScheme` type to `skos:ConceptScheme`s

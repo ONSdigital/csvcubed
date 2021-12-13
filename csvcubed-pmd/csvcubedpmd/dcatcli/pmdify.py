@@ -93,7 +93,7 @@ def _set_pmdcat_type_on_dataset_contents(
             PREFIX qb:      <http://purl.org/linked-data/cube#>
             PREFIX pmdcat:  <http://publishmydata.com/pmdcat#>
 
-            INSERT { ?dataset a pmdcat:Dataset. } WHERE { ?dataset a qb:DataSet. }
+            INSERT { ?dataset a pmdcat:DataCube. } WHERE { ?dataset a qb:DataSet. }
             """
         )
     elif csvw_type == CsvCubedOutputType.SkosConceptScheme:
@@ -312,7 +312,9 @@ def _get_catalog_entry_from_dcat_dataset(csvw_graph: Graph) -> pmdcat.Dataset:
     pmdcat_dataset.creator = _none_or_map(record["creator"], str)
     pmdcat_dataset.publisher = _none_or_map(record["publisher"], str)
     pmdcat_dataset.landing_page = (
-        set() if len(record["landingPages"]) == 0 else set(str(record["landingPages"]).split("|"))
+        set()
+        if len(record["landingPages"]) == 0
+        else set(str(record["landingPages"]).split("|"))
     )
     pmdcat_dataset.themes = (
         set() if len(record["themes"]) == 0 else set(str(record["themes"]).split("|"))
