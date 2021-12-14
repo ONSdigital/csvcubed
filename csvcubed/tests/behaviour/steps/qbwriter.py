@@ -527,7 +527,7 @@ def step_impl(context, cube_name: str):
         QbColumn(
             csv_column_title="Existing Dimension",
             component=ExistingQbDimension("http://existing/dimension"),
-            csv_column_uri_template="http://existing/dimension/{+existing_dimension}",
+            csv_column_uri_template="http://existing/dimension/code-list/{+existing_dimension}",
         ),
         QbColumn(
             csv_column_title="New Dimension",
@@ -581,14 +581,14 @@ def step_impl(context, cube_name: str):
         QbColumn(
             "Existing Dimension",
             ExistingQbDimension("http://existing/dimension"),
-            csv_column_uri_template="http://existing/dimension/{+existing_dimension}",
+            csv_column_uri_template="http://existing/dimension/code-list/{+existing_dimension}",
         ),
         QbColumn(
             csv_column_title="New Dimension",
             component=NewQbDimension(
                 label="existing codelist",
                 code_list=ExistingQbCodeList(
-                    concept_scheme_uri="http://existing/concept/scheme/uri"
+                    concept_scheme_uri="http://gss-data.org.uk/def/concept-scheme/some-existing-codelist"
                 ),
             ),
         ),
