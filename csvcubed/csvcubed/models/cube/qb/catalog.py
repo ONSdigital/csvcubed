@@ -11,7 +11,7 @@ from pathlib import Path
 
 from csvcubed.models.cube.catalog import CatalogMetadataBase
 from csvcubed.models.uriidentifiable import UriIdentifiable
-from csvcubed.utils.validators.uri import validate_uri, validate_uris
+from csvcubed.utils.validators.uri import validate_uri, validate_uris_in_list
 
 
 @dataclass
@@ -32,7 +32,7 @@ class CatalogMetadata(CatalogMetadataBase, UriIdentifiable):
 
     _creator_uri_validator = validate_uri("creator_uri", is_optional=True)
     _publisher_uri_validator = validate_uri("publisher_uri", is_optional=True)
-    _landing_page_uris_validator = validate_uris("landing_page_uris", is_optional=True)
+    _landing_page_uris_validator = validate_uris_in_list("landing_page_uris", is_optional=True)
     _license_uri_validator = validate_uri("license_uri", is_optional=True)
     _public_contact_point_uri_validator = validate_uri(
         "public_contact_point_uri", is_optional=True
