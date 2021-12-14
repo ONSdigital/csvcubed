@@ -29,7 +29,7 @@ def validate_uri(attr_name: str, is_optional: bool = False) -> classmethod:
     )
 
     
-def validate_uris_in_lists(attr_name: str, is_optional: bool = False) -> classmethod:
+def validate_uris_in_list(attr_name: str, is_optional: bool = False) -> classmethod:
     """
     pydantic validator to ensure that an attribute has a string value within lists, which also looks like a URI.
 
