@@ -96,23 +96,15 @@ pipeline {
                 }
             }
             steps {
-                 dir('csvcubed-devtools') {
-                    sh 'poetry install'
-                    sh 'tox'
-                }
-
                 dir('csvcubed-models') {
-                    sh 'poetry install'
                     sh 'tox'
                 }
 
                 dir('csvcubed-pmd') {
-                    sh 'poetry install'
                     sh 'tox'
                 }
 
                 dir('csvcubed') {
-                    sh 'poetry install'
                     sh 'tox'
                 }               
             }
