@@ -39,6 +39,7 @@ ADD https://raw.githubusercontent.com/GSS-Cogs/gss-utils/master/cucumber-format.
 RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
 RUN apt-get install -y nodejs
 RUN npm install -g pyright
+RUN python3 -m pip install tox
 
 RUN mkdir /workspace
 WORKDIR /workspace
