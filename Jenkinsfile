@@ -106,7 +106,9 @@ pipeline {
 
                 dir('csvcubed') {
                     sh 'tox'
-                }               
+                }
+
+                stash name: 'tox-test-results', includes: '**/tox-test-results.json,**/*results*.xml' // Ensure test reports are available to be reported on.              
             }
         }
         stage('Package') {
