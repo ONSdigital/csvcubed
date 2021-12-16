@@ -68,20 +68,19 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     And the RDF should contain
     """
       @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
-      @prefix skos: <http://www.w3.org/2004/02/skos/core#>.
       @prefix qudt: <http://qudt.org/schema/qudt/>.
       @prefix om2: <http://www.ontology-of-units-of-measure.org/resource/om-2/>.
 
       <file:/tmp/some-qube.csv#attribute/new-attribute/pending>
-        a skos:Concept;
+        a rdfs:Resource;
         rdfs:label "pending"@en.
 
       <file:/tmp/some-qube.csv#attribute/new-attribute/final>
-        a skos:Concept;
+        a rdfs:Resource;
         rdfs:label "final"@en.
 
       <file:/tmp/some-qube.csv#attribute/new-attribute/in-review>
-        a skos:Concept;
+        a rdfs:Resource;
         rdfs:label "in-review"@en.
 
       <file:/tmp/some-qube.csv#unit/some-unit>

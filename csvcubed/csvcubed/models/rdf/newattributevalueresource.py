@@ -32,4 +32,3 @@ class NewAttributeValueResource(NewMetadataResource):
 
     def __init__(self, uri: str):
         NewMetadataResource.__init__(self, uri)
-        self.rdf_types.add(SKOS.Concept)
