@@ -28,8 +28,9 @@ class Cube(Generic[TMetadata], PydanticModel):
     columns: List[CsvColumn] = field(default_factory=lambda: [], repr=False)
 
     def validate(self) -> List[ValidationError]:
+        errors = []
         try:
-            errors = self.pydantic_validation()
+            errors += self.pydantic_validation()
             errors += self._validate_columns()
         except Exception as e:
             errors.append(ValidationError(str(e)))
@@ -43,11 +44,11 @@ class Cube(Generic[TMetadata], PydanticModel):
 
     @staticmethod
     def _get_validation_error_for_exception_in_col(
-        col: CsvColumn, error: Exception
+        csv_column_title: str, error: Exception
     ) -> ColumnValidationError:
         # todo: Put this in debug logging when we get to that issue.
         traceback.print_exception(type(error), error, error.__traceback__)
-        return ColumnValidationError(col.csv_column_title, error)
+        return ColumnValidationError(csv_column_title, error)
 
     def _validate_columns(self) -> List[ValidationError]:
         errors: List[ValidationError] = []
@@ -69,7 +70,11 @@ class Cube(Generic[TMetadata], PydanticModel):
                 if maybe_column_data is not None:
                     errors += col.validate_data(maybe_column_data)
             except Exception as e:
-                errors.append(self._get_validation_error_for_exception_in_col(col, e))
+                errors.append(
+                    self._get_validation_error_for_exception_in_col(
+                        col.csv_column_title, e
+                    )
+                )
 
         if self.data is not None:
             defined_column_titles = [c.csv_column_title for c in self.columns]
