@@ -43,3 +43,16 @@ class MissingColumnDefinitionError(SpecificValidationError):
         self.message = (
             f"Column '{self.csv_column_title}' does not have a mapping defined."
         )
+
+
+@dataclass
+class ColumnValidationError(SpecificValidationError):
+    """
+    An error to inform the user that there a general exception occurred when attempting to validate a column.
+    """
+
+    csv_column_title: str
+    error: Exception
+
+    def __post_init__(self):
+        self.message = f"An exception occurred when validating column '{self.csv_column_title}': {self.error}."
