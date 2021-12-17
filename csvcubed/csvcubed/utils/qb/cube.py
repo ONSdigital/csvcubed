@@ -4,6 +4,14 @@ QbCube
 """
 from typing import List, TypeVar, Type, Set
 
+import pandas as pd
+from csvcubedmodels.rdf.namespaces import SDMX_Attribute
+
+from csvcubed.models.cube import ObservationValuesMissing
+
+SDMX_A_OBS_STATUS_URI: str = str(SDMX_Attribute.obsStatus)
+
+
 from csvcubed.models.cube.qb.validationerrors import (
     CsvColumnLiteralWithUriTemplate,
     CsvColumnUriTemplateMissingError,
@@ -24,8 +32,13 @@ from csvcubed.models.cube.qb.components.dimension import (
 from csvcubed.models.cube.qb.components.attribute import (
     QbAttribute,
     QbAttributeLiteral,
+    ExistingQbAttribute,
+    NewQbAttribute,
 )
-from csvcubed.models.cube.qb.components.measure import QbMultiMeasureDimension, QbMeasure
+from csvcubed.models.cube.qb.components.measure import (
+    QbMultiMeasureDimension,
+    QbMeasure,
+)
 from csvcubed.models.cube.qb.components.unit import QbMultiUnits, QbUnit
 from csvcubed.models.cube.qb.components.observedvalue import (
     QbObservationValue,
@@ -151,7 +164,71 @@ def _validate_observation_value_constraints(cube: Cube) -> List[ValidationError]
             errors += _validate_observation_value(obs_val_column, multi_units_columns)
             errors += _validate_single_measure_cube(cube, obs_val_column)
 
+        errors += _validate_missing_observation_values(cube, observed_value_columns[0])
+
     return errors
+
+
+def _validate_missing_observation_values(
+    cube: Cube, observed_value_column: QbColumn[QbObservationValue]
+) -> List[ValidationError]:
+    """
+    Check whether there are any missing observation values in this dataset. If there are, ensure they have at least one
+    `sdmxa:obsStatus` set against them to explain why the value is missing.
+    """
+
+    if cube.data is None:
+        return []
+
+    potential_missing_values = cube.data[
+        cube.data[observed_value_column.csv_column_title].isna()
+    ]
+
+    if potential_missing_values.size > 0:
+        obs_status_columns = get_observation_status_columns(cube)
+        for obs_status_column in obs_status_columns:
+            potential_missing_values = potential_missing_values[
+                potential_missing_values[obs_status_column.csv_column_title].isna()
+            ]
+
+        if potential_missing_values.size > 0:
+            return [
+                ObservationValuesMissing(
+                    csv_column_title=observed_value_column.csv_column_title,
+                    row_numbers=set(potential_missing_values.index),
+                )
+            ]
+
+    return []
+
+
+def get_observation_status_columns(cube: Cube) -> List[QbColumn[QbAttribute]]:
+    """
+    Returns any columns in the given cube which represent `sdmxa:obsStatus` attributes.
+    """
+    return [
+        c
+        for c in get_columns_of_dsd_type(cube, QbAttribute)
+        if _attribute_represents_observation_status(c.component)
+    ]
+
+
+def _attribute_represents_observation_status(attribute: QbAttribute) -> bool:
+    if isinstance(attribute, ExistingQbAttribute):
+        # todo: There is no way currently to tell whether an existing attribute is a sub property of `sdmxa:obsStatus`
+        #   once we've started to implement SPARQL querying/etc. we should check here to see if
+        #   `attribute.attribute_uri` does extend `sdmxa:obsStatus`.
+        return attribute.attribute_uri == SDMX_A_OBS_STATUS_URI
+    elif isinstance(attribute, NewQbAttribute):
+        return (
+            attribute.parent_attribute_uri is not None
+            # todo: There is no way currently to tell whether an existing attribute is a sub property of
+            #  `sdmxa:obsStatus` once we've started to implement SPARQL querying/etc. we should check here to see
+            #  if `attribute.parent_attribute_uri` does extend `sdmxa:obsStatus`/
+            and attribute.parent_attribute_uri == SDMX_A_OBS_STATUS_URI
+        )
+
+    return False
 
 
 def _validate_multi_measure_cube(
