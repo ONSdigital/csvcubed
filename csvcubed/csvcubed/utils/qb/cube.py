@@ -217,14 +217,14 @@ def _attribute_represents_observation_status(attribute: QbAttribute) -> bool:
     if isinstance(attribute, ExistingQbAttribute):
         # todo: There is no way currently to tell whether an existing attribute is a sub property of `sdmxa:obsStatus`
         #   once we've started to implement SPARQL querying/etc. we should check here to see if
-        #   `attribute.attribute_uri` does extend `sdmxa:obsStatus`.
+        #   `attribute.attribute_uri` does extend `sdmxa:obsStatus`. Issue #273.
         return attribute.attribute_uri == SDMX_A_OBS_STATUS_URI
     elif isinstance(attribute, NewQbAttribute):
         return (
             attribute.parent_attribute_uri is not None
             # todo: There is no way currently to tell whether an existing attribute is a sub property of
             #  `sdmxa:obsStatus` once we've started to implement SPARQL querying/etc. we should check here to see
-            #  if `attribute.parent_attribute_uri` does extend `sdmxa:obsStatus`/
+            #  if `attribute.parent_attribute_uri` does extend `sdmxa:obsStatus`. Issue #273.
             and attribute.parent_attribute_uri == SDMX_A_OBS_STATUS_URI
         )
 
