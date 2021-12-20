@@ -5,7 +5,7 @@ from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
 
 from csvcubed.models.cube import *
 from csvcubed.writers.qbwriter import QbWriter
-from csvcubed.utils.qb.cube import validate_qb_component_constraints
+from csvcubed.utils.qb.validation.cube import validate_qb_component_constraints
 from csvcubed.utils.csvw import get_first_table_schema
 
 

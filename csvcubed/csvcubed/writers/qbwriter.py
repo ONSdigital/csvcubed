@@ -29,7 +29,6 @@ from csvcubed.utils.csvw import get_dependent_local_files
 from csvcubed.utils.qb.cube import (
     get_columns_of_dsd_type,
     QbColumnarDsdType,
-    get_observation_status_columns,
 )
 from csvcubed.utils.dict import rdf_resource_to_json_ld
 from csvcubed.utils.qb.standardise import convert_data_values_to_uri_safe_values
@@ -40,6 +39,7 @@ from ..models.rdf.newattributevalueresource import NewAttributeValueResource
 from ..models.rdf.newunitresource import NewUnitResource
 from ..models.cube.qb.components.arbitraryrdf import RdfSerialisationHint
 from csvcubed.models.rdf.qbdatasetincatalog import QbDataSetInCatalog
+from ..utils.qb.validation.observations import get_observation_status_columns
 
 DATASET_RELATIVE_PATH = "dataset"
 
