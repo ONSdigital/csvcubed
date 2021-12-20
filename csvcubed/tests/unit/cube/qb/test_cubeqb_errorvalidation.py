@@ -16,7 +16,7 @@ from csvcubed.models.cube.qb.validationerrors import (
     IncompatibleComponentsError,
 )
 from tests.unit.test_baseunit import *
-from csvcubed.utils.qb.cube import validate_qb_component_constraints
+from csvcubed.utils.qb.validation.cube import validate_qb_component_constraints
 from csvcubed.utils.qb.standardise import convert_data_values_to_uri_safe_values
 
 

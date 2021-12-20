@@ -543,6 +543,40 @@ def test_csv_col_required():
         assert not required
 
 
+def test_csv_col_required_observed_value_with_obs_status_attribute():
+    """Test that the observation value column is **not** marked as `required` in the CSV-W where an `sdmxa:obsStatus`
+    attribute column is defined in the same cube."""
+    observed_values_column = QbColumn(
+        "Values",
+        QbSingleMeasureObservationValue(
+            NewQbMeasure("Some Measure"),
+            NewQbUnit("Some Unit"),
+        ),
+    )
+
+    qube = Cube(
+        metadata=CatalogMetadata("Some Qube"),
+        data=None,
+        columns=[
+            QbColumn("Some Dimension", NewQbDimension(label="Some Dimension")),
+            observed_values_column,
+            QbColumn(
+                "Marker",
+                ExistingQbAttribute(
+                    "http://purl.org/linked-data/sdmx/2009/attribute#obsStatus"
+                ),
+                csv_column_uri_template="https://example.org/some_attribute/{+Some_attribute}",
+            ),
+        ],
+    )
+    writer = QbWriter(qube)
+    observed_values_column_is_required = writer._generate_csvqb_column(
+        observed_values_column
+    )["required"]
+    assert isinstance(observed_values_column_is_required, bool)
+    assert not observed_values_column_is_required
+
+
 def test_csv_col_definition_suppressed():
     """
     Test basic configuration of a *suppressed* CSV-W column definition.

@@ -26,7 +26,10 @@ from csvcubed.utils.uri import (
     get_data_type_uri_from_str,
 )
 from csvcubed.utils.csvw import get_dependent_local_files
-from csvcubed.utils.qb.cube import get_columns_of_dsd_type, QbColumnarDsdType
+from csvcubed.utils.qb.cube import (
+    get_columns_of_dsd_type,
+    QbColumnarDsdType,
+)
 from csvcubed.utils.dict import rdf_resource_to_json_ld
 from csvcubed.utils.qb.standardise import convert_data_values_to_uri_safe_values
 from csvcubed.utils.file import copy_files_to_directory_with_structure
@@ -36,6 +39,7 @@ from ..models.rdf.newattributevalueresource import NewAttributeValueResource
 from ..models.rdf.newunitresource import NewUnitResource
 from ..models.cube.qb.components.arbitraryrdf import RdfSerialisationHint
 from csvcubed.models.rdf.qbdatasetincatalog import QbDataSetInCatalog
+from ..utils.qb.validation.observations import get_observation_status_columns
 
 DATASET_RELATIVE_PATH = "dataset"
 
@@ -588,7 +592,7 @@ class QbWriter(WriterBase):
             if col.component.unit is not None
         }
 
-        def get_new_base_units(u: QbUnit) -> Set[QbUnit]:
+        def get_new_base_units(u: QbUnit) -> set[QbUnit]:
             if (
                 isinstance(u, NewQbUnit)
                 and u.base_unit is not None
@@ -673,12 +677,17 @@ class QbWriter(WriterBase):
 
         csvw_col["required"] = (
             isinstance(column.component, QbDimension)
-            or isinstance(column.component, QbObservationValue)
             or isinstance(column.component, QbMultiUnits)
             or isinstance(column.component, QbMultiMeasureDimension)
             or (
                 isinstance(column.component, QbAttribute)
                 and column.component.is_required
+            )
+            or (
+                isinstance(column.component, QbObservationValue)
+                and len(get_observation_status_columns(self.cube)) == 0
+                # We cannot mark an observation value column as `required` if there are `obsStatus` columns defined
+                # since we permit missing observation values where an `obsStatus` explains the reason.
             )
         )
 

@@ -5,7 +5,7 @@ from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
 
 from csvcubed.models.cube import *
 from csvcubed.writers.qbwriter import QbWriter
-from csvcubed.utils.qb.cube import validate_qb_component_constraints
+from csvcubed.utils.qb.validation.cube import validate_qb_component_constraints
 from csvcubed.utils.csvw import get_first_table_schema
 
 
@@ -35,6 +35,85 @@ _standard_data = pd.DataFrame(
 @Given('a single-measure QbCube named "{cube_name}"')
 def step_impl(context, cube_name: str):
     context.cube = _get_single_measure_cube_with_name_and_id(cube_name, None)
+
+
+@Given('a single-measure QbCube named "{cube_name}" with missing observation values')
+def step_impl(context, cube_name: str):
+    cube = _get_single_measure_cube_with_name_and_id(cube_name, None)
+    cube.data["Value"] = [1, None, 3]
+    context.cube = cube
+
+
+@Given(
+    'a single-measure QbCube named "{cube_name}" with missing observation values and `sdmxa:obsStatus` replacements'
+)
+def step_impl(context, cube_name: str):
+    data = pd.DataFrame(
+        {
+            "A": ["a", "b", "c"],
+            "D": ["e", "f", "g"],
+            "Marker": ["Suppressed", None, None],
+            "Value": [None, 2, 3],
+        }
+    )
+    columns = [
+        QbColumn("A", NewQbDimension.from_data(label="A", data=data["A"])),
+        QbColumn("D", NewQbDimension.from_data(label="D", data=data["D"])),
+        QbColumn(
+            "Marker",
+            NewQbAttribute.from_data(
+                "Marker",
+                data["Marker"],
+                parent_attribute_uri="http://purl.org/linked-data/sdmx/2009/attribute#obsStatus",
+            ),
+        ),
+        QbColumn(
+            "Value",
+            QbSingleMeasureObservationValue(
+                NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
+            ),
+        ),
+    ]
+
+    context.cube = Cube(
+        get_standard_catalog_metadata_for_name(cube_name), data, columns
+    )
+
+
+@Given(
+    'a single-measure QbCube named "{cube_name}" with missing observation values and missing `sdmxa:obsStatus` replacements'
+)
+def step_impl(context, cube_name: str):
+    data = pd.DataFrame(
+        {
+            "A": ["a", "b", "c"],
+            "D": ["e", "f", "g"],
+            "Marker": [None, "Provisional", None],
+            "Value": [None, 2, 3],
+        }
+    )
+    columns = [
+        QbColumn("A", NewQbDimension.from_data(label="A", data=data["A"])),
+        QbColumn("D", NewQbDimension.from_data(label="D", data=data["D"])),
+        QbColumn(
+            "Marker",
+            NewQbAttribute.from_data(
+                "Marker",
+                data["Marker"],
+                parent_attribute_uri="http://purl.org/linked-data/sdmx/2009/attribute#obsStatus",
+            ),
+        ),
+        QbColumn(
+            "Value",
+            QbSingleMeasureObservationValue(
+                NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
+            ),
+        ),
+    ]
+
+    context.cube = Cube(
+        get_standard_catalog_metadata_for_name(cube_name), data, columns
+    )
 
 
 @Given(
@@ -335,6 +414,16 @@ def step_impl(context):
     writer = QbWriter(context.cube, raise_missing_uri_safe_value_exceptions=False)
     temp_dir = get_context_temp_dir_path(context)
     writer.write(temp_dir)
+
+
+@Step('the CSVqb should fail validation with "{validation_error}"')
+def step_impl(context, validation_error: str):
+    cube: Cube = context.cube
+    errors = cube.validate()
+    errors += validate_qb_component_constraints(context.cube)
+    assert any([e for e in errors if validation_error in e.message]), [
+        e.message for e in errors
+    ]
 
 
 @Step("the CSVqb should pass all validations")
