@@ -3,6 +3,12 @@ import pytest
 from pandas.core.arrays.categorical import Categorical
 
 from csvcubed.models.cube import *
+from csvcubed.models.cube import (
+    NewQbAttribute,
+    NewQbConcept,
+    QbMultiMeasureDimension,
+    QbMultiUnits,
+)
 from csvcubed.utils.qb.standardise import (
     ensure_qbcube_data_is_categorical,
     convert_data_values_to_uri_safe_values,

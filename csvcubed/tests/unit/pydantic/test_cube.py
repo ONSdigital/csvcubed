@@ -2,6 +2,7 @@ import pandas as pd
 import pytest
 
 from csvcubed.models.cube import *
+from csvcubed.models.cube import ExistingQbAttribute
 from tests.unit.test_baseunit import assert_num_validation_errors
 
 
@@ -37,12 +38,12 @@ def test_attribute_property_validation():
     # rather than `NewQbConcept`s.
     error_1 = errors[0]
     assert (
-        "('columns', 0, 'component', 'code_list', 'concepts', 0) - instance of NewQbConcept, tuple or dict expected"
+        "('columns', 0, 'structural_definition', 'code_list', 'concepts', 0) - instance of NewQbConcept, tuple or dict expected"
         in error_1.message
     )
     error_2 = errors[1]
     assert (
-        "('columns', 0, 'component', 'code_list', 'concepts', 1) - instance of NewQbConcept, tuple or dict expected"
+        "('columns', 0, 'structural_definition', 'code_list', 'concepts', 1) - instance of NewQbConcept, tuple or dict expected"
         in error_2.message
     )
 

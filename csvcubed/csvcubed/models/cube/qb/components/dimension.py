@@ -9,16 +9,25 @@ import pandas as pd
 
 from csvcubed.inputs import PandasDataTypes
 from csvcubed.models.uriidentifiable import UriIdentifiable
-from .arbitraryrdf import ArbitraryRdf, RdfSerialisationHint, TripleFragmentBase
-from .datastructuredefinition import ColumnarQbDataStructureDefinition
-from .codelist import QbCodeList, NewQbCodeList
+from csvcubed.models.cube.qb.components.arbitraryrdf import (
+    ArbitraryRdf,
+    RdfSerialisationHint,
+    TripleFragmentBase,
+)
+from csvcubed.models.cube.qb.components.datastructuredefinition import (
+    QbColumnStructuralDefinition,
+)
+from .codelist import (
+    QbCodeList,
+    NewQbCodeList,
+)
 from csvcubed.models.validationerror import ValidationError
-from ..catalog import CatalogMetadata
+from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.utils.validators.uri import validate_uri
 
 
 @dataclass
-class QbDimension(ColumnarQbDataStructureDefinition, ArbitraryRdf, ABC):
+class QbDimension(QbColumnStructuralDefinition, ArbitraryRdf, ABC):
     @property
     @abstractmethod
     def range_uri(self) -> Optional[str]:

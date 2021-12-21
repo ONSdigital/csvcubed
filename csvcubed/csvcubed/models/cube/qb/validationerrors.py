@@ -8,14 +8,10 @@ Qb-Cube Validation Errors
 from dataclasses import dataclass
 from typing import Optional, Type, Union
 
-from csvcubed.models.cube.qb.components import (
-    QbObservationValue,
-    QbMultiUnits,
-    QbDataStructureDefinition,
-)
+from .components import QbObservationValue, QbStructuralDefinition, QbMultiUnits
 from csvcubed.models.validationerror import SpecificValidationError
 
-ComponentTypeDescription = Union[str, Type[QbDataStructureDefinition]]
+ComponentTypeDescription = Union[str, Type[QbStructuralDefinition]]
 
 
 def _get_description_for_component(t: ComponentTypeDescription) -> str:
@@ -40,6 +36,7 @@ class CsvColumnUriTemplateMissingError(SpecificValidationError):
             f"'{self.csv_column_name}' - a {_get_description_for_component(self.component_type)} must have an "
             + "csv_column_uri_template defined."
         )
+
 
 @dataclass
 class CsvColumnLiteralWithUriTemplate(SpecificValidationError):

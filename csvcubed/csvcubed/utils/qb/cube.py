@@ -4,25 +4,21 @@ QbCube
 """
 from typing import List, TypeVar, Type, Set
 
-from csvcubed.models.cube.cube import Cube
-from csvcubed.models.cube.qb.columns import QbColumn
-from csvcubed.models.cube.qb.components.measure import (
-    QbMultiMeasureDimension,
+
+from csvcubed.models.cube import (
+    Cube,
+    QbColumn,
     QbMeasure,
-)
-from csvcubed.models.cube.qb.components.unit import QbMultiUnits, QbUnit
-from csvcubed.models.cube.qb.components.observedvalue import (
+    QbMultiMeasureDimension,
+    QbMultiUnits,
+    QbUnit,
     QbObservationValue,
     QbSingleMeasureObservationValue,
-)
-from csvcubed.models.cube.qb.components.datastructuredefinition import (
-    ColumnarQbDataStructureDefinition,
+    QbColumnStructuralDefinition,
 )
 
 
-QbColumnarDsdType = TypeVar(
-    "QbColumnarDsdType", bound=ColumnarQbDataStructureDefinition
-)
+QbColumnarDsdType = TypeVar("QbColumnarDsdType", bound=QbColumnStructuralDefinition)
 """Anything which inherits from :class:`ColumnarQbDataStructureDefinition 
     <csvcubed.models.cube.qb.components.datastructuredefinition.ColumnarQbDataStructureDefinition>`."""
 
@@ -39,7 +35,7 @@ def get_columns_of_dsd_type(
     return [
         c
         for c in cube.columns
-        if isinstance(c, QbColumn) and isinstance(c.component, t)
+        if isinstance(c, QbColumn) and isinstance(c.structural_definition, t)
     ]
 
 
@@ -57,9 +53,9 @@ def get_all_measures(cube: Cube) -> Set[QbMeasure]:
     measures = {
         meas
         for dim in multi_measure_dimension_columns
-        for meas in dim.component.measures
+        for meas in dim.structural_definition.measures
     }
-    measures |= {x.component.measure for x in single_meas_obs_val_columns}
+    measures |= {x.structural_definition.measure for x in single_meas_obs_val_columns}
 
     return measures
 
@@ -71,7 +67,13 @@ def get_all_units(cube: Cube) -> Set[QbUnit]:
     """
     multi_units_columns = get_columns_of_dsd_type(cube, QbMultiUnits)
     obs_val_columns = get_columns_of_dsd_type(cube, QbObservationValue)
-    units = {unit for dim in multi_units_columns for unit in dim.component.units}
-    units |= {x.component.unit for x in obs_val_columns if x.component.unit is not None}
+    units = {
+        unit for dim in multi_units_columns for unit in dim.structural_definition.units
+    }
+    units |= {
+        x.structural_definition.unit
+        for x in obs_val_columns
+        if x.structural_definition.unit is not None
+    }
 
     return units

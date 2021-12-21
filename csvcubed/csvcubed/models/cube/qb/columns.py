@@ -7,26 +7,26 @@ from typing import Optional, TypeVar, Generic, List
 
 from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar
 from csvcubed.utils.uri import csvw_column_name_safe
-from .components.datastructuredefinition import ColumnarQbDataStructureDefinition
+from .components.datastructuredefinition import QbColumnStructuralDefinition
 from csvcubed.models.cube.columns import CsvColumn
 from ...validationerror import ValidationError
 
-QbColumnarDsdType = TypeVar(
-    "QbColumnarDsdType", bound=ColumnarQbDataStructureDefinition, covariant=True
+QbColumnStructuralDefinition = TypeVar(
+    "QbColumnStructureDefinition", bound=QbColumnStructuralDefinition, covariant=True
 )
 """
-An instance of a class which inherits from :obj:`~.components.datastructuredefinition.ColumnarQbDataStructureDefinition`.
+An instance of a class which inherits from :obj:`~.components.datastructuredefinition.QbColumnStructureDefinition`.
 """
 
 
 @dataclass
-class QbColumn(CsvColumn, Generic[QbColumnarDsdType]):
+class QbColumn(CsvColumn, Generic[QbColumnStructuralDefinition]):
     """
-    A CSV column and the qb component it relates to.
+    A CSV column and the qb structural definition it relates to.
     """
 
     csv_column_title: str
-    component: QbColumnarDsdType
+    structural_definition: QbColumnStructuralDefinition
     csv_column_uri_template: Optional[str] = field(default=None, repr=False)
     uri_safe_identifier_override: Optional[str] = field(default=None, repr=False)
 
@@ -40,6 +40,6 @@ class QbColumn(CsvColumn, Generic[QbColumnarDsdType]):
         columnar_data = pandas_input_to_columnar(data, False)
         assert columnar_data is not None
 
-        return self.component.validate_data(
+        return self.structural_definition.validate_data(
             columnar_data, column_variable_name, csv_column_uri_template
         )

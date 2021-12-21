@@ -104,7 +104,7 @@ def get_observation_status_columns(cube: Cube) -> List[QbColumn[QbAttribute]]:
     return [
         c
         for c in get_columns_of_dsd_type(cube, QbAttribute)
-        if _attribute_represents_observation_status(c.component)
+        if _attribute_represents_observation_status(c.structural_definition)
     ]
 
 
@@ -131,7 +131,7 @@ def _validate_observation_value(
     multi_unit_columns: List[QbColumn[QbMultiUnits]],
 ) -> List[ValidationError]:
     errors: List[ValidationError] = []
-    if observation_value.component.unit is None:
+    if observation_value.structural_definition.unit is None:
         if len(multi_unit_columns) == 0:
             errors.append(UnitsNotDefinedError())
     else:
