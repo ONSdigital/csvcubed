@@ -140,8 +140,7 @@ pipeline {
             steps{
                 script{
                     dir('external-docs') {
-                        //sh "python3 -m mkdocs serve"
-                        //sh "python3 -m curl 'https://jaspervdj.be/lorem-markdownum/markdown.txt' > docs/about.md"
+                        sh "cd mkdocs-project"
                         sh "python3 -m mkdocs build --clean"
                     }
                     stash name: 'mkdocs', includes: '**/mkdocs-project/**/*'
