@@ -11,6 +11,7 @@ def get_test_base_dir() -> Path:
         test_root_path = Path(*path_parts[0 : test_index + 1])
     else:  # Fine Rob, you win.
         csvwlib_index = path_parts.index("csvcubed")
+        # Removed double csvcubed because tox is run in the first csvcubed directory not csvcubed/tests.
         test_root_path = Path(*path_parts[0 : csvwlib_index + 1], "tests")
     return test_root_path
 

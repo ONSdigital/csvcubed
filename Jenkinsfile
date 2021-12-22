@@ -101,10 +101,14 @@ pipeline {
                 }
 
                 dir('csvcubed-pmd') {
+                    // Patch behave so that it can output the correct format for the Jenkins cucumber tool.
+                    sh "patch -Nf -d "$(python -m site --user-site)/behave/formatter" -p1 < /cucumber-format.patch || true"
                     sh 'tox'
                 }
 
                 dir('csvcubed') {
+                    // Patch behave so that it can output the correct format for the Jenkins cucumber tool.
+                    sh "patch -Nf -d "$(python -m site --user-site)/behave/formatter" -p1 < /cucumber-format.patch || true"
                     sh 'tox'
                 }
 
