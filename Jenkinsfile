@@ -169,7 +169,16 @@ pipeline {
                     echo 'test-results stash does not exist'
                 }
 
+                try {
+                    unstash name: 'tox-test-results'
+                } catch (Exception e) {
+                    echo 'test-results stash does not exist'
+                }
+
                 cucumber fileIncludePattern: '**/test-results.json'
+                junit allowEmptyResults: true, testResults: '**/*results*.xml'
+
+                cucumber fileIncludePattern: '**/tox-test-results.json'
                 junit allowEmptyResults: true, testResults: '**/*results*.xml'
 
                 try {
