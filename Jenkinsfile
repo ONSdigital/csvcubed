@@ -136,6 +136,19 @@ pipeline {
                 }
             }
         }
+        stage('Build Static Site'){    
+            steps{
+                script{
+                    dir('external-docs') {
+                        //sh "python3 -m mkdocs serve"
+                        //sh "python3 -m curl 'https://jaspervdj.be/lorem-markdownum/markdown.txt' > docs/about.md"
+                        sh "python3 -m mkdocs build --clean"
+                    }
+                    stash name: 'mkdocs', includes: '**/mkdocs-project/**/*'
+                }
+
+            }
+        }
     }
     post {
         always {
@@ -161,7 +174,13 @@ pipeline {
                     echo 'docs stash does not exist'
                 }
 
-                archiveArtifacts artifacts: '**/dist/*.whl, **/docs/_build/html/**/*', fingerprint: true
+                try {
+                    unstash name: 'mkdocs'
+                } catch (Exception e) {
+                    echo 'mkdocs stash does not exist'
+                }
+
+                archiveArtifacts artifacts: '**/dist/*.whl, **/docs/_build/html/**/*, **/mkdocs-project/**/*', fingerprint: true
 
                 // Set more permissive permissions on all files so future processes/Jenkins can easily delete them.
                 sh 'chmod -R ugo+rw .'
