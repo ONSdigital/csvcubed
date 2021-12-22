@@ -1,6 +1,47 @@
 # Defining a QbCube
 
-* TODO: Do a flow diagram to help users figure out which kind of component they need for each individual column?
+This file serves as an introduction to how the `Qb` components in csvcubed should be used. It will give you a rough breakdown of what the purpose of each component is as well as where it should be used.
+
+Note that it is generally supposed that the `Qb` cube classes are (and should always be) the back-end way we represent and validate data cubes before they are serialised to CSV-Ws. Hence, all classes are designed and structured to be clearly named, specific in their purpose and readily composable; they are generally **unsuitable for direct use by an end-user**. These classes are designed to be used by a **specialised user interface which is targetted to the needs and capabilities of a specific type of user**, e.g. a declarative JSON document for experts who need full control or a wizard-style GUI for people who just need to publish something simple.
+
+## The `Cube` Class
+
+When defining a `Cube` there are three components which need to be provided: the catalog `metadata`, the `data` and the `columns`' metadata.
+
+```python
+from csvcubed.models.cube import *
+import pandas as pd
+
+data = pd.DataFrame({
+    "A Dimension": ["a", "b", "c"],
+    "An Observation": [1, 2, 3]
+})
+
+cube = Cube(
+    metadata=CatalogMetadata("Some Dataset Name"),
+    data=data,
+    columns=[
+        QbColumn("A Dimension", NewQbDimension.from_data(data["A Dimension"])),
+        QbColumn(
+            "An Observation",
+            QbSingleMeasureObservationValue(
+                measure=NewQbMeasure("Some Measure"),
+                unit=NewQbUnit("Some Unit")
+            )
+        )
+    ]
+)
+```
+
+**The catalog metadata** - holds the catalog metadata which should describe what the cube contains, who published it, when it was published and how the data in licensed.
+
+**The data** - holds the actual data associated with the cube (as a pandas DataFrame). This is technically optional, however your life is generally easier if you can provide it since we can perform additional validations on your cube.
+
+**The column metadata** - holds a list of `QbColumn`s providing the metadata which describes what each column in `data` contains.
+
+## Defining Columns
+
+## Data Structure Definitions
 
 ```text
 QbStructuralDefinition              - A class which holds part of a qb:DataStructureDefinition (DSD).
@@ -8,7 +49,9 @@ QbStructuralDefinition              - A class which holds part of a qb:DataStruc
 └── SecondaryQbStructuralDefinition     - All other parts of the DSD.
 ```
 
-## Column Structrual Definitions
+### Column Structrual Definitions
+
+A rough structure of `QbColumnStructuralDefinition`s is shown below. It can be used to help you decide which kind of column to use in your column definitions.
 
 ```text
 QbColumnStructuralDefinition
@@ -21,32 +64,59 @@ QbColumnStructuralDefinition
 ├── QbDimension                         - The column values describe a dimension which partitions the statistical population.
 │   ├── ExistingQbDimension                 - We can reuse a dimension someone else has defined.
 │   └── NewQbDimension                      - We want/need to define a new dimension property.
-├── QbMultiMeasureDimension             - Each value describes which population characteristic was observed and is recorded in the row.
-├── QbMultiUnits                        - The column values describe the unit that the row's measure was recorded in.
+├── QbMultiMeasureDimension             - The values describe which population characteristic was observed and is recorded in the row.
+├── QbMultiUnits                        - The column values describe the unit that the row's measured/observed value was recorded in.
 └── QbObservationValue                  - The column values represent observed values of some population characteristic.
     ├── QbSingleMeasureObservationValue     - All rows measure the same population characteristic in the same unit.
     └── QbMultiMeasureObservationValue      - Each row declares what its measure is (and also possibly what its unit is).
 ```
 
-## Secondary Structural Definitions
+**Note that**:
+
+* The above diagram does not represent the true class hierarchy and should be interpreted as a guide to help the lay-user decide which  `QbColumnStructuralDefinition` should be selected to describe their data-cube's structure.
+* When choosing which structural definition to use, you must pick the most specific one. If the type you want to use has children then it cannot be used - you must select one of its children.
+
+#### Literal vs URI
+
+todo: Describe the difference between literal values and URI values in RDF.
+
+### Secondary Structural Definitions
+
+Secondary structural definitions are parts of the data structure definition which cannot fully describe a column in the data-cube. They are *secondary to* the column's structural definitions. You only need to use these secondary definitions where they are required by the column's structural definiton.
+
+A rough structure of `SecondaryQbStructuralDefinition`s is shown below. It can be used to help you decide which secondary structural definitions you should use when describing your data-cube.
 
 ```text
 SecondaryQbStructuralDefinition
-├── QbAttributeValue
-│   └── NewQbAttributeValue
-├── QbCodeList
-│   ├── CompositeQbCodeList
-│   ├── ExistingQbCodeList
-│   ├── NewQbCodeList
-│   └── NewQbCodeListInCsvW
-├── QbConcept
-│   ├── DuplicatedQbConcept
-│   ├── ExistingQbConcept
-│   └── NewQbConcept
-├── QbMeasure
-│   ├── ExistingQbMeasure
-│   └── NewQbMeasure
-└── QbUnit
-    ├── ExistingQbUnit
-    └── NewQbUnit
+├── QbAttributeValue        - Stored against the QbAttribute. Represents a (URI) value that an attribute can have.        
+│   └── NewQbAttributeValue     - We want/need to define a new URI value which an attribute can hold.
+├── QbCodeList              - Stored against the QbDimension. Holds a `skos:ConceptScheme` which lists the values the dimension can have.
+│   ├── ExistingQbCodeList      - We want to reuse a code-list defined elsewhere.
+│   ├── NewQbCodeList           - We want/need to define a new code-list   
+│   ├── CompositeQbCodeList     - We want/need to define a new code-list which is a composite of `skos:Concept`s defined in other code-lists.
+│   └── NewQbCodeListInCsvW     - We want/need to define a new code-list which we have already generated and stored in a CSV-W.
+├── QbConcept               - Stored against the QbCodeList. It holds a concept contained in a `skos:ConceptScheme`.
+│   ├── NewQbConcept            - We want/need to define a new concept
+│   └── DuplicatedQbConcept     - We want to reuse a concept defined elsewhere. We can alter its label/notation/structure.
+├── QbMeasure               - Stored against the QbObservation OR QbMultiMeasureDimension. Represents an observation's measure.
+│   ├── ExistingQbMeasure       - We want to reuse a measure defined elsewhere.
+│   └── NewQbMeasure            - We want/need to define a new measure.
+└── QbUnit                  - Stored against the QbObservation OR QbMultiUnits. Represents an observation's unit.
+    ├── ExistingQbUnit          - We want to reuse a unit defined elsewhere.
+    └── NewQbUnit               - We want/need to define a new unit.
 ```
+
+**Note that**:
+
+* The above diagram does not represent the true class hierarchy and should be interpreted as a guide to help the lay-user decide which `SecondaryQbStructuralDefinition` best describes their data-cube's structure.
+* When choosing which structural definition to use, you must pick the most specific one. If the type you want to use has children then it cannot be used - you must select one of its children.
+
+## The `from_data` Helpers
+
+todo: Discuss where and how to use the `from_data` helper methods.
+
+## Validations
+
+todo: Discuss what we typically validate in these structural definitions.
+
+todo: Discuss how to initiate the relevant validations against a cube.
