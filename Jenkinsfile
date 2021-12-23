@@ -139,9 +139,6 @@ pipeline {
         stage('Build Static Site'){    
             steps{
                 script{
-                    dir('external-docs') {
-                        sh "cd mkdocs-static-site"
-                    }
                     stash name: 'mkdocs', includes: '**/mkdocs-static-site/**/*'
                 }
 
