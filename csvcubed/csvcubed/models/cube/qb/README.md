@@ -33,25 +33,30 @@ cube = Cube(
 )
 ```
 
-**The catalog metadata** - holds the catalog metadata which should describe what the cube contains, who published it, when it was published and how the data in licensed.
+**The catalog metadata** - holds the catalog metadata which should describe what the cube contains, who published it, when it was published and how the data is licensed. See [here](https://github.com/GSS-Cogs/dataengineer-walkthrough/blob/master/csvcubed-usage/Generating%20Catalog%20Metadata.md#how-to-generate-catalog-metadata) for a discussion on ways of configuring the catalog metadata.
 
 **The data** - holds the actual data associated with the cube (as a pandas DataFrame). This is technically optional, however your life is generally easier if you can provide it since we can perform additional validations on your cube.
 
-**The column metadata** - holds a list of `QbColumn`s providing the metadata which describes what each column in `data` contains.
+**The column mappings/metadata** - holds a list of `QbColumn`s providing the metadata which describes what each column in `data` contains.
 
-## Defining Columns
+## Defining Column Mappings
+
+todo: Need to discuss the use of the `QbColumn` class including use of the `csv_column_template_uri` property.
+
+todo: Mention using the `SuppressedCsvColumn` type.
 
 ## Data Structure Definitions
 
-```text
-QbStructuralDefinition              - A class which holds part of a qb:DataStructureDefinition (DSD).
-├── QbColumnStructuralDefinition        - A DSD Part which can define what a column in the data CSV represents.
-└── SecondaryQbStructuralDefinition     - All other parts of the DSD.
-```
+There are two types of structural definitions which we use in `csvcubed`: columnar structure definitions (`QbColumnStructuralDefinition`) and secondary structural definitions (`SecondaryQbStructuralDefinition`).
 
-### Column Structrual Definitions
+* `QbColumnStructuralDefinition` - A DSD Part which can define what a column in the data CSV represents.
+* `SecondaryQbStructuralDefinition` - Parts of the DSD which are secondary to a parent QbColumnStructuralDefinition.
 
-A rough structure of `QbColumnStructuralDefinition`s is shown below. It can be used to help you decide which kind of column to use in your column definitions.
+**N.B. Only columnar structural definitions can be set on a `QbColumn` mapping.**
+
+### Columnar Structrual Definitions
+
+A rough structure of the available columnar structural definitions is shown below. The hierarchical/tree representation has been chosen to help you decide which kind of column to use in your column definitions when defining a cube.
 
 ```text
 QbColumnStructuralDefinition
@@ -73,8 +78,8 @@ QbColumnStructuralDefinition
 
 **Note that**:
 
-* The above diagram does not represent the true class hierarchy and should be interpreted as a guide to help the lay-user decide which  `QbColumnStructuralDefinition` should be selected to describe their data-cube's structure.
-* When choosing which structural definition to use, you must pick the most specific one. If the type you want to use has children then it cannot be used - you must select one of its children.
+* The above diagram **does not represent the true class hierarchy** and should be used as a guide to help the lay-user decide which  `QbColumnStructuralDefinition` should be selected to describe their data-cube's structure.
+* When choosing which structural definition to use, you must pick the most specific one. If the type you want to use has descendents then you must select one of its children. (i.e. you must pick a leaf node)
 
 #### Literal vs URI
 
@@ -82,7 +87,7 @@ todo: Describe the difference between literal values and URI values in RDF.
 
 ### Secondary Structural Definitions
 
-Secondary structural definitions are parts of the data structure definition which cannot fully describe a column in the data-cube. They are *secondary to* the column's structural definitions. You only need to use these secondary definitions where they are required by the column's structural definiton.
+Secondary structural definitions are parts of the data structure definition which cannot fully describe a column in the data-cube. They are *secondary to* the column's structural definition. You only need to use these secondary definitions where they are required by the column's structural definiton.
 
 A rough structure of `SecondaryQbStructuralDefinition`s is shown below. It can be used to help you decide which secondary structural definitions you should use when describing your data-cube.
 
@@ -108,8 +113,8 @@ SecondaryQbStructuralDefinition
 
 **Note that**:
 
-* The above diagram does not represent the true class hierarchy and should be interpreted as a guide to help the lay-user decide which `SecondaryQbStructuralDefinition` best describes their data-cube's structure.
-* When choosing which structural definition to use, you must pick the most specific one. If the type you want to use has children then it cannot be used - you must select one of its children.
+* The above diagram **does not represent the true class hierarchy** and should be interpreted as a guide to help the lay-user decide which `SecondaryQbStructuralDefinition` best describes their data-cube's structure.
+* When choosing which structural definition to use, you must pick the most specific one. If the type you want to use has descendents then you must select one of its children. (i.e. you must pick a leaf node)
 
 ## The `from_data` Helpers
 
