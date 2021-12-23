@@ -138,11 +138,6 @@ pipeline {
         }
         stage('Build Static Site'){    
             steps{
-                script{
-                    // dir('external-docs') {
-                    //     sh "cd mkdocs-static-site ; python3 -m mkdocs build --clean"
-                    // }
-                    sh "cd ; cd /workspaces/csvcubed/external-docs/mkdocs-static-site ; python3 -m mkdocs build --clean"
                     stash name: 'mkdocs', includes: '**/mkdocs-static-site/**/*'
                 }
 

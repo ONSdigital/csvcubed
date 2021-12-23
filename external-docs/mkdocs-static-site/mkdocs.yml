@@ -4,6 +4,7 @@ nav:
     - Home: index.md
     - About: about.md
     - Page1: page1.md
+    - Page2: page2.md
 theme:
   name: material
   palette: 
