@@ -139,11 +139,10 @@ pipeline {
         stage('Build Static Site'){    
             steps{
                 script{
-                    dir('external-docs') {
-                        sh "cd mkdocs-static-site"
-                        sh "python3 -m mkdocs serve"
-                        sh "python3 -m mkdocs build --clean"
-                    }
+                    // dir('external-docs') {
+                    //     sh "cd mkdocs-static-site"
+                    //     sh "python3 -m mkdocs build --clean"
+                    // }
                     stash name: 'mkdocs', includes: '**/mkdocs-static-site/**/*'
                 }
 
@@ -185,6 +184,7 @@ pipeline {
                 //import urllib2
                 //data = urllib2.urlopen("https://ci.floop.org.uk/job/GSS_data/job/csvwlib/job/MuazzamChaud%252Fissue202/5/artifact/external-docs/mkdocs-project/")
                 //sh "python3 -m python setup.py upload_docs --upload-dir=site"
+                sh "python3 -m mkdocs build"
 
                 // Set more permissive permissions on all files so future processes/Jenkins can easily delete them.
                 sh 'chmod -R ugo+rw .'
