@@ -139,7 +139,10 @@ pipeline {
         stage('Build Static Site'){    
             steps{
                 script{
-                    stash name: 'mkdocs', includes: '**/mkdocs-static-site/**/*'
+                    dir('external-docs'){
+                        sh "python3 -m mkdocs build"
+                    }
+                    stash name: 'mkdocs', includes: '**/external-docs/site/**/*'
                 }
 
             }
@@ -175,7 +178,7 @@ pipeline {
                     echo 'mkdocs stash does not exist'
                 }
 
-                archiveArtifacts artifacts: '**/dist/*.whl, **/docs/_build/html/**/*, **/mkdocs-static-site/**/*', fingerprint: true
+                archiveArtifacts artifacts: '**/dist/*.whl, **/docs/_build/html/**/*, **/external-docs/site/**/*', fingerprint: true
 
                 // Set more permissive permissions on all files so future processes/Jenkins can easily delete them.
                 sh 'chmod -R ugo+rw .'
