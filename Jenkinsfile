@@ -141,7 +141,6 @@ pipeline {
                 script{
                     dir('external-docs') {
                         sh "cd mkdocs-static-site python3 -m mkdocs build --clean"
-                        //sh "python3 -m mkdocs build --clean"
                     }
                     stash name: 'mkdocs', includes: '**/mkdocs-static-site/**/*'
                 }
