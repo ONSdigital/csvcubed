@@ -1,0 +1,25 @@
+site_name: My Docs
+site_url: https://example5.com/
+nav:
+    - Home: index.md
+    - About: about.md
+    - Page1: page1.md
+theme:
+  name: material
+  palette: 
+    - scheme: default
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+    - scheme: slate 
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
+  features:
+    - navigation.instant
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.indexes
+    - navigation.top
