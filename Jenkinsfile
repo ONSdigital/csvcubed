@@ -68,27 +68,45 @@ pipeline {
             }
         }
         stage('Test') {
+            when {
+                expression { 
+                    return false // todo: Ensure this doesn't run when in a 'v*.*.*(-RC*)?' tag
+                }
+            }
             steps {
-                dir('csvcubed-models/tests/unit') {
-                    sh "poetry run pytest --junitxml=pytest_results_models.xml"
-                }
-                dir('csvcubed-pmd') {
-                    sh 'poetry run behave tests/behaviour --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json'
-                    dir('tests/unit') {
-                        sh "poetry run pytest --junitxml=pytest_results_pmd.xml"
+                script {
+                    try {
+                        dir('csvcubed-models/tests/unit') {
+                            sh "poetry run pytest --junitxml=pytest_results_models.xml"
+                        }
+                        dir('csvcubed-pmd') {
+                            sh 'poetry run behave tests/behaviour --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json'
+                            dir('tests/unit') {
+                                sh "poetry run pytest --junitxml=pytest_results_pmd.xml"
+                            }
+                        }
+                        dir('csvcubed') {
+                            sh 'poetry run behave tests/behaviour --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json'
+                            dir('tests/unit') {
+                                sh "poetry run pytest --junitxml=pytest_results_csvcubed.xml"
+                            }
+                        }
+                    } catch (ex) {
+                        echo "An error occurred when testing: ${ex}"
+                        stash name: 'test-results', includes: '**/test-results.json,**/*results*.xml' // Ensure test reports are available to be reported on.
+                        throw ex
                     }
-                }
-                dir('csvcubed') {
-                    sh 'poetry run behave tests/behaviour --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json'
-                    dir('tests/unit') {
-                        sh "poetry run pytest --junitxml=pytest_results_csvcubed.xml"
-                    }
-                }
 
-                stash name: 'test-results', includes: '**/test-results.json,**/*results*.xml' // Ensure test reports are available to be reported on.
+                    stash name: 'test-results', includes: '**/test-results.json,**/*results*.xml' // Ensure test reports are available to be reported on.
+                }
             }
         }
-        stage('Tox'){
+        stage('Tox') {
+            when {
+                expression {
+                    return true // todo: Ensure this only runs when in a 'v*.*.*(-RC*)?' tag
+                }
+            }
             agent {
                 dockerfile {
                     filename 'Dockerfile'
@@ -96,23 +114,29 @@ pipeline {
                 }
             }
             steps {
-                dir('csvcubed-models') {
-                    sh 'tox'
-                }
+                script {
+                    try {
+                        dir('csvcubed-models') {
+                            sh 'tox'
+                        }
 
-                dir('csvcubed-pmd') {
-                    // Patch behave so that it can output the correct format for the Jenkins cucumber tool.
-                    sh "patch -Nf -d "$(python -m site --user-site)/behave/formatter" -p1 < /cucumber-format.patch || true"
-                    sh 'tox'
-                }
+                        dir('csvcubed-pmd') {
+                            // Patch behave so that it can output the correct format for the Jenkins cucumber tool.
+                            sh 'tox'
+                        }
 
-                dir('csvcubed') {
-                    // Patch behave so that it can output the correct format for the Jenkins cucumber tool.
-                    sh "patch -Nf -d "$(python -m site --user-site)/behave/formatter" -p1 < /cucumber-format.patch || true"
-                    sh 'tox'
+                        dir('csvcubed') {
+                            // Patch behave so that it can output the correct format for the Jenkins cucumber tool.
+                            sh 'tox'
+                        }
+                    } catch (ex) {
+                        echo "An error occurred testing with tox: ${ex}"
+                        stash name: 'tox-test-results', includes: '**/tox-test-results-*.json,**/*results*.xml'
+                        throw ex
+                    }
+                    // Ensure test reports are available to be reported on.
+                    stash name: 'tox-test-results', includes: '**/tox-test-results-*.json,**/*results*.xml'
                 }
-
-                stash name: 'tox-test-results', includes: '**/tox-test-results.json,**/*results*.xml' // Ensure test reports are available to be reported on.              
             }
         }
         stage('Package') {
@@ -176,13 +200,11 @@ pipeline {
                 try {
                     unstash name: 'tox-test-results'
                 } catch (Exception e) {
-                    echo 'test-results stash does not exist'
+                    echo 'tox-test-results stash does not exist'
                 }
 
                 cucumber fileIncludePattern: '**/test-results.json'
-                junit allowEmptyResults: true, testResults: '**/*results*.xml'
-
-                cucumber fileIncludePattern: '**/tox-test-results.json'
+                cucumber fileIncludePattern: '**/tox-test-results-*.json'
                 junit allowEmptyResults: true, testResults: '**/*results*.xml'
 
                 try {
