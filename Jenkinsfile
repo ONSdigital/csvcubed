@@ -139,10 +139,10 @@ pipeline {
         stage('Build Static Site'){    
             steps{
                 script{
-                    // dir('external-docs') {
-                    //     sh "cd mkdocs-static-site"
-                    //     sh "python3 -m mkdocs build --clean"
-                    // }
+                    dir('mkdocs-static-site') {
+                        //sh "cd mkdocs-static-site"
+                        sh "python3 -m mkdocs build --clean"
+                    }
                     stash name: 'mkdocs', includes: '**/mkdocs-static-site/**/*'
                 }
 
