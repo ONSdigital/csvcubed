@@ -21,7 +21,7 @@ cube = Cube(
     metadata=CatalogMetadata("Some Dataset Name"),
     data=data,
     columns=[
-        QbColumn("A Dimension", NewQbDimension.from_data(data["A Dimension"])),
+        QbColumn("A Dimension", NewQbDimension.from_data("The Dimension's Name", data["A Dimension"])),
         QbColumn(
             "An Observation",
             QbSingleMeasureObservationValue(
@@ -41,9 +41,38 @@ cube = Cube(
 
 ## Defining Column Mappings
 
-todo: Need to discuss the use of the `QbColumn` class including use of the `csv_column_template_uri` property.
+Column Mappings are defined using the `QbColumn` class:
 
-todo: Mention using the `SuppressedCsvColumn` type.
+```python
+[
+    QbColumn("The CSV Column's Title", <A Columnar Structural Definition (QbColumnStructuralDefinition)>),
+    # e.g.
+    QbColumn(
+        "Product Name", 
+        ExistingQbDimension("http://gss-data.org.uk/def/trade/property/dimension/product"),
+        csv_column_uri_template="http://gss-data.org.uk/def/trade/concept-scheme/sitc-sections/{+product_name}"
+    )
+]
+```
+
+N.B. You must list the columns **in the order** in which they are present in the `data` dataframe. You must also provide mappings for *every* column defined in your dataframe.
+
+When mapping a column to a pre-existing code-list or set of attribute values, or mapping the column to a list of pre-existing measures or units, you must set the column's `csv_column_uri_template`. This property specifies how the cell values are mapped to the URIs representing the existing code-list concepts, attribute values, measures or units that you are attempting to re-use.
+
+### URI Templates
+
+<!-- todo: Need some discussion on what URI templates should look like and how the title of the column is transformed into the column's name. -->
+
+### Ignoring Columns
+
+It is sometimes the case that a column appears in the source CSV/dataframe that you do not wish to be serialised with the RDF cube. In this case, you can use the `SuppressedCsvColumn` class to represent this column. It will be included in the CSV-W, but will not not make it into any resulting RDF.
+
+```python
+[
+    QbColumn("Useful Data", NewQbDimension.from_data("Useful Data", data["Useful Data"])),
+    SuppressedCsvColumn("Irrelevant Notes Column")
+]
+```
 
 ## Data Structure Definitions
 
@@ -83,7 +112,7 @@ QbColumnStructuralDefinition
 
 #### Literal vs URI
 
-todo: Describe the difference between literal values and URI values in RDF.
+URIs represent resources which can have relationships to other resources or values. Literal values are just plain values like a number `3.5` or a string `'elephants and other pachyderms'`.
 
 ### Secondary Structural Definitions
 
@@ -118,10 +147,10 @@ SecondaryQbStructuralDefinition
 
 ## The `from_data` Helpers
 
-todo: Discuss where and how to use the `from_data` helper methods.
+<!-- todo: Discuss where and how to use the `from_data` helper methods. -->
 
 ## Validations
 
-todo: Discuss what we typically validate in these structural definitions.
+<!-- todo: Discuss what we typically validate in these structural definitions. -->
 
-todo: Discuss how to initiate the relevant validations against a cube.
+<!-- todo: Discuss how to initiate the relevant validations against a cube. -->
