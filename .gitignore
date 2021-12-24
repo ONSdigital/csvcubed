@@ -143,5 +143,5 @@ cython_debug/
 .vscode
 
 # Ignore docs folders
-docs
+csvcubed*/docs
 .DS_Store
