@@ -61,7 +61,15 @@ When mapping a column to a pre-existing code-list or set of attribute values, or
 
 ### URI Templates
 
-<!-- todo: Need some discussion on what URI templates should look like and how the title of the column is transformed into the column's name. -->
+The URI templates used by the `csv_column_uri_template` property follow the [RDF 6570](https://datatracker.ietf.org/doc/html/rfc6570) standard. The variable names available within the template URI are the CSV-W column's `name` - this can be deduced by applying the [csvw_column_name_safe](https://github.com/GSS-Cogs/csvcubed/blob/96f37301f7eb056e6048014e4ebfcf5ded37e853/csvcubed/csvcubed/utils/uri.py#L28) transformation to the column's title.
+
+The [csvw_column_name_safe](https://github.com/GSS-Cogs/csvcubed/blob/96f37301f7eb056e6048014e4ebfcf5ded37e853/csvcubed/csvcubed/utils/uri.py#L28) transformation essentialy says to:
+
+* convert the column's title to lower case
+* replace any non-alphanumeric characters with `_`
+* de-duplicate any character strings containing more than one underscore (i.e. `hello___world` -> `hello_world`)
+
+e.g. a column with the title `Average Income (£ Sterling)` is transformed to `average_income_sterling_`.
 
 ### Ignoring Columns
 
