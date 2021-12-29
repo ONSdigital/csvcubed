@@ -134,9 +134,9 @@ SecondaryQbStructuralDefinition
 │   └── NewQbAttributeValue     - We want/need to define a new URI value which an attribute can hold.
 ├── QbCodeList              - Stored against the QbDimension. Holds a `skos:ConceptScheme` which lists the values the dimension can have.
 │   ├── ExistingQbCodeList      - We want to reuse a code-list defined elsewhere.
-│   ├── NewQbCodeList           - We want/need to define a new code-list   
+│   ├── NewQbCodeList           - We want/need to define a new code-list. 
 │   ├── CompositeQbCodeList     - We want/need to define a new code-list which is a composite of `skos:Concept`s defined in other code-lists.
-│   └── NewQbCodeListInCsvW     - We want/need to define a new code-list which we have already generated and stored in a CSV-W.
+│   └── NewQbCodeListInCsvW     - We want/need to use a code-list which we have already generated and stored in a CSV-W.
 ├── QbConcept               - Stored against the QbCodeList. It holds a concept contained in a `skos:ConceptScheme`.
 │   ├── NewQbConcept            - We want/need to define a new concept
 │   └── DuplicatedQbConcept     - We want to reuse a concept defined elsewhere. We can alter its label/notation/structure.
@@ -168,7 +168,7 @@ And there is also a helper method on the `NewQbCodeList` secondary structural de
 
 * `NewQbCodeList.from_data`
 
-These methods accept data straight from a pandas DataFrame's column and are designed to speed up the user by automatically generating resources, or references to resources. Use them where the user has not provided detailed configuration to help support the [convention over configuration](https://en.wikipedia.org/wiki/Convention_over_configuration) approach to CSV-W generation; this is an attempt to lower the cognative load on new users.
+These methods accept data straight from a pandas DataFrame's column and are designed to speed up the user by automatically generating resources, or references to resources from the DataFrame's data. Use them where the user has not provided detailed configuration to help support the [convention over configuration](https://en.wikipedia.org/wiki/Convention_over_configuration) approach to CSV-W generation; this is an attempt to lower the cognative load on new users.
 
 ## Validations
 
@@ -178,7 +178,7 @@ Pydantic validation can be performed on individual models by calling `pydantic_v
 
 ### The Works
 
-More thorough validations, including some checks on the cube's structure as a whole, as well as validation of models against the data present can be performed with the following:
+More thorough validations, including some checks on the cube's structure as a whole, as well as the validation of models against the data present can be performed with the following:
 
 ```python
 from csvcubed.models.cube import *
