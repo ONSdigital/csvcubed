@@ -622,12 +622,12 @@ def step_impl(context, cube_name: str):
     columns = [
         QbColumn(
             csv_column_title="Existing Dimension",
-            component=ExistingQbDimension("http://existing/dimension"),
+            structural_definition=ExistingQbDimension("http://existing/dimension"),
             csv_column_uri_template="http://existing/dimension/code-list/{+existing_dimension}",
         ),
         QbColumn(
             csv_column_title="New Dimension",
-            component=NewQbDimension(
+            structural_definition=NewQbDimension(
                 label="existing codelist",
                 code_list=ExistingQbCodeList(
                     concept_scheme_uri="http://existing/concept/scheme/uri"
@@ -636,12 +636,12 @@ def step_impl(context, cube_name: str):
         ),
         QbColumn(
             csv_column_title="Existing Attribute",
-            component=ExistingQbAttribute("http://existing/attribute"),
+            structural_definition=ExistingQbAttribute("http://existing/attribute"),
             csv_column_uri_template="http://existing/attribute/{+existing_attribute}",
         ),
         QbColumn(
             csv_column_title="Observed Value",
-            component=QbSingleMeasureObservationValue(
+            structural_definition=QbSingleMeasureObservationValue(
                 ExistingQbMeasure("http://existing/measure"),
                 ExistingQbUnit("http://exisiting/unit"),
             ),
@@ -681,7 +681,7 @@ def step_impl(context, cube_name: str):
         ),
         QbColumn(
             csv_column_title="New Dimension",
-            component=NewQbDimension(
+            structural_definition=NewQbDimension(
                 label="existing codelist",
                 code_list=ExistingQbCodeList(
                     concept_scheme_uri="http://gss-data.org.uk/def/concept-scheme/some-existing-codelist"
@@ -690,7 +690,7 @@ def step_impl(context, cube_name: str):
         ),
         QbColumn(
             csv_column_title="Existing Attribute",
-            component=ExistingQbAttribute("http://existing/attribute"),
+            structural_definition=ExistingQbAttribute("http://existing/attribute"),
             csv_column_uri_template="http://existing/attribute/{+existing_attribute}",
         ),
         QbColumn(
