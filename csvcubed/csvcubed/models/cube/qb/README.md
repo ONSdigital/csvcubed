@@ -120,7 +120,7 @@ QbColumnStructuralDefinition
 
 #### Literal vs URI
 
-URIs represent resources which can have relationships to other resources or values. Literal values are just plain values like a number `3.5` or a string `'elephants and other pachyderms'`.
+URIs represent resources which can have relationships to other resources or values. [Literals](https://www.w3.org/TR/rdf11-concepts/#section-Graph-Literal) are just plain values like a number `3.5` or a string `'elephants and other pachyderms'`.
 
 ### Secondary Structural Definitions
 
@@ -155,10 +155,63 @@ SecondaryQbStructuralDefinition
 
 ## The `from_data` Helpers
 
-<!-- todo: Discuss where and how to use the `from_data` helper methods. -->
+There are a number of `from_data` helper methods on columnar structrual definition classes:
+
+* `NewQbDimension.from_data`
+* `NewQbAttribute.from_data`
+* `QbMultiMeasureDimension.new_measures_from_data`
+* `QbMultiMeasureDimension.existing_measures_from_data`
+* `QbMultiUnits.new_units_from_data`
+* `QbMultiUnits.existing_units_from_data`
+
+And there is also a helper method on the `NewQbCodeList` secondary structural definition class:
+
+* `NewQbCodeList.from_data`
+
+These methods accept data straight from a pandas DataFrame's column and are designed to speed up the user by automatically generating resources, or references to resources. Use them where the user has not provided detailed configuration to help support the [convention over configuration](https://en.wikipedia.org/wiki/Convention_over_configuration) approach to CSV-W generation; this is an attempt to lower the cognative load on new users.
 
 ## Validations
 
-<!-- todo: Discuss what we typically validate in these structural definitions. -->
+Each of the classes discussed above extends from the [csvcubed.models.PydanticModel](https://github.com/GSS-Cogs/csvcubed/blob/main/csvcubed/csvcubed/models/pydanticmodel.py) class. This adds [pydantic](https://pydantic-docs.helpmanual.io/) validation to our models which ensures that all attributes have the correct type as decribed by their [static type annotations](https://docs.python.org/3/library/typing.html). Many of the models use the [pydantic custom validator](https://pydantic-docs.helpmanual.io/usage/validators/) functionality to add checks which are more specific than checking the overall type, e.g. `_attribute_uri_validator` inside the `ExistingQbAttribute` class in [csvcubed.models.cube.qb.components.attribute](https://github.com/GSS-Cogs/csvcubed/blob/main/csvcubed/csvcubed/models/cube/qb/components/attribute.py).
 
-<!-- todo: Discuss how to initiate the relevant validations against a cube. -->
+Pydantic validation can be performed on individual models by calling `pydantic_validation` (declared on [PydanticModel](https://github.com/GSS-Cogs/csvcubed/blob/main/csvcubed/csvcubed/models/pydanticmodel.py)).
+
+### The Works
+
+More thorough validations, including some checks on the cube's structure as a whole, as well as validation of models against the data present can be performed with the following:
+
+```python
+
+from csvcubed.models.cube import *
+from csvcubed.utils.qb.validation.cube import validate_qb_component_constraints
+import pandas as pd
+
+data = pd.DataFrame({
+    "A Dimension": ["a", "b", "c"],
+    "An Observation": [1, 2, 3]
+})
+
+cube = Cube(
+    metadata=CatalogMetadata("Some Dataset Name"),
+    data=data,
+    columns=[
+        QbColumn("A Dimension", NewQbDimension.from_data("The Dimension's Name", data["A Dimension"])),
+        QbColumn(
+            "An Observation",
+            QbSingleMeasureObservationValue(
+                measure=NewQbMeasure("Some Measure"),
+                unit=NewQbUnit("Some Unit")
+            )
+        )
+    ]
+)
+
+errors = cube.validate()
+errors += validate_qb_component_constraints(cube)
+
+if len(errors) > 0:
+    print([e.message for e in errors])
+    raise Exception("The cube is invalid!")
+else:
+    print("The cube is valid")
+```
