@@ -12,7 +12,7 @@ from csvcubed.models.cube.columns import CsvColumn
 from ...validationerror import ValidationError
 
 QbColumnStructuralDefinition = TypeVar(
-    "QbColumnStructureDefinition", bound=QbColumnStructuralDefinition, covariant=True
+    "QbColumnStructuralDefinition", bound=QbColumnStructuralDefinition, covariant=True
 )
 """
 An instance of a class which inherits from :obj:`~.components.datastructuredefinition.QbColumnStructureDefinition`.
