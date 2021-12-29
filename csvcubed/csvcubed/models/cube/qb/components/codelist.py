@@ -122,6 +122,9 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf):
     variant_of_uris: List[str] = field(default_factory=list)
     arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
 
+    def _get_arbitrary_rdf(self) -> list[str]:
+        return self.arbitrary_rdf
+
     @staticmethod
     def from_data(
         metadata: CatalogMetadata,
