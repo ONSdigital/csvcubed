@@ -1,6 +1,8 @@
 """
 Observed Values
 ---------------
+
+Represent observed values in an RDF Data Cube.
 """
 from dataclasses import dataclass, field
 from typing import Optional, List

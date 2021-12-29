@@ -1,3 +1,10 @@
+"""
+Concepts
+--------
+
+Represent individual concepts inside a `skos:ConceptScheme`.
+"""
+
 from dataclasses import dataclass, field
 from typing import Optional
 

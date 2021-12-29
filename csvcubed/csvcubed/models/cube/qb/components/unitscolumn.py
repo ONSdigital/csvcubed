@@ -1,3 +1,10 @@
+"""
+Units Column
+------------
+
+Define a units column in an RDF Data Cube.
+"""
+
 from dataclasses import dataclass
 from typing import List
 

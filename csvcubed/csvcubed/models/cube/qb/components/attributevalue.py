@@ -1,7 +1,10 @@
 """
-Attributes
-----------
+Attribute Values
+----------------
+
+Represent values for Attributes in an RDF Data Cube.
 """
+
 from dataclasses import dataclass, field
 from typing import Optional, List, Set
 

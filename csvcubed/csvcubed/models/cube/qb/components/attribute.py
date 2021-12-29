@@ -1,3 +1,10 @@
+"""
+QB Attributes
+-------------
+
+Represent Attributes in an RDF Data Cube.
+"""
+
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import List, Set, Optional

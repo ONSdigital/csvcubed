@@ -1,6 +1,8 @@
 """
 Code Lists
 ----------
+
+Represent code lists in an RDF Data Cube.
 """
 from pathlib import Path
 from dataclasses import dataclass, field
