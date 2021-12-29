@@ -181,7 +181,6 @@ Pydantic validation can be performed on individual models by calling `pydantic_v
 More thorough validations, including some checks on the cube's structure as a whole, as well as validation of models against the data present can be performed with the following:
 
 ```python
-
 from csvcubed.models.cube import *
 from csvcubed.utils.qb.validation.cube import validate_qb_component_constraints
 import pandas as pd
