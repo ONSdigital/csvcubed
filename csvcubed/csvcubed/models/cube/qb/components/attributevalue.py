@@ -36,29 +36,3 @@ class NewQbAttributeValue(
 
     def get_identifier(self) -> str:
         return self.label
-
-
-accepted_data_types = {
-    "anyURI",
-    "boolean",
-    "date",
-    "dateTime",
-    "dateTimeStamp",
-    "decimal",
-    "integer",
-    "long",
-    "int",
-    "short",
-    "nonNegativeInteger",
-    "positiveInteger",
-    "unsignedLong",
-    "unsignedInt",
-    "unsignedShort",
-    "nonPositiveInteger",
-    "negativeInteger",
-    "double",
-    "float",
-    "string",
-    "language",
-    "time",
-}

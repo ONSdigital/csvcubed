@@ -1,6 +1,6 @@
 """
-QB Attributes
--------------
+Attributes
+----------
 
 Represent Attributes in an RDF Data Cube.
 """
@@ -13,7 +13,7 @@ import pandas as pd
 from pydantic import validator
 
 from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_optional_str
-from .attributevalue import NewQbAttributeValue, accepted_data_types
+from .attributevalue import NewQbAttributeValue
 from .arbitraryrdf import (
     ArbitraryRdf,
     TripleFragmentBase,
@@ -146,6 +146,32 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
         self, data: pd.Series, column_csvw_name: str, csv_column_uri_template: str
     ) -> List[ValidationError]:
         return self._validate_data_new_attribute_values(data)
+
+
+accepted_data_types = {
+    "anyURI",
+    "boolean",
+    "date",
+    "dateTime",
+    "dateTimeStamp",
+    "decimal",
+    "integer",
+    "long",
+    "int",
+    "short",
+    "nonNegativeInteger",
+    "positiveInteger",
+    "unsignedLong",
+    "unsignedInt",
+    "unsignedShort",
+    "nonPositiveInteger",
+    "negativeInteger",
+    "double",
+    "float",
+    "string",
+    "language",
+    "time",
+}
 
 
 @dataclass
