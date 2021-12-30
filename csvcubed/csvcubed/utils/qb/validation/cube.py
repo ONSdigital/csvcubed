@@ -54,24 +54,26 @@ def _validate_attributes(cube: Cube) -> List[ValidationError]:
 
     for c in cube.columns:
         if isinstance(c, QbColumn) and isinstance(c.component, QbAttribute):
-            if (
-                c.csv_column_uri_template is None
-                and len(c.component.new_attribute_values) == 0  # type: ignore
-            ):
-                errors.append(
-                    CsvColumnUriTemplateMissingError(
-                        c.csv_column_title,
-                        f"{c.component.__class__.__name__} using existing attribute values",
+            if isinstance(c.component, QbAttributeLiteral):
+                if c.csv_column_uri_template is not None:
+                    errors.append(
+                        CsvColumnLiteralWithUriTemplate(
+                            c.csv_column_title,
+                            f"{c.component.__class__.__name__} "
+                            + "cannot have a uri_tempate as it holds literal values",
+                        )
                     )
-                )
-        if isinstance(c, QbColumn) and isinstance(c.component, QbAttributeLiteral):
-            if c.csv_column_uri_template is not None:
-                errors.append(
-                    CsvColumnLiteralWithUriTemplate(
-                        c.csv_column_title,
-                        f"{c.component.__class__.__name__} "
-                        + "cannot have a uri_tempate as it holds literal values",
+            else:
+                # Not a QbAttributeLiteral
+                if (
+                    c.csv_column_uri_template is None
+                    and len(c.component.new_attribute_values) == 0  # type: ignore
+                ):
+                    errors.append(
+                        CsvColumnUriTemplateMissingError(
+                            c.csv_column_title,
+                            f"{c.component.__class__.__name__} using existing attribute values",
+                        )
                     )
-                )
 
     return errors

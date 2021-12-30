@@ -116,6 +116,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
 
   Scenario: A QbCube with string literal new attributes should validate successfully
     Given a single-measure QbCube named "Qube with string literals" with "new" "string" attribute
+    Then the CSVqb should pass all validations
     When the cube is serialised to CSV-W
     Then csvlint validation of "qube-with-string-literals.csv-metadata.json" should succeed
     And csv2rdf on all CSV-Ws should succeed
@@ -132,6 +133,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
 
   Scenario: A QbCube with numeric literal new attributes should validate successfully
     Given a single-measure QbCube named "Qube with int literals" with "new" "int" attribute
+    Then the CSVqb should pass all validations
     When the cube is serialised to CSV-W
     Then csvlint validation of "qube-with-int-literals.csv-metadata.json" should succeed
     And csv2rdf on all CSV-Ws should succeed
@@ -148,6 +150,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
 
   Scenario: A QbCube with date literal new attributes should validate successfully
     Given a single-measure QbCube named "Qube with date literals" with "new" "date" attribute
+    Then the CSVqb should pass all validations
     When the cube is serialised to CSV-W
     Then csvlint validation of "qube-with-date-literals.csv-metadata.json" should succeed
     And csv2rdf on all CSV-Ws should succeed
@@ -164,6 +167,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
 
   Scenario: A QbCube with string literal existing attributes should validate successfully
     Given a single-measure QbCube named "Qube with string literals" with "existing" "string" attribute
+    Then the CSVqb should pass all validations
     When the cube is serialised to CSV-W
     Then csvlint validation of "qube-with-string-literals.csv-metadata.json" should succeed
     And csv2rdf on all CSV-Ws should succeed
@@ -178,6 +182,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
 
   Scenario: A QbCube with numeric literal existing attributes should validate successfully
     Given a single-measure QbCube named "Qube with int literals" with "existing" "int" attribute
+    Then the CSVqb should pass all validations
     When the cube is serialised to CSV-W
     Then csvlint validation of "qube-with-int-literals.csv-metadata.json" should succeed
     And csv2rdf on all CSV-Ws should succeed
@@ -192,6 +197,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
 
   Scenario: A QbCube with date literal existing attributes should validate successfully
     Given a single-measure QbCube named "Qube with date literals" with "existing" "date" attribute
+    Then the CSVqb should pass all validations
     When the cube is serialised to CSV-W
     Then csvlint validation of "qube-with-date-literals.csv-metadata.json" should succeed
     And csv2rdf on all CSV-Ws should succeed
