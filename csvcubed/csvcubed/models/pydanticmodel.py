@@ -2,7 +2,7 @@ import dataclasses
 from dataclasses import dataclass, fields, is_dataclass
 import pydantic
 import pydantic.dataclasses
-from pydantic import BaseConfig
+from pydantic import BaseConfig, Extra
 from typing import Dict, Type, List, Iterable, Union, Any
 from abc import ABC
 
@@ -26,7 +26,7 @@ class PydanticModel(DataClassBase, ABC):
     class _DefaultConfig(BaseConfig):
         """pydantic Configuration - see https://pydantic-docs.helpmanual.io/usage/model_config/"""
 
-        extra = "forbid"
+        extra = Extra.forbid
         arbitrary_types_allowed = True
         validate_all = True
 
