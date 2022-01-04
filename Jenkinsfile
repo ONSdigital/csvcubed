@@ -180,7 +180,7 @@ pipeline {
 
                 archiveArtifacts artifacts: '**/dist/*.whl, **/docs/_build/html/**/*, **/external-docs/site/**/*', fingerprint: true
 
-                sh 'git clone https://github.com/GSS-Cogs/csvcubed-docs.git'
+                sh 'git clone "https://github.com/GSS-Cogs/csvcubed-docs.git"'
                 dir ('csvcubed-docs') {
                     sh 'git config --global user.email "none@none.com" && git config --global user.name "auto-uploader"'
                     sh 'git rm -rf external'
