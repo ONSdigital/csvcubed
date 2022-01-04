@@ -1,8 +1,8 @@
 # Defining a QbCube
 
-This file serves as an introduction to how the `Qb` components in csvcubed should be used. It will give you a rough breakdown of what the purpose of each component is as well as where it should be used.
+This file serves as an introduction to how the `Qb` components in csvcubed should be used. It is a rough description of the purpose of each component is as well as where it should be used.
 
-Note that it is generally supposed that the `Qb` cube classes are (and should always be) the back-end way we represent and validate data cubes before they are serialised to CSV-Ws. Hence, all classes are designed and structured to be clearly named, specific in their purpose and readily composable; they are generally **unsuitable for direct use by an end-user**. These classes are designed to be used by a **specialised user interface which is targetted to the needs and capabilities of a specific type of user**, e.g. a declarative JSON document for experts who need full control or a wizard-style GUI for people who just need to publish something simple.
+Note that it is generally supposed that the `Qb` cube classes are (and should always be) the back-end way csvcubed represent and validate data cubes before they are serialised to CSV-Ws. Hence, all classes are designed and structured to be clearly named, specific in their purpose and readily composable; they are generally **unsuitable for direct use**. These classes are designed to be used by a **specialised user interface which is targetted to the needs and capabilities of a specific type of user**, e.g. a declarative JSON document for experts who need full control or a wizard-style GUI for an interactive publication process.
 
 ## The `Cube` Class
 
@@ -33,9 +33,9 @@ cube = Cube(
 )
 ```
 
-**The catalog metadata** - holds the catalog metadata which should describe what the cube contains, who published it, when it was published and how the data is licensed. See [here](https://github.com/GSS-Cogs/dataengineer-walkthrough/blob/master/csvcubed-usage/Generating%20Catalog%20Metadata.md#how-to-generate-catalog-metadata) for a discussion on ways of configuring the catalog metadata.
+**The catalog metadata** - holds the catalog metadata which should describe the cube (i.e. a description of its contents), as well details about the publication (e.g. the publisher, its publication date, contact information, and usage restrictions/license). Further information on configuring catalog metadata is [available](https://github.com/GSS-Cogs/dataengineer-walkthrough/blob/master/csvcubed-usage/Generating%20Catalog%20Metadata.md#how-to-generate-catalog-metadata).
 
-**The data** - holds the actual data associated with the cube (as a pandas DataFrame). This is technically optional, however your life is generally easier if you can provide it since we can perform additional validations on your cube.
+**The data** - holds the observational data associated with the cube (as a pandas DataFrame). Although optional, providing this data allows additional validations on your cube.
 
 **The column mappings/metadata** - holds a list of `QbColumn`s providing the metadata which describes what each column in `data` contains.
 
@@ -55,9 +55,10 @@ Column Mappings are defined using the `QbColumn` class:
 ]
 ```
 
-N.B. You must list the columns **in the order** in which they are present in the `data` dataframe. You must also provide mappings for *every* column defined in your dataframe.
+N.B. **All columns** must be mapped from the `data`, and the colums must be listed in the **same order** from left to right as they appear. Columns can be supressed, see [Ignoring Columns](#ignoring-columns).
 
 When mapping a column to a pre-existing code-list or set of attribute values, or mapping the column to a list of pre-existing measures or units, you must set the column's `csv_column_uri_template`. This property specifies how the cell values are mapped to the URIs representing the existing code-list concepts, attribute values, measures or units that you are attempting to re-use.
+
 
 ### URI Templates
 
@@ -93,19 +94,19 @@ There are two types of structural definitions which we use in `csvcubed`: column
 
 ### Columnar Structrual Definitions
 
-A rough structure of the available columnar structural definitions is shown below. The hierarchical/tree representation has been chosen to help you decide which kind of column to use in your column definitions when defining a cube.
+A rough structure of the available columnar structural definitions is shown below. The hierarchical/tree representation assists in selecting the which kind of column to use in the cube's column defintions.
 
 ```text
 QbColumnStructuralDefinition
 ├── QbAttribute                         - A column where the values describe an attribute of the observed value.
-│   ├── ExistingQbAttribute                 - We can reuse an attribute someone else has defined.
-│   ├── NewQbAttribute                      - We want/need to define a new attribute property.
+│   ├── ExistingQbAttribute                 - Reuse an attribute defined elsewhere.
+│   ├── NewQbAttribute                      - Define a new attribute property.
 │   └── QbAttributeLiteral                  - The attribute values should be represented by a literal value instead of a URI.
-│       ├── ExistingQbAttributeLiteral          - We can reuse a literal attribute someone else has defined.
-│       └── NewQbAttributeLiteral               - We want/need to define a new literal attribute property.
+│       ├── ExistingQbAttributeLiteral          - Reuse a literal attribute defined elsehwere.
+│       └── NewQbAttributeLiteral               - Define a new literal attribute property.
 ├── QbDimension                         - The column values describe a dimension which partitions the statistical population.
-│   ├── ExistingQbDimension                 - We can reuse a dimension someone else has defined.
-│   └── NewQbDimension                      - We want/need to define a new dimension property.
+│   ├── ExistingQbDimension                 - Reuse a dimension defined elsewhere.
+│   └── NewQbDimension                      - Define a new dimension property.
 ├── QbMultiMeasureDimension             - The values describe which population characteristic was observed and is recorded in the row.
 ├── QbMultiUnits                        - The column values describe the unit that the row's measured/observed value was recorded in.
 └── QbObservationValue                  - The column values represent observed values of some population characteristic.
@@ -115,8 +116,8 @@ QbColumnStructuralDefinition
 
 **Note that**:
 
-* The above diagram **does not represent the true class hierarchy** and should be used as a guide to help the lay-user decide which  `QbColumnStructuralDefinition` should be selected to describe their data-cube's structure.
-* When choosing which structural definition to use, you must pick the most specific one. If the type you want to use has descendents then you must select one of its children. (i.e. you must pick a leaf node)
+* The above diagram **does not represent the true class hierarchy** and should be used as a guide to help decide which  `QbColumnStructuralDefinition` should be selected to describe their data-cube's structure.
+* Choose the most specific structural definition in every case. If the structural definition has children, it cannot be used directly and its children must be used. (i.e. use leaf nodes only)
 
 #### Literal vs URI
 
@@ -131,27 +132,27 @@ A rough structure of `SecondaryQbStructuralDefinition`s is shown below. It can b
 ```text
 SecondaryQbStructuralDefinition
 ├── QbAttributeValue        - Stored against the QbAttribute. Represents a (URI) value that an attribute can have.        
-│   └── NewQbAttributeValue     - We want/need to define a new URI value which an attribute can hold.
+│   └── NewQbAttributeValue     - Define a new URI value which an attribute can hold.
 ├── QbCodeList              - Stored against the QbDimension. Holds a `skos:ConceptScheme` which lists the values the dimension can have.
-│   ├── ExistingQbCodeList      - We want to reuse a code-list defined elsewhere.
-│   ├── NewQbCodeList           - We want/need to define a new code-list. 
-│   ├── CompositeQbCodeList     - We want/need to define a new code-list which is a composite of `skos:Concept`s defined in other code-lists.
-│   └── NewQbCodeListInCsvW     - We want/need to use a code-list which we have already generated and stored in a CSV-W.
+│   ├── ExistingQbCodeList      - Reuse a code-list defined elsewhere.
+│   ├── NewQbCodeList           - Define a new code-list. 
+│   ├── CompositeQbCodeList     - Define a new code-list which is a composite of `skos:Concept`s defined in other code-lists.
+│   └── NewQbCodeListInCsvW     - Use a code-list which is already generated and stored in a CSV-W.
 ├── QbConcept               - Stored against the QbCodeList. It holds a concept contained in a `skos:ConceptScheme`.
-│   ├── NewQbConcept            - We want/need to define a new concept
-│   └── DuplicatedQbConcept     - We want to reuse a concept defined elsewhere. We can alter its label/notation/structure.
+│   ├── NewQbConcept            - Define a new concept
+│   └── DuplicatedQbConcept     - Reuse a concept defined elsewhere. This permits altering its label/notation/structure.
 ├── QbMeasure               - Stored against the QbObservation OR QbMultiMeasureDimension. Represents an observation's measure.
-│   ├── ExistingQbMeasure       - We want to reuse a measure defined elsewhere.
-│   └── NewQbMeasure            - We want/need to define a new measure.
+│   ├── ExistingQbMeasure       - Reuse a measure defined elsewhere.
+│   └── NewQbMeasure            - Define a new measure.
 └── QbUnit                  - Stored against the QbObservation OR QbMultiUnits. Represents an observation's unit.
-    ├── ExistingQbUnit          - We want to reuse a unit defined elsewhere.
-    └── NewQbUnit               - We want/need to define a new unit.
+    ├── ExistingQbUnit          - Reuse a unit defined elsewhere.
+    └── NewQbUnit               - Define a new unit.
 ```
 
 **Note that**:
 
 * The above diagram **does not represent the true class hierarchy** and should be interpreted as a guide to help the lay-user decide which `SecondaryQbStructuralDefinition` best describes their data-cube's structure.
-* When choosing which structural definition to use, you must pick the most specific one. If the type you want to use has descendents then you must select one of its children. (i.e. you must pick a leaf node)
+* Choose the most specific structural definition in every case. If the structural definition has children, it cannot be used directly and its children must be used. (i.e. use leaf nodes only)
 
 ## The `from_data` Helpers
 
@@ -168,11 +169,11 @@ And there is also a helper method on the `NewQbCodeList` secondary structural de
 
 * `NewQbCodeList.from_data`
 
-These methods accept data straight from a pandas DataFrame's column and are designed to speed up the user by automatically generating resources, or references to resources from the DataFrame's data. Use them where the user has not provided detailed configuration to help support the [convention over configuration](https://en.wikipedia.org/wiki/Convention_over_configuration) approach to CSV-W generation; this is an attempt to lower the cognative load on new users.
+These methods accept data straight from a pandas DataFrame's column and are designed to automatically generate resources, or references to resources from the DataFrame's data. Use them where the user has not provided detailed configuration to help support the [convention over configuration](https://en.wikipedia.org/wiki/Convention_over_configuration) approach to CSV-W generation; this is to speed the adoption of the standards for new users.
 
 ## Validations
 
-Each of the classes discussed above extends from the [csvcubed.models.PydanticModel](https://github.com/GSS-Cogs/csvcubed/blob/main/csvcubed/csvcubed/models/pydanticmodel.py) class. This adds [pydantic](https://pydantic-docs.helpmanual.io/) validation to our models which ensures that all attributes have the correct type as decribed by their [static type annotations](https://docs.python.org/3/library/typing.html). Many of the models use the [pydantic custom validator](https://pydantic-docs.helpmanual.io/usage/validators/) functionality to add checks which are more specific than checking the overall type, e.g. `_attribute_uri_validator` inside the `ExistingQbAttribute` class in [csvcubed.models.cube.qb.components.attribute](https://github.com/GSS-Cogs/csvcubed/blob/main/csvcubed/csvcubed/models/cube/qb/components/attribute.py).
+Each of the classes discussed above extends from the [csvcubed.models.PydanticModel](https://github.com/GSS-Cogs/csvcubed/blob/main/csvcubed/csvcubed/models/pydanticmodel.py) class. This adds [pydantic](https://pydantic-docs.helpmanual.io/) validation to csvcubed's models which ensures that all attributes have the correct type as decribed by their [static type annotations](https://docs.python.org/3/library/typing.html). Many of the models use the [pydantic custom validator](https://pydantic-docs.helpmanual.io/usage/validators/) functionality to add checks which are more specific than checking the overall type, e.g. `_attribute_uri_validator` inside the `ExistingQbAttribute` class in [csvcubed.models.cube.qb.components.attribute](https://github.com/GSS-Cogs/csvcubed/blob/main/csvcubed/csvcubed/models/cube/qb/components/attribute.py).
 
 Pydantic validation can be performed on individual models by calling `pydantic_validation` (declared on [PydanticModel](https://github.com/GSS-Cogs/csvcubed/blob/main/csvcubed/csvcubed/models/pydanticmodel.py)).
 
