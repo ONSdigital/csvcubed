@@ -1,6 +1,8 @@
 """
 Data Structure Definitions
 --------------------------
+
+Provides the structure or mapping to components of an RDF Cube (i.e. `qb:DataStructureDefintion`)
 """
 from dataclasses import dataclass
 from abc import ABC, abstractmethod

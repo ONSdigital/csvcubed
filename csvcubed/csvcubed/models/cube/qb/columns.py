@@ -1,6 +1,8 @@
 """
 Columns with qb Components
 --------------------------
+
+Represents csv columns as `qb:Components`
 """
 from dataclasses import field, dataclass
 from typing import Optional, TypeVar, Generic, List

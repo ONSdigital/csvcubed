@@ -1,6 +1,8 @@
 """
 QbCube
 ------
+
+Utilities for getting columns (of a given type) from the `qb:DataStructureType`
 """
 from typing import List, TypeVar, Type, Set
 
