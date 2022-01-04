@@ -180,7 +180,7 @@ pipeline {
 
                 archiveArtifacts artifacts: '**/dist/*.whl, **/docs/_build/html/**/*, **/external-docs/site/**/*', fingerprint: true
 
-                sh 'git clone git@github.com:GSS-Cogs/csvcubed-docs.git'
+                sh 'git clone https://github.com/GSS-Cogs/csvcubed-docs.git'
                 dir ('csvcubed-docs') {
                     sh 'git config --global user.email "none@none.com" && git config --global user.name "auto-uploader"'
                     sh 'git rm -rf external'
@@ -191,7 +191,7 @@ pipeline {
                     sh 'git push'
                 }
                 sh 'rm -rf csvcubed-docs'
-                
+
 
                 // Set more permissive permissions on all files so future processes/Jenkins can easily delete them.
                 sh 'chmod -R ugo+rw .'
