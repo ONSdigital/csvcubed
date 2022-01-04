@@ -69,7 +69,7 @@ def _validate_attributes(cube: Cube) -> List[ValidationError]:
                 # Not a QbAttributeLiteral
                 if (
                     c.csv_column_uri_template is None
-                    and len(c.component.new_attribute_values) == 0  # type: ignore
+                    and len(c.structural_definition.new_attribute_values) == 0  # type: ignore
                 ):
                     errors.append(
                         CsvColumnUriTemplateMissingError(
