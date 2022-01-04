@@ -191,6 +191,7 @@ pipeline {
                     sh 'git push'
                 }
                 sh 'rm -rf csvcubed-docs'
+                
 
                 // Set more permissive permissions on all files so future processes/Jenkins can easily delete them.
                 sh 'chmod -R ugo+rw .'
