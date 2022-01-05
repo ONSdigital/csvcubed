@@ -15,7 +15,7 @@ def get_standard_catalog_metadata_for_name(name: str) -> CatalogMetadata:
         publisher_uri="https://www.gov.uk/government/organisations/office-for-national-statistics",
         theme_uris=["http://gss-data.org.uk/def/gdp#some-test-theme"],
         keywords=["Key word one", "Key word two"],
-        landing_page_uri="http://example.org/landing-page",
+        landing_page_uris=["http://example.org/landing-page"],
         license_uri="http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
         public_contact_point_uri="mailto:something@example.org",
     )
@@ -34,6 +34,36 @@ def step_impl(context, code_list_name: str):
                 description="This is the first concept.",
             ),
             NewQbConcept("Second Concept", parent_code="1st-concept", sort_order=20),
+        ],
+    )
+
+
+@Given('a CompositeQbCodeList named "{code_list_name}"')
+def step_impl(context, code_list_name: str):
+    metadata = get_standard_catalog_metadata_for_name(code_list_name)
+
+    context.code_list = CompositeQbCodeList(
+        metadata,
+        [
+            DuplicatedQbConcept(
+                existing_concept_uri="http://data.europa.eu/nuts/code/UKL",
+                label="Wales",
+                code="wales",
+            ),
+            DuplicatedQbConcept(
+                existing_concept_uri="http://data.europa.eu/nuts/code/UKM",
+                label="Scotland",
+                code="scotland",
+            ),
+            DuplicatedQbConcept(
+                existing_concept_uri="http://statistics.data.gov.uk/id/statistical-geography/E92000001",
+                label="England",
+                code="england",
+            ),
+        ],
+        variant_of_uris=[
+            "http://data.europa.eu/nuts/scheme/2016",
+            "http://gss-data.org.uk/def/concept-scheme/geography-hierarchy/administrative",
         ],
     )
 

@@ -4,12 +4,14 @@ Code Lists
 """
 from pathlib import Path
 from dataclasses import dataclass, field
-from typing import Optional, List, Set
+from typing import Optional, List, Set, Generic, TypeVar
 from abc import ABC
+from pandas import Series, DataFrame
 from pydantic import root_validator
 
 from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.readers.skoscodelistreader import extract_code_list_concept_scheme_info
+from csvcubed.utils.pandas import ensure_no_uri_safe_collision
 from .arbitraryrdf import ArbitraryRdf, RdfSerialisationHint, TripleFragmentBase
 from .datastructuredefinition import QbDataStructureDefinition
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
@@ -61,6 +63,26 @@ class NewQbConcept(UriIdentifiable):
 
 
 @dataclass
+class ExistingQbConcept:
+    """Represents a QbConcept which is already defined at the given URI."""
+
+    existing_concept_uri: str
+
+    _existing_concept_uri_validator = validate_uri("existing_concept_uri")
+
+
+@dataclass
+class DuplicatedQbConcept(NewQbConcept, ExistingQbConcept):
+    """
+    Represents a QbConcept which duplicates an :class:`ExistingQbConcept` with overriding label, notation, etc.
+
+    To be used in a :class:`CompositeQbCodeList`.
+    """
+
+    pass
+
+
+@dataclass
 class NewQbCodeListInCsvW(QbCodeList):
     """
     Contains the reference to an existing skos:ConceptScheme defined in a CSV-W.
@@ -109,29 +131,27 @@ class NewQbCodeListInCsvW(QbCodeList):
             self.concept_template_uri = None  # type: ignore
 
 
+TNewQbConcept = TypeVar("TNewQbConcept", bound=NewQbConcept, covariant=True)
+
+
 @dataclass
-class NewQbCodeList(QbCodeList, ArbitraryRdf):
+class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
     """
     Contains the metadata necessary to create a new skos:ConceptScheme which is local to a dataset.
     """
 
     metadata: CatalogMetadata
-    concepts: List[NewQbConcept]
-    variant_of_uris: List[str] = field(default_factory=list)
+    concepts: List[TNewQbConcept]
     arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
 
     def _get_arbitrary_rdf(self) -> List[TripleFragmentBase]:
         return self.arbitrary_rdf
 
     @staticmethod
-    def from_data(
-        metadata: CatalogMetadata,
-        data: PandasDataTypes,
-        variant_of_uris: List[str] = [],
-    ) -> "NewQbCodeList":
+    def from_data(metadata: CatalogMetadata, data: PandasDataTypes) -> "NewQbCodeList":
         columnar_data = pandas_input_to_columnar_str(data)
         concepts = [NewQbConcept(c) for c in sorted(set(columnar_data))]
-        return NewQbCodeList(metadata, concepts, variant_of_uris=variant_of_uris)
+        return NewQbCodeList(metadata, concepts)
 
     def get_permitted_rdf_fragment_hints(self) -> Set[RdfSerialisationHint]:
         return {
@@ -142,5 +162,23 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf):
     def get_default_node_serialisation_hint(self) -> RdfSerialisationHint:
         return RdfSerialisationHint.ConceptScheme
 
-    def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
-        return []  # TODO: implement this.
+    def validate_data(self, data: PandasDataTypes) -> list[Optional[ValidationError]]:
+        """
+        Validate the data held in the codelists, assuming case insensitivity
+        """
+
+        errors = list()
+
+        if isinstance(data, Series):
+            errors += ensure_no_uri_safe_collision(data=data, series_name=None)
+        elif isinstance(data, DataFrame):
+            errors += ensure_no_uri_safe_collision(data.squeeze(), series_name=None)
+
+        return errors
+
+
+@dataclass
+class CompositeQbCodeList(NewQbCodeList[DuplicatedQbConcept]):
+    """Represents a :class:`NewQbCodeList` made from a set of :class:`DuplicatedQbConcept` instances."""
+
+    variant_of_uris: List[str] = field(default_factory=list)

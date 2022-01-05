@@ -167,7 +167,7 @@ def test_convert_data_values_to_uri_safe_values_missing_value_mapping():
     )
 
 
-def test_qbcube_catagorical_numberic():
+def test_qbcube_catagorical_numeric():
     """
     Ensure that when we convert a QbCube's dataframe columns to categorical, and it works for numeric
     """

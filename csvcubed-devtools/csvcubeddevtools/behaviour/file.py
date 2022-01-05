@@ -64,6 +64,7 @@ def step_impl(context, file):
     comparison_result = list(differ.compare(expected_contents, file_contents))
     assert len(comparison_result) == len(expected_contents), "".join(comparison_result)
 
+
 @then('the file at "{file}" should exist')
 def step_impl(context, file):
     temp_dir = get_context_temp_dir_path(context)

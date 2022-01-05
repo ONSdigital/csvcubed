@@ -2,11 +2,13 @@
 RDF Test Steps
 --------------
 """
-from pathlib import Path
 from behave import *
 from rdflib.compare import to_isomorphic, graph_diff
-from rdflib import Graph
+from rdflib import Graph, ConjunctiveGraph
 import distutils.util
+from .temporarydirectory import get_context_temp_dir_path
+
+from csvcubeddevtools.helpers import rdflibhelpers
 
 
 def test_graph_diff(g1, g2):
@@ -19,9 +21,9 @@ def test_graph_diff(g1, g2):
         len(only_in_second) == 0
     ), f"""
         <<<
-        {only_in_first.serialize(format='n3').decode('utf-8')}
+        {rdflibhelpers.serialise_to_string(only_in_first, format='n3')}
         ===
-        {only_in_second.serialize(format='n3').decode('utf-8')}
+        {rdflibhelpers.serialise_to_string(only_in_second, format='n3')}
         >>>
         """
 
@@ -45,6 +47,16 @@ def assert_ask(context, ask_query: str, expected_ask_result: bool):
     results = list(g.query(ask_query))
     ask_result = results[0]
     assert ask_result == expected_ask_result
+
+
+@given('the N-Quads contained in "{rdf_file}"')
+def step_impl(context, rdf_file: str):
+    rdf_file_path = get_context_temp_dir_path(context) / rdf_file
+    graph = ConjunctiveGraph()
+    graph.parse(str(rdf_file_path), format="nquads")
+    context.turtle = getattr(context, "turtle", "") + rdflibhelpers.serialise_to_string(
+        graph, format="turtle"
+    )
 
 
 @step('the RDF should not contain any instances of "{entity_type}"')

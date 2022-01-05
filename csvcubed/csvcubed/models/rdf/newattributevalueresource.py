@@ -4,7 +4,7 @@ New Attribute Value
 """
 from typing import Annotated, Optional
 
-from rdflib import RDFS, SKOS
+from csvcubedmodels.rdf.namespaces import RDFS, SKOS
 from csvcubedmodels.rdf import (
     NewMetadataResource,
     Triple,
@@ -32,4 +32,3 @@ class NewAttributeValueResource(NewMetadataResource):
 
     def __init__(self, uri: str):
         NewMetadataResource.__init__(self, uri)
-        self.rdf_types.add(SKOS.Concept)

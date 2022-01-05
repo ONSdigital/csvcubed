@@ -1,0 +1,13 @@
+{
+    "title": "Some title",
+    "description": "Some Description",
+    "dataset_issued": "2010-01-01T00:00:00",
+    "dataset_modified": "2020-01-01T00:00:00",
+    "summary": "Some Summary",
+    "landing_page_uris": [
+        "http://first-landing-page",
+        "http://second-landing-page"
+    ],
+    "theme_uris": [],
+    "keywords": []
+}

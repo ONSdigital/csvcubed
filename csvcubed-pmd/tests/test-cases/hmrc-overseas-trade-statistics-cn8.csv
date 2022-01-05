@@ -1,4 +1,0 @@
-marker,country_id,flow_type,cn8_id,port,period,measure_type,unit_type,value
-,1,eu-exports,01012100,000,2020-09,monetary-value,http://gss-data.org.uk/def/concept/measurement-units/gbp,1559133.0
-,1,eu-exports,01012100,000,2020-10,net-mass,http://qudt.org/vocab/unit/KiloGM,8847.0
-,1,eu-exports,01051119,000,2020-11,monetary-value,http://gss-data.org.uk/def/concept/measurement-units/gbp,593528.0

@@ -17,6 +17,8 @@ from .codelist import (
     NewQbConcept,
     ExistingQbCodeList,
     NewQbCodeListInCsvW,
+    CompositeQbCodeList,
+    DuplicatedQbConcept,
 )
 from .dimension import QbDimension, NewQbDimension, ExistingQbDimension
 from .measure import QbMeasure, NewQbMeasure, ExistingQbMeasure, QbMultiMeasureDimension

@@ -7,9 +7,9 @@ Provides some utilities to help with serialisation/deserialisation
 import copy
 import datetime
 import json
-from collections.abc import Iterable
 import typing
 from abc import ABC
+import collections.abc
 from dataclasses import Field, _MISSING_TYPE, fields, asdict, dataclass
 from typing import List, Any, get_type_hints, Dict, Set, Type
 
@@ -176,7 +176,9 @@ class DataClassBase(ABC):
             return typing_hint.from_dict(val)
         elif len(generic_type_args) > 0:
             origin_type = typing.get_origin(typing_hint)
-            if isinstance(origin_type, type) and issubclass(origin_type, Iterable):
+            if isinstance(origin_type, type) and issubclass(
+                origin_type, collections.abc.Iterable
+            ):
                 return cls._get_value_for_generic_iterable_field(
                     field, typing_hint, origin_type, generic_type_args, val
                 )
@@ -209,18 +211,18 @@ class DataClassBase(ABC):
         field: Field,
         typing_hint: Any,
         origin_type: Any,
-        generic_type_args: Iterable,
+        generic_type_args: collections.abc.Iterable,
         val: Any,
     ) -> Any:
         generic_type_args = list(generic_type_args)
 
-        if not isinstance(val, Iterable):
+        if not isinstance(val, collections.abc.Iterable):
             raise DataClassFromDictValueError(
                 f"Unable to inflate {cls.__name__}.{field.name} as dictionary value is not list: {val}"
             )
 
-        typing_args_contain_subclass_dataclassbase = (
-            cls._get_generic_type_args_subclassing_dataclassbase(generic_type_args)
+        typing_args_contain_subclass_dataclassbase = cls._get_generic_type_args_subclassing_dataclassbase(
+            generic_type_args
         )
 
         if len(typing_args_contain_subclass_dataclassbase) > 0:
@@ -239,7 +241,7 @@ class DataClassBase(ABC):
 
     @classmethod
     def _get_generic_type_args_subclassing_dataclassbase(
-        cls, generic_type_args: Iterable
+        cls, generic_type_args: collections.abc.Iterable
     ) -> Set:
         args_subclassing_dataclassbase = {
             a
@@ -260,7 +262,7 @@ class DataClassBase(ABC):
         cls,
         field: Field,
         union_typing_hint: Any,
-        generic_type_args: Iterable,
+        generic_type_args: collections.abc.Iterable,
         val: Any,
     ) -> Any:
         for arg in generic_type_args:

@@ -350,13 +350,14 @@ def test_default_property_value_uris_multi_measure_all_existing():
         QbMultiMeasureDimension(
             [ExistingQbMeasure("http://base-uri/measures/existing-measure")]
         ),
+        csv_column_uri_template="http://base-uri/measures/{+some_column}",
     )
     (
         default_property_uri,
         default_value_uri,
     ) = empty_qbwriter._get_default_property_value_uris_for_column(column)
     assert "http://purl.org/linked-data/cube#measureType" == default_property_uri
-    assert "{+some_column}" == default_value_uri
+    assert "http://base-uri/measures/{+some_column}" == default_value_uri
 
 
 def test_default_property_value_uris_multi_measure_local_and_existing():
@@ -404,7 +405,7 @@ def test_default_property_value_uris_single_measure_obs_val():
 
 def test_default_property_value_uris_multi_measure_obs_val():
     """
-    There should be no `propertyUrl` or `valueUrl` for a `QbMultiMeasureObservationValue`.
+    There should be no `valueUrl` for a `QbMultiMeasureObservationValue`.
     """
     column = QbColumn("Some Column", QbMultiMeasureObservationValue())
 
@@ -420,6 +421,36 @@ def test_default_property_value_uris_multi_measure_obs_val():
         default_value_uri,
     ) = writer._get_default_property_value_uris_for_column(column)
     assert default_property_uri == "cube-name.csv#measure/{+measure}"
+    assert default_value_uri is None
+
+
+def test_default_property_value_uris_multi_existing_measure_obs_val():
+    """
+    The `propertyUrl` for a multi-existing-measure observation value should match the measure column's
+    value URI template.
+    """
+    column = QbColumn("Some Column", QbMultiMeasureObservationValue())
+
+    cube = Cube(
+        CatalogMetadata("Cube Name"),
+        pd.DataFrame({"Measure": ["kg"]}),
+        [
+            QbColumn(
+                "Measure",
+                QbMultiMeasureDimension(
+                    [ExistingQbMeasure("http://some-existing-measures/kg")]
+                ),
+                csv_column_uri_template="http://some-existing-measures/{+measure}",
+            )
+        ],
+    )
+    writer = QbWriter(cube)
+
+    (
+        default_property_uri,
+        default_value_uri,
+    ) = writer._get_default_property_value_uris_for_column(column)
+    assert default_property_uri == "http://some-existing-measures/{+measure}"
     assert default_value_uri is None
 
 
@@ -510,6 +541,40 @@ def test_csv_col_required():
         required = csv_col["required"]
         assert isinstance(required, bool)
         assert not required
+
+
+def test_csv_col_required_observed_value_with_obs_status_attribute():
+    """Test that the observation value column is **not** marked as `required` in the CSV-W where an `sdmxa:obsStatus`
+    attribute column is defined in the same cube."""
+    observed_values_column = QbColumn(
+        "Values",
+        QbSingleMeasureObservationValue(
+            NewQbMeasure("Some Measure"),
+            NewQbUnit("Some Unit"),
+        ),
+    )
+
+    qube = Cube(
+        metadata=CatalogMetadata("Some Qube"),
+        data=None,
+        columns=[
+            QbColumn("Some Dimension", NewQbDimension(label="Some Dimension")),
+            observed_values_column,
+            QbColumn(
+                "Marker",
+                ExistingQbAttribute(
+                    "http://purl.org/linked-data/sdmx/2009/attribute#obsStatus"
+                ),
+                csv_column_uri_template="https://example.org/some_attribute/{+Some_attribute}",
+            ),
+        ],
+    )
+    writer = QbWriter(qube)
+    observed_values_column_is_required = writer._generate_csvqb_column(
+        observed_values_column
+    )["required"]
+    assert isinstance(observed_values_column_is_required, bool)
+    assert not observed_values_column_is_required
 
 
 def test_csv_col_definition_suppressed():

@@ -17,10 +17,10 @@ def step_impl(context):
     assert status_code == 0, (status_code, response)
 
 
-@then("the CLI should fail with status code {status_code}")
-def step_impl(context, status_code: str):
+@then("the CLI should fail with status code {expected_status_code}")
+def step_impl(context, expected_status_code: str):
     (status_code, response) = context.cli_result
-    assert status_code == int(status_code), status_code
+    assert status_code == int(expected_status_code), status_code
 
 
 @then('the CLI should print "{printed_text}"')

@@ -67,7 +67,7 @@ class QbAttribute(ColumnarQbDataStructureDefinition, ArbitraryRdf, ABC):
                 av.uri_safe_identifier for av in self.new_attribute_values  # type: ignore
             }
             actual_values = {
-                uri_safe(v)
+                uri_safe(str(v))
                 for v in set(data.unique().astype(object).flatten())
                 if not pd.isna(v)
             }
@@ -225,7 +225,7 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
         ]
 
         return NewQbAttribute(
-            label,
+            label=label,
             description=description,
             new_attribute_values=new_attribute_values_from_column,
             parent_attribute_uri=parent_attribute_uri,

@@ -26,7 +26,7 @@ def test_serialise_and_load_json():
             creator_uri="http://some-creator-uri",
             publisher_uri="http://some-publisher-uri",
             public_contact_point_uri="mailto:somecontactpoint@ons.gov.uk",
-            landing_page_uri="http://some-landing-page-uri",
+            landing_page_uris=["http://some-landing-page-uri"],
         )
 
         tmp_dir_path = Path(tmp_dir_path)
@@ -59,10 +59,9 @@ def test_serialise_and_load_json():
             reinflated_catalog_metadata.public_contact_point_uri
             == "mailto:somecontactpoint@ons.gov.uk"
         )
-        assert (
-            reinflated_catalog_metadata.landing_page_uri
-            == "http://some-landing-page-uri"
-        )
+        assert reinflated_catalog_metadata.landing_page_uris == [
+            "http://some-landing-page-uri"
+        ]
 
 
 if __name__ == "__main__":
