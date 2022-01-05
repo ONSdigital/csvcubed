@@ -123,8 +123,8 @@ class QbAttributeLiteral(QbAttribute, ABC):
     def _get_arbitrary_rdf(self) -> List[TripleFragmentBase]:
         return self.arbitrary_rdf
 
-    def _get_arbitrary_rdf(self) -> List[TripleFragmentBase]:
-        return self.arbitrary_rdf
+    def get_is_required(self) -> bool:
+        return self.is_required
 
     @validator("data_type", pre=True, always=False)
     def data_type_value(cls, data_type):
