@@ -1,10 +1,27 @@
-site_name: My Docs
-site_url: https://example5.com/
+site_name: csvcubed
+site_url: https://gss-cogs.github.io/csvcubed-docs/external
 nav:
-    - Home: index.md
-    - About: about.md
-    - Page1: page1.md
-    - Page2: page2.md
+    - Home: 
+      - index.md
+    - Why: 
+      - why/index.md
+    - Quickstart: 
+      - quick-start/index.md
+      - Installation: quick-start/installation.md
+      - Shaping your data: quick-start/shaping.md
+    - Guides: 
+      - guides/index.md
+      - Filing a bug: guides/file-bug.md
+      - Shaping your data: guides/shaping-data.md
+      - Errors:
+        - guides/errors/index.md
+        - Typical error: guides/errors/typical-error.md
+    - Reference Metadata: 
+      - reference-metadata/index.md
+    - Glossary: 
+      - glossary/index.md
+    - API Documentation: 
+      - api-documentation/index.md
 theme:
   name: material
   palette: 
@@ -18,8 +35,8 @@ theme:
         name: Switch to light mode
   features:
     - navigation.instant
-    - navigation.tabs
-    - navigation.tabs.sticky
+    # - navigation.expand
     - navigation.sections
-    - navigation.expand
     - navigation.indexes
+    - navigation.top
+    - toc.integrate
