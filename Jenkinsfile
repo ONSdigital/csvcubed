@@ -181,17 +181,19 @@ pipeline {
                 archiveArtifacts artifacts: '**/dist/*.whl, **/docs/_build/html/**/*, **/external-docs/site/**/*', fingerprint: true
 
                 try {
-                    sh 'git clone "https://github.com/GSS-Cogs/csvcubed-docs.git"'
-                    dir ('csvcubed-docs') {
-                        sh 'git config --global user.email "none@none.com" && git config --global user.name "auto-uploader"'
-                        if (fileExists("external")) {
-                            sh 'git rm -rf external'
+                    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'robons/******', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+                        sh 'git clone "https://$USERNAME:$PASSWORD@github.com/GSS-Cogs/csvcubed-docs.git"'
+                        dir ('csvcubed-docs') {
+                            sh 'git config --global user.email "none@none.com" && git config --global user.name "auto-uploader"'
+                            if (fileExists("external")) {
+                                sh 'git rm -rf external'
+                            }
+                            sh 'mkdir external'
+                            sh 'cp -r ../external-docs/site/* external'
+                            sh 'git add *'
+                            sh 'git commit -m "Updating documentation."'
+                            sh 'git push'
                         }
-                        sh 'mkdir external'
-                        sh 'cp -r ../external-docs/site/* external'
-                        sh 'git add *'
-                        sh 'git commit -m "Updating documentation."'
-                        sh 'git push'
                     }
                 } finally {
                     sh 'rm -rf csvcubed-docs'
