@@ -180,6 +180,7 @@ pipeline {
 
                 archiveArtifacts artifacts: '**/dist/*.whl, **/docs/_build/html/**/*, **/external-docs/site/**/*', fingerprint: true
                 
+                
                 try {
                     withCredentials([gitUsernamePassword(credentialsId: 'testonetwothree')]){
                     //withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'robons/******', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
