@@ -96,7 +96,7 @@ class NewQbUnit(QbUnit, UriIdentifiable, ArbitraryRdf):
 
     _qudt_quantity_kind_uri_validation = validate_uri("qudt_quantity_kind_uri")
 
-    def _get_arbitrary_rdf(self) -> list[str]:
+    def _get_arbitrary_rdf(self) -> list[TripleFragmentBase]:
         return self.arbitrary_rdf
 
     def _get_identifiable_state(self) -> tuple:
