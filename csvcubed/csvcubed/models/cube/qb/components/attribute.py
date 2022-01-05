@@ -118,6 +118,10 @@ class QbAttributeLiteral(QbAttribute, ABC):
     data_type: str = field(repr=False)
 
     is_required: bool = field(default=False, repr=False)
+    arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
+
+    def _get_arbitrary_rdf(self) -> List[TripleFragmentBase]:
+        return self.arbitrary_rdf
 
     def _get_arbitrary_rdf(self) -> List[TripleFragmentBase]:
         return self.arbitrary_rdf
