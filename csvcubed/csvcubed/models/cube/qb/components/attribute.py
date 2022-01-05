@@ -11,6 +11,7 @@ import pandas as pd
 from csvcubed.models.uriidentifiable import UriIdentifiable
 from .arbitraryrdf import (
     ArbitraryRdf,
+    TripleFragment,
     TripleFragmentBase,
     RdfSerialisationHint,
 )
@@ -32,7 +33,7 @@ class NewQbAttributeValue(UriIdentifiable, ArbitraryRdf):
     parent_attribute_value_uri: Optional[str] = field(default=None, repr=False)
     arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
 
-    def _get_arbitrary_rdf(self) -> list[str]:
+    def _get_arbitrary_rdf(self) -> list[TripleFragmentBase]:
         return self.arbitrary_rdf
 
     def get_default_node_serialisation_hint(self) -> RdfSerialisationHint:
@@ -132,7 +133,7 @@ class ExistingQbAttribute(QbAttribute):
     is_required: bool = field(default=False, repr=False)
     arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
 
-    def _get_arbitrary_rdf(self) -> list[str]:
+    def _get_arbitrary_rdf(self) -> list[TripleFragmentBase]:
         return self.arbitrary_rdf
 
     def get_is_required(self) -> bool:
@@ -162,7 +163,7 @@ class ExistingQbAttributeLiteral(ExistingQbAttribute, QbAttributeLiteral):
     )
     arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
 
-    def _get_arbitrary_rdf(self) -> list[str]:
+    def _get_arbitrary_rdf(self) -> list[TripleFragmentBase]:
         return self.arbitrary_rdf
 
     def validate_data(
@@ -185,7 +186,7 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
     uri_safe_identifier_override: Optional[str] = field(default=None, repr=False)
     arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
 
-    def _get_arbitrary_rdf(self) -> list[str]:
+    def _get_arbitrary_rdf(self) -> list[TripleFragmentBase]:
         return self.arbitrary_rdf
 
     def get_is_required(self) -> bool:
@@ -247,7 +248,7 @@ class NewQbAttributeLiteral(NewQbAttribute, QbAttributeLiteral):
     )
     arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
 
-    def _get_arbitrary_rdf(self) -> list[str]:
+    def _get_arbitrary_rdf(self) -> list[TripleFragmentBase]:
         return self.arbitrary_rdf
 
     def validate_data(
