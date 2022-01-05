@@ -117,6 +117,11 @@ class QbAttributeLiteral(QbAttribute, ABC):
 
     data_type: str = field(repr=False)
 
+    is_required: bool = field(default=False, repr=False)
+
+    def _get_arbitrary_rdf(self) -> List[TripleFragmentBase]:
+        return self.arbitrary_rdf
+
     @validator("data_type", pre=True, always=False)
     def data_type_value(cls, data_type):
         if data_type not in accepted_data_types:
