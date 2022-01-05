@@ -180,7 +180,6 @@ pipeline {
 
                 archiveArtifacts artifacts: '**/dist/*.whl, **/docs/_build/html/**/*, **/external-docs/site/**/*', fingerprint: true
 
-                sh 'rm -rf csvcubed-docs'
                 try {
                     sh 'git clone "https://github.com/GSS-Cogs/csvcubed-docs.git"'
                     dir ('csvcubed-docs') {
