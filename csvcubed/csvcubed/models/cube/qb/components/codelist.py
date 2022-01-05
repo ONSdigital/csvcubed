@@ -120,7 +120,7 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf):
     variant_of_uris: List[str] = field(default_factory=list)
     arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
 
-    def _get_arbitrary_rdf(self) -> list[TripleFragmentBase]:
+    def _get_arbitrary_rdf(self) -> List[TripleFragmentBase]:
         return self.arbitrary_rdf
 
     @staticmethod

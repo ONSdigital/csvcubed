@@ -32,7 +32,7 @@ class ExistingQbMeasure(QbMeasure):
     measure_uri: str
     arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
 
-    def _get_arbitrary_rdf(self) -> list[TripleFragmentBase]:
+    def _get_arbitrary_rdf(self) -> List[TripleFragmentBase]:
         return self.arbitrary_rdf
 
     def __eq__(self, other):
@@ -62,7 +62,7 @@ class NewQbMeasure(QbMeasure, UriIdentifiable):
     uri_safe_identifier_override: Optional[str] = field(default=None, repr=False)
     arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
 
-    def _get_arbitrary_rdf(self) -> list[TripleFragmentBase]:
+    def _get_arbitrary_rdf(self) -> List[TripleFragmentBase]:
         return self.arbitrary_rdf
 
     def _get_identifiable_state(self) -> tuple:
