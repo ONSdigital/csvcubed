@@ -180,10 +180,9 @@ pipeline {
 
                 archiveArtifacts artifacts: '**/dist/*.whl, **/docs/_build/html/**/*, **/external-docs/site/**/*', fingerprint: true
                 
-                
                 try {
                     withCredentials([gitUsernamePassword(credentialsId: 'testonetwothree')]){
-                    //withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'robons/******', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+                        //withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'robons/******', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                         sh 'git clone "https://$USERNAME:$PASSWORD@github.com/GSS-Cogs/csvcubed-docs.git"'
                         dir ('csvcubed-docs') {
                             sh 'git config --global user.email "none@none.com" && git config --global user.name "auto-uploader"'
