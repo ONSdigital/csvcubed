@@ -13,7 +13,6 @@ from csvcubed.models.cube.qb.validationerrors import (
     BothUnitTypesDefinedError,
     MaxNumComponentsExceededError,
     WrongNumberComponentsError,
-    IncompatibleComponentsError,
 )
 from tests.unit.test_baseunit import *
 from csvcubed.utils.qb.validation.cube import validate_qb_component_constraints
@@ -439,9 +438,9 @@ def test_measure_dimension_with_single_measure_obs_val():
 
     assert_num_validation_errors(errors, 1)
     error = errors[0]
-    assert isinstance(error, IncompatibleComponentsError)
-    assert error.component_one == QbSingleMeasureObservationValue
-    assert error.component_two == QbMultiMeasureDimension
+    assert isinstance(error, BothMeasureTypesDefinedError)
+    assert error.component_one == QbMultiMeasureDimension
+    assert error.component_two == f"{QbSingleMeasureObservationValue.__name__}.measure"
     assert (
         error.additional_explanation
         == "A single-measure cube cannot have a measure dimension."

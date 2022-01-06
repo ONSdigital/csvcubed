@@ -7,7 +7,9 @@ Qb-Cube Validation Errors
 
 from dataclasses import dataclass
 from typing import Optional, Type, Union
+from abc import ABC
 
+from csvcubed.models.cube import QbMultiMeasureDimension, QbDimension
 from csvcubed.models.cube.qb.components import (
     QbObservationValue,
     QbMultiUnits,
@@ -41,6 +43,7 @@ class CsvColumnUriTemplateMissingError(SpecificValidationError):
             + "csv_column_uri_template defined."
         )
 
+
 @dataclass
 class CsvColumnLiteralWithUriTemplate(SpecificValidationError):
     """
@@ -58,7 +61,7 @@ class CsvColumnLiteralWithUriTemplate(SpecificValidationError):
 
 
 @dataclass
-class MaxNumComponentsExceededError(SpecificValidationError):
+class MaxNumComponentsExceededError(SpecificValidationError, ABC):
     """
     Represents an error where the user can define a maximum number of components of a given type, but has defined
     too many.
@@ -79,7 +82,22 @@ class MaxNumComponentsExceededError(SpecificValidationError):
 
 
 @dataclass
-class MinNumComponentsNotSatisfiedError(SpecificValidationError):
+class MoreThanOneDefinedError(MaxNumComponentsExceededError, ABC):
+    maximum_number: int = 1
+
+
+@dataclass
+class MoreThanOneMeasureColumnError(MaxNumComponentsExceededError):
+    component_type: ComponentTypeDescription = QbMultiMeasureDimension
+
+
+@dataclass
+class MoreThanOneUnitsColumnError(MaxNumComponentsExceededError):
+    component_type: ComponentTypeDescription = QbMultiUnits
+
+
+@dataclass
+class MinNumComponentsNotSatisfiedError(SpecificValidationError, ABC):
     """
     Represents an error where the user must define a minimum number of components of a given type, but has not done so.
     """
@@ -96,6 +114,13 @@ class MinNumComponentsNotSatisfiedError(SpecificValidationError):
         )
         if self.additional_explanation is not None:
             self.message += " " + self.additional_explanation
+
+
+@dataclass
+class NoDimensionsDefinedError(MinNumComponentsNotSatisfiedError):
+    component_type: ComponentTypeDescription = QbDimension
+    minimum_number: int = 1
+    actual_number: int = 0
 
 
 @dataclass
@@ -150,7 +175,7 @@ class UnitsNotDefinedError(NeitherDefinedError):
 
 
 @dataclass
-class IncompatibleComponentsError(SpecificValidationError):
+class IncompatibleComponentsError(SpecificValidationError, ABC):
     """
     An error for when the user has defined components which are incompatible with each-other.
     """
@@ -177,4 +202,15 @@ class BothUnitTypesDefinedError(IncompatibleComponentsError):
 
     component_one: ComponentTypeDescription = f"{QbObservationValue.__name__}.unit"
     component_two: ComponentTypeDescription = QbMultiUnits
+    additional_explanation: Optional[str] = None
+
+
+@dataclass
+class BothMeasureTypesDefinedError(IncompatibleComponentsError):
+    """
+    An error for when the user has both a measure dimension column as well as setting `QbObservationValue.measure`.
+    """
+
+    component_one: ComponentTypeDescription = f"{QbObservationValue.__name__}.measure"
+    component_two: ComponentTypeDescription = QbMultiMeasureDimension
     additional_explanation: Optional[str] = None

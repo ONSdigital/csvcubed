@@ -2,7 +2,6 @@ from typing import List
 
 from csvcubed.models.cube import (
     ObservationValuesMissing,
-    MaxNumComponentsExceededError,
     QbMultiUnits,
     QbObservationValue,
     Cube,
@@ -14,9 +13,11 @@ from csvcubed.models.cube import (
     ExistingQbAttribute,
     NewQbAttribute,
     QbMultiMeasureDimension,
-    IncompatibleComponentsError,
     UnitsNotDefinedError,
     BothUnitTypesDefinedError,
+    BothMeasureTypesDefinedError,
+    MoreThanOneUnitsColumnError,
+    MoreThanOneMeasureColumnError,
 )
 
 from csvcubedmodels.rdf.namespaces import SDMX_Attribute
@@ -33,9 +34,7 @@ def validate_observations(cube: Cube) -> List[ValidationError]:
     multi_units_columns = get_columns_of_dsd_type(cube, QbMultiUnits)
 
     if len(multi_units_columns) > 1:
-        errors.append(
-            MaxNumComponentsExceededError(QbMultiUnits, 1, len(multi_units_columns))
-        )
+        errors.append(MoreThanOneUnitsColumnError(len(multi_units_columns)))
 
     if len(observed_value_columns) != 1:
         errors.append(
@@ -157,11 +156,7 @@ def _validate_multi_measure_cube(
             )
         )
     elif len(multi_measure_columns) > 1:
-        errors.append(
-            MaxNumComponentsExceededError(
-                QbMultiMeasureDimension, 1, len(multi_measure_columns)
-            )
-        )
+        errors.append(MoreThanOneMeasureColumnError(len(multi_measure_columns)))
 
     return errors
 
@@ -174,7 +169,7 @@ def _validate_single_measure_cube(
     multi_measure_columns = get_columns_of_dsd_type(cube, QbMultiMeasureDimension)
     if len(multi_measure_columns) > 0:
         errors.append(
-            IncompatibleComponentsError(
+            BothMeasureTypesDefinedError(
                 QbSingleMeasureObservationValue,
                 QbMultiMeasureDimension,
                 additional_explanation="A single-measure cube cannot have a measure dimension.",
