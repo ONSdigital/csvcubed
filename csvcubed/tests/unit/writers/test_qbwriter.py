@@ -6,6 +6,12 @@ from csvcubedmodels import rdf
 from typing import List
 
 from csvcubed.models.cube import *
+from csvcubed.models.cube import (
+    ExistingQbAttribute,
+    NewQbAttribute,
+    QbMultiMeasureDimension,
+    QbMultiUnits,
+)
 from csvcubed.models.cube.qb.components.arbitraryrdf import (
     TripleFragment,
     RdfSerialisationHint,

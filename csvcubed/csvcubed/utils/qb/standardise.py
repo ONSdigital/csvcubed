@@ -4,20 +4,24 @@ Standardise
 
 Utilities for standardising cubes and their corresponding data values.
 """
-from typing import DefaultDict, Optional, List, Dict
-import pandas as pd
-from warnings import warn
+from typing import List, Dict
 from pandas.core.arrays.categorical import Categorical
 
 from csvcubed.utils.pandas import coalesce_on_uri_safe
 
 
 from .cube import get_all_units, get_all_measures, get_columns_of_dsd_type
-from csvcubed.models.cube.qb import *
-from csvcubed.models.cube.qb.components.unit import NewQbUnit, QbMultiUnits
-from csvcubed.models.cube.qb.components.measure import (
+from csvcubed.models.cube.qb import QbCube, QbColumn
+from csvcubed.models.cube.qb.components import (
     NewQbMeasure,
+    NewQbUnit,
+    QbAttribute,
+    QbDimension,
+    NewQbDimension,
+    NewQbCodeList,
     QbMultiMeasureDimension,
+    QbMultiUnits,
+    QbAttributeLiteral,
 )
 
 
@@ -30,10 +34,10 @@ def ensure_qbcube_data_is_categorical(cube: QbCube) -> None:
         is_categorical_column = (
             isinstance(column, QbColumn)
             and isinstance(
-                column.component,
+                column.structural_definition,
                 (QbDimension, QbAttribute, QbMultiMeasureDimension, QbMultiUnits),
             )
-            and not isinstance(column.component, QbAttributeLiteral)
+            and not isinstance(column.structural_definition, QbAttributeLiteral)
         )
 
         if is_categorical_column:
@@ -68,7 +72,7 @@ def convert_data_values_to_uri_safe_values(
     multi_units_columns_with_new_units = [
         c
         for c in get_columns_of_dsd_type(cube, QbMultiUnits)
-        if all([isinstance(u, NewQbUnit) for u in c.component.units])
+        if all([isinstance(u, NewQbUnit) for u in c.structural_definition.units])
     ]
     _overwrite_labels_for_columns(
         cube,
@@ -84,7 +88,9 @@ def convert_data_values_to_uri_safe_values(
     multi_measure_dimension_columns_defining_new_measures = [
         meas
         for meas in get_columns_of_dsd_type(cube, QbMultiMeasureDimension)
-        if all([isinstance(m, NewQbMeasure) for m in meas.component.measures])
+        if all(
+            [isinstance(m, NewQbMeasure) for m in meas.structural_definition.measures]
+        )
     ]
     _overwrite_labels_for_columns(
         cube,
@@ -94,8 +100,8 @@ def convert_data_values_to_uri_safe_values(
     )
 
     for attribute_column in get_columns_of_dsd_type(cube, NewQbDimension):
-        if isinstance(attribute_column.component.code_list, NewQbCodeList):
-            new_code_list = attribute_column.component.code_list
+        if isinstance(attribute_column.structural_definition.code_list, NewQbCodeList):
+            new_code_list = attribute_column.structural_definition.code_list
             map_attr_val_labels_to_uri_identifiers = dict(
                 [
                     (concept.label, concept.uri_safe_identifier)
@@ -111,7 +117,7 @@ def convert_data_values_to_uri_safe_values(
             )
 
     for attribute_column in get_columns_of_dsd_type(cube, QbAttribute):
-        attribute = attribute_column.component
+        attribute = attribute_column.structural_definition
         new_attribute_values: List[NewQbAttributeValue] = attribute.new_attribute_values  # type: ignore
         if (
             not isinstance(attribute, QbAttributeLiteral)

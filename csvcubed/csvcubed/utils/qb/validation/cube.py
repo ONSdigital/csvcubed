@@ -36,7 +36,9 @@ def _validate_dimensions(cube: Cube) -> List[ValidationError]:
     dimension_columns = get_columns_of_dsd_type(cube, QbDimension)
 
     for c in cube.columns:
-        if isinstance(c, QbColumn) and isinstance(c.component, ExistingQbDimension):
+        if isinstance(c, QbColumn) and isinstance(
+            c.structural_definition, ExistingQbDimension
+        ):
             if c.csv_column_uri_template is None:
                 errors.append(
                     CsvColumnUriTemplateMissingError(
@@ -53,13 +55,13 @@ def _validate_attributes(cube: Cube) -> List[ValidationError]:
     errors: List[ValidationError] = []
 
     for c in cube.columns:
-        if isinstance(c, QbColumn) and isinstance(c.component, QbAttribute):
-            if isinstance(c.component, QbAttributeLiteral):
+        if isinstance(c, QbColumn) and isinstance(c.structural_definition, QbAttribute):
+            if isinstance(c.structural_definition, QbAttributeLiteral):
                 if c.csv_column_uri_template is not None:
                     errors.append(
                         CsvColumnLiteralWithUriTemplate(
                             c.csv_column_title,
-                            f"{c.component.__class__.__name__} "
+                            f"{c.structural_definition.__class__.__name__} "
                             + "cannot have a uri_tempate as it holds literal values",
                         )
                     )
@@ -67,12 +69,12 @@ def _validate_attributes(cube: Cube) -> List[ValidationError]:
                 # Not a QbAttributeLiteral
                 if (
                     c.csv_column_uri_template is None
-                    and len(c.component.new_attribute_values) == 0  # type: ignore
+                    and len(c.structural_definition.new_attribute_values) == 0  # type: ignore
                 ):
                     errors.append(
                         CsvColumnUriTemplateMissingError(
                             c.csv_column_title,
-                            f"{c.component.__class__.__name__} using existing attribute values",
+                            f"{c.structural_definition.__class__.__name__} using existing attribute values",
                         )
                     )
 
