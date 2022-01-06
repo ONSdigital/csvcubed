@@ -181,7 +181,7 @@ pipeline {
                 archiveArtifacts artifacts: '**/dist/*.whl, **/docs/_build/html/**/*, **/external-docs/site/**/*', fingerprint: true
                 
                 try {
-                    withCredentials([gitUsernamePassword(credentialsId: 'testonetwothree')]){
+                    withCredentials([gitUsernamePassword(credentialsId: 'testonetwothree', gitToolName: 'git-tool')]){
                         //withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'robons/******', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                         sh 'git clone "https://github.com/GSS-Cogs/csvcubed-docs.git"'
                         dir ('csvcubed-docs') {
