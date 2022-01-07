@@ -202,7 +202,7 @@ pipeline {
                                 sh 'git rm -rf api-docs'
                             }
                             sh 'mkdir api-docs'
-                            sh 'cp -r ../docs/_build/html/* api-docs'
+                            sh 'cp -r ../docs/_build/html/**/* api-docs'
 
 
                             sh 'git add *'
