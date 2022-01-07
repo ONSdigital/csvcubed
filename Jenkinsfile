@@ -210,7 +210,7 @@ pipeline {
                         dir ('csvcubed-docs') {
                             sh 'git config --global user.email "csvcubed@gsscogs.uk" && git config --global user.name "csvcubed"'
                             if (fileExists("API-docs")) {
-                                sh 'git rm -rf external'
+                                sh 'git rm -rf API-docs'
                             }
                             sh 'mkdir API-docs'
                             sh 'cp -r ../docs/_build/html/* API-docs'
