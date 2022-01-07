@@ -185,44 +185,43 @@ pipeline {
 
                 archiveArtifacts artifacts: '**/dist/*.whl, **/docs/_build/html/**/*, **/external-docs/site/**/*', fingerprint: true
                 
-                try {
-                    withCredentials([gitUsernamePassword(credentialsId: 'csvcubed-github', gitToolName: 'git-tool')]){
-                        sh 'git clone "https://github.com/GSS-Cogs/csvcubed-docs.git"'
-                        dir ('csvcubed-docs') {
-                            sh 'git config --global user.email "csvcubed@gsscogs.uk" && git config --global user.name "csvcubed"'
-                            if (fileExists("external")) {
-                                sh 'git rm -rf external'
+                stage('Pushing to csvcubed-docs'){
+                    // when {
+                    //     expression {
+                    //         return false
+                    //         }
+                    //     }
+                    steps{
+                        try {
+                            withCredentials([gitUsernamePassword(credentialsId: 'csvcubed-github', gitToolName: 'git-tool')]){
+                                sh 'git clone "https://github.com/GSS-Cogs/csvcubed-docs.git"'
+                                dir ('csvcubed-docs') {
+                                    sh 'git config --global user.email "csvcubed@gsscogs.uk" && git config --global user.name "csvcubed"'
+                                    
+                                    if (fileExists("external")) {
+                                        sh 'git rm -rf external'
+                                    }
+                                    sh 'mkdir external'
+                                    sh 'cp -r ../external-docs/site/* external'
+
+
+                                    if (fileExists("api-docs")) {
+                                        sh 'git rm -rf api-docs'
+                                    }
+                                    sh 'mkdir api-docs'
+                                    sh 'cp -r ../docs/_build/html/* api-docs'
+
+
+                                    sh 'git add *'
+                                    sh 'git commit -m "Updating documentation."'
+                                    sh 'git push'
+                                }
                             }
-                            sh 'mkdir external'
-                            sh 'cp -r ../external-docs/site/* external'
-                            sh 'git add *'
-                            sh 'git commit -m "Updating documentation."'
-                            sh 'git push'
+                        } finally {
+                            sh 'rm -rf csvcubed-docs'
                         }
                     }
-                } finally {
-                    sh 'rm -rf csvcubed-docs'
                 }
-
-                try {
-                    withCredentials([gitUsernamePassword(credentialsId: 'csvcubed-github', gitToolName: 'git-tool')]){
-                        sh 'git clone "https://github.com/GSS-Cogs/csvcubed-docs.git"'
-                        dir ('csvcubed-docs') {
-                            sh 'git config --global user.email "csvcubed@gsscogs.uk" && git config --global user.name "csvcubed"'
-                            if (fileExists("API-docs")) {
-                                sh 'git rm -rf API-docs'
-                            }
-                            sh 'mkdir API-docs'
-                            sh 'cp -r ../docs/_build/html/* API-docs'
-                            sh 'git add *'
-                            sh 'git commit -m "Updating documentation."'
-                            sh 'git push'
-                        }
-                    }
-                } finally {
-                    sh 'rm -rf csvcubed-docs'
-                }
-
 
                 // Set more permissive permissions on all files so future processes/Jenkins can easily delete them.
                 sh 'chmod -R ugo+rw .'
