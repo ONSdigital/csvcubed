@@ -10,3 +10,6 @@ An attribute can have values which are *either* **literal** values or **resource
 
 * If the attribute **values are literals** then the column's mapping should **not have a value URI template**.
 * If the attribute **values are resources** then the column's mapping should **not have a datatype**.
+
+<!-- TODO: Link to somewhere which helps the user define CSV Column URI templates. -->
+<!-- TODO: Link to glossary definitions of literals and resources. -->

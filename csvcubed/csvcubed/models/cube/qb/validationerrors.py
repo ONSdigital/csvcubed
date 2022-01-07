@@ -9,7 +9,12 @@ from dataclasses import dataclass
 from typing import Optional, Type, Union
 from abc import ABC
 
-from csvcubed.models.cube import QbMultiMeasureDimension, QbDimension
+from csvcubed.models.cube import (
+    QbMultiMeasureDimension,
+    QbDimension,
+    QbSingleMeasureObservationValue,
+    QbMultiMeasureObservationValue,
+)
 from csvcubed.models.cube.qb.components import (
     QbObservationValue,
     QbMultiUnits,
@@ -97,6 +102,11 @@ class MoreThanOneUnitsColumnError(MaxNumComponentsExceededError):
 
 
 @dataclass
+class MoreThanOneObservationsColumnError(MaxNumComponentsExceededError):
+    component_type: ComponentTypeDescription = QbObservationValue
+
+
+@dataclass
 class MinNumComponentsNotSatisfiedError(SpecificValidationError, ABC):
     """
     Represents an error where the user must define a minimum number of components of a given type, but has not done so.
@@ -124,7 +134,7 @@ class NoDimensionsDefinedError(MinNumComponentsNotSatisfiedError):
 
 
 @dataclass
-class WrongNumberComponentsError(SpecificValidationError):
+class WrongNumberComponentsError(SpecificValidationError, ABC):
     """
     Represents an error where the user must include a specific number of components, but has not done so.
     """
@@ -144,7 +154,7 @@ class WrongNumberComponentsError(SpecificValidationError):
 
 
 @dataclass
-class NeitherDefinedError(SpecificValidationError):
+class NeitherDefinedError(SpecificValidationError, ABC):
     """
     An error for when the user must define one of two different kinds of component, but has defined neither.
     """
@@ -164,14 +174,33 @@ class NeitherDefinedError(SpecificValidationError):
 
 
 @dataclass
-class UnitsNotDefinedError(NeitherDefinedError):
+class NoUnitsDefinedError(NeitherDefinedError):
     """
     An error for when the user has not defined any units for the dataset.
     """
 
     component_one: ComponentTypeDescription = f"{QbObservationValue.__name__}.unit"
     component_two: ComponentTypeDescription = QbMultiUnits
-    additional_explanation: Optional[str] = None
+
+
+@dataclass
+class NoMeasuresDefinedError(NeitherDefinedError):
+    """
+    An error for when the user has not defined any measures for the dataset.
+    """
+
+    component_one: ComponentTypeDescription = f"{QbObservationValue.__name__}.measure"
+    component_two: ComponentTypeDescription = QbMultiMeasureDimension
+
+
+@dataclass
+class NoObservedValuesColumnDefinedError(NeitherDefinedError):
+    """
+    An error for when the user has not defined any observed value columns for the dataset.
+    """
+
+    component_one: ComponentTypeDescription = QbSingleMeasureObservationValue
+    component_two: ComponentTypeDescription = QbMultiMeasureObservationValue
 
 
 @dataclass

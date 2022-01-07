@@ -9,7 +9,7 @@ from csvcubed.models.cube import *
 from csvcubed.models.cube.qb.validationerrors import (
     CsvColumnUriTemplateMissingError,
     MinNumComponentsNotSatisfiedError,
-    UnitsNotDefinedError,
+    NoUnitsDefinedError,
     BothUnitTypesDefinedError,
     MaxNumComponentsExceededError,
     WrongNumberComponentsError,
@@ -220,7 +220,7 @@ def test_no_unit_defined():
 
     assert_num_validation_errors(errors, 1)
     error = errors[0]
-    assert isinstance(error, UnitsNotDefinedError)
+    assert isinstance(error, NoUnitsDefinedError)
 
 
 def test_multiple_units_columns():

@@ -13,11 +13,14 @@ from csvcubed.models.cube import (
     ExistingQbAttribute,
     NewQbAttribute,
     QbMultiMeasureDimension,
-    UnitsNotDefinedError,
+    NoUnitsDefinedError,
     BothUnitTypesDefinedError,
     BothMeasureTypesDefinedError,
     MoreThanOneUnitsColumnError,
     MoreThanOneMeasureColumnError,
+    NoMeasuresDefinedError,
+    NoObservedValuesColumnDefinedError,
+    MoreThanOneObservationsColumnError,
 )
 
 from csvcubedmodels.rdf.namespaces import SDMX_Attribute
@@ -36,12 +39,11 @@ def validate_observations(cube: Cube) -> List[ValidationError]:
     if len(multi_units_columns) > 1:
         errors.append(MoreThanOneUnitsColumnError(len(multi_units_columns)))
 
-    if len(observed_value_columns) != 1:
-        errors.append(
-            WrongNumberComponentsError(
-                QbObservationValue, 1, len(observed_value_columns)
-            )
-        )
+    num_obs_val_columns = len(observed_value_columns)
+    if num_obs_val_columns == 0:
+        errors.append(NoObservedValuesColumnDefinedError())
+    elif num_obs_val_columns > 1:
+        errors.append(MoreThanOneObservationsColumnError(num_obs_val_columns))
     else:
         single_measure_obs_val_columns = get_columns_of_dsd_type(
             cube, QbSingleMeasureObservationValue
@@ -132,7 +134,7 @@ def _validate_observation_value(
     errors: List[ValidationError] = []
     if observation_value.component.unit is None:
         if len(multi_unit_columns) == 0:
-            errors.append(UnitsNotDefinedError())
+            errors.append(NoUnitsDefinedError())
     else:
         if len(multi_unit_columns) > 0:
             errors.append(BothUnitTypesDefinedError())
@@ -147,14 +149,7 @@ def _validate_multi_measure_cube(
 
     multi_measure_columns = get_columns_of_dsd_type(cube, QbMultiMeasureDimension)
     if len(multi_measure_columns) == 0:
-        errors.append(
-            WrongNumberComponentsError(
-                QbMultiMeasureDimension,
-                expected_number=1,
-                actual_number=0,
-                additional_explanation="A multi-measure cube must have a measure dimension.",
-            )
-        )
+        errors.append(NoMeasuresDefinedError())
     elif len(multi_measure_columns) > 1:
         errors.append(MoreThanOneMeasureColumnError(len(multi_measure_columns)))
 

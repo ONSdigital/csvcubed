@@ -20,3 +20,7 @@ A column mapping reuses:
 Ensure that you have an active internet connection and can reach the PMD platform. Once there, ensure that the existing resource you are reusing is correctly defined.
 
 If the above is not possible, ensure that the value URI template is correctly set in the column's mapping.
+
+<!-- TODO: Link to somewhere which helps the user define CSV Column URI templates. -->
+
+<!-- TODO: Link to some document discussing why we query PMD for certain information and where PMD lives. -->

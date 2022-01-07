@@ -11,26 +11,29 @@ nav:
       - Shaping your data: quick-start/shaping.md
     - Guides: 
       - guides/index.md
-      - Raise an issue: guides/raise-an-issue.md
+      - Raise an issue: guides/raise-issue.md
       - Shape your data: guides/shape-data.md
+      - Handling missing observed values: guides/missing-observed-values.md
       - Errors:
         - guides/errors/index.md
-        - Column validation: guides/errors/column-validation.md
         - Missing column definition: guides/errors/missing-column-definition.md
         - Column not found in data: guides/errors/column-not-found-in-data.md
         - Duplicate column title: guides/errors/duplicate-column-title.md
         - No dimensions defined: guides/errors/no-dimensions-defined.md
-        - Wrong number components: guides/errors/wrong-number-components.md
-        - CSV column literal with URI template: guides/errors/csv-column-literal-with-uri-template.md
-        - CSV column URI template missing: guides/errors/csv-column-uri-template-missing.md
-        - Neither defined: guides/errors/neither-defined.md
-        - Observation values missing: guides/errors/observation-values-missing.md
-        - Undefined values: guides/errors/undefined-values.md
+        - No measures defined: guides/errors/no-measures-defined.md
+        - No units defined: guides/errors/no-units-defined.md
         - Multiple measure columns: guides/errors/multiple-measure-columns.md
         - Multiple units columns: guides/errors/multiple-units-columns.md
+        - Multiple observations columns: guides/errors/multiple-observations-columns.md
+        - No observations column defined: guides/errors/no-observations-columns.md
+        - Observed values missing: guides/errors/observed-values-missing.md
         - Both measure types defined: guides/errors/both-measure-types-defined.md
         - Both unit types defined: guides/errors/both-unit-types-defined.md
-        - Units not defined: guides/errors/units-not-defined.md
+        - Undefined unit URIs: guides/errors/undefined-unit-uris.md
+        - Undefined measure URIs: guides/errors/undefined-measure-uris.md
+        - CSV column URI template missing: guides/errors/csv-column-uri-template-missing.md
+        - CSV column literal with URI template: guides/errors/csv-column-literal-with-uri-template.md
+        - Column validation error: guides/errors/column-validation.md
     - Reference Metadata: 
       - reference-metadata/index.md
     - Glossary: 
