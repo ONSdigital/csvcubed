@@ -202,7 +202,15 @@ pipeline {
                                 sh 'git rm -rf api-docs'
                             }
                             sh 'mkdir api-docs'
-                            sh 'cp -r ../docs/_build/html/**/* api-docs'
+                            sh 'cd api-docs'
+                            sh 'mkdir csvcubed'
+                            sh 'mkdir csvcubed-devtools'
+                            sh 'mkdir csvcubed-models'
+                            sh 'mkdir csvcubed-pmd'
+                            sh 'cp -r ../csvcubed/docs/_build/html/**/* csvcubed'
+                            sh 'cp -r ../csvcubed-devtools/docs/_build/html/**/* csvcubed-devtools'
+                            sh 'cp -r ../csvcubed-models/docs/_build/html/**/* csvcubed-models'
+                            sh 'cp -r ../csvcubed-pmd/docs/_build/html/**/* csvcubed-pmd'
 
 
                             sh 'git add *'
