@@ -9,13 +9,11 @@ from dataclasses import dataclass
 from typing import Optional, Type, Union
 from abc import ABC
 
-from csvcubed.models.cube import (
+from ..qb import (
     QbMultiMeasureDimension,
     QbDimension,
     QbSingleMeasureObservationValue,
     QbMultiMeasureObservationValue,
-)
-from csvcubed.models.cube.qb.components import (
     QbObservationValue,
     QbMultiUnits,
     QbDataStructureDefinition,
@@ -72,9 +70,9 @@ class MaxNumComponentsExceededError(SpecificValidationError, ABC):
     too many.
     """
 
-    component_type: ComponentTypeDescription
-    maximum_number: int
     actual_number: int
+    maximum_number: int
+    component_type: ComponentTypeDescription
     additional_explanation: Optional[str] = None
 
     def __post_init__(self):
@@ -88,21 +86,40 @@ class MaxNumComponentsExceededError(SpecificValidationError, ABC):
 
 @dataclass
 class MoreThanOneDefinedError(MaxNumComponentsExceededError, ABC):
+    """
+    More than one instance of a component has been found. A maximum of one of these components can be defined per cube.
+    """
+
     maximum_number: int = 1
 
 
 @dataclass
 class MoreThanOneMeasureColumnError(MaxNumComponentsExceededError):
+    """
+    More than one multi-measure columns has been defined in a cube.
+    """
+
+    maximum_number: int = 1
     component_type: ComponentTypeDescription = QbMultiMeasureDimension
 
 
 @dataclass
 class MoreThanOneUnitsColumnError(MaxNumComponentsExceededError):
+    """
+    More than one multi-units column has been defined in a cube.
+    """
+
+    maximum_number: int = 1
     component_type: ComponentTypeDescription = QbMultiUnits
 
 
 @dataclass
 class MoreThanOneObservationsColumnError(MaxNumComponentsExceededError):
+    """
+    An error where more than one observations column has been defined in a cube.
+    """
+
+    maximum_number: int = 1
     component_type: ComponentTypeDescription = QbObservationValue
 
 
@@ -128,6 +145,10 @@ class MinNumComponentsNotSatisfiedError(SpecificValidationError, ABC):
 
 @dataclass
 class NoDimensionsDefinedError(MinNumComponentsNotSatisfiedError):
+    """
+    Represents an error where no dimensions have been defined in a cube.
+    """
+
     component_type: ComponentTypeDescription = QbDimension
     minimum_number: int = 1
     actual_number: int = 0

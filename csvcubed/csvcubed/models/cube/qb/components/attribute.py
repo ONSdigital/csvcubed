@@ -16,7 +16,7 @@ from .arbitraryrdf import (
 )
 from .datastructuredefinition import ColumnarQbDataStructureDefinition
 from csvcubed.models.validationerror import ValidationError
-from .validationerrors import UndefinedValuesError
+from .validationerrors import UndefinedValuesError, UndefinedAttributeValueUrisError
 from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_optional_str
 
 from csvcubed.utils.uri import uri_safe
@@ -70,11 +70,7 @@ class QbAttribute(ColumnarQbDataStructureDefinition, ArbitraryRdf, ABC):
             undefined_values = expected_values - actual_values
 
             if len(undefined_values) > 0:
-                return [
-                    UndefinedValuesError(
-                        self, "new attribute value URI", undefined_values
-                    )
-                ]
+                return [UndefinedAttributeValueUrisError(self, undefined_values)]
 
         return []
 
