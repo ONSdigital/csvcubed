@@ -1,6 +1,7 @@
 import pytest
 
 from csvcubed.models.cube import *
+from csvcubed.models.cube import QbMultiMeasureDimension, QbMultiUnits
 from csvcubed.utils.qb.cube import get_all_units, get_all_measures
 
 

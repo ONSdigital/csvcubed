@@ -16,11 +16,11 @@ from ..qb import (
     QbMultiMeasureObservationValue,
     QbObservationValue,
     QbMultiUnits,
-    QbDataStructureDefinition,
+    QbStructuralDefinition,
 )
 from csvcubed.models.validationerror import SpecificValidationError
 
-ComponentTypeDescription = Union[str, Type[QbDataStructureDefinition]]
+ComponentTypeDescription = Union[str, Type[QbStructuralDefinition]]
 
 
 def _get_description_for_component(t: ComponentTypeDescription) -> str:

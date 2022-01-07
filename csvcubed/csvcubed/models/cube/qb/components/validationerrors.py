@@ -8,7 +8,7 @@ from abc import ABC
 from dataclasses import dataclass
 from typing import Set
 
-from .datastructuredefinition import QbDataStructureDefinition
+from .datastructuredefinition import QbStructuralDefinition
 from csvcubed.models.validationerror import SpecificValidationError
 
 
@@ -20,7 +20,7 @@ class UndefinedValuesError(SpecificValidationError, ABC):
     (e.g. a dimension column contains values not in the defined code list)
     """
 
-    component: QbDataStructureDefinition
+    component: QbStructuralDefinition
     """The component where the undefined values were found."""
 
     undefined_values: Set[str]

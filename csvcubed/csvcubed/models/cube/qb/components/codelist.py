@@ -1,6 +1,8 @@
 """
 Code Lists
 ----------
+
+Represent code lists in an RDF Data Cube.
 """
 from pathlib import Path
 from dataclasses import dataclass, field
@@ -9,13 +11,18 @@ from abc import ABC
 from pandas import Series, DataFrame
 from pydantic import root_validator
 
-from csvcubed.models.uriidentifiable import UriIdentifiable
+from .concept import NewQbConcept, DuplicatedQbConcept
 from csvcubed.readers.skoscodelistreader import extract_code_list_concept_scheme_info
 from csvcubed.utils.pandas import ensure_no_uri_safe_collision
-from .arbitraryrdf import ArbitraryRdf, RdfSerialisationHint, TripleFragmentBase
-from .datastructuredefinition import QbDataStructureDefinition
+from .arbitraryrdf import (
+    ArbitraryRdf,
+    RdfSerialisationHint,
+    TripleFragmentBase,
+)
+from .datastructuredefinition import (
+    SecondaryQbStructuralDefinition,
+)
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
-from csvcubed.utils.uri import uri_safe
 from csvcubed.utils.validators.uri import validate_uri
 from csvcubed.utils.validators.file import validate_file_exists
 from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_str
@@ -23,7 +30,7 @@ from csvcubed.models.validationerror import ValidationError
 
 
 @dataclass
-class QbCodeList(QbDataStructureDefinition, ABC):
+class QbCodeList(SecondaryQbStructuralDefinition, ABC):
     pass
 
 
@@ -36,50 +43,6 @@ class ExistingQbCodeList(QbCodeList):
     concept_scheme_uri: str
 
     _concept_scheme_uri_validator = validate_uri("concept_scheme_uri")
-
-
-@dataclass(eq=False, unsafe_hash=False)
-class NewQbConcept(UriIdentifiable):
-
-    label: str
-    code: str = field(default="")
-    parent_code: Optional[str] = field(default=None, repr=False)
-    sort_order: Optional[int] = field(default=None, repr=False)
-    description: Optional[str] = field(default=None, repr=False)
-    uri_safe_identifier_override: Optional[str] = field(default=None, repr=False)
-
-    def get_identifier(self) -> str:
-        return self.code
-
-    def __post_init__(self):
-        if self.code.strip() == "":
-            self.code = uri_safe(self.label)
-
-    def __eq__(self, other):
-        return isinstance(other, NewQbConcept) and self.code == other.code
-
-    def __hash__(self):
-        return self.code.__hash__()
-
-
-@dataclass
-class ExistingQbConcept:
-    """Represents a QbConcept which is already defined at the given URI."""
-
-    existing_concept_uri: str
-
-    _existing_concept_uri_validator = validate_uri("existing_concept_uri")
-
-
-@dataclass
-class DuplicatedQbConcept(NewQbConcept, ExistingQbConcept):
-    """
-    Represents a QbConcept which duplicates an :class:`ExistingQbConcept` with overriding label, notation, etc.
-
-    To be used in a :class:`CompositeQbCodeList`.
-    """
-
-    pass
 
 
 @dataclass
