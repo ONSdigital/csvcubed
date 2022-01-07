@@ -201,12 +201,11 @@ pipeline {
                             if (fileExists("api-docs")) {
                                 sh 'git rm -rf api-docs'
                             }
-                            sh 'mkdir api-docs | cd api-docs | mkdir csvcubed | mkdir csvcubed-devtools | mkdir csvcubed-models | mkdir csvcubed-pmd'
-                            // sh 'cd api-docs'
-                            // sh 'mkdir csvcubed'
-                            // sh 'mkdir csvcubed-devtools'
-                            // sh 'mkdir csvcubed-models'
-                            // sh 'mkdir csvcubed-pmd'
+                            sh 'mkdir api-docs'
+                            sh 'mkdir csvcubed | mv csvcubed api-docs'
+                            sh 'mkdir csvcubed-devtools | mv csvcubed-devtools api-docs'
+                            sh 'mkdir csvcubed-models | mv csvcubed-models api-docs'
+                            sh 'mkdir csvcubed-pmd | mv csvcubed-pmd api-docs'
                             sh 'cp -r ../csvcubed/docs/_build/html/**/* csvcubed'
                             sh 'cp -r ../csvcubed-devtools/docs/_build/html/**/* csvcubed-devtools'
                             sh 'cp -r ../csvcubed-models/docs/_build/html/**/* csvcubed-models'
