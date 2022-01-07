@@ -198,11 +198,11 @@ pipeline {
                             sh 'cp -r ../external-docs/site/* external'
 
 
-                            // if (fileExists("api-docs")) {
-                            //     sh 'git rm -rf api-docs'
-                            // }
-                            // sh 'mkdir api-docs'
-                            // sh 'cp -r ../docs/_build/html/* api-docs'
+                            if (fileExists("api-docs")) {
+                                sh 'git rm -rf api-docs'
+                            }
+                            sh 'mkdir api-docs'
+                            sh 'cp -r ../docs/_build/html/* api-docs'
 
 
                             sh 'git add *'
