@@ -1,38 +1,11 @@
-# Qui Tres divitior
+## Explanation
+this document os an example document for me to see what thos will look like on a web page with the layouts i have slection and the customization options that i have chosen.
 
-## Amans non exstinguite fudit
+## Themes
+ the themes i have chosen is material since is as said to be accesible and had brief explanations as to what made it accessible. also because all the others that wre researched into either said that it wasn't accesible or lcked options for accesbleness.
 
-Lorem markdownum mittis superis Myrrha primasque sisto, leto hic deae redunco!
-Saturnus **eripe**. Tamquam moderatior auras **dicentem**, ait natus mora solent
-ex et Phaethon.
+## third paragraph
+this is typed to have more on this page to read so tha there is a way for me toe scroll down the page so that i can teat thte back to top buton.
 
-*Nubes* Leucothoen tempora, **et** Iovis me miseris plantas Peleus obruor, in
-saxa, loca. Longave reus matre aetherioque inpensius nitentem.
-
-Modo cui recta fagus tuae navis dixit posses in fata miserere moveant, non manu,
-radiorum elige umbras truncaeque. **Vidisse est invidit** ipsa stant, mea corbe
-volucrem columbas.
-
-## Durum sed maenades
-
-Et nomen aprorum mihi meruit aliud, aethera hos eandem ille! Reserabo virum
-misit suae servaverat inlisit et vultu inpiger; quo lurida dicta.
-
-    var operation = pipeline;
-    if (parity) {
-        broadbandSafeCore(2);
-    }
-    if (freewareSessionCdfs - excel_standalone_regular < 2) {
-        ip_dynamic_raster /= digital;
-    } else {
-        virtual = manet_petaflops;
-    }
-
-Fetus unda auctor est necis haec crede ferunt molirique et maneat surge, erat.
-Et **meae extemplo hic** quas est lacrimis, eo lignum mutata. Vocando Derceti.
-Est dicta adiutis, inmensae aut natus ales [nec
-non](http://www.quarum.io/novaque). Praecordia inquit despectat ante **auro**
-crudelius e mandere tenuis meritis lunares, precibus, artes.
-
-Cavata triticeas mittere Pelates flamine leves. Achilles repugnat, flumina, per
-ego oblita viri digreditur nemus. Est tamen Dolona noxia.
+## fourth pargraph
+my speeling in this is terrible cuz im just getting anything down on this opage to be displayed for the sake of tsting the layout options that ghave bean chossen.
