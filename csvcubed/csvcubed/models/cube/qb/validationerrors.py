@@ -71,8 +71,8 @@ class MaxNumComponentsExceededError(SpecificValidationError, ABC):
     """
 
     actual_number: int
-    maximum_number: int
     component_type: ComponentTypeDescription
+    maximum_number: int
     additional_explanation: Optional[str] = None
 
     def __post_init__(self):

@@ -165,7 +165,7 @@ def _validate_single_measure_cube(
     if len(multi_measure_columns) > 0:
         errors.append(
             BothMeasureTypesDefinedError(
-                QbSingleMeasureObservationValue,
+                f"{QbSingleMeasureObservationValue.__name__}.measure",
                 QbMultiMeasureDimension,
                 additional_explanation="A single-measure cube cannot have a measure dimension.",
             )

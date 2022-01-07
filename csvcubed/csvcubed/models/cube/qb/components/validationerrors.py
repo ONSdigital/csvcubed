@@ -10,8 +10,6 @@ from typing import Set
 
 from .datastructuredefinition import QbDataStructureDefinition
 from csvcubed.models.validationerror import SpecificValidationError
-from .. import QbMultiMeasureDimension
-from ... import QbMultiUnits, QbAttribute
 
 
 @dataclass
