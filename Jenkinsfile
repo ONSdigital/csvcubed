@@ -186,6 +186,8 @@ pipeline {
 
                                 sh 'git add *'
                                 sh 'git commit -m "Updating documentation."'
+                                sh 'git checkout gh-pages'
+                                sh 'git reset --hard main'
                                 sh 'git push'
                             }
                         }
