@@ -43,6 +43,11 @@ pipeline {
             }
         }
         stage('Pyright') {
+            when {
+                expression {
+                    return false
+                }
+            }
             steps {
                     dir('csvcubed-devtools') {
                         sh 'poetry run pyright . --lib'
@@ -62,6 +67,11 @@ pipeline {
             }
         }
         stage('Test') {
+            when {
+                expression {
+                    return false
+                }
+            }
             steps {
                 dir('csvcubed-models/tests/unit') {
                     sh "poetry run pytest --junitxml=pytest_results_models.xml"
@@ -152,7 +162,7 @@ pipeline {
                                 }
                                 sh 'mkdir external'
                                 sh 'cp -r ../external-docs/site/* external'
-                                
+
 
                                 if (fileExists("api-docs")) {
                                     sh 'git rm -rf api-docs'
