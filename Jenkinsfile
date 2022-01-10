@@ -113,7 +113,7 @@ pipeline {
                 stash name: 'wheels', includes: '**/dist/*.whl'
             }
         }
-        stage('Documentation') {
+        stage('Building Documentation') {
             steps {
                 script {
                     dir('csvcubed-devtools') {
@@ -136,22 +136,27 @@ pipeline {
                         sh 'poetry run sphinx-build -W -b html docs docs/_build/html'
                     }
 
-                    stash name: 'docs', includes: '**/docs/_build/html/**/*'
-                }
-            }
-        }
-        stage('Build Static Site'){    
-            steps{
-                script{
                     dir('external-docs'){
                         sh "python3 -m mkdocs build"
                     }
+
+                    stash name: 'docs', includes: '**/docs/_build/html/**/*'
                     stash name: 'mkdocs', includes: '**/external-docs/site/**/*'
                 }
-
             }
         }
-        stage('Pushing to csvcubed-docs'){
+        // stage('Build Static Site'){    
+        //     steps{
+        //         script{
+        //             dir('external-docs'){
+        //                 sh "python3 -m mkdocs build"
+        //             }
+        //             stash name: 'mkdocs', includes: '**/external-docs/site/**/*'
+        //         }
+
+        //     }
+        // }
+        stage('Publishing Documentation'){
             // when{
             //     branch 'main'
             // }
