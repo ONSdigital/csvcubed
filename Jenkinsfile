@@ -43,6 +43,12 @@ pipeline {
             }
         }
         stage('Pyright') {
+            agent {
+                dockerfile {
+                    args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
+                    reuseNode true
+                }
+            }
             steps {
                     dir('csvcubed-devtools') {
                         sh 'poetry run pyright . --lib'
