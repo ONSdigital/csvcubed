@@ -174,12 +174,12 @@ pipeline {
                                     sh 'git rm -rf api-docs'
                                 }
                                 sh 'mkdir api-docs'
-                                dir("api-docs") {
-                                    sh 'mkdir csvcubed'
-                                    sh 'mkdir csvcubed-devtools'
-                                    sh 'mkdir csvcubed-models'
-                                    sh 'mkdir csvcubed-pmd'
+                                sh 'mkdir api-docs/csvcubed'
+                                sh 'mkdir api-docs/csvcubed-devtools'
+                                sh 'mkdir api-docs/csvcubed-models'
+                                sh 'mkdir api-docs/csvcubed-pmd'
 
+                                dir("api-docs") {
                                     sh 'cp -r ../../csvcubed/docs/_build/html/* csvcubed'
                                     sh 'cp -r ../../csvcubed-devtools/docs/_build/html/* csvcubed-devtools'
                                     sh 'cp -r ../../csvcubed-models/docs/_build/html/* csvcubed-models'
