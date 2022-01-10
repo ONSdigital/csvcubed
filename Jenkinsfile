@@ -43,6 +43,11 @@ pipeline {
             }
         }
         stage('Pyright') {
+            when {
+                expression {
+                    return false
+                }
+            }
             agent {
                 dockerfile {
                     args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
@@ -115,6 +120,11 @@ pipeline {
             }
         }
         stage('Documentation') {
+            when {
+                expression {
+                    return false
+                }
+            }
             steps {
                 script {
                     dir('csvcubed-devtools') {
@@ -231,11 +241,11 @@ pipeline {
                 
 
                 stage('Pushing to csvcubed-docs'){
-                    script{
-                        // when{
-                        //     branch 'main'
-                        // }
-                        steps{
+                    when{
+                        branch 'main'
+                    }
+                    steps{
+                        script{
                             try {
                                 withCredentials([gitUsernamePassword(credentialsId: 'csvcubed-github', gitToolName: 'git-tool')]){
                                     sh 'git clone "https://github.com/GSS-Cogs/csvcubed-docs.git"'
