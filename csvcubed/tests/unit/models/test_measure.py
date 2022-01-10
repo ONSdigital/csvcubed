@@ -21,7 +21,9 @@ def test_known_new_measures_defined():
 
     measure_dimension = measure_column.structural_definition
 
-    errors = measure_dimension.validate_data(data["Measure"], "measure", "{+measure}")
+    errors = measure_dimension.validate_data(
+        data["Measure"], "measure", "{+measure}", "Measure"
+    )
     assert_num_validation_errors(errors, 0)
 
 
@@ -35,7 +37,9 @@ def test_unknown_new_measures_error():
 
     measure_dimension = measure_column.structural_definition
 
-    errors = measure_dimension.validate_data(data["Measure"], "measure", "{+measure}")
+    errors = measure_dimension.validate_data(
+        data["Measure"], "measure", "{+measure}", "Measure"
+    )
     assert_num_validation_errors(errors, 1)
 
     error = errors[0]
@@ -60,7 +64,7 @@ def test_known_existing_measures_defined():
     measure_dimension = measure_column.structural_definition
 
     errors = measure_dimension.validate_data(
-        data["Measure"], "measure", "http://example.org/measures/{+measure}"
+        data["Measure"], "measure", "http://example.org/measures/{+measure}", "Measure"
     )
     assert_num_validation_errors(errors, 0)
 
@@ -81,7 +85,7 @@ def test_unknown_existing_measures_error():
     measure_dimension = measure_column.structural_definition
 
     errors = measure_dimension.validate_data(
-        data["Measure"], "measure", "http://example.org/measures/{+measure}"
+        data["Measure"], "measure", "http://example.org/measures/{+measure}", "Measure"
     )
     assert_num_validation_errors(errors, 1)
 

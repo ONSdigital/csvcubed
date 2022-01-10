@@ -7,6 +7,7 @@ Contains all of the URI definitions & configuration necessary to serialise a sko
 from dataclasses import dataclass
 
 from csvcubed.models.cube import NewQbCodeList
+from csvcubed.writers.urihelpers.skoscodelistconstants import SCHEMA_URI_IDENTIFIER
 
 
 @dataclass
@@ -30,16 +31,14 @@ class SkosCodeListNewUriHelper:
         """
         return f"{self._get_identifier_for_document()}#{identifier}"
 
-    def get_concept_uri(self, concept_str: str):
+    def get_concept_uri(self, concept_identifier: str):
         """
         Return the URI for a concept in a new code-list
         """
-        return self._uri_in_doc(
-            f"concept/{self.code_list.metadata.uri_safe_identifier}/{concept_str}"
-        )
+        return self._uri_in_doc(concept_identifier)
 
     def get_scheme_uri(self):
         """
         Return the URI for the scheme
         """
-        return self._uri_in_doc(f"scheme/{self.code_list.metadata.uri_safe_identifier}")
+        return self._uri_in_doc(SCHEMA_URI_IDENTIFIER)

@@ -55,7 +55,11 @@ class QbMultiUnits(QbColumnStructuralDefinition):
         )
 
     def validate_data(
-        self, data: pd.Series, csvw_column_name: str, csv_column_uri_template: str
+        self,
+        data: pd.Series,
+        csvw_column_name: str,
+        csv_column_uri_template: str,
+        column_csv_title: str,
     ) -> List[ValidationError]:
         if len(self.units) > 0:
             unique_values = {
