@@ -232,9 +232,9 @@ pipeline {
 
                 stage('Pushing to csvcubed-docs'){
                     script{
-                        when{
-                            branch 'main'
-                        }
+                        // when{
+                        //     branch 'main'
+                        // }
                         steps{
                             try {
                                 withCredentials([gitUsernamePassword(credentialsId: 'csvcubed-github', gitToolName: 'git-tool')]){
