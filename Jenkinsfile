@@ -43,11 +43,6 @@ pipeline {
             }
         }
         stage('Pyright') {
-            when {
-                expression {
-                    return false
-                }
-            }
             steps {
                     dir('csvcubed-devtools') {
                         sh 'poetry run pyright . --lib'
@@ -67,11 +62,6 @@ pipeline {
             }
         }
         stage('Test') {
-            when {
-                expression {
-                    return false
-                }
-            }
             steps {
                 dir('csvcubed-models/tests/unit') {
                     sh "poetry run pytest --junitxml=pytest_results_models.xml"
@@ -147,7 +137,7 @@ pipeline {
         }
         stage('Publishing Documentation'){
             when{
-                branch 'MuazzamChaud/issue278'
+                branch 'main'
             }
             steps{
                 script{
