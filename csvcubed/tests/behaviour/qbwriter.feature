@@ -244,13 +244,13 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     And the RDF should contain
     """
       <file:/tmp/multi-measure-qube-with-new-definitions.csv#structure> <http://purl.org/linked-data/cube#component> <file:/tmp/multi-measure-qube-with-new-definitions.csv#component/new-dimension>.
-      <file:/tmp/multi-measure-qube-with-new-definitions.csv#dimension/new-dimension> <http://purl.org/linked-data/cube#codeList> <file:/tmp/a-new-codelist.csv#scheme/a-new-codelist>.
+      <file:/tmp/multi-measure-qube-with-new-definitions.csv#dimension/new-dimension> <http://purl.org/linked-data/cube#codeList> <file:/tmp/a-new-codelist.csv#code-list>.
 
       <file:/tmp/multi-measure-qube-with-new-definitions.csv#obs/a/part-time> a <http://purl.org/linked-data/cube#Observation>;
-        <file:/tmp/multi-measure-qube-with-new-definitions.csv#dimension/new-dimension> <file:/tmp/a-new-codelist.csv#concept/a-new-codelist/a>.
+        <file:/tmp/multi-measure-qube-with-new-definitions.csv#dimension/new-dimension> <file:/tmp/a-new-codelist.csv#a>.
 
-      <file:/tmp/a-new-codelist.csv#scheme/a-new-codelist> a <http://www.w3.org/2004/02/skos/core#ConceptScheme>.
-      <file:/tmp/a-new-codelist.csv#concept/a-new-codelist/a> a <http://www.w3.org/2004/02/skos/core#Concept>.
+      <file:/tmp/a-new-codelist.csv#code-list> a <http://www.w3.org/2004/02/skos/core#ConceptScheme>.
+      <file:/tmp/a-new-codelist.csv#a> a <http://www.w3.org/2004/02/skos/core#Concept>.
     """
 
   Scenario: A single-measure dataset (with code-list) having existing resources can be serialised to a standard CSV-qb

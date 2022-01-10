@@ -5,6 +5,7 @@ Pandas
 Functions to help when working with pandas dtypes.
 """
 import json
+from collections.abc import Iterable
 from typing import DefaultDict, Union
 from pandas import Series, DataFrame
 from pandas.api.types import is_string_dtype
@@ -137,13 +138,19 @@ def coalesce_on_uri_safe(
 
 
 def _data_is_string_type(data: PandasDataTypes) -> bool:
+    if data is None:
+        return False
+
     if data.dtype == "category":
         return is_string_dtype(data.cat.categories)
 
     return is_string_dtype(data)
 
 
-def _get_unique_values(data: PandasDataTypes):
+def _get_unique_values(data: PandasDataTypes) -> Iterable[str]:
+    if data is None:
+        return []
+
     if data.dtype == "category":
         return data.cat.categories
 

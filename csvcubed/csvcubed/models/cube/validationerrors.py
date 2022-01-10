@@ -2,7 +2,7 @@
 Cube Validation Errors
 ----------------------
 """
-from collections import Set
+from typing import Set
 from dataclasses import dataclass
 
 from csvcubed.models.validationerror import SpecificValidationError
