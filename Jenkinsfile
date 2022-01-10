@@ -152,6 +152,7 @@ pipeline {
                                 }
                                 sh 'mkdir external'
                                 sh 'cp -r ../external-docs/site/* external'
+                                
 
                                 if (fileExists("api-docs")) {
                                     sh 'git rm -rf api-docs'
