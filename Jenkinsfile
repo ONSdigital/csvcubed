@@ -43,11 +43,6 @@ pipeline {
             }
         }
         stage('Pyright') {
-            when {
-                expression {
-                    return false
-                }
-            }
             steps {
                     dir('csvcubed-devtools') {
                         sh 'poetry run pyright . --lib'
