@@ -145,21 +145,10 @@ pipeline {
                 }
             }
         }
-        // stage('Build Static Site'){    
-        //     steps{
-        //         script{
-        //             dir('external-docs'){
-        //                 sh "python3 -m mkdocs build"
-        //             }
-        //             stash name: 'mkdocs', includes: '**/external-docs/site/**/*'
-        //         }
-
-        //     }
-        // }
         stage('Publishing Documentation'){
-            // when{
-            //     branch 'main'
-            // }
+            when{
+                branch 'MuazzamChaud/issue278'
+            }
             steps{
                 script{
                     try {
