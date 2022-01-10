@@ -116,7 +116,7 @@ def coalesce_on_uri_safe(
 
         if any(non_recoverable_errors):
             raise ValueError(
-                f"Unrecoverable error(s) experienced: {json.dumps(non_recoverable_errors, indent=4)}."
+                f"Unrecoverable error(s) experienced: {non_recoverable_errors}."
             )
         elif not any(errors):
             # There is a 1:1 relationship between categories and uri_safe categoies
