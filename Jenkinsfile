@@ -184,6 +184,8 @@ pipeline {
                                 sh 'cp -r ../csvcubed-models/docs/_build/html/* api-docs/csvcubed-models'
                                 sh 'cp -r ../csvcubed-pmd/docs/_build/html/* api-docs/csvcubed-pmd'
 
+                                sh 'touch .nojekyll'
+
                                 sh 'git add *'
                                 sh 'git commit -m "Updating documentation."'
                                 sh 'git checkout gh-pages'
