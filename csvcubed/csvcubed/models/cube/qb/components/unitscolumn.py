@@ -18,7 +18,7 @@ from .unit import (
     NewQbUnit,
     ExistingQbUnit,
 )
-from .validationerrors import UndefinedValuesError
+from .validationerrors import UndefinedUnitUrisError
 from csvcubed.models.validationerror import ValidationError
 from csvcubed.utils.uri import uri_safe
 
@@ -76,6 +76,6 @@ class QbMultiUnits(QbColumnStructuralDefinition):
 
             undefined_uris = unique_expanded_uris - expected_uris
             if len(undefined_uris) > 0:
-                return [UndefinedValuesError(self, "unit URI", undefined_uris)]
+                return [UndefinedUnitUrisError(self, undefined_uris)]
 
         return []

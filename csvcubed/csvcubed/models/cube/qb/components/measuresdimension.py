@@ -17,7 +17,7 @@ from .measure import (
     NewQbMeasure,
     ExistingQbMeasure,
 )
-from csvcubed.models.cube.qb.components.validationerrors import UndefinedValuesError
+from .validationerrors import UndefinedMeasureUrisError
 from csvcubed.models.validationerror import ValidationError
 from csvcubed.utils.uri import uri_safe
 from .datastructuredefinition import QbColumnStructuralDefinition
@@ -74,6 +74,6 @@ class QbMultiMeasureDimension(QbColumnStructuralDefinition):
 
             undefined_uris = unique_expanded_uris - expected_uris
             if len(undefined_uris) > 0:
-                return [UndefinedValuesError(self, "measure URI", undefined_uris)]
+                return [UndefinedMeasureUrisError(self, undefined_uris)]
 
         return []

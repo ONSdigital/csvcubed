@@ -7,11 +7,10 @@ from csvcubed.models.cube import NewQbAttribute, QbMultiMeasureDimension, QbMult
 from csvcubed.models.cube.qb.validationerrors import (
     CsvColumnUriTemplateMissingError,
     MinNumComponentsNotSatisfiedError,
-    UnitsNotDefinedError,
+    NoUnitsDefinedError,
     BothUnitTypesDefinedError,
     MaxNumComponentsExceededError,
     WrongNumberComponentsError,
-    IncompatibleComponentsError,
 )
 from tests.unit.test_baseunit import *
 from csvcubed.utils.qb.validation.cube import validate_qb_component_constraints
@@ -219,7 +218,7 @@ def test_no_unit_defined():
 
     assert_num_validation_errors(errors, 1)
     error = errors[0]
-    assert isinstance(error, UnitsNotDefinedError)
+    assert isinstance(error, NoUnitsDefinedError)
 
 
 def test_multiple_units_columns():
@@ -304,9 +303,9 @@ def test_multiple_obs_val_columns():
 
     assert_num_validation_errors(errors, 1)
     error = errors[0]
-    assert isinstance(error, WrongNumberComponentsError)
+    assert isinstance(error, MoreThanOneObservationsColumnError)
     assert error.component_type == QbObservationValue
-    assert error.expected_number == 1
+    assert error.maximum_number == 1
     assert error.actual_number == 2
 
 
@@ -340,14 +339,7 @@ def test_multi_measure_obs_val_without_measure_dimension():
 
     assert_num_validation_errors(errors, 1)
     error = errors[0]
-    assert isinstance(error, WrongNumberComponentsError)
-    assert error.component_type == QbMultiMeasureDimension
-    assert error.expected_number == 1
-    assert error.actual_number == 0
-    assert (
-        error.additional_explanation
-        == "A multi-measure cube must have a measure dimension."
-    )
+    assert isinstance(error, NoMeasuresDefinedError)
 
 
 def test_multi_measure_obs_val_with_multiple_measure_dimensions():
@@ -437,8 +429,8 @@ def test_measure_dimension_with_single_measure_obs_val():
 
     assert_num_validation_errors(errors, 1)
     error = errors[0]
-    assert isinstance(error, IncompatibleComponentsError)
-    assert error.component_one == QbSingleMeasureObservationValue
+    assert isinstance(error, BothMeasureTypesDefinedError)
+    assert error.component_one == f"{QbSingleMeasureObservationValue.__name__}.measure"
     assert error.component_two == QbMultiMeasureDimension
     assert (
         error.additional_explanation

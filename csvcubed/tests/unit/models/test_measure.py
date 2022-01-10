@@ -7,7 +7,9 @@ from csvcubed.models.cube import (
     QbColumn,
     ExistingQbMeasure,
 )
-from csvcubed.models.cube.qb.components.validationerrors import UndefinedValuesError
+from csvcubed.models.cube.qb.components.validationerrors import (
+    UndefinedMeasureUrisError,
+)
 from tests.unit.test_baseunit import assert_num_validation_errors
 
 
@@ -39,7 +41,7 @@ def test_unknown_new_measures_error():
     assert_num_validation_errors(errors, 1)
 
     error = errors[0]
-    assert isinstance(error, UndefinedValuesError)
+    assert isinstance(error, UndefinedMeasureUrisError)
     assert isinstance(error.component, QbMultiMeasureDimension)
     assert error.undefined_values == {"measure-3"}
 
@@ -86,7 +88,7 @@ def test_unknown_existing_measures_error():
     assert_num_validation_errors(errors, 1)
 
     error = errors[0]
-    assert isinstance(error, UndefinedValuesError)
+    assert isinstance(error, UndefinedMeasureUrisError)
     assert isinstance(error.component, QbMultiMeasureDimension)
     assert error.undefined_values == {"http://example.org/measures/measure-3"}
 
