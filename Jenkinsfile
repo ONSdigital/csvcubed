@@ -185,11 +185,12 @@ pipeline {
 
                 archiveArtifacts artifacts: '**/dist/*.whl, **/docs/_build/html/**/*, **/external-docs/site/**/*', fingerprint: true
                 
-                
-                stage('Pushing to csvcubed-docs'){
-                    // when{
 
-                    // }
+                //stage('Pushing to csvcubed-docs'){
+                if always{
+                    when{
+                        branch 'main'
+                    }
                     steps{
                         try {
                             withCredentials([gitUsernamePassword(credentialsId: 'csvcubed-github', gitToolName: 'git-tool')]){
