@@ -152,6 +152,48 @@ pipeline {
 
             }
         }
+        stage('Pushing to csvcubed-docs'){
+            when{
+                branch 'main'
+            }
+            steps{
+                try {
+                    withCredentials([gitUsernamePassword(credentialsId: 'csvcubed-github', gitToolName: 'git-tool')]){
+                        sh 'git clone "https://github.com/GSS-Cogs/csvcubed-docs.git"'
+                        dir ('csvcubed-docs') {
+                            sh 'git config --global user.email "csvcubed@gsscogs.uk" && git config --global user.name "csvcubed"'
+                            
+                            if (fileExists("external")) {
+                                sh 'git rm -rf external'
+                            }
+                            sh 'mkdir external'
+                            sh 'cp -r ../external-docs/site/* external'
+
+
+                            if (fileExists("api-docs")) {
+                                sh 'git rm -rf api-docs'
+                            }
+                            sh 'mkdir api-docs'
+                            sh 'mkdir csvcubed | mv csvcubed api-docs'
+                            sh 'mkdir csvcubed-devtools | mv csvcubed-devtools api-docs'
+                            sh 'mkdir csvcubed-models | mv csvcubed-models api-docs'
+                            sh 'mkdir csvcubed-pmd | mv csvcubed-pmd api-docs'
+                            sh 'cp -r ../csvcubed/docs/_build/html/**/* csvcubed'
+                            sh 'cp -r ../csvcubed-devtools/docs/_build/html/**/* csvcubed-devtools'
+                            sh 'cp -r ../csvcubed-models/docs/_build/html/**/* csvcubed-models'
+                            sh 'cp -r ../csvcubed-pmd/docs/_build/html/**/* csvcubed-pmd'
+
+
+                            sh 'git add *'
+                            sh 'git commit -m "Updating documentation."'
+                            sh 'git push'
+                        }
+                    }
+                } finally {
+                    sh 'rm -rf csvcubed-docs'
+                }
+            }
+        }
     }
     post {
         always {
@@ -233,48 +275,6 @@ pipeline {
                 sh 'chmod -R ugo+rw .'
                 // Clean up any unwanted files lying about.
                 sh "git clean -fxd --exclude='.venv'"
-            }
-        }
-    }
-    success{
-        when{
-            branch 'main'
-        }
-        steps{
-            try {
-                withCredentials([gitUsernamePassword(credentialsId: 'csvcubed-github', gitToolName: 'git-tool')]){
-                    sh 'git clone "https://github.com/GSS-Cogs/csvcubed-docs.git"'
-                    dir ('csvcubed-docs') {
-                        sh 'git config --global user.email "csvcubed@gsscogs.uk" && git config --global user.name "csvcubed"'
-                        
-                        if (fileExists("external")) {
-                            sh 'git rm -rf external'
-                        }
-                        sh 'mkdir external'
-                        sh 'cp -r ../external-docs/site/* external'
-
-
-                        if (fileExists("api-docs")) {
-                            sh 'git rm -rf api-docs'
-                        }
-                        sh 'mkdir api-docs'
-                        sh 'mkdir csvcubed | mv csvcubed api-docs'
-                        sh 'mkdir csvcubed-devtools | mv csvcubed-devtools api-docs'
-                        sh 'mkdir csvcubed-models | mv csvcubed-models api-docs'
-                        sh 'mkdir csvcubed-pmd | mv csvcubed-pmd api-docs'
-                        sh 'cp -r ../csvcubed/docs/_build/html/**/* csvcubed'
-                        sh 'cp -r ../csvcubed-devtools/docs/_build/html/**/* csvcubed-devtools'
-                        sh 'cp -r ../csvcubed-models/docs/_build/html/**/* csvcubed-models'
-                        sh 'cp -r ../csvcubed-pmd/docs/_build/html/**/* csvcubed-pmd'
-
-
-                        sh 'git add *'
-                        sh 'git commit -m "Updating documentation."'
-                        sh 'git push'
-                    }
-                }
-            } finally {
-                sh 'rm -rf csvcubed-docs'
             }
         }
     }
