@@ -6,10 +6,10 @@ from csvcubed.models.cube import (
     ExistingQbDimension,
     QbColumn,
     CsvColumnUriTemplateMissingError,
-    MinNumComponentsNotSatisfiedError,
     QbAttributeLiteral,
     CsvColumnLiteralWithUriTemplate,
     QbAttribute,
+    NoDimensionsDefinedError,
 )
 from csvcubed.models.validationerror import ValidationError
 from csvcubed.utils.qb.cube import get_columns_of_dsd_type
@@ -47,7 +47,7 @@ def _validate_dimensions(cube: Cube) -> List[ValidationError]:
                 )
 
     if len(dimension_columns) == 0:
-        errors.append(MinNumComponentsNotSatisfiedError(QbDimension, 1, 0))
+        errors.append(NoDimensionsDefinedError())
     return errors
 
 
