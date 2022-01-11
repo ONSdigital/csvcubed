@@ -178,8 +178,8 @@ pipeline {
                                 sh 'git add *'
                                 sh 'git add .nojekyll'
                                 sh 'git commit -m "Updating documentation."'
-                                //sh 'git checkout gh-pages'
-                                //sh 'git reset --hard main'
+                                sh 'git checkout gh-pages'
+                                sh 'git reset --hard main'
                                 sh 'git push -f'
                             }
                         }
