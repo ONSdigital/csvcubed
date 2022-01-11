@@ -24,6 +24,9 @@ rdflib = ">=6.0.0"
 sphinx = "*"
 sphinx-book-theme = "*"
 pyparsing = "==2.4.7"
+# docker depends on pywin32 - https://github.com/advisories/GHSA-hwfp-hg2m-9vr2
+# this is mainly to stop dependabot stop moaning since we don't use win32 for development
+pywin32 = { version = ">=301", markers = "sys_platform == 'win32'"}
 
 [tool.poetry.dev-dependencies]
 flake8 = "*"

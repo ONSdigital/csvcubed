@@ -116,6 +116,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
 
   Scenario: A QbCube with string literal new attributes should validate successfully
     Given a single-measure QbCube named "Qube with string literals" with "new" "string" attribute
+    Then the CSVqb should pass all validations
     When the cube is serialised to CSV-W
     Then csvlint validation of "qube-with-string-literals.csv-metadata.json" should succeed
     And csv2rdf on all CSV-Ws should succeed
@@ -132,6 +133,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
 
   Scenario: A QbCube with numeric literal new attributes should validate successfully
     Given a single-measure QbCube named "Qube with int literals" with "new" "int" attribute
+    Then the CSVqb should pass all validations
     When the cube is serialised to CSV-W
     Then csvlint validation of "qube-with-int-literals.csv-metadata.json" should succeed
     And csv2rdf on all CSV-Ws should succeed
@@ -148,6 +150,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
 
   Scenario: A QbCube with date literal new attributes should validate successfully
     Given a single-measure QbCube named "Qube with date literals" with "new" "date" attribute
+    Then the CSVqb should pass all validations
     When the cube is serialised to CSV-W
     Then csvlint validation of "qube-with-date-literals.csv-metadata.json" should succeed
     And csv2rdf on all CSV-Ws should succeed
@@ -164,6 +167,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
 
   Scenario: A QbCube with string literal existing attributes should validate successfully
     Given a single-measure QbCube named "Qube with string literals" with "existing" "string" attribute
+    Then the CSVqb should pass all validations
     When the cube is serialised to CSV-W
     Then csvlint validation of "qube-with-string-literals.csv-metadata.json" should succeed
     And csv2rdf on all CSV-Ws should succeed
@@ -178,6 +182,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
 
   Scenario: A QbCube with numeric literal existing attributes should validate successfully
     Given a single-measure QbCube named "Qube with int literals" with "existing" "int" attribute
+    Then the CSVqb should pass all validations
     When the cube is serialised to CSV-W
     Then csvlint validation of "qube-with-int-literals.csv-metadata.json" should succeed
     And csv2rdf on all CSV-Ws should succeed
@@ -192,6 +197,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
 
   Scenario: A QbCube with date literal existing attributes should validate successfully
     Given a single-measure QbCube named "Qube with date literals" with "existing" "date" attribute
+    Then the CSVqb should pass all validations
     When the cube is serialised to CSV-W
     Then csvlint validation of "qube-with-date-literals.csv-metadata.json" should succeed
     And csv2rdf on all CSV-Ws should succeed
@@ -428,3 +434,25 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
        <file:/tmp/some-qube.csv#obs/c/g> a qb:Observation;
                                          qb:dataSet <file:/tmp/some-qube.csv#dataset>.
     """
+
+  Scenario: Observation Values are Required where no `sdmxa:ObsStatus` Attribute Column is Present
+    Given a single-measure QbCube named "Bad Qube" with missing observation values
+    Then the CSVqb should fail validation with "Missing value(s) found for 'Value' in row(s) 1"
+    When the cube is serialised to CSV-W
+    # CSV-W validation will catch this error since the obs column is marked as `required` since no `sdmxa:obsStatus` column is defined.
+    Then csvlint validation of "bad-qube.csv-metadata.json" should fail with "required. Row: 3,3"
+
+  Scenario: Observation Values are Optional where an `sdmxa:ObsStatus` Attribute is Present
+    Given a single-measure QbCube named "Good Qube" with missing observation values and `sdmxa:obsStatus` replacements
+    Then the CSVqb should pass all validations
+    When the cube is serialised to CSV-W
+    Then csvlint validation of "good-qube.csv-metadata.json" should succeed
+
+  Scenario: Observation Values are Required where an `sdmxa:ObsStatus` Attribute Column is present but no value is set.
+    Given a single-measure QbCube named "Bad Qube" with missing observation values and missing `sdmxa:obsStatus` replacements
+    Then the CSVqb should fail validation with "Missing value(s) found for 'Value' in row(s) 0"
+    When the cube is serialised to CSV-W
+    # Unfortunately, CSV-W validation will *not* catch this error since the obs column cannot be marked as `required`
+    # since an `sdmxa:obsStatus` Attribute column has been defined.
+    Then csvlint validation of "bad-qube.csv-metadata.json" should succeed
+

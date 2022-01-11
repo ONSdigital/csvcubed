@@ -7,15 +7,20 @@ Qb-Cube Validation Errors
 
 from dataclasses import dataclass
 from typing import Optional, Type, Union
+from abc import ABC
 
-from csvcubed.models.cube.qb.components import (
+from ..qb import (
+    QbMultiMeasureDimension,
+    QbDimension,
+    QbSingleMeasureObservationValue,
+    QbMultiMeasureObservationValue,
     QbObservationValue,
     QbMultiUnits,
-    QbDataStructureDefinition,
+    QbStructuralDefinition,
 )
 from csvcubed.models.validationerror import SpecificValidationError
 
-ComponentTypeDescription = Union[str, Type[QbDataStructureDefinition]]
+ComponentTypeDescription = Union[str, Type[QbStructuralDefinition]]
 
 
 def _get_description_for_component(t: ComponentTypeDescription) -> str:
@@ -41,6 +46,7 @@ class CsvColumnUriTemplateMissingError(SpecificValidationError):
             + "csv_column_uri_template defined."
         )
 
+
 @dataclass
 class CsvColumnLiteralWithUriTemplate(SpecificValidationError):
     """
@@ -58,15 +64,15 @@ class CsvColumnLiteralWithUriTemplate(SpecificValidationError):
 
 
 @dataclass
-class MaxNumComponentsExceededError(SpecificValidationError):
+class MaxNumComponentsExceededError(SpecificValidationError, ABC):
     """
     Represents an error where the user can define a maximum number of components of a given type, but has defined
     too many.
     """
 
+    actual_number: int
     component_type: ComponentTypeDescription
     maximum_number: int
-    actual_number: int
     additional_explanation: Optional[str] = None
 
     def __post_init__(self):
@@ -79,7 +85,46 @@ class MaxNumComponentsExceededError(SpecificValidationError):
 
 
 @dataclass
-class MinNumComponentsNotSatisfiedError(SpecificValidationError):
+class MoreThanOneDefinedError(MaxNumComponentsExceededError, ABC):
+    """
+    More than one instance of a component has been found. A maximum of one of these components can be defined per cube.
+    """
+
+    maximum_number: int = 1
+
+
+@dataclass
+class MoreThanOneMeasureColumnError(MaxNumComponentsExceededError):
+    """
+    More than one multi-measure columns has been defined in a cube.
+    """
+
+    maximum_number: int = 1
+    component_type: ComponentTypeDescription = QbMultiMeasureDimension
+
+
+@dataclass
+class MoreThanOneUnitsColumnError(MaxNumComponentsExceededError):
+    """
+    More than one multi-units column has been defined in a cube.
+    """
+
+    maximum_number: int = 1
+    component_type: ComponentTypeDescription = QbMultiUnits
+
+
+@dataclass
+class MoreThanOneObservationsColumnError(MaxNumComponentsExceededError):
+    """
+    An error where more than one observations column has been defined in a cube.
+    """
+
+    maximum_number: int = 1
+    component_type: ComponentTypeDescription = QbObservationValue
+
+
+@dataclass
+class MinNumComponentsNotSatisfiedError(SpecificValidationError, ABC):
     """
     Represents an error where the user must define a minimum number of components of a given type, but has not done so.
     """
@@ -99,7 +144,18 @@ class MinNumComponentsNotSatisfiedError(SpecificValidationError):
 
 
 @dataclass
-class WrongNumberComponentsError(SpecificValidationError):
+class NoDimensionsDefinedError(MinNumComponentsNotSatisfiedError):
+    """
+    Represents an error where no dimensions have been defined in a cube.
+    """
+
+    component_type: ComponentTypeDescription = QbDimension
+    minimum_number: int = 1
+    actual_number: int = 0
+
+
+@dataclass
+class WrongNumberComponentsError(SpecificValidationError, ABC):
     """
     Represents an error where the user must include a specific number of components, but has not done so.
     """
@@ -119,7 +175,7 @@ class WrongNumberComponentsError(SpecificValidationError):
 
 
 @dataclass
-class NeitherDefinedError(SpecificValidationError):
+class NeitherDefinedError(SpecificValidationError, ABC):
     """
     An error for when the user must define one of two different kinds of component, but has defined neither.
     """
@@ -139,18 +195,37 @@ class NeitherDefinedError(SpecificValidationError):
 
 
 @dataclass
-class UnitsNotDefinedError(NeitherDefinedError):
+class NoUnitsDefinedError(NeitherDefinedError):
     """
     An error for when the user has not defined any units for the dataset.
     """
 
     component_one: ComponentTypeDescription = f"{QbObservationValue.__name__}.unit"
     component_two: ComponentTypeDescription = QbMultiUnits
-    additional_explanation: Optional[str] = None
 
 
 @dataclass
-class IncompatibleComponentsError(SpecificValidationError):
+class NoMeasuresDefinedError(NeitherDefinedError):
+    """
+    An error for when the user has not defined any measures for the dataset.
+    """
+
+    component_one: ComponentTypeDescription = f"{QbObservationValue.__name__}.measure"
+    component_two: ComponentTypeDescription = QbMultiMeasureDimension
+
+
+@dataclass
+class NoObservedValuesColumnDefinedError(NeitherDefinedError):
+    """
+    An error for when the user has not defined any observed value columns for the dataset.
+    """
+
+    component_one: ComponentTypeDescription = QbSingleMeasureObservationValue
+    component_two: ComponentTypeDescription = QbMultiMeasureObservationValue
+
+
+@dataclass
+class IncompatibleComponentsError(SpecificValidationError, ABC):
     """
     An error for when the user has defined components which are incompatible with each-other.
     """
@@ -177,4 +252,15 @@ class BothUnitTypesDefinedError(IncompatibleComponentsError):
 
     component_one: ComponentTypeDescription = f"{QbObservationValue.__name__}.unit"
     component_two: ComponentTypeDescription = QbMultiUnits
+    additional_explanation: Optional[str] = None
+
+
+@dataclass
+class BothMeasureTypesDefinedError(IncompatibleComponentsError):
+    """
+    An error for when the user has both a measure dimension column as well as setting `QbObservationValue.measure`.
+    """
+
+    component_one: ComponentTypeDescription = f"{QbObservationValue.__name__}.measure"
+    component_two: ComponentTypeDescription = QbMultiMeasureDimension
     additional_explanation: Optional[str] = None

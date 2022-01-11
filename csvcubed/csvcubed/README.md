@@ -10,6 +10,10 @@ It is anticipated that csvcubed will soon have a command line interface which ac
 
 ## API Documentation
 
-The latest API Documentation for the package can be found [here](https://ci.floop.org.uk/job/GSS_data/job/csvwlib/job/main/lastSuccessfulBuild/artifact/csvqb/docs/_build/html/index.html).
+The latest API Documentation for the package can be found [here](https://ci.floop.org.uk/job/GSS_data/job/csvwlib/job/main/lastSuccessfulBuild/artifact/csvcubed/docs/_build/html/index.html).
 
 TODO: #215 Update uri on build location in csvcubed/README.md
+
+## Further Links
+
+* [Using the Qb classes / Defining a QbCube](./models/cube/qb/README.md).

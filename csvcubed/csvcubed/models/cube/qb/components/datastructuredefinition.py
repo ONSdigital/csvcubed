@@ -1,6 +1,8 @@
 """
 Data Structure Definitions
 --------------------------
+
+Provides the structure or mapping to components of an RDF Cube (i.e. `qb:DataStructureDefintion`)
 """
 from dataclasses import dataclass
 from abc import ABC, abstractmethod
@@ -12,7 +14,7 @@ from csvcubed.models.validationerror import ValidationError
 
 
 @dataclass
-class QbDataStructureDefinition(PydanticModel, ABC):
+class QbStructuralDefinition(PydanticModel, ABC):
     """
     Base class for entities holding information necessary to generate one or many qb DataStructureDefinition (DSD)
     components.
@@ -22,7 +24,7 @@ class QbDataStructureDefinition(PydanticModel, ABC):
 
 
 @dataclass
-class ColumnarQbDataStructureDefinition(QbDataStructureDefinition, ABC):
+class QbColumnStructuralDefinition(QbStructuralDefinition, ABC):
     """
     Base class representing Qb Data Structure Definitions which can be directly attached to a `pd.DataFrame` column.
     """
@@ -39,7 +41,7 @@ class ColumnarQbDataStructureDefinition(QbDataStructureDefinition, ABC):
 
 
 @dataclass
-class MultiQbDataStructureDefinition(ColumnarQbDataStructureDefinition, ABC):
+class SecondaryQbStructuralDefinition(QbStructuralDefinition, ABC):
     """
-    Base class representing an entity which defines a group of `QbDataStructureDefinition` s.
+    Base class representing part of the qb Data Structure Definition which cannot in itself represent a column of data.
     """

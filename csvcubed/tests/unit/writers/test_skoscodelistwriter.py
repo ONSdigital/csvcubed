@@ -1,10 +1,9 @@
-import json
-
 import pytest
 from typing import Dict, Any
 from rdflib import RDFS, Literal, URIRef, Graph
 
 from csvcubed.models.cube import *
+from csvcubed.models.cube import NewQbConcept
 from csvcubed.models.cube.qb.components.arbitraryrdf import (
     RdfSerialisationHint,
     TripleFragment,
