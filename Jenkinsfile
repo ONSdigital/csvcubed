@@ -143,7 +143,7 @@ pipeline {
         }
         stage('Publishing Documentation'){
             when{
-                branch 'main'
+                branch 'MuazzamChaud/issue278'
             }
             steps{
                 script{
