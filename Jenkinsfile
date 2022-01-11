@@ -178,6 +178,7 @@ pipeline {
                                 sh 'git add *'
                                 sh 'git add .nojekyll'
                                 sh 'git commit -m "Updating documentation."'
+                                // commit being built in csvcubed repo: https://github.com/GSS-Cogs/csvcubed
                                 sh 'git checkout gh-pages'
                                 sh 'git reset --hard main'
                                 sh 'git push -f'
