@@ -7,7 +7,9 @@ from csvcubed.models.cube import (
     QbColumn,
     ExistingQbMeasure,
 )
-from csvcubed.models.cube.qb.components.validationerrors import UndefinedValuesError
+from csvcubed.models.cube.qb.components.validationerrors import (
+    UndefinedMeasureUrisError,
+)
 from tests.unit.test_baseunit import assert_num_validation_errors
 
 
@@ -19,7 +21,7 @@ def test_known_new_measures_defined():
         QbMultiMeasureDimension([NewQbMeasure("Measure 1"), NewQbMeasure("Measure 2")]),
     )
 
-    measure_dimension = measure_column.component
+    measure_dimension = measure_column.structural_definition
 
     errors = measure_dimension.validate_data(data["Measure"], "measure", "{+measure}")
     assert_num_validation_errors(errors, 0)
@@ -38,7 +40,7 @@ def test_known_existing_measures_defined():
         ),
     )
 
-    measure_dimension = measure_column.component
+    measure_dimension = measure_column.structural_definition
 
     errors = measure_dimension.validate_data(
         data["Measure"], "measure", "http://example.org/measures/{+measure}"
@@ -54,13 +56,13 @@ def test_known_new_measures_undefined():
         QbMultiMeasureDimension([NewQbMeasure("Measure 1"), NewQbMeasure("Measure 3")]),
     )
 
-    measure_dimension = measure_column.component
+    measure_dimension = measure_column.structural_definition
 
     errors = measure_dimension.validate_data(data["Measure"], "measure", "{+measure}")
     assert_num_validation_errors(errors, 1)
     error = errors[0]
 
-    assert isinstance(error, UndefinedValuesError)
+    assert isinstance(error, UndefinedMeasureUrisError)
     assert isinstance(error.component, QbMultiMeasureDimension)
     assert error.undefined_values == {"measure-2"}
 
@@ -78,7 +80,7 @@ def test_known_existing_measures_undefined():
         ),
     )
 
-    measure_dimension = measure_column.component
+    measure_dimension = measure_column.structural_definition
 
     errors = measure_dimension.validate_data(
         data["Measure"], "measure", "http://example.org/measures/{+measure}"
@@ -86,7 +88,7 @@ def test_known_existing_measures_undefined():
     assert_num_validation_errors(errors, 1)
     error = errors[0]
 
-    assert isinstance(error, UndefinedValuesError)
+    assert isinstance(error, UndefinedMeasureUrisError)
     assert isinstance(error.component, QbMultiMeasureDimension)
     assert error.undefined_values == {"http://example.org/measures/measure-2"}
 

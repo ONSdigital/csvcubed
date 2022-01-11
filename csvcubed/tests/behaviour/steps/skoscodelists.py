@@ -2,6 +2,7 @@ from behave import Given, When
 
 
 from csvcubed.models.cube import *
+from csvcubed.models.cube import NewQbConcept, DuplicatedQbConcept
 from csvcubed.writers.skoscodelistwriter import SkosCodeListWriter
 from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
 
