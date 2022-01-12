@@ -142,9 +142,9 @@ pipeline {
             }
         }
         stage('Publishing Documentation'){
-            when{
-                branch 'main'
-            }
+            // when{
+            //     branch 'main'
+            // }
             steps{
                 script{
                     try {
