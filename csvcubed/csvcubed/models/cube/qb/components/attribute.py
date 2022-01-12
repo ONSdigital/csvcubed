@@ -126,7 +126,7 @@ class QbAttributeLiteral(QbAttribute, ABC):
     def get_is_required(self) -> bool:
         return self.is_required
 
-    @validator("data_type", pre=True, always=False)
+    @validator("data_type", always=False)
     def data_type_value(cls, data_type):
         if data_type not in accepted_data_types:
             raise ValueError(f"Literal type '{data_type}' not supported")
