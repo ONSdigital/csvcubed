@@ -89,9 +89,9 @@ See the python [typing documentation](https://docs.python.org/3/library/typing.h
 
 ### API Documentation
 
->* [csvqb docs](https://ci.floop.org.uk/job/GSS_data/job/csvwlib/job/main/lastSuccessfulBuild/artifact/csvqb/docs/_build/html/index.html)
->* [sharedmodels docs](https://ci.floop.org.uk/job/GSS_data/job/csvwlib/job/main/lastSuccessfulBuild/artifact/sharedmodels/docs/_build/html/index.html)
->* [pmd docs](https://ci.floop.org.uk/job/GSS_data/job/csvwlib/job/main/lastSuccessfulBuild/artifact/pmd/docs/_build/html/index.html)
+>* [csvqb docs](https://ci.floop.org.uk/job/GSS_data/job/csvwlib/job/main/lastSuccessfulBuild/artifact/csvcubed/docs/_build/html/index.html)
+>* [sharedmodels docs](https://ci.floop.org.uk/job/GSS_data/job/csvwlib/job/main/lastSuccessfulBuild/artifact/csvcubed-models/docs/_build/html/index.html)
+>* [pmd docs](https://ci.floop.org.uk/job/GSS_data/job/csvwlib/job/main/lastSuccessfulBuild/artifact/csvcubed-pmd/docs/_build/html/index.html)
 >* [devtools docs](https://ci.floop.org.uk/job/GSS_data/job/csvwlib/job/main/lastSuccessfulBuild/artifact/devtools/docs/_build/html/index.html)
 
 TODO: #220 Update the links to the build docs in developer.md

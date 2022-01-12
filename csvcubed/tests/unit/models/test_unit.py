@@ -7,7 +7,7 @@ from csvcubed.models.cube import (
     ExistingQbUnit,
     QbMultiUnits,
 )
-from csvcubed.models.cube.qb.components.validationerrors import UndefinedValuesError
+from csvcubed.models.cube.qb.components.validationerrors import UndefinedUnitUrisError
 from tests.unit.test_baseunit import assert_num_validation_errors
 
 
@@ -19,7 +19,7 @@ def test_known_new_units_defined():
         QbMultiUnits([NewQbUnit("Unit 1"), NewQbUnit("Unit 2")]),
     )
 
-    unit_dimension = unit_column.component
+    unit_dimension = unit_column.structural_definition
 
     errors = unit_dimension.validate_data(data["Unit"], "unit", "{+unit}")
     assert_num_validation_errors(errors, 0)
@@ -33,13 +33,13 @@ def test_unknown_new_units_error():
         QbMultiUnits([NewQbUnit("Unit 1"), NewQbUnit("Unit 2")]),
     )
 
-    unit_dimension = unit_column.component
+    unit_dimension = unit_column.structural_definition
 
     errors = unit_dimension.validate_data(data["Unit"], "unit", "{+unit}")
     assert_num_validation_errors(errors, 1)
 
     error = errors[0]
-    assert isinstance(error, UndefinedValuesError)
+    assert isinstance(error, UndefinedUnitUrisError)
     assert isinstance(error.component, QbMultiUnits)
     assert error.undefined_values == {"unit-3"}
 
@@ -57,7 +57,7 @@ def test_known_existing_units_defined():
         ),
     )
 
-    unit_dimension = unit_column.component
+    unit_dimension = unit_column.structural_definition
 
     errors = unit_dimension.validate_data(
         data["Unit"], "unit", "http://example.org/units/{+unit}"
@@ -78,7 +78,7 @@ def test_unknown_existing_units_error():
         ),
     )
 
-    multi_units_component = unit_column.component
+    multi_units_component = unit_column.structural_definition
 
     errors = multi_units_component.validate_data(
         data["Unit"], "unit", "http://example.org/units/{+unit}"
@@ -86,7 +86,7 @@ def test_unknown_existing_units_error():
     assert_num_validation_errors(errors, 1)
 
     error = errors[0]
-    assert isinstance(error, UndefinedValuesError)
+    assert isinstance(error, UndefinedUnitUrisError)
     assert isinstance(error.component, QbMultiUnits)
     assert error.undefined_values == {"http://example.org/units/unit-3"}
 
