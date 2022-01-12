@@ -109,7 +109,7 @@ pipeline {
                 stash name: 'wheels', includes: '**/dist/*.whl'
             }
         }
-        stage('Documentation') {
+        stage('Building Documentation') {
             steps {
                 script {
                     dir('csvcubed-devtools') {
@@ -132,19 +132,62 @@ pipeline {
                         sh 'poetry run sphinx-build -W -b html docs docs/_build/html'
                     }
 
-                    stash name: 'docs', includes: '**/docs/_build/html/**/*'
-                }
-            }
-        }
-        stage('Build Static Site'){    
-            steps{
-                script{
                     dir('external-docs'){
                         sh "python3 -m mkdocs build"
                     }
+
+                    stash name: 'docs', includes: '**/docs/_build/html/**/*'
                     stash name: 'mkdocs', includes: '**/external-docs/site/**/*'
                 }
+            }
+        }
+        stage('Publishing Documentation'){
+            when{
+                branch 'main'
+            }
+            steps{
+                script{
+                    try {
+                        withCredentials([gitUsernamePassword(credentialsId: 'csvcubed-github', gitToolName: 'git-tool')]){
+                            sh 'git clone "https://github.com/GSS-Cogs/csvcubed-docs.git"'
+                            dir ('csvcubed-docs') {
+                                sh 'git config --global user.email "csvcubed@gsscogs.uk" && git config --global user.name "csvcubed"'
+                                
+                                if (fileExists("external")) {
+                                    sh 'git rm -rf external'
+                                }
+                                sh 'mkdir external'
+                                sh 'cp -r ../external-docs/site/* external'
 
+                                if (fileExists("api-docs")) {
+                                    sh 'git rm -rf api-docs'
+                                }
+                                sh 'mkdir api-docs'
+                                sh 'mkdir api-docs/csvcubed'
+                                sh 'mkdir api-docs/csvcubed-devtools'
+                                sh 'mkdir api-docs/csvcubed-models'
+                                sh 'mkdir api-docs/csvcubed-pmd'
+
+                                sh 'cp -r ../csvcubed/docs/_build/html/* api-docs/csvcubed'
+                                sh 'cp -r ../csvcubed-devtools/docs/_build/html/* api-docs/csvcubed-devtools'
+                                sh 'cp -r ../csvcubed-models/docs/_build/html/* api-docs/csvcubed-models'
+                                sh 'cp -r ../csvcubed-pmd/docs/_build/html/* api-docs/csvcubed-pmd'
+
+                                sh 'touch .nojekyll'
+
+                                sh 'git add *'
+                                sh 'git add .nojekyll'
+                                sh 'git commit -m "Updating documentation."'
+                                // commit being built in csvcubed repo: https://github.com/GSS-Cogs/csvcubed
+                                sh 'git checkout gh-pages'
+                                sh 'git reset --hard main'
+                                sh 'git push -f'
+                            }
+                        }
+                    } finally {
+                        sh 'rm -rf csvcubed-docs'
+                    }
+                }
             }
         }
     }
