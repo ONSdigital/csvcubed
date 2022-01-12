@@ -71,7 +71,8 @@ pipeline {
         stage('Test') {
             when {
                 expression { 
-                    return false // todo: Ensure this doesn't run when in a 'v*.*.*(-RC*)?' tag
+                    tag "v*.*.[0-8]-rc*"
+                    // todo: Ensure this doesn't run when in a 'v*.*.*(-RC*)?' tag v[0-9]+\.[0-9+]\.[0-9]+
                 }
             }
             steps {
@@ -105,7 +106,8 @@ pipeline {
         stage('Tox') {
             when {
                 expression {
-                    return true // todo: Ensure this only runs when in a 'v*.*.*(-RC*)?' tag
+                    // todo: Ensure this only runs when in a 'v*.*.*(-RC*)?' tag v[0-9]+\.[0-9+]\.[0-9]+
+                    tag "v*.*.9-rc*"
                 }
             }
             agent {
