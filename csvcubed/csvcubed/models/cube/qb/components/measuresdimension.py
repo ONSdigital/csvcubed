@@ -56,9 +56,7 @@ class QbMultiMeasureDimension(QbColumnStructuralDefinition):
         self, data: pd.Series, csvw_column_name: str, csv_column_uri_template: str
     ) -> List[ValidationError]:
         if len(self.measures) > 0:
-            unique_values = {
-                uri_safe(v) for v in set(data.unique().astype(object).flatten())
-            }
+            unique_values = {uri_safe(v) for v in set(data.unique())}
             unique_expanded_uris = {
                 uritemplate.expand(csv_column_uri_template, {csvw_column_name: s})
                 for s in unique_values

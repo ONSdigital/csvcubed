@@ -107,7 +107,7 @@ pipeline {
             when {
                 expression {
                     // todo: Ensure this only runs when in a 'v*.*.*(-RC*)?' tag v[0-9]+\.[0-9+]\.[0-9]+
-                    tag "v*.*.9-rc*"
+                    tag "v*.*.*"
                 }
             }
             agent {
