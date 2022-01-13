@@ -43,6 +43,7 @@ pipeline {
             }
         }
         stage('Pyright') {
+            when { not { buildingTag() } }
             steps {
                     dir('csvcubed-devtools') {
                         sh 'poetry run pyright . --lib'
@@ -63,6 +64,7 @@ pipeline {
             }
         }
         stage('Test') {
+            when { not { buildingTag() } }
             steps {
                 script {
                     try {
@@ -93,6 +95,7 @@ pipeline {
         }
         stage('Tox') {
             when { 
+                buildingTag()
                 tag pattern: "v\\d+\\.\\d+\\.\\d+(-RC\\d)?", comparator: "REGEXP"
             }
             agent {
