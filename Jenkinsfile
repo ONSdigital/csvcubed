@@ -43,9 +43,6 @@ pipeline {
             }
         }
         stage('Pyright') {
-            when {
-                not { tag pattern: "v\\d+\\.\\d+\\.\\d+(-RC\\d)?", comparator: "REGEXP" }
-            }
             steps {
                     dir('csvcubed-devtools') {
                         sh 'poetry run pyright . --lib'
@@ -66,9 +63,6 @@ pipeline {
             }
         }
         stage('Test') {
-            when {
-                not { tag pattern: "v\\d+\\.\\d+\\.\\d+(-RC\\d)?", comparator: "REGEXP" }
-            }
             steps {
                 script {
                     try {
