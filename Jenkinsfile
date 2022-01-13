@@ -69,12 +69,6 @@ pipeline {
             when {
                 not { tag "v*.*.*" }
             }
-            when {
-                expression { 
-                    tag "v*.*.[0-8]-rc*"
-                    // todo: Ensure this doesn't run when in a 'v*.*.*(-RC*)?' tag v[0-9]+\.[0-9+]\.[0-9]+
-                }
-            }
             steps {
                 script {
                     try {
