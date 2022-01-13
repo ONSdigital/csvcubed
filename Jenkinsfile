@@ -44,7 +44,7 @@ pipeline {
         }
         stage('Pyright') {
             when {
-                not { tag "v*.*.*" }
+                not { tag pattern: "v\\d+\\.\\d+\\.\\d+(-RC\\d)?", comparator: "REGEXP" }
             }
             steps {
                     dir('csvcubed-devtools') {
@@ -67,7 +67,7 @@ pipeline {
         }
         stage('Test') {
             when {
-                not { tag "v*.*.*" }
+                not { tag pattern: "v\\d+\\.\\d+\\.\\d+(-RC\\d)?", comparator: "REGEXP" }
             }
             steps {
                 script {
@@ -99,7 +99,7 @@ pipeline {
         }
         stage('Tox') {
             when { 
-                tag "v*.*.*" 
+                tag pattern: "v\\d+\\.\\d+\\.\\d+(-RC\\d)?", comparator: "REGEXP"
             }
             agent {
                 dockerfile {
