@@ -43,11 +43,8 @@ pipeline {
             }
         }
         stage('Pyright') {
-            agent {
-                dockerfile {
-                    args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
-                    reuseNode true
-                }
+            when {
+                not { tag "v*.*.*" }
             }
             steps {
                     dir('csvcubed-devtools') {
@@ -69,6 +66,9 @@ pipeline {
             }
         }
         stage('Test') {
+            when {
+                not { tag "v*.*.*" }
+            }
             when {
                 expression { 
                     tag "v*.*.[0-8]-rc*"
@@ -104,11 +104,8 @@ pipeline {
             }
         }
         stage('Tox') {
-            when {
-                expression {
-                    // todo: Ensure this only runs when in a 'v*.*.*(-RC*)?' tag v[0-9]+\.[0-9+]\.[0-9]+
-                    tag "v*.*.*"
-                }
+            when { 
+                tag "v*.*.*" 
             }
             agent {
                 dockerfile {
@@ -196,7 +193,7 @@ pipeline {
             }
         }
         stage('Publishing Documentation'){
-            when{
+            when {
                 branch 'main'
             }
             steps{
