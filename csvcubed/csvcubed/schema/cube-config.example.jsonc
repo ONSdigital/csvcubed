@@ -2,7 +2,7 @@
     "$schema": "./cube-config.schema.json",
     "title": "Some Qube",
     "description": "A string of any length or markdown, etc",
-    "publisher": "uri", // Link to existing publisher or similar as a new creator below
+    "publisher": "uri", // Link to existing publisher
     "creator": "uri", // Link to existing creator
     "theme": [
         "theme1",
@@ -11,7 +11,6 @@
     ], // List or string
     "columns": { // In the same order as the csv, unspecified column types are assumed to be dimensions
         // # Dimensions
-        // For dimensions there's a "oneOf" requirement of ["label" or "existing"]
         // All columns are assumed to be dimensions unless otherwise stated
         "Existing dimension": { // Note all columns are assumed dimensions unless explicitly declared otherwise
             "type": "dimension", // optional - if not present it starts a dimension anyways
@@ -19,14 +18,13 @@
             "from_existing": "uri", // optional - if present this creates ExistingQbDimension;
             // if stays an ExistingQbDimension maps to ExistingQbDimension.dimension_uri
             // if child dimension triggered, maps to NewQbDimension.parent_dimension_uri
-            // the "_dimension" part is not strictly required, could be replaced with "existing_resource"
             "range_uri": "uri", // optional - if present this stays ExistingQbDimension;
             // maps to ExistingQbDimension.range_uri
             "label": "Replacement label", // optional - if present this becomes a NewQbDimension child of existing dimension;
             // maps to NewQbDimension.label
             "description": "A description", // optional - if present this becomes a NewQbDimension child of existing dimension;
             // maps to NewQbDimension.description
-            "source_uri": "uri", // optional - if present this becomes a NewQbDimension child of existing dimension;
+            "definition_uri": "uri", // optional - if present this becomes a NewQbDimension child of existing dimension;
             // maps to NewQbDimension.source_uri,
             "uri_template": "http://example.org/code-list/{+some_column}" // TODO: Figure out how to guess uri values for serialising
         },
@@ -36,10 +34,9 @@
             "label": "A new dimension", // optional - maps to NewQbDimension.label
             // default - the column name from csv
             "description": "A new dimension's description", // optional - maps to NewQbDimension.description
-            "existing_dimension": "uri", // optional - maps to NewQbDimension.parent_dimension_uri
-            // the "_dimension" part is not strictly required, could be replaced with "existing_resource"
+            "from_existing": "uri", // optional - maps to NewQbDimension.parent_dimension_uri
             "range_uri": "uri", // optional - maps to NewDimension.range_uri
-            "source_uri": "uri", // optional - maps to NewQbDimension.source_uri
+            "definition_uri": "uri", // optional - maps to NewQbDimension.source_uri
             "uri_override": "uri", // optional -  maps to NewQbDimension.uri_safe_identifier_override
             "uri_template": "http://example.org/code-list/{+some_column}", // TODO: Figure out how to guess uri values for serialising
             "codelist": "uri" // optional - maps to NewQbDimension.codelist [True (create from values), False (do not create code list), uri, as values in New Attribute.values]
@@ -50,16 +47,14 @@
             "from_existing": "uri", // optional - if present this creates ExistingQbAttribute;
             // if stays an ExistingQbAttribute maps to ExistingQbAttribute.attribute_uri (or ExistingQbAttributeLiteral.attribute_uri)
             // if child attribute triggered, maps to NewQbAttribute.parent_attribute_uri (or NewQbAttributeLiteral.attribute_uri)
-            // the "dimension" part is not strictly required, could be replaced with "existing_resource"
             "required": true, // optional - if set, the attribute requires values for each observation
             // default - false (i.e. some observations will not have an attribute value)
             // maps to ExistingQbAttribute.is_required (or ExistingQbAttributeLiteral.is_required)
-
             "label": "Replacement label", // optional - if present this becomes a NewQbAttribute (or NewQbAttributeLiteral) child of existing attribute;
             // maps to NewQbAttribute.label (or NewQbAttributeLiteral.literal)
             "description": "A description", // optional - if present this becomes a NewQbAttribute child of existing dimension;
             // maps to NewQbAttribute.description (or NewQbAttributeLiteral.description)
-            "source_uri": "uri", // optional - if present this becomes a NewQbAttribute (or NewQbAttributeLiteral) child of existing attribute;
+            "definition_uri": "uri", // optional - if present this becomes a NewQbAttribute (or NewQbAttributeLiteral) child of existing attribute;
             // maps to NewQbAttribute.source_uri (or NewQbAttributeLiteral.source_uri),
             "data_type": "string", // optional - if set, the attribute becomes ExistingQbAttributeLiteral
             // maps to ExistingQbAttributeLiteral.data_type
@@ -68,11 +63,10 @@
         "New attribute": {
             "type": "attribute", // required
             "from_existing": "uri", // optional - maps to NewQbAttribute.label (or NewQbAttributeLiteral.label)
-            // the "_attribute" part is not strictly required, could be replaced with "existing_resource"
             "label": "Replacement label", // optional - if present this becomes a NewQbAttribute (or NewQbAttributeLiteral) child of existing attribute;
             // maps to NewQbAttribute.label (or NewQbAttributeLiteral.literal)
             "description": "A description", // optional - maps to NewQbAttribute.description (or NewQbAttributeLiteral.description)
-            "source_uri": "uri", // optional - maps to NewQbAttribute.source_uri (or NewQbAttributeLiteral.source_uri),
+            "definition_uri": "uri", // optional - maps to NewQbAttribute.source_uri (or NewQbAttributeLiteral.source_uri),
             "required": true, // optional - if set, the attribute requires values for each observation
             // default - false (i.e. some observations will not have an attribute value)
             // maps to ExistingQbAttribute.is_required (or ExistingQbAttributeLiteral.is_required)
@@ -83,19 +77,19 @@
                     "label": "value label",
                     "description": "description label",
                     "existing_value": "uri",
-                    "source_uri": "uri",
+                    "definition_uri": "uri",
                     "uri_override": "uri"
                 } // ... etc
             ] // True to infer codelist using NewQbAttribute.from_data()
         },
         "Observation (Single observation measure column combo)": {
-            "data_type": "decimal", // required - (other option would be integer),
+            "data_type": "decimal", // default is decimal
             "unit": {
                 // See "Existing unit" or "New Unit" for contents
             }
         },
         "Observation (Multi observation column construction)": {
-            "data_type": "decimal", // required - (other option would be integer)
+            "data_type": "decimal", // default is decimal
             "measure": {
                 // See "Existing measure" or "New measure" for contents
             },
@@ -103,50 +97,60 @@
                 // See "Existing unit" or "New Unit" for contents
             }
         },
-        "Existing measure (Single observation measure column combo)": {
-            "type": "measure", // required IFF there is only one observation-type column creates an ExistingQbMeasure
-            "from_existing": "uri", // optional - if present this creates ExistingQbMeasure;
-            // if stays an ExistingQbMeasure maps to ExistingQbMeasure.measure_uri
-            // if child measure triggered, maps to NewQbMeasure.parent_measure_uri
-            // the "_measure" part is not strictly required, could be replaced with "existing_resource"
-            "description": "measure description", // optional - if present this becomes NewQbMeasure
-            // maps to NewQbMeasure.description
-            "label": "label", // optional - if present this becomes a NewQbAttribute child of existing attribute;
-            // maps to NewQbAttribute.label
-            "source_uri": "uri" // optional - if present this becomes a NewQbAttribute child of existing attribute;
-            // maps to NewQbAttribute.source_uri
+        "Ignore this column": false, // For columns in csv which you don't want to be returned as a dimension
+        // use a boolean value (either true or false, so long as it's not another object) to supress its
+        // conversion to a dimension,
+        "measures": {
+            "type": "measure column", // optional as a column called ["Measure", "Measures"] are read as QbMeasureColumn,
+            "values": true, // Create new measures from values or
+            "_values": {
+                "Existing measure": {
+                    "type": "measure", // required IFF there is only one observation-type column creates an ExistingQbMeasure
+                    "from_existing": "uri", // optional - if present this creates ExistingQbMeasure;
+                    // if stays an ExistingQbMeasure maps to ExistingQbMeasure.measure_uri
+                    // if child measure triggered, maps to NewQbMeasure.parent_measure_uri
+                    "description": "measure description", // optional - if present this becomes NewQbMeasure
+                    // maps to NewQbMeasure.description
+                    "label": "label", // optional - if present this becomes a NewQbAttribute child of existing attribute;
+                    // maps to NewQbAttribute.label
+                    "definition_uri": "uri" // optional - if present this becomes a NewQbAttribute child of existing attribute;
+                    // maps to NewQbAttribute.source_uri
+                },
+                "New measure": {
+                    "type": "measure", // required IFF there is only one observation-type column
+                    "from_existing": "uri", // optional - maps to NewQbMeasure.parent_measure_uri
+                    "description": "measure description", // optional - maps to NewQbMeasure.description
+                    "label": "label", // optional - maps to NewQbMeasure.label
+                    // default - the column name from csv
+                    "definition_uri": "uri" // optional - maps to NewQbAttribute.source_uri
+                }
+            }
         },
-        "New measure (Single observation measure column combo)": {
-            "type": "measure", // required IFF there is only one observation-type column
-            "from_existing": "uri", // optional - maps to NewQbMeasure.parent_measure_uri
-            // the "_measure" part is not strictly required, could be replaced with "existing_resource"
-            "description": "measure description", // optional - maps to NewQbMeasure.description
-            "label": "label", // optional - maps to NewQbMeasure.label
-            // default - the column name from csv
-            "source_uri": "uri" // optional - maps to NewQbAttribute.source_uri
-        },
-        // Units like this can only be used in a unit column, which needs to be attached differently than a normal column
-        // EXCEPT when using exclusively existing_units, otherwise they need to be attached to Observations.
-        "Existing unit (Single observation measure column combo - optional)": {
-            "type": "unit", // required though fiddly, creates an ExistingQbUnit
-            "from_existing": "uri", // optional - if present this creates ExistingQbUnit, if it becomes a NewQbUnit it maps to NewQbUnit.base_unit (TODO: Probably should be called parent_unit_uri, aligned to the other components).
-            "scaling_factor": 1000, // optional - if present this creates NewQbUnit and maps to NewQbMUnit.base_unit_scaling_factor
-            "label": "unit label here", // optional - if present this creates NewQbUnit and maps to NewQbUnit.label
-            "description": "a long string here", // optional - if present this creates NewQbUnit and maps to NewQbUnit.description
-            "si_scaling_factor": 1000, // optional - if present this creates NewQbUnit and maps to NewQbUnit.si_base_unit_conversion_multiplier
-            "quantity_kind": "uri", // optional - if present this creates NewQbUnit and maps to NewQbUnit.qudt_quantity_kind_uri
-            "source_uri": "uri" // optional - if present this creates NewQbUnit and maps to NewQbUnit.source_uri
-        },
-        "New unit (Single observation measure column combo - optional)": {
-            "type": "unit", // required NewQbUnit
-            "from_existing": "uri", // optional - maps to NewQbUnit.base_unit (TODO: Probably should be called parent_unit_uri, aligned to the other components).
-            "scaling_factor": 1000, // optional - maps to NewQbMUnit.base_unit_scaling_factor
-            "label": "unit label here", // required
-            "description": "a long string here", // optional - maps to NewQbUnit.description
-            "si_scaling_factor": 1000, // optional -  maps to NewQbUnit.si_base_unit_conversion_multiplier
-            "quantity_kind": "uri", // optional - maps to NewQbUnit.qudt_quantity_kind_uri
-            "source_uri": "uri" // optional -  maps to NewQbUnit.source_uri
-        },
-        "Ignore this column": false
+        "units": {
+            "type": "units column", // optional as a column called ["Unit", "Units"] areread as a QbUnitColumn,
+            "values": true, // Create new measures from values or 
+            "_values": {
+                "Existing unit": {
+                    "type": "unit", // required though fiddly, creates an ExistingQbUnit
+                    "from_existing": "uri", // optional - if present this creates ExistingQbUnit, if it becomes a NewQbUnit it maps to NewQbUnit.base_unit (TODO: Probably should be called parent_unit_uri, aligned to the other components).
+                    "scaling_factor": 1000, // optional - if present this creates NewQbUnit and maps to NewQbMUnit.base_unit_scaling_factor
+                    "label": "unit label here", // optional - if present this creates NewQbUnit and maps to NewQbUnit.label
+                    "description": "a long string here", // optional - if present this creates NewQbUnit and maps to NewQbUnit.description
+                    "si_scaling_factor": 1000, // optional - if present this creates NewQbUnit and maps to NewQbUnit.si_base_unit_conversion_multiplier
+                    "quantity_kind": "uri", // optional - if present this creates NewQbUnit and maps to NewQbUnit.qudt_quantity_kind_uri
+                    "definition_uri": "uri" // optional - if present this creates NewQbUnit and maps to NewQbUnit.source_uri
+                },
+                "New unit": {
+                    "type": "unit", // required NewQbUnit
+                    "from_existing": "uri", // optional - maps to NewQbUnit.base_unit (TODO: Probably should be called parent_unit_uri, aligned to the other components).
+                    "scaling_factor": 1000, // optional - maps to NewQbMUnit.base_unit_scaling_factor
+                    "label": "unit label here", // required
+                    "description": "a long string here", // optional - maps to NewQbUnit.description
+                    "si_scaling_factor": 1000, // optional -  maps to NewQbUnit.si_base_unit_conversion_multiplier
+                    "quantity_kind": "uri", // optional - maps to NewQbUnit.qudt_quantity_kind_uri
+                    "definition_uri": "uri" // optional -  maps to NewQbUnit.source_uri
+                }
+            }
+        }
     }
 }
