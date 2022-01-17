@@ -23,10 +23,14 @@ from csvcubed.models.cube import (
     MoreThanOneObservationsColumnError,
 )
 
+from csvcubed.models.cube.qb.components.dimension import ExistingQbDimension, QbDimension
+from csvcubed.models.cube.qb.components.measure import ExistingQbMeasure, QbMeasure
+from csvcubed.models.cube.qb.validationerrors import CsvColumnUriTemplateMissingError
+
 from csvcubedmodels.rdf.namespaces import SDMX_Attribute
 
 from csvcubed.models.validationerror import ValidationError
-from csvcubed.utils.qb.cube import get_columns_of_dsd_type
+from csvcubed.utils.qb.cube import get_all_measures, get_columns_of_dsd_type
 
 SDMX_A_OBS_STATUS_URI: str = str(SDMX_Attribute.obsStatus)
 
@@ -147,11 +151,28 @@ def _validate_multi_measure_cube(
 ) -> List[ValidationError]:
     errors: List[ValidationError] = []
 
-    multi_measure_columns = get_columns_of_dsd_type(cube, QbMultiMeasureDimension)
+    multi_measure_columns: List[QbColumn[QbMultiMeasureDimension]] = get_columns_of_dsd_type(cube, QbMultiMeasureDimension)
     if len(multi_measure_columns) == 0:
         errors.append(NoMeasuresDefinedError())
     elif len(multi_measure_columns) > 1:
         errors.append(MoreThanOneMeasureColumnError(len(multi_measure_columns)))
+    else:
+        measure_column: QbColumn[QbMultiMeasureDimension] = multi_measure_columns[0]
+
+        all_measures_existing = all(
+            [
+                isinstance(m, ExistingQbMeasure)
+                for m in measure_column.structural_definition.measures
+            ]
+        )
+    
+        if all_measures_existing:
+            if measure_column.csv_column_uri_template is None:
+                errors.append(
+                    CsvColumnUriTemplateMissingError(
+                        measure_column.csv_column_title, ExistingQbMeasure
+                    )
+                )
 
     return errors
 
