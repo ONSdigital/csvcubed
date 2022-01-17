@@ -118,8 +118,9 @@ def test_value_uri_template_is_missing_in_existing_measure_dimention():
     )
     errors = _validate_multi_measure_cube(qube, None)
     assert len(errors) == 1, [e.message for e in errors]
-    assert 'CsvColumnUriTemplateMissingError' in str(errors)
-    assert 'ExistingQbMeasure' in str(errors)
+    error = errors[0]
+    assert isinstance(error, CsvColumnUriTemplateMissingError)
+    assert error.component_type == ExistingQbMeasure
     
 if __name__ == "__main__":
     pytest.main()
