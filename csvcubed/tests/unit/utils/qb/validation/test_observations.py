@@ -1,6 +1,7 @@
 from csvcubed.models.cube.qb.components.measure import ExistingQbMeasure
 from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureDimension
 from csvcubed.models.cube.qb.components.observedvalue import QbMultiMeasureObservationValue
+from csvcubed.models.cube.qb.validationerrors import CsvColumnUriTemplateMissingError
 import pytest
 
 
@@ -64,7 +65,8 @@ def test_find_sdmxa_obs_status_columns():
 
 def test_value_uri_template_is_present_in_existing_measure_dimention():
     """
-    Testing to see that when the measure dimention is defined, that the value uri template is also defined.
+    Ensuring that there is no validation error raised,
+    for a multi-measure column which re-uses existing measures when a csv_column_uri_template is provided.
     """
     qube = Cube(
         metadata=CatalogMetadata("Some Qube"),
@@ -92,7 +94,8 @@ def test_value_uri_template_is_present_in_existing_measure_dimention():
 
 def test_value_uri_template_is_missing_in_existing_measure_dimention():
     """
-    Testing to see that the value uri template is not defined when the measure dimention is defined.
+    Ensuring that there is a validation error raised,
+    for a multi-measure column which re-uses existing measures when a csv_column_uri_template is provided.
     """
     qube = Cube(
         metadata=CatalogMetadata("Some Qube"),
@@ -115,6 +118,8 @@ def test_value_uri_template_is_missing_in_existing_measure_dimention():
     )
     errors = _validate_multi_measure_cube(qube, None)
     assert len(errors) == 1, [e.message for e in errors]
+    assert 'CsvColumnUriTemplateMissingError' in str(errors)
+    assert 'ExistingQbMeasure' in str(errors)
     
 if __name__ == "__main__":
     pytest.main()
