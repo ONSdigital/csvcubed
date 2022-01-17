@@ -9,7 +9,9 @@
         "theme2",
         "etc."
     ], // List or string
-    "columns": { // In the same order as the csv, unspecified column types are assumed to be dimensions
+    "spatial_bound": "a geography uri", // maps to dcterms.spatial
+    "temporal_bound": "a temporal uri", // maps to dcterms.temporal
+    "columns": { // In the same order as the csv, unspecified column types are assumed to be dimensions, case insensitive
         // # Dimensions
         // All columns are assumed to be dimensions unless otherwise stated
         "Existing dimension": { // Note all columns are assumed dimensions unless explicitly declared otherwise
@@ -104,7 +106,7 @@
             "type": "measure column", // optional as a column called ["Measure", "Measures"] are read as QbMeasureColumn,
             "values": true, // Create new measures from values or
             "_values": {
-                "Existing measure": {
+                "Existing measure value from measure column": {
                     "type": "measure", // required IFF there is only one observation-type column creates an ExistingQbMeasure
                     "from_existing": "uri", // optional - if present this creates ExistingQbMeasure;
                     // if stays an ExistingQbMeasure maps to ExistingQbMeasure.measure_uri
@@ -116,7 +118,7 @@
                     "definition_uri": "uri" // optional - if present this becomes a NewQbAttribute child of existing attribute;
                     // maps to NewQbAttribute.source_uri
                 },
-                "New measure": {
+                "New measure value from measure column": {
                     "type": "measure", // required IFF there is only one observation-type column
                     "from_existing": "uri", // optional - maps to NewQbMeasure.parent_measure_uri
                     "description": "measure description", // optional - maps to NewQbMeasure.description
@@ -130,7 +132,7 @@
             "type": "units column", // optional as a column called ["Unit", "Units"] areread as a QbUnitColumn,
             "values": true, // Create new measures from values or 
             "_values": {
-                "Existing unit": {
+                "Existing unit value from unit column": {
                     "type": "unit", // required though fiddly, creates an ExistingQbUnit
                     "from_existing": "uri", // optional - if present this creates ExistingQbUnit, if it becomes a NewQbUnit it maps to NewQbUnit.base_unit (TODO: Probably should be called parent_unit_uri, aligned to the other components).
                     "scaling_factor": 1000, // optional - if present this creates NewQbUnit and maps to NewQbMUnit.base_unit_scaling_factor
@@ -140,7 +142,7 @@
                     "quantity_kind": "uri", // optional - if present this creates NewQbUnit and maps to NewQbUnit.qudt_quantity_kind_uri
                     "definition_uri": "uri" // optional - if present this creates NewQbUnit and maps to NewQbUnit.source_uri
                 },
-                "New unit": {
+                "New unit value from unit column": {
                     "type": "unit", // required NewQbUnit
                     "from_existing": "uri", // optional - maps to NewQbUnit.base_unit (TODO: Probably should be called parent_unit_uri, aligned to the other components).
                     "scaling_factor": 1000, // optional - maps to NewQbMUnit.base_unit_scaling_factor
