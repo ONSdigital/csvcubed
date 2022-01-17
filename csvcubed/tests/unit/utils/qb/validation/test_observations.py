@@ -94,8 +94,8 @@ def test_value_uri_template_is_present_in_existing_measure_dimention():
 
 def test_value_uri_template_is_missing_in_existing_measure_dimention():
     """
-    Ensuring that there is a validation error raised,
-    for a multi-measure column which re-uses existing measures when a csv_column_uri_template is provided.
+    A validation error should be raised,
+    for a multi-measure column which re-uses existing measures when a csv_column_uri_template is not provided.
     """
     qube = Cube(
         metadata=CatalogMetadata("Some Qube"),
