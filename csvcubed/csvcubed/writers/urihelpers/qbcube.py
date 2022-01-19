@@ -39,30 +39,30 @@ class QbCubeNewUriHelper:
         if measure_identifier is not None:
             identifying_parts += f"@{measure_identifier}"
 
-        return self._uri_in_doc(f"obs.{identifying_parts}")
+        return self._uri_in_doc(f"obs/{identifying_parts}")
 
     def get_component_uri(self, component_identifier: str) -> str:
-        return self._uri_in_doc(f"component.{component_identifier}")
+        return self._uri_in_doc(f"component/{component_identifier}")
 
     def get_measure_uri(self, measure_identifier: str) -> str:
-        return self._uri_in_doc(f"measure.{measure_identifier}")
+        return self._uri_in_doc(f"measure/{measure_identifier}")
 
     def get_unit_uri(self, unit_identifier: str) -> str:
-        return self._uri_in_doc(f"unit.{unit_identifier}")
+        return self._uri_in_doc(f"unit/{unit_identifier}")
 
     def get_attribute_uri(self, attribute_identifier: str) -> str:
-        return self._uri_in_doc(f"attribute.{attribute_identifier}")
+        return self._uri_in_doc(f"attribute/{attribute_identifier}")
 
     def get_attribute_value_uri(
         self, attribute_identifier: str, value_identifier: str
     ) -> str:
-        return self._uri_in_doc(f"attribute.{attribute_identifier}/{value_identifier}")
+        return self._uri_in_doc(f"attribute/{attribute_identifier}/{value_identifier}")
 
     def get_dimension_uri(self, dimension_identifier: str) -> str:
-        return self._uri_in_doc(f"dimension.{dimension_identifier}")
+        return self._uri_in_doc(f"dimension/{dimension_identifier}")
 
     def get_class_uri(self, class_identifier: str) -> str:
-        return self._uri_in_doc(f"class.{class_identifier}")
+        return self._uri_in_doc(f"class/{class_identifier}")
 
     def get_dataset_uri(self) -> str:
         return self._uri_in_doc("dataset")

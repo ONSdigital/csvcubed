@@ -71,19 +71,19 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
       @prefix qudt: <http://qudt.org/schema/qudt/>.
       @prefix om2: <http://www.ontology-of-units-of-measure.org/resource/om-2/>.
 
-      <file:/tmp/some-qube.csv#attribute.new-attribute/pending>
+      <file:/tmp/some-qube.csv#attribute/new-attribute/pending>
         a rdfs:Resource;
         rdfs:label "pending"@en.
 
-      <file:/tmp/some-qube.csv#attribute.new-attribute/final>
+      <file:/tmp/some-qube.csv#attribute/new-attribute/final>
         a rdfs:Resource;
         rdfs:label "final"@en.
 
-      <file:/tmp/some-qube.csv#attribute.new-attribute/in-review>
+      <file:/tmp/some-qube.csv#attribute/new-attribute/in-review>
         a rdfs:Resource;
         rdfs:label "in-review"@en.
 
-      <file:/tmp/some-qube.csv#unit.some-unit>
+      <file:/tmp/some-qube.csv#unit/some-unit>
         a qudt:Unit, om2:Unit;
         rdfs:label "Some Unit"@en.
     """
@@ -100,16 +100,16 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
       @prefix om2: <http://www.ontology-of-units-of-measure.org/resource/om-2/>.
       @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
 
-      <file:/tmp/some-qube.csv#unit.some-base-unit>
+      <file:/tmp/some-qube.csv#unit/some-base-unit>
         a qudt:Unit, om2:Unit;
         rdfs:label "Some Base Unit"@en.
 
-      <file:/tmp/some-qube.csv#unit.some-extending-unit>
+      <file:/tmp/some-qube.csv#unit/some-extending-unit>
         a qudt:Unit, om2:Unit;
-        qudt:isScalingOf <file:/tmp/some-qube.csv#unit.some-base-unit>;
+        qudt:isScalingOf <file:/tmp/some-qube.csv#unit/some-base-unit>;
         qudt:hasQuantityKind <http://some-quantity-kind>;
         qudt:conversionMultiplier "25.123123"^^xsd:float;
-        om2:hasUnit <file:/tmp/some-qube.csv#unit.some-base-unit>;
+        om2:hasUnit <file:/tmp/some-qube.csv#unit/some-base-unit>;
         om2:hasFactor "1000.0"^^xsd:float;
         rdfs:label "Some Extending Unit"@en.
     """
@@ -122,12 +122,12 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should contain
       """
-      <file:/tmp/qube-with-string-literals.csv#obs.uss-cerritos> <file:/tmp/qube-with-string-literals.csv#attribute.first-captain>
+      <file:/tmp/qube-with-string-literals.csv#obs/uss-cerritos> <file:/tmp/qube-with-string-literals.csv#attribute/first-captain>
       "William Riker".
       """
     And the RDF should contain
       """
-      <file:/tmp/qube-with-string-literals.csv#obs.uss-titan> <file:/tmp/qube-with-string-literals.csv#attribute.first-captain>
+      <file:/tmp/qube-with-string-literals.csv#obs/uss-titan> <file:/tmp/qube-with-string-literals.csv#attribute/first-captain>
       "Carol Freeman".
       """
 
@@ -139,12 +139,12 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should contain
       """
-      <file:/tmp/qube-with-int-literals.csv#obs.uss-cerritos> <file:/tmp/qube-with-int-literals.csv#attribute.reg>
+      <file:/tmp/qube-with-int-literals.csv#obs/uss-cerritos> <file:/tmp/qube-with-int-literals.csv#attribute/reg>
       "75567"^^<http://www.w3.org/2001/XMLSchema#int>.
       """
     And the RDF should contain
       """
-      <file:/tmp/qube-with-int-literals.csv#obs.uss-titan> <file:/tmp/qube-with-int-literals.csv#attribute.reg>
+      <file:/tmp/qube-with-int-literals.csv#obs/uss-titan> <file:/tmp/qube-with-int-literals.csv#attribute/reg>
       "80102"^^<http://www.w3.org/2001/XMLSchema#int>.
       """
 
@@ -156,12 +156,12 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should contain
       """
-      <file:/tmp/qube-with-date-literals.csv#obs.uss-cerritos> <file:/tmp/qube-with-date-literals.csv#attribute.appeared>
+      <file:/tmp/qube-with-date-literals.csv#obs/uss-cerritos> <file:/tmp/qube-with-date-literals.csv#attribute/appeared>
       "2020-08-06"^^<http://www.w3.org/2001/XMLSchema#date>.
       """
     And the RDF should contain
       """
-      <file:/tmp/qube-with-date-literals.csv#obs.uss-titan> <file:/tmp/qube-with-date-literals.csv#attribute.appeared>
+      <file:/tmp/qube-with-date-literals.csv#obs/uss-titan> <file:/tmp/qube-with-date-literals.csv#attribute/appeared>
       "2020-10-08"^^<http://www.w3.org/2001/XMLSchema#date>.
       """
 
@@ -173,11 +173,11 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should contain
       """
-      <file:/tmp/qube-with-string-literals.csv#obs.uss-cerritos> <http://some-uri> "William Riker".
+      <file:/tmp/qube-with-string-literals.csv#obs/uss-cerritos> <http://some-uri> "William Riker".
       """
     And the RDF should contain
       """
-      <file:/tmp/qube-with-string-literals.csv#obs.uss-titan> <http://some-uri> "Carol Freeman".
+      <file:/tmp/qube-with-string-literals.csv#obs/uss-titan> <http://some-uri> "Carol Freeman".
       """
 
   Scenario: A QbCube with numeric literal existing attributes should validate successfully
@@ -188,11 +188,11 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should contain
       """
-      <file:/tmp/qube-with-int-literals.csv#obs.uss-cerritos> <http://some-uri> "75567"^^<http://www.w3.org/2001/XMLSchema#int>.
+      <file:/tmp/qube-with-int-literals.csv#obs/uss-cerritos> <http://some-uri> "75567"^^<http://www.w3.org/2001/XMLSchema#int>.
       """
     And the RDF should contain
       """
-      <file:/tmp/qube-with-int-literals.csv#obs.uss-titan> <http://some-uri> "80102"^^<http://www.w3.org/2001/XMLSchema#int>.
+      <file:/tmp/qube-with-int-literals.csv#obs/uss-titan> <http://some-uri> "80102"^^<http://www.w3.org/2001/XMLSchema#int>.
       """
 
   Scenario: A QbCube with date literal existing attributes should validate successfully
@@ -203,11 +203,11 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should contain
       """
-      <file:/tmp/qube-with-date-literals.csv#obs.uss-cerritos> <http://some-uri> "2020-08-06"^^<http://www.w3.org/2001/XMLSchema#date>.
+      <file:/tmp/qube-with-date-literals.csv#obs/uss-cerritos> <http://some-uri> "2020-08-06"^^<http://www.w3.org/2001/XMLSchema#date>.
       """
     And the RDF should contain
       """
-      <file:/tmp/qube-with-date-literals.csv#obs.uss-titan> <http://some-uri> "2020-10-08"^^<http://www.w3.org/2001/XMLSchema#date>.
+      <file:/tmp/qube-with-date-literals.csv#obs/uss-titan> <http://some-uri> "2020-10-08"^^<http://www.w3.org/2001/XMLSchema#date>.
       """
 
   Scenario: A single-measure QbCube should pass skos+qb SPARQL test constraints
@@ -243,11 +243,11 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     And the RDF should pass "skos, qb" SPARQL tests
     And the RDF should contain
     """
-      <file:/tmp/multi-measure-qube-with-new-definitions.csv#structure> <http://purl.org/linked-data/cube#component> <file:/tmp/multi-measure-qube-with-new-definitions.csv#component.new-dimension>.
-      <file:/tmp/multi-measure-qube-with-new-definitions.csv#dimension.new-dimension> <http://purl.org/linked-data/cube#codeList> <file:/tmp/a-new-codelist.csv#code-list>.
+      <file:/tmp/multi-measure-qube-with-new-definitions.csv#structure> <http://purl.org/linked-data/cube#component> <file:/tmp/multi-measure-qube-with-new-definitions.csv#component/new-dimension>.
+      <file:/tmp/multi-measure-qube-with-new-definitions.csv#dimension/new-dimension> <http://purl.org/linked-data/cube#codeList> <file:/tmp/a-new-codelist.csv#code-list>.
 
-      <file:/tmp/multi-measure-qube-with-new-definitions.csv#obs.a@part-time> a <http://purl.org/linked-data/cube#Observation>;
-        <file:/tmp/multi-measure-qube-with-new-definitions.csv#dimension.new-dimension> <file:/tmp/a-new-codelist.csv#a>.
+      <file:/tmp/multi-measure-qube-with-new-definitions.csv#obs/a@part-time> a <http://purl.org/linked-data/cube#Observation>;
+        <file:/tmp/multi-measure-qube-with-new-definitions.csv#dimension/new-dimension> <file:/tmp/a-new-codelist.csv#a>.
 
       <file:/tmp/a-new-codelist.csv#code-list> a <http://www.w3.org/2004/02/skos/core#ConceptScheme>.
       <file:/tmp/a-new-codelist.csv#a> a <http://www.w3.org/2004/02/skos/core#Concept>.
@@ -401,11 +401,11 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     And the RDF should pass "skos, qb" SPARQL tests
     And the RDF should contain
     """
-      <file:/tmp/some-qube.csv#structure> <http://purl.org/linked-data/cube#component> <file:/tmp/some-qube.csv#component.d-code-list>.
-      <file:/tmp/some-qube.csv#component.d-code-list> <http://purl.org/linked-data/cube#dimension> <file:/tmp/some-qube.csv#dimension.d-code-list>.
-      <file:/tmp/some-qube.csv#dimension.d-code-list> <http://purl.org/linked-data/cube#codeList> <http://gss-data.org.uk/def/trade/concept-scheme/age-of-business>.
+      <file:/tmp/some-qube.csv#structure> <http://purl.org/linked-data/cube#component> <file:/tmp/some-qube.csv#component/d-code-list>.
+      <file:/tmp/some-qube.csv#component/d-code-list> <http://purl.org/linked-data/cube#dimension> <file:/tmp/some-qube.csv#dimension/d-code-list>.
+      <file:/tmp/some-qube.csv#dimension/d-code-list> <http://purl.org/linked-data/cube#codeList> <http://gss-data.org.uk/def/trade/concept-scheme/age-of-business>.
 
-      <file:/tmp/some-qube.csv#obs.a,10-20> <file:/tmp/some-qube.csv#dimension.d-code-list> <http://gss-data.org.uk/def/trade/concept/age-of-business/10-20>.
+      <file:/tmp/some-qube.csv#obs/a,10-20> <file:/tmp/some-qube.csv#dimension/d-code-list> <http://gss-data.org.uk/def/trade/concept/age-of-business/10-20>.
 
       <http://gss-data.org.uk/def/trade/concept-scheme/age-of-business> a <http://www.w3.org/2004/02/skos/core#ConceptScheme>.
       <http://gss-data.org.uk/def/trade/concept/age-of-business/10-20> a <http://www.w3.org/2004/02/skos/core#Concept>;
@@ -427,11 +427,11 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     """
        @prefix qb: <http://purl.org/linked-data/cube#>.
 
-       <file:/tmp/some-qube.csv#obs.a,e> a qb:Observation;
+       <file:/tmp/some-qube.csv#obs/a,e> a qb:Observation;
                                          qb:dataSet <file:/tmp/some-qube.csv#dataset>.
-       <file:/tmp/some-qube.csv#obs.b,f> a qb:Observation;
+       <file:/tmp/some-qube.csv#obs/b,f> a qb:Observation;
                                          qb:dataSet <file:/tmp/some-qube.csv#dataset>.
-       <file:/tmp/some-qube.csv#obs.c,g> a qb:Observation;
+       <file:/tmp/some-qube.csv#obs/c,g> a qb:Observation;
                                          qb:dataSet <file:/tmp/some-qube.csv#dataset>.
     """
 

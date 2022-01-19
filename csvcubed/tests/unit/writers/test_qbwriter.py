@@ -38,7 +38,7 @@ def _assert_component_defined(
 ) -> rdf.qb.ComponentSpecification:
     component = first(
         dataset.structure.components,
-        lambda x: str(x.uri) == f"cube-name.csv#component.{name}",
+        lambda x: str(x.uri) == f"cube-name.csv#component/{name}",
     )
     assert component is not None
     return component
@@ -175,7 +175,7 @@ def test_default_property_value_uris_new_dimension_column_without_code_list():
         default_property_uri,
         default_value_uri,
     ) = empty_qbwriter._get_default_property_value_uris_for_column(column)
-    assert "cube-name.csv#dimension.some-new-dimension" == default_property_uri
+    assert "cube-name.csv#dimension/some-new-dimension" == default_property_uri
     assert "{+some_column}" == default_value_uri
 
 
@@ -194,7 +194,7 @@ def test_default_property_value_uris_new_dimension_column_with_code_list():
         default_property_uri,
         default_value_uri,
     ) = empty_qbwriter._get_default_property_value_uris_for_column(column)
-    assert "cube-name.csv#dimension.some-new-dimension" == default_property_uri
+    assert "cube-name.csv#dimension/some-new-dimension" == default_property_uri
     assert (
         "http://base-uri/concept-scheme/this-scheme/{+some_column}" == default_value_uri
     )
@@ -232,7 +232,7 @@ def test_default_property_value_uris_existing_attribute_new_values():
         default_value_uri,
     ) = empty_qbwriter._get_default_property_value_uris_for_column(column)
     assert "http://base-uri/attributes/existing-attribute" == default_property_uri
-    assert "cube-name.csv#attribute.some-column/{+some_column}" == default_value_uri
+    assert "cube-name.csv#attribute/some-column/{+some_column}" == default_value_uri
 
 
 def test_default_property_value_uris_new_attribute_existing_values():
@@ -244,7 +244,7 @@ def test_default_property_value_uris_new_attribute_existing_values():
         default_property_uri,
         default_value_uri,
     ) = empty_qbwriter._get_default_property_value_uris_for_column(column)
-    assert "cube-name.csv#attribute.this-new-attribute" == default_property_uri
+    assert "cube-name.csv#attribute/this-new-attribute" == default_property_uri
     assert "{+some_column}" == default_value_uri
 
 
@@ -263,9 +263,9 @@ def test_default_property_value_uris_new_attribute_new_values():
         default_property_uri,
         default_value_uri,
     ) = empty_qbwriter._get_default_property_value_uris_for_column(column)
-    assert "cube-name.csv#attribute.this-new-attribute" == default_property_uri
+    assert "cube-name.csv#attribute/this-new-attribute" == default_property_uri
     assert (
-        "cube-name.csv#attribute.this-new-attribute/{+some_column}" == default_value_uri
+        "cube-name.csv#attribute/this-new-attribute/{+some_column}" == default_value_uri
     )
 
 
@@ -283,7 +283,7 @@ def test_default_property_value_uris_multi_units_all_new():
         "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
         == default_property_uri
     )
-    assert "cube-name.csv#unit.{+some_column}" == default_value_uri
+    assert "cube-name.csv#unit/{+some_column}" == default_value_uri
 
 
 def test_default_property_value_uris_multi_units_all_existing():
@@ -343,7 +343,7 @@ def test_default_property_value_uris_multi_measure_all_new():
         default_value_uri,
     ) = empty_qbwriter._get_default_property_value_uris_for_column(column)
     assert "http://purl.org/linked-data/cube#measureType" == default_property_uri
-    assert "cube-name.csv#measure.{+some_column}" == default_value_uri
+    assert "cube-name.csv#measure/{+some_column}" == default_value_uri
 
 
 def test_default_property_value_uris_multi_measure_all_existing():
@@ -405,7 +405,7 @@ def test_default_property_value_uris_single_measure_obs_val():
         default_property_uri,
         default_value_uri,
     ) = empty_qbwriter._get_default_property_value_uris_for_column(column)
-    assert default_property_uri == "cube-name.csv#measure.new-qb-measure"
+    assert default_property_uri == "cube-name.csv#measure/new-qb-measure"
     assert default_value_uri is None
 
 
@@ -426,7 +426,7 @@ def test_default_property_value_uris_multi_measure_obs_val():
         default_property_uri,
         default_value_uri,
     ) = writer._get_default_property_value_uris_for_column(column)
-    assert default_property_uri == "cube-name.csv#measure.{+measure}"
+    assert default_property_uri == "cube-name.csv#measure/{+measure}"
     assert default_value_uri is None
 
 
@@ -472,7 +472,7 @@ def test_csv_col_definition_default_property_value_urls():
         "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
         == csv_col["propertyUrl"]
     )
-    assert "cube-name.csv#unit.{+some_column}" == csv_col["valueUrl"]
+    assert "cube-name.csv#unit/{+some_column}" == csv_col["valueUrl"]
 
 
 def test_csv_col_definition_csv_column_uri_template_override():
@@ -613,13 +613,13 @@ def test_virtual_columns_generated_for_single_obs_val():
         "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
         == virt_unit["propertyUrl"]
     )
-    assert "cube-name.csv#unit.some-unit" == virt_unit["valueUrl"]
+    assert "cube-name.csv#unit/some-unit" == virt_unit["valueUrl"]
 
     virt_measure = first(virtual_columns, lambda x: x["name"] == "virt_measure")
     assert virt_measure is not None
     assert virt_measure["virtual"]
     assert "http://purl.org/linked-data/cube#measureType" == virt_measure["propertyUrl"]
-    assert "cube-name.csv#measure.some-measure" == virt_measure["valueUrl"]
+    assert "cube-name.csv#measure/some-measure" == virt_measure["valueUrl"]
 
 
 def test_virtual_columns_generated_for_multi_meas_obs_val():
@@ -637,7 +637,7 @@ def test_virtual_columns_generated_for_multi_meas_obs_val():
         "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
         == virt_unit["propertyUrl"]
     )
-    assert "cube-name.csv#unit.some-unit" == virt_unit["valueUrl"]
+    assert "cube-name.csv#unit/some-unit" == virt_unit["valueUrl"]
 
 
 def test_about_url_generation():
@@ -675,7 +675,7 @@ def test_about_url_generation():
     cube = Cube(metadata, data, columns)
 
     actual_about_url = QbWriter(cube)._get_about_url()
-    expected_about_url = "some-dataset.csv#obs.{+existing_dimension},{+local_dimension}"
+    expected_about_url = "some-dataset.csv#obs/{+existing_dimension},{+local_dimension}"
     assert actual_about_url == expected_about_url
 
 
@@ -716,7 +716,7 @@ def test_about_url_generation_with_multiple_measures():
 
     actual_about_url = QbWriter(cube)._get_about_url()
     expected_about_url = (
-        "some-dataset.csv#obs.{+existing_dimension},{+local_dimension}@{+measure}"
+        "some-dataset.csv#obs/{+existing_dimension},{+local_dimension}@{+measure}"
     )
     assert actual_about_url == expected_about_url
 
@@ -776,37 +776,37 @@ def test_serialise_new_attribute_values():
 
     map_label_to_expected_config = {
         "Pending": {
-            "uri": "some-dataset.csv#attribute.new-attribute/pending",
+            "uri": "some-dataset.csv#attribute/new-attribute/pending",
             "description": None,
             "parent_attribute_value_uri": None,
             "source_uri": None,
         },
         "Final": {
-            "uri": "some-dataset.csv#attribute.new-attribute/final",
+            "uri": "some-dataset.csv#attribute/new-attribute/final",
             "description": None,
             "parent_attribute_value_uri": None,
             "source_uri": None,
         },
         "In Review": {
-            "uri": "some-dataset.csv#attribute.new-attribute/in-review",
+            "uri": "some-dataset.csv#attribute/new-attribute/in-review",
             "description": None,
             "parent_attribute_value_uri": None,
             "source_uri": None,
         },
         "D": {
-            "uri": "some-dataset.csv#attribute.existing-attribute/d",
+            "uri": "some-dataset.csv#attribute/existing-attribute/d",
             "description": "real value",
             "parent_attribute_value_uri": "http://parent-uri",
             "source_uri": None,
         },
         "E": {
-            "uri": "some-dataset.csv#attribute.existing-attribute/e",
+            "uri": "some-dataset.csv#attribute/existing-attribute/e",
             "description": None,
             "parent_attribute_value_uri": None,
             "source_uri": "http://source-uri",
         },
         "F": {
-            "uri": "some-dataset.csv#attribute.existing-attribute/f",
+            "uri": "some-dataset.csv#attribute/existing-attribute/f",
             "description": None,
             "parent_attribute_value_uri": None,
             "source_uri": None,
@@ -886,7 +886,7 @@ def test_serialise_unit():
 
     map_label_to_expected_config = {
         "Percent": {
-            "uri": "some-dataset.csv#unit.percent",
+            "uri": "some-dataset.csv#unit/percent",
             "description": "unit",
             "parent_unit_uri": "http://parent-uri",
             "source_uri": None,
@@ -894,7 +894,7 @@ def test_serialise_unit():
             "qudt_conversion_multiplier": None,
         },
         "People": {
-            "uri": "some-dataset.csv#unit.people",
+            "uri": "some-dataset.csv#unit/people",
             "description": None,
             "parent_unit_uri": None,
             "source_uri": "http://source-uri",
@@ -979,7 +979,7 @@ def test_arbitrary_rdf_serialisation_existing_attribute():
     graph = dataset.to_graph(Graph())
 
     assert (
-        URIRef("some-dataset.csv#component.existing-attribute"),
+        URIRef("some-dataset.csv#component/existing-attribute"),
         RDFS.label,
         Literal("Existing Attribute Component"),
     ) in graph
@@ -1036,13 +1036,13 @@ def test_arbitrary_rdf_serialisation_new_attribute():
     graph = dataset.to_graph(Graph())
 
     assert (
-        URIRef("some-dataset.csv#attribute.new-attribute"),
+        URIRef("some-dataset.csv#attribute/new-attribute"),
         RDFS.label,
         Literal("New Attribute Property"),
     ) in graph
 
     assert (
-        URIRef("some-dataset.csv#component.new-attribute"),
+        URIRef("some-dataset.csv#component/new-attribute"),
         RDFS.label,
         Literal("New Attribute Component"),
     ) in graph
@@ -1087,7 +1087,7 @@ def test_arbitrary_rdf_serialisation_existing_dimension():
     graph = dataset.to_graph(Graph())
 
     assert (
-        URIRef("some-dataset.csv#component.existing-dimension"),
+        URIRef("some-dataset.csv#component/existing-dimension"),
         RDFS.label,
         Literal("Existing Dimension Component"),
     ) in graph
@@ -1132,13 +1132,13 @@ def test_arbitrary_rdf_serialisation_new_dimension():
     graph = dataset.to_graph(Graph())
 
     assert (
-        URIRef("some-dataset.csv#dimension.some-dimension"),
+        URIRef("some-dataset.csv#dimension/some-dimension"),
         RDFS.label,
         Literal("New Dimension Property"),
     ) in graph
 
     assert (
-        URIRef("some-dataset.csv#component.some-dimension"),
+        URIRef("some-dataset.csv#component/some-dimension"),
         RDFS.label,
         Literal("New Dimension Component"),
     ) in graph
@@ -1186,7 +1186,7 @@ def test_arbitrary_rdf_serialisation_existing_dimension():
     graph = dataset.to_graph(Graph())
 
     assert (
-        URIRef("some-dataset.csv#component.existing-measure-uri"),
+        URIRef("some-dataset.csv#component/existing-measure-uri"),
         RDFS.label,
         Literal("Existing Measure Component"),
     ) in graph
@@ -1231,13 +1231,13 @@ def test_arbitrary_rdf_serialisation_new_measure():
     graph = dataset.to_graph(Graph())
 
     assert (
-        URIRef("some-dataset.csv#measure.some-measure"),
+        URIRef("some-dataset.csv#measure/some-measure"),
         RDFS.label,
         Literal("New Measure Property"),
     ) in graph
 
     assert (
-        URIRef("some-dataset.csv#component.some-measure"),
+        URIRef("some-dataset.csv#component/some-measure"),
         RDFS.label,
         Literal("New Measure Component"),
     ) in graph
@@ -1272,21 +1272,21 @@ def test_qb_order_of_components():
     graph = dataset.to_graph(Graph())
 
     assert (
-        URIRef("some-dataset.csv#component.some-dimension"),
+        URIRef("some-dataset.csv#component/some-dimension"),
         rdf.QB.order,
         Literal(1),
     ) in graph
 
-    assert (URIRef("some-dataset.csv#component.measure-type"), rdf.QB.order, Literal(2))
+    assert (URIRef("some-dataset.csv#component/measure-type"), rdf.QB.order, Literal(2))
 
     assert (
-        URIRef("some-dataset.csv#component.unit"),
+        URIRef("some-dataset.csv#component/unit"),
         rdf.QB.order,
         Literal(3),
     ) in graph
 
     assert (
-        URIRef("some-dataset.csv#component.some-measure"),
+        URIRef("some-dataset.csv#component/some-measure"),
         rdf.QB.order,
         Literal(4),
     ) in graph
