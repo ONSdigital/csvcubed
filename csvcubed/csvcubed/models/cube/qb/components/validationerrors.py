@@ -6,6 +6,7 @@ Component Validation Errors
 """
 from abc import ABC
 from dataclasses import dataclass
+from pydoc import classname
 from typing import ClassVar, Set
 
 from .datastructuredefinition import QbStructuralDefinition
@@ -49,7 +50,10 @@ class UndefinedMeasureUrisError(UndefinedValuesError):
     """
 
     location: str = "measure URI"
-    error_url: ClassVar =  'http://purl.org/csv-cubed/err/undef-meas'
+
+    @classmethod
+    def get_error_url(cls) -> str:
+        return 'http://purl.org/csv-cubed/err/undef-meas'
 
 
 @dataclass
@@ -60,7 +64,10 @@ class UndefinedUnitUrisError(UndefinedValuesError):
     """
 
     location: str = "unit URI"
-    error_url: ClassVar =  'http://purl.org/csv-cubed/err/undef-unit'
+
+    @classmethod
+    def get_error_url(cls) -> str:
+        return 'http://purl.org/csv-cubed/err/undef-unit'
 
 
 @dataclass
@@ -71,4 +78,7 @@ class UndefinedAttributeValueUrisError(UndefinedValuesError):
     """
 
     location: str = "attribute value URI"
-    error_url: ClassVar =  'http://purl.org/csv-cubed/err/undef-attrib'
+
+    @classmethod
+    def get_error_url(cls) -> str:
+        return 'http://purl.org/csv-cubed/err/undef-attrib'

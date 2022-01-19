@@ -39,7 +39,10 @@ class CsvColumnUriTemplateMissingError(SpecificValidationError):
 
     csv_column_name: str
     component_type: ComponentTypeDescription
-    error_url: ClassVar =  'http://purl.org/csv-cubed/err/csv-col-uri-temp-mis'
+
+    @classmethod
+    def get_error_url(cls) -> str:
+        return 'http://purl.org/csv-cubed/err/csv-col-uri-temp-mis'
 
     def __post_init__(self):
         self.message = (
@@ -56,7 +59,10 @@ class CsvColumnLiteralWithUriTemplate(SpecificValidationError):
 
     csv_column_name: str
     component_type: ComponentTypeDescription
-    error_url: ClassVar =  'http://purl.org/csv-cubed/err/csv-col-lit-uri-temp'
+
+    @classmethod
+    def get_error_url(cls) -> str:
+        return 'http://purl.org/csv-cubed/err/csv-col-lit-uri-temp'
 
     def __post_init__(self):
         self.message = (
@@ -103,7 +109,10 @@ class MoreThanOneMeasureColumnError(MaxNumComponentsExceededError):
 
     maximum_number: int = 1
     component_type: ComponentTypeDescription = QbMultiMeasureDimension
-    error_url: ClassVar =  'http://purl.org/csv-cubed/err/multi-meas-col'
+
+    @classmethod
+    def get_error_url(cls) -> str:
+        return 'http://purl.org/csv-cubed/err/multi-meas-col'
 
 
 @dataclass
@@ -114,7 +123,10 @@ class MoreThanOneUnitsColumnError(MaxNumComponentsExceededError):
 
     maximum_number: int = 1
     component_type: ComponentTypeDescription = QbMultiUnits
-    error_url: ClassVar =  'http://purl.org/csv-cubed/err/multi-unit-col'
+
+    @classmethod
+    def get_error_url(cls) -> str:
+        return 'http://purl.org/csv-cubed/err/multi-unit-col'
 
 
 @dataclass
@@ -125,7 +137,10 @@ class MoreThanOneObservationsColumnError(MaxNumComponentsExceededError):
 
     maximum_number: int = 1
     component_type: ComponentTypeDescription = QbObservationValue
-    error_url: ClassVar =  'http://purl.org/csv-cubed/err/multi-obsv-col'
+
+    @classmethod
+    def get_error_url(cls) -> str:
+        return 'http://purl.org/csv-cubed/err/multi-obsv-col'
 
 
 @dataclass
@@ -157,7 +172,10 @@ class NoDimensionsDefinedError(MinNumComponentsNotSatisfiedError):
     component_type: ComponentTypeDescription = QbDimension
     minimum_number: int = 1
     actual_number: int = 0
-    error_url: ClassVar =  'http://purl.org/csv-cubed/err/no-dim'
+
+    @classmethod
+    def get_error_url(cls) -> str:
+        return 'http://purl.org/csv-cubed/err/no-dim'
 
 
 @dataclass
@@ -208,7 +226,10 @@ class NoUnitsDefinedError(NeitherDefinedError):
 
     component_one: ComponentTypeDescription = f"{QbObservationValue.__name__}.unit"
     component_two: ComponentTypeDescription = QbMultiUnits
-    error_url: ClassVar =  'http://purl.org/csv-cubed/err/no-unit'
+
+    @classmethod
+    def get_error_url(cls) -> str:
+        return 'http://purl.org/csv-cubed/err/no-unit'
 
 
 @dataclass
@@ -219,7 +240,10 @@ class NoMeasuresDefinedError(NeitherDefinedError):
 
     component_one: ComponentTypeDescription = f"{QbObservationValue.__name__}.measure"
     component_two: ComponentTypeDescription = QbMultiMeasureDimension
-    error_url: ClassVar =  'http://purl.org/csv-cubed/err/no-meas'
+
+    @classmethod
+    def get_error_url(cls) -> str:
+        return 'http://purl.org/csv-cubed/err/no-meas'
 
 
 @dataclass
@@ -230,7 +254,10 @@ class NoObservedValuesColumnDefinedError(NeitherDefinedError):
 
     component_one: ComponentTypeDescription = QbSingleMeasureObservationValue
     component_two: ComponentTypeDescription = QbMultiMeasureObservationValue
-    error_url: ClassVar =  'http://purl.org/csv-cubed/err/no-obsv-col'
+
+    @classmethod
+    def get_error_url(cls) -> str:
+        return 'http://purl.org/csv-cubed/err/no-obsv-col'
 
 
 @dataclass
@@ -262,7 +289,10 @@ class BothUnitTypesDefinedError(IncompatibleComponentsError):
     component_one: ComponentTypeDescription = f"{QbObservationValue.__name__}.unit"
     component_two: ComponentTypeDescription = QbMultiUnits
     additional_explanation: Optional[str] = None
-    error_url: ClassVar =  'http://purl.org/csv-cubed/err/both-unit-typ-def'
+
+    @classmethod
+    def get_error_url(cls) -> str:
+        return 'http://purl.org/csv-cubed/err/both-unit-typ-def'
 
 
 @dataclass
@@ -274,4 +304,7 @@ class BothMeasureTypesDefinedError(IncompatibleComponentsError):
     component_one: ComponentTypeDescription = f"{QbObservationValue.__name__}.measure"
     component_two: ComponentTypeDescription = QbMultiMeasureDimension
     additional_explanation: Optional[str] = None
-    error_url: ClassVar =  'http://purl.org/csv-cubed/err/both-meas-typ-def'
+
+    @classmethod
+    def get_error_url(cls) -> str:
+        return 'http://purl.org/csv-cubed/err/both-meas-typ-def'
