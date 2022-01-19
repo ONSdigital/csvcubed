@@ -81,6 +81,10 @@ class LabelUriCollisionError(SpecificValidationError):
     conflicting_values: List[str]
     conflicting_identifier: str
 
+    @classmethod
+    def get_error_url(cls) -> str:
+        raise Exception("Exception should never be presented to user.")
+
     def __post_init__(self):
         label_values = ", ".join([f'"{v}"' for v in self.conflicting_values])
         self.message = (
