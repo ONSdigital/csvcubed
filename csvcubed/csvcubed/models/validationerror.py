@@ -23,4 +23,4 @@ class SpecificValidationError(ValidationError, ABC):
 
     @abstractclassmethod
     def get_error_url(cls) -> str:
-        return(str(cls.error_url))
+        ... 
