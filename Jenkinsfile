@@ -43,12 +43,7 @@ pipeline {
             }
         }
         stage('Pyright') {
-            agent {
-                dockerfile {
-                    args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
-                    reuseNode true
-                }
-            }
+            when { not { buildingTag() } }
             steps {
                     dir('csvcubed-devtools') {
                         sh 'poetry run pyright . --lib'
@@ -63,29 +58,75 @@ pipeline {
                     }
 
                     dir('csvcubed') {
-                        sh 'poetry run pyright . --lib'
+                       sh 'poetry run pyright . --lib'
                     }
             }
         }
         stage('Test') {
+            when { not { buildingTag() } }
             steps {
-                dir('csvcubed-models/tests/unit') {
-                    sh "poetry run pytest --junitxml=pytest_results_models.xml"
-                }
-                dir('csvcubed-pmd') {
-                    sh 'poetry run behave tests/behaviour --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json'
-                    dir('tests/unit') {
-                        sh "poetry run pytest --junitxml=pytest_results_pmd.xml"
+                script {
+                    try {
+                        dir('csvcubed-models/tests/unit') {
+                            sh "poetry run pytest --junitxml=pytest_results_models.xml"
+                        }
+                        dir('csvcubed-pmd') {
+                            sh 'poetry run behave tests/behaviour --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json'
+                            dir('tests/unit') {
+                                sh "poetry run pytest --junitxml=pytest_results_pmd.xml"
+                            }
+                        }
+                        dir('csvcubed') {
+                            sh 'poetry run behave tests/behaviour --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json'
+                            dir('tests/unit') {
+                                sh "poetry run pytest --junitxml=pytest_results_csvcubed.xml"
+                            }
+                        }
+                    } catch (ex) {
+                        echo "An error occurred when testing: ${ex}"
+                        stash name: 'test-results', includes: '**/test-results.json,**/*results*.xml' // Ensure test reports are available to be reported on.
+                        throw ex
                     }
-                }
-                dir('csvcubed') {
-                    sh 'poetry run behave tests/behaviour --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json'
-                    dir('tests/unit') {
-                        sh "poetry run pytest --junitxml=pytest_results_csvcubed.xml"
-                    }
-                }
 
-                stash name: 'test-results', includes: '**/test-results.json,**/*results*.xml' // Ensure test reports are available to be reported on.
+                    stash name: 'test-results', includes: '**/test-results.json,**/*results*.xml' // Ensure test reports are available to be reported on.
+                }
+            }
+        }
+        stage('Tox') {
+            when { 
+                buildingTag()
+                tag pattern: "v\\d+\\.\\d+\\.\\d+(-RC\\d)?", comparator: "REGEXP"
+            }
+            agent {
+                dockerfile {
+                    filename 'Dockerfile'
+                    dir 'pythonversiontesting'
+                }
+            }
+            steps {
+                script {
+                    try {
+                        dir('csvcubed-models') {
+                            sh 'tox'
+                        }
+
+                        dir('csvcubed-pmd') {
+                            // Patch behave so that it can output the correct format for the Jenkins cucumber tool.
+                            sh 'tox'
+                        }
+
+                        dir('csvcubed') {
+                            // Patch behave so that it can output the correct format for the Jenkins cucumber tool.
+                            sh 'tox'
+                        }
+                    } catch (ex) {
+                        echo "An error occurred testing with tox: ${ex}"
+                        stash name: 'tox-test-results', includes: '**/tox-test-results-*.json,**/*results*.xml'
+                        throw ex
+                    }
+                    // Ensure test reports are available to be reported on.
+                    stash name: 'tox-test-results', includes: '**/tox-test-results-*.json,**/*results*.xml'
+                }
             }
         }
         stage('Package') {
@@ -109,7 +150,7 @@ pipeline {
                 stash name: 'wheels', includes: '**/dist/*.whl'
             }
         }
-        stage('Documentation') {
+        stage('Building Documentation') {
             steps {
                 script {
                     dir('csvcubed-devtools') {
@@ -132,19 +173,62 @@ pipeline {
                         sh 'poetry run sphinx-build -W -b html docs docs/_build/html'
                     }
 
-                    stash name: 'docs', includes: '**/docs/_build/html/**/*'
-                }
-            }
-        }
-        stage('Build Static Site'){    
-            steps{
-                script{
                     dir('external-docs'){
                         sh "python3 -m mkdocs build"
                     }
+
+                    stash name: 'docs', includes: '**/docs/_build/html/**/*'
                     stash name: 'mkdocs', includes: '**/external-docs/site/**/*'
                 }
+            }
+        }
+        stage('Publishing Documentation'){
+            when {
+                branch 'main'
+            }
+            steps{
+                script{
+                    try {
+                        withCredentials([gitUsernamePassword(credentialsId: 'csvcubed-github', gitToolName: 'git-tool')]){
+                            sh 'git clone "https://github.com/GSS-Cogs/csvcubed-docs.git"'
+                            dir ('csvcubed-docs') {
+                                sh 'git config --global user.email "csvcubed@gsscogs.uk" && git config --global user.name "csvcubed"'
+                                
+                                if (fileExists("external")) {
+                                    sh 'git rm -rf external'
+                                }
+                                sh 'mkdir external'
+                                sh 'cp -r ../external-docs/site/* external'
 
+                                if (fileExists("api-docs")) {
+                                    sh 'git rm -rf api-docs'
+                                }
+                                sh 'mkdir api-docs'
+                                sh 'mkdir api-docs/csvcubed'
+                                sh 'mkdir api-docs/csvcubed-devtools'
+                                sh 'mkdir api-docs/csvcubed-models'
+                                sh 'mkdir api-docs/csvcubed-pmd'
+
+                                sh 'cp -r ../csvcubed/docs/_build/html/* api-docs/csvcubed'
+                                sh 'cp -r ../csvcubed-devtools/docs/_build/html/* api-docs/csvcubed-devtools'
+                                sh 'cp -r ../csvcubed-models/docs/_build/html/* api-docs/csvcubed-models'
+                                sh 'cp -r ../csvcubed-pmd/docs/_build/html/* api-docs/csvcubed-pmd'
+
+                                sh 'touch .nojekyll'
+
+                                sh 'git add *'
+                                sh 'git add .nojekyll'
+                                sh 'git commit -m "Updating documentation."'
+                                // commit being built in csvcubed repo: https://github.com/GSS-Cogs/csvcubed
+                                sh 'git checkout gh-pages'
+                                sh 'git reset --hard main'
+                                sh 'git push -f'
+                            }
+                        }
+                    } finally {
+                        sh 'rm -rf csvcubed-docs'
+                    }
+                }
             }
         }
     }
@@ -157,7 +241,14 @@ pipeline {
                     echo 'test-results stash does not exist'
                 }
 
+                try {
+                    unstash name: 'tox-test-results'
+                } catch (Exception e) {
+                    echo 'tox-test-results stash does not exist'
+                }
+
                 cucumber fileIncludePattern: '**/test-results.json'
+                cucumber fileIncludePattern: '**/tox-test-results-*.json'
                 junit allowEmptyResults: true, testResults: '**/*results*.xml'
 
                 try {

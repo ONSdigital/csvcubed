@@ -687,7 +687,7 @@ class QbWriter(WriterBase):
             or isinstance(column.structural_definition, QbMultiMeasureDimension)
             or (
                 isinstance(column.structural_definition, QbAttribute)
-                and column.structural_definition.is_required
+                and column.structural_definition.get_is_required()
             )
             or (
                 isinstance(column.structural_definition, QbObservationValue)

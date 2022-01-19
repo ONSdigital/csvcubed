@@ -39,6 +39,7 @@ requires = ["poetry-core>=1.0.0"]
 exclude = [
   ".venv",
   "**/tests",
+  "**/.tox",
 ]
 pythonVersion = "3.9"
 
