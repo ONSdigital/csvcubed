@@ -6,7 +6,7 @@ Component Validation Errors
 """
 from abc import ABC
 from dataclasses import dataclass
-from typing import Set
+from typing import ClassVar, Set
 
 from .datastructuredefinition import QbStructuralDefinition
 from csvcubed.models.validationerror import SpecificValidationError
@@ -27,6 +27,7 @@ class UndefinedValuesError(SpecificValidationError, ABC):
 
     location: str
     """The property or location where the undefined values were found."""
+    
 
     def __post_init__(self):
         unique_values_to_display: str = (
@@ -48,6 +49,7 @@ class UndefinedMeasureUrisError(UndefinedValuesError):
     """
 
     location: str = "measure URI"
+    error_url: ClassVar =  'http://purl.org/csv-cubed/err/undef-meas'
 
 
 @dataclass
@@ -58,6 +60,7 @@ class UndefinedUnitUrisError(UndefinedValuesError):
     """
 
     location: str = "unit URI"
+    error_url: ClassVar =  'http://purl.org/csv-cubed/err/undef-unit'
 
 
 @dataclass
@@ -68,3 +71,4 @@ class UndefinedAttributeValueUrisError(UndefinedValuesError):
     """
 
     location: str = "attribute value URI"
+    error_url: ClassVar =  'http://purl.org/csv-cubed/err/undef-attrib'

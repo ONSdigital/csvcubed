@@ -4,6 +4,7 @@ Cube Validation Errors
 """
 from collections import Set
 from dataclasses import dataclass
+from typing import ClassVar
 
 from csvcubed.models.validationerror import SpecificValidationError
 
@@ -15,6 +16,7 @@ class DuplicateColumnTitleError(SpecificValidationError):
     """
 
     csv_column_title: str
+    error_url: ClassVar =  'http://purl.org/csv-cubed/err/dupe-col'
 
     def __post_init__(self):
         self.message = f"Duplicate column title '{self.csv_column_title}'"
@@ -27,6 +29,7 @@ class ColumnNotFoundInDataError(SpecificValidationError):
     """
 
     csv_column_title: str
+    error_url: ClassVar =  'http://purl.org/csv-cubed/err/col-not-found-in-dat'
 
     def __post_init__(self):
         self.message = f"Column '{self.csv_column_title}' not found in data provided."
@@ -39,6 +42,7 @@ class MissingColumnDefinitionError(SpecificValidationError):
     """
 
     csv_column_title: str
+    error_url: ClassVar =  'http://purl.org/csv-cubed/err/mis-col-def'
 
     def __post_init__(self):
         self.message = (
@@ -54,6 +58,7 @@ class ColumnValidationError(SpecificValidationError):
 
     csv_column_title: str
     error: Exception
+    error_url: ClassVar =  'http://purl.org/csv-cubed/err/col-valid'
 
     def __post_init__(self):
         self.message = f"An exception occurred when validating column '{self.csv_column_title}': {self.error}."
@@ -68,6 +73,7 @@ class ObservationValuesMissing(SpecificValidationError):
 
     csv_column_title: str
     row_numbers: Set[int]
+    error_url: ClassVar =  'http://purl.org/csv-cubed/err/obsv-val-mis'
 
     def __post_init__(self):
         row_nums_str = ", ".join([str(i) for i in sorted(self.row_numbers)])
