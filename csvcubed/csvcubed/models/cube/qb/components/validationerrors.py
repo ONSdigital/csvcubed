@@ -99,6 +99,10 @@ class ReservedUriValueError(SpecificValidationError):
     conflicting_values: List[str]
     reserved_identifier: str
 
+    @classmethod
+    def get_error_url(cls) -> str:
+        return "https://purl.org/csv-cubed/err/resrv-uri-val"
+
     def __post_init__(self):
         label_values = ", ".join([f'"{v}"' for v in self.conflicting_values])
         self.message = (
