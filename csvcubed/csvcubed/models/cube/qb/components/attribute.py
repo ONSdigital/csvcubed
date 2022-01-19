@@ -15,6 +15,7 @@ from pydantic import validator
 from .attributevalue import NewQbAttributeValue
 from .arbitraryrdf import (
     ArbitraryRdf,
+    TripleFragment,
     TripleFragmentBase,
     RdfSerialisationHint,
 )
@@ -33,11 +34,11 @@ from csvcubed.utils.validators.uri import validate_uri
 @dataclass
 class QbAttribute(QbColumnStructuralDefinition, ArbitraryRdf, ABC):
     @abstractmethod
-    def is_required(self) -> bool:
+    def get_is_required(self) -> bool:
         pass
 
     @abstractmethod
-    def new_attribute_values(self) -> List[NewQbAttributeValue]:
+    def get_new_attribute_values(self) -> List[NewQbAttributeValue]:
         pass
 
     def _validate_data_new_attribute_values(
@@ -51,9 +52,7 @@ class QbAttribute(QbColumnStructuralDefinition, ArbitraryRdf, ABC):
                 av.uri_safe_identifier for av in self.new_attribute_values  # type: ignore
             }
             actual_values = {
-                uri_safe(str(v))
-                for v in set(data.unique().astype(object).flatten())
-                if not pd.isna(v)
+                uri_safe(str(v)) for v in set(data.unique()) if not pd.isna(v)
             }
             undefined_values = expected_values - actual_values
 
@@ -71,6 +70,15 @@ class ExistingQbAttribute(QbAttribute):
     )
     is_required: bool = field(default=False, repr=False)
     arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
+
+    def _get_arbitrary_rdf(self) -> List[TripleFragmentBase]:
+        return self.arbitrary_rdf
+
+    def get_is_required(self) -> bool:
+        return self.is_required
+
+    def get_new_attribute_values(self) -> List[NewQbAttributeValue]:
+        return self.new_attribute_values
 
     def get_default_node_serialisation_hint(self) -> RdfSerialisationHint:
         return RdfSerialisationHint.Component
@@ -98,6 +106,15 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
     is_required: bool = field(default=False, repr=False)
     uri_safe_identifier_override: Optional[str] = field(default=None, repr=False)
     arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
+
+    def _get_arbitrary_rdf(self) -> List[TripleFragmentBase]:
+        return self.arbitrary_rdf
+
+    def get_is_required(self) -> bool:
+        return self.is_required
+
+    def get_new_attribute_values(self) -> List[NewQbAttributeValue]:
+        return self.new_attribute_values
 
     def get_default_node_serialisation_hint(self) -> RdfSerialisationHint:
         return RdfSerialisationHint.Property
@@ -206,6 +223,9 @@ class NewQbAttributeLiteral(NewQbAttribute, QbAttributeLiteral):
         default_factory=list, init=False, repr=False
     )
     arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
+
+    def _get_arbitrary_rdf(self) -> List[TripleFragmentBase]:
+        return self.arbitrary_rdf
 
     def validate_data(
         self, data: pd.Series, column_csvw_name: str, csv_column_uri_template: str

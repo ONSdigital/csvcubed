@@ -28,6 +28,9 @@ class NewQbAttributeValue(
     parent_attribute_value_uri: Optional[str] = field(default=None, repr=False)
     arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
 
+    def _get_arbitrary_rdf(self) -> List[TripleFragmentBase]:
+        return self.arbitrary_rdf
+        
     def get_default_node_serialisation_hint(self) -> RdfSerialisationHint:
         return RdfSerialisationHint.AttributeValue
 

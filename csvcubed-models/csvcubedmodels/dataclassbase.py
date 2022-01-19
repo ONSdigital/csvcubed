@@ -4,7 +4,6 @@ DataClass Base
 
 Provides some utilities to help with serialisation/deserialisation
 """
-import collections
 import copy
 import datetime
 import json
@@ -222,8 +221,8 @@ class DataClassBase(ABC):
                 f"Unable to inflate {cls.__name__}.{field.name} as dictionary value is not list: {val}"
             )
 
-        typing_args_contain_subclass_dataclassbase = (
-            cls._get_generic_type_args_subclassing_dataclassbase(generic_type_args)
+        typing_args_contain_subclass_dataclassbase = cls._get_generic_type_args_subclassing_dataclassbase(
+            generic_type_args
         )
 
         if len(typing_args_contain_subclass_dataclassbase) > 0:

@@ -10,8 +10,12 @@ def get_test_base_dir() -> Path:
         test_index = path_parts.index("tests")
         test_root_path = Path(*path_parts[0 : test_index + 1])
     else:  # Fine Rob, you win.
-        csvwlib_index = path_parts.index("csvcubed")
-        test_root_path = Path(*path_parts[0: csvwlib_index + 1], "csvcubed", "tests")
+        # Use deepest instance of "csvcubed" so I can call my cloned repository folder "csvcubed" too.
+        csvwlib_index = len(path_parts) - (
+            1 + list(reversed(path_parts)).index("csvcubed")
+        )
+        # Removed double csvcubed because tox is run in the first csvcubed directory not csvcubed/tests.
+        test_root_path = Path(*path_parts[0 : csvwlib_index + 1], "tests")
     return test_root_path
 
 

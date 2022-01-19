@@ -107,6 +107,9 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
     concepts: List[TNewQbConcept]
     arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
 
+    def _get_arbitrary_rdf(self) -> List[TripleFragmentBase]:
+        return self.arbitrary_rdf
+
     @staticmethod
     def from_data(metadata: CatalogMetadata, data: PandasDataTypes) -> "NewQbCodeList":
         columnar_data = pandas_input_to_columnar_str(data)
