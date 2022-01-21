@@ -4,7 +4,6 @@ Cube Validation Errors
 """
 from collections.abc import Set
 from dataclasses import dataclass
-from typing import ClassVar
 
 from csvcubed.models.validationerror import SpecificValidationError
 

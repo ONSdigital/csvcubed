@@ -124,8 +124,8 @@ def test_existing_dimension_csv_column_uri_template():
     assert isinstance(validation_error, CsvColumnUriTemplateMissingError)
     assert validation_error.csv_column_name == "Existing Dimension"
 
-    assert isinstance(CsvColumnUriTemplateMissingError.get_error_url(), str)
-    assert CsvColumnUriTemplateMissingError.get_error_url() == 'http://purl.org/csv-cubed/err/csv-col-uri-temp-mis'
+    assert isinstance(validation_error.get_error_url(), str)
+    assert validation_error.get_error_url() == 'http://purl.org/csv-cubed/err/csv-col-uri-temp-mis'
 
 
 def test_no_dimensions_validation_error():
@@ -186,14 +186,15 @@ def test_multiple_incompatible_unit_definitions():
             ),
         ],
     )
+    
     errors = validate_qb_component_constraints(cube)
 
     assert_num_validation_errors(errors, 1)
-    error = errors[0]
-    assert isinstance(error, BothUnitTypesDefinedError)
+    validation_error = errors[0]
+    assert isinstance(validation_error, BothUnitTypesDefinedError)
 
-    assert isinstance(BothUnitTypesDefinedError.get_error_url(), str)
-    assert BothUnitTypesDefinedError.get_error_url() == 'http://purl.org/csv-cubed/err/both-unit-typ-def'
+    assert isinstance(validation_error.get_error_url(), str)
+    assert validation_error.get_error_url() == 'http://purl.org/csv-cubed/err/both-unit-typ-def'
 
 
 def test_no_unit_defined():
@@ -224,11 +225,11 @@ def test_no_unit_defined():
     errors = validate_qb_component_constraints(cube)
 
     assert_num_validation_errors(errors, 1)
-    error = errors[0]
-    assert isinstance(error, NoUnitsDefinedError)
+    validation_error = errors[0]
+    assert isinstance(validation_error, NoUnitsDefinedError)
 
-    assert isinstance(NoUnitsDefinedError.get_error_url(), str)
-    assert NoUnitsDefinedError.get_error_url() == 'http://purl.org/csv-cubed/err/no-unit'
+    assert isinstance(validation_error.get_error_url(), str)
+    assert validation_error.get_error_url() == 'http://purl.org/csv-cubed/err/no-unit'
 
 
 def test_multiple_units_columns():
@@ -348,11 +349,11 @@ def test_multi_measure_obs_val_without_measure_dimension():
     errors = validate_qb_component_constraints(cube)
 
     assert_num_validation_errors(errors, 1)
-    error = errors[0]
-    assert isinstance(error, NoMeasuresDefinedError)
+    validation_error = errors[0]
+    assert isinstance(validation_error, NoMeasuresDefinedError)
 
-    assert isinstance(NoMeasuresDefinedError.get_error_url(), str)
-    assert NoMeasuresDefinedError.get_error_url() == 'http://purl.org/csv-cubed/err/no-meas'
+    assert isinstance(validation_error.get_error_url(), str)
+    assert validation_error.get_error_url() == 'http://purl.org/csv-cubed/err/no-meas'
 
 
 def test_multi_measure_obs_val_with_multiple_measure_dimensions():

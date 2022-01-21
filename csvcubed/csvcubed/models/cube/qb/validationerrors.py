@@ -6,7 +6,7 @@ Qb-Cube Validation Errors
 """
 
 from dataclasses import dataclass
-from typing import ClassVar, Optional, Type, Union
+from typing import Optional, Type, Union
 from abc import ABC
 
 from ..qb import (
