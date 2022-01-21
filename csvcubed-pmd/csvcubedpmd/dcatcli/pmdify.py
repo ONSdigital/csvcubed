@@ -58,8 +58,6 @@ def pmdify_dcat(
 
     _delete_existing_dcat_dataset_metadata(csvw_rdf_graph)
 
-    _set_pmdcat_type_on_dataset_contents(csvw_rdf_graph, csvw_type)
-
     _replace_uri_substring_in_graph(csvw_rdf_graph, str(_TEMP_PREFIX_URI), base_uri)
     csvw_file_contents_json["rdfs:seeAlso"] = rdflibutils.serialise_to_json_ld(
         csvw_rdf_graph
@@ -81,6 +79,7 @@ def pmdify_dcat(
         catalog_metadata_quads_file_path,
         catalog_metadata_graph_uri,
         base_uri,
+        csvw_type
     )
 
 
@@ -93,7 +92,7 @@ def _set_pmdcat_type_on_dataset_contents(
             PREFIX qb:      <http://purl.org/linked-data/cube#>
             PREFIX pmdcat:  <http://publishmydata.com/pmdcat#>
 
-            INSERT { ?dataset a pmdcat:DataCube. } WHERE { ?dataset a qb:DataSet. }
+            INSERT { ?dataset a pmdcat:DataCube. } WHERE { [] pmdcat:datasetContents ?dataset. }
             """
         )
     elif csvw_type == CsvCubedOutputType.SkosConceptScheme:
@@ -102,7 +101,7 @@ def _set_pmdcat_type_on_dataset_contents(
             PREFIX skos:    <http://www.w3.org/2004/02/skos/core#>
             PREFIX pmdcat:  <http://publishmydata.com/pmdcat#>
 
-            INSERT { ?dataset a pmdcat:ConceptScheme. } WHERE { ?dataset a skos:ConceptScheme. }
+            INSERT { ?conceptScheme a pmdcat:ConceptScheme. } WHERE { [] pmdcat:datasetContents ?conceptScheme. }
             """
         )
     else:
@@ -188,6 +187,7 @@ def _write_catalog_metadata_to_quads(
     catalog_metadata_quads_file_path: Path,
     catalog_metadata_graph_uri: str,
     base_uri: str,
+    csvw_type: CsvCubedOutputType
 ) -> None:
     catalog_metadata_ds = rdflib.Dataset()
     catalog_metadata_graph = catalog_metadata_ds.graph(
@@ -196,7 +196,8 @@ def _write_catalog_metadata_to_quads(
     assert catalog_metadata_graph is not None
 
     catalog_metadata_graph = catalog_record.to_graph(catalog_metadata_graph)
-    catalog_record.to_graph(catalog_metadata_graph)
+    _set_pmdcat_type_on_dataset_contents(catalog_metadata_graph, csvw_type)
+
     _replace_uri_substring_in_graph(
         catalog_metadata_graph, str(_TEMP_PREFIX_URI), base_uri
     )

@@ -48,7 +48,7 @@ def ensure_qbcube_data_is_categorical(cube: QbCube) -> None:
 
             # TODO: When addressing ticket #250, this is the start of the process.
             cube.data[column.csv_column_title] = coalesce_on_uri_safe(
-                cube.data[column.csv_column_title]
+                cube.data[column.csv_column_title], column.csv_column_title
             )
 
 

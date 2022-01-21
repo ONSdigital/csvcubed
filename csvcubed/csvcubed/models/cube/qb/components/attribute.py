@@ -89,7 +89,11 @@ class ExistingQbAttribute(QbAttribute):
     _attribute_uri_validator = validate_uri("attribute_uri")
 
     def validate_data(
-        self, data: pd.Series, column_csvw_name: str, csv_column_uri_template: str
+        self,
+        data: pd.Series,
+        column_csvw_name: str,
+        csv_column_uri_template: str,
+        column_csv_title: str,
     ) -> List[ValidationError]:
         return self._validate_data_new_attribute_values(data)
 
@@ -157,7 +161,11 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
         )
 
     def validate_data(
-        self, data: pd.Series, column_csvw_name: str, csv_column_uri_template: str
+        self,
+        data: pd.Series,
+        column_csvw_name: str,
+        csv_column_uri_template: str,
+        column_csv_title: str,
     ) -> List[ValidationError]:
         return self._validate_data_new_attribute_values(data)
 
@@ -211,7 +219,11 @@ class ExistingQbAttributeLiteral(ExistingQbAttribute, QbAttributeLiteral):
     arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
 
     def validate_data(
-        self, data: pd.Series, column_csvw_name: str, csv_column_uri_template: str
+        self,
+        data: pd.Series,
+        column_csvw_name: str,
+        csv_column_uri_template: str,
+        column_csv_title: str,
     ) -> List[ValidationError]:
         # csv-validation will check that all literals match the expected data type.
         return []
@@ -228,7 +240,11 @@ class NewQbAttributeLiteral(NewQbAttribute, QbAttributeLiteral):
         return self.arbitrary_rdf
 
     def validate_data(
-        self, data: pd.Series, column_csvw_name: str, csv_column_uri_template: str
+        self,
+        data: pd.Series,
+        column_csvw_name: str,
+        csv_column_uri_template: str,
+        column_csv_title: str,
     ) -> List[ValidationError]:
         # csv-validation will check that all literals match the expected data type.
         return []
