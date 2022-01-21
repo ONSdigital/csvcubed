@@ -35,6 +35,7 @@ def uri_safe_ios(data: PandasDataTypes) -> dict[str, list[str]]:
             data = data.squeeze()
             if data is None:
                 raise Exception("This should never happen.")
+        assert isinstance(data, Series)
 
         original_safe_dict: dict[str, str] = {}
 
@@ -147,10 +148,7 @@ def _data_is_string_type(data: PandasDataTypes) -> bool:
     return is_string_dtype(data)
 
 
-def _get_unique_values(data: PandasDataTypes) -> Iterable[str]:
-    if data is None:
-        return []
-
+def _get_unique_values(data: Series) -> Iterable[str]:
     if data.dtype == "category":
         return data.cat.categories
 
