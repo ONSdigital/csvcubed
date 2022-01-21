@@ -43,5 +43,8 @@ class QbColumn(CsvColumn, Generic[QbColumnStructuralDefinition]):
         assert columnar_data is not None
 
         return self.structural_definition.validate_data(
-            columnar_data, column_variable_name, csv_column_uri_template
+            columnar_data,
+            column_variable_name,
+            csv_column_uri_template,
+            self.csv_column_title,
         )

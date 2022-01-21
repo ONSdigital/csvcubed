@@ -11,9 +11,9 @@ Feature: Test outputting CSV-Ws containing `SKOS:ConceptScheme`s.
     And the RDF should pass "skos" SPARQL tests
     And the RDF should contain
       """
-        @prefix concept: <file:/tmp/basic-code-list.csv#concept/basic-code-list/>.
+        @prefix basicCodeList: <file:/tmp/basic-code-list.csv#>.
 
-        <file:/tmp/basic-code-list.csv#scheme/basic-code-list> a <http://www.w3.org/2004/02/skos/core#ConceptScheme>,
+        basicCodeList:code-list a <http://www.w3.org/2004/02/skos/core#ConceptScheme>,
           <http://www.w3.org/ns/dcat#Dataset>, <http://www.w3.org/ns/dcat#Resource>;
         <http://purl.org/dc/terms/license> <http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/>;
         <http://purl.org/dc/terms/publisher> <https://www.gov.uk/government/organisations/office-for-national-statistics>;
@@ -27,17 +27,17 @@ Feature: Test outputting CSV-Ws containing `SKOS:ConceptScheme`s.
         <http://www.w3.org/ns/dcat#theme> <http://gss-data.org.uk/def/gdp#some-test-theme>;
         <http://www.w3.org/ns/dcat#contactPoint> <mailto:something@example.org>.
 
-        concept:1st-concept a <http://www.w3.org/2004/02/skos/core#Concept>;
+        basicCodeList:1st-concept a <http://www.w3.org/2004/02/skos/core#Concept>;
         <http://www.w3.org/2000/01/rdf-schema#comment> "This is the first concept.";
         <http://www.w3.org/2000/01/rdf-schema#label> "First Concept";
-        <http://www.w3.org/2004/02/skos/core#inScheme> <file:/tmp/basic-code-list.csv#scheme/basic-code-list>;
+        <http://www.w3.org/2004/02/skos/core#inScheme> basicCodeList:code-list;
         <http://www.w3.org/2004/02/skos/core#notation> "1st-concept";
         <http://www.w3.org/ns/ui#sortPriority> 0 .
 
-        concept:second-concept a <http://www.w3.org/2004/02/skos/core#Concept>;
+        basicCodeList:second-concept a <http://www.w3.org/2004/02/skos/core#Concept>;
         <http://www.w3.org/2000/01/rdf-schema#label> "Second Concept";
-        <http://www.w3.org/2004/02/skos/core#broader> concept:1st-concept;
-        <http://www.w3.org/2004/02/skos/core#inScheme> <file:/tmp/basic-code-list.csv#scheme/basic-code-list>;
+        <http://www.w3.org/2004/02/skos/core#broader> basicCodeList:1st-concept;
+        <http://www.w3.org/2004/02/skos/core#inScheme> basicCodeList:code-list;
         <http://www.w3.org/2004/02/skos/core#notation> "second-concept";
         <http://www.w3.org/ns/ui#sortPriority> 20 .
       """
@@ -58,9 +58,9 @@ Feature: Test outputting CSV-Ws containing `SKOS:ConceptScheme`s.
     And the RDF should pass "skos" SPARQL tests
     And the RDF should contain
       """
-        @prefix concept: <file:/tmp/composite-code-list.csv#concept/composite-code-list/>.
+        @prefix compositeCodeList: <file:/tmp/composite-code-list.csv#>.
 
-        <file:/tmp/composite-code-list.csv#scheme/composite-code-list> a <http://www.w3.org/2004/02/skos/core#ConceptScheme>,
+        compositeCodeList:code-list a <http://www.w3.org/2004/02/skos/core#ConceptScheme>,
           <http://www.w3.org/ns/dcat#Dataset>, <http://www.w3.org/ns/dcat#Resource>;
         <http://purl.org/dc/terms/license> <http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/>;
         <http://purl.org/dc/terms/publisher> <https://www.gov.uk/government/organisations/office-for-national-statistics>;
@@ -77,25 +77,25 @@ Feature: Test outputting CSV-Ws containing `SKOS:ConceptScheme`s.
             <http://data.europa.eu/nuts/scheme/2016>,
             <http://gss-data.org.uk/def/concept-scheme/geography-hierarchy/administrative>.
 
-        concept:wales a <http://www.w3.org/2004/02/skos/core#Concept>;
+        compositeCodeList:wales a <http://www.w3.org/2004/02/skos/core#Concept>;
         <http://www.w3.org/2002/07/owl#sameAs> <http://data.europa.eu/nuts/code/UKL>;
         <http://www.w3.org/2000/01/rdf-schema#label> "Wales";
         <http://www.w3.org/2004/02/skos/core#notation> "wales";
-        <http://www.w3.org/2004/02/skos/core#inScheme> <file:/tmp/composite-code-list.csv#scheme/composite-code-list>;
+        <http://www.w3.org/2004/02/skos/core#inScheme> compositeCodeList:code-list;
         <http://www.w3.org/ns/ui#sortPriority> 0.
 
-        concept:scotland a <http://www.w3.org/2004/02/skos/core#Concept>;
+        compositeCodeList:scotland a <http://www.w3.org/2004/02/skos/core#Concept>;
         <http://www.w3.org/2002/07/owl#sameAs> <http://data.europa.eu/nuts/code/UKM>;
         <http://www.w3.org/2000/01/rdf-schema#label> "Scotland";
         <http://www.w3.org/2004/02/skos/core#notation> "scotland";
-        <http://www.w3.org/2004/02/skos/core#inScheme> <file:/tmp/composite-code-list.csv#scheme/composite-code-list>;
+        <http://www.w3.org/2004/02/skos/core#inScheme> compositeCodeList:code-list;
         <http://www.w3.org/ns/ui#sortPriority> 1.
 
-        concept:england a <http://www.w3.org/2004/02/skos/core#Concept>;
+        compositeCodeList:england a <http://www.w3.org/2004/02/skos/core#Concept>;
         <http://www.w3.org/2002/07/owl#sameAs> <http://statistics.data.gov.uk/id/statistical-geography/E92000001>;
         <http://www.w3.org/2000/01/rdf-schema#label> "England";
         <http://www.w3.org/2004/02/skos/core#notation> "england";
-        <http://www.w3.org/2004/02/skos/core#inScheme> <file:/tmp/composite-code-list.csv#scheme/composite-code-list>;
+        <http://www.w3.org/2004/02/skos/core#inScheme> compositeCodeList:code-list;
         <http://www.w3.org/ns/ui#sortPriority> 2.
 
       """

@@ -9,30 +9,7 @@ Feature: Testing the csvw command group in the CLI
     And the RDF should not contain any instances of "http://www.w3.org/ns/dcat#Dataset"
     And the RDF should contain
     """
-      <http://base-uri/single-measure-bulletin.csv#dataset> a <http://purl.org/linked-data/cube#DataSet>,
-                                                              # the qb:Dataset needs to be a pmdcat:Dataset too since
-                                                              # it's referenced by a catalog record.
-                                                              <http://publishmydata.com/pmdcat#DataCube>.
-    """
-
-  Scenario: The `pmdify` command should add the `pmdcat:Dataset` type to `qb:DataSet`s
-    Given the existing test-case files "dcatcli/*"
-    When the pmdutils command CLI is run with "dcat pmdify single-measure-bulletin.csv-metadata.json http://base-uri http://data-graph-uri http://catalog-metadata-graph-uri"
-    Then the CLI should succeed
-    And csv2rdf on "single-measure-bulletin.csv-metadata.json" should succeed
-    And the RDF should contain
-    """
-      <http://base-uri/single-measure-bulletin.csv#dataset> a <http://publishmydata.com/pmdcat#DataCube>.
-    """
-
-  Scenario: The `pmdify` command should add the `pmdcat:ConceptScheme` type to `skos:ConceptScheme`s
-    Given the existing test-case files "dcatcli/*"
-    When the pmdutils command CLI is run with "dcat pmdify period.csv-metadata.json http://base-uri http://data-graph-uri http://catalog-metadata-graph-uri"
-    Then the CLI should succeed
-    And csv2rdf on "period.csv-metadata.json" should succeed
-    And the RDF should contain
-    """
-      <http://base-uri/period.csv#scheme/period> a <http://publishmydata.com/pmdcat#ConceptScheme>.
+      <http://base-uri/single-measure-bulletin.csv#dataset> a <http://purl.org/linked-data/cube#DataSet>.
     """
 
   Scenario: The `pmdify` command should create a separate N-Quads file containing pmd-style catalog metadata.
@@ -76,6 +53,31 @@ Feature: Testing the csvw command group in the CLI
           dct:description "All bulletins provide details on percentage of one litre or less bottles. This information is provided on a yearly basis."@en;
           dct:title "single-measure-bottles-bulletin"@en;
           foaf:primaryTopic <http://base-uri/single-measure-bulletin.csv#catalog-entry> .
+
+      # the qb:Dataset needs to be a pmdcat:Dataset too since it's referenced by a catalog record.
+      <http://base-uri/single-measure-bulletin.csv#dataset> a <http://publishmydata.com/pmdcat#DataCube>.
+    """
+
+  Scenario: The `pmdify` command should add the `pmdcat:Dataset` type to `qb:DataSet`s
+    Given the existing test-case files "dcatcli/*"
+    When the pmdutils command CLI is run with "dcat pmdify single-measure-bulletin.csv-metadata.json http://base-uri http://data-graph-uri http://catalog-metadata-graph-uri"
+    Then the CLI should succeed
+    And the file at "single-measure-bulletin.csv-metadata.json.nq" should exist
+    Given the N-Quads contained in "single-measure-bulletin.csv-metadata.json.nq"
+    Then the RDF should contain
+    """
+      <http://base-uri/single-measure-bulletin.csv#dataset> a <http://publishmydata.com/pmdcat#DataCube>.
+    """
+
+  Scenario: The `pmdify` command should add the `pmdcat:ConceptScheme` type to `skos:ConceptScheme`s
+    Given the existing test-case files "dcatcli/*"
+    When the pmdutils command CLI is run with "dcat pmdify period.csv-metadata.json http://base-uri http://data-graph-uri http://catalog-metadata-graph-uri"
+    Then the CLI should succeed
+    And the file at "period.csv-metadata.json.nq" should exist
+    Given the N-Quads contained in "period.csv-metadata.json.nq"
+    Then the RDF should contain
+    """
+      <http://base-uri/period.csv#scheme/period> a <http://publishmydata.com/pmdcat#ConceptScheme>.
     """
 
 

@@ -17,6 +17,7 @@ from csvcubed.models.cube.qb.components import (
 )
 from csvcubed.utils.dict import rdf_resource_to_json_ld
 from csvcubed.models.rdf.conceptschemeincatalog import ConceptSchemeInCatalog
+from csvcubed.writers.urihelpers.skoscodelist import SkosCodeListNewUriHelper
 from csvcubed.writers.writerbase import WriterBase
 
 CODE_LIST_NOTATION_COLUMN_NAME = "notation"
@@ -26,9 +27,11 @@ CODE_LIST_NOTATION_COLUMN_NAME = "notation"
 class SkosCodeListWriter(WriterBase):
     new_code_list: NewQbCodeList
     csv_file_name: str = field(init=False)
+    _new_uri_helper: SkosCodeListNewUriHelper = field(init=False)
 
     def __post_init__(self):
         self.csv_file_name = f"{self.new_code_list.metadata.uri_safe_identifier}.csv"
+        self._new_uri_helper = SkosCodeListNewUriHelper(self.new_code_list)
 
     def write(self, output_directory: Path) -> None:
         csv_file_path = (output_directory / self.csv_file_name).absolute()
@@ -52,21 +55,7 @@ class SkosCodeListWriter(WriterBase):
 
         data.to_csv(str(csv_file_path), index=False)
 
-    def _doc_rel_uri(self, fragment: str) -> str:
-        """
-        URIs declared in the `columns` section of the CSV-W are relative to the CSV's location.
-        URIs declared in the JSON-LD metadata section of the CSV-W are relative to the metadata file's location.
-
-        This function makes both point to the same base location - the CSV file's location. This ensures that we
-        can talk about the same resources in the `columns` section and the JSON-LD metadata section.
-        """
-        return f"./{self.csv_file_name}#{fragment}"
-
     def _get_csvw_table_schema(self) -> dict:
-        concept_base_uri = self._doc_rel_uri(
-            f"concept/{self.new_code_list.metadata.uri_safe_identifier}/"
-        )
-
         csvw_columns = [
             {
                 "titles": "Label",
@@ -85,7 +74,7 @@ class SkosCodeListWriter(WriterBase):
                 "name": "parent_notation",
                 "required": False,
                 "propertyUrl": "skos:broader",
-                "valueUrl": concept_base_uri + "{+parent_notation}",
+                "valueUrl": self._new_uri_helper.get_concept_uri("{+parent_notation}"),
             },
             {
                 "titles": "Sort Priority",
@@ -119,7 +108,7 @@ class SkosCodeListWriter(WriterBase):
                 "name": "virt_inScheme",
                 "required": True,
                 "propertyUrl": "skos:inScheme",
-                "valueUrl": self._get_concept_scheme_uri(),
+                "valueUrl": self._new_uri_helper.get_scheme_uri(),
             }
         )
 
@@ -134,17 +123,12 @@ class SkosCodeListWriter(WriterBase):
         )
         return {
             "columns": csvw_columns,
-            "aboutUrl": concept_base_uri + "{+notation}",
+            "aboutUrl": self._new_uri_helper.get_concept_uri("{+notation}"),
             "primaryKey": CODE_LIST_NOTATION_COLUMN_NAME,
         }
 
-    def _get_concept_scheme_uri(self) -> str:
-        return self._doc_rel_uri(
-            f"scheme/{self.new_code_list.metadata.uri_safe_identifier}"
-        )
-
     def _get_csvw_metadata(self) -> dict:
-        scheme_uri = self._get_concept_scheme_uri()
+        scheme_uri = self._new_uri_helper.get_scheme_uri()
         additional_metadata = self._get_catalog_metadata(scheme_uri)
 
         return {

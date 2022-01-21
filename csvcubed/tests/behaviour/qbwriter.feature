@@ -244,13 +244,13 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     And the RDF should contain
     """
       <file:/tmp/multi-measure-qube-with-new-definitions.csv#structure> <http://purl.org/linked-data/cube#component> <file:/tmp/multi-measure-qube-with-new-definitions.csv#component/new-dimension>.
-      <file:/tmp/multi-measure-qube-with-new-definitions.csv#dimension/new-dimension> <http://purl.org/linked-data/cube#codeList> <file:/tmp/a-new-codelist.csv#scheme/a-new-codelist>.
+      <file:/tmp/multi-measure-qube-with-new-definitions.csv#dimension/new-dimension> <http://purl.org/linked-data/cube#codeList> <file:/tmp/a-new-codelist.csv#code-list>.
 
-      <file:/tmp/multi-measure-qube-with-new-definitions.csv#obs/a/part-time> a <http://purl.org/linked-data/cube#Observation>;
-        <file:/tmp/multi-measure-qube-with-new-definitions.csv#dimension/new-dimension> <file:/tmp/a-new-codelist.csv#concept/a-new-codelist/a>.
+      <file:/tmp/multi-measure-qube-with-new-definitions.csv#obs/a@part-time> a <http://purl.org/linked-data/cube#Observation>;
+        <file:/tmp/multi-measure-qube-with-new-definitions.csv#dimension/new-dimension> <file:/tmp/a-new-codelist.csv#a>.
 
-      <file:/tmp/a-new-codelist.csv#scheme/a-new-codelist> a <http://www.w3.org/2004/02/skos/core#ConceptScheme>.
-      <file:/tmp/a-new-codelist.csv#concept/a-new-codelist/a> a <http://www.w3.org/2004/02/skos/core#Concept>.
+      <file:/tmp/a-new-codelist.csv#code-list> a <http://www.w3.org/2004/02/skos/core#ConceptScheme>.
+      <file:/tmp/a-new-codelist.csv#a> a <http://www.w3.org/2004/02/skos/core#Concept>.
     """
 
   Scenario: A single-measure dataset (with code-list) having existing resources can be serialised to a standard CSV-qb
@@ -405,7 +405,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
       <file:/tmp/some-qube.csv#component/d-code-list> <http://purl.org/linked-data/cube#dimension> <file:/tmp/some-qube.csv#dimension/d-code-list>.
       <file:/tmp/some-qube.csv#dimension/d-code-list> <http://purl.org/linked-data/cube#codeList> <http://gss-data.org.uk/def/trade/concept-scheme/age-of-business>.
 
-      <file:/tmp/some-qube.csv#obs/a/10-20> <file:/tmp/some-qube.csv#dimension/d-code-list> <http://gss-data.org.uk/def/trade/concept/age-of-business/10-20>.
+      <file:/tmp/some-qube.csv#obs/a,10-20> <file:/tmp/some-qube.csv#dimension/d-code-list> <http://gss-data.org.uk/def/trade/concept/age-of-business/10-20>.
 
       <http://gss-data.org.uk/def/trade/concept-scheme/age-of-business> a <http://www.w3.org/2004/02/skos/core#ConceptScheme>.
       <http://gss-data.org.uk/def/trade/concept/age-of-business/10-20> a <http://www.w3.org/2004/02/skos/core#Concept>;
@@ -427,11 +427,11 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     """
        @prefix qb: <http://purl.org/linked-data/cube#>.
 
-       <file:/tmp/some-qube.csv#obs/a/e> a qb:Observation;
+       <file:/tmp/some-qube.csv#obs/a,e> a qb:Observation;
                                          qb:dataSet <file:/tmp/some-qube.csv#dataset>.
-       <file:/tmp/some-qube.csv#obs/b/f> a qb:Observation;
+       <file:/tmp/some-qube.csv#obs/b,f> a qb:Observation;
                                          qb:dataSet <file:/tmp/some-qube.csv#dataset>.
-       <file:/tmp/some-qube.csv#obs/c/g> a qb:Observation;
+       <file:/tmp/some-qube.csv#obs/c,g> a qb:Observation;
                                          qb:dataSet <file:/tmp/some-qube.csv#dataset>.
     """
 

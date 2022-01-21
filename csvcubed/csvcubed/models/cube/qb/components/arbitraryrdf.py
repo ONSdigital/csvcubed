@@ -4,7 +4,7 @@ Arbitrary RDF Container
 
 Defines a mixin permitting arbitrary RDF to be added to a qb component.
 """
-from abc import ABC, abstractmethod
+from abc import ABC, abstractmethod, abstractproperty
 from dataclasses import dataclass
 from enum import Enum
 from typing import Set, Dict, Union, List, Tuple
@@ -73,14 +73,14 @@ class InverseTripleFragment(TripleFragmentBase):
     object_hint: RdfSerialisationHint = RdfSerialisationHint.DefaultNode
 
 
+@dataclass
 class ArbitraryRdf(ABC):
     """
     A mixin permitting arbitrary RDF to be added to a qb component.
     """
 
     @abstractmethod
-    def arbitrary_rdf(self) -> List[TripleFragmentBase]:
-        """Defines the arbitrary RDF related to this entity which should be serialised."""
+    def _get_arbitrary_rdf(self) -> List[TripleFragmentBase]:
         ...
 
     @abstractmethod
@@ -98,7 +98,7 @@ class ArbitraryRdf(ABC):
         ...
 
     def get_arbitrary_rdf_fragments(self) -> Set[TripleFragmentBase]:
-        return set(self.arbitrary_rdf)  # type: ignore
+        return set(self._get_arbitrary_rdf()) 
 
     def copy_arbitrary_triple_fragments_to_resources(
         self,

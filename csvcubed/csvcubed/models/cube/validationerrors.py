@@ -2,7 +2,7 @@
 Cube Validation Errors
 ----------------------
 """
-from collections import Set
+from collections.abc import Set
 from dataclasses import dataclass
 from typing import ClassVar
 
