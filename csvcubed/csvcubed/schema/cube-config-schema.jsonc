@@ -34,108 +34,126 @@
         },
 
         "columns": {
-            "description": "Array of 3 or more unique columns",
-			"type": "array",
-			"items": { "$ref": "#/$defs/columnTypes"},
-			"minItems": 3,
-			"uniqueItems": true
+            "description": "Columns in the same order as the csv, unspecified column types are assumed to be dimensions, case insensitive",
+			"properties": {
+				"Existing dimension": {"$ref": "#/$defs/existingDimension"},
+				"New dimension": {"$ref": "#/$defs/newDimension"},
+				"Existing attribute": {"$ref": "#/$defs/existingAttribute"},
+				"New attribute": {"$ref": "#/$defs/newAttribute"},
+				"Observation": {"$ref": "#/$defs/observation"},
+				"measures": {"$ref": "#/$defs/measure"},
+				"list of units": {"$ref": "#/$defs/unit"}
+			}
         }
     },
 
     "$defs": {
-		"columnTypes": {
+		"unitValueTypes": {
 			"type": "object",
-            "oneOf": [
-                {"$ref": "#/$defs/dimensionTypes"},
-                {"$ref": "#/$defs/attributeTypes"},
-                {"$ref": "#/$defs/observationTypes"},
-                {"$ref": "#/$defs/measureTypes"},
-                {"$ref": "#/$defs/unitTypes"}
-            ]
-        },
-
-        "dimensionTypes": {
-			"type": "object",
-            "oneOf": [
-                {"$ref": "#/$defs/existingDimension"},
-                {"$ref": "#/$defs/newDimension"}
-            ]
-        },
-
-        "attributeTypes": {
-			"type": "object",
-            "oneOf": [
-				{"$ref": "#/$defs/existingAttribute"},
-                {"$ref": "#/$defs/newAttribute"}
-            ]
-        },
-
-		"observationTypes": {
-			"type": "object",
-            "oneOf": [
-				{"$ref": "#/$defs/singleValueObservation"},
-                {"$ref": "#/$defs/multiValueObservation"}
-            ]
-        },
-
-        "measureTypes": {
-			"type": "object",
-            "oneOf": [
+			"oneOf": [
 				{"type": "boolean"},
-				{"$ref": "#/$defs/existingMeasure"},
-                {"$ref": "#/$defs/newMeasure"}
-            ]
-        },
+				{"Existing unit value from unit column": {"$ref": "#/$defs/unit" }},
+				{"New unit value from unit column": {"$ref": "#/$defs/unit" }}
+			]
+		},
 
-
-        "unitTypes": {
-			"description": "",
+		"unit": {
+			"description": "Definition of units for the observed value",
 			"type": "object",
-            "oneOf": [
+			"properties": {
+				"anyOf": {
+					"label": {
+						"description": "Replacement label for the Unit",
+						"type": "string"
+					},
+					"from_existing": {
+						"description": "URI of an Existing Qb Dimension",
+						"type": "string",
+						"format": "uri"
+					},
+					"scaling_factor": {
+						"type": "decimal"
+
+					},
+					"si_scaling_factor": {
+						"type": "decimal"
+
+					},
+					"quantity_kind": {
+						"description": "Source URI for the definition of the Unit Kind",
+						"type": "string",
+						"format": "uri"
+					},
+					"definition_uri": {
+						"description": "Source URI for the definition of the Unit",
+						"type": "string",
+						"format": "uri"
+					}
+				}
+			}
+		},
+		"measureValueTypes": {
+			"type": "object",
+			"oneOf": [
 				{"type": "boolean"},
-				{"$ref": "#/$defs/existingUnit"},
-                {"$ref": "#/$defs/newUnit"}
-            ]
+				{"Existing measure value from measure column": {"$ref": "#/$defs/measure" }},
+				{"New measure value from measure column": {"$ref": "#/$defs/measure" }}
+			]
+		},
+
+
+		"dataTypes": {
+			"type": "string",
+			"default": "decimal",
+			"enum": [
+				"anyURI",
+				"boolean",
+				"date",
+				"dateTime",
+				"dateTimeStamp",
+				"decimal",
+				"integer",
+				"long",
+				"int",
+				"short",
+				"nonNegativeInteger",
+				"positiveInteger",
+				"unsignedLong",
+				"unsignedInt",
+				"unsignedShort",
+				"nonPositiveInteger",
+				"negativeInteger",
+				"double",
+				"float",
+				"string",
+				"language",
+				"time"]
+		},
+
+		"existingDimension": {
+            "description": "An existing dimension",
+            "$ref": "#/$defs/dimension"
         },
 
-
-        "existingDimension": {
-            "description": "An Existing Dimension Column",
-            "type": "object",
-            "required": [],
-            "properties": {
-                "from_existing": {
-                    "description": "URI of an Existing Qb Dimension",
-                    "type": "string",
-                    "format": "uri"
-                },
-
-				"label": {
-                    "description": "Replacement label for the Dimension",
-                    "type": "string"
-                },
-                "definition_uri": {
-                    "description": "Source URI for the definition of the Dimension",
-                    "type": "string",
-                    "format": "uri"
-                },
-                "cell_uri_template": {
-                    "description": "Source URI for the code-list referred to by the dimension, e.g. 'http://example.org/code-list/{+some_column}'",
+        "newDimension": {
+            "description": "A new dimension",
+            "$ref": "#/$defs/dimension",
+            "additionalProperties": {
+				"codelist": {
+                    "description": "Source URI for the code-list for the dimension, e.g. 'http://example.org/code-list/{+some_column}'",
                     "type": "string",
                     "format": "uri"
                 }
             }
         },
 
-
-        "newDimension": {
-            "description": "A New Dimension Column",
+        "dimension": {
+            "description": "A Dimension Column",
             "type": "object",
-            "required": [],
             "properties": {
                 "type": {
                     "type": "string",
-                    "const": "dimension"
+                    "default": "dimension"
                 },
                 "label": {
                     "description": "Replacement label for the Dimension",
@@ -160,65 +178,26 @@
                     "description": "Source URI for the code-list referred to by the dimension, e.g. 'http://example.org/code-list/{+some_column}'",
                     "type": "string",
                     "format": "uri"
-                },
-                "codelist": {
-                    "description": "Source URI for the code-list for the dimension, e.g. 'http://example.org/code-list/{+some_column}'",
-                    "type": "string",
-                    "format": "uri"
                 }
             }
         },
 
 
+
+
 		"existingAttribute": {
             "description": "An Existing Attribute Column",
-            "type": "object",
-            "required": ["type"],
-            "properties": {
-                "type": {
-                    "description": "The type of column",
-                    "type": "string",
-                    "const": "attribute"
-                },
-
-                "from_existing": {
-                    "description": "The type of column",
-                    "type": "string",
-                    "format": "uri"
-                },
-
-                "required": {
-                    "description": "Indicates if attribute values are required for each observation",
-                    "type": "boolean"
-                },
-
-                "label": {
-                    "description": "The replacement label for the attribute",
-                    "type": "string"
-                },
-
-                "definition_uri":  {
-                    "description": "The URI that defines the attribute source",
-                    "type": "string",
-                    "format": "uri"
-                },
-
-                "data_type": {
-                    "description": "The URI that defines the attribute type",
-                    "type": "string"
-                },
-
-                "values": {
-					"type": "array",
-					"items": {"$ref": "#/$defs/attributeValueTypes"}
-                }
-
-            }
+            "$ref": "#/$defs/attribute"
 		},
 
 		"newAttribute": {
 			"description": "A New Attribute column",
+			 "$ref": "#/$defs/attribute"
+		},
+
+		"attribute": {
 			"type": "object",
+			"required": ["type"],
 			"properties": {
 				"type": {
                     "description": "The type of column",
@@ -253,61 +232,37 @@
 				"values": {
 					"description": "A list of the values for this attribute column",
 					"type": "array",
-					"items": {"$ref": "#/$defs/attributeValueTypes"}
+					"items": {"$ref": "#/$defs/attributeValue"}
 				}
 			}
         },
-
-
-		"attributeValueTypes": {
-			"description": "Attribute value types may be boolean or an attributeValue",
-			"type": "object",
-			"oneOf": [
-				{"type": "boolean"},
-				{"$ref": "#/$defs/attributeValue"}
-			]
-		},
 
 		"attributeValue": {
 			"description": "A single attribute value, optionally referencing existing values and definition URIs",
 			"type": "object",
 			"properties": {
-				"anyOf": {
-					"label": "Value Label",
-					"description": "The Label to be associated with the value",
-					"existing_value": {
-						"type": "string",
-						"format": "uri"
-					},
-					"definition_uri": {
-						"type": "string",
-						"format": "uri"
-					}
+				"label": {"type": "string"},
+				"description": {"type": "string"},
+				"existing_value": {
+					"type": "string",
+					"format": "uri"
+				},
+				"definition_uri": {
+					"type": "string",
+					"format": "uri"
 				}
 			}
 		},
-		"singleValueObservation": {
+
+		"observation": {
 			"description": "An observation containing a single attribute value, optionally referencing existing values and definition URIs",
 			"type": "object",
 			"properties": {
-				"anyOf": {
-					"data_type": {
-						"$ref": "#/$defs/dataTypes",
-						"default": "decimal"
-					},
-					"unit" : {"$ref": "#/$defs/unitTypes"},
-					"measure": {"type": "string"}
-				}
+				"data_type": {"$ref": "#/$defs/dataTypes"},
+				"unit": {"$ref": "#/$defs/unit"}
 			}
         },
-        "multiValueObservation": {
-			"$comment": "Not Yet Implemented",
-			"description": "An observation containing a multiple attribute values, optionally referencing existing values and definition URIs",
-			"type": "object",
-			"properties": {}
-        },
-
-        "existingMeasure": {
+        "measure": {
 			"description": "Definition of how the observation value is being measured",
 			"type": "object",
 			"properties": {
@@ -327,104 +282,7 @@
 						"format": "uri"
 					}
 				}
-
 			}
-        },
-		"newMeasure": {
-			"description": "Definition of how the observation value is being measured",
-			"type": "object",
-			"properties": {
-				"anyOf": {
-					"label": {
-						"description": "Replacement label for the Measure",
-						"type": "string"
-					},
-					"from_existing": {
-						"description": "URI of an Existing Qb Dimension",
-						"type": "string",
-						"format": "uri"
-					},
-					"definition_uri": {
-						"description": "Source URI for the definition of the Dimension",
-						"type": "string",
-						"format": "uri"
-					}
-				}
-
-			}
-		},
-		"existingUnit": {
-			"description": "Definition of existing units for the observed value",
-			"type": "object",
-			"properties": {
-				"anyOf": {
-					"label": {
-						"description": "Replacement label for the Unit",
-						"type": "string"
-					},
-					"from_existing": {
-						"description": "URI of an Existing Qb Dimension",
-						"type": "string",
-						"format": "uri"
-					},
-					"scaling_factor": {
-						"type": "decimal"
-
-					},
-					"si_scaling_factor": {
-						"type": "decimal"
-
-					},
-					"quantity_kind": {
-						"description": "Source URI for the definition of the Unit Kind",
-						"type": "string",
-						"format": "uri"
-					},
-					"definition_uri": {
-						"description": "Source URI for the definition of the Unit",
-						"type": "string",
-						"format": "uri"
-					}
-				}
-
-			}
-		},
-		"newUnit": {
-			"description": "Definition of new units for the observed value",
-			"type": "object",
-			"properties": {
-				"anyOf": {
-					"label": {
-						"description": "Replacement label for the Unit",
-						"type": "string"
-					},
-					"from_existing": {
-						"description": "URI of an Existing Qb Dimension",
-						"type": "string",
-						"format": "uri"
-					},
-					"scaling_factor": {
-						"type": "decimal"
-
-					},
-					"si_scaling_factor": {
-						"type": "decimal"
-
-					},
-					"quantity_kind": {
-						"description": "Source URI for the definition of the Unit Kind",
-						"type": "string",
-						"format": "uri"
-					},
-					"definition_uri": {
-						"description": "Source URI for the definition of the Unit",
-						"type": "string",
-						"format": "uri"
-					}
-				}
-			}
-		}
-
+        }
     }
-
 }
