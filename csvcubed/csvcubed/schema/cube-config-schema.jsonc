@@ -1,0 +1,430 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "http://gss-cogs.github.io/gss-cogs/csvcubed/csvcubed/schemas/cube-config-schema.jsonc",
+    "title": "Schema for a qb-config cube",
+    "description": "Schema to be used for creation & validation of a single csv-cubed-flavoured linked data cube in CSV-W format",
+    "type": "object",
+
+    "properties": {
+
+		"publisher": {
+            "description": "The schema publisher link uri",
+            "type": "string",
+            "format": "uri"
+		},
+
+        "creator": {
+            "description": "The schema publisher link uri",
+            "type": "string",
+            "format": "uri"
+        },
+
+        "spatial_bound": {
+            "description": "URI that defines the spatial / geographic bounds of the data contained herein",
+            "type": "string",
+            "format": "uri",
+            "const": "https://tdg.docbook.org/tdg/publishers/5.1/dcterms.html#dcterms.spatial"
+        },
+
+        "temporal_bound": {
+            "description": "URI that defines the temporal bounds of the data contained herein",
+            "type": "string",
+            "format": "uri",
+            "const": "https://tdg.docbook.org/tdg/publishers/5.1/dcterms.html#dcterms.temporal"
+        },
+
+        "columns": {
+            "description": "Array of 3 or more unique columns",
+			"type": "array",
+			"items": { "$ref": "#/$defs/columnTypes"},
+			"minItems": 3,
+			"uniqueItems": true
+        }
+    },
+
+    "$defs": {
+		"columnTypes": {
+			"type": "object",
+            "oneOf": [
+                {"$ref": "#/$defs/dimensionTypes"},
+                {"$ref": "#/$defs/attributeTypes"},
+                {"$ref": "#/$defs/observationTypes"},
+                {"$ref": "#/$defs/measureTypes"},
+                {"$ref": "#/$defs/unitTypes"}
+            ]
+        },
+
+        "dimensionTypes": {
+			"type": "object",
+            "oneOf": [
+                {"$ref": "#/$defs/existingDimension"},
+                {"$ref": "#/$defs/newDimension"}
+            ]
+        },
+
+        "attributeTypes": {
+			"type": "object",
+            "oneOf": [
+				{"$ref": "#/$defs/existingAttribute"},
+                {"$ref": "#/$defs/newAttribute"}
+            ]
+        },
+
+		"observationTypes": {
+			"type": "object",
+            "oneOf": [
+				{"$ref": "#/$defs/singleValueObservation"},
+                {"$ref": "#/$defs/multiValueObservation"}
+            ]
+        },
+
+        "measureTypes": {
+			"type": "object",
+            "oneOf": [
+				{"type": "boolean"},
+				{"$ref": "#/$defs/existingMeasure"},
+                {"$ref": "#/$defs/newMeasure"}
+            ]
+        },
+
+
+        "unitTypes": {
+			"description": "",
+			"type": "object",
+            "oneOf": [
+				{"type": "boolean"},
+				{"$ref": "#/$defs/existingUnit"},
+                {"$ref": "#/$defs/newUnit"}
+            ]
+        },
+
+
+        "existingDimension": {
+            "description": "An Existing Dimension Column",
+            "type": "object",
+            "required": [],
+            "properties": {
+                "from_existing": {
+                    "description": "URI of an Existing Qb Dimension",
+                    "type": "string",
+                    "format": "uri"
+                },
+
+				"label": {
+                    "description": "Replacement label for the Dimension",
+                    "type": "string"
+                },
+                "definition_uri": {
+                    "description": "Source URI for the definition of the Dimension",
+                    "type": "string",
+                    "format": "uri"
+                },
+                "cell_uri_template": {
+                    "description": "Source URI for the code-list referred to by the dimension, e.g. 'http://example.org/code-list/{+some_column}'",
+                    "type": "string",
+                    "format": "uri"
+                }
+            }
+        },
+
+
+        "newDimension": {
+            "description": "A New Dimension Column",
+            "type": "object",
+            "required": [],
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "const": "dimension"
+                },
+                "label": {
+                    "description": "Replacement label for the Dimension",
+                    "type": "string"
+                },
+                "description": {
+                    "description": "",
+                    "type": "string"
+                },
+                "from_existing": {
+                    "description": "URI of an Existing Qb Dimension",
+                    "type": "string",
+                    "format": "uri"
+                },
+
+                "definition_uri": {
+                    "description": "Source URI for the definition of the Dimension",
+                    "type": "string",
+                    "format": "uri"
+                },
+                "cell_uri_template": {
+                    "description": "Source URI for the code-list referred to by the dimension, e.g. 'http://example.org/code-list/{+some_column}'",
+                    "type": "string",
+                    "format": "uri"
+                },
+                "codelist": {
+                    "description": "Source URI for the code-list for the dimension, e.g. 'http://example.org/code-list/{+some_column}'",
+                    "type": "string",
+                    "format": "uri"
+                }
+            }
+        },
+
+
+		"existingAttribute": {
+            "description": "An Existing Attribute Column",
+            "type": "object",
+            "required": ["type"],
+            "properties": {
+                "type": {
+                    "description": "The type of column",
+                    "type": "string",
+                    "const": "attribute"
+                },
+
+                "from_existing": {
+                    "description": "The type of column",
+                    "type": "string",
+                    "format": "uri"
+                },
+
+                "required": {
+                    "description": "Indicates if attribute values are required for each observation",
+                    "type": "boolean"
+                },
+
+                "label": {
+                    "description": "The replacement label for the attribute",
+                    "type": "string"
+                },
+
+                "definition_uri":  {
+                    "description": "The URI that defines the attribute source",
+                    "type": "string",
+                    "format": "uri"
+                },
+
+                "data_type": {
+                    "description": "The URI that defines the attribute type",
+                    "type": "string"
+                },
+
+                "values": {
+					"type": "array",
+					"items": {"$ref": "#/$defs/attributeValueTypes"}
+                }
+
+            }
+		},
+
+		"newAttribute": {
+			"description": "A New Attribute column",
+			"type": "object",
+			"properties": {
+				"type": {
+                    "description": "The type of column",
+                    "type": "string",
+                    "const": "attribute"
+                },
+
+                "from_existing": {
+                    "description": "The type of column",
+                    "type": "string",
+                    "format": "uri"
+                },
+
+				"label": {
+                    "description": "The replacement label for the attribute",
+                    "type": "string"
+                },
+
+				"definition_uri":  {
+                    "description": "The URI that defines the attribute source",
+                    "type": "string",
+                    "format": "uri"
+                },
+				"required": {
+					"description": "optional, if set, the attribute requires values for each observation",
+					"type": "boolean"
+				},
+				"data_type": {
+					"description": "The data-type for the values for this attribute",
+					"type": "string"
+				},
+				"values": {
+					"description": "A list of the values for this attribute column",
+					"type": "array",
+					"items": {"$ref": "#/$defs/attributeValueTypes"}
+				}
+			}
+        },
+
+
+		"attributeValueTypes": {
+			"description": "Attribute value types may be boolean or an attributeValue",
+			"type": "object",
+			"oneOf": [
+				{"type": "boolean"},
+				{"$ref": "#/$defs/attributeValue"}
+			]
+		},
+
+		"attributeValue": {
+			"description": "A single attribute value, optionally referencing existing values and definition URIs",
+			"type": "object",
+			"properties": {
+				"anyOf": {
+					"label": "Value Label",
+					"description": "The Label to be associated with the value",
+					"existing_value": {
+						"type": "string",
+						"format": "uri"
+					},
+					"definition_uri": {
+						"type": "string",
+						"format": "uri"
+					}
+				}
+			}
+		},
+		"singleValueObservation": {
+			"description": "An observation containing a single attribute value, optionally referencing existing values and definition URIs",
+			"type": "object",
+			"properties": {
+				"anyOf": {
+					"data_type": {
+						"$ref": "#/$defs/dataTypes",
+						"default": "decimal"
+					},
+					"unit" : {"$ref": "#/$defs/unitTypes"},
+					"measure": {"type": "string"}
+				}
+			}
+        },
+        "multiValueObservation": {
+			"$comment": "Not Yet Implemented",
+			"description": "An observation containing a multiple attribute values, optionally referencing existing values and definition URIs",
+			"type": "object",
+			"properties": {}
+        },
+
+        "existingMeasure": {
+			"description": "Definition of how the observation value is being measured",
+			"type": "object",
+			"properties": {
+				"anyOf": {
+					"label": {
+						"description": "Replacement label for the Measure",
+						"type": "string"
+					},
+					"from_existing": {
+						"description": "URI of an Existing Qb Dimension",
+						"type": "string",
+						"format": "uri"
+					},
+					"definition_uri": {
+						"description": "Source URI for the definition of the Dimension",
+						"type": "string",
+						"format": "uri"
+					}
+				}
+
+			}
+        },
+		"newMeasure": {
+			"description": "Definition of how the observation value is being measured",
+			"type": "object",
+			"properties": {
+				"anyOf": {
+					"label": {
+						"description": "Replacement label for the Measure",
+						"type": "string"
+					},
+					"from_existing": {
+						"description": "URI of an Existing Qb Dimension",
+						"type": "string",
+						"format": "uri"
+					},
+					"definition_uri": {
+						"description": "Source URI for the definition of the Dimension",
+						"type": "string",
+						"format": "uri"
+					}
+				}
+
+			}
+		},
+		"existingUnit": {
+			"description": "Definition of existing units for the observed value",
+			"type": "object",
+			"properties": {
+				"anyOf": {
+					"label": {
+						"description": "Replacement label for the Unit",
+						"type": "string"
+					},
+					"from_existing": {
+						"description": "URI of an Existing Qb Dimension",
+						"type": "string",
+						"format": "uri"
+					},
+					"scaling_factor": {
+						"type": "decimal"
+
+					},
+					"si_scaling_factor": {
+						"type": "decimal"
+
+					},
+					"quantity_kind": {
+						"description": "Source URI for the definition of the Unit Kind",
+						"type": "string",
+						"format": "uri"
+					},
+					"definition_uri": {
+						"description": "Source URI for the definition of the Unit",
+						"type": "string",
+						"format": "uri"
+					}
+				}
+
+			}
+		},
+		"newUnit": {
+			"description": "Definition of new units for the observed value",
+			"type": "object",
+			"properties": {
+				"anyOf": {
+					"label": {
+						"description": "Replacement label for the Unit",
+						"type": "string"
+					},
+					"from_existing": {
+						"description": "URI of an Existing Qb Dimension",
+						"type": "string",
+						"format": "uri"
+					},
+					"scaling_factor": {
+						"type": "decimal"
+
+					},
+					"si_scaling_factor": {
+						"type": "decimal"
+
+					},
+					"quantity_kind": {
+						"description": "Source URI for the definition of the Unit Kind",
+						"type": "string",
+						"format": "uri"
+					},
+					"definition_uri": {
+						"description": "Source URI for the definition of the Unit",
+						"type": "string",
+						"format": "uri"
+					}
+				}
+			}
+		}
+
+    }
+
+}
