@@ -23,14 +23,14 @@
             "description": "URI that defines the spatial / geographic bounds of the data contained herein",
             "type": "string",
             "format": "uri",
-            "const": "https://tdg.docbook.org/tdg/publishers/5.1/dcterms.html#dcterms.spatial"
+            "default": "https://tdg.docbook.org/tdg/publishers/5.1/dcterms.html#dcterms.spatial"
         },
 
         "temporal_bound": {
             "description": "URI that defines the temporal bounds of the data contained herein",
             "type": "string",
             "format": "uri",
-            "const": "https://tdg.docbook.org/tdg/publishers/5.1/dcterms.html#dcterms.temporal"
+            "default": "https://tdg.docbook.org/tdg/publishers/5.1/dcterms.html#dcterms.temporal"
         },
 
         "columns": {
@@ -61,34 +61,34 @@
 			"description": "Definition of units for the observed value",
 			"type": "object",
 			"properties": {
-				"anyOf": {
-					"label": {
-						"description": "Replacement label for the Unit",
-						"type": "string"
-					},
-					"from_existing": {
-						"description": "URI of an Existing Qb Dimension",
-						"type": "string",
-						"format": "uri"
-					},
-					"scaling_factor": {
-						"type": "decimal"
+				"label": {
+					"description": "Replacement label for the Unit",
+					"type": "string"
+				},
+				"from_existing": {
+					"description": "URI of an Existing Qb Dimension",
+					"type": "string",
+					"format": "uri"
+				},
+				"scaling_factor": {
+					"description": "The scaling factor",
+					"type": "decimal"
 
-					},
-					"si_scaling_factor": {
-						"type": "decimal"
+				},
+				"si_scaling_factor": {
+					"description": "The SI scaling factor",
+					"type": "decimal"
 
-					},
-					"quantity_kind": {
-						"description": "Source URI for the definition of the Unit Kind",
-						"type": "string",
-						"format": "uri"
-					},
-					"definition_uri": {
-						"description": "Source URI for the definition of the Unit",
-						"type": "string",
-						"format": "uri"
-					}
+				},
+				"quantity_kind": {
+					"description": "Source URI for the definition of the Unit Kind",
+					"type": "string",
+					"format": "uri"
+				},
+				"definition_uri": {
+					"description": "Source URI for the definition of the Unit",
+					"type": "string",
+					"format": "uri"
 				}
 			}
 		},
@@ -138,7 +138,7 @@
         "newDimension": {
             "description": "A new dimension",
             "$ref": "#/$defs/dimension",
-            "additionalProperties": {
+            "properties": {
 				"codelist": {
                     "description": "Source URI for the code-list for the dimension, e.g. 'http://example.org/code-list/{+some_column}'",
                     "type": "string",
@@ -152,7 +152,8 @@
             "type": "object",
             "properties": {
                 "type": {
-                    "type": "string",
+                    "description": "Column type, defaults to 'dimension'.",
+					"type": "string",
                     "default": "dimension"
                 },
                 "label": {
@@ -160,7 +161,7 @@
                     "type": "string"
                 },
                 "description": {
-                    "description": "",
+                    "description": "Description for the column",
                     "type": "string"
                 },
                 "from_existing": {
@@ -202,11 +203,15 @@
 				"type": {
                     "description": "The type of column",
                     "type": "string",
-                    "const": "attribute"
+                    "default": "attribute"
                 },
+				"description": {
+					"description": "A description of the attribute",
+					"type": "string"
+				},
 
                 "from_existing": {
-                    "description": "The type of column",
+                    "description": "The URI of an existing attribute column",
                     "type": "string",
                     "format": "uri"
                 },
@@ -241,13 +246,21 @@
 			"description": "A single attribute value, optionally referencing existing values and definition URIs",
 			"type": "object",
 			"properties": {
-				"label": {"type": "string"},
-				"description": {"type": "string"},
+				"label": {
+					"type": "string",
+					"description": "A label for the attribute values"
+				},
+				"description": {
+					"type": "string",
+					"description": "The description of the attribute values"
+				},
 				"existing_value": {
+					"description": "The URI to an existing set of values",
 					"type": "string",
 					"format": "uri"
 				},
 				"definition_uri": {
+					"description": "The URI to an existing value definition",
 					"type": "string",
 					"format": "uri"
 				}
@@ -266,21 +279,23 @@
 			"description": "Definition of how the observation value is being measured",
 			"type": "object",
 			"properties": {
-				"anyOf": {
-					"label": {
-						"description": "Replacement label for the Measure",
-						"type": "string"
-					},
-					"from_existing": {
-						"description": "URI of an Existing Qb Dimension",
-						"type": "string",
-						"format": "uri"
-					},
-					"definition_uri": {
-						"description": "Source URI for the definition of the Dimension",
-						"type": "string",
-						"format": "uri"
-					}
+				"label": {
+					"description": "Replacement label for the Measure",
+					"type": "string"
+				},
+				"description": {
+					"description": "A description for the Measure",
+					"type": "string"
+				},
+				"from_existing": {
+					"description": "URI of an Existing Qb Dimension",
+					"type": "string",
+					"format": "uri"
+				},
+				"definition_uri": {
+					"description": "Source URI for the definition of the Dimension",
+					"type": "string",
+					"format": "uri"
 				}
 			}
         }
