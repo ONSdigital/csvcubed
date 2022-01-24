@@ -27,6 +27,7 @@ class UndefinedValuesError(SpecificValidationError, ABC):
 
     location: str
     """The property or location where the undefined values were found."""
+    
 
     def __post_init__(self):
         unique_values_to_display: str = (
@@ -49,6 +50,10 @@ class UndefinedMeasureUrisError(UndefinedValuesError):
 
     location: str = "measure URI"
 
+    @classmethod
+    def get_error_url(cls) -> str:
+        return 'http://purl.org/csv-cubed/err/undef-meas'
+
 
 @dataclass
 class UndefinedUnitUrisError(UndefinedValuesError):
@@ -58,6 +63,10 @@ class UndefinedUnitUrisError(UndefinedValuesError):
     """
 
     location: str = "unit URI"
+
+    @classmethod
+    def get_error_url(cls) -> str:
+        return 'http://purl.org/csv-cubed/err/undef-unit'
 
 
 @dataclass
@@ -69,6 +78,9 @@ class UndefinedAttributeValueUrisError(UndefinedValuesError):
 
     location: str = "attribute value URI"
 
+    @classmethod
+    def get_error_url(cls) -> str:
+        return 'http://purl.org/csv-cubed/err/undef-attrib'
 
 @dataclass
 class LabelUriCollisionError(SpecificValidationError):
