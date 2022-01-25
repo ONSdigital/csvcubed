@@ -127,7 +127,7 @@
             }
         },
         "units": {
-            "type": "units column", // optional as a column called ["Unit", "Units"] areread as a QbUnitColumn,
+            "type": "unit column", // optional as a column called ["Unit", "Units"] areread as a QbUnitColumn,
             "values": true, // Create new measures from values or 
             "_values": {
                 "Existing unit": {
