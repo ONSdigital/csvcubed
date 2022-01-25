@@ -6,6 +6,10 @@ from csvcubed.utils.uri import (
     looks_like_uri,
     ensure_looks_like_uri,
 )
+from csvcubed.utils.log import start_logging
+
+
+start_logging()
 
 
 def test_uri_last_part():

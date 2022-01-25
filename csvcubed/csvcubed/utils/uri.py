@@ -8,7 +8,10 @@ import re
 from unidecode import unidecode
 from urllib.parse import urlparse
 import rdflib
+import logging
 
+
+_logger = logging.getLogger(__name__)
 
 _multiple_non_word_chars_regex = re.compile(r"[^\w]+")
 _last_uri_part_regex = re.compile(".*/(.*?)$")
@@ -20,6 +23,7 @@ def uri_safe(label: str) -> str:
 
     The function formerly known as :func:`pathify`.
     """
+    _logger.debug(f"Generating uri-safe equivalent for '{label}'.")
     return re.sub(
         r"-$", "", re.sub(r"-+", "-", re.sub(r"[^\w/]", "-", unidecode(label).lower()))
     )
@@ -31,6 +35,7 @@ def csvw_column_name_safe(label: str) -> str:
 
     :return: A :obj:`str` based on :obj:`label` which is safe to use to :attr:`name` columns in a CSV-W metadata file.
     """
+    _logger.debug(f"Generating CSV-W safe column identifier for '{label}'.")
     return _multiple_non_word_chars_regex.sub("_", label).lower()
 
 
@@ -77,7 +82,7 @@ def ensure_looks_like_uri(value: str) -> None:
     """
     if not looks_like_uri(value):
         raise ValueError(f"'{value}' does not look like a URI.")
-        
+
 
 def ensure_values_in_lists_looks_like_uris(values: list[str]) -> None:
     """
