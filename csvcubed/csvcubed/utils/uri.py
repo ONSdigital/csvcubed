@@ -23,10 +23,13 @@ def uri_safe(label: str) -> str:
 
     The function formerly known as :func:`pathify`.
     """
-    _logger.debug(f"Generating uri-safe equivalent for '{label}'.")
-    return re.sub(
+    uri_safe_value = re.sub(
         r"-$", "", re.sub(r"-+", "-", re.sub(r"[^\w/]", "-", unidecode(label).lower()))
     )
+    _logger.debug(
+        "Generated uri-safe equivalent for '%s': '%s'.", label, uri_safe_value
+    )
+    return uri_safe_value
 
 
 def csvw_column_name_safe(label: str) -> str:
@@ -35,8 +38,13 @@ def csvw_column_name_safe(label: str) -> str:
 
     :return: A :obj:`str` based on :obj:`label` which is safe to use to :attr:`name` columns in a CSV-W metadata file.
     """
-    _logger.debug(f"Generating CSV-W safe column identifier for '{label}'.")
-    return _multiple_non_word_chars_regex.sub("_", label).lower()
+    csvw_safe_col_name = _multiple_non_word_chars_regex.sub("_", label).lower()
+    _logger.debug(
+        "Generated CSV-W safe column identifier for '{%s}': '%s'.",
+        label,
+        csvw_safe_col_name,
+    )
+    return csvw_safe_col_name
 
 
 def get_last_uri_part(uri: str) -> str:
@@ -48,9 +56,11 @@ def get_last_uri_part(uri: str) -> str:
 
     maybe_match = _last_uri_part_regex.search(uri)
     if maybe_match:
-        return maybe_match.group(1)
+        match = maybe_match.group(1)
+        _logger.debug("Matched '%s' as last URI group of '%s'.", match, uri)
+        return match
 
-    raise Exception("Could not match last URI part")
+    raise Exception(f"Could not match last URI part for uri '{uri}'")
 
 
 def looks_like_uri(maybe_uri: str) -> bool:
@@ -60,7 +70,7 @@ def looks_like_uri(maybe_uri: str) -> bool:
     :return: whether the :class:`str` looks like a URI or not.
     """
     parse_result = urlparse(maybe_uri)
-    return parse_result.scheme != ""
+    return maybe_uri is not None and parse_result.scheme != ""
 
 
 def get_data_type_uri_from_str(data_type: str) -> str:
@@ -83,6 +93,8 @@ def ensure_looks_like_uri(value: str) -> None:
     if not looks_like_uri(value):
         raise ValueError(f"'{value}' does not look like a URI.")
 
+    _logger.debug("'%s' looks like a URI.", value)
+
 
 def ensure_values_in_lists_looks_like_uris(values: list[str]) -> None:
     """
@@ -93,3 +105,5 @@ def ensure_values_in_lists_looks_like_uris(values: list[str]) -> None:
     for value in values:
         if not looks_like_uri(value):
             raise ValueError(f"'{value}' does not look like a URI.")
+
+    _logger.debug("Values %s all look like URIs.", values)

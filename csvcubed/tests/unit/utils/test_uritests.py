@@ -5,11 +5,8 @@ from csvcubed.utils.uri import (
     csvw_column_name_safe,
     looks_like_uri,
     ensure_looks_like_uri,
+    ensure_values_in_lists_looks_like_uris,
 )
-from csvcubed.utils.log import start_logging
-
-
-start_logging()
 
 
 def test_uri_last_part():
@@ -41,6 +38,12 @@ def test_ensure_looks_like_uri():
         ensure_looks_like_uri("not-like-a-uri")
 
     assert "'not-like-a-uri' does not look like a URI" in str(err)
+
+
+def test_ensure_all_look_like_uri():
+    ensure_values_in_lists_looks_like_uris(
+        ["http://some-domain.org/", "http://some-other-domain.org/"]
+    )
 
 
 if __name__ == "__main__":

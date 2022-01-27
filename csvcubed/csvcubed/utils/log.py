@@ -6,7 +6,6 @@ Utilities to help with logging.
 """
 import logging
 import sys
-from typing import Union
 from colorama import Fore, Style
 
 

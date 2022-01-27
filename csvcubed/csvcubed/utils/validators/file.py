@@ -4,11 +4,14 @@ File
 
 pydantic validators for files.
 """
+import logging
+from typing import Optional
 
 from pydantic import validator
 from pathlib import Path
 
-from ..uri import ensure_looks_like_uri
+
+_logger = logging.getLogger(__name__)
 
 
 def validate_file_exists(attr_name: str, is_optional: bool = False) -> classmethod:
@@ -25,8 +28,14 @@ def validate_file_exists(attr_name: str, is_optional: bool = False) -> classmeth
             _some_uri_validator = validate_uri("some_uri")
     """
 
-    def ensure_exists(f: Path) -> None:
-        if not f.exists():
-            raise ValueError(f"Path '{f}' does not exist.")
+    def ensure_exists(f: Optional[Path]) -> Optional[Path]:
+        if not (is_optional and f is None):
+            # If statement deals with pydantic bug - https://github.com/samuelcolvin/pydantic/issues/3741
+            if not f.exists():
+                raise ValueError(f"Path '{f}' does not exist.")
+
+            _logger.debug("Path '%s' exists.", f)
+
+        return f
 
     return validator(attr_name, allow_reuse=True, always=not is_optional)(ensure_exists)

@@ -5,12 +5,16 @@ CSV-W
 Utils for working with CSV-Ws.
 """
 import json
+import logging
 from typing import Set, List, Optional, Union, Tuple
 from pathlib import Path
 import urllib.parse
 import requests
 
 from .uri import looks_like_uri
+
+
+_logger = logging.getLogger(__name__)
 
 
 def get_dependent_local_files(csvw_metadata_file: Path) -> Set[Path]:
@@ -20,16 +24,18 @@ def get_dependent_local_files(csvw_metadata_file: Path) -> Set[Path]:
 
     :return: a list of all of the local dependencies specified in a CSV-W file.
     """
-
+    _logger.debug("Searching for local dependencies in CSV-W at %s", csvw_metadata_file)
     table_group = _load_table_group(csvw_metadata_file)
-
-    dependent_local_files: Set[Path] = set()
 
     base_path = _get_base_path(csvw_metadata_file.parent, table_group)
     if not isinstance(base_path, Path):
+        _logger.debug(
+            "CSV-W base path is a URI '%s'. There are no relatively defined local dependent files.",
+            base_path,
+        )
         return set()
 
-    dependent_local_files |= _get_url_and_table_schema_path_for_table(
+    dependent_local_files: Set[Path] = _get_url_and_table_schema_path_for_table(
         base_path, table_group
     )
 
@@ -39,6 +45,7 @@ def get_dependent_local_files(csvw_metadata_file: Path) -> Set[Path]:
             base_path, table
         )
 
+    _logger.debug("Found dependent local files %s", dependent_local_files)
     return dependent_local_files
 
 
@@ -76,6 +83,11 @@ def get_first_table_schema(
 
     table_group_schema = _get_table_schema(base_path, table_group)
     if table_group_schema is not None:
+        _logger.debug(
+            "Found first table schema (%s) in CSV-W at %s",
+            table_group_schema[0],
+            csvw_metadata_file,
+        )
         return table_group_schema
 
     tables = table_group.get("tables")
@@ -83,8 +95,14 @@ def get_first_table_schema(
         for table in tables:
             table_schema = _get_table_schema(base_path, table)
             if table_schema is not None:
+                _logger.debug(
+                    f"Found first table schema (%s) in CSV-W at %s",
+                    table_schema[0],
+                    csvw_metadata_file,
+                )
                 return table_schema
 
+    _logger.warning("Could not find table schema in CSV-W at %s", csvw_metadata_file)
     return None
 
 
@@ -103,10 +121,15 @@ def _get_url_and_table_schema_path_for_table(base_path: Path, table: dict) -> Se
 
     if table_url is not None and str(table_url).strip() != "":
         table_url = str(table_url).strip()
+        _logger.debug("Found CSV dependency (%s) in 'url' field.", table_url)
         if not looks_like_uri(table_url):
             dependent_local_files.add(base_path / table_url)
     if table_schema is not None and isinstance(table_schema, str):
         table_schema_path = table_schema.strip()
+        _logger.debug(
+            "Found table schema dependency (%s) in 'tableSchema' field.",
+            table_schema_path,
+        )
         if not looks_like_uri(table_schema_path):
             dependent_local_files.add(base_path / table_schema_path)
 
