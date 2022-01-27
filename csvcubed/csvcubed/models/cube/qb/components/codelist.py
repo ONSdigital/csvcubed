@@ -131,15 +131,7 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
         """
         Validate the data held in the codelists, assuming case insensitivity
         """
-
-        if isinstance(data, DataFrame):
-            data = data.squeeze()
-        elif not isinstance(data, Series):
-            raise TypeError(
-                f"Unexpected type: received {type(data)} expected pd.Series or pd.DataFrame"
-            )
-
-        return ensure_no_uri_safe_collision(data, column_csv_title)
+        pass
 
 
 @dataclass
