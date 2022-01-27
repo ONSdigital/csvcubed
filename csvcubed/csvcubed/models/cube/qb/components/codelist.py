@@ -125,9 +125,7 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
     def get_default_node_serialisation_hint(self) -> RdfSerialisationHint:
         return RdfSerialisationHint.ConceptScheme
 
-    def validate_data(
-        self, data: PandasDataTypes, column_csv_title: str
-    ) -> list[ValidationError]:
+    def validate_data():
         """
         Validate the data held in the codelists, assuming case insensitivity
         """
