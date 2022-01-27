@@ -129,7 +129,7 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
         """
         Validate the data held in the codelists, assuming case insensitivity
         """
-        pass
+        return None
 
 
 @dataclass
