@@ -23,7 +23,7 @@ def get_test_base_dir() -> Path:
             # Can't raise an exception here else VSCode gets unhappy running the unit tests.
             print(f"Found multiple 'tests' folders in {csvcubed_path}")        
 
-    return (tests_folders[0])
+        return tests_folders[0]
 
 
 def get_test_cases_dir() -> Path:
