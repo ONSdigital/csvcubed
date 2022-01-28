@@ -9,6 +9,8 @@ def get_test_base_dir() -> Path:
     if "tests" in path_parts:
         test_index = path_parts.index("tests")
         test_root_path = Path(*path_parts[0 : test_index + 1])
+        
+        return test_root_path
     else:  # Fine Rob, you win.
         # Use deepest instance of "csvcubed" so I can call my cloned repository folder "csvcubed" too.
         csvwlib_index = len(path_parts) - (
@@ -24,7 +26,6 @@ def get_test_base_dir() -> Path:
             print(f"Found multiple 'tests' folders in {csvcubed_path}")        
 
         return tests_folders[0]
-
 
 def get_test_cases_dir() -> Path:
     return get_test_base_dir() / "test-cases"
