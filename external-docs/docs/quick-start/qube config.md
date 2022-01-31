@@ -93,7 +93,7 @@ A CSV-W file contains metadata which improves discoverability of data publicatio
 
 ## Column definitions
 
-A CSV-W file provides detailed information about the columns beyond their values. In csvcubed, we are targeting a level of detail which results in a data cube which can be be expressed using W3C's RDF Cube Vocabulary. A data cube must have a dimension, measure, unit, and observation column to be valid. A cube may also have one or more attribute columns which provide clarification to observational data.
+A CSV-W file provides detailed information about the columns beyond their values. In csvcubed, we are targeting a level of detail which results in a data cube which can be be expressed using W3C's RDF Cube Vocabulary. A data cube must have a dimension, and observation columns along with at least one unit and measure defined to be valid. A cube may also have one or more attribute columns which provide clarification to observational data. Units and measures may be attached to the observation column (single measure qube), or appear in a column of their own (multi-measure qube).
 
 To define a column in a `qube-config.json` file, provide the column header's value as a dictionary key, and create a new dictionary.
 
@@ -143,7 +143,23 @@ The *observation* column are the numeric values of the observation being recorde
 
 To reuse or extend existing dimensions, attributes, units, or measures, provide a `"from_existing": "uri"` key-value pair linking to the RDF subject for the component specification. csvcubed determines whether the column is a reuse of an existing component (e.g. dimension) or requires the extension of an existing component through the configuration of the column.
 
-Unless the component being reused is literal attribute and you're providing a `"data_type"` key-value pair, any other key-value pairs provided will change the column to a new component which will extend the linked parent component.
+```json
+   "columns": {
+      "reused column": {
+         "type": "dimension",
+         "from_existing": "https://example.org/dimension/years"
+      },
+      "reused and renamed column": {
+         "type": "dimension",
+         "from_existing": "https://example.org/dimension/flavours",
+         "label": "ice cream flavours"
+      }
+   }
+```
+
+In the example above there are two reused dimensions. For the first existing dimension, "reused column" takes the existing dimension "years" and reuses it without any changes. The second dimension is an example of the creation of a new dimension but showing that ice-cream flavours it is a child dimension of flavours.
+
+Unless the component being reused is a literal attribute and you're providing a `"data_type"` key-value pair, any other key-value pairs provided will change the column to a new component which will extend the linked parent component.
 
 ## Shared column configuration options
 
@@ -159,7 +175,7 @@ There are several configuration options available across column types except obs
 
 The `from_existing` value when set provides the basis of linked data; it allows csvcubed to generate additional RDF-hints to allow users to discover how the `tidy_data.csv` links to other data semanticly.
 
-## Dimenion configuration
+## Dimension configuration
 
 | **field name**   | **description**                                              | **default value**                                            |
 | ---------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
@@ -182,7 +198,7 @@ The `from_existing` value when set provides the basis of linked data; it allows 
 | `description`    | A description of the contents of the column (Optional)       | *none*                                                       |
 | `from_existing`  | The uri of the resource for reuse/extension (Optional)       | *none*                                                       |
 | `definition_uri` | A uri of a resource to show how the column is created/managed (i.e. a uri of a PDF explaining a list of units) (Optional) | *none*                                                       |
-| `data_type`      | The xml data type of the contents of the column, if this is provided it becomes a Literal Attribute column (Optional) | *none*                                                       |
+| `data_type`      | The [xml data type](https://www.w3.org/TR/xmlschema-2/#built-in-datatypes) of the contents of the column, if this is provided it becomes a Literal Attribute column (Optional) | *none*                                                       |
 | `required`       | If this boolean value is true csvcubed will flag to the user if there are blank values in this column | *none*                                                       |
 | `codelist`       | Link to an existing code list (Optional) (Advanced)          | *none*                                                       |
 
@@ -192,7 +208,7 @@ Observations are the most important component of a CSV-W data set. Observation c
 
 | **field name** | **description**                                              | **default value** |
 | -------------- | ------------------------------------------------------------ | ----------------- |
-| `data_type`    | The data type of the observations. This can only be decimal or integer. (Optional) | *decimal*         |
+| `data_type`    | The data type of the observations. This should generally be a decimal or integer. (Optional) | *decimal*         |
 | `unit`         | The unit for this observation column; this can a uri to an existing unit, or a dictionary containing a new or extended existing unit. If there is a unit column this value must not be provided. (Optional) | *none*            |
 | `measure`      | The measure for this observation column; this can be a uri to an existing dimension, or a dictionary containing a new or extneded existing measure. If there is a measure column this key must not be provided. (Optional) | *none*            |
 
@@ -202,7 +218,7 @@ Measure and unit columns are treated slightly differently to dimension, attribut
 
 | **field name** | **description**                                              | **default value** |
 | -------------- | ------------------------------------------------------------ | ----------------- |
-| `type`         | The type of the column, provide `"measure colum"` for the measure column type or `"unit column"` for the unit column (Required) | *dimension*       |
+| `type`         | The type of the column, provide `"measure column"` for the measure column type or `"unit column"` for the unit column (Required) | *dimension*       |
 | `values`       | If basic units/measures are desired, a boolean value of `true` is used to signify to csvcubed to create units/measures from values of this column; otherwise values is a dictionary which defines the units/measures using the notion from [Measures and Units](#Measures and Units) | `true`            |
 
 # Measures and Units
@@ -214,26 +230,24 @@ Measure and units can be attached to a Measure and Unit Column
 Measures have no unique configuration options.
 
 | **field name**   | **description**                                              | **default value**                                            |
-| ---------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| `type`           | The type of the column (Required)                            | *dimension*                                                  |
-| `label`          | The title of the column (Optional)                           | The capital case of the header in the csv file with spaces replacing underscores |
-| `description`    | A description of the contents of the column (Optional)       | *none*                                                       |
+| ---------------- | ------------------------------------------------------------ | ------------------------------------------------------------
+| `label`          | The title of the measure (Required; Optional if `from_existing` defined)                           | *none* |
+| `description`    | A description of the contents of the measure (Optional)       | *none*                                                       |
 | `from_existing`  | The uri of the resource for reuse/extension (Optional)       | *none*                                                       |
-| `definition_uri` | A uri of a resource to show how the column is created/managed (i.e. a uri of a PDF explaining a list of units) (Optional) | *none*                                                       |
+| `definition_uri` | A uri of a resource to show how the measure is created/managed (i.e. a uri of a PDF explaining the measure type) (Optional) | *none*                                                       |
 
 ## Units
 
-Units are effectively attributes with additional options
+Units are effectively attributes with additional options.
 
 | **field name**      | **description**                                              | **default value**                                            |
-| ------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| `type`              | The type of the column (Required)                            | *dimension*                                                  |
-| `label`             | The title of the column (Optional)                           | The capital case of the header in the csv file with spaces replacing underscores |
-| `description`       | A description of the contents of the column (Optional)       | *none*                                                       |
+| ------------------- | ------------------------------------------------------------ | ------------------------------------------------------------
+| `label`             | The title of the unit (Required; Optional if `from_existing` defined)                          | *none* |
+| `description`       | A description of the contents of the unit (Optional)       | *none*                                                       |
 | `from_existing`     | The uri of the resource for reuse/extension (Optional)       | *none*                                                       |
-| `definition_uri`    | A uri of a resource to show how the column is created/managed (i.e. a uri of a PDF explaining a list of units) (Optional) | *none*                                                       |
+| `definition_uri`    | A uri of a resource to show how the unit is created/managed (i.e. a uri of a image which shows the formula on how the unit is derived) (Optional) | *none*                                                       |
 | `scaling_factor`    | The scaling factor (expressed in base 10) is used to define a new unit from an existing base (i.e. "GBP millions" would have a form_existing unit of GBP, and a `"scaling_factor": 1000000`) (Optional) | *none*                                                       |
 | `si_scaling_factor` | The si_scaling_factor helps relate common scaled units to source SI units, for example kilograms are 1000 grams. Most of these units are already defined. (Optional) (Advanced) | *none*                                                       |
-| `quantity_kind`     | ¯\\_(ツ)_/¯                                                  | *none*                                                       |
+| `quantity_kind`     | The [QUDT quantity kind](http://www.qudt.org/doc/DOC_VOCAB-QUANTITY-KINDS.html#Instances) helps group units                                                 | *none*                                                       |
 
 ## 

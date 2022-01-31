@@ -1,53 +1,54 @@
 site_name: csvcubed
 site_url: https://gss-cogs.github.io/csvcubed-docs/external
 nav:
-    - Home: 
+  - Home:
       - index.md
-    - Why: 
+  - Why:
       - why/index.md
-    - Quickstart: 
+  - Quickstart:
       - quick-start/index.md
       - Installation: quick-start/installation.md
       - Shaping your data: quick-start/shaping.md
-    - Guides: 
+      - Configuring a qube: quick-start/qube config.md
+  - Guides:
       - guides/index.md
       - Raise an issue: guides/raise-issue.md
       - Shape your data: guides/shape-data.md
       - Handling missing observed values: guides/missing-observed-values.md
       - Errors:
-        - Missing column definition: guides/errors/missing-column-definition.md
-        - Column not found in data: guides/errors/column-not-found-in-data.md
-        - Duplicate column title: guides/errors/duplicate-column-title.md
-        - No dimensions defined: guides/errors/no-dimensions-defined.md
-        - No measures defined: guides/errors/no-measures-defined.md
-        - No units defined: guides/errors/no-units-defined.md
-        - No observations column defined: guides/errors/no-observations-columns.md
-        - Multiple measure columns: guides/errors/multiple-measure-columns.md
-        - Multiple units columns: guides/errors/multiple-units-columns.md
-        - Multiple observations columns: guides/errors/multiple-observations-columns.md
-        - Observed values missing: guides/errors/observed-values-missing.md
-        - Both measure types defined: guides/errors/both-measure-types-defined.md
-        - Both unit types defined: guides/errors/both-unit-types-defined.md
-        - Undefined units: guides/errors/undefined-units.md
-        - Undefined measures: guides/errors/undefined-measures.md
-        - Undefined attribute values: guides/errors/undefined-attribute-values.md
-        - CSV column URI template missing: guides/errors/csv-column-uri-template-missing.md
-        - CSV column literal with URI template: guides/errors/csv-column-literal-with-uri-template.md
-        - Column validation error: guides/errors/column-validation.md
-    - Reference Metadata: 
+          - Missing column definition: guides/errors/missing-column-definition.md
+          - Column not found in data: guides/errors/column-not-found-in-data.md
+          - Duplicate column title: guides/errors/duplicate-column-title.md
+          - No dimensions defined: guides/errors/no-dimensions-defined.md
+          - No measures defined: guides/errors/no-measures-defined.md
+          - No units defined: guides/errors/no-units-defined.md
+          - No observations column defined: guides/errors/no-observations-columns.md
+          - Multiple measure columns: guides/errors/multiple-measure-columns.md
+          - Multiple units columns: guides/errors/multiple-units-columns.md
+          - Multiple observations columns: guides/errors/multiple-observations-columns.md
+          - Observed values missing: guides/errors/observed-values-missing.md
+          - Both measure types defined: guides/errors/both-measure-types-defined.md
+          - Both unit types defined: guides/errors/both-unit-types-defined.md
+          - Undefined units: guides/errors/undefined-units.md
+          - Undefined measures: guides/errors/undefined-measures.md
+          - Undefined attribute values: guides/errors/undefined-attribute-values.md
+          - CSV column URI template missing: guides/errors/csv-column-uri-template-missing.md
+          - CSV column literal with URI template: guides/errors/csv-column-literal-with-uri-template.md
+          - Column validation error: guides/errors/column-validation.md
+  - Reference Metadata:
       - reference-metadata/index.md
-    - Glossary: 
+  - Glossary:
       - glossary/index.md
-    - API Documentation: 
+  - API Documentation:
       - api-documentation/index.md
 theme:
   name: material
-  palette: 
+  palette:
     - scheme: default
       toggle:
         icon: material/toggle-switch-off-outline
         name: Switch to dark mode
-    - scheme: slate 
+    - scheme: slate
       toggle:
         icon: material/toggle-switch
         name: Switch to light mode
@@ -59,3 +60,7 @@ theme:
     - navigation.indexes
     - navigation.top
     - toc.integrate
+plugins:
+  - markdownmermaid
+extra_javascript:
+  - https://unpkg.com/mermaid@8.4.5/dist/mermaid.min.js
