@@ -105,16 +105,6 @@ def test_identification_of_csvcubed_output_type():
     assert actual_output_type == CsvCubedOutputType.SkosConceptScheme
 
 
-def test_itis_industry():
-    # Test legacy manually defined `skos:ConceptScheme` can be correctly identified.
-    pmdify.pmdify_dcat(
-        _TEST_CASES_DIR / "single-measure-bulletin.csv-metadata.json",
-        "http://some-base-uri/",
-        "http://graph-uri/",
-        "http://graph-uri/catalog-metadata/",
-    )
-
-
 def test_catalog_uris_for_csvcubed_output_types():
     assert (
         pmdify._get_catalog_uri_to_add_to(CsvCubedOutputType.SkosConceptScheme)
