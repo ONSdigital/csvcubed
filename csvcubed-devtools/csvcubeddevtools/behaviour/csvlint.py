@@ -41,12 +41,12 @@ def step_impl(context):
 def step_impl(context, file: str):
     temp_dir = get_context_temp_dir_path(context)
     exit_code, logs = _run_csvlint(temp_dir / file)
-    assert exit_code == 0
+    assert exit_code == 0, logs
 
 
 @step('csvlint validation of "{file}" should fail with "{expected}"')
 def step_impl(context, file: str, expected: str):
     temp_dir = get_context_temp_dir_path(context)
     exit_code, logs = _run_csvlint(temp_dir / file)
-    assert exit_code == 1
+    assert exit_code == 1, logs
     assert expected in logs
