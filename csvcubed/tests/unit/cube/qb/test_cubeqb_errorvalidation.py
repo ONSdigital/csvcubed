@@ -712,42 +712,44 @@ def test_attribute_numeric_resources_validation():
     assert len(errors) == 0
 
 
-def test_code_list_concept_identifier_reserved():
-    """
-    Test that if the user tries to define a code-list with a concept which would use the reserved `code-list`
-    identifier then they get a suitable validation error.
-    """
-    data = pd.DataFrame(
-        {
-            "New Dimension": ["A", "B", "C", "Code List"],
-            "Value": [2, 2, 2, 2],
-        }
-    )
+# Commenting out the below function since we've removed the functionality checking for duplicate uri safe mappings.
+# todo: This will need to be reintroduced when we re-implement this functionality correctly.
+# def test_code_list_concept_identifier_reserved():
+#     """
+#     Test that if the user tries to define a code-list with a concept which would use the reserved `code-list`
+#     identifier then they get a suitable validation error.
+#     """
+#     data = pd.DataFrame(
+#         {
+#             "New Dimension": ["A", "B", "C", "Code List"],
+#             "Value": [2, 2, 2, 2],
+#         }
+#     )
 
-    qube = Cube(
-        metadata=CatalogMetadata("Some Qube"),
-        data=data,
-        columns=[
-            QbColumn(
-                "New Dimension",
-                NewQbDimension.from_data("New Dimension", data["New Dimension"]),
-            ),
-            QbColumn(
-                "Value",
-                QbSingleMeasureObservationValue(
-                    NewQbMeasure("Some Measure"),
-                    NewQbUnit("Some Unit"),
-                ),
-            ),
-        ],
-    )
-    errors = qube.validate() + validate_qb_component_constraints(qube)
-    assert_num_validation_errors(errors, 1)
-    error = errors[0]
-    assert isinstance(error, ReservedUriValueError)
-    assert error.csv_column_name == "New Dimension"
-    assert error.reserved_identifier == "code-list"
-    assert error.conflicting_values == ["Code List"]
+#     qube = Cube(
+#         metadata=CatalogMetadata("Some Qube"),
+#         data=data,
+#         columns=[
+#             QbColumn(
+#                 "New Dimension",
+#                 NewQbDimension.from_data("New Dimension", data["New Dimension"]),
+#             ),
+#             QbColumn(
+#                 "Value",
+#                 QbSingleMeasureObservationValue(
+#                     NewQbMeasure("Some Measure"),
+#                     NewQbUnit("Some Unit"),
+#                 ),
+#             ),
+#         ],
+#     )
+#     errors = qube.validate() + validate_qb_component_constraints(qube)
+#     assert_num_validation_errors(errors, 1)
+#     error = errors[0]
+#     assert isinstance(error, ReservedUriValueError)
+#     assert error.csv_column_name == "New Dimension"
+#     assert error.reserved_identifier == "code-list"
+#     assert error.conflicting_values == ["Code List"]
 
 
 if __name__ == "__main__":
