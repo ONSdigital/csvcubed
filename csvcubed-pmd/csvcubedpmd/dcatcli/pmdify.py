@@ -41,9 +41,10 @@ def pmdify_dcat(
     csvw_metadata_file_path = csvw_metadata_file_path.absolute()
     csvw_rdf_graph = Graph(base=_TEMP_PREFIX_URI)
     with open(csvw_metadata_file_path, "r") as f:
-        csvw_file_contents_json: dict = json.load(f)
+        csvw_file_contents: str = f.read()
+        csvw_file_contents_json: dict = json.loads(csvw_file_contents)
 
-    csvw_rdf_graph.parse(data=json.dumps(csvw_file_contents_json), publicID=_TEMP_PREFIX_URI, format="json-ld")
+    csvw_rdf_graph.parse(data=csvw_file_contents, publicID=_TEMP_PREFIX_URI, format="json-ld")
     _remove_csvw_rdf_from_graph(csvw_rdf_graph)
 
     csvw_type = _get_csv_cubed_output_type(csvw_rdf_graph)
