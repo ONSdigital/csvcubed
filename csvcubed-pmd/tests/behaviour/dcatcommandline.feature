@@ -106,3 +106,15 @@ Feature: Testing the csvw command group in the CLI
 
       <http://gss-data.org.uk/catalog/vocabularies> dcat:record <http://base-uri/period.csv#catalog-record> .
      """
+
+  Scenario: The `pmdify` command should work on `itis-industry.csv`
+    Given the existing test-case files "dcatcli/*"
+    When the pmdutils command CLI is run with "dcat pmdify itis-industry.csv-metadata.json http://base-uri http://data-graph-uri http://catalog-metadata-graph-uri"
+    Then the CLI should succeed
+    And csvlint validation of "itis-industry.csv-metadata.json" should succeed
+    And csv2rdf on "itis-industry.csv-metadata.json" should succeed
+    And the RDF should not contain any instances of "http://www.w3.org/ns/dcat#Dataset"
+    And the RDF should contain
+    """
+      <http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services#scheme/itis-industry> a <http://publishmydata.com/pmdcat#ConceptScheme>.
+    """

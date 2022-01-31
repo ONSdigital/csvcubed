@@ -94,6 +94,16 @@ def test_identification_of_csvcubed_output_type():
 
     assert actual_output_type == CsvCubedOutputType.SkosConceptScheme
 
+    # Test legacy manually defined `skos:ConceptScheme` can be correctly identified.
+    csvw_graph = Graph()
+    csvw_graph.parse(
+        str(_TEST_CASES_DIR / "itis-industry.csv-metadata.json"),
+        format="json-ld",
+    )
+    actual_output_type = pmdify._get_csv_cubed_output_type(csvw_graph)
+
+    assert actual_output_type == CsvCubedOutputType.SkosConceptScheme
+
 
 def test_catalog_uris_for_csvcubed_output_types():
     assert (

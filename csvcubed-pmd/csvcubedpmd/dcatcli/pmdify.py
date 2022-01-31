@@ -41,14 +41,12 @@ def pmdify_dcat(
     csvw_metadata_file_path = csvw_metadata_file_path.absolute()
     csvw_rdf_graph = Graph(base=_TEMP_PREFIX_URI)
     with open(csvw_metadata_file_path, "r") as f:
-        csvw_file_contents_json = json.load(f)
+        csvw_file_contents: str = f.read()
+        csvw_file_contents_json: dict = json.loads(csvw_file_contents)
 
-    rdf_metadata = csvw_file_contents_json["rdfs:seeAlso"]
-    rdf_metadata_json = json.dumps(rdf_metadata)
+    csvw_rdf_graph.parse(data=csvw_file_contents, publicID=_TEMP_PREFIX_URI, format="json-ld")
+    _remove_csvw_rdf_from_graph(csvw_rdf_graph)
 
-    csvw_rdf_graph.parse(
-        data=rdf_metadata_json, publicID=_TEMP_PREFIX_URI, format="json-ld"
-    )
     csvw_type = _get_csv_cubed_output_type(csvw_rdf_graph)
 
     catalog_entry = _get_catalog_entry_from_dcat_dataset(csvw_rdf_graph)
@@ -59,6 +57,10 @@ def pmdify_dcat(
     _delete_existing_dcat_dataset_metadata(csvw_rdf_graph)
 
     _replace_uri_substring_in_graph(csvw_rdf_graph, str(_TEMP_PREFIX_URI), base_uri)
+
+    # Remove RDF which is not of CSV-W origin from the JSON, we'll add the relevant info back later.
+    _remove_non_csvw_rdf_from_json_ld(csvw_file_contents_json)
+
     csvw_file_contents_json["rdfs:seeAlso"] = rdflibutils.serialise_to_json_ld(
         csvw_rdf_graph
     )
@@ -81,6 +83,36 @@ def pmdify_dcat(
         base_uri,
         csvw_type
     )
+
+
+def _remove_csvw_rdf_from_graph(csvw_rdf_graph):
+    columns_list_items = list(csvw_rdf_graph.query("""
+        PREFIX rdfs: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX csvw: <http://www.w3.org/ns/csvw#>
+        
+        SELECT ?listItem 
+        WHERE {
+            {
+                [] csvw:column/rdfs:rest*/rdfs:first* ?listItem.
+            } UNION {
+                [] csvw:columnReference/rdfs:rest*/rdfs:first* ?listItem.
+            }
+        }    
+    """))
+
+    for list_item_identifier in [item[0] for item in columns_list_items]:
+        csvw_rdf_graph.remove((list_item_identifier, None, None))
+        csvw_rdf_graph.remove((None, None, list_item_identifier))
+
+    for (sub, pred, obj) in list(csvw_rdf_graph.triples((None, None, None))):
+        if str(pred).startswith("http://www.w3.org/ns/csvw#"):
+            csvw_rdf_graph.remove((sub, pred, obj))
+
+
+def _remove_non_csvw_rdf_from_json_ld(csvw_file_contents_json: dict) -> None:
+    rdf_keys = [k for k in csvw_file_contents_json.keys() if ":" in k or looks_like_uri(k)]
+    for key in rdf_keys:
+        del csvw_file_contents_json[key]
 
 
 def _set_pmdcat_type_on_dataset_contents(
