@@ -57,19 +57,19 @@
         "description": "A column name to component mapping",
         "oneOf": [
           {
-            "$ref": "#/$defs/v1.0/columns/dimension"
+            "$ref": "#/$defs/v1.0/columnTypes/Dimension"
           },
           {
-            "$ref": "#/$defs/v1.0/columns/attribute"
+            "$ref": "#/$defs/v1.0/columnTypes/Attribute"
           },
           {
-            "$ref": "#/$defs/v1.0/columns/measure"
+            "$ref": "#/$defs/v1.0/columnTypes/Measure"
           },
           {
-            "$ref": "#/$defs/v1.0/columns/observation/single"
+            "$ref": "#/$defs/v1.0/columnTypes/Observation"
           },
           {
-            "$ref": "#/$defs/v1.0/columns/units"
+            "$ref": "#/$defs/v1.0/columnTypes/Unit"
           }
         ]
       }
@@ -77,98 +77,146 @@
   },
   "$defs": {
     "v1.0": {
-      "columns": {
-        "attribute": {
-          "description": "An attribute column, boolean or attribute dictionary",
-          "oneOf": [
-            {
-              "$ref": "#/$defs/v1.0/columnTypes/attribute/Attribute"
+      "columnTypes": {
+        "Attribute": {
+          "description": "Definition of units for the observation",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "values"
+          ],
+          "properties": {
+            "type": {
+              "description": "An Attribute Column Type",
+              "type": "string",
+              "const": "attribute"
             },
-            {
-              "$ref": "#/$defs/v1.0/columnTypes/attribute/boolAttribute"
+            "values": {
+              "oneOf": [
+                {"$ref": "#/$defs/v1.0/valueTypes/boolValueTrue"},
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/v1.0/valueTypes/attributeType"
+                  }
+                }
+              ]
             }
-          ]
-        },
-        "dimension": {
-          "description": "A New Dimension column",
-          "$ref": "#/$defs/v1.0/columnTypes/dimension"
-        },
-        "measure": {
-          "description": "A measures column, boolean or measure dictionary",
-          "oneOf": [
-            {
-              "$ref": "#/$defs/v1.0/columnTypes/measure/Measure"
-            },
-            {
-              "$ref": "#/$defs/v1.0/columnTypes/measure/boolMeasure"
-            }
-          ]
-        },
-        "observation": {
-          "single": {
-            "description": "Single observation measure column combo",
-            "$ref": "#/$defs/v1.0/columnTypes/observation"
           }
         },
-        "units": {
-          "description": "Single units column",
-          "oneOf": [
-            {
-              "$ref": "#/$defs/v1.0/columnTypes/unit/Unit"
+        "Dimension": {
+          "description": "A Dimension column",
+          "$ref": "#/$defs/v1.0/valueTypes/dimensionType"
+        },
+        "Measure": {
+          "description": "Definition of how the observation value is being measured",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "values"
+          ],
+          "properties": {
+            "type": {
+              "description": "A Measure Column Type",
+              "type": "string",
+              "const": "measure"
             },
-            {
-              "$ref": "#/$defs/v1.0/columnTypes/unit/boolUnit"
+            "values": {
+              "oneOf": [
+                {"$ref": "#/$defs/v1.0/valueTypes/boolValueTrue"},
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/v1.0/valueTypes/measureType"
+                  }
+                }
+              ]
             }
-          ]
-        }
-      },
-      "columnTypes": {
-        "attribute": {
-          "boolAttribute": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-              "type",
-              "values"
-            ],
-            "properties": {
-              "type": {
-                "description": "An Attribute Column Type",
-                "type": "string",
-                "const": "attribute"
-              },
-              "values": {
-                "description": "A boolean 'true' or 'measure' object ",
-                "type": "boolean",
-                "default": true
-              }
+          }
+        },
+        "Unit": {
+          "description": "Definition the unit",
+          "type": "object",
+          "required": [
+            "type",
+            "values"
+          ],
+          "properties": {
+            "type": {
+              "description": "A Unit Column Type",
+              "type": "string",
+              "const": "unit"
+            },
+            "values": {
+              "oneOf": [
+                {"$ref": "#/$defs/v1.0/valueTypes/boolValueTrue"},
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/v1.0/valueTypes/unitType"
+                  }
+                }
+              ]
             }
           },
-          "Attribute": {
-            "description": "Definition of units for the observation",
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-              "type",
-              "values"
-            ],
-            "properties": {
-              "type": {
-                "description": "An Attribute Column Type",
-                "type": "string",
-                "const": "attribute"
-              },
-              "values": {
-                "description": "A single attribute value, optionally referencing existing values and definition URIs",
-                "type": "array",
-                "items": {
-                  "$ref": "#/$defs/v1.0/valueTypes/attributeType"
-                }
-              }
+          "additionalProperties": false
+        },
+        "Observation": {
+          "description": "An observation",
+          "$ref": "#/$defs/v1.0/valueTypes/observationType"
+        }
+      },
+      "units": {
+        "boolUnit": {
+          "description": "Definition of the unit",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "value"
+          ],
+          "properties": {
+            "type": {
+              "description": "A Unit Column Type",
+              "type": "string",
+              "const": "units"
+            },
+            "value": {
+              "type": "boolean"
             }
           }
         },
-        "dimension": {
+      },
+      "valueTypes": {
+        "attributeType": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "label"
+          ],
+          "properties": {
+            "label": {
+              "type": "string",
+              "description": "A label for the attribute values"
+            },
+            "description": {
+              "type": "string",
+              "description": "The description of the attribute values"
+            },
+            "from_existing": {
+              "description": "The URI to an existing set of values",
+              "$ref": "http://gss-cogs.github.io/family-schemas/external.json#/definitions/attr_ext_uri"
+            },
+            "definition_uri": {
+              "description": "The URI link to an existing definition",
+              "type": "string",
+              "format": "uri"
+            }
+          }
+        },
+        "dimensionType": {
           "description": "A Dimension Column",
           "type": "object",
           "required": [
@@ -217,97 +265,7 @@
             }
           }
         },
-        "measure": {
-          "boolMeasure": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-              "type",
-              "values"
-            ],
-            "properties": {
-              "type": {
-                "description": "A Measure Column Type",
-                "type": "string",
-                "const": "measure"
-              },
-              "values": {
-                "description": "A boolean 'true' or 'measure' object ",
-                "type": "boolean",
-                "default": true
-              }
-            }
-          },
-          "Measure": {
-            "description": "Definition of how the observation value is being measured",
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-              "type",
-              "values"
-            ],
-            "properties": {
-              "type": {
-                "description": "A Measure Column Type",
-                "type": "string",
-                "const": "measure"
-              },
-              "values": {
-                "description": "A single attribute value, optionally referencing existing values and definition URIs",
-                "type": "array",
-                "items": {
-                  "$ref": "#/$defs/v1.0/valueTypes/measureType"
-                }
-              }
-            }
-          }
-        },
-        "unit": {
-          "boolUnit": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-              "type",
-              "values"
-            ],
-            "properties": {
-              "type": {
-                "description": "A Unit Column Type",
-                "type": "string",
-                "const": "unit"
-              },
-              "values": {
-                "description": "A boolean 'true' or 'unit' object ",
-                "type": "boolean",
-                "const": true
-              }
-            }
-          },
-          "Unit": {
-            "description": "Definition the unit",
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-              "type",
-              "values"
-            ],
-            "properties": {
-              "type": {
-                "description": "A Unit Column Type",
-                "type": "string",
-                "const": "unit"
-              },
-              "values": {
-                "description": "A Unit name, optionally referencing existing values and definition URIs",
-                "type": "array",
-                "items": {
-                  "$ref": "#/$defs/v1.0/valueTypes/unitType"
-                }
-              }
-            }
-          }
-        },
-        "observation": {
+        "observationType": {
           "description": "An observation column",
           "type": "object",
           "additionalProperties": false,
@@ -331,98 +289,6 @@
             "measure": {
               "description": "The measure used for this observation",
               "$ref": "#/$defs/v1.0/valueTypes/measureType"
-            }
-          }
-        }
-      },
-      "units": {
-        "boolUnit": {
-          "description": "Definition of the unit",
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "type",
-            "value"
-          ],
-          "properties": {
-            "type": {
-              "description": "A Unit Column Type",
-              "type": "string",
-              "const": "units"
-            },
-            "value": {
-              "type": "boolean"
-            }
-          }
-        },
-        "Unit": {
-          "description": "Definition of how the observation value is being measured",
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "type",
-            "value"
-          ],
-          "properties": {
-            "type": {
-              "description": "A Unit Column Type",
-              "type": "string",
-              "const": "units"
-            },
-            "value": {
-              "label": {
-                "description": "Replacement label for the Unit",
-                "type": "string"
-              },
-              "from_existing": {
-                "description": "URI of an Existing Qb Dimension",
-                "$ref": "http://gss-cogs.github.io/family-schemas/external.json#/definitions/unit_ext_uri"
-              },
-              "scaling_factor": {
-                "description": "The scaling factor",
-                "type": "decimal"
-              },
-              "si_scaling_factor": {
-                "description": "The SI scaling factor",
-                "type": "decimal"
-              },
-              "quantity_kind": {
-                "description": "Source URI for the definition of the Unit Kind",
-                "type": "string",
-                "format": "uri"
-              },
-              "definition_uri": {
-                "description": "Source URI for the definition of the Unit",
-                "$ref": "#/$defs/types/definition_uri"
-              }
-            }
-          }
-        }
-      },
-      "valueTypes": {
-        "attributeType": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "label"
-          ],
-          "properties": {
-            "label": {
-              "type": "string",
-              "description": "A label for the attribute values"
-            },
-            "description": {
-              "type": "string",
-              "description": "The description of the attribute values"
-            },
-            "from_existing": {
-              "description": "The URI to an existing set of values",
-              "$ref": "http://gss-cogs.github.io/family-schemas/external.json#/definitions/attr_ext_uri"
-            },
-            "definition_uri": {
-              "description": "The URI link to an existing definition",
-              "type": "string",
-              "format": "uri"
             }
           }
         },
@@ -476,11 +342,11 @@
             },
             "scaling_factor": {
               "description": "Scaling factor of the observation to base unit",
-              "type": "decimal"
+              "type": "number"
             },
             "si_scaling_factor": {
               "description": "Scaling factor of the observation to SI base unit",
-              "type": "decimal"
+              "type": "number"
             },
             "quantity_kind": {
               "description": "The kind of unit being measured in this observation",
@@ -488,6 +354,10 @@
               "format": "uri"
             }
           }
+        },
+        "boolValueTrue": {
+          "type": "boolean",
+          "const": true
         }
       },
       "dataTypes": {
@@ -578,7 +448,7 @@
             },
             {
               "type": "boolean",
-              "const": false
+              "default": false
             }
           ]
         }
