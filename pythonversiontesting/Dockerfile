@@ -1,6 +1,18 @@
-FROM python:3.9
+FROM debian:latest
 
 RUN apt-get update
+
+# install pyenv with appropriate python versions
+RUN apt-get install -y make build-essential libssl-dev zlib1g-dev \
+  libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm \
+  libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev
+RUN apt-get install -y git python3 python3-pip
+
+RUN curl https://pyenv.run | bash
+
+RUN /root/.pyenv/bin/pyenv install 3.9.7
+RUN /root/.pyenv/bin/pyenv install 3.10.0
+RUN /root/.pyenv/bin/pyenv global 3.9.7 3.10.0
 
 # install docker stuff
 RUN apt-get install -y \
@@ -23,14 +35,12 @@ RUN python3 -m pip install poetry
 
 ADD https://raw.githubusercontent.com/GSS-Cogs/gss-utils/master/cucumber-format.patch /
 
-RUN apt-get install -y git 
-
 # Pyright (nodejs)
 RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
 RUN apt-get install -y nodejs
 RUN npm install -g pyright
-
-RUN python3 -m pip install mkdocs mkdocs-material git+https://github.com/sebastienwarin/mkdocs-mermaid-plugin
+RUN python3 -m pip install tox tox-pyenv
 
 RUN mkdir /workspace
 WORKDIR /workspace
+ENV PATH="/root/.pyenv/bin:/root/.pyenv/shims:${PATH}"

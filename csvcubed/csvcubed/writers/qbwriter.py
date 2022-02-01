@@ -33,7 +33,12 @@ from csvcubed.utils.qb.cube import (
 from csvcubed.utils.dict import rdf_resource_to_json_ld
 from csvcubed.utils.qb.standardise import convert_data_values_to_uri_safe_values
 from csvcubed.utils.file import copy_files_to_directory_with_structure
-from .skoscodelistwriter import SkosCodeListWriter, CODE_LIST_NOTATION_COLUMN_NAME
+from .skoscodelistwriter import (
+    SkosCodeListWriter,
+    CODE_LIST_NOTATION_COLUMN_NAME,
+)
+from .urihelpers.skoscodelist import SkosCodeListNewUriHelper
+from .urihelpers.qbcube import QbCubeNewUriHelper
 from .writerbase import WriterBase
 from ..models.cube import (
     QbAttribute,
@@ -49,8 +54,6 @@ from ..models.cube.qb.components.arbitraryrdf import RdfSerialisationHint
 from csvcubed.models.rdf.qbdatasetincatalog import QbDataSetInCatalog
 from ..utils.qb.validation.observations import get_observation_status_columns
 
-DATASET_RELATIVE_PATH = "dataset"
-
 VIRT_UNIT_COLUMN_NAME = "virt_unit"
 
 
@@ -59,9 +62,11 @@ class QbWriter(WriterBase):
     cube: QbCube
     csv_file_name: str = field(init=False)
     raise_missing_uri_safe_value_exceptions: bool = field(default=True, repr=False)
+    _new_uri_helper: QbCubeNewUriHelper = field(init=False)
 
     def __post_init__(self):
         self.csv_file_name = f"{self.cube.metadata.uri_safe_identifier}.csv"
+        self._new_uri_helper = QbCubeNewUriHelper(self.cube)
 
     def write(self, output_folder: Path):
         # Map all labels to their corresponding URI-safe-values, where possible.
@@ -88,7 +93,7 @@ class QbWriter(WriterBase):
 
         csvw_metadata = {
             "@context": "http://www.w3.org/ns/csvw",
-            "@id": self._doc_rel_uri(DATASET_RELATIVE_PATH),
+            "@id": self._new_uri_helper.get_dataset_uri(),
             "tables": tables,
             "rdfs:seeAlso": self._get_additional_rdf_metadata(),
         }
@@ -112,16 +117,6 @@ class QbWriter(WriterBase):
             see_also += rdf_resource_to_json_ld(unit)
 
         return see_also
-
-    def _doc_rel_uri(self, uri_fragment: str) -> str:
-        """
-        URIs declared in the `columns` section of the CSV-W are relative to the CSV's location.
-        URIs declared in the JSON-LD metadata section of the CSV-W are relative to the metadata file's location.
-
-        This function makes both point to the same base location - the CSV file's location. This ensures that we
-        can talk about the same resources in the `columns` section and the JSON-LD metadata section.
-        """
-        return f"{self.csv_file_name}#{uri_fragment}"
 
     def _output_new_code_list_csvws(self, output_folder: Path) -> None:
         for column in get_columns_of_dsd_type(self.cube, NewQbDimension):
@@ -240,7 +235,7 @@ class QbWriter(WriterBase):
                 "name": "virt_dataset",
                 "virtual": True,
                 "propertyUrl": "http://purl.org/linked-data/cube#dataSet",
-                "valueUrl": self._doc_rel_uri(DATASET_RELATIVE_PATH),
+                "valueUrl": self._new_uri_helper.get_dataset_uri(),
             },
         ]
         unit = obs_val.unit
@@ -266,7 +261,7 @@ class QbWriter(WriterBase):
 
     def _get_qb_dataset_with_catalog_metadata(self) -> QbDataSetInCatalog:
         qb_dataset_with_metadata = QbDataSetInCatalog(
-            self._doc_rel_uri(DATASET_RELATIVE_PATH)
+            self._new_uri_helper.get_dataset_uri()
         )
         self.cube.metadata.configure_dcat_dataset(qb_dataset_with_metadata)
         return qb_dataset_with_metadata
@@ -274,7 +269,7 @@ class QbWriter(WriterBase):
     def _generate_qb_dataset_dsd_definitions(self) -> QbDataSetInCatalog:
         dataset = self._get_qb_dataset_with_catalog_metadata()
         dataset.structure = rdf.qb.DataStructureDefinition(
-            self._doc_rel_uri("structure")
+            self._new_uri_helper.get_structure_uri()
         )
         component_oridinal = 1
         for column in self.cube.columns:
@@ -330,7 +325,7 @@ class QbWriter(WriterBase):
         self, column_name_uri_safe: str
     ) -> rdf.qb.AttributeComponentSpecification:
         component = rdf.qb.AttributeComponentSpecification(
-            self._doc_rel_uri(f"component/{column_name_uri_safe}")
+            self._new_uri_helper.get_component_uri(column_name_uri_safe)
         )
         component.componentRequired = True
         component.attribute = ExistingResource(
@@ -370,7 +365,7 @@ class QbWriter(WriterBase):
         self,
     ) -> rdf.qb.DimensionComponentSpecification:
         measure_dimension_spec = rdf.qb.DimensionComponentSpecification(
-            self._doc_rel_uri("component/measure-type")
+            self._new_uri_helper.get_component_uri("measure-type")
         )
         measure_dimension_spec.dimension = ExistingResource(
             "http://purl.org/linked-data/cube#measureType"
@@ -400,8 +395,8 @@ class QbWriter(WriterBase):
         self, measure: QbMeasure
     ) -> rdf.qb.MeasureComponentSpecification:
         if isinstance(measure, ExistingQbMeasure):
-            component_uri = self._doc_rel_uri(
-                f"component/{get_last_uri_part(measure.measure_uri)}"
+            component_uri = self._new_uri_helper.get_component_uri(
+                get_last_uri_part(measure.measure_uri)
             )
             component = rdf.qb.MeasureComponentSpecification(component_uri)
             component.measure = ExistingResource(measure.measure_uri)
@@ -413,10 +408,10 @@ class QbWriter(WriterBase):
             return component
         elif isinstance(measure, NewQbMeasure):
             component = rdf.qb.MeasureComponentSpecification(
-                self._doc_rel_uri(f"component/{measure.uri_safe_identifier}")
+                self._new_uri_helper.get_component_uri(measure.uri_safe_identifier)
             )
             component.measure = rdf.qb.MeasureProperty(
-                self._doc_rel_uri(f"measure/{measure.uri_safe_identifier}")
+                self._new_uri_helper.get_measure_uri(measure.uri_safe_identifier)
             )
             component.measure.label = measure.label
             component.measure.comment = measure.description
@@ -443,7 +438,7 @@ class QbWriter(WriterBase):
     ) -> rdf.qb.DimensionComponentSpecification:
         if isinstance(dimension, ExistingQbDimension):
             component = rdf.qb.DimensionComponentSpecification(
-                self._doc_rel_uri(f"component/{column_name_uri_safe}")
+                self._new_uri_helper.get_component_uri(column_name_uri_safe)
             )
             component.dimension = ExistingResource(dimension.dimension_uri)
             dimension.copy_arbitrary_triple_fragments_to_resources(
@@ -451,10 +446,10 @@ class QbWriter(WriterBase):
             )
         elif isinstance(dimension, NewQbDimension):
             component = rdf.qb.DimensionComponentSpecification(
-                self._doc_rel_uri(f"component/{dimension.uri_safe_identifier}")
+                self._new_uri_helper.get_component_uri(dimension.uri_safe_identifier)
             )
             component.dimension = rdf.qb.DimensionProperty(
-                self._doc_rel_uri(f"dimension/{dimension.uri_safe_identifier}")
+                self._new_uri_helper.get_dimension_uri(dimension.uri_safe_identifier)
             )
             component.dimension.label = dimension.label
             component.dimension.comment = dimension.description
@@ -463,7 +458,7 @@ class QbWriter(WriterBase):
             )
             component.dimension.source = maybe_existing_resource(dimension.source_uri)
             component.dimension.range = rdfs.Class(
-                self._doc_rel_uri(f"class/{dimension.uri_safe_identifier}")
+                self._new_uri_helper.get_class_uri(dimension.uri_safe_identifier)
             )
 
             dimension.copy_arbitrary_triple_fragments_to_resources(
@@ -492,7 +487,9 @@ class QbWriter(WriterBase):
             return ExistingResource(code_list.concept_scheme_uri)
         elif isinstance(code_list, NewQbCodeList):
             # The resource is created elsewhere. There is a separate CSV-W definition for the code-list
-            return ExistingResource(self._get_new_code_list_scheme_uri(code_list))
+            return ExistingResource(
+                SkosCodeListNewUriHelper(code_list).get_scheme_uri()
+            )
         elif isinstance(code_list, NewQbCodeListInCsvW):
             return ExistingResource(code_list.concept_scheme_uri)
         else:
@@ -503,7 +500,7 @@ class QbWriter(WriterBase):
     ) -> rdf.qb.AttributeComponentSpecification:
         if isinstance(attribute, ExistingQbAttribute):
             component = rdf.qb.AttributeComponentSpecification(
-                self._doc_rel_uri(f"component/{column_name_uri_safe}")
+                self._new_uri_helper.get_component_uri(column_name_uri_safe)
             )
             if isinstance(attribute, QbAttributeLiteral):
                 component.attribute = ExistingResourceWithLiteral(
@@ -520,10 +517,10 @@ class QbWriter(WriterBase):
             )
         elif isinstance(attribute, NewQbAttribute):
             component = rdf.qb.AttributeComponentSpecification(
-                self._doc_rel_uri(f"component/{attribute.uri_safe_identifier}")
+                self._new_uri_helper.get_component_uri(attribute.uri_safe_identifier)
             )
             component.attribute = rdf.qb.AttributeProperty(
-                self._doc_rel_uri(f"attribute/{attribute.uri_safe_identifier}")
+                self._new_uri_helper.get_attribute_uri(attribute.uri_safe_identifier)
             )
             component.attribute.label = attribute.label
             component.attribute.comment = attribute.description
@@ -567,8 +564,8 @@ class QbWriter(WriterBase):
             for value in column.structural_definition.new_attribute_values:  # type: ignore
                 assert isinstance(value, NewQbAttributeValue)
 
-                attribute_value_uri = self._doc_rel_uri(
-                    f"attribute/{column_identifier}/{value.uri_safe_identifier}"
+                attribute_value_uri = self._new_uri_helper.get_attribute_value_uri(
+                    column_identifier, value.uri_safe_identifier
                 )
                 new_attribute_value_resource = NewAttributeValueResource(
                     attribute_value_uri
@@ -690,7 +687,7 @@ class QbWriter(WriterBase):
             or isinstance(column.structural_definition, QbMultiMeasureDimension)
             or (
                 isinstance(column.structural_definition, QbAttribute)
-                and column.structural_definition.is_required
+                and column.structural_definition.get_is_required()
             )
             or (
                 isinstance(column.structural_definition, QbObservationValue)
@@ -711,7 +708,7 @@ class QbWriter(WriterBase):
 
         unit_value_uri: str
         if all_units_new:
-            unit_value_uri = self._doc_rel_uri(f"unit/{column_template_fragment}")
+            unit_value_uri = self._new_uri_helper.get_unit_uri(column_template_fragment)
         elif all_units_existing:
             unit_value_uri = column_template_fragment
         else:
@@ -749,7 +746,7 @@ class QbWriter(WriterBase):
 
         column_template_fragment = self._get_column_uri_template_fragment(column)
         if all_measures_new:
-            return self._doc_rel_uri(f"measure/{column_template_fragment}")
+            return self._new_uri_helper.get_measure_uri(column_template_fragment)
         elif all_measures_existing:
             if column.csv_column_uri_template is None:
                 raise ValueError(
@@ -825,8 +822,8 @@ class QbWriter(WriterBase):
                 self._get_column_uri_template_fragment(column),
             )
         elif isinstance(dimension, NewQbDimension):
-            local_dimension_uri = self._doc_rel_uri(
-                f"dimension/{dimension.uri_safe_identifier}"
+            local_dimension_uri = self._new_uri_helper.get_dimension_uri(
+                dimension.uri_safe_identifier
             )
             value_uri = self._get_column_uri_template_fragment(column)
             if dimension.code_list is not None:
@@ -847,22 +844,22 @@ class QbWriter(WriterBase):
         if isinstance(attribute, ExistingQbAttribute):
             if len(attribute.new_attribute_values) > 0:
                 # NewQbAttributeValues defined here.
-                value_uri = self._doc_rel_uri(
-                    f"attribute/{column.uri_safe_identifier}/{column_uri_fragment}"
+                value_uri = self._new_uri_helper.get_attribute_value_uri(
+                    column.uri_safe_identifier, column_uri_fragment
                 )
             # Else: Existing attribute values defined elsewhere. The user *should* have defined an csv_column_uri_template.
             # N.B. We can't do mix-and-match New/Existing attribute values.
 
             return attribute.attribute_uri, value_uri
         elif isinstance(attribute, NewQbAttribute):
-            local_attribute_uri = self._doc_rel_uri(
-                f"attribute/{attribute.uri_safe_identifier}"
+            local_attribute_uri = self._new_uri_helper.get_attribute_uri(
+                attribute.uri_safe_identifier
             )
 
             if len(attribute.new_attribute_values) > 0:
                 # NewQbAttributeValues defined here.
-                value_uri = self._doc_rel_uri(
-                    f"attribute/{attribute.uri_safe_identifier}/{column_uri_fragment}"
+                value_uri = self._new_uri_helper.get_attribute_value_uri(
+                    attribute.uri_safe_identifier, column_uri_fragment
                 )
             # Else: Existing attribute values defined elsewhere. The user *should* have defined an
             # csv_column_uri_template.
@@ -879,9 +876,6 @@ class QbWriter(WriterBase):
             return "{" + csvw_column_name_safe(column.uri_safe_identifier) + "}"
 
         return "{+" + csvw_column_name_safe(column.uri_safe_identifier) + "}"
-
-    def _get_new_code_list_scheme_uri(self, code_list: NewQbCodeList) -> str:
-        return f"{code_list.metadata.uri_safe_identifier}.csv#scheme/{code_list.metadata.uri_safe_identifier}"
 
     _external_code_list_pattern = re.compile("^(.*)/concept-scheme/(.*)$")
     _dataset_local_code_list_pattern = re.compile("^(.*)#scheme/(.*)$")
@@ -916,7 +910,9 @@ class QbWriter(WriterBase):
                 return column_uri_fragment
 
         elif isinstance(code_list, NewQbCodeList):
-            return f"{code_list.metadata.uri_safe_identifier}.csv#concept/{code_list.metadata.uri_safe_identifier}/{column_uri_fragment}"
+            return SkosCodeListNewUriHelper(code_list).get_concept_uri(
+                column_uri_fragment
+            )
         elif isinstance(code_list, NewQbCodeListInCsvW):
             return re.sub(
                 r"\{.?notation\}", column_uri_fragment, code_list.concept_template_uri
@@ -928,7 +924,7 @@ class QbWriter(WriterBase):
         if isinstance(unit, ExistingQbUnit):
             return unit.unit_uri
         elif isinstance(unit, NewQbUnit):
-            return self._doc_rel_uri(f"unit/{unit.uri_safe_identifier}")
+            return self._new_uri_helper.get_unit_uri(unit.uri_safe_identifier)
         else:
             raise Exception(f"Unmatched unit type {type(unit)}")
 
@@ -936,7 +932,7 @@ class QbWriter(WriterBase):
         if isinstance(measure, ExistingQbMeasure):
             return measure.measure_uri
         elif isinstance(measure, NewQbMeasure):
-            return self._doc_rel_uri(f"measure/{measure.uri_safe_identifier}")
+            return self._new_uri_helper.get_measure_uri(measure.uri_safe_identifier)
         else:
             raise Exception(f"Unmatched measure type {type(measure)}")
 
@@ -945,20 +941,23 @@ class QbWriter(WriterBase):
         #       We may want to alter this in the future so that the ordering is from
         #       least entropic dimension -> most entropic.
         #       E.g. http://base-uri/observations/male/1996/all-males-1996
-        about_url = self._doc_rel_uri("obs")
-        multi_measure_col = ""
+        dimension_columns_templates: List[str] = []
+        multi_measure_col_template: Optional[str] = None
+
         for c in self.cube.columns:
             if isinstance(c, QbColumn):
                 if isinstance(c.structural_definition, QbDimension):
-                    about_url = (
-                        about_url
-                        + f"/{{+{csvw_column_name_safe(c.uri_safe_identifier)}}}"
+                    dimension_columns_templates.append(
+                        f"{{+{csvw_column_name_safe(c.uri_safe_identifier)}}}"
                     )
                 elif isinstance(c.structural_definition, QbMultiMeasureDimension):
-                    multi_measure_col = csvw_column_name_safe(c.uri_safe_identifier)
-        if len(multi_measure_col) != 0:
-            about_url = about_url + f"/{{+{multi_measure_col}}}"
-        return about_url
+                    multi_measure_col_template = (
+                        f"{{+{csvw_column_name_safe(c.uri_safe_identifier)}}}"
+                    )
+
+        return self._new_uri_helper.get_observation_uri(
+            dimension_columns_templates, multi_measure_col_template
+        )
 
     def _get_primary_key_columns(self) -> List[str]:
         dimension_columns: Iterable[QbColumn] = itertools.chain(

@@ -3,7 +3,7 @@ Test adding Arbitrary RDF relations to a model.
 """
 
 from dataclasses import dataclass, field
-from typing import Set
+from typing import Set, List
 
 import pytest
 from rdflib import RDFS, FOAF
@@ -21,7 +21,10 @@ from csvcubed.models.cube.qb.components.arbitraryrdf import (
 
 @dataclass
 class SomeQbComponent(ArbitraryRdf):
-    arbitrary_rdf: Set[TripleFragmentBase] = field(default_factory=set)
+    arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list)
+
+    def _get_arbitrary_rdf(self) -> List[TripleFragmentBase]:
+        return self.arbitrary_rdf
 
     def get_default_node_serialisation_hint(self) -> RdfSerialisationHint:
         return RdfSerialisationHint.Property
@@ -45,14 +48,14 @@ def test_triple_fragment_serialised():
     Test that triple fragments are correctly mapped to resources.
     """
     a = SomeQbComponent(
-        arbitrary_rdf={
+        arbitrary_rdf=[
             TripleFragment("rdfs:label", "Some Default Property Label"),
             TripleFragment(
                 "rdfs:label",
                 "Some Component Label",
                 RdfSerialisationHint.Component,
             ),
-        }
+        ]
     )
 
     a_property = AProperty("http://some-resource-property")
@@ -80,11 +83,11 @@ def test_inverse_triple_fragment_serialised():
     Test that *inverse* triple fragments are correctly mapped to resources.
     """
     a = SomeQbComponent(
-        arbitrary_rdf={
+        arbitrary_rdf=[
             InverseTripleFragment(
                 FOAF.primaryTopic, "http://resource-with-primary-contents"
             ),
-        }
+        ]
     )
 
     a_property = AProperty("http://some-resource")
@@ -124,9 +127,9 @@ def test_hint_not_mapped_exception():
     Test that we get a suitable error where a hint is permitted but hasn't been mapped to a `NewResource`
     """
     a = SomeQbComponent(
-        arbitrary_rdf={
+        arbitrary_rdf=[
             TripleFragment("rdfs:label", "Some Label", RdfSerialisationHint.Component),
-        }
+        ]
     )
 
     a_property = AProperty("http://some-resource")
@@ -144,12 +147,12 @@ def test_rdflib_identifier_supported():
     they get a suitable exception.
     """
     a = SomeQbComponent(
-        arbitrary_rdf={
+        arbitrary_rdf=[
             TripleFragment(RDFS.label, Literal("Rhywbeth neis iawn", "cy")),
             InverseTripleFragment(
                 RDFS.subPropertyOf, URIRef("http://some-child-resource")
             ),
-        }
+        ]
     )
 
     a_property = AProperty("http://some-resource")

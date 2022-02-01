@@ -107,6 +107,9 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
     concepts: List[TNewQbConcept]
     arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
 
+    def _get_arbitrary_rdf(self) -> List[TripleFragmentBase]:
+        return self.arbitrary_rdf
+
     @staticmethod
     def from_data(metadata: CatalogMetadata, data: PandasDataTypes) -> "NewQbCodeList":
         columnar_data = pandas_input_to_columnar_str(data)
@@ -122,19 +125,21 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
     def get_default_node_serialisation_hint(self) -> RdfSerialisationHint:
         return RdfSerialisationHint.ConceptScheme
 
-    def validate_data(self, data: PandasDataTypes) -> list[Optional[ValidationError]]:
+    def validate_data(
+        self, data: PandasDataTypes, column_csv_title: str
+    ) -> list[ValidationError]:
         """
         Validate the data held in the codelists, assuming case insensitivity
         """
 
-        errors = list()
+        if isinstance(data, DataFrame):
+            data = data.squeeze()
+        elif not isinstance(data, Series):
+            raise TypeError(
+                f"Unexpected type: received {type(data)} expected pd.Series or pd.DataFrame"
+            )
 
-        if isinstance(data, Series):
-            errors += ensure_no_uri_safe_collision(data=data, series_name=None)
-        elif isinstance(data, DataFrame):
-            errors += ensure_no_uri_safe_collision(data.squeeze(), series_name=None)
-
-        return errors
+        return ensure_no_uri_safe_collision(data, column_csv_title)
 
 
 @dataclass

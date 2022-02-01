@@ -27,5 +27,6 @@ exclude = [
   ".venv",
   "**/tests",
   "**/build",
+  "**/.tox",
 ]
 pythonVersion = "3.9"

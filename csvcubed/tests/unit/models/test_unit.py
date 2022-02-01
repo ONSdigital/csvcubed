@@ -21,7 +21,7 @@ def test_known_new_units_defined():
 
     unit_dimension = unit_column.structural_definition
 
-    errors = unit_dimension.validate_data(data["Unit"], "unit", "{+unit}")
+    errors = unit_dimension.validate_data(data["Unit"], "unit", "{+unit}", "Unit")
     assert_num_validation_errors(errors, 0)
 
 
@@ -35,7 +35,7 @@ def test_unknown_new_units_error():
 
     unit_dimension = unit_column.structural_definition
 
-    errors = unit_dimension.validate_data(data["Unit"], "unit", "{+unit}")
+    errors = unit_dimension.validate_data(data["Unit"], "unit", "{+unit}", "Unit")
     assert_num_validation_errors(errors, 1)
 
     error = errors[0]
@@ -60,7 +60,7 @@ def test_known_existing_units_defined():
     unit_dimension = unit_column.structural_definition
 
     errors = unit_dimension.validate_data(
-        data["Unit"], "unit", "http://example.org/units/{+unit}"
+        data["Unit"], "unit", "http://example.org/units/{+unit}", "Unit"
     )
     assert_num_validation_errors(errors, 0)
 
@@ -81,7 +81,7 @@ def test_unknown_existing_units_error():
     multi_units_component = unit_column.structural_definition
 
     errors = multi_units_component.validate_data(
-        data["Unit"], "unit", "http://example.org/units/{+unit}"
+        data["Unit"], "unit", "http://example.org/units/{+unit}", "Unit"
     )
     assert_num_validation_errors(errors, 1)
 

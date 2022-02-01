@@ -35,6 +35,7 @@ class QbColumnStructuralDefinition(QbStructuralDefinition, ABC):
         data: pd.Series,
         column_csvw_name: str,
         csv_column_uri_template: Optional[str],
+        column_csv_title: str,
     ) -> List[ValidationError]:
         """Validate a columns of data against this component's definition."""
         pass
