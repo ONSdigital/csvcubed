@@ -7,13 +7,6 @@
   "additionalProperties": false,
   "required": [
     "$schema",
-    "title",
-    "description",
-    "creator",
-    "publisher",
-    "theme",
-    "spatial_bound",
-    "temporal_bound",
     "columns"
   ],
   "properties": {
@@ -30,7 +23,7 @@
       "type": "string"
     },
     "description": {
-      "description": "A description of the cube, may include markdown, etc",
+      "description": "A description of the cube",
       "type": "string"
     },
     "publisher": {
@@ -63,11 +56,21 @@
       "additionalProperties": {
         "description": "A column name to component mapping",
         "oneOf": [
-          {"$ref": "#/$defs/v1.0/columns/dimension"},
-          {"$ref": "#/$defs/v1.0/columns/attribute"},
-          {"$ref": "#/$defs/v1.0/columns/measures"},
-          {"$ref": "#/$defs/v1.0/columns/observation/single"},
-          {"$ref": "#/$defs/v1.0/columns/units"}
+          {
+            "$ref": "#/$defs/v1.0/columns/dimension"
+          },
+          {
+            "$ref": "#/$defs/v1.0/columns/attribute"
+          },
+          {
+            "$ref": "#/$defs/v1.0/columns/measure"
+          },
+          {
+            "$ref": "#/$defs/v1.0/columns/observation/single"
+          },
+          {
+            "$ref": "#/$defs/v1.0/columns/units"
+          }
         ]
       }
     }
@@ -76,30 +79,37 @@
     "v1.0": {
       "columns": {
         "attribute": {
-          "description": "A New Attribute column",
-          "$ref": "#/$defs/v1.0/columnTypes/attribute"
+          "description": "An attribute column, boolean or attribute dictionary",
+          "oneOf": [
+            {
+              "$ref": "#/$defs/v1.0/columnTypes/attribute/Attribute"
+            },
+            {
+              "$ref": "#/$defs/v1.0/columnTypes/attribute/boolAttribute"
+            }
+          ]
         },
-
         "dimension": {
           "description": "A New Dimension column",
           "$ref": "#/$defs/v1.0/columnTypes/dimension"
         },
-
-        "measures": {
+        "measure": {
           "description": "A measures column, boolean or measure dictionary",
           "oneOf": [
-            {"$ref": "#/$defs/v1.0/columnTypes/measure/Measure"},
-            {"$ref": "#/$defs/v1.0/columnTypes/measure/boolMeasure"}
+            {
+              "$ref": "#/$defs/v1.0/columnTypes/measure/Measure"
+            },
+            {
+              "$ref": "#/$defs/v1.0/columnTypes/measure/boolMeasure"
+            }
           ]
         },
-
         "observation": {
           "single": {
             "description": "Single observation measure column combo",
             "$ref": "#/$defs/v1.0/columnTypes/observation"
           }
         },
-
         "units": {
           "description": "Single units column",
           "oneOf": [
@@ -112,61 +122,48 @@
           ]
         }
       },
-      
       "columnTypes": {
         "attribute": {
-          "description": "An Attribute column",
-          "type": "object",
-          "required": [
-            "type"
-          ],
-          "additionalProperties": false,
-          "properties": {
-            "type": {
-              "description": "The type of column",
-              "type": "string",
-              "const": "attribute"
-            },
-            "description": {
-              "description": "A description of the attribute",
-              "type": "string"
-            },
-            "from_existing": {
-              "description": "The URI of an existing attribute column",
-              "anyOf": [
-                {
-                  "description": "The relative file path to the attribute's local definition",
-                  "type": "string",
-                  "format": "uri"
-                },
-                {
-                  "description": "The URI of the existing attribute",
-                  "$ref": "http://gss-cogs.github.io/family-schemas/external.json#/definitions/attr_ext_uri"
+          "boolAttribute": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "type",
+              "values"
+            ],
+            "properties": {
+              "type": {
+                "description": "An Attribute Column Type",
+                "type": "string",
+                "const": "attribute"
+              },
+              "values": {
+                "description": "A boolean 'true' or 'measure' object ",
+                "type": "boolean",
+                "default": true
+              }
+            }
+          },
+          "Attribute": {
+            "description": "Definition of units for the observation",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "type",
+              "values"
+            ],
+            "properties": {
+              "type": {
+                "description": "An Attribute Column Type",
+                "type": "string",
+                "const": "attribute"
+              },
+              "values": {
+                "description": "A single attribute value, optionally referencing existing values and definition URIs",
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/v1.0/valueTypes/attributeType"
                 }
-              ]
-            },
-            "label": {
-              "description": "The replacement label for the attribute",
-              "type": "string"
-            },
-            "definition_uri": {
-              "description": "The URI that defines the attribute source",
-              "$ref": "#/$defs/types/definition_uri"
-            },
-            "required": {
-              "description": "optional, if set, the attribute requires values for each observation",
-              "type": "boolean"
-            },
-            "data_type": {
-              "description": "The data-type for the values for this attribute",
-              "type": "string",
-              "$ref": "#/$defs/v1.0/dataTypes"
-            },
-            "values": {
-              "description": "A list of the values for this attribute column",
-              "type": "array",
-              "items": {
-                "$ref": "#/$defs/v1.0/valueTypes/attribute"
               }
             }
           }
@@ -194,7 +191,7 @@
             },
             "from_existing": {
               "description": "The URI of the codelist associated with the dimension *OR* the relative file path to the code-list's local definition. (qb:codeList)",
-              "anyOf": [
+              "oneOf": [
                 {
                   "description": "The relative file path to the code-list's local definition",
                   "type": "string",
@@ -222,12 +219,11 @@
         },
         "measure": {
           "boolMeasure": {
-            "description": "Definition of how the observation value is being measured",
             "type": "object",
             "additionalProperties": false,
             "required": [
               "type",
-              "value"
+              "values"
             ],
             "properties": {
               "type": {
@@ -235,8 +231,10 @@
                 "type": "string",
                 "const": "measure"
               },
-              "value": {
-                "type": "boolean"
+              "values": {
+                "description": "A boolean 'true' or 'measure' object ",
+                "type": "boolean",
+                "default": true
               }
             }
           },
@@ -246,7 +244,7 @@
             "additionalProperties": false,
             "required": [
               "type",
-              "value"
+              "values"
             ],
             "properties": {
               "type": {
@@ -254,25 +252,11 @@
                 "type": "string",
                 "const": "measure"
               },
-              "value": {
-                "type": "object",
-                "properties": {
-                  "label": {
-                    "description": "Replacement label for the Measure",
-                    "type": "string"
-                  },
-                  "description": {
-                    "description": "A description for the Measure",
-                    "type": "string"
-                  },
-                  "from_existing": {
-                    "description": "URI of an Existing Qb Dimension",
-                    "$ref": "http://gss-cogs.github.io/family-schemas/external.json#/definitions/meas_ext_uri"
-                  },
-                  "definition_uri": {
-                    "description": "Source URI for the definition of the Dimension",
-                    "$ref": "#/$defs/types/definition_uri"
-                  }
+              "values": {
+                "description": "A single attribute value, optionally referencing existing values and definition URIs",
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/v1.0/valueTypes/measureType"
                 }
               }
             }
@@ -300,76 +284,79 @@
               "$ref": "#/$defs/v1.0/columnTypes/units/Unit"
             }
           }
-        },
-        "units": {
-          "boolUnit": {
-            "description": "Definition of the unit",
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-              "type",
-              "value"
-            ],
-            "properties": {
-              "type": {
-                "description": "A Unit Column Type",
-                "type": "string",
-                "const": "units"
-              },
-              "value": {
-                "type": "boolean"
-              }
+        }
+      },
+      "units": {
+        "boolUnit": {
+          "description": "Definition of the unit",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "value"
+          ],
+          "properties": {
+            "type": {
+              "description": "A Unit Column Type",
+              "type": "string",
+              "const": "units"
+            },
+            "value": {
+              "type": "boolean"
             }
-          },
-          "Unit": {
-            "description": "Definition of how the observation value is being measured",
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-              "type",
-              "value"
-            ],
-            "properties": {
-              "type": {
-                "description": "A Unit Column Type",
-                "type": "string",
-                "const": "units"
+          }
+        },
+        "Unit": {
+          "description": "Definition of how the observation value is being measured",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "value"
+          ],
+          "properties": {
+            "type": {
+              "description": "A Unit Column Type",
+              "type": "string",
+              "const": "units"
+            },
+            "value": {
+              "label": {
+                "description": "Replacement label for the Unit",
+                "type": "string"
               },
-              "value": {
-                "label": {
-                  "description": "Replacement label for the Unit",
-                  "type": "string"
-                },
-                "from_existing": {
-                  "description": "URI of an Existing Qb Dimension",
-                  "$ref": "http://gss-cogs.github.io/family-schemas/external.json#/definitions/unit_ext_uri"
-                },
-                "scaling_factor": {
-                  "description": "The scaling factor",
-                  "type": "decimal"
-                },
-                "si_scaling_factor": {
-                  "description": "The SI scaling factor",
-                  "type": "decimal"
-                },
-                "quantity_kind": {
-                  "description": "Source URI for the definition of the Unit Kind",
-                  "type": "string",
-                  "format": "uri"
-                },
-                "definition_uri": {
-                  "description": "Source URI for the definition of the Unit",
-                  "$ref": "#/$defs/types/definition_uri"
-                }
+              "from_existing": {
+                "description": "URI of an Existing Qb Dimension",
+                "$ref": "http://gss-cogs.github.io/family-schemas/external.json#/definitions/unit_ext_uri"
+              },
+              "scaling_factor": {
+                "description": "The scaling factor",
+                "type": "decimal"
+              },
+              "si_scaling_factor": {
+                "description": "The SI scaling factor",
+                "type": "decimal"
+              },
+              "quantity_kind": {
+                "description": "Source URI for the definition of the Unit Kind",
+                "type": "string",
+                "format": "uri"
+              },
+              "definition_uri": {
+                "description": "Source URI for the definition of the Unit",
+                "$ref": "#/$defs/types/definition_uri"
               }
             }
           }
         }
       },
       "valueTypes": {
-        "attribute": {
-          "description": "A single attribute value, optionally referencing existing values and definition URIs",
+        "attributeType": {
           "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "label"
+          ],
           "properties": {
             "label": {
               "type": "string",
@@ -381,13 +368,37 @@
             },
             "from_existing": {
               "description": "The URI to an existing set of values",
-              "type": "string",
-              "format": "uri"
+              "$ref": "http://gss-cogs.github.io/family-schemas/external.json#/definitions/attr_ext_uri"
             },
             "definition_uri": {
               "description": "The URI link to an existing definition",
               "type": "string",
               "format": "uri"
+            }
+          }
+        },
+        "measureType": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "label"
+          ],
+          "properties": {
+            "label": {
+              "description": "Replacement label for the Measure",
+              "type": "string"
+            },
+            "description": {
+              "description": "A description for the Measure",
+              "type": "string"
+            },
+            "from_existing": {
+              "description": "URI of an Existing Qb Dimension",
+              "$ref": "http://gss-cogs.github.io/family-schemas/external.json#/definitions/meas_ext_uri"
+            },
+            "definition_uri": {
+              "description": "Source URI for the definition of the Dimension",
+              "$ref": "#/$defs/v1.0/types/definition_uri"
             }
           }
         }
@@ -423,16 +434,23 @@
       "themeTypes": {
         "description": "A theme or list of themes that describe the focus of the data",
         "additionalProperties": {
-          "theme": {
-            "type": "string"
-          },
-          "themeList": {
-            "description": "A list of themes",
-            "type": "array",
-            "items": {
-              "$ref": "#/$defs/v1.0/types/theme"
+          "oneOf": [
+            {
+              "theme": {
+                "description": "A single theme (string)",
+                "type": "string"
+              }
+            },
+            {
+              "themeList": {
+                "description": "A list of themes",
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/v1.0/types/theme"
+                }
+              }
             }
-          }
+          ]
         }
       },
       "types": {
