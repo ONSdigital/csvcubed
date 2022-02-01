@@ -19,15 +19,13 @@ graph LR
 	subgraph "Fastest Qube"
 		A(Start) ==> B[1. Define metadata];
 		B ==> C{"Column names"};
-		C == Convention ==> D{"Custom RDF"};
-		D == No ==> E;
+		C == Convention ==> D
 	end
 	subgraph "Custom Qube"
 		C -- Configuration --> 1["2. Define columns"] --> D;
-		D -- Yes --> 2["3. Define custom RDF"] --> E;
 	end
 	
-	E["4. Generate CSV-W"] ==> F(End);
+	D["3. Generate CSV-W"] ==> F(End);
 ```
 
 1. **Define metadata** (Optional)
