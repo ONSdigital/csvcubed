@@ -381,7 +381,8 @@
             },
             "from_existing": {
               "description": "The URI to an existing set of values",
-              "$ref": "http://gss-cogs.github.io/family-schemas/external.json#/definitions/attr_ext_uri"
+              "type": "string",
+              "format": "uri"
             },
             "definition_uri": {
               "description": "The URI link to an existing definition",
