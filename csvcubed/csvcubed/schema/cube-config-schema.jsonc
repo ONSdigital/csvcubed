@@ -63,8 +63,8 @@
       "additionalProperties": {
         "description": "A column name to component mapping",
         "oneOf": [
-          {"$ref": "#/$defs/v1.0/columns/dimension/new"},
-          {"$ref": "#/$defs/v1.0/columns/attribute/new"},
+          {"$ref": "#/$defs/v1.0/columns/dimension"},
+          {"$ref": "#/$defs/v1.0/columns/attribute"},
           {"$ref": "#/$defs/v1.0/columns/measures"},
           {"$ref": "#/$defs/v1.0/columns/observation/single"},
           {"$ref": "#/$defs/v1.0/columns/units"}
@@ -76,18 +76,15 @@
     "v1.0": {
       "columns": {
         "attribute": {
-          "new": {
-            "description": "A New Attribute column",
-            "$ref": "#/$defs/v1.0/columnTypes/attribute"
-          }
+          "description": "A New Attribute column",
+          "$ref": "#/$defs/v1.0/columnTypes/attribute"
         },
+
         "dimension": {
-          "new": {
-            "description": "A New Dimension column",
-            "$ref": "#/$defs/v1.0/columnTypes/dimension"
-          }
+          "description": "A New Dimension column",
+          "$ref": "#/$defs/v1.0/columnTypes/dimension"
         },
-        //dimension column
+
         "measures": {
           "description": "A measures column, boolean or measure dictionary",
           "oneOf": [
@@ -95,7 +92,6 @@
             {"$ref": "#/$defs/v1.0/columnTypes/measure/boolMeasure"}
           ]
         },
-        // measures column
 
         "observation": {
           "single": {
@@ -103,7 +99,6 @@
             "$ref": "#/$defs/v1.0/columnTypes/observation"
           }
         },
-        // observation column
 
         "units": {
           "description": "Single units column",
@@ -116,10 +111,8 @@
             }
           ]
         }
-        //units
       },
-      // columns
-
+      
       "columnTypes": {
         "attribute": {
           "description": "An Attribute column",
@@ -158,17 +151,7 @@
             },
             "definition_uri": {
               "description": "The URI that defines the attribute source",
-              "anyOf": [
-                {
-                  "description": "The relative file path to the code-list's local definition",
-                  "type": "string",
-                  "format": "uri"
-                },
-                {
-                  "description": "The URI of the codelist associated with the dimension.",
-                  "$ref": "http://gss-cogs.github.io/family-schemas/external.json#/definitions/attr_ext_uri"
-                }
-              ]
+              "$ref": "#/$defs/types/definition_uri"
             },
             "required": {
               "description": "optional, if set, the attribute requires values for each observation",
@@ -178,7 +161,6 @@
               "description": "The data-type for the values for this attribute",
               "type": "string",
               "$ref": "#/$defs/v1.0/dataTypes"
-              // not defined in example but seems logical
             },
             "values": {
               "description": "A list of the values for this attribute column",
@@ -190,7 +172,6 @@
           }
         },
         "dimension": {
-          // column type
           "description": "A Dimension Column",
           "type": "object",
           "required": [
@@ -227,17 +208,7 @@
             },
             "definition_uri": {
               "description": "Source URI for the definition of the Dimension",
-              "anyOf": [
-                {
-                  "description": "The relative file path to the code-list's local definition",
-                  "type": "string",
-                  "format": "uri"
-                },
-                {
-                  "description": "The URI of the codelist associated with the dimension.",
-                  "$ref": "http://gss-cogs.github.io/family-schemas/external.json#/definitions/dim_ext_uri"
-                }
-              ]
+              "$ref": "#/$defs/types/definition_uri"
             },
             "cell_uri_template": {
               "description": "Source URI for the code-list referred to by the dimension, e.g. 'http://example.org/code-list/{+some_column}'",
@@ -245,11 +216,10 @@
               "format": "uri"
             },
             "codelist": {
-                "$ref": "#/$defs/v1.0/types/code_list"
+              "$ref": "#/$defs/v1.0/types/code_list"
             }
           }
         },
-        // dimension column
         "measure": {
           "boolMeasure": {
             "description": "Definition of how the observation value is being measured",
@@ -301,15 +271,13 @@
                   },
                   "definition_uri": {
                     "description": "Source URI for the definition of the Dimension",
-                    "$ref": "http://gss-cogs.github.io/family-schemas/external.json#/definitions/meas_ext_uri"
+                    "$ref": "#/$defs/types/definition_uri"
                   }
                 }
               }
             }
           }
         },
-        // measure columnType
-
         "observation": {
           "description": "An observation column",
           "type": "object",
@@ -327,14 +295,12 @@
             "data_type": {
               "$ref": "#/$defs/v1.0/dataTypes"
             },
-
             "unit": {
               "description": "The units being measured in this observation",
               "$ref": "#/$defs/v1.0/columnTypes/units/Unit"
             }
           }
         },
-        // observation column Type
         "units": {
           "boolUnit": {
             "description": "Definition of the unit",
@@ -354,7 +320,7 @@
                 "type": "boolean"
               }
             }
-          },  // unit column Type
+          },
           "Unit": {
             "description": "Definition of how the observation value is being measured",
             "type": "object",
@@ -393,16 +359,13 @@
                 },
                 "definition_uri": {
                   "description": "Source URI for the definition of the Unit",
-                  "$ref": "http://gss-cogs.github.io/family-schemas/external.json#/definitions/unit_ext_uri"
+                  "$ref": "#/$defs/types/definition_uri"
                 }
               }
             }
           }
-          // units column Type
         }
       },
-      // columnTypes
-
       "valueTypes": {
         "attribute": {
           "description": "A single attribute value, optionally referencing existing values and definition URIs",
@@ -421,14 +384,13 @@
               "$ref": "http://gss-cogs.github.io/family-schemas/external.json#/definitions/attr_ext_uri"
             },
             "definition_uri": {
-              "description": "The URI to an existing value definition",
+              "description": "The URI link to an existing definition",
               "type": "string",
               "format": "uri"
             }
           }
         }
-
-      }, //valueTypes
+      },
       "dataTypes": {
         "type": "string",
         "default": "decimal",
@@ -481,18 +443,23 @@
           "description": "A string describing a theme",
           "type": "string"
         },
+        "definition_uri": {
+          "description": "A string describing a theme",
+          "type": "string",
+          "format": "uri"
+        },
         "dim_uri": {
-      "description": "The URI for this dimension.",
-      "$ref": "http://gss-cogs.github.io/family-schemas/external.json#/definitions/dim_ext_uri"
-    },
+          "description": "The URI for this dimension.",
+          "$ref": "http://gss-cogs.github.io/family-schemas/external.json#/definitions/dim_ext_uri"
+        },
         "measure_uri": {
-      "description": "The URI of the measure.",
-      "$ref": "http://gss-cogs.github.io/family-schemas/external.json#/definitions/meas_ext_uri"
-    },
+          "description": "The URI of the measure.",
+          "$ref": "http://gss-cogs.github.io/family-schemas/external.json#/definitions/meas_ext_uri"
+        },
         "unit_uri": {
-      "description": "The URI of the measurement units for this measure.",
-      "$ref": "http://gss-cogs.github.io/family-schemas/external.json#/definitions/unit_ext_uri"
-    },
+          "description": "The URI of the measurement units for this measure.",
+          "$ref": "http://gss-cogs.github.io/family-schemas/external.json#/definitions/unit_ext_uri"
+        },
         "attr_uri": {
           "description": "The URI for this attribute.",
           "$ref": "http://gss-cogs.github.io/family-schemas/external.json#/definitions/attr_ext_uri"
