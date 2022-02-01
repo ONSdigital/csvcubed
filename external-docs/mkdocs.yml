@@ -37,8 +37,8 @@ nav:
         - CSV column URI template missing: guides/errors/csv-column-uri-template-missing.md
         - CSV column literal with URI template: guides/errors/csv-column-literal-with-uri-template.md
         - Column validation error: guides/errors/column-validation.md
-    - Reference Metadata: 
-      - reference-metadata/index.md
+  - Reference Metadata:
+    - reference-metadata/index.md
   - Glossary:
       - glossary/index.md
   - API Documentation:
