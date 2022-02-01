@@ -327,6 +327,10 @@
             "unit": {
               "description": "The units being measured in this observation",
               "$ref": "#/$defs/v1.0/valueTypes/unitType"
+            },
+            "measure": {
+              "description": "The measure used for this observation",
+              "$ref": "#/$defs/v1.0/valueTypes/measureType"
             }
           }
         }
