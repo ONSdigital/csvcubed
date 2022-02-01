@@ -2,7 +2,7 @@
 
 This file serves as an introduction to how the `Qb` components in csvcubed should be used. It is a rough description of the purpose of each component as well as where it should be used.
 
-Note that it is generally supposed that the `Qb` cube classes are (and should always be) the back-end way csvcubed represents and validates data cubes before they are serialised to CSV-Ws. Hence, all classes are designed and structured to be clearly named, specific in their purpose and readily composable; they are generally **unsuitable for direct use**. These classes are designed to be used by a **specialised user interface which is targetted to the needs and capabilities of a specific type of user**, e.g. a declarative JSON document for experts who need full control, or a wizard-style GUI for an interactive publication process.
+Note that it is generally supposed that the `Qb` cube classes are (and should always be) the back-end way csvcubed represents and validates data cubes before they are serialised to CSV-Ws. Hence, all classes are designed and structured to be clearly named, specific in their purpose and readily composable; they are generally **unsuitable for direct use**. These classes are designed to be used by a **specialised user interface which is targeted to the needs and capabilities of a specific type of user**, e.g. a declarative JSON document for experts who need full control, or a wizard-style GUI for an interactive publication process.
 
 ## The `Cube` Class
 
@@ -91,9 +91,9 @@ There are two types of structural definitions which we use in `csvcubed`: column
 
 **N.B. Only columnar structural definitions can be set on a `QbColumn` mapping.**
 
-### Columnar Structrual Definitions
+### Columnar Structural Definitions
 
-A rough structure of the available columnar structural definitions is shown below. The hierarchical/tree representation assists in selecting the which kind of column to use in the cube's column defintions.
+A rough structure of the available columnar structural definitions is shown below. The hierarchical/tree representation assists in selecting the which kind of column to use in the cube's column definitions.
 
 ```text
 QbColumnStructuralDefinition
@@ -101,7 +101,7 @@ QbColumnStructuralDefinition
 │   ├── ExistingQbAttribute                 - Reuse an attribute defined elsewhere.
 │   ├── NewQbAttribute                      - Define a new attribute property.
 │   └── QbAttributeLiteral                  - The attribute values should be represented by a literal value instead of a URI.
-│       ├── ExistingQbAttributeLiteral          - Reuse a literal attribute defined elsehwere.
+│       ├── ExistingQbAttributeLiteral          - Reuse a literal attribute defined elsewhere.
 │       └── NewQbAttributeLiteral               - Define a new literal attribute property.
 ├── QbDimension                         - The column values describe a dimension which partitions the statistical population.
 │   ├── ExistingQbDimension                 - Reuse a dimension defined elsewhere.
@@ -124,7 +124,7 @@ URIs represent resources which can have relationships to other resources or valu
 
 ### Secondary Structural Definitions
 
-Secondary structural definitions are parts of the data structure definition which cannot fully describe a column in the data-cube. They are *secondary to* the column's structural definition. You only need to use these secondary definitions where they are required by the column's structural definiton.
+Secondary structural definitions are parts of the data structure definition which cannot fully describe a column in the data-cube. They are *secondary to* the column's structural definition. You only need to use these secondary definitions where they are required by the column's structural definition.
 
 A rough structure of `SecondaryQbStructuralDefinition`s is shown below. It can be used to help you decide which secondary structural definitions you should use when describing your data-cube.
 
@@ -155,7 +155,7 @@ SecondaryQbStructuralDefinition
 
 ## The `from_data` Helpers
 
-There are a number of `from_data` helper methods on columnar structrual definition classes:
+There are a number of `from_data` helper methods on columnar structural definition classes:
 
 * `NewQbDimension.from_data`
 * `NewQbAttribute.from_data`
@@ -172,7 +172,7 @@ These methods accept data straight from a pandas DataFrame's column and are desi
 
 ## Validations
 
-Each of the classes discussed above extends from the [csvcubed.models.PydanticModel](https://github.com/GSS-Cogs/csvcubed/blob/main/csvcubed/csvcubed/models/pydanticmodel.py) class. This adds [pydantic](https://pydantic-docs.helpmanual.io/) validation to csvcubed's models which ensures that all attributes have the correct type as decribed by their [static type annotations](https://docs.python.org/3/library/typing.html). Many of the models define [custom pydantic validators](https://pydantic-docs.helpmanual.io/usage/validators/) to add checks which are more specific than checking the overall type, e.g. `_attribute_uri_validator` inside the `ExistingQbAttribute` class in [csvcubed.models.cube.qb.components.attribute](https://github.com/GSS-Cogs/csvcubed/blob/main/csvcubed/csvcubed/models/cube/qb/components/attribute.py).
+Each of the classes discussed above extends from the [csvcubed.models.PydanticModel](https://github.com/GSS-Cogs/csvcubed/blob/main/csvcubed/csvcubed/models/pydanticmodel.py) class. This adds [pydantic](https://pydantic-docs.helpmanual.io/) validation to csvcubed's models which ensures that all attributes have the correct type as described by their [static type annotations](https://docs.python.org/3/library/typing.html). Many of the models define [custom pydantic validators](https://pydantic-docs.helpmanual.io/usage/validators/) to add checks which are more specific than checking the overall type, e.g. `_attribute_uri_validator` inside the `ExistingQbAttribute` class in [csvcubed.models.cube.qb.components.attribute](https://github.com/GSS-Cogs/csvcubed/blob/main/csvcubed/csvcubed/models/cube/qb/components/attribute.py).
 
 Pydantic validation can be performed on individual models by calling `pydantic_validation` (declared on [PydanticModel](https://github.com/GSS-Cogs/csvcubed/blob/main/csvcubed/csvcubed/models/pydanticmodel.py)).
 

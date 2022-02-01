@@ -1,19 +1,21 @@
 site_name: csvcubed
 site_url: https://gss-cogs.github.io/csvcubed-docs/external
 nav:
-    - Home: 
+  - Home:
       - index.md
-    - Why: 
+  - Why:
       - why/index.md
-    - Quickstart: 
+  - Quickstart:
       - quick-start/index.md
       - Installation: quick-start/installation.md
       - Shaping your data: quick-start/shaping.md
-    - Guides: 
+      - Qube config: quick-start/qube-config.md
+  - Guides:
       - guides/index.md
       - Raise an issue: guides/raise-issue.md
       - Shape your data: guides/shape-data.md
       - Handling missing observed values: guides/missing-observed-values.md
+      - Qube config: guides/qube-config.md
       - Errors:
         - Missing column definition: guides/errors/missing-column-definition.md
         - Column not found in data: guides/errors/column-not-found-in-data.md
@@ -35,20 +37,20 @@ nav:
         - CSV column URI template missing: guides/errors/csv-column-uri-template-missing.md
         - CSV column literal with URI template: guides/errors/csv-column-literal-with-uri-template.md
         - Column validation error: guides/errors/column-validation.md
-    - Reference Metadata: 
-      - reference-metadata/index.md
-    - Glossary: 
+  - Reference Metadata:
+    - reference-metadata/index.md
+  - Glossary:
       - glossary/index.md
-    - API Documentation: 
+  - API Documentation:
       - api-documentation/index.md
 theme:
   name: material
-  palette: 
+  palette:
     - scheme: default
       toggle:
         icon: material/toggle-switch-off-outline
         name: Switch to dark mode
-    - scheme: slate 
+    - scheme: slate
       toggle:
         icon: material/toggle-switch
         name: Switch to light mode
@@ -60,3 +62,7 @@ theme:
     - navigation.indexes
     - navigation.top
     - toc.integrate
+plugins:
+  - markdownmermaid
+extra_javascript:
+  - https://unpkg.com/mermaid@8.4.5/dist/mermaid.min.js
