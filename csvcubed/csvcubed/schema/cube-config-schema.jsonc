@@ -114,10 +114,10 @@
           "description": "Single units column",
           "oneOf": [
             {
-              "$ref": "#/$defs/v1.0/columnTypes/units/Unit"
+              "$ref": "#/$defs/v1.0/columnTypes/unit/Unit"
             },
             {
-              "$ref": "#/$defs/v1.0/columnTypes/units/boolUnit"
+              "$ref": "#/$defs/v1.0/columnTypes/unit/boolUnit"
             }
           ]
         }
@@ -262,6 +262,51 @@
             }
           }
         },
+        "unit": {
+          "boolUnit": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "type",
+              "values"
+            ],
+            "properties": {
+              "type": {
+                "description": "A Unit Column Type",
+                "type": "string",
+                "const": "unit"
+              },
+              "values": {
+                "description": "A boolean 'true' or 'unit' object ",
+                "type": "boolean",
+                "const": true
+              }
+            }
+          },
+          "Unit": {
+            "description": "Definition the unit",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "type",
+              "values"
+            ],
+            "properties": {
+              "type": {
+                "description": "A Unit Column Type",
+                "type": "string",
+                "const": "unit"
+              },
+              "values": {
+                "description": "A Unit name, optionally referencing existing values and definition URIs",
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/v1.0/valueTypes/unitType"
+                }
+              }
+            }
+          }
+        },
         "observation": {
           "description": "An observation column",
           "type": "object",
@@ -281,7 +326,7 @@
             },
             "unit": {
               "description": "The units being measured in this observation",
-              "$ref": "#/$defs/v1.0/columnTypes/units/Unit"
+              "$ref": "#/$defs/v1.0/valueTypes/unitType"
             }
           }
         }
@@ -399,6 +444,44 @@
             "definition_uri": {
               "description": "Source URI for the definition of the Dimension",
               "$ref": "#/$defs/v1.0/types/definition_uri"
+            }
+          }
+        },
+        "unitType": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "label"
+          ],
+          "properties": {
+            "label": {
+              "description": "Replacement label for the Unit",
+              "type": "string"
+            },
+            "description": {
+              "description": "A description for the Unit",
+              "type": "string"
+            },
+            "from_existing": {
+              "description": "URI of an Existing Qb Dimension",
+              "$ref": "http://gss-cogs.github.io/family-schemas/external.json#/definitions/meas_ext_uri"
+            },
+            "definition_uri": {
+              "description": "Source URI for the definition of the Dimension",
+              "$ref": "#/$defs/v1.0/types/definition_uri"
+            },
+            "scaling_factor": {
+              "description": "Scaling factor of the observation to base unit",
+              "type": "decimal"
+            },
+            "si_scaling_factor": {
+              "description": "Scaling factor of the observation to SI base unit",
+              "type": "decimal"
+            },
+            "quantity_kind": {
+              "description": "The kind of unit being measured in this observation",
+              "type": "string",
+              "format": "uri"
             }
           }
         }
