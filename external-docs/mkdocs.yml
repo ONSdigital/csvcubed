@@ -9,13 +9,13 @@ nav:
       - quick-start/index.md
       - Installation: quick-start/installation.md
       - Shaping your data: quick-start/shaping.md
-      - Qube config: quick-stard/qube-config.md
+      - Qube config: quick-start/qube-config.md
   - Guides:
       - guides/index.md
       - Raise an issue: guides/raise-issue.md
       - Shape your data: guides/shape-data.md
       - Handling missing observed values: guides/missing-observed-values.md
-      - Qube config: quick-start/qube-config.md
+      - Qube config: guides/qube-config.md
       - Errors:
         - Missing column definition: guides/errors/missing-column-definition.md
         - Column not found in data: guides/errors/column-not-found-in-data.md
