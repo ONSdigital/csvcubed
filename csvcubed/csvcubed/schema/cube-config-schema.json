@@ -1,5 +1,5 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "http://gss-cogs.github.io/gss-cogs/csvcubed/csvcubed/schemas/cube-config-schema.jsonc",
   "title": "Schema for a qb-config cube",
   "description": "Schema to be used for creation & validation of a single csv-cubed-flavoured linked data cube in CSV-W format",
@@ -49,7 +49,7 @@
       "default": "https://tdg.docbook.org/tdg/publishers/5.1/dcterms.html#dcterms.temporal"
     },
     "theme": {
-      "$ref": "#/$defs/v1.0/themeTypes"
+      "$ref": "#/definitions/v1.0/themeTypes"
     },
     "columns": {
       "description": "The mapping from column names to data cube components",
@@ -57,25 +57,25 @@
         "description": "A column name to component mapping",
         "oneOf": [
           {
-            "$ref": "#/$defs/v1.0/columnTypes/Dimension"
+            "$ref": "#/definitions/v1.0/columnTypes/Dimension"
           },
           {
-            "$ref": "#/$defs/v1.0/columnTypes/Attribute"
+            "$ref": "#/definitions/v1.0/columnTypes/Attribute"
           },
           {
-            "$ref": "#/$defs/v1.0/columnTypes/Measure"
+            "$ref": "#/definitions/v1.0/columnTypes/Measure"
           },
           {
-            "$ref": "#/$defs/v1.0/columnTypes/Observation"
+            "$ref": "#/definitions/v1.0/columnTypes/Observation"
           },
           {
-            "$ref": "#/$defs/v1.0/columnTypes/Unit"
+            "$ref": "#/definitions/v1.0/columnTypes/Unit"
           }
         ]
       }
     }
   },
-  "$defs": {
+  "definitions": {
     "v1.0": {
       "columnTypes": {
         "Attribute": {
@@ -94,11 +94,11 @@
             },
             "values": {
               "oneOf": [
-                {"$ref": "#/$defs/v1.0/valueTypes/boolValueTrue"},
+                {"$ref": "#/definitions/v1.0/valueTypes/boolValueTrue"},
                 {
                   "type": "array",
                   "items": {
-                    "$ref": "#/$defs/v1.0/valueTypes/attributeType"
+                    "$ref": "#/definitions/v1.0/valueTypes/attributeType"
                   }
                 }
               ]
@@ -107,7 +107,7 @@
         },
         "Dimension": {
           "description": "A Dimension column",
-          "$ref": "#/$defs/v1.0/valueTypes/dimensionType"
+          "$ref": "#/definitions/v1.0/valueTypes/dimensionType"
         },
         "Measure": {
           "description": "Definition of how the observation value is being measured",
@@ -125,11 +125,11 @@
             },
             "values": {
               "oneOf": [
-                {"$ref": "#/$defs/v1.0/valueTypes/boolValueTrue"},
+                {"$ref": "#/definitions/v1.0/valueTypes/boolValueTrue"},
                 {
                   "type": "array",
                   "items": {
-                    "$ref": "#/$defs/v1.0/valueTypes/measureType"
+                    "$ref": "#/definitions/v1.0/valueTypes/measureType"
                   }
                 }
               ]
@@ -151,11 +151,11 @@
             },
             "values": {
               "oneOf": [
-                {"$ref": "#/$defs/v1.0/valueTypes/boolValueTrue"},
+                {"$ref": "#/definitions/v1.0/valueTypes/boolValueTrue"},
                 {
                   "type": "array",
                   "items": {
-                    "$ref": "#/$defs/v1.0/valueTypes/unitType"
+                    "$ref": "#/definitions/v1.0/valueTypes/unitType"
                   }
                 }
               ]
@@ -165,7 +165,7 @@
         },
         "Observation": {
           "description": "An observation",
-          "$ref": "#/$defs/v1.0/valueTypes/observationType"
+          "$ref": "#/definitions/v1.0/valueTypes/observationType"
         }
       },
       "units": {
@@ -253,7 +253,7 @@
             },
             "definition_uri": {
               "description": "Source URI for the definition of the Dimension",
-              "$ref": "#/$defs/types/definition_uri"
+              "$ref": "#/definitions/v1.0/types/definition_uri"
             },
             "cell_uri_template": {
               "description": "Source URI for the code-list referred to by the dimension, e.g. 'http://example.org/code-list/{+some_column}'",
@@ -261,7 +261,7 @@
               "format": "uri"
             },
             "codelist": {
-              "$ref": "#/$defs/v1.0/types/code_list"
+              "$ref": "#/definitions/v1.0/types/code_list"
             }
           }
         },
@@ -280,15 +280,15 @@
               "const": "observation"
             },
             "data_type": {
-              "$ref": "#/$defs/v1.0/dataTypes"
+              "$ref": "#/definitions/v1.0/dataTypes"
             },
             "unit": {
               "description": "The units being measured in this observation",
-              "$ref": "#/$defs/v1.0/valueTypes/unitType"
+              "$ref": "#/definitions/v1.0/valueTypes/unitType"
             },
             "measure": {
               "description": "The measure used for this observation",
-              "$ref": "#/$defs/v1.0/valueTypes/measureType"
+              "$ref": "#/definitions/v1.0/valueTypes/measureType"
             }
           }
         },
@@ -313,7 +313,7 @@
             },
             "definition_uri": {
               "description": "Source URI for the definition of the Dimension",
-              "$ref": "#/$defs/v1.0/types/definition_uri"
+              "$ref": "#/definitions/v1.0/types/definition_uri"
             }
           }
         },
@@ -338,7 +338,7 @@
             },
             "definition_uri": {
               "description": "Source URI for the definition of the Dimension",
-              "$ref": "#/$defs/v1.0/types/definition_uri"
+              "$ref": "#/definitions/v1.0/types/definition_uri"
             },
             "scaling_factor": {
               "description": "Scaling factor of the observation to base unit",
@@ -403,7 +403,7 @@
                 "description": "A list of themes",
                 "type": "array",
                 "items": {
-                  "$ref": "#/$defs/v1.0/types/theme"
+                  "$ref": "#/definitions/v1.0/types/theme"
                 }
               }
             }
