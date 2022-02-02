@@ -1,16 +1,18 @@
 {
-  "$schema": "http://gss-cogs.github.io/gss-cogs/csvcubed/csvcubed/schemas/cube-config-schema.json",
-  "$id": "http://gss-cogs.github.io/gss-cogs/csvcubed/csvcubed/schemas/cube-config-schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://gss-cogs.github.io/gss-cogs/csvcubed/csvcubed/schemas/cube-config-schema.jsonc",
   "title": "Schema for a qb-config cube",
   "description": "Schema to be used for creation & validation of a single csv-cubed-flavoured linked data cube in CSV-W format",
   "type": "object",
+  "additionalProperties": false,
   "required": [
-    "$schema"
+    "$schema",
+    "columns"
   ],
   "properties": {
     "$schema": {
       "type": "string",
-      "const": "http://gss-cogs.github.io/gss-cogs/csvcubed/csvcubed/schemas/cube-config-schema.json"
+      "const": "./cube-config-schema2.jsonc"
     },
     "$id": {
       "description": "A unique id for the cube",
@@ -22,10 +24,6 @@
     },
     "description": {
       "description": "A description of the cube",
-      "type": "string"
-    },
-    "summary": {
-      "description": "A summary of the cube",
       "type": "string"
     },
     "publisher": {
@@ -53,29 +51,11 @@
     "theme": {
       "$ref": "#/definitions/v1.0/themeTypes"
     },
-    "keyword": {
-      "$ref": "#/definitions/v1.0/keywordTypes"
-    },
-    "dataset_issued": {
-      "description": "UTC Date time that the cube's dataset was initially published in ISO8601 format",
-      "type": "string",
-      "format": "date-time"
-    },
-    "dataset_modified": {
-      "description": "UTC Date time that the cube's dataset was last modified published in ISO8601 format",
-      "type": "string",
-      "format": "date-time"
-    },
-    "license": {
-      "description": "URI that the licence for this data cube",
-      "type": "string",
-      "format": "uri"
-    },
     "columns": {
       "description": "The mapping from column names to data cube components",
       "additionalProperties": {
         "description": "A column name to component mapping",
-        "anyOf": [
+        "oneOf": [
           {
             "$ref": "#/definitions/v1.0/columnTypes/Dimension"
           },
@@ -103,26 +83,14 @@
           "type": "object",
           "additionalProperties": false,
           "required": [
-            "type"
+            "type",
+            "values"
           ],
           "properties": {
             "type": {
               "description": "An Attribute Column Type",
               "type": "string",
-              "default": "attribute"
-            },
-            "description": {
-                "description": "Description of the attribute",
-                "type": "string"
-            },
-            "definition_uri": {
-              "description": "Uri for the attribute",
-              "type": "String",
-              "format": "uri"
-            },
-            "required": {
-              "description": "indicates if attribute values are required for each observation",
-              "type": "boolean"
+              "const": "attribute"
             },
             "values": {
               "oneOf": [
@@ -153,7 +121,7 @@
             "type": {
               "description": "A Measure Column Type",
               "type": "string",
-              "default": "measures"
+              "const": "measure"
             },
             "values": {
               "oneOf": [
@@ -179,7 +147,7 @@
             "type": {
               "description": "A Unit Column Type",
               "type": "string",
-              "default": "units"
+              "const": "unit"
             },
             "values": {
               "oneOf": [
@@ -213,7 +181,7 @@
             "type": {
               "description": "A Unit Column Type",
               "type": "string",
-              "default": "units"
+              "const": "units"
             },
             "value": {
               "type": "boolean"
@@ -252,13 +220,14 @@
           "description": "A Dimension Column",
           "type": "object",
           "required": [
+            "type"
           ],
           "additionalProperties": false,
           "properties": {
             "type": {
               "description": "Column type, defaults to 'dimension'.",
               "type": "string",
-              "default": "dimension"
+              "const": "dimension"
             },
             "label": {
               "description": "Replacement label for the Dimension",
@@ -291,7 +260,7 @@
               "type": "string",
               "format": "uri"
             },
-            "code_list": {
+            "codelist": {
               "$ref": "#/definitions/v1.0/types/code_list"
             }
           }
@@ -308,7 +277,7 @@
             "type": {
               "description": "Column type.",
               "type": "string",
-              "default": "observations"
+              "const": "observation"
             },
             "data_type": {
               "$ref": "#/definitions/v1.0/dataTypes"
@@ -424,7 +393,10 @@
         "additionalProperties": {
           "oneOf": [
             {
-               "$ref": "#/definitions/v1.0/types/theme"
+              "theme": {
+                "description": "A single theme (string)",
+                "type": "string"
+              }
             },
             {
               "themeList": {
@@ -432,25 +404,6 @@
                 "type": "array",
                 "items": {
                   "$ref": "#/definitions/v1.0/types/theme"
-                }
-              }
-            }
-          ]
-        }
-      },
-      "keywordTypes": {
-        "description": "A keyword or list of keywords relevant to the cube",
-        "additionalProperties": {
-          "oneOf": [
-            {
-              "$ref": "#/definitions/v1.0/types/keyword"
-            },
-            {
-              "themeList": {
-                "description": "A list of keywords",
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/v1.0/types/keyword"
                 }
               }
             }
