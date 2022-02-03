@@ -35,6 +35,6 @@ class ConsoleColourFilter(logging.Filter):
         # else:
         #     record.colour = Fore.LIGHTBLACK_EX  # type: ignore
         # todo: Sort colouring out in Issue #322.
-        record.colour = ""
+        record.colour = ""  # type: ignore
 
         return True
