@@ -26,7 +26,7 @@ def validate_uri(attr_name: str, is_optional: bool = False) -> classmethod:
     """
 
     def validate(value: Optional[str]) -> Optional[str]:
-        if not (is_optional and value is None):
+        if value is not None and not is_optional:
             # If statement deals with pydantic bug - https://github.com/samuelcolvin/pydantic/issues/3741
             ensure_looks_like_uri(value)
 
@@ -50,7 +50,7 @@ def validate_uris_in_list(attr_name: str, is_optional: bool = False) -> classmet
     """
 
     def validate(values: Optional[list[str]]) -> Optional[list[str]]:
-        if not (is_optional and values is None):
+        if values is not None and not is_optional:
             # If statement deals with pydantic bug - https://github.com/samuelcolvin/pydantic/issues/3741
             ensure_values_in_lists_looks_like_uris(values)
 

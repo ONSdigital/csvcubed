@@ -30,10 +30,10 @@ def start_logging(
 class ConsoleColourFilter(logging.Filter):
     def filter(self, record: logging.LogRecord) -> bool:
         if record.levelno >= logging.ERROR:
-            record.colour = Fore.RED + Style.BRIGHT
+            record.colour = Fore.RED + Style.BRIGHT  # type: ignore
         elif record.levelno >= logging.WARNING:
-            record.colour = Fore.YELLOW
+            record.colour = Fore.YELLOW  # type: ignore
         else:
-            record.colour = Fore.LIGHTBLACK_EX
+            record.colour = Fore.LIGHTBLACK_EX  # type: ignore
 
         return True

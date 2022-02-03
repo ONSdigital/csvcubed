@@ -29,7 +29,7 @@ def validate_file_exists(attr_name: str, is_optional: bool = False) -> classmeth
     """
 
     def ensure_exists(f: Optional[Path]) -> Optional[Path]:
-        if not (is_optional and f is None):
+        if f is not None and not is_optional:
             # If statement deals with pydantic bug - https://github.com/samuelcolvin/pydantic/issues/3741
             if not f.exists():
                 raise ValueError(f"Path '{f}' does not exist.")
