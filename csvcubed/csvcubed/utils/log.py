@@ -6,7 +6,6 @@ Utilities to help with logging.
 """
 import logging
 import sys
-from colorama import Fore, Style
 
 
 def start_logging(
@@ -20,7 +19,7 @@ def start_logging(
     console_handler.addFilter(ConsoleColourFilter())
     console_handler.setFormatter(
         logging.Formatter(
-            f"%(colour)s%(asctime)s - %(name)s - %(levelname)s - %(message)s {Style.RESET_ALL}"
+            f"%(colour)s%(asctime)s - %(name)s - %(levelname)s - %(message)s"
         )
     )
 
@@ -29,11 +28,13 @@ def start_logging(
 
 class ConsoleColourFilter(logging.Filter):
     def filter(self, record: logging.LogRecord) -> bool:
-        if record.levelno >= logging.ERROR:
-            record.colour = Fore.RED + Style.BRIGHT  # type: ignore
-        elif record.levelno >= logging.WARNING:
-            record.colour = Fore.YELLOW  # type: ignore
-        else:
-            record.colour = Fore.LIGHTBLACK_EX  # type: ignore
+        # if record.levelno >= logging.ERROR:
+        #     record.colour = Fore.RED + Style.BRIGHT  # type: ignore
+        # elif record.levelno >= logging.WARNING:
+        #     record.colour = Fore.YELLOW  # type: ignore
+        # else:
+        #     record.colour = Fore.LIGHTBLACK_EX  # type: ignore
+        # todo: Sort colouring out in Issue #322.
+        record.colour = ""
 
         return True
