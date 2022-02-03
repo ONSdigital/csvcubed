@@ -1,6 +1,7 @@
 import datetime
 
 import pytest
+import rdflib
 from rdflib import Graph
 from csvcubeddevtools.helpers.file import get_test_cases_dir
 
@@ -66,11 +67,53 @@ def test_delete_dcat_metadata():
     existing_dcat_dataset = pmdify._get_catalog_entry_from_dcat_dataset(csvw_graph)
     assert existing_dcat_dataset is not None
 
-    pmdify._delete_existing_dcat_dataset_metadata(csvw_graph)
+    pmdify._delete_existing_dcat_metadata(csvw_graph)
 
     with pytest.raises(Exception) as exception:
         pmdify._get_catalog_entry_from_dcat_dataset(csvw_graph)
     assert str(exception.value) == "Expected 1 dcat:Dataset record, found 0"
+
+
+def test_delete_dcat_metadata_removes_legacy_code_list_items():
+    csvw_graph = Graph()
+    csvw_graph.parse(
+        str(_TEST_CASES_DIR / "itis-industry.csv-metadata.json"),
+        format="json-ld",
+    )
+
+    assert _get_num_catalog_records(csvw_graph) == 1
+    assert _get_num_catalog_entries(csvw_graph) == 1
+
+    pmdify._delete_existing_dcat_metadata(csvw_graph)
+
+    assert _get_num_catalog_records(csvw_graph) == 0
+    assert _get_num_catalog_entries(csvw_graph) == 0
+
+
+def _get_num_catalog_entries(csvw_graph: rdflib.Graph) -> int:
+    results = csvw_graph.query("""
+      PREFIX dcat: <http://www.w3.org/ns/dcat#>
+
+      SELECT (COUNT(DISTINCT ?catalogEntry) as ?numCatalogEntries) 
+      WHERE {
+        ?catalogEntry a dcat:Dataset.
+      }
+    """)
+    assert len(results) == 1
+    return int(list(results)[0]["numCatalogEntries"])
+
+
+def _get_num_catalog_records(csvw_graph: rdflib.Graph) -> int:
+    results = csvw_graph.query("""
+      PREFIX dcat: <http://www.w3.org/ns/dcat#>
+
+      SELECT (COUNT(DISTINCT ?catalogRecord) as ?numCatalogRecords) 
+      WHERE {
+        ?catalogRecord a dcat:CatalogRecord.
+      }
+    """)
+    assert len(results) == 1
+    return int(list(results)[0]["numCatalogRecords"])
 
 
 def test_identification_of_csvcubed_output_type():

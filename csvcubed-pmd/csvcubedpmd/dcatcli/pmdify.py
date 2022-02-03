@@ -54,7 +54,7 @@ def pmdify_dcat(
         catalog_entry, data_graph_uri, catalog_metadata_graph_uri, csvw_type
     )
 
-    _delete_existing_dcat_dataset_metadata(csvw_rdf_graph)
+    _delete_existing_dcat_metadata(csvw_rdf_graph)
 
     _replace_uri_substring_in_graph(csvw_rdf_graph, str(_TEMP_PREFIX_URI), base_uri)
 
@@ -178,8 +178,8 @@ def _generate_pmd_catalog_record(
     catalog_entry.dataset_contents = ExistingResource(catalog_entry.uri)
 
     # N.B. assumes that all URIs are hash URIs, this may not always be the case.
-    catalog_entry_uri = re.sub("#.*?$", "#catalog-entry", str(catalog_entry.uri))
-    catalog_record_uri = re.sub("#.*?$", "#catalog-record", str(catalog_entry.uri))
+    catalog_entry_uri = f"{catalog_entry.uri}-catalog-entry"
+    catalog_record_uri = f"{catalog_entry.uri}-catalog-record"
     catalog_entry.uri = URIRef(catalog_entry_uri)
 
     # Catalog -(dcat:record)-> Catalog Record -(foaf:primaryTopic)-> Dataset -(pmdcat:datasetContents)->
@@ -237,6 +237,38 @@ def _write_catalog_metadata_to_quads(
     catalog_metadata_ds.serialize(
         str(catalog_metadata_quads_file_path), format="nquads"
     )
+
+
+def _delete_existing_dcat_metadata(csvw_graph: Graph) -> None:
+    _delete_existing_dcat_dataset_metadata(csvw_graph)
+    _delete_legacy_existing_dcat_catalog_record(csvw_graph)
+
+
+def _delete_legacy_existing_dcat_catalog_record(csvw_graph: Graph) -> None:
+    # Now to delete any catalogue entries already present. This can occur in legacy code-lists.
+    csvw_graph.update("""
+        PREFIX dcat: <http://www.w3.org/ns/dcat#>
+        PREFIX dcterms: <http://purl.org/dc/terms/>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+        DELETE {
+            ?catalogRecord a dcat:CatalogRecord;
+                ?p ?o.
+                
+            <http://gss-data.org.uk/catalog/vocabularies> dcat:record ?catalogRecord.
+        }
+        WHERE {
+            ?catalogRecord a dcat:CatalogRecord.
+            
+            OPTIONAL { 
+                <http://gss-data.org.uk/catalog/vocabularies> dcat:record ?catalogRecord.
+            }
+            
+            OPTIONAL {
+                ?catalogRecord ?p ?o. 
+            }
+        }
+    """)
 
 
 def _delete_existing_dcat_dataset_metadata(csvw_graph: Graph) -> None:
