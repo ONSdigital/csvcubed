@@ -1,21 +1,21 @@
 """
 CLI
 ---
-The *Command Line Interface* for :mod:`~gssutils.csvcubedintegration.infojson2csvqb`.
+The *Command Line Interface* for :mod:`~csvcubed.csvcubedcli.infojson2csvqb`.
 """
+from email.policy import default
 import click
 from pathlib import Path
 import colorama
 
-from .csvcubedbuild import build
+from .build import build
 
 
 @click.group(context_settings=dict(help_option_names=["-h", "--help"]))
 def entry_point():
     """
-    infojson2csvqb - a tool to generate qb-flavoured CSV-W cubes from COGS-style info.json files.
+    csvcubed - a tool to generate qb-flavoured CSV-W cubes from COGS-style info.json files.
     """
-    _suppress_rdf_lib_json_ld_import_warning()
     colorama.init(autoreset=True, wrap=True)
 
 
@@ -28,17 +28,6 @@ def entry_point():
     required=True,
     metavar="CONFIG_PATH",
 )
-# @click.option(
-#     "--catalog-metadata",
-#     "-m",
-#     help=(
-#         "Location of a JSON file containing the Catalog Metadata for this qube. "
-#         "If present, this overrides any configuration found in the info.json."
-#     ),
-#     type=click.Path(exists=True, path_type=Path, file_okay=True, dir_okay=False),
-#     required=False,
-#     metavar="CATALOG_METADATA_PATH",
-# )
 @click.option(
     "--out",
     "-o",
@@ -62,6 +51,11 @@ def entry_point():
     default=False,
     show_default=True,
 )
+@click.option('--logginglvl',
+    help= "select logging level",
+    type=click.Choice(['warn', 'err', 'crit', 'info', 'debug', 'none'], case_sensitive=False),
+    default= ['warn'],
+)
 @click.argument(
     "csv", type=click.Path(exists=True, path_type=Path), metavar="TIDY_CSV_PATH"
 )
@@ -72,6 +66,7 @@ def build_command(
     csv: Path,
     fail_when_validation_error: bool,
     validation_errors_to_file: bool,
+    logginglvl: str,
 ):
     """Build a qb-flavoured CSV-W from a tidy CSV."""
     validation_errors_file_out = (
@@ -84,20 +79,5 @@ def build_command(
         csv,
         fail_when_validation_error,
         validation_errors_file_out,
+        logginglvl,
     )
-
-
-def _suppress_rdf_lib_json_ld_import_warning():
-    """
-    Unfortunately, the current version of rdflib-jsonld library issued a warning that they seem to insist users see.
-    Here's some hacky code to make sure the user never sees it.
-    """
-    import io
-    import sys
-
-    initial_std_err = sys.stderr
-    try:
-        sys.stderr = io.StringIO()
-        import rdflib_jsonld
-    finally:
-        sys.stderr = initial_std_err

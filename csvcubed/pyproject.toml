@@ -36,3 +36,6 @@ exclude = [
   "**/.tox",
 ]
 pythonVersion = "3.9"
+
+[tool.poetry.scripts]
+csvcubed = 'csvcubed.cli.entrypoint:entry_point'

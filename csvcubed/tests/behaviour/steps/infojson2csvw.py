@@ -6,34 +6,34 @@ from typing import Tuple
 from csvcubeddevtools.behaviour.temporarydirectory import get_context_temp_dir_path
 
 
-@when('the infojson2csvqb CLI is run with "{arguments}"')
+@when('the csvcubed CLI is run with "{arguments}"')
 def step_impl(context, arguments: str):
-    command: str = f"infojson2csvqb {arguments.strip()}"
+    command: str = f"csvcubed {arguments.strip()}"
     (status_code, response) = run_command_in_temp_dir(context, command)
-    context.infojson2csvqb_cli_result = (status_code, response)
+    context.csvcubed_cli_result = (status_code, response)
 
 
-@then("the infojson2csvqb CLI should succeed")
+@then("the csvcubed CLI should succeed")
 def step_impl(context):
-    (status_code, response) = context.infojson2csvqb_cli_result
+    (status_code, response) = context.csvcubed_cli_result
     assert status_code == 0, (status_code, response)
     assert "Build Complete" in response, response
 
 
-@then("the infojson2csvqb CLI should fail with status code {status_code}")
+@then("the csvcubed CLI should fail with status code {status_code}")
 def step_impl(context, status_code: str):
-    (status_code, response) = context.infojson2csvqb_cli_result
+    (status_code, response) = context.csvcubed_cli_result
     assert status_code == int(status_code), status_code
 
 
-@then('the infojson2csvqb CLI should print "{printed_text}"')
+@then('the csvcubed CLI should print "{printed_text}"')
 def step_impl(context, printed_text: str):
-    (status_code, response) = context.infojson2csvqb_cli_result
+    (status_code, response) = context.csvcubed_cli_result
     assert printed_text in response, response
 
-@then('the infojson2csvqb CLI should not print "{printed_text}"')
+@then('the csvcubed CLI should not print "{printed_text}"')
 def step_impl(context, printed_text: str):
-    (status_code, response) = context.infojson2csvqb_cli_result
+    (status_code, response) = context.csvcubed_cli_result
     assert printed_text not in response, response
 
 
