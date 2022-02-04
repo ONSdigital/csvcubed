@@ -90,7 +90,9 @@ class NewQbUnit(QbUnit, UriIdentifiable, ArbitraryRdf):
         }
     )
 
-    _qudt_quantity_kind_uri_validation = validate_uri("qudt_quantity_kind_uri")
+    _qudt_quantity_kind_uri_validation = validate_uri(
+        "qudt_quantity_kind_uri", is_optional=True
+    )
 
     def _get_arbitrary_rdf(self) -> List[TripleFragmentBase]:
         return self.arbitrary_rdf

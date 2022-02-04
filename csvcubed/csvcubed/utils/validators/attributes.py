@@ -4,8 +4,12 @@ Attributes
 
 pydantic validators for class attributes.
 """
+import logging
 from typing import Any, Dict, List
 from pydantic import root_validator
+
+
+_logger = logging.getLogger(__name__)
 
 
 def enforce_optional_attribute_dependencies(
@@ -35,6 +39,12 @@ def enforce_optional_attribute_dependencies(
                         f"'{attribute_name}' has been specified, but the following is missing and must be "
                         f"provided: {missing_values_str}."
                     )
+
+                _logger.debug(
+                    "Attribute '%s' has dependent attributes %s satisfied.",
+                    attribute_name,
+                    dependent_attribute_names,
+                )
 
         return values
 
