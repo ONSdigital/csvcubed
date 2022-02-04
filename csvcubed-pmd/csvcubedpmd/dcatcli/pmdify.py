@@ -307,8 +307,18 @@ def _delete_existing_dcat_dataset_metadata(csvw_graph: Graph) -> None:
             ?s ?p ?dataset.               
         }
         WHERE {
-            ?dataset a dcat:Dataset, pmdcat:Dataset;
-                dcterms:issued ?issued;
+            {
+                SELECT DISTINCT ?dataset
+                WHERE {
+                    {
+                        ?dataset a dcat:Dataset.        
+                    } UNION {
+                        ?dataset a pmdcat:Dataset.
+                    }
+                }
+            }
+            
+            ?dataset dcterms:issued ?issued;
                 dcterms:modified ?modified.
 
             OPTIONAL { ?dataset rdfs:comment ?comment }.
@@ -358,6 +368,7 @@ def _get_catalog_entry_from_dcat_dataset(csvw_graph: Graph) -> pmdcat.Dataset:
         PREFIX dcat: <http://www.w3.org/ns/dcat#>
         PREFIX dcterms: <http://purl.org/dc/terms/>
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX pmdcat:  <http://publishmydata.com/pmdcat#>
     
         SELECT ?dataset ?title ?label ?issued ?modified ?comment ?description ?license ?creator ?publisher 
             (GROUP_CONCAT(?landingPage ; separator='|') as ?landingPages) 
@@ -365,8 +376,18 @@ def _get_catalog_entry_from_dcat_dataset(csvw_graph: Graph) -> pmdcat.Dataset:
             (GROUP_CONCAT(?keyword; separator='|') as ?keywords) 
             ?contactPoint ?identifier
         WHERE {
-            ?dataset a dcat:Dataset;
-                dcterms:title ?title;
+            {
+                SELECT DISTINCT ?dataset
+                WHERE {
+                    {
+                        ?dataset a dcat:Dataset.        
+                    } UNION {
+                        ?dataset a pmdcat:Dataset.
+                    }
+                }
+            }
+        
+            ?dataset dcterms:title ?title;
                 rdfs:label ?label;
                 dcterms:issued ?issued;
                 dcterms:modified ?modified.

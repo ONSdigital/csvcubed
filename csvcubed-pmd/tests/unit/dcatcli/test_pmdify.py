@@ -57,23 +57,6 @@ def test_extracting_metadata():
     assert existing_dcat_dataset.identifier == "single-measure-bottles-bulletin"
 
 
-def test_extracting_metadata_from_legacy_code_list():
-    """
-    Test we can successfully extract the metadata from a `dcat:Dataset` defined in a legacy code list CSV-W.
-    """
-    csvw_graph = Graph()
-    csvw_graph.parse(
-        str(_TEST_CASES_DIR / "itis-industry.csv-metadata.json"),
-        format="json-ld",
-    )
-
-    existing_dcat_dataset = pmdify._get_catalog_entry_from_dcat_dataset(csvw_graph)
-
-    assert existing_dcat_dataset is not None
-    assert existing_dcat_dataset.issued == datetime.datetime(2014, 4, 13, 10, 4, 13, 589262)
-    assert existing_dcat_dataset.modified == datetime.datetime(2021, 5, 20)
-
-
 def test_delete_dcat_metadata():
     csvw_graph = Graph()
     csvw_graph.parse(
@@ -87,17 +70,9 @@ def test_delete_dcat_metadata():
     pmdify._delete_existing_dcat_metadata(csvw_graph)
 
     with pytest.raises(Exception) as exception:
-        pmdify._get_catalog_entry_from_dcat_dataset(csvw_graph)
+        thing = pmdify._get_catalog_entry_from_dcat_dataset(csvw_graph)
+        print("hi")
     assert str(exception.value) == "Expected 1 dcat:Dataset record, found 0"
-
-
-def test_x():
-    pmdify.pmdify_dcat(
-        _TEST_CASES_DIR / "itis-industry.csv-metadata.json",
-        "http://base-uri",
-        "http://graph-uri",
-        "http://graph-uri-cat"
-    )
 
 
 def test_delete_dcat_metadata_removes_legacy_code_list_items():
