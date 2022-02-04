@@ -114,12 +114,15 @@ Feature: Testing the csvw command group in the CLI
     And csvlint validation of "itis-industry.csv-metadata.json" should succeed
     And csv2rdf on "itis-industry.csv-metadata.json" should succeed
     And the RDF should not contain any instances of "http://www.w3.org/ns/dcat#Dataset"
-    And the RDF should contain
-    """
-      <http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services#scheme/itis-industry> a <http://publishmydata.com/pmdcat#ConceptScheme>.
-    """
+    And the RDF should not contain any instances of "http://publishmydata.com/pmdcat#Dataset"
+    And the RDF should not contain any instances of "http://www.w3.org/ns/dcat#CatalogRecord"
+    And the RDF should contain 1 instance(s) of "http://www.w3.org/2004/02/skos/core#ConceptScheme"
+    And the RDF should not contain any URIs in the "http://publishmydata.com/pmdcat#" namespace
     Given the N-Quads contained in "itis-industry.csv-metadata.json.nq"
-    Then the RDF should contain
+    Then the RDF should contain 1 instance(s) of "http://publishmydata.com/pmdcat#ConceptScheme"
+    And the RDF should contain 1 instance(s) of "http://www.w3.org/ns/dcat#CatalogRecord"
+    And the RDF should contain 1 instance(s) of "http://www.w3.org/ns/dcat#Dataset"
+    And the RDF should contain
     """
       @prefix dcat: <http://www.w3.org/ns/dcat#>.
       @prefix foaf: <http://xmlns.com/foaf/0.1/>.
@@ -130,27 +133,4 @@ Feature: Testing the csvw command group in the CLI
       <http://gss-data.org.uk/catalog/vocabularies> dcat:record <http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services#scheme/itis-industry/dataset-catalog-record>.
 
       <http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services#scheme/itis-industry/dataset-catalog-entry> a dcat:Dataset.
-    """
-    # Ensuring there is only one catalog record
-    And the ask query should return false
-    """
-      PREFIX dcat: <http://www.w3.org/ns/dcat#>
-
-      ASK
-      WHERE {
-        ?catalogRecord a dcat:CatalogRecord.
-      }
-      HAVING (COUNT(DISTINCT ?catalogRecord) != 1)
-    """
-    # Ensuring there is only one catalog entry
-    And the ask query should return false
-    """
-      PREFIX dcat: <http://www.w3.org/ns/dcat#>
-      PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-
-      ASK
-      WHERE {
-          ?catalogEntry a dcat:Dataset.
-      }
-      HAVING (COUNT(DISTINCT ?catalogEntry) != 1)
     """
