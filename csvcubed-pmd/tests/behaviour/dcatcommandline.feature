@@ -6,7 +6,7 @@ Feature: Testing the csvw command group in the CLI
     Then the CLI should succeed
     And csvlint validation of "single-measure-bulletin.csv-metadata.json" should succeed
     And csv2rdf on "single-measure-bulletin.csv-metadata.json" should succeed
-    And the RDF should not contain any instances of "http://www.w3.org/ns/dcat#Dataset"
+    And the RDF should not contain any URIs in the "http://www.w3.org/ns/dcat#" namespace
     And the RDF should contain
     """
       <http://base-uri/single-measure-bulletin.csv#dataset> a <http://purl.org/linked-data/cube#DataSet>.
@@ -113,6 +113,7 @@ Feature: Testing the csvw command group in the CLI
     Then the CLI should succeed
     And csvlint validation of "itis-industry.csv-metadata.json" should succeed
     And csv2rdf on "itis-industry.csv-metadata.json" should succeed
+    And the RDF should not contain any reference to "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services#scheme/itis-industry/dataset"
     And the RDF should not contain any instances of "http://www.w3.org/ns/dcat#Dataset"
     And the RDF should not contain any instances of "http://publishmydata.com/pmdcat#Dataset"
     And the RDF should not contain any instances of "http://www.w3.org/ns/dcat#CatalogRecord"

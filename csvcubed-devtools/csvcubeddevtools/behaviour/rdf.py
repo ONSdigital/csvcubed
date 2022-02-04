@@ -97,3 +97,15 @@ def step_impl(context, uri_prefix: str):
     """
 
     assert_ask(context, query, False)
+
+@step('the RDF should not contain any reference to "{uri}"')
+def step_impl(context, uri: str):
+    query = f"""
+        ASK
+        WHERE {{
+            ?s ?p ?o.
+            FILTER(?s = <{uri}> || ?p = <{uri}> || ?o = <{uri}>).
+        }}
+    """
+
+    assert_ask(context, query, False)

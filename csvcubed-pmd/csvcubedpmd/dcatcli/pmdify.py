@@ -299,12 +299,15 @@ def _delete_existing_dcat_dataset_metadata(csvw_graph: Graph) -> None:
                 dcat:contactPoint ?contactPoint;
                 dcterms:identifier ?identifier;
                 pmdcat:graph ?graph;
-                pmdcat:datasetContents ?datasetContents.
+                pmdcat:datasetContents ?datasetContents;
+                ?p ?o.
                 
-            ?datasetContents a pmdcat:DatasetContents, pmdcat:DataCube, pmdcat:ConceptScheme.               
+            ?datasetContents a pmdcat:DatasetContents, pmdcat:DataCube, pmdcat:ConceptScheme.
+            
+            ?s ?p ?dataset.               
         }
         WHERE {
-            ?dataset a dcat:Dataset;
+            ?dataset a dcat:Dataset, pmdcat:Dataset;
                 dcterms:issued ?issued;
                 dcterms:modified ?modified.
 
@@ -325,6 +328,21 @@ def _delete_existing_dcat_dataset_metadata(csvw_graph: Graph) -> None:
                     ?datasetContents a pmdcat:DatasetContents, pmdcat:DataCube, pmdcat:ConceptScheme.
                 } 
             }          
+            OPTIONAL {
+                # Make sure to delete all related triples if the ?dataset is only an instance of 
+                # dcat:Dataset of pmdcat:Dataset (and nothing else).
+                
+                FILTER NOT EXISTS {
+                    ?dataset a ?type.
+                    FILTER(?type NOT IN (dcat:Dataset, pmdcat:Dataset)).
+                }
+                
+                {
+                    ?dataset ?p ?o.
+                } UNION {     
+                    ?s ?p ?dataset.
+                }
+            }
         }
         """
     )
