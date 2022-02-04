@@ -51,7 +51,7 @@ def entry_point():
     default=False,
     show_default=True,
 )
-@click.option('--logginglvl',
+@click.option("--logginglvl",
     help= "select logging level",
     type=click.Choice(['warn', 'err', 'crit', 'info', 'debug', 'none'], case_sensitive=False),
     default= ['warn'],
