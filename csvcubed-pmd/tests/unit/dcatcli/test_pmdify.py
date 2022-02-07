@@ -70,7 +70,7 @@ def test_delete_dcat_metadata():
     pmdify._delete_existing_dcat_metadata(csvw_graph)
 
     with pytest.raises(Exception) as exception:
-        pmdify._get_catalog_entry_from_dcat_dataset(csvw_graph)
+        thing = pmdify._get_catalog_entry_from_dcat_dataset(csvw_graph)
     assert str(exception.value) == "Expected 1 dcat:Dataset record, found 0"
 
 
