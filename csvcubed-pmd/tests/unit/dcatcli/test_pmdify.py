@@ -71,7 +71,6 @@ def test_delete_dcat_metadata():
 
     with pytest.raises(Exception) as exception:
         thing = pmdify._get_catalog_entry_from_dcat_dataset(csvw_graph)
-        print("hi")
     assert str(exception.value) == "Expected 1 dcat:Dataset record, found 0"
 
 
