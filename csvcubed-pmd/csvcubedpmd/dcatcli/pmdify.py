@@ -298,8 +298,6 @@ def _delete_existing_dcat_dataset_metadata(csvw_graph: Graph) -> None:
                 dcat:keyword ?keyword;
                 dcat:contactPoint ?contactPoint;
                 dcterms:identifier ?identifier;
-                pmdcat:graph ?graph;
-                pmdcat:datasetContents ?datasetContents;
                 ?p ?o.
                 
             ?datasetContents a pmdcat:DatasetContents, pmdcat:DataCube, pmdcat:ConceptScheme.
