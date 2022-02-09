@@ -4,9 +4,11 @@ CLI
 The *Command Line Interface* for :mod:`~csvcubed.csvcubedcli.infojson2csvqb`.
 """
 from email.policy import default
+import logging
 import click
 from pathlib import Path
 import colorama
+from csvcubed.utils.log import start_logging
 
 from .build import build
 
@@ -52,8 +54,13 @@ def entry_point():
     show_default=True,
 )
 @click.option("--logginglvl",
+<<<<<<< HEAD
     help= "select logging level",
     type=click.Choice(['warn', 'err', 'crit', 'info', 'debug', 'none'], case_sensitive=False),
+=======
+    help= "select out of logging level: 'warn', 'err' and 'crit'.",
+    type=click.Choice(['warn', 'err', 'crit'], case_sensitive=False),
+>>>>>>> 45f7798 (now on to creating tests)
     default= ['warn'],
 )
 @click.argument(
@@ -61,7 +68,7 @@ def entry_point():
 )
 def build_command(
     config: Path,
-    catalog_metadata: Path,
+    #catalog_metadata: Path,
     out: Path,
     csv: Path,
     fail_when_validation_error: bool,
@@ -74,10 +81,10 @@ def build_command(
     )
     build(
         config,
-        catalog_metadata,
+        #catalog_metadata,
         out,
         csv,
         fail_when_validation_error,
         validation_errors_file_out,
-        logginglvl,
     )
+    start_logging(logginglvl)
