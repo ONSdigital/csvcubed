@@ -54,13 +54,8 @@ def entry_point():
     show_default=True,
 )
 @click.option("--logginglvl",
-<<<<<<< HEAD
     help= "select logging level",
     type=click.Choice(['warn', 'err', 'crit', 'info', 'debug', 'none'], case_sensitive=False),
-=======
-    help= "select out of logging level: 'warn', 'err' and 'crit'.",
-    type=click.Choice(['warn', 'err', 'crit'], case_sensitive=False),
->>>>>>> 45f7798 (now on to creating tests)
     default= ['warn'],
 )
 @click.argument(
