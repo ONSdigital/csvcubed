@@ -10,7 +10,7 @@ from typing import Union
 
 
 def start_logging(
-    selected_logging_level: Union[str,None], root_logger_name: str = "csvcubed"
+    selected_logging_level: str, root_logger_name: str = "csvcubed"
 ) -> None:
     if selected_logging_level == 'err':
         logging_level: int = logging.ERROR
