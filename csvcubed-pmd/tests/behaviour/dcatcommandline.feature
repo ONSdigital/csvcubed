@@ -113,12 +113,13 @@ Feature: Testing the csvw command group in the CLI
     Then the CLI should succeed
     And csvlint validation of "itis-industry.csv-metadata.json" should succeed
     And csv2rdf on "itis-industry.csv-metadata.json" should succeed
-    And the RDF should not contain any reference to "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services#scheme/itis-industry/dataset"
+    # Disabled this test because this generates SPARQL failures https://github.com/GSS-Cogs/gdp-sparql-tests/blob/master/tests/pmd/pmd4/concept-schemes/SELECT_ConceptSchemeMustHaveCatalogEntry.sparql
+    # And the RDF should not contain any reference to "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services#scheme/itis-industry/dataset"
     And the RDF should not contain any instances of "http://www.w3.org/ns/dcat#Dataset"
     And the RDF should not contain any instances of "http://publishmydata.com/pmdcat#Dataset"
     And the RDF should not contain any instances of "http://www.w3.org/ns/dcat#CatalogRecord"
     And the RDF should contain 1 instance(s) of "http://www.w3.org/2004/02/skos/core#ConceptScheme"
-    And the RDF should not contain any URIs in the "http://publishmydata.com/pmdcat#" namespace
+    # And the RDF should not contain any URIs in the "http://publishmydata.com/pmdcat#" namespace
     Given the N-Quads contained in "itis-industry.csv-metadata.json.nq"
     Then the RDF should contain 1 instance(s) of "http://publishmydata.com/pmdcat#ConceptScheme"
     And the RDF should contain 1 instance(s) of "http://www.w3.org/ns/dcat#CatalogRecord"
