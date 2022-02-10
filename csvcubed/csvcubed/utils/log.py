@@ -5,7 +5,7 @@ Utilities to help with logging.
 """
 import logging
 import sys
-from appdirs import AppDirs
+from appdirs import *
 from typing import Union
 
 
@@ -19,7 +19,7 @@ def start_logging(
     else:
         logging_level: int = logging.WARNING
 
-    dirs = AppDirs("cli.log", "csvcubed")
+    dirs = AppDirs("csvcubedcli", "csvcubed")
     dirs.user_log_dir
 
     logger = logging.getLogger(root_logger_name)
@@ -34,12 +34,18 @@ def start_logging(
         )
     )
 
-    file_handler = logging.FileHandler('cli.log')
+    file_handler = logging.FileHandler('dirs.user_log_dir')
     file_handler.setLevel(logging_level)
-    file_handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
+    file_handler.setFormatter(
+        logging.Formatter(
+            f"%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+        )
+    )
 
     logger.addHandler(console_handler)
     logger.addHandler(file_handler)
+
+    logger.warning(dirs.user_log_dir)
 
 
 class ConsoleColourFilter(logging.Filter):
