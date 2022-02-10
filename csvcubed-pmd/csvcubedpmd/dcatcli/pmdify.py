@@ -282,7 +282,7 @@ def _delete_existing_dcat_dataset_metadata(csvw_graph: Graph) -> None:
         PREFIX dcterms: <http://purl.org/dc/terms/>
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX pmdcat: <http://publishmydata.com/pmdcat#>
-
+        PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
         DELETE {
             ?dataset a dcat:Dataset, pmdcat:Dataset;
                 a dcat:Resource;
@@ -298,9 +298,11 @@ def _delete_existing_dcat_dataset_metadata(csvw_graph: Graph) -> None:
                 dcat:keyword ?keyword;
                 dcat:contactPoint ?contactPoint;
                 dcterms:identifier ?identifier;
-                ?p ?o.
+                pmdcat:graph ?graph;
+                pmdcat:datasetContents ?datasetContents;
+                .
                 
-            ?datasetContents a pmdcat:DatasetContents, pmdcat:DataCube, pmdcat:ConceptScheme.
+            ?datasetContents a pmdcat:DatasetContents, pmdcat:DataCube.
             
             ?s ?p ?dataset.               
         }
@@ -316,25 +318,25 @@ def _delete_existing_dcat_dataset_metadata(csvw_graph: Graph) -> None:
                 }
             }
             
-            ?dataset dcterms:issued ?issued;
-                dcterms:modified ?modified.
+            ?dataset dcterms:issued ?issued ;
+                dcterms:modified ?modified .
 
-            OPTIONAL { ?dataset rdfs:comment ?comment }.
-            OPTIONAL { ?dataset dcterms:description ?description }.
-            OPTIONAL { ?dataset dcterms:license ?license }.
-            OPTIONAL { ?dataset dcterms:creator ?creator }.
-            OPTIONAL { ?dataset dcterms:publisher ?publisher }.
-            OPTIONAL { ?dataset dcat:landingPage ?landingPage }.
-            OPTIONAL { ?dataset dcat:theme ?theme }.
-            OPTIONAL { ?dataset dcat:keyword ?keyword }.
-            OPTIONAL { ?dataset dcat:contactPoint ?contactPoint }
-            OPTIONAL { ?dataset dcterms:identifier ?identifier }      
-            OPTIONAL { ?dataset pmdcat:graph ?graph }
+            OPTIONAL { ?dataset rdfs:comment ?comment } .
+            OPTIONAL { ?dataset dcterms:description ?description } .
+            OPTIONAL { ?dataset dcterms:license ?license } .
+            OPTIONAL { ?dataset dcterms:creator ?creator } .
+            OPTIONAL { ?dataset dcterms:publisher ?publisher } .
+            OPTIONAL { ?dataset dcat:landingPage ?landingPage } .
+            OPTIONAL { ?dataset dcat:theme ?theme } .
+            OPTIONAL { ?dataset dcat:keyword ?keyword } .
+            OPTIONAL { ?dataset dcat:contactPoint ?contactPoint } .
+            OPTIONAL { ?dataset dcterms:identifier ?identifier } .
+            OPTIONAL { ?dataset pmdcat:graph ?graph } .
             OPTIONAL { 
-                ?dataset pmdcat:datasetContents ?datasetContents.
-                OPTIONAL {
-                    ?datasetContents a pmdcat:DatasetContents, pmdcat:DataCube, pmdcat:ConceptScheme.
-                } 
+                ?dataset pmdcat:datasetContents ?datasetContents .
+                FILTER NOT EXISTS {
+                    ?datasetContents a skos:ConceptScheme .
+                }
             }          
             OPTIONAL {
                 # Make sure to delete all related triples if the ?dataset is only an instance of 
@@ -342,7 +344,7 @@ def _delete_existing_dcat_dataset_metadata(csvw_graph: Graph) -> None:
                 
                 FILTER NOT EXISTS {
                     ?dataset a ?type.
-                    FILTER(?type NOT IN (dcat:Dataset, pmdcat:Dataset)).
+                    FILTER(?type NOT IN (dcat:Dataset, pmdcat:Dataset, pmdcat:ConceptScheme)).
                 }
                 
                 {
