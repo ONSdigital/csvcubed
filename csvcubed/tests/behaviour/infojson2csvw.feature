@@ -40,19 +40,22 @@ Feature: Test the csvcubed Command Line Interface.
     And the file at "out/validation-error-output.csv" should exist
     And the file at "out/validation-error-output.csv-metadata.json" should exist
 
-  Scenario: The csvcubed build command should accept an optional catalog-metadata.json which overrides the info.json configuration
-    Given the existing test-case file "configloaders/data.csv"
-    And the existing test-case file "configloaders/info.json"
-    And the existing test-case file "configloaders/catalog-metadata.json"
-    When the csvcubed CLI is run with "build --config configloaders/info.json --catalog-metadata configloaders/catalog-metadata.json configloaders/data.csv"
-    Then the csvcubed CLI should succeed
-    And the file at "out/some-dataset.csv" should exist
-    And the file at "out/some-dataset.csv-metadata.json" should exist
-    But the file at "out/ons-international-trade-in-services-by-subnational-areas-of-the-uk.csv" should not exist
-
   Scenario: The csvcubed build command should succeed when 'families' within info.json contains 'Climate Change'
     Given the existing test-case file "configloaders/ClimateChangeFamilyError/info.json"
     And the existing test-case file "configloaders/ClimateChangeFamilyError/data.csv"
     When the csvcubed CLI is run with "build -c configloaders/ClimateChangeFamilyError/info.json configloaders/ClimateChangeFamilyError/data.csv"
     Then the csvcubed CLI should succeed
     And the csvcubed CLI should not print "http://gss-data.org.uk/def/gdp#Climate Change does not look like a valid URI, trying to serialize this will break."
+
+  Scenario: The csvcubed build command should output a log file
+    Given the existing test-case file "configloaders/data.csv"
+    And the existing test-case file "configloaders/info.json"
+    When the csvcubed CLI is run with "build --logginglvl=warn --config configloaders/info.json configloaders/data.csv"
+    Then the csvcubed CLI should fail with status code 1
+    And the file at "/Users/trentm/Library/Logs/cli.log" should exist
+    #And the log file "/home/trentm/.cache/SuperApp/log/cli.log" should exist
+    #And the file at "/home/trentm/.cache/SuperApp/log/cli.log" should exist
+    And the cli.log file in the "user_log_dir" directory should contain
+    """
+      
+    """

@@ -10,7 +10,7 @@ from typing import Union
 
 
 def start_logging(
-    selected_logging_level: str, root_logger_name: str = "csvcubed"
+    selected_logging_level: Union[str,None], root_logger_name: str = "csvcubed"
 ) -> None:
     if selected_logging_level == 'err':
         logging_level: int = logging.ERROR
@@ -20,6 +20,7 @@ def start_logging(
         logging_level: int = logging.WARNING
 
     dirs = AppDirs("cli.log", "csvcubed")
+    dirs.user_log_dir
 
     logger = logging.getLogger(root_logger_name)
     logger.setLevel(logging.WARNING)
@@ -39,8 +40,6 @@ def start_logging(
 
     logger.addHandler(console_handler)
     logger.addHandler(file_handler)
-    
-    dirs.user_log_dir
 
 
 class ConsoleColourFilter(logging.Filter):

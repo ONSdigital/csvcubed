@@ -48,7 +48,7 @@ def entry_point():
 @click.option(
     "--validation-errors-to-file",
     "validation_errors_to_file",
-    help="Save validation errors to an `validation-errors.json` file in the output directory.",
+    help="Save validation errors to a `validation-errors.json` file in the output directory.",
     flag_value=True,
     default=False,
     show_default=True,
@@ -63,23 +63,21 @@ def entry_point():
 )
 def build_command(
     config: Path,
-    #catalog_metadata: Path,
     out: Path,
     csv: Path,
-    fail_when_validation_error: bool,
-    validation_errors_to_file: bool,
     logginglvl: str,
+    fail_when_validation_error: bool=False,
+    validation_errors_to_file: bool=False,
 ):
     """Build a qb-flavoured CSV-W from a tidy CSV."""
     validation_errors_file_out = (
         out / "validation-errors.json" if validation_errors_to_file else None
     )
     build(
-        config,
-        #catalog_metadata,
-        out,
-        csv,
-        fail_when_validation_error,
-        validation_errors_file_out,
+        config=config,
+        output_directory=out,
+        csv_path=csv,
+        fail_when_validation_error_occurs=fail_when_validation_error,
+        validation_errors_file_out=validation_errors_file_out,
     )
     start_logging(logginglvl)
