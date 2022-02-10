@@ -1,18 +1,16 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "http://gss-cogs.github.io/gss-cogs/csvcubed/csvcubed/schemas/cube-config-schema.jsonc",
+  "$schema": "http://gss-cogs.github.io/gss-cogs/csvcubed/csvcubed/schemas/cube-config-schema.json",
+  "$id": "http://gss-cogs.github.io/gss-cogs/csvcubed/csvcubed/schemas/cube-config-schema.json",
   "title": "Schema for a qb-config cube",
   "description": "Schema to be used for creation & validation of a single csv-cubed-flavoured linked data cube in CSV-W format",
   "type": "object",
-  "additionalProperties": false,
   "required": [
-    "$schema",
-    "columns"
+    "$schema"
   ],
   "properties": {
     "$schema": {
       "type": "string",
-      "const": "./cube-config-schema2.jsonc"
+      "const": "http://gss-cogs.github.io/gss-cogs/csvcubed/csvcubed/schemas/cube-config-schema.json"
     },
     "$id": {
       "description": "A unique id for the cube",
@@ -24,6 +22,10 @@
     },
     "description": {
       "description": "A description of the cube",
+      "type": "string"
+    },
+    "summary": {
+      "description": "A summary of the cube",
       "type": "string"
     },
     "publisher": {
@@ -51,11 +53,29 @@
     "theme": {
       "$ref": "#/definitions/v1.0/themeTypes"
     },
+    "keyword": {
+      "$ref": "#/definitions/v1.0/keywordTypes"
+    },
+    "dataset_issued": {
+      "description": "UTC Date time that the cube's dataset was initially published in ISO8601 format",
+      "type": "string",
+      "format": "date-time"
+    },
+    "dataset_modified": {
+      "description": "UTC Date time that the cube's dataset was last modified published in ISO8601 format",
+      "type": "string",
+      "format": "date-time"
+    },
+    "license": {
+      "description": "URI that the licence for this data cube",
+      "type": "string",
+      "format": "uri"
+    },
     "columns": {
       "description": "The mapping from column names to data cube components",
       "additionalProperties": {
         "description": "A column name to component mapping",
-        "oneOf": [
+        "anyOf": [
           {
             "$ref": "#/definitions/v1.0/columnTypes/Dimension"
           },
@@ -90,7 +110,7 @@
             "type": {
               "description": "An Attribute Column Type",
               "type": "string",
-              "const": "attribute"
+              "default": "attribute"
             },
             "values": {
               "oneOf": [
@@ -121,7 +141,7 @@
             "type": {
               "description": "A Measure Column Type",
               "type": "string",
-              "const": "measure"
+              "default": "measure"
             },
             "values": {
               "oneOf": [
@@ -147,7 +167,7 @@
             "type": {
               "description": "A Unit Column Type",
               "type": "string",
-              "const": "unit"
+              "default": "unit"
             },
             "values": {
               "oneOf": [
@@ -181,7 +201,7 @@
             "type": {
               "description": "A Unit Column Type",
               "type": "string",
-              "const": "units"
+              "default": "units"
             },
             "value": {
               "type": "boolean"
@@ -220,14 +240,13 @@
           "description": "A Dimension Column",
           "type": "object",
           "required": [
-            "type"
           ],
           "additionalProperties": false,
           "properties": {
             "type": {
               "description": "Column type, defaults to 'dimension'.",
               "type": "string",
-              "const": "dimension"
+              "default": "dimension"
             },
             "label": {
               "description": "Replacement label for the Dimension",
@@ -277,7 +296,7 @@
             "type": {
               "description": "Column type.",
               "type": "string",
-              "const": "observation"
+              "default": "observation"
             },
             "data_type": {
               "$ref": "#/definitions/v1.0/dataTypes"
@@ -393,10 +412,7 @@
         "additionalProperties": {
           "oneOf": [
             {
-              "theme": {
-                "description": "A single theme (string)",
-                "type": "string"
-              }
+               "$ref": "#/definitions/v1.0/types/theme"
             },
             {
               "themeList": {
@@ -410,6 +426,25 @@
           ]
         }
       },
+      "keywordTypes": {
+        "description": "A keyword or list of keywords relevant to the cube",
+        "additionalProperties": {
+          "oneOf": [
+            {
+              "$ref": "#/definitions/v1.0/types/keyword"
+            },
+            {
+              "themeList": {
+                "description": "A list of keywords",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/v1.0/types/keyword"
+                }
+              }
+            }
+          ]
+        }
+      },
       "types": {
         "title": {
           "description": "A title for this dataset",
@@ -417,6 +452,10 @@
         },
         "theme": {
           "description": "A string describing a theme",
+          "type": "string"
+        },
+        "keyword": {
+          "description": "A string describing a keyword",
           "type": "string"
         },
         "definition_uri": {
