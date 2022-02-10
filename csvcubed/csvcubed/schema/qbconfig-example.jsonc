@@ -3,6 +3,7 @@
     "$schema": "./cube-config.schema.json",
     "title": "Some Qube",
     "description": "A string of any length or markdown, etc",
+    "summary": "A string of any length or markdown, etc",
     "publisher": "uri", // Link to existing publisher
     "creator": "uri", // Link to existing creator
     "theme": [
@@ -10,8 +11,15 @@
         "theme2",
         "etc."
     ], // List or string
+    "dataset_issued": "date-time",
+    "dataset_modified": "date-time",
+    "license": "uri", // Link to existing licence
     "spatial_bound": "a geography uri", // maps to dcterms.spatial
     "temporal_bound": "a temporal uri", // maps to dcterms.temporal
+    "keywords": [
+        "keyword1",
+        "keyword2"
+    ], //List or string
     "columns": { // In the same order as the csv, unspecified column types are assumed to be dimensions, case insensitive
         // # Dimensions
         // All columns are assumed to be dimensions unless otherwise stated
