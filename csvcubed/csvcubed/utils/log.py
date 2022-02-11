@@ -5,7 +5,7 @@ Utilities to help with logging.
 """
 import logging
 import sys
-from appdirs import *
+from appdirs import AppDirs
 from typing import Union
 from pathlib import Path
 
