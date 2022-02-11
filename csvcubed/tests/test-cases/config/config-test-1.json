@@ -1,0 +1,5 @@
+{
+    "$schema": "http://gss-cogs.github.io/gss-cogs/csvcubed/csvcubed/schemas/cube-config-schema.json",
+    "title": "Tests/test-cases/config/schema",
+    "columns": ""
+}

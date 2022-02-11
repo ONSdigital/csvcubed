@@ -4,11 +4,14 @@ URI
 
 Functions to help when working with URIs.
 """
+import json
+import logging
 import re
+import requests
+from json.decoder import JSONDecodeError
 from unidecode import unidecode
 from urllib.parse import urlparse
 import rdflib
-import logging
 
 
 _logger = logging.getLogger(__name__)
@@ -107,3 +110,34 @@ def ensure_values_in_lists_looks_like_uris(values: list[str]) -> None:
             raise ValueError(f"'{value}' does not look like a URI.")
 
     _logger.debug("Values %s all look like URIs.", values)
+
+
+def read_from_uri(uri: str, log: logging.RootLogger) -> dict:
+    """
+    Loads a resource from a URI using the requests library
+    Returns a dict of the response content or
+    Raises the Exceptions once logging them
+    """
+    try:
+        response = requests.get(uri)
+        if response.status_code != requests.codes("ok"):
+            # HTTP Get request failed - raise error
+            _logger.error(
+                f"Failed to retrieve the schema from: {uri}.\n"
+                f"Status-Code: {response.status_code} - {response.text}"
+            )
+        return json.loads(response.text)
+
+    except JSONDecodeError as err:
+        _logger.error(f"JSON Decode Error: {repr(err)}")
+        _logger.error(f"The content being decoded: {response.text}")
+        raise err
+
+    except TypeError as err:
+        _logger.error(f"JSON Type Error: {repr(err)}")
+        raise err
+
+    except Exception as err:
+        # TODO - Determine what exceptions may be raised
+        _logger.error(f"The http get request to retrieve the schema returned the exception: {repr(err)}")
+        raise err
