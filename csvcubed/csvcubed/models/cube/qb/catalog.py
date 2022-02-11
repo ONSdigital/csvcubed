@@ -29,8 +29,8 @@ class CatalogMetadata(CatalogMetadataBase, UriIdentifiable):
     license_uri: Optional[str] = field(default=None, repr=False)
     public_contact_point_uri: Optional[str] = field(default=None, repr=False)
     uri_safe_identifier_override: Optional[str] = field(default=None, repr=False)
-    spatial_bounds_uri: Optional[str] = field(default=None, repr=False)
-    temporal_bounds_uri: Optional[str] = field(default=None, repr=False)
+    spatial_bound_uri: Optional[str] = field(default=None, repr=False)
+    temporal_bound_uri: Optional[str] = field(default=None, repr=False)
 
     _creator_uri_validator = validate_uri("creator_uri", is_optional=True)
     _publisher_uri_validator = validate_uri("publisher_uri", is_optional=True)
@@ -38,10 +38,8 @@ class CatalogMetadata(CatalogMetadataBase, UriIdentifiable):
         "landing_page_uris", is_optional=True
     )
     _license_uri_validator = validate_uri("license_uri", is_optional=True)
-    _spatial_bounds_uri_validator = validate_uri("spatial_bounds_uri", is_optional=True)
-    _temporal_bounds_uri_validator = validate_uri(
-        "temporal_bounds_uri", is_optional=True
-    )
+    _spatial_bound_uri_validator = validate_uri("spatial_bound_uri", is_optional=True)
+    _temporal_bound_uri_validator = validate_uri("temporal_bound_uri", is_optional=True)
     _public_contact_point_uri_validator = validate_uri(
         "public_contact_point_uri", is_optional=True
     )
