@@ -103,14 +103,26 @@
           "type": "object",
           "additionalProperties": false,
           "required": [
-            "type",
-            "values"
+            "type"
           ],
           "properties": {
             "type": {
               "description": "An Attribute Column Type",
               "type": "string",
               "default": "attribute"
+            },
+            "description": {
+                "description": "Description of the attribute",
+                "type": "string"
+            },
+            "definition_uri": {
+              "description": "Uri for the attribute",
+              "type": "String",
+              "format": "uri"
+            },
+            "required": {
+              "description": "indicates if attribute values are required for each observation",
+              "type": "boolean"
             },
             "values": {
               "oneOf": [
@@ -141,7 +153,7 @@
             "type": {
               "description": "A Measure Column Type",
               "type": "string",
-              "default": "measure"
+              "default": "measures"
             },
             "values": {
               "oneOf": [
@@ -167,7 +179,7 @@
             "type": {
               "description": "A Unit Column Type",
               "type": "string",
-              "default": "unit"
+              "default": "units"
             },
             "values": {
               "oneOf": [
@@ -279,7 +291,7 @@
               "type": "string",
               "format": "uri"
             },
-            "codelist": {
+            "code_list": {
               "$ref": "#/definitions/v1.0/types/code_list"
             }
           }
@@ -296,7 +308,7 @@
             "type": {
               "description": "Column type.",
               "type": "string",
-              "default": "observation"
+              "default": "observations"
             },
             "data_type": {
               "$ref": "#/definitions/v1.0/dataTypes"
@@ -483,11 +495,12 @@
           "description": "The URI of the codelist or false for no codelist.",
           "oneOf": [
             {
-              "$ref": "http://gss-cogs.github.io/family-schemas/external.json#/definitions/cs_ext_uri"
-            },
-            {
               "type": "boolean",
               "default": false
+            },
+            {
+              "description": "The URI of the codelist associated with the dimension.",
+              "$ref": "http://gss-cogs.github.io/family-schemas/external.json#/definitions/dim_ext_uri"
             }
           ]
         }
