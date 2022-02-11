@@ -1,7 +1,9 @@
 import json
+from pathlib import Path
 
 from behave import when, then
 import subprocess
+from appdirs import AppDirs
 from typing import Tuple
 from csvcubeddevtools.behaviour.temporarydirectory import get_context_temp_dir_path
 
@@ -11,6 +13,12 @@ def step_impl(context, arguments: str):
     command: str = f"csvcubed {arguments.strip()}"
     (status_code, response) = run_command_in_temp_dir(context, command)
     context.csvcubed_cli_result = (status_code, response)
+
+@when('the log location is determined by Appdirs')
+def step_impl(context):
+    dirs = AppDirs("csvcubedcli","csvcubed")
+    context.csvcubed_log_location = Path(dirs.user_log_dir)# call to AppDirs directly 
+    assert (context.csvcubed_log_location).exists()
 
 
 @then("the csvcubed CLI should succeed")
@@ -53,22 +61,21 @@ def step_impl(context, out_dir: str):
 
     assert expected_text_contents in file_contents, file_contents
 
-@then('the cli.log file in the "{user_log_dir}" directory should contain')
-def step_impl(context, user_log_dir: str = "/Users/trentm/Library/Logs/cli.log"):
-    tmp_dir_path = get_context_temp_dir_path(context)
+@then('the log file should contain')
+def step_impl(context):
+    log_file = context.csvcubed_log_location
     expected_text_contents: str = context.text.strip()
-    cli_log_file = tmp_dir_path / user_log_dir / "cli.log"
-    assert cli_log_file.exists()
+    assert log_file.exists()
 
-    with open(cli_log_file, "r") as f:
+    with open(log_file, "r") as f:
         file_contents = f.read()
 
     assert expected_text_contents in file_contents, file_contents
 
-@then('the log file "{cli_log}" should exist')
-def step_impl(context, cli_log: str):
-    cli_log_file = "/home/trentm/.cache/SuperApp/log/cli.log"
-    assert cli_log_file.exists()
+@then('the log file should exist')
+def step_impl(context):
+    log_file = context.csvcubed_log_location
+    assert log_file.exists()
 
 def run_command_in_temp_dir(context, command: str) -> Tuple[int, str]:
     tmp_dir_path = get_context_temp_dir_path(context)
