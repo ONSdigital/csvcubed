@@ -7,6 +7,7 @@ import logging
 import sys
 from appdirs import *
 from typing import Union
+from pathlib import Path
 
 
 def start_logging(
@@ -20,10 +21,11 @@ def start_logging(
         logging_level: int = logging.WARNING
 
     dirs = AppDirs("csvcubedcli", "csvcubed")
-    dirs.user_log_dir
+    Path(dirs.user_log_dir).mkdir(parents=True,exist_ok=True)
+    Path(dirs.user_log_dir).rmdir()
 
     logger = logging.getLogger(root_logger_name)
-    logger.setLevel(logging.WARNING)
+    logger.setLevel(logging.DEBUG)
 
     console_handler = logging.StreamHandler(sys.stderr)
     console_handler.setLevel(logging_level)
@@ -34,7 +36,7 @@ def start_logging(
         )
     )
 
-    file_handler = logging.FileHandler('dirs.user_log_dir')
+    file_handler = logging.FileHandler(dirs.user_log_dir)
     file_handler.setLevel(logging_level)
     file_handler.setFormatter(
         logging.Formatter(
@@ -45,7 +47,7 @@ def start_logging(
     logger.addHandler(console_handler)
     logger.addHandler(file_handler)
 
-    logger.warning(dirs.user_log_dir)
+    logger.warning("A log file containing the recorings of this cli, is at: "+dirs.user_log_dir)
 
 
 class ConsoleColourFilter(logging.Filter):
