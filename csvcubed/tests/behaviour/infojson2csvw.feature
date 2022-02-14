@@ -11,3 +11,4 @@ Feature: Test the csvcubed Command Line Interface.
     """
      - csvcubed - WARNING - A log file containing the recorings of this cli, is at:
     """
+    And remove test log files

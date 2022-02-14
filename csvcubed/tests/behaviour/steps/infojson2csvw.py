@@ -19,7 +19,12 @@ def step_impl(context, arguments: str):
 def step_impl(context):
     dirs = AppDirs("csvcubedcli","csvcubed")
     context.csvcubed_log_location = Path(dirs.user_log_dir)
+    logginglvl = 'warn'
+    context.was_log_file_created_for_bdd = False
 
+    if context.csvcubed_log_location.exists():
+        start_logging(selected_logging_level=logginglvl)
+        context.was_log_file_created_for_bdd = True
 
 @then("the csvcubed CLI should succeed")
 def step_impl(context):
@@ -76,6 +81,11 @@ def step_impl(context):
 def step_impl(context):
     log_file = context.csvcubed_log_location
     assert log_file.exists()
+
+@then('remove test log files')
+def step_impl(context):
+    if context.was_log_file_created_for_bdd:
+        Path(context.csvcubed_log_location).unlink(missing_ok=True)
 
 def run_command_in_temp_dir(context, command: str) -> Tuple[int, str]:
     tmp_dir_path = get_context_temp_dir_path(context)
