@@ -21,7 +21,7 @@ def start_logging(
         logging_level: int = logging.WARNING
 
     dirs = AppDirs("csvcubedcli", "csvcubed")
-    if not Path(dirs.user_log_dir):
+    if not Path(dirs.user_log_dir).exists():
         Path(dirs.user_log_dir).mkdir(parents=True,exist_ok=True)
         Path(dirs.user_log_dir).rmdir()
 
