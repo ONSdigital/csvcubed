@@ -2,7 +2,7 @@
 CLI
 ---
 
-The *Command Line Interface* for :csvcubed:`~csvcubed.csvcubed.cli.inspect`.
+The *Command Line Interface* for `csvcubed inspect`.
 """
 
 from pathlib import Path
