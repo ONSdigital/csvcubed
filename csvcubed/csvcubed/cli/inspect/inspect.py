@@ -32,9 +32,9 @@ def inpsect(metadata_json: Path) -> None:
     input_handler = MetadataInputHandler(metadata_json)
     metadata_processor = MetadataProcessor()
 
-    valid_input, input_type = input_handler.validateInput()
+    valid_input, input_type = input_handler.validate_input()
     if valid_input:
-        metadata_rdf = metadata_processor.serialise_to_rdf(metadata_json, input_type)
+        metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph(metadata_json, input_type)
         """TODO: Output below printables to the CLI"""
         (
             type_printable,
@@ -43,14 +43,14 @@ def inpsect(metadata_json: Path) -> None:
             codelist_info_printable,
             headtail_printable,
             valcount_printable,
-        ) = _generate_printables(input_type, metadata_rdf)
+        ) = _generate_printables(input_type, metadata_rdf_graph)
 
     else:
         _logger.debug("Display unsupported input error message to the user")
 
 
 def _generate_printables(
-    metadata_type: MetadataType, metadata_rdf: Graph
+    metadata_type: MetadataType, metadata_rdf_graph: Graph
 ) -> Tuple[str, str, str, str, str, str]:
     """
     Generates printables of type, metadata, dsd, code list, head/tail and value count information.
@@ -59,7 +59,7 @@ def _generate_printables(
 
     :return: `Tuple[str, str, str, str, str]` - printables of metadata information.
     """
-    metadata_printer = MetadataPrinter(metadata_rdf)
+    metadata_printer = MetadataPrinter(metadata_rdf_graph)
 
     return (
         metadata_printer.gen_type_info_printable(metadata_type),

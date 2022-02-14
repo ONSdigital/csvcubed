@@ -37,7 +37,7 @@ class MetadataInputHandler:
     def __init__(self, metadata_json: Path):
         self.metadata_json = metadata_json
 
-    def validateInput(self) -> Tuple[bool, MetadataType]:
+    def validate_input(self) -> Tuple[bool, MetadataType]:
         """
         Detects the validity and type of metadata file.
 
@@ -45,14 +45,14 @@ class MetadataInputHandler:
 
         :return: `Tuple[bool, MetadataType]` - the boolean shows whether the metadata file is valid (`True`) or invalid (`False`). The `MetadataType` provides the type of metadata file.
         """
-        metadata_type = self._detectInputType()
+        metadata_type = self._detect_input_type()
         return (
             metadata_type == MetadataType.DataCube
             or metadata_type == MetadataType.CodeList,
             metadata_type,
         )
 
-    def _detectInputType(self) -> MetadataType:
+    def _detect_input_type(self) -> MetadataType:
         """
         Detects the type of metadata file.
 

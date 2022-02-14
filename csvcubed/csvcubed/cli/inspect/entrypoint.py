@@ -25,7 +25,9 @@ def entry_point() -> None:
 
 @entry_point.command("inspect")
 @click.argument(
-    "csv", type=click.Path(exists=True, path_type=Path), metavar="TIDY_CSV_PATH"
+    "csv-metadata.json",
+    type=click.Path(exists=True, path_type=Path),
+    metavar="TIDY_CSV_METADATA_JSON_PATH",
 )
 def inspect_command(metadata_json: Path) -> None:
     inpsect(metadata_json)

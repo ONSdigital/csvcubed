@@ -16,18 +16,20 @@ _logger = logging.getLogger(__name__)
 
 class MetadataProcessor:
     """
-    This class handles the conversion/serialisation of metadata jsons to RDF.
+    This class handles the loading of metadata jsons to RDFLib Graphs.
     """
 
-    def serialise_to_rdf(self, metadata_json: Path, type: MetadataType) -> Graph:
+    def load_json_ld_to_rdflib_graph(
+        self, metadata_json: Path, type: MetadataType
+    ) -> Graph:
         """
-        Serialises given metadata json to RDF.
+        Loads metadata json to RDFLib Graph
 
         Member of :class:`./MetadataProcessor`.
 
-        :return: `Graph` - RDF Graph of CSV-W metadata.
+        :return: `Graph` - RDFLib Graph of CSV-W metadata json.
         """
 
-        """TODO: Convert Metadata json to RDF"""
+        """TODO: Convert Metadata json to RDFLib Graph"""
         graph = Graph()
         return graph

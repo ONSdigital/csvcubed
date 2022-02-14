@@ -16,8 +16,8 @@ class MetadataPrinter:
     This class produces the printables necessary for producing outputs to the CLI.
     """
 
-    def __init__(self, metadata_rdf: Graph):
-        self.metadata_rdf = metadata_rdf
+    def __init__(self, metadata_rdf_graph: Graph):
+        self.metadata_rdf_graph = metadata_rdf_graph
 
     def gen_type_info_printable(self, metadata_type: MetadataType) -> str:
         """
