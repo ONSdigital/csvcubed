@@ -17,8 +17,7 @@ def step_impl(context, arguments: str):
 @when('the log location is determined by Appdirs')
 def step_impl(context):
     dirs = AppDirs("csvcubedcli","csvcubed")
-    context.csvcubed_log_location = Path(dirs.user_log_dir)# call to AppDirs directly 
-    assert (context.csvcubed_log_location).exists()
+    context.csvcubed_log_location = Path(dirs.user_log_dir)
 
 
 @then("the csvcubed CLI should succeed")
