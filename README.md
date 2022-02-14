@@ -16,3 +16,7 @@ We're currently keeping all of the packages in one repository to make life easie
 ## Developer Documentation
 
 More detailed developer documentation for this project can be found [here](./docs/developer.md).
+
+## External User Documentation
+
+For those wanting to track the documentation progress as we approach our initial release, [beware](https://gss-cogs.github.io/csvcubed-docs/external/).

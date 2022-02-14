@@ -4,11 +4,15 @@ Dictionary
 
 Functions to help when working with dictionaries.
 """
+import logging
 from typing import Any, Optional, Callable, List, Dict
 import rdflib
 import json
 
 from csvcubedmodels.rdf.resource import NewResource
+
+
+_logger = logging.getLogger(__name__)
 
 
 def get_from_dict_ensure_exists(config: dict, key: str) -> Any:
@@ -42,4 +46,6 @@ def rdf_resource_to_json_ld(resource: NewResource) -> List[Dict[str, Any]]:
     """
     g = rdflib.Graph()
     resource.to_graph(g)
-    return json.loads(g.serialize(format="json-ld") or "[]")
+    json_ld = g.serialize(format="json-ld") or "[]"
+    _logger.debug("Serialised RDF Graph to JSON-LD: %s", json_ld)
+    return json.loads(json_ld)

@@ -41,14 +41,13 @@ def pmdify_dcat(
     csvw_metadata_file_path = csvw_metadata_file_path.absolute()
     csvw_rdf_graph = Graph(base=_TEMP_PREFIX_URI)
     with open(csvw_metadata_file_path, "r") as f:
-        csvw_file_contents_json = json.load(f)
+        csvw_file_contents: str = f.read()
 
-    rdf_metadata = csvw_file_contents_json["rdfs:seeAlso"]
-    rdf_metadata_json = json.dumps(rdf_metadata)
+    csvw_file_contents_json: dict = json.loads(csvw_file_contents)
 
-    csvw_rdf_graph.parse(
-        data=rdf_metadata_json, publicID=_TEMP_PREFIX_URI, format="json-ld"
-    )
+    csvw_rdf_graph.parse(data=csvw_file_contents, publicID=_TEMP_PREFIX_URI, format="json-ld")
+    _remove_csvw_rdf_from_graph(csvw_rdf_graph)
+
     csvw_type = _get_csv_cubed_output_type(csvw_rdf_graph)
 
     catalog_entry = _get_catalog_entry_from_dcat_dataset(csvw_rdf_graph)
@@ -56,9 +55,13 @@ def pmdify_dcat(
         catalog_entry, data_graph_uri, catalog_metadata_graph_uri, csvw_type
     )
 
-    _delete_existing_dcat_dataset_metadata(csvw_rdf_graph)
+    _delete_existing_dcat_metadata(csvw_rdf_graph)
 
     _replace_uri_substring_in_graph(csvw_rdf_graph, str(_TEMP_PREFIX_URI), base_uri)
+
+    # Remove RDF which is not of CSV-W origin from the JSON, we'll add the relevant info back later.
+    _remove_non_csvw_rdf_from_json_ld(csvw_file_contents_json)
+
     csvw_file_contents_json["rdfs:seeAlso"] = rdflibutils.serialise_to_json_ld(
         csvw_rdf_graph
     )
@@ -72,7 +75,7 @@ def pmdify_dcat(
     with open(csvw_metadata_file_path, "w") as f:
         json.dump(csvw_file_contents_json, f, indent=4)
 
-    # Write separate N-Quads file containing pmdified catalogue metadata.
+    # # Write separate N-Quads file containing pmdified catalogue metadata.
     catalog_metadata_quads_file_path = Path(f"{csvw_metadata_file_path.absolute()}.nq")
     _write_catalog_metadata_to_quads(
         catalog_record,
@@ -81,6 +84,36 @@ def pmdify_dcat(
         base_uri,
         csvw_type
     )
+
+
+def _remove_csvw_rdf_from_graph(csvw_rdf_graph):
+    columns_list_items = list(csvw_rdf_graph.query("""
+        PREFIX rdfs: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX csvw: <http://www.w3.org/ns/csvw#>
+        
+        SELECT ?listItem 
+        WHERE {
+            {
+                [] csvw:column/rdfs:rest*/rdfs:first* ?listItem.
+            } UNION {
+                [] csvw:columnReference/rdfs:rest*/rdfs:first* ?listItem.
+            }
+        }    
+    """))
+
+    for list_item_identifier in [item[0] for item in columns_list_items]:
+        csvw_rdf_graph.remove((list_item_identifier, None, None))
+        csvw_rdf_graph.remove((None, None, list_item_identifier))
+
+    for (sub, pred, obj) in list(csvw_rdf_graph.triples((None, None, None))):
+        if str(pred).startswith("http://www.w3.org/ns/csvw#"):
+            csvw_rdf_graph.remove((sub, pred, obj))
+
+
+def _remove_non_csvw_rdf_from_json_ld(csvw_file_contents_json: dict) -> None:
+    rdf_keys = [k for k in csvw_file_contents_json.keys() if ":" in k or looks_like_uri(k)]
+    for key in rdf_keys:
+        del csvw_file_contents_json[key]
 
 
 def _set_pmdcat_type_on_dataset_contents(
@@ -146,8 +179,8 @@ def _generate_pmd_catalog_record(
     catalog_entry.dataset_contents = ExistingResource(catalog_entry.uri)
 
     # N.B. assumes that all URIs are hash URIs, this may not always be the case.
-    catalog_entry_uri = re.sub("#.*?$", "#catalog-entry", str(catalog_entry.uri))
-    catalog_record_uri = re.sub("#.*?$", "#catalog-record", str(catalog_entry.uri))
+    catalog_entry_uri = f"{catalog_entry.uri}-catalog-entry"
+    catalog_record_uri = f"{catalog_entry.uri}-catalog-record"
     catalog_entry.uri = URIRef(catalog_entry_uri)
 
     # Catalog -(dcat:record)-> Catalog Record -(foaf:primaryTopic)-> Dataset -(pmdcat:datasetContents)->
@@ -207,6 +240,38 @@ def _write_catalog_metadata_to_quads(
     )
 
 
+def _delete_existing_dcat_metadata(csvw_graph: Graph) -> None:
+    _delete_existing_dcat_dataset_metadata(csvw_graph)
+    _delete_legacy_existing_dcat_catalog_record(csvw_graph)
+
+
+def _delete_legacy_existing_dcat_catalog_record(csvw_graph: Graph) -> None:
+    # Now to delete any catalogue entries already present. This can occur in legacy code-lists.
+    csvw_graph.update("""
+        PREFIX dcat: <http://www.w3.org/ns/dcat#>
+        PREFIX dcterms: <http://purl.org/dc/terms/>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+        DELETE {
+            ?catalogRecord a dcat:CatalogRecord;
+                ?p ?o.
+                
+            <http://gss-data.org.uk/catalog/vocabularies> dcat:record ?catalogRecord.
+        }
+        WHERE {
+            ?catalogRecord a dcat:CatalogRecord.
+            
+            OPTIONAL { 
+                <http://gss-data.org.uk/catalog/vocabularies> dcat:record ?catalogRecord.
+            }
+            
+            OPTIONAL {
+                ?catalogRecord ?p ?o. 
+            }
+        }
+    """)
+
+
 def _delete_existing_dcat_dataset_metadata(csvw_graph: Graph) -> None:
     """
     Removes the existing `dcat:Dataset` and associated metadata from the :obj:`csvw_graph` passed in.
@@ -216,9 +281,10 @@ def _delete_existing_dcat_dataset_metadata(csvw_graph: Graph) -> None:
         PREFIX dcat: <http://www.w3.org/ns/dcat#>
         PREFIX dcterms: <http://purl.org/dc/terms/>
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX pmdcat: <http://publishmydata.com/pmdcat#>
 
         DELETE {
-            ?dataset a dcat:Dataset;
+            ?dataset a dcat:Dataset, pmdcat:Dataset;
                 a dcat:Resource;
                 dcterms:issued ?issued;
                 dcterms:modified ?modified;
@@ -231,11 +297,28 @@ def _delete_existing_dcat_dataset_metadata(csvw_graph: Graph) -> None:
                 dcat:theme ?theme;
                 dcat:keyword ?keyword;
                 dcat:contactPoint ?contactPoint;
-                dcterms:identifier ?identifier.
+                dcterms:identifier ?identifier;
+                pmdcat:graph ?graph;
+                pmdcat:datasetContents ?datasetContents;
+                ?p ?o.
+                
+            ?datasetContents a pmdcat:DatasetContents, pmdcat:DataCube, pmdcat:ConceptScheme.
+            
+            ?s ?p ?dataset.               
         }
         WHERE {
-            ?dataset a dcat:Dataset;
-                dcterms:issued ?issued;
+            {
+                SELECT DISTINCT ?dataset
+                WHERE {
+                    {
+                        ?dataset a dcat:Dataset.        
+                    } UNION {
+                        ?dataset a pmdcat:Dataset.
+                    }
+                }
+            }
+            
+            ?dataset dcterms:issued ?issued;
                 dcterms:modified ?modified.
 
             OPTIONAL { ?dataset rdfs:comment ?comment }.
@@ -247,7 +330,29 @@ def _delete_existing_dcat_dataset_metadata(csvw_graph: Graph) -> None:
             OPTIONAL { ?dataset dcat:theme ?theme }.
             OPTIONAL { ?dataset dcat:keyword ?keyword }.
             OPTIONAL { ?dataset dcat:contactPoint ?contactPoint }
-            OPTIONAL { ?dataset dcterms:identifier ?identifier }                
+            OPTIONAL { ?dataset dcterms:identifier ?identifier }      
+            OPTIONAL { ?dataset pmdcat:graph ?graph }
+            OPTIONAL { 
+                ?dataset pmdcat:datasetContents ?datasetContents.
+                OPTIONAL {
+                    ?datasetContents a pmdcat:DatasetContents, pmdcat:DataCube, pmdcat:ConceptScheme.
+                } 
+            }          
+            OPTIONAL {
+                # Make sure to delete all related triples if the ?dataset is only an instance of 
+                # dcat:Dataset of pmdcat:Dataset (and nothing else).
+                
+                FILTER NOT EXISTS {
+                    ?dataset a ?type.
+                    FILTER(?type NOT IN (dcat:Dataset, pmdcat:Dataset)).
+                }
+                
+                {
+                    ?dataset ?p ?o.
+                } UNION {     
+                    ?s ?p ?dataset.
+                }
+            }
         }
         """
     )
@@ -263,6 +368,7 @@ def _get_catalog_entry_from_dcat_dataset(csvw_graph: Graph) -> pmdcat.Dataset:
         PREFIX dcat: <http://www.w3.org/ns/dcat#>
         PREFIX dcterms: <http://purl.org/dc/terms/>
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX pmdcat:  <http://publishmydata.com/pmdcat#>
     
         SELECT ?dataset ?title ?label ?issued ?modified ?comment ?description ?license ?creator ?publisher 
             (GROUP_CONCAT(?landingPage ; separator='|') as ?landingPages) 
@@ -270,8 +376,18 @@ def _get_catalog_entry_from_dcat_dataset(csvw_graph: Graph) -> pmdcat.Dataset:
             (GROUP_CONCAT(?keyword; separator='|') as ?keywords) 
             ?contactPoint ?identifier
         WHERE {
-            ?dataset a dcat:Dataset;
-                dcterms:title ?title;
+            {
+                SELECT DISTINCT ?dataset
+                WHERE {
+                    {
+                        ?dataset a dcat:Dataset.        
+                    } UNION {
+                        ?dataset a pmdcat:Dataset.
+                    }
+                }
+            }
+        
+            ?dataset dcterms:title ?title;
                 rdfs:label ?label;
                 dcterms:issued ?issued;
                 dcterms:modified ?modified.

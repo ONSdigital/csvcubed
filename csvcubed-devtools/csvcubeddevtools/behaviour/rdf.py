@@ -69,3 +69,43 @@ def step_impl(context, entity_type: str):
     """
 
     assert_ask(context, query, False)
+
+@step('the RDF should contain {num_instances:d} instance(s) of "{entity_type}"')
+def step_impl(context, num_instances: int, entity_type: str):
+    query = f"""
+        ASK
+        WHERE {{
+         ?instance a <{entity_type}>.
+        }}
+        HAVING (COUNT(DISTINCT ?instance) != {num_instances})
+    """
+
+    assert_ask(context, query, False)
+
+@step('the RDF should not contain any URIs in the "{uri_prefix}" namespace')
+def step_impl(context, uri_prefix: str):
+    query = f"""
+        ASK
+        WHERE {{
+            ?s ?p ?o.
+            FILTER(
+              strStarts(LCASE(str(?s)), "{uri_prefix}")
+                || strStarts(LCASE(str(?p)), "{uri_prefix}")
+                || strStarts(LCASE(str(?o)), "{uri_prefix}")
+            ).
+        }}
+    """
+
+    assert_ask(context, query, False)
+
+@step('the RDF should not contain any reference to "{uri}"')
+def step_impl(context, uri: str):
+    query = f"""
+        ASK
+        WHERE {{
+            ?s ?p ?o.
+            FILTER(?s = <{uri}> || ?p = <{uri}> || ?o = <{uri}>).
+        }}
+    """
+
+    assert_ask(context, query, False)

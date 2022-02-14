@@ -129,7 +129,7 @@
             }
         },
         "units": {
-            "type": "units column", // optional as a column called ["Unit", "Units"] areread as a QbUnitColumn,
+            "type": "unit column", // optional as a column called ["Unit", "Units"] areread as a QbUnitColumn,
             "values": true, // Create new measures from values or 
             "_values": { // the _values object doesn't exist but "values" can accept boolean values or this object
                 "Existing unit value from unit column": { // The value in the units column to link to this existing unit

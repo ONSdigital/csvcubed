@@ -59,7 +59,7 @@ class ExistingQbDimension(QbDimension):
 
     _dimension_uri_validator = validate_uri("dimension_uri")
 
-    _range_uri_validator = validate_uri("range_uri")
+    _range_uri_validator = validate_uri("range_uri", is_optional=True)
 
     def validate_data(
         self,
