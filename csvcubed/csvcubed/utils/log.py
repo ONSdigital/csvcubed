@@ -48,7 +48,7 @@ def start_logging(
     logger.addHandler(console_handler)
     logger.addHandler(file_handler)
 
-    logger.warning("A log file containing the recorings of this cli, is at: "+dirs.user_log_dir)
+    logger.warning("A log file containing the recordings of this cli, is at: "+dirs.user_log_dir)
 
 
 class ConsoleColourFilter(logging.Filter):
