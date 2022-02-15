@@ -11,12 +11,12 @@ import logging
 from pathlib import Path
 from typing import Tuple
 
-from csvcubed.cli.inspect_cli.metadatainputhandler import (
-    MetadataInputHandler,
-    MetadataType,
+from csvcubed.cli.inspect.metadatainputvalidator import (
+    CSVWType,
+    MetadataValidator,
 )
-from csvcubed.cli.inspect_cli.metadataprinter import MetadataPrinter
-from csvcubed.cli.inspect_cli.metadataprocessor import MetadataProcessor
+from csvcubed.cli.inspect.metadataprinter import MetadataPrinter
+from csvcubed.cli.inspect.metadataprocessor import MetadataProcessor
 from rdflib import Graph
 
 _logger = logging.getLogger(__name__)
@@ -30,17 +30,18 @@ def inspect(csvw_metadata_json_path: Path) -> None:
 
     :return: `None`
     """
-
-    _logger.info(f"Valid metadata json path: {csvw_metadata_json_path.absolute()}")
-
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
-    input_handler = MetadataInputHandler(csvw_metadata_rdf_graph)
-    valid_input, input_type = input_handler.validate_input()
+    assert csvw_metadata_rdf_graph is not None
 
-    if valid_input:
-        """TODO: Output below printables to the CLI"""
+    csvw_metadata_rdf_validator = MetadataValidator(csvw_metadata_rdf_graph)
+    (
+        valid_csvw_metadata,
+        csvw_type,
+    ) = csvw_metadata_rdf_validator.validate_and_detect_type()
+
+    if valid_csvw_metadata:
         (
             type_printable,
             metadata_info_printable,
@@ -48,14 +49,18 @@ def inspect(csvw_metadata_json_path: Path) -> None:
             codelist_info_printable,
             headtail_printable,
             valcount_printable,
-        ) = _generate_printables(input_type, csvw_metadata_rdf_graph)
+        ) = _generate_printables(csvw_type, csvw_metadata_rdf_graph)
+
+        _logger.info(type_printable)
 
     else:
-        print("Unsupported CSV-W metadata! Supported types are data cube and code list")
+        _logger.error(
+            "This is an unsupported csv-w! Supported types are `data cube` and `code list`."
+        )
 
 
 def _generate_printables(
-    metadata_type: MetadataType, csvw_metadata_rdf_graph: Graph
+    csvw_type: CSVWType, csvw_metadata_rdf_graph: Graph
 ) -> Tuple[str, str, str, str, str, str]:
     """
     Generates printables of type, metadata, dsd, code list, head/tail and value count information.
@@ -67,7 +72,7 @@ def _generate_printables(
     metadata_printer = MetadataPrinter(csvw_metadata_rdf_graph)
 
     return (
-        metadata_printer.gen_type_info_printable(metadata_type),
+        metadata_printer.gen_type_info_printable(csvw_type),
         metadata_printer.gen_metadata_info_printable(),
         metadata_printer.gen_dsd_info_printable(),
         metadata_printer.gen_codelist_info_printable(),

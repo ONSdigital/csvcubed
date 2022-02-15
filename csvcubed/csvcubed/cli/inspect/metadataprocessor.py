@@ -9,7 +9,6 @@ import json
 import logging
 
 from pathlib import Path
-from csvcubed.cli.inspect_cli.metadatainputhandler import MetadataType
 from rdflib import Graph, URIRef
 
 _TEMP_PREFIX_URI = URIRef("http://temporary")
@@ -35,7 +34,7 @@ class MetadataProcessor:
         """
         csvw_metadata_file_path = self.csvw_metadata_file_path.absolute()
         csvw_rdf_graph = Graph(base=_TEMP_PREFIX_URI)
-        
+
         try:
             with open(csvw_metadata_file_path, "r") as f:
                 csvw_file_contents: str = f.read()

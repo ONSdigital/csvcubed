@@ -6,7 +6,7 @@ Provides functionality for validating and detecting input metadata.json file.
 """
 
 
-from csvcubed.cli.inspect_cli.metadatainputhandler import MetadataType
+from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
 from rdflib import Graph
 import pandas as pd
 
@@ -19,7 +19,7 @@ class MetadataPrinter:
     def __init__(self, csvw_metadata_rdf_graph: Graph):
         self.csvw_metadata_rdf_graph = csvw_metadata_rdf_graph
 
-    def gen_type_info_printable(self, metadata_type: MetadataType) -> str:
+    def gen_type_info_printable(self, metadata_type: CSVWType) -> str:
         """
         Generates a printable of metadata type information.
 
@@ -27,10 +27,10 @@ class MetadataPrinter:
 
         :return: `str` - user-friendly string which will be output to CLI.
         """
-        if metadata_type == MetadataType.DataCube:
-            return "This is a data cube."
+        if metadata_type == CSVWType.QbDataSet:
+            return "This csv-w is a data cube."
         else:
-            return "This is a code list."
+            return "This csv-w is a code list."
 
     def gen_metadata_info_printable(self) -> str:
         """
@@ -67,7 +67,7 @@ class MetadataPrinter:
 
     def gen_headtail_printable(self) -> str:
         """
-        Generates a printable of top 10 and last 10 records. 
+        Generates a printable of top 10 and last 10 records.
 
         Member of :class:`./MetadataPrinter`.
 
