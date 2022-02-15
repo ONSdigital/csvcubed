@@ -11,6 +11,8 @@ from enum import Enum
 from pathlib import Path
 from typing import Tuple
 
+from rdflib import Graph
+
 _logger = logging.getLogger(__name__)
 
 
@@ -34,8 +36,8 @@ class MetadataInputHandler:
     This class validates the input metadata files and detects the metadata type.
     """
 
-    def __init__(self, metadata_json: Path):
-        self.metadata_json = metadata_json
+    def __init__(self, csvw_metadata_rdf_graph: Graph):
+        self.csvw_metadata_rdf_graph = csvw_metadata_rdf_graph
 
     def validate_input(self) -> Tuple[bool, MetadataType]:
         """

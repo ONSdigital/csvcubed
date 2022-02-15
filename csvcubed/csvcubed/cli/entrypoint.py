@@ -5,6 +5,10 @@ CLI
 The *Command Line Interface* for `csvcubed inspect`.
 """
 
+import logging
+logging.basicConfig()
+logging.root.setLevel(logging.DEBUG)
+
 from pathlib import Path
 import click
 import colorama
@@ -25,9 +29,9 @@ def entry_point():
 
 @entry_point.command("inspect")
 @click.argument(
-    "json",
+    "csvw_metadata_json_path",
     type=click.Path(exists=True, path_type=Path),
     metavar="TIDY_CSV-W_METADATA_JSON_PATH",
 )
-def inspect_command(json: Path) -> None:
-    inspect(metadata_json=json)
+def inspect_command(csvw_metadata_json_path: Path) -> None:
+    inspect(csvw_metadata_json_path)
