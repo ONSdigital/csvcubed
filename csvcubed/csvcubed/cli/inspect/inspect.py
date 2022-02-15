@@ -52,7 +52,6 @@ def inspect(csvw_metadata_json_path: Path) -> None:
         ) = _generate_printables(csvw_type, csvw_metadata_rdf_graph)
 
         _logger.info(type_printable)
-
     else:
         _logger.error(
             "This is an unsupported csv-w! Supported types are `data cube` and `code list`."
