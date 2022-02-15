@@ -54,6 +54,7 @@ class MetadataValidator:
             metadata_type,
         )
 
+    # Below code is duplicated from csvcubed pmd package. In the future, we would need to abstract away this into a shared utils project.
     def _detect_type(self) -> CSVWType:
         """
         Detects the type of metadata file.
