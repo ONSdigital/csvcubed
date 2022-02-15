@@ -63,29 +63,29 @@ class MetadataValidator:
 
         :return: `CSVWMetadataType` - The `CSVWMetadataType` provides the type of metadata file.
         """
-        is_qb_dataset = ask(
-            """
-            ASK 
-            WHERE {
-                ?qbDataSet a <http://purl.org/linked-data/cube#DataSet>.
-            }
-        """,
-            self.csvw_metadata_rdf_graph,
-        )
-        if is_qb_dataset:
-            return CSVWType.QbDataSet
-
         is_code_list = ask(
             """
-        ASK 
-        WHERE {
-            ?conceptScheme a <http://www.w3.org/2004/02/skos/core#ConceptScheme>.
-        }
-        """,
+                ASK 
+                WHERE {
+                    ?conceptScheme a <http://www.w3.org/2004/02/skos/core#ConceptScheme>.
+                }
+            """,
             self.csvw_metadata_rdf_graph,
         )
 
-        if is_code_list:
-            return CSVWType.CodeList
+        is_qb_dataset = ask(
+            """
+                ASK 
+                WHERE {
+                    ?qbDataSet a <http://purl.org/linked-data/cube#DataSet>.
+                }
+            """,
+            self.csvw_metadata_rdf_graph,
+        )
 
-        return CSVWType.Other
+        if is_qb_dataset:
+            return CSVWType.QbDataSet
+        elif is_code_list:
+            return CSVWType.CodeList
+        else:
+            return CSVWType.Other

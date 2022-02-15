@@ -28,9 +28,9 @@ class MetadataPrinter:
         :return: `str` - user-friendly string which will be output to CLI.
         """
         if metadata_type == CSVWType.QbDataSet:
-            return "This csv-w is a data cube."
+            return "This is a data cube."
         else:
-            return "This csv-w is a code list."
+            return "This is a code list."
 
     def gen_metadata_info_printable(self) -> str:
         """
