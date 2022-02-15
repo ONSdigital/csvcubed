@@ -10,18 +10,18 @@ import logging
 from pathlib import Path
 from typing import Tuple
 
-from csvcubed.cli.inspect.metadatainputhandler import (
+from csvcubed.cli.inspect_cli.metadatainputhandler import (
     MetadataInputHandler,
     MetadataType,
 )
-from csvcubed.cli.inspect.metadataprinter import MetadataPrinter
-from csvcubed.cli.inspect.metadataprocessor import MetadataProcessor
+from csvcubed.cli.inspect_cli.metadataprinter import MetadataPrinter
+from csvcubed.cli.inspect_cli.metadataprocessor import MetadataProcessor
 from rdflib import Graph
 
 _logger = logging.getLogger(__name__)
 
 
-def inpsect(metadata_json: Path) -> None:
+def inspect(metadata_json: Path) -> None:
     """
     Command for validating CSV-W metadata files through the CLI.
     

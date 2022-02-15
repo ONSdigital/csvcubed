@@ -6,7 +6,7 @@ Provides functionality for validating and detecting input metadata.json file.
 """
 
 
-from csvcubed.cli.inspect.metadatainputhandler import MetadataType
+from csvcubed.cli.inspect_cli.metadatainputhandler import MetadataType
 from rdflib import Graph
 import pandas as pd
 
