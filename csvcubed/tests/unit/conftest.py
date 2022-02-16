@@ -1,5 +1,3 @@
-import logging
-
 import pytest
 
 from csvcubed.utils.log import start_logging
