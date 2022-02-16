@@ -42,9 +42,10 @@ class MetadataProcessor:
                     f"Successfully read content from %s",
                     self.csvw_metadata_file_path,
                 )
-        except Exception:
-            _logger.exception(f"An error occured while reading csvw file content")
-            return None
+        except Exception as ex:
+            raise Exception(
+                "An error occured while reading csvw json-ld content"
+            ) from ex
 
         try:
             csvw_rdf_graph.parse(
@@ -52,8 +53,7 @@ class MetadataProcessor:
             )
             _logger.info("Successfully parsed csvw json-ld to rdf graph")
             return csvw_rdf_graph
-        except Exception:
-            _logger.exception(
-                f"An error occured while parsing csvw json-ld to rdf graph"
-            )
-            return None
+        except Exception as ex:
+            raise Exception(
+                "An error occured while parsing csvw json-ld to rdf graph"
+            ) from ex
