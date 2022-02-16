@@ -176,7 +176,6 @@ def _generate_pmd_catalog_record(
     catalog_metadata_graph_uri: str,
     csv_cubed_output_type: CsvCubedOutputType,
 ) -> pmdcat.CatalogRecord:
-    catalog_entry.dataset_contents = ExistingResource(catalog_entry.uri)
 
     # N.B. assumes that all URIs are hash URIs, this may not always be the case.
     catalog_entry_uri = f"{catalog_entry.uri}-catalog-entry"
@@ -374,7 +373,7 @@ def _get_catalog_entry_from_dcat_dataset(csvw_graph: Graph) -> pmdcat.Dataset:
             (GROUP_CONCAT(?landingPage ; separator='|') as ?landingPages) 
             (GROUP_CONCAT(?theme; separator='|') as ?themes) 
             (GROUP_CONCAT(?keyword; separator='|') as ?keywords) 
-            ?contactPoint ?identifier
+            ?contactPoint ?identifier ?datasetContents
         WHERE {
             {
                 SELECT DISTINCT ?dataset
@@ -401,7 +400,8 @@ def _get_catalog_entry_from_dcat_dataset(csvw_graph: Graph) -> pmdcat.Dataset:
             OPTIONAL { ?dataset dcat:theme ?theme }.
             OPTIONAL { ?dataset dcat:keyword ?keyword }.
             OPTIONAL { ?dataset dcat:contactPoint ?contactPoint }
-            OPTIONAL { ?dataset dcterms:identifier ?identifier }                
+            OPTIONAL { ?dataset dcterms:identifier ?identifier }      
+            OPTIONAL { ?dataset pmdcat:datasetContents ?datasetContents }           
         }
         """
         )
@@ -443,6 +443,8 @@ def _get_catalog_entry_from_dcat_dataset(csvw_graph: Graph) -> pmdcat.Dataset:
     )
     pmdcat_dataset.contact_point = _none_or_map(record["contactPoint"], str)
     pmdcat_dataset.identifier = str(record["identifier"])
+    dataset_contents_uri: str = str(record.get("datasetContents", pmdcat_dataset.uri))
+    pmdcat_dataset.dataset_contents = ExistingResource(dataset_contents_uri)
 
     return pmdcat_dataset
 

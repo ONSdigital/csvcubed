@@ -127,11 +127,13 @@ Feature: Testing the csvw command group in the CLI
     """
       @prefix dcat: <http://www.w3.org/ns/dcat#>.
       @prefix foaf: <http://xmlns.com/foaf/0.1/>.
+      @prefix pmdcat: <http://publishmydata.com/pmdcat#>.
 
       <http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services#scheme/itis-industry/dataset-catalog-record> a dcat:CatalogRecord;
         foaf:primaryTopic <http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services#scheme/itis-industry/dataset-catalog-entry>.
 
       <http://gss-data.org.uk/catalog/vocabularies> dcat:record <http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services#scheme/itis-industry/dataset-catalog-record>.
 
-      <http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services#scheme/itis-industry/dataset-catalog-entry> a dcat:Dataset.
+      <http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services#scheme/itis-industry/dataset-catalog-entry> a dcat:Dataset;
+        pmdcat:datasetContents <http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services#scheme/itis-industry>.
     """
