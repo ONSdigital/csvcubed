@@ -6,13 +6,12 @@ Provides functionality for validating the input metadata.json and detecting its 
 """
 
 import logging
-
 from enum import Enum
-from pathlib import Path
 from typing import Tuple
-from csvcubed.utils.sparql import ask
 
 from rdflib import Graph
+
+from csvcubed.utils.sparql import ask
 
 _logger = logging.getLogger(__name__)
 

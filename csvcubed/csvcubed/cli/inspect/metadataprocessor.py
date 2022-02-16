@@ -5,13 +5,10 @@ Metadata Processor
 Provides functionality for validating and detecting input metadata.json file.
 """
 
-import json
 import logging
-
 from pathlib import Path
-from rdflib import Graph, URIRef
 
-_TEMP_PREFIX_URI = URIRef("http://temporary")
+from rdflib import Graph
 
 _logger = logging.getLogger(__name__)
 
@@ -33,7 +30,7 @@ class MetadataProcessor:
         :return: `Graph` - RDFLib Graph of CSV-W metadata json.
         """
         csvw_metadata_file_path = self.csvw_metadata_file_path.absolute()
-        csvw_rdf_graph = Graph(base=_TEMP_PREFIX_URI)
+        csvw_rdf_graph = Graph()
 
         try:
             with open(csvw_metadata_file_path, "r") as f:
@@ -48,9 +45,7 @@ class MetadataProcessor:
             ) from ex
 
         try:
-            csvw_rdf_graph.parse(
-                data=csvw_file_contents, publicID=_TEMP_PREFIX_URI, format="json-ld"
-            )
+            csvw_rdf_graph.parse(data=csvw_file_contents, format="json-ld")
             _logger.info("Successfully parsed csvw json-ld to rdf graph")
             return csvw_rdf_graph
         except Exception as ex:

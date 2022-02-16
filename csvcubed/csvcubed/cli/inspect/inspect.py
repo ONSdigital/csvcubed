@@ -5,11 +5,11 @@ Inspect Command
 Output CSV-W metadata in a user-friendly format to the CLI for validation.
 """
 
-from asyncio.log import logger
 import logging
-
 from pathlib import Path
 from typing import Tuple
+
+from rdflib import Graph
 
 from csvcubed.cli.inspect.metadatainputvalidator import (
     CSVWType,
@@ -17,7 +17,6 @@ from csvcubed.cli.inspect.metadatainputvalidator import (
 )
 from csvcubed.cli.inspect.metadataprinter import MetadataPrinter
 from csvcubed.cli.inspect.metadataprocessor import MetadataProcessor
-from rdflib import Graph
 
 _logger = logging.getLogger(__name__)
 

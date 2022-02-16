@@ -1,6 +1,5 @@
 from csvcubed.cli.inspect.metadatainputvalidator import CSVWType, MetadataValidator
 from csvcubed.cli.inspect.metadataprocessor import MetadataProcessor
-import pytest
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli/inspect"

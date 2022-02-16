@@ -7,14 +7,13 @@ The *Command Line Interface* for `csvcubed inspect`.
 
 
 import click
-import colorama
 import logging
+from pathlib import Path
+
+from csvcubed.cli.inspect.inspect import inspect
 
 logging.basicConfig()
 logging.root.setLevel(logging.DEBUG)
-
-from pathlib import Path
-from csvcubed.cli.inspect.inspect import inspect
 
 _logger = logging.getLogger(__name__)
 
@@ -24,7 +23,6 @@ def entry_point():
     """
     csvcubed - a tool to generate qb-flavoured CSV-W cubes from COGS-style info.json files.
     """
-    colorama.init(autoreset=True, wrap=True)
 
 
 # csvcubed build command goes here
@@ -37,5 +35,7 @@ def entry_point():
     metavar="TIDY_CSV-W_METADATA_JSON_PATH",
 )
 def inspect_command(csvw_metadata_json_path: Path) -> None:
-    _logger.info(f"Valid csv-w metadata json path: {csvw_metadata_json_path.absolute()}")
+    _logger.info(
+        f"Valid csv-w metadata json path: {csvw_metadata_json_path.absolute()}"
+    )
     inspect(csvw_metadata_json_path)
