@@ -4,7 +4,7 @@ Feature: Test the csvcubed Command Line Interface.
     Given the existing test-case file "configloaders/data.csv"
     And the existing test-case file "configloaders/info.json"
     When the csvcubed CLI is run with "build --logdir=log_test_dir --logginglvl=warn --config configloaders/info.json configloaders/data.csv"
-    And the log location is determined by Appdirs
+    And the location of "log_test_dir" is determined by Appdirs
     Then the csvcubed CLI should fail with status code 1
     And the log file should exist
     And the log file should contain
