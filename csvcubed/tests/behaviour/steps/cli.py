@@ -1,12 +1,10 @@
 import json
-import os
 from pathlib import Path
 
 from behave import when, then
 import subprocess
 from appdirs import AppDirs
 from typing import Tuple
-from csvcubed.utils.log import start_logging
 from csvcubeddevtools.behaviour.temporarydirectory import get_context_temp_dir_path
 
 
