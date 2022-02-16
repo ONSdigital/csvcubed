@@ -2,7 +2,7 @@ from csvcubed.cli.inspect.metadatainputvalidator import CSVWType, MetadataValida
 from csvcubed.cli.inspect.metadataprocessor import MetadataProcessor
 from tests.unit.test_baseunit import get_test_cases_dir
 
-_test_case_base_dir = get_test_cases_dir() / "cli/inspect"
+_test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
 
 
 def test_detect_valid_csvw_metadata_datacube_input():
