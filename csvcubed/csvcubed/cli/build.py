@@ -16,6 +16,7 @@ def build(
     validation_errors_file_out: Optional[Path],
     root_logger_name: str
 ):
+
     # Create a path to save the validation-errors.json file in the ./out directory
 
     logger = logging.getLogger(root_logger_name)
