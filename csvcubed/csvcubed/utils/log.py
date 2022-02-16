@@ -11,19 +11,22 @@ from pathlib import Path
 
 
 def start_logging(
-    selected_logging_level: Union[str,None], root_logger_name: str = "csvcubed"
+    logdir:str,selected_logging_level: Union[str,None], root_logger_name: str
 ) -> None:
     if selected_logging_level == 'err':
         logging_level: int = logging.ERROR
     elif selected_logging_level == 'crit':
         logging_level: int = logging.CRITICAL
+    elif selected_logging_level == 'info':
+        logging_level: int = logging.INFO
+    elif selected_logging_level == 'debug':
+        logging_level: int = logging.DEBUG
     else:
         logging_level: int = logging.WARNING
 
-    dirs = AppDirs("csvcubedcli", "csvcubed")
-    if not Path(dirs.user_log_dir).exists():
-        Path(dirs.user_log_dir).mkdir(parents=True,exist_ok=True)
-        Path(dirs.user_log_dir).rmdir()
+    dirs = AppDirs(logdir, "csvcubed")
+    log_file_path = Path(dirs.user_log_dir)
+    log_file_path.parent.mkdir(parents=True,exist_ok=True)
 
     logger = logging.getLogger(root_logger_name)
     logger.setLevel(logging.DEBUG)
@@ -48,7 +51,7 @@ def start_logging(
     logger.addHandler(console_handler)
     logger.addHandler(file_handler)
 
-    logger.warning("A log file containing the recordings of this cli, is at: "+dirs.user_log_dir)
+    logger.critical("A log file containing the recordings of this cli, is at: "+dirs.user_log_dir)
 
 
 class ConsoleColourFilter(logging.Filter):

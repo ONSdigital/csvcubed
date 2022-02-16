@@ -3,11 +3,8 @@ CLI
 ---
 The *Command Line Interface* for :mod:`~csvcubed.csvcubedcli.infojson2csvqb`.
 """
-from email.policy import default
-import logging
 import click
 from pathlib import Path
-import colorama
 from csvcubed.utils.log import start_logging
 
 from .build import build
@@ -18,14 +15,13 @@ def entry_point():
     """
     csvcubed - a tool to generate qb-flavoured CSV-W cubes from COGS-style info.json files.
     """
-    colorama.init(autoreset=True, wrap=True)
 
 
 @entry_point.command("build")
 @click.option(
     "--config",
     "-c",
-    help="Location of the info.json file containing the QB column mapping definitions.",
+    help="Location of the json file containing the column definitions.",
     type=click.Path(exists=True, path_type=Path, file_okay=True, dir_okay=False),
     required=True,
     metavar="CONFIG_PATH",
@@ -53,9 +49,14 @@ def entry_point():
     default=False,
     show_default=True,
 )
+@click.option("--logdir",
+    help= "type a name for the directory that will house the log files.",
+    type=str,
+    default = "csvcubedcli"
+)
 @click.option("--logginglvl",
-    help= "select a logging level out of: 'warn', 'err' or 'crit'.",
-    type=click.Choice(['warn', 'err', 'crit'], case_sensitive=False),
+    help= "select a logging level out of: 'warn', 'err', 'crit', 'info' or 'debug'.",
+    type=click.Choice(['warn', 'err', 'crit', 'info', 'debug'], case_sensitive=False),
     default= ['warn'],
 )
 @click.argument(
@@ -65,19 +66,27 @@ def build_command(
     config: Path,
     out: Path,
     csv: Path,
+    logdir: str,
     logginglvl: str,
-    fail_when_validation_error: bool=False,
-    validation_errors_to_file: bool=False,
+    fail_when_validation_error: bool,
+    validation_errors_to_file: bool,
 ):
     """Build a qb-flavoured CSV-W from a tidy CSV."""
     validation_errors_file_out = (
         out / "validation-errors.json" if validation_errors_to_file else None
     )
+    out.mkdir(parents=True, exist_ok=True)
+    root_logger_name: str = "csvcubed"
+    start_logging(
+        logdir = logdir,
+        selected_logging_level = logginglvl,
+        root_logger_name = root_logger_name,
+        )
     build(
         config=config,
         output_directory=out,
         csv_path=csv,
         fail_when_validation_error_occurs=fail_when_validation_error,
         validation_errors_file_out=validation_errors_file_out,
+        root_logger_name = root_logger_name,
     )
-    start_logging(logginglvl)

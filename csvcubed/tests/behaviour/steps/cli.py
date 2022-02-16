@@ -1,4 +1,5 @@
 import json
+import os
 from pathlib import Path
 
 from behave import when, then
@@ -17,14 +18,9 @@ def step_impl(context, arguments: str):
 
 @when('the log location is determined by Appdirs')
 def step_impl(context):
-    dirs = AppDirs("csvcubedcli","csvcubed")
+    dirs = AppDirs("log_test_dir","csvcubed")
     context.csvcubed_log_location = Path(dirs.user_log_dir)
-    logginglvl = 'warn'
-    context.was_log_file_created_for_bdd = False
 
-    if context.csvcubed_log_location.exists():
-        start_logging(selected_logging_level=logginglvl)
-        context.was_log_file_created_for_bdd = True
 
 @then("the csvcubed CLI should succeed")
 def step_impl(context):
@@ -84,8 +80,9 @@ def step_impl(context):
 
 @then('remove test log files')
 def step_impl(context):
-    if context.was_log_file_created_for_bdd:
-        Path(context.csvcubed_log_location).unlink(missing_ok=True)
+    Path(context.csvcubed_log_location).unlink(missing_ok=True)
+    truncated_log_path = Path(*(context.csvcubed_log_location).parts[:-1])
+    truncated_log_path.rmdir()
 
 def run_command_in_temp_dir(context, command: str) -> Tuple[int, str]:
     tmp_dir_path = get_context_temp_dir_path(context)
