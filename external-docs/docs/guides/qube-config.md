@@ -182,7 +182,7 @@ The `from_existing` value when set provides the basis of linked data; it allows 
 | `range_uri`      | A uri which describes the range of the values within the column (Optional) | *none*                                                       |
 | `uri_override`   | Override the uri created automatically for the column (Optional) (Advanced) | `tidy_data.csv#uri_safe_column_header_from_csv`              |
 | `uri_template`   | Override the uri generated for values within the uri (Optional) (Advanced) | **TODO** Look this up                                        |
-| `codelist`       | Link to an existing code list (Optional) (Advanced)          |                                                              |
+| `codelist`       | Link to an existing code list (by providing a uri), supress the generation of a codelist (by setting the value as false), or enforce the creation of a codelist (by setting the value as true)           | true                                                         |
 
 ### Attributes
 
