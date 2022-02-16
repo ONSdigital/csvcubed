@@ -8,7 +8,7 @@ import json
 import re
 from datetime import datetime
 from pathlib import Path
-from typing import Optional, Any, Callable, Tuple
+from typing import Optional, Any, Callable, Tuple, List
 from urllib.parse import urlparse, urljoin
 
 import dateutil.parser
@@ -16,6 +16,7 @@ import rdflib
 from csvcubedmodels.rdf import ExistingResource
 from csvcubedmodels.utils.uri import looks_like_uri
 from rdflib import Graph, Literal, URIRef
+from rdflib.query import ResultRow
 from rdflib.term import Identifier
 
 from csvcubedpmd.config import pmdconfig
@@ -399,15 +400,15 @@ def _get_catalog_entry_from_dcat_dataset(csvw_graph: Graph) -> pmdcat.Dataset:
             OPTIONAL { ?dataset dcat:landingPage ?landingPage }.
             OPTIONAL { ?dataset dcat:theme ?theme }.
             OPTIONAL { ?dataset dcat:keyword ?keyword }.
-            OPTIONAL { ?dataset dcat:contactPoint ?contactPoint }
-            OPTIONAL { ?dataset dcterms:identifier ?identifier }      
-            OPTIONAL { ?dataset pmdcat:datasetContents ?datasetContents }           
+            OPTIONAL { ?dataset dcat:contactPoint ?contactPoint }.
+            OPTIONAL { ?dataset dcterms:identifier ?identifier }.   
+            OPTIONAL { ?dataset pmdcat:datasetContents ?datasetContents }.           
         }
         """
         )
     )
 
-    results = [
+    results: List[ResultRow] = [
         r
         for r in results
         if any([r[k] is not None and r[k] != Literal("") for k in r.labels.keys()])
@@ -416,18 +417,18 @@ def _get_catalog_entry_from_dcat_dataset(csvw_graph: Graph) -> pmdcat.Dataset:
     if len(results) != 1:
         raise Exception(f"Expected 1 dcat:Dataset record, found {len(results)}")
 
-    record = results[0]
+    record = results[0].asdict()
 
     pmdcat_dataset = pmdcat.Dataset(record["dataset"])
     pmdcat_dataset.title = str(record["title"])
     pmdcat_dataset.label = str(record["label"])
     pmdcat_dataset.issued = dateutil.parser.isoparse(record["issued"])
     pmdcat_dataset.modified = dateutil.parser.isoparse(record["modified"])
-    pmdcat_dataset.comment = _none_or_map(record["comment"], str)
-    pmdcat_dataset.description = _none_or_map(record["description"], str)
-    pmdcat_dataset.license = _none_or_map(record["license"], str)
-    pmdcat_dataset.creator = _none_or_map(record["creator"], str)
-    pmdcat_dataset.publisher = _none_or_map(record["publisher"], str)
+    pmdcat_dataset.comment = _none_or_map(record.get("comment"), str)
+    pmdcat_dataset.description = _none_or_map(record.get("description"), str)
+    pmdcat_dataset.license = _none_or_map(record.get("license"), str)
+    pmdcat_dataset.creator = _none_or_map(record.get("creator"), str)
+    pmdcat_dataset.publisher = _none_or_map(record.get("publisher"), str)
     pmdcat_dataset.landing_page = (
         set()
         if len(record["landingPages"]) == 0
@@ -441,9 +442,9 @@ def _get_catalog_entry_from_dcat_dataset(csvw_graph: Graph) -> pmdcat.Dataset:
         if len(record["keywords"]) == 0
         else set(str(record["keywords"]).split("|"))
     )
-    pmdcat_dataset.contact_point = _none_or_map(record["contactPoint"], str)
-    pmdcat_dataset.identifier = str(record["identifier"])
-    dataset_contents_uri: str = str(record.get("datasetContents", pmdcat_dataset.uri))
+    pmdcat_dataset.contact_point = _none_or_map(record.get("contactPoint"), str)
+    pmdcat_dataset.identifier = str(record.get("identifier"))
+    dataset_contents_uri = record.get("datasetContents", record["dataset"])
     pmdcat_dataset.dataset_contents = ExistingResource(dataset_contents_uri)
 
     return pmdcat_dataset
