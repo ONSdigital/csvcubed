@@ -10,7 +10,6 @@ def test_detect_valid_csvw_metadata_datacube_input():
     """
     Should return true if the csv-w metadata input is a data cube or code list.
     """
-    print(_test_case_base_dir)
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
