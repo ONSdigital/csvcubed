@@ -73,7 +73,3 @@ def start_logging(
 
     if not log_file_already_exists:
         logger.critical("A log file containing the recordings of this cli, is at: "+dirs.user_log_dir)
-        logger.error("A log file containing the recordings of this cli, is at: "+dirs.user_log_dir)
-        logger.warning("A log file containing the recordings of this cli, is at: "+dirs.user_log_dir)
-        logger.info("A log file containing the recordings of this cli, is at: "+dirs.user_log_dir)
-        logger.debug("A log file containing the recordings of this cli, is at: "+dirs.user_log_dir)
