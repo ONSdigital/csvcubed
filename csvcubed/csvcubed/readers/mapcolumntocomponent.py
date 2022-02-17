@@ -14,51 +14,67 @@ from csvcubed.inputs import PandasDataTypes
 
 from csvcubed.readers import columnschema as schema
 
+from csvcubed.models.cube.qb.components import (
+    NewQbDimension,
+    ExistingQbDimension,
+    NewQbAttribute,
+    NewQbAttributeValue,
+    ExistingQbAttribute,
+    NewQbUnit,
+    ExistingQbUnit,
+    QbMultiUnits,
+    QbMultiMeasureDimension,
+    QbMultiMeasureObservationValue,
+    QbSingleMeasureObservationValue,
+    ExistingQbCodeList,
+    ExistingQbMeasure,
+    NewQbMeasure,
+    QbObservationValue,
+    NewQbCodeListInCsvW,
+)
+
 
 def map_column_to_qb_component(
         column_title: str,
         column: dict,
         data: PandasDataTypes,
-        info_json_parent_dir: Path
+        json_parent_dir: Path
 ) -> QbColumn:
     """
-    Takes an info.json v1.1 column mapping and, if valid,
+    Takes an config.json v1.0 column mapping and, if valid,
     returns a :obj:`~csvcubed.models.cube.qb.components.datastructuredefinition.QbDataStructureDefinition`.
     """
     schema_mapping = _from_column_dict_to_schema_model(column_title, column)
 
-    if isinstance(schema_mapping, schema.NewDimension):
-        new_qb_dimension = schema_mapping.map_to_new_qb_dimension(
-            column_title, data, info_json_parent_dir
+    if isinstance(schema_mapping, schema.Dimension):
+        qb_dimension = schema_mapping.map_to_qb_dimension(
+            column_title, data, json_parent_dir
         )
-        uri_template = (
-            None
-            if isinstance(new_qb_dimension.code_list, CompositeQbCodeList)
-            else schema_mapping.value
-        )
+
+        if isinstance(qb_dimension, NewQbDimension):
+            csv_column_uri_template = (
+                None
+                if isinstance(qb_dimension.code_list, CompositeQbCodeList)
+                else schema_mapping.value
+            )
+        else:
+            csv_column_uri_template = schema_mapping.value,
+
         return QbColumn(
             column_title,
-            new_qb_dimension,
-            csv_column_uri_template=uri_template,
+            qb_dimension,
+            csv_column_uri_template=csv_column_uri_template
         )
-    elif isinstance(schema_mapping, schema.ExistingDimension):
+
+    elif isinstance(schema_mapping, schema.Attribute):
         return QbColumn(
             column_title,
-            schema_mapping.map_to_existing_qb_dimension(),
+            schema_mapping.map_to_qb_attribute(column_title, data),
             csv_column_uri_template=schema_mapping.value,
         )
-    elif isinstance(schema_mapping, schema.NewAttribute):
-        return QbColumn(
-            column_title,
-            schema_mapping.map_to_new_qb_attribute(column_title, data),
-            csv_column_uri_template=schema_mapping.value,
-        )
-    elif isinstance(schema_mapping, schema.ExistingAttribute):
-        return QbColumn(
-            column_title,
-            schema_mapping.map_to_existing_qb_attribute(data),
-            csv_column_uri_template=schema_mapping.value,
-        )
+
+
+
     elif isinstance(schema_mapping, schema.NewUnits):
         return QbColumn(column_title, schema_mapping.map_to_qb_multi_units(data))
     elif isinstance(schema_mapping, schema.ExistingUnits):
@@ -87,14 +103,10 @@ def _from_column_dict_to_schema_model(
     column_title: str,
     column: dict,
 ) -> Union[
-    schema.NewDimension,
-    schema.ExistingDimension,
-    schema.NewAttribute,
-    schema.ExistingAttribute,
-    schema.NewUnits,
-    schema.ExistingUnits,
-    schema.NewMeasures,
-    schema.ExistingMeasures,
+    schema.Dimension,
+    schema.Attribute,
+    schema.Units,
+    schema.Measures,
     schema.ObservationValue,
 ]:
     """
@@ -108,55 +120,21 @@ def _from_column_dict_to_schema_model(
     if column_type is None:
         raise ValueError("Type of column not specified.")
     elif column_type == "dimension":
-        if any([column_without_type.get(a) for a in ['label', 'description', 'cell_uri_template', 'code_list']]):
-            # probably a New dimension, so move all properties under a new node
-            # 'new' can be bool or NewDimensionProperty (only former works)
-            column = {'type': column_type,
-                      'new': True}
-            column_without_type = {'new': True}
-
-        if schema.ExistingDimension.dict_fields_match_class(column_without_type):
-            return schema.ExistingDimension.from_dict(column)
-        elif schema.NewDimension.dict_fields_match_class(column_without_type):
-            result = schema.NewDimension.from_dict(column)
-            return result
+        if schema.Dimension.dict_fields_match_class(column_without_type):
+            return schema.Dimension.from_dict(column)
 
     elif column_type == "attribute":
-        if any([column_without_type.get(a) for a in ['label', 'description', 'definition_uri']]):
-            # probably a New attribute, so move all properties under a new node
-            # 'new' can be bool
-            column = {'type': column_type,
-                      'new': True}
-            column_without_type = {'new': True}
+        if schema.Attribute.dict_fields_match_class(column_without_type):
+            return schema.Attribute.from_dict(column)
 
-        # must have from_existing to be an existing attribute, if label, description, definition
-        # uri, is provided it is a new attribute
-        if schema.ExistingAttribute.dict_fields_match_class(column_without_type):
-            return schema.ExistingAttribute.from_dict(column)
-        elif schema.NewAttribute.dict_fields_match_class(column_without_type):
-            return schema.NewAttribute.from_dict(column)
     elif column_type == "units":
-        if any([column_without_type.get(a) for a in ['label', 'description', 'definition_uri']]):
-            # probably a New attribute, so move all properties under a new node
-            # 'new' can be bool
-            column = {'type': column_type,
-                      'new': True}
-            column_without_type = {'new': True}
-        if schema.ExistingUnits.dict_fields_match_class(column_without_type):
-            return schema.ExistingUnits.from_dict(column)
-        elif schema.NewUnits.dict_fields_match_class(column_without_type):
-            return schema.NewUnits.from_dict(column)
+        if schema.Units.dict_fields_match_class(column_without_type):
+            return schema.Units.from_dict(column)
+
     elif column_type == "measures":
-        if any([column_without_type.get(a) for a in ['label', 'description', 'definition_uri']]):
-            # probably a New attribute, so move all properties under a new node
-            # 'new' can be bool
-            column = {'type': column_type,
-                      'new': True}
-            column_without_type = {'new': True}
-        if schema.ExistingMeasures.dict_fields_match_class(column_without_type):
-            return schema.ExistingMeasures.from_dict(column)
-        elif schema.NewMeasures.dict_fields_match_class(column_without_type):
-            return schema.NewMeasures.from_dict(column)
+        if schema.Measures.dict_fields_match_class(column_without_type):
+            return schema.Measures.from_dict(column)
+
     elif column_type == "observations":
         return schema.ObservationValue.from_dict(column)
 
