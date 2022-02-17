@@ -9,6 +9,28 @@ from appdirs import AppDirs
 from typing import Union
 from pathlib import Path
 
+class CustomFormatter(logging.Formatter):
+
+    grey = "\x1b[2;20m"
+    light_grey = "\x1b[1;50m"
+    yellow = "\x1b[33;20m"
+    red = "\x1b[31;20m"
+    bold_red = "\x1b[31;1m"
+    reset = "\x1b[0m"
+    format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s (%(filename)s:%(lineno)d)"
+
+    FORMATS = {
+        logging.DEBUG: grey + format + reset,
+        logging.INFO: light_grey + format + reset,
+        logging.WARNING: yellow + format + reset,
+        logging.ERROR: red + format + reset,
+        logging.CRITICAL: bold_red + format + reset
+    }
+
+    def format(self, record):
+        log_fmt = self.FORMATS.get(record.levelno)
+        formatter = logging.Formatter(log_fmt)
+        return formatter.format(record)
 
 def start_logging(
     logdir:str,selected_logging_level: Union[str,None], root_logger_name: str = "csvcubed"
@@ -34,11 +56,7 @@ def start_logging(
     console_handler = logging.StreamHandler(sys.stderr)
     console_handler.setLevel(logging_level)
     console_handler.addFilter(ConsoleColourFilter())
-    console_handler.setFormatter(
-        logging.Formatter(
-            f"%(colour)s%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-        )
-    )
+    console_handler.setFormatter(CustomFormatter())
 
     file_handler = logging.FileHandler(dirs.user_log_dir)
     file_handler.setLevel(logging_level)
@@ -52,7 +70,10 @@ def start_logging(
     logger.addHandler(file_handler)
 
     logger.critical("A log file containing the recordings of this cli, is at: "+dirs.user_log_dir)
-
+    logger.error("A log file containing the recordings of this cli, is at: "+dirs.user_log_dir)
+    logger.warning("A log file containing the recordings of this cli, is at: "+dirs.user_log_dir)
+    logger.info("A log file containing the recordings of this cli, is at: "+dirs.user_log_dir)
+    logger.debug("A log file containing the recordings of this cli, is at: "+dirs.user_log_dir)
 
 class ConsoleColourFilter(logging.Filter):
     def filter(self, record: logging.LogRecord) -> bool:
