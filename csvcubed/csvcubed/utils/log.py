@@ -8,10 +8,11 @@ import sys
 from appdirs import AppDirs
 from typing import Union
 from pathlib import Path
+from cli import __init__
 
 
 def start_logging(
-    logdir:str,selected_logging_level: Union[str,None], root_logger_name: str
+    logdir:str,selected_logging_level: Union[str,None], root_logger_name: str = "csvcubed"
 ) -> None:
     if selected_logging_level == 'err':
         logging_level: int = logging.ERROR

@@ -76,11 +76,10 @@ def build_command(
         out / "validation-errors.json" if validation_errors_to_file else None
     )
     out.mkdir(parents=True, exist_ok=True)
-    root_logger_name: str = "csvcubed"
+
     start_logging(
         logdir = logdir,
         selected_logging_level = logginglvl,
-        root_logger_name = root_logger_name,
         )
     build(
         config=config,
@@ -88,5 +87,4 @@ def build_command(
         csv_path=csv,
         fail_when_validation_error_occurs=fail_when_validation_error,
         validation_errors_file_out=validation_errors_file_out,
-        root_logger_name = root_logger_name,
     )

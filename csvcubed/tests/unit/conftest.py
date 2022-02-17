@@ -9,7 +9,6 @@ from tests.behaviour import *
 def configure_logging():
     start_logging(
         logdir = 'log_test_dir', 
-        selected_logging_level = 'err', 
-        root_logger_name ="csvcubed"
+        selected_logging_level = 'err'
     )
 
