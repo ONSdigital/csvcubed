@@ -440,22 +440,17 @@
       },
       "keywordTypes": {
         "description": "A keyword or list of keywords relevant to the cube",
-        "additionalProperties": {
-          "oneOf": [
-            {
+        "oneOf": [
+          {
+            "$ref": "#/definitions/v1.0/types/keyword"
+          },
+          {
+            "type": "array",
+            "items": {
               "$ref": "#/definitions/v1.0/types/keyword"
-            },
-            {
-              "themeList": {
-                "description": "A list of keywords",
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/v1.0/types/keyword"
-                }
-              }
             }
-          ]
-        }
+          }
+        ]
       },
       "types": {
         "title": {
