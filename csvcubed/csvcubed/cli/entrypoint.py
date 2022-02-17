@@ -56,7 +56,7 @@ def entry_point():
     "--logginglvl",
     help="select a logging level out of: 'warn', 'err', 'crit', 'info' or 'debug'.",
     type=click.Choice(["warn", "err", "crit", "info", "debug"], case_sensitive=False),
-    default=["warn"],
+    default="warn",
 )
 @click.argument(
     "csv", type=click.Path(exists=True, path_type=Path), metavar="TIDY_CSV_PATH"
