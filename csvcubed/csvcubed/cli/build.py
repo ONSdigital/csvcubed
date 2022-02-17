@@ -6,7 +6,6 @@ Build a qb-flavoured CSV-W from an info.json and a tidy CSV.
 import logging
 from pathlib import Path
 from typing import Optional
-import __init__
 
 _logger = logging.getLogger(__name__)
 

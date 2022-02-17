@@ -8,7 +8,6 @@ import sys
 from appdirs import AppDirs
 from typing import Union
 from pathlib import Path
-from cli import __init__
 
 
 def start_logging(
