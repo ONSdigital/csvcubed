@@ -49,15 +49,14 @@ def entry_point():
     default=False,
     show_default=True,
 )
-@click.option("--logdir",
-    help= "Location for log files.",
-    type=str,
-    default = "csvcubedcli"
+@click.option(
+    "--logdir", help="Location for log files.", type=str, default="csvcubedcli"
 )
-@click.option("--logginglvl",
-    help= "select a logging level out of: 'warn', 'err', 'crit', 'info' or 'debug'.",
-    type=click.Choice(['warn', 'err', 'crit', 'info', 'debug'], case_sensitive=False),
-    default= ['warn'],
+@click.option(
+    "--logginglvl",
+    help="select a logging level out of: 'warn', 'err', 'crit', 'info' or 'debug'.",
+    type=click.Choice(["warn", "err", "crit", "info", "debug"], case_sensitive=False),
+    default=["warn"],
 )
 @click.argument(
     "csv", type=click.Path(exists=True, path_type=Path), metavar="TIDY_CSV_PATH"
@@ -78,9 +77,9 @@ def build_command(
     out.mkdir(parents=True, exist_ok=True)
 
     start_logging(
-        logdir = logdir,
-        selected_logging_level = logginglvl,
-        )
+        logdir=logdir,
+        selected_logging_level=logginglvl,
+    )
     build(
         config=config,
         output_directory=out,

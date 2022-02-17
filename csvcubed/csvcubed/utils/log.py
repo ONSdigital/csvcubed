@@ -9,6 +9,7 @@ from appdirs import AppDirs
 from typing import Union
 from pathlib import Path
 
+
 class CustomFormatter(logging.Formatter):
 
     grey = "\x1b[2;20m"
@@ -17,14 +18,16 @@ class CustomFormatter(logging.Formatter):
     red = "\x1b[31;20m"
     bold_red = "\x1b[31;1m"
     reset = "\x1b[0m"
-    formatting = "%(asctime)s - %(name)s - %(levelname)s - %(message)s (%(filename)s:%(lineno)d)"
+    formatting = (
+        "%(asctime)s - %(name)s - %(levelname)s - %(message)s (%(filename)s:%(lineno)d)"
+    )
 
     FORMATS = {
         logging.DEBUG: grey + formatting + reset,
         logging.INFO: light_grey + formatting + reset,
         logging.WARNING: yellow + formatting + reset,
         logging.ERROR: red + formatting + reset,
-        logging.CRITICAL: bold_red + formatting + reset
+        logging.CRITICAL: bold_red + formatting + reset,
     }
 
     def format(self, record):
@@ -32,16 +35,19 @@ class CustomFormatter(logging.Formatter):
         formatter = logging.Formatter(log_fmt)
         return formatter.format(record)
 
+
 def start_logging(
-    logdir:str,selected_logging_level: Union[str,None], root_logger_name: str = "csvcubed"
+    logdir: str,
+    selected_logging_level: Union[str, None],
+    root_logger_name: str = "csvcubed",
 ) -> None:
-    if selected_logging_level == 'err':
+    if selected_logging_level == "err":
         logging_level: int = logging.ERROR
-    elif selected_logging_level == 'crit':
+    elif selected_logging_level == "crit":
         logging_level: int = logging.CRITICAL
-    elif selected_logging_level == 'info':
+    elif selected_logging_level == "info":
         logging_level: int = logging.INFO
-    elif selected_logging_level == 'debug':
+    elif selected_logging_level == "debug":
         logging_level: int = logging.DEBUG
     else:
         logging_level: int = logging.WARNING
@@ -51,7 +57,7 @@ def start_logging(
     log_file_already_exists = True
     if not log_file_path.exists():
         log_file_already_exists: bool = False
-    log_file_path.parent.mkdir(parents=True,exist_ok=True)
+    log_file_path.parent.mkdir(parents=True, exist_ok=True)
 
     logger = logging.getLogger(root_logger_name)
     logger.setLevel(logging.DEBUG)
@@ -63,13 +69,14 @@ def start_logging(
     file_handler = logging.FileHandler(dirs.user_log_dir)
     file_handler.setLevel(logging_level)
     file_handler.setFormatter(
-        logging.Formatter(
-            f"%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-        )
+        logging.Formatter(f"%(asctime)s - %(name)s - %(levelname)s - %(message)s")
     )
 
     logger.addHandler(console_handler)
     logger.addHandler(file_handler)
 
     if not log_file_already_exists:
-        logger.critical("A log file containing the recordings of this cli, is at: "+dirs.user_log_dir)
+        logger.critical(
+            "A log file containing the recordings of this cli, is at: "
+            + dirs.user_log_dir
+        )

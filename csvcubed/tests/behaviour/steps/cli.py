@@ -14,6 +14,7 @@ def step_impl(context, arguments: str):
     (status_code, response) = run_command_in_temp_dir(context, command)
     context.csvcubed_cli_result = (status_code, response)
 
+
 @when('the location of "{log_test_dir}" is determined by Appdirs')
 def step_impl(context, log_test_dir: str):
     dirs = AppDirs(log_test_dir, "csvcubed")
@@ -24,7 +25,7 @@ def step_impl(context, log_test_dir: str):
 def step_impl(context):
     (status_code, response) = context.csvcubed_cli_result
     assert status_code == 0, (status_code, response)
-    #assert "Build Complete" in response, response
+    # assert "Build Complete" in response, response
 
 
 @then("the csvcubed CLI should fail with status code {status_code}")
@@ -37,6 +38,7 @@ def step_impl(context, status_code: str):
 def step_impl(context, printed_text: str):
     (status_code, response) = context.csvcubed_cli_result
     assert printed_text in response, response
+
 
 @then('the csvcubed CLI should not print "{printed_text}"')
 def step_impl(context, printed_text: str):
@@ -60,7 +62,8 @@ def step_impl(context, out_dir: str):
 
     assert expected_text_contents in file_contents, file_contents
 
-@then('the log file should contain')
+
+@then("the log file should contain")
 def step_impl(context):
     log_file = context.csvcubed_log_location
     expected_text_contents: str = context.text.strip()
@@ -71,16 +74,19 @@ def step_impl(context):
 
     assert expected_text_contents in file_contents, file_contents
 
-@then('the log file should exist')
+
+@then("the log file should exist")
 def step_impl(context):
     log_file = context.csvcubed_log_location
     assert log_file.exists()
 
-@then('remove test log files')
+
+@then("remove test log files")
 def step_impl(context):
     Path(context.csvcubed_log_location).unlink(missing_ok=True)
     truncated_log_path = Path(*(context.csvcubed_log_location).parts[:-1])
     truncated_log_path.rmdir()
+
 
 def run_command_in_temp_dir(context, command: str) -> Tuple[int, str]:
     tmp_dir_path = get_context_temp_dir_path(context)
