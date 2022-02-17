@@ -13,7 +13,7 @@ from .build import build
 @click.group(context_settings=dict(help_option_names=["-h", "--help"]))
 def entry_point():
     """
-    csvcubed - a tool to generate qb-flavoured CSV-W cubes from COGS-style info.json files.
+    csvcubed - a tool to generate qb-flavoured CSV-W cubes from qube-config files.
     """
 
 
@@ -21,7 +21,7 @@ def entry_point():
 @click.option(
     "--config",
     "-c",
-    help="Location of the json file containing the column definitions.",
+    help="Location of the json file containing the qube-config file.",
     type=click.Path(exists=True, path_type=Path, file_okay=True, dir_okay=False),
     required=True,
     metavar="CONFIG_PATH",
@@ -50,7 +50,7 @@ def entry_point():
     show_default=True,
 )
 @click.option("--logdir",
-    help= "type a name for the directory that will house the log files.",
+    help= "Location for log files.",
     type=str,
     default = "csvcubedcli"
 )
