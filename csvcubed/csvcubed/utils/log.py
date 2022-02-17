@@ -17,14 +17,14 @@ class CustomFormatter(logging.Formatter):
     red = "\x1b[31;20m"
     bold_red = "\x1b[31;1m"
     reset = "\x1b[0m"
-    format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s (%(filename)s:%(lineno)d)"
+    formatting = "%(asctime)s - %(name)s - %(levelname)s - %(message)s (%(filename)s:%(lineno)d)"
 
     FORMATS = {
-        logging.DEBUG: grey + format + reset,
-        logging.INFO: light_grey + format + reset,
-        logging.WARNING: yellow + format + reset,
-        logging.ERROR: red + format + reset,
-        logging.CRITICAL: bold_red + format + reset
+        logging.DEBUG: grey + formatting + reset,
+        logging.INFO: light_grey + formatting + reset,
+        logging.WARNING: yellow + formatting + reset,
+        logging.ERROR: red + formatting + reset,
+        logging.CRITICAL: bold_red + formatting + reset
     }
 
     def format(self, record):
@@ -48,6 +48,9 @@ def start_logging(
 
     dirs = AppDirs(logdir, "csvcubed")
     log_file_path = Path(dirs.user_log_dir)
+    log_file_already_exists = True
+    if not log_file_path.exists():
+        log_file_already_exists: bool = False
     log_file_path.parent.mkdir(parents=True,exist_ok=True)
 
     logger = logging.getLogger(root_logger_name)
@@ -55,7 +58,6 @@ def start_logging(
 
     console_handler = logging.StreamHandler(sys.stderr)
     console_handler.setLevel(logging_level)
-    console_handler.addFilter(ConsoleColourFilter())
     console_handler.setFormatter(CustomFormatter())
 
     file_handler = logging.FileHandler(dirs.user_log_dir)
@@ -69,21 +71,9 @@ def start_logging(
     logger.addHandler(console_handler)
     logger.addHandler(file_handler)
 
-    logger.critical("A log file containing the recordings of this cli, is at: "+dirs.user_log_dir)
-    logger.error("A log file containing the recordings of this cli, is at: "+dirs.user_log_dir)
-    logger.warning("A log file containing the recordings of this cli, is at: "+dirs.user_log_dir)
-    logger.info("A log file containing the recordings of this cli, is at: "+dirs.user_log_dir)
-    logger.debug("A log file containing the recordings of this cli, is at: "+dirs.user_log_dir)
-
-class ConsoleColourFilter(logging.Filter):
-    def filter(self, record: logging.LogRecord) -> bool:
-        # if record.levelno >= logging.ERROR:
-        #     record.colour = Fore.RED + Style.BRIGHT  # type: ignore
-        # elif record.levelno >= logging.WARNING:
-        #     record.colour = Fore.YELLOW  # type: ignore
-        # else:
-        #     record.colour = Fore.LIGHTBLACK_EX  # type: ignore
-        # todo: Sort colouring out in Issue #322.
-        record.colour = ""  # type: ignore
-
-        return True
+    if not log_file_already_exists:
+        logger.critical("A log file containing the recordings of this cli, is at: "+dirs.user_log_dir)
+        logger.error("A log file containing the recordings of this cli, is at: "+dirs.user_log_dir)
+        logger.warning("A log file containing the recordings of this cli, is at: "+dirs.user_log_dir)
+        logger.info("A log file containing the recordings of this cli, is at: "+dirs.user_log_dir)
+        logger.debug("A log file containing the recordings of this cli, is at: "+dirs.user_log_dir)
