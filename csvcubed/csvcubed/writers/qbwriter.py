@@ -6,6 +6,7 @@ Output writer for CSV-qb
 """
 import itertools
 import json
+import logging
 import re
 from dataclasses import field
 from pathlib import Path
@@ -54,6 +55,9 @@ from ..models.cube.qb.components.arbitraryrdf import RdfSerialisationHint
 from csvcubed.models.rdf.qbdatasetincatalog import QbDataSetInCatalog
 from ..utils.qb.validation.observations import get_observation_status_columns
 
+
+_logger = logging.getLogger(__name__)
+
 VIRT_UNIT_COLUMN_NAME = "virt_unit"
 
 
@@ -66,11 +70,19 @@ class QbWriter(WriterBase):
 
     def __post_init__(self):
         self.csv_file_name = f"{self.cube.metadata.uri_safe_identifier}.csv"
+        _logger.debug(
+            "Initialising %s with CSV output set to '%s'",
+            QbWriter.__name__,
+            self.csv_file_name,
+        )
         self._new_uri_helper = QbCubeNewUriHelper(self.cube)
 
     def write(self, output_folder: Path):
         # Map all labels to their corresponding URI-safe-values, where possible.
         # Also converts all appropriate columns to the pandas categorical format.
+
+        _logger.info("Beginning CSV-W Generation")
+
         convert_data_values_to_uri_safe_values(
             self.cube, self.raise_missing_uri_safe_value_exceptions
         )
@@ -98,11 +110,17 @@ class QbWriter(WriterBase):
             "rdfs:seeAlso": self._get_additional_rdf_metadata(),
         }
 
-        with open(output_folder / f"{self.csv_file_name}-metadata.json", "w+") as f:
+        metadata_json_output_path = (
+            output_folder / f"{self.csv_file_name}-metadata.json"
+        )
+        with open(metadata_json_output_path, "w+") as f:
+            _logger.debug("Writing CSV-W JSON-LD to %s", metadata_json_output_path)
             json.dump(csvw_metadata, f, indent=4)
 
         if self.cube.data is not None:
-            self.cube.data.to_csv(output_folder / self.csv_file_name, index=False)
+            csv_output_file_path = output_folder / self.csv_file_name
+            _logger.debug("Writing CSV to %s", csv_output_file_path)
+            self.cube.data.to_csv(csv_output_file_path, index=False)
 
     def _get_additional_rdf_metadata(self) -> List[dict]:
         """
@@ -642,6 +660,10 @@ class QbWriter(WriterBase):
         return new_unit_resources
 
     def _generate_csvqb_column(self, column: CsvColumn) -> Dict[str, Any]:
+        _logger.debug(
+            "Generating CSV-W Column Definition for '%s'", column.csv_column_title
+        )
+
         csvw_col: Dict[str, Any] = {
             "titles": column.csv_column_title,
             "name": csvw_column_name_safe(column.uri_safe_identifier),
@@ -649,6 +671,7 @@ class QbWriter(WriterBase):
 
         if isinstance(column, SuppressedCsvColumn):
             csvw_col["suppressOutput"] = True
+            _logger.debug("'%s' is a suppressed column", column.csv_column_title)
         elif isinstance(column, QbColumn):
             self._define_csvw_column_for_qb_column(csvw_col, column)
         else:
@@ -661,10 +684,23 @@ class QbWriter(WriterBase):
     def _define_csvw_column_for_qb_column(
         self, csvw_col: dict, column: QbColumn
     ) -> None:
+        _logger.debug(
+            "Expanding CSV-W column definition for DSD column '%s' (%s).",
+            column.csv_column_title,
+            column.structural_definition.__class__.__name__,
+        )
+
         (
             property_url,
             default_value_url,
         ) = self._get_default_property_value_uris_for_column(column)
+
+        _logger.debug(
+            "Column has default propertyUrl '%s' and default valueUrl '%s'.",
+            property_url,
+            default_value_url,
+        )
+
         if property_url is not None:
             csvw_col["propertyUrl"] = property_url
 
@@ -672,19 +708,27 @@ class QbWriter(WriterBase):
             # User-specified value overrides our default guess.
             csvw_col["valueUrl"] = column.csv_column_uri_template
         elif isinstance(column.structural_definition, QbAttributeLiteral):
+            _logger.debug("Column valueUrl is left unset.")
             pass
         elif default_value_url is not None:
             csvw_col["valueUrl"] = default_value_url
 
         if isinstance(column.structural_definition, QbObservationValue):
+            _logger.debug(
+                "Setting CSV-W datatype to %s.", column.structural_definition.data_type
+            )
             csvw_col["datatype"] = column.structural_definition.data_type
         elif isinstance(column.structural_definition, QbAttributeLiteral):
+            _logger.debug(
+                "Setting CSV-W datatype to %s.", column.structural_definition.data_type
+            )
             csvw_col["datatype"] = column.structural_definition.data_type
 
-        csvw_col["required"] = (
-            isinstance(column.structural_definition, QbDimension)
-            or isinstance(column.structural_definition, QbMultiUnits)
-            or isinstance(column.structural_definition, QbMultiMeasureDimension)
+        is_required = (
+            isinstance(
+                column.structural_definition,
+                (QbDimension, QbMultiUnits, QbMultiMeasureDimension),
+            )
             or (
                 isinstance(column.structural_definition, QbAttribute)
                 and column.structural_definition.get_is_required()
@@ -697,6 +741,13 @@ class QbWriter(WriterBase):
             )
         )
 
+        if is_required:
+            _logger.debug("Column is required.")
+        else:
+            _logger.debug("Column is not required.")
+
+        csvw_col["required"] = is_required
+
     def _get_default_property_value_uris_for_multi_units(
         self, column: QbColumn, multi_units: QbMultiUnits
     ) -> Tuple[str, str]:
@@ -708,8 +759,10 @@ class QbWriter(WriterBase):
 
         unit_value_uri: str
         if all_units_new:
+            _logger.debug("All units are new; they define the column's valueUrl.")
             unit_value_uri = self._new_uri_helper.get_unit_uri(column_template_fragment)
         elif all_units_existing:
+            _logger.debug("All units are existing.")
             unit_value_uri = column_template_fragment
         else:
             # todo: Come up with a solution for this!
@@ -746,8 +799,10 @@ class QbWriter(WriterBase):
 
         column_template_fragment = self._get_column_uri_template_fragment(column)
         if all_measures_new:
+            _logger.debug("All measures are new; they define the column's valueUrl.")
             return self._new_uri_helper.get_measure_uri(column_template_fragment)
         elif all_measures_existing:
+            _logger.debug("All measures are existing.")
             if column.csv_column_uri_template is None:
                 raise ValueError(
                     "A URI value template must be defined when a measures column reuses existing measures."
@@ -826,7 +881,15 @@ class QbWriter(WriterBase):
                 dimension.uri_safe_identifier
             )
             value_uri = self._get_column_uri_template_fragment(column)
-            if dimension.code_list is not None:
+            if dimension.code_list is None:
+                _logger.debug(
+                    "Dimension does not have code list; valueUrl defaults directly to column's value."
+                )
+            else:
+                _logger.debug(
+                    "Dimension valueUrl determined by code list %s.",
+                    dimension.code_list,
+                )
                 value_uri = self._get_default_value_uri_for_code_list_concepts(
                     column, dimension.code_list
                 )
@@ -843,11 +906,16 @@ class QbWriter(WriterBase):
         value_uri = self._get_column_uri_template_fragment(column)
         if isinstance(attribute, ExistingQbAttribute):
             if len(attribute.new_attribute_values) > 0:
+                _logger.debug(
+                    "Existing Attribute has new attribute values which define the valueUrl."
+                )
                 # NewQbAttributeValues defined here.
                 value_uri = self._new_uri_helper.get_attribute_value_uri(
                     column.uri_safe_identifier, column_uri_fragment
                 )
-            # Else: Existing attribute values defined elsewhere. The user *should* have defined an csv_column_uri_template.
+            else:
+                _logger.debug("Existing Attribute does not have new attribute values.")
+
             # N.B. We can't do mix-and-match New/Existing attribute values.
 
             return attribute.attribute_uri, value_uri
@@ -857,12 +925,16 @@ class QbWriter(WriterBase):
             )
 
             if len(attribute.new_attribute_values) > 0:
+                _logger.debug(
+                    "New Attribute has new attribute values which define the valueUrl."
+                )
                 # NewQbAttributeValues defined here.
                 value_uri = self._new_uri_helper.get_attribute_value_uri(
                     attribute.uri_safe_identifier, column_uri_fragment
                 )
-            # Else: Existing attribute values defined elsewhere. The user *should* have defined an
-            # csv_column_uri_template.
+            else:
+                _logger.debug("New Attribute does not have new attribute values.")
+
             # N.B. We can't do mix-and-match New/Existing attribute values.
 
             return local_attribute_uri, value_uri
