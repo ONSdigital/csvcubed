@@ -3,6 +3,7 @@ CLI
 ---
 The *Command Line Interface* for :mod:`~csvcubed.csvcubedcli.infojson2csvqb`.
 """
+import logging
 import click
 from pathlib import Path
 from csvcubed.utils.log import start_logging
@@ -50,7 +51,10 @@ def entry_point():
     show_default=True,
 )
 @click.option(
-    "--logdir", help="Location for log files.", type=str, default="csvcubedcli"
+    "--logdir", 
+    help="Location for log files.", 
+    type=str, 
+    default="csvcubedcli"
 )
 @click.option(
     "--logginglvl",
@@ -76,14 +80,19 @@ def build_command(
     )
     out.mkdir(parents=True, exist_ok=True)
 
+    logger = logging.getLogger(__name__)
     start_logging(
         logdir=logdir,
         selected_logging_level=logginglvl,
     )
-    build(
-        config=config,
-        output_directory=out,
-        csv_path=csv,
-        fail_when_validation_error_occurs=fail_when_validation_error,
-        validation_errors_file_out=validation_errors_file_out,
-    )
+    try:
+        build(
+            config=config,
+            output_directory=out,
+            csv_path=csv,
+            fail_when_validation_error_occurs=fail_when_validation_error,
+            validation_errors_file_out=validation_errors_file_out,
+        )
+    except Exception as e:
+        logger.error(e, exc_info=True)
+        raise
