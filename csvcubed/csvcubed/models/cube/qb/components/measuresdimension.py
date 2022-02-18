@@ -34,8 +34,10 @@ class QbMultiMeasureDimension(QbColumnStructuralDefinition):
     @staticmethod
     def new_measures_from_data(data: PandasDataTypes) -> "QbMultiMeasureDimension":
         columnar_data = pandas_input_to_columnar_str(data)
+
+        qb_measures = [NewQbMeasure(m) for m in sorted(set(columnar_data))]
         return QbMultiMeasureDimension(
-            [NewQbMeasure(m) for m in sorted(set(columnar_data))]
+            qb_measures  # TODO investigate None value from generator
         )
 
     @staticmethod

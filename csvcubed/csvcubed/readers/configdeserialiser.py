@@ -148,9 +148,9 @@ def _override_catalog_metadata_state(
 
 
 def _from_config_json_dict(d: Dict,
-                         data: pd.DataFrame,
-                         json_parent_dir: Path
-                         ) -> QbCube:
+                           data: pd.DataFrame,
+                           json_parent_dir: Path
+                          ) -> QbCube:
 
     metadata: CatalogMetadata = _metadata_from_dict(d)
     columns: List[CsvColumn] = _columns_from_config_json(d.get("columns", []), data, json_parent_dir)
@@ -185,10 +185,10 @@ def _override_config_for_cube_id(config: dict, cube_id: str) -> Optional[dict]:
 def _metadata_from_dict(config: dict) -> "CatalogMetadata":
     creator = get_with_func_or_none(config, "creator", lambda c: str(GOV[uri_safe(c)]))
     publisher = get_with_func_or_none(config, "publisher", lambda p: str(GOV[uri_safe(p)]))
-    themes = config.get('theme', "")
+    themes = config.get('themes', "")
     if isinstance(themes, str) and themes:
         themes = [themes]
-    keywords = config.get('keyword', "")
+    keywords = config.get('keywords', "")
     if isinstance(keywords, str) and keywords:
         keywords = [keywords]
 
@@ -400,6 +400,7 @@ def get_cube_from_data(csv_path: Path, data: PandasDataTypes) -> QbCube:
         "units": 0,
         "attribute": 0,
     }
+    cube_columns: List[QbColumn] = []
     column_types: List[str] = []
     for i, column_name in enumerate(data.columns):
         # Determine column type by matching column names accepted by convention or default to 'dimension'
@@ -427,22 +428,21 @@ def get_cube_from_data(csv_path: Path, data: PandasDataTypes) -> QbCube:
         raise ValueError("The data does not contain any attribute columns")
 
     # At this point we have confirmed that we have sufficient rows and columns by type so lets build our cube
-    cube_columns: List[QbColumn] = []
-    column_types: List[str] = []
+    # column_types: List[str] = []
 
-    # Identify column types and count
-    for i, column_name in enumerate(data.columns):
-        # Determine column type by matching column names accepted by convention or default to 'dimension'
-        convention_name_matches = [
-            standard_name
-            for standard_name, options in CONVENTION_NAMES.items()
-            if column_name.lower() in options
-        ]
-        column_type = (
-            convention_name_matches[0] if convention_name_matches else "dimension"
-        )
-        # cols[i] = {'index': i, 'column_name': column_name, 'qb_type': column_type }
-        column_types.append(column_type)
+    # # Identify column types and count
+    # for i, column_name in enumerate(data.columns):
+    #     # Determine column type by matching column names accepted by convention or default to 'dimension'
+    #     convention_name_matches = [
+    #         standard_name
+    #         for standard_name, options in CONVENTION_NAMES.items()
+    #         if column_name.lower() in options
+    #     ]
+    #     column_type = (
+    #         convention_name_matches[0] if convention_name_matches else "dimension"
+    #     )
+    #     # cols[i] = {'index': i, 'column_name': column_name, 'qb_type': column_type }
+    #     column_types.append(column_type)
 
     for i, column_type in enumerate(column_types):
         # Build a dict of fields for the identified column types' data-class
@@ -450,7 +450,11 @@ def get_cube_from_data(csv_path: Path, data: PandasDataTypes) -> QbCube:
         column_data = data.T.iloc[i]
 
         if column_type == "dimension":
-            column_dict = {"type": column_type, "new": True, "value": column_name}
+            column_dict = {
+                "type": column_type,
+                "label": column_name,
+                "code_list": True
+            }
 
         elif column_type == "observations":
             column_dict = {
@@ -460,7 +464,10 @@ def get_cube_from_data(csv_path: Path, data: PandasDataTypes) -> QbCube:
             }
 
         elif column_type in ["measures", "units"]:
-            column_dict = {"type": column_type, "new": True}
+            column_dict = {
+                "type": column_type
+                # "label": column_name
+            }
         elif column_type == "attribute":
             # Note: attribute type columns are currently not supported
             raise ValueError(
@@ -477,11 +484,13 @@ def get_cube_from_data(csv_path: Path, data: PandasDataTypes) -> QbCube:
                 column_title=column_name,
                 column=column_dict,
                 data=column_data.astype("category"),
-                json_parent_dir=None,
+                json_parent_dir=csv_path.parent.absolute(),
             )
             cube_columns.append(qb_column)
 
         except Exception as err:
+            import traceback
+            traceback.print_exc()
             log.error(f"{type(err)} exception raised because: {repr(err)}")
 
     cube_metadata = _metadata_from_dict(
