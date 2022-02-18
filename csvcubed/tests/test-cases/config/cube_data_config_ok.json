@@ -5,7 +5,7 @@
   "description": "Schema for testing",
   "creator": "http://Fred the creator",
   "publisher": "http://Joe the publisher",
-  "theme": "A Theme",
+  "themes": "A Theme",
   "spatial_bound":"spatial",
   "temporal_bound": "temporal",
   "licence": "the licence",
@@ -13,9 +13,20 @@
   "dataset-modified": "2020/02/16",
   "license": "the licence",
   "summary": "a summary",
-  "keyword": "two",
+  "keywords": "two",
   "uri_safe_identifier_override": "uri-safe",
   "columns": {
+    "Measure": {
+      "type": "measures"
+    },
+    "Units": {
+      "type": "units"
+    },
+    "Attr-1": {
+      "type": "attribute",
+      "label": "Some Attr",
+      "required": true
+    },
     "Dim-0": {
       "label": "Non Dimension",
       "code_list": true
@@ -30,21 +41,8 @@
       "label": "Trade Direction Dimension",
       "code_list": true
     },
-    "Attr-1": {
-      "type": "attribute",
-      "label": "Some Attr",
-      "required": true
-    },
     "Amount": {
       "type": "observations",
-      "label": "Volume"
-    },
-    "Measure": {
-      "type": "measures",
-      "label": "MyMeasure"
-    },
-    "Units": {
-      "type": "units",
       "label": "Volume"
     }
   }

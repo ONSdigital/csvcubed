@@ -68,7 +68,7 @@ def test_build_98():
     test_case_json = None
     print(f"test_case_data: {test_case_data}")
     print(f"test_case_config: {test_case_config}")
-    cube, validation_errors = build(csv_path=test_case_data, info_json=test_case_config)
+    cube, validation_errors = build(csv_path=test_case_data, config_json=test_case_config)
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, List)
 
@@ -83,6 +83,10 @@ def test_build_99():
     cube, validation_errors = build(csv_path=test_case_data)
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, List)
+    print("*******************************")
+    cj = cube.as_dict()
+    print(cj)
+    print("*******************************")
 
 
 if __name__ == "__main__":

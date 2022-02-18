@@ -22,8 +22,8 @@ class CatalogMetadata(CatalogMetadataBase, UriIdentifiable):
     creator_uri: Optional[str] = field(default=None, repr=False)
     publisher_uri: Optional[str] = field(default=None, repr=False)
     landing_page_uris: list[str] = field(default_factory=list, repr=False) 
-    theme_uris: list[str] = field(default_factory=list, repr=False)
-    keywords: list[str] = field(default_factory=list, repr=False)
+    theme_uris: Optional[list[str]] = field(default_factory=list, repr=False)
+    keywords: Optional[list[str]] = field(default_factory=list, repr=False)
     dataset_issued: Optional[datetime] = field(default=None, repr=False)
     dataset_modified: Optional[datetime] = field(default=None, repr=False)
     license_uri: Optional[str] = field(default=None, repr=False)
@@ -78,6 +78,6 @@ class CatalogMetadata(CatalogMetadataBase, UriIdentifiable):
         dataset.publisher = self.publisher_uri
         dataset.landing_page = set(self.landing_page_uris)
         dataset.themes = set(self.theme_uris)
-        dataset.keywords = set(self.keywords)
+        dataset.keywords = set(self.keyword)
         dataset.contact_point = self.public_contact_point_uri
         dataset.identifier = self.get_identifier()

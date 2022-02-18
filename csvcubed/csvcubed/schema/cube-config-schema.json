@@ -50,10 +50,10 @@
       "format": "uri",
       "default": "https://tdg.docbook.org/tdg/publishers/5.1/dcterms.html#dcterms.temporal"
     },
-    "theme": {
+    "themes": {
       "$ref": "#/definitions/v1.0/themeTypes"
     },
-    "keyword": {
+    "keywords": {
       "$ref": "#/definitions/v1.0/keywordTypes"
     },
     "dataset_issued": {
@@ -146,8 +146,7 @@
           "type": "object",
           "additionalProperties": false,
           "required": [
-            "type",
-            "values"
+            "type"
           ],
           "properties": {
             "type": {
