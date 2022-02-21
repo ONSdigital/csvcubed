@@ -1,5 +1,6 @@
 from pathlib import Path
 from csvcubed.utils.file import get_root_dir_level
+from csvcubed.utils.qb.components import ComponentPropertyType
 import dateutil.parser
 
 from csvcubed.cli.inspect.inspectsparqlmanager import (
@@ -137,6 +138,17 @@ def test_select_csvw_dsd_dataset():
 
     assert str(result_dict["dataSetLabel"]) == "Alcohol Bulletin"
     assert len(components) == 17
+    assert (
+        str(components[0]["componentProperty"])
+        == "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod"
+    )
+    assert components[0]["componentPropertyLabel"] is None
+    assert (
+        str(components[0]["componentPropertyType"])
+        == ComponentPropertyType.Dimension.value
+    )
+    assert components[0]["csvColumnTitle"] is None
+    assert components[0]["required"] is None
 
 
 def test_select_cols_when_supress_output_cols_not_present():
