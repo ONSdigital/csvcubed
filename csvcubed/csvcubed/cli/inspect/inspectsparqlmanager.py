@@ -16,7 +16,7 @@ from rdflib.query import ResultRow
 from csvcubed.utils.sparql import ask, select
 
 
-class SPARQLQueryType(Enum):
+class SPARQLQueryFileName(Enum):
     """
     The file name of sparql query.
     """
@@ -34,7 +34,7 @@ class SPARQLQueryType(Enum):
     SELECT_COLS_W_SUPPRESS_OUTPUT = "select_cols_w_suppress_output"
 
 
-def _get_query_string_from_file(queryType: SPARQLQueryType) -> str:
+def _get_query_string_from_file(queryType: SPARQLQueryFileName) -> str:
     """
     Read the sparql query string from sparql file for the given query type.
 
@@ -69,7 +69,7 @@ def ask_is_csvw_code_list(rdf_graph: Graph) -> bool:
     :return: `bool` - Boolean specifying whether the rdf is code list (true) or not (false).
     """
     return ask(
-        _get_query_string_from_file(SPARQLQueryType.ASK_IS_CODELIST),
+        _get_query_string_from_file(SPARQLQueryFileName.ASK_IS_CODELIST),
         rdf_graph,
     )
 
@@ -83,7 +83,7 @@ def ask_is_csvw_qb_dataset(rdf_graph: Graph) -> bool:
     :return: `bool` - Boolean specifying whether the rdf is code list (true) or not (false).
     """
     return ask(
-        _get_query_string_from_file(SPARQLQueryType.ASK_IS_QB_DATASET),
+        _get_query_string_from_file(SPARQLQueryFileName.ASK_IS_QB_DATASET),
         rdf_graph,
     )
 
@@ -97,7 +97,7 @@ def select_csvw_catalog_metadata(rdf_graph: Graph) -> ResultRow:
     :return: `List[ResultRow]` - List containing the results. The expected length of this list for this query is 1.
     """
     results: List[ResultRow] = select(
-        _get_query_string_from_file(SPARQLQueryType.SELECT_CATALOG_METADATA),
+        _get_query_string_from_file(SPARQLQueryFileName.SELECT_CATALOG_METADATA),
         rdf_graph,
     )
 
@@ -116,7 +116,7 @@ def select_csvw_dsd_dataset_label_and_dsd_def_uri(rdf_graph: Graph) -> ResultRow
     :return: `List[ResultRow]` - List containing the results. The expected length of this list for this query is 1.
     """
     results: List[ResultRow] = select(
-        _get_query_string_from_file(SPARQLQueryType.SELECT_DSD_DATASETLABEL_AND_URI),
+        _get_query_string_from_file(SPARQLQueryFileName.SELECT_DSD_DATASETLABEL_AND_URI),
         rdf_graph,
     )
 
@@ -135,7 +135,7 @@ def select_csvw_dsd_qube_components(rdf_graph: Graph, dsd_uri: str) -> List[Resu
     :return: `List[ResultRow]` - List containing the results.
     """
     return select(
-        _get_query_string_from_file(SPARQLQueryType.SELECT_DSD_QUBE_COMPONENTS),
+        _get_query_string_from_file(SPARQLQueryFileName.SELECT_DSD_QUBE_COMPONENTS),
         rdf_graph,
         init_bindings={"dsd_uri": URIRef(dsd_uri)},
     )
@@ -150,6 +150,6 @@ def select_cols_w_supress_output(rdf_graph: Graph) -> List[ResultRow]:
     :return: `List[ResultRow]` - List containing the results.
     """
     return select(
-        _get_query_string_from_file(SPARQLQueryType.SELECT_COLS_W_SUPPRESS_OUTPUT),
+        _get_query_string_from_file(SPARQLQueryFileName.SELECT_COLS_W_SUPPRESS_OUTPUT),
         rdf_graph,
     )
