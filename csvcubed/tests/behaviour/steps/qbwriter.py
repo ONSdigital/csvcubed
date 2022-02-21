@@ -435,7 +435,7 @@ def step_impl(context, validation_error: str):
 
 @Step("the CSVqb should pass all validations")
 def step_impl(context):
-    cube: Cube = context.cube
+    cube: QbCube = context.cube
     errors = cube.validate()
     errors += validate_qb_component_constraints(context.cube)
     assert len(errors) == 0, [e.message for e in errors]

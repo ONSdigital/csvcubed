@@ -19,7 +19,6 @@ rdflib = "*"
 requests = "*"
 unidecode = "*"
 uritemplate = "*"
-colorama = "^0.4.4"
 click = "^8.0.3"
 chardet = "^4.0.0"
 
