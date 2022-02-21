@@ -5,15 +5,15 @@ Metadata Input Handler
 Provides functionality for validating the input metadata.json and detecting its type (i.e. DataCube, CodeList or other) file.
 """
 
-import logging
 from enum import Enum
 from typing import Tuple
 
 from rdflib import Graph
 
-from csvcubed.utils.sparql import ask
-
-_logger = logging.getLogger(__name__)
+from csvcubed.cli.inspect.inspectsparqlqueries import (
+    ask_is_csvw_code_list,
+    ask_is_csvw_qb_dataset,
+)
 
 
 class CSVWType(Enum):
@@ -53,38 +53,18 @@ class MetadataValidator:
             metadata_type,
         )
 
-    # Below code is duplicated from csvcubed pmd package. In the future, we would need to abstract away this to a shared utils project.
     def _detect_type(self) -> CSVWType:
         """
         Detects the type of metadata file.
 
         Member of :class:`./MetadataValidator`.
 
-        :return: `CSVWMetadataType` - The `CSVWMetadataType` provides the type of metadata file.
+        :return: `CSVWType` - The `CSVWType` provides the type of metadata file.
         """
-        is_code_list = ask(
-            """
-                ASK 
-                WHERE {
-                    ?conceptScheme a <http://www.w3.org/2004/02/skos/core#ConceptScheme>.
-                }
-            """,
-            self.csvw_metadata_rdf_graph,
-        )
 
-        is_qb_dataset = ask(
-            """
-                ASK 
-                WHERE {
-                    ?qbDataSet a <http://purl.org/linked-data/cube#DataSet>.
-                }
-            """,
-            self.csvw_metadata_rdf_graph,
-        )
-
-        if is_qb_dataset:
-            return CSVWType.QbDataSet
-        elif is_code_list:
+        if ask_is_csvw_code_list(self.csvw_metadata_rdf_graph):
             return CSVWType.CodeList
+        elif ask_is_csvw_qb_dataset(self.csvw_metadata_rdf_graph):
+            return CSVWType.QbDataSet
         else:
             return CSVWType.Other
