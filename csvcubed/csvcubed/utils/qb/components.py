@@ -14,13 +14,13 @@ class ComponentPropertyType(Enum):
     The type of qube component.
     """
 
-    Dimension = "DimensionProperty"
+    Dimension = "http://purl.org/linked-data/cube#DimensionProperty"
     """ The component is of type qb:Diemension. """
 
-    Attribute = "AttributeProperty"
+    Attribute = "http://purl.org/linked-data/cube#AttributeProperty"
     """ The component is of type qb:Attribute. """
 
-    Measure = "MeasureProperty"
+    Measure = "http://purl.org/linked-data/cube#MeasureProperty"
     """ The component is of type qb:Measure. """
 
 
@@ -32,11 +32,11 @@ def get_printable_component_property_type(property_type: str) -> str:
 
     :return: `str` - user-friendly name of component property type.
     """
-    if ComponentPropertyType.Dimension.value in property_type:
+    if ComponentPropertyType.Dimension.value == property_type:
         return ComponentPropertyType.Dimension.value
-    elif ComponentPropertyType.Attribute.value in property_type:
+    elif ComponentPropertyType.Attribute.value == property_type:
         return ComponentPropertyType.Attribute.value
-    elif ComponentPropertyType.Measure.value in property_type:
+    elif ComponentPropertyType.Measure.value == property_type:
         return ComponentPropertyType.Measure.value
     else:
         raise Exception(f"Property type {property_type} is not supported.")

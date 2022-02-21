@@ -119,9 +119,7 @@ class MetadataPrinter:
                     "componentPropertyLabel": none_or_map(
                         component.get("componentPropertyLabel"), str
                     ),
-                    "componentPropertyType": get_printable_component_property_type(
-                        component["componentPropertyType"]
-                    ),
+                    "componentPropertyType": (component["componentPropertyType"]),
                     "csvColumnTitle": none_or_map(component.get("csvColumnTitle"), str),
                     "required": component["required"],
                 },
