@@ -133,18 +133,25 @@ def test_select_csvw_dsd_dataset():
         csvw_metadata_rdf_graph, result_dict["dataStructureDefinition"]
     )
 
-    assert (
-        str(result_dict["dataStructureDefinition"])
-        == "file:///workspaces/csvcubed/alcohol-bulletin.csv#structure"
-    )
     assert str(result_dict["dataSetLabel"]) == "Alcohol Bulletin"
     assert len(components) == 17
 
 
-def test_select_cols_w_supress_output():
+def test_select_cols_when_supress_output_cols_not_present():
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
     results = select_cols_w_supress_output(csvw_metadata_rdf_graph)
     assert len(results) == 0
+
+
+def test_select_cols_when_supress_output_cols_present():
+    csvw_metadata_json_path = (
+        _test_case_base_dir / "datacube_with_suppress_output_cols.csv-metadata.json"
+    )
+    metadata_processor = MetadataProcessor(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+
+    results = select_cols_w_supress_output(csvw_metadata_rdf_graph)
+    assert len(results) == 1

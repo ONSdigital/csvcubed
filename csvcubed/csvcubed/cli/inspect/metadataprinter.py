@@ -6,13 +6,17 @@ Provides functionality for validating and detecting input metadata.json file.
 """
 
 import json
+from pathlib import Path
 import dateutil.parser
 from typing import List
 
 from rdflib import Graph
 
 from csvcubed.utils.sparql import none_or_map
-from csvcubed.utils.qb.components import get_printable_component_property_type
+from csvcubed.utils.qb.components import (
+    get_printable_component_property,
+    get_printable_component_property_type,
+)
 from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
 from csvcubed.cli.inspect.inspectsparqlqueries import (
     select_cols_w_supress_output,
@@ -27,9 +31,15 @@ class MetadataPrinter:
     This class produces the printables necessary for producing outputs to the CLI.
     """
 
-    def __init__(self, csvw_metadata_rdf_graph: Graph, csvw_type: CSVWType):
-        self.csvw_metadata_rdf_graph: Graph = csvw_metadata_rdf_graph
+    def __init__(
+        self,
+        csvw_type: CSVWType,
+        csvw_metadata_rdf_graph: Graph,
+        csvw_metadata_json_path: Path,
+    ):
         self.csvw_type: CSVWType = csvw_type
+        self.csvw_metadata_rdf_graph: Graph = csvw_metadata_rdf_graph
+        self.csvw_metadata_json_path: Path = csvw_metadata_json_path
 
     def gen_type_info_printable(self) -> str:
         """
@@ -106,7 +116,9 @@ class MetadataPrinter:
         qube_components: List[dict] = list(
             map(
                 lambda component: {
-                    "componentProperty": component["componentProperty"],
+                    "componentProperty": get_printable_component_property(
+                        component["componentProperty"], self.csvw_metadata_json_path
+                    ),
                     "componentPropertyLabel": none_or_map(
                         component.get("componentPropertyLabel"), str
                     ),

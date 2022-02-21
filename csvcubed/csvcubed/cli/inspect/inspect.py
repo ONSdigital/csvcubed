@@ -48,7 +48,9 @@ def inspect(csvw_metadata_json_path: Path) -> None:
             codelist_info_printable,
             headtail_printable,
             valcount_printable,
-        ) = _generate_printables(csvw_type, csvw_metadata_rdf_graph)
+        ) = _generate_printables(
+            csvw_type, csvw_metadata_rdf_graph, csvw_metadata_json_path
+        )
 
         _logger.info("Type: %s", type_printable)
         _logger.info("Description: %s", metadata_info_printable)
@@ -60,7 +62,7 @@ def inspect(csvw_metadata_json_path: Path) -> None:
 
 
 def _generate_printables(
-    csvw_type: CSVWType, csvw_metadata_rdf_graph: Graph
+    csvw_type: CSVWType, csvw_metadata_rdf_graph: Graph, csvw_metadata_json_path: Path
 ) -> Tuple[str, str, str, str, str, str]:
     """
     Generates printables of type, metadata, dsd, code list, head/tail and value count information.
@@ -69,7 +71,9 @@ def _generate_printables(
 
     :return: `Tuple[str, str, str, str, str]` - printables of metadata information.
     """
-    metadata_printer = MetadataPrinter(csvw_metadata_rdf_graph, csvw_type)
+    metadata_printer = MetadataPrinter(
+        csvw_type, csvw_metadata_rdf_graph, csvw_metadata_json_path
+    )
 
     return (
         metadata_printer.gen_type_info_printable(),

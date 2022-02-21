@@ -23,7 +23,9 @@ def test_csvw_type_info_printable_datacube():
         csvw_type,
     ) = csvw_metadata_rdf_validator.validate_and_detect_type()
 
-    metadata_printer = MetadataPrinter(csvw_metadata_rdf_graph, csvw_type)
+    metadata_printer = MetadataPrinter(
+        csvw_type, csvw_metadata_rdf_graph, csvw_metadata_json_path
+    )
     printable = metadata_printer.gen_type_info_printable()
 
     assert printable == "This file is a data cube."
@@ -43,7 +45,9 @@ def test_csvw_type_info_printable_codelist():
         csvw_type,
     ) = csvw_metadata_rdf_validator.validate_and_detect_type()
 
-    metadata_printer = MetadataPrinter(csvw_metadata_rdf_graph, csvw_type)
+    metadata_printer = MetadataPrinter(
+        csvw_type, csvw_metadata_rdf_graph, csvw_metadata_json_path
+    )
     printable = metadata_printer.gen_type_info_printable()
 
     assert printable == "This file is a code list."
@@ -63,7 +67,9 @@ def test_csvw_metadata_info_printable_datacube_():
         csvw_type,
     ) = csvw_metadata_rdf_validator.validate_and_detect_type()
 
-    metadata_printer = MetadataPrinter(csvw_metadata_rdf_graph, csvw_type)
+    metadata_printer = MetadataPrinter(
+        csvw_type, csvw_metadata_rdf_graph, csvw_metadata_json_path
+    )
     printable = metadata_printer.gen_metadata_info_printable()
     printable_json = json.loads(printable)
 
@@ -116,7 +122,9 @@ def test_csvw_metadata_info_printable_codelist_():
         csvw_type,
     ) = csvw_metadata_rdf_validator.validate_and_detect_type()
 
-    metadata_printer = MetadataPrinter(csvw_metadata_rdf_graph, csvw_type)
+    metadata_printer = MetadataPrinter(
+        csvw_type, csvw_metadata_rdf_graph, csvw_metadata_json_path
+    )
     printable = metadata_printer.gen_metadata_info_printable()
     printable_json = json.loads(printable)
 
@@ -150,7 +158,9 @@ def test_csvw_dsd_info_printable_datacube():
         csvw_type,
     ) = csvw_metadata_rdf_validator.validate_and_detect_type()
 
-    metadata_printer = MetadataPrinter(csvw_metadata_rdf_graph, csvw_type)
+    metadata_printer = MetadataPrinter(
+        csvw_type, csvw_metadata_rdf_graph, csvw_metadata_json_path
+    )
     printable = metadata_printer.gen_dsd_info_printable()
     printable_json = json.loads(printable)
 
@@ -185,7 +195,9 @@ def test_csvw_dsd_info_printable_codelist():
         csvw_type,
     ) = csvw_metadata_rdf_validator.validate_and_detect_type()
 
-    metadata_printer = MetadataPrinter(csvw_metadata_rdf_graph, csvw_type)
+    metadata_printer = MetadataPrinter(
+        csvw_type, csvw_metadata_rdf_graph, csvw_metadata_json_path
+    )
     printable = metadata_printer.gen_dsd_info_printable()
 
     assert printable == "N/A"
