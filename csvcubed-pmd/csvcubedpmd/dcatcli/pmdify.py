@@ -374,7 +374,7 @@ def _get_catalog_entry_from_dcat_dataset(csvw_graph: Graph) -> pmdcat.Dataset:
             (GROUP_CONCAT(?landingPage ; separator='|') as ?landingPages) 
             (GROUP_CONCAT(?theme; separator='|') as ?themes) 
             (GROUP_CONCAT(?keyword; separator='|') as ?keywords) 
-            ?contactPoint ?identifier ?datasetContents
+            ?contactPoint ?identifier
         WHERE {
             {
                 SELECT DISTINCT ?dataset
