@@ -16,19 +16,9 @@
   "keywords": "two",
   "uri_safe_identifier_override": "uri-safe",
   "columns": {
-    "Measure": {
-      "type": "measures"
-    },
-    "Units": {
-      "type": "units"
-    },
-    "Attr-1": {
-      "type": "attribute",
-      "label": "Some Attr",
-      "required": true
-    },
     "Dim-0": {
       "label": "Non Dimension",
+      "type": "dimension",
       "code_list": true
     },
     "Dim-1": {
@@ -41,9 +31,20 @@
       "label": "Trade Direction Dimension",
       "code_list": true
     },
+    "Attr-1": {
+      "type": "attribute",
+      "label": "Some Attr",
+      "required": true
+    },
     "Amount": {
       "type": "observations",
       "label": "Volume"
+    },
+    "Measure": {
+      "type": "measures"
+    },
+    "Units": {
+      "type": "units"
     }
   }
 }
