@@ -64,7 +64,6 @@ def start_logging(
     log_file_path.parent.mkdir(parents=True, exist_ok=True)
 
     logger = logging.getLogger(root_logger_name)
-    # logger.setLevel(logging.DEBUG)
 
     console_handler = logging.StreamHandler(sys.stderr)
     console_handler.setLevel(logging_level)
