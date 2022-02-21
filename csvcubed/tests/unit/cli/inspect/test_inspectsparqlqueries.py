@@ -4,9 +4,9 @@ from csvcubed.cli.inspect.inspectsparqlqueries import (
     ask_is_csvw_code_list,
     ask_is_csvw_qb_dataset,
     select_cols_w_supress_output,
+    select_csvw_catalog_metadata,
     select_csvw_dsd_dataset_label_and_dsd_def_uri,
     select_csvw_dsd_qube_components,
-    select_csvw_information,
 )
 from csvcubed.cli.inspect.metadatainputvalidator import MetadataValidator
 from csvcubed.cli.inspect.metadataprocessor import MetadataProcessor
@@ -41,12 +41,12 @@ def test_ask_is_csvw_qb_dataset():
     assert is_qb_dataset == True
 
 
-def test_select_csvw_information_for_dataset():
+def test_select_csvw_catalog_metadata_for_dataset():
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
-    result = select_csvw_information(csvw_metadata_rdf_graph)
+    result = select_csvw_catalog_metadata(csvw_metadata_rdf_graph)
     info_dict = result.asdict()
 
     assert str(info_dict["title"]) == "Alcohol Bulletin"
@@ -90,12 +90,12 @@ def test_select_csvw_information_for_dataset():
     assert str(info_dict["identifier"]) == "Alcohol Bulletin"
 
 
-def test_select_csvw_information_for_codelist():
+def test_select_csvw_catalog_metadata_for_codelist():
     csvw_metadata_json_path = _test_case_base_dir / "codelist.csv-metadata.json"
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
-    result = select_csvw_information(csvw_metadata_rdf_graph)
+    result = select_csvw_catalog_metadata(csvw_metadata_rdf_graph)
     info_dict = result.asdict()
 
     assert str(info_dict["title"]) == "Alcohol Content"

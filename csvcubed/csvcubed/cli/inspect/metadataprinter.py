@@ -20,9 +20,9 @@ from csvcubed.utils.qb.components import (
 from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
 from csvcubed.cli.inspect.inspectsparqlqueries import (
     select_cols_w_supress_output,
+    select_csvw_catalog_metadata,
     select_csvw_dsd_dataset_label_and_dsd_def_uri,
     select_csvw_dsd_qube_components,
-    select_csvw_information,
 )
 
 
@@ -54,16 +54,16 @@ class MetadataPrinter:
         else:
             return "This file is a code list."
 
-    def gen_metadata_info_printable(self) -> str:
+    def gen_catalog_metadata_printable(self) -> str:
         """
-        Generates a printable of metadata information (e.g. title, description, etc.).
+        Generates a printable of catalog metadata (e.g. title, description, etc.).
 
         Member of :class:`./MetadataPrinter`.
 
         :return: `str` - user-friendly string which will be output to CLI.
         """
 
-        result = select_csvw_information(self.csvw_metadata_rdf_graph)
+        result = select_csvw_catalog_metadata(self.csvw_metadata_rdf_graph)
         result_dict = result.asdict()
 
         return json.dumps(

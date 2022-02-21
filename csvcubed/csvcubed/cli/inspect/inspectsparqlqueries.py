@@ -51,9 +51,9 @@ def ask_is_csvw_qb_dataset(rdf_graph: Graph) -> bool:
     )
 
 
-def select_csvw_information(rdf_graph: Graph) -> ResultRow:
+def select_csvw_catalog_metadata(rdf_graph: Graph) -> ResultRow:
     """
-    Queries information such as title, label, issued date/time, modified data/time, etc.
+    Queries catalog metadata such as title, label, issued date/time, modified data/time, etc.
 
     Member of :file:`./inspectsparqlqueries.py`
 

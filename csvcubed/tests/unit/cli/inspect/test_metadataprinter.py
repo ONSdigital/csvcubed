@@ -70,7 +70,7 @@ def test_csvw_metadata_info_printable_datacube_():
     metadata_printer = MetadataPrinter(
         csvw_type, csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
-    printable = metadata_printer.gen_metadata_info_printable()
+    printable = metadata_printer.gen_catalog_metadata_printable()
     printable_json = json.loads(printable)
 
     assert printable_json["title"] == "Alcohol Bulletin"
@@ -125,7 +125,7 @@ def test_csvw_metadata_info_printable_codelist_():
     metadata_printer = MetadataPrinter(
         csvw_type, csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
-    printable = metadata_printer.gen_metadata_info_printable()
+    printable = metadata_printer.gen_catalog_metadata_printable()
     printable_json = json.loads(printable)
 
     assert printable_json["title"] == "Alcohol Content"

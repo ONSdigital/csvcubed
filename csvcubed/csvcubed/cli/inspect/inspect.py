@@ -77,7 +77,7 @@ def _generate_printables(
 
     return (
         metadata_printer.gen_type_info_printable(),
-        metadata_printer.gen_metadata_info_printable(),
+        metadata_printer.gen_catalog_metadata_printable(),
         metadata_printer.gen_dsd_info_printable(),
         metadata_printer.gen_codelist_info_printable(),
         metadata_printer.gen_headtail_printable(),
