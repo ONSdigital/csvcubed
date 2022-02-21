@@ -179,25 +179,3 @@ def test_csvw_dsd_info_printable_datacube():
     )
     assert printable_json["components"][0]["csvColumnTitle"] is None
     assert printable_json["components"][0]["required"] is None
-
-
-def test_csvw_dsd_info_printable_codelist():
-    """
-    Should contain N/A for the given code list.
-    """
-    csvw_metadata_json_path = _test_case_base_dir / "codelist.csv-metadata.json"
-    metadata_processor = MetadataProcessor(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
-    csvw_metadata_rdf_validator = MetadataValidator(csvw_metadata_rdf_graph)
-
-    (
-        _,
-        csvw_type,
-    ) = csvw_metadata_rdf_validator.validate_and_detect_type()
-
-    metadata_printer = MetadataPrinter(
-        csvw_type, csvw_metadata_rdf_graph, csvw_metadata_json_path
-    )
-    printable = metadata_printer.gen_dsd_info_printable()
-
-    assert printable == "N/A"

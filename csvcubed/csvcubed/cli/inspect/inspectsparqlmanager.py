@@ -6,7 +6,9 @@ Collection of SPARQL queries used in the inspect cli.
 """
 
 from enum import Enum
+from pathlib import Path
 from typing import List
+from csvcubed.utils.file import get_root_dir_level
 
 from rdflib import Graph, URIRef
 from rdflib.query import ResultRow
@@ -41,11 +43,16 @@ def _get_query_string_from_file(queryType: SPARQLQueryType) -> str:
     :return: `bool` - String containing the sparql query.
     """
     try:
+        file_path = (
+            get_root_dir_level("pyproject.toml", Path.cwd())
+            / "csvcubed"
+            / "cli"
+            / "inspect"
+            / "inspect_sparql_queries"
+            / (queryType.value + ".sparql")
+        )
         with open(
-            "csvcubed/cli/inspect/inspect_sparql_queries"
-            + "/"
-            + queryType.value
-            + ".sparql",
+            file_path,
             "r",
         ) as f:
             return f.read()
