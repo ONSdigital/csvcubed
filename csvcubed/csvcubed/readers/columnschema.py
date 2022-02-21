@@ -91,62 +91,62 @@ class Dimension(SchemaBaseClass):
 
             return new_dimension
 
-    def _get_code_list(
-            self,
-            new_dimension: NewQbDimension,
-            json_parent_dir: Path,
-    ) -> Union[NewQbCodeListInCsvW, ExistingQbCodeList]:
+    # def _get_code_list(
+    #         self,
+    #         new_dimension: NewQbDimension,
+    #         json_parent_dir: Path,
+    # ) -> Union[NewQbCodeListInCsvW, ExistingQbCodeList]:
+    #
+    #     code_list_obj = None
+    #
+    #     if isinstance(self.code_list, str):
+    #         if looks_like_uri(self.code_list):
+    #             code_list_obj = ExistingQbCodeList(self.code_list)
+    #         else:
+    #             code_list_path = Path(self.code_list)
+    #             if code_list_path.is_absolute():
+    #                 code_list_obj = NewQbCodeListInCsvW(code_list_path)
+    #             else:
+    #                 code_list_obj = NewQbCodeListInCsvW(
+    #                     json_parent_dir / self.code_list
+    #                 )
+    #     elif isinstance(self.code_list, bool):
+    #         if self.code_list is False:
+    #             code_list_obj = None
+    #
+    #         elif (
+    #                 # self.new.subPropertyOf
+    #                 # == "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod" and
+    #                 self.value is not None
+    #                 and self.value.lower().startswith("http://reference.data.gov.uk/id/")
+    #         ):
+    #             # This is a special case where we build up a code-list of the date/time values.
+    #             code_list_obj = (
+    #                 self._get_date_time_code_list_for_dimension(self.label, new_dimension)
+    #             )
+    #         # else, the user wants a standard codelist to be automatically generated
+    #     else:
+    #         raise ValueError(f"Unmatched code_list value {self.code_list}")
 
-        code_list_obj = None
-
-        if isinstance(self.code_list, str):
-            if looks_like_uri(self.code_list):
-                code_list_obj = ExistingQbCodeList(self.code_list)
-            else:
-                code_list_path = Path(self.code_list)
-                if code_list_path.is_absolute():
-                    code_list_obj = NewQbCodeListInCsvW(code_list_path)
-                else:
-                    code_list_obj = NewQbCodeListInCsvW(
-                        json_parent_dir / self.code_list
-                    )
-        elif isinstance(self.code_list, bool):
-            if self.code_list is False:
-                code_list_obj = None
-
-            elif (
-                    # self.new.subPropertyOf
-                    # == "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod" and
-                    self.value is not None
-                    and self.value.lower().startswith("http://reference.data.gov.uk/id/")
-            ):
-                # This is a special case where we build up a code-list of the date/time values.
-                code_list_obj = (
-                    self._get_date_time_code_list_for_dimension(self.label, new_dimension)
-                )
-            # else, the user wants a standard codelist to be automatically generated
-        else:
-            raise ValueError(f"Unmatched code_list value {self.code_list}")
-
-    def _get_date_time_code_list_for_dimension(
-        self, column_title: str, new_dimension: NewQbDimension
-    ) -> CompositeQbCodeList:
-        csvw_safe_column_title = csvw_column_name_safe(column_title)
-        assert isinstance(new_dimension.code_list, NewQbCodeList)
-        return CompositeQbCodeList(
-            CatalogMetadata(new_dimension.label),
-            [
-                DuplicatedQbConcept(
-                    existing_concept_uri=uritemplate.expand(
-                        self.value,
-                        {csvw_safe_column_title: c.label},
-                    ),
-                    label=c.label,
-                    code=c.code,
-                )
-                for c in new_dimension.code_list.concepts
-            ],
-        )
+    # def _get_date_time_code_list_for_dimension(
+    #     self, column_title: str, new_dimension: NewQbDimension
+    # ) -> CompositeQbCodeList:
+    #     csvw_safe_column_title = csvw_column_name_safe(column_title)
+    #     assert isinstance(new_dimension.code_list, NewQbCodeList)
+    #     return CompositeQbCodeList(
+    #         CatalogMetadata(new_dimension.label),
+    #         [
+    #             DuplicatedQbConcept(
+    #                 existing_concept_uri=uritemplate.expand(
+    #                     self.value,
+    #                     {csvw_safe_column_title: c.label},
+    #                 ),
+    #                 label=c.label,
+    #                 code=c.code,
+    #             )
+    #             for c in new_dimension.code_list.concepts
+    #         ],
+    #     )
 
 @dataclass
 class AttributeValue(SchemaBaseClass):

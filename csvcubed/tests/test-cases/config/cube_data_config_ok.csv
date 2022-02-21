@@ -1,3 +1,3 @@
-Measure,Units,Attr-1,Dim-0,Dim-1,Dim-2,Amount
-Billions,Pounds,goods,1,2009,import,goods,100
-Billions,Pounds,services,2,2010,export,321
+Dim-0,Dim-1,Dim-2,Attr-1,Amount,Measure,Units
+1,2009,import,goods,100,Billions,Pounds
+2,2010,export,services,321,Billions,Pounds

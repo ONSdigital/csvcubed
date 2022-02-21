@@ -72,59 +72,59 @@ def _load_resource(resource_path: Path) -> dict:
     return schema
 
 
-def _get_code_list(
-    column_label: str,
-    maybe_code_list: Optional[Union[bool, str]],
-    json_parent_dir: Path,
-    maybe_parent_uri: Optional[str],
-    column_data: PandasDataTypes,
-    maybe_property_value_url: Optional[str],
-) -> Optional[QbCodeList]:
-
-    is_date_time_code_list = (
-        (
-            maybe_code_list is None
-            or (isinstance(maybe_code_list, bool) and maybe_code_list)
-        )
-        and maybe_parent_uri
-        == "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod"
-        and maybe_property_value_url is not None
-        and maybe_property_value_url.startswith("http://reference.data.gov.uk/id/")
-    )
-
-    if is_date_time_code_list:
-        column_name_csvw_safe = csvw_column_name_safe(column_label)
-        columnar_data = pandas_input_to_columnar_str(column_data)
-        concepts = [
-            DuplicatedQbConcept(
-                existing_concept_uri=uritemplate.expand(
-                    maybe_property_value_url, {column_name_csvw_safe: c}
-                ),
-                label=c,
-            )
-            for c in sorted(set(columnar_data))
-        ]
-        return CompositeQbCodeList(
-            CatalogMetadata(column_label),
-            concepts,
-        )
-
-    elif maybe_code_list is not None:
-        if isinstance(maybe_code_list, str):
-            return ExistingQbCodeList(maybe_code_list)
-
-        #elif isinstance(maybe_code_list, bool) and not maybe_code_list:
-        elif isinstance(maybe_code_list, bool) and maybe_code_list is False:
-            return None
-
-        else:
-            raise Exception(f"Unexpected codelist value '{maybe_code_list}'")
-
-    return NewQbCodeListInCsvW(
-        json_parent_dir
-        / "codelists"
-        / f"{uri_safe(column_label)}.csv-metadata.json"
-    )
+# def _get_code_list(
+#     column_label: str,
+#     maybe_code_list: Optional[Union[bool, str]],
+#     json_parent_dir: Path,
+#     maybe_parent_uri: Optional[str],
+#     column_data: PandasDataTypes,
+#     maybe_property_value_url: Optional[str],
+# ) -> Optional[QbCodeList]:
+#
+#     is_date_time_code_list = (
+#         (
+#             maybe_code_list is None
+#             or (isinstance(maybe_code_list, bool) and maybe_code_list is True)
+#         )
+#         and maybe_parent_uri
+#         == "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod"
+#         and maybe_property_value_url is not None
+#         and maybe_property_value_url.startswith("http://reference.data.gov.uk/id/")
+#     )
+#
+#     if is_date_time_code_list:
+#         column_name_csvw_safe = csvw_column_name_safe(column_label)
+#         columnar_data = pandas_input_to_columnar_str(column_data)
+#         concepts = [
+#             DuplicatedQbConcept(
+#                 existing_concept_uri=uritemplate.expand(
+#                     maybe_property_value_url, {column_name_csvw_safe: c}
+#                 ),
+#                 label=c,
+#             )
+#             for c in sorted(set(columnar_data))
+#         ]
+#         return CompositeQbCodeList(
+#             CatalogMetadata(column_label),
+#             concepts,
+#         )
+#
+#     elif maybe_code_list is not None:
+#         if isinstance(maybe_code_list, str):
+#             return ExistingQbCodeList(maybe_code_list)
+#
+#         #elif isinstance(maybe_code_list, bool) and not maybe_code_list:
+#         elif isinstance(maybe_code_list, bool) and maybe_code_list is False:
+#             return None
+#
+#         else:
+#             raise Exception(f"Unexpected codelist value '{maybe_code_list}'")
+#
+#     return NewQbCodeListInCsvW(
+#         json_parent_dir
+#         / "codelists"
+#         / f"{uri_safe(column_label)}.csv-metadata.json"
+#     )
 
 
 def initialise_from_config(self, config_json: dict) -> bool:
@@ -153,8 +153,12 @@ def _from_config_json_dict(d: Dict,
                           ) -> QbCube:
 
     metadata: CatalogMetadata = _metadata_from_dict(d)
-    columns: List[CsvColumn] = _columns_from_config_json(d.get("columns", []), data, json_parent_dir)
-
+    # columns: List[CsvColumn] = _columns_from_config_json(d.get("columns", []), data, json_parent_dir)
+    columns: List[QbColumn] = []
+    for column_title in d.get('columns', []):
+        column_config = d['columns'].get(column_title)
+        columns.append(map_column_to_qb_component(column_title, column_config,
+                                                  data[column_title], json_parent_dir))
 
     return Cube(metadata, data, columns)
 
@@ -198,8 +202,8 @@ def _metadata_from_dict(config: dict) -> "CatalogMetadata":
         description=config.get("description", ""),
         creator_uri=creator,
         publisher_uri=publisher,
-        theme_uris=[uri_safe(t) for t in themes],
-        keywords=keywords,
+        theme_uris=[uri_safe(t) for t in themes] if isinstance(themes, list) else None,
+        keywords=keywords if isinstance(keywords, list) else None,
         spatial_bound_uri=uri_safe(config.get('spatial_bound', "")),
         temporal_bound_uri=uri_safe(config.get('temporal_bound', "")),
         uri_safe_identifier_override=uri_safe(config.get('$id', "")),
@@ -307,7 +311,7 @@ def _get_column_for_metadata_config(
             label: str = maybe_label
             code_list = _get_code_list(
                 label,
-                col_config.get("codelist"),
+                col_config.get("code_list"),
                 json_parent_dir,
                 maybe_parent_uri,
                 column_data,
@@ -427,23 +431,6 @@ def get_cube_from_data(csv_path: Path, data: PandasDataTypes) -> QbCube:
     if convention_col_counts["units"] < 1:  # needs resolving between Rob and Andrew
         raise ValueError("The data does not contain any attribute columns")
 
-    # At this point we have confirmed that we have sufficient rows and columns by type so lets build our cube
-    # column_types: List[str] = []
-
-    # # Identify column types and count
-    # for i, column_name in enumerate(data.columns):
-    #     # Determine column type by matching column names accepted by convention or default to 'dimension'
-    #     convention_name_matches = [
-    #         standard_name
-    #         for standard_name, options in CONVENTION_NAMES.items()
-    #         if column_name.lower() in options
-    #     ]
-    #     column_type = (
-    #         convention_name_matches[0] if convention_name_matches else "dimension"
-    #     )
-    #     # cols[i] = {'index': i, 'column_name': column_name, 'qb_type': column_type }
-    #     column_types.append(column_type)
-
     for i, column_type in enumerate(column_types):
         # Build a dict of fields for the identified column types' data-class
         column_name = data.columns[i]
@@ -466,7 +453,6 @@ def get_cube_from_data(csv_path: Path, data: PandasDataTypes) -> QbCube:
         elif column_type in ["measures", "units"]:
             column_dict = {
                 "type": column_type
-                # "label": column_name
             }
         elif column_type == "attribute":
             # Note: attribute type columns are currently not supported
@@ -535,9 +521,10 @@ def get_cube_from_config_json(
     return _from_config_json_dict(config, data, config_path.parent), None
 
 
+
 def build(
     csv_path: Path,
-    config_json: Optional[Path] = None,
+    config_path: Optional[Path] = None,
     # catalog_metadata_json_file: Optional[Path]
     # output_directory: Path,
     # csv_path: Path,
@@ -549,8 +536,8 @@ def build(
     data: pd.DataFrame = pd.read_csv(csv_path)
 
 
-    if config_json:
-        cube, json_schema_validation_errors = get_cube_from_config_json(config_json, data)
+    if config_path:
+        cube, json_schema_validation_errors = get_cube_from_config_json(config_path, data)
 
     else:
         cube, json_schema_validation_error = get_cube_from_data(csv_path, data)
