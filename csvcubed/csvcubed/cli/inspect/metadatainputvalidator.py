@@ -10,7 +10,7 @@ from typing import Tuple
 
 from rdflib import Graph
 
-from csvcubed.cli.inspect.inspectsparqlqueries import (
+from csvcubed.cli.inspect.inspectsparqlmanager import (
     ask_is_csvw_code_list,
     ask_is_csvw_qb_dataset,
 )

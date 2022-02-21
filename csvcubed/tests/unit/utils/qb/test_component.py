@@ -46,30 +46,3 @@ def test_printable_component_property_type_unsupported_exception():
         get_printable_component_property_type(
             "http://purl.org/linked-data/cube#UnsupportedProperty"
         )
-
-
-def test_get_printable_component_property_url():
-    """
-    If the property is a url, the url should be the printable.
-    """
-    component_property = get_printable_component_property(
-        "http://gss-data.org.uk/def/measure/beer-duty-receipts",
-        "csvcubed/cli/inspect/out/alcohol-bulletin.csv-metadata.json",
-    )
-
-    assert component_property == "http://gss-data.org.uk/def/measure/beer-duty-receipts"
-
-
-def test_get_printable_component_property_file():
-    """
-    If the property is a file, the relative file path should be the printable.
-    """
-    component_property_printable = get_printable_component_property(
-        "file:///workspaces/csvcubed/alcohol-bulletin.csv#dimension/clearance-origin",
-        Path("csvcubed/cli/inspect/out/alcohol-bulletin.csv-metadata.json"),
-    )
-
-    assert (
-        component_property_printable
-        == "csvcubed/cli/inspect/out/alcohol-bulletin.csv#dimension/clearance-origin"
-    )

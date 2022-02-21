@@ -18,7 +18,7 @@ from csvcubed.utils.qb.components import (
     get_printable_component_property_type,
 )
 from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
-from csvcubed.cli.inspect.inspectsparqlqueries import (
+from csvcubed.cli.inspect.inspectsparqlmanager import (
     select_cols_w_supress_output,
     select_csvw_catalog_metadata,
     select_csvw_dsd_dataset_label_and_dsd_def_uri,
@@ -106,7 +106,7 @@ class MetadataPrinter:
 
         result_dataset_label_uri = select_csvw_dsd_dataset_label_and_dsd_def_uri(
             self.csvw_metadata_rdf_graph
-        )
+        )        
         result_dataset_label_uri_dict = result_dataset_label_uri.asdict()
         self.dsd_uri = str(result_dataset_label_uri_dict["dataStructureDefinition"])
 

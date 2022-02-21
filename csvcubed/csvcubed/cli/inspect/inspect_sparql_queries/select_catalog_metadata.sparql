@@ -1,0 +1,33 @@
+PREFIX dcat: <http://www.w3.org/ns/dcat#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?dataset ?title ?label ?issued ?modified ?comment ?description ?license ?creator ?publisher 
+    (GROUP_CONCAT(?landingPage ; separator='|') as ?landingPages) 
+    (GROUP_CONCAT(?theme; separator='|') as ?themes) 
+    (GROUP_CONCAT(?keyword; separator='|') as ?keywords) 
+    ?contactPoint ?identifier
+WHERE {
+    {
+        SELECT DISTINCT ?dataset
+        WHERE {
+            ?dataset a dcat:Dataset.        
+        }
+    }
+
+    ?dataset dcterms:title ?title;
+        rdfs:label ?label;
+        dcterms:issued ?issued;
+        dcterms:modified ?modified.
+
+    OPTIONAL { ?dataset rdfs:comment ?comment }.
+    OPTIONAL { ?dataset dcterms:description ?description }.
+    OPTIONAL { ?dataset dcterms:license ?license }.
+    OPTIONAL { ?dataset dcterms:creator ?creator }.
+    OPTIONAL { ?dataset dcterms:publisher ?publisher }.
+    OPTIONAL { ?dataset dcat:landingPage ?landingPage }.
+    OPTIONAL { ?dataset dcat:theme ?theme }.
+    OPTIONAL { ?dataset dcat:keyword ?keyword }.
+    OPTIONAL { ?dataset dcat:contactPoint ?contactPoint }.
+    OPTIONAL { ?dataset dcterms:identifier ?identifier }.   
+}

@@ -37,7 +37,7 @@ def ask(query: str, graph: Graph) -> bool:
         raise Exception(f"Unexpected number of results for ASK query {len(results)}.")
 
 
-def select(query: str, graph: Graph) -> List[ResultRow]:
+def select(query: str, graph: Graph, init_bindings=None) -> List[ResultRow]:
     """
     Executes the given SELECT query on the rdf graph.
 
@@ -46,7 +46,7 @@ def select(query: str, graph: Graph) -> List[ResultRow]:
     :return: `List[ResultRow]` - List containing the results.
 
     """
-    results = list(graph.query(query))
+    results = list(graph.query(query, initBindings=init_bindings))
     results: List[ResultRow] = [
         result
         for result in results

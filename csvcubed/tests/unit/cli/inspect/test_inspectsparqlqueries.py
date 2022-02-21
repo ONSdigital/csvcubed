@@ -1,6 +1,6 @@
 import dateutil.parser
 
-from csvcubed.cli.inspect.inspectsparqlqueries import (
+from csvcubed.cli.inspect.inspectsparqlmanager import (
     ask_is_csvw_code_list,
     ask_is_csvw_qb_dataset,
     select_cols_w_supress_output,
