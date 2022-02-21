@@ -4,9 +4,10 @@ CLI
 The *Command Line Interface* for :mod:`~csvcubed.csvcubedcli.infojson2csvqb`.
 """
 import logging
+import sys
 import click
 from pathlib import Path
-from csvcubed.utils.log import start_logging
+from csvcubed.utils.log import handle_exception, start_logging
 
 from .build import build
 
@@ -93,6 +94,7 @@ def build_command(
             fail_when_validation_error_occurs=fail_when_validation_error,
             validation_errors_file_out=validation_errors_file_out,
         )
-    except Exception as e:
-        logger.error(e, exc_info=True)
-        raise
+    except Exception:
+        handle_exception(logger, *sys.exc_info())
+
+        

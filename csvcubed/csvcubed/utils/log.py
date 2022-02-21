@@ -5,9 +5,13 @@ Utilities to help with logging.
 """
 import logging
 import sys
-from appdirs import AppDirs
+import io
+import traceback
+
 from typing import Union
 from pathlib import Path
+
+from appdirs import AppDirs
 
 
 class CustomFormatter(logging.Formatter):
@@ -80,3 +84,11 @@ def start_logging(
             "A log file containing the recordings of this cli, is at: "
             + dirs.user_log_dir
         )
+
+def handle_exception(logger, exc_type, exc_value, exc_tb) -> None:
+    
+    file_stream = io.StringIO()
+    traceback.print_exception(exc_type, exc_value, exc_tb,limit=None, chain=True, file=file_stream)
+    file_stream.seek(0)
+    stack_trace: str = file_stream.read()
+    logger.critical(stack_trace)
