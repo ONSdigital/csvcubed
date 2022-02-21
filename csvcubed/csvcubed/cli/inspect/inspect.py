@@ -54,7 +54,8 @@ def inspect(csvw_metadata_json_path: Path) -> None:
 
         _logger.info("Type: %s", type_printable)
         _logger.info("Description: %s", metadata_info_printable)
-        _logger.info("Data Structure Definition: %s", dsd_info_printable)
+        if csvw_type == CSVWType.QbDataSet:
+            _logger.info("Data Structure Definition: %s", dsd_info_printable)
     else:
         _logger.error(
             "This is an unsupported csv-w! Supported types are `data cube` and `code list`."
@@ -78,7 +79,9 @@ def _generate_printables(
     return (
         metadata_printer.gen_type_info_printable(),
         metadata_printer.gen_catalog_metadata_printable(),
-        metadata_printer.gen_dsd_info_printable(),
+        metadata_printer.gen_dsd_info_printable()
+        if csvw_type == CSVWType.QbDataSet
+        else "",
         metadata_printer.gen_codelist_info_printable(),
         metadata_printer.gen_headtail_printable(),
         metadata_printer.gen_valcount_printable(),

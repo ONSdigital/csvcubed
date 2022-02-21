@@ -101,12 +101,9 @@ class MetadataPrinter:
 
         :return: `str` - user-friendly string which will be output to CLI.
         """
-        if self.csvw_type == CSVWType.CodeList:
-            return "N/A"
-
         result_dataset_label_uri = select_csvw_dsd_dataset_label_and_dsd_def_uri(
             self.csvw_metadata_rdf_graph
-        )        
+        )
         result_dataset_label_uri_dict = result_dataset_label_uri.asdict()
         self.dsd_uri = str(result_dataset_label_uri_dict["dataStructureDefinition"])
 
