@@ -1,6 +1,6 @@
 from pathlib import Path
 from csvcubed.utils.file import get_root_dir_level
-from csvcubed.utils.qb.components import ComponentPropertyType
+from csvcubed.utils.qb.components import ComponentPropertyType, ComponentPropertyTypeURI
 import dateutil.parser
 
 from csvcubed.cli.inspect.inspectsparqlmanager import (
@@ -145,7 +145,7 @@ def test_select_csvw_dsd_dataset():
     assert components[0]["componentPropertyLabel"] is None
     assert (
         str(components[0]["componentPropertyType"])
-        == ComponentPropertyType.Dimension.value
+        == ComponentPropertyTypeURI.Dimension.value
     )
     assert components[0]["csvColumnTitle"] is None
     assert components[0]["required"] is None

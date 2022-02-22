@@ -45,4 +45,5 @@ def get_root_dir_level(end_file: str, start_dir: Path = Path(".")) -> Path:
     target_file = start_dir / end_file
     if target_file.exists():
         return start_dir
+
     return get_root_dir_level(end_file, start_dir.absolute().parent)

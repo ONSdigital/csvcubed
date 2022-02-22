@@ -44,7 +44,7 @@ def _get_query_string_from_file(queryType: SPARQLQueryFileName) -> str:
     """
     try:
         file_path = (
-            get_root_dir_level("pyproject.toml", Path.cwd())
+            get_root_dir_level("pyproject.toml", Path(__file__))
             / "csvcubed"
             / "cli"
             / "inspect"

@@ -54,12 +54,12 @@ class MetadataPrinter:
             output_str = f"{output_str}\n\t\t-- {item}"
         return output_str
 
-    def _get_printable_tabular_str(self, items: List[Dict], columns_names=None) -> str:
+    def _get_printable_tabular_str(self, items: List[Dict], column_names=None) -> str:
         if len(items) == 0:
             return "None"
 
         df = pd.DataFrame(items)
-        df.columns = columns_names if columns_names is not None else items[0].keys()
+        df.columns = column_names if column_names is not None else items[0].keys()
         return df.to_string(index=False)
 
     def gen_type_info_printable(self) -> str:
@@ -125,6 +125,7 @@ class MetadataPrinter:
         results_qube_components = select_csvw_dsd_qube_components(
             self.csvw_metadata_rdf_graph, self.dsd_uri
         )
+
         qube_components: List[Dict] = list(
             map(
                 lambda component: {
@@ -156,7 +157,7 @@ class MetadataPrinter:
             len(qube_components),
             self._get_printable_tabular_str(
                 qube_components,
-                columns_names=[
+                column_names=[
                     "Property",
                     "Property Label",
                     "Property Type",
