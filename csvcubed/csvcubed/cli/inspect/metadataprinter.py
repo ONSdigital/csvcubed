@@ -54,13 +54,16 @@ class MetadataPrinter:
             output_str = f"{output_str}\n\t\t-- {item}"
         return output_str
 
-    def _get_printable_tabular_str(self, items: List[Dict], column_names=None) -> str:
+    def _get_printable_tabular_str(self, items: List[Dict], column_names) -> str:
         if len(items) == 0:
             return "None"
 
         df = pd.DataFrame(items)
-        df.columns = column_names if column_names is not None else items[0].keys()
-        return df.to_string(index=False)
+        df.columns = column_names
+        output_str = df.to_string(index=False)
+        if output_str:
+            return output_str
+        raise Exception("Failed to covert data frame to string")
 
     def gen_type_info_printable(self) -> str:
         """
