@@ -59,9 +59,9 @@ class MetadataPrinter:
         :return: `str` - user-friendly string which will be output to CLI.
         """
         if self.csvw_type == CSVWType.QbDataSet:
-            return "This file is a data cube."
+            return "\u2022 This file is a data cube."
         else:
-            return "This file is a code list."
+            return "\u2022 This file is a code list."
 
     def gen_catalog_metadata_printable(self) -> str:
         """
@@ -75,7 +75,7 @@ class MetadataPrinter:
         result = select_csvw_catalog_metadata(self.csvw_metadata_rdf_graph)
         result_dict = result.asdict()
 
-        output_str = "\tTitle: {}\n\tLabel: {}\n\tIssued: {}\n\tModified: {}\n\tLicense: {}\n\tCreator: {}\n\tPublisher: {}\n\tLanding Pages: {}\n\tThemes: {}\n\tKeywords: {}\n\tContact Point: {}\n\tIdentifier: {}\n\tComment: {}\n\tDescription: {}".format(
+        output_str = "\t- Title: {}\n\t- Label: {}\n\t- Issued: {}\n\t- Modified: {}\n\t- License: {}\n\t- Creator: {}\n\t- Publisher: {}\n\t- Landing Pages: {}\n\t- Themes: {}\n\t- Keywords: {}\n\t- Contact Point: {}\n\t- Identifier: {}\n\t- Comment: {}\n\t- Description: {}".format(
             result_dict["title"],
             result_dict["label"],
             result_dict["issued"],
@@ -97,7 +97,7 @@ class MetadataPrinter:
         )
 
         type_str = "data cube" if self.csvw_type == CSVWType.QbDataSet else "code list"
-        return f"The {type_str} has the following catalog metadata:\n {output_str}"
+        return f"\u2022 The {type_str} has the following catalog metadata:\n {output_str}"
 
     def gen_dsd_info_printable(self) -> str:
         """
