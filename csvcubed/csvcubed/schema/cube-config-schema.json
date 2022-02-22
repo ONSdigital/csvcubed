@@ -278,7 +278,7 @@
               "type": "string",
               "format": "uri"
             },
-            "codelist": {
+            "code_list": {
               "$ref": "#/definitions/v1.0/types/code_list"
             }
           }

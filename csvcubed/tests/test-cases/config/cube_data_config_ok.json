@@ -33,8 +33,7 @@
     },
     "Attr-1": {
       "type": "attribute",
-      "label": "My best attribute",
-      "required": true
+      "label": "My best attribute"
     },
     "Amount": {
       "type": "observations",
