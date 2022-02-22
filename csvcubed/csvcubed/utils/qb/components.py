@@ -9,9 +9,9 @@ from enum import Enum
 from pathlib import Path
 
 
-class ComponentPropertyType(Enum):
+class ComponentPropertyTypeURI(Enum):
     """
-    The type of qube component.
+    The type uris of component properties..
     """
 
     Dimension = "http://purl.org/linked-data/cube#DimensionProperty"
@@ -24,6 +24,21 @@ class ComponentPropertyType(Enum):
     """ The component is of type qb:Measure. """
 
 
+class ComponentPropertyType(Enum):
+    """
+    The type of component properties..
+    """
+
+    Dimension = "Dimension"
+    """ The component is of type qb:Diemension. """
+
+    Attribute = "Attribute"
+    """ The component is of type qb:Attribute. """
+
+    Measure = "Measure"
+    """ The component is of type qb:Measure. """
+
+
 def get_printable_component_property_type(property_type: str) -> str:
     """
     Produces the user-friendly name of component property type.
@@ -32,11 +47,11 @@ def get_printable_component_property_type(property_type: str) -> str:
 
     :return: `str` - user-friendly name of component property type.
     """
-    if ComponentPropertyType.Dimension.value == property_type:
+    if ComponentPropertyTypeURI.Dimension.value == property_type:
         return ComponentPropertyType.Dimension.value
-    elif ComponentPropertyType.Attribute.value == property_type:
+    elif ComponentPropertyTypeURI.Attribute.value == property_type:
         return ComponentPropertyType.Attribute.value
-    elif ComponentPropertyType.Measure.value == property_type:
+    elif ComponentPropertyTypeURI.Measure.value == property_type:
         return ComponentPropertyType.Measure.value
     else:
         raise Exception(f"Property type {property_type} is not supported.")
@@ -54,10 +69,10 @@ def get_printable_component_property(component_property: str, csvw_path: Path) -
     """
 
     if component_property.startswith("file://") == False:
-        return component_property
+        return str(component_property)
 
     component_property_printable = str(csvw_path).removesuffix(
         "/" + csvw_path.name
     ) + component_property.removeprefix("file://" + str(Path.cwd()))
 
-    return component_property_printable
+    return f"file://{component_property_printable}"

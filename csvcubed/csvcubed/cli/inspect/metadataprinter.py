@@ -8,7 +8,8 @@ Provides functionality for validating and detecting input metadata.json file.
 import json
 from pathlib import Path
 import dateutil.parser
-from typing import List
+from typing import Dict, List
+import pandas as pd
 
 from rdflib import Graph
 
@@ -41,7 +42,10 @@ class MetadataPrinter:
         self.csvw_metadata_rdf_graph: Graph = csvw_metadata_rdf_graph
         self.csvw_metadata_json_path: Path = csvw_metadata_json_path
 
-    def _get_printable_list_of_items(self, items: List) -> str:
+    def _get_type_str(self):
+        return "data cube" if self.csvw_type == CSVWType.QbDataSet else "code list"
+
+    def _get_printable_list_str(self, items: List) -> str:
         if len(items) == 0 or len(items[0]) == 0:
             return "None"
 
@@ -49,6 +53,14 @@ class MetadataPrinter:
         for item in items:
             output_str = f"{output_str}\n\t\t-- {item}"
         return output_str
+
+    def _get_printable_tabular_str(self, items: List[Dict], columns_names=None) -> str:
+        if len(items) == 0:
+            return "None"
+
+        df = pd.DataFrame(items)
+        df.columns = columns_names if columns_names is not None else items[0].keys()
+        return df.to_string(index=False)
 
     def gen_type_info_printable(self) -> str:
         """
@@ -80,24 +92,21 @@ class MetadataPrinter:
             result_dict["label"],
             result_dict["issued"],
             result_dict["modified"],
-            str(none_or_map(result_dict.get("license"), str)),
-            str(none_or_map(result_dict.get("creator"), str)),
-            str(none_or_map(result_dict.get("publisher"), str)),
-            self._get_printable_list_of_items(
-                str(result_dict["landingPages"]).split("|")
-            ),
-            self._get_printable_list_of_items(str(result_dict["themes"]).split("|")),
-            self._get_printable_list_of_items(str(result_dict["keywords"]).split("|")),
-            str(none_or_map(result_dict.get("contact_point"), str)),
+            none_or_map(result_dict.get("license"), str),
+            none_or_map(result_dict.get("creator"), str),
+            none_or_map(result_dict.get("publisher"), str),
+            self._get_printable_list_str(str(result_dict["landingPages"]).split("|")),
+            self._get_printable_list_str(str(result_dict["themes"]).split("|")),
+            self._get_printable_list_str(str(result_dict["keywords"]).split("|")),
+            none_or_map(result_dict.get("contact_point"), str),
             result_dict["identifier"],
-            str(none_or_map(result_dict.get("comment"), str)),
+            none_or_map(result_dict.get("comment"), str),
             str(none_or_map(result_dict.get("description"), str)).replace(
                 "\n", "\n\t\t"
             ),
         )
 
-        type_str = "data cube" if self.csvw_type == CSVWType.QbDataSet else "code list"
-        return f"\u2022 The {type_str} has the following catalog metadata:\n {output_str}"
+        return f"\u2022 The {self._get_type_str()} has the following catalog metadata:\n {output_str}"
 
     def gen_dsd_info_printable(self) -> str:
         """
@@ -116,18 +125,22 @@ class MetadataPrinter:
         results_qube_components = select_csvw_dsd_qube_components(
             self.csvw_metadata_rdf_graph, self.dsd_uri
         )
-        qube_components: List[dict] = list(
+        qube_components: List[Dict] = list(
             map(
                 lambda component: {
                     "componentProperty": get_printable_component_property(
                         component["componentProperty"], self.csvw_metadata_json_path
                     ),
-                    "componentPropertyLabel": none_or_map(
-                        component.get("componentPropertyLabel"), str
+                    "componentPropertyLabel": str(
+                        none_or_map(component.get("componentPropertyLabel"), str)
                     ),
-                    "componentPropertyType": (component["componentPropertyType"]),
-                    "csvColumnTitle": none_or_map(component.get("csvColumnTitle"), str),
-                    "required": component["required"],
+                    "componentPropertyType": get_printable_component_property_type(
+                        str(component["componentPropertyType"])
+                    ),
+                    "csvColumnTitle": str(
+                        none_or_map(component.get("csvColumnTitle"), str)
+                    ),
+                    "required": str(component["required"]),
                 },
                 results_qube_components,
             )
@@ -137,16 +150,23 @@ class MetadataPrinter:
             self.csvw_metadata_rdf_graph
         )
 
-        return json.dumps(
-            {
-                "dataset_label": result_dataset_label_uri_dict["dataSetLabel"],
-                "num_of_components": len(qube_components),
-                "components": qube_components,
-                "columns_with_suppress_output_true": results_cols_with_suppress_output,
-            },
-            indent=4,
-            default=str,
+        output_str = "\t- Dataset label: {}\n\t- Columns with suppress output: {}\n\t- Number of components: {}\n\t- Components:\n{}".format(
+            result_dataset_label_uri_dict["dataSetLabel"],
+            self._get_printable_list_str(results_cols_with_suppress_output),
+            len(qube_components),
+            self._get_printable_tabular_str(
+                qube_components,
+                columns_names=[
+                    "Property",
+                    "Property Label",
+                    "Property Type",
+                    "Column Title",
+                    "Required",
+                ],
+            ),
         )
+
+        return f"\u2022 The {self._get_type_str()} has the following data structure definition:\n {output_str}"
 
     def gen_codelist_info_printable(self) -> str:
         """
