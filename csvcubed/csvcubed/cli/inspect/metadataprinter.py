@@ -135,16 +135,17 @@ class MetadataPrinter:
                     "componentProperty": get_printable_component_property(
                         component["componentProperty"], self.csvw_metadata_json_path
                     ),
-                    "componentPropertyLabel": str(
-                        none_or_map(component.get("componentPropertyLabel"), str)
-                    ),
+                    "componentPropertyLabel": none_or_map(
+                        component.get("componentPropertyLabel"), str
+                    )
+                    or "",
                     "componentPropertyType": get_printable_component_property_type(
-                        str(component["componentPropertyType"])
+                        str(component["componentPropertyType"]) or ""
                     ),
                     "csvColumnTitle": str(
-                        none_or_map(component.get("csvColumnTitle"), str)
+                        none_or_map(component.get("csvColumnTitle"), str) or ""
                     ),
-                    "required": str(component["required"]),
+                    "required": component["required"] or "",
                 },
                 results_qube_components,
             )
