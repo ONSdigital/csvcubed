@@ -6,7 +6,7 @@
     "summary": "A string of any length or markdown, etc",
     "publisher": "uri", // Link to existing publisher
     "creator": "uri", // Link to existing creator
-    "theme": [
+    "themes": [
         "theme1",
         "theme2",
         "etc."
@@ -16,7 +16,7 @@
     "license": "uri", // Link to existing licence
     "spatial_bound": "a geography uri", // maps to dcterms.spatial
     "temporal_bound": "a temporal uri", // maps to dcterms.temporal
-    "keyword": [
+    "keywords": [
         "keyword1",
         "keyword2"
     ], //List or string

@@ -8,14 +8,9 @@ from dataclasses import dataclass
 from typing import List, Union, Optional, TypeVar
 from pathlib import Path
 
-import uritemplate
 from csvcubed.models.cube import (
     ExistingQbAttributeLiteral,
     NewQbAttributeLiteral,
-    CompositeQbCodeList,
-    CatalogMetadata,
-    DuplicatedQbConcept,
-    NewQbCodeList,
 )
 from csvcubedmodels.dataclassbase import DataClassBase
 
@@ -32,14 +27,12 @@ from csvcubed.models.cube.qb.components import (
     QbMultiMeasureDimension,
     QbMultiMeasureObservationValue,
     QbSingleMeasureObservationValue,
-    ExistingQbCodeList,
     ExistingQbMeasure,
     NewQbMeasure,
     QbObservationValue,
-    NewQbCodeListInCsvW,
 )
 from csvcubed.inputs import PandasDataTypes
-from csvcubed.utils.uri import looks_like_uri, csvw_column_name_safe
+from csvcubed.utils.uri import csvw_column_name_safe
 
 T = TypeVar("T", bound=object)
 
@@ -62,14 +55,14 @@ class Dimension(SchemaBaseClass):
     # Properties common to both New and Existing Dimension
     from_existing: Optional[str] = None
     cell_uri_template: Optional[str] = None
-    code_list: Optional[Union[str, bool]] = False
+    code_list: Optional[Union[str, bool]] = True
 
     def map_to_qb_dimension(
         self, label: str, data: PandasDataTypes, json_parent_dir: Path
     ) -> Union[NewQbDimension, ExistingQbDimension]:
 
         # No label, description or code_list means its likely to be an ExistingDimension
-        if not any([self.label, self.description, self.code_list]):
+        if not any([self.label, self.description]):
             # but requires a valid from_existing uri str
             if isinstance(self.from_existing, str) :
                 return ExistingQbDimension(self.from_existing)
@@ -81,7 +74,7 @@ class Dimension(SchemaBaseClass):
         # label, description or code_list present therefore it will be a NewDimension
         else:
             new_dimension = NewQbDimension.from_data(
-                label=label,
+                label=self.label or label,
                 data=data,
                 description=self.description,
                 parent_dimension_uri=self.from_existing,

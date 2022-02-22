@@ -8,30 +8,10 @@ import copy
 from typing import Union
 from pathlib import Path
 
-from csvcubed.models.cube import CompositeQbCodeList
 from csvcubed.models.cube.qb.columns import QbColumn
 from csvcubed.inputs import PandasDataTypes
 
-from csvcubed.readers import columnschema as schema
-
-from csvcubed.models.cube.qb.components import (
-    NewQbDimension,
-    ExistingQbDimension,
-    NewQbAttribute,
-    NewQbAttributeValue,
-    ExistingQbAttribute,
-    NewQbUnit,
-    ExistingQbUnit,
-    QbMultiUnits,
-    QbMultiMeasureDimension,
-    QbMultiMeasureObservationValue,
-    QbSingleMeasureObservationValue,
-    ExistingQbCodeList,
-    ExistingQbMeasure,
-    NewQbMeasure,
-    QbObservationValue,
-    NewQbCodeListInCsvW,
-)
+from csvcubed.readers.v1_0 import columnschema as schema
 
 
 def map_column_to_qb_component(

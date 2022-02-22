@@ -3,8 +3,10 @@ import logging
 import jsonschema
 from jsonschema.exceptions import ValidationError
 
+log = logging.getLogger(__name__)
 
-def validate_dict_against_schema(value: dict, schema: dict, log: logging.RootLogger) -> list[ValidationError]:
+
+def validate_dict_against_schema(value: dict, schema: dict) -> list[ValidationError]:
     """
     Validates a dict against a schema,
     """
@@ -26,11 +28,14 @@ def validate_dict_against_schema(value: dict, schema: dict, log: logging.RootLog
 
     except jsonschema.exceptions.ValidationError as err:
         log.error(f"Validation of the supplied config cube failed: {repr(err)}")
+        raise err
 
     except jsonschema.exceptions.SchemaError as err:
         log.error(f"The schema provided for validation of the config cube was not a valid schema: {repr(err)}")
+        raise err
 
     except Exception as err:
-        print(repr(err))
+        log.error(f"Unexpected Error: {repr(err)}")
+        raise err
 
     return errors
