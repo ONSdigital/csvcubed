@@ -43,7 +43,7 @@ def inspect(csvw_metadata_json_path: Path) -> None:
     if valid_csvw_metadata:
         (
             type_printable,
-            metadata_info_printable,
+            catalog_metadata_printable,
             dsd_info_printable,
             codelist_info_printable,
             headtail_printable,
@@ -52,10 +52,11 @@ def inspect(csvw_metadata_json_path: Path) -> None:
             csvw_type, csvw_metadata_rdf_graph, csvw_metadata_json_path
         )
 
-        _logger.info("Type: %s", type_printable)
-        _logger.info("Description: %s", metadata_info_printable)
-        if csvw_type == CSVWType.QbDataSet:
-            _logger.info("Data Structure Definition: %s", dsd_info_printable)
+        print(f"\n{type_printable}")
+        print(f"\n{catalog_metadata_printable}")
+
+        # if csvw_type == CSVWType.QbDataSet:
+        #     print(dsd_info_printable)
     else:
         _logger.error(
             "This is an unsupported csv-w! Supported types are `data cube` and `code list`."

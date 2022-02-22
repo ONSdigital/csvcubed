@@ -41,6 +41,15 @@ class MetadataPrinter:
         self.csvw_metadata_rdf_graph: Graph = csvw_metadata_rdf_graph
         self.csvw_metadata_json_path: Path = csvw_metadata_json_path
 
+    def _get_printable_list_of_items(self, items: List) -> str:
+        if len(items) == 0 or len(items[0]) == 0:
+            return "None"
+
+        output_str = ""
+        for item in items:
+            output_str = f"{output_str}\n\t\t-- {item}"
+        return output_str
+
     def gen_type_info_printable(self) -> str:
         """
         Generates a printable of metadata type information.
@@ -66,32 +75,29 @@ class MetadataPrinter:
         result = select_csvw_catalog_metadata(self.csvw_metadata_rdf_graph)
         result_dict = result.asdict()
 
-        return json.dumps(
-            {
-                "title": result_dict["title"],
-                "label": result_dict["label"],
-                "issued": dateutil.parser.isoparse(result_dict["issued"]),
-                "modified": dateutil.parser.isoparse(result_dict["modified"]),
-                "comment": none_or_map(result_dict.get("comment"), str),
-                "description": none_or_map(result_dict.get("description"), str),
-                "license": none_or_map(result_dict.get("license"), str),
-                "creator": none_or_map(result_dict.get("creator"), str),
-                "publisher": none_or_map(result_dict.get("publisher"), str),
-                "landing_pages": []
-                if len(result_dict["landingPages"]) == 0
-                else result_dict["landingPages"].split("|"),
-                "themes": []
-                if len(result_dict["themes"]) == 0 == 0
-                else result_dict["themes"].split("|"),
-                "keywords": []
-                if len(result_dict["keywords"]) == 0
-                else result_dict["keywords"].split("|"),
-                "contact_point": none_or_map(result_dict.get("contactPoint"), str),
-                "identifier": result_dict["identifier"],
-            },
-            indent=4,
-            default=str,
+        output_str = "\tTitle: {}\n\tLabel: {}\n\tIssued: {}\n\tModified: {}\n\tLicense: {}\n\tCreator: {}\n\tPublisher: {}\n\tLanding Pages: {}\n\tThemes: {}\n\tKeywords: {}\n\tContact Point: {}\n\tIdentifier: {}\n\tComment: {}\n\tDescription: {}".format(
+            result_dict["title"],
+            result_dict["label"],
+            result_dict["issued"],
+            result_dict["modified"],
+            str(none_or_map(result_dict.get("license"), str)),
+            str(none_or_map(result_dict.get("creator"), str)),
+            str(none_or_map(result_dict.get("publisher"), str)),
+            self._get_printable_list_of_items(
+                str(result_dict["landingPages"]).split("|")
+            ),
+            self._get_printable_list_of_items(str(result_dict["themes"]).split("|")),
+            self._get_printable_list_of_items(str(result_dict["keywords"]).split("|")),
+            str(none_or_map(result_dict.get("contact_point"), str)),
+            result_dict["identifier"],
+            str(none_or_map(result_dict.get("comment"), str)),
+            str(none_or_map(result_dict.get("description"), str)).replace(
+                "\n", "\n\t\t"
+            ),
         )
+
+        type_str = "data cube" if self.csvw_type == CSVWType.QbDataSet else "code list"
+        return f"The {type_str} has the following catalog metadata:\n {output_str}"
 
     def gen_dsd_info_printable(self) -> str:
         """
