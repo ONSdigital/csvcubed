@@ -4,8 +4,11 @@ URI
 
 Functions to help when working with URIs.
 """
+import json
 import logging
 import re
+import requests
+from json.decoder import JSONDecodeError
 from unidecode import unidecode
 from urllib.parse import urlparse
 import rdflib

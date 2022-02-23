@@ -33,5 +33,3 @@ def _ensure_dir_structure_exists(dir_path: Path) -> None:
         _ensure_dir_structure_exists(dir_path.parent)
         log.debug("Creating directory %s", dir_path)
         dir_path.mkdir()
-
-
