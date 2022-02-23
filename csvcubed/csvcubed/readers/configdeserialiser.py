@@ -159,29 +159,6 @@ def _from_config_json_dict(d: Dict,
     return Cube(metadata, data, columns)
 
 
-# def _override_config_for_cube_id(config: dict, cube_id: str) -> Optional[dict]:
-#     """
-#     Apply cube config overrides contained inside the `cubes` dictionary to get the config for the given `cube_id`
-#     """
-#     # Need to do a deep-clone of the config to avoid side-effecs
-#     config = copy.deepcopy(config)
-#
-#     config_json_id = config.get("id")
-#     if config_json_id is not None and config_json_id == cube_id:
-#         if "cubes" in config:
-#             del config["cubes"]
-#
-#         return config
-#     elif "cubes" in config and cube_id in config["cubes"]:
-#         overrides = config["cubes"][cube_id]
-#         for k, v in overrides.items():
-#             config[k] = v
-#
-#         return config
-#     else:
-#         return None
-
-
 def _metadata_from_dict(config: dict) -> "CatalogMetadata":
     creator = get_with_func_or_none(config, "creator", lambda c: str(GOV[uri_safe(c)]))
     publisher = get_with_func_or_none(config, "publisher", lambda p: str(GOV[uri_safe(p)]))
