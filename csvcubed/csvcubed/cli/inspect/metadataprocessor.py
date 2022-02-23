@@ -31,21 +31,9 @@ class MetadataProcessor:
         """
         csvw_metadata_file_path = self.csvw_metadata_file_path.absolute()
         csvw_metadata_rdf_graph = Graph()
-
+        
         try:
-            with open(csvw_metadata_file_path, "r") as f:
-                csvw_file_contents: str = f.read()
-                _logger.info(
-                    f"Successfully read content from %s",
-                    self.csvw_metadata_file_path,
-                )
-        except Exception as ex:
-            raise Exception(
-                "An error occured while reading csvw json-ld content"
-            ) from ex
-
-        try:
-            csvw_metadata_rdf_graph.parse(data=csvw_file_contents, format="json-ld")
+            csvw_metadata_rdf_graph.load(csvw_metadata_file_path, format="json-ld")
             _logger.info("Successfully parsed csvw json-ld to rdf graph")
             return csvw_metadata_rdf_graph
         except Exception as ex:

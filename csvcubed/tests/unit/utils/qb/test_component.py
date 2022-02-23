@@ -8,6 +8,38 @@ from csvcubed.utils.qb.components import (
 )
 
 
+def test_printable_component_property_url():
+    input_file_path = Path("folder/sub-folder/file.csv")
+    component_property = "http://purl.org/linked-data/sdmx/2009/attribute#obsStatus"
+    printable_component_property = get_printable_component_property(
+        input_file_path, component_property
+    )
+    assert printable_component_property == "http://purl.org/linked-data/sdmx/2009/attribute#obsStatus"
+
+
+def test_printable_component_property_supported_file_path():
+    input_file_path = Path("folder/sub-folder/file.csv")
+    component_property = (
+        "file://folder/sub-folder/sub-sub-folder/other-file.csv#property-type/type"
+    )
+    printable_component_property = get_printable_component_property(
+        input_file_path, component_property
+    )
+    assert printable_component_property == "./sub-sub-folder/other-file.csv#property-type/type"
+
+
+def test_printable_component_property_unsupported_file_path():
+    input_file_path = Path("folder/sub-folder/file.csv")
+    component_property = "file://folder/new-folder/sub-folder/sub-sub-folder/other-file.csv#property-type/type"
+    printable_component_property = get_printable_component_property(
+        input_file_path, component_property
+    )
+    assert (
+        printable_component_property
+        == "folder/new-folder/sub-folder/sub-sub-folder/other-file.csv#property-type/type"
+    )
+
+
 def test_printable_component_property_type_dimension():
     """
     Should return "Dimension" when the input is http://purl.org/linked-data/cube#DimensionProperty

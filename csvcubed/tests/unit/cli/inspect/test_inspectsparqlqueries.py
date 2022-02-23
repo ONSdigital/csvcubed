@@ -147,8 +147,8 @@ def test_select_csvw_dsd_dataset():
         str(components[0]["componentPropertyType"])
         == ComponentPropertyTypeURI.Dimension.value
     )
-    assert components[0]["csvColumnTitle"] is None
-    assert components[0]["required"] is None
+    assert str(components[0]["csvColumnTitle"]) == "Period" 
+    assert bool(components[0]["required"]) is True
 
 
 def test_select_cols_when_supress_output_cols_not_present():

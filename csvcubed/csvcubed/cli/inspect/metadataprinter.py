@@ -133,7 +133,8 @@ class MetadataPrinter:
             map(
                 lambda component: {
                     "componentProperty": get_printable_component_property(
-                        component["componentProperty"], self.csvw_metadata_json_path
+                        self.csvw_metadata_json_path,
+                        component["componentProperty"],
                     ),
                     "componentPropertyLabel": none_or_map(
                         component.get("componentPropertyLabel"), str
@@ -145,7 +146,9 @@ class MetadataPrinter:
                     "csvColumnTitle": str(
                         none_or_map(component.get("csvColumnTitle"), str) or ""
                     ),
-                    "required": component["required"] or "",
+                    "required": ""
+                    if component["required"] is None
+                    else str(component["required"]),
                 },
                 results_qube_components,
             )

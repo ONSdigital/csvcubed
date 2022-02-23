@@ -2,32 +2,28 @@ PREFIX qb: <http://purl.org/linked-data/cube#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX csvw: <http://www.w3.org/ns/csvw#>
 
-SELECT DISTINCT ?componentProperty ?componentPropertyLabel ?componentOrder ?componentPropertyType ?csvColumnTitle (?csvColumnRequired || ?componentRequired as ?required)
+SELECT DISTINCT 
+    ?componentProperty ?componentPropertyLabel ?componentOrder ?componentPropertyType ?csvColumnTitle 
+    (COALESCE(?csvColumnRequired, false) || ?componentRequired as ?required) 
 WHERE {   
     { 
         SELECT DISTINCT ?csvColumnTitle ?csvColumnRequired ?component ?componentProperty ?componentOrder 
         WHERE {
             ?dsd_uri qb:component ?component.
-            
+
             ?component qb:componentProperty|qb:dimension|qb:measureDimension|qb:measure|qb:attribute ?componentProperty;
                     qb:order ?componentOrder.
 
             OPTIONAL {
+                ?csvColumn csvw:propertyUrl ?csvColumnPropertyUrl;
+                        csvw:title ?csvColumnTitle.
+
                 {
-                    SELECT ?csvColumnTitle ?csvColumnPropertyUrl ?csvColumnRequired
-                    WHERE {
-                        ?csvColumn csvw:propertyUrl ?csvColumnPropertyUrl;
-                                csvw:titles ?csvColumnTitle.
-
-                        {
-                            ?csvColumn csvw:required ?csvColumnRequired.
-                        } UNION {
-                            BIND(false as ?csvColumnRequired).
-                            FILTER NOT EXISTS {
-                                ?csvColumn csvw:required ?csvColumnRequired.
-                            }
-                        }
-
+                    ?csvColumn csvw:required ?csvColumnRequired.
+                } UNION {
+                    BIND(false as ?csvColumnRequired).
+                    FILTER NOT EXISTS {
+                        ?csvColumn csvw:required ?csvColumnRequired.
                     }
                 }
 
@@ -35,7 +31,7 @@ WHERE {
             }
         }
     }
-    
+
     OPTIONAL {
         ?componentProperty rdfs:label ?componentPropertyLabel.
     }

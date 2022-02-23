@@ -57,22 +57,23 @@ def get_printable_component_property_type(property_type: str) -> str:
         raise Exception(f"Property type {property_type} is not supported.")
 
 
-def get_printable_component_property(component_property: str, csvw_path: Path) -> str:
+def get_printable_component_property(
+    input_file_path: Path, component_property: str
+) -> str:
     """
     Produces the user-friendly property of the component property.
-    More specifically, if the property is a url, the url should be the printable.
-    If the property is a file, the relative file path should be the printable.
 
     Member of :file:`./utils/qb/components.py`
 
     :return: `str` - url or relative path
     """
-
     if component_property.startswith("file://") == False:
-        return str(component_property)
+        return component_property
 
-    component_property_printable = str(csvw_path).removesuffix(
-        "/" + csvw_path.name
-    ) + component_property.removeprefix("file://" + str(Path.cwd()))
-
-    return f"file://{component_property_printable}"
+    component_property = component_property.removeprefix("file://")
+    try:
+        component_property_path = Path(component_property)
+        relative_path = component_property_path.relative_to(input_file_path.parent)
+        return f"./{relative_path}"
+    except Exception:
+        return component_property
