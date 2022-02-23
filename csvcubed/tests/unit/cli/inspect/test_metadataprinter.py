@@ -103,27 +103,3 @@ def test_csvw_catalog_metadata_printable_codelist():
         printable
         == "\u2022 The code list has the following catalog metadata: - Title: Alcohol Content- Label: Alcohol Content- Issued: 2022-02-11T21:00:21.040987- Modified: 2022-02-11T21:00:21.040987- License: None- Creator: None- Publisher: None- Landing Pages: None- Themes: None- Keywords: None- Contact Point: None- Identifier: Alcohol Content- Comment: None- Description: None"
     )
-
-
-def test_csvw_dsd_info_printable_datacube():
-    """
-    Should contain dataset label, qube components and cols with suppress output for the given data cube.
-    """
-    csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
-    metadata_processor = MetadataProcessor(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
-    csvw_metadata_rdf_validator = MetadataValidator(csvw_metadata_rdf_graph)
-
-    (
-        _,
-        csvw_type,
-    ) = csvw_metadata_rdf_validator.validate_and_detect_type()
-
-    metadata_printer = MetadataPrinter(
-        csvw_type, csvw_metadata_rdf_graph, csvw_metadata_json_path
-    )
-    printable = metadata_printer.gen_dsd_info_printable()
-    printable = printable.replace("\t", "").replace("\n", "")
-
-    #TODO: Format string and do assert.
-    assert printable == printable
