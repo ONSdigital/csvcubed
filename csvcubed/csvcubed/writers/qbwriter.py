@@ -40,6 +40,7 @@ from .skoscodelistwriter import (
 )
 from .urihelpers.skoscodelist import SkosCodeListNewUriHelper
 from .urihelpers.qbcube import QbCubeNewUriHelper
+from .urihelpers.skoscodelistconstants import SCHEMA_URI_IDENTIFIER
 from .writerbase import WriterBase
 from ..models.cube import (
     QbAttribute,
@@ -949,43 +950,83 @@ class QbWriter(WriterBase):
 
         return "{+" + csvw_column_name_safe(column.uri_safe_identifier) + "}"
 
-    _external_code_list_pattern = re.compile("^(.*)/concept-scheme/(.*)$")
-    _dataset_local_code_list_pattern = re.compile("^(.*)#scheme/(.*)$")
+    _legacy_external_code_list_pattern = re.compile("^(.*)/concept-scheme/(.*)$")
+    _legacy_dataset_local_code_list_pattern = re.compile("^(.*)#scheme/(.*)$")
+    _csvcubed_code_list_pattern = re.compile(
+        "^(.*)#" + re.escape(SCHEMA_URI_IDENTIFIER) + "$"
+    )
 
     def _get_default_value_uri_for_code_list_concepts(
         self, column: CsvColumn, code_list: QbCodeList
     ) -> str:
         column_uri_fragment = self._get_column_uri_template_fragment(column)
         if isinstance(code_list, ExistingQbCodeList):
-            external_match = self._external_code_list_pattern.match(
+            legacy_external_match: re.Match = (
+                self._legacy_external_code_list_pattern.match(
+                    code_list.concept_scheme_uri
+                )
+            )
+            legacy_local_match: re.Match = (
+                self._legacy_dataset_local_code_list_pattern.match(
+                    code_list.concept_scheme_uri
+                )
+            )
+            csvcubed_match: re.Match = self._csvcubed_code_list_pattern.match(
                 code_list.concept_scheme_uri
             )
-            local_match = self._dataset_local_code_list_pattern.match(
-                code_list.concept_scheme_uri
-            )
-            if external_match:
-                m: re.Match = external_match
+            if legacy_external_match:
+                _logger.debug(
+                    "Existing concept scheme URI %s matches legacy family/global style.",
+                    code_list.concept_scheme_uri,
+                )
+                m = legacy_external_match
                 # ConceptScheme URI:
                 # http://gss-data.org.uk/def/concept-scheme/{code-list-name}
                 # Concept URI:
                 # http://gss-data.org.uk/def/concept-scheme/{code-list-name}/{notation}
                 return f"{m.group(1)}/concept-scheme/{m.group(2)}/{column_uri_fragment}"
-            elif local_match:
-                m: re.Match = local_match
+            elif legacy_local_match:
+                _logger.debug(
+                    "Existing concept scheme URI %s matches legacy dataset-local style.",
+                    code_list.concept_scheme_uri,
+                )
+                m: re.Match = legacy_local_match
                 # ConceptScheme URI:
                 # http://gss-data.org.uk/data/gss_data/{family-name}/{dataset-root-name}#scheme/{code-list-name}
                 # Concept URI:
                 # http://gss-data.org.uk/data/gss_data/{family-name}/{dataset-root-name}#concept/{code-list-name}/{notation}
                 return f"{m.group(1)}#concept/{m.group(2)}/{column_uri_fragment}"
+            elif csvcubed_match:
+                _logger.debug(
+                    "Existing concept scheme URI %s matches csvcubed style.",
+                    code_list.concept_scheme_uri,
+                )
+                m: re.Match = csvcubed_match
+                # ConceptScheme URI:
+                # {code-list-uri}#code-list
+                # Concept URI:
+                # {code-list-uri}#{notation}
+                return f"{m.group(1)}#{column_uri_fragment}"
             else:
+                _logger.warning(
+                    "Existing concept scheme URI %s does not match expected any known convention.",
+                    code_list.concept_scheme_uri,
+                )
                 # Unexpected code-list URI. Does not match expected conventions.
                 return column_uri_fragment
-
         elif isinstance(code_list, NewQbCodeList):
+            _logger.debug(
+                "valueUrl defined by new dataset-local code list %s",
+                code_list.metadata.title,
+            )
             return SkosCodeListNewUriHelper(code_list).get_concept_uri(
                 column_uri_fragment
             )
         elif isinstance(code_list, NewQbCodeListInCsvW):
+            _logger.debug(
+                "valueUrl defined by legacy dataset-local code list %s",
+                code_list.concept_scheme_uri,
+            )
             return re.sub(
                 r"\{.?notation\}", column_uri_fragment, code_list.concept_template_uri
             )
