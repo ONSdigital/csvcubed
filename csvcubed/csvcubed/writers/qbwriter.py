@@ -141,10 +141,20 @@ class QbWriter(WriterBase):
         for column in get_columns_of_dsd_type(self.cube, NewQbDimension):
             code_list = column.structural_definition.code_list
             if isinstance(code_list, NewQbCodeList):
+                _logger.debug(
+                    "Writing code list %s to '%s' directory.", code_list, output_folder
+                )
+
                 code_list_writer = SkosCodeListWriter(code_list)
                 code_list_writer.write(output_folder)
             elif isinstance(code_list, NewQbCodeListInCsvW):
                 # find the CSV-W codelist and all dependent relative files and copy them into the output_folder
+                _logger.debug(
+                    "Copying legacy code list %s (with dependent files) to '%s' directory.",
+                    code_list,
+                    output_folder,
+                )
+
                 dependent_files = get_dependent_local_files(
                     code_list.schema_metadata_file_path
                 )
@@ -176,6 +186,8 @@ class QbWriter(WriterBase):
         for col in self._get_columns_for_foreign_keys():
             code_list = col.structural_definition.code_list
             if isinstance(code_list, NewQbCodeList):
+                _logger.debug("Referencing dataset-local code list %s.", code_list)
+
                 tables.append(
                     {
                         "url": f"{code_list.metadata.uri_safe_identifier}.csv",
@@ -184,6 +196,11 @@ class QbWriter(WriterBase):
                     }
                 )
             elif isinstance(code_list, NewQbCodeListInCsvW):
+                _logger.debug(
+                    "Referencing legacy dataset-local code list %s with assumed table schema.",
+                    code_list,
+                )
+
                 tables.append(
                     {
                         "url": code_list.csv_file_relative_path_or_uri,
@@ -201,6 +218,11 @@ class QbWriter(WriterBase):
         for col in self._get_columns_for_foreign_keys():
             code_list = col.structural_definition.code_list
             if isinstance(code_list, NewQbCodeList):
+                _logger.debug(
+                    "Configuring foreign key constraints for dataset-local code list %s",
+                    code_list,
+                )
+
                 foreign_keys.append(
                     {
                         "columnReference": csvw_column_name_safe(
@@ -213,6 +235,11 @@ class QbWriter(WriterBase):
                     }
                 )
             elif isinstance(code_list, NewQbCodeListInCsvW):
+                _logger.debug(
+                    "Configuring foreign key constraints for legacy dataset-local code list %s",
+                    code_list,
+                )
+
                 foreign_keys.append(
                     {
                         "columnReference": csvw_column_name_safe(
@@ -243,6 +270,8 @@ class QbWriter(WriterBase):
     def _generate_virtual_columns_for_obs_val(
         self, obs_val: QbObservationValue
     ) -> List[Dict[str, Any]]:
+        _logger.debug("Configuring per-row virtual columns.")
+
         virtual_columns: List[dict] = [
             {
                 "name": "virt_type",
@@ -259,6 +288,7 @@ class QbWriter(WriterBase):
         ]
         unit = obs_val.unit
         if unit is not None:
+            _logger.debug("Adding virtual unit column.")
             virtual_columns.append(
                 {
                     "name": VIRT_UNIT_COLUMN_NAME,
@@ -268,6 +298,7 @@ class QbWriter(WriterBase):
                 }
             )
         if isinstance(obs_val, QbSingleMeasureObservationValue):
+            _logger.debug("Adding virtual measure column.")
             virtual_columns.append(
                 {
                     "name": "virt_measure",
@@ -842,14 +873,23 @@ class QbWriter(WriterBase):
         observation_value: QbObservationValue,
     ):
         if isinstance(observation_value, QbSingleMeasureObservationValue):
+            _logger.debug(
+                "Single-measure observation value propertyUrl defined by measure %s",
+                observation_value.measure,
+            )
             return self._get_measure_uri(observation_value.measure), None
         elif isinstance(observation_value, QbMultiMeasureObservationValue):
-            multi_measure_dimension = self._get_single_column_of_type(
+            multi_measure_dimension_col = self._get_single_column_of_type(
                 QbMultiMeasureDimension
             )
+            _logger.debug(
+                "Multi-measure observation value propertyUrl defined by measure column %s",
+                multi_measure_dimension_col.csv_column_title,
+            )
+
             measure_uri_template = (
                 self._get_measure_dimension_column_measure_template_uri(
-                    multi_measure_dimension
+                    multi_measure_dimension_col
                 )
             )
             return measure_uri_template, None
@@ -1068,9 +1108,12 @@ class QbWriter(WriterBase):
                         f"{{+{csvw_column_name_safe(c.uri_safe_identifier)}}}"
                     )
 
-        return self._new_uri_helper.get_observation_uri(
+        about_url_template = self._new_uri_helper.get_observation_uri(
             dimension_columns_templates, multi_measure_col_template
         )
+
+        _logger.debug("aboutUrl template is %s", about_url_template)
+        return about_url_template
 
     def _get_primary_key_columns(self) -> List[str]:
         dimension_columns: Iterable[QbColumn] = itertools.chain(
@@ -1078,4 +1121,9 @@ class QbWriter(WriterBase):
             get_columns_of_dsd_type(self.cube, QbMultiMeasureDimension),
         )
 
-        return [csvw_column_name_safe(c.csv_column_title) for c in dimension_columns]
+        primary_key_columns = [
+            csvw_column_name_safe(c.csv_column_title) for c in dimension_columns
+        ]
+
+        _logger.debug("Primary key columns are %s", primary_key_columns)
+        return primary_key_columns
