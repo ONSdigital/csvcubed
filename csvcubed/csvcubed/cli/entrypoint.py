@@ -7,7 +7,7 @@ import logging
 import sys
 import click
 from pathlib import Path
-from csvcubed.utils.log import handle_exception, start_logging
+from csvcubed.utils.log import log_exception, start_logging
 
 from .build import build
 
@@ -52,10 +52,7 @@ def entry_point():
     show_default=True,
 )
 @click.option(
-    "--logdir", 
-    help="Location for log files.", 
-    type=str, 
-    default="csvcubedcli"
+    "--logdir", help="Location for log files.", type=str, default="csvcubedcli"
 )
 @click.option(
     "--logginglvl",
@@ -83,7 +80,7 @@ def build_command(
 
     logger = logging.getLogger(__name__)
     start_logging(
-        logdir=logdir,
+        log_dir=logdir,
         selected_logging_level=logginglvl,
     )
     try:
@@ -95,6 +92,4 @@ def build_command(
             validation_errors_file_out=validation_errors_file_out,
         )
     except Exception:
-        handle_exception(logger, *sys.exc_info())
-
-        
+        log_exception(logger, *sys.exc_info())

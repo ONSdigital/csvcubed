@@ -4,6 +4,7 @@ Log
 Utilities to help with logging.
 """
 import logging
+import logging.handlers
 import sys
 import io
 import traceback
@@ -41,35 +42,29 @@ class CustomFormatter(logging.Formatter):
 
 
 def start_logging(
-    logdir: str,
-    selected_logging_level: Union[str, None],
+    log_dir: str,
+    selected_logging_level: Union[str, int, None],
     root_logger_name: str = "csvcubed",
 ) -> None:
-    if selected_logging_level == "err":
-        logging_level: int = logging.ERROR
-    elif selected_logging_level == "crit":
-        logging_level: int = logging.CRITICAL
-    elif selected_logging_level == "info":
-        logging_level: int = logging.INFO
-    elif selected_logging_level == "debug":
-        logging_level: int = logging.DEBUG
-    else:
-        logging_level: int = logging.WARNING
+    logging_level = _get_logging_level(selected_logging_level)
 
-    dirs = AppDirs(logdir, "csvcubed")
-    log_file_path = Path(dirs.user_log_dir)
-    log_file_already_exists = True
-    if not log_file_path.exists():
-        log_file_already_exists: bool = False
+    dirs = AppDirs(log_dir, "csvcubed")
+    log_file_path = Path(dirs.user_log_dir) / "out.log"
     log_file_path.parent.mkdir(parents=True, exist_ok=True)
 
     logger = logging.getLogger(root_logger_name)
+    logger.setLevel(logging_level)
 
     console_handler = logging.StreamHandler(sys.stderr)
     console_handler.setLevel(logging_level)
     console_handler.setFormatter(CustomFormatter())
 
-    file_handler = logging.FileHandler(dirs.user_log_dir)
+    file_handler = logging.handlers.TimedRotatingFileHandler(
+        log_file_path,
+        encoding="utf-8",
+        when="D",
+        interval=7,  # Keep one week's worth of logs
+    )
     file_handler.setLevel(logging_level)
     file_handler.setFormatter(
         logging.Formatter(f"%(asctime)s - %(name)s - %(levelname)s - %(message)s")
@@ -78,16 +73,31 @@ def start_logging(
     logger.addHandler(console_handler)
     logger.addHandler(file_handler)
 
-    if not log_file_already_exists:
-        logger.critical(
-            "A log file containing the recordings of this cli, is at: "
-            + dirs.user_log_dir
-        )
 
-def handle_exception(logger, exc_type, exc_value, exc_tb) -> None:
-    
+def _get_logging_level(selected_logging_level: Union[int, str, None]) -> int:
+    if isinstance(selected_logging_level, int):
+        return selected_logging_level
+    elif isinstance(selected_logging_level, str):
+        selected_logging_level = selected_logging_level.lower()
+        if selected_logging_level == "err":
+            return logging.ERROR
+        elif selected_logging_level == "crit":
+            return logging.CRITICAL
+        elif selected_logging_level == "info":
+            return logging.INFO
+        elif selected_logging_level == "debug":
+            return logging.DEBUG
+        else:
+            raise ValueError(f"Unexpected logging level {selected_logging_level}.")
+
+    return logging.WARNING
+
+
+def log_exception(logger, exc_type, exc_value, exc_tb) -> None:
     file_stream = io.StringIO()
-    traceback.print_exception(exc_type, exc_value, exc_tb,limit=None, chain=True, file=file_stream)
+    traceback.print_exception(
+        exc_type, exc_value, exc_tb, limit=None, chain=True, file=file_stream
+    )
     file_stream.seek(0)
     stack_trace: str = file_stream.read()
     logger.critical(stack_trace)
