@@ -181,22 +181,22 @@ def test_select_cols_when_supress_output_cols_present():
     assert str(cols_with_suppress_output[0]) == "Col1WithSuppressOutput"
     assert str(cols_with_suppress_output[1]) == "Col2WithSuppressOutput"
 
+
 def test_select_dsd_code_list_and_cols_without_codelist_labels():
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
+    result_dsd = select_csvw_dsd_dataset_label_and_dsd_def_uri(csvw_metadata_rdf_graph)
+    result_dsd_dict = result_dsd.asdict()
+
     results = select_dsd_code_list_and_cols(
         csvw_metadata_rdf_graph,
-        "file:///workspaces/csvcubed/csvcubed/tests/test-cases/cli/inspect/alcohol-bulletin.csv#structure",
+        result_dsd_dict["dataStructureDefinition"],
     )
-    assert len(results) == 3
-
     result_dict = results[0].asdict()
     csvColumnsUsedIn = str(result_dict["csvColumnsUsedIn"]).split("|")
-    assert (
-        str(result_dict["codeList"])
-        == "file:///workspaces/csvcubed/csvcubed/tests/test-cases/cli/inspect/alcohol-sub-type.csv#scheme/alcohol-sub-type"
-    )
+
+    assert len(results) == 3
     assert result_dict.get("codeListLabel") is None
     assert csvColumnsUsedIn == ["Alcohol Sub Type"]
