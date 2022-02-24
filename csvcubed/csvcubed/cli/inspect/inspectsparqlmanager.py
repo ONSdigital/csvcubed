@@ -33,6 +33,8 @@ class SPARQLQueryFileName(Enum):
 
     SELECT_COLS_W_SUPPRESS_OUTPUT = "select_cols_w_suppress_output"
 
+    SELECT_CODE_LISTS_AND_COLS = "select_code_lists_and_cols"
+
 
 def _get_query_string_from_file(queryType: SPARQLQueryFileName) -> str:
     """
@@ -116,7 +118,9 @@ def select_csvw_dsd_dataset_label_and_dsd_def_uri(rdf_graph: Graph) -> ResultRow
     :return: `List[ResultRow]` - List containing the results. The expected length of this list for this query is 1.
     """
     results: List[ResultRow] = select(
-        _get_query_string_from_file(SPARQLQueryFileName.SELECT_DSD_DATASETLABEL_AND_URI),
+        _get_query_string_from_file(
+            SPARQLQueryFileName.SELECT_DSD_DATASETLABEL_AND_URI
+        ),
         rdf_graph,
     )
 
@@ -152,4 +156,19 @@ def select_cols_w_supress_output(rdf_graph: Graph) -> List[ResultRow]:
     return select(
         _get_query_string_from_file(SPARQLQueryFileName.SELECT_COLS_W_SUPPRESS_OUTPUT),
         rdf_graph,
+    )
+
+
+def select_dsd_code_list_and_cols(rdf_graph: Graph, dsd_uri: str) -> List[ResultRow]:
+    """
+    Queries code lists and columns in the data cube.
+
+    Member of :file:`./inspectsparqlmanager.py`
+
+    :return: `List[ResultRow]` - List containing the results.
+    """
+    return select(
+        _get_query_string_from_file(SPARQLQueryFileName.SELECT_CODE_LISTS_AND_COLS),
+        rdf_graph,
+        init_bindings={"dsd_uri": URIRef(dsd_uri)},
     )

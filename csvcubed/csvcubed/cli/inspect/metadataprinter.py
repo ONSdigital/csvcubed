@@ -24,6 +24,7 @@ from csvcubed.cli.inspect.inspectsparqlmanager import (
     select_csvw_catalog_metadata,
     select_csvw_dsd_dataset_label_and_dsd_def_uri,
     select_csvw_dsd_qube_components,
+    select_dsd_code_list_and_cols,
 )
 
 
@@ -52,6 +53,15 @@ class MetadataPrinter:
         output_str = ""
         for item in items:
             output_str = f"{output_str}\n\t\t-- {item}"
+        return output_str
+
+    def _get_printable_tabular_list_str(self, items: List) -> str:
+        if len(items) == 0 or len(items[0]) == 0:
+            return "None"
+
+        output_str = ""
+        for idx, item in enumerate(items):
+            output_str = f"{output_str}{item}{',' if idx != len(items)-1 else ''}"
         return output_str
 
     def _get_printable_tabular_str(self, items: List[Dict], column_names) -> str:
@@ -124,7 +134,8 @@ class MetadataPrinter:
         )
         result_dataset_label_uri_dict = result_dataset_label_uri.asdict()
         self.dsd_uri = str(result_dataset_label_uri_dict["dataStructureDefinition"])
-
+        print(self.dsd_uri)
+        
         results_qube_components = select_csvw_dsd_qube_components(
             self.csvw_metadata_rdf_graph, self.dsd_uri
         )
@@ -143,9 +154,8 @@ class MetadataPrinter:
                     "componentPropertyType": get_printable_component_property_type(
                         str(component["componentPropertyType"]) or ""
                     ),
-                    "csvColumnTitle": str(
-                        none_or_map(component.get("csvColumnTitle"), str) or ""
-                    ),
+                    "csvColumnTitle": none_or_map(component.get("csvColumnTitle"), str)
+                    or "",
                     "required": ""
                     if component["required"] is None
                     else str(component["required"]),
@@ -157,10 +167,16 @@ class MetadataPrinter:
         results_cols_with_suppress_output = select_cols_w_supress_output(
             self.csvw_metadata_rdf_graph
         )
+        cols_with_suppress_output = list(
+            map(
+                lambda result: str(result["csvColumnTitle"]),
+                results_cols_with_suppress_output,
+            )
+        )
 
         output_str = "\t- Dataset label: {}\n\t- Columns with suppress output: {}\n\t- Number of components: {}\n\t- Components:\n{}".format(
             result_dataset_label_uri_dict["dataSetLabel"],
-            self._get_printable_list_str(results_cols_with_suppress_output),
+            self._get_printable_list_str(cols_with_suppress_output),
             len(qube_components),
             self._get_printable_tabular_str(
                 qube_components,
@@ -178,16 +194,40 @@ class MetadataPrinter:
 
     def gen_codelist_info_printable(self) -> str:
         """
-        Generates a printable of code list information (e.g. column name, type, etc.).
+        Generates a printable of dsd code list information (e.g. column name, type, etc.).
 
         Member of :class:`./MetadataPrinter`.
 
         :return: `str` - user-friendly string which will be output to CLI.
         """
-        """TODO: Read codelist info using Pandas and generate CLI printable"""
-        return ""
 
-    def gen_headtail_printable(self) -> str:
+        results = select_dsd_code_list_and_cols(
+            self.csvw_metadata_rdf_graph, self.dsd_uri
+        )
+        code_lists: List[Dict] = list(
+            map(
+                lambda code_list: {
+                    "codeList": get_printable_component_property(
+                        self.csvw_metadata_json_path,
+                        code_list["codeList"],
+                    ),
+                    "codeListLabel": none_or_map(code_list.get("codeListLabel"), str)
+                    or "",
+                    "csvColumnsUsedIn": self._get_printable_tabular_list_str(
+                        str(code_list["csvColumnsUsedIn"]).split("|")
+                    ),
+                },
+                results,
+            )
+        )
+
+        output_str = self._get_printable_tabular_str(
+            code_lists,
+            column_names=["Code List", "Code List Label", "Columns Used In"],
+        )
+        return f"\u2022 The {self._get_type_str()} has the following code lists:\n {output_str}"
+
+    def gen_head_tail_printable(self) -> str:
         """
         Generates a printable of top 10 and last 10 records.
 
@@ -199,7 +239,7 @@ class MetadataPrinter:
         # Check panda.to_string() and panda.to_text() cmds and other printable functions in pandas.
         return ""
 
-    def gen_valcount_printable(self) -> str:
+    def gen_val_count_printable(self) -> str:
         """
         Generates a printable of number of records.
 
@@ -208,5 +248,4 @@ class MetadataPrinter:
         :return: `str` - user-friendly string which will be output to CLI.
         """
         """TODO: Read value count using Pandas and generate CLI printable"""
-        # Check panda.to_string() and panda.to_text() cmds and other printable functions in pandas.
         return ""

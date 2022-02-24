@@ -7,8 +7,14 @@
             "tableSchema": {
                 "columns": [
                     {
-                        "titles": "ColWithSuppressOutput",
-                        "name": "period",
+                        "titles": "Col1WithSuppressOutput",
+                        "name": "col1withsuppressoutput",
+                        "required": true,
+                        "suppressOutput": true
+                    },
+                    {
+                        "titles": "Col2WithSuppressOutput",
+                        "name": "col2withsuppressoutput",
                         "required": true,
                         "suppressOutput": true
                     },
