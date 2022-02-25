@@ -1076,7 +1076,7 @@ class QbWriter(WriterBase):
                 return f"{m.group(1)}#{column_uri_fragment}"
             else:
                 _logger.warning(
-                    "Existing concept scheme URI %s does not match expected any known convention.",
+                    "Existing code list URI %s does not match expected any known convention.",
                     code_list.concept_scheme_uri,
                 )
                 # Unexpected code-list URI. Does not match expected conventions.
