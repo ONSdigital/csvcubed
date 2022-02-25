@@ -55,9 +55,6 @@ def entry_point():
     show_default=True,
 )
 @click.option(
-    "--log-dir", help="Location for log files.", type=str, default="csvcubed-cli"
-)
-@click.option(
     "--log-level",
     help="select a logging level out of: 'warn', 'err', 'crit', 'info' or 'debug'.",
     type=click.Choice(["warn", "err", "crit", "info", "debug"], case_sensitive=False),
@@ -70,7 +67,6 @@ def build_command(
     config: Path,
     out: Path,
     csv: Path,
-    log_dir: str,
     log_level: str,
     fail_when_validation_error: bool,
     validation_errors_to_file: bool,
@@ -81,10 +77,7 @@ def build_command(
     )
     out.mkdir(parents=True, exist_ok=True)
 
-    start_logging(
-        log_dir_name=log_dir,
-        selected_logging_level=log_level,
-    )
+    start_logging(log_dir_name="csvcubed-cli", selected_logging_level=log_level)
     try:
         build(
             config=config,
