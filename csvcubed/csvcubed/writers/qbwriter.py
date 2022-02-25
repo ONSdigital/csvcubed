@@ -321,7 +321,7 @@ class QbWriter(WriterBase):
         dataset.structure = rdf.qb.DataStructureDefinition(
             self._new_uri_helper.get_structure_uri()
         )
-        component_oridinal = 1
+        component_ordinal = 1
         for column in self.cube.columns:
             if isinstance(column, QbColumn):
                 component_specs_for_col = self._get_qb_component_specs_for_col(
@@ -334,8 +334,8 @@ class QbWriter(WriterBase):
                     component_properties_for_col
                 )
                 for component in component_specs_for_col:
-                    component.order = component_oridinal
-                    component_oridinal += 1
+                    component.order = component_ordinal
+                    component_ordinal += 1
 
                 dataset.structure.components |= set(component_specs_for_col)
 
@@ -382,6 +382,11 @@ class QbWriter(WriterBase):
             "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
         )
         component.componentProperties.add(component.attribute)
+
+        _logger.debug(
+            "Generated units component %s.",
+            component.uri,
+        )
 
         return component
 
@@ -455,7 +460,6 @@ class QbWriter(WriterBase):
             measure.copy_arbitrary_triple_fragments_to_resources(
                 {RdfSerialisationHint.Component: component}
             )
-            return component
         elif isinstance(measure, NewQbMeasure):
             component = rdf.qb.MeasureComponentSpecification(
                 self._new_uri_helper.get_component_uri(measure.uri_safe_identifier)
@@ -479,9 +483,16 @@ class QbWriter(WriterBase):
                 }
             )
 
-            return component
         else:
             raise Exception(f"Unhandled measure type {type(measure)}")
+
+        _logger.debug(
+            "Generated component %s with measure %s.",
+            component.uri,
+            component.measure.uri,
+        )
+
+        return component
 
     def _get_qb_dimension_specification(
         self, column_name_uri_safe: str, dimension: QbDimension
@@ -527,6 +538,12 @@ class QbWriter(WriterBase):
             raise Exception(f"Unhandled dimension component type {type(dimension)}.")
 
         component.componentProperties.add(component.dimension)
+
+        _logger.debug(
+            "Generated component %s with dimension %s.",
+            component.uri,
+            component.dimension.uri,
+        )
 
         return component
 
@@ -597,6 +614,12 @@ class QbWriter(WriterBase):
         component.componentRequired = attribute.is_required
         component.componentProperties.add(component.attribute)
 
+        _logger.debug(
+            "Generated component %s with attribute %s.",
+            component.uri,
+            component.attribute.uri,
+        )
+
         return component
 
     def _get_new_attribute_value_resources(self) -> List[NewAttributeValueResource]:
@@ -628,6 +651,12 @@ class QbWriter(WriterBase):
                 new_attribute_value_resource.parent_attribute_value_uri = (
                     maybe_existing_resource(value.parent_attribute_value_uri)
                 )
+
+                _logger.debug(
+                    "Generated New Attribute Value %s.",
+                    new_attribute_value_resource.uri,
+                )
+
                 new_attribute_value_resources.append(new_attribute_value_resource)
 
         return new_attribute_value_resources
@@ -686,6 +715,8 @@ class QbWriter(WriterBase):
             new_unit_resource.qudt_conversion_multiplier = (
                 unit.si_base_unit_conversion_multiplier
             )
+
+            _logger.debug("Generated new unit resource %s.", new_unit_resource.uri)
 
             new_unit_resources.append(new_unit_resource)
 
