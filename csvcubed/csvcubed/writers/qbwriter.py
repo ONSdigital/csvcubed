@@ -1032,17 +1032,13 @@ class QbWriter(WriterBase):
     ) -> str:
         column_uri_fragment = self._get_column_uri_template_fragment(column)
         if isinstance(code_list, ExistingQbCodeList):
-            legacy_external_match: re.Match = (
-                self._legacy_external_code_list_pattern.match(
-                    code_list.concept_scheme_uri
-                )
+            legacy_external_match = self._legacy_external_code_list_pattern.match(
+                code_list.concept_scheme_uri
             )
-            legacy_local_match: re.Match = (
-                self._legacy_dataset_local_code_list_pattern.match(
-                    code_list.concept_scheme_uri
-                )
+            legacy_local_match = self._legacy_dataset_local_code_list_pattern.match(
+                code_list.concept_scheme_uri
             )
-            csvcubed_match: re.Match = self._csvcubed_code_list_pattern.match(
+            csvcubed_match = self._csvcubed_code_list_pattern.match(
                 code_list.concept_scheme_uri
             )
             if legacy_external_match:
@@ -1050,7 +1046,7 @@ class QbWriter(WriterBase):
                     "Existing concept scheme URI %s matches legacy family/global style.",
                     code_list.concept_scheme_uri,
                 )
-                m = legacy_external_match
+                m: re.Match = legacy_external_match
                 # ConceptScheme URI:
                 # http://gss-data.org.uk/def/concept-scheme/{code-list-name}
                 # Concept URI:
