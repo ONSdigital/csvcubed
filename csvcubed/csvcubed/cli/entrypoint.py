@@ -12,6 +12,9 @@ from csvcubed.utils.log import log_exception, start_logging
 from .build import build
 
 
+_logger = logging.getLogger(__name__)
+
+
 @click.group(context_settings=dict(help_option_names=["-h", "--help"]))
 def entry_point():
     """
@@ -52,10 +55,10 @@ def entry_point():
     show_default=True,
 )
 @click.option(
-    "--logdir", help="Location for log files.", type=str, default="csvcubedcli"
+    "--log-dir", help="Location for log files.", type=str, default="csvcubed-cli"
 )
 @click.option(
-    "--logginglvl",
+    "--log-level",
     help="select a logging level out of: 'warn', 'err', 'crit', 'info' or 'debug'.",
     type=click.Choice(["warn", "err", "crit", "info", "debug"], case_sensitive=False),
     default="warn",
@@ -67,8 +70,8 @@ def build_command(
     config: Path,
     out: Path,
     csv: Path,
-    logdir: str,
-    logginglvl: str,
+    log_dir: str,
+    log_level: str,
     fail_when_validation_error: bool,
     validation_errors_to_file: bool,
 ):
@@ -78,10 +81,9 @@ def build_command(
     )
     out.mkdir(parents=True, exist_ok=True)
 
-    logger = logging.getLogger(__name__)
     start_logging(
-        log_dir=logdir,
-        selected_logging_level=logginglvl,
+        log_dir_name=log_dir,
+        selected_logging_level=log_level,
     )
     try:
         build(
@@ -92,4 +94,4 @@ def build_command(
             validation_errors_file_out=validation_errors_file_out,
         )
     except Exception:
-        log_exception(logger, *sys.exc_info())
+        log_exception(_logger, *sys.exc_info())

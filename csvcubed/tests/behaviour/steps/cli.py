@@ -1,4 +1,5 @@
 import json
+import shutil
 from pathlib import Path
 
 from behave import when, then
@@ -77,15 +78,13 @@ def step_impl(context):
 
 @then("the log file should exist")
 def step_impl(context):
-    log_file = context.csvcubed_log_location
+    log_file = Path(context.csvcubed_log_location) / "out.log"
     assert log_file.exists()
 
 
 @then("remove test log files")
 def step_impl(context):
-    Path(context.csvcubed_log_location).unlink(missing_ok=True)
-    truncated_log_path = Path(*(context.csvcubed_log_location).parts[:-1])
-    truncated_log_path.rmdir()
+    shutil.rmtree(context.csvcubed_log_location)
 
 
 def run_command_in_temp_dir(context, command: str) -> Tuple[int, str]:

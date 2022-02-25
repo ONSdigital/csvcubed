@@ -42,13 +42,13 @@ class CustomFormatter(logging.Formatter):
 
 
 def start_logging(
-    log_dir: str,
+    log_dir_name: str,
     selected_logging_level: Union[str, int, None],
     root_logger_name: str = "csvcubed",
 ) -> None:
     logging_level = _get_logging_level(selected_logging_level)
 
-    dirs = AppDirs(log_dir, "csvcubed")
+    dirs = AppDirs(log_dir_name, "csvcubed")
     log_file_path = Path(dirs.user_log_dir) / "out.log"
     log_file_path.parent.mkdir(parents=True, exist_ok=True)
 
