@@ -5,9 +5,7 @@ Metadata Printer
 Provides functionality for validating and detecting input metadata.json file.
 """
 
-import json
 from pathlib import Path
-import dateutil.parser
 from typing import Dict, List
 import pandas as pd
 
@@ -84,9 +82,9 @@ class MetadataPrinter:
         :return: `str` - user-friendly string which will be output to CLI.
         """
         if self.csvw_type == CSVWType.QbDataSet:
-            return "\u2022 This file is a data cube."
+            return "- This file is a data cube."
         else:
-            return "\u2022 This file is a code list."
+            return "- This file is a code list."
 
     def gen_catalog_metadata_printable(self) -> str:
         """
@@ -119,7 +117,7 @@ class MetadataPrinter:
             ),
         )
 
-        return f"\u2022 The {self._get_type_str()} has the following catalog metadata:\n {output_str}"
+        return f"- The {self._get_type_str()} has the following catalog metadata:\n {output_str}"
 
     def gen_dsd_info_printable(self) -> str:
         """
@@ -134,7 +132,6 @@ class MetadataPrinter:
         )
         result_dataset_label_uri_dict = result_dataset_label_uri.asdict()
         self.dsd_uri = str(result_dataset_label_uri_dict["dataStructureDefinition"])
-        print(self.dsd_uri)
         
         results_qube_components = select_csvw_dsd_qube_components(
             self.csvw_metadata_rdf_graph, self.dsd_uri
@@ -190,7 +187,7 @@ class MetadataPrinter:
             ),
         )
 
-        return f"\u2022 The {self._get_type_str()} has the following data structure definition:\n {output_str}"
+        return f"- The {self._get_type_str()} has the following data structure definition:\n {output_str}"
 
     def gen_codelist_info_printable(self) -> str:
         """
@@ -225,7 +222,7 @@ class MetadataPrinter:
             code_lists,
             column_names=["Code List", "Code List Label", "Columns Used In"],
         )
-        return f"\u2022 The {self._get_type_str()} has the following code lists:\n {output_str}"
+        return f"- The {self._get_type_str()} has the following code lists:\n {output_str}"
 
     def gen_head_tail_printable(self) -> str:
         """

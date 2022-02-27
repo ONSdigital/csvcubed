@@ -55,8 +55,8 @@ def inspect(csvw_metadata_json_path: Path) -> None:
         print(f"\n{type_printable}")
         print(f"\n{catalog_metadata_printable}")
         if csvw_type == CSVWType.QbDataSet:
-            print(dsd_info_printable)
-        print(f"\n{codelist_info_printable}")
+            print(f"\n{dsd_info_printable}")
+            print(f"\n{codelist_info_printable}")
     else:
         _logger.error(
             "This is an unsupported csv-w! Supported types are `data cube` and `code list`."
