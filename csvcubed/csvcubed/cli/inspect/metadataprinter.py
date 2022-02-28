@@ -153,9 +153,7 @@ class MetadataPrinter:
                     ),
                     "csvColumnTitle": none_or_map(component.get("csvColumnTitle"), str)
                     or "",
-                    "required": ""
-                    if component["required"] is None
-                    else str(component["required"]),
+                    "required": none_or_map(component.get("required"), str),
                 },
                 results_qube_components,
             )
