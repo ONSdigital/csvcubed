@@ -60,7 +60,6 @@ Feature: Behaviour testing of csvcubed inspect.
         """
         - The data cube has the following data structure definition:
         - Dataset label: Alcohol Bulletin
-        - Columns with suppress output: None
         - Number of components: 17
         - Components:
                                                               Property        Property Label     Property Type     Column Title Required
@@ -81,6 +80,7 @@ Feature: Behaviour testing of csvcubed inspect.
             http://gss-data.org.uk/def/measure/wine-duty-receipts                                      Measure                      true
             http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure                              Attribute             Unit     true
             http://purl.org/linked-data/sdmx/2009/attribute#obsStatus                                Attribute           Marker    false
+        - Columns with suppress output: None
         """
         And the Code List Printable should be
         """

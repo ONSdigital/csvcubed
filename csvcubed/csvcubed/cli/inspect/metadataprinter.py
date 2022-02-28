@@ -42,7 +42,12 @@ class MetadataPrinter:
         self.csvw_metadata_json_path: Path = csvw_metadata_json_path
 
     def _get_type_str(self):
-        return "data cube" if self.csvw_type == CSVWType.QbDataSet else "code list"
+        if self.csvw_type == CSVWType.QbDataSet:
+            return "data cube"
+        elif self.csvw_type == CSVWType.CodeList:
+            return "code list"
+        else:
+            raise Exception("The input type is unknown")
 
     def _get_printable_list_str(self, items: List) -> str:
         if len(items) == 0 or len(items[0]) == 0:
@@ -132,7 +137,7 @@ class MetadataPrinter:
         )
         result_dataset_label_uri_dict = result_dataset_label_uri.asdict()
         self.dsd_uri = str(result_dataset_label_uri_dict["dataStructureDefinition"])
-        
+
         results_qube_components = select_csvw_dsd_qube_components(
             self.csvw_metadata_rdf_graph, self.dsd_uri
         )
@@ -149,8 +154,9 @@ class MetadataPrinter:
                     )
                     or "",
                     "componentPropertyType": get_printable_component_property_type(
-                        str(component["componentPropertyType"]) or ""
-                    ),
+                        str(component["componentPropertyType"])
+                    )
+                    or "",
                     "csvColumnTitle": none_or_map(component.get("csvColumnTitle"), str)
                     or "",
                     "required": none_or_map(component.get("required"), str),
@@ -169,9 +175,8 @@ class MetadataPrinter:
             )
         )
 
-        output_str = "\t- Dataset label: {}\n\t- Columns with suppress output: {}\n\t- Number of components: {}\n\t- Components:\n{}".format(
+        output_str = "\t- Dataset label: {}\n\t- Number of components: {}\n\t- Components:\n{}\n\t- Columns with suppress output: {}".format(
             result_dataset_label_uri_dict["dataSetLabel"],
-            self._get_printable_list_str(cols_with_suppress_output),
             len(qube_components),
             self._get_printable_tabular_str(
                 qube_components,
@@ -183,6 +188,7 @@ class MetadataPrinter:
                     "Required",
                 ],
             ),
+            self._get_printable_list_str(cols_with_suppress_output),
         )
 
         return f"- The {self._get_type_str()} has the following data structure definition:\n {output_str}"
@@ -220,7 +226,9 @@ class MetadataPrinter:
             code_lists,
             column_names=["Code List", "Code List Label", "Columns Used In"],
         )
-        return f"- The {self._get_type_str()} has the following code lists:\n {output_str}"
+        return (
+            f"- The {self._get_type_str()} has the following code lists:\n {output_str}"
+        )
 
     def gen_head_tail_printable(self) -> str:
         """

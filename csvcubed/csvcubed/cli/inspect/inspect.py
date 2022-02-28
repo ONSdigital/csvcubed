@@ -77,15 +77,17 @@ def _generate_printables(
         csvw_type, csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
 
+    dsd_info_printable: str = ""
+    codelist_info_printable: str = ""
+    if csvw_type == CSVWType.QbDataSet:
+        dsd_info_printable = metadata_printer.gen_dsd_info_printable()
+        codelist_info_printable = metadata_printer.gen_codelist_info_printable()
+
     return (
         metadata_printer.gen_type_info_printable(),
         metadata_printer.gen_catalog_metadata_printable(),
-        metadata_printer.gen_dsd_info_printable()
-        if csvw_type == CSVWType.QbDataSet
-        else "",
-        metadata_printer.gen_codelist_info_printable()
-        if csvw_type == CSVWType.QbDataSet
-        else "",
+        dsd_info_printable,
+        codelist_info_printable,
         metadata_printer.gen_head_tail_printable(),
         metadata_printer.gen_val_count_printable(),
     )
