@@ -9,6 +9,11 @@ from csvcubed.cli.inspect.metadataprocessor import MetadataProcessor
 
 
 def _unformat_multiline_string(string: str) -> str:
+    """
+    Removes characters that related to formatting (e.g. tabs, newlines, etc.). This allows assert equal to be not impacted by the formating of ground-truth and function-returned strings.
+
+    :return: `str` - unformated string
+    """
     return "".join(s for s in string if ord(s) > 32 and ord(s) < 126)
 
 
@@ -104,14 +109,14 @@ def step_impl(context):
 
 
 @Given('a none existing test-case file "{csvw_metadata_file}"')
-def step_impl(_,csvw_metadata_file:str):
-    pass
+def step_impl(context, csvw_metadata_file: str):
+    context.csvw_metadata_file = csvw_metadata_file
 
 
-@Then('the file not found error is displayed "{csvw_metadata_file}" "{error_message}"')
-def step_impl(context, csvw_metadata_file: str, error_message: str):
+@Then('the file not found error is displayed "{error_message}"')
+def step_impl(context, error_message: str):
     try:
-        _ = get_context_temp_dir_path(context) / csvw_metadata_file
+        _ = get_context_temp_dir_path(context) / context.csvw_metadata_file
     except Exception as ex:
         assert ex is not None
-        assert ex.message == f"{error_message} {csvw_metadata_file}"
+        assert ex.message == f"{error_message} {context.csvw_metadata_file}"

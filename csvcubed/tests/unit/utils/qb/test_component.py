@@ -62,7 +62,7 @@ def test_printable_component_property_type_attribute():
 
 def test_printable_component_property_type_measure():
     """
-    Should return "Attribute" when the input is http://purl.org/linked-data/cube#MeasureProperty
+    Should return "Measure" when the input is http://purl.org/linked-data/cube#MeasureProperty
     """
     property_type = get_printable_component_property_type(
         "http://purl.org/linked-data/cube#MeasureProperty"

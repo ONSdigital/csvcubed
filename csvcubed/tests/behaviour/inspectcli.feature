@@ -1,6 +1,6 @@
-Feature: Behaviour testing of inspect cli.
+Feature: Behaviour testing of csvcubed inspect.
 
-    Scenario: inspect cli should produce printable for data cube metadata json-ld input
+    Scenario: inspect should produce printable for data cube metadata json-ld input
         Given the existing test-case file "cli/inspect/datacube.csv-metadata.json"
         When the existing Metadata file exists "cli/inspect/datacube.csv-metadata.json"
         And the Metadata File json-ld is loaded to a rdf graph
@@ -91,7 +91,7 @@ Feature: Behaviour testing of inspect cli.
         ./clearance-origin.csv#scheme/clearance-origin                   Clearance Origin
         """
 
-    Scenario: inspect cli should produce printable for code list metadata json-ld input
+    Scenario: inspect should produce printable for code list metadata json-ld input
         Given the existing test-case file "cli/inspect/codelist.csv-metadata.json"
         When the existing Metadata file exists "cli/inspect/codelist.csv-metadata.json"
         And the Metadata File json-ld is loaded to a rdf graph
@@ -117,6 +117,6 @@ Feature: Behaviour testing of inspect cli.
             - Description: None
         """
 
-    Scenario: inspect cli should output error when the metadata json-ld input does not exist
+    Scenario: inspect should output error when the metadata json-ld input does not exist
         Given a none existing test-case file "cli/inspect/not_exists.csv-metadata.json"
-        Then the file not found error is displayed "cli/inspect/not_exists.csv-metadata.json" "Could not find test-case file"
+        Then the file not found error is displayed "Could not find test-case file"

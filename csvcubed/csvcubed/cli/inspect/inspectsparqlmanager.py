@@ -42,24 +42,27 @@ def _get_query_string_from_file(queryType: SPARQLQueryFileName) -> str:
 
     Member of :file:`./inspectsparqlmanager.py`
 
-    :return: `bool` - String containing the sparql query.
+    :return: `str` - String containing the sparql query.
     """
+    file_path = (
+        get_root_dir_level("pyproject.toml", Path(__file__))
+        / "csvcubed"
+        / "cli"
+        / "inspect"
+        / "inspect_sparql_queries"
+        / (queryType.value + ".sparql")
+    )
+
     try:
-        file_path = (
-            get_root_dir_level("pyproject.toml", Path(__file__))
-            / "csvcubed"
-            / "cli"
-            / "inspect"
-            / "inspect_sparql_queries"
-            / (queryType.value + ".sparql")
-        )
         with open(
             file_path,
             "r",
         ) as f:
             return f.read()
     except Exception as ex:
-        raise Exception("An error occured while reading sparql query") from ex
+        raise Exception(
+            f"An error occured while reading sparql query from file '{file_path}'"
+        ) from ex
 
 
 def ask_is_csvw_code_list(rdf_graph: Graph) -> bool:
@@ -104,7 +107,7 @@ def select_csvw_catalog_metadata(rdf_graph: Graph) -> ResultRow:
     )
 
     if len(results) != 1:
-        raise Exception(f"Expected 1 dcat:Dataset record, found {len(results)}")
+        raise Exception(f"Expected 1 record, but found {len(results)}")
 
     return results[0]
 
@@ -125,7 +128,7 @@ def select_csvw_dsd_dataset_label_and_dsd_def_uri(rdf_graph: Graph) -> ResultRow
     )
 
     if len(results) != 1:
-        raise Exception(f"Expected 1 dcat:Dataset record, found {len(results)}")
+        raise Exception(f"Expected 1 record, but found {len(results)}")
 
     return results[0]
 
@@ -145,9 +148,9 @@ def select_csvw_dsd_qube_components(rdf_graph: Graph, dsd_uri: str) -> List[Resu
     )
 
 
-def select_cols_w_supress_output(rdf_graph: Graph) -> List[ResultRow]:
+def select_cols_where_supress_output_is_true(rdf_graph: Graph) -> List[ResultRow]:
     """
-    Queries the columns with suppress output is true.
+    Queries the columns where suppress output is true.
 
     Member of :file:`./inspectsparqlmanager.py`
 

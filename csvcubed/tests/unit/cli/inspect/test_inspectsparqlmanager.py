@@ -6,7 +6,7 @@ import dateutil.parser
 from csvcubed.cli.inspect.inspectsparqlmanager import (
     ask_is_csvw_code_list,
     ask_is_csvw_qb_dataset,
-    select_cols_w_supress_output,
+    select_cols_where_supress_output_is_true,
     select_csvw_catalog_metadata,
     select_csvw_dsd_dataset_label_and_dsd_def_uri,
     select_csvw_dsd_qube_components,
@@ -157,7 +157,7 @@ def test_select_cols_when_supress_output_cols_not_present():
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
-    results = select_cols_w_supress_output(csvw_metadata_rdf_graph)
+    results = select_cols_where_supress_output_is_true(csvw_metadata_rdf_graph)
     assert len(results) == 0
 
 
@@ -168,7 +168,7 @@ def test_select_cols_when_supress_output_cols_present():
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
-    results = select_cols_w_supress_output(csvw_metadata_rdf_graph)
+    results = select_cols_where_supress_output_is_true(csvw_metadata_rdf_graph)
     assert len(results) == 2
 
     cols_with_suppress_output = list(

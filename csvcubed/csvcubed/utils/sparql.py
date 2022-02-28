@@ -23,7 +23,7 @@ def ask(query: str, graph: Graph) -> bool:
 
     Member of :file:`./sparql.py`.
 
-    :return: `List[ResultRow]` - List containing the results.
+    :return: `bool` - Whether the given query yeilds true or false
     """
     results = list(graph.query(query))
 

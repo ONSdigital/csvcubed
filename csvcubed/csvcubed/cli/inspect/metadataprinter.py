@@ -18,7 +18,7 @@ from csvcubed.utils.qb.components import (
 )
 from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
 from csvcubed.cli.inspect.inspectsparqlmanager import (
-    select_cols_w_supress_output,
+    select_cols_where_supress_output_is_true,
     select_csvw_catalog_metadata,
     select_csvw_dsd_dataset_label_and_dsd_def_uri,
     select_csvw_dsd_qube_components,
@@ -161,7 +161,7 @@ class MetadataPrinter:
             )
         )
 
-        results_cols_with_suppress_output = select_cols_w_supress_output(
+        results_cols_with_suppress_output = select_cols_where_supress_output_is_true(
             self.csvw_metadata_rdf_graph
         )
         cols_with_suppress_output = list(

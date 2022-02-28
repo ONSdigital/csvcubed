@@ -67,7 +67,7 @@ def get_printable_component_property(
 
     :return: `str` - url or relative path
     """
-    if component_property.startswith("file://") == False:
+    if not component_property.startswith("file://"):
         return component_property
 
     component_property = component_property.removeprefix("file://")

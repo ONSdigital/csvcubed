@@ -12,6 +12,7 @@ def test_metadata_dataset_json_ld_to_rdf_loading():
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
     
     assert csvw_metadata_rdf_graph is not None
+    assert any(csvw_metadata_rdf_graph)
 
 def test_metadata_codelist_json_ld_to_rdf_loading():
     """
@@ -22,3 +23,4 @@ def test_metadata_codelist_json_ld_to_rdf_loading():
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
     
     assert csvw_metadata_rdf_graph is not None
+    assert any(csvw_metadata_rdf_graph)
