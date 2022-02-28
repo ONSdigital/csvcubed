@@ -7,6 +7,7 @@ Provides functionality for validating and detecting input metadata.json file.
 
 from pathlib import Path
 from typing import Dict, List
+from csvcubed.models.cli.inspect.inspectsparqlresults import CatalogMetadataSparqlResult
 import pandas as pd
 
 from rdflib import Graph
@@ -100,8 +101,9 @@ class MetadataPrinter:
         :return: `str` - user-friendly string which will be output to CLI.
         """
 
-        result = select_csvw_catalog_metadata(self.csvw_metadata_rdf_graph)
-        result_dict = result.asdict()
+        result: CatalogMetadataSparqlResult = select_csvw_catalog_metadata(
+            self.csvw_metadata_rdf_graph
+        )
 
         output_str = "\t- Title: {}\n\t- Label: {}\n\t- Issued: {}\n\t- Modified: {}\n\t- License: {}\n\t- Creator: {}\n\t- Publisher: {}\n\t- Landing Pages: {}\n\t- Themes: {}\n\t- Keywords: {}\n\t- Contact Point: {}\n\t- Identifier: {}\n\t- Comment: {}\n\t- Description: {}".format(
             result_dict["title"],

@@ -8,6 +8,7 @@ Collection of SPARQL queries used in the inspect cli.
 from enum import Enum
 from pathlib import Path
 from typing import List
+from csvcubed.models.cli.inspect.inspectsparqlresults import CatalogMetadataSparqlResult
 from csvcubed.utils.file import get_root_dir_level
 
 from rdflib import Graph, URIRef
@@ -93,7 +94,7 @@ def ask_is_csvw_qb_dataset(rdf_graph: Graph) -> bool:
     )
 
 
-def select_csvw_catalog_metadata(rdf_graph: Graph) -> ResultRow:
+def select_csvw_catalog_metadata(rdf_graph: Graph) -> CatalogMetadataSparqlResult:
     """
     Queries catalog metadata such as title, label, issued date/time, modified data/time, etc.
 
@@ -109,7 +110,8 @@ def select_csvw_catalog_metadata(rdf_graph: Graph) -> ResultRow:
     if len(results) != 1:
         raise Exception(f"Expected 1 record, but found {len(results)}")
 
-    return results[0]
+    result = CatalogMetadataSparqlResult(results[0])
+    return result
 
 
 def select_csvw_dsd_dataset_label_and_dsd_def_uri(rdf_graph: Graph) -> ResultRow:
