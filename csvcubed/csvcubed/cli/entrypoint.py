@@ -9,7 +9,7 @@ import click
 from pathlib import Path
 from csvcubed.utils.log import handle_exception, start_logging
 
-from .build import build
+from csvcubed.cli.build import build
 
 
 @click.group(context_settings=dict(help_option_names=["-h", "--help"]))
@@ -25,7 +25,7 @@ def entry_point():
     "-c",
     help="Location of the json file containing the qube-config file.",
     type=click.Path(exists=True, path_type=Path, file_okay=True, dir_okay=False),
-    required=True,
+    required=False,
     metavar="CONFIG_PATH",
 )
 @click.option(
@@ -96,5 +96,3 @@ def build_command(
         )
     except Exception:
         handle_exception(logger, *sys.exc_info())
-
-        
