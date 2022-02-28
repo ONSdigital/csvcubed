@@ -139,7 +139,7 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
         description: Optional[str] = None,
         parent_attribute_uri: Optional[str] = None,
         source_uri: Optional[str] = None,
-        is_required: bool = False,
+        is_required: Optional[bool] = False,
         uri_safe_identifier_override: Optional[str] = None,
         arbitrary_rdf: List[TripleFragmentBase] = list(),
     ) -> "NewQbAttribute":
