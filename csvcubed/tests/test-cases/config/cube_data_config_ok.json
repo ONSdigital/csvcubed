@@ -1,5 +1,5 @@
 {
-  "$schema": "../../../../csvcubed/csvcubed/schema/cube-config-schema.json",
+  "$schema": "./csvcubed/schema/cube-config-schema.json",
   "id": "http://schema-id",
   "title": "Tests/test-cases/config/schema-cube-data-config-ok",
   "description": "Schema for testing",
@@ -40,10 +40,12 @@
       "label": "Volume"
     },
     "Measure": {
-      "type": "measures"
+      "type": "measures",
+      "values": true
     },
     "Units": {
-      "type": "units"
+      "type": "units",
+      "values": true
     }
   }
 }

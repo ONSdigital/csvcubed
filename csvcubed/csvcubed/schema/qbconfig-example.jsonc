@@ -27,16 +27,26 @@
             "type": "dimension", // optional - if not present it starts a dimension anyways
             // default - dimension
             "from_existing": "uri", // optional - if present this creates ExistingQbDimension;
-            // if stays an ExistingQbDimension maps to ExistingQbDimension.dimension_uri
-            // if child dimension triggered, maps to NewQbDimension.parent_dimension_uri
-            "label": "Replacement label", // optional - if present this becomes a NewQbDimension child of existing dimension;
-            // maps to NewQbDimension.label
-            "description": "A description", // optional - if present this becomes a NewQbDimension child of existing dimension;
-            // maps to NewQbDimension.description
-            "definition_uri": "uri", // optional - if present this becomes a NewQbDimension child of existing dimension;
             // maps to NewQbDimension.source_uri,
             "cell_uri_template": "http://example.org/code-list/{+some_column}" // maps to QbColumn.csv_column_uri_template
         },
+        "Some Dimension": {
+            "type": "dimension",
+            "from_existing":  "uri",
+            "cell_uri_template": "dadasdz",
+            "label": "something"
+        },
+
+        /**
+
+        if properties match new dimension:
+          if properties match existing dimension:
+            It is an existing dimension
+          else:
+            It is a new dimension
+
+        **/
+
         "New dimension": {
             "type": "dimension", // optional - if not present it starts a dimension anyways
             // default - dimension
@@ -64,13 +74,14 @@
             // maps to NewQbAttribute.source_uri (or NewQbAttributeLiteral.source_uri),
             "data_type": "string", // optional - if set, the attribute becomes ExistingQbAttributeLiteral
             // maps to ExistingQbAttributeLiteral.data_type
-            "values": { // a list of the values
-                "attribute value one": {
-                    "label": "value label",
-                    "description": "description label",
-                    "existing_value": "uri",
-                    "definition_uri": "uri"
-                } // ... etc }
+            "values": [ // a list of the values
+                    {
+                        "label": "value label",
+                        "description": "description label",
+                        "existing_value": "uri",
+                        "definition_uri": "uri"
+                    } // ... etc }
+                ]
             } // True to infer valuelists using ExistingQbAttribute.from_data()
         },
         "New attribute": {
@@ -114,6 +125,7 @@
         // conversion to a dimension,
         "measures": {
             "type": "measure column", // optional as a column called ["Measure", "Measures"] are read as QbMeasureColumn,
+            "cell_uri_template": "e.g. 'http://example.org/measures/{+some_column}'",// optional, maps to csv_column_uri_template,
             "values": true, // Create new measures from values or
             "_values": [
                 { // the _values object doesn't exist but "values" can accept boolean values or this object
@@ -121,10 +133,6 @@
                     "from_existing": "uri", // optional - if present this creates ExistingQbMeasure;
                     // if stays an ExistingQbMeasure maps to ExistingQbMeasure.measure_uri
                     // if child measure triggered, maps to NewQbMeasure.parent_measure_uri
-                    "description": "measure description", // optional - if present this becomes NewQbMeasure
-                    // maps to NewQbMeasure.description
-                    "label": "label", // optional - if present this becomes a NewQbAttribute child of existing attribute;
-                    // maps to NewQbAttribute.label
                     "definition_uri": "uri" // optional - if present this becomes a NewQbAttribute child of existing attribute;
                     // maps to NewQbAttribute.source_uri
                 },
@@ -139,7 +147,8 @@
             ]
         },
         "units": {
-            "type": "unit column", // optional as a column called ["Unit", "Units"] areread as a QbUnitColumn,
+            "type": "unit column", // optional as a column called ["Unit", "Units"] are read as a QbUnitColumn,
+            "cell_uri_template": "e.g. 'http://example.org/units/{+some_column}'",
             "values": true, // Create new measures from values or 
             "_values": [
                     { // the _values object doesn't exist but "values" can accept boolean values or this object

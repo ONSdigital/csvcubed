@@ -129,6 +129,7 @@
           "description": "A Dimension column",
           "$ref": "#/definitions/v1.0/valueTypes/dimensionType"
         },
+
         "Measure": {
           "description": "Definition of how the observation value is being measured",
           "type": "object",
@@ -141,6 +142,10 @@
               "description": "A Measure Column Type",
               "type": "string",
               "default": "measure"
+            },
+            "cell_uri_template": {
+              "type": "string",
+              "format": "uri"
             },
             "values": {
               "oneOf": [
@@ -204,6 +209,10 @@
             },
             "value": {
               "type": "boolean"
+            },
+            "cell_uri_template": {
+              "type": "string",
+              "format": "uri"
             }
           }
         }
@@ -310,6 +319,7 @@
             }
           }
         },
+
         "measureType": {
           "type": "object",
           "additionalProperties": false,
@@ -332,6 +342,11 @@
             "definition_uri": {
               "description": "Source URI for the definition of the Dimension",
               "$ref": "#/definitions/v1.0/types/definition_uri"
+            },
+            "cell_uri_template": {
+              "description": "URI template used for constructing measures e.g. 'http://example.org/measures/{+some_column}'",
+              "type": "string",
+              "format": "uri"
             }
           }
         },

@@ -68,61 +68,6 @@ def _load_resource(resource_path: Path) -> dict:
     return schema
 
 
-# def _get_code_list(
-#     column_label: str,
-#     maybe_code_list: Optional[Union[bool, str]],
-#     json_parent_dir: Path,
-#     maybe_parent_uri: Optional[str],
-#     column_data: PandasDataTypes,
-#     maybe_property_value_url: Optional[str],
-# ) -> Optional[QbCodeList]:
-#
-#     is_date_time_code_list = (
-#         (
-#             maybe_code_list is None
-#             or (isinstance(maybe_code_list, bool) and maybe_code_list is True)
-#         )
-#         and maybe_parent_uri
-#         == "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod"
-#         and maybe_property_value_url is not None
-#         and maybe_property_value_url.startswith("http://reference.data.gov.uk/id/")
-#     )
-#
-#     if is_date_time_code_list:
-#         column_name_csvw_safe = csvw_column_name_safe(column_label)
-#         columnar_data = pandas_input_to_columnar_str(column_data)
-#         concepts = [
-#             DuplicatedQbConcept(
-#                 existing_concept_uri=uritemplate.expand(
-#                     maybe_property_value_url, {column_name_csvw_safe: c}
-#                 ),
-#                 label=c,
-#             )
-#             for c in sorted(set(columnar_data))
-#         ]
-#         return CompositeQbCodeList(
-#             CatalogMetadata(column_label),
-#             concepts,
-#         )
-#
-#     elif maybe_code_list is not None:
-#         if isinstance(maybe_code_list, str):
-#             return ExistingQbCodeList(maybe_code_list)
-#
-#         #elif isinstance(maybe_code_list, bool) and not maybe_code_list:
-#         elif isinstance(maybe_code_list, bool) and maybe_code_list is False:
-#             return None
-#
-#         else:
-#             raise Exception(f"Unexpected codelist value '{maybe_code_list}'")
-#
-#     return NewQbCodeListInCsvW(
-#         json_parent_dir
-#         / "codelists"
-#         / f"{uri_safe(column_label)}.csv-metadata.json"
-#     )
-
-
 def initialise_from_config(self, config_json: dict) -> bool:
     """
     Initialises a Qube from a qube json file.
@@ -149,7 +94,6 @@ def _from_config_json_dict(d: Dict,
                           ) -> QbCube:
 
     metadata: CatalogMetadata = _metadata_from_dict(d)
-    # columns: List[CsvColumn] = _columns_from_config_json(d.get("columns", []), data, json_parent_dir)
     columns: List[QbColumn] = []
     for column_title in d.get('columns', []):
         column_config = d['columns'].get(column_title)
@@ -184,197 +128,14 @@ def _metadata_from_dict(config: dict) -> "CatalogMetadata":
         uri_safe_identifier_override=config['id'] if config.get('id') else None
     )
 
-    summary: Optional[str] = field(default=None, repr=False)
-    landing_page_uris: list[str] = field(default_factory=list, repr=False)
-    dataset_issued: Optional[datetime] = field(default=None, repr=False)
-    dataset_modified: Optional[datetime] = field(default=None, repr=False)
-    license_uri: Optional[str] = field(default=None, repr=False)
-    public_contact_point_uri: Optional[str] = field(default=None, repr=False)
-    uri_safe_identifier_override: Optional[str] = field(default=None, repr=False)
-    spatial_bound_uri: Optional[str] = field(default=None, repr=False)
-    temporal_bound_uri: Optional[str] = field(default=None, repr=False)
 
-
-
-
-# def _columns_from_config_json(column_mappings: Dict[str, Any],
-#                               data: pd.DataFrame,
-#                               json_parent_dir: Path
-#                               ) -> List[CsvColumn]:
-#
-#     defined_columns: List[CsvColumn] = []
-#
-#     column_titles_in_data: List[str] = [
-#         str(title) for title in data.columns  # type: ignore
-#     ]
-#     for col_title in column_titles_in_data:
-#         maybe_config = column_mappings.get(col_title)
-#         defined_columns.append(
-#             _get_column_for_metadata_config(
-#                 col_title, maybe_config, data[col_title], json_parent_dir
-#             )
-#         )
-#
-#     columns_missing_in_data = set(column_mappings.keys()) - set(column_titles_in_data)
-#     for col_title in columns_missing_in_data:
-#         config = column_mappings[col_title]
-#         defined_columns.append(
-#             _get_column_for_metadata_config(
-#                 col_title, config, pd.Series([]), json_parent_dir
-#             )
-#         )
-#
-#     return defined_columns
-
-
-# def _get_column_for_metadata_config(
-#     column_name: str,
-#     col_config: Optional[Union[dict, bool]],
-#     column_data: PandasDataTypes,
-#     json_parent_dir: Path,
-# ) -> CsvColumn:
-#     if isinstance(col_config, dict):
-#         # The schema defines 'type' as a required property, however if absent we can set to
-#         # 'dimension' ?
-#             # if col_config.get("type") is None:
-#             #     col_config['type'] = 'dimension'
-#             #
-#             # return map_column_to_qb_component(
-#             #     column_name, col_config, column_data, json_parent_dir
-#             # )
-#         # end
-#
-#         if col_config.get("type") is not None:
-#             return map_column_to_qb_component(
-#                 column_name, col_config, column_data, json_parent_dir
-#             )
-#         csv_safe_column_name = csvw_column_name_safe(column_name)
-#
-#         # maybe_dimension_uri = col_config.get("dimension")
-#         maybe_property_value_url = col_config.get("value")
-#         # maybe_parent_uri = col_config.get("parent")
-#         maybe_parent_uri = col_config.get("from_existing")
-#         maybe_description = col_config.get("description")
-#         maybe_label = col_config.get("label")
-#         # maybe_attribute_uri = col_config.get("attribute")
-#         maybe_unit_uri = col_config.get("unit")
-#         maybe_measure_uri = col_config.get("measure")
-#         maybe_data_type = col_config.get("data_type")
-#
-#         # if maybe_dimension_uri is not None and maybe_property_value_url is not None:
-#         #     if maybe_dimension_uri == "http://purl.org/linked-data/cube#measureType":
-#         #         # multi-measure cube
-#         #         defined_measure_types: List[str] = col_config.get("types", [])
-#         #         if maybe_property_value_url is not None:
-#         #             defined_measure_types = [
-#         #                 uritemplate.expand(
-#         #                     maybe_property_value_url, {csv_safe_column_name: d}
-#         #                 )
-#         #                 for d in defined_measure_types
-#         #             ]
-#         #
-#         #         if len(defined_measure_types) == 0:
-#         #             raise Exception(
-#         #                 f"Property 'types' was not defined in measure types column '{column_name}'."
-#         #             )
-#         #
-#         #         measures = QbMultiMeasureDimension(
-#         #             [ExistingQbMeasure(t) for t in defined_measure_types]
-#         #         )
-#         #         return QbColumn(column_name, measures, maybe_property_value_url)
-#         #     else:
-#         #         return QbColumn(
-#         #             column_name,
-#         #             ExistingQbDimension(maybe_dimension_uri),
-#         #             maybe_property_value_url,
-#         #         )
-#         # elif (
-#         if (
-#             maybe_parent_uri is not None
-#             or maybe_description is not None
-#             or maybe_label is not None
-#         ):
-#             # label: str = column_name if maybe_label is None else maybe_label
-#             label: str = maybe_label
-#             code_list = _get_code_list(
-#                 label,
-#                 col_config.get("code_list"),
-#                 json_parent_dir,
-#                 maybe_parent_uri,
-#                 column_data,
-#                 maybe_property_value_url,
-#             )
-#             new_dimension = NewQbDimension(
-#                 label,
-#                 description=maybe_description,
-#                 parent_dimension_uri=maybe_parent_uri,
-#                 source_uri=col_config.get("source"),
-#                 code_list=code_list,
-#             )
-#             csv_column_value_url_template = (
-#                 None
-#                 if isinstance(code_list, CompositeQbCodeList)
-#                 else maybe_property_value_url
-#             )
-#             return QbColumn(
-#                 column_name,
-#                 new_dimension,
-#                 csv_column_value_url_template,
-#             )
-#         # elif maybe_attribute_uri is not None and maybe_property_value_url is not None:
-#         #     if (
-#         #         maybe_attribute_uri
-#         #         == "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
-#         #     ):
-#         #         distinct_unit_uris = [
-#         #             uritemplate.expand(
-#         #                 maybe_property_value_url, {csv_safe_column_name: u}
-#         #             )
-#         #             for u in set(pandas_input_to_columnar_str(column_data))
-#         #         ]
-#         #         dsd_component = QbMultiUnits(
-#         #             [ExistingQbUnit(u) for u in distinct_unit_uris]
-#         #         )
-#         #     else:
-#         #         dsd_component = ExistingQbAttribute(maybe_attribute_uri)
-#         #
-#         #     return QbColumn(column_name, dsd_component, maybe_property_value_url)
-#         elif maybe_unit_uri is not None and maybe_measure_uri is not None:
-#             measure_component = ExistingQbMeasure(maybe_measure_uri)
-#             unit_component = ExistingQbUnit(maybe_unit_uri)
-#             observation_value = QbSingleMeasureObservationValue(
-#                 measure=measure_component,
-#                 unit=unit_component,
-#                 data_type=maybe_data_type or "decimal",
-#             )
-#             return QbColumn(column_name, observation_value)
-#         elif maybe_data_type is not None:
-#             return QbColumn(
-#                 column_name, QbMultiMeasureObservationValue(maybe_data_type)
-#             )
-#         else:
-#             raise Exception(f"Unmatched column definition: {col_config}")
-#
-#     elif isinstance(col_config, bool) and col_config:
-#         return SuppressedCsvColumn(column_name)
-#     else:
-#         # If not a known/expected type/value (or is a string), treat it as a dimension.
-#         maybe_description: Optional[str] = None
-#         if isinstance(col_config, str):
-#             maybe_description = col_config
-#
-#         new_dimension = NewQbDimension.from_data(
-#             column_name, column_data, description=maybe_description
-#         )
-#         return QbColumn(column_name, new_dimension)
-
-
-def get_cube_from_data(csv_path: Path, data: PandasDataTypes) -> QbCube:
+def get_cube_from_data(csv_path: Path) -> QbCube:
     """
     Given a Pandas DataFrame, it resolves each column to a column based on naming conventions
     The cube must have dimension, observation, units and measures columns
     The csv_path arg is used for the Cube title
     """
+    data: pd.DataFrame = pd.read_csv(csv_path)
     if data.shape[0] < 2:
         # Must have 2 or more rows, a heading row and a data row
         raise ValueError("The csv data did not contain sufficient rows to continue")
@@ -479,16 +240,15 @@ def get_cube_from_data(csv_path: Path, data: PandasDataTypes) -> QbCube:
 
 def get_cube_from_config_json(
         config_path: Path,
-        data: pd.DataFrame
+        csv_path: Path
 ) -> Tuple[QbCube, List[ValidationError]]:
     """
     Generates a Cube structure from a config.json input.
     :return: tuple of cube and json schema errors (if any)
     """
-
-    config = _load_resource(config_path)
-    schema_path = Path("..", "..", "..", "..", "csvcubed", "schema", "cube-config-schema.json").resolve()
-    schema = _load_resource(schema_path)
+    data: pd.DataFrame = pd.read_csv(csv_path)
+    config = _load_resource(config_path.resolve())
+    schema = _load_resource(Path(config['$schema']).resolve())
     try:
         errors = validate_dict_against_schema(value=config, schema=schema)
         if errors:
@@ -497,7 +257,7 @@ def get_cube_from_config_json(
     except Exception as err:
         print(err)
 
-    return _from_config_json_dict(config, data, config_path.parent), None
+    return _from_config_json_dict(config, data, config_path.parent), []
 
 
 def build(
@@ -511,13 +271,13 @@ def build(
 ):
     # print(f"{Style.DIM}CSV: {csv_path.absolute()}")
     # print(f"{Style.DIM}info.json: {config_json.absolute()}")
-    data: pd.DataFrame = pd.read_csv(csv_path)
+    # data: pd.DataFrame = pd.read_csv(csv_path)
 
     if config_path:
-        cube, json_schema_validation_errors = get_cube_from_config_json(config_path, data)
+        cube, json_schema_validation_errors = get_cube_from_config_json(config_path, csv_path)
 
     else:
-        cube, json_schema_validation_error = get_cube_from_data(csv_path, data)
+        cube, json_schema_validation_error = get_cube_from_data(csv_path, csv_path)
 
     # if catalog_metadata_json_file is not None:
     #     _override_catalog_metadata_state(catalog_metadata_json_file, cube)
