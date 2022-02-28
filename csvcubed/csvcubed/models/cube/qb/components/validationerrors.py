@@ -4,12 +4,17 @@ Component Validation Errors
 
 :obj:`ValidationError <csvcubed.models.validationerror.ValidationError>` models specific to :mod:`components`.
 """
+import os
 from abc import ABC
-from dataclasses import dataclass
-from typing import Set, List
+from dataclasses import dataclass, field
+from typing import Set, List, Dict, Type, ClassVar, Optional
 
 from .datastructuredefinition import QbStructuralDefinition
-from csvcubed.models.validationerror import SpecificValidationError
+from csvcubed.models.validationerror import (
+    SpecificValidationError,
+    PydanticValidationError,
+    PydanticThrowableSpecificValidationError,
+)
 
 
 @dataclass
@@ -27,7 +32,6 @@ class UndefinedValuesError(SpecificValidationError, ABC):
 
     location: str
     """The property or location where the undefined values were found."""
-    
 
     def __post_init__(self):
         unique_values_to_display: str = (
@@ -52,7 +56,7 @@ class UndefinedMeasureUrisError(UndefinedValuesError):
 
     @classmethod
     def get_error_url(cls) -> str:
-        return 'http://purl.org/csv-cubed/err/undef-meas'
+        return "http://purl.org/csv-cubed/err/undef-meas"
 
 
 @dataclass
@@ -66,7 +70,7 @@ class UndefinedUnitUrisError(UndefinedValuesError):
 
     @classmethod
     def get_error_url(cls) -> str:
-        return 'http://purl.org/csv-cubed/err/undef-unit'
+        return "http://purl.org/csv-cubed/err/undef-unit"
 
 
 @dataclass
@@ -80,7 +84,8 @@ class UndefinedAttributeValueUrisError(UndefinedValuesError):
 
     @classmethod
     def get_error_url(cls) -> str:
-        return 'http://purl.org/csv-cubed/err/undef-attrib'
+        return "http://purl.org/csv-cubed/err/undef-attrib"
+
 
 @dataclass
 class LabelUriCollisionError(SpecificValidationError):
@@ -106,12 +111,13 @@ class LabelUriCollisionError(SpecificValidationError):
 
 
 @dataclass
-class ReservedUriValueError(SpecificValidationError):
+class ReservedUriValueError(PydanticThrowableSpecificValidationError):
     """
     An error which occurs when the user has defined a resource which would re-use a reserved URI value.
     """
 
-    csv_column_name: str
+    component: Type[QbStructuralDefinition]
+    """The type of component where the conflicting values were found."""
     conflicting_values: List[str]
     reserved_identifier: str
 
@@ -122,6 +128,48 @@ class ReservedUriValueError(SpecificValidationError):
     def __post_init__(self):
         label_values = ", ".join([f'"{v}"' for v in self.conflicting_values])
         self.message = (
-            f'Label(s) {label_values} used in column "{self.csv_column_name}". '
+            f'Label(s) {label_values} used in "{self.component.__name__}" component. '
             + f'"{self.reserved_identifier}" is a reserved identifier and cannot be used in code-lists.'
         )
+
+
+@dataclass
+class ConflictingUriSafeValuesError(PydanticThrowableSpecificValidationError):
+    """
+    An error which happens when the user has multiple resources which would generate the same URI-safe value.
+    This conflict must be resolved by the user before it is possible to continue.
+
+    N.B. This error extends :class:`ValueError` in order for it to be possible for it to be raised as an exception
+    in a pydantic validation function.
+    """
+
+    component_type: Type[QbStructuralDefinition]
+    """The component type where the conflicting values were found."""
+
+    map_uri_safe_values_to_conflicting_labels: Dict[str, Set[str]]
+
+    _indented_line_sep: ClassVar[str] = f"{os.linesep}    "
+
+    @staticmethod
+    def _generate_conflicting_values_string(
+        uri_val: str, conflicting_labels: Set[str]
+    ) -> str:
+        return f"{uri_val}: " + ", ".join(
+            [f"'{label}'" for label in conflicting_labels]
+        )
+
+    def __post_init__(self):
+        conflicting_values_lines = [
+            self._generate_conflicting_values_string(uri_val, conflicting_labels)
+            for uri_val, conflicting_labels in self.map_uri_safe_values_to_conflicting_labels.items()
+        ]
+
+        self.message = (
+            f"Conflicting URIs: {self._indented_line_sep}"
+            + self._indented_line_sep.join(conflicting_values_lines)
+        )
+
+    @classmethod
+    def get_error_url(cls) -> str:
+        # todo: Need to write documentation for this page and implement it properly.
+        raise Exception("Not implemented yet, unfortunately.")

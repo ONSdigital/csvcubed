@@ -6,12 +6,16 @@ Represent individual concepts inside a `skos:ConceptScheme`.
 """
 
 from dataclasses import dataclass, field
-from typing import Optional
+from typing import Optional, Dict, Any
 
+from pydantic import validator, root_validator
+
+from csvcubed.writers.urihelpers.skoscodelistconstants import SCHEMA_URI_IDENTIFIER
 from .datastructuredefinition import SecondaryQbStructuralDefinition
 from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.utils.uri import uri_safe
 from csvcubed.utils.validators.uri import validate_uri
+from .validationerrors import ReservedUriValueError
 
 
 @dataclass(eq=False, unsafe_hash=False)

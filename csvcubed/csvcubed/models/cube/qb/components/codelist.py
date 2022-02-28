@@ -6,11 +6,12 @@ Represent code lists in an RDF Data Cube.
 """
 from pathlib import Path
 from dataclasses import dataclass, field
-from typing import Optional, List, Set, Generic, TypeVar
+from typing import Optional, List, Set, Generic, TypeVar, Dict
 from abc import ABC
 from pandas import Series, DataFrame
-from pydantic import root_validator
+from pydantic import root_validator, validator
 
+from csvcubed.writers.urihelpers.skoscodelistconstants import SCHEMA_URI_IDENTIFIER
 from .concept import NewQbConcept, DuplicatedQbConcept
 from csvcubed.readers.skoscodelistreader import extract_code_list_concept_scheme_info
 from csvcubed.utils.pandas import ensure_no_uri_safe_collision
@@ -27,6 +28,7 @@ from csvcubed.utils.validators.uri import validate_uri
 from csvcubed.utils.validators.file import validate_file_exists
 from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_str
 from csvcubed.models.validationerror import ValidationError
+from .validationerrors import ConflictingUriSafeValuesError, ReservedUriValueError
 
 
 @dataclass
@@ -106,6 +108,54 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
     metadata: CatalogMetadata
     concepts: List[TNewQbConcept]
     arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
+
+    @validator("concepts")
+    def _ensure_no_use_of_reserved_keywords(
+        cls, concepts: List[TNewQbConcept]
+    ) -> List[TNewQbConcept]:
+        conflicting_values: List[str] = []
+        for concept in concepts:
+            if concept.uri_safe_identifier == SCHEMA_URI_IDENTIFIER:
+                conflicting_values.append(concept.label)
+
+        if any(conflicting_values):
+            raise ReservedUriValueError(
+                cls.__base__,
+                conflicting_values,
+                SCHEMA_URI_IDENTIFIER,
+            )
+
+        return concepts
+
+    @validator("concepts")
+    def _validate_concepts_non_conflicting(
+        cls, concepts: List[TNewQbConcept]
+    ) -> List[TNewQbConcept]:
+        """
+        Ensure that there are no collisions where multiple concepts map to the same URI-safe value.
+        """
+        map_uri_safe_val_to_concepts: Dict[str, Set[str]] = {}
+
+        for concept in concepts:
+            uri_safe_identifier = concept.uri_safe_identifier
+            concepts_for_this_uri_safe_identifier = map_uri_safe_val_to_concepts.get(
+                uri_safe_identifier, set()
+            )
+            concepts_for_this_uri_safe_identifier.add(concept.label)
+            map_uri_safe_val_to_concepts[
+                uri_safe_identifier
+            ] = concepts_for_this_uri_safe_identifier
+
+        collisions = {
+            uri_safe_value: concepts
+            for uri_safe_value, concepts in map_uri_safe_val_to_concepts.items()
+            if len(concepts) > 1
+        }
+
+        if any(collisions):
+            raise ConflictingUriSafeValuesError(cls.__base__, collisions)
+
+        return concepts
 
     def _get_arbitrary_rdf(self) -> List[TripleFragmentBase]:
         return self.arbitrary_rdf

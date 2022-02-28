@@ -97,45 +97,45 @@ def ensure_no_uri_safe_collision(
     return errors
 
 
-def coalesce_on_uri_safe(
-    data: PandasDataTypes, column_csv_title: str
-) -> PandasDataTypes:
-    """Coalesce a categorical Pandas Series() or DataFrame so that all uri_safe collisions have the same value.
-    The value which is preferred is the first value when the list of colliding category names are sorted()
-    i.e. 'canada' and 'Canada' categories will replace 'canada' with 'Canada'
-    """
-
-    if data is None or not _data_is_string_type(data):
-        return data
-    else:
-
-        uri_safe_ios_dict = uri_safe_ios(data)
-        errors = ensure_no_uri_safe_collision(uri_safe_ios_dict, column_csv_title)
-        non_recoverable_errors = [
-            e for e in errors if not isinstance(e, LabelUriCollisionError)
-        ]
-
-        if any(non_recoverable_errors):
-            raise ValueError(
-                f"Unrecoverable error(s) experienced: {non_recoverable_errors}."
-            )
-        elif not any(errors):
-            # There is a 1:1 relationship between categories and uri_safe categoies
-            return data
-        else:
-
-            cat_map = DefaultDict(str)
-
-            for k, v in uri_safe_ios_dict.items():
-                if len(v) > 1:
-                    warn(
-                        message=f'Labels "{v}" collide as single uri-safe value "{k}" in column "{data.name}" and were consolidated'
-                    )
-
-                for f in v:
-                    cat_map[f] = sorted(v)[0]
-
-            return data.map(cat_map).astype("category")
+# def coalesce_on_uri_safe(
+#     data: PandasDataTypes, column_csv_title: str
+# ) -> PandasDataTypes:
+#     """Coalesce a categorical Pandas Series() or DataFrame so that all uri_safe collisions have the same value.
+#     The value which is preferred is the first value when the list of colliding category names are sorted()
+#     i.e. 'canada' and 'Canada' categories will replace 'canada' with 'Canada'
+#     """
+#
+#     if data is None or not _data_is_string_type(data):
+#         return data
+#     else:
+#
+#         uri_safe_ios_dict = uri_safe_ios(data)
+#         errors = ensure_no_uri_safe_collision(uri_safe_ios_dict, column_csv_title)
+#         non_recoverable_errors = [
+#             e for e in errors if not isinstance(e, LabelUriCollisionError)
+#         ]
+#
+#         if any(non_recoverable_errors):
+#             raise ValueError(
+#                 f"Unrecoverable error(s) experienced: {non_recoverable_errors}."
+#             )
+#         elif not any(errors):
+#             # There is a 1:1 relationship between categories and uri_safe categoies
+#             return data
+#         else:
+#
+#             cat_map = DefaultDict(str)
+#
+#             for k, v in uri_safe_ios_dict.items():
+#                 if len(v) > 1:
+#                     warn(
+#                         message=f'Labels "{v}" collide as single uri-safe value "{k}" in column "{data.name}" and were consolidated'
+#                     )
+#
+#                 for f in v:
+#                     cat_map[f] = sorted(v)[0]
+#
+#             return data.map(cat_map).astype("category")
 
 
 def _data_is_string_type(data: PandasDataTypes) -> bool:

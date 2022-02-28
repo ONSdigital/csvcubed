@@ -8,7 +8,12 @@ from abc import ABC
 
 from csvcubedmodels.dataclassbase import DataClassBase
 
-from .validationerror import ValidationError
+from .validationerror import (
+    ValidationError,
+    PydanticValidationError,
+    UnknownPydanticValidationError,
+    PydanticThrowableSpecificValidationError,
+)
 
 _map_class_to_pydantic_constructor: Dict[Type, Type] = dict()
 """_map_class_to_pydantic_constructor - Cache of pydantic constructor corresponding to a given class."""
@@ -52,10 +57,8 @@ class PydanticModel(DataClassBase, ABC):
         try:
             validated_model = pydantic_class_constructor(**self._as_shallow_dict())
         except pydantic.ValidationError as error:
-            return [
-                ValidationError(f"{self} - {e['loc']} - {e['msg']}")
-                for e in error.errors()
-            ]
+            errors = _extract_pydantic_leaf_errors(error)
+            return errors
 
         return validated_model
 
@@ -99,3 +102,37 @@ def _value_is_list_of_or_single_pydantic_dataclass(value: Any) -> bool:
 
     # Anything else should be fine.
     return False
+
+
+def _extract_pydantic_leaf_errors(
+    error: Union[
+        list,
+        pydantic.error_wrappers.ValidationError,
+        pydantic.error_wrappers.ErrorWrapper,
+    ],
+    path: List[str] = [],
+) -> List[PydanticValidationError]:
+    if isinstance(error, list):
+        leaf_errors = []
+        for item in error:
+            leaf_errors += _extract_pydantic_leaf_errors(item, path)
+
+        return leaf_errors
+    elif isinstance(error, pydantic.error_wrappers.ErrorWrapper):
+        new_path = path + [str(error._loc)]
+        return _extract_pydantic_leaf_errors(error.exc, new_path)
+    elif isinstance(error, pydantic.error_wrappers.ValidationError):
+        if any(error.raw_errors):
+            return _extract_pydantic_leaf_errors(list(error.raw_errors), path)
+        else:
+            if isinstance(error, PydanticThrowableSpecificValidationError):
+                error.path = path
+                return [error]
+
+            return [UnknownPydanticValidationError(str(error), path, error)]
+    else:
+        if isinstance(error, PydanticThrowableSpecificValidationError):
+            error.path = path
+            return [error]
+
+        return [UnknownPydanticValidationError(str(error), path, error)]

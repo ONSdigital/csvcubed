@@ -3,6 +3,7 @@ import pytest
 
 from csvcubed.models.cube import *
 from csvcubed.models.cube import ExistingQbAttribute
+from csvcubed.models.validationerror import PydanticValidationError
 from tests.unit.test_baseunit import assert_num_validation_errors
 
 
@@ -37,14 +38,40 @@ def test_attribute_property_validation():
     # Ensure that the errors are related to the erroneous definition of the concepts as `str`s
     # rather than `NewQbConcept`s.
     error_1 = errors[0]
+    assert isinstance(error_1, PydanticValidationError)
+    assert error_1.path == [
+        "('columns', 0)",
+        "structural_definition",
+        "code_list",
+        "('concepts', 0)",
+    ]
     assert (
-        "('columns', 0, 'structural_definition', 'code_list', 'concepts', 0) - instance of NewQbConcept, tuple or dict expected"
-        in error_1.message
+        str(error_1.original_error)
+        == "instance of NewQbConcept, tuple or dict expected"
     )
-    error_2 = errors[1]
     assert (
-        "('columns', 0, 'structural_definition', 'code_list', 'concepts', 1) - instance of NewQbConcept, tuple or dict expected"
-        in error_2.message
+        error_1.message
+        == "('columns', 0), structural_definition, code_list, ('concepts', 0) - instance of NewQbConcept, "
+        "tuple or dict expected"
+    )
+
+    error_2 = errors[1]
+    assert isinstance(error_2, PydanticValidationError)
+
+    assert error_2.path == [
+        "('columns', 0)",
+        "structural_definition",
+        "code_list",
+        "('concepts', 1)",
+    ]
+    assert (
+        str(error_2.original_error)
+        == "instance of NewQbConcept, tuple or dict expected"
+    )
+    assert (
+        error_2.message
+        == "('columns', 0), structural_definition, code_list, ('concepts', 1) - instance of NewQbConcept, "
+        "tuple or dict expected"
     )
 
 
