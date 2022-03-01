@@ -1,6 +1,13 @@
 from ast import Dict
+import csv
 from typing import List
-from csvcubed.models.cli.inspect.inspectsparqlresults import CatalogMetadataSparqlResult
+from csvcubed.models.cli.inspect.inspectsparqlresults import (
+    CatalogMetadataSparqlResult,
+    CodelistInfoSparqlResult,
+    ColsWithSupressOutputTrueSparlqlResult,
+    DSDLabelURISparqlResult,
+    QubeComponentsSparqlResult,
+)
 from csvcubed.utils.qb.components import ComponentPropertyType, ComponentPropertyTypeURI
 import dateutil.parser
 
@@ -71,9 +78,7 @@ def test_select_csvw_catalog_metadata_for_dataset():
     )
     assert (
         result.description
-        == "The Alcohol Bulletin National Statistics present statistics from the 4\ndifferent alcohol duties administered by HM Revenue and Customs (HMRC): [Wine\nDuty](https://www.gov.uk/government/collections/wine-duty) (wine and made-\nwine), [Spirits Duty](https://www.gov.uk/guidance/spirits-duty), [Beer\nDuty](https://www.gov.uk/guidance/beer-duty) and [Cider\nDuty](https://www.gov.uk/government/collections/cider-duty).\n\nThe Alcohol Bulletin is updated quarterly and includes statistics on duty\nreceipts up to the latest full month before its release, and statistics\nrelating to clearances and production that are one month behind that of duty\nreceipts.\n\n[Archive versions of the Alcohol Bulletin published on GOV.UK after August\n2019](https://webarchive.nationalarchives.gov.uk/ukgwa/*/https://www.gov.uk/government/statistics/alcohol-\nbulletin) are no longer hosted on this page and are instead available via the\nUK Government Web Archive, from the National Archives.\n\n[Archive versions of the Alcohol Bulletin published between 2008 and August\n2019](https://www.uktradeinfo.com/trade-data/tax-and-duty-bulletins/) are\nfound on the UK Trade Info website.\n\n## Quality report\n\nFurther details for this statistical release, including data suitability and\ncoverage, are included within the [Alcohol Bulletin quality\nreport](https://www.gov.uk/government/statistics/quality-report-alcohol-\nduties-publications-bulletin-and-factsheet).\n\n  *[HMRC]: HM Revenue and Customs\n  *[UK]: United Kingdom\n\n".replace(
-            "\n", "\n\t\t"
-        )
+        == "The Alcohol Bulletin National Statistics present statistics from the 4\ndifferent alcohol duties administered by HM Revenue and Customs (HMRC): [Wine\nDuty](https://www.gov.uk/government/collections/wine-duty) (wine and made-\nwine), [Spirits Duty](https://www.gov.uk/guidance/spirits-duty), [Beer\nDuty](https://www.gov.uk/guidance/beer-duty) and [Cider\nDuty](https://www.gov.uk/government/collections/cider-duty).\n\nThe Alcohol Bulletin is updated quarterly and includes statistics on duty\nreceipts up to the latest full month before its release, and statistics\nrelating to clearances and production that are one month behind that of duty\nreceipts.\n\n[Archive versions of the Alcohol Bulletin published on GOV.UK after August\n2019](https://webarchive.nationalarchives.gov.uk/ukgwa/*/https://www.gov.uk/government/statistics/alcohol-\nbulletin) are no longer hosted on this page and are instead available via the\nUK Government Web Archive, from the National Archives.\n\n[Archive versions of the Alcohol Bulletin published between 2008 and August\n2019](https://www.uktradeinfo.com/trade-data/tax-and-duty-bulletins/) are\nfound on the UK Trade Info website.\n\n## Quality report\n\nFurther details for this statistical release, including data suitability and\ncoverage, are included within the [Alcohol Bulletin quality\nreport](https://www.gov.uk/government/statistics/quality-report-alcohol-\nduties-publications-bulletin-and-factsheet).\n\n  *[HMRC]: HM Revenue and Customs\n  *[UK]: United Kingdom\n\n"
     )
     assert result.license is None
     assert (
@@ -134,25 +139,24 @@ def test_select_csvw_dsd_dataset():
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
-    result = select_csvw_dsd_dataset_label_and_dsd_def_uri(csvw_metadata_rdf_graph)
-    result_dict = result.asdict()
-    components = select_csvw_dsd_qube_components(
-        csvw_metadata_rdf_graph, result_dict["dataStructureDefinition"]
+    result: DSDLabelURISparqlResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
+        csvw_metadata_rdf_graph
     )
+    component_result: QubeComponentsSparqlResult = select_csvw_dsd_qube_components(
+        csvw_metadata_rdf_graph, result.dsd_uri, csvw_metadata_json_path
+    )
+    components = component_result.qube_components
 
-    assert str(result_dict["dataSetLabel"]) == "Alcohol Bulletin"
+    assert result.dataset_label == "Alcohol Bulletin"
     assert len(components) == 17
     assert (
-        str(components[0]["componentProperty"])
+        components[0].property
         == "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod"
     )
-    assert components[0]["componentPropertyLabel"] is None
-    assert (
-        str(components[0]["componentPropertyType"])
-        == ComponentPropertyTypeURI.Dimension.value
-    )
-    assert str(components[0]["csvColumnTitle"]) == "Period"
-    assert bool(components[0]["required"]) is True
+    assert components[0].property_label == ""
+    assert components[0].property_type == ComponentPropertyTypeURI.Dimension.value
+    assert components[0].csv_col_title == "Period"
+    assert components[0].required is True
 
 
 def test_select_cols_when_supress_output_cols_not_present():
@@ -160,8 +164,10 @@ def test_select_cols_when_supress_output_cols_not_present():
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
-    results = select_cols_where_supress_output_is_true(csvw_metadata_rdf_graph)
-    assert len(results) == 0
+    result: ColsWithSupressOutputTrueSparlqlResult = (
+        select_cols_where_supress_output_is_true(csvw_metadata_rdf_graph)
+    )
+    assert len(result.columns) == 0
 
 
 def test_select_cols_when_supress_output_cols_present():
@@ -171,18 +177,12 @@ def test_select_cols_when_supress_output_cols_present():
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
-    results = select_cols_where_supress_output_is_true(csvw_metadata_rdf_graph)
-    assert len(results) == 2
-
-    cols_with_suppress_output = list(
-        map(
-            lambda result: str(result["csvColumnTitle"]),
-            results,
-        )
+    result: ColsWithSupressOutputTrueSparlqlResult = (
+        select_cols_where_supress_output_is_true(csvw_metadata_rdf_graph)
     )
-    assert len(cols_with_suppress_output) == 2
-    assert str(cols_with_suppress_output[0]) == "Col1WithSuppressOutput"
-    assert str(cols_with_suppress_output[1]) == "Col2WithSuppressOutput"
+    assert len(result.columns) == 2
+    assert str(result.columns[0]) == "Col1WithSuppressOutput"
+    assert str(result.columns[1]) == "Col2WithSuppressOutput"
 
 
 def test_select_dsd_code_list_and_cols_without_codelist_labels():
@@ -190,16 +190,17 @@ def test_select_dsd_code_list_and_cols_without_codelist_labels():
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
-    result_dsd = select_csvw_dsd_dataset_label_and_dsd_def_uri(csvw_metadata_rdf_graph)
-    result_dsd_dict = result_dsd.asdict()
-
-    results = select_dsd_code_list_and_cols(
-        csvw_metadata_rdf_graph,
-        result_dsd_dict["dataStructureDefinition"],
+    result_dsd: DSDLabelURISparqlResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
+        csvw_metadata_rdf_graph
     )
-    result_dict = results[0].asdict()
-    csvColumnsUsedIn = str(result_dict["csvColumnsUsedIn"]).split("|")
 
-    assert len(results) == 3
-    assert result_dict.get("codeListLabel") is None
-    assert csvColumnsUsedIn == ["Alcohol Sub Type"]
+    result: CodelistInfoSparqlResult = select_dsd_code_list_and_cols(
+        csvw_metadata_rdf_graph, result_dsd.dsd_uri, csvw_metadata_json_path
+    )
+
+    assert len(result.codelists) == 3
+    assert (
+        result.codelists[0].codeList == "file:///workspaces/csvcubed/csvcubed/tests/test-cases/cli/inspect/alcohol-sub-type.csv#scheme/alcohol-sub-type"
+    )
+    assert result.codelists[0].codeListLabel == ""
+    assert result.codelists[0].colsInUsed == ["Alcohol Sub Type"]

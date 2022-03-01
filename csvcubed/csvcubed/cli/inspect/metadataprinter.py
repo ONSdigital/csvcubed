@@ -14,16 +14,10 @@ from csvcubed.models.cli.inspect.inspectsparqlresults import (
     DSDLabelURISparqlResult,
     QubeComponentsSparqlResult,
 )
-from numpy import sort
 import pandas as pd
 
 from rdflib import Graph
 
-from csvcubed.utils.sparql import none_or_map
-from csvcubed.utils.qb.components import (
-    get_printable_component_property,
-    get_printable_component_property_type,
-)
 from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
 from csvcubed.cli.inspect.inspectsparqlmanager import (
     select_cols_where_supress_output_is_true,

@@ -74,8 +74,8 @@ class DSDLabelURISparqlResult:
     def __post_init__(self):
         result_dict = self.sparql_result.asdict()
 
-        self.dataset_label: str = result_dict["dataSetLabel"]
-        self.dsd_uri: URIRef = result_dict["dataStructureDefinition"]
+        self.dataset_label: str = str(result_dict["dataSetLabel"])
+        self.dsd_uri: URIRef = URIRef(result_dict["dataStructureDefinition"])
 
 
 @dataclass()
@@ -84,7 +84,7 @@ class QubeComponent:
     Model to represent the result of an individual component.
     """
 
-    result: ResultRow
+    sparql_result: ResultRow
     json_path: Path
 
     def to_dict(self) -> Dict:
@@ -97,17 +97,19 @@ class QubeComponent:
         }
 
     def __post_init__(self):
+        result_dict = self.sparql_result.asdict()
+
         self.property = get_printable_component_property(
-            self.json_path, self.result["componentProperty"]
+            self.json_path, str(result_dict["componentProperty"])
         )
         self.property_label = (
-            none_or_map(self.result.get("componentPropertyLabel"), str) or ""
+            none_or_map(result_dict.get("componentPropertyLabel"), str) or ""
         )
         self.property_type = (
-            none_or_map(self.result.get("componentPropertyType"), str) or ""
+            none_or_map(result_dict.get("componentPropertyType"), str) or ""
         )
-        self.csv_col_title = none_or_map(self.result.get("csvColumnTitle"), str) or ""
-        self.required = none_or_map(self.result.get("required"), str)
+        self.csv_col_title = none_or_map(result_dict.get("csvColumnTitle"), str) or ""
+        self.required = none_or_map(result_dict.get("required"), bool)
 
 
 @dataclass()
@@ -163,24 +165,24 @@ class Codelist:
     Model to represent the result of an individual codelist.
     """
 
-    result: ResultRow
+    sparql_result: ResultRow
     json_path: Path
 
     def to_dict(self) -> Dict:
         return {
-            "Code List": self.codeList,
+            "Code List": get_printable_component_property(
+                self.json_path, self.codeList
+            ),
             "Code List Label": self.codeListLabel,
-            "Columns Used In": self.colsInUsed,
+            "Columns Used In": get_printable_tabular_list_str(self.colsInUsed),
         }
 
     def __post_init__(self):
-        self.codeList = get_printable_component_property(
-            self.json_path, self.result["codeList"]
-        )
-        self.codeListLabel = none_or_map(self.result.get("codeListLabel"), str) or ""
-        self.colsInUsed = get_printable_tabular_list_str(
-            str(self.result["csvColumnsUsedIn"]).split("|")
-        )
+        result_dict = self.sparql_result.asdict()
+
+        self.codeList: str = str(result_dict["codeList"])
+        self.codeListLabel = none_or_map(result_dict.get("codeListLabel"), str) or ""
+        self.colsInUsed = str(result_dict["csvColumnsUsedIn"]).split("|")
 
 
 @dataclass()
