@@ -7,9 +7,7 @@ import pandas as pd
 
 def get_printable_list_str(items: List) -> str:
     """
-    Converts the given list of items into a printable string representation:
-        -- Item 1
-        -- Item 2
+    Converts the given list of items into a printable string representation.
 
     Member of :file:`./utils/printable`.
 
@@ -26,8 +24,7 @@ def get_printable_list_str(items: List) -> str:
 
 def get_printable_tabular_list_str(items: List) -> str:
     """
-    Converts the given list of items into a printable list that can be a cell in tabular:
-        |Item 1, Item 2|
+    Converts the given list of items into a printable list that can be a cell in tabular.
 
     Member of :file:`./utils/printable`.
 
@@ -44,9 +41,7 @@ def get_printable_tabular_list_str(items: List) -> str:
 
 def get_printable_tabular_str(items: List[Dict], column_names=None) -> str:
     """
-    Converts the given list of items of {key, value} into a printable tabular:
-        |Key 1 | Key 2|
-        |Val 1 | Val 2|
+    Converts the given list of items of {key, value} into a printable tabular.
 
     Member of :file:`./utils/printable`.
 
