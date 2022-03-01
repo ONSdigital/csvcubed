@@ -138,9 +138,6 @@ class ConflictingUriSafeValuesError(PydanticThrowableSpecificValidationError):
     """
     An error which happens when the user has multiple resources which would generate the same URI-safe value.
     This conflict must be resolved by the user before it is possible to continue.
-
-    N.B. This error extends :class:`ValueError` in order for it to be possible for it to be raised as an exception
-    in a pydantic validation function.
     """
 
     component_type: Type[QbStructuralDefinition]

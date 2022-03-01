@@ -6,15 +6,13 @@ Represent code lists in an RDF Data Cube.
 """
 from pathlib import Path
 from dataclasses import dataclass, field
-from typing import Optional, List, Set, Generic, TypeVar, Dict
+from typing import List, Set, Generic, TypeVar, Dict
 from abc import ABC
-from pandas import Series, DataFrame
 from pydantic import root_validator, validator
 
 from csvcubed.writers.urihelpers.skoscodelistconstants import SCHEMA_URI_IDENTIFIER
 from .concept import NewQbConcept, DuplicatedQbConcept
 from csvcubed.readers.skoscodelistreader import extract_code_list_concept_scheme_info
-from csvcubed.utils.pandas import ensure_no_uri_safe_collision
 from .arbitraryrdf import (
     ArbitraryRdf,
     RdfSerialisationHint,
@@ -120,7 +118,7 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
 
         if any(conflicting_values):
             raise ReservedUriValueError(
-                cls.__base__,
+                NewQbCodeList,
                 conflicting_values,
                 SCHEMA_URI_IDENTIFIER,
             )
@@ -153,7 +151,7 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
         }
 
         if any(collisions):
-            raise ConflictingUriSafeValuesError(cls.__base__, collisions)
+            raise ConflictingUriSafeValuesError(NewQbCodeList, collisions)
 
         return concepts
 

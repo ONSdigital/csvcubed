@@ -48,7 +48,7 @@ class UnknownPydanticValidationError(PydanticValidationError):
     """
 
     path: List[str] = field(init=True)
-    original_error: ValueError
+    original_error: Exception
 
     def __post_init__(self):
         self.message = f"{', '.join(self.path)} - {self.original_error}"

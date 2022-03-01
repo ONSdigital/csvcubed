@@ -25,12 +25,9 @@ def validate_qb_component_constraints(cube: Cube) -> List[ValidationError]:
     :return: A list of :class:`ValidationError <csvcubed.models.validationerror.ValidationError>` s.
     """
 
-    try:
-        errors = _validate_dimensions(cube)
-        errors += _validate_attributes(cube)
-        errors += validate_observations(cube)
-    except Exception as e:
-        print(e)
+    errors = _validate_dimensions(cube)
+    errors += _validate_attributes(cube)
+    errors += validate_observations(cube)
 
     return errors
 

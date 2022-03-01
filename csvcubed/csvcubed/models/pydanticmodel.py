@@ -109,6 +109,7 @@ def _extract_pydantic_leaf_errors(
         list,
         pydantic.error_wrappers.ValidationError,
         pydantic.error_wrappers.ErrorWrapper,
+        Exception,
     ],
     path: List[str] = [],
 ) -> List[PydanticValidationError]:
