@@ -2,9 +2,8 @@
 
 ## When it occurs
 
-csvcubed is designed to help you create a valid self-contained cube of data as easily as possible. To help with this, it automatically creates new units, measures and code lists from the CSV that you provide. The way this works is that csvcubed extracts the distinct values from a column of the CSV input and treats these values as labels for the new code list concepts, units or measures; it then generates a URI from that label by applying the following transformation:
+csvcubed is designed to help you create a valid self-contained cube of data as easily as possible. To help with this, it automatically creates new units, measures and code lists from the CSV that you provide. The way this works is that csvcubed extracts the distinct values from a column of the CSV input and treats these values as labels for the new code list concepts, units or measures; it then generates a URI from that label by applying the [URI-safe transformation](../uris.md#uri-safe-transformation).
 
-TODO: Complete the transformation.
 
 > N.B. This error often arises due to differences in case, e.g. `Football` and `FootBall` are distinct and conflicting values.
 
