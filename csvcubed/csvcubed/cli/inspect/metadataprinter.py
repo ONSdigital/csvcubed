@@ -10,7 +10,7 @@ from pathlib import Path
 from rdflib import Graph
 
 from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
-from csvcubed.models.cli.inspect.inspectsparqlresults import (
+from csvcubed.models.inspectsparqlresults import (
     CatalogMetadataSparqlResult,
     CodelistInfoSparqlResult,
     ColsWithSupressOutputTrueSparlqlResult,

@@ -12,7 +12,7 @@ from typing import List
 from rdflib import Graph, URIRef
 from rdflib.query import ResultRow
 
-from csvcubed.models.cli.inspect.inspectsparqlresults import (
+from csvcubed.models.inspectsparqlresults import (
     CatalogMetadataSparqlResult,
     CodelistInfoSparqlResult,
     ColsWithSupressOutputTrueSparlqlResult,

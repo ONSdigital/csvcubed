@@ -1,6 +1,6 @@
 import dateutil.parser
 
-from csvcubed.models.cli.inspect.inspectsparqlresults import (
+from csvcubed.models.inspectsparqlresults import (
     CatalogMetadataSparqlResult,
     CodelistInfoSparqlResult,
     ColsWithSupressOutputTrueSparlqlResult,
