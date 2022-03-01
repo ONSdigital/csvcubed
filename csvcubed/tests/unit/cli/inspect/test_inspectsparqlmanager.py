@@ -196,9 +196,5 @@ def test_select_dsd_code_list_and_cols_without_codelist_labels():
     )
 
     assert len(result.codelists) == 3
-    assert (
-        result.codelists[0].codeList
-        == "file:///workspaces/csvcubed/csvcubed/tests/test-cases/cli/inspect/alcohol-sub-type.csv#scheme/alcohol-sub-type"
-    )
     assert result.codelists[0].codeListLabel == ""
     assert result.codelists[0].colsInUsed == ["Alcohol Sub Type"]
