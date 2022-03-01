@@ -179,7 +179,7 @@ def select_cols_where_supress_output_is_true(
 
 def select_dsd_code_list_and_cols(
     rdf_graph: Graph, dsd_uri: str, json_path: Path
-) -> List[ResultRow]:
+) -> CodelistInfoSparqlResult:
     """
     Queries code lists and columns in the data cube.
 

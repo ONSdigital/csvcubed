@@ -77,7 +77,7 @@ def test_select_csvw_catalog_metadata_for_dataset():
         result.description
         == "The Alcohol Bulletin National Statistics present statistics from the 4\ndifferent alcohol duties administered by HM Revenue and Customs (HMRC): [Wine\nDuty](https://www.gov.uk/government/collections/wine-duty) (wine and made-\nwine), [Spirits Duty](https://www.gov.uk/guidance/spirits-duty), [Beer\nDuty](https://www.gov.uk/guidance/beer-duty) and [Cider\nDuty](https://www.gov.uk/government/collections/cider-duty).\n\nThe Alcohol Bulletin is updated quarterly and includes statistics on duty\nreceipts up to the latest full month before its release, and statistics\nrelating to clearances and production that are one month behind that of duty\nreceipts.\n\n[Archive versions of the Alcohol Bulletin published on GOV.UK after August\n2019](https://webarchive.nationalarchives.gov.uk/ukgwa/*/https://www.gov.uk/government/statistics/alcohol-\nbulletin) are no longer hosted on this page and are instead available via the\nUK Government Web Archive, from the National Archives.\n\n[Archive versions of the Alcohol Bulletin published between 2008 and August\n2019](https://www.uktradeinfo.com/trade-data/tax-and-duty-bulletins/) are\nfound on the UK Trade Info website.\n\n## Quality report\n\nFurther details for this statistical release, including data suitability and\ncoverage, are included within the [Alcohol Bulletin quality\nreport](https://www.gov.uk/government/statistics/quality-report-alcohol-\nduties-publications-bulletin-and-factsheet).\n\n  *[HMRC]: HM Revenue and Customs\n  *[UK]: United Kingdom\n\n"
     )
-    assert result.license is None
+    assert result.license == "None"
     assert (
         result.creator
         == "https://www.gov.uk/government/organisations/hm-revenue-customs"
@@ -96,7 +96,7 @@ def test_select_csvw_catalog_metadata_for_dataset():
         and result.themes[0] == "http://gss-data.org.uk/def/gdp#trade"
     )
     assert len(result.keywords) == 1 and result.keywords[0] == ""
-    assert result.contact_point is None
+    assert result.contact_point == "None"
     assert result.identifier == "Alcohol Bulletin"
 
 
@@ -119,15 +119,15 @@ def test_select_csvw_catalog_metadata_for_codelist():
         dateutil.parser.isoparse(result.modified).strftime("%Y-%m-%d %H:%M:%S.%f%Z")
         == "2022-02-11 21:00:21.040987"
     )
-    assert result.comment is None
-    assert result.description == ""
-    assert result.license is None
-    assert result.creator is None
-    assert result.publisher is None
+    assert result.comment == "None"
+    assert result.description == "None"
+    assert result.license == "None"
+    assert result.creator == "None"
+    assert result.publisher == "None"
     assert len(result.landing_pages) == 1 and result.landing_pages[0] == ""
     assert len(result.themes) == 1 and result.themes[0] == ""
     assert len(result.keywords) == 1 and result.keywords[0] == ""
-    assert result.contact_point is None
+    assert result.contact_point == "None"
     assert result.identifier == "Alcohol Content"
 
 

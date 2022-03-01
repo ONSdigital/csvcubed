@@ -33,11 +33,7 @@ class CatalogMetadataSparqlResult:
         formatted_landing_pages: str = get_printable_list_str(self.landing_pages)
         formatted_themes: str = get_printable_list_str(self.themes)
         formatted_keywords: str = get_printable_list_str(self.keywords)
-        formatted_description: str = (
-            self.description.replace(linesep, f"{linesep}\t\t")
-            if self.description != ""
-            else "None"
-        )
+        formatted_description: str = self.description.replace(linesep, f"{linesep}\t\t")
         return f"{linesep}\t- Title: {self.title}{linesep}\t- Label: {self.label}{linesep}\t- Issued: {self.issued}{linesep}\t- Modified: {self.modified}{linesep}\t- License: {self.license}{linesep}\t- Creator: {self.creator}{linesep}\t- Publisher: {self.publisher}{linesep}\t- Landing Pages: {formatted_landing_pages}{linesep}\t- Themes: {formatted_themes}{linesep}\t- Keywords: {formatted_keywords}{linesep}\t- Contact Point: {self.contact_point}{linesep}\t- Identifier: {self.identifier}{linesep}\t- Comment: {self.comment}{linesep}\t- Description: {formatted_description}"
 
     def __post_init__(self):
@@ -47,16 +43,18 @@ class CatalogMetadataSparqlResult:
         self.label: str = str(result_dict["label"])
         self.issued: str = str(result_dict["issued"])
         self.modified: str = str(result_dict["modified"])
-        self.license: str = none_or_map(result_dict.get("license"), str)
-        self.creator: str = none_or_map(result_dict.get("creator"), str)
-        self.publisher: str = none_or_map(result_dict.get("publisher"), str)
+        self.license: str = none_or_map(result_dict.get("license"), str) or "None"
+        self.creator: str = none_or_map(result_dict.get("creator"), str) or "None"
+        self.publisher: str = none_or_map(result_dict.get("publisher"), str) or "None"
         self.landing_pages: list[str] = str(result_dict["landingPages"]).split("|")
         self.themes: list[str] = str(result_dict["themes"]).split("|")
         self.keywords: list[str] = str(result_dict["keywords"]).split("|")
-        self.contact_point: str = none_or_map(result_dict.get("contact_point"), str)
-        self.identifier: str = str(result_dict["identifier"])
-        self.comment: str = none_or_map(result_dict.get("comment"), str)
-        self.description: str = none_or_map(result_dict.get("description"), str) or ""
+        self.contact_point: str = none_or_map(result_dict.get("contact_point"), str) or "None"
+        self.identifier: str = str(result_dict["identifier"]) or "None"
+        self.comment: str = none_or_map(result_dict.get("comment"), str) or "None"
+        self.description: str = (
+            none_or_map(result_dict.get("description"), str) or "None"
+        )
 
 
 @dataclass()
