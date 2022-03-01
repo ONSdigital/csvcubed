@@ -10,8 +10,10 @@ from typing import List
 
 import pandas as pd
 import uritemplate
+from pydantic import validator
 
 from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_str
+from csvcubed.utils.qb.validation.uri_safe import ensure_no_uri_safe_conflicts
 from .measure import (
     QbMeasure,
     NewQbMeasure,
@@ -30,6 +32,24 @@ class QbMultiMeasureDimension(QbColumnStructuralDefinition):
     """
 
     measures: List[QbMeasure]
+
+    @validator("measures")
+    def _validate_measures_non_conflicting(
+        cls, measures: List[QbMeasure]
+    ) -> List[QbMeasure]:
+        """
+        Ensure that there are no collisions where multiple new measures map to the same URI-safe value.
+        """
+        ensure_no_uri_safe_conflicts(
+            [
+                (meas.label, meas.uri_safe_identifier)
+                for meas in measures
+                if isinstance(meas, NewQbMeasure)
+            ],
+            QbMultiMeasureDimension,
+        )
+
+        return measures
 
     @staticmethod
     def new_measures_from_data(data: PandasDataTypes) -> "QbMultiMeasureDimension":

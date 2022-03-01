@@ -6,10 +6,12 @@ Represent code lists in an RDF Data Cube.
 """
 from pathlib import Path
 from dataclasses import dataclass, field
-from typing import List, Set, Generic, TypeVar, Dict
+from typing import List, Set, Generic, TypeVar
 from abc import ABC
+
 from pydantic import root_validator, validator
 
+from csvcubed.utils.qb.validation.uri_safe import ensure_no_uri_safe_conflicts
 from csvcubed.writers.urihelpers.skoscodelistconstants import SCHEMA_URI_IDENTIFIER
 from .concept import NewQbConcept, DuplicatedQbConcept
 from csvcubed.readers.skoscodelistreader import extract_code_list_concept_scheme_info
@@ -26,7 +28,7 @@ from csvcubed.utils.validators.uri import validate_uri
 from csvcubed.utils.validators.file import validate_file_exists
 from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_str
 from csvcubed.models.validationerror import ValidationError
-from .validationerrors import ConflictingUriSafeValuesError, ReservedUriValueError
+from .validationerrors import ReservedUriValueError
 
 
 @dataclass
@@ -132,26 +134,10 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
         """
         Ensure that there are no collisions where multiple concepts map to the same URI-safe value.
         """
-        map_uri_safe_val_to_concepts: Dict[str, Set[str]] = {}
-
-        for concept in concepts:
-            uri_safe_identifier = concept.uri_safe_identifier
-            concepts_for_this_uri_safe_identifier = map_uri_safe_val_to_concepts.get(
-                uri_safe_identifier, set()
-            )
-            concepts_for_this_uri_safe_identifier.add(concept.label)
-            map_uri_safe_val_to_concepts[
-                uri_safe_identifier
-            ] = concepts_for_this_uri_safe_identifier
-
-        collisions = {
-            uri_safe_value: concepts
-            for uri_safe_value, concepts in map_uri_safe_val_to_concepts.items()
-            if len(concepts) > 1
-        }
-
-        if any(collisions):
-            raise ConflictingUriSafeValuesError(NewQbCodeList, collisions)
+        ensure_no_uri_safe_conflicts(
+            [(concept.label, concept.uri_safe_identifier) for concept in concepts],
+            NewQbCodeList,
+        )
 
         return concepts
 

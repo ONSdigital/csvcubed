@@ -1,3 +1,10 @@
+"""
+Pydantic Model
+--------------
+
+The functionality necessary to repurpose pydantic so that we can validate at a point in time of our choosing.
+"""
+
 import dataclasses
 from dataclasses import dataclass, fields, is_dataclass
 import pydantic
@@ -57,7 +64,7 @@ class PydanticModel(DataClassBase, ABC):
         try:
             validated_model = pydantic_class_constructor(**self._as_shallow_dict())
         except pydantic.ValidationError as error:
-            errors = _extract_pydantic_leaf_errors(error)
+            errors = _extract_pydantic_underlying_errors(error)
             return errors
 
         return validated_model
@@ -104,7 +111,7 @@ def _value_is_list_of_or_single_pydantic_dataclass(value: Any) -> bool:
     return False
 
 
-def _extract_pydantic_leaf_errors(
+def _extract_pydantic_underlying_errors(
     error: Union[
         list,
         pydantic.error_wrappers.ValidationError,
@@ -113,27 +120,31 @@ def _extract_pydantic_leaf_errors(
     ],
     path: List[str] = [],
 ) -> List[PydanticValidationError]:
+    """
+    Extracts the underlying ValueErrors which caused pydantic to raise an exception.
+
+    Rather than keeping them hidden in the depths of objects with only strings hinting at what happened, we extract
+    the underlying causes here in a list.
+    """
     if isinstance(error, list):
         leaf_errors = []
         for item in error:
-            leaf_errors += _extract_pydantic_leaf_errors(item, path)
+            leaf_errors += _extract_pydantic_underlying_errors(item, path)
 
         return leaf_errors
     elif isinstance(error, pydantic.error_wrappers.ErrorWrapper):
-        new_path = path + [str(error._loc)]
-        return _extract_pydantic_leaf_errors(error.exc, new_path)
+        location = error.loc_tuple()
+        if len(location) == 1:
+            # Just because I don't think we want a tuple of one item confusing the path with unnecessary
+            # parentheses & commas.
+            location = location[0]
+
+        new_path = path + [str(location)]
+        return _extract_pydantic_underlying_errors(error.exc, new_path)
     elif isinstance(error, pydantic.error_wrappers.ValidationError):
-        if any(error.raw_errors):
-            return _extract_pydantic_leaf_errors(list(error.raw_errors), path)
-        else:
-            if isinstance(error, PydanticThrowableSpecificValidationError):
-                error.path = path
-                return [error]
-
-            return [UnknownPydanticValidationError(str(error), path, error)]
+        return _extract_pydantic_underlying_errors(list(error.raw_errors), path)
+    elif isinstance(error, PydanticThrowableSpecificValidationError):
+        error.path = path
+        return [error]
     else:
-        if isinstance(error, PydanticThrowableSpecificValidationError):
-            error.path = path
-            return [error]
-
         return [UnknownPydanticValidationError(str(error), path, error)]

@@ -7,7 +7,7 @@ Component Validation Errors
 import os
 from abc import ABC
 from dataclasses import dataclass, field
-from typing import Set, List, Dict, Type, ClassVar, Optional
+from typing import Set, List, Dict, Type, ClassVar, Optional, Union
 
 from .datastructuredefinition import QbStructuralDefinition
 from csvcubed.models.validationerror import (
@@ -140,7 +140,7 @@ class ConflictingUriSafeValuesError(PydanticThrowableSpecificValidationError):
     This conflict must be resolved by the user before it is possible to continue.
     """
 
-    component_type: Type[QbStructuralDefinition]
+    component_type: Union[Type, str]
     """The component type where the conflicting values were found."""
 
     map_uri_safe_values_to_conflicting_labels: Dict[str, Set[str]]
