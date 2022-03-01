@@ -7,7 +7,11 @@ Provides functionality for validating and detecting input metadata.json file.
 
 from pathlib import Path
 from typing import Dict, List
-from csvcubed.models.cli.inspect.inspectsparqlresults import CatalogMetadataSparqlResult
+from csvcubed.models.cli.inspect.inspectsparqlresults import (
+    CatalogMetadataSparqlResult,
+    DSDLabelURISparqlResult,
+    QubeComponentsSparqlResult,
+)
 from numpy import sort
 import pandas as pd
 
@@ -51,35 +55,6 @@ class MetadataPrinter:
         else:
             raise Exception("The input type is unknown")
 
-    def _get_printable_list_str(self, items: List) -> str:
-        if len(items) == 0 or len(items[0]) == 0:
-            return "None"
-
-        output_str = ""
-        for item in items:
-            output_str = f"{output_str}\n\t\t-- {item}"
-        return output_str
-
-    def _get_printable_tabular_list_str(self, items: List) -> str:
-        if len(items) == 0 or len(items[0]) == 0:
-            return "None"
-
-        output_str = ""
-        for idx, item in enumerate(items):
-            output_str = f"{output_str}{item}{',' if idx != len(items)-1 else ''}"
-        return output_str
-
-    def _get_printable_tabular_str(self, items: List[Dict], column_names) -> str:
-        if len(items) == 0:
-            return "None"
-
-        df = pd.DataFrame(items)
-        df.columns = column_names
-        output_str = df.to_string(index=False)
-        if output_str:
-            return output_str
-        raise Exception("Failed to covert data frame to string")
-
     def gen_type_info_printable(self) -> str:
         """
         Generates a printable of metadata type information.
@@ -104,8 +79,7 @@ class MetadataPrinter:
         result: CatalogMetadataSparqlResult = select_csvw_catalog_metadata(
             self.csvw_metadata_rdf_graph
         )
-        
-        return f"- The {self._get_type_str()} has the following catalog metadata:{result.get_formatted_str()}"
+        return f"- The {self._get_type_str()} has the following catalog metadata:{result.output_str}"
 
     def gen_dsd_info_printable(self) -> str:
         """
@@ -115,66 +89,22 @@ class MetadataPrinter:
 
         :return: `str` - user-friendly string which will be output to CLI.
         """
-        result_dataset_label_uri = select_csvw_dsd_dataset_label_and_dsd_def_uri(
-            self.csvw_metadata_rdf_graph
+        result_dataset_label_dsd_uri: DSDLabelURISparqlResult = (
+            select_csvw_dsd_dataset_label_and_dsd_def_uri(self.csvw_metadata_rdf_graph)
         )
-        result_dataset_label_uri_dict = result_dataset_label_uri.asdict()
-        self.dsd_uri = str(result_dataset_label_uri_dict["dataStructureDefinition"])
+        self.dsd_uri = result_dataset_label_dsd_uri.dsd_uri
 
-        results_qube_components = select_csvw_dsd_qube_components(
-            self.csvw_metadata_rdf_graph, self.dsd_uri
-        )
-
-        qube_components: List[Dict] = list(
-            map(
-                lambda component: {
-                    "componentProperty": get_printable_component_property(
-                        self.csvw_metadata_json_path,
-                        component["componentProperty"],
-                    ),
-                    "componentPropertyLabel": none_or_map(
-                        component.get("componentPropertyLabel"), str
-                    )
-                    or "",
-                    "componentPropertyType": get_printable_component_property_type(
-                        str(component["componentPropertyType"])
-                    )
-                    or "",
-                    "csvColumnTitle": none_or_map(component.get("csvColumnTitle"), str)
-                    or "",
-                    "required": none_or_map(component.get("required"), str),
-                },
-                results_qube_components,
+        result_qube_components: QubeComponentsSparqlResult = (
+            select_csvw_dsd_qube_components(
+                self.csvw_metadata_rdf_graph, self.dsd_uri, self.csvw_metadata_json_path
             )
         )
 
-        results_cols_with_suppress_output = select_cols_where_supress_output_is_true(
+        result_cols_with_suppress_output = select_cols_where_supress_output_is_true(
             self.csvw_metadata_rdf_graph
         )
-        cols_with_suppress_output = list(
-            map(
-                lambda result: str(result["csvColumnTitle"]),
-                results_cols_with_suppress_output,
-            )
-        )
 
-        output_str = "\t- Dataset label: {}\n\t- Number of components: {}\n\t- Components:\n{}\n\t- Columns with suppress output: {}".format(
-            result_dataset_label_uri_dict["dataSetLabel"],
-            len(qube_components),
-            self._get_printable_tabular_str(
-                qube_components,
-                column_names=[
-                    "Property",
-                    "Property Label",
-                    "Property Type",
-                    "Column Title",
-                    "Required",
-                ],
-            ),
-            self._get_printable_list_str(cols_with_suppress_output),
-        )
-
-        return f"- The {self._get_type_str()} has the following data structure definition:\n {output_str}"
+        return f"- The {self._get_type_str()} has the following data structure definition:{result_dataset_label_dsd_uri.output_str}{result_qube_components.output_str}{result_cols_with_suppress_output.output_str}"
 
     def gen_codelist_info_printable(self) -> str:
         """

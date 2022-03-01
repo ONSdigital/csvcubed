@@ -8,7 +8,12 @@ Collection of SPARQL queries used in the inspect cli.
 from enum import Enum
 from pathlib import Path
 from typing import List
-from csvcubed.models.cli.inspect.inspectsparqlresults import CatalogMetadataSparqlResult
+from csvcubed.models.cli.inspect.inspectsparqlresults import (
+    CatalogMetadataSparqlResult,
+    ColsWithSupressOutputTrueSparlqlResult,
+    DSDLabelURISparqlResult,
+    QubeComponentsSparqlResult,
+)
 from csvcubed.utils.file import get_root_dir_level
 
 from rdflib import Graph, URIRef
@@ -100,7 +105,7 @@ def select_csvw_catalog_metadata(rdf_graph: Graph) -> CatalogMetadataSparqlResul
 
     Member of :file:`./inspectsparqlmanager.py`
 
-    :return: `List[ResultRow]` - List containing the results. The expected length of this list for this query is 1.
+    :return: `CatalogMetadataSparqlResult`
     """
     results: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryFileName.SELECT_CATALOG_METADATA),
@@ -113,13 +118,15 @@ def select_csvw_catalog_metadata(rdf_graph: Graph) -> CatalogMetadataSparqlResul
     return CatalogMetadataSparqlResult(results[0])
 
 
-def select_csvw_dsd_dataset_label_and_dsd_def_uri(rdf_graph: Graph) -> ResultRow:
+def select_csvw_dsd_dataset_label_and_dsd_def_uri(
+    rdf_graph: Graph,
+) -> DSDLabelURISparqlResult:
     """
     Queries data structure definition dataset label and uri.
 
     Member of :file:`./inspectsparqlmanager.py`
 
-    :return: `List[ResultRow]` - List containing the results. The expected length of this list for this query is 1.
+    :return: `DSDLabelURISparqlResult`
     """
     results: List[ResultRow] = select(
         _get_query_string_from_file(
@@ -131,36 +138,42 @@ def select_csvw_dsd_dataset_label_and_dsd_def_uri(rdf_graph: Graph) -> ResultRow
     if len(results) != 1:
         raise Exception(f"Expected 1 record, but found {len(results)}")
 
-    return results[0]
+    return DSDLabelURISparqlResult(results[0])
 
 
-def select_csvw_dsd_qube_components(rdf_graph: Graph, dsd_uri: str) -> List[ResultRow]:
+def select_csvw_dsd_qube_components(
+    rdf_graph: Graph, dsd_uri: str, json_path: Path
+) -> QubeComponentsSparqlResult:
     """
     Queries the list of qube components.
 
     Member of :file:`./inspectsparqlmanager.py`
 
-    :return: `List[ResultRow]` - List containing the results.
+    :return: `QubeComponentsSparqlResult`
     """
-    return select(
+    results: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryFileName.SELECT_DSD_QUBE_COMPONENTS),
         rdf_graph,
         init_bindings={"dsd_uri": URIRef(dsd_uri)},
     )
+    return QubeComponentsSparqlResult(results, json_path)
 
 
-def select_cols_where_supress_output_is_true(rdf_graph: Graph) -> List[ResultRow]:
+def select_cols_where_supress_output_is_true(
+    rdf_graph: Graph,
+) -> ColsWithSupressOutputTrueSparlqlResult:
     """
     Queries the columns where suppress output is true.
 
     Member of :file:`./inspectsparqlmanager.py`
 
-    :return: `List[ResultRow]` - List containing the results.
+    :return: `ColsWithSupressOutputTrueSparlqlResult`
     """
-    return select(
+    results: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryFileName.SELECT_COLS_W_SUPPRESS_OUTPUT),
         rdf_graph,
     )
+    return ColsWithSupressOutputTrueSparlqlResult(results)
 
 
 def select_dsd_code_list_and_cols(rdf_graph: Graph, dsd_uri: str) -> List[ResultRow]:
