@@ -8,6 +8,10 @@ Collection of SPARQL queries used in the inspect cli.
 from enum import Enum
 from pathlib import Path
 from typing import List
+
+from rdflib import Graph, URIRef
+from rdflib.query import ResultRow
+
 from csvcubed.models.cli.inspect.inspectsparqlresults import (
     CatalogMetadataSparqlResult,
     CodelistInfoSparqlResult,
@@ -16,10 +20,6 @@ from csvcubed.models.cli.inspect.inspectsparqlresults import (
     QubeComponentsSparqlResult,
 )
 from csvcubed.utils.file import get_root_dir_level
-
-from rdflib import Graph, URIRef
-from rdflib.query import ResultRow
-
 from csvcubed.utils.sparql import ask, select
 
 

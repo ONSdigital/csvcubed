@@ -1,6 +1,5 @@
-from ast import Dict
-import csv
-from typing import List
+import dateutil.parser
+
 from csvcubed.models.cli.inspect.inspectsparqlresults import (
     CatalogMetadataSparqlResult,
     CodelistInfoSparqlResult,
@@ -9,8 +8,6 @@ from csvcubed.models.cli.inspect.inspectsparqlresults import (
     QubeComponentsSparqlResult,
 )
 from csvcubed.utils.qb.components import ComponentPropertyType, ComponentPropertyTypeURI
-import dateutil.parser
-
 from csvcubed.cli.inspect.inspectsparqlmanager import (
     ask_is_csvw_code_list,
     ask_is_csvw_qb_dataset,
@@ -200,7 +197,8 @@ def test_select_dsd_code_list_and_cols_without_codelist_labels():
 
     assert len(result.codelists) == 3
     assert (
-        result.codelists[0].codeList == "file:///workspaces/csvcubed/csvcubed/tests/test-cases/cli/inspect/alcohol-sub-type.csv#scheme/alcohol-sub-type"
+        result.codelists[0].codeList
+        == "file:///workspaces/csvcubed/csvcubed/tests/test-cases/cli/inspect/alcohol-sub-type.csv#scheme/alcohol-sub-type"
     )
     assert result.codelists[0].codeListLabel == ""
     assert result.codelists[0].colsInUsed == ["Alcohol Sub Type"]

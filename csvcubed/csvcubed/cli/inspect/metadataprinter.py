@@ -6,7 +6,10 @@ Provides functionality for validating and detecting input metadata.json file.
 """
 
 from pathlib import Path
-from typing import Dict, List
+
+from rdflib import Graph
+
+from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
 from csvcubed.models.cli.inspect.inspectsparqlresults import (
     CatalogMetadataSparqlResult,
     CodelistInfoSparqlResult,
@@ -14,11 +17,6 @@ from csvcubed.models.cli.inspect.inspectsparqlresults import (
     DSDLabelURISparqlResult,
     QubeComponentsSparqlResult,
 )
-import pandas as pd
-
-from rdflib import Graph
-
-from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
 from csvcubed.cli.inspect.inspectsparqlmanager import (
     select_cols_where_supress_output_is_true,
     select_csvw_catalog_metadata,
