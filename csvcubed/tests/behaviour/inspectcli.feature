@@ -59,15 +59,15 @@ Feature: Behaviour testing of csvcubed inspect.
         And the Data Structure Definition Printable should be
         """
         - The data cube has the following data structure definition:
-            - Dataset Label: Alcohol Bulletin
-            - Number of Components: 17
-            - Components:
+        - Dataset Label: Alcohol Bulletin
+        - Number of Components: 17
+        - Components:
                                                                 Property   Property Label                                      Property Type     Column Title  Required
                http://purl.org/linked-data/sdmx/2009/dimension#refPeriod                  http://purl.org/linked-data/cube#DimensionProperty           Period      True
         http://gss-data.org.uk/def/trade/property/dimension/alcohol-type                  http://purl.org/linked-data/cube#DimensionProperty     Alcohol Type      True
-                       ./alcohol-bulletin.csv#dimension/alcohol-sub-type Alcohol Sub Type http://purl.org/linked-data/cube#DimensionProperty Alcohol Sub Type      True
-                        ./alcohol-bulletin.csv#dimension/alcohol-content  Alcohol Content http://purl.org/linked-data/cube#DimensionProperty  Alcohol Content      True
-                       ./alcohol-bulletin.csv#dimension/clearance-origin Clearance Origin http://purl.org/linked-data/cube#DimensionProperty Clearance Origin      True
+                    ./../alcohol-bulletin.csv#dimension/alcohol-sub-type Alcohol Sub Type http://purl.org/linked-data/cube#DimensionProperty Alcohol Sub Type      True
+                    ./../alcohol-bulletin.csv#dimension/alcohol-content  Alcohol Content http://purl.org/linked-data/cube#DimensionProperty  Alcohol Content      True
+                    ./../alcohol-bulletin.csv#dimension/clearance-origin Clearance Origin http://purl.org/linked-data/cube#DimensionProperty Clearance Origin      True
                             http://purl.org/linked-data/cube#measureType                  http://purl.org/linked-data/cube#DimensionProperty     Measure Type      True
                 http://gss-data.org.uk/def/measure/alcohol-duty-receipts                    http://purl.org/linked-data/cube#MeasureProperty                       True
                    http://gss-data.org.uk/def/measure/beer-duty-receipts                    http://purl.org/linked-data/cube#MeasureProperty                       True
@@ -87,10 +87,10 @@ Feature: Behaviour testing of csvcubed inspect.
         - The data cube has the following code list information:
         - Number of Code Lists: 3
         - Code Lists:
-                                             Code List   Code List Label   Columns Used In
-        ./alcohol-sub-type.csv#scheme/alcohol-sub-type                    Alcohol Sub Type
-          ./alcohol-content.csv#scheme/alcohol-content                     Alcohol Content
-        ./clearance-origin.csv#scheme/clearance-origin                    Clearance Origin
+                                                Code List   Code List Label   Columns Used In
+        ./../alcohol-sub-type.csv#scheme/alcohol-sub-type                    Alcohol Sub Type
+          ./../alcohol-content.csv#scheme/alcohol-content                     Alcohol Content
+        ./../clearance-origin.csv#scheme/clearance-origin                    Clearance Origin
         """
 
     Scenario: inspect should produce printable for code list metadata json-ld input

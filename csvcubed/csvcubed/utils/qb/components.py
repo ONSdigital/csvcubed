@@ -7,6 +7,7 @@ Utilities to help when handling qube components data.
 
 from enum import Enum
 from pathlib import Path
+import os
 
 
 class ComponentPropertyTypeURI(Enum):
@@ -72,8 +73,10 @@ def get_printable_component_property(
 
     component_property = component_property.removeprefix("file://")
     try:
-        component_property_path = Path(component_property)
-        relative_path = component_property_path.relative_to(input_file_path.parent)
+        relative_path = os.path.relpath(
+            component_property,
+            input_file_path.resolve(),
+        )
         return f"./{relative_path}"
     except Exception:
         return component_property
