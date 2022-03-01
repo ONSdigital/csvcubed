@@ -13,7 +13,11 @@ from rdflib import URIRef
 from rdflib.query import ResultRow
 
 from csvcubed.utils.sparql import none_or_map
-from csvcubed.utils.printable import get_printable_list_str, get_printable_tabular_str
+from csvcubed.utils.printable import (
+    get_printable_list_str,
+    get_printable_tabular_list_str,
+    get_printable_tabular_str,
+)
 
 
 @dataclass()
@@ -77,8 +81,8 @@ class QubeComponent:
     Model to represent the result of an individual component.
     """
 
-    component_result: ResultRow
-    csvw_metadata_json_path: Path
+    result: ResultRow
+    json_path: Path
 
     def to_dict(self) -> Dict:
         return {
@@ -91,18 +95,16 @@ class QubeComponent:
 
     def __post_init__(self):
         self.property = get_printable_component_property(
-            self.csvw_metadata_json_path, self.component_result["componentProperty"]
+            self.json_path, self.result["componentProperty"]
         )
         self.property_label = (
-            none_or_map(self.component_result.get("componentPropertyLabel"), str) or ""
+            none_or_map(self.result.get("componentPropertyLabel"), str) or ""
         )
         self.property_type = (
-            none_or_map(self.component_result.get("componentPropertyType"), str) or ""
+            none_or_map(self.result.get("componentPropertyType"), str) or ""
         )
-        self.csv_col_title = (
-            none_or_map(self.component_result.get("csvColumnTitle"), str) or ""
-        )
-        self.required = none_or_map(self.component_result.get("required"), str)
+        self.csv_col_title = none_or_map(self.result.get("csvColumnTitle"), str) or ""
+        self.required = none_or_map(self.result.get("required"), str)
 
 
 @dataclass()
@@ -112,7 +114,7 @@ class QubeComponentsSparqlResult:
     """
 
     sparql_results: List[ResultRow]
-    csvw_metadata_json_path: Path
+    json_path: Path
 
     @property
     def output_str(self) -> str:
@@ -124,7 +126,7 @@ class QubeComponentsSparqlResult:
     def __post_init__(self):
         self.qube_components: List[QubeComponent] = list(
             map(
-                lambda result: QubeComponent(result, self.csvw_metadata_json_path),
+                lambda result: QubeComponent(result, self.json_path),
                 self.sparql_results,
             )
         )
@@ -150,3 +152,55 @@ class ColsWithSupressOutputTrueSparlqlResult:
                 self.sparql_results,
             )
         )
+
+
+@dataclass()
+class Codelist:
+    """
+    Model to represent the result of an individual codelist.
+    """
+
+    result: ResultRow
+    json_path: Path
+
+    def to_dict(self) -> Dict:
+        return {
+            "Code List": self.codeList,
+            "Code List Label": self.codeListLabel,
+            "Columns Used In": self.colsInUsed,
+        }
+
+    def __post_init__(self):
+        self.codeList = get_printable_component_property(
+            self.json_path, self.result["codeList"]
+        )
+        self.codeListLabel = none_or_map(self.result.get("codeListLabel"), str) or ""
+        self.colsInUsed = get_printable_tabular_list_str(
+            str(self.result["csvColumnsUsedIn"]).split("|")
+        )
+
+
+@dataclass()
+class CodelistInfoSparqlResult:
+    """
+    Model to represent result of the `select_dsd_code_list_and_cols` sparql query.
+    """
+
+    sparql_results: List[ResultRow]
+    json_path: Path
+
+    @property
+    def output_str(self) -> str:
+        formatted_codelists = get_printable_tabular_str(
+            [codelist.to_dict() for codelist in self.codelists]
+        )
+        return f"{linesep}\t- Number of Code Lists: {self.num_codelists}{linesep}\t- Code Lists:{linesep}{formatted_codelists}"
+
+    def __post_init__(self):
+        self.codelists: List[Codelist] = list(
+            map(
+                lambda result: Codelist(result, self.json_path),
+                self.sparql_results,
+            )
+        )
+        self.num_codelists: int = len(self.codelists)

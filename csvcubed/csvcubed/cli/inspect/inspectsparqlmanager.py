@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import List
 from csvcubed.models.cli.inspect.inspectsparqlresults import (
     CatalogMetadataSparqlResult,
+    CodelistInfoSparqlResult,
     ColsWithSupressOutputTrueSparlqlResult,
     DSDLabelURISparqlResult,
     QubeComponentsSparqlResult,
@@ -176,16 +177,19 @@ def select_cols_where_supress_output_is_true(
     return ColsWithSupressOutputTrueSparlqlResult(results)
 
 
-def select_dsd_code_list_and_cols(rdf_graph: Graph, dsd_uri: str) -> List[ResultRow]:
+def select_dsd_code_list_and_cols(
+    rdf_graph: Graph, dsd_uri: str, json_path: Path
+) -> List[ResultRow]:
     """
     Queries code lists and columns in the data cube.
 
     Member of :file:`./inspectsparqlmanager.py`
 
-    :return: `List[ResultRow]` - List containing the results.
+    :return: `CodelistInfoSparqlResult``
     """
-    return select(
+    results: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryFileName.SELECT_CODE_LISTS_AND_COLS),
         rdf_graph,
         init_bindings={"dsd_uri": URIRef(dsd_uri)},
     )
+    return CodelistInfoSparqlResult(results, json_path)

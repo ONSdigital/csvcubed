@@ -9,6 +9,8 @@ from pathlib import Path
 from typing import Dict, List
 from csvcubed.models.cli.inspect.inspectsparqlresults import (
     CatalogMetadataSparqlResult,
+    CodelistInfoSparqlResult,
+    ColsWithSupressOutputTrueSparlqlResult,
     DSDLabelURISparqlResult,
     QubeComponentsSparqlResult,
 )
@@ -79,6 +81,7 @@ class MetadataPrinter:
         result: CatalogMetadataSparqlResult = select_csvw_catalog_metadata(
             self.csvw_metadata_rdf_graph
         )
+
         return f"- The {self._get_type_str()} has the following catalog metadata:{result.output_str}"
 
     def gen_dsd_info_printable(self) -> str:
@@ -100,8 +103,8 @@ class MetadataPrinter:
             )
         )
 
-        result_cols_with_suppress_output = select_cols_where_supress_output_is_true(
-            self.csvw_metadata_rdf_graph
+        result_cols_with_suppress_output: ColsWithSupressOutputTrueSparlqlResult = (
+            select_cols_where_supress_output_is_true(self.csvw_metadata_rdf_graph)
         )
 
         return f"- The {self._get_type_str()} has the following data structure definition:{result_dataset_label_dsd_uri.output_str}{result_qube_components.output_str}{result_cols_with_suppress_output.output_str}"
@@ -115,33 +118,11 @@ class MetadataPrinter:
         :return: `str` - user-friendly string which will be output to CLI.
         """
 
-        results = select_dsd_code_list_and_cols(
-            self.csvw_metadata_rdf_graph, self.dsd_uri
-        )
-        code_lists: List[Dict] = list(
-            map(
-                lambda code_list: {
-                    "codeList": get_printable_component_property(
-                        self.csvw_metadata_json_path,
-                        code_list["codeList"],
-                    ),
-                    "codeListLabel": none_or_map(code_list.get("codeListLabel"), str)
-                    or "",
-                    "csvColumnsUsedIn": self._get_printable_tabular_list_str(
-                        str(code_list["csvColumnsUsedIn"]).split("|")
-                    ),
-                },
-                results,
-            )
+        result: CodelistInfoSparqlResult = select_dsd_code_list_and_cols(
+            self.csvw_metadata_rdf_graph, self.dsd_uri, self.csvw_metadata_json_path
         )
 
-        output_str = self._get_printable_tabular_str(
-            code_lists,
-            column_names=["Code List", "Code List Label", "Columns Used In"],
-        )
-        return (
-            f"- The {self._get_type_str()} has the following code lists:\n {output_str}"
-        )
+        return f"- The {self._get_type_str()} has the following code list information:{result.output_str}"
 
     def gen_head_tail_printable(self) -> str:
         """
