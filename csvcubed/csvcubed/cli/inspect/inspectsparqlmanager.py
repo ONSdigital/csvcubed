@@ -110,8 +110,7 @@ def select_csvw_catalog_metadata(rdf_graph: Graph) -> CatalogMetadataSparqlResul
     if len(results) != 1:
         raise Exception(f"Expected 1 record, but found {len(results)}")
 
-    result = CatalogMetadataSparqlResult(results[0])
-    return result
+    return CatalogMetadataSparqlResult(results[0])
 
 
 def select_csvw_dsd_dataset_label_and_dsd_def_uri(rdf_graph: Graph) -> ResultRow:

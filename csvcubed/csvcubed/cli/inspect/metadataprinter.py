@@ -8,6 +8,7 @@ Provides functionality for validating and detecting input metadata.json file.
 from pathlib import Path
 from typing import Dict, List
 from csvcubed.models.cli.inspect.inspectsparqlresults import CatalogMetadataSparqlResult
+from numpy import sort
 import pandas as pd
 
 from rdflib import Graph
@@ -100,31 +101,11 @@ class MetadataPrinter:
 
         :return: `str` - user-friendly string which will be output to CLI.
         """
-
         result: CatalogMetadataSparqlResult = select_csvw_catalog_metadata(
             self.csvw_metadata_rdf_graph
         )
-
-        output_str = "\t- Title: {}\n\t- Label: {}\n\t- Issued: {}\n\t- Modified: {}\n\t- License: {}\n\t- Creator: {}\n\t- Publisher: {}\n\t- Landing Pages: {}\n\t- Themes: {}\n\t- Keywords: {}\n\t- Contact Point: {}\n\t- Identifier: {}\n\t- Comment: {}\n\t- Description: {}".format(
-            result_dict["title"],
-            result_dict["label"],
-            result_dict["issued"],
-            result_dict["modified"],
-            none_or_map(result_dict.get("license"), str),
-            none_or_map(result_dict.get("creator"), str),
-            none_or_map(result_dict.get("publisher"), str),
-            self._get_printable_list_str(str(result_dict["landingPages"]).split("|")),
-            self._get_printable_list_str(str(result_dict["themes"]).split("|")),
-            self._get_printable_list_str(str(result_dict["keywords"]).split("|")),
-            none_or_map(result_dict.get("contact_point"), str),
-            result_dict["identifier"],
-            none_or_map(result_dict.get("comment"), str),
-            str(none_or_map(result_dict.get("description"), str)).replace(
-                "\n", "\n\t\t"
-            ),
-        )
-
-        return f"- The {self._get_type_str()} has the following catalog metadata:\n {output_str}"
+        
+        return f"- The {self._get_type_str()} has the following catalog metadata:{result.get_formatted_str()}"
 
     def gen_dsd_info_printable(self) -> str:
         """
