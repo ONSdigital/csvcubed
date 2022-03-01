@@ -33,6 +33,7 @@ nav:
         - Undefined units: guides/errors/undefined-units.md
         - Undefined measures: guides/errors/undefined-measures.md
         - Undefined attribute values: guides/errors/undefined-attribute-values.md
+        - Conflicting URI values: guides/errors/conflicting-uri-values.md
         - Reserved URI value: guides/errors/reserved-uri-value.md
         - CSV column URI template missing: guides/errors/csv-column-uri-template-missing.md
         - CSV column literal with URI template: guides/errors/csv-column-literal-with-uri-template.md

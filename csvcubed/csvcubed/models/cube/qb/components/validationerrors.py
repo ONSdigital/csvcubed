@@ -168,5 +168,4 @@ class ConflictingUriSafeValuesError(PydanticThrowableSpecificValidationError):
 
     @classmethod
     def get_error_url(cls) -> str:
-        # todo: Need to write documentation for this page and implement it properly.
-        raise Exception("Not implemented yet, unfortunately.")
+        return "https://purl.org/csv-cubed/err/conflict-uri"

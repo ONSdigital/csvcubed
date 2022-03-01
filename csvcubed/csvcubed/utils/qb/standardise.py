@@ -5,10 +5,8 @@ Standardise
 Utilities for standardising cubes and their corresponding data values.
 """
 from typing import List, Dict
+
 from pandas.core.arrays.categorical import Categorical
-
-# from csvcubed.utils.pandas import coalesce_on_uri_safe
-
 
 from .cube import get_all_units, get_all_measures, get_columns_of_dsd_type
 from csvcubed.models.cube.qb import QbCube, QbColumn
