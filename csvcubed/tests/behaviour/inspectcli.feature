@@ -59,36 +59,38 @@ Feature: Behaviour testing of csvcubed inspect.
         And the Data Structure Definition Printable should be
         """
         - The data cube has the following data structure definition:
-        - Dataset label: Alcohol Bulletin
-        - Number of components: 17
-        - Components:
-                                                              Property        Property Label     Property Type     Column Title Required
-            http://purl.org/linked-data/sdmx/2009/dimension#refPeriod                                Dimension           Period     true
-            http://gss-data.org.uk/def/trade/property/dimension/alcohol-type                         Dimension     Alcohol Type     true
-            ./alcohol-bulletin.csv#dimension/alcohol-sub-type               Alcohol Sub Type         Dimension Alcohol Sub Type     true
-            ./alcohol-bulletin.csv#dimension/alcohol-content                 Alcohol Content         Dimension  Alcohol Content     true
-            ./alcohol-bulletin.csv#dimension/clearance-origin               Clearance Origin         Dimension Clearance Origin     true
-            http://purl.org/linked-data/cube#measureType                                             Dimension     Measure Type     true
-            http://gss-data.org.uk/def/measure/alcohol-duty-receipts                                   Measure                      true
-            http://gss-data.org.uk/def/measure/beer-duty-receipts                                      Measure                      true
-            http://gss-data.org.uk/def/measure/cider-duty-receipts                                     Measure                      true
-            http://gss-data.org.uk/def/measure/clearances                                              Measure                      true
-            http://gss-data.org.uk/def/measure/clearances-of-alcohol                                   Measure                      true
-            http://gss-data.org.uk/def/measure/production-volume                                       Measure                      true
-            http://gss-data.org.uk/def/measure/production-volume-alcohol                               Measure                      true
-            http://gss-data.org.uk/def/measure/spirits-duty-receipts                                   Measure                      true
-            http://gss-data.org.uk/def/measure/wine-duty-receipts                                      Measure                      true
-            http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure                              Attribute             Unit     true
-            http://purl.org/linked-data/sdmx/2009/attribute#obsStatus                                Attribute           Marker    false
-        - Columns with suppress output: None
+            - Dataset Label: Alcohol Bulletin
+            - Number of Components: 17
+            - Components:
+                                                                Property   Property Label                                      Property Type     Column Title  Required
+               http://purl.org/linked-data/sdmx/2009/dimension#refPeriod                  http://purl.org/linked-data/cube#DimensionProperty           Period      True
+        http://gss-data.org.uk/def/trade/property/dimension/alcohol-type                  http://purl.org/linked-data/cube#DimensionProperty     Alcohol Type      True
+                       ./alcohol-bulletin.csv#dimension/alcohol-sub-type Alcohol Sub Type http://purl.org/linked-data/cube#DimensionProperty Alcohol Sub Type      True
+                        ./alcohol-bulletin.csv#dimension/alcohol-content  Alcohol Content http://purl.org/linked-data/cube#DimensionProperty  Alcohol Content      True
+                       ./alcohol-bulletin.csv#dimension/clearance-origin Clearance Origin http://purl.org/linked-data/cube#DimensionProperty Clearance Origin      True
+                            http://purl.org/linked-data/cube#measureType                  http://purl.org/linked-data/cube#DimensionProperty     Measure Type      True
+                http://gss-data.org.uk/def/measure/alcohol-duty-receipts                    http://purl.org/linked-data/cube#MeasureProperty                       True
+                   http://gss-data.org.uk/def/measure/beer-duty-receipts                    http://purl.org/linked-data/cube#MeasureProperty                       True
+                  http://gss-data.org.uk/def/measure/cider-duty-receipts                    http://purl.org/linked-data/cube#MeasureProperty                       True
+                           http://gss-data.org.uk/def/measure/clearances                    http://purl.org/linked-data/cube#MeasureProperty                       True
+                http://gss-data.org.uk/def/measure/clearances-of-alcohol                    http://purl.org/linked-data/cube#MeasureProperty                       True
+                    http://gss-data.org.uk/def/measure/production-volume                    http://purl.org/linked-data/cube#MeasureProperty                       True
+            http://gss-data.org.uk/def/measure/production-volume-alcohol                    http://purl.org/linked-data/cube#MeasureProperty                       True
+                http://gss-data.org.uk/def/measure/spirits-duty-receipts                    http://purl.org/linked-data/cube#MeasureProperty                       True
+                   http://gss-data.org.uk/def/measure/wine-duty-receipts                    http://purl.org/linked-data/cube#MeasureProperty                       True
+             http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure                  http://purl.org/linked-data/cube#AttributeProperty             Unit      True
+               http://purl.org/linked-data/sdmx/2009/attribute#obsStatus                  http://purl.org/linked-data/cube#AttributeProperty           Marker     False
+        - Columns where suppress output is true: None
         """
         And the Code List Printable should be
         """
-        - The data cube has the following code lists:
-                                             Code List   Code List Label  Columns Used In
-        ./alcohol-sub-type.csv#scheme/alcohol-sub-type                   Alcohol Sub Type
-          ./alcohol-content.csv#scheme/alcohol-content                    Alcohol Content
-        ./clearance-origin.csv#scheme/clearance-origin                   Clearance Origin
+        - The data cube has the following code list information:
+        - Number of Code Lists: 3
+        - Code Lists:
+                                             Code List   Code List Label   Columns Used In
+        ./alcohol-sub-type.csv#scheme/alcohol-sub-type                    Alcohol Sub Type
+          ./alcohol-content.csv#scheme/alcohol-content                     Alcohol Content
+        ./clearance-origin.csv#scheme/clearance-origin                    Clearance Origin
         """
 
     Scenario: inspect should produce printable for code list metadata json-ld input
