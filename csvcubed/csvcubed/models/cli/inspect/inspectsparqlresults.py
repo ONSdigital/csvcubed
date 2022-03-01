@@ -30,18 +30,23 @@ class CatalogMetadataSparqlResult:
 
     @property
     def output_str(self) -> str:
-        formatted_landing_pages = get_printable_list_str(self.landing_pages)
-        formatted_themes = get_printable_list_str(self.themes)
-        formatted_keywords = get_printable_list_str(self.keywords)
-        return f"{linesep}\t- Title: {self.title}{linesep}\t- Label: {self.label}{linesep}\t- Issued: {self.issued}{linesep}\t- Modified: {self.modified}{linesep}\t- License: {self.license}{linesep}\t- Creator: {self.creator}{linesep}\t- Publisher: {self.publisher}{linesep}\t- Landing Pages: {formatted_landing_pages}{linesep}\t- Themes: {formatted_themes}{linesep}\t- Keywords: {formatted_keywords}{linesep}\t- Contact Point: {self.contact_point}{linesep}\t- Identifier: {self.identifier}{linesep}\t- Comment: {self.comment}{linesep}\t- Description: {self.description}"
+        formatted_landing_pages: str = get_printable_list_str(self.landing_pages)
+        formatted_themes: str = get_printable_list_str(self.themes)
+        formatted_keywords: str = get_printable_list_str(self.keywords)
+        formatted_description: str = (
+            self.description.replace(linesep, f"{linesep}\t\t")
+            if self.description != ""
+            else "None"
+        )
+        return f"{linesep}\t- Title: {self.title}{linesep}\t- Label: {self.label}{linesep}\t- Issued: {self.issued}{linesep}\t- Modified: {self.modified}{linesep}\t- License: {self.license}{linesep}\t- Creator: {self.creator}{linesep}\t- Publisher: {self.publisher}{linesep}\t- Landing Pages: {formatted_landing_pages}{linesep}\t- Themes: {formatted_themes}{linesep}\t- Keywords: {formatted_keywords}{linesep}\t- Contact Point: {self.contact_point}{linesep}\t- Identifier: {self.identifier}{linesep}\t- Comment: {self.comment}{linesep}\t- Description: {formatted_description}"
 
     def __post_init__(self):
         result_dict = self.sparql_result.asdict()
 
-        self.title: str = result_dict["title"]
-        self.label: str = result_dict["label"]
-        self.issued: str = result_dict["issued"]
-        self.modified: str = result_dict["modified"]
+        self.title: str = str(result_dict["title"])
+        self.label: str = str(result_dict["label"])
+        self.issued: str = str(result_dict["issued"])
+        self.modified: str = str(result_dict["modified"])
         self.license: str = none_or_map(result_dict.get("license"), str)
         self.creator: str = none_or_map(result_dict.get("creator"), str)
         self.publisher: str = none_or_map(result_dict.get("publisher"), str)
@@ -49,11 +54,9 @@ class CatalogMetadataSparqlResult:
         self.themes: list[str] = str(result_dict["themes"]).split("|")
         self.keywords: list[str] = str(result_dict["keywords"]).split("|")
         self.contact_point: str = none_or_map(result_dict.get("contact_point"), str)
-        self.identifier: str = result_dict["identifier"]
+        self.identifier: str = str(result_dict["identifier"])
         self.comment: str = none_or_map(result_dict.get("comment"), str)
-        self.description: str = str(
-            none_or_map(result_dict.get("description"), str)
-        ).replace(linesep, f"{linesep}\t\t")
+        self.description: str = none_or_map(result_dict.get("description"), str) or ""
 
 
 @dataclass()
