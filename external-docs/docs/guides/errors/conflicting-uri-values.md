@@ -4,8 +4,9 @@
 
 csvcubed is designed to help you create a valid self-contained cube of data as easily as possible. To help with this, it automatically creates new units, measures and code lists from the CSV that you provide. The way this works is that csvcubed extracts the distinct values from a column of the CSV input and treats these values as labels for the new code list concepts, units or measures; it then generates a URI from that label by applying the [URI-safe transformation](../uris.md#uri-safe-transformation).
 
+Occasionally the [URI-safe transformation](../uris.md#uri-safe-transformation) generates the concepts/units/measures with the same URI but different labels. For instance if one of your columns contains the labels `Time Period` and `Time-period`, which both map to the same URI-safe value of `time-period`, then this error will be raised.
 
-> N.B. This error often arises due to differences in case, e.g. `Football` and `FootBall` are distinct and conflicting values.
+> N.B. This error often arises due to differences in case, e.g. `Football` and `FootBall` are distinct and conflicting values which map to the same URI-safe value of `football`.
 
 ## How to fix
 
@@ -13,7 +14,7 @@ csvcubed is designed to help you create a valid self-contained cube of data as e
 
 Often, the conflicting labels are meant to represent the same thing but contain small errors or differences; in this case the distinct labels should be altered so that they are identical.
 
-> e.g. `Football` and `Foot Ball` clearly represent the same concept with `Football` being the correct label. All `Foot Ball` values should be corrected to read `Football`.
+> e.g. `Time Period` and `Time-period` clearly represent the same concept with `Time Period` being the best label. All `Time-period` values should be corrected to read `Time Period`.
 
 It is also possible you have two similar labels which should be distinct; if this is the case then the labels must be further differentiated such that their URI values will not conflict with one another.
 
