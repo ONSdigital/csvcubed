@@ -1,12 +1,6 @@
+from csvcubed.models.inspectsparqlresults import CatalogMetadataModel, CodelistsModel, ColsWithSuppressOutputTrueModel, DSDLabelURIModel, QubeComponentsModel
 import dateutil.parser
 
-from csvcubed.models.inspectsparqlresults import (
-    CatalogMetadataSparqlResult,
-    CodelistInfoSparqlResult,
-    ColsWithSupressOutputTrueSparlqlResult,
-    DSDLabelURISparqlResult,
-    QubeComponentsSparqlResult,
-)
 from csvcubed.utils.qb.components import ComponentPropertyType, ComponentPropertyTypeURI
 from csvcubed.cli.inspect.inspectsparqlmanager import (
     ask_is_csvw_code_list,
@@ -55,7 +49,7 @@ def test_select_csvw_catalog_metadata_for_dataset():
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
-    result: CatalogMetadataSparqlResult = select_csvw_catalog_metadata(
+    result: CatalogMetadataModel = select_csvw_catalog_metadata(
         csvw_metadata_rdf_graph
     )
 
@@ -105,7 +99,7 @@ def test_select_csvw_catalog_metadata_for_codelist():
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
-    result: CatalogMetadataSparqlResult = select_csvw_catalog_metadata(
+    result: CatalogMetadataModel = select_csvw_catalog_metadata(
         csvw_metadata_rdf_graph
     )
 
@@ -136,10 +130,10 @@ def test_select_csvw_dsd_dataset():
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
-    result: DSDLabelURISparqlResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
+    result: DSDLabelURIModel = select_csvw_dsd_dataset_label_and_dsd_def_uri(
         csvw_metadata_rdf_graph
     )
-    component_result: QubeComponentsSparqlResult = select_csvw_dsd_qube_components(
+    component_result: QubeComponentsModel = select_csvw_dsd_qube_components(
         csvw_metadata_rdf_graph, result.dsd_uri, csvw_metadata_json_path
     )
     components = component_result.qube_components
@@ -151,7 +145,7 @@ def test_select_csvw_dsd_dataset():
         == "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod"
     )
     assert components[0].property_label == ""
-    assert components[0].property_type == ComponentPropertyTypeURI.Dimension.value
+    assert components[0].property_type == ComponentPropertyType.Dimension.value
     assert components[0].csv_col_title == "Period"
     assert components[0].required is True
 
@@ -161,7 +155,7 @@ def test_select_cols_when_supress_output_cols_not_present():
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
-    result: ColsWithSupressOutputTrueSparlqlResult = (
+    result: ColsWithSuppressOutputTrueModel = (
         select_cols_where_supress_output_is_true(csvw_metadata_rdf_graph)
     )
     assert len(result.columns) == 0
@@ -174,7 +168,7 @@ def test_select_cols_when_supress_output_cols_present():
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
-    result: ColsWithSupressOutputTrueSparlqlResult = (
+    result: ColsWithSuppressOutputTrueModel = (
         select_cols_where_supress_output_is_true(csvw_metadata_rdf_graph)
     )
     assert len(result.columns) == 2
@@ -187,11 +181,11 @@ def test_select_dsd_code_list_and_cols_without_codelist_labels():
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
-    result_dsd: DSDLabelURISparqlResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
+    result_dsd: DSDLabelURIModel = select_csvw_dsd_dataset_label_and_dsd_def_uri(
         csvw_metadata_rdf_graph
     )
 
-    result: CodelistInfoSparqlResult = select_dsd_code_list_and_cols(
+    result: CodelistsModel = select_dsd_code_list_and_cols(
         csvw_metadata_rdf_graph, result_dsd.dsd_uri, csvw_metadata_json_path
     )
 

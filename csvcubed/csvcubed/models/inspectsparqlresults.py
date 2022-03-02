@@ -17,7 +17,10 @@ from csvcubed.utils.printable import (
     get_printable_tabular_list_str,
     get_printable_tabular_str,
 )
-from csvcubed.utils.qb.components import get_printable_component_property
+from csvcubed.utils.qb.components import (
+    get_printable_component_property,
+    get_printable_component_property_type,
+)
 
 
 @dataclass()
@@ -192,10 +195,10 @@ def map_dataset_label_dsd_uri_sparql_result(
     """
     result_dict = sparql_result.asdict()
 
-    model = DSDLabelURIModel()
-    model.dataset_label = str(result_dict["dataSetLabel"])
-    model.dsd_uri = URIRef(result_dict["dataStructureDefinition"])
-
+    model = DSDLabelURIModel(
+        dataset_label=str(result_dict["dataSetLabel"]),
+        dsd_uri=URIRef(result_dict["dataStructureDefinition"]),
+    )
     return model
 
 
@@ -211,19 +214,19 @@ def map_qube_component_sparql_result(
     """
     result_dict = sparql_result.asdict()
 
-    model = QubeComponentModel()
-    model.property = get_printable_component_property(
-        json_path, str(result_dict["componentProperty"])
+    model = QubeComponentModel(
+        property=get_printable_component_property(
+            json_path, str(result_dict["componentProperty"])
+        ),
+        property_label=(
+            none_or_map(result_dict.get("componentPropertyLabel"), str) or ""
+        ),
+        property_type=get_printable_component_property_type(
+            str(result_dict["componentPropertyType"])
+        ),
+        csv_col_title=none_or_map(result_dict.get("csvColumnTitle"), str) or "",
+        required=none_or_map(result_dict.get("required"), bool) or False,
     )
-    model.property_label = (
-        none_or_map(result_dict.get("componentPropertyLabel"), str) or ""
-    )
-    model.property_type = (
-        none_or_map(result_dict.get("componentPropertyType"), str) or ""
-    )
-    model.csv_col_title = none_or_map(result_dict.get("csvColumnTitle"), str) or ""
-    model.required = none_or_map(result_dict.get("required"), bool)
-
     return model
 
 
@@ -237,14 +240,15 @@ def map_qube_components_sparql_result(
 
     :return: `QubeComponentsModel`
     """
-    model = QubeComponentsModel()
-    model.qube_components = list(
+    components = list(
         map(
             lambda result: map_qube_component_sparql_result(result, json_path),
             sparql_results,
         )
     )
-    model.num_components = len(model.qube_components)
+    model = QubeComponentsModel(
+        qube_components=components, num_components=len(components)
+    )
     return model
 
 
@@ -258,13 +262,14 @@ def map_cols_with_supress_output_true_sparql_result(
 
     :return: `ColsWithSuppressOutputTrueModel`
     """
-    model = ColsWithSuppressOutputTrueModel()
-    model.columns = list(
+    columns = list(
         map(
             lambda result: str(result["csvColumnTitle"]),
             sparql_results,
         )
     )
+    model = ColsWithSuppressOutputTrueModel(columns=columns)
+    return model
 
 
 def map_codelist_sparql_result(
@@ -279,32 +284,31 @@ def map_codelist_sparql_result(
     """
     result_dict = sparql_result.asdict()
 
-    model = CodelistModel()
-    model.codeList = (
-        get_printable_component_property(json_path, str(result_dict["codeList"])),
+    model = CodelistModel(
+        codeList=get_printable_component_property(
+            json_path, str(result_dict["codeList"])
+        ),
+        codeListLabel=none_or_map(result_dict.get("codeListLabel"), str) or "",
+        colsInUsed=str(result_dict["csvColumnsUsedIn"]).split("|"),
     )
-    model.codeListLabel = none_or_map(result_dict.get("codeListLabel"), str) or ""
-    model.colsInUsed = str(result_dict["csvColumnsUsedIn"]).split("|")
-
     return model
 
 
 def map_codelists_sparql_result(
     sparql_results: List[ResultRow], json_path: Path
-) -> QubeComponentsModel:
+) -> CodelistsModel:
     """
-    Maps sparql query to `QubeComponentsModel`
+    Maps sparql query to `CodelistsModel`
 
     Member of :file:`./models/inspectsparqlresults.py`
 
-    :return: `QubeComponentsModel`
+    :return: `CodelistsModel`
     """
-    model = CodelistsModel()
-    model.codelists = list(
+    codelists = list(
         map(
             lambda result: map_codelist_sparql_result(result, json_path),
             sparql_results,
         )
     )
-    model.num_codelists = len(model.codelists)
+    model = CodelistsModel(codelists=codelists, num_codelists=len(codelists))
     return model

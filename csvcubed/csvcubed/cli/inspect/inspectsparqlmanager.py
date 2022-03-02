@@ -18,6 +18,7 @@ from csvcubed.models.inspectsparqlresults import (
     ColsWithSuppressOutputTrueModel,
     DSDLabelURIModel,
     QubeComponentModel,
+    QubeComponentsModel,
     map_catalog_metadata_result,
     map_codelists_sparql_result,
     map_cols_with_supress_output_true_sparql_result,
@@ -149,13 +150,13 @@ def select_csvw_dsd_dataset_label_and_dsd_def_uri(
 
 def select_csvw_dsd_qube_components(
     rdf_graph: Graph, dsd_uri: str, json_path: Path
-) -> QubeComponentModel:
+) -> QubeComponentsModel:
     """
     Queries the list of qube components.
 
     Member of :file:`./inspectsparqlmanager.py`
 
-    :return: `QubeComponentModel`
+    :return: `QubeComponentsModel`
     """
     results: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryFileName.SELECT_DSD_QUBE_COMPONENTS),

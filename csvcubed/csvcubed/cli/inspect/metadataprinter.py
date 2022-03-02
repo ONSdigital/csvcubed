@@ -6,7 +6,14 @@ Provides functionality for validating and detecting input metadata.json file.
 """
 
 from pathlib import Path
-from csvcubed.models.inspectsparqlresults import CatalogMetadataModel
+from csvcubed.models.inspectsparqlresults import (
+    CatalogMetadataModel,
+    CodelistsModel,
+    ColsWithSuppressOutputTrueModel,
+    DSDLabelURIModel,
+    QubeComponentModel,
+    QubeComponentsModel,
+)
 
 from rdflib import Graph
 
@@ -79,22 +86,20 @@ class MetadataPrinter:
 
         :return: `str` - user-friendly string which will be output to CLI.
         """
-        # result_dataset_label_dsd_uri: DSDLabelURISparqlResult = (
-        #     select_csvw_dsd_dataset_label_and_dsd_def_uri(self.csvw_metadata_rdf_graph)
-        # )
-        # self.dsd_uri = result_dataset_label_dsd_uri.dsd_uri
+        result_dataset_label_dsd_uri: DSDLabelURIModel = (
+            select_csvw_dsd_dataset_label_and_dsd_def_uri(self.csvw_metadata_rdf_graph)
+        )
+        self.dsd_uri = result_dataset_label_dsd_uri.dsd_uri
 
-        # result_qube_components: QubeComponentsSparqlResult = (
-        #     select_csvw_dsd_qube_components(
-        #         self.csvw_metadata_rdf_graph, self.dsd_uri, self.csvw_metadata_json_path
-        #     )
-        # )
+        result_qube_components: QubeComponentsModel = select_csvw_dsd_qube_components(
+            self.csvw_metadata_rdf_graph, self.dsd_uri, self.csvw_metadata_json_path
+        )
 
-        # result_cols_with_suppress_output: ColsWithSupressOutputTrueSparlqlResult = (
-        #     select_cols_where_supress_output_is_true(self.csvw_metadata_rdf_graph)
-        # )
+        result_cols_with_suppress_output_true: ColsWithSuppressOutputTrueModel = (
+            select_cols_where_supress_output_is_true(self.csvw_metadata_rdf_graph)
+        )
 
-        # return f"- The {self._get_type_str()} has the following data structure definition:{result_dataset_label_dsd_uri.output_str}{result_qube_components.output_str}{result_cols_with_suppress_output.output_str}"
+        return f"- The {self._get_type_str()} has the following data structure definition:{result_dataset_label_dsd_uri.output_str}{result_qube_components.output_str}{result_cols_with_suppress_output_true.output_str}"
 
     def gen_codelist_info_printable(self) -> str:
         """
@@ -105,11 +110,11 @@ class MetadataPrinter:
         :return: `str` - user-friendly string which will be output to CLI.
         """
 
-        # result: CodelistInfoSparqlResult = select_dsd_code_list_and_cols(
-        #     self.csvw_metadata_rdf_graph, self.dsd_uri, self.csvw_metadata_json_path
-        # )
+        result: CodelistsModel = select_dsd_code_list_and_cols(
+            self.csvw_metadata_rdf_graph, self.dsd_uri, self.csvw_metadata_json_path
+        )
 
-        # return f"- The {self._get_type_str()} has the following code list information:{result.output_str}"
+        return f"- The {self._get_type_str()} has the following code list information:{result.output_str}"
 
     def gen_head_tail_printable(self) -> str:
         """
@@ -119,8 +124,6 @@ class MetadataPrinter:
 
         :return: `str` - user-friendly string which will be output to CLI.
         """
-        """TODO: Read head/tail using Pandas and generate CLI printable"""
-        # Check panda.to_string() and panda.to_text() cmds and other printable functions in pandas.
         return ""
 
     def gen_val_count_printable(self) -> str:
@@ -131,5 +134,4 @@ class MetadataPrinter:
 
         :return: `str` - user-friendly string which will be output to CLI.
         """
-        """TODO: Read value count using Pandas and generate CLI printable"""
         return ""
