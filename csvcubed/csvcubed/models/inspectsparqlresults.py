@@ -3,15 +3,15 @@ Inspect SPARQL query results
 ----------------------------
 """
 
-from dataclasses import dataclass
 from os import linesep
 from pathlib import Path
-from typing import Dict, List
-from csvcubedmodels.dataclassbase import DataClassBase
-from rdflib import URIRef
+from typing import List
+from dataclasses import dataclass
 
+from rdflib import URIRef
 from rdflib.query import ResultRow
 
+from csvcubedmodels.dataclassbase import DataClassBase
 from csvcubed.utils.sparql import none_or_map
 from csvcubed.utils.printable import (
     get_printable_list_str,
