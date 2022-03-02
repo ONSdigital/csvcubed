@@ -65,9 +65,9 @@ Feature: Behaviour testing of csvcubed inspect.
                                                                 Property   Property Label Property Type     Column Title  Required
                http://purl.org/linked-data/sdmx/2009/dimension#refPeriod                      Dimension           Period      True
         http://gss-data.org.uk/def/trade/property/dimension/alcohol-type                      Dimension     Alcohol Type      True
-                    ./../alcohol-bulletin.csv#dimension/alcohol-sub-type Alcohol Sub Type     Dimension Alcohol Sub Type      True
-                     ./../alcohol-bulletin.csv#dimension/alcohol-content  Alcohol Content     Dimension  Alcohol Content      True
-                    ./../alcohol-bulletin.csv#dimension/clearance-origin Clearance Origin     Dimension Clearance Origin      True
+                         alcohol-bulletin.csv#dimension/alcohol-sub-type Alcohol Sub Type     Dimension Alcohol Sub Type      True
+                          alcohol-bulletin.csv#dimension/alcohol-content  Alcohol Content     Dimension  Alcohol Content      True
+                         alcohol-bulletin.csv#dimension/clearance-origin Clearance Origin     Dimension Clearance Origin      True
                             http://purl.org/linked-data/cube#measureType                      Dimension     Measure Type      True
                 http://gss-data.org.uk/def/measure/alcohol-duty-receipts                        Measure                       True
                    http://gss-data.org.uk/def/measure/beer-duty-receipts                        Measure                       True
@@ -88,9 +88,9 @@ Feature: Behaviour testing of csvcubed inspect.
         - Number of Code Lists: 3
         - Code Lists:
                                                 Code List   Code List Label   Columns Used In
-        ./../alcohol-sub-type.csv#scheme/alcohol-sub-type                    Alcohol Sub Type
-          ./../alcohol-content.csv#scheme/alcohol-content                     Alcohol Content
-        ./../clearance-origin.csv#scheme/clearance-origin                    Clearance Origin
+             alcohol-sub-type.csv#scheme/alcohol-sub-type                    Alcohol Sub Type
+               alcohol-content.csv#scheme/alcohol-content                     Alcohol Content
+             clearance-origin.csv#scheme/clearance-origin                    Clearance Origin
         """
 
     Scenario: inspect should produce printable for code list metadata json-ld input

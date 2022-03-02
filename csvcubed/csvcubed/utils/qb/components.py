@@ -73,10 +73,10 @@ def get_printable_component_property(
 
     component_property = component_property.removeprefix("file://")
     try:
-        relative_path = os.path.relpath(
+        relative_path: str = os.path.relpath(
             component_property,
-            input_file_path.resolve(),
+            input_file_path.parent,
         )
-        return f"./{relative_path}"
+        return relative_path
     except Exception:
         return component_property

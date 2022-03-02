@@ -36,7 +36,7 @@ def test_printable_component_property_sub_file_path():
     )
     assert (
         printable_component_property
-        == "./../sub-sub-folder/other-file.csv#property-type/type"
+        == "sub-sub-folder/other-file.csv#property-type/type"
     )
 
 
@@ -51,7 +51,7 @@ def test_printable_component_property_root_file_path():
     )
     assert (
         printable_component_property
-        == "./../../../other-folder/sub-folder/sub-sub-folder/other-file.csv#property-type/type"
+        == "../../other-folder/sub-folder/sub-sub-folder/other-file.csv#property-type/type"
     )
 
 
