@@ -1,14 +1,16 @@
 """
-Inspect SPARQL Queries
-----------------------
+Inspect SPARQL Query Manager
+----------------------------
 
-Collection of SPARQL queries used in the inspect cli.
+Collection of SPARQL query handling functions used in the inspect cli.
 """
 
 from enum import Enum
 from pathlib import Path
 from typing import List
 
+import pandas as pd
+from pandas import DataFrame
 from rdflib import Graph, URIRef
 from rdflib.query import ResultRow
 
@@ -26,6 +28,16 @@ from csvcubed.models.inspectsparqlresults import (
 )
 from csvcubed.utils.file import get_root_dir_level
 from csvcubed.utils.sparql import ask, select
+
+
+class DatasetUnit(Enum):
+    """
+    The type of dataset unit.
+    """
+
+    SINGLE_UNIT = 0
+
+    MULTI_UNIT = 1
 
 
 class SPARQLQueryFileName(Enum):
@@ -190,7 +202,7 @@ def select_dsd_code_list_and_cols(
 
     Member of :file:`./inspectsparqlmanager.py`
 
-    :return: `CodelistInfoSparqlResult``
+    :return: `CodelistInfoSparqlResult`
     """
     results: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryFileName.SELECT_CODE_LISTS_AND_COLS),
@@ -198,3 +210,91 @@ def select_dsd_code_list_and_cols(
         init_bindings={"dsd_uri": URIRef(dsd_uri)},
     )
     return map_codelists_sparql_result(results, json_path)
+
+
+def select_datacube_csv_url(dataset_uri: str) -> str:
+    """
+    TODO: Description
+
+    Member of :file:`./inspectsparqlmanager.py`
+
+    :return: `TODO`
+    """
+    return "TODO"
+
+
+def select_codelist_csv_url() -> str:
+    """
+    TODO: Description
+
+    Member of :file:`./inspectsparqlmanager.py`
+
+    :return: `TODO`
+    """
+    return "TODO"
+
+
+def select_datacube_url() -> str:
+    """
+    TODO: Description
+
+    Member of :file:`./inspectsparqlmanager.py`
+
+    :return: `TODO`
+    """
+    return "TODO"
+
+
+def get_dataset_unit_type() -> DatasetUnit:
+    """
+    TODO: Description
+
+    Member of :file:`./inspectsparqlmanager.py`
+
+    :return: `TODO`
+    """
+    return DatasetUnit.SINGLE_UNIT
+
+
+def get_dsd_single_measure() -> str:
+    """
+    TODO: Description
+
+    Member of :file:`./inspectsparqlmanager.py`
+
+    :return: `TODO`
+    """
+    return ""
+
+
+def get_measure_column() -> str:
+    """
+    TODO: Description
+
+    Member of :file:`./inspectsparqlmanager.py`
+
+    :return: `TODO`
+    """
+    return "ColMeasure"
+
+
+def get_dsd_single_unit() -> str:
+    """
+    TODO: Description
+
+    Member of :file:`./inspectsparqlmanager.py`
+
+    :return: `TODO`
+    """
+    return ""
+
+
+def get_units_column() -> str:
+    """
+    TODO: Description
+
+    Member of :file:`./inspectsparqlmanager.py`
+
+    :return: `TODO`
+    """
+    return "ColUnits"
