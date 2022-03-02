@@ -1,4 +1,10 @@
-from csvcubed.models.inspectsparqlresults import CatalogMetadataModel, CodelistsModel, ColsWithSuppressOutputTrueModel, DSDLabelURIModel, QubeComponentsModel
+from csvcubed.models.inspectsparqlresults import (
+    CatalogMetadataModel,
+    CodelistsModel,
+    ColsWithSuppressOutputTrueModel,
+    DSDLabelURIModel,
+    QubeComponentsModel,
+)
 import dateutil.parser
 
 from csvcubed.utils.qb.components import ComponentPropertyType, ComponentPropertyTypeURI
@@ -49,9 +55,7 @@ def test_select_csvw_catalog_metadata_for_dataset():
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
-    result: CatalogMetadataModel = select_csvw_catalog_metadata(
-        csvw_metadata_rdf_graph
-    )
+    result: CatalogMetadataModel = select_csvw_catalog_metadata(csvw_metadata_rdf_graph)
 
     assert result.title == "Alcohol Bulletin"
     assert result.label == "Alcohol Bulletin"
@@ -99,9 +103,7 @@ def test_select_csvw_catalog_metadata_for_codelist():
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
-    result: CatalogMetadataModel = select_csvw_catalog_metadata(
-        csvw_metadata_rdf_graph
-    )
+    result: CatalogMetadataModel = select_csvw_catalog_metadata(csvw_metadata_rdf_graph)
 
     assert result.title == "Alcohol Content"
     assert result.label == "Alcohol Content"
@@ -155,8 +157,8 @@ def test_select_cols_when_supress_output_cols_not_present():
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
-    result: ColsWithSuppressOutputTrueModel = (
-        select_cols_where_supress_output_is_true(csvw_metadata_rdf_graph)
+    result: ColsWithSuppressOutputTrueModel = select_cols_where_supress_output_is_true(
+        csvw_metadata_rdf_graph
     )
     assert len(result.columns) == 0
 
@@ -168,8 +170,8 @@ def test_select_cols_when_supress_output_cols_present():
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
-    result: ColsWithSuppressOutputTrueModel = (
-        select_cols_where_supress_output_is_true(csvw_metadata_rdf_graph)
+    result: ColsWithSuppressOutputTrueModel = select_cols_where_supress_output_is_true(
+        csvw_metadata_rdf_graph
     )
     assert len(result.columns) == 2
     assert str(result.columns[0]) == "Col1WithSuppressOutput"
@@ -191,4 +193,4 @@ def test_select_dsd_code_list_and_cols_without_codelist_labels():
 
     assert len(result.codelists) == 3
     assert result.codelists[0].codeListLabel == ""
-    assert result.codelists[0].colsInUsed == ["Alcohol Sub Type"]
+    assert result.codelists[0].colsInUsed == "Alcohol Sub Type"

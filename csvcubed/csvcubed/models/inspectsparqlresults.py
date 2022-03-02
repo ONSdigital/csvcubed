@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from os import linesep
 from pathlib import Path
 from typing import Dict, List
+from csvcubedmodels.dataclassbase import DataClassBase
 from rdflib import URIRef
 
 from rdflib.query import ResultRow
@@ -68,7 +69,7 @@ class DSDLabelURIModel:
 
 
 @dataclass()
-class QubeComponentModel:
+class QubeComponentModel(DataClassBase):
     """
     Model to represent a qube component.
     """
@@ -78,15 +79,6 @@ class QubeComponentModel:
     property_type: str
     csv_col_title: str
     required: bool
-
-    def to_dict(self) -> Dict:
-        return {
-            "Property": self.property,
-            "Property Label": self.property_label,
-            "Property Type": self.property_type,
-            "Column Title": self.csv_col_title,
-            "Required": self.required,
-        }
 
 
 @dataclass()
@@ -101,7 +93,14 @@ class QubeComponentsModel:
     @property
     def output_str(self) -> str:
         formatted_components = get_printable_tabular_str(
-            [component.to_dict() for component in self.qube_components]
+            [component.as_dict() for component in self.qube_components],
+            column_names=[
+                "Property",
+                "Property Label",
+                "Property Type",
+                "Column Title",
+                "Required",
+            ],
         )
         return f"{linesep}\t- Number of Components: {self.num_components}{linesep}\t- Components:{linesep}{formatted_components}"
 
@@ -120,21 +119,14 @@ class ColsWithSuppressOutputTrueModel:
 
 
 @dataclass()
-class CodelistModel:
+class CodelistModel(DataClassBase):
     """
     Model to represent a codelist.
     """
 
     codeList: str
     codeListLabel: str
-    colsInUsed: list[str]
-
-    def to_dict(self) -> Dict:
-        return {
-            "Code List": self.codeList,
-            "Code List Label": self.codeListLabel,
-            "Columns Used In": get_printable_tabular_list_str(self.colsInUsed),
-        }
+    colsInUsed: str
 
 
 @dataclass()
@@ -149,7 +141,8 @@ class CodelistsModel:
     @property
     def output_str(self) -> str:
         formatted_codelists = get_printable_tabular_str(
-            [codelist.to_dict() for codelist in self.codelists]
+            [codelist.as_dict() for codelist in self.codelists],
+            column_names=["Code List", "Code List Label", "Columns Used In"],
         )
         return f"{linesep}\t- Number of Code Lists: {self.num_codelists}{linesep}\t- Code Lists:{linesep}{formatted_codelists}"
 
@@ -289,7 +282,9 @@ def map_codelist_sparql_result(
             json_path, str(result_dict["codeList"])
         ),
         codeListLabel=none_or_map(result_dict.get("codeListLabel"), str) or "",
-        colsInUsed=str(result_dict["csvColumnsUsedIn"]).split("|"),
+        colsInUsed=get_printable_tabular_list_str(
+            str(result_dict["csvColumnsUsedIn"]).split("|")
+        ),
     )
     return model
 
