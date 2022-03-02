@@ -68,14 +68,6 @@ def _load_resource(resource_path: Path) -> dict:
     return schema
 
 
-def initialise_from_config(self, config_json: dict) -> bool:
-    """
-    Initialises a Qube from a qube json file.
-
-    param: config_json: A Qube created according to a Qube Config schema
-    """
-
-
 def _override_catalog_metadata_state(
     catalog_metadata_json_file: Path, cube: QbCube
 ) -> None:
