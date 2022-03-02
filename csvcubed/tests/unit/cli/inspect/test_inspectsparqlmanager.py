@@ -1,3 +1,5 @@
+import dateutil.parser
+
 from csvcubed.models.inspectsparqlresults import (
     CatalogMetadataModel,
     CodelistsModel,
@@ -5,8 +7,6 @@ from csvcubed.models.inspectsparqlresults import (
     DSDLabelURIModel,
     QubeComponentsModel,
 )
-import dateutil.parser
-
 from csvcubed.utils.qb.components import ComponentPropertyType, ComponentPropertyTypeURI
 from csvcubed.cli.inspect.inspectsparqlmanager import (
     ask_is_csvw_code_list,

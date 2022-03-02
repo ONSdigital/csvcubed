@@ -17,7 +17,6 @@ from csvcubed.models.inspectsparqlresults import (
     CodelistsModel,
     ColsWithSuppressOutputTrueModel,
     DSDLabelURIModel,
-    QubeComponentModel,
     QubeComponentsModel,
     map_catalog_metadata_result,
     map_codelists_sparql_result,

@@ -6,19 +6,17 @@ Provides functionality for validating and detecting input metadata.json file.
 """
 
 from pathlib import Path
+
+from rdflib import Graph
+
 from csvcubed.models.inspectsparqlresults import (
     CatalogMetadataModel,
     CodelistsModel,
     ColsWithSuppressOutputTrueModel,
     DSDLabelURIModel,
-    QubeComponentModel,
     QubeComponentsModel,
 )
-
-from rdflib import Graph
-
 from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
-
 from csvcubed.cli.inspect.inspectsparqlmanager import (
     select_cols_where_supress_output_is_true,
     select_csvw_catalog_metadata,
