@@ -148,7 +148,7 @@ unicode_backport = ["unicodedata2"]
 name = "click"
 version = "8.0.4"
 description = "Composable command line interface toolkit"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -159,7 +159,7 @@ colorama = {version = "*", markers = "platform_system == \"Windows\""}
 name = "colorama"
 version = "0.4.4"
 description = "Cross-platform colored terminal text."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
@@ -307,7 +307,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 
 [[package]]
 name = "importlib-metadata"
-version = "4.11.1"
+version = "4.11.2"
 description = "Read metadata from Python packages"
 category = "dev"
 optional = false
@@ -317,7 +317,7 @@ python-versions = ">=3.7"
 zipp = ">=0.5"
 
 [package.extras]
-docs = ["sphinx", "jaraco.packaging (>=8.2)", "rst.linker (>=1.9)"]
+docs = ["sphinx", "jaraco.packaging (>=9)", "rst.linker (>=1.9)"]
 perf = ["ipython"]
 testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-cov", "pytest-enabler (>=1.0.1)", "packaging", "pyfakefs", "flufl.flake8", "pytest-perf (>=0.9.2)", "pytest-black (>=0.3.7)", "pytest-mypy (>=0.9.1)", "importlib-resources (>=1.3)"]
 
@@ -407,7 +407,7 @@ six = ">=1.8.0"
 
 [[package]]
 name = "packaging"
-version = "19.2"
+version = "20.9"
 description = "Core utilities for Python packages"
 category = "dev"
 optional = false
@@ -415,7 +415,6 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 
 [package.dependencies]
 pyparsing = ">=2.0.2"
-six = "*"
 
 [[package]]
 name = "pandas"
@@ -499,23 +498,26 @@ tests = ["pytest-timeout", "pytest", "pytest-xdist", "pytest-cov", "readme-rende
 
 [[package]]
 name = "pipenv-setup"
-version = "2.2.2"
+version = "3.2.0"
 description = "sync Pipfile/Pipfile.lock to setup.py"
 category = "dev"
 optional = false
 python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*, <4"
 
 [package.dependencies]
-black = {version = ">=19.3b0", markers = "python_version >= \"3.6\""}
+chardet = ">=3.0.0,<=5.0.0"
 colorama = ">=0.4,<1.0"
-packaging = ">=19.1,<20.0"
+packaging = ">=20.0,<21.0"
 pipfile = ">=0.0,<1.0"
+pyparsing = "!=3.0.5"
 requirementslib = ">=1.5,<2.0"
 six = ">=1.12,<2.0"
 vistir = ">=0.4,<1.0"
 
 [package.extras]
-dev = ["pytest-cov (>=2.7,<3.0)", "pytest-datadir (>=1.3,<2.0)", "pytest-xdist (>=1.29,<2.0)", "tox (>=3.14,<4.0)", "tox-travis (>=0.12,<1.0)", "autopep8 (>=1.4,<2.0)", "pytest-mypy (>=0.3,<1.0)", "pytest (>=5.2,<6.0)", "codecov (>=2.0,<3.0)"]
+autopep8 = ["autopep8"]
+black = ["black"]
+dev = ["pytest-cov (>=2.7,<3.0)", "pytest-datadir (>=1.3,<2.0)", "pytest-xdist (>=1.29,<2.0)", "tox (>=3.24,<4.0)", "autopep8 (>=1.4,<2.0)", "types-six", "pytest-mypy (>=0.8)", "black (==19.10b0)", "pytest (>=5.2,<6.0)", "pre-commit (>=2.17,<3.0)"]
 
 [[package]]
 name = "pipfile"
@@ -992,7 +994,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 
 [[package]]
 name = "virtualenv"
-version = "20.13.1"
+version = "20.13.2"
 description = "Virtual Python Environment builder"
 category = "dev"
 optional = false
@@ -1029,7 +1031,7 @@ typing = ["typing", "mypy", "mypy-extensions", "mypytools", "pytype", "typed-ast
 
 [[package]]
 name = "websocket-client"
-version = "1.2.3"
+version = "1.3.1"
 description = "WebSocket client for Python with low level API options"
 category = "dev"
 optional = false
@@ -1055,7 +1057,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "~=3.9"
-content-hash = "332b200af5b03959c5e744ff663d9363e6aa32494680775f9e4781b411a07a70"
+content-hash = "caa189a7161e0050b961fa5d963efd1f530d8af0a2b16111bf136ab56a2d013c"
 
 [metadata.files]
 alabaster = [
@@ -1205,8 +1207,8 @@ imagesize = [
     {file = "imagesize-1.3.0.tar.gz", hash = "sha256:cd1750d452385ca327479d45b64d9c7729ecf0b3969a58148298c77092261f9d"},
 ]
 importlib-metadata = [
-    {file = "importlib_metadata-4.11.1-py3-none-any.whl", hash = "sha256:e0bc84ff355328a4adfc5240c4f211e0ab386f80aa640d1b11f0618a1d282094"},
-    {file = "importlib_metadata-4.11.1.tar.gz", hash = "sha256:175f4ee440a0317f6e8d81b7f8d4869f93316170a65ad2b007d2929186c8052c"},
+    {file = "importlib_metadata-4.11.2-py3-none-any.whl", hash = "sha256:d16e8c1deb60de41b8e8ed21c1a7b947b0bc62fab7e1d470bcdf331cea2e6735"},
+    {file = "importlib_metadata-4.11.2.tar.gz", hash = "sha256:b36ffa925fe3139b2f6ff11d6925ffd4fa7bc47870165e3ac260ac7b4f91e6ac"},
 ]
 iniconfig = [
     {file = "iniconfig-1.1.1-py2.py3-none-any.whl", hash = "sha256:011e24c64b7f47f6ebd835bb12a743f2fbe9a26d4cecaa7f53bc4f35ee9da8b3"},
@@ -1296,8 +1298,8 @@ orderedmultidict = [
     {file = "orderedmultidict-1.0.1.tar.gz", hash = "sha256:04070bbb5e87291cc9bfa51df413677faf2141c73c61d2a5f7b26bea3cd882ad"},
 ]
 packaging = [
-    {file = "packaging-19.2-py2.py3-none-any.whl", hash = "sha256:d9551545c6d761f3def1677baf08ab2a3ca17c56879e70fecba2fc4dde4ed108"},
-    {file = "packaging-19.2.tar.gz", hash = "sha256:28b924174df7a2fa32c1953825ff29c61e2f5e082343165438812f00d3a7fc47"},
+    {file = "packaging-20.9-py2.py3-none-any.whl", hash = "sha256:67714da7f7bc052e064859c05c595155bd1ee9f69f76557e21f051443c20947a"},
+    {file = "packaging-20.9.tar.gz", hash = "sha256:5b327ac1320dc863dca72f4514ecc086f31186744b84a230374cc1fd776feae5"},
 ]
 pandas = [
     {file = "pandas-1.4.1-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:3dfb32ed50122fe8c5e7f2b8d97387edd742cc78f9ec36f007ee126cd3720907"},
@@ -1342,7 +1344,8 @@ pip-shims = [
     {file = "pip_shims-0.6.0.tar.gz", hash = "sha256:b6704551be47f9a7b05cbdb51a180b6d68be4c980c255e22d6a6dec7feb8f087"},
 ]
 pipenv-setup = [
-    {file = "pipenv-setup-2.2.2.tar.gz", hash = "sha256:94f24609c26b5d80be1613b1f098a06dc3270821f5c8f547a7185eea74cd7b5e"},
+    {file = "pipenv-setup-3.2.0.tar.gz", hash = "sha256:0def7ec3363f58b38a43dc59b2078fcee67b47301fd51a41b8e34e6f79812b1a"},
+    {file = "pipenv_setup-3.2.0-py3-none-any.whl", hash = "sha256:6ceda7145a3088494d8ca68fded4b0473022dc62eb786a021c137632c44298b5"},
 ]
 pipfile = [
     {file = "pipfile-0.0.2.tar.gz", hash = "sha256:f7d9f15de8b660986557eb3cc5391aa1a16207ac41bc378d03f414762d36c984"},
@@ -1556,16 +1559,16 @@ urllib3 = [
     {file = "urllib3-1.26.8.tar.gz", hash = "sha256:0e7c33d9a63e7ddfcb86780aac87befc2fbddf46c58dbb487e0855f7ceec283c"},
 ]
 virtualenv = [
-    {file = "virtualenv-20.13.1-py2.py3-none-any.whl", hash = "sha256:45e1d053cad4cd453181ae877c4ffc053546ae99e7dd049b9ff1d9be7491abf7"},
-    {file = "virtualenv-20.13.1.tar.gz", hash = "sha256:e0621bcbf4160e4e1030f05065c8834b4e93f4fcc223255db2a823440aca9c14"},
+    {file = "virtualenv-20.13.2-py2.py3-none-any.whl", hash = "sha256:e7b34c9474e6476ee208c43a4d9ac1510b041c68347eabfe9a9ea0c86aa0a46b"},
+    {file = "virtualenv-20.13.2.tar.gz", hash = "sha256:01f5f80744d24a3743ce61858123488e91cb2dd1d3bdf92adaf1bba39ffdedf0"},
 ]
 vistir = [
     {file = "vistir-0.5.2-py2.py3-none-any.whl", hash = "sha256:a37079cdbd85d31a41cdd18457fe521e15ec08b255811e81aa061fd5f48a20fb"},
     {file = "vistir-0.5.2.tar.gz", hash = "sha256:eff1d19ef50c703a329ed294e5ec0b0fbb35b96c1b3ee6dcdb266dddbe1e935a"},
 ]
 websocket-client = [
-    {file = "websocket-client-1.2.3.tar.gz", hash = "sha256:1315816c0acc508997eb3ae03b9d3ff619c9d12d544c9a9b553704b1cc4f6af5"},
-    {file = "websocket_client-1.2.3-py3-none-any.whl", hash = "sha256:2eed4cc58e4d65613ed6114af2f380f7910ff416fc8c46947f6e76b6815f56c0"},
+    {file = "websocket-client-1.3.1.tar.gz", hash = "sha256:6278a75065395418283f887de7c3beafb3aa68dada5cacbe4b214e8d26da499b"},
+    {file = "websocket_client-1.3.1-py3-none-any.whl", hash = "sha256:074e2ed575e7c822fc0940d31c3ac9bb2b1142c303eafcf3e304e6ce035522e8"},
 ]
 zipp = [
     {file = "zipp-3.7.0-py3-none-any.whl", hash = "sha256:b47250dd24f92b7dd6a0a8fc5244da14608f3ca90a5efcd37a3b1642fac9a375"},
