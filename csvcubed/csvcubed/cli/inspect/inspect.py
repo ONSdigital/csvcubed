@@ -81,9 +81,9 @@ def _generate_printables(
     dsd_info_printable: str = ""
     codelist_info_printable: str = ""
 
-    if csvw_type == CSVWType.QbDataSet:
-        dsd_info_printable = metadata_printer.gen_dsd_info_printable()
-        codelist_info_printable = metadata_printer.gen_codelist_info_printable()
+    # if csvw_type == CSVWType.QbDataSet:
+    #     dsd_info_printable = metadata_printer.gen_dsd_info_printable()
+    #     codelist_info_printable = metadata_printer.gen_codelist_info_printable()
 
     return (
         metadata_printer.gen_type_info_printable(),

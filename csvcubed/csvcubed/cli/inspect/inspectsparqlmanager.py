@@ -13,11 +13,16 @@ from rdflib import Graph, URIRef
 from rdflib.query import ResultRow
 
 from csvcubed.models.inspectsparqlresults import (
-    CatalogMetadataSparqlResult,
-    CodelistInfoSparqlResult,
-    ColsWithSupressOutputTrueSparlqlResult,
-    DSDLabelURISparqlResult,
-    QubeComponentsSparqlResult,
+    CatalogMetadataModel,
+    CodelistsModel,
+    ColsWithSuppressOutputTrueModel,
+    DSDLabelURIModel,
+    QubeComponentModel,
+    map_catalog_metadata_result,
+    map_codelists_sparql_result,
+    map_cols_with_supress_output_true_sparql_result,
+    map_dataset_label_dsd_uri_sparql_result,
+    map_qube_components_sparql_result,
 )
 from csvcubed.utils.file import get_root_dir_level
 from csvcubed.utils.sparql import ask, select
@@ -100,13 +105,13 @@ def ask_is_csvw_qb_dataset(rdf_graph: Graph) -> bool:
     )
 
 
-def select_csvw_catalog_metadata(rdf_graph: Graph) -> CatalogMetadataSparqlResult:
+def select_csvw_catalog_metadata(rdf_graph: Graph) -> CatalogMetadataModel:
     """
     Queries catalog metadata such as title, label, issued date/time, modified data/time, etc.
 
     Member of :file:`./inspectsparqlmanager.py`
 
-    :return: `CatalogMetadataSparqlResult`
+    :return: `CatalogMetadataModel`
     """
     results: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryFileName.SELECT_CATALOG_METADATA),
@@ -116,18 +121,18 @@ def select_csvw_catalog_metadata(rdf_graph: Graph) -> CatalogMetadataSparqlResul
     if len(results) != 1:
         raise Exception(f"Expected 1 record, but found {len(results)}")
 
-    return CatalogMetadataSparqlResult(results[0])
+    return map_catalog_metadata_result(results[0])
 
 
 def select_csvw_dsd_dataset_label_and_dsd_def_uri(
     rdf_graph: Graph,
-) -> DSDLabelURISparqlResult:
+) -> DSDLabelURIModel:
     """
     Queries data structure definition dataset label and uri.
 
     Member of :file:`./inspectsparqlmanager.py`
 
-    :return: `DSDLabelURISparqlResult`
+    :return: `DSDLabelURIModel`
     """
     results: List[ResultRow] = select(
         _get_query_string_from_file(
@@ -139,30 +144,30 @@ def select_csvw_dsd_dataset_label_and_dsd_def_uri(
     if len(results) != 1:
         raise Exception(f"Expected 1 record, but found {len(results)}")
 
-    return DSDLabelURISparqlResult(results[0])
+    return map_dataset_label_dsd_uri_sparql_result(results[0])
 
 
 def select_csvw_dsd_qube_components(
     rdf_graph: Graph, dsd_uri: str, json_path: Path
-) -> QubeComponentsSparqlResult:
+) -> QubeComponentModel:
     """
     Queries the list of qube components.
 
     Member of :file:`./inspectsparqlmanager.py`
 
-    :return: `QubeComponentsSparqlResult`
+    :return: `QubeComponentModel`
     """
     results: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryFileName.SELECT_DSD_QUBE_COMPONENTS),
         rdf_graph,
         init_bindings={"dsd_uri": URIRef(dsd_uri)},
     )
-    return QubeComponentsSparqlResult(results, json_path)
+    return map_qube_components_sparql_result(results, json_path)
 
 
 def select_cols_where_supress_output_is_true(
     rdf_graph: Graph,
-) -> ColsWithSupressOutputTrueSparlqlResult:
+) -> ColsWithSuppressOutputTrueModel:
     """
     Queries the columns where suppress output is true.
 
@@ -174,12 +179,12 @@ def select_cols_where_supress_output_is_true(
         _get_query_string_from_file(SPARQLQueryFileName.SELECT_COLS_W_SUPPRESS_OUTPUT),
         rdf_graph,
     )
-    return ColsWithSupressOutputTrueSparlqlResult(results)
+    return map_cols_with_supress_output_true_sparql_result(results)
 
 
 def select_dsd_code_list_and_cols(
     rdf_graph: Graph, dsd_uri: str, json_path: Path
-) -> CodelistInfoSparqlResult:
+) -> CodelistsModel:
     """
     Queries code lists and columns in the data cube.
 
@@ -192,4 +197,4 @@ def select_dsd_code_list_and_cols(
         rdf_graph,
         init_bindings={"dsd_uri": URIRef(dsd_uri)},
     )
-    return CodelistInfoSparqlResult(results, json_path)
+    return map_codelists_sparql_result(results, json_path)

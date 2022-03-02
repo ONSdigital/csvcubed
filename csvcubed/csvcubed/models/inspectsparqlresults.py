@@ -3,11 +3,10 @@ Inspect SPARQL query results
 ----------------------------
 """
 
+from dataclasses import dataclass
 from os import linesep
-from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, List
-from csvcubed.utils.qb.components import get_printable_component_property
 from rdflib import URIRef
 
 from rdflib.query import ResultRow
@@ -18,6 +17,7 @@ from csvcubed.utils.printable import (
     get_printable_tabular_list_str,
     get_printable_tabular_str,
 )
+from csvcubed.utils.qb.components import get_printable_component_property
 
 
 @dataclass()
@@ -67,7 +67,7 @@ class DSDLabelURIModel:
 @dataclass()
 class QubeComponentModel:
     """
-    Model to represent qube component.
+    Model to represent a qube component.
     """
 
     property: str
@@ -92,7 +92,7 @@ class QubeComponentsModel:
     Model to represent qube components.
     """
 
-    qube_components: List[QubeComponentModel]
+    qube_components: list[QubeComponentModel]
     num_components: int
 
     @property
@@ -104,60 +104,44 @@ class QubeComponentsModel:
 
 
 @dataclass()
-class ColsWithSupressOutputTrueSparlqlResult:
+class ColsWithSuppressOutputTrueModel:
     """
-    Model to represent result of the `select_cols_where_supress_output_is_true` sparql query.
+    Model to represent cols where the suppress output is true.
     """
 
-    sparql_results: List[ResultRow]
+    columns: list[str]
 
     @property
     def output_str(self) -> str:
         return f"{linesep}- Columns where suppress output is true: {get_printable_list_str(self.columns)}"
 
-    def __post_init__(self):
-        self.columns = list(
-            map(
-                lambda result: str(result["csvColumnTitle"]),
-                self.sparql_results,
-            )
-        )
-
 
 @dataclass()
-class Codelist:
+class CodelistModel:
     """
-    Model to represent the result of an individual codelist.
+    Model to represent a codelist.
     """
 
-    sparql_result: ResultRow
-    json_path: Path
+    codeList: str
+    codeListLabel: str
+    colsInUsed: list[str]
 
     def to_dict(self) -> Dict:
         return {
-            "Code List": get_printable_component_property(
-                self.json_path, self.codeList
-            ),
+            "Code List": self.codeList,
             "Code List Label": self.codeListLabel,
             "Columns Used In": get_printable_tabular_list_str(self.colsInUsed),
         }
 
-    def __post_init__(self):
-        result_dict = self.sparql_result.asdict()
-
-        self.codeList: str = str(result_dict["codeList"])
-        self.codeListLabel = none_or_map(result_dict.get("codeListLabel"), str) or ""
-        self.colsInUsed = str(result_dict["csvColumnsUsedIn"]).split("|")
-
 
 @dataclass()
-class CodelistInfoSparqlResult:
+class CodelistsModel:
     """
-    Model to represent result of the `select_dsd_code_list_and_cols` sparql query.
+    Model to represent codelists.
     """
 
-    sparql_results: List[ResultRow]
-    json_path: Path
+    codelists: list[CodelistModel]
+    num_codelists: int
 
     @property
     def output_str(self) -> str:
@@ -165,15 +149,6 @@ class CodelistInfoSparqlResult:
             [codelist.to_dict() for codelist in self.codelists]
         )
         return f"{linesep}\t- Number of Code Lists: {self.num_codelists}{linesep}\t- Code Lists:{linesep}{formatted_codelists}"
-
-    def __post_init__(self):
-        self.codelists: List[Codelist] = list(
-            map(
-                lambda result: Codelist(result, self.json_path),
-                self.sparql_results,
-            )
-        )
-        self.num_codelists: int = len(self.codelists)
 
 
 def map_catalog_metadata_result(sparql_result: ResultRow) -> CatalogMetadataModel:
@@ -186,22 +161,22 @@ def map_catalog_metadata_result(sparql_result: ResultRow) -> CatalogMetadataMode
     """
     result_dict = sparql_result.asdict()
 
-    model = CatalogMetadataModel()
-    model.title = str(result_dict["title"])
-    model.label = str(result_dict["label"])
-    model.issued = str(result_dict["issued"])
-    model.modified = str(result_dict["modified"])
-    model.license = none_or_map(result_dict.get("license"), str) or "None"
-    model.creator = none_or_map(result_dict.get("creator"), str) or "None"
-    model.publisher = none_or_map(result_dict.get("publisher"), str) or "None"
-    model.landing_pages = str(result_dict["landingPages"]).split("|")
-    model.themes = str(result_dict["themes"]).split("|")
-    model.keywords = str(result_dict["keywords"]).split("|")
-    model.contact_point = none_or_map(result_dict.get("contact_point"), str) or "None"
-    model.identifier = str(result_dict["identifier"]) or "None"
-    model.comment = none_or_map(result_dict.get("comment"), str) or "None"
-    model.description = none_or_map(result_dict.get("description"), str) or "None"
-
+    model = CatalogMetadataModel(
+        title=str(result_dict["title"]),
+        label=str(result_dict["label"]),
+        issued=str(result_dict["issued"]),
+        modified=str(result_dict["modified"]),
+        license=none_or_map(result_dict.get("license"), str) or "None",
+        creator=none_or_map(result_dict.get("creator"), str) or "None",
+        publisher=none_or_map(result_dict.get("publisher"), str) or "None",
+        landing_pages=str(result_dict["landingPages"]).split("|"),
+        themes=str(result_dict["themes"]).split("|"),
+        keywords=str(result_dict["keywords"]).split("|"),
+        contact_point=none_or_map(result_dict.get("contactPoint"), str) or "None",
+        identifier=str(result_dict["identifier"]) or "None",
+        comment=none_or_map(result_dict.get("comment"), str) or "None",
+        description=none_or_map(result_dict.get("description"), str) or "None",
+    )
     return model
 
 
@@ -270,4 +245,66 @@ def map_qube_components_sparql_result(
         )
     )
     model.num_components = len(model.qube_components)
+    return model
+
+
+def map_cols_with_supress_output_true_sparql_result(
+    sparql_results: List[ResultRow],
+) -> ColsWithSuppressOutputTrueModel:
+    """
+    Maps sparql query to `ColsWithSuppressOutputTrueModel`
+
+    Member of :file:`./models/inspectsparqlresults.py`
+
+    :return: `ColsWithSuppressOutputTrueModel`
+    """
+    model = ColsWithSuppressOutputTrueModel()
+    model.columns = list(
+        map(
+            lambda result: str(result["csvColumnTitle"]),
+            sparql_results,
+        )
+    )
+
+
+def map_codelist_sparql_result(
+    sparql_result: ResultRow, json_path: Path
+) -> CodelistModel:
+    """
+    Maps sparql query to `CodelistModel`
+
+    Member of :file:`./models/inspectsparqlresults.py`
+
+    :return: `CodelistModel`
+    """
+    result_dict = sparql_result.asdict()
+
+    model = CodelistModel()
+    model.codeList = (
+        get_printable_component_property(json_path, str(result_dict["codeList"])),
+    )
+    model.codeListLabel = none_or_map(result_dict.get("codeListLabel"), str) or ""
+    model.colsInUsed = str(result_dict["csvColumnsUsedIn"]).split("|")
+
+    return model
+
+
+def map_codelists_sparql_result(
+    sparql_results: List[ResultRow], json_path: Path
+) -> QubeComponentsModel:
+    """
+    Maps sparql query to `QubeComponentsModel`
+
+    Member of :file:`./models/inspectsparqlresults.py`
+
+    :return: `QubeComponentsModel`
+    """
+    model = CodelistsModel()
+    model.codelists = list(
+        map(
+            lambda result: map_codelist_sparql_result(result, json_path),
+            sparql_results,
+        )
+    )
+    model.num_codelists = len(model.codelists)
     return model

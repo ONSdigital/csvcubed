@@ -6,17 +6,12 @@ Provides functionality for validating and detecting input metadata.json file.
 """
 
 from pathlib import Path
+from csvcubed.models.inspectsparqlresults import CatalogMetadataModel
 
 from rdflib import Graph
 
 from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
-from csvcubed.models.inspectsparqlresults import (
-    CatalogMetadataSparqlResult,
-    CodelistInfoSparqlResult,
-    ColsWithSupressOutputTrueSparlqlResult,
-    DSDLabelURISparqlResult,
-    QubeComponentsSparqlResult,
-)
+
 from csvcubed.cli.inspect.inspectsparqlmanager import (
     select_cols_where_supress_output_is_true,
     select_csvw_catalog_metadata,
@@ -70,7 +65,7 @@ class MetadataPrinter:
 
         :return: `str` - user-friendly string which will be output to CLI.
         """
-        result: CatalogMetadataSparqlResult = select_csvw_catalog_metadata(
+        result: CatalogMetadataModel = select_csvw_catalog_metadata(
             self.csvw_metadata_rdf_graph
         )
 
@@ -84,22 +79,22 @@ class MetadataPrinter:
 
         :return: `str` - user-friendly string which will be output to CLI.
         """
-        result_dataset_label_dsd_uri: DSDLabelURISparqlResult = (
-            select_csvw_dsd_dataset_label_and_dsd_def_uri(self.csvw_metadata_rdf_graph)
-        )
-        self.dsd_uri = result_dataset_label_dsd_uri.dsd_uri
+        # result_dataset_label_dsd_uri: DSDLabelURISparqlResult = (
+        #     select_csvw_dsd_dataset_label_and_dsd_def_uri(self.csvw_metadata_rdf_graph)
+        # )
+        # self.dsd_uri = result_dataset_label_dsd_uri.dsd_uri
 
-        result_qube_components: QubeComponentsSparqlResult = (
-            select_csvw_dsd_qube_components(
-                self.csvw_metadata_rdf_graph, self.dsd_uri, self.csvw_metadata_json_path
-            )
-        )
+        # result_qube_components: QubeComponentsSparqlResult = (
+        #     select_csvw_dsd_qube_components(
+        #         self.csvw_metadata_rdf_graph, self.dsd_uri, self.csvw_metadata_json_path
+        #     )
+        # )
 
-        result_cols_with_suppress_output: ColsWithSupressOutputTrueSparlqlResult = (
-            select_cols_where_supress_output_is_true(self.csvw_metadata_rdf_graph)
-        )
+        # result_cols_with_suppress_output: ColsWithSupressOutputTrueSparlqlResult = (
+        #     select_cols_where_supress_output_is_true(self.csvw_metadata_rdf_graph)
+        # )
 
-        return f"- The {self._get_type_str()} has the following data structure definition:{result_dataset_label_dsd_uri.output_str}{result_qube_components.output_str}{result_cols_with_suppress_output.output_str}"
+        # return f"- The {self._get_type_str()} has the following data structure definition:{result_dataset_label_dsd_uri.output_str}{result_qube_components.output_str}{result_cols_with_suppress_output.output_str}"
 
     def gen_codelist_info_printable(self) -> str:
         """
@@ -110,11 +105,11 @@ class MetadataPrinter:
         :return: `str` - user-friendly string which will be output to CLI.
         """
 
-        result: CodelistInfoSparqlResult = select_dsd_code_list_and_cols(
-            self.csvw_metadata_rdf_graph, self.dsd_uri, self.csvw_metadata_json_path
-        )
+        # result: CodelistInfoSparqlResult = select_dsd_code_list_and_cols(
+        #     self.csvw_metadata_rdf_graph, self.dsd_uri, self.csvw_metadata_json_path
+        # )
 
-        return f"- The {self._get_type_str()} has the following code list information:{result.output_str}"
+        # return f"- The {self._get_type_str()} has the following code list information:{result.output_str}"
 
     def gen_head_tail_printable(self) -> str:
         """
