@@ -24,7 +24,8 @@ class DatasetUnit(Enum):
 
 
 def load_csv_to_dataframe(csv_path: Path) -> DataFrame:
-    return pd.read_csv(csv_path)
+    
+    return DataFrame(pd.read_csv(csv_path))
 
 
 def get_dataset_head(dataset: DataFrame, num_observations: int = 10) -> DataFrame:
