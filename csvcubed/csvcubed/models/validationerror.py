@@ -3,9 +3,11 @@ ValidationError
 ---------------
 """
 from dataclasses import dataclass, field
-from abc import ABC, abstractclassmethod
+from abc import ABC, abstractmethod
+from typing import List
 
 from csvcubedmodels.dataclassbase import DataClassBase
+from pydantic import PydanticValueError
 
 
 @dataclass
@@ -21,6 +23,44 @@ class SpecificValidationError(ValidationError, ABC):
 
     message: str = field(init=False)
 
-    @abstractclassmethod
+    @classmethod
+    @abstractmethod
     def get_error_url(cls) -> str:
-        ... 
+        ...
+
+
+@dataclass
+class PydanticValidationError(ValidationError, ABC):
+    """
+    The error type returned from pydantic validation functionality.
+    """
+
+    path: List[str] = field(init=False, default_factory=lambda: [])
+    """
+    Place to for pydantic validation to set the object path where this error occurred.
+    """
+
+
+@dataclass
+class UnknownPydanticValidationError(PydanticValidationError):
+    """
+    The error type for a generic type of error raised by pydantic which we don't handle by default.
+    """
+
+    path: List[str] = field(init=True)
+    original_error: Exception
+
+    def __post_init__(self):
+        self.message = f"{', '.join(self.path)} - {self.original_error}"
+
+
+@dataclass
+class PydanticThrowableSpecificValidationError(
+    SpecificValidationError, PydanticValidationError, ValueError, ABC
+):
+    """
+    This error extends :class:`ValueError` in order for it to be possible for it to be raised as an exception
+    in a pydantic validation function.
+    """
+
+    pass

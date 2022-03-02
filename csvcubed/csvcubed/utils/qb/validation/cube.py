@@ -28,6 +28,7 @@ def validate_qb_component_constraints(cube: Cube) -> List[ValidationError]:
     errors = _validate_dimensions(cube)
     errors += _validate_attributes(cube)
     errors += validate_observations(cube)
+
     return errors
 
 

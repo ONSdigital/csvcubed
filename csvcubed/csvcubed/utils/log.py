@@ -93,10 +93,15 @@ def _get_logging_level(selected_logging_level: Union[int, str, None]) -> int:
     return logging.WARNING
 
 
-def log_exception(logger, exc_type, exc_value, exc_tb) -> None:
+def log_exception(logger: logging.Logger, error: Exception) -> None:
     file_stream = io.StringIO()
     traceback.print_exception(
-        exc_type, exc_value, exc_tb, limit=None, chain=True, file=file_stream
+        type(error),
+        error,
+        error.__traceback__,
+        limit=None,
+        chain=True,
+        file=file_stream,
     )
     file_stream.seek(0)
     stack_trace: str = file_stream.read()

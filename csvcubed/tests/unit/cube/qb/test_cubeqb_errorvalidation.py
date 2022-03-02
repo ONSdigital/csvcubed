@@ -4,18 +4,19 @@ import pandas as pd
 
 from csvcubed.models.cube import *
 from csvcubed.models.cube import NewQbAttribute, QbMultiMeasureDimension, QbMultiUnits
-from csvcubed.models.cube.qb.components.validationerrors import ReservedUriValueError
+from csvcubed.models.cube.qb.components.validationerrors import (
+    ConflictingUriSafeValuesError,
+    ReservedUriValueError,
+)
 from csvcubed.models.cube.qb.validationerrors import (
     CsvColumnUriTemplateMissingError,
     MinNumComponentsNotSatisfiedError,
     NoUnitsDefinedError,
     BothUnitTypesDefinedError,
     MaxNumComponentsExceededError,
-    WrongNumberComponentsError,
 )
 from tests.unit.test_baseunit import *
 from csvcubed.utils.qb.validation.cube import validate_qb_component_constraints
-from csvcubed.utils.qb.standardise import convert_data_values_to_uri_safe_values
 
 
 def test_single_measure_qb_definition():
@@ -116,16 +117,15 @@ def test_existing_dimension_csv_column_uri_template():
         ],
     )
 
-    errors = cube.validate()
-    errors += validate_qb_component_constraints(cube)
-
-    assert_num_validation_errors(errors, 1)
-    validation_error = errors[0]
+    validation_error = _get_single_validation_error_for_qube(cube)
     assert isinstance(validation_error, CsvColumnUriTemplateMissingError)
     assert validation_error.csv_column_name == "Existing Dimension"
 
     assert isinstance(validation_error.get_error_url(), str)
-    assert validation_error.get_error_url() == 'http://purl.org/csv-cubed/err/csv-col-uri-temp-mis'
+    assert (
+        validation_error.get_error_url()
+        == "http://purl.org/csv-cubed/err/csv-col-uri-temp-mis"
+    )
 
 
 def test_no_dimensions_validation_error():
@@ -147,10 +147,7 @@ def test_no_dimensions_validation_error():
         ],
     )
 
-    errors = validate_qb_component_constraints(cube)
-
-    assert_num_validation_errors(errors, 1)
-    error = errors[0]
+    error = _get_single_validation_error_for_qube(cube)
     assert isinstance(error, MinNumComponentsNotSatisfiedError)
     assert error.component_type == QbDimension
     assert error.minimum_number == 1
@@ -186,15 +183,15 @@ def test_multiple_incompatible_unit_definitions():
             ),
         ],
     )
-    
-    errors = validate_qb_component_constraints(cube)
 
-    assert_num_validation_errors(errors, 1)
-    validation_error = errors[0]
+    validation_error = _get_single_validation_error_for_qube(cube)
     assert isinstance(validation_error, BothUnitTypesDefinedError)
 
     assert isinstance(validation_error.get_error_url(), str)
-    assert validation_error.get_error_url() == 'http://purl.org/csv-cubed/err/both-unit-typ-def'
+    assert (
+        validation_error.get_error_url()
+        == "http://purl.org/csv-cubed/err/both-unit-typ-def"
+    )
 
 
 def test_no_unit_defined():
@@ -222,14 +219,11 @@ def test_no_unit_defined():
             ),
         ],
     )
-    errors = validate_qb_component_constraints(cube)
-
-    assert_num_validation_errors(errors, 1)
-    validation_error = errors[0]
+    validation_error = _get_single_validation_error_for_qube(cube)
     assert isinstance(validation_error, NoUnitsDefinedError)
 
     assert isinstance(validation_error.get_error_url(), str)
-    assert validation_error.get_error_url() == 'http://purl.org/csv-cubed/err/no-unit'
+    assert validation_error.get_error_url() == "http://purl.org/csv-cubed/err/no-unit"
 
 
 def test_multiple_units_columns():
@@ -264,10 +258,7 @@ def test_multiple_units_columns():
             ),
         ],
     )
-    errors = validate_qb_component_constraints(cube)
-
-    assert_num_validation_errors(errors, 1)
-    error = errors[0]
+    error = _get_single_validation_error_for_qube(cube)
     assert isinstance(error, MaxNumComponentsExceededError)
     assert error.component_type == QbMultiUnits
     assert error.maximum_number == 1
@@ -310,10 +301,7 @@ def test_multiple_obs_val_columns():
             ),
         ],
     )
-    errors = validate_qb_component_constraints(cube)
-
-    assert_num_validation_errors(errors, 1)
-    error = errors[0]
+    error = _get_single_validation_error_for_qube(cube)
     assert isinstance(error, MoreThanOneObservationsColumnError)
     assert error.component_type == QbObservationValue
     assert error.maximum_number == 1
@@ -346,14 +334,11 @@ def test_multi_measure_obs_val_without_measure_dimension():
             ),
         ],
     )
-    errors = validate_qb_component_constraints(cube)
+    error = _get_single_validation_error_for_qube(cube)
+    assert isinstance(error, NoMeasuresDefinedError)
 
-    assert_num_validation_errors(errors, 1)
-    validation_error = errors[0]
-    assert isinstance(validation_error, NoMeasuresDefinedError)
-
-    assert isinstance(validation_error.get_error_url(), str)
-    assert validation_error.get_error_url() == 'http://purl.org/csv-cubed/err/no-meas'
+    assert isinstance(error.get_error_url(), str)
+    assert error.get_error_url() == "http://purl.org/csv-cubed/err/no-meas"
 
 
 def test_multi_measure_obs_val_with_multiple_measure_dimensions():
@@ -395,10 +380,7 @@ def test_multi_measure_obs_val_with_multiple_measure_dimensions():
             ),
         ],
     )
-    errors = validate_qb_component_constraints(cube)
-
-    assert_num_validation_errors(errors, 1)
-    error = errors[0]
+    error = _get_single_validation_error_for_qube(cube)
     assert isinstance(error, MaxNumComponentsExceededError)
     assert error.component_type == QbMultiMeasureDimension
     assert error.maximum_number == 1
@@ -439,10 +421,7 @@ def test_measure_dimension_with_single_measure_obs_val():
             ),
         ],
     )
-    errors = validate_qb_component_constraints(cube)
-
-    assert_num_validation_errors(errors, 1)
-    error = errors[0]
+    error = _get_single_validation_error_for_qube(cube)
     assert isinstance(error, BothMeasureTypesDefinedError)
     assert error.component_one == f"{QbSingleMeasureObservationValue.__name__}.measure"
     assert error.component_two == QbMultiMeasureDimension
@@ -502,11 +481,7 @@ def test_existing_attribute_csv_column_uri_template_required():
         ],
     )
 
-    errors = cube.validate()
-    errors += validate_qb_component_constraints(cube)
-
-    assert_num_validation_errors(errors, 1)
-    error = errors[0]
+    error = _get_single_validation_error_for_qube(cube)
     assert isinstance(error, CsvColumnUriTemplateMissingError)
     assert error.csv_column_name == "Existing Attribute 1"
     assert error.component_type == "ExistingQbAttribute using existing attribute values"
@@ -562,11 +537,7 @@ def test_new_attribute_csv_column_uri_template_required():
         ],
     )
 
-    errors = cube.validate()
-    errors += validate_qb_component_constraints(cube)
-
-    assert_num_validation_errors(errors, 1)
-    error = errors[0]
+    error = _get_single_validation_error_for_qube(cube)
     assert isinstance(error, CsvColumnUriTemplateMissingError)
     assert error.csv_column_name == "New Attribute 1"
     assert error.component_type == "NewQbAttribute using existing attribute values"
@@ -632,7 +603,7 @@ def test_new_qb_attribute_literal_int():
         ],
     )
 
-    assert len(qube.validate()) == 0
+    assert_num_validation_errors(qube.validate(), 0)
 
 
 def test_existing_qb_attribute_literal_date():
@@ -657,28 +628,7 @@ def test_existing_qb_attribute_literal_date():
         ],
     )
 
-    assert len(qube.validate()) == 0
-
-
-def test_case_insensitivity_code_collisions():
-    obs = pd.DataFrame({"Some Dimension": ["a", "b", "A"], "Value": [1, 2, 3]})
-    cube = Cube(
-        CatalogMetadata("Some Cube"),
-        obs,
-        [
-            QbColumn(
-                "Some Dimension",
-                NewQbDimension.from_data("Some Dimension", obs["Some Dimension"]),
-            ),
-            QbColumn(
-                "Value",
-                QbSingleMeasureObservationValue(
-                    measure=NewQbMeasure("Some Measure"), unit=NewQbUnit("Some Unit")
-                ),
-            ),
-        ],
-    )
-    convert_data_values_to_uri_safe_values(cube)
+    assert_num_validation_errors(qube.validate(), 0)
 
 
 def test_attribute_numeric_resources_validation():
@@ -709,47 +659,247 @@ def test_attribute_numeric_resources_validation():
         ],
     )
     errors = qube.validate()
-    assert len(errors) == 0
+    assert_num_validation_errors(errors, 0)
 
 
-# Commenting out the below function since we've removed the functionality checking for duplicate uri safe mappings.
-# todo: This will need to be reintroduced when we re-implement this functionality correctly.
-# def test_code_list_concept_identifier_reserved():
-#     """
-#     Test that if the user tries to define a code-list with a concept which would use the reserved `code-list`
-#     identifier then they get a suitable validation error.
-#     """
-#     data = pd.DataFrame(
-#         {
-#             "New Dimension": ["A", "B", "C", "Code List"],
-#             "Value": [2, 2, 2, 2],
-#         }
-#     )
+def test_code_list_concept_identifier_reserved():
+    """
+    Test that if the user tries to define a code-list with a concept which would use the reserved `code-list`
+    identifier then they get a suitable validation error.
+    """
+    data = pd.DataFrame(
+        {
+            "New Dimension": ["A", "B", "C", "Code List"],
+            "Value": [2, 2, 2, 2],
+        }
+    )
 
-#     qube = Cube(
-#         metadata=CatalogMetadata("Some Qube"),
-#         data=data,
-#         columns=[
-#             QbColumn(
-#                 "New Dimension",
-#                 NewQbDimension.from_data("New Dimension", data["New Dimension"]),
-#             ),
-#             QbColumn(
-#                 "Value",
-#                 QbSingleMeasureObservationValue(
-#                     NewQbMeasure("Some Measure"),
-#                     NewQbUnit("Some Unit"),
-#                 ),
-#             ),
-#         ],
-#     )
-#     errors = qube.validate() + validate_qb_component_constraints(qube)
-#     assert_num_validation_errors(errors, 1)
-#     error = errors[0]
-#     assert isinstance(error, ReservedUriValueError)
-#     assert error.csv_column_name == "New Dimension"
-#     assert error.reserved_identifier == "code-list"
-#     assert error.conflicting_values == ["Code List"]
+    qube = Cube(
+        metadata=CatalogMetadata("Some Qube"),
+        data=data,
+        columns=[
+            QbColumn(
+                "New Dimension",
+                NewQbDimension.from_data("New Dimension", data["New Dimension"]),
+            ),
+            QbColumn(
+                "Value",
+                QbSingleMeasureObservationValue(
+                    NewQbMeasure("Some Measure"),
+                    NewQbUnit("Some Unit"),
+                ),
+            ),
+        ],
+    )
+    error = _get_single_validation_error_for_qube(qube)
+    assert isinstance(error, ReservedUriValueError)
+    assert error.component == NewQbCodeList
+    assert error.reserved_identifier == "code-list"
+    assert error.conflicting_values == ["Code List"]
+
+
+def test_conflict_concept_uri_values_error():
+    """
+    Test that a validation error is raised when the user defines labels which are distinct, but map to the same
+    URI-safe value.
+    """
+    data = pd.DataFrame(
+        {
+            "New Dimension": ["A B", "A.B"],
+            "Value": [2, 2],
+        }
+    )
+
+    qube = Cube(
+        metadata=CatalogMetadata("Some Qube"),
+        data=data,
+        columns=[
+            QbColumn(
+                "New Dimension",
+                NewQbDimension.from_data("New Dimension", data["New Dimension"]),
+            ),
+            QbColumn(
+                "Value",
+                QbSingleMeasureObservationValue(
+                    NewQbMeasure("Some Measure"),
+                    NewQbUnit("Some Unit"),
+                ),
+            ),
+        ],
+    )
+    error = _get_single_validation_error_for_qube(qube)
+    assert isinstance(error, ConflictingUriSafeValuesError)
+    assert error.component_type == NewQbCodeList
+    assert error.path == [
+        "('columns', 0)",
+        "structural_definition",
+        "code_list",
+        "concepts",
+    ]
+    assert error.map_uri_safe_values_to_conflicting_labels == {"a-b": {"A B", "A.B"}}
+
+
+def test_conflict_new_attribute_value_uri_values_error():
+    """
+    Test that a validation error is raised when the user defines new attribute value labels (on a new attribute)
+     which are distinct but map to the same URI-safe value.
+    """
+    data = pd.DataFrame(
+        {
+            "New Dimension": ["A", "B"],
+            "New Attribute": ["A B", "A.B"],
+            "Value": [2, 2],
+        }
+    )
+
+    qube = Cube(
+        metadata=CatalogMetadata("Some Qube"),
+        data=data,
+        columns=[
+            QbColumn(
+                "New Dimension",
+                NewQbDimension.from_data("New Dimension", data["New Dimension"]),
+            ),
+            QbColumn(
+                "New Attribute",
+                NewQbAttribute.from_data("New Attribute", data["New Attribute"]),
+            ),
+            QbColumn(
+                "Value",
+                QbSingleMeasureObservationValue(
+                    NewQbMeasure("Some Measure"),
+                    NewQbUnit("Some Unit"),
+                ),
+            ),
+        ],
+    )
+    error = _get_single_validation_error_for_qube(qube)
+    assert isinstance(error, ConflictingUriSafeValuesError)
+    assert error.component_type == NewQbAttribute
+    assert error.map_uri_safe_values_to_conflicting_labels == {"a-b": {"A B", "A.B"}}
+
+
+def test_conflict_existing_attribute_value_uri_values_error():
+    """
+    Test that a validation error is raised when the user defines new attribute value labels (on an existing attribute)
+     which are distinct but map to the same URI-safe value.
+    """
+    data = pd.DataFrame(
+        {
+            "New Dimension": ["A", "B"],
+            "Existing Attribute": ["A B", "A.B"],
+            "Value": [2, 2],
+        }
+    )
+
+    qube = Cube(
+        metadata=CatalogMetadata("Some Qube"),
+        data=data,
+        columns=[
+            QbColumn(
+                "New Dimension",
+                NewQbDimension.from_data("New Dimension", data["New Dimension"]),
+            ),
+            QbColumn(
+                "Existing Attribute",
+                ExistingQbAttribute(
+                    "http://example.com/attributes/existing-attribute",
+                    [NewQbAttributeValue("A B"), NewQbAttributeValue("A.B")],
+                ),
+            ),
+            QbColumn(
+                "Value",
+                QbSingleMeasureObservationValue(
+                    NewQbMeasure("Some Measure"),
+                    NewQbUnit("Some Unit"),
+                ),
+            ),
+        ],
+    )
+    error = _get_single_validation_error_for_qube(qube)
+    assert isinstance(error, ConflictingUriSafeValuesError)
+    assert error.component_type == ExistingQbAttribute
+    assert error.map_uri_safe_values_to_conflicting_labels == {"a-b": {"A B", "A.B"}}
+
+
+def test_conflict_new_units_uri_values_error():
+    """
+    Test that a validation error is raised when the user defines new units which are distinct but map to the
+     same URI-safe value.
+    """
+    data = pd.DataFrame(
+        {
+            "New Dimension": ["A", "B"],
+            "Units": ["A B", "A.B"],
+            "Value": [2, 2],
+        }
+    )
+
+    qube = Cube(
+        metadata=CatalogMetadata("Some Qube"),
+        data=data,
+        columns=[
+            QbColumn(
+                "New Dimension",
+                NewQbDimension.from_data("New Dimension", data["New Dimension"]),
+            ),
+            QbColumn(
+                "Units",
+                QbMultiUnits.new_units_from_data(data["Units"]),
+            ),
+            QbColumn(
+                "Value",
+                QbSingleMeasureObservationValue(NewQbMeasure("Some Measure")),
+            ),
+        ],
+    )
+    error = _get_single_validation_error_for_qube(qube)
+    assert isinstance(error, ConflictingUriSafeValuesError)
+    assert error.component_type == QbMultiUnits
+    assert error.map_uri_safe_values_to_conflicting_labels == {"a-b": {"A B", "A.B"}}
+
+
+def test_conflict_new_measures_uri_values_error():
+    """
+    Test that a validation error is raised when the user defines new measures which are distinct but map to the
+     same URI-safe value.
+    """
+    data = pd.DataFrame(
+        {
+            "New Dimension": ["A", "B"],
+            "Measures": ["A B", "A.B"],
+            "Value": [2, 2],
+        }
+    )
+
+    qube = Cube(
+        metadata=CatalogMetadata("Some Qube"),
+        data=data,
+        columns=[
+            QbColumn(
+                "New Dimension",
+                NewQbDimension.from_data("New Dimension", data["New Dimension"]),
+            ),
+            QbColumn(
+                "Measures",
+                QbMultiMeasureDimension.new_measures_from_data(data["Measures"]),
+            ),
+            QbColumn(
+                "Value",
+                QbMultiMeasureObservationValue(unit=NewQbUnit("Some Unit")),
+            ),
+        ],
+    )
+    error = _get_single_validation_error_for_qube(qube)
+    assert isinstance(error, ConflictingUriSafeValuesError)
+    assert error.component_type == QbMultiMeasureDimension
+    assert error.map_uri_safe_values_to_conflicting_labels == {"a-b": {"A B", "A.B"}}
+
+
+def _get_single_validation_error_for_qube(qube: QbCube) -> ValidationError:
+    errors = qube.validate() + validate_qb_component_constraints(qube)
+    assert_num_validation_errors(errors, 1)
+    return errors[0]
 
 
 if __name__ == "__main__":
