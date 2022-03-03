@@ -1,0 +1,19 @@
+{
+    "title": "Some Dataset",
+    "uri_safe_identifier_override": "some-dataset",
+    "summary": "Some catalog item summary",
+    "description": "Some catalog item description",
+    "creator_uri": "http://some-creator-uri",
+    "publisher_uri": "http://some-publisher-uri",
+    "landing_page_uri": "http://some-landing-page-uri",
+    "theme_uris": [
+        "http://some-theme-uri"
+    ],
+    "keywords": [
+        "Some key word"
+    ],
+    "dataset_issued": "2010-01-01T01:01:01.000001",
+    "dataset_modified": "2010-01-01T02:01:01.000001",
+    "license_uri": "http://some-license-uri",
+    "public_contact_point_uri": "mailto:somecontactpoint@ons.gov.uk"
+}

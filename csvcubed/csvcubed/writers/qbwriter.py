@@ -6,6 +6,7 @@ Output writer for CSV-qb
 """
 import itertools
 import json
+import logging
 import re
 from dataclasses import field
 from pathlib import Path
@@ -39,6 +40,7 @@ from .skoscodelistwriter import (
 )
 from .urihelpers.skoscodelist import SkosCodeListNewUriHelper
 from .urihelpers.qbcube import QbCubeNewUriHelper
+from .urihelpers.skoscodelistconstants import SCHEMA_URI_IDENTIFIER
 from .writerbase import WriterBase
 from ..models.cube import (
     QbAttribute,
@@ -54,6 +56,9 @@ from ..models.cube.qb.components.arbitraryrdf import RdfSerialisationHint
 from csvcubed.models.rdf.qbdatasetincatalog import QbDataSetInCatalog
 from ..utils.qb.validation.observations import get_observation_status_columns
 
+
+_logger = logging.getLogger(__name__)
+
 VIRT_UNIT_COLUMN_NAME = "virt_unit"
 
 
@@ -66,11 +71,19 @@ class QbWriter(WriterBase):
 
     def __post_init__(self):
         self.csv_file_name = f"{self.cube.metadata.uri_safe_identifier}.csv"
+        _logger.debug(
+            "Initialising %s with CSV output set to '%s'",
+            QbWriter.__name__,
+            self.csv_file_name,
+        )
         self._new_uri_helper = QbCubeNewUriHelper(self.cube)
 
     def write(self, output_folder: Path):
         # Map all labels to their corresponding URI-safe-values, where possible.
         # Also converts all appropriate columns to the pandas categorical format.
+
+        _logger.info("Beginning CSV-W Generation")
+
         convert_data_values_to_uri_safe_values(
             self.cube, self.raise_missing_uri_safe_value_exceptions
         )
@@ -98,11 +111,17 @@ class QbWriter(WriterBase):
             "rdfs:seeAlso": self._get_additional_rdf_metadata(),
         }
 
-        with open(output_folder / f"{self.csv_file_name}-metadata.json", "w+") as f:
+        metadata_json_output_path = (
+            output_folder / f"{self.csv_file_name}-metadata.json"
+        )
+        with open(metadata_json_output_path, "w+") as f:
+            _logger.debug("Writing CSV-W JSON-LD to %s", metadata_json_output_path)
             json.dump(csvw_metadata, f, indent=4)
 
         if self.cube.data is not None:
-            self.cube.data.to_csv(output_folder / self.csv_file_name, index=False)
+            csv_output_file_path = output_folder / self.csv_file_name
+            _logger.debug("Writing CSV to %s", csv_output_file_path)
+            self.cube.data.to_csv(csv_output_file_path, index=False)
 
     def _get_additional_rdf_metadata(self) -> List[dict]:
         """
@@ -122,10 +141,20 @@ class QbWriter(WriterBase):
         for column in get_columns_of_dsd_type(self.cube, NewQbDimension):
             code_list = column.structural_definition.code_list
             if isinstance(code_list, NewQbCodeList):
+                _logger.debug(
+                    "Writing code list %s to '%s' directory.", code_list, output_folder
+                )
+
                 code_list_writer = SkosCodeListWriter(code_list)
                 code_list_writer.write(output_folder)
             elif isinstance(code_list, NewQbCodeListInCsvW):
                 # find the CSV-W codelist and all dependent relative files and copy them into the output_folder
+                _logger.debug(
+                    "Copying legacy code list %s (with dependent files) to '%s' directory.",
+                    code_list,
+                    output_folder,
+                )
+
                 dependent_files = get_dependent_local_files(
                     code_list.schema_metadata_file_path
                 )
@@ -157,6 +186,8 @@ class QbWriter(WriterBase):
         for col in self._get_columns_for_foreign_keys():
             code_list = col.structural_definition.code_list
             if isinstance(code_list, NewQbCodeList):
+                _logger.debug("Referencing dataset-local code list %s.", code_list)
+
                 tables.append(
                     {
                         "url": f"{code_list.metadata.uri_safe_identifier}.csv",
@@ -165,6 +196,11 @@ class QbWriter(WriterBase):
                     }
                 )
             elif isinstance(code_list, NewQbCodeListInCsvW):
+                _logger.debug(
+                    "Referencing legacy dataset-local code list %s with assumed table schema.",
+                    code_list,
+                )
+
                 tables.append(
                     {
                         "url": code_list.csv_file_relative_path_or_uri,
@@ -182,6 +218,11 @@ class QbWriter(WriterBase):
         for col in self._get_columns_for_foreign_keys():
             code_list = col.structural_definition.code_list
             if isinstance(code_list, NewQbCodeList):
+                _logger.debug(
+                    "Configuring foreign key constraints for dataset-local code list %s",
+                    code_list,
+                )
+
                 foreign_keys.append(
                     {
                         "columnReference": csvw_column_name_safe(
@@ -194,6 +235,11 @@ class QbWriter(WriterBase):
                     }
                 )
             elif isinstance(code_list, NewQbCodeListInCsvW):
+                _logger.debug(
+                    "Configuring foreign key constraints for legacy dataset-local code list %s",
+                    code_list,
+                )
+
                 foreign_keys.append(
                     {
                         "columnReference": csvw_column_name_safe(
@@ -224,6 +270,8 @@ class QbWriter(WriterBase):
     def _generate_virtual_columns_for_obs_val(
         self, obs_val: QbObservationValue
     ) -> List[Dict[str, Any]]:
+        _logger.debug("Configuring per-row virtual columns.")
+
         virtual_columns: List[dict] = [
             {
                 "name": "virt_type",
@@ -240,6 +288,7 @@ class QbWriter(WriterBase):
         ]
         unit = obs_val.unit
         if unit is not None:
+            _logger.debug("Adding virtual unit column.")
             virtual_columns.append(
                 {
                     "name": VIRT_UNIT_COLUMN_NAME,
@@ -249,6 +298,7 @@ class QbWriter(WriterBase):
                 }
             )
         if isinstance(obs_val, QbSingleMeasureObservationValue):
+            _logger.debug("Adding virtual measure column.")
             virtual_columns.append(
                 {
                     "name": "virt_measure",
@@ -271,7 +321,7 @@ class QbWriter(WriterBase):
         dataset.structure = rdf.qb.DataStructureDefinition(
             self._new_uri_helper.get_structure_uri()
         )
-        component_oridinal = 1
+        component_ordinal = 1
         for column in self.cube.columns:
             if isinstance(column, QbColumn):
                 component_specs_for_col = self._get_qb_component_specs_for_col(
@@ -284,8 +334,8 @@ class QbWriter(WriterBase):
                     component_properties_for_col
                 )
                 for component in component_specs_for_col:
-                    component.order = component_oridinal
-                    component_oridinal += 1
+                    component.order = component_ordinal
+                    component_ordinal += 1
 
                 dataset.structure.components |= set(component_specs_for_col)
 
@@ -332,6 +382,11 @@ class QbWriter(WriterBase):
             "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
         )
         component.componentProperties.add(component.attribute)
+
+        _logger.debug(
+            "Generated units component %s.",
+            component.uri,
+        )
 
         return component
 
@@ -405,7 +460,6 @@ class QbWriter(WriterBase):
             measure.copy_arbitrary_triple_fragments_to_resources(
                 {RdfSerialisationHint.Component: component}
             )
-            return component
         elif isinstance(measure, NewQbMeasure):
             component = rdf.qb.MeasureComponentSpecification(
                 self._new_uri_helper.get_component_uri(measure.uri_safe_identifier)
@@ -429,9 +483,16 @@ class QbWriter(WriterBase):
                 }
             )
 
-            return component
         else:
             raise Exception(f"Unhandled measure type {type(measure)}")
+
+        _logger.debug(
+            "Generated component %s with measure %s.",
+            component.uri,
+            component.measure.uri,
+        )
+
+        return component
 
     def _get_qb_dimension_specification(
         self, column_name_uri_safe: str, dimension: QbDimension
@@ -477,6 +538,12 @@ class QbWriter(WriterBase):
             raise Exception(f"Unhandled dimension component type {type(dimension)}.")
 
         component.componentProperties.add(component.dimension)
+
+        _logger.debug(
+            "Generated component %s with dimension %s.",
+            component.uri,
+            component.dimension.uri,
+        )
 
         return component
 
@@ -547,6 +614,12 @@ class QbWriter(WriterBase):
         component.componentRequired = attribute.is_required
         component.componentProperties.add(component.attribute)
 
+        _logger.debug(
+            "Generated component %s with attribute %s.",
+            component.uri,
+            component.attribute.uri,
+        )
+
         return component
 
     def _get_new_attribute_value_resources(self) -> List[NewAttributeValueResource]:
@@ -578,6 +651,12 @@ class QbWriter(WriterBase):
                 new_attribute_value_resource.parent_attribute_value_uri = (
                     maybe_existing_resource(value.parent_attribute_value_uri)
                 )
+
+                _logger.debug(
+                    "Generated New Attribute Value %s.",
+                    new_attribute_value_resource.uri,
+                )
+
                 new_attribute_value_resources.append(new_attribute_value_resource)
 
         return new_attribute_value_resources
@@ -637,11 +716,17 @@ class QbWriter(WriterBase):
                 unit.si_base_unit_conversion_multiplier
             )
 
+            _logger.debug("Generated new unit resource %s.", new_unit_resource.uri)
+
             new_unit_resources.append(new_unit_resource)
 
         return new_unit_resources
 
     def _generate_csvqb_column(self, column: CsvColumn) -> Dict[str, Any]:
+        _logger.debug(
+            "Generating CSV-W Column Definition for '%s'", column.csv_column_title
+        )
+
         csvw_col: Dict[str, Any] = {
             "titles": column.csv_column_title,
             "name": csvw_column_name_safe(column.uri_safe_identifier),
@@ -649,6 +734,7 @@ class QbWriter(WriterBase):
 
         if isinstance(column, SuppressedCsvColumn):
             csvw_col["suppressOutput"] = True
+            _logger.debug("'%s' is a suppressed column", column.csv_column_title)
         elif isinstance(column, QbColumn):
             self._define_csvw_column_for_qb_column(csvw_col, column)
         else:
@@ -661,10 +747,23 @@ class QbWriter(WriterBase):
     def _define_csvw_column_for_qb_column(
         self, csvw_col: dict, column: QbColumn
     ) -> None:
+        _logger.debug(
+            "Expanding CSV-W column definition for DSD column '%s' (%s).",
+            column.csv_column_title,
+            column.structural_definition.__class__.__name__,
+        )
+
         (
             property_url,
             default_value_url,
         ) = self._get_default_property_value_uris_for_column(column)
+
+        _logger.debug(
+            "Column has default propertyUrl '%s' and default valueUrl '%s'.",
+            property_url,
+            default_value_url,
+        )
+
         if property_url is not None:
             csvw_col["propertyUrl"] = property_url
 
@@ -672,19 +771,27 @@ class QbWriter(WriterBase):
             # User-specified value overrides our default guess.
             csvw_col["valueUrl"] = column.csv_column_uri_template
         elif isinstance(column.structural_definition, QbAttributeLiteral):
+            _logger.debug("Column valueUrl is left unset.")
             pass
         elif default_value_url is not None:
             csvw_col["valueUrl"] = default_value_url
 
         if isinstance(column.structural_definition, QbObservationValue):
+            _logger.debug(
+                "Setting CSV-W datatype to %s.", column.structural_definition.data_type
+            )
             csvw_col["datatype"] = column.structural_definition.data_type
         elif isinstance(column.structural_definition, QbAttributeLiteral):
+            _logger.debug(
+                "Setting CSV-W datatype to %s.", column.structural_definition.data_type
+            )
             csvw_col["datatype"] = column.structural_definition.data_type
 
-        csvw_col["required"] = (
-            isinstance(column.structural_definition, QbDimension)
-            or isinstance(column.structural_definition, QbMultiUnits)
-            or isinstance(column.structural_definition, QbMultiMeasureDimension)
+        is_required = (
+            isinstance(
+                column.structural_definition,
+                (QbDimension, QbMultiUnits, QbMultiMeasureDimension),
+            )
             or (
                 isinstance(column.structural_definition, QbAttribute)
                 and column.structural_definition.get_is_required()
@@ -697,6 +804,13 @@ class QbWriter(WriterBase):
             )
         )
 
+        if is_required:
+            _logger.debug("Column is required.")
+        else:
+            _logger.debug("Column is not required.")
+
+        csvw_col["required"] = is_required
+
     def _get_default_property_value_uris_for_multi_units(
         self, column: QbColumn, multi_units: QbMultiUnits
     ) -> Tuple[str, str]:
@@ -708,8 +822,10 @@ class QbWriter(WriterBase):
 
         unit_value_uri: str
         if all_units_new:
+            _logger.debug("All units are new; they define the column's valueUrl.")
             unit_value_uri = self._new_uri_helper.get_unit_uri(column_template_fragment)
         elif all_units_existing:
+            _logger.debug("All units are existing.")
             unit_value_uri = column_template_fragment
         else:
             # todo: Come up with a solution for this!
@@ -746,8 +862,10 @@ class QbWriter(WriterBase):
 
         column_template_fragment = self._get_column_uri_template_fragment(column)
         if all_measures_new:
+            _logger.debug("All measures are new; they define the column's valueUrl.")
             return self._new_uri_helper.get_measure_uri(column_template_fragment)
         elif all_measures_existing:
+            _logger.debug("All measures are existing.")
             if column.csv_column_uri_template is None:
                 raise ValueError(
                     "A URI value template must be defined when a measures column reuses existing measures."
@@ -786,14 +904,23 @@ class QbWriter(WriterBase):
         observation_value: QbObservationValue,
     ):
         if isinstance(observation_value, QbSingleMeasureObservationValue):
+            _logger.debug(
+                "Single-measure observation value propertyUrl defined by measure %s",
+                observation_value.measure,
+            )
             return self._get_measure_uri(observation_value.measure), None
         elif isinstance(observation_value, QbMultiMeasureObservationValue):
-            multi_measure_dimension = self._get_single_column_of_type(
+            multi_measure_dimension_col = self._get_single_column_of_type(
                 QbMultiMeasureDimension
             )
+            _logger.debug(
+                "Multi-measure observation value propertyUrl defined by measure column %s",
+                multi_measure_dimension_col.csv_column_title,
+            )
+
             measure_uri_template = (
                 self._get_measure_dimension_column_measure_template_uri(
-                    multi_measure_dimension
+                    multi_measure_dimension_col
                 )
             )
             return measure_uri_template, None
@@ -826,7 +953,15 @@ class QbWriter(WriterBase):
                 dimension.uri_safe_identifier
             )
             value_uri = self._get_column_uri_template_fragment(column)
-            if dimension.code_list is not None:
+            if dimension.code_list is None:
+                _logger.debug(
+                    "Dimension does not have code list; valueUrl defaults directly to column's value."
+                )
+            else:
+                _logger.debug(
+                    "Dimension valueUrl determined by code list %s.",
+                    dimension.code_list,
+                )
                 value_uri = self._get_default_value_uri_for_code_list_concepts(
                     column, dimension.code_list
                 )
@@ -843,11 +978,16 @@ class QbWriter(WriterBase):
         value_uri = self._get_column_uri_template_fragment(column)
         if isinstance(attribute, ExistingQbAttribute):
             if len(attribute.new_attribute_values) > 0:
+                _logger.debug(
+                    "Existing Attribute has new attribute values which define the valueUrl."
+                )
                 # NewQbAttributeValues defined here.
                 value_uri = self._new_uri_helper.get_attribute_value_uri(
                     column.uri_safe_identifier, column_uri_fragment
                 )
-            # Else: Existing attribute values defined elsewhere. The user *should* have defined an csv_column_uri_template.
+            else:
+                _logger.debug("Existing Attribute does not have new attribute values.")
+
             # N.B. We can't do mix-and-match New/Existing attribute values.
 
             return attribute.attribute_uri, value_uri
@@ -857,12 +997,16 @@ class QbWriter(WriterBase):
             )
 
             if len(attribute.new_attribute_values) > 0:
+                _logger.debug(
+                    "New Attribute has new attribute values which define the valueUrl."
+                )
                 # NewQbAttributeValues defined here.
                 value_uri = self._new_uri_helper.get_attribute_value_uri(
                     attribute.uri_safe_identifier, column_uri_fragment
                 )
-            # Else: Existing attribute values defined elsewhere. The user *should* have defined an
-            # csv_column_uri_template.
+            else:
+                _logger.debug("New Attribute does not have new attribute values.")
+
             # N.B. We can't do mix-and-match New/Existing attribute values.
 
             return local_attribute_uri, value_uri
@@ -877,43 +1021,79 @@ class QbWriter(WriterBase):
 
         return "{+" + csvw_column_name_safe(column.uri_safe_identifier) + "}"
 
-    _external_code_list_pattern = re.compile("^(.*)/concept-scheme/(.*)$")
-    _dataset_local_code_list_pattern = re.compile("^(.*)#scheme/(.*)$")
+    _legacy_external_code_list_pattern = re.compile("^(.*)/concept-scheme/(.*)$")
+    _legacy_dataset_local_code_list_pattern = re.compile("^(.*)#scheme/(.*)$")
+    _csvcubed_code_list_pattern = re.compile(
+        "^(.*)#" + re.escape(SCHEMA_URI_IDENTIFIER) + "$"
+    )
 
     def _get_default_value_uri_for_code_list_concepts(
         self, column: CsvColumn, code_list: QbCodeList
     ) -> str:
         column_uri_fragment = self._get_column_uri_template_fragment(column)
         if isinstance(code_list, ExistingQbCodeList):
-            external_match = self._external_code_list_pattern.match(
+            legacy_external_match = self._legacy_external_code_list_pattern.match(
                 code_list.concept_scheme_uri
             )
-            local_match = self._dataset_local_code_list_pattern.match(
+            legacy_local_match = self._legacy_dataset_local_code_list_pattern.match(
                 code_list.concept_scheme_uri
             )
-            if external_match:
-                m: re.Match = external_match
+            csvcubed_match = self._csvcubed_code_list_pattern.match(
+                code_list.concept_scheme_uri
+            )
+            if legacy_external_match:
+                _logger.debug(
+                    "Existing concept scheme URI %s matches legacy family/global style.",
+                    code_list.concept_scheme_uri,
+                )
+                m: re.Match = legacy_external_match
                 # ConceptScheme URI:
                 # http://gss-data.org.uk/def/concept-scheme/{code-list-name}
                 # Concept URI:
                 # http://gss-data.org.uk/def/concept-scheme/{code-list-name}/{notation}
                 return f"{m.group(1)}/concept-scheme/{m.group(2)}/{column_uri_fragment}"
-            elif local_match:
-                m: re.Match = local_match
+            elif legacy_local_match:
+                _logger.debug(
+                    "Existing concept scheme URI %s matches legacy dataset-local style.",
+                    code_list.concept_scheme_uri,
+                )
+                m: re.Match = legacy_local_match
                 # ConceptScheme URI:
                 # http://gss-data.org.uk/data/gss_data/{family-name}/{dataset-root-name}#scheme/{code-list-name}
                 # Concept URI:
                 # http://gss-data.org.uk/data/gss_data/{family-name}/{dataset-root-name}#concept/{code-list-name}/{notation}
                 return f"{m.group(1)}#concept/{m.group(2)}/{column_uri_fragment}"
+            elif csvcubed_match:
+                _logger.debug(
+                    "Existing concept scheme URI %s matches csvcubed style.",
+                    code_list.concept_scheme_uri,
+                )
+                m: re.Match = csvcubed_match
+                # ConceptScheme URI:
+                # {code-list-uri}#code-list
+                # Concept URI:
+                # {code-list-uri}#{notation}
+                return f"{m.group(1)}#{column_uri_fragment}"
             else:
+                _logger.warning(
+                    "Existing code list URI %s does not match expected any known convention.",
+                    code_list.concept_scheme_uri,
+                )
                 # Unexpected code-list URI. Does not match expected conventions.
                 return column_uri_fragment
-
         elif isinstance(code_list, NewQbCodeList):
+            _logger.debug(
+                "valueUrl defined by new dataset-local code list %s",
+                code_list.metadata.title,
+            )
             return SkosCodeListNewUriHelper(code_list).get_concept_uri(
                 column_uri_fragment
             )
         elif isinstance(code_list, NewQbCodeListInCsvW):
+            _logger.debug(
+                "valueUrl defined by legacy dataset-local code list %s",
+                code_list.concept_scheme_uri,
+            )
             return re.sub(
                 r"\{.?notation\}", column_uri_fragment, code_list.concept_template_uri
             )
@@ -955,9 +1135,12 @@ class QbWriter(WriterBase):
                         f"{{+{csvw_column_name_safe(c.uri_safe_identifier)}}}"
                     )
 
-        return self._new_uri_helper.get_observation_uri(
+        about_url_template = self._new_uri_helper.get_observation_uri(
             dimension_columns_templates, multi_measure_col_template
         )
+
+        _logger.debug("aboutUrl template is %s", about_url_template)
+        return about_url_template
 
     def _get_primary_key_columns(self) -> List[str]:
         dimension_columns: Iterable[QbColumn] = itertools.chain(
@@ -965,4 +1148,9 @@ class QbWriter(WriterBase):
             get_columns_of_dsd_type(self.cube, QbMultiMeasureDimension),
         )
 
-        return [csvw_column_name_safe(c.csv_column_title) for c in dimension_columns]
+        primary_key_columns = [
+            csvw_column_name_safe(c.csv_column_title) for c in dimension_columns
+        ]
+
+        _logger.debug("Primary key columns are %s", primary_key_columns)
+        return primary_key_columns
