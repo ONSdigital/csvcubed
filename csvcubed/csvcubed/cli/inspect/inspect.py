@@ -30,6 +30,8 @@ def inspect(csvw_metadata_json_path: Path) -> None:
 
     :return: `None`
     """
+    _logger.debug(f"Metadata json-ld path: {csvw_metadata_json_path.absolute()}")
+
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 

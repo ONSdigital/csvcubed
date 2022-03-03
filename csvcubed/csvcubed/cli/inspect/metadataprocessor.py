@@ -34,7 +34,7 @@ class MetadataProcessor:
         
         try:
             csvw_metadata_rdf_graph.load(csvw_metadata_file_path, format="json-ld")
-            _logger.info("Successfully parsed csvw json-ld to rdf graph")
+            _logger.info("Successfully parsed csvw json-ld to rdf graph.")
             return csvw_metadata_rdf_graph
         except Exception as ex:
             raise Exception(

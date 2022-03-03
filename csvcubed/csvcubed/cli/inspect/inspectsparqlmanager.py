@@ -5,6 +5,7 @@ Inspect SPARQL Queries
 Collection of SPARQL queries used in the inspect cli.
 """
 
+import logging
 from enum import Enum
 from pathlib import Path
 from typing import List
@@ -26,6 +27,8 @@ from csvcubed.models.inspectsparqlresults import (
 )
 from csvcubed.utils.file import get_root_dir_level
 from csvcubed.utils.sparql import ask, select
+
+_logger = logging.getLogger(__name__)
 
 
 class SPARQLQueryFileName(Enum):
@@ -64,6 +67,7 @@ def _get_query_string_from_file(queryType: SPARQLQueryFileName) -> str:
         / "inspect_sparql_queries"
         / (queryType.value + ".sparql")
     )
+    _logger.debug(f"{queryType.value} query file path: {file_path.absolute()}")
 
     try:
         with open(
