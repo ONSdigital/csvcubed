@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 
 import pytest
+from csvcubed.cli.build import build as cli_build
 from csvcubed.readers.configdeserialiser import *
 
 from tests.unit.test_baseunit import get_test_cases_dir
@@ -63,7 +64,7 @@ def test_01_build_convention_ok():
     test_data_path = Path(os.path.join(TEST_CASE_DIR, 'cube_data_convention_ok.csv')).resolve()
     test_json_path = None
     print(f"test_case_data: {test_data_path}")
-    cube, validation_errors = build(csv_path=test_data_path)
+    cube, validation_errors = cli_build(csv_path=test_data_path)
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, List)
     assert isinstance(cube.columns, list)

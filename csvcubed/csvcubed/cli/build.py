@@ -11,34 +11,24 @@ from typing import Optional
 
 from csvcubedmodels.dataclassbase import DataClassBase
 
-from csvcubed.readers.configdeserialiser import (
-    get_cube_from_data,
-    get_cube_from_config_json
-)
+from csvcubed.readers.configdeserialiser import get_cube_from_config_json
 from csvcubed.utils.qb.validation.cube import validate_qb_component_constraints
 
 _logger = logging.getLogger(__name__)
 _logger.addHandler(logging.StreamHandler())
 
+
 def build(
-    config: Path,
-    output_directory: Path,
     csv_path: Path,
-    fail_when_validation_error_occurs: bool,
-    validation_errors_file_out: Optional[Path],
+    config: Optional[Path] = None,
+    output_directory: Optional[Path] = Path('.', 'out').resolve(),
+    fail_when_validation_error_occurs: Optional[bool] = False,
+    validation_errors_file_out: Optional[Path] = None,
 ):
-
-    # Create a path to save the validation-errors.json file in the ./out directory
-
     _logger.debug(f"CSV: {csv_path.absolute() if csv_path is not None else ''}")
     _logger.debug(f"qube-config.json: {config.absolute() if config is not None else ''}")
 
-    if config:
-        cube, json_schema_validation_errors = get_cube_from_config_json(config, csv_path)
-
-    else:
-        cube, json_schema_validation_errors = get_cube_from_data(csv_path)
-
+    cube, json_schema_validation_errors = get_cube_from_config_json(csv_path, config)
     validation_errors = cube.validate()
     validation_errors += validate_qb_component_constraints(cube)
 
@@ -73,7 +63,6 @@ def build(
 
         if fail_when_validation_error_occurs and len(validation_errors) > 0:
             exit(1)
-
 
     print(f"Build Complete")
     return cube, validation_errors

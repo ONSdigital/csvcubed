@@ -109,6 +109,7 @@ def _from_column_dict_to_schema_model(
 
     if column_type is None:
         raise ValueError("Type of column not specified.")
+
     elif column_type == "dimension":
         if schema.NewDimension.dict_fields_match_class(column_without_type):
             if schema.ExistingDimension.dict_fields_match_class(column_without_type):
