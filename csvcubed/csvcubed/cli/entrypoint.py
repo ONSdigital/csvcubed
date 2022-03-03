@@ -78,7 +78,7 @@ def build_command(
     )
     out.mkdir(parents=True, exist_ok=True)
 
-    start_logging(log_dir_name="csvcubed-cli-build", selected_logging_level=log_level)
+    start_logging(log_dir_name="csvcubed-cli", selected_logging_level=log_level)
     try:
         build(
             config=config,
@@ -104,5 +104,5 @@ def build_command(
     metavar="TIDY_CSV-W_METADATA_JSON_PATH",
 )
 def inspect_command(log_level: str, csvw_metadata_json_path: Path) -> None:
-    start_logging(log_dir_name="csvcubed-cli-inspect", selected_logging_level=log_level)
+    start_logging(log_dir_name="csvcubed-cli", selected_logging_level=log_level)
     inspect(csvw_metadata_json_path)
