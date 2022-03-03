@@ -1,7 +1,7 @@
 """
 CLI
 ---
-The *Command Line Interface* for :mod:`~csvcubed.csvcubedcli.infojson2csvqb`.
+The *Command Line Interface* for :mod:`~csvcubed.cli`.
 """
 import logging
 
