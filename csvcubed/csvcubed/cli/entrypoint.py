@@ -4,13 +4,13 @@ CLI
 The *Command Line Interface* for :mod:`~csvcubed.csvcubedcli.infojson2csvqb`.
 """
 import logging
+
 import click
 from pathlib import Path
 
 from csvcubed.utils.log import log_exception, start_logging
-
-from .build import build
 from csvcubed.cli.inspect.inspect import inspect
+from .build import build
 
 
 _logger = logging.getLogger(__name__)
