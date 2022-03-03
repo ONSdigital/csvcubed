@@ -3,13 +3,14 @@ CLI
 ---
 The *Command Line Interface* for :mod:`~csvcubed.csvcubedcli.infojson2csvqb`.
 """
-import inspect
 import logging
 import click
 from pathlib import Path
+
 from csvcubed.utils.log import log_exception, start_logging
 
 from .build import build
+from csvcubed.cli.inspect.inspect import inspect
 
 
 _logger = logging.getLogger(__name__)
@@ -20,6 +21,8 @@ def entry_point():
     """
     csvcubed - a tool to generate qb-flavoured CSV-W cubes from COGS-style info.json files.
     """
+
+
 @entry_point.command("build")
 @click.option(
     "--config",
@@ -86,6 +89,7 @@ def build_command(
         )
     except Exception as e:
         log_exception(_logger, e)
+
 
 @entry_point.command("inspect")
 @click.argument(
