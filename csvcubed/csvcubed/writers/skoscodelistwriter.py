@@ -5,6 +5,7 @@ CodeList Writer
 Write `NewQbCodeList`s to CSV-Ws as `skos:ConceptScheme` s with DCAT2 metadata.
 """
 import json
+import logging
 from dataclasses import dataclass, field
 from pathlib import Path
 import pandas as pd
@@ -22,6 +23,8 @@ from csvcubed.writers.writerbase import WriterBase
 
 CODE_LIST_NOTATION_COLUMN_NAME = "notation"
 
+_logger = logging.getLogger(__name__)
+
 
 @dataclass
 class SkosCodeListWriter(WriterBase):
@@ -31,6 +34,11 @@ class SkosCodeListWriter(WriterBase):
 
     def __post_init__(self):
         self.csv_file_name = f"{self.new_code_list.metadata.uri_safe_identifier}.csv"
+        _logger.debug(
+            "Initialising %s with CSV output set to '%s'",
+            SkosCodeListWriter.__name__,
+            self.csv_file_name,
+        )
         self._new_uri_helper = SkosCodeListNewUriHelper(self.new_code_list)
 
     def write(self, output_directory: Path) -> None:
@@ -48,11 +56,16 @@ class SkosCodeListWriter(WriterBase):
         data = self._get_code_list_data()
 
         with open(str(metadata_file_path), "w+") as f:
+            _logger.debug("Writing CSV-W JSON-LD to %s", metadata_file_path)
             json.dump(csvw_metadata, f, indent=4)
 
         with open(str(table_json_schema_file_path), "w+") as f:
+            _logger.debug(
+                "Writing CSV-W table schema to %s", table_json_schema_file_path
+            )
             json.dump(table_schema, f, indent=4)
 
+        _logger.debug("Writing CSV to %s", csv_file_path)
         data.to_csv(str(csv_file_path), index=False)
 
     def _get_csvw_table_schema(self) -> dict:
@@ -92,6 +105,8 @@ class SkosCodeListWriter(WriterBase):
         ]
 
         if isinstance(self.new_code_list, CompositeQbCodeList):
+            _logger.debug("Code list is composite. Linking to original concept URIs.")
+
             csvw_columns.append(
                 {
                     "titles": "Original Concept URI",

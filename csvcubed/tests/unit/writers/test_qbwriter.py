@@ -18,6 +18,7 @@ from csvcubed.models.cube.qb.components.arbitraryrdf import (
 )
 from csvcubed.utils.iterables import first
 from csvcubed.writers.qbwriter import QbWriter
+from csvcubed.writers.urihelpers.skoscodelistconstants import SCHEMA_URI_IDENTIFIER
 
 
 def _get_standard_cube_for_columns(columns: List[CsvColumn]) -> Cube:
@@ -95,7 +96,7 @@ def test_structure_defined():
     _assert_component_defined(dataset, "some-existing-measure")
 
 
-def test_generating_concept_uri_template_from_global_concept_scheme_uri():
+def test_generating_concept_uri_template_from_legacy_global_concept_scheme_uri():
     """
     Given a globally defined skos:ConceptScheme's URI, generate the URI template for a column which maps the
     column's value to a concept defined inside the concept scheme.
@@ -114,7 +115,7 @@ def test_generating_concept_uri_template_from_global_concept_scheme_uri():
     )
 
 
-def test_generating_concept_uri_template_from_local_concept_scheme_uri():
+def test_generating_concept_uri_template_from_legacy_local_concept_scheme_uri():
     """
     Given a dataset-local skos:ConceptScheme's URI, generate the URI template for a column which maps the
     column's value to a concept defined inside the concept scheme.
@@ -130,6 +131,24 @@ def test_generating_concept_uri_template_from_local_concept_scheme_uri():
     assert (
         "http://base-uri/dataset-name#concept/that-concept-scheme-name/{+some_column}"
         == actual_concept_template_uri
+    )
+
+
+def test_generating_concept_uri_template_from_csvcubed_concept_scheme_uri():
+    """
+    Given a csvcubed-style skos:ConceptScheme's URI, generate the URI template for a column which maps the
+    column's value to a concept defined inside the concept scheme.
+    """
+    column = SuppressedCsvColumn("Some Column")
+    code_list = ExistingQbCodeList(
+        f"http://base-uri/concept-scheme#{SCHEMA_URI_IDENTIFIER}"
+    )
+
+    actual_concept_template_uri = (
+        empty_qbwriter._get_default_value_uri_for_code_list_concepts(column, code_list)
+    )
+    assert (
+        "http://base-uri/concept-scheme#{+some_column}" == actual_concept_template_uri
     )
 
 

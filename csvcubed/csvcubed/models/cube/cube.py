@@ -2,12 +2,14 @@
 Cube
 ----
 """
+import logging
 from dataclasses import dataclass, field
 from typing import List, Optional, Set, TypeVar, Generic
 import pandas as pd
-import traceback
 
-from csvcubed.models.validationerror import ValidationError
+from csvcubed.models.validationerror import (
+    ValidationError,
+)
 from .validationerrors import (
     DuplicateColumnTitleError,
     ColumnNotFoundInDataError,
@@ -17,6 +19,10 @@ from .validationerrors import (
 from .columns import CsvColumn
 from .catalog import CatalogMetadataBase
 from ..pydanticmodel import PydanticModel
+from csvcubed.utils.log import log_exception
+
+
+_logger = logging.getLogger(__name__)
 
 TMetadata = TypeVar("TMetadata", bound=CatalogMetadataBase, covariant=True)
 
@@ -28,14 +34,13 @@ class Cube(Generic[TMetadata], PydanticModel):
     columns: List[CsvColumn] = field(default_factory=lambda: [], repr=False)
 
     def validate(self) -> List[ValidationError]:
-        errors = []
+        errors: List[ValidationError] = []
         try:
             errors += self.pydantic_validation()
             errors += self._validate_columns()
         except Exception as e:
+            log_exception(_logger, e)
             errors.append(ValidationError(str(e)))
-            # todo: Put this in debug logging when we get to that issue.
-            traceback.print_exception(type(e), e, e.__traceback__)
             errors.append(
                 ValidationError("An error occurred and validation Failed to Complete")
             )
@@ -46,8 +51,7 @@ class Cube(Generic[TMetadata], PydanticModel):
     def _get_validation_error_for_exception_in_col(
         csv_column_title: str, error: Exception
     ) -> ColumnValidationError:
-        # todo: Put this in debug logging when we get to that issue.
-        traceback.print_exception(type(error), error, error.__traceback__)
+        log_exception(_logger, error)
         return ColumnValidationError(csv_column_title, error)
 
     def _validate_columns(self) -> List[ValidationError]:

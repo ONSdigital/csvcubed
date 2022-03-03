@@ -1,0 +1,6 @@
+{
+    "type": "dimension",
+    "from_existing": "....",
+    "label": "NUTSgeography",
+    "column_uri_template": "http://....../{+<column_name>}"
+}

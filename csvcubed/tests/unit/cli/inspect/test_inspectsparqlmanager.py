@@ -1,11 +1,11 @@
 import dateutil.parser
 
 from csvcubed.models.inspectsparqlresults import (
-    CatalogMetadataModel,
-    CodelistsModel,
-    ColsWithSuppressOutputTrueModel,
-    DSDLabelURIModel,
-    QubeComponentsModel,
+    CatalogMetadataResult,
+    CodelistsResult,
+    ColsWithSuppressOutputTrueResult,
+    DSDLabelURIResult,
+    QubeComponentsResult,
 )
 from csvcubed.utils.qb.components import ComponentPropertyType, ComponentPropertyTypeURI
 from csvcubed.cli.inspect.inspectsparqlmanager import (
@@ -51,14 +51,13 @@ def test_ask_is_csvw_qb_dataset():
 
 
 def test_select_csvw_catalog_metadata_for_dataset():
-    """
-    Should return catalog metadata for the dataset.
-    """
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
-    result: CatalogMetadataModel = select_csvw_catalog_metadata(csvw_metadata_rdf_graph)
+    result: CatalogMetadataResult = select_csvw_catalog_metadata(
+        csvw_metadata_rdf_graph
+    )
 
     assert result.title == "Alcohol Bulletin"
     assert result.label == "Alcohol Bulletin"
@@ -102,14 +101,13 @@ def test_select_csvw_catalog_metadata_for_dataset():
 
 
 def test_select_csvw_catalog_metadata_for_codelist():
-    """
-    Should return catalog metadata for the codelist.
-    """
     csvw_metadata_json_path = _test_case_base_dir / "codelist.csv-metadata.json"
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
-    result: CatalogMetadataModel = select_csvw_catalog_metadata(csvw_metadata_rdf_graph)
+    result: CatalogMetadataResult = select_csvw_catalog_metadata(
+        csvw_metadata_rdf_graph
+    )
 
     assert result.title == "Alcohol Content"
     assert result.label == "Alcohol Content"
@@ -134,17 +132,14 @@ def test_select_csvw_catalog_metadata_for_codelist():
 
 
 def test_select_csvw_dsd_dataset():
-    """
-    Should return dataset dsd.
-    """
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
-    result: DSDLabelURIModel = select_csvw_dsd_dataset_label_and_dsd_def_uri(
+    result: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
         csvw_metadata_rdf_graph
     )
-    component_result: QubeComponentsModel = select_csvw_dsd_qube_components(
+    component_result: QubeComponentsResult = select_csvw_dsd_qube_components(
         csvw_metadata_rdf_graph, result.dsd_uri, csvw_metadata_json_path
     )
     components = component_result.qube_components
@@ -162,30 +157,24 @@ def test_select_csvw_dsd_dataset():
 
 
 def test_select_cols_when_supress_output_cols_not_present():
-    """
-    Should return columns where suppress output is true.
-    """
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
-    result: ColsWithSuppressOutputTrueModel = select_cols_where_supress_output_is_true(
+    result: ColsWithSuppressOutputTrueResult = select_cols_where_supress_output_is_true(
         csvw_metadata_rdf_graph
     )
     assert len(result.columns) == 0
 
 
 def test_select_cols_when_supress_output_cols_present():
-    """
-    Should return columns where suppress output is true.
-    """
     csvw_metadata_json_path = (
         _test_case_base_dir / "datacube_with_suppress_output_cols.csv-metadata.json"
     )
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
-    result: ColsWithSuppressOutputTrueModel = select_cols_where_supress_output_is_true(
+    result: ColsWithSuppressOutputTrueResult = select_cols_where_supress_output_is_true(
         csvw_metadata_rdf_graph
     )
     assert len(result.columns) == 2
@@ -194,77 +183,18 @@ def test_select_cols_when_supress_output_cols_present():
 
 
 def test_select_dsd_code_list_and_cols_without_codelist_labels():
-    """
-    Should return dsd code lists.
-    """
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
-    result_dsd: DSDLabelURIModel = select_csvw_dsd_dataset_label_and_dsd_def_uri(
+    result_dsd: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
         csvw_metadata_rdf_graph
     )
 
-    result: CodelistsModel = select_dsd_code_list_and_cols(
+    result: CodelistsResult = select_dsd_code_list_and_cols(
         csvw_metadata_rdf_graph, result_dsd.dsd_uri, csvw_metadata_json_path
     )
 
     assert len(result.codelists) == 3
     assert result.codelists[0].codeListLabel == ""
     assert result.codelists[0].colsInUsed == "Alcohol Sub Type"
-
-
-def test_select_datacube_csv_url():
-    """
-    TODO: Description
-    """
-    assert True
-
-
-def test_select_codelist_csv_url():
-    """
-    TODO: Description
-    """
-    assert True
-
-
-def test_select_datacube_url():
-    """
-    TODO: Description
-    """
-    assert True
-
-
-def test_get_dataset_unit_type():
-    """
-    TODO: Description
-    """
-    assert True
-
-
-def test_get_dsd_single_measure():
-    """
-    TODO: Description
-    """
-    assert True
-
-
-def test_get_measure_column():
-    """
-    TODO: Description
-    """
-    assert True
-
-
-def test_get_dsd_single_unit():
-    """
-    TODO: Description
-    """
-    assert True
-
-
-def test_get_units_column():
-    """
-    TODO: Description
-    """
-    assert True

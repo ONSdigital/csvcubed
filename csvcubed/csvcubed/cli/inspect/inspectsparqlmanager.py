@@ -1,25 +1,23 @@
 """
-Inspect SPARQL Query Manager
-----------------------------
+Inspect SPARQL Queries
+----------------------
 
-Collection of SPARQL query handling functions used in the inspect cli.
+Collection of SPARQL queries used in the inspect cli.
 """
 
 from enum import Enum
 from pathlib import Path
 from typing import List
 
-import pandas as pd
-from pandas import DataFrame
 from rdflib import Graph, URIRef
 from rdflib.query import ResultRow
 
 from csvcubed.models.inspectsparqlresults import (
-    CatalogMetadataModel,
-    CodelistsModel,
-    ColsWithSuppressOutputTrueModel,
-    DSDLabelURIModel,
-    QubeComponentsModel,
+    CatalogMetadataResult,
+    CodelistsResult,
+    ColsWithSuppressOutputTrueResult,
+    DSDLabelURIResult,
+    QubeComponentsResult,
     map_catalog_metadata_result,
     map_codelists_sparql_result,
     map_cols_with_supress_output_true_sparql_result,
@@ -28,16 +26,6 @@ from csvcubed.models.inspectsparqlresults import (
 )
 from csvcubed.utils.file import get_root_dir_level
 from csvcubed.utils.sparql import ask, select
-
-
-class DatasetUnit(Enum):
-    """
-    The type of dataset unit.
-    """
-
-    SINGLE_UNIT = 0
-
-    MULTI_UNIT = 1
 
 
 class SPARQLQueryFileName(Enum):
@@ -117,13 +105,13 @@ def ask_is_csvw_qb_dataset(rdf_graph: Graph) -> bool:
     )
 
 
-def select_csvw_catalog_metadata(rdf_graph: Graph) -> CatalogMetadataModel:
+def select_csvw_catalog_metadata(rdf_graph: Graph) -> CatalogMetadataResult:
     """
     Queries catalog metadata such as title, label, issued date/time, modified data/time, etc.
 
     Member of :file:`./inspectsparqlmanager.py`
 
-    :return: `CatalogMetadataModel`
+    :return: `CatalogMetadataResult`
     """
     results: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryFileName.SELECT_CATALOG_METADATA),
@@ -138,13 +126,13 @@ def select_csvw_catalog_metadata(rdf_graph: Graph) -> CatalogMetadataModel:
 
 def select_csvw_dsd_dataset_label_and_dsd_def_uri(
     rdf_graph: Graph,
-) -> DSDLabelURIModel:
+) -> DSDLabelURIResult:
     """
     Queries data structure definition dataset label and uri.
 
     Member of :file:`./inspectsparqlmanager.py`
 
-    :return: `DSDLabelURIModel`
+    :return: `DSDLabelURIResult`
     """
     results: List[ResultRow] = select(
         _get_query_string_from_file(
@@ -161,13 +149,13 @@ def select_csvw_dsd_dataset_label_and_dsd_def_uri(
 
 def select_csvw_dsd_qube_components(
     rdf_graph: Graph, dsd_uri: str, json_path: Path
-) -> QubeComponentsModel:
+) -> QubeComponentsResult:
     """
     Queries the list of qube components.
 
     Member of :file:`./inspectsparqlmanager.py`
 
-    :return: `QubeComponentsModel`
+    :return: `QubeComponentsResult`
     """
     results: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryFileName.SELECT_DSD_QUBE_COMPONENTS),
@@ -179,7 +167,7 @@ def select_csvw_dsd_qube_components(
 
 def select_cols_where_supress_output_is_true(
     rdf_graph: Graph,
-) -> ColsWithSuppressOutputTrueModel:
+) -> ColsWithSuppressOutputTrueResult:
     """
     Queries the columns where suppress output is true.
 
@@ -196,13 +184,13 @@ def select_cols_where_supress_output_is_true(
 
 def select_dsd_code_list_and_cols(
     rdf_graph: Graph, dsd_uri: str, json_path: Path
-) -> CodelistsModel:
+) -> CodelistsResult:
     """
     Queries code lists and columns in the data cube.
 
     Member of :file:`./inspectsparqlmanager.py`
 
-    :return: `CodelistInfoSparqlResult`
+    :return: `CodelistInfoSparqlResult``
     """
     results: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryFileName.SELECT_CODE_LISTS_AND_COLS),
@@ -210,91 +198,3 @@ def select_dsd_code_list_and_cols(
         init_bindings={"dsd_uri": URIRef(dsd_uri)},
     )
     return map_codelists_sparql_result(results, json_path)
-
-
-def select_datacube_csv_url(dataset_uri: str) -> str:
-    """
-    TODO: Description
-
-    Member of :file:`./inspectsparqlmanager.py`
-
-    :return: `TODO`
-    """
-    return "TODO"
-
-
-def select_codelist_csv_url() -> str:
-    """
-    TODO: Description
-
-    Member of :file:`./inspectsparqlmanager.py`
-
-    :return: `TODO`
-    """
-    return "TODO"
-
-
-def select_datacube_url() -> str:
-    """
-    TODO: Description
-
-    Member of :file:`./inspectsparqlmanager.py`
-
-    :return: `TODO`
-    """
-    return "TODO"
-
-
-def get_dataset_unit_type() -> DatasetUnit:
-    """
-    TODO: Description
-
-    Member of :file:`./inspectsparqlmanager.py`
-
-    :return: `TODO`
-    """
-    return DatasetUnit.SINGLE_UNIT
-
-
-def get_dsd_single_measure() -> str:
-    """
-    TODO: Description
-
-    Member of :file:`./inspectsparqlmanager.py`
-
-    :return: `TODO`
-    """
-    return ""
-
-
-def get_measure_column() -> str:
-    """
-    TODO: Description
-
-    Member of :file:`./inspectsparqlmanager.py`
-
-    :return: `TODO`
-    """
-    return "ColMeasure"
-
-
-def get_dsd_single_unit() -> str:
-    """
-    TODO: Description
-
-    Member of :file:`./inspectsparqlmanager.py`
-
-    :return: `TODO`
-    """
-    return ""
-
-
-def get_units_column() -> str:
-    """
-    TODO: Description
-
-    Member of :file:`./inspectsparqlmanager.py`
-
-    :return: `TODO`
-    """
-    return "ColUnits"

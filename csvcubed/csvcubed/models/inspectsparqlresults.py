@@ -25,9 +25,9 @@ from csvcubed.utils.qb.components import (
 
 
 @dataclass()
-class CatalogMetadataModel:
+class CatalogMetadataResult:
     """
-    Model to represent Catalog metadata
+    Model to represent select catalog metadata sparql query result.
     """
 
     title: str
@@ -55,9 +55,9 @@ class CatalogMetadataModel:
 
 
 @dataclass()
-class DSDLabelURIModel:
+class DSDLabelURIResult:
     """
-    Model to represent dsd dataset label and uri.
+    Model to represent select dsd dataset label and uri sparql query result.
     """
 
     dataset_label: str
@@ -69,7 +69,7 @@ class DSDLabelURIModel:
 
 
 @dataclass()
-class QubeComponentModel(DataClassBase):
+class QubeComponentResult(DataClassBase):
     """
     Model to represent a qube component.
     """
@@ -82,12 +82,12 @@ class QubeComponentModel(DataClassBase):
 
 
 @dataclass()
-class QubeComponentsModel:
+class QubeComponentsResult:
     """
-    Model to represent qube components.
+    Model to represent select qube components sparql query result.
     """
 
-    qube_components: list[QubeComponentModel]
+    qube_components: list[QubeComponentResult]
     num_components: int
 
     @property
@@ -106,9 +106,9 @@ class QubeComponentsModel:
 
 
 @dataclass()
-class ColsWithSuppressOutputTrueModel:
+class ColsWithSuppressOutputTrueResult:
     """
-    Model to represent cols where the suppress output is true.
+    Model to represent select cols where the suppress output is true sparql query result.
     """
 
     columns: list[str]
@@ -119,7 +119,7 @@ class ColsWithSuppressOutputTrueModel:
 
 
 @dataclass()
-class CodelistModel(DataClassBase):
+class CodelistResult(DataClassBase):
     """
     Model to represent a codelist.
     """
@@ -130,12 +130,12 @@ class CodelistModel(DataClassBase):
 
 
 @dataclass()
-class CodelistsModel:
+class CodelistsResult:
     """
-    Model to represent codelists.
+    Model to represent select codelists sparql query result.
     """
 
-    codelists: list[CodelistModel]
+    codelists: list[CodelistResult]
     num_codelists: int
 
     @property
@@ -147,17 +147,17 @@ class CodelistsModel:
         return f"{linesep}\t- Number of Code Lists: {self.num_codelists}{linesep}\t- Code Lists:{linesep}{formatted_codelists}"
 
 
-def map_catalog_metadata_result(sparql_result: ResultRow) -> CatalogMetadataModel:
+def map_catalog_metadata_result(sparql_result: ResultRow) -> CatalogMetadataResult:
     """
-    Maps sparql query to `CatalogMetadataModel`
+    Maps sparql query to `CatalogMetadataResult`
 
     Member of :file:`./models/inspectsparqlresults.py`
 
-    :return: `CatalogMetadataModel`
+    :return: `CatalogMetadataResult`
     """
     result_dict = sparql_result.asdict()
 
-    model = CatalogMetadataModel(
+    result = CatalogMetadataResult(
         title=str(result_dict["title"]),
         label=str(result_dict["label"]),
         issued=str(result_dict["issued"]),
@@ -173,41 +173,41 @@ def map_catalog_metadata_result(sparql_result: ResultRow) -> CatalogMetadataMode
         comment=none_or_map(result_dict.get("comment"), str) or "None",
         description=none_or_map(result_dict.get("description"), str) or "None",
     )
-    return model
+    return result
 
 
 def map_dataset_label_dsd_uri_sparql_result(
     sparql_result: ResultRow,
-) -> DSDLabelURIModel:
+) -> DSDLabelURIResult:
     """
-    Maps sparql query to `DSDLabelURIModel`
+    Maps sparql query to `DSDLabelURIResult`
 
     Member of :file:`./models/inspectsparqlresults.py`
 
-    :return: `DSDLabelURIModel`
+    :return: `DSDLabelURIResult`
     """
     result_dict = sparql_result.asdict()
 
-    model = DSDLabelURIModel(
+    result = DSDLabelURIResult(
         dataset_label=str(result_dict["dataSetLabel"]),
         dsd_uri=URIRef(result_dict["dataStructureDefinition"]),
     )
-    return model
+    return result
 
 
 def map_qube_component_sparql_result(
     sparql_result: ResultRow, json_path: Path
-) -> QubeComponentModel:
+) -> QubeComponentResult:
     """
-    Maps sparql query to `QubeComponentModel`
+    Maps sparql query to `QubeComponentResult`
 
     Member of :file:`./models/inspectsparqlresults.py`
 
-    :return: `QubeComponentModel`
+    :return: `QubeComponentResult`
     """
     result_dict = sparql_result.asdict()
 
-    model = QubeComponentModel(
+    result = QubeComponentResult(
         property=get_printable_component_property(
             json_path, str(result_dict["componentProperty"])
         ),
@@ -220,18 +220,18 @@ def map_qube_component_sparql_result(
         csv_col_title=none_or_map(result_dict.get("csvColumnTitle"), str) or "",
         required=none_or_map(result_dict.get("required"), bool) or False,
     )
-    return model
+    return result
 
 
 def map_qube_components_sparql_result(
     sparql_results: List[ResultRow], json_path: Path
-) -> QubeComponentsModel:
+) -> QubeComponentsResult:
     """
-    Maps sparql query to `QubeComponentsModel`
+    Maps sparql query to `QubeComponentsResult`
 
     Member of :file:`./models/inspectsparqlresults.py`
 
-    :return: `QubeComponentsModel`
+    :return: `QubeComponentsResult`
     """
     components = list(
         map(
@@ -239,21 +239,21 @@ def map_qube_components_sparql_result(
             sparql_results,
         )
     )
-    model = QubeComponentsModel(
+    result = QubeComponentsResult(
         qube_components=components, num_components=len(components)
     )
-    return model
+    return result
 
 
 def map_cols_with_supress_output_true_sparql_result(
     sparql_results: List[ResultRow],
-) -> ColsWithSuppressOutputTrueModel:
+) -> ColsWithSuppressOutputTrueResult:
     """
-    Maps sparql query to `ColsWithSuppressOutputTrueModel`
+    Maps sparql query to `ColsWithSuppressOutputTrueResult`
 
     Member of :file:`./models/inspectsparqlresults.py`
 
-    :return: `ColsWithSuppressOutputTrueModel`
+    :return: `ColsWithSuppressOutputTrueResult`
     """
     columns = list(
         map(
@@ -261,23 +261,23 @@ def map_cols_with_supress_output_true_sparql_result(
             sparql_results,
         )
     )
-    model = ColsWithSuppressOutputTrueModel(columns=columns)
-    return model
+    result = ColsWithSuppressOutputTrueResult(columns=columns)
+    return result
 
 
 def map_codelist_sparql_result(
     sparql_result: ResultRow, json_path: Path
-) -> CodelistModel:
+) -> CodelistResult:
     """
-    Maps sparql query to `CodelistModel`
+    Maps sparql query to `CodelistResult`
 
     Member of :file:`./models/inspectsparqlresults.py`
 
-    :return: `CodelistModel`
+    :return: `CodelistResult`
     """
     result_dict = sparql_result.asdict()
 
-    model = CodelistModel(
+    result = CodelistResult(
         codeList=get_printable_component_property(
             json_path, str(result_dict["codeList"])
         ),
@@ -286,12 +286,12 @@ def map_codelist_sparql_result(
             str(result_dict["csvColumnsUsedIn"]).split("|")
         ),
     )
-    return model
+    return result
 
 
 def map_codelists_sparql_result(
     sparql_results: List[ResultRow], json_path: Path
-) -> CodelistsModel:
+) -> CodelistsResult:
     """
     Maps sparql query to `CodelistsModel`
 
@@ -305,5 +305,5 @@ def map_codelists_sparql_result(
             sparql_results,
         )
     )
-    model = CodelistsModel(codelists=codelists, num_codelists=len(codelists))
-    return model
+    result = CodelistsResult(codelists=codelists, num_codelists=len(codelists))
+    return result

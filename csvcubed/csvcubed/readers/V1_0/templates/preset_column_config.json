@@ -1,0 +1,6 @@
+{
+    "year": "year.json",
+    "year+month": "year+month.json",
+    "ons geographies": "onsgeographies.json",
+    "nuts geography": "nutsgeography.json"
+}
