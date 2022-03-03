@@ -46,9 +46,9 @@ class UnknownPydanticValidationError(PydanticValidationError):
     """
     The error type for a generic type of error raised by pydantic which we don't handle by default.
     """
-
-    path: List[str] = field(init=True)
+    
     original_error: Exception
+    path: List[str] = field(init=True)
 
     def __post_init__(self):
         self.message = f"{', '.join(self.path)} - {self.original_error}"
