@@ -87,6 +87,8 @@ def _get_logging_level(selected_logging_level: Union[int, str, None]) -> int:
             return logging.INFO
         elif selected_logging_level == "debug":
             return logging.DEBUG
+        elif selected_logging_level == "warn":
+            return logging.WARN
         else:
             raise ValueError(f"Unexpected logging level {selected_logging_level}.")
 
