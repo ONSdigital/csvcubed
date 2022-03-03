@@ -4,9 +4,9 @@ CLI
 The *Command Line Interface* for :mod:`~csvcubed.cli`.
 """
 import logging
+from pathlib import Path
 
 import click
-from pathlib import Path
 
 from csvcubed.utils.log import log_exception, start_logging
 from csvcubed.cli.inspect.inspect import inspect
