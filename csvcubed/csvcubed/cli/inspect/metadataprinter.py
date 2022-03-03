@@ -10,11 +10,11 @@ from pathlib import Path
 from rdflib import Graph
 
 from csvcubed.models.inspectsparqlresults import (
-    CatalogMetadataModel,
-    CodelistsModel,
-    ColsWithSuppressOutputTrueModel,
-    DSDLabelURIModel,
-    QubeComponentsModel,
+    CatalogMetadataResult,
+    CodelistsResult,
+    ColsWithSuppressOutputTrueResult,
+    DSDLabelURIResult,
+    QubeComponentsResult,
 )
 from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
 from csvcubed.cli.inspect.inspectsparqlmanager import (
@@ -70,7 +70,7 @@ class MetadataPrinter:
 
         :return: `str` - user-friendly string which will be output to CLI.
         """
-        result: CatalogMetadataModel = select_csvw_catalog_metadata(
+        result: CatalogMetadataResult = select_csvw_catalog_metadata(
             self.csvw_metadata_rdf_graph
         )
 
@@ -84,16 +84,16 @@ class MetadataPrinter:
 
         :return: `str` - user-friendly string which will be output to CLI.
         """
-        result_dataset_label_dsd_uri: DSDLabelURIModel = (
+        result_dataset_label_dsd_uri: DSDLabelURIResult = (
             select_csvw_dsd_dataset_label_and_dsd_def_uri(self.csvw_metadata_rdf_graph)
         )
         self.dsd_uri = result_dataset_label_dsd_uri.dsd_uri
 
-        result_qube_components: QubeComponentsModel = select_csvw_dsd_qube_components(
+        result_qube_components: QubeComponentsResult = select_csvw_dsd_qube_components(
             self.csvw_metadata_rdf_graph, self.dsd_uri, self.csvw_metadata_json_path
         )
 
-        result_cols_with_suppress_output_true: ColsWithSuppressOutputTrueModel = (
+        result_cols_with_suppress_output_true: ColsWithSuppressOutputTrueResult = (
             select_cols_where_supress_output_is_true(self.csvw_metadata_rdf_graph)
         )
 
@@ -108,7 +108,7 @@ class MetadataPrinter:
         :return: `str` - user-friendly string which will be output to CLI.
         """
 
-        result: CodelistsModel = select_dsd_code_list_and_cols(
+        result: CodelistsResult = select_dsd_code_list_and_cols(
             self.csvw_metadata_rdf_graph, self.dsd_uri, self.csvw_metadata_json_path
         )
 
