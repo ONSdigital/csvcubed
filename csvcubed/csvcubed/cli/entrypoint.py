@@ -78,7 +78,7 @@ def build_command(
     )
     out.mkdir(parents=True, exist_ok=True)
 
-    start_logging(log_dir_name="csvcubed-cli", selected_logging_level=log_level)
+    start_logging(log_dir_name="csvcubed-cli-build", selected_logging_level=log_level)
     try:
         build(
             config=config,
