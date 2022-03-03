@@ -92,13 +92,17 @@ def build_command(
 
 
 @entry_point.command("inspect")
+@click.option(
+    "--log-level",
+    help="select a logging level out of: 'warn', 'err', 'crit', 'info' or 'debug'.",
+    type=click.Choice(["warn", "err", "crit", "info", "debug"], case_sensitive=False),
+    default="warn",
+)
 @click.argument(
     "csvw_metadata_json_path",
     type=click.Path(exists=True, path_type=Path),
     metavar="TIDY_CSV-W_METADATA_JSON_PATH",
 )
-def inspect_command(csvw_metadata_json_path: Path) -> None:
-    _logger.info(
-        f"Valid csv-w metadata json path: {csvw_metadata_json_path.absolute()}"
-    )
+def inspect_command(log_level: str, csvw_metadata_json_path: Path) -> None:
+    start_logging(log_dir_name="csvcubed-cli-inspect", selected_logging_level=log_level)
     inspect(csvw_metadata_json_path)
