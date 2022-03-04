@@ -15,18 +15,19 @@ from csvcubed.readers.configdeserialiser import get_cube_from_config_json
 from csvcubed.utils.qb.validation.cube import validate_qb_component_constraints
 
 _logger = logging.getLogger(__name__)
-_logger.addHandler(logging.StreamHandler())
 
 
 def build(
     csv_path: Path,
     config: Optional[Path] = None,
-    output_directory: Optional[Path] = Path('.', 'out').resolve(),
-    fail_when_validation_error_occurs: Optional[bool] = False,
+    output_directory: Optional[Path] = Path(".", "out").resolve(),
+    fail_when_validation_error_occurs: bool = False,
     validation_errors_file_out: Optional[Path] = None,
 ):
     _logger.debug(f"CSV: {csv_path.absolute() if csv_path is not None else ''}")
-    _logger.debug(f"qube-config.json: {config.absolute() if config is not None else ''}")
+    _logger.debug(
+        f"qube-config.json: {config.absolute() if config is not None else ''}"
+    )
 
     cube, json_schema_validation_errors = get_cube_from_config_json(csv_path, config)
     validation_errors = cube.validate()
@@ -34,18 +35,14 @@ def build(
 
     if not output_directory.exists():
         print(f"Creating output directory {output_directory.absolute()}")
-        output_directory.mkdir()
+        output_directory.mkdir(parents=True)
 
     if len(validation_errors) > 0 or len(json_schema_validation_errors) > 0:
         for error in validation_errors:
-            print(
-                f"Validation Error: {error.message}"
-            )
+            _logger.error(f"Validation Error: {error.message}")
 
         for err in json_schema_validation_errors:
-            print(
-                f"Schema Validation Error: {err.message}"
-            )
+            _logger.warning(f"Schema Validation Error: {err.message}")
 
         if validation_errors_file_out is not None:
             validation_errors_dict = [

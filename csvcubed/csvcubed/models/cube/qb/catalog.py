@@ -21,16 +21,16 @@ class CatalogMetadata(CatalogMetadataBase, UriIdentifiable):
     description: Optional[str] = field(default=None, repr=False)
     creator_uri: Optional[str] = field(default=None, repr=False)
     publisher_uri: Optional[str] = field(default=None, repr=False)
-    landing_page_uris: list[str] = field(default_factory=list, repr=False) 
-    theme_uris: Optional[list[str]] = field(default_factory=list, repr=False)
-    keywords: Optional[list[str]] = field(default_factory=list, repr=False)
+    landing_page_uris: list[str] = field(default_factory=list, repr=False)
+    theme_uris: list[str] = field(default_factory=list, repr=False)
+    keywords: list[str] = field(default_factory=list, repr=False)
     dataset_issued: Optional[datetime] = field(default=None, repr=False)
     dataset_modified: Optional[datetime] = field(default=None, repr=False)
     license_uri: Optional[str] = field(default=None, repr=False)
     public_contact_point_uri: Optional[str] = field(default=None, repr=False)
     uri_safe_identifier_override: Optional[str] = field(default=None, repr=False)
-    spatial_bound_uri: Optional[str] = field(default=None, repr=False)
-    temporal_bound_uri: Optional[str] = field(default=None, repr=False)
+    # spatial_bound_uri: Optional[str] = field(default=None, repr=False)
+    # temporal_bound_uri: Optional[str] = field(default=None, repr=False)
 
     _creator_uri_validator = validate_uri("creator_uri", is_optional=True)
     _publisher_uri_validator = validate_uri("publisher_uri", is_optional=True)
@@ -38,8 +38,8 @@ class CatalogMetadata(CatalogMetadataBase, UriIdentifiable):
         "landing_page_uris", is_optional=True
     )
     _license_uri_validator = validate_uri("license_uri", is_optional=True)
-    _spatial_bound_uri_validator = validate_uri("spatial_bound_uri", is_optional=True)
-    _temporal_bound_uri_validator = validate_uri("temporal_bound_uri", is_optional=True)
+    # _spatial_bound_uri_validator = validate_uri("spatial_bound_uri", is_optional=True)
+    # _temporal_bound_uri_validator = validate_uri("temporal_bound_uri", is_optional=True)
     _public_contact_point_uri_validator = validate_uri(
         "public_contact_point_uri", is_optional=True
     )

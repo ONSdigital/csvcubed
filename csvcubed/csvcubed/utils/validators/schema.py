@@ -24,14 +24,19 @@ def validate_dict_against_schema(value: dict, schema: dict) -> list[ValidationEr
             return errors
 
         # Validate the cube config json against our the cube config schema
-        errors = jsonschema.validate(value, schema)
+        try:
+            jsonschema.validate(value, schema)
+        except Exception as err:
+            errors.append(err)
 
     except jsonschema.exceptions.ValidationError as err:
         log.error(f"Validation of the supplied config cube failed: {repr(err)}")
         raise err
 
     except jsonschema.exceptions.SchemaError as err:
-        log.error(f"The schema provided for validation of the config cube was not a valid schema: {repr(err)}")
+        log.error(
+            f"The schema provided for validation of the config cube was not a valid schema: {repr(err)}"
+        )
         raise err
 
     except Exception as err:

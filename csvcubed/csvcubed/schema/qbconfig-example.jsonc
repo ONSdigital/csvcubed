@@ -13,7 +13,7 @@
     ], // List or string
     "dataset_issued": "date-time",
     "dataset_modified": "date-time",
-    "license": "uri", // Link to existing licence
+    "license": "uri", // Link to existing license
     "spatial_bound": "a geography uri", // maps to dcterms.spatial
     "temporal_bound": "a temporal uri", // maps to dcterms.temporal
     "keywords": [

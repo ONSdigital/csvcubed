@@ -18,10 +18,12 @@ def load_json_from_uri(uri: str) -> dict:
         response = requests.get(uri)
         if response.status_code != requests.codes("ok"):
             # HTTP Get request failed - raise error
-            log.error(
-                f"Failed to retrieve the schema from: {uri}.\n"
-                f"Status-Code: {response.status_code} - {response.text}"
+            msg = (
+                f"Failed to retrieve the schema from: {uri}.Status-Code: {response.status_code}"
+                f" - {response.text}"
             )
+            log.error(msg)
+            raise IOError(msg)
         return json.loads(response.text)
 
     except JSONDecodeError as err:
@@ -34,7 +36,9 @@ def load_json_from_uri(uri: str) -> dict:
         raise err
 
     except Exception as err:
-        log.error(f"The http get request to retrieve the schema returned the exception: {repr(err)}")
+        log.error(
+            f"The http get request to retrieve the schema returned the exception: {repr(err)}"
+        )
         raise err
 
 

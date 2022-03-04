@@ -84,9 +84,9 @@ class NewDimension(SchemaBaseClass):
         return new_dimension
 
     def _get_code_list(
-            self,
-            new_dimension: NewQbDimension,
-            json_parent_dir: Path,
+        self,
+        new_dimension: NewQbDimension,
+        json_parent_dir: Path,
     ) -> Union[NewQbCodeListInCsvW, ExistingQbCodeList]:
 
         code_list_obj = None
@@ -107,14 +107,14 @@ class NewDimension(SchemaBaseClass):
                 code_list_obj = None
 
             elif (
-                    new_dimension.parent_dimension_uri
-                    == "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod" and
-                    self.source_uri is not None and
-                    self.value.lower().startswith("http://reference.data.gov.uk/id/")
+                new_dimension.parent_dimension_uri
+                == "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod"
+                and self.source_uri is not None
+                and self.value.lower().startswith("http://reference.data.gov.uk/id/")
             ):
                 # This is a special case where we build up a code-list of the date/time values.
-                code_list_obj = (
-                    self._get_date_time_code_list_for_dimension(self.label, new_dimension)
+                code_list_obj = self._get_date_time_code_list_for_dimension(
+                    self.label, new_dimension
                 )
             # else, the user wants a standard codelist to be automatically generated
             return code_list_obj or new_dimension.code_list
@@ -141,11 +141,6 @@ class NewDimension(SchemaBaseClass):
             ],
         )
 
-        return NewQbCodeListInCsvW(
-            info_json_parent_dir
-            / "codelists"
-            / f"{uri_safe(column_label)}.csv-metadata.json"
-        )
 
 @dataclass
 class ExistingDimension(SchemaBaseClass):
@@ -197,9 +192,7 @@ class ExistingAttribute(SchemaBaseClass):
         if self.data_type is None:
             return ExistingQbAttribute(
                 self.from_existing,
-                new_attribute_values=_get_new_attribute_values(
-                    data, self.values
-                ),
+                new_attribute_values=_get_new_attribute_values(data, self.values),
                 is_required=self.required,
             )
 
@@ -214,6 +207,7 @@ class ExistingAttribute(SchemaBaseClass):
                 is_required=self.required,
             )
 
+
 @dataclass
 class NewAttribute(SchemaBaseClass):
     label: Optional[str] = None
@@ -227,7 +221,7 @@ class NewAttribute(SchemaBaseClass):
     def map_to_new_qb_attribute(
         self, column_title: str, data: PandasDataTypes
     ) -> NewQbAttribute:
-        if (isinstance(self, NewAttribute) and self.data_type is not None):
+        if isinstance(self, NewAttribute) and self.data_type is not None:
             if isinstance(self.values, list):
                 raise Exception(
                     "Attributes cannot represent both literal values and attribute (resource) values"
@@ -238,7 +232,7 @@ class NewAttribute(SchemaBaseClass):
                 data_type=self.data_type,
                 parent_attribute_uri=self.from_existing,
                 source_uri=self.definition_uri,
-                is_required=self.isRequired
+                is_required=self.required,
             )
         else:
             if isinstance(self.values, bool) and self.values is True:
@@ -263,8 +257,9 @@ class NewAttribute(SchemaBaseClass):
             else:
                 raise ValueError(f"Unhandled value: {self}")
 
+
 @dataclass
-class UnitType(SchemaBaseClass):
+class Unit(SchemaBaseClass):
     label: str
     description: Optional[str] = None
     from_existing: Optional[str] = None
@@ -276,7 +271,7 @@ class UnitType(SchemaBaseClass):
 
 @dataclass
 class ExistingUnits(SchemaBaseClass):
-    values: Union[bool, List[UnitType]] = True
+    values: Union[bool, List[Unit]] = True
     cell_uri_template: Optional[str] = None
 
     def map_to_existing_qb_multi_units(
@@ -289,7 +284,7 @@ class ExistingUnits(SchemaBaseClass):
 
 @dataclass
 class NewUnits(SchemaBaseClass):
-    values: Union[bool, List[UnitType]] = True
+    values: Union[bool, List[Unit]] = True
 
     def map_to_new_qb_multi_units(self, data: PandasDataTypes) -> QbMultiUnits:
         if isinstance(self.values, bool) and self.values is True:
@@ -299,7 +294,7 @@ class NewUnits(SchemaBaseClass):
 
             units = []
             for unit in self.values:
-                if not isinstance(unit, UnitType):
+                if not isinstance(unit, Unit):
                     raise ValueError(f"Unexpected unit value: {unit}")
 
                 units.append(_map_unit(unit))
@@ -310,7 +305,7 @@ class NewUnits(SchemaBaseClass):
 
 
 @dataclass
-class MeasureType(SchemaBaseClass):
+class Measure(SchemaBaseClass):
     label: Optional[str] = None
     description: Optional[str] = None
     from_existing: Optional[str] = None
@@ -319,7 +314,7 @@ class MeasureType(SchemaBaseClass):
 
 @dataclass
 class NewMeasures(SchemaBaseClass):
-    values: Union[bool, List[MeasureType]] = True
+    values: Union[bool, List[Measure]] = True
 
     def map_to_new_multi_measure_dimension(
         self, data: PandasDataTypes
@@ -332,44 +327,41 @@ class NewMeasures(SchemaBaseClass):
         elif isinstance(self.values, list):
             new_measures = []
             for new_measure in self.values:
-                if not isinstance(new_measure, MeasureType):
+                if not isinstance(new_measure, Measure):
                     raise ValueError(f"Unexpected measure: {new_measure}")
-
-                if any([new_measure.label, new_measure.description, new_measure.definition_uri]):
-                    # NewQBMeasure
-                    new_measures.append(_map_measure(new_measure))
-                else:
-                    new_measures.append(QbMultiMeasureDimension(new_measure))
 
             return QbMultiMeasureDimension(new_measures)
 
         else:
             raise ValueError(f"Unexpected values type: {self.values}")
 
+
 @dataclass
 class ExistingMeasures(SchemaBaseClass):
-    values: Union[bool, List[MeasureType]] = True
+    values: Union[bool, List[Measure]] = True
     cell_uri_template: Optional[str] = None
 
     def map_to_existing_multi_measure_dimension(
         self, column_title: str, data: PandasDataTypes
     ) -> QbMultiMeasureDimension:
         csvw_column_name = csvw_column_name_safe(column_title)
-        return QbMultiMeasureDimension.existing_measures_from_data(data, csvw_column_name,
-                                                                   self.cell_uri_template)
+        return QbMultiMeasureDimension.existing_measures_from_data(
+            data, csvw_column_name, self.cell_uri_template
+        )
+
 
 @dataclass
 class ObservationValue(SchemaBaseClass):
-    datatype: Optional[str] = None
-    unit: Union[None, str, UnitType] = None
-    measure: Union[None, str, NewMeasures] = None
+    datatype: Optional[str] = "decimal"
+    unit: Union[None, str, Unit] = None
+    measure: Union[None, str, Measure] = None
 
     def map_to_qb_observation(self) -> QbObservationValue:
         unit = None
         if isinstance(self.unit, str):
             unit = ExistingQbUnit(unit_uri=self.unit)
 
-        elif isinstance(self.unit, UnitType):
+        elif isinstance(self.unit, Unit):
             unit = _map_unit(self.unit)
 
         elif self.unit is not None:
@@ -377,9 +369,7 @@ class ObservationValue(SchemaBaseClass):
 
         if self.measure is None:
             # Multi-measure cube
-            return QbMultiMeasureObservationValue(
-                data_type=self.datatype or "decimal", unit=unit
-            )
+            return QbMultiMeasureObservationValue(data_type=self.datatype, unit=unit)
         else:
             # Single measure qb
             measure = None
@@ -397,24 +387,22 @@ class ObservationValue(SchemaBaseClass):
             )
 
 
-def _map_unit(resource: UnitType) -> NewQbUnit:
+def _map_unit(resource: Unit) -> NewQbUnit:
     return NewQbUnit(
         label=resource.label,
         description=resource.description,
         source_uri=resource.from_existing,
         # uri_safe_identifier_override=resource.path,
         base_unit=(
-                      None
-                      if resource.baseUnit is None
-                      else ExistingQbUnit(resource.baseUnit)
-                  ),
+            None if resource.baseUnit is None else ExistingQbUnit(resource.baseUnit)
+        ),
         base_unit_scaling_factor=resource.scaling_Factor,
         qudt_quantity_kind_uri=resource.quantity_kind,
         si_base_unit_conversion_multiplier=resource.si_scaling_factor,
     )
 
 
-def _map_measure(resource: MeasureType) -> NewQbMeasure:
+def _map_measure(resource: Measure) -> NewQbMeasure:
     return NewQbMeasure(
         label=resource.label,
         description=resource.description,

@@ -1,51 +1,31 @@
 {
-  "$schema": "./csvcubed/schema/cube-config-schema.json",
-  "id": "http://schema-id",
-  "title": "Tests/test-cases/config/schema-cube-data-config-ok",
-  "description": "Schema for testing",
-  "creator": "http://Fred the creator",
-  "publisher": "http://Joe the publisher",
-  "themes": "A Theme",
-  "spatial_bound":"spatial",
-  "temporal_bound": "temporal",
-  "licence": "the licence",
-  "dataset-issued": "2020/02/15",
-  "dataset-modified": "2020/02/16",
-  "license": "the licence",
-  "summary": "a summary",
-  "keywords": "two",
-  "uri_safe_identifier_override": "uri-safe",
-  "columns": {
-    "Dim-0": {
-      "label": "Non Dimension",
-      "type": "dimension",
-      "code_list": true
+    "$schema": "./csvcubed/schema/cube-config-schema.json",
+    "id": "http://schema-id",
+    "title": "Tests/test-cases/config/schema-cube-data-config-ok",
+    "description": "Schema for testing",
+    "creator": "Fred the creator",
+    "publisher": "Joe the publisher",
+    "themes": "A Theme",
+    "spatial_bound": "spatial",
+    "temporal_bound": "temporal",
+    "dataset_issued": "2022-03-04 15:00:00.000",
+    "dataset_modified": "2022-03-04 15:00:00.000",
+    "public_contact_point": "Rob Barry",
+    "license": "the license",
+    "summary": "a summary",
+    "keywords": "two",
+    "uri_safe_identifier_override": "uri-safe",
+    "columns": {
+        "Dim-0": {"label": "Non Dimension", "type": "dimension", "code_list": true},
+        "Dim-1": {"type": "dimension", "label": "Period Dimension", "code_list": true},
+        "Dim-2": {
+            "type": "dimension",
+            "label": "Trade Direction Dimension",
+            "code_list": true,
+        },
+        "Attr-1": {"type": "attribute", "label": "My best attribute"},
+        "Amount": {"type": "observations", "label": "Volume"},
+        "Measure": {"type": "measures", "values": true},
+        "Units": {"type": "units", "values": true},
     },
-    "Dim-1": {
-      "type": "dimension",
-      "label": "Period Dimension",
-      "code_list": true
-    },
-    "Dim-2": {
-      "type": "dimension",
-      "label": "Trade Direction Dimension",
-      "code_list": true
-    },
-    "Attr-1": {
-      "type": "attribute",
-      "label": "My best attribute"
-    },
-    "Amount": {
-      "type": "observations",
-      "label": "Volume"
-    },
-    "Measure": {
-      "type": "measures",
-      "values": true
-    },
-    "Units": {
-      "type": "units",
-      "values": true
-    }
-  }
 }
