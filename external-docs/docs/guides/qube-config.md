@@ -39,7 +39,7 @@ If you chose to omit step 2, you **must** ensure that your columns use [conventi
 
 ### Convention-first method
 
-The conventions used in generating a csvcubed-flavoured CSV-W involve a series of assumptions. These assumptions are always present, even if a configuration approach is used. A summary of the assumptions made by csvcubed are as follows; however for further detail see here. **TODO:** do this thing.
+The conventions used in generating a csvcubed-flavoured CSV-W involve a series of assumptions. These assumptions are always present, even if a configuration approach is used. A summary of the assumptions made by csvcubed are as follows.
 
 * The title of the cube is the name of the csv file in capital case with underscores replaced by spaces.
 * Every column which does not use a conventional name is interpreted as a dimension.
@@ -87,8 +87,6 @@ A CSV-W file contains metadata which improves discoverability of data publicatio
 | `publisher`      | a link to the publisher of the cube                          | *none*                                      |
 | `creator`        | a link to the creator of the cube                            | *none*                                      |
 | `theme`          | a list or a single string of the theme(s) covered by the data (i.e. "trade", "energy", "imports") | *none*                                      |
-| `spatial_bound`  | URI that defines the spatial / geographic bounds of the data contained herein | *none*                                      |
-| `temporal_bound` | URI that defines the temporal bounds of the data contained herein | *none*                                      |
 
 ### Column definitions
 
