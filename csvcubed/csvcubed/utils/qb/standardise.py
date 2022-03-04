@@ -76,6 +76,7 @@ def ensure_int_columns_are_ints(cube: QbCube) -> None:
         return
 
     def _coerce_to_int_values_if_int(column_title: str, data_type: str):
+        assert cube.data is not None
         if data_type in _signed_integer_data_types:
             cube.data[column_title] = cube.data[column_title].astype(pd.Int64Dtype())
         elif data_type in _unsigned_integer_data_types:
