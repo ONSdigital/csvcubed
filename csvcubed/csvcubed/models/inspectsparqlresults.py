@@ -190,7 +190,7 @@ def map_dataset_label_dsd_uri_sparql_result(
 
     result = DSDLabelURIResult(
         dataset_label=str(result_dict["dataSetLabel"]),
-        dsd_uri=URIRef(result_dict["dataStructureDefinition"]),
+        dsd_uri=URIRef(str(result_dict["dataStructureDefinition"])),
     )
     return result
 
