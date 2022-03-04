@@ -45,7 +45,7 @@ The canonical shape extends the [common structure](#common-structure) by requiri
 | 2020 | Edinburgh |    90 |       Final | Number of 'Arthur's Bakes' | Count |
 | 2021 | Belfast   |     0 |       Final | Number of 'Arthur's Bakes' | Count |
 
-The simplest [qube-config.json](./qube-config.md) column mappings we can define for this data set are:
+The simplest [qube-config.json](./qube-config.md#configuration) we can define for this data set is:
 
 ```json
 {
@@ -77,9 +77,11 @@ The simplest [qube-config.json](./qube-config.md) column mappings we can define 
 }
 ```
 
+It is possible to use the [conventional-first approach](./qube-config.md#convention-first-method) to generate a valid [canonical shape](#canonical-shape) cube without defining a [qube-config.json](./qube-config.md#configuration) at all. Just ensure that your columns use the [conventional column names](./qube-config.md#conventional-column-names) appropriate to their type.
+
 ### Multiple Measures
 
-One of the benefits of the canonical shape is that it makes it simple to add new measure types and unit types; all that you have to do is add additional rows to your data set with the appropriate units and measures present.
+One of the benefits of the canonical shape is that it is relatively straightforward to add new measure types and unit types; all that you have to do is add additional rows to your data set with the appropriate units and measures present.
 
 We can extend out example data set so that it now includes revenue values for the given year by adding rows to the table:
 
@@ -97,13 +99,13 @@ The same data could be more naturally represented in the equivalent pivoted shap
 | 2022 | London   |                         35 |                               25 |
 | 2021 | Cardiff  |                         26 |                               18 |
 
-**Note that csvcubed does not currently support data sets containing multiple measures in the [pivoted shape](#pivoted-shape).**
+**csvcubed does not currently support data sets containing multiple measures in the [pivoted shape](#pivoted-shape).**
 
-### Converting from the Pivoted Shape to the Canonical Shape
+### Converting to the Canonical Shape
 
-Since csvcubed doesn't current support multi-measure data sets in the [pivoted shape](#pivoted-shape), it is often necessary to convert your data from the [pivoted shape](#pivoted-shape) into the [canonical shape](#canonical-shape). See the following examples using the [pandas library](https://pandas.pydata.org/) in python and using [tibble](https://tibble.tidyverse.org/) in R to convert from a pivoted to the canonical shape.
+Since csvcubed doesn't current support multi-measure data sets in the [pivoted shape](#pivoted-shape), it is often necessary to convert your data from the [pivoted shape](#pivoted-shape) into the [canonical shape](#canonical-shape). See the following examples using the [pandas library](https://pandas.pydata.org/) in python and the [tidyverse library](https://tidyverse.org/) in R to convert from the pivoted to the canonical shape.
 
-Starting with a dataframe looking in the pivoted form:
+Starting with a dataframe in the pivoted shape:
 
 | Year | Location | Number of 'Arthur's Bakes' | Revenue (GBP Sterling, Millions) |
 |:-----|:---------|---------------------------:|---------------------------------:|
@@ -182,17 +184,58 @@ Starting with a dataframe looking in the pivoted form:
     canonical_shape_data %>% write.csv(file="my-data.csv", row.names=FALSE)
     ```
 
-The data is now in canonical form.
+The data is now in canonical form:
 
 | Year | Location |                    Measure | Value |                   Unit |
 |:-----|:---------|---------------------------:|------:|-----------------------:|
-| 2022 | London   | Number of 'Arthur's Bakes' |    35 |                  count |
-| 2021 | Cardiff  | Number of 'Arthur's Bakes' |    26 |                  count |
+| 2022 | London   | Number of 'Arthur's Bakes' |    35 |                  Count |
+| 2021 | Cardiff  | Number of 'Arthur's Bakes' |    26 |                  Count |
 | 2022 | London   |                    Revenue |    25 | GBP Sterling, Millions |
 | 2021 | Cardiff  |                    Revenue |    18 | GBP Sterling, Millions |
 
 ## Pivoted Shape
 
-Suggest that people start from the canonical form and alter their configurations if they realise every measure has the same measure.
+> csvcubed currently only accepts the pivoted data shape if your cube contains a single measure type and a single unit type.
 
-todo: Pivoted Example
+The [canonical shape](#canonical-shape) is flexible but it also has a lot of redudancy which can often be removed by using the more concise pivoted form. Our dataset on the distribution of the number of `Arthur's Bakes' stores can be expressed in the following way in the pivoted shape:
+
+| Year | Location  | Number of 'Arthur's Bakes' |      Status |
+|:-----|:----------|---------------------------:|------------:|
+| 2022 | London    |                         35 | Provisional |
+| 2021 | Cardiff   |                         26 |       Final |
+| 2020 | Edinburgh |                         90 |       Final |
+| 2021 | Belfast   |                          0 |       Final |
+
+Note that this shape doesn't require that you add any additional columns to the underlying [common structure](#common-structure), however it does require a different [qube-config.json](./qube-config.md#configuration) configuration; we must ensure that the measure and corresponding unit are attached to the _observations_ column:
+
+```json
+{
+    "$schema": "http://purl.org/csv-cubed/qube-config/v1.0",
+    "title": "'Arthur's Bakes' stores in UK cities from 2020 to 2022",
+    "description": "The number of 'Arthurs' Bakes' stores in cities across the UK between 2020 and 2022.",
+    "creator": "HM Revenue & Customs",
+    "publisher": "HM Revenue & Customs",
+    "columns": {
+        "Year": {
+            "type": "dimension"
+        },
+        "Location": {
+            "type": "dimension"
+        },
+        "Number of 'Arthur's Bakes'": {
+            "type": "observations",
+            "unit": {
+                "label": "Count"
+            },
+            "measure": {
+                "label": "Number of Stores"
+            }
+        },
+        "Status": {
+            "type": "attribute"
+        }
+    }
+}
+```
+
+**Is is not possible to create a pivoted shape data set relying solely on the [convention-first approach](./qube-config.md#convention-first-method); the observations column _must_ be configured inside a [qube-config.json](./qube-config.md#configuration).**
