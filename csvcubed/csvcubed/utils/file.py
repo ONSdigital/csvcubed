@@ -33,3 +33,17 @@ def _ensure_dir_structure_exists(dir_path: Path) -> None:
         _ensure_dir_structure_exists(dir_path.parent)
         log.debug("Creating directory %s", dir_path)
         dir_path.mkdir()
+
+
+def get_root_dir_level(end_file: str, start_dir: Path = Path(".")) -> Path:
+    """
+    Recursively moves backward in the dir tree until the end_file is found. If found, the current path is returned.
+    """
+    if str(start_dir) == "/":
+        raise Exception("Could not find the root directory.")
+
+    target_file = start_dir / end_file
+    if target_file.exists():
+        return start_dir
+
+    return get_root_dir_level(end_file, start_dir.absolute().parent)

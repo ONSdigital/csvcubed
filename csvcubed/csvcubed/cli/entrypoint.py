@@ -1,21 +1,25 @@
 """
 CLI
 ---
-The *Command Line Interface* for :mod:`~csvcubed.csvcubedcli.infojson2csvqb`.
+The *Command Line Interface* for :mod:`~csvcubed.cli`.
 """
 import logging
-import sys
-import click
 from pathlib import Path
-from csvcubed.utils.log import handle_exception, start_logging
 
+import click
+
+from csvcubed.utils.log import log_exception, start_logging
+from csvcubed.cli.inspect.inspect import inspect
 from csvcubed.cli.build import build
+
+
+_logger = logging.getLogger(__name__)
 
 
 @click.group(context_settings=dict(help_option_names=["-h", "--help"]))
 def entry_point():
     """
-    csvcubed - a tool to generate qb-flavoured CSV-W cubes from qube-config files.
+    csvcubed - a tool to generate qb-flavoured CSV-W cubes from COGS-style info.json files.
     """
 
 
@@ -52,13 +56,7 @@ def entry_point():
     show_default=True,
 )
 @click.option(
-    "--logdir", 
-    help="Location for log files.", 
-    type=str, 
-    default="csvcubedcli"
-)
-@click.option(
-    "--logginglvl",
+    "--log-level",
     help="select a logging level out of: 'warn', 'err', 'crit', 'info' or 'debug'.",
     type=click.Choice(["warn", "err", "crit", "info", "debug"], case_sensitive=False),
     default="warn",
@@ -70,8 +68,7 @@ def build_command(
     config: Path,
     out: Path,
     csv: Path,
-    logdir: str,
-    logginglvl: str,
+    log_level: str,
     fail_when_validation_error: bool,
     validation_errors_to_file: bool,
 ):
@@ -81,11 +78,7 @@ def build_command(
     )
     out.mkdir(parents=True, exist_ok=True)
 
-    logger = logging.getLogger(__name__)
-    start_logging(
-        logdir=logdir,
-        selected_logging_level=logginglvl,
-    )
+    start_logging(log_dir_name="csvcubed-cli", selected_logging_level=log_level)
     try:
         build(
             config=config,
@@ -94,5 +87,23 @@ def build_command(
             fail_when_validation_error_occurs=fail_when_validation_error,
             validation_errors_file_out=validation_errors_file_out,
         )
-    except Exception:
-        handle_exception(logger, *sys.exc_info())
+
+    except Exception as e:
+        log_exception(_logger, e)
+
+
+@entry_point.command("inspect")
+@click.option(
+    "--log-level",
+    help="select a logging level out of: 'warn', 'err', 'crit', 'info' or 'debug'.",
+    type=click.Choice(["warn", "err", "crit", "info", "debug"], case_sensitive=False),
+    default="warn",
+)
+@click.argument(
+    "csvw_metadata_json_path",
+    type=click.Path(exists=True, path_type=Path),
+    metavar="TIDY_CSV-W_METADATA_JSON_PATH",
+)
+def inspect_command(log_level: str, csvw_metadata_json_path: Path) -> None:
+    start_logging(log_dir_name="csvcubed-cli", selected_logging_level=log_level)
+    inspect(csvw_metadata_json_path)
