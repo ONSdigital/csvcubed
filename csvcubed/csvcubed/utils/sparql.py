@@ -50,10 +50,11 @@ def select(query: str, graph: Graph, init_bindings=None) -> List[ResultRow]:
         result
         for result in graph.query(query, initBindings=init_bindings)
         if isinstance(result, ResultRow)
+        and isinstance(result.labels, dict)
         and any(
             [
                 result[key] is not None and result[key] != Literal("")
-                for key in result.labels.keys()  # type: ignore
+                for key in result.labels.keys()
             ]
         )
     ]
