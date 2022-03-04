@@ -6,6 +6,7 @@ Utilities for standardising cubes and their corresponding data values.
 """
 from typing import List, Dict
 
+import pandas as pd
 from pandas.core.arrays.categorical import Categorical
 
 from .cube import get_all_units, get_all_measures, get_columns_of_dsd_type
@@ -20,7 +21,27 @@ from csvcubed.models.cube.qb.components import (
     QbMultiMeasureDimension,
     QbMultiUnits,
     QbAttributeLiteral,
+    QbObservationValue,
 )
+
+
+_unsigned_integer_data_types = {
+    "unsignedLong",
+    "unsignedInt",
+    "unsignedShort",
+    "unsignedByte",
+    "nonPositiveInteger",
+    "negativeInteger",
+}
+_signed_integer_data_types = {
+    "integer",
+    "long",
+    "int",
+    "short",
+    "byte",
+    "nonNegativeInteger",
+    "positiveInteger",
+}
 
 
 def ensure_qbcube_data_is_categorical(cube: QbCube) -> None:
@@ -43,6 +64,34 @@ def ensure_qbcube_data_is_categorical(cube: QbCube) -> None:
             assert column_data is not None
             if not isinstance(column_data.values, Categorical):
                 cube.data[column.csv_column_title] = column_data.astype("category")
+
+
+def ensure_int_columns_are_ints(cube: QbCube) -> None:
+    """
+    Given a :obj:`~csvcubed.models.cube.qb.QbCube`, ensure that any column which claims to contain integer values is
+     coerced so that even if values are missing (pandas represents these as NaN), all of the remaining values remain
+     as integers.
+    """
+    if cube.data is None:
+        return
+
+    def _coerce_to_int_values_if_int(column_title: str, data_type: str):
+        if data_type in _signed_integer_data_types:
+            cube.data[column_title] = cube.data[column_title].astype(pd.Int64Dtype())
+        elif data_type in _unsigned_integer_data_types:
+            cube.data[column_title] = cube.data[column_title].astype(pd.UInt64Dtype())
+
+    for obs_val_col in get_columns_of_dsd_type(cube, QbObservationValue):
+        _coerce_to_int_values_if_int(
+            obs_val_col.csv_column_title,
+            obs_val_col.structural_definition.data_type,
+        )
+
+    for attribute_literal_col in get_columns_of_dsd_type(cube, QbAttributeLiteral):
+        _coerce_to_int_values_if_int(
+            attribute_literal_col.csv_column_title,
+            attribute_literal_col.structural_definition.data_type,
+        )
 
 
 def convert_data_values_to_uri_safe_values(
