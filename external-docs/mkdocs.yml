@@ -68,3 +68,9 @@ plugins:
   - markdownmermaid
 extra_javascript:
   - https://unpkg.com/mermaid@8.4.5/dist/mermaid.min.js
+markdown_extensions:
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
