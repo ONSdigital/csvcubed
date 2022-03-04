@@ -4,7 +4,7 @@ ValidationError
 """
 from dataclasses import dataclass, field
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Optional
 
 from csvcubedmodels.dataclassbase import DataClassBase
 from pydantic import PydanticValueError
@@ -48,7 +48,7 @@ class UnknownPydanticValidationError(PydanticValidationError):
     """
 
     path: List[str] = field(init=True)
-    original_error: Exception
+    original_error: Optional[Exception] = field(default=None)
 
     def __post_init__(self):
         self.message = f"{', '.join(self.path)} - {self.original_error}"

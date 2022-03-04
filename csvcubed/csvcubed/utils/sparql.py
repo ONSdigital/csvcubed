@@ -46,14 +46,14 @@ def select(query: str, graph: Graph, init_bindings=None) -> List[ResultRow]:
     :return: `List[ResultRow]` - List containing the results.
 
     """
-    results = list(graph.query(query, initBindings=init_bindings))
     results: List[ResultRow] = [
         result
-        for result in results
-        if any(
+        for result in graph.query(query, initBindings=init_bindings)
+        if isinstance(result, ResultRow)
+        and any(
             [
                 result[key] is not None and result[key] != Literal("")
-                for key in result.labels.keys()
+                for key in result.labels.keys()  # type: ignore
             ]
         )
     ]
