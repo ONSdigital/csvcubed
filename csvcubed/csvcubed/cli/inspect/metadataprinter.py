@@ -153,4 +153,4 @@ class MetadataPrinter:
         result: DatasetObservationsInfoResult = get_dataset_observations_info(
             self.dataset
         )
-        return f"- The {self._get_type_str()} has the following observations information:{result.output_str}"
+        return f"- The {self._get_type_str()} has the following dataset information:{result.output_str}"

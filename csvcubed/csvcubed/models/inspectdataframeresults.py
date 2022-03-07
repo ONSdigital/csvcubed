@@ -29,4 +29,4 @@ class DatasetObservationsInfoResult:
         formatted_dataset_tail = get_printable_tabuler_str_from_dataframe(
             self.dataset_tail
         )
-        return f"{linesep}\t- Number of Observations: {self.num_of_observations}{linesep}\t- Number of Duplicates: {self.num_of_duplicates}{linesep}\t- First 10 observations:{linesep}{formatted_dataset_head}{linesep}{linesep}\t- Last 10 observations:{linesep}{formatted_dataset_tail}{linesep}"
+        return f"{linesep}\t- Number of Observations: {self.num_of_observations}{linesep}\t- Number of Duplicates: {self.num_of_duplicates}{linesep}\t- First 10 Observations:{linesep}{formatted_dataset_head}{linesep}{linesep}\t- Last 10 Observations:{linesep}{formatted_dataset_tail}{linesep}"
