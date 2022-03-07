@@ -10,7 +10,7 @@ from enum import Enum
 from pathlib import Path
 from typing import List
 
-from rdflib import Graph, URIRef
+from rdflib import Graph, Literal, URIRef
 from rdflib.query import ResultRow
 
 from csvcubed.models.inspectsparqlresults import (
@@ -18,11 +18,13 @@ from csvcubed.models.inspectsparqlresults import (
     CodelistsResult,
     ColsWithSuppressOutputTrueResult,
     DSDLabelURIResult,
+    DatasetURLResult,
     QubeComponentsResult,
     map_catalog_metadata_result,
     map_codelists_sparql_result,
     map_cols_with_supress_output_true_sparql_result,
     map_dataset_label_dsd_uri_sparql_result,
+    map_dataset_url_result,
     map_qube_components_sparql_result,
 )
 from csvcubed.utils.file import get_root_dir_level
@@ -49,6 +51,10 @@ class SPARQLQueryFileName(Enum):
     SELECT_COLS_W_SUPPRESS_OUTPUT = "select_cols_w_suppress_output"
 
     SELECT_CODE_LISTS_AND_COLS = "select_code_lists_and_cols"
+
+    SELECT_QB_DATASET_URL = "select_qb_dataset_url"
+
+    SELECT_CODELIST_DATASET_URL = "select_codelist_dataset_url"
 
 
 def _get_query_string_from_file(queryType: SPARQLQueryFileName) -> str:
@@ -202,3 +208,40 @@ def select_dsd_code_list_and_cols(
         init_bindings={"dsd_uri": URIRef(dsd_uri)},
     )
     return map_codelists_sparql_result(results, json_path)
+
+
+def select_qb_dataset_url(rdf_graph: Graph, dataset_uri: str) -> DatasetURLResult:
+    """
+    Queries the url of the given qb:dataset.
+
+    Member of :file:`./inspectsparqlmanager.py`
+
+    :return: `DatasetURLResult``
+    """
+    results: List[ResultRow] = select(
+        _get_query_string_from_file(SPARQLQueryFileName.SELECT_QB_DATASET_URL),
+        rdf_graph,
+        init_bindings={"dataset_uri": Literal(dataset_uri)},
+    )
+    if len(results) != 1:
+        raise Exception(f"Expected 1 record, but found {len(results)}")
+
+    return map_dataset_url_result(results[0])
+
+
+def select_codelist_dataset_url(rdf_graph: Graph) -> DatasetURLResult:
+    """
+    Queries the url of the given skos:conceptScheme.
+
+    Member of :file:`./inspectsparqlmanager.py`
+
+    :return: `DatasetURLResult``
+    """
+    results: List[ResultRow] = select(
+        _get_query_string_from_file(SPARQLQueryFileName.SELECT_CODELIST_DATASET_URL),
+        rdf_graph,
+    )
+    if len(results) != 1:
+        raise Exception(f"Expected 1 record, but found {len(results)}")
+
+    return map_dataset_url_result(results[0])

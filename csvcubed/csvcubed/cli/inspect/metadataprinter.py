@@ -5,24 +5,35 @@ Metadata Printer
 Provides functionality for validating and detecting input metadata.json file.
 """
 
+from mailbox import linesep
 from pathlib import Path
+from csvcubed.models.inspectdataframeresults import DatasetObservationsInfoResult
+from csvcubed.utils.printable import get_printable_tabuler_str_from_dataframe
+from pandas import DataFrame
 
-from rdflib import Graph
+from rdflib import Graph, URIRef
 
 from csvcubed.models.inspectsparqlresults import (
     CatalogMetadataResult,
     CodelistsResult,
     ColsWithSuppressOutputTrueResult,
     DSDLabelURIResult,
+    DatasetURLResult,
     QubeComponentsResult,
 )
 from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
 from csvcubed.cli.inspect.inspectsparqlmanager import (
+    select_codelist_dataset_url,
     select_cols_where_supress_output_is_true,
     select_csvw_catalog_metadata,
     select_csvw_dsd_dataset_label_and_dsd_def_uri,
     select_csvw_dsd_qube_components,
     select_dsd_code_list_and_cols,
+    select_qb_dataset_url,
+)
+from csvcubed.cli.inspect.inspectcsvmanager import (
+    get_dataset_observations_info,
+    load_csv_to_dataframe,
 )
 
 
@@ -73,6 +84,7 @@ class MetadataPrinter:
         result: CatalogMetadataResult = select_csvw_catalog_metadata(
             self.csvw_metadata_rdf_graph
         )
+        self.dataset_uri: URIRef = result.dataset_uri
 
         return f"- The {self._get_type_str()} has the following catalog metadata:{result.output_str}"
 
@@ -87,7 +99,7 @@ class MetadataPrinter:
         result_dataset_label_dsd_uri: DSDLabelURIResult = (
             select_csvw_dsd_dataset_label_and_dsd_def_uri(self.csvw_metadata_rdf_graph)
         )
-        self.dsd_uri = result_dataset_label_dsd_uri.dsd_uri
+        self.dsd_uri: URIRef = result_dataset_label_dsd_uri.dsd_uri
 
         result_qube_components: QubeComponentsResult = select_csvw_dsd_qube_components(
             self.csvw_metadata_rdf_graph, self.dsd_uri, self.csvw_metadata_json_path
@@ -114,7 +126,7 @@ class MetadataPrinter:
 
         return f"- The {self._get_type_str()} has the following code list information:{result.output_str}"
 
-    def gen_head_tail_printable(self) -> str:
+    def gen_dataset_observations_info_printable(self) -> str:
         """
         Generates a printable of top 10 and last 10 records.
 
@@ -122,14 +134,23 @@ class MetadataPrinter:
 
         :return: `str` - user-friendly string which will be output to CLI.
         """
-        return ""
+        result_dataset_url: DatasetURLResult
+        if self.csvw_type == CSVWType.QbDataSet:
+            result_dataset_url = select_qb_dataset_url(
+                self.csvw_metadata_rdf_graph, self.dataset_uri
+            )
+        elif self.csvw_type == CSVWType.CodeList:
+            result_dataset_url = select_codelist_dataset_url(
+                self.csvw_metadata_rdf_graph
+            )
+        else:
+            raise Exception("The input csvw json-ld is not supported.")
+            
+        self.dataset: DataFrame = load_csv_to_dataframe(
+            self.csvw_metadata_json_path, Path(result_dataset_url.dataset_url)
+        )
 
-    def gen_val_count_printable(self) -> str:
-        """
-        Generates a printable of number of records.
-
-        Member of :class:`./MetadataPrinter`.
-
-        :return: `str` - user-friendly string which will be output to CLI.
-        """
-        return ""
+        result: DatasetObservationsInfoResult = get_dataset_observations_info(
+            self.dataset
+        )
+        return f"- The {self._get_type_str()} has the following observations information:{result.output_str}"

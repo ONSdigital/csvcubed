@@ -49,8 +49,7 @@ def inspect(csvw_metadata_json_path: Path) -> None:
             catalog_metadata_printable,
             dsd_info_printable,
             codelist_info_printable,
-            head_tail_printable,
-            val_count_printable,
+            dataset_observations_printable,
         ) = _generate_printables(
             csvw_type, csvw_metadata_rdf_graph, csvw_metadata_json_path
         )
@@ -60,6 +59,7 @@ def inspect(csvw_metadata_json_path: Path) -> None:
         if csvw_type == CSVWType.QbDataSet:
             print(f"{linesep}{dsd_info_printable}")
             print(f"{linesep}{codelist_info_printable}")
+        print(f"{linesep}{dataset_observations_printable}")
     else:
         _logger.error(
             "This is an unsupported csv-w! Supported types are `data cube` and `code list`."
@@ -68,7 +68,7 @@ def inspect(csvw_metadata_json_path: Path) -> None:
 
 def _generate_printables(
     csvw_type: CSVWType, csvw_metadata_rdf_graph: Graph, csvw_metadata_json_path: Path
-) -> Tuple[str, str, str, str, str, str]:
+) -> Tuple[str, str, str, str, str]:
     """
     Generates printables of type, metadata, dsd, code list, head/tail and value count information.
 
@@ -92,6 +92,5 @@ def _generate_printables(
         metadata_printer.gen_catalog_metadata_printable(),
         dsd_info_printable,
         codelist_info_printable,
-        metadata_printer.gen_head_tail_printable(),
-        metadata_printer.gen_val_count_printable(),
+        metadata_printer.gen_dataset_observations_info_printable(),
     )
