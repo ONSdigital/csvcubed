@@ -98,7 +98,7 @@ _expected_dataframe = DataFrame(
 
 def test_load_csv_to_dataframe_success():
     """
-    Should load csv to dataframe successfully.
+    Should load the csv to dataframe successfully.
     """
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
     dataset = load_csv_to_dataframe(csvw_metadata_json_path, "csv_file.csv")
@@ -120,7 +120,7 @@ def test_load_csv_to_dataframe_error():
 
 def test_get_dataset_observations_info():
     """
-    Should produce expected `DatasetObservationsInfoResult`
+    Should produce the expected `DatasetObservationsInfoResult`.
     """
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
     dataset = load_csv_to_dataframe(csvw_metadata_json_path, "csv_file.csv")
