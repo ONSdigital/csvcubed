@@ -218,6 +218,11 @@ def select_qb_dataset_url(rdf_graph: Graph, dataset_uri: str) -> DatasetURLResul
 
     :return: `DatasetURLResult``
     """
+    if not dataset_uri.startswith("file://"):
+        raise Exception(
+            "Currently, inspect cli only suports CSVs with local file paths. CSVs from HTTP urls are not yet supported."
+        )
+
     results: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryFileName.SELECT_QB_DATASET_URL),
         rdf_graph,
