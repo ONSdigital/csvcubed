@@ -8,7 +8,7 @@ packages = [
   {include = "csvcubedpmd"},
 ]
 readme = "csvcubedpmd/README.md"
-version = "0.1.0"
+version = "0.1.0-rc6"
 
 [tool.poetry.dependencies]
 csvw = "*"
