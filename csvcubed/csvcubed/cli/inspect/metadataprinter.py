@@ -31,7 +31,7 @@ from csvcubed.cli.inspect.inspectsparqlmanager import (
     select_dsd_code_list_and_cols,
     select_qb_dataset_url,
 )
-from csvcubed.cli.inspect.inspectcsvmanager import (
+from csvcubed.cli.inspect.inspectdatasetmanager import (
     get_dataset_observations_info,
     load_csv_to_dataframe,
 )

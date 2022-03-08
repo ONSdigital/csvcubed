@@ -3,7 +3,7 @@ import pytest
 from pandas.util.testing import assert_frame_equal
 import numpy as np
 
-from csvcubed.cli.inspect.inspectcsvmanager import (
+from csvcubed.cli.inspect.inspectdatasetmanager import (
     get_dataset_observations_info,
     load_csv_to_dataframe,
 )
