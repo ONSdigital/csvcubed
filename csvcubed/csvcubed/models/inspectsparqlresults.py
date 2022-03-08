@@ -180,7 +180,7 @@ def map_catalog_metadata_result(sparql_result: ResultRow) -> CatalogMetadataResu
         themes=str(result_dict["themes"]).split("|"),
         keywords=str(result_dict["keywords"]).split("|"),
         contact_point=none_or_map(result_dict.get("contactPoint"), str) or "None",
-        identifier=str(result_dict["identifier"]) or "None",
+        identifier=none_or_map(result_dict.get("identifier"), str) or "None",
         comment=none_or_map(result_dict.get("comment"), str) or "None",
         description=none_or_map(result_dict.get("description"), str) or "None",
     )

@@ -50,7 +50,7 @@ class SPARQLQueryFileName(Enum):
 
     SELECT_COLS_W_SUPPRESS_OUTPUT = "select_cols_w_suppress_output"
 
-    SELECT_CODE_LISTS_AND_COLS = "select_code_lists_and_cols"
+    SELECT_CODELISTS_AND_COLS = "select_codelists_and_cols"
 
     SELECT_QB_DATASET_URL = "select_qb_dataset_url"
 
@@ -203,7 +203,7 @@ def select_dsd_code_list_and_cols(
     :return: `CodelistInfoSparqlResult``
     """
     results: List[ResultRow] = select(
-        _get_query_string_from_file(SPARQLQueryFileName.SELECT_CODE_LISTS_AND_COLS),
+        _get_query_string_from_file(SPARQLQueryFileName.SELECT_CODELISTS_AND_COLS),
         rdf_graph,
         init_bindings={"dsd_uri": URIRef(dsd_uri)},
     )
