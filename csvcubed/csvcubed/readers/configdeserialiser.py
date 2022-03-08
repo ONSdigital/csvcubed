@@ -63,7 +63,7 @@ def _load_resource(resource_path: Path) -> dict:
     schema: dict = {}
 
     if "http" in urlsplit(str(resource_path)).scheme:
-        schema = load_json_from_uri(resource_path)
+        schema = load_json_from_uri(str(resource_path))
 
     else:
         schema = read_json_from_file(resource_path)
@@ -86,7 +86,7 @@ def _override_catalog_metadata_state(
 def _from_config_json_dict(
     data: pd.DataFrame, config: Optional[Dict], json_parent_dir: Path
 ) -> QbCube:
-    columns: List[QbColumn] = []
+    columns: List[CsvColumn] = []
     if not config:
         metadata: CatalogMetadata = _metadata_from_dict({})
     else:
@@ -122,7 +122,7 @@ def _metadata_from_dict(config: dict) -> "CatalogMetadata":
 
     return CatalogMetadata(
         identifier=config.get("id"),
-        title=config.get("title"),
+        title=config.get("title", ""),
         description=config.get("description", ""),
         summary=config.get("summary", ""),
         creator_uri=creator,
@@ -147,13 +147,15 @@ def _read_and_check_csv(csv_path: Path) -> pd.DataFrame:
     """
     Reads the csv data file and performs rudimentary checks.
     """
-    data: pd.DataFrame = pd.read_csv(csv_path)
+    data = pd.read_csv(csv_path)
 
-    if data.shape[0] < 2:
-        # Must have 2 or more rows, a heading row and a data row
-        raise ValueError(
-            "CSV input must contain header row and at least one row of data"
-        )
+    if isinstance(data, pd.DataFrame):
+        if data.shape[0] < 2:
+            # Must have 2 or more rows, a heading row and a data row
+            raise ValueError("CSV input must contain header row and at least one row of data")
+
+    else:
+        raise TypeError("There was a problem reading the csv file as a dataframe")
 
     return data
 
@@ -165,7 +167,7 @@ def get_cube_from_config_json(
     Generates a Cube structure from a config.json input.
     :return: tuple of cube and json schema errors (if any)
     """
-    data: pd.DataFrame = _read_and_check_csv(csv_path)
+    data = _read_and_check_csv(csv_path)
 
     # If we have a config json file then load it and validate against its reference schema
     if config_path:
@@ -229,7 +231,7 @@ def get_cube_from_config_json(
                 raise ValueError(f"Column type '{column_type}' is not supported.")
 
             try:
-                qb_column = map_column_to_qb_component(
+                qb_column: CsvColumn = map_column_to_qb_component(
                     column_title=column_title,
                     column=column_dict,
                     data=data[column_title].astype("category"),

@@ -14,6 +14,7 @@ def load_json_from_uri(uri: str) -> dict:
     Returns a dict of the response content or
     Raises the Exceptions once logging them
     """
+    response = None
     try:
         response = requests.get(uri)
         if response.status_code != requests.codes("ok"):
@@ -28,7 +29,8 @@ def load_json_from_uri(uri: str) -> dict:
 
     except JSONDecodeError as err:
         log.error(f"JSON Decode Error: {repr(err)}")
-        log.error(f"The content being decoded: {response.text}")
+        if response:
+            log.error(f"The content being decoded: {response.text}")
         raise err
 
     except TypeError as err:

@@ -384,7 +384,7 @@ def test_05_02_attribute_existing_ok():
     assert isinstance(sd, ExistingQbAttribute)
     assert not hasattr(sd, 'code_list')
     # assert sd.definition_uri == column_config.get('from_existing')
-    assert sd.attribute_uri == column_config.get('from_existing')
+    assert sd.attribute_uri == column_config.get('from_existing', '')
     assert sd.is_required == column_config.get('required')
     assert isinstance(sd.arbitrary_rdf, list)
     assert sd.arbitrary_rdf == []

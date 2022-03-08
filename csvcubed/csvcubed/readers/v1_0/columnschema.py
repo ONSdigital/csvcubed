@@ -18,7 +18,7 @@ from csvcubed.models.cube import (
     ExistingQbCodeList,
     NewQbAttributeLiteral,
     NewQbCodeList,
-    NewQbCodeListInCsvW,
+    NewQbCodeListInCsvW, QbCodeList,
 )
 
 from csvcubedmodels.dataclassbase import DataClassBase
@@ -60,7 +60,7 @@ class NewDimension(SchemaBaseClass):
     # type: # str = "dimension"
 
     # Properties only available for New Dimension
-    label: Optional[str] = None
+    label: str = ""
     description: Optional[str] = None
     definition_uri: Optional[str] = None
 
@@ -87,13 +87,14 @@ class NewDimension(SchemaBaseClass):
         self,
         new_dimension: NewQbDimension,
         json_parent_dir: Path,
-    ) -> Union[NewQbCodeListInCsvW, ExistingQbCodeList]:
+    ) -> Optional[QbCodeList]:
 
         code_list_obj = None
 
         if isinstance(self.code_list, str):
             if looks_like_uri(self.code_list):
                 code_list_obj = ExistingQbCodeList(self.code_list)
+
             else:
                 code_list_path = Path(self.code_list)
                 if code_list_path.is_absolute():
@@ -109,17 +110,19 @@ class NewDimension(SchemaBaseClass):
             elif (
                 new_dimension.parent_dimension_uri
                 == "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod"
-                and self.source_uri is not None
-                and self.value.lower().startswith("http://reference.data.gov.uk/id/")
+                and self.definition_uri is not None
+                and self.definition_uri.lower().startswith("http://reference.data.gov.uk/id/")
             ):
                 # This is a special case where we build up a code-list of the date/time values.
                 code_list_obj = self._get_date_time_code_list_for_dimension(
                     self.label, new_dimension
                 )
-            # else, the user wants a standard codelist to be automatically generated
-            return code_list_obj or new_dimension.code_list
+                # else, the user wants a standard codelist to be automatically generated
+                return code_list_obj or new_dimension.code_list
         else:
             raise ValueError(f"Unmatched code_list value {self.code_list}")
+
+        return code_list_obj or new_dimension.code_list
 
     def _get_date_time_code_list_for_dimension(
         self, column_title: str, new_dimension: NewQbDimension
@@ -131,7 +134,7 @@ class NewDimension(SchemaBaseClass):
             [
                 DuplicatedQbConcept(
                     existing_concept_uri=uritemplate.expand(
-                        self.value,
+                        c.value,
                         {csvw_safe_column_title: c.label},
                     ),
                     label=c.label,
@@ -144,7 +147,7 @@ class NewDimension(SchemaBaseClass):
 
 @dataclass
 class ExistingDimension(SchemaBaseClass):
-    from_existing: Optional[str] = None
+    from_existing: str = ""
     cell_uri_template: Optional[str] = None
 
     def map_to_existing_qb_dimension(
@@ -174,16 +177,24 @@ class NewAttributeProperty(SchemaBaseClass):
 
 @dataclass
 class ExistingAttribute(SchemaBaseClass):
-    from_existing: Optional[str] = None
+    from_existing: str = ""
     definition_uri: Optional[str] = None
     data_type: Optional[str] = None
-    required: Optional[bool] = None
+    required: bool = False
     values: Union[bool, List[AttributeValue]] = True
 
     def map_to_qb_attribute(
-        self, label: str, data: PandasDataTypes
+        self,
+        label: str,
+        data: PandasDataTypes
     ) -> ExistingQbAttribute:
-        pass
+        return ExistingQbAttribute(
+            self.from_existing,
+            new_attribute_values=_get_new_attribute_values(
+                data, self.values
+            ),
+            is_required=self.required,
+        )
 
     def map_to_existing_qb_attribute(
         self, data: PandasDataTypes
@@ -210,12 +221,12 @@ class ExistingAttribute(SchemaBaseClass):
 
 @dataclass
 class NewAttribute(SchemaBaseClass):
-    label: Optional[str] = None
+    label: str = ""
     description: Optional[str] = None
     from_existing: Optional[str] = None
     definition_uri: Optional[str] = None
     data_type: Optional[str] = None
-    required: Optional[bool] = False
+    required: bool = False
     values: Union[bool, List[AttributeValue]] = True
 
     def map_to_new_qb_attribute(
@@ -272,7 +283,7 @@ class Unit(SchemaBaseClass):
 @dataclass
 class ExistingUnits(SchemaBaseClass):
     values: Union[bool, List[Unit]] = True
-    cell_uri_template: Optional[str] = None
+    cell_uri_template: str = ""
 
     def map_to_existing_qb_multi_units(
         self, data: PandasDataTypes, column_title: str
@@ -306,7 +317,7 @@ class NewUnits(SchemaBaseClass):
 
 @dataclass
 class Measure(SchemaBaseClass):
-    label: Optional[str] = None
+    label: str = ""
     description: Optional[str] = None
     from_existing: Optional[str] = None
     definition_uri: Optional[str] = None
@@ -339,7 +350,7 @@ class NewMeasures(SchemaBaseClass):
 @dataclass
 class ExistingMeasures(SchemaBaseClass):
     values: Union[bool, List[Measure]] = True
-    cell_uri_template: Optional[str] = None
+    cell_uri_template: str = ""
 
     def map_to_existing_multi_measure_dimension(
         self, column_title: str, data: PandasDataTypes
@@ -352,7 +363,7 @@ class ExistingMeasures(SchemaBaseClass):
 
 @dataclass
 class ObservationValue(SchemaBaseClass):
-    datatype: Optional[str] = "decimal"
+    datatype: str = "decimal"
     unit: Union[None, str, Unit] = None
     measure: Union[None, str, Measure] = None
 
@@ -392,11 +403,10 @@ def _map_unit(resource: Unit) -> NewQbUnit:
         label=resource.label,
         description=resource.description,
         source_uri=resource.from_existing,
-        # uri_safe_identifier_override=resource.path,
         base_unit=(
-            None if resource.baseUnit is None else ExistingQbUnit(resource.baseUnit)
+            None if resource.from_existing is None else ExistingQbUnit(resource.from_existing)
         ),
-        base_unit_scaling_factor=resource.scaling_Factor,
+        base_unit_scaling_factor=resource.scaling_factor,
         qudt_quantity_kind_uri=resource.quantity_kind,
         si_base_unit_conversion_multiplier=resource.si_scaling_factor,
     )

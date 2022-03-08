@@ -51,7 +51,7 @@ class ExistingQbMeasure(QbMeasure):
 
 @dataclass
 class NewQbMeasure(QbMeasure, UriIdentifiable):
-    label: str
+    label: str = field(default="", repr=True)
     description: Optional[str] = field(default=None, repr=False)
     parent_measure_uri: Optional[str] = field(default=None, repr=False)
     source_uri: Optional[str] = field(default=None, repr=False)

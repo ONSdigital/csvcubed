@@ -20,7 +20,7 @@ _logger = logging.getLogger(__name__)
 def build(
     csv_path: Path,
     config: Optional[Path] = None,
-    output_directory: Optional[Path] = Path(".", "out").resolve(),
+    output_directory: Path = Path(".", "out").resolve(),
     fail_when_validation_error_occurs: bool = False,
     validation_errors_file_out: Optional[Path] = None,
 ):

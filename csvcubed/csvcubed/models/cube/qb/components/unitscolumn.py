@@ -60,7 +60,9 @@ class QbMultiUnits(QbColumnStructuralDefinition):
 
     @staticmethod
     def existing_units_from_data(
-        data: PandasDataTypes, csvw_column_name: str, csv_column_uri_template: str
+        data: PandasDataTypes,
+        csvw_column_name: str,
+        csv_column_uri_template: str
     ) -> "QbMultiUnits":
         columnar_data = pandas_input_to_columnar_str(data)
         return QbMultiUnits(

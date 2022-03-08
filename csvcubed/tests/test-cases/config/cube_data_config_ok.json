@@ -21,11 +21,11 @@
         "Dim-2": {
             "type": "dimension",
             "label": "Trade Direction Dimension",
-            "code_list": true,
+            "code_list": true
         },
         "Attr-1": {"type": "attribute", "label": "My best attribute"},
         "Amount": {"type": "observations", "label": "Volume"},
         "Measure": {"type": "measures", "values": true},
-        "Units": {"type": "units", "values": true},
-    },
+        "Units": {"type": "units", "values": true}
+    }
 }
