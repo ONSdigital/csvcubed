@@ -27,6 +27,7 @@ from csvcubed.models.inspectsparqlresults import (
 )
 from csvcubed.utils.file import get_root_dir_level
 from csvcubed.utils.sparql import ask, select
+from definitions import ROOT_DIR
 
 _logger = logging.getLogger(__name__)
 
@@ -59,8 +60,11 @@ def _get_query_string_from_file(queryType: SPARQLQueryFileName) -> str:
 
     :return: `str` - String containing the sparql query.
     """
+    root_path = Path(ROOT_DIR)
+    _logger.debug(f"Root path: {root_path.absolute()}")
+
     file_path = (
-        get_root_dir_level("pyproject.toml", Path(__file__))
+        root_path
         / "csvcubed"
         / "cli"
         / "inspect"
