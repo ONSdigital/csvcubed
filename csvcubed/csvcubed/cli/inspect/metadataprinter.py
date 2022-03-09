@@ -5,10 +5,7 @@ Metadata Printer
 Provides functionality for validating and detecting input metadata.json file.
 """
 
-from mailbox import linesep
 from pathlib import Path
-from csvcubed.models.inspectdataframeresults import DatasetObservationsInfoResult
-from csvcubed.utils.printable import get_printable_tabuler_str_from_dataframe
 from pandas import DataFrame
 
 from rdflib import Graph, URIRef
@@ -35,7 +32,7 @@ from csvcubed.cli.inspect.inspectdatasetmanager import (
     get_dataset_observations_info,
     load_csv_to_dataframe,
 )
-
+from csvcubed.models.inspectdataframeresults import DatasetObservationsInfoResult
 
 class MetadataPrinter:
     """

@@ -13,8 +13,6 @@ import pandas as pd
 from pandas import DataFrame
 
 from csvcubed.models.inspectdataframeresults import DatasetObservationsInfoResult
-from csvcubed.utils.file import get_root_dir_level
-
 
 _logger = logging.getLogger(__name__)
 
