@@ -8,15 +8,6 @@ An aggregate is formed when multiple numbers are gathered for statistical purpos
 
 ### [Code List](https://sdmx.org/wp-content/uploads/SDMX_Glossary_version_2_1-Final-2.docx)
 Predefined set of codified concepts which represent the distinct values that a dimension can hold.
-Example Code List:
-
-| Label            | Notation       | Parent Notation | Sort Priority |
-|------------------|----------------|-----------------|---------------|
-| Wine             | wine           |                 | 1             |
-| Made-Wine        | made-wine      |                 | 2             |
-| Spirits          | spirits        |                 | 3             |
-| Beer and Cider   | beer-and-cider |                 | 4             |
-| Beer             | beer           |                 | 5             |
 
 ### [CSV-W](https://www.w3.org/TR/tabular-data-primer/)
 Comma Separated Values on the Web – a standardised format to express useful metadata about CSV files. For more information, see the W3C project page on this topic.
@@ -41,8 +32,7 @@ Examples:
 An observation is the RDF Data Cube representation of an observed value. It describes what has been measured, its value, the units in which it has been measured as well as the dimension values necessary to identify the subset of the population which has been measured.
 
 ### [Population Characteristic](https://sdmx.org/wp-content/uploads/SDMX_Glossary_version_2_1-Final-2.docx)
-A concept to describe the set of objects that information is to be obtained about in a statistical survey. For example, the Population of adults in the Netherlands based on the Unit Type of persons.
-
+A concept which can be measured or observed used to describe the set of objects that information is to be obtained about in a statistical survey (statistical population). For example, height in a population of people or income in a population of households.
 
 ### [Semantic Web](https://www.w3.org/RDF/Metalog/docs/sw-easy)
 An extension of the current web in which information is given well-defined meaning, better enabling computers and people to work in cooperation. [W3C refers to its vision of a Web of Linked Data](https://www.w3.org/standards/semanticweb/) created using Semantic Web technologies to enable people to create data stores on the Web, build vocabularies, and write rules for handling data.
