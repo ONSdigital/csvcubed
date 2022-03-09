@@ -1,6 +1,6 @@
 """
 Metadata Processor
----------------------------
+------------------
 
 Provides functionality for validating and detecting input metadata.json file.
 """

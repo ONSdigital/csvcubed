@@ -1,6 +1,6 @@
 """
 Inspect Dataset Manager
--------------------
+-----------------------
 
 Collection of functions handling csv-related operations used in the inspect cli.
 """

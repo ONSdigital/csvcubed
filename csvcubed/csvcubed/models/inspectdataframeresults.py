@@ -1,6 +1,6 @@
 """
 Inspect Dataframe query results
-----------------------------
+-------------------------------
 """
 
 from os import linesep
