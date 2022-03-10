@@ -39,7 +39,7 @@ def test_dict_is_exactly_same_as_fetched_template():
     assert column_config["label"] == "NUTSgeography"
     assert column_config["column_uri_template"] == "http://....../{+<column_name>}"
 
-def test_ons_geographies_template_gets_fetched():
+def test_ons_geographies_template_is_fetched():
     column_config = {
         "from_template" : "ons geographies"
     }
