@@ -4,7 +4,7 @@
 
 csvcubed requires that all CSV data inputs are provided in one of two specialised form of [tidy data](../glossary/index.md#tidy-data):
 
-* the [canonical approach](#canonical-shape) - the **default recommended shape** accepted by csvcubed. It is the **most flexible** but also the most **verbose**.
+* the [canonical approach](#canonical-shape) - the **default recommended shape** accepted by csvcubed. It is the **most flexible** approach as it allows you to vary measures and units within the same cube, but it is also the most **verbose** shape.
 * the [pivoted approach](#pivoted-shape) - a **terser** shape currently only compatible with data sets containing a **single measure**.
 
 These two shapes share a number of similarities in how they require data to be structured; this is explored in the following section on the [common structure](#common-structure).
@@ -36,7 +36,7 @@ _Data set representing the number of 'Arthur's Bakes' stores in UK cities from 2
 
 ## Canonical Shape
 
-The canonical shape extends the [common structure](#common-structure) by requiring that **each row** has a _measures_ column and a _units_ column; these columns define the measure and unit (of measure) for each row.
+The canonical shape extends the [common structure](#common-structure) by requiring that **each row** has a _measures_ column and a _units_ column; these columns define the measure and unit (of measure) for each row. In our example, the measure observed is `Number of 'Arthur's Bakes'` and the corresponding unit is `Count`.
 
 | Year | Location  | Value |      Status |                    Measure |  Unit |
 |:-----|:----------|------:|------------:|---------------------------:|------:|
@@ -77,13 +77,13 @@ The simplest [qube-config.json](./qube-config.md#configuration) we can define fo
 }
 ```
 
-It is possible to use the [conventional-first approach](./qube-config.md#convention-first-method) to generate a valid [canonical shape](#canonical-shape) cube without defining a [qube-config.json](./qube-config.md#configuration) at all. Just ensure that your columns use the [conventional column names](./qube-config.md#conventional-column-names) appropriate to their type.
+It is possible to use the [convention-first approach](./qube-config.md#convention-first-method) to generate a valid [canonical shape](#canonical-shape) cube without defining a [qube-config.json](./qube-config.md#configuration) at all. Just ensure that your columns use the [conventional column names](./qube-config.md#conventional-column-names) appropriate to their type.
 
 ### Multiple Measures
 
 One of the benefits of the canonical shape is that it is relatively straightforward to add new measure types and unit types; all that you have to do is add additional rows to your data set with the appropriate units and measures present.
 
-We can extend out example data set so that it now includes revenue values for the given year by adding rows to the table:
+We can extend our example data set so that it now includes revenue values for the given year by adding rows to the table:
 
 | Year | Location | Value |      Status |                    Measure |                   Unit |
 |:-----|:---------|------:|------------:|---------------------------:|-----------------------:|
@@ -103,7 +103,7 @@ The same data could be more naturally represented in the equivalent pivoted shap
 
 ### Converting to the Canonical Shape
 
-Since csvcubed doesn't current support multi-measure data sets in the [pivoted shape](#pivoted-shape), it is often necessary to convert your data from the [pivoted shape](#pivoted-shape) into the [canonical shape](#canonical-shape). See the following examples using the [pandas library](https://pandas.pydata.org/) in python and the [tidyverse library](https://tidyverse.org/) in R to convert from the pivoted to the canonical shape.
+Since csvcubed doesn't currently support multi-measure data sets in the [pivoted shape](#pivoted-shape), it is often necessary to convert your data from the [pivoted shape](#pivoted-shape) into the [canonical shape](#canonical-shape). See the following examples using the [pandas library](https://pandas.pydata.org/) in python and the [tidyverse library](https://tidyverse.org/) in R to convert from the pivoted to the canonical shape.
 
 Starting with a dataframe in the pivoted shape:
 
