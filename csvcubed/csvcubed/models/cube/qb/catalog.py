@@ -16,6 +16,7 @@ from csvcubed.utils.validators.uri import validate_uri, validate_uris_in_list
 
 @dataclass
 class CatalogMetadata(CatalogMetadataBase, UriIdentifiable):
+    title: str
     identifier: Optional[str] = None
     summary: Optional[str] = field(default=None, repr=False)
     description: Optional[str] = field(default=None, repr=False)
@@ -68,7 +69,7 @@ class CatalogMetadata(CatalogMetadataBase, UriIdentifiable):
         dt_now = datetime.now()
         dt_issued = self.dataset_issued or dt_now
 
-        dataset.label = dataset.title = self.title
+        # dataset.label = dataset.title = self.title
         dataset.issued = dt_issued
         dataset.modified = self.dataset_modified or dt_issued
         dataset.comment = self.summary

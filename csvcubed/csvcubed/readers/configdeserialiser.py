@@ -74,14 +74,14 @@ def _load_resource(resource_path: Path) -> dict:
 
 
 def _from_config_json_dict(
-    data: pd.DataFrame, config: Optional[Dict], json_parent_dir: Path
+    data: pd.DataFrame, config: Dict, json_parent_dir: Path
 ) -> QbCube:
     columns: List[CsvColumn] = []
     metadata: CatalogMetadata = _metadata_from_dict(config)
 
-    config_columns = config.get("columns", [])
+    config_columns = config.get("columns", {})
     for column_title in config_columns:
-        column_config = config_columns.get(column_title)
+        column_config = config_columns[column_title]
 
         # When the config json contains a col definition and the col title is not in the data
         column_data = (
@@ -111,7 +111,7 @@ def _metadata_from_dict(config: dict) -> "CatalogMetadata":
 
     return CatalogMetadata(
         identifier=config.get("id"),
-        title=config.get("title"),
+        title=config["title"],
         description=config.get("description", ""),
         summary=config.get("summary", ""),
         creator_uri=creator,
