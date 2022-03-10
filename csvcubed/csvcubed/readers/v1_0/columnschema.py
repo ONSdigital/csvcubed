@@ -6,6 +6,7 @@ config.json V1.0 column mapping models.
 """
 import uritemplate
 
+from abc import ABC
 from dataclasses import dataclass
 from typing import List, Union, Optional, TypeVar
 from pathlib import Path
@@ -18,7 +19,7 @@ from csvcubed.models.cube import (
     ExistingQbCodeList,
     NewQbAttributeLiteral,
     NewQbCodeList,
-    NewQbCodeListInCsvW, QbCodeList,
+    QbCodeList,
 )
 
 from csvcubedmodels.dataclassbase import DataClassBase
@@ -50,7 +51,7 @@ T = TypeVar("T", bound=object)
 
 
 @dataclass
-class SchemaBaseClass(DataClassBase):
+class SchemaBaseClass(DataClassBase, ABC):
     ...
 
 
@@ -60,7 +61,7 @@ class NewDimension(SchemaBaseClass):
     # type: # str = "dimension"
 
     # Properties only available for New Dimension
-    label: str = ""
+    label: str
     description: Optional[str] = None
     definition_uri: Optional[str] = None
 
@@ -70,7 +71,7 @@ class NewDimension(SchemaBaseClass):
     code_list: Optional[Union[str, bool]] = True
 
     def map_to_new_qb_dimension(
-        self, label: str, data: PandasDataTypes, json_parent_dir: Path
+        self, label: str, data: PandasDataTypes
     ) -> NewQbDimension:
 
         new_dimension = NewQbDimension.from_data(
@@ -80,13 +81,14 @@ class NewDimension(SchemaBaseClass):
             parent_dimension_uri=self.from_existing,
             source_uri=self.definition_uri,
         )
-        new_dimension.code_list = self._get_code_list(new_dimension, json_parent_dir)
+        # The NewQbCodeList and Concepts are populated in the NewQbDimension.from_data() call
+        # the _get_code_list method overrides the code_list if required.
+        new_dimension.code_list = self._get_code_list(new_dimension)
         return new_dimension
 
     def _get_code_list(
         self,
-        new_dimension: NewQbDimension,
-        json_parent_dir: Path,
+        new_dimension: NewQbDimension
     ) -> Optional[QbCodeList]:
 
         code_list_obj = None
@@ -96,13 +98,8 @@ class NewDimension(SchemaBaseClass):
                 code_list_obj = ExistingQbCodeList(self.code_list)
 
             else:
-                code_list_path = Path(self.code_list)
-                if code_list_path.is_absolute():
-                    code_list_obj = NewQbCodeListInCsvW(code_list_path)
-                else:
-                    code_list_obj = NewQbCodeListInCsvW(
-                        json_parent_dir / self.code_list
-                    )
+                raise ValueError("Code List contains a string that cannot be recognised as a URI")
+
         elif isinstance(self.code_list, bool):
             if self.code_list is False:
                 code_list_obj = None
@@ -147,13 +144,11 @@ class NewDimension(SchemaBaseClass):
 
 @dataclass
 class ExistingDimension(SchemaBaseClass):
-    from_existing: str = ""
+    from_existing: str
     cell_uri_template: Optional[str] = None
 
-    def map_to_existing_qb_dimension(
-        self, label: str, data: PandasDataTypes, json_parent_dir: Path
-    ) -> ExistingQbDimension:
-        return ExistingQbDimension(self.from_existing)
+    def map_to_existing_qb_dimension(self) -> ExistingQbDimension:
+        return ExistingQbDimension(dimension_uri=self.from_existing)
 
 
 @dataclass
@@ -165,36 +160,12 @@ class AttributeValue(SchemaBaseClass):
 
 
 @dataclass
-class NewAttributeProperty(SchemaBaseClass):
-    path: Optional[str] = None
-    label: Optional[str] = None
-    comment: Optional[str] = None
-    isDefinedBy: Optional[str] = None
-    subPropertyOf: Optional[str] = None
-    newAttributeValues: Union[None, bool, List[AttributeValue]] = None
-    literalValuesDataType: Optional[str] = None
-
-
-@dataclass
 class ExistingAttribute(SchemaBaseClass):
-    from_existing: str = ""
+    from_existing: str
     definition_uri: Optional[str] = None
     data_type: Optional[str] = None
     required: bool = False
     values: Union[bool, List[AttributeValue]] = True
-
-    def map_to_qb_attribute(
-        self,
-        label: str,
-        data: PandasDataTypes
-    ) -> ExistingQbAttribute:
-        return ExistingQbAttribute(
-            self.from_existing,
-            new_attribute_values=_get_new_attribute_values(
-                data, self.values
-            ),
-            is_required=self.required,
-        )
 
     def map_to_existing_qb_attribute(
         self, data: PandasDataTypes
@@ -221,7 +192,7 @@ class ExistingAttribute(SchemaBaseClass):
 
 @dataclass
 class NewAttribute(SchemaBaseClass):
-    label: str = ""
+    label: str
     description: Optional[str] = None
     from_existing: Optional[str] = None
     definition_uri: Optional[str] = None
@@ -282,8 +253,8 @@ class Unit(SchemaBaseClass):
 
 @dataclass
 class ExistingUnits(SchemaBaseClass):
+    cell_uri_template: str
     values: Union[bool, List[Unit]] = True
-    cell_uri_template: str = ""
 
     def map_to_existing_qb_multi_units(
         self, data: PandasDataTypes, column_title: str
@@ -332,7 +303,6 @@ class NewMeasures(SchemaBaseClass):
     ) -> QbMultiMeasureDimension:
         # When values is a single bool True then create new Measures from the csv column data
         if self.values is True:
-            # return QbMultiMeasureDimension.new_measures_from_data(data, csvw_column_name)
             return QbMultiMeasureDimension.new_measures_from_data(data)
 
         elif isinstance(self.values, list):
@@ -349,8 +319,8 @@ class NewMeasures(SchemaBaseClass):
 
 @dataclass
 class ExistingMeasures(SchemaBaseClass):
+    cell_uri_template: str
     values: Union[bool, List[Measure]] = True
-    cell_uri_template: str = ""
 
     def map_to_existing_multi_measure_dimension(
         self, column_title: str, data: PandasDataTypes

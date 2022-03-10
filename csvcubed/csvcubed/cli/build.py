@@ -30,11 +30,12 @@ def build(
     )
 
     cube, json_schema_validation_errors = get_cube_from_config_json(csv_path, config)
+
     validation_errors = cube.validate()
     validation_errors += validate_qb_component_constraints(cube)
 
     if not output_directory.exists():
-        print(f"Creating output directory {output_directory.absolute()}")
+        _logger.debug(f"Creating output directory {output_directory.absolute()}")
         output_directory.mkdir(parents=True)
 
     if len(validation_errors) > 0 or len(json_schema_validation_errors) > 0:

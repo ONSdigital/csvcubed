@@ -7,16 +7,16 @@ A loader for the config.json.
 import json
 import logging
 
-from typing import Dict, Tuple
-
-from urllib.parse import urlsplit
+from pathlib import Path
+from typing import Dict, Tuple, List
 
 import pandas as pd
 from jsonschema.exceptions import ValidationError
-from csvcubed.readers.v1_0.columnschema import *
+# import csvcubed.readers.v1_0.columnschema as v1_0_col_schema
 
 from csvcubed.models.cube import *
-from csvcubed.readers.v1_0.mapcolumntocomponent import map_column_to_qb_component
+from csvcubed.readers.v1_0.mapcolumntocomponent import map_column_to_qb_component \
+    as v1_0_map_column_to_qb_component
 from csvcubed.utils.dict import get_with_func_or_none
 from csvcubed.utils.uri import uri_safe
 from csvcubed.utils.json import load_json_from_uri, read_json_from_file
@@ -26,15 +26,15 @@ from csvcubedmodels.rdf.namespaces import GOV
 
 # Used to determine whether a column name matches accepted conventions
 CONVENTION_NAMES = {
-    "measures": [
+    "measures": {
         "measure",
         "measures",
         "measures column",
         "measure column",
         "measure type",
         "measure types",
-    ],
-    "observations": [
+    },
+    "observations": {
         "observation",
         "observations",
         "obs",
@@ -42,15 +42,15 @@ CONVENTION_NAMES = {
         "value",
         "val",
         "vals",
-    ],
-    "units": [
+    },
+    "units": {
         "unit",
         "units",
         "units column",
         "unit column",
         "unit type",
         "unit types",
-    ],
+    },
 }
 
 log = logging.getLogger(__name__)
@@ -62,48 +62,37 @@ def _load_resource(resource_path: Path) -> dict:
     """
     schema: dict = {}
 
-    if "http" in urlsplit(str(resource_path)).scheme:
+    if resource_path.parts[0].startswith('http'):
         schema = load_json_from_uri(str(resource_path))
 
     else:
+        if not resource_path.is_absolute():
+            resource_path = resource_path.resolve()
         schema = read_json_from_file(resource_path)
 
     return schema
-
-
-def _override_catalog_metadata_state(
-    catalog_metadata_json_file: Path, cube: QbCube
-) -> None:
-    with open(catalog_metadata_json_file, "r") as f:
-        catalog_metadata_dict: dict = json.load(f)
-    overriding_catalog_metadata = CatalogMetadata.from_dict(catalog_metadata_dict)
-    cube.metadata.override_with(
-        overriding_catalog_metadata,
-        overriding_keys={k for k in catalog_metadata_dict.keys()},
-    )
 
 
 def _from_config_json_dict(
     data: pd.DataFrame, config: Optional[Dict], json_parent_dir: Path
 ) -> QbCube:
     columns: List[CsvColumn] = []
-    if not config:
-        metadata: CatalogMetadata = _metadata_from_dict({})
-    else:
-        metadata: CatalogMetadata = _metadata_from_dict(config)
-        for column_title in config.get("columns", []):
-            column_config = config["columns"].get(column_title)
+    metadata: CatalogMetadata = _metadata_from_dict(config)
 
-            # When the config json contains a col definition and the col title is not in the data
-            column_data = (
-                None if column_title not in data.columns else data[column_title]
-            )
+    config_columns = config.get("columns", [])
+    for column_title in config_columns:
+        column_config = config_columns.get(column_title)
 
-            columns.append(
-                map_column_to_qb_component(
-                    column_title, column_config, column_data, json_parent_dir
-                )
+        # When the config json contains a col definition and the col title is not in the data
+        column_data = (
+            data[column_title] if column_title in data.columns else None
+        )
+
+        columns.append(
+            v1_0_map_column_to_qb_component(
+                column_title, column_config, column_data, json_parent_dir
             )
+        )
 
     return Cube(metadata, data, columns)
 
@@ -122,7 +111,7 @@ def _metadata_from_dict(config: dict) -> "CatalogMetadata":
 
     return CatalogMetadata(
         identifier=config.get("id"),
-        title=config.get("title", ""),
+        title=config.get("title"),
         description=config.get("description", ""),
         summary=config.get("summary", ""),
         creator_uri=creator,
@@ -172,16 +161,25 @@ def get_cube_from_config_json(
     # If we have a config json file then load it and validate against its reference schema
     if config_path:
         config = _load_resource(config_path.resolve())
-        schema = _load_resource(Path(config["$schema"]).resolve())
+        # Update loaded config's title if not defined, setting title from csv data file path.
+        if config.get('title') is None:
+            config['title'] = ' '.join(
+                [word.capitalize() for word in csv_path.stem.replace('-', ' ').split(' ')]
+            )
+        schema = _load_resource(Path(config["$schema"]))
         schema_validation_errors = validate_dict_against_schema(
             value=config, schema=schema
         )
 
+    # Create a default config, setting title from csv data file path.
     else:
-        config = None
+        config = {'title': ' '.join(
+            [word.capitalize() for word in csv_path.stem.replace('-',' ').split(' ')]
+            )
+        }
         schema_validation_errors = []
 
-    parent_path = csv_path.parent if not config_path else config_path.parent
+    parent_path = config_path.parent if config_path else csv_path.parent
     cube = _from_config_json_dict(data, config, parent_path)
 
     # Update metadata from csv where appropriate
@@ -192,9 +190,10 @@ def get_cube_from_config_json(
     )
 
     # Update columns from csv where appropriate, i.e. config did not define the column
+    config_column_titles = {col.csv_column_title for col in cube.columns}
     for i, column_title in enumerate(data.columns):
         # ... determine if the column_title in data matches a convention
-        if column_title not in [col.csv_column_title for col in cube.columns]:
+        if column_title not in config_column_titles:
             convention_names = [
                 standard_name
                 for standard_name, options in CONVENTION_NAMES.items()
@@ -231,7 +230,7 @@ def get_cube_from_config_json(
                 raise ValueError(f"Column type '{column_type}' is not supported.")
 
             try:
-                qb_column: CsvColumn = map_column_to_qb_component(
+                qb_column: CsvColumn = v1_0_map_column_to_qb_component(
                     column_title=column_title,
                     column=column_dict,
                     data=data[column_title].astype("category"),

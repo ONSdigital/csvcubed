@@ -6,7 +6,7 @@ Define a measure dimension in an RDF Data Cube.
 """
 
 from dataclasses import dataclass
-from typing import List, Union
+from typing import List
 
 import pandas as pd
 import uritemplate

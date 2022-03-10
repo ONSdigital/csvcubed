@@ -11,7 +11,7 @@ from pathlib import Path
 from csvcubed.models.cube.qb.columns import QbColumn
 from csvcubed.inputs import PandasDataTypes
 
-from csvcubed.readers.v1_0 import columnschema as schema
+import csvcubed.readers.v1_0.columnschema as v1_0_col_schema
 
 
 def map_column_to_qb_component(
@@ -26,77 +26,76 @@ def map_column_to_qb_component(
     """
     schema_mapping = _from_column_dict_to_schema_model(column_title, column)
 
-    if isinstance(schema_mapping, schema.NewDimension):
+    if isinstance(schema_mapping, v1_0_col_schema.NewDimension):
         return QbColumn(
             column_title,
-            # column.get('label', column_title),
-            schema_mapping.map_to_new_qb_dimension(column_title, data, json_parent_dir),
+            schema_mapping.map_to_new_qb_dimension(column_title, data),
             csv_column_uri_template=schema_mapping.cell_uri_template
         )
 
-    elif isinstance(schema_mapping, schema.ExistingDimension):
+    elif isinstance(schema_mapping, v1_0_col_schema.ExistingDimension):
         return QbColumn(
             column_title,
-            schema_mapping.map_to_existing_qb_dimension(column_title, data, json_parent_dir),
+            schema_mapping.map_to_existing_qb_dimension(),
             csv_column_uri_template=schema_mapping.cell_uri_template
         )
 
-    elif isinstance(schema_mapping, schema.NewAttribute):
+    elif isinstance(schema_mapping, v1_0_col_schema.NewAttribute):
         return QbColumn(
             column_title,
             schema_mapping.map_to_new_qb_attribute(column_title, data)
         )
 
-    elif isinstance(schema_mapping, schema.ExistingAttribute):
+    elif isinstance(schema_mapping, v1_0_col_schema.ExistingAttribute):
         return QbColumn(
             column_title,
             schema_mapping.map_to_existing_qb_attribute(data)
         )
 
-    elif isinstance(schema_mapping, schema.NewUnits):
+    elif isinstance(schema_mapping, v1_0_col_schema.NewUnits):
         return QbColumn(
             column_title,
             schema_mapping.map_to_new_qb_multi_units(data))
 
-    elif isinstance(schema_mapping, schema.ExistingUnits):
+    elif isinstance(schema_mapping, v1_0_col_schema.ExistingUnits):
         return QbColumn(
             column_title,
             schema_mapping.map_to_existing_qb_multi_units(data, column_title))
 
-    elif isinstance(schema_mapping, schema.NewMeasures):
+    elif isinstance(schema_mapping, v1_0_col_schema.NewMeasures):
         return QbColumn(
             column_title,
             schema_mapping.map_to_new_multi_measure_dimension(data)
         )
 
-    elif isinstance(schema_mapping, schema.ExistingMeasures):
+    elif isinstance(schema_mapping, v1_0_col_schema.ExistingMeasures):
         return QbColumn(
             column_title,
             schema_mapping.map_to_existing_multi_measure_dimension(column_title, data)
         )
 
-    elif isinstance(schema_mapping, schema.ObservationValue):
+    elif isinstance(schema_mapping, v1_0_col_schema.ObservationValue):
         return QbColumn(
             column_title,
             schema_mapping.map_to_qb_observation())
 
     else:
-        raise ValueError(f"Unmatched schema model type {type(schema_mapping)}")
+        raise ValueError(f"Unmatched v1_0_col_schema model type {type(schema_mapping)}")
 
 
 def _from_column_dict_to_schema_model(
     column_title: str,
     column: dict,
 ) -> Union[
-    schema.NewDimension,
-    schema.ExistingDimension,
-    schema.NewAttribute,
-    schema.ExistingAttribute,
-    schema.NewUnits,
-    schema.ExistingUnits,
-    schema.NewMeasures,
-    schema.ExistingMeasures,
-    schema.ObservationValue,
+    v1_0_col_schema.NewDimension,
+    v1_0_col_schema.ExistingDimension,
+    v1_0_col_schema.NewAttribute,
+    v1_0_col_schema.ExistingAttribute,
+    v1_0_col_schema.NewUnits,
+    v1_0_col_schema.ExistingUnits,
+    v1_0_col_schema.NewMeasures,
+    v1_0_col_schema.ExistingMeasures,
+    v1_0_col_schema.ObservationValue,
 ]:
     """
     N.B. when using the :method:`dict_fields_match_class` method, we need to ensure that we check for types with
@@ -111,60 +110,61 @@ def _from_column_dict_to_schema_model(
         raise ValueError("Type of column not specified.")
 
     elif column_type == "dimension":
-        if schema.NewDimension.dict_fields_match_class(column_without_type):
-            if schema.ExistingDimension.dict_fields_match_class(column_without_type):
-                return schema.ExistingDimension.from_dict(column_without_type)
+        if v1_0_col_schema.NewDimension.dict_fields_match_class(column_without_type):
+            if v1_0_col_schema.ExistingDimension.dict_fields_match_class(column_without_type):
+                return v1_0_col_schema.ExistingDimension.from_dict(column_without_type)
             else:
-                return schema.NewDimension.from_dict(column_without_type)
+                return v1_0_col_schema.NewDimension.from_dict(column_without_type)
 
-        elif schema.ExistingDimension.dict_fields_match_class(column_without_type):
-            return schema.ExistingDimension.from_dict(column_without_type)
+        elif v1_0_col_schema.ExistingDimension.dict_fields_match_class(column_without_type):
+            return v1_0_col_schema.ExistingDimension.from_dict(column_without_type)
         else:
-            raise Exception(f"Column with type '{column_type}' did not match either New or "
-                            f"Existing Dimension schema")
+            raise Exception(
+                f"Column with config: '{column}' did not match "
+                f"either New or Existing Dimension using v1_0_col_schema")
 
     elif column_type == "attribute":
-        if schema.NewAttribute.dict_fields_match_class(column_without_type):
-            if schema.ExistingAttribute.dict_fields_match_class(column_without_type):
-                return schema.ExistingAttribute.from_dict(column_without_type)
+        if v1_0_col_schema.NewAttribute.dict_fields_match_class(column_without_type):
+            if v1_0_col_schema.ExistingAttribute.dict_fields_match_class(column_without_type):
+                return v1_0_col_schema.ExistingAttribute.from_dict(column_without_type)
 
             else:
-                return schema.NewAttribute.from_dict(column_without_type)
-        elif schema.ExistingAttribute.dict_fields_match_class(column_without_type):
-            return schema.ExistingAttribute.from_dict(column_without_type)
+                return v1_0_col_schema.NewAttribute.from_dict(column_without_type)
+        elif v1_0_col_schema.ExistingAttribute.dict_fields_match_class(column_without_type):
+            return v1_0_col_schema.ExistingAttribute.from_dict(column_without_type)
         else:
-            raise Exception(f"Column with type '{column_type}' did not match either New or "
-                            f"Existing Attribute schema"
+            raise Exception(f"Column with config '{column}' did not match either New or "
+                            f"Existing Attribute v1_0_col_schema"
                             )
 
     elif column_type == "units":
-        if schema.ExistingUnits.dict_fields_match_class(column_without_type):
-            if schema.NewUnits.dict_fields_match_class(column_without_type):
-                return schema.NewUnits.from_dict(column_without_type)
+        if v1_0_col_schema.ExistingUnits.dict_fields_match_class(column_without_type):
+            if v1_0_col_schema.NewUnits.dict_fields_match_class(column_without_type):
+                return v1_0_col_schema.NewUnits.from_dict(column_without_type)
             else:
-                return schema.ExistingUnits.from_dict(column_without_type)
-        elif schema.NewUnits.dict_fields_match_class(column_without_type):
-            return schema.NewUnits.from_dict(column_without_type)
+                return v1_0_col_schema.ExistingUnits.from_dict(column_without_type)
+        elif v1_0_col_schema.NewUnits.dict_fields_match_class(column_without_type):
+            return v1_0_col_schema.NewUnits.from_dict(column_without_type)
         else:
             raise Exception(f"Column with type '{column_type}' did not match either New or "
-                            f"Existing Units schema"
+                            f"Existing Units v1_0_col_schema"
                             )
 
     elif column_type == "measures":
-        if schema.ExistingMeasures.dict_fields_match_class(column_without_type):
-            if schema.NewMeasures.dict_fields_match_class(column_without_type):
-                return schema.NewMeasures.from_dict(column_without_type)
+        if v1_0_col_schema.ExistingMeasures.dict_fields_match_class(column_without_type):
+            if v1_0_col_schema.NewMeasures.dict_fields_match_class(column_without_type):
+                return v1_0_col_schema.NewMeasures.from_dict(column_without_type)
             else:
-                return schema.ExistingMeasures.from_dict(column_without_type)
-        elif schema.NewMeasures.dict_fields_match_class(column_without_type):
-            return schema.NewMeasures.from_dict(column_without_type)
+                return v1_0_col_schema.ExistingMeasures.from_dict(column_without_type)
+        elif v1_0_col_schema.NewMeasures.dict_fields_match_class(column_without_type):
+            return v1_0_col_schema.NewMeasures.from_dict(column_without_type)
         else:
             raise Exception(f"Column with type '{column_type}' did not match either New or "
-                            f"Existing Measures schema"
+                            f"Existing Measures v1_0_col_schema"
                             )
 
     elif column_type == "observations":
-        return schema.ObservationValue.from_dict(column)
+        return v1_0_col_schema.ObservationValue.from_dict(column)
 
     raise ValueError(
         f"Column '{column_title}' with type '{column_type}' could not be understood."
