@@ -9,7 +9,7 @@ import logging
 
 from typing import Dict, Any
 
-from csvcubed.utils.cache import start_session
+from csvcubed.utils.cache import session
 
 def apply_preconfigured_values_from_template(column_config: Dict[str, Any], version_module_path: str) -> None:
     # if column_config doesn't have the `from_template` property, just terminate the function now
@@ -23,7 +23,7 @@ def apply_preconfigured_values_from_template(column_config: Dict[str, Any], vers
 
     # given the `from_template` value, look up the template in the git repo
     url =  f"https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/csvcubed/csvcubed/readers/{version_module_path}/templates/preset_column_config.json"
-    url_response = start_session(url)
+    url_response = session.get(url)
     logging.debug("The template is at: ", url)
    
     if url_response.status_code != 200:
@@ -31,7 +31,7 @@ def apply_preconfigured_values_from_template(column_config: Dict[str, Any], vers
 
     template_file = url_response.json().get(template_value)
     template_url = f"https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/csvcubed/csvcubed/readers/{version_module_path}/templates/{template_file}"
-    template_response = start_session(template_url)
+    template_response = session.get(template_url)
     logging.critical(template_response)
     if template_response.status_code != 200:
         logging.error("Status code: %s. Couldn't retrieve propeties from template at: %s" % (template_response.status_code, url))
