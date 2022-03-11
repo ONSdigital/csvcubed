@@ -5,6 +5,8 @@ import requests
 from json import JSONDecodeError
 from pathlib import Path
 
+from csvcubed.utils.cache import session
+
 log = logging.getLogger(__name__)
 
 
@@ -16,7 +18,7 @@ def load_json_from_uri(uri: str) -> dict:
     """
     response = None
     try:
-        response = requests.get(uri)
+        response = session(uri)
         if response.status_code != requests.codes("ok"):
             # HTTP Get request failed - raise error
             msg = (
