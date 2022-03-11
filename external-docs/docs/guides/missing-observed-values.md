@@ -1,7 +1,7 @@
 # Handling missing observed values
 Users may wish to avoid including particular observations within their data set. This may be done for many reasons including invalid or failed measurements, statistical suppression to avoid disclosing sensitive data, or simple missing observations because circumstances wouldn't permit an observation.
 
-Csvcubed supports missing values so long as there is an observation status/marker column present which explains why the observed value is missing. This column must be an attribute column which either reuses an existing attribute column which reuses the `http://purl.org/linked-data/sdmx/2009/attribute#obsStatus` definition, or be a new attribute column which has from_existing of `http://purl.org/linked-data/sdmx/2009/attribute#obsStatus`. The observation which is missing must have the observation status filled in.
+csvcubed permits missing observation values as long as there is an _attribute_ column which explains why the value is missing. The _attribute_ column must be based on the `http://purl.org/linked-data/sdmx/2009/attribute#obsStatus` attribute. The observation which is missing must have the observation status filled in.
 
 Blank values are represented as a zero length string in an observation column in csv format (i.e. `,,`).
 

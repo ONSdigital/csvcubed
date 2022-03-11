@@ -25,13 +25,13 @@ graph LR
 		C -- Configuration --> 1["2. Define columns"] --> D;
 	end
 	
-	D["3. Generate CSV-W"] ==> F(End);
+	D["3. Generate CSV-W"] ==> F(CSV-W);
 ```
 
 1. **Define metadata** (Optional)
    Provide information about the CSV-W's contents, such as title, publication date, description, and scope (e.g. start and end date of a time series)
 2. **Define columns** (Optional)
-   csvcubed has sensible defaults including the assumption that all columns are dimensions unless they have a reserved name (See: [Conventional column names for input `.csv` files](#conventional-column-name))
+   csvcubed has sensible defaults including the assumption that all columns are [dimensions](../glossary/index.md#dimension) unless they use a reserved name (See: [Conventional column names for input `.csv` files](#conventional-column-name))
 3. **Generate CSV-W**
    Run `csvcubed build tidy_data.csv (-c qube-config.json)` to generate a CSV-W
 
@@ -39,30 +39,35 @@ If you chose to omit step 2, you **must** ensure that your columns use [conventi
 
 ### Convention-first method
 
-The conventions used in generating a csvcubed-flavoured CSV-W involve a series of assumptions. These assumptions are always present, even if a configuration approach is used. A summary of the assumptions made by csvcubed are as follows.
+The convention-first method enables you to generate a CSV-W cube without providing a [qube-config.json](#configuration) configuration file at all. This approach requires that you make use of standardised column names which help csvcubed infer what kind of information is contained in each column.
 
-* The title of the cube is the name of the csv file in capital case with underscores replaced by spaces.
-* Every column which does not use a conventional name is interpreted as a dimension.
-* The title of a dimension is taken as the [title case](https://en.wikipedia.org/wiki/Title_case) value of the column header with any underscores replaced by spaces.
-* A sibling code list is generated for each conventionally defined dimension. This code list is generated from the unique values present in the data CSV column.
-* Observation values are in the observation column and are decimal values.
-* Measures are in the measure column, and new measures are created using the unique values in the column unless a URI is present, when that uri is assumed to point to an existing measure.
-* Units are in the unit column, and new units are created using the unique values in the column unless a URI is present, when that uri is assumed to point to an existing unit.
+Requirements:
+
+* The data set must be in the [canonical data shape](./shape-data.md#canonical-shape).
+* The data CSV's column titles use [conventional column names](#conventional-column-names) for [measure](../glossary/index.md#measure) columns, [unit](../glossary/index.md#unit) columns and [observed value](../glossary/index.md#observation-observed-value) columns.
+
+Inferences and assumptions:
+
+* The title of the cube is the name of the csv file in [title case](https://en.wikipedia.org/wiki/Title_case) with underscores or dashes replaced by spaces.
+* Every column which does not use a conventional name is interpreted as a [dimension](../glossary/index.md#dimension).
+* The title of each dimension is the [title case](https://en.wikipedia.org/wiki/Title_case) version of the column header with any underscores or dashes replaced by spaces.
+* A code list is generated for each dimension column. This code list is generated from the unique values present in the data CSV column.
+* Observation values are decimal values.
+* New measures are created using the unique values in the measures column unless a URI is present, where that uri is assumed to point to an existing measure.
+* New units are created using the unique values in the units column unless a URI is present, where that uri is assumed to point to an existing unit.
 
 #### Conventional Column Names
 
 The following table defines the conventional column names understood by csvcubed:
 
-<!-- TODO: We should ensure to link to a document describing what the different types of component mean. -->
-
 | Component type     | Reserved names                                               | Resulting configuration                                      |
 | ------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| Dimension          | none                                                         | A new dimension with the label of the csv column as its title |
-| Measure Column     | Measure, measures, measures column, measure column, measure type, measure types | A new measure column with the values within the measure column as new measures unless the values are uris, when csvcubed will assume these are existing measures |
-| Observation Column | Observations, obs, values, value, val, vals                  | A new observation column with the values in this column; the data type of this column must be numeric and is assumed to be of type [xsd:decimal](https://www.w3.org/TR/xmlschema11-2/#decimal). |
-| Unit Column        | Unit, units, units column, unit column, unit type, unit types | A new unit column with the values within the unit column as new units unless the values are uris, when csvcubed will assume these are existing units |
+| [Dimension](../glossary/index.md#dimension)          | none                                                         | A new dimension with the label of the csv column as its title |
+| [Measure](../glossary/index.md#measure) Column     | Measure, measures, measures column, measure column, measure type, measure types | A new measure column with the values within the measure column as new measures unless the values are uris, when csvcubed will assume these are existing measures |
+| [Observation](../glossary/index.md#observation-observed-value) Column | Observations, obs, values, value, val, vals                  | A new observation column with the values in this column; the data type of this column must be numeric and is assumed to be of type [xsd:decimal](https://www.w3.org/TR/xmlschema11-2/#decimal). |
+| [Unit](../glossary/index.md#unit) Column        | Unit, units, units column, unit column, unit type, unit types | A new unit column with the values within the unit column as new units unless the values are uris, when csvcubed will assume these are existing units |
 
-A valid `.csv` file must have a column of each *component type* to be valid. It is possible to override the default configuration of a conventional column by [configuring a corresponding column mapping](#column-definitions) in a `qube-config.json` file.
+A valid convention-first cube must have a column of each *component type* to be valid. It is possible to override the default configuration of a conventional column by [configuring a corresponding column mapping](#column-definitions) in a `qube-config.json` file.
 
 
 ### Configuration
@@ -72,7 +77,7 @@ Configuring the CSV-W output is done in such a way that the user is explicit in 
 The `qube-config.json` file has two sections.
 
 1. **Metadata**
-   This section is used to describe the dataset's catalog information to aide discovery, provide provinance and publication information, and optionally define the scope of the data set
+   This section is used to describe the data set's catalog information to aide discovery, provide provinance and publication information, and optionally define the scope of the data set
 2. **Define columns**
    This section is used to describe each column in the `.csv` file, classifying the column and defining how the column data is both represented and how it links semantically to other data
 
@@ -216,8 +221,8 @@ Measure and unit columns are treated slightly differently to dimension, attribut
 
 ## Measures and Units
 
-Measures can either be attached to a Measure Column if there are a mixture of measures in your dataset, or to an Observation column if all observations in the cube have the same measure.
-Units can either be attached to a Unit Column if there are a mixture of units in your dataset, or to an Observation column if all observations in the cube have the same unit.
+Measures can either be attached to a Measure Column if there are a mixture of measures in your data set, or to an Observation column if all observations in the cube have the same measure.
+Units can either be attached to a Unit Column if there are a mixture of units in your data set, or to an Observation column if all observations in the cube have the same unit.
 
 ### Measures
 
