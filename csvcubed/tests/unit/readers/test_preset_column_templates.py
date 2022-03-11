@@ -1,5 +1,7 @@
 import pytest
 
+from copy import deepcopy
+
 from csvcubed.readers.preconfiguredtemplates import apply_preconfigured_values_from_template
 from csvcubed.readers.vnum import JsonSchemaVersion
 
@@ -15,9 +17,9 @@ def test_func_accepts_dict_without_template():
     column_config = {
         "label" : "year",
     }
-    assert "label" in column_config
-    assert "column_uri_template" not in column_config
-    assert (apply_preconfigured_values_from_template(column_config, JsonSchemaVersion.v1_0.value)) == None
+    column_config_copy = deepcopy(column_config)
+    apply_preconfigured_values_from_template(column_config, JsonSchemaVersion.v1_0.value)
+    assert column_config == column_config_copy
 
 def test_from_template_removed_from_column_config():
     column_config = {

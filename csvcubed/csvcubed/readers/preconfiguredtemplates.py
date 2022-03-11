@@ -6,22 +6,23 @@ Functionality to help augment JSON files with configuration from some pre-config
 """
 import logging
 
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 from requests.exceptions import JSONDecodeError
 
 from csvcubed.utils.cache import session
 
-def get_template_file_from_template_lookup(template_value: str, version_module_path: str) -> str:
+def _get_template_file_from_template_lookup(template_value: str, version_module_path: str) -> str:
     """
     Given the `from_template` value, look up the template in the git repo
     """
 
     template_lookup_url =  f"https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/csvcubed/csvcubed/readers/{version_module_path}/templates/preset_column_config.json"
     template_lookup_response = session.get(template_lookup_url)
-    logging.debug("The template is at: %s", template_lookup_url)
+    logging.debug("The template lookup/index file: %s", template_lookup_url)
    
     if template_lookup_response.status_code != 200:
         logging.warning("Status code: %s.", template_lookup_response.status_code)
+        logging.debug("Response: %s.", template_lookup_response)
 
     try:
         template_lookup = template_lookup_response.json()
@@ -29,24 +30,26 @@ def get_template_file_from_template_lookup(template_value: str, version_module_p
         raise Exception(f"Could not access template lookup file at {template_lookup_url}") from e
 
     template_file = template_lookup.get(template_value)
+    if template_file == None:
+        raise Exception("Couldn't find template your looking for.")
 
     return template_file
 
 
-def get_propeties_from_template_file(template_file: str, version_module_path: str) -> dict:
+def _get_propeties_from_template_file(template_file: str, version_module_path: str) -> dict:
     """
     Given the file path to the template, read in all the propeties of that particular template
     """
-    template_template_lookup_url = f"https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/csvcubed/csvcubed/readers/{version_module_path}/templates/{template_file}"
-    template_response = session.get(template_template_lookup_url)
-    logging.critical(template_response)
+    template_lookup_url = f"https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/csvcubed/csvcubed/readers/{version_module_path}/templates/{template_file}"
+    template_response = session.get(template_lookup_url)
     if template_response.status_code != 200:
         logging.warning("Status code: %s.", template_response.status_code)
+        logging.debug("Response: %s.", template_response)
 
     try:
         fetch_template = template_response.json() 
     except JSONDecodeError as e:
-        raise Exception(f"Could not access template at {template_template_lookup_url}") from e
+        raise Exception(f"Could not access template at {template_lookup_url}") from e
 
     return fetch_template
 
@@ -66,10 +69,10 @@ def apply_preconfigured_values_from_template(column_config: Dict[str, Any], vers
     del column_config["from_template"]
 
     # given the `from_template` value, look up the template in the git repo
-    template_file = get_template_file_from_template_lookup(template_value, version_module_path)
+    template_file = _get_template_file_from_template_lookup(template_value, version_module_path)
 
     # given the file path to the template, read in all the propeties of that particular template
-    fetch_template = get_propeties_from_template_file(template_file, version_module_path)
+    fetch_template = _get_propeties_from_template_file(template_file, version_module_path)
 
     # insert values from column_config (as long as the user hasn't provided an overriding value for them)
     for propety in fetch_template:
