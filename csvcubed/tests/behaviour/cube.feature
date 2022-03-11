@@ -45,7 +45,7 @@ Feature:
     Then The cube Metadata should match
       """
         {
-          "title": "CUBE DATA CONVENTION OK.CSV",
+          "title": "Cube Data Convention Ok",
           "identifier": None,
           "summary": "",
           "description": "",

@@ -1,9 +1,8 @@
 import os
 import pytest
 from csvcubed.cli.build import build as cli_build
-from csvcubed.readers.configdeserialiser import *
+from csvcubed.readers.cubeconfig.v1_0.configdeserialiser import *
 from tests.unit.test_baseunit import get_test_cases_dir
-from csvcubed.cli.build import build
 
 PROJECT_ROOT = Path(Path(__file__).parent, "..", "..", "..", "..").resolve()
 TEST_CASE_DIR = Path(get_test_cases_dir().absolute(), 'config')
@@ -16,7 +15,7 @@ def test_build():
     output = Path("./out")
     csv = Path(TEST_CASE_DIR, "cube_data_config_ok.csv")
     cli_build(
-        config=config,
+        config_path=config,
         output_directory=output,
         csv_path=csv,
         fail_when_validation_error_occurs=True,
@@ -89,7 +88,7 @@ def test_01_build_config_ok():
     test_json_path = Path(os.path.join(TEST_CASE_DIR, 'cube_data_config_ok.json')).resolve()
     print(f"test_case_data: {test_data_path}")
     cube, validation_errors = cli_build(
-        config=test_json_path,
+        config_path=test_json_path,
         csv_path=test_data_path,
         output_directory=Path('./out'),
         fail_when_validation_error_occurs=True,

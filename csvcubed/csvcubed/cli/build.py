@@ -9,27 +9,28 @@ import logging
 from pathlib import Path
 from typing import Optional
 
+from csvcubed.readers.cubeconfig.get_deserialiser import get_deserialiser
 from csvcubedmodels.dataclassbase import DataClassBase
-
-from csvcubed.readers.configdeserialiser import get_cube_from_config_json
 from csvcubed.utils.qb.validation.cube import validate_qb_component_constraints
+
 
 _logger = logging.getLogger(__name__)
 
 
 def build(
     csv_path: Path,
-    config: Optional[Path] = None,
+    config_path: Optional[Path] = None,
     output_directory: Path = Path(".", "out").resolve(),
     fail_when_validation_error_occurs: bool = False,
     validation_errors_file_out: Optional[Path] = None,
 ):
     _logger.debug(f"CSV: {csv_path.absolute() if csv_path is not None else ''}")
     _logger.debug(
-        f"qube-config.json: {config.absolute() if config is not None else ''}"
+        f"qube-config.json: {config_path.absolute() if config_path is not None else ''}"
     )
 
-    cube, json_schema_validation_errors = get_cube_from_config_json(csv_path, config)
+    deserialiser = get_deserialiser(config_path)
+    cube, json_schema_validation_errors = deserialiser(csv_path, config_path)
 
     validation_errors = cube.validate()
     validation_errors += validate_qb_component_constraints(cube)

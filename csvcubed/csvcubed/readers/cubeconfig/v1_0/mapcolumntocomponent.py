@@ -11,7 +11,7 @@ from pathlib import Path
 from csvcubed.models.cube.qb.columns import QbColumn
 from csvcubed.inputs import PandasDataTypes
 
-import csvcubed.readers.v1_0.columnschema as v1_0_col_schema
+import csvcubed.readers.cubeconfig.v1_0.columnschema as v1_0_col_schema
 
 
 def map_column_to_qb_component(

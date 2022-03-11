@@ -15,6 +15,7 @@ from pathlib import Path
 from appdirs import AppDirs
 
 
+
 class CustomFormatter(logging.Formatter):
 
     grey = "\x1b[2;20m"

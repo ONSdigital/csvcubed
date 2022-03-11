@@ -81,7 +81,7 @@ def build_command(
     start_logging(log_dir_name="csvcubed-cli", selected_logging_level=log_level)
     try:
         build(
-            config=config,
+            config_path=config,
             output_directory=out,
             csv_path=csv,
             fail_when_validation_error_occurs=fail_when_validation_error,

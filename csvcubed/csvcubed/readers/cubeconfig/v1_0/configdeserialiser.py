@@ -4,7 +4,6 @@ __________________
 
 A loader for the config.json.
 """
-import json
 import logging
 
 from pathlib import Path
@@ -15,14 +14,13 @@ from jsonschema.exceptions import ValidationError
 # import csvcubed.readers.v1_0.columnschema as v1_0_col_schema
 
 from csvcubed.models.cube import *
-from csvcubed.readers.v1_0.mapcolumntocomponent import map_column_to_qb_component \
+from csvcubed.readers.cubeconfig.v1_0.mapcolumntocomponent import map_column_to_qb_component \
     as v1_0_map_column_to_qb_component
 from csvcubed.utils.dict import get_with_func_or_none
 from csvcubed.utils.uri import uri_safe
-from csvcubed.utils.json import load_json_from_uri, read_json_from_file
 from csvcubed.utils.validators.schema import validate_dict_against_schema
 from csvcubedmodels.rdf.namespaces import GOV
-
+from csvcubed.readers.cubeconfig.utils import load_resource
 
 # Used to determine whether a column name matches accepted conventions
 CONVENTION_NAMES = {
@@ -54,23 +52,6 @@ CONVENTION_NAMES = {
 }
 
 log = logging.getLogger(__name__)
-
-
-def _load_resource(resource_path: Path) -> dict:
-    """
-    Load a json schema document from either a File or URI
-    """
-    schema: dict = {}
-
-    if resource_path.parts[0].startswith('http'):
-        schema = load_json_from_uri(str(resource_path))
-
-    else:
-        if not resource_path.is_absolute():
-            resource_path = resource_path.resolve()
-        schema = read_json_from_file(resource_path)
-
-    return schema
 
 
 def _from_config_json_dict(
@@ -160,34 +141,23 @@ def get_cube_from_config_json(
 
     # If we have a config json file then load it and validate against its reference schema
     if config_path:
-        config = _load_resource(config_path.resolve())
+        config = load_resource(config_path.resolve())
         # Update loaded config's title if not defined, setting title from csv data file path.
         if config.get('title') is None:
-            config['title'] = ' '.join(
-                [word.capitalize() for word in csv_path.stem.replace('-', ' ').split(' ')]
-            )
-        schema = _load_resource(Path(config["$schema"]))
+            config['title'] = reformat_title(csv_path)
+        schema = load_resource(Path(config["$schema"]))
         schema_validation_errors = validate_dict_against_schema(
             value=config, schema=schema
         )
 
     # Create a default config, setting title from csv data file path.
     else:
-        config = {'title': ' '.join(
-            [word.capitalize() for word in csv_path.stem.replace('-',' ').split(' ')]
-            )
+        config = {'title': reformat_title(csv_path)
         }
         schema_validation_errors = []
 
     parent_path = config_path.parent if config_path else csv_path.parent
     cube = _from_config_json_dict(data, config, parent_path)
-
-    # Update metadata from csv where appropriate
-    cube.metadata.title = (
-        cube.metadata.title
-        if cube.metadata.title
-        else csv_path.name.upper().replace("_", " ")
-    )
 
     # Update columns from csv where appropriate, i.e. config did not define the column
     config_column_titles = {col.csv_column_title for col in cube.columns}
@@ -246,6 +216,16 @@ def get_cube_from_config_json(
                 raise err
 
     return cube, schema_validation_errors
+
+
+def reformat_title(csv_path: Path) -> str:
+    """
+    Formats a file Path, stripping -_ and returning the capitalised file name without extn
+    e.g. Path('./csv-data_file.csv') -> 'Csv Data File'
+    """
+    return ' '.join(
+        [word.capitalize() for word in csv_path.stem.replace('-', ' ').replace('_', ' ').split(' ')]
+    )
 
 
 if __name__ == "__main__":

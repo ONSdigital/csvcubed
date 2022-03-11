@@ -1,9 +1,8 @@
 import os
-from pathlib import Path
 
 import pytest
 from csvcubed.cli.build import build as cli_build
-from csvcubed.readers.configdeserialiser import *
+from csvcubed.readers.cubeconfig.v1_0.configdeserialiser import *
 
 from tests.unit.test_baseunit import get_test_cases_dir
 

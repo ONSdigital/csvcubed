@@ -1,9 +1,7 @@
-import os
 import pytest
 from csvcubed.cli.build import build as cli_build
-from csvcubed.readers.configdeserialiser import *
+from csvcubed.readers.cubeconfig.v1_0.configdeserialiser import *
 from tests.unit.test_baseunit import get_test_cases_dir
-from csvcubed.cli.build import build
 
 PROJECT_ROOT = Path(Path(__file__).parent, "..", "..", "..", "..").resolve()
 TEST_CASE_DIR = Path(get_test_cases_dir().absolute(), "config")
@@ -16,7 +14,7 @@ def test_build_with_fail():
     csv = Path(TEST_CASE_DIR, "cube_data_config_extra_cols.csv")
     with pytest.raises(SystemExit):
         cli_build(
-            config=config,
+            config_path=config,
             output_directory=output,
             csv_path=csv,
             fail_when_validation_error_occurs=True,
@@ -29,7 +27,7 @@ def test_build_without_fail():
     output = Path("./out")
     csv = Path(TEST_CASE_DIR, "cube_data_config_extra_cols.csv")
     cube, errors = cli_build(
-        config=config,
+        config_path=config,
         output_directory=output,
         csv_path=csv,
         fail_when_validation_error_occurs=False,
