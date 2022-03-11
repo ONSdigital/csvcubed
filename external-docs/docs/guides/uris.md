@@ -13,6 +13,6 @@ The URI safe transformation is a process which converts human-friendly text into
 | Multiple dashes are replaced with single dashes                                     | `picard--jean-luc-` is transformed to `picard-jean-luc-`   |
 | A trailing dash is removed if present                                               | `picard-jean-luc-` is transformed to `picard-jean-luc`    |
 
-Once this process is complete, the value is appended on to a URI base to make a full URI, for example `picard-jean-luc` may be appended to `http://example.com/definitions/code-lists/enterprise-captains/` to identify Jean-Luc Picard within the list of code list defining Enterprise captains.
+Once this process is complete, the value is appended on to a URI base to make a full URI, for example `picard-jean-luc` may be appended to `http://example.com/definitions/code-lists/enterprise-captains/` to identify Jean-Luc Picard within the code list defining Enterprise captains.
 
 > `http://example.com/definitions/code-lists/enterprise-captains/picard-jean-luc`.
