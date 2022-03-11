@@ -69,7 +69,6 @@ The following table defines the conventional column names understood by csvcubed
 
 A valid convention-first cube must have a column of each *component type* to be valid. It is possible to override the default configuration of a conventional column by [configuring a corresponding column mapping](#column-definitions) in a `qube-config.json` file.
 
-
 ### Configuration
 
 Configuring the CSV-W output is done in such a way that the user is explicit in overriding the default values assumed by csvcubed. Every value in the configuration of a cube has a default value, and if it is not overriden it is ether omitted as unnecessary for the production of valid CSV-W or the default value is used.
@@ -77,9 +76,9 @@ Configuring the CSV-W output is done in such a way that the user is explicit in 
 The `qube-config.json` file has two sections.
 
 1. **Metadata**
-   This section is used to describe the data set's catalog information to aide discovery, provide provinance and publication information, and optionally define the scope of the data set
-2. **Define columns**
-   This section is used to describe each column in the `.csv` file, classifying the column and defining how the column data is both represented and how it links semantically to other data
+   This section is used to describe the data set's catalog information to aide discovery, provide provinance and publication information, and optionally define the scope of the data set.
+2. **Column Definitions**
+   This section is used to describe each column in the `.csv` file, classifying the column and defining how the column data is both represented and how it links semantically to other data.
 
 ### Metadata
 
