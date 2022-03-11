@@ -1,0 +1,7 @@
+PREFIX csvw: <http://www.w3.org/ns/csvw#>
+
+SELECT DISTINCT ?csvColumnTitle
+WHERE {
+    ?csvColumn csvw:title ?csvColumnTitle;
+            csvw:suppressOutput true.
+}
