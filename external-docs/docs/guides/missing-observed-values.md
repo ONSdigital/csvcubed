@@ -8,9 +8,9 @@ Blank values are represented as a zero length string in an observation column in
 
 ## A worked example: Sweden in Eurovision
 
-In the example below, which is an extract of a data set capturing Sweden's Eurovision entries, we see a Marker column which is used to explain why a the given row's observed value is missing. 
+In the example below, which is an extract of a data set capturing Sweden's Eurovision entries, we see a Marker column which is used to explain why a the given row's observed value is missing.
 
-For example: 
+For example:
 
 * the number of People on the stage is known for Anna Bergendahl's entry into Eurovision as she comepted in second semi-final; however as she didn't make it to the final, her Final Points, and Final Rank are not applicable and therefore the observations are blank in the associated csv. 
 * in the case of The Mama's entry in 2020, the entire contest was cancelled so no values are provided however they were to represent Sweden at Eurovision that year.
@@ -58,7 +58,7 @@ Year,Entrant,Song,Language,Marker,Measure,Observation,Units
 
 ## Configuration of observation status in `qube-config.json`
 
-Adding a Marker column to represent the observation status can be done in the column definitions section of the [qube-config](../quick-start/qube-config.md) file. In this example the Marker column has the following configuration:
+Adding a `Marker` column to represent the observation status can be done in the column definitions section of the [qube-config](../quick-start/qube-config.md) file. In this example the Marker column has the following configuration:
 
 ```json
         "Marker": {
