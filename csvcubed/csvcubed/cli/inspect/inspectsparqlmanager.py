@@ -203,7 +203,7 @@ def select_dsd_code_list_and_cols(
 
     Member of :file:`./inspectsparqlmanager.py`
 
-    :return: `CodelistInfoSparqlResult``
+    :return: `CodelistInfoSparqlResult`
     """
     results: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryFileName.SELECT_CODELISTS_AND_COLS),
@@ -219,7 +219,7 @@ def select_qb_dataset_url(rdf_graph: Graph, dataset_uri: str) -> DatasetURLResul
 
     Member of :file:`./inspectsparqlmanager.py`
 
-    :return: `DatasetURLResult``
+    :return: `DatasetURLResult`
     """
     if not dataset_uri.startswith("file://"):
         raise Exception(
@@ -240,12 +240,13 @@ def select_qb_dataset_url(rdf_graph: Graph, dataset_uri: str) -> DatasetURLResul
 def select_codelist_dataset_url(rdf_graph: Graph) -> DatasetURLResult:
     """
     Queries the url of the given skos:conceptScheme.
-    TODO: check why no results are returned.
 
     Member of :file:`./inspectsparqlmanager.py`
 
-    :return: `DatasetURLResult``
+    :return: `DatasetURLResult`
     """
+    # TODO: Currently 0 results are returned. But it should return one result after implementing the loading of table schemas into rdf graph.
+
     results: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryFileName.SELECT_CODELIST_DATASET_URL),
         rdf_graph,
@@ -257,6 +258,13 @@ def select_codelist_dataset_url(rdf_graph: Graph) -> DatasetURLResult:
 
 
 def select_single_unit_from_dsd(rdf_graph: Graph):
+    """
+    Queries the single unit uri and label from the data structure definition.
+
+    Member of :file:`./inspectsparqlmanager.py`
+
+    :return: `DatasetURLResult`
+    """
     results: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryFileName.SELECT_SINGLE_UNIT_FROM_DSD),
         rdf_graph,

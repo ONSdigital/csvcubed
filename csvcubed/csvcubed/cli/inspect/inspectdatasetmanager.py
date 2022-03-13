@@ -9,6 +9,11 @@ Collection of functions handling csv-related operations used in the inspect cli.
 import logging
 from enum import Enum
 from pathlib import Path
+import pandas as pd
+from pandas import DataFrame
+
+from rdflib import Graph, URIRef
+
 from csvcubed.cli.inspect.inspectsparqlmanager import select_csvw_dsd_qube_components
 from csvcubed.models.inspectsparqlresults import QubeComponentsResult
 from csvcubed.utils.qb.components import (
@@ -16,14 +21,10 @@ from csvcubed.utils.qb.components import (
     ComponentPropertyType,
     ComponentPropertyTypeURI,
 )
-import pandas as pd
-from pandas import DataFrame
-
 from csvcubed.models.inspectdataframeresults import (
     DatasetObservationsByMeasureUnitInfoResult,
     DatasetObservationsInfoResult,
 )
-from rdflib import Graph, URIRef
 
 _logger = logging.getLogger(__name__)
 
@@ -113,15 +114,16 @@ def get_multi_measure_dataset_val_counts_info(
 
     :return: `DatasetObservationsByMeasureUnitInfoResult`
     """
-    if unit_label is not None:
-        by_measure_and_unit_grouped_df = dataset.groupby(["Measure Type", "Unit"])
+    if unit_label is None:
+        by_measure_and_unit_grouped = dataset.groupby(["Measure Type", "Unit"])
     else:
-        by_measure_and_unit_grouped_df = dataset.groupby("Measure Type")
-        # TODO Add new col to df with Unit.
+        by_measure_and_unit_grouped = dataset.groupby("Measure Type")
+
+    # TODO: Add unit to displaying df after fixing the input example for "no Unit col in dataset" AND "Single Unit dataset".
 
     return DatasetObservationsByMeasureUnitInfoResult(
         by_measure_and_unit_val_counts_df=DataFrame(
-            by_measure_and_unit_grouped_df.size().reset_index(name="count")
+            by_measure_and_unit_grouped.size().reset_index(name="count")
         ),
     )
 

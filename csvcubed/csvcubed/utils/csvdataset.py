@@ -1,3 +1,10 @@
+"""
+CSV Dataset
+-----------
+
+Utilities for CSV Datasets
+"""
+
 from enum import Enum
 
 

@@ -244,7 +244,7 @@ def test_select_codelist_dataset_url():
     """
     Should return expected `DatasetURLResult`.
 
-    TODO: Check sparql and implementation. Currently `select_codelist_dataset_url` raises no results found exception.
+    TODO: Complete this after implementing loading of table schema into rdf.
     """
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)

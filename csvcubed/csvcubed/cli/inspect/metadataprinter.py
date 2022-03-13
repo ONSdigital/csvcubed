@@ -5,9 +5,7 @@ Metadata Printer
 Provides functionality for validating and detecting input metadata.json file.
 """
 
-from mailbox import linesep
 from pathlib import Path
-from csvcubed.utils.dataset import CanonicalShapeRequiredCols
 from pandas import DataFrame
 
 from rdflib import Graph, URIRef
@@ -46,6 +44,7 @@ from csvcubed.models.inspectdataframeresults import (
     DatasetObservationsByMeasureUnitInfoResult,
     DatasetObservationsInfoResult,
 )
+from csvcubed.utils.csvdataset import CanonicalShapeRequiredCols
 
 
 class MetadataPrinter:
@@ -169,32 +168,44 @@ class MetadataPrinter:
         return f"- The {self._get_type_str()} has the following dataset information:{result.output_str}"
 
     def gen_dataset_val_counts_by_measure_unit_info_printable(self) -> str:
+        """
+        Generates a printable of dataset value counts broken-down by measure and unit.
+
+        Member of :class:`./MetadataPrinter`.
+
+        :return: `str` - user-friendly string which will be output to CLI.
+        """
         dataset_measure_type = get_dataset_measure_type(
             self.csvw_metadata_rdf_graph, self.dsd_uri, self.csvw_metadata_json_path
         )
 
         result_val_count: DatasetObservationsByMeasureUnitInfoResult
-        result_dsd_single_unit: DSDSingleUnitResult
 
         if dataset_measure_type == DatasetMeasureType.SINGLE_MEASURE:
+            # TODO IMPLEMENT REQUIRMENT: "If it's a single measure cube, we need to extract the measure/unit from the DSD and then the count is simply the number of rows (observations) in the data frame."
             result_val_count = get_single_measure_dataset_val_counts_info(self.dataset)
         elif dataset_measure_type == DatasetMeasureType.MULTI_MEASURE:
-            if CanonicalShapeRequiredCols.Unit.value not in self.dataset.columns:
-                dataset_unit_type = get_dataset_unit_type(
-                    self.csvw_metadata_rdf_graph,
-                    self.dsd_uri,
-                    self.csvw_metadata_json_path,
+            unit_label: str = None
+            result_dsd_single_unit: DSDSingleUnitResult
+
+            dataset_unit_type = get_dataset_unit_type(
+                self.csvw_metadata_rdf_graph,
+                self.dsd_uri,
+                self.csvw_metadata_json_path,
+            )
+
+            # If there is no Unit column in the dataset, we extract the Unit Label from the DSD. This only applies to Single Unit datasets.
+            if (
+                CanonicalShapeRequiredCols.Unit.value not in self.dataset.columns
+                and dataset_unit_type == DatasetUnitType.SINGLE_UNIT
+            ):
+                result_dsd_single_unit = select_single_unit_from_dsd(
+                    self.csvw_metadata_rdf_graph
                 )
-                if dataset_unit_type == DatasetUnitType.SINGLE_UNIT:
-                    result_dsd_single_unit = select_single_unit_from_dsd(
-                        self.csvw_metadata_rdf_graph
-                    )
-                    # TODO:
-                    # 1. Get an example from Rob where "Unit cols is not in dataset" AND "dataset is single unit".
-                    # 2. Get Unit Label and send it as the param to get_multi_measure_dataset_val_counts_info method.
-                    print(result_dsd_single_unit)
+                unit_label = result_dsd_single_unit.unit_label
+
             result_val_count = get_multi_measure_dataset_val_counts_info(
-                self.dataset, unit_label=result_dsd_single_unit.unit_label
+                self.dataset, unit_label
             )
         else:
             raise Exception("The dataset measure is unknown.")
