@@ -30,3 +30,22 @@ class DatasetObservationsInfoResult:
             self.dataset_tail
         )
         return f"{linesep}\t- Number of Observations: {self.num_of_observations}{linesep}\t- Number of Duplicates: {self.num_of_duplicates}{linesep}\t- First 10 Observations:{linesep}{formatted_dataset_head}{linesep}{linesep}\t- Last 10 Observations:{linesep}{formatted_dataset_tail}{linesep}"
+
+
+@dataclass()
+class DatasetObservationsByMeasureUnitInfoResult:
+    """
+    Model to represent get value counts of dataset observations broken-down by measure and unit.
+    """
+
+    by_measure_and_unit_val_counts_df: DataFrame
+
+    @property
+    def output_str(self) -> str:
+        formatted_by_measure_and_unit_val_counts = (
+            get_printable_tabuler_str_from_dataframe(
+                self.by_measure_and_unit_val_counts_df,
+                column_names=["Measure", "Unit", "Count"],
+            )
+        )
+        return f"{linesep}\t- Value counts broken-down by measure and unit (of measure):{linesep}{formatted_by_measure_and_unit_val_counts}"

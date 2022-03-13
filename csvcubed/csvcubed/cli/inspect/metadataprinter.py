@@ -5,7 +5,9 @@ Metadata Printer
 Provides functionality for validating and detecting input metadata.json file.
 """
 
+from mailbox import linesep
 from pathlib import Path
+from csvcubed.utils.dataset import CanonicalShapeRequiredCols
 from pandas import DataFrame
 
 from rdflib import Graph, URIRef
@@ -15,6 +17,7 @@ from csvcubed.models.inspectsparqlresults import (
     CodelistsResult,
     ColsWithSuppressOutputTrueResult,
     DSDLabelURIResult,
+    DSDSingleUnitResult,
     DatasetURLResult,
     QubeComponentsResult,
 )
@@ -27,12 +30,23 @@ from csvcubed.cli.inspect.inspectsparqlmanager import (
     select_csvw_dsd_qube_components,
     select_dsd_code_list_and_cols,
     select_qb_dataset_url,
+    select_single_unit_from_dsd,
 )
 from csvcubed.cli.inspect.inspectdatasetmanager import (
+    DatasetMeasureType,
+    DatasetUnitType,
+    get_dataset_measure_type,
     get_dataset_observations_info,
+    get_dataset_unit_type,
+    get_multi_measure_dataset_val_counts_info,
+    get_single_measure_dataset_val_counts_info,
     load_csv_to_dataframe,
 )
-from csvcubed.models.inspectdataframeresults import DatasetObservationsInfoResult
+from csvcubed.models.inspectdataframeresults import (
+    DatasetObservationsByMeasureUnitInfoResult,
+    DatasetObservationsInfoResult,
+)
+
 
 class MetadataPrinter:
     """
@@ -131,6 +145,7 @@ class MetadataPrinter:
 
         :return: `str` - user-friendly string which will be output to CLI.
         """
+
         result_dataset_url: DatasetURLResult
         if self.csvw_type == CSVWType.QbDataSet:
             result_dataset_url = select_qb_dataset_url(
@@ -142,7 +157,7 @@ class MetadataPrinter:
             )
         else:
             raise Exception("The input csvw json-ld is not supported.")
-            
+
         self.dataset: DataFrame = load_csv_to_dataframe(
             self.csvw_metadata_json_path, Path(result_dataset_url.dataset_url)
         )
@@ -150,4 +165,38 @@ class MetadataPrinter:
         result: DatasetObservationsInfoResult = get_dataset_observations_info(
             self.dataset
         )
+
         return f"- The {self._get_type_str()} has the following dataset information:{result.output_str}"
+
+    def gen_dataset_val_counts_by_measure_unit_info_printable(self) -> str:
+        dataset_measure_type = get_dataset_measure_type(
+            self.csvw_metadata_rdf_graph, self.dsd_uri, self.csvw_metadata_json_path
+        )
+
+        result_val_count: DatasetObservationsByMeasureUnitInfoResult
+        result_dsd_single_unit: DSDSingleUnitResult
+
+        if dataset_measure_type == DatasetMeasureType.SINGLE_MEASURE:
+            result_val_count = get_single_measure_dataset_val_counts_info(self.dataset)
+        elif dataset_measure_type == DatasetMeasureType.MULTI_MEASURE:
+            if CanonicalShapeRequiredCols.Unit.value not in self.dataset.columns:
+                dataset_unit_type = get_dataset_unit_type(
+                    self.csvw_metadata_rdf_graph,
+                    self.dsd_uri,
+                    self.csvw_metadata_json_path,
+                )
+                if dataset_unit_type == DatasetUnitType.SINGLE_UNIT:
+                    result_dsd_single_unit = select_single_unit_from_dsd(
+                        self.csvw_metadata_rdf_graph
+                    )
+                    # TODO:
+                    # 1. Get an example from Rob where "Unit cols is not in dataset" AND "dataset is single unit".
+                    # 2. Get Unit Label and send it as the param to get_multi_measure_dataset_val_counts_info method.
+                    print(result_dsd_single_unit)
+            result_val_count = get_multi_measure_dataset_val_counts_info(
+                self.dataset, unit_label=result_dsd_single_unit.unit_label
+            )
+        else:
+            raise Exception("The dataset measure is unknown.")
+
+        return f"- The {self._get_type_str()} has the following value counts:{result_val_count.output_str}"

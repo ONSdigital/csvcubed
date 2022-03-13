@@ -157,6 +157,12 @@ class DatasetURLResult:
     dataset_url: str
 
 
+@dataclass()
+class DSDSingleUnitResult:
+    unit_uri: URIRef
+    unit_label: str
+
+
 def map_catalog_metadata_result(sparql_result: ResultRow) -> CatalogMetadataResult:
     """
     Maps sparql query result to `CatalogMetadataResult`
@@ -333,4 +339,20 @@ def map_dataset_url_result(
     result_dict = sparql_result.asdict()
 
     result = DatasetURLResult(dataset_url=str(result_dict["tableUrl"]))
+    return result
+
+
+def map_single_unit_from_dsd_result(sparql_result: ResultRow) -> DSDSingleUnitResult:
+    """
+    Maps sparql query result to `DSDSingleUnitResult`
+
+    Member of :file:`./models/inspectsparqlresults.py`
+
+    :return: `DSDSingleUnitResult`
+    """
+    result_dict = sparql_result.asdict()
+
+    result = DSDSingleUnitResult(
+        unit_uri=URIRef(result_dict["unitUri"]), unit_label=str(result_dict["unitLabel"])
+    )
     return result

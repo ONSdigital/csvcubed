@@ -50,6 +50,7 @@ def inspect(csvw_metadata_json_path: Path) -> None:
             dsd_info_printable,
             codelist_info_printable,
             dataset_observations_printable,
+            val_counts_by_measure_unit_printable,
         ) = _generate_printables(
             csvw_type, csvw_metadata_rdf_graph, csvw_metadata_json_path
         )
@@ -60,6 +61,7 @@ def inspect(csvw_metadata_json_path: Path) -> None:
             print(f"{linesep}{dsd_info_printable}")
             print(f"{linesep}{codelist_info_printable}")
         print(f"{linesep}{dataset_observations_printable}")
+        print(f"{linesep}{val_counts_by_measure_unit_printable}")
     else:
         _logger.error(
             "This is an unsupported csv-w! Supported types are `data cube` and `code list`."
@@ -68,7 +70,7 @@ def inspect(csvw_metadata_json_path: Path) -> None:
 
 def _generate_printables(
     csvw_type: CSVWType, csvw_metadata_rdf_graph: Graph, csvw_metadata_json_path: Path
-) -> Tuple[str, str, str, str, str]:
+) -> Tuple[str, str, str, str, str, str]:
     """
     Generates printables of type, metadata, dsd, code list, head/tail and value count information.
 
@@ -80,17 +82,18 @@ def _generate_printables(
         csvw_type, csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
 
-    dsd_info_printable: str = ""
-    codelist_info_printable: str = ""
-
-    if csvw_type == CSVWType.QbDataSet:
-        dsd_info_printable = metadata_printer.gen_dsd_info_printable()
-        codelist_info_printable = metadata_printer.gen_codelist_info_printable()
+    type_info_printable: str = metadata_printer.gen_type_info_printable()
+    catalog_metadata_printable: str = metadata_printer.gen_catalog_metadata_printable()
+    dsd_info_printable: str = metadata_printer.gen_dsd_info_printable() if csvw_type ==  CSVWType.QbDataSet else ""
+    codelist_info_printable: str = metadata_printer.gen_codelist_info_printable() if csvw_type ==  CSVWType.QbDataSet else ""
+    dataset_observations_info_printable: str = metadata_printer.gen_dataset_observations_info_printable()
+    dataset_val_counts_by_measure_unit: str = metadata_printer.gen_dataset_val_counts_by_measure_unit_info_printable() if csvw_type ==  CSVWType.QbDataSet else ""
 
     return (
-        metadata_printer.gen_type_info_printable(),
-        metadata_printer.gen_catalog_metadata_printable(),
+        type_info_printable,
+        catalog_metadata_printable,
         dsd_info_printable,
         codelist_info_printable,
-        metadata_printer.gen_dataset_observations_info_printable(),
+        dataset_observations_info_printable,
+        dataset_val_counts_by_measure_unit,
     )

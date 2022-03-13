@@ -26,6 +26,7 @@ from csvcubed.models.inspectsparqlresults import (
     map_dataset_label_dsd_uri_sparql_result,
     map_dataset_url_result,
     map_qube_components_sparql_result,
+    map_single_unit_from_dsd_result,
 )
 from csvcubed.utils.file import get_root_dir_level
 from csvcubed.utils.sparql import ask, select
@@ -55,6 +56,8 @@ class SPARQLQueryFileName(Enum):
     SELECT_QB_DATASET_URL = "select_qb_dataset_url"
 
     SELECT_CODELIST_DATASET_URL = "select_codelist_dataset_url"
+
+    SELECT_SINGLE_UNIT_FROM_DSD = "select_single_unit_from_dsd"
 
 
 def _get_query_string_from_file(queryType: SPARQLQueryFileName) -> str:
@@ -251,3 +254,14 @@ def select_codelist_dataset_url(rdf_graph: Graph) -> DatasetURLResult:
         raise Exception(f"Expected 1 record, but found {len(results)}")
 
     return map_dataset_url_result(results[0])
+
+
+def select_single_unit_from_dsd(rdf_graph: Graph):
+    results: List[ResultRow] = select(
+        _get_query_string_from_file(SPARQLQueryFileName.SELECT_SINGLE_UNIT_FROM_DSD),
+        rdf_graph,
+    )
+    if len(results) != 1:
+        raise Exception(f"Expected 1 record, but found {len(results)}")
+
+    return map_single_unit_from_dsd_result(results[0])

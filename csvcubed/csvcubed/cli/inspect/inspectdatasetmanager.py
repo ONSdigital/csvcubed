@@ -9,12 +9,33 @@ Collection of functions handling csv-related operations used in the inspect cli.
 import logging
 from enum import Enum
 from pathlib import Path
+from csvcubed.cli.inspect.inspectsparqlmanager import select_csvw_dsd_qube_components
+from csvcubed.models.inspectsparqlresults import QubeComponentsResult
+from csvcubed.utils.qb.components import (
+    COMPONENT_PROPERTY_ATTRIBUTE_UNITMEASURE,
+    ComponentPropertyType,
+    ComponentPropertyTypeURI,
+)
 import pandas as pd
 from pandas import DataFrame
 
-from csvcubed.models.inspectdataframeresults import DatasetObservationsInfoResult
+from csvcubed.models.inspectdataframeresults import (
+    DatasetObservationsByMeasureUnitInfoResult,
+    DatasetObservationsInfoResult,
+)
+from rdflib import Graph, URIRef
 
 _logger = logging.getLogger(__name__)
+
+
+class DatasetMeasureType(Enum):
+    """
+    The type of dataset measure.
+    """
+
+    SINGLE_MEASURE = 0
+
+    MULTI_MEASURE = 1
 
 
 class DatasetUnitType(Enum):
@@ -65,68 +86,89 @@ def get_dataset_observations_info(
     )
 
 
-def get_dataset_val_counts_splitted(dataset: DataFrame) -> DataFrame:
+def get_single_measure_dataset_val_counts_info(
+    dataset: DataFrame,
+) -> DatasetObservationsByMeasureUnitInfoResult:
     """
-    TODO: Not yet implemented.
+    Generates the `DatasetObservationsByMeasureUnitInfoResult` from the single-measure dataset.
 
     Member of :file:`./inspectdatasetmanager.py`
 
-    :return: `DataFrame` - TODO
+    :return: `DatasetObservationsByMeasureUnitInfoResult`
     """
-    count_data = [{"measure_1": 10, "unit_1": 10}]
-    return pd.DataFrame(count_data)
+
+    # TODO: Implement for single-measure dataset.
+    return DatasetObservationsByMeasureUnitInfoResult(
+        by_measure_and_unit_val_counts_df=DataFrame()
+    )
 
 
-def get_dataset_unit_type(dataset: DataFrame) -> DatasetUnitType:
+def get_multi_measure_dataset_val_counts_info(
+    dataset: DataFrame, unit_label=None
+) -> DatasetObservationsByMeasureUnitInfoResult:
     """
-    TODO: Not yet implemented.
+    Generates the `DatasetObservationsByMeasureUnitInfoResult` from the multi-measure dataset.
 
     Member of :file:`./inspectdatasetmanager.py`
 
-    :return: `DatasetUnitType` - TODO
+    :return: `DatasetObservationsByMeasureUnitInfoResult`
     """
-    return DatasetUnitType.SINGLE_UNIT
+    if unit_label is not None:
+        by_measure_and_unit_grouped_df = dataset.groupby(["Measure Type", "Unit"])
+    else:
+        by_measure_and_unit_grouped_df = dataset.groupby("Measure Type")
+        # TODO Add new col to df with Unit.
+
+    return DatasetObservationsByMeasureUnitInfoResult(
+        by_measure_and_unit_val_counts_df=DataFrame(
+            by_measure_and_unit_grouped_df.size().reset_index(name="count")
+        ),
+    )
 
 
-def extract_single_measure_from_dsd(dataset: DataFrame) -> str:
+def get_dataset_measure_type(
+    graph: Graph, dsd_uri: URIRef, json_path: Path
+) -> DatasetMeasureType:
     """
-    TODO: Not yet implemented.
+    Detects whether the dataset is single-measure or multi-measure.
 
     Member of :file:`./inspectdatasetmanager.py`
 
-    :return: `str` - TODO
+    :return: `DatasetMeasureType`
     """
-    return ""
+    result_qube_components: QubeComponentsResult = select_csvw_dsd_qube_components(
+        graph, dsd_uri, json_path
+    )
+    filtered_components = [
+        component
+        for component in result_qube_components.qube_components
+        if component.property_type == ComponentPropertyType.Measure.value
+    ]
+    return (
+        DatasetMeasureType.MULTI_MEASURE
+        if len(filtered_components) > 1
+        else DatasetMeasureType.SINGLE_MEASURE
+    )
 
 
-def get_measure_column_from_csvw(dataset: DataFrame) -> str:
+def get_dataset_unit_type(graph: Graph, dsd_uri, json_path: Path) -> DatasetUnitType:
     """
-    TODO: Not yet implemented.
+    Detects whether the dataset is single-unit or multi-unit.
 
     Member of :file:`./inspectdatasetmanager.py`
 
-    :return: `str` - TODO
+    :return: `DatasetUnitType`
     """
-    return ""
-
-
-def get_units_column_from_csvw(dataset: DataFrame) -> str:
-    """
-    TODO: Not yet implemented.
-
-    Member of :file:`./inspectdatasetmanager.py`
-
-    :return: `str` - TODO
-    """
-    return ""
-
-
-def get_single_unit_from_dsd(dataset: DataFrame) -> str:
-    """
-    TODO: Not yet implemented.
-
-    Member of :file:`./inspectdatasetmanager.py`
-
-    :return: `str` - TODO
-    """
-    return ""
+    result_qube_components: QubeComponentsResult = select_csvw_dsd_qube_components(
+        graph, dsd_uri, json_path
+    )
+    filtered_components = [
+        component
+        for component in result_qube_components.qube_components
+        if component.property == COMPONENT_PROPERTY_ATTRIBUTE_UNITMEASURE
+    ]
+    return (
+        DatasetUnitType.MULTI_UNIT
+        if len(filtered_components) > 0
+        else DatasetUnitType.SINGLE_UNIT
+    )
