@@ -6,31 +6,32 @@ Functionality to help augment JSON files with configuration from some pre-config
 """
 import logging
 
-from typing import Dict, Any, Optional
+from typing import Dict, Any
 from requests.exceptions import JSONDecodeError
 
 from csvcubed.utils.cache import session
+
+TEMPLATE_BASE_URL = "https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/csvcubed/csvcubed/readers/{}/templates{}"
 
 def _get_template_file_from_template_lookup(template_value: str, version_module_path: str) -> str:
     """
     Given the `from_template` value, look up the template in the git repo
     """
-
-    template_lookup_url =  f"https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/csvcubed/csvcubed/readers/{version_module_path}/templates/preset_column_config.json"
+    template_lookup_url =  TEMPLATE_BASE_URL.format(version_module_path, "preset_column_config.json")
     template_lookup_response = session.get(template_lookup_url)
     logging.debug("The template lookup/index file: %s", template_lookup_url)
    
-    if template_lookup_response.status_code != 200:
+    if not template_lookup_response.ok:
         logging.warning("Status code: %s.", template_lookup_response.status_code)
         logging.debug("Response: %s.", template_lookup_response)
 
     try:
         template_lookup = template_lookup_response.json()
     except JSONDecodeError as e:
-        raise Exception(f"Could not access template lookup file at {template_lookup_url}") from e
+        raise Exception(f"Could not decode response \n{template_lookup_response}\n from {template_lookup_url}") from e
 
     template_file = template_lookup.get(template_value)
-    if template_file == None:
+    if not template_file:
         raise Exception("Couldn't find template your looking for.")
 
     return template_file
@@ -40,16 +41,17 @@ def _get_propeties_from_template_file(template_file: str, version_module_path: s
     """
     Given the file path to the template, read in all the propeties of that particular template
     """
-    template_lookup_url = f"https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/csvcubed/csvcubed/readers/{version_module_path}/templates/{template_file}"
-    template_response = session.get(template_lookup_url)
-    if template_response.status_code != 200:
+    template_url = TEMPLATE_BASE_URL.format(version_module_path, template_file)
+    template_response = session.get(template_url)
+
+    if not template_response.ok:
         logging.warning("Status code: %s.", template_response.status_code)
         logging.debug("Response: %s.", template_response)
 
     try:
         fetch_template = template_response.json() 
     except JSONDecodeError as e:
-        raise Exception(f"Could not access template at {template_lookup_url}") from e
+        raise Exception(f"Could not access template at {template_url}") from e
 
     return fetch_template
 
@@ -61,13 +63,14 @@ def apply_preconfigured_values_from_template(column_config: Dict[str, Any], vers
     """
     # if column_config doesn't have the `from_template` property, just terminate the function now
     if "from_template" not in column_config:
+        logging.debug("Column config has no preset template to collect from.")
         return
         
     # if column_config has `from_template` property, extract that value
     # remove the `from_template` property
     template_value = column_config["from_template"]
     del column_config["from_template"]
-
+    
     # given the `from_template` value, look up the template in the git repo
     template_file = _get_template_file_from_template_lookup(template_value, version_module_path)
 
@@ -75,7 +78,7 @@ def apply_preconfigured_values_from_template(column_config: Dict[str, Any], vers
     fetch_template = _get_propeties_from_template_file(template_file, version_module_path)
 
     # insert values from column_config (as long as the user hasn't provided an overriding value for them)
-    for propety in fetch_template:
-        if propety not in column_config:
-            column_config[propety] = fetch_template[propety]
+    for template_property in fetch_template:
+        if template_property not in column_config:
+            column_config[template_property] = fetch_template[template_property]
     
