@@ -36,8 +36,12 @@ from csvcubed.cli.inspect.inspectdatasetmanager import (
     get_dataset_measure_type,
     get_dataset_observations_info,
     get_dataset_unit_type,
+    get_measure_col_from_dsd,
     get_multi_measure_dataset_val_counts_info,
     get_single_measure_dataset_val_counts_info,
+    get_single_measure_label_from_dsd,
+    get_single_unit_label_from_dsd,
+    get_unit_col_from_dsd,
     load_csv_to_dataframe,
 )
 from csvcubed.models.inspectdataframeresults import (
@@ -178,36 +182,46 @@ class MetadataPrinter:
         dataset_measure_type = get_dataset_measure_type(
             self.csvw_metadata_rdf_graph, self.dsd_uri, self.csvw_metadata_json_path
         )
+        dataset_unit_type = get_dataset_unit_type(
+            self.csvw_metadata_rdf_graph, self.dsd_uri, self.csvw_metadata_json_path
+        )
 
-        result_val_count: DatasetObservationsByMeasureUnitInfoResult
+        measure_col: str = get_measure_col_from_dsd(
+            self.csvw_metadata_rdf_graph, self.dsd_uri, self.csvw_metadata_json_path
+        )
+        unit_col: str
 
-        if dataset_measure_type == DatasetMeasureType.SINGLE_MEASURE:
-            # TODO IMPLEMENT REQUIRMENT: "If it's a single measure cube, we need to extract the measure/unit from the DSD and then the count is simply the number of rows (observations) in the data frame."
-            result_val_count = get_single_measure_dataset_val_counts_info(self.dataset)
-        elif dataset_measure_type == DatasetMeasureType.MULTI_MEASURE:
-            unit_label: str = None
-            result_dsd_single_unit: DSDSingleUnitResult
-
-            dataset_unit_type = get_dataset_unit_type(
-                self.csvw_metadata_rdf_graph,
-                self.dsd_uri,
-                self.csvw_metadata_json_path,
+        if dataset_unit_type == DatasetUnitType.SINGLE_UNIT:
+            unit_col = select_single_unit_from_dsd(
+                self.csvw_metadata_rdf_graph, self.dataset_uri
             )
-
-            # If there is no Unit column in the dataset, we extract the Unit Label from the DSD. This only applies to Single Unit datasets.
-            if (
-                CanonicalShapeRequiredCols.Unit.value not in self.dataset.columns
-                and dataset_unit_type == DatasetUnitType.SINGLE_UNIT
-            ):
-                result_dsd_single_unit = select_single_unit_from_dsd(
-                    self.csvw_metadata_rdf_graph, self.dataset_uri
-                )
-                unit_label = result_dsd_single_unit.unit_label
-                
-            result_val_count = get_multi_measure_dataset_val_counts_info(
-                self.dataset, unit_label
+        elif dataset_unit_type == DatasetUnitType.MULTI_UNIT:
+            unit_col = get_unit_col_from_dsd(
+                self.csvw_metadata_rdf_graph, self.dsd_uri, self.csvw_metadata_json_path
             )
         else:
-            raise Exception("The dataset measure is unknown.")
+            raise Exception("The dataset unit type is unknown.")
+
+        result_val_count: DatasetObservationsByMeasureUnitInfoResult
+        if dataset_measure_type == DatasetMeasureType.SINGLE_MEASURE:
+            single_measure_label: str = get_single_measure_label_from_dsd(
+                self.csvw_metadata_rdf_graph, self.dsd_uri, self.csvw_metadata_json_path
+            )
+            single_unit_label: str = get_single_unit_label_from_dsd(
+                self.csvw_metadata_rdf_graph, self.dsd_uri, self.csvw_metadata_json_path
+            )
+            result_val_count = get_single_measure_dataset_val_counts_info(
+                self.dataset,
+                measure_col,
+                unit_col,
+                single_measure_label,
+                single_unit_label,
+            )
+        elif dataset_measure_type == DatasetMeasureType.MULTI_MEASURE:
+            result_val_count = get_multi_measure_dataset_val_counts_info(
+                self.dataset, measure_col, unit_col
+            )
+        else:
+            raise Exception("The dataset measure type is unknown.")
 
         return f"- The {self._get_type_str()} has the following value counts:{result_val_count.output_str}"

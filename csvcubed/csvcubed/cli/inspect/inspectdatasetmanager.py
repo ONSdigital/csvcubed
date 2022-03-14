@@ -9,6 +9,7 @@ Collection of functions handling csv-related operations used in the inspect cli.
 import logging
 from enum import Enum
 from pathlib import Path
+from csvcubed.utils.csvdataset import CanonicalShapeRequiredCols
 import pandas as pd
 from pandas import DataFrame
 
@@ -17,7 +18,7 @@ from rdflib import Graph, URIRef
 from csvcubed.cli.inspect.inspectsparqlmanager import select_csvw_dsd_qube_components
 from csvcubed.models.inspectsparqlresults import QubeComponentsResult
 from csvcubed.utils.qb.components import (
-    COMPONENT_PROPERTY_ATTRIBUTE_UNITMEASURE,
+    ComponentPropertyAttributeURI,
     ComponentPropertyType,
     ComponentPropertyTypeURI,
 )
@@ -69,65 +70,6 @@ def load_csv_to_dataframe(json_path: Path, csv_path: Path) -> DataFrame:
         raise Exception("An error occured while loading csv into dataframe.") from ex
 
 
-def get_dataset_observations_info(
-    dataset: DataFrame,
-) -> DatasetObservationsInfoResult:
-    """
-    Generates the `DatasetObservationsInfoResult` from the dataset.
-
-    Member of :file:`./inspectdatasetmanager.py`
-
-    :return: `DatasetObservationsInfoResult`
-    """
-    return DatasetObservationsInfoResult(
-        len(dataset.index),
-        dataset.duplicated().sum(),
-        dataset.head(n=10),
-        dataset.tail(n=10),
-    )
-
-
-def get_single_measure_dataset_val_counts_info(
-    dataset: DataFrame,
-) -> DatasetObservationsByMeasureUnitInfoResult:
-    """
-    Generates the `DatasetObservationsByMeasureUnitInfoResult` from the single-measure dataset.
-
-    Member of :file:`./inspectdatasetmanager.py`
-
-    :return: `DatasetObservationsByMeasureUnitInfoResult`
-    """
-
-    # TODO: Implement for single-measure dataset.
-    return DatasetObservationsByMeasureUnitInfoResult(
-        by_measure_and_unit_val_counts_df=DataFrame()
-    )
-
-
-def get_multi_measure_dataset_val_counts_info(
-    dataset: DataFrame, unit_label=None
-) -> DatasetObservationsByMeasureUnitInfoResult:
-    """
-    Generates the `DatasetObservationsByMeasureUnitInfoResult` from the multi-measure dataset.
-
-    Member of :file:`./inspectdatasetmanager.py`
-
-    :return: `DatasetObservationsByMeasureUnitInfoResult`
-    """
-    if unit_label is None:
-        by_measure_and_unit_grouped = dataset.groupby(["Measure Type", "Unit"])
-    else:
-        by_measure_and_unit_grouped = dataset.groupby("Measure Type")
-
-    # TODO: Add unit to displaying df after fixing the input example for "no Unit col in dataset" AND "Single Unit dataset".
-
-    return DatasetObservationsByMeasureUnitInfoResult(
-        by_measure_and_unit_val_counts_df=DataFrame(
-            by_measure_and_unit_grouped.size().reset_index(name="count")
-        ),
-    )
-
-
 def get_dataset_measure_type(
     graph: Graph, dsd_uri: URIRef, json_path: Path
 ) -> DatasetMeasureType:
@@ -167,10 +109,164 @@ def get_dataset_unit_type(graph: Graph, dsd_uri, json_path: Path) -> DatasetUnit
     filtered_components = [
         component
         for component in result_qube_components.qube_components
-        if component.property == COMPONENT_PROPERTY_ATTRIBUTE_UNITMEASURE
+        if component.property == ComponentPropertyAttributeURI.UnitMeasure.value
     ]
     return (
         DatasetUnitType.MULTI_UNIT
         if len(filtered_components) > 0
         else DatasetUnitType.SINGLE_UNIT
+    )
+
+
+def get_measure_col_from_dsd(graph: Graph, dsd_uri, json_path: Path) -> str:
+    """
+    Identifies the name of measure column.
+
+    Member of :file:`./inspectdatasetmanager.py`
+
+    :return: `str`
+    """
+    result_qube_components: QubeComponentsResult = select_csvw_dsd_qube_components(
+        graph, dsd_uri, json_path
+    )
+    filtered_components = [
+        component
+        for component in result_qube_components.qube_components
+        if component.property == ComponentPropertyAttributeURI.MeasureType.value
+    ]
+
+    if len(filtered_components) != 1:
+        raise Exception(f"Expected 1 record, but found {len(filtered_components)}")
+
+    return filtered_components[0].csv_col_title
+
+
+def get_unit_col_from_dsd(graph: Graph, dsd_uri, json_path: Path) -> str:
+    """
+    Identifies the name of unit column.
+
+    Member of :file:`./inspectdatasetmanager.py`
+
+    :return: `str`
+    """
+    result_qube_components: QubeComponentsResult = select_csvw_dsd_qube_components(
+        graph, dsd_uri, json_path
+    )
+    filtered_components = [
+        component
+        for component in result_qube_components.qube_components
+        if component.property == ComponentPropertyAttributeURI.UnitMeasure.value
+    ]
+
+    if len(filtered_components) != 1:
+        raise Exception(f"Expected 1 record, but found {len(filtered_components)}")
+
+    return filtered_components[0].csv_col_title
+
+
+def get_single_measure_label_from_dsd(graph: Graph, dsd_uri, json_path: Path) -> str:
+    """
+    Identifies the measure label for single-measure dataset.
+
+    Member of :file:`./inspectdatasetmanager.py`
+
+    :return: `str`
+    """
+    result_qube_components: QubeComponentsResult = select_csvw_dsd_qube_components(
+        graph, dsd_uri, json_path
+    )
+    filtered_components = [
+        component
+        for component in result_qube_components.qube_components
+        if component.property == ComponentPropertyAttributeURI.MeasureType.value
+    ]
+
+    if len(filtered_components) != 1:
+        raise Exception(f"Expected 1 record, but found {len(filtered_components)}")
+
+    return filtered_components[0].property_label
+
+
+def get_single_unit_label_from_dsd(graph: Graph, dsd_uri, json_path: Path) -> str:
+    """
+    Identifies the unit label for single-measure dataset.
+
+    Member of :file:`./inspectdatasetmanager.py`
+
+    :return: `str`
+    """
+    result_qube_components: QubeComponentsResult = select_csvw_dsd_qube_components(
+        graph, dsd_uri, json_path
+    )
+    filtered_components = [
+        component
+        for component in result_qube_components.qube_components
+        if component.property == ComponentPropertyAttributeURI.UnitMeasure.value
+    ]
+
+    if len(filtered_components) != 1:
+        raise Exception(f"Expected 1 record, but found {len(filtered_components)}")
+
+    return filtered_components[0].property_label
+
+
+def get_single_unit_col_from_dsd():
+    pass
+
+
+def get_dataset_observations_info(
+    dataset: DataFrame,
+) -> DatasetObservationsInfoResult:
+    """
+    Generates the `DatasetObservationsInfoResult` from the dataset.
+
+    Member of :file:`./inspectdatasetmanager.py`
+
+    :return: `DatasetObservationsInfoResult`
+    """
+    return DatasetObservationsInfoResult(
+        len(dataset.index),
+        dataset.duplicated().sum(),
+        dataset.head(n=10),
+        dataset.tail(n=10),
+    )
+
+
+def get_single_measure_dataset_val_counts_info(
+    dataset: DataFrame,
+    measure_col: str,
+    unit_col: str,
+    measure_label: str,
+    unit_label: str,
+) -> DatasetObservationsByMeasureUnitInfoResult:
+    """
+    Generates the `DatasetObservationsByMeasureUnitInfoResult` from the single-measure dataset.
+
+    Member of :file:`./inspectdatasetmanager.py`
+
+    :return: `DatasetObservationsByMeasureUnitInfoResult`
+    """
+    return DatasetObservationsByMeasureUnitInfoResult(
+        by_measure_and_unit_val_counts_df=DataFrame(
+            {measure_col: measure_label, unit_col: unit_label, "Count": dataset.shape[0]}
+        )
+    )
+
+
+def get_multi_measure_dataset_val_counts_info(
+    dataset: DataFrame, measure_col: str, unit_col: str
+) -> DatasetObservationsByMeasureUnitInfoResult:
+    """
+    Generates the `DatasetObservationsByMeasureUnitInfoResult` from the multi-measure dataset.
+
+    Member of :file:`./inspectdatasetmanager.py`
+
+    :return: `DatasetObservationsByMeasureUnitInfoResult`
+    """
+    by_measure_and_unit_grouped = dataset.groupby([measure_col, unit_col])
+
+    return DatasetObservationsByMeasureUnitInfoResult(
+        by_measure_and_unit_val_counts_df=DataFrame(
+            by_measure_and_unit_grouped.size().reset_index(name="count")
+        ),
     )

@@ -9,9 +9,14 @@ from enum import Enum
 from pathlib import Path
 import os
 
-COMPONENT_PROPERTY_ATTRIBUTE_UNITMEASURE = (
-    "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
-)
+
+class ComponentPropertyAttributeURI(Enum):
+    """
+    The uris of component attributes.
+    """
+    UnitMeasure = "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
+
+    MeasureType = "http://purl.org/linked-data/cube#measureType"
 
 
 class ComponentPropertyTypeURI(Enum):
