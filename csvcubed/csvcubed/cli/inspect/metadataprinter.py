@@ -200,10 +200,10 @@ class MetadataPrinter:
                 and dataset_unit_type == DatasetUnitType.SINGLE_UNIT
             ):
                 result_dsd_single_unit = select_single_unit_from_dsd(
-                    self.csvw_metadata_rdf_graph
+                    self.csvw_metadata_rdf_graph, self.dataset_uri
                 )
                 unit_label = result_dsd_single_unit.unit_label
-
+                
             result_val_count = get_multi_measure_dataset_val_counts_info(
                 self.dataset, unit_label
             )

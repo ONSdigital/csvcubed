@@ -24,7 +24,7 @@ def step_impl(context, csvw_metadata_file: str):
         get_context_temp_dir_path(context) / csvw_metadata_file
     )
     path = Path(context.csvw_metadata_json_path)
-    assert path.exists() == True
+    assert path.exists() is True
 
 
 @When("the Metadata File json-ld is loaded to a rdf graph")
@@ -42,7 +42,7 @@ def step_impl(context):
         context.csvw_type,
     ) = csvw_metadata_rdf_validator.validate_and_detect_type()
 
-    assert context.valid_csvw_metadata == True
+    assert context.valid_csvw_metadata is True
 
 
 @When("the Printables for data cube are generated")

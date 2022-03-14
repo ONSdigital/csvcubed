@@ -38,7 +38,7 @@ def test_ask_is_csvw_code_list():
 
     is_code_list = ask_is_csvw_code_list(csvw_metadata_rdf_graph)
 
-    assert is_code_list == True
+    assert is_code_list is True
 
 
 def test_ask_is_csvw_qb_dataset():
@@ -51,7 +51,7 @@ def test_ask_is_csvw_qb_dataset():
 
     is_qb_dataset = ask_is_csvw_qb_dataset(csvw_metadata_rdf_graph)
 
-    assert is_qb_dataset == True
+    assert is_qb_dataset is True
 
 
 def test_select_csvw_catalog_metadata_for_dataset():

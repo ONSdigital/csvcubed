@@ -257,7 +257,7 @@ def select_codelist_dataset_url(rdf_graph: Graph) -> DatasetURLResult:
     return map_dataset_url_result(results[0])
 
 
-def select_single_unit_from_dsd(rdf_graph: Graph):
+def select_single_unit_from_dsd(rdf_graph: Graph, dataset_uri: URIRef):
     """
     Queries the single unit uri and label from the data structure definition.
 
@@ -265,10 +265,14 @@ def select_single_unit_from_dsd(rdf_graph: Graph):
 
     :return: `DatasetURLResult`
     """
+    print(dataset_uri)
     results: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryFileName.SELECT_SINGLE_UNIT_FROM_DSD),
         rdf_graph,
+        init_bindings={"dataset_uri": Literal(dataset_uri)},
     )
+
+    print(results)
     if len(results) != 1:
         raise Exception(f"Expected 1 record, but found {len(results)}")
 

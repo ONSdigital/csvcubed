@@ -19,7 +19,7 @@ def test_detect_valid_csvw_metadata_datacube_input():
         _,
     ) = csvw_metadata_rdf_validator.validate_and_detect_type()
 
-    assert valid_csvw_metadata_datacube == True
+    assert valid_csvw_metadata_datacube is True
 
 
 def test_detect_valid_csvw_metadata_codelist_input():
@@ -36,7 +36,7 @@ def test_detect_valid_csvw_metadata_codelist_input():
         _,
     ) = csvw_metadata_rdf_validator.validate_and_detect_type()
 
-    assert valid_csvw_metadata_codelist == True
+    assert valid_csvw_metadata_codelist is True
 
 
 def test_detect_invalid_csvw_metadata_input():
@@ -54,7 +54,7 @@ def test_detect_invalid_csvw_metadata_input():
         _,
     ) = csvw_metadata_rdf_validator.validate_and_detect_type()
 
-    assert valid_csvw_metadata == False
+    assert valid_csvw_metadata is False
 
 
 def test_detect_type_datacube():
