@@ -9,7 +9,6 @@ from csvcubed.cli.inspect.inspectdatasetmanager import (
 )
 from csvcubed.cli.inspect.metadataprocessor import MetadataProcessor
 from csvcubed.models.inspectdataframeresults import DatasetObservationsInfoResult
-
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"

@@ -1,5 +1,7 @@
 import dateutil.parser
 
+from rdflib import URIRef
+
 from csvcubed.models.inspectsparqlresults import (
     CatalogMetadataResult,
     CodelistsResult,
@@ -22,7 +24,6 @@ from csvcubed.cli.inspect.inspectsparqlmanager import (
 )
 from csvcubed.cli.inspect.metadatainputvalidator import MetadataValidator
 from csvcubed.cli.inspect.metadataprocessor import MetadataProcessor
-from rdflib import URIRef
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"

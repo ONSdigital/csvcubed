@@ -9,7 +9,6 @@ Collection of functions handling csv-related operations used in the inspect cli.
 import logging
 from enum import Enum
 from pathlib import Path
-from csvcubed.utils.csvdataset import CanonicalShapeRequiredCols
 import pandas as pd
 from pandas import DataFrame
 
@@ -20,7 +19,6 @@ from csvcubed.models.inspectsparqlresults import QubeComponentsResult
 from csvcubed.utils.qb.components import (
     ComponentPropertyAttributeURI,
     ComponentPropertyType,
-    ComponentPropertyTypeURI,
 )
 from csvcubed.models.inspectdataframeresults import (
     DatasetObservationsByMeasureUnitInfoResult,
@@ -248,7 +246,11 @@ def get_single_measure_dataset_val_counts_info(
     """
     return DatasetObservationsByMeasureUnitInfoResult(
         by_measure_and_unit_val_counts_df=DataFrame(
-            {measure_col: measure_label, unit_col: unit_label, "Count": dataset.shape[0]}
+            {
+                measure_col: measure_label,
+                unit_col: unit_label,
+                "Count": dataset.shape[0],
+            }
         )
     )
 

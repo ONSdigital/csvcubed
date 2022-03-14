@@ -15,7 +15,6 @@ from csvcubed.models.inspectsparqlresults import (
     CodelistsResult,
     ColsWithSuppressOutputTrueResult,
     DSDLabelURIResult,
-    DSDSingleUnitResult,
     DatasetURLResult,
     QubeComponentsResult,
 )
