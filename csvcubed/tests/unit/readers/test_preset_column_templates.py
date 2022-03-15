@@ -59,8 +59,10 @@ def test_raise_error_works_for_none_existing_file_path():
     column_config = {
         "from_template" : "years"
     }
-    potential_error = apply_preconfigured_values_from_template(column_config, JsonSchemaVersion.v1_0.value)
-    assert isinstance(potential_error,HTTPError)
+    try:
+        apply_preconfigured_values_from_template(column_config, JsonSchemaVersion.v1_0.value)
+    except Exception as e:
+        assert isinstance(e, HTTPError)
 
 
 if __name__ == "__main__":
