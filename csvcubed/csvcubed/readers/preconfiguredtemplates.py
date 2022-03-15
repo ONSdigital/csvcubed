@@ -22,7 +22,7 @@ def _get_template_file_from_template_lookup(template_value: str, version_module_
     logging.debug("The template lookup/index file: %s", template_lookup_url)
    
     if not template_lookup_response.ok:
-        raise HTTPError(f'Unable to get from url {template_lookup_url}. Status code: {template_lookup_response.status_code})')
+        raise HTTPError(f'Unable to get from url {template_lookup_url}. Status code: {template_lookup_response.status_code}')
 
     try:
         template_lookup = template_lookup_response.json()
@@ -44,7 +44,7 @@ def _get_propeties_from_template_file(template_file: str, version_module_path: s
     template_response = session.get(template_url)
 
     if not template_response.ok:
-        raise HTTPError(f'Unable to get from url {template_url}. Status code: {template_response.status_code})')
+        raise HTTPError(f'Unable to get from url {template_url}. Status code: {template_response.status_code}')
 
     try:
         fetch_template = template_response.json() 
