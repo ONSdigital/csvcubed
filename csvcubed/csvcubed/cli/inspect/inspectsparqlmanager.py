@@ -18,6 +18,7 @@ from csvcubed.models.inspectsparqlresults import (
     CodelistsResult,
     ColsWithSuppressOutputTrueResult,
     DSDLabelURIResult,
+    DSDSingleUnitResult,
     DatasetURLResult,
     QubeComponentsResult,
     map_catalog_metadata_result,
@@ -257,43 +258,20 @@ def select_codelist_dataset_url(rdf_graph: Graph) -> DatasetURLResult:
     return map_dataset_url_result(results[0])
 
 
-def select_single_unit_from_dsd(rdf_graph: Graph, dataset_uri: URIRef):
+def select_single_unit_from_dsd(rdf_graph: Graph, dataset_uri: URIRef) -> DSDSingleUnitResult:
     """
     Queries the single unit uri and label from the data structure definition.
 
     Member of :file:`./inspectsparqlmanager.py`
 
-    :return: `DatasetURLResult`
+    :return: `DSDSingleUnitResult`
     """
-    print(dataset_uri)
     results: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryFileName.SELECT_SINGLE_UNIT_FROM_DSD),
         rdf_graph,
         init_bindings={"dataset_uri": Literal(dataset_uri)},
     )
 
-    print(results)
-    if len(results) != 1:
-        raise Exception(f"Expected 1 record, but found {len(results)}")
-
-    return map_single_unit_from_dsd_result(results[0])
-
-def select_single_unit_from_dsd(rdf_graph: Graph, dataset_uri: URIRef):
-    """
-    Queries the single unit uri and label from the data structure definition.
-
-    Member of :file:`./inspectsparqlmanager.py`
-
-    :return: `DatasetURLResult`
-    """
-    print(dataset_uri)
-    results: List[ResultRow] = select(
-        _get_query_string_from_file(SPARQLQueryFileName.SELECT_SINGLE_UNIT_FROM_DSD),
-        rdf_graph,
-        init_bindings={"dataset_uri": Literal(dataset_uri)},
-    )
-
-    print(results)
     if len(results) != 1:
         raise Exception(f"Expected 1 record, but found {len(results)}")
 

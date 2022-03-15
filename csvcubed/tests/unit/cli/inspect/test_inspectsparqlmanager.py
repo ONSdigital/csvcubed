@@ -7,6 +7,7 @@ from csvcubed.models.inspectsparqlresults import (
     CodelistsResult,
     ColsWithSuppressOutputTrueResult,
     DSDLabelURIResult,
+    DSDSingleUnitResult,
     DatasetURLResult,
     QubeComponentsResult,
 )
@@ -21,6 +22,7 @@ from csvcubed.cli.inspect.inspectsparqlmanager import (
     select_csvw_dsd_qube_components,
     select_dsd_code_list_and_cols,
     select_qb_dataset_url,
+    select_single_unit_from_dsd,
 )
 from csvcubed.cli.inspect.metadatainputvalidator import MetadataValidator
 from csvcubed.cli.inspect.metadataprocessor import MetadataProcessor
@@ -243,9 +245,8 @@ def test_select_qb_dataset_url():
 
 def test_select_codelist_dataset_url():
     """
-    Should return expected `DatasetURLResult`.
-
     TODO: Complete this after implementing loading of table schema into rdf.
+    Should return expected `DatasetURLResult`.
     """
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
@@ -255,3 +256,20 @@ def test_select_codelist_dataset_url():
         csvw_metadata_rdf_graph,
     )
     assert result.dataset_url == "alcohol-content.csv"
+
+
+def test_select_single_unit_from_dsd():
+    """
+    TODO: Complete this after single measure dataset issues are sorted.
+    Should return expected `DSDSingleUnitResult`.
+    """
+    csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
+    metadata_processor = MetadataProcessor(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+    dataset_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
+
+    result: DSDSingleUnitResult = select_single_unit_from_dsd(
+        csvw_metadata_rdf_graph, dataset_uri
+    )
+    assert result.unit_label == "TODO"
+    assert result.unit_uri == URIRef("TODO")
