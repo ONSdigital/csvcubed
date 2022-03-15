@@ -45,8 +45,7 @@ def _get_propeties_from_template_file(template_file: str, version_module_path: s
     template_response = session.get(template_url)
 
     if not template_response.ok:
-        logging.warning("Status code: %s.", template_response.status_code)
-        logging.debug("Response: %s.", template_response)
+        raise HTTPError(f'Unable to get from url {template_url}. Status code: {template_response.status_code})')
 
     try:
         fetch_template = template_response.json() 

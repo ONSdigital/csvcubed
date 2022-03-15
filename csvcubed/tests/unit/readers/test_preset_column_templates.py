@@ -1,5 +1,6 @@
 import pytest
 
+from requests.exceptions import HTTPError
 from copy import deepcopy
 
 from csvcubed.readers.preconfiguredtemplates import apply_preconfigured_values_from_template
@@ -53,6 +54,14 @@ def test_ons_geographies_template_is_fetched():
     assert column_config["from_existing"] == "...."
     assert column_config["label"] == "ONSgeographies"
     assert column_config["column_uri_template"] == "http://....../{+<column_name>}"
+
+def test_raise_error_works_for_none_existing_file_path():
+    column_config = {
+        "from_template" : "years"
+    }
+    potential_error = apply_preconfigured_values_from_template(column_config, JsonSchemaVersion.v1_0.value)
+    assert isinstance(potential_error,HTTPError)
+
 
 if __name__ == "__main__":
     pytest.main()
