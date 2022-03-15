@@ -193,7 +193,7 @@ class MetadataPrinter:
         if dataset_unit_type == DatasetUnitType.SINGLE_UNIT:
             unit_col = select_single_unit_from_dsd(
                 self.csvw_metadata_rdf_graph, self.dataset_uri
-            )
+            ).unit_label
         elif dataset_unit_type == DatasetUnitType.MULTI_UNIT:
             unit_col = get_unit_col_from_dsd(
                 self.csvw_metadata_rdf_graph, self.dsd_uri, self.csvw_metadata_json_path
