@@ -22,7 +22,7 @@ def _get_template_file_from_template_lookup(template_value: str, version_module_
     template_lookup_response = session.get(template_lookup_url)
     logging.debug("The template lookup/index file: %s", template_lookup_url)
    
-    if not template_lookup_response.ok:
+    if template_lookup_response.ok:
         raise HTTPError(f'Unable to get from url {template_lookup_url}. Status code: {template_lookup_response.status_code})')
 
     try:
