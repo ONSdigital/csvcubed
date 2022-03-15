@@ -6,12 +6,13 @@ Functionality to help augment JSON files with configuration from some pre-config
 """
 import logging
 
+from requests.exceptions import HttpError
 from typing import Dict, Any
 from requests.exceptions import JSONDecodeError
 
 from csvcubed.utils.cache import session
 
-TEMPLATE_BASE_URL = "https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/csvcubed/csvcubed/readers/{}/templates{}"
+TEMPLATE_BASE_URL = "https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/csvcubed/csvcubed/readers/{}/templates/{}"
 
 def _get_template_file_from_template_lookup(template_value: str, version_module_path: str) -> str:
     """
@@ -22,8 +23,7 @@ def _get_template_file_from_template_lookup(template_value: str, version_module_
     logging.debug("The template lookup/index file: %s", template_lookup_url)
    
     if not template_lookup_response.ok:
-        logging.warning("Status code: %s.", template_lookup_response.status_code)
-        logging.debug("Response: %s.", template_lookup_response)
+        raise HttpError(f'Unable to get from url {template_lookup_url}. Status code: {template_lookup_response.status_code})'
 
     try:
         template_lookup = template_lookup_response.json()
