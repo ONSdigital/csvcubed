@@ -71,6 +71,16 @@ def test_raise_error_works_for_none_existing_template_path():
     except Exception as e:
         assert isinstance(e, HTTPError)
 
+def test_exception_is_raised_when_given_wrong_template_file_path():
+    column_config = {
+        "from_template" : "this_doesn't_exist"
+    }
+    try:
+        apply_preconfigured_values_from_template(column_config, JsonSchemaVersion.v1_0.value)
+    except Exception as e:
+        assert isinstance(e, Exception)
+        error_message = "Couldn't find template your looking for."
+        assert str(e) == error_message
 
 if __name__ == "__main__":
     pytest.main()
