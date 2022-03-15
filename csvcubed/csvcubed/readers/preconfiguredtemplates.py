@@ -6,7 +6,7 @@ Functionality to help augment JSON files with configuration from some pre-config
 """
 import logging
 
-from requests.exceptions import HttpError
+from requests.exceptions import HTTPError
 from typing import Dict, Any
 from requests.exceptions import JSONDecodeError
 
@@ -23,7 +23,7 @@ def _get_template_file_from_template_lookup(template_value: str, version_module_
     logging.debug("The template lookup/index file: %s", template_lookup_url)
    
     if not template_lookup_response.ok:
-        raise HttpError(f'Unable to get from url {template_lookup_url}. Status code: {template_lookup_response.status_code})'
+        raise HTTPError(f'Unable to get from url {template_lookup_url}. Status code: {template_lookup_response.status_code})')
 
     try:
         template_lookup = template_lookup_response.json()
