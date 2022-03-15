@@ -116,7 +116,20 @@ def test_load_csv_to_dataframe_error():
     with pytest.raises(Exception):
         load_csv_to_dataframe(csvw_metadata_json_path, "missing_csv_file.csv")
 
+def test_get_dataset_measure_type_single_measure():
+    #TODO: FORM HERE
+    #TODO: FORM HERE
+    """
+    Should return `DatasetMeasureType.SINGLE_MEASURE`.
+    """
+    assert True
 
+def test_get_dataset_measure_type_multi_measure():
+    """
+    Should return `DatasetMeasureType.MULTI_MEASURE`.
+    """
+    assert True
+    
 def test_get_dataset_observations_info():
     """
     Should produce the expected `DatasetObservationsInfoResult`.
@@ -130,3 +143,4 @@ def test_get_dataset_observations_info():
     assert result.num_of_duplicates == 2
     assert_frame_equal(result.dataset_head, _expected_dataframe.head(n=10))
     assert_frame_equal(result.dataset_tail, _expected_dataframe.tail(n=10))
+
