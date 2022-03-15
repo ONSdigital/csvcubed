@@ -207,11 +207,6 @@ def get_single_unit_label_from_dsd(graph: Graph, dsd_uri, json_path: Path) -> st
 
     return filtered_components[0].property_label
 
-
-def get_single_unit_col_from_dsd():
-    pass
-
-
 def get_dataset_observations_info(
     dataset: DataFrame,
 ) -> DatasetObservationsInfoResult:
