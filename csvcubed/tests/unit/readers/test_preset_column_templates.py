@@ -3,7 +3,11 @@ import pytest
 from requests.exceptions import HTTPError
 from copy import deepcopy
 
-from csvcubed.readers.preconfiguredtemplates import apply_preconfigured_values_from_template
+from csvcubed.readers.preconfiguredtemplates import(
+     _get_propeties_from_template_file, 
+     _get_template_file_from_template_lookup, 
+     apply_preconfigured_values_from_template,
+)
 from csvcubed.readers.vnum import JsonSchemaVersion
 
 def test_func_accepts_dict_with_template():
@@ -55,12 +59,15 @@ def test_ons_geographies_template_is_fetched():
     assert column_config["label"] == "ONSgeographies"
     assert column_config["column_uri_template"] == "http://....../{+<column_name>}"
 
-def test_raise_error_works_for_none_existing_file_path():
-    column_config = {
-        "from_template" : "years"
-    }
+def test_raise_error_works_for_none_existing_template_lookup_path():
     try:
-        apply_preconfigured_values_from_template(column_config, JsonSchemaVersion.v1_0.value)
+        _get_template_file_from_template_lookup("year", "vv2_0")
+    except Exception as e:
+        assert isinstance(e, HTTPError)
+
+def test_raise_error_works_for_none_existing_template_path():
+    try:
+        _get_propeties_from_template_file("year.json", "vv2_0")
     except Exception as e:
         assert isinstance(e, HTTPError)
 
