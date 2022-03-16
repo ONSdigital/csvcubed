@@ -1,4 +1,10 @@
+import pytest
+import numpy as np
+from pandas import DataFrame
+from pandas.util.testing import assert_frame_equal
+
 from pathlib import Path
+
 from csvcubed.cli.inspect.inspectsparqlmanager import (
     select_csvw_catalog_metadata,
     select_csvw_dsd_dataset_label_and_dsd_def_uri,
@@ -7,11 +13,6 @@ from csvcubed.cli.inspect.inspectsparqlmanager import (
 from csvcubed.models.inspectsparqlresults import (
     DSDLabelURIResult,
 )
-from pandas import DataFrame
-import pytest
-from pandas.util.testing import assert_frame_equal
-import numpy as np
-
 from csvcubed.cli.inspect.inspectdatasetmanager import (
     DatasetMeasureType,
     DatasetUnitType,
@@ -182,7 +183,7 @@ def test_get_dataset_measure_type_single_measure():
     """
 
     csvw_metadata_json_path = (
-        _test_case_base_dir / "datacube-single_measure.csv-metadata.json"
+        _test_case_base_dir / "multi-unit_single-measure" / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
     )
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
@@ -202,7 +203,7 @@ def test_get_dataset_measure_type_multi_measure():
     """
     Should return `DatasetMeasureType.MULTI_MEASURE`.
     """
-    csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
+    csvw_metadata_json_path = _test_case_base_dir / "multi-unit_multi-measure" / "alcohol-bulletin.csv-metadata.json"
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
@@ -222,7 +223,7 @@ def test_get_dataset_unit_type_single_unit():
     Should return `DatasetUnitType.SINGLE_UNIT`.
     """
     csvw_metadata_json_path = (
-        _test_case_base_dir / "datacube-single_unit.csv-metadata.json"
+        _test_case_base_dir / "single-unit_multi-measure" / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv-metadata.json"
     )
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
@@ -242,7 +243,7 @@ def test_get_dataset_unit_type_multi_unit():
     """
     Should return `DatasetUnitType.MULTI_UNIT`.
     """
-    csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
+    csvw_metadata_json_path = _test_case_base_dir / "multi-unit_multi-measure" / "alcohol-bulletin.csv-metadata.json"
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
@@ -261,7 +262,7 @@ def test_get_measure_col_from_dsd():
     """
     Should return the correct measure column name.
     """
-    csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
+    csvw_metadata_json_path = _test_case_base_dir / "multi-unit_multi-measure" / "alcohol-bulletin.csv-metadata.json"
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
@@ -280,7 +281,7 @@ def test_get_unit_col_from_dsd():
     """
     Should return the correct unit column name.
     """
-    csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
+    csvw_metadata_json_path = _test_case_base_dir / "multi-unit_multi-measure" / "alcohol-bulletin.csv-metadata.json"
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
@@ -297,11 +298,10 @@ def test_get_unit_col_from_dsd():
 
 def test_get_single_measure_label_from_dsd():
     """
-    TODO: Fix this test after single-measure dataset issue is fixed.
     Should return the correct measure label.
     """
     csvw_metadata_json_path = (
-        _test_case_base_dir / "datacube-single_measure.csv-metadata.json"
+        _test_case_base_dir / "single-unit_single-measure" / "energy-trends-uk-total-energy.csv-metadata.json"
     )
 
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
@@ -315,16 +315,15 @@ def test_get_single_measure_label_from_dsd():
         csvw_metadata_rdf_graph, result.dsd_uri, csvw_metadata_json_path
     )
 
-    assert measure_label == "TODO"
+    assert measure_label == ""
 
 
 def test_get_single_unit_label_from_dsd():
     """
-    TODO: Fix this test after single-measure dataset issue is fixed.
-    Should return the correct measure label.
+    Should return the correct unit label.
     """
     csvw_metadata_json_path = (
-        _test_case_base_dir / "datacube-single_measure.csv-metadata.json"
+        _test_case_base_dir / "single-unit_multi-measure" / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv-metadata.json"
     )
 
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
@@ -334,19 +333,17 @@ def test_get_single_unit_label_from_dsd():
         csvw_metadata_rdf_graph
     )
 
-    unit_label = get_single_unit_label_from_dsd
-    (csvw_metadata_rdf_graph, result.dsd_uri, csvw_metadata_json_path)
+    unit_label = get_single_unit_label_from_dsd(csvw_metadata_rdf_graph, result.dsd_uri, csvw_metadata_json_path)
 
-    assert unit_label == "TODO"
+    assert unit_label == ""
 
 
-def test_get_single_measure_dataset_val_counts_info():
+def test_get_single_unit_single_measure_dataset_val_counts_info():
     """
-    TODO: Fix this test after single-measure dataset issue is fixed.
     Should produce expected `DatasetObservationsByMeasureUnitInfoResult`.
     """
     csvw_metadata_json_path = (
-        _test_case_base_dir / "datacube-single_measure.csv-metadata.json"
+        _test_case_base_dir / "single-unit_single-measure"/ "energy-trends-uk-total-energy.csv-metadata.json"
     )
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
@@ -370,12 +367,64 @@ def test_get_single_measure_dataset_val_counts_info():
         _expected_by_measure_and_unit_val_counts_df_single_measure,
     )
 
-
-def test_get_multi_measure_dataset_val_counts_info():
+def test_get_single_unit_multi_measure_dataset_val_counts_info():
     """
     Should produce expected `DatasetObservationsByMeasureUnitInfoResult`.
     """
-    csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
+    csvw_metadata_json_path = _test_case_base_dir / "single-unit_multi-measure" / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv-metadata.json"
+    metadata_processor = MetadataProcessor(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+    dataset_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
+    dataset_url = select_qb_dataset_url(
+        csvw_metadata_rdf_graph, dataset_uri
+    ).dataset_url
+    dataset: DataFrame = load_csv_to_dataframe(
+        csvw_metadata_json_path, Path(dataset_url)
+    )
+
+    result: DatasetObservationsByMeasureUnitInfoResult = (
+        get_multi_measure_dataset_val_counts_info(dataset, "Measure", "Unit")
+    )
+
+    assert result is not None
+    assert_frame_equal(
+        result.by_measure_and_unit_val_counts_df,
+        _expected_by_measure_and_unit_val_counts_df_multi_measure,
+    )
+
+
+def test_get_multi_unit_single_measure_dataset_val_counts_info():
+    """
+    Should produce expected `DatasetObservationsByMeasureUnitInfoResult`.
+    """
+    csvw_metadata_json_path = _test_case_base_dir / "multi-unit_single-measure" / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
+    metadata_processor = MetadataProcessor(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+    dataset_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
+    dataset_url = select_qb_dataset_url(
+        csvw_metadata_rdf_graph, dataset_uri
+    ).dataset_url
+    dataset: DataFrame = load_csv_to_dataframe(
+        csvw_metadata_json_path, Path(dataset_url)
+    )
+    
+    result: DatasetObservationsByMeasureUnitInfoResult = (
+        get_single_measure_dataset_val_counts_info(
+            dataset, "Measure Type", "Unit", "Measure Label", "Unit Label"
+        )
+    )
+
+    assert result is not None
+    assert_frame_equal(
+        result.by_measure_and_unit_val_counts_df,
+        _expected_by_measure_and_unit_val_counts_df_single_measure,
+    )
+
+def test_get_multi_unit_multi_measure_dataset_val_counts_info():
+    """
+    Should produce expected `DatasetObservationsByMeasureUnitInfoResult`.
+    """
+    csvw_metadata_json_path = _test_case_base_dir / "multi-unit_multi-measure" / "alcohol-bulletin.csv-metadata.json"
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
     dataset_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
@@ -395,7 +444,6 @@ def test_get_multi_measure_dataset_val_counts_info():
         result.by_measure_and_unit_val_counts_df,
         _expected_by_measure_and_unit_val_counts_df_multi_measure,
     )
-
 
 def test_get_dataset_observations_info():
     """

@@ -27,7 +27,7 @@ from csvcubed.cli.inspect.inspectsparqlmanager import (
     select_csvw_dsd_qube_components,
     select_dsd_code_list_and_cols,
     select_qb_dataset_url,
-    select_single_unit_from_dsd,
+    select_unit_col_from_dsd,
 )
 from csvcubed.cli.inspect.inspectdatasetmanager import (
     DatasetMeasureType,
@@ -48,7 +48,6 @@ from csvcubed.models.inspectdataframeresults import (
     DatasetObservationsInfoResult,
 )
 from csvcubed.utils.csvdataset import CanonicalShapeRequiredCols
-
 
 class MetadataPrinter:
     """
@@ -189,9 +188,9 @@ class MetadataPrinter:
             self.csvw_metadata_rdf_graph, self.dsd_uri, self.csvw_metadata_json_path
         )
         unit_col: str
-
+        
         if dataset_unit_type == DatasetUnitType.SINGLE_UNIT:
-            unit_col = select_single_unit_from_dsd(
+            unit_col = select_unit_col_from_dsd(
                 self.csvw_metadata_rdf_graph, self.dataset_uri
             ).unit_label
         elif dataset_unit_type == DatasetUnitType.MULTI_UNIT:

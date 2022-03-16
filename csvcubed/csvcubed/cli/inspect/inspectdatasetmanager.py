@@ -86,6 +86,14 @@ def get_dataset_measure_type(
         for component in result_qube_components.qube_components
         if component.property_type == ComponentPropertyType.Measure.value
     ]
+
+    measure_type = (
+        DatasetMeasureType.MULTI_MEASURE
+        if len(filtered_components) > 1
+        else DatasetMeasureType.SINGLE_MEASURE
+    )
+    _logger.debug(f"Dataset measure type: {measure_type}")
+
     return (
         DatasetMeasureType.MULTI_MEASURE
         if len(filtered_components) > 1
@@ -109,6 +117,14 @@ def get_dataset_unit_type(graph: Graph, dsd_uri, json_path: Path) -> DatasetUnit
         for component in result_qube_components.qube_components
         if component.property == ComponentPropertyAttributeURI.UnitMeasure.value
     ]
+
+    unit_type = (
+        DatasetUnitType.MULTI_UNIT
+        if len(filtered_components) > 0
+        else DatasetUnitType.SINGLE_UNIT
+    )
+    _logger.debug(f"Dataset unit type: {unit_type}")
+
     return (
         DatasetUnitType.MULTI_UNIT
         if len(filtered_components) > 0
@@ -207,6 +223,7 @@ def get_single_unit_label_from_dsd(graph: Graph, dsd_uri, json_path: Path) -> st
 
     return filtered_components[0].property_label
 
+
 def get_dataset_observations_info(
     dataset: DataFrame,
 ) -> DatasetObservationsInfoResult:
@@ -239,6 +256,12 @@ def get_single_measure_dataset_val_counts_info(
 
     :return: `DatasetObservationsByMeasureUnitInfoResult`
     """
+    _logger.debug(f"Dataset measure column: {measure_col}")
+    _logger.debug(f"Dataset unit column: {unit_col}")
+
+    if measure_col == "" or unit_col == "":
+        raise Exception("Measure column name and/or Unit column is invalid.")
+
     return DatasetObservationsByMeasureUnitInfoResult(
         by_measure_and_unit_val_counts_df=DataFrame(
             {
@@ -260,6 +283,12 @@ def get_multi_measure_dataset_val_counts_info(
 
     :return: `DatasetObservationsByMeasureUnitInfoResult`
     """
+    _logger.debug(f"Dataset measure column: {measure_col}")
+    _logger.debug(f"Dataset unit column: {unit_col}")
+
+    if measure_col == "" or unit_col == "":
+        raise Exception("Measure column name and/or Unit column is invalid.")
+
     by_measure_and_unit_grouped = dataset.groupby([measure_col, unit_col])
 
     return DatasetObservationsByMeasureUnitInfoResult(
