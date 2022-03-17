@@ -49,6 +49,7 @@ from csvcubed.models.inspectdataframeresults import (
 )
 from csvcubed.utils.csvdataset import CanonicalShapeRequiredCols
 
+
 class MetadataPrinter:
     """
     This class produces the printables necessary for producing outputs to the CLI.
@@ -180,15 +181,13 @@ class MetadataPrinter:
         dataset_measure_type = get_dataset_measure_type(
             self.csvw_metadata_rdf_graph, self.dsd_uri, self.csvw_metadata_json_path
         )
-        dataset_unit_type = get_dataset_unit_type(
-            self.csvw_metadata_rdf_graph, self.dsd_uri, self.csvw_metadata_json_path
-        )
+        dataset_unit_type = get_dataset_unit_type(self.dataset)
 
         measure_col: str = get_measure_col_from_dsd(
             self.csvw_metadata_rdf_graph, self.dsd_uri, self.csvw_metadata_json_path
         )
         unit_col: str
-        
+
         if dataset_unit_type == DatasetUnitType.SINGLE_UNIT:
             unit_col = select_unit_col_from_dsd(
                 self.csvw_metadata_rdf_graph, self.dataset_uri

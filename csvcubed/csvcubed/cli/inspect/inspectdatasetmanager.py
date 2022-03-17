@@ -24,6 +24,7 @@ from csvcubed.models.inspectdataframeresults import (
     DatasetObservationsByMeasureUnitInfoResult,
     DatasetObservationsInfoResult,
 )
+from csvcubed.utils.csvdataset import CanonicalShapeRequiredCols
 
 _logger = logging.getLogger(__name__)
 
@@ -94,14 +95,10 @@ def get_dataset_measure_type(
     )
     _logger.debug(f"Dataset measure type: {measure_type}")
 
-    return (
-        DatasetMeasureType.MULTI_MEASURE
-        if len(filtered_components) > 1
-        else DatasetMeasureType.SINGLE_MEASURE
-    )
+    return measure_type
 
 
-def get_dataset_unit_type(graph: Graph, dsd_uri, json_path: Path) -> DatasetUnitType:
+def get_dataset_unit_type(dataset: DataFrame) -> DatasetUnitType:
     """
     Detects whether the dataset is single-unit or multi-unit.
 
@@ -109,27 +106,14 @@ def get_dataset_unit_type(graph: Graph, dsd_uri, json_path: Path) -> DatasetUnit
 
     :return: `DatasetUnitType`
     """
-    result_qube_components: QubeComponentsResult = select_csvw_dsd_qube_components(
-        graph, dsd_uri, json_path
-    )
-    filtered_components = [
-        component
-        for component in result_qube_components.qube_components
-        if component.property == ComponentPropertyAttributeURI.UnitMeasure.value
-    ]
-
     unit_type = (
         DatasetUnitType.MULTI_UNIT
-        if len(filtered_components) > 0
+        if len(dataset[CanonicalShapeRequiredCols.Unit.value].unique()) > 1
         else DatasetUnitType.SINGLE_UNIT
     )
     _logger.debug(f"Dataset unit type: {unit_type}")
 
-    return (
-        DatasetUnitType.MULTI_UNIT
-        if len(filtered_components) > 0
-        else DatasetUnitType.SINGLE_UNIT
-    )
+    return unit_type
 
 
 def get_measure_col_from_dsd(graph: Graph, dsd_uri, json_path: Path) -> str:
@@ -262,14 +246,16 @@ def get_single_measure_dataset_val_counts_info(
     if measure_col == "" or unit_col == "":
         raise Exception("Measure column name and/or Unit column name is invalid.")
 
+    print(dataset.head())
+    print(dataset.shape[0])
+    data = {
+        measure_col: [measure_label],
+        unit_col: [unit_label],
+        "Count": dataset.shape[0],
+    }
+
     return DatasetObservationsByMeasureUnitInfoResult(
-        by_measure_and_unit_val_counts_df=DataFrame(
-            {
-                measure_col: measure_label,
-                unit_col: unit_label,
-                "Count": dataset.shape[0],
-            }
-        )
+        by_measure_and_unit_val_counts_df=DataFrame(data)
     )
 
 
