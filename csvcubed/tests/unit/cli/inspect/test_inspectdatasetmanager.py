@@ -411,34 +411,35 @@ def test_get_single_unit_single_measure_dataset_val_counts_info():
     )
 
 
-def test_get_single_unit_multi_measure_dataset_val_counts_info():
-    """
-    Should produce expected `DatasetObservationsByMeasureUnitInfoResult`.
-    """
-    csvw_metadata_json_path = (
-        _test_case_base_dir
-        / "single-unit_multi-measure"
-        / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv-metadata.json"
-    )
-    metadata_processor = MetadataProcessor(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
-    dataset_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
-    dataset_url = select_qb_dataset_url(
-        csvw_metadata_rdf_graph, dataset_uri
-    ).dataset_url
-    dataset: DataFrame = load_csv_to_dataframe(
-        csvw_metadata_json_path, Path(dataset_url)
-    )
+# TODO: Enable below test when the correct single-unit multi-measure dataset is received.
+# def test_get_single_unit_multi_measure_dataset_val_counts_info():
+#     """
+#     Should produce expected `DatasetObservationsByMeasureUnitInfoResult`.
+#     """
+#     csvw_metadata_json_path = (
+#         _test_case_base_dir
+#         / "single-unit_multi-measure"
+#         / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv-metadata.json"
+#     )
+#     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
+#     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+#     dataset_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
+#     dataset_url = select_qb_dataset_url(
+#         csvw_metadata_rdf_graph, dataset_uri
+#     ).dataset_url
+#     dataset: DataFrame = load_csv_to_dataframe(
+#         csvw_metadata_json_path, Path(dataset_url)
+#     )
 
-    result: DatasetObservationsByMeasureUnitInfoResult = (
-        get_multi_measure_dataset_val_counts_info(dataset, "Measure", "Unit")
-    )
+#     result: DatasetObservationsByMeasureUnitInfoResult = (
+#         get_multi_measure_dataset_val_counts_info(dataset, "Measure", "Unit")
+#     )
 
-    assert result is not None
-    assert_frame_equal(
-        result.by_measure_and_unit_val_counts_df,
-        _expected_by_measure_and_unit_val_counts_df_single_unit_multi_measure,
-    )
+#     assert result is not None
+#     assert_frame_equal(
+#         result.by_measure_and_unit_val_counts_df,
+#         _expected_by_measure_and_unit_val_counts_df_single_unit_multi_measure,
+#     )
 
 
 def test_get_multi_unit_single_measure_dataset_val_counts_info():

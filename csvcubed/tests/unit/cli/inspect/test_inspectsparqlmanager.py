@@ -243,33 +243,34 @@ def test_select_qb_dataset_url():
     assert result.dataset_url == "alcohol-bulletin.csv"
 
 
-def test_select_codelist_dataset_url():
-    """
-    TODO: Complete this after implementing loading of table schema into rdf.
-    Should return expected `DatasetURLResult`.
-    """
-    csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
-    metadata_processor = MetadataProcessor(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+# TODO: Enable below after implementing loading of table schema into rdf.
+# def test_select_codelist_dataset_url():
+#     """
+#     Should return expected `DatasetURLResult`.
+#     """
+#     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
+#     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
+#     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
-    result: DatasetURLResult = select_codelist_dataset_url(
-        csvw_metadata_rdf_graph,
-    )
-    assert result.dataset_url == "alcohol-content.csv"
+#     result: DatasetURLResult = select_codelist_dataset_url(
+#         csvw_metadata_rdf_graph,
+#     )
+#     assert result.dataset_url == "alcohol-content.csv"
 
 
-def test_select_unit_col_from_dsd():
-    """
-    TODO: Complete this after single measure dataset issues are sorted.
-    Should return expected `DSDSingleUnitResult`.
-    """
-    csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
-    metadata_processor = MetadataProcessor(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
-    dataset_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
+# TODO: Enable below after implementing loading of table schema into rdf.
+# def test_select_unit_col_from_dsd():
+#     """
+#     TODO: Complete this after single measure dataset issues are sorted.
+#     Should return expected `DSDSingleUnitResult`.
+#     """
+#     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
+#     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
+#     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+#     dataset_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
 
-    result: DSDSingleUnitResult = select_unit_col_from_dsd(
-        csvw_metadata_rdf_graph, dataset_uri
-    )
-    assert result.unit_label == "TODO"
-    assert result.unit_uri == URIRef("TODO")
+#     result: DSDSingleUnitResult = select_unit_col_from_dsd(
+#         csvw_metadata_rdf_graph, dataset_uri
+#     )
+#     assert result.unit_label == "TODO"
+#     assert result.unit_uri == URIRef("TODO")
