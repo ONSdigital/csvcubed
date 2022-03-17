@@ -41,7 +41,7 @@ def select(query: str, graph: Graph, init_bindings=None) -> List[ResultRow]:
     """
     Executes the given SELECT query on the rdf graph.
 
-    Member of :file:`./sparql.py`.
+    Member of :file:`./sparql.py`. 
 
     :return: `List[ResultRow]` - List containing the results.
 
