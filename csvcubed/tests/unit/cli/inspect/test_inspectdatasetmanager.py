@@ -123,7 +123,7 @@ _expected_by_measure_and_unit_val_counts_df_single_unit_single_measure = DataFra
 ).replace("", np.NAN)
 
 _expected_by_measure_and_unit_val_counts_df_single_unit_multi_measure = DataFrame(
-    [{"Measure Type": "Measure Label", "Unit": "Unit Label", "Count": 41508}]
+    [{"Measure Type": "Measure Label", "Unit": "Unit Label", 0: 41508}]
 ).replace("", np.NAN)
 
 _expected_by_measure_and_unit_val_counts_df_multi_unit_single_measure = DataFrame(
@@ -132,35 +132,35 @@ _expected_by_measure_and_unit_val_counts_df_multi_unit_single_measure = DataFram
 
 _expected_by_measure_and_unit_val_counts_df_multi_unit_multi_measure = DataFrame(
     [
-        {"Measure Type": "alcohol-duty-receipts", "Unit": "gbp-million", "count": 314},
-        {"Measure Type": "beer-duty-receipts", "Unit": "gbp-million", "count": 314},
-        {"Measure Type": "cider-duty-receipts", "Unit": "gbp-million", "count": 314},
-        {"Measure Type": "clearances", "Unit": "hectolitres", "count": 4710},
-        {"Measure Type": "clearances", "Unit": "hectolitres-of-alcohol", "count": 942},
-        {"Measure Type": "clearances", "Unit": "thousand-hectolitres", "count": 1256},
-        {"Measure Type": "clearances-of-alcohol", "Unit": "hectolitres", "count": 942},
+        {"Measure Type": "alcohol-duty-receipts", "Unit": "gbp-million", 0: 314},
+        {"Measure Type": "beer-duty-receipts", "Unit": "gbp-million", 0: 314},
+        {"Measure Type": "cider-duty-receipts", "Unit": "gbp-million", 0: 314},
+        {"Measure Type": "clearances", "Unit": "hectolitres", 0: 4710},
+        {"Measure Type": "clearances", "Unit": "hectolitres-of-alcohol", 0: 942},
+        {"Measure Type": "clearances", "Unit": "thousand-hectolitres", 0: 1256},
+        {"Measure Type": "clearances-of-alcohol", "Unit": "hectolitres", 0: 942},
         {
             "Measure Type": "clearances-of-alcohol",
             "Unit": "thousand-hectolitres",
-            "count": 314,
+            0: 314,
         },
         {
             "Measure Type": "production-volume",
             "Unit": "thousand-hectolitres",
-            "count": 314,
+            0: 314,
         },
         {
             "Measure Type": "production-volume-alcohol",
             "Unit": "hectolitres",
-            "count": 314,
+            0: 314,
         },
         {
             "Measure Type": "production-volume-alcohol",
             "Unit": "thousand-hectolitres",
-            "count": 314,
+            0: 314,
         },
-        {"Measure Type": "spirits-duty-receipts", "Unit": "gbp-million", "count": 314},
-        {"Measure Type": "wine-duty-receipts", "Unit": "gbp-million", "count": 314},
+        {"Measure Type": "spirits-duty-receipts", "Unit": "gbp-million", 0: 314},
+        {"Measure Type": "wine-duty-receipts", "Unit": "gbp-million", 0: 314},
     ]
 ).replace("", np.NAN)
 
@@ -499,7 +499,7 @@ def test_get_multi_unit_multi_measure_dataset_val_counts_info():
     assert result is not None
     assert_frame_equal(
         result.by_measure_and_unit_val_counts_df,
-        _expected_by_measure_and_unit_val_counts_df_multi_unit_multi_measure
+        _expected_by_measure_and_unit_val_counts_df_multi_unit_multi_measure,
     )
 
 

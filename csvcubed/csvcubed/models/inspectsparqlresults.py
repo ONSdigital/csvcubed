@@ -24,6 +24,7 @@ from csvcubed.utils.qb.components import (
 )
 from csvcubed.utils.csvdataset import CanonicalShapeRequiredCols
 
+
 @dataclass()
 class CatalogMetadataResult:
     """
@@ -351,10 +352,13 @@ def map_single_unit_from_dsd_result(sparql_result: ResultRow) -> DSDSingleUnitRe
     :return: `DSDSingleUnitResult`
     """
     result_dict = sparql_result.asdict()
-    unit_col = result_dict.get("unitLabel") or CanonicalShapeRequiredCols.Unit.value
+    unit_col = (
+        none_or_map(result_dict.get("unitLabel"), str)
+        or CanonicalShapeRequiredCols.Unit.value
+    )
 
     result = DSDSingleUnitResult(
-        unit_uri=URIRef(result_dict["unitUri"]),
+        unit_uri=URIRef(str(result_dict["unitUri"])),
         unit_label=unit_col,
     )
     return result

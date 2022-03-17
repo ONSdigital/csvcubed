@@ -246,8 +246,6 @@ def get_single_measure_dataset_val_counts_info(
     if measure_col == "" or unit_col == "":
         raise Exception("Measure column name and/or Unit column name is invalid.")
 
-    print(dataset.head())
-    print(dataset.shape[0])
     data = {
         measure_col: [measure_label],
         unit_col: [unit_label],
@@ -279,6 +277,6 @@ def get_multi_measure_dataset_val_counts_info(
 
     return DatasetObservationsByMeasureUnitInfoResult(
         by_measure_and_unit_val_counts_df=DataFrame(
-            by_measure_and_unit_grouped.size().reset_index(name="count")
-        ),
+            by_measure_and_unit_grouped.size().reset_index()
+        )
     )

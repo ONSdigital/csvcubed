@@ -11,7 +11,7 @@ from csvcubed.models.inspectsparqlresults import (
     DatasetURLResult,
     QubeComponentsResult,
 )
-from csvcubed.utils.qb.components import ComponentPropertyType, ComponentPropertyTypeURI
+from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.cli.inspect.inspectsparqlmanager import (
     ask_is_csvw_code_list,
     ask_is_csvw_qb_dataset,
