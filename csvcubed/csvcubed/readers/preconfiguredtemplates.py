@@ -36,7 +36,7 @@ def _get_template_file_from_template_lookup(template_value: str, version_module_
     return template_file
 
 
-def _get_propeties_from_template_file(template_file: str, version_module_path: str) -> dict:
+def _get_properties_from_template_file(template_file: str, version_module_path: str) -> dict:
     """
     Given the file path to the template, read in all the propeties of that particular template
     """
@@ -49,7 +49,7 @@ def _get_propeties_from_template_file(template_file: str, version_module_path: s
     try:
         fetch_template = template_response.json() 
     except JSONDecodeError as e:
-        raise Exception(f"Could not access template at {template_url}") from e
+        raise Exception(f"Could not decode response \n{template_response}\n from {template_url}") from e
 
     return fetch_template
 
@@ -73,7 +73,7 @@ def apply_preconfigured_values_from_template(column_config: Dict[str, Any], vers
     template_file = _get_template_file_from_template_lookup(template_value, version_module_path)
 
     # given the file path to the template, read in all the propeties of that particular template
-    fetch_template = _get_propeties_from_template_file(template_file, version_module_path)
+    fetch_template = _get_properties_from_template_file(template_file, version_module_path)
 
     # insert values from column_config (as long as the user hasn't provided an overriding value for them)
     for template_property in fetch_template:

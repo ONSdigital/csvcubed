@@ -4,7 +4,7 @@ from requests.exceptions import HTTPError
 from copy import deepcopy
 
 from csvcubed.readers.preconfiguredtemplates import(
-     _get_propeties_from_template_file, 
+     _get_properties_from_template_file, 
      _get_template_file_from_template_lookup, 
      apply_preconfigured_values_from_template,
 )
@@ -72,7 +72,7 @@ def test_raise_error_works_for_none_existing_template_path():
     version_module_path = JsonSchemaVersion.v1_0.value
     template_url = TEMPLATE_BASE_URL.format(version_module_path,"year.json")
     with pytest.raises(HTTPError) as excinfo:
-        _get_propeties_from_template_file("year.json", "vv2_0")
+        _get_properties_from_template_file("year.json", "vv2_0")
         assert f"Unable to get from url {template_url}. Status code:" in str(excinfo)
 
 def test_exception_is_raised_when_given_wrong_template_file_path():
