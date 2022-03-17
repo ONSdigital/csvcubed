@@ -64,19 +64,7 @@ theme:
     - navigation.indexes
     - navigation.top
     - toc.integrate
-markdown_extensions:
-  - pymdownx.highlight:
-      anchor_linenums: true
-      linenums: true
-  - pymdownx.inlinehilite
-  - pymdownx.snippets
-  - pymdownx.superfences:
-      custom_fences:
-        - name: mermaid
-          class: mermaid
-          format: !!python/name:pymdownx.superfences.fence_div_format
-  - pymdownx.tabbed:
-      alternate_style: true 
 plugins:
-  - search
-  - mermaid2
+  - markdownmermaid
+extra_javascript:
+  - https://unpkg.com/mermaid@8.4.5/dist/mermaid.min.js

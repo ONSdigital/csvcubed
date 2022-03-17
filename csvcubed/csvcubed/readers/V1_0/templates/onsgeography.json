@@ -1,6 +1,6 @@
 {
     "type": "dimension",
     "from_existing": "....",
-    "label": "ONSgeographies",
+    "label": "ONSgeography",
     "column_uri_template": "http://....../{+<column_name>}"
 }

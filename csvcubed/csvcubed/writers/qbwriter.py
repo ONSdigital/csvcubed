@@ -32,10 +32,7 @@ from csvcubed.utils.qb.cube import (
     QbColumnarDsdType,
 )
 from csvcubed.utils.dict import rdf_resource_to_json_ld
-from csvcubed.utils.qb.standardise import (
-    convert_data_values_to_uri_safe_values,
-    ensure_int_columns_are_ints,
-)
+from csvcubed.utils.qb.standardise import convert_data_values_to_uri_safe_values
 from csvcubed.utils.file import copy_files_to_directory_with_structure
 from .skoscodelistwriter import (
     SkosCodeListWriter,
@@ -86,8 +83,6 @@ class QbWriter(WriterBase):
         # Also converts all appropriate columns to the pandas categorical format.
 
         _logger.info("Beginning CSV-W Generation")
-
-        ensure_int_columns_are_ints(self.cube)
 
         convert_data_values_to_uri_safe_values(
             self.cube, self.raise_missing_uri_safe_value_exceptions

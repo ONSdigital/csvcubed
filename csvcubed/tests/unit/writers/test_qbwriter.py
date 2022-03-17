@@ -1,13 +1,9 @@
-from tempfile import TemporaryDirectory
-from typing import List
-from copy import deepcopy
-import csv
-from pathlib import Path
-
 import pytest
+from copy import deepcopy
 import pandas as pd
 from rdflib import RDFS, Graph, URIRef, Literal
 from csvcubedmodels import rdf
+from typing import List
 
 from csvcubed.models.cube import *
 from csvcubed.models.cube import (
@@ -1313,52 +1309,6 @@ def test_qb_order_of_components():
         rdf.QB.order,
         Literal(4),
     ) in graph
-
-
-def test_output_integer_obs_val_with_missing_values():
-    """
-    Due to the way that pandas represents missing values (as NaN), instead of interpreting an integer data column as
-     integers, it represents the column as decimal values when some values are missing. Therefore we need to explicitly
-     coerce these values back to integers.
-
-     This test ensures that we can write CSVs to disk which contain integer values even when one of the obs_vals is
-     missing.
-    """
-
-    data = pd.DataFrame({"New Dimension": ["A", "B", "C"], "Value": [1, None, 3]})
-
-    cube = Cube(
-        CatalogMetadata("Some Dataset"),
-        data,
-        [
-            QbColumn(
-                "New Dimension",
-                NewQbDimension.from_data("Some Dimension", data["New Dimension"]),
-            ),
-            QbColumn(
-                "Value",
-                QbSingleMeasureObservationValue(
-                    NewQbMeasure("Some Measure"),
-                    NewQbUnit("Some Unit"),
-                    data_type="int",
-                ),
-            ),
-        ],
-    )
-
-    qb_writer = QbWriter(cube)
-    with TemporaryDirectory() as temp_dir:
-        temp_dir = Path(temp_dir)
-        qb_writer.write(temp_dir)
-        with open(temp_dir / "some-dataset.csv") as csv_file:
-            rows = list(csv.reader(csv_file, delimiter=",", quotechar='"'))
-            for row in rows[1:]:
-                value: str = row[1]
-                if len(value) > 0:
-                    # If any of the values are not integers (e.g. "1.0") the next line will throw an exception.
-                    int_val = int(value)
-                    assert isinstance(int_val, int)
-                # else: len == 0 implies it's a missing value, which is expected in one location.
 
 
 if __name__ == "__main__":

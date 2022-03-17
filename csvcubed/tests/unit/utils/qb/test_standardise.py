@@ -1,4 +1,3 @@
-import math
 import pandas as pd
 import pytest
 from pandas.core.arrays.categorical import Categorical
@@ -13,7 +12,6 @@ from csvcubed.models.cube import (
 from csvcubed.utils.qb.standardise import (
     ensure_qbcube_data_is_categorical,
     convert_data_values_to_uri_safe_values,
-    ensure_int_columns_are_ints,
 )
 
 
@@ -214,114 +212,6 @@ def test_qbcube_catagorical_numeric():
     for column_name in expected_non_categorical_columns:
         values = cube.data[column_name].values
         assert not isinstance(values, Categorical)
-
-
-def test_coerce_signed_integer_with_missing_obs_values():
-    """
-    Ensure that columns which should be signed integers are correctly coerced by `ensure_int_columns_are_ints`
-    """
-
-    data = pd.DataFrame({"New Dimension": ["A", "B", "C"], "Value": [1, None, -3]})
-
-    cube = Cube(
-        CatalogMetadata("Some Dataset"),
-        data,
-        [
-            QbColumn(
-                "New Dimension",
-                NewQbDimension.from_data("Some Dimension", data["New Dimension"]),
-            ),
-            QbColumn(
-                "Value",
-                QbSingleMeasureObservationValue(
-                    NewQbMeasure("Some Measure"),
-                    NewQbUnit("Some Unit"),
-                    data_type="int",
-                ),
-            ),
-        ],
-    )
-
-    ensure_int_columns_are_ints(cube)
-
-    values = cube.data["Value"]
-    assert values.dtype == pd.Int64Dtype(), values.dtype
-    values_set = set(values.values)
-    assert 1 in values_set, "Unsigned value not retained."
-    assert -3 in values_set, "Signed value not retained."
-
-
-def test_coerce_unsigned_integer_with_missing_obs_values():
-    """
-    Ensure that columns which should be signed integers are correctly coerced by `ensure_int_columns_are_ints`
-    """
-
-    data = pd.DataFrame({"New Dimension": ["A", "B", "C"], "Value": [1, None, 3]})
-
-    cube = Cube(
-        CatalogMetadata("Some Dataset"),
-        data,
-        [
-            QbColumn(
-                "New Dimension",
-                NewQbDimension.from_data("Some Dimension", data["New Dimension"]),
-            ),
-            QbColumn(
-                "Value",
-                QbSingleMeasureObservationValue(
-                    NewQbMeasure("Some Measure"),
-                    NewQbUnit("Some Unit"),
-                    data_type="unsignedInt",
-                ),
-            ),
-        ],
-    )
-
-    ensure_int_columns_are_ints(cube)
-
-    values = cube.data["Value"]
-    assert values.dtype == pd.UInt64Dtype(), values.dtype
-    values_set = set(values.values)
-    assert 1 in values_set
-    assert 3 in values_set
-
-
-def test_coerce_attribute_value_with_missing_values():
-    """
-    Ensure that columns which should be signed integers are correctly coerced by `ensure_int_columns_are_ints`
-    """
-
-    data = pd.DataFrame(
-        {"New Dimension": ["A", "B", "C"], "Value": [1, 2, 3], "Error": [11, None, 33]}
-    )
-
-    cube = Cube(
-        CatalogMetadata("Some Dataset"),
-        data,
-        [
-            QbColumn(
-                "New Dimension",
-                NewQbDimension.from_data("Some Dimension", data["New Dimension"]),
-            ),
-            QbColumn(
-                "Value",
-                QbSingleMeasureObservationValue(
-                    NewQbMeasure("Some Measure"),
-                    NewQbUnit("Some Unit"),
-                    data_type="unsignedInt",
-                ),
-            ),
-            QbColumn("Error", NewQbAttributeLiteral(data_type="int", label="Error")),
-        ],
-    )
-
-    ensure_int_columns_are_ints(cube)
-
-    error_values = cube.data["Error"]
-    assert error_values.dtype == pd.Int64Dtype(), error_values.dtype
-    error_values_set = set(error_values.values)
-    assert 11 in error_values_set
-    assert 33 in error_values_set
 
 
 if __name__ == "__main__":
