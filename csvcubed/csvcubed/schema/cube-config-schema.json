@@ -57,13 +57,16 @@
             "description": "The mapping from column names to data cube components",
             "additionalProperties": {
                 "description": "A column name to component mapping",
-                "anyOf": [
-                    {"$ref": "#/definitions/v1.0/columnTypes/Dimension"},
-                    {"$ref": "#/definitions/v1.0/columnTypes/Attribute"},
-                    {"$ref": "#/definitions/v1.0/columnTypes/Measure"},
-                    {"$ref": "#/definitions/v1.0/columnTypes/Observation"},
-                    {"$ref": "#/definitions/v1.0/columnTypes/Unit"}
-                ]
+                "type": "array",
+                "items": {
+                    "anyOf": [
+                        {"$ref": "#/definitions/v1.0/columnTypes/Dimension"},
+                        {"$ref": "#/definitions/v1.0/columnTypes/Attribute"},
+                        {"$ref": "#/definitions/v1.0/columnTypes/Measure"},
+                        {"$ref": "#/definitions/v1.0/columnTypes/Observation"},
+                        {"$ref": "#/definitions/v1.0/columnTypes/Unit"}
+                    ]
+                }
             }
         }
     },

@@ -6,46 +6,19 @@ config.json V1.0 column mapping models.
 """
 import uritemplate
 
-from abc import ABC
-from dataclasses import dataclass
-from typing import List, Union, Optional, TypeVar
-from pathlib import Path
+from typing import List, TypeVar
 
-from csvcubed.models.cube import (
-    CatalogMetadata,
-    CompositeQbCodeList,
-    DuplicatedQbConcept,
-    ExistingQbAttributeLiteral,
-    ExistingQbCodeList,
-    NewQbAttributeLiteral,
-    NewQbCodeList,
-    QbCodeList,
+from csvcubed.models.cube import *
+from csvcubed.models.cube.qb.components import *
+from csvcubed.inputs import (
+    PandasDataTypes,
+    pandas_input_to_columnar_optional_str,
 )
-
-from csvcubedmodels.dataclassbase import DataClassBase
-
-from csvcubed.inputs import pandas_input_to_columnar_optional_str
-from csvcubed.models.cube.qb.components import (
-    NewQbDimension,
-    ExistingQbDimension,
-    NewQbAttribute,
-    NewQbAttributeValue,
-    ExistingQbAttribute,
-    NewQbUnit,
-    ExistingQbUnit,
-    QbMultiUnits,
-    QbMultiMeasureDimension,
-    QbMultiMeasureObservationValue,
-    QbSingleMeasureObservationValue,
-    ExistingQbMeasure,
-    NewQbMeasure,
-    QbObservationValue,
-)
-from csvcubed.inputs import PandasDataTypes
 from csvcubed.utils.uri import (
     csvw_column_name_safe,
     looks_like_uri,
 )
+from csvcubedmodels.dataclassbase import DataClassBase
 
 T = TypeVar("T", bound=object)
 
@@ -288,7 +261,7 @@ class NewUnits(SchemaBaseClass):
 
 @dataclass
 class Measure(SchemaBaseClass):
-    label: str = ""
+    label: str
     description: Optional[str] = None
     from_existing: Optional[str] = None
     definition_uri: Optional[str] = None
@@ -306,10 +279,12 @@ class NewMeasures(SchemaBaseClass):
             return QbMultiMeasureDimension.new_measures_from_data(data)
 
         elif isinstance(self.values, list):
-            new_measures = []
+            new_measures: List[NewQbMeasure] = []
             for new_measure in self.values:
                 if not isinstance(new_measure, Measure):
                     raise ValueError(f"Unexpected measure: {new_measure}")
+                else:
+                    new_measures.append(NewQbMeasure.from_dict(new_measure.as_dict()))
 
             return QbMultiMeasureDimension(new_measures)
 

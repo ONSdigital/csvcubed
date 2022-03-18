@@ -9,6 +9,7 @@ import logging
 from pathlib import Path
 from typing import Optional
 
+from csvcubed.cli.error_mapping import friendly_error_mapping
 from csvcubed.readers.cubeconfig.get_deserialiser import get_deserialiser
 from csvcubedmodels.dataclassbase import DataClassBase
 from csvcubed.utils.qb.validation.cube import validate_qb_component_constraints
@@ -41,7 +42,8 @@ def build(
 
     if len(validation_errors) > 0 or len(json_schema_validation_errors) > 0:
         for error in validation_errors:
-            _logger.error(f"Validation Error: {error.message}")
+            message = friendly_error_mapping(error)
+            _logger.error(f"Validation Error: {message}")
 
         for err in json_schema_validation_errors:
             _logger.warning(f"Schema Validation Error: {err.message}")
@@ -57,11 +59,19 @@ def build(
                 e.message for e in json_schema_validation_errors
             ]
 
-            with open(validation_errors_file_out, "w+") as f:
-                json.dump(all_errors, f, indent=4)
+            with open(output_directory / validation_errors_file_out, "w+") as f:
+                json.dump(all_errors, f, indent=4, default=serialize_sets)
 
         if fail_when_validation_error_occurs and len(validation_errors) > 0:
             exit(1)
 
     print(f"Build Complete")
     return cube, validation_errors
+
+
+# Credit: Antti Haapala: https://stackoverflow.com/questions/8230315/how-to-json-serialize-sets
+def serialize_sets(obj):
+    if isinstance(obj, set):
+        return list(obj)
+
+    return obj

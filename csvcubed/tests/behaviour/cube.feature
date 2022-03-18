@@ -73,7 +73,7 @@ Feature:
       ]
     """
 
-    Scenario: Output a cube combining config and convention
+  Scenario: Output a cube combining config and convention
     Given The config json file "cube_data_part_config.json" and the existing tidy data csv file "cube_data_part_config.csv"
     When The cube is created
     Then The cube Metadata should match

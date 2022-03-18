@@ -20,7 +20,7 @@
         "keyword1",
         "keyword2"
     ], //List or string
-    "columns": { // In the same order as the csv, unspecified column types are assumed to be dimensions, case insensitive
+    "columns": [ // In the same order as the csv, unspecified column types are assumed to be dimensions, case insensitive
         // # Dimensions
         // All columns are assumed to be dimensions unless otherwise stated
         "Existing dimension": { // Note all columns are assumed dimensions unless explicitly declared otherwise
@@ -78,7 +78,7 @@
                     {
                         "label": "value label",
                         "description": "description label",
-                        "existing_value": "uri",
+                        "from_existing": "uri",
                         "definition_uri": "uri"
                     } // ... etc }
                 ]

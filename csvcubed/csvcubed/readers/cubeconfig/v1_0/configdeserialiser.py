@@ -11,16 +11,16 @@ from typing import Dict, Tuple, List
 
 import pandas as pd
 from jsonschema.exceptions import ValidationError
-# import csvcubed.readers.v1_0.columnschema as v1_0_col_schema
 
 from csvcubed.models.cube import *
-from csvcubed.readers.cubeconfig.v1_0.mapcolumntocomponent import map_column_to_qb_component \
-    as v1_0_map_column_to_qb_component
+from csvcubed.readers.cubeconfig.v1_0.mapcolumntocomponent import \
+    map_column_to_qb_component as v1_0_map_column_to_qb_component
+from csvcubed.readers.cubeconfig.utils import load_resource
 from csvcubed.utils.dict import get_with_func_or_none
 from csvcubed.utils.uri import uri_safe
 from csvcubed.utils.validators.schema import validate_dict_against_schema
 from csvcubedmodels.rdf.namespaces import GOV
-from csvcubed.readers.cubeconfig.utils import load_resource
+
 
 # Used to determine whether a column name matches accepted conventions
 CONVENTION_NAMES = {
@@ -60,20 +60,15 @@ def _from_config_json_dict(
     columns: List[CsvColumn] = []
     metadata: CatalogMetadata = _metadata_from_dict(config)
 
-    config_columns = config.get("columns", {})
-    for column_title in config_columns:
-        column_config = config_columns[column_title]
-
-        # When the config json contains a col definition and the col title is not in the data
-        column_data = (
-            data[column_title] if column_title in data.columns else None
-        )
-
-        columns.append(
-            v1_0_map_column_to_qb_component(
-                column_title, column_config, column_data, json_parent_dir
+    config_columns = config.get("columns", [])
+    for column in config_columns:
+        for column_title, column_config in column.items():
+            # When the config json contains a col definition and the col title is not in the data
+            column_data = (
+                data[column_title] if column_title in data.columns else None
             )
-        )
+
+            columns.append(v1_0_map_column_to_qb_component(column_title, column_config, column_data, json_parent_dir))
 
     return Cube(metadata, data, columns)
 
@@ -191,7 +186,7 @@ def get_cube_from_config_json(
             elif column_type in ["measures", "units"]:
                 column_dict = {"type": column_type}
             elif column_type == "attribute":
-                # Note: attribute type columns are currently not supported for getting from data
+                # Note: attribute type columns are currently not supported for getting from data (convention)
                 raise ValueError(
                     "Column type 'Attribute' is not supported when using csv naming convention"
                 )

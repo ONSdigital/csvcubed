@@ -28,7 +28,7 @@ def get_deserialiser(config_path: Optional[Path]) -> object:
             return csvcubed.readers.cubeconfig.v1_0.configdeserialiser.get_cube_from_config_json
 
         else:
-            msg = f"The $schema '{schema}' referenced in the cub config file is not recognised."
+            msg = f"The $schema '{schema}' referenced in the cube config file is not recognised."
             _logger.error(msg)
             raise ValueError(msg)
 

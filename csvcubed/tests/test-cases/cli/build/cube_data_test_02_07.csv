@@ -1,0 +1,5 @@
+Measure,Dim-0,Attr-1,Amount,Units,unit
+Billions,1,goods,100,Pounds,sterling
+Billions,2,services,321,Pounds,sterling
+Billions,3,services,88,Pounds,sterling
+Billions,4,services,99,Dollars,sterling
