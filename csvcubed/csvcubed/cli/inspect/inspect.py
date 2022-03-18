@@ -35,7 +35,7 @@ def inspect(csvw_metadata_json_path: Path) -> None:
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
-    assert csvw_metadata_rdf_graph is not None
+    assert csvw_metadata_rdf_graph is not None, "The rdf graph cannot be None."
 
     csvw_metadata_rdf_validator = MetadataValidator(csvw_metadata_rdf_graph)
     (

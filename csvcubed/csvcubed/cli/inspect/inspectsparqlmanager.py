@@ -247,6 +247,7 @@ def select_codelist_dataset_url(rdf_graph: Graph) -> DatasetURLResult:
     :return: `DatasetURLResult`
     """
     # TODO: Currently 0 results are returned. But it should return one result after implementing the loading of table schemas into rdf graph.
+    raise NotImplementedError
 
     results: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryFileName.SELECT_CODELIST_DATASET_URL),
@@ -258,7 +259,7 @@ def select_codelist_dataset_url(rdf_graph: Graph) -> DatasetURLResult:
     return map_dataset_url_result(results[0])
 
 
-def select_unit_col_from_dsd(rdf_graph: Graph, dataset_uri: URIRef) -> DSDSingleUnitResult:
+def select_single_unit_from_dsd(rdf_graph: Graph, dataset_uri: URIRef) -> DSDSingleUnitResult:
     """
     Queries the single unit uri and label from the data structure definition.
 

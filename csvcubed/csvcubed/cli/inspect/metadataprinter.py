@@ -27,7 +27,7 @@ from csvcubed.cli.inspect.inspectsparqlmanager import (
     select_csvw_dsd_qube_components,
     select_dsd_code_list_and_cols,
     select_qb_dataset_url,
-    select_unit_col_from_dsd,
+    select_single_unit_from_dsd,
 )
 from csvcubed.cli.inspect.inspectdatasetmanager import (
     DatasetMeasureType,
@@ -189,7 +189,7 @@ class MetadataPrinter:
         unit_col: str
 
         if dataset_unit_type == DatasetUnitType.SINGLE_UNIT:
-            unit_col = select_unit_col_from_dsd(
+            unit_col = select_single_unit_from_dsd(
                 self.csvw_metadata_rdf_graph, self.dataset_uri
             ).unit_label
         elif dataset_unit_type == DatasetUnitType.MULTI_UNIT:
@@ -215,6 +215,9 @@ class MetadataPrinter:
                 single_unit_label,
             )
         elif dataset_measure_type == DatasetMeasureType.MULTI_MEASURE:
+            assert measure_col != "", "The measure column name cannot be blank."
+            assert unit_col != "", "The unit column name cannot be blank."
+
             result_val_count = get_multi_measure_dataset_val_counts_info(
                 self.dataset, measure_col, unit_col
             )

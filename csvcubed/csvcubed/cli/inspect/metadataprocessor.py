@@ -40,7 +40,7 @@ class MetadataProcessor:
         csvw_metadata_rdf_graph = Graph()
 
         try:
-            csvw_metadata_rdf_graph.load(csvw_metadata_file_path, format="json-ld")
+            csvw_metadata_rdf_graph.parse(csvw_metadata_file_path, format="json-ld")
             _logger.info("Successfully parsed csvw json-ld to rdf graph.")
 
             # TODO: run sparql query here to identify whether the tableschema is defined within the json-ld or not. If not, call load_tables_into_rdf_graph()

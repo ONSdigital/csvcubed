@@ -28,9 +28,9 @@ def test_metadata_codelist_json_ld_to_rdf_loading_with_table_schema():
     assert any(csvw_metadata_rdf_graph)
 
 
-def test_metadata_codelist_json_ld_to_rdf_loading_without_table_schema():
-    """
-    Metadata codelist RDF graph should not be None.
-    """
-    # TODO: implement after adding sparkl for getting tableschema.
-    assert True
+# TODO: implement below after adding sparkl for getting tableschema.
+# def test_metadata_codelist_json_ld_to_rdf_loading_without_table_schema():
+#     """
+#     Metadata codelist RDF graph should not be None.
+#     """
+#     raise NotImplementedError()

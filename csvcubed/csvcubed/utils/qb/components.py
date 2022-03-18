@@ -10,10 +10,21 @@ from pathlib import Path
 import os
 
 
+class ComponentField(Enum):
+    """
+    The fields of `QubeComponentResult` model that are relevant for filtering the `QubeComponentsResult`.
+    """
+
+    Property = "property"
+
+    PropertyType = "property_type"
+
+
 class ComponentPropertyAttributeURI(Enum):
     """
     The uris of component attributes.
     """
+
     UnitMeasure = "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
 
     MeasureType = "http://purl.org/linked-data/cube#measureType"

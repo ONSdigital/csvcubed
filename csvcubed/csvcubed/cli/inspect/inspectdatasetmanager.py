@@ -7,16 +7,21 @@ Collection of functions handling csv-related operations used in the inspect cli.
 
 
 import logging
-from enum import Enum
+from enum import Enum, auto
 from pathlib import Path
+from typing import List
 import pandas as pd
 from pandas import DataFrame
 
 from rdflib import Graph, URIRef
 
 from csvcubed.cli.inspect.inspectsparqlmanager import select_csvw_dsd_qube_components
-from csvcubed.models.inspectsparqlresults import QubeComponentsResult
+from csvcubed.models.inspectsparqlresults import (
+    QubeComponentResult,
+    QubeComponentsResult,
+)
 from csvcubed.utils.qb.components import (
+    ComponentField,
     ComponentPropertyAttributeURI,
     ComponentPropertyType,
 )
@@ -34,9 +39,9 @@ class DatasetMeasureType(Enum):
     The type of dataset measure.
     """
 
-    SINGLE_MEASURE = 0
+    SINGLE_MEASURE = auto()
 
-    MULTI_MEASURE = 1
+    MULTI_MEASURE = auto()
 
 
 class DatasetUnitType(Enum):
@@ -44,9 +49,30 @@ class DatasetUnitType(Enum):
     The type of dataset unit.
     """
 
-    SINGLE_UNIT = 0
+    SINGLE_UNIT = auto()
 
-    MULTI_UNIT = 1
+    MULTI_UNIT = auto()
+
+
+def _filter_components_from_dsd(
+    graph: Graph, dsd_uri: URIRef, json_path: str, field: ComponentField, filter: str
+) -> List[QubeComponentResult]:
+    """
+    Filters the components for the given filter.
+
+    Member of :file:`./inspectdatasetmanager.py`
+
+    :return: `List[QubeComponentResult]` - filtered results.
+    """
+    result_qube_components: QubeComponentsResult = select_csvw_dsd_qube_components(
+        graph, dsd_uri, json_path
+    )
+
+    return [
+        component
+        for component in result_qube_components.qube_components
+        if component.as_dict()[field.value] == filter
+    ]
 
 
 def load_csv_to_dataframe(json_path: Path, csv_path: Path) -> DataFrame:
@@ -79,15 +105,13 @@ def get_dataset_measure_type(
 
     :return: `DatasetMeasureType`
     """
-    result_qube_components: QubeComponentsResult = select_csvw_dsd_qube_components(
-        graph, dsd_uri, json_path
+    filtered_components = _filter_components_from_dsd(
+        graph,
+        dsd_uri,
+        json_path,
+        ComponentField.PropertyType,
+        ComponentPropertyType.Measure.value,
     )
-    filtered_components = [
-        component
-        for component in result_qube_components.qube_components
-        if component.property_type == ComponentPropertyType.Measure.value
-    ]
-
     measure_type = (
         DatasetMeasureType.MULTI_MEASURE
         if len(filtered_components) > 1
@@ -124,14 +148,13 @@ def get_measure_col_from_dsd(graph: Graph, dsd_uri, json_path: Path) -> str:
 
     :return: `str`
     """
-    result_qube_components: QubeComponentsResult = select_csvw_dsd_qube_components(
-        graph, dsd_uri, json_path
+    filtered_components = _filter_components_from_dsd(
+        graph,
+        dsd_uri,
+        json_path,
+        ComponentField.Property,
+        ComponentPropertyAttributeURI.MeasureType.value,
     )
-    filtered_components = [
-        component
-        for component in result_qube_components.qube_components
-        if component.property == ComponentPropertyAttributeURI.MeasureType.value
-    ]
 
     if len(filtered_components) != 1:
         raise Exception(f"Expected 1 record, but found {len(filtered_components)}")
@@ -147,14 +170,13 @@ def get_unit_col_from_dsd(graph: Graph, dsd_uri, json_path: Path) -> str:
 
     :return: `str`
     """
-    result_qube_components: QubeComponentsResult = select_csvw_dsd_qube_components(
-        graph, dsd_uri, json_path
+    filtered_components = _filter_components_from_dsd(
+        graph,
+        dsd_uri,
+        json_path,
+        ComponentField.Property,
+        ComponentPropertyAttributeURI.UnitMeasure.value,
     )
-    filtered_components = [
-        component
-        for component in result_qube_components.qube_components
-        if component.property == ComponentPropertyAttributeURI.UnitMeasure.value
-    ]
 
     if len(filtered_components) != 1:
         raise Exception(f"Expected 1 record, but found {len(filtered_components)}")
@@ -170,14 +192,13 @@ def get_single_measure_label_from_dsd(graph: Graph, dsd_uri, json_path: Path) ->
 
     :return: `str`
     """
-    result_qube_components: QubeComponentsResult = select_csvw_dsd_qube_components(
-        graph, dsd_uri, json_path
+    filtered_components = _filter_components_from_dsd(
+        graph,
+        dsd_uri,
+        json_path,
+        ComponentField.Property,
+        ComponentPropertyAttributeURI.MeasureType.value,
     )
-    filtered_components = [
-        component
-        for component in result_qube_components.qube_components
-        if component.property == ComponentPropertyAttributeURI.MeasureType.value
-    ]
 
     if len(filtered_components) != 1:
         raise Exception(f"Expected 1 record, but found {len(filtered_components)}")
@@ -193,14 +214,13 @@ def get_single_unit_label_from_dsd(graph: Graph, dsd_uri, json_path: Path) -> st
 
     :return: `str`
     """
-    result_qube_components: QubeComponentsResult = select_csvw_dsd_qube_components(
-        graph, dsd_uri, json_path
+    filtered_components = _filter_components_from_dsd(
+        graph,
+        dsd_uri,
+        json_path,
+        ComponentField.Property,
+        ComponentPropertyAttributeURI.UnitMeasure.value,
     )
-    filtered_components = [
-        component
-        for component in result_qube_components.qube_components
-        if component.property == ComponentPropertyAttributeURI.UnitMeasure.value
-    ]
 
     if len(filtered_components) != 1:
         raise Exception(f"Expected 1 record, but found {len(filtered_components)}")
@@ -269,9 +289,6 @@ def get_multi_measure_dataset_val_counts_info(
     """
     _logger.debug(f"Dataset measure column: {measure_col}")
     _logger.debug(f"Dataset unit column: {unit_col}")
-
-    if measure_col == "" or unit_col == "":
-        raise Exception("Measure column name and/or Unit column name is invalid.")
 
     by_measure_and_unit_grouped = dataset.groupby([measure_col, unit_col])
 
