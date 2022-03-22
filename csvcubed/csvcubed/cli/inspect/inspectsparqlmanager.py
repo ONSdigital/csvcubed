@@ -14,7 +14,7 @@ from rdflib import Graph, Literal, URIRef
 from rdflib.query import ResultRow
 
 from csvcubed.models.inspectsparqlresults import (
-    CSVWTabelSchemaResult,
+    CSVWTabelSchemasResult,
     CatalogMetadataResult,
     CodelistsResult,
     ColsWithSuppressOutputTrueResult,
@@ -25,7 +25,7 @@ from csvcubed.models.inspectsparqlresults import (
     map_catalog_metadata_result,
     map_codelists_sparql_result,
     map_cols_with_supress_output_true_sparql_result,
-    map_csvw_tableschema_field_result,
+    map_csvw_table_schemas_result,
     map_dataset_label_dsd_uri_sparql_result,
     map_dataset_url_result,
     map_qube_components_sparql_result,
@@ -62,7 +62,7 @@ class SPARQLQueryFileName(Enum):
 
     SELECT_SINGLE_UNIT_FROM_DSD = "select_single_unit_from_dsd"
 
-    SELECT_CSVW_TABLE_SCHEMA = "select_csvw_table_schema"
+    SELECT_CSVW_TABLE_SCHEMA = "select_csvw_table_schemas"
 
 
 def _get_query_string_from_file(queryType: SPARQLQueryFileName) -> str:
@@ -218,9 +218,9 @@ def select_dsd_code_list_and_cols(
     return map_codelists_sparql_result(results, json_path)
 
 
-def select_csvw_table_schema(rdf_graph: Graph) -> CSVWTabelSchemaResult:
+def select_csvw_table_schemas(rdf_graph: Graph) -> CSVWTabelSchemasResult:
     """
-    Queries the table schema field of the given csvw json-ld.
+    Queries the table schemas of the given csvw json-ld.
 
     Member of :file:`./inspectsparqlmanager.py`
 
@@ -230,10 +230,10 @@ def select_csvw_table_schema(rdf_graph: Graph) -> CSVWTabelSchemaResult:
         _get_query_string_from_file(SPARQLQueryFileName.SELECT_CSVW_TABLE_SCHEMA),
         rdf_graph,
     )
-    if len(results) != 1:
-        raise Exception(f"Expected 1 record, but found {len(results)}")
+    if len(results) == 0:
+        raise Exception(f"Expected at least 1 record but found {len(results)}")
 
-    return map_csvw_tableschema_field_result(results[0])
+    return map_csvw_table_schemas_result(results)
 
 
 def select_qb_dataset_url(rdf_graph: Graph, dataset_uri: str) -> DatasetURLResult:
@@ -269,7 +269,6 @@ def select_codelist_dataset_url(rdf_graph: Graph) -> DatasetURLResult:
     :return: `DatasetURLResult`
     """
     # TODO: Currently 0 results are returned. But it should return one result after implementing the loading of table schemas into rdf graph.
-    raise NotImplementedError
 
     results: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryFileName.SELECT_CODELIST_DATASET_URL),

@@ -8,10 +8,11 @@ Provides functionality for validating and detecting input metadata.json file.
 import os
 import logging
 from pathlib import Path
+from typing import List
 
 from rdflib import Graph
 
-from csvcubed.cli.inspect.inspectsparqlmanager import select_csvw_table_schema
+from csvcubed.cli.inspect.inspectsparqlmanager import select_csvw_table_schemas
 
 _logger = logging.getLogger(__name__)
 
@@ -25,24 +26,32 @@ class MetadataProcessor:
         self.csvw_metadata_file_path = csvw_metadata_file_path
 
     def _load_table_schema_into_rdf_graph(
-        self, graph: Graph, table_schema_name: str, csvw_path: Path
+        self, graph: Graph, table_schemas: List[str], csvw_path: Path
     ) -> Graph:
         """
-        Loads the table schema into rdf graph, if the table schema is not defined in the csvw json-ld.
-        """
-        table_schema_path: str = os.path.relpath(
-            table_schema_name,
-            csvw_path.parent,
-        )
+        Loads the table schemas into rdf graph.
 
-        try:
-            graph.parse(table_schema_path)
-            _logger.info("Successfully loaded external table schema into rdf graph.")
-            return graph
-        except Exception as ex:
-            raise Exception(
-                "An error occured while loading table schema json into rdf graph"
-            ) from ex
+        Member of :class:`./MetadataProcessor`.
+
+        :return: `Graph` - RDFLib Graph of CSV-W metadata json.
+        """
+        for table_schema in table_schemas:
+            table_schema_path: str = os.path.relpath(
+                table_schema,
+                csvw_path.parent,
+            )
+
+            try:
+                graph.parse(table_schema_path)
+            except Exception as ex:
+                raise Exception(
+                    "An error occured while loading table schema json into rdf graph"
+                ) from ex
+
+        _logger.info(
+            f"Successfully loaded {len(table_schemas)} table schemas into rdf graph."
+        )
+        return graph
 
     def load_json_ld_to_rdflib_graph(self) -> Graph:
         """
@@ -59,11 +68,12 @@ class MetadataProcessor:
             csvw_metadata_rdf_graph.parse(csvw_metadata_file_path, format="json-ld")
             _logger.info("Successfully parsed csvw json-ld to rdf graph.")
 
-            # result = select_csvw_table_schema(csvw_metadata_rdf_graph)
-            # if not result.table_schema_is_defined:
+            result = select_csvw_table_schemas(csvw_metadata_rdf_graph)
+            print(result)
+            # if len(result.table_schemas_need_loading) > 0:
             #     csvw_metadata_rdf_graph = self._load_table_schema_into_rdf_graph(
             #         csvw_metadata_rdf_graph,
-            #         result.table_schema,
+            #         result.table_schemas_need_loading,
             #         csvw_metadata_file_path,
             #     )
             return csvw_metadata_rdf_graph

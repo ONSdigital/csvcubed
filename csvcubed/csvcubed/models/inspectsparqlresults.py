@@ -131,21 +131,23 @@ class CodelistResult(DataClassBase):
 
 
 @dataclass
-class CSVWTabelSchemaResult:
+class CSVWTabelSchemasResult:
     """
-    Model to represent select csvw table schema result.
+    Model to represent select csvw table schemas result.
     """
 
-    table_schema: str
+    table_schemas: List[str]
 
     @property
-    def table_schema_is_defined(self) -> bool:
-        try:
-            json.loads(self.table_schema)
-        except:
-            return False
-        return True
-
+    def table_schemas_need_loading(self) -> List[str]:
+        print("table_schemas: ", self.table_schemas)
+        schemas: List[str] = []
+        for schema in self.table_schemas:
+            try:
+                json.loads(schema)
+            except:
+                schemas.append(schema)
+        return schemas
 
 @dataclass
 class CodelistsResult:
@@ -343,19 +345,22 @@ def map_codelists_sparql_result(
     return result
 
 
-def map_csvw_tableschema_field_result(
-    sparql_result: ResultRow,
-) -> CSVWTabelSchemaResult:
+def map_csvw_table_schemas_result(
+    sparql_results: List[ResultRow],
+) -> CSVWTabelSchemasResult:
     """
-    Maps sparql query result to `CSVWTabelSchemaResult`
+    Maps sparql query result to `CSVWTabelSchemasResult`
 
     Member of :file:`./models/inspectsparqlresults.py`
 
-    :return: `CSVWTabelSchemaResult`
+    :return: `CSVWTabelSchemasResult`
     """
-    result_dict = sparql_result.asdict()
 
-    result = CSVWTabelSchemaResult(table_schema=str(result_dict["tableSchema"]))
+    result = CSVWTabelSchemasResult(
+        table_schemas=[
+            str(sparql_result["tableSchema"]) for sparql_result in sparql_results
+        ]
+    )
     return result
 
 

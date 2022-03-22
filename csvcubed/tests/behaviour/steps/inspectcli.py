@@ -26,6 +26,14 @@ def step_impl(context, csvw_metadata_file: str):
     path = Path(context.csvw_metadata_json_path)
     assert path.exists() is True
 
+@When('the existing csv file exists "{csv_file}"')
+def step_impl(context, csv_file: str):
+    print(csv_file)
+    context.csv_file_path = (
+        get_context_temp_dir_path(context) / csv_file
+    )
+    path = Path(context.csv_file_path)
+    assert path.exists() is True
 
 @When("the Metadata File json-ld is loaded to a rdf graph")
 def step_impl(context):
@@ -59,7 +67,6 @@ def step_impl(context):
     context.dsd_info_printable = metadata_printer.gen_dsd_info_printable()
     context.codelist_info_printable = metadata_printer.gen_codelist_info_printable()
     context.dataset_observations_info_printable = metadata_printer.gen_dataset_observations_info_printable()
-    context.dataset_val_counts_by_measure_unit_info_printable = metadata_printer.gen_dataset_val_counts_by_measure_unit_info_printable()
 
     assert (
         context.type_printable
@@ -67,7 +74,6 @@ def step_impl(context):
         and context.dsd_info_printable
         and context.codelist_info_printable
         and context.dataset_observations_info_printable
-        and context.dataset_val_counts_by_measure_unit_info_printable
     )
 
 
@@ -115,12 +121,6 @@ def step_impl(context):
 def step_impl(context):
     assert _unformat_multiline_string(
         context.dataset_observations_info_printable
-    ) == _unformat_multiline_string(context.text)
-
-@Then("the Value Count Printable should be")
-def step_impl(context):
-    assert _unformat_multiline_string(
-        context.dataset_val_counts_by_measure_unit_info_printable
     ) == _unformat_multiline_string(context.text)
 
 @Given('a none existing test-case file "{csvw_metadata_file}"')

@@ -1,8 +1,10 @@
 Feature: Behaviour testing of csvcubed inspect.
 
-    Scenario: inspect should produce th eexpected printable for data cube metadata json-ld input of type multi-unit multi-measure
+    Scenario: inspect should produce th eexpected printable for data cube metadata json-ld input of type multi-unit multi-measure.
         Given the existing test-case file "cli/inspect/multi-unit_multi-measure/alcohol-bulletin.csv-metadata.json"
+        And the existing test-case file "cli/inspect/multi-unit_multi-measure/alcohol-bulletin.csv"
         When the existing Metadata file exists "cli/inspect/multi-unit_multi-measure/alcohol-bulletin.csv-metadata.json"
+        And the existing csv file exists "cli/inspect/multi-unit_multi-measure/alcohol-bulletin.csv"
         And the Metadata File json-ld is loaded to a rdf graph
         And the Metadata File is validated
         And the Printables for data cube are generated
@@ -123,25 +125,7 @@ Feature: Behaviour testing of csvcubed inspect.
             month/2021-10           beer              all             all                                 all 344.74        beer-duty-receipts          gbp-million   provisional
             month/2021-10          cider              all             all                                 all  22.60       cider-duty-receipts          gbp-million   provisional
         """
-        And the Value Count Printable should be
-        """
-        - The data cube has the following value counts:
-        - Value counts broken-down by measure and unit (of measure):
-                        Measure                   Unit  Count
-            alcohol-duty-receipts            gbp-million    314
-            beer-duty-receipts            gbp-million    314
-            cider-duty-receipts            gbp-million    314
-                    clearances            hectolitres   4710
-                    clearances hectolitres-of-alcohol    942
-                    clearances   thousand-hectolitres   1256
-            clearances-of-alcohol            hectolitres    942
-            clearances-of-alcohol   thousand-hectolitres    314
-                production-volume   thousand-hectolitres    314
-        production-volume-alcohol            hectolitres    314
-        production-volume-alcohol   thousand-hectolitres    314
-            spirits-duty-receipts            gbp-million    314
-            wine-duty-receipts            gbp-million    314
-        """
+
         
     Scenario: inspect should produce printable for code list metadata json-ld input
         Given the existing test-case file "cli/inspect/codelist.csv-metadata.json"
