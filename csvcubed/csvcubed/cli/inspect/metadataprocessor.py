@@ -49,7 +49,7 @@ class MetadataProcessor:
                 ) from ex
 
         _logger.info(
-            f"Successfully loaded {len(table_schemas)} table schemas into rdf graph."
+            f"Successfully loaded {len(table_schemas)} table schemas into the rdf graph."
         )
         return graph
 
@@ -70,6 +70,7 @@ class MetadataProcessor:
 
             result = select_csvw_table_schemas(csvw_metadata_rdf_graph)
             print(result)
+            # TODO: The sparql query for getting table schemas return wrong results.
             # if len(result.table_schemas_need_loading) > 0:
             #     csvw_metadata_rdf_graph = self._load_table_schema_into_rdf_graph(
             #         csvw_metadata_rdf_graph,
