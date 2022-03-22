@@ -25,7 +25,7 @@ class MetadataProcessor:
     def __init__(self, csvw_metadata_file_path: Path):
         self.csvw_metadata_file_path = csvw_metadata_file_path
 
-    def _load_table_schema_into_rdf_graph(
+    def _load_table_schemas_into_rdf_graph(
         self, graph: Graph, table_schemas: List[str], csvw_path: Path
     ) -> Graph:
         """
@@ -72,7 +72,7 @@ class MetadataProcessor:
             #result = select_csvw_table_schemas(csvw_metadata_rdf_graph)
             #print(result)
             # if len(result.table_schemas_need_loading) > 0:
-            #     csvw_metadata_rdf_graph = self._load_table_schema_into_rdf_graph(
+            #     csvw_metadata_rdf_graph = self._load_table_schemas_into_rdf_graph(
             #         csvw_metadata_rdf_graph,
             #         result.table_schemas_need_loading,
             #         csvw_metadata_file_path,
