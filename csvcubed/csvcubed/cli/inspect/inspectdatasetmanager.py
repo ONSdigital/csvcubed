@@ -55,7 +55,7 @@ class DatasetUnitType(Enum):
 
 
 def _filter_components_from_dsd(
-    graph: Graph, dsd_uri: URIRef, json_path: str, field: ComponentField, filter: str
+    graph: Graph, dsd_uri: URIRef, json_path: Path, field: ComponentField, filter: str
 ) -> List[QubeComponentResult]:
     """
     Filters the components for the given filter.
