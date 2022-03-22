@@ -224,7 +224,7 @@ def select_csvw_table_schemas(rdf_graph: Graph) -> CSVWTabelSchemasResult:
 
     Member of :file:`./inspectsparqlmanager.py`
 
-    :return: `CSVWTabelSchemaResult`
+    :return: `CSVWTabelSchemasResult`
     """
     results: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryFileName.SELECT_CSVW_TABLE_SCHEMA),

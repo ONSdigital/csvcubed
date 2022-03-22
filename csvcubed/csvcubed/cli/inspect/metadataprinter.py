@@ -6,8 +6,7 @@ Provides functionality for validating and detecting input metadata.json file.
 """
 
 from pathlib import Path
-from typing import List, Optional, Tuple
-from uuid import uuid1
+from typing import List
 import pandas as pd
 
 from rdflib import Graph
@@ -34,10 +33,7 @@ from csvcubed.cli.inspect.inspectsparqlmanager import (
 )
 from csvcubed.cli.inspect.inspectdatasetmanager import (
     get_dataset_observations_info,
-    get_measure_col_name_from_dsd,
     get_dataset_val_counts_info,
-    get_single_measure_from_dsd,
-    get_unit_col_name_from_dsd,
     load_csv_to_dataframe,
 )
 from csvcubed.models.inspectdataframeresults import (

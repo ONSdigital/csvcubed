@@ -68,9 +68,9 @@ class MetadataProcessor:
             csvw_metadata_rdf_graph.parse(csvw_metadata_file_path, format="json-ld")
             _logger.info("Successfully parsed csvw json-ld to rdf graph.")
 
-            result = select_csvw_table_schemas(csvw_metadata_rdf_graph)
-            print(result)
             # TODO: The sparql query for getting table schemas return wrong results.
+            #result = select_csvw_table_schemas(csvw_metadata_rdf_graph)
+            #print(result)
             # if len(result.table_schemas_need_loading) > 0:
             #     csvw_metadata_rdf_graph = self._load_table_schema_into_rdf_graph(
             #         csvw_metadata_rdf_graph,

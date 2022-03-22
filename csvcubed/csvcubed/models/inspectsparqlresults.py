@@ -20,7 +20,7 @@ from csvcubed.utils.printable import (
 )
 from csvcubed.utils.qb.components import (
     get_component_property_as_relative_path,
-    get_component_property_as_relative_path_type,
+    get_component_property_type,
 )
 
 
@@ -140,7 +140,6 @@ class CSVWTabelSchemasResult:
 
     @property
     def table_schemas_need_loading(self) -> List[str]:
-        print("table_schemas: ", self.table_schemas)
         schemas: List[str] = []
         for schema in self.table_schemas:
             try:
@@ -250,7 +249,7 @@ def map_qube_component_sparql_result(
         property_label=(
             none_or_map(result_dict.get("componentPropertyLabel"), str) or ""
         ),
-        property_type=get_component_property_as_relative_path_type(
+        property_type=get_component_property_type(
             str(result_dict["componentPropertyType"])
         ),
         csv_col_title=none_or_map(result_dict.get("csvColumnTitle"), str) or "",

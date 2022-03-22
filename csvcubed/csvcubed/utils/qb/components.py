@@ -60,7 +60,7 @@ class ComponentPropertyType(Enum):
     """ The component is of type qb:Measure. """
 
 
-def get_component_property_as_relative_path_type(property_type: str) -> str:
+def get_component_property_type(property_type: str) -> str:
     """
     Produces the user-friendly name of component property type.
 
