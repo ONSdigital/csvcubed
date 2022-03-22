@@ -7,17 +7,13 @@ Collection of functions handling csv-related operations used in the inspect cli.
 
 
 import logging
-from enum import Enum, auto
 from pathlib import Path
 from typing import List, Optional
 import pandas as pd
-from pandas import DataFrame
 
 
-from csvcubed.cli.inspect.inspectsparqlmanager import select_csvw_dsd_qube_components
 from csvcubed.models.inspectsparqlresults import (
     QubeComponentResult,
-    QubeComponentsResult,
 )
 from csvcubed.utils.qb.components import (
     ComponentField,
@@ -30,7 +26,6 @@ from csvcubed.models.inspectdataframeresults import (
     DatasetObservationsInfoResult,
     DatasetSingleMeasureResult,
 )
-from csvcubed.utils.csvdataset import CanonicalShapeRequiredCols
 
 _logger = logging.getLogger(__name__)
 
@@ -55,7 +50,7 @@ def _filter_components_from_dsd(
     ]
 
 
-def load_csv_to_dataframe(json_path: Path, csv_path: Path) -> DataFrame:
+def load_csv_to_dataframe(json_path: Path, csv_path: Path) -> pd.DataFrame:
     """
     Loads the csv in given path to a Panda Dataframe.
 
@@ -68,7 +63,7 @@ def load_csv_to_dataframe(json_path: Path, csv_path: Path) -> DataFrame:
         dataset_path = json_path.parent / csv_path
         _logger.debug(f"Dataset path: {dataset_path.absolute()}")
 
-        dataset = DataFrame(pd.read_csv(dataset_path))
+        dataset = pd.DataFrame(pd.read_csv(dataset_path))
         _logger.info("Successfully loaded csv into dataframe.")
         return dataset
     except Exception as ex:
@@ -147,7 +142,7 @@ def get_single_measure_from_dsd(
 
 
 def get_dataset_observations_info(
-    dataset: DataFrame,
+    dataset: pd.DataFrame,
 ) -> DatasetObservationsInfoResult:
     """
     Generates the `DatasetObservationsInfoResult` from the dataset.
@@ -165,7 +160,7 @@ def get_dataset_observations_info(
 
 
 def get_dataset_val_counts_info(
-    dataset: DataFrame, measure_col: str, unit_col: str
+    dataset: pd.DataFrame, measure_col: str, unit_col: str
 ) -> DatasetObservationsByMeasureUnitInfoResult:
     """
     Generates the `DatasetObservationsByMeasureUnitInfoResult` from the dataset.
@@ -180,7 +175,7 @@ def get_dataset_val_counts_info(
     by_measure_and_unit_grouped = dataset.groupby([measure_col, unit_col])
 
     return DatasetObservationsByMeasureUnitInfoResult(
-        by_measure_and_unit_val_counts_df=DataFrame(
+        by_measure_and_unit_val_counts_df=pd.DataFrame(
             by_measure_and_unit_grouped.size().reset_index()
         )
     )

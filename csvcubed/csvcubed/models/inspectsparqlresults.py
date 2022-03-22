@@ -22,7 +22,6 @@ from csvcubed.utils.qb.components import (
     get_component_property_as_relative_path,
     get_component_property_as_relative_path_type,
 )
-from csvcubed.utils.csvdataset import CanonicalShapeRequiredCols
 
 
 @dataclass
@@ -356,7 +355,7 @@ def map_csvw_tableschema_field_result(
     """
     result_dict = sparql_result.asdict()
 
-    result = CSVWTabelSchemaResult(dataset_url=str(result_dict["tableSchema"]))
+    result = CSVWTabelSchemaResult(table_schema=str(result_dict["tableSchema"]))
     return result
 
 

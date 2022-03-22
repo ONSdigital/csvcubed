@@ -5,7 +5,7 @@ Inspect Dataframe query results
 
 from os import linesep
 from typing import Optional
-from pandas import DataFrame
+import pandas as pd
 from dataclasses import dataclass
 
 from csvcubed.utils.printable import get_printable_tabuler_str_from_dataframe
@@ -19,8 +19,8 @@ class DatasetObservationsInfoResult:
 
     num_of_observations: int
     num_of_duplicates: int
-    dataset_head: DataFrame
-    dataset_tail: DataFrame
+    dataset_head: pd.DataFrame
+    dataset_tail: pd.DataFrame
 
     @property
     def output_str(self) -> str:
@@ -38,13 +38,14 @@ class DatasetSingleMeasureResult:
     measure_uri: str
     measure_label: Optional[str]
 
+
 @dataclass
 class DatasetObservationsByMeasureUnitInfoResult:
     """
     Model to represent get value counts of dataset observations broken-down by measure and unit.
     """
 
-    by_measure_and_unit_val_counts_df: DataFrame
+    by_measure_and_unit_val_counts_df: pd.DataFrame
 
     @property
     def output_str(self) -> str:

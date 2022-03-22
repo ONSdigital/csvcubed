@@ -6,9 +6,9 @@ Provides functionality for validating and detecting input metadata.json file.
 """
 
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Tuple
 from uuid import uuid1
-from pandas import DataFrame
+import pandas as pd
 
 from rdflib import Graph
 
@@ -43,7 +43,9 @@ from csvcubed.cli.inspect.inspectdatasetmanager import (
 from csvcubed.models.inspectdataframeresults import (
     DatasetObservationsInfoResult,
 )
-from csvcubed.utils.csvdataset import CanonicalShapeRequiredCols
+from csvcubed.utils.csvdataset import (
+    transform_dataset_to_canonical_shape,
+)
 
 
 class MetadataPrinter:
@@ -159,7 +161,7 @@ class MetadataPrinter:
         else:
             raise Exception("The input csvw json-ld is not supported.")
 
-        self.dataset: DataFrame = load_csv_to_dataframe(
+        self.dataset: pd.DataFrame = load_csv_to_dataframe(
             self.csvw_metadata_json_path, Path(result_dataset_url.dataset_url)
         )
 
@@ -177,32 +179,17 @@ class MetadataPrinter:
 
         :return: `str` - user-friendly string which will be output to CLI.
         """
-        canonical_shape_dataset = self.dataset.copy()
-
-        measure_col: Optional[str] = get_measure_col_name_from_dsd(self.qube_components)
-        unit_col: Optional[str] = get_unit_col_name_from_dsd(self.qube_components)
-
-        if unit_col is None:
-            unit_col = f"{CanonicalShapeRequiredCols.Unit.value}_{str(uuid1())}"
-            result = select_single_unit_from_dsd(
-                self.csvw_metadata_rdf_graph,
-                self.dataset_uri,
-                self.csvw_metadata_json_path,
-            )
-            canonical_shape_dataset[unit_col] = (
-                result.unit_label if result.unit_label is not None else result.unit_uri
-            )
-
-        if measure_col is None:
-            measure_col = f"{CanonicalShapeRequiredCols.Measure.value}_{str(uuid1())}"
-            result = get_single_measure_from_dsd(
-                self.qube_components, self.csvw_metadata_json_path
-            )
-            canonical_shape_dataset[measure_col] = (
-                result.measure_label
-                if result.measure_label is not None
-                else result.measure_uri
-            )
+        (
+            canonical_shape_dataset,
+            measure_col,
+            unit_col,
+        ) = transform_dataset_to_canonical_shape(
+            self.dataset,
+            self.qube_components,
+            self.dsd_uri,
+            self.csvw_metadata_rdf_graph,
+            self.csvw_metadata_json_path,
+        )
 
         result_val_count = get_dataset_val_counts_info(
             canonical_shape_dataset, measure_col, unit_col
