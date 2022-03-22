@@ -282,7 +282,7 @@ def select_codelist_dataset_url(rdf_graph: Graph) -> DatasetURLResult:
 
 
 def select_single_unit_from_dsd(
-    rdf_graph: Graph, dataset_uri: URIRef, json_path: Path
+    rdf_graph: Graph, dataset_uri: str, json_path: Path
 ) -> DSDSingleUnitResult:
     """
     Queries the single unit uri and label from the data structure definition.

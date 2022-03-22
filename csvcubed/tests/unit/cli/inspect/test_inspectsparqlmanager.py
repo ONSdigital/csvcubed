@@ -1,7 +1,5 @@
 import dateutil.parser
 
-from rdflib import URIRef
-
 from csvcubed.models.inspectsparqlresults import (
     CatalogMetadataResult,
     CodelistsResult,
@@ -69,9 +67,7 @@ def test_select_csvw_catalog_metadata_for_dataset():
         csvw_metadata_rdf_graph
     )
 
-    assert result.dataset_uri == URIRef(
-        "file:///workspaces/csvcubed/csvcubed/tests/test-cases/cli/inspect/alcohol-bulletin.csv#dataset"
-    )
+    assert result.dataset_uri == "file:///workspaces/csvcubed/csvcubed/tests/test-cases/cli/inspect/alcohol-bulletin.csv#dataset"
     assert result.title == "Alcohol Bulletin"
     assert result.label == "Alcohol Bulletin"
     assert (
@@ -273,4 +269,4 @@ def test_select_qb_dataset_url():
 #         csvw_metadata_rdf_graph, dataset_uri
 #     )
 #     assert result.unit_label == "TODO"
-#     assert result.unit_uri == URIRef("TODO")
+#     assert result.unit_uri == "TODO"

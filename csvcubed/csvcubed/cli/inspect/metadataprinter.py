@@ -8,10 +8,9 @@ Provides functionality for validating and detecting input metadata.json file.
 from pathlib import Path
 from typing import List, Optional
 from uuid import uuid1
-from numpy import row_stack
 from pandas import DataFrame
 
-from rdflib import Graph, URIRef
+from rdflib import Graph
 
 from csvcubed.models.inspectsparqlresults import (
     CatalogMetadataResult,
@@ -94,7 +93,7 @@ class MetadataPrinter:
         result: CatalogMetadataResult = select_csvw_catalog_metadata(
             self.csvw_metadata_rdf_graph
         )
-        self.dataset_uri: URIRef = result.dataset_uri
+        self.dataset_uri: str = result.dataset_uri
 
         return f"- The {self._get_type_str()} has the following catalog metadata:{result.output_str}"
 
@@ -109,7 +108,7 @@ class MetadataPrinter:
         result_dataset_label_dsd_uri: DSDLabelURIResult = (
             select_csvw_dsd_dataset_label_and_dsd_def_uri(self.csvw_metadata_rdf_graph)
         )
-        self.dsd_uri: URIRef = result_dataset_label_dsd_uri.dsd_uri
+        self.dsd_uri: str = result_dataset_label_dsd_uri.dsd_uri
 
         result_qube_components: QubeComponentsResult = select_csvw_dsd_qube_components(
             self.csvw_metadata_rdf_graph, self.dsd_uri, self.csvw_metadata_json_path

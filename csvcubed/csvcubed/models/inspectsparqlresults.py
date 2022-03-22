@@ -9,7 +9,6 @@ from pathlib import Path
 from typing import List, Optional
 from dataclasses import dataclass
 
-from rdflib import URIRef
 from rdflib.query import ResultRow
 
 from csvcubedmodels.dataclassbase import DataClassBase
@@ -32,7 +31,7 @@ class CatalogMetadataResult:
     Model to represent select catalog metadata sparql query result.
     """
 
-    dataset_uri: URIRef
+    dataset_uri: str
     title: str
     label: str
     issued: str
@@ -64,7 +63,7 @@ class DSDLabelURIResult:
     """
 
     dataset_label: str
-    dsd_uri: URIRef
+    dsd_uri: str
 
     @property
     def output_str(self) -> str:
@@ -193,7 +192,7 @@ def map_catalog_metadata_result(sparql_result: ResultRow) -> CatalogMetadataResu
     result_dict = sparql_result.asdict()
 
     result = CatalogMetadataResult(
-        dataset_uri=URIRef(str(result_dict["dataset"])),
+        dataset_uri=str(result_dict["dataset"]),
         title=str(result_dict["title"]),
         label=str(result_dict["label"]),
         issued=str(result_dict["issued"]),
@@ -226,7 +225,7 @@ def map_dataset_label_dsd_uri_sparql_result(
 
     result = DSDLabelURIResult(
         dataset_label=str(result_dict["dataSetLabel"]),
-        dsd_uri=URIRef(str(result_dict["dataStructureDefinition"])),
+        dsd_uri=str(result_dict["dataStructureDefinition"]),
     )
     return result
 
