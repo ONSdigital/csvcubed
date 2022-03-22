@@ -109,4 +109,4 @@ def inspect_command(log_level: str, csvw_metadata_json_path: Path) -> None:
         inspect(csvw_metadata_json_path)
     except Exception as e:
         log_exception(_logger, e)
-        raise (e)
+        raise

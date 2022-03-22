@@ -35,7 +35,8 @@ def inspect(csvw_metadata_json_path: Path) -> None:
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
-    assert csvw_metadata_rdf_graph is not None, "The rdf graph cannot be None."
+    if csvw_metadata_rdf_graph is None:
+        raise Exception("The rdf graph cannot be None")
 
     csvw_metadata_rdf_validator = MetadataValidator(csvw_metadata_rdf_graph)
     (
@@ -84,10 +85,24 @@ def _generate_printables(
 
     type_info_printable: str = metadata_printer.gen_type_info_printable()
     catalog_metadata_printable: str = metadata_printer.gen_catalog_metadata_printable()
-    dsd_info_printable: str = metadata_printer.gen_dsd_info_printable() if csvw_type ==  CSVWType.QbDataSet else ""
-    codelist_info_printable: str = metadata_printer.gen_codelist_info_printable() if csvw_type ==  CSVWType.QbDataSet else ""
-    dataset_observations_info_printable: str = metadata_printer.gen_dataset_observations_info_printable()
-    dataset_val_counts_by_measure_unit: str = metadata_printer.gen_dataset_val_counts_by_measure_unit_info_printable() if csvw_type ==  CSVWType.QbDataSet else ""
+    dsd_info_printable: str = (
+        metadata_printer.gen_dsd_info_printable()
+        if csvw_type == CSVWType.QbDataSet
+        else ""
+    )
+    codelist_info_printable: str = (
+        metadata_printer.gen_codelist_info_printable()
+        if csvw_type == CSVWType.QbDataSet
+        else ""
+    )
+    dataset_observations_info_printable: str = (
+        metadata_printer.gen_dataset_observations_info_printable()
+    )
+    dataset_val_counts_by_measure_unit: str = (
+        metadata_printer.gen_dataset_val_counts_by_measure_unit_info_printable()
+        if csvw_type == CSVWType.QbDataSet
+        else ""
+    )
 
     return (
         type_info_printable,
