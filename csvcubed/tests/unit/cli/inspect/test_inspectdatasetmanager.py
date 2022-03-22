@@ -20,7 +20,7 @@ from csvcubed.cli.inspect.inspectdatasetmanager import (
     get_dataset_observations_info,
     get_dataset_unit_type,
     get_measure_col_from_dsd,
-    get_multi_measure_dataset_val_counts_info,
+    get_dataset_val_counts_info,
     get_single_measure_dataset_val_counts_info,
     get_single_measure_label_from_dsd,
     get_single_unit_label_from_dsd,
@@ -432,7 +432,7 @@ def test_get_single_unit_single_measure_dataset_val_counts_info():
 #     )
 
 #     result: DatasetObservationsByMeasureUnitInfoResult = (
-#         get_multi_measure_dataset_val_counts_info(dataset, "Measure", "Unit")
+#         get_dataset_val_counts_info(dataset, "Measure", "Unit")
 #     )
 
 #     assert result is not None
@@ -494,7 +494,7 @@ def test_get_multi_unit_multi_measure_dataset_val_counts_info():
     )
 
     result: DatasetObservationsByMeasureUnitInfoResult = (
-        get_multi_measure_dataset_val_counts_info(dataset, "Measure Type", "Unit")
+        get_dataset_val_counts_info(dataset, "Measure Type", "Unit")
     )
 
     assert result is not None

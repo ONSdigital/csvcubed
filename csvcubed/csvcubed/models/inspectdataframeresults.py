@@ -4,13 +4,14 @@ Inspect Dataframe query results
 """
 
 from os import linesep
+from typing import Optional
 from pandas import DataFrame
 from dataclasses import dataclass
 
 from csvcubed.utils.printable import get_printable_tabuler_str_from_dataframe
 
 
-@dataclass()
+@dataclass
 class DatasetObservationsInfoResult:
     """
     Model to represent get dataset observation info dataframe operation result.
@@ -32,7 +33,12 @@ class DatasetObservationsInfoResult:
         return f"{linesep}\t- Number of Observations: {self.num_of_observations}{linesep}\t- Number of Duplicates: {self.num_of_duplicates}{linesep}\t- First 10 Observations:{linesep}{formatted_dataset_head}{linesep}{linesep}\t- Last 10 Observations:{linesep}{formatted_dataset_tail}{linesep}"
 
 
-@dataclass()
+@dataclass
+class DatasetSingleMeasureResult:
+    measure_uri: str
+    measure_label: Optional[str]
+
+@dataclass
 class DatasetObservationsByMeasureUnitInfoResult:
     """
     Model to represent get value counts of dataset observations broken-down by measure and unit.

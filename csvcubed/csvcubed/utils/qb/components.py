@@ -60,7 +60,7 @@ class ComponentPropertyType(Enum):
     """ The component is of type qb:Measure. """
 
 
-def get_printable_component_property_type(property_type: str) -> str:
+def get_component_property_as_relative_path_type(property_type: str) -> str:
     """
     Produces the user-friendly name of component property type.
 
@@ -78,7 +78,7 @@ def get_printable_component_property_type(property_type: str) -> str:
         raise Exception(f"Property type {property_type} is not supported.")
 
 
-def get_printable_component_property(
+def get_component_property_as_relative_path(
     input_file_path: Path, component_property: str
 ) -> str:
     """

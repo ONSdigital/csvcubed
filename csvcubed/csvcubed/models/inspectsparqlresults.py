@@ -3,9 +3,10 @@ Inspect SPARQL query results
 ----------------------------
 """
 
+import json
 from os import linesep
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 from dataclasses import dataclass
 
 from rdflib import URIRef
@@ -19,13 +20,13 @@ from csvcubed.utils.printable import (
     get_printable_tabular_str_from_list,
 )
 from csvcubed.utils.qb.components import (
-    get_printable_component_property,
-    get_printable_component_property_type,
+    get_component_property_as_relative_path,
+    get_component_property_as_relative_path_type,
 )
 from csvcubed.utils.csvdataset import CanonicalShapeRequiredCols
 
 
-@dataclass()
+@dataclass
 class CatalogMetadataResult:
     """
     Model to represent select catalog metadata sparql query result.
@@ -56,7 +57,7 @@ class CatalogMetadataResult:
         return f"{linesep}\t- Title: {self.title}{linesep}\t- Label: {self.label}{linesep}\t- Issued: {self.issued}{linesep}\t- Modified: {self.modified}{linesep}\t- License: {self.license}{linesep}\t- Creator: {self.creator}{linesep}\t- Publisher: {self.publisher}{linesep}\t- Landing Pages: {formatted_landing_pages}{linesep}\t- Themes: {formatted_themes}{linesep}\t- Keywords: {formatted_keywords}{linesep}\t- Contact Point: {self.contact_point}{linesep}\t- Identifier: {self.identifier}{linesep}\t- Comment: {self.comment}{linesep}\t- Description: {formatted_description}"
 
 
-@dataclass()
+@dataclass
 class DSDLabelURIResult:
     """
     Model to represent select dsd dataset label and uri sparql query result.
@@ -70,20 +71,20 @@ class DSDLabelURIResult:
         return f"{linesep}\t- Dataset Label: {self.dataset_label}"
 
 
-@dataclass()
+@dataclass
 class QubeComponentResult(DataClassBase):
     """
     Model to represent a qube component.
     """
 
     property: str
-    property_label: str
+    property_label: Optional[str]
     property_type: str
-    csv_col_title: str
+    csv_col_title: Optional[str]
     required: bool
 
 
-@dataclass()
+@dataclass
 class QubeComponentsResult:
     """
     Model to represent select qube components sparql query result.
@@ -107,7 +108,7 @@ class QubeComponentsResult:
         return f"{linesep}\t- Number of Components: {self.num_components}{linesep}\t- Components:{linesep}{formatted_components}"
 
 
-@dataclass()
+@dataclass
 class ColsWithSuppressOutputTrueResult:
     """
     Model to represent select cols where the suppress output is true sparql query result.
@@ -120,7 +121,7 @@ class ColsWithSuppressOutputTrueResult:
         return f"{linesep}- Columns where suppress output is true: {get_printable_list_str(self.columns)}"
 
 
-@dataclass()
+@dataclass
 class CodelistResult(DataClassBase):
     """
     Model to represent a codelist.
@@ -131,7 +132,24 @@ class CodelistResult(DataClassBase):
     colsInUsed: str
 
 
-@dataclass()
+@dataclass
+class CSVWTabelSchemaResult:
+    """
+    Model to represent select csvw table schema result.
+    """
+
+    table_schema: str
+
+    @property
+    def table_schema_is_defined(self) -> bool:
+        try:
+            json.loads(self.table_schema)
+        except:
+            return False
+        return True
+
+
+@dataclass
 class CodelistsResult:
     """
     Model to represent select codelists sparql query result.
@@ -149,7 +167,7 @@ class CodelistsResult:
         return f"{linesep}\t- Number of Code Lists: {self.num_codelists}{linesep}\t- Code Lists:{linesep}{formatted_codelists}"
 
 
-@dataclass()
+@dataclass
 class DatasetURLResult:
     """
     Model to represent select dataset url result.
@@ -158,10 +176,10 @@ class DatasetURLResult:
     dataset_url: str
 
 
-@dataclass()
+@dataclass
 class DSDSingleUnitResult:
-    unit_uri: URIRef
-    unit_label: str
+    unit_uri: str
+    unit_label: Optional[str]
 
 
 def map_catalog_metadata_result(sparql_result: ResultRow) -> CatalogMetadataResult:
@@ -226,13 +244,13 @@ def map_qube_component_sparql_result(
     result_dict = sparql_result.asdict()
 
     result = QubeComponentResult(
-        property=get_printable_component_property(
+        property=get_component_property_as_relative_path(
             json_path, str(result_dict["componentProperty"])
         ),
         property_label=(
             none_or_map(result_dict.get("componentPropertyLabel"), str) or ""
         ),
-        property_type=get_printable_component_property_type(
+        property_type=get_component_property_as_relative_path_type(
             str(result_dict["componentPropertyType"])
         ),
         csv_col_title=none_or_map(result_dict.get("csvColumnTitle"), str) or "",
@@ -296,7 +314,7 @@ def map_codelist_sparql_result(
     result_dict = sparql_result.asdict()
 
     result = CodelistResult(
-        codeList=get_printable_component_property(
+        codeList=get_component_property_as_relative_path(
             json_path, str(result_dict["codeList"])
         ),
         codeListLabel=none_or_map(result_dict.get("codeListLabel"), str) or "",
@@ -327,6 +345,22 @@ def map_codelists_sparql_result(
     return result
 
 
+def map_csvw_tableschema_field_result(
+    sparql_result: ResultRow,
+) -> CSVWTabelSchemaResult:
+    """
+    Maps sparql query result to `CSVWTabelSchemaResult`
+
+    Member of :file:`./models/inspectsparqlresults.py`
+
+    :return: `CSVWTabelSchemaResult`
+    """
+    result_dict = sparql_result.asdict()
+
+    result = CSVWTabelSchemaResult(dataset_url=str(result_dict["tableSchema"]))
+    return result
+
+
 def map_dataset_url_result(
     sparql_result: ResultRow,
 ) -> DatasetURLResult:
@@ -343,7 +377,9 @@ def map_dataset_url_result(
     return result
 
 
-def map_single_unit_from_dsd_result(sparql_result: ResultRow) -> DSDSingleUnitResult:
+def map_single_unit_from_dsd_result(
+    sparql_result: ResultRow, json_path: Path
+) -> DSDSingleUnitResult:
     """
     Maps sparql query result to `DSDSingleUnitResult`
 
@@ -352,13 +388,12 @@ def map_single_unit_from_dsd_result(sparql_result: ResultRow) -> DSDSingleUnitRe
     :return: `DSDSingleUnitResult`
     """
     result_dict = sparql_result.asdict()
-    unit_col = (
-        none_or_map(result_dict.get("unitLabel"), str)
-        or CanonicalShapeRequiredCols.Unit.value
-    )
+    unit_label = none_or_map(result_dict.get("unitLabel"), str)
 
     result = DSDSingleUnitResult(
-        unit_uri=URIRef(str(result_dict["unitUri"])),
-        unit_label=unit_col,
+        unit_uri=get_component_property_as_relative_path(
+            json_path, str(result_dict["unitUri"])
+        ),
+        unit_label=unit_label,
     )
     return result

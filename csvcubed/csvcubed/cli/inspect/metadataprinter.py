@@ -6,6 +6,9 @@ Provides functionality for validating and detecting input metadata.json file.
 """
 
 from pathlib import Path
+from typing import List, Optional
+from uuid import uuid1
+from numpy import row_stack
 from pandas import DataFrame
 
 from rdflib import Graph, URIRef
@@ -16,6 +19,7 @@ from csvcubed.models.inspectsparqlresults import (
     ColsWithSuppressOutputTrueResult,
     DSDLabelURIResult,
     DatasetURLResult,
+    QubeComponentResult,
     QubeComponentsResult,
 )
 from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
@@ -30,21 +34,14 @@ from csvcubed.cli.inspect.inspectsparqlmanager import (
     select_single_unit_from_dsd,
 )
 from csvcubed.cli.inspect.inspectdatasetmanager import (
-    DatasetMeasureType,
-    DatasetUnitType,
-    get_dataset_measure_type,
     get_dataset_observations_info,
-    get_dataset_unit_type,
-    get_measure_col_from_dsd,
-    get_multi_measure_dataset_val_counts_info,
-    get_single_measure_dataset_val_counts_info,
-    get_single_measure_label_from_dsd,
-    get_single_unit_label_from_dsd,
-    get_unit_col_from_dsd,
+    get_measure_col_name_from_dsd,
+    get_dataset_val_counts_info,
+    get_single_measure_from_dsd,
+    get_unit_col_name_from_dsd,
     load_csv_to_dataframe,
 )
 from csvcubed.models.inspectdataframeresults import (
-    DatasetObservationsByMeasureUnitInfoResult,
     DatasetObservationsInfoResult,
 )
 from csvcubed.utils.csvdataset import CanonicalShapeRequiredCols
@@ -117,6 +114,9 @@ class MetadataPrinter:
         result_qube_components: QubeComponentsResult = select_csvw_dsd_qube_components(
             self.csvw_metadata_rdf_graph, self.dsd_uri, self.csvw_metadata_json_path
         )
+        self.qube_components: List[
+            QubeComponentResult
+        ] = result_qube_components.qube_components
 
         result_cols_with_suppress_output_true: ColsWithSuppressOutputTrueResult = (
             select_cols_where_supress_output_is_true(self.csvw_metadata_rdf_graph)
@@ -178,50 +178,34 @@ class MetadataPrinter:
 
         :return: `str` - user-friendly string which will be output to CLI.
         """
-        dataset_measure_type = get_dataset_measure_type(
-            self.csvw_metadata_rdf_graph, self.dsd_uri, self.csvw_metadata_json_path
+        canonical_shape_dataset = self.dataset.copy()
+
+        measure_col: Optional[str] = get_measure_col_name_from_dsd(self.qube_components)
+        unit_col: Optional[str] = get_unit_col_name_from_dsd(self.qube_components)
+
+        if unit_col is None:
+            unit_col = f"{CanonicalShapeRequiredCols.Unit.value}_{str(uuid1())}"
+            result = select_single_unit_from_dsd(
+                self.csvw_metadata_rdf_graph,
+                self.dataset_uri,
+                self.csvw_metadata_json_path,
+            )
+            canonical_shape_dataset[unit_col] = (
+                result.unit_label if result.unit_label is not None else result.unit_uri
+            )
+
+        if measure_col is None:
+            measure_col = f"{CanonicalShapeRequiredCols.Measure.value}_{str(uuid1())}"
+            result = get_single_measure_from_dsd(
+                self.qube_components, self.csvw_metadata_json_path
+            )
+            canonical_shape_dataset[measure_col] = (
+                result.measure_label
+                if result.measure_label is not None
+                else result.measure_uri
+            )
+
+        result_val_count = get_dataset_val_counts_info(
+            canonical_shape_dataset, measure_col, unit_col
         )
-        dataset_unit_type = get_dataset_unit_type(self.dataset)
-
-        measure_col: str = get_measure_col_from_dsd(
-            self.csvw_metadata_rdf_graph, self.dsd_uri, self.csvw_metadata_json_path
-        )
-        unit_col: str
-
-        if dataset_unit_type == DatasetUnitType.SINGLE_UNIT:
-            unit_col = select_single_unit_from_dsd(
-                self.csvw_metadata_rdf_graph, self.dataset_uri
-            ).unit_label
-        elif dataset_unit_type == DatasetUnitType.MULTI_UNIT:
-            unit_col = get_unit_col_from_dsd(
-                self.csvw_metadata_rdf_graph, self.dsd_uri, self.csvw_metadata_json_path
-            )
-        else:
-            raise Exception("The dataset unit type is unknown.")
-
-        result_val_count: DatasetObservationsByMeasureUnitInfoResult
-        if dataset_measure_type == DatasetMeasureType.SINGLE_MEASURE:
-            single_measure_label: str = get_single_measure_label_from_dsd(
-                self.csvw_metadata_rdf_graph, self.dsd_uri, self.csvw_metadata_json_path
-            )
-            single_unit_label: str = get_single_unit_label_from_dsd(
-                self.csvw_metadata_rdf_graph, self.dsd_uri, self.csvw_metadata_json_path
-            )
-            result_val_count = get_single_measure_dataset_val_counts_info(
-                self.dataset,
-                measure_col,
-                unit_col,
-                single_measure_label,
-                single_unit_label,
-            )
-        elif dataset_measure_type == DatasetMeasureType.MULTI_MEASURE:
-            assert measure_col != "", "The measure column name cannot be blank."
-            assert unit_col != "", "The unit column name cannot be blank."
-
-            result_val_count = get_multi_measure_dataset_val_counts_info(
-                self.dataset, measure_col, unit_col
-            )
-        else:
-            raise Exception("The dataset measure type is unknown.")
-
         return f"- The {self._get_type_str()} has the following value counts:{result_val_count.output_str}"

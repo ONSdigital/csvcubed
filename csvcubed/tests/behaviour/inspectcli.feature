@@ -1,8 +1,8 @@
 Feature: Behaviour testing of csvcubed inspect.
 
-    Scenario: inspect should produce printable for data cube metadata json-ld input
-        Given the existing test-case file "cli/inspect/datacube.csv-metadata.json"
-        When the existing Metadata file exists "cli/inspect/datacube.csv-metadata.json"
+    Scenario: inspect should produce th eexpected printable for data cube metadata json-ld input of type multi-unit multi-measure
+        Given the existing test-case file "cli/inspect/multi-unit_multi-measure/alcohol-bulletin.csv-metadata.json"
+        When the existing Metadata file exists "cli/inspect/multi-unit_multi-measure/alcohol-bulletin.csv-metadata.json"
         And the Metadata File json-ld is loaded to a rdf graph
         And the Metadata File is validated
         And the Printables for data cube are generated
@@ -92,7 +92,57 @@ Feature: Behaviour testing of csvcubed inspect.
                alcohol-content.csv#scheme/alcohol-content                     Alcohol Content
              clearance-origin.csv#scheme/clearance-origin                    Clearance Origin
         """
+        And the Dataset Information Printable should be
+        """
+        - The data cube has the following dataset information:
+        - Number of Observations: 10676
+        - Number of Duplicates: 0
+        - First 10 Observations:
+                            Period Alcohol Type Alcohol Sub Type Alcohol Content Clearance Origin      Value          Measure Type        Unit Marker
+            government-year/1999-2000         wine            still    up-to-15-abv              all 8721828.97            clearances hectolitres    NaN
+            government-year/1999-2000         wine        sparkling    up-to-15-abv              all  621067.74            clearances hectolitres    NaN
+            government-year/1999-2000         wine              all     over-15-abv              all  312545.57            clearances hectolitres    NaN
+            government-year/1999-2000         wine              all    over-5-5-abv          ex-ship 2248574.50            clearances hectolitres    NaN
+            government-year/1999-2000         wine              all    over-5-5-abv     ex-warehouse 7393838.35            clearances hectolitres    NaN
+            government-year/1999-2000         wine              all    over-5-5-abv        uk-origin   13029.44            clearances hectolitres    NaN
+            government-year/1999-2000         wine              all             all              all 9655442.29            clearances hectolitres    NaN
+            government-year/1999-2000         wine              all             all              all    1657.00    wine-duty-receipts gbp-million    NaN
+            government-year/1999-2000         wine              all             all              all    6429.00 alcohol-duty-receipts gbp-million    NaN
+            government-year/2000-2001         wine            still    up-to-15-abv              all 8920111.13            clearances hectolitres    NaN
 
+                    - Last 10 Observations:
+                Period   Alcohol Type Alcohol Sub Type Alcohol Content                    Clearance Origin  Value              Measure Type                 Unit        Marker
+            month/2021-09          cider              all             all                                 all  25.05       cider-duty-receipts          gbp-million   provisional
+            month/2021-10           beer               uk             all                                 all    NaN         production-volume thousand-hectolitres not-available
+            month/2021-10           beer               uk             all                                 all    NaN production-volume-alcohol thousand-hectolitres not-available
+            month/2021-10 beer-and-cider    uk-registered             all                                 all    NaN                clearances thousand-hectolitres not-available
+            month/2021-10 beer-and-cider              all             all ex-warehouse-and-ex-ship-clearances    NaN                clearances thousand-hectolitres not-available
+            month/2021-10           beer              all             all                                 all    NaN                clearances thousand-hectolitres not-available
+            month/2021-10           beer              all             all                                 all    NaN     clearances-of-alcohol thousand-hectolitres not-available
+            month/2021-10          cider              all             all                                 all    NaN                clearances thousand-hectolitres not-available
+            month/2021-10           beer              all             all                                 all 344.74        beer-duty-receipts          gbp-million   provisional
+            month/2021-10          cider              all             all                                 all  22.60       cider-duty-receipts          gbp-million   provisional
+        """
+        And the Value Count Printable should be
+        """
+        - The data cube has the following value counts:
+        - Value counts broken-down by measure and unit (of measure):
+                        Measure                   Unit  Count
+            alcohol-duty-receipts            gbp-million    314
+            beer-duty-receipts            gbp-million    314
+            cider-duty-receipts            gbp-million    314
+                    clearances            hectolitres   4710
+                    clearances hectolitres-of-alcohol    942
+                    clearances   thousand-hectolitres   1256
+            clearances-of-alcohol            hectolitres    942
+            clearances-of-alcohol   thousand-hectolitres    314
+                production-volume   thousand-hectolitres    314
+        production-volume-alcohol            hectolitres    314
+        production-volume-alcohol   thousand-hectolitres    314
+            spirits-duty-receipts            gbp-million    314
+            wine-duty-receipts            gbp-million    314
+        """
+        
     Scenario: inspect should produce printable for code list metadata json-ld input
         Given the existing test-case file "cli/inspect/codelist.csv-metadata.json"
         When the existing Metadata file exists "cli/inspect/codelist.csv-metadata.json"
