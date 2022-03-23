@@ -14,7 +14,7 @@ from rdflib import Graph, Literal, URIRef
 from rdflib.query import ResultRow
 
 from csvcubed.models.inspectsparqlresults import (
-    CSVWTabelSchemasResult,
+    CSVWTableSchemaFileDependenciesResult,
     CatalogMetadataResult,
     CodelistsResult,
     ColsWithSuppressOutputTrueResult,
@@ -62,7 +62,9 @@ class SPARQLQueryFileName(Enum):
 
     SELECT_SINGLE_UNIT_FROM_DSD = "select_single_unit_from_dsd"
 
-    SELECT_CSVW_TABLE_SCHEMA = "select_csvw_table_schemas"
+    SELECT_CSVW_TABLE_SCHEMA_FILE_DEPENDENCIES = (
+        "select_csvw_table_schema_file_dependencies"
+    )
 
 
 def _get_query_string_from_file(queryType: SPARQLQueryFileName) -> str:
@@ -220,7 +222,9 @@ def select_dsd_code_list_and_cols(
     return map_codelists_sparql_result(results, json_path)
 
 
-def select_csvw_table_schemas(rdf_graph: Graph) -> CSVWTabelSchemasResult:
+def select_csvw_table_schema_file_dependencies(
+    rdf_graph: Graph,
+) -> CSVWTableSchemaFileDependenciesResult:
     """
     Queries the table schemas of the given csvw json-ld.
 
@@ -229,11 +233,13 @@ def select_csvw_table_schemas(rdf_graph: Graph) -> CSVWTabelSchemasResult:
     :return: `CSVWTabelSchemasResult`
     """
     results: List[ResultRow] = select(
-        _get_query_string_from_file(SPARQLQueryFileName.SELECT_CSVW_TABLE_SCHEMA),
+        _get_query_string_from_file(
+            SPARQLQueryFileName.SELECT_CSVW_TABLE_SCHEMA_FILE_DEPENDENCIES
+        ),
         rdf_graph,
     )
-    if len(results) == 0:
-        raise Exception(f"Expected at least 1 record but found {len(results)}")
+
+    # todo: Need to map from relative paths to absolute paths here.
 
     return map_csvw_table_schemas_result(results)
 

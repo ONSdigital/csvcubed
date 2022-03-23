@@ -131,22 +131,13 @@ class CodelistResult(DataClassBase):
 
 
 @dataclass
-class CSVWTabelSchemasResult:
+class CSVWTableSchemaFileDependenciesResult:
     """
     Model to represent select csvw table schemas result.
     """
 
-    table_schemas: List[str]
+    table_schema_file_dependencies: List[str]
 
-    @property
-    def table_schemas_need_loading(self) -> List[str]:
-        schemas: List[str] = []
-        for schema in self.table_schemas:
-            try:
-                json.loads(schema)
-            except:
-                schemas.append(schema)
-        return schemas
 
 @dataclass
 class CodelistsResult:
@@ -346,7 +337,7 @@ def map_codelists_sparql_result(
 
 def map_csvw_table_schemas_result(
     sparql_results: List[ResultRow],
-) -> CSVWTabelSchemasResult:
+) -> CSVWTableSchemaFileDependenciesResult:
     """
     Maps sparql query result to `CSVWTabelSchemasResult`
 
@@ -355,8 +346,8 @@ def map_csvw_table_schemas_result(
     :return: `CSVWTabelSchemasResult`
     """
 
-    result = CSVWTabelSchemasResult(
-        table_schemas=[
+    result = CSVWTableSchemaFileDependenciesResult(
+        table_schema_file_dependencies=[
             str(sparql_result["tableSchema"]) for sparql_result in sparql_results
         ]
     )

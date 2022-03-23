@@ -1,4 +1,5 @@
 import dateutil.parser
+from rdflib import Graph
 
 from definitions import ROOT_DIR_PATH
 from csvcubed.models.inspectsparqlresults import (
@@ -19,6 +20,7 @@ from csvcubed.cli.inspect.inspectsparqlmanager import (
     select_csvw_dsd_qube_components,
     select_dsd_code_list_and_cols,
     select_qb_dataset_url,
+    select_csvw_table_schema_file_dependencies,
 )
 from csvcubed.cli.inspect.metadatainputvalidator import MetadataValidator
 from csvcubed.cli.inspect.metadataprocessor import MetadataProcessor
@@ -271,3 +273,33 @@ def test_select_qb_dataset_url():
 #     )
 #     assert result.unit_label == "TODO"
 #     assert result.unit_uri == "TODO"
+
+
+def test_select_table_schema_dependencies():
+    """
+    Test that we can successfully identify all table schema file dependencies from a CSV-W.
+
+    This test ensures that table schemas defined in-line are not returned and are handled gracefully.
+    """
+    table_schema_dependencies_dir = _test_case_base_dir / "table-schema-dependencies"
+    csvw_metadata_json_path = (
+        table_schema_dependencies_dir
+        / "sectors-economic-estimates-2018-trade-in-services.csv-metadata.json"
+    )
+
+    # Deliberately not using MetadataProcessor.load_json_ld_to_rdflib_graph
+    # since it calls `select_csvw_table_schemas` itself implicitly.
+    graph = Graph()
+    graph.load(csvw_metadata_json_path, format="json-ld")
+
+    table_schema_results = select_csvw_table_schema_file_dependencies(graph)
+
+    standardised_file_paths = {
+        s.removeprefix("file://")
+        for s in table_schema_results.table_schema_file_dependencies
+    }
+
+    assert standardised_file_paths == {
+        str(table_schema_dependencies_dir / "sector.table.json"),
+        str(table_schema_dependencies_dir / "subsector.table.json"),
+    }
