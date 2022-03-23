@@ -53,6 +53,7 @@ from ..models.cube import (
     QbMultiUnits,
     QbAttributeLiteral,
 )
+from ..models.cube.qb.components.codelist import NewQbCodeListInCsvW
 from ..models.rdf.newattributevalueresource import NewAttributeValueResource
 from ..models.rdf.newunitresource import NewUnitResource
 from ..models.cube.qb.components.arbitraryrdf import RdfSerialisationHint
@@ -152,6 +153,23 @@ class QbWriter(WriterBase):
 
                 code_list_writer = SkosCodeListWriter(code_list)
                 code_list_writer.write(output_folder)
+            elif isinstance(code_list, NewQbCodeListInCsvW):
+                # find the CSV-W codelist and all dependent relative files and copy them into the output_folder
+                _logger.debug(
+                    "Copying legacy code list %s (with dependent files) to '%s' directory.",
+                    code_list,
+                    output_folder,
+                )
+
+                dependent_files = get_dependent_local_files(
+                    code_list.schema_metadata_file_path
+                )
+                files_relative_to = code_list.schema_metadata_file_path.parent
+                copy_files_to_directory_with_structure(
+                    [code_list.schema_metadata_file_path] + list(dependent_files),
+                    files_relative_to,
+                    output_folder,
+                )
 
     def _generate_csvw_columns_for_cube(self) -> List[Dict[str, Any]]:
         columns = [self._generate_csvqb_column(c) for c in self.cube.columns]
@@ -163,7 +181,7 @@ class QbWriter(WriterBase):
         for col in get_columns_of_dsd_type(self.cube, NewQbDimension):
             if col.structural_definition.code_list is not None and isinstance(
                 col.structural_definition.code_list,
-                NewQbCodeList,
+                (NewQbCodeList, NewQbCodeListInCsvW),
             ):
                 columns.append(col)
 
@@ -183,7 +201,19 @@ class QbWriter(WriterBase):
                         "suppressOutput": True,
                     }
                 )
+            elif isinstance(code_list, NewQbCodeListInCsvW):
+                _logger.debug(
+                    "Referencing legacy dataset-local code list %s with assumed table schema.",
+                    code_list,
+                )
 
+                tables.append(
+                    {
+                        "url": code_list.csv_file_relative_path_or_uri,
+                        "tableSchema": "https://gss-cogs.github.io/family-schemas/codelist-schema.json",
+                        "suppressOutput": True,
+                    }
+                )
             else:
                 raise ValueError(f"Unmatched codelist type {type(code_list)}")
 
@@ -210,7 +240,23 @@ class QbWriter(WriterBase):
                         },
                     }
                 )
+            elif isinstance(code_list, NewQbCodeListInCsvW):
+                _logger.debug(
+                    "Configuring foreign key constraints for legacy dataset-local code list %s",
+                    code_list,
+                )
 
+                foreign_keys.append(
+                    {
+                        "columnReference": csvw_column_name_safe(
+                            col.uri_safe_identifier
+                        ),
+                        "reference": {
+                            "resource": code_list.csv_file_relative_path_or_uri,
+                            "columnReference": CODE_LIST_NOTATION_COLUMN_NAME,
+                        },
+                    }
+                )
             else:
                 raise ValueError(f"Unmatched codelist type {type(code_list)}")
 
@@ -517,7 +563,8 @@ class QbWriter(WriterBase):
             return ExistingResource(
                 SkosCodeListNewUriHelper(code_list).get_scheme_uri()
             )
-
+        elif isinstance(code_list, NewQbCodeListInCsvW):
+            return ExistingResource(code_list.concept_scheme_uri)
         else:
             raise Exception(f"Unhandled codelist type {type(code_list)}")
 
@@ -1047,6 +1094,14 @@ class QbWriter(WriterBase):
             )
             return SkosCodeListNewUriHelper(code_list).get_concept_uri(
                 column_uri_fragment
+            )
+        elif isinstance(code_list, NewQbCodeListInCsvW):
+            _logger.debug(
+                "valueUrl defined by legacy dataset-local code list %s",
+                code_list.concept_scheme_uri,
+            )
+            return re.sub(
+                r"\{.?notation\}", column_uri_fragment, code_list.concept_template_uri
             )
         else:
             raise Exception(f"Unhandled codelist type {type(code_list)}")
