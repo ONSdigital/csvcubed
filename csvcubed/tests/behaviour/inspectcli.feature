@@ -151,8 +151,32 @@ Feature: Behaviour testing of csvcubed inspect.
     Scenario: inspect should produce the expected printable for data cube metadata json-ld input of type multi-unit single-measure.
         Given the existing test-case file "cli/inspect/multi-unit_single-measure/final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
         And the existing test-case file "cli/inspect/multi-unit_single-measure/final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv"
+        And the existing test-case file "cli/inspect/multi-unit_single-measure/ghg.table.json"
+        And the existing test-case file "cli/inspect/multi-unit_single-measure/ghg-grouped.table.json"
+        And the existing test-case file "cli/inspect/multi-unit_single-measure/ipcc-code.table.json"
+        And the existing test-case file "cli/inspect/multi-unit_single-measure/year.table.json"
+        And the existing test-case file "cli/inspect/multi-unit_single-measure/national-communication-sector.table.json"
+        And the existing test-case file "cli/inspect/multi-unit_single-measure/national-communication-sub-sector.table.json"
+        And the existing test-case file "cli/inspect/multi-unit_single-measure/national-communication-category.csv"
+        And the existing test-case file "cli/inspect/multi-unit_single-measure/source.table.json"
+        And the existing test-case file "cli/inspect/multi-unit_single-measure/national-communication-fuel-group.table.json"
+        And the existing test-case file "cli/inspect/multi-unit_single-measure/national-communication-fuel.table.json"
+        And the existing test-case file "cli/inspect/multi-unit_single-measure/activity-name.table.json"
+
         When the existing Metadata file exists "cli/inspect/multi-unit_single-measure/final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
         And the existing csv file exists "cli/inspect/multi-unit_single-measure/final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv"
+        And the existing csv file exists "cli/inspect/multi-unit_single-measure/ghg.table.json"
+        And the existing csv file exists "cli/inspect/multi-unit_single-measure/ghg-grouped.table.json"
+        And the existing csv file exists "cli/inspect/multi-unit_single-measure/ipcc-code.table.json"
+        And the existing csv file exists "cli/inspect/multi-unit_single-measure/year.table.json"
+        And the existing csv file exists "cli/inspect/multi-unit_single-measure/national-communication-sector.table.json"
+        And the existing csv file exists "cli/inspect/multi-unit_single-measure/national-communication-sub-sector.table.json"
+        And the existing csv file exists "cli/inspect/multi-unit_single-measure/national-communication-category.csv"
+        And the existing csv file exists "cli/inspect/multi-unit_single-measure/source.table.json"
+        And the existing csv file exists "cli/inspect/multi-unit_single-measure/national-communication-fuel-group.table.json"
+        And the existing csv file exists "cli/inspect/multi-unit_single-measure/national-communication-fuel.table.json"
+        And the existing csv file exists "cli/inspect/multi-unit_single-measure/activity-name.table.json"
+
         And the Metadata File json-ld is loaded to a rdf graph
         And the Metadata File is validated
         And the Printables for data cube are generated
