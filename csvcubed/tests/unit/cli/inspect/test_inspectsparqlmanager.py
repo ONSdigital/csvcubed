@@ -7,6 +7,7 @@ from csvcubed.models.inspectsparqlresults import (
     CodelistsResult,
     ColsWithSuppressOutputTrueResult,
     DSDLabelURIResult,
+    DSDSingleUnitResult,
     DatasetURLResult,
     QubeComponentsResult,
 )
@@ -21,6 +22,7 @@ from csvcubed.cli.inspect.inspectsparqlmanager import (
     select_dsd_code_list_and_cols,
     select_qb_dataset_url,
     select_csvw_table_schema_file_dependencies,
+    select_single_unit_from_dsd,
 )
 from csvcubed.cli.inspect.metadataprocessor import MetadataProcessor
 from tests.unit.test_baseunit import get_test_cases_dir
@@ -241,21 +243,20 @@ def test_select_qb_dataset_url():
     )
     assert result.dataset_url == "alcohol-bulletin.csv"
 
-# def test_select_single_unit_from_dsd():
-#     """
-#     TODO: Complete this after single measure dataset issues are sorted.
-#     Should return expected `DSDSingleUnitResult`.
-#     """
-#     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
-#     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
-#     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
-#     dataset_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
+def test_select_single_unit_from_dsd():
+    """
+    Should return expected `DSDSingleUnitResult`.
+    """
+    csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
+    metadata_processor = MetadataProcessor(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+    dataset_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
 
-#     result: DSDSingleUnitResult = select_single_unit_from_dsd(
-#         csvw_metadata_rdf_graph, dataset_uri
-#     )
-#     assert result.unit_label == "TODO"
-#     assert result.unit_uri == "TODO"
+    result: DSDSingleUnitResult = select_single_unit_from_dsd(
+        csvw_metadata_rdf_graph, dataset_uri, csvw_metadata_json_path
+    )
+    assert result.unit_label is None
+    assert result.unit_uri == "http://gss-data.org.uk/def/concept/measurement-units/{+unit}"
 
 
 def test_select_table_schema_dependencies():
