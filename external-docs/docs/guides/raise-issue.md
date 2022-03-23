@@ -4,8 +4,6 @@ TODO:
 
 * How to obtain detailed error log
 
-* How to email sensitive bug reports
-
 * How to get support from the IDP-D team
 
 
@@ -21,12 +19,12 @@ Well written bug reports are very helpful. See this [stackoverflow article](http
     2. Reproducible steps / Code example
     3. Error message obtained / Resulting behaviour
     4. Expected behaviour
-    5. Any Additional Information
-    6. Version information + Operating System
+    5. Any additional information
+    6. Version information + Operating system
 
 To obtain detailed error logging ...
 
-In the event that your bug can only be reproduced using sensitive information ...
+In the event that your issue can only be reproduced using sensitive information, please send your report to csvcubed@gsscogs.uk and try to follow the template detailed above as closely as possible.
 
 
 
