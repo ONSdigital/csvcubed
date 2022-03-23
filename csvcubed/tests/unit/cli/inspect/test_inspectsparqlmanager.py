@@ -1,4 +1,6 @@
+from pathlib import Path
 import dateutil.parser
+import os
 
 from csvcubed.models.inspectsparqlresults import (
     CatalogMetadataResult,
@@ -21,6 +23,7 @@ from csvcubed.cli.inspect.inspectsparqlmanager import (
 )
 from csvcubed.cli.inspect.metadatainputvalidator import MetadataValidator
 from csvcubed.cli.inspect.metadataprocessor import MetadataProcessor
+from definitions import ROOT_DIR_PATH
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
@@ -64,7 +67,8 @@ def test_select_csvw_catalog_metadata_for_dataset():
         csvw_metadata_rdf_graph
     )
 
-    assert result.dataset_uri == "file:///workspaces/csvcubed/csvcubed/tests/test-cases/cli/inspect/alcohol-bulletin.csv#dataset"
+    path = ROOT_DIR_PATH / "tests" / "test-cases" / "cli" / "inspect"
+    assert result.dataset_uri == f"file://{str(path)}/alcohol-bulletin.csv#dataset"
     assert result.title == "Alcohol Bulletin"
     assert result.label == "Alcohol Bulletin"
     assert (
@@ -229,9 +233,11 @@ def test_select_qb_dataset_url():
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
+    path = ROOT_DIR_PATH / "tests" / "test-cases" / "cli" / "inspect"
+
     result: DatasetURLResult = select_qb_dataset_url(
         csvw_metadata_rdf_graph,
-        "file:///workspaces/csvcubed/csvcubed/tests/test-cases/cli/inspect/alcohol-bulletin.csv#dataset",
+        f"file://{str(path)}/alcohol-bulletin.csv#dataset",
     )
     assert result.dataset_url == "alcohol-bulletin.csv"
 
