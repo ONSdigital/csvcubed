@@ -11,15 +11,6 @@ body:
       issue, please ensure you have read [our bug reporting guidelines](https://gss-cogs.github.io/csvcubed-docs/external/guides/raise-issue/#report-bugs) 
       as well as checking the open issues for existing issues regarding your bug.
 
-- type: checkboxes
-    id: checks
-    attributes:
-      label: "Guidance and existing issues check"
-      options:
-        - label: >
-            I have read the guidelines and checked that this issue has not already been reported.
-          required: true
-
 - type: textarea
   attributes: 
     label: "Describe the issue:"
@@ -68,4 +59,3 @@ body:
       Please state to which version of csvcubed this issue relates and on which operating system it has occured.
   validations:
     required: true
-    
