@@ -8,7 +8,7 @@ body:
   attributes:
     value: >
       Thank you for taking the time to file a bug report. Before creating a new 
-      issue, please ensure you have read [our bug reporting guidelines](https://gss-cogs.github.io/csvcubed-docs/external/guides/raise-issue/) 
+      issue, please ensure you have read [our bug reporting guidelines](https://gss-cogs.github.io/csvcubed-docs/external/guides/raise-issue/#report-bugs) 
       as well as checking the open issues for existing issues regarding your bug.
 
 - type: checkboxes
@@ -41,7 +41,7 @@ body:
     label: "Error message obtained / Resulting behaviour:"
     description: >
       Include the full error message, if any. Detailed error logging can 
-      be obtained by following [this guide]().
+      be obtained by following [this guide](https://gss-cogs.github.io/csvcubed-docs/external/guides/raise-issue/#obtaining-error-logs).
   validations:
     required: true
 
@@ -68,3 +68,4 @@ body:
       Please state to which version of csvcubed this issue relates and on which operating system it has occured.
   validations:
     required: true
+    

@@ -1,12 +1,5 @@
 # Raise an issue
 
-TODO: 
-
-* How to obtain detailed error log
-
-* How to get support from the IDP-D team
-
-
 ## Report Bugs
 
 If you find a bug in the code, please do not hesitate to submit a ticket to the issue tracker.
@@ -22,9 +15,14 @@ Well written bug reports are very helpful. See this [stackoverflow article](http
     5. Any additional information
     6. Version information + Operating system
 
-To obtain detailed error logging ...
+In the event that your issue can only be reproduced using sensitive information, please send your report to [csvcubed@gsscogs.uk](mailto:csvcubed@gsscogs.uk) and try to follow the template detailed above as closely as possible.
 
-In the event that your issue can only be reproduced using sensitive information, please send your report to csvcubed@gsscogs.uk and try to follow the template detailed above as closely as possible.
+## Obtaining Error Logs
+To obtain a detailed error log, please follow the following steps:
 
+1. Set the logging level to debug in the build command. `build --log-level debug`
+2. Rerun the issue causing lines.
+3. Copy and paste the resulting console output into the bug reporting form.
 
-
+**Note:** Logs from the past 7 days are recorded in csvcube's log file `out.log`.
+Feel free to consulte these for more detailed retrospective debugging.
