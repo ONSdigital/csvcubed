@@ -29,6 +29,7 @@ chardet = "^4.0.0"
 # Issue #205
 csvcubed-models = {path = "./../csvcubed-models", develop = true}
 csvcubed-devtools = {path = "./../csvcubed-devtools", develop = true}
+pytest-recording = "^0.12.0"
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
