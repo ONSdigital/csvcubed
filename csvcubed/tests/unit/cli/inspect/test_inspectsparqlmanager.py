@@ -22,11 +22,11 @@ from csvcubed.cli.inspect.inspectsparqlmanager import (
     select_qb_dataset_url,
     select_csvw_table_schema_file_dependencies,
 )
-from csvcubed.cli.inspect.metadatainputvalidator import MetadataValidator
 from csvcubed.cli.inspect.metadataprocessor import MetadataProcessor
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
+_csvw_test_cases_dir = get_test_cases_dir() / "utils" / "csvw"
 
 
 def test_ask_is_csvw_code_list():
@@ -281,7 +281,7 @@ def test_select_table_schema_dependencies():
 
     This test ensures that table schemas defined in-line are not returned and are handled gracefully.
     """
-    table_schema_dependencies_dir = _test_case_base_dir / "table-schema-dependencies"
+    table_schema_dependencies_dir = _csvw_test_cases_dir / "table-schema-dependencies"
     csvw_metadata_json_path = (
         table_schema_dependencies_dir
         / "sectors-economic-estimates-2018-trade-in-services.csv-metadata.json"
