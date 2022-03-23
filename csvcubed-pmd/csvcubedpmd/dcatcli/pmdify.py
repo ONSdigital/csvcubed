@@ -164,7 +164,9 @@ def _replace_uri_substring_in_graph(
         )
 
     triples = [
-        replace_uri_in_triple(t) for t in csvw_rdf_graph.triples((None, None, None))
+        replace_uri_in_triple((s, p, o))
+        for (s, p, o) in csvw_rdf_graph.triples((None, None, None))
+        if isinstance(s, Identifier) and isinstance(p, Identifier) and isinstance(o, Identifier)
     ]
     csvw_rdf_graph.remove((None, None, None))
     for triple in triples:
@@ -362,9 +364,8 @@ def _get_catalog_entry_from_dcat_dataset(csvw_graph: Graph) -> pmdcat.Dataset:
     """
     :return: a :class:`csvcubedpmd.models.rdf.pmdcat.Dataset` to avoid need to convert from dcat to pmdcat object.
     """
-    results = list(
-        csvw_graph.query(
-            """
+
+    catalog_metadata_query = """
         PREFIX dcat: <http://www.w3.org/ns/dcat#>
         PREFIX dcterms: <http://purl.org/dc/terms/>
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -405,13 +406,12 @@ def _get_catalog_entry_from_dcat_dataset(csvw_graph: Graph) -> pmdcat.Dataset:
             OPTIONAL { ?dataset pmdcat:datasetContents ?datasetContents }.           
         }
         """
-        )
-    )
 
-    results: List[ResultRow] = [
+    results = [
         r
-        for r in results
-        if any([r[k] is not None and r[k] != Literal("") for k in r.labels.keys()])
+        for r in list(csvw_graph.query(catalog_metadata_query))
+        if isinstance(r, ResultRow) and isinstance(r.labels, dict) and
+           any([r[k] is not None and r[k] != Literal("") for k in r.labels.keys()])
     ]
 
     if len(results) != 1:
@@ -419,11 +419,11 @@ def _get_catalog_entry_from_dcat_dataset(csvw_graph: Graph) -> pmdcat.Dataset:
 
     record = results[0].asdict()
 
-    pmdcat_dataset = pmdcat.Dataset(record["dataset"])
+    pmdcat_dataset = pmdcat.Dataset(str(record["dataset"]))
     pmdcat_dataset.title = str(record["title"])
     pmdcat_dataset.label = str(record["label"])
-    pmdcat_dataset.issued = dateutil.parser.isoparse(record["issued"])
-    pmdcat_dataset.modified = dateutil.parser.isoparse(record["modified"])
+    pmdcat_dataset.issued = dateutil.parser.isoparse(str(record["issued"]))
+    pmdcat_dataset.modified = dateutil.parser.isoparse(str(record["modified"]))
     pmdcat_dataset.comment = _none_or_map(record.get("comment"), str)
     pmdcat_dataset.description = _none_or_map(record.get("description"), str)
     pmdcat_dataset.license = _none_or_map(record.get("license"), str)
@@ -431,20 +431,20 @@ def _get_catalog_entry_from_dcat_dataset(csvw_graph: Graph) -> pmdcat.Dataset:
     pmdcat_dataset.publisher = _none_or_map(record.get("publisher"), str)
     pmdcat_dataset.landing_page = (
         set()
-        if len(record["landingPages"]) == 0
+        if len(str(record["landingPages"])) == 0
         else set(str(record["landingPages"]).split("|"))
     )
     pmdcat_dataset.themes = (
-        set() if len(record["themes"]) == 0 else set(str(record["themes"]).split("|"))
+        set() if len(str(record["themes"])) == 0 else set(str(record["themes"]).split("|"))
     )
     pmdcat_dataset.keywords = (
         set()
-        if len(record["keywords"]) == 0
+        if len(str(record["keywords"])) == 0
         else set(str(record["keywords"]).split("|"))
     )
     pmdcat_dataset.contact_point = _none_or_map(record.get("contactPoint"), str)
     pmdcat_dataset.identifier = str(record.get("identifier"))
-    dataset_contents_uri = record.get("datasetContents", record["dataset"])
+    dataset_contents_uri = str(record.get("datasetContents", record["dataset"]))
     pmdcat_dataset.dataset_contents = ExistingResource(dataset_contents_uri)
 
     return pmdcat_dataset

@@ -36,18 +36,18 @@
       "type": "string",
       "format": "uri"
     },
-    "spatial_bound": {
-      "description": "URI that defines the spatial / geographic bounds of the data contained herein",
-      "type": "string",
-      "format": "uri",
-      "default": "https://tdg.docbook.org/tdg/publishers/5.1/dcterms.html#dcterms.spatial"
-    },
-    "temporal_bound": {
-      "description": "URI that defines the temporal bounds of the data contained herein",
-      "type": "string",
-      "format": "uri",
-      "default": "https://tdg.docbook.org/tdg/publishers/5.1/dcterms.html#dcterms.temporal"
-    },
+    // "spatial_bound": {
+    //   "description": "URI that defines the spatial / geographic bounds of the data contained herein",
+    //   "type": "string",
+    //   "format": "uri",
+    //   "default": "https://tdg.docbook.org/tdg/publishers/5.1/dcterms.html#dcterms.spatial"
+    // },
+    // "temporal_bound": {
+    //   "description": "URI that defines the temporal bounds of the data contained herein",
+    //   "type": "string",
+    //   "format": "uri",
+    //   "default": "https://tdg.docbook.org/tdg/publishers/5.1/dcterms.html#dcterms.temporal"
+    // },
     "theme": {
       "$ref": "#/$defs/v1.0/themeTypes"
     },
