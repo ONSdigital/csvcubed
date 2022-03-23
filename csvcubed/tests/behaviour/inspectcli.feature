@@ -6,12 +6,14 @@ Feature: Behaviour testing of csvcubed inspect.
         And the existing test-case file "cli/inspect/multi-unit_multi-measure/alcohol-content.table.json"
         And the existing test-case file "cli/inspect/multi-unit_multi-measure/alcohol-sub-type.table.json"
         And the existing test-case file "cli/inspect/multi-unit_multi-measure/clearance-origin.table.json"
+        
         When the existing Metadata file exists "cli/inspect/multi-unit_multi-measure/alcohol-bulletin.csv-metadata.json"
         And the existing csv file exists "cli/inspect/multi-unit_multi-measure/alcohol-bulletin.csv"
         And the Metadata File json-ld is loaded to a rdf graph
         And the Metadata File is validated
         And the Printables for data cube are generated
         Then the Type Printable should be "- This file is a data cube."
+        
         And the Catalog Metadata Printable should be
         """
           - The data cube has the following catalog metadata:
@@ -157,12 +159,12 @@ Feature: Behaviour testing of csvcubed inspect.
         And the existing test-case file "cli/inspect/multi-unit_single-measure/year.table.json"
         And the existing test-case file "cli/inspect/multi-unit_single-measure/national-communication-sector.table.json"
         And the existing test-case file "cli/inspect/multi-unit_single-measure/national-communication-sub-sector.table.json"
-        And the existing test-case file "cli/inspect/multi-unit_single-measure/national-communication-category.csv"
+        And the existing test-case file "cli/inspect/multi-unit_single-measure/national-communication-category.table.json"
         And the existing test-case file "cli/inspect/multi-unit_single-measure/source.table.json"
         And the existing test-case file "cli/inspect/multi-unit_single-measure/national-communication-fuel-group.table.json"
         And the existing test-case file "cli/inspect/multi-unit_single-measure/national-communication-fuel.table.json"
         And the existing test-case file "cli/inspect/multi-unit_single-measure/activity-name.table.json"
-
+        
         When the existing Metadata file exists "cli/inspect/multi-unit_single-measure/final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
         And the existing csv file exists "cli/inspect/multi-unit_single-measure/final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv"
         And the existing csv file exists "cli/inspect/multi-unit_single-measure/ghg.table.json"
@@ -171,16 +173,16 @@ Feature: Behaviour testing of csvcubed inspect.
         And the existing csv file exists "cli/inspect/multi-unit_single-measure/year.table.json"
         And the existing csv file exists "cli/inspect/multi-unit_single-measure/national-communication-sector.table.json"
         And the existing csv file exists "cli/inspect/multi-unit_single-measure/national-communication-sub-sector.table.json"
-        And the existing csv file exists "cli/inspect/multi-unit_single-measure/national-communication-category.csv"
+        And the existing csv file exists "cli/inspect/multi-unit_single-measure/national-communication-category.table.json"
         And the existing csv file exists "cli/inspect/multi-unit_single-measure/source.table.json"
         And the existing csv file exists "cli/inspect/multi-unit_single-measure/national-communication-fuel-group.table.json"
         And the existing csv file exists "cli/inspect/multi-unit_single-measure/national-communication-fuel.table.json"
         And the existing csv file exists "cli/inspect/multi-unit_single-measure/activity-name.table.json"
-
         And the Metadata File json-ld is loaded to a rdf graph
         And the Metadata File is validated
         And the Printables for data cube are generated
         Then the Type Printable should be "- This file is a data cube."
+        
         And the Catalog Metadata Printable should be
         """
         - The data cube has the following catalog metadata:
@@ -332,15 +334,39 @@ Feature: Behaviour testing of csvcubed inspect.
         """
         - The data cube has the following value counts:
             - Value counts broken-down by measure and unit (of measure):
-                       Measure                                                                                                                    Unit  Count
-        gas emissions(gwp-ar4) final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#unit/millions-of-tonnes-of-carbon-dioxide-mt-co2  41508
+                       Measure                                          Unit  Count
+        gas emissions(gwp-ar4) millions of tonnes of carbon dioxide (mt co2)  41508
         """
 
     Scenario: inspect should produce the expected printable for data cube metadata json-ld input of type single-unit multi-measure.
         Given the existing test-case file "cli/inspect/single-unit_multi-measure/final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv-metadata.json"
         And the existing test-case file "cli/inspect/single-unit_multi-measure/final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv"
+        And the existing test-case file "cli/inspect/single-unit_multi-measure/ghg.table.json"
+        And the existing test-case file "cli/inspect/single-unit_multi-measure/ghg-grouped.table.json"
+        And the existing test-case file "cli/inspect/single-unit_multi-measure/ipcc-code.table.json"
+        And the existing test-case file "cli/inspect/single-unit_multi-measure/year.table.json"
+        And the existing test-case file "cli/inspect/single-unit_multi-measure/national-communication-sector.table.json"
+        And the existing test-case file "cli/inspect/single-unit_multi-measure/national-communication-sub-sector.table.json"
+        And the existing test-case file "cli/inspect/single-unit_multi-measure/national-communication-category.table.json"
+        And the existing test-case file "cli/inspect/single-unit_multi-measure/source.table.json"
+        And the existing test-case file "cli/inspect/single-unit_multi-measure/national-communication-fuel-group.table.json"
+        And the existing test-case file "cli/inspect/single-unit_multi-measure/national-communication-fuel.table.json"
+        And the existing test-case file "cli/inspect/single-unit_multi-measure/activity-name.table.json"
+
         When the existing Metadata file exists "cli/inspect/single-unit_multi-measure/final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv-metadata.json"
         And the existing csv file exists "cli/inspect/single-unit_multi-measure/final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv"
+        And the existing csv file exists "cli/inspect/single-unit_multi-measure/ghg.table.json"
+        And the existing csv file exists "cli/inspect/single-unit_multi-measure/ghg-grouped.table.json"
+        And the existing csv file exists "cli/inspect/single-unit_multi-measure/ipcc-code.table.json"
+        And the existing csv file exists "cli/inspect/single-unit_multi-measure/year.table.json"
+        And the existing csv file exists "cli/inspect/single-unit_multi-measure/national-communication-sector.table.json"
+        And the existing csv file exists "cli/inspect/single-unit_multi-measure/national-communication-sub-sector.table.json"
+        And the existing csv file exists "cli/inspect/single-unit_multi-measure/national-communication-category.table.json"
+        And the existing csv file exists "cli/inspect/single-unit_multi-measure/source.table.json"
+        And the existing csv file exists "cli/inspect/single-unit_multi-measure/national-communication-fuel-group.table.json"
+        And the existing csv file exists "cli/inspect/single-unit_multi-measure/national-communication-fuel.table.json"
+        And the existing csv file exists "cli/inspect/single-unit_multi-measure/activity-name.table.json"
+
         And the Metadata File json-ld is loaded to a rdf graph
         And the Metadata File is validated
         And the Printables for data cube are generated
@@ -489,16 +515,18 @@ Feature: Behaviour testing of csvcubed inspect.
         """
         - The data cube has the following value counts:
                 - Value counts broken-down by measure and unit (of measure):
-                    Measure                                                                               Unit  Count
-         emissions-ar4-gwps final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#unit/mtco2e  49765
-         emissions-ar5-gwps final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#unit/mtco2e  49765
+                    Measure   Unit  Count
+         emissions-ar4-gwps MtCO2e  49765
+         emissions-ar5-gwps MtCO2e  49765
         """
 
     Scenario: inspect should produce the expected printable for data cube metadata json-ld input of type single-unit single-measure.
         Given the existing test-case file "cli/inspect/single-unit_single-measure/energy-trends-uk-total-energy.csv-metadata.json"
         And the existing test-case file "cli/inspect/single-unit_single-measure/energy-trends-uk-total-energy.csv"
+        
         When the existing Metadata file exists "cli/inspect/single-unit_single-measure/energy-trends-uk-total-energy.csv-metadata.json"
         And the existing csv file exists "cli/inspect/single-unit_single-measure/energy-trends-uk-total-energy.csv"
+        
         And the Metadata File json-ld is loaded to a rdf graph
         And the Metadata File is validated
         And the Printables for data cube are generated
