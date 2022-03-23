@@ -135,12 +135,12 @@ _expected_by_measure_and_unit_val_counts_df_single_unit_multi_measure = DataFram
     [
         {
             "Measure": "emissions-ar4-gwps",
-            "Unit": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#unit/mtco2e",
+            "Unit": "MtCO2e",
             0: 49765,
         },
         {
             "Measure": "emissions-ar5-gwps",
-            "Unit": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#unit/mtco2e",
+            "Unit": "MtCO2e",
             0: 49765,
         },
     ]
@@ -150,7 +150,7 @@ _expected_by_measure_and_unit_val_counts_df_multi_unit_single_measure = DataFram
     [
         {
             "Measure": "gas emissions(gwp-ar4)",
-            "Unit": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#unit/millions-of-tonnes-of-carbon-dioxide-mt-co2",
+            "Unit": "millions of tonnes of carbon dioxide (mt co2)",
             0: 41508,
         }
     ]

@@ -241,23 +241,6 @@ def test_select_qb_dataset_url():
     )
     assert result.dataset_url == "alcohol-bulletin.csv"
 
-
-# TODO: Enable below after implementing loading of table schema into rdf.
-# def test_select_codelist_dataset_url():
-#     """
-#     Should return expected `DatasetURLResult`.
-#     """
-#     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
-#     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
-#     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
-
-#     result: DatasetURLResult = select_codelist_dataset_url(
-#         csvw_metadata_rdf_graph,
-#     )
-#     assert result.dataset_url == "alcohol-content.csv"
-
-
-# TODO: Enable below after implementing loading of table schema into rdf.
 # def test_select_single_unit_from_dsd():
 #     """
 #     TODO: Complete this after single measure dataset issues are sorted.

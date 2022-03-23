@@ -26,13 +26,9 @@ class CsvcubedExceptionMsges(Enum):
 
     InvalidCSVFilePath = "Currently, inspect cli only suports CSVs with local file paths. CSVs from HTTP urls are not yet supported"
 
-    FailedToLoadTableSchemaIntoRDFGraph = (
-        "An error occured while loading table schema json into rdf graph"
-    )
+    FailedToLoadTableSchemaIntoRDFGraph = "An error occured while loading table schema '{table_schema_file}' into rdf graph"
 
-    FailedToParseJSONldtoRDFGraph = (
-        "An error occured while parsing csvw json-ld to rdf graph"
-    )
+    FailedToParseJSONldtoRDFGraph = "An error occured while parsing CSV-W JSON-LD to RDF graph ({csvw_metadata_file_path})"
 
     UnsupportedComponentPropertyType = "Property type {property_type} is not supported"
 
@@ -200,9 +196,11 @@ class InvalidCsvFilePathException(Exception):
 class FailedToLoadTableSchemaIntoRDFGraphException(Exception):
     """Class representing the FailedToLoadTableSchemaIntoRDFGraphException model."""
 
-    def __init__(self):
+    def __init__(self, table_schema_file: str):
         super().__init__(
-            f"{CsvcubedExceptionMsges.FailedToLoadTableSchemaIntoRDFGraph.value}: {self.get_error_url()}"
+            f"{CsvcubedExceptionMsges.FailedToLoadTableSchemaIntoRDFGraph.value}: {self.get_error_url()}".format(
+                table_schema_file=table_schema_file
+            )
         )
 
     @classmethod
@@ -213,9 +211,11 @@ class FailedToLoadTableSchemaIntoRDFGraphException(Exception):
 class FailedToParseJSONldtoRDFGraphException(Exception):
     """Class representing the FailedToParseJSONldtoRDFGraphException model."""
 
-    def __init__(self):
+    def __init__(self, csvw_metadata_file_path: Path):
         super().__init__(
-            f"{CsvcubedExceptionMsges.FailedToParseJSONldtoRDFGraph.value}: {self.get_error_url()}"
+            f"{CsvcubedExceptionMsges.FailedToParseJSONldtoRDFGraph.value}: {self.get_error_url()}".format(
+                csvw_metadata_file_path=str(csvw_metadata_file_path)
+            )
         )
 
     @classmethod
