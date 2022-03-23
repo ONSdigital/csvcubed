@@ -13,6 +13,10 @@ from typing import List
 from rdflib import Graph
 
 from csvcubed.cli.inspect.inspectsparqlmanager import select_csvw_table_schemas
+from csvcubed.models.csvcubedexception import (
+    FailedToLoadTableSchemaIntoRDFGraphException,
+    FailedToParseJSONldtoRDFGraphException,
+)
 
 _logger = logging.getLogger(__name__)
 
@@ -44,9 +48,7 @@ class MetadataProcessor:
             try:
                 graph.parse(table_schema_path)
             except Exception as ex:
-                raise Exception(
-                    "An error occured while loading table schema json into rdf graph"
-                ) from ex
+                raise FailedToLoadTableSchemaIntoRDFGraphException from ex
 
         _logger.info(
             f"Successfully loaded {len(table_schemas)} table schemas into the rdf graph."
@@ -79,6 +81,4 @@ class MetadataProcessor:
             #     )
             return csvw_metadata_rdf_graph
         except Exception as ex:
-            raise Exception(
-                "An error occured while parsing csvw json-ld to rdf graph"
-            ) from ex
+            raise FailedToParseJSONldtoRDFGraphException from ex

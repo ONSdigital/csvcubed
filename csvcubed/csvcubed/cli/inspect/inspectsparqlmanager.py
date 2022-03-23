@@ -32,6 +32,11 @@ from csvcubed.models.inspectsparqlresults import (
     map_single_unit_from_dsd_result,
 )
 from csvcubed.utils.sparql import ask, select
+from csvcubed.models.csvcubedexception import (
+    FailedToReadSparqlQueryException,
+    InvalidCsvFilePathException,
+    InvalidNumberOfRecordsException,
+)
 from definitions import ROOT_DIR_PATH
 
 _logger = logging.getLogger(__name__)
@@ -75,7 +80,7 @@ def _get_query_string_from_file(queryType: SPARQLQueryFileName) -> str:
     """
     _logger.debug(f"Root path: {ROOT_DIR_PATH.absolute()}")
 
-    file_path = (
+    file_path: Path = (
         ROOT_DIR_PATH
         / "csvcubed"
         / "cli"
@@ -92,8 +97,8 @@ def _get_query_string_from_file(queryType: SPARQLQueryFileName) -> str:
         ) as f:
             return f.read()
     except Exception as ex:
-        raise Exception(
-            f"An error occured while reading sparql query from file '{file_path}'"
+        raise FailedToReadSparqlQueryException(
+            sparql_file_path=file_path.absolute()
         ) from ex
 
 
@@ -139,7 +144,9 @@ def select_csvw_catalog_metadata(rdf_graph: Graph) -> CatalogMetadataResult:
     )
 
     if len(results) != 1:
-        raise Exception(f"Expected 1 record, but found {len(results)}")
+        raise InvalidNumberOfRecordsException(
+            excepted_num_of_records=1, num_of_records=len(results)
+        )
 
     return map_catalog_metadata_result(results[0])
 
@@ -162,8 +169,9 @@ def select_csvw_dsd_dataset_label_and_dsd_def_uri(
     )
 
     if len(results) != 1:
-        raise Exception(f"Expected 1 record, but found {len(results)}")
-
+        raise InvalidNumberOfRecordsException(
+            excepted_num_of_records=1, num_of_records=len(results)
+        )
     return map_dataset_label_dsd_uri_sparql_result(results[0])
 
 
@@ -233,8 +241,9 @@ def select_csvw_table_schemas(rdf_graph: Graph) -> CSVWTabelSchemasResult:
         rdf_graph,
     )
     if len(results) == 0:
-        raise Exception(f"Expected at least 1 record but found {len(results)}")
-
+        raise InvalidNumberOfRecordsException(
+            excepted_num_of_records=1, num_of_records=len(results)
+        )
     return map_csvw_table_schemas_result(results)
 
 
@@ -247,9 +256,7 @@ def select_qb_dataset_url(rdf_graph: Graph, dataset_uri: str) -> DatasetURLResul
     :return: `DatasetURLResult`
     """
     if not dataset_uri.startswith("file://"):
-        raise Exception(
-            "Currently, inspect cli only suports CSVs with local file paths. CSVs from HTTP urls are not yet supported."
-        )
+        raise InvalidCsvFilePathException
 
     results: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryFileName.SELECT_QB_DATASET_URL),
@@ -257,8 +264,9 @@ def select_qb_dataset_url(rdf_graph: Graph, dataset_uri: str) -> DatasetURLResul
         init_bindings={"dataset_uri": Literal(dataset_uri)},
     )
     if len(results) != 1:
-        raise Exception(f"Expected 1 record, but found {len(results)}")
-
+        raise InvalidNumberOfRecordsException(
+            excepted_num_of_records=1, num_of_records=len(results)
+        )
     return map_dataset_url_result(results[0])
 
 
@@ -277,8 +285,9 @@ def select_codelist_dataset_url(rdf_graph: Graph) -> DatasetURLResult:
         rdf_graph,
     )
     if len(results) != 1:
-        raise Exception(f"Expected 1 record, but found {len(results)}")
-
+        raise InvalidNumberOfRecordsException(
+            excepted_num_of_records=1, num_of_records=len(results)
+        )
     return map_dataset_url_result(results[0])
 
 
@@ -299,6 +308,7 @@ def select_single_unit_from_dsd(
     )
 
     if len(results) != 1:
-        raise Exception(f"Expected 1 record, but found {len(results)}")
-
+        raise InvalidNumberOfRecordsException(
+            excepted_num_of_records=1, num_of_records=len(results)
+        )
     return map_single_unit_from_dsd_result(results[0], json_path)

@@ -3,11 +3,11 @@ ValidationError
 ---------------
 """
 from dataclasses import dataclass, field
-from abc import ABC, abstractmethod
+from abc import ABC
 from typing import List, Optional
 
 from csvcubedmodels.dataclassbase import DataClassBase
-from pydantic import PydanticValueError
+from csvcubed.models.errorurl import HasErrorUrl
 
 
 @dataclass
@@ -18,15 +18,10 @@ class ValidationError(DataClassBase):
 
 
 @dataclass
-class SpecificValidationError(ValidationError, ABC):
+class SpecificValidationError(ValidationError, HasErrorUrl, ABC):
     """Abstract base class to represent ValidationErrors which are more specific and so can be interpreted by code."""
 
     message: str = field(init=False)
-
-    @classmethod
-    @abstractmethod
-    def get_error_url(cls) -> str:
-        ...
 
 
 @dataclass

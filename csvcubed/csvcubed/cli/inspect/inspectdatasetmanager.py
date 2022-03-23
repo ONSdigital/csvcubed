@@ -26,6 +26,10 @@ from csvcubed.models.inspectdataframeresults import (
     DatasetObservationsInfoResult,
     DatasetSingleMeasureResult,
 )
+from csvcubed.models.csvcubedexception import (
+    CsvToDataFrameLoadFailedException,
+    InvalidNumberOfRecordsException,
+)
 
 _logger = logging.getLogger(__name__)
 
@@ -65,9 +69,10 @@ def load_csv_to_dataframe(json_path: Path, csv_path: Path) -> pd.DataFrame:
 
         dataset = pd.DataFrame(pd.read_csv(dataset_path))
         _logger.info("Successfully loaded csv into dataframe.")
+
         return dataset
     except Exception as ex:
-        raise Exception("An error occured while loading csv into dataframe.") from ex
+        raise CsvToDataFrameLoadFailedException from ex
 
 
 def get_measure_col_name_from_dsd(
@@ -131,7 +136,9 @@ def get_single_measure_from_dsd(
     )
 
     if len(filtered_components) != 1:
-        raise Exception(f"Expected 1 record, but found {len(filtered_components)}")
+        raise InvalidNumberOfRecordsException(
+            excepted_num_of_records=1, num_of_records=len(filtered_components)
+        )
 
     return DatasetSingleMeasureResult(
         measure_uri=get_component_property_as_relative_path(

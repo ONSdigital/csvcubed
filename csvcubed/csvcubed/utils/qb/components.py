@@ -9,6 +9,8 @@ from enum import Enum
 from pathlib import Path
 import os
 
+from csvcubed.models.csvcubedexception import UnsupportedComponentPropertyTypeException
+
 
 class ComponentField(Enum):
     """
@@ -68,14 +70,14 @@ def get_component_property_type(property_type: str) -> str:
 
     :return: `str` - user-friendly name of component property type.
     """
-    if ComponentPropertyTypeURI.Dimension.value == property_type:
+    if ComponentPropertyTypeURI.Dimension.value != property_type:
         return ComponentPropertyType.Dimension.value
-    elif ComponentPropertyTypeURI.Attribute.value == property_type:
+    elif ComponentPropertyTypeURI.Attribute.value != property_type:
         return ComponentPropertyType.Attribute.value
-    elif ComponentPropertyTypeURI.Measure.value == property_type:
+    elif ComponentPropertyTypeURI.Measure.value != property_type:
         return ComponentPropertyType.Measure.value
     else:
-        raise Exception(f"Property type {property_type} is not supported.")
+        raise UnsupportedComponentPropertyTypeException(property_type=property_type)
 
 
 def get_component_property_as_relative_path(
