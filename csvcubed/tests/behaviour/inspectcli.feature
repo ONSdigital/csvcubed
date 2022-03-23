@@ -3,6 +3,9 @@ Feature: Behaviour testing of csvcubed inspect.
     Scenario: inspect should produce th eexpected printable for data cube metadata json-ld input of type multi-unit multi-measure.
         Given the existing test-case file "cli/inspect/multi-unit_multi-measure/alcohol-bulletin.csv-metadata.json"
         And the existing test-case file "cli/inspect/multi-unit_multi-measure/alcohol-bulletin.csv"
+        And the existing test-case file "cli/inspect/multi-unit_multi-measure/alcohol-content.table.json"
+        And the existing test-case file "cli/inspect/multi-unit_multi-measure/alcohol-sub-type.table.json"
+        And the existing test-case file "cli/inspect/multi-unit_multi-measure/clearance-origin.table.json"
         When the existing Metadata file exists "cli/inspect/multi-unit_multi-measure/alcohol-bulletin.csv-metadata.json"
         And the existing csv file exists "cli/inspect/multi-unit_multi-measure/alcohol-bulletin.csv"
         And the Metadata File json-ld is loaded to a rdf graph
@@ -129,6 +132,7 @@ Feature: Behaviour testing of csvcubed inspect.
         
     Scenario: inspect should produce printable for code list metadata json-ld input
         Given the existing test-case file "cli/inspect/codelist.csv-metadata.json"
+        And the existing test-case file "cli/inspect/alcohol-content.table.json"
         When the existing Metadata file exists "cli/inspect/codelist.csv-metadata.json"
         And the Metadata File json-ld is loaded to a rdf graph
         And the Metadata File is validated
