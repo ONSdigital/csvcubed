@@ -70,11 +70,11 @@ def get_component_property_type(property_type: str) -> str:
 
     :return: `str` - user-friendly name of component property type.
     """
-    if ComponentPropertyTypeURI.Dimension.value != property_type:
+    if ComponentPropertyTypeURI.Dimension.value == property_type:
         return ComponentPropertyType.Dimension.value
-    elif ComponentPropertyTypeURI.Attribute.value != property_type:
+    elif ComponentPropertyTypeURI.Attribute.value == property_type:
         return ComponentPropertyType.Attribute.value
-    elif ComponentPropertyTypeURI.Measure.value != property_type:
+    elif ComponentPropertyTypeURI.Measure.value == property_type:
         return ComponentPropertyType.Measure.value
     else:
         raise UnsupportedComponentPropertyTypeException(property_type=property_type)
