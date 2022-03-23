@@ -12,6 +12,8 @@ from rdflib import Graph
 from csvcubed.cli.inspect.inspectsparqlmanager import (
     select_csvw_table_schema_file_dependencies,
 )
+from csvcubed.utils.csvw import load_table_schema_file_to_graph
+
 
 _logger = logging.getLogger(__name__)
 
@@ -38,17 +40,14 @@ class MetadataProcessor:
         for table_schema_file in dependencies_result.table_schema_file_dependencies:
             try:
                 _logger.debug(
-                    "Loading dependent file containing table schema %s",
+                    "Loading dependent file containing table schema %s into RDF graph.",
                     table_schema_file,
                 )
 
-                # todo: Need to load the JSON from file/URL and append a bit of configuration to it to ensure it's
-                #  properly interpreted as JSON-LD.
-
-                graph.parse(table_schema_file, format="json-ld")
+                load_table_schema_file_to_graph(table_schema_file, graph)
             except Exception as ex:
                 raise Exception(
-                    f"An error occured while loading table schema '{table_schema_file}' into rdf graph"
+                    f"An error occured while loading table schema '{table_schema_file}' into RDF graph."
                 ) from ex
 
         _logger.info(
