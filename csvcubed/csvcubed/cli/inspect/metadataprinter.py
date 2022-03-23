@@ -29,7 +29,6 @@ from csvcubed.cli.inspect.inspectsparqlmanager import (
     select_csvw_dsd_qube_components,
     select_dsd_code_list_and_cols,
     select_qb_dataset_url,
-    select_single_unit_from_dsd,
 )
 from csvcubed.cli.inspect.inspectdatasetmanager import (
     get_dataset_observations_info,
@@ -42,7 +41,7 @@ from csvcubed.models.inspectdataframeresults import (
 from csvcubed.utils.csvdataset import (
     transform_dataset_to_canonical_shape,
 )
-
+from csvcubed.models.csvcubedexception import InputTypeIsUnknownException, JsonldNotSupportedException
 
 class MetadataPrinter:
     """
@@ -65,7 +64,7 @@ class MetadataPrinter:
         elif self.csvw_type == CSVWType.CodeList:
             return "code list"
         else:
-            raise Exception("The input type is unknown")
+            raise InputTypeIsUnknownException
 
     def gen_type_info_printable(self) -> str:
         """
@@ -155,7 +154,7 @@ class MetadataPrinter:
                 self.csvw_metadata_rdf_graph
             )
         else:
-            raise Exception("The input csvw json-ld is not supported.")
+            raise JsonldNotSupportedException
 
         self.dataset: pd.DataFrame = load_csv_to_dataframe(
             self.csvw_metadata_json_path, Path(result_dataset_url.dataset_url)

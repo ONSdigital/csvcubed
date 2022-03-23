@@ -9,11 +9,14 @@ from pathlib import Path
 
 from rdflib import Graph
 
+from csvcubed.utils.csvw import load_table_schema_file_to_graph
 from csvcubed.cli.inspect.inspectsparqlmanager import (
     select_csvw_table_schema_file_dependencies,
 )
-from csvcubed.utils.csvw import load_table_schema_file_to_graph
-
+from csvcubed.models.csvcubedexception import (
+    FailedToLoadTableSchemaIntoRDFGraphException,
+    FailedToParseJSONldtoRDFGraphException,
+)
 
 _logger = logging.getLogger(__name__)
 
@@ -46,8 +49,8 @@ class MetadataProcessor:
 
                 load_table_schema_file_to_graph(table_schema_file, graph)
             except Exception as ex:
-                raise Exception(
-                    f"An error occured while loading table schema '{table_schema_file}' into RDF graph."
+                raise FailedToLoadTableSchemaIntoRDFGraphException(
+                    table_schema_file=table_schema_file
                 ) from ex
 
         _logger.info(
@@ -71,9 +74,8 @@ class MetadataProcessor:
             _logger.info("Successfully parsed csvw json-ld to rdf graph.")
 
             self._load_table_schema_dependencies_into_rdf_graph(csvw_metadata_rdf_graph)
-
             return csvw_metadata_rdf_graph
         except Exception as ex:
-            raise Exception(
-                f"An error occured while parsing CSV-W JSON-LD to RDF graph ({csvw_metadata_file_path})"
+            raise FailedToParseJSONldtoRDFGraphException(
+                csvw_metadata_file_path=csvw_metadata_file_path
             ) from ex

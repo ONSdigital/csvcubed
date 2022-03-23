@@ -9,6 +9,8 @@ from enum import Enum
 from pathlib import Path
 import os
 
+from csvcubed.models.csvcubedexception import UnsupportedComponentPropertyTypeException
+
 
 class ComponentField(Enum):
     """
@@ -75,7 +77,7 @@ def get_component_property_type(property_type: str) -> str:
     elif ComponentPropertyTypeURI.Measure.value == property_type:
         return ComponentPropertyType.Measure.value
     else:
-        raise Exception(f"Property type {property_type} is not supported.")
+        raise UnsupportedComponentPropertyTypeException(property_type=property_type)
 
 
 def get_component_property_as_relative_path(
