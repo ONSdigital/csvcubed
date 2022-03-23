@@ -1,11 +1,20 @@
 import pytest
 from csvcubed.cli.build import build as cli_build
+from csvcubed.readers.cubeconfig import get_deserialiser
 from csvcubed.readers.cubeconfig.v1_0.configdeserialiser import *
 from tests.unit.test_baseunit import get_test_cases_dir
 
-PROJECT_ROOT = Path(Path(__file__).parent, "..", "..", "..", "..").resolve()
 TEST_CASE_DIR = Path(get_test_cases_dir().absolute(), "config")
-SCHEMA_PATH_FILE = Path(PROJECT_ROOT, "csvcubed", "schema", "cube-config-schema.json")
+
+
+@pytest.fixture(autouse=True)
+def something():
+    """
+    Configure the tests to believe that the locally defined cube-config-schema.json is the correct V1 schema.
+    """
+    get_deserialiser.DEFAULT_V1_SCHEMA_PURL = (
+        "../csvcubed/schema/cube-config-schema.json"
+    )
 
 
 def test_build_with_fail():

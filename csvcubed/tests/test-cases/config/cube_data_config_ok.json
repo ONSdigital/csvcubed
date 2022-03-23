@@ -1,5 +1,5 @@
 {
-    "$schema": "./csvcubed/schema/cube-config-schema.json",
+    "$schema": "../csvcubed/schema/cube-config-schema.json",
     "id": "http://schema-id",
     "title": "Tests/test-cases/config/schema-cube-data-config-ok",
     "description": "Schema for testing",
