@@ -8,7 +8,7 @@ TEST_CASE_DIR = Path(get_test_cases_dir().absolute(), "config")
 
 
 @pytest.fixture(autouse=True)
-def something():
+def set_testing_v1_schema_url():
     """
     Configure the tests to believe that the locally defined cube-config-schema.json is the correct V1 schema.
     """

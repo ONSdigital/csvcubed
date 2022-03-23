@@ -136,6 +136,7 @@ SecondaryQbStructuralDefinition
 │   ├── ExistingQbCodeList      - Reuse a code-list defined elsewhere.
 │   ├── NewQbCodeList           - Define a new code-list. 
 │   ├── CompositeQbCodeList     - Define a new code-list which is a composite of `skos:Concept`s defined in other code-lists.
+│   └── NewQbCodeListInCsvW     - Use a code-list which is already generated and stored in a CSV-W.
 ├── QbConcept               - Stored against the QbCodeList. It holds a concept contained in a `skos:ConceptScheme`.
 │   ├── NewQbConcept            - Define a new concept
 │   └── DuplicatedQbConcept     - Reuse a concept defined elsewhere. This permits altering its label/notation/structure.
