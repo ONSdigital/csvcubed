@@ -1,6 +1,6 @@
 """
 Csvcubed Error url specific funtionalities
----------------------------------
+------------------------------------------
 """
 
 from abc import ABC, abstractmethod
