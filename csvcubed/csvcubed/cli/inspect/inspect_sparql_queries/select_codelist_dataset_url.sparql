@@ -21,5 +21,13 @@ WHERE {
             csvw:valueUrl ?columnValueUrl.
 
     FILTER (str(?columnPropertyUrl) IN (str(skos:inScheme), "skos:inScheme")).
-    FILTER (strends(str(?columnValueUrl), ?conceptSchemeUrlStr) || strends(?conceptSchemeUrlStr, str(?columnValueUrl))).
+
+    BIND(
+        IF(strstarts(str(?columnValueUrl), "./"), 
+           strafter(str(?columnValueUrl), "./"), # Remove preceding `./` from URL if it is present.
+           str(?columnValueUrl)
+        ) as ?columnSchemeUrl
+    ).
+
+    FILTER (strends(?columnSchemeUrl, ?conceptSchemeUrlStr) || strends(?conceptSchemeUrlStr, ?columnSchemeUrl)).
 }
