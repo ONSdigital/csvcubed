@@ -282,9 +282,6 @@ def select_codelist_dataset_url(rdf_graph: Graph) -> DatasetURLResult:
 
     :return: `DatasetURLResult`
     """
-    # TODO As part of CodeList info display ticket: Currently 0 results are returned. But it should return one result.
-    raise NotImplementedError
-
     results: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryFileName.SELECT_CODELIST_DATASET_URL),
         rdf_graph,
