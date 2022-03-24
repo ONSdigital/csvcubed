@@ -26,7 +26,7 @@ def test_na_filter_works():
     assert "" not in pd_table['Description'].values
     assert not pd_table['Parent Notation'].isnull().values.any()
 
-def test_empty_strings_are_replaced_with_NaN():
+def test_zero_length_strings_are_replaced_with_NaN():
     """
     Checking to see that zero-length string (i.e. ,,) are translated into NaN
     """
@@ -34,7 +34,7 @@ def test_empty_strings_are_replaced_with_NaN():
     assert pd_table['Description'].isnull().values.any()
     assert pd_table['Description'].isnull().sum() == 13
 
-def test_NaN_value_in_Parent_Notation_column_is_not_typr_string():
+def test_NaN_value_in_Parent_Notation_column_is_type_string():
     """
     Checking to see that string NaN values (i.e. "NaN") typed into 
     csvs is not treated as a none cell item type value, instead 
