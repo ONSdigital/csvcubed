@@ -16,6 +16,7 @@ def refiltered_pandas_read_csv(csv: Path) ->  pd.DataFrame:
 def _get_new_na_values():
     specified_na_values = {
     "",
+    "NaN"
     }
     return specified_na_values
 

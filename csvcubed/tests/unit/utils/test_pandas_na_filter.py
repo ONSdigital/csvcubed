@@ -20,7 +20,7 @@ def test_na_filter_works():
 
 def test_empty_strings_are_replaced_with_hello():
     pd_table = refiltered_pandas_read_csv(csv_path)
-    assert None in pd_table["Description"].values
+    assert "NaN" not in pd_table["Description"].values
     pd_table = pd_table.fillna("hello")
     assert "hello" in pd_table["Description"].values
 
