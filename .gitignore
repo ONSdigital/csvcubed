@@ -146,5 +146,5 @@ cython_debug/
 csvcubed*/docs
 .DS_Store
 
-# http cache files
+# Ignore response cache sqlite file
 http_cache.sqlite
