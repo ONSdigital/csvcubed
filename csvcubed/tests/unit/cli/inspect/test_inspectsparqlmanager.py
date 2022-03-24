@@ -1,4 +1,5 @@
 import dateutil.parser
+from rdflib import Graph
 
 from definitions import ROOT_DIR_PATH
 from csvcubed.models.inspectsparqlresults import (
@@ -6,6 +7,7 @@ from csvcubed.models.inspectsparqlresults import (
     CodelistsResult,
     ColsWithSuppressOutputTrueResult,
     DSDLabelURIResult,
+    DSDSingleUnitResult,
     DatasetURLResult,
     QubeComponentsResult,
 )
@@ -19,12 +21,14 @@ from csvcubed.cli.inspect.inspectsparqlmanager import (
     select_csvw_dsd_qube_components,
     select_dsd_code_list_and_cols,
     select_qb_dataset_url,
+    select_csvw_table_schema_file_dependencies,
+    select_single_unit_from_dsd,
 )
-from csvcubed.cli.inspect.metadatainputvalidator import MetadataValidator
 from csvcubed.cli.inspect.metadataprocessor import MetadataProcessor
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
+_csvw_test_cases_dir = get_test_cases_dir() / "utils" / "csvw"
 
 
 def test_ask_is_csvw_code_list():
@@ -239,35 +243,47 @@ def test_select_qb_dataset_url():
     )
     assert result.dataset_url == "alcohol-bulletin.csv"
 
+def test_select_single_unit_from_dsd():
+    """
+    Should return expected `DSDSingleUnitResult`.
+    """
+    csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
+    metadata_processor = MetadataProcessor(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+    dataset_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
 
-# TODO: Enable below after implementing loading of table schema into rdf.
-# def test_select_codelist_dataset_url():
-#     """
-#     Should return expected `DatasetURLResult`.
-#     """
-#     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
-#     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
-#     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
-
-#     result: DatasetURLResult = select_codelist_dataset_url(
-#         csvw_metadata_rdf_graph,
-#     )
-#     assert result.dataset_url == "alcohol-content.csv"
+    result: DSDSingleUnitResult = select_single_unit_from_dsd(
+        csvw_metadata_rdf_graph, dataset_uri, csvw_metadata_json_path
+    )
+    assert result.unit_label is None
+    assert result.unit_uri == "http://gss-data.org.uk/def/concept/measurement-units/{+unit}"
 
 
-# TODO: Enable below after implementing loading of table schema into rdf.
-# def test_select_single_unit_from_dsd():
-#     """
-#     TODO: Complete this after single measure dataset issues are sorted.
-#     Should return expected `DSDSingleUnitResult`.
-#     """
-#     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
-#     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
-#     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
-#     dataset_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
+def test_select_table_schema_dependencies():
+    """
+    Test that we can successfully identify all table schema file dependencies from a CSV-W.
 
-#     result: DSDSingleUnitResult = select_single_unit_from_dsd(
-#         csvw_metadata_rdf_graph, dataset_uri
-#     )
-#     assert result.unit_label == "TODO"
-#     assert result.unit_uri == "TODO"
+    This test ensures that table schemas defined in-line are not returned and are handled gracefully.
+    """
+    table_schema_dependencies_dir = _csvw_test_cases_dir / "table-schema-dependencies"
+    csvw_metadata_json_path = (
+        table_schema_dependencies_dir
+        / "sectors-economic-estimates-2018-trade-in-services.csv-metadata.json"
+    )
+
+    # Deliberately not using MetadataProcessor.load_json_ld_to_rdflib_graph
+    # since it calls `select_csvw_table_schemas` itself implicitly.
+    graph = Graph()
+    graph.load(csvw_metadata_json_path, format="json-ld")
+
+    table_schema_results = select_csvw_table_schema_file_dependencies(graph)
+
+    standardised_file_paths = {
+        s.removeprefix("file://")
+        for s in table_schema_results.table_schema_file_dependencies
+    }
+
+    assert standardised_file_paths == {
+        str(table_schema_dependencies_dir / "sector.table.json"),
+        str(table_schema_dependencies_dir / "subsector.table.json"),
+    }

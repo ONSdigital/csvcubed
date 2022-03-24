@@ -1,0 +1,10 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX csvw: <http://www.w3.org/ns/csvw#>
+
+SELECT DISTINCT ?tableSchema
+WHERE {
+    [] csvw:tableSchema ?tableSchema.
+    # Only return the tableSchemas which are defined elsewhere.
+    # In this case they are IRIs, whereas tableSchemas defined in-line are BNODES.
+    FILTER (isIRI(?tableSchema)).
+}

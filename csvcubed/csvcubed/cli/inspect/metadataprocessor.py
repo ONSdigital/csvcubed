@@ -4,15 +4,15 @@ Metadata Processor
 
 Provides functionality for validating and detecting input metadata.json file.
 """
-
-import os
 import logging
 from pathlib import Path
-from typing import List
 
 from rdflib import Graph
 
-from csvcubed.cli.inspect.inspectsparqlmanager import select_csvw_table_schemas
+from csvcubed.utils.csvw import load_table_schema_file_to_graph
+from csvcubed.cli.inspect.inspectsparqlmanager import (
+    select_csvw_table_schema_file_dependencies,
+)
 from csvcubed.models.csvcubedexception import (
     FailedToLoadTableSchemaIntoRDFGraphException,
     FailedToParseJSONldtoRDFGraphException,
@@ -29,9 +29,8 @@ class MetadataProcessor:
     def __init__(self, csvw_metadata_file_path: Path):
         self.csvw_metadata_file_path = csvw_metadata_file_path
 
-    def _load_table_schemas_into_rdf_graph(
-        self, graph: Graph, table_schemas: List[str], csvw_path: Path
-    ) -> Graph:
+    @staticmethod
+    def _load_table_schema_dependencies_into_rdf_graph(graph: Graph) -> None:
         """
         Loads the table schemas into rdf graph.
 
@@ -39,21 +38,25 @@ class MetadataProcessor:
 
         :return: `Graph` - RDFLib Graph of CSV-W metadata json.
         """
-        for table_schema in table_schemas:
-            table_schema_path: str = os.path.relpath(
-                table_schema,
-                csvw_path.parent,
-            )
+        dependencies_result = select_csvw_table_schema_file_dependencies(graph)
 
+        for table_schema_file in dependencies_result.table_schema_file_dependencies:
             try:
-                graph.parse(table_schema_path)
+                _logger.debug(
+                    "Loading dependent file containing table schema %s into RDF graph.",
+                    table_schema_file,
+                )
+
+                load_table_schema_file_to_graph(table_schema_file, graph)
             except Exception as ex:
-                raise FailedToLoadTableSchemaIntoRDFGraphException from ex
+                raise FailedToLoadTableSchemaIntoRDFGraphException(
+                    table_schema_file=table_schema_file
+                ) from ex
 
         _logger.info(
-            f"Successfully loaded {len(table_schemas)} table schemas into the rdf graph."
+            "Successfully loaded %d table schemas into the rdf graph.",
+            len(dependencies_result.table_schema_file_dependencies),
         )
-        return graph
 
     def load_json_ld_to_rdflib_graph(self) -> Graph:
         """
@@ -70,15 +73,9 @@ class MetadataProcessor:
             csvw_metadata_rdf_graph.parse(csvw_metadata_file_path, format="json-ld")
             _logger.info("Successfully parsed csvw json-ld to rdf graph.")
 
-            # TODO: The current sparql query for getting table schemas return wrong results (see this by uncommenting below).
-            # result = select_csvw_table_schemas(csvw_metadata_rdf_graph)
-            # print(result)
-            # if len(result.table_schemas_need_loading) > 0:
-            #     csvw_metadata_rdf_graph = self._load_table_schemas_into_rdf_graph(
-            #         csvw_metadata_rdf_graph,
-            #         result.table_schemas_need_loading,
-            #         csvw_metadata_file_path,
-            #     )
+            self._load_table_schema_dependencies_into_rdf_graph(csvw_metadata_rdf_graph)
             return csvw_metadata_rdf_graph
         except Exception as ex:
-            raise FailedToParseJSONldtoRDFGraphException from ex
+            raise FailedToParseJSONldtoRDFGraphException(
+                csvw_metadata_file_path=csvw_metadata_file_path
+            ) from ex
