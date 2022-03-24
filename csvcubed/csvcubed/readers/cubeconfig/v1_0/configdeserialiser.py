@@ -7,16 +7,15 @@ A loader for the config.json.
 import logging
 
 from pathlib import Path
-from typing import Dict, Tuple, List
+from typing import Dict, Tuple, List, Callable
 
 import pandas as pd
 from jsonschema.exceptions import ValidationError as JsonSchemaValidationError
 
 from csvcubed.models.cube import *
-from csvcubed.readers.cubeconfig.v1_0.mapcolumntocomponent import (
-    map_column_to_qb_component as v1_0_map_column_to_qb_component,
-)
+from .mapcolumntocomponent import map_column_to_qb_component
 from csvcubed.utils.dict import get_with_func_or_none
+from csvcubed.utils.iterables import first
 from csvcubed.utils.uri import uri_safe
 from csvcubed.utils.validators.schema import validate_dict_against_schema
 from csvcubedmodels.rdf.namespaces import GOV
@@ -54,6 +53,46 @@ CONVENTION_NAMES = {
 log = logging.getLogger(__name__)
 
 
+def get_deserialiser(
+    schema_path: str,
+) -> Callable[[Path, Optional[Path]], Tuple[QbCube, List[JsonSchemaValidationError]]]:
+    """Generates a deserialiser function which validates the JSON file against the schema at :obj:`schema_path`"""
+
+    def get_cube_from_config_json(
+        csv_path: Path, config_path: Optional[Path]
+    ) -> Tuple[QbCube, List[JsonSchemaValidationError]]:
+        """
+        Generates a Cube structure from a config.json input.
+        :return: tuple of cube and json schema errors (if any)
+        """
+        data = _read_and_check_csv(csv_path)
+
+        # If we have a config json file then load it and validate against its reference schema
+        if config_path:
+            config = load_resource(config_path.resolve())
+            # Update loaded config's title if not defined, setting title from csv data file path.
+            if config.get("title") is None:
+                config["title"] = _generate_title_from_file_name(csv_path)
+            schema = load_resource(Path(schema_path))
+            schema_validation_errors = validate_dict_against_schema(
+                value=config, schema=schema
+            )
+
+        # Create a default config, setting title from csv data file path.
+        else:
+            config = {"title": _generate_title_from_file_name(csv_path)}
+            schema_validation_errors = []
+
+        parent_path = config_path.parent if config_path else csv_path.parent
+        cube = _from_config_json_dict(data, config, parent_path)
+
+        _configure_remaining_columns_by_convention(cube, data)
+
+        return cube, schema_validation_errors
+
+    return get_cube_from_config_json
+
+
 def _from_config_json_dict(
     data: pd.DataFrame, config: Dict, json_parent_dir: Path
 ) -> QbCube:
@@ -68,9 +107,7 @@ def _from_config_json_dict(
         column_data = data[column_title] if column_title in data.columns else None
 
         columns.append(
-            v1_0_map_column_to_qb_component(
-                column_title, column_config, column_data, json_parent_dir
-            )
+            map_column_to_qb_component(column_title, column_config, column_data)
         )
 
     return Cube(metadata, data, columns)
@@ -130,94 +167,62 @@ def _read_and_check_csv(csv_path: Path) -> pd.DataFrame:
     return data
 
 
-def get_cube_from_config_json(
-    csv_path: Path, config_path: Optional[Path]
-) -> Tuple[QbCube, List[JsonSchemaValidationError]]:
-    """
-    Generates a Cube structure from a config.json input.
-    :return: tuple of cube and json schema errors (if any)
-    """
-    data = _read_and_check_csv(csv_path)
-
-    # If we have a config json file then load it and validate against its reference schema
-    if config_path:
-        config = load_resource(config_path.resolve())
-        # Update loaded config's title if not defined, setting title from csv data file path.
-        if config.get("title") is None:
-            config["title"] = reformat_title(csv_path)
-        schema = load_resource(Path(config["$schema"]))
-        schema_validation_errors = validate_dict_against_schema(
-            value=config, schema=schema
-        )
-
-    # Create a default config, setting title from csv data file path.
-    else:
-        config = {"title": reformat_title(csv_path)}
-        schema_validation_errors = []
-
-    parent_path = config_path.parent if config_path else csv_path.parent
-    cube = _from_config_json_dict(data, config, parent_path)
-
-    # Update columns from csv where appropriate, i.e. config did not define the column
-    config_column_titles = {col.csv_column_title for col in cube.columns}
+def _configure_remaining_columns_by_convention(
+    cube: QbCube, data: pd.DataFrame
+) -> None:
+    """Update columns from csv where appropriate, i.e. config did not define the column."""
+    configured_column_titles = {col.csv_column_title for col in cube.columns}
     for i, column_title in enumerate(data.columns):
         # ... determine if the column_title in data matches a convention
-        if column_title not in config_column_titles:
-            convention_names = [
-                standard_name
-                for standard_name, options in CONVENTION_NAMES.items()
-                if column_title.lower() in options
-            ]
+        if column_title not in configured_column_titles:
+            column_dict = _get_conventional_column_definition_for_title(column_title)
 
-            # ... get or default the column type
-            column_type = convention_names[0] if convention_names else "dimension"
-
-            # ... create a default config dict for the column type
-            if column_type == "dimension":
-                column_dict = {
-                    "type": column_type,
-                    "label": column_title,
-                    "code_list": True,
-                }
-
-            elif column_type == "observations":
-                column_dict = {
-                    "type": column_type,
-                    "value": column_title,
-                    "datatype": "decimal",
-                }
-
-            elif column_type in ["measures", "units"]:
-                column_dict = {"type": column_type}
-            elif column_type == "attribute":
-                # Note: attribute type columns are currently not supported for getting from data
-                raise ValueError(
-                    "Column type 'Attribute' is not supported when using csv naming convention"
-                )
-
+            qb_column: CsvColumn = map_column_to_qb_component(
+                column_title=column_title,
+                column=column_dict,
+                data=data[column_title].astype("category"),
+            )
+            if i < len(cube.columns):
+                cube.columns.insert(i + 1, qb_column)
             else:
-                raise ValueError(f"Column type '{column_type}' is not supported.")
-
-            try:
-                qb_column: CsvColumn = v1_0_map_column_to_qb_component(
-                    column_title=column_title,
-                    column=column_dict,
-                    data=data[column_title].astype("category"),
-                    json_parent_dir=csv_path.parent.absolute(),
-                )
-                if i < len(cube.columns):
-                    cube.columns.insert(i + 1, qb_column)
-                else:
-                    cube.columns.append(qb_column)
-
-            except Exception as err:
-                log.exception(f"{type(err)} exception raised because: {repr(err)}")
-                raise err
-
-    return cube, schema_validation_errors
+                cube.columns.append(qb_column)
 
 
-def reformat_title(csv_path: Path) -> str:
+def _get_conventional_column_definition_for_title(column_title: str) -> dict:
+    matching_column_types = [
+        standard_name
+        for standard_name, options in CONVENTION_NAMES.items()
+        if column_title.lower() in options
+    ]
+    # ... get or default the column type
+    column_type = first(matching_column_types) or "dimension"
+    # ... create a default config dict for the column type
+    if column_type == "dimension":
+        return {
+            "type": column_type,
+            "label": column_title,
+            "code_list": True,
+        }
+
+    elif column_type == "observations":
+        return {
+            "type": column_type,
+            "value": column_title,
+            "datatype": "decimal",
+        }
+
+    elif column_type in ["measures", "units"]:
+        return {"type": column_type}
+    elif column_type == "attribute":
+        # Note: attribute type columns are currently not supported for getting from data
+        raise ValueError(
+            "Conventionally named attribute columns are not current supported"
+        )
+
+    raise ValueError(f"Column type '{column_type}' is not supported.")
+
+
+def _generate_title_from_file_name(csv_path: Path) -> str:
     """
     Formats a file Path, stripping -_ and returning the capitalised file name without extn
     e.g. Path('./csv-data_file.csv') -> 'Csv Data File'

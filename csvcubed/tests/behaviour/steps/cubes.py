@@ -4,6 +4,9 @@ from behave import *
 from csvcubed.cli.build import build as cli_build
 from csvcubeddevtools.helpers.file import get_test_cases_dir
 
+from csvcubed.readers.cubeconfig import schema_versions, v1_0
+from definitions import ROOT_DIR_PATH
+
 
 @given('The existing tidy data csv file "{data_file}"')
 def step_impl(context, data_file):
@@ -36,6 +39,11 @@ def step_impl(context, config_file, data_file):
 def step_impl(context):
     config_file = context.config_file if hasattr(context, "config_file") else None
     data_file = context.data_file
+    schema_versions._schema_url_overrides = {
+        "https://purl.org/csv-cubed/qube-config/v1.0": str(
+            ROOT_DIR_PATH / "csvcubed" / "schema" / "cube-config-schema.json"
+        )
+    }
     cube, errors = cli_build(data_file, config_file)
     context.cube = cube
     context.errors = errors

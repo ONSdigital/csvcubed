@@ -6,6 +6,7 @@ from csvcubed.cli.build import build as cli_build
 from csvcubed.models.cube import Cube
 from csvcubed.readers.cubeconfig import v1_0
 from csvcubed.readers.cubeconfig import schema_versions
+from definitions import ROOT_DIR_PATH
 from tests.unit.test_baseunit import get_test_cases_dir
 
 TEST_CASE_DIR = Path(get_test_cases_dir().absolute(), "config")
@@ -16,10 +17,11 @@ def set_testing_v1_schema_url():
     """
     Configure the tests to believe that the locally defined cube-config-schema.json is the correct V1 schema.
     """
-
-    schema_versions.QubeConfigJsonSchemaVersion.DEFAULT_V1_SCHEMA_URL = (
-        "../csvcubed/schema/cube-config-schema.json"
-    )
+    schema_versions._schema_url_overrides = {
+        "https://purl.org/csv-cubed/qube-config/v1.0": str(
+            ROOT_DIR_PATH / "csvcubed" / "schema" / "cube-config-schema.json"
+        )
+    }
 
 
 def test_build_with_fail():
