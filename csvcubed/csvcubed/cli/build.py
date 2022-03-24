@@ -9,8 +9,13 @@ import logging
 from pathlib import Path
 from typing import Optional
 
-from csvcubed.readers.cubeconfig.get_deserialiser import get_deserialiser_for_schema
 from csvcubedmodels.dataclassbase import DataClassBase
+
+from csvcubed.readers.cubeconfig.schema_versions import (
+    QubeConfigDeserialiser,
+    QubeConfigJsonSchemaVersion,
+)
+from csvcubed.readers.cubeconfig.utils import load_resource
 from csvcubed.utils.qb.validation.cube import validate_qb_component_constraints
 
 
@@ -29,7 +34,7 @@ def build(
         f"qube-config.json: {config_path.absolute() if config_path is not None else ''}"
     )
 
-    deserialiser = get_deserialiser_for_schema(config_path)
+    deserialiser = _get_versioned_deserialiser(config_path)
     cube, json_schema_validation_errors = deserialiser(csv_path, config_path)
 
     validation_errors = cube.validate()
@@ -65,3 +70,18 @@ def build(
 
     print(f"Build Complete")
     return cube, validation_errors
+
+
+def _get_versioned_deserialiser(
+    json_config_path: Optional[Path],
+) -> QubeConfigDeserialiser:
+    """
+    Return the correct version of the config deserialiser based on the schema in the cube config file
+    """
+    if json_config_path:
+        config = load_resource(json_config_path)
+        return QubeConfigJsonSchemaVersion.get_deserialiser_for_schema(
+            config.get("$schema")
+        )
+    else:
+        return QubeConfigJsonSchemaVersion.get_deserialiser_for_schema(None)

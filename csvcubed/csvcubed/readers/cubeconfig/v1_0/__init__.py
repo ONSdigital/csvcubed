@@ -1,1 +1,1 @@
-import configdeserialiser
+from . import configdeserialiser

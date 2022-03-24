@@ -1,7 +1,11 @@
+from enum import Enum
+from pathlib import Path
+
 import pytest
 from csvcubed.cli.build import build as cli_build
-from csvcubed.readers.cubeconfig import get_deserialiser
-from csvcubed.readers.cubeconfig.v1_0.configdeserialiser import *
+from csvcubed.models.cube import Cube
+from csvcubed.readers.cubeconfig import v1_0
+from csvcubed.readers.cubeconfig import schema_versions
 from tests.unit.test_baseunit import get_test_cases_dir
 
 TEST_CASE_DIR = Path(get_test_cases_dir().absolute(), "config")
@@ -12,7 +16,8 @@ def set_testing_v1_schema_url():
     """
     Configure the tests to believe that the locally defined cube-config-schema.json is the correct V1 schema.
     """
-    get_deserialiser.DEFAULT_V1_SCHEMA_URL = (
+
+    schema_versions.QubeConfigJsonSchemaVersion.DEFAULT_V1_SCHEMA_URL = (
         "../csvcubed/schema/cube-config-schema.json"
     )
 
