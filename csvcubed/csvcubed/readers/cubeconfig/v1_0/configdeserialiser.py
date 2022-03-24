@@ -10,12 +10,12 @@ from pathlib import Path
 from typing import Dict, Tuple, List
 
 import pandas as pd
-from jsonschema.exceptions import ValidationError
-# import csvcubed.readers.v1_0.columnschema as v1_0_col_schema
+from jsonschema.exceptions import ValidationError as JsonSchemaValidationError
 
 from csvcubed.models.cube import *
-from csvcubed.readers.cubeconfig.v1_0.mapcolumntocomponent import map_column_to_qb_component \
-    as v1_0_map_column_to_qb_component
+from csvcubed.readers.cubeconfig.v1_0.mapcolumntocomponent import (
+    map_column_to_qb_component as v1_0_map_column_to_qb_component,
+)
 from csvcubed.utils.dict import get_with_func_or_none
 from csvcubed.utils.uri import uri_safe
 from csvcubed.utils.validators.schema import validate_dict_against_schema
@@ -65,9 +65,7 @@ def _from_config_json_dict(
         column_config = config_columns[column_title]
 
         # When the config json contains a col definition and the col title is not in the data
-        column_data = (
-            data[column_title] if column_title in data.columns else None
-        )
+        column_data = data[column_title] if column_title in data.columns else None
 
         columns.append(
             v1_0_map_column_to_qb_component(
@@ -122,7 +120,9 @@ def _read_and_check_csv(csv_path: Path) -> pd.DataFrame:
     if isinstance(data, pd.DataFrame):
         if data.shape[0] < 2:
             # Must have 2 or more rows, a heading row and a data row
-            raise ValueError("CSV input must contain header row and at least one row of data")
+            raise ValueError(
+                "CSV input must contain header row and at least one row of data"
+            )
 
     else:
         raise TypeError("There was a problem reading the csv file as a dataframe")
@@ -132,7 +132,7 @@ def _read_and_check_csv(csv_path: Path) -> pd.DataFrame:
 
 def get_cube_from_config_json(
     csv_path: Path, config_path: Optional[Path]
-) -> Tuple[QbCube, List[ValidationError]]:
+) -> Tuple[QbCube, List[JsonSchemaValidationError]]:
     """
     Generates a Cube structure from a config.json input.
     :return: tuple of cube and json schema errors (if any)
@@ -143,8 +143,8 @@ def get_cube_from_config_json(
     if config_path:
         config = load_resource(config_path.resolve())
         # Update loaded config's title if not defined, setting title from csv data file path.
-        if config.get('title') is None:
-            config['title'] = reformat_title(csv_path)
+        if config.get("title") is None:
+            config["title"] = reformat_title(csv_path)
         schema = load_resource(Path(config["$schema"]))
         schema_validation_errors = validate_dict_against_schema(
             value=config, schema=schema
@@ -152,8 +152,7 @@ def get_cube_from_config_json(
 
     # Create a default config, setting title from csv data file path.
     else:
-        config = {'title': reformat_title(csv_path)
-        }
+        config = {"title": reformat_title(csv_path)}
         schema_validation_errors = []
 
     parent_path = config_path.parent if config_path else csv_path.parent
@@ -223,8 +222,11 @@ def reformat_title(csv_path: Path) -> str:
     Formats a file Path, stripping -_ and returning the capitalised file name without extn
     e.g. Path('./csv-data_file.csv') -> 'Csv Data File'
     """
-    return ' '.join(
-        [word.capitalize() for word in csv_path.stem.replace('-', ' ').replace('_', ' ').split(' ')]
+    return " ".join(
+        [
+            word.capitalize()
+            for word in csv_path.stem.replace("-", " ").replace("_", " ").split(" ")
+        ]
     )
 
 

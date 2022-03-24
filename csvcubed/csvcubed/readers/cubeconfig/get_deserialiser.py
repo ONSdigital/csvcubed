@@ -1,32 +1,35 @@
 import logging
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Tuple, List, Callable
 
-import csvcubed.readers.cubeconfig.v1_0.configdeserialiser
+from jsonschema.exceptions import ValidationError as JsonSchemaValidationError
+
+from csvcubed.models.cube import QbCube
 from csvcubed.readers.cubeconfig import v1_0
+from csvcubed.readers.cubeconfig.schema_versions import QubeConfigJsonSchemaVersion
 from csvcubed.readers.cubeconfig.utils import load_resource
-
-DEFAULT_V1_SCHEMA_PURL = "https://purl.org/csv-cubed/qube-config/v1.0"
 
 _logger = logging.getLogger(__name__)
 
 
-def get_deserialiser(config_path: Optional[Path]) -> object:
+def get_deserialiser_for_schema(
+    json_config_path: Optional[Path],
+) -> Callable[[Path, Optional[Path]], Tuple[QbCube, List[JsonSchemaValidationError]]]:
     """
     Return the correct version of the config deserialiser based on the schema in the cube config file
     """
-    if config_path:
-        config = load_resource(config_path)
-        schema = config.get("$schema", DEFAULT_V1_SCHEMA_PURL)
+    if json_config_path:
+        config = load_resource(json_config_path)
+        schema = config.get(
+            "$schema", QubeConfigJsonSchemaVersion.DEFAULT_V1_SCHEMA_URL.value
+        )
 
-        if schema == DEFAULT_V1_SCHEMA_PURL:
-            return (
-                csvcubed.readers.cubeconfig.v1_0.configdeserialiser.get_cube_from_config_json
-            )
+        if schema == QubeConfigJsonSchemaVersion.DEFAULT_V1_SCHEMA_URL.value:
+            return v1_0.configdeserialiser.get_cube_from_config_json
         else:
-            msg = f"The $schema '{schema}' referenced in the cub config file is not recognised."
-            _logger.error(msg)
-            raise ValueError(msg)
+            raise ValueError(
+                f"The $schema '{schema}' referenced in the cube config file is not recognised."
+            )
 
     else:
         return v1_0.configdeserialiser.get_cube_from_config_json

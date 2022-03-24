@@ -12,7 +12,7 @@ def set_testing_v1_schema_url():
     """
     Configure the tests to believe that the locally defined cube-config-schema.json is the correct V1 schema.
     """
-    get_deserialiser.DEFAULT_V1_SCHEMA_PURL = (
+    get_deserialiser.DEFAULT_V1_SCHEMA_URL = (
         "../csvcubed/schema/cube-config-schema.json"
     )
 
