@@ -1,0 +1,146 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.27.1
+    method: GET
+    uri: https://w3c.github.io/csvw/tests/test273-metadata.json
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA21RwWrDMAy99yuEj6EksB4GPRV2GmyXdd1lFKI4SmNw7GIryaDk3yelbLvsYtB7
+        0ntP8m0DYA42BqYvNnv4ND3zdV9V8zyX866M6VKFXNk8zWYLN3NoMJP0GabMD4+7yiznrWqktst7
+        jw15Zeu1r4ZMDC5A/eNQQ5woJde6cAG6wNPxA3y0yC4G86dj4zBQ0DzmuYNroizVFhxnmNCPBK+n
+        4zs0BAiZk2pxj+KUxYwpyQBTC5iFP729wNw72ysrQtFPSl3QhcwyRr/+ELu1HoixRUZoox01BnCU
+        DHFyLa0NRaHLqXJRQBcTREGT1ur/v0Z5325M63nQqmEpV73DjI2no+1pQKFvAgloox+HkPVTVgDk
+        /OzYk0Im4EBmWYmzvMtm2XwDO3f0fMwBAAA=
+    headers:
+      Accept-Ranges:
+      - bytes
+      Access-Control-Allow-Origin:
+      - '*'
+      Age:
+      - '0'
+      Cache-Control:
+      - max-age=600
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '311'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Wed, 23 Mar 2022 17:14:39 GMT
+      ETag:
+      - W/"5c404c76-1cc"
+      Last-Modified:
+      - Thu, 17 Jan 2019 09:35:50 GMT
+      Server:
+      - GitHub.com
+      Vary:
+      - Accept-Encoding
+      Via:
+      - 1.1 varnish
+      X-Cache:
+      - MISS
+      X-Cache-Hits:
+      - '0'
+      X-Fastly-Request-ID:
+      - 38cb7e446620c33f7ae54c1c8d793118306241f9
+      X-GitHub-Request-Id:
+      - D3F0:6656:8CB2A:DE39F:623B557F
+      X-Served-By:
+      - cache-lhr7322-LHR
+      X-Timer:
+      - S1648055679.979777,VS0,VE100
+      expires:
+      - Wed, 23 Mar 2022 17:24:39 GMT
+      permissions-policy:
+      - interest-cohort=()
+      x-proxy-cache:
+      - MISS
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.27.1
+    method: GET
+    uri: https://w3c.github.io/csvw/tests/test273-metadata.json
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA21RwWrDMAy99yuEj6EksB4GPRV2GmyXdd1lFKI4SmNw7GIryaDk3yelbLvsYtB7
+        0ntP8m0DYA42BqYvNnv4ND3zdV9V8zyX866M6VKFXNk8zWYLN3NoMJP0GabMD4+7yiznrWqktst7
+        jw15Zeu1r4ZMDC5A/eNQQ5woJde6cAG6wNPxA3y0yC4G86dj4zBQ0DzmuYNroizVFhxnmNCPBK+n
+        4zs0BAiZk2pxj+KUxYwpyQBTC5iFP729wNw72ysrQtFPSl3QhcwyRr/+ELu1HoixRUZoox01BnCU
+        DHFyLa0NRaHLqXJRQBcTREGT1ur/v0Z5325M63nQqmEpV73DjI2no+1pQKFvAgloox+HkPVTVgDk
+        /OzYk0Im4EBmWYmzvMtm2XwDO3f0fMwBAAA=
+    headers:
+      Accept-Ranges:
+      - bytes
+      Access-Control-Allow-Origin:
+      - '*'
+      Age:
+      - '0'
+      Cache-Control:
+      - max-age=600
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '311'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Wed, 23 Mar 2022 17:14:39 GMT
+      ETag:
+      - W/"5c404c76-1cc"
+      Last-Modified:
+      - Thu, 17 Jan 2019 09:35:50 GMT
+      Server:
+      - GitHub.com
+      Vary:
+      - Accept-Encoding
+      Via:
+      - 1.1 varnish
+      X-Cache:
+      - HIT
+      X-Cache-Hits:
+      - '1'
+      X-Fastly-Request-ID:
+      - fa91d115a1837ec63c0dfd5158e8115cbfe6d552
+      X-GitHub-Request-Id:
+      - D3F0:6656:8CB2A:DE39F:623B557F
+      X-Served-By:
+      - cache-lhr7342-LHR
+      X-Timer:
+      - S1648055679.134805,VS0,VE1
+      expires:
+      - Wed, 23 Mar 2022 17:24:39 GMT
+      permissions-policy:
+      - interest-cohort=()
+      x-proxy-cache:
+      - MISS
+    status:
+      code: 200
+      message: OK
+version: 1
