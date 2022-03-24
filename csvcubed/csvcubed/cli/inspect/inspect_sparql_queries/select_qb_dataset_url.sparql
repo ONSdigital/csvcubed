@@ -14,5 +14,13 @@ WHERE {
             csvw:valueUrl ?columnValueUrl.
 
     FILTER (str(?columnPropertyUrl) IN (str(qb:dataSet), "qb:dataSet")).
-    FILTER (strends(str(?columnValueUrl), ?datasetUrlStr) || strends(?datasetUrlStr, str(?columnValueUrl))).
-}    
+
+    BIND(
+        IF(strstarts(str(?columnValueUrl), "./"), 
+           strafter(str(?columnValueUrl), "./"), # Remove preceding `./` from URL if it is present.
+           str(?columnValueUrl)
+        ) as ?columnDatasetUrl
+    ).
+
+    FILTER (strends(?columnDatasetUrl, ?datasetUrlStr) || strends(?datasetUrlStr, ?columnDatasetUrl)).
+}
