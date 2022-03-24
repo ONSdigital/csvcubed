@@ -1,5 +1,4 @@
 import pytest
-from pathlib import Path
 
 from csvcubed.utils.pandas_na_filter import refiltered_pandas_read_csv
 
@@ -14,15 +13,19 @@ def test_na_filter_works():
     assert "NULL" in pd_table['Parent Notation'].values
     assert "-nan" in pd_table['Parent Notation'].values
     assert "" not in pd_table
-    assert "" not in pd_table["Parent Notation"].values
-    assert "" not in pd_table["Description"].values
-    assert "NaN" not in pd_table["Parent Notation"].values
+    assert "" not in pd_table['Parent Notation'].values
+    assert "" not in pd_table['Description'].values
+    assert pd_table['Parent Notation'].isnull().values.any()
 
-def test_empty_strings_are_replaced_with_hello():
+def test_empty_strings_are_replaced_with_NaN():
     pd_table = refiltered_pandas_read_csv(csv_path)
-    assert "NaN" not in pd_table["Description"].values
-    pd_table = pd_table.fillna("hello")
-    assert "hello" in pd_table["Description"].values
+    assert pd_table['Description'].isnull().values.any()
+    assert pd_table['Description'].isnull().sum() == 13
+
+def test_NaN_value_in_Parent_Notation_column_is_not_typr_string():
+    pd_table = refiltered_pandas_read_csv(csv_path)
+    assert pd_table['Parent Notation'].isnull().values.any()
+    assert pd_table['Parent Notation'].isnull().sum() == 1
 
 if __name__ == "__main__":
     pytest.main()
