@@ -3,28 +3,19 @@ Models
 ------
 
 config.json V1.0 column mapping models.
+
+If you change the shape of any model in this file, you **must** create a newly versioned JSON schema reflecting said changes.
 """
-import uritemplate
 
 from abc import ABC
 from dataclasses import dataclass
 from typing import List, Union, Optional, TypeVar
-from pathlib import Path
 
-from csvcubed.models.cube import (
-    CatalogMetadata,
-    CompositeQbCodeList,
-    DuplicatedQbConcept,
-    ExistingQbAttributeLiteral,
-    ExistingQbCodeList,
-    NewQbAttributeLiteral,
-    NewQbCodeList,
-    QbCodeList,
-)
-
+import uritemplate
 from csvcubedmodels.dataclassbase import DataClassBase
 
 from csvcubed.inputs import pandas_input_to_columnar_optional_str
+from csvcubed.models.cube import CatalogMetadata
 from csvcubed.models.cube.qb.components import (
     NewQbDimension,
     ExistingQbDimension,
@@ -40,6 +31,13 @@ from csvcubed.models.cube.qb.components import (
     ExistingQbMeasure,
     NewQbMeasure,
     QbObservationValue,
+    CompositeQbCodeList,
+    DuplicatedQbConcept,
+    ExistingQbAttributeLiteral,
+    ExistingQbCodeList,
+    NewQbAttributeLiteral,
+    NewQbCodeList,
+    QbCodeList,
 )
 from csvcubed.inputs import PandasDataTypes
 from csvcubed.utils.uri import (
@@ -60,22 +58,18 @@ class NewDimension(SchemaBaseClass):
     # Schema property - but removed for json to dataclass mapping
     # type: # str = "dimension"
 
-    # Properties only available for New Dimension
-    label: str
+    label: Optional[str] = None
     description: Optional[str] = None
     definition_uri: Optional[str] = None
-
-    # Properties common to both New and Existing Dimension
-    from_existing: Optional[str] = None
-    cell_uri_template: Optional[str] = None
     code_list: Optional[Union[str, bool]] = True
+    from_existing: Optional[str] = None
 
     def map_to_new_qb_dimension(
-        self, label: str, data: PandasDataTypes
+        self, csv_column_title: str, data: PandasDataTypes
     ) -> NewQbDimension:
 
         new_dimension = NewQbDimension.from_data(
-            label=self.label or label,
+            label=self.label or csv_column_title,
             data=data,
             description=self.description,
             parent_dimension_uri=self.from_existing,
@@ -86,45 +80,39 @@ class NewDimension(SchemaBaseClass):
         new_dimension.code_list = self._get_code_list(new_dimension)
         return new_dimension
 
-    def _get_code_list(
-        self,
-        new_dimension: NewQbDimension
-    ) -> Optional[QbCodeList]:
-
-        code_list_obj = None
+    def _get_code_list(self, new_dimension: NewQbDimension) -> Optional[QbCodeList]:
 
         if isinstance(self.code_list, str):
             if looks_like_uri(self.code_list):
-                code_list_obj = ExistingQbCodeList(self.code_list)
+                return ExistingQbCodeList(self.code_list)
 
             else:
-                raise ValueError("Code List contains a string that cannot be recognised as a URI")
+                raise ValueError(
+                    "Code List contains a string that cannot be recognised as a URI"
+                )
 
         elif isinstance(self.code_list, bool):
             if self.code_list is False:
-                code_list_obj = None
-
+                return None
             elif (
                 new_dimension.parent_dimension_uri
                 == "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod"
                 and self.definition_uri is not None
-                and self.definition_uri.lower().startswith("http://reference.data.gov.uk/id/")
+                and self.definition_uri.lower().startswith(
+                    "http://reference.data.gov.uk/id/"
+                )
             ):
                 # This is a special case where we build up a code-list of the date/time values.
-                code_list_obj = self._get_date_time_code_list_for_dimension(
-                    self.label, new_dimension
-                )
-                # else, the user wants a standard codelist to be automatically generated
-                return code_list_obj or new_dimension.code_list
+                return self._get_date_time_code_list_for_dimension(new_dimension)
+            else:
+                return new_dimension.code_list
         else:
             raise ValueError(f"Unmatched code_list value {self.code_list}")
 
-        return code_list_obj or new_dimension.code_list
-
     def _get_date_time_code_list_for_dimension(
-        self, column_title: str, new_dimension: NewQbDimension
+        self, new_dimension: NewQbDimension
     ) -> CompositeQbCodeList:
-        csvw_safe_column_title = csvw_column_name_safe(column_title)
+        csvw_safe_column_title = csvw_column_name_safe(new_dimension.label)
         assert isinstance(new_dimension.code_list, NewQbCodeList)
         return CompositeQbCodeList(
             CatalogMetadata(new_dimension.label),
@@ -162,10 +150,10 @@ class AttributeValue(SchemaBaseClass):
 @dataclass
 class ExistingAttribute(SchemaBaseClass):
     from_existing: str
-    definition_uri: Optional[str] = None
     data_type: Optional[str] = None
     required: bool = False
-    values: Union[bool, List[AttributeValue]] = True
+    values: Union[None, bool, List[AttributeValue]] = None
+    cell_uri_template: Optional[str] = None
 
     def map_to_existing_qb_attribute(
         self, data: PandasDataTypes
@@ -192,52 +180,63 @@ class ExistingAttribute(SchemaBaseClass):
 
 @dataclass
 class NewAttribute(SchemaBaseClass):
-    label: str
+    label: Optional[str] = None
     description: Optional[str] = None
     from_existing: Optional[str] = None
     definition_uri: Optional[str] = None
     data_type: Optional[str] = None
     required: bool = False
     values: Union[bool, List[AttributeValue]] = True
+    cell_uri_template: Optional[str] = None
 
     def map_to_new_qb_attribute(
         self, column_title: str, data: PandasDataTypes
     ) -> NewQbAttribute:
-        if isinstance(self, NewAttribute) and self.data_type is not None:
-            if isinstance(self.values, list):
+        label = self.label or column_title
+
+        if self.data_type is None:
+            if isinstance(self.values, bool):
+                if self.values:
+                    return NewQbAttribute.from_data(
+                        label=label,
+                        data=data,
+                        description=self.description,
+                        parent_attribute_uri=self.from_existing,
+                        source_uri=self.definition_uri,
+                        is_required=self.required,
+                    )
+                else:
+                    return NewQbAttribute(
+                        label=label,
+                        description=self.description,
+                        parent_attribute_uri=self.from_existing,
+                        source_uri=self.definition_uri,
+                        is_required=self.required,
+                    )
+            elif isinstance(self.values, list):
+                return NewQbAttribute(
+                    label=label,
+                    description=self.description,
+                    new_attribute_values=_get_new_attribute_values(data, self.values),
+                    parent_attribute_uri=self.from_existing,
+                    source_uri=self.definition_uri,
+                    is_required=self.required,
+                )
+            else:
+                raise ValueError(f"Unhandled value: {self}")
+        else:
+            if isinstance(self.values, list) or self.values:
                 raise Exception(
                     "Attributes cannot represent both literal values and attribute (resource) values"
                 )
             return NewQbAttributeLiteral(
-                label=self.label,
+                label=label,
                 description=self.description,
                 data_type=self.data_type,
                 parent_attribute_uri=self.from_existing,
                 source_uri=self.definition_uri,
                 is_required=self.required,
             )
-        else:
-            if isinstance(self.values, bool) and self.values is True:
-                return NewQbAttribute.from_data(
-                    label=self.label or column_title,
-                    data=data,
-                    description=self.description,
-                    parent_attribute_uri=self.from_existing,
-                    source_uri=self.definition_uri,
-                    is_required=self.required,
-                )
-
-            elif isinstance(self, NewAttribute):
-                return NewQbAttribute(
-                    label=self.label or column_title,
-                    description=self.description,
-                    new_attribute_values=_get_new_attribute_values(data, self.values),
-                    parent_attribute_uri=self.from_existing,
-                    source_uri=self.definition_uri,
-                    is_required=self.required
-                )
-            else:
-                raise ValueError(f"Unhandled value: {self}")
 
 
 @dataclass
@@ -254,7 +253,6 @@ class Unit(SchemaBaseClass):
 @dataclass
 class ExistingUnits(SchemaBaseClass):
     cell_uri_template: str
-    values: Union[bool, List[Unit]] = True
 
     def map_to_existing_qb_multi_units(
         self, data: PandasDataTypes, column_title: str
@@ -283,12 +281,12 @@ class NewUnits(SchemaBaseClass):
 
             return QbMultiUnits(units)
 
-        raise ValueError(f"Unhandled 'Units' value: {self}")
+        raise ValueError(f"Unhandled units 'values': {self}")
 
 
 @dataclass
 class Measure(SchemaBaseClass):
-    label: str = ""
+    label: str
     description: Optional[str] = None
     from_existing: Optional[str] = None
     definition_uri: Optional[str] = None
@@ -314,13 +312,12 @@ class NewMeasures(SchemaBaseClass):
             return QbMultiMeasureDimension(new_measures)
 
         else:
-            raise ValueError(f"Unexpected values type: {self.values}")
+            raise ValueError(f"Unexpected measure 'values': {self.values}")
 
 
 @dataclass
 class ExistingMeasures(SchemaBaseClass):
     cell_uri_template: str
-    values: Union[bool, List[Measure]] = True
 
     def map_to_existing_multi_measure_dimension(
         self, column_title: str, data: PandasDataTypes
@@ -374,7 +371,9 @@ def _map_unit(resource: Unit) -> NewQbUnit:
         description=resource.description,
         source_uri=resource.from_existing,
         base_unit=(
-            None if resource.from_existing is None else ExistingQbUnit(resource.from_existing)
+            None
+            if resource.from_existing is None
+            else ExistingQbUnit(resource.from_existing)
         ),
         base_unit_scaling_factor=resource.scaling_factor,
         qudt_quantity_kind_uri=resource.quantity_kind,

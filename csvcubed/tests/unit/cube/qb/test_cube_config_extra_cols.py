@@ -1,11 +1,12 @@
+from pathlib import Path
+
 import pytest
+
 from csvcubed.cli.build import build as cli_build
-from csvcubed.readers.cubeconfig.v1_0.configdeserialiser import *
+from csvcubed.models.cube import Cube
 from tests.unit.test_baseunit import get_test_cases_dir
 
-PROJECT_ROOT = Path(Path(__file__).parent, "..", "..", "..", "..").resolve()
 TEST_CASE_DIR = Path(get_test_cases_dir().absolute(), "config")
-SCHEMA_PATH_FILE = Path(PROJECT_ROOT, "csvcubed", "schema", "cube-config-schema.json")
 
 
 def test_build_with_fail():

@@ -18,8 +18,8 @@ def load_json_from_uri(uri: str) -> dict:
     """
     response = None
     try:
-        response = session(uri)
-        if response.status_code != requests.codes("ok"):
+        response = session.get(uri)
+        if not response.ok:
             # HTTP Get request failed - raise error
             msg = (
                 f"Failed to retrieve the schema from: {uri}.Status-Code: {response.status_code}"

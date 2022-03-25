@@ -1,4 +1,4 @@
-Feature:
+Feature: Cube!
   As a data engineer.
   I want to create a cube from a tidy data csv, with or without a config json file
   That conforms to the documented conventions for column headings.

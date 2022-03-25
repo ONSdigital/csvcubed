@@ -1,6 +1,6 @@
 {
-    "$schema": "http://gss-cogs.github.io/gss-cogs/csvcubed/csvcubed/schemas/cube-config-schema.json",
-    "id": "http://gss-cogs.github.io/gss-cogs/csvcubed/csvcubed/schemas/cube-config-schema.json",
+    "$schema": "https://json-schema.org/draft-07/schema",
+    "id": "http://purl.org/csv-cubed/qube-config/v1.0",
     "title": "Schema for a qb-config cube",
     "description": "Schema to be used for creation & validation of a single csv-cubed-flavoured linked data cube in CSV-W format",
     "type": "object",
@@ -8,7 +8,7 @@
     "properties": {
         "$schema": {
             "type": "string",
-            "default": "http://gss-cogs.github.io/gss-cogs/csvcubed/csvcubed/schemas/cube-config-schema.json"
+            "default": "http://purl.org/csv-cubed/qube-config/v1.0"
         },
         "id": {"description": "A unique id for the cube", "type": "string"},
         "title": {"description": "A title for this dataset", "type": "string"},

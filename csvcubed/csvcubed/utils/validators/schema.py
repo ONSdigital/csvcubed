@@ -10,25 +10,11 @@ def validate_dict_against_schema(value: dict, schema: dict) -> list[ValidationEr
     """
     Validates a dict against a schema,
     """
-    errors: list = []
-
     try:
-        # Validate our schema against the standard  # TODO - confirm if required / parameterise ?
+        # Validate our JSON document against the schema
+        # This will implicitly validate the schema itself.
         v = jsonschema.Draft7Validator(schema)
-        err = sorted(v.iter_errors(schema), key=lambda e: str(e.path))
-        for error in err:
-            errors.append(error)
-
-        if errors:
-            log.error(f"Schema validation failed for the base config schema: {errors}")
-            return errors
-
-        # Validate the cube config json against our the cube config schema
-        try:
-            jsonschema.validate(value, schema)
-        except Exception as err:
-            errors.append(err)
-
+        return list(sorted(v.iter_errors(value), key=lambda e: str(e.path)))
     except ValidationError as err:
         log.error(f"Validation of the supplied config cube failed: {repr(err)}")
         raise err
@@ -42,5 +28,3 @@ def validate_dict_against_schema(value: dict, schema: dict) -> list[ValidationEr
     except Exception as err:
         log.error(f"Unexpected Error: {repr(err)}")
         raise err
-
-    return errors

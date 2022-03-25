@@ -1,25 +1,20 @@
-import logging
 from pathlib import Path
+from typing import Union
+
 from csvcubed.utils.json import load_json_from_uri, read_json_from_file
+from csvcubed.utils.uri import looks_like_uri
 
 
-def load_resource(resource_path: Path) -> dict:
+def load_resource(resource_path: Union[str, Path]) -> dict:
     """
     Load a json schema document from either a File or URI
     """
-    schema: dict = {}
+    if isinstance(resource_path, str):
+        if looks_like_uri(resource_path):
+            return load_json_from_uri(str(resource_path))
+        else:
+            resource_path = Path(resource_path)
 
-    if resource_path.parts[0].startswith('http'):
-        schema = load_json_from_uri(str(resource_path))
-
-    else:
-        if not resource_path.is_absolute():
-            resource_path = resource_path.resolve()
-        schema = read_json_from_file(resource_path)
-
-    return schema
-
-
-_logger = logging.getLogger(__name__)
-
-
+    if not resource_path.is_absolute():
+        resource_path = resource_path.resolve()
+    return read_json_from_file(resource_path)
