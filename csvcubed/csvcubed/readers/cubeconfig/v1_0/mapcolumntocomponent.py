@@ -19,16 +19,12 @@ def map_column_to_qb_component(
 ) -> QbColumn:
     """
     Takes a config.json v1.0 column mapping and, if valid,
-    returns a :obj:`~csvcubed.models.cube.qb.components.datastructuredefinition.QbDataStructureDefinition`.
+    returns a :obj:`~csvcubed.models.cube.qb.columns.QbColumn`.
     """
     schema_mapping = _from_column_dict_to_schema_model(column_title, column)
 
     if isinstance(schema_mapping, v1_0_col_schema.NewDimension):
-        return QbColumn(
-            column_title,
-            schema_mapping.map_to_new_qb_dimension(column_title, data),
-            csv_column_uri_template=schema_mapping.cell_uri_template,
-        )
+        return QbColumn(column_title, schema_mapping.map_to_new_qb_dimension(column_title, data))
 
     elif isinstance(schema_mapping, v1_0_col_schema.ExistingDimension):
         return QbColumn(
@@ -39,11 +35,17 @@ def map_column_to_qb_component(
 
     elif isinstance(schema_mapping, v1_0_col_schema.NewAttribute):
         return QbColumn(
-            column_title, schema_mapping.map_to_new_qb_attribute(column_title, data)
+            column_title, 
+            schema_mapping.map_to_new_qb_attribute(column_title, data),
+            csv_column_uri_template=schema_mapping.cell_uri_template,
         )
 
     elif isinstance(schema_mapping, v1_0_col_schema.ExistingAttribute):
-        return QbColumn(column_title, schema_mapping.map_to_existing_qb_attribute(data))
+        return QbColumn(
+            column_title, 
+            schema_mapping.map_to_existing_qb_attribute(data),
+            csv_column_uri_template=schema_mapping.cell_uri_template,
+        )
 
     elif isinstance(schema_mapping, v1_0_col_schema.NewUnits):
         return QbColumn(column_title, schema_mapping.map_to_new_qb_multi_units(data))
@@ -52,6 +54,7 @@ def map_column_to_qb_component(
         return QbColumn(
             column_title,
             schema_mapping.map_to_existing_qb_multi_units(data, column_title),
+            csv_column_uri_template=schema_mapping.cell_uri_template,
         )
 
     elif isinstance(schema_mapping, v1_0_col_schema.NewMeasures):
@@ -63,13 +66,14 @@ def map_column_to_qb_component(
         return QbColumn(
             column_title,
             schema_mapping.map_to_existing_multi_measure_dimension(column_title, data),
+            csv_column_uri_template=schema_mapping.cell_uri_template,
         )
 
     elif isinstance(schema_mapping, v1_0_col_schema.ObservationValue):
         return QbColumn(column_title, schema_mapping.map_to_qb_observation())
 
     else:
-        raise ValueError(f"Unmatched v1_0_col_schema model type {type(schema_mapping)}")
+        raise ValueError(f"Unmatched column type {type(schema_mapping)}")
 
 
 def _from_column_dict_to_schema_model(
@@ -94,9 +98,6 @@ def _from_column_dict_to_schema_model(
     column_without_type = copy.deepcopy(column)
     if "type" in column_without_type:
         del column_without_type["type"]
-
-    if column_type is None:
-        raise ValueError("Type of column not specified.")
 
     elif column_type == "dimension":
         if v1_0_col_schema.NewDimension.dict_fields_match_class(column_without_type):

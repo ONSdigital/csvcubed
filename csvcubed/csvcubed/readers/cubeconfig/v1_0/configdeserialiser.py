@@ -11,6 +11,7 @@ from typing import Dict, Tuple, List, Callable
 
 import pandas as pd
 from jsonschema.exceptions import ValidationError as JsonSchemaValidationError
+from csvcubedmodels.rdf.namespaces import GOV
 
 from csvcubed.models.cube import *
 from .mapcolumntocomponent import map_column_to_qb_component
@@ -18,7 +19,6 @@ from csvcubed.utils.dict import get_with_func_or_none
 from csvcubed.utils.iterables import first
 from csvcubed.utils.uri import uri_safe
 from csvcubed.utils.validators.schema import validate_dict_against_schema
-from csvcubedmodels.rdf.namespaces import GOV
 from csvcubed.readers.cubeconfig.utils import load_resource
 
 # Used to determine whether a column name matches accepted conventions
@@ -84,7 +84,7 @@ def get_deserialiser(
             schema_validation_errors = []
 
         parent_path = config_path.parent if config_path else csv_path.parent
-        cube = _from_config_json_dict(data, config, parent_path)
+        cube = _get_cube_from_config_json_dict(data, config, parent_path)
 
         _configure_remaining_columns_by_convention(cube, data)
 
@@ -93,16 +93,14 @@ def get_deserialiser(
     return get_cube_from_config_json
 
 
-def _from_config_json_dict(
+def _get_cube_from_config_json_dict(
     data: pd.DataFrame, config: Dict, json_parent_dir: Path
 ) -> QbCube:
     columns: List[CsvColumn] = []
     metadata: CatalogMetadata = _metadata_from_dict(config)
 
     config_columns = config.get("columns", {})
-    for column_title in config_columns:
-        column_config = config_columns[column_title]
-
+    for (column_title, column_config) in config_columns.items():
         # When the config json contains a col definition and the col title is not in the data
         column_data = data[column_title] if column_title in data.columns else None
 
@@ -232,10 +230,4 @@ def _generate_title_from_file_name(csv_path: Path) -> str:
             word.capitalize()
             for word in csv_path.stem.replace("-", " ").replace("_", " ").split(" ")
         ]
-    )
-
-
-if __name__ == "__main__":
-    log.error(
-        "The config deserialiser module should not be run directly, please user the 'csvcubed build' command."
     )

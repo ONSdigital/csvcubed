@@ -16,7 +16,6 @@ from csvcubed.utils.validators.uri import validate_uri, validate_uris_in_list
 
 @dataclass
 class CatalogMetadata(CatalogMetadataBase, UriIdentifiable):
-    title: str
     identifier: Optional[str] = None
     summary: Optional[str] = field(default=None, repr=False)
     description: Optional[str] = field(default=None, repr=False)

@@ -5,26 +5,15 @@ Models
 config.json V1.0 column mapping models.
 """
 import uritemplate
-
 from abc import ABC
 from dataclasses import dataclass
 from typing import List, Union, Optional, TypeVar
 from pathlib import Path
 
-from csvcubed.models.cube import (
-    CatalogMetadata,
-    CompositeQbCodeList,
-    DuplicatedQbConcept,
-    ExistingQbAttributeLiteral,
-    ExistingQbCodeList,
-    NewQbAttributeLiteral,
-    NewQbCodeList,
-    QbCodeList,
-)
-
 from csvcubedmodels.dataclassbase import DataClassBase
 
 from csvcubed.inputs import pandas_input_to_columnar_optional_str
+from csvcubed.models.cube import CatalogMetadata
 from csvcubed.models.cube.qb.components import (
     NewQbDimension,
     ExistingQbDimension,
@@ -40,6 +29,13 @@ from csvcubed.models.cube.qb.components import (
     ExistingQbMeasure,
     NewQbMeasure,
     QbObservationValue,
+    CompositeQbCodeList,
+    DuplicatedQbConcept,
+    ExistingQbAttributeLiteral,
+    ExistingQbCodeList,
+    NewQbAttributeLiteral,
+    NewQbCodeList,
+    QbCodeList,
 )
 from csvcubed.inputs import PandasDataTypes
 from csvcubed.utils.uri import (
@@ -64,11 +60,10 @@ class NewDimension(SchemaBaseClass):
     label: str
     description: Optional[str] = None
     definition_uri: Optional[str] = None
+    code_list: Optional[Union[str, bool]] = True
 
     # Properties common to both New and Existing Dimension
     from_existing: Optional[str] = None
-    cell_uri_template: Optional[str] = None
-    code_list: Optional[Union[str, bool]] = True
 
     def map_to_new_qb_dimension(
         self, label: str, data: PandasDataTypes
@@ -91,18 +86,16 @@ class NewDimension(SchemaBaseClass):
         new_dimension: NewQbDimension
     ) -> Optional[QbCodeList]:
 
-        code_list_obj = None
-
         if isinstance(self.code_list, str):
             if looks_like_uri(self.code_list):
-                code_list_obj = ExistingQbCodeList(self.code_list)
+                return ExistingQbCodeList(self.code_list)
 
             else:
                 raise ValueError("Code List contains a string that cannot be recognised as a URI")
 
         elif isinstance(self.code_list, bool):
             if self.code_list is False:
-                code_list_obj = None
+                return None
 
             elif (
                 new_dimension.parent_dimension_uri
@@ -111,15 +104,11 @@ class NewDimension(SchemaBaseClass):
                 and self.definition_uri.lower().startswith("http://reference.data.gov.uk/id/")
             ):
                 # This is a special case where we build up a code-list of the date/time values.
-                code_list_obj = self._get_date_time_code_list_for_dimension(
+                return self._get_date_time_code_list_for_dimension(
                     self.label, new_dimension
                 )
-                # else, the user wants a standard codelist to be automatically generated
-                return code_list_obj or new_dimension.code_list
         else:
             raise ValueError(f"Unmatched code_list value {self.code_list}")
-
-        return code_list_obj or new_dimension.code_list
 
     def _get_date_time_code_list_for_dimension(
         self, column_title: str, new_dimension: NewQbDimension
@@ -162,10 +151,10 @@ class AttributeValue(SchemaBaseClass):
 @dataclass
 class ExistingAttribute(SchemaBaseClass):
     from_existing: str
-    definition_uri: Optional[str] = None
     data_type: Optional[str] = None
     required: bool = False
-    values: Union[bool, List[AttributeValue]] = True
+    values: Union[None, bool, List[AttributeValue]] = None
+    cell_uri_template: Optional[str] = None
 
     def map_to_existing_qb_attribute(
         self, data: PandasDataTypes
@@ -199,6 +188,7 @@ class NewAttribute(SchemaBaseClass):
     data_type: Optional[str] = None
     required: bool = False
     values: Union[bool, List[AttributeValue]] = True
+    cell_uri_template: Optional[str] = None
 
     def map_to_new_qb_attribute(
         self, column_title: str, data: PandasDataTypes
