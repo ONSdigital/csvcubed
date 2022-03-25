@@ -87,7 +87,7 @@ def _from_column_dict_to_schema_model(
     v1_0_col_schema.ObservationValue,
 ]:
     """
-    N.B. when using the :method:`dict_fields_match_class` method, we need to ensure that we check for types with
+    N.B. when using the :meth:`dict_fields_match_class` method, we need to ensure that we check for types with
     required properties *before* types without required properties.
     """
     column_type = column.get("type", "dimension")
