@@ -1,5 +1,5 @@
 {
-  "$schema": "./csvcubed/schema/cube-config-schema2.json",
+  "$schema": "./csvcubed/schema/cube-config-schema.json",
   "id": "http://schema-id",
   "title": "Tests/test-cases/config/schema-cube-data-config-ok",
   "description": "Schema for testing",
@@ -10,7 +10,7 @@
   "temporal_bound": "temporal",
   "dataset_issued": "2022-03-04 15:00:00.000",
   "dataset_modified": "2022-03-04 15:00:00.000",
-  "public_contact_point": "Rob Barry",
+  "public_contact_point": "A User",
   "license": "the license",
   "summary": "a summary",
   "keywords": "two",
@@ -19,13 +19,7 @@
     {
       "Measure": {
         "type": "measures",
-       "values": [
-          {
-            "label": "Billions",
-            "description": "A billion whatsits",
-            "definition_uri": "https://definition_uri2/bilion"
-          }
-        ]
+       "values": true
       }
     },
     {
@@ -42,15 +36,12 @@
       }
     },
     {
-      "Attr-2": {
-        "type": "attribute2",
-        "label": "My second best attribute"
-      }
-    },
-    {
       "Amount": {
         "type": "observations",
-        "label": "Volume"
+        "label": "Volume",
+        "measure": {
+          "label": "Lbs"
+        }
       }
     },
 

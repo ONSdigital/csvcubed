@@ -1,6 +1,6 @@
 import logging
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Callable
 
 import csvcubed.readers.cubeconfig.v1_0.configdeserialiser
 from csvcubed.readers.cubeconfig import v1_0
@@ -13,7 +13,7 @@ DEV_SCHEMA_PATH = "./csvcubed/schema/cube-config-schema.json"
 _logger = logging.getLogger(__name__)
 
 
-def get_deserialiser(config_path: Optional[Path]) -> object:
+def get_deserialiser(config_path: Optional[Path]) -> Callable:
     """
     Return the correct version of the config deserialiser based on the schema in the cube config file
     """
@@ -33,4 +33,4 @@ def get_deserialiser(config_path: Optional[Path]) -> object:
             raise ValueError(msg)
 
     else:
-        return v1_0.configdeserialiser.get_cube_from_config_json
+        return csvcubed.readers.cubeconfig.v1_0.configdeserialiser.get_cube_from_config_json

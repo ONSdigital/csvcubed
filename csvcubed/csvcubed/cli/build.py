@@ -65,6 +65,7 @@ def build(
         if fail_when_validation_error_occurs and len(validation_errors) > 0:
             exit(1)
 
+    logging.shutdown()
     print(f"Build Complete")
     return cube, validation_errors
 

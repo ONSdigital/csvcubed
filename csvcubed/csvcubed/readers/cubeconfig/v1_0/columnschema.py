@@ -279,7 +279,7 @@ class NewMeasures(SchemaBaseClass):
             return QbMultiMeasureDimension.new_measures_from_data(data)
 
         elif isinstance(self.values, list):
-            new_measures: List[NewQbMeasure] = []
+            new_measures: List[QbMeasure] = []
             for new_measure in self.values:
                 if not isinstance(new_measure, Measure):
                     raise ValueError(f"Unexpected measure: {new_measure}")
@@ -332,7 +332,7 @@ class ObservationValue(SchemaBaseClass):
             if isinstance(self.measure, str):
                 measure = ExistingQbMeasure(self.measure)
 
-            elif isinstance(self.measure, NewMeasures):
+            elif isinstance(self.measure, Measure):
                 measure = _map_measure(self.measure)
 
             else:
