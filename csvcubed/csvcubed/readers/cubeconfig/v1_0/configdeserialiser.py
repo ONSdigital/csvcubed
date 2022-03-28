@@ -73,7 +73,7 @@ def get_deserialiser(
             # Update loaded config's title if not defined, setting title from csv data file path.
             if config.get("title") is None:
                 config["title"] = _generate_title_from_file_name(csv_path)
-            schema = load_resource(Path(schema_path))
+            schema = load_resource(schema_path)
             schema_validation_errors = validate_dict_against_schema(
                 value=config, schema=schema
             )

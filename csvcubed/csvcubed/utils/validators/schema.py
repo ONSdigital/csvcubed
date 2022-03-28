@@ -11,9 +11,10 @@ def validate_dict_against_schema(value: dict, schema: dict) -> list[ValidationEr
     Validates a dict against a schema,
     """
     try:
-        # Validate our schema against the standard 
+        # Validate our JSON document against the schema
+        # This will implicitly validate the schema itself.
         v = jsonschema.Draft7Validator(schema)
-        return list(sorted(v.iter_errors(schema), key=lambda e: str(e.path)))
+        return list(sorted(v.iter_errors(value), key=lambda e: str(e.path)))
     except ValidationError as err:
         log.error(f"Validation of the supplied config cube failed: {repr(err)}")
         raise err

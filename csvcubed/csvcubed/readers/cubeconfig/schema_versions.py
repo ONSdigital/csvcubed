@@ -27,7 +27,11 @@ _V1_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.0"
 
 
 class QubeConfigJsonSchemaVersion(Enum):
-    V1 = auto()
+    """
+    Known versions of the QubeConfig JSON Schema and the directory/module name they are contained within.
+    """
+
+    V1_0 = "V1_0"
 
 
 def get_deserialiser_for_schema(
@@ -46,7 +50,7 @@ def get_deserialiser_for_schema(
         # This is for use in testing.
         schema_path = _schema_url_overrides.get(schema_path, schema_path)
 
-    if schema_version == QubeConfigJsonSchemaVersion.V1:
+    if schema_version == QubeConfigJsonSchemaVersion.V1_0:
         return v1_0.configdeserialiser.get_deserialiser(schema_path)
     else:
         raise ValueError(f"Unhandled schema version {schema_version}")
@@ -54,7 +58,7 @@ def get_deserialiser_for_schema(
 
 def _get_schema_version(schema_path: str) -> QubeConfigJsonSchemaVersion:
     if schema_path == _V1_SCHEMA_URL:
-        return QubeConfigJsonSchemaVersion.V1
+        return QubeConfigJsonSchemaVersion.V1_0
     else:
         raise ValueError(
             f"The $schema '{schema_path}' referenced in the cube config file is not recognised."

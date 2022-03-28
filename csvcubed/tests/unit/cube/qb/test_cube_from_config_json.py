@@ -196,33 +196,12 @@ def test_02_01_dimension_new_ok():
         "description": "A description of the dimension",
         "from_existing": "http://gss-cogs/dimesions/#period",
         "definition_uri": "http://wikipedia.com/#periods",
-        "cell_uri_template": "http://example.org/code-list/{+some_column}",
         # 'code_list': '', -> defaults to True so should be a NewQbCodeList
     }
     data = pd.Series(column_data, name="Dimension Heading")
 
     column = map_column_to_qb_component("New Dimension", dimension_config, data)
     _check_new_dimension_column(column, dimension_config, column_data, "New Dimension")
-
-
-def test_02_02_dimension_new_ok():
-    """
-    Check New dimension when omitting label, from_existing, definition_url and cell_uri_template
-    """
-    column_data = ["a", "b", "c", "a"]
-    dimension_config = {
-        "type": "dimension",
-        # 'label': 'The New Dimension',
-        "description": "A description of the dimension",
-    }
-    data = pd.Series(column_data, name="Dimension Heading")
-
-    with pytest.raises(Exception) as err:
-        column = map_column_to_qb_component("New Dimension", dimension_config, data)
-    assert (
-        err.value.args[0] == f"Column with config: '{dimension_config}' did not match "
-        f"either New or Existing Dimension using v1_0_col_schema"
-    )
 
 
 def test_02_03_dimension_new_ok():
@@ -239,30 +218,6 @@ def test_02_03_dimension_new_ok():
 
     column = map_column_to_qb_component("New Dimension", dimension_config, data)
     _check_new_dimension_column(column, dimension_config, column_data, "New Dimension")
-
-
-def test_02_03_dimension_new_broke():
-    """
-    Check New dimension when omitting label, description, from_existing, definition_url and
-    cell_uri_template
-
-    *** NOTE: Without either label or description this looks like an existing Dimension so fails ***
-
-    """
-    column_data = ["a", "b", "c", "a"]
-    dimension_config = {
-        "type": "dimension",
-    }
-    data = pd.Series(column_data, name="Dimension Heading")
-
-    with pytest.raises(Exception) as err:
-        column = map_column_to_qb_component("New Dimension", dimension_config, data)
-        # result = _check_new_dimension_column(column, dimension_config, column_data, 'New Dimension')
-        # print(result)
-    assert (
-        err.value.args[0] == f"Column with config: '{dimension_config}' did not match "
-        f"either New or Existing Dimension using v1_0_col_schema"
-    )
 
 
 def test_03_dimension_existing_ok():
@@ -316,30 +271,6 @@ def test_04_01_attribute_new_ok():
     _check_new_attribute_column(column, column_config, column_data, "New Attribute")
 
 
-def test_04_02_attribute_new_broken():
-    """
-    Checks New attribute when description, values, from_existing and definition_uri options
-    are omitted
-    ** Values True
-    """
-    column_data = ["a", "b", "c", "a"]
-    column_config = {
-        "type": "attribute",
-        "description": "A description of the attribute",
-        "values": True,
-    }
-    data = pd.Series(column_data, name="Attribute Heading")
-
-    with pytest.raises(Exception) as err:
-        column = map_column_to_qb_component("New Attribute", column_config, data)
-        # _check_new_attribute_column(column, column_config, column_data, 'New Attribute')
-    assert (
-        err.value.args[0]
-        == f"Column with config '{column_config}' did not match either New or "
-        f"Existing Attribute v1_0_col_schema"
-    )
-
-
 def test_04_03_attribute_new_ok():
     """
     Checks New attribute when description, values, from_existing and definition_uri options
@@ -355,10 +286,8 @@ def test_04_03_attribute_new_ok():
     }
     data = pd.Series(column_data, name="Attribute Heading")
 
-    with pytest.raises(ValueError) as err:
-        column = map_column_to_qb_component("New Attribute", column_config, data)
-        # _check_new_attribute_column(column, column_config, column_data, 'New Attribute')
-    assert err.value.args[0] == "Unexpected value for 'newAttributeValues': False"
+    column = map_column_to_qb_component("New Attribute", column_config, data)
+    _check_new_attribute_column(column, column_config, column_data, "New Attribute")
 
 
 def test_04_04_attribute_new_ok():
@@ -569,7 +498,6 @@ def test_09_units_existing_ok():
     column_data = ["a", "b", "c", "a"]
     column_config = {
         "type": "units",
-        "values": True,
         "cell_uri_template": "http://example.org/unit/{+existing_unit}",
     }
     data = pd.Series(column_data, name="Existing Unit Series")
