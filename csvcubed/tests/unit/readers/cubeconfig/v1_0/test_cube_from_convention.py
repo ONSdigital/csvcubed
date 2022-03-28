@@ -5,10 +5,10 @@ from csvcubed.cli.build import build as cli_build
 from csvcubed.readers.cubeconfig.v1_0.configdeserialiser import *
 
 from tests.unit.test_baseunit import get_test_cases_dir
+from definitions import ROOT_DIR_PATH
 
-PROJECT_ROOT = Path(Path(__file__).parent, "../../../cube", "..", "..", "..").resolve()
-TEST_CASE_DIR = Path(get_test_cases_dir().absolute(), "config")
-SCHEMA_PATH_FILE = Path(PROJECT_ROOT, "csvcubed", "schema", "cube-config-schema.json")
+TEST_CASE_DIR = get_test_cases_dir().absolute() / "readers" / "cube-config" / "v1.0"
+SCHEMA_PATH_FILE = Path(ROOT_DIR_PATH, "csvcubed", "schema", "cube-config-schema.json")
 
 
 # def test_schema_loads_from_file():

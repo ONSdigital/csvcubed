@@ -10,11 +10,13 @@ from csvcubed.readers.cubeconfig import schema_versions, v1_0
 from csvcubed.utils.cache import session
 from definitions import ROOT_DIR_PATH
 
+_cube_config_test_case_dir = get_test_cases_dir() / "readers" / "cube-config"
+
 
 @given('The existing tidy data csv file "{data_file}"')
 def step_impl(context, data_file):
     test_case_dir = get_test_cases_dir()
-    data_file = Path(test_case_dir, "config", data_file)
+    data_file = _cube_config_test_case_dir / data_file
     if not data_file.exists():
         raise Exception(f"Could not find test-case file {data_file}")
     context.data_file = data_file
@@ -25,12 +27,11 @@ def step_impl(context, data_file):
     '"{data_file}"'
 )
 def step_impl(context, config_file, data_file):
-    test_case_dir = get_test_cases_dir()
-    config_file = Path(test_case_dir, "config", config_file)
+    config_file = _cube_config_test_case_dir / config_file
     if not config_file.exists():
         raise Exception(f"Could not find test-case file {config_file}")
 
-    data_file = Path(test_case_dir, "config", data_file)
+    data_file = _cube_config_test_case_dir / data_file
     if not data_file.exists():
         raise Exception(f"Could not find test-case file {data_file}")
 

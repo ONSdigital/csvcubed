@@ -6,7 +6,7 @@ from csvcubed.cli.build import build as cli_build
 from csvcubed.models.cube import Cube
 from tests.unit.test_baseunit import get_test_cases_dir
 
-TEST_CASE_DIR = Path(get_test_cases_dir().absolute(), "config")
+TEST_CASE_DIR = get_test_cases_dir().absolute() / "readers" / "cube-config" / "v1.0"
 
 
 def test_build_with_fail():
