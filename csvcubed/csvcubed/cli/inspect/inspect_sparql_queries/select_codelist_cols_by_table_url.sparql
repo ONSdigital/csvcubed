@@ -4,13 +4,18 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 
-SELECT DISTINCT ?columnTitle ?columnPropertyUrl ?tableUrl
+SELECT DISTINCT ?columnPropertyUrl ?columnValueUrl
 WHERE {   
+    BIND ('alcohol-content.csv' as ?tableUrlStr).
+
     ?table csvw:url ?tableUrl.
     ?table csvw:tableSchema/csvw:column/rdf:rest*/rdf:first ?column.
 
     ?column csvw:propertyUrl ?columnPropertyUrl.
-    ?column csvw:title ?columnTitle.
+    OPTIONAL{
+        ?column csvw:valueUrl ?columnValueUrl.
+    }
+    
+    FILTER (strends(str(?tableUrl), ?tableUrlStr)).
 
-    FILTER (str(?columnPropertyUrl) IN (str(skos:notation), "skos:notation") || str(?columnPropertyUrl) IN (str(rdfs:label), "rdfs:label") || str(?columnPropertyUrl) IN (str(skos:broader), "skos:broader")).
 }
