@@ -10,7 +10,7 @@ Feature: Cube!
       """
       {
         "title": "Tests/test-cases/config/schema-cube-data-config-ok",
-        "identifier": "http://schema-id",
+        "identifier": "schema-id",
         "summary": "a summary",
         "description": "Schema for testing",
         "creator_uri": "https://www.gov.uk/government/organisations/fred-the-creator",
@@ -22,7 +22,7 @@ Feature: Cube!
         "dataset_modified": "2022-03-04 15:00:00.000",
         "license_uri": "the license",
         "public_contact_point_uri": "Rob Barry",
-        "uri_safe_identifier_override": "http://schema-id"
+        "uri_safe_identifier_override": "schema-id"
       }
       """
     Then The cube Columns should match
@@ -79,7 +79,7 @@ Feature: Cube!
     Then The cube Metadata should match
       """
         {"title": "Tests/test-cases/config/schema-cube-data-config-ok",
-        "identifier": "http://schema-id",
+        "identifier": "schema-id",
         "summary": "a summary",
         "description": "Schema for testing",
         "creator_uri": "https://www.gov.uk/government/organisations/fred-the-creator",
@@ -91,7 +91,7 @@ Feature: Cube!
         "dataset_modified": "2022-03-04 18:00:00.000",
         "license_uri": "the license",
         "public_contact_point_uri": None,
-        "uri_safe_identifier_override": "http://schema-id",
+        "uri_safe_identifier_override": "schema-id",
         }
 
       """
