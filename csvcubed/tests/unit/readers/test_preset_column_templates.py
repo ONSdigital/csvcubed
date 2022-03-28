@@ -2,10 +2,7 @@ from requests.exceptions import HTTPError
 from copy import deepcopy
 
 import pytest
-import requests_mock
 
-from definitions import ROOT_DIR_PATH
-from csvcubed.utils.cache import session
 from csvcubed.readers.cubeconfig.schema_versions import (
     QubeConfigJsonSchemaVersion,
 )
@@ -18,39 +15,13 @@ from csvcubed.readers.preconfiguredtemplates import (
 TEMPLATE_BASE_URL = "https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/csvcubed/csvcubed/readers/{}/templates/{}"
 
 
-@pytest.fixture(autouse=True)
-def mock_http_session():
-    """
-    Fixture which mocks the HTTP responses of the JSON template files for testing.
-    """
-
-    with session.cache_disabled(), requests_mock.Mocker(
-        session=session, real_http=True
-    ) as mocker:
-        templates_dir = (
-            ROOT_DIR_PATH / "csvcubed" / "readers" / "cubeconfig" / "v1_0" / "templates"
-        )
-
-        for template_file in templates_dir.rglob("**/*.json"):
-            relative_file_path = str(template_file.relative_to(templates_dir))
-            with open(template_file) as f:
-                mocker.register_uri(
-                    "GET",
-                    "//raw.githubusercontent.com/GSS-Cogs/csvcubed/main/csvcubed/csvcubed/readers/v1_0/templates/"
-                    + relative_file_path,
-                    text=f.read(),
-                )
-
-        yield session
-
-
 def test_func_accepts_dict_with_template():
     column_config = {"label": "year", "from_template": "year"}
     apply_preconfigured_values_from_template(
         column_config, QubeConfigJsonSchemaVersion.V1_0.value
     )
     assert (
-        column_config.get("column_uri_template")
+        column_config.get("cell_uri_template")
         == "http://example.com/code-list/year/{+<column_name>}"
     )
 
@@ -72,7 +43,7 @@ def test_from_template_removed_from_column_config():
         column_config, QubeConfigJsonSchemaVersion.V1_0.value
     )
     assert (
-        column_config.get("column_uri_template")
+        column_config.get("cell_uri_template")
         == "http://example.com/code-list/year/{+<column_name>}"
     )
     assert "from_template" not in column_config
@@ -84,12 +55,12 @@ def test_dict_is_exactly_same_as_fetched_template():
     apply_preconfigured_values_from_template(
         column_config, QubeConfigJsonSchemaVersion.V1_0.value
     )
-    assert column_config.get("column_uri_template") == "http://....../{+<column_name>}"
+    assert column_config.get("cell_uri_template") == "http://....../{+<column_name>}"
     assert "from_template" not in column_config
     assert column_config["type"] == "dimension"
     assert column_config["from_existing"] == "...."
     assert column_config["label"] == "NUTSgeography"
-    assert column_config["column_uri_template"] == "http://....../{+<column_name>}"
+    assert column_config["cell_uri_template"] == "http://....../{+<column_name>}"
 
 
 def test_ons_geographies_template_is_fetched():
@@ -97,12 +68,12 @@ def test_ons_geographies_template_is_fetched():
     apply_preconfigured_values_from_template(
         column_config, QubeConfigJsonSchemaVersion.V1_0.value
     )
-    assert column_config.get("column_uri_template") == "http://....../{+<column_name>}"
+    assert column_config.get("cell_uri_template") == "http://....../{+<column_name>}"
     assert "from_template" not in column_config
     assert column_config["type"] == "dimension"
     assert column_config["from_existing"] == "...."
     assert column_config["label"] == "ONSgeographies"
-    assert column_config["column_uri_template"] == "http://....../{+<column_name>}"
+    assert column_config["cell_uri_template"] == "http://....../{+<column_name>}"
 
 
 def test_raise_error_works_for_none_existing_template_lookup_path():

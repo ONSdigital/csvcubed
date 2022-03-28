@@ -102,17 +102,23 @@ def _get_cube_from_config_json_dict(
 
     config_columns = config.get("columns", {})
     for (column_title, column_config) in config_columns.items():
-        # When the config json contains a col definition and the col title is not in the data
-        column_data = data[column_title] if column_title in data.columns else None
-
-        # Load configuration from the "from_template": if provided.
-        apply_preconfigured_values_from_template(column_config, version_module_path)
-
         columns.append(
-            map_column_to_qb_component(column_title, column_config, column_data)
+            _get_qb_column_from_json(
+                column_config, column_title, data, version_module_path
+            )
         )
 
     return Cube(metadata, data, columns)
+
+
+def _get_qb_column_from_json(
+    column_config: dict, column_title: str, data: pd.DataFrame, version_module_path: str
+):
+    # When the config json contains a col definition and the col title is not in the data
+    column_data = data[column_title] if column_title in data.columns else None
+    # Load configuration from the "from_template": if provided.
+    apply_preconfigured_values_from_template(column_config, version_module_path)
+    return map_column_to_qb_component(column_title, column_config, column_data)
 
 
 def _metadata_from_dict(config: dict) -> "CatalogMetadata":

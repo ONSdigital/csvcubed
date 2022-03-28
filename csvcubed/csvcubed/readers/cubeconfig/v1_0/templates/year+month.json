@@ -2,5 +2,5 @@
     "type": "dimension",
     "from_existing": "....",
     "label": "Year+Month",
-    "column_uri_template": "http://....../{+<column_name>}"
+    "cell_uri_template": "http://....../{+<column_name>}"
 }

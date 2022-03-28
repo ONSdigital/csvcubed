@@ -1,7 +1,9 @@
 import os
 import pytest
 from csvcubed.cli.build import build as cli_build
+from csvcubed.readers.cubeconfig.schema_versions import QubeConfigJsonSchemaVersion
 from csvcubed.readers.cubeconfig.v1_0.configdeserialiser import *
+from csvcubed.readers.cubeconfig.v1_0.configdeserialiser import _get_qb_column_from_json
 from tests.unit.test_baseunit import get_test_cases_dir
 
 PROJECT_ROOT = Path(Path(__file__).parent, "../../../cube", "..", "..", "..").resolve()
@@ -592,6 +594,26 @@ def test_new_dimension_existing_code_list():
         column.csv_column_uri_template
         == "http://example.com/code-list#{+new_dimension}"
     )
+
+
+def test_column_template_expansion():
+    """
+    Test that when using a column template, we see the default parameters expanded as expected.
+    """
+    data = pd.DataFrame({"The Column": ["a", "b", "c", "a"]})
+
+    column = _get_qb_column_from_json(
+        {
+            "from_template": "year",
+        },
+        "The Column",
+        data,
+        QubeConfigJsonSchemaVersion.V1_0.value,
+    )
+
+    assert isinstance(column.structural_definition, NewQbDimension)
+    dimension = column.structural_definition
+    assert dimension.label == "Year"
 
 
 if __name__ == "__main__":
