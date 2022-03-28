@@ -26,6 +26,7 @@ def test_na_filter_works():
     assert "" not in pd_table['Description'].values
     assert not pd_table['Parent Notation'].isnull().values.any()
 
+
 def test_zero_length_strings_are_replaced_with_NaN():
     """
     Checking to see that zero-length string (i.e. ,,) are translated into NaN
@@ -33,6 +34,7 @@ def test_zero_length_strings_are_replaced_with_NaN():
     pd_table = read_csv(csv_path)
     assert pd_table['Description'].isnull().values.any()
     assert pd_table['Description'].isnull().sum() == 13
+
 
 def test_NaN_value_in_Parent_Notation_column_is_type_string():
     """
