@@ -6,8 +6,8 @@ from csvcubed.readers.cubeconfig.v1_0.configdeserialiser import *
 
 from tests.unit.test_baseunit import get_test_cases_dir
 
-PROJECT_ROOT = Path(Path(__file__).parent, "..", "..", "..", "..").resolve()
-TEST_CASE_DIR = Path(get_test_cases_dir().absolute(), 'config')
+PROJECT_ROOT = Path(Path(__file__).parent, "../../../cube", "..", "..", "..").resolve()
+TEST_CASE_DIR = Path(get_test_cases_dir().absolute(), "config")
 SCHEMA_PATH_FILE = Path(PROJECT_ROOT, "csvcubed", "schema", "cube-config-schema.json")
 
 
@@ -56,11 +56,14 @@ SCHEMA_PATH_FILE = Path(PROJECT_ROOT, "csvcubed", "schema", "cube-config-schema.
 #     assert exc_info.type is TypeError
 #     assert exc_info.value.args == ""
 
+
 def test_01_build_convention_ok():
     """
     Valid Cube from Data using Convention (no config json)
     """
-    test_data_path = Path(os.path.join(TEST_CASE_DIR, 'cube_data_convention_ok.csv')).resolve()
+    test_data_path = Path(
+        os.path.join(TEST_CASE_DIR, "cube_data_convention_ok.csv")
+    ).resolve()
     test_json_path = None
     print(f"test_case_data: {test_data_path}")
     cube, validation_errors = cli_build(csv_path=test_data_path)
@@ -73,20 +76,30 @@ def test_01_build_convention_ok():
     col_dim_0 = cube.columns[0]
     assert isinstance(col_dim_0.structural_definition, NewQbDimension)
     assert isinstance(col_dim_0.structural_definition.code_list, NewQbCodeList)
-    assert isinstance(col_dim_0.structural_definition.code_list.metadata, CatalogMetadata)
+    assert isinstance(
+        col_dim_0.structural_definition.code_list.metadata, CatalogMetadata
+    )
     assert isinstance(col_dim_0.structural_definition.code_list.concepts, list)
-    assert isinstance(col_dim_0.structural_definition.code_list.concepts[0], NewQbConcept)
+    assert isinstance(
+        col_dim_0.structural_definition.code_list.concepts[0], NewQbConcept
+    )
 
     col_dim_1 = cube.columns[1]
     assert isinstance(col_dim_1.structural_definition, NewQbDimension)
-    assert isinstance(col_dim_1.structural_definition.code_list.metadata, CatalogMetadata)
+    assert isinstance(
+        col_dim_1.structural_definition.code_list.metadata, CatalogMetadata
+    )
     assert isinstance(col_dim_1.structural_definition.code_list.concepts, list)
-    assert isinstance(col_dim_1.structural_definition.code_list.concepts[0], NewQbConcept)
+    assert isinstance(
+        col_dim_1.structural_definition.code_list.concepts[0], NewQbConcept
+    )
 
     col_observation = cube.columns[2]
-    assert isinstance(col_observation.structural_definition, QbMultiMeasureObservationValue)
+    assert isinstance(
+        col_observation.structural_definition, QbMultiMeasureObservationValue
+    )
     assert col_observation.structural_definition.unit is None
-    assert col_observation.structural_definition.data_type == 'decimal'
+    assert col_observation.structural_definition.data_type == "decimal"
 
     col_measure = cube.columns[3]
     assert isinstance(col_measure.structural_definition, QbMultiMeasureDimension)
@@ -103,7 +116,8 @@ def test_01_build_convention_ok():
     assert isinstance(col_attribute.structural_definition.code_list, NewQbCodeList)
     assert isinstance(col_attribute.structural_definition.code_list.concepts, list)
     assert isinstance(
-        col_attribute.structural_definition.code_list.concepts[0], NewQbConcept)
+        col_attribute.structural_definition.code_list.concepts[0], NewQbConcept
+    )
 
 
 if __name__ == "__main__":

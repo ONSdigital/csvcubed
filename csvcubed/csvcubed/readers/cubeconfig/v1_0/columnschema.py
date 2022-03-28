@@ -63,6 +63,7 @@ class NewDimension(SchemaBaseClass):
     definition_uri: Optional[str] = None
     code_list: Optional[Union[str, bool]] = True
     from_existing: Optional[str] = None
+    cell_uri_template: Optional[str] = None
 
     def map_to_new_qb_dimension(
         self, csv_column_title: str, data: PandasDataTypes

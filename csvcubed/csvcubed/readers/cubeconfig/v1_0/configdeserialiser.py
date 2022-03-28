@@ -22,6 +22,8 @@ from csvcubed.utils.validators.schema import validate_dict_against_schema
 from csvcubed.readers.cubeconfig.utils import load_resource
 
 # Used to determine whether a column name matches accepted conventions
+from ...preconfiguredtemplates import apply_preconfigured_values_from_template
+
 CONVENTION_NAMES = {
     "measures": {
         "measure",
@@ -54,7 +56,7 @@ log = logging.getLogger(__name__)
 
 
 def get_deserialiser(
-    schema_path: str,
+    schema_path: str, version_module_path: str
 ) -> Callable[[Path, Optional[Path]], Tuple[QbCube, List[JsonSchemaValidationError]]]:
     """Generates a deserialiser function which validates the JSON file against the schema at :obj:`schema_path`"""
 
@@ -83,8 +85,7 @@ def get_deserialiser(
             config = {"title": _generate_title_from_file_name(csv_path)}
             schema_validation_errors = []
 
-        parent_path = config_path.parent if config_path else csv_path.parent
-        cube = _get_cube_from_config_json_dict(data, config, parent_path)
+        cube = _get_cube_from_config_json_dict(data, config, version_module_path)
 
         _configure_remaining_columns_by_convention(cube, data)
 
@@ -94,7 +95,7 @@ def get_deserialiser(
 
 
 def _get_cube_from_config_json_dict(
-    data: pd.DataFrame, config: Dict, json_parent_dir: Path
+    data: pd.DataFrame, config: Dict, version_module_path: str
 ) -> QbCube:
     columns: List[CsvColumn] = []
     metadata: CatalogMetadata = _metadata_from_dict(config)
@@ -103,6 +104,9 @@ def _get_cube_from_config_json_dict(
     for (column_title, column_config) in config_columns.items():
         # When the config json contains a col definition and the col title is not in the data
         column_data = data[column_title] if column_title in data.columns else None
+
+        # Load configuration from the "from_template": if provided.
+        apply_preconfigured_values_from_template(column_config, version_module_path)
 
         columns.append(
             map_column_to_qb_component(column_title, column_config, column_data)

@@ -4,7 +4,7 @@ from csvcubed.cli.build import build as cli_build
 from csvcubed.readers.cubeconfig.v1_0.configdeserialiser import *
 from tests.unit.test_baseunit import get_test_cases_dir
 
-PROJECT_ROOT = Path(Path(__file__).parent, "..", "..", "..", "..").resolve()
+PROJECT_ROOT = Path(Path(__file__).parent, "../../../cube", "..", "..", "..").resolve()
 TEST_CASE_DIR = Path(get_test_cases_dir().absolute(), "config")
 SCHEMA_PATH_FILE = Path(PROJECT_ROOT, "csvcubed", "schema", "cube-config-schema.json")
 
@@ -565,6 +565,33 @@ def test_10_observation_ok():
     assert isinstance(sd, QbMultiMeasureObservationValue)
     assert sd.unit is None
     assert sd.data_type == "decimal"
+
+
+def test_new_dimension_existing_code_list():
+    """
+    Ensure we can correctly define a new dimension using an existing code-list
+    """
+    column_data = ["a", "b", "c", "a"]
+    dimension_config = {
+        "label": "The New Dimension",
+        "code_list": "http://example.com/code-list#scheme",
+        "cell_uri_template": "http://example.com/code-list#{+new_dimension}",
+    }
+    data = pd.Series(column_data, name="Dimension Heading")
+
+    column = map_column_to_qb_component("New Dimension", dimension_config, data)
+
+    assert isinstance(column.structural_definition, NewQbDimension)
+    dimension = column.structural_definition
+    assert dimension.label == "The New Dimension"
+    assert isinstance(dimension.code_list, ExistingQbCodeList)
+    assert (
+        dimension.code_list.concept_scheme_uri == "http://example.com/code-list#scheme"
+    )
+    assert (
+        column.csv_column_uri_template
+        == "http://example.com/code-list#{+new_dimension}"
+    )
 
 
 if __name__ == "__main__":

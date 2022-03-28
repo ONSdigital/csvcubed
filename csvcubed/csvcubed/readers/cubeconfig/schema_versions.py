@@ -17,12 +17,6 @@ QubeConfigDeserialiser = Callable[
     [Path, Optional[Path]], Tuple[QbCube, List[JsonSchemaValidationError]]
 ]
 
-if __debug__:
-    from typing import Dict
-
-    _schema_url_overrides: Dict[str, str] = {}
-    """Allows overriding the location the schema definition can be found. Designed to be used in testing."""
-
 _V1_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.0"
 
 
@@ -31,7 +25,7 @@ class QubeConfigJsonSchemaVersion(Enum):
     Known versions of the QubeConfig JSON Schema and the directory/module name they are contained within.
     """
 
-    V1_0 = "V1_0"
+    V1_0 = "v1_0"
 
 
 def get_deserialiser_for_schema(
@@ -45,13 +39,10 @@ def get_deserialiser_for_schema(
 
     schema_version = _get_schema_version(schema_path)
 
-    if __debug__:
-        # If there is a specific location we should use to override the schema path, let's use that.
-        # This is for use in testing.
-        schema_path = _schema_url_overrides.get(schema_path, schema_path)
-
     if schema_version == QubeConfigJsonSchemaVersion.V1_0:
-        return v1_0.configdeserialiser.get_deserialiser(schema_path)
+        return v1_0.configdeserialiser.get_deserialiser(
+            schema_path, schema_version.value
+        )
     else:
         raise ValueError(f"Unhandled schema version {schema_version}")
 

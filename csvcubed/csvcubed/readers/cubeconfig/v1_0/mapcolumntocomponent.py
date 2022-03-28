@@ -24,7 +24,9 @@ def map_column_to_qb_component(
 
     if isinstance(schema_mapping, schema.NewDimension):
         return QbColumn(
-            column_title, schema_mapping.map_to_new_qb_dimension(column_title, data)
+            column_title,
+            schema_mapping.map_to_new_qb_dimension(column_title, data),
+            csv_column_uri_template=schema_mapping.cell_uri_template,
         )
 
     elif isinstance(schema_mapping, schema.ExistingDimension):
@@ -101,10 +103,10 @@ def _from_column_dict_to_schema_model(
         del column_without_type["type"]
 
     if column_type == "dimension":
-        if schema.NewDimension.dict_fields_match_class(column_without_type):
-            return schema.NewDimension.from_dict(column_without_type)
-        elif schema.ExistingDimension.dict_fields_match_class(column_without_type):
+        if schema.ExistingDimension.dict_fields_match_class(column_without_type):
             return schema.ExistingDimension.from_dict(column_without_type)
+        elif schema.NewDimension.dict_fields_match_class(column_without_type):
+            return schema.NewDimension.from_dict(column_without_type)
         else:
             raise Exception(
                 f"Column with config: '{column}' did not match "
