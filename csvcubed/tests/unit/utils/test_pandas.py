@@ -17,13 +17,42 @@ def test_na_filter_works():
     pd_table = read_csv(csv_path)
     assert "nan" in pd_table['Description'].values
     assert "null" in pd_table['Description'].values
-    assert "#N/A" not in pd_table['Description'].values
-    assert "null"  not in pd_table['Parent Notation'].values
+    assert "#N/A" in pd_table['Parent Notation'].values
     assert "NULL" in pd_table['Parent Notation'].values
     assert "-nan" in pd_table['Parent Notation'].values
     assert "" not in pd_table
     assert "" not in pd_table['Parent Notation'].values
     assert "" not in pd_table['Description'].values
+
+def test_default_na_values_show_up_in_right_column():
+    """
+    The original default na values are all entered once between two
+    columns "Parent Notation' and 'Description', and we checking that
+    they are not converted to NaN values, whilst in the
+    correct location in the pandas dataframe.
+    """
+    pd_table = read_csv(csv_path)
+    assert "nan" in pd_table['Description'].values
+    assert "nan" not in pd_table['Parent Notation'].values
+
+    assert "null" in pd_table['Description'].values
+    assert "null"  not in pd_table['Parent Notation'].values
+
+    assert "#N/A" in pd_table['Parent Notation'].values
+    assert "#N/A" not in pd_table['Description'].values
+
+    assert "NULL" in pd_table['Parent Notation'].values
+    assert "NULL" not in pd_table['Description'].values
+
+    assert "-nan" in pd_table['Parent Notation'].values
+    assert "-nan" not in pd_table['Description'].values
+
+def test_no_NaN_empty_cells_are_in_Parent_Notation_column():
+    """
+    Original default na values that occupy the entire 'Parent Notation' column
+    are not to become NaN values.
+    """
+    pd_table = read_csv(csv_path)
     assert not pd_table['Parent Notation'].isnull().values.any()
 
 
