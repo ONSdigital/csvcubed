@@ -179,10 +179,13 @@ def _configure_remaining_columns_by_convention(
     cube: QbCube, data: pd.DataFrame
 ) -> None:
     """Update columns from csv where appropriate, i.e. config did not define the column."""
-    configured_column_titles = {col.csv_column_title for col in cube.columns}
+    configured_columns = {col.csv_column_title: col for col in cube.columns}
+    ordered_columns: List[QbColumn] = []
     for i, column_title in enumerate(data.columns):
         # ... determine if the column_title in data matches a convention
-        if column_title not in configured_column_titles:
+        if column_title in configured_columns:
+            ordered_columns.append(configured_columns[column_title])
+        if column_title not in configured_columns:
             column_dict = _get_conventional_column_definition_for_title(column_title)
 
             qb_column: CsvColumn = map_column_to_qb_component(
@@ -190,10 +193,10 @@ def _configure_remaining_columns_by_convention(
                 column=column_dict,
                 data=data[column_title].astype("category"),
             )
-            if i < len(cube.columns):
-                cube.columns.insert(i + 1, qb_column)
-            else:
-                cube.columns.append(qb_column)
+
+            ordered_columns.append(qb_column)
+
+    cube.columns = ordered_columns
 
 
 def _get_conventional_column_definition_for_title(column_title: str) -> dict:

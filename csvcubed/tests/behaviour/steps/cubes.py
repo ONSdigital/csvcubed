@@ -1,4 +1,5 @@
 import ast
+import json
 from pathlib import Path
 
 import requests_mock
@@ -84,6 +85,9 @@ def step_impl(context):
     for i, col in enumerate(expected_columns):
         if expected_columns[i] != result[i]:
             # Print the mis-matched values in each row if the row dict is not equal
+            raise Exception(
+                f"{json.dumps(expected_columns[i], indent=4)} ??? {result[i]}"
+            )
             for k, v in col.items():
                 if expected_columns[i].get(k) != col[k]:
                     print(
