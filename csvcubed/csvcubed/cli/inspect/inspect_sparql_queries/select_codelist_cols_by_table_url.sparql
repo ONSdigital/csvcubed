@@ -6,7 +6,7 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT DISTINCT ?columnPropertyUrl ?columnValueUrl
 WHERE {   
-    BIND ('alcohol-content.csv' as ?tableUrlStr).
+    BIND (?table_url as ?tableUrlStr).
 
     ?table csvw:url ?tableUrl.
     ?table csvw:tableSchema/csvw:column/rdf:rest*/rdf:first ?column.

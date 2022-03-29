@@ -189,8 +189,31 @@ class DatasetURLResult:
 
 @dataclass
 class DSDSingleUnitResult:
+    """
+    Model to represent select single unit from dsd.
+    """
+
     unit_uri: str
     unit_label: Optional[str]
+
+
+@dataclass
+class CodelistColumnResult(DataClassBase):
+    """
+    Model to represent a codelist column.
+    """
+
+    column_property_url: str
+    column_value_url: Optional[str]
+
+
+@dataclass
+class CodeListColsByTableUrlResult:
+    """
+    Model to represent select codelist columns by table url.
+    """
+
+    columns: List[CodelistColumn]
 
 
 def map_catalog_metadata_result(sparql_result: ResultRow) -> CatalogMetadataResult:
@@ -410,4 +433,42 @@ def map_single_unit_from_dsd_result(
         ),
         unit_label=unit_label,
     )
+    return result
+
+
+def map_codelist_column_sparql_result(sparql_result: ResultRow) -> CodelistColumnResult:
+    """
+    Maps sparql query result to `CodelistColumnResult`
+
+    Member of :file:`./models/inspectsparqlresults.py`
+
+    :return: `CodelistColumnResult`
+    """
+    result_dict = sparql_result.asdict()
+
+    result = CodelistColumnResult(
+        column_property_url=str(result_dict["columnPropertyUrl"]),
+        column_value_url=none_or_map(result_dict.get("columnValueUrl"), str),
+    )
+    return result
+
+
+def map_codelist_cols_by_table_url_result(
+    sparql_results: List[ResultRow],
+) -> CodeListColsByTableUrlResult:
+    """
+    Maps sparql query result to `CodeListColsByTableUrlResult`
+
+    Member of :file:`./models/inspectsparqlresults.py`
+
+    :return: `CodeListColsByTableUrlResult`
+    """
+
+    columns = list(
+        map(
+            lambda result: map_codelist_column_sparql_result(result),
+            sparql_results,
+        )
+    )
+    result = CodeListColsByTableUrlResult(columns=columns)
     return result
