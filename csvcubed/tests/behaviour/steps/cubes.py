@@ -1,17 +1,22 @@
 import ast
 from pathlib import Path
+
+import requests_mock
 from behave import *
 from csvcubed.cli.build import build as cli_build
 from csvcubeddevtools.helpers.file import get_test_cases_dir
 
 from csvcubed.readers.cubeconfig import schema_versions, v1_0
+from csvcubed.utils.cache import session
 from definitions import ROOT_DIR_PATH
+
+_cube_config_test_case_dir = get_test_cases_dir() / "readers" / "cube-config"
 
 
 @given('The existing tidy data csv file "{data_file}"')
 def step_impl(context, data_file):
     test_case_dir = get_test_cases_dir()
-    data_file = Path(test_case_dir, "config", data_file)
+    data_file = _cube_config_test_case_dir / data_file
     if not data_file.exists():
         raise Exception(f"Could not find test-case file {data_file}")
     context.data_file = data_file
@@ -22,12 +27,11 @@ def step_impl(context, data_file):
     '"{data_file}"'
 )
 def step_impl(context, config_file, data_file):
-    test_case_dir = get_test_cases_dir()
-    config_file = Path(test_case_dir, "config", config_file)
+    config_file = _cube_config_test_case_dir / config_file
     if not config_file.exists():
         raise Exception(f"Could not find test-case file {config_file}")
 
-    data_file = Path(test_case_dir, "config", data_file)
+    data_file = _cube_config_test_case_dir / data_file
     if not data_file.exists():
         raise Exception(f"Could not find test-case file {data_file}")
 
@@ -39,11 +43,19 @@ def step_impl(context, config_file, data_file):
 def step_impl(context):
     config_file = context.config_file if hasattr(context, "config_file") else None
     data_file = context.data_file
-    schema_versions._schema_url_overrides = {
-        "https://purl.org/csv-cubed/qube-config/v1.0": str(
-            ROOT_DIR_PATH / "csvcubed" / "schema" / "cube-config-schema.json"
+
+    mocker = requests_mock.Mocker(session=session)
+    mocker.start()
+
+    with open(
+        ROOT_DIR_PATH / "csvcubed" / "schema" / "cube-config-schema.json", "r"
+    ) as f:
+        mocker.register_uri(
+            "GET", "https://purl.org/csv-cubed/qube-config/v1.0", text=f.read()
         )
-    }
+
+    context.add_cleanup(lambda: mocker.stop())
+
     cube, errors = cli_build(data_file, config_file)
     context.cube = cube
     context.errors = errors

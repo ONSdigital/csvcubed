@@ -1,6 +1,6 @@
 {
     "$schema": "https://purl.org/csv-cubed/qube-config/v1.0",
-    "id": "http://schema-id",
+    "id": "schema-id",
     "title": "Tests/test-cases/config/schema-cube-data-config-ok",
     "description": "Schema for testing",
     "creator": "Fred the creator",
@@ -15,14 +15,8 @@
     "keywords": "two",
     "uri_safe_identifier_override": "uri-safe",
     "columns": {
-        "Dim-0": {"label": "Non Dimension", "type": "dimension", "code_list": true},
-        "Dim-2": {
-            "type": "dimension",
-            "label": "Trade Direction Dimension",
-            "code_list": true
-        },
-        "Attr-1": {"type": "attribute", "label": "My best attribute"},
-        "Measure": {"type": "measures", "values": true},
-        "Units": {"type": "units", "values": true}
+        "Amount": {
+            "type": "observations"
+        }
     }
 }

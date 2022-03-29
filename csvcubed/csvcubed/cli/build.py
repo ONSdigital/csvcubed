@@ -19,7 +19,7 @@ from csvcubed.readers.cubeconfig.schema_versions import (
 )
 from csvcubed.readers.cubeconfig.utils import load_resource
 from csvcubed.utils.qb.validation.cube import validate_qb_component_constraints
-
+from csvcubed.writers.qbwriter import QbWriter
 
 _logger = logging.getLogger(__name__)
 
@@ -72,6 +72,9 @@ def build(
 
         if fail_when_validation_error_occurs and len(validation_errors) > 0:
             exit(1)
+
+    writer = QbWriter(cube)
+    writer.write(output_directory)
 
     print(f"Build Complete")
     return cube, validation_errors
