@@ -14,15 +14,15 @@ def test_na_filter_works():
     running the 'read_csv' command and checking that some of the default na-values
     don't get transformed to NaN values.
     """
-    pd_table = read_csv(csv_path)
-    assert "nan" in pd_table['Description'].values
-    assert "null" in pd_table['Description'].values
-    assert "#N/A" in pd_table['Parent Notation'].values
-    assert "NULL" in pd_table['Parent Notation'].values
-    assert "-nan" in pd_table['Parent Notation'].values
-    assert "" not in pd_table
-    assert "" not in pd_table['Parent Notation'].values
-    assert "" not in pd_table['Description'].values
+    df = read_csv(csv_path)
+    assert "nan" in df['Description'].values
+    assert "null" in df['Description'].values
+    assert "#N/A" in df['Parent Notation'].values
+    assert "NULL" in df['Parent Notation'].values
+    assert "-nan" in df['Parent Notation'].values
+    assert "" not in df
+    assert "" not in df['Parent Notation'].values
+    assert "" not in df['Description'].values
 
 def test_default_na_values_show_up_in_right_column():
     """
@@ -31,38 +31,38 @@ def test_default_na_values_show_up_in_right_column():
     they are not converted to NaN values, whilst in the
     correct location in the pandas dataframe.
     """
-    pd_table = read_csv(csv_path)
-    assert "nan" in pd_table['Description'].values
-    assert "nan" not in pd_table['Parent Notation'].values
+    df = read_csv(csv_path)
+    assert "nan" in df['Description'].values
+    assert "nan" not in df['Parent Notation'].values
 
-    assert "null" in pd_table['Description'].values
-    assert "null"  not in pd_table['Parent Notation'].values
+    assert "null" in df['Description'].values
+    assert "null"  not in df['Parent Notation'].values
 
-    assert "#N/A" in pd_table['Parent Notation'].values
-    assert "#N/A" not in pd_table['Description'].values
+    assert "#N/A" in df['Parent Notation'].values
+    assert "#N/A" not in df['Description'].values
 
-    assert "NULL" in pd_table['Parent Notation'].values
-    assert "NULL" not in pd_table['Description'].values
+    assert "NULL" in df['Parent Notation'].values
+    assert "NULL" not in df['Description'].values
 
-    assert "-nan" in pd_table['Parent Notation'].values
-    assert "-nan" not in pd_table['Description'].values
+    assert "-nan" in df['Parent Notation'].values
+    assert "-nan" not in df['Description'].values
 
 def test_no_NaN_empty_cells_are_in_Parent_Notation_column():
     """
     Original default na values that occupy the entire 'Parent Notation' column
     are not to become NaN values.
     """
-    pd_table = read_csv(csv_path)
-    assert not pd_table['Parent Notation'].isnull().values.any()
+    df = read_csv(csv_path)
+    assert not df['Parent Notation'].isnull().values.any()
 
 
 def test_zero_length_strings_are_replaced_with_NaN():
     """
     Checking to see that zero-length string (i.e. ,,) are translated into NaN
     """
-    pd_table = read_csv(csv_path)
-    assert pd_table['Description'].isnull().values.any()
-    assert pd_table['Description'].isnull().sum() == 13
+    df = read_csv(csv_path)
+    assert df['Description'].isnull().values.any()
+    assert df['Description'].isnull().sum() == 13
 
 
 def test_NaN_value_in_Parent_Notation_column_is_type_string():
@@ -71,10 +71,10 @@ def test_NaN_value_in_Parent_Notation_column_is_type_string():
     csvs is not treated as a none cell item type value, instead 
     treated as a string type value.
     """
-    pd_table = read_csv(csv_path)
-    assert not pd_table['Parent Notation'].isnull().values.any()
-    assert not pd_table['Parent Notation'].isnull().sum() == 1
-    assert "NaN" in pd_table['Parent Notation'].values
+    df = read_csv(csv_path)
+    assert not df['Parent Notation'].isnull().values.any()
+    assert not df['Parent Notation'].isnull().sum() == 1
+    assert "NaN" in df['Parent Notation'].values
 
 if __name__ == "__main__":
     pytest.main()
