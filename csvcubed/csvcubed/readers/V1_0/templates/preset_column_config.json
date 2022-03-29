@@ -1,6 +1,17 @@
 {
-    "year": "year.json",
-    "year+month": "year+month.json",
-    "ons geographies": "onsgeographies.json",
-    "nuts geography": "nutsgeography.json"
+    "year": "calendar-year.jsonc",
+    "half-year": "calendar-half-year.jsonc",
+    "quarter": "calendar-quarter.jsonc",
+    "month": "calendar-month.jsonc",
+    "week": "calendar-week.jsonc",
+    "day": "calendar-day.jsonc",
+    "hour": "calendar-hour.jsonc",
+    "minutes": "calendar-minute.jsonc",
+    "second": "calendar-seconds.jsonc",
+    "government-year": "government-year.jsonc",
+    "government-half-year": "government-half-year.jsonc",
+    "government-quarter": "government-quarter.jsonc",
+    "government-week": "government-week.jsonc",
+    "gregorian-instant": "gregorian-instant.jsonc",
+    "observation-status": "observation-status.json"
 }
