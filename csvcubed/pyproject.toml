@@ -20,6 +20,7 @@ appdirs = "^1.4.4"
 requests = "^2.27.1"
 click = ">=8.0.0"
 requests-cache = "^0.9.3"
+treelib = "^1.6.1"
 
 [tool.poetry.dev-dependencies]
 # The -models library is currently listed as a dev dependency so that we can reference it by its relative
