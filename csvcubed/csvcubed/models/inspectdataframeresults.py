@@ -5,10 +5,12 @@ Inspect Dataframe query results
 
 from os import linesep
 from typing import Optional
-from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
 import pandas as pd
 from dataclasses import dataclass
 
+from treelib import Tree
+
+from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
 from csvcubed.utils.printable import get_printable_tabuler_str_from_dataframe
 
 
@@ -62,3 +64,16 @@ class DatasetObservationsByMeasureUnitInfoResult:
             )
         )
         return f"{linesep}\t- Value counts broken-down by measure and unit (of measure):{linesep}{formatted_by_measure_and_unit_val_counts}"
+
+
+@dataclass
+class CodelistHierarchyInfoResult:
+    """
+    Model to represent codelist hierarchy (i.e. tree strcuture).
+    """
+
+    tree: Tree
+
+    @property
+    def output_str(self) -> str:
+        return f"{linesep}\t- Hierarchy:{linesep}{self.tree}{linesep}\t- Hierarchy depth: {self.tree.depth()}"

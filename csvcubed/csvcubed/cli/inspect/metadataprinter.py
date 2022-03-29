@@ -8,6 +8,10 @@ Provides functionality for validating and detecting input metadata.json file.
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import List
+from csvcubed.utils.skos.codelist import (
+    CodelistPropertyUrl,
+    get_codelist_col_title_by_property_uri,
+)
 import pandas as pd
 
 from rdflib import Graph
@@ -23,7 +27,7 @@ from csvcubed.models.inspectsparqlresults import (
 )
 from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
 from csvcubed.cli.inspect.inspectsparqlmanager import (
-    select_codelist_cols_by_table_url,
+    select_codelist_cols_by_dataset_url,
     select_codelist_dataset_url,
     select_cols_where_supress_output_is_true,
     select_csvw_catalog_metadata,
@@ -33,6 +37,7 @@ from csvcubed.cli.inspect.inspectsparqlmanager import (
     select_qb_dataset_url,
 )
 from csvcubed.cli.inspect.inspectdatasetmanager import (
+    get_codelist_hierarchy_info,
     get_dataset_observations_info,
     get_dataset_val_counts_info,
     load_csv_to_dataframe,
@@ -164,8 +169,9 @@ class MetadataPrinter:
         else:
             raise JsonldNotSupportedException()
 
+        self.dataset_url: str = result_dataset_url.dataset_url
         self.dataset: pd.DataFrame = load_csv_to_dataframe(
-            self.csvw_metadata_json_path, Path(result_dataset_url.dataset_url)
+            self.csvw_metadata_json_path, Path(self.dataset_url)
         )
 
         result: DatasetObservationsInfoResult = get_dataset_observations_info(
@@ -201,10 +207,22 @@ class MetadataPrinter:
         return f"- The {self._get_type_str()} has the following value counts:{result.output_str}"
 
     def gen_codelist_hierachy_info_printable(self) -> str:
-        #TODO: get table url and pass as param below.
-        result_code_list_cols = select_codelist_cols_by_table_url(
-            self.csvw_metadata_rdf_graph, "TODO TABLE URL"
+        result_code_list_cols = select_codelist_cols_by_dataset_url(
+            self.csvw_metadata_rdf_graph, self.dataset_url
         )
-        print("result_code_list_cols: ", result_code_list_cols)
-        
-        #TODO: Add a method to codelist utility for getting col obj by notation.
+
+        parent_notation_col = get_codelist_col_title_by_property_uri(
+            result_code_list_cols.columns, CodelistPropertyUrl.SkosBroader
+        )
+        label_col = get_codelist_col_title_by_property_uri(
+            result_code_list_cols.columns, CodelistPropertyUrl.RDFLabel
+        )
+        notation_col = get_codelist_col_title_by_property_uri(
+            result_code_list_cols.columns, CodelistPropertyUrl.SkosNotation
+        )
+
+        result = get_codelist_hierarchy_info(
+            self.dataset, parent_notation_col, label_col, notation_col
+        )
+
+        return f"- The {self._get_type_str()} has the following hierarchy information:{result.output_str}"

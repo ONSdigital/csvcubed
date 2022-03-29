@@ -10,6 +10,7 @@ import logging
 from pathlib import Path
 from typing import List, Optional
 from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
+from csvcubed.utils.skos.codelist import build_codelist_hierarchy_tree
 import pandas as pd
 
 from csvcubed.utils.pandas import read_csv
@@ -23,6 +24,7 @@ from csvcubed.utils.qb.components import (
     get_component_property_as_relative_path,
 )
 from csvcubed.models.inspectdataframeresults import (
+    CodelistHierarchyInfoResult,
     DatasetObservationsByMeasureUnitInfoResult,
     DatasetObservationsInfoResult,
     DatasetSingleMeasureResult,
@@ -192,3 +194,13 @@ def get_dataset_val_counts_info(
             by_measure_and_unit_grouped.size().reset_index()
         )
     )
+
+
+def get_codelist_hierarchy_info(
+    dataset: pd.DataFrame, parent_notation_col, label_col, notation_col
+) -> str:
+    concepts_tree = build_codelist_hierarchy_tree(
+        dataset, parent_notation_col, label_col, notation_col
+    )
+
+    return CodelistHierarchyInfoResult(tree=concepts_tree)

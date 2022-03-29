@@ -16,7 +16,7 @@ from rdflib.query import ResultRow
 from csvcubed.models.inspectsparqlresults import (
     CSVWTableSchemaFileDependenciesResult,
     CatalogMetadataResult,
-    CodeListColsByTableUrlResult,
+    CodeListColsByDatasetUrlResult,
     CodelistsResult,
     ColsWithSuppressOutputTrueResult,
     DSDLabelURIResult,
@@ -24,7 +24,7 @@ from csvcubed.models.inspectsparqlresults import (
     DatasetURLResult,
     QubeComponentsResult,
     map_catalog_metadata_result,
-    map_codelist_cols_by_table_url_result,
+    map_codelist_cols_by_dataset_url_result,
     map_codelists_sparql_result,
     map_cols_with_supress_output_true_sparql_result,
     map_csvw_table_schemas_result,
@@ -74,7 +74,7 @@ class SPARQLQueryFileName(Enum):
         "select_csvw_table_schema_file_dependencies"
     )
 
-    SELECT_CODELIST_COLS_BY_TABLE_URL = "select_codelist_cols_by_table_url"
+    SELECT_CODELIST_COLS_BY_DATASET_URL = "select_codelist_cols_by_dataset_url"
 
 
 def _get_query_string_from_file(queryType: SPARQLQueryFileName) -> str:
@@ -323,26 +323,26 @@ def select_single_unit_from_dsd(
     return map_single_unit_from_dsd_result(results[0], json_path)
 
 
-def select_codelist_cols_by_table_url(
+def select_codelist_cols_by_dataset_url(
     rdf_graph: Graph, table_url: str
-) -> CodeListColsByTableUrlResult:
+) -> CodeListColsByDatasetUrlResult:
     """
     Queries the code list column property and value urls for the given table url.
 
     Member of :file:`./inspectsparqlmanager.py`
 
-    :return: `CodeListColsByTableUrlResult`
+    :return: `CodeListColsByDatasetUrlResult`
     """
     results: List[ResultRow] = select(
         _get_query_string_from_file(
-            SPARQLQueryFileName.SELECT_CODELIST_COLS_BY_TABLE_URL
+            SPARQLQueryFileName.SELECT_CODELIST_COLS_BY_DATASET_URL
         ),
         rdf_graph,
         init_bindings={"table_url": Literal(table_url)},
     )
 
-    if len(results) > 1:
+    if len(results) < 1:
         raise InvalidNumberOfRecordsException(
             excepted_num_of_records=1, num_of_records=len(results)
         )
-    return map_codelist_cols_by_table_url_result(results)
+    return map_codelist_cols_by_dataset_url_result(results)

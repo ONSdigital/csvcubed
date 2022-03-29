@@ -205,15 +205,15 @@ class CodelistColumnResult(DataClassBase):
 
     column_property_url: str
     column_value_url: Optional[str]
-
+    column_title: Optional[str]
 
 @dataclass
-class CodeListColsByTableUrlResult:
+class CodeListColsByDatasetUrlResult:
     """
     Model to represent select codelist columns by table url.
     """
 
-    columns: List[CodelistColumn]
+    columns: List[CodelistColumnResult]
 
 
 def map_catalog_metadata_result(sparql_result: ResultRow) -> CatalogMetadataResult:
@@ -449,19 +449,20 @@ def map_codelist_column_sparql_result(sparql_result: ResultRow) -> CodelistColum
     result = CodelistColumnResult(
         column_property_url=str(result_dict["columnPropertyUrl"]),
         column_value_url=none_or_map(result_dict.get("columnValueUrl"), str),
+        column_title=none_or_map(result_dict.get("columnTitle"), str),
     )
     return result
 
 
-def map_codelist_cols_by_table_url_result(
+def map_codelist_cols_by_dataset_url_result(
     sparql_results: List[ResultRow],
-) -> CodeListColsByTableUrlResult:
+) -> CodeListColsByDatasetUrlResult:
     """
-    Maps sparql query result to `CodeListColsByTableUrlResult`
+    Maps sparql query result to `CodeListColsByDatasetUrlResult`
 
     Member of :file:`./models/inspectsparqlresults.py`
 
-    :return: `CodeListColsByTableUrlResult`
+    :return: `CodeListColsByDatasetUrlResult`
     """
 
     columns = list(
@@ -470,5 +471,5 @@ def map_codelist_cols_by_table_url_result(
             sparql_results,
         )
     )
-    result = CodeListColsByTableUrlResult(columns=columns)
+    result = CodeListColsByDatasetUrlResult(columns=columns)
     return result
