@@ -79,7 +79,7 @@ class CodelistHierarchyInfoResult:
     @property
     def output_str(self) -> str:
         hierarchy_output = (
-            f"{linesep} {self.tree}"
+            f"{linesep}{self.tree}"
             if len(self.tree.all_nodes()) < HIERARCHY_TREE_CONCEPTS_LIMIT
             else " Hierarchy is too large to display."
         )
