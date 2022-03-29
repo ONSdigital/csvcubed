@@ -5,6 +5,7 @@ Inspect Dataframe query results
 
 from os import linesep
 from typing import Optional
+from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
 import pandas as pd
 from dataclasses import dataclass
 
@@ -17,6 +18,7 @@ class DatasetObservationsInfoResult:
     Model to represent get dataset observation info dataframe operation result.
     """
 
+    csvw_type: CSVWType
     num_of_observations: int
     num_of_duplicates: int
     dataset_head: pd.DataFrame
@@ -30,12 +32,11 @@ class DatasetObservationsInfoResult:
         formatted_dataset_tail = get_printable_tabuler_str_from_dataframe(
             self.dataset_tail
         )
-        return f"""
-        - Number of Observations: {self.num_of_observations}
-        - Number of Duplicates: {self.num_of_duplicates}
-        - First 10 Observations:{linesep}{formatted_dataset_head}
-        - Last 10 Observations:{linesep}{formatted_dataset_tail}
-        """
+
+        obs_or_concepts_str = (
+            "Observations" if self.csvw_type == CSVWType.QbDataSet else "Concepts"
+        )
+        return f"{linesep}\t- Number of {obs_or_concepts_str}: {self.num_of_observations}{linesep}\t- Number of Duplicates: {self.num_of_duplicates}{linesep}\t- First 10 Observations:{linesep}{formatted_dataset_head}{linesep}{linesep}\t- Last 10 Observations:{linesep}{formatted_dataset_tail}{linesep}"
 
 
 @dataclass
@@ -60,6 +61,4 @@ class DatasetObservationsByMeasureUnitInfoResult:
                 column_names=["Measure", "Unit", "Count"],
             )
         )
-        return f"""
-        - Value counts broken-down by measure and unit (of measure):{linesep}{formatted_by_measure_and_unit_val_counts}
-        """
+        return f"{linesep}\t- Value counts broken-down by measure and unit (of measure):{linesep}{formatted_by_measure_and_unit_val_counts}"

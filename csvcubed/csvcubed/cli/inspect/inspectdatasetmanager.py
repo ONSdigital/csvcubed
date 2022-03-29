@@ -9,6 +9,7 @@ Collection of functions handling csv-related operations used in the inspect cli.
 import logging
 from pathlib import Path
 from typing import List, Optional
+from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
 import pandas as pd
 
 from csvcubed.utils.pandas import read_csv
@@ -153,7 +154,7 @@ def get_single_measure_from_dsd(
 
 
 def get_dataset_observations_info(
-    dataset: pd.DataFrame,
+    dataset: pd.DataFrame, csvw_type: CSVWType
 ) -> DatasetObservationsInfoResult:
     """
     Generates the `DatasetObservationsInfoResult` from the dataset.
@@ -163,6 +164,7 @@ def get_dataset_observations_info(
     :return: `DatasetObservationsInfoResult`
     """
     return DatasetObservationsInfoResult(
+        csvw_type,
         len(dataset.index),
         dataset.duplicated().sum(),
         dataset.head(n=10),

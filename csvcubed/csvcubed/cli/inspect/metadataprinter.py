@@ -168,7 +168,7 @@ class MetadataPrinter:
         )
 
         result: DatasetObservationsInfoResult = get_dataset_observations_info(
-            self.dataset
+            self.dataset, self.csvw_type
         )
 
         return f"- The {self._get_type_str()} has the following dataset information:{result.output_str}"
