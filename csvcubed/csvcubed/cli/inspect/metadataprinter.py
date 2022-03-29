@@ -211,18 +211,18 @@ class MetadataPrinter:
             self.csvw_metadata_rdf_graph, self.dataset_url
         )
 
-        parent_notation_col = get_codelist_col_title_by_property_uri(
+        parent_notation_col_name = get_codelist_col_title_by_property_uri(
             result_code_list_cols.columns, CodelistPropertyUrl.SkosBroader
         )
-        label_col = get_codelist_col_title_by_property_uri(
+        label_col_name = get_codelist_col_title_by_property_uri(
             result_code_list_cols.columns, CodelistPropertyUrl.RDFLabel
         )
-        notation_col = get_codelist_col_title_by_property_uri(
+        notation_col_name = get_codelist_col_title_by_property_uri(
             result_code_list_cols.columns, CodelistPropertyUrl.SkosNotation
         )
 
         result = get_codelist_hierarchy_info(
-            self.dataset, parent_notation_col, label_col, notation_col
+            self.dataset, parent_notation_col_name, label_col_name, notation_col_name
         )
 
-        return f"- The {self._get_type_str()} has the following hierarchy information:{result.output_str}"
+        return f"- The {self._get_type_str()} has the following concepts information:{result.output_str}"

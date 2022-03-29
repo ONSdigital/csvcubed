@@ -13,6 +13,8 @@ from treelib import Tree
 from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
 from csvcubed.utils.printable import get_printable_tabuler_str_from_dataframe
 
+HIERARCHY_TREE_CONCEPTS_LIMIT = 100
+
 
 @dataclass
 class DatasetObservationsInfoResult:
@@ -69,11 +71,16 @@ class DatasetObservationsByMeasureUnitInfoResult:
 @dataclass
 class CodelistHierarchyInfoResult:
     """
-    Model to represent codelist hierarchy (i.e. tree strcuture).
+    Model to represent codelist hierarchy tree.
     """
 
     tree: Tree
 
     @property
     def output_str(self) -> str:
-        return f"{linesep}\t- Hierarchy:{linesep}{self.tree}{linesep}\t- Hierarchy depth: {self.tree.depth()}"
+        hierarchy_output = (
+            f"{linesep} {self.tree}"
+            if len(self.tree.all_nodes()) < HIERARCHY_TREE_CONCEPTS_LIMIT
+            else " Hierarchy is too large to display."
+        )
+        return f"{linesep}\t- Concepts hierarchy depth: {self.tree.depth()}{linesep}\t- Concepts hierarchy:{hierarchy_output}"
