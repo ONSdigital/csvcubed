@@ -85,7 +85,7 @@ class MaxNumComponentsExceededError(SpecificValidationError, ABC):
 
     def __post_init__(self):
         self.message = (
-            f"Found {self.actual_number} of {_get_description_for_component(self.component_type)}s. "
+            f"Found {self.actual_number} of {_get_description_for_component(self.component_type)}. "
             + f"Expected a maximum of {self.maximum_number}."
         )
         if self.additional_explanation is not None:

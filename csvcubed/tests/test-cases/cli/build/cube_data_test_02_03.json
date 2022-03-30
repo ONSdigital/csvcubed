@@ -1,6 +1,6 @@
 {
-    "$schema": "https://purl.org/csv-cubed/qube-config/v1.0",
-    "id": "schema-id",
+    "$schema": "./csvcubed/schema/cube-config-schema.json",
+    "id": "http://schema-id",
     "title": "Tests/test-cases/config/schema-cube-data-config-ok",
     "description": "Schema for testing",
     "creator": "Fred the creator",
@@ -16,27 +16,13 @@
     "keywords": "two",
     "uri_safe_identifier_override": "uri-safe",
     "columns": [
-        {
-            "Dim-0": {
-                "label": "Non Dimension",
-                "type": "dimension",
-                "code_list": true
-            }
-        },
-        {
-            "Dim-1": {
-                "type": "dimension",
-                "label": "Period Dimension",
-                "code_list": true
-            }
-        },
-        {
-            "Dim-2": {
-                "type": "dimension",
-                "label": "Trade Direction Dimension",
-                "code_list": true
-            }
-        },
+        {"Dim-0": {"label": "Non Dimension", "type": "dimension", "code_list": true}},
+        {"Dim-1": {"type": "dimension", "label": "Period Dimension", "code_list": true}},
+        {"Dim-2": {
+            "type": "dimension",
+            "label": "Trade Direction Dimension",
+            "code_list": true
+        }},
         {
             "Attr-1": {
                 "type": "attribute",

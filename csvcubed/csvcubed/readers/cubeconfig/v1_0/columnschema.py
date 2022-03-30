@@ -305,10 +305,12 @@ class NewMeasures(SchemaBaseClass):
             return QbMultiMeasureDimension.new_measures_from_data(data)
 
         elif isinstance(self.values, list):
-            new_measures = []
+            new_measures: List[QbMeasure] = []
             for new_measure in self.values:
                 if not isinstance(new_measure, Measure):
                     raise ValueError(f"Unexpected measure: {new_measure}")
+                else:
+                    new_measures.append(NewQbMeasure.from_dict(new_measure.as_dict()))
 
             return QbMultiMeasureDimension(new_measures)
 
