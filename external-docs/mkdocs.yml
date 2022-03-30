@@ -10,6 +10,7 @@ nav:
       - Installation: quick-start/installation.md
       - Shaping your data: quick-start/shaping.md
       - Qube config: quick-start/qube-config.md
+      - Command Line: quick-start/command-line.md
   - Guides:
       - guides/index.md
       - Raise an issue: guides/raise-issue.md
