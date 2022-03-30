@@ -145,7 +145,7 @@ def step_impl(context, cube_name: str, csvw_file_path: str):
     ]
 
     csv_path, _ = get_first_table_schema(csvw_path)
-    code_list_data = read_csv(csvw_path.parent / csv_path)
+    code_list_data = read_csv(csv = csvw_path.parent / csv_path)
     code_list_values = code_list_data["Notation"].sample(3, random_state=1)
 
     context.cube = Cube(
