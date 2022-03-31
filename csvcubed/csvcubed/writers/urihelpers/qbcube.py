@@ -9,6 +9,7 @@ from dataclasses import dataclass
 from typing import List, Optional
 
 from csvcubed.models.cube import QbCube
+from csvcubed.models.cube.uristyle import URIStyle
 
 
 @dataclass
@@ -20,7 +21,10 @@ class QbCubeNewUriHelper:
     cube: QbCube
 
     def _get_identifier_for_document(self) -> str:
-        return f"{self.cube.metadata.uri_safe_identifier}.csv"
+        extension = (
+            ".csv" if self.cube.uriStyle != URIStyle.WithoutFileExtensions else ""
+        )
+        return f"{self.cube.metadata.uri_safe_identifier}{extension}"
 
     def _uri_in_doc(self, identifier: str) -> str:
         """

@@ -29,6 +29,7 @@ from csvcubed.utils.validators.file import validate_file_exists
 from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_str
 from csvcubed.models.validationerror import ValidationError
 from .validationerrors import ReservedUriValueError
+from ...uristyle import URIStyle
 
 
 @dataclass
@@ -108,6 +109,7 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
     metadata: CatalogMetadata
     concepts: List[TNewQbConcept]
     arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
+    uriStyle: URIStyle = URIStyle.Standard
 
     @validator("concepts")
     def _ensure_no_use_of_reserved_keywords(

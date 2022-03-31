@@ -8,6 +8,7 @@ from csvcubed.models.cube.qb.components.arbitraryrdf import (
     RdfSerialisationHint,
     TripleFragment,
 )
+from csvcubed.models.cube.uristyle import URIStyle
 from csvcubed.writers.skoscodelistwriter import SkosCodeListWriter
 
 
@@ -22,6 +23,42 @@ basic_code_list = NewQbCodeList(
         NewQbConcept("Second Concept", parent_code="1st-concept", sort_order=20),
     ],
 )
+
+
+def test_csvw_metadata_url():
+    """
+    Test that the generated URL for a CSVW is as expected
+    """
+    writer = SkosCodeListWriter(basic_code_list)
+    data = writer._get_csvw_metadata()
+    actual_url = data["url"]
+    assert actual_url == "some-codelist.csv"
+
+
+def test_csvw_metadata_url_standard_style():
+    """
+    Test that the generated URL for a CSVW is as expected when configured to use Standard URI style
+    """
+    code_list_standard_uri_style = NewQbCodeList(
+        CatalogMetadata("Some CodeList"), [], uriStyle=URIStyle.Standard
+    )
+    writer = SkosCodeListWriter(code_list_standard_uri_style)
+    data = writer._get_csvw_metadata()
+    actual_url = data["url"]
+    assert actual_url == "some-codelist.csv"
+
+
+def test_csvw_metadata_url_withoutFileExtension_style():
+    """
+    Test that the generated URL for a CSVW is as expected when configured to use without file extension URI style
+    """
+    code_list_withoutFileExtensions_uri_style = NewQbCodeList(
+        CatalogMetadata("Some CodeList"), [], uriStyle=URIStyle.WithoutFileExtensions
+    )
+    writer = SkosCodeListWriter(code_list_withoutFileExtensions_uri_style)
+    data = writer._get_csvw_metadata()
+    actual_url = data["url"]
+    assert actual_url == "some-codelist"
 
 
 def test_code_list_data_mapping():

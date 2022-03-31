@@ -16,6 +16,7 @@ from csvcubed.models.cube import (
     QbMultiMeasureDimension,
     QbMultiUnits,
 )
+from csvcubed.models.cube.uristyle import URIStyle
 from csvcubed.models.cube.qb.components.arbitraryrdf import (
     TripleFragment,
     RdfSerialisationHint,
@@ -98,6 +99,22 @@ def test_structure_defined():
     _assert_component_defined(dataset, "marker")
     _assert_component_defined(dataset, "unit")
     _assert_component_defined(dataset, "some-existing-measure")
+
+
+def test_structure_uri_standard_pattern():
+    cube = Cube(CatalogMetadata("Cube Name"))
+    qbwriter = QbWriter(cube)
+
+    actual = qbwriter._generate_qb_dataset_dsd_definitions().structure.uri_str
+    assert actual.startswith("cube-name.csv#")
+
+
+def test_structure_uri_withoutFileExtensions_pattern():
+    cube = Cube(CatalogMetadata("Cube Name"), uriStyle=URIStyle.WithoutFileExtensions)
+    qbwriter = QbWriter(cube)
+
+    actual = qbwriter._generate_qb_dataset_dsd_definitions().structure.uri_str
+    assert actual.startswith("cube-name#")
 
 
 def test_generating_concept_uri_template_from_legacy_global_concept_scheme_uri():
