@@ -101,8 +101,16 @@ def test_structure_defined():
     _assert_component_defined(dataset, "some-existing-measure")
 
 
-def test_structure_uri_standard_pattern():
+def test_structure_uri():
     cube = Cube(CatalogMetadata("Cube Name"))
+    qbwriter = QbWriter(cube)
+
+    actual = qbwriter._generate_qb_dataset_dsd_definitions().structure.uri_str
+    assert actual.startswith("cube-name.csv#")
+
+
+def test_structure_uri_standard_pattern():
+    cube = Cube(CatalogMetadata("Cube Name"), uriStyle=URIStyle.Standard)
     qbwriter = QbWriter(cube)
 
     actual = qbwriter._generate_qb_dataset_dsd_definitions().structure.uri_str
