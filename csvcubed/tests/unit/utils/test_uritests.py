@@ -27,8 +27,17 @@ def test_looks_like_uri():
     assert looks_like_uri("http://some-domain.org/some-stuff/other-stuff")
     assert looks_like_uri("ftp://some-domain.org")
     assert looks_like_uri("somescheme:somevalue")
+    assert looks_like_uri("urn:")
 
     assert not looks_like_uri("somevalue/cheese")
+    assert not looks_like_uri("\\\\server\\temp.txt")
+
+    assert not looks_like_uri("c:\\temp\\temp.txt")
+    assert not looks_like_uri("C:\\")
+    assert not looks_like_uri("c:/temp/temp.txt")
+    assert not looks_like_uri("c:/")
+
+
 
 
 def test_ensure_looks_like_uri():

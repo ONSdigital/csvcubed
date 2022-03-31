@@ -69,7 +69,13 @@ def looks_like_uri(maybe_uri: str) -> bool:
 
     :return: whether the :class:`str` looks like a URI or not.
     """
+    # exclude file paths such as C:\, C:\something, C:/ and C:/something
+    if re.search("^[a-zA-Z]*:(?:\\\\|/[a-zA-Z]|/$)", maybe_uri):
+        return False
+
     parse_result = urlparse(maybe_uri)
+    print(parse_result)
+
     return maybe_uri is not None and parse_result.scheme != ""
 
 
