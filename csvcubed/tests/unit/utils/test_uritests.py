@@ -38,8 +38,6 @@ def test_looks_like_uri():
     assert not looks_like_uri("c:/")
 
 
-
-
 def test_ensure_looks_like_uri():
     ensure_looks_like_uri("http://some-domain.org/")
 
