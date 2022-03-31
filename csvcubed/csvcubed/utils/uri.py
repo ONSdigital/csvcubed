@@ -74,7 +74,6 @@ def looks_like_uri(maybe_uri: str) -> bool:
         return False
 
     parse_result = urlparse(maybe_uri)
-    print(parse_result)
 
     return maybe_uri is not None and parse_result.scheme != ""
 
