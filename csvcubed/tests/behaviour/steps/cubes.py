@@ -49,7 +49,8 @@ def step_impl(context):
     mocker.start()
 
     with open(
-        ROOT_DIR_PATH / "csvcubed" / "schema" / "cube-config-schema.json", "r"
+        ROOT_DIR_PATH / "csvcubed" / "schema" / "cube-config" / "v1_0" / "schema.json",
+        "r",
     ) as f:
         mocker.register_uri(
             "GET", "https://purl.org/csv-cubed/qube-config/v1.0", text=f.read()

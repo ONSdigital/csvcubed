@@ -1,5 +1,5 @@
 {
-    "$schema": "http://gss-cogs.github.io/gss-cogs/csvcubed/csvcubed/schemas/cube-config-schema.json",
+    "$schema": "https://purl.org/csv-cubed/qube-config/v1.0",
     "title": "Tests/test-cases/config/schema",
     "columns": ""
 }

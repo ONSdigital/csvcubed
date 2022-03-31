@@ -14,7 +14,14 @@ def mock_http_session_qube_config_schema():
     with session.cache_disabled(), requests_mock.Mocker(
         session=session, real_http=True
     ) as mocker:
-        schema_path = ROOT_DIR_PATH / "csvcubed" / "schema" / "cube-config-schema.json"
+        schema_path = (
+            ROOT_DIR_PATH
+            / "csvcubed"
+            / "schema"
+            / "cube-config"
+            / "v1_0"
+            / "schema.json"
+        )
 
         with open(schema_path) as f:
             mocker.register_uri(

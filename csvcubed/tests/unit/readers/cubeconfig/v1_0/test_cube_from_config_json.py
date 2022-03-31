@@ -8,7 +8,9 @@ from tests.unit.test_baseunit import get_test_cases_dir
 from definitions import ROOT_DIR_PATH
 
 TEST_CASE_DIR = get_test_cases_dir().absolute() / "readers" / "cube-config" / "v1.0"
-SCHEMA_PATH_FILE = Path(ROOT_DIR_PATH, "csvcubed", "schema", "cube-config-schema.json")
+SCHEMA_PATH_FILE = Path(
+    ROOT_DIR_PATH, "csvcubed", "schema", "cube-config", "v1_0", "schema.json"
+)
 
 
 def test_build():
@@ -383,24 +385,6 @@ def test_05_02_attribute_existing_ok():
     for value in sd.new_attribute_values:
         assert hasattr(value, "label")
         assert value.label in data_vals
-
-
-def test_05_03_attribute_existing_broke():
-    """
-    Checks that Values =  False, which is not a supported value, behaves as expected
-    """
-    column_data = ["a", "b", None, "a"]
-    column_config = {
-        "type": "attribute",
-        "from_existing": "http://gss-cofs.github.io/attributes/trade-direction",
-        "required": False,
-        "values": False,
-    }
-    data = pd.Series(column_data, name="Attribute Heading")
-
-    with pytest.raises(ValueError) as err:
-        column = map_column_to_qb_component("Existing Attribute", column_config, data)
-    assert err.value.args[0] == "Unexpected value for 'newAttributeValues': False"
 
 
 def test_06_measure_new_ok():

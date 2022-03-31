@@ -11,7 +11,9 @@ from tests.unit.test_baseunit import get_test_cases_dir
 from definitions import ROOT_DIR_PATH
 
 TEST_CASE_DIR = get_test_cases_dir().absolute() / "readers" / "cube-config" / "v1.0"
-SCHEMA_PATH_FILE = Path(ROOT_DIR_PATH, "csvcubed", "schema", "cube-config-schema.json")
+SCHEMA_PATH_FILE = Path(
+    ROOT_DIR_PATH, "csvcubed", "schema", "cube-config", "v1_0", "schema.json"
+)
 
 
 # def test_schema_loads_from_file():

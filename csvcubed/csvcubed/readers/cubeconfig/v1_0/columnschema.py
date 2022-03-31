@@ -153,7 +153,7 @@ class ExistingAttribute(SchemaBaseClass):
     from_existing: str
     data_type: Optional[str] = None
     required: bool = False
-    values: Union[None, bool, List[AttributeValue]] = None
+    values: Union[bool, List[AttributeValue]] = True
     cell_uri_template: Optional[str] = None
 
     def map_to_existing_qb_attribute(
@@ -196,35 +196,14 @@ class NewAttribute(SchemaBaseClass):
         label = self.label or column_title
 
         if self.data_type is None:
-            if isinstance(self.values, bool):
-                if self.values:
-                    return NewQbAttribute.from_data(
-                        label=label,
-                        data=data,
-                        description=self.description,
-                        parent_attribute_uri=self.from_existing,
-                        source_uri=self.definition_uri,
-                        is_required=self.required,
-                    )
-                else:
-                    return NewQbAttribute(
-                        label=label,
-                        description=self.description,
-                        parent_attribute_uri=self.from_existing,
-                        source_uri=self.definition_uri,
-                        is_required=self.required,
-                    )
-            elif isinstance(self.values, list):
-                return NewQbAttribute(
-                    label=label,
-                    description=self.description,
-                    new_attribute_values=_get_new_attribute_values(data, self.values),
-                    parent_attribute_uri=self.from_existing,
-                    source_uri=self.definition_uri,
-                    is_required=self.required,
-                )
-            else:
-                raise ValueError(f"Unhandled value: {self}")
+            return NewQbAttribute(
+                label=label,
+                description=self.description,
+                new_attribute_values=_get_new_attribute_values(data, self.values),
+                parent_attribute_uri=self.from_existing,
+                source_uri=self.definition_uri,
+                is_required=self.required,
+            )
         else:
             if isinstance(self.values, list) or self.values:
                 raise Exception(
@@ -412,18 +391,19 @@ def _map_attribute_values(
 
 def _get_new_attribute_values(
     data: PandasDataTypes,
-    new_attribute_values: Union[None, bool, List[AttributeValue]],
+    new_attribute_values: Union[bool, List[AttributeValue]],
 ) -> List[NewQbAttributeValue]:
-    if isinstance(new_attribute_values, bool) and new_attribute_values:
-        columnar_data: List[str] = [
-            v for v in pandas_input_to_columnar_optional_str(data) if v is not None
-        ]
-        return [NewQbAttributeValue(v) for v in sorted(set(columnar_data))]
-    elif isinstance(new_attribute_values, list) and len(new_attribute_values) > 0:
-        return _map_attribute_values(new_attribute_values)
-    elif new_attribute_values is not None:
-        raise ValueError(
-            f"Unexpected value for 'newAttributeValues': {new_attribute_values}"
-        )
+    if isinstance(new_attribute_values, bool):
+        if new_attribute_values:
+            columnar_data: List[str] = [
+                v for v in pandas_input_to_columnar_optional_str(data) if v is not None
+            ]
+            return [NewQbAttributeValue(v) for v in sorted(set(columnar_data))]
 
-    return []
+        return []
+    elif isinstance(new_attribute_values, list):
+        return _map_attribute_values(new_attribute_values)
+
+    raise ValueError(
+        f"Unexpected value for 'newAttributeValues': {new_attribute_values}"
+    )
