@@ -180,7 +180,7 @@ def _configure_remaining_columns_by_convention(
 ) -> None:
     """Update columns from csv where appropriate, i.e. config did not define the column."""
     configured_columns = {col.csv_column_title: col for col in cube.columns}
-    ordered_columns: List[QbColumn] = []
+    ordered_columns: List[CsvColumn] = []
     for i, column_title in enumerate(data.columns):
         # ... determine if the column_title in data matches a convention
         if column_title in configured_columns:
