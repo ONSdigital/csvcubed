@@ -11,7 +11,7 @@ from pydantic import PydanticValueError
 
 
 @dataclass
-class ValidationError(DataClassBase):
+class ValidationError(DataClassBase, ABC):
     """Class representing an error validating a model."""
 
     message: str
