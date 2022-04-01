@@ -1,7 +1,7 @@
 from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
 from csvcubed.utils.skos.codelist import (
     CodelistPropertyUrl,
-    get_codelist_col_title_by_property_uri,
+    get_codelist_col_title_by_property_url,
 )
 import pytest
 import numpy as np
@@ -610,13 +610,13 @@ def test_get_concepts_hierarchy_info_hierarchy_with_depth_of_one():
     result_code_list_cols = select_codelist_cols_by_dataset_url(
         csvw_metadata_rdf_graph, dataset_url
     )
-    parent_notation_col_name = get_codelist_col_title_by_property_uri(
+    parent_notation_col_name = get_codelist_col_title_by_property_url(
         result_code_list_cols.columns, CodelistPropertyUrl.SkosBroader
     )
-    label_col_name = get_codelist_col_title_by_property_uri(
+    label_col_name = get_codelist_col_title_by_property_url(
         result_code_list_cols.columns, CodelistPropertyUrl.RDFLabel
     )
-    notation_col_name = get_codelist_col_title_by_property_uri(
+    notation_col_name = get_codelist_col_title_by_property_url(
         result_code_list_cols.columns, CodelistPropertyUrl.SkosNotation
     )
 
@@ -644,13 +644,13 @@ def test_get_concepts_hierarchy_info_hierarchy_with_depth_more_than_one():
     result_code_list_cols = select_codelist_cols_by_dataset_url(
         csvw_metadata_rdf_graph, dataset_url
     )
-    parent_notation_col_name = get_codelist_col_title_by_property_uri(
+    parent_notation_col_name = get_codelist_col_title_by_property_url(
         result_code_list_cols.columns, CodelistPropertyUrl.SkosBroader
     )
-    label_col_name = get_codelist_col_title_by_property_uri(
+    label_col_name = get_codelist_col_title_by_property_url(
         result_code_list_cols.columns, CodelistPropertyUrl.RDFLabel
     )
-    notation_col_name = get_codelist_col_title_by_property_uri(
+    notation_col_name = get_codelist_col_title_by_property_url(
         result_code_list_cols.columns, CodelistPropertyUrl.SkosNotation
     )
 

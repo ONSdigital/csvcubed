@@ -8,10 +8,6 @@ Provides functionality for validating and detecting input metadata.json file.
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import List
-from csvcubed.utils.skos.codelist import (
-    CodelistPropertyUrl,
-    get_codelist_col_title_by_property_uri,
-)
 import pandas as pd
 
 from rdflib import Graph
@@ -52,7 +48,10 @@ from csvcubed.models.csvcubedexception import (
     InputTypeIsUnknownException,
     JsonldNotSupportedException,
 )
-
+from csvcubed.utils.skos.codelist import (
+    CodelistPropertyUrl,
+    get_codelist_col_title_by_property_url,
+)
 
 @dataclass
 class MetadataPrinter:
@@ -211,13 +210,13 @@ class MetadataPrinter:
             self.csvw_metadata_rdf_graph, self.dataset_url
         )
 
-        parent_notation_col_name = get_codelist_col_title_by_property_uri(
+        parent_notation_col_name = get_codelist_col_title_by_property_url(
             result_code_list_cols.columns, CodelistPropertyUrl.SkosBroader
         )
-        label_col_name = get_codelist_col_title_by_property_uri(
+        label_col_name = get_codelist_col_title_by_property_url(
             result_code_list_cols.columns, CodelistPropertyUrl.RDFLabel
         )
-        notation_col_name = get_codelist_col_title_by_property_uri(
+        notation_col_name = get_codelist_col_title_by_property_url(
             result_code_list_cols.columns, CodelistPropertyUrl.SkosNotation
         )
 
