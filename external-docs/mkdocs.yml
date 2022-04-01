@@ -18,6 +18,7 @@ nav:
       - Handling missing observed values: guides/missing-observed-values.md
       - Qube config: guides/qube-config.md
       - Errors:
+        - guides/errors/index.md
         - Missing column definition: guides/errors/missing-column-definition.md
         - Column not found in data: guides/errors/column-not-found-in-data.md
         - Duplicate column title: guides/errors/duplicate-column-title.md
