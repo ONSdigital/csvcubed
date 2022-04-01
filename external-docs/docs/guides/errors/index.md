@@ -1,3 +1,27 @@
 # Validation Errors
 
-todo: Write something here.
+## Index of known exceptions:
+
+ * [ColumnValidationError](./column-validation.md) 
+ * [ColumnNotFoundInDataError](./column-not-found-in-data.md)
+ * [DuplicateColumnTitleError](./duplicate-column-title.md)
+ * [MissingColumnDefinitionError](./missing-column-definition.md)
+ * [ObservationValuesMissing](./observed-values-missing.md)
+ * [CsvColumnUriTemplateMissing](./csv-column-uri-template-missing.md)
+ * [CsvColumnLiteralWithUriTemplate](./csv-column-literal-with-uri-template.md)
+ * [BothUnitTypesDefinedError](./both-unit-types-defined.md)
+ * [BothMeasureTypesDefinedError](./both-measure-types-defined.md)
+ * [NoDimensionDefinedError](./no-dimensions-defined.md)
+ * [NoUnitsDefinedError](./no-units-defined.md)
+ * [NoMeasuresDefinedError](./no-measures-defined.md)
+ * [NoObservedValuesColumnDefinedError](./no-observations-columns.md)
+ * [MoreThanOnceUnitsColumnError](./multiple-units-columns.md)
+ * [MoreThanObeObservationsColumnError](./multiple-observations-columns.md)
+ * [MoreThanOneMeasureColumneError](./multiple-measure-columns.md)
+ * [LabelUriCollisionError](./label-uri-collision.md)
+ * [UndefinedMeasureUrisError](./undefined-measures.md)
+ * [UndefinedUnitUrisError](./undefined-units.md)
+ * [UndefinedAttributeValueUrisError](./undefined-attribute-values.md)
+ * [ReservedUriValueError](./reserved-uri-value.md)
+ * [ConflictingUriSafeValuesError](./conflicting-uri-values.md)
+ * [UnknownPydanticValidationError](./unknown-pydantic-error.md)
