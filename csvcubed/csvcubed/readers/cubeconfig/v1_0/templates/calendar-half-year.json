@@ -2,7 +2,6 @@
     "type": "dimension",
     "from_existing": "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod",
     "label": "Half-year",
-    "column_uri_template": "http://reference.data.gov.uk/id/half/{+<column_name>}",
-    // requires column values of `YYYY-H` in <column_name>
+    "uri_template": "http://reference.data.gov.uk/id/half/{+<column_name>}",
     "codelist": false
 }
