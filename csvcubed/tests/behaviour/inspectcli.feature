@@ -7,8 +7,8 @@ Feature: Behaviour testing of csvcubed inspect.
         And the existing test-case file "cli/inspect/multi-unit_multi-measure/alcohol-sub-type.table.json"
         And the existing test-case file "cli/inspect/multi-unit_multi-measure/clearance-origin.table.json"
         
-        When the Metadata file path is detected and validated "cli/inspect/multi-unit_multi-measure/alcohol-bulletin.csv-metadata.json"
-        And the csv file path is detected and validated "cli/inspect/multi-unit_multi-measure/alcohol-bulletin.csv"
+        When the existing Metadata file exists "cli/inspect/multi-unit_multi-measure/alcohol-bulletin.csv-metadata.json"
+        And the existing csv file exists "cli/inspect/multi-unit_multi-measure/alcohol-bulletin.csv"
         And the Metadata File json-ld is loaded to a rdf graph
         And the Metadata File is validated
         And the Printables for data cube are generated
@@ -105,7 +105,7 @@ Feature: Behaviour testing of csvcubed inspect.
         - Number of Observations: 10676
         - Number of Duplicates: 0
         - First 10 Observations:
-                               Period Alcohol Type Alcohol Sub Type Alcohol Content Clearance Origin      Value          Measure Type        Unit Marker
+                            Period Alcohol Type Alcohol Sub Type Alcohol Content Clearance Origin      Value          Measure Type        Unit Marker
             government-year/1999-2000         wine            still    up-to-15-abv              all 8721828.97            clearances hectolitres    NaN
             government-year/1999-2000         wine        sparkling    up-to-15-abv              all  621067.74            clearances hectolitres    NaN
             government-year/1999-2000         wine              all     over-15-abv              all  312545.57            clearances hectolitres    NaN
@@ -118,7 +118,7 @@ Feature: Behaviour testing of csvcubed inspect.
             government-year/2000-2001         wine            still    up-to-15-abv              all 8920111.13            clearances hectolitres    NaN
 
                     - Last 10 Observations:
-                   Period   Alcohol Type Alcohol Sub Type Alcohol Content                    Clearance Origin  Value              Measure Type                 Unit        Marker
+                Period   Alcohol Type Alcohol Sub Type Alcohol Content                    Clearance Origin  Value              Measure Type                 Unit        Marker
             month/2021-09          cider              all             all                                 all  25.05       cider-duty-receipts          gbp-million   provisional
             month/2021-10           beer               uk             all                                 all    NaN         production-volume thousand-hectolitres not-available
             month/2021-10           beer               uk             all                                 all    NaN production-volume-alcohol thousand-hectolitres not-available
@@ -165,7 +165,19 @@ Feature: Behaviour testing of csvcubed inspect.
         And the existing test-case file "cli/inspect/multi-unit_single-measure/national-communication-fuel.table.json"
         And the existing test-case file "cli/inspect/multi-unit_single-measure/activity-name.table.json"
         
-        When the Metadata file path is detected and validated "cli/inspect/multi-unit_single-measure/final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
+        When the existing Metadata file exists "cli/inspect/multi-unit_single-measure/final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
+        And the existing csv file exists "cli/inspect/multi-unit_single-measure/final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv"
+        And the existing csv file exists "cli/inspect/multi-unit_single-measure/ghg.table.json"
+        And the existing csv file exists "cli/inspect/multi-unit_single-measure/ghg-grouped.table.json"
+        And the existing csv file exists "cli/inspect/multi-unit_single-measure/ipcc-code.table.json"
+        And the existing csv file exists "cli/inspect/multi-unit_single-measure/year.table.json"
+        And the existing csv file exists "cli/inspect/multi-unit_single-measure/national-communication-sector.table.json"
+        And the existing csv file exists "cli/inspect/multi-unit_single-measure/national-communication-sub-sector.table.json"
+        And the existing csv file exists "cli/inspect/multi-unit_single-measure/national-communication-category.table.json"
+        And the existing csv file exists "cli/inspect/multi-unit_single-measure/source.table.json"
+        And the existing csv file exists "cli/inspect/multi-unit_single-measure/national-communication-fuel-group.table.json"
+        And the existing csv file exists "cli/inspect/multi-unit_single-measure/national-communication-fuel.table.json"
+        And the existing csv file exists "cli/inspect/multi-unit_single-measure/activity-name.table.json"
         And the Metadata File json-ld is loaded to a rdf graph
         And the Metadata File is validated
         And the Printables for data cube are generated
@@ -274,7 +286,7 @@ Feature: Behaviour testing of csvcubed inspect.
         - The data cube has the following code list information:
                 - Number of Code Lists: 11
                 - Code Lists:
-                                                 Code List Code List Label                   Columns Used In
+                                            Code List Code List Label                        Columns Used In
            national-communication-sub-sector.csv#code-list                 National Communication Sub-sector
                                activity-name.csv#code-list                                     Activity Name
              national-communication-category.csv#code-list                   National Communication Category
@@ -341,7 +353,20 @@ Feature: Behaviour testing of csvcubed inspect.
         And the existing test-case file "cli/inspect/single-unit_multi-measure/national-communication-fuel.table.json"
         And the existing test-case file "cli/inspect/single-unit_multi-measure/activity-name.table.json"
 
-        When the Metadata file path is detected and validated "cli/inspect/single-unit_multi-measure/final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv-metadata.json"
+        When the existing Metadata file exists "cli/inspect/single-unit_multi-measure/final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv-metadata.json"
+        And the existing csv file exists "cli/inspect/single-unit_multi-measure/final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv"
+        And the existing csv file exists "cli/inspect/single-unit_multi-measure/ghg.table.json"
+        And the existing csv file exists "cli/inspect/single-unit_multi-measure/ghg-grouped.table.json"
+        And the existing csv file exists "cli/inspect/single-unit_multi-measure/ipcc-code.table.json"
+        And the existing csv file exists "cli/inspect/single-unit_multi-measure/year.table.json"
+        And the existing csv file exists "cli/inspect/single-unit_multi-measure/national-communication-sector.table.json"
+        And the existing csv file exists "cli/inspect/single-unit_multi-measure/national-communication-sub-sector.table.json"
+        And the existing csv file exists "cli/inspect/single-unit_multi-measure/national-communication-category.table.json"
+        And the existing csv file exists "cli/inspect/single-unit_multi-measure/source.table.json"
+        And the existing csv file exists "cli/inspect/single-unit_multi-measure/national-communication-fuel-group.table.json"
+        And the existing csv file exists "cli/inspect/single-unit_multi-measure/national-communication-fuel.table.json"
+        And the existing csv file exists "cli/inspect/single-unit_multi-measure/activity-name.table.json"
+
         And the Metadata File json-ld is loaded to a rdf graph
         And the Metadata File is validated
         And the Printables for data cube are generated
@@ -499,8 +524,8 @@ Feature: Behaviour testing of csvcubed inspect.
         Given the existing test-case file "cli/inspect/single-unit_single-measure/energy-trends-uk-total-energy.csv-metadata.json"
         And the existing test-case file "cli/inspect/single-unit_single-measure/energy-trends-uk-total-energy.csv"
         
-        When the Metadata file path is detected and validated "cli/inspect/single-unit_single-measure/energy-trends-uk-total-energy.csv-metadata.json"
-        And the csv file path is detected and validated "cli/inspect/single-unit_single-measure/energy-trends-uk-total-energy.csv"
+        When the existing Metadata file exists "cli/inspect/single-unit_single-measure/energy-trends-uk-total-energy.csv-metadata.json"
+        And the existing csv file exists "cli/inspect/single-unit_single-measure/energy-trends-uk-total-energy.csv"
         
         And the Metadata File json-ld is loaded to a rdf graph
         And the Metadata File is validated
@@ -631,10 +656,13 @@ Feature: Behaviour testing of csvcubed inspect.
         """
 
     Scenario: inspect should produce printable for code list metadata json-ld input
-        Given the existing test-case file "cli/inspect/codelist.csv-metadata.json"
-        And the existing test-case file "cli/inspect/alcohol-content.table.json"
-        
-        When the Metadata file path is detected and validated "cli/inspect/codelist.csv-metadata.json"
+        Given the existing test-case file "cli/inspect/multi-unit_multi-measure/alcohol-content.csv-metadata.json"
+        And the existing test-case file "cli/inspect/multi-unit_multi-measure/alcohol-content.table.json"
+        And the existing test-case file "cli/inspect/multi-unit_multi-measure/alcohol-content.csv"
+
+				When the existing Metadata file exists "cli/inspect/multi-unit_multi-measure/alcohol-content.csv-metadata.json"
+        And the existing csv file exists "cli/inspect/multi-unit_multi-measure/alcohol-content.csv"
+ 
         And the Metadata File json-ld is loaded to a rdf graph
         And the Metadata File is validated
         And the Printables for code list are generated
@@ -644,8 +672,8 @@ Feature: Behaviour testing of csvcubed inspect.
         - The code list has the following catalog metadata:
             - Title: Alcohol Content
             - Label: Alcohol Content
-            - Issued: 2022-02-11T21:00:21.040987
-            - Modified: 2022-02-11T21:00:21.040987
+            - Issued: 2022-02-24T11:42:44.097778
+            - Modified: 2022-02-24T11:42:44.097778
             - License: None
             - Creator: None
             - Publisher: None
@@ -657,6 +685,117 @@ Feature: Behaviour testing of csvcubed inspect.
             - Comment: None
             - Description: None
         """
+        And the Dataset Information Printable should be
+        """
+        - The code list has the following dataset information:
+          - Number of Concepts: 6
+        	- Number of Duplicates: 0
+        	- First 10 Observations:
+                           Label       Notation  Parent Notation  Sort Priority  Description
+                1.2% to 5.5% abv 1-2-to-5-5-abv              NaN              0          NaN
+                 5.5% to 15% abv  5-5-to-15-abv              NaN              1          NaN
+                             All            all              NaN              2          NaN
+                    over 15% abv    over-15-abv              NaN              3          NaN
+                   over 5.5% abv   over-5-5-abv              NaN              4          NaN
+                   up to 15% abv   up-to-15-abv              NaN              5          NaN
+
+          - Last 10 Observations:
+                           Label       Notation  Parent Notation  Sort Priority  Description
+                1.2% to 5.5% abv 1-2-to-5-5-abv              NaN              0          NaN
+                 5.5% to 15% abv  5-5-to-15-abv              NaN              1          NaN
+                             All            all              NaN              2          NaN
+                    over 15% abv    over-15-abv              NaN              3          NaN
+                   over 5.5% abv   over-5-5-abv              NaN              4          NaN
+                   up to 15% abv   up-to-15-abv              NaN              5          NaN
+        """
+				And the Concepts Information Printable should be
+				"""
+				- The code list has the following concepts information:
+					- Concepts hierarchy depth: 1
+					- Concepts hierarchy:
+						root
+						├── 1.2% to 5.5% abv
+						├── 5.5% to 15% abv
+						├── All
+						├── over 15% abv
+						├── over 5.5% abv
+						└── up to 15% abv
+				"""
+
+		 Scenario: inspect should produce printable for code list metadata json-ld input with concepts hierarchy depth of more than one
+        Given the existing test-case file "cli/inspect/itis-industry.csv-metadata.json"
+        And the existing test-case file "cli/inspect/itis-industry.csv"
+
+				When the existing Metadata file exists "cli/inspect/itis-industry.csv-metadata.json"
+        And the existing csv file exists "cli/inspect/itis-industry.csv"
+ 
+        And the Metadata File json-ld is loaded to a rdf graph
+        And the Metadata File is validated
+        And the Printables for code list are generated
+        Then the Type Printable should be "- This file is a code list."
+        And the Catalog Metadata Printable should be
+				"""
+				- The code list has the following catalog metadata:
+            - Title: Itis Industry
+            - Label: Itis Industry
+            - Issued: 2021-04-13T10:04:13.589262
+            - Modified: 2021-05-20T10:55:04.059085
+            - License: None
+            - Creator: None
+            - Publisher: None
+            - Landing Pages: None
+            - Themes: None
+            - Keywords: None
+            - Contact Point: None
+            - Identifier: None
+            - Comment: Dataset representing the 'Itis Industry' code list.
+            - Description: None
+        """
+        And the Dataset Information Printable should be
+        """
+        - The code list has the following dataset information:
+          - Number of Concepts: 9
+          - Number of Duplicates: 0
+          - First 10 Observations:
+																																	 Label                                                            Notation Parent Notation  Sort Priority  Description
+																													All industries                                                                 all             NaN              1          NaN
+																													 Manufacturing                                              manufacturing-industry             all              2          NaN
+																											Wholesale & Retail                                           wholesale-retail-industry             all              3          NaN
+																					 Information and Communication                              information-and-communication-industry             all              4          NaN
+													Professional, Scientific and Technical Support              professional-scientific-and-technical-support-industry             all              5          NaN
+													 Administrative and Support Service Activities              administrative-and-support-service-activities-industry             all              6          NaN
+            Arts, Entertainment, Recreation and Other Service Activities arts-entertainment-recreation-and-other-service-activities-industry             all              7          NaN
+																													 Film Industry                              film-industry-excluding-other-services             all              8          NaN
+																										 Television Industry                        television-industry-excluding-other-services             all              9          NaN
+
+          - Last 10 Observations:
+																																	 Label                                                            Notation Parent Notation  Sort Priority  Description
+																													All industries                                                                 all             NaN              1          NaN
+																													 Manufacturing                                              manufacturing-industry             all              2          NaN
+																											Wholesale & Retail                                           wholesale-retail-industry             all              3          NaN
+																					 Information and Communication                              information-and-communication-industry             all              4          NaN
+													Professional, Scientific and Technical Support              professional-scientific-and-technical-support-industry             all              5          NaN
+													 Administrative and Support Service Activities              administrative-and-support-service-activities-industry             all              6          NaN
+            Arts, Entertainment, Recreation and Other Service Activities arts-entertainment-recreation-and-other-service-activities-industry             all              7          NaN
+																													 Film Industry                              film-industry-excluding-other-services             all              8          NaN
+																										 Television Industry                        television-industry-excluding-other-services             all              9          NaN
+        """
+				And the Concepts Information Printable should be
+				"""
+				- The code list has the following concepts information:
+					- Concepts hierarchy depth: 2
+					- Concepts hierarchy:
+						root
+						└── All industries
+								├── Administrative and Support Service Activities
+								├── Arts, Entertainment, Recreation and Other Service Activities
+								├── Film Industry
+								├── Information and Communication
+								├── Manufacturing
+								├── Professional, Scientific and Technical Support
+								├── Television Industry
+								└── Wholesale & Retail
+				"""
 
     Scenario: inspect should output error when the metadata json-ld input does not exist
         Given a none existing test-case file "cli/inspect/not_exists.csv-metadata.json"
