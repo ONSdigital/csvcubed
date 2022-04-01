@@ -30,7 +30,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
 RUN apt-get install -y nodejs
 RUN npm install -g pyright
 
-RUN python3 -m pip install mkdocs mkdocs-material git+https://github.com/sebastienwarin/mkdocs-mermaid-plugin
+RUN python3 -m pip install mkdocs mkdocs-material mkdocs-mermaid2-plugin
 
 RUN mkdir /workspace
 WORKDIR /workspace

@@ -69,7 +69,14 @@ def _get_csvw_dependencies_relative_to_metadata_file(
     metadata_file: URLOrPath,
 ) -> Set[str]:
     def _get_raw_dependencies(table_group: dict) -> Iterable[str]:
+
+        # Embedded tables
         tables = table_group.get("tables", [])
+
+        # If none, assume csvw represents a single table
+        if not any(tables):
+            tables = [table_group]
+
         for table in tables:
             table_url = table.get("url")
             schema = table.get("tableSchema")

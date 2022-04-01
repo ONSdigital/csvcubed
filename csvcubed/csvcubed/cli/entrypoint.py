@@ -106,4 +106,7 @@ def build_command(
 )
 def inspect_command(log_level: str, csvw_metadata_json_path: Path) -> None:
     start_logging(log_dir_name="csvcubed-cli", selected_logging_level=log_level)
-    inspect(csvw_metadata_json_path)
+    try:
+        inspect(csvw_metadata_json_path)
+    except Exception as e:
+        log_exception(_logger, e)

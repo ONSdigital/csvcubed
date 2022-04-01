@@ -5,8 +5,6 @@ from pathlib import Path
 import pytest
 from appdirs import AppDirs
 from csvcubed.utils.log import start_logging
-from tests.unit import *
-from tests.behaviour import *
 
 
 @pytest.fixture(autouse=True, scope="session")

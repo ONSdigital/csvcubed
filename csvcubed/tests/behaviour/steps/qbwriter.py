@@ -14,6 +14,7 @@ from csvcubed.models.cube import (
 from csvcubed.writers.qbwriter import QbWriter
 from csvcubed.utils.qb.validation.cube import validate_qb_component_constraints
 from csvcubed.utils.csvw import get_first_table_schema
+from csvcubed.utils.pandas import read_csv
 
 
 def get_standard_catalog_metadata_for_name(
@@ -144,7 +145,7 @@ def step_impl(context, cube_name: str, csvw_file_path: str):
     ]
 
     csv_path, _ = get_first_table_schema(csvw_path)
-    code_list_data = pd.read_csv(csvw_path.parent / csv_path)
+    code_list_data = read_csv(csv = csvw_path.parent / csv_path)
     code_list_values = code_list_data["Notation"].sample(3, random_state=1)
 
     context.cube = Cube(
