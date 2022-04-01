@@ -5,7 +5,7 @@ from csvcubed.readers.cubeconfig.schema_versions import QubeConfigJsonSchemaVers
 from csvcubed.readers.cubeconfig.v1_0.configdeserialiser import *
 from csvcubed.readers.cubeconfig.v1_0.configdeserialiser import _get_qb_column_from_json
 from tests.unit.test_baseunit import get_test_cases_dir
-from definitions import ROOT_DIR_PATH
+from csvcubed.definitions import ROOT_DIR_PATH
 
 TEST_CASE_DIR = get_test_cases_dir().absolute() / "readers" / "cube-config" / "v1.0"
 SCHEMA_PATH_FILE = Path(

@@ -2,7 +2,7 @@ import pytest
 import requests_mock
 
 from csvcubed.utils.cache import session
-from definitions import ROOT_DIR_PATH
+from csvcubed.definitions import ROOT_DIR_PATH
 
 
 @pytest.fixture(scope="package", autouse=True)
