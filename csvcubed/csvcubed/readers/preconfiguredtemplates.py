@@ -97,7 +97,7 @@ def apply_preconfigured_values_from_template(column_config: Dict[str, Any], vers
     # insert values from column_config (as long as the user hasn't provided an overriding value for them)
     for template_property in fetch_template:
         if template_property not in column_config:
-            if type(fetch_template[template_property]) == str:
+            if isinstance(fetch_template[template_property], str):
                 column_config[template_property] = fetch_template[template_property].replace("<column_name>", column_name)
             else:
                 column_config[template_property] = fetch_template[template_property]

@@ -148,3 +148,6 @@ csvcubed*/docs
 
 # Ignore response cache sqlite file
 http_cache.sqlite
+
+# Ignore test files
+out/
