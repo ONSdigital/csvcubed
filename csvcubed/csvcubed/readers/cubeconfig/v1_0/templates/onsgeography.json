@@ -1,0 +1,6 @@
+{
+    "type": "dimension",
+    "from_existing": "....",
+    "label": "ONSgeography",
+    "cell_uri_template": "http://....../{+<column_name>}"
+}
