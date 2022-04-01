@@ -4,6 +4,7 @@ CLI
 The *Command Line Interface* for :mod:`~csvcubed.cli`.
 """
 import logging
+import sys
 from pathlib import Path
 
 import click
@@ -90,6 +91,7 @@ def build_command(
 
     except Exception as e:
         log_exception(_logger, e)
+        sys.exit(1)
 
 
 @entry_point.command("inspect")
@@ -110,3 +112,4 @@ def inspect_command(log_level: str, csvw_metadata_json_path: Path) -> None:
         inspect(csvw_metadata_json_path)
     except Exception as e:
         log_exception(_logger, e)
+        sys.exit(1)
