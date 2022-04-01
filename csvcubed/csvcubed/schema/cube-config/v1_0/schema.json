@@ -105,6 +105,9 @@
                                     "type": "string",
                                     "const": "attribute"
                                 },
+                                "from_template": {
+                                    "$ref": "#/definitions/v1.0/column_templates/attribute_resource"
+                                },
                                 "label": {
                                     "description": "Label describing the Attribute",
                                     "type": "string"
@@ -156,6 +159,9 @@
                             "description": "This column represents a dimension of the cube",
                             "type": "string",
                             "const": "dimension"
+                        },
+                        "from_template": {
+                            "$ref": "#/definitions/v1.0/column_templates/dimension"
                         },
                         "label": {
                             "description": "Label describing the Dimension",
@@ -435,6 +441,25 @@
                     "description": "A string describing a theme",
                     "type": "string",
                     "format": "uri"
+                }
+            },
+            "column_templates": {
+                "comment": "This is where you should place all column template identifiers. Ensure you segregate them into the appropriate column type.",
+                "dimension": {
+                    "description": "Templates for common dimension columns",
+                    "type": "string",
+                    "enum": [
+                        "nutsgeography",
+                        "onsgeographies",
+                        "onsgeography",
+                        "year",
+                        "year+month"
+                    ]
+                },
+                "attribute_resource": {
+                    "description": "Templates for common attribute columns with resource values",
+                    "type": "string",
+                    "enum": [ ]
                 }
             }
         }
