@@ -1,3 +1,8 @@
+from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
+from csvcubed.utils.skos.codelist import (
+    CodelistPropertyUrl,
+    get_codelist_col_title_by_property_uri,
+)
 import pytest
 import numpy as np
 from pandas import DataFrame
@@ -6,8 +11,11 @@ from typing import List, Tuple
 
 from pathlib import Path
 from rdflib import Graph
+from treelib import Node, Tree
 
 from csvcubed.cli.inspect.inspectsparqlmanager import (
+    select_codelist_cols_by_dataset_url,
+    select_codelist_dataset_url,
     select_csvw_catalog_metadata,
     select_csvw_dsd_dataset_label_and_dsd_def_uri,
     select_csvw_dsd_qube_components,
@@ -19,6 +27,7 @@ from csvcubed.models.inspectsparqlresults import (
     QubeComponentsResult,
 )
 from csvcubed.cli.inspect.inspectdatasetmanager import (
+    get_concepts_hierarchy_info,
     get_dataset_observations_info,
     get_dataset_val_counts_info,
     get_measure_col_name_from_dsd,
@@ -191,9 +200,12 @@ _expected_by_measure_and_unit_val_counts_df_multi_unit_multi_measure = DataFrame
 ).replace("", np.NAN)
 
 
-def _get_arguments_for_canonical_dataset_transform(
+def _get_arguments_qb_dataset(
     csvw_metadata_rdf_graph: Graph, csvw_metadata_json_path: Path
-) -> Tuple[DataFrame, List[QubeComponentResult], str]:
+) -> Tuple[DataFrame, List[QubeComponentResult], str, str]:
+    """
+    Produces the dataset, qube components and dsd uri arguments for qb:dataset.
+    """
     dataset_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
     dataset_url = select_qb_dataset_url(
         csvw_metadata_rdf_graph, dataset_uri
@@ -211,7 +223,21 @@ def _get_arguments_for_canonical_dataset_transform(
         csvw_metadata_rdf_graph, dsd_uri, csvw_metadata_json_path
     ).qube_components
 
-    return (dataset, qube_components, dsd_uri)
+    return (dataset, qube_components, dsd_uri, dataset_url)
+
+
+def _get_arguments_skos_codelist(
+    csvw_metadata_rdf_graph: Graph, csvw_metadata_json_path: Path
+) -> Tuple[DataFrame, str]:
+    """
+    Produces the dataset, qube components and dsd uri arguments for skos:codelist.
+    """
+    dataset_url = select_codelist_dataset_url(csvw_metadata_rdf_graph).dataset_url
+
+    dataset: DataFrame = load_csv_to_dataframe(
+        csvw_metadata_json_path, Path(dataset_url)
+    )
+    return (dataset, dataset_url)
 
 
 def test_load_csv_to_dataframe_success():
@@ -243,7 +269,9 @@ def test_get_dataset_observations_info():
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
     dataset = load_csv_to_dataframe(csvw_metadata_json_path, "csv_file.csv")
 
-    result: DatasetObservationsInfoResult = get_dataset_observations_info(dataset)
+    result: DatasetObservationsInfoResult = get_dataset_observations_info(
+        dataset, CSVWType.QbDataSet
+    )
 
     assert result.num_of_observations == 11
     assert result.num_of_duplicates == 2
@@ -391,11 +419,7 @@ def test_get_val_counts_info_multi_unit_multi_measure_dataset():
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
-    (
-        dataset,
-        qube_components,
-        dsd_uri,
-    ) = _get_arguments_for_canonical_dataset_transform(
+    (dataset, qube_components, dsd_uri, _) = _get_arguments_qb_dataset(
         csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
     (
@@ -441,11 +465,7 @@ def test_get_val_counts_info_multi_unit_single_measure_dataset():
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
-    (
-        dataset,
-        qube_components,
-        dsd_uri,
-    ) = _get_arguments_for_canonical_dataset_transform(
+    (dataset, qube_components, dsd_uri, _) = _get_arguments_qb_dataset(
         csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
     (
@@ -491,11 +511,7 @@ def test_get_val_counts_info_single_unit_multi_measure_dataset():
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
-    (
-        dataset,
-        qube_components,
-        dsd_uri,
-    ) = _get_arguments_for_canonical_dataset_transform(
+    (dataset, qube_components, dsd_uri, _) = _get_arguments_qb_dataset(
         csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
     (
@@ -541,11 +557,7 @@ def test_get_val_counts_info_single_unit_single_measure_dataset():
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
-    (
-        dataset,
-        qube_components,
-        dsd_uri,
-    ) = _get_arguments_for_canonical_dataset_transform(
+    (dataset, qube_components, dsd_uri, _) = _get_arguments_qb_dataset(
         csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
     (
@@ -577,3 +589,75 @@ def test_get_val_counts_info_single_unit_single_measure_dataset():
         result.by_measure_and_unit_val_counts_df,
         _expected_by_measure_and_unit_val_counts_df_single_unit_single_measure,
     )
+
+
+def test_get_concepts_hierarchy_info_hierarchy_with_depth_of_one():
+    """
+    Should produce the expected tree structure for the given codelist.
+    """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "multi-unit_multi-measure"
+        / "alcohol-content.csv-metadata.json"
+    )
+    metadata_processor = MetadataProcessor(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+
+    (dataset, dataset_url) = _get_arguments_skos_codelist(
+        csvw_metadata_rdf_graph, csvw_metadata_json_path
+    )
+
+    result_code_list_cols = select_codelist_cols_by_dataset_url(
+        csvw_metadata_rdf_graph, dataset_url
+    )
+    parent_notation_col_name = get_codelist_col_title_by_property_uri(
+        result_code_list_cols.columns, CodelistPropertyUrl.SkosBroader
+    )
+    label_col_name = get_codelist_col_title_by_property_uri(
+        result_code_list_cols.columns, CodelistPropertyUrl.RDFLabel
+    )
+    notation_col_name = get_codelist_col_title_by_property_uri(
+        result_code_list_cols.columns, CodelistPropertyUrl.SkosNotation
+    )
+
+    result = get_concepts_hierarchy_info(
+        dataset, parent_notation_col_name, label_col_name, notation_col_name
+    )
+
+    assert isinstance(result.tree, Tree)
+    assert result.tree.depth() == 1
+    assert len(result.tree.all_nodes_itr()) == 7
+
+
+def test_get_concepts_hierarchy_info_hierarchy_with_depth_more_than_one():
+    """
+    Should produce the expected tree structure for the given codelist.
+    """
+    csvw_metadata_json_path = _test_case_base_dir / "itis-industry.csv-metadata.json"
+    metadata_processor = MetadataProcessor(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+
+    (dataset, dataset_url) = _get_arguments_skos_codelist(
+        csvw_metadata_rdf_graph, csvw_metadata_json_path
+    )
+
+    result_code_list_cols = select_codelist_cols_by_dataset_url(
+        csvw_metadata_rdf_graph, dataset_url
+    )
+    parent_notation_col_name = get_codelist_col_title_by_property_uri(
+        result_code_list_cols.columns, CodelistPropertyUrl.SkosBroader
+    )
+    label_col_name = get_codelist_col_title_by_property_uri(
+        result_code_list_cols.columns, CodelistPropertyUrl.RDFLabel
+    )
+    notation_col_name = get_codelist_col_title_by_property_uri(
+        result_code_list_cols.columns, CodelistPropertyUrl.SkosNotation
+    )
+
+    result = get_concepts_hierarchy_info(
+        dataset, parent_notation_col_name, label_col_name, notation_col_name
+    )
+
+    assert isinstance(result.tree, Tree)
+    assert result.tree.depth() == 2
+    assert len(result.tree.all_nodes_itr()) == 10

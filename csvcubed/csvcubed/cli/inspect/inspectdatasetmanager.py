@@ -9,8 +9,6 @@ Collection of functions handling csv-related operations used in the inspect cli.
 import logging
 from pathlib import Path
 from typing import List, Optional
-from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
-from csvcubed.utils.skos.codelist import build_codelist_hierarchy_tree
 import pandas as pd
 
 from csvcubed.utils.pandas import read_csv
@@ -33,6 +31,8 @@ from csvcubed.models.csvcubedexception import (
     CsvToDataFrameLoadFailedException,
     InvalidNumberOfRecordsException,
 )
+from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
+from csvcubed.utils.skos.codelist import build_concepts_hierarchy_tree
 
 _logger = logging.getLogger(__name__)
 
@@ -196,10 +196,17 @@ def get_dataset_val_counts_info(
     )
 
 
-def get_codelist_hierarchy_info(
+def get_concepts_hierarchy_info(
     dataset: pd.DataFrame, parent_notation_col, label_col, notation_col
-) -> str:
-    concepts_tree = build_codelist_hierarchy_tree(
+) -> CodelistHierarchyInfoResult:
+    """
+    Generates the `CodelistHierarchyInfoResult` from the codelist.
+
+    Member of :file:`./inspectdatasetmanager.py`
+
+    :return: `CodelistHierarchyInfoResult`
+    """
+    concepts_tree = build_concepts_hierarchy_tree(
         dataset, parent_notation_col, label_col, notation_col
     )
 

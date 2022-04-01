@@ -39,6 +39,9 @@ class CodelistPropertyUrl(Enum):
 def get_codelist_col_title_by_property_uri(
     columns: List[CodelistColumnResult], property_url: CodelistPropertyUrl
 ) -> str:
+    """
+    TODO
+    """
     results = [
         column for column in columns if column.column_property_url == property_url.value
     ]
@@ -51,7 +54,7 @@ def get_codelist_col_title_by_property_uri(
     return results[0].column_title
 
 
-def build_codelist_hierarchy_tree(
+def build_concepts_hierarchy_tree(
     concepts_df: pd.DataFrame,
     parent_notation_col_name: str,
     label_col_name: str,

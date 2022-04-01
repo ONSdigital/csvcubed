@@ -37,7 +37,7 @@ from csvcubed.cli.inspect.inspectsparqlmanager import (
     select_qb_dataset_url,
 )
 from csvcubed.cli.inspect.inspectdatasetmanager import (
-    get_codelist_hierarchy_info,
+    get_concepts_hierarchy_info,
     get_dataset_observations_info,
     get_dataset_val_counts_info,
     load_csv_to_dataframe,
@@ -221,7 +221,7 @@ class MetadataPrinter:
             result_code_list_cols.columns, CodelistPropertyUrl.SkosNotation
         )
 
-        result = get_codelist_hierarchy_info(
+        result = get_concepts_hierarchy_info(
             self.dataset, parent_notation_col_name, label_col_name, notation_col_name
         )
 

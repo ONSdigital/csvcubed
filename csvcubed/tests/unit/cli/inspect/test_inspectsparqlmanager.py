@@ -1,9 +1,10 @@
 import dateutil.parser
 from rdflib import Graph
 
-from csvcubed.definitions import ROOT_DIR_PATH
+from definitions import ROOT_DIR_PATH
 from csvcubed.models.inspectsparqlresults import (
     CatalogMetadataResult,
+    CodeListColsByDatasetUrlResult,
     CodelistsResult,
     ColsWithSuppressOutputTrueResult,
     DSDLabelURIResult,
@@ -15,6 +16,8 @@ from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.cli.inspect.inspectsparqlmanager import (
     ask_is_csvw_code_list,
     ask_is_csvw_qb_dataset,
+    select_codelist_cols_by_dataset_url,
+    select_codelist_dataset_url,
     select_cols_where_supress_output_is_true,
     select_csvw_catalog_metadata,
     select_csvw_dsd_dataset_label_and_dsd_def_uri,
@@ -248,11 +251,7 @@ def test_select_single_unit_from_dsd():
     """
     Should return expected `DSDSingleUnitResult`.
     """
-    csvw_metadata_json_path = (
-        _test_case_base_dir
-        / "single-unit_multi-measure"
-        / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv-metadata.json"
-    )
+    csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
     dataset_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
@@ -260,10 +259,10 @@ def test_select_single_unit_from_dsd():
     result: DSDSingleUnitResult = select_single_unit_from_dsd(
         csvw_metadata_rdf_graph, dataset_uri, csvw_metadata_json_path
     )
-    assert result.unit_label == "MtCO2e"
+    assert result.unit_label is None
     assert (
         result.unit_uri
-        == "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#unit/mtco2e"
+        == "http://gss-data.org.uk/def/concept/measurement-units/{+unit}"
     )
 
 
@@ -295,3 +294,20 @@ def test_select_table_schema_dependencies():
         str(table_schema_dependencies_dir / "sector.table.json"),
         str(table_schema_dependencies_dir / "subsector.table.json"),
     }
+
+
+#TODO FROM HERE
+def test_select_codelist_cols_by_dataset_url():
+    """
+    Should return expected `CodeListColsByDatasetUrlResult`.
+    """
+    csvw_metadata_json_path = _test_case_base_dir / "codelist.csv-metadata.json"
+    metadata_processor = MetadataProcessor(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+    dataset_url = select_codelist_dataset_url(csvw_metadata_rdf_graph).dataset_url
+
+    result: CodeListColsByDatasetUrlResult = select_codelist_cols_by_dataset_url(
+        csvw_metadata_rdf_graph, dataset_url
+    )
+
+    assert len(result.columns) == 6
