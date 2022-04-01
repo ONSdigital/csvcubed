@@ -16,7 +16,6 @@ from csvcubed.utils.qb.validation.uri_safe import ensure_no_uri_safe_conflicts
 from .attributevalue import NewQbAttributeValue
 from .arbitraryrdf import (
     ArbitraryRdf,
-    TripleFragment,
     TripleFragmentBase,
     RdfSerialisationHint,
 )

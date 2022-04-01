@@ -1,0 +1,467 @@
+{
+    "$schema": "https://json-schema.org/draft-07/schema",
+    "id": "http://purl.org/csv-cubed/qube-config/v1.0",
+    "title": "Schema for a qb-config cube",
+    "description": "Schema to be used for creation & validation of a single csv-cubed-flavoured linked data cube in CSV-W format",
+    "type": "object",
+    "required": ["$schema"],
+    "properties": {
+        "$schema": {
+            "type": "string",
+            "default": "http://purl.org/csv-cubed/qube-config/v1.0"
+        },
+        "id": {"description": "A unique id for the cube", "type": "string"},
+        "title": {"description": "A title for this data set", "type": "string"},
+        "description": {"description": "A longer description of the cube", "type": "string"},
+        "summary": {"description": "A shorter summary of the data set", "type": "string"},
+        "publisher": {
+            "description": "The publisher of the data set (uri)",
+            "$ref": "http://purl.org/csv-cubed/resources/organisations.json#/uris"
+        },
+        "creator": {
+            "description": "The creator of the data set (uri)",
+            "$ref": "http://purl.org/csv-cubed/resources/organisations.json#/uris"
+        },
+        "themes": {"$ref": "#/definitions/v1.0/themeTypes"},
+        "keywords": {"$ref": "#/definitions/v1.0/keywordTypes"},
+        "dataset_issued": {
+            "description": "Date time that the data set was initially published in ISO 8601 format, e.g. 2022-03-31 or 2022-03-31T12:54:30Z",
+            "type": "string",
+            "format": "date-time"
+        },
+        "dataset_modified": {
+            "description": "Date time that the data set was last modified published in ISO 8601 format, e.g. 2022-03-31 or 2022-03-31T12:54:30Z",
+            "type": "string",
+            "format": "date-time"
+        },
+        "license": {
+            "description": "URI that represents the copyright license applying to this cube",
+            "$ref": "http://purl.org/csv-cubed/resources/licenses.json#/uris"
+        },
+        "columns": {
+            "description": "Map of CSV column titles to definitions of what the column represents (a dimension, an attribute, observations, units or measures)",
+            "additionalProperties": {
+                "description": "Column's meaning in the data cube",
+                "anyOf": [
+                    {"$ref": "#/definitions/v1.0/columnTypes/Dimension"},
+                    {"$ref": "#/definitions/v1.0/columnTypes/Attribute"},
+                    {"$ref": "#/definitions/v1.0/columnTypes/Measures"},
+                    {"$ref": "#/definitions/v1.0/columnTypes/Observations"},
+                    {"$ref": "#/definitions/v1.0/columnTypes/Units"}
+                ]
+            }
+        }
+    },
+    "definitions": {
+        "v1.0": {
+            "columnTypes": {
+                "Attribute": {
+                    "description": "This column represents an attribute of the cube",
+                    "oneOf": [
+                        {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "required": ["type"],
+                            "properties": {
+                                "type": {
+                                    "description": "This column represents an attribute of the cube",
+                                    "type": "string",
+                                    "const": "attribute"
+                                },
+                                "label": {
+                                    "description": "Label describing the Attribute",
+                                    "type": "string"
+                                },
+                                "description": {
+                                    "description": "A explanation of what the Attribute represents",
+                                    "type": "string"
+                                },
+                                "from_existing": {
+                                    "description": "URI of an existing attribute to reuse or extend",
+                                    "$ref": "http://purl.org/csv-cubed/resources/attributes.json#/uris/literalValues"
+                                },
+                                "definition_uri": {
+                                    "description": "Source URI for the definition of the Attribute",
+                                    "$ref": "#/definitions/v1.0/types/definition_uri"
+                                },
+                                "data_type": {
+                                    "description": "The data type of the attribute values",
+                                    "$ref": "#/definitions/v1.0/dataTypes"
+                                },
+                                "required": {
+                                    "description": "Whether or not it is required that every observation has a value for this attribute",
+                                    "type": "boolean",
+                                    "default": false
+                                }
+                            }
+                        },
+                        {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "required": ["type"],
+                            "properties": {
+                                "type": {
+                                    "description": "This column represents an attribute of the cube",
+                                    "type": "string",
+                                    "const": "attribute"
+                                },
+                                "from_template": {
+                                    "$ref": "#/definitions/v1.0/column_templates/attribute_resource"
+                                },
+                                "label": {
+                                    "description": "Label describing the Attribute",
+                                    "type": "string"
+                                },
+                                "description": {
+                                    "description": "A explanation of what the Attribute represents",
+                                    "type": "string"
+                                },
+                                "from_existing": {
+                                    "description": "URI of an existing attribute to reuse or extend",
+                                    "$ref": "http://purl.org/csv-cubed/resources/attributes.json#/uris/resourceValues"
+                                },
+                                "definition_uri": {
+                                    "description": "Source URI for the definition of the Attribute",
+                                    "$ref": "#/definitions/v1.0/types/definition_uri"
+                                },
+                                "values": {
+                                    "oneOf": [
+                                        {
+                                            "description": "Whether to automatically generate attribute value resources for each unique value in the column",
+                                            "type": "boolean",
+                                            "default": true
+                                        },
+                                        {
+                                            "type": "array",
+                                            "description": "The distinct attribute values which can be used in the column",
+                                            "items": {
+                                                "$ref": "#/definitions/v1.0/valueTypes/attributeValueType"
+                                            }
+                                        }
+                                    ]
+                                },
+                                "cell_uri_template": {
+                                    "description": "A template used to map the cell values in this column into URIs, e.g. 'http://example.com/attribute-values/{+column_csvw_name}'",
+                                    "type": "string",
+                                    "format": "uri"
+                                }
+                            }        
+                        }
+                    ]
+                },
+                "Dimension": {
+                    "description": "This column represents a dimension of the cube",
+                    "type": "object",
+                    "required": [],
+                    "additionalProperties": false,
+                    "properties": {
+                        "type": {
+                            "description": "This column represents a dimension of the cube",
+                            "type": "string",
+                            "const": "dimension"
+                        },
+                        "from_template": {
+                            "$ref": "#/definitions/v1.0/column_templates/dimension"
+                        },
+                        "label": {
+                            "description": "Label describing the Dimension",
+                            "type": "string"
+                        },
+                        "description": {
+                            "description": "A explanation of what the Dimension represents",
+                            "type": "string"
+                        },
+                        "from_existing": {
+                            "description": "URI of an existing dimension to reuse or extend",
+                            "$ref": "http://purl.org/csv-cubed/resources/dimensions.json#/uris"
+                        },
+                        "definition_uri": {
+                            "description": "Source URI for the definition of the Dimension",
+                            "$ref": "#/definitions/v1.0/types/definition_uri"
+                        },
+                        "cell_uri_template": {
+                            "description": "A template used to map the cell values in this column into URIs, e.g. 'http://example.com/code-list/{+column_csvw_name}'",
+                            "type": "string",
+                            "format": "uri"
+                        },
+                        "code_list": {
+                            "description": "A code list defines the unique values permitted in a dimension",
+                            "oneOf": [
+                                {
+                                    "description": "Whether or not to generate a code list defining the unique values permitted in this dimension",
+                                    "type": "boolean", 
+                                    "default": true
+                                },
+                                {
+                                    "description": "The URI of a code list defining the unique values permitted in this dimension",
+                                    "$ref": "http://purl.org/csv-cubed/resources/code-lists.json#/uris"
+                                }
+                            ]       
+                        }
+                    }
+                },
+                "Measures": {
+                    "description": "This column represents the phenomenon which has been measured",
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["type"],
+                    "properties": {
+                        "type": {
+                            "description": "This column represents the phenomenon which has been measured",
+                            "type": "string",
+                            "const": "measures"
+                        },
+                        "cell_uri_template": {
+                            "type": "string", 
+                            "format": "uri",
+                            "description": "A template used to map the cell values in this column into URIs, e.g. 'http://example.com/measures/{+column_csvw_name}'"
+                        },
+                        "values": {
+                            "oneOf": [
+                                {
+                                    "description": "Whether to automatically measure resources for each unique value in the column",
+                                    "type": "boolean",
+                                    "default": true
+                                },
+                                {
+                                    "type": "array",
+                                    "description": "A list of measures permitted in this column.",
+                                    "items": {
+                                        "$ref": "#/definitions/v1.0/valueTypes/measureType"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                },
+                "Units": {
+                    "description": "This column represents the unit of measure in which observations were recorded",
+                    "type": "object",
+                    "required": ["type"],
+                    "properties": {
+                        "type": {
+                            "description": "This column represents the unit of measure in which observations were recorded",
+                            "type": "string",
+                            "const": "units"
+                        },
+                        "values": {
+                            "description": "The Units used in this dataset.",
+                            "oneOf": [
+                                {
+                                    "description": "Whether to automatically generate new units from the unique values in this column.",
+                                    "type": "boolean",
+                                    "default": true
+                                },
+                                {
+                                    "description": "A list of units permitted in this column.",
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/v1.0/valueTypes/unitType"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "Observations": {
+                    "description": "This column holds observed/recorded values",
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["type"],
+                    "properties": {
+                        "type": {
+                            "description": "Column type.",
+                            "type": "string",
+                            "const": "observations"
+                        },
+                        "data_type": {"$ref": "#/definitions/v1.0/dataTypes"},
+                        "unit": {
+                            "description": "The unit that all observations were measured in",
+                            "$ref": "#/definitions/v1.0/valueTypes/unitType"
+                        },
+                        "measure": {
+                            "description": "The characteristic which was measured in all observation",
+                            "$ref": "#/definitions/v1.0/valueTypes/measureType"
+                        }
+                    }
+                }
+            },
+            "valueTypes": {
+                "attributeValueType": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["label"],
+                    "properties": {
+                        "label": {
+                            "type": "string",
+                            "description": "A label describing this attribute value"
+                        },
+                        "description": {
+                            "type": "string",
+                            "description": "The description of the attribute values"
+                        },
+                        "from_existing": {
+                            "description": "The URI to an existing attribute values to extend",
+                            "$ref": "http://purl.org/csv-cubed/resources/attribute-values.json#/uris"
+                        },
+                        "definition_uri": {
+                            "description": "The URI link to an existing definition",
+                            "type": "string",
+                            "format": "uri"
+                        }
+                    }
+                },
+                "measureType": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["label"],
+                    "properties": {
+                        "label": {
+                            "description": "Label for the Measure",
+                            "type": "string"
+                        },
+                        "description": {
+                            "description": "A explanation of what the Measure represents",
+                            "type": "string"
+                        },
+                        "from_existing": {
+                            "description": "URI of an Existing Measure to reuse or extend",
+                            "$ref": "http://purl.org/csv-cubed/resources/measures.json#/uris"
+                        },
+                        "definition_uri": {
+                            "description": "Source URI for the definition of the Measure",
+                            "$ref": "#/definitions/v1.0/types/definition_uri"
+                        }
+                    }
+                },
+                "unitType": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["label"],
+                    "properties": {
+                        "label": {
+                            "description": "Label describing the Unit",
+                            "type": "string"
+                        },
+                        "description": {
+                            "description": "A explanation of what the Unit represents",
+                            "type": "string"
+                        },
+                        "from_existing": {
+                            "description": "URI of an existing Unit to reuse",
+                            "$ref": "http://purl.org/csv-cubed/resources/units.json#/uris"
+                        },
+                        "definition_uri": {
+                            "description": "Source URI for the definition of the Unit",
+                            "$ref": "#/definitions/v1.0/types/definition_uri"
+                        },
+                        "scaling_factor": {
+                            "description": "Scaling factor of the observation to base unit",
+                            "type": "number"
+                        },
+                        "quantity_kind": {
+                            "description": "The QUDT quantity kind this unit is used to measure",
+                            "$ref": "http://purl.org/csv-cubed/resources/quantity-kinds.json#/uris"
+                        },
+                        "si_scaling_factor": {
+                            "description": "Scaling factor to convert from this unit to the SI base unit defined in the unit's quantity_kind",
+                            "type": "number"
+                        }
+                    }
+                }
+            },
+            "dataTypes": {
+                "type": "string",
+                "default": "decimal",
+                "enum": [
+                    "anyURI",
+                    "boolean",
+                    "date",
+                    "dateTime",
+                    "dateTimeStamp",
+                    "decimal",
+                    "integer",
+                    "long",
+                    "int",
+                    "short",
+                    "nonNegativeInteger",
+                    "positiveInteger",
+                    "unsignedLong",
+                    "unsignedInt",
+                    "unsignedShort",
+                    "nonPositiveInteger",
+                    "negativeInteger",
+                    "double",
+                    "float",
+                    "string",
+                    "language",
+                    "time"
+                ]
+            },
+            "themeTypes": {
+                "description": "A theme or list of themes that describe the focus of the data",
+                "additionalProperties": {
+                    "oneOf": [
+                        {"$ref": "#/definitions/v1.0/types/theme"},
+                        {
+                            "themeList": {
+                                "description": "A list of themes",
+                                "type": "array",
+                                "items": {"$ref": "#/definitions/v1.0/types/theme"}
+                            }
+                        }
+                    ]
+                }
+            },
+            "keywordTypes": {
+                "description": "A keyword or list of keywords relevant to the cube",
+                "oneOf": [
+                    {"$ref": "#/definitions/v1.0/types/keyword"},
+                    {
+                        "type": "array",
+                        "items": {"$ref": "#/definitions/v1.0/types/keyword"}
+                    }
+                ]
+            },
+            "types": {
+                "organisation": {
+                    "description": "A URI defining an organisation.",
+                    "$ref": "http://purl.org/csv-cubed/resources/organisations.json#/uris"
+                },
+                "theme": {
+                    "description": "A URI describing a theme",
+                    "$ref": "http://purl.org/csv-cubed/resources/themes.json#/uris"
+                },
+                "keyword": {
+                    "description": "A string describing a keyword",
+                    "type": "string"
+                },
+                "definition_uri": {
+                    "description": "A string describing a theme",
+                    "type": "string",
+                    "format": "uri"
+                }
+            },
+            "column_templates": {
+                "comment": "This is where you should place all column template identifiers. Ensure you segregate them into the appropriate column type.",
+                "dimension": {
+                    "description": "Templates for common dimension columns",
+                    "type": "string",
+                    "enum": [
+                        "nutsgeography",
+                        "onsgeographies",
+                        "onsgeography",
+                        "year",
+                        "year+month"
+                    ]
+                },
+                "attribute_resource": {
+                    "description": "Templates for common attribute columns with resource values",
+                    "type": "string",
+                    "enum": [ ]
+                }
+            }
+        }
+    }
+}
