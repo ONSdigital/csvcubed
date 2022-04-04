@@ -21,6 +21,7 @@ from csvcubed.cli.inspect.inspectdatasetmanager import (
     get_unit_col_name_from_dsd,
 )
 
+
 def transform_dataset_to_canonical_shape(
     dataset: pd.DataFrame,
     qube_components: List[QubeComponentResult],
@@ -31,7 +32,7 @@ def transform_dataset_to_canonical_shape(
     """
     Transforms the given dataset into canonical shape if it is not in the canonical shape already.
 
-    Member of :class:`./MetadataPrinter`.
+    Member of :file:`./csvdataset.py`
 
     :return: `Tuple[pd.DataFrame, str, str]` - canonical dataframe, measure column name, unit column name.
     """
