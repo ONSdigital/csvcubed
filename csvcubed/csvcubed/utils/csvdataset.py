@@ -21,19 +21,6 @@ from csvcubed.cli.inspect.inspectdatasetmanager import (
     get_unit_col_name_from_dsd,
 )
 
-
-class CanonicalShapeRequiredCols(Enum):
-    """
-    The type uris of component properties.
-    """
-
-    Measure = "Measure"
-    """ Measure column """
-
-    Unit = "Unit"
-    """ Unit (of measure) column """
-
-
 def transform_dataset_to_canonical_shape(
     dataset: pd.DataFrame,
     qube_components: List[QubeComponentResult],
@@ -54,7 +41,7 @@ def transform_dataset_to_canonical_shape(
     unit_col: Optional[str] = get_unit_col_name_from_dsd(qube_components)
 
     if unit_col is None:
-        unit_col = f"{CanonicalShapeRequiredCols.Unit.value}_{str(uuid1())}"
+        unit_col = f"Unit_{str(uuid1())}"
         result = select_single_unit_from_dsd(
             csvw_metadata_rdf_graph,
             dataset_uri,
@@ -65,7 +52,7 @@ def transform_dataset_to_canonical_shape(
         )
 
     if measure_col is None:
-        measure_col = f"{CanonicalShapeRequiredCols.Measure.value}_{str(uuid1())}"
+        measure_col = f"Measure_{str(uuid1())}"
         result = get_single_measure_from_dsd(qube_components, csvw_metadata_json_path)
         canonical_shape_dataset[measure_col] = (
             result.measure_label

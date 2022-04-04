@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import List, Optional
 import pandas as pd
 
-
+from csvcubed.utils.pandas import read_csv
 from csvcubed.models.inspectsparqlresults import (
     QubeComponentResult,
 )
@@ -67,7 +67,7 @@ def load_csv_to_dataframe(json_path: Path, csv_path: Path) -> pd.DataFrame:
         dataset_path = json_path.parent / csv_path
         _logger.debug(f"Dataset path: {dataset_path.absolute()}")
 
-        dataset = pd.DataFrame(pd.read_csv(dataset_path))
+        dataset = pd.DataFrame(read_csv(dataset_path))
         _logger.info("Successfully loaded csv into dataframe.")
 
         return dataset
