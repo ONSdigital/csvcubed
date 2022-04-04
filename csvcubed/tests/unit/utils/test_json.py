@@ -1,4 +1,5 @@
 import pytest
+import requests_mock
 
 from tests.unit.test_baseunit import get_test_cases_dir
 from csvcubed.utils.json import load_json_document
@@ -31,11 +32,14 @@ def test_loading_json_from_url():
     Ensure we can load a JSON document from the local file system with a `pathlib.Path`.
     """
 
-    document = load_json_document(
-        "https://raw.githubusercontent.com/GSS-Cogs/csvcubed/010e36574204f0a321d4997ad45d8a6109248dc1/csvcubed/"
-        "tests/test-cases/cli/inspect/json.table.json"
-    )
-    assert isinstance(document.get("columns"), list)
+    with requests_mock.Mocker() as m:
+        m.get(
+            "http://url/file.json",
+            text='{"columns": []}',
+        )
+
+        document = load_json_document("http://url/file.json")
+        assert isinstance(document.get("columns"), list)
 
 
 if __name__ == "__main__":
