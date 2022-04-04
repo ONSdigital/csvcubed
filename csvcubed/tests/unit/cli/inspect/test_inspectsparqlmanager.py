@@ -243,11 +243,16 @@ def test_select_qb_dataset_url():
     )
     assert result.dataset_url == "alcohol-bulletin.csv"
 
+
 def test_select_single_unit_from_dsd():
     """
     Should return expected `DSDSingleUnitResult`.
     """
-    csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "single-unit_multi-measure"
+        / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv-metadata.json"
+    )
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
     dataset_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
@@ -255,8 +260,11 @@ def test_select_single_unit_from_dsd():
     result: DSDSingleUnitResult = select_single_unit_from_dsd(
         csvw_metadata_rdf_graph, dataset_uri, csvw_metadata_json_path
     )
-    assert result.unit_label is None
-    assert result.unit_uri == "http://gss-data.org.uk/def/concept/measurement-units/{+unit}"
+    assert result.unit_label == "MtCO2e"
+    assert (
+        result.unit_uri
+        == "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#unit/mtco2e"
+    )
 
 
 def test_select_table_schema_dependencies():
