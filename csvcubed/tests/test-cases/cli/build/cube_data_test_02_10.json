@@ -1,6 +1,6 @@
 {
-  "$schema": "./csvcubed/schema/cube-config-schema.json",
-  "id": "http://schema-id",
+  "$schema": "https://purl.org/csv-cubed/qube-config/v1.0",
+  "id": "schema-id",
   "title": "Tests/test-cases/config/schema-cube-data-config-ok",
   "description": "Schema for testing",
   "creator": "Fred the creator",
@@ -19,7 +19,7 @@
     {
       "Measure": {
         "type": "measures",
-       "values": true
+        "values": true
       }
     },
     {
@@ -45,7 +45,6 @@
         ]
       }
     },
-
     {
       "Amount": {
         "type": "observations",

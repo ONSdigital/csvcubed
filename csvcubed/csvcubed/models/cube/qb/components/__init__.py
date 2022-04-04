@@ -14,6 +14,7 @@ from .attributevalue import NewQbAttributeValue
 from .codelist import (
     QbCodeList,
     NewQbCodeList,
+    NewQbCodeListInCsvW,
     ExistingQbCodeList,
     CompositeQbCodeList,
 )

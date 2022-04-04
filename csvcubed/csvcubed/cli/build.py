@@ -67,10 +67,10 @@ def build(
                 e.message for e in json_schema_validation_errors
             ]
 
-            # with open(validation_errors_file_out, "w+") as f:
-            #     json.dump(all_errors, f, indent=4)
-            with open(output_directory / validation_errors_file_out, "w+") as f:
-                json.dump(all_errors, f, indent=4, default=serialize_sets)
+            with open(validation_errors_file_out, "w+") as f:
+                json.dump(all_errors, f, indent=4)
+            # with open(output_directory / validation_errors_file_out, "w+") as f:
+            #     json.dump(all_errors, f, indent=4, default=serialize_sets)
 
         if fail_when_validation_error_occurs and len(validation_errors) > 0:
             exit(1)
@@ -84,7 +84,7 @@ def build(
 
 
 def _get_versioned_deserialiser(
-    json_config_path: Optional[Path],
+    json_config_path: Optional[Path]=None,
 ) -> QubeConfigDeserialiser:
     """
     Return the correct version of the config deserialiser based on the schema in the cube config file
@@ -95,9 +95,10 @@ def _get_versioned_deserialiser(
     else:
         return get_deserialiser_for_schema(None)
 
-# Credit: Antti Haapala: https://stackoverflow.com/questions/8230315/how-to-json-serialize-sets
-def serialize_sets(obj):
-    if isinstance(obj, set):
-        return list(obj)
 
-    return obj
+# Credit: Antti Haapala: https://stackoverflow.com/questions/8230315/how-to-json-serialize-sets
+# def serialize_sets(obj):
+#     if isinstance(obj, set):
+#         return list(obj)
+#
+#     return obj

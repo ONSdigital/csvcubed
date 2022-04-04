@@ -2,13 +2,11 @@ from pathlib import Path
 
 import appdirs
 import pytest
-
 from csvcubed.cli.build import build as cli_build
 
 from csvcubed.models.cube import *
 from csvcubed.models.cube.qb.components.validationerrors import *
 from csvcubed.models.cube.qb.validationerrors import *
-
 from tests.unit.test_baseunit import get_test_cases_dir
 
 PROJECT_ROOT = Path(Path(__file__).parent, "..", "..", "..", "..").resolve()
@@ -197,8 +195,9 @@ def test_02_05_val_errors_missing_obs_vals():
 
     assert isinstance(validation_errors[0], ObservationValuesMissing)
 
-    assert _check_log("csvcubed.cli.build - ERROR - Validation Error: Observation values are missing in the column: " \
-           "'Amount' on rows: {2, 3}")
+    assert _check_log("csvcubed.cli.build - ERROR - Validation Error: Observation values are missing in the column: " 
+                      "'Amount' on rows: {2, 3}"
+                      )
     assert _check_log("Refer to http://purl.org/csv-cubed/err/obsv-val-mis for guidance on correcting this problem.")
 
 

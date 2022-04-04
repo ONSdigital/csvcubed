@@ -31,6 +31,7 @@ class ColumnNotFoundInDataError(SpecificValidationError):
     """
 
     csv_column_title: str
+
     @classmethod
     def get_error_url(cls) -> str:
         return 'http://purl.org/csv-cubed/err/col-not-found-in-dat'

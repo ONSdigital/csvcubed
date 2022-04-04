@@ -39,6 +39,7 @@ def looks_like_uri(maybe_uri: str) -> bool:
     parse_result = urlparse(maybe_uri)
     return parse_result.scheme != ""
 
+
 def get_data_type_uri_from_str(data_type: str) -> str:
     """
     Is it a uri? Find out, and return one.

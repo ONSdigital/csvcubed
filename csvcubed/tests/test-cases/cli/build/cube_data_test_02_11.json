@@ -1,6 +1,6 @@
 {
-  "$schema": "./csvcubed/schema/cube-config-schema.json",
-  "id": "http://schema-id",
+  "$schema": "https://purl.org/csv-cubed/qube-config/v1.0",
+  "id": "schema-id",
   "title": "Tests/test-cases/config/schema-cube-data-config-ok",
   "description": "Schema for testing",
   "creator": "Fred the creator",
@@ -19,13 +19,13 @@
     {
       "Measure": {
         "type": "measures",
-       "values": [
+        "values": [
           {
             "label": "Billions",
             "description": "A billion whatsits",
             "definition_uri": "https://definition_uri2/bilion"
           },
-         {
+          {
             "label": "DogeCoin",
             "description": "A dogecoin",
             "definition_uri": "https://definition_uri2/dogecoin"
@@ -47,7 +47,6 @@
         "values": true
       }
     },
-
     {
       "Amount": {
         "type": "observations",

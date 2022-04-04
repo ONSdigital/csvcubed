@@ -7,7 +7,7 @@ A loader for the config.json.
 import logging
 
 from pathlib import Path
-from typing import Dict, Tuple, List, Callable
+from typing import Dict, Tuple, List, Callable, Any
 
 import pandas as pd
 from jsonschema.exceptions import ValidationError as JsonSchemaValidationError

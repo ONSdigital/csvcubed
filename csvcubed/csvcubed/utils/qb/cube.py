@@ -50,8 +50,8 @@ def get_columns_of_dsd_type(
 
 def get_all_measures(cube: Cube) -> Set[QbMeasure]:
     """
-    :return: The :obj:`set` of :class:`~csvcubed.models.cube.qb.components.measure.QbMeasure` instances defined against the
-      cube's columns.
+    :return: The :obj:`set` of :class:`~csvcubed.models.cube.qb.components.measure.QbMeasure` instances defined against
+     the cube's columns.
     """
     multi_measure_dimension_columns = get_columns_of_dsd_type(
         cube, QbMultiMeasureDimension

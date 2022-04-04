@@ -121,6 +121,7 @@ def test_value_uri_template_is_missing_in_existing_measure_dimention():
     error = errors[0]
     assert isinstance(error, CsvColumnUriTemplateMissingError)
     assert error.component_type == ExistingQbMeasure
-    
+
+
 if __name__ == "__main__":
     pytest.main()

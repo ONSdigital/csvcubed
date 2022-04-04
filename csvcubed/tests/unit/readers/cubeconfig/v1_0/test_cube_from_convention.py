@@ -54,7 +54,8 @@ SCHEMA_PATH_FILE = Path(
 # def test_build_2():
 #     """
 #     Incorrect types for args
-#     TODO - Implement strict type hint checking - https://stackoverflow.com/questions/32844556/python-3-5-type-hints-can-i-check-if-function-arguments-match-type-hints
+#     TODO - Implement strict type hint checking - https://stackoverflow.com/questions/32844556/
+#      python-3-5-type-hints-can-i-check-if-function-arguments-match-type-hints
 #     """
 #     with pytest.raises(ValueError) as exc_info:
 #         build("should_be_path", "should_be_path", "should_be_path",)

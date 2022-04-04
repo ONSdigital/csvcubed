@@ -7,7 +7,7 @@ from csvcubeddevtools.helpers.file import get_test_cases_dir
 from csvcubedmodels.rdf import dcat
 from rdflib import Graph
 
-from csvcubed.models.cube.qb.catalog import CatalogMetadata #from_json_file
+from csvcubed.models.cube.qb.catalog import CatalogMetadata  # from_json_file
 from csvcubed.models.cube import catalog
 
 
@@ -15,6 +15,7 @@ from csvcubed.models.cube import catalog
 def step_impl(context, catalog_metadata_file: str):
     catalog_metadata_file_path = get_context_temp_dir_path(context) / catalog_metadata_file
     context.catalog_metadata = CatalogMetadata.from_json_file(catalog_metadata_file_path) 
+
 
 @When('the Catalog Metadata file is converted to Turtle with dataset URI "{dataset_uri}"')
 def step_impl(context, dataset_uri: str):

@@ -1,7 +1,34 @@
 import os
 import pytest
+from pathlib import Path
+from typing import List
+
+import pandas as pd
+
 from csvcubed.cli.build import build as cli_build
-from csvcubed.readers.cubeconfig.v1_0.configdeserialiser import *
+from csvcubed.models.cube import (
+    CsvColumn,
+    CatalogMetadata,
+    Cube,
+    QbColumn,
+    QbMultiMeasureObservationValue,
+    QbMultiMeasureDimension,
+    QbMultiUnits,
+    NewQbMeasure,
+    ExistingQbMeasure,
+    NewQbUnit,
+    ExistingQbUnit,
+    NewQbDimension,
+    ExistingQbDimension,
+    ExistingQbAttribute,
+    NewQbAttribute,
+    NewQbAttributeValue,
+    NewQbCodeList,
+    NewQbConcept,
+)
+
+from csvcubed.utils.uri import uri_safe
+from csvcubed.readers.cubeconfig.v1_0.configdeserialiser import map_column_to_qb_component
 from tests.unit.test_baseunit import get_test_cases_dir
 
 PROJECT_ROOT = Path(Path(__file__).parent, "..", "..", "..", "..").resolve()
@@ -150,7 +177,7 @@ def test_02_00_dimension_new_no_type():
     }
     data = pd.Series(column_data, name='Dimension Heading')
     parent_dir = Path(__file__).parent
-    column = v1_0_map_column_to_qb_component('New Dimension', dimension_config, data, parent_dir)
+    column = map_column_to_qb_component('New Dimension', dimension_config, data)
     _check_new_dimension_column(column, dimension_config, column_data, 'New Dimension')
 
 
@@ -171,29 +198,29 @@ def test_02_01_dimension_new_ok():
     }
     data = pd.Series(column_data, name='Dimension Heading')
     parent_dir = Path(__file__).parent
-    column = v1_0_map_column_to_qb_component('New Dimension', dimension_config, data, parent_dir)
+    column = map_column_to_qb_component('New Dimension', dimension_config, data)
     _check_new_dimension_column(column, dimension_config, column_data, 'New Dimension')
 
 
-def test_02_02_dimension_new_ok():
-    """
-    Check New dimension when omitting label, from_existing, definition_url and cell_uri_template
-    """
-    column_data = ['a', 'b', 'c', 'a']
-    dimension_config = {
-        'type': 'dimension',
-        # 'label': 'The New Dimension',
-        'description': 'A description of the dimension',
-    }
-    data = pd.Series(column_data, name='Dimension Heading')
-    parent_dir = Path(__file__).parent
-
-    with pytest.raises(Exception) as err:
-        column = v1_0_map_column_to_qb_component('New Dimension', dimension_config, data, parent_dir)
-    assert err.value.args[0] == \
-           f"Column with config: '{dimension_config}' did not match " \
-           f"either New or Existing Dimension using v1_0_col_schema"
-
+# def test_02_02_dimension_new_ok():
+#     """
+#     Check New dimension when omitting label, from_existing, definition_url and cell_uri_template
+#     Schema evaluation changed so that label is not longer required for new dimension
+#     """
+#     column_data = ['a', 'b', 'c', 'a']
+#     dimension_config = {
+#         'type': 'dimension',
+#         # 'label': 'The New Dimension',
+#         'description': 'A description of the dimension',
+#     }
+#     data = pd.Series(column_data, name='Dimension Heading')
+#     parent_dir = Path(__file__).parent
+#
+#     with pytest.raises(Exception) as err:
+#         column = map_column_to_qb_component('New Dimension', dimension_config, data)
+#     assert err.value.args[0] == \
+#            f"Column with config: '{dimension_config}' did not match " \
+#            f"either New or Existing Dimension using v1_0_col_schema"
 
 
 def test_02_03_dimension_new_ok():
@@ -208,32 +235,32 @@ def test_02_03_dimension_new_ok():
     }
     data = pd.Series(column_data, name='Dimension Heading')
     parent_dir = Path(__file__).parent
-    column = v1_0_map_column_to_qb_component('New Dimension', dimension_config, data, parent_dir)
+    column = map_column_to_qb_component('New Dimension', dimension_config, data)
     _check_new_dimension_column(column, dimension_config, column_data, 'New Dimension')
 
 
-def test_02_03_dimension_new_broke():
-    """
-    Check New dimension when omitting label, description, from_existing, definition_url and
-    cell_uri_template
-
-    *** NOTE: Without either label or description this looks like an existing Dimension so fails ***
-
-    """
-    column_data = ['a', 'b', 'c', 'a']
-    dimension_config = {
-        'type': 'dimension',
-    }
-    data = pd.Series(column_data, name='Dimension Heading')
-    parent_dir = Path(__file__).parent
-    with pytest.raises(Exception) as err:
-        column = v1_0_map_column_to_qb_component('New Dimension', dimension_config, data, parent_dir)
-        # result = _check_new_dimension_column(column, dimension_config, column_data, 'New Dimension')
-        # print(result)
-    assert err.value.args[0] == \
-           f"Column with config: '{dimension_config}' did not match " \
-           f"either New or Existing Dimension using v1_0_col_schema"
-
+# def test_02_03_dimension_new_broke():
+#     """
+#     Check New dimension when omitting label, description, from_existing, definition_url and
+#     cell_uri_template
+#
+#     *** NOTE: Without either label or description this looks like an existing Dimension so fails ***
+#     Schema evaluation changed so label or description no longer required
+#
+#     """
+#     column_data = ['a', 'b', 'c', 'a']
+#     dimension_config = {
+#         'type': 'dimension',
+#     }
+#     data = pd.Series(column_data, name='Dimension Heading')
+#     parent_dir = Path(__file__).parent
+#     with pytest.raises(Exception) as err:
+#         column = map_column_to_qb_component('New Dimension', dimension_config, data)
+#         # result = _check_new_dimension_column(column, dimension_config, column_data, 'New Dimension')
+#         # print(result)
+#     assert err.value.args[0] == \
+#            f"Column with config: '{dimension_config}' did not match " \
+#            f"either New or Existing Dimension using v1_0_col_schema"
 
 
 def test_03_dimension_existing_ok():
@@ -249,7 +276,7 @@ def test_03_dimension_existing_ok():
     }
     data = pd.Series(column_data, name='Dimension Heading')
     parent_dir = Path(__file__).parent
-    column = v1_0_map_column_to_qb_component('New Dimension', dimension_config, data, parent_dir)
+    column = map_column_to_qb_component('New Dimension', dimension_config, data)
 
     # Confirm a Column is returned
     assert isinstance(column, QbColumn)
@@ -281,30 +308,33 @@ def test_04_01_attribute_new_ok():
     }
     data = pd.Series(column_data, name='Attribute Heading')
     parent_dir = Path(__file__).parent
-    column = v1_0_map_column_to_qb_component('New Attribute', column_config, data, parent_dir)
+    column = map_column_to_qb_component('New Attribute', column_config, data)
     _check_new_attribute_column(column, column_config, column_data, 'New Attribute')
 
 
-def test_04_02_attribute_new_broken():
-    """
-    Checks New attribute when description, values, from_existing and definition_uri options
-    are omitted
-    ** Values True
-    """
-    column_data = ['a', 'b', 'c', 'a']
-    column_config = {
-        'type': 'attribute',
-        'description': 'A description of the attribute',
-        'values': True
-    }
-    data = pd.Series(column_data, name='Attribute Heading')
-    parent_dir = Path(__file__).parent
-    with pytest.raises(Exception) as err:
-        column = v1_0_map_column_to_qb_component('New Attribute', column_config, data, parent_dir)
-        # _check_new_attribute_column(column, column_config, column_data, 'New Attribute')
-    assert err.value.args[0] == \
-           f"Column with config '{column_config}' did not match either New or " \
-           f"Existing Attribute v1_0_col_schema"
+# def test_04_02_attribute_new_broken():
+#     """
+#     Checks New attribute when description, values, from_existing and definition_uri options
+#     are omitted
+#
+#     Schema evaluation changed so that the label is not required for new attribute
+#
+#     ** Values True
+#     """
+#     column_data = ['a', 'b', 'c', 'a']
+#     column_config = {
+#         'type': 'attribute',
+#         'description': 'A description of the attribute',
+#         'values': True
+#     }
+#     data = pd.Series(column_data, name='Attribute Heading')
+#     parent_dir = Path(__file__).parent
+#     with pytest.raises(Exception) as err:
+#         column = map_column_to_qb_component('New Attribute', column_config, data)
+#         # _check_new_attribute_column(column, column_config, column_data, 'New Attribute')
+#     assert err.value.args[0] == \
+#            f"Column with config '{column_config}' did not match either New or " \
+#            f"Existing Attribute v1_0_col_schema"
 
 
 
@@ -313,6 +343,9 @@ def test_04_03_attribute_new_ok():
     Checks New attribute when description, values, from_existing and definition_uri options
     are omitted
     ** Values False
+
+    Schema has been changed to False is now permitted
+
     """
     column_data = ['a', 'b', 'c', 'a']
     column_config = {
@@ -323,16 +356,17 @@ def test_04_03_attribute_new_ok():
     }
     data = pd.Series(column_data, name='Attribute Heading')
     parent_dir = Path(__file__).parent
-    with pytest.raises(ValueError) as err:
-        column = v1_0_map_column_to_qb_component('New Attribute', column_config, data, parent_dir)
-        # _check_new_attribute_column(column, column_config, column_data, 'New Attribute')
-    assert err.value.args[0] == "Unexpected value for 'newAttributeValues': False"
+    # with pytest.raises(ValueError) as err:
+    #     column = map_column_to_qb_component('New Attribute', column_config, data)
+    #     # _check_new_attribute_column(column, column_config, column_data, 'New Attribute')
+    # assert err.value.args[0] == "Unexpected value for 'newAttributeValues': False"
+    column = map_column_to_qb_component('New Attribute', column_config, data)
+    _check_new_attribute_column(column, column_config, [], 'New Attribute')
 
 
 def test_04_04_attribute_new_ok():
     """
-    Checks New attribute when description, values, from_existing and definition_uri options
-    are omitted
+    Checks New attribute when description, values, from_existing and definition_uri are present
     """
     column_data = ['a', 'b', 'c', 'a']
     column_config = {
@@ -354,7 +388,7 @@ def test_04_04_attribute_new_ok():
     }
     data = pd.Series(column_data, name='Attribute Heading')
     parent_dir = Path(__file__).parent
-    column = v1_0_map_column_to_qb_component('New Attribute', column_config, data, parent_dir)
+    column = map_column_to_qb_component('New Attribute', column_config, data)
     _check_new_attribute_column(column, column_config, column_data, 'New Attribute')
 
 
@@ -369,7 +403,7 @@ def test_05_01_attribute_existing_ok():
     }
     data = pd.Series(column_data, name='Attribute Heading')
     parent_dir = Path(__file__).parent
-    column = v1_0_map_column_to_qb_component('Existing Attribute', column_config, data, parent_dir)
+    column = map_column_to_qb_component('Existing Attribute', column_config, data)
 
     # Confirm a Column is returned
     assert isinstance(column, QbColumn)
@@ -397,7 +431,7 @@ def test_05_02_attribute_existing_ok():
     }
     data = pd.Series(column_data, name='Attribute Heading')
     parent_dir = Path(__file__).parent
-    column = v1_0_map_column_to_qb_component('Existing Attribute', column_config, data, parent_dir)
+    column = map_column_to_qb_component('Existing Attribute', column_config, data)
 
     assert isinstance(column, QbColumn)
     assert hasattr(column, 'type') is False
@@ -434,7 +468,7 @@ def test_05_03_attribute_existing_broke():
     data = pd.Series(column_data, name='Attribute Heading')
     parent_dir = Path(__file__).parent
     with pytest.raises(ValueError) as err:
-        column = v1_0_map_column_to_qb_component('Existing Attribute', column_config, data, parent_dir)
+        column = map_column_to_qb_component('Existing Attribute', column_config, data)
     assert err.value.args[0] == "Unexpected value for 'newAttributeValues': False"
 
 
@@ -449,7 +483,7 @@ def test_06_measure_new_ok():
     }
     data = pd.Series(column_data, name='New Measure')
     parent_dir = Path(__file__).parent
-    column = v1_0_map_column_to_qb_component('New Measure', column_config, data, parent_dir)
+    column = map_column_to_qb_component('New Measure', column_config, data)
 
     # Confirm a Column is returned
     assert isinstance(column, QbColumn)
@@ -479,7 +513,7 @@ def test_07_measure_existing_ok():
     }
     data = pd.Series(column_data, name='Existing Measure Series')
     parent_dir = Path(__file__).parent
-    column = v1_0_map_column_to_qb_component('Existing Measure', column_config, data, parent_dir)
+    column = map_column_to_qb_component('Existing Measure', column_config, data)
 
     # Confirm a Column is returned
     assert isinstance(column, QbColumn)
@@ -509,7 +543,7 @@ def test_08_unit_new_ok():
     }
     data = pd.Series(column_data, name='New Units')
     parent_dir = Path(__file__).parent
-    column = v1_0_map_column_to_qb_component('New Units', column_config, data, parent_dir)
+    column = map_column_to_qb_component('New Units', column_config, data)
 
     # Confirm a Column is returned
     assert isinstance(column, QbColumn)
@@ -540,7 +574,7 @@ def test_09_units_existing_ok():
     }
     data = pd.Series(column_data, name='Existing Unit Series')
     parent_dir = Path(__file__).parent
-    column = v1_0_map_column_to_qb_component('Existing Unit', column_config, data, parent_dir)
+    column = map_column_to_qb_component('Existing Unit', column_config, data)
 
     # Confirm a Column is returned
     assert isinstance(column, QbColumn)
@@ -586,7 +620,7 @@ def test_10_observation_ok():
     #     }
     data = pd.Series(column_data, name='Observation Series')
     parent_dir = Path(__file__).parent
-    column = v1_0_map_column_to_qb_component('Observations', column_config, data, parent_dir)
+    column = map_column_to_qb_component('Observations', column_config, data)
 
     # Confirm a Column is returned
     assert isinstance(column, QbColumn)

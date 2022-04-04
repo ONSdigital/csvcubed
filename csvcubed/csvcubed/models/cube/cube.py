@@ -32,8 +32,8 @@ TMetadata = TypeVar("TMetadata", bound=CatalogMetadataBase, covariant=True)
 @dataclass
 class Cube(Generic[TMetadata], PydanticModel):
     metadata: TMetadata
-    data: Optional[pd.DataFrame] = field(default=None, repr=False)
-    columns: List[CsvColumn] = field(default_factory=lambda: [], repr=False)
+    data: Optional[pd.DataFrame] = field(default=None, init=True, repr=False)
+    columns: List[CsvColumn] = field(default_factory=list, init=True, repr=False)
 
     def validate(self) -> List[ValidationError]:
         errors: List[ValidationError] = []
