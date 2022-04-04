@@ -17,7 +17,7 @@ def _unformat_multiline_string(string: str) -> str:
     return "".join(s for s in string if ord(s) > 32 and ord(s) < 126)
 
 
-@When('the existing Metadata file exists "{csvw_metadata_file}"')
+@When('the Metadata file path is detected and validated "{csvw_metadata_file}"')
 def step_impl(context, csvw_metadata_file: str):
     context.csvw_metadata_json_path = (
         get_context_temp_dir_path(context) / csvw_metadata_file
@@ -25,7 +25,7 @@ def step_impl(context, csvw_metadata_file: str):
     path = Path(context.csvw_metadata_json_path)
     assert path.exists() is True
 
-@When('the existing csv file exists "{csv_file}"')
+@When('the csv file path is detected and validated "{csv_file}"')
 def step_impl(context, csv_file: str):
     context.csv_file_path = (
         get_context_temp_dir_path(context) / csv_file
