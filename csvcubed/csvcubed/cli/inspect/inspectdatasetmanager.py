@@ -72,7 +72,7 @@ def load_csv_to_dataframe(json_path: Path, csv_path: Path) -> pd.DataFrame:
 
         return dataset
     except Exception as ex:
-        raise CsvToDataFrameLoadFailedException from ex
+        raise CsvToDataFrameLoadFailedException() from ex
 
 
 def get_measure_col_name_from_dsd(

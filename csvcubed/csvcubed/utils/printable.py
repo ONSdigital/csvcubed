@@ -56,7 +56,7 @@ def get_printable_tabular_str_from_list(items: List[Dict], column_names=None) ->
     output_str = df.to_string(index=False)
     if output_str:
         return output_str
-    raise FailedToConvertDataFrameToStringException
+    raise FailedToConvertDataFrameToStringException()
 
 
 def get_printable_tabuler_str_from_dataframe(df: DataFrame, column_names=None) -> str:
@@ -72,4 +72,4 @@ def get_printable_tabuler_str_from_dataframe(df: DataFrame, column_names=None) -
     output_str = df.to_string(index=False)
     if output_str:
         return output_str
-    raise FailedToConvertDataFrameToStringException
+    raise FailedToConvertDataFrameToStringException()

@@ -260,7 +260,7 @@ def select_qb_dataset_url(rdf_graph: Graph, dataset_uri: str) -> DatasetURLResul
     :return: `DatasetURLResult`
     """
     if not dataset_uri.startswith("file://"):
-        raise InvalidCsvFilePathException
+        raise InvalidCsvFilePathException()
 
     results: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryFileName.SELECT_QB_DATASET_URL),

@@ -64,7 +64,7 @@ class MetadataPrinter:
         elif self.csvw_type == CSVWType.CodeList:
             return "code list"
         else:
-            raise InputTypeIsUnknownException
+            raise InputTypeIsUnknownException()
 
     def gen_type_info_printable(self) -> str:
         """
@@ -154,7 +154,7 @@ class MetadataPrinter:
                 self.csvw_metadata_rdf_graph
             )
         else:
-            raise JsonldNotSupportedException
+            raise JsonldNotSupportedException()
 
         self.dataset: pd.DataFrame = load_csv_to_dataframe(
             self.csvw_metadata_json_path, Path(result_dataset_url.dataset_url)
