@@ -6,14 +6,17 @@ Utilities for skos:codelists
 """
 
 from enum import Enum
-from typing import List
+from typing import List, Optional
 import pandas as pd
 import numpy as np
 
 from treelib import Tree
 
 from csvcubed.models.inspectsparqlresults import CodelistColumnResult
-from csvcubed.models.csvcubedexception import InvalidNumberOfRecordsException
+from csvcubed.models.csvcubedexception import (
+    ErrorProcessingDataFrameException,
+    InvalidNumberOfRecordsException,
+)
 
 
 class CodelistPropertyUrl(Enum):
@@ -38,7 +41,7 @@ class CodelistPropertyUrl(Enum):
 
 def get_codelist_col_title_by_property_url(
     columns: List[CodelistColumnResult], property_url: CodelistPropertyUrl
-) -> str:
+) -> Optional[str]:
     """
     Returns dataset column title for the given property url.
 
@@ -76,9 +79,17 @@ def build_concepts_hierarchy_tree(
     tree.create_node("root", identifier="root")
 
     # Replacing empty values with None and sorting consepts by Sort Priortiy to maintain the order when iterating below.
-    concepts_df = concepts_df.replace({np.nan: None}).sort_values(by="Sort Priority")
+    concepts_df_na_replaced = concepts_df.replace({np.nan: None})
+    if concepts_df_na_replaced is None:
+        raise ErrorProcessingDataFrameException(operation="replace")
 
-    for _, concept_row in concepts_df.iterrows():
+    concepts_df_sorted = pd.DataFrame(concepts_df_na_replaced).sort_values(
+        by="Sort Priority"
+    )
+    if concepts_df_sorted is None:
+        raise ErrorProcessingDataFrameException(operation="sort")
+
+    for _, concept_row in pd.DataFrame(concepts_df_sorted).iterrows():
         node_id = concept_row[notation_col_name]
         node_label = concept_row[label_col_name]
         node_parent_id = concept_row[parent_notation_col_name] or "root"

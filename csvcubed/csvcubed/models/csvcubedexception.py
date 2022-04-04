@@ -42,7 +42,11 @@ class CsvcubedExceptionMsges(Enum):
         "Unexpected number of results for ASK query {num_of_results}"
     )
 
-    FeatureNotSupported = "This feature is not yet supported: {explanation}."
+    FeatureNotSupported = "This feature is not yet supported: {explanation}"
+
+    ErrorProcessingDataFrameException = (
+        "An error occurred when performing {operation} operation on dataframe"
+    )
 
 
 class CsvcubedExceptionUrls(Enum):
@@ -93,6 +97,10 @@ class CsvcubedExceptionUrls(Enum):
     )
 
     FeatureNotSupported = "http://purl.org/csv-cubed/err/feature-not-supported"
+
+    ErrorProcessingDataFrameException = (
+        "http://purl.org/csv-cubed/err/error-when-processing-dataframe"
+    )
 
 
 class CsvcubedException(Exception, HasErrorUrl, ABC):
@@ -286,3 +294,18 @@ class FeatureNotSupportedException(CsvcubedException):
     @classmethod
     def get_error_url(cls) -> str:
         return CsvcubedExceptionUrls.FeatureNotSupported.value
+
+
+class ErrorProcessingDataFrameException(CsvcubedException):
+    """Class representing the FeatureNotSupportedException model."""
+
+    def __init__(self, operation: str):
+        super().__init__(
+            CsvcubedExceptionMsges.ErrorProcessingDataFrameException.value.format(
+                operation=operation
+            )
+        )
+
+    @classmethod
+    def get_error_url(cls) -> str:
+        return CsvcubedExceptionUrls.ErrorProcessingDataFrameException.value
