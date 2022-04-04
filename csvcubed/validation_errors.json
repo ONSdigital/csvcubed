@@ -1,7 +1,0 @@
-[
-    "{'type': 'observations', 'label': 'Volume'} is not valid under any of the given schemas",
-    "{'type': 'attribute', 'label': 'My best attribute'} is not valid under any of the given schemas",
-    "'Fred the creator' is not one of ['http://example.com/organisations/organisation']",
-    "'the license' is not one of ['http://example.com/licenses/license']",
-    "'Joe the publisher' is not one of ['http://example.com/organisations/organisation']"
-]

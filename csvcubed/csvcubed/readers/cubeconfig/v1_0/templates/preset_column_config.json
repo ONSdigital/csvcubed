@@ -6,7 +6,7 @@
     "week": "calendar-week.json",
     "day": "calendar-day.json",
     "hour": "calendar-hour.json",
-    "minutes": "calendar-minute.json",
+    "minute": "calendar-minute.json",
     "second": "calendar-seconds.json",
     "government-year": "government-year.json",
     "government-half-year": "government-half-year.json",
