@@ -37,7 +37,7 @@ from csvcubed.models.csvcubedexception import (
     InvalidCsvFilePathException,
     InvalidNumberOfRecordsException,
 )
-from definitions import ROOT_DIR_PATH
+from csvcubed.definitions import ROOT_DIR_PATH
 
 _logger = logging.getLogger(__name__)
 

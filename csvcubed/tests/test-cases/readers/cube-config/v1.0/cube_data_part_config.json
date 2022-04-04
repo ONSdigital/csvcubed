@@ -1,0 +1,22 @@
+{
+    "$schema": "https://purl.org/csv-cubed/qube-config/v1.0",
+    "id": "schema-id",
+    "title": "Tests/test-cases/config/schema-cube-data-config-ok",
+    "description": "Schema for testing",
+    "creator": "Fred the creator",
+    "publisher": "Joe the publisher",
+    "themes": "A Theme",
+    "spatial_bound": "spatial",
+    "temporal_bound": "temporal",
+    "dataset_issued": "2022-03-04 17:00:00.000",
+    "dataset_modified": "2022-03-04 18:00:00.000",
+    "license": "the license",
+    "summary": "a summary",
+    "keywords": "two",
+    "uri_safe_identifier_override": "uri-safe",
+    "columns": {
+        "Amount": {
+            "type": "observations"
+        }
+    }
+}

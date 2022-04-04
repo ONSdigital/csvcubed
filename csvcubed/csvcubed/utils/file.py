@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Iterable
 
 
-_logger = logging.getLogger(__name__)
+log = logging.getLogger(__name__)
 
 
 def copy_files_to_directory_with_structure(
@@ -24,14 +24,14 @@ def copy_files_to_directory_with_structure(
         abs_out_file_path = to_dir / relative_dir_structure
 
         _ensure_dir_structure_exists(abs_out_file_path.parent)
-        _logger.debug("Copying %s to %s", file, abs_out_file_path)
+        log.debug("Copying %s to %s", file, abs_out_file_path)
         shutil.copy(file, abs_out_file_path)
 
 
 def _ensure_dir_structure_exists(dir_path: Path) -> None:
     if not dir_path.exists():
         _ensure_dir_structure_exists(dir_path.parent)
-        _logger.debug("Creating directory %s", dir_path)
+        log.debug("Creating directory %s", dir_path)
         dir_path.mkdir()
 
 
