@@ -9,6 +9,7 @@ from tests.unit.test_baseunit import get_test_cases_dir
 TEST_CASE_DIR = get_test_cases_dir().absolute() / "readers" / "cube-config" / "v1.0"
 
 
+@pytest.mark.vcr
 def test_build_with_fail():
     config = Path(TEST_CASE_DIR, "cube_data_config_extra_cols.json")
     output = Path("./out")
@@ -23,6 +24,7 @@ def test_build_with_fail():
         )
 
 
+@pytest.mark.vcr
 def test_build_without_fail():
     config = Path(TEST_CASE_DIR, "cube_data_config_ok.json")
     output = Path("./out")
