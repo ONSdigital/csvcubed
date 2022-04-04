@@ -26,7 +26,7 @@ from csvcubed.models.inspectsparqlresults import (
     map_qube_components_sparql_result,
 )
 from csvcubed.utils.sparql import ask, select
-from definitions import ROOT_DIR_PATH
+from csvcubed.definitions import ROOT_DIR_PATH
 
 _logger = logging.getLogger(__name__)
 
