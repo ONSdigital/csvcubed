@@ -4,13 +4,14 @@ CLI
 The *Command Line Interface* for :mod:`~csvcubed.cli`.
 """
 import logging
+import sys
 from pathlib import Path
 
 import click
 
 from csvcubed.utils.log import log_exception, start_logging
 from csvcubed.cli.inspect.inspect import inspect
-from .build import build
+from csvcubed.cli.build import build
 
 
 _logger = logging.getLogger(__name__)
@@ -29,7 +30,7 @@ def entry_point():
     "-c",
     help="Location of the json file containing the qube-config file.",
     type=click.Path(exists=True, path_type=Path, file_okay=True, dir_okay=False),
-    required=True,
+    required=False,
     metavar="CONFIG_PATH",
 )
 @click.option(
@@ -81,14 +82,16 @@ def build_command(
     start_logging(log_dir_name="csvcubed-cli", selected_logging_level=log_level)
     try:
         build(
-            config=config,
+            config_path=config,
             output_directory=out,
             csv_path=csv,
             fail_when_validation_error_occurs=fail_when_validation_error,
             validation_errors_file_out=validation_errors_file_out,
         )
+
     except Exception as e:
         log_exception(_logger, e)
+        sys.exit(1)
 
 
 @entry_point.command("inspect")
@@ -109,3 +112,4 @@ def inspect_command(log_level: str, csvw_metadata_json_path: Path) -> None:
         inspect(csvw_metadata_json_path)
     except Exception as e:
         log_exception(_logger, e)
+        sys.exit(1)

@@ -74,8 +74,10 @@ def step_impl(context):
 
 @then("the log file should exist")
 def step_impl(context):
-    log_file = Path(context.csvcubed_log_location) / "out.log"
-    assert log_file.exists()
+    log_dir = Path(context.csvcubed_log_location)
+    assert log_dir.exists(), str(log_dir)
+    log_file = log_dir / "out.log"
+    assert log_file.exists(), f"Files in log directory: {list(log_dir.rglob('**/*'))}"
 
 
 @then("remove test log files")

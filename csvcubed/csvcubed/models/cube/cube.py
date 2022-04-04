@@ -11,15 +11,17 @@ import pandas as pd
 from csvcubed.models.validationerror import (
     ValidationError,
 )
-from .validationerrors import (
+
+from csvcubed.models.cube.validationerrors import (
     DuplicateColumnTitleError,
     ColumnNotFoundInDataError,
     MissingColumnDefinitionError,
     ColumnValidationError,
 )
-from .columns import CsvColumn
-from .catalog import CatalogMetadataBase
-from ..pydanticmodel import PydanticModel
+from csvcubed.models.cube.columns import CsvColumn
+
+from csvcubed.models.cube.catalog import CatalogMetadataBase
+from csvcubed.models.pydanticmodel import PydanticModel
 from csvcubed.utils.log import log_exception
 from .uristyle import URIStyle
 

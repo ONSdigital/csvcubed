@@ -54,13 +54,16 @@ class QbMultiMeasureDimension(QbColumnStructuralDefinition):
     @staticmethod
     def new_measures_from_data(data: PandasDataTypes) -> "QbMultiMeasureDimension":
         columnar_data = pandas_input_to_columnar_str(data)
+        qb_measures: List[QbMeasure] = [NewQbMeasure(m) for m in sorted(set(columnar_data))]
         return QbMultiMeasureDimension(
-            [NewQbMeasure(m) for m in sorted(set(columnar_data))]
+            qb_measures
         )
 
     @staticmethod
     def existing_measures_from_data(
-        data: PandasDataTypes, csvw_column_name: str, csv_column_uri_template: str
+        data: PandasDataTypes,
+        csvw_column_name: str,
+        csv_column_uri_template: str
     ) -> "QbMultiMeasureDimension":
         columnar_data = pandas_input_to_columnar_str(data)
         return QbMultiMeasureDimension(

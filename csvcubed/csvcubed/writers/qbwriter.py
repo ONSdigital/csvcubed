@@ -54,6 +54,7 @@ from ..models.cube import (
     QbMultiUnits,
     QbAttributeLiteral,
 )
+from ..models.cube.qb.components.codelist import NewQbCodeListInCsvW
 from ..models.rdf.newattributevalueresource import NewAttributeValueResource
 from ..models.rdf.newunitresource import NewUnitResource
 from ..models.cube.qb.components.arbitraryrdf import RdfSerialisationHint
