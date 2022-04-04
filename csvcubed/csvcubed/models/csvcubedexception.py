@@ -42,6 +42,8 @@ class CsvcubedExceptionMsges(Enum):
         "Unexpected number of results for ASK query {num_of_results}"
     )
 
+    FeatureNotSupported = "This feature is not yet supported: {explanation}."
+
 
 class CsvcubedExceptionUrls(Enum):
     """
@@ -89,6 +91,8 @@ class CsvcubedExceptionUrls(Enum):
     UnexpectedSparqlASKQueryResults = (
         "http://purl.org/csv-cubed/err/invalid-ask-query-results"
     )
+
+    FeatureNotSupported = "http://purl.org/csv-cubed/err/feature-not-supported"
 
 
 class CsvcubedException(Exception, HasErrorUrl, ABC):
@@ -279,3 +283,18 @@ class UnexpectedSparqlASKQueryResultsException(Exception):
     @classmethod
     def get_error_url(cls) -> str:
         return CsvcubedExceptionUrls.UnexpectedSparqlASKQueryResults.value
+
+
+class FeatureNotSupportedException(Exception):
+    """Class representing the FeatureNotSupportedException model."""
+
+    def __init__(self, explanation: str):
+        super().__init__(
+            f"{CsvcubedExceptionMsges.FeatureNotSupported.value}: {self.get_error_url()}".format(
+                explanation=explanation
+            )
+        )
+
+    @classmethod
+    def get_error_url(cls) -> str:
+        return CsvcubedExceptionUrls.FeatureNotSupported.value

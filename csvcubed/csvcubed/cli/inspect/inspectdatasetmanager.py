@@ -91,11 +91,13 @@ def get_measure_col_name_from_dsd(
         ComponentPropertyAttributeURI.MeasureType.value,
     )
 
-    return (
-        filtered_components[0].csv_col_title
-        if filtered_components[0] and filtered_components[0].csv_col_title != ""
-        else None
-    )
+    if len(filtered_components) == 0 or filtered_components[0].csv_col_title == "":
+        _logger.warn(
+            "Could not find measure column name from the DSD, hence returning None"
+        )
+        return None
+    else:
+        return filtered_components[0].csv_col_title
 
 
 def get_unit_col_name_from_dsd(
@@ -114,11 +116,13 @@ def get_unit_col_name_from_dsd(
         ComponentPropertyAttributeURI.UnitMeasure.value,
     )
 
-    return (
-        filtered_components[0].csv_col_title
-        if filtered_components[0] and filtered_components[0].csv_col_title != ""
-        else None
-    )
+    if len(filtered_components) == 0 or filtered_components[0].csv_col_title == "":
+        _logger.warn(
+            "Could not find unit column name from the DSD, hence returning None"
+        )
+        return None
+    else:
+        return filtered_components[0].csv_col_title
 
 
 def get_single_measure_from_dsd(

@@ -34,6 +34,7 @@ from csvcubed.models.inspectsparqlresults import (
 from csvcubed.utils.sparql import ask, select
 from csvcubed.models.csvcubedexception import (
     FailedToReadSparqlQueryException,
+    FeatureNotSupportedException,
     InvalidCsvFilePathException,
     InvalidNumberOfRecordsException,
 )
@@ -260,7 +261,9 @@ def select_qb_dataset_url(rdf_graph: Graph, dataset_uri: str) -> DatasetURLResul
     :return: `DatasetURLResult`
     """
     if not dataset_uri.startswith("file://"):
-        raise InvalidCsvFilePathException()
+        raise FeatureNotSupportedException(
+            explanation="Currently, the inspect command only supports reading the csv when the url is a file path. In the future, it will support reading the csv when the url is a web address."
+        )
 
     results: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryFileName.SELECT_QB_DATASET_URL),
