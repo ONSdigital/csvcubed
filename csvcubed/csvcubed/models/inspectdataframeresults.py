@@ -40,7 +40,12 @@ class DatasetObservationsInfoResult:
         obs_or_concepts_str = (
             "Observations" if self.csvw_type == CSVWType.QbDataSet else "Concepts"
         )
-        return f"{linesep}\t- Number of {obs_or_concepts_str}: {self.num_of_observations}{linesep}\t- Number of Duplicates: {self.num_of_duplicates}{linesep}\t- First 10 Observations:{linesep}{formatted_dataset_head}{linesep}{linesep}\t- Last 10 Observations:{linesep}{formatted_dataset_tail}{linesep}"
+        return f"""
+        - Number of {obs_or_concepts_str}: {self.num_of_observations}
+        - Number of Duplicates: {self.num_of_duplicates}
+        - First 10 Observations:{linesep}{formatted_dataset_head}
+        - Last 10 Observations:{linesep}{formatted_dataset_tail}
+        """
 
 
 @dataclass
@@ -65,7 +70,9 @@ class DatasetObservationsByMeasureUnitInfoResult:
                 column_names=["Measure", "Unit", "Count"],
             )
         )
-        return f"{linesep}\t- Value counts broken-down by measure and unit (of measure):{linesep}{formatted_by_measure_and_unit_val_counts}"
+        return f"""
+        - Value counts broken-down by measure and unit (of measure):{linesep}{formatted_by_measure_and_unit_val_counts}
+        """
 
 
 @dataclass
@@ -83,4 +90,7 @@ class CodelistHierarchyInfoResult:
             if len(self.tree.all_nodes()) < HIERARCHY_TREE_CONCEPTS_LIMIT
             else " Hierarchy is too large to display."
         )
-        return f"{linesep}\t- Concepts hierarchy depth: {self.tree.depth()}{linesep}\t- Concepts hierarchy:{hierarchy_output}"
+        return f"""
+        - Concepts hierarchy depth: {self.tree.depth()}
+        - Concepts hierarchy:{hierarchy_output}
+        """

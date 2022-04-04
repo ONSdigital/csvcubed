@@ -53,20 +53,21 @@ from csvcubed.utils.skos.codelist import (
     get_codelist_col_title_by_property_url,
 )
 
+
 @dataclass
 class MetadataPrinter:
     """
     This class produces the printables necessary for producing outputs to the CLI.
     """
-    
+
     csvw_type: CSVWType
     csvw_metadata_rdf_graph: Graph
     csvw_metadata_json_path: Path
-    
+
     dataset_uri: str = field(init=False)
     dsd_uri: str = field(init=False)
     qube_components: List[QubeComponentResult] = field(init=False)
-    
+
     def _get_type_str(self):
         if self.csvw_type == CSVWType.QbDataSet:
             return "data cube"
@@ -205,7 +206,8 @@ class MetadataPrinter:
         )
         return f"- The {self._get_type_str()} has the following value counts:{result.output_str}"
 
-    def gen_codelist_hierachy_info_printable(self) -> str:
+    @property
+    def codelist_hierachy_info_printable(self) -> str:
         result_code_list_cols = select_codelist_cols_by_dataset_url(
             self.csvw_metadata_rdf_graph, self.dataset_url
         )

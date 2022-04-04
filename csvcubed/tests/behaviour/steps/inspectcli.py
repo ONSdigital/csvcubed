@@ -62,13 +62,13 @@ def step_impl(context):
     context.catalog_metadata_printable = (
         metadata_printer.gen_catalog_metadata_printable()
     )
-    context.dsd_info_printable = metadata_printer.gen_dsd_info_printable()
-    context.codelist_info_printable = metadata_printer.gen_codelist_info_printable()
+    context.dsd_info_printable = metadata_printer.dsd_info_printable
+    context.codelist_info_printable = metadata_printer.codelist_info_printable
     context.dataset_observations_info_printable = (
-        metadata_printer.gen_dataset_observations_info_printable()
+        metadata_printer.dataset_observations_info_printable
     )
     context.dataset_val_counts_by_measure_unit_info_printable = (
-        metadata_printer.gen_dataset_val_counts_by_measure_unit_info_printable()
+        metadata_printer.dataset_val_counts_by_measure_unit_info_printable
     )
 
     assert (
@@ -88,17 +88,15 @@ def step_impl(context):
         context.csvw_metadata_rdf_graph,
         context.csvw_metadata_json_path,
     )
-    context.type_printable = metadata_printer.gen_type_info_printable()
-    context.catalog_metadata_printable = (
-        metadata_printer.gen_catalog_metadata_printable()
-    )
+    context.type_printable = metadata_printer.type_info_printable
+    context.catalog_metadata_printable = metadata_printer.catalog_metadata_printable
     context.dataset_observations_info_printable = (
-        metadata_printer.gen_dataset_observations_info_printable()
+        metadata_printer.dataset_observations_info_printable
     )
     context.codelist_hierachy_info_printable = (
-        metadata_printer.gen_codelist_hierachy_info_printable()
+        metadata_printer.codelist_hierachy_info_printable
     )
-    
+
     assert (
         context.type_printable
         and context.catalog_metadata_printable

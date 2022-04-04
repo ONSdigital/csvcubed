@@ -110,7 +110,7 @@ def _generate_printables(
         else ""
     )
     codelist_hierarchy_info_printable: str = (
-        metadata_printer.gen_codelist_hierachy_info_printable()
+        metadata_printer.codelist_hierachy_info_printable
         if csvw_type == CSVWType.CodeList
         else ""
     )
