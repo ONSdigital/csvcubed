@@ -1,6 +1,0 @@
-{
-    "type": "dimension",
-    "from_existing": "....",
-    "label": "Year",
-    "cell_uri_template": "http://example.com/code-list/year/{+<column_name>}"
-}

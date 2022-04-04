@@ -1,0 +1,5 @@
+{
+    "type": "attribute",
+    "from_existing": "http://purl.org/linked-data/sdmx/2009/attribute#obsStatus",
+    "label": "Observation Status"
+}

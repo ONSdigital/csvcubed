@@ -69,9 +69,7 @@ def _get_properties_from_template_file(
     return fetch_template
 
 
-def apply_preconfigured_values_from_template(
-    column_config: Dict[str, Any], version_module_path: str
-) -> None:
+def apply_preconfigured_values_from_template(column_config: Dict[str, Any], version_module_path: str, column_name: str) -> None:
     """
     Preset templates are found through template lookup file. Propeties are then taken from templates and
     added to column config, with user specified propeties overriding template propeties.
@@ -99,4 +97,7 @@ def apply_preconfigured_values_from_template(
     # insert values from column_config (as long as the user hasn't provided an overriding value for them)
     for template_property in fetch_template:
         if template_property not in column_config:
-            column_config[template_property] = fetch_template[template_property]
+            if isinstance(fetch_template[template_property], str):
+                column_config[template_property] = fetch_template[template_property].replace("<column_name>", column_name)
+            else:
+                column_config[template_property] = fetch_template[template_property]

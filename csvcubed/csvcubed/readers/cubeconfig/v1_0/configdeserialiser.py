@@ -117,7 +117,11 @@ def _get_qb_column_from_json(
     # When the config json contains a col definition and the col title is not in the data
     column_data = data[column_title] if column_title in data.columns else None
     # Load configuration from the "from_template": if provided.
-    apply_preconfigured_values_from_template(column_config, version_module_path)
+    apply_preconfigured_values_from_template(
+        column_config=column_config,
+        version_module_path=version_module_path,
+        column_name=column_title,
+    )
     return map_column_to_qb_component(column_title, column_config, column_data)
 
 
