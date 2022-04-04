@@ -1,7 +1,7 @@
 import dateutil.parser
 from rdflib import Graph
 
-from definitions import ROOT_DIR_PATH
+from csvcubed.definitions import ROOT_DIR_PATH
 from csvcubed.models.inspectsparqlresults import (
     CatalogMetadataResult,
     CodelistsResult,
