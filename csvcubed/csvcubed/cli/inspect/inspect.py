@@ -38,7 +38,7 @@ def inspect(csvw_metadata_json_path: Path) -> None:
 
     if csvw_metadata_rdf_graph is None:
         raise RDFGraphCannotBeNoneException()
-        
+
     csvw_metadata_rdf_validator = MetadataValidator(csvw_metadata_rdf_graph)
     (
         valid_csvw_metadata,
@@ -81,26 +81,26 @@ def _generate_printables(
     :return: `Tuple[str, str, str, str, str]` - printables of metadata information.
     """
     metadata_printer = MetadataPrinter(
-        csvw_type, csvw_metadata_rdf_graph, csvw_metadata_json_path
+        csvw_type=csvw_type,
+        csvw_metadata_rdf_graph=csvw_metadata_rdf_graph,
+        csvw_metadata_json_path=csvw_metadata_json_path,
     )
 
-    type_info_printable: str = metadata_printer.gen_type_info_printable()
-    catalog_metadata_printable: str = metadata_printer.gen_catalog_metadata_printable()
+    type_info_printable: str = metadata_printer.type_info_printable
+    catalog_metadata_printable: str = metadata_printer.catalog_metadata_printable
     dsd_info_printable: str = (
-        metadata_printer.gen_dsd_info_printable()
-        if csvw_type == CSVWType.QbDataSet
-        else ""
+        metadata_printer.dsd_info_printable if csvw_type == CSVWType.QbDataSet else ""
     )
     codelist_info_printable: str = (
-        metadata_printer.gen_codelist_info_printable()
+        metadata_printer.codelist_info_printable
         if csvw_type == CSVWType.QbDataSet
         else ""
     )
     dataset_observations_info_printable: str = (
-        metadata_printer.gen_dataset_observations_info_printable()
+        metadata_printer.dataset_observations_info_printable
     )
     dataset_val_counts_by_measure_unit: str = (
-        metadata_printer.gen_dataset_val_counts_by_measure_unit_info_printable()
+        metadata_printer.dataset_val_counts_by_measure_unit_info_printable
         if csvw_type == CSVWType.QbDataSet
         else ""
     )
