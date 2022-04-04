@@ -30,7 +30,12 @@ class DatasetObservationsInfoResult:
         formatted_dataset_tail = get_printable_tabuler_str_from_dataframe(
             self.dataset_tail
         )
-        return f"{linesep}\t- Number of Observations: {self.num_of_observations}{linesep}\t- Number of Duplicates: {self.num_of_duplicates}{linesep}\t- First 10 Observations:{linesep}{formatted_dataset_head}{linesep}{linesep}\t- Last 10 Observations:{linesep}{formatted_dataset_tail}{linesep}"
+        return f"""
+        - Number of Observations: {self.num_of_observations}
+        - Number of Duplicates: {self.num_of_duplicates}
+        - First 10 Observations:{linesep}{formatted_dataset_head}
+        - Last 10 Observations:{linesep}{formatted_dataset_tail}
+        """
 
 
 @dataclass
@@ -55,4 +60,6 @@ class DatasetObservationsByMeasureUnitInfoResult:
                 column_names=["Measure", "Unit", "Count"],
             )
         )
-        return f"{linesep}\t- Value counts broken-down by measure and unit (of measure):{linesep}{formatted_by_measure_and_unit_val_counts}"
+        return f"""
+        - Value counts broken-down by measure and unit (of measure):{linesep}{formatted_by_measure_and_unit_val_counts}
+        """

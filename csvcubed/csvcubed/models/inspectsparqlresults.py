@@ -52,7 +52,22 @@ class CatalogMetadataResult:
         formatted_themes: str = get_printable_list_str(self.themes)
         formatted_keywords: str = get_printable_list_str(self.keywords)
         formatted_description: str = self.description.replace(linesep, f"{linesep}\t\t")
-        return f"{linesep}\t- Title: {self.title}{linesep}\t- Label: {self.label}{linesep}\t- Issued: {self.issued}{linesep}\t- Modified: {self.modified}{linesep}\t- License: {self.license}{linesep}\t- Creator: {self.creator}{linesep}\t- Publisher: {self.publisher}{linesep}\t- Landing Pages: {formatted_landing_pages}{linesep}\t- Themes: {formatted_themes}{linesep}\t- Keywords: {formatted_keywords}{linesep}\t- Contact Point: {self.contact_point}{linesep}\t- Identifier: {self.identifier}{linesep}\t- Comment: {self.comment}{linesep}\t- Description: {formatted_description}"
+        return f"""
+        - Title: {self.title}
+        - Label: {self.label}
+        - Issued: {self.issued}
+        - Modified: {self.modified}
+        - License: {self.license}
+        - Creator: {self.creator}
+        - Publisher: {self.publisher}
+        - Landing Pages: {formatted_landing_pages}
+        - Themes: {formatted_themes}
+        - Keywords: {formatted_keywords}
+        - Contact Point: {self.contact_point}
+        - Identifier: {self.identifier}
+        - Comment: {self.comment}
+        - Description: {formatted_description}
+        """
 
 
 @dataclass
@@ -66,7 +81,8 @@ class DSDLabelURIResult:
 
     @property
     def output_str(self) -> str:
-        return f"{linesep}\t- Dataset Label: {self.dataset_label}"
+        return f"""
+        - Dataset Label: {self.dataset_label}"""
 
 
 @dataclass
@@ -103,7 +119,9 @@ class QubeComponentsResult:
                 "Required",
             ],
         )
-        return f"{linesep}\t- Number of Components: {self.num_components}{linesep}\t- Components:{linesep}{formatted_components}"
+        return f"""
+        - Number of Components: {self.num_components}
+        - Components:{linesep}{formatted_components}"""
 
 
 @dataclass
@@ -116,7 +134,8 @@ class ColsWithSuppressOutputTrueResult:
 
     @property
     def output_str(self) -> str:
-        return f"{linesep}- Columns where suppress output is true: {get_printable_list_str(self.columns)}"
+        return f"""
+        - Columns where suppress output is true: {get_printable_list_str(self.columns)}"""
 
 
 @dataclass
@@ -154,7 +173,9 @@ class CodelistsResult:
             [codelist.as_dict() for codelist in self.codelists],
             column_names=["Code List", "Code List Label", "Columns Used In"],
         )
-        return f"{linesep}\t- Number of Code Lists: {self.num_codelists}{linesep}\t- Code Lists:{linesep}{formatted_codelists}"
+        return f"""
+        - Number of Code Lists: {self.num_codelists}
+        - Code Lists:{linesep}{formatted_codelists}"""
 
 
 @dataclass
