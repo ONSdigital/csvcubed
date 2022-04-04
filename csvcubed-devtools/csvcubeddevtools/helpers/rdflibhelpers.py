@@ -20,3 +20,4 @@ def serialise_to_string(graph: Graph, format: str = "turtle") -> str:
         return result
     else:
         raise Exception(f"Unexpected serialised value type {type(result)}.")
+

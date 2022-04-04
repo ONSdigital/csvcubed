@@ -767,8 +767,6 @@ def assertURIStyle(uri_style: URIStyle, temp_dir: Path, csv_file_name: str):
 
     fileObjects = set([f for f in [str(s) for s in g.objects()] if f.startswith("file://")])
     fileObjectPaths = set([urlparse(f).path for f in fileObjects])
-    for f in fileObjectPaths:
-        print(f)
     assertURIStyles(uri_style, fileObjectPaths)
 
 def assertURIStyles(uri_style, uris):

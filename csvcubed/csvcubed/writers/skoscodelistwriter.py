@@ -33,7 +33,6 @@ class SkosCodeListWriter(WriterBase):
     _new_uri_helper: SkosCodeListNewUriHelper = field(init=False)
 
     def __post_init__(self):
-
         self.csv_file_name = f"{self.new_code_list.metadata.uri_safe_identifier}.csv"
         _logger.debug(
             "Initialising %s with CSV output set to '%s'",

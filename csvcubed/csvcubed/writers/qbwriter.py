@@ -1047,7 +1047,6 @@ class QbWriter(WriterBase):
             csvcubed_match = self._csvcubed_code_list_pattern.match(
                 code_list.concept_scheme_uri
             )
-            print(f"ext {legacy_external_match} loc {legacy_local_match} csv {csvcubed_match}")
             if legacy_external_match:
                 _logger.debug(
                     "Existing concept scheme URI %s matches legacy family/global style.",
