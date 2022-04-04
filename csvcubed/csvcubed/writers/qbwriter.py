@@ -21,6 +21,7 @@ from csvcubedmodels.rdf.resource import (
 )
 
 from csvcubed.models.cube import *
+from csvcubed.models.cube.uristyle import URIStyle
 from csvcubed.utils.uri import (
     get_last_uri_part,
     csvw_column_name_safe,
@@ -80,6 +81,8 @@ class QbWriter(WriterBase):
             self.csv_file_name,
         )
         self._new_uri_helper = QbCubeNewUriHelper(self.cube)
+        self.extension = (".csv" if self.cube.uri_style != URIStyle.WithoutFileExtensions else "")
+
 
     def write(self, output_folder: Path):
         # Map all labels to their corresponding URI-safe-values, where possible.
@@ -95,7 +98,7 @@ class QbWriter(WriterBase):
 
         tables = [
             {
-                "url": self.csv_file_name,
+                "url": self._new_uri_helper.get_identifier_for_document(),
                 "tableSchema": {
                     "columns": self._generate_csvw_columns_for_cube(),
                     "foreignKeys": self._generate_foreign_keys_for_cube(),
@@ -195,7 +198,7 @@ class QbWriter(WriterBase):
 
                 tables.append(
                     {
-                        "url": f"{code_list.metadata.uri_safe_identifier}.csv",
+                        "url": f"{code_list.metadata.uri_safe_identifier}{self.extension}",
                         "tableSchema": f"{code_list.metadata.uri_safe_identifier}.table.json",
                         "suppressOutput": True,
                     }
@@ -227,14 +230,13 @@ class QbWriter(WriterBase):
                     "Configuring foreign key constraints for dataset-local code list %s",
                     code_list,
                 )
-
                 foreign_keys.append(
                     {
                         "columnReference": csvw_column_name_safe(
                             col.uri_safe_identifier
                         ),
                         "reference": {
-                            "resource": f"{code_list.metadata.uri_safe_identifier}.csv",
+                            "resource": f"{code_list.metadata.uri_safe_identifier}{self.extension}",
                             "columnReference": CODE_LIST_NOTATION_COLUMN_NAME,
                         },
                     }
@@ -970,7 +972,6 @@ class QbWriter(WriterBase):
                 value_uri = self._get_default_value_uri_for_code_list_concepts(
                     column, dimension.code_list
                 )
-
             return local_dimension_uri, value_uri
         else:
             raise Exception(f"Unhandled dimension type {type(dimension)}")
@@ -1046,6 +1047,7 @@ class QbWriter(WriterBase):
             csvcubed_match = self._csvcubed_code_list_pattern.match(
                 code_list.concept_scheme_uri
             )
+            print(f"ext {legacy_external_match} loc {legacy_local_match} csv {csvcubed_match}")
             if legacy_external_match:
                 _logger.debug(
                     "Existing concept scheme URI %s matches legacy family/global style.",

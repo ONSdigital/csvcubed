@@ -10,6 +10,7 @@ from abc import ABC, abstractmethod
 import pandas as pd
 
 from csvcubed.inputs import PandasDataTypes
+from csvcubed.models.cube.uristyle import URIStyle
 from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.models.cube.qb.components.arbitraryrdf import (
     ArbitraryRdf,
@@ -96,6 +97,7 @@ class NewQbDimension(QbDimension, UriIdentifiable):
         range_uri: Optional[str] = None,
         uri_safe_identifier_override: Optional[str] = None,
         arbitrary_rdf: List[TripleFragmentBase] = [],
+        uri_style: URIStyle = URIStyle.Standard,
     ) -> "NewQbDimension":
         """
         Creates a new dimension and code list from the columnar data provided.
@@ -103,7 +105,7 @@ class NewQbDimension(QbDimension, UriIdentifiable):
         return NewQbDimension(
             label=label,
             description=description,
-            code_list=NewQbCodeList.from_data(CatalogMetadata(label), data),
+            code_list=NewQbCodeList.from_data(CatalogMetadata(label), data, uri_style),
             parent_dimension_uri=parent_dimension_uri,
             source_uri=source_uri,
             range_uri=range_uri,

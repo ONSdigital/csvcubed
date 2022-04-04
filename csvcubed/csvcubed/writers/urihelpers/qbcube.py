@@ -20,9 +20,9 @@ class QbCubeNewUriHelper:
 
     cube: QbCube
 
-    def _get_identifier_for_document(self) -> str:
+    def get_identifier_for_document(self) -> str:
         extension = (
-            ".csv" if self.cube.uriStyle != URIStyle.WithoutFileExtensions else ""
+            ".csv" if self.cube.uri_style != URIStyle.WithoutFileExtensions else ""
         )
         return f"{self.cube.metadata.uri_safe_identifier}{extension}"
 
@@ -34,7 +34,7 @@ class QbCubeNewUriHelper:
         This function makes both point to the same base location - the CSV file's location. This ensures that we
         can talk about the same resources in the `columns` section and the JSON-LD metadata section.
         """
-        return f"{self._get_identifier_for_document()}#{identifier}"
+        return f"{self.get_identifier_for_document()}#{identifier}"
 
     def get_observation_uri(
         self, dimension_identifying_values: List[str], measure_identifier: Optional[str]

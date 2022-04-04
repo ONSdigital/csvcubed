@@ -33,7 +33,7 @@ class Cube(Generic[TMetadata], PydanticModel):
     metadata: TMetadata
     data: Optional[pd.DataFrame] = field(default=None, repr=False)
     columns: List[CsvColumn] = field(default_factory=lambda: [], repr=False)
-    uriStyle: URIStyle = URIStyle.Standard
+    uri_style: URIStyle = URIStyle.Standard
 
     def validate(self) -> List[ValidationError]:
         errors: List[ValidationError] = []

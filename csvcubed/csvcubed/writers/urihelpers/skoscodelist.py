@@ -21,7 +21,7 @@ class SkosCodeListNewUriHelper:
 
     def _get_identifier_for_document(self) -> str:
         extension = (
-            ".csv" if self.code_list.uriStyle != URIStyle.WithoutFileExtensions else ""
+            ".csv" if self.code_list.uri_style != URIStyle.WithoutFileExtensions else ""
         )
         return f"{self.code_list.metadata.uri_safe_identifier}{extension}"
 

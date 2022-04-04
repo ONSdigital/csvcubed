@@ -109,7 +109,7 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
     metadata: CatalogMetadata
     concepts: List[TNewQbConcept]
     arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
-    uriStyle: URIStyle = URIStyle.Standard
+    uri_style: URIStyle = URIStyle.Standard
 
     @validator("concepts")
     def _ensure_no_use_of_reserved_keywords(
@@ -147,10 +147,12 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
         return self.arbitrary_rdf
 
     @staticmethod
-    def from_data(metadata: CatalogMetadata, data: PandasDataTypes) -> "NewQbCodeList":
+    def from_data(
+        metadata: CatalogMetadata, data: PandasDataTypes, uri_style: URIStyle
+    ) -> "NewQbCodeList":
         columnar_data = pandas_input_to_columnar_str(data)
         concepts = [NewQbConcept(c) for c in sorted(set(columnar_data))]
-        return NewQbCodeList(metadata, concepts)
+        return NewQbCodeList(metadata, concepts, uri_style=uri_style)
 
     def get_permitted_rdf_fragment_hints(self) -> Set[RdfSerialisationHint]:
         return {
