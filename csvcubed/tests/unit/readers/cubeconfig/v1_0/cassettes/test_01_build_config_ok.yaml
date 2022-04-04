@@ -1,0 +1,439 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.27.1
+    method: GET
+    uri: http://purl.org/csv-cubed/resources/organisations.json
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      location:
+      - https://purl.org/csv-cubed/resources/organisations.json
+    status:
+      code: 301
+      message: Moved Permanently
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.27.1
+    method: GET
+    uri: https://purl.org/csv-cubed/resources/organisations.json
+  response:
+    body:
+      string: '<!DOCTYPE HTML>
+
+        <html>
+
+        <head>
+
+        <title>302 Found</title>
+
+        </head>
+
+        <body>
+
+        <h1>Found</h1>
+
+        <p>The resource requested is available <a href="https://raw.githubusercontent.com/GSS-Cogs/reusable-rdf-resources/main/organisations.json">here</a>.<p>
+
+        </body>
+
+        </html>'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '252'
+      content-type:
+      - text/html; charset=utf-8
+      date:
+      - Mon, 04 Apr 2022 13:56:39 GMT
+      location:
+      - https://raw.githubusercontent.com/GSS-Cogs/reusable-rdf-resources/main/organisations.json
+      server:
+      - gunicorn
+    status:
+      code: 302
+      message: FOUND
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.27.1
+    method: GET
+    uri: https://raw.githubusercontent.com/GSS-Cogs/reusable-rdf-resources/main/organisations.json
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA1WOQQuDMAyF7/4KKTtOs9vAvzJ2CK5qx5qWJsKG+N8Xa5Etp+R774W3VLWOOXE/
+        WY+mq80kEjuAJwdqdtqGNMIj4SDN5QrFed6Dc3KsqSVfmcgn2u0PS3I0Fl9WhpA8yqZp6lewNHvF
+        t4NkWorYN/r4sm0fPGgRJMcoLhD/XebI3vO2VusXz5uG29sAAAA=
+    headers:
+      Accept-Ranges:
+      - bytes
+      Access-Control-Allow-Origin:
+      - '*'
+      Cache-Control:
+      - max-age=300
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '152'
+      Content-Security-Policy:
+      - default-src 'none'; style-src 'unsafe-inline'; sandbox
+      Content-Type:
+      - text/plain; charset=utf-8
+      Date:
+      - Mon, 04 Apr 2022 13:56:39 GMT
+      ETag:
+      - W/"9ee7e20e4b6fca8b7ea8bcc691256b6943535a45fb5426273d0dec690ea81a91"
+      Expires:
+      - Mon, 04 Apr 2022 14:01:39 GMT
+      Source-Age:
+      - '4'
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Authorization,Accept-Encoding,Origin
+      Via:
+      - 1.1 varnish
+      X-Cache:
+      - HIT
+      X-Cache-Hits:
+      - '1'
+      X-Content-Type-Options:
+      - nosniff
+      X-Fastly-Request-ID:
+      - 456c06a707fef1fee9285e27e2b2b2d335220d4a
+      X-Frame-Options:
+      - deny
+      X-GitHub-Request-Id:
+      - FF92:3E40:18B5794:19E388F:624AA946
+      X-Served-By:
+      - cache-lcy19274-LCY
+      X-Timer:
+      - S1649080600.627512,VS0,VE0
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.27.1
+    method: GET
+    uri: http://purl.org/csv-cubed/resources/licenses.json
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      location:
+      - https://purl.org/csv-cubed/resources/licenses.json
+    status:
+      code: 301
+      message: Moved Permanently
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.27.1
+    method: GET
+    uri: https://purl.org/csv-cubed/resources/licenses.json
+  response:
+    body:
+      string: '<!DOCTYPE HTML>
+
+        <html>
+
+        <head>
+
+        <title>302 Found</title>
+
+        </head>
+
+        <body>
+
+        <h1>Found</h1>
+
+        <p>The resource requested is available <a href="https://raw.githubusercontent.com/GSS-Cogs/reusable-rdf-resources/main/licenses.json">here</a>.<p>
+
+        </body>
+
+        </html>'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '247'
+      content-type:
+      - text/html; charset=utf-8
+      date:
+      - Mon, 04 Apr 2022 13:56:40 GMT
+      location:
+      - https://raw.githubusercontent.com/GSS-Cogs/reusable-rdf-resources/main/licenses.json
+      server:
+      - gunicorn
+    status:
+      code: 302
+      message: FOUND
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.27.1
+    method: GET
+    uri: https://raw.githubusercontent.com/GSS-Cogs/reusable-rdf-resources/main/licenses.json
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA02OQQuDMAyF7/4KKTtOs9vAvzJ2KF3UDtOWJoJD/O+rtZPl9PK990LWqk6jLmxG
+        JK26Wo0ioQN4s3fNQVsfB3hF3Utzu0NJXo/iHC2n1pq3TOQTcL/DEq0bSi47vY+kZfdS699AN1PC
+        j5NkWh7BRVOYsDWeYLIGHSP/hDobz6y2avsC1r1NdNEAAAA=
+    headers:
+      Accept-Ranges:
+      - bytes
+      Access-Control-Allow-Origin:
+      - '*'
+      Cache-Control:
+      - max-age=300
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '149'
+      Content-Security-Policy:
+      - default-src 'none'; style-src 'unsafe-inline'; sandbox
+      Content-Type:
+      - text/plain; charset=utf-8
+      Date:
+      - Mon, 04 Apr 2022 13:56:40 GMT
+      ETag:
+      - W/"ef2728ca951e33b7c64f238d27ea69ac3a00dff75657bcd234707e9aa7d050e8"
+      Expires:
+      - Mon, 04 Apr 2022 14:01:40 GMT
+      Fastly-Original-Body-Size:
+      - '0'
+      Source-Age:
+      - '4'
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Authorization,Accept-Encoding,Origin
+      Via:
+      - 1.1 varnish
+      X-Cache:
+      - HIT
+      X-Cache-Hits:
+      - '1'
+      X-Content-Type-Options:
+      - nosniff
+      X-Fastly-Request-ID:
+      - 35a955f3f464a36769ff54acecd04b446aee700b
+      X-Frame-Options:
+      - deny
+      X-GitHub-Request-Id:
+      - 2E7C:9A8A:BFCB23:D07B2A:624AE694
+      X-Served-By:
+      - cache-lcy19257-LCY
+      X-Timer:
+      - S1649080601.877615,VS0,VE1
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.27.1
+    method: GET
+    uri: http://purl.org/csv-cubed/resources/code-lists.json
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      location:
+      - https://purl.org/csv-cubed/resources/code-lists.json
+    status:
+      code: 301
+      message: Moved Permanently
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.27.1
+    method: GET
+    uri: https://purl.org/csv-cubed/resources/code-lists.json
+  response:
+    body:
+      string: '<!DOCTYPE HTML>
+
+        <html>
+
+        <head>
+
+        <title>302 Found</title>
+
+        </head>
+
+        <body>
+
+        <h1>Found</h1>
+
+        <p>The resource requested is available <a href="https://raw.githubusercontent.com/GSS-Cogs/reusable-rdf-resources/main/code-lists.json">here</a>.<p>
+
+        </body>
+
+        </html>'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '249'
+      content-type:
+      - text/html; charset=utf-8
+      date:
+      - Mon, 04 Apr 2022 13:56:41 GMT
+      location:
+      - https://raw.githubusercontent.com/GSS-Cogs/reusable-rdf-resources/main/code-lists.json
+      server:
+      - gunicorn
+    status:
+      code: 302
+      message: FOUND
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.27.1
+    method: GET
+    uri: https://raw.githubusercontent.com/GSS-Cogs/reusable-rdf-resources/main/code-lists.json
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA02OzQqDMBCE7z6FBI+N6a3gq5QeQlw1xfyQXaFFfPfGNWj3NPvNzLJrVecRDZoJ
+        nBZdLSai2Cn1xuDlQduQRtUnPZC8P1RJ3o7ikizm1sobE/pG2O8gJevHkmNnCMlp2r3c+jfALy7j
+        50mYlkfgo12coTXBKRN6kLNFwkuKs/VitVXbD+Cnqx7VAAAA
+    headers:
+      Accept-Ranges:
+      - bytes
+      Access-Control-Allow-Origin:
+      - '*'
+      Cache-Control:
+      - max-age=300
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '150'
+      Content-Security-Policy:
+      - default-src 'none'; style-src 'unsafe-inline'; sandbox
+      Content-Type:
+      - text/plain; charset=utf-8
+      Date:
+      - Mon, 04 Apr 2022 13:56:41 GMT
+      ETag:
+      - W/"16c578deef30575e6f9366de7617bfee239ce1a5206a3ad08b802579ca9c4e40"
+      Expires:
+      - Mon, 04 Apr 2022 14:01:41 GMT
+      Source-Age:
+      - '3'
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Authorization,Accept-Encoding,Origin
+      Via:
+      - 1.1 varnish
+      X-Cache:
+      - HIT
+      X-Cache-Hits:
+      - '1'
+      X-Content-Type-Options:
+      - nosniff
+      X-Fastly-Request-ID:
+      - 5b83c933f22d3cdd3eda2931eaface84969861a9
+      X-Frame-Options:
+      - deny
+      X-GitHub-Request-Id:
+      - 29AA:26DE:30783E:45F60D:624AA3AD
+      X-Served-By:
+      - cache-lcy19250-LCY
+      X-Timer:
+      - S1649080602.784786,VS0,VE1
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+version: 1

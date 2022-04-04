@@ -12,7 +12,7 @@ SCHEMA_PATH_FILE = Path(
     ROOT_DIR_PATH, "csvcubed", "schema", "cube-config", "v1_0", "schema.json"
 )
 
-
+@pytest.mark.vcr
 def test_build():
 
     config = Path(TEST_CASE_DIR, "cube_data_config_ok.json")
@@ -94,6 +94,7 @@ def _check_new_dimension_column(
         assert concept.uri_safe_identifier_override is None
 
 
+@pytest.mark.vcr
 def test_01_build_config_ok():
     """
     Valid Cube from Data using Convention (no config json)
@@ -174,6 +175,7 @@ def test_01_build_config_ok():
     assert isinstance(col_unit.structural_definition.units[0], NewQbUnit)
 
 
+@pytest.mark.vcr
 def test_02_00_dimension_new_no_type():
     """
     Checks a New dimension is created when omitting 'type'
@@ -188,6 +190,7 @@ def test_02_00_dimension_new_no_type():
     _check_new_dimension_column(column, dimension_config, column_data, "New Dimension")
 
 
+@pytest.mark.vcr
 def test_02_01_dimension_new_ok():
     """
     Populates all options and confirms the New Dimension & CodeList classes are created
@@ -208,6 +211,7 @@ def test_02_01_dimension_new_ok():
     _check_new_dimension_column(column, dimension_config, column_data, "New Dimension")
 
 
+@pytest.mark.vcr
 def test_02_03_dimension_new_ok():
     """
     Check New dimension when omitting description, from_existing, definition_url and
@@ -224,6 +228,7 @@ def test_02_03_dimension_new_ok():
     _check_new_dimension_column(column, dimension_config, column_data, "New Dimension")
 
 
+@pytest.mark.vcr
 def test_03_dimension_existing_ok():
     """
     Populates options for an Existing Dimension & New CodeList classes are created
@@ -254,6 +259,7 @@ def test_03_dimension_existing_ok():
     assert column.structural_definition.arbitrary_rdf == []
 
 
+@pytest.mark.vcr
 def test_04_01_attribute_new_ok():
     """
     Populates all options and confirms the New Attribute and checks all properties are mapped
@@ -275,6 +281,7 @@ def test_04_01_attribute_new_ok():
     _check_new_attribute_column(column, column_config, column_data, "New Attribute")
 
 
+@pytest.mark.vcr
 def test_04_03_attribute_new_ok():
     """
     Checks New attribute when description, values, from_existing and definition_uri options
@@ -294,6 +301,7 @@ def test_04_03_attribute_new_ok():
     _check_new_attribute_column(column, column_config, column_data, "New Attribute")
 
 
+@pytest.mark.vcr
 def test_04_04_attribute_new_ok():
     """
     Checks New attribute when description, values, from_existing and definition_uri options
@@ -325,6 +333,7 @@ def test_04_04_attribute_new_ok():
     _check_new_attribute_column(column, column_config, column_data, "New Attribute")
 
 
+@pytest.mark.vcr
 def test_05_01_attribute_existing_ok():
     """
     Populates options for an Existing Attribute checks all properties are mapped through correctly
@@ -350,6 +359,7 @@ def test_05_01_attribute_existing_ok():
     assert column.structural_definition.arbitrary_rdf == []
 
 
+@pytest.mark.vcr
 def test_05_02_attribute_existing_ok():
     """
     Checks that new (non nul) values are created from data for an existing attribute
@@ -387,6 +397,7 @@ def test_05_02_attribute_existing_ok():
         assert value.label in data_vals
 
 
+@pytest.mark.vcr
 def test_06_measure_new_ok():
     """
     Populates options for an New Measures checks all properties are mapped through correctly
@@ -414,6 +425,7 @@ def test_06_measure_new_ok():
         assert measure.label in column_data
 
 
+@pytest.mark.vcr
 def test_07_measure_existing_ok():
     """
     Populates options for existing Measures checks all properties are mapped through correctly
@@ -450,6 +462,7 @@ def test_07_measure_existing_ok():
         )
 
 
+@pytest.mark.vcr
 def test_08_unit_new_ok():
     """
     Populates options for an New Units checks all properties are mapped through correctly
@@ -477,6 +490,7 @@ def test_08_unit_new_ok():
         assert unit.label in column_data
 
 
+@pytest.mark.vcr
 def test_09_units_existing_ok():
     """
     Populates options for an Existing Units checks all properties are mapped through correctly
@@ -512,6 +526,7 @@ def test_09_units_existing_ok():
         )
 
 
+@pytest.mark.vcr
 def test_10_observation_ok():
     column_data = ["a", "b", "c", "a"]
     column_config = {
@@ -580,6 +595,7 @@ def test_new_dimension_existing_code_list():
     )
 
 
+@pytest.mark.vcr
 def test_column_template_expansion():
     """
     Test that when using a column template, we see the default parameters expanded as expected.

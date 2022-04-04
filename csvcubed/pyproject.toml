@@ -29,6 +29,7 @@ requests-cache = "^0.9.3"
 csvcubed-models = {path = "./../csvcubed-models", develop = true}
 csvcubed-devtools = {path = "./../csvcubed-devtools", develop = true}
 requests-mock = "~1.9.3"
+pytest-vcr = "~1.0.2"
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

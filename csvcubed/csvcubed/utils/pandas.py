@@ -19,5 +19,7 @@ def read_csv(csv: Path, **kwargs) ->  pd.DataFrame:
     """
 
     df = pd.read_csv(csv, keep_default_na = False, na_values = specified_na_values, **kwargs)
+    if not isinstance(df, pd.DataFrame):
+        raise ValueError(f"Expected a pandas dataframe when reading from CSV, value was {df}")
 
     return df
