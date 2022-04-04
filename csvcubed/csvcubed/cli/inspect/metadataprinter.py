@@ -53,7 +53,7 @@ class MetadataPrinter:
     """
     This class produces the printables necessary for producing outputs to the CLI.
     """
-
+    
     csvw_type: CSVWType
     csvw_metadata_rdf_graph: Graph
     csvw_metadata_json_path: Path

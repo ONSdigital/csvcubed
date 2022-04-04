@@ -262,7 +262,7 @@ def select_qb_dataset_url(rdf_graph: Graph, dataset_uri: str) -> DatasetURLResul
     """
     if not dataset_uri.startswith("file://"):
         raise FeatureNotSupportedException(
-            explanation="Currently, the inspect command only supports reading the csv when the url is a file path. In the future, it will support reading the csv when the url is a web address."
+            explanation="Currently, the inspect command only supports reading the csv when the url is a file path. In the future, it will support reading the csv when the url is a web address"
         )
 
     results: List[ResultRow] = select(
