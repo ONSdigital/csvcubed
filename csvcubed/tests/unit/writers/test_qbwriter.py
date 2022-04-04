@@ -110,7 +110,7 @@ def test_structure_uri():
 
 
 def test_structure_uri_standard_pattern():
-    cube = Cube(CatalogMetadata("Cube Name"), uriStyle=URIStyle.Standard)
+    cube = Cube(CatalogMetadata("Cube Name"), uri_style=URIStyle.Standard)
     qbwriter = QbWriter(cube)
 
     actual = qbwriter._generate_qb_dataset_dsd_definitions().structure.uri_str
@@ -118,7 +118,7 @@ def test_structure_uri_standard_pattern():
 
 
 def test_structure_uri_withoutFileExtensions_pattern():
-    cube = Cube(CatalogMetadata("Cube Name"), uriStyle=URIStyle.WithoutFileExtensions)
+    cube = Cube(CatalogMetadata("Cube Name"), uri_style=URIStyle.WithoutFileExtensions)
     qbwriter = QbWriter(cube)
 
     actual = qbwriter._generate_qb_dataset_dsd_definitions().structure.uri_str

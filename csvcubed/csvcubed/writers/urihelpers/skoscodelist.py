@@ -18,6 +18,7 @@ class SkosCodeListNewUriHelper:
     """
 
     code_list: NewQbCodeList
+    default_uri_style: URIStyle
 
     def _get_identifier_for_document(self) -> str:
         extension = (

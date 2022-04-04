@@ -16,6 +16,7 @@ from csvcubed.models.cube.qb.components import (
     NewQbCodeList,
     CompositeQbCodeList,
 )
+from csvcubed.models.cube.uristyle import URIStyle
 from csvcubed.utils.dict import rdf_resource_to_json_ld
 from csvcubed.models.rdf.conceptschemeincatalog import ConceptSchemeInCatalog
 from csvcubed.writers.urihelpers.skoscodelist import SkosCodeListNewUriHelper
@@ -29,6 +30,7 @@ _logger = logging.getLogger(__name__)
 @dataclass
 class SkosCodeListWriter(WriterBase):
     new_code_list: NewQbCodeList
+    default_uri_style: URIStyle = URIStyle.Standard
     csv_file_name: str = field(init=False)
     _new_uri_helper: SkosCodeListNewUriHelper = field(init=False)
 
@@ -39,7 +41,7 @@ class SkosCodeListWriter(WriterBase):
             SkosCodeListWriter.__name__,
             self.csv_file_name,
         )
-        self._new_uri_helper = SkosCodeListNewUriHelper(self.new_code_list)
+        self._new_uri_helper = SkosCodeListNewUriHelper(self.new_code_list, default_uri_style = self.default_uri_style)
 
     def write(self, output_directory: Path) -> None:
         csv_file_path = (output_directory / self.csv_file_name).absolute()

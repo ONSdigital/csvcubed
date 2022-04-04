@@ -154,7 +154,7 @@ class QbWriter(WriterBase):
                     "Writing code list %s to '%s' directory.", code_list, output_folder
                 )
 
-                code_list_writer = SkosCodeListWriter(code_list)
+                code_list_writer = SkosCodeListWriter(code_list, default_uri_style = self.cube.uri_style)
                 code_list_writer.write(output_folder)
             elif isinstance(code_list, NewQbCodeListInCsvW):
                 # find the CSV-W codelist and all dependent relative files and copy them into the output_folder
@@ -563,7 +563,7 @@ class QbWriter(WriterBase):
         elif isinstance(code_list, NewQbCodeList):
             # The resource is created elsewhere. There is a separate CSV-W definition for the code-list
             return ExistingResource(
-                SkosCodeListNewUriHelper(code_list).get_scheme_uri()
+                SkosCodeListNewUriHelper(code_list, self.cube.uri_style).get_scheme_uri()
             )
         elif isinstance(code_list, NewQbCodeListInCsvW):
             return ExistingResource(code_list.concept_scheme_uri)
@@ -1093,7 +1093,7 @@ class QbWriter(WriterBase):
                 "valueUrl defined by new dataset-local code list %s",
                 code_list.metadata.title,
             )
-            return SkosCodeListNewUriHelper(code_list).get_concept_uri(
+            return SkosCodeListNewUriHelper(code_list, self.cube.uri_style).get_concept_uri(
                 column_uri_fragment
             )
         elif isinstance(code_list, NewQbCodeListInCsvW):
