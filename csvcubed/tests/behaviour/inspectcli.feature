@@ -708,21 +708,21 @@ Feature: Behaviour testing of csvcubed inspect.
                    over 5.5% abv   over-5-5-abv              NaN              4          NaN
                    up to 15% abv   up-to-15-abv              NaN              5          NaN
         """
-				And the Concepts Information Printable should be
-				"""
-				- The code list has the following concepts information:
-					- Concepts hierarchy depth: 1
-					- Concepts hierarchy:
-						root
-						├── 1.2% to 5.5% abv
-						├── 5.5% to 15% abv
-						├── All
-						├── over 15% abv
-						├── over 5.5% abv
-						└── up to 15% abv
-				"""
+        And the Concepts Information Printable should be
+        """
+        - The code list has the following concepts information:
+                - Concepts hierarchy depth: 1
+                - Concepts hierarchy:
+                        root
+                        ├── 1.2% to 5.5% abv
+                        ├── 5.5% to 15% abv
+                        ├── All
+                        ├── over 15% abv
+                        ├── over 5.5% abv
+                        └── up to 15% abv
+        """
 
-		 Scenario: inspect should produce printable for code list metadata json-ld input with concepts hierarchy depth of more than one
+    Scenario: inspect should produce printable for code list metadata json-ld input with concepts hierarchy depth of more than one
         Given the existing test-case file "cli/inspect/itis-industry.csv-metadata.json"
         And the existing test-case file "cli/inspect/itis-industry.csv"
 
@@ -757,45 +757,45 @@ Feature: Behaviour testing of csvcubed inspect.
           - Number of Concepts: 9
           - Number of Duplicates: 0
           - First 10 Observations:
-																																	 Label                                                            Notation Parent Notation  Sort Priority  Description
-																													All industries                                                                 all             NaN              1          NaN
-																													 Manufacturing                                              manufacturing-industry             all              2          NaN
-																											Wholesale & Retail                                           wholesale-retail-industry             all              3          NaN
-																					 Information and Communication                              information-and-communication-industry             all              4          NaN
-													Professional, Scientific and Technical Support              professional-scientific-and-technical-support-industry             all              5          NaN
-													 Administrative and Support Service Activities              administrative-and-support-service-activities-industry             all              6          NaN
-            Arts, Entertainment, Recreation and Other Service Activities arts-entertainment-recreation-and-other-service-activities-industry             all              7          NaN
-																													 Film Industry                              film-industry-excluding-other-services             all              8          NaN
-																										 Television Industry                        television-industry-excluding-other-services             all              9          NaN
+																   Label       														  Notation Parent Notation  Sort Priority  Description
+									   					  All industries  																   all             NaN              1          NaN
+														   Manufacturing   								 				manufacturing-industry             all              2          NaN
+			 									 	  Wholesale & Retail   											 wholesale-retail-industry             all              3          NaN
+							 			   Information and Communication   								information-and-communication-industry             all              4          NaN
+						  Professional, Scientific and Technical Support   				professional-scientific-and-technical-support-industry             all              5          NaN
+			 			   Administrative and Support Service Activities   				administrative-and-support-service-activities-industry             all              6          NaN
+            Arts, Entertainment, Recreation and Other Service Activities   arts-entertainment-recreation-and-other-service-activities-industry             all              7          NaN
+														   Film Industry   								film-industry-excluding-other-services             all              8          NaN
+													 Television Industry   						  television-industry-excluding-other-services             all              9          NaN
 
           - Last 10 Observations:
-																																	 Label                                                            Notation Parent Notation  Sort Priority  Description
-																													All industries                                                                 all             NaN              1          NaN
-																													 Manufacturing                                              manufacturing-industry             all              2          NaN
-																											Wholesale & Retail                                           wholesale-retail-industry             all              3          NaN
-																					 Information and Communication                              information-and-communication-industry             all              4          NaN
-													Professional, Scientific and Technical Support              professional-scientific-and-technical-support-industry             all              5          NaN
-													 Administrative and Support Service Activities              administrative-and-support-service-activities-industry             all              6          NaN
-            Arts, Entertainment, Recreation and Other Service Activities arts-entertainment-recreation-and-other-service-activities-industry             all              7          NaN
-																													 Film Industry                              film-industry-excluding-other-services             all              8          NaN
-																										 Television Industry                        television-industry-excluding-other-services             all              9          NaN
+																   Label       														  Notation Parent Notation  Sort Priority  Description
+									   					  All industries  																   all             NaN              1          NaN
+														   Manufacturing   								 				manufacturing-industry             all              2          NaN
+			 									 	  Wholesale & Retail   											 wholesale-retail-industry             all              3          NaN
+							 			   Information and Communication   								information-and-communication-industry             all              4          NaN
+						  Professional, Scientific and Technical Support   				professional-scientific-and-technical-support-industry             all              5          NaN
+			 			   Administrative and Support Service Activities   				administrative-and-support-service-activities-industry             all              6          NaN
+            Arts, Entertainment, Recreation and Other Service Activities   arts-entertainment-recreation-and-other-service-activities-industry             all              7          NaN
+														   Film Industry   								film-industry-excluding-other-services             all              8          NaN
+													 Television Industry   						  television-industry-excluding-other-services             all              9          NaN
         """
-				And the Concepts Information Printable should be
-				"""
-				- The code list has the following concepts information:
-					- Concepts hierarchy depth: 2
-					- Concepts hierarchy:
-						root
-						└── All industries
-								├── Administrative and Support Service Activities
-								├── Arts, Entertainment, Recreation and Other Service Activities
-								├── Film Industry
-								├── Information and Communication
-								├── Manufacturing
-								├── Professional, Scientific and Technical Support
-								├── Television Industry
-								└── Wholesale & Retail
-				"""
+		And the Concepts Information Printable should be
+		"""
+		- The code list has the following concepts information:
+			- Concepts hierarchy depth: 2
+			- Concepts hierarchy:
+				root
+				└── All industries
+						├── Administrative and Support Service Activities
+						├── Arts, Entertainment, Recreation and Other Service Activities
+						├── Film Industry
+						├── Information and Communication
+						├── Manufacturing
+						├── Professional, Scientific and Technical Support
+						├── Television Industry
+						└── Wholesale & Retail
+		"""
 
     Scenario: inspect should output error when the metadata json-ld input does not exist
         Given a none existing test-case file "cli/inspect/not_exists.csv-metadata.json"
