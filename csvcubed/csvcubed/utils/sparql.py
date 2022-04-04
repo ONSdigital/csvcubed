@@ -10,7 +10,7 @@ from rdflib import Graph, Literal
 from rdflib.query import ResultRow
 
 from csvcubed.models.csvcubedexception import (
-    UnexpectedSparqlASKQueryResponseTypeException,
+    UnexpectedSparqlAskQueryResponseTypeException,
     UnexpectedSparqlASKQueryResultsException,
 )
 
@@ -37,7 +37,7 @@ def ask(query: str, graph: Graph) -> bool:
         if isinstance(result, bool):
             return result
         else:
-            raise UnexpectedSparqlASKQueryResponseTypeException(type(result))
+            raise UnexpectedSparqlAskQueryResponseTypeException(type(result))
     else:
         raise UnexpectedSparqlASKQueryResultsException(len(results))
 

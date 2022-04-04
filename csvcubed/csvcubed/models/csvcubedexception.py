@@ -255,8 +255,8 @@ class FailedToConvertDataFrameToStringException(Exception):
         return CsvcubedExceptionUrls.FailedToConvertDataFrameToString.value
 
 
-class UnexpectedSparqlASKQueryResponseTypeException(Exception):
-    """Class representing the UnexpectedSparqlASKQueryResponseTypeException model."""
+class UnexpectedSparqlAskQueryResponseTypeException(Exception):
+    """Class representing the UnexpectedSparqlAskQueryResponseTypeException model."""
 
     def __init__(self, response_type: type):
         super().__init__(
