@@ -1,6 +1,6 @@
 # Configuring a Qube
 
-There are two ways to use csvcubed to generate a valid statictical qube:
+There are two ways to use csvcubed to generate a valid statistical qube:
 
 * **The convention-first approach** allows you to create a qube with minimal configuration.
 * **The configuration-first approach** where you have the full power to configure your qube.
