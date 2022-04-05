@@ -8,7 +8,12 @@ from typing import Optional
 import pandas as pd
 from dataclasses import dataclass
 
+from treelib import Tree
+
+from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
 from csvcubed.utils.printable import get_printable_tabuler_str_from_dataframe
+
+HIERARCHY_TREE_CONCEPTS_LIMIT = 100
 
 
 @dataclass
@@ -17,6 +22,7 @@ class DatasetObservationsInfoResult:
     Model to represent get dataset observation info dataframe operation result.
     """
 
+    csvw_type: CSVWType
     num_of_observations: int
     num_of_duplicates: int
     dataset_head: pd.DataFrame
@@ -30,11 +36,15 @@ class DatasetObservationsInfoResult:
         formatted_dataset_tail = get_printable_tabuler_str_from_dataframe(
             self.dataset_tail
         )
+
+        obs_or_concepts_str = (
+            "Observations" if self.csvw_type == CSVWType.QbDataSet else "Concepts"
+        )
         return f"""
-        - Number of Observations: {self.num_of_observations}
+        - Number of {obs_or_concepts_str}: {self.num_of_observations}
         - Number of Duplicates: {self.num_of_duplicates}
-        - First 10 Observations:{linesep}{formatted_dataset_head}
-        - Last 10 Observations:{linesep}{formatted_dataset_tail}
+        - First 10 Concepts:{linesep}{formatted_dataset_head}
+        - Last 10 Concepts:{linesep}{formatted_dataset_tail}
         """
 
 
@@ -62,4 +72,25 @@ class DatasetObservationsByMeasureUnitInfoResult:
         )
         return f"""
         - Value counts broken-down by measure and unit (of measure):{linesep}{formatted_by_measure_and_unit_val_counts}
+        """
+
+
+@dataclass
+class CodelistHierarchyInfoResult:
+    """
+    Model to represent codelist hierarchy tree.
+    """
+
+    tree: Tree
+
+    @property
+    def output_str(self) -> str:
+        hierarchy_output = (
+            f"{linesep}{self.tree}"
+            if len(self.tree.all_nodes()) < HIERARCHY_TREE_CONCEPTS_LIMIT
+            else " Hierarchy is too large to display."
+        )
+        return f"""
+        - Concepts hierarchy depth: {self.tree.depth()}
+        - Concepts hierarchy:{hierarchy_output}
         """

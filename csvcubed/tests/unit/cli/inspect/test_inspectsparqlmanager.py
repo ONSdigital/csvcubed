@@ -4,6 +4,7 @@ from rdflib import Graph
 from csvcubed.definitions import ROOT_DIR_PATH
 from csvcubed.models.inspectsparqlresults import (
     CatalogMetadataResult,
+    CodeListColsByDatasetUrlResult,
     CodelistsResult,
     ColsWithSuppressOutputTrueResult,
     DSDLabelURIResult,
@@ -15,6 +16,8 @@ from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.cli.inspect.inspectsparqlmanager import (
     ask_is_csvw_code_list,
     ask_is_csvw_qb_dataset,
+    select_codelist_cols_by_dataset_url,
+    select_codelist_dataset_url,
     select_cols_where_supress_output_is_true,
     select_csvw_catalog_metadata,
     select_csvw_dsd_dataset_label_and_dsd_def_uri,
@@ -248,11 +251,7 @@ def test_select_single_unit_from_dsd():
     """
     Should return expected `DSDSingleUnitResult`.
     """
-    csvw_metadata_json_path = (
-        _test_case_base_dir
-        / "single-unit_multi-measure"
-        / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv-metadata.json"
-    )
+    csvw_metadata_json_path = _test_case_base_dir / "single-unit_multi-measure" / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv-metadata.json"
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
     dataset_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
@@ -295,3 +294,51 @@ def test_select_table_schema_dependencies():
         str(table_schema_dependencies_dir / "sector.table.json"),
         str(table_schema_dependencies_dir / "subsector.table.json"),
     }
+
+
+def test_select_codelist_cols_by_dataset_url():
+    """
+    Should return expected `CodeListColsByDatasetUrlResult`.
+    """
+    csvw_metadata_json_path = _test_case_base_dir / "alcohol-content.csv-metadata.json"
+    metadata_processor = MetadataProcessor(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+    dataset_url = select_codelist_dataset_url(csvw_metadata_rdf_graph).dataset_url
+
+    result: CodeListColsByDatasetUrlResult = select_codelist_cols_by_dataset_url(
+        csvw_metadata_rdf_graph, dataset_url
+    )
+
+    assert len(result.columns) == 7
+
+    assert result.columns[0].column_title == "Label"
+    assert result.columns[0].column_property_url == "rdfs:label"
+    assert result.columns[0].column_value_url is None
+
+    assert result.columns[1].column_title == "Notation"
+    assert result.columns[1].column_property_url == "skos:notation"
+    assert result.columns[1].column_value_url is None
+
+    assert result.columns[2].column_title == "Parent Notation"
+    assert result.columns[2].column_property_url == "skos:broader"
+    assert (
+        result.columns[2].column_value_url == "alcohol-content.csv#{+parent_notation}"
+    )
+
+    assert result.columns[3].column_title == "Sort Priority"
+    assert (
+        result.columns[3].column_property_url == "http://www.w3.org/ns/ui#sortPriority"
+    )
+    assert result.columns[3].column_value_url is None
+
+    assert result.columns[4].column_title == "Description"
+    assert result.columns[4].column_property_url == "rdfs:comment"
+    assert result.columns[4].column_value_url is None
+
+    assert result.columns[5].column_title is None
+    assert result.columns[5].column_property_url == "skos:inScheme"
+    assert result.columns[5].column_value_url == "alcohol-content.csv#code-list"
+
+    assert result.columns[6].column_title is None
+    assert result.columns[6].column_property_url == "rdf:type"
+    assert result.columns[6].column_value_url == "skos:Concept"

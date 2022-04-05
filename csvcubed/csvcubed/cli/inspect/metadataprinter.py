@@ -23,6 +23,7 @@ from csvcubed.models.inspectsparqlresults import (
 )
 from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
 from csvcubed.cli.inspect.inspectsparqlmanager import (
+    select_codelist_cols_by_dataset_url,
     select_codelist_dataset_url,
     select_cols_where_supress_output_is_true,
     select_csvw_catalog_metadata,
@@ -32,6 +33,7 @@ from csvcubed.cli.inspect.inspectsparqlmanager import (
     select_qb_dataset_url,
 )
 from csvcubed.cli.inspect.inspectdatasetmanager import (
+    get_concepts_hierarchy_info,
     get_dataset_observations_info,
     get_dataset_val_counts_info,
     load_csv_to_dataframe,
@@ -46,6 +48,10 @@ from csvcubed.models.csvcubedexception import (
     InputTypeIsUnknownException,
     JsonldNotSupportedException,
 )
+from csvcubed.utils.skos.codelist import (
+    CodelistPropertyUrl,
+    get_codelist_col_title_by_property_url,
+)
 
 
 @dataclass
@@ -53,15 +59,15 @@ class MetadataPrinter:
     """
     This class produces the printables necessary for producing outputs to the CLI.
     """
-    
+
     csvw_type: CSVWType
     csvw_metadata_rdf_graph: Graph
     csvw_metadata_json_path: Path
-    
+
     dataset_uri: str = field(init=False)
     dsd_uri: str = field(init=False)
     qube_components: List[QubeComponentResult] = field(init=False)
-    
+
     def _get_type_str(self):
         if self.csvw_type == CSVWType.QbDataSet:
             return "data cube"
@@ -163,12 +169,13 @@ class MetadataPrinter:
         else:
             raise JsonldNotSupportedException()
 
+        self.dataset_url: str = result_dataset_url.dataset_url
         self.dataset: pd.DataFrame = load_csv_to_dataframe(
-            self.csvw_metadata_json_path, Path(result_dataset_url.dataset_url)
+            self.csvw_metadata_json_path, Path(self.dataset_url)
         )
 
         result: DatasetObservationsInfoResult = get_dataset_observations_info(
-            self.dataset
+            self.dataset, self.csvw_type
         )
 
         return f"- The {self._get_type_str()} has the following dataset information:{result.output_str}"
@@ -194,7 +201,29 @@ class MetadataPrinter:
             self.csvw_metadata_json_path,
         )
 
-        result_val_count = get_dataset_val_counts_info(
+        result = get_dataset_val_counts_info(
             canonical_shape_dataset, measure_col, unit_col
         )
-        return f"- The {self._get_type_str()} has the following value counts:{result_val_count.output_str}"
+        return f"- The {self._get_type_str()} has the following value counts:{result.output_str}"
+
+    @property
+    def codelist_hierachy_info_printable(self) -> str:
+        result_code_list_cols = select_codelist_cols_by_dataset_url(
+            self.csvw_metadata_rdf_graph, self.dataset_url
+        )
+
+        parent_notation_col_name = get_codelist_col_title_by_property_url(
+            result_code_list_cols.columns, CodelistPropertyUrl.SkosBroader
+        )
+        label_col_name = get_codelist_col_title_by_property_url(
+            result_code_list_cols.columns, CodelistPropertyUrl.RDFLabel
+        )
+        notation_col_name = get_codelist_col_title_by_property_url(
+            result_code_list_cols.columns, CodelistPropertyUrl.SkosNotation
+        )
+
+        result = get_concepts_hierarchy_info(
+            self.dataset, parent_notation_col_name, label_col_name, notation_col_name
+        )
+
+        return f"- The {self._get_type_str()} has the following concepts information:{result.output_str}"

@@ -32,7 +32,7 @@ def transform_dataset_to_canonical_shape(
     """
     Transforms the given dataset into canonical shape if it is not in the canonical shape already.
 
-    Member of :file:`./csvdataset.py`
+    Member of :class:`./csvdataset`.
 
     :return: `Tuple[pd.DataFrame, str, str]` - canonical dataframe, measure column name, unit column name.
     """

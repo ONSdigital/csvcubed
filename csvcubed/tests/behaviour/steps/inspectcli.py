@@ -54,9 +54,9 @@ def step_impl(context):
 @When("the Printables for data cube are generated")
 def step_impl(context):
     metadata_printer = MetadataPrinter(
-        csvw_type=context.csvw_type,
-        csvw_metadata_rdf_graph=context.csvw_metadata_rdf_graph,
-        csvw_metadata_json_path=context.csvw_metadata_json_path,
+        context.csvw_type,
+        context.csvw_metadata_rdf_graph,
+        context.csvw_metadata_json_path,
     )
     context.type_printable = metadata_printer.type_info_printable
     context.catalog_metadata_printable = metadata_printer.catalog_metadata_printable
@@ -88,8 +88,19 @@ def step_impl(context):
     )
     context.type_printable = metadata_printer.type_info_printable
     context.catalog_metadata_printable = metadata_printer.catalog_metadata_printable
+    context.dataset_observations_info_printable = (
+        metadata_printer.dataset_observations_info_printable
+    )
+    context.codelist_hierachy_info_printable = (
+        metadata_printer.codelist_hierachy_info_printable
+    )
 
-    assert context.type_printable and context.catalog_metadata_printable
+    assert (
+        context.type_printable
+        and context.catalog_metadata_printable
+        and context.dataset_observations_info_printable
+        and context.codelist_hierachy_info_printable
+    )
 
 
 @Then('the Type Printable should be "{type_printable}"')
@@ -129,6 +140,13 @@ def step_impl(context):
 def step_impl(context):
     assert _unformat_multiline_string(
         context.dataset_val_counts_by_measure_unit_info_printable
+    ) == _unformat_multiline_string(context.text)
+
+
+@Then("the Concepts Information Printable should be")
+def step_impl(context):
+    assert _unformat_multiline_string(
+        context.codelist_hierachy_info_printable
     ) == _unformat_multiline_string(context.text)
 
 

@@ -104,7 +104,7 @@ Feature: Behaviour testing of csvcubed inspect.
         - The data cube has the following dataset information:
         - Number of Observations: 10676
         - Number of Duplicates: 0
-        - First 10 Observations:
+        - First 10 Concepts:
                                Period Alcohol Type Alcohol Sub Type Alcohol Content Clearance Origin      Value          Measure Type        Unit Marker
             government-year/1999-2000         wine            still    up-to-15-abv              all 8721828.97            clearances hectolitres    NaN
             government-year/1999-2000         wine        sparkling    up-to-15-abv              all  621067.74            clearances hectolitres    NaN
@@ -117,7 +117,7 @@ Feature: Behaviour testing of csvcubed inspect.
             government-year/1999-2000         wine              all             all              all    6429.00 alcohol-duty-receipts gbp-million    NaN
             government-year/2000-2001         wine            still    up-to-15-abv              all 8920111.13            clearances hectolitres    NaN
 
-                    - Last 10 Observations:
+                    - Last 10 Concepts:
                    Period   Alcohol Type Alcohol Sub Type Alcohol Content                    Clearance Origin  Value              Measure Type                 Unit        Marker
             month/2021-09          cider              all             all                                 all  25.05       cider-duty-receipts          gbp-million   provisional
             month/2021-10           beer               uk             all                                 all    NaN         production-volume thousand-hectolitres not-available
@@ -292,7 +292,7 @@ Feature: Behaviour testing of csvcubed inspect.
         - The data cube has the following dataset information:
                 - Number of Observations: 41508
                 - Number of Duplicates: 0
-                - First 10 Observations:
+                - First 10 Concepts:
         GHG GHG Grouped IPCC Code  Year National Communication Sector National Communication Sub-sector National Communication Category                          Source National Communication Fuel Group National Communication Fuel       Activity Name  Value
         c2f6        pfcs     2b9b3  1990          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.001
         c2f6        pfcs     2b9b3  1991          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.001
@@ -305,7 +305,7 @@ Feature: Behaviour testing of csvcubed inspect.
         c2f6        pfcs     2b9b3  1998          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.005
         c2f6        pfcs     2b9b3  1999          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.002
 
-                - Last 10 Observations:
+                - Last 10 Concepts:
         GHG GHG Grouped IPCC Code  Year National Communication Sector National Communication Sub-sector                                                                National Communication Category     Source National Communication Fuel Group National Communication Fuel      Activity Name  Value
         sf6         sf6      2g2e  2010                      business                    not-applicable electronics-electrical-insulation-scientific-research-military-applications-and-sporting-goods tracer-gas                   other-emissions             other-emissions halocarbon-use-sf6  0.001
         sf6         sf6      2g2e  2011                      business                    not-applicable electronics-electrical-insulation-scientific-research-military-applications-and-sporting-goods tracer-gas                   other-emissions             other-emissions halocarbon-use-sf6  0.029
@@ -460,7 +460,7 @@ Feature: Behaviour testing of csvcubed inspect.
         - The data cube has the following dataset information:
                 - Number of Observations: 99530
                 - Number of Duplicates: 0
-                - First 10 Observations:
+                - First 10 Concepts:
         GHG GHG Grouped IPCC Code  Year National Communication Sector National Communication Sub-sector National Communication Category                          Source National Communication Fuel Group National Communication Fuel       Activity Name            Measure  Value
         c2f6        pfcs     2b9b3  1990          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion emissions-ar4-gwps  0.001
         c2f6        pfcs     2b9b3  1991          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion emissions-ar4-gwps  0.001
@@ -473,7 +473,7 @@ Feature: Behaviour testing of csvcubed inspect.
         c2f6        pfcs     2b9b3  1998          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion emissions-ar4-gwps  0.005
         c2f6        pfcs     2b9b3  1999          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion emissions-ar4-gwps  0.002
 
-                - Last 10 Observations:
+                - Last 10 Concepts:
         GHG GHG Grouped IPCC Code  Year National Communication Sector National Communication Sub-sector National Communication Category                      Source National Communication Fuel Group National Communication Fuel  Activity Name            Measure  Value
         co2         co2    5c1-2b  2016              waste-management                    not-applicable              waste-incineration incineration-chemical-waste                   other-emissions             other-emissions chemical-waste emissions-ar5-gwps  0.181
         co2         co2    5c1-2b  2016              waste-management                    not-applicable              waste-incineration incineration-clinical-waste                   other-emissions             other-emissions clinical-waste emissions-ar5-gwps  0.082
@@ -596,7 +596,7 @@ Feature: Behaviour testing of csvcubed inspect.
         - The data cube has the following dataset information:
                 - Number of Observations: 286
                 - Number of Duplicates: 0
-                - First 10 Observations:
+                - First 10 Concepts:
            Period    Region Fuel       Measure Type                                 Unit  Value
         year/1995 K02000001  all energy-consumption millions-of-tonnes-of-oil-equivalent  221.4
         year/1996 K02000001  all energy-consumption millions-of-tonnes-of-oil-equivalent  230.8
@@ -609,7 +609,7 @@ Feature: Behaviour testing of csvcubed inspect.
         year/2003 K02000001  all energy-consumption millions-of-tonnes-of-oil-equivalent  231.9
         year/2004 K02000001  all energy-consumption millions-of-tonnes-of-oil-equivalent  233.7
 
-                - Last 10 Observations:
+                - Last 10 Concepts:
            Period    Region       Fuel       Measure Type                                 Unit  Value
         year/2011 K02000001 renewables energy-consumption millions-of-tonnes-of-oil-equivalent    9.8
         year/2012 K02000001 renewables energy-consumption millions-of-tonnes-of-oil-equivalent   10.4
@@ -631,10 +631,12 @@ Feature: Behaviour testing of csvcubed inspect.
         """
 
     Scenario: inspect should produce printable for code list metadata json-ld input
-        Given the existing test-case file "cli/inspect/codelist.csv-metadata.json"
+        Given the existing test-case file "cli/inspect/alcohol-content.csv-metadata.json"
         And the existing test-case file "cli/inspect/alcohol-content.table.json"
+        And the existing test-case file "cli/inspect/alcohol-content.csv"
         
-        When the Metadata file path is detected and validated "cli/inspect/codelist.csv-metadata.json"
+        When the Metadata file path is detected and validated "cli/inspect/alcohol-content.csv-metadata.json"
+		And the csv file path is detected and validated "cli/inspect/alcohol-content.csv"
         And the Metadata File json-ld is loaded to a rdf graph
         And the Metadata File is validated
         And the Printables for code list are generated
@@ -644,8 +646,8 @@ Feature: Behaviour testing of csvcubed inspect.
         - The code list has the following catalog metadata:
             - Title: Alcohol Content
             - Label: Alcohol Content
-            - Issued: 2022-02-11T21:00:21.040987
-            - Modified: 2022-02-11T21:00:21.040987
+            - Issued: 2022-02-24T11:42:44.097778
+            - Modified: 2022-02-24T11:42:44.097778
             - License: None
             - Creator: None
             - Publisher: None
@@ -657,6 +659,116 @@ Feature: Behaviour testing of csvcubed inspect.
             - Comment: None
             - Description: None
         """
+        And the Dataset Information Printable should be
+        """
+        - The code list has the following dataset information:
+          - Number of Concepts: 6
+        	- Number of Duplicates: 0
+        	- First 10 Concepts:
+                           Label       Notation  Parent Notation  Sort Priority  Description
+                1.2% to 5.5% abv 1-2-to-5-5-abv              NaN              0          NaN
+                 5.5% to 15% abv  5-5-to-15-abv              NaN              1          NaN
+                             All            all              NaN              2          NaN
+                    over 15% abv    over-15-abv              NaN              3          NaN
+                   over 5.5% abv   over-5-5-abv              NaN              4          NaN
+                   up to 15% abv   up-to-15-abv              NaN              5          NaN
+
+          - Last 10 Concepts:
+                           Label       Notation  Parent Notation  Sort Priority  Description
+                1.2% to 5.5% abv 1-2-to-5-5-abv              NaN              0          NaN
+                 5.5% to 15% abv  5-5-to-15-abv              NaN              1          NaN
+                             All            all              NaN              2          NaN
+                    over 15% abv    over-15-abv              NaN              3          NaN
+                   over 5.5% abv   over-5-5-abv              NaN              4          NaN
+                   up to 15% abv   up-to-15-abv              NaN              5          NaN
+        """
+        And the Concepts Information Printable should be
+        """
+        - The code list has the following concepts information:
+                - Concepts hierarchy depth: 1
+                - Concepts hierarchy:
+                        root
+                        ├── 1.2% to 5.5% abv
+                        ├── 5.5% to 15% abv
+                        ├── All
+                        ├── over 15% abv
+                        ├── over 5.5% abv
+                        └── up to 15% abv
+        """
+
+    Scenario: inspect should produce printable for code list metadata json-ld input with concepts hierarchy depth of more than one
+        Given the existing test-case file "cli/inspect/itis-industry.csv-metadata.json"
+        And the existing test-case file "cli/inspect/itis-industry.csv"
+
+		When the Metadata file path is detected and validated "cli/inspect/itis-industry.csv-metadata.json"
+        And the csv file path is detected and validated "cli/inspect/itis-industry.csv"
+        And the Metadata File json-ld is loaded to a rdf graph
+        And the Metadata File is validated
+        And the Printables for code list are generated
+        Then the Type Printable should be "- This file is a code list."
+        And the Catalog Metadata Printable should be
+		"""
+		- The code list has the following catalog metadata:
+            - Title: Itis Industry
+            - Label: Itis Industry
+            - Issued: 2021-04-13T10:04:13.589262
+            - Modified: 2021-05-20T10:55:04.059085
+            - License: None
+            - Creator: None
+            - Publisher: None
+            - Landing Pages: None
+            - Themes: None
+            - Keywords: None
+            - Contact Point: None
+            - Identifier: None
+            - Comment: Dataset representing the 'Itis Industry' code list.
+            - Description: None
+        """
+        And the Dataset Information Printable should be
+        """
+        - The code list has the following dataset information:
+          - Number of Concepts: 9
+          - Number of Duplicates: 0
+          - First 10 Concepts:
+																   Label       														  Notation Parent Notation  Sort Priority  Description
+									   					  All industries  																   all             NaN              1          NaN
+														   Manufacturing   								 				manufacturing-industry             all              2          NaN
+			 									 	  Wholesale & Retail   											 wholesale-retail-industry             all              3          NaN
+							 			   Information and Communication   								information-and-communication-industry             all              4          NaN
+						  Professional, Scientific and Technical Support   				professional-scientific-and-technical-support-industry             all              5          NaN
+			 			   Administrative and Support Service Activities   				administrative-and-support-service-activities-industry             all              6          NaN
+            Arts, Entertainment, Recreation and Other Service Activities   arts-entertainment-recreation-and-other-service-activities-industry             all              7          NaN
+														   Film Industry   								film-industry-excluding-other-services             all              8          NaN
+													 Television Industry   						  television-industry-excluding-other-services             all              9          NaN
+
+          - Last 10 Concepts:
+																   Label       														  Notation Parent Notation  Sort Priority  Description
+									   					  All industries  																   all             NaN              1          NaN
+														   Manufacturing   								 				manufacturing-industry             all              2          NaN
+			 									 	  Wholesale & Retail   											 wholesale-retail-industry             all              3          NaN
+							 			   Information and Communication   								information-and-communication-industry             all              4          NaN
+						  Professional, Scientific and Technical Support   				professional-scientific-and-technical-support-industry             all              5          NaN
+			 			   Administrative and Support Service Activities   				administrative-and-support-service-activities-industry             all              6          NaN
+            Arts, Entertainment, Recreation and Other Service Activities   arts-entertainment-recreation-and-other-service-activities-industry             all              7          NaN
+														   Film Industry   								film-industry-excluding-other-services             all              8          NaN
+													 Television Industry   						  television-industry-excluding-other-services             all              9          NaN
+        """
+		And the Concepts Information Printable should be
+		"""
+		- The code list has the following concepts information:
+			- Concepts hierarchy depth: 2
+			- Concepts hierarchy:
+				root
+				└── All industries
+						├── Administrative and Support Service Activities
+						├── Arts, Entertainment, Recreation and Other Service Activities
+						├── Film Industry
+						├── Information and Communication
+						├── Manufacturing
+						├── Professional, Scientific and Technical Support
+						├── Television Industry
+						└── Wholesale & Retail
+		"""
 
     Scenario: inspect should output error when the metadata json-ld input does not exist
         Given a none existing test-case file "cli/inspect/not_exists.csv-metadata.json"

@@ -22,6 +22,7 @@ from csvcubed.utils.qb.components import (
     get_component_property_as_relative_path,
 )
 from csvcubed.models.inspectdataframeresults import (
+    CodelistHierarchyInfoResult,
     DatasetObservationsByMeasureUnitInfoResult,
     DatasetObservationsInfoResult,
     DatasetSingleMeasureResult,
@@ -30,6 +31,8 @@ from csvcubed.models.csvcubedexception import (
     CsvToDataFrameLoadFailedException,
     InvalidNumberOfRecordsException,
 )
+from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
+from csvcubed.utils.skos.codelist import build_concepts_hierarchy_tree
 
 _logger = logging.getLogger(__name__)
 
@@ -153,7 +156,7 @@ def get_single_measure_from_dsd(
 
 
 def get_dataset_observations_info(
-    dataset: pd.DataFrame,
+    dataset: pd.DataFrame, csvw_type: CSVWType
 ) -> DatasetObservationsInfoResult:
     """
     Generates the `DatasetObservationsInfoResult` from the dataset.
@@ -163,6 +166,7 @@ def get_dataset_observations_info(
     :return: `DatasetObservationsInfoResult`
     """
     return DatasetObservationsInfoResult(
+        csvw_type,
         len(dataset.index),
         dataset.duplicated().sum(),
         dataset.head(n=10),
@@ -190,3 +194,20 @@ def get_dataset_val_counts_info(
             by_measure_and_unit_grouped.size().reset_index()
         )
     )
+
+
+def get_concepts_hierarchy_info(
+    dataset: pd.DataFrame, parent_notation_col, label_col, notation_col
+) -> CodelistHierarchyInfoResult:
+    """
+    Generates the `CodelistHierarchyInfoResult` from the codelist.
+
+    Member of :file:`./inspectdatasetmanager.py`
+
+    :return: `CodelistHierarchyInfoResult`
+    """
+    concepts_tree = build_concepts_hierarchy_tree(
+        dataset, parent_notation_col, label_col, notation_col
+    )
+
+    return CodelistHierarchyInfoResult(tree=concepts_tree)
