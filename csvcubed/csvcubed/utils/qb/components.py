@@ -9,10 +9,32 @@ from enum import Enum
 from pathlib import Path
 import os
 
+from csvcubed.models.csvcubedexception import UnsupportedComponentPropertyTypeException
+
+
+class ComponentField(Enum):
+    """
+    The fields of `QubeComponentResult` model that are relevant for filtering the `QubeComponentsResult`.
+    """
+
+    Property = "property"
+
+    PropertyType = "property_type"
+
+
+class ComponentPropertyAttributeURI(Enum):
+    """
+    The uris of component attributes.
+    """
+
+    UnitMeasure = "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
+
+    MeasureType = "http://purl.org/linked-data/cube#measureType"
+
 
 class ComponentPropertyTypeURI(Enum):
     """
-    The type uris of component properties..
+    The type uris of component properties.
     """
 
     Dimension = "http://purl.org/linked-data/cube#DimensionProperty"
@@ -27,7 +49,7 @@ class ComponentPropertyTypeURI(Enum):
 
 class ComponentPropertyType(Enum):
     """
-    The type of component properties..
+    The type of component properties.
     """
 
     Dimension = "Dimension"
@@ -40,7 +62,7 @@ class ComponentPropertyType(Enum):
     """ The component is of type qb:Measure. """
 
 
-def get_printable_component_property_type(property_type: str) -> str:
+def get_component_property_type(property_type: str) -> str:
     """
     Produces the user-friendly name of component property type.
 
@@ -55,10 +77,10 @@ def get_printable_component_property_type(property_type: str) -> str:
     elif ComponentPropertyTypeURI.Measure.value == property_type:
         return ComponentPropertyType.Measure.value
     else:
-        raise Exception(f"Property type {property_type} is not supported.")
+        raise UnsupportedComponentPropertyTypeException(property_type=property_type)
 
 
-def get_printable_component_property(
+def get_component_property_as_relative_path(
     input_file_path: Path, component_property: str
 ) -> str:
     """

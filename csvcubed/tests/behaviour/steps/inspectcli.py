@@ -17,14 +17,20 @@ def _unformat_multiline_string(string: str) -> str:
     return "".join(s for s in string if ord(s) > 32 and ord(s) < 126)
 
 
-@When('the existing Metadata file exists "{csvw_metadata_file}"')
+@When('the Metadata file path is detected and validated "{csvw_metadata_file}"')
 def step_impl(context, csvw_metadata_file: str):
-    print(csvw_metadata_file)
     context.csvw_metadata_json_path = (
         get_context_temp_dir_path(context) / csvw_metadata_file
     )
     path = Path(context.csvw_metadata_json_path)
-    assert path.exists() == True
+    assert path.exists() is True
+
+
+@When('the csv file path is detected and validated "{csv_file}"')
+def step_impl(context, csv_file: str):
+    context.csv_file_path = get_context_temp_dir_path(context) / csv_file
+    path = Path(context.csv_file_path)
+    assert path.exists() is True
 
 
 @When("the Metadata File json-ld is loaded to a rdf graph")
@@ -42,28 +48,34 @@ def step_impl(context):
         context.csvw_type,
     ) = csvw_metadata_rdf_validator.validate_and_detect_type()
 
-    assert context.valid_csvw_metadata == True
+    assert context.valid_csvw_metadata is True
 
 
 @When("the Printables for data cube are generated")
 def step_impl(context):
     metadata_printer = MetadataPrinter(
-        context.csvw_type,
-        context.csvw_metadata_rdf_graph,
-        context.csvw_metadata_json_path,
+        csvw_type=context.csvw_type,
+        csvw_metadata_rdf_graph=context.csvw_metadata_rdf_graph,
+        csvw_metadata_json_path=context.csvw_metadata_json_path,
     )
-    context.type_printable = metadata_printer.gen_type_info_printable()
-    context.catalog_metadata_printable = (
-        metadata_printer.gen_catalog_metadata_printable()
+    context.type_printable = metadata_printer.type_info_printable
+    context.catalog_metadata_printable = metadata_printer.catalog_metadata_printable
+    context.dsd_info_printable = metadata_printer.dsd_info_printable
+    context.codelist_info_printable = metadata_printer.codelist_info_printable
+    context.dataset_observations_info_printable = (
+        metadata_printer.dataset_observations_info_printable
     )
-    context.dsd_info_printable = metadata_printer.gen_dsd_info_printable()
-    context.codelist_info_printable = metadata_printer.gen_codelist_info_printable()
+    context.dataset_val_counts_by_measure_unit_info_printable = (
+        metadata_printer.dataset_val_counts_by_measure_unit_info_printable
+    )
 
     assert (
         context.type_printable
         and context.catalog_metadata_printable
         and context.dsd_info_printable
         and context.codelist_info_printable
+        and context.dataset_observations_info_printable
+        and context.dataset_val_counts_by_measure_unit_info_printable
     )
 
 
@@ -74,10 +86,8 @@ def step_impl(context):
         context.csvw_metadata_rdf_graph,
         context.csvw_metadata_json_path,
     )
-    context.type_printable = metadata_printer.gen_type_info_printable()
-    context.catalog_metadata_printable = (
-        metadata_printer.gen_catalog_metadata_printable()
-    )
+    context.type_printable = metadata_printer.type_info_printable
+    context.catalog_metadata_printable = metadata_printer.catalog_metadata_printable
 
     assert context.type_printable and context.catalog_metadata_printable
 
@@ -105,6 +115,20 @@ def step_impl(context):
 def step_impl(context):
     assert _unformat_multiline_string(
         context.codelist_info_printable
+    ) == _unformat_multiline_string(context.text)
+
+
+@Then("the Dataset Information Printable should be")
+def step_impl(context):
+    assert _unformat_multiline_string(
+        context.dataset_observations_info_printable
+    ) == _unformat_multiline_string(context.text)
+
+
+@Then("the Dataset Value Counts Printable should be")
+def step_impl(context):
+    assert _unformat_multiline_string(
+        context.dataset_val_counts_by_measure_unit_info_printable
     ) == _unformat_multiline_string(context.text)
 
 

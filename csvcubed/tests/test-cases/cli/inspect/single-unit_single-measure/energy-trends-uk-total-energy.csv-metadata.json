@@ -1,0 +1,378 @@
+{
+    "@context": "http://www.w3.org/ns/csvw",
+    "@id": "energy-trends-uk-total-energy.csv#dataset",
+    "tables": [
+        {
+            "url": "energy-trends-uk-total-energy.csv",
+            "tableSchema": {
+                "columns": [
+                    {
+                        "titles": "Period",
+                        "name": "period",
+                        "propertyUrl": "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod",
+                        "valueUrl": "http://reference.data.gov.uk/id/{+period}",
+                        "required": true
+                    },
+                    {
+                        "titles": "Region",
+                        "name": "region",
+                        "propertyUrl": "http://purl.org/linked-data/sdmx/2009/dimension#refArea",
+                        "valueUrl": "http://statistics.data.gov.uk/id/statistical-geography/{region}",
+                        "required": true
+                    },
+                    {
+                        "titles": "Fuel",
+                        "name": "fuel",
+                        "propertyUrl": "http://gss-data.org.uk/def/energy/property/dimension/fuel",
+                        "valueUrl": "http://gss-data.org.uk/def/energy/concept/fuel/{fuel}",
+                        "required": true
+                    },
+                    {
+                        "titles": "Measure Type",
+                        "name": "measure_type",
+                        "propertyUrl": "http://purl.org/linked-data/cube#measureType",
+                        "valueUrl": "energy-trends-uk-total-energy.csv#measure/{+measure_type}",
+                        "required": true
+                    },
+                    {
+                        "titles": "Unit",
+                        "name": "unit",
+                        "propertyUrl": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
+                        "valueUrl": "energy-trends-uk-total-energy.csv#unit/{+unit}",
+                        "required": true
+                    },
+                    {
+                        "titles": "Value",
+                        "name": "value",
+                        "propertyUrl": "energy-trends-uk-total-energy.csv#measure/{+measure_type}",
+                        "datatype": "decimal",
+                        "required": true
+                    },
+                    {
+                        "name": "virt_type",
+                        "virtual": true,
+                        "propertyUrl": "rdf:type",
+                        "valueUrl": "http://purl.org/linked-data/cube#Observation"
+                    },
+                    {
+                        "name": "virt_dataset",
+                        "virtual": true,
+                        "propertyUrl": "http://purl.org/linked-data/cube#dataSet",
+                        "valueUrl": "energy-trends-uk-total-energy.csv#dataset"
+                    }
+                ],
+                "foreignKeys": [],
+                "primaryKey": [
+                    "period",
+                    "region",
+                    "fuel",
+                    "measure_type"
+                ],
+                "aboutUrl": "energy-trends-uk-total-energy.csv#obs/{+period},{+region},{+fuel}@{+measure_type}"
+            }
+        }
+    ],
+    "rdfs:seeAlso": [
+        {
+            "@id": "energy-trends-uk-total-energy.csv#dataset",
+            "@type": [
+                "http://purl.org/linked-data/cube#Attachable",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#DataSet",
+                "http://www.w3.org/ns/dcat#Resource",
+                "http://www.w3.org/ns/dcat#Dataset"
+            ],
+            "http://purl.org/dc/terms/creator": [
+                {
+                    "@id": "https://www.gov.uk/government/organisations/department-for-business-energy-and-industrial-strategy"
+                }
+            ],
+            "http://purl.org/dc/terms/description": [
+                {
+                    "@language": "en",
+                    "@value": "### UK total energy production and consumption (PDF)\n\nAn overview of the trends in energy production and consumption in the United\nKingdom for the previous quarter, focusing on:\u200b\n\n  * production \u200b\n  * consumption, both primary and final by broad sector, including seasonally adjusted series\u200b\n  * dependency rates of imports, fossil fuels and low carbon fuels\u200b\n\nWe publish this document on the last Thursday of each calendar quarter (March,\nJune, September and December).\n\n### Quarterly data (all tables)\u200b\n\nThe quarterly version of the tables covers production, consumption by broad\nsector and key energy dependency ratios.\n\nWe publish all tables (ET 1.1 - ET 1.3) on a quarterly basis, on the last\nThursday of the calendar quarter (March, June, September and December). The\ndata is a quarter in arrears.\u200b\n\n### Monthly data\u200b ET 1.1, ET 1.2\n\nThe monthly versions focus on production and consumption only. More detail is\nprovided in the quarterly versions.\n\nWe publish 2 of the tables on a monthly basis (ET 1.1 and ET 1.2), on the last\nThursday of the month.\n\n### Earlier data\u200b\n\nPrevious editions of Energy Trends are available on the [Energy\nTrends](https://www.gov.uk/government/collections/energy-trends) collection\npage.\n\nYou can request previous editions of the tables from BEIS using the email\nbelow in Contact us.\n\n### Contact us\u200b\n\nIf you have questions about these statistics, please email:\n[energy.stats@beis.gov.uk](mailto:energy.stats@beis.gov.uk)\n\n  *[ET]: Energy Trends\n\n"
+                }
+            ],
+            "http://purl.org/dc/terms/identifier": [
+                {
+                    "@value": "Energy Trends: UK total energy"
+                }
+            ],
+            "http://purl.org/dc/terms/issued": [
+                {
+                    "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "@value": "2013-06-27T08:30:00+00:00"
+                }
+            ],
+            "http://purl.org/dc/terms/modified": [
+                {
+                    "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "@value": "2022-03-16T10:29:42.619423+00:00"
+                }
+            ],
+            "http://purl.org/dc/terms/publisher": [
+                {
+                    "@id": "https://www.gov.uk/government/organisations/department-for-business-energy-and-industrial-strategy"
+                }
+            ],
+            "http://purl.org/dc/terms/title": [
+                {
+                    "@language": "en",
+                    "@value": "Energy Trends: UK total energy"
+                }
+            ],
+            "http://purl.org/linked-data/cube#structure": [
+                {
+                    "@id": "energy-trends-uk-total-energy.csv#structure"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#comment": [
+                {
+                    "@language": "en",
+                    "@value": "Data on overall energy balances of energy supply and demand in the United Kingdom."
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Energy Trends: UK total energy"
+                }
+            ],
+            "http://www.w3.org/ns/dcat#landingPage": [
+                {
+                    "@id": "https://www.gov.uk/government/statistics/total-energy-section-1-energy-trends"
+                }
+            ],
+            "http://www.w3.org/ns/dcat#theme": [
+                {
+                    "@id": "http://gss-data.org.uk/def/gdp#climate-change"
+                }
+            ]
+        },
+        {
+            "@id": "energy-trends-uk-total-energy.csv#component/region",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/dimension#refArea"
+                }
+            ],
+            "http://purl.org/linked-data/cube#dimension": [
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/dimension#refArea"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 2
+                }
+            ]
+        },
+        {
+            "@id": "energy-trends-uk-total-energy.csv#structure",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#DataStructureDefinition"
+            ],
+            "http://purl.org/linked-data/cube#component": [
+                {
+                    "@id": "energy-trends-uk-total-energy.csv#component/period"
+                },
+                {
+                    "@id": "energy-trends-uk-total-energy.csv#component/region"
+                },
+                {
+                    "@id": "energy-trends-uk-total-energy.csv#component/measure-type"
+                },
+                {
+                    "@id": "energy-trends-uk-total-energy.csv#component/energy-consumption"
+                },
+                {
+                    "@id": "energy-trends-uk-total-energy.csv#component/fuel"
+                },
+                {
+                    "@id": "energy-trends-uk-total-energy.csv#component/unit"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "energy-trends-uk-total-energy.csv#measure/energy-consumption"
+                },
+                {
+                    "@id": "http://gss-data.org.uk/def/energy/property/dimension/fuel"
+                },
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
+                },
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/dimension#refArea"
+                },
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod"
+                },
+                {
+                    "@id": "http://purl.org/linked-data/cube#measureType"
+                }
+            ]
+        },
+        {
+            "@id": "energy-trends-uk-total-energy.csv#component/energy-consumption",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "energy-trends-uk-total-energy.csv#measure/energy-consumption"
+                }
+            ],
+            "http://purl.org/linked-data/cube#measure": [
+                {
+                    "@id": "energy-trends-uk-total-energy.csv#measure/energy-consumption"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 4
+                }
+            ]
+        },
+        {
+            "@id": "energy-trends-uk-total-energy.csv#component/period",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod"
+                }
+            ],
+            "http://purl.org/linked-data/cube#dimension": [
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 1
+                }
+            ]
+        },
+        {
+            "@id": "energy-trends-uk-total-energy.csv#component/measure-type",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "http://purl.org/linked-data/cube#measureType"
+                }
+            ],
+            "http://purl.org/linked-data/cube#dimension": [
+                {
+                    "@id": "http://purl.org/linked-data/cube#measureType"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 6
+                }
+            ]
+        },
+        {
+            "@id": "energy-trends-uk-total-energy.csv#component/unit",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://purl.org/linked-data/cube#attribute": [
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentRequired": [
+                {
+                    "@value": true
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 5
+                }
+            ]
+        },
+        {
+            "@id": "energy-trends-uk-total-energy.csv#component/fuel",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "http://gss-data.org.uk/def/energy/property/dimension/fuel"
+                }
+            ],
+            "http://purl.org/linked-data/cube#dimension": [
+                {
+                    "@id": "http://gss-data.org.uk/def/energy/property/dimension/fuel"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 3
+                }
+            ]
+        },
+        {
+            "@id": "energy-trends-uk-total-energy.csv#measure/energy-consumption",
+            "@type": [
+                "http://purl.org/linked-data/cube#MeasureProperty",
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://purl.org/linked-data/cube#ComponentProperty",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "energy-consumption"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#range": [
+                {
+                    "@id": "http://www.w3.org/2001/XMLSchema#decimal"
+                }
+            ]
+        },
+        {
+            "@id": "energy-trends-uk-total-energy.csv#unit/millions-of-tonnes-of-oil-equivalent",
+            "@type": [
+                "http://www.ontology-of-units-of-measure.org/resource/om-2/Unit",
+                "http://qudt.org/schema/qudt/Unit",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "millions-of-tonnes-of-oil-equivalent"
+                }
+            ]
+        }
+    ]
+}

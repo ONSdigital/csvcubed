@@ -1,0 +1,550 @@
+{
+    "@context": "http://www.w3.org/ns/csvw",
+    "@id": "sectors-economic-estimates-2018-trade-in-services.csv#dataset",
+    "tables": [
+        {
+            "url": "sectors-economic-estimates-2018-trade-in-services.csv",
+            "tableSchema": {
+                "columns": [
+                    {
+                        "titles": "Sector",
+                        "name": "sector",
+                        "propertyUrl": "sectors-economic-estimates-2018-trade-in-services.csv#dimension/sector",
+                        "valueUrl": "sector.csv#{+sector}",
+                        "required": true
+                    },
+                    {
+                        "titles": "Subsector",
+                        "name": "subsector",
+                        "propertyUrl": "sectors-economic-estimates-2018-trade-in-services.csv#dimension/subsector",
+                        "valueUrl": "subsector.csv#{+subsector}",
+                        "required": true
+                    },
+                    {
+                        "titles": "Country",
+                        "name": "country",
+                        "propertyUrl": "http://purl.org/linked-data/sdmx/2009/dimension#refArea",
+                        "valueUrl": "http://gss-data.org.uk/def/concept/dcms-country/{+country}",
+                        "required": true
+                    },
+                    {
+                        "titles": "Year",
+                        "name": "year",
+                        "propertyUrl": "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod",
+                        "valueUrl": "http://reference.data.gov.uk/id/{+year}",
+                        "required": true
+                    },
+                    {
+                        "titles": "Flow",
+                        "name": "flow",
+                        "propertyUrl": "http://gss-data.org.uk/def/trade/property/dimension/flow-directions",
+                        "valueUrl": "http://gss-data.org.uk/def/trade/concept/flow-directions/{+flow}",
+                        "required": true
+                    },
+                    {
+                        "titles": "Measure Type",
+                        "name": "measure_type",
+                        "propertyUrl": "http://purl.org/linked-data/cube#measureType",
+                        "valueUrl": "http://gss-data.org.uk/def/measure/current-prices",
+                        "required": true
+                    },
+                    {
+                        "titles": "Unit",
+                        "name": "unit",
+                        "propertyUrl": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
+                        "valueUrl": "http://gss-data.org.uk/def/concept/measurement-units/gbp-million",
+                        "required": true
+                    },
+                    {
+                        "titles": "Value",
+                        "name": "value",
+                        "propertyUrl": "http://gss-data.org.uk/def/measure/current-prices",
+                        "datatype": "double",
+                        "required": false
+                    },
+                    {
+                        "titles": "Marker",
+                        "name": "marker",
+                        "propertyUrl": "http://purl.org/linked-data/sdmx/2009/attribute#obsStatus",
+                        "valueUrl": "http://gss-data.org.uk/def/concept/cogs-markers/{+marker}",
+                        "required": false
+                    },
+                    {
+                        "name": "virt_type",
+                        "virtual": true,
+                        "propertyUrl": "rdf:type",
+                        "valueUrl": "http://purl.org/linked-data/cube#Observation"
+                    },
+                    {
+                        "name": "virt_dataset",
+                        "virtual": true,
+                        "propertyUrl": "http://purl.org/linked-data/cube#dataSet",
+                        "valueUrl": "sectors-economic-estimates-2018-trade-in-services.csv#dataset"
+                    }
+                ],
+                "foreignKeys": [
+                    {
+                        "columnReference": "sector",
+                        "reference": {
+                            "resource": "sector.csv",
+                            "columnReference": "notation"
+                        }
+                    },
+                    {
+                        "columnReference": "subsector",
+                        "reference": {
+                            "resource": "subsector.csv",
+                            "columnReference": "notation"
+                        }
+                    }
+                ],
+                "primaryKey": [
+                    "sector",
+                    "subsector",
+                    "country",
+                    "year",
+                    "flow",
+                    "measure_type"
+                ],
+                "aboutUrl": "sectors-economic-estimates-2018-trade-in-services.csv#obs/{+sector},{+subsector},{+country},{+year},{+flow}@{+measure_type}"
+            }
+        },
+        {
+            "url": "sector.csv",
+            "tableSchema": "sector.table.json",
+            "suppressOutput": true
+        },
+        {
+            "url": "subsector.csv",
+            "tableSchema": "subsector.table.json",
+            "suppressOutput": true
+        }
+    ],
+    "rdfs:seeAlso": [
+        {
+            "@id": "sectors-economic-estimates-2018-trade-in-services.csv#component/marker",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification"
+            ],
+            "http://purl.org/linked-data/cube#attribute": [
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/attribute#obsStatus"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/attribute#obsStatus"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentRequired": [
+                {
+                    "@value": false
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 9
+                }
+            ]
+        },
+        {
+            "@id": "sectors-economic-estimates-2018-trade-in-services.csv#component/year",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod"
+                }
+            ],
+            "http://purl.org/linked-data/cube#dimension": [
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 4
+                }
+            ]
+        },
+        {
+            "@id": "sectors-economic-estimates-2018-trade-in-services.csv#dimension/subsector",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentProperty",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#DimensionProperty",
+                "http://purl.org/linked-data/cube#CodedProperty",
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"
+            ],
+            "http://purl.org/linked-data/cube#codeList": [
+                {
+                    "@id": "subsector.csv#code-list"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Subsector"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#range": [
+                {
+                    "@id": "sectors-economic-estimates-2018-trade-in-services.csv#class/subsector"
+                }
+            ]
+        },
+        {
+            "@id": "sectors-economic-estimates-2018-trade-in-services.csv#component/unit",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification"
+            ],
+            "http://purl.org/linked-data/cube#attribute": [
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentRequired": [
+                {
+                    "@value": true
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 7
+                }
+            ]
+        },
+        {
+            "@id": "sectors-economic-estimates-2018-trade-in-services.csv#class/sector",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.w3.org/2000/01/rdf-schema#Class"
+            ]
+        },
+        {
+            "@id": "sectors-economic-estimates-2018-trade-in-services.csv#component/current-prices",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "http://gss-data.org.uk/def/measure/current-prices"
+                }
+            ],
+            "http://purl.org/linked-data/cube#measure": [
+                {
+                    "@id": "http://gss-data.org.uk/def/measure/current-prices"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 6
+                }
+            ]
+        },
+        {
+            "@id": "sectors-economic-estimates-2018-trade-in-services.csv#component/measure-type",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "http://purl.org/linked-data/cube#measureType"
+                }
+            ],
+            "http://purl.org/linked-data/cube#dimension": [
+                {
+                    "@id": "http://purl.org/linked-data/cube#measureType"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 8
+                }
+            ]
+        },
+        {
+            "@id": "sectors-economic-estimates-2018-trade-in-services.csv#component/flow",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "http://gss-data.org.uk/def/trade/property/dimension/flow-directions"
+                }
+            ],
+            "http://purl.org/linked-data/cube#dimension": [
+                {
+                    "@id": "http://gss-data.org.uk/def/trade/property/dimension/flow-directions"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 5
+                }
+            ]
+        },
+        {
+            "@id": "sectors-economic-estimates-2018-trade-in-services.csv#component/subsector",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "sectors-economic-estimates-2018-trade-in-services.csv#dimension/subsector"
+                }
+            ],
+            "http://purl.org/linked-data/cube#dimension": [
+                {
+                    "@id": "sectors-economic-estimates-2018-trade-in-services.csv#dimension/subsector"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 2
+                }
+            ]
+        },
+        {
+            "@id": "sectors-economic-estimates-2018-trade-in-services.csv#dimension/sector",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentProperty",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#DimensionProperty",
+                "http://purl.org/linked-data/cube#CodedProperty",
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"
+            ],
+            "http://purl.org/linked-data/cube#codeList": [
+                {
+                    "@id": "sector.csv#code-list"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Sector"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#range": [
+                {
+                    "@id": "sectors-economic-estimates-2018-trade-in-services.csv#class/sector"
+                }
+            ]
+        },
+        {
+            "@id": "sectors-economic-estimates-2018-trade-in-services.csv#dataset",
+            "@type": [
+                "http://www.w3.org/ns/dcat#Resource",
+                "http://purl.org/linked-data/cube#Attachable",
+                "http://www.w3.org/ns/dcat#Dataset",
+                "http://purl.org/linked-data/cube#DataSet",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://purl.org/dc/terms/creator": [
+                {
+                    "@id": "https://www.gov.uk/government/organisations/department-for-digital-culture-media-sport"
+                }
+            ],
+            "http://purl.org/dc/terms/description": [
+                {
+                    "@language": "en",
+                    "@value": "\nDCMS Sector Economic Estimates 2018: Trade in Services is an official statistic and has been produced to the standards set out in the Code of Practice for Statistics.\nDCMS Sectors Economic Estimates 2018: Trade in services report:\nhttps://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/863862/DCMS_Sectors_Economic_Estimates_2018_Trade_In_Services.pdf\nThis release provides estimates of exports and imports of services by businesses in DCMS Sectors excluding Tourism and Civil Society2) in current prices. Any changes between years may reflect changes in the absolute value of the \u00a3 (affected by the domestic rate of inflation and by exchange rates), as well as changes in actual trade volume. These statistics are further broken down by selected countries, regions and continents.The latest year for which these estimates are available is 2018. Estimates of trade in services have been constructed from ONS official statistics using international classifications (StandardIndustrial Classification (SIC) codes). For further information see Annex A and the quality assurance (QA) document accompanying this report.Data are available for each DCMS Sector (excluding Tourism and Civil Society) and sub-sectors within the Creative Industries, Digital Sector, and Cultural Sector. There is significant overlap between DCMS Sectors so users should be aware that the estimate for \u201cDCMSSectors Total\u201d is lower than the sum of the individual sectors.\n\nThe World totals are calculated on the same basis as previous years. However, the list of individual countries used in the calculation of the (world) regional and continental statistics (e.g. European Union, Latin America and Caribbean, Asia) is slightly different to the previous (August 2019) release. Therefore, these statistics in particular are not directly comparable with previous years. In particular:\n-The Bailiwick of Guernsey, the Bailiwick of Jersey and Timor-Leste form part of the Europe, Rest of Europe and    Asia totals for the first time.\n-Gibraltar is included, and now forms part of the European Union total, in line with the Balance of Payments Vademecum. The EU Institutions total is also included on its own for the first time.\n-Latin America & Caribbean no longer includes America Unallocated as part of its calculation.\nA revised backseries of calculations on the current basis is expected to be provided in the summer.\n\n"
+                }
+            ],
+            "http://purl.org/dc/terms/identifier": [
+                {
+                    "@value": "Sectors Economic Estimates 2018: Trade in services"
+                }
+            ],
+            "http://purl.org/dc/terms/issued": [
+                {
+                    "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "@value": "2020-02-06T09:30:00+00:00"
+                }
+            ],
+            "http://purl.org/dc/terms/modified": [
+                {
+                    "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "@value": "2022-03-07T11:21:06.147039+00:00"
+                }
+            ],
+            "http://purl.org/dc/terms/publisher": [
+                {
+                    "@id": "https://www.gov.uk/government/organisations/department-for-digital-culture-media-sport"
+                }
+            ],
+            "http://purl.org/dc/terms/title": [
+                {
+                    "@language": "en",
+                    "@value": "Sectors Economic Estimates 2018: Trade in services"
+                }
+            ],
+            "http://purl.org/linked-data/cube#structure": [
+                {
+                    "@id": "sectors-economic-estimates-2018-trade-in-services.csv#structure"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#comment": [
+                {
+                    "@language": "en",
+                    "@value": "Official Statistics used to provide an estimate of the contribution of DCMS Sectors to the UK economy, measured by imports and exports of services."
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Sectors Economic Estimates 2018: Trade in services"
+                }
+            ],
+            "http://www.w3.org/ns/dcat#landingPage": [
+                {
+                    "@id": "https://www.gov.uk/government/statistics/dcms-sectors-economic-estimates-2018-trade-in-services"
+                }
+            ],
+            "http://www.w3.org/ns/dcat#theme": [
+                {
+                    "@id": "http://gss-data.org.uk/def/gdp#trade"
+                }
+            ]
+        },
+        {
+            "@id": "sectors-economic-estimates-2018-trade-in-services.csv#class/subsector",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.w3.org/2000/01/rdf-schema#Class"
+            ]
+        },
+        {
+            "@id": "sectors-economic-estimates-2018-trade-in-services.csv#component/country",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/dimension#refArea"
+                }
+            ],
+            "http://purl.org/linked-data/cube#dimension": [
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/dimension#refArea"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 3
+                }
+            ]
+        },
+        {
+            "@id": "sectors-economic-estimates-2018-trade-in-services.csv#structure",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#DataStructureDefinition"
+            ],
+            "http://purl.org/linked-data/cube#component": [
+                {
+                    "@id": "sectors-economic-estimates-2018-trade-in-services.csv#component/current-prices"
+                },
+                {
+                    "@id": "sectors-economic-estimates-2018-trade-in-services.csv#component/sector"
+                },
+                {
+                    "@id": "sectors-economic-estimates-2018-trade-in-services.csv#component/year"
+                },
+                {
+                    "@id": "sectors-economic-estimates-2018-trade-in-services.csv#component/unit"
+                },
+                {
+                    "@id": "sectors-economic-estimates-2018-trade-in-services.csv#component/measure-type"
+                },
+                {
+                    "@id": "sectors-economic-estimates-2018-trade-in-services.csv#component/flow"
+                },
+                {
+                    "@id": "sectors-economic-estimates-2018-trade-in-services.csv#component/marker"
+                },
+                {
+                    "@id": "sectors-economic-estimates-2018-trade-in-services.csv#component/country"
+                },
+                {
+                    "@id": "sectors-economic-estimates-2018-trade-in-services.csv#component/subsector"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "http://gss-data.org.uk/def/trade/property/dimension/flow-directions"
+                },
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod"
+                },
+                {
+                    "@id": "sectors-economic-estimates-2018-trade-in-services.csv#dimension/subsector"
+                },
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/attribute#obsStatus"
+                },
+                {
+                    "@id": "http://gss-data.org.uk/def/measure/current-prices"
+                },
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
+                },
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/dimension#refArea"
+                },
+                {
+                    "@id": "http://purl.org/linked-data/cube#measureType"
+                },
+                {
+                    "@id": "sectors-economic-estimates-2018-trade-in-services.csv#dimension/sector"
+                }
+            ]
+        },
+        {
+            "@id": "sectors-economic-estimates-2018-trade-in-services.csv#component/sector",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "sectors-economic-estimates-2018-trade-in-services.csv#dimension/sector"
+                }
+            ],
+            "http://purl.org/linked-data/cube#dimension": [
+                {
+                    "@id": "sectors-economic-estimates-2018-trade-in-services.csv#dimension/sector"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 1
+                }
+            ]
+        }
+    ]
+}

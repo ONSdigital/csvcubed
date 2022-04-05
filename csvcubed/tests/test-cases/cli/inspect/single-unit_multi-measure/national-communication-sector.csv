@@ -1,0 +1,10 @@
+Label,Notation,Parent Notation,Sort Priority,Description
+Agriculture,agriculture,,0,
+Business,business,,1,
+Energy Supply,energy-supply,,2,
+Industrial processes,industrial-processes,,3,
+"Land use, land use change and forestry",land-use-land-use-change-and-forestry,,4,
+Public,public,,5,
+Residential,residential,,6,
+Transport,transport,,7,
+Waste Management,waste-management,,8,

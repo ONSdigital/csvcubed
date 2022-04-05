@@ -10,22 +10,34 @@ from enum import Enum
 from pathlib import Path
 from typing import List
 
-from rdflib import Graph, URIRef
+from rdflib import Graph, Literal, URIRef
 from rdflib.query import ResultRow
 
 from csvcubed.models.inspectsparqlresults import (
+    CSVWTableSchemaFileDependenciesResult,
     CatalogMetadataResult,
     CodelistsResult,
     ColsWithSuppressOutputTrueResult,
     DSDLabelURIResult,
+    DSDSingleUnitResult,
+    DatasetURLResult,
     QubeComponentsResult,
     map_catalog_metadata_result,
     map_codelists_sparql_result,
     map_cols_with_supress_output_true_sparql_result,
+    map_csvw_table_schemas_result,
     map_dataset_label_dsd_uri_sparql_result,
+    map_dataset_url_result,
     map_qube_components_sparql_result,
+    map_single_unit_from_dsd_result,
 )
 from csvcubed.utils.sparql import ask, select
+from csvcubed.models.csvcubedexception import (
+    FailedToReadSparqlQueryException,
+    FeatureNotSupportedException,
+    InvalidCsvFilePathException,
+    InvalidNumberOfRecordsException,
+)
 from csvcubed.definitions import ROOT_DIR_PATH
 
 _logger = logging.getLogger(__name__)
@@ -48,7 +60,17 @@ class SPARQLQueryFileName(Enum):
 
     SELECT_COLS_W_SUPPRESS_OUTPUT = "select_cols_w_suppress_output"
 
-    SELECT_CODE_LISTS_AND_COLS = "select_code_lists_and_cols"
+    SELECT_CODELISTS_AND_COLS = "select_codelists_and_cols"
+
+    SELECT_QB_DATASET_URL = "select_qb_dataset_url"
+
+    SELECT_CODELIST_DATASET_URL = "select_codelist_dataset_url"
+
+    SELECT_SINGLE_UNIT_FROM_DSD = "select_single_unit_from_dsd"
+
+    SELECT_CSVW_TABLE_SCHEMA_FILE_DEPENDENCIES = (
+        "select_csvw_table_schema_file_dependencies"
+    )
 
 
 def _get_query_string_from_file(queryType: SPARQLQueryFileName) -> str:
@@ -61,7 +83,7 @@ def _get_query_string_from_file(queryType: SPARQLQueryFileName) -> str:
     """
     _logger.debug(f"Root path: {ROOT_DIR_PATH.absolute()}")
 
-    file_path = (
+    file_path: Path = (
         ROOT_DIR_PATH
         / "csvcubed"
         / "cli"
@@ -78,8 +100,8 @@ def _get_query_string_from_file(queryType: SPARQLQueryFileName) -> str:
         ) as f:
             return f.read()
     except Exception as ex:
-        raise Exception(
-            f"An error occured while reading sparql query from file '{file_path}'"
+        raise FailedToReadSparqlQueryException(
+            sparql_file_path=file_path.absolute()
         ) from ex
 
 
@@ -125,7 +147,9 @@ def select_csvw_catalog_metadata(rdf_graph: Graph) -> CatalogMetadataResult:
     )
 
     if len(results) != 1:
-        raise Exception(f"Expected 1 record, but found {len(results)}")
+        raise InvalidNumberOfRecordsException(
+            excepted_num_of_records=1, num_of_records=len(results)
+        )
 
     return map_catalog_metadata_result(results[0])
 
@@ -148,8 +172,9 @@ def select_csvw_dsd_dataset_label_and_dsd_def_uri(
     )
 
     if len(results) != 1:
-        raise Exception(f"Expected 1 record, but found {len(results)}")
-
+        raise InvalidNumberOfRecordsException(
+            excepted_num_of_records=1, num_of_records=len(results)
+        )
     return map_dataset_label_dsd_uri_sparql_result(results[0])
 
 
@@ -196,11 +221,99 @@ def select_dsd_code_list_and_cols(
 
     Member of :file:`./inspectsparqlmanager.py`
 
-    :return: `CodelistInfoSparqlResult``
+    :return: `CodelistInfoSparqlResult`
     """
     results: List[ResultRow] = select(
-        _get_query_string_from_file(SPARQLQueryFileName.SELECT_CODE_LISTS_AND_COLS),
+        _get_query_string_from_file(SPARQLQueryFileName.SELECT_CODELISTS_AND_COLS),
         rdf_graph,
         init_bindings={"dsd_uri": URIRef(dsd_uri)},
     )
     return map_codelists_sparql_result(results, json_path)
+
+
+def select_csvw_table_schema_file_dependencies(
+    rdf_graph: Graph,
+) -> CSVWTableSchemaFileDependenciesResult:
+    """
+    Queries the table schemas of the given csvw json-ld.
+
+    Member of :file:`./inspectsparqlmanager.py`
+
+    :return: `CSVWTabelSchemasResult`
+    """
+    results: List[ResultRow] = select(
+        _get_query_string_from_file(
+            SPARQLQueryFileName.SELECT_CSVW_TABLE_SCHEMA_FILE_DEPENDENCIES
+        ),
+        rdf_graph,
+    )
+
+    # TODO: Need to map from relative paths to absolute paths here.
+    return map_csvw_table_schemas_result(results)
+
+
+def select_qb_dataset_url(rdf_graph: Graph, dataset_uri: str) -> DatasetURLResult:
+    """
+    Queries the url of the given qb:dataset.
+
+    Member of :file:`./inspectsparqlmanager.py`
+
+    :return: `DatasetURLResult`
+    """
+    if not dataset_uri.startswith("file://"):
+        raise FeatureNotSupportedException(
+            explanation="Currently, the inspect command only supports reading the csv when the url is a file path. In the future, it will support reading the csv when the url is a web address"
+        )
+
+    results: List[ResultRow] = select(
+        _get_query_string_from_file(SPARQLQueryFileName.SELECT_QB_DATASET_URL),
+        rdf_graph,
+        init_bindings={"dataset_uri": Literal(dataset_uri)},
+    )
+    if len(results) != 1:
+        raise InvalidNumberOfRecordsException(
+            excepted_num_of_records=1, num_of_records=len(results)
+        )
+    return map_dataset_url_result(results[0])
+
+
+def select_codelist_dataset_url(rdf_graph: Graph) -> DatasetURLResult:
+    """
+    Queries the url of the given skos:conceptScheme.
+
+    Member of :file:`./inspectsparqlmanager.py`
+
+    :return: `DatasetURLResult`
+    """
+    results: List[ResultRow] = select(
+        _get_query_string_from_file(SPARQLQueryFileName.SELECT_CODELIST_DATASET_URL),
+        rdf_graph,
+    )
+    if len(results) != 1:
+        raise InvalidNumberOfRecordsException(
+            excepted_num_of_records=1, num_of_records=len(results)
+        )
+    return map_dataset_url_result(results[0])
+
+
+def select_single_unit_from_dsd(
+    rdf_graph: Graph, dataset_uri: str, json_path: Path
+) -> DSDSingleUnitResult:
+    """
+    Queries the single unit uri and label from the data structure definition.
+
+    Member of :file:`./inspectsparqlmanager.py`
+
+    :return: `DSDSingleUnitResult`
+    """
+    results: List[ResultRow] = select(
+        _get_query_string_from_file(SPARQLQueryFileName.SELECT_SINGLE_UNIT_FROM_DSD),
+        rdf_graph,
+        init_bindings={"dataset_uri": Literal(dataset_uri)},
+    )
+
+    if len(results) != 1:
+        raise InvalidNumberOfRecordsException(
+            excepted_num_of_records=1, num_of_records=len(results)
+        )
+    return map_single_unit_from_dsd_result(results[0], json_path)

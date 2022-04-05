@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Union
 
-from csvcubed.utils.json import load_json_from_uri, read_json_from_file
+from csvcubed.utils.json import load_json_document
 from csvcubed.utils.uri import looks_like_uri
 
 
@@ -11,10 +11,10 @@ def load_resource(resource_path: Union[str, Path]) -> dict:
     """
     if isinstance(resource_path, str):
         if looks_like_uri(resource_path):
-            return load_json_from_uri(str(resource_path))
+            return load_json_document(str(resource_path))
         else:
             resource_path = Path(resource_path)
 
     if not resource_path.is_absolute():
         resource_path = resource_path.resolve()
-    return read_json_from_file(resource_path)
+    return load_json_document(resource_path)

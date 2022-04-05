@@ -3,12 +3,12 @@ Inspect SPARQL query results
 ----------------------------
 """
 
+import json
 from os import linesep
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 from dataclasses import dataclass
 
-from rdflib import URIRef
 from rdflib.query import ResultRow
 
 from csvcubedmodels.dataclassbase import DataClassBase
@@ -16,20 +16,21 @@ from csvcubed.utils.sparql import none_or_map
 from csvcubed.utils.printable import (
     get_printable_list_str,
     get_printable_tabular_list_str,
-    get_printable_tabular_str,
+    get_printable_tabular_str_from_list,
 )
 from csvcubed.utils.qb.components import (
-    get_printable_component_property,
-    get_printable_component_property_type,
+    get_component_property_as_relative_path,
+    get_component_property_type,
 )
 
 
-@dataclass()
+@dataclass
 class CatalogMetadataResult:
     """
     Model to represent select catalog metadata sparql query result.
     """
 
+    dataset_uri: str
     title: str
     label: str
     issued: str
@@ -51,37 +52,53 @@ class CatalogMetadataResult:
         formatted_themes: str = get_printable_list_str(self.themes)
         formatted_keywords: str = get_printable_list_str(self.keywords)
         formatted_description: str = self.description.replace(linesep, f"{linesep}\t\t")
-        return f"{linesep}\t- Title: {self.title}{linesep}\t- Label: {self.label}{linesep}\t- Issued: {self.issued}{linesep}\t- Modified: {self.modified}{linesep}\t- License: {self.license}{linesep}\t- Creator: {self.creator}{linesep}\t- Publisher: {self.publisher}{linesep}\t- Landing Pages: {formatted_landing_pages}{linesep}\t- Themes: {formatted_themes}{linesep}\t- Keywords: {formatted_keywords}{linesep}\t- Contact Point: {self.contact_point}{linesep}\t- Identifier: {self.identifier}{linesep}\t- Comment: {self.comment}{linesep}\t- Description: {formatted_description}"
+        return f"""
+        - Title: {self.title}
+        - Label: {self.label}
+        - Issued: {self.issued}
+        - Modified: {self.modified}
+        - License: {self.license}
+        - Creator: {self.creator}
+        - Publisher: {self.publisher}
+        - Landing Pages: {formatted_landing_pages}
+        - Themes: {formatted_themes}
+        - Keywords: {formatted_keywords}
+        - Contact Point: {self.contact_point}
+        - Identifier: {self.identifier}
+        - Comment: {self.comment}
+        - Description: {formatted_description}
+        """
 
 
-@dataclass()
+@dataclass
 class DSDLabelURIResult:
     """
     Model to represent select dsd dataset label and uri sparql query result.
     """
 
     dataset_label: str
-    dsd_uri: URIRef
+    dsd_uri: str
 
     @property
     def output_str(self) -> str:
-        return f"{linesep}\t- Dataset Label: {self.dataset_label}"
+        return f"""
+        - Dataset Label: {self.dataset_label}"""
 
 
-@dataclass()
+@dataclass
 class QubeComponentResult(DataClassBase):
     """
     Model to represent a qube component.
     """
 
     property: str
-    property_label: str
+    property_label: Optional[str]
     property_type: str
-    csv_col_title: str
+    csv_col_title: Optional[str]
     required: bool
 
 
-@dataclass()
+@dataclass
 class QubeComponentsResult:
     """
     Model to represent select qube components sparql query result.
@@ -92,7 +109,7 @@ class QubeComponentsResult:
 
     @property
     def output_str(self) -> str:
-        formatted_components = get_printable_tabular_str(
+        formatted_components = get_printable_tabular_str_from_list(
             [component.as_dict() for component in self.qube_components],
             column_names=[
                 "Property",
@@ -102,10 +119,12 @@ class QubeComponentsResult:
                 "Required",
             ],
         )
-        return f"{linesep}\t- Number of Components: {self.num_components}{linesep}\t- Components:{linesep}{formatted_components}"
+        return f"""
+        - Number of Components: {self.num_components}
+        - Components:{linesep}{formatted_components}"""
 
 
-@dataclass()
+@dataclass
 class ColsWithSuppressOutputTrueResult:
     """
     Model to represent select cols where the suppress output is true sparql query result.
@@ -115,10 +134,11 @@ class ColsWithSuppressOutputTrueResult:
 
     @property
     def output_str(self) -> str:
-        return f"{linesep}- Columns where suppress output is true: {get_printable_list_str(self.columns)}"
+        return f"""
+        - Columns where suppress output is true: {get_printable_list_str(self.columns)}"""
 
 
-@dataclass()
+@dataclass
 class CodelistResult(DataClassBase):
     """
     Model to represent a codelist.
@@ -129,7 +149,16 @@ class CodelistResult(DataClassBase):
     colsInUsed: str
 
 
-@dataclass()
+@dataclass
+class CSVWTableSchemaFileDependenciesResult:
+    """
+    Model to represent select csvw table schemas result.
+    """
+
+    table_schema_file_dependencies: List[str]
+
+
+@dataclass
 class CodelistsResult:
     """
     Model to represent select codelists sparql query result.
@@ -140,16 +169,33 @@ class CodelistsResult:
 
     @property
     def output_str(self) -> str:
-        formatted_codelists = get_printable_tabular_str(
+        formatted_codelists = get_printable_tabular_str_from_list(
             [codelist.as_dict() for codelist in self.codelists],
             column_names=["Code List", "Code List Label", "Columns Used In"],
         )
-        return f"{linesep}\t- Number of Code Lists: {self.num_codelists}{linesep}\t- Code Lists:{linesep}{formatted_codelists}"
+        return f"""
+        - Number of Code Lists: {self.num_codelists}
+        - Code Lists:{linesep}{formatted_codelists}"""
+
+
+@dataclass
+class DatasetURLResult:
+    """
+    Model to represent select dataset url result.
+    """
+
+    dataset_url: str
+
+
+@dataclass
+class DSDSingleUnitResult:
+    unit_uri: str
+    unit_label: Optional[str]
 
 
 def map_catalog_metadata_result(sparql_result: ResultRow) -> CatalogMetadataResult:
     """
-    Maps sparql query to `CatalogMetadataResult`
+    Maps sparql query result to `CatalogMetadataResult`
 
     Member of :file:`./models/inspectsparqlresults.py`
 
@@ -158,6 +204,7 @@ def map_catalog_metadata_result(sparql_result: ResultRow) -> CatalogMetadataResu
     result_dict = sparql_result.asdict()
 
     result = CatalogMetadataResult(
+        dataset_uri=str(result_dict["dataset"]),
         title=str(result_dict["title"]),
         label=str(result_dict["label"]),
         issued=str(result_dict["issued"]),
@@ -169,7 +216,7 @@ def map_catalog_metadata_result(sparql_result: ResultRow) -> CatalogMetadataResu
         themes=str(result_dict["themes"]).split("|"),
         keywords=str(result_dict["keywords"]).split("|"),
         contact_point=none_or_map(result_dict.get("contactPoint"), str) or "None",
-        identifier=str(result_dict["identifier"]) or "None",
+        identifier=none_or_map(result_dict.get("identifier"), str) or "None",
         comment=none_or_map(result_dict.get("comment"), str) or "None",
         description=none_or_map(result_dict.get("description"), str) or "None",
     )
@@ -180,7 +227,7 @@ def map_dataset_label_dsd_uri_sparql_result(
     sparql_result: ResultRow,
 ) -> DSDLabelURIResult:
     """
-    Maps sparql query to `DSDLabelURIResult`
+    Maps sparql query result to `DSDLabelURIResult`
 
     Member of :file:`./models/inspectsparqlresults.py`
 
@@ -190,7 +237,7 @@ def map_dataset_label_dsd_uri_sparql_result(
 
     result = DSDLabelURIResult(
         dataset_label=str(result_dict["dataSetLabel"]),
-        dsd_uri=URIRef(str(result_dict["dataStructureDefinition"])),
+        dsd_uri=str(result_dict["dataStructureDefinition"]),
     )
     return result
 
@@ -199,7 +246,7 @@ def map_qube_component_sparql_result(
     sparql_result: ResultRow, json_path: Path
 ) -> QubeComponentResult:
     """
-    Maps sparql query to `QubeComponentResult`
+    Maps sparql query result to `QubeComponentResult`
 
     Member of :file:`./models/inspectsparqlresults.py`
 
@@ -208,13 +255,13 @@ def map_qube_component_sparql_result(
     result_dict = sparql_result.asdict()
 
     result = QubeComponentResult(
-        property=get_printable_component_property(
+        property=get_component_property_as_relative_path(
             json_path, str(result_dict["componentProperty"])
         ),
         property_label=(
             none_or_map(result_dict.get("componentPropertyLabel"), str) or ""
         ),
-        property_type=get_printable_component_property_type(
+        property_type=get_component_property_type(
             str(result_dict["componentPropertyType"])
         ),
         csv_col_title=none_or_map(result_dict.get("csvColumnTitle"), str) or "",
@@ -227,7 +274,7 @@ def map_qube_components_sparql_result(
     sparql_results: List[ResultRow], json_path: Path
 ) -> QubeComponentsResult:
     """
-    Maps sparql query to `QubeComponentsResult`
+    Maps sparql query result to `QubeComponentsResult`
 
     Member of :file:`./models/inspectsparqlresults.py`
 
@@ -249,7 +296,7 @@ def map_cols_with_supress_output_true_sparql_result(
     sparql_results: List[ResultRow],
 ) -> ColsWithSuppressOutputTrueResult:
     """
-    Maps sparql query to `ColsWithSuppressOutputTrueResult`
+    Maps sparql query result to `ColsWithSuppressOutputTrueResult`
 
     Member of :file:`./models/inspectsparqlresults.py`
 
@@ -269,7 +316,7 @@ def map_codelist_sparql_result(
     sparql_result: ResultRow, json_path: Path
 ) -> CodelistResult:
     """
-    Maps sparql query to `CodelistResult`
+    Maps sparql query result to `CodelistResult`
 
     Member of :file:`./models/inspectsparqlresults.py`
 
@@ -278,7 +325,7 @@ def map_codelist_sparql_result(
     result_dict = sparql_result.asdict()
 
     result = CodelistResult(
-        codeList=get_printable_component_property(
+        codeList=get_component_property_as_relative_path(
             json_path, str(result_dict["codeList"])
         ),
         codeListLabel=none_or_map(result_dict.get("codeListLabel"), str) or "",
@@ -293,7 +340,7 @@ def map_codelists_sparql_result(
     sparql_results: List[ResultRow], json_path: Path
 ) -> CodelistsResult:
     """
-    Maps sparql query to `CodelistsModel`
+    Maps sparql query result to `CodelistsModel`
 
     Member of :file:`./models/inspectsparqlresults.py`
 
@@ -306,4 +353,61 @@ def map_codelists_sparql_result(
         )
     )
     result = CodelistsResult(codelists=codelists, num_codelists=len(codelists))
+    return result
+
+
+def map_csvw_table_schemas_result(
+    sparql_results: List[ResultRow],
+) -> CSVWTableSchemaFileDependenciesResult:
+    """
+    Maps sparql query result to `CSVWTabelSchemasResult`
+
+    Member of :file:`./models/inspectsparqlresults.py`
+
+    :return: `CSVWTabelSchemasResult`
+    """
+
+    result = CSVWTableSchemaFileDependenciesResult(
+        table_schema_file_dependencies=[
+            str(sparql_result["tableSchema"]) for sparql_result in sparql_results
+        ]
+    )
+    return result
+
+
+def map_dataset_url_result(
+    sparql_result: ResultRow,
+) -> DatasetURLResult:
+    """
+    Maps sparql query result to `DatasetURLResult`
+
+    Member of :file:`./models/inspectsparqlresults.py`
+
+    :return: `DatasetURLResult`
+    """
+    result_dict = sparql_result.asdict()
+
+    result = DatasetURLResult(dataset_url=str(result_dict["tableUrl"]))
+    return result
+
+
+def map_single_unit_from_dsd_result(
+    sparql_result: ResultRow, json_path: Path
+) -> DSDSingleUnitResult:
+    """
+    Maps sparql query result to `DSDSingleUnitResult`
+
+    Member of :file:`./models/inspectsparqlresults.py`
+
+    :return: `DSDSingleUnitResult`
+    """
+    result_dict = sparql_result.asdict()
+    unit_label = none_or_map(result_dict.get("unitLabel"), str)
+
+    result = DSDSingleUnitResult(
+        unit_uri=get_component_property_as_relative_path(
+            json_path, str(result_dict["unitUri"])
+        ),
+        unit_label=unit_label,
+    )
     return result

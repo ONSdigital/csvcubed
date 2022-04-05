@@ -1,0 +1,16 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX csvw: <http://www.w3.org/ns/csvw#>
+
+SELECT DISTINCT ?unitUri ?unitLabel
+WHERE {   
+    ?column csvw:propertyUrl "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"^^csvw:uriTemplate;
+            csvw:valueUrl ?unitUriTemplate.
+
+    BIND(str(?unitUriTemplate) as ?unitUri).
+
+
+    OPTIONAL {
+        ?unit rdfs:label ?unitLabel.
+        FILTER(strends(str(?unit), ?unitUri)).
+    }
+}    

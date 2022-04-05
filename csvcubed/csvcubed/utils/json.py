@@ -1,72 +1,58 @@
+"""
+JSON Utilities
+--------------
+
+Utilities for working with JSON
+"""
 import json
-import logging
-import requests
-
-from json import JSONDecodeError
+from typing import Dict, Any, Union
 from pathlib import Path
+import logging
+from urllib.parse import urlparse
 
-from csvcubed.utils.cache import session
+from .cache import session
 
-log = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
 
-def load_json_from_uri(uri: str) -> dict:
+def load_json_document(file_uri_or_path: Union[str, Path]) -> Dict[str, Any]:
     """
-    Loads a resource from a URI using the requests library
-    Returns a dict of the response content or
-    Raises the Exceptions once logging them
+    Accepts a :obj:`file_uri` and returns the deserialised JSON document as a python dictionary.
+
+        :obj:`file_uri` accepts URLs such as: `https://example.com/some-document.json`
+        :obj:`file_uri` accepts file paths such as: `file:///User/MyUser/some-document.json`
+        :obj:`file_uri` accepts :class:`pathlib.Path`, e.g.: `Path('/User/MyUser/some-document.json')`
+
+    :return: :obj:`Dict[str, Any]`
     """
-    response = None
+    if isinstance(file_uri_or_path, Path):
+        return _load_json_from_path(file_uri_or_path)
+    else:
+        url = urlparse(file_uri_or_path)
+        if url.scheme == "file":
+            file_path = Path(file_uri_or_path.removeprefix("file://"))
+            return _load_json_from_path(file_path)
+        else:
+            # Treat it as a URL
+            _logger.debug("Loading JSON from URL %s", file_uri_or_path)
+            http_response = session.get(file_uri_or_path)
+            if not http_response.ok:
+                raise Exception(
+                    f"Error loading JSON from URL '{file_uri_or_path}'. HTTP response: {http_response}."
+                )
+
+            try:
+                return http_response.json()
+            except Exception as e:
+                raise Exception(
+                    f"Error loading JSON from URL '{file_uri_or_path}'"
+                ) from e
+
+
+def _load_json_from_path(path: Path) -> Dict[str, Any]:
+    _logger.debug("Loading JSON from file %s", path)
     try:
-        response = session.get(uri)
-        if not response.ok:
-            # HTTP Get request failed - raise error
-            msg = (
-                f"Failed to retrieve the schema from: {uri}.Status-Code: {response.status_code}"
-                f" - {response.text}"
-            )
-            log.error(msg)
-            raise IOError(msg)
-        return json.loads(response.text)
-
-    except JSONDecodeError as err:
-        log.error(f"JSON Decode Error: {repr(err)}")
-        if response:
-            log.error(f"The content being decoded: {response.text}")
-        raise err
-
-    except TypeError as err:
-        log.error(f"JSON Type Error: {repr(err)}")
-        raise err
-
-    except Exception as err:
-        log.error(
-            f"The http get request to retrieve the schema returned the exception: {repr(err)}"
-        )
-        raise err
-
-
-def read_json_from_file(file_path: Path) -> dict:
-    """
-    Reads the json content of the file located at file_path
-    Returns the decoded json as a dict
-    """
-    try:
-        with open(file_path, "r") as f:
+        with open(path, "r") as f:
             return json.load(f)
-
-    except FileNotFoundError as err:
-        log.error(f"File Not Found Error when looking for: {file_path}")
-        raise err
-
-    except JSONDecodeError as err:
-        log.error(f"JSON Decode Error: {repr(err)}")
-        raise err
-
-    except TypeError as err:
-        log.error(f"JSON Type Error: {repr(err)}")
-        raise err
-
-    except Exception as err:
-        log.error(f"{type(err)} exception raised because: {repr(err)}")
-        raise err
+    except Exception as e:
+        raise Exception(f"Error loading JSON from file at '{path}'") from e
