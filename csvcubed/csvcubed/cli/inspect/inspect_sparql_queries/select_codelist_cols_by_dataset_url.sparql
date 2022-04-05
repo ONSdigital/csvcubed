@@ -6,7 +6,6 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT DISTINCT ?columnPropertyUrl ?columnValueUrl ?columnTitle
 WHERE {   
-    BIND (?table_url as ?tableUrlStr).
 
     ?table csvw:url ?tableUrl.
     ?table csvw:tableSchema/csvw:column/rdf:rest*/rdf:first ?column.
@@ -19,6 +18,8 @@ WHERE {
         ?column csvw:title ?columnTitle.
     }
     
-    FILTER (strends(str(?tableUrl), ?tableUrlStr)).
+    BIND (?table_url as ?tableUrlStr).
 
+    FILTER (strends(str(?tableUrl), ?tableUrlStr)).
+    
 }
