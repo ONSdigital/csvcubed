@@ -104,7 +104,7 @@ Feature: Behaviour testing of csvcubed inspect.
         - The data cube has the following dataset information:
         - Number of Observations: 10676
         - Number of Duplicates: 0
-        - First 10 Observations:
+        - First 10 Concepts:
                                Period Alcohol Type Alcohol Sub Type Alcohol Content Clearance Origin      Value          Measure Type        Unit Marker
             government-year/1999-2000         wine            still    up-to-15-abv              all 8721828.97            clearances hectolitres    NaN
             government-year/1999-2000         wine        sparkling    up-to-15-abv              all  621067.74            clearances hectolitres    NaN
@@ -117,7 +117,7 @@ Feature: Behaviour testing of csvcubed inspect.
             government-year/1999-2000         wine              all             all              all    6429.00 alcohol-duty-receipts gbp-million    NaN
             government-year/2000-2001         wine            still    up-to-15-abv              all 8920111.13            clearances hectolitres    NaN
 
-                    - Last 10 Observations:
+                    - Last 10 Concepts:
                    Period   Alcohol Type Alcohol Sub Type Alcohol Content                    Clearance Origin  Value              Measure Type                 Unit        Marker
             month/2021-09          cider              all             all                                 all  25.05       cider-duty-receipts          gbp-million   provisional
             month/2021-10           beer               uk             all                                 all    NaN         production-volume thousand-hectolitres not-available
@@ -292,7 +292,7 @@ Feature: Behaviour testing of csvcubed inspect.
         - The data cube has the following dataset information:
                 - Number of Observations: 41508
                 - Number of Duplicates: 0
-                - First 10 Observations:
+                - First 10 Concepts:
         GHG GHG Grouped IPCC Code  Year National Communication Sector National Communication Sub-sector National Communication Category                          Source National Communication Fuel Group National Communication Fuel       Activity Name  Value
         c2f6        pfcs     2b9b3  1990          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.001
         c2f6        pfcs     2b9b3  1991          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.001
@@ -305,7 +305,7 @@ Feature: Behaviour testing of csvcubed inspect.
         c2f6        pfcs     2b9b3  1998          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.005
         c2f6        pfcs     2b9b3  1999          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.002
 
-                - Last 10 Observations:
+                - Last 10 Concepts:
         GHG GHG Grouped IPCC Code  Year National Communication Sector National Communication Sub-sector                                                                National Communication Category     Source National Communication Fuel Group National Communication Fuel      Activity Name  Value
         sf6         sf6      2g2e  2010                      business                    not-applicable electronics-electrical-insulation-scientific-research-military-applications-and-sporting-goods tracer-gas                   other-emissions             other-emissions halocarbon-use-sf6  0.001
         sf6         sf6      2g2e  2011                      business                    not-applicable electronics-electrical-insulation-scientific-research-military-applications-and-sporting-goods tracer-gas                   other-emissions             other-emissions halocarbon-use-sf6  0.029
@@ -460,7 +460,7 @@ Feature: Behaviour testing of csvcubed inspect.
         - The data cube has the following dataset information:
                 - Number of Observations: 99530
                 - Number of Duplicates: 0
-                - First 10 Observations:
+                - First 10 Concepts:
         GHG GHG Grouped IPCC Code  Year National Communication Sector National Communication Sub-sector National Communication Category                          Source National Communication Fuel Group National Communication Fuel       Activity Name            Measure  Value
         c2f6        pfcs     2b9b3  1990          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion emissions-ar4-gwps  0.001
         c2f6        pfcs     2b9b3  1991          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion emissions-ar4-gwps  0.001
@@ -473,7 +473,7 @@ Feature: Behaviour testing of csvcubed inspect.
         c2f6        pfcs     2b9b3  1998          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion emissions-ar4-gwps  0.005
         c2f6        pfcs     2b9b3  1999          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion emissions-ar4-gwps  0.002
 
-                - Last 10 Observations:
+                - Last 10 Concepts:
         GHG GHG Grouped IPCC Code  Year National Communication Sector National Communication Sub-sector National Communication Category                      Source National Communication Fuel Group National Communication Fuel  Activity Name            Measure  Value
         co2         co2    5c1-2b  2016              waste-management                    not-applicable              waste-incineration incineration-chemical-waste                   other-emissions             other-emissions chemical-waste emissions-ar5-gwps  0.181
         co2         co2    5c1-2b  2016              waste-management                    not-applicable              waste-incineration incineration-clinical-waste                   other-emissions             other-emissions clinical-waste emissions-ar5-gwps  0.082
@@ -596,7 +596,7 @@ Feature: Behaviour testing of csvcubed inspect.
         - The data cube has the following dataset information:
                 - Number of Observations: 286
                 - Number of Duplicates: 0
-                - First 10 Observations:
+                - First 10 Concepts:
            Period    Region Fuel       Measure Type                                 Unit  Value
         year/1995 K02000001  all energy-consumption millions-of-tonnes-of-oil-equivalent  221.4
         year/1996 K02000001  all energy-consumption millions-of-tonnes-of-oil-equivalent  230.8
@@ -609,7 +609,7 @@ Feature: Behaviour testing of csvcubed inspect.
         year/2003 K02000001  all energy-consumption millions-of-tonnes-of-oil-equivalent  231.9
         year/2004 K02000001  all energy-consumption millions-of-tonnes-of-oil-equivalent  233.7
 
-                - Last 10 Observations:
+                - Last 10 Concepts:
            Period    Region       Fuel       Measure Type                                 Unit  Value
         year/2011 K02000001 renewables energy-consumption millions-of-tonnes-of-oil-equivalent    9.8
         year/2012 K02000001 renewables energy-consumption millions-of-tonnes-of-oil-equivalent   10.4
@@ -664,7 +664,7 @@ Feature: Behaviour testing of csvcubed inspect.
         - The code list has the following dataset information:
           - Number of Concepts: 6
         	- Number of Duplicates: 0
-        	- First 10 Observations:
+        	- First 10 Concepts:
                            Label       Notation  Parent Notation  Sort Priority  Description
                 1.2% to 5.5% abv 1-2-to-5-5-abv              NaN              0          NaN
                  5.5% to 15% abv  5-5-to-15-abv              NaN              1          NaN
@@ -673,7 +673,7 @@ Feature: Behaviour testing of csvcubed inspect.
                    over 5.5% abv   over-5-5-abv              NaN              4          NaN
                    up to 15% abv   up-to-15-abv              NaN              5          NaN
 
-          - Last 10 Observations:
+          - Last 10 Concepts:
                            Label       Notation  Parent Notation  Sort Priority  Description
                 1.2% to 5.5% abv 1-2-to-5-5-abv              NaN              0          NaN
                  5.5% to 15% abv  5-5-to-15-abv              NaN              1          NaN
@@ -729,7 +729,7 @@ Feature: Behaviour testing of csvcubed inspect.
         - The code list has the following dataset information:
           - Number of Concepts: 9
           - Number of Duplicates: 0
-          - First 10 Observations:
+          - First 10 Concepts:
 																   Label       														  Notation Parent Notation  Sort Priority  Description
 									   					  All industries  																   all             NaN              1          NaN
 														   Manufacturing   								 				manufacturing-industry             all              2          NaN
@@ -741,7 +741,7 @@ Feature: Behaviour testing of csvcubed inspect.
 														   Film Industry   								film-industry-excluding-other-services             all              8          NaN
 													 Television Industry   						  television-industry-excluding-other-services             all              9          NaN
 
-          - Last 10 Observations:
+          - Last 10 Concepts:
 																   Label       														  Notation Parent Notation  Sort Priority  Description
 									   					  All industries  																   all             NaN              1          NaN
 														   Manufacturing   								 				manufacturing-industry             all              2          NaN

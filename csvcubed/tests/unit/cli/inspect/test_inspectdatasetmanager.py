@@ -41,7 +41,6 @@ from csvcubed.models.inspectdataframeresults import (
     DatasetObservationsInfoResult,
 )
 from csvcubed.utils.csvdataset import (
-    CanonicalShapeRequiredCol,
     transform_dataset_to_canonical_shape,
 )
 from tests.unit.test_baseunit import get_test_cases_dir
@@ -440,8 +439,8 @@ def test_get_val_counts_info_multi_unit_multi_measure_dataset():
 
     _expected_by_measure_and_unit_val_counts_df_multi_unit_multi_measure.rename(
         columns={
-            CanonicalShapeRequiredCol.Measure.value: measure_col,
-            CanonicalShapeRequiredCol.Unit.value: unit_col,
+            "Measure": measure_col,
+            "Unit": unit_col,
         },
         inplace=True,
     )
@@ -486,8 +485,8 @@ def test_get_val_counts_info_multi_unit_single_measure_dataset():
 
     _expected_by_measure_and_unit_val_counts_df_multi_unit_single_measure.rename(
         columns={
-            CanonicalShapeRequiredCol.Measure.value: measure_col,
-            CanonicalShapeRequiredCol.Unit.value: unit_col,
+            "Measure": measure_col,
+            "Unit": unit_col,
         },
         inplace=True,
     )
@@ -532,8 +531,8 @@ def test_get_val_counts_info_single_unit_multi_measure_dataset():
 
     _expected_by_measure_and_unit_val_counts_df_single_unit_multi_measure.rename(
         columns={
-            CanonicalShapeRequiredCol.Measure.value: measure_col,
-            CanonicalShapeRequiredCol.Unit.value: unit_col,
+            "Measure": measure_col,
+            "Unit": unit_col,
         },
         inplace=True,
     )
@@ -578,8 +577,8 @@ def test_get_val_counts_info_single_unit_single_measure_dataset():
 
     _expected_by_measure_and_unit_val_counts_df_single_unit_single_measure.rename(
         columns={
-            CanonicalShapeRequiredCol.Measure.value: measure_col,
-            CanonicalShapeRequiredCol.Unit.value: unit_col,
+            "Measure": measure_col,
+            "Unit": unit_col,
         },
         inplace=True,
     )
