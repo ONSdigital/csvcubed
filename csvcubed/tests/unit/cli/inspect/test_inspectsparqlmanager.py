@@ -1,7 +1,7 @@
 import dateutil.parser
 from rdflib import Graph
 
-from definitions import ROOT_DIR_PATH
+from csvcubed.definitions import ROOT_DIR_PATH
 from csvcubed.models.inspectsparqlresults import (
     CatalogMetadataResult,
     CodeListColsByDatasetUrlResult,
@@ -295,6 +295,7 @@ def test_select_table_schema_dependencies():
         str(table_schema_dependencies_dir / "subsector.table.json"),
     }
 
+
 def test_select_codelist_cols_by_dataset_url():
     """
     Should return expected `CodeListColsByDatasetUrlResult`.
@@ -313,17 +314,21 @@ def test_select_codelist_cols_by_dataset_url():
     assert result.columns[0].column_title == "Label"
     assert result.columns[0].column_property_url == "rdfs:label"
     assert result.columns[0].column_value_url is None
-    
+
     assert result.columns[1].column_title == "Notation"
     assert result.columns[1].column_property_url == "skos:notation"
     assert result.columns[1].column_value_url is None
 
     assert result.columns[2].column_title == "Parent Notation"
     assert result.columns[2].column_property_url == "skos:broader"
-    assert result.columns[2].column_value_url == "alcohol-content.csv#{+parent_notation}"
+    assert (
+        result.columns[2].column_value_url == "alcohol-content.csv#{+parent_notation}"
+    )
 
     assert result.columns[3].column_title == "Sort Priority"
-    assert result.columns[3].column_property_url == "http://www.w3.org/ns/ui#sortPriority"
+    assert (
+        result.columns[3].column_property_url == "http://www.w3.org/ns/ui#sortPriority"
+    )
     assert result.columns[3].column_value_url is None
 
     assert result.columns[4].column_title == "Description"
