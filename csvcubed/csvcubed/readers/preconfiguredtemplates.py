@@ -11,7 +11,7 @@ from requests.exceptions import JSONDecodeError, HTTPError
 
 from csvcubed.utils.cache import session
 
-TEMPLATE_BASE_URL = "https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/csvcubed/csvcubed/readers/{}/templates/{}"
+TEMPLATE_BASE_URL = "https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/csvcubed/csvcubed/readers/cubeconfig/{}/templates/{}"
 
 
 def _get_template_file_from_template_lookup(
