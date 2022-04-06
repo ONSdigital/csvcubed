@@ -69,7 +69,7 @@ class MetadataProcessor:
         :return: `Graph` - RDFLib Graph of CSV-W metadata json.
         """
         csvw_metadata_rdf_graph = Graph()
-        csvw_file_content: str = None
+        csvw_file_content: str
         csvw_metadata_file_path = str(self.csvw_metadata_file_path.absolute())
 
         try:
@@ -80,7 +80,7 @@ class MetadataProcessor:
                 csvw_file_content = f.read()
         except Exception as ex:
             raise FailedToReadCsvwContentException(
-                csvw_metadata_file_path=csvw_metadata_file_path
+                csvw_metadata_file_path=self.csvw_metadata_file_path
             ) from ex
 
         if csvw_file_content is None:
@@ -98,5 +98,5 @@ class MetadataProcessor:
             return csvw_metadata_rdf_graph
         except Exception as ex:
             raise FailedToParseJsonldtoRdfGraphException(
-                csvw_metadata_file_path=csvw_metadata_file_path
+                csvw_metadata_file_path=self.csvw_metadata_file_path
             ) from ex
