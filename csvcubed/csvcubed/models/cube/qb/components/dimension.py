@@ -97,7 +97,7 @@ class NewQbDimension(QbDimension, UriIdentifiable):
         range_uri: Optional[str] = None,
         uri_safe_identifier_override: Optional[str] = None,
         arbitrary_rdf: List[TripleFragmentBase] = [],
-        uri_style: URIStyle = URIStyle.Standard,
+        uri_style: Optional[URIStyle] = None,
     ) -> "NewQbDimension":
         """
         Creates a new dimension and code list from the columnar data provided.

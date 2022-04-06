@@ -6,7 +6,7 @@ Represent code lists in an RDF Data Cube.
 """
 from pathlib import Path
 from dataclasses import dataclass, field
-from typing import List, Set, Generic, TypeVar
+from typing import List, Optional, Set, Generic, TypeVar
 from abc import ABC
 
 from pydantic import root_validator, validator
@@ -109,7 +109,7 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
     metadata: CatalogMetadata
     concepts: List[TNewQbConcept]
     arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
-    uri_style: URIStyle = URIStyle.Standard
+    uri_style: Optional[URIStyle] = None
 
     @validator("concepts")
     def _ensure_no_use_of_reserved_keywords(
@@ -148,7 +148,7 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
 
     @staticmethod
     def from_data(
-        metadata: CatalogMetadata, data: PandasDataTypes, uri_style: URIStyle
+        metadata: CatalogMetadata, data: PandasDataTypes, uri_style: Optional[URIStyle]
     ) -> "NewQbCodeList":
         columnar_data = pandas_input_to_columnar_str(data)
         concepts = [NewQbConcept(c) for c in sorted(set(columnar_data))]

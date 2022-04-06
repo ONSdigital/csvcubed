@@ -3,10 +3,11 @@ from typing import List
 from copy import deepcopy
 import csv
 from pathlib import Path
+from urllib.parse import urlparse
 
 import pytest
 import pandas as pd
-from rdflib import RDFS, Graph, URIRef, Literal
+from rdflib import RDFS, XSD, Graph, URIRef, Literal, Namespace
 from csvcubedmodels import rdf
 
 from csvcubed.models.cube import *
@@ -248,6 +249,67 @@ def test_default_property_value_uris_new_dimension_column_with_code_list():
     )
 
 
+def test_default_property_value_uris_new_dimension_column_with_new_code_list():
+    """
+    When a new dimension is defined with a new code list, by default it should provide standard-formatted property and value Urls
+    """
+    column = QbColumn(
+        "Some Column",
+        NewQbDimension(
+            "Some New Dimension",
+            code_list=NewQbCodeList(CatalogMetadata("Some Catalog"), []),
+        ),
+    )
+    (
+        default_property_uri,
+        default_value_uri,
+    ) = empty_qbwriter._get_default_property_value_uris_for_column(column)
+    assert "cube-name.csv#dimension/some-new-dimension" == default_property_uri
+    assert "some-catalog.csv#{+some_column}" == default_value_uri
+
+
+def test_default_property_value_uris_new_dimension_column_with_new_code_list():
+    """
+    When a new dimension is defined with a new code list, by default it should provide standard-formatted property and value Urls
+    """
+    column = QbColumn(
+        "Some Column",
+        NewQbDimension(
+            "Some New Dimension",
+            code_list=NewQbCodeList(CatalogMetadata("Some Catalog"), []),
+        ),
+    )
+    (
+        default_property_uri,
+        default_value_uri,
+    ) = empty_qbwriter._get_default_property_value_uris_for_column(column)
+    assert "cube-name.csv#dimension/some-new-dimension" == default_property_uri
+    assert "some-catalog.csv#{+some_column}" == default_value_uri
+
+def test_default_property_value_uris_new_dimension_column_with_new_code_list_for_cube_WithoutFileExtensions_uri_style():
+    """
+    When a new dimension is defined with a new code list, and the cube has a defined uri_style of WithoutFileExtensions,
+    it should provide property and value Urls which follow the cube's uri style
+    """
+
+    uri_styled_cube = Cube(CatalogMetadata("Cube Name"), pd.DataFrame, [], URIStyle.WithoutFileExtensions)
+    uri_styled_qbwriter = QbWriter(uri_styled_cube)
+
+    column = QbColumn(
+        "Some Column",
+        NewQbDimension(
+            "Some New Dimension",
+            code_list=NewQbCodeList(CatalogMetadata("Some Catalog"), []),
+        ),
+    )
+    (
+        default_property_uri,
+        default_value_uri,
+    ) = uri_styled_qbwriter._get_default_property_value_uris_for_column(column)
+    assert "cube-name#dimension/some-new-dimension" == default_property_uri
+    assert "some-catalog#{+some_column}" == default_value_uri
+
+
 def test_default_property_value_uris_existing_attribute_existing_values():
     """
     When an existing attribute is used, we can provide the `propertyUrl`, but we cannot guess the `valueUrl`.
@@ -456,6 +518,128 @@ def test_default_property_value_uris_single_measure_obs_val():
     assert default_property_uri == "cube-name.csv#measure/new-qb-measure"
     assert default_value_uri is None
 
+def test_foreign_key_table_and_resource_urls():
+    """
+    For foreign key tables and the foreign key reference resources, a valid url should exist
+    """
+    data = pd.DataFrame({"New Dimension": ["A", "B", "C"], "Value": [1, 2, 3]})
+    cube = Cube(
+        CatalogMetadata("Cube Name"),
+        pd.DataFrame(),
+        [QbColumn(
+            "New Dimension",
+            NewQbDimension.from_data(
+                "Some Dimension",
+                data["New Dimension"]
+            )
+        )]
+    )
+    qb_writer = QbWriter(cube)
+    foreign_key_table_ref = qb_writer._get_table_references_needed_for_foreign_keys()[0]
+    assert foreign_key_table_ref["url"] == "some-dimension.csv"
+
+    foreign_key = qb_writer._generate_foreign_keys_for_cube()[0]
+    assert foreign_key["reference"]["resource"] == "some-dimension.csv"
+
+    dataset_definitions = qb_writer._generate_qb_dataset_dsd_definitions()
+    g = Graph()
+    dataset_definitions.to_graph(g)
+
+    (_,_,codeListRef) = first(g.triples((
+        URIRef("cube-name.csv#dimension/some-dimension"),
+        URIRef("http://purl.org/linked-data/cube#codeList"),
+        None
+    )))
+    codeListRefUrlPath = urlparse(codeListRef).path
+    assert codeListRefUrlPath.endswith(".csv"), f"Expected {codeListRef} to have a file ending"
+
+def test_foreign_key_table_and_resource_urls_when_configured_with_uri_style_WithoutFileExtensions():
+    """
+    For foreign key tables and the foreign key reference resources, when the cube is configured with uri_style WithoutFileExtensions, then it should produce urls without file extensions
+    """
+    data = pd.DataFrame({"New Dimension": ["A", "B", "C"], "Value": [1, 2, 3]})
+    cube = Cube(
+        CatalogMetadata("Cube Name"),
+        pd.DataFrame(),
+        [QbColumn(
+            "New Dimension",
+            NewQbDimension.from_data(
+                "Some Dimension",
+                data["New Dimension"]
+            )
+        )],
+        uri_style=URIStyle.WithoutFileExtensions
+    )
+    qb_writer = QbWriter(cube)
+    foreign_key = qb_writer._get_table_references_needed_for_foreign_keys()[0]
+    assert foreign_key["url"] == "some-dimension"
+
+    foreign_key = qb_writer._generate_foreign_keys_for_cube()[0]
+    assert foreign_key["reference"]["resource"] == "some-dimension"
+
+    dataset_definitions = qb_writer._generate_qb_dataset_dsd_definitions()
+    g = Graph()
+    dataset_definitions.to_graph(g)
+
+    (_,_,codeListRef) = first(g.triples((
+        URIRef("cube-name#dimension/some-dimension"),
+        URIRef("http://purl.org/linked-data/cube#codeList"),
+        None
+    )))
+    codeListRefUrlPath = urlparse(codeListRef).path
+    assert not codeListRefUrlPath.endswith(".csv"), f"Expected {codeListRef} not to have a file ending"
+
+def test_output_new_code_list_csvws_urls():
+    data = pd.DataFrame({"New Dimension": ["A", "B", "C"], "Value": [1, 2, 3]})
+    cube = Cube(
+        CatalogMetadata("Cube Name"),
+        pd.DataFrame(),
+        [QbColumn(
+            "New Dimension",
+            NewQbDimension.from_data(
+                "Some Dimension",
+                data["New Dimension"]
+            )
+        )]
+    )
+    qb_writer = QbWriter(cube)
+    with TemporaryDirectory() as temp_dir:
+        temp_dir = Path(temp_dir)
+        qb_writer._output_new_code_list_csvws(temp_dir)
+        graph = Graph()
+        graph.parse(temp_dir / "some-dimension.csv-metadata.json")
+        assert (
+            URIRef(f"file://{temp_dir}/some-dimension.csv#code-list"),
+            URIRef("http://www.w3.org/ns/csvw#url"),
+            Literal("some-dimension.csv", datatype=XSD.anyURI)
+        ) in graph
+
+
+def test_output_new_code_list_csvws_urls_with_uri_style_WithoutFileExtensions():
+    data = pd.DataFrame({"New Dimension": ["A", "B", "C"], "Value": [1, 2, 3]})
+    cube = Cube(
+        CatalogMetadata("Cube Name"),
+        pd.DataFrame(),
+        [QbColumn(
+            "New Dimension",
+            NewQbDimension.from_data(
+                "Some Dimension",
+                data["New Dimension"]
+            )
+        )],
+        uri_style=URIStyle.WithoutFileExtensions
+    )
+    qb_writer = QbWriter(cube)
+    with TemporaryDirectory() as temp_dir:
+        temp_dir = Path(temp_dir)
+        qb_writer._output_new_code_list_csvws(temp_dir)
+        graph = Graph()
+        graph.parse(temp_dir / "some-dimension.csv-metadata.json")
+        assert (
+            URIRef(f"file://{temp_dir}/some-dimension#code-list"),
+            URIRef("http://www.w3.org/ns/csvw#url"),
+            Literal("some-dimension", datatype=XSD.anyURI)
+        ) in graph
 
 def test_default_property_value_uris_multi_measure_obs_val():
     """
@@ -1172,7 +1356,7 @@ def test_arbitrary_rdf_serialisation_new_dimension():
                     NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
                 ),
             ),
-        ],
+        ]
     )
 
     qb_writer = QbWriter(cube)
@@ -1187,6 +1371,57 @@ def test_arbitrary_rdf_serialisation_new_dimension():
 
     assert (
         URIRef("some-dataset.csv#component/some-dimension"),
+        RDFS.label,
+        Literal("New Dimension Component"),
+    ) in graph
+
+def test_arbitrary_rdf_serialisation_new_dimension_with_cube_uri_style_WithoutFileExtensions():
+    """
+    Test that when arbitrary RDF is specified against a new dimension, it is serialised correctly.
+    """
+    data = pd.DataFrame({"New Dimension": ["A", "B", "C"], "Value": [1, 2, 3]})
+
+    cube = Cube(
+        CatalogMetadata("Some Dataset"),
+        data,
+        [
+            QbColumn(
+                "New Dimension",
+                NewQbDimension.from_data(
+                    "Some Dimension",
+                    data["New Dimension"],
+                    arbitrary_rdf=[
+                        TripleFragment(RDFS.label, "New Dimension Property"),
+                        TripleFragment(
+                            RDFS.label,
+                            "New Dimension Component",
+                            RdfSerialisationHint.Component,
+                        ),
+                    ],
+                ),
+            ),
+            QbColumn(
+                "Value",
+                QbSingleMeasureObservationValue(
+                    NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
+                ),
+            ),
+        ],
+        uri_style=URIStyle.WithoutFileExtensions
+    )
+
+    qb_writer = QbWriter(cube)
+    dataset = qb_writer._generate_qb_dataset_dsd_definitions()
+    graph = dataset.to_graph(Graph())
+
+    assert (
+        URIRef("some-dataset#dimension/some-dimension"),
+        RDFS.label,
+        Literal("New Dimension Property"),
+    ) in graph
+
+    assert (
+        URIRef("some-dataset#component/some-dimension"),
         RDFS.label,
         Literal("New Dimension Component"),
     ) in graph

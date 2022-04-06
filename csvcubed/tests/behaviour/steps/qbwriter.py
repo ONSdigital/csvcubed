@@ -4,7 +4,7 @@ import pandas as pd
 from pathlib import Path
 from behave import Given, When, Then, Step
 from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
-from rdflib import Graph
+from rdflib import RDF, XSD, Graph, Literal, URIRef
 
 from csvcubed.models.cube import *
 from csvcubed.models.cube import (
@@ -166,8 +166,8 @@ def step_impl(context, cube_name: str, cube_id: str):
 
 def _get_single_measure_cube_with_name_and_id(cube_name: str, cube_id: str, uri_style: URIStyle = URIStyle.Standard) -> Cube:
     columns = [
-        QbColumn("A", NewQbDimension.from_data("A code list", _standard_data["A"], uri_style=uri_style)),
-        QbColumn("D", NewQbDimension.from_data("D code list", _standard_data["D"], uri_style=uri_style)),
+        QbColumn("A", NewQbDimension.from_data("A code list", _standard_data["A"])),
+        QbColumn("D", NewQbDimension.from_data("D code list", _standard_data["D"])),
         QbColumn(
             "Value",
             QbSingleMeasureObservationValue(
@@ -761,18 +761,50 @@ def assertURIStyle(uri_style: URIStyle, temp_dir: Path, csv_file_name: str):
     g = Graph()
     g.parse(metadataFilePath)
 
-    fileSubjects = set([f for f in [str(s) for s in g.subjects()] if f.startswith("file://")])
-    fileSubjectPaths = set([urlparse(f).path for f in fileSubjects])
-    assertURIStyles(uri_style, fileSubjectPaths)
+    predicate_whitelist = [
+        str(RDF.type),
+        "http://www.w3.org/ns/dcat#landingPage",
+        "http://purl.org/dc/terms/creator",
+        "http://purl.org/dc/terms/publisher",
+        "http://www.w3.org/ns/dcat#contactPoint"
+    ]
+    object_prefix_whitelist = [
+        str(XSD),
+        "http://gss-data.org.uk",
+        "http://www.w3.org",
+        "http://www.nationalarchives.gov.uk",
+        "http://purl.org",
+    ]
+    uri_literal_whitelist = [
+        "rdf:type"
+    ]
+    uri_data_types = [
+        "http://www.w3.org/ns/csvw#uriTemplate",
+        "http://www.w3.org/2001/XMLSchema#anyURI"
+    ]
 
-    fileObjects = set([f for f in [str(s) for s in g.objects()] if f.startswith("file://")])
-    fileObjectPaths = set([urlparse(f).path for f in fileObjects])
-    assertURIStyles(uri_style, fileObjectPaths)
+    uriRefSubjects = set([s for s in g.subjects() if isinstance(s, URIRef)])
+    assertURIStyles(uri_style, uriRefSubjects)
 
-def assertURIStyles(uri_style, uris):
-    if uri_style == URIStyle.WithoutFileExtensions:
-        for s in uris:
-            assert not s.endswith(".csv"), f"expected {s} to end without a CSV file extension"
-    if uri_style == URIStyle.Standard:
-        for s in uris:
-            assert s.endswith(".csv") or s.endswith(".json"), f"expected {s} to end with .csv or .json"
+    uriRefObjects = set([o for (p, o) in g.predicate_objects()
+        if isinstance(o, URIRef)
+        and not (str(p) in predicate_whitelist)
+        and not (str(o).startswith(tuple(object_prefix_whitelist)))
+    ])
+    assertURIStyles(uri_style, uriRefObjects)
+
+    uriLiteralObjects = set([o for o in g.objects()
+        if isinstance(o, Literal)
+        and str(o.datatype) in uri_data_types
+        and not (str(o).startswith(tuple(object_prefix_whitelist)))
+        and not (str(o) in uri_literal_whitelist)
+    ])
+    assertURIStyles(uri_style, uriLiteralObjects)
+
+def assertURIStyles(uri_style, uriNodes):
+    for n in uriNodes:
+        path = urlparse(str(n)).path
+        if uri_style == URIStyle.WithoutFileExtensions:
+            assert not path.endswith(".csv"), f"expected {n} to end without a CSV file extension"
+        else:
+            assert path.endswith(".csv") or path.endswith(".json"), f"expected {n} to end with .csv or .json"

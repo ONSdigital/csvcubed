@@ -220,7 +220,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     When the cube is serialised to CSV-W
     Then the cube's metadata should contain URLs with file endings
 
-  Scenario: A QbCube conigured with WithoutFileExtensions URI style should exclude file endings in URIs
+  Scenario: A QbCube configured with WithoutFileExtensions URI style should exclude file endings in URIs
     Given a single-measure QbCube named "WithoutFileExtensions URI style qube" configured with "WithoutFileExtensions" URI style
     When the cube is serialised to CSV-W
     Then the cube's metadata should contain URLs without file endings
