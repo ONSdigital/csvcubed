@@ -449,17 +449,28 @@
                     "description": "Templates for common dimension columns",
                     "type": "string",
                     "enum": [
-                        "nutsgeography",
-                        "onsgeographies",
-                        "onsgeography",
                         "year",
-                        "year+month"
+                        "half-year",
+                        "quarter",
+                        "month",
+                        "week",
+                        "day",
+                        "hour",
+                        "minute",
+                        "second",
+                        "government-year",
+                        "government-half-year",
+                        "government-quarter",
+                        "government-week",
+                        "gregorian-instant"
                     ]
                 },
                 "attribute_resource": {
                     "description": "Templates for common attribute columns with resource values",
                     "type": "string",
-                    "enum": [ ]
+                    "enum": [
+                       "observation-status"
+                    ]
                 }
             }
         }
