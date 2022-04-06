@@ -149,7 +149,7 @@ def step_impl(context, cube_name: str, csvw_file_path: str):
     ]
 
     csv_path, _ = get_first_table_schema(csvw_path)
-    code_list_data = read_csv(csv = csvw_path.parent / csv_path)
+    code_list_data = read_csv(csv=csvw_path.parent / csv_path)
     code_list_values = code_list_data["Notation"].sample(3, random_state=1)
 
     context.cube = Cube(
@@ -164,7 +164,9 @@ def step_impl(context, cube_name: str, cube_id: str):
     context.cube = _get_single_measure_cube_with_name_and_id(cube_name, cube_id)
 
 
-def _get_single_measure_cube_with_name_and_id(cube_name: str, cube_id: str, uri_style: URIStyle = URIStyle.Standard) -> Cube:
+def _get_single_measure_cube_with_name_and_id(
+    cube_name: str, cube_id: str, uri_style: URIStyle = URIStyle.Standard
+) -> Cube:
     columns = [
         QbColumn("A", NewQbDimension.from_data("A code list", _standard_data["A"])),
         QbColumn("D", NewQbDimension.from_data("D code list", _standard_data["D"])),
@@ -180,7 +182,7 @@ def _get_single_measure_cube_with_name_and_id(cube_name: str, cube_id: str, uri_
         get_standard_catalog_metadata_for_name(cube_name, cube_id),
         _standard_data,
         columns,
-        uri_style=uri_style
+        uri_style=uri_style,
     )
 
 
@@ -742,19 +744,27 @@ def step_impl(context):
     rdf_to_add = context.text
     context.turtle += rdf_to_add
 
+
 @Then("the cube's metadata should contain URLs with file endings")
 def step_impl(context):
     temp_dir = get_context_temp_dir_path(context)
     assertURIStyle(URIStyle.Standard, temp_dir, context.csv_file_name)
+
 
 @Then("the cube's metadata should contain URLs without file endings")
 def step_impl(context):
     temp_dir = get_context_temp_dir_path(context)
     assertURIStyle(URIStyle.WithoutFileExtensions, temp_dir, context.csv_file_name)
 
-@Given(u'a single-measure QbCube named "{cube_name}" configured with "{uri_style}" URI style')
+
+@Given(
+    'a single-measure QbCube named "{cube_name}" configured with "{uri_style}" URI style'
+)
 def step_impl(context, cube_name: str, uri_style: str):
-    context.cube = _get_single_measure_cube_with_name_and_id(cube_name, None, URIStyle[uri_style])
+    context.cube = _get_single_measure_cube_with_name_and_id(
+        cube_name, None, URIStyle[uri_style]
+    )
+
 
 def assertURIStyle(uri_style: URIStyle, temp_dir: Path, csv_file_name: str):
     metadataFilePath = temp_dir.joinpath(f"{csv_file_name}-metadata.json")
@@ -766,7 +776,7 @@ def assertURIStyle(uri_style: URIStyle, temp_dir: Path, csv_file_name: str):
         "http://www.w3.org/ns/dcat#landingPage",
         "http://purl.org/dc/terms/creator",
         "http://purl.org/dc/terms/publisher",
-        "http://www.w3.org/ns/dcat#contactPoint"
+        "http://www.w3.org/ns/dcat#contactPoint",
     ]
     object_prefix_whitelist = [
         str(XSD),
@@ -775,36 +785,47 @@ def assertURIStyle(uri_style: URIStyle, temp_dir: Path, csv_file_name: str):
         "http://www.nationalarchives.gov.uk",
         "http://purl.org",
     ]
-    uri_literal_whitelist = [
-        "rdf:type"
-    ]
+    uri_literal_whitelist = ["rdf:type"]
     uri_data_types = [
         "http://www.w3.org/ns/csvw#uriTemplate",
-        "http://www.w3.org/2001/XMLSchema#anyURI"
+        "http://www.w3.org/2001/XMLSchema#anyURI",
     ]
 
     uriRefSubjects = set([s for s in g.subjects() if isinstance(s, URIRef)])
     assertURIStyles(uri_style, uriRefSubjects)
 
-    uriRefObjects = set([o for (p, o) in g.predicate_objects()
-        if isinstance(o, URIRef)
-        and not (str(p) in predicate_whitelist)
-        and not (str(o).startswith(tuple(object_prefix_whitelist)))
-    ])
+    uriRefObjects = set(
+        [
+            o
+            for (p, o) in g.predicate_objects()
+            if isinstance(o, URIRef)
+            and not (str(p) in predicate_whitelist)
+            and not (str(o).startswith(tuple(object_prefix_whitelist)))
+        ]
+    )
     assertURIStyles(uri_style, uriRefObjects)
 
-    uriLiteralObjects = set([o for o in g.objects()
-        if isinstance(o, Literal)
-        and str(o.datatype) in uri_data_types
-        and not (str(o).startswith(tuple(object_prefix_whitelist)))
-        and not (str(o) in uri_literal_whitelist)
-    ])
+    uriLiteralObjects = set(
+        [
+            o
+            for o in g.objects()
+            if isinstance(o, Literal)
+            and str(o.datatype) in uri_data_types
+            and not (str(o).startswith(tuple(object_prefix_whitelist)))
+            and not (str(o) in uri_literal_whitelist)
+        ]
+    )
     assertURIStyles(uri_style, uriLiteralObjects)
+
 
 def assertURIStyles(uri_style, uriNodes):
     for n in uriNodes:
         path = urlparse(str(n)).path
         if uri_style == URIStyle.WithoutFileExtensions:
-            assert not path.endswith(".csv"), f"expected {n} to end without a CSV file extension"
+            assert not path.endswith(
+                ".csv"
+            ), f"expected {n} to end without a CSV file extension"
         else:
-            assert path.endswith(".csv") or path.endswith(".json"), f"expected {n} to end with .csv or .json"
+            assert path.endswith(".csv") or path.endswith(
+                ".json"
+            ), f"expected {n} to end with .csv or .json"
