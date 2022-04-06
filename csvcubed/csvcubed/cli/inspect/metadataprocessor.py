@@ -14,8 +14,10 @@ from csvcubed.cli.inspect.inspectsparqlmanager import (
     select_csvw_table_schema_file_dependencies,
 )
 from csvcubed.models.csvcubedexception import (
-    FailedToLoadTableSchemaIntoRDFGraphException,
-    FailedToParseJSONldtoRDFGraphException,
+    FailedToLoadTableSchemaIntoRdfGraphException,
+    FailedToParseJsonldtoRdfGraphException,
+    FailedToReadCsvwContentException,
+    InvalidCsvwContentException,
 )
 
 _logger = logging.getLogger(__name__)
@@ -49,7 +51,7 @@ class MetadataProcessor:
 
                 load_table_schema_file_to_graph(table_schema_file, graph)
             except Exception as ex:
-                raise FailedToLoadTableSchemaIntoRDFGraphException(
+                raise FailedToLoadTableSchemaIntoRdfGraphException(
                     table_schema_file=table_schema_file
                 ) from ex
 
@@ -66,16 +68,35 @@ class MetadataProcessor:
 
         :return: `Graph` - RDFLib Graph of CSV-W metadata json.
         """
-        csvw_metadata_file_path = self.csvw_metadata_file_path.absolute()
         csvw_metadata_rdf_graph = Graph()
+        csvw_file_content: str = None
+        csvw_metadata_file_path = str(self.csvw_metadata_file_path.absolute())
 
         try:
-            csvw_metadata_rdf_graph.parse(csvw_metadata_file_path, format="json-ld")
+            with open(
+                csvw_metadata_file_path,
+                "r",
+            ) as f:
+                csvw_file_content = f.read()
+        except Exception as ex:
+            raise FailedToReadCsvwContentException(
+                csvw_metadata_file_path=csvw_metadata_file_path
+            ) from ex
+
+        if csvw_file_content is None:
+            raise InvalidCsvwContentException()
+
+        try:
+            csvw_metadata_rdf_graph.parse(
+                data=csvw_file_content,
+                publicID=f"file://{csvw_metadata_file_path}",
+                format="json-ld",
+            )
             _logger.info("Successfully parsed csvw json-ld to rdf graph.")
 
             self._load_table_schema_dependencies_into_rdf_graph(csvw_metadata_rdf_graph)
             return csvw_metadata_rdf_graph
         except Exception as ex:
-            raise FailedToParseJSONldtoRDFGraphException(
+            raise FailedToParseJsonldtoRdfGraphException(
                 csvw_metadata_file_path=csvw_metadata_file_path
             ) from ex

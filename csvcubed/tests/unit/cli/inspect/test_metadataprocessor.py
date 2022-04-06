@@ -20,6 +20,22 @@ def test_metadata_dataset_json_ld_to_rdf_loading():
     assert any(csvw_metadata_rdf_graph)
 
 
+def test_metadata_dataset_json_ld_to_rdf_loading_when_path_contains_url_encodable_chars():
+    """
+    Metadata dataset RDF graph should not be None when the path contains url encodable chars.
+    """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "url_enc@dable_char_@2path"
+        / "alcohol-bulletin.csv-metadata.json"
+    )
+    metadata_processor = MetadataProcessor(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+
+    assert csvw_metadata_rdf_graph is not None
+    assert any(csvw_metadata_rdf_graph)
+
+
 def test_metadata_codelist_json_ld_to_rdf_loading_with_table_schema():
     """
     Metadata codelist RDF graph should not be None.
