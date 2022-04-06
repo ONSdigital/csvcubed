@@ -11,7 +11,7 @@ from requests.exceptions import JSONDecodeError, HTTPError
 
 from csvcubed.utils.cache import session
 
-TEMPLATE_BASE_URL = "https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/csvcubed/csvcubed/readers/{}/templates/{}"
+TEMPLATE_BASE_URL = "https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/csvcubed/csvcubed/readers/cubeconfig/{}/templates/{}"
 
 
 def _get_template_file_from_template_lookup(
@@ -69,7 +69,9 @@ def _get_properties_from_template_file(
     return fetch_template
 
 
-def apply_preconfigured_values_from_template(column_config: Dict[str, Any], version_module_path: str, column_name: str) -> None:
+def apply_preconfigured_values_from_template(
+    column_config: Dict[str, Any], version_module_path: str, column_name: str
+) -> None:
     """
     Preset templates are found through template lookup file. Propeties are then taken from templates and
     added to column config, with user specified propeties overriding template propeties.
@@ -98,6 +100,8 @@ def apply_preconfigured_values_from_template(column_config: Dict[str, Any], vers
     for template_property in fetch_template:
         if template_property not in column_config:
             if isinstance(fetch_template[template_property], str):
-                column_config[template_property] = fetch_template[template_property].replace("<column_name>", column_name)
+                column_config[template_property] = fetch_template[
+                    template_property
+                ].replace("<column_name>", column_name)
             else:
                 column_config[template_property] = fetch_template[template_property]
