@@ -28,7 +28,6 @@ class SkosCodeListNewUriHelper:
                 or self.default_uri_style == URIStyle.WithoutFileExtensions
             ) else ".csv"
         )
-        print(f"{self.code_list.metadata.uri_safe_identifier}{extension}")
         return f"{self.code_list.metadata.uri_safe_identifier}{extension}"
 
     def _uri_in_doc(self, identifier: str) -> str:
