@@ -8,7 +8,7 @@ packages = [
   {include = "csvcubedmodels"},
 ]
 readme = "csvcubedmodels/README.md"
-version = "0.1.0-rc8"
+version = "0.1.0-rc9"
 
 [tool.poetry.dependencies]
 python = "^3.9"
