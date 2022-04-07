@@ -12,6 +12,7 @@ import click
 from csvcubed.utils.log import log_exception, start_logging
 from csvcubed.cli.inspect.inspect import inspect
 from csvcubed.cli.build import build
+from csvcubed.models.errorurl import HasErrorUrl
 
 
 _logger = logging.getLogger(__name__)
@@ -107,9 +108,12 @@ def build_command(
     metavar="TIDY_CSV-W_METADATA_JSON_PATH",
 )
 def inspect_command(log_level: str, csvw_metadata_json_path: Path) -> None:
+    """inspect the contents of a CSV-W generated with csvcubed"""
     start_logging(log_dir_name="csvcubed-cli", selected_logging_level=log_level)
     try:
         inspect(csvw_metadata_json_path)
     except Exception as e:
         log_exception(_logger, e)
+        if isinstance(e, HasErrorUrl):
+            _logger.error(f"More information available at {e.get_error_url()}")
         sys.exit(1)

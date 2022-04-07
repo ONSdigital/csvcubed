@@ -1,3 +1,27 @@
 # Validation Errors
 
-todo: Write something here.
+## Index of known exceptions:
+
+* [Missing Column Definition Error](./missing-column-definition.md) 
+* [Column Not Found In Data Error](./column-not-found-in-data.md)
+* [Duplicate Column Title Error](./duplicate-column-title.md) 
+* [No Dimensions Defined Error](./no-dimensions-defined.md) 
+* [No Measures Defined Error](./no-measures-defined.md)
+* [No Units Defined Error](./no-units-defined.md)
+* [No Observed Values Column Defined Error](./no-observations-columns.md)
+* [More Than One Measure Column Error](./multiple-measure-columns.md)
+* [More Than One Units Column Error](./multiple-units-columns.md)
+* [More Than One Observations Column Error](./multiple-observations-columns.md)
+* [Observation Values Missing](./observed-values-missing.md)
+* [Both Measure Types Defined Error](./both-measure-types-defined.md)
+* [Both Unit Types Defined Error](./both-unit-types-defined.md)
+* [Undefined Unit Uris Error](./undefined-units.md)
+* [Undefined Measure Uris Error](./undefined-measures.md)
+* [Undefined Attribute Value Uris Error](./undefined-attribute-values.md)
+* [Conflicting Uri Safe Values Error](./conflicting-uri-values.md)
+* [Reserved UriValueError](./reserved-uri-value.md)
+* [Csv Column Uri Template Missing](./csv-column-uri-template-missing.md)
+* [Csv Column Literal With Uri Template](./csv-column-literal-with-uri-template.md)
+* [Column Validation Error](./column-validation.md) 
+* [Label Uri Collision Error](./label-uri-collision.md)
+* [Unknown Pydantic Validation Error](./unknown-pydantic-error.md)

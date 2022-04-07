@@ -1,7 +1,13 @@
 import pytest
+from csvcubedmodels.rdf import CSVW
+from rdflib import Graph, Literal, URIRef
 
 from tests.unit.test_baseunit import get_test_cases_dir
-from csvcubed.utils.csvw import get_dependent_local_files, get_first_table_schema
+from csvcubed.utils.csvw import (
+    get_dependent_local_files,
+    get_first_table_schema,
+    load_table_schema_file_to_graph,
+)
 
 csvw_utils_test_cases = get_test_cases_dir() / "utils" / "csvw"
 
@@ -86,6 +92,29 @@ def test_get_first_table_group_schema_relative_uri_multiple_tables():
     assert csv_url == "code-list.csv"
     assert first_table_schema is not None
     assert first_table_schema["columns"][0]["titles"] == "Label"
+
+
+def test_load_table_schema_file_to_graph():
+    """
+    Test that we generate sensible triples when loading a tableSchema file into a graph.
+    """
+    graph = Graph()
+    assert len(graph) == 0
+
+    sector_table_schema_json_path = "file://" + str(
+        csvw_utils_test_cases / "table-schema-dependencies" / "sector.table.json"
+    )
+
+    load_table_schema_file_to_graph(sector_table_schema_json_path, graph)
+
+    assert len(graph) > 0
+
+    # This triple is defined within the table schema JSON file.
+    assert (
+        URIRef(sector_table_schema_json_path),
+        CSVW.aboutUrl,
+        Literal("sector.csv#{+notation}", datatype=CSVW.uriTemplate),
+    ) in graph
 
 
 if __name__ == "__main__":

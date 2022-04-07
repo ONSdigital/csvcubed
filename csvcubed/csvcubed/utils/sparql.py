@@ -9,6 +9,11 @@ from typing import List, Optional, Any, Callable
 from rdflib import Graph, Literal
 from rdflib.query import ResultRow
 
+from csvcubed.models.csvcubedexception import (
+    UnexpectedSparqlAskQueryResponseTypeException,
+    UnexpectedSparqlAskQueryResultsException,
+)
+
 
 def none_or_map(val: Optional[Any], map_func: Callable[[Any], Any]) -> Optional[Any]:
     if val is None:
@@ -26,15 +31,15 @@ def ask(query: str, graph: Graph) -> bool:
     :return: `bool` - Whether the given query yeilds true or false
     """
     results = list(graph.query(query))
-
+    
     if len(results) == 1:
         result = results[0]
         if isinstance(result, bool):
             return result
         else:
-            raise Exception(f"Unexpected ASK query response type {type(result)}")
+            raise UnexpectedSparqlAskQueryResponseTypeException(type(result))
     else:
-        raise Exception(f"Unexpected number of results for ASK query {len(results)}.")
+        raise UnexpectedSparqlAskQueryResultsException(len(results))
 
 
 def select(query: str, graph: Graph, init_bindings=None) -> List[ResultRow]:

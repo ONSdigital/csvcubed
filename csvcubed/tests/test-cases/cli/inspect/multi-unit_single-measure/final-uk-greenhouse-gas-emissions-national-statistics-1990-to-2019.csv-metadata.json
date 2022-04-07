@@ -1,0 +1,1167 @@
+{
+    "@context": "http://www.w3.org/ns/csvw",
+    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dataset",
+    "tables": [
+        {
+            "url": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv",
+            "tableSchema": {
+                "columns": [
+                    {
+                        "titles": "GHG",
+                        "name": "ghg",
+                        "propertyUrl": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/ghg",
+                        "valueUrl": "ghg.csv#{+ghg}",
+                        "required": true
+                    },
+                    {
+                        "titles": "GHG Grouped",
+                        "name": "ghg_grouped",
+                        "propertyUrl": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/ghg-grouped",
+                        "valueUrl": "ghg-grouped.csv#{+ghg_grouped}",
+                        "required": true
+                    },
+                    {
+                        "titles": "IPCC Code",
+                        "name": "ipcc_code",
+                        "propertyUrl": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/ipcc-code",
+                        "valueUrl": "ipcc-code.csv#{+ipcc_code}",
+                        "required": true
+                    },
+                    {
+                        "titles": "Year",
+                        "name": "year",
+                        "propertyUrl": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/year",
+                        "valueUrl": "year.csv#{+year}",
+                        "required": true
+                    },
+                    {
+                        "titles": "National Communication Sector",
+                        "name": "national_communication_sector",
+                        "propertyUrl": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-sector",
+                        "valueUrl": "national-communication-sector.csv#{+national_communication_sector}",
+                        "required": true
+                    },
+                    {
+                        "titles": "National Communication Sub-sector",
+                        "name": "national_communication_sub_sector",
+                        "propertyUrl": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-sub-sector",
+                        "valueUrl": "national-communication-sub-sector.csv#{+national_communication_sub_sector}",
+                        "required": true
+                    },
+                    {
+                        "titles": "National Communication Category",
+                        "name": "national_communication_category",
+                        "propertyUrl": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-category",
+                        "valueUrl": "national-communication-category.csv#{+national_communication_category}",
+                        "required": true
+                    },
+                    {
+                        "titles": "Source",
+                        "name": "source",
+                        "propertyUrl": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/source",
+                        "valueUrl": "source.csv#{+source}",
+                        "required": true
+                    },
+                    {
+                        "titles": "National Communication Fuel Group",
+                        "name": "national_communication_fuel_group",
+                        "propertyUrl": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-fuel-group",
+                        "valueUrl": "national-communication-fuel-group.csv#{+national_communication_fuel_group}",
+                        "required": true
+                    },
+                    {
+                        "titles": "National Communication Fuel",
+                        "name": "national_communication_fuel",
+                        "propertyUrl": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-fuel",
+                        "valueUrl": "national-communication-fuel.csv#{+national_communication_fuel}",
+                        "required": true
+                    },
+                    {
+                        "titles": "Activity Name",
+                        "name": "activity_name",
+                        "propertyUrl": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/activity-name",
+                        "valueUrl": "activity-name.csv#{+activity_name}",
+                        "required": true
+                    },
+                    {
+                        "titles": "Value",
+                        "name": "value",
+                        "propertyUrl": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#measure/gas-emissions-gwp-ar4",
+                        "datatype": "decimal",
+                        "required": true
+                    },
+                    {
+                        "name": "virt_type",
+                        "virtual": true,
+                        "propertyUrl": "rdf:type",
+                        "valueUrl": "http://purl.org/linked-data/cube#Observation"
+                    },
+                    {
+                        "name": "virt_dataset",
+                        "virtual": true,
+                        "propertyUrl": "http://purl.org/linked-data/cube#dataSet",
+                        "valueUrl": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dataset"
+                    },
+                    {
+                        "name": "virt_unit",
+                        "virtual": true,
+                        "propertyUrl": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
+                        "valueUrl": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#unit/millions-of-tonnes-of-carbon-dioxide-mt-co2"
+                    },
+                    {
+                        "name": "virt_measure",
+                        "virtual": true,
+                        "propertyUrl": "http://purl.org/linked-data/cube#measureType",
+                        "valueUrl": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#measure/gas-emissions-gwp-ar4"
+                    }
+                ],
+                "foreignKeys": [
+                    {
+                        "columnReference": "ghg",
+                        "reference": {
+                            "resource": "ghg.csv",
+                            "columnReference": "notation"
+                        }
+                    },
+                    {
+                        "columnReference": "ghg_grouped",
+                        "reference": {
+                            "resource": "ghg-grouped.csv",
+                            "columnReference": "notation"
+                        }
+                    },
+                    {
+                        "columnReference": "ipcc_code",
+                        "reference": {
+                            "resource": "ipcc-code.csv",
+                            "columnReference": "notation"
+                        }
+                    },
+                    {
+                        "columnReference": "year",
+                        "reference": {
+                            "resource": "year.csv",
+                            "columnReference": "notation"
+                        }
+                    },
+                    {
+                        "columnReference": "national_communication_sector",
+                        "reference": {
+                            "resource": "national-communication-sector.csv",
+                            "columnReference": "notation"
+                        }
+                    },
+                    {
+                        "columnReference": "national_communication_sub_sector",
+                        "reference": {
+                            "resource": "national-communication-sub-sector.csv",
+                            "columnReference": "notation"
+                        }
+                    },
+                    {
+                        "columnReference": "national_communication_category",
+                        "reference": {
+                            "resource": "national-communication-category.csv",
+                            "columnReference": "notation"
+                        }
+                    },
+                    {
+                        "columnReference": "source",
+                        "reference": {
+                            "resource": "source.csv",
+                            "columnReference": "notation"
+                        }
+                    },
+                    {
+                        "columnReference": "national_communication_fuel_group",
+                        "reference": {
+                            "resource": "national-communication-fuel-group.csv",
+                            "columnReference": "notation"
+                        }
+                    },
+                    {
+                        "columnReference": "national_communication_fuel",
+                        "reference": {
+                            "resource": "national-communication-fuel.csv",
+                            "columnReference": "notation"
+                        }
+                    },
+                    {
+                        "columnReference": "activity_name",
+                        "reference": {
+                            "resource": "activity-name.csv",
+                            "columnReference": "notation"
+                        }
+                    }
+                ],
+                "primaryKey": [
+                    "ghg",
+                    "ghg_grouped",
+                    "ipcc_code",
+                    "year",
+                    "national_communication_sector",
+                    "national_communication_sub_sector",
+                    "national_communication_category",
+                    "source",
+                    "national_communication_fuel_group",
+                    "national_communication_fuel",
+                    "activity_name"
+                ],
+                "aboutUrl": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#obs/{+ghg},{+ghg_grouped},{+ipcc_code},{+year},{+national_communication_sector},{+national_communication_sub_sector},{+national_communication_category},{+source},{+national_communication_fuel_group},{+national_communication_fuel},{+activity_name}"
+            }
+        },
+        {
+            "url": "ghg.csv",
+            "tableSchema": "ghg.table.json",
+            "suppressOutput": true
+        },
+        {
+            "url": "ghg-grouped.csv",
+            "tableSchema": "ghg-grouped.table.json",
+            "suppressOutput": true
+        },
+        {
+            "url": "ipcc-code.csv",
+            "tableSchema": "ipcc-code.table.json",
+            "suppressOutput": true
+        },
+        {
+            "url": "year.csv",
+            "tableSchema": "year.table.json",
+            "suppressOutput": true
+        },
+        {
+            "url": "national-communication-sector.csv",
+            "tableSchema": "national-communication-sector.table.json",
+            "suppressOutput": true
+        },
+        {
+            "url": "national-communication-sub-sector.csv",
+            "tableSchema": "national-communication-sub-sector.table.json",
+            "suppressOutput": true
+        },
+        {
+            "url": "national-communication-category.csv",
+            "tableSchema": "national-communication-category.table.json",
+            "suppressOutput": true
+        },
+        {
+            "url": "source.csv",
+            "tableSchema": "source.table.json",
+            "suppressOutput": true
+        },
+        {
+            "url": "national-communication-fuel-group.csv",
+            "tableSchema": "national-communication-fuel-group.table.json",
+            "suppressOutput": true
+        },
+        {
+            "url": "national-communication-fuel.csv",
+            "tableSchema": "national-communication-fuel.table.json",
+            "suppressOutput": true
+        },
+        {
+            "url": "activity-name.csv",
+            "tableSchema": "activity-name.table.json",
+            "suppressOutput": true
+        }
+    ],
+    "rdfs:seeAlso": [
+        {
+            "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/ipcc-code",
+            "@type": [
+                "http://purl.org/linked-data/cube#CodedProperty",
+                "http://purl.org/linked-data/cube#ComponentProperty",
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#DimensionProperty"
+            ],
+            "http://purl.org/linked-data/cube#codeList": [
+                {
+                    "@id": "ipcc-code.csv#code-list"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "IPCC Code"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#range": [
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#class/ipcc-code"
+                }
+            ]
+        },
+        {
+            "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dataset",
+            "@type": [
+                "http://www.w3.org/ns/dcat#Dataset",
+                "http://purl.org/linked-data/cube#DataSet",
+                "http://www.w3.org/ns/dcat#Resource",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#Attachable"
+            ],
+            "http://purl.org/dc/terms/creator": [
+                {
+                    "@id": "https://www.gov.uk/government/organisations/department-for-business-energy-and-industrial-strategy"
+                }
+            ],
+            "http://purl.org/dc/terms/description": [
+                {
+                    "@language": "en",
+                    "@value": "This publication provides the final estimates of UK territorial greenhouse gas\nemissions going back to 1990.\n\nEstimates are presented by source in February of each year. They are updated\neach year:\n\n  * in March, to include estimates by end-user and fuel type\n  * in June, to include estimates by Standard Industrial Classification (SIC)\n\nThe statistics covers emissions that occur within the UK\u2019s borders. When\nemissions are reported by source, emissions are attributed to the sector that\nemits them directly. When emissions are reported by end-user, energy supply\nemissions by source are reallocated in accordance with where the end-use\nactivity occurred. This reallocation of emissions is based on a modelling\nprocess. For example, all the carbon dioxide produced by a power station is\nallocated to the power station when reporting on a source basis. However, when\napplying the end-user method, these emissions are reallocated to the users of\nthis electricity, such as domestic homes or large industrial users.\n\nBEIS does not estimate emissions outside the UK associated with UK\nconsumption, however the Department for Environment, Food and Rural Affairs\npublishes estimates of the [UK\u2019s carbon\nfootprint](https://www.gov.uk/government/statistics/uks-carbon-footprint)\nannually. The [alternative approaches to reporting UK greenhouse gas emissions\nreport](https://www.gov.uk/government/publications/uk-greenhouse-gas-\nemissions-explanatory-notes) outlines the differences between them.\n\nFor the purposes of reporting, greenhouse gas emissions are allocated into a\nsmall number of broad, high level sectors known as National Communication\nsectors, which are as follows: energy supply, business, transport, public,\nresidential, agriculture, industrial processes, land use land use change and\nforestry (LULUCF), and waste management.\n\nThese high-level sectors are made up of a number of more detailed sectors,\nwhich follow the definitions set out by the [International Panel on Climate\nChange (IPCC)](http://www.ipcc.ch/), and which are used in international\nreporting tables which are submitted to the [United Nations Framework\nConvention on Climate Change (UNFCCC)](https://unfccc.int/) every year. A\n[list of corresponding Global Warming Potentials (GWPs) used and a record of\nbase year emissions](https://www.gov.uk/government/publications/uk-greenhouse-\ngas-emissions-explanatory-notes) are published separately.\n\nThis is a National Statistics publication and complies with the Code of\nPractice for Statistics.\n\nPlease check our [frequently asked\nquestions](https://www.gov.uk/government/publications/uk-greenhouse-gas-\nemissions-statistics-user-guidance) or email\n[Climatechange.Statistics@beis.gov.uk](mailto:Climatechange.Statistics@beis.gov.uk)\nif you have any questions or comments about the information on this page.\n\n  *[SIC]: Standard Industrial Classification\n  *[LULUCF]: land use land use change and forestry\n  *[IPCC]: International Panel on Climate Change\n  *[UNFCCC]: United Nations Framework Convention on Climate Change\n  *[GWPs]: Global Warming Potentials\n\n"
+                }
+            ],
+            "http://purl.org/dc/terms/identifier": [
+                {
+                    "@value": "Final UK greenhouse gas emissions national statistics: 1990 to 2019"
+                }
+            ],
+            "http://purl.org/dc/terms/issued": [
+                {
+                    "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "@value": "2021-02-02T09:30:00+00:00"
+                }
+            ],
+            "http://purl.org/dc/terms/modified": [
+                {
+                    "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "@value": "2022-03-03T18:04:29.277945+00:00"
+                }
+            ],
+            "http://purl.org/dc/terms/publisher": [
+                {
+                    "@id": "https://www.gov.uk/government/organisations/department-for-business-energy-and-industrial-strategy"
+                }
+            ],
+            "http://purl.org/dc/terms/title": [
+                {
+                    "@language": "en",
+                    "@value": "Final UK greenhouse gas emissions national statistics: 1990 to 2019"
+                }
+            ],
+            "http://purl.org/linked-data/cube#structure": [
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#structure"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#comment": [
+                {
+                    "@language": "en",
+                    "@value": "Final estimates of UK territorial greenhouse gas emissions."
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Final UK greenhouse gas emissions national statistics: 1990 to 2019"
+                }
+            ],
+            "http://www.w3.org/ns/dcat#landingPage": [
+                {
+                    "@id": "https://www.gov.uk/government/statistics/final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019"
+                }
+            ],
+            "http://www.w3.org/ns/dcat#theme": [
+                {
+                    "@id": "http://gss-data.org.uk/def/gdp#climate-change"
+                }
+            ]
+        },
+        {
+            "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#measure/gas-emissions-gwp-ar4",
+            "@type": [
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://purl.org/linked-data/cube#ComponentProperty",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#MeasureProperty"
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "gas emissions(gwp-ar4)"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#range": [
+                {
+                    "@id": "http://www.w3.org/2001/XMLSchema#decimal"
+                }
+            ]
+        },
+        {
+            "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#component/national-communication-fuel",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-fuel"
+                }
+            ],
+            "http://purl.org/linked-data/cube#dimension": [
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-fuel"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 10
+                }
+            ]
+        },
+        {
+            "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#component/ghg",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/ghg"
+                }
+            ],
+            "http://purl.org/linked-data/cube#dimension": [
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/ghg"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 1
+                }
+            ]
+        },
+        {
+            "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#component/national-communication-fuel-group",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-fuel-group"
+                }
+            ],
+            "http://purl.org/linked-data/cube#dimension": [
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-fuel-group"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 9
+                }
+            ]
+        },
+        {
+            "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#component/gas-emissions-gwp-ar4",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#measure/gas-emissions-gwp-ar4"
+                }
+            ],
+            "http://purl.org/linked-data/cube#measure": [
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#measure/gas-emissions-gwp-ar4"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 14
+                }
+            ]
+        },
+        {
+            "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#component/national-communication-sub-sector",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-sub-sector"
+                }
+            ],
+            "http://purl.org/linked-data/cube#dimension": [
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-sub-sector"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 6
+                }
+            ]
+        },
+        {
+            "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#component/ipcc-code",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/ipcc-code"
+                }
+            ],
+            "http://purl.org/linked-data/cube#dimension": [
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/ipcc-code"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 3
+                }
+            ]
+        },
+        {
+            "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/activity-name",
+            "@type": [
+                "http://purl.org/linked-data/cube#CodedProperty",
+                "http://purl.org/linked-data/cube#ComponentProperty",
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#DimensionProperty"
+            ],
+            "http://purl.org/linked-data/cube#codeList": [
+                {
+                    "@id": "activity-name.csv#code-list"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Activity Name"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#range": [
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#class/activity-name"
+                }
+            ]
+        },
+        {
+            "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#class/national-communication-fuel-group",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.w3.org/2000/01/rdf-schema#Class"
+            ]
+        },
+        {
+            "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#class/source",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.w3.org/2000/01/rdf-schema#Class"
+            ]
+        },
+        {
+            "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#class/ipcc-code",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.w3.org/2000/01/rdf-schema#Class"
+            ]
+        },
+        {
+            "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/ghg-grouped",
+            "@type": [
+                "http://purl.org/linked-data/cube#CodedProperty",
+                "http://purl.org/linked-data/cube#ComponentProperty",
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#DimensionProperty"
+            ],
+            "http://purl.org/linked-data/cube#codeList": [
+                {
+                    "@id": "ghg-grouped.csv#code-list"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "GHG Grouped"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#range": [
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#class/ghg-grouped"
+                }
+            ]
+        },
+        {
+            "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-category",
+            "@type": [
+                "http://purl.org/linked-data/cube#CodedProperty",
+                "http://purl.org/linked-data/cube#ComponentProperty",
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#DimensionProperty"
+            ],
+            "http://purl.org/linked-data/cube#codeList": [
+                {
+                    "@id": "national-communication-category.csv#code-list"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "National Communication Category"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#range": [
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#class/national-communication-category"
+                }
+            ]
+        },
+        {
+            "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-sub-sector",
+            "@type": [
+                "http://purl.org/linked-data/cube#CodedProperty",
+                "http://purl.org/linked-data/cube#ComponentProperty",
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#DimensionProperty"
+            ],
+            "http://purl.org/linked-data/cube#codeList": [
+                {
+                    "@id": "national-communication-sub-sector.csv#code-list"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "National Communication Sub-sector"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#range": [
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#class/national-communication-sub-sector"
+                }
+            ]
+        },
+        {
+            "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#class/national-communication-fuel",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.w3.org/2000/01/rdf-schema#Class"
+            ]
+        },
+        {
+            "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/ghg",
+            "@type": [
+                "http://purl.org/linked-data/cube#CodedProperty",
+                "http://purl.org/linked-data/cube#ComponentProperty",
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#DimensionProperty"
+            ],
+            "http://purl.org/linked-data/cube#codeList": [
+                {
+                    "@id": "ghg.csv#code-list"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "GHG"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#range": [
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#class/ghg"
+                }
+            ]
+        },
+        {
+            "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#component/year",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/year"
+                }
+            ],
+            "http://purl.org/linked-data/cube#dimension": [
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/year"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 4
+                }
+            ]
+        },
+        {
+            "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#component/national-communication-category",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-category"
+                }
+            ],
+            "http://purl.org/linked-data/cube#dimension": [
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-category"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 7
+                }
+            ]
+        },
+        {
+            "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/source",
+            "@type": [
+                "http://purl.org/linked-data/cube#CodedProperty",
+                "http://purl.org/linked-data/cube#ComponentProperty",
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#DimensionProperty"
+            ],
+            "http://purl.org/linked-data/cube#codeList": [
+                {
+                    "@id": "source.csv#code-list"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Source"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#range": [
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#class/source"
+                }
+            ]
+        },
+        {
+            "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#class/year",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.w3.org/2000/01/rdf-schema#Class"
+            ]
+        },
+        {
+            "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#class/ghg",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.w3.org/2000/01/rdf-schema#Class"
+            ]
+        },
+        {
+            "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/year",
+            "@type": [
+                "http://purl.org/linked-data/cube#CodedProperty",
+                "http://purl.org/linked-data/cube#ComponentProperty",
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#DimensionProperty"
+            ],
+            "http://purl.org/linked-data/cube#codeList": [
+                {
+                    "@id": "year.csv#code-list"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Year"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#range": [
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#class/year"
+                }
+            ]
+        },
+        {
+            "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#class/national-communication-category",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.w3.org/2000/01/rdf-schema#Class"
+            ]
+        },
+        {
+            "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#class/activity-name",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.w3.org/2000/01/rdf-schema#Class"
+            ]
+        },
+        {
+            "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-fuel",
+            "@type": [
+                "http://purl.org/linked-data/cube#CodedProperty",
+                "http://purl.org/linked-data/cube#ComponentProperty",
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#DimensionProperty"
+            ],
+            "http://purl.org/linked-data/cube#codeList": [
+                {
+                    "@id": "national-communication-fuel.csv#code-list"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "National Communication Fuel"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#range": [
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#class/national-communication-fuel"
+                }
+            ]
+        },
+        {
+            "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#component/source",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/source"
+                }
+            ],
+            "http://purl.org/linked-data/cube#dimension": [
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/source"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 8
+                }
+            ]
+        },
+        {
+            "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-sector",
+            "@type": [
+                "http://purl.org/linked-data/cube#CodedProperty",
+                "http://purl.org/linked-data/cube#ComponentProperty",
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#DimensionProperty"
+            ],
+            "http://purl.org/linked-data/cube#codeList": [
+                {
+                    "@id": "national-communication-sector.csv#code-list"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "National Communication Sector"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#range": [
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#class/national-communication-sector"
+                }
+            ]
+        },
+        {
+            "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#class/national-communication-sector",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.w3.org/2000/01/rdf-schema#Class"
+            ]
+        },
+        {
+            "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#component/unit",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://purl.org/linked-data/cube#attribute": [
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentRequired": [
+                {
+                    "@value": true
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 13
+                }
+            ]
+        },
+        {
+            "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#component/measure-type",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "http://purl.org/linked-data/cube#measureType"
+                }
+            ],
+            "http://purl.org/linked-data/cube#dimension": [
+                {
+                    "@id": "http://purl.org/linked-data/cube#measureType"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 12
+                }
+            ]
+        },
+        {
+            "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-fuel-group",
+            "@type": [
+                "http://purl.org/linked-data/cube#CodedProperty",
+                "http://purl.org/linked-data/cube#ComponentProperty",
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#DimensionProperty"
+            ],
+            "http://purl.org/linked-data/cube#codeList": [
+                {
+                    "@id": "national-communication-fuel-group.csv#code-list"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "National Communication Fuel Group"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#range": [
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#class/national-communication-fuel-group"
+                }
+            ]
+        },
+        {
+            "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#structure",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#DataStructureDefinition",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://purl.org/linked-data/cube#component": [
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#component/national-communication-sub-sector"
+                },
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#component/activity-name"
+                },
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#component/national-communication-category"
+                },
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#component/measure-type"
+                },
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#component/ghg-grouped"
+                },
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#component/source"
+                },
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#component/ipcc-code"
+                },
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#component/national-communication-fuel-group"
+                },
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#component/year"
+                },
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#component/gas-emissions-gwp-ar4"
+                },
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#component/ghg"
+                },
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#component/national-communication-sector"
+                },
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#component/unit"
+                },
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#component/national-communication-fuel"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/year"
+                },
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-fuel-group"
+                },
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-sector"
+                },
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/ghg"
+                },
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-fuel"
+                },
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
+                },
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-sub-sector"
+                },
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/activity-name"
+                },
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-category"
+                },
+                {
+                    "@id": "http://purl.org/linked-data/cube#measureType"
+                },
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#measure/gas-emissions-gwp-ar4"
+                },
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/source"
+                },
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/ipcc-code"
+                },
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/ghg-grouped"
+                }
+            ]
+        },
+        {
+            "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#class/ghg-grouped",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.w3.org/2000/01/rdf-schema#Class"
+            ]
+        },
+        {
+            "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#component/activity-name",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/activity-name"
+                }
+            ],
+            "http://purl.org/linked-data/cube#dimension": [
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/activity-name"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 11
+                }
+            ]
+        },
+        {
+            "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#class/national-communication-sub-sector",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.w3.org/2000/01/rdf-schema#Class"
+            ]
+        },
+        {
+            "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#component/ghg-grouped",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/ghg-grouped"
+                }
+            ],
+            "http://purl.org/linked-data/cube#dimension": [
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/ghg-grouped"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 2
+                }
+            ]
+        },
+        {
+            "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#component/national-communication-sector",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-sector"
+                }
+            ],
+            "http://purl.org/linked-data/cube#dimension": [
+                {
+                    "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-sector"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 5
+                }
+            ]
+        },
+        {
+            "@id": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#unit/millions-of-tonnes-of-carbon-dioxide-mt-co2",
+            "@type": [
+                "http://qudt.org/schema/qudt/Unit",
+                "http://www.ontology-of-units-of-measure.org/resource/om-2/Unit",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "millions of tonnes of carbon dioxide (mt co2)"
+                }
+            ]
+        }
+    ]
+}

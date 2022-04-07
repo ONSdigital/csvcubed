@@ -10,6 +10,7 @@ nav:
       - Installation: quick-start/installation.md
       - Shaping your data: quick-start/shaping.md
       - Qube config: quick-start/qube-config.md
+      - Command Line: quick-start/command-line.md
   - Guides:
       - guides/index.md
       - Raise an issue: guides/raise-issue.md
@@ -17,6 +18,7 @@ nav:
       - Handling missing observed values: guides/missing-observed-values.md
       - Qube config: guides/qube-config.md
       - Errors:
+        - guides/errors/index.md
         - Missing column definition: guides/errors/missing-column-definition.md
         - Column not found in data: guides/errors/column-not-found-in-data.md
         - Duplicate column title: guides/errors/duplicate-column-title.md

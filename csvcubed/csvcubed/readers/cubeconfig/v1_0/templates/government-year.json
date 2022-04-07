@@ -1,0 +1,7 @@
+{
+    "type": "dimension",
+    "from_existing": "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod",
+    "label": "Goverment Year",
+    "cell_uri_template": "http://reference.data.gov.uk/id/goverment-year/{+<column_name>}",
+    "code_list": false
+}

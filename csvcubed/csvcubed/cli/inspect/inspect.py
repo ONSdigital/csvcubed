@@ -18,6 +18,7 @@ from csvcubed.cli.inspect.metadatainputvalidator import (
 )
 from csvcubed.cli.inspect.metadataprinter import MetadataPrinter
 from csvcubed.cli.inspect.metadataprocessor import MetadataProcessor
+from csvcubed.models.csvcubedexception import RdfGraphCannotBeNoneException
 
 _logger = logging.getLogger(__name__)
 
@@ -35,7 +36,8 @@ def inspect(csvw_metadata_json_path: Path) -> None:
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
-    assert csvw_metadata_rdf_graph is not None
+    if csvw_metadata_rdf_graph is None:
+        raise RdfGraphCannotBeNoneException()
 
     csvw_metadata_rdf_validator = MetadataValidator(csvw_metadata_rdf_graph)
     (
@@ -49,8 +51,9 @@ def inspect(csvw_metadata_json_path: Path) -> None:
             catalog_metadata_printable,
             dsd_info_printable,
             codelist_info_printable,
-            head_tail_printable,
-            val_count_printable,
+            dataset_observations_printable,
+            val_counts_by_measure_unit_printable,
+            codelist_hierarchy_info_printable,
         ) = _generate_printables(
             csvw_type, csvw_metadata_rdf_graph, csvw_metadata_json_path
         )
@@ -60,6 +63,12 @@ def inspect(csvw_metadata_json_path: Path) -> None:
         if csvw_type == CSVWType.QbDataSet:
             print(f"{linesep}{dsd_info_printable}")
             print(f"{linesep}{codelist_info_printable}")
+        print(f"{linesep}{dataset_observations_printable}")
+        if csvw_type == CSVWType.QbDataSet:
+            print(f"{linesep}{val_counts_by_measure_unit_printable}")
+        if csvw_type == CSVWType.CodeList:
+            print(f"{linesep}{codelist_hierarchy_info_printable}")
+
     else:
         _logger.error(
             "This is an unsupported csv-w! Supported types are `data cube` and `code list`."
@@ -68,7 +77,7 @@ def inspect(csvw_metadata_json_path: Path) -> None:
 
 def _generate_printables(
     csvw_type: CSVWType, csvw_metadata_rdf_graph: Graph, csvw_metadata_json_path: Path
-) -> Tuple[str, str, str, str, str, str]:
+) -> Tuple[str, str, str, str, str, str, str]:
     """
     Generates printables of type, metadata, dsd, code list, head/tail and value count information.
 
@@ -80,18 +89,36 @@ def _generate_printables(
         csvw_type, csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
 
-    dsd_info_printable: str = ""
-    codelist_info_printable: str = ""
-
-    if csvw_type == CSVWType.QbDataSet:
-        dsd_info_printable = metadata_printer.gen_dsd_info_printable()
-        codelist_info_printable = metadata_printer.gen_codelist_info_printable()
+    type_info_printable: str = metadata_printer.type_info_printable
+    catalog_metadata_printable: str = metadata_printer.catalog_metadata_printable
+    dsd_info_printable: str = (
+        metadata_printer.dsd_info_printable if csvw_type == CSVWType.QbDataSet else ""
+    )
+    codelist_info_printable: str = (
+        metadata_printer.codelist_info_printable
+        if csvw_type == CSVWType.QbDataSet
+        else ""
+    )
+    dataset_observations_info_printable: str = (
+        metadata_printer.dataset_observations_info_printable
+    )
+    dataset_val_counts_by_measure_unit: str = (
+        metadata_printer.dataset_val_counts_by_measure_unit_info_printable
+        if csvw_type == CSVWType.QbDataSet
+        else ""
+    )
+    codelist_hierarchy_info_printable: str = (
+        metadata_printer.codelist_hierachy_info_printable
+        if csvw_type == CSVWType.CodeList
+        else ""
+    )
 
     return (
-        metadata_printer.gen_type_info_printable(),
-        metadata_printer.gen_catalog_metadata_printable(),
+        type_info_printable,
+        catalog_metadata_printable,
         dsd_info_printable,
         codelist_info_printable,
-        metadata_printer.gen_head_tail_printable(),
-        metadata_printer.gen_val_count_printable(),
+        dataset_observations_info_printable,
+        dataset_val_counts_by_measure_unit,
+        codelist_hierarchy_info_printable,
     )

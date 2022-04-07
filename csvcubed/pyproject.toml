@@ -20,6 +20,8 @@ appdirs = "^1.4.4"
 requests = "^2.27.1"
 click = ">=8.0.0"
 requests-cache = "^0.9.3"
+treelib = "^1.6.1"
+uritemplate = "^4.1.1"
 
 [tool.poetry.dev-dependencies]
 # The -models library is currently listed as a dev dependency so that we can reference it by its relative
@@ -29,6 +31,7 @@ requests-cache = "^0.9.3"
 csvcubed-models = {path = "./../csvcubed-models", develop = true}
 csvcubed-devtools = {path = "./../csvcubed-devtools", develop = true}
 requests-mock = "~1.9.3"
+pytest-vcr = "~1.0.2"
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
