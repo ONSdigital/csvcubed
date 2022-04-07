@@ -251,7 +251,11 @@ def test_select_single_unit_from_dsd():
     """
     Should return expected `DSDSingleUnitResult`.
     """
-    csvw_metadata_json_path = _test_case_base_dir / "single-unit_multi-measure" / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv-metadata.json"
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "single-unit_multi-measure"
+        / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv-metadata.json"
+    )
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
     dataset_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
@@ -278,12 +282,12 @@ def test_select_table_schema_dependencies():
         / "sectors-economic-estimates-2018-trade-in-services.csv-metadata.json"
     )
 
-    # Deliberately not using MetadataProcessor.load_json_ld_to_rdflib_graph
-    # since it calls `select_csvw_table_schemas` itself implicitly.
-    graph = Graph()
-    graph.load(csvw_metadata_json_path, format="json-ld")
+    metadata_processor = MetadataProcessor(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
-    table_schema_results = select_csvw_table_schema_file_dependencies(graph)
+    table_schema_results = select_csvw_table_schema_file_dependencies(
+        csvw_metadata_rdf_graph
+    )
 
     standardised_file_paths = {
         s.removeprefix("file://")
