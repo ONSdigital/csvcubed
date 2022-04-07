@@ -9,6 +9,7 @@ This quick-start provides an overview of how to configure your qube using either
 For detailed coverage of configuring a cube refer to the [Qube Config](../guides/qube-config.md) guide.
 
 ## Convention-first method
+
 The convention-first method enables you to generate a CSV-W using just the data file, this must be formatted according 
 to the requirements.  This approach is useful as a starting point, however the configuration-first approach provides 
 greater control over the cube configuration.
@@ -45,6 +46,7 @@ Run ``csvcubed build cube-data.csv``
 This will generate the cube using the documented [inferences and assumptions](../guides/qube-config.md).
 
 ## Configuration-first method
+
 Configuring the CSV-W output is done in such a way that the user is explicit in overriding the default values assumed 
 by the csvcubed convention-first approach. Every value in the configuration of a cube has a default value, and if it is 
 not overridden it is ether omitted as unnecessary for the production of valid CSV-W or the default value is used.

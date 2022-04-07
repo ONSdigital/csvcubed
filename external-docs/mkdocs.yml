@@ -17,6 +17,9 @@ nav:
       - Shape your data: guides/shape-data.md
       - Handling missing observed values: guides/missing-observed-values.md
       - Qube config: guides/qube-config.md
+      - Commands: 
+        - build: guides/command-line/build-command.md
+        - inspect: guides/command-line/inspect-command.md
       - Errors:
         - guides/errors/index.md
         - Missing column definition: guides/errors/missing-column-definition.md

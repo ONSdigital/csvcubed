@@ -1,10 +1,12 @@
 # Command Line Interface (CLI)
 
-Csvcubed provides a command line interface (CLI) than can be used to build a new Qube and inspect an existing Qube.
+csvcubed provides a command line interface (CLI) than can be used to build a new cube and inspect an existing cube.
 
-### Commands
+## Commands
 For details of these commands proceed to the following pages:
 
-* [build](./build-command.md)
-* [inspect](./inspect-command.md)
+* [build](../guides/command-line/build-command.md)
+* [inspect](../guides/command-line/inspect-command.md)
+
+
 

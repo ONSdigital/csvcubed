@@ -1,27 +1,27 @@
-# Configuring a Qube
+# Configuring a cube
 
-There are two ways to use csvcubed to generate a valid statistical qube:
+There are two ways to use csvcubed to generate a valid statistical cube:
 
-* **The convention-first approach** allows you to create a qube with minimal configuration.
-* **The configuration-first approach** where you have the full power to configure your qube.
+* **The convention-first approach** allows you to create a cube with minimal configuration.
+* **The configuration-first approach** where you have the full power to configure your cube.
 
-This document goes through, in detail, how to configure your qube whether you wish to use either of the two approaches or a combination of the two. For a quicker overview of the topic take a look at the [Qube Config quick-start](../quick-start/qube-config.md).  
+This document goes through, in detail, how to configure your cube whether you wish to use either of the two approaches or a combination of the two. For a quicker overview of the topic take a look at the [Qube Config quick-start](../quick-start/qube-config.md).  
 
 > **Experience of writing basic JSON documents is assumed throughout this document.** 
 > See this [tutorial from DigitalOcean](https://www.digitalocean.com/community/tutorials/an-introduction-to-json) for an introduction to writing JSON.
 
-## Qube configuration overview
+## Cube configuration overview
 
 There are three steps to generating a CSV-W using csvcubed, some of which are optional. 
 
 ```mermaid
 graph LR
-	subgraph "Fastest Qube"
+	subgraph "Fastest Cube"
 		A(Start) ==> B[1. Define metadata];
 		B ==> C{"Column names"};
 		C == Convention ==> D
 	end
-	subgraph "Custom Qube"
+	subgraph "Custom Cube"
 		C -- Configuration --> 1["2. Define columns"] --> D;
 	end
 	
@@ -94,7 +94,7 @@ A CSV-W file contains metadata which improves discoverability of data publicatio
 
 ### Column definitions
 
-A CSV-W file provides detailed information about the columns beyond their values. In csvcubed, we are targeting a level of detail which results in a data cube which can be be expressed using W3C's RDF Cube Vocabulary. A data cube must have a dimension, and observation columns along with at least one unit and measure defined to be valid. A cube may also have one or more attribute columns which provide clarification to observational data. Units and measures may be attached to the observation column (single measure qube), or appear in a column of their own (multi-measure qube).
+A CSV-W file provides detailed information about the columns beyond their values. In csvcubed, we are targeting a level of detail which results in a data cube which can be be expressed using W3C's RDF Cube Vocabulary. A data cube must have a dimension, and observation columns along with at least one unit and measure defined to be valid. A cube may also have one or more attribute columns which provide clarification to observational data. Units and measures may be attached to the observation column (single measure cube), or appear in a column of their own (multi-measure cube).
 
 To define a column in a `qube-config.json` file, provide the column header's value as a dictionary key, and create a new dictionary.
 
