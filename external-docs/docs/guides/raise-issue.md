@@ -2,7 +2,8 @@
 
 ## Report Bugs
 
-If you find a bug in the code, please do not hesitate to submit a ticket to the issue tracker.
+If you find any bug in the code, please know that we welcome all contributions to our project even if you just report the bug.
+
 Well written bug reports are very helpful. See this [stackoverflow article](https://stackoverflow.com/help/minimal-reproducible-example) and this [blog post](https://matthewrocklin.com/blog/work/2018/02/28/minimal-bug-reports) for tips on writing minimal, reproducible examples. Please also keep in mind the following guidelines when reporting a new bug:
 
 * Check the errors section of this documentation to see if your issue is addressed.
@@ -20,9 +21,9 @@ In the event that your issue can only be reproduced using sensitive information,
 ## Obtaining Error Logs
 To obtain a detailed error log, please follow the following steps:
 
-1. Set the logging level to debug in the build command. `build --log-level debug`
+1. Set the logging level to debug in the build or inspect command respectively command. `[build/inspect] --log-level debug` 
 2. Rerun the issue causing lines.
-3. Copy and paste the resulting console output into the bug reporting form.
+3. Copy and paste the resulting console output into the bug reporting form. 
 
 **Note:** Logs from the past 7 days are recorded in csvcube's log file `out.log`.
 Feel free to consulte these for more detailed retrospective debugging.
