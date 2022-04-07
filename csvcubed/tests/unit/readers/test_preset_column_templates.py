@@ -12,7 +12,7 @@ from csvcubed.readers.preconfiguredtemplates import (
     apply_preconfigured_values_from_template,
 )
 
-TEMPLATE_BASE_URL = "https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/csvcubed/csvcubed/readers/{}/templates/{}"
+TEMPLATE_BASE_URL = "https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/csvcubed/csvcubed/readers/cubeconfig/{}/templates/{}"
 
 
 def test_func_accepts_dict_with_template():
