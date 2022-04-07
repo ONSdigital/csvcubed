@@ -40,7 +40,7 @@ The table below illustrates a sample data set that conforms to the above require
 Building:
 
 When your data file conforms with the above requirements you can proceed to build the cube using the 
-[build command](./build-command.md)  
+[build command](../guides/command-line/build-command.md)  
 Run ``csvcubed build cube-data.csv``
 
 This will generate the cube using the documented [inferences and assumptions](../guides/qube-config.md).

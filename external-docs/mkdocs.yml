@@ -5,8 +5,8 @@ nav:
       - index.md
   - Why:
       - why/index.md
-  - Quickstart:
-      - quick-start/index.md
+  - Quickstart: 
+      - quick-start/installation.md
       - Installation: quick-start/installation.md
       - Shaping your data: quick-start/shaping.md
       - Qube config: quick-start/qube-config.md
