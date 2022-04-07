@@ -14,7 +14,7 @@ class CsvcubedExceptionMsges(Enum):
 
     InputTypeUnknown = "The input type is unknown"
 
-    RDFGraphCannotBeNone = "RDF graph cannot be none"
+    RdfGraphCannotBeNone = "RDF graph cannot be none"
 
     CsvToDataFrameLoadFailed = "Failed to load csv to dataframe"
 
@@ -24,21 +24,27 @@ class CsvcubedExceptionMsges(Enum):
         "Failed to read sparql query from file at {sparql_file_path}"
     )
 
-    InvalidCSVFilePath = "Currently, inspect cli only suports CSVs with local file paths. CSVs from HTTP urls are not yet supported"
+    InvalidCsvFilePath = "Currently, inspect cli only suports CSVs with local file paths. CSVs from HTTP urls are not yet supported"
 
-    FailedToLoadTableSchemaIntoRDFGraph = "An error occured while loading table schema '{table_schema_file}' into rdf graph"
+    FailedToLoadTableSchemaIntoRdfGraph = "An error occured while loading table schema '{table_schema_file}' into rdf graph"
 
-    FailedToParseJSONldtoRDFGraph = "An error occured while parsing CSV-W JSON-LD to RDF graph ({csvw_metadata_file_path})"
+    FailedToParseJsonldtoRdfGraph = "An error occured while parsing CSV-W JSON-LD to RDF graph ({csvw_metadata_file_path})"
+
+    FailedToReadCsvwContent = (
+        "An error occured while reading csvw content ({csvw_metadata_file_path})"
+    )
+
+    InvalidCsvwContent = "CSVW content is invalid."
 
     UnsupportedComponentPropertyType = "Property type {property_type} is not supported"
 
     FailedToConvertDataFrameToString = "Failed to convert dataframe to string"
 
-    UnexpectedSparqlASKQueryResponseType = (
+    UnexpectedSparqlAskQueryResponseType = (
         "Unexpected ASK query response type {response_type}"
     )
 
-    UnexpectedSparqlASKQueryResults = (
+    UnexpectedSparqlAskQueryResults = (
         "Unexpected number of results for ASK query {num_of_results}"
     )
 
@@ -58,7 +64,7 @@ class CsvcubedExceptionUrls(Enum):
 
     InputTypeUnknown = "http://purl.org/csv-cubed/err/input-type-unknown"
 
-    RDFGraphCannotBeNone = "http://purl.org/csv-cubed/err/rdf-graph-none"
+    RdfGraphCannotBeNone = "http://purl.org/csv-cubed/err/rdf-graph-none"
 
     CsvToDataFrameLoadFailed = (
         "http://purl.org/csv-cubed/err/csv-to-dataframe-load-failed"
@@ -70,15 +76,21 @@ class CsvcubedExceptionUrls(Enum):
         "http://purl.org/csv-cubed/err/failed-read-sparql_query-from-file"
     )
 
-    InvalidCSVFilePath = "http://purl.org/csv-cubed/err/invalid-csv-file-path"
+    InvalidCsvFilePath = "http://purl.org/csv-cubed/err/invalid-csv-file-path"
 
-    FailedToLoadTableSchemaIntoRDFGraph = (
+    FailedToLoadTableSchemaIntoRdfGraph = (
         "http://purl.org/csv-cubed/err/failed-to-load-table-schema-into-rdf-graph"
     )
 
-    FailedToParseJSONldtoRDFGraph = (
+    FailedToParseJsonldtoRdfGraph = (
         "http://purl.org/csv-cubed/err/failed-to-parse-json-ld-to-rdf-graph"
     )
+
+    FailedToReadCsvwContent = (
+        "http://purl.org/csv-cubed/err/failed-to-read-csvw-content"
+    )
+
+    InvalidCsvwContent = "http://purl.org/csv-cubed/err/invalid-csvw-content"
 
     UnsupportedComponentPropertyType = (
         "http://purl.org/csv-cubed/err/unsupported-component-property-type"
@@ -88,11 +100,11 @@ class CsvcubedExceptionUrls(Enum):
         "http://purl.org/csv-cubed/err/failed-to-convert-dataframe-to-string"
     )
 
-    UnexpectedSparqlASKQueryResponseType = (
+    UnexpectedSparqlAskQueryResponseType = (
         "http://purl.org/csv-cubed/err/invalid-ask-query-response-type"
     )
 
-    UnexpectedSparqlASKQueryResults = (
+    UnexpectedSparqlAskQueryResults = (
         "http://purl.org/csv-cubed/err/invalid-ask-query-results"
     )
 
@@ -131,15 +143,15 @@ class InputTypeIsUnknownException(CsvcubedException):
         return CsvcubedExceptionUrls.InputTypeUnknown.value
 
 
-class RDFGraphCannotBeNoneException(CsvcubedException):
-    """Class representing the RDFGraphCannotBeNoneException model."""
+class RdfGraphCannotBeNoneException(CsvcubedException):
+    """Class representing the RdfGraphCannotBeNoneException model."""
 
     def __init__(self):
-        super().__init__(f"{CsvcubedExceptionMsges.RDFGraphCannotBeNone.value}")
+        super().__init__(f"{CsvcubedExceptionMsges.RdfGraphCannotBeNone.value}")
 
     @classmethod
     def get_error_url(cls) -> str:
-        return CsvcubedExceptionUrls.RDFGraphCannotBeNone.value
+        return CsvcubedExceptionUrls.RdfGraphCannotBeNone.value
 
 
 class CsvToDataFrameLoadFailedException(CsvcubedException):
@@ -188,41 +200,67 @@ class InvalidCsvFilePathException(CsvcubedException):
     """Class representing the InvalidCsvFilePathException model."""
 
     def __init__(self):
-        super().__init__(CsvcubedExceptionMsges.InvalidCSVFilePath.value)
+        super().__init__(CsvcubedExceptionMsges.InvalidCsvFilePath.value)
 
     @classmethod
     def get_error_url(cls) -> str:
-        return CsvcubedExceptionUrls.InvalidCSVFilePath.value
+        return CsvcubedExceptionUrls.InvalidCsvFilePath.value
 
 
-class FailedToLoadTableSchemaIntoRDFGraphException(CsvcubedException):
-    """Class representing the FailedToLoadTableSchemaIntoRDFGraphException model."""
+class FailedToLoadTableSchemaIntoRdfGraphException(CsvcubedException):
+    """Class representing the FailedToLoadTableSchemaIntoRdfGraphException model."""
 
     def __init__(self, table_schema_file: str):
         super().__init__(
-            CsvcubedExceptionMsges.FailedToLoadTableSchemaIntoRDFGraph.value.format(
+            CsvcubedExceptionMsges.FailedToLoadTableSchemaIntoRdfGraph.value.format(
                 table_schema_file=table_schema_file
             )
         )
 
     @classmethod
     def get_error_url(cls) -> str:
-        return CsvcubedExceptionUrls.FailedToLoadTableSchemaIntoRDFGraph.value
+        return CsvcubedExceptionUrls.FailedToLoadTableSchemaIntoRdfGraph.value
 
 
-class FailedToParseJSONldtoRDFGraphException(CsvcubedException):
-    """Class representing the FailedToParseJSONldtoRDFGraphException model."""
+class FailedToParseJsonldtoRdfGraphException(CsvcubedException):
+    """Class representing the FailedToParseJsonldtoRdfGraphException model."""
 
     def __init__(self, csvw_metadata_file_path: Path):
         super().__init__(
-            CsvcubedExceptionMsges.FailedToParseJSONldtoRDFGraph.value.format(
+            CsvcubedExceptionMsges.FailedToParseJsonldtoRdfGraph.value.format(
                 csvw_metadata_file_path=str(csvw_metadata_file_path)
             )
         )
 
     @classmethod
     def get_error_url(cls) -> str:
-        return CsvcubedExceptionUrls.FailedToParseJSONldtoRDFGraph.value
+        return CsvcubedExceptionUrls.FailedToParseJsonldtoRdfGraph.value
+
+
+class FailedToReadCsvwContentException(CsvcubedException):
+    """Class representing the FailedToReadCsvwContentException model."""
+
+    def __init__(self, csvw_metadata_file_path: Path):
+        super().__init__(
+            CsvcubedExceptionMsges.FailedToReadCsvwContent.value.format(
+                csvw_metadata_file_path=str(csvw_metadata_file_path)
+            )
+        )
+
+    @classmethod
+    def get_error_url(cls) -> str:
+        return CsvcubedExceptionUrls.FailedToReadCsvwContent.value
+
+
+class InvalidCsvwContentException(CsvcubedException):
+    """Class representing the InvalidCsvwContentException model."""
+
+    def __init__(self):
+        super().__init__(CsvcubedExceptionMsges.InvalidCsvwContent.value)
+
+    @classmethod
+    def get_error_url(cls) -> str:
+        return CsvcubedExceptionUrls.InvalidCsvwContent.value
 
 
 class UnsupportedComponentPropertyTypeException(CsvcubedException):
@@ -256,29 +294,29 @@ class UnexpectedSparqlAskQueryResponseTypeException(CsvcubedException):
 
     def __init__(self, response_type: type):
         super().__init__(
-            CsvcubedExceptionMsges.UnexpectedSparqlASKQueryResponseType.value.format(
+            CsvcubedExceptionMsges.UnexpectedSparqlAskQueryResponseType.value.format(
                 response_type=response_type
             )
         )
 
     @classmethod
     def get_error_url(cls) -> str:
-        return CsvcubedExceptionUrls.UnexpectedSparqlASKQueryResponseType.value
+        return CsvcubedExceptionUrls.UnexpectedSparqlAskQueryResponseType.value
 
 
-class UnexpectedSparqlASKQueryResultsException(CsvcubedException):
-    """Class representing the UnexpectedSparqlASKQueryResultsException model."""
+class UnexpectedSparqlAskQueryResultsException(CsvcubedException):
+    """Class representing the UnexpectedSparqlAskQueryResultsException model."""
 
     def __init__(self, num_of_results: int):
         super().__init__(
-            CsvcubedExceptionMsges.UnexpectedSparqlASKQueryResults.value.format(
+            CsvcubedExceptionMsges.UnexpectedSparqlAskQueryResults.value.format(
                 num_of_results=num_of_results
             )
         )
 
     @classmethod
     def get_error_url(cls) -> str:
-        return CsvcubedExceptionUrls.UnexpectedSparqlASKQueryResults.value
+        return CsvcubedExceptionUrls.UnexpectedSparqlAskQueryResults.value
 
 
 class FeatureNotSupportedException(CsvcubedException):

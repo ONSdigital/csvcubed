@@ -11,7 +11,7 @@ from rdflib.query import ResultRow
 
 from csvcubed.models.csvcubedexception import (
     UnexpectedSparqlAskQueryResponseTypeException,
-    UnexpectedSparqlASKQueryResultsException,
+    UnexpectedSparqlAskQueryResultsException,
 )
 
 
@@ -39,7 +39,7 @@ def ask(query: str, graph: Graph) -> bool:
         else:
             raise UnexpectedSparqlAskQueryResponseTypeException(type(result))
     else:
-        raise UnexpectedSparqlASKQueryResultsException(len(results))
+        raise UnexpectedSparqlAskQueryResultsException(len(results))
 
 
 def select(query: str, graph: Graph, init_bindings=None) -> List[ResultRow]:
