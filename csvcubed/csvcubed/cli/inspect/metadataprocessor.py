@@ -77,9 +77,9 @@ class MetadataProcessor:
         This is an alternative to passing in the path of the csvw file directly to the RDFlib's parse() function. 
         
         The reason for doing this is because when concurrent builds are running in Git or Jenkins pipelines, suffixes such as
-        @2, @3 and so on (e.g. "path/to/file/dir_@2", "path/to/file/dir_@3") will be appended to the directory path by Git and Jenkins.
-        Since RDFLib uses the Path lib which url encodes these paths (e.g. "path/to/file/dir_%40"), the wrong path will be used to load the csvws.
-        This results in "file not found" error.
+        @2, @3 and so on (e.g. "path/to/file/dir_@2", "path/to/file/dir_@3") will be appended to the directory path.
+        Since RDFLib uses the Path lib which it then url encodes, these graphs will end up with relative URIs turned into absolute URIs 
+        containing parts such as "path/to/file/dir_%40"; this makes it hard to identify the correct location of the underlying file when reading results from RDFlib.
         """
 
         try:
