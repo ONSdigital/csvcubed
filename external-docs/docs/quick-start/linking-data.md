@@ -47,7 +47,6 @@ For more information see the [templates guide](../guides/using-templates.md).
 
 ## Next steps
 
-
 This is the end of the quick start section, there is lots more information available in the guides section available in the lefthand menu.
 
 The completed Sweden at Eurovision data set requires knowlege of how to [describe missing data](../guides/missing-observed-values.md) 
