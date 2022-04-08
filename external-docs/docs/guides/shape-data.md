@@ -4,7 +4,7 @@
 
 csvcubed requires that all CSV data inputs are provided in one of two specialised form of [tidy data](../glossary/index.md#tidy-data):
 
-* the [canonical approach](#canonical-shape) - the **default recommended shape** accepted by csvcubed. It is the **most flexible** approach as it allows you to vary measures and units within the same cube, but it is also the most **verbose** shape.
+* the [standard approach](#standard-shape) - the **default recommended shape** accepted by csvcubed. It is the **most flexible** approach as it allows you to vary measures and units within the same cube, but it is also the most **verbose** shape.
 * the [pivoted approach](#pivoted-shape) - a **terser** shape currently only compatible with data sets containing a **single measure**.
 
 These two shapes share a number of similarities in how they require data to be structured; this is explored in the following section on the [common structure](#common-structure).
@@ -34,9 +34,9 @@ _Data set representing the number of 'Arthur's Bakes' stores in UK cities from 2
     * the `Status` _attribute_ column contains information describing the state of the observed value itself.
     * Note that _attributes_ should only describe the observed value and must not identify any subset of the population.  
 
-## Canonical Shape
+## Standard shape
 
-The canonical shape extends the [common structure](#common-structure) by requiring that **each row** has a _measures_ column and a _units_ column; these columns define the measure and unit (of measure) for each row. In our example, the measure observed is `Number of 'Arthur's Bakes'` and the corresponding unit is `Count`.
+The standard shape extends the [common structure](#common-structure) by requiring that **each row** has a _measures_ column and a _units_ column; these columns define the measure and unit (of measure) for each row. In our example, the measure observed is `Number of 'Arthur's Bakes'` and the corresponding unit is `Count`.
 
 | Year | Location  | Value |      Status |                    Measure |  Unit |
 |:-----|:----------|------:|------------:|---------------------------:|------:|
@@ -77,11 +77,11 @@ The simplest [qube-config.json](./qube-config.md#configuration) we can define fo
 }
 ```
 
-It is possible to use the [convention-first approach](./qube-config.md#convention-first-method) to generate a valid [canonical shape](#canonical-shape) cube without defining a [qube-config.json](./qube-config.md#configuration) at all. Just ensure that your columns use the [conventional column names](./qube-config.md#conventional-column-names) appropriate to their type.
+It is possible to use the [convention-first approach](./qube-config.md#convention-first-method) to generate a valid [standard shape](#standard-shape) cube without defining a [qube-config.json](./qube-config.md#configuration) at all. Just ensure that your columns use the [conventional column names](./qube-config.md#conventional-column-names) appropriate to their type.
 
 ### Multiple Measures
 
-One of the benefits of the canonical shape is that it is relatively straightforward to add new measure types and unit types; all that you have to do is add additional rows to your data set with the appropriate units and measures present.
+One of the benefits of the standard shape is that it is relatively straightforward to add new measure types and unit types; all that you have to do is add additional rows to your data set with the appropriate units and measures present.
 
 We can extend our example data set so that it now includes revenue values for the given year by adding rows to the table:
 
@@ -101,9 +101,9 @@ The same data could be more naturally represented in the equivalent pivoted shap
 
 **csvcubed does not currently support data sets containing multiple measures in the [pivoted shape](#pivoted-shape).**
 
-### Converting to the Canonical Shape
+### Converting to the standard shape
 
-Since csvcubed doesn't currently support multi-measure data sets in the [pivoted shape](#pivoted-shape), it is often necessary to convert your data from the [pivoted shape](#pivoted-shape) into the [canonical shape](#canonical-shape). See the following examples using the [pandas library](https://pandas.pydata.org/) in python and the [tidyverse library](https://tidyverse.org/) in R to convert from the pivoted to the canonical shape.
+Since csvcubed doesn't currently support multi-measure data sets in the [pivoted shape](#pivoted-shape), it is often necessary to convert your data from the [pivoted shape](#pivoted-shape) into the [standard shape](#standard-shape). See the following examples using the [pandas library](https://pandas.pydata.org/) in python and the [tidyverse library](https://tidyverse.org/) in R to convert from the pivoted to the standard shape.
 
 Starting with a dataframe in the pivoted shape:
 
@@ -125,7 +125,7 @@ Starting with a dataframe in the pivoted shape:
     })
 
     # Melt the data frame - this reshapes the data so there are now 'Measure' and 'Value' columns.
-    canonical_shaped_data = pivoted_data.melt(
+    standard_shaped_data = pivoted_data.melt(
         id_vars=["Year", "Location"],
         value_vars=["Number of 'Arthur's Bakes'", "Revenue (GBP Sterling, Millions)"],
         var_name="Measure",
@@ -133,18 +133,18 @@ Starting with a dataframe in the pivoted shape:
     )
 
     # Create a units column based on the measure.
-    canonical_shaped_data["Unit"] = canonical_shaped_data["Measure"].map({
+    standard_shaped_data["Unit"] = standard_shaped_data["Measure"].map({
         "Number of 'Arthur's Bakes'": "Count",
         "Revenue (GBP Sterling, Millions)": "GBP Sterling, Millions"
     })
 
     # Rename the measures now that the units have been extracted into their own column.
-    canonical_shaped_data["Measure"] = canonical_shaped_data["Measure"].replace({
+    standard_shaped_data["Measure"] = standard_shaped_data["Measure"].replace({
         "Revenue (GBP Sterling, Millions)": "Revenue"
     })
 
     # Output the data to CSV for input to csvcubed.
-    canonical_shaped_data.to_csv("my-data.csv", index=False)
+    standard_shaped_data.to_csv("my-data.csv", index=False)
     ```
 === "R"
     ```r
@@ -157,7 +157,7 @@ Starting with a dataframe in the pivoted shape:
         `Revenue (GBP Sterling, Millions)` = c(25, 18)
     )
 
-    canonical_shape_data <- pivoted_shape_data %>% 
+    standard_shape_data <- pivoted_shape_data %>% 
         # Re-pivot the data frame - this reshapes the data so there are now 'Measure' and 'Value' columns.
         pivot_longer(
             cols = c(`Number of 'Arthur's Bakes'`, "Revenue (GBP Sterling, Millions)"), 
@@ -181,10 +181,10 @@ Starting with a dataframe in the pivoted shape:
         )
 
     # Output the data to CSV for input to csvcubed.
-    canonical_shape_data %>% write.csv(file="my-data.csv", row.names=FALSE)
+    standard_shape_data %>% write.csv(file="my-data.csv", row.names=FALSE)
     ```
 
-The data is now in canonical form:
+The data is now in standard form:
 
 | Year | Location |                    Measure | Value |                   Unit |
 |:-----|:---------|---------------------------:|------:|-----------------------:|
@@ -197,7 +197,7 @@ The data is now in canonical form:
 
 > csvcubed currently only accepts the pivoted data shape if your cube contains a single measure type and a single unit type.
 
-The [canonical shape](#canonical-shape) is flexible but it also has a lot of redudancy which can often be removed by using the more concise pivoted form. Our dataset on the distribution of the number of `Arthur's Bakes' stores can be expressed in the following way in the pivoted shape:
+The [standard shape](#standard-shape) is flexible but it also has a lot of redudancy which can often be removed by using the more concise pivoted form. Our dataset on the distribution of the number of `Arthur's Bakes' stores can be expressed in the following way in the pivoted shape:
 
 | Year | Location  | Number of 'Arthur's Bakes' |      Status |
 |:-----|:----------|---------------------------:|------------:|

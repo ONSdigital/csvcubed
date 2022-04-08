@@ -1,6 +1,6 @@
 # Validation Errors
 
-## Index of known exceptions:
+## Known validation errors
 
 * [Missing Column Definition Error](./missing-column-definition.md) 
 * [Column Not Found In Data Error](./column-not-found-in-data.md)

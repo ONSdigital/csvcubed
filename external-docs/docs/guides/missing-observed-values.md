@@ -62,8 +62,6 @@ Adding a `Marker` column to represent the observation status can be done in the 
 
 ```json
         "Marker": {
-            "type": "attribute",
-            "label": "Marker",
-            "from_existing": "http://purl.org/linked-data/sdmx/2009/attribute#obsStatus"
+            "from_template": "observation-status"
         },
 ```
