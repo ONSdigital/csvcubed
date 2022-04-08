@@ -48,4 +48,4 @@ There are two sub-commands:
 
 ## Next
 
-The next step it to [shape your data](./shaping.md).
+The next step is to [design your CSV](./designing-csv.md).

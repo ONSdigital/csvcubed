@@ -22,7 +22,7 @@ Requirements:
  * There must be, as a minimum, columns of type [dimension](../glossary/#dimension),
    [observations](../glossary/#observation-observed-value), [measures](../glossary/#measure), [units](../glossary/#unit).
 
- * The data must be structured in the [canonical data shape](../guides/shape-data/#canonical-shape).
+ * The data must be structured in the [standard data shape](../guides/shape-data/#standard-shape).
 
  * All data row values must be populated.
 

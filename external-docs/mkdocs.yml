@@ -3,11 +3,12 @@ site_url: https://gss-cogs.github.io/csvcubed-docs/external
 nav:
   - Home:
       - index.md
-  - Quickstart: 
-      - quick-start/installation.md
+  - Quick start: 
+      - quick-start/index.md
       - Installation: quick-start/installation.md
-      - Qube config: quick-start/qube-config.md
-      - Command line: quick-start/command-line.md
+      - Designing a CSV: quick-start/designing-csv.md
+      - Building a CSV-W: quick-start/build.md
+      - Describing your CSV: quick-start/describing-csv.md
       - Linking data: quick-start/linking-data.md
   - Guides:
       - guides/index.md

@@ -43,7 +43,7 @@ The convention-first method enables you to generate a CSV-W cube without providi
 
 Requirements:
 
-* The data set must be in the [canonical data shape](./shape-data.md#canonical-shape).
+* The data set must be in the [standard data shape](./shape-data.md#standard-shape).
 * The data CSV's column titles use [conventional column names](#conventional-column-names) for [measure](../glossary/index.md#measure) columns, [unit](../glossary/index.md#unit) columns and [observed value](../glossary/index.md#observation-observed-value) columns.
 
 Inferences and assumptions:
