@@ -1,0 +1,35 @@
+{
+  "$schema": "https://purl.org/csv-cubed/qube-config/v1.0",
+  "id": "schema-id",
+  "title": "Tests/test-cases/config/schema-cube-data-config-ok",
+  "description": "Schema for testing",
+  "uri_safe_identifier_override": "uri-safe",
+  "columns": {
+    "Measure": {
+      "type": "measures",
+      "values": true
+    },
+    "Dim-0": {
+      "label": "Non Dimension",
+      "type": "dimension",
+      "code_list": true
+    },
+    "Attr 1": {
+      "type": "attribute",
+      "label": "My best attribute",
+      "values": true
+    },
+    "attr-1": {
+      "type": "attribute",
+      "label": "My best attribute",
+      "values": true
+    },
+    "Amount": {
+      "type": "observations"
+    },
+    "Units": {
+      "type": "units",
+      "values": true
+    }
+  }
+}

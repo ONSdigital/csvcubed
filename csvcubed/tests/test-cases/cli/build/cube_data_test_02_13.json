@@ -1,0 +1,23 @@
+{
+  "$schema": "https://purl.org/csv-cubed/qube-config/v1.0",
+  "id": "schema-id",
+  "columns": {
+    "Measure": {
+      "type": "measures",
+      "values": true
+    },
+    "Dim-0": {
+      "label": "Non Dimension",
+      "type": "dimension",
+      "code_list": true
+    },
+    "Amount": {
+      "type": "observations",
+      "label": "Volume"
+    },
+    "Units": {
+      "type": "units",
+      "values": true
+    }
+  }
+}

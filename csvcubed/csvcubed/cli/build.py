@@ -10,8 +10,8 @@ from pathlib import Path
 from typing import Optional, Tuple, List
 
 from csvcubedmodels.dataclassbase import DataClassBase
-
-from csvcubed.models.cube import QbCube
+from csvcubed.cli.error_mapping import friendly_error_mapping
+from csvcubed.models.cube import QbCube, DuplicateColumnTitleError
 from csvcubed.models.validationerror import SpecificValidationError, ValidationError
 from csvcubed.readers.cubeconfig.schema_versions import (
     QubeConfigDeserialiser,
@@ -49,7 +49,7 @@ def build(
 
     if len(validation_errors) > 0 or len(json_schema_validation_errors) > 0:
         for error in validation_errors:
-            _logger.error("Validation Error: %s", error.message)
+            _logger.error("Validation Error: %s", friendly_error_mapping(error))
             if isinstance(error, SpecificValidationError):
                 _logger.error("More information: %s", error.get_error_url())
 
@@ -68,14 +68,17 @@ def build(
             ]
 
             with open(validation_errors_file_out, "w+") as f:
-                json.dump(all_errors, f, indent=4)
+                json.dump(all_errors, f, indent=4, default=serialize_sets)
+            # with open(output_directory / validation_errors_file_out, "w+") as f:
+            #     json.dump(all_errors, f, indent=4, default=serialize_sets)
 
         if fail_when_validation_error_occurs and len(validation_errors) > 0:
             exit(1)
+    else:
+        writer = QbWriter(cube)
+        writer.write(output_directory)
 
-    writer = QbWriter(cube)
-    writer.write(output_directory)
-
+    # logging.shutdown()
     print(f"Build Complete")
     return cube, validation_errors
 
@@ -91,3 +94,11 @@ def _get_versioned_deserialiser(
         return get_deserialiser_for_schema(config.get("$schema"))
     else:
         return get_deserialiser_for_schema(None)
+
+
+# Credit: Antti Haapala: https://stackoverflow.com/questions/8230315/how-to-json-serialize-sets
+def serialize_sets(obj):
+    if isinstance(obj, set):
+        return list(obj)
+
+    return obj
