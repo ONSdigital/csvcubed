@@ -1,18 +1,18 @@
 # Command Line
 
 ## inspect command
-The inspect command is used to inspect the metadata in an existing Qube.
+The inspect command is used to inspect the metadata of an existing Qube.
 
-**Syntax:**  
+**Syntax**  
 `csvcubed inspect [OPTIONS] TIDY_CSV_PATH`
 
-**Arguments:**
+**Arguments**
 
 | Argument      | Description                                                      |
 | ------------- | ---------------------------------------------------------------- |
 | TIDY_CSV_PATH | The file path to the Qube data file, formatted as tidy data csv. |
 
-**Options:**
+**Options**
 
 | Option      | Description                                                                                                      |
 | ----------- | ---------------------------------------------------------------------------------------------------------------- |
@@ -20,12 +20,13 @@ The inspect command is used to inspect the metadata in an existing Qube.
 | --log-level | Set the desired logging level to one of 'crit', 'err', 'warn', 'info' and 'debug'.  <br/> The default is 'warn'. |
 
 **Log output**  
-Logs are written to both the console and a log file. The verbosity of the logging is governed by the `--log-level` option. 
+The logs are written to both the console and a log file. The verbosity of the logging is controlled by the `--log-level` option. 
 
-The log messages can be used to help identify and resolve issues that are experienced when inspect a Qube.
+The log messages can be used to help identify and resolve issues that are experienced when inspecting a Qube.
 
-The log path is dependant upon the operating system in-use, the following are typical paths, these may also be 
-influenced by your system configuration.
+The log path depends on the operating system, and the following are typical paths:
+
+> Below paths may also be influenced by your system configuration.
 
 | Operating System | Typical Log Path                                                     |
 | ---------------- | -------------------------------------------------------------------- |
