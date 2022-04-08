@@ -1,4 +1,4 @@
-> This step is optional. However, we recommend you to do this step as it allows you to easily validate the content in your CSV-Ws.
+> This step is optional. However, we recommend you do this step as it allows you to easily validate the content in your CSV-Ws.
 
 This page is designed to help you inspect an existing CSV-W. It assumes that you have already [installed csvcubed](./installation.md), [designed your CSV input](./designing-csv.md) and [built your CSV-W](./build.md).
 
@@ -8,7 +8,7 @@ To inspect the `sweden-at-eurovision-no-missing.csv-metadata.json` data cube we 
 csvcubed inspect sweden_at_eurovision_no_missing.csv-metadata.json
 ```
 
-All being well we get the below output. A detailed explanation of these outputs is provided in [csvcubed inspect](../guides/command-line/inspect-command.md#output-format) section.
+All being well we get the below output. A detailed explanation of this output is provided in [csvcubed inspect](../guides/command-line/inspect-command.md#output-format) section.
 
 ```
 - This file is a data cube.
@@ -97,7 +97,7 @@ Now we inspect the `language.csv-metadata.json` code list we built in [Building 
 csvcubed inspect language.csv-metadata.json
 ```
 
-All being well we get the below output. A detailed explanation of these outputs is provided in [csvcubed inspect](../guides/command-line/inspect-command.md#output-format) section.
+All being well we get the below output. A detailed explanation of this output is provided in [csvcubed inspect](../guides/command-line/inspect-command.md#output-format) section.
 
 ```
 - This file is a code list.
@@ -145,7 +145,7 @@ root
 
 ## Errors
 
-There are a number of errors which can occur when inspecting a CSV-W; most of them are designed to help ensure you get correct and valid outputs.
+There are a number of errors that can occur when inspecting a CSV-W; most of them are designed to help ensure you get correct and valid outputs.
 
 Please see our documentation explaining a [number of common errors](../guides/errors/index.md) to see what you can do to diagnose and correct any errors which occur.
 
