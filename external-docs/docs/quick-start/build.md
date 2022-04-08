@@ -5,7 +5,7 @@ This page is designed to help you build a CSV-W from a properly structured CSV f
 To build a cube from the structured CSV we built in [Designing a CSV](designing-csv.md), we run the [csvcubed build](../guides/command-line/build-command.md) command:
 
 ```bash
-csvcubed build sweden-at-eurovision-no-missing.csv
+csvcubed build sweden_at_eurovision_no_missing.csv
 ```
 
 All being well we get the following output:
@@ -29,8 +29,8 @@ out
 ├── song.csv
 ├── song.csv-metadata.json
 ├── song.table.json
-├── sweden-at-eurovision-no-missing.csv
-├── sweden-at-eurovision-no-missing.csv-metadata.json
+├── sweden_at_eurovision_no_missing.csv
+├── sweden_at_eurovision_no_missing.csv-metadata.json
 ├── year.csv
 ├── year.csv-metadata.json
 └── year.table.json
@@ -38,8 +38,8 @@ out
 
 The key files are:
 
-* `sweden-at-eurovision-no-missing.csv` - contains all of the observations.
-* `sweden-at-eurovision-no-missing.csv-metadata.json` - contains metadata describing the structure of your CSV-W cube.
+* `sweden_at_eurovision_no_missing.csv` - contains all of the observations.
+* `sweden_at_eurovision_no_missing.csv-metadata.json` - contains metadata describing the structure of your CSV-W cube.
 * For each dimension you will have:
     * `<dimension_name>.csv` - a code list containing the unique values of that dimension.
     * `<dimension_name>.table.json` - schema describing the code list CSV.
