@@ -3,19 +3,20 @@ site_url: https://gss-cogs.github.io/csvcubed-docs/external
 nav:
   - Home:
       - index.md
-  - Why:
-      - why/index.md
   - Quickstart: 
       - quick-start/installation.md
       - Installation: quick-start/installation.md
       - Qube config: quick-start/qube-config.md
-      - Command Line: quick-start/command-line.md
+      - Command line: quick-start/command-line.md
+      - Linking data: quick-start/linking-data.md
   - Guides:
       - guides/index.md
       - Raise an issue: guides/raise-issue.md
       - Shape your data: guides/shape-data.md
       - Handling missing observed values: guides/missing-observed-values.md
-      - Qube config: guides/qube-config.md
+      - Qube config:
+        - guides/qube-config.md
+        - Templates: guides/using-templates.md
       - Commands: 
         - build: guides/command-line/build-command.md
         - inspect: guides/command-line/inspect-command.md
@@ -43,12 +44,8 @@ nav:
         - CSV column literal with URI template: guides/errors/csv-column-literal-with-uri-template.md
         - Column validation error: guides/errors/column-validation.md
       - Working with URIs: guides/uris.md
-  - Reference Metadata:
-    - reference-metadata/index.md
   - Glossary:
       - glossary/index.md
-  - API Documentation:
-      - api-documentation/index.md
 theme:
   name: material
   palette:

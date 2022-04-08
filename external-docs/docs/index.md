@@ -8,7 +8,7 @@ By publishing [5* linked data](https://5stardata.info/en/) and leveraging open s
 
 ## How do I get started?
 
-See the [quick-start guide](./quick-start).
+See the [quick-start guide](./quick-start/installation.md).
 
 ## I want to know more
 
