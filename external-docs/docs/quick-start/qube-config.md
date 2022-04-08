@@ -2,15 +2,14 @@
 
 There are two approaches to use csvcubed to generate a valid statistical qube:
 
-The **convention-first approach** allows you to create a qube with minimal or no configuration.  
-The **configuration-first approach** where you have the full power to configure your qube.
+The [convention-first approach](../guides/qube-config.md#convention-first-method) allows you to create a cube with minimal or no configuration.  
+The [configuration approach](../guides/qube-config.md#configuration) where you have the full power to configure your cube.
 
-This quick-start provides an overview of how to configure your qube using either approach.  
-For detailed coverage of configuring a cube refer to the [Qube Config](../guides/qube-config.md) guide.
+This quick-start provides an overview of how to configure your qube using the convention-first approach first then covers how to customise using the configuration approach. For detailed coverage of configuring a cube refer to the [Qube Config](../guides/qube-config.md) guide.
 
-## Convention-first method
+## Designing your CSV
 
-The convention-first method enables you to generate a CSV-W using just the data file, this must be formatted according 
+The convention-first appraoch enables you to generate a CSV-W using just the csv file, this must be formatted according 
 to the requirements.  This approach is useful as a starting point, however the configuration-first approach provides 
 greater control over the cube configuration.
 
@@ -30,12 +29,12 @@ Requirements:
 Example Data:
 The table below illustrates a sample data set that conforms to the above requirements. 
 
-| Year  | Location  | Value | Status       | Measure                    | Unit  |
-|------|-----------|--------|--------------|----------------------------|-------|
-| 2022  | London    | 35    | 	Provisional | Number of 'Arthur's Bakes' | 	Count |
-| 2021  | Cardiff   | 26    | 	Final       | Number of 'Arthur's Bakes' | 	Count |
-| 2020  | Edinburgh | 90    | 	Final       | Number of 'Arthur's Bakes' | 	Count |
-| 2021  | Belfast   | 0     | 	Final       | Number of 'Arthur's Bakes' | 	Count |
+| Year | Location  | Value | Status      | Measure                    | Unit  |
+| ---- | --------- | ----- | ----------- | -------------------------- | ----- |
+| 2022 | London    | 35    | Provisional | Number of 'Arthur's Bakes' | Count |
+| 2021 | Cardiff   | 26    | Final       | Number of 'Arthur's Bakes' | Count |
+| 2020 | Edinburgh | 90    | Final       | Number of 'Arthur's Bakes' | Count |
+| 2021 | Belfast   | 0     | Final       | Number of 'Arthur's Bakes' | Count |
 
 Building:
 
