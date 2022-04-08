@@ -8,6 +8,7 @@ nav:
       - Installation: quick-start/installation.md
       - Designing a CSV: quick-start/designing-csv.md
       - Building a CSV-W: quick-start/build.md
+      - Inspecting a CSV-W (Optional): quick-start/inspect.md
       - Describing your CSV: quick-start/describing-csv.md
       - Linking data: quick-start/linking-data.md
   - Guides:
