@@ -8,7 +8,6 @@ nav:
   - Quickstart: 
       - quick-start/installation.md
       - Installation: quick-start/installation.md
-      - Shaping your data: quick-start/shaping.md
       - Qube config: quick-start/qube-config.md
       - Command Line: quick-start/command-line.md
   - Guides:
