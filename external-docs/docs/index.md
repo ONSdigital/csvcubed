@@ -2,9 +2,9 @@
 
 ## What is csvcubed?
 
-The csvcubed project provides libraries and utilities which make it easier to turn a CSV into [5* linked data](https://5stardata.info/en/).
+The csvcubed project provides libraries and utilities which make it easier to turn a CSV into [5-star linked data](https://5stardata.info/en/).
 
-By publishing [5* linked data](https://5stardata.info/en/) and leveraging open standards for data, we believe that we can help ensure that statistical data is discoverable, comparable and analysable by automated tools. We hope that this standards-based approach will unlock network effects which accelerate data analysis by making it easier to collate, compare and contrast data from different sources.
+By publishing [5-star linked data](https://5stardata.info/en/) and leveraging open standards for data, we believe that we can help ensure that statistical data is discoverable, comparable and analysable by automated tools. We hope that this standards-based approach will unlock network effects which accelerate data analysis by making it easier to collate, compare and contrast data from different sources.
 
 ## How do I get started?
 
