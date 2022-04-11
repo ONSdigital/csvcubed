@@ -68,7 +68,7 @@ class CsvcubedExceptionUrls(Enum):
         "http://purl.org/csv-cubed/err/csv-to-dataframe-load-failed"
     )
 
-    InvalidNumberOfRecords = "http://purl.org/csv-cubed/err/invalid-num-of-records"
+    InvalidNumberOfRecords = "http://purl.org/csv-cubed/err/unexpected-number-of-records"
 
     FailedToReadSparqlQuery = (
         "http://purl.org/csv-cubed/err/failed-to-read-sparql-query"
@@ -97,7 +97,7 @@ class CsvcubedExceptionUrls(Enum):
     FeatureNotSupported = "http://purl.org/csv-cubed/err/feature-not-supported"
 
     ErrorProcessingDataFrame = (
-        "http://purl.org/csv-cubed/err/error-when-processing-dataframe"
+        "http://purl.org/csv-cubed/err/error-processing-dataframe"
     )
 
 
