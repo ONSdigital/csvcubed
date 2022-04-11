@@ -61,20 +61,6 @@ def test_about_url_missing():
     assert "is missing `aboutUrl` property" in str(ex)
 
 
-def test_about_url_wrong_variable():
-    """
-    Ensure that we get an appropriate exception when the aboutUrl contains the wrong variable.
-    """
-    code_list_csvw = (
-        _skos_codelist_reader_test_cases / "about-url-wrong-variable.csv-metadata.json"
-    )
-
-    with pytest.raises(ValueError) as ex:
-        extract_code_list_concept_scheme_info(code_list_csvw)
-
-    assert "Unexpected variable found in aboutUrl template" in str(ex)
-
-
 def test_csv_url_missing():
     """
     Ensure that we get an appropriate exception when the table's URL is missing.
