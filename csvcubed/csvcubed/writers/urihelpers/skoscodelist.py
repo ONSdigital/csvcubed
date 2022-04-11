@@ -32,7 +32,7 @@ class SkosCodeListNewUriHelper:
             raise ValueError(f"Unhandled URI Style '{self.code_list.uri_style}'.")
 
     def _resolve_uri_style(self) -> URIStyle:
-        if not (self.code_list is None or self.code_list.uri_style is None):
+        if self.code_list and self.code_list.uri_style:
             return self.code_list.uri_style
         else:
             return self.default_uri_style

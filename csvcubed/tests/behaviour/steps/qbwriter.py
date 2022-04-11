@@ -1,4 +1,3 @@
-from lib2to3.pytree import Node
 from urllib.parse import urlparse
 from numpy import where
 import pandas as pd
@@ -781,7 +780,7 @@ def assertURIStyle(uri_style: URIStyle, temp_dir: Path, csv_file_name: str):
             assert_uri_style_for_uri(uri_style, p, (s, p, o))
 
 
-def assert_uri_style_for_uri(uri_style: URIStyle, uri: str, node: Node):
+def assert_uri_style_for_uri(uri_style: URIStyle, uri: str, node):
     path = urlparse(uri).path
     if uri_style == URIStyle.WithoutFileExtensions:
         assert not path.endswith(

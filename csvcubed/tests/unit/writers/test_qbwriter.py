@@ -520,9 +520,9 @@ def test_output_new_code_list_csvws_urls():
         temp_dir = Path(temp_dir)
         qb_writer._output_new_code_list_csvws(temp_dir)
         graph = Graph()
-        graph.parse(temp_dir / "some-dimension.csv-metadata.json")
+        graph.parse(temp_dir / "some-dimension.csv-metadata.json", publicID="file://relative/")
         assert (
-            URIRef(f"file://{temp_dir}/some-dimension.csv#code-list"),
+            URIRef(f"file://relative/some-dimension.csv#code-list"),
             URIRef("http://www.w3.org/ns/csvw#url"),
             Literal("some-dimension.csv", datatype=XSD.anyURI),
         ) in graph
@@ -546,9 +546,9 @@ def test_output_new_code_list_csvws_urls_with_uri_style_WithoutFileExtensions():
         temp_dir = Path(temp_dir)
         qb_writer._output_new_code_list_csvws(temp_dir)
         graph = Graph()
-        graph.parse(temp_dir / "some-dimension.csv-metadata.json")
+        graph.parse(temp_dir / "some-dimension.csv-metadata.json", publicID="file://relative/")
         assert (
-            URIRef(f"file://{temp_dir}/some-dimension#code-list"),
+            URIRef(f"file://relative/some-dimension#code-list"),
             URIRef("http://www.w3.org/ns/csvw#url"),
             Literal("some-dimension.csv", datatype=XSD.anyURI),
         ) in graph
