@@ -21,6 +21,7 @@ from csvcubedmodels.rdf.resource import (
 )
 
 from csvcubed.models.cube import *
+from csvcubed.models.cube.uristyle import URIStyle
 from csvcubed.utils.uri import (
     get_last_uri_part,
     csvw_column_name_safe,
@@ -151,7 +152,9 @@ class QbWriter(WriterBase):
                     "Writing code list %s to '%s' directory.", code_list, output_folder
                 )
 
-                code_list_writer = SkosCodeListWriter(code_list)
+                code_list_writer = SkosCodeListWriter(
+                    code_list, default_uri_style=self.cube.uri_style
+                )
                 code_list_writer.write(output_folder)
             elif isinstance(code_list, NewQbCodeListInCsvW):
                 # find the CSV-W codelist and all dependent relative files and copy them into the output_folder
@@ -228,7 +231,6 @@ class QbWriter(WriterBase):
                     "Configuring foreign key constraints for dataset-local code list %s",
                     code_list,
                 )
-
                 foreign_keys.append(
                     {
                         "columnReference": csvw_column_name_safe(
@@ -561,7 +563,9 @@ class QbWriter(WriterBase):
         elif isinstance(code_list, NewQbCodeList):
             # The resource is created elsewhere. There is a separate CSV-W definition for the code-list
             return ExistingResource(
-                SkosCodeListNewUriHelper(code_list).get_scheme_uri()
+                SkosCodeListNewUriHelper(
+                    code_list, self.cube.uri_style
+                ).get_scheme_uri()
             )
         elif isinstance(code_list, NewQbCodeListInCsvW):
             return ExistingResource(code_list.concept_scheme_uri)
@@ -971,7 +975,6 @@ class QbWriter(WriterBase):
                 value_uri = self._get_default_value_uri_for_code_list_concepts(
                     column, dimension.code_list
                 )
-
             return local_dimension_uri, value_uri
         else:
             raise Exception(f"Unhandled dimension type {type(dimension)}")
@@ -1037,6 +1040,7 @@ class QbWriter(WriterBase):
         self, column: CsvColumn, code_list: QbCodeList
     ) -> str:
         column_uri_fragment = self._get_column_uri_template_fragment(column)
+
         if isinstance(code_list, ExistingQbCodeList):
             legacy_external_match = self._legacy_external_code_list_pattern.match(
                 code_list.concept_scheme_uri
@@ -1092,9 +1096,9 @@ class QbWriter(WriterBase):
                 "valueUrl defined by new dataset-local code list %s",
                 code_list.metadata.title,
             )
-            return SkosCodeListNewUriHelper(code_list).get_concept_uri(
-                column_uri_fragment
-            )
+            return SkosCodeListNewUriHelper(
+                code_list, self.cube.uri_style
+            ).get_concept_uri(column_uri_fragment)
         elif isinstance(code_list, NewQbCodeListInCsvW):
             _logger.debug(
                 "valueUrl defined by legacy dataset-local code list %s",
