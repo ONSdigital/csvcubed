@@ -58,7 +58,8 @@ def extract_code_list_concept_scheme_info(
             + f"Expected 1, found {len(variables_in_about_url)}"
         )
 
-    variable_name_in_about_url: str = first(variables_in_about_url)
+    variable_name_in_about_url = first(variables_in_about_url)
+    assert variable_name_in_about_url is not None
 
     if variable_name_in_about_url != "notation":
         _logger.debug(
