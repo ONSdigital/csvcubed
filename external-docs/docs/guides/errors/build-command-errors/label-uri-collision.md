@@ -7,4 +7,4 @@ _When the uri-safe value derived from more than one column title or value result
 ## How to fix
 
 Identify which titles or values have resulted in the duplicate uri-safe equivalents and modify to avoid the collision.
-The [Working with URIs Guide](../uris.md) covers how uri-safe equivalent values are derived.
+The [Working with URIs Guide](../../uris.md) covers how uri-safe equivalent values are derived.

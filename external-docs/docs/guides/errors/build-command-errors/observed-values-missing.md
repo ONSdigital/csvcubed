@@ -6,4 +6,4 @@ There are missing (blank) observed values present in the data CSV. These values 
 
 ## How to fix
 
-All rows in your data CSV must have an observed value unless the observation has an *observation status* attribute explaining why the value is missing. See the guide on [handling missing observed values](../missing-observed-values.md) for more information.
+All rows in your data CSV must have an observed value unless the observation has an *observation status* attribute explaining why the value is missing. See the guide on [handling missing observed values](../../missing-observed-values.md) for more information.

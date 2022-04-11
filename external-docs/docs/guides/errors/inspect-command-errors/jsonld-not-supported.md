@@ -1,4 +1,4 @@
-# Error - both measure types defined
+# Error - input csvw json-ld is not supported
 
 ## When it occurs
 

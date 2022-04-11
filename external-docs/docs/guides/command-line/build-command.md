@@ -47,7 +47,7 @@ When the cube is built the default output path is `./out`. This may be changed b
 
 ## Build Command Errors
 
-When errors are encountered refer to the [errors guide](../errors/index.md) for help on understanding and resolving them.
+When errors are encountered, please refer to the [errors guide](../../guides/errors/index.md) for help on understanding and resolving them.
 
 ## Examples
 
