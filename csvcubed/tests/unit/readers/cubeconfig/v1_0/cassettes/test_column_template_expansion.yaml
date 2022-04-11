@@ -1,0 +1,146 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.27.1
+    method: GET
+    uri: https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/csvcubed/csvcubed/readers/cubeconfig/v1_0/templates/preset_column_config.json
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA3WQXQ6CMBCE3zkF6bP1AN5mhRWqsI39wRDj3S2gxCnSt377TTKZZ1Gmp0Ymp06l
+        qqhjqcnpCRyv3oo6LEZL3UVvtJWCe4/kAqP5YeD1VkIL1kzAeTDfQJkAGDWNIKQ/NrcxK50A9jAS
+        A2ORGYHlubJSg7UgD1pjB3bSs4R1rgzt6TDxP74X/Nl7S/dC32EzhLrjxjpDoo34QBLmQA4hYs+e
+        3UDBWNHpGqKfMlu6hIrXG+1bQqiBAgAA
+    headers:
+      Accept-Ranges:
+      - bytes
+      Access-Control-Allow-Origin:
+      - '*'
+      Cache-Control:
+      - max-age=300
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '195'
+      Content-Security-Policy:
+      - default-src 'none'; style-src 'unsafe-inline'; sandbox
+      Content-Type:
+      - text/plain; charset=utf-8
+      Date:
+      - Fri, 08 Apr 2022 18:02:48 GMT
+      ETag:
+      - W/"f900c7f65494a650d725890b29bb676e2adcb73776a1406c770143117cf368de"
+      Expires:
+      - Fri, 08 Apr 2022 18:07:48 GMT
+      Source-Age:
+      - '1'
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Authorization,Accept-Encoding,Origin
+      Via:
+      - 1.1 varnish
+      X-Cache:
+      - HIT
+      X-Cache-Hits:
+      - '1'
+      X-Content-Type-Options:
+      - nosniff
+      X-Fastly-Request-ID:
+      - b4dd8f75d4f34d9dc1a4a942aa076125ab668e25
+      X-Frame-Options:
+      - deny
+      X-GitHub-Request-Id:
+      - 6CB8:70F4:30678A:51A048:625078C6
+      X-Served-By:
+      - cache-lhr7336-LHR
+      X-Timer:
+      - S1649440968.188708,VS0,VE1
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.27.1
+    method: GET
+    uri: https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/csvcubed/csvcubed/readers/cubeconfig/v1_0/templates/calendar-year.json
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA03OQQ6CMBAF0D2nILhUGeJOYjyDW1dNpR9smLakFAMh3N0SA3GWMz/vz5ykcbIw
+        dcjKNFPawPba2ez0O9TeGYFR90HbZk28Q+hKom7wnDvfEGvbQp2VDJJ6ZUa6FMWVdufgUT/gtVOb
+        yPIFXqUnpN+WFZjF4LUIMB3LgL+qKMDDVsjXkrxxn3xoSSuaIkDz8VY5HowVVhrcl110CoLj31Gq
+        JfdIli/awj3i7AAAAA==
+    headers:
+      Accept-Ranges:
+      - bytes
+      Access-Control-Allow-Origin:
+      - '*'
+      Cache-Control:
+      - max-age=300
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '184'
+      Content-Security-Policy:
+      - default-src 'none'; style-src 'unsafe-inline'; sandbox
+      Content-Type:
+      - text/plain; charset=utf-8
+      Date:
+      - Fri, 08 Apr 2022 18:02:48 GMT
+      ETag:
+      - W/"52e1ea380ace500a00eca068f7cf15e75155b509f2cbd087b7d5118d11500ac4"
+      Expires:
+      - Fri, 08 Apr 2022 18:07:48 GMT
+      Source-Age:
+      - '1'
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Authorization,Accept-Encoding,Origin
+      Via:
+      - 1.1 varnish
+      X-Cache:
+      - HIT
+      X-Cache-Hits:
+      - '1'
+      X-Content-Type-Options:
+      - nosniff
+      X-Fastly-Request-ID:
+      - 641243e967809f36c20ab39ce72b990020327cec
+      X-Frame-Options:
+      - deny
+      X-GitHub-Request-Id:
+      - 8828:55A3:7EE40C:A61B81:625078C6
+      X-Served-By:
+      - cache-lhr7336-LHR
+      X-Timer:
+      - S1649440968.200580,VS0,VE1
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+version: 1

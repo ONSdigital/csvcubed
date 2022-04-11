@@ -1,5 +1,3 @@
-> This step is optional. However, we recommend you do this step as it allows you to easily validate the content in your CSV-Ws.
-
 This page is designed to help you inspect an existing CSV-W. It assumes that you have already [installed csvcubed](./installation.md), [designed your CSV input](./designing-csv.md) and [built your CSV-W](./build.md).
 
 To inspect the `sweden-at-eurovision-no-missing.csv-metadata.json` data cube we built in [Building a CSV-W](build.md), we run the [csvcubed inspect](../guides/command-line/inspect-command.md) command:
@@ -151,4 +149,6 @@ Please see our documentation explaining a [number of common errors](../guides/er
 
 ## Next
 
-The next step is to [describing your CSV](./describing-csv.md).
+This is the end of the quick start section, there is lots more information available in the guides section available in the lefthand menu.
+
+The completed Sweden at Eurovision data set requires knowlege of how to [describe missing data](../guides/missing-observed-values.md) 

@@ -8,9 +8,9 @@ nav:
       - Installation: quick-start/installation.md
       - Designing a CSV: quick-start/designing-csv.md
       - Building a CSV-W: quick-start/build.md
-      - Inspecting a CSV-W (Optional): quick-start/inspect.md
       - Describing your CSV: quick-start/describing-csv.md
       - Linking data: quick-start/linking-data.md
+      - Inspecting a CSV-W: quick-start/inspect.md
   - Guides:
       - guides/index.md
       - Raise an issue: guides/raise-issue.md
@@ -22,6 +22,7 @@ nav:
       - Commands: 
         - build: guides/command-line/build-command.md
         - inspect: guides/command-line/inspect-command.md
+        - Logging: guides/command-line/logging.md
       - Errors:
         - guides/errors/index.md
         - Missing column definition: guides/errors/missing-column-definition.md

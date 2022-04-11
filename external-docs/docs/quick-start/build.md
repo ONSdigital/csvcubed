@@ -61,4 +61,4 @@ Please see our documentation explaining a [number of common errors](../guides/er
 
 ## Next
 
-The next step is to [inspect your CSV-W](./inspect.md).
+The next step is to [describing your CSV](./describing-csv.md).
