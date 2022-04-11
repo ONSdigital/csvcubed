@@ -1,5 +1,8 @@
+from pathlib import Path
+
 import pytest
 
+from csvcubed.models.cube import NewQbCodeListInCsvW
 from csvcubed.readers.skoscodelistreader import (
     extract_code_list_concept_scheme_info,
 )
@@ -85,6 +88,19 @@ def test_csv_url_missing():
         extract_code_list_concept_scheme_info(code_list_csvw)
 
     assert "is missing `url` property for code list table" in str(ex)
+
+
+def test_legacy_composite_code_list():
+    """Test that a legacy composite code list returns a sensible `aboutUrl`. Addresses bug in issue #389."""
+    location_test_case: Path = (
+        _skos_codelist_reader_test_cases / "location.csv-metadata.json"
+    )
+    (_, _, concept_uri_template) = extract_code_list_concept_scheme_info(
+        location_test_case
+    )
+
+    # aboutUrl is actually `{+uri}` inside the CSV-W, but is standardised to `{+notation}`.
+    assert concept_uri_template == "{+notation}"
 
 
 if __name__ == "__main__":
