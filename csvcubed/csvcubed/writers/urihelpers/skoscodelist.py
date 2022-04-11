@@ -21,14 +21,15 @@ class SkosCodeListNewUriHelper:
     default_uri_style: URIStyle
 
     def _get_identifier_for_document(self) -> str:
-        extension = (
-            "" if (
-                self.code_list == None
-                or self.code_list.uri_style == URIStyle.WithoutFileExtensions
-                or self.default_uri_style == URIStyle.WithoutFileExtensions
-            ) else ".csv"
-        )
-        return f"{self.code_list.metadata.uri_safe_identifier}{extension}"
+        identifier = self.code_list.metadata.uri_safe_identifier
+        if (self.code_list is None
+            or self.code_list.uri_style is None
+            or self.code_list.uri_style == URIStyle.Standard):
+            return identifier + ".csv"
+        elif self.code_list.uri_style == URIStyle.WithoutFileExtensions:
+            return identifier
+        else:
+            raise ValueError(f"Unhandled URI Style '{self.code_list.uri_style}'.")
 
     def _uri_in_doc(self, identifier: str) -> str:
         """

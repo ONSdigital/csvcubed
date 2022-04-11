@@ -148,7 +148,7 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
 
     @staticmethod
     def from_data(
-        metadata: CatalogMetadata, data: PandasDataTypes, uri_style: Optional[URIStyle]
+        metadata: CatalogMetadata, data: PandasDataTypes, uri_style: Optional[URIStyle] = None
     ) -> "NewQbCodeList":
         columnar_data = pandas_input_to_columnar_str(data)
         concepts = [NewQbConcept(c) for c in sorted(set(columnar_data))]

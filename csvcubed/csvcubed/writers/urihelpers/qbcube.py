@@ -21,10 +21,12 @@ class QbCubeNewUriHelper:
     cube: QbCube
 
     def get_identifier_for_document(self) -> str:
-        extension = (
-            ".csv" if self.cube.uri_style != URIStyle.WithoutFileExtensions else ""
-        )
-        return f"{self.cube.metadata.uri_safe_identifier}{extension}"
+        if self.cube.uri_style == URIStyle.Standard:
+            return self.cube.metadata.uri_safe_identifier + ".csv"
+        elif self.cube.uri_style == URIStyle.WithoutFileExtensions:
+            return self.cube.metadata.uri_safe_identifier
+        else:
+            raise ValueError(f"Unhandled URI Style '{self.cube.uri_style}'.")
 
     def _uri_in_doc(self, identifier: str) -> str:
         """

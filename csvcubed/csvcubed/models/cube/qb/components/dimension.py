@@ -97,7 +97,7 @@ class NewQbDimension(QbDimension, UriIdentifiable):
         range_uri: Optional[str] = None,
         uri_safe_identifier_override: Optional[str] = None,
         arbitrary_rdf: List[TripleFragmentBase] = [],
-        uri_style: Optional[URIStyle] = None,
+        code_list_uri_style: Optional[URIStyle] = None,
     ) -> "NewQbDimension":
         """
         Creates a new dimension and code list from the columnar data provided.
@@ -105,7 +105,7 @@ class NewQbDimension(QbDimension, UriIdentifiable):
         return NewQbDimension(
             label=label,
             description=description,
-            code_list=NewQbCodeList.from_data(CatalogMetadata(label), data, uri_style),
+            code_list=NewQbCodeList.from_data(CatalogMetadata(label), data, code_list_uri_style),
             parent_dimension_uri=parent_dimension_uri,
             source_uri=source_uri,
             range_uri=range_uri,

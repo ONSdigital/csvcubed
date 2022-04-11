@@ -310,7 +310,7 @@ def test_default_property_value_uris_new_dimension_column_with_new_code_list_for
         default_value_uri,
     ) = uri_styled_qbwriter._get_default_property_value_uris_for_column(column)
     assert "cube-name#dimension/some-new-dimension" == default_property_uri
-    assert "some-catalog#{+some_column}" == default_value_uri
+    assert "some-catalog.csv#{+some_column}" == default_value_uri
 
 
 def test_default_property_value_uris_existing_attribute_existing_values():
@@ -581,10 +581,10 @@ def test_foreign_key_table_and_resource_urls_when_configured_with_uri_style_With
     )
     qb_writer = QbWriter(cube)
     foreign_key = qb_writer._get_table_references_needed_for_foreign_keys()[0]
-    assert foreign_key["url"] == "some-dimension"
+    assert foreign_key["url"] == "some-dimension.csv"
 
     foreign_key = qb_writer._generate_foreign_keys_for_cube()[0]
-    assert foreign_key["reference"]["resource"] == "some-dimension"
+    assert foreign_key["reference"]["resource"] == "some-dimension.csv"
 
     dataset_definitions = qb_writer._generate_qb_dataset_dsd_definitions()
     g = Graph()
@@ -600,9 +600,9 @@ def test_foreign_key_table_and_resource_urls_when_configured_with_uri_style_With
         )
     )
     codeListRefUrlPath = urlparse(codeListRef).path
-    assert not codeListRefUrlPath.endswith(
+    assert codeListRefUrlPath.endswith(
         ".csv"
-    ), f"Expected {codeListRef} not to have a file ending"
+    ), f"Expected {codeListRef} to have a file ending"
 
 
 def test_output_new_code_list_csvws_urls():
@@ -649,10 +649,12 @@ def test_output_new_code_list_csvws_urls_with_uri_style_WithoutFileExtensions():
         qb_writer._output_new_code_list_csvws(temp_dir)
         graph = Graph()
         graph.parse(temp_dir / "some-dimension.csv-metadata.json")
+        for (s,p,o) in graph:
+            print(s, p, o)
         assert (
-            URIRef(f"file://{temp_dir}/some-dimension#code-list"),
+            URIRef(f"file://{temp_dir}/some-dimension.csv#code-list"),
             URIRef("http://www.w3.org/ns/csvw#url"),
-            Literal("some-dimension", datatype=XSD.anyURI),
+            Literal("some-dimension.csv", datatype=XSD.anyURI),
         ) in graph
 
 

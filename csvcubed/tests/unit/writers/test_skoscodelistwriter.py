@@ -58,7 +58,7 @@ def test_csvw_metadata_url_withoutFileExtension_style():
     writer = SkosCodeListWriter(code_list_withoutFileExtensions_uri_style)
     data = writer._get_csvw_metadata()
     actual_url = data["url"]
-    assert actual_url == "some-codelist"
+    assert actual_url == "some-codelist.csv"
 
 
 def test_code_list_data_mapping():

@@ -794,27 +794,23 @@ def assertURIStyle(uri_style: URIStyle, temp_dir: Path, csv_file_name: str):
     uriRefSubjects = set([s for s in g.subjects() if isinstance(s, URIRef)])
     assertURIStyles(uri_style, uriRefSubjects)
 
-    uriRefObjects = set(
-        [
-            o
-            for (p, o) in g.predicate_objects()
-            if isinstance(o, URIRef)
-            and not (str(p) in predicate_whitelist)
-            and not (str(o).startswith(tuple(object_prefix_whitelist)))
-        ]
-    )
+    uriRefObjects = {
+        o
+        for (p, o) in g.predicate_objects()
+        if isinstance(o, URIRef)
+        and not (str(p) in predicate_whitelist)
+        and not (str(o).startswith(tuple(object_prefix_whitelist)))
+    }
     assertURIStyles(uri_style, uriRefObjects)
 
-    uriLiteralObjects = set(
-        [
-            o
-            for o in g.objects()
-            if isinstance(o, Literal)
-            and str(o.datatype) in uri_data_types
-            and not (str(o).startswith(tuple(object_prefix_whitelist)))
-            and not (str(o) in uri_literal_whitelist)
-        ]
-    )
+    uriLiteralObjects = {
+        o
+        for o in g.objects()
+        if isinstance(o, Literal)
+        and str(o.datatype) in uri_data_types
+        and not (str(o).startswith(tuple(object_prefix_whitelist)))
+        and not (str(o) in uri_literal_whitelist)
+    }
     assertURIStyles(uri_style, uriLiteralObjects)
 
 

@@ -99,7 +99,7 @@ class QbWriter(WriterBase):
 
         tables = [
             {
-                "url": self._new_uri_helper.get_identifier_for_document(),
+                "url": self.csv_file_name,
                 "tableSchema": {
                     "columns": self._generate_csvw_columns_for_cube(),
                     "foreignKeys": self._generate_foreign_keys_for_cube(),
@@ -199,8 +199,8 @@ class QbWriter(WriterBase):
 
                 tables.append(
                     {
-                        "url": f"{code_list.metadata.uri_safe_identifier}{self.extension}",
-                        "tableSchema": f"{code_list.metadata.uri_safe_identifier}.table.json",
+                        "url": code_list.metadata.uri_safe_identifier + ".csv",
+                        "tableSchema": code_list.metadata.uri_safe_identifier + ".table.json",
                         "suppressOutput": True,
                     }
                 )
@@ -237,7 +237,7 @@ class QbWriter(WriterBase):
                             col.uri_safe_identifier
                         ),
                         "reference": {
-                            "resource": f"{code_list.metadata.uri_safe_identifier}{self.extension}",
+                            "resource": code_list.metadata.uri_safe_identifier + ".csv",
                             "columnReference": CODE_LIST_NOTATION_COLUMN_NAME,
                         },
                     }
