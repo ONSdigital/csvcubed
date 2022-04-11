@@ -251,7 +251,7 @@ def test_default_property_value_uris_new_dimension_column_with_code_list():
 
 def test_default_property_value_uris_new_dimension_column_with_new_code_list():
     """
-    When a new dimension is defined with a new code list, by default it should provide standard-formatted property Urls
+    When a new dimension is defined with a new code list, by default it should provide standard-formatted property and value Urls
     """
     column = QbColumn(
         "Some Column",
@@ -271,8 +271,7 @@ def test_default_property_value_uris_new_dimension_column_with_new_code_list():
 def test_default_property_value_uris_new_dimension_column_with_new_code_list_for_cube_WithoutFileExtensions_uri_style():
     """
     When a new dimension is defined with a new code list, and the cube has a defined uri_style of WithoutFileExtensions,
-    it should provide property Urls which follow the cube's uri style, but the value URL should still reflect the actual
-    file location
+    it should provide property and value Urls which follow the cube's uri style
     """
 
     uri_styled_cube = Cube(

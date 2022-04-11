@@ -25,32 +25,9 @@ basic_code_list = NewQbCodeList(
 )
 
 
-def test_csvw_metadata_url():
-    """
-    Test that the generated URL for a CSVW is as expected
-    """
-    writer = SkosCodeListWriter(basic_code_list)
-    data = writer._get_csvw_metadata()
-    actual_url = data["url"]
-    assert actual_url == "some-codelist.csv"
-
-
-def test_csvw_metadata_url_standard_style():
-    """
-    Test that the generated URL for a CSVW is as expected when configured to use Standard URI style
-    """
-    code_list_standard_uri_style = NewQbCodeList(
-        CatalogMetadata("Some CodeList"), [], uri_style=URIStyle.Standard
-    )
-    writer = SkosCodeListWriter(code_list_standard_uri_style)
-    data = writer._get_csvw_metadata()
-    actual_url = data["url"]
-    assert actual_url == "some-codelist.csv"
-
-
 def test_csvw_metadata_url_withoutFileExtension_style():
     """
-    Test that the generated URL for a CSVW is as expected when configured to use without file extension URI style
+    Test that the generated URL for a CSVW still contains file endings even when configured to use without file extension URI style
     """
     code_list_withoutFileExtensions_uri_style = NewQbCodeList(
         CatalogMetadata("Some CodeList"), [], uri_style=URIStyle.WithoutFileExtensions
