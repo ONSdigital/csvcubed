@@ -37,7 +37,6 @@ from csvcubed.utils.sparql import ask, select
 from csvcubed.models.csvcubedexception import (
     FailedToReadSparqlQueryException,
     FeatureNotSupportedException,
-    InvalidCsvFilePathException,
     InvalidNumberOfRecordsException,
 )
 from csvcubed.definitions import ROOT_DIR_PATH
