@@ -16,7 +16,7 @@ class CsvcubedExceptionMsges(Enum):
         "An error occured while reading CSV-W content from file at {csvw_metadata_file_path}"
     )
 
-    InvalidCsvwContent = "CSV-W content is invalid."
+    InvalidCsvwFileContent = "CSV-W file content is invalid."
 
     FailedToLoadRDFGraph = "Failed to load the RDF graph from input"
 
@@ -30,21 +30,21 @@ class CsvcubedExceptionMsges(Enum):
 
     FailedToLoadTableSchemaIntoRdfGraph = "Failed to load table schema '{table_schema_file}' into RDF graph"
 
-    UnsupportedComponentPropertyType = "Property type {property_type} is not supported"
+    UnsupportedComponentPropertyType = "DSD component property type {property_type} is not supported"
 
     FailedToConvertDataFrameToString = "Failed to convert dataframe to string"
 
     UnexpectedSparqlAskQueryResponseType = (
-        "Unexpected ASK query response type {response_type}"
+        "Unexpected sparql ASK query response type {response_type}"
     )
 
     UnexpectedSparqlAskQueryResults = (
-        "Unexpected number of results for ASK query {num_of_results}"
+        "Unexpected number of results for sparql ASK query {num_of_results}"
     )
 
     FeatureNotSupported = "This feature is not yet supported: {explanation}"
 
-    ErrorProcessingDataFrameException = (
+    ErrorProcessingDataFrame = (
         "An error occurred when performing {operation} operation on dataframe"
     )
 
@@ -60,7 +60,7 @@ class CsvcubedExceptionUrls(Enum):
         "http://purl.org/csv-cubed/err/failed-to-read-csvw-file-content"
     )
 
-    InvalidCsvwContent = "http://purl.org/csv-cubed/err/invalid-csvw-content"
+    InvalidCsvwFileContent = "http://purl.org/csv-cubed/err/invalid-csvw-file-content"
 
     FailedToLoadRDFGraph = "http://purl.org/csv-cubed/err/rdf-graph-load-failed"
 
@@ -79,7 +79,7 @@ class CsvcubedExceptionUrls(Enum):
     )
 
     UnsupportedComponentPropertyType = (
-        "http://purl.org/csv-cubed/err/unsupported-component-property-type"
+        "http://purl.org/csv-cubed/err/unsupported-dsd-component-property-type"
     )
 
     FailedToConvertDataFrameToString = (
@@ -87,16 +87,16 @@ class CsvcubedExceptionUrls(Enum):
     )
 
     UnexpectedSparqlAskQueryResponseType = (
-        "http://purl.org/csv-cubed/err/invalid-ask-query-response-type"
+        "http://purl.org/csv-cubed/err/unexpected-sparql-ask-query-response-type"
     )
 
     UnexpectedSparqlAskQueryResults = (
-        "http://purl.org/csv-cubed/err/invalid-ask-query-results"
+        "http://purl.org/csv-cubed/err/unexpected-sparql-ask-query-results"
     )
 
     FeatureNotSupported = "http://purl.org/csv-cubed/err/feature-not-supported"
 
-    ErrorProcessingDataFrameException = (
+    ErrorProcessingDataFrame = (
         "http://purl.org/csv-cubed/err/error-when-processing-dataframe"
     )
 
@@ -133,15 +133,15 @@ class FailedToReadCsvwFileContentException(CsvcubedException):
         return CsvcubedExceptionUrls.FailedToReadCsvwFileContent.value
 
 
-class InvalidCsvwContentException(CsvcubedException):
-    """Class representing the InvalidCsvwContentException model."""
+class InvalidCsvwFileContentException(CsvcubedException):
+    """Class representing the InvalidCsvwFileContentException model."""
 
     def __init__(self):
-        super().__init__(CsvcubedExceptionMsges.InvalidCsvwContent.value)
+        super().__init__(CsvcubedExceptionMsges.InvalidCsvwFileContent.value)
 
     @classmethod
     def get_error_url(cls) -> str:
-        return CsvcubedExceptionUrls.InvalidCsvwContent.value
+        return CsvcubedExceptionUrls.InvalidCsvwFileContent.value
 
 class FailedToLoadRDFGraphException(CsvcubedException):
     """Class representing the FailedToLoadRDFGraphException model."""
@@ -281,15 +281,15 @@ class FeatureNotSupportedException(CsvcubedException):
 
 
 class ErrorProcessingDataFrameException(CsvcubedException):
-    """Class representing the FeatureNotSupportedException model."""
+    """Class representing the ErrorProcessingDataFrameException model."""
 
     def __init__(self, operation: str):
         super().__init__(
-            CsvcubedExceptionMsges.ErrorProcessingDataFrameException.value.format(
+            CsvcubedExceptionMsges.ErrorProcessingDataFrame.value.format(
                 operation=operation
             )
         )
 
     @classmethod
     def get_error_url(cls) -> str:
-        return CsvcubedExceptionUrls.ErrorProcessingDataFrameException.value
+        return CsvcubedExceptionUrls.ErrorProcessingDataFrame.value

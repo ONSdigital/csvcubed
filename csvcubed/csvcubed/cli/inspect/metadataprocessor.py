@@ -17,7 +17,7 @@ from csvcubed.models.csvcubedexception import (
     FailedToLoadRDFGraphException,
     FailedToLoadTableSchemaIntoRdfGraphException,
     FailedToReadCsvwFileContentException,
-    InvalidCsvwContentException,
+    InvalidCsvwFileContentException,
 )
 
 _logger = logging.getLogger(__name__)
@@ -94,7 +94,7 @@ class MetadataProcessor:
             ) from ex
 
         if csvw_file_content is None:
-            raise InvalidCsvwContentException()
+            raise InvalidCsvwFileContentException()
 
         try:
             csvw_metadata_rdf_graph.parse(
