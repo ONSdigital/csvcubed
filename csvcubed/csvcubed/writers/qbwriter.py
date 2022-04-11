@@ -1040,6 +1040,7 @@ class QbWriter(WriterBase):
         self, column: CsvColumn, code_list: QbCodeList
     ) -> str:
         column_uri_fragment = self._get_column_uri_template_fragment(column)
+
         if isinstance(code_list, ExistingQbCodeList):
             legacy_external_match = self._legacy_external_code_list_pattern.match(
                 code_list.concept_scheme_uri
@@ -1096,7 +1097,7 @@ class QbWriter(WriterBase):
                 code_list.metadata.title,
             )
             return SkosCodeListNewUriHelper(
-                code_list, self.cube.uri_style
+                code_list, URIStyle.Standard
             ).get_concept_uri(column_uri_fragment)
         elif isinstance(code_list, NewQbCodeListInCsvW):
             _logger.debug(

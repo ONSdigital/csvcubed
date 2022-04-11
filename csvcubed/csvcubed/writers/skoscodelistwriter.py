@@ -41,7 +41,9 @@ class SkosCodeListWriter(WriterBase):
             SkosCodeListWriter.__name__,
             self.csv_file_name,
         )
-        self._new_uri_helper = SkosCodeListNewUriHelper(self.new_code_list, default_uri_style = self.default_uri_style)
+        self._new_uri_helper = SkosCodeListNewUriHelper(
+            self.new_code_list, default_uri_style=self.default_uri_style
+        )
 
     def write(self, output_directory: Path) -> None:
         csv_file_path = (output_directory / self.csv_file_name).absolute()
@@ -147,7 +149,6 @@ class SkosCodeListWriter(WriterBase):
     def _get_csvw_metadata(self) -> dict:
         scheme_uri = self._new_uri_helper.get_scheme_uri()
         additional_metadata = self._get_catalog_metadata(scheme_uri)
-
         return {
             "@context": "http://www.w3.org/ns/csvw",
             "@id": scheme_uri,

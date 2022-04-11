@@ -548,10 +548,8 @@ def test_output_new_code_list_csvws_urls_with_uri_style_WithoutFileExtensions():
         qb_writer._output_new_code_list_csvws(temp_dir)
         graph = Graph()
         graph.parse(temp_dir / "some-dimension.csv-metadata.json")
-        for (s,p,o) in graph:
-            print(s, p, o)
         assert (
-            URIRef(f"file://{temp_dir}/some-dimension.csv#code-list"),
+            URIRef(f"file://{temp_dir}/some-dimension#code-list"),
             URIRef("http://www.w3.org/ns/csvw#url"),
             Literal("some-dimension.csv", datatype=XSD.anyURI),
         ) in graph
