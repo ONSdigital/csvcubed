@@ -5,6 +5,7 @@ __________________
 A loader for the config.json.
 """
 import logging
+from json import JSONDecodeError
 
 from pathlib import Path
 from typing import Dict, Tuple, List, Callable
@@ -12,8 +13,10 @@ from typing import Dict, Tuple, List, Callable
 import pandas as pd
 from jsonschema.exceptions import ValidationError as JsonSchemaValidationError
 from csvcubedmodels.rdf.namespaces import GOV
+from pandas import DataFrame
 
 from csvcubed.models.cube import *
+from csvcubed.models.validationerror import ValidationError
 from .mapcolumntocomponent import map_column_to_qb_component
 from csvcubed.utils.dict import get_with_func_or_none
 from csvcubed.utils.iterables import first
@@ -58,12 +61,12 @@ log = logging.getLogger(__name__)
 
 def get_deserialiser(
     schema_path: str, version_module_path: str
-) -> Callable[[Path, Optional[Path]], Tuple[QbCube, List[JsonSchemaValidationError]]]:
+) -> Callable[[Path, Optional[Path]], Tuple[QbCube, List[JsonSchemaValidationError], List[ValidationError]]]:
     """Generates a deserialiser function which validates the JSON file against the schema at :obj:`schema_path`"""
 
     def get_cube_from_config_json(
         csv_path: Path, config_path: Optional[Path]
-    ) -> Tuple[QbCube, List[JsonSchemaValidationError]]:
+    ) -> Tuple[QbCube, List[JsonSchemaValidationError], List[ValidationError]]:
         """
         Generates a Cube structure from a config.json input.
         :return: tuple of cube and json schema errors (if any)
@@ -81,7 +84,7 @@ def get_deserialiser(
                 schema_validation_errors = validate_dict_against_schema(
                     value=config, schema=schema
                 )
-            except Exception as err:  # TODO - use specific ExceptionClass
+            except JSONDecodeError as err:
                 log.warning(
                     "Validation of the config json is not currently available, continuing without validation."
                 )
@@ -96,7 +99,7 @@ def get_deserialiser(
 
         _configure_remaining_columns_by_convention(cube, data)
 
-        return cube, schema_validation_errors + data_errors
+        return cube, schema_validation_errors, data_errors
 
     return get_cube_from_config_json
 
@@ -167,7 +170,7 @@ def _metadata_from_dict(config: dict) -> "CatalogMetadata":
     )
 
 
-def _read_and_check_csv(csv_path: Path) -> pd.DataFrame:
+def _read_and_check_csv(csv_path: Path) -> Tuple[DataFrame, List[ValidationError]]:
     """
     Reads the csv data file and performs rudimentary checks.
     """

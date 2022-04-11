@@ -29,12 +29,10 @@
     },
     "Attr-1": {
       "type": "attribute",
-      "label": "My best attribute",
       "values": true
     },
     "Amount": {
-      "type": "observations",
-      "values": true
+      "type": "observations"
     },
     "Measure": {
       "type": "measures",

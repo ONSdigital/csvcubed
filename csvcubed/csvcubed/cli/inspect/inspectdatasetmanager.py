@@ -70,7 +70,7 @@ def load_csv_to_dataframe(json_path: Path, csv_path: Path) -> pd.DataFrame:
         dataset_path = json_path.parent / csv_path
         _logger.debug(f"Dataset path: {dataset_path.absolute()}")
 
-        dataset = read_csv(dataset_path)
+        dataset, _data_errors = read_csv(dataset_path)
         _logger.info("Successfully loaded csv into dataframe.")
 
         return dataset

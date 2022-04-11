@@ -18,8 +18,7 @@
       "code_list": true
     },
     "Attr-1": {
-      "type": "attribute",
-      "label": "My best attribute"
+      "type": "attribute"
     },
     "Amount": {
       "type": "observations"

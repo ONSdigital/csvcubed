@@ -11,7 +11,7 @@ from typing import Optional, Tuple, List
 
 from csvcubedmodels.dataclassbase import DataClassBase
 from csvcubed.cli.error_mapping import friendly_error_mapping
-from csvcubed.models.cube import QbCube, DuplicateColumnTitleError
+from csvcubed.models.cube import QbCube
 from csvcubed.models.validationerror import SpecificValidationError, ValidationError
 from csvcubed.readers.cubeconfig.schema_versions import (
     QubeConfigDeserialiser,
@@ -38,9 +38,9 @@ def build(
     )
 
     deserialiser = _get_versioned_deserialiser(config_path)
-    cube, json_schema_validation_errors = deserialiser(csv_path, config_path)
+    cube, json_schema_validation_errors, validation_errors = deserialiser(csv_path, config_path)
 
-    validation_errors = cube.validate()
+    validation_errors += cube.validate()
     validation_errors += validate_qb_component_constraints(cube)
 
     if not output_directory.exists():
