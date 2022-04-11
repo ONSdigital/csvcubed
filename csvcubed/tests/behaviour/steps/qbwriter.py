@@ -774,27 +774,20 @@ def assertURIStyle(uri_style: URIStyle, temp_dir: Path, csv_file_name: str):
     g = Graph()
     g.parse(metadataFilePath, publicID=baseUri)
 
-    for (s,p,o) in g:
-        if(s.startswith(baseUri)):
-            assert_uri_style_for_uri(uri_style, s, (s,p,o))
-        if(p.startswith(baseUri)):
-            assert_uri_style_for_uri(uri_style, p, (s,p,o))
+    for (s, p, o) in g:
+        if s.startswith(baseUri):
+            assert_uri_style_for_uri(uri_style, s, (s, p, o))
+        if p.startswith(baseUri):
+            assert_uri_style_for_uri(uri_style, p, (s, p, o))
+
 
 def assert_uri_style_for_uri(uri_style: URIStyle, uri: str, node: Node):
     path = urlparse(uri).path
     if uri_style == URIStyle.WithoutFileExtensions:
-        assert not path.endswith(".csv"), f"expected {node} to end without a CSV file extension"
+        assert not path.endswith(
+            ".csv"
+        ), f"expected {node} to end without a CSV file extension"
     else:
-        assert path.endswith(".csv") or path.endswith(".json"), f"expected {node} to end with .csv or .json"
-
-def assertURIStyles(uri_style, uriNodes):
-    for n in uriNodes:
-        path = urlparse(str(n)).path
-        if uri_style == URIStyle.WithoutFileExtensions:
-            assert not path.endswith(
-                ".csv"
-            ), f"expected {n} to end without a CSV file extension"
-        else:
-            assert path.endswith(".csv") or path.endswith(
-                ".json"
-            ), f"expected {n} to end with .csv or .json"
+        assert path.endswith(".csv") or path.endswith(
+            ".json"
+        ), f"expected {node} to end with .csv or .json"
