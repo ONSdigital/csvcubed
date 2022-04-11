@@ -456,3 +456,10 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     # since an `sdmxa:obsStatus` Attribute column has been defined.
     Then csvlint validation of "bad-qube.csv-metadata.json" should succeed
 
+  # Related to issue #389
+  Scenario: A QbCube which references a legacy composite code list should pass all tests
+    Given a QbCube named "Some Qube" which references a legacy composite code-list
+    When the cube is serialised to CSV-W
+    Then csvlint validation of all CSV-Ws should succeed
+    And csv2rdf on all CSV-Ws should succeed
+    And the RDF should pass "qb, skos" SPARQL tests

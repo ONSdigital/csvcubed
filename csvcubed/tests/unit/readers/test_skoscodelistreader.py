@@ -2,7 +2,6 @@ from pathlib import Path
 
 import pytest
 
-from csvcubed.models.cube import NewQbCodeListInCsvW
 from csvcubed.readers.skoscodelistreader import (
     extract_code_list_concept_scheme_info,
 )
