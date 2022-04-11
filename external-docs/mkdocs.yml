@@ -24,28 +24,9 @@ nav:
         - inspect: guides/command-line/inspect-command.md
         - Logging: guides/command-line/logging.md
       - Errors:
-        - guides/errors/index.md
-        - Missing column definition: guides/errors/missing-column-definition.md
-        - Column not found in data: guides/errors/column-not-found-in-data.md
-        - Duplicate column title: guides/errors/duplicate-column-title.md
-        - No dimensions defined: guides/errors/no-dimensions-defined.md
-        - No measures defined: guides/errors/no-measures-defined.md
-        - No units defined: guides/errors/no-units-defined.md
-        - No observations column defined: guides/errors/no-observations-columns.md
-        - Multiple measure columns: guides/errors/multiple-measure-columns.md
-        - Multiple units columns: guides/errors/multiple-units-columns.md
-        - Multiple observations columns: guides/errors/multiple-observations-columns.md
-        - Observed values missing: guides/errors/observed-values-missing.md
-        - Both measure types defined: guides/errors/both-measure-types-defined.md
-        - Both unit types defined: guides/errors/both-unit-types-defined.md
-        - Undefined units: guides/errors/undefined-units.md
-        - Undefined measures: guides/errors/undefined-measures.md
-        - Undefined attribute values: guides/errors/undefined-attribute-values.md
-        - Conflicting URI values: guides/errors/conflicting-uri-values.md
-        - Reserved URI value: guides/errors/reserved-uri-value.md
-        - CSV column URI template missing: guides/errors/csv-column-uri-template-missing.md
-        - CSV column literal with URI template: guides/errors/csv-column-literal-with-uri-template.md
-        - Column validation error: guides/errors/column-validation.md
+        - guides/errors/index.md 
+        - build command errors: guides/errors/build-command-errors/index.md
+        - inspect command errors: guides/errors/inspect-command-errors/index.md
       - Working with URIs: guides/uris.md
   - Glossary:
       - glossary/index.md
