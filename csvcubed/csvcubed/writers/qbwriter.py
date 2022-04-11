@@ -1097,7 +1097,7 @@ class QbWriter(WriterBase):
                 code_list.metadata.title,
             )
             return SkosCodeListNewUriHelper(
-                code_list, URIStyle.Standard
+                code_list, self.cube.uri_style
             ).get_concept_uri(column_uri_fragment)
         elif isinstance(code_list, NewQbCodeListInCsvW):
             _logger.debug(

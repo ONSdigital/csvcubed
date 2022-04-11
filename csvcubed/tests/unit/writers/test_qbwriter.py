@@ -292,7 +292,7 @@ def test_default_property_value_uris_new_dimension_column_with_new_code_list_for
         default_value_uri,
     ) = uri_styled_qbwriter._get_default_property_value_uris_for_column(column)
     assert "cube-name#dimension/some-new-dimension" == default_property_uri
-    assert "some-catalog.csv#{+some_column}" == default_value_uri
+    assert "some-catalog#{+some_column}" == default_value_uri
 
 
 def test_default_property_value_uris_existing_attribute_existing_values():

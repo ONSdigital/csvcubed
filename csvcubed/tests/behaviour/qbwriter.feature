@@ -214,16 +214,19 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     Given a single-measure QbCube named "Default URI style qube"
     When the cube is serialised to CSV-W
     Then the cube's metadata should contain URLs with file endings
+    And csvlint validation of "default-uri-style-qube.csv-metadata.json" should succeed
 
   Scenario: A QbCube configured with Standard URI style should include file endings in URIs
     Given a single-measure QbCube named "Standard URI style qube" configured with "Standard" URI style
     When the cube is serialised to CSV-W
     Then the cube's metadata should contain URLs with file endings
+    And csvlint validation of "standard-uri-style-qube.csv-metadata.json" should succeed
 
   Scenario: A QbCube configured with WithoutFileExtensions URI style should exclude file endings in URIs
     Given a single-measure QbCube named "WithoutFileExtensions URI style qube" configured with "WithoutFileExtensions" URI style
     When the cube is serialised to CSV-W
     Then the cube's metadata should contain URLs without file endings
+    And csvlint validation of "withoutfileextensions-uri-style-qube.csv-metadata.json" should succeed
 
   Scenario: A single-measure QbCube should pass skos+qb SPARQL test constraints
     Given a single-measure QbCube named "Some Qube"

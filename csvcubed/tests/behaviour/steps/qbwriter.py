@@ -1,3 +1,4 @@
+from lib2to3.pytree import Node
 from urllib.parse import urlparse
 from numpy import where
 import pandas as pd
@@ -767,52 +768,24 @@ def step_impl(context, cube_name: str, uri_style: str):
 
 
 def assertURIStyle(uri_style: URIStyle, temp_dir: Path, csv_file_name: str):
+
+    baseUri = "file://local/"
     metadataFilePath = temp_dir.joinpath(f"{csv_file_name}-metadata.json")
     g = Graph()
-    g.parse(metadataFilePath)
+    g.parse(metadataFilePath, publicID=baseUri)
 
-    predicate_whitelist = [
-        str(RDF.type),
-        "http://www.w3.org/ns/dcat#landingPage",
-        "http://purl.org/dc/terms/creator",
-        "http://purl.org/dc/terms/publisher",
-        "http://www.w3.org/ns/dcat#contactPoint",
-    ]
-    object_prefix_whitelist = [
-        str(XSD),
-        "http://gss-data.org.uk",
-        "http://www.w3.org",
-        "http://www.nationalarchives.gov.uk",
-        "http://purl.org",
-    ]
-    uri_literal_whitelist = ["rdf:type"]
-    uri_data_types = [
-        "http://www.w3.org/ns/csvw#uriTemplate",
-        "http://www.w3.org/2001/XMLSchema#anyURI",
-    ]
+    for (s,p,o) in g:
+        if(s.startswith(baseUri)):
+            assert_uri_style_for_uri(uri_style, s, (s,p,o))
+        if(p.startswith(baseUri)):
+            assert_uri_style_for_uri(uri_style, p, (s,p,o))
 
-    uriRefSubjects = set([s for s in g.subjects() if isinstance(s, URIRef)])
-    assertURIStyles(uri_style, uriRefSubjects)
-
-    uriRefObjects = {
-        o
-        for (p, o) in g.predicate_objects()
-        if isinstance(o, URIRef)
-        and not (str(p) in predicate_whitelist)
-        and not (str(o).startswith(tuple(object_prefix_whitelist)))
-    }
-    assertURIStyles(uri_style, uriRefObjects)
-
-    uriLiteralObjects = {
-        o
-        for o in g.objects()
-        if isinstance(o, Literal)
-        and str(o.datatype) in uri_data_types
-        and not (str(o).startswith(tuple(object_prefix_whitelist)))
-        and not (str(o) in uri_literal_whitelist)
-    }
-    assertURIStyles(uri_style, uriLiteralObjects)
-
+def assert_uri_style_for_uri(uri_style: URIStyle, uri: str, node: Node):
+    path = urlparse(uri).path
+    if uri_style == URIStyle.WithoutFileExtensions:
+        assert not path.endswith(".csv"), f"expected {node} to end without a CSV file extension"
+    else:
+        assert path.endswith(".csv") or path.endswith(".json"), f"expected {node} to end with .csv or .json"
 
 def assertURIStyles(uri_style, uriNodes):
     for n in uriNodes:
