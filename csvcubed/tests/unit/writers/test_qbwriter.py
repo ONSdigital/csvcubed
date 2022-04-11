@@ -251,26 +251,7 @@ def test_default_property_value_uris_new_dimension_column_with_code_list():
 
 def test_default_property_value_uris_new_dimension_column_with_new_code_list():
     """
-    When a new dimension is defined with a new code list, by default it should provide standard-formatted property and value Urls
-    """
-    column = QbColumn(
-        "Some Column",
-        NewQbDimension(
-            "Some New Dimension",
-            code_list=NewQbCodeList(CatalogMetadata("Some Catalog"), []),
-        ),
-    )
-    (
-        default_property_uri,
-        default_value_uri,
-    ) = empty_qbwriter._get_default_property_value_uris_for_column(column)
-    assert "cube-name.csv#dimension/some-new-dimension" == default_property_uri
-    assert "some-catalog.csv#{+some_column}" == default_value_uri
-
-
-def test_default_property_value_uris_new_dimension_column_with_new_code_list():
-    """
-    When a new dimension is defined with a new code list, by default it should provide standard-formatted property and value Urls
+    When a new dimension is defined with a new code list, by default it should provide standard-formatted property Urls
     """
     column = QbColumn(
         "Some Column",
