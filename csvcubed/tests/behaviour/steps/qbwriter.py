@@ -769,7 +769,7 @@ def step_impl(context, cube_name: str, uri_style: str):
 
 def assertURIStyle(uri_style: URIStyle, temp_dir: Path, csv_file_name: str):
 
-    baseUri = "file://local/"
+    baseUri = "file://relative-uris/"
     metadataFilePath = temp_dir.joinpath(f"{csv_file_name}-metadata.json")
     g = Graph()
     g.parse(metadataFilePath, publicID=baseUri)
