@@ -43,8 +43,8 @@ class DatasetObservationsInfoResult:
         return f"""
         - Number of {obs_or_concepts_str}: {self.num_of_observations}
         - Number of Duplicates: {self.num_of_duplicates}
-        - First 10 Concepts:{linesep}{formatted_dataset_head}
-        - Last 10 Concepts:{linesep}{formatted_dataset_tail}
+        - First 10 {obs_or_concepts_str}: {linesep}{formatted_dataset_head}
+        - Last 10 {obs_or_concepts_str}: {linesep}{formatted_dataset_tail}
         """
 
 

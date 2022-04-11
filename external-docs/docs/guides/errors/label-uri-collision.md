@@ -8,7 +8,3 @@ _When the uri-safe value derived from more than one column title or value result
 
 Identify which titles or values have resulted in the duplicate uri-safe equivalents and modify to avoid the collision.
 The [Working with URIs Guide](../uris.md) covers how uri-safe equivalent values are derived.
-
-Running the [build command](../../quick-start/build-command.md) with the ``--log-level=debug`` will log the   
-uri-safe conversion messages, these may be reviewed in the console or log file.
-
