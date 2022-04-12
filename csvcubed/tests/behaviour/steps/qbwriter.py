@@ -1,10 +1,10 @@
 from urllib.parse import urlparse
-from numpy import where
 import pandas as pd
 from pathlib import Path
 from behave import Given, When, Then, Step
 from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
-from rdflib import RDF, XSD, Graph, Literal, URIRef
+from csvcubeddevtools.helpers.file import get_test_cases_dir
+from rdflib import Graph
 
 from csvcubed.models.cube import *
 from csvcubed.models.cube import (
@@ -19,6 +19,8 @@ from csvcubed.writers.qbwriter import QbWriter
 from csvcubed.utils.qb.validation.cube import validate_qb_component_constraints
 from csvcubed.utils.csvw import get_first_table_schema
 from csvcubed.utils.pandas import read_csv
+
+_test_case_dir = get_test_cases_dir()
 
 
 def get_standard_catalog_metadata_for_name(
@@ -726,6 +728,51 @@ def step_impl(context, cube_name: str):
                 ]
             ),
             csv_column_uri_template="http://existing/measure/{+existing_measures}",
+        ),
+    ]
+
+    cube = Cube(get_standard_catalog_metadata_for_name(cube_name), data, columns)
+
+    errors = cube.validate()
+    errors += validate_qb_component_constraints(cube)
+
+    assert len(errors) == 0, [e.message for e in errors]
+
+    context.cube = cube
+
+
+@Given('a QbCube named "{cube_name}" which references a legacy composite code-list')
+def step_impl(context, cube_name: str):
+
+    data = pd.DataFrame(
+        {
+            "Location": [
+                "http://data.europa.eu/nuts/code/UKC",
+                "http://data.europa.eu/nuts/code/UKL",
+                "http://data.europa.eu/nuts/code/UKD",
+            ],
+            "Observed Value": [1, 2, 3],
+        }
+    )
+
+    columns = [
+        QbColumn(
+            "Location",
+            NewQbDimension(
+                "Location",
+                code_list=NewQbCodeListInCsvW(
+                    _test_case_dir
+                    / "readers"
+                    / "skoscodelistreader"
+                    / "location.csv-metadata.json"
+                ),
+            ),
+        ),
+        QbColumn(
+            "Observed Value",
+            QbSingleMeasureObservationValue(
+                unit=NewQbUnit("Num of students"), measure=NewQbMeasure("Total")
+            ),
         ),
     ]
 

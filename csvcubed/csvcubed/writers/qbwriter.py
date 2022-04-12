@@ -213,6 +213,8 @@ class QbWriter(WriterBase):
                 tables.append(
                     {
                         "url": code_list.csv_file_relative_path_or_uri,
+                        # n.b. the below tableSchema works for *both* standard and composite legacy code lists
+                        # due to the `notation` column supporting both `Notation` *and* `URI` as column titles.
                         "tableSchema": "https://gss-cogs.github.io/family-schemas/codelist-schema.json",
                         "suppressOutput": True,
                     }
