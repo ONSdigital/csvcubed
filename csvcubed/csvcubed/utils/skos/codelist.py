@@ -49,10 +49,10 @@ def get_codelist_col_title_by_property_url(
 
     :return: `str` - dataset column title.
     """
-    print(columns)
     results = [
         column for column in columns if column.column_property_url == property_url.value
     ]
+    print(results)
 
     if len(results) != 1:
         raise InvalidNumberOfRecordsException(

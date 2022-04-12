@@ -19,8 +19,6 @@ from csvcubed.models.inspectsparqlresults import (
     CodelistsResult,
     ColsWithSuppressOutputTrueResult,
     DSDLabelURIResult,
-    DatasetURLResult,
-    QubeComponentResult,
     QubeComponentsResult,
 )
 from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
@@ -125,7 +123,7 @@ class MetadataPrinter:
         self.result_catalog_metadata = select_csvw_catalog_metadata(
             self.csvw_metadata_rdf_graph
         )
-        dataset_url = self.get_dataset_url(
+        dataset_url: str = self.get_dataset_url(
             self.csvw_metadata_rdf_graph,
             self.csvw_type,
             self.result_catalog_metadata.dataset_uri,
@@ -154,19 +152,6 @@ class MetadataPrinter:
             dataset, self.csvw_type
         )
 
-        self.result_code_list_cols = select_codelist_cols_by_dataset_url(
-            self.csvw_metadata_rdf_graph, dataset_url
-        )
-        (
-            parent_notation_col_name,
-            label_col_name,
-            notation_col_name,
-        ) = self.get_parent_label_notation_col_names(self.result_code_list_cols.columns)
-
-        self.result_concepts_hierachy_info = get_concepts_hierarchy_info(
-            dataset, parent_notation_col_name, label_col_name, notation_col_name
-        )
-
         (
             canonical_shape_dataset,
             measure_col,
@@ -180,6 +165,19 @@ class MetadataPrinter:
         )
         self.result_dataset_value_counts = get_dataset_val_counts_info(
             canonical_shape_dataset, measure_col, unit_col
+        )
+
+        self.result_code_list_cols = select_codelist_cols_by_dataset_url(
+            self.csvw_metadata_rdf_graph, dataset_url
+        )
+        (
+            parent_notation_col_name,
+            label_col_name,
+            notation_col_name,
+        ) = self.get_parent_label_notation_col_names(self.result_code_list_cols.columns)
+
+        self.result_concepts_hierachy_info = get_concepts_hierarchy_info(
+            dataset, parent_notation_col_name, label_col_name, notation_col_name
         )
 
     @property
