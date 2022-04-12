@@ -1,5 +1,6 @@
 import json
-
+from pathlib import Path
+from tempfile import TemporaryDirectory
 import requests_mock
 from behave import *
 from csvcubed.cli.build import build as cli_build
@@ -58,9 +59,15 @@ def step_impl(context):
     context.add_cleanup(lambda: mocker.stop())
 
     with vcr.use_cassette(str(_cassettes_dir / "cube-created.yaml")):
-        cube, errors = cli_build(data_file, config_file)
-        context.cube = cube
-        context.errors = errors
+        with TemporaryDirectory() as temp_dir_path:
+            temp_dir = Path(temp_dir_path)
+            out_dir = temp_dir / "out"
+            cube, errors = cli_build(data_file,
+                                     config_file,
+                                     output_directory=out_dir,
+                                     validation_errors_file_out=out_dir / "validation_errors.json")
+            context.cube = cube
+            context.errors = errors
 
 
 @then("The cube Metadata should match")
