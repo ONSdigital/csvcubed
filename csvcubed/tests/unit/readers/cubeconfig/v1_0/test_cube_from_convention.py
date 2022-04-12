@@ -71,7 +71,17 @@ def test_01_build_convention_ok():
     ).resolve()
     test_json_path = None
     print(f"test_case_data: {test_data_path}")
-    cube, validation_errors = cli_build(csv_path=test_data_path)
+    with TemporaryDirectory() as temp_dir_path:
+        temp_dir = Path(temp_dir_path)
+        output = temp_dir / "out"
+        csv = Path(TEST_CASE_DIR, "cube_data_convention_ok.csv")
+        cube, validation_errors = cli_build(
+            output_directory=output,
+            csv_path=csv,
+            fail_when_validation_error_occurs=False,
+            validation_errors_file_out=Path(output, "validation_errors.json"),
+        )
+
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, List)
     assert isinstance(cube.columns, list)

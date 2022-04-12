@@ -1,5 +1,8 @@
 import os
+from tempfile import TemporaryDirectory
+
 import pytest
+
 from csvcubed.cli.build import build as cli_build
 from csvcubed.readers.cubeconfig.schema_versions import QubeConfigJsonSchemaVersion
 from csvcubed.readers.cubeconfig.v1_0.configdeserialiser import *
@@ -14,17 +17,18 @@ SCHEMA_PATH_FILE = Path(
 
 @pytest.mark.vcr
 def test_build():
-
-    config = Path(TEST_CASE_DIR, "cube_data_config_ok.json")
-    output = Path("./out")
-    csv = Path(TEST_CASE_DIR, "cube_data_config_ok.csv")
-    cli_build(
-        config_path=config,
-        output_directory=output,
-        csv_path=csv,
-        fail_when_validation_error_occurs=True,
-        validation_errors_file_out=Path("validation_errors.json"),
-    )
+    with TemporaryDirectory() as temp_dir_path:
+        temp_dir = Path(temp_dir_path)
+        config = Path(TEST_CASE_DIR, "cube_data_config_ok.json")
+        output = temp_dir / "out"
+        csv = Path(TEST_CASE_DIR, "cube_data_config_ok.csv")
+        cli_build(
+            config_path=config,
+            output_directory=output,
+            csv_path=csv,
+            fail_when_validation_error_occurs=True,
+            validation_errors_file_out=Path(output, "validation_errors.json"),
+        )
 
 
 def _check_new_attribute_column(
@@ -99,20 +103,20 @@ def test_01_build_config_ok():
     """
     Valid Cube from Data using Convention (no config json)
     """
-    test_data_path = Path(
-        os.path.join(TEST_CASE_DIR, "cube_data_config_ok.csv")
-    ).resolve()
-    test_json_path = Path(
-        os.path.join(TEST_CASE_DIR, "cube_data_config_ok.json")
-    ).resolve()
-    print(f"test_case_data: {test_data_path}")
-    cube, validation_errors = cli_build(
-        config_path=test_json_path,
-        csv_path=test_data_path,
-        output_directory=Path("./out"),
-        fail_when_validation_error_occurs=True,
-        validation_errors_file_out=Path("validation_errors.json"),
-    )
+    with TemporaryDirectory() as temp_dir_path:
+        temp_dir = Path(temp_dir_path)
+        csv = Path(TEST_CASE_DIR, "cube_data_config_ok.csv")
+        config = Path(TEST_CASE_DIR, "cube_data_config_ok.json")
+        output = temp_dir / "out"
+        csv = Path(TEST_CASE_DIR, "cube_data_config_ok.csv")
+        cube, validation_errors = cli_build(
+            csv_path=csv,
+            config_path=config,
+            output_directory=output,
+            fail_when_validation_error_occurs=True,
+            validation_errors_file_out=Path(output, "validation_errors.json")
+        )
+
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, List)
     assert isinstance(cube.columns, list)
