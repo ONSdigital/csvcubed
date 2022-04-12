@@ -39,6 +39,7 @@ from csvcubed.cli.inspect.inspectdatasetmanager import (
     load_csv_to_dataframe,
 )
 from csvcubed.models.inspectdataframeresults import (
+    CodelistHierarchyInfoResult,
     DatasetObservationsByMeasureUnitInfoResult,
     DatasetObservationsInfoResult,
 )
@@ -66,6 +67,9 @@ class MetadataPrinter:
     csvw_metadata_json_path: Path
 
     csvw_type_str: str = field(init=False)
+    dataset_url: str = field(init=False)
+    dataset: pd.DataFrame = field(init=False)
+
     result_catalog_metadata: CatalogMetadataResult = field(init=False)
     result_dataset_label_dsd_uri: DSDLabelURIResult = field(init=False)
     result_qube_components: QubeComponentsResult = field(init=False)
@@ -78,6 +82,7 @@ class MetadataPrinter:
         init=False
     )
     result_code_list_cols: CodeListColsByDatasetUrlResult = field(init=False)
+    result_concepts_hierachy_info: CodelistHierarchyInfoResult = field(init=False)
 
     @staticmethod
     def get_csvw_type_str(csvw_type: CSVWType) -> str:
@@ -118,20 +123,34 @@ class MetadataPrinter:
         )
         return (parent_notation_col_name, label_col_name, notation_col_name)
 
-    def __post_init__(self):
+    def generate_general_results(self):
+        """
+        Generates results related to data cubes and code lists.
+
+        Member of :class:`./MetadataPrinter`.
+        """
         self.csvw_type_str = self.get_csvw_type_str(self.csvw_type)
         self.result_catalog_metadata = select_csvw_catalog_metadata(
             self.csvw_metadata_rdf_graph
         )
-        dataset_url: str = self.get_dataset_url(
+        self.dataset_url = self.get_dataset_url(
             self.csvw_metadata_rdf_graph,
             self.csvw_type,
             self.result_catalog_metadata.dataset_uri,
         )
-        dataset: pd.DataFrame = load_csv_to_dataframe(
-            self.csvw_metadata_json_path, Path(dataset_url)
+        self.dataset = load_csv_to_dataframe(
+            self.csvw_metadata_json_path, Path(self.dataset_url)
+        )
+        self.result_dataset_observations_info = get_dataset_observations_info(
+            self.dataset, self.csvw_type
         )
 
+    def get_datacube_results(self):
+        """
+        Generates results specific to data cubes.
+
+        Member of :class:`./MetadataPrinter`.
+        """
         self.result_dataset_label_dsd_uri = (
             select_csvw_dsd_dataset_label_and_dsd_def_uri(self.csvw_metadata_rdf_graph)
         )
@@ -148,16 +167,12 @@ class MetadataPrinter:
             self.result_dataset_label_dsd_uri.dsd_uri,
             self.csvw_metadata_json_path,
         )
-        self.result_dataset_observations_info = get_dataset_observations_info(
-            dataset, self.csvw_type
-        )
-
         (
             canonical_shape_dataset,
             measure_col,
             unit_col,
         ) = transform_dataset_to_canonical_shape(
-            dataset,
+            self.dataset,
             self.result_qube_components.qube_components,
             self.result_dataset_label_dsd_uri.dsd_uri,
             self.csvw_metadata_rdf_graph,
@@ -167,23 +182,36 @@ class MetadataPrinter:
             canonical_shape_dataset, measure_col, unit_col
         )
 
+    def generate_codelist_results(self):
+        """
+        Generates results specific to code lists.
+
+        Member of :class:`./MetadataPrinter`.
+        """
         self.result_code_list_cols = select_codelist_cols_by_dataset_url(
-            self.csvw_metadata_rdf_graph, dataset_url
+            self.csvw_metadata_rdf_graph, self.dataset_url
         )
         (
             parent_notation_col_name,
             label_col_name,
             notation_col_name,
         ) = self.get_parent_label_notation_col_names(self.result_code_list_cols.columns)
-
         self.result_concepts_hierachy_info = get_concepts_hierarchy_info(
-            dataset, parent_notation_col_name, label_col_name, notation_col_name
+            self.dataset, parent_notation_col_name, label_col_name, notation_col_name
         )
+
+    def __post_init__(self):
+        self.generate_general_results()
+
+        if self.csvw_type == CSVWType.QbDataSet:
+            self.get_datacube_results()
+        elif self.csvw_type == CSVWType.CodeList:
+            self.generate_codelist_results()
 
     @property
     def type_info_printable(self) -> str:
         """
-        Generates a printable of metadata type information.
+        Returns a printable of metadata type information.
 
         Member of :class:`./MetadataPrinter`.
 
@@ -197,7 +225,7 @@ class MetadataPrinter:
     @property
     def catalog_metadata_printable(self) -> str:
         """
-        Retue a printable of catalog metadata (e.g. title, description, etc.).
+        Returns a printable of catalog metadata (e.g. title, description, etc.).
 
         Member of :class:`./MetadataPrinter`.
 
@@ -208,7 +236,7 @@ class MetadataPrinter:
     @property
     def dsd_info_printable(self) -> str:
         """
-        Generates a printable of Data Structure Definition (DSD) information.
+        Returns a printable of Data Structure Definition (DSD) information.
 
         Member of :class:`./MetadataPrinter`.
 
@@ -219,7 +247,7 @@ class MetadataPrinter:
     @property
     def codelist_info_printable(self) -> str:
         """
-        Generates a printable of dsd code list information (e.g. column name, type, etc.).
+        Returns a printable of dsd code list information (e.g. column name, type, etc.).
 
         Member of :class:`./MetadataPrinter`.
 
@@ -241,7 +269,7 @@ class MetadataPrinter:
     @property
     def dataset_val_counts_by_measure_unit_info_printable(self) -> str:
         """
-        Generates a printable of dataset value counts broken-down by measure and unit.
+        Returns a printable of dataset value counts broken-down by measure and unit.
 
         Member of :class:`./MetadataPrinter`.
 
@@ -252,7 +280,7 @@ class MetadataPrinter:
     @property
     def codelist_hierachy_info_printable(self) -> str:
         """
-        Generates a printable of code list concepts hierarchy.
+        Returns a printable of code list concepts hierarchy.
 
         Member of :class:`./MetadataPrinter`.
 
