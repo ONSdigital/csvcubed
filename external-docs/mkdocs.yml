@@ -3,20 +3,26 @@ site_url: https://gss-cogs.github.io/csvcubed-docs/external
 nav:
   - Home:
       - index.md
-  - Why:
-      - why/index.md
-  - Quickstart:
+  - Quick start: 
       - quick-start/index.md
       - Installation: quick-start/installation.md
-      - Shaping your data: quick-start/shaping.md
-      - Qube config: quick-start/qube-config.md
+      - Designing a CSV: quick-start/designing-csv.md
+      - Building a CSV-W: quick-start/build.md
+      - Describing your CSV: quick-start/describing-csv.md
+      - Linking data: quick-start/linking-data.md
   - Guides:
       - guides/index.md
       - Raise an issue: guides/raise-issue.md
       - Shape your data: guides/shape-data.md
       - Handling missing observed values: guides/missing-observed-values.md
-      - Qube config: guides/qube-config.md
+      - Qube config:
+        - guides/qube-config.md
+        - Templates: guides/using-templates.md
+      - Commands: 
+        - build: guides/command-line/build-command.md
+        - inspect: guides/command-line/inspect-command.md
       - Errors:
+        - guides/errors/index.md
         - Missing column definition: guides/errors/missing-column-definition.md
         - Column not found in data: guides/errors/column-not-found-in-data.md
         - Duplicate column title: guides/errors/duplicate-column-title.md
@@ -33,16 +39,14 @@ nav:
         - Undefined units: guides/errors/undefined-units.md
         - Undefined measures: guides/errors/undefined-measures.md
         - Undefined attribute values: guides/errors/undefined-attribute-values.md
+        - Conflicting URI values: guides/errors/conflicting-uri-values.md
         - Reserved URI value: guides/errors/reserved-uri-value.md
         - CSV column URI template missing: guides/errors/csv-column-uri-template-missing.md
         - CSV column literal with URI template: guides/errors/csv-column-literal-with-uri-template.md
         - Column validation error: guides/errors/column-validation.md
-  - Reference Metadata:
-    - reference-metadata/index.md
+      - Working with URIs: guides/uris.md
   - Glossary:
       - glossary/index.md
-  - API Documentation:
-      - api-documentation/index.md
 theme:
   name: material
   palette:
@@ -62,7 +66,19 @@ theme:
     - navigation.indexes
     - navigation.top
     - toc.integrate
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_div_format
+  - pymdownx.tabbed:
+      alternate_style: true 
 plugins:
-  - markdownmermaid
-extra_javascript:
-  - https://unpkg.com/mermaid@8.4.5/dist/mermaid.min.js
+  - search
+  - mermaid2

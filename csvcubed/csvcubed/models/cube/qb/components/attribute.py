@@ -12,10 +12,10 @@ from typing import List, Set, Optional
 import pandas as pd
 from pydantic import validator
 
+from csvcubed.utils.qb.validation.uri_safe import ensure_no_uri_safe_conflicts
 from .attributevalue import NewQbAttributeValue
 from .arbitraryrdf import (
     ArbitraryRdf,
-    TripleFragment,
     TripleFragmentBase,
     RdfSerialisationHint,
 )
@@ -71,6 +71,20 @@ class ExistingQbAttribute(QbAttribute):
     is_required: bool = field(default=False, repr=False)
     arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
 
+    @validator("new_attribute_values")
+    def _validate_concepts_non_conflicting(
+        cls, new_attribute_values: List[NewQbAttributeValue]
+    ) -> List[NewQbAttributeValue]:
+        """
+        Ensure that there are no collisions where multiple attribute values map to the same URI-safe value.
+        """
+        ensure_no_uri_safe_conflicts(
+            [(val.label, val.uri_safe_identifier) for val in new_attribute_values],
+            ExistingQbAttribute,
+        )
+
+        return new_attribute_values
+
     def _get_arbitrary_rdf(self) -> List[TripleFragmentBase]:
         return self.arbitrary_rdf
 
@@ -110,6 +124,20 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
     is_required: bool = field(default=False, repr=False)
     uri_safe_identifier_override: Optional[str] = field(default=None, repr=False)
     arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
+
+    @validator("new_attribute_values")
+    def _validate_attribute_values_non_conflicting(
+        cls, new_attribute_values: List[NewQbAttributeValue]
+    ) -> List[NewQbAttributeValue]:
+        """
+        Ensure that there are no collisions where multiple attribute values map to the same URI-safe value.
+        """
+        ensure_no_uri_safe_conflicts(
+            [(val.label, val.uri_safe_identifier) for val in new_attribute_values],
+            NewQbAttribute,
+        )
+
+        return new_attribute_values
 
     def _get_arbitrary_rdf(self) -> List[TripleFragmentBase]:
         return self.arbitrary_rdf

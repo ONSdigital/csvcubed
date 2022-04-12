@@ -1,0 +1,6 @@
+Label,Notation,Parent Notation,Sort Priority,Description
+All,all,,0,
+Ex-ship,ex-ship,,1,
+Ex-warehouse,ex-warehouse,,2,
+Ex-warehouse and Ex-ship Clearances,ex-warehouse-and-ex-ship-clearances,,3,
+UK Origin,uk-origin,,4,

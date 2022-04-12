@@ -145,3 +145,9 @@ cython_debug/
 # Ignore docs folders
 csvcubed*/docs
 .DS_Store
+
+# Ignore response cache sqlite file
+http_cache.sqlite
+
+# Ignore test files
+out/

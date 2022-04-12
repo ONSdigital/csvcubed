@@ -1,0 +1,69 @@
+PREFIX qb: <http://purl.org/linked-data/cube#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX csvw: <http://www.w3.org/ns/csvw#>
+
+SELECT DISTINCT 
+    ?componentProperty ?componentPropertyLabel ?componentOrder ?componentPropertyType ?csvColumnTitle 
+    (COALESCE(?csvColumnRequired, false) || ?componentRequired as ?required) 
+WHERE {   
+    { 
+        SELECT DISTINCT ?csvColumnTitle ?csvColumnRequired ?component ?componentProperty ?componentOrder 
+        WHERE {
+            ?dsd_uri qb:component ?component.
+
+            ?component qb:componentProperty|qb:dimension|qb:measureDimension|qb:measure|qb:attribute ?componentProperty;
+                    qb:order ?componentOrder.
+
+            OPTIONAL {
+                ?csvColumn csvw:propertyUrl ?csvColumnPropertyUrl;
+                        csvw:title ?csvColumnTitle.
+
+                {
+                    ?csvColumn csvw:required ?csvColumnRequired.
+                } UNION {
+                    BIND(false as ?csvColumnRequired).
+                    FILTER NOT EXISTS {
+                        ?csvColumn csvw:required ?csvColumnRequired.
+                    }
+                }
+
+                FILTER(STRENDS(str(?componentProperty), str(?csvColumnPropertyUrl))).
+            }
+        }
+    }
+
+    OPTIONAL {
+        ?componentProperty rdfs:label ?componentPropertyLabel.
+    }
+
+    OPTIONAL {
+        # https://www.w3.org/TR/vocab-data-cube/#h3_reference-compspec
+        {
+            ?component qb:dimension ?dimension.
+            BIND (qb:DimensionProperty as ?componentPropertyType).
+            BIND (true as ?componentRequired)
+        } UNION {
+            # https://www.w3.org/TR/vocab-data-cube/#dfn-qb-measuredimension
+            ?component qb:measureDimension ?dimension.
+            BIND (qb:MeasureProperty as ?componentPropertyType).
+            BIND (true as ?componentRequired)
+        } UNION {
+            ?component qb:measure ?measure.
+            BIND (qb:MeasureProperty as ?componentPropertyType).
+            BIND (true as ?componentRequired)
+        } UNION {
+            ?component qb:attribute ?attribute.
+            BIND (qb:AttributeProperty as ?componentPropertyType).
+
+            {
+                ?component qb:componentRequired ?componentRequired.
+            } UNION {
+                BIND (false as ?componentRequired)
+                FILTER NOT EXISTS {
+                    ?component qb:componentRequired [].
+                }
+            }
+        } 
+    }
+}    
+ORDER BY ASC(?componentOrder)

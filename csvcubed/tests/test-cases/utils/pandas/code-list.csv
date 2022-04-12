@@ -1,0 +1,16 @@
+Label,Notation,Parent Notation,Sort Priority,Description
+0 to 2 years,0-2,NA,1,nan
+2 to 4 years,2-4,#N/A,2,null
+4 to 10 years,4-10,#N/A N/A,3,
+10 to 20 years,10-20,#NA,4,
+20+ years,20plus,-1.#IND,5,
+Any,any,-1.#QNAN,6,
+0 to 1 years,0-to-1,-NaN,7,
+2 to 3 years,2-to-3,-nan,8,
+4 to 5 years,4-to-5,1.#IND,9,
+6 to 9 years,6-to-9,1.#QNAN,10,
+10 to 20 years,10-to-20,<NA>,11,
+20+ years,20,N/A,12,
+Unknown,unknown,NULL,13,
+Total,total,NaN,14,
+All,all,n/a,15,

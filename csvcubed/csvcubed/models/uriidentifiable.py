@@ -1,3 +1,8 @@
+"""
+URI Identifiable
+----------------
+"""
+
 import dataclasses
 from typing import Optional
 from abc import ABC, abstractmethod

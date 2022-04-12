@@ -7,7 +7,6 @@ Utilities for getting columns (of a given type) from the `qb:DataStructureType`
 import logging
 from typing import List, TypeVar, Type, Set
 
-
 from csvcubed.models.cube import (
     Cube,
     QbColumn,
@@ -60,7 +59,7 @@ def get_all_measures(cube: Cube) -> Set[QbMeasure]:
     single_meas_obs_val_columns = get_columns_of_dsd_type(
         cube, QbSingleMeasureObservationValue
     )
-    measures = {
+    measures: Set[QbMeasure] = {
         meas
         for dim in multi_measure_dimension_columns
         for meas in dim.structural_definition.measures

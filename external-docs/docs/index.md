@@ -1,12 +1,26 @@
-# Welcome to MkDocs
+# csvcubed - turn CSV files into linked data
 
-## The Project
-### What the Project is about
+## What is csvcubed?
 
-The csvcubed project aims to provide libraries and utilities which make it simple to turn a CSV into [5* linked data](https://5stardata.info/en/). We want to make it easier for data producers to annotate their existing data with the metadata required to ensure that each dataset is discoverable, comparable and analysable by automated tools.
+The csvcubed project provides libraries and utilities which make it easier to turn a CSV into [5-star linked data](https://5stardata.info/en/).
 
-The csvcubed catalogue of tools help to deliver this vision in an opinionated fashion. Our tools output [data cubes](https://en.wikipedia.org/wiki/Data_cube) using the [CSV on the web (CSV-W)](https://www.w3.org/TR/tabular-metadata/) file format. Within these CSV-W files we describe what the data represents using a combination of the following ontologies:
+By publishing [5-star linked data](https://5stardata.info/en/) and leveraging open standards for data, we believe that we can help ensure that statistical data is discoverable, comparable and analysable by automated tools. We hope that this standards-based approach will unlock network effects which accelerate data analysis by making it easier to collate, compare and contrast data from different sources.
+
+## How do I get started?
+
+See the [quick-start guide](./quick-start/installation.md).
+
+## I want to know more
+
+csvcubed outputs [data cubes](https://en.wikipedia.org/wiki/Data_cube) using the [CSV on the web (CSV-W)](https://www.w3.org/TR/tabular-metadata/) file format. These CSV-W files contain your statistical data *with* the metadata necessary to describe what the data means, in context.
+
+We make use of the following ontologies to describe cubes, code lists and catalogue metadata:
 
 - [RDF Data Cube (qb)](https://www.w3.org/TR/vocab-data-cube/)
 - [Simple Knowledge Organization System (SKOS)](http://www.w3.org/TR/skos-primer)
 - [Data Catalog Vocabulary (DCAT2)](https://www.w3.org/TR/vocab-dcat-2/)
+
+## Is this just about Open Data?
+
+No! This isn't *just* about open data. We love open data but it isn't right for everything. We understand that some data contains disclosive or private information which shouldn't be published as open data. Our tools are designed to use open standards to enable you to create CSV-Ws which you can choose to publish or keep private.
+ 

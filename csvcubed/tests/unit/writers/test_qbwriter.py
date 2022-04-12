@@ -1,9 +1,14 @@
-import pytest
-from copy import deepcopy
-import pandas as pd
-from rdflib import RDFS, Graph, URIRef, Literal
-from csvcubedmodels import rdf
+from tempfile import TemporaryDirectory
 from typing import List
+from copy import deepcopy
+import csv
+from pathlib import Path
+from urllib.parse import urlparse
+
+import pytest
+import pandas as pd
+from rdflib import RDFS, XSD, Graph, URIRef, Literal, Namespace
+from csvcubedmodels import rdf
 
 from csvcubed.models.cube import *
 from csvcubed.models.cube import (
@@ -12,12 +17,14 @@ from csvcubed.models.cube import (
     QbMultiMeasureDimension,
     QbMultiUnits,
 )
+from csvcubed.models.cube.uristyle import URIStyle
 from csvcubed.models.cube.qb.components.arbitraryrdf import (
     TripleFragment,
     RdfSerialisationHint,
 )
 from csvcubed.utils.iterables import first
 from csvcubed.writers.qbwriter import QbWriter
+from csvcubed.writers.urihelpers.skoscodelistconstants import SCHEMA_URI_IDENTIFIER
 
 
 def _get_standard_cube_for_columns(columns: List[CsvColumn]) -> Cube:
@@ -95,7 +102,31 @@ def test_structure_defined():
     _assert_component_defined(dataset, "some-existing-measure")
 
 
-def test_generating_concept_uri_template_from_global_concept_scheme_uri():
+def test_structure_uri():
+    cube = Cube(CatalogMetadata("Cube Name"))
+    qbwriter = QbWriter(cube)
+
+    actual = qbwriter._generate_qb_dataset_dsd_definitions().structure.uri_str
+    assert actual.startswith("cube-name.csv#")
+
+
+def test_structure_uri_standard_pattern():
+    cube = Cube(CatalogMetadata("Cube Name"), uri_style=URIStyle.Standard)
+    qbwriter = QbWriter(cube)
+
+    actual = qbwriter._generate_qb_dataset_dsd_definitions().structure.uri_str
+    assert actual.startswith("cube-name.csv#")
+
+
+def test_structure_uri_withoutFileExtensions_pattern():
+    cube = Cube(CatalogMetadata("Cube Name"), uri_style=URIStyle.WithoutFileExtensions)
+    qbwriter = QbWriter(cube)
+
+    actual = qbwriter._generate_qb_dataset_dsd_definitions().structure.uri_str
+    assert actual.startswith("cube-name#")
+
+
+def test_generating_concept_uri_template_from_legacy_global_concept_scheme_uri():
     """
     Given a globally defined skos:ConceptScheme's URI, generate the URI template for a column which maps the
     column's value to a concept defined inside the concept scheme.
@@ -114,7 +145,7 @@ def test_generating_concept_uri_template_from_global_concept_scheme_uri():
     )
 
 
-def test_generating_concept_uri_template_from_local_concept_scheme_uri():
+def test_generating_concept_uri_template_from_legacy_local_concept_scheme_uri():
     """
     Given a dataset-local skos:ConceptScheme's URI, generate the URI template for a column which maps the
     column's value to a concept defined inside the concept scheme.
@@ -130,6 +161,24 @@ def test_generating_concept_uri_template_from_local_concept_scheme_uri():
     assert (
         "http://base-uri/dataset-name#concept/that-concept-scheme-name/{+some_column}"
         == actual_concept_template_uri
+    )
+
+
+def test_generating_concept_uri_template_from_csvcubed_concept_scheme_uri():
+    """
+    Given a csvcubed-style skos:ConceptScheme's URI, generate the URI template for a column which maps the
+    column's value to a concept defined inside the concept scheme.
+    """
+    column = SuppressedCsvColumn("Some Column")
+    code_list = ExistingQbCodeList(
+        f"http://base-uri/concept-scheme#{SCHEMA_URI_IDENTIFIER}"
+    )
+
+    actual_concept_template_uri = (
+        empty_qbwriter._get_default_value_uri_for_code_list_concepts(column, code_list)
+    )
+    assert (
+        "http://base-uri/concept-scheme#{+some_column}" == actual_concept_template_uri
     )
 
 
@@ -198,6 +247,51 @@ def test_default_property_value_uris_new_dimension_column_with_code_list():
     assert (
         "http://base-uri/concept-scheme/this-scheme/{+some_column}" == default_value_uri
     )
+
+
+def test_default_property_value_uris_new_dimension_column_with_new_code_list():
+    """
+    When a new dimension is defined with a new code list, by default it should provide standard-formatted property and value Urls
+    """
+    column = QbColumn(
+        "Some Column",
+        NewQbDimension(
+            "Some New Dimension",
+            code_list=NewQbCodeList(CatalogMetadata("Some Catalog"), []),
+        ),
+    )
+    (
+        default_property_uri,
+        default_value_uri,
+    ) = empty_qbwriter._get_default_property_value_uris_for_column(column)
+    assert "cube-name.csv#dimension/some-new-dimension" == default_property_uri
+    assert "some-catalog.csv#{+some_column}" == default_value_uri
+
+
+def test_default_property_value_uris_new_dimension_column_with_new_code_list_for_cube_WithoutFileExtensions_uri_style():
+    """
+    When a new dimension is defined with a new code list, and the cube has a defined uri_style of WithoutFileExtensions,
+    it should provide property and value Urls which follow the cube's uri style
+    """
+
+    uri_styled_cube = Cube(
+        CatalogMetadata("Cube Name"), pd.DataFrame, [], URIStyle.WithoutFileExtensions
+    )
+    uri_styled_qbwriter = QbWriter(uri_styled_cube)
+
+    column = QbColumn(
+        "Some Column",
+        NewQbDimension(
+            "Some New Dimension",
+            code_list=NewQbCodeList(CatalogMetadata("Some Catalog"), []),
+        ),
+    )
+    (
+        default_property_uri,
+        default_value_uri,
+    ) = uri_styled_qbwriter._get_default_property_value_uris_for_column(column)
+    assert "cube-name#dimension/some-new-dimension" == default_property_uri
+    assert "some-catalog#{+some_column}" == default_value_uri
 
 
 def test_default_property_value_uris_existing_attribute_existing_values():
@@ -407,6 +501,57 @@ def test_default_property_value_uris_single_measure_obs_val():
     ) = empty_qbwriter._get_default_property_value_uris_for_column(column)
     assert default_property_uri == "cube-name.csv#measure/new-qb-measure"
     assert default_value_uri is None
+
+
+def test_output_new_code_list_csvws_urls():
+    data = pd.DataFrame({"New Dimension": ["A", "B", "C"], "Value": [1, 2, 3]})
+    cube = Cube(
+        CatalogMetadata("Cube Name"),
+        pd.DataFrame(),
+        [
+            QbColumn(
+                "New Dimension",
+                NewQbDimension.from_data("Some Dimension", data["New Dimension"]),
+            )
+        ],
+    )
+    qb_writer = QbWriter(cube)
+    with TemporaryDirectory() as temp_dir:
+        temp_dir = Path(temp_dir)
+        qb_writer._output_new_code_list_csvws(temp_dir)
+        graph = Graph()
+        graph.parse(temp_dir / "some-dimension.csv-metadata.json", publicID="file://relative/")
+        assert (
+            URIRef(f"file://relative/some-dimension.csv#code-list"),
+            URIRef("http://www.w3.org/ns/csvw#url"),
+            Literal("some-dimension.csv", datatype=XSD.anyURI),
+        ) in graph
+
+
+def test_output_new_code_list_csvws_urls_with_uri_style_WithoutFileExtensions():
+    data = pd.DataFrame({"New Dimension": ["A", "B", "C"], "Value": [1, 2, 3]})
+    cube = Cube(
+        CatalogMetadata("Cube Name"),
+        pd.DataFrame(),
+        [
+            QbColumn(
+                "New Dimension",
+                NewQbDimension.from_data("Some Dimension", data["New Dimension"]),
+            )
+        ],
+        uri_style=URIStyle.WithoutFileExtensions,
+    )
+    qb_writer = QbWriter(cube)
+    with TemporaryDirectory() as temp_dir:
+        temp_dir = Path(temp_dir)
+        qb_writer._output_new_code_list_csvws(temp_dir)
+        graph = Graph()
+        graph.parse(temp_dir / "some-dimension.csv-metadata.json", publicID="file://relative/")
+        assert (
+            URIRef(f"file://relative/some-dimension#code-list"),
+            URIRef("http://www.w3.org/ns/csvw#url"),
+            Literal("some-dimension.csv", datatype=XSD.anyURI),
+        ) in graph
 
 
 def test_default_property_value_uris_multi_measure_obs_val():
@@ -1144,6 +1289,58 @@ def test_arbitrary_rdf_serialisation_new_dimension():
     ) in graph
 
 
+def test_arbitrary_rdf_serialisation_new_dimension_with_cube_uri_style_WithoutFileExtensions():
+    """
+    Test that when arbitrary RDF is specified against a new dimension, it is serialised correctly.
+    """
+    data = pd.DataFrame({"New Dimension": ["A", "B", "C"], "Value": [1, 2, 3]})
+
+    cube = Cube(
+        CatalogMetadata("Some Dataset"),
+        data,
+        [
+            QbColumn(
+                "New Dimension",
+                NewQbDimension.from_data(
+                    "Some Dimension",
+                    data["New Dimension"],
+                    arbitrary_rdf=[
+                        TripleFragment(RDFS.label, "New Dimension Property"),
+                        TripleFragment(
+                            RDFS.label,
+                            "New Dimension Component",
+                            RdfSerialisationHint.Component,
+                        ),
+                    ],
+                ),
+            ),
+            QbColumn(
+                "Value",
+                QbSingleMeasureObservationValue(
+                    NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
+                ),
+            ),
+        ],
+        uri_style=URIStyle.WithoutFileExtensions,
+    )
+
+    qb_writer = QbWriter(cube)
+    dataset = qb_writer._generate_qb_dataset_dsd_definitions()
+    graph = dataset.to_graph(Graph())
+
+    assert (
+        URIRef("some-dataset#dimension/some-dimension"),
+        RDFS.label,
+        Literal("New Dimension Property"),
+    ) in graph
+
+    assert (
+        URIRef("some-dataset#component/some-dimension"),
+        RDFS.label,
+        Literal("New Dimension Component"),
+    ) in graph
+
+
 def test_arbitrary_rdf_serialisation_existing_dimension():
     """
     Test that when arbitrary RDF is specified against an Existing Dimension, it is serialised correctly.
@@ -1290,6 +1487,52 @@ def test_qb_order_of_components():
         rdf.QB.order,
         Literal(4),
     ) in graph
+
+
+def test_output_integer_obs_val_with_missing_values():
+    """
+    Due to the way that pandas represents missing values (as NaN), instead of interpreting an integer data column as
+     integers, it represents the column as decimal values when some values are missing. Therefore we need to explicitly
+     coerce these values back to integers.
+
+     This test ensures that we can write CSVs to disk which contain integer values even when one of the obs_vals is
+     missing.
+    """
+
+    data = pd.DataFrame({"New Dimension": ["A", "B", "C"], "Value": [1, None, 3]})
+
+    cube = Cube(
+        CatalogMetadata("Some Dataset"),
+        data,
+        [
+            QbColumn(
+                "New Dimension",
+                NewQbDimension.from_data("Some Dimension", data["New Dimension"]),
+            ),
+            QbColumn(
+                "Value",
+                QbSingleMeasureObservationValue(
+                    NewQbMeasure("Some Measure"),
+                    NewQbUnit("Some Unit"),
+                    data_type="int",
+                ),
+            ),
+        ],
+    )
+
+    qb_writer = QbWriter(cube)
+    with TemporaryDirectory() as temp_dir:
+        temp_dir = Path(temp_dir)
+        qb_writer.write(temp_dir)
+        with open(temp_dir / "some-dataset.csv") as csv_file:
+            rows = list(csv.reader(csv_file, delimiter=",", quotechar='"'))
+            for row in rows[1:]:
+                value: str = row[1]
+                if len(value) > 0:
+                    # If any of the values are not integers (e.g. "1.0") the next line will throw an exception.
+                    int_val = int(value)
+                    assert isinstance(int_val, int)
+                # else: len == 0 implies it's a missing value, which is expected in one location.
 
 
 if __name__ == "__main__":

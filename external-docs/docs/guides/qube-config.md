@@ -1,37 +1,37 @@
-# Configuring a Qube
+# Configuring a cube
 
-There are two ways to use csvcubed to generate a valid statictical qube:
+There are two ways to use csvcubed to generate a valid statistical cube:
 
-* **The convention-first approach** allows you to create a qube with minimal configuration.
-* **The configuration-first approach** where you have the full power to configure your qube.
+* **The convention-first approach** allows you to create a cube with minimal configuration.
+* **The configuration-first approach** where you have the full power to configure your cube.
 
-This document goes through, in detail, how to configure your qube whether you wish to use either of the two approaches or a combination of the two. For a quicker overview of the topic take a look at the [Qube Config quick-start](../quick-start/qube-config.md).  
+This document goes through, in detail, how to configure your cube whether you wish to use either of the two approaches or a combination of the two. For a quicker overview of the topic take a look at the [Qube Config quick-start](../quick-start/qube-config.md).  
 
 > **Experience of writing basic JSON documents is assumed throughout this document.** 
 > See this [tutorial from DigitalOcean](https://www.digitalocean.com/community/tutorials/an-introduction-to-json) for an introduction to writing JSON.
 
-## Qube configuration overview
+## Cube configuration overview
 
 There are three steps to generating a CSV-W using csvcubed, some of which are optional. 
 
 ```mermaid
 graph LR
-	subgraph "Fastest Qube"
+	subgraph "Fastest Cube"
 		A(Start) ==> B[1. Define metadata];
 		B ==> C{"Column names"};
 		C == Convention ==> D
 	end
-	subgraph "Custom Qube"
+	subgraph "Custom Cube"
 		C -- Configuration --> 1["2. Define columns"] --> D;
 	end
 	
-	D["3. Generate CSV-W"] ==> F(End);
+	D["3. Generate CSV-W"] ==> F(CSV-W);
 ```
 
 1. **Define metadata** (Optional)
    Provide information about the CSV-W's contents, such as title, publication date, description, and scope (e.g. start and end date of a time series)
 2. **Define columns** (Optional)
-   csvcubed has sensible defaults including the assumption that all columns are dimensions unless they have a reserved name (See: [Conventional column names for input `.csv` files](#conventional-column-name))
+   csvcubed has sensible defaults including the assumption that all columns are [dimensions](../glossary/index.md#dimension) unless they use a reserved name (See: [Conventional column names for input `.csv` files](#conventional-column-name))
 3. **Generate CSV-W**
    Run `csvcubed build tidy_data.csv (-c qube-config.json)` to generate a CSV-W
 
@@ -39,31 +39,35 @@ If you chose to omit step 2, you **must** ensure that your columns use [conventi
 
 ### Convention-first method
 
-The conventions used in generating a csvcubed-flavoured CSV-W involve a series of assumptions. These assumptions are always present, even if a configuration approach is used. A summary of the assumptions made by csvcubed are as follows; however for further detail see here. **TODO:** do this thing.
+The convention-first method enables you to generate a CSV-W cube without providing a [qube-config.json](#configuration) configuration file at all. This approach requires that you make use of standardised column names which help csvcubed infer what kind of information is contained in each column.
 
-* The title of the cube is the name of the csv file in capital case with underscores replaced by spaces.
-* Every column which does not use a conventional name is interpreted as a dimension.
-* The title of a dimension is taken as the [title case](https://en.wikipedia.org/wiki/Title_case) value of the column header with any underscores replaced by spaces.
-* A sibling code list is generated for each conventionally defined dimension. This code list is generated from the unique values present in the data CSV column.
-* Observation values are in the observation column and are decimal values.
-* Measures are in the measure column, and new measures are created using the unique values in the column unless a URI is present, when that uri is assumed to point to an existing measure.
-* Units are in the unit column, and new units are created using the unique values in the column unless a URI is present, when that uri is assumed to point to an existing unit.
+Requirements:
+
+* The data set must be in the [standard data shape](./shape-data.md#standard-shape).
+* The data CSV's column titles use [conventional column names](#conventional-column-names) for [measure](../glossary/index.md#measure) columns, [unit](../glossary/index.md#unit) columns and [observed value](../glossary/index.md#observation-observed-value) columns.
+
+Inferences and assumptions:
+
+* The title of the cube is the name of the csv file in [title case](https://en.wikipedia.org/wiki/Title_case) with underscores or dashes replaced by spaces.
+* Every column which does not use a conventional name is interpreted as a [dimension](../glossary/index.md#dimension).
+* The title of each dimension is the [title case](https://en.wikipedia.org/wiki/Title_case) version of the column header with any underscores or dashes replaced by spaces.
+* A code list is generated for each dimension column. This code list is generated from the unique values present in the data CSV column.
+* Observation values are decimal values.
+* New measures are created using the unique values in the measures column unless a URI is present, where that uri is assumed to point to an existing measure.
+* New units are created using the unique values in the units column unless a URI is present, where that uri is assumed to point to an existing unit.
 
 #### Conventional Column Names
 
 The following table defines the conventional column names understood by csvcubed:
 
-<!-- TODO: We should ensure to link to a document describing what the different types of component mean. -->
+| Component type                                                        | Reserved names                                                                  | Resulting configuration                                                                                                                                                                         |
+|-----------------------------------------------------------------------|---------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [Dimension](../glossary/index.md#dimension)                           | none                                                                            | A new dimension with the label of the csv column as its title                                                                                                                                   |
+| [Measure](../glossary/index.md#measure) Column                        | Measure, measures, measures column, measure column, measure type, measure types | A new measure column with the values within the measure column as new measures unless the values are uris, when csvcubed will assume these are existing measures                                |
+| [Observation](../glossary/index.md#observation-observed-value) Column | Observations, obs, values, value, val, vals                                     | A new observation column with the values in this column; the data type of this column must be numeric and is assumed to be of type [xsd:decimal](https://www.w3.org/TR/xmlschema11-2/#decimal). |
+| [Unit](../glossary/index.md#unit) Column                              | Unit, units, units column, unit column, unit type, unit types                   | A new unit column with the values within the unit column as new units unless the values are uris, when csvcubed will assume these are existing units                                            |
 
-| Component type     | Reserved names                                               | Resulting configuration                                      |
-| ------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| Dimension          | none                                                         | A new dimension with the label of the csv column as its title |
-| Measure Column     | Measure, measures, measures column, measure column, measure type, measure types | A new measure column with the values within the measure column as new measures unless the values are uris, when csvcubed will assume these are existing measures |
-| Observation Column | Observations, obs, values, value, val, vals                  | A new observation column with the values in this column; the data type of this column must be numeric and is assumed to be of type [xsd:decimal](https://www.w3.org/TR/xmlschema11-2/#decimal). |
-| Unit Column        | Unit, units, units column, unit column, unit type, unit types | A new unit column with the values within the unit column as new units unless the values are uris, when csvcubed will assume these are existing units |
-
-A valid `.csv` file must have a column of each *component type* to be valid. It is possible to override the default configuration of a conventional column by [configuring a corresponding column mapping](#column-definitions) in a `qube-config.json` file.
-
+A valid convention-first cube must have a column of each *component type* to be valid. It is possible to override the default configuration of a conventional column by [configuring a corresponding column mapping](#column-definitions) in a `qube-config.json` file.
 
 ### Configuration
 
@@ -72,27 +76,25 @@ Configuring the CSV-W output is done in such a way that the user is explicit in 
 The `qube-config.json` file has two sections.
 
 1. **Metadata**
-   This section is used to describe the dataset's catalog information to aide discovery, provide provinance and publication information, and optionally define the scope of the data set
-2. **Define columns**
-   This section is used to describe each column in the `.csv` file, classifying the column and defining how the column data is both represented and how it links semantically to other data
+   This section is used to describe the data set's catalog information to aide discovery, provide provinance and publication information, and optionally define the scope of the data set.
+2. **Column Definitions**
+   This section is used to describe each column in the `.csv` file, classifying the column and defining how the column data is both represented and how it links semantically to other data.
 
 ### Metadata
 
 A CSV-W file contains metadata which improves discoverability of data publications. In csvcubed, we use a selection of metadata entries from established namespaces to enable users to contribute to the web of data faster. The metadata fields available, their description and defaults are as follows.
 
-| **field name**   | **description**                                              | **default value**                           |
-| ---------------- | ------------------------------------------------------------ | ------------------------------------------- |
-| `title`          | the title of the cube                                        | A capital case version of the csv file name |
-| `description`    | a description of the contents of the cube                    | *none*                                      |
-| `publisher`      | a link to the publisher of the cube                          | *none*                                      |
-| `creator`        | a link to the creator of the cube                            | *none*                                      |
-| `theme`          | a list or a single string of the theme(s) covered by the data (i.e. "trade", "energy", "imports") | *none*                                      |
-| `spatial_bound`  | URI that defines the spatial / geographic bounds of the data contained herein | *none*                                      |
-| `temporal_bound` | URI that defines the temporal bounds of the data contained herein | *none*                                      |
+| **field name** | **description**                                                                                   | **default value**                           |
+|----------------|---------------------------------------------------------------------------------------------------|---------------------------------------------|
+| `title`        | the title of the cube                                                                             | A capital case version of the csv file name |
+| `description`  | a description of the contents of the cube                                                         | *none*                                      |
+| `publisher`    | a link to the publisher of the cube                                                               | *none*                                      |
+| `creator`      | a link to the creator of the cube                                                                 | *none*                                      |
+| `theme`        | a list or a single string of the theme(s) covered by the data (i.e. "trade", "energy", "imports") | *none*                                      |
 
 ### Column definitions
 
-A CSV-W file provides detailed information about the columns beyond their values. In csvcubed, we are targeting a level of detail which results in a data cube which can be be expressed using W3C's RDF Cube Vocabulary. A data cube must have a dimension, and observation columns along with at least one unit and measure defined to be valid. A cube may also have one or more attribute columns which provide clarification to observational data. Units and measures may be attached to the observation column (single measure qube), or appear in a column of their own (multi-measure qube).
+A CSV-W file provides detailed information about the columns beyond their values. In csvcubed, we are targeting a level of detail which results in a data cube which can be be expressed using W3C's RDF Cube Vocabulary. A data cube must have a dimension, and observation columns along with at least one unit and measure defined to be valid. A cube may also have one or more attribute columns which provide clarification to observational data. Units and measures may be attached to the observation column (single measure cube), or appear in a column of their own (multi-measure cube).
 
 To define a column in a `qube-config.json` file, provide the column header's value as a dictionary key, and create a new dictionary.
 
@@ -160,66 +162,67 @@ Unless the component being reused is a literal attribute and you're providing a 
 
 There are several configuration options available across column types except observations.
 
-| **field name**   | **description**                                              | **default value**                                            |
-| ---------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| `type`           | The type of the column (Required)                            | *dimension*                                                  |
-| `label`          | The title of the column (Optional)                           | The capital case of the header in the csv file with spaces replacing underscores |
-| `description`    | A description of the contents of the column (Optional)       | *none*                                                       |
-| `from_existing`  | The uri of the resource for reuse/extension (Optional)       | *none*                                                       |
-| `definition_uri` | A uri of a resource to show how the column is created/managed (i.e. a uri of a PDF explaining a list of units) (Optional) | *none*                                                       |
+| **field name**   | **description**                                                                                                           | **default value**                                                                |
+|------------------|---------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+| `type`           | The type of the column (Required)                                                                                         | *dimension*                                                                      |
+| `label`          | The title of the column (Optional)                                                                                        | The capital case of the header in the csv file with spaces replacing underscores |
+| `description`    | A description of the contents of the column (Optional)                                                                    | *none*                                                                           |
+| `from_existing`  | The uri of the resource for reuse/extension (Optional)                                                                    | *none*                                                                           |
+| `definition_uri` | A uri of a resource to show how the column is created/managed (i.e. a uri of a PDF explaining a list of units) (Optional) | *none*                                                                           |
 
 The `from_existing` value when set provides the basis of linked data; it allows csvcubed to generate additional RDF-hints to allow users to discover how the `tidy_data.csv` links to other data semanticly.
 
 ### Dimension configuration
 
-| **field name**   | **description**                                              | **default value**                                            |
-| ---------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| `type`           | The type of the column (Required)                            | *dimension*                                                  |
-| `label`          | The title of the column (Optional)                           | The capital case of the header in the csv file with spaces replacing underscores |
-| `description`    | A description of the contents of the column (Optional)       | *none*                                                       |
-| `from_existing`  | The uri of the resource for reuse/extension (Optional)       | *none*                                                       |
-| `definition_uri` | A uri of a resource to show how the column is created/managed (i.e. a uri of a PDF explaining a list of units) (Optional) | *none*                                                       |
-| `range_uri`      | A uri which describes the range of the values within the column (Optional) | *none*                                                       |
-| `uri_override`   | Override the uri created automatically for the column (Optional) (Advanced) | `tidy_data.csv#uri_safe_column_header_from_csv`              |
-| `uri_template`   | Override the uri generated for values within the uri (Optional) (Advanced) | **TODO** Look this up                                        |
-| `codelist`       | Link to an existing code list (by providing a uri), supress the generation of a codelist (by setting the value as false), or enforce the creation of a codelist (by setting the value as true)           | true                                                         |
+
+| **field name**   | **description**                                                                                                           | **default value**                                                                |
+|------------------|---------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+| `type`           | The type of the column (Required)                                                                                         | *dimension*                                                                      |
+| `label`          | The title of the column (Optional)                                                                                        | The capital case of the header in the csv file with spaces replacing underscores |
+| `description`    | A description of the contents of the column (Optional)                                                                    | *none*                                                                           |
+| `from_existing`  | The uri of the resource for reuse/extension (Optional)                                                                    | *none*                                                                           |
+| `definition_uri` | A uri of a resource to show how the column is created/managed (i.e. a uri of a PDF explaining a list of units) (Optional) | *none*                                                                           |
+| `range_uri`      | A uri which describes the range of the values within the column (Optional)                                                | *none*                                                                           |
+| `uri_override`   | Override the uri created automatically for the column (Optional) (Advanced)                                               | `tidy_data.csv#uri_safe_column_header_from_csv`                                  |
+| `uri_template`   | Override the uri generated for values within the uri (Optional) (Advanced)                                                | **TODO** Look this up                                                            |
+| `code_list`      | Link to an existing code list (uri), supress a code-list (false), or generate a code-list (true)                          | true                                                                             |
 
 ### Attributes
 
-| **field name**   | **description**                                              | **default value**                                            |
-| ---------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| `type`           | The type of the column (Required)                            | *dimension*                                                  |
-| `label`          | The title of the column (Optional)                           | The capital case of the header in the csv file with spaces replacing underscores |
-| `description`    | A description of the contents of the column (Optional)       | *none*                                                       |
-| `from_existing`  | The uri of the resource for reuse/extension (Optional)       | *none*                                                       |
-| `definition_uri` | A uri of a resource to show how the column is created/managed (i.e. a uri of a PDF explaining a list of units) (Optional) | *none*                                                       |
-| `data_type`      | The [xml data type](https://www.w3.org/TR/xmlschema-2/#built-in-datatypes) of the contents of the column, if this is provided it becomes a Literal Attribute column (Optional) | *none*                                                       |
-| `required`       | If this boolean value is true csvcubed will flag to the user if there are blank values in this column | *none*                                                       |
-| `codelist`       | Link to an existing code list (Optional) (Advanced)          | *none*                                                       |
+| **field name**   | **description**                                                                                                                                                                | **default value**                                                                |
+|------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+| `type`           | The type of the column (Required)                                                                                                                                              | *dimension*                                                                      |
+| `label`          | The title of the column (Optional)                                                                                                                                             | The capital case of the header in the csv file with spaces replacing underscores |
+| `description`    | A description of the contents of the column (Optional)                                                                                                                         | *none*                                                                           |
+| `from_existing`  | The uri of the resource for reuse/extension (Optional)                                                                                                                         | *none*                                                                           |
+| `definition_uri` | A uri of a resource to show how the column is created/managed (i.e. a uri of a PDF explaining a list of units) (Optional)                                                      | *none*                                                                           |
+| `data_type`      | The [xml data type](https://www.w3.org/TR/xmlschema-2/#built-in-datatypes) of the contents of the column, if this is provided it becomes a Literal Attribute column (Optional) | *none*                                                                           |
+| `required`       | If this boolean value is true csvcubed will flag to the user if there are blank values in this column                                                                          | *none*                                                                           |
+| `codelist`       | Link to an existing code list (Optional) (Advanced)                                                                                                                            | *none*                                                                           |
 
 ### Observations
 
 Observations are the most important component of a CSV-W data set. Observation columns can have measures and units defined against them to obviate the need for separate unit and measure columns in a single unit/measure data set.
 
-| **field name** | **description**                                              | **default value** |
-| -------------- | ------------------------------------------------------------ | ----------------- |
-| `data_type`    | The data type of the observations. This should generally be a decimal or integer. (Optional) | *decimal*         |
-| `unit`         | The unit for this observation column; this can a uri to an existing unit, or a dictionary containing a new or extended existing unit. If there is a unit column this value must not be provided. (Optional) | *none*            |
+| **field name** | **description**                                                                                                                                                                                                            | **default value** |
+|----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------|
+| `data_type`    | The data type of the observations. This should generally be a decimal or integer. (Optional)                                                                                                                               | *decimal*         |
+| `unit`         | The unit for this observation column; this can a uri to an existing unit, or a dictionary containing a new or extended existing unit. If there is a unit column this value must not be provided. (Optional)                | *none*            |
 | `measure`      | The measure for this observation column; this can be a uri to an existing dimension, or a dictionary containing a new or extneded existing measure. If there is a measure column this key must not be provided. (Optional) | *none*            |
 
 ### Measure and Unit Columns
 
 Measure and unit columns are treated slightly differently to dimension, attribute, and observation columns. Measure and unit columns contain references to discrete units and measures. In both cases by defining `"type": "measure column"` or `"type": "unit column"` provides the same behaviour. Do not put measures in units columns and units and measure columns.
 
-| **field name** | **description**                                              | **default value** |
-| -------------- | ------------------------------------------------------------ | ----------------- |
-| `type`         | The type of the column, provide `"measure column"` for the measure column type or `"unit column"` for the unit column (Required) | *dimension*       |
+| **field name** | **description**                                                                                                                                                                                                                                                                      | **default value** |
+|----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------|
+| `type`         | The type of the column, provide `"measure column"` for the measure column type or `"unit column"` for the unit column (Required)                                                                                                                                                     | *dimension*       |
 | `values`       | If basic units/measures are desired, a boolean value of `true` is used to signify to csvcubed to create units/measures from values of this column; otherwise values is a dictionary which defines the units/measures using the notion from [Measures and Units](#Measures and Units) | `true`            |
 
 ## Measures and Units
 
-Measures can either be attached to a Measure Column if there are a mixture of measures in your dataset, or to an Observation column if all observations in the cube have the same measure.
-Units can either be attached to a Unit Column if there are a mixture of units in your dataset, or to an Observation column if all observations in the cube have the same unit.
+Measures can either be attached to a Measure Column if there are a mixture of measures in your data set, or to an Observation column if all observations in the cube have the same measure.
+Units can either be attached to a Unit Column if there are a mixture of units in your data set, or to an Observation column if all observations in the cube have the same unit.
 
 ### Measures
 

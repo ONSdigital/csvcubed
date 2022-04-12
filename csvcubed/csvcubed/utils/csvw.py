@@ -10,7 +10,9 @@ from typing import Set, List, Optional, Union, Tuple
 from pathlib import Path
 import urllib.parse
 import requests
+from rdflib import Graph
 
+from .json import load_json_document
 from .uri import looks_like_uri
 
 
@@ -155,3 +157,30 @@ def _get_base_path(preliminary_base_path: Path, table_group: dict) -> Union[Path
             else:
                 return preliminary_base_path / base
     return preliminary_base_path
+
+
+def load_table_schema_file_to_graph(
+    table_schema_file_path: Union[str, Path], graph: Graph
+) -> None:
+    """
+    Given a tableSchema file definition at :obj:`table_schema_file_path`,
+     load the metadata as CSV-W flavoured RDF into the graph :obj:`graph`.
+    """
+    table_schema_document = load_json_document(table_schema_file_path)
+
+    # > When a schema is referenced by URL, this URL becomes the value of the @id property in the
+    # > normalized schema description, and thus the value of the schema annotation on the table.
+    #
+    # https://www.w3.org/TR/2015/REC-tabular-metadata-20151217/#table-schema
+    table_schema_document["@id"] = str(table_schema_file_path)
+
+    # Provide the context to help generate all of the necessary RDF.
+    table_schema_document["@context"] = "http://www.w3.org/ns/csvw"
+
+    table_schema_document_json = json.dumps(table_schema_document)
+
+    graph.parse(
+        data=table_schema_document_json,
+        publicID=str(table_schema_file_path),
+        format="json-ld",
+    )

@@ -1,0 +1,33 @@
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX csvw: <http://www.w3.org/ns/csvw#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+
+SELECT DISTINCT ?conceptScheme ?tableUrl
+WHERE {   
+    {
+        SELECT DISTINCT ?conceptScheme
+        WHERE {
+            ?conceptScheme a skos:ConceptScheme.
+        }
+    }
+
+    BIND (str(?conceptScheme) as ?conceptSchemeUrlStr).
+
+    ?table csvw:url ?tableUrl.
+    ?table csvw:tableSchema/csvw:column/rdf:rest*/rdf:first ?column.
+
+    ?column csvw:propertyUrl ?columnPropertyUrl;
+            csvw:valueUrl ?columnValueUrl.
+
+    FILTER (str(?columnPropertyUrl) IN (str(skos:inScheme), "skos:inScheme")).
+
+    BIND(
+        IF(strstarts(str(?columnValueUrl), "./"), 
+           strafter(str(?columnValueUrl), "./"), # Remove preceding `./` from URL if it is present.
+           str(?columnValueUrl)
+        ) as ?columnSchemeUrl
+    ).
+
+    FILTER (strends(?columnSchemeUrl, ?conceptSchemeUrlStr) || strends(?conceptSchemeUrlStr, ?columnSchemeUrl)).
+}

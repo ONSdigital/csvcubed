@@ -210,6 +210,24 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
       <file:/tmp/qube-with-date-literals.csv#obs/uss-titan> <http://some-uri> "2020-10-08"^^<http://www.w3.org/2001/XMLSchema#date>.
       """
 
+  Scenario: A QbCube, by default, should include file endings in URIs
+    Given a single-measure QbCube named "Default URI style qube"
+    When the cube is serialised to CSV-W
+    Then the cube's metadata should contain URLs with file endings
+    And csvlint validation of "default-uri-style-qube.csv-metadata.json" should succeed
+
+  Scenario: A QbCube configured with Standard URI style should include file endings in URIs
+    Given a single-measure QbCube named "Standard URI style qube" configured with "Standard" URI style
+    When the cube is serialised to CSV-W
+    Then the cube's metadata should contain URLs with file endings
+    And csvlint validation of "standard-uri-style-qube.csv-metadata.json" should succeed
+
+  Scenario: A QbCube configured with WithoutFileExtensions URI style should exclude file endings in URIs
+    Given a single-measure QbCube named "WithoutFileExtensions URI style qube" configured with "WithoutFileExtensions" URI style
+    When the cube is serialised to CSV-W
+    Then the cube's metadata should contain URLs without file endings
+    And csvlint validation of "withoutfileextensions-uri-style-qube.csv-metadata.json" should succeed
+
   Scenario: A single-measure QbCube should pass skos+qb SPARQL test constraints
     Given a single-measure QbCube named "Some Qube"
     When the cube is serialised to CSV-W
@@ -411,7 +429,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
       <http://gss-data.org.uk/def/trade/concept/age-of-business/10-20> a <http://www.w3.org/2004/02/skos/core#Concept>;
         <http://www.w3.org/2004/02/skos/core#inScheme> <http://gss-data.org.uk/def/trade/concept-scheme/age-of-business>.
     """
-  
+
   Scenario: A cube with an option attribute which has missing data values should validate successfully
     Given a single-measure QbCube named "Some Qube" with optional attribute values missing
     Then the CSVqb should pass all validations

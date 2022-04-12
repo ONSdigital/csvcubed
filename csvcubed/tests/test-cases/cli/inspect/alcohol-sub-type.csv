@@ -1,0 +1,10 @@
+Label,Notation,Parent Notation,Sort Priority,Description
+All,all,,0,
+Ready to Drink,ready-to-drink,,1,
+Sparkling,sparkling,,2,
+Still,still,,3,
+UK,uk,,4,
+UK Grain and Blend,uk-grain-and-blend,,5,
+UK Potable,uk-potable,,6,
+UK Registered,uk-registered,,7,
+Uk Malt,uk-malt,,8,

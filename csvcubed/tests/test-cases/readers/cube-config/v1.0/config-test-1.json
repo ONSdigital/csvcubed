@@ -1,0 +1,5 @@
+{
+    "$schema": "https://purl.org/csv-cubed/qube-config/v1.0",
+    "title": "Tests/test-cases/config/schema",
+    "columns": ""
+}

@@ -1,0 +1,9 @@
+PREFIX qb: <http://purl.org/linked-data/cube#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT *
+WHERE {
+    ?dataSet a qb:DataSet;
+        rdfs:label ?dataSetLabel;
+        qb:structure ?dataStructureDefinition.
+}

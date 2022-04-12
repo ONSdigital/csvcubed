@@ -10,8 +10,10 @@ from typing import List
 
 import pandas as pd
 import uritemplate
+from pydantic import validator
 
 from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_str
+from csvcubed.utils.qb.validation.uri_safe import ensure_no_uri_safe_conflicts
 from .datastructuredefinition import QbColumnStructuralDefinition
 from .unit import (
     QbUnit,
@@ -31,6 +33,22 @@ class QbMultiUnits(QbColumnStructuralDefinition):
 
     units: List[QbUnit]
 
+    @validator("units")
+    def _validate_units_non_conflicting(cls, units: List[QbUnit]) -> List[QbUnit]:
+        """
+        Ensure that there are no collisions where multiple new units map to the same URI-safe value.
+        """
+        ensure_no_uri_safe_conflicts(
+            [
+                (unit.label, unit.uri_safe_identifier)
+                for unit in units
+                if isinstance(unit, NewQbUnit)
+            ],
+            QbMultiUnits,
+        )
+
+        return units
+
     @staticmethod
     def new_units_from_data(data: PandasDataTypes) -> "QbMultiUnits":
         """
@@ -42,7 +60,9 @@ class QbMultiUnits(QbColumnStructuralDefinition):
 
     @staticmethod
     def existing_units_from_data(
-        data: PandasDataTypes, csvw_column_name: str, csv_column_uri_template: str
+        data: PandasDataTypes,
+        csvw_column_name: str,
+        csv_column_uri_template: str
     ) -> "QbMultiUnits":
         columnar_data = pandas_input_to_columnar_str(data)
         return QbMultiUnits(
