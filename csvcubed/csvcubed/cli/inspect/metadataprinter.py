@@ -8,7 +8,7 @@ Provides functionality for validating and detecting input metadata.json file.
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import List, Optional, Tuple
-import pandas as pd
+from pandas import DataFrame
 
 from rdflib import Graph
 
@@ -68,7 +68,7 @@ class MetadataPrinter:
 
     csvw_type_str: str = field(init=False)
     dataset_url: str = field(init=False)
-    dataset: pd.DataFrame = field(init=False)
+    dataset: DataFrame = field(init=False)
 
     result_catalog_metadata: CatalogMetadataResult = field(init=False)
     result_dataset_label_dsd_uri: DSDLabelURIResult = field(init=False)
