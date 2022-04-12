@@ -6,7 +6,7 @@ Represent code lists in an RDF Data Cube.
 """
 from pathlib import Path
 from dataclasses import dataclass, field
-from typing import List, Set, Generic, TypeVar
+from typing import List, Optional, Set, Generic, TypeVar
 from abc import ABC
 
 from pydantic import root_validator, validator
@@ -29,6 +29,7 @@ from csvcubed.utils.validators.file import validate_file_exists
 from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_str
 from csvcubed.models.validationerror import ValidationError
 from .validationerrors import ReservedUriValueError
+from ...uristyle import URIStyle
 
 
 @dataclass
@@ -108,6 +109,7 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
     metadata: CatalogMetadata
     concepts: List[TNewQbConcept]
     arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
+    uri_style: Optional[URIStyle] = None
 
     @validator("concepts")
     def _ensure_no_use_of_reserved_keywords(
@@ -145,10 +147,12 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
         return self.arbitrary_rdf
 
     @staticmethod
-    def from_data(metadata: CatalogMetadata, data: PandasDataTypes) -> "NewQbCodeList":
+    def from_data(
+        metadata: CatalogMetadata, data: PandasDataTypes, uri_style: Optional[URIStyle] = None
+    ) -> "NewQbCodeList":
         columnar_data = pandas_input_to_columnar_str(data)
         concepts = [NewQbConcept(c) for c in sorted(set(columnar_data))]
-        return NewQbCodeList(metadata, concepts)
+        return NewQbCodeList(metadata, concepts, uri_style=uri_style)
 
     def get_permitted_rdf_fragment_hints(self) -> Set[RdfSerialisationHint]:
         return {

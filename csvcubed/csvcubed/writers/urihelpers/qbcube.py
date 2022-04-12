@@ -9,6 +9,7 @@ from dataclasses import dataclass
 from typing import List, Optional
 
 from csvcubed.models.cube import QbCube
+from csvcubed.models.cube.uristyle import URIStyle
 
 
 @dataclass
@@ -19,8 +20,14 @@ class QbCubeNewUriHelper:
 
     cube: QbCube
 
-    def _get_identifier_for_document(self) -> str:
-        return f"{self.cube.metadata.uri_safe_identifier}.csv"
+    def get_identifier_for_document(self) -> str:
+        identifier = self.cube.metadata.uri_safe_identifier;
+        if self.cube.uri_style == URIStyle.Standard:
+            return identifier + ".csv"
+        elif self.cube.uri_style == URIStyle.WithoutFileExtensions:
+            return identifier
+        else:
+            raise ValueError(f"Unhandled URI Style '{self.cube.uri_style}'.")
 
     def _uri_in_doc(self, identifier: str) -> str:
         """
@@ -30,7 +37,7 @@ class QbCubeNewUriHelper:
         This function makes both point to the same base location - the CSV file's location. This ensures that we
         can talk about the same resources in the `columns` section and the JSON-LD metadata section.
         """
-        return f"{self._get_identifier_for_document()}#{identifier}"
+        return f"{self.get_identifier_for_document()}#{identifier}"
 
     def get_observation_uri(
         self, dimension_identifying_values: List[str], measure_identifier: Optional[str]
