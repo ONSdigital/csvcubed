@@ -94,7 +94,7 @@ def step_impl(context):
         if expected_columns[i] != result[i]:
             # Print the mis-matched values in each row if the row dict is not equal
             raise Exception(
-                f"{json.dumps(expected_columns[i], indent=4)} ??? {result[i]}"
+                f"{json.dumps(expected_columns[i], indent=4)} ??? {json.dumps(result[i], indent=4)}"
             )
             for k, v in col.items():
                 if expected_columns[i].get(k) != col[k]:
