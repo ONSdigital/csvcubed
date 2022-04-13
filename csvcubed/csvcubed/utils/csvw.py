@@ -9,6 +9,7 @@ import logging
 from typing import Set, List, Optional, Union, Tuple
 from pathlib import Path
 import urllib.parse
+from csvcubed.utils.sparql import path_to_file_uri_for_rdflib
 import requests
 from rdflib import Graph
 
@@ -179,8 +180,13 @@ def load_table_schema_file_to_graph(
 
     table_schema_document_json = json.dumps(table_schema_document)
 
+    if isinstance(table_schema_document, Path):
+        table_schema_file_uri = path_to_file_uri_for_rdflib(table_schema_document)
+    else:
+        table_schema_file_uri = table_schema_file_path
+
     graph.parse(
         data=table_schema_document_json,
-        publicID=str(table_schema_file_path),
+        publicID=table_schema_file_uri,
         format="json-ld",
     )
