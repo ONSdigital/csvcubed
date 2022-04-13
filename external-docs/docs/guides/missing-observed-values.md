@@ -58,7 +58,7 @@ Year,Entrant,Song,Language,Marker,Measure,Observation,Units
 
 ## Configuration of observation status in `qube-config.json`
 
-Adding a `Marker` column to represent the observation status can be done in the column definitions section of the [qube-config](../quick-start/qube-config.md) file. In this example the Marker column has the following configuration:
+Adding a `Marker` column to represent the observation status can be done in the column definitions section of the [qube-config](./qube-config.md) file. In this example the Marker column has the following configuration:
 
 ```json
         "Marker": {

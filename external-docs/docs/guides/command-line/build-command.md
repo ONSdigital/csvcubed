@@ -3,7 +3,7 @@
 The build command is used to construct a new cube from its source file(s).  
 
 The source files must include a tidy-data.csv and optionally a cube-config.json.  
-Refer to the [qube-config quickstart](../../quick-start/qube-config.md) for an overview of how to construct these files.
+Refer to the [qube-config guide](../qube-config.md) for an overview of how to construct these files.
 
 **Syntax:**  
 ``csvcubed build [OPTIONS] TIDY_CSV_PATH``
@@ -101,7 +101,7 @@ This is referred to as the [configuration-first approach](../qube-config.md#conv
 
 The cube config json file must adhere to the structures defined in the [cube config schema](https://purl.org/csv-cubed/qube-config/v1.0).  
 
-For help on constructing the config json refer to the [qube-config quickstart](../../quick-start/qube-config.md) or the more detailed [Configuration Guide]("../qube-config/#configuration")
+For help on constructing the config json refer to the quick start guides on [designing a csv](../../quick-start/designing-csv.md) and [linking data](../../quick-start/linking-data.md) or the more detailed [Configuration Guide]("../qube-config/#configuration")
 
 To build a cube using both configuration and data files the command is shown below.  
 

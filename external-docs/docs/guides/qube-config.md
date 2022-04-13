@@ -5,7 +5,7 @@ There are two ways to use csvcubed to generate a valid statistical cube:
 * **The convention-first approach** allows you to create a cube with minimal configuration.
 * **The configuration-first approach** where you have the full power to configure your cube.
 
-This document goes through, in detail, how to configure your cube whether you wish to use either of the two approaches or a combination of the two. For a quicker overview of the topic take a look at the [Qube Config quick-start](../quick-start/qube-config.md).  
+This document goes through, in detail, how to configure your cube whether you wish to use either of the two approaches or a combination of the two. For a quicker overview of the topic take a look at the quick start guides on [designing a csv](../quick-start/designing-csv.md) and [linking data](../quick-start/linking-data.md).  
 
 > **Experience of writing basic JSON documents is assumed throughout this document.** 
 > See this [tutorial from DigitalOcean](https://www.digitalocean.com/community/tutorials/an-introduction-to-json) for an introduction to writing JSON.
@@ -13,20 +13,6 @@ This document goes through, in detail, how to configure your cube whether you wi
 ## Cube configuration overview
 
 There are three steps to generating a CSV-W using csvcubed, some of which are optional. 
-
-```mermaid
-graph LR
-	subgraph "Fastest Cube"
-		A(Start) ==> B[1. Define metadata];
-		B ==> C{"Column names"};
-		C == Convention ==> D
-	end
-	subgraph "Custom Cube"
-		C -- Configuration --> 1["2. Define columns"] --> D;
-	end
-	
-	D["3. Generate CSV-W"] ==> F(CSV-W);
-```
 
 1. **Define metadata** (Optional)
    Provide information about the CSV-W's contents, such as title, publication date, description, and scope (e.g. start and end date of a time series)
