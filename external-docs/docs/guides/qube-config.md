@@ -70,13 +70,13 @@ The `qube-config.json` file has two sections.
 
 A CSV-W file contains metadata which improves discoverability of data publications. In csvcubed, we use a selection of metadata entries from established namespaces to enable users to contribute to the web of data faster. The metadata fields available, their description and defaults are as follows.
 
-| **field name** | **description**                                                                                   | **default value**                           |
-| -------------- | ------------------------------------------------------------------------------------------------- | ------------------------------------------- |
-| `title`        | the title of the cube                                                                             | A capital case version of the csv file name |
-| `description`  | a description of the contents of the cube                                                         | *none*                                      |
-| `publisher`    | a link to the publisher of the cube                                                               | *none*                                      |
-| `creator`      | a link to the creator of the cube                                                                 | *none*                                      |
-| `theme`        | a list or a single string of the theme(s) covered by the data (i.e. "trade", "energy", "imports") | *none*                                      |
+| **field name** | **description**                                                                                       | **default value**                           |
+| -------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------- |
+| `title`        | the title of the cube                                                                                 | A capital case version of the csv file name |
+| `description`  | a description of the contents of the cube                                                             | *none*                                      |
+| `publisher`    | a link to the publisher of the cube                                                                   | *none*                                      |
+| `creator`      | a link to the creator of the cube                                                                     | *none*                                      |
+| `theme`        | a list or a single string of the theme(s) covered by the data (i.e. `["trade", "energy", "imports"]`) | *none*                                      |
 
 ### Column definitions
 
@@ -121,6 +121,18 @@ The *unit* component is a type of attribute column which provides the units of t
 #### Observations
 
 The *observation* column are the numeric values of the observation being recorded in the data set.
+
+#### Using templates
+
+To use or extend an existing template, provide a `"from_template": "month"` key-value pair referencing one of the [available templates](using-templates.md). csvcubed loads the reference template's key-value pairs making creating linked data much faster. The values for a column with a `from_template` set in `qube-config.json` override the values for the template. In the example below, the CSV contains a column called Marker, the `qube-config.json` file references the template [`observation-status`](https://github.com/GSS-Cogs/csvcubed/blob/main/csvcubed/csvcubed/readers/cubeconfig/v1_0/templates/observation-status.json) but csvcubed will override the template's label with the value provided.
+
+```json
+   "columns" {
+      "Marker": {
+         "from_template": "observation-status",
+         "label": "Data Marker"
+      }
+   }
 
 #### Using existing columns
 
