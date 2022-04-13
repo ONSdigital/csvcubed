@@ -70,7 +70,8 @@ class MetadataProcessor:
         """
         csvw_metadata_rdf_graph = Graph()
         csvw_file_content: str
-        csvw_metadata_file_path = str(self.csvw_metadata_file_path.absolute())
+        csvw_metadata_file_path = str(self.csvw_metadata_file_path.absolute()).replace('\\', '/') 
+
 
         """
         Note: in below, we are loading the content of the csvw file into a variable before calling the RDFLib's parse() function.
