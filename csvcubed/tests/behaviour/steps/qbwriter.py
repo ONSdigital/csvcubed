@@ -1,7 +1,10 @@
+from urllib.parse import urlparse
 import pandas as pd
 from pathlib import Path
 from behave import Given, When, Then, Step
 from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
+from csvcubeddevtools.helpers.file import get_test_cases_dir
+from rdflib import Graph
 
 from csvcubed.models.cube import *
 from csvcubed.models.cube import (
@@ -11,10 +14,13 @@ from csvcubed.models.cube import (
     QbMultiMeasureDimension,
     QbMultiUnits,
 )
+from csvcubed.models.cube.uristyle import URIStyle
 from csvcubed.writers.qbwriter import QbWriter
 from csvcubed.utils.qb.validation.cube import validate_qb_component_constraints
 from csvcubed.utils.csvw import get_first_table_schema
 from csvcubed.utils.pandas import read_csv
+
+_test_case_dir = get_test_cases_dir()
 
 
 def get_standard_catalog_metadata_for_name(
@@ -145,7 +151,7 @@ def step_impl(context, cube_name: str, csvw_file_path: str):
     ]
 
     csv_path, _ = get_first_table_schema(csvw_path)
-    code_list_data = read_csv(csv = csvw_path.parent / csv_path)
+    code_list_data = read_csv(csv=csvw_path.parent / csv_path)
     code_list_values = code_list_data["Notation"].sample(3, random_state=1)
 
     context.cube = Cube(
@@ -160,7 +166,9 @@ def step_impl(context, cube_name: str, cube_id: str):
     context.cube = _get_single_measure_cube_with_name_and_id(cube_name, cube_id)
 
 
-def _get_single_measure_cube_with_name_and_id(cube_name: str, cube_id: str) -> Cube:
+def _get_single_measure_cube_with_name_and_id(
+    cube_name: str, cube_id: str, uri_style: URIStyle = URIStyle.Standard
+) -> Cube:
     columns = [
         QbColumn("A", NewQbDimension.from_data("A code list", _standard_data["A"])),
         QbColumn("D", NewQbDimension.from_data("D code list", _standard_data["D"])),
@@ -176,6 +184,7 @@ def _get_single_measure_cube_with_name_and_id(cube_name: str, cube_id: str) -> C
         get_standard_catalog_metadata_for_name(cube_name, cube_id),
         _standard_data,
         columns,
+        uri_style=uri_style,
     )
 
 
@@ -415,6 +424,7 @@ def step_impl(context):
     writer = QbWriter(context.cube)
     temp_dir = get_context_temp_dir_path(context)
     writer.write(temp_dir)
+    context.csv_file_name = writer.csv_file_name
 
 
 @When("the cube is serialised to CSV-W (suppressing missing uri value exceptions)")
@@ -731,7 +741,99 @@ def step_impl(context, cube_name: str):
     context.cube = cube
 
 
+@Given('a QbCube named "{cube_name}" which references a legacy composite code-list')
+def step_impl(context, cube_name: str):
+
+    data = pd.DataFrame(
+        {
+            "Location": [
+                "http://data.europa.eu/nuts/code/UKC",
+                "http://data.europa.eu/nuts/code/UKL",
+                "http://data.europa.eu/nuts/code/UKD",
+            ],
+            "Observed Value": [1, 2, 3],
+        }
+    )
+
+    columns = [
+        QbColumn(
+            "Location",
+            NewQbDimension(
+                "Location",
+                code_list=NewQbCodeListInCsvW(
+                    _test_case_dir
+                    / "readers"
+                    / "skoscodelistreader"
+                    / "location.csv-metadata.json"
+                ),
+            ),
+        ),
+        QbColumn(
+            "Observed Value",
+            QbSingleMeasureObservationValue(
+                unit=NewQbUnit("Num of students"), measure=NewQbMeasure("Total")
+            ),
+        ),
+    ]
+
+    cube = Cube(get_standard_catalog_metadata_for_name(cube_name), data, columns)
+
+    errors = cube.validate()
+    errors += validate_qb_component_constraints(cube)
+
+    assert len(errors) == 0, [e.message for e in errors]
+
+    context.cube = cube
+
+
 @Then("some additional turtle is appended to the resulting RDF")
 def step_impl(context):
     rdf_to_add = context.text
     context.turtle += rdf_to_add
+
+
+@Then("the cube's metadata should contain URLs with file endings")
+def step_impl(context):
+    temp_dir = get_context_temp_dir_path(context)
+    assertURIStyle(URIStyle.Standard, temp_dir, context.csv_file_name)
+
+
+@Then("the cube's metadata should contain URLs without file endings")
+def step_impl(context):
+    temp_dir = get_context_temp_dir_path(context)
+    assertURIStyle(URIStyle.WithoutFileExtensions, temp_dir, context.csv_file_name)
+
+
+@Given(
+    'a single-measure QbCube named "{cube_name}" configured with "{uri_style}" URI style'
+)
+def step_impl(context, cube_name: str, uri_style: str):
+    context.cube = _get_single_measure_cube_with_name_and_id(
+        cube_name, None, URIStyle[uri_style]
+    )
+
+
+def assertURIStyle(uri_style: URIStyle, temp_dir: Path, csv_file_name: str):
+
+    baseUri = "file://relative-uris/"
+    metadataFilePath = temp_dir.joinpath(f"{csv_file_name}-metadata.json")
+    g = Graph()
+    g.parse(metadataFilePath, publicID=baseUri)
+
+    for (s, p, o) in g:
+        if s.startswith(baseUri):
+            assert_uri_style_for_uri(uri_style, s, (s, p, o))
+        if p.startswith(baseUri):
+            assert_uri_style_for_uri(uri_style, p, (s, p, o))
+
+
+def assert_uri_style_for_uri(uri_style: URIStyle, uri: str, node):
+    path = urlparse(uri).path
+    if uri_style == URIStyle.WithoutFileExtensions:
+        assert not path.endswith(
+            ".csv"
+        ), f"expected {node} to end without a CSV file extension"
+    else:
+        assert path.endswith(".csv") or path.endswith(
+            ".json"
+        ), f"expected {node} to end with .csv or .json"

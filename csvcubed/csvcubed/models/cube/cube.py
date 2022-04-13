@@ -4,6 +4,7 @@ Cube
 """
 import logging
 from dataclasses import dataclass, field
+from enum import Enum
 from typing import List, Optional, Set, TypeVar, Generic
 import pandas as pd
 
@@ -22,7 +23,7 @@ from csvcubed.models.cube.columns import CsvColumn
 from csvcubed.models.cube.catalog import CatalogMetadataBase
 from csvcubed.models.pydanticmodel import PydanticModel
 from csvcubed.utils.log import log_exception
-
+from .uristyle import URIStyle
 
 _logger = logging.getLogger(__name__)
 
@@ -34,6 +35,7 @@ class Cube(Generic[TMetadata], PydanticModel):
     metadata: TMetadata
     data: Optional[pd.DataFrame] = field(default=None, repr=False)
     columns: List[CsvColumn] = field(default_factory=lambda: [], repr=False)
+    uri_style: URIStyle = URIStyle.Standard
 
     def validate(self) -> List[ValidationError]:
         errors: List[ValidationError] = []

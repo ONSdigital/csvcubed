@@ -7,6 +7,7 @@ Contains all of the URI definitions & configuration necessary to serialise a sko
 from dataclasses import dataclass
 
 from csvcubed.models.cube import NewQbCodeList
+from csvcubed.models.cube.uristyle import URIStyle
 from csvcubed.writers.urihelpers.skoscodelistconstants import SCHEMA_URI_IDENTIFIER
 
 
@@ -17,9 +18,24 @@ class SkosCodeListNewUriHelper:
     """
 
     code_list: NewQbCodeList
+    default_uri_style: URIStyle
 
     def _get_identifier_for_document(self) -> str:
-        return f"{self.code_list.metadata.uri_safe_identifier}.csv"
+        identifier = self.code_list.metadata.uri_safe_identifier
+
+        resolved_uri_style = self._resolve_uri_style()
+        if resolved_uri_style == URIStyle.Standard:
+            return identifier + ".csv"
+        elif resolved_uri_style == URIStyle.WithoutFileExtensions:
+            return identifier
+        else:
+            raise ValueError(f"Unhandled URI Style '{self.code_list.uri_style}'.")
+
+    def _resolve_uri_style(self) -> URIStyle:
+        if self.code_list and self.code_list.uri_style:
+            return self.code_list.uri_style
+        else:
+            return self.default_uri_style
 
     def _uri_in_doc(self, identifier: str) -> str:
         """
