@@ -101,7 +101,7 @@ This is referred to as the [configuration-first approach](../qube-config.md#conv
 
 The cube config json file must adhere to the structures defined in the [cube config schema](https://purl.org/csv-cubed/qube-config/v1.0).  
 
-For help on constructing the config json refer to the quick start guides on [designing a csv](../../quick-start/designing-csv.md) and [linking data](../../quick-start/linking-data.md) or the more detailed [Configuration Guide]("../qube-config/#configuration")
+For help on constructing the config json refer to the quick start guides on [designing a csv](../../quick-start/designing-csv.md) and [linking data](../../quick-start/linking-data.md) or the more detailed [Configuration Guide](../qube-config/#configuration)
 
 To build a cube using both configuration and data files the command is shown below.  
 
