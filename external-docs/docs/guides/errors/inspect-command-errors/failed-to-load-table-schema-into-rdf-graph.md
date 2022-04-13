@@ -6,4 +6,4 @@ The inspect command cannot find the table schema json file at `<table-schema-fil
 
 ## How to fix
 
-Make sure the table schema json files built by the build command are present at the `<table-schema-file-path>` referenced in the CSV-W json-ld.
+Make sure the table schema JSON files built by the build command are present at the `<table-schema-file-path>` referenced in the CSV-W.

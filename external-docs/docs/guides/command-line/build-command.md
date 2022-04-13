@@ -37,7 +37,7 @@ csvcubed build my-data-file.csv -c my-qube-config.json
 
 ## Logging
 
-Please refer to the [Logging](./logging.md) section to know how the logging works in the build command.
+Please refer to the [Logging](./logging.md) section for more information on how to configure logging and the location of log files.
 
 ## Output Directory
 

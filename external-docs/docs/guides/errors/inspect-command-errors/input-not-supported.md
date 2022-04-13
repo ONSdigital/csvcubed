@@ -6,4 +6,4 @@ The input CSV-W json-ld is not a valid data cube or a valid code list.
 
 ## How to fix
 
-Make sure the input CSV-W json-ld is a valid data cube or a code list that is provided in one of two specialised forms of tidy data: [standard shape](../../../guides/shape-data.md#standard-shape) and [pivoted shape](../../../guides/shape-data.md#pivoted-shape).
+Make sure the input CSV-W is a valid data cube or code list that has been generated using csvcubed.
