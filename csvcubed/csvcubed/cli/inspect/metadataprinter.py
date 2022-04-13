@@ -211,7 +211,7 @@ class MetadataPrinter:
     @property
     def type_info_printable(self) -> str:
         """
-        Returns a printable of metadata type information.
+        Returns a printable of file content type.
 
         Member of :class:`./MetadataPrinter`.
 
@@ -225,7 +225,7 @@ class MetadataPrinter:
     @property
     def catalog_metadata_printable(self) -> str:
         """
-        Returns a printable of catalog metadata (e.g. title, description, etc.).
+        Returns a printable of catalog metadata (e.g. title, description).
 
         Member of :class:`./MetadataPrinter`.
 
@@ -236,7 +236,7 @@ class MetadataPrinter:
     @property
     def dsd_info_printable(self) -> str:
         """
-        Returns a printable of Data Structure Definition (DSD) information.
+        Returns a printable of data structure definition (DSD).
 
         Member of :class:`./MetadataPrinter`.
 
@@ -247,7 +247,7 @@ class MetadataPrinter:
     @property
     def codelist_info_printable(self) -> str:
         """
-        Returns a printable of dsd code list information (e.g. column name, type, etc.).
+        Returns a printable of data structure definition (DSD) code list information (e.g. column name, type, etc.).
 
         Member of :class:`./MetadataPrinter`.
 
@@ -258,7 +258,7 @@ class MetadataPrinter:
     @property
     def dataset_observations_info_printable(self) -> str:
         """
-        Generates a printable of top 10 and last 10 records.
+        Returns a printable of top 10 and last 10 records.
 
         Member of :class:`./MetadataPrinter`.
 
@@ -269,7 +269,7 @@ class MetadataPrinter:
     @property
     def dataset_val_counts_by_measure_unit_info_printable(self) -> str:
         """
-        Returns a printable of dataset value counts broken-down by measure and unit.
+        Returns a printable of data set value counts broken-down by measure and unit.
 
         Member of :class:`./MetadataPrinter`.
 
