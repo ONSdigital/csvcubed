@@ -1,4 +1,5 @@
 from typing import TypeVar
+from os import linesep
 
 from csvcubed.models.validationerror import *
 from csvcubed.models.cube.validationerrors import *
@@ -9,46 +10,39 @@ from csvcubed.models.cube.qb.components.validationerrors import *
 
 MSG_TEMPLATE: Dict[Type[ValidationError], str] = {
     CsvColumnUriTemplateMissingError:
-        "An error occurred as {error[component_type]} column: '{error[csv_column_name]}' requires a URI Template "
-        "to be defined in the cube config json as it cannot infer its own.",
+        "The '{error[csv_column_name]}' column definition is missing a `cell_uri_template`; a suitable value could not be inferred.",
     NoObservedValuesColumnDefinedError:
-        "The cube does not contain an Observed Values column, this column type is required.",
+        "The cube does not contain an observed values column.",
     NoMeasuresDefinedError:
-        "No column of measures was found in the cube.",
+        "At least one measure must be defined in a cube.",
     NoUnitsDefinedError:
-        "No column of units was found in the cube.",
+        "At least one unit must be defined in a cube.",
     MoreThanOneObservationsColumnError:
-        "The cube contained {error[actual_number]} columns of Observation values, only 1 is permitted.",
+        "Found {error[actual_number]} observed values columns. Only 1 is permitted.",
     MoreThanOneMeasureColumnError:
-        "The cube contained {error[actual_number]} columns of Measures, only 1 is permitted.",
+        "Found {error[actual_number]} measures columns. Only 1 is permitted.",
     MoreThanOneUnitsColumnError:
-        "The cube contained {error[actual_number]} columns of Units, only 1 is permitted.",
+        "Found {error[actual_number]} units columns. Only 1 is permitted.",
     BothMeasureTypesDefinedError:
-        "Both measure types were present in the cube. \nThe columns are '{error[component_one]}' and '{" \
-        "error[component_two]}' ",
+        "Measures defined in multiple locations. Measures may only be defined in one location.",
     BothUnitTypesDefinedError:
-        "Both unit types were present in the cube. \nThe columns are '{error[component_one]}' and '{"
-        "error[component_two]}' ",
+        "Units defined in multiple locations. Units may only be defined in one location.",
     ObservationValuesMissing:
-        "Observation values are missing in the column: '{error[csv_column_title]}' on rows: {error[row_numbers]}",
+        "Observed values missing in '{error[csv_column_title]}' on rows: {error[row_numbers]}",
     MissingColumnDefinitionError:
-        "The column '{error[csv_column_title]}' is present in the data but does not have a configuration in the cube"
-        "config. ",
+        "Column '{error[csv_column_title]}' is present in CSV but no configuration could be found.",
     DuplicateColumnTitleError:
-        "There are multiple columns with the column title: '{error[csv_column_title]}'.",
+        "There are multiple CSV columns with the title: '{error[csv_column_title]}'.",
     ColumnValidationError:
-        "An error was encountered whilst validating the column '{error[csv_column_title]}'. \nThe error was: '{"
-        "error[error]}'",
+        (
+            "An error occurred when validating the column '{error[csv_column_title]}':" + linesep + 
+            "{error[error]}"
+        ),
     ColumnNotFoundInDataError:
-        "The cube configuration refers to the column '{error[csv_column_title]}' but no column in the data has this "
-        "title.",
+        "Configuration found for column '{error[csv_column_title]}' but no corresponding column found in CSV.",
     UnknownPydanticValidationError:
-        "An error was encountered when validating the cube's data structures. The error occurred in '{error[path]}' "
+        "An error was encountered when validating the cube. The error occurred in '{error[path]}' "
         "and was reported as '{error[original_error]}'",
-    LabelUriCollisionError:
-        "A label-uri collision error occurred when validating the cube: '{error[message]}'.  The column: '{"
-        "error[csv_column_name]}' with URI: '{error[conflicting_identifier]}' conflicted with the values: '{"
-        "error[conflicting_values]}'",
     UndefinedMeasureUrisError:
         "The Measure URI {error[undefined_values]} found in the data was not defined in the cube config.",
     UndefinedUnitUrisError:
@@ -57,12 +51,9 @@ MSG_TEMPLATE: Dict[Type[ValidationError], str] = {
         "The Attribute URI {error[undefined_values]} in column '{error[component][label]}' defined in the cube "
         "config was not found in the data.",
     ReservedUriValueError:
-        "A Reserved-URI Value error occurred when validating the cube, {error[message]}.  The URI value(s) "
-        "of '{error[conflicting_values]}' conflicted with the reserved value: '{error[reserved_identifier]}' in the "
-        "code list values.",
+        "The URI value(s) {error[conflicting_values]} conflict with the reserved value: '{error[reserved_identifier]}'.",
     ConflictingUriSafeValuesError:
-        "Conflicting safe URI values were found when validating the cube, in '{error[extra_details][0]}' column '{"
-        "error[extra_details][1]}'",
+        "A URI collision has been detected in: '{error[component]}'.",
     ValidationError:
         "A validation error occurred when validating the cube: '{error[message]}'."
 }
@@ -81,14 +72,9 @@ def friendly_error_mapping(error: ValidationError) -> str:
             error.get_error_url()
 
         if isinstance(error, ConflictingUriSafeValuesError):
-            ed['extra_details'] = (
-                str(ed['component_type']).split('.')[-2].capitalize(),
-                ed['path'][2].replace('_', ' ')
-            )
+            ed['component'] = str(ed['component_type']).split('.')[-2].capitalize()
             for safe_uri, values in error.map_uri_safe_values_to_conflicting_labels.items():
-                msg += f"\nThe values " \
-                       f"{tuple(values)} all have the same safe-uri of '{safe_uri}' and the column labels " \
-                       f"were: {list(error.map_uri_safe_values_to_conflicting_labels.keys())}."
+                msg += f"{linesep}The values {tuple(values)} all map to the same identifier '{safe_uri}'."
 
         msg = msg.format(error=ed)
 
