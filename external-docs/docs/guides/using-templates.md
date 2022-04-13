@@ -30,6 +30,7 @@ It is possible to override the configuration inherited from the template; do thi
 In the above example, we have reused the `year` template, but given the dimension created the label of `Competition Year`.
 
 ## Available templates
+The templates are currently in version 1.0; with future development planned. You can see the entire list of the templates inline below or on [csvcubed github](https://github.com/GSS-Cogs/csvcubed/tree/main/csvcubed/csvcubed/readers/cubeconfig/v1_0/templates). Our template funcitonality prefers to fetch the most recent version of our templates from the web; however it will fall back to the most recently installed package should github be unreachable.
 
 ### Date/Time period template
 
