@@ -105,7 +105,7 @@ class MetadataPrinter:
         elif csvw_type == CSVWType.CodeList:
             return select_codelist_dataset_url(csvw_metadata_rdf_graph).dataset_url
         else:
-            raise JsonldNotSupportedException()
+            raise InputNotSupportedException()
 
     @staticmethod
     def get_parent_label_notation_col_names(
