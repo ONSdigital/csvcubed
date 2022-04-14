@@ -2,11 +2,12 @@
 Tests for friendly error messages being logged
 """
 import appdirs
-from os import linesep
 from pathlib import Path
-from tempfile import TemporaryDirectory
 
-from csvcubed.cli.build import build as cli_build
+from csvcubed.cli.build import (
+    _extract_and_validate_cube,
+    _write_errors_to_log,
+)
 from csvcubed.models.cube import (
     Cube,
     BothMeasureTypesDefinedError,
@@ -34,8 +35,8 @@ from tests.unit.test_baseunit import get_test_cases_dir
 _test_case_dir = Path(
     get_test_cases_dir().absolute(), "readers", "cube-config", "v1.0", "error_mappings"
 )
-dirs = appdirs.AppDirs("csvcubed_testing", "csvcubed")
-_log_file_path = Path(dirs.user_log_dir) / "out.log"
+_user_log_dir = Path(appdirs.AppDirs("csvcubed_testing", "csvcubed").user_log_dir)
+_log_file_path = _user_log_dir / "out.log"
 
 
 def _check_log(text: str) -> bool:
@@ -54,15 +55,10 @@ def test_01_val_errors_no_observation():
     """
     config = Path(_test_case_dir, "no_observed_values_column_defined_error.json")
     csv = Path(_test_case_dir, "no_observed_values_column_defined_error.csv")
-    with TemporaryDirectory() as temp_dir_path:
-        temp_dir = Path(temp_dir_path)
-        output = temp_dir / "out"
-        cube, validation_errors = cli_build(
-            config_path=config,
-            csv_path=csv,
-            output_directory=output,
-            validation_errors_file_out=Path("validation_errors.json"),
-        )
+    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
+        config, csv
+    )
+    _write_errors_to_log(json_schema_validation_errors, validation_errors)
 
     # Check cube
     assert isinstance(cube, Cube)
@@ -90,17 +86,12 @@ def test_02_val_errors_no_measure():
     """
     config = Path(_test_case_dir, "val_errors_no_measure.json")
     csv = Path(_test_case_dir, "val_errors_no_measure.csv")
-    with TemporaryDirectory() as temp_dir_path:
-        temp_dir = Path(temp_dir_path)
-        output = temp_dir / "out"
-        cube, validation_errors = cli_build(
-            config_path=config,
-            csv_path=csv,
-            output_directory=output,
-            validation_errors_file_out=Path("validation_errors.json"),
-        )
 
-    assert isinstance(cube, Cube)
+    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
+        config, csv
+    )
+    _write_errors_to_log(json_schema_validation_errors, validation_errors)
+
     assert isinstance(validation_errors, list)
     assert len(validation_errors) == 2
     err_msgs = [
@@ -135,15 +126,10 @@ def test_03_val_errors_col_not_in_data():
     """
     config = Path(_test_case_dir, "column_not_found_in_data_error.json")
     csv = Path(_test_case_dir, "column_not_found_in_data_error.csv")
-    with TemporaryDirectory() as temp_dir_path:
-        temp_dir = Path(temp_dir_path)
-        output = temp_dir / "out"
-        cube, validation_errors = cli_build(
-            config_path=config,
-            csv_path=csv,
-            output_directory=output,
-            validation_errors_file_out=Path("validation_errors.json"),
-        )
+    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
+        config, csv
+    )
+    _write_errors_to_log(json_schema_validation_errors, validation_errors)
 
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, list)
@@ -169,15 +155,11 @@ def test_04_val_errors_duplicate_col():
     """
     config = Path(_test_case_dir, "duplicate_column_title_error.json")
     csv = Path(_test_case_dir, "duplicate_column_title_error.csv")
-    with TemporaryDirectory() as temp_dir_path:
-        temp_dir = Path(temp_dir_path)
-        output = temp_dir / "out"
-        cube, validation_errors = cli_build(
-            config_path=config,
-            csv_path=csv,
-            output_directory=output,
-            validation_errors_file_out=Path("validation_errors.json"),
-        )
+    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
+        config, csv
+    )
+    _write_errors_to_log(json_schema_validation_errors, validation_errors)
+
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, list)
     assert len(validation_errors) == 1
@@ -200,15 +182,11 @@ def test_05_val_errors_missing_obs_vals():
     """
     config = Path(_test_case_dir, "observation_values_missing.json")
     csv = Path(_test_case_dir, "observation_values_missing.csv")
-    with TemporaryDirectory() as temp_dir_path:
-        temp_dir = Path(temp_dir_path)
-        output = temp_dir / "out"
-        cube, validation_errors = cli_build(
-            config_path=config,
-            csv_path=csv,
-            output_directory=output,
-            validation_errors_file_out=Path("validation_errors.json"),
-        )
+    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
+        config, csv
+    )
+    _write_errors_to_log(json_schema_validation_errors, validation_errors)
+
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, list)
     assert len(validation_errors) == 1
@@ -235,19 +213,14 @@ def test_06_val_errors_both_measure_types():
     """
     config = Path(_test_case_dir, "both_measure_types_defined.json")
     csv = Path(_test_case_dir, "both_measure_types_defined.csv")
-    cube, validation_errors = cli_build(
-        config_path=config,
-        csv_path=csv,
-        validation_errors_file_out=Path("validation_errors.json"),
+    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
+        config, csv
     )
+    _write_errors_to_log(json_schema_validation_errors, validation_errors)
+
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, list)
     assert len(validation_errors) == 1
-    assert (
-        validation_errors[0].message
-        == "Both QbSingleMeasureObservationValue.measure and QbMultiMeasureDimension have been defined. These "
-        "components cannot be used together. A single-measure cube cannot have a measure dimension."
-    )
 
     assert isinstance(validation_errors[0], BothMeasureTypesDefinedError)
     assert _check_log(
@@ -255,7 +228,7 @@ def test_06_val_errors_both_measure_types():
         "may only be defined in one location."
     )
     assert _check_log(
-        "Further details are: A single-measure cube cannot have a measure dimension."
+        "Further details: A single-measure cube cannot have a measure dimension."
     )
     assert _check_log(
         "csvcubed.cli.build - ERROR - More information: http://purl.org/csv-cubed/err/both-meas-typ-def"
@@ -269,15 +242,11 @@ def test_07_val_errors_both_unit_types():
     """
     config = Path(_test_case_dir, "both_unit_types_defined.json")
     csv = Path(_test_case_dir, "both_unit_types_defined.csv")
-    with TemporaryDirectory() as temp_dir_path:
-        temp_dir = Path(temp_dir_path)
-        output = temp_dir / "out"
-        cube, validation_errors = cli_build(
-            config_path=config,
-            csv_path=csv,
-            output_directory=output,
-            validation_errors_file_out=Path("validation_errors.json"),
-        )
+    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
+        config, csv
+    )
+    _write_errors_to_log(json_schema_validation_errors, validation_errors)
+
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, list)
     assert len(validation_errors) == 1
@@ -304,15 +273,11 @@ def test_08_val_errors_more_than_one_observation():
     """
     config = Path(_test_case_dir, "more_than_one_observations_col.json")
     csv = Path(_test_case_dir, "more_than_one_observations_col.csv")
-    with TemporaryDirectory() as temp_dir_path:
-        temp_dir = Path(temp_dir_path)
-        output = temp_dir / "out"
-        cube, validation_errors = cli_build(
-            config_path=config,
-            csv_path=csv,
-            output_directory=output,
-            validation_errors_file_out=Path("validation_errors.json"),
-        )
+    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
+        config, csv
+    )
+    _write_errors_to_log(json_schema_validation_errors, validation_errors)
+
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, list)
     assert len(validation_errors) == 1
@@ -337,15 +302,11 @@ def test_09_val_errors_more_than_one_measure():
     """
     config = Path(_test_case_dir, "more_than_one_measures_col.json")
     csv = Path(_test_case_dir, "more_than_one_measures_col.csv")
-    with TemporaryDirectory() as temp_dir_path:
-        temp_dir = Path(temp_dir_path)
-        output = temp_dir / "out"
-        cube, validation_errors = cli_build(
-            config_path=config,
-            csv_path=csv,
-            output_directory=output,
-            validation_errors_file_out=Path("validation_errors.json"),
-        )
+    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
+        config, csv
+    )
+    _write_errors_to_log(json_schema_validation_errors, validation_errors)
+
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, list)
     assert len(validation_errors) == 1
@@ -369,27 +330,20 @@ def test_10_val_errors_undefined_attr_uri():
     """
     config = Path(_test_case_dir, "undefined_attribute_value_uris.json")
     csv = Path(_test_case_dir, "undefined_attribute_value_uris.csv")
-    with TemporaryDirectory() as temp_dir_path:
-        temp_dir = Path(temp_dir_path)
-        output = temp_dir / "out"
-        cube, validation_errors = cli_build(
-            config_path=config,
-            csv_path=csv,
-            output_directory=output,
-            validation_errors_file_out=Path("validation_errors.json"),
-        )
+    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
+        config, csv
+    )
+    _write_errors_to_log(json_schema_validation_errors, validation_errors)
+
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, list)
     assert len(validation_errors) == 1
     assert isinstance(validation_errors[0], UndefinedAttributeValueUrisError)
-    assert (
-        validation_errors[0].message
-        == "Found undefined value(s) for 'attribute value URI' of NewQbAttribute("
-        "label='My best attribute'). Undefined values: {'beach-ware'}"
-    )
+
     assert _check_log(
-        "csvcubed.cli.build - ERROR - Validation Error: The Attribute URI {'beach-ware'} in column "
-        "'My best attribute' defined in the cube config was not found in the data."
+        "csvcubed.cli.build - ERROR - Validation Error: The Attribute URI(s) {'beach-ware'} in the "
+        "NewQbAttribute(label='My best attribute') attribute column have not been defined in the list of "
+        "valid attribute values."
     )
     assert _check_log(
         "csvcubed.cli.build - ERROR - More information: http://purl.org/csv-cubed/err/undef-attrib"
@@ -403,39 +357,24 @@ def test_11_val_errors_undefined_measure_uri():
     """
     config = Path(_test_case_dir, "undefined_measure_uris.json")
     csv = Path(_test_case_dir, "undefined_measure_uris.csv")
-    with TemporaryDirectory() as temp_dir_path:
-        temp_dir = Path(temp_dir_path)
-        output = temp_dir / "out"
-        cube, validation_errors = cli_build(
-            config_path=config,
-            csv_path=csv,
-            output_directory=output,
-            validation_errors_file_out=Path("validation_errors.json"),
-        )
+    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
+        config, csv
+    )
+    _write_errors_to_log(json_schema_validation_errors, validation_errors)
+
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, list)
     assert len(validation_errors) == 1
     assert isinstance(validation_errors[0], UndefinedMeasureUrisError)
-    assert (
-        validation_errors[0].message
-        == "Found undefined value(s) for 'measure URI' of QbMultiMeasureDimension("
-        "measures=[ExistingQbMeasure(measure_uri='https://example.org/measures/Billions'), "
-        "ExistingQbMeasure(measure_uri='https://example.org/measures/Bitcoin')]). "
-        "Undefined values: {'https://example.org/measures/billions', "
-        "'https://example.org/measures/bitcoin'}"
-        or validation_errors[0].message
-        == "Found undefined value(s) for 'measure URI' of QbMultiMeasureDimension("
-        "measures=[ExistingQbMeasure(measure_uri='https://example.org/measures/Billions'), "
-        "ExistingQbMeasure(measure_uri='https://example.org/measures/Bitcoin')]). "
-        "Undefined values: {'https://example.org/measures/bitcoin', "
-        "'https://example.org/measures/billions'}"
-    )
 
     assert _check_log(
-        "csvcubed.cli.build - ERROR - Validation Error: The Measure URI "
-        "{'https://example.org/measures/billions', 'https://example.org/measures/bitcoin'} found in the "
-        "data was not defined in the cube config."
+        "csvcubed.cli.build - ERROR - Validation Error: The Measure URI(s) {'https://example.org/measures/bitcoin', "
+        "'https://example.org/measures/billions'} found in the data was not defined in the cube config"
+    ) or _check_log(
+        "csvcubed.cli.build - ERROR - Validation Error: The Measure URI(s) {'https://example.org/measures/billions', "
+        "'https://example.org/measures/bitcoin'} found in the data was not defined in the cube config"
     )
+
     assert _check_log(
         "csvcubed.cli.build - ERROR - More information: http://purl.org/csv-cubed/err/undef-meas"
     )
@@ -448,15 +387,11 @@ def test_12_val_errors_uri_conflict():
     """
     config = Path(_test_case_dir, "conflicting_uri_safe_values.json")
     csv = Path(_test_case_dir, "conflicting_uri_safe_values.csv")
-    with TemporaryDirectory() as temp_dir_path:
-        temp_dir = Path(temp_dir_path)
-        output = temp_dir / "out"
-        cube, validation_errors = cli_build(
-            config_path=config,
-            csv_path=csv,
-            output_directory=output,
-            validation_errors_file_out=Path("validation_errors.json"),
-        )
+    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
+        config, csv
+    )
+    _write_errors_to_log(json_schema_validation_errors, validation_errors)
+
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, list)
     assert len(validation_errors) == 1
@@ -479,15 +414,11 @@ def test_13_val_errors_reserved_uri():
     """
     config = Path(_test_case_dir, "reserved_uri_value_error.json")
     csv = Path(_test_case_dir, "reserved_uri_value_error.csv")
-    with TemporaryDirectory() as temp_dir_path:
-        temp_dir = Path(temp_dir_path)
-        output = temp_dir / "out"
-        cube, validation_errors = cli_build(
-            config_path=config,
-            csv_path=csv,
-            output_directory=output,
-            validation_errors_file_out=Path("validation_errors.json"),
-        )
+    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
+        config, csv
+    )
+    _write_errors_to_log(json_schema_validation_errors, validation_errors)
+
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, list)
     assert len(validation_errors) == 1
@@ -500,8 +431,8 @@ def test_13_val_errors_reserved_uri():
     )
 
     assert _check_log(
-        "csvcubed.cli.build - ERROR - Validation Error: The URI value(s) ['Code List'] conflict with the "
-        "reserved value: 'code-list'."
+        "csvcubed.cli.build - ERROR - Validation Error: The URI value(s) ['Code List'] conflict with the reserved "
+        "value: code-list'."
     )
 
     assert _check_log(
@@ -516,15 +447,11 @@ def test_14_val_errors_no_dimensions():
     """
     config = Path(_test_case_dir, "no_dimensions_defined.json")
     csv = Path(_test_case_dir, "no_dimensions_defined.csv")
-    with TemporaryDirectory() as temp_dir_path:
-        temp_dir = Path(temp_dir_path)
-        output = temp_dir / "out"
-        cube, validation_errors = cli_build(
-            config_path=config,
-            csv_path=csv,
-            output_directory=output,
-            validation_errors_file_out=Path("validation_errors.json"),
-        )
+    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
+        config, csv
+    )
+    _write_errors_to_log(json_schema_validation_errors, validation_errors)
+
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, list)
     assert len(validation_errors) == 1
@@ -543,14 +470,3 @@ def test_14_val_errors_no_dimensions():
     assert _check_log(
         "csvcubed.cli.build - ERROR - More information: http://purl.org/csv-cubed/err/no-dim"
     )
-
-
-def test_15_val_errors_missing_col_def():
-    """
-    Test for:-
-        MissingColumnDefinitionError
-    Note: It is currently not possible to produce this error as a column in the data will be assumed to be a
-        NewQbDimension if it is not defined in the cube config, so it appears in the list of cube columns which
-        is used for the comparison.
-    """
-    pass

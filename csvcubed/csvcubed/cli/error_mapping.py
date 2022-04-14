@@ -25,6 +25,7 @@ from csvcubed.models.cube import (
     ColumnValidationError,
     ColumnNotFoundInDataError,
     QbObservationValue,
+    QbStructuralDefinition,
 )
 from csvcubed.models.cube.qb.components.validationerrors import (
     UndefinedMeasureUrisError,
@@ -144,11 +145,27 @@ def friendly_error_mapping(error: ValidationError) -> str:
     raise ValueError(f"Unhandled validation error type {type(error)}")
 
 
-def _get_description_for_component(component: Union[Type, str]) -> str:
+def _get_description_for_component(
+    component: Union[QbStructuralDefinition, Type, str]
+) -> str:
     _logger.debug("Getting description for component %s", component)
 
     if isinstance(component, str):
         return component
+    elif isinstance(component, QbStructuralDefinition):
+        if isinstance(component, QbMultiMeasureDimension):
+            return f"the {component} measures column"
+        elif isinstance(component, QbMultiUnits):
+            return f"the {component} units column"
+        if isinstance(component, QbAttribute):
+            return f"the {component} attribute column"
+        elif isinstance(component, QbDimension):
+            return f"the {component} dimension column"
+        elif isinstance(component, QbCodeList):
+            return f"the {component} code list"
+        elif isinstance(component, QbObservationValue):
+            return f"the {component} observed values column"
+    # else it is a type of component
     elif component == QbMultiMeasureDimension:
         return "a measures column"
     elif component == QbMultiUnits:
@@ -163,4 +180,4 @@ def _get_description_for_component(component: Union[Type, str]) -> str:
         elif issubclass(component, QbObservationValue):
             return "the observed values column"
 
-    return f"a '{component.__name__}' component"
+    return f"a '{component}' component"

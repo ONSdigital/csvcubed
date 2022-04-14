@@ -9,6 +9,7 @@ import logging
 from pathlib import Path
 from typing import Optional, Tuple, List
 
+import jsonschema
 from csvcubedmodels.dataclassbase import DataClassBase
 from csvcubed.cli.error_mapping import friendly_error_mapping
 from csvcubed.models.cube import QbCube
@@ -20,6 +21,7 @@ from csvcubed.readers.cubeconfig.schema_versions import (
 )
 from csvcubed.readers.cubeconfig.utils import load_resource
 from csvcubed.utils.json import serialize_sets
+from csvcubed.utils.log import log_exception
 from csvcubed.utils.qb.validation.cube import validate_qb_component_constraints
 from csvcubed.writers.qbwriter import QbWriter
 
@@ -33,32 +35,16 @@ def build(
     fail_when_validation_error_occurs: bool = False,
     validation_errors_file_out: Optional[Path] = None,
 ) -> Tuple[QbCube, List[ValidationError]]:
-    _logger.debug("CSV: %s", csv_path.absolute() if csv_path is not None else "")
-    _logger.debug(
-        "qube-config.json: %s",
-        config_path.absolute() if config_path is not None else "",
+    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
+        config_path, csv_path
     )
-
-    deserialiser = _get_versioned_deserialiser(config_path)
-    cube, json_schema_validation_errors, validation_errors = deserialiser(
-        csv_path, config_path
-    )
-
-    validation_errors += cube.validate()
-    validation_errors += validate_qb_component_constraints(cube)
 
     if not output_directory.exists():
         _logger.debug("Creating output directory %s", output_directory.absolute())
         output_directory.mkdir(parents=True)
 
     if len(validation_errors) > 0 or len(json_schema_validation_errors) > 0:
-        for error in validation_errors:
-            _logger.error("Validation Error: %s", friendly_error_mapping(error))
-            if isinstance(error, HasErrorUrl):
-                _logger.error("More information: %s", error.get_error_url())
-
-        for err in json_schema_validation_errors:
-            _logger.warning("Schema Validation Error: %s", err.message)
+        _write_errors_to_log(json_schema_validation_errors, validation_errors)
 
         if validation_errors_file_out is not None:
             validation_errors_dict = [
@@ -79,7 +65,7 @@ def build(
                 exit(1)
             else:
                 _logger.warning(
-                    "Attempting to build CSV-W even though there is/are %s validation errors.",
+                    "Attempting to build CSV-W even though there are %s validation errors.",
                     len(validation_errors),
                 )
 
@@ -92,6 +78,38 @@ def build(
 
     print(f"Build Complete")
     return cube, validation_errors
+
+
+def _write_errors_to_log(
+    json_schema_validation_errors: List[jsonschema.ValidationError],
+    validation_errors: List[ValidationError],
+) -> None:
+    for error in validation_errors:
+        _logger.error("Validation Error: %s", friendly_error_mapping(error))
+        if isinstance(error, HasErrorUrl):
+            _logger.error("More information: %s", error.get_error_url())
+
+    for err in json_schema_validation_errors:
+        _logger.warning("Schema Validation Error: %s", err.message)
+
+
+def _extract_and_validate_cube(config_path: Path, csv_path: Path):
+    _logger.debug("CSV: %s", csv_path.absolute() if csv_path is not None else "")
+    _logger.debug(
+        "qube-config.json: %s",
+        config_path.absolute() if config_path is not None else "",
+    )
+
+    deserialiser = _get_versioned_deserialiser(config_path)
+
+    cube, json_schema_validation_errors, validation_errors = deserialiser(
+        csv_path, config_path
+    )
+
+    validation_errors += cube.validate()
+    validation_errors += validate_qb_component_constraints(cube)
+
+    return cube, json_schema_validation_errors, validation_errors
 
 
 def _get_versioned_deserialiser(
