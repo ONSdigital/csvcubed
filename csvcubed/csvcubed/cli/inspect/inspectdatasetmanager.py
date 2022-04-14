@@ -31,6 +31,7 @@ from csvcubed.models.csvcubedexception import (
     CsvToDataFrameLoadFailedException,
     InvalidNumberOfRecordsException,
 )
+from csvcubed.cli.error_mapping import friendly_error_mapping
 from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
 from csvcubed.utils.skos.codelist import build_concepts_hierarchy_tree
 
@@ -70,7 +71,9 @@ def load_csv_to_dataframe(json_path: Path, csv_path: Path) -> pd.DataFrame:
         dataset_path = json_path.parent / csv_path
         _logger.debug(f"Dataset path: {dataset_path.absolute()}")
 
-        dataset, _data_errors = read_csv(dataset_path)
+        dataset, data_errors = read_csv(dataset_path)
+        for error in data_errors:
+            _logger.warning(friendly_error_mapping(error))
         _logger.info("Successfully loaded csv into dataframe.")
 
         return dataset

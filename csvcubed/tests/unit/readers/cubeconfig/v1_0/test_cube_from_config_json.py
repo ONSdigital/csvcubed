@@ -23,7 +23,7 @@ def test_build():
         output_directory=output,
         csv_path=csv,
         fail_when_validation_error_occurs=True,
-        validation_errors_file_out=Path("validation_errors.json"),
+        validation_errors_file_out="validation_errors.json",
     )
 
 
@@ -111,7 +111,7 @@ def test_01_build_config_ok():
         csv_path=test_data_path,
         output_directory=Path("./out"),
         fail_when_validation_error_occurs=True,
-        validation_errors_file_out=Path("validation_errors.json"),
+        validation_errors_file_out="validation_errors.json",
     )
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, List)

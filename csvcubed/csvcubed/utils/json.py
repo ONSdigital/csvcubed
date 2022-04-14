@@ -56,3 +56,14 @@ def _load_json_from_path(path: Path) -> Dict[str, Any]:
             return json.load(f)
     except Exception as e:
         raise Exception(f"Error loading JSON from file at '{path}'") from e
+
+
+# Credit: Antti Haapala: https://stackoverflow.com/questions/8230315/how-to-json-serialize-sets
+def serialize_sets(obj):
+    """
+    Converts any sets in the object to a list for json serialisation
+    """
+    if isinstance(obj, set):
+        return list(obj)
+
+    return obj

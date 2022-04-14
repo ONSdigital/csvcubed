@@ -12,12 +12,14 @@ from typing import Optional, Tuple, List
 from csvcubedmodels.dataclassbase import DataClassBase
 from csvcubed.cli.error_mapping import friendly_error_mapping
 from csvcubed.models.cube import QbCube
+from csvcubed.models.errorurl import HasErrorUrl
 from csvcubed.models.validationerror import SpecificValidationError, ValidationError
 from csvcubed.readers.cubeconfig.schema_versions import (
     QubeConfigDeserialiser,
     get_deserialiser_for_schema,
 )
 from csvcubed.readers.cubeconfig.utils import load_resource
+from csvcubed.utils.json import serialize_sets
 from csvcubed.utils.qb.validation.cube import validate_qb_component_constraints
 from csvcubed.writers.qbwriter import QbWriter
 
@@ -50,7 +52,7 @@ def build(
     if len(validation_errors) > 0 or len(json_schema_validation_errors) > 0:
         for error in validation_errors:
             _logger.error("Validation Error: %s", friendly_error_mapping(error))
-            if isinstance(error, SpecificValidationError):
+            if isinstance(error, HasErrorUrl):
                 _logger.error("More information: %s", error.get_error_url())
 
         for err in json_schema_validation_errors:
@@ -67,10 +69,8 @@ def build(
                 e.message for e in json_schema_validation_errors
             ]
 
-            with open(validation_errors_file_out, "w+") as f:
+            with open(output_directory / validation_errors_file_out, "w+") as f:
                 json.dump(all_errors, f, indent=4, default=serialize_sets)
-            # with open(output_directory / validation_errors_file_out, "w+") as f:
-            #     json.dump(all_errors, f, indent=4, default=serialize_sets)
 
         if fail_when_validation_error_occurs and len(validation_errors) > 0:
             exit(1)
@@ -78,7 +78,6 @@ def build(
         writer = QbWriter(cube)
         writer.write(output_directory)
 
-    # logging.shutdown()
     print(f"Build Complete")
     return cube, validation_errors
 
@@ -94,11 +93,3 @@ def _get_versioned_deserialiser(
         return get_deserialiser_for_schema(config.get("$schema"))
     else:
         return get_deserialiser_for_schema(None)
-
-
-# Credit: Antti Haapala: https://stackoverflow.com/questions/8230315/how-to-json-serialize-sets
-def serialize_sets(obj):
-    if isinstance(obj, set):
-        return list(obj)
-
-    return obj

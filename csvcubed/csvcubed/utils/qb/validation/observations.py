@@ -5,7 +5,6 @@ from csvcubed.models.cube import (
     QbMultiUnits,
     QbObservationValue,
     Cube,
-    WrongNumberComponentsError,
     QbSingleMeasureObservationValue,
     QbMultiMeasureObservationValue,
     QbColumn,
