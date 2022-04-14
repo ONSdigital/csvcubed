@@ -75,12 +75,4 @@ def friendly_error_mapping(error: ValidationError) -> str:
     """
     Given an Exception / Error it returns an error message that is more user-friendly
     """
-    msg = MSG_TEMPLATE[error.__class__](error)
-    error_dict = error.as_dict()
-
-    if isinstance(error, ConflictingUriSafeValuesError):
-        error_dict['component'] = str(error_dict['component_type']).split('.')[-2].capitalize()
-        for safe_uri, values in error.map_uri_safe_values_to_conflicting_labels.items():
-            msg += f"{linesep}The values {tuple(values)} all map to the same identifier '{safe_uri}'."
-
-    return msg.format(error=error_dict)
+    return MSG_TEMPLATE[error.__class__](error)

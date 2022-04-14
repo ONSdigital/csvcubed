@@ -54,7 +54,7 @@ def test_01_val_errors_no_observation():
             config_path=config,
             csv_path=csv,
             output_directory=output,
-            validation_errors_file_out="validation_errors.json",
+            validation_errors_file_out=Path("validation_errors.json"),
         )
 
     # Check cube
@@ -86,7 +86,7 @@ def test_02_val_errors_no_measure():
             config_path=config,
             csv_path=csv,
             output_directory=output,
-            validation_errors_file_out="validation_errors.json",
+            validation_errors_file_out=Path("validation_errors.json"),
         )
 
     assert isinstance(cube, Cube)
@@ -105,7 +105,7 @@ def test_02_val_errors_no_measure():
     assert _check_log('csvcubed.cli.build - ERROR - Validation Error: At least one unit must be defined in a cube.')
     assert _check_log('csvcubed.cli.build - ERROR - More information: http://purl.org/csv-cubed/err/no-unit')
 
-    assert _check_log('svcubed.cli.build - ERROR - Validation Error: At least one measure must be defined in a cube.')
+    assert _check_log('csvcubed.cli.build - ERROR - Validation Error: At least one measure must be defined in a cube.')
     assert _check_log('csvcubed.cli.build - ERROR - More information: http://purl.org/csv-cubed/err/no-meas')
 
 
@@ -123,7 +123,7 @@ def test_03_val_errors_col_not_in_data():
             config_path=config,
             csv_path=csv,
             output_directory=output,
-            validation_errors_file_out="validation_errors.json",
+            validation_errors_file_out=Path("validation_errors.json"),
         )
 
     assert isinstance(cube, Cube)
@@ -155,7 +155,7 @@ def test_04_val_errors_duplicate_col():
             config_path=config,
             csv_path=csv,
             output_directory=output,
-            validation_errors_file_out="validation_errors.json",
+            validation_errors_file_out=Path("validation_errors.json"),
         )
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, list)
@@ -182,7 +182,7 @@ def test_05_val_errors_missing_obs_vals():
             config_path=config,
             csv_path=csv,
             output_directory=output,
-            validation_errors_file_out="validation_errors.json",
+            validation_errors_file_out=Path("validation_errors.json"),
         )
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, list)
@@ -207,7 +207,7 @@ def test_06_val_errors_both_measure_types():
     cube, validation_errors = cli_build(
         config_path=config,
         csv_path=csv,
-        validation_errors_file_out="validation_errors.json",
+        validation_errors_file_out=Path("validation_errors.json"),
     )
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, list)
@@ -237,7 +237,7 @@ def test_07_val_errors_both_unit_types():
             config_path=config,
             csv_path=csv,
             output_directory=output,
-            validation_errors_file_out="validation_errors.json",
+            validation_errors_file_out=Path("validation_errors.json"),
         )
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, list)
@@ -265,7 +265,7 @@ def test_08_val_errors_more_than_one_observation():
             config_path=config,
             csv_path=csv,
             output_directory=output,
-            validation_errors_file_out="validation_errors.json",
+            validation_errors_file_out=Path("validation_errors.json"),
         )
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, list)
@@ -291,7 +291,7 @@ def test_09_val_errors_more_than_one_measure():
             config_path=config,
             csv_path=csv,
             output_directory=output,
-            validation_errors_file_out="validation_errors.json",
+            validation_errors_file_out=Path("validation_errors.json"),
         )
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, list)
@@ -316,7 +316,7 @@ def test_10_val_errors_undefined_attr_uri():
             config_path=config,
             csv_path=csv,
             output_directory=output,
-            validation_errors_file_out="validation_errors.json",
+            validation_errors_file_out=Path("validation_errors.json"),
         )
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, list)
@@ -343,7 +343,7 @@ def test_11_val_errors_undefined_measure_uri():
             config_path=config,
             csv_path=csv,
             output_directory=output,
-            validation_errors_file_out="validation_errors.json",
+            validation_errors_file_out=Path("validation_errors.json"),
         )
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, list)
@@ -382,16 +382,16 @@ def test_12_val_errors_uri_conflict():
             config_path=config,
             csv_path=csv,
             output_directory=output,
-            validation_errors_file_out="validation_errors.json",
+            validation_errors_file_out=Path("validation_errors.json"),
         )
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, list)
     assert len(validation_errors) == 1
     assert isinstance(validation_errors[0], ConflictingUriSafeValuesError)
     assert validation_errors[0].message == \
-           f"Conflicting URIs: {linesep}    software-sales: 'software-sales', 'Software Sales'" or \
+           "Conflicting URIs: " + linesep + "    software-sales: 'software-sales', 'Software Sales'" or \
            validation_errors[0].message == \
-           f"Conflicting URIs: {linesep}    software-sales: 'Software Sales', 'software-sales'"
+           f"Conflicting URIs: " + linesep + "    software-sales: 'Software Sales', 'software-sales'"
     assert _check_log("csvcubed.cli.build - ERROR - Validation Error: A URI collision has been detected in: "
                       "'Attribute'.")
     assert _check_log("The values ('software-sales', 'Software Sales') all map to the same identifier "
@@ -415,7 +415,7 @@ def test_13_val_errors_reserved_uri():
             config_path=config,
             csv_path=csv,
             output_directory=output,
-            validation_errors_file_out="validation_errors.json",
+            validation_errors_file_out=Path("validation_errors.json"),
         )
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, list)
@@ -446,7 +446,7 @@ def test_14_val_errors_no_dimensions():
             config_path=config,
             csv_path=csv,
             output_directory=output,
-            validation_errors_file_out="validation_errors.json",
+            validation_errors_file_out=Path("validation_errors.json"),
         )
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, list)
