@@ -68,29 +68,13 @@ class CsvcubedExceptionUrls(Enum):
 
     FailedToLoadRDFGraph = "http://purl.org/csv-cubed/err/rdf-graph-load-failed"
 
-    CsvToDataFrameLoadFailed = (
-        "http://purl.org/csv-cubed/err/dataframe-load-failed"
-    )
-
-    InvalidNumberOfRecords = (
-        "http://purl.org/csv-cubed/err/unexpected-num-of-records"
-    )
-
-    FailedToReadSparqlQuery = (
-        "http://purl.org/csv-cubed/err/sparql-query-read-failed"
-    )
-
     FailedToLoadTableSchemaIntoRdfGraph = (
         "http://purl.org/csv-cubed/err/table-schema-to-rdf-graph-load-failed"
     )
 
-    UnsupportedComponentPropertyType = (
-        "http://purl.org/csv-cubed/err/comp-property-type-unsupported"
-    )
+    CsvToDataFrameLoadFailed = "http://purl.org/csv-cubed/err/dataframe-load-failed"
 
-    FailedToConvertDataFrameToString = (
-        "http://purl.org/csv-cubed/err/dataframe-to-string-convert-failed"
-    )
+    FailedToReadSparqlQuery = "http://purl.org/csv-cubed/err/sparql-query-read-failed"
 
     UnexpectedSparqlAskQueryResponseType = (
         "http://purl.org/csv-cubed/err/ask-sparql-query-response-type-unexpected"
@@ -100,11 +84,21 @@ class CsvcubedExceptionUrls(Enum):
         "http://purl.org/csv-cubed/err/ask-sparql-query-results-unexpected"
     )
 
-    FeatureNotSupported = "http://purl.org/csv-cubed/err/feature-not-supported"
+    UnsupportedComponentPropertyType = (
+        "http://purl.org/csv-cubed/err/comp-property-type-unsupported"
+    )
+
+    InvalidNumberOfRecords = "http://purl.org/csv-cubed/err/unexpected-num-of-records"
 
     ErrorProcessingDataFrame = (
         "http://purl.org/csv-cubed/err/error-processing-dataframe"
     )
+
+    FailedToConvertDataFrameToString = (
+        "http://purl.org/csv-cubed/err/dataframe-to-string-convert-failed"
+    )
+
+    FeatureNotSupported = "http://purl.org/csv-cubed/err/feature-not-supported"
 
 
 class CsvcubedException(Exception, HasErrorUrl, ABC):
