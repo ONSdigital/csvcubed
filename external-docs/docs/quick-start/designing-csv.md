@@ -54,7 +54,7 @@ Where `Year`, `Entrant`, `Song` and `Language` are the cube's identifying [dimen
 
 Note that we have included multiple measures in this dataset as `Final Rank`, `Final Points` and `People on Stage` have been recorded for each contestant.
 
-You can download the full CSV [here](TODO).
+You can download the full CSV [here](https://raw.githubusercontent.com/GSS-Cogs/csvcubed-demo/main/sweden_at_eurovision_no_missing.csv).
 
 ## Next
 

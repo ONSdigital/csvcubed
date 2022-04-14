@@ -151,3 +151,6 @@ http_cache.sqlite
 
 # Ignore test files
 out/
+
+# mkdocs
+external-docs/site
