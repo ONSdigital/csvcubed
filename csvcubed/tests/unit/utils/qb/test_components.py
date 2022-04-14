@@ -1,4 +1,5 @@
 from pathlib import Path
+from csvcubed.utils.sparql import path_to_file_uri_for_rdflib
 import pytest
 
 from csvcubed.utils.qb.components import (
@@ -27,16 +28,17 @@ def test_printable_component_property_sub_file_path():
     """
     Should return component property as relative path, if it is `file://`.
     """
-    input_file_path = Path("folder/sub-folder/file.csv")
+    input_file_path = Path("folder", "sub-folder", "file.csv")
+    other_file_path = Path("folder", "sub-folder", "sub-sub-folder", "other-file.csv")
     component_property = (
-        "file://folder/sub-folder/sub-sub-folder/other-file.csv#property-type/type"
+        f"{path_to_file_uri_for_rdflib(other_file_path)}#property-type/type"
     )
     printable_component_property = get_component_property_as_relative_path(
         input_file_path, component_property
     )
     assert (
         printable_component_property
-        == "sub-sub-folder/other-file.csv#property-type/type"
+        == f"{Path('sub-sub-folder', 'other-file.csv')}#property-type/type"
     )
 
 
@@ -44,14 +46,15 @@ def test_printable_component_property_root_file_path():
     """
     Should return component property as relative path, if it is `file://`.
     """
-    input_file_path = Path("folder/sub-folder/file.csv")
-    component_property = "file://other-folder/sub-folder/sub-sub-folder/other-file.csv#property-type/type"
+    input_file_path = Path("folder", "sub-folder", "file.csv")
+    other_file_path = Path("other-folder", "sub-folder", "sub-sub-folder", "other-file.csv")
+    component_property = f"{path_to_file_uri_for_rdflib(other_file_path)}#property-type/type"
     printable_component_property = get_component_property_as_relative_path(
         input_file_path, component_property
     )
     assert (
         printable_component_property
-        == "../../other-folder/sub-folder/sub-sub-folder/other-file.csv#property-type/type"
+        == f"{Path('..', '..', 'other-folder', 'sub-folder', 'sub-sub-folder', 'other-file.csv')}#property-type/type"
     )
 
 

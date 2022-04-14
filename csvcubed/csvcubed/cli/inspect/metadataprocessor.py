@@ -19,6 +19,7 @@ from csvcubed.models.csvcubedexception import (
     FailedToReadCsvwContentException,
     InvalidCsvwContentException,
 )
+from csvcubed.utils.sparql import path_to_file_uri_for_rdflib
 
 _logger = logging.getLogger(__name__)
 
@@ -70,7 +71,8 @@ class MetadataProcessor:
         """
         csvw_metadata_rdf_graph = Graph()
         csvw_file_content: str
-        csvw_metadata_file_path = str(self.csvw_metadata_file_path.absolute())
+        csvw_metadata_file_path = self.csvw_metadata_file_path.absolute()
+
 
         """
         Note: in below, we are loading the content of the csvw file into a variable before calling the RDFLib's parse() function.
@@ -99,7 +101,7 @@ class MetadataProcessor:
         try:
             csvw_metadata_rdf_graph.parse(
                 data=csvw_file_content,
-                publicID=f"file://{csvw_metadata_file_path}",
+                publicID=path_to_file_uri_for_rdflib(csvw_metadata_file_path),
                 format="json-ld",
             )
             _logger.info("Successfully parsed csvw json-ld to rdf graph.")

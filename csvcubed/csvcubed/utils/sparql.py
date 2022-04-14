@@ -4,6 +4,7 @@ SPARQL
 
 Utilities to help when running SPARQL queries.
 """
+from pathlib import Path
 from typing import List, Optional, Any, Callable
 
 from rdflib import Graph, Literal
@@ -64,3 +65,11 @@ def select(query: str, graph: Graph, init_bindings=None) -> List[ResultRow]:
         )
     ]
     return results
+
+def path_to_file_uri_for_rdflib(file: Path) -> str:
+    """
+    Converts a `pathlib.Path` into a file:///.... URI. 
+    
+    This is necessary due to windows paths being altered by rdflib when they're loaded. 
+    """
+    return "file://" + str(file).replace("\\", "/")
