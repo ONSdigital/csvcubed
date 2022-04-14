@@ -35,9 +35,14 @@ To create a cube using a [qube-config.json](../qube-config.md#configuration) fil
 csvcubed build my-data-file.csv -c my-qube-config.json
 ```
 
-## Logging
+## Saving Validation Errors
+### `--validation-errors-to-file`
 
-Please refer to the [Logging](./logging.md) section for more information on how to configure logging and the location of log files.
+Setting this flag will result in any validation errors being written to the `validation-errors.json` file in the [output directory](#output-directory).  If no errors are encountered then the file is not written.
+
+## Log Level and Log File Location
+
+Please refer to the [Logging](./logging.md) section for information on how to configure the log-level and the location of log files.
 
 ## Output Directory
 

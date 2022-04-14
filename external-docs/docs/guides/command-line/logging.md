@@ -4,12 +4,6 @@ This page describes how the logging works for the build and inspect commands.
 
 ## Options
 
-### `--validation-errors-to-file`
-
-Setting this flag will result in any validation errors being written to the `validation-errors.json` file in the [output directory](#output-directory).  If no errors are encountered then the file is not written.
-
-Common validation errors are documented in the [error guide](../errors/index.md).
-
 ### `--log-level`
 
 Allows you to set the level of messages that are logged with `debug` being the most verbose and `err` the least. The default level is `warn`, at this level you will see messages with a level of `warn`, `err` and `crit`.
