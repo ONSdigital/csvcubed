@@ -10,19 +10,19 @@ Feature: Cube!
       """
       {
         "title": "Tests/test-cases/config/schema-cube-data-config-ok",
-        "identifier": "schema-id",
+        "identifier": "schema-cube-data-config-ok",
         "summary": "a summary",
         "description": "Schema for testing",
-        "creator_uri": "https://www.gov.uk/government/organisations/fred-the-creator",
-        "publisher_uri": "https://www.gov.uk/government/organisations/joe-the-publisher",
+        "creator_uri": "https://www.gov.uk/government/organisations/office-for-national-statistics",
+        "publisher_uri": "http://statistics.data.gov.uk",
         "landing_page_uris": [],
-        "theme_uris": ["a-theme"],
-        "keywords": ["two"],
-        "dataset_issued": "2022-03-04 15:00:00.000",
-        "dataset_modified": "2022-03-04 15:00:00.000",
-        "license_uri": "the license",
-        "public_contact_point_uri": "Rob Barry",
-        "uri_safe_identifier_override": "schema-id"
+        "theme_uris": ["https://www.ons.gov.uk/economy/nationalaccounts/balanceofpayments"],
+        "keywords": ["A keyword", "Another keyword"],
+        "dataset_issued": "2022-03-04T15:00:00Z",
+        "dataset_modified": "2022-03-04T15:00:00Z",
+        "license_uri": "http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
+        "public_contact_point_uri": "mailto:csvcubed@example.com",
+        "uri_safe_identifier_override": None
       }
       """
     Then The cube Columns should match
@@ -83,16 +83,16 @@ Feature: Cube!
         "identifier": "schema-id",
         "summary": "a summary",
         "description": "Schema for testing",
-        "creator_uri": "https://www.gov.uk/government/organisations/fred-the-creator",
-        "publisher_uri": "https://www.gov.uk/government/organisations/joe-the-publisher",
+        "creator_uri": "https://www.gov.uk/government/organisations/office-for-national-statistics",
+        "publisher_uri": "http://statistics.data.gov.uk",
         "landing_page_uris": [],
-        "theme_uris": ["a-theme"],
+        "theme_uris": ["A Theme"],
         "keywords": ["two"],
         "dataset_issued": "2022-03-04 17:00:00.000",
         "dataset_modified": "2022-03-04 18:00:00.000",
         "license_uri": "the license",
         "public_contact_point_uri": None,
-        "uri_safe_identifier_override": "schema-id",
+        "uri_safe_identifier_override": None
         }
 
       """

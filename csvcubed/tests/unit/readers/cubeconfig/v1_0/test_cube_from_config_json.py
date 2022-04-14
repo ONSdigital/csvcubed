@@ -1,3 +1,5 @@
+import datetime
+import json
 import os
 from tempfile import TemporaryDirectory
 
@@ -6,14 +8,18 @@ import pytest
 from csvcubed.cli.build import build as cli_build
 from csvcubed.readers.cubeconfig.schema_versions import QubeConfigJsonSchemaVersion
 from csvcubed.readers.cubeconfig.v1_0.configdeserialiser import *
-from csvcubed.readers.cubeconfig.v1_0.configdeserialiser import _get_qb_column_from_json
-from tests.unit.test_baseunit import get_test_cases_dir
+from csvcubed.readers.cubeconfig.v1_0.configdeserialiser import (
+    _get_qb_column_from_json,
+    _metadata_from_dict,
+)
+from tests.unit.test_baseunit import get_test_cases_dir, assert_num_validation_errors
 from csvcubed.definitions import ROOT_DIR_PATH
 
 TEST_CASE_DIR = get_test_cases_dir().absolute() / "readers" / "cube-config" / "v1.0"
 SCHEMA_PATH_FILE = Path(
     ROOT_DIR_PATH, "csvcubed", "schema", "cube-config", "v1_0", "schema.json"
 )
+
 
 @pytest.mark.vcr
 def test_build():
@@ -28,7 +34,7 @@ def test_build():
         validation_errors_file_out=Path("validation_errors.json"),
     )
 
-    
+
 def _check_new_attribute_column(
     column: QbColumn, column_config: dict, column_data: list, title: str
 ) -> None:
@@ -112,7 +118,7 @@ def test_01_build_config_ok():
             config_path=config,
             output_directory=output,
             fail_when_validation_error_occurs=True,
-            validation_errors_file_out=Path("validation_errors.json")
+            validation_errors_file_out=Path(output, "validation_errors.json"),
         )
 
     assert isinstance(cube, Cube)
@@ -616,6 +622,45 @@ def test_column_template_expansion():
     assert isinstance(column.structural_definition, NewQbDimension)
     dimension = column.structural_definition
     assert dimension.label == "Year"
+
+
+def test_load_catalog_metadata():
+    with open(TEST_CASE_DIR / "cube_data_config_ok.json") as f:
+        config = json.load(f)
+
+    catalog_metadata = _metadata_from_dict(config)
+
+    validation_errors = catalog_metadata.pydantic_validation()
+    assert_num_validation_errors(validation_errors, 0)
+
+    assert (
+        catalog_metadata.title == "Tests/test-cases/config/schema-cube-data-config-ok"
+    )
+    assert catalog_metadata.identifier == "schema-cube-data-config-ok"
+    assert (
+        catalog_metadata.creator_uri
+        == "https://www.gov.uk/government/organisations/office-for-national-statistics"
+    )
+    assert catalog_metadata.publisher_uri == "http://statistics.data.gov.uk"
+    assert catalog_metadata.description == "Schema for testing"
+    assert catalog_metadata.summary == "a summary"
+    assert (
+        catalog_metadata.license_uri
+        == "http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+    )
+    assert catalog_metadata.public_contact_point_uri == "mailto:csvcubed@example.com"
+
+    assert catalog_metadata.dataset_issued == datetime.datetime(
+        2022, 3, 4, 15, 0, 0, tzinfo=datetime.timezone.utc
+    )
+    assert catalog_metadata.dataset_modified == datetime.datetime(
+        2022, 3, 4, 15, 0, 0, tzinfo=datetime.timezone.utc
+    )
+
+    assert set(catalog_metadata.keywords) == {"A keyword", "Another keyword"}
+    assert set(catalog_metadata.theme_uris) == {
+        "https://www.ons.gov.uk/economy/nationalaccounts/balanceofpayments"
+    }
 
 
 if __name__ == "__main__":

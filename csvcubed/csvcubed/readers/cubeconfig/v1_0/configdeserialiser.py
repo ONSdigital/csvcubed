@@ -136,37 +136,31 @@ def _get_qb_column_from_json(
 
 
 def _metadata_from_dict(config: dict) -> "CatalogMetadata":
-    creator = get_with_func_or_none(config, "creator", lambda c: str(GOV[uri_safe(c)]))
-    publisher = get_with_func_or_none(
-        config, "publisher", lambda p: str(GOV[uri_safe(p)])
-    )
-    themes = config.get("themes", "")
-    if isinstance(themes, str) and themes:
+    themes = config.get("themes", [])
+    if themes and isinstance(themes, str):
         themes = [themes]
-    keywords = config.get("keywords", "")
-    if isinstance(keywords, str) and keywords:
+
+    keywords = config.get("keywords", [])
+    if keywords and isinstance(keywords, str):
         keywords = [keywords]
 
     return CatalogMetadata(
-        identifier=config.get("id"),
+        identifier=get_with_func_or_none(config, "id", uri_safe),
         title=config["title"],
         description=config.get("description", ""),
         summary=config.get("summary", ""),
-        creator_uri=creator,
-        publisher_uri=publisher,
+        creator_uri=config.get("creator"),
+        publisher_uri=config.get("publisher"),
         public_contact_point_uri=config.get("public_contact_point"),
         dataset_issued=config.get("dataset_issued"),
         dataset_modified=config.get("dataset_modified"),
         license_uri=config.get("license"),
-        theme_uris=[uri_safe(t) for t in themes if t]
-        if isinstance(themes, list)
-        else [],
-        keywords=keywords if isinstance(keywords, list) else [],
+        theme_uris=themes,
+        keywords=keywords,
         # spatial_bound_uri=uri_safe(config['spatial_bound'])
         #     if config.get('spatial_bound') else None,
         # temporal_bound_uri=uri_safe(config['temporal_bound'])
         #     if config.get('temporal_bound') else None,
-        uri_safe_identifier_override=config["id"] if config.get("id") else None,
     )
 
 
