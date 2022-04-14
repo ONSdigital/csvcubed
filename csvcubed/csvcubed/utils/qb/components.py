@@ -99,11 +99,12 @@ def get_component_property_as_relative_path(
     except Exception:
         return component_property
 
+
 def _relative_path(path_uri: str, relative_to: Path) -> str:
     """
-    Unfortunately, `os.path.relpath` on Windows alters any `/` chars in the fragment part of a URI to `\`.
+    Unfortunately, `os.path.relpath` on Windows alters any `/` chars in the fragment part of a URI to the `\\` char.
 
-    This function ensures that we don't pass the fragment part of the URI to `os.path.relpath` so it never gets mangled. 
+    This function ensures that we don't pass the fragment part of the URI to `os.path.relpath` so it never gets mangled.
     """
     url = urlparse(path_uri)
 
