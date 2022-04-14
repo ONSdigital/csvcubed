@@ -1,8 +1,8 @@
-# Error - Unexpected sparql ASK query response type `<response_type>`.
+# Error - Unexpected ASK sparql query `<query_name>` response type: `<response_type>`.
 
 ## When it occurs
 
-The inspect command encountered an unexpected response type `<response_type>` when running a sparql query.
+The inspect command encountered an unexpected response type `<response_type>` when running the `<query_name>` sparql query.
 
 ## How to fix
 

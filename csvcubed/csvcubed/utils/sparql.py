@@ -23,7 +23,7 @@ def none_or_map(val: Optional[Any], map_func: Callable[[Any], Any]) -> Optional[
         return map_func(val)
 
 
-def ask(query: str, graph: Graph) -> bool:
+def ask(query_name: str, query: str, graph: Graph) -> bool:
     """
     Executes the given ASK query on the rdf graph.
 
@@ -32,15 +32,17 @@ def ask(query: str, graph: Graph) -> bool:
     :return: `bool` - Whether the given query yeilds true or false
     """
     results = list(graph.query(query))
-    
+
     if len(results) == 1:
         result = results[0]
         if isinstance(result, bool):
             return result
         else:
-            raise UnexpectedSparqlAskQueryResponseTypeException(type(result))
+            raise UnexpectedSparqlAskQueryResponseTypeException(
+                query_name, type(result)
+            )
     else:
-        raise UnexpectedSparqlAskQueryResultsException(len(results))
+        raise UnexpectedSparqlAskQueryResultsException(query_name, len(results))
 
 
 def select(query: str, graph: Graph, init_bindings=None) -> List[ResultRow]:
@@ -66,10 +68,11 @@ def select(query: str, graph: Graph, init_bindings=None) -> List[ResultRow]:
     ]
     return results
 
+
 def path_to_file_uri_for_rdflib(file: Path) -> str:
     """
-    Converts a `pathlib.Path` into a file:///.... URI. 
-    
-    This is necessary due to windows paths being altered by rdflib when they're loaded. 
+    Converts a `pathlib.Path` into a file:///.... URI.
+
+    This is necessary due to windows paths being altered by rdflib when they're loaded.
     """
     return "file://" + str(file).replace("\\", "/")

@@ -39,12 +39,10 @@ class CsvcubedExceptionMsges(Enum):
     FailedToConvertDataFrameToString = "Failed to convert dataframe to string"
 
     UnexpectedSparqlAskQueryResponseType = (
-        "Unexpected sparql ASK query response type {response_type}"
+        "Unexpected ASK sparql query ({query_name}) response type: {response_type}"
     )
 
-    UnexpectedSparqlAskQueryResults = (
-        "Unexpected number of results for sparql ASK query {num_of_results}"
-    )
+    UnexpectedSparqlAskQueryResults = "Unexpected number of results ({num_of_results}) for the {query_name} ASK sparql query"
 
     FeatureNotSupported = "This feature is not yet supported: {explanation}"
 
@@ -245,10 +243,10 @@ class FailedToConvertDataFrameToStringException(CsvcubedException):
 class UnexpectedSparqlAskQueryResponseTypeException(CsvcubedException):
     """Class representing the UnexpectedSparqlAskQueryResponseTypeException model."""
 
-    def __init__(self, response_type: type):
+    def __init__(self, query_name: str, response_type: type):
         super().__init__(
             CsvcubedExceptionMsges.UnexpectedSparqlAskQueryResponseType.value.format(
-                response_type=response_type
+                query_name=query_name, response_type=response_type
             )
         )
 
@@ -260,10 +258,10 @@ class UnexpectedSparqlAskQueryResponseTypeException(CsvcubedException):
 class UnexpectedSparqlAskQueryResultsException(CsvcubedException):
     """Class representing the UnexpectedSparqlAskQueryResultsException model."""
 
-    def __init__(self, num_of_results: int):
+    def __init__(self, query_name: str, num_of_results: int):
         super().__init__(
             CsvcubedExceptionMsges.UnexpectedSparqlAskQueryResults.value.format(
-                num_of_results=num_of_results
+                query_name=query_name, num_of_results=num_of_results
             )
         )
 

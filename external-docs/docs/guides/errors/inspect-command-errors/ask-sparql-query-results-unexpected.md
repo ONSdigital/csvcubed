@@ -1,8 +1,8 @@
-# Error - Unexpected number of results for sparql ASK query `<num_of_results>`.
+# Error - Unexpected number of results (`<num_of_results>`) for the `<query_name>` ASK sparql query.
 
 ## When it occurs
 
-The inspect command encountered an unexpected number of results `<num_of_results>` when running a sparql query.
+The inspect command encountered an unexpected number of results `<num_of_results>` when running the `<query_name>` sparql query.
 
 ## How to fix
 
