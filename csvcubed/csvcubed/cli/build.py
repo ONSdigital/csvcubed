@@ -93,7 +93,7 @@ def _write_errors_to_log(
         _logger.warning("Schema Validation Error: %s", err.message)
 
 
-def _extract_and_validate_cube(config_path: Path, csv_path: Path):
+def _extract_and_validate_cube(config_path: Optional[Path], csv_path: Path):
     _logger.debug("CSV: %s", csv_path.absolute() if csv_path is not None else "")
     _logger.debug(
         "qube-config.json: %s",
