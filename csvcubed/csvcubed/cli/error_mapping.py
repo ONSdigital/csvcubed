@@ -116,13 +116,13 @@ def friendly_error_mapping(error: ValidationError) -> str:
             f"and was reported as '{error.original_error}'"
         )
     elif isinstance(error, UndefinedMeasureUrisError):
-        return f"The Measure URI {error.undefined_values} found in the data was not defined in the cube config."
+        return f"The Measure URI(s) {error.undefined_values} found in the data was not defined in the cube config."
     elif isinstance(error, UndefinedUnitUrisError):
-        return f"The Unit URI {error.undefined_values} found in the data was not defined in the cube config."
+        return f"The Unit URI(s) {error.undefined_values} found in the data was not defined in the cube config."
     elif isinstance(error, UndefinedAttributeValueUrisError):
         return (
-            f"The Attribute URI {error.undefined_values} in {_get_description_for_component(error.component)} "
-            "defined in the cube config was not found in the data."
+            f"The Attribute URI(s) {error.undefined_values} in {_get_description_for_component(error.component)} "
+            "have not been defined in the list of valid attribute values."
         )
     elif isinstance(error, ReservedUriValueError):
         return (
@@ -140,6 +140,7 @@ def friendly_error_mapping(error: ValidationError) -> str:
             f"A validation error occurred when validating the cube: '{error.message}'."
         )
 
+    _logger.error("Unhandled validation error: %s", error)
     raise ValueError(f"Unhandled validation error type {type(error)}")
 
 

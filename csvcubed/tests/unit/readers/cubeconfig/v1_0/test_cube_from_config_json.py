@@ -23,16 +23,18 @@ SCHEMA_PATH_FILE = Path(
 
 @pytest.mark.vcr
 def test_build():
-    config = Path(TEST_CASE_DIR, "cube_data_config_ok.json")
-    output = Path("./out")
-    csv = Path(TEST_CASE_DIR, "cube_data_config_ok.csv")
-    cli_build(
-        config_path=config,
-        output_directory=output,
-        csv_path=csv,
-        fail_when_validation_error_occurs=True,
-        validation_errors_file_out=Path("validation_errors.json"),
-    )
+    with TemporaryDirectory() as temp_dir_path:
+        temp_dir = Path(temp_dir_path)
+        config = Path(TEST_CASE_DIR, "cube_data_config_ok.json")
+        output = temp_dir / "out"
+        csv = Path(TEST_CASE_DIR, "cube_data_config_ok.csv")
+        cli_build(
+            config_path=config,
+            output_directory=output,
+            csv_path=csv,
+            fail_when_validation_error_occurs=True,
+            validation_errors_file_out=Path(output, "validation_errors.json"),
+        )
 
 
 def _check_new_attribute_column(

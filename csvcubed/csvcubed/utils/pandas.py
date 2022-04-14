@@ -25,14 +25,21 @@ def read_csv(csv: Path, **kwargs) -> Tuple[pd.DataFrame, List[ValidationError]]:
         pd.DataFrame without the default na values being changes into NaN
         list of ValidationExceptions
     """
-    df = pd.read_csv(csv, keep_default_na=False, na_values=specified_na_values, **kwargs)
+    df = pd.read_csv(
+        csv, keep_default_na=False, na_values=specified_na_values, **kwargs
+    )
     if not isinstance(df, pd.DataFrame):
-        raise ValueError(f"Expected a pandas dataframe when reading from CSV, value was {df}")
+        raise ValueError(
+            f"Expected a pandas dataframe when reading from CSV, value was {df}"
+        )
 
     # Read first row as values rather than headers, so we can check for duplicate column titles
     col_title_counts = pd.read_csv(csv, header=None, nrows=1).iloc[0, :].value_counts()  # type: ignore
     duplicate_titles = list(col_title_counts[col_title_counts > 1].keys())
-    if duplicate_titles:
-        return df, [DuplicateColumnTitleError(csv_column_title=duplicate_titles[0])]
+    if any(duplicate_titles):
+        return df, [
+            DuplicateColumnTitleError(csv_column_title=dupe_title)
+            for dupe_title in duplicate_titles
+        ]
 
     return df, []

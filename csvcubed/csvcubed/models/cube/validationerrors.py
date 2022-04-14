@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from csvcubed.models.validationerror import SpecificValidationError
 
 
-@dataclass
+@dataclass(unsafe_hash=True)
 class DuplicateColumnTitleError(SpecificValidationError):
     """
     An error to inform the user that they have defined two instances of the same column.
@@ -18,7 +18,7 @@ class DuplicateColumnTitleError(SpecificValidationError):
 
     @classmethod
     def get_error_url(cls) -> str:
-        return 'http://purl.org/csv-cubed/err/dupe-col'
+        return "http://purl.org/csv-cubed/err/dupe-col"
 
     def __post_init__(self):
         self.message = f"Duplicate column title '{self.csv_column_title}'"
@@ -31,9 +31,10 @@ class ColumnNotFoundInDataError(SpecificValidationError):
     """
 
     csv_column_title: str
+
     @classmethod
     def get_error_url(cls) -> str:
-        return 'http://purl.org/csv-cubed/err/col-not-found-in-dat'
+        return "http://purl.org/csv-cubed/err/col-not-found-in-dat"
 
     def __post_init__(self):
         self.message = f"Column '{self.csv_column_title}' not found in data provided."
@@ -49,7 +50,7 @@ class MissingColumnDefinitionError(SpecificValidationError):
 
     @classmethod
     def get_error_url(cls) -> str:
-        return 'http://purl.org/csv-cubed/err/mis-col-def'
+        return "http://purl.org/csv-cubed/err/mis-col-def"
 
     def __post_init__(self):
         self.message = (
@@ -68,7 +69,7 @@ class ColumnValidationError(SpecificValidationError):
 
     @classmethod
     def get_error_url(cls) -> str:
-        return 'http://purl.org/csv-cubed/err/col-valid'
+        return "http://purl.org/csv-cubed/err/col-valid"
 
     def __post_init__(self):
         self.message = f"An exception occurred when validating column '{self.csv_column_title}': {self.error}."
@@ -86,7 +87,7 @@ class ObservationValuesMissing(SpecificValidationError):
 
     @classmethod
     def get_error_url(cls) -> str:
-        return 'http://purl.org/csv-cubed/err/obsv-val-mis'
+        return "http://purl.org/csv-cubed/err/obsv-val-mis"
 
     def __post_init__(self):
         row_nums_str = ", ".join([str(i) for i in sorted(self.row_numbers)])

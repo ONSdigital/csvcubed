@@ -40,7 +40,9 @@ def build(
     )
 
     deserialiser = _get_versioned_deserialiser(config_path)
-    cube, json_schema_validation_errors, validation_errors = deserialiser(csv_path, config_path)
+    cube, json_schema_validation_errors, validation_errors = deserialiser(
+        csv_path, config_path
+    )
 
     validation_errors += cube.validate()
     validation_errors += validate_qb_component_constraints(cube)
@@ -72,11 +74,21 @@ def build(
             with open(output_directory / validation_errors_file_out, "w+") as f:
                 json.dump(all_errors, f, indent=4, default=serialize_sets)
 
-        if fail_when_validation_error_occurs and len(validation_errors) > 0:
-            exit(1)
-    else:
+        if len(validation_errors) > 0:
+            if fail_when_validation_error_occurs:
+                exit(1)
+            else:
+                _logger.warning(
+                    "Attempting to build CSV-W even though there is/are %s validation errors.",
+                    len(validation_errors),
+                )
+
+    try:
         writer = QbWriter(cube)
         writer.write(output_directory)
+    except:
+        _logger.fatal("Failed to generate CSV-W.")
+        raise
 
     print(f"Build Complete")
     return cube, validation_errors
