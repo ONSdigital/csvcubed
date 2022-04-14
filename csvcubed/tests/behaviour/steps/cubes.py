@@ -3,7 +3,9 @@ import json
 import requests_mock
 from behave import *
 from csvcubed.cli.build import build as cli_build
+from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
 from csvcubeddevtools.helpers.file import get_test_cases_dir
+
 import vcr
 
 from csvcubed.utils.cache import session
@@ -54,11 +56,16 @@ def step_impl(context):
         mocker.register_uri(
             "GET", "https://purl.org/csv-cubed/qube-config/v1.0", text=f.read()
         )
-
+    context.out_dir = (
+            get_context_temp_dir_path(context) / "out"
+    )
     context.add_cleanup(lambda: mocker.stop())
 
     with vcr.use_cassette(str(_cassettes_dir / "cube-created.yaml")):
-        cube, errors = cli_build(data_file, config_file)
+        cube, errors = cli_build(data_file,
+                                 config_file,
+                                 output_directory=context.out_dir,
+                                 validation_errors_file_out=context.out_dir / "validation_errors.json")
         context.cube = cube
         context.errors = errors
 
@@ -87,7 +94,7 @@ def step_impl(context):
         if expected_columns[i] != result[i]:
             # Print the mis-matched values in each row if the row dict is not equal
             raise Exception(
-                f"{json.dumps(expected_columns[i], indent=4)} ??? {result[i]}"
+                f"{json.dumps(expected_columns[i], indent=4)} ??? {json.dumps(result[i], indent=4)}"
             )
             for k, v in col.items():
                 if expected_columns[i].get(k) != col[k]:

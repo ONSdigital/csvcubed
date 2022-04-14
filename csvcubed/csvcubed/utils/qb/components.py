@@ -8,6 +8,7 @@ Utilities to help when handling qube components data.
 from enum import Enum
 from pathlib import Path
 import os
+from urllib.parse import urlparse
 
 from csvcubed.models.csvcubedexception import UnsupportedComponentPropertyTypeException
 
@@ -93,12 +94,25 @@ def get_component_property_as_relative_path(
     if not component_property.startswith("file://"):
         return component_property
 
-    component_property = component_property.removeprefix("file://")
     try:
-        relative_path: str = os.path.relpath(
-            component_property,
-            input_file_path.parent,
-        )
-        return relative_path
+        return _relative_path(component_property, input_file_path.parent)
     except Exception:
         return component_property
+
+
+def _relative_path(path_uri: str, relative_to: Path) -> str:
+    """
+    Unfortunately, `os.path.relpath` on Windows alters any `/` chars in the fragment part of a URI to the backslash
+     char.
+
+    This function ensures that we don't pass the fragment part of the URI to `os.path.relpath` so it never gets mangled.
+    """
+    url = urlparse(path_uri)
+
+    if len(url.fragment) > 0:
+        fragment_part = "#" + url.fragment
+        file_path = Path(path_uri.removesuffix(fragment_part).removeprefix("file://"))
+        relative_file_path: str = os.path.relpath(file_path, relative_to)
+        return relative_file_path + fragment_part
+
+    return os.path.relpath(path_uri, relative_to)
