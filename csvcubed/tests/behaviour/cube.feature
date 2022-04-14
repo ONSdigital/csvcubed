@@ -21,7 +21,7 @@ Feature: Cube!
         "dataset_issued": "2022-03-04 15:00:00.000",
         "dataset_modified": "2022-03-04 15:00:00.000",
         "license_uri": "the license",
-        "public_contact_point_uri": "Rob Barry",
+        "public_contact_point_uri": "mailto:csvcubed@example.com",
         "uri_safe_identifier_override": "schema-id"
       }
       """
