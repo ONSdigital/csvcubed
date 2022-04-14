@@ -13,7 +13,8 @@ _user_log_dir = Path(appdirs.AppDirs("csvcubed_testing", "csvcubed").user_log_di
 @pytest.fixture(autouse=True, scope="session")
 def configure_logging():
     """Make sure to remove all the existing log files so we don't contaminate the tests."""
-    shutil.rmtree(_user_log_dir)
+    if _user_log_dir.exists():
+        shutil.rmtree(_user_log_dir)
 
     root_logger = logging.getLogger("csvcubed")
     for filter in root_logger.filters:
