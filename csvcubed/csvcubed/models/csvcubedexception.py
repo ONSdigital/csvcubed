@@ -12,13 +12,13 @@ class CsvcubedExceptionMsges(Enum):
 
     InputNotSupported = "The input CSV-W json-ld is not supported. The input should be a data cube or a code list"
 
-    FailedToReadCsvwFileContent = (
-        "An error occured while reading CSV-W content from file at {csvw_metadata_file_path}"
-    )
+    FailedToReadCsvwFileContent = "An error occured while reading CSV-W content from file at {csvw_metadata_file_path}"
 
     InvalidCsvwFileContent = "CSV-W file content is invalid."
 
-    FailedToLoadRDFGraph = "Failed to load the RDF graph from input"
+    FailedToLoadRDFGraph = (
+        "Failed to load the RDF graph from input: {csvw_metadata_file_path}"
+    )
 
     CsvToDataFrameLoadFailed = "Failed to load CSV dataset to dataframe"
 
@@ -28,9 +28,13 @@ class CsvcubedExceptionMsges(Enum):
         "Failed to read sparql query from file at {sparql_file_path}"
     )
 
-    FailedToLoadTableSchemaIntoRdfGraph = "Failed to load table schema '{table_schema_file}' into RDF graph"
+    FailedToLoadTableSchemaIntoRdfGraph = (
+        "Failed to load table schema '{table_schema_file}' into RDF graph"
+    )
 
-    UnsupportedComponentPropertyType = "DSD component property type {property_type} is not supported"
+    UnsupportedComponentPropertyType = (
+        "DSD component property type {property_type} is not supported"
+    )
 
     FailedToConvertDataFrameToString = "Failed to convert dataframe to string"
 
@@ -68,7 +72,9 @@ class CsvcubedExceptionUrls(Enum):
         "http://purl.org/csv-cubed/err/csv-to-dataframe-load-failed"
     )
 
-    InvalidNumberOfRecords = "http://purl.org/csv-cubed/err/unexpected-number-of-records"
+    InvalidNumberOfRecords = (
+        "http://purl.org/csv-cubed/err/unexpected-number-of-records"
+    )
 
     FailedToReadSparqlQuery = (
         "http://purl.org/csv-cubed/err/failed-to-read-sparql-query"
@@ -143,11 +149,16 @@ class InvalidCsvwFileContentException(CsvcubedException):
     def get_error_url(cls) -> str:
         return CsvcubedExceptionUrls.InvalidCsvwFileContent.value
 
+
 class FailedToLoadRDFGraphException(CsvcubedException):
     """Class representing the FailedToLoadRDFGraphException model."""
 
-    def __init__(self):
-        super().__init__(f"{CsvcubedExceptionMsges.FailedToLoadRDFGraph.value}")
+    def __init__(self, csvw_metadata_file_path: Path):
+        super().__init__(
+            CsvcubedExceptionMsges.FailedToLoadRDFGraph.value.format(
+                csvw_metadata_file_path=str(csvw_metadata_file_path),
+            )
+        )
 
     @classmethod
     def get_error_url(cls) -> str:
@@ -195,6 +206,7 @@ class FailedToReadSparqlQueryException(CsvcubedException):
     def get_error_url(cls) -> str:
         return CsvcubedExceptionUrls.FailedToReadSparqlQuery.value
 
+
 class FailedToLoadTableSchemaIntoRdfGraphException(CsvcubedException):
     """Class representing the FailedToLoadTableSchemaIntoRdfGraphException model."""
 
@@ -208,6 +220,7 @@ class FailedToLoadTableSchemaIntoRdfGraphException(CsvcubedException):
     @classmethod
     def get_error_url(cls) -> str:
         return CsvcubedExceptionUrls.FailedToLoadTableSchemaIntoRdfGraph.value
+
 
 class UnsupportedComponentPropertyTypeException(CsvcubedException):
     """Class representing the UnsupportedComponentPropertyType model."""

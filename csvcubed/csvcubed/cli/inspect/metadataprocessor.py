@@ -107,4 +107,4 @@ class MetadataProcessor:
             self._load_table_schema_dependencies_into_rdf_graph(csvw_metadata_rdf_graph)
             return csvw_metadata_rdf_graph
         except Exception as ex:
-            raise FailedToLoadRDFGraphException() from ex
+            raise FailedToLoadRDFGraphException(self.csvw_metadata_file_path) from ex
