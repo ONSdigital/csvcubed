@@ -1,3 +1,4 @@
+from csvcubed.utils.sparql import path_to_file_uri_for_rdflib
 from csvcubedmodels.rdf.namespaces import CSVW
 from rdflib import Literal, URIRef
 
@@ -35,7 +36,7 @@ def test_metadata_dataset_json_ld_to_rdf_loading_when_path_contains_url_encodabl
 
     assert (
         URIRef(
-            f"file://{dir_path}/alcohol-bulletin.csv#component/alcohol-sub-type",
+            f"{path_to_file_uri_for_rdflib(dir_path / 'alcohol-bulletin.csv')}#component/alcohol-sub-type",
         ),
         None,
         None,
@@ -43,7 +44,7 @@ def test_metadata_dataset_json_ld_to_rdf_loading_when_path_contains_url_encodabl
 
     assert (
         URIRef(
-            f"file://url_enc%40dable_char_%402path/alcohol-bulletin.csv#component/alcohol-sub-type",
+            f"{path_to_file_uri_for_rdflib(_test_case_base_dir / 'url_enc%40dable_char_%402path' / 'alcohol-bulletin.csv')}#component/alcohol-sub-type",
         ),
         None,
         None,
