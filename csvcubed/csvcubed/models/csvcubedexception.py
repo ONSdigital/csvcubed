@@ -22,7 +22,7 @@ class CsvcubedExceptionMsges(Enum):
 
     CsvToDataFrameLoadFailed = "Failed to load CSV dataset to dataframe"
 
-    InvalidNumberOfRecords = "Expected {excepted_num_of_records} record(s), but found {num_of_records} record(s)"
+    InvalidNumberOfRecords = "Expected {excepted_num_of_records} {record_description}, but found {num_of_records}"
 
     FailedToReadSparqlQuery = (
         "Failed to read sparql query from file at {sparql_file_path}"
@@ -171,9 +171,12 @@ class CsvToDataFrameLoadFailedException(CsvcubedException):
 class InvalidNumberOfRecordsException(CsvcubedException):
     """Class representing the InvalidNumberOfRecordsException model."""
 
-    def __init__(self, excepted_num_of_records: int, num_of_records: int):
+    def __init__(
+        self, record_description: str, excepted_num_of_records: int, num_of_records: int
+    ):
         super().__init__(
             CsvcubedExceptionMsges.InvalidNumberOfRecords.value.format(
+                record_description=record_description,
                 excepted_num_of_records=excepted_num_of_records,
                 num_of_records=num_of_records,
             )

@@ -153,7 +153,9 @@ def select_csvw_catalog_metadata(rdf_graph: Graph) -> CatalogMetadataResult:
 
     if len(results) != 1:
         raise InvalidNumberOfRecordsException(
-            excepted_num_of_records=1, num_of_records=len(results)
+            record_description=f"result for the {SPARQLQueryName.SELECT_CATALOG_METADATA.value} sparql query",
+            excepted_num_of_records=1,
+            num_of_records=len(results),
         )
 
     return map_catalog_metadata_result(results[0])
@@ -176,7 +178,9 @@ def select_csvw_dsd_dataset_label_and_dsd_def_uri(
 
     if len(results) != 1:
         raise InvalidNumberOfRecordsException(
-            excepted_num_of_records=1, num_of_records=len(results)
+            record_description=f"result for the {SPARQLQueryName.SELECT_DSD_DATASETLABEL_AND_URI.value} sparql query",
+            excepted_num_of_records=1,
+            num_of_records=len(results),
         )
     return map_dataset_label_dsd_uri_sparql_result(results[0])
 
@@ -275,7 +279,9 @@ def select_qb_dataset_url(rdf_graph: Graph, dataset_uri: str) -> DatasetURLResul
     )
     if len(results) != 1:
         raise InvalidNumberOfRecordsException(
-            excepted_num_of_records=1, num_of_records=len(results)
+            record_description=f"result for the {SPARQLQueryName.SELECT_QB_DATASET_URL.value} sparql query",
+            excepted_num_of_records=1,
+            num_of_records=len(results),
         )
     return map_dataset_url_result(results[0])
 
@@ -294,7 +300,9 @@ def select_codelist_dataset_url(rdf_graph: Graph) -> DatasetURLResult:
     )
     if len(results) != 1:
         raise InvalidNumberOfRecordsException(
-            excepted_num_of_records=1, num_of_records=len(results)
+            record_description=f"result for the {SPARQLQueryName.SELECT_CODELIST_DATASET_URL.value} sparql query",
+            excepted_num_of_records=1,
+            num_of_records=len(results),
         )
     return map_dataset_url_result(results[0])
 
@@ -317,7 +325,9 @@ def select_single_unit_from_dsd(
 
     if len(results) != 1:
         raise InvalidNumberOfRecordsException(
-            excepted_num_of_records=1, num_of_records=len(results)
+            record_description=f"result for the {SPARQLQueryName.SELECT_SINGLE_UNIT_FROM_DSD.value} sparql query",
+            excepted_num_of_records=1,
+            num_of_records=len(results),
         )
     return map_single_unit_from_dsd_result(results[0], json_path)
 
@@ -342,6 +352,8 @@ def select_codelist_cols_by_dataset_url(
 
     if len(results) < 1:
         raise InvalidNumberOfRecordsException(
-            excepted_num_of_records=1, num_of_records=len(results)
+            record_description=f"result for the {SPARQLQueryName.SELECT_CODELIST_COLS_BY_DATASET_URL.value} sparql query",
+            excepted_num_of_records=1,
+            num_of_records=len(results),
         )
     return map_codelist_cols_by_dataset_url_result(results)

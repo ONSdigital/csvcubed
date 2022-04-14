@@ -144,7 +144,9 @@ def get_single_measure_from_dsd(
 
     if len(filtered_components) != 1:
         raise InvalidNumberOfRecordsException(
-            excepted_num_of_records=1, num_of_records=len(filtered_components)
+            record_description="dsd components",
+            excepted_num_of_records=1,
+            num_of_records=len(filtered_components),
         )
 
     return DatasetSingleMeasureResult(
