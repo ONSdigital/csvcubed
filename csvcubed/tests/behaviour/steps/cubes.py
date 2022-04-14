@@ -56,16 +56,16 @@ def step_impl(context):
         mocker.register_uri(
             "GET", "https://purl.org/csv-cubed/qube-config/v1.0", text=f.read()
         )
-    context.out_dir = (
-            get_context_temp_dir_path(context) / "out"
-    )
+    context.out_dir = get_context_temp_dir_path(context) / "out"
     context.add_cleanup(lambda: mocker.stop())
 
     with vcr.use_cassette(str(_cassettes_dir / "cube-created.yaml")):
-        cube, errors = cli_build(data_file,
-                                 config_file,
-                                 output_directory=context.out_dir,
-                                 validation_errors_file_out=context.out_dir / "validation_errors.json")
+        cube, errors = cli_build(
+            data_file,
+            config_file,
+            output_directory=context.out_dir,
+            validation_errors_file_out=context.out_dir / "validation_errors.json",
+        )
         context.cube = cube
         context.errors = errors
 
@@ -79,9 +79,8 @@ def step_impl(context):
         # Print the mis-matched values if the whole dict is not equal
         for k, v in result_dict.items():
             if expected_meta[k] != result_dict[k]:
-                print(
-                    f"Key: {k} - result: {result_dict[k]} does not match expected "
-                    f":{expected_meta[k]}"
+                raise Exception(
+                    f"Key: {k} - result: {result_dict[k]} does not match expected: {expected_meta[k]}"
                 )
     assert expected_meta == result_dict
 
