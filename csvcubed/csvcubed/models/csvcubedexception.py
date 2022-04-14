@@ -58,46 +58,46 @@ class CsvcubedExceptionUrls(Enum):
     Urls for the exceptions thrown in csvcubed.
     """
 
-    InputNotSupported = "http://purl.org/csv-cubed/err/input-not-supported"
+    InputNotSupported = "http://purl.org/csv-cubed/err/unsupported-input"
 
     FailedToReadCsvwFileContent = (
-        "http://purl.org/csv-cubed/err/failed-to-read-csvw-file-content"
+        "http://purl.org/csv-cubed/err/csvw-content-read-failed"
     )
 
-    InvalidCsvwFileContent = "http://purl.org/csv-cubed/err/invalid-csvw-file-content"
+    InvalidCsvwFileContent = "http://purl.org/csv-cubed/err/invalid-csvw-content"
 
     FailedToLoadRDFGraph = "http://purl.org/csv-cubed/err/rdf-graph-load-failed"
 
     CsvToDataFrameLoadFailed = (
-        "http://purl.org/csv-cubed/err/csv-to-dataframe-load-failed"
+        "http://purl.org/csv-cubed/err/dataframe-load-failed"
     )
 
     InvalidNumberOfRecords = (
-        "http://purl.org/csv-cubed/err/unexpected-number-of-records"
+        "http://purl.org/csv-cubed/err/unexpected-num-of-records"
     )
 
     FailedToReadSparqlQuery = (
-        "http://purl.org/csv-cubed/err/failed-to-read-sparql-query"
+        "http://purl.org/csv-cubed/err/sparql-query-read-failed"
     )
 
     FailedToLoadTableSchemaIntoRdfGraph = (
-        "http://purl.org/csv-cubed/err/failed-to-load-table-schema-into-rdf-graph"
+        "http://purl.org/csv-cubed/err/table-schema-to-rdf-graph-load-failed"
     )
 
     UnsupportedComponentPropertyType = (
-        "http://purl.org/csv-cubed/err/unsupported-dsd-component-property-type"
+        "http://purl.org/csv-cubed/err/comp-property-type-unsupported"
     )
 
     FailedToConvertDataFrameToString = (
-        "http://purl.org/csv-cubed/err/failed-to-convert-dataframe-to-string"
+        "http://purl.org/csv-cubed/err/dataframe-to-string-convert-failed"
     )
 
     UnexpectedSparqlAskQueryResponseType = (
-        "http://purl.org/csv-cubed/err/unexpected-sparql-ask-query-response-type"
+        "http://purl.org/csv-cubed/err/ask-sparql-query-response-type-unexpected"
     )
 
     UnexpectedSparqlAskQueryResults = (
-        "http://purl.org/csv-cubed/err/unexpected-sparql-ask-query-results"
+        "http://purl.org/csv-cubed/err/ask-sparql-query-results-unexpected"
     )
 
     FeatureNotSupported = "http://purl.org/csv-cubed/err/feature-not-supported"
