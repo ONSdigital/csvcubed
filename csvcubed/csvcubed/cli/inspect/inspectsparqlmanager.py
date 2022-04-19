@@ -37,7 +37,6 @@ from csvcubed.utils.sparql import ask, select
 from csvcubed.models.csvcubedexception import (
     FailedToReadSparqlQueryException,
     FeatureNotSupportedException,
-    InvalidCsvFilePathException,
     InvalidNumberOfRecordsException,
 )
 from csvcubed.definitions import ROOT_DIR_PATH
@@ -45,9 +44,9 @@ from csvcubed.definitions import ROOT_DIR_PATH
 _logger = logging.getLogger(__name__)
 
 
-class SPARQLQueryFileName(Enum):
+class SPARQLQueryName(Enum):
     """
-    The file name of sparql query.
+    The names of sparql queries.
     """
 
     ASK_IS_CODELIST = "ask_is_codelist"
@@ -77,7 +76,7 @@ class SPARQLQueryFileName(Enum):
     SELECT_CODELIST_COLS_BY_DATASET_URL = "select_codelist_cols_by_dataset_url"
 
 
-def _get_query_string_from_file(queryType: SPARQLQueryFileName) -> str:
+def _get_query_string_from_file(queryType: SPARQLQueryName) -> str:
     """
     Read the sparql query string from sparql file for the given query type.
 
@@ -118,7 +117,8 @@ def ask_is_csvw_code_list(rdf_graph: Graph) -> bool:
     :return: `bool` - Boolean specifying whether the rdf is code list (true) or not (false).
     """
     return ask(
-        _get_query_string_from_file(SPARQLQueryFileName.ASK_IS_CODELIST),
+        SPARQLQueryName.ASK_IS_QB_DATASET.ASK_IS_CODELIST.value,
+        _get_query_string_from_file(SPARQLQueryName.ASK_IS_CODELIST),
         rdf_graph,
     )
 
@@ -132,7 +132,8 @@ def ask_is_csvw_qb_dataset(rdf_graph: Graph) -> bool:
     :return: `bool` - Boolean specifying whether the rdf is code list (true) or not (false).
     """
     return ask(
-        _get_query_string_from_file(SPARQLQueryFileName.ASK_IS_QB_DATASET),
+        SPARQLQueryName.ASK_IS_QB_DATASET.ASK_IS_QB_DATASET.value,
+        _get_query_string_from_file(SPARQLQueryName.ASK_IS_QB_DATASET),
         rdf_graph,
     )
 
@@ -146,13 +147,15 @@ def select_csvw_catalog_metadata(rdf_graph: Graph) -> CatalogMetadataResult:
     :return: `CatalogMetadataResult`
     """
     results: List[ResultRow] = select(
-        _get_query_string_from_file(SPARQLQueryFileName.SELECT_CATALOG_METADATA),
+        _get_query_string_from_file(SPARQLQueryName.SELECT_CATALOG_METADATA),
         rdf_graph,
     )
 
     if len(results) != 1:
         raise InvalidNumberOfRecordsException(
-            excepted_num_of_records=1, num_of_records=len(results)
+            record_description=f"result for the {SPARQLQueryName.SELECT_CATALOG_METADATA.value} sparql query",
+            excepted_num_of_records=1,
+            num_of_records=len(results),
         )
 
     return map_catalog_metadata_result(results[0])
@@ -169,15 +172,15 @@ def select_csvw_dsd_dataset_label_and_dsd_def_uri(
     :return: `DSDLabelURIResult`
     """
     results: List[ResultRow] = select(
-        _get_query_string_from_file(
-            SPARQLQueryFileName.SELECT_DSD_DATASETLABEL_AND_URI
-        ),
+        _get_query_string_from_file(SPARQLQueryName.SELECT_DSD_DATASETLABEL_AND_URI),
         rdf_graph,
     )
 
     if len(results) != 1:
         raise InvalidNumberOfRecordsException(
-            excepted_num_of_records=1, num_of_records=len(results)
+            record_description=f"result for the {SPARQLQueryName.SELECT_DSD_DATASETLABEL_AND_URI.value} sparql query",
+            excepted_num_of_records=1,
+            num_of_records=len(results),
         )
     return map_dataset_label_dsd_uri_sparql_result(results[0])
 
@@ -193,7 +196,7 @@ def select_csvw_dsd_qube_components(
     :return: `QubeComponentsResult`
     """
     results: List[ResultRow] = select(
-        _get_query_string_from_file(SPARQLQueryFileName.SELECT_DSD_QUBE_COMPONENTS),
+        _get_query_string_from_file(SPARQLQueryName.SELECT_DSD_QUBE_COMPONENTS),
         rdf_graph,
         init_bindings={"dsd_uri": URIRef(dsd_uri)},
     )
@@ -211,7 +214,7 @@ def select_cols_where_supress_output_is_true(
     :return: `ColsWithSupressOutputTrueSparlqlResult`
     """
     results: List[ResultRow] = select(
-        _get_query_string_from_file(SPARQLQueryFileName.SELECT_COLS_W_SUPPRESS_OUTPUT),
+        _get_query_string_from_file(SPARQLQueryName.SELECT_COLS_W_SUPPRESS_OUTPUT),
         rdf_graph,
     )
     return map_cols_with_supress_output_true_sparql_result(results)
@@ -228,7 +231,7 @@ def select_dsd_code_list_and_cols(
     :return: `CodelistInfoSparqlResult`
     """
     results: List[ResultRow] = select(
-        _get_query_string_from_file(SPARQLQueryFileName.SELECT_CODELISTS_AND_COLS),
+        _get_query_string_from_file(SPARQLQueryName.SELECT_CODELISTS_AND_COLS),
         rdf_graph,
         init_bindings={"dsd_uri": URIRef(dsd_uri)},
     )
@@ -247,7 +250,7 @@ def select_csvw_table_schema_file_dependencies(
     """
     results: List[ResultRow] = select(
         _get_query_string_from_file(
-            SPARQLQueryFileName.SELECT_CSVW_TABLE_SCHEMA_FILE_DEPENDENCIES
+            SPARQLQueryName.SELECT_CSVW_TABLE_SCHEMA_FILE_DEPENDENCIES
         ),
         rdf_graph,
     )
@@ -270,13 +273,15 @@ def select_qb_dataset_url(rdf_graph: Graph, dataset_uri: str) -> DatasetURLResul
         )
 
     results: List[ResultRow] = select(
-        _get_query_string_from_file(SPARQLQueryFileName.SELECT_QB_DATASET_URL),
+        _get_query_string_from_file(SPARQLQueryName.SELECT_QB_DATASET_URL),
         rdf_graph,
         init_bindings={"dataset_uri": Literal(dataset_uri)},
     )
     if len(results) != 1:
         raise InvalidNumberOfRecordsException(
-            excepted_num_of_records=1, num_of_records=len(results)
+            record_description=f"result for the {SPARQLQueryName.SELECT_QB_DATASET_URL.value} sparql query",
+            excepted_num_of_records=1,
+            num_of_records=len(results),
         )
     return map_dataset_url_result(results[0])
 
@@ -290,12 +295,14 @@ def select_codelist_dataset_url(rdf_graph: Graph) -> DatasetURLResult:
     :return: `DatasetURLResult`
     """
     results: List[ResultRow] = select(
-        _get_query_string_from_file(SPARQLQueryFileName.SELECT_CODELIST_DATASET_URL),
+        _get_query_string_from_file(SPARQLQueryName.SELECT_CODELIST_DATASET_URL),
         rdf_graph,
     )
     if len(results) != 1:
         raise InvalidNumberOfRecordsException(
-            excepted_num_of_records=1, num_of_records=len(results)
+            record_description=f"result for the {SPARQLQueryName.SELECT_CODELIST_DATASET_URL.value} sparql query",
+            excepted_num_of_records=1,
+            num_of_records=len(results),
         )
     return map_dataset_url_result(results[0])
 
@@ -311,14 +318,16 @@ def select_single_unit_from_dsd(
     :return: `DSDSingleUnitResult`
     """
     results: List[ResultRow] = select(
-        _get_query_string_from_file(SPARQLQueryFileName.SELECT_SINGLE_UNIT_FROM_DSD),
+        _get_query_string_from_file(SPARQLQueryName.SELECT_SINGLE_UNIT_FROM_DSD),
         rdf_graph,
         init_bindings={"dataset_uri": Literal(dataset_uri)},
     )
 
     if len(results) != 1:
         raise InvalidNumberOfRecordsException(
-            excepted_num_of_records=1, num_of_records=len(results)
+            record_description=f"result for the {SPARQLQueryName.SELECT_SINGLE_UNIT_FROM_DSD.value} sparql query",
+            excepted_num_of_records=1,
+            num_of_records=len(results),
         )
     return map_single_unit_from_dsd_result(results[0], json_path)
 
@@ -335,7 +344,7 @@ def select_codelist_cols_by_dataset_url(
     """
     results: List[ResultRow] = select(
         _get_query_string_from_file(
-            SPARQLQueryFileName.SELECT_CODELIST_COLS_BY_DATASET_URL
+            SPARQLQueryName.SELECT_CODELIST_COLS_BY_DATASET_URL
         ),
         rdf_graph,
         init_bindings={"table_url": Literal(table_url)},
@@ -343,6 +352,8 @@ def select_codelist_cols_by_dataset_url(
 
     if len(results) < 1:
         raise InvalidNumberOfRecordsException(
-            excepted_num_of_records=1, num_of_records=len(results)
+            record_description=f"result for the {SPARQLQueryName.SELECT_CODELIST_COLS_BY_DATASET_URL.value} sparql query",
+            excepted_num_of_records=1,
+            num_of_records=len(results),
         )
     return map_codelist_cols_by_dataset_url_result(results)

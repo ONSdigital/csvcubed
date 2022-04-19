@@ -151,6 +151,7 @@ http_cache.sqlite
 
 # Ignore test files
 out/
+validation_errors.json
 
 # mkdocs
 external-docs/site

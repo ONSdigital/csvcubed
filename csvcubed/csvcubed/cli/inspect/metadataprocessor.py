@@ -14,10 +14,10 @@ from csvcubed.cli.inspect.inspectsparqlmanager import (
     select_csvw_table_schema_file_dependencies,
 )
 from csvcubed.models.csvcubedexception import (
+    FailedToLoadRDFGraphException,
     FailedToLoadTableSchemaIntoRdfGraphException,
-    FailedToParseJsonldtoRdfGraphException,
-    FailedToReadCsvwContentException,
-    InvalidCsvwContentException,
+    FailedToReadCsvwFileContentException,
+    InvalidCsvwFileContentException,
 )
 from csvcubed.utils.sparql import path_to_file_uri_for_rdflib
 
@@ -91,12 +91,12 @@ class MetadataProcessor:
             ) as f:
                 csvw_file_content = f.read()
         except Exception as ex:
-            raise FailedToReadCsvwContentException(
+            raise FailedToReadCsvwFileContentException(
                 csvw_metadata_file_path=self.csvw_metadata_file_path
             ) from ex
 
         if csvw_file_content is None:
-            raise InvalidCsvwContentException()
+            raise InvalidCsvwFileContentException()
 
         try:
             csvw_metadata_rdf_graph.parse(
@@ -109,6 +109,4 @@ class MetadataProcessor:
             self._load_table_schema_dependencies_into_rdf_graph(csvw_metadata_rdf_graph)
             return csvw_metadata_rdf_graph
         except Exception as ex:
-            raise FailedToParseJsonldtoRdfGraphException(
-                csvw_metadata_file_path=self.csvw_metadata_file_path
-            ) from ex
+            raise FailedToLoadRDFGraphException(self.csvw_metadata_file_path) from ex

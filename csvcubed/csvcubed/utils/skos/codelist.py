@@ -55,7 +55,9 @@ def get_codelist_col_title_by_property_url(
 
     if len(results) != 1:
         raise InvalidNumberOfRecordsException(
-            excepted_num_of_records=1, num_of_records=len(results)
+            record_description="code lists",
+            excepted_num_of_records=1,
+            num_of_records=len(results),
         )
 
     return results[0].column_title

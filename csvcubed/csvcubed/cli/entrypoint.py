@@ -105,10 +105,10 @@ def build_command(
 @click.argument(
     "csvw_metadata_json_path",
     type=click.Path(exists=True, path_type=Path),
-    metavar="TIDY_CSV-W_METADATA_JSON_PATH",
+    metavar="CSVW_METADATA_JSON_PATH",
 )
 def inspect_command(log_level: str, csvw_metadata_json_path: Path) -> None:
-    """inspect the contents of a CSV-W generated with csvcubed"""
+    """inspects the metadata in an existing cube."""
     start_logging(log_dir_name="csvcubed-cli", selected_logging_level=log_level)
     try:
         inspect(csvw_metadata_json_path)

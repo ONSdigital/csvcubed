@@ -26,7 +26,6 @@ def test_build_with_fail():
                 validation_errors_file_out=Path(output, "validation_errors.json"),
             )
 
-
 @pytest.mark.vcr
 def test_build_without_fail():
     with TemporaryDirectory() as temp_dir:

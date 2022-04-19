@@ -47,8 +47,7 @@ from csvcubed.utils.csvdataset import (
     transform_dataset_to_canonical_shape,
 )
 from csvcubed.models.csvcubedexception import (
-    InputTypeIsUnknownException,
-    JsonldNotSupportedException,
+    InputNotSupportedException,
 )
 from csvcubed.utils.skos.codelist import (
     CodelistPropertyUrl,
@@ -91,7 +90,7 @@ class MetadataPrinter:
         elif csvw_type == CSVWType.CodeList:
             return "code list"
         else:
-            raise InputTypeIsUnknownException()
+            raise InputNotSupportedException()
 
     @staticmethod
     def get_dataset_url(
@@ -106,7 +105,7 @@ class MetadataPrinter:
         elif csvw_type == CSVWType.CodeList:
             return select_codelist_dataset_url(csvw_metadata_rdf_graph).dataset_url
         else:
-            raise JsonldNotSupportedException()
+            raise InputNotSupportedException()
 
     @staticmethod
     def get_parent_label_notation_col_names(
