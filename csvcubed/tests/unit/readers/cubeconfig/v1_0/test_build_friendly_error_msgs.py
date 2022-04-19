@@ -401,6 +401,8 @@ def test_12_val_errors_uri_conflict():
     )
     assert _check_log(
         "The values 'Software Sales', 'software-sales' map to the same URI-safe identifier 'software-sales'"
+    ) or _check_log(
+        "The values 'software-sales', 'Software Sales' map to the same URI-safe identifier 'software-sales'"
     )
     assert _check_log(
         "csvcubed.cli.build - ERROR - More information: https://purl.org/csv-cubed/err/conflict-uri"
