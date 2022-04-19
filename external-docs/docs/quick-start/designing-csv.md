@@ -18,7 +18,7 @@ The [standard shape](../guides/shape-data.md#standard-shape) of data is the reco
 
 In the above table:
 
-* *identifying characteristics* are one or more columns which identify the sub-set of the population has been observed in a given row. This are called [dimensions](../glossary/index.md#dimensionhttpswwww3orgtrvocab-data-cubecubes-model) elsewhere in documentation.
+* *identifying characteristics* are one or more columns which identify the sub-set of the population that has been observed in a given row. These are called [dimensions](../glossary/index.md#dimensionhttpswwww3orgtrvocab-data-cubecubes-model) elsewhere in documentation.
 * the `Value` column contains the value which has been observed or measured; there is only ever one observed value per row in the [standard shape](../guides/shape-data.md#standard-shape).
 * the `Measure` column describes what has been observed or measured; note that the measure should not include any information about the units of measure.
 * the `Unit` column describes the unit of measure in which the `Value` has been recorded.
