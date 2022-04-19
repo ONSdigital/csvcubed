@@ -368,11 +368,11 @@ def test_11_val_errors_undefined_measure_uri():
     assert isinstance(validation_errors[0], UndefinedMeasureUrisError)
 
     assert _check_log(
-        "csvcubed.cli.build - ERROR - Validation Error: The Measure URI(s) {'https://example.org/measures/bitcoin', "
+        "csvcubed.cli.build - ERROR - Validation Error: The Measure URI(s) {'https://example.org/measures/quintillions', "
         "'https://example.org/measures/billions'} found in the data was not defined in the cube config"
     ) or _check_log(
         "csvcubed.cli.build - ERROR - Validation Error: The Measure URI(s) {'https://example.org/measures/billions', "
-        "'https://example.org/measures/bitcoin'} found in the data was not defined in the cube config"
+        "'https://example.org/measures/quintillions'} found in the data was not defined in the cube config"
     )
 
     assert _check_log(
