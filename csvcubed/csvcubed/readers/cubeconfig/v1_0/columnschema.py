@@ -334,7 +334,7 @@ class ObservationValue(SchemaBaseClass):
             if isinstance(self.measure, str):
                 measure = ExistingQbMeasure(self.measure)
 
-            elif isinstance(self.measure, NewMeasures):
+            elif isinstance(self.measure, Measure):
                 measure = _map_measure(self.measure)
 
             else:

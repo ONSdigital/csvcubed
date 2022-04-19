@@ -40,7 +40,7 @@ class UndefinedValuesError(SpecificValidationError, ABC):
             else str(self.undefined_values)
         )
         self.message = (
-            f'Found undefined value(s) for "{self.location}" of {self.component}. '
+            f"Found undefined value(s) for '{self.location}' of {self.component}. "
             + f"Undefined values: {unique_values_to_display}"
         )
 

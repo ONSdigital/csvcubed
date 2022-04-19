@@ -5,6 +5,7 @@ __________________
 A loader for the config.json.
 """
 import logging
+from json import JSONDecodeError
 
 from pathlib import Path
 from typing import Dict, Tuple, List, Callable
@@ -12,11 +13,14 @@ from typing import Dict, Tuple, List, Callable
 import pandas as pd
 from jsonschema.exceptions import ValidationError as JsonSchemaValidationError
 from csvcubedmodels.rdf.namespaces import GOV
+from pandas import DataFrame
 
 from csvcubed.models.cube import *
+from csvcubed.models.validationerror import ValidationError
 from .mapcolumntocomponent import map_column_to_qb_component
 from csvcubed.utils.dict import get_with_func_or_none
 from csvcubed.utils.iterables import first
+from csvcubed.utils.pandas import read_csv
 from csvcubed.utils.uri import uri_safe
 from csvcubed.utils.validators.schema import validate_dict_against_schema
 from csvcubed.readers.cubeconfig.utils import load_resource
@@ -57,17 +61,17 @@ log = logging.getLogger(__name__)
 
 def get_deserialiser(
     schema_path: str, version_module_path: str
-) -> Callable[[Path, Optional[Path]], Tuple[QbCube, List[JsonSchemaValidationError]]]:
+) -> Callable[[Path, Optional[Path]], Tuple[QbCube, List[JsonSchemaValidationError], List[ValidationError]]]:
     """Generates a deserialiser function which validates the JSON file against the schema at :obj:`schema_path`"""
 
     def get_cube_from_config_json(
         csv_path: Path, config_path: Optional[Path]
-    ) -> Tuple[QbCube, List[JsonSchemaValidationError]]:
+    ) -> Tuple[QbCube, List[JsonSchemaValidationError], List[ValidationError]]:
         """
         Generates a Cube structure from a config.json input.
         :return: tuple of cube and json schema errors (if any)
         """
-        data = _read_and_check_csv(csv_path)
+        data, data_errors = _read_and_check_csv(csv_path)
 
         # If we have a config json file then load it and validate against its reference schema
         if config_path:
@@ -75,10 +79,16 @@ def get_deserialiser(
             # Update loaded config's title if not defined, setting title from csv data file path.
             if config.get("title") is None:
                 config["title"] = _generate_title_from_file_name(csv_path)
-            schema = load_resource(schema_path)
-            schema_validation_errors = validate_dict_against_schema(
-                value=config, schema=schema
-            )
+            try:
+                schema = load_resource(schema_path)
+                schema_validation_errors = validate_dict_against_schema(
+                    value=config, schema=schema
+                )
+            except JSONDecodeError as err:
+                log.warning(
+                    "Validation of the config json is not currently available, continuing without validation."
+                )
+                schema_validation_errors = []
 
         # Create a default config, setting title from csv data file path.
         else:
@@ -89,7 +99,7 @@ def get_deserialiser(
 
         _configure_remaining_columns_by_convention(cube, data)
 
-        return cube, schema_validation_errors
+        return cube, schema_validation_errors, data_errors
 
     return get_cube_from_config_json
 
@@ -154,11 +164,11 @@ def _metadata_from_dict(config: dict) -> "CatalogMetadata":
     )
 
 
-def _read_and_check_csv(csv_path: Path) -> pd.DataFrame:
+def _read_and_check_csv(csv_path: Path) -> Tuple[DataFrame, List[ValidationError]]:
     """
     Reads the csv data file and performs rudimentary checks.
     """
-    data = pd.read_csv(csv_path)
+    data, data_errors = read_csv(csv_path)
 
     if isinstance(data, pd.DataFrame):
         if data.shape[0] < 2:
@@ -170,7 +180,7 @@ def _read_and_check_csv(csv_path: Path) -> pd.DataFrame:
     else:
         raise TypeError("There was a problem reading the csv file as a dataframe")
 
-    return data
+    return data, data_errors
 
 
 def _configure_remaining_columns_by_convention(
@@ -183,7 +193,8 @@ def _configure_remaining_columns_by_convention(
         # ... determine if the column_title in data matches a convention
         if column_title in configured_columns:
             ordered_columns.append(configured_columns[column_title])
-        if column_title not in configured_columns:
+            del configured_columns[column_title]
+        elif column_title not in configured_columns:
             column_dict = _get_conventional_column_definition_for_title(column_title)
 
             qb_column: CsvColumn = map_column_to_qb_component(
@@ -194,7 +205,7 @@ def _configure_remaining_columns_by_convention(
 
             ordered_columns.append(qb_column)
 
-    cube.columns = ordered_columns
+    cube.columns = ordered_columns + list(configured_columns.values())
 
 
 def _get_conventional_column_definition_for_title(column_title: str) -> dict:

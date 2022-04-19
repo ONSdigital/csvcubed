@@ -11,10 +11,11 @@ from typing import Optional, Callable, Tuple, List
 from jsonschema.exceptions import ValidationError as JsonSchemaValidationError
 
 from csvcubed.models.cube import QbCube
+from csvcubed.models.validationerror import ValidationError
 from csvcubed.readers.cubeconfig import v1_0
 
 QubeConfigDeserialiser = Callable[
-    [Path, Optional[Path]], Tuple[QbCube, List[JsonSchemaValidationError]]
+    [Path, Optional[Path]], Tuple[QbCube, List[JsonSchemaValidationError], List[ValidationError]]
 ]
 
 _V1_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.0"

@@ -16,52 +16,6 @@ SCHEMA_PATH_FILE = Path(
 )
 
 
-# def test_schema_loads_from_file():
-#     # schema_path = os.path.realpath(os.path.join(PROJECT_ROOT, "csvcubed", "schema", "dataset-schema-1.1.0.json"))
-#     print(f"schema file path: {SCHEMA_PATH_FILE}")
-#     schema = _load_resource(SCHEMA_PATH_FILE)
-#     assert isinstance(schema, dict)
-#
-#
-# def test_schema_loads_from_uri():
-#     print(f"schema uri: {SCHEMA_PATH_URI}")
-#     schema = _load_resource(SCHEMA_PATH_URI)
-#     assert isinstance(schema, dict)
-#
-#
-# def test_schema_validation_mininal():
-#     json_path = os.path.join(TEST_CASE_DIR, "config-test-1.json")
-#     print(json_path)
-#
-#     if os.path.exists(json_path):
-#         with open(json_path, "r") as fp:
-#             config_json = json.load(fp)
-#         print(type(config_json), config_json)
-#         errors = validate_dict_against_schema_url(config_json, SCHEMA_PATH_FILE)
-#         print(errors, sep='\n')
-#
-# def test_build_1():
-#     """No Args"""
-#     try:
-#         with pytest.raises(ValueError) as exc_info:
-#             build()
-#         assert exc_info.type is ValueError
-#         assert exc_info.value.args == "build() missing 1 required positional arguments: 'csv_path'"
-#
-#     except Exception as err:
-#         print(err)
-
-# def test_build_2():
-#     """
-#     Incorrect types for args
-#     TODO - Implement strict type hint checking - https://stackoverflow.com/questions/32844556/python-3-5-type-hints-can-i-check-if-function-arguments-match-type-hints
-#     """
-#     with pytest.raises(ValueError) as exc_info:
-#         build("should_be_path", "should_be_path", "should_be_path",)
-#     assert exc_info.type is TypeError
-#     assert exc_info.value.args == ""
-
-
 def test_01_build_convention_ok():
     """
     Valid Cube from Data using Convention (no config json)
@@ -165,7 +119,7 @@ def test_conventional_column_ordering_correct():
             SCHEMA_PATH_FILE, QubeConfigJsonSchemaVersion.V1_0.value
         )
 
-        cube, _ = deserialiser(data_file_path, config_file_path)
+        cube, _schema_validation_errors, data_errors = deserialiser(data_file_path, config_file_path)
 
         column_titles_in_order = [c.csv_column_title for c in cube.columns]
         assert column_titles_in_order == list(data.columns)

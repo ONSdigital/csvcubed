@@ -1,0 +1,5 @@
+Measure,Dim-0,Attr 1,attr-1,Amount,Units
+Billions,1,goods,hardware,100,Pounds
+Billions,2,services,software-sales,321,Pounds
+Billions,3,services,Software Sales,88,Pounds
+Billions,4,services,software,99,Dollars

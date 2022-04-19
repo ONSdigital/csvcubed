@@ -1,6 +1,6 @@
 Feature: Testing CatalogMetadata
 
-    Scenario: This should suceed when multiple landing pages are supported
+    Scenario: This should succeed when multiple landing pages are supported
         Given the existing test-case file "MultipleLandingPageError/CatalogMetadata.json"
         When loading the existing Catalog Metadata file "MultipleLandingPageError/CatalogMetadata.json"
         And the Catalog Metadata file is converted to Turtle with dataset URI "http://dataset-uri"

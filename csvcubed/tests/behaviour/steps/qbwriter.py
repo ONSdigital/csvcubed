@@ -1,3 +1,4 @@
+from typing import List
 from urllib.parse import urlparse
 import pandas as pd
 from pathlib import Path
@@ -14,6 +15,8 @@ from csvcubed.models.cube import (
     QbMultiMeasureDimension,
     QbMultiUnits,
 )
+
+from csvcubed.models.validationerror import ValidationError
 from csvcubed.models.cube.uristyle import URIStyle
 from csvcubed.writers.qbwriter import QbWriter
 from csvcubed.utils.qb.validation.cube import validate_qb_component_constraints
@@ -151,9 +154,10 @@ def step_impl(context, cube_name: str, csvw_file_path: str):
     ]
 
     csv_path, _ = get_first_table_schema(csvw_path)
-    code_list_data = read_csv(csv=csvw_path.parent / csv_path)
+    code_list_data, data_loading_errors = read_csv(csv=csvw_path.parent / csv_path)
     code_list_values = code_list_data["Notation"].sample(3, random_state=1)
 
+    context.data_loading_errors = data_loading_errors
     context.cube = Cube(
         get_standard_catalog_metadata_for_name(cube_name, None),
         pd.DataFrame({"A": ["a", "b", "c"], "D": code_list_values, "Value": [1, 2, 3]}),
@@ -447,9 +451,15 @@ def step_impl(context, validation_error: str):
 @Step("the CSVqb should pass all validations")
 def step_impl(context):
     cube: QbCube = context.cube
-    errors = cube.validate()
+    data_loading_errors: List[ValidationError] = (
+        context.data_loading_errors if hasattr(context, "data_loading_errors") else []
+    )
+    errors = cube.validate() + data_loading_errors
     errors += validate_qb_component_constraints(context.cube)
     assert len(errors) == 0, [e.message for e in errors]
+    assert (
+        len(data_loading_errors) == 0
+    ), f"Errors were found in the csv: {[e.message for e in errors]}"
 
 
 @Given(
