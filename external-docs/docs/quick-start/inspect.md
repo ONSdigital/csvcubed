@@ -5,7 +5,7 @@ This page is designed to help you inspect an existing CSV-W. It assumes that you
 To inspect the `sweden-at-eurovision-no-missing.csv-metadata.json` data cube we built in [Building a CSV-W](build.md), we run the [csvcubed inspect](../guides/command-line/inspect-command.md) command:
 
 ```bash
-csvcubed inspect sweden_at_eurovision_no_missing.csv-metadata.json
+csvcubed inspect sweden-at-eurovision-no-missing.csv-metadata.json
 ```
 
 All being well we get the below output. A detailed explanation of this output is provided in [csvcubed inspect](../guides/command-line/inspect-command.md#output-format) section.

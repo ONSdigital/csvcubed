@@ -20,7 +20,7 @@ This is what a basic [`qube-config.json`](../guides/qube-config.md) looks like:
     "description": "Sweden has been competing in Eurovision since 1958, with an enviable track record of wins. This dataset covers all contests since 1958, their artists, the song names, language (if mono-lingual), and some observations covering points in final, rank in final, and number of artists on stage. Data originally sourced from https://en.wikipedia.org/w/index.php?title=Sweden_in_the_Eurovision_Song_Contest&oldid=1081060799",
     "license": "https://creativecommons.org/licenses/by/4.0/",
     "publisher": "https://www.ons.gov.uk",
-    "dataset_issued": "2022-04-08",
+    "dataset_issued": "2022-04-08T00:00:00Z",
     "keywords": [
         "Eurovision",
         "Song Contest",
