@@ -19,7 +19,6 @@
     },
     "Amount": {
       "type": "observations",
-      "label": "Volume",
       "unit": {
         "label": "Kilograms"
       }

@@ -24,8 +24,7 @@
       "label": "My best attribute"
     },
     "Amount": {
-      "type": "observations",
-      "label": "Volume"
+      "type": "observations"
     },
     "Measure": {
       "type": "measures",

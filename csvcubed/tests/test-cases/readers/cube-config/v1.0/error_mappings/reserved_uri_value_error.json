@@ -12,8 +12,7 @@
       "code_list": true
     },
     "Amount": {
-      "type": "observations",
-      "label": "Volume"
+      "type": "observations"
     },
     "Units": {
       "type": "units",

@@ -24,8 +24,7 @@
       "values": true
     },
     "Amount": {
-      "type": "observations",
-      "values": true
+      "type": "observations"
     },
     "Measure": {
       "type": "measures",

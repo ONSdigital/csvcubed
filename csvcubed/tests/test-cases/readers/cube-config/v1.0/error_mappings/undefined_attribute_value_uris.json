@@ -27,8 +27,7 @@
       ]
     },
     "Amount": {
-      "type": "observations",
-      "label": "Volume"
+      "type": "observations"
     },
     "Units": {
       "type": "units",
