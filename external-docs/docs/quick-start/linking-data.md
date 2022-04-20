@@ -1,10 +1,10 @@
 # Linking data
 
-This page assumes that you have a well structured CSV with a corresponding JSON [qube-config.json](../guides/qube-config.md#configuration) as built in [describing your CSV](describing-csv.md). It aims to start you on the journey towards [5-star linked data](https://5stardata.info/en/) where your data reuses standard definitions.
+This page assumes that you have a well structured CSV with a corresponding JSON [qube-config.json](../guides/configuration/qube-config.md) as built in [describing your CSV](describing-csv.md). It aims to start you on the journey towards [5-star linked data](https://5stardata.info/en/) where your data reuses standard definitions.
 
 ## Column Mappings
 
-We saw in the [describing your CSV](./describing-csv.md) section that we can provide a [qube-config.json](../guides/qube-config.md#configuration) configuration file to describe the data set. We can also use this file to describe columns.
+We saw in the [describing your CSV](./describing-csv.md) section that we can provide a [qube-config.json](../guides/configuration/qube-config.md) configuration file to describe the data set. We can also use this file to describe columns.
 
 ```json
 {
@@ -43,7 +43,7 @@ For example, in the `sweden_at_eurovision_no_missing.csv` data set we have been 
 
 Column templates are pre-configured column definitions which speed up creating linked data. csvcubed has several templates for columns convering calendar and UK Government time periods, as well as observation-status.
 
-For more information see the [templates guide](../guides/using-templates.md).
+For more information see the [templates guide](../guides/configuration/templates.md).
 
 ## Next steps
 

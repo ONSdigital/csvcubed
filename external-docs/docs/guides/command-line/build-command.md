@@ -3,7 +3,7 @@
 The build command is used to construct a new cube from its source file(s).  
 
 The source files must include a tidy-data.csv and optionally a cube-config.json.  
-Refer to the [qube-config guide](../qube-config.md) for an overview of how to construct these files.
+Refer to the [qube-config guide](../configuration/index.md) for an overview of how to construct these files.
 
 **Syntax:**  
 ``csvcubed build [OPTIONS] TIDY_CSV_PATH``
@@ -29,7 +29,7 @@ Refer to the [qube-config guide](../qube-config.md) for an overview of how to co
 
 ### `--config` / `-c`
 
-To create a cube using a [qube-config.json](../qube-config.md#configuration) file, use the `-c` option, e.g.
+To create a cube using a [qube-config.json](../configuration/qube-config.md) file, use the `-c` option, e.g.
 
 ```bash
 csvcubed build my-data-file.csv -c my-qube-config.json
@@ -58,7 +58,7 @@ When errors are encountered, please refer to the [errors guide](../../guides/err
 
 ### Building a cube without configuration
 
-Building a cube without providing a [qube-config.md](../qube-config.md#configuration) configuration file relies upon the [convention-first approach](../qube-config.md#convention-first-method).
+Building a cube without providing a [configuration/index.md](../configuration/qube-config.md) configuration file relies upon the [configuration by convention approach](../configuration/convention.md).
 
 To build a cube using only a csv data file. For guidance on the correct data structure refer to the [Shaping your data](../shape-data.md) guide, the 'standard approach' is recommended as a good starting point.
 
@@ -72,11 +72,11 @@ Indicates that a cube was created and was written to the [output directory](#out
 
 ### Building a cube from data and configuration file
 
-This is referred to as the [configuration-first approach](../qube-config.md#convention-first-method)  
+This is referred to as the [configuration by convention approach](../configuration/convention.md)  
 
 The cube config json file must adhere to the structures defined in the [cube config schema](https://purl.org/csv-cubed/qube-config/v1.0).  
 
-For help on constructing the config json refer to the quick start guides on [designing a csv](../../quick-start/designing-csv.md) and [linking data](../../quick-start/linking-data.md) or the more detailed [Configuration Guide](../qube-config/#configuration)
+For help on constructing the config json refer to the quick start guides on [designing a csv](../../quick-start/designing-csv.md) and [linking data](../../quick-start/linking-data.md) or the more detailed [Configuration Guide](../configuration/qube-config.md)
 
 To build a cube using both configuration and data files the command is shown below.  
 

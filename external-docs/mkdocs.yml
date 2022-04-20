@@ -13,24 +13,26 @@ nav:
       - Inspecting a CSV-W: quick-start/inspect.md
   - Guides:
       - guides/index.md
-      - Raise an issue: guides/raise-issue.md
-      - Shape your data: guides/shape-data.md
-      - Handling missing observed values: guides/missing-observed-values.md
-      - Link Data:
-        - Choose a unit: guides/link-data/choose-units.md
-        - Reuse a unit: guides/link-data/reuse-units.md 
-        - Organisations: guides/link-data/organisations.md
-      - Qube config:
-        - guides/qube-config.md
-        - Templates: guides/using-templates.md
       - Commands: 
         - build: guides/command-line/build-command.md
         - inspect: guides/command-line/inspect-command.md
         - Logging: guides/command-line/logging.md
+      - Configuration:
+        - guides/configuration/index.md
+        - By convention: guides/configuration/convention.md
+        - qube-config.json: guides/configuration/qube-config.md
+        - Templates: guides/configuration/templates.md
+        - Units: guides/configuration/units.md
       - Errors:
         - guides/errors/index.md 
         - build command errors: guides/errors/build-command-errors/index.md
         - inspect command errors: guides/errors/inspect-command-errors/index.md
+      - Handling missing observed values: guides/missing-observed-values.md
+      - Linked Data:
+        - Units: guides/linked-data/units.md
+        - Organisations: guides/linked-data/organisations.md
+      - Raise an issue: guides/raise-issue.md
+      - Shape your data: guides/shape-data.md
       - Working with URIs: guides/uris.md
   - Glossary:
       - glossary/index.md

@@ -45,7 +45,7 @@ The standard shape extends the [common structure](#common-structure) by requirin
 | 2020 | Edinburgh |    90 |       Final | Number of 'Arthur's Bakes' | Count |
 | 2021 | Belfast   |     0 |       Final | Number of 'Arthur's Bakes' | Count |
 
-The simplest [qube-config.json](./qube-config.md#configuration) we can define for this data set is:
+The simplest [qube-config.json](./configuration/qube-config.md) we can define for this data set is:
 
 ```json
 {
@@ -77,7 +77,7 @@ The simplest [qube-config.json](./qube-config.md#configuration) we can define fo
 }
 ```
 
-It is possible to use the [convention-first approach](./qube-config.md#convention-first-method) to generate a valid [standard shape](#standard-shape) cube without defining a [qube-config.json](./qube-config.md#configuration) at all. Just ensure that your columns use the [conventional column names](./qube-config.md#conventional-column-names) appropriate to their type.
+It is possible to use the [configuration by convention approach](./configuration/convention.md) to generate a valid [standard shape](#standard-shape) cube without defining a [qube-config.json](./configuration/qube-config.md) at all. Just ensure that your columns use the [conventional column names](./configuration/convention.md#conventional-column-names) appropriate to their type.
 
 ### Multiple Measures
 
@@ -206,7 +206,7 @@ The [standard shape](#standard-shape) is flexible but it also has a lot of redud
 | 2020 | Edinburgh |                         90 |       Final |
 | 2021 | Belfast   |                          0 |       Final |
 
-Note that this shape doesn't require that you add any additional columns to the underlying [common structure](#common-structure), however it does require a different [qube-config.json](./qube-config.md#configuration) configuration; we must ensure that the measure and corresponding unit are attached to the _observations_ column:
+Note that this shape doesn't require that you add any additional columns to the underlying [common structure](#common-structure), however it does require a different [qube-config.json](./configuration/qube-config.md) configuration; we must ensure that the measure and corresponding unit are attached to the _observations_ column:
 
 ```json
 {
@@ -238,4 +238,4 @@ Note that this shape doesn't require that you add any additional columns to the 
 }
 ```
 
-**Is is not possible to create a pivoted shape data set relying solely on the [convention-first approach](./qube-config.md#convention-first-method); the observations column _must_ be configured inside a [qube-config.json](./qube-config.md#configuration).**
+**Is is not possible to create a pivoted shape data set relying solely on the [configuration by convention approach](./configuration/convention.md); the observations column _must_ be configured inside a [qube-config.json](./configuration/qube-config.md).**

@@ -2,13 +2,13 @@
 
 Column templates are pre-configured column definitions which speed up creating linked data. 
 
-This page aims to introduce column template functionality, show you how to make use of it in a [qube-config.json](./qube-config.md#configuration) configuration file and list common templates you might wish to use yourself.
+This page aims to introduce column template functionality, show you how to make use of it in a [qube-config.json](qube-config.md) configuration file and list common templates you might wish to use yourself.
 
-Also see the quick start [introduction to linking data](../quick-start/linking-data.md).
+Also see the quick start [introduction to linking data](../../quick-start/linking-data.md).
 
 ## How to use templates
 
-To use a column template in the [qube-config.json](./qube-config.md#configuration) configuration file set the `from_template` property on the column definition to one the available templates, for example with a column representing year:
+To use a column template in the [qube-config.json](qube-config.md) configuration file set the `from_template` property on the column definition to one the available templates, for example with a column representing year:
 
 ```json
 "Year": {

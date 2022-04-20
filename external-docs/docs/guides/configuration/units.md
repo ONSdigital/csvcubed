@@ -1,18 +1,45 @@
-# Using existing units
+# Configuring units
 
-This guide discussed how to reuse units which have been defined elsewhere within your data cube. If you're not sure which unit is right for your data set, take a look at the guide on [choosing units](./choose-units.md).
+This guide discusses how to reuse units which have been defined elsewhere within your data cube. If you're not sure which unit is right for your data set, take a look at the guide on [choosing units](../linked-data/units.md).
 
 ## Defining a new unit
 
-csvcubed automatically defines new units using the unique values in your [standard shape](../shape-data.md#standard-shape) cube's units column, however you can gain more control over how the units are defined by providing configuration in a [qube-config.json](../qube-config.md#configuration) file.
+csvcubed automatically defines new units using the unique values in your [standard shape](../shape-data.md#standard-shape) cube's units column. If desired, you can gain more control over how the units are defined by providing configuration in a [qube-config.json](./qube-config.md) file.
 
-A data set like the one defined below can be paired with the following configuration allowing you to provide additional information about the units you are creating. 
+A data set like the one defined below can be paired with a JSON configuration allowing you to provide additional information about the units you are creating:
+
+| Location     | Value |                           Measure |                          Unit |
+|:-------------|------:|----------------------------------:|------------------------------:|
+| Biscuitburgh |    31 | Annual Income (Gross Value Added) | Pounds Sterling (£), Millions |
+
+```json
+{
+    "$schema": "https://purl.org/csv-cubed/qube-config/v1.0",
+    "columns": {
+        "Unit": {
+            "type": "units",
+            "values": [
+                {
+                    "label": "Pounds Sterling (£), Millions",
+                    "description": "Millions of Pounds Sterling (GBP, £)."
+                }
+            ]
+        }
+    }
+}
+```
+
+**N.B. you must ensure that your units column definition contains defintions for *all* of the units contained within your dataset; the `label` property must match the value found in the cell.**
+
+We can see in the above that we've defined a new unit called `Pounds Sterling (£), Millions` and been able to configure its description; this will give extra context to help people really understand your data. But we can still improve our data by describing how this new unit relates to standardised units defined by other organisations so users can compare your data with other data cubes with confidence.  
 
 ### Linking a new unit to an existing unit
 
-It's possible that your new unit is related to an existing unit. For instance you will note that QUDT contains a unit for [PoundSterling](http://qudt.org/vocab/unit/PoundSterling), however it does not contain a unit for millions of pounds sterling.
+In the above example we defined a new unit called `Pounds Sterling (£), Millions`. Looking at the guide on [choosing units](../linked-data/units.md) we see that we could relate this unit back to a well established standard unit defined by QUDT: [PoundSterling](http://qudt.org/vocab/unit/PoundSterling).
 
-Your dataset could of course be expressed directly in [PoundSterling](http://qudt.org/vocab/unit/PoundSterling) but that may make the data harder to read and compare so it would be ideal if you could define your own new unit `Pounds Sterling (£), Millions`.
+Our dataset could of course be expressed directly in [PoundSterling](http://qudt.org/vocab/unit/PoundSterling) but that may make the data harder to read and compare so it would be ideal if you could define your own new unit `Pounds Sterling (£), Millions`.
+
+We've done some checking on the [QUDT Units vocabulary](http://www.qudt.org/doc/DOC_VOCAB-UNITS.html#Instances) to make sure that our new unit doesn't duplicating an existing unit so we decide that it is helpful to link `Pounds Sterling (£), Millions` back to [PoundSterling](http://qudt.org/vocab/unit/PoundSterling). This will ensure that software can automatically figure out how to compare our data with other data sets that use units related to [PoundSterling](http://qudt.org/vocab/unit/PoundSterling).
 
 In the following example, we'll show how to define new units for `Pounds Sterling (£), Millions` and `Barrels of oil consumed per day (,000)` with a [standard shaped](../shape-data.md#standard-shape) cube:
 
@@ -23,7 +50,7 @@ In the following example, we'll show how to define new units for `Pounds Sterlin
 | Biscuitburgh |    31 | Annual Income (Gross Value Added) |             Pounds Sterling (£), Millions |
 | Biscuitburgh |   2.6 |  Average Daily Petrol Consumption | Barrels of petrol consumed per day (,000) |
 
-**2. Edit your [qube-config.json](../qube-config.md#configuration) so that your unit has the following definition**
+**2. Edit your [qube-config.json](../configuration/qube-config.md) so that your units column has the following definition**
 
 ```json
 {

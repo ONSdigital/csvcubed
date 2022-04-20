@@ -2,10 +2,10 @@
 
 csvcubed needs to understand how your statistical data is structured in order to make it more machine readable. There are two ways that you can do this with csvcubed:
 
-* Using the [convention-first approach](../guides/qube-config.md#convention-first-method) - you start out with a [standard CSV data shape](../guides/shape-data.md#standard-shape) with conventional column titles and fill it out with your data.
-* Using the [configuration approach](../guides/qube-config.md#configuration) - you write a JSON configuration file which tells csvcubed exactly how to interpret your data.
+* Using the [configuration by convention approach](../guides/configuration/convention.md) - you start out with a [standard CSV data shape](../guides/shape-data.md#standard-shape) with conventional column titles and fill it out with your data.
+* Using the [configuration approach](../guides/configuration/qube-config.md) - you write a JSON configuration file which tells csvcubed exactly how to interpret your data.
 
-This quick start will use the [convention-first approach](../guides/qube-config.md#convention-first-method) to help you generate a CSV-W cube. We assume that you already have a working [installation of csvcubed](./installation.md).
+This quick start will use the [configuration by convention approach](../guides/configuration/convention.md) to help you generate a CSV-W cube. We assume that you already have a working [installation of csvcubed](./installation.md).
 
 ## Structuring your data
 
@@ -23,7 +23,7 @@ In the above table:
 * the `Measure` column describes what has been observed or measured; note that the measure should not include any information about the units of measure.
 * the `Unit` column describes the unit of measure in which the `Value` has been recorded.
 
-The names of the columns is how csvcubed interprets what each column contains in the [convention-first approach](../guides/qube-config.md#convention-first-method). Using the column titles `Value`, `Measure` and `Unit` or one of their [synonyms](../guides/qube-config.md#conventional-column-names) in your CSV will work. All other columns are assumed to be *identifying characteristics* ([dimensions](../glossary/index.md#dimensionhttpswwww3orgtrvocab-data-cubecubes-model)).
+The names of the columns is how csvcubed interprets what each column contains in the [configuration by convention approach](../guides/configuration/convention.md). Using the column titles `Value`, `Measure` and `Unit` or one of their [synonyms](../guides/configuration/index.md#conventional-column-names) in your CSV will work. All other columns are assumed to be *identifying characteristics* ([dimensions](../glossary/index.md#dimensionhttpswwww3orgtrvocab-data-cubecubes-model)).
 
 ## Adding your data
 
