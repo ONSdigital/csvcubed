@@ -29,8 +29,9 @@ nav:
         - inspect command errors: guides/errors/inspect-command-errors/index.md
       - Handling missing observed values: guides/missing-observed-values.md
       - Linked Data:
-        - Units: guides/linked-data/units.md
+        - Licenses: guides/linked-data/licenses.md
         - Organisations: guides/linked-data/organisations.md
+        - Units: guides/linked-data/units.md
       - Raise an issue: guides/raise-issue.md
       - Shape your data: guides/shape-data.md
       - Working with URIs: guides/uris.md
