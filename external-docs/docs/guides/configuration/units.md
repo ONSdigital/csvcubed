@@ -41,7 +41,7 @@ Our dataset could of course be expressed directly in [PoundSterling](http://qudt
 
 We've done some checking on the [QUDT Units vocabulary](http://www.qudt.org/doc/DOC_VOCAB-UNITS.html#Instances) to make sure that our new unit doesn't duplicating an existing unit so we decide that it is helpful to link `Pounds Sterling (£), Millions` back to [PoundSterling](http://qudt.org/vocab/unit/PoundSterling). This will ensure that software can automatically figure out how to compare our data with other data sets that use units related to [PoundSterling](http://qudt.org/vocab/unit/PoundSterling).
 
-In the following example, we'll show how to define new units for `Pounds Sterling (£), Millions` and `Barrels of oil consumed per day (,000)` with a [standard shaped](../shape-data.md#standard-shape) cube:
+In the following example, we'll show how to define new units for `Pounds Sterling (£), Millions` and `Barrels of petrol per day (,000)` with a [standard shaped](../shape-data.md#standard-shape) cube:
 
 **1. Ensure that your units column contains the new units' labels**
 
@@ -106,7 +106,7 @@ Taking a closer look at the new `Pounds Sterling (£), Millions` unit:
 ```json
 {
     // Again, the label must exactly match the label's value in the `unit` column.
-    "label": "Barrels of oil consumed per day (,000)",
+    "label": "Barrels of petrol per day (,000)",
     // We start using the more exotic unit `BBL_UK_PET-PER-DAY` (Barrel (UK Petroleum) Per Day).
     "from_existing": "http://qudt.org/vocab/unit/BBL_UK_PET-PER-DAY",
     // Just like `BBL_UK_PET-PER-DAY`, our new unit is also a kind of volume per unit time.
