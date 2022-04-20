@@ -2,11 +2,13 @@
 
 This page introduces some of the *units of measure* that you can use to describe your data. It assumes that you have a rough understanding of what linked data is and where you might want to make use of it.
 
+If you already know which unit you want to reuse but want to find out how to use it, see the guide on [reusing units](./reuse-units.md).
+
 ## Units
 
 [QUDT's Units Vocabulary](http://www.qudt.org/doc/DOC_VOCAB-UNITS.html#Instances) is the preferred system of units recommended for use with csvcubed.
 
-Below we list a summary of some of the key units you may wish to use. Note that the units listed in this document **are not exhaustive**; if the unit that you want to represent has not been listed below then please refer to [QUDT's Units Vocabulary](http://www.qudt.org/doc/DOC_VOCAB-UNITS.html#Instances) to see if a suitable unit has already been published. If not, you may wish to [define a new unit](#defining-a-new-unit).
+Below we list a summary of some of the key units you may wish to use. Note that the units listed in this document **are not exhaustive**; if the unit that you want to represent has not been listed below then please refer to [QUDT's Units Vocabulary](http://www.qudt.org/doc/DOC_VOCAB-UNITS.html#Instances) to see if a suitable unit has already been published. If not, you may wish to [define a new unit](./reuse-units.md#definind-a-new-unit).
 
 ### Currencies
 
@@ -113,11 +115,3 @@ Occasionally you may want to record the ranks or ordinals. Ranks do not  have a
 | Unit     | Identifier                            |                                                     Quantity Kind |
 |:---------|:--------------------------------------|------------------------------------------------------------------:|
 | Unitless | <http://qudt.org/vocab/unit/UNITLESS> | [Dimensionless](http://qudt.org/vocab/quantitykind/Dimensionless) |
-
-## Defining a new unit
-
-If the unit you want to make use of has not been published in a linked data context, then you may wish to define a new unit.
-
-Units may also be [submitted](https://github.com/qudt/qudt-public-repo/wiki/Unit-Vocabulary-Submission-Guidelines) for consideration of inclusion in the QUDT Units vocabulary.
-
-

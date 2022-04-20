@@ -18,6 +18,7 @@ nav:
       - Handling missing observed values: guides/missing-observed-values.md
       - Link Data:
         - Choose a unit: guides/link-data/choose-units.md
+        - Reuse a unit: guides/link-data/reuse-units.md 
         - Organisations: guides/link-data/organisations.md
       - Qube config:
         - guides/qube-config.md
