@@ -48,7 +48,7 @@ In the following example, we'll show how to define new units for `Pounds Sterlin
 | Location     | Value |                           Measure |                                      Unit |
 |:-------------|------:|----------------------------------:|------------------------------------------:|
 | Biscuitburgh |    31 | Annual Income (Gross Value Added) |             Pounds Sterling (£), Millions |
-| Biscuitburgh |   2.6 |  Average Daily Petrol Consumption | Barrels of petrol consumed per day (,000) |
+| Biscuitburgh |   2.6 |  Average Daily Petrol Consumption | Barrels of petrol per day (,000) |
 
 **2. Edit your [qube-config.json](../configuration/qube-config.md) so that your units column has the following definition**
 
@@ -67,7 +67,7 @@ In the following example, we'll show how to define new units for `Pounds Sterlin
                     "description": "Millions of Pounds Sterling (£)."
                 },
                 {
-                    "label": "Barrels of petrol consumed per day (,000)",
+                    "label": "Barrels of petrol per day (,000)",
                     "from_existing": "http://qudt.org/vocab/unit/BBL_UK_PET-PER-DAY",
                     "quantity_kind": "http://qudt.org/vocab/quantitykind/VolumePerUnitTime",
                     "scaling_factor": 1000,
