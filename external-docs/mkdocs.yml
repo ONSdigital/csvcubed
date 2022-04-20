@@ -16,6 +16,9 @@ nav:
       - Raise an issue: guides/raise-issue.md
       - Shape your data: guides/shape-data.md
       - Handling missing observed values: guides/missing-observed-values.md
+      - Link Data:
+        - Choose a unit: guides/link-data/choose-units.md
+        - Organisations: guides/link-data/organisations.md
       - Qube config:
         - guides/qube-config.md
         - Templates: guides/using-templates.md
