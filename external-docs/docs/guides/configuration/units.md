@@ -101,7 +101,7 @@ Taking a closer look at the new `Pounds Sterling (£), Millions` unit:
 }
 ```
 
-Taking a closer look at the new `Pounds Sterling (£), Millions` unit:
+Taking a closer look at the new `Barrels of petrol per day (,000)` unit:
 
 ```json
 {
