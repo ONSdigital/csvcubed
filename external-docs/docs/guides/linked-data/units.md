@@ -110,7 +110,7 @@ Below we list a summary of some of the key units you may wish to use. Note that 
 
 >e.g. the ranks/final positions of participants in a competition.
 
-Occasionally you may want to record the ranks or ordinals. Ranks do not  have a unit and so you should express this with the [UNITLESS](http://qudt.org/vocab/unit/UNITLESS) *unit*.
+Occasionally you may want to record the ranks or ordinals. Ranks do not have a unit and so you should express this with the [UNITLESS](http://qudt.org/vocab/unit/UNITLESS) *unit*.
 
 | Unit     | Identifier                            |                                                     Quantity Kind |
 |:---------|:--------------------------------------|------------------------------------------------------------------:|
