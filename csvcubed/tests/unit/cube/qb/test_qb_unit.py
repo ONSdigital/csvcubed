@@ -6,18 +6,18 @@ from tests.unit.test_baseunit import assert_num_validation_errors
 
 def test_new_unit_base_unit_validation():
     """
-    Ensure that if either of :obj:`base_unit` or :obj:`base_unit_scaling_factor` are specified, and the other isn't,
+    Ensure that if :obj:`base_unit_scaling_factor` is specified and :obj:`base_unit` isn't,
     the user gets a suitable validation error.
     """
-    _assert_both_properties_defined_error(
-        NewQbUnit(
-            "Some Unit",
-            base_unit=ExistingQbUnit("http://existing-unit"),
-            base_unit_scaling_factor=None,
-        ),
-        "base_unit",
-        "base_unit_scaling_factor",
-    )
+    # _assert_both_properties_defined_error(
+    #     NewQbUnit(
+    #         "Some Unit",
+    #         base_unit=ExistingQbUnit("http://existing-unit"),
+    #         base_unit_scaling_factor=None,
+    #     ),
+    #     "base_unit",
+    #     "base_unit_scaling_factor",
+    # )
 
     _assert_both_properties_defined_error(
         NewQbUnit(
