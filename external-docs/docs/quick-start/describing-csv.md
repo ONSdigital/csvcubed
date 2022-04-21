@@ -10,7 +10,7 @@ This document assumes you have an existing CSV-W such as the `sweden_at_eurovisi
 
 We recommend using [Visual Studio Code](https://code.visualstudio.com/) or another text editor which supports JSON schemas in order to use autocomplete on field names and values.
 
-This is what a basic [`qube-config.json`](../guides/qube-config.md) looks like:
+This is what a basic [`qube-config.json`](../guides/configuration/index.md) looks like:
 
 ```json
 {

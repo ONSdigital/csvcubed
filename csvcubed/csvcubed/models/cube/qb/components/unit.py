@@ -85,8 +85,7 @@ class NewQbUnit(QbUnit, UriIdentifiable, ArbitraryRdf):
         {
             "base_unit": ["base_unit_scaling_factor"],
             "base_unit_scaling_factor": ["base_unit"],
-            "si_base_unit_conversion_multiplier": ["qudt_quantity_kind_uri"],
-            "qudt_quantity_kind_uri": ["si_base_unit_conversion_multiplier"],
+            "si_base_unit_conversion_multiplier": ["qudt_quantity_kind_uri"]
         }
     )
 
