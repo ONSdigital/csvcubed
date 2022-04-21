@@ -3,7 +3,7 @@
 csvcubed needs to understand how your statistical data is structured in order to make it more machine readable. There are two ways that you can do this with csvcubed:
 
 * Using the [configuration by convention approach](../guides/configuration/convention.md) - you start out with a [standard CSV data shape](../guides/shape-data.md#standard-shape) with conventional column titles and fill it out with your data.
-* Using the [configuration approach](../guides/configuration/qube-config.md) - you write a JSON configuration file which tells csvcubed exactly how to interpret your data.
+* Using the [explicit configuration approach](../guides/configuration/qube-config.md) - you write a JSON configuration file which tells csvcubed exactly how to interpret your data.
 
 This quick start will use the [configuration by convention approach](../guides/configuration/convention.md) to help you generate a CSV-W cube. We assume that you already have a working [installation of csvcubed](./installation.md).
 

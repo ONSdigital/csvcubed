@@ -20,9 +20,10 @@ nav:
       - Configuration:
         - guides/configuration/index.md
         - By convention: guides/configuration/convention.md
-        - qube-config.json: guides/configuration/qube-config.md
-        - Templates: guides/configuration/templates.md
-        - Units: guides/configuration/units.md
+        - Explicit configuration: 
+          - guides/configuration/qube-config.md
+          - Templates: guides/configuration/templates.md
+          - Units: guides/configuration/units.md
       - Errors:
         - guides/errors/index.md 
         - build command errors: guides/errors/build-command-errors/index.md
