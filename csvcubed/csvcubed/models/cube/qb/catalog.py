@@ -55,7 +55,7 @@ class CatalogMetadata(CatalogMetadataBase, UriIdentifiable):
 
         return cls.from_dict(dict_structure)
 
-    def get_issued(self) -> Optional[datetime]:
+    def get_issued(self) -> Union[datetime, date, None]:
         return self.dataset_issued
 
     def get_description(self) -> Optional[str]:
@@ -66,11 +66,13 @@ class CatalogMetadata(CatalogMetadataBase, UriIdentifiable):
 
     def configure_dcat_dataset(self, dataset: dcat.Dataset) -> None:
         dt_now = datetime.now()
-        dt_issued = self.dataset_issued or dt_now
+        dt_issued = _convert_date_to_date_time(self.dataset_issued or dt_now)
 
         dataset.label = dataset.title = self.title
         dataset.issued = dt_issued
-        dataset.modified = self.dataset_modified or dt_issued
+        dataset.modified = _convert_date_to_date_time(
+            self.dataset_modified or dt_issued
+        )
         dataset.comment = self.summary
         dataset.description = self.description
         dataset.license = self.license_uri
@@ -81,3 +83,10 @@ class CatalogMetadata(CatalogMetadataBase, UriIdentifiable):
         dataset.keywords = set(self.keywords)
         dataset.contact_point = self.public_contact_point_uri
         dataset.identifier = self.get_identifier()
+
+
+def _convert_date_to_date_time(dt_issued: Union[datetime, date]) -> datetime:
+    if isinstance(dt_issued, date) and not isinstance(dt_issued, datetime):
+        return datetime.combine(dt_issued, datetime.time.min)
+
+    return dt_issued
