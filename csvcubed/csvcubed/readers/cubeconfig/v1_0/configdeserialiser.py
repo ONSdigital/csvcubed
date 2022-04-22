@@ -4,15 +4,16 @@ __________________
 
 A loader for the config.json.
 """
+import datetime
 import logging
 from json import JSONDecodeError
 
 from pathlib import Path
 from typing import Dict, Tuple, List, Callable
+from dateutil import parser
 
 import pandas as pd
 from jsonschema.exceptions import ValidationError as JsonSchemaValidationError
-from csvcubedmodels.rdf.namespaces import GOV
 from pandas import DataFrame
 
 from csvcubed.models.cube import *
@@ -61,7 +62,10 @@ log = logging.getLogger(__name__)
 
 def get_deserialiser(
     schema_path: str, version_module_path: str
-) -> Callable[[Path, Optional[Path]], Tuple[QbCube, List[JsonSchemaValidationError], List[ValidationError]]]:
+) -> Callable[
+    [Path, Optional[Path]],
+    Tuple[QbCube, List[JsonSchemaValidationError], List[ValidationError]],
+]:
     """Generates a deserialiser function which validates the JSON file against the schema at :obj:`schema_path`"""
 
     def get_cube_from_config_json(
@@ -135,6 +139,16 @@ def _get_qb_column_from_json(
     return map_column_to_qb_component(column_title, column_config, column_data)
 
 
+def _parse_iso_8601_date_time(
+    date_or_date_time: str,
+) -> Union[datetime.date, datetime.datetime]:
+    dt = parser.isoparse(date_or_date_time)
+    if dt.time() == datetime.time.min:
+        return dt.date()
+
+    return dt
+
+
 def _metadata_from_dict(config: dict) -> "CatalogMetadata":
     themes = config.get("themes", [])
     if themes and isinstance(themes, str):
@@ -152,8 +166,12 @@ def _metadata_from_dict(config: dict) -> "CatalogMetadata":
         creator_uri=config.get("creator"),
         publisher_uri=config.get("publisher"),
         public_contact_point_uri=config.get("public_contact_point"),
-        dataset_issued=config.get("dataset_issued"),
-        dataset_modified=config.get("dataset_modified"),
+        dataset_issued=get_with_func_or_none(
+            config, "dataset_issued", _parse_iso_8601_date_time
+        ),
+        dataset_modified=get_with_func_or_none(
+            config, "dataset_modified", _parse_iso_8601_date_time
+        ),
         license_uri=config.get("license"),
         theme_uris=themes,
         keywords=keywords,

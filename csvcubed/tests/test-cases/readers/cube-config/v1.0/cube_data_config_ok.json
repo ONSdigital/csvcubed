@@ -7,7 +7,7 @@
     "publisher": "http://statistics.data.gov.uk",
     "spatial_bound": "spatial",
     "temporal_bound": "temporal",
-    "dataset_issued": "2022-03-04T15:00:00Z",
+    "dataset_issued": "2022-03-04",
     "dataset_modified": "2022-03-04T15:00:00Z",
     "public_contact_point": "mailto:csvcubed@example.com",
     "license": "http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
