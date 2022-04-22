@@ -13,6 +13,8 @@ import collections.abc
 from dataclasses import Field, _MISSING_TYPE, fields, asdict, dataclass
 from typing import List, Any, get_type_hints, Dict, Set, Type
 
+from dateutil import parser
+
 
 class DataClassFromDictValueError(ValueError):
     ...
@@ -198,8 +200,8 @@ class DataClassBase(ABC):
         elif isinstance(val, str) and issubclass(typing_hint, datetime.date):
             # ISO-8601 conversion.
             if issubclass(typing_hint, datetime.datetime):
-                return datetime.datetime.fromisoformat(val)
-            return datetime.date.fromisoformat(val)
+                return parser.isoparse(val)
+            return parser.isoparse(val).date()
 
         raise DataClassFromDictValueError(
             f"Could not match {val} with static type {typing_hint}"

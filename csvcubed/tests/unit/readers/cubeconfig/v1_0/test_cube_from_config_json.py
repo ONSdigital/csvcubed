@@ -652,9 +652,10 @@ def test_load_catalog_metadata():
     )
     assert catalog_metadata.public_contact_point_uri == "mailto:csvcubed@example.com"
 
-    assert catalog_metadata.dataset_issued == datetime.datetime(
-        2022, 3, 4, 15, 0, 0, tzinfo=datetime.timezone.utc
-    )
+    # Test date deserialisation
+    assert catalog_metadata.dataset_issued == datetime.date(2022, 3, 4)
+
+    # Test date-time deserialisation
     assert catalog_metadata.dataset_modified == datetime.datetime(
         2022, 3, 4, 15, 0, 0, tzinfo=datetime.timezone.utc
     )

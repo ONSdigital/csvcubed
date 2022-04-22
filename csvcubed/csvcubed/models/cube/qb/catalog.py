@@ -4,7 +4,7 @@ Catalog Metadata (DCAT)
 """
 import json
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, date
 from typing import Optional, Union
 from csvcubedmodels.rdf import dcat
 from pathlib import Path
@@ -24,8 +24,8 @@ class CatalogMetadata(CatalogMetadataBase, UriIdentifiable):
     landing_page_uris: list[str] = field(default_factory=list, repr=False)
     theme_uris: list[str] = field(default_factory=list, repr=False)
     keywords: list[str] = field(default_factory=list, repr=False)
-    dataset_issued: Optional[datetime] = field(default=None, repr=False)
-    dataset_modified: Optional[datetime] = field(default=None, repr=False)
+    dataset_issued: Union[datetime, date, None] = field(default=None, repr=False)
+    dataset_modified: Union[datetime, date, None] = field(default=None, repr=False)
     license_uri: Optional[str] = field(default=None, repr=False)
     public_contact_point_uri: Optional[str] = field(default=None, repr=False)
     uri_safe_identifier_override: Optional[str] = field(default=None, repr=False)

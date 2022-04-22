@@ -22,6 +22,7 @@ click = ">=8.0.0"
 requests-cache = "^0.9.3"
 treelib = "^1.6.1"
 uritemplate = "^4.1.1"
+python-dateutil = "^2.8.2"
 
 [tool.poetry.dev-dependencies]
 # The -models library is currently listed as a dev dependency so that we can reference it by its relative

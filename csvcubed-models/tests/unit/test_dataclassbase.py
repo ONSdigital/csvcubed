@@ -340,6 +340,36 @@ def test_datetime_json_serialisation():
     assert reinflated_a.some_datetime == dt
 
 
+def test_datetime_deserialisation():
+    """
+    the built in datetime lib doesn't fully support ISO-8601 strings, e.g. "2020-01-01T03:50Z" fails to parse.
+     Ensure we're able to parse this example.
+    """
+    with pytest.raises(ValueError) as err:
+        datetime.datetime.fromisoformat("2020-01-01T03:50Z")
+        assert err is not None
+
+    @dataclass
+    class A(DataClassBase):
+        some_datetime: datetime.datetime
+
+    a = A.from_json('{"some_datetime": "2020-01-01T03:50Z"}')
+    assert isinstance(a.some_datetime, datetime.datetime)
+    assert a.some_datetime == datetime.datetime(2020, 1, 1, 3, 50, tzinfo=datetime.timezone.utc)
+
+
+def test_date_deserialisation():
+    """Ensure we're able to parse dates to the expected type."""
+    @dataclass
+    class A(DataClassBase):
+        some_date: datetime.date
+
+    a = A.from_json('{"some_date": "2020-01-01T03:50Z"}')
+    assert isinstance(a.some_date, datetime.date)
+    assert not isinstance(a.some_date, datetime.datetime)
+    assert a.some_date == datetime.date(2020, 1, 1)
+
+
 def test_date_json_serialisation():
     @dataclass
     class A(DataClassBase):
