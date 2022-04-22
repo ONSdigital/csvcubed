@@ -59,7 +59,7 @@ def step_impl(context, file):
     temp_dir = get_context_temp_dir_path(context)
     with open(temp_dir / file, "r") as f:
         file_contents = f.read().strip().splitlines(keepends=True)
-    expected_contents = dedent(context.text).splitlines(keepends=True)
+    expected_contents = dedent(context.text.strip()).splitlines(keepends=True)
     differ = Differ()
     comparison_result = list(differ.compare(expected_contents, file_contents))
     assert len(comparison_result) == len(expected_contents), "".join(comparison_result)

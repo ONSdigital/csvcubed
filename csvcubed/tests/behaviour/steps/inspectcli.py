@@ -112,42 +112,42 @@ def step_impl(context, type_printable: str):
 def step_impl(context):
     assert _unformat_multiline_string(
         context.catalog_metadata_printable
-    ) == _unformat_multiline_string(context.text)
+    ) == _unformat_multiline_string(context.text.strip())
 
 
 @Then("the Data Structure Definition Printable should be")
 def step_impl(context):
     assert _unformat_multiline_string(
         context.dsd_info_printable
-    ) == _unformat_multiline_string(context.text)
+    ) == _unformat_multiline_string(context.text.strip())
 
 
 @Then("the Code List Printable should be")
 def step_impl(context):
     assert _unformat_multiline_string(
         context.codelist_info_printable
-    ) == _unformat_multiline_string(context.text)
+    ) == _unformat_multiline_string(context.text.strip())
 
 
 @Then("the Dataset Information Printable should be")
 def step_impl(context):
     assert _unformat_multiline_string(
         context.dataset_observations_info_printable
-    ) == _unformat_multiline_string(context.text)
+    ) == _unformat_multiline_string(context.text.strip())
 
 
 @Then("the Dataset Value Counts Printable should be")
 def step_impl(context):
     assert _unformat_multiline_string(
         context.dataset_val_counts_by_measure_unit_info_printable
-    ) == _unformat_multiline_string(context.text)
+    ) == _unformat_multiline_string(context.text.strip())
 
 
 @Then("the Concepts Information Printable should be")
 def step_impl(context):
     assert _unformat_multiline_string(
         context.codelist_hierachy_info_printable
-    ) == _unformat_multiline_string(context.text)
+    ) == _unformat_multiline_string(context.text.strip())
 
 
 @Given('a none existing test-case file "{csvw_metadata_file}"')

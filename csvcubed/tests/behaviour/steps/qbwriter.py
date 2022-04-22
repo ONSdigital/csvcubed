@@ -798,7 +798,7 @@ def step_impl(context, cube_name: str):
 
 @Then("some additional turtle is appended to the resulting RDF")
 def step_impl(context):
-    rdf_to_add = context.text
+    rdf_to_add = context.text.strip()
     context.turtle += rdf_to_add
 
 

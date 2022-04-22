@@ -32,14 +32,14 @@ def test_graph_diff(g1, g2):
 def step_impl(context):
     test_graph_diff(
         Graph().parse(format="turtle", data=context.turtle),
-        Graph().parse(format="turtle", data=context.text),
+        Graph().parse(format="turtle", data=context.text.strip()),
     )
 
 
 @step("the ask query should return {expected_query_result}")
 def step_impl(context, expected_query_result: str):
     expected_ask_result = bool(distutils.util.strtobool(expected_query_result))
-    assert_ask(context, context.text, expected_ask_result)
+    assert_ask(context, context.text.strip(), expected_ask_result)
 
 
 def assert_ask(context, ask_query: str, expected_ask_result: bool):
