@@ -4,7 +4,7 @@ Catalog Metadata (DCAT)
 """
 import json
 from dataclasses import dataclass, field
-from datetime import datetime, date
+from datetime import datetime, date, time
 from typing import Optional, Union
 from csvcubedmodels.rdf import dcat
 from pathlib import Path
@@ -87,6 +87,6 @@ class CatalogMetadata(CatalogMetadataBase, UriIdentifiable):
 
 def _convert_date_to_date_time(dt: Union[datetime, date]) -> datetime:
     if isinstance(dt, date) and not isinstance(dt, datetime):
-        return datetime.combine(dt, datetime.time.min)
+        return datetime.combine(dt, time.min)
 
     return dt
