@@ -26,17 +26,20 @@
         "keywords": {"$ref": "#/definitions/v1.0/keywordTypes"},
         "dataset_issued": {
             "description": "Date time that the data set was initially published in ISO 8601 format, e.g. 2022-03-31 or 2022-03-31T12:54:30Z",
-            "type": "string",
-            "format": "date-time"
+            "type": "string"
         },
         "dataset_modified": {
             "description": "Date time that the data set was last modified published in ISO 8601 format, e.g. 2022-03-31 or 2022-03-31T12:54:30Z",
-            "type": "string",
-            "format": "date-time"
+            "type": "string"
         },
         "license": {
             "description": "URI that represents the copyright license applying to this cube",
             "$ref": "http://purl.org/csv-cubed/resources/licenses.json#/uris"
+        },
+        "public_contact_point_uri": {
+            "description": "URI that provides a public contact point for discussion of the data set, e.g. mailto:contact.point@example.com",
+            "type": "string",
+            "format": "uri"
         },
         "columns": {
             "description": "Map of CSV column titles to definitions of what the column represents (a dimension, an attribute, observations, units or measures)",
@@ -44,7 +47,8 @@
                 "description": "Column's meaning in the data cube",
                 "anyOf": [
                     {"$ref": "#/definitions/v1.0/columnTypes/Dimension"},
-                    {"$ref": "#/definitions/v1.0/columnTypes/Attribute"},
+                    {"$ref": "#/definitions/v1.0/columnTypes/Attribute_Resource"},
+                    {"$ref": "#/definitions/v1.0/columnTypes/Attribute_Literal"},
                     {"$ref": "#/definitions/v1.0/columnTypes/Measures"},
                     {"$ref": "#/definitions/v1.0/columnTypes/Observations"},
                     {"$ref": "#/definitions/v1.0/columnTypes/Units"}
@@ -55,99 +59,99 @@
     "definitions": {
         "v1.0": {
             "columnTypes": {
-                "Attribute": {
-                    "description": "This column represents an attribute of the cube",
-                    "oneOf": [
-                        {
-                            "type": "object",
-                            "additionalProperties": false,
-                            "required": ["type"],
-                            "properties": {
-                                "type": {
-                                    "description": "This column represents an attribute of the cube",
-                                    "type": "string",
-                                    "const": "attribute"
-                                },
-                                "label": {
-                                    "description": "Label describing the Attribute",
-                                    "type": "string"
-                                },
-                                "description": {
-                                    "description": "A explanation of what the Attribute represents",
-                                    "type": "string"
-                                },
-                                "from_existing": {
-                                    "description": "URI of an existing attribute to reuse or extend",
-                                    "$ref": "http://purl.org/csv-cubed/resources/attributes.json#/uris/literalValues"
-                                },
-                                "definition_uri": {
-                                    "description": "Source URI for the definition of the Attribute",
-                                    "$ref": "#/definitions/v1.0/types/definition_uri"
-                                },
-                                "data_type": {
-                                    "description": "The data type of the attribute values",
-                                    "$ref": "#/definitions/v1.0/dataTypes"
-                                },
-                                "required": {
-                                    "description": "Whether or not it is required that every observation has a value for this attribute",
-                                    "type": "boolean",
-                                    "default": false
-                                }
-                            }
+                "Attribute_Literal": {
+                    "type": "object",
+                    "description": "This column represents an attribute (with resource values) of the cube",
+                    "additionalProperties": false,
+                    "required": ["type"],
+                    "properties": {
+                        "type": {
+                            "description": "This column represents an attribute of the cube",
+                            "type": "string",
+                            "const": "attribute"
                         },
-                        {
-                            "type": "object",
-                            "additionalProperties": false,
-                            "required": ["type"],
-                            "properties": {
-                                "type": {
-                                    "description": "This column represents an attribute of the cube",
-                                    "type": "string",
-                                    "const": "attribute"
-                                },
-                                "from_template": {
-                                    "$ref": "#/definitions/v1.0/column_templates/attribute_resource"
-                                },
-                                "label": {
-                                    "description": "Label describing the Attribute",
-                                    "type": "string"
-                                },
-                                "description": {
-                                    "description": "A explanation of what the Attribute represents",
-                                    "type": "string"
-                                },
-                                "from_existing": {
-                                    "description": "URI of an existing attribute to reuse or extend",
-                                    "$ref": "http://purl.org/csv-cubed/resources/attributes.json#/uris/resourceValues"
-                                },
-                                "definition_uri": {
-                                    "description": "Source URI for the definition of the Attribute",
-                                    "$ref": "#/definitions/v1.0/types/definition_uri"
-                                },
-                                "values": {
-                                    "oneOf": [
-                                        {
-                                            "description": "Whether to automatically generate attribute value resources for each unique value in the column",
-                                            "type": "boolean",
-                                            "default": true
-                                        },
-                                        {
-                                            "type": "array",
-                                            "description": "The distinct attribute values which can be used in the column",
-                                            "items": {
-                                                "$ref": "#/definitions/v1.0/valueTypes/attributeValueType"
-                                            }
-                                        }
-                                    ]
-                                },
-                                "cell_uri_template": {
-                                    "description": "A template used to map the cell values in this column into URIs, e.g. 'http://example.com/attribute-values/{+column_csvw_name}'",
-                                    "type": "string",
-                                    "format": "uri"
-                                }
-                            }        
+                        "label": {
+                            "description": "Label describing the Attribute",
+                            "type": "string"
+                        },
+                        "description": {
+                            "description": "A explanation of what the Attribute represents",
+                            "type": "string"
+                        },
+                        "from_existing": {
+                            "description": "URI of an existing attribute to reuse or extend",
+                            "$ref": "http://purl.org/csv-cubed/resources/attributes.json#/uris/literalValues"
+                        },
+                        "definition_uri": {
+                            "description": "Source URI for the definition of the Attribute",
+                            "$ref": "#/definitions/v1.0/types/definition_uri"
+                        },
+                        "data_type": {
+                            "description": "The data type of the attribute values",
+                            "$ref": "#/definitions/v1.0/dataTypes"
+                        },
+                        "required": {
+                            "description": "Whether or not it is required that every observation has a value for this attribute",
+                            "type": "boolean",
+                            "default": false
                         }
-                    ]
+                    }
+                },
+                "Attribute_Resource": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "oneOf": [
+                        {"required": ["type"]},
+                        {"required": ["from_template"]}
+                    ],
+                    "description": "This column represents an attribute (with literal values) of the cube",
+                    "properties": {
+                        "type": {
+                            "description": "This column represents an attribute of the cube",
+                            "type": "string",
+                            "const": "attribute"
+                        },
+                        "from_template": {
+                            "$ref": "#/definitions/v1.0/column_templates/attribute_resource"
+                        },
+                        "label": {
+                            "description": "Label describing the Attribute",
+                            "type": "string"
+                        },
+                        "description": {
+                            "description": "A explanation of what the Attribute represents",
+                            "type": "string"
+                        },
+                        "from_existing": {
+                            "description": "URI of an existing attribute to reuse or extend",
+                            "$ref": "http://purl.org/csv-cubed/resources/attributes.json#/uris/resourceValues"
+                        },
+                        "definition_uri": {
+                            "description": "Source URI for the definition of the Attribute",
+                            "$ref": "#/definitions/v1.0/types/definition_uri"
+                        },
+                        "values": {
+                            "oneOf": [
+                                {
+                                    "description": "Whether to automatically generate attribute value resources for each unique value in the column",
+                                    "type": "boolean",
+                                    "default": true
+                                },
+                                {
+                                    "type": "array",
+                                    "description": "The distinct attribute values which can be used in the column",
+                                    "items": {
+                                        "$ref": "#/definitions/v1.0/valueTypes/attributeValueType"
+                                    }
+                                }
+                            ]
+                        },
+                        "cell_uri_template": {
+                            "description": "A template used to map the cell values in this column into URIs, e.g. 'http://example.com/attribute-values/{+column_csvw_name}'",
+                            "type": "string",
+                            "format": "uri"
+                        }
+                    }        
                 },
                 "Dimension": {
                     "description": "This column represents a dimension of the cube",
