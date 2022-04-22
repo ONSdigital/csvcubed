@@ -85,8 +85,8 @@ class CatalogMetadata(CatalogMetadataBase, UriIdentifiable):
         dataset.identifier = self.get_identifier()
 
 
-def _convert_date_to_date_time(dt_issued: Union[datetime, date]) -> datetime:
-    if isinstance(dt_issued, date) and not isinstance(dt_issued, datetime):
-        return datetime.combine(dt_issued, datetime.time.min)
+def _convert_date_to_date_time(dt: Union[datetime, date]) -> datetime:
+    if isinstance(dt, date) and not isinstance(dt, datetime):
+        return datetime.combine(dt, datetime.time.min)
 
-    return dt_issued
+    return dt
