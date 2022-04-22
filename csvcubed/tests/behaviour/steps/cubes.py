@@ -1,3 +1,4 @@
+import datetime
 import json
 
 import requests_mock
@@ -78,7 +79,11 @@ def step_impl(context):
     if expected_meta != result_dict:
         # Print the mis-matched values if the whole dict is not equal
         for k, v in result_dict.items():
-            if expected_meta[k] != result_dict[k]:
+            true_value = result_dict[k]
+            if isinstance(true_value, (datetime.datetime, datetime.date)):
+                true_value = true_value.isoformat()
+
+            if expected_meta[k] != true_value:
                 raise Exception(
                     f"Key: {k} - result: {result_dict[k]} does not match expected: {expected_meta[k]}"
                 )
