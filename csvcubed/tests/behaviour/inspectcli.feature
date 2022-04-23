@@ -636,7 +636,7 @@ Feature: Behaviour testing of csvcubed inspect.
         And the existing test-case file "cli/inspect/alcohol-content.csv"
         
         When the Metadata file path is detected and validated "cli/inspect/alcohol-content.csv-metadata.json"
-		And the csv file path is detected and validated "cli/inspect/alcohol-content.csv"
+        And the csv file path is detected and validated "cli/inspect/alcohol-content.csv"
         And the Metadata File json-ld is loaded to a rdf graph
         And the Metadata File is validated
         And the Printables for code list are generated
@@ -663,17 +663,8 @@ Feature: Behaviour testing of csvcubed inspect.
         """
         - The code list has the following dataset information:
           - Number of Concepts: 6
-        	- Number of Duplicates: 0
-        	- First 10 Concepts:
-                           Label       Notation  Parent Notation  Sort Priority  Description
-                1.2% to 5.5% abv 1-2-to-5-5-abv              NaN              0          NaN
-                 5.5% to 15% abv  5-5-to-15-abv              NaN              1          NaN
-                             All            all              NaN              2          NaN
-                    over 15% abv    over-15-abv              NaN              3          NaN
-                   over 5.5% abv   over-5-5-abv              NaN              4          NaN
-                   up to 15% abv   up-to-15-abv              NaN              5          NaN
-
-          - Last 10 Concepts:
+          - Number of Duplicates: 0
+          - Concepts:
                            Label       Notation  Parent Notation  Sort Priority  Description
                 1.2% to 5.5% abv 1-2-to-5-5-abv              NaN              0          NaN
                  5.5% to 15% abv  5-5-to-15-abv              NaN              1          NaN
@@ -699,8 +690,7 @@ Feature: Behaviour testing of csvcubed inspect.
     Scenario: inspect should produce printable for code list metadata json-ld input with concepts hierarchy depth of more than one
         Given the existing test-case file "cli/inspect/itis-industry.csv-metadata.json"
         And the existing test-case file "cli/inspect/itis-industry.csv"
-
-		When the Metadata file path is detected and validated "cli/inspect/itis-industry.csv-metadata.json"
+        When the Metadata file path is detected and validated "cli/inspect/itis-industry.csv-metadata.json"
         And the csv file path is detected and validated "cli/inspect/itis-industry.csv"
         And the Metadata File json-ld is loaded to a rdf graph
         And the Metadata File is validated
@@ -729,19 +719,7 @@ Feature: Behaviour testing of csvcubed inspect.
         - The code list has the following dataset information:
           - Number of Concepts: 9
           - Number of Duplicates: 0
-          - First 10 Concepts:
-																   Label       														  Notation Parent Notation  Sort Priority  Description
-									   					  All industries  																   all             NaN              1          NaN
-														   Manufacturing   								 				manufacturing-industry             all              2          NaN
-			 									 	  Wholesale & Retail   											 wholesale-retail-industry             all              3          NaN
-							 			   Information and Communication   								information-and-communication-industry             all              4          NaN
-						  Professional, Scientific and Technical Support   				professional-scientific-and-technical-support-industry             all              5          NaN
-			 			   Administrative and Support Service Activities   				administrative-and-support-service-activities-industry             all              6          NaN
-            Arts, Entertainment, Recreation and Other Service Activities   arts-entertainment-recreation-and-other-service-activities-industry             all              7          NaN
-														   Film Industry   								film-industry-excluding-other-services             all              8          NaN
-													 Television Industry   						  television-industry-excluding-other-services             all              9          NaN
-
-          - Last 10 Concepts:
+          - Concepts:
 																   Label       														  Notation Parent Notation  Sort Priority  Description
 									   					  All industries  																   all             NaN              1          NaN
 														   Manufacturing   								 				manufacturing-industry             all              2          NaN
