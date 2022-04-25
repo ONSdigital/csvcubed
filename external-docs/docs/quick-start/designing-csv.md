@@ -12,7 +12,7 @@ This quick start will use the [configuration by convention approach](../guides/c
 The [standard shape](../guides/shape-data.md#standard-shape) of data is the recommended way to shape your data for csvcubed. It requires that your CSV has the following columns:
 
 | ...Identifying characteristics... | Value | Measure | Unit |
-|:---------------------------------:|------:|--------:|-----:|
+| :-------------------------------: | ----: | ------: | ---: |
 |                ...                |   3.4 |  Length | Feet |
 |                ...                |   3.6 |  Length | Feet |
 
@@ -31,23 +31,23 @@ First, we start by taking the above shape and adding columns for each of your *i
 
 From hereonin we will be creating a data set to represent the competition winners in Eurovision. Our CSV will be structured as per the following extract:
 
-| Year | Entrant            | Song     | Language | Value |         Measure |    Unit |
-|:----:|:-------------------|:---------|:---------|------:|----------------:|--------:|
-| 1974 | ABBA               | Waterloo | English  |     1 |      Final Rank | Ordinal |
-| 1974 | ABBA               | Waterloo | English  |    24 |    Final Points |  Points |
-| 1974 | ABBA               | Waterloo | English  |     6 | People on Stage |  People |
-| 2008 | Charlotte Perrelli | Hero     | English  |     5 | People on Stage |  People |
-| 2008 | Charlotte Perrelli | Hero     | English  |    18 |      Final Rank | Ordinal |
-| 2008 | Charlotte Perrelli | Hero     | English  |    47 |    Final Points |  Points |
+| Year  | Entrant            | Song     | Language | Value |         Measure |     Unit |
+| :---: | :----------------- | :------- | :------- | ----: | --------------: | -------: |
+| 1974  | ABBA               | Waterloo | English  |     1 |      Final Rank | Unitless |
+| 1974  | ABBA               | Waterloo | English  |    24 |    Final Points | Unitless |
+| 1974  | ABBA               | Waterloo | English  |     6 | People on Stage |   Number |
+| 2008  | Charlotte Perrelli | Hero     | English  |     5 | People on Stage |   Number |
+| 2008  | Charlotte Perrelli | Hero     | English  |    18 |      Final Rank | Unitless |
+| 2008  | Charlotte Perrelli | Hero     | English  |    47 |    Final Points | Unitless |
 
 ```csv
 Year,Entrant,Song,Language,Value,Measure,Unit
-1974,ABBA,Waterloo,English,1,Final Rank,Ordinal
-1974,ABBA,Waterloo,English,24,Final Points,Points
-1974,ABBA,Waterloo,English,6,People on Stage,People
-2008,Charlotte Perrelli,Hero,English,5,People on Stage,People
-2008,Charlotte Perrelli,Hero,English,18,Final Rank,Ordinal
-2008,Charlotte Perrelli,Hero,English,47,Final Points,Points
+1974,ABBA,Waterloo,English,1,Final Rank,Unitless
+1974,ABBA,Waterloo,English,24,Final Points,Unitless
+1974,ABBA,Waterloo,English,6,People on Stage,Number
+2008,Charlotte Perrelli,Hero,English,5,People on Stage,Number
+2008,Charlotte Perrelli,Hero,English,18,Final Rank,Unitless
+2008,Charlotte Perrelli,Hero,English,47,Final Points,Unitless
 ```
 
 Where `Year`, `Entrant`, `Song` and `Language` are the cube's identifying [dimensions](../glossary/index.md#dimensionhttpswwww3orgtrvocab-data-cubecubes-model).
