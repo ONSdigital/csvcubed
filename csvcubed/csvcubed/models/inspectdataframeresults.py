@@ -14,6 +14,7 @@ from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
 from csvcubed.utils.printable import get_printable_tabuler_str_from_dataframe
 
 HIERARCHY_TREE_CONCEPTS_LIMIT = 100
+DATASET_HEAD_TAIL_LIMIT = 10
 
 
 @dataclass
@@ -40,11 +41,19 @@ class DatasetObservationsInfoResult:
         obs_or_concepts_str = (
             "Observations" if self.csvw_type == CSVWType.QbDataSet else "Concepts"
         )
+
+        if self.num_of_observations < DATASET_HEAD_TAIL_LIMIT:
+            observations_str = (
+                f"""- {obs_or_concepts_str}: {linesep}{formatted_dataset_head}"""
+            )
+        else:
+            observations_str = f"""- First 10 {obs_or_concepts_str}: {linesep}{formatted_dataset_head}
+        - Last 10 {obs_or_concepts_str}: {linesep}{formatted_dataset_tail}"""
+
         return f"""
         - Number of {obs_or_concepts_str}: {self.num_of_observations}
         - Number of Duplicates: {self.num_of_duplicates}
-        - First 10 {obs_or_concepts_str}: {linesep}{formatted_dataset_head}
-        - Last 10 {obs_or_concepts_str}: {linesep}{formatted_dataset_tail}
+        {observations_str}
         """
 
 
