@@ -1,0 +1,63 @@
+{
+  "$schema": "https://purl.org/csv-cubed/codelist-config/v1.0",
+  "title": "Title of the code list",
+  "description": "Description of the code list",
+  "summary": "Summary of the code list",
+  "publisher": "Publisher URI",
+  "creator": "Creator URI",
+  "dataset_issued": "Data set issued date and time",
+  "dataset_modified": "Dataset modified date and time",
+  "license": "License URI",
+  "concepts": [
+    {
+      "label": "Concept's label",
+      "description": "Concept's description",
+      "notation": "notation",
+      "sort_order": 1, // This is optional and if not provided, should be the concept's order in the parent list
+      "same_as": "http://example.com/concepts/some-existing-concept" // Ability to say your concept is the same as an existing one defined elsewhere.
+    },
+    {
+      "label": "Concept's label",
+      "description": "Concept's description",
+      "notation": "notationA",
+      "sort_order": 2,
+      "children": [
+        // Ability to define the concepts hierarchy.
+        {
+          "label": "Concept's label",
+          "description": "Concept's description",
+          "notation": "notationA-1",
+          "sort_order": 1
+        },
+        {
+          "label": "Concept's label",
+          "description": "Concept's description",
+          "notation": "notationA-2",
+          "sort_order": 2
+        }
+      ]
+    },
+    {
+      "label": "Concept's label",
+      "description": "Concept's description",
+      "notation": "notationB",
+      "sort_order": 3,
+      "children": [
+        {
+          "label": "Concept's label",
+          "description": "Concept's description",
+          "notation": "notationB-1",
+          "sort_order": 1,
+          "children": [
+            {
+              "label": "Concept's label",
+              "description": "Concept's description",
+              "notation": "notationB-1-1",
+              "sort_order": 1
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
