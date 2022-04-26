@@ -8,6 +8,14 @@
   "dataset_issued": "Data set issued date and time",
   "dataset_modified": "Dataset modified date and time",
   "license": "License URI",
+  "themes": [
+    "theme1",
+    "theme2"
+  ],
+  "keywords": [
+    "keyword1",
+    "keyword2"
+  ],
   "concepts": [
     {
       "label": "Concept's label",
