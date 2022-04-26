@@ -4,20 +4,28 @@
   "title": "Schema for a codelist",
   "description": "Schema to be used for creation & validation of a single codelist in CSV-W format",
   "type": "object",
-  "required": ["$schema"],
+  "required": [
+    "$schema"
+  ],
   "properties": {
     "$schema": {
       "type": "string",
       "default": "https://raw.githubusercontent.com/GSS-Cogs/csvcubed/294-define-codelist-in-qubeconfig/csvcubed/csvcubed/schema/codelist-config/v1_0/schema.json"
     },
-    "id": { "description": "A unique id for the code list", "type": "string" },
-    "title": { "description": "A title for the data set", "type": "string" },
+    "id": {
+      "description": "A unique id for the code list",
+      "type": "string"
+    },
+    "title": {
+      "description": "A title for the data set",
+      "type": "string"
+    },
     "description": {
-      "description": "A longer description of the code list",
+      "description": "A long description of the code list",
       "type": "string"
     },
     "summary": {
-      "description": "A shorter summary of the code list",
+      "description": "A short summary of the code list",
       "type": "string"
     }
   }
