@@ -48,31 +48,33 @@
     },
     "dataset_issued": {
       "description": "Date time that the data set was initially published in ISO 8601 format, e.g. 2022-03-31 or 2022-03-31T12:54:30Z",
-      "type": "string",
-      "format": "date-time"
+      "type": "string"
     },
     "dataset_modified": {
       "description": "Date time that the data set was last modified published in ISO 8601 format, e.g. 2022-03-31 or 2022-03-31T12:54:30Z",
-      "type": "string",
-      "format": "date-time"
+      "type": "string"
     },
     "license": {
       "description": "URI that represents the copyright license applying to this codelist",
       "$ref": "http://purl.org/csv-cubed/resources/licenses.json#/uris"
     },
     "concepts": {
-      "description": "Concepts in the codelist",
-      "type": "array",
-      "uniqueItems": true,
-      "minItems": 1,
-      "items": {
-        "$ref": "#/definitions/v1.0/concept"
-      }
+      "$ref": "#/definitions/v1.0/concepts"
     }
   },
   "definitions": {
     "v1.0": {
+      "concepts": {
+        "description": "List of concepts in the codelist",
+        "type": "array",
+        "uniqueItems": true,
+        "minItems": 1,
+        "items": {
+          "$ref": "#/definitions/v1.0/concept"
+        }
+      },
       "concept": {
+        "description": "Concept in the codelist",
         "type": "object",
         "required": [
           "label",
@@ -101,13 +103,7 @@
             "format": "uri"
           },
           "children": {
-            "description": "Sub-concepts of the concept",
-            "type": "array",
-            "uniqueItems": true,
-            "minItems": 1,
-            "items": {
-              "$ref": "#/definitions/v1.0/concept"
-            }
+            "$ref": "#/definitions/v1.0/concepts"
           }
         }
       },
