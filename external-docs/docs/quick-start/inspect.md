@@ -149,6 +149,10 @@ There are a number of errors that can occur when inspecting a CSV-W; most of the
 
 Please see our documentation explaining a [number of common errors](../guides/errors/index.md) to see what you can do to diagnose and correct any errors which occur.
 
+## A transcribed audio screencast convering the contents of this page
+
+<iframe src="https://share.descript.com/embed/Umk1wrKpSMV" width="640" height="360" frameborder="0" allowfullscreen></iframe>
+
 ## Next
 
 This is the end of the quick start section, however there is a lot more information available in the guides section; see the left-hand menu.

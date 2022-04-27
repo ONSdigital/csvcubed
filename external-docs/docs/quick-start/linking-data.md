@@ -45,6 +45,10 @@ Column templates are pre-configured column definitions which speed up creating l
 
 For more information see the [templates guide](../guides/configuration/templates.md).
 
+## A transcribed audio screencast convering the contents of this page
+
+<iframe src="https://share.descript.com/embed/WJeFEHVvAom" width="640" height="360" frameborder="0" allowfullscreen></iframe>
+
 ## Next steps
 
 The next step is to [inspect your CSV-W](./inspect.md).
