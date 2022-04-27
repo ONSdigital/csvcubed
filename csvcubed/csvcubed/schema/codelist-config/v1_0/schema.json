@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema",
   "id": "https://raw.githubusercontent.com/GSS-Cogs/csvcubed/294-define-codelist-in-qubeconfig/csvcubed/csvcubed/schema/codelist-config/v1_0/schema.json",
-  "title": "Schema for a codelist",
-  "description": "Schema to be used for creation & validation of a single codelist in CSV-W format",
+  "title": "Schema for a codelist.",
+  "description": "Schema to be used for creation and validation of a single codelist in CSV-W format.",
   "type": "object",
   "required": [
     "$schema",
@@ -17,27 +17,27 @@
       "default": "https://raw.githubusercontent.com/GSS-Cogs/csvcubed/294-define-codelist-in-qubeconfig/csvcubed/csvcubed/schema/codelist-config/v1_0/schema.json"
     },
     "id": {
-      "description": "A unique id for the code list",
+      "description": "A unique id for the code list.",
       "type": "string"
     },
     "title": {
-      "description": "A title for the data set",
+      "description": "A title for the data set.",
       "type": "string"
     },
     "description": {
-      "description": "A long description of the code list",
+      "description": "A long description of the code list.",
       "type": "string"
     },
     "summary": {
-      "description": "A short summary of the code list",
+      "description": "A short summary of the code list.",
       "type": "string"
     },
     "creator": {
-      "description": "The creator of the data set (uri)",
+      "description": "The creator of the data set (uri).",
       "$ref": "http://purl.org/csv-cubed/resources/organisations.json#/uris"
     },
     "publisher": {
-      "description": "The publisher of the data set (uri)",
+      "description": "The publisher of the data set (uri).",
       "$ref": "http://purl.org/csv-cubed/resources/organisations.json#/uris"
     },
     "themes": {
@@ -47,15 +47,15 @@
       "$ref": "#/definitions/v1.0/keywordTypes"
     },
     "dataset_issued": {
-      "description": "Date time that the data set was initially published in ISO 8601 format, e.g. 2022-03-31 or 2022-03-31T12:54:30Z",
+      "description": "Date time that the data set was initially published in ISO 8601 format, e.g. 2022-03-31 or 2022-03-31T12:54:30Z.",
       "type": "string"
     },
     "dataset_modified": {
-      "description": "Date time that the data set was last modified published in ISO 8601 format, e.g. 2022-03-31 or 2022-03-31T12:54:30Z",
+      "description": "Date time that the data set was last modified published in ISO 8601 format, e.g. 2022-03-31 or 2022-03-31T12:54:30Z.",
       "type": "string"
     },
     "license": {
-      "description": "URI that represents the copyright license applying to this codelist",
+      "description": "URI that represents the copyright license applying to this codelist.",
       "$ref": "http://purl.org/csv-cubed/resources/licenses.json#/uris"
     },
     "concepts": {
@@ -65,7 +65,7 @@
   "definitions": {
     "v1.0": {
       "concepts": {
-        "description": "List of concepts in the codelist",
+        "description": "List of concepts in the codelist.",
         "type": "array",
         "uniqueItems": true,
         "minItems": 1,
@@ -74,7 +74,7 @@
         }
       },
       "concept": {
-        "description": "Concept in the codelist",
+        "description": "Concept in the codelist.",
         "type": "object",
         "required": [
           "label",
@@ -82,15 +82,15 @@
         ],
         "properties": {
           "label": {
-            "description": "Label of the concept",
+            "description": "Label of the concept.",
             "type": "string"
           },
           "description": {
-            "description": "Description of the concept",
+            "description": "Description of the concept.",
             "type": "string"
           },
           "notation": {
-            "description": "Notation of the concept",
+            "description": "Notation of the concept.",
             "type": "string"
           },
           "sort_order": {
@@ -108,7 +108,7 @@
         }
       },
       "themeTypes": {
-        "description": "A theme or list of themes that describe the focus of the data",
+        "description": "A theme or list of themes that describe the focus of the data.",
         "additionalProperties": {
           "oneOf": [
             {
@@ -116,7 +116,7 @@
             },
             {
               "themeList": {
-                "description": "A list of themes",
+                "description": "A list of themes.",
                 "type": "array",
                 "items": {
                   "$ref": "#/definitions/v1.0/types/theme"
@@ -127,7 +127,7 @@
         }
       },
       "keywordTypes": {
-        "description": "A keyword or list of keywords relevant to the cube",
+        "description": "A keyword or list of keywords relevant to the cube.",
         "oneOf": [
           {
             "$ref": "#/definitions/v1.0/types/keyword"
@@ -142,11 +142,11 @@
       },
       "types": {
         "theme": {
-          "description": "A URI describing a theme",
+          "description": "A URI describing a theme.",
           "$ref": "http://purl.org/csv-cubed/resources/themes.json#/uris"
         },
         "keyword": {
-          "description": "A string describing a keyword",
+          "description": "A string describing a keyword.",
           "type": "string"
         }
       }
