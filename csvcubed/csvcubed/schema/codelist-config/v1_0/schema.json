@@ -5,7 +5,11 @@
   "description": "Schema to be used for creation & validation of a single codelist in CSV-W format",
   "type": "object",
   "required": [
-    "$schema"
+    "$schema",
+    "title",
+    "description",
+    "license",
+    "concepts"
   ],
   "properties": {
     "$schema": {
@@ -27,6 +31,127 @@
     "summary": {
       "description": "A short summary of the code list",
       "type": "string"
+    },
+    "creator": {
+      "description": "The creator of the data set (uri)",
+      "$ref": "http://purl.org/csv-cubed/resources/organisations.json#/uris"
+    },
+    "publisher": {
+      "description": "The publisher of the data set (uri)",
+      "$ref": "http://purl.org/csv-cubed/resources/organisations.json#/uris"
+    },
+    "themes": {
+      "$ref": "#/definitions/v1.0/themeTypes"
+    },
+    "keywords": {
+      "$ref": "#/definitions/v1.0/keywordTypes"
+    },
+    "dataset_issued": {
+      "description": "Date time that the data set was initially published in ISO 8601 format, e.g. 2022-03-31 or 2022-03-31T12:54:30Z",
+      "type": "string"
+    },
+    "dataset_modified": {
+      "description": "Date time that the data set was last modified published in ISO 8601 format, e.g. 2022-03-31 or 2022-03-31T12:54:30Z",
+      "type": "string"
+    },
+    "license": {
+      "description": "URI that represents the copyright license applying to this codelist",
+      "$ref": "http://purl.org/csv-cubed/resources/licenses.json#/uris"
+    },
+    "concepts": {
+      "description": "Concepts in the codelist",
+      "type": "array",
+      "uniqueItems": true,
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/v1.0/concept"
+      }
+    }
+  },
+  "definitions": {
+    "v1.0": {
+      "concept": {
+        "type": "object",
+        "required": [
+          "label",
+          "notation"
+        ],
+        "properties": {
+          "label": {
+            "description": "Label of the concept",
+            "type": "string"
+          },
+          "description": {
+            "description": "Description of the concept",
+            "type": "string"
+          },
+          "notation": {
+            "description": "Notation of the concept",
+            "type": "string"
+          },
+          "sort_order": {
+            "description": "Sort order of the concept. If not provided, the order will be inferred from the concepts list.",
+            "type": "number"
+          },
+          "same_as": {
+            "description": "Reference to a concept defined elsewhere.",
+            "type": "string",
+            "format": "uri"
+          },
+          "children": {
+            "description": "Sub-concepts of the concept",
+            "type": "array",
+            "uniqueItems": true,
+            "minItems": 1,
+            "items": {
+              "$ref": "#/definitions/v1.0/concept"
+            }
+          }
+        }
+      },
+      "themeTypes": {
+        "description": "A theme or list of themes that describe the focus of the data",
+        "additionalProperties": {
+          "oneOf": [
+            {
+              "$ref": "#/definitions/v1.0/types/theme"
+            },
+            {
+              "themeList": {
+                "description": "A list of themes",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/v1.0/types/theme"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "keywordTypes": {
+        "description": "A keyword or list of keywords relevant to the cube",
+        "oneOf": [
+          {
+            "$ref": "#/definitions/v1.0/types/keyword"
+          },
+          {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/v1.0/types/keyword"
+            }
+          }
+        ]
+      },
+      "types": {
+        "theme": {
+          "description": "A URI describing a theme",
+          "$ref": "http://purl.org/csv-cubed/resources/themes.json#/uris"
+        },
+        "keyword": {
+          "description": "A string describing a keyword",
+          "type": "string"
+        }
+      }
     }
   }
 }
