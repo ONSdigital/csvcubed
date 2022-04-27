@@ -40,6 +40,10 @@ All publishers are encouraged to provide license information in their CSV-W whic
 
 You can now revisit the [build process](./build.md#passing-configuration) to provide the configuration file and generate a better described CSV-W cube.
 
+## A transcribed audio screencast convering the contents of this page
+
+<iframe src="https://share.descript.com/embed/havTKRTeHVx" width="640" height="360" frameborder="0" allowfullscreen></iframe>
+
 ## Next
 
 The next step is to [link data](./linking-data.md).

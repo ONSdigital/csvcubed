@@ -56,6 +56,10 @@ Note that we have included multiple measures in this dataset as `Final Rank`, `F
 
 You can download the full CSV [here](https://raw.githubusercontent.com/GSS-Cogs/csvcubed-demo/main/sweden_at_eurovision_no_missing.csv).
 
+## A transcribed audio screencast convering the contents of this page
+
+<iframe src="https://share.descript.com/embed/SJiVPSziEkw" width="640" height="360" frameborder="0" allowfullscreen></iframe>
+
 ## Next
 
 The next step is to [build a CSV-W](./build.md).
