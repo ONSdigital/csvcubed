@@ -1,69 +1,54 @@
 {
-  "$schema": "https://raw.githubusercontent.com/GSS-Cogs/csvcubed/294-define-codelist-in-qubeconfig/csvcubed/csvcubed/schema/codelist-config/v1_0/schema.json",
+  "$schema": "./schema.json",
   "title": "Title of the code list",
   "description": "Description of the code list",
-  "summary": "Summary of the code list",
+  "summary": "Summary of the code list.",
   "creator": "http://purl.org/dc/aboutdcmi#DCMI",
   "publisher": "http://purl.org/dc/aboutdcmi#DCMI",
-  "dataset_issued": "Data set issued date and time",
-  "dataset_modified": "Data set modified date and time",
+  "dataset_issued": "2022-03-31T12:54:30Z",
+  "dataset_modified": "2022-04-01T12:54:30Z",
   "license": "https://creativecommons.org/licenses/by/4.0/",
   "themes": [
-    "theme1",
-    "theme2"
+    "http: //example.com/themes/theme"
   ],
   "keywords": [
     "keyword1",
     "keyword2"
   ],
   "sort": {
-    "by": "labels", // labels or notation
-    "method": "ascending" // ascending or descending
+    "by": "labels", // labels (default) or notation
+    "method": "ascending" // ascending (default) or descending
   },
   "concepts": [
     {
       "label": "Concept's label",
       "description": "Concept's description",
-      "notation": "notation",
-      "sort_order": 1, // This can only be provided if sort is not present behaviour: sort_order is always used if both are provided do not proceed, throw error (provide one you must provide all)
+      "notation": "notationA",
+      "sort_order": 1,
       "same_as": "http://example.com/concepts/some-existing-concept"
     },
     {
       "label": "Concept's label",
       "description": "Concept's description",
-      "notation": "notationA",
+      "notation": "notationB",
       "sort_order": 2,
       "children": [
         {
           "label": "Concept's label",
           "description": "Concept's description",
-          "notation": "notationA-1",
+          "notation": "notationB-1",
           "sort_order": 1
         },
         {
           "label": "Concept's label",
           "description": "Concept's description",
-          "notation": "notationA-2",
-          "sort_order": 2
-        }
-      ]
-    },
-    {
-      "label": "Concept's label",
-      "description": "Concept's description",
-      "notation": "notationB",
-      "sort_order": 3,
-      "children": [
-        {
-          "label": "Concept's label",
-          "description": "Concept's description",
-          "notation": "notationB-1",
-          "sort_order": 1,
+          "notation": "notationB-2",
+          "sort_order": 2,
           "children": [
             {
               "label": "Concept's label",
               "description": "Concept's description",
-              "notation": "notationB-1-1",
+              "notation": "notationB-2-1",
               "sort_order": 1
             }
           ]

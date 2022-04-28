@@ -63,21 +63,16 @@
       ],
       "properties": {
         "by": {
-          "description": "labels or notation",
-          "type": "string"
+          "description": "labels (default) or notation",
+          "type": "string",
+          "default": "labels"
         },
         "method": {
-          "description": "ascending or descending",
-          "type": "string"
+          "description": "ascending (default) or descending",
+          "type": "string",
+          "default": "ascending"
         }
-      },
-      "allOf": [
-        {
-          "not": {
-            "$ref": "#/definitions/v1.0/concept/properties/sort_order"
-          }
-        }
-      ]
+      }
     },
     "concepts": {
       "$ref": "#/definitions/v1.0/concepts"
@@ -116,14 +111,7 @@
           },
           "sort_order": {
             "description": "Sort order of the concept. If not provided, the sort object values will be used for storing.",
-            "type": "number",
-            "allOf": [
-              {
-                "not": {
-                  "$ref": "#/properties/sort"
-                }
-              }
-            ]
+            "type": "number"
           },
           "same_as": {
             "description": "Reference to a concept defined elsewhere.",
