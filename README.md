@@ -18,6 +18,10 @@ From there you'll have access to the `csvcubed` command line tool which features
 
 Become well acquainted to csvcubed with our [quick start](https://gss-cogs.github.io/csvcubed-docs/external/quick-start/), which includes written instructions as well as transcribed videos.
 
+## User Documentation
+
+csvcubed has extensive user documentation which tracks the release of csvcubed while it is in its beta phase. Our [documentation](https://gss-cogs.github.io/csvcubed-docs/external/) can always be improved, so treat bad docs as a bug report.
+
 ## Packages
 
 | Name                                                                | Description                                                                                    |
@@ -27,7 +31,6 @@ Become well acquainted to csvcubed with our [quick start](https://gss-cogs.githu
 | [csvcubed-pmd](./csvcubed-pmd/csvcubedpmd/README.md)                | Transforms a CSV-qb into RDF which is compatible with the Publish My Data platform.            |
 | [csvcubed-devtools](./csvcubed-devtools/csvcubeddevtools/README.md) | Shared test functionality & dev dependencies which are commonly required.                      |
 
-
 ## Developer Documentation
 
 More detailed developer documentation for this project can be found [here](./docs/developer.md).
@@ -36,6 +39,3 @@ More detailed developer documentation for this project can be found [here](./doc
 
 We welcome and appreciate bug reports. As we are trying to make this tool useful for all levels of experience, any level of bug or improvement helps others. To contribute to making csvcubed better, check out our [bug reporting instructions](https://gss-cogs.github.io/csvcubed-docs/external/guides/raise-issue/).
 
-## External User Documentation
-
-csvcubed has extensive user documentation which tracks the release of csvcubed while it is in its beta phase. Our [documentation](https://gss-cogs.github.io/csvcubed-docs/external/) can always be improved, so treat bad docs as a bug report.
