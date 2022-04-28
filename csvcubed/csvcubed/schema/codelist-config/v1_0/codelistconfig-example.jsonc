@@ -16,8 +16,8 @@
     "keyword2"
   ],
   "sort": {
-    "by": "labels", // labels (default) or notation
-    "method": "ascending" // ascending (default) or descending
+    "by": "labels",
+    "method": "ascending"
   },
   "concepts": [
     {
