@@ -16,7 +16,7 @@ from csvcubeddevtools.helpers.tar import dir_to_tar, extract_tar
 from csvcubeddevtools.behaviour.temporarydirectory import get_context_temp_dir_path
 
 client = docker.from_env()
-client.images.pull("gsscogs/csv2rdf")
+client.images.pull("gsscogs/csv2rdf:native")
 
 
 def _run_csv2rdf(context, metadata_file_path: Path) -> Tuple[int, str, Optional[str]]:
