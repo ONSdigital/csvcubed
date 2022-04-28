@@ -1,22 +1,41 @@
 # csvcubed
 
-A refactored version of the functionality required to build *CSV-qb*s along with the functionality necessary to convert said *CSV-qb*s into RDF compatible with the PMD platform.
+csvcubed project provides a command line tool which make it straightforward to turn a CSV into 5-star linked data (CSV-W)
+
+By publishing 5-star linked data and leveraging open standards for data, we believe that we can help ensure that statistical data is discoverable, comparable and analysable by automated tools. We hope that this standards-based approach will unlock network effects which accelerate data analysis by making it easier to collate, compare and contrast data from different sources.
+
+All our work depends on open standards; however it isn't just for open data. Share your data with the world or keep it private, the choice is yours.
+
+## Getting started immediately
+
+Get going with csvcubed immediately by installing csvcubed and csvcubed-models using pip.
+
+```bash
+pip install csvcubed csvcubed-models
+```
+
+From there you'll have access to the `csvcubed` command line tool which features sub commands `build` and `inspect` to create CSV-Ws from CSV and inspect CSV-Ws.
+
+Become well acquainted to csvcubed with our [quick start](https://gss-cogs.github.io/csvcubed-docs/external/quick-start/), which includes written instructions as well as transcribed videos.
 
 ## Packages
 
-| Name                                                                | Description                                                                         |
-|:--------------------------------------------------------------------|:------------------------------------------------------------------------------------|
-| [csvcubed](./csvcubed/csvcubed/README.md)                           | The key library helping to transform tidy-data into qb-flavoured CSV-W cubes.       |
-| [csvcubed-models](./csvcubed-models/csvcubedmodels/README.md)       | Models and RDF serialisation functionality required by the csvcubed and csvcubed-pmd packages.  |
-| [csvcubed-pmd](./csvcubed-pmd/csvcubedpmd/README.md)                | Transforms a CSV-qb into RDF which is compatible with the Publish My Data platform. |
-| [csvcubed-devtools](./csvcubed-devtools/csvcubeddevtools/README.md) | Shared test functionality & dev dependencies which are commonly required.           |
+| Name                                                                | Description                                                                                    |
+| :------------------------------------------------------------------ | :--------------------------------------------------------------------------------------------- |
+| [csvcubed](./csvcubed/csvcubed/README.md)                           | The key library helping to transform tidy-data into qb-flavoured CSV-W cubes.                  |
+| [csvcubed-models](./csvcubed-models/csvcubedmodels/README.md)       | Models and RDF serialisation functionality required by the csvcubed and csvcubed-pmd packages. |
+| [csvcubed-pmd](./csvcubed-pmd/csvcubedpmd/README.md)                | Transforms a CSV-qb into RDF which is compatible with the Publish My Data platform.            |
+| [csvcubed-devtools](./csvcubed-devtools/csvcubeddevtools/README.md) | Shared test functionality & dev dependencies which are commonly required.                      |
 
-We're currently keeping all of the packages in one repository to make life easier whilst we break apart and refactor the existing code we have in [GSS-utils](https://github.com/GSS-Cogs/gss-utils). Once we're confident in how our packages look (and they're stable), it's likely that each individual package will be moved to its own independent repository.
 
 ## Developer Documentation
 
 More detailed developer documentation for this project can be found [here](./docs/developer.md).
 
+## How to report bugs
+
+We welcome and appreciate bug reports. As we are trying to make this tool useful for all levels of experience, any level of bug or improvement helps others. To contribute to making csvcubed better, check out our [bug reporting instructions](https://gss-cogs.github.io/csvcubed-docs/external/guides/raise-issue/).
+
 ## External User Documentation
 
-For those wanting to track the documentation progress as we approach our initial release, [beware](https://gss-cogs.github.io/csvcubed-docs/external/).
+csvcubed has extensive user documentation which tracks the release of csvcubed while it is in its beta phase. Our [documentation](https://gss-cogs.github.io/csvcubed-docs/external/) can always be improved, so treat bad docs as a bug report.
