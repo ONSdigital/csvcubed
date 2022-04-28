@@ -18,6 +18,7 @@ from csvcubeddevtools.behaviour.temporarydirectory import get_context_temp_dir_p
 client = docker.from_env()
 client.images.pull("gsscogs/csv2rdf")
 
+
 def _run_csv2rdf(context, metadata_file_path: Path) -> Tuple[int, str, Optional[str]]:
     with TemporaryDirectory() as tmp_dir:
         tmp_dir = Path(tmp_dir)
