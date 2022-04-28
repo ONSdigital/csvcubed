@@ -36,12 +36,6 @@
       "description": "The publisher of the code list (uri).",
       "$ref": "http://purl.org/csv-cubed/resources/organisations.json#/uris"
     },
-    "themes": {
-      "$ref": "#/definitions/v1.0/themeTypes"
-    },
-    "keywords": {
-      "$ref": "#/definitions/v1.0/keywordTypes"
-    },
     "dataset_issued": {
       "description": "Date time that the code list was initially published in ISO 8601 format, e.g. 2022-03-31 or 2022-03-31T12:54:30Z.",
       "type": "string"
@@ -53,6 +47,37 @@
     "license": {
       "description": "URI that represents the copyright license applying to this code list.",
       "$ref": "http://purl.org/csv-cubed/resources/licenses.json#/uris"
+    },
+    "themes": {
+      "$ref": "#/definitions/v1.0/themeTypes"
+    },
+    "keywords": {
+      "$ref": "#/definitions/v1.0/keywordTypes"
+    },
+    "sort": {
+      "description": "Sort strategy for the concepts. If the sort_order per concept is provided, defining sort will not have an effect.",
+      "type": "object",
+      "required": [
+        "by",
+        "method"
+      ],
+      "properties": {
+        "by": {
+          "description": "labels or notation",
+          "type": "string"
+        },
+        "method": {
+          "description": "ascending or descending",
+          "type": "string"
+        }
+      },
+      "allOf": [
+        {
+          "not": {
+            "$ref": "#/definitions/v1.0/concept/properties/sort_order"
+          }
+        }
+      ]
     },
     "concepts": {
       "$ref": "#/definitions/v1.0/concepts"
@@ -90,8 +115,15 @@
             "type": "string"
           },
           "sort_order": {
-            "description": "Sort order of the concept. If not provided, the order will be inferred from its position.",
-            "type": "number"
+            "description": "Sort order of the concept. If not provided, the sort object values will be used for storing.",
+            "type": "number",
+            "allOf": [
+              {
+                "not": {
+                  "$ref": "#/properties/sort"
+                }
+              }
+            ]
           },
           "same_as": {
             "description": "Reference to a concept defined elsewhere.",

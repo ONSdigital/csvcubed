@@ -6,7 +6,7 @@
   "creator": "http://purl.org/dc/aboutdcmi#DCMI",
   "publisher": "http://purl.org/dc/aboutdcmi#DCMI",
   "dataset_issued": "Data set issued date and time",
-  "dataset_modified": "Dataset modified date and time",
+  "dataset_modified": "Data set modified date and time",
   "license": "https://creativecommons.org/licenses/by/4.0/",
   "themes": [
     "theme1",
@@ -16,12 +16,16 @@
     "keyword1",
     "keyword2"
   ],
+  "sort": {
+    "by": "labels", // labels or notation
+    "method": "ascending" // ascending or descending
+  },
   "concepts": [
     {
       "label": "Concept's label",
       "description": "Concept's description",
       "notation": "notation",
-      "sort_order": 1,
+      "sort_order": 1, // This can only be provided if sort is not present behaviour: sort_order is always used if both are provided do not proceed, throw error (provide one you must provide all)
       "same_as": "http://example.com/concepts/some-existing-concept"
     },
     {
