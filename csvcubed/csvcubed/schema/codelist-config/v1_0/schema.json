@@ -21,7 +21,7 @@
       "type": "string"
     },
     "title": {
-      "description": "A title for the data set.",
+      "description": "A title for the code list.",
       "type": "string"
     },
     "description": {
@@ -33,11 +33,11 @@
       "type": "string"
     },
     "creator": {
-      "description": "The creator of the data set (uri).",
+      "description": "The creator of the code list (uri).",
       "$ref": "http://purl.org/csv-cubed/resources/organisations.json#/uris"
     },
     "publisher": {
-      "description": "The publisher of the data set (uri).",
+      "description": "The publisher of the code list (uri).",
       "$ref": "http://purl.org/csv-cubed/resources/organisations.json#/uris"
     },
     "themes": {
@@ -47,15 +47,15 @@
       "$ref": "#/definitions/v1.0/keywordTypes"
     },
     "dataset_issued": {
-      "description": "Date time that the data set was initially published in ISO 8601 format, e.g. 2022-03-31 or 2022-03-31T12:54:30Z.",
+      "description": "Date time that the code list was initially published in ISO 8601 format, e.g. 2022-03-31 or 2022-03-31T12:54:30Z.",
       "type": "string"
     },
     "dataset_modified": {
-      "description": "Date time that the data set was last modified published in ISO 8601 format, e.g. 2022-03-31 or 2022-03-31T12:54:30Z.",
+      "description": "Date time that the code list was last modified published in ISO 8601 format, e.g. 2022-03-31 or 2022-03-31T12:54:30Z.",
       "type": "string"
     },
     "license": {
-      "description": "URI that represents the copyright license applying to this codelist.",
+      "description": "URI that represents the copyright license applying to this code list.",
       "$ref": "http://purl.org/csv-cubed/resources/licenses.json#/uris"
     },
     "concepts": {
@@ -65,7 +65,7 @@
   "definitions": {
     "v1.0": {
       "concepts": {
-        "description": "List of concepts in the codelist.",
+        "description": "List of concepts in the code list.",
         "type": "array",
         "uniqueItems": true,
         "minItems": 1,
@@ -74,7 +74,7 @@
         }
       },
       "concept": {
-        "description": "Concept in the codelist.",
+        "description": "A concept in the code list.",
         "type": "object",
         "required": [
           "label",
@@ -94,7 +94,7 @@
             "type": "string"
           },
           "sort_order": {
-            "description": "Sort order of the concept. If not provided, the order will be inferred from the concepts list.",
+            "description": "Sort order of the concept. If not provided, the order will be inferred from its position.",
             "type": "number"
           },
           "same_as": {
@@ -108,7 +108,7 @@
         }
       },
       "themeTypes": {
-        "description": "A theme or list of themes that describe the focus of the data.",
+        "description": "A theme or list of themes that describe the focus of the code list.",
         "additionalProperties": {
           "oneOf": [
             {
@@ -127,7 +127,7 @@
         }
       },
       "keywordTypes": {
-        "description": "A keyword or list of keywords relevant to the cube.",
+        "description": "A keyword or list of keywords relevant to the code list.",
         "oneOf": [
           {
             "$ref": "#/definitions/v1.0/types/keyword"
