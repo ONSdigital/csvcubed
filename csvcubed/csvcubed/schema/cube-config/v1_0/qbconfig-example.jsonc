@@ -20,6 +20,7 @@
         "keyword1",
         "keyword2"
     ], //List or string
+    "codelist": "../codelist-config/v1_0/codelistconfig-example.jsonc", //code list defined in a seperate json
     "columns": { // In the same order as the csv, unspecified column types are assumed to be dimensions, case insensitive
         // # Dimensions
         // All columns are assumed to be dimensions unless otherwise stated

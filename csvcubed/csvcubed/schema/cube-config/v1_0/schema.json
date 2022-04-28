@@ -24,6 +24,10 @@
         },
         "themes": {"$ref": "#/definitions/v1.0/themeTypes"},
         "keywords": {"$ref": "#/definitions/v1.0/keywordTypes"},
+        "codelist": {
+            "description": "File path to the code list",
+            "type": "string"
+        },
         "dataset_issued": {
             "description": "Date time that the data set was initially published in ISO 8601 format, e.g. 2022-03-31 or 2022-03-31T12:54:30Z",
             "type": "string"
