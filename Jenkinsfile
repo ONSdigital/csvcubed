@@ -98,10 +98,7 @@ pipeline {
                 tag pattern: "v\\d+\\.\\d+\\.\\d+(-RC\\d)?", comparator: "REGEXP"
             }
             agent {
-                dockerfile {
-                    filename 'Dockerfile'
-                    dir 'pythonversiontesting'
-                }
+                docker { image 'gsscogs/pythonversiontesting' }
             }
             steps {
                 script {
