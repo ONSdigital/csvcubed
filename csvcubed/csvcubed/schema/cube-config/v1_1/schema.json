@@ -1,19 +1,33 @@
 {
     "$schema": "https://json-schema.org/draft-07/schema",
-    "id": "https://purl.org/csv-cubed/qube-config/v1.0",
+    "id": "https://purl.org/csv-cubed/qube-config/v1.1",
     "title": "Schema for a qb-config cube",
     "description": "Schema to be used for creation & validation of a single csv-cubed-flavoured linked data cube in CSV-W format",
     "type": "object",
-    "required": ["$schema"],
+    "required": [
+        "$schema"
+    ],
     "properties": {
         "$schema": {
             "type": "string",
-            "default": "https://purl.org/csv-cubed/qube-config/v1.0"
+            "default": "https://purl.org/csv-cubed/qube-config/v1.1"
         },
-        "id": {"description": "A unique id for the cube", "type": "string"},
-        "title": {"description": "A title for this data set", "type": "string"},
-        "description": {"description": "A longer description of the cube", "type": "string"},
-        "summary": {"description": "A shorter summary of the data set", "type": "string"},
+        "id": {
+            "description": "A unique id for the cube",
+            "type": "string"
+        },
+        "title": {
+            "description": "A title for this data set",
+            "type": "string"
+        },
+        "description": {
+            "description": "A longer description of the cube",
+            "type": "string"
+        },
+        "summary": {
+            "description": "A shorter summary of the data set",
+            "type": "string"
+        },
         "publisher": {
             "description": "The publisher of the data set (uri)",
             "$ref": "http://purl.org/csv-cubed/resources/organisations.json#/uris"
@@ -22,8 +36,12 @@
             "description": "The creator of the data set (uri)",
             "$ref": "http://purl.org/csv-cubed/resources/organisations.json#/uris"
         },
-        "themes": {"$ref": "#/definitions/v1.0/themeTypes"},
-        "keywords": {"$ref": "#/definitions/v1.0/keywordTypes"},
+        "themes": {
+            "$ref": "#/definitions/v1.0/themeTypes"
+        },
+        "keywords": {
+            "$ref": "#/definitions/v1.0/keywordTypes"
+        },
         "dataset_issued": {
             "description": "Date time that the data set was initially published in ISO 8601 format, e.g. 2022-03-31 or 2022-03-31T12:54:30Z",
             "type": "string"
@@ -46,12 +64,24 @@
             "additionalProperties": {
                 "description": "Column's meaning in the data cube",
                 "anyOf": [
-                    {"$ref": "#/definitions/v1.0/columnTypes/Dimension"},
-                    {"$ref": "#/definitions/v1.0/columnTypes/Attribute_Resource"},
-                    {"$ref": "#/definitions/v1.0/columnTypes/Attribute_Literal"},
-                    {"$ref": "#/definitions/v1.0/columnTypes/Measures"},
-                    {"$ref": "#/definitions/v1.0/columnTypes/Observations"},
-                    {"$ref": "#/definitions/v1.0/columnTypes/Units"}
+                    {
+                        "$ref": "#/definitions/v1.0/columnTypes/Dimension"
+                    },
+                    {
+                        "$ref": "#/definitions/v1.0/columnTypes/Attribute_Resource"
+                    },
+                    {
+                        "$ref": "#/definitions/v1.0/columnTypes/Attribute_Literal"
+                    },
+                    {
+                        "$ref": "#/definitions/v1.0/columnTypes/Measures"
+                    },
+                    {
+                        "$ref": "#/definitions/v1.0/columnTypes/Observations"
+                    },
+                    {
+                        "$ref": "#/definitions/v1.0/columnTypes/Units"
+                    }
                 ]
             }
         }
@@ -63,7 +93,9 @@
                     "type": "object",
                     "description": "This column represents an attribute (with resource values) of the cube",
                     "additionalProperties": false,
-                    "required": ["type"],
+                    "required": [
+                        "type"
+                    ],
                     "properties": {
                         "type": {
                             "description": "This column represents an attribute of the cube",
@@ -101,8 +133,16 @@
                     "type": "object",
                     "additionalProperties": false,
                     "oneOf": [
-                        {"required": ["type"]},
-                        {"required": ["from_template"]}
+                        {
+                            "required": [
+                                "type"
+                            ]
+                        },
+                        {
+                            "required": [
+                                "from_template"
+                            ]
+                        }
                     ],
                     "description": "This column represents an attribute (with literal values) of the cube",
                     "properties": {
@@ -151,7 +191,7 @@
                             "type": "string",
                             "format": "uri"
                         }
-                    }        
+                    }
                 },
                 "Dimension": {
                     "description": "This column represents a dimension of the cube",
@@ -193,14 +233,18 @@
                             "oneOf": [
                                 {
                                     "description": "Whether or not to generate a code list defining the unique values permitted in this dimension",
-                                    "type": "boolean", 
+                                    "type": "boolean",
                                     "default": true
                                 },
                                 {
                                     "description": "The URI of a code list defining the unique values permitted in this dimension",
                                     "$ref": "http://purl.org/csv-cubed/resources/code-lists.json#/uris"
+                                },
+                                {
+                                    "description": "TODO",
+                                    "type": "string"
                                 }
-                            ]       
+                            ]
                         }
                     }
                 },
@@ -208,7 +252,9 @@
                     "description": "This column represents the phenomenon which has been measured",
                     "type": "object",
                     "additionalProperties": false,
-                    "required": ["type"],
+                    "required": [
+                        "type"
+                    ],
                     "properties": {
                         "type": {
                             "description": "This column represents the phenomenon which has been measured",
@@ -216,7 +262,7 @@
                             "const": "measures"
                         },
                         "cell_uri_template": {
-                            "type": "string", 
+                            "type": "string",
                             "format": "uri",
                             "description": "A template used to map the cell values in this column into URIs, e.g. 'http://example.com/measures/{+column_csvw_name}'"
                         },
@@ -241,7 +287,9 @@
                 "Units": {
                     "description": "This column represents the unit of measure in which observations were recorded",
                     "type": "object",
-                    "required": ["type"],
+                    "required": [
+                        "type"
+                    ],
                     "properties": {
                         "type": {
                             "description": "This column represents the unit of measure in which observations were recorded",
@@ -272,14 +320,18 @@
                     "description": "This column holds observed/recorded values",
                     "type": "object",
                     "additionalProperties": false,
-                    "required": ["type"],
+                    "required": [
+                        "type"
+                    ],
                     "properties": {
                         "type": {
                             "description": "Column type.",
                             "type": "string",
                             "const": "observations"
                         },
-                        "data_type": {"$ref": "#/definitions/v1.0/dataTypes"},
+                        "data_type": {
+                            "$ref": "#/definitions/v1.0/dataTypes"
+                        },
                         "unit": {
                             "description": "The unit that all observations were measured in",
                             "$ref": "#/definitions/v1.0/valueTypes/unitType"
@@ -295,7 +347,9 @@
                 "attributeValueType": {
                     "type": "object",
                     "additionalProperties": false,
-                    "required": ["label"],
+                    "required": [
+                        "label"
+                    ],
                     "properties": {
                         "label": {
                             "type": "string",
@@ -319,7 +373,9 @@
                 "measureType": {
                     "type": "object",
                     "additionalProperties": false,
-                    "required": ["label"],
+                    "required": [
+                        "label"
+                    ],
                     "properties": {
                         "label": {
                             "description": "Label for the Measure",
@@ -342,7 +398,9 @@
                 "unitType": {
                     "type": "object",
                     "additionalProperties": false,
-                    "required": ["label"],
+                    "required": [
+                        "label"
+                    ],
                     "properties": {
                         "label": {
                             "description": "Label describing the Unit",
@@ -407,12 +465,16 @@
                 "description": "A theme or list of themes that describe the focus of the data",
                 "additionalProperties": {
                     "oneOf": [
-                        {"$ref": "#/definitions/v1.0/types/theme"},
+                        {
+                            "$ref": "#/definitions/v1.0/types/theme"
+                        },
                         {
                             "themeList": {
                                 "description": "A list of themes",
                                 "type": "array",
-                                "items": {"$ref": "#/definitions/v1.0/types/theme"}
+                                "items": {
+                                    "$ref": "#/definitions/v1.0/types/theme"
+                                }
                             }
                         }
                     ]
@@ -421,10 +483,14 @@
             "keywordTypes": {
                 "description": "A keyword or list of keywords relevant to the cube",
                 "oneOf": [
-                    {"$ref": "#/definitions/v1.0/types/keyword"},
+                    {
+                        "$ref": "#/definitions/v1.0/types/keyword"
+                    },
                     {
                         "type": "array",
-                        "items": {"$ref": "#/definitions/v1.0/types/keyword"}
+                        "items": {
+                            "$ref": "#/definitions/v1.0/types/keyword"
+                        }
                     }
                 ]
             },
@@ -473,7 +539,7 @@
                     "description": "Templates for common attribute columns with resource values",
                     "type": "string",
                     "enum": [
-                       "observation-status"
+                        "observation-status"
                     ]
                 }
             }

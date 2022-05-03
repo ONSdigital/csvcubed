@@ -99,3 +99,6 @@ Feature: Test outputting CSV-Ws containing `SKOS:ConceptScheme`s.
         <http://www.w3.org/ns/ui#sortPriority> 2.
 
       """
+
+  #Scenario: A hierarchal code list can be serialised from config.json v1_1.
+      

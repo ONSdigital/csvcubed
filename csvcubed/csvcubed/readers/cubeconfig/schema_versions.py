@@ -12,13 +12,15 @@ from jsonschema.exceptions import ValidationError as JsonSchemaValidationError
 
 from csvcubed.models.cube import QbCube
 from csvcubed.models.validationerror import ValidationError
-from csvcubed.readers.cubeconfig import v1_0
+from csvcubed.readers.cubeconfig import v1_0, v1_1
 
 QubeConfigDeserialiser = Callable[
-    [Path, Optional[Path]], Tuple[QbCube, List[JsonSchemaValidationError], List[ValidationError]]
+    [Path, Optional[Path]],
+    Tuple[QbCube, List[JsonSchemaValidationError], List[ValidationError]],
 ]
 
 _V1_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.0"
+_V1_1_SCHEMA_URL = "/workspaces/csvcubed/csvcubed/csvcubed/schema/cube-config/v1_1/schema.json"  # TODO: Chnage to the purl v1.1 url
 
 
 class QubeConfigJsonSchemaVersion(Enum):
@@ -27,6 +29,7 @@ class QubeConfigJsonSchemaVersion(Enum):
     """
 
     V1_0 = "v1_0"
+    V1_1 = "v1_1"
 
 
 def get_deserialiser_for_schema(
@@ -44,6 +47,10 @@ def get_deserialiser_for_schema(
         return v1_0.configdeserialiser.get_deserialiser(
             schema_path, schema_version.value
         )
+    elif schema_version == QubeConfigJsonSchemaVersion.V1_1:
+        return v1_1.configdeserialiser.get_deserialiser(
+            schema_path, schema_version.value
+        )
     else:
         raise ValueError(f"Unhandled schema version {schema_version}")
 
@@ -51,6 +58,8 @@ def get_deserialiser_for_schema(
 def _get_schema_version(schema_path: str) -> QubeConfigJsonSchemaVersion:
     if schema_path == _V1_SCHEMA_URL:
         return QubeConfigJsonSchemaVersion.V1_0
+    elif schema_path == _V1_1_SCHEMA_URL:
+        return QubeConfigJsonSchemaVersion.V1_1
     else:
         raise ValueError(
             f"The $schema '{schema_path}' referenced in the cube config file is not recognised."

@@ -1,5 +1,5 @@
 {
-  "$schema": "./schema.json",
+  "$schema": "/workspaces/csvcubed/csvcubed/csvcubed/schema/codelist-config/v1_0/schema.json",
   "title": "Title of the code list",
   "description": "Description of the code list",
   "summary": "Summary of the code list.",
