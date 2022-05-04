@@ -108,14 +108,6 @@ class NewDimension(SchemaBaseClass):
                 return self._get_date_time_code_list_for_dimension(new_dimension)
             else:
                 return new_dimension.code_list
-        elif isinstance(self.code_list, dict):
-            """This is where we put a manually defined codelist"""
-            # Deserialise the dict and map it into a dataclass
-            # validate against the codelist schema code-listconfig.v1_1.validator
-            # Another validation to check outside of validation constraints (i.e. sort vs ordering)
-            # Read-in the values from code-listconfig.v1_1.reader
-            # Return the new codelist once the tree has been assembled
-            # NewQbCodeList(metadata, concepts)
         else:
             raise ValueError(f"Unmatched code_list value {self.code_list}")
 
