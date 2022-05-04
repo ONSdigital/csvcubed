@@ -40,6 +40,7 @@ from csvcubed.models.cube.qb.components import (
     NewQbAttributeLiteral,
     NewQbCodeList,
     QbCodeList,
+    NewQbConcept,
 )
 from csvcubed.models.codelistconfig.codelist_config import CodeListConfig
 from csvcubed.inputs import PandasDataTypes
@@ -49,6 +50,10 @@ from csvcubed.utils.uri import (
 )
 from csvcubed.utils.file import is_file_exist
 from csvcubed.utils.json import load_json_document
+from csvcubed.readers.codelistconfig.codelist_config_validator import (
+    CodeListConfigValidator,
+)
+from csvcubed.readers.cubeconfig.utils import load_resource
 
 T = TypeVar("T", bound=object)
 
@@ -93,18 +98,22 @@ class NewDimension(SchemaBaseClass):
             if looks_like_uri(self.code_list):
                 return ExistingQbCodeList(self.code_list)
             elif is_file_exist(self.code_list):
-                # [DONE] Deserialise the dict and map it into a dataclass
+                code_list_config_validator = CodeListConfigValidator()
+
                 code_list_config = CodeListConfig.from_json_file(Path(self.code_list))
+                schema = load_resource(code_list_config.schema)
+                config = load_resource(self.code_list)
+
+                code_list_config_validator.validate_against_schema(schema, config)
+                code_list_config_validator.validate_against_constraints(
+                    code_list_config
+                )
+
                 print(code_list_config)
 
-                # TODO: validate against the codelist schema code-listconfig.v1_1.validator
-                print("TODO FROM HERE")
-
-                
-                # Another validation to check outside of validation constraints (i.e. sort vs ordering)
-                # Read-in the values from code-listconfig.v1_1.reader
-                # Return the new codelist once the tree has been assembled
-                # NewQbCodeList(metadata, concepts)
+                return NewQbCodeList(
+                    code_list_config.metadata, code_list_config.new_qb_concepts
+                )
             else:
                 raise ValueError(
                     "Code list contains a string that cannot be recognised as a URI or a valid file path"
