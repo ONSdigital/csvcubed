@@ -38,6 +38,7 @@ class CodeListConfigConcept:
         :return: `Graph` - RDFLib Graph of CSV-W metadata json.
         """
         if "children" in concept_dict:
+            # TODO There is an issue here with missng children. This should not have pop it seems?
             for child_concept_dict in concept_dict.pop("children", None):
                 child_concept_dict["parent_notation"] = concept_dict["notation"]
                 CodeListConfigConcept.from_dict(child_concept_dict)

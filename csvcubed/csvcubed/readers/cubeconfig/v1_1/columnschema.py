@@ -92,25 +92,22 @@ class NewDimension(SchemaBaseClass):
         return new_dimension
 
     def _get_code_list(self, new_dimension: NewQbDimension) -> Optional[QbCodeList]:
-        print("Code list:", self.code_list)
-
         if isinstance(self.code_list, str):
             if looks_like_uri(self.code_list):
                 return ExistingQbCodeList(self.code_list)
             elif is_file_exist(self.code_list):
-                code_list_config_validator = CodeListConfigValidator()
-
                 code_list_config = CodeListConfig.from_json_file(Path(self.code_list))
                 schema = load_resource(code_list_config.schema)
                 config = load_resource(self.code_list)
 
+                code_list_config_validator = CodeListConfigValidator()
                 code_list_config_validator.validate_against_schema(schema, config)
                 code_list_config_validator.validate_against_constraints(
                     code_list_config
                 )
 
-                print(code_list_config)
-
+                # TODO: Remove
+                print("Processed and validated code list config: ", code_list_config)
                 return NewQbCodeList(
                     code_list_config.metadata, code_list_config.new_qb_concepts
                 )
