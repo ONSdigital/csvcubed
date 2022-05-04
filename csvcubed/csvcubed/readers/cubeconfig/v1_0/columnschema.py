@@ -82,7 +82,6 @@ class NewDimension(SchemaBaseClass):
         return new_dimension
 
     def _get_code_list(self, new_dimension: NewQbDimension) -> Optional[QbCodeList]:
-        print("Here: ", self.code_list)
 
         if isinstance(self.code_list, str):
             if looks_like_uri(self.code_list):
