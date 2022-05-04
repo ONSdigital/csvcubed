@@ -10,14 +10,14 @@ from typing import Union
 from csvcubed.models.cube.qb.columns import QbColumn
 from csvcubed.inputs import PandasDataTypes
 
-import csvcubed.readers.cubeconfig.v1_0.columnschema as schema
+import csvcubed.readers.cubeconfig.v1_1.columnschema as schema
 
 
 def map_column_to_qb_component(
     column_title: str, column: dict, data: PandasDataTypes
 ) -> QbColumn:
     """
-    Takes a config.json v1.0 column mapping and, if valid,
+    Takes a config.json v1.1 column mapping and, if valid,
     returns a :obj:`~csvcubed.models.cube.qb.columns.QbColumn`.
     """
     schema_mapping = _from_column_dict_to_schema_model(column_title, column)

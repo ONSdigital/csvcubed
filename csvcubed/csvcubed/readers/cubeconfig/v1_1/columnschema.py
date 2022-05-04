@@ -2,7 +2,7 @@
 Models
 ------
 
-config.json V1.0 column mapping models.
+config.json V1.1 column mapping models.
 
 If you change the shape of any model in this file, you **must** create a newly versioned JSON schema reflecting said changes.
 """
@@ -12,6 +12,8 @@ from dataclasses import dataclass
 from typing import List, Union, Optional, TypeVar
 
 import uritemplate
+from pathlib import Path
+
 from csvcubedmodels.dataclassbase import DataClassBase
 
 from csvcubed.inputs import pandas_input_to_columnar_optional_str
@@ -38,12 +40,20 @@ from csvcubed.models.cube.qb.components import (
     NewQbAttributeLiteral,
     NewQbCodeList,
     QbCodeList,
+    NewQbConcept,
 )
+from csvcubed.models.codelistconfig.codelist_config import CodeListConfig
 from csvcubed.inputs import PandasDataTypes
 from csvcubed.utils.uri import (
     csvw_column_name_safe,
     looks_like_uri,
 )
+from csvcubed.utils.file import is_file_exist
+from csvcubed.utils.json import load_json_document
+from csvcubed.readers.codelistconfig.codelist_config_validator import (
+    CodeListConfigValidator,
+)
+from csvcubed.readers.cubeconfig.utils import load_resource
 
 T = TypeVar("T", bound=object)
 
@@ -82,17 +92,32 @@ class NewDimension(SchemaBaseClass):
         return new_dimension
 
     def _get_code_list(self, new_dimension: NewQbDimension) -> Optional[QbCodeList]:
-        print("Here: ", self.code_list)
+        print("Code list:", self.code_list)
 
         if isinstance(self.code_list, str):
             if looks_like_uri(self.code_list):
                 return ExistingQbCodeList(self.code_list)
+            elif is_file_exist(self.code_list):
+                code_list_config_validator = CodeListConfigValidator()
 
-            else:
-                raise ValueError(
-                    "Code List contains a string that cannot be recognised as a URI"
+                code_list_config = CodeListConfig.from_json_file(Path(self.code_list))
+                schema = load_resource(code_list_config.schema)
+                config = load_resource(self.code_list)
+
+                code_list_config_validator.validate_against_schema(schema, config)
+                code_list_config_validator.validate_against_constraints(
+                    code_list_config
                 )
 
+                print(code_list_config)
+
+                return NewQbCodeList(
+                    code_list_config.metadata, code_list_config.new_qb_concepts
+                )
+            else:
+                raise ValueError(
+                    "Code list contains a string that cannot be recognised as a URI or a valid file path"
+                )
         elif isinstance(self.code_list, bool):
             if self.code_list is False:
                 return None
@@ -108,14 +133,6 @@ class NewDimension(SchemaBaseClass):
                 return self._get_date_time_code_list_for_dimension(new_dimension)
             else:
                 return new_dimension.code_list
-        elif isinstance(self.code_list, dict):
-            """This is where we put a manually defined codelist"""
-            # Deserialise the dict and map it into a dataclass
-            # validate against the codelist schema code-listconfig.v1_1.validator
-            # Another validation to check outside of validation constraints (i.e. sort vs ordering)
-            # Read-in the values from code-listconfig.v1_1.reader
-            # Return the new codelist once the tree has been assembled
-            # NewQbCodeList(metadata, concepts)
         else:
             raise ValueError(f"Unmatched code_list value {self.code_list}")
 
