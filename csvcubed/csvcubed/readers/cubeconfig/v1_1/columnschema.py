@@ -96,13 +96,14 @@ class NewDimension(SchemaBaseClass):
             if looks_like_uri(self.code_list):
                 return ExistingQbCodeList(self.code_list)
             elif is_file_exist(self.code_list):
+                print("Serialising code list form json config v1.1")
                 code_list_config = CodeListConfig.from_json_file(Path(self.code_list))
                 schema = load_resource(code_list_config.schema)
                 config = load_resource(self.code_list)
 
                 code_list_config_validator = CodeListConfigValidator()
                 code_list_config_validator.validate_against_schema(schema, config)
-                
+
                 return NewQbCodeList(
                     code_list_config.metadata, code_list_config.new_qb_concepts
                 )

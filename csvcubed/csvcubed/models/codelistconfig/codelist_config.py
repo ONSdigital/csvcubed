@@ -10,7 +10,7 @@ from csvcubed.models.cube.qb.components import NewQbConcept
 
 @dataclass
 class CodeListConfigSort:
-    """TODO: Add Description"""
+    """Add Description"""
 
     by: str
     method: str
@@ -18,7 +18,7 @@ class CodeListConfigSort:
 
 @dataclass
 class CodeListConfigConcept:
-    """TODO: Add Description"""
+    """Add Description"""
 
     label: str
     notation: str
@@ -31,24 +31,23 @@ class CodeListConfigConcept:
     @classmethod
     def from_dict(cls, concept_dict: dict) -> "CodeListConfigConcept":
         """
-        TODO:Loads CSV-W metadata json-ld to rdflib graph
+        Add Description
 
-        Member of :class:`./MetadataProcessor`.
+        Member of :class:``.
 
-        :return: `Graph` - RDFLib Graph of CSV-W metadata json.
+        :return: ``
         """
         if "children" in concept_dict:
-            # TODO There is an issue here with missng children. This should not have pop it seems?
-            for child_concept_dict in concept_dict.pop("children"):
-                child_concept_dict["parent_notation"] = concept_dict["notation"]
-                CodeListConfigConcept.from_dict(child_concept_dict)
+            for child_concepts_dict in concept_dict.pop("children"):
+                child_concepts_dict["parent_notation"] = concept_dict["notation"]
+                CodeListConfigConcept.from_dict(child_concepts_dict)
 
         return CodeListConfigConcept(**concept_dict)
 
 
 @dataclass
 class CodeListConfig:
-    """TODO: Add Description"""
+    """Add Description"""
 
     schema: str
     metadata: CatalogMetadata
@@ -58,11 +57,11 @@ class CodeListConfig:
     @classmethod
     def from_json_file(cls, file_path: Path) -> "CodeListConfig":
         """
-        TODO:
+        Add Description
 
         Member of :class:``.
 
-        :return: .
+        :return: `CodeListConfig`.
         """
         code_list_dict = load_json_document(file_path)
         schema = code_list_dict.pop("$schema")
@@ -78,7 +77,7 @@ class CodeListConfig:
     @property
     def new_qb_concepts(self) -> list[NewQbConcept]:
         """
-        TODO:
+        Add Description
         """
         new_qb_concepts: list[NewQbConcept] = []
         if self.concepts:

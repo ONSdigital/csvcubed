@@ -1,0 +1,49 @@
+{
+  "$schema": "/workspaces/csvcubed/csvcubed/csvcubed/schema/codelist-config/v1_0/schema.json",
+  "title": "Title of the code list",
+  "description": "Description of the code list",
+  "summary": "Summary of the code list",
+  "creator_uri": "http://purl.org/dc/aboutdcmi#DCMI",
+  "publisher_uri": "http://purl.org/dc/aboutdcmi#DCMI",
+  "dataset_issued": "2022-03-31T12:54:30Z",
+  "dataset_modified": "2022-04-01T12:54:30Z",
+  "license_uri": "https://creativecommons.org/licenses/by/4.0/",
+  "theme_uris": [
+   
+  ],
+  "keywords": [
+    "keyword1",
+    "keyword2"
+  ],
+  "sort": {
+    "by": "labels",
+    "method": "ascending"
+  },
+  "concepts": [
+    {
+      "label": "A",
+      "description": "A data record",
+      "notation": "a"
+    },
+    {
+      "label": "B",
+      "description": "B data record",
+      "notation": "b"
+    },
+    {
+      "label": "C",
+      "description": "C data record",
+      "notation": "c"
+    },
+    {
+      "label": "D",
+      "description": "D data record",
+      "notation": "d"
+    },
+    {
+      "label": "E",
+      "description": "E data record",
+      "notation": "e"
+    }
+  ]
+}

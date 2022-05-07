@@ -2,7 +2,7 @@
   "$schema": "/workspaces/csvcubed/csvcubed/csvcubed/schema/codelist-config/v1_0/schema.json",
   "title": "Title of the code list",
   "description": "Description of the code list",
-  "summary": "Summary of the code list.",
+  "summary": "Summary of the code list",
   "creator_uri": "http://purl.org/dc/aboutdcmi#DCMI",
   "publisher_uri": "http://purl.org/dc/aboutdcmi#DCMI",
   "dataset_issued": "2022-03-31T12:54:30Z",
@@ -22,28 +22,28 @@
   "concepts": [
     {
       "label": "A",
-      "description": "Concept's description",
+      "description": "A data record",
       "notation": "a",
       "same_as": "http://example.com/concepts/some-existing-concept"
     },
     {
       "label": "B",
-      "description": "Concept's description",
+      "description": "B data record",
       "notation": "b",
       "children": [
         {
           "label": "C",
-          "description": "Concept's description",
+          "description": "C data record",
           "notation": "c"
         },
         {
           "label": "D",
-          "description": "Concept's description",
+          "description": "D data record",
           "notation": "d",
           "children": [
             {
               "label": "E",
-              "description": "Concept's description",
+              "description": "E data record",
               "notation": "e"
             }
           ]
