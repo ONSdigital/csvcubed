@@ -1,0 +1,17 @@
+{
+    "$schema": "/workspaces/csvcubed/csvcubed/csvcubed/schema/cube-config/v1_1/schema.json",
+    "title": "Test cube config",
+    "summary": "Test cube config summary",
+    "description": "Test cube config description",
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "publisher": "https://www.ons.gov.uk",
+    "dataset_issued": "2022-04-08T00:00:00Z",
+    "keywords": [
+        "Test cube"
+    ],
+    "columns": {
+        "TestDimension": {
+            "code_list": "./code_list_config.json"
+        }
+    }
+}

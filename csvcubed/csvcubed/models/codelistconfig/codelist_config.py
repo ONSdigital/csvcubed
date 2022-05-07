@@ -58,11 +58,11 @@ class CodeListConfig:
     @classmethod
     def from_json_file(cls, file_path: Path) -> "CodeListConfig":
         """
-        TODO:Loads CSV-W metadata json-ld to rdflib graph
+        TODO:
 
-        Member of :class:`./MetadataProcessor`.
+        Member of :class:``.
 
-        :return: `Graph` - RDFLib Graph of CSV-W metadata json.
+        :return: .
         """
         code_list_dict = load_json_document(file_path)
         schema = code_list_dict.pop("$schema")
@@ -78,11 +78,7 @@ class CodeListConfig:
     @property
     def new_qb_concepts(self) -> list[NewQbConcept]:
         """
-        TODO:Loads CSV-W metadata json-ld to rdflib graph
-
-        Member of :class:`./MetadataProcessor`.
-
-        :return: `Graph` - RDFLib Graph of CSV-W metadata json.
+        TODO:
         """
         new_qb_concepts: list[NewQbConcept] = []
         if self.concepts:
