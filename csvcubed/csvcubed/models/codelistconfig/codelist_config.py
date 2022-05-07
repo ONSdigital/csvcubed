@@ -26,7 +26,7 @@ class CodeListConfigConcept:
     description: Optional[str] = field(default=None)
     sort_order: Optional[int] = field(default=None)
     same_as: Optional[str] = field(default=None)
-    children: Optional[list["NewQbConcept"]] = field(default=None)
+    children: Optional[list["CodeListConfigConcept"]] = field(default=None)
 
     @classmethod
     def from_dict(cls, concept_dict: dict) -> "CodeListConfigConcept":
@@ -39,7 +39,7 @@ class CodeListConfigConcept:
         """
         if "children" in concept_dict:
             # TODO There is an issue here with missng children. This should not have pop it seems?
-            for child_concept_dict in concept_dict.pop("children", None):
+            for child_concept_dict in concept_dict.pop("children"):
                 child_concept_dict["parent_notation"] = concept_dict["notation"]
                 CodeListConfigConcept.from_dict(child_concept_dict)
 
@@ -65,11 +65,11 @@ class CodeListConfig:
         :return: `Graph` - RDFLib Graph of CSV-W metadata json.
         """
         code_list_dict = load_json_document(file_path)
-        schema = code_list_dict.pop("$schema", None)
+        schema = code_list_dict.pop("$schema")
         sort = code_list_dict.pop("sort")
         concepts = [
             CodeListConfigConcept.from_dict(concept_dict)
-            for concept_dict in code_list_dict.pop("concepts", None)
+            for concept_dict in code_list_dict.pop("concepts")
         ]
         metadata = CatalogMetadata(**code_list_dict)
 
@@ -85,16 +85,17 @@ class CodeListConfig:
         :return: `Graph` - RDFLib Graph of CSV-W metadata json.
         """
         new_qb_concepts: list[NewQbConcept] = []
-        for concept in self.concepts:
-            new_qb_concepts.append(
-                NewQbConcept(
-                    label=concept.label,
-                    code=concept.notation,
-                    parent_code=concept.parent_notation,
-                    sort_order=concept.sort_order,
-                    description=concept.description,
-                    same_as=concept.same_as,
+        if self.concepts:
+            for concept in self.concepts:
+                new_qb_concepts.append(
+                    NewQbConcept(
+                        label=concept.label,
+                        code=concept.notation,
+                        parent_code=concept.parent_notation,
+                        sort_order=concept.sort_order,
+                        description=concept.description,
+                        same_as=concept.same_as,
+                    )
                 )
-            )
 
         return new_qb_concepts

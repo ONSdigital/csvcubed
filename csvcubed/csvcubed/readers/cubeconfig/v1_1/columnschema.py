@@ -102,12 +102,7 @@ class NewDimension(SchemaBaseClass):
 
                 code_list_config_validator = CodeListConfigValidator()
                 code_list_config_validator.validate_against_schema(schema, config)
-                code_list_config_validator.validate_against_constraints(
-                    code_list_config
-                )
-
-                # TODO: Remove
-                print("Processed and validated code list config: ", code_list_config)
+                
                 return NewQbCodeList(
                     code_list_config.metadata, code_list_config.new_qb_concepts
                 )
