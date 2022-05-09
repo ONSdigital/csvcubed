@@ -9,15 +9,14 @@ If you change the shape of any model in this file, you **must** create a newly v
 
 from abc import ABC
 from dataclasses import dataclass
+from pathlib import Path
 from typing import List, Union, Optional, TypeVar
 
 import uritemplate
-from pathlib import Path
-
 from csvcubedmodels.dataclassbase import DataClassBase
 
 from csvcubed.inputs import pandas_input_to_columnar_optional_str
-from csvcubed.models.cube import CatalogMetadata
+from csvcubed.models.cube import CatalogMetadata, NewQbConcept
 from csvcubed.models.cube.qb.components import (
     NewQbDimension,
     ExistingQbDimension,
@@ -40,14 +39,13 @@ from csvcubed.models.cube.qb.components import (
     NewQbAttributeLiteral,
     NewQbCodeList,
     QbCodeList,
-    NewQbConcept,
 )
-from csvcubed.models.codelistconfig.codelist_config import CodeListConfig
 from csvcubed.inputs import PandasDataTypes
 from csvcubed.utils.uri import (
     csvw_column_name_safe,
     looks_like_uri,
 )
+from csvcubed.models.codelistconfig.codelist_config import CodeListConfig
 from csvcubed.utils.file import is_file_exist
 from csvcubed.readers.codelistconfig.codelist_config_validator import (
     CodeListConfigValidator,
@@ -87,10 +85,13 @@ class NewDimension(SchemaBaseClass):
         )
         # The NewQbCodeList and Concepts are populated in the NewQbDimension.from_data() call
         # the _get_code_list method overrides the code_list if required.
-        new_dimension.code_list = self._get_code_list(new_dimension)
+        new_dimension.code_list = self._get_code_list(new_dimension, csv_column_title)
         return new_dimension
 
-    def _get_code_list(self, new_dimension: NewQbDimension) -> Optional[QbCodeList]:
+    def _get_code_list(
+        self, new_dimension: NewQbDimension, csv_column_title: str
+    ) -> Optional[QbCodeList]:
+
         if isinstance(self.code_list, str):
             if looks_like_uri(self.code_list):
                 return ExistingQbCodeList(self.code_list)
@@ -109,41 +110,47 @@ class NewDimension(SchemaBaseClass):
                 raise ValueError(
                     "Code list contains a string that cannot be recognised as a URI or a valid file path"
                 )
+
         elif isinstance(self.code_list, bool):
             if self.code_list is False:
                 return None
             elif (
                 new_dimension.parent_dimension_uri
                 == "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod"
-                and self.definition_uri is not None
-                and self.definition_uri.lower().startswith(
+                and self.cell_uri_template is not None
+                and self.cell_uri_template.lower().startswith(
                     "http://reference.data.gov.uk/id/"
                 )
             ):
                 # This is a special case where we build up a code-list of the date/time values.
-                return self._get_date_time_code_list_for_dimension(new_dimension)
+                return self._get_date_time_code_list_for_dimension(
+                    new_dimension, self.cell_uri_template, csv_column_title
+                )
             else:
                 return new_dimension.code_list
         else:
             raise ValueError(f"Unmatched code_list value {self.code_list}")
 
+    @staticmethod
     def _get_date_time_code_list_for_dimension(
-        self, new_dimension: NewQbDimension
+        new_dimension: NewQbDimension, cell_uri_template: str, csv_column_title: str
     ) -> CompositeQbCodeList:
-        csvw_safe_column_title = csvw_column_name_safe(new_dimension.label)
+        csvw_safe_column_title = csvw_column_name_safe(csv_column_title)
         assert isinstance(new_dimension.code_list, NewQbCodeList)
+
         return CompositeQbCodeList(
             CatalogMetadata(new_dimension.label),
             [
                 DuplicatedQbConcept(
                     existing_concept_uri=uritemplate.expand(
-                        c.value,
+                        cell_uri_template,
                         {csvw_safe_column_title: c.label},
                     ),
                     label=c.label,
                     code=c.code,
                 )
                 for c in new_dimension.code_list.concepts
+                if isinstance(c, NewQbConcept)
             ],
         )
 
