@@ -28,11 +28,11 @@
       "description": "A short summary of the code list.",
       "type": "string"
     },
-    "creator_uri": {
+    "creator": {
       "description": "The creator of the code list (uri).",
       "$ref": "http://purl.org/csv-cubed/resources/organisations.json#/uris"
     },
-    "publisher_uri": {
+    "publisher": {
       "description": "The publisher of the code list (uri).",
       "$ref": "http://purl.org/csv-cubed/resources/organisations.json#/uris"
     },
@@ -44,11 +44,11 @@
       "description": "Date time that the code list was last modified published in ISO 8601 format, e.g. 2022-03-31 or 2022-03-31T12:54:30Z.",
       "type": "string"
     },
-    "license_uri": {
+    "license": {
       "description": "URI that represents the copyright license applying to this code list.",
       "$ref": "http://purl.org/csv-cubed/resources/licenses.json#/uris"
     },
-    "theme_uris": {
+    "themes": {
       "$ref": "#/definitions/v1.0/themeTypes"
     },
     "keywords": {

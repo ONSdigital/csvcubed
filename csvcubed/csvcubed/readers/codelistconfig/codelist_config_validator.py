@@ -1,7 +1,7 @@
 import logging
 
 from csvcubed.utils.validators.schema import validate_dict_against_schema
-from csvcubed.models.codelistconfig.codelist_config import (
+from csvcubed.models.codelistconfig.code_list_config import (
     CodeListConfigConcept,
 )
 

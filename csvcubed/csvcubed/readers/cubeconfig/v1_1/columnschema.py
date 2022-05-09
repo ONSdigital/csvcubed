@@ -45,7 +45,7 @@ from csvcubed.utils.uri import (
     csvw_column_name_safe,
     looks_like_uri,
 )
-from csvcubed.models.codelistconfig.codelist_config import CodeListConfig
+from csvcubed.models.codelistconfig.code_list_config import CodeListConfig
 from csvcubed.utils.file import is_file_exist
 from csvcubed.readers.codelistconfig.codelist_config_validator import (
     CodeListConfigValidator,

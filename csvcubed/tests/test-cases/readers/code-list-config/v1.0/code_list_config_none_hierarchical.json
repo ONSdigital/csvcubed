@@ -3,13 +3,13 @@
   "title": "Title of the code list",
   "description": "Description of the code list",
   "summary": "Summary of the code list",
-  "creator_uri": "http://purl.org/dc/aboutdcmi#DCMI",
-  "publisher_uri": "http://purl.org/dc/aboutdcmi#DCMI",
+  "creator": "http://purl.org/dc/aboutdcmi#DCMI",
+  "publisher": "http://purl.org/dc/aboutdcmi#DCMI",
   "dataset_issued": "2022-03-31T12:54:30Z",
   "dataset_modified": "2022-04-01T12:54:30Z",
-  "license_uri": "https://creativecommons.org/licenses/by/4.0/",
-  "theme_uris": [
-   
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "themes": [
+    "http: //example.com/themes/theme"
   ],
   "keywords": [
     "keyword1",
