@@ -625,6 +625,12 @@ def test_column_template_expansion():
     dimension = column.structural_definition
     assert dimension.label == "Year"
 
+    # Ensure that the `<column_name>` value gets replaced with the column's CSV-W safe name.
+    assert (
+        column.csv_column_uri_template
+        == "http://reference.data.gov.uk/id/year/{+the_column}"
+    )
+
 
 def test_load_catalog_metadata():
     with open(TEST_CASE_DIR / "cube_data_config_ok.json") as f:
@@ -663,6 +669,43 @@ def test_load_catalog_metadata():
     assert set(catalog_metadata.keywords) == {"A keyword", "Another keyword"}
     assert set(catalog_metadata.theme_uris) == {
         "https://www.ons.gov.uk/economy/nationalaccounts/balanceofpayments"
+    }
+
+
+def test_date_time_column_extraction():
+    """
+    Ensure that date time columns generate code lists which refer back to the original reference.data.gov.uk identifiers.
+    """
+    data = pd.DataFrame({"The Column": ["2010", "2011", "2012"]})
+
+    column = _get_qb_column_from_json(
+        {
+            "type": "dimension",
+            "from_existing": "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod",
+            "label": "Year",
+            "cell_uri_template": "http://reference.data.gov.uk/id/year/{+the_column}",
+        },
+        "The Column",
+        data,
+        QubeConfigJsonSchemaVersion.V1_0.value,
+    )
+
+    assert isinstance(
+        column.structural_definition, NewQbDimension
+    ), column.structural_definition
+    new_dimension = column.structural_definition
+    assert isinstance(new_dimension.code_list, CompositeQbCodeList)
+    composite_code_list = new_dimension.code_list
+    assert set(composite_code_list.concepts) == {
+        DuplicatedQbConcept(
+            "http://reference.data.gov.uk/id/year/2010", label="2010", code="2010"
+        ),
+        DuplicatedQbConcept(
+            "http://reference.data.gov.uk/id/year/2011", label="2011", code="2011"
+        ),
+        DuplicatedQbConcept(
+            "http://reference.data.gov.uk/id/year/2012", label="2012", code="2012"
+        ),
     }
 
 
