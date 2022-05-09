@@ -131,10 +131,11 @@ Feature: Cube!
 
       """
 
-#TODO from here
-Scenario: Output a cube when the code list is defined using code list config schema
+Scenario: Output a cube when the code list is defined using code list config schema v1.0
     Given The config json file "v1.1/cube_config_hierarchical.json" and the existing tidy data csv file "v1.1/data.csv"
+    # TODO Fix VCR issue here - Check with Rob
     When The cube is created with v1.1
+    # TODO change output
     Then The cube Metadata should match
       """
       {
@@ -154,6 +155,7 @@ Scenario: Output a cube when the code list is defined using code list config sch
         "uri_safe_identifier_override": None
       }
       """
+    # TODO change output
     Then The cube Columns should match
     """
       [
