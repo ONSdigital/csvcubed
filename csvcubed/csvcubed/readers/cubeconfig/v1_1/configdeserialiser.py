@@ -10,7 +10,6 @@ from json import JSONDecodeError
 
 from pathlib import Path
 from typing import Dict, Tuple, List, Callable
-from dateutil import parser
 
 import pandas as pd
 from jsonschema.exceptions import ValidationError as JsonSchemaValidationError
@@ -25,6 +24,7 @@ from csvcubed.utils.pandas import read_csv
 from csvcubed.utils.uri import uri_safe
 from csvcubed.utils.validators.schema import validate_dict_against_schema
 from csvcubed.readers.cubeconfig.utils import load_resource
+from csvcubed.readers.catalogmetadata.v1_0.catalog_metadata_reader import metadata_from_dict
 
 # Used to determine whether a column name matches accepted conventions
 from ...preconfiguredtemplates import apply_preconfigured_values_from_template
@@ -112,7 +112,7 @@ def _get_cube_from_config_json_dict(
     data: pd.DataFrame, config: Dict, version_module_path: str
 ) -> QbCube:
     columns: List[CsvColumn] = []
-    metadata: CatalogMetadata = _metadata_from_dict(config)
+    metadata: CatalogMetadata = metadata_from_dict(config)
 
     config_columns = config.get("columns", {})
     for (column_title, column_config) in config_columns.items():
@@ -137,49 +137,6 @@ def _get_qb_column_from_json(
         column_name=column_title,
     )
     return map_column_to_qb_component(column_title, column_config, column_data)
-
-
-def _parse_iso_8601_date_time(
-    date_or_date_time: str,
-) -> Union[datetime.date, datetime.datetime]:
-    dt = parser.isoparse(date_or_date_time)
-    if dt.time() == datetime.time.min:
-        return dt.date()
-
-    return dt
-
-
-def _metadata_from_dict(config: dict) -> "CatalogMetadata":
-    themes = config.get("themes", [])
-    if themes and isinstance(themes, str):
-        themes = [themes]
-
-    keywords = config.get("keywords", [])
-    if keywords and isinstance(keywords, str):
-        keywords = [keywords]
-
-    return CatalogMetadata(
-        identifier=get_with_func_or_none(config, "id", uri_safe),
-        title=config["title"],
-        description=config.get("description", ""),
-        summary=config.get("summary", ""),
-        creator_uri=config.get("creator"),
-        publisher_uri=config.get("publisher"),
-        public_contact_point_uri=config.get("public_contact_point"),
-        dataset_issued=get_with_func_or_none(
-            config, "dataset_issued", _parse_iso_8601_date_time
-        ),
-        dataset_modified=get_with_func_or_none(
-            config, "dataset_modified", _parse_iso_8601_date_time
-        ),
-        license_uri=config.get("license"),
-        theme_uris=themes,
-        keywords=keywords,
-        # spatial_bound_uri=uri_safe(config['spatial_bound'])
-        #     if config.get('spatial_bound') else None,
-        # temporal_bound_uri=uri_safe(config['temporal_bound'])
-        #     if config.get('temporal_bound') else None,
-    )
 
 
 def _read_and_check_csv(csv_path: Path) -> Tuple[DataFrame, List[ValidationError]]:

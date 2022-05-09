@@ -1,24 +1,31 @@
 import json
-from typing import Optional
+from typing import Optional, List
 from dataclasses import dataclass, field
 from pathlib import Path
+
+from csvcubedmodels.dataclassbase import DataClassBase
 
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.utils.json import load_json_document
 from csvcubed.models.cube.qb.components import NewQbConcept
+from csvcubed.readers.catalogmetadata.v1_0.catalog_metadata_reader import (
+    metadata_from_dict,
+)
+
+CODE_LIST_CONFIG_DEFAULT_URL = "https://purl.org/csv-cubed/code-list-config/v1.0"
 
 
 @dataclass
-class CodeListConfigSort:
-    """Add Description"""
+class CodeListConfigSort(DataClassBase):
+    """Model for representing the sort object in code list config."""
 
     by: str
     method: str
 
 
 @dataclass
-class CodeListConfigConcept:
-    """Add Description"""
+class CodeListConfigConcept(DataClassBase):
+    """Model for representing a code list concept in code list config."""
 
     label: str
     notation: str
@@ -26,62 +33,45 @@ class CodeListConfigConcept:
     description: Optional[str] = field(default=None)
     sort_order: Optional[int] = field(default=None)
     same_as: Optional[str] = field(default=None)
-    children: Optional[list["CodeListConfigConcept"]] = field(default=None)
-
-    @classmethod
-    def from_dict(cls, concept_dict: dict) -> "CodeListConfigConcept":
-        """
-        Add Description
-
-        Member of :class:``.
-
-        :return: ``
-        """
-        if "children" in concept_dict:
-            for child_concepts_dict in concept_dict.pop("children"):
-                child_concepts_dict["parent_notation"] = concept_dict["notation"]
-                CodeListConfigConcept.from_dict(child_concepts_dict)
-
-        return CodeListConfigConcept(**concept_dict)
+    children: List["CodeListConfigConcept"] = field(default_factory=list)
 
 
 @dataclass
-class CodeListConfig:
-    """Add Description"""
+class CodeListConfig(DataClassBase):
+    """Model for representing a code list config."""
 
-    schema: str
-    metadata: CatalogMetadata
     sort: Optional[CodeListConfigSort] = field(default=None)
-    concepts: Optional[list[CodeListConfigConcept]] = field(default=None)
+    concepts: List[CodeListConfigConcept] = field(default_factory=list)
+    schema: str = field(init=False, default=CODE_LIST_CONFIG_DEFAULT_URL)
+    metadata: CatalogMetadata = field(
+        init=False, default_factory=lambda: CatalogMetadata("Metadata")
+    )
 
     @classmethod
     def from_json_file(cls, file_path: Path) -> "CodeListConfig":
         """
-        Add Description
-
-        Member of :class:``.
-
-        :return: `CodeListConfig`.
+        Converts code list config json to `CodeListConfig`.
         """
         code_list_dict = load_json_document(file_path)
-        schema = code_list_dict.pop("$schema")
-        sort = code_list_dict.pop("sort")
-        concepts = [
-            CodeListConfigConcept.from_dict(concept_dict)
-            for concept_dict in code_list_dict.pop("concepts")
-        ]
-        metadata = CatalogMetadata(**code_list_dict)
+        schema = code_list_dict.get("$schema", CODE_LIST_CONFIG_DEFAULT_URL)
 
-        return CodeListConfig(schema, metadata, sort, concepts)
+        code_list_config = cls.from_dict(code_list_dict)
+        code_list_config.schema = schema
+        code_list_config.metadata = metadata_from_dict(code_list_dict)
+
+        return code_list_config
 
     @property
     def new_qb_concepts(self) -> list[NewQbConcept]:
         """
-        Add Description
+        Converts concepts of type CodeListConfigConcept to concepts of type NewQbConcept whilst maintaining the hierarchy.
         """
+
         new_qb_concepts: list[NewQbConcept] = []
         if self.concepts:
-            for concept in self.concepts:
+            concepts: list[CodeListConfigConcept] = list(self.concepts)
+
+            for concept in concepts:
                 new_qb_concepts.append(
                     NewQbConcept(
                         label=concept.label,
@@ -92,5 +82,7 @@ class CodeListConfig:
                         same_as=concept.same_as,
                     )
                 )
+                if concept.children is not None and any(concept.children):
+                    concepts += concept.children
 
         return new_qb_concepts
