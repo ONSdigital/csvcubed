@@ -74,8 +74,8 @@ def apply_preconfigured_values_from_template(
     column_config: Dict[str, Any], version_module_path: str, column_name: str
 ) -> None:
     """
-    Preset templates are found through template lookup file. Propeties are then taken from templates and
-    added to column config, with user specified propeties overriding template propeties.
+    Preset templates are found through template lookup file. Properties are then taken from templates and
+    added to column config, with user specified properties overriding template properties.
     """
     # if column_config doesn't have the `from_template` property, just terminate the function now
     if "from_template" not in column_config:
