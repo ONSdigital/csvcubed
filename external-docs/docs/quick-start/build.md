@@ -59,6 +59,10 @@ There are a number of errors which can occur when building a CSV-W; most of them
 
 Please see our documentation explaining a [number of common errors](../guides/errors/index.md) to see what you can do to diagnose and correct any errors which occur.
 
+## A transcribed audio screencast convering the contents of this page
+
+<iframe src="https://share.descript.com/embed/6tk6GM5GAAd" width="640" height="360" frameborder="0" allowfullscreen></iframe>
+
 ## Next
 
 The next step is to [describe your CSV](./describing-csv.md).

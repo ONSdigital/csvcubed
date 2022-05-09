@@ -48,7 +48,7 @@ class ExistingQbConcept(SecondaryQbStructuralDefinition):
     _existing_concept_uri_validator = validate_uri("existing_concept_uri")
 
 
-@dataclass
+@dataclass(unsafe_hash=True)
 class DuplicatedQbConcept(NewQbConcept, ExistingQbConcept):
     """
     Represents a QbConcept which duplicates an :class:`ExistingQbConcept` with overriding label, notation, etc.

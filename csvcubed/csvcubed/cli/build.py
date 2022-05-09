@@ -76,7 +76,7 @@ def build(
         _logger.fatal("Failed to generate CSV-W.")
         raise
 
-    print(f"Build Complete")
+    print(f"Build Complete @ {output_directory.resolve()}")
     return cube, validation_errors
 
 
