@@ -12,7 +12,7 @@
     "columns": {
         "Diemension": {
             "type": "dimension",
-            "code_list": "/workspaces/csvcubed/csvcubed/csvcubed/schema/cube-config/v1_1/temp/code_list_config_hierarchical.json"
+            "code_list": "/workspaces/csvcubed/csvcubed/tests/test-cases/readers/code-list-config/v1.0/code_list_config_hierarchical.json"
         },
         "Value": {
             "type": "observations"

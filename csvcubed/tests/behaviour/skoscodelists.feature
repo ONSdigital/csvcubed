@@ -99,9 +99,3 @@ Feature: Test outputting CSV-Ws containing `SKOS:ConceptScheme`s.
         <http://www.w3.org/ns/ui#sortPriority> 2.
 
       """
-
-  # Scenario: A hierarchal code list can be serialised from config.json v1_1.
-  #   Given The config json file "v1.1/cube_config.json" and the existing tidy data csv file "v1.0/cube_data_config_ok.csv"
-  #   When The cube is created
-  #   Then The cube Metadata should match
-  #   Then The cube Columns should match      

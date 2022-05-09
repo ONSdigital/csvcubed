@@ -42,8 +42,8 @@ def step_impl(context, config_file, data_file):
     context.data_file = data_file
 
 
-@when("The cube is created")
-def step_impl(context):
+@when("The cube is created with {version}")
+def step_impl(context, version):
     config_file = context.config_file if hasattr(context, "config_file") else None
     data_file = context.data_file
 
@@ -51,15 +51,22 @@ def step_impl(context):
     mocker.start()
 
     with open(
-        ROOT_DIR_PATH / "csvcubed" / "schema" / "cube-config" / "v1_0" / "schema.json",
+        ROOT_DIR_PATH
+        / "csvcubed"
+        / "schema"
+        / "cube-config"
+        / version.replace(".", "_")
+        / "schema.json",
         "r",
     ) as f:
         mocker.register_uri(
-            "GET", "https://purl.org/csv-cubed/qube-config/v1.0", text=f.read()
+            "GET", f"https://purl.org/csv-cubed/qube-config/{version}", text=f.read()
         )
     context.out_dir = get_context_temp_dir_path(context) / "out"
     context.add_cleanup(lambda: mocker.stop())
-
+    print(data_file)
+    print(config_file)
+    
     with vcr.use_cassette(str(_cassettes_dir / "cube-created.yaml")):
         cube, errors = cli_build(
             data_file,
