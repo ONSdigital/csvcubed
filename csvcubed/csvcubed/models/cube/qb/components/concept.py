@@ -22,7 +22,6 @@ class NewQbConcept(SecondaryQbStructuralDefinition, UriIdentifiable):
     parent_code: Optional[str] = field(default=None, repr=False)
     sort_order: Optional[int] = field(default=None, repr=False)
     description: Optional[str] = field(default=None, repr=False)
-    same_as: Optional[str] = field(default=None, repr=False)
     uri_safe_identifier_override: Optional[str] = field(default=None, repr=False)
 
     def get_identifier(self) -> str:

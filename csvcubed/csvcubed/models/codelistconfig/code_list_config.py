@@ -79,7 +79,6 @@ class CodeListConfig(DataClassBase):
                         parent_code=concept.parent_notation,
                         sort_order=concept.sort_order,
                         description=concept.description,
-                        same_as=concept.same_as,
                     )
                 )
                 if concept.children is not None and any(concept.children):
