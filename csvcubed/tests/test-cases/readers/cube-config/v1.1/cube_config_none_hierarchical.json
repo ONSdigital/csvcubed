@@ -13,7 +13,7 @@
     "columns": {
         "Dimension": {
             "type": "dimension",
-            "code_list": "/workspaces/csvcubed/csvcubed/csvcubed/schema/code-list-config/v1_0/code_list_config_none_hierarchical.json"
+            "code_list": "../../code-list-config/v1.0/code_list_config_hierarchical.json"
         },
         "Value": {
             "type": "observations"

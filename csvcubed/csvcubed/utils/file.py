@@ -4,6 +4,7 @@ File
 
 Utilities for files.
 """
+import os
 import logging
 import shutil
 from pathlib import Path
@@ -49,9 +50,11 @@ def get_root_dir_level(end_file: str, start_dir: Path = Path(".")) -> Path:
     return get_root_dir_level(end_file, start_dir.absolute().parent)
 
 
-def file_exists(file_path: str) -> bool:
+def code_list_config_json_exists(
+    code_list_config_path: Path, cube_config_path: Path
+) -> bool:
     """
     Checks whether the files exists in the given file path.
     """
-    file = Path(file_path)
-    return file.exists()
+    file_path = (cube_config_path / code_list_config_path).resolve()
+    return file_path.exists()

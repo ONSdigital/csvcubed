@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional, List, Tuple, Dict
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -47,7 +47,7 @@ class CodeListConfig(DataClassBase):
     )
 
     @classmethod
-    def from_json_file(cls, file_path: Path) -> "CodeListConfig":
+    def from_json_file(cls, file_path: Path) -> Tuple["CodeListConfig", Dict]:
         """
         Converts code list config json to `CodeListConfig`.
         """
@@ -58,7 +58,7 @@ class CodeListConfig(DataClassBase):
         code_list_config.schema = schema
         code_list_config.metadata = metadata_from_dict(code_list_dict)
 
-        return code_list_config
+        return (code_list_config, code_list_dict)
 
     @property
     def new_qb_concepts(self) -> list[NewQbConcept]:

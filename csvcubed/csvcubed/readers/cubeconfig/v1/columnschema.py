@@ -49,7 +49,7 @@ from csvcubed.utils.uri import (
     looks_like_uri,
 )
 from csvcubed.models.codelistconfig.code_list_config import CodeListConfig
-from csvcubed.utils.file import file_exists
+from csvcubed.utils.file import code_list_config_json_exists
 from csvcubed.readers.cubeconfig.utils import load_resource
 
 _logger = logging.getLogger(__name__)
@@ -93,18 +93,27 @@ class NewDimension(SchemaBaseClass):
     def _get_code_list(
         self, new_dimension: NewQbDimension, csv_column_title: str
     ) -> Optional[QbCodeList]:
+        cube_config_path = Path(
+            "/workspaces/csvcubed/csvcubed/tests/test-cases/readers/cube-config/v1.1/"
+        )
 
         if isinstance(self.code_list, str):
             if looks_like_uri(self.code_list):
                 return ExistingQbCodeList(self.code_list)
             # The following elif is for cube config v1.1.
-            elif file_exists(self.code_list):
-                code_list_config = CodeListConfig.from_json_file(Path(self.code_list))
+            elif code_list_config_json_exists(Path(self.code_list), cube_config_path):
+                code_list_config_path = (cube_config_path / self.code_list).resolve()
+                _logger.info(
+                    f"Loading code list from local file path: {code_list_config_path}"
+                )
+
+                code_list_config, code_list_config_dict = CodeListConfig.from_json_file(
+                    code_list_config_path
+                )
                 schema = load_resource(code_list_config.schema)
-                config = load_resource(self.code_list)
 
                 code_list_schema_validation_errors = validate_dict_against_schema(
-                    value=config, schema=schema
+                    value=code_list_config_dict, schema=schema
                 )
                 for error_msg in code_list_schema_validation_errors:
                     _logger.warn(error_msg)
@@ -114,7 +123,7 @@ class NewDimension(SchemaBaseClass):
                 )
             else:
                 raise ValueError(
-                    "Code List contains a string that cannot be recognised as a URI"
+                    "Code List contains a string that cannot be recognised as a URI or a valid File Path"
                 )
 
         elif isinstance(self.code_list, bool):

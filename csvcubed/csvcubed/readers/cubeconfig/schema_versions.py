@@ -46,6 +46,7 @@ class QubeConfigJsonSchemaMinorVersion(Enum):
 
 def get_deserialiser_for_schema(
     maybe_schema_path: Optional[str],
+    cube_config_path: str
 ) -> QubeConfigDeserialiser:
     """
     Provides a versioned deserialiser function appropriate to the referenced schema.
@@ -54,10 +55,10 @@ def get_deserialiser_for_schema(
     schema_path = _v1_1_SCHEMA_URL if maybe_schema_path is None else maybe_schema_path
 
     schema_version_majour, schema_version_minor = _get_schema_version(schema_path)
-    _logger.info(f"Using schema version {schema_version_majour}.{schema_version_minor}")
+    _logger.info(f"Using schema version {schema_version_majour.value}.{schema_version_minor.value}")
 
     if schema_version_majour == QubeConfigJsonSchemaMajourVersion.v1:
-        return v1.configdeserialiser.get_deserialiser(schema_path)
+        return v1.configdeserialiser.get_deserialiser(schema_path, cube_config_path)
     else:
         raise ValueError(f"Unhandled schema version {schema_version_majour}")
 
