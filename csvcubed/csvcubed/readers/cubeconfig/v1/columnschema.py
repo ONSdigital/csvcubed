@@ -7,10 +7,12 @@ config.json v1.* column mapping models.
 If you change the shape of any model in this file, you **must** create a newly versioned JSON schema reflecting said changes.
 """
 
+import logging
 from abc import ABC
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Union, Optional, TypeVar
+from csvcubed.utils.validators.schema import validate_dict_against_schema
 
 import uritemplate
 
@@ -48,10 +50,9 @@ from csvcubed.utils.uri import (
 )
 from csvcubed.models.codelistconfig.code_list_config import CodeListConfig
 from csvcubed.utils.file import is_file_exist
-from csvcubed.readers.codelistconfig.codelist_config_validator import (
-    CodeListConfigValidator,
-)
 from csvcubed.readers.cubeconfig.utils import load_resource
+
+_logger = logging.getLogger(__name__)
 
 T = TypeVar("T", bound=object)
 
@@ -102,8 +103,11 @@ class NewDimension(SchemaBaseClass):
                 schema = load_resource(code_list_config.schema)
                 config = load_resource(self.code_list)
 
-                code_list_config_validator = CodeListConfigValidator()
-                code_list_config_validator.validate_against_schema(schema, config)
+                schema_validation_errors = validate_dict_against_schema(
+                    value=config, schema=schema
+                )
+                for error_msg in schema_validation_errors:
+                    _logger.warn(error_msg)
 
                 return NewQbCodeList(
                     code_list_config.metadata, code_list_config.new_qb_concepts
