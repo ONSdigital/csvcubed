@@ -4,13 +4,14 @@
     "summary": "Test cube config summary",
     "description": "Test cube config description",
     "license": "https://creativecommons.org/licenses/by/4.0/",
-    "publisher": "https://www.ons.gov.uk",
+    "creator": "http://statistics.data.gov.uk",
+    "publisher": "http://statistics.data.gov.uk",
     "dataset_issued": "2022-04-08T00:00:00Z",
     "keywords": [
         "Test cube"
     ],
     "columns": {
-        "Diemension": {
+        "Dimension": {
             "type": "dimension",
             "code_list": "/workspaces/csvcubed/csvcubed/csvcubed/schema/code-list-config/v1_0/code_list_config_none_hierarchical.json"
         },
