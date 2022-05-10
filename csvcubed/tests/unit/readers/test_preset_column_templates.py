@@ -41,8 +41,8 @@ def test_from_template_removed_from_column_config():
 
 def test_raise_error_works_for_none_existing_template_lookup_path():
     template_lookup_url = f"{TEMPLATE_BASE_URL}/preset_column_config.json"
-    with pytest.raises(HTTPError) as excinfo:
-        _get_template_file_from_template_lookup("year", "vv2_0")
+    with pytest.raises(Exception) as excinfo:
+        _get_template_file_from_template_lookup("year_none_existing")
         assert f"Unable to get from url {template_lookup_url}. Status code:" in str(
             excinfo
         )
