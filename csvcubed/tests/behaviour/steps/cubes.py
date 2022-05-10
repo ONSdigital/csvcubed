@@ -64,8 +64,6 @@ def step_impl(context, version):
         )
     context.out_dir = get_context_temp_dir_path(context) / "out"
     context.add_cleanup(lambda: mocker.stop())
-    print(data_file)
-    print(config_file)
     
     with vcr.use_cassette(str(_cassettes_dir / "cube-created.yaml")):
         cube, errors = cli_build(

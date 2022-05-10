@@ -23,5 +23,5 @@ class CodeListConfigValidator:
             value=config, schema=schema
         )
 
-        if len(schema_validation_errors) > 0:
-            raise Exception("".join(f"{err}," for err in schema_validation_errors))
+        for error_msg in schema_validation_errors:
+            _logger.warn(error_msg)

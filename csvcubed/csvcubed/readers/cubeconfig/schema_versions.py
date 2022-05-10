@@ -4,7 +4,9 @@ Schema Versions
 
 Contains an enum listing the qube-config.json schema versions recognised by csvcubed.
 """
-from enum import Enum, auto
+
+import logging
+from enum import Enum
 from pathlib import Path
 from typing import Optional, Callable, Tuple, List
 
@@ -12,7 +14,9 @@ from jsonschema.exceptions import ValidationError as JsonSchemaValidationError
 
 from csvcubed.models.cube import QbCube
 from csvcubed.models.validationerror import ValidationError
-from csvcubed.readers.cubeconfig import v1, v1_1
+from csvcubed.readers.cubeconfig import v1
+
+_logger = logging.getLogger(__name__)
 
 QubeConfigDeserialiser = Callable[
     [Path, Optional[Path]],
@@ -49,7 +53,9 @@ def get_deserialiser_for_schema(
     # Default to the latest version of the schema.
     schema_path = _v1_1_SCHEMA_URL if maybe_schema_path is None else maybe_schema_path
 
-    schema_version_majour, _ = _get_schema_version(schema_path)
+    schema_version_majour, schema_version_minor = _get_schema_version(schema_path)
+    _logger.info(f"Using schema version {schema_version_majour}.{schema_version_minor}")
+
     if schema_version_majour == QubeConfigJsonSchemaMajourVersion.v1:
         return v1.configdeserialiser.get_deserialiser(
             schema_path, schema_version_majour.value

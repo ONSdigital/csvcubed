@@ -9,7 +9,7 @@
   "dataset_modified": "2022-04-01T12:54:30Z",
   "license": "https://creativecommons.org/licenses/by/4.0/",
   "themes": [
-    "http: //example.com/themes/theme"
+    "http://example.com/themes/theme"
   ],
   "keywords": [
     "keyword1"

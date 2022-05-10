@@ -11,10 +11,10 @@ from jsonschema.exceptions import ValidationError as JsonSchemaValidationError
 from pathlib import Path
 from typing import Dict, Optional, Tuple, List, Callable
 
-from csvcubed.csvcubed.models.cube.columns import CsvColumn
-from csvcubed.csvcubed.models.cube.cube import Cube
-from csvcubed.csvcubed.models.cube.qb import QbCube
-from csvcubed.csvcubed.models.cube.qb.catalog import CatalogMetadata
+from csvcubed.models.cube.columns import CsvColumn
+from csvcubed.models.cube.cube import Cube
+from csvcubed.models.cube.qb import QbCube
+from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.validationerror import ValidationError
 from csvcubed.utils.iterables import first
 from csvcubed.utils.validators.schema import validate_dict_against_schema
