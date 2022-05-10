@@ -19,8 +19,9 @@ def mock_http_session():
         )
 
         template_files = templates_dir.rglob("**/*.json*")
+
         if not any(template_files):
-            raise ValueError(f"Couldn't find template files in {templates_dir}")
+            raise ValueError(f"Couldn't find template files in {templates_dir}.")
 
         for template_file in template_files:
             relative_file_path = str(template_file.relative_to(templates_dir))
