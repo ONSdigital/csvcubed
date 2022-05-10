@@ -1,14 +1,32 @@
+import datetime
+from pathlib import Path
 import json
 import os
+import pandas as pd
 from tempfile import TemporaryDirectory
+from typing import List
+from csvcubed.readers.cubeconfig.v1.configdeserialiser import get_deserialiser
 
 import pytest
-from csvcubed.cli.build import build as cli_build
-from csvcubed.readers.cubeconfig.v1.configdeserialiser import *
-from csvcubed.readers.cubeconfig.schema_versions import QubeConfigJsonSchemaVersion
 
-from tests.unit.test_baseunit import get_test_cases_dir
+from csvcubed.models.cube.cube import Cube
+from csvcubed.models.cube.qb.catalog import CatalogMetadata
+from csvcubed.models.cube.qb.components.observedvalue import (
+    QbMultiMeasureObservationValue,
+)
+from csvcubed.cli.build import build as cli_build
 from csvcubed.definitions import ROOT_DIR_PATH
+from csvcubed.models.cube.qb import QbColumn
+from csvcubed.models.cube.qb.components import (
+    NewQbMeasure,
+    NewQbUnit,
+    NewQbDimension,
+    NewQbCodeList,
+    QbMultiMeasureDimension,
+    QbMultiUnits,
+    NewQbConcept,
+)
+from tests.unit.test_baseunit import get_test_cases_dir
 
 TEST_CASE_DIR = get_test_cases_dir().absolute() / "readers" / "cube-config" / "v1.0"
 SCHEMA_PATH_FILE = Path(
@@ -115,11 +133,9 @@ def test_conventional_column_ordering_correct():
 
         data.to_csv(str(data_file_path), index=False)
 
-        deserialiser = get_deserialiser(
-            SCHEMA_PATH_FILE, QubeConfigJsonSchemaVersion.V1_0.value
-        )
+        deserialiser = get_deserialiser(SCHEMA_PATH_FILE)
 
-        cube, _schema_validation_errors, data_errors = deserialiser(data_file_path, config_file_path)
+        cube, _, _ = deserialiser(data_file_path, config_file_path)
 
         column_titles_in_order = [c.csv_column_title for c in cube.columns]
         assert column_titles_in_order == list(data.columns)

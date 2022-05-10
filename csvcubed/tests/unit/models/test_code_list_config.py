@@ -1,10 +1,7 @@
 from pathlib import Path
 from typing import Dict, List
 
-from csvcubed.readers.cubeconfig.utils import load_resource
-from csvcubed.readers.catalogmetadata.v1.catalog_metadata_reader import (
-    _parse_iso_8601_date_time,
-)
+from csvcubed.readers.cubeconfig.utils import load_resource, parse_iso_8601_date_time
 from csvcubed.models.codelistconfig.code_list_config import (
     CODE_LIST_CONFIG_DEFAULT_URL,
     CodeListConfig,
@@ -48,10 +45,10 @@ def _assert_code_list_config_data(
     assert code_list_config.metadata.creator_uri == code_list_config_json["creator"]
     assert code_list_config.metadata.publisher_uri == code_list_config_json["publisher"]
     assert code_list_config.metadata.dataset_issued == get_with_func_or_none(
-        code_list_config_json, "dataset_issued", _parse_iso_8601_date_time
+        code_list_config_json, "dataset_issued", parse_iso_8601_date_time
     )
     assert code_list_config.metadata.dataset_modified == get_with_func_or_none(
-        code_list_config_json, "dataset_modified", _parse_iso_8601_date_time
+        code_list_config_json, "dataset_modified", parse_iso_8601_date_time
     )
     assert code_list_config.metadata.license_uri == code_list_config_json["license"]
     assert len(code_list_config.metadata.theme_uris) == len(

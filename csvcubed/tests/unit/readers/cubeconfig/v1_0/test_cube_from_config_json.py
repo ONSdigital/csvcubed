@@ -1,19 +1,53 @@
 import datetime
+from pathlib import Path
 import json
 import os
+import pandas as pd
 from tempfile import TemporaryDirectory
+from typing import List
+
+from csvcubed.models.cube.qb.components.attribute import ExistingQbAttribute
+from csvcubed.models.cube.qb.components.codelist import (
+    CompositeQbCodeList,
+    ExistingQbCodeList,
+)
+from csvcubed.models.cube.qb.components.concept import DuplicatedQbConcept
+from csvcubed.models.cube.qb.components.dimension import ExistingQbDimension
+from csvcubed.models.cube.qb.components.measure import ExistingQbMeasure
+from csvcubed.models.cube.qb.components.unit import ExistingQbUnit
+from csvcubed.readers.catalogmetadata.v1.catalog_metadata_reader import (
+    metadata_from_dict,
+)
 
 import pytest
 
-from csvcubed.cli.build import build as cli_build
-from csvcubed.readers.cubeconfig.schema_versions import QubeConfigJsonSchemaVersion
-from csvcubed.readers.cubeconfig.v1.configdeserialiser import *
-from csvcubed.readers.cubeconfig.v1.configdeserialiser import (
-    _get_qb_column_from_json,
-    _metadata_from_dict,
+from csvcubed.models.cube.cube import Cube
+from csvcubed.models.cube.qb.catalog import CatalogMetadata
+from csvcubed.models.cube.qb.components.attributevalue import (
+    NewQbAttributeValue,
 )
+from csvcubed.models.cube.qb.components.observedvalue import (
+    QbMultiMeasureObservationValue,
+)
+from csvcubed.readers.cubeconfig.v1.mapcolumntocomponent import (
+    map_column_to_qb_component,
+)
+from csvcubed.utils.uri import uri_safe
+from csvcubed.cli.build import build as cli_build
+from csvcubed.readers.cubeconfig.v1.configdeserialiser import _get_qb_column_from_json
 from tests.unit.test_baseunit import get_test_cases_dir, assert_num_validation_errors
 from csvcubed.definitions import ROOT_DIR_PATH
+from csvcubed.models.cube.qb import QbColumn
+from csvcubed.models.cube.qb.components import (
+    NewQbMeasure,
+    NewQbUnit,
+    NewQbDimension,
+    NewQbCodeList,
+    QbMultiMeasureDimension,
+    QbMultiUnits,
+    NewQbAttribute,
+    NewQbConcept,
+)
 
 TEST_CASE_DIR = get_test_cases_dir().absolute() / "readers" / "cube-config" / "v1.0"
 SCHEMA_PATH_FILE = Path(
@@ -618,7 +652,6 @@ def test_column_template_expansion():
         },
         "The Column",
         data,
-        QubeConfigJsonSchemaVersion.V1_0.value,
     )
 
     assert isinstance(column.structural_definition, NewQbDimension)
@@ -636,7 +669,7 @@ def test_load_catalog_metadata():
     with open(TEST_CASE_DIR / "cube_data_config_ok.json") as f:
         config = json.load(f)
 
-    catalog_metadata = _metadata_from_dict(config)
+    catalog_metadata = metadata_from_dict(config)
 
     validation_errors = catalog_metadata.pydantic_validation()
     assert_num_validation_errors(validation_errors, 0)
@@ -687,7 +720,6 @@ def test_date_time_column_extraction():
         },
         "The Column",
         data,
-        QubeConfigJsonSchemaVersion.V1_0.value,
     )
 
     assert isinstance(
