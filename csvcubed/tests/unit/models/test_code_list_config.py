@@ -68,8 +68,7 @@ def test_code_list_config_model():
     code_list_config_json_path = (
         _test_case_base_dir / "code_list_config_none_hierarchical.json"
     )
-    code_list_config_json = load_resource(code_list_config_json_path)
-    code_list_config = CodeListConfig.from_json_file(Path(code_list_config_json_path))
+    code_list_config, code_list_config_json = CodeListConfig.from_json_file(Path(code_list_config_json_path))
 
     assert code_list_config.schema == code_list_config_json["$schema"]
     _assert_code_list_config_data(code_list_config, code_list_config_json)
@@ -85,8 +84,7 @@ def test_code_list_config_model_without_schema():
     code_list_config_json_path = (
         _test_case_base_dir / "code_list_config_none_hierarchical_without_schema.json"
     )
-    code_list_config_json = load_resource(code_list_config_json_path)
-    code_list_config = CodeListConfig.from_json_file(Path(code_list_config_json_path))
+    code_list_config, code_list_config_json = CodeListConfig.from_json_file(Path(code_list_config_json_path))
 
     assert code_list_config.schema == CODE_LIST_CONFIG_DEFAULT_URL
     _assert_code_list_config_data(code_list_config, code_list_config_json)
@@ -103,8 +101,7 @@ def test_code_list_config_model_with_hierarchy():
     code_list_config_json_path = (
         _test_case_base_dir / "code_list_config_hierarchical.json"
     )
-    code_list_config_json = load_resource(code_list_config_json_path)
-    code_list_config = CodeListConfig.from_json_file(Path(code_list_config_json_path))
+    code_list_config, code_list_config_json = CodeListConfig.from_json_file(Path(code_list_config_json_path))
 
     assert code_list_config.schema == code_list_config_json["$schema"]
     _assert_code_list_config_data(code_list_config, code_list_config_json)

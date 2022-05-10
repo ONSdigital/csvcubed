@@ -103,28 +103,35 @@ def get_deserialiser(
             config = {"title": generate_title_from_file_name(csv_path)}
             schema_validation_errors = []
 
-        cube = _get_cube_from_config_json_dict(data, config)
+        cube = _get_cube_from_config_json_dict(data, config, config_path)
 
-        _configure_remaining_columns_by_convention(cube, data)
+        _configure_remaining_columns_by_convention(cube, data, config_path)
 
         return cube, schema_validation_errors, data_errors
 
     return get_cube_from_config_json
 
 
-def _get_cube_from_config_json_dict(data: pd.DataFrame, config: Dict) -> QbCube:
+def _get_cube_from_config_json_dict(
+    data: pd.DataFrame, config: Dict, config_path: Optional[Path] = None
+) -> QbCube:
     columns: List[CsvColumn] = []
     metadata: CatalogMetadata = metadata_from_dict(config)
 
     config_columns = config.get("columns", {})
     for (column_title, column_config) in config_columns.items():
-        columns.append(_get_qb_column_from_json(column_config, column_title, data))
+        columns.append(
+            _get_qb_column_from_json(column_config, column_title, data, config_path)
+        )
 
     return Cube(metadata, data, columns)
 
 
 def _get_qb_column_from_json(
-    column_config: dict, column_title: str, data: pd.DataFrame
+    column_config: dict,
+    column_title: str,
+    data: pd.DataFrame,
+    config_path: Optional[Path] = None,
 ):
     # When the config json contains a col definition and the col title is not in the data
     column_data = data[column_title] if column_title in data.columns else None
@@ -133,11 +140,13 @@ def _get_qb_column_from_json(
         column_config=column_config,
         column_name=column_title,
     )
-    return map_column_to_qb_component(column_title, column_config, column_data)
+    return map_column_to_qb_component(
+        column_title, column_config, column_data, config_path
+    )
 
 
 def _configure_remaining_columns_by_convention(
-    cube: QbCube, data: pd.DataFrame
+    cube: QbCube, data: pd.DataFrame, config_path: Optional[Path] = None
 ) -> None:
     """Update columns from csv where appropriate, i.e. config did not define the column."""
     configured_columns = {col.csv_column_title: col for col in cube.columns}
@@ -154,6 +163,7 @@ def _configure_remaining_columns_by_convention(
                 column_title=column_title,
                 column=column_dict,
                 data=data[column_title].astype("category"),
+                config_path=config_path,
             )
 
             ordered_columns.append(qb_column)

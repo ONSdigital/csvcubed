@@ -41,7 +41,7 @@ def test_01_build_convention_ok():
     test_data_path = Path(
         os.path.join(TEST_CASE_DIR, "cube_data_convention_ok.csv")
     ).resolve()
-    test_json_path = None
+
     print(f"test_case_data: {test_data_path}")
     with TemporaryDirectory() as temp_dir_path:
         temp_dir = Path(temp_dir_path)

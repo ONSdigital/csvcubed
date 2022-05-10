@@ -75,7 +75,10 @@ class NewDimension(SchemaBaseClass):
     cell_uri_template: Optional[str] = None
 
     def map_to_new_qb_dimension(
-        self, csv_column_title: str, data: PandasDataTypes
+        self,
+        csv_column_title: str,
+        data: PandasDataTypes,
+        config_path: Optional[Path] = None,
     ) -> NewQbDimension:
 
         new_dimension = NewQbDimension.from_data(
@@ -87,22 +90,27 @@ class NewDimension(SchemaBaseClass):
         )
         # The NewQbCodeList and Concepts are populated in the NewQbDimension.from_data() call
         # the _get_code_list method overrides the code_list if required.
-        new_dimension.code_list = self._get_code_list(new_dimension, csv_column_title)
+        new_dimension.code_list = self._get_code_list(
+            new_dimension, csv_column_title, cube_config_path=config_path
+        )
         return new_dimension
 
     def _get_code_list(
-        self, new_dimension: NewQbDimension, csv_column_title: str
+        self,
+        new_dimension: NewQbDimension,
+        csv_column_title: str,
+        cube_config_path: Path,
     ) -> Optional[QbCodeList]:
-        cube_config_path = Path(
-            "/workspaces/csvcubed/csvcubed/tests/test-cases/readers/cube-config/v1.1/"
-        )
-
         if isinstance(self.code_list, str):
             if looks_like_uri(self.code_list):
                 return ExistingQbCodeList(self.code_list)
             # The following elif is for cube config v1.1.
-            elif code_list_config_json_exists(Path(self.code_list), cube_config_path):
-                code_list_config_path = (cube_config_path / self.code_list).resolve()
+            elif cube_config_path and code_list_config_json_exists(
+                Path(self.code_list), cube_config_path.parent
+            ):
+                code_list_config_path = (
+                    cube_config_path.parent / self.code_list
+                ).resolve()
                 _logger.info(
                     f"Loading code list from local file path: {code_list_config_path}"
                 )

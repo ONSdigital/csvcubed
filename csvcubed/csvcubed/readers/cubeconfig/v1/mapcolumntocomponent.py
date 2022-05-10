@@ -5,7 +5,8 @@ Mapping
 Map info.json v1.* definitions to QB column components
 """
 import copy
-from typing import Union
+from pathlib import Path
+from typing import Union, Optional
 
 from csvcubed.models.cube.qb.columns import QbColumn
 from csvcubed.inputs import PandasDataTypes
@@ -13,7 +14,10 @@ import csvcubed.readers.cubeconfig.v1.columnschema as schema
 
 
 def map_column_to_qb_component(
-    column_title: str, column: dict, data: PandasDataTypes
+    column_title: str,
+    column: dict,
+    data: PandasDataTypes,
+    config_path: Optional[Path] = None,
 ) -> QbColumn:
     """
     Takes a config.json v1.* column mapping and, if valid,
@@ -24,7 +28,7 @@ def map_column_to_qb_component(
     if isinstance(schema_mapping, schema.NewDimension):
         return QbColumn(
             column_title,
-            schema_mapping.map_to_new_qb_dimension(column_title, data),
+            schema_mapping.map_to_new_qb_dimension(column_title, data, config_path),
             csv_column_uri_template=schema_mapping.cell_uri_template,
         )
 
