@@ -7,8 +7,8 @@ import pytest
 
 from csvcubed.cli.build import build as cli_build
 from csvcubed.readers.cubeconfig.schema_versions import QubeConfigJsonSchemaVersion
-from csvcubed.readers.cubeconfig.v1_0.configdeserialiser import *
-from csvcubed.readers.cubeconfig.v1_0.configdeserialiser import (
+from csvcubed.readers.cubeconfig.v1.configdeserialiser import *
+from csvcubed.readers.cubeconfig.v1.configdeserialiser import (
     _get_qb_column_from_json,
     _metadata_from_dict,
 )

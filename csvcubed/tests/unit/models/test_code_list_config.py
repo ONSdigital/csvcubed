@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import Dict, List
 
 from csvcubed.readers.cubeconfig.utils import load_resource
-from csvcubed.readers.catalogmetadata.v1_0.catalog_metadata_reader import (
+from csvcubed.readers.catalogmetadata.v1.catalog_metadata_reader import (
     _parse_iso_8601_date_time,
 )
 from csvcubed.models.codelistconfig.code_list_config import (

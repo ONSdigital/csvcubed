@@ -18,7 +18,11 @@ def mock_http_session():
             ROOT_DIR_PATH / "csvcubed" / "readers" / "cubeconfig" / "v1_0" / "templates"
         )
 
-        for template_file in templates_dir.rglob("**/*.json*"):
+        template_files = templates_dir.rglob("**/*.json*")
+        if not any(template_files):
+            raise ValueError(f"Couldn't find template files in {templates_dir}")
+
+        for template_file in template_files:
             relative_file_path = str(template_file.relative_to(templates_dir))
             with open(template_file) as f:
                 mocker.register_uri(

@@ -8,7 +8,7 @@ from csvcubedmodels.dataclassbase import DataClassBase
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.utils.json import load_json_document
 from csvcubed.models.cube.qb.components import NewQbConcept
-from csvcubed.readers.catalogmetadata.v1_0.catalog_metadata_reader import (
+from csvcubed.readers.catalogmetadata.v1.catalog_metadata_reader import (
     metadata_from_dict,
 )
 

@@ -2,29 +2,33 @@
 Config.json Loader
 __________________
 
-A loader for the config.json.
+A loader for the v1.* config.json.
 """
-import datetime
 import logging
 from json import JSONDecodeError
-
-from pathlib import Path
-from typing import Dict, Tuple, List, Callable
-
 import pandas as pd
 from jsonschema.exceptions import ValidationError as JsonSchemaValidationError
-from pandas import DataFrame
+from pathlib import Path
+from typing import Dict, Optional, Tuple, List, Callable
 
-from csvcubed.models.cube import *
+from csvcubed.csvcubed.models.cube.columns import CsvColumn
+from csvcubed.csvcubed.models.cube.cube import Cube
+from csvcubed.csvcubed.models.cube.qb import QbCube
+from csvcubed.csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.validationerror import ValidationError
-from .mapcolumntocomponent import map_column_to_qb_component
-from csvcubed.utils.dict import get_with_func_or_none
 from csvcubed.utils.iterables import first
-from csvcubed.utils.pandas import read_csv
-from csvcubed.utils.uri import uri_safe
 from csvcubed.utils.validators.schema import validate_dict_against_schema
-from csvcubed.readers.cubeconfig.utils import load_resource
-from csvcubed.readers.catalogmetadata.v1_0.catalog_metadata_reader import metadata_from_dict
+from csvcubed.readers.cubeconfig.utils import (
+    generate_title_from_file_name,
+    load_resource,
+    read_and_check_csv,
+)
+from csvcubed.readers.catalogmetadata.v1.catalog_metadata_reader import (
+    metadata_from_dict,
+)
+from csvcubed.readers.cubeconfig.v1.mapcolumntocomponent import (
+    map_column_to_qb_component,
+)
 
 # Used to determine whether a column name matches accepted conventions
 from ...preconfiguredtemplates import apply_preconfigured_values_from_template
@@ -75,14 +79,14 @@ def get_deserialiser(
         Generates a Cube structure from a config.json input.
         :return: tuple of cube and json schema errors (if any)
         """
-        data, data_errors = _read_and_check_csv(csv_path)
+        data, data_errors = read_and_check_csv(csv_path)
 
         # If we have a config json file then load it and validate against its reference schema
         if config_path:
             config = load_resource(config_path.resolve())
             # Update loaded config's title if not defined, setting title from csv data file path.
             if config.get("title") is None:
-                config["title"] = _generate_title_from_file_name(csv_path)
+                config["title"] = generate_title_from_file_name(csv_path)
             try:
                 schema = load_resource(schema_path)
                 schema_validation_errors = validate_dict_against_schema(
@@ -96,7 +100,7 @@ def get_deserialiser(
 
         # Create a default config, setting title from csv data file path.
         else:
-            config = {"title": _generate_title_from_file_name(csv_path)}
+            config = {"title": generate_title_from_file_name(csv_path)}
             schema_validation_errors = []
 
         cube = _get_cube_from_config_json_dict(data, config, version_module_path)
@@ -137,25 +141,6 @@ def _get_qb_column_from_json(
         column_name=column_title,
     )
     return map_column_to_qb_component(column_title, column_config, column_data)
-
-
-def _read_and_check_csv(csv_path: Path) -> Tuple[DataFrame, List[ValidationError]]:
-    """
-    Reads the csv data file and performs rudimentary checks.
-    """
-    data, data_errors = read_csv(csv_path)
-
-    if isinstance(data, pd.DataFrame):
-        if data.shape[0] < 2:
-            # Must have 2 or more rows, a heading row and a data row
-            raise ValueError(
-                "CSV input must contain header row and at least one row of data"
-            )
-
-    else:
-        raise TypeError("There was a problem reading the csv file as a dataframe")
-
-    return data, data_errors
 
 
 def _configure_remaining_columns_by_convention(
@@ -215,16 +200,3 @@ def _get_conventional_column_definition_for_title(column_title: str) -> dict:
         )
 
     raise ValueError(f"Column type '{column_type}' is not supported.")
-
-
-def _generate_title_from_file_name(csv_path: Path) -> str:
-    """
-    Formats a file Path, stripping -_ and returning the capitalised file name without extn
-    e.g. Path('./csv-data_file.csv') -> 'Csv Data File'
-    """
-    return " ".join(
-        [
-            word.capitalize()
-            for word in csv_path.stem.replace("-", " ").replace("_", " ").split(" ")
-        ]
-    )

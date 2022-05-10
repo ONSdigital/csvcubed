@@ -12,7 +12,7 @@ from jsonschema.exceptions import ValidationError as JsonSchemaValidationError
 
 from csvcubed.models.cube import QbCube
 from csvcubed.models.validationerror import ValidationError
-from csvcubed.readers.cubeconfig import v1_0, v1_1
+from csvcubed.readers.cubeconfig import v1, v1_1
 
 QubeConfigDeserialiser = Callable[
     [Path, Optional[Path]],
@@ -42,15 +42,13 @@ def get_deserialiser_for_schema(
     schema_path = _V1_SCHEMA_URL if maybe_schema_path is None else maybe_schema_path
 
     schema_version = _get_schema_version(schema_path)
+    
+    # TODO: Handle schema version detection
+    majour_version = 1
 
-    if schema_version == QubeConfigJsonSchemaVersion.V1_0:
-        return v1_0.configdeserialiser.get_deserialiser(
-            schema_path, schema_version.value
-        )
-    elif schema_version == QubeConfigJsonSchemaVersion.V1_1:
-        return v1_1.configdeserialiser.get_deserialiser(
-            schema_path, schema_version.value
-        )
+    if majour_version == 1:
+        return v1.configdeserialiser.get_deserialiser(schema_path, schema_version.value)
+    # If there is a new majour version of the cube config schema, another elif needs adding. And a new version of the deseariler needs to be created. For more info, please visit https://purl.org/csv-cubed/schema-versioning
     else:
         raise ValueError(f"Unhandled schema version {schema_version}")
 

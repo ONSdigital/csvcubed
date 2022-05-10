@@ -1,23 +1,7 @@
-import datetime
-from typing import Union
-from dateutil import parser
-
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.utils.dict import get_with_func_or_none
 from csvcubed.utils.uri import uri_safe
-
-
-def _parse_iso_8601_date_time(
-    date_or_date_time: str,
-) -> Union[datetime.date, datetime.datetime]:
-    """
-    Parses ISO 8601 Date Time.
-    """
-    dt = parser.isoparse(date_or_date_time)
-    if dt.time() == datetime.time.min:
-        return dt.date()
-
-    return dt
+from csvcubed.readers.cubeconfig.utils import parse_iso_8601_date_time
 
 
 def metadata_from_dict(config: dict) -> CatalogMetadata:
@@ -41,10 +25,10 @@ def metadata_from_dict(config: dict) -> CatalogMetadata:
         publisher_uri=config.get("publisher"),
         public_contact_point_uri=config.get("public_contact_point"),
         dataset_issued=get_with_func_or_none(
-            config, "dataset_issued", _parse_iso_8601_date_time
+            config, "dataset_issued", parse_iso_8601_date_time
         ),
         dataset_modified=get_with_func_or_none(
-            config, "dataset_modified", _parse_iso_8601_date_time
+            config, "dataset_modified", parse_iso_8601_date_time
         ),
         license_uri=config.get("license"),
         theme_uris=themes,

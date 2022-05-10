@@ -2,7 +2,7 @@
 Models
 ------
 
-config.json V1.1 column mapping models.
+config.json v1.* column mapping models.
 
 If you change the shape of any model in this file, you **must** create a newly versioned JSON schema reflecting said changes.
 """
@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import List, Union, Optional, TypeVar
 
 import uritemplate
+
 from csvcubedmodels.dataclassbase import DataClassBase
 
 from csvcubed.inputs import pandas_input_to_columnar_optional_str
@@ -95,6 +96,7 @@ class NewDimension(SchemaBaseClass):
         if isinstance(self.code_list, str):
             if looks_like_uri(self.code_list):
                 return ExistingQbCodeList(self.code_list)
+            # The following elif is for cube config v1.1.
             elif is_file_exist(self.code_list):
                 code_list_config = CodeListConfig.from_json_file(Path(self.code_list))
                 schema = load_resource(code_list_config.schema)
@@ -108,7 +110,7 @@ class NewDimension(SchemaBaseClass):
                 )
             else:
                 raise ValueError(
-                    "Code list contains a string that cannot be recognised as a URI or a valid file path"
+                    "Code List contains a string that cannot be recognised as a URI"
                 )
 
         elif isinstance(self.code_list, bool):
