@@ -1,0 +1,1 @@
+The templates folder will be moved to the top level once no one is using 0.1.0 of csvcuved.

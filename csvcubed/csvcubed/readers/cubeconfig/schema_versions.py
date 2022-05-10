@@ -57,9 +57,7 @@ def get_deserialiser_for_schema(
     _logger.info(f"Using schema version {schema_version_majour}.{schema_version_minor}")
 
     if schema_version_majour == QubeConfigJsonSchemaMajourVersion.v1:
-        return v1.configdeserialiser.get_deserialiser(
-            schema_path, schema_version_majour.value
-        )
+        return v1.configdeserialiser.get_deserialiser(schema_path)
     # If there is a new majour version of the cube config schema, another elif needs adding here. And a new version of the deseariler needs to be created. For more info, please visit https://purl.org/csv-cubed/schema-versioning
     else:
         raise ValueError(f"Unhandled schema version {schema_version_majour}")

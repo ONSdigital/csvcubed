@@ -12,18 +12,14 @@ from requests.exceptions import JSONDecodeError, HTTPError
 from csvcubed.utils.cache import session
 from csvcubed.utils.uri import csvw_column_name_safe
 
-TEMPLATE_BASE_URL = "https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/csvcubed/csvcubed/readers/cubeconfig/{}/templates/{}"
+TEMPLATE_BASE_URL = "https://purl.org/csv-cubed/qube-config/templates"
 
 
-def _get_template_file_from_template_lookup(
-    template_value: str, version_module_path: str
-) -> str:
+def _get_template_file_from_template_lookup(template_value: str) -> str:
     """
     Given the `from_template` value, look up the template in the git repo
     """
-    template_lookup_url = TEMPLATE_BASE_URL.format(
-        version_module_path, "preset_column_config.json"
-    )
+    template_lookup_url = f"{TEMPLATE_BASE_URL}/preset_column_config.json"
     template_lookup_response = session.get(template_lookup_url)
     logging.debug("The template lookup/index file: %s", template_lookup_url)
 
@@ -46,13 +42,11 @@ def _get_template_file_from_template_lookup(
     return template_file
 
 
-def _get_properties_from_template_file(
-    template_file: str, version_module_path: str
-) -> dict:
+def _get_properties_from_template_file(template_file: str) -> dict:
     """
     Given the file path to the template, read in all the propeties of that particular template
     """
-    template_url = TEMPLATE_BASE_URL.format(version_module_path, template_file)
+    template_url = f"{TEMPLATE_BASE_URL}/{template_file}"
     template_response = session.get(template_url)
 
     if not template_response.ok:
@@ -71,7 +65,7 @@ def _get_properties_from_template_file(
 
 
 def apply_preconfigured_values_from_template(
-    column_config: Dict[str, Any], version_module_path: str, column_name: str
+    column_config: Dict[str, Any], column_name: str
 ) -> None:
     """
     Preset templates are found through template lookup file. Properties are then taken from templates and
@@ -88,14 +82,10 @@ def apply_preconfigured_values_from_template(
     del column_config["from_template"]
 
     # given the `from_template` value, look up the template in the git repo
-    template_file = _get_template_file_from_template_lookup(
-        template_value, version_module_path
-    )
+    template_file = _get_template_file_from_template_lookup(template_value)
 
     # given the file path to the template, read in all the propeties of that particular template
-    fetch_template = _get_properties_from_template_file(
-        template_file, version_module_path
-    )
+    fetch_template = _get_properties_from_template_file(template_file)
 
     # insert values from column_config (as long as the user hasn't provided an overriding value for them)
     for template_property in fetch_template:
