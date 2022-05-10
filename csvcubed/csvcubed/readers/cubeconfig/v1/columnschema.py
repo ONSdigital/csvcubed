@@ -99,12 +99,12 @@ class NewDimension(SchemaBaseClass):
         self,
         new_dimension: NewQbDimension,
         csv_column_title: str,
-        cube_config_path: Path,
+        cube_config_path: Optional[Path],
     ) -> Optional[QbCodeList]:
         if isinstance(self.code_list, str):
             if looks_like_uri(self.code_list):
                 return ExistingQbCodeList(self.code_list)
-            # The following elif is for cube config v1.1.
+            # The following elif is for cube config v1.1. This also requires the user to define the configuration in the build command, and therefore cube_config_path.
             elif cube_config_path and code_list_config_json_exists(
                 Path(self.code_list), cube_config_path.parent
             ):
