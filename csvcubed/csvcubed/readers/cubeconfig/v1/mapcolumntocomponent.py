@@ -9,7 +9,6 @@ from typing import Union
 
 from csvcubed.models.cube.qb.columns import QbColumn
 from csvcubed.inputs import PandasDataTypes
-
 import csvcubed.readers.cubeconfig.v1.columnschema as schema
 
 

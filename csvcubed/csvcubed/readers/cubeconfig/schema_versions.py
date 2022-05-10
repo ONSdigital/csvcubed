@@ -24,7 +24,15 @@ QubeConfigDeserialiser = Callable[
 ]
 
 _v1_0_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.0"
-_v1_1_SCHEMA_URL = "/workspaces/csvcubed/csvcubed/csvcubed/schema/cube-config/v1_1/schema.json"  # TODO: Chnage to the purl v1.1 url
+_v1_1_SCHEMA_URL = "/workspaces/csvcubed/csvcubed/csvcubed/schema/cube-config/v1_1/schema.json"  # TODO: Change to the v1.1 PURL after PR review.
+
+
+class QubeConfigJsonSchemaMajourVersion(Enum):
+    """
+    Majour versions of the cube config schema.
+    """
+
+    v1 = "v1"
 
 
 class QubeConfigJsonSchemaMinorVersion(Enum):
@@ -34,14 +42,6 @@ class QubeConfigJsonSchemaMinorVersion(Enum):
 
     v0 = "0"
     v1 = "1"
-
-
-class QubeConfigJsonSchemaMajourVersion(Enum):
-    """
-    Majour versions of the cube config schema.
-    """
-
-    v1 = "v1"
 
 
 def get_deserialiser_for_schema(
@@ -58,7 +58,6 @@ def get_deserialiser_for_schema(
 
     if schema_version_majour == QubeConfigJsonSchemaMajourVersion.v1:
         return v1.configdeserialiser.get_deserialiser(schema_path)
-    # If there is a new majour version of the cube config schema, another elif needs adding here. And a new version of the deseariler needs to be created. For more info, please visit https://purl.org/csv-cubed/schema-versioning
     else:
         raise ValueError(f"Unhandled schema version {schema_version_majour}")
 

@@ -12,7 +12,7 @@ from csvcubed.utils.pandas import read_csv
 
 def load_resource(resource_path: Union[str, Path]) -> dict:
     """
-    Load a json schema document from either a File or URI
+    Loads a json schema document from either a File or URI
     """
     if isinstance(resource_path, str):
         if looks_like_uri(resource_path):
@@ -63,7 +63,6 @@ def read_and_check_csv(csv_path: Path) -> Tuple[DataFrame, List[ValidationError]
             raise ValueError(
                 "CSV input must contain header row and at least one row of data"
             )
-
     else:
         raise TypeError("There was a problem reading the csv file as a dataframe")
 

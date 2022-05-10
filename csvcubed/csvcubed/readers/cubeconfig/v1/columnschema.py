@@ -12,12 +12,12 @@ from abc import ABC
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Union, Optional, TypeVar
-from csvcubed.utils.validators.schema import validate_dict_against_schema
 
 import uritemplate
 
 from csvcubedmodels.dataclassbase import DataClassBase
 
+from csvcubed.utils.validators.schema import validate_dict_against_schema
 from csvcubed.inputs import pandas_input_to_columnar_optional_str
 from csvcubed.models.cube import CatalogMetadata, NewQbConcept
 from csvcubed.models.cube.qb.components import (
@@ -49,7 +49,7 @@ from csvcubed.utils.uri import (
     looks_like_uri,
 )
 from csvcubed.models.codelistconfig.code_list_config import CodeListConfig
-from csvcubed.utils.file import is_file_exist
+from csvcubed.utils.file import file_exists
 from csvcubed.readers.cubeconfig.utils import load_resource
 
 _logger = logging.getLogger(__name__)
@@ -98,15 +98,15 @@ class NewDimension(SchemaBaseClass):
             if looks_like_uri(self.code_list):
                 return ExistingQbCodeList(self.code_list)
             # The following elif is for cube config v1.1.
-            elif is_file_exist(self.code_list):
+            elif file_exists(self.code_list):
                 code_list_config = CodeListConfig.from_json_file(Path(self.code_list))
                 schema = load_resource(code_list_config.schema)
                 config = load_resource(self.code_list)
 
-                schema_validation_errors = validate_dict_against_schema(
+                code_list_schema_validation_errors = validate_dict_against_schema(
                     value=config, schema=schema
                 )
-                for error_msg in schema_validation_errors:
+                for error_msg in code_list_schema_validation_errors:
                     _logger.warn(error_msg)
 
                 return NewQbCodeList(

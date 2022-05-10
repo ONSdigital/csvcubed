@@ -49,7 +49,7 @@ def get_root_dir_level(end_file: str, start_dir: Path = Path(".")) -> Path:
     return get_root_dir_level(end_file, start_dir.absolute().parent)
 
 
-def is_file_exist(file_path: str) -> bool:
+def file_exists(file_path: str) -> bool:
     """
     Checks whether the files exists in the given file path.
     """
