@@ -5,7 +5,7 @@ Feature: Cube!
 
   Scenario: Output a cube and errors when created from both config and data
     Given The config json file "v1.0/cube_data_config_ok.json" and the existing tidy data csv file "v1.0/cube_data_config_ok.csv"
-    When The cube is created with v1.0
+    When The cube is created
     Then The cube Metadata should match
       """
       {
@@ -40,7 +40,7 @@ Feature: Cube!
 
   Scenario: Output a cube and errors when created from both config and data
     Given The config json file "v1.0/cube_data_config_ok.json" and the existing tidy data csv file "v1.0/cube_data_config_ok.csv"
-    When The cube is created with v1.0
+    When The cube is created
     Then The cube Metadata should match
       """
       {
@@ -75,7 +75,7 @@ Feature: Cube!
 
   Scenario: Output a cube and errors when created data only
     Given The existing tidy data csv file "v1.0/cube_data_convention_ok.csv"
-    When The cube is created with v1.0
+    When The cube is created
     Then The cube Metadata should match
       """
         {
@@ -110,7 +110,7 @@ Feature: Cube!
 
   Scenario: Output a cube combining config and convention
     Given The config json file "v1.0/cube_data_part_config.json" and the existing tidy data csv file "v1.0/cube_data_part_config.csv"
-    When The cube is created with v1.0
+    When The cube is created
     Then The cube Metadata should match
       """
         {"title": "Tests/test-cases/config/schema-cube-data-config-ok",
@@ -133,7 +133,7 @@ Feature: Cube!
 
   Scenario: Output a cube when the code list is defined using code list config schema v1.0
     Given The config json file "v1.1/cube_config_hierarchical.json" and the existing tidy data csv file "v1.1/data.csv"
-    When The cube is created with v1.1
+    When The cube is created
     Then The cube Metadata should match
       """
       {
