@@ -1,14 +1,16 @@
 import datetime
 import json
+from pathlib import Path
+from typing import Dict
 
 import requests_mock
 from behave import *
-from csvcubed.cli.build import build as cli_build
+import vcr
+
 from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
 from csvcubeddevtools.helpers.file import get_test_cases_dir
 
-import vcr
-
+from csvcubed.cli.build import build as cli_build
 from csvcubed.utils.cache import session
 from csvcubed.definitions import ROOT_DIR_PATH
 
@@ -42,29 +44,31 @@ def step_impl(context, config_file, data_file):
     context.data_file = data_file
 
 
-@when("The cube is created with {version}")
-def step_impl(context, version):
+@when("The cube is created")
+def step_impl(context):
     config_file = context.config_file if hasattr(context, "config_file") else None
     data_file = context.data_file
 
     mocker = requests_mock.Mocker(session=session)
     mocker.start()
 
-    with open(
-        ROOT_DIR_PATH
-        / "csvcubed"
-        / "schema"
-        / "cube-config"
-        / version.replace(".", "_")
-        / "schema.json",
-        "r",
-    ) as f:
-        mocker.register_uri(
-            "GET", f"https://purl.org/csv-cubed/qube-config/{version}", text=f.read()
-        )
+    paths_to_mock: Dict[str, Path] = {
+        "https://purl.org/csv-cubed/qube-config/v1.0": ROOT_DIR_PATH / "csvcubed" / "schema" / "cube-config" / "v1_0" / "schema.json",
+        "https://purl.org/csv-cubed/qube-config/v1.1": ROOT_DIR_PATH / "csvcubed" / "schema" / "cube-config" / "v1_1" / "schema.json",
+        "https://purl.org/csv-cubed/code-list-config/v1.0": ROOT_DIR_PATH / "csvcubed" / "schema" / "codelist-config" / "v1_0" / "schema.json",
+    }
+
+    for uri, path in paths_to_mock.items():
+        with open(path) as f:
+            mocker.register_uri(
+                "GET", uri, text=f.read()
+            )
+       
     context.out_dir = get_context_temp_dir_path(context) / "out"
     context.add_cleanup(lambda: mocker.stop())
     
+    #print("config_file:", config_file)
+
     with vcr.use_cassette(str(_cassettes_dir / "cube-created.yaml")):
         cube, errors = cli_build(
             data_file,
