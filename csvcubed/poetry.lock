@@ -200,21 +200,16 @@ tox = ">=3.24.4,<4.0.0"
 
 [[package]]
 name = "csvcubed-models"
-version = "0.1.0-dev"
+version = "0.1.1"
 description = "Models and RDF serialisation functionality useful to the csvcubed family of tools."
-category = "dev"
+category = "main"
 optional = false
-python-versions = "^3.9"
-develop = true
+python-versions = ">=3.9,<4.0"
 
 [package.dependencies]
-python-dateutil = "^2.8.2"
+python-dateutil = ">=2.8.2,<3.0.0"
 rdflib = ">=6.0.0"
 unidecode = "*"
-
-[package.source]
-type = "directory"
-url = "../csvcubed-models"
 
 [[package]]
 name = "csvcubed-pydantic"
@@ -348,7 +343,7 @@ python-versions = "*"
 name = "isodate"
 version = "0.6.1"
 description = "An ISO 8601 date/time/duration parser and formatter"
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
 
@@ -729,7 +724,7 @@ python-versions = ">=3.6"
 name = "rdflib"
 version = "6.1.1"
 description = "RDFLib is a Python library for working with RDF, a simple yet powerful language for representing information."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 
@@ -1057,7 +1052,7 @@ python-versions = ">=3.7"
 name = "unidecode"
 version = "1.3.4"
 description = "ASCII transliterations of Unicode text"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.5"
 
@@ -1192,7 +1187,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "6136c41e1dbfc365c0e63acc23bd1625dce59067b1896a97f04f0eb0af3c0fcc"
+content-hash = "d5dfc9ba19c2c4e9c31576d2e01cd26d27f76b881231f8355b101ee5ecd9a97f"
 
 [metadata.files]
 alabaster = [
@@ -1282,7 +1277,9 @@ colorama = [
 csvcubed-devtools = [
     {file = "csvcubed_devtools-0.1.1-py3-none-any.whl", hash = "sha256:c96829713f8f2cbc2436aab640eeab56dd17d440ef30bd2a36991823f2726c28"},
 ]
-csvcubed-models = []
+csvcubed-models = [
+    {file = "csvcubed_models-0.1.1-py3-none-any.whl", hash = "sha256:3da07f896ea25802fdc866b1c50a37538eef9445aa2e98681a4e6317f24ca061"},
+]
 csvcubed-pydantic = [
     {file = "csvcubed_pydantic-1.9.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:47216ab6a6334f075ae8d592418974b0355da9cbf366747f3a6738c1beae9ecd"},
     {file = "csvcubed_pydantic-1.9.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:fd0a8c97d745581f9ded4ad0927b6ad78f287f9bd2a3c215b9ee3975f67db783"},

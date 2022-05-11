@@ -181,21 +181,16 @@ tox = ">=3.24.4,<4.0.0"
 
 [[package]]
 name = "csvcubed-models"
-version = "0.1.0-dev"
+version = "0.1.1"
 description = "Models and RDF serialisation functionality useful to the csvcubed family of tools."
-category = "dev"
+category = "main"
 optional = false
-python-versions = "^3.9"
-develop = true
+python-versions = ">=3.9,<4.0"
 
 [package.dependencies]
-python-dateutil = "^2.8.2"
+python-dateutil = ">=2.8.2,<3.0.0"
 rdflib = ">=6.0.0"
 unidecode = "*"
-
-[package.source]
-type = "directory"
-url = "../csvcubed-models"
 
 [[package]]
 name = "csvw"
@@ -1062,7 +1057,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "2a9691435e4d0cc1c4299e4f90cf98e77516540d86fba991b4f8fe3870f3c947"
+content-hash = "decd43344f018d1a9b915ecfc70a9a3cfa12a7c40b3f421057a11869a517244f"
 
 [metadata.files]
 alabaster = [
@@ -1144,7 +1139,9 @@ colorama = [
 csvcubed-devtools = [
     {file = "csvcubed_devtools-0.1.1-py3-none-any.whl", hash = "sha256:c96829713f8f2cbc2436aab640eeab56dd17d440ef30bd2a36991823f2726c28"},
 ]
-csvcubed-models = []
+csvcubed-models = [
+    {file = "csvcubed_models-0.1.1-py3-none-any.whl", hash = "sha256:3da07f896ea25802fdc866b1c50a37538eef9445aa2e98681a4e6317f24ca061"},
+]
 csvw = [
     {file = "csvw-2.0.0-py2.py3-none-any.whl", hash = "sha256:2aaf52b5449254cbde42c6ad8ca662c3ebf42bfe5fc32a976ecb1a89163c0997"},
     {file = "csvw-2.0.0.tar.gz", hash = "sha256:97cf1bf28cd739475d58b6a7c846faac07d7d3191b0b25acda4a4419364d15dd"},
