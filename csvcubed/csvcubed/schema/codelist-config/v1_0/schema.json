@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema",
-  "id": "https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/csvcubed/csvcubed/schema/codelist-config/v1_0/schema.json",
+  "id": "https://purl.org/csv-cubed/code-list-config/v1.0",
   "title": "Schema for a codelist.",
   "description": "Schema to be used for creation and validation of a single codelist in CSV-W format.",
   "type": "object",
@@ -10,7 +10,7 @@
   "properties": {
     "$schema": {
       "type": "string",
-      "default": "https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/csvcubed/csvcubed/schema/codelist-config/v1_0/schema.json"
+      "default": "https://purl.org/csv-cubed/code-list-config/v1.0"
     },
     "id": {
       "description": "A unique id for the code list.",

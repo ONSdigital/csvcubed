@@ -11,7 +11,7 @@ from csvcubed.readers.catalogmetadata.v1.catalog_metadata_reader import (
     metadata_from_dict,
 )
 
-CODE_LIST_CONFIG_DEFAULT_URL = "https://purl.org/csv-cubed/code-list-config/v1.0"
+CODE_LIST_CONFIG_DEFAULT_URL = "https://raw.githubusercontent.com/GSS-Cogs/csvcubed/294-define-codelist-in-qubeconfig/csvcubed/csvcubed/schema/codelist-config/v1_0/schema.json"
 
 
 @dataclass
