@@ -24,7 +24,7 @@ QubeConfigDeserialiser = Callable[
 ]
 
 _v1_0_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.0"
-_v1_1_SCHEMA_URL = "/workspaces/csvcubed/csvcubed/csvcubed/schema/cube-config/v1_1/schema.json"  # TODO: Change to the v1.1 PURL after PR review.
+_v1_1_SCHEMA_URL = "https://raw.githubusercontent.com/GSS-Cogs/csvcubed/294-define-codelist-in-qubeconfig/csvcubed/csvcubed/schema/cube-config/v1_1/schema.json"  # TODO: Change to the v1.1 PURL after PR review.
 
 
 class QubeConfigJsonSchemaMajourVersion(Enum):

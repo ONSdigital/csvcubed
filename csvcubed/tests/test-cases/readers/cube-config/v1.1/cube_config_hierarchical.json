@@ -1,5 +1,5 @@
 {
-    "$schema": "/workspaces/csvcubed/csvcubed/csvcubed/schema/cube-config/v1_1/schema.json",
+    "$schema": "https://raw.githubusercontent.com/GSS-Cogs/csvcubed/294-define-codelist-in-qubeconfig/csvcubed/csvcubed/schema/cube-config/v1_1/schema.json",
     "title": "Test cube config",
     "summary": "Test cube config summary",
     "description": "Test cube config description",
