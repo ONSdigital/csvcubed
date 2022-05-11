@@ -8,7 +8,7 @@ packages = [
   {include = "csvcubedpmd"},
 ]
 readme = "csvcubedpmd/README.md"
-version = "0.1.0"
+version = "0.1.0-dev"
 
 [tool.poetry.dependencies]
 csvw = "*"
@@ -28,7 +28,7 @@ chardet = "^4.0.0"
 # The dependency is to become a regular dependency when the packages are split out into separate repositories in
 # Issue #205
 csvcubed-models = {path = "./../csvcubed-models", develop = true}
-csvcubed-devtools = {path = "./../csvcubed-devtools", develop = true}
+csvcubed-devtools = "==v0.1.1"
 pytest-recording = "^0.12.0"
 
 [build-system]
