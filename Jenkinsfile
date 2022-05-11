@@ -12,11 +12,6 @@ pipeline {
                     // Clean up any unwanted files lying about after the previous build.
                     sh "git clean -fxd --exclude='.venv'"
 
-                    dir('csvcubed-devtools') {
-                        sh 'poetry config virtualenvs.in-project true'
-                        sh 'poetry install'
-                    }
-
                     dir('csvcubed-models') {
                         sh 'poetry config virtualenvs.in-project true'
                         sh 'poetry install'
@@ -45,10 +40,6 @@ pipeline {
         stage('Pyright') {
             when { not { buildingTag() } }
             steps {
-                    dir('csvcubed-devtools') {
-                        sh 'poetry run pyright . --lib'
-                    }
-
                     dir('csvcubed-models') {
                         sh 'poetry run pyright . --lib'
                     }
@@ -128,10 +119,6 @@ pipeline {
         }
         stage('Package') {
             steps {
-                dir('csvcubed-devtools') {
-                    sh 'poetry build'
-                }
-
                 dir('csvcubed-models') {
                     sh 'poetry build'
                 }
@@ -150,11 +137,6 @@ pipeline {
         stage('Building Documentation') {
             steps {
                 script {
-                    dir('csvcubed-devtools') {
-                        sh "poetry run sphinx-apidoc -F -M -a -P --tocfile index.rst -d 10 -E -o docs --implicit-namespaces -o docs csvcubeddevtools \"setup*\""
-                        sh 'poetry run sphinx-build -W -b html docs docs/_build/html'
-                    }
-
                     dir('csvcubed-models') {
                         sh "poetry run sphinx-apidoc -F -M -a -P --tocfile index.rst -d 10 -E --implicit-namespaces -o docs csvcubedmodels \"setup*\" \"csvcubedmodels/scripts\" \"/tests\""
                         sh 'poetry run sphinx-build -W -b html docs docs/_build/html'
@@ -266,7 +248,7 @@ pipeline {
                     echo 'mkdocs stash does not exist'
                 }
 
-                archiveArtifacts artifacts: '**/dist/*.whl, **/docs/_build/html/**/*, **/external-docs/site/**/*', fingerprint: true
+                archiveArtifacts artifacts: '**/dist/*.whl, **/docs/_build/html/**/*, **/external-docs/site/**/*, **/test-results.json, **/tox-test-results-*.json, **/*results*.xml', fingerprint: true
 
                 // Set more permissive permissions on all files so future processes/Jenkins can easily delete them.
                 sh 'chmod -R ugo+rw .'
