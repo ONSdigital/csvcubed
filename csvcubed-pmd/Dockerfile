@@ -13,7 +13,6 @@ COPY . /workspace/
 
 # Set up pip, poetry, and install dependencies
 RUN pip install poetry
-RUN cd /workspace/csvcubed-models && pip install .
 RUN cd /workspace/csvcubed-pmd && poetry export --format requirements.txt --without-hashes | grep -v 'csvcubed-models' > requirements.txt
 RUN pip install --requirement /workspace/csvcubed-pmd/requirements.txt
 RUN pip install --no-deps --use-feature=in-tree-build /workspace/csvcubed-pmd/.

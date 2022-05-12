@@ -159,13 +159,9 @@ pipeline {
                                 }
                                 sh 'mkdir api-docs'
                                 sh 'mkdir api-docs/csvcubed'
-                                sh 'mkdir api-docs/csvcubed-devtools'
-                                sh 'mkdir api-docs/csvcubed-models'
                                 sh 'mkdir api-docs/csvcubed-pmd'
 
                                 sh 'cp -r ../csvcubed/docs/_build/html/* api-docs/csvcubed'
-                                sh 'cp -r ../csvcubed-devtools/docs/_build/html/* api-docs/csvcubed-devtools'
-                                sh 'cp -r ../csvcubed-models/docs/_build/html/* api-docs/csvcubed-models'
                                 sh 'cp -r ../csvcubed-pmd/docs/_build/html/* api-docs/csvcubed-pmd'
 
                                 sh 'touch .nojekyll'
