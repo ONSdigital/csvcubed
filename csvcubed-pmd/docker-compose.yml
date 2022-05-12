@@ -1,8 +1,0 @@
-version: '3.4'
-
-services:
-  pmdutils:
-    image: pmdutils
-    build:
-      context: ../
-      dockerfile: ./csvcubed-pmd/Dockerfile

@@ -12,15 +12,6 @@ pipeline {
                     // Clean up any unwanted files lying about after the previous build.
                     sh "git clean -fxd --exclude='.venv'"
 
-                    dir('csvcubed-pmd') {
-                        sh 'poetry config virtualenvs.in-project true'
-                        sh 'poetry install'
-                        // Patch behave so that it can output the correct format for the Jenkins cucumber tool.
-                        def venv_location = sh script: 'poetry env info --path', returnStdout: true
-                        venv_location = venv_location.trim()
-                        sh "patch -Nf -d \"${venv_location}/lib/python3.9/site-packages/behave/formatter\" -p1 < /cucumber-format.patch || true"
-                    }
-
                     dir('csvcubed') {
                         sh 'poetry config virtualenvs.in-project true'
                         sh 'poetry install'
@@ -35,10 +26,6 @@ pipeline {
         stage('Pyright') {
             when { not { buildingTag() } }
             steps {
-                    dir('csvcubed-pmd') {
-                        sh 'poetry run pyright . --lib'
-                    }
-
                     dir('csvcubed') {
                        sh 'poetry run pyright . --lib'
                     }
@@ -49,12 +36,6 @@ pipeline {
             steps {
                 script {
                     try {
-                        dir('csvcubed-pmd') {
-                            sh 'poetry run behave tests/behaviour --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json'
-                            dir('tests/unit') {
-                                sh "poetry run pytest --junitxml=pytest_results_pmd.xml"
-                            }
-                        }
                         dir('csvcubed') {
                             sh 'poetry run behave tests/behaviour --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json'
                             dir('tests/unit') {
@@ -82,11 +63,6 @@ pipeline {
             steps {
                 script {
                     try {
-                        dir('csvcubed-pmd') {
-                            // Patch behave so that it can output the correct format for the Jenkins cucumber tool.
-                            sh 'tox'
-                        }
-
                         dir('csvcubed') {
                             // Patch behave so that it can output the correct format for the Jenkins cucumber tool.
                             sh 'tox'
@@ -103,10 +79,6 @@ pipeline {
         }
         stage('Package') {
             steps {
-                dir('csvcubed-pmd') {
-                    sh 'poetry build'
-                }
-
                 dir('csvcubed') {
                     sh 'poetry build'
                 }
@@ -117,11 +89,6 @@ pipeline {
         stage('Building Documentation') {
             steps {
                 script {
-                    dir('csvcubed-pmd') {
-                        sh "poetry run sphinx-apidoc -F -M -a -P --tocfile index.rst -d 10 -E --implicit-namespaces -o docs  csvcubedpmd \"setup*\" \"tests\""
-                        sh 'poetry run sphinx-build -W -b html docs docs/_build/html'
-                    }
-
                     dir('csvcubed') {
                         sh "poetry run sphinx-apidoc -F -M -a -P --tocfile index.rst -d 10 -E --implicit-namespaces -o docs csvcubed \"setup*\" \"tests\""
                         sh 'poetry run sphinx-build -W -b html docs docs/_build/html'
@@ -159,10 +126,8 @@ pipeline {
                                 }
                                 sh 'mkdir api-docs'
                                 sh 'mkdir api-docs/csvcubed'
-                                sh 'mkdir api-docs/csvcubed-pmd'
 
                                 sh 'cp -r ../csvcubed/docs/_build/html/* api-docs/csvcubed'
-                                sh 'cp -r ../csvcubed-pmd/docs/_build/html/* api-docs/csvcubed-pmd'
 
                                 sh 'touch .nojekyll'
 
