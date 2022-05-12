@@ -23,14 +23,15 @@ requests-cache = "^0.9.3"
 treelib = "^1.6.1"
 uritemplate = "^4.1.1"
 python-dateutil = "^2.8.2"
+csvcubed-models = "~0.1.1"
 
 [tool.poetry.dev-dependencies]
 # The -models library is currently listed as a dev dependency so that we can reference it by its relative
 # path and continue to edit code side-by-side within the repo.
 # The dependency is to become a regular dependency when the packages are split out into separate repositories in
 # Issue #205
-csvcubed-models = {path = "./../csvcubed-models", develop = true}
-csvcubed-devtools = "==v0.1.1"
+
+csvcubed-devtools = "~0.1.1"
 requests-mock = "~1.9.3"
 pytest-vcr = "~1.0.2"
 
