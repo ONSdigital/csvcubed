@@ -1,6 +1,6 @@
 """
 Catalog Metadata Reader
-----------------
+-----------------------
 
 Functionalities necessary for reading catalog metadata.
 """
