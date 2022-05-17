@@ -4,7 +4,6 @@ File
 
 Utilities for files.
 """
-import os
 import logging
 import shutil
 from pathlib import Path

@@ -1,3 +1,9 @@
+"""
+Catalog Metadata Reader
+----------------
+
+Functionalities necessary for reading catalog metadata.
+"""
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.utils.dict import get_with_func_or_none
 from csvcubed.utils.uri import uri_safe

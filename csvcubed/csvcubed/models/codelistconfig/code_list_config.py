@@ -1,3 +1,10 @@
+"""
+Code List Config
+----------------
+
+Models for representing code list config.
+"""
+
 from typing import Optional, List, Tuple, Dict
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -41,9 +48,10 @@ class CodeListConfig(DataClassBase):
 
     sort: Optional[CodeListConfigSort] = field(default=None)
     concepts: List[CodeListConfigConcept] = field(default_factory=list)
-    schema: str = field(init=False, default=CODE_LIST_CONFIG_DEFAULT_URL)
+    schema: str = field(default=CODE_LIST_CONFIG_DEFAULT_URL)
+    # Using CatalogMetadata in the dataclass requires providing default_factory as otherwise, the metadata itself needs to be provided. Since we want have the metadata at initialisation, the default_factory below is defined.
     metadata: CatalogMetadata = field(
-        init=False, default_factory=lambda: CatalogMetadata("Metadata")
+        default_factory=lambda: CatalogMetadata("Metadata")
     )
 
     @classmethod
@@ -80,7 +88,7 @@ class CodeListConfig(DataClassBase):
                         description=concept.description,
                     )
                 )
-                if concept.children is not None and any(concept.children):
+                if any(concept.children):
                     concepts += concept.children
 
         return new_qb_concepts

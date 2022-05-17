@@ -27,9 +27,9 @@ _v1_0_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.0"
 _v1_1_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.1"  # TODO: Change to the v1.1 PURL after PR review. This PURL should point to the main branch.
 
 
-class QubeConfigJsonSchemaMajourVersion(Enum):
+class QubeConfigJsonSchemaMajorVersion(Enum):
     """
-    Majour versions of the cube config schema.
+    Major versions of the cube config schema.
     """
 
     v1 = "v1"
@@ -52,26 +52,26 @@ def get_deserialiser_for_schema(
     # Default to the latest version of the schema.
     schema_path = _v1_1_SCHEMA_URL if maybe_schema_path is None else maybe_schema_path
 
-    schema_version_majour, schema_version_minor = _get_schema_version(schema_path)
-    _logger.info(f"Using schema version {schema_version_majour.value}.{schema_version_minor.value}")
+    schema_version_major, schema_version_minor = _get_schema_version(schema_path)
+    _logger.info(f"Using schema version {schema_version_major.value}.{schema_version_minor.value}")
 
-    if schema_version_majour == QubeConfigJsonSchemaMajourVersion.v1:
+    if schema_version_major == QubeConfigJsonSchemaMajorVersion.v1:
         return v1.configdeserialiser.get_deserialiser(schema_path)
     else:
-        raise ValueError(f"Unhandled schema version {schema_version_majour}")
+        raise ValueError(f"Unhandled major schema version {schema_version_major}")
 
 
 def _get_schema_version(
     schema_path: str,
-) -> Tuple[QubeConfigJsonSchemaMajourVersion, QubeConfigJsonSchemaMinorVersion]:
+) -> Tuple[QubeConfigJsonSchemaMajorVersion, QubeConfigJsonSchemaMinorVersion]:
     if schema_path == _v1_0_SCHEMA_URL:
         return (
-            QubeConfigJsonSchemaMajourVersion.v1,
+            QubeConfigJsonSchemaMajorVersion.v1,
             QubeConfigJsonSchemaMinorVersion.v0,
         )
     elif schema_path == _v1_1_SCHEMA_URL:
         return (
-            QubeConfigJsonSchemaMajourVersion.v1,
+            QubeConfigJsonSchemaMajorVersion.v1,
             QubeConfigJsonSchemaMinorVersion.v1,
         )
     else:
