@@ -24,7 +24,8 @@ QubeConfigDeserialiser = Callable[
 ]
 
 _v1_0_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.0"
-_v1_1_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.1"  # TODO: Change to the v1.1 PURL after PR review. This PURL should point to the main branch.
+_v1_1_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.1"
+_v1_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1" # v1 defaults to the latest minor version of v1.*.
 
 
 class QubeConfigJsonSchemaMajorVersion(Enum):
@@ -69,7 +70,8 @@ def _get_schema_version(
             QubeConfigJsonSchemaMajorVersion.v1,
             QubeConfigJsonSchemaMinorVersion.v0,
         )
-    elif schema_path == _v1_1_SCHEMA_URL:
+    # The second condition in the following makes v1 defaults to the latest minor version of v1.*.
+    elif schema_path == _v1_1_SCHEMA_URL or schema_path == _v1_SCHEMA_URL:
         return (
             QubeConfigJsonSchemaMajorVersion.v1,
             QubeConfigJsonSchemaMinorVersion.v1,

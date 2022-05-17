@@ -5,9 +5,10 @@ Catalog Metadata Reader
 Functionalities necessary for reading catalog metadata.
 """
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
+
+from csvcubed.utils.datetime import parse_iso_8601_date_time
 from csvcubed.utils.dict import get_with_func_or_none
 from csvcubed.utils.uri import uri_safe
-from csvcubed.readers.cubeconfig.utils import parse_iso_8601_date_time
 
 
 def metadata_from_dict(config: dict) -> CatalogMetadata:

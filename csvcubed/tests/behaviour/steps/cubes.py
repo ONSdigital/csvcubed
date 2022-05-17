@@ -55,7 +55,9 @@ def step_impl(context):
     paths_to_mock: Dict[str, Path] = {
         "https://purl.org/csv-cubed/qube-config/v1.0": ROOT_DIR_PATH / "csvcubed" / "schema" / "cube-config" / "v1_0" / "schema.json",
         "https://purl.org/csv-cubed/qube-config/v1.1": ROOT_DIR_PATH / "csvcubed" / "schema" / "cube-config" / "v1_1" / "schema.json",
+        "https://purl.org/csv-cubed/qube-config/v1": ROOT_DIR_PATH / "csvcubed" / "schema" / "cube-config" / "v1_1" / "schema.json", #v1 defaults to the latest minor version of v1.*.
         "https://purl.org/csv-cubed/code-list-config/v1.0": ROOT_DIR_PATH / "csvcubed" / "schema" / "codelist-config" / "v1_0" / "schema.json",
+        "https://purl.org/csv-cubed/code-list-config/v1": ROOT_DIR_PATH / "csvcubed" / "schema" / "codelist-config" / "v1_0" / "schema.json", #v1 defaults to the latest minor version of v1.*.
     }
 
     for uri, path in paths_to_mock.items():

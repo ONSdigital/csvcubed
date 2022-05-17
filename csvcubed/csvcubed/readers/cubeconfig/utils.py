@@ -1,5 +1,3 @@
-import datetime
-from dateutil import parser
 from pathlib import Path
 from typing import Union, Tuple, List
 from pandas import DataFrame
@@ -23,20 +21,6 @@ def load_resource(resource_path: Union[str, Path]) -> dict:
     if not resource_path.is_absolute():
         resource_path = resource_path.resolve()
     return load_json_document(resource_path)
-
-
-def parse_iso_8601_date_time(
-    date_or_date_time: str,
-) -> Union[datetime.date, datetime.datetime]:
-    """
-    Parses ISO 8601 Date Time.
-    """
-    dt = parser.isoparse(date_or_date_time)
-    if dt.time() == datetime.time.min:
-        return dt.date()
-
-    return dt
-
 
 def generate_title_from_file_name(csv_path: Path) -> str:
     """

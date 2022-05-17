@@ -18,7 +18,7 @@ from csvcubed.readers.catalogmetadata.v1.catalog_metadata_reader import (
     metadata_from_dict,
 )
 
-CODE_LIST_CONFIG_DEFAULT_URL = "https://purl.org/csv-cubed/code-list-config/v1.0"
+CODE_LIST_CONFIG_DEFAULT_URL = "https://purl.org/csv-cubed/code-list-config/v1"
 
 
 @dataclass
@@ -35,7 +35,6 @@ class CodeListConfigConcept(DataClassBase):
 
     label: str
     notation: str
-    parent_notation: Optional[str] = field(default=None)
     description: Optional[str] = field(default=None)
     sort_order: Optional[int] = field(default=None)
     same_as: Optional[str] = field(default=None)
@@ -53,6 +52,22 @@ class CodeListConfig(DataClassBase):
     metadata: CatalogMetadata = field(
         default_factory=lambda: CatalogMetadata("Metadata")
     )
+
+    def _get_parent_of_concept(
+        self,
+        concepts: List[CodeListConfigConcept],
+        target_concept: CodeListConfigConcept,
+    ) -> Optional[CodeListConfigConcept]:
+        """
+        Finds the parent concept of the given concept, if exists.
+        """
+        for parent_concept in concepts:
+            for child_concept in parent_concept.children:
+                if child_concept.notation == target_concept.notation:
+                    return parent_concept
+                elif any(child_concept.children):
+                    return self._get_parent_of_concept([child_concept], target_concept)
+        return None
 
     @classmethod
     def from_json_file(cls, file_path: Path) -> Tuple["CodeListConfig", Dict]:
@@ -77,18 +92,17 @@ class CodeListConfig(DataClassBase):
         new_qb_concepts: list[NewQbConcept] = []
         if self.concepts:
             concepts: list[CodeListConfigConcept] = list(self.concepts)
-
             for concept in concepts:
+                parent_concept = self._get_parent_of_concept(self.concepts, concept)
                 new_qb_concepts.append(
                     NewQbConcept(
                         label=concept.label,
                         code=concept.notation,
-                        parent_code=concept.parent_notation,
+                        parent_code=parent_concept.notation if parent_concept else None,
                         sort_order=concept.sort_order,
                         description=concept.description,
                     )
                 )
                 if any(concept.children):
                     concepts += concept.children
-
         return new_qb_concepts

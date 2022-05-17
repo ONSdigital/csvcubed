@@ -1,12 +1,12 @@
 from pathlib import Path
 from typing import Dict, List
 
-from csvcubed.readers.cubeconfig.utils import load_resource, parse_iso_8601_date_time
 from csvcubed.models.codelistconfig.code_list_config import (
     CODE_LIST_CONFIG_DEFAULT_URL,
     CodeListConfig,
     CodeListConfigConcept,
 )
+from csvcubed.utils.datetime import parse_iso_8601_date_time
 from csvcubed.utils.dict import get_with_func_or_none
 from tests.unit.test_baseunit import get_test_cases_dir
 
