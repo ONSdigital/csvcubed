@@ -12,7 +12,6 @@ from abc import ABC
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Union, Optional, TypeVar
-
 import uritemplate
 
 from csvcubedmodels.dataclassbase import DataClassBase
@@ -78,6 +77,7 @@ class NewDimension(SchemaBaseClass):
         self,
         csv_column_title: str,
         data: PandasDataTypes,
+        cube_config_minor_version: Optional[int],
         config_path: Optional[Path] = None,
     ) -> NewQbDimension:
 
@@ -91,7 +91,10 @@ class NewDimension(SchemaBaseClass):
         # The NewQbCodeList and Concepts are populated in the NewQbDimension.from_data() call
         # the _get_code_list method overrides the code_list if required.
         new_dimension.code_list = self._get_code_list(
-            new_dimension, csv_column_title, cube_config_path=config_path
+            new_dimension,
+            csv_column_title,
+            cube_config_minor_version,
+            cube_config_path=config_path,
         )
         return new_dimension
 
@@ -99,14 +102,21 @@ class NewDimension(SchemaBaseClass):
         self,
         new_dimension: NewQbDimension,
         csv_column_title: str,
+        cube_config_minor_version: Optional[int],
         cube_config_path: Optional[Path],
     ) -> Optional[QbCodeList]:
         if isinstance(self.code_list, str):
             if looks_like_uri(self.code_list):
                 return ExistingQbCodeList(self.code_list)
             # The following elif is for cube config v1.1. This also requires the user to define the configuration in the build command, and therefore cube_config_path.
-            elif cube_config_path and code_list_config_json_exists(
-                Path(self.code_list), cube_config_path.parent
+            elif (
+                cube_config_minor_version
+                and cube_config_minor_version
+                >= 1
+                and cube_config_path
+                and code_list_config_json_exists(
+                    Path(self.code_list), cube_config_path.parent
+                )
             ):
                 code_list_config_path = (
                     cube_config_path.parent / self.code_list

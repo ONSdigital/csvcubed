@@ -66,6 +66,7 @@ log = logging.getLogger(__name__)
 
 def get_deserialiser(
     schema_path: str,
+    cube_config_minor_version: int,
 ) -> Callable[
     [Path, Optional[Path]],
     Tuple[QbCube, List[JsonSchemaValidationError], List[ValidationError]],
@@ -73,7 +74,8 @@ def get_deserialiser(
     """Generates a deserialiser function which validates the JSON file against the schema at :obj:`schema_path`"""
 
     def get_cube_from_config_json(
-        csv_path: Path, config_path: Optional[Path]
+        csv_path: Path,
+        config_path: Optional[Path],
     ) -> Tuple[QbCube, List[JsonSchemaValidationError], List[ValidationError]]:
         """
         Generates a Cube structure from a config.json input.
@@ -103,9 +105,19 @@ def get_deserialiser(
             config = {"title": generate_title_from_file_name(csv_path)}
             schema_validation_errors = []
 
-        cube = _get_cube_from_config_json_dict(data, config, config_path)
+        cube = _get_cube_from_config_json_dict(
+            data,
+            config,
+            cube_config_minor_version,
+            config_path=config_path,
+        )
 
-        _configure_remaining_columns_by_convention(cube, data, config_path)
+        _configure_remaining_columns_by_convention(
+            cube,
+            data,
+            cube_config_minor_version,
+            config_path=config_path,
+        )
 
         return cube, schema_validation_errors, data_errors
 
@@ -113,7 +125,10 @@ def get_deserialiser(
 
 
 def _get_cube_from_config_json_dict(
-    data: pd.DataFrame, config: Dict, config_path: Optional[Path] = None
+    data: pd.DataFrame,
+    config: Dict,
+    cube_config_minor_version: int,
+    config_path: Optional[Path] = None,
 ) -> QbCube:
     columns: List[CsvColumn] = []
     metadata: CatalogMetadata = metadata_from_dict(config)
@@ -121,7 +136,13 @@ def _get_cube_from_config_json_dict(
     config_columns = config.get("columns", {})
     for (column_title, column_config) in config_columns.items():
         columns.append(
-            _get_qb_column_from_json(column_config, column_title, data, config_path)
+            _get_qb_column_from_json(
+                column_config,
+                column_title,
+                data,
+                cube_config_minor_version,
+                config_path=config_path,
+            )
         )
 
     return Cube(metadata, data, columns)
@@ -131,6 +152,7 @@ def _get_qb_column_from_json(
     column_config: dict,
     column_title: str,
     data: pd.DataFrame,
+    cube_config_minor_version: int,
     config_path: Optional[Path] = None,
 ):
     # When the config json contains a col definition and the col title is not in the data
@@ -141,12 +163,19 @@ def _get_qb_column_from_json(
         column_name=column_title,
     )
     return map_column_to_qb_component(
-        column_title, column_config, column_data, config_path
+        column_title,
+        column_config,
+        column_data,
+        cube_config_minor_version,
+        config_path=config_path,
     )
 
 
 def _configure_remaining_columns_by_convention(
-    cube: QbCube, data: pd.DataFrame, config_path: Optional[Path] = None
+    cube: QbCube,
+    data: pd.DataFrame,
+    cube_config_minor_version: int,
+    config_path: Optional[Path] = None,
 ) -> None:
     """Update columns from csv where appropriate, i.e. config did not define the column."""
     configured_columns = {col.csv_column_title: col for col in cube.columns}
@@ -163,6 +192,7 @@ def _configure_remaining_columns_by_convention(
                 column_title=column_title,
                 column=column_dict,
                 data=data[column_title].astype("category"),
+                cube_config_minor_version=cube_config_minor_version,
                 config_path=config_path,
             )
 

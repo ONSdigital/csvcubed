@@ -241,7 +241,7 @@
                                     "$ref": "http://purl.org/csv-cubed/resources/code-lists.json#/uris"
                                 },
                                 {
-                                    "description": "TODO",
+                                    "description": "The path to the code list json defined using the code list config schema",
                                     "type": "string"
                                 }
                             ]

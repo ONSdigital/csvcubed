@@ -133,7 +133,7 @@ def test_conventional_column_ordering_correct():
 
         data.to_csv(str(data_file_path), index=False)
 
-        deserialiser = get_deserialiser(SCHEMA_PATH_FILE)
+        deserialiser = get_deserialiser(SCHEMA_PATH_FILE, 1)
 
         cube, _, _ = deserialiser(data_file_path, config_file_path)
 

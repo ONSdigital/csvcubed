@@ -5,6 +5,7 @@ Schema Versions
 Contains an enum listing the qube-config.json schema versions recognised by csvcubed.
 """
 
+import numbers
 import logging
 from enum import Enum
 from pathlib import Path
@@ -14,7 +15,7 @@ from jsonschema.exceptions import ValidationError as JsonSchemaValidationError
 
 from csvcubed.models.cube import QbCube
 from csvcubed.models.validationerror import ValidationError
-from csvcubed.readers.cubeconfig import v1
+from csvcubed.readers.cubeconfig.v1 import configdeserialiser as v1_configdeserialiser
 
 _logger = logging.getLogger(__name__)
 
@@ -25,7 +26,7 @@ QubeConfigDeserialiser = Callable[
 
 _v1_0_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.0"
 _v1_1_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.1"
-_v1_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1" # v1 defaults to the latest minor version of v1.*.
+_v1_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1"  # v1 defaults to the latest minor version of v1.*.
 
 
 class QubeConfigJsonSchemaMajorVersion(Enum):
@@ -33,7 +34,7 @@ class QubeConfigJsonSchemaMajorVersion(Enum):
     Major versions of the cube config schema.
     """
 
-    v1 = "v1"
+    v1 = "1"
 
 
 class QubeConfigJsonSchemaMinorVersion(Enum):
@@ -46,7 +47,8 @@ class QubeConfigJsonSchemaMinorVersion(Enum):
 
 
 def get_deserialiser_for_schema(
-    maybe_schema_path: Optional[str]) -> QubeConfigDeserialiser:
+    maybe_schema_path: Optional[str],
+) -> QubeConfigDeserialiser:
     """
     Provides a versioned deserialiser function appropriate to the referenced schema.
     """
@@ -54,10 +56,14 @@ def get_deserialiser_for_schema(
     schema_path = _v1_1_SCHEMA_URL if maybe_schema_path is None else maybe_schema_path
 
     schema_version_major, schema_version_minor = _get_schema_version(schema_path)
-    _logger.info(f"Using schema version {schema_version_major.value}.{schema_version_minor.value}")
+    _logger.info(
+        f"Using schema version {schema_version_major.value}.{schema_version_minor.value}"
+    )
 
     if schema_version_major == QubeConfigJsonSchemaMajorVersion.v1:
-        return v1.configdeserialiser.get_deserialiser(schema_path)
+        return v1_configdeserialiser.get_deserialiser(
+            schema_path, schema_version_minor.value
+        )
     else:
         raise ValueError(f"Unhandled major schema version {schema_version_major}")
 

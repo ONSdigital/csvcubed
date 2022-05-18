@@ -17,6 +17,7 @@ def map_column_to_qb_component(
     column_title: str,
     column: dict,
     data: PandasDataTypes,
+    cube_config_minor_version: Optional[int],
     config_path: Optional[Path] = None,
 ) -> QbColumn:
     """
@@ -28,7 +29,12 @@ def map_column_to_qb_component(
     if isinstance(schema_mapping, schema.NewDimension):
         return QbColumn(
             column_title,
-            schema_mapping.map_to_new_qb_dimension(column_title, data, config_path),
+            schema_mapping.map_to_new_qb_dimension(
+                column_title,
+                data,
+                cube_config_minor_version,
+                config_path=config_path,
+            ),
             csv_column_uri_template=schema_mapping.cell_uri_template,
         )
 
