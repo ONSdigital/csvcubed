@@ -34,7 +34,7 @@ class QubeConfigJsonSchemaMajorVersion(Enum):
     Major versions of the cube config schema.
     """
 
-    v1 = "1"
+    v1 = 1
 
 
 class QubeConfigJsonSchemaMinorVersion(Enum):
@@ -42,8 +42,8 @@ class QubeConfigJsonSchemaMinorVersion(Enum):
     Minor versions of the cube config schema.
     """
 
-    v0 = "0"
-    v1 = "1"
+    v0 = 0
+    v1 = 1
 
 
 def get_deserialiser_for_schema(
