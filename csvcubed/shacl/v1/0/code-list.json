@@ -9,7 +9,8 @@
             "ui": "http://www.w3.org/ns/ui#",
             "xkos": "http://rdf-vocabulary.ddialliance.org/xkos#",
             "dcatshapes": {
-                "@id": "https://purl.org/csv-cubed/shacl/v1.0/deps/dcat.json#"
+                "@id": "https://purl.org/csv-cubed/shacl/v1.0/deps/dcat.json#",
+                "prefix": true
             }
         }
     ],
