@@ -1,0 +1,133 @@
+{
+    "@context": [
+        "shacl-context.json",
+        {
+            "this": {
+                "@id": "https://purl.org/csv-cubed/shacl/v1.0/deps/dcat.json#",
+                "prefix": true
+            }
+        }
+    ],
+    "@id": "https://purl.org/csv-cubed/shacl/v1.0/deps/dcat.json#ontology",
+    "@type": "owl:Ontology",
+    "shape": [
+        {
+            "@id": "this:CatalogDatasetShape",
+            "@type": "sh:NodeShape",
+            "targetClass": "dcat:Dataset",
+            "property": [
+                {
+                    "path": "dct:title",
+                    "name": "Title",
+                    "equals": "rdfs:label",
+                    "description": "A short title describing the catalogued item.",
+                    "datatype": "rdf:langString",
+                    "uniqueLang": true,
+                    "minCount": 1,
+                    "maxCount": 1,
+                    "minLength": 1
+                },
+                {
+                    "path": "dct:identifier",
+                    "name": "Identifier",
+                    "description": "An identifier for this catalogued item.",
+                    "datatype": "xsd:string",
+                    "minCount": 1,
+                    "maxCount": 1,
+                    "minLength": 1
+                },
+                {
+                    "path": "dct:issued",
+                    "name": "Date-time Issued",
+                    "description": "The point in time when the catalogued item was first issued.",
+                    "datatype": "xsd:dateTime",
+                    "minCount": 1,
+                    "maxCount": 1
+                },
+                {
+                    "path": "dct:modified",
+                    "name": "Date-time Modified",
+                    "description": "The point in time when the catalogued item was last updated.",
+                    "datatype": "xsd:dateTime",
+                    "minCount": 1,
+                    "maxCount": 1
+                },
+                {
+                    "path": "rdfs:comment",
+                    "name": "Comment",
+                    "description": "Short sentence describing the item being catalogued.",
+                    "datatype": "rdf:langString",
+                    "uniqueLang": true,
+                    "minCount": 0,
+                    "maxCount": 1,
+                    "minLength": 1
+                },
+                {
+                    "path": "dct:description",
+                    "name": "Description",
+                    "description": "Longer multi-paragraph description of what this catalogued item represents.",
+                    "datatype": "rdf:langString",
+                    "uniqueLang": true,
+                    "minCount": 0,
+                    "maxCount": 1,
+                    "minLength": 1
+                },
+                {
+                    "path": "dct:license",
+                    "name": "License",
+                    "description": "The license under which the catalogue item is available.",
+                    "nodeKind": "sh:IRI",
+                    "minCount": 0,
+                    "maxCount": 1
+                },
+                {
+                    "path": "dct:creator",
+                    "name": "Creator",
+                    "description": "The original creator of the catalogued item.",
+                    "nodeKind": "sh:IRI",
+                    "minCount": 0,
+                    "maxCount": 1
+                },
+                {
+                    "path": "dct:publisher",
+                    "name": "Publisher",
+                    "description": "The publisher of the catalogued item.",
+                    "nodeKind": "sh:IRI",
+                    "minCount": 0,
+                    "maxCount": 1
+                },
+                {
+                    "path": "dcat:landingPage",
+                    "name": "Landing Page",
+                    "description": "Landing page where a copy of the catalogued item's data can be found for download.",
+                    "nodeKind": "sh:IRI",
+                    "minCount": 0
+                },
+                {
+                    "path": "dcat:theme",
+                    "name": "Theme",
+                    "description": "Pre-defined theme URIs which the catalogued item sits within.",
+                    "nodeKind": "sh:IRI",
+                    "minCount": 0
+                },
+                {
+                    "path": "dcat:keyword",
+                    "name": "Keyword",
+                    "description": "Free-text key words which catagorise the catalogued item.",
+                    "datatype": "rdf:langString",
+                    "uniqueLang": true,
+                    "minCount": 0,
+                    "minLength": 1
+                },
+                {
+                    "path": "dcat:contactPoint",
+                    "name": "Contact Point",
+                    "description": "A URI which can be used to get in contact to discuss the catalogued item.",
+                    "nodeKind": "sh:IRI",
+                    "minCount": 0,
+                    "maxCount": 1
+                }
+            ]
+        }
+    ]
+}
