@@ -8,10 +8,10 @@ All our work depends on open standards; however it isn't just for open data. Sha
 
 ## Getting started immediately
 
-Get going with csvcubed immediately by installing csvcubed and csvcubed-models using pip.
+Get going with csvcubed immediately by installing csvcubed using pip.
 
 ```bash
-pip install csvcubed csvcubed-models
+pip install csvcubed
 ```
 
 From there you'll have access to the `csvcubed` command line tool which features sub commands `build` and `inspect` to create CSV-Ws from CSV and inspect CSV-Ws.

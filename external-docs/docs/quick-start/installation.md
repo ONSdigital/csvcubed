@@ -36,7 +36,7 @@ conda activate csvcubed
 [csvcubed](https://pypi.org/project/csvcubed/) is on [pypi.org](https://pypi.org), Python's main package repository. Installation can be done with your favoured python package manager like [pip](https://pip.pypa.io/en/stable/).
 
 ```bash
-pip install csvcubed csvcubed-models
+pip install csvcubed
 ```
 
 That's it, let the installation happen.
