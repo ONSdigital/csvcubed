@@ -22,14 +22,14 @@ Become well acquainted to csvcubed with our [quick start](https://gss-cogs.githu
 
 csvcubed has extensive user documentation which tracks the release of csvcubed while it is in its beta phase. Our [documentation](https://gss-cogs.github.io/csvcubed-docs/external/) can always be improved, so treat bad docs as a bug report.
 
-## Packages
+## Related Packages
 
 | Name                                                                | Description                                                                                    |
 | :------------------------------------------------------------------ | :--------------------------------------------------------------------------------------------- |
 | [csvcubed](./csvcubed/csvcubed/README.md)                           | The key library helping to transform tidy-data into qb-flavoured CSV-W cubes.                  |
-| [csvcubed-models](./csvcubed-models/csvcubedmodels/README.md)       | Models and RDF serialisation functionality required by the csvcubed and csvcubed-pmd packages. |
-| [csvcubed-pmd](./csvcubed-pmd/csvcubedpmd/README.md)                | Transforms a CSV-qb into RDF which is compatible with the Publish My Data platform.            |
-| [csvcubed-devtools](./csvcubed-devtools/csvcubeddevtools/README.md) | Shared test functionality & dev dependencies which are commonly required.                      |
+| [csvcubed-models](https://github.com/gss-Cogs/csvcubed-models)       | Models and RDF serialisation functionality required by the csvcubed and csvcubed-pmd packages. |
+| [csvcubed-pmd](https://github.com/gss-Cogs/csvcubed-pmd)                | Transforms a CSV-qb into RDF which is compatible with the Publish My Data platform.            |
+| [csvcubed-devtools](https://github.com/gss-Cogs/csvcubed-devtools) | Shared test functionality & dev dependencies which are commonly required.                      |
 
 ## Developer Documentation
 
