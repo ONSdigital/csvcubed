@@ -1,0 +1,44 @@
+{
+    "@context": [
+        "https://raw.githubusercontent.com/w3c/shacl/master/shacl-jsonld-context/shacl.context.ld.json",
+        {
+            "uniqueLang": {
+                "@id": "sh:uniqueLang",
+                "@type": "xsd:boolean"
+            },
+            "description": {
+                "@id": "sh:description",
+                "@type": "xsd:string"
+            },
+            "name": {
+                "@id": "sh:name",
+                "@type": "xsd:string"
+            },
+
+            "skos": "http://www.w3.org/2004/02/skos/core#",
+            "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+            "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+            "xsd": "http://www.w3.org/2001/XMLSchema#",
+            "dct": "http://purl.org/dc/terms/",
+            "owl": "http://www.w3.org/2002/07/owl#",
+            "dcat": "http://www.w3.org/ns/dcat#",
+
+            "@base": "https://purl.org/csv-cubed/shacl/v1.0/deps/shacl-context.json",
+            "@vocab": "https://purl.org/csv-cubed/shacl/v1.0/deps/shacl-context.json#",
+            "shape": {
+                "@type": "@id"
+            },
+            "owl:imports": {
+                "@type": "@id"
+            }
+        }
+    ],
+    "@id": "https://purl.org/csv-cubed/shacl/v1.0/deps/shacl-context.json",
+    "rdfs:seeAlso": [
+        {
+            "@id": "#shape",
+            "@type": "rdf:Property",
+            "rdfs:label": "Defines a SHACL shape."
+        }
+    ]
+}

@@ -1,0 +1,205 @@
+<https://purl.org/csv-cubed/shacl/v1.0/deps/shacl-context.json>
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso>  <https://purl.org/csv-cubed/shacl/v1.0/deps/shacl-context.json#shape> .
+
+<https://purl.org/csv-cubed/shacl/v1.0/deps/shacl-context.json#shape>
+        a       <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> ;
+        <http://www.w3.org/2000/01/rdf-schema#label>  "Defines a SHACL shape." .
+
+<https://purl.org/csv-cubed/shacl/v1.0/code-list.json#ontology>
+        a       <http://www.w3.org/2002/07/owl#Ontology> ;
+        <https://purl.org/csv-cubed/shacl/v1.0/deps/shacl-context.json#shape>  <https://purl.org/csv-cubed/shacl/v1.0/code-list.json#ConceptSchemeShape> ;
+        <https://purl.org/csv-cubed/shacl/v1.0/deps/shacl-context.json#shape>  <https://purl.org/csv-cubed/shacl/v1.0/code-list.json#ConceptShape> .
+
+<https://purl.org/csv-cubed/shacl/v1.0/code-list.json#ConceptSchemeShape>
+        a       <http://www.w3.org/ns/shacl#NodeShape> ;
+        <http://www.w3.org/ns/shacl#and>  _:b0 .
+
+_:b0    <http://www.w3.org/1999/02/22-rdf-syntax-ns#first>  <https://purl.org/csv-cubed/shacl/v1.0/deps/dcat.json#CatalogDatasetShape> ;
+        <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest>  <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+
+<https://purl.org/csv-cubed/shacl/v1.0/code-list.json#ConceptSchemeShape>
+        <http://www.w3.org/ns/shacl#property>  _:b1 ;
+        <http://www.w3.org/ns/shacl#property>  _:b2 ;
+        <http://www.w3.org/ns/shacl#targetClass>  <http://www.w3.org/2004/02/skos/core#ConceptScheme> .
+
+_:b1    <http://www.w3.org/ns/shacl#datatype>  <http://www.w3.org/1999/02/22-rdf-syntax-ns#langString> ;
+        <http://www.w3.org/ns/shacl#description>  "The code list's label must be a non-zero length `rdf:languageString` with no duplicate languages present. Each label has a matching `dct:title` triple." ;
+        <http://www.w3.org/ns/shacl#minCount>  1 ;
+        <http://www.w3.org/ns/shacl#minLength>  1 ;
+        <http://www.w3.org/ns/shacl#name>  "Code list's label" ;
+        <http://www.w3.org/ns/shacl#path>  <http://www.w3.org/2000/01/rdf-schema#label> ;
+        <http://www.w3.org/ns/shacl#uniqueLang>  true .
+
+_:b2    <http://www.w3.org/ns/shacl#class>  <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+        <http://www.w3.org/ns/shacl#description>  "The concept scheme is a variant of another existing code list" ;
+        <http://www.w3.org/ns/shacl#minCount>  0 ;
+        <http://www.w3.org/ns/shacl#name>  "Variant of" ;
+        <http://www.w3.org/ns/shacl#node>  <https://purl.org/csv-cubed/shacl/v1.0/code-list.json#ConceptSchemeShape> ;
+        <http://www.w3.org/ns/shacl#nodeKind>  <http://www.w3.org/ns/shacl#IRI> ;
+        <http://www.w3.org/ns/shacl#path>  <http://rdf-vocabulary.ddialliance.org/xkos#variant> .
+
+<https://purl.org/csv-cubed/shacl/v1.0/code-list.json#ConceptShape>
+        a       <http://www.w3.org/ns/shacl#NodeShape> ;
+        <http://www.w3.org/ns/shacl#property>  _:b3 ;
+        <http://www.w3.org/ns/shacl#property>  _:b4 ;
+        <http://www.w3.org/ns/shacl#property>  _:b5 ;
+        <http://www.w3.org/ns/shacl#property>  _:b6 ;
+        <http://www.w3.org/ns/shacl#property>  _:b7 ;
+        <http://www.w3.org/ns/shacl#targetClass>  <http://www.w3.org/2004/02/skos/core#Concept> .
+
+_:b3    <http://www.w3.org/ns/shacl#datatype>  <http://www.w3.org/2001/XMLSchema#string> ;
+        <http://www.w3.org/ns/shacl#description>  "A concept's label must be a non-zero length `xsd:string`." ;
+        <http://www.w3.org/ns/shacl#minCount>  1 ;
+        <http://www.w3.org/ns/shacl#minLength>  1 ;
+        <http://www.w3.org/ns/shacl#name>  "Label" ;
+        <http://www.w3.org/ns/shacl#path>  <http://www.w3.org/2000/01/rdf-schema#label> .
+
+_:b4    <http://www.w3.org/ns/shacl#datatype>  <http://www.w3.org/2001/XMLSchema#string> ;
+        <http://www.w3.org/ns/shacl#description>  "A concept must have a single notation. The notation must be a non-zero length `xsd:string`." ;
+        <http://www.w3.org/ns/shacl#maxCount>  1 ;
+        <http://www.w3.org/ns/shacl#minCount>  1 ;
+        <http://www.w3.org/ns/shacl#minLength>  1 ;
+        <http://www.w3.org/ns/shacl#name>  "Notation" ;
+        <http://www.w3.org/ns/shacl#path>  <http://www.w3.org/2004/02/skos/core#notation> .
+
+_:b5    <http://www.w3.org/ns/shacl#class>  <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+        <http://www.w3.org/ns/shacl#description>  "A concept must be part of at least one concept scheme (code list). The concept scheme must be referred to by IRI." ;
+        <http://www.w3.org/ns/shacl#minCount>  1 ;
+        <http://www.w3.org/ns/shacl#name>  "In Scheme" ;
+        <http://www.w3.org/ns/shacl#node>  <https://purl.org/csv-cubed/shacl/v1.0/code-list.json#ConceptSchemeShape> ;
+        <http://www.w3.org/ns/shacl#nodeKind>  <http://www.w3.org/ns/shacl#IRI> ;
+        <http://www.w3.org/ns/shacl#path>  <http://www.w3.org/2004/02/skos/core#inScheme> .
+
+_:b6    <http://www.w3.org/ns/shacl#datatype>  <http://www.w3.org/2001/XMLSchema#integer> ;
+        <http://www.w3.org/ns/shacl#description>  "A concept must have a single integer sort priority to guide user interfaces on the order in which to sort concepts for display." ;
+        <http://www.w3.org/ns/shacl#maxCount>  1 ;
+        <http://www.w3.org/ns/shacl#minCount>  1 ;
+        <http://www.w3.org/ns/shacl#name>  "Sort Priority" ;
+        <http://www.w3.org/ns/shacl#path>  <http://www.w3.org/ns/ui#sortPriority> .
+
+_:b7    <http://www.w3.org/ns/shacl#class>  <http://www.w3.org/2004/02/skos/core#Concept> ;
+        <http://www.w3.org/ns/shacl#description>  "A concept may have one or more concepts which are broader than itself. These concepts must be referred to by IRI." ;
+        <http://www.w3.org/ns/shacl#minCount>  0 ;
+        <http://www.w3.org/ns/shacl#name>  "Broader Concept" ;
+        <http://www.w3.org/ns/shacl#node>  <https://purl.org/csv-cubed/shacl/v1.0/code-list.json#ConceptShape> ;
+        <http://www.w3.org/ns/shacl#nodeKind>  <http://www.w3.org/ns/shacl#IRI> ;
+        <http://www.w3.org/ns/shacl#path>  <http://www.w3.org/2004/02/skos/core#broader> .
+
+<https://purl.org/csv-cubed/shacl/v1.0/deps/dcat.json#ontology>
+        a       <http://www.w3.org/2002/07/owl#Ontology> ;
+        <https://purl.org/csv-cubed/shacl/v1.0/deps/shacl-context.json#shape>  <https://purl.org/csv-cubed/shacl/v1.0/deps/dcat.json#CatalogDatasetShape> .
+
+<https://purl.org/csv-cubed/shacl/v1.0/deps/dcat.json#CatalogDatasetShape>
+        a       <http://www.w3.org/ns/shacl#NodeShape> ;
+        <http://www.w3.org/ns/shacl#property>  _:b8 ;
+        <http://www.w3.org/ns/shacl#property>  _:b9 ;
+        <http://www.w3.org/ns/shacl#property>  _:b10 ;
+        <http://www.w3.org/ns/shacl#property>  _:b11 ;
+        <http://www.w3.org/ns/shacl#property>  _:b12 ;
+        <http://www.w3.org/ns/shacl#property>  _:b13 ;
+        <http://www.w3.org/ns/shacl#property>  _:b14 ;
+        <http://www.w3.org/ns/shacl#property>  _:b15 ;
+        <http://www.w3.org/ns/shacl#property>  _:b16 ;
+        <http://www.w3.org/ns/shacl#property>  _:b17 ;
+        <http://www.w3.org/ns/shacl#property>  _:b18 ;
+        <http://www.w3.org/ns/shacl#property>  _:b19 ;
+        <http://www.w3.org/ns/shacl#property>  _:b20 ;
+        <http://www.w3.org/ns/shacl#targetClass>  <http://www.w3.org/ns/dcat#Dataset> .
+
+_:b8    <http://www.w3.org/ns/shacl#datatype>  <http://www.w3.org/1999/02/22-rdf-syntax-ns#langString> ;
+        <http://www.w3.org/ns/shacl#description>  "A short title describing the catalogued item." ;
+        <http://www.w3.org/ns/shacl#equals>  <http://www.w3.org/2000/01/rdf-schema#label> ;
+        <http://www.w3.org/ns/shacl#maxCount>  1 ;
+        <http://www.w3.org/ns/shacl#minCount>  1 ;
+        <http://www.w3.org/ns/shacl#minLength>  1 ;
+        <http://www.w3.org/ns/shacl#name>  "Title" ;
+        <http://www.w3.org/ns/shacl#path>  <http://purl.org/dc/terms/title> ;
+        <http://www.w3.org/ns/shacl#uniqueLang>  true .
+
+_:b9    <http://www.w3.org/ns/shacl#datatype>  <http://www.w3.org/2001/XMLSchema#string> ;
+        <http://www.w3.org/ns/shacl#description>  "An identifier for this catalogued item." ;
+        <http://www.w3.org/ns/shacl#maxCount>  1 ;
+        <http://www.w3.org/ns/shacl#minCount>  1 ;
+        <http://www.w3.org/ns/shacl#minLength>  1 ;
+        <http://www.w3.org/ns/shacl#name>  "Identifier" ;
+        <http://www.w3.org/ns/shacl#path>  <http://purl.org/dc/terms/identifier> .
+
+_:b10   <http://www.w3.org/ns/shacl#datatype>  <http://www.w3.org/2001/XMLSchema#dateTime> ;
+        <http://www.w3.org/ns/shacl#description>  "The point in time when the catalogued item was first issued." ;
+        <http://www.w3.org/ns/shacl#maxCount>  1 ;
+        <http://www.w3.org/ns/shacl#minCount>  1 ;
+        <http://www.w3.org/ns/shacl#name>  "Date-time Issued" ;
+        <http://www.w3.org/ns/shacl#path>  <http://purl.org/dc/terms/issued> .
+
+_:b11   <http://www.w3.org/ns/shacl#datatype>  <http://www.w3.org/2001/XMLSchema#dateTime> ;
+        <http://www.w3.org/ns/shacl#description>  "The point in time when the catalogued item was last updated." ;
+        <http://www.w3.org/ns/shacl#maxCount>  1 ;
+        <http://www.w3.org/ns/shacl#minCount>  1 ;
+        <http://www.w3.org/ns/shacl#name>  "Date-time Modified" ;
+        <http://www.w3.org/ns/shacl#path>  <http://purl.org/dc/terms/modified> .
+
+_:b12   <http://www.w3.org/ns/shacl#datatype>  <http://www.w3.org/1999/02/22-rdf-syntax-ns#langString> ;
+        <http://www.w3.org/ns/shacl#description>  "Short sentence describing the item being catalogued." ;
+        <http://www.w3.org/ns/shacl#maxCount>  1 ;
+        <http://www.w3.org/ns/shacl#minCount>  0 ;
+        <http://www.w3.org/ns/shacl#minLength>  1 ;
+        <http://www.w3.org/ns/shacl#name>  "Comment" ;
+        <http://www.w3.org/ns/shacl#path>  <http://www.w3.org/2000/01/rdf-schema#comment> ;
+        <http://www.w3.org/ns/shacl#uniqueLang>  true .
+
+_:b13   <http://www.w3.org/ns/shacl#datatype>  <http://www.w3.org/1999/02/22-rdf-syntax-ns#langString> ;
+        <http://www.w3.org/ns/shacl#description>  "Longer multi-paragraph description of what this catalogued item represents." ;
+        <http://www.w3.org/ns/shacl#maxCount>  1 ;
+        <http://www.w3.org/ns/shacl#minCount>  0 ;
+        <http://www.w3.org/ns/shacl#minLength>  1 ;
+        <http://www.w3.org/ns/shacl#name>  "Description" ;
+        <http://www.w3.org/ns/shacl#path>  <http://purl.org/dc/terms/description> ;
+        <http://www.w3.org/ns/shacl#uniqueLang>  true .
+
+_:b14   <http://www.w3.org/ns/shacl#description>  "The license under which the catalogue item is available." ;
+        <http://www.w3.org/ns/shacl#maxCount>  1 ;
+        <http://www.w3.org/ns/shacl#minCount>  0 ;
+        <http://www.w3.org/ns/shacl#name>  "License" ;
+        <http://www.w3.org/ns/shacl#nodeKind>  <http://www.w3.org/ns/shacl#IRI> ;
+        <http://www.w3.org/ns/shacl#path>  <http://purl.org/dc/terms/license> .
+
+_:b15   <http://www.w3.org/ns/shacl#description>  "The original creator of the catalogued item." ;
+        <http://www.w3.org/ns/shacl#maxCount>  1 ;
+        <http://www.w3.org/ns/shacl#minCount>  0 ;
+        <http://www.w3.org/ns/shacl#name>  "Creator" ;
+        <http://www.w3.org/ns/shacl#nodeKind>  <http://www.w3.org/ns/shacl#IRI> ;
+        <http://www.w3.org/ns/shacl#path>  <http://purl.org/dc/terms/creator> .
+
+_:b16   <http://www.w3.org/ns/shacl#description>  "The publisher of the catalogued item." ;
+        <http://www.w3.org/ns/shacl#maxCount>  1 ;
+        <http://www.w3.org/ns/shacl#minCount>  0 ;
+        <http://www.w3.org/ns/shacl#name>  "Publisher" ;
+        <http://www.w3.org/ns/shacl#nodeKind>  <http://www.w3.org/ns/shacl#IRI> ;
+        <http://www.w3.org/ns/shacl#path>  <http://purl.org/dc/terms/publisher> .
+
+_:b17   <http://www.w3.org/ns/shacl#description>  "Landing page where a copy of the catalogued item's data can be found for download." ;
+        <http://www.w3.org/ns/shacl#minCount>  0 ;
+        <http://www.w3.org/ns/shacl#name>  "Landing Page" ;
+        <http://www.w3.org/ns/shacl#nodeKind>  <http://www.w3.org/ns/shacl#IRI> ;
+        <http://www.w3.org/ns/shacl#path>  <http://www.w3.org/ns/dcat#landingPage> .
+
+_:b18   <http://www.w3.org/ns/shacl#description>  "Pre-defined theme URIs which the catalogued item sits within." ;
+        <http://www.w3.org/ns/shacl#minCount>  0 ;
+        <http://www.w3.org/ns/shacl#name>  "Theme" ;
+        <http://www.w3.org/ns/shacl#nodeKind>  <http://www.w3.org/ns/shacl#IRI> ;
+        <http://www.w3.org/ns/shacl#path>  <http://www.w3.org/ns/dcat#theme> .
+
+_:b19   <http://www.w3.org/ns/shacl#datatype>  <http://www.w3.org/1999/02/22-rdf-syntax-ns#langString> ;
+        <http://www.w3.org/ns/shacl#description>  "Free-text key words which catagorise the catalogued item." ;
+        <http://www.w3.org/ns/shacl#minCount>  0 ;
+        <http://www.w3.org/ns/shacl#minLength>  1 ;
+        <http://www.w3.org/ns/shacl#name>  "Keyword" ;
+        <http://www.w3.org/ns/shacl#path>  <http://www.w3.org/ns/dcat#keyword> ;
+        <http://www.w3.org/ns/shacl#uniqueLang>  true .
+
+_:b20   <http://www.w3.org/ns/shacl#description>  "A URI which can be used to get in contact to discuss the catalogued item." ;
+        <http://www.w3.org/ns/shacl#maxCount>  1 ;
+        <http://www.w3.org/ns/shacl#minCount>  0 ;
+        <http://www.w3.org/ns/shacl#name>  "Contact Point" ;
+        <http://www.w3.org/ns/shacl#nodeKind>  <http://www.w3.org/ns/shacl#IRI> ;
+        <http://www.w3.org/ns/shacl#path>  <http://www.w3.org/ns/dcat#contactPoint> .

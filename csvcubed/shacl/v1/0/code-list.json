@@ -1,0 +1,100 @@
+{
+    "@context": [
+        "deps/shacl-context.json",
+        {
+            "this": {
+                "@id": "https://purl.org/csv-cubed/shacl/v1.0/code-list.json#",
+                "prefix": true
+            },
+            "ui": "http://www.w3.org/ns/ui#",
+            "xkos": "http://rdf-vocabulary.ddialliance.org/xkos#",
+            "dcatshapes": {
+                "@id": "https://purl.org/csv-cubed/shacl/v1.0/deps/dcat.json#",
+                "prefix": true
+            }
+        }
+    ],
+    "@id": "https://purl.org/csv-cubed/shacl/v1.0/code-list.json#ontology",
+    "@type": "owl:Ontology",
+    "owl:imports": "deps/dcat.json",
+    "shape": [
+        {
+            "@id": "this:ConceptSchemeShape",
+            "@type": "sh:NodeShape",
+            "targetClass": "skos:ConceptScheme",
+            "property": [
+                {
+                    "path": "rdfs:label",
+                    "name": "Code list's label",
+                    "description": "The code list's label must be a non-zero length `rdf:languageString` with no duplicate languages present. Each label has a matching `dct:title` triple.",
+                    "datatype": "rdf:langString",
+                    "uniqueLang": true,
+                    "minCount": 1,
+                    "minLength": 1
+                },
+                {
+                    "path": "xkos:variant",
+                    "name": "Variant of",
+                    "description": "The concept scheme is a variant of another existing code list",
+                    "minCount": 0,
+                    "nodeKind": "sh:IRI",
+                    "class": "skos:ConceptScheme",
+                    "node": "this:ConceptSchemeShape"
+                }
+            ],
+            "and": [
+                "dcatshapes:CatalogDatasetShape"
+            ]
+        },
+        {
+            "@id": "this:ConceptShape",
+            "@type": "sh:NodeShape",
+            "targetClass": "skos:Concept",
+            "property": [
+                {
+                    "path": "rdfs:label",
+                    "name": "Label",
+                    "description": "A concept's label must be a non-zero length `xsd:string`.",
+                    "minCount": 1,
+                    "datatype": "xsd:string",
+                    "minLength": 1
+                },
+                {
+                    "path": "skos:notation",
+                    "name": "Notation",
+                    "description": "A concept must have a single notation. The notation must be a non-zero length `xsd:string`.",
+                    "minCount": 1,
+                    "maxCount": 1,
+                    "datatype": "xsd:string",
+                    "minLength": 1
+                },
+                {
+                    "path": "skos:inScheme",
+                    "name": "In Scheme",
+                    "description": "A concept must be part of at least one concept scheme (code list). The concept scheme must be referred to by IRI.",
+                    "minCount": 1,
+                    "nodeKind": "sh:IRI",
+                    "class": "skos:ConceptScheme",
+                    "node": "this:ConceptSchemeShape"
+                },
+                {
+                    "path": "ui:sortPriority",
+                    "name": "Sort Priority",
+                    "description": "A concept must have a single integer sort priority to guide user interfaces on the order in which to sort concepts for display.",
+                    "minCount": 1,
+                    "maxCount": 1,
+                    "datatype": "xsd:integer"
+                },
+                {
+                    "path": "skos:broader",
+                    "name": "Broader Concept",
+                    "description": "A concept may have one or more concepts which are broader than itself. These concepts must be referred to by IRI.",
+                    "minCount": 0,
+                    "nodeKind": "sh:IRI",
+                    "class": "skos:Concept",
+                    "node": "this:ConceptShape"
+                }
+            ]
+        }
+    ]
+}
