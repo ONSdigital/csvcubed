@@ -9,6 +9,7 @@ pipeline {
         stage('Setup') {
             steps {
                 script {
+                    echo "Hello from canwaf!"
                     // Clean up any unwanted files lying about after the previous build.
                     sh "git clean -fxd --exclude='.venv'"
 
