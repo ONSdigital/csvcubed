@@ -15,7 +15,7 @@
     "keyword1"
   ],
   "sort": {
-    "by": "labels",
+    "by": "label",
     "method": "ascending"
   },
   "concepts": [
@@ -29,6 +29,7 @@
       "label": "B",
       "description": "B data record",
       "notation": "b",
+      "sort_order": 0,
       "children": [
         {
           "label": "C",
@@ -39,6 +40,7 @@
           "label": "D",
           "description": "D data record",
           "notation": "d",
+          "sort_order": 0,
           "children": [
             {
               "label": "E",

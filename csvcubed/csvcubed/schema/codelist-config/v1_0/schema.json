@@ -114,6 +114,10 @@
             "type": "string",
             "format": "uri"
           },
+          "sort_order": {
+            "description": "Sort order of the concept.",
+            "type": "integer"
+          },
           "children": {
             "$ref": "#/definitions/v1.0/concepts"
           }

@@ -15,7 +15,7 @@
     "keyword2"
   ],
   "sort": {
-    "by": "labels",
+    "by": "label",
     "method": "ascending"
   },
   "concepts": [
