@@ -12,6 +12,8 @@ pipeline {
                     // Clean up any unwanted files lying about after the previous build.
                     sh "git clean -fxd --exclude='.venv'"
 
+                    echo "hello world"
+
                     dir('csvcubed') {
                         sh 'poetry config virtualenvs.in-project true'
                         sh 'poetry install'
