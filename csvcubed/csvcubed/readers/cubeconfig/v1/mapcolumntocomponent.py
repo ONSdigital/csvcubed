@@ -8,10 +8,11 @@ import copy
 from pathlib import Path
 from typing import Union, Optional, Tuple
 
+from jsonschema.exceptions import ValidationError
+
 from csvcubed.models.cube.qb.columns import QbColumn
 from csvcubed.inputs import PandasDataTypes
 import csvcubed.readers.cubeconfig.v1.columnschema as schema
-from jsonschema.exceptions import ValidationError
 
 
 def map_column_to_qb_component(

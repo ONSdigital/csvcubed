@@ -6,11 +6,13 @@ A loader for the v1.* config.json.
 """
 import logging
 from json import JSONDecodeError
-from csvcubed.models.cube.qb.columns import QbColumn
 import pandas as pd
-from jsonschema.exceptions import ValidationError as JsonSchemaValidationError
 from pathlib import Path
 from typing import Dict, Optional, Tuple, List, Callable
+
+from jsonschema.exceptions import ValidationError as JsonSchemaValidationError
+
+from csvcubed.models.cube.qb.columns import QbColumn
 
 from csvcubed.models.cube.columns import CsvColumn
 from csvcubed.models.cube.cube import Cube

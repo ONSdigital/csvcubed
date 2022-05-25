@@ -12,8 +12,9 @@ from abc import ABC
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Union, Optional, TypeVar, Tuple
-from jsonschema.exceptions import ValidationError
 import uritemplate
+
+from jsonschema.exceptions import ValidationError
 
 from csvcubedmodels.dataclassbase import DataClassBase
 
@@ -136,8 +137,6 @@ class NewDimension(SchemaBaseClass):
                 code_list_schema_validation_errors = validate_dict_against_schema(
                     value=code_list_config_dict, schema=schema
                 )
-                # for error_msg in code_list_schema_validation_errors:
-                #     _logger.warn(error_msg)
 
                 return (
                     NewQbCodeList(
@@ -183,8 +182,6 @@ class NewDimension(SchemaBaseClass):
             code_list_schema_validation_errors = validate_dict_against_schema(
                 value=code_list_config.as_dict(), schema=schema
             )
-            # for error_msg in code_list_schema_validation_errors:
-            #     _logger.warn(error_msg)
 
             return (
                 NewQbCodeList(

@@ -5,7 +5,6 @@ Schema Versions
 Contains an enum listing the qube-config.json schema versions recognised by csvcubed.
 """
 
-import numbers
 import logging
 from enum import Enum
 from pathlib import Path
