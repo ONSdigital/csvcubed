@@ -6,6 +6,7 @@ A loader for the v1.* config.json.
 """
 import logging
 from json import JSONDecodeError
+from csvcubed.models.cube.qb.columns import QbColumn
 import pandas as pd
 from jsonschema.exceptions import ValidationError as JsonSchemaValidationError
 from pathlib import Path
@@ -105,19 +106,21 @@ def get_deserialiser(
             config = {"title": generate_title_from_file_name(csv_path)}
             schema_validation_errors = []
 
-        cube = _get_cube_from_config_json_dict(
+        (cube, code_list_schema_validation_errors) = _get_cube_from_config_json_dict(
             data,
             config,
             cube_config_minor_version,
             config_path=config_path,
         )
+        schema_validation_errors += code_list_schema_validation_errors
 
-        _configure_remaining_columns_by_convention(
+        code_list_schema_validation_errors = _configure_remaining_columns_by_convention(
             cube,
             data,
             cube_config_minor_version,
             config_path=config_path,
         )
+        schema_validation_errors += code_list_schema_validation_errors
 
         return cube, schema_validation_errors, data_errors
 
@@ -129,23 +132,25 @@ def _get_cube_from_config_json_dict(
     config: Dict,
     cube_config_minor_version: int,
     config_path: Optional[Path] = None,
-) -> QbCube:
+) -> Tuple[QbCube, list[JsonSchemaValidationError]]:
     columns: List[CsvColumn] = []
     metadata: CatalogMetadata = metadata_from_dict(config)
 
     config_columns = config.get("columns", {})
+    code_list_schema_validation_errors: list[JsonSchemaValidationError] = []
     for (column_title, column_config) in config_columns.items():
-        columns.append(
-            _get_qb_column_from_json(
-                column_config,
-                column_title,
-                data,
-                cube_config_minor_version,
-                config_path=config_path,
-            )
+        (qb_column, validation_errors) = _get_qb_column_from_json(
+            column_config,
+            column_title,
+            data,
+            cube_config_minor_version,
+            config_path=config_path,
         )
+        columns.append(qb_column)
+        if validation_errors:
+            code_list_schema_validation_errors += validation_errors
 
-    return Cube(metadata, data, columns)
+    return (Cube(metadata, data, columns), code_list_schema_validation_errors)
 
 
 def _get_qb_column_from_json(
@@ -154,7 +159,7 @@ def _get_qb_column_from_json(
     data: pd.DataFrame,
     cube_config_minor_version: int,
     config_path: Optional[Path] = None,
-):
+) -> Tuple[QbColumn, Optional[list[JsonSchemaValidationError]]]:
     # When the config json contains a col definition and the col title is not in the data
     column_data = data[column_title] if column_title in data.columns else None
     # Load configuration from the "from_template": if provided.
@@ -176,10 +181,12 @@ def _configure_remaining_columns_by_convention(
     data: pd.DataFrame,
     cube_config_minor_version: int,
     config_path: Optional[Path] = None,
-) -> None:
+) -> list[JsonSchemaValidationError]:
     """Update columns from csv where appropriate, i.e. config did not define the column."""
     configured_columns = {col.csv_column_title: col for col in cube.columns}
     ordered_columns: List[CsvColumn] = []
+    code_list_schema_validation_errors: list[JsonSchemaValidationError] = []
+
     for i, column_title in enumerate(data.columns):
         # ... determine if the column_title in data matches a convention
         if column_title in configured_columns:
@@ -188,17 +195,19 @@ def _configure_remaining_columns_by_convention(
         elif column_title not in configured_columns:
             column_dict = _get_conventional_column_definition_for_title(column_title)
 
-            qb_column: CsvColumn = map_column_to_qb_component(
+            (qb_column, validation_errors) = map_column_to_qb_component(
                 column_title=column_title,
                 column=column_dict,
                 data=data[column_title].astype("category"),
                 cube_config_minor_version=cube_config_minor_version,
                 config_path=config_path,
             )
-
+            if validation_errors:
+                code_list_schema_validation_errors += validation_errors
             ordered_columns.append(qb_column)
 
     cube.columns = ordered_columns + list(configured_columns.values())
+    return code_list_schema_validation_errors
 
 
 def _get_conventional_column_definition_for_title(column_title: str) -> dict:

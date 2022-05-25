@@ -11,7 +11,8 @@ import logging
 from abc import ABC
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Union, Optional, TypeVar
+from typing import List, Union, Optional, TypeVar, Tuple
+from jsonschema.exceptions import ValidationError
 import uritemplate
 
 from csvcubedmodels.dataclassbase import DataClassBase
@@ -79,7 +80,7 @@ class NewDimension(SchemaBaseClass):
         data: PandasDataTypes,
         cube_config_minor_version: Optional[int],
         config_path: Optional[Path] = None,
-    ) -> NewQbDimension:
+    ) -> Tuple[NewQbDimension, Optional[list[ValidationError]]]:
 
         new_dimension = NewQbDimension.from_data(
             label=self.label or csv_column_title,
@@ -90,13 +91,16 @@ class NewDimension(SchemaBaseClass):
         )
         # The NewQbCodeList and Concepts are populated in the NewQbDimension.from_data() call
         # the _get_code_list method overrides the code_list if required.
-        new_dimension.code_list = self._get_code_list(
+        (
+            new_dimension.code_list,
+            code_list_schema_validation_errors,
+        ) = self._get_code_list(
             new_dimension,
             csv_column_title,
             cube_config_minor_version,
             cube_config_path=config_path,
         )
-        return new_dimension
+        return (new_dimension, code_list_schema_validation_errors)
 
     def _get_code_list(
         self,
@@ -104,10 +108,10 @@ class NewDimension(SchemaBaseClass):
         csv_column_title: str,
         cube_config_minor_version: Optional[int],
         cube_config_path: Optional[Path],
-    ) -> Optional[QbCodeList]:
+    ) -> Tuple[Optional[QbCodeList], Optional[list[ValidationError]]]:
         if isinstance(self.code_list, str):
             if looks_like_uri(self.code_list):
-                return ExistingQbCodeList(self.code_list)
+                return (ExistingQbCodeList(self.code_list), None)
             # The following elif is for cube config v1.1. This also requires the user to define the configuration in the build command, and therefore cube_config_path.
             elif (
                 cube_config_minor_version
@@ -132,11 +136,14 @@ class NewDimension(SchemaBaseClass):
                 code_list_schema_validation_errors = validate_dict_against_schema(
                     value=code_list_config_dict, schema=schema
                 )
-                for error_msg in code_list_schema_validation_errors:
-                    _logger.warn(error_msg)
+                # for error_msg in code_list_schema_validation_errors:
+                #     _logger.warn(error_msg)
 
-                return NewQbCodeList(
-                    code_list_config.metadata, code_list_config.new_qb_concepts
+                return (
+                    NewQbCodeList(
+                        code_list_config.metadata, code_list_config.new_qb_concepts
+                    ),
+                    code_list_schema_validation_errors,
                 )
             else:
                 raise ValueError(
@@ -145,7 +152,7 @@ class NewDimension(SchemaBaseClass):
 
         elif isinstance(self.code_list, bool):
             if self.code_list is False:
-                return None
+                return (None, None)
             elif (
                 new_dimension.parent_dimension_uri
                 == "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod"
@@ -155,11 +162,14 @@ class NewDimension(SchemaBaseClass):
                 )
             ):
                 # This is a special case where we build up a code-list of the date/time values.
-                return self._get_date_time_code_list_for_dimension(
-                    new_dimension, self.cell_uri_template, csv_column_title
+                return (
+                    self._get_date_time_code_list_for_dimension(
+                        new_dimension, self.cell_uri_template, csv_column_title
+                    ),
+                    None,
                 )
             else:
-                return new_dimension.code_list
+                return (new_dimension.code_list, None)
 
         # The following elif is for cube config v1.1 and when the code list is defined inline.
         elif (
@@ -173,11 +183,14 @@ class NewDimension(SchemaBaseClass):
             code_list_schema_validation_errors = validate_dict_against_schema(
                 value=code_list_config.as_dict(), schema=schema
             )
-            for error_msg in code_list_schema_validation_errors:
-                _logger.warn(error_msg)
+            # for error_msg in code_list_schema_validation_errors:
+            #     _logger.warn(error_msg)
 
-            return NewQbCodeList(
-                code_list_config.metadata, code_list_config.new_qb_concepts
+            return (
+                NewQbCodeList(
+                    code_list_config.metadata, code_list_config.new_qb_concepts
+                ),
+                code_list_schema_validation_errors,
             )
         else:
             raise ValueError(f"Unmatched code_list value {self.code_list}")

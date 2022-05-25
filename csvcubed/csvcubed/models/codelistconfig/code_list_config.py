@@ -80,9 +80,16 @@ class CodeListConfig(DataClassBase):
         """
         Sorting concepts based on the sort object and sort order defined in the code list json.
         """
+        # If the sort object is not defined, the sorting will default to the sort_order where defined.
         if self.sort is None:
-            return self.concepts
+            sorted_concepts: List[CodeListConfigConcept] = sorted(
+                concepts,
+                key=lambda x: (x.sort_order is None, x.sort_order),
+                reverse=False,
+            )
+            return sorted_concepts
 
+        # Otherwise, the sort object and sort_order both are used for sorting.
         if self.sort.by != "label" and self.sort.by != "notation":
             raise Exception(
                 f"Unsupported sort by {self.sort.by}. The supported options are 'label' and 'notation'."
@@ -92,12 +99,12 @@ class CodeListConfig(DataClassBase):
                 f"Unsupported sort method {self.sort.method}. The supported options are 'ascending' and 'descending'."
             )
 
-        sorted_concepts = sorted(
+        sorted_concepts: List[CodeListConfigConcept] = sorted(
             concepts,
             key=lambda x: (
                 x.sort_order is None,
                 x.sort_order,
-                x.label if self.sort.by == "label" else x.notation,
+                x.label if self.sort and self.sort.by == "label" else x.notation,
             ),
             reverse=True if self.sort.method == "descending" else False,
         )
@@ -149,7 +156,7 @@ class CodeListConfig(DataClassBase):
         code_list_config.metadata = metadata_from_dict(code_list_dict)
 
         return code_list_config
-        
+
     @property
     def new_qb_concepts(self) -> list[NewQbConcept]:
         """
