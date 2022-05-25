@@ -32,5 +32,7 @@ RUN npm install -g pyright
 
 RUN python3 -m pip install mkdocs mkdocs-material mkdocs-mermaid2-plugin
 
+RUN apt-get install -y nano
+
 RUN mkdir /workspace
 WORKDIR /workspace
