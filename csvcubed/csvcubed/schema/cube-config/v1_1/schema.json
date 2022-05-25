@@ -246,7 +246,8 @@
                                 },
                                 {
                                     "description": "Inline code list",
-                                    "$ref": "https://raw.githubusercontent.com/GSS-Cogs/csvcubed/294-define-codelist-in-qubeconfig/csvcubed/csvcubed/schema/codelist-config/v1_0/schema.json"
+                                    "$ref": "https://raw.githubusercontent.com/GSS-Cogs/csvcubed/294-define-codelist-in-qubeconfig/csvcubed/csvcubed/schema/codelist-config/v1_0/schema.json#properties/$schema",
+                                    "type": "object"
                                 }
                             ]
                         }

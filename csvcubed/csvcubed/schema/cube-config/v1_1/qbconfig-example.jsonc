@@ -54,7 +54,7 @@
             "from_existing": "uri", // optional - maps to NewQbDimension.parent_dimension_uri
             "definition_uri": "uri", // optional - maps to NewQbDimension.source_uri
             "cell_uri_template": "http://example.org/code-list/{+some_column}", // maps to QbColumn.csv_column_uri_template
-            "code_list": "" // optional - maps to NewQbDimension.code_list [True (create from values), False (do not create code list), uri, as values in New Attribute.values]
+            "code_list": "uri" // optional - maps to NewQbDimension.code_list [True (create from values), False (do not create code list), uri, as values in New Attribute.values]
         },
         "Existing attribute": {
             "type": "attribute", // required

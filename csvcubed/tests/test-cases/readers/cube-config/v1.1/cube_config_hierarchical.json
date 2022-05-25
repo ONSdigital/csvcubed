@@ -1,5 +1,5 @@
 {
-    "$schema": "https://purl.org/csv-cubed/qube-config/v1.1",
+    "$schema": "https://raw.githubusercontent.com/GSS-Cogs/csvcubed/294-define-codelist-in-qubeconfig/csvcubed/csvcubed/schema/cube-config/v1_1/schema.json",
     "title": "Test cube config",
     "summary": "Test cube config summary",
     "description": "Test cube config description",
@@ -13,7 +13,9 @@
     "columns": {
         "Dimension": {
             "type": "dimension",
-            "code_list": "../../code-list-config/v1.0/code_list_config_hierarchical.json"
+            "code_list": {
+                
+            }
         },
         "Value": {
             "type": "observations"
