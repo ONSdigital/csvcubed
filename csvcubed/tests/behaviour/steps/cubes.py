@@ -86,7 +86,8 @@ def step_impl(context):
 def step_impl(context):
     expected_meta = eval(context.text.strip().replace("\r\n", ""))
     result_dict = context.cube.metadata.as_json_dict()
-
+    print(expected_meta)
+    
     if expected_meta != result_dict:
         # Print the mis-matched values if the whole dict is not equal
         for k, v in result_dict.items():

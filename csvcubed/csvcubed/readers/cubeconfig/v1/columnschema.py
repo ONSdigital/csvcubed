@@ -128,11 +128,6 @@ class NewDimension(SchemaBaseClass):
                     code_list_config_path
                 )
                 schema = load_resource(code_list_config.schema)
-                
-                if code_list_config.sort:
-                    code_list_config.apply_sort(None)
-                    for parent_concept in code_list_config.concepts:
-                        code_list_config.apply_sort(parent_concept)
 
                 code_list_schema_validation_errors = validate_dict_against_schema(
                     value=code_list_config_dict, schema=schema

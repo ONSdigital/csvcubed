@@ -22,8 +22,7 @@
     {
       "label": "A",
       "description": "A data record",
-      "notation": "a",
-      "same_as": "http://example.com/concepts/some-existing-concept"
+      "notation": "a"
     },
     {
       "label": "B",
@@ -33,7 +32,8 @@
     {
       "label": "C",
       "description": "C data record",
-      "notation": "c"
+      "notation": "c",
+      "sort_order": 1
     },
     {
       "label": "D",
@@ -43,7 +43,8 @@
     {
       "label": "E",
       "description": "E data record",
-      "notation": "e"
+      "notation": "e",
+      "sort_order": 0
     }
   ]
 }

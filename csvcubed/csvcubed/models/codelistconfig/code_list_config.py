@@ -53,6 +53,33 @@ class CodeListConfig(DataClassBase):
         default_factory=lambda: CatalogMetadata("Metadata")
     )
 
+    def __post_init__(self):
+        print("unsorted concepts: ", self.concepts)
+        if self.sort:
+            self.apply_sort(None)
+            for parent_concept in self.concepts:
+                self.apply_sort(parent_concept)
+        print("sorted concepts: ", self.concepts)
+
+    def apply_sort(
+        self,
+        parent_concept: Optional[CodeListConfigConcept],
+    ):
+        if parent_concept is None:
+            self.concepts = self._apply_sort_to_concepts(self.concepts)
+        else:
+            parent_concept.children = self._apply_sort_to_concepts(
+                parent_concept.children
+            )
+            print(
+                f"sorted_concepts for parent {parent_concept.notation}: ",
+                parent_concept.children,
+            )
+
+            for child_concept in parent_concept.children:
+                if any(child_concept.children):
+                    self.apply_sort(child_concept)
+
     def _apply_sort_to_concepts(
         self, concepts: List[CodeListConfigConcept]
     ) -> List[CodeListConfigConcept]:
@@ -65,27 +92,18 @@ class CodeListConfig(DataClassBase):
                 f"Unsupported sort method {self.sort.method}. The supported options are 'ascending' and 'descending'."
             )
 
-        # First sorting by the sort object defined in the schema.
         sorted_concepts = sorted(
             concepts,
-            key=lambda x: x.label if self.sort.by == "label" else "notation",
+            key=lambda x: (
+                x.sort_order is None,
+                x.sort_order,
+                x.label if self.sort.by == "label" else "notation",
+            ),
             reverse=True if self.sort.method == "descending" else False,
         )
-
-        # Then updating the sort order by prioritising the sort_order set per concept.
         for idx, concept in enumerate(sorted_concepts):
-            if concept.sort_order:
-                if concept.sort_order > len(concepts) - 1:
-                    raise Exception(
-                        f"Invalid sort order for the concept with notation {concept.notation}."
-                    )
-                print("hereffff")
-                sorted_concepts.remove(concept)
-                sorted_concepts.insert(concept.sort_order, concept)
-            else:
-                concept.sort_order = idx
+            concept.sort_order = idx
 
-        print("sorted_concepts: ", sorted_concepts)
         return sorted_concepts
 
     def _get_parent_of_concept(
@@ -98,6 +116,8 @@ class CodeListConfig(DataClassBase):
         """
         for parent_concept in concepts:
             for child_concept in parent_concept.children:
+                print("child_concept notation: ", child_concept.notation)
+                print("target_concept notation: ", target_concept.notation)
                 if child_concept.notation == target_concept.notation:
                     return parent_concept
                 elif any(child_concept.children):
@@ -118,21 +138,6 @@ class CodeListConfig(DataClassBase):
 
         return (code_list_config, code_list_dict)
 
-    def apply_sort(
-        self,
-        parent_concept: Optional[CodeListConfigConcept],
-    ):
-        if parent_concept is None:
-            self.concepts = self._apply_sort_to_concepts(self.concepts)
-            print(self.concepts)
-        else:
-            parent_concept.children = self._apply_sort_to_concepts(
-                parent_concept.children
-            )
-            for child_concept in parent_concept.children:
-                if any(child_concept.children):
-                    self.apply_sort(child_concept)
-
     @property
     def new_qb_concepts(self) -> list[NewQbConcept]:
         """
@@ -141,6 +146,7 @@ class CodeListConfig(DataClassBase):
 
         new_qb_concepts: list[NewQbConcept] = []
         if self.concepts:
+            print("self.concepts at new qb: ", self.concepts)
             concepts: list[CodeListConfigConcept] = list(self.concepts)
             for concept in concepts:
                 parent_concept = self._get_parent_of_concept(self.concepts, concept)
@@ -155,6 +161,5 @@ class CodeListConfig(DataClassBase):
                 )
                 if any(concept.children):
                     concepts += concept.children
-        print(new_qb_concepts)
-
+        print("new_qb_concepts:", new_qb_concepts)
         return new_qb_concepts

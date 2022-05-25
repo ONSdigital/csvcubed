@@ -19,8 +19,8 @@ class NewQbConcept(SecondaryQbStructuralDefinition, UriIdentifiable):
 
     label: str
     code: str = field(default="")
-    parent_code: Optional[str] = field(default=None, repr=False)
-    sort_order: Optional[int] = field(default=None, repr=False)
+    parent_code: Optional[str] = field(default=None)
+    sort_order: Optional[int] = field(default=None)
     description: Optional[str] = field(default=None, repr=False)
     uri_safe_identifier_override: Optional[str] = field(default=None, repr=False)
 
