@@ -67,16 +67,16 @@ class CodeListConfig(DataClassBase):
         Sorting the top level concepts and then children in each parent concept seperately.
         """
         if parent_concept is None:
-            self.concepts = self._apply_sort_to_concepts(self.concepts)
+            self.concepts = self._sort_concepts(self.concepts)
         else:
-            parent_concept.children = self._apply_sort_to_concepts(
+            parent_concept.children = self._sort_concepts(
                 parent_concept.children
             )
             for child_concept in parent_concept.children:
                 if any(child_concept.children):
                     self._apply_sort(child_concept)
 
-    def _apply_sort_to_concepts(
+    def _sort_concepts(
         self, concepts: List[CodeListConfigConcept]
     ) -> List[CodeListConfigConcept]:
         """
