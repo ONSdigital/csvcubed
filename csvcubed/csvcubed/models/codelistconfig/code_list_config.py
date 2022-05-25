@@ -69,9 +69,7 @@ class CodeListConfig(DataClassBase):
         if parent_concept is None:
             self.concepts = self._sort_concepts(self.concepts)
         else:
-            parent_concept.children = self._sort_concepts(
-                parent_concept.children
-            )
+            parent_concept.children = self._sort_concepts(parent_concept.children)
             for child_concept in parent_concept.children:
                 if any(child_concept.children):
                     self._apply_sort(child_concept)
@@ -126,19 +124,32 @@ class CodeListConfig(DataClassBase):
         return None
 
     @classmethod
-    def from_json_file(cls, file_path: Path) -> Tuple["CodeListConfig", Dict]:
+    def from_json_file(cls, file_path: Path) -> "CodeListConfig":
         """
         Converts code list config json to `CodeListConfig`.
         """
         code_list_dict = load_json_document(file_path)
         schema = code_list_dict.get("$schema", CODE_LIST_CONFIG_DEFAULT_URL)
 
-        code_list_config = cls.from_dict(code_list_dict)
+        code_list_config = super().from_dict(code_list_dict)
         code_list_config.schema = schema
         code_list_config.metadata = metadata_from_dict(code_list_dict)
 
-        return (code_list_config, code_list_dict)
+        return code_list_config
 
+    @classmethod
+    def from_dict(cls, code_list_dict: Dict) -> "CodeListConfig":
+        """
+        Converts code list config dict to `CodeListConfig`.
+        """
+        schema = code_list_dict.get("$schema", CODE_LIST_CONFIG_DEFAULT_URL)
+
+        code_list_config = super().from_dict(code_list_dict)
+        code_list_config.schema = schema
+        code_list_config.metadata = metadata_from_dict(code_list_dict)
+
+        return code_list_config
+        
     @property
     def new_qb_concepts(self) -> list[NewQbConcept]:
         """

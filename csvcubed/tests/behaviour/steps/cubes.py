@@ -49,7 +49,7 @@ def step_impl(context):
     config_file = context.config_file if hasattr(context, "config_file") else None
     data_file = context.data_file
 
-    mocker = requests_mock.Mocker(session=session)
+    mocker = requests_mock.Mocker(real_http=True)
     mocker.start()
 
     paths_to_mock: Dict[str, Path] = {

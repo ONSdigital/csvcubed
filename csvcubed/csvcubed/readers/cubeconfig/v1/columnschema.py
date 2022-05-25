@@ -69,7 +69,7 @@ class NewDimension(SchemaBaseClass):
     label: Optional[str] = None
     description: Optional[str] = None
     definition_uri: Optional[str] = None
-    code_list: Optional[Union[str, bool]] = True
+    code_list: Union[str, bool, dict, None] = True
     from_existing: Optional[str] = None
     cell_uri_template: Optional[str] = None
 
@@ -124,13 +124,11 @@ class NewDimension(SchemaBaseClass):
                     f"Loading code list from local file path: {code_list_config_path}"
                 )
 
-                code_list_config, code_list_config_dict = CodeListConfig.from_json_file(
-                    code_list_config_path
-                )
+                code_list_config = CodeListConfig.from_json_file(code_list_config_path)
                 schema = load_resource(code_list_config.schema)
 
                 code_list_schema_validation_errors = validate_dict_against_schema(
-                    value=code_list_config_dict, schema=schema
+                    value=code_list_config.as_dict(), schema=schema
                 )
                 for error_msg in code_list_schema_validation_errors:
                     _logger.warn(error_msg)
@@ -160,6 +158,25 @@ class NewDimension(SchemaBaseClass):
                 )
             else:
                 return new_dimension.code_list
+
+        # The following elif is for cube config v1.1 and when the code list is defined inline.
+        elif (
+            cube_config_minor_version
+            and cube_config_minor_version >= 1
+            and isinstance(self.code_list, dict)
+        ):
+            code_list_config = CodeListConfig.from_dict(self.code_list)
+            schema = load_resource(code_list_config.schema)
+
+            code_list_schema_validation_errors = validate_dict_against_schema(
+                value=code_list_config.as_dict(), schema=schema
+            )
+            for error_msg in code_list_schema_validation_errors:
+                _logger.warn(error_msg)
+
+            return NewQbCodeList(
+                code_list_config.metadata, code_list_config.new_qb_concepts
+            )
         else:
             raise ValueError(f"Unmatched code_list value {self.code_list}")
 
