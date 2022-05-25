@@ -64,7 +64,7 @@ class CodeListConfig(DataClassBase):
         parent_concept: Optional[CodeListConfigConcept],
     ):
         """
-        Passes the concepts to the `_apply_sort_to_concepts` recursively.
+        Sorting the top level concepts and then children in each parent concept seperately.
         """
         if parent_concept is None:
             self.concepts = self._apply_sort_to_concepts(self.concepts)
@@ -80,7 +80,7 @@ class CodeListConfig(DataClassBase):
         self, concepts: List[CodeListConfigConcept]
     ) -> List[CodeListConfigConcept]:
         """
-        Sorts concepts based on the sort object and sort order defined in the code list json.
+        Sorting concepts based on the sort object and sort order defined in the code list json.
         """
         if self.sort is None:
             return self.concepts
@@ -103,6 +103,7 @@ class CodeListConfig(DataClassBase):
             ),
             reverse=True if self.sort.method == "descending" else False,
         )
+        # Assigning the new sort_order to the concepts.
         for idx, concept in enumerate(sorted_concepts):
             concept.sort_order = idx
 
