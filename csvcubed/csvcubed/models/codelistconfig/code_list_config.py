@@ -124,18 +124,18 @@ class CodeListConfig(DataClassBase):
         return None
 
     @classmethod
-    def from_json_file(cls, file_path: Path) -> "CodeListConfig":
+    def from_json_file(cls, file_path: Path) -> Tuple["CodeListConfig", Dict]:
         """
         Converts code list config json to `CodeListConfig`.
         """
         code_list_dict = load_json_document(file_path)
         schema = code_list_dict.get("$schema", CODE_LIST_CONFIG_DEFAULT_URL)
 
-        code_list_config = super().from_dict(code_list_dict)
+        code_list_config = cls.from_dict(code_list_dict)
         code_list_config.schema = schema
         code_list_config.metadata = metadata_from_dict(code_list_dict)
 
-        return code_list_config
+        return (code_list_config, code_list_dict)
 
     @classmethod
     def from_dict(cls, code_list_dict: Dict) -> "CodeListConfig":

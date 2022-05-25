@@ -124,11 +124,13 @@ class NewDimension(SchemaBaseClass):
                     f"Loading code list from local file path: {code_list_config_path}"
                 )
 
-                code_list_config = CodeListConfig.from_json_file(code_list_config_path)
+                code_list_config, code_list_config_dict = CodeListConfig.from_json_file(
+                    code_list_config_path
+                )
                 schema = load_resource(code_list_config.schema)
 
                 code_list_schema_validation_errors = validate_dict_against_schema(
-                    value=code_list_config.as_dict(), schema=schema
+                    value=code_list_config_dict, schema=schema
                 )
                 for error_msg in code_list_schema_validation_errors:
                     _logger.warn(error_msg)
