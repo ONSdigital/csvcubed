@@ -4,9 +4,7 @@
   "title": "Schema for a codelist.",
   "description": "Schema to be used for creation and validation of a single codelist in CSV-W format.",
   "type": "object",
-  "required": [
-    "$schema"
-  ],
+  "required": [],
   "properties": {
     "$schema": {
       "type": "string",
