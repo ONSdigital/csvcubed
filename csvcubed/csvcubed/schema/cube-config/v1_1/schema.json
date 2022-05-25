@@ -243,6 +243,10 @@
                                 {
                                     "description": "The path to the code list json defined using the code list config schema",
                                     "type": "string"
+                                },
+                                {
+                                    "description": "Inline code list",
+                                    "$ref": "https://raw.githubusercontent.com/GSS-Cogs/csvcubed/294-define-codelist-in-qubeconfig/csvcubed/csvcubed/schema/codelist-config/v1_0/schema.json"
                                 }
                             ]
                         }
