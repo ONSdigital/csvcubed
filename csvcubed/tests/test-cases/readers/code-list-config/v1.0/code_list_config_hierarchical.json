@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/GSS-Cogs/csvcubed/294-define-codelist-in-qubeconfig/csvcubed/csvcubed/schema/codelist-config/v1_0/schema.json",
+  "$schema": "https://purl.org/csv-cubed/code-list-config/v1.0",
   "title": "Title of the code list",
   "description": "Description of the code list",
   "summary": "Summary of the code list",
@@ -14,6 +14,10 @@
   "keywords": [
     "keyword1"
   ],
+  "sort": {
+    "by": "label",
+    "method": "ascending"
+  },
   "concepts": [
     {
       "label": "A",

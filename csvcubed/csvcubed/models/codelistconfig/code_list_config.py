@@ -55,25 +55,17 @@ class CodeListConfig(DataClassBase):
     )
 
     def __post_init__(self):
-        if self.sort:
-            self._apply_sort(None)
-            for parent_concept in self.concepts:
-                self._apply_sort(parent_concept)
+        self.concepts = self._sort_concepts(self.concepts)
+        self._apply_sort_to_child_concepts(self.concepts)
 
-    def _apply_sort(
-        self,
-        parent_concept: Optional[CodeListConfigConcept],
-    ):
+    def _apply_sort_to_child_concepts(self, concepts: List[CodeListConfigConcept]):
         """
         Sorting the top level concepts and then children in each parent concept seperately.
         """
-        if parent_concept is None:
-            self.concepts = self._sort_concepts(self.concepts)
-        else:
-            parent_concept.children = self._sort_concepts(parent_concept.children)
-            for child_concept in parent_concept.children:
-                if any(child_concept.children):
-                    self._apply_sort(child_concept)
+        for concept in concepts:
+             if any(concept.children):
+                 concept.children = self._sort_concepts(concept.children)
+                 self._apply_sort_to_child_concepts(concept.children)
 
     def _assign_sort_order_to_concepts(
         self,
@@ -83,11 +75,12 @@ class CodeListConfig(DataClassBase):
         """Assinging a sort order to concepts without sort order whilst avoiding conflicts with the sort orders already used by the user."""
 
         sort_order: int = 0
-        concepts: List[CodeListConfigConcept] = concepts_without_sort_order
-        for concept in concepts:
+        concepts: List[CodeListConfigConcept] = []
+        for concept in concepts_without_sort_order:
             while sort_order in user_defined_sort_orders:
                 sort_order += 1
             concept.sort_order = sort_order
+            concepts.append(concept)
             sort_order += 1
 
         return concepts

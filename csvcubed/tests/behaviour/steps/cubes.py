@@ -56,7 +56,7 @@ def step_impl(context):
         "https://purl.org/csv-cubed/qube-config/v1.0": ROOT_DIR_PATH / "csvcubed" / "schema" / "cube-config" / "v1_0" / "schema.json",
         "https://purl.org/csv-cubed/qube-config/v1.1": ROOT_DIR_PATH / "csvcubed" / "schema" / "cube-config" / "v1_1" / "schema.json",
         "https://purl.org/csv-cubed/qube-config/v1": ROOT_DIR_PATH / "csvcubed" / "schema" / "cube-config" / "v1_1" / "schema.json", #v1 defaults to the latest minor version of v1.*.
-        "https://raw.githubusercontent.com/GSS-Cogs/csvcubed/294-define-codelist-in-qubeconfig/csvcubed/csvcubed/schema/codelist-config/v1_0/schema.json": ROOT_DIR_PATH / "csvcubed" / "schema" / "codelist-config" / "v1_0" / "schema.json",
+        "https://purl.org/csv-cubed/code-list-config/v1.0": ROOT_DIR_PATH / "csvcubed" / "schema" / "codelist-config" / "v1_0" / "schema.json",
         "https://purl.org/csv-cubed/code-list-config/v1": ROOT_DIR_PATH / "csvcubed" / "schema" / "codelist-config" / "v1_0" / "schema.json", #v1 defaults to the latest minor version of v1.*.
     }
 
