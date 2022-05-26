@@ -48,24 +48,24 @@ class CodeListConfig(DataClassBase):
     sort: Optional[CodeListConfigSort] = field(default=None)
     concepts: List[CodeListConfigConcept] = field(default_factory=list)
     schema: str = field(default=CODE_LIST_CONFIG_DEFAULT_URL)
-    # Using CatalogMetadata in the dataclass requires providing default_factory as otherwise, the metadata itself needs
-    # to be provided. Since we want have the metadata at initialisation, the default_factory below is defined.
+    # Using CatalogMetadata in the dataclass requires providing default_factory as otherwise, the metadata itself needs to be provided. Since we want have the metadata at initialisation, the default_factory below is defined.
     metadata: CatalogMetadata = field(
         default_factory=lambda: CatalogMetadata("Metadata")
     )
 
     def __post_init__(self):
+        # Sorting top-level concepts.
         self.concepts = self._sort_concepts(self.concepts)
         self._apply_sort_to_child_concepts(self.concepts)
 
     def _apply_sort_to_child_concepts(self, concepts: List[CodeListConfigConcept]):
         """
-        Sorting the top level concepts and then children in each parent concept seperately.
+        Sorting children in each parent concept seperately.
         """
         for concept in concepts:
-             if any(concept.children):
-                 concept.children = self._sort_concepts(concept.children)
-                 self._apply_sort_to_child_concepts(concept.children)
+            if any(concept.children):
+                concept.children = self._sort_concepts(concept.children)
+                self._apply_sort_to_child_concepts(concept.children)
 
     def _assign_sort_order_to_concepts(
         self,
@@ -95,7 +95,6 @@ class CodeListConfig(DataClassBase):
         user_defined_sort_orders: List[int] = [
             concept.sort_order for concept in concepts if concept.sort_order is not None
         ]
-        print("user_defined_sort_orders: ", user_defined_sort_orders)
 
         # Step 2: Identify the concepts with and without sort order.
         concepts_with_sort_order: List[CodeListConfigConcept] = [
@@ -104,8 +103,6 @@ class CodeListConfig(DataClassBase):
         concepts_without_sort_order: List[CodeListConfigConcept] = [
             concept for concept in concepts if concept.sort_order is None
         ]
-        print("concepts_with_sort_order: ", concepts_with_sort_order)
-        print("concepts_without_sort_order: ", concepts_without_sort_order)
 
         # Step 3: If the sort object is defined, concepts without a sort order will be sorted by the sort object first.
         if self.sort is not None:
@@ -131,14 +128,13 @@ class CodeListConfig(DataClassBase):
         all_concepts = concepts_with_sort_order + self._assign_sort_order_to_concepts(
             concepts_without_sort_order, user_defined_sort_orders
         )
-        print("all_concepts ", all_concepts)
 
         sorted_concepts: List[CodeListConfigConcept] = sorted(
             all_concepts,
             key=lambda concept: concept.sort_order is not None and concept.sort_order,
             reverse=False,
         )
-        print("sorted_concepts: ", sorted_concepts)
+
         return sorted_concepts
 
     @classmethod
