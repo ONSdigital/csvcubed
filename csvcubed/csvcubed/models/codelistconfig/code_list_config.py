@@ -48,7 +48,8 @@ class CodeListConfig(DataClassBase):
     sort: Optional[CodeListConfigSort] = field(default=None)
     concepts: List[CodeListConfigConcept] = field(default_factory=list)
     schema: str = field(default=CODE_LIST_CONFIG_DEFAULT_URL)
-    # Using CatalogMetadata in the dataclass requires providing default_factory as otherwise, the metadata itself needs to be provided. Since we want have the metadata at initialisation, the default_factory below is defined.
+    # Using CatalogMetadata in the dataclass requires providing default_factory as otherwise, the metadata itself needs
+    # to be provided. Since we want have the metadata at initialisation, the default_factory below is defined.
     metadata: CatalogMetadata = field(
         default_factory=lambda: CatalogMetadata("Metadata")
     )
@@ -114,22 +115,6 @@ class CodeListConfig(DataClassBase):
 
         return sorted_concepts
 
-    def _get_parent_of_concept(
-        self,
-        concepts: List[CodeListConfigConcept],
-        target_concept: CodeListConfigConcept,
-    ) -> Optional[CodeListConfigConcept]:
-        """
-        Finds the parent concept of the given concept, if exists.
-        """
-        for parent_concept in concepts:
-            for child_concept in parent_concept.children:
-                if child_concept.notation == target_concept.notation:
-                    return parent_concept
-                elif any(child_concept.children):
-                    return self._get_parent_of_concept([child_concept], target_concept)
-        return None
-
     @classmethod
     def from_json_file(cls, file_path: Path) -> Tuple["CodeListConfig", Dict]:
         """
@@ -165,18 +150,25 @@ class CodeListConfig(DataClassBase):
 
         new_qb_concepts: list[NewQbConcept] = []
         if self.concepts:
-            concepts: list[CodeListConfigConcept] = list(self.concepts)
-            for concept in concepts:
-                parent_concept = self._get_parent_of_concept(self.concepts, concept)
+            concepts_with_maybe_parent: list[
+                Tuple[CodeListConfigConcept, Optional[CodeListConfigConcept]]
+            ] = [(c, None) for c in self.concepts]
+
+            for (concept, maybe_parent_concept) in concepts_with_maybe_parent:
                 new_qb_concepts.append(
                     NewQbConcept(
                         label=concept.label,
                         code=concept.notation,
-                        parent_code=parent_concept.notation if parent_concept else None,
+                        parent_code=maybe_parent_concept.notation
+                        if maybe_parent_concept
+                        else None,
                         sort_order=concept.sort_order,
                         description=concept.description,
                     )
                 )
                 if any(concept.children):
-                    concepts += concept.children
+                    concepts_with_maybe_parent += [
+                        (child, concept) for child in concept.children
+                    ]
+
         return new_qb_concepts
