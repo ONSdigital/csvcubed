@@ -10,7 +10,7 @@
     "properties": {
         "$schema": {
             "type": "string",
-            "default": "https://purl.org/csv-cubed/qube-config/v1.1"
+            "const": "https://purl.org/csv-cubed/qube-config/v1.1"
         },
         "id": {
             "description": "A unique id for the cube",

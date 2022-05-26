@@ -81,7 +81,7 @@ class NewDimension(SchemaBaseClass):
         data: PandasDataTypes,
         cube_config_minor_version: Optional[int],
         config_path: Optional[Path] = None,
-    ) -> Tuple[NewQbDimension, Optional[list[ValidationError]]]:
+    ) -> Tuple[NewQbDimension, list[ValidationError]]:
 
         new_dimension = NewQbDimension.from_data(
             label=self.label or csv_column_title,
@@ -109,10 +109,10 @@ class NewDimension(SchemaBaseClass):
         csv_column_title: str,
         cube_config_minor_version: Optional[int],
         cube_config_path: Optional[Path],
-    ) -> Tuple[Optional[QbCodeList], Optional[list[ValidationError]]]:
+    ) -> Tuple[Optional[QbCodeList], list[ValidationError]]:
         if isinstance(self.code_list, str):
             if looks_like_uri(self.code_list):
-                return (ExistingQbCodeList(self.code_list), None)
+                return (ExistingQbCodeList(self.code_list), [])
             # The following elif is for cube config v1.1. This also requires the user to define the configuration in the build command, and therefore cube_config_path.
             elif (
                 cube_config_minor_version
@@ -151,7 +151,7 @@ class NewDimension(SchemaBaseClass):
 
         elif isinstance(self.code_list, bool):
             if self.code_list is False:
-                return (None, None)
+                return (None, [])
             elif (
                 new_dimension.parent_dimension_uri
                 == "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod"
@@ -165,10 +165,10 @@ class NewDimension(SchemaBaseClass):
                     self._get_date_time_code_list_for_dimension(
                         new_dimension, self.cell_uri_template, csv_column_title
                     ),
-                    None,
+                    [],
                 )
             else:
-                return (new_dimension.code_list, None)
+                return (new_dimension.code_list, [])
 
         # The following elif is for cube config v1.1 and when the code list is defined inline.
         elif (

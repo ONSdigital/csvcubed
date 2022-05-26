@@ -21,7 +21,7 @@ def map_column_to_qb_component(
     data: PandasDataTypes,
     cube_config_minor_version: Optional[int],
     config_path: Optional[Path] = None,
-) -> Tuple[QbColumn, Optional[list[ValidationError]]]:
+) -> Tuple[QbColumn, list[ValidationError]]:
     """
     Takes a config.json v1.* column mapping and, if valid,
     returns a :obj:`~csvcubed.models.cube.qb.columns.QbColumn`.
@@ -54,7 +54,7 @@ def map_column_to_qb_component(
                 schema_mapping.map_to_existing_qb_dimension(),
                 csv_column_uri_template=schema_mapping.cell_uri_template,
             ),
-            None,
+            [],
         )
 
     elif isinstance(schema_mapping, schema.NewAttribute):
@@ -64,7 +64,7 @@ def map_column_to_qb_component(
                 schema_mapping.map_to_new_qb_attribute(column_title, data),
                 csv_column_uri_template=schema_mapping.cell_uri_template,
             ),
-            None,
+            [],
         )
 
     elif isinstance(schema_mapping, schema.ExistingAttribute):
@@ -74,13 +74,13 @@ def map_column_to_qb_component(
                 schema_mapping.map_to_existing_qb_attribute(data),
                 csv_column_uri_template=schema_mapping.cell_uri_template,
             ),
-            None,
+            [],
         )
 
     elif isinstance(schema_mapping, schema.NewUnits):
         return (
             QbColumn(column_title, schema_mapping.map_to_new_qb_multi_units(data)),
-            None,
+            [],
         )
 
     elif isinstance(schema_mapping, schema.ExistingUnits):
@@ -90,7 +90,7 @@ def map_column_to_qb_component(
                 schema_mapping.map_to_existing_qb_multi_units(data, column_title),
                 csv_column_uri_template=schema_mapping.cell_uri_template,
             ),
-            None,
+            [],
         )
 
     elif isinstance(schema_mapping, schema.NewMeasures):
@@ -98,7 +98,7 @@ def map_column_to_qb_component(
             QbColumn(
                 column_title, schema_mapping.map_to_new_multi_measure_dimension(data)
             ),
-            None,
+            [],
         )
 
     elif isinstance(schema_mapping, schema.ExistingMeasures):
@@ -110,11 +110,11 @@ def map_column_to_qb_component(
                 ),
                 csv_column_uri_template=schema_mapping.cell_uri_template,
             ),
-            None,
+            [],
         )
 
     elif isinstance(schema_mapping, schema.ObservationValue):
-        return (QbColumn(column_title, schema_mapping.map_to_qb_observation()), None)
+        return (QbColumn(column_title, schema_mapping.map_to_qb_observation()), [])
 
     else:
         raise ValueError(f"Unmatched column type {type(schema_mapping)}")

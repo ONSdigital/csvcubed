@@ -1,5 +1,5 @@
 {
-  "$schema": "https://purl.org/csv-cubed/code-list-config/v1.0",
+  "$schema": "file:///workspaces/csvcubed/csvcubed/csvcubed/schema/codelist-config/v1_0/schema.json",
   "title": "Title of the code list",
   "description": "Description of the code list",
   "summary": "Summary of the code list.",

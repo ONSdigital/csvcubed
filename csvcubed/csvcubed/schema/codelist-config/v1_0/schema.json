@@ -8,7 +8,7 @@
   "properties": {
     "$schema": {
       "type": "string",
-      "default": "https://purl.org/csv-cubed/code-list-config/v1.0"
+      "const": "https://purl.org/csv-cubed/code-list-config/v1.0"
     },
     "id": {
       "description": "A unique id for the code list.",
@@ -63,11 +63,13 @@
         "by": {
           "description": "labels (default) or notation",
           "type": "string",
+          "enum": ["labels", "noftation"],
           "default": "labels"
         },
         "method": {
           "description": "ascending (default) or descending",
           "type": "string",
+          "enum": ["ascending", "descending"],
           "default": "ascending"
         }
       }
@@ -82,7 +84,6 @@
         "description": "List of concepts in the code list.",
         "type": "array",
         "uniqueItems": true,
-        "minItems": 1,
         "items": {
           "$ref": "#/definitions/v1.0/concept"
         }
