@@ -14,10 +14,6 @@
   "keywords": [
     "keyword1"
   ],
-  "sort": {
-    "by": "label",
-    "method": "ascending"
-  },
   "concepts": [
     {
       "label": "A",

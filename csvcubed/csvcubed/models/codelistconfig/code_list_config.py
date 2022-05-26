@@ -75,44 +75,77 @@ class CodeListConfig(DataClassBase):
                 if any(child_concept.children):
                     self._apply_sort(child_concept)
 
+    def _assign_sort_order_to_concepts(
+        self,
+        concepts_without_sort_order: List[CodeListConfigConcept],
+        user_defined_sort_orders: List[int],
+    ) -> List[CodeListConfigConcept]:
+        """Assinging a sort order to concepts without sort order whilst avoiding conflicts with the sort orders already used by the user."""
+
+        sort_order: int = 0
+        concepts: List[CodeListConfigConcept] = concepts_without_sort_order
+        for concept in concepts:
+            while sort_order in user_defined_sort_orders:
+                sort_order += 1
+            concept.sort_order = sort_order
+            sort_order += 1
+
+        return concepts
+
     def _sort_concepts(
         self, concepts: List[CodeListConfigConcept]
     ) -> List[CodeListConfigConcept]:
         """
         Sorting concepts based on the sort object and sort order defined in the code list json.
         """
-        # If the sort object is not defined, the sorting will default to the sort_order where defined.
-        if self.sort is None:
-            sorted_concepts: List[CodeListConfigConcept] = sorted(
-                concepts,
-                key=lambda x: (x.sort_order is None, x.sort_order),
-                reverse=False,
-            )
-            return sorted_concepts
+        # Step 1: Identify sort orders defined by the user in code list config json.
+        user_defined_sort_orders: List[int] = [
+            concept.sort_order for concept in concepts if concept.sort_order is not None
+        ]
+        print("user_defined_sort_orders: ", user_defined_sort_orders)
 
-        # Otherwise, the sort object and sort_order both are used for sorting.
-        if self.sort.by != "label" and self.sort.by != "notation":
-            raise Exception(
-                f"Unsupported sort by {self.sort.by}. The supported options are 'label' and 'notation'."
+        # Step 2: Identify the concepts with and without sort order.
+        concepts_with_sort_order: List[CodeListConfigConcept] = [
+            concept for concept in concepts if concept.sort_order is not None
+        ]
+        concepts_without_sort_order: List[CodeListConfigConcept] = [
+            concept for concept in concepts if concept.sort_order is None
+        ]
+        print("concepts_with_sort_order: ", concepts_with_sort_order)
+        print("concepts_without_sort_order: ", concepts_without_sort_order)
+
+        # Step 3: If the sort object is defined, concepts without a sort order will be sorted by the sort object first.
+        if self.sort is not None:
+            if self.sort.by != "label" and self.sort.by != "notation":
+                raise Exception(
+                    f"Unsupported sort by {self.sort.by}. The supported options are 'label' and 'notation'."
+                )
+            if self.sort.method != "ascending" and self.sort.by != "descending":
+                raise Exception(
+                    f"Unsupported sort method {self.sort.method}. The supported options are 'ascending' and 'descending'."
+                )
+
+            concepts_without_sort_order.sort(
+                key=lambda concept: (
+                    concept.label
+                    if self.sort and self.sort.by == "label"
+                    else concept.notation,
+                ),
+                reverse=True if self.sort.method == "descending" else False,
             )
-        if self.sort.method != "ascending" and self.sort.by != "descending":
-            raise Exception(
-                f"Unsupported sort method {self.sort.method}. The supported options are 'ascending' and 'descending'."
-            )
+
+        # Step 4: Fianlly, all the concepts are sorted by the sort order.
+        all_concepts = concepts_with_sort_order + self._assign_sort_order_to_concepts(
+            concepts_without_sort_order, user_defined_sort_orders
+        )
+        print("all_concepts ", all_concepts)
 
         sorted_concepts: List[CodeListConfigConcept] = sorted(
-            concepts,
-            key=lambda x: (
-                x.sort_order is None,
-                x.sort_order,
-                x.label if self.sort and self.sort.by == "label" else x.notation,
-            ),
-            reverse=True if self.sort.method == "descending" else False,
+            all_concepts,
+            key=lambda concept: concept.sort_order is not None and concept.sort_order,
+            reverse=False,
         )
-        # Assigning the new sort_order to the concepts.
-        for idx, concept in enumerate(sorted_concepts):
-            concept.sort_order = idx
-
+        print("sorted_concepts: ", sorted_concepts)
         return sorted_concepts
 
     @classmethod
