@@ -12,6 +12,7 @@ from abc import ABC
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Union, Optional, TypeVar, Tuple
+
 import uritemplate
 
 from jsonschema.exceptions import ValidationError
@@ -43,6 +44,7 @@ from csvcubed.models.cube.qb.components import (
     NewQbAttributeLiteral,
     NewQbCodeList,
     QbCodeList,
+    codelist,
 )
 from csvcubed.inputs import PandasDataTypes
 from csvcubed.utils.uri import (
@@ -122,9 +124,12 @@ class NewDimension(SchemaBaseClass):
                     Path(self.code_list), cube_config_path.parent
                 )
             ):
+                code_list_path = Path(self.code_list)
                 code_list_config_path = (
-                    cube_config_path.parent / self.code_list
-                ).resolve()
+                    code_list_path
+                    if code_list_path.is_absolute()
+                    else (cube_config_path.parent / code_list_path).resolve()
+                )
                 _logger.info(
                     f"Loading code list from local file path: {code_list_config_path}"
                 )
