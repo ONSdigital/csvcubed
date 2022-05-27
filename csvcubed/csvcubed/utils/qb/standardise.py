@@ -142,9 +142,9 @@ def convert_data_values_to_uri_safe_values(
         raise_missing_value_exceptions,
     )
 
-    for attribute_column in get_columns_of_dsd_type(cube, NewQbDimension):
-        if isinstance(attribute_column.structural_definition.code_list, NewQbCodeList):
-            new_code_list = attribute_column.structural_definition.code_list
+    for dimension_column in get_columns_of_dsd_type(cube, NewQbDimension):
+        if isinstance(dimension_column.structural_definition.code_list, NewQbCodeList):
+            new_code_list = dimension_column.structural_definition.code_list
             map_attr_val_labels_to_uri_identifiers = dict(
                 [
                     (concept.label, concept.uri_safe_identifier)
@@ -154,7 +154,7 @@ def convert_data_values_to_uri_safe_values(
 
             _overwrite_labels_for_columns(
                 cube,
-                [attribute_column],
+                [dimension_column],
                 map_attr_val_labels_to_uri_identifiers,
                 raise_missing_value_exceptions,
             )
@@ -189,7 +189,7 @@ def _overwrite_labels_for_columns(
 ) -> None:
     if cube.data is None:
         return
-
+        
     for column in affected_columns:
         column_data = cube.data[column.csv_column_title]
         assert column_data is not None

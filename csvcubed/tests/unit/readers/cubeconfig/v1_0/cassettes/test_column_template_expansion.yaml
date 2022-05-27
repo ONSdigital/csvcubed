@@ -11,6 +11,56 @@ interactions:
       User-Agent:
       - python-requests/2.27.1
     method: GET
+    uri: https://purl.org/csv-cubed/qube-config/templates/preset_column_config.json
+  response:
+    body:
+      string: '<!DOCTYPE HTML>
+
+        <html>
+
+        <head>
+
+        <title>302 Found</title>
+
+        </head>
+
+        <body>
+
+        <h1>Found</h1>
+
+        <p>The resource requested is available <a href="https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/csvcubed/csvcubed/readers/cubeconfig/v1_0/templates/preset_column_config.json">here</a>.<p>
+
+        </body>
+
+        </html>'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '297'
+      content-type:
+      - text/html; charset=utf-8
+      date:
+      - Tue, 10 May 2022 16:53:33 GMT
+      location:
+      - https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/csvcubed/csvcubed/readers/cubeconfig/v1_0/templates/preset_column_config.json
+      server:
+      - gunicorn
+    status:
+      code: 302
+      message: FOUND
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.27.1
+    method: GET
     uri: https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/csvcubed/csvcubed/readers/cubeconfig/v1_0/templates/preset_column_config.json
   response:
     body:
@@ -37,13 +87,13 @@ interactions:
       Content-Type:
       - text/plain; charset=utf-8
       Date:
-      - Wed, 13 Apr 2022 13:33:46 GMT
+      - Tue, 10 May 2022 16:53:33 GMT
       ETag:
       - W/"f900c7f65494a650d725890b29bb676e2adcb73776a1406c770143117cf368de"
       Expires:
-      - Wed, 13 Apr 2022 13:38:46 GMT
+      - Tue, 10 May 2022 16:58:33 GMT
       Source-Age:
-      - '4'
+      - '0'
       Strict-Transport-Security:
       - max-age=31536000
       Vary:
@@ -51,21 +101,21 @@ interactions:
       Via:
       - 1.1 varnish
       X-Cache:
-      - HIT
+      - MISS
       X-Cache-Hits:
-      - '1'
+      - '0'
       X-Content-Type-Options:
       - nosniff
       X-Fastly-Request-ID:
-      - a1218f5efc86f83a2e7cca684b0648ae28098b6f
+      - 274f1b183a53d30b30e477b30a7d76ae8908b7c6
       X-Frame-Options:
       - deny
       X-GitHub-Request-Id:
-      - F9D2:C916:97B54B:9D949C:6256D135
+      - 23E6:6878:4F8DE:6F70F:627A988D
       X-Served-By:
-      - cache-lcy19225-LCY
+      - cache-lhr7362-LHR
       X-Timer:
-      - S1649856826.149379,VS0,VE1
+      - S1652201614.753015,VS0,VE188
       X-XSS-Protection:
       - 1; mode=block
     status:
@@ -83,14 +133,64 @@ interactions:
       User-Agent:
       - python-requests/2.27.1
     method: GET
+    uri: https://purl.org/csv-cubed/qube-config/templates/calendar-year.json
+  response:
+    body:
+      string: '<!DOCTYPE HTML>
+
+        <html>
+
+        <head>
+
+        <title>302 Found</title>
+
+        </head>
+
+        <body>
+
+        <h1>Found</h1>
+
+        <p>The resource requested is available <a href="https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/csvcubed/csvcubed/readers/cubeconfig/v1_0/templates/calendar-year.json">here</a>.<p>
+
+        </body>
+
+        </html>'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '290'
+      content-type:
+      - text/html; charset=utf-8
+      date:
+      - Tue, 10 May 2022 16:53:34 GMT
+      location:
+      - https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/csvcubed/csvcubed/readers/cubeconfig/v1_0/templates/calendar-year.json
+      server:
+      - gunicorn
+    status:
+      code: 302
+      message: FOUND
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.27.1
+    method: GET
     uri: https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/csvcubed/csvcubed/readers/cubeconfig/v1_0/templates/calendar-year.json
   response:
     body:
       string: !!binary |
-        H4sIAAAAAAAAA03OQQ6CMBAF0D2nILhUGeJOYjyDW1dNpR9smLakFAMh3N0SA3GWMz/vz5ykcbIw
-        dcjKNFPawPba2ez0O9TeGYFR90HbZk28Q+hKom7wnDvfEGvbQp2VDJJ6ZUa6FMWVdufgUT/gtVOb
-        yPIFXqUnpN+WFZjF4LUIMB3LgL+qKMDDVsjXkrxxn3xoSSuaIkDz8VY5HowVVhrcl110CoLj31Gq
-        JfdIli/awj3i7AAAAA==
+        H4sIAAAAAAAAA03NTQ6CMBAF4D2nIHWpdog7ifEMbl01lY44YfqT0hoI4e5CDMa3nDf53lSUS0Qa
+        A4q6FIYsup68E4dv8YzeKhyoT+Ta9eOVUqgBQo4sfWyByXVojkYnDb2xA5yq6gw/ZxfxecNI3mwi
+        6wfyKt1Rx+3YILPKkVRCG1gn/JtaBIzoGpTriGz9W+YOyMC4ADDtL43nbJ1y2uJ1FsX8ATUKGrLU
+        AAAA
     headers:
       Accept-Ranges:
       - bytes
@@ -103,19 +203,19 @@ interactions:
       Content-Encoding:
       - gzip
       Content-Length:
-      - '184'
+      - '174'
       Content-Security-Policy:
       - default-src 'none'; style-src 'unsafe-inline'; sandbox
       Content-Type:
       - text/plain; charset=utf-8
       Date:
-      - Wed, 13 Apr 2022 13:33:46 GMT
+      - Tue, 10 May 2022 16:53:34 GMT
       ETag:
-      - W/"52e1ea380ace500a00eca068f7cf15e75155b509f2cbd087b7d5118d11500ac4"
+      - W/"ec3cbf1671d9608474b67bac5ef1b2f7f391d45e3cae700fb9988deef9e4c237"
       Expires:
-      - Wed, 13 Apr 2022 13:38:46 GMT
+      - Tue, 10 May 2022 16:58:34 GMT
       Source-Age:
-      - '4'
+      - '0'
       Strict-Transport-Security:
       - max-age=31536000
       Vary:
@@ -123,21 +223,21 @@ interactions:
       Via:
       - 1.1 varnish
       X-Cache:
-      - HIT
+      - MISS
       X-Cache-Hits:
-      - '1'
+      - '0'
       X-Content-Type-Options:
       - nosniff
       X-Fastly-Request-ID:
-      - 5c1b10b0c6b20f72bff550e6dff8eccf749a1c84
+      - 5236a28d810972a8a71065283c99ac71fd56f792
       X-Frame-Options:
       - deny
       X-GitHub-Request-Id:
-      - EA5E:757B:99A7CC:9F9047:6256D135
+      - 4988:90A2:93FB0:B769A:627A988E
       X-Served-By:
-      - cache-lcy19225-LCY
+      - cache-lhr7362-LHR
       X-Timer:
-      - S1649856826.162950,VS0,VE1
+      - S1652201615.548773,VS0,VE394
       X-XSS-Protection:
       - 1; mode=block
     status:
