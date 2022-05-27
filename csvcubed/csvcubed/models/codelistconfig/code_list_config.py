@@ -5,7 +5,7 @@ Code List Config
 Models for representing code list config.
 """
 
-from typing import Optional, List, Tuple, Dict
+from typing import Optional, List, Tuple, Dict, Set
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -70,7 +70,7 @@ class CodeListConfig(DataClassBase):
     def _assign_sort_order_to_concepts(
         self,
         concepts_without_sort_order: List[CodeListConfigConcept],
-        user_defined_sort_orders: List[int],
+        user_defined_sort_orders: Set[int],
     ) -> List[CodeListConfigConcept]:
         """Assinging a sort order to concepts without sort order whilst avoiding conflicts with the sort orders already used by the user."""
 
@@ -92,9 +92,9 @@ class CodeListConfig(DataClassBase):
         Sorting concepts based on the sort object and sort order defined in the code list json.
         """
         # Step 1: Identify sort orders defined by the user in code list config json.
-        user_defined_sort_orders: List[int] = [
+        user_defined_sort_orders: Set[int] = {
             concept.sort_order for concept in concepts if concept.sort_order is not None
-        ]
+        }
 
         # Step 2: Identify the concepts with and without sort order.
         concepts_with_sort_order: List[CodeListConfigConcept] = [
