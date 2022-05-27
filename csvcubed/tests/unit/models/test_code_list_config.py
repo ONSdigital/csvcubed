@@ -19,7 +19,7 @@ def _assert_code_list_config_concepts(
     """
     Asserts the concepts data provided in the code list config.
     """
-    for idx, concept in enumerate(concepts):
+    for concept in concepts:
         for concept_json in concepts_jsons:
             if concept.notation == concept_json["notation"]:
                 assert concept.label == concept_json["label"]
@@ -31,6 +31,16 @@ def _assert_code_list_config_concepts(
                     _assert_code_list_config_concepts(
                         concept.children, concept_json["children"]
                     )
+
+
+def _assert_code_list_concept_sorting(
+    concepts: List[CodeListConfigConcept], expected_sort_orders: Dict
+):
+    """
+    Asserts the sort order of concepts.
+    """
+    for concept in concepts:
+        assert expected_sort_orders.get(concept.notation) == concept.sort_order
 
 
 def _assert_code_list_config_data(
@@ -79,6 +89,10 @@ def test_code_list_config_model():
     _assert_code_list_config_concepts(
         code_list_config.concepts, code_list_config_json["concepts"]
     )
+    _assert_code_list_concept_sorting(
+        code_list_config.concepts,
+        expected_sort_orders={"a": 2, "b": 3, "c": 1, "d": 4, "e": 0},
+    )
 
 
 def test_code_list_config_model_without_schema():
@@ -97,7 +111,10 @@ def test_code_list_config_model_without_schema():
     _assert_code_list_config_concepts(
         code_list_config.concepts, code_list_config_json["concepts"]
     )
-
+    _assert_code_list_concept_sorting(
+        code_list_config.concepts,
+        expected_sort_orders={"a": 0, "b": 1, "c": 2, "d": 3, "e": 4},
+    )
 
 def test_code_list_config_model_with_hierarchy():
     """
@@ -115,4 +132,8 @@ def test_code_list_config_model_with_hierarchy():
     _assert_code_list_config_data(code_list_config, code_list_config_json)
     _assert_code_list_config_concepts(
         code_list_config.concepts, code_list_config_json["concepts"]
+    )
+    _assert_code_list_concept_sorting(
+        code_list_config.concepts,
+        expected_sort_orders={"a": 1, "b": 0, "c": 2, "d": 0, "e": 0},
     )
