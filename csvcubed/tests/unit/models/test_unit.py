@@ -65,6 +65,28 @@ def test_known_existing_units_defined():
     assert_num_validation_errors(errors, 0)
 
 
+def test_known_existing_units_defined_non_standard_uris():
+    """Ensure that we don't get any errors raised when existing units are used without
+    standard uri conventions."""
+    data = pd.DataFrame({"Unit": ["NUM", "PERCENT"]})
+    unit_column = QbColumn(
+        "Unit",
+        QbMultiUnits(
+            [
+                ExistingQbUnit("http://example.org/units/NUM"),
+                ExistingQbUnit("http://example.org/units/PERCENT"),
+            ]
+        ),
+    )
+
+    unit_dimension = unit_column.structural_definition
+
+    errors = unit_dimension.validate_data(
+        data["Unit"], "unit", "http://example.org/units/{+unit}", "Unit"
+    )
+    assert_num_validation_errors(errors, 0)
+
+
 def test_unknown_existing_units_error():
     """Ensure that we get an error when existing units are used which we're not aware of."""
     data = pd.DataFrame({"Unit": ["unit-1", "unit-3"]})
@@ -89,6 +111,28 @@ def test_unknown_existing_units_error():
     assert isinstance(error, UndefinedUnitUrisError)
     assert isinstance(error.component, QbMultiUnits)
     assert error.undefined_values == {"http://example.org/units/unit-3"}
+
+
+def test_defining_existing_units_without_uri_safe_values():
+    """Ensure that we don't get any errors raised when existing units are
+    defined without uri safe values."""
+    data = pd.DataFrame({"Unit": ["NUM", "PERCENT"]})
+    unit_column = QbColumn(
+        "Unit",
+        QbMultiUnits(
+            [
+                ExistingQbUnit("http://example.org/units/NUM"),
+                ExistingQbUnit("http://example.org/units/PERCENT"),
+            ]
+        ),
+    )
+
+    unit_dimension = unit_column.structural_definition
+
+    errors = unit_dimension.validate_data(
+        data["Unit"], "unit", "http://example.org/units/{+unit}", "Unit"
+    )
+    assert_num_validation_errors(errors, 0)
 
 
 if __name__ == "__main__":
