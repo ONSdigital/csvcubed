@@ -71,6 +71,26 @@ def test_known_existing_measures_defined():
     assert_num_validation_errors(errors, 0)
 
 
+def test_known_existing_measures_defined_non_standard_uris():
+    """Ensure that we don't get any errors raised when existing measures are used without
+    standard uri conventions."""
+    data = pd.DataFrame({"Measure": ["A", "B"]})
+    measure_column = QbColumn(
+        "Measure",
+        QbMultiMeasureDimension(
+            [
+                ExistingQbMeasure("http://example.org/measures/A"),
+                ExistingQbMeasure("http://example.org/measures/B"),
+            ]
+        ),
+        csv_column_uri_template="http://example.org/measures/{+measure}"
+    )
+    
+    errors = measure_column.validate_data(data["Measure"])
+
+    assert_num_validation_errors(errors, 0)
+
+
 def test_unknown_existing_measures_error():
     """Ensure that we get an error when existing measures are used which we're not aware of."""
     data = pd.DataFrame({"Measure": ["measure-1", "measure-3"]})
