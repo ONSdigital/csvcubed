@@ -21,7 +21,6 @@ from .measure import (
 )
 from .validationerrors import UndefinedMeasureUrisError
 from csvcubed.models.validationerror import ValidationError
-from csvcubed.utils.uri import uri_safe
 from .datastructuredefinition import QbColumnStructuralDefinition
 
 
