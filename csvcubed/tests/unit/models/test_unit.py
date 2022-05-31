@@ -77,13 +77,11 @@ def test_known_existing_units_defined_non_standard_uris():
                 ExistingQbUnit("http://example.org/units/PERCENT"),
             ]
         ),
+        csv_column_uri_template="http://example.org/units/{+unit}"
     )
+    
+    errors = unit_column.validate_data(data["Unit"])
 
-    unit_dimension = unit_column.structural_definition
-
-    errors = unit_dimension.validate_data(
-        data["Unit"], "unit", "http://example.org/units/{+unit}", "Unit"
-    )
     assert_num_validation_errors(errors, 0)
 
 
