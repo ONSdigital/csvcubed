@@ -1,0 +1,59 @@
+{
+  "$schema": "https://purl.org/csv-cubed/code-list-config/v1.0",
+  "title": "Title of the code list",
+  "description": "Description of the code list",
+  "summary": "Summary of the code list.",
+  "creator": "http://purl.org/dc/aboutdcmi#DCMI",
+  "publisher": "http://purl.org/dc/aboutdcmi#DCMI",
+  "dataset_issued": "2022-03-31T12:54:30Z",
+  "dataset_modified": "2022-04-01T12:54:30Z",
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "themes": [
+    "http://example.com/themes/theme"
+  ],
+  "keywords": [
+    "keyword1",
+    "keyword2"
+  ],
+  "sort": {
+    "by": "label",
+    "method": "ascending"
+  },
+  "concepts": [
+    {
+      "label": "Concept's label",
+      "description": "Concept's description",
+      "notation": "notationA",
+      "sort_order": 1,
+      "same_as": "http://example.com/concepts/some-existing-concept"
+    },
+    {
+      "label": "Concept's label",
+      "description": "Concept's description",
+      "notation": "notationB",
+      "sort_order": 2,
+      "children": [
+        {
+          "label": "Concept's label",
+          "description": "Concept's description",
+          "notation": "notationB-1",
+          "sort_order": 1
+        },
+        {
+          "label": "Concept's label",
+          "description": "Concept's description",
+          "notation": "notationB-2",
+          "sort_order": 2,
+          "children": [
+            {
+              "label": "Concept's label",
+              "description": "Concept's description",
+              "notation": "notationB-2-1",
+              "sort_order": 1
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

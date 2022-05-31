@@ -2,18 +2,24 @@
 Models
 ------
 
-config.json V1.0 column mapping models.
+config.json v1.* column mapping models.
 
 If you change the shape of any model in this file, you **must** create a newly versioned JSON schema reflecting said changes.
 """
 
+import logging
 from abc import ABC
 from dataclasses import dataclass
-from typing import List, Union, Optional, TypeVar
+from pathlib import Path
+from typing import List, Union, Optional, TypeVar, Tuple
 
 import uritemplate
+
+from jsonschema.exceptions import ValidationError
+
 from csvcubedmodels.dataclassbase import DataClassBase
 
+from csvcubed.utils.validators.schema import validate_dict_against_schema
 from csvcubed.inputs import pandas_input_to_columnar_optional_str
 from csvcubed.models.cube import CatalogMetadata, NewQbConcept
 from csvcubed.models.cube.qb.components import (
@@ -38,12 +44,18 @@ from csvcubed.models.cube.qb.components import (
     NewQbAttributeLiteral,
     NewQbCodeList,
     QbCodeList,
+    codelist,
 )
 from csvcubed.inputs import PandasDataTypes
 from csvcubed.utils.uri import (
     csvw_column_name_safe,
     looks_like_uri,
 )
+from csvcubed.models.codelistconfig.code_list_config import CodeListConfig
+from csvcubed.utils.file import code_list_config_json_exists
+from csvcubed.readers.cubeconfig.utils import load_resource
+
+_logger = logging.getLogger(__name__)
 
 T = TypeVar("T", bound=object)
 
@@ -61,13 +73,17 @@ class NewDimension(SchemaBaseClass):
     label: Optional[str] = None
     description: Optional[str] = None
     definition_uri: Optional[str] = None
-    code_list: Optional[Union[str, bool]] = True
+    code_list: Union[str, bool, dict, None] = True
     from_existing: Optional[str] = None
     cell_uri_template: Optional[str] = None
 
     def map_to_new_qb_dimension(
-        self, csv_column_title: str, data: PandasDataTypes
-    ) -> NewQbDimension:
+        self,
+        csv_column_title: str,
+        data: PandasDataTypes,
+        cube_config_minor_version: Optional[int],
+        config_path: Optional[Path] = None,
+    ) -> Tuple[NewQbDimension, list[ValidationError]]:
 
         new_dimension = NewQbDimension.from_data(
             label=self.label or csv_column_title,
@@ -78,25 +94,69 @@ class NewDimension(SchemaBaseClass):
         )
         # The NewQbCodeList and Concepts are populated in the NewQbDimension.from_data() call
         # the _get_code_list method overrides the code_list if required.
-        new_dimension.code_list = self._get_code_list(new_dimension, csv_column_title)
-        return new_dimension
+        (
+            new_dimension.code_list,
+            code_list_schema_validation_errors,
+        ) = self._get_code_list(
+            new_dimension,
+            csv_column_title,
+            cube_config_minor_version,
+            cube_config_path=config_path,
+        )
+        return (new_dimension, code_list_schema_validation_errors)
 
     def _get_code_list(
-        self, new_dimension: NewQbDimension, csv_column_title: str
-    ) -> Optional[QbCodeList]:
-
+        self,
+        new_dimension: NewQbDimension,
+        csv_column_title: str,
+        cube_config_minor_version: Optional[int],
+        cube_config_path: Optional[Path],
+    ) -> Tuple[Optional[QbCodeList], list[ValidationError]]:
         if isinstance(self.code_list, str):
             if looks_like_uri(self.code_list):
-                return ExistingQbCodeList(self.code_list)
+                return (ExistingQbCodeList(self.code_list), [])
+            # The following elif is for cube config v1.1. This also requires the user to define the configuration in the build command, and therefore cube_config_path.
+            elif (
+                cube_config_minor_version
+                and cube_config_minor_version >= 1
+                and cube_config_path
+                and code_list_config_json_exists(
+                    Path(self.code_list), cube_config_path.parent
+                )
+            ):
+                code_list_path = Path(self.code_list)
+                code_list_config_path = (
+                    code_list_path
+                    if code_list_path.is_absolute()
+                    else (cube_config_path.parent / code_list_path).resolve()
+                )
+                _logger.info(
+                    f"Loading code list from local file path: {code_list_config_path}"
+                )
 
+                code_list_config, code_list_config_dict = CodeListConfig.from_json_file(
+                    code_list_config_path
+                )
+                schema = load_resource(code_list_config.schema)
+
+                code_list_schema_validation_errors = validate_dict_against_schema(
+                    value=code_list_config_dict, schema=schema
+                )
+
+                return (
+                    NewQbCodeList(
+                        code_list_config.metadata, code_list_config.new_qb_concepts
+                    ),
+                    code_list_schema_validation_errors,
+                )
             else:
                 raise ValueError(
-                    "Code List contains a string that cannot be recognised as a URI"
+                    "Code List contains a string that cannot be recognised as a URI or a valid File Path"
                 )
 
         elif isinstance(self.code_list, bool):
             if self.code_list is False:
-                return None
+                return (None, [])
             elif (
                 new_dimension.parent_dimension_uri
                 == "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod"
@@ -106,11 +166,34 @@ class NewDimension(SchemaBaseClass):
                 )
             ):
                 # This is a special case where we build up a code-list of the date/time values.
-                return self._get_date_time_code_list_for_dimension(
-                    new_dimension, self.cell_uri_template, csv_column_title
+                return (
+                    self._get_date_time_code_list_for_dimension(
+                        new_dimension, self.cell_uri_template, csv_column_title
+                    ),
+                    [],
                 )
             else:
-                return new_dimension.code_list
+                return (new_dimension.code_list, [])
+
+        # The following elif is for cube config v1.1 and when the code list is defined inline.
+        elif (
+            cube_config_minor_version
+            and cube_config_minor_version >= 1
+            and isinstance(self.code_list, dict)
+        ):
+            code_list_config = CodeListConfig.from_dict(self.code_list)
+            schema = load_resource(code_list_config.schema)
+
+            code_list_schema_validation_errors = validate_dict_against_schema(
+                value=code_list_config.as_dict(), schema=schema
+            )
+
+            return (
+                NewQbCodeList(
+                    code_list_config.metadata, code_list_config.new_qb_concepts
+                ),
+                code_list_schema_validation_errors,
+            )
         else:
             raise ValueError(f"Unmatched code_list value {self.code_list}")
 

@@ -1,0 +1,170 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema",
+  "id": "https://purl.org/csv-cubed/code-list-config/v1.0",
+  "title": "Schema for a codelist.",
+  "description": "Schema to be used for creation and validation of a single codelist in CSV-W format.",
+  "type": "object",
+  "required": [],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "default": "https://purl.org/csv-cubed/code-list-config/v1.0"
+    },
+    "id": {
+      "description": "A unique id for the code list.",
+      "type": "string"
+    },
+    "title": {
+      "description": "A title for the code list.",
+      "type": "string"
+    },
+    "description": {
+      "description": "A long description of the code list.",
+      "type": "string"
+    },
+    "summary": {
+      "description": "A short summary of the code list.",
+      "type": "string"
+    },
+    "creator": {
+      "description": "The creator of the code list (uri).",
+      "$ref": "http://purl.org/csv-cubed/resources/organisations.json#/uris"
+    },
+    "publisher": {
+      "description": "The publisher of the code list (uri).",
+      "$ref": "http://purl.org/csv-cubed/resources/organisations.json#/uris"
+    },
+    "dataset_issued": {
+      "description": "Date time that the code list was initially published in ISO 8601 format, e.g. 2022-03-31 or 2022-03-31T12:54:30Z.",
+      "type": "string"
+    },
+    "dataset_modified": {
+      "description": "Date time that the code list was last modified published in ISO 8601 format, e.g. 2022-03-31 or 2022-03-31T12:54:30Z.",
+      "type": "string"
+    },
+    "license": {
+      "description": "URI that represents the copyright license applying to this code list.",
+      "$ref": "http://purl.org/csv-cubed/resources/licenses.json#/uris"
+    },
+    "themes": {
+      "$ref": "#/definitions/v1.0/themeTypes"
+    },
+    "keywords": {
+      "$ref": "#/definitions/v1.0/keywordTypes"
+    },
+    "sort": {
+      "description": "Sort strategy for the concepts.",
+      "type": "object",
+      "required": [
+        "by",
+        "method"
+      ],
+      "properties": {
+        "by": {
+          "description": "label (default) or notation",
+          "type": "string",
+          "enum": ["label", "notation"],
+          "default": "label"
+        },
+        "method": {
+          "description": "ascending (default) or descending",
+          "type": "string",
+          "enum": ["ascending", "descending"],
+          "default": "ascending"
+        }
+      }
+    },
+    "concepts": {
+      "$ref": "#/definitions/v1.0/concepts"
+    }
+  },
+  "definitions": {
+    "v1.0": {
+      "concepts": {
+        "description": "List of concepts in the code list.",
+        "type": "array",
+        "uniqueItems": true,
+        "items": {
+          "$ref": "#/definitions/v1.0/concept"
+        }
+      },
+      "concept": {
+        "description": "A concept in the code list.",
+        "type": "object",
+        "required": [
+          "label",
+          "notation"
+        ],
+        "properties": {
+          "label": {
+            "description": "Label of the concept.",
+            "type": "string"
+          },
+          "description": {
+            "description": "Description of the concept.",
+            "type": "string"
+          },
+          "notation": {
+            "description": "Notation of the concept.",
+            "type": "string"
+          },
+          "same_as": {
+            "description": "Reference to a concept defined elsewhere.",
+            "type": "string",
+            "format": "uri"
+          },
+          "sort_order": {
+            "description": "Sort order of the concept.",
+            "type": "integer"
+          },
+          "children": {
+            "$ref": "#/definitions/v1.0/concepts"
+          }
+        }
+      },
+      "themeTypes": {
+        "description": "A theme or list of themes that describe the focus of the code list.",
+        "additionalProperties": {
+          "oneOf": [
+            {
+              "$ref": "#/definitions/v1.0/types/theme"
+            },
+            {
+              "themeList": {
+                "description": "A list of themes.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/v1.0/types/theme"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "keywordTypes": {
+        "description": "A keyword or list of keywords relevant to the code list.",
+        "oneOf": [
+          {
+            "$ref": "#/definitions/v1.0/types/keyword"
+          },
+          {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/v1.0/types/keyword"
+            }
+          }
+        ]
+      },
+      "types": {
+        "theme": {
+          "description": "A URI describing a theme.",
+          "$ref": "http://purl.org/csv-cubed/resources/themes.json#/uris"
+        },
+        "keyword": {
+          "description": "A string describing a keyword.",
+          "type": "string"
+        }
+      }
+    }
+  }
+}

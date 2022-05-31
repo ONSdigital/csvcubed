@@ -1,19 +1,53 @@
 import datetime
+from pathlib import Path
 import json
 import os
+import pandas as pd
 from tempfile import TemporaryDirectory
+from typing import List
+
+from csvcubed.models.cube.qb.components.attribute import ExistingQbAttribute
+from csvcubed.models.cube.qb.components.codelist import (
+    CompositeQbCodeList,
+    ExistingQbCodeList,
+)
+from csvcubed.models.cube.qb.components.concept import DuplicatedQbConcept
+from csvcubed.models.cube.qb.components.dimension import ExistingQbDimension
+from csvcubed.models.cube.qb.components.measure import ExistingQbMeasure
+from csvcubed.models.cube.qb.components.unit import ExistingQbUnit
+from csvcubed.readers.catalogmetadata.v1.catalog_metadata_reader import (
+    metadata_from_dict,
+)
 
 import pytest
 
-from csvcubed.cli.build import build as cli_build
-from csvcubed.readers.cubeconfig.schema_versions import QubeConfigJsonSchemaVersion
-from csvcubed.readers.cubeconfig.v1_0.configdeserialiser import *
-from csvcubed.readers.cubeconfig.v1_0.configdeserialiser import (
-    _get_qb_column_from_json,
-    _metadata_from_dict,
+from csvcubed.models.cube.cube import Cube
+from csvcubed.models.cube.qb.catalog import CatalogMetadata
+from csvcubed.models.cube.qb.components.attributevalue import (
+    NewQbAttributeValue,
 )
+from csvcubed.models.cube.qb.components.observedvalue import (
+    QbMultiMeasureObservationValue,
+)
+from csvcubed.readers.cubeconfig.v1.mapcolumntocomponent import (
+    map_column_to_qb_component,
+)
+from csvcubed.utils.uri import uri_safe
+from csvcubed.cli.build import build as cli_build
+from csvcubed.readers.cubeconfig.v1.configdeserialiser import _get_qb_column_from_json
 from tests.unit.test_baseunit import get_test_cases_dir, assert_num_validation_errors
 from csvcubed.definitions import ROOT_DIR_PATH
+from csvcubed.models.cube.qb import QbColumn
+from csvcubed.models.cube.qb.components import (
+    NewQbMeasure,
+    NewQbUnit,
+    NewQbDimension,
+    NewQbCodeList,
+    QbMultiMeasureDimension,
+    QbMultiUnits,
+    NewQbAttribute,
+    NewQbConcept,
+)
 
 TEST_CASE_DIR = get_test_cases_dir().absolute() / "readers" / "cube-config" / "v1.0"
 SCHEMA_PATH_FILE = Path(
@@ -196,7 +230,7 @@ def test_02_00_dimension_new_no_type():
     }
     data = pd.Series(column_data, name="Dimension Heading")
 
-    column = map_column_to_qb_component("New Dimension", dimension_config, data)
+    (column, _) = map_column_to_qb_component("New Dimension", dimension_config, data, cube_config_minor_version=0)
     _check_new_dimension_column(column, dimension_config, column_data, "New Dimension")
 
 
@@ -217,7 +251,7 @@ def test_02_01_dimension_new_ok():
     }
     data = pd.Series(column_data, name="Dimension Heading")
 
-    column = map_column_to_qb_component("New Dimension", dimension_config, data)
+    (column, _) = map_column_to_qb_component("New Dimension", dimension_config, data, cube_config_minor_version=0)
     _check_new_dimension_column(column, dimension_config, column_data, "New Dimension")
 
 
@@ -234,7 +268,7 @@ def test_02_03_dimension_new_ok():
     }
     data = pd.Series(column_data, name="Dimension Heading")
 
-    column = map_column_to_qb_component("New Dimension", dimension_config, data)
+    (column, _) = map_column_to_qb_component("New Dimension", dimension_config, data, cube_config_minor_version=0)
     _check_new_dimension_column(column, dimension_config, column_data, "New Dimension")
 
 
@@ -252,7 +286,7 @@ def test_03_dimension_existing_ok():
     }
     data = pd.Series(column_data, name="Dimension Heading")
 
-    column = map_column_to_qb_component("New Dimension", dimension_config, data)
+    (column, _) = map_column_to_qb_component("New Dimension", dimension_config, data, cube_config_minor_version=0)
 
     # Confirm a Column is returned
     assert isinstance(column, QbColumn)
@@ -287,7 +321,7 @@ def test_04_01_attribute_new_ok():
     }
     data = pd.Series(column_data, name="Attribute Heading")
 
-    column = map_column_to_qb_component("New Attribute", column_config, data)
+    (column, _) = map_column_to_qb_component("New Attribute", column_config, data, cube_config_minor_version=0)
     _check_new_attribute_column(column, column_config, column_data, "New Attribute")
 
 
@@ -307,7 +341,7 @@ def test_04_03_attribute_new_ok():
     }
     data = pd.Series(column_data, name="Attribute Heading")
 
-    column = map_column_to_qb_component("New Attribute", column_config, data)
+    (column, _) = map_column_to_qb_component("New Attribute", column_config, data, cube_config_minor_version=0)
     _check_new_attribute_column(column, column_config, column_data, "New Attribute")
 
 
@@ -339,7 +373,7 @@ def test_04_04_attribute_new_ok():
     }
     data = pd.Series(column_data, name="Attribute Heading")
 
-    column = map_column_to_qb_component("New Attribute", column_config, data)
+    (column, _) = map_column_to_qb_component("New Attribute", column_config, data, cube_config_minor_version=0)
     _check_new_attribute_column(column, column_config, column_data, "New Attribute")
 
 
@@ -355,7 +389,7 @@ def test_05_01_attribute_existing_ok():
     }
     data = pd.Series(column_data, name="Attribute Heading")
 
-    column = map_column_to_qb_component("Existing Attribute", column_config, data)
+    (column, _) = map_column_to_qb_component("Existing Attribute", column_config, data, cube_config_minor_version=0)
 
     # Confirm a Column is returned
     assert isinstance(column, QbColumn)
@@ -384,7 +418,7 @@ def test_05_02_attribute_existing_ok():
     }
     data = pd.Series(column_data, name="Attribute Heading")
 
-    column = map_column_to_qb_component("Existing Attribute", column_config, data)
+    (column, _) = map_column_to_qb_component("Existing Attribute", column_config, data, cube_config_minor_version=0)
 
     assert isinstance(column, QbColumn)
     assert hasattr(column, "type") is False
@@ -416,7 +450,7 @@ def test_06_measure_new_ok():
     column_config = {"type": "measures", "values": True}
     data = pd.Series(column_data, name="New Measure")
 
-    column = map_column_to_qb_component("New Measure", column_config, data)
+    (column, _) = map_column_to_qb_component("New Measure", column_config, data, cube_config_minor_version=0)
 
     # Confirm a Column is returned
     assert isinstance(column, QbColumn)
@@ -447,7 +481,7 @@ def test_07_measure_existing_ok():
     }
     data = pd.Series(column_data, name="Existing Measure Series")
 
-    column = map_column_to_qb_component("Existing Measure", column_config, data)
+    (column, _) = map_column_to_qb_component("Existing Measure", column_config, data, cube_config_minor_version=0)
 
     # Confirm a Column is returned
     assert isinstance(column, QbColumn)
@@ -481,7 +515,7 @@ def test_08_unit_new_ok():
     column_config = {"type": "units", "values": True}
     data = pd.Series(column_data, name="New Units")
 
-    column = map_column_to_qb_component("New Units", column_config, data)
+    (column, _) = map_column_to_qb_component("New Units", column_config, data, cube_config_minor_version=0)
 
     # Confirm a Column is returned
     assert isinstance(column, QbColumn)
@@ -512,7 +546,7 @@ def test_09_units_existing_ok():
     }
     data = pd.Series(column_data, name="Existing Unit Series")
 
-    column = map_column_to_qb_component("Existing Unit", column_config, data)
+    (column, _) = map_column_to_qb_component("Existing Unit", column_config, data, cube_config_minor_version=0)
 
     # Confirm a Column is returned
     assert isinstance(column, QbColumn)
@@ -564,7 +598,7 @@ def test_10_observation_ok():
     #     }
     data = pd.Series(column_data, name="Observation Series")
 
-    column = map_column_to_qb_component("Observations", column_config, data)
+    (column, _) = map_column_to_qb_component("Observations", column_config, data, cube_config_minor_version=0)
 
     # Confirm a Column is returned
     assert isinstance(column, QbColumn)
@@ -590,7 +624,7 @@ def test_new_dimension_existing_code_list():
     }
     data = pd.Series(column_data, name="Dimension Heading")
 
-    column = map_column_to_qb_component("New Dimension", dimension_config, data)
+    (column, _) = map_column_to_qb_component("New Dimension", dimension_config, data, cube_config_minor_version=0)
 
     assert isinstance(column.structural_definition, NewQbDimension)
     dimension = column.structural_definition
@@ -612,13 +646,13 @@ def test_column_template_expansion():
     """
     data = pd.DataFrame({"The Column": ["a", "b", "c", "a"]})
 
-    column = _get_qb_column_from_json(
+    (column, _) = _get_qb_column_from_json(
         {
             "from_template": "year",
         },
         "The Column",
         data,
-        QubeConfigJsonSchemaVersion.V1_0.value,
+        1,
     )
 
     assert isinstance(column.structural_definition, NewQbDimension)
@@ -636,7 +670,7 @@ def test_load_catalog_metadata():
     with open(TEST_CASE_DIR / "cube_data_config_ok.json") as f:
         config = json.load(f)
 
-    catalog_metadata = _metadata_from_dict(config)
+    catalog_metadata = metadata_from_dict(config)
 
     validation_errors = catalog_metadata.pydantic_validation()
     assert_num_validation_errors(validation_errors, 0)
@@ -678,7 +712,7 @@ def test_date_time_column_extraction():
     """
     data = pd.DataFrame({"The Column": ["2010", "2011", "2012"]})
 
-    column = _get_qb_column_from_json(
+    (column, _) = _get_qb_column_from_json(
         {
             "type": "dimension",
             "from_existing": "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod",
@@ -687,7 +721,7 @@ def test_date_time_column_extraction():
         },
         "The Column",
         data,
-        QubeConfigJsonSchemaVersion.V1_0.value,
+        1
     )
 
     assert isinstance(

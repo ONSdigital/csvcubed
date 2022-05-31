@@ -14,14 +14,13 @@ from csvcubedmodels.dataclassbase import DataClassBase
 from csvcubed.cli.error_mapping import friendly_error_mapping
 from csvcubed.models.cube import QbCube
 from csvcubed.models.errorurl import HasErrorUrl
-from csvcubed.models.validationerror import SpecificValidationError, ValidationError
+from csvcubed.models.validationerror import ValidationError
 from csvcubed.readers.cubeconfig.schema_versions import (
     QubeConfigDeserialiser,
     get_deserialiser_for_schema,
 )
 from csvcubed.readers.cubeconfig.utils import load_resource
 from csvcubed.utils.json import serialize_sets
-from csvcubed.utils.log import log_exception
 from csvcubed.utils.qb.validation.cube import validate_qb_component_constraints
 from csvcubed.writers.qbwriter import QbWriter
 

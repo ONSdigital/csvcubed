@@ -39,7 +39,7 @@ class ComponentPropertyTypeURI(Enum):
     """
 
     Dimension = "http://purl.org/linked-data/cube#DimensionProperty"
-    """ The component is of type qb:Diemension. """
+    """ The component is of type qb:Dimension. """
 
     Attribute = "http://purl.org/linked-data/cube#AttributeProperty"
     """ The component is of type qb:Attribute. """
@@ -54,7 +54,7 @@ class ComponentPropertyType(Enum):
     """
 
     Dimension = "Dimension"
-    """ The component is of type qb:Diemension. """
+    """ The component is of type qb:Dimension. """
 
     Attribute = "Attribute"
     """ The component is of type qb:Attribute. """
