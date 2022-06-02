@@ -11,7 +11,6 @@ from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
 from csvcubeddevtools.helpers.file import get_test_cases_dir
 
 from csvcubed.cli.build import build as cli_build
-from csvcubed.utils.cache import session
 from definitions import ROOT_DIR_PATH
 
 _test_case_dir = get_test_cases_dir()
@@ -53,11 +52,11 @@ def step_impl(context):
     mocker.start()
 
     paths_to_mock: Dict[str, Path] = {
-        "https://purl.org/csv-cubed/qube-config/v1.0": ROOT_DIR_PATH / "csvcubed" / "schema" / "cube-config" / "v1_0" / "schema.json",
-        "https://purl.org/csv-cubed/qube-config/v1.1": ROOT_DIR_PATH / "csvcubed" / "schema" / "cube-config" / "v1_1" / "schema.json",
-        "https://purl.org/csv-cubed/qube-config/v1": ROOT_DIR_PATH / "csvcubed" / "schema" / "cube-config" / "v1_1" / "schema.json", #v1 defaults to the latest minor version of v1.*.
-        "https://purl.org/csv-cubed/code-list-config/v1.0": ROOT_DIR_PATH / "csvcubed" / "schema" / "codelist-config" / "v1_0" / "schema.json",
-        "https://purl.org/csv-cubed/code-list-config/v1": ROOT_DIR_PATH / "csvcubed" / "schema" / "codelist-config" / "v1_0" / "schema.json", #v1 defaults to the latest minor version of v1.*.
+        "https://purl.org/csv-cubed/qube-config/v1.0": ROOT_DIR_PATH / "csvcubed" / "src" / "csvcubed"/ "schema" / "cube-config" / "v1_0" / "schema.json",
+        "https://purl.org/csv-cubed/qube-config/v1.1": ROOT_DIR_PATH / "csvcubed" / "src" / "csvcubed"/ "schema" / "cube-config" / "v1_1" / "schema.json",
+        "https://purl.org/csv-cubed/qube-config/v1": ROOT_DIR_PATH / "csvcubed" / "src" / "csvcubed"/ "schema" / "cube-config" / "v1_1" / "schema.json", #v1 defaults to latest minor version of v1.*.
+        "https://purl.org/csv-cubed/code-list-config/v1.0": ROOT_DIR_PATH / "csvcubed" / "src" / "csvcubed"/ "schema" / "codelist-config" / "v1_0" / "schema.json",
+        "https://purl.org/csv-cubed/code-list-config/v1": ROOT_DIR_PATH / "csvcubed" / "src" / "csvcubed"/ "schema" / "codelist-config" / "v1_0" / "schema.json", #v1 defaults to latest minor version of v1.*.
     }
 
     for uri, path in paths_to_mock.items():
