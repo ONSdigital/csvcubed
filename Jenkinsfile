@@ -34,7 +34,7 @@ pipeline {
             steps {
                 script {
                     try {
-                        sh 'poetry run behave tests/features --tags=-skip -f json.cucumber -o tests/features/test-results.json'
+                        sh 'poetry run behave tests/behaviour --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json'
                         dir('tests/unit') {
                             sh "poetry run pytest --junitxml=pytest_results_csvcubed.xml"
                         }

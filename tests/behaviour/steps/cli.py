@@ -17,7 +17,6 @@ def step_impl(context, arguments: str):
     dirs = AppDirs("csvcubed-cli", "csvcubed")
     context.csvcubed_log_location = Path(dirs.user_log_dir)
 
-
 @then("the csvcubed CLI should succeed")
 def step_impl(context):
     (status_code, response) = context.csvcubed_cli_result
