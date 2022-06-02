@@ -26,9 +26,7 @@ pipeline {
         stage('Pyright') {
             when { not { buildingTag() } }
             steps {
-                    dir('csvcubed') {
-                       sh 'poetry run pyright . --lib'
-                    }
+                sh 'poetry run pyright . --lib'    
             }
         }
         stage('Test') {
@@ -36,11 +34,9 @@ pipeline {
             steps {
                 script {
                     try {
-                        dir('csvcubed') {
-                            sh 'poetry run behave tests/behaviour --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json'
-                            dir('tests/unit') {
-                                sh "poetry run pytest --junitxml=pytest_results_csvcubed.xml"
-                            }
+                        sh 'poetry run behave tests/behaviour --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json'
+                        dir('tests/unit') {
+                            sh "poetry run pytest --junitxml=pytest_results_csvcubed.xml"
                         }
                     } catch (ex) {
                         echo "An error occurred when testing: ${ex}"
@@ -63,10 +59,7 @@ pipeline {
             steps {
                 script {
                     try {
-                        dir('csvcubed') {
-                            // Patch behave so that it can output the correct format for the Jenkins cucumber tool.
-                            sh 'tox'
-                        }
+                        sh 'tox'
                     } catch (ex) {
                         echo "An error occurred testing with tox: ${ex}"
                         stash name: 'tox-test-results', includes: '**/tox-test-results-*.json,**/*results*.xml'
@@ -79,20 +72,17 @@ pipeline {
         }
         stage('Package') {
             steps {
-                dir('csvcubed') {
-                    sh 'poetry build'
-                }
-
+                sh 'poetry build'
+                
                 stash name: 'wheels', includes: '**/dist/*.whl'
             }
         }
         stage('Building Documentation') {
             steps {
                 script {
-                    dir('csvcubed') {
-                        sh "poetry run sphinx-apidoc -F -M -a -P --tocfile index.rst -d 10 -E --implicit-namespaces -o docs csvcubed \"setup*\" \"tests\""
-                        sh 'poetry run sphinx-build -W -b html docs docs/_build/html'
-                    }
+                    sh "poetry run sphinx-apidoc -F -M -a -P --tocfile index.rst -d 10 -E --implicit-namespaces -o docs csvcubed \"setup*\" \"tests\""
+                    sh 'poetry run sphinx-build -W -b html docs docs/_build/html'
+                    
 
                     dir('external-docs'){
                         sh "python3 -m mkdocs build"

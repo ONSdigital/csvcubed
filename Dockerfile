@@ -1,36 +1,44 @@
-FROM python:3.9
+FROM gsscogs/pythonversiontesting:v1.0.1
 
-# Installing packages required by docker.
-# To prevent any cache related issues that could occur when building the container and during apt-get install, the apt-get update and apt-get install are added to the same RUN statement 
-# as per the instructions in https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#run.
-RUN apt-get update && apt-get install -y \
-  apt-transport-https \
-  ca-certificates \
-  curl \
-  gnupg \
-  lsb-release
+ARG VENV_PATH=/csvcubed-venv
+ARG VENV_PIP=${VENV_PATH}/bin/pip
+ARG VENV_POETRY=${VENV_PATH}/bin/poetry
 
-RUN curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 
-RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \
-  $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+RUN pyenv global 3.10.0
 
-# To prevent any cache related issues that could occur when building the container and during apt-get install, the apt-get update and apt-get install are added to the same RUN statement 
-# as per the instructions in https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#run.
-RUN apt-get update && apt-get install -y docker-ce docker-ce-cli containerd.io
+RUN mkdir -p /workspace
 
-RUN python3 -m pip install poetry
-
-ADD https://raw.githubusercontent.com/GSS-Cogs/gss-utils/master/cucumber-format.patch /
-
-RUN apt-get install -y git 
-
-# Pyright (nodejs)
-RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
-RUN apt-get install -y nodejs
-RUN npm install -g pyright
-
-RUN python3 -m pip install mkdocs mkdocs-material mkdocs-mermaid2-plugin
-
-RUN mkdir /workspace
 WORKDIR /workspace
+
+# Install all dependencies for project
+COPY poetry.lock .
+COPY pyproject.toml .
+
+# Using a manually created venv so that poetry uses the same venv no matter where the source code is mounted.
+# Jenkins will mount the source code at some esoteric path, and vscode will mount the code at /workspaces/<project-name>.
+# This gives us consistency so that the docker container genuinely caches the dependencies.
+RUN python -m venv ${VENV_PATH}
+
+# Write all dependencies to file. 
+RUN poetry export --format requirements.txt --output /requirements.txt --without-hashes --dev
+
+# Install all dependencies listed in text file to the venv.
+RUN ${VENV_PIP} install --requirement /requirements.txt
+RUN ${VENV_PIP} install poetry
+
+# Patch behave
+RUN patch -Nf -d "${VENV_PATH}/lib/python3.10/site-packages/behave/formatter" -p1 < /cucumber-format.patch
+
+RUN rm -rf /workspace/*
+
+WORKDIR /workspace
+
+
+# Trick poetry into thinking it's inside the virtual environment
+# This will make all poetry commands work naturally, even outside the virtual environment.
+ENV VIRTUAL_ENV="${VENV_PATH}"
+ENV PATH="${PATH}:${VENV_PATH}/bin/"
+
+# On container start, the source code is loaded so we call poetry install so the venv knows where the local project's package/code lives.
+ENTRYPOINT poetry install && bash
