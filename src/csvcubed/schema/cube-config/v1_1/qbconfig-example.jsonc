@@ -1,6 +1,6 @@
 {
     // The ability to define curies in qbconfig.jsonc
-    "$schema": "https://raw.githubusercontent.com/GSS-Cogs/csvcubed/294-define-codelist-in-qubeconfig/csvcubed/csvcubed/schema/cube-config/v1_1/schema.json",
+    "$schema": "https://purl.org/csv-cubed/qube-config/v1.1",
     "title": "Some Qube",
     "description": "A string of any length or markdown, etc",
     "summary": "A string of any length or markdown, etc",

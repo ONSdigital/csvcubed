@@ -60,9 +60,7 @@ class QbMultiUnits(QbColumnStructuralDefinition):
 
     @staticmethod
     def existing_units_from_data(
-        data: PandasDataTypes,
-        csvw_column_name: str,
-        csv_column_uri_template: str
+        data: PandasDataTypes, csvw_column_name: str, csv_column_uri_template: str
     ) -> "QbMultiUnits":
         columnar_data = pandas_input_to_columnar_str(data)
         return QbMultiUnits(
@@ -82,7 +80,18 @@ class QbMultiUnits(QbColumnStructuralDefinition):
         column_csv_title: str,
     ) -> List[ValidationError]:
         if len(self.units) > 0:
-            unique_values = {uri_safe(v) for v in set(data.unique())}
+            unique_values = set(data.unique())
+
+            map_label_to_new_uri_value = {}
+            for u in self.units:
+                if isinstance(u, NewQbUnit):
+                    map_label_to_new_uri_value.update({u.label: u.uri_safe_identifier})
+
+            if map_label_to_new_uri_value:
+                unique_values = {
+                    map_label_to_new_uri_value.get(v, v) for v in unique_values
+                }
+
             unique_expanded_uris = {
                 uritemplate.expand(csv_column_uri_template, {csvw_column_name: s})
                 for s in unique_values
@@ -92,12 +101,17 @@ class QbMultiUnits(QbColumnStructuralDefinition):
                 if isinstance(unit, ExistingQbUnit):
                     expected_uris.add(unit.unit_uri)
                 elif isinstance(unit, NewQbUnit):
-                    expected_uris.add(unit.uri_safe_identifier)
+                    expected_uris.add(
+                        uritemplate.expand(
+                            csv_column_uri_template,
+                            {csvw_column_name: unit.uri_safe_identifier},
+                        )
+                    )
                 else:
                     raise Exception(f"Unhandled unit type {type(unit)}")
 
             undefined_uris = unique_expanded_uris - expected_uris
-            if len(undefined_uris) > 0:
+            if any(undefined_uris):
                 return [UndefinedUnitUrisError(self, undefined_uris)]
 
         return []

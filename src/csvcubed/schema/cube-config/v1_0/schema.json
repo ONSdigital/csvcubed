@@ -8,7 +8,7 @@
     "properties": {
         "$schema": {
             "type": "string",
-            "const": "https://purl.org/csv-cubed/qube-config/v1.0"
+            "default": "https://purl.org/csv-cubed/qube-config/v1.0"
         },
         "id": {"description": "A unique id for the cube", "type": "string"},
         "title": {"description": "A title for this data set", "type": "string"},
