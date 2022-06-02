@@ -2,7 +2,7 @@ import pytest
 import requests_mock
 
 from csvcubed.utils.cache import session
-from csvcubed.definitions import ROOT_DIR_PATH
+from definitions import ROOT_DIR_PATH
 
 
 @pytest.fixture(scope="package", autouse=True)
@@ -16,6 +16,8 @@ def mock_http_session_qube_config_schema():
     ) as mocker:
         schema_path = (
             ROOT_DIR_PATH
+            / "csvcubed"
+            / "src"
             / "csvcubed"
             / "schema"
             / "cube-config"

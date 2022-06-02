@@ -2,7 +2,7 @@ from csvcubed.utils.sparql import path_to_file_uri_for_rdflib
 import dateutil.parser
 from rdflib import Graph
 
-from csvcubed.definitions import ROOT_DIR_PATH
+from definitions import ROOT_DIR_PATH
 from csvcubed.models.inspectsparqlresults import (
     CatalogMetadataResult,
     CodeListColsByDatasetUrlResult,
@@ -73,7 +73,7 @@ def test_select_csvw_catalog_metadata_for_dataset():
         csvw_metadata_rdf_graph
     )
 
-    path = ROOT_DIR_PATH / "tests" / "test-cases" / "cli" / "inspect"
+    path = ROOT_DIR_PATH / "csvcubed" / "tests" / "test-cases" / "cli" / "inspect"
     assert result.dataset_uri == f"{path_to_file_uri_for_rdflib(path)}/alcohol-bulletin.csv#dataset"
     assert result.title == "Alcohol Bulletin"
     assert result.label == "Alcohol Bulletin"
