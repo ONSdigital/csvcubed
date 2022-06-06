@@ -47,6 +47,12 @@ class SkosCodeListNewUriHelper:
         """
         return f"{self._get_identifier_for_document()}#{identifier}"
 
+    def get_uri_prefix_for_doc(self):
+        """
+        Return the prefix for all new URIs defined in the document.
+        """
+        return self._uri_in_doc("")
+
     def get_concept_uri(self, concept_identifier: str):
         """
         Return the URI for a concept in a new code-list
