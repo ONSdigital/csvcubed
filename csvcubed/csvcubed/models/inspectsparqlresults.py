@@ -6,7 +6,7 @@ Inspect SPARQL query results
 import json
 from os import linesep
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 from dataclasses import dataclass
 
 from rdflib.query import ResultRow
@@ -207,6 +207,7 @@ class CodelistColumnResult(DataClassBase):
     column_value_url: Optional[str]
     column_title: Optional[str]
 
+
 @dataclass
 class CodeListColsByDatasetUrlResult:
     """
@@ -214,6 +215,17 @@ class CodeListColsByDatasetUrlResult:
     """
 
     columns: List[CodelistColumnResult]
+
+
+@dataclass
+class MetadataDependenciesResult:
+    """
+    Model representing a metadata dependency which should be loaded to make sense of the current graph.
+    """
+
+    data_set: str
+    data_dump: str
+    uri_space: str
 
 
 def map_catalog_metadata_result(sparql_result: ResultRow) -> CatalogMetadataResult:
@@ -473,3 +485,16 @@ def map_codelist_cols_by_dataset_url_result(
     )
     result = CodeListColsByDatasetUrlResult(columns=columns)
     return result
+
+
+def map_metadata_dependency_results(
+    sparql_results: List[ResultRow],
+) -> List[MetadataDependenciesResult]:
+    def map_row(row_result: Dict[str, Any]) -> MetadataDependenciesResult:
+        return MetadataDependenciesResult(
+            data_set=str(row_result["dataset"]),
+            data_dump=str(row_result["dataDump"]),
+            uri_space=str(row_result["uriSpace"]),
+        )
+
+    return [map_row(row.asdict()) for row in sparql_results]

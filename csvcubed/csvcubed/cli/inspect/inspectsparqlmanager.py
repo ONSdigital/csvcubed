@@ -32,6 +32,8 @@ from csvcubed.models.inspectsparqlresults import (
     map_dataset_url_result,
     map_qube_components_sparql_result,
     map_single_unit_from_dsd_result,
+    MetadataDependenciesResult,
+    map_metadata_dependency_results,
 )
 from csvcubed.utils.sparql import ask, select
 from csvcubed.models.csvcubedexception import (
@@ -74,6 +76,8 @@ class SPARQLQueryName(Enum):
     )
 
     SELECT_CODELIST_COLS_BY_DATASET_URL = "select_codelist_cols_by_dataset_url"
+
+    SELECT_METADATA_DEPENDENCIES = "select_metadata_dependencies"
 
 
 def _get_query_string_from_file(queryType: SPARQLQueryName) -> str:
@@ -357,3 +361,15 @@ def select_codelist_cols_by_dataset_url(
             num_of_records=len(results),
         )
     return map_codelist_cols_by_dataset_url_result(results)
+
+
+def select_metadata_dependencies(rdf_graph: Graph) -> List[MetadataDependenciesResult]:
+    """
+    Queries a CSV-W and extracts metadata dependencies defined by void dataset dataDumps.
+    """
+    results: List[ResultRow] = select(
+        _get_query_string_from_file(SPARQLQueryName.SELECT_METADATA_DEPENDENCIES),
+        rdf_graph,
+    )
+
+    return map_metadata_dependency_results(results)

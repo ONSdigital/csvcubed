@@ -1,6 +1,6 @@
 from csvcubed.utils.sparql import path_to_file_uri_for_rdflib
 import dateutil.parser
-from rdflib import Graph
+from rdflib import Graph, RDF, DCAT, URIRef
 
 from csvcubed.definitions import ROOT_DIR_PATH
 from csvcubed.models.inspectsparqlresults import (
@@ -12,6 +12,7 @@ from csvcubed.models.inspectsparqlresults import (
     DSDSingleUnitResult,
     DatasetURLResult,
     QubeComponentsResult,
+    MetadataDependenciesResult,
 )
 from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.cli.inspect.inspectsparqlmanager import (
@@ -27,6 +28,7 @@ from csvcubed.cli.inspect.inspectsparqlmanager import (
     select_qb_dataset_url,
     select_csvw_table_schema_file_dependencies,
     select_single_unit_from_dsd,
+    select_metadata_dependencies,
 )
 from csvcubed.cli.inspect.metadataprocessor import MetadataProcessor
 from tests.unit.test_baseunit import get_test_cases_dir
@@ -74,7 +76,10 @@ def test_select_csvw_catalog_metadata_for_dataset():
     )
 
     path = ROOT_DIR_PATH / "tests" / "test-cases" / "cli" / "inspect"
-    assert result.dataset_uri == f"{path_to_file_uri_for_rdflib(path)}/alcohol-bulletin.csv#dataset"
+    assert (
+        result.dataset_uri
+        == f"{path_to_file_uri_for_rdflib(path)}/alcohol-bulletin.csv#dataset"
+    )
     assert result.title == "Alcohol Bulletin"
     assert result.label == "Alcohol Bulletin"
     assert (
@@ -291,8 +296,12 @@ def test_select_table_schema_dependencies():
     )
 
     assert set(table_schema_results.table_schema_file_dependencies) == {
-        path_to_file_uri_for_rdflib(table_schema_dependencies_dir / "sector.table.json"),
-        path_to_file_uri_for_rdflib(table_schema_dependencies_dir / "subsector.table.json"),
+        path_to_file_uri_for_rdflib(
+            table_schema_dependencies_dir / "sector.table.json"
+        ),
+        path_to_file_uri_for_rdflib(
+            table_schema_dependencies_dir / "subsector.table.json"
+        ),
     }
 
 
@@ -342,3 +351,47 @@ def test_select_codelist_cols_by_dataset_url():
     assert result.columns[6].column_title is None
     assert result.columns[6].column_property_url == "rdf:type"
     assert result.columns[6].column_value_url == "skos:Concept"
+
+
+def test_select_metadata_dependencies() -> None:
+    """
+    Test that we can extract `void:DataSet` dependencies from a csvcubed CSV-W output.
+    """
+
+    metadata_file = _test_case_base_dir / "dependencies" / "data.csv-metadata.json"
+    data_file = _test_case_base_dir / "dependencies" / "data.csv"
+    expected_dependency_file = (
+        _test_case_base_dir / "dependencies" / "dimension.csv-metadata.json"
+    )
+
+    graph = Graph()
+    graph.load(metadata_file, format="json-ld")
+    dependencies = select_metadata_dependencies(graph)
+
+    assert len(dependencies) == 1
+    dependency = dependencies[0]
+
+    assert dependency == MetadataDependenciesResult(
+        data_set=f"{path_to_file_uri_for_rdflib(data_file)}#dependency/dimension",
+        data_dump=path_to_file_uri_for_rdflib(expected_dependency_file.absolute()),
+        uri_space="dimension.csv#",
+    )
+
+
+def test_rdf_dependencies_loaded() -> None:
+    """
+    Ensure that the MetadataProcessor loads dependent RDF graphs to get a complete picture of the cube's metadata.
+    """
+    dimension_data_file = _test_case_base_dir / "dependencies" / "dimension.csv"
+    metadata_file = _test_case_base_dir / "dependencies" / "data.csv-metadata.json"
+
+    metadata_processor = MetadataProcessor(metadata_file)
+    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+
+    # assert that the `<dimension.csv#code-list> a dcat:Dataset` triple has been loaded.
+    # this triple lives in the dependent `dimension.csv-metadata.json` file.
+    assert (
+        URIRef(path_to_file_uri_for_rdflib(dimension_data_file) + "#code-list"),
+        RDF.type,
+        DCAT.Dataset,
+    ) in csvw_metadata_rdf_graph
