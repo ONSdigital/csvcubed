@@ -15,7 +15,7 @@ from csvcubed.models.cube.qb.components.observedvalue import (
     QbMultiMeasureObservationValue,
 )
 from csvcubed.cli.build import build as cli_build
-from definitions import ROOT_DIR_PATH
+from csvcubed.definitions import ROOT_DIR_PATH
 from csvcubed.models.cube.qb import QbColumn
 from csvcubed.models.cube.qb.components import (
     NewQbMeasure,

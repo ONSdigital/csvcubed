@@ -11,7 +11,7 @@ from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
 from csvcubeddevtools.helpers.file import get_test_cases_dir
 
 from csvcubed.cli.build import build as cli_build
-from definitions import ROOT_DIR_PATH
+from csvcubed.definitions import ROOT_DIR_PATH
 
 _test_case_dir = get_test_cases_dir()
 _cube_config_test_case_dir = _test_case_dir / "readers" / "cube-config"

@@ -43,4 +43,4 @@ exclude = [
 pythonVersion = "3.9"
 
 [tool.poetry.scripts]
-csvcubed = 'src.csvcubed.cli.entrypoint:entry_point'
+csvcubed = 'csvcubed.cli.entrypoint:entry_point'

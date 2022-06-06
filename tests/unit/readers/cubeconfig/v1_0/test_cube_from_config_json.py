@@ -36,7 +36,7 @@ from csvcubed.utils.uri import uri_safe
 from csvcubed.cli.build import build as cli_build
 from csvcubed.readers.cubeconfig.v1.configdeserialiser import _get_qb_column_from_json
 from tests.unit.test_baseunit import get_test_cases_dir, assert_num_validation_errors
-from definitions import ROOT_DIR_PATH
+from csvcubed.definitions import ROOT_DIR_PATH
 from csvcubed.models.cube.qb import QbColumn
 from csvcubed.models.cube.qb.components import (
     NewQbMeasure,

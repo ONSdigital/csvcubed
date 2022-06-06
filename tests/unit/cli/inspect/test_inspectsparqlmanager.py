@@ -2,7 +2,7 @@ from csvcubed.utils.sparql import path_to_file_uri_for_rdflib
 import dateutil.parser
 from rdflib import Graph
 
-from definitions import ROOT_DIR_PATH
+from csvcubed.definitions import ROOT_DIR_PATH
 from csvcubed.models.inspectsparqlresults import (
     CatalogMetadataResult,
     CodeListColsByDatasetUrlResult,
