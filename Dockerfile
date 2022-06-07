@@ -27,6 +27,9 @@ RUN poetry export --format requirements.txt --output /requirements.txt --without
 RUN ${VENV_PIP} install --requirement /requirements.txt
 RUN ${VENV_PIP} install poetry
 
+# Install mkdocs for external docs building and publishing
+RUN python3 -m pip install mkdocs mkdocs-material mkdocs-mermaid2-plugin
+
 # Patch behave
 RUN patch -Nf -d "${VENV_PATH}/lib/python3.10/site-packages/behave/formatter" -p1 < /cucumber-format.patch
 
