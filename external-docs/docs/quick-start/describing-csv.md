@@ -2,9 +2,15 @@
 
 csvcubed makes it straightforward to describe your data. Important information to provide includes a title, a description, themes, publisher, and publication date.
 
-This document assumes you have an existing CSV-W such as the `sweden_at_eurovision_no_missing.csv` data set created as in the [quick start build](./build.md).
+## A transcribed audio screencast convering the contents of this page
+
+<iframe src="https://share.descript.com/embed/havTKRTeHVx" width="640" height="360" frameborder="0" allowfullscreen></iframe>
+
+## Pre-requisites
 
 **Experience of writing basic JSON documents is assumed throughout this document.** See this [tutorial from DigitalOcean](https://www.digitalocean.com/community/tutorials/an-introduction-to-json) for an introduction to writing JSON.
+
+This document assumes you have an existing CSV such as the `sweden_at_eurovision_no_missing.csv` data set created as in the [quick start build](./build.md) and have csvcubed installed. If you don't have the example data set download it [here](https://raw.githubusercontent.com/GSS-Cogs/csvcubed-demo/v1.0/sweden_at_eurovision_no_missing.csv).
 
 ## Describing your data set
 
@@ -17,9 +23,9 @@ This is what a basic [`qube-config.json`](../guides/configuration/index.md) look
     "$schema": "https://purl.org/csv-cubed/qube-config/v1.0",
     "title": "Sweden at Eurovision",
     "summary": "List of Swedish entries to the Eurovision Song Contest since 1958.",
-     "description": "Sweden has been competing in Eurovision since 1958, with an enviable track record of wins. This dataset covers all contests since 1958, their artists, the song names, language (if mono-lingual), and some observations covering points in final, rank in final, and number of artists on stage. Data originally sourced from https://en.wikipedia.org/w/index.php?title=Sweden_in_the_Eurovision_Song_Contest&oldid=1081060799 and https://sixonstage.com/",
+    "description": "Sweden has been competing in Eurovision since 1958, with an enviable track record of wins. This dataset covers all contests since 1958, their artists, the song names, language (if mono-lingual), and some observations covering points in final, rank in final, and number of artists on stage. Data originally sourced from https://en.wikipedia.org/w/index.php?title=Sweden_in_the_Eurovision_Song_Contest&oldid=1081060799 and https://sixonstage.com/",
     "license": "https://creativecommons.org/licenses/by/4.0/",
-    "publisher": "https://www.ons.gov.uk",
+    "publisher": "https://www.gov.uk/government/organisations/office-for-national-statistics",
     "dataset_issued": "2022-04-08T00:00:00Z",
     "keywords": [
         "Eurovision",
@@ -39,10 +45,6 @@ Note that there are three similar fields, `title`, `summary` and `description`:
 All publishers are encouraged to provide license information in their CSV-W which permits data consumers to discover data which meets their use case.
 
 You can now revisit the [build process](./build.md#passing-configuration) to provide the configuration file and generate a better described CSV-W cube.
-
-## A transcribed audio screencast convering the contents of this page
-
-<iframe src="https://share.descript.com/embed/havTKRTeHVx" width="640" height="360" frameborder="0" allowfullscreen></iframe>
 
 ## Next
 

@@ -1,11 +1,16 @@
 # Designing a CSV
 
-csvcubed needs to understand how your statistical data is structured in order to make it more machine readable. There are two ways that you can do this with csvcubed:
+## A transcribed audio screencast convering the contents of this page
 
-* Using the [configuration by convention approach](../guides/configuration/convention.md) - you start out with a [standard CSV data shape](../guides/shape-data.md#standard-shape) with conventional column titles and fill it out with your data.
-* Using the [explicit configuration approach](../guides/configuration/qube-config.md) - you write a JSON configuration file which tells csvcubed exactly how to interpret your data.
+<iframe src="https://share.descript.com/embed/SJiVPSziEkw" width="640" height="360" frameborder="0" allowfullscreen></iframe>
 
-This quick start will use the [configuration by convention approach](../guides/configuration/convention.md) to help you generate a CSV-W cube. We assume that you already have a working [installation of csvcubed](./installation.md).
+## Pre-requisites to follow along
+
+csvcubed must be installed in order to proceed, please go back to [installation](installation.md).
+
+## How csvcubed interprets a CSV
+
+csvcubed needs to understand how your statistical data is structured in order to make it more machine readable. There are two ways that you can do this with csvcubed, we are covering the [configuration by convention approach](../guides/configuration/convention.md) in this quick-start. Configuration by convention requires a [standard CSV data shape](../guides/shape-data.md#standard-shape) with conventional column titles and fill it out with your data which is explained briefly below.
 
 ## Structuring your data
 
@@ -54,12 +59,12 @@ Where `Year`, `Entrant`, `Song` and `Language` are the cube's identifying [dimen
 
 Note that we have included multiple measures in this dataset as `Final Rank`, `Final Points` and `People on Stage` have been recorded for each contestant.
 
-You can download the full CSV [here](https://raw.githubusercontent.com/GSS-Cogs/csvcubed-demo/main/sweden_at_eurovision_no_missing.csv).
-
-## A transcribed audio screencast convering the contents of this page
-
-<iframe src="https://share.descript.com/embed/SJiVPSziEkw" width="640" height="360" frameborder="0" allowfullscreen></iframe>
+You can download the full CSV [here](https://raw.githubusercontent.com/GSS-Cogs/csvcubed-demo/v1.0/sweden_at_eurovision_no_missing.csv).
 
 ## Next
 
 The next step is to [build a CSV-W](./build.md).
+
+## Optional: further reading
+
+The other way to configure a CSV-W cube is using the [explicit configuration approach](../guides/configuration/qube-config.md) - you write a JSON configuration file which tells csvcubed exactly how to interpret your data.
