@@ -21,7 +21,7 @@ Feature: Test outputting CSV-Ws containing `SKOS:ConceptScheme`s.
         <http://purl.org/dc/terms/title> "Basic Code-list"@en;
         <http://www.w3.org/2000/01/rdf-schema#label> "Basic Code-list"@en;
         <http://www.w3.org/2000/01/rdf-schema#comment> "Summary"@en;
-        <http://purl.org/dc/terms/description> "Description"@en;
+        <http://purl.org/dc/terms/description> "Description"^^<https://www.w3.org/ns/iana/media-types/text/markdown#Resource>;
         <http://www.w3.org/ns/dcat#keyword> "Key word one"@en, "Key word two"@en;
         <http://www.w3.org/ns/dcat#landingPage> <http://example.org/landing-page>;
         <http://www.w3.org/ns/dcat#theme> <http://gss-data.org.uk/def/gdp#some-test-theme>;
@@ -68,7 +68,7 @@ Feature: Test outputting CSV-Ws containing `SKOS:ConceptScheme`s.
         <http://purl.org/dc/terms/title> "Composite Code List"@en;
         <http://www.w3.org/2000/01/rdf-schema#label> "Composite Code List"@en;
         <http://www.w3.org/2000/01/rdf-schema#comment> "Summary"@en;
-        <http://purl.org/dc/terms/description> "Description"@en;
+        <http://purl.org/dc/terms/description> "Description"^^<https://www.w3.org/ns/iana/media-types/text/markdown#Resource>;
         <http://www.w3.org/ns/dcat#keyword> "Key word one"@en, "Key word two"@en;
         <http://www.w3.org/ns/dcat#landingPage> <http://example.org/landing-page>;
         <http://www.w3.org/ns/dcat#theme> <http://gss-data.org.uk/def/gdp#some-test-theme>;
