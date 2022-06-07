@@ -12,12 +12,14 @@ from abc import ABC
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Union, Optional, TypeVar, Tuple
+from pandas import describe_option
 
 import uritemplate
 
 from jsonschema.exceptions import ValidationError
 
 from csvcubedmodels.dataclassbase import DataClassBase
+from csvcubed.models.cube.qb.components.measure import QbMeasure
 
 from csvcubed.utils.validators.schema import validate_dict_against_schema
 from csvcubed.inputs import pandas_input_to_columnar_optional_str
@@ -361,6 +363,15 @@ class Measure(SchemaBaseClass):
     from_existing: Optional[str] = None
     definition_uri: Optional[str] = None
 
+    def map_to_measure(self) -> NewQbMeasure:
+        return NewQbMeasure(
+            label=self.label,
+            description=self.description,
+            parent_measure_uri=self.from_existing,
+            source_uri=self.definition_uri
+        )
+
+
 
 @dataclass
 class NewMeasures(SchemaBaseClass):
@@ -378,6 +389,7 @@ class NewMeasures(SchemaBaseClass):
             for new_measure in self.values:
                 if not isinstance(new_measure, Measure):
                     raise ValueError(f"Unexpected measure: {new_measure}")
+                new_measures.append(new_measure.map_to_measure())
 
             return QbMultiMeasureDimension(new_measures)
 

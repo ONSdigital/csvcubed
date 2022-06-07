@@ -21,13 +21,14 @@ from csvcubed.models.cube import (
     NoObservedValuesColumnDefinedError,
     NoUnitsDefinedError,
     ObservationValuesMissing,
+    EmptyQbMultiMeasureDimensionError
 )
 
 from csvcubed.models.cube.qb.components.validationerrors import (
     ReservedUriValueError,
     ConflictingUriSafeValuesError,
-    UndefinedMeasureUrisError,
     UndefinedAttributeValueUrisError,
+    UndefinedMeasureUrisError,
 )
 
 from tests.unit.test_baseunit import get_test_cases_dir
@@ -48,7 +49,7 @@ def _check_log(text: str) -> bool:
     return False
 
 
-def test_01_val_errors_no_observation():
+def test_val_errors_no_observation():
     """
     Test for:-
         NoObservedValuesColumnDefinedError
@@ -78,7 +79,7 @@ def test_01_val_errors_no_observation():
     )
 
 
-def test_02_val_errors_no_measure():
+def test_val_errors_no_measure():
     """
     Test for:-
         NoUnitsDefinedError
@@ -119,7 +120,7 @@ def test_02_val_errors_no_measure():
     )
 
 
-def test_03_val_errors_col_not_in_data():
+def test_val_errors_col_not_in_data():
     """
     Test for:-
         ColumnNotFoundInDataError
@@ -148,7 +149,7 @@ def test_03_val_errors_col_not_in_data():
     )
 
 
-def test_04_val_errors_duplicate_col():
+def test_val_errors_duplicate_col():
     """
     Test for:-
         DuplicateColumnTitleError
@@ -175,7 +176,7 @@ def test_04_val_errors_duplicate_col():
     )
 
 
-def test_05_val_errors_missing_obs_vals():
+def test_val_errors_missing_obs_vals():
     """
     Test for:-
         ObservationValuesMissing
@@ -206,7 +207,7 @@ def test_05_val_errors_missing_obs_vals():
     )
 
 
-def test_06_val_errors_both_measure_types():
+def test_val_errors_both_measure_types():
     """
     Test for:-
         BothMeasureTypesDefinedError
@@ -235,7 +236,7 @@ def test_06_val_errors_both_measure_types():
     )
 
 
-def test_07_val_errors_both_unit_types():
+def test_val_errors_both_unit_types():
     """
     Test for:-
         BothUnitTypesDefinedError
@@ -266,7 +267,7 @@ def test_07_val_errors_both_unit_types():
     )
 
 
-def test_08_val_errors_more_than_one_observation():
+def test_val_errors_more_than_one_observation():
     """
     Test for:-
         MoreThanOneObservationsColumnError
@@ -295,7 +296,7 @@ def test_08_val_errors_more_than_one_observation():
     )
 
 
-def test_09_val_errors_more_than_one_measure():
+def test_val_errors_more_than_one_measure():
     """
     Test for:-
         MoreThanOneMeasureColumnError,
@@ -323,7 +324,7 @@ def test_09_val_errors_more_than_one_measure():
     )
 
 
-def test_10_val_errors_undefined_attr_uri():
+def test_val_errors_undefined_attr_uri():
     """
     Test for:-
         UndefinedAttributeValueUrisError
@@ -350,10 +351,37 @@ def test_10_val_errors_undefined_attr_uri():
     )
 
 
-def test_11_val_errors_undefined_measure_uri():
+def test_val_errors_empty_multi_measure_dimension():
+    """
+    Test for:-
+        EmptyQbMultiMeasureDimensionError
+
+    Where we have a QbMultiMeasureDimension but the measures field
+    is an empty list.
+    """
+    config = Path(_test_case_dir, "empty_measure_uris.json")
+    csv = Path(_test_case_dir, "empty_measure_uris.csv")
+    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
+        config, csv
+    )
+    _write_errors_to_log(json_schema_validation_errors, validation_errors)
+
+    assert isinstance(cube, Cube)
+    assert isinstance(validation_errors, list)
+    assert len(validation_errors) == 1
+    assert isinstance(validation_errors[0], EmptyQbMultiMeasureDimensionError)
+
+    assert _check_log(
+        "csvcubed.cli.build - ERROR - More information: http://purl.org/csv-cubed/err/empty-multi-meas-dimension"
+    )
+
+
+def test_val_errors_undefined_measure_uri():
     """
     Test for:-
         UndefinedMeasureUrisError
+
+    Where the data contains an undefined measure uri
     """
     config = Path(_test_case_dir, "undefined_measure_uris.json")
     csv = Path(_test_case_dir, "undefined_measure_uris.csv")
@@ -368,11 +396,7 @@ def test_11_val_errors_undefined_measure_uri():
     assert isinstance(validation_errors[0], UndefinedMeasureUrisError)
 
     assert _check_log(
-        "csvcubed.cli.build - ERROR - Validation Error: The Measure URI(s) {'https://example.org/measures/quintillions', "
-        "'https://example.org/measures/billions'} found in the data was not defined in the cube config"
-    ) or _check_log(
-        "csvcubed.cli.build - ERROR - Validation Error: The Measure URI(s) {'https://example.org/measures/billions', "
-        "'https://example.org/measures/quintillions'} found in the data was not defined in the cube config"
+        "csvcubed.cli.build - ERROR - Validation Error: The Measure URI(s) {'Quintillions'} found in the data was not defined in the cube config."
     )
 
     assert _check_log(
@@ -380,7 +404,7 @@ def test_11_val_errors_undefined_measure_uri():
     )
 
 
-def test_12_val_errors_uri_conflict():
+def test_val_errors_uri_conflict():
     """
     Test for:-
         ConflictingUriSafeValuesError
@@ -409,7 +433,7 @@ def test_12_val_errors_uri_conflict():
     )
 
 
-def test_13_val_errors_reserved_uri():
+def test_val_errors_reserved_uri():
     """
     Test for:-
         ReservedUriValueError
@@ -442,7 +466,7 @@ def test_13_val_errors_reserved_uri():
     )
 
 
-def test_14_val_errors_no_dimensions():
+def test_val_errors_no_dimensions():
     """
     Test for:-
         NoDimensionsDefinedError

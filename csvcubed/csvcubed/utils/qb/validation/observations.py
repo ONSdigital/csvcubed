@@ -20,6 +20,7 @@ from csvcubed.models.cube import (
     NoMeasuresDefinedError,
     NoObservedValuesColumnDefinedError,
     MoreThanOneObservationsColumnError,
+    EmptyQbMultiMeasureDimensionError
 )
 
 from csvcubed.models.cube.qb.components.measure import ExistingQbMeasure
@@ -157,19 +158,22 @@ def _validate_multi_measure_cube(
     else:
         measure_column: QbColumn[QbMultiMeasureDimension] = multi_measure_columns[0]
 
-        all_measures_existing = all(
-            [
-                isinstance(m, ExistingQbMeasure)
-                for m in measure_column.structural_definition.measures
-            ]
-        )
-    
-        if all_measures_existing and measure_column.csv_column_uri_template is None:
-                errors.append(
-                    CsvColumnUriTemplateMissingError(
-                        measure_column.csv_column_title, ExistingQbMeasure
+        if len(measure_column.structural_definition.measures) == 0:
+            errors.append(EmptyQbMultiMeasureDimensionError())
+        else:
+            all_measures_existing = all(
+                [
+                    isinstance(m, ExistingQbMeasure)
+                    for m in measure_column.structural_definition.measures
+                ]
+            )
+        
+            if all_measures_existing and measure_column.csv_column_uri_template is None:
+                    errors.append(
+                        CsvColumnUriTemplateMissingError(
+                            measure_column.csv_column_title, ExistingQbMeasure
+                        )
                     )
-                )
 
     return errors
 
