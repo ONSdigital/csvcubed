@@ -34,7 +34,7 @@ Note that there are three similar fields, `title`, `summary` and `description`:
 
 * the `title` field contains a short human-readable identifier for the data set,
 * the `summary` contains a single line of text summarising the data set,
-* the `description` is a longer free-text field for a more thorough description.
+* the `description` is a longer free-text field for a more thorough description, more complex descriptions are supported through [`markdown`](https://www.markdownguide.org/getting-started/).
 
 All publishers are encouraged to provide license information in their CSV-W which permits data consumers to discover data which meets their use case.
 
