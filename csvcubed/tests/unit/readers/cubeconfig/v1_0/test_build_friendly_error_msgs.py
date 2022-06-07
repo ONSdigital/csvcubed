@@ -372,6 +372,10 @@ def test_val_errors_empty_multi_measure_dimension():
     assert isinstance(validation_errors[0], EmptyQbMultiMeasureDimensionError)
 
     assert _check_log(
+        "csvcubed.cli.build - ERROR - Validation Error: A validation error occurred when validating the cube: 'A measure dimension must contain at least one defined measure'"
+    )
+
+    assert _check_log(
         "csvcubed.cli.build - ERROR - More information: http://purl.org/csv-cubed/err/empty-multi-meas-dimension"
     )
 
