@@ -88,7 +88,6 @@ def _get_query_string_from_file(queryType: SPARQLQueryName) -> str:
 
     file_path: Path = (
         ROOT_DIR_PATH
-        / "csvcubed"
         / "src"
         / "csvcubed"
         / "cli"

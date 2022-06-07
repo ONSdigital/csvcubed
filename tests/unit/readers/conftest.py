@@ -16,7 +16,6 @@ def mock_http_session():
     ) as mocker:
         templates_dir = (
             ROOT_DIR_PATH
-            / "csvcubed"
             / "src"
             / "csvcubed"
             / "readers"

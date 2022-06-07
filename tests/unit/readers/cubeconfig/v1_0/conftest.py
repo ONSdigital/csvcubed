@@ -16,7 +16,6 @@ def mock_http_session_qube_config_schema():
     ) as mocker:
         schema_path = (
             ROOT_DIR_PATH
-            / "csvcubed"
             / "src"
             / "csvcubed"
             / "schema"
