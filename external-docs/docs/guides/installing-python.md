@@ -1,6 +1,6 @@
 # Installing Python
 
-csvcubed requires one of the following python environments to function
+csvcubed requires python to function. It has been tested with versions:
 
 * 3.9
 * 3.10
@@ -11,7 +11,7 @@ If you do not have a favoured way of managing your python environment or package
 
 To install miniconda, go to [this link](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html).
 
-Once you have installed miniconda, you will need to configure an environment specifically for csvcubed.
+Once you have installed miniconda, you will need to configure an environment specifically for csvcubed:
 
 ```bash
 # create a new environment using python 3.10
