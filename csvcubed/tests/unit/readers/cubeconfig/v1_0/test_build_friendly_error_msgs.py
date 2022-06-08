@@ -359,7 +359,7 @@ def test_val_errors_empty_multi_units():
     Test for:-
         EmptyQbMultiUnitsError
 
-    Where we have a QbMultiMeasureDimension but the units field
+    Where we have a QbMultiUnits but the units field
     is an empty list.
     """
     config = Path(_test_case_dir, "empty_unit_uris.json")
