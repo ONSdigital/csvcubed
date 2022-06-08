@@ -97,10 +97,10 @@ def friendly_error_mapping(error: ValidationError) -> str:
         _logger.error("Unhandled validation error: %s", error)
         raise ValueError(f"Unhandled validation error type {type(error)}")
 
-    # Lazy evaluation of f-string to account for differing subclass attributes
+    # Lazy evaluation of f-string to account for differing attributes
     message = eval(f'f"{message}"')
 
-    # for ConflictingUriSafeValuesError, extend the massage with stringifed
+    # for ConflictingUriSafeValuesError, extend the message with stringified
     # map of conflicting uris and labels
     if isinstance(error, ConflictingUriSafeValuesError):
         for (key, values) in error.map_uri_safe_values_to_conflicting_labels.items():
