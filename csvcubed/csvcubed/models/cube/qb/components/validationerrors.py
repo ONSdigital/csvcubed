@@ -184,4 +184,4 @@ class EmptyQbMultiUnitsError(SpecificValidationError):
         return 'http://purl.org/csv-cubed/err/empty-multi-units'
 
     def __post_init__(self):
-        self.message = 'A units column must contain at least one defined unit'
+        self.message = 'The units attribute of a QbMultiUnits must be populated'

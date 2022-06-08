@@ -375,11 +375,11 @@ def test_val_errors_empty_multi_units():
     assert isinstance(validation_errors[0], EmptyQbMultiUnitsError)
 
     assert _check_log(
-        "Validation Error: A validation error occurred when validating the cube: 'A units column must contain at least one defined unit'."
+        "csvcubed.cli.build - ERROR - Validation Error: A unit column has been detected, but no units are defined within it"
     )
 
     assert _check_log(
-        "More information: http://purl.org/csv-cubed/err/empty-multi-units"
+        "csvcubed.cli.build - ERROR - More information: http://purl.org/csv-cubed/err/empty-multi-units"
     )
 
 
@@ -404,7 +404,7 @@ def test_val_errors_empty_multi_measure_dimension():
     assert isinstance(validation_errors[0], EmptyQbMultiMeasureDimensionError)
 
     assert _check_log(
-        "csvcubed.cli.build - ERROR - Validation Error: A validation error occurred when validating the cube: 'A measure dimension must contain at least one defined measure'"
+        "csvcubed.cli.build - ERROR - Validation Error: A Measures dimension column has been detected, but no measured are defined within it"
     )
 
     assert _check_log(

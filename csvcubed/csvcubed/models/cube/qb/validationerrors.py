@@ -322,4 +322,4 @@ class EmptyQbMultiMeasureDimensionError(SpecificValidationError):
         return 'http://purl.org/csv-cubed/err/empty-multi-meas-dimension'
 
     def __post_init__(self):
-        self.message = 'A measure dimension must contain at least one defined measure'
+        self.message = 'The field attribute of a QbMultiMeasureDimension must be populated'
