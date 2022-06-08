@@ -72,9 +72,6 @@ class MetadataValidator:
             primary_graph_identifier
         )
 
-        print(primary_graph_identifier)
-        print(f"Length {len(primary_graph)}")
-
         if ask_is_csvw_code_list(primary_graph):
             return CSVWType.CodeList
         elif ask_is_csvw_qb_dataset(primary_graph):
