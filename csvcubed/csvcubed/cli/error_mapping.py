@@ -47,7 +47,7 @@ _logger = logging.getLogger(__name__)
 def friendly_error_mapping(error: ValidationError) -> str:
     """
     Given a validation error it returns an error message that is tailored to the qube-config.json interface so it's
-     more user-friendly.
+    more user-friendly.
     """
 
     _map = {
@@ -59,10 +59,10 @@ def friendly_error_mapping(error: ValidationError) -> str:
         ),
         ConflictingUriSafeValuesError: "A URI collision has been detected in {_get_description_for_component(error.component_type)}.",
         CsvColumnUriTemplateMissingError: "The '{error.csv_column_name}' column definition is missing a 'cell_uri_template'; a suitable "
-            "value could not be inferred.",
+        "value could not be inferred.",
         DuplicateColumnTitleError: "There are multiple CSV columns with the title: '{error.csv_column_title}'.",
-        EmptyQbMultiMeasureDimensionError: "A Measures dimension column has been detected, but no measured are defined within it",
-        EmptyQbMultiUnitsError: "A unit column has been detected, but no units are defined within it",
+        EmptyQbMultiMeasureDimensionError: "A Measure column has been defined but no measures have been defined within it",
+        EmptyQbMultiUnitsError: "A Unit column has been defined but no units have been defined within it",
         MoreThanOneObservationsColumnError: "Found {error.actual_number} observed values columns. Only 1 is permitted.",
         MoreThanOneMeasureColumnError: "Found {error.actual_number} measures columns. Only 1 is permitted.",
         MoreThanOneUnitsColumnError: "Found {error.actual_number} units columns. Only 1 is permitted.",
@@ -88,11 +88,11 @@ def friendly_error_mapping(error: ValidationError) -> str:
         UndefinedUnitUrisError: "The Unit URI(s) {error.undefined_values} found in the data was not defined in the cube config.",
         ValidationError: (
             "A validation error occurred when validating the cube: '{error.message}'."
-        )
+        ),
     }
 
     message = _map.get(type(error))
-    
+
     if not message:
         _logger.error("Unhandled validation error: %s", error)
         raise ValueError(f"Unhandled validation error type {type(error)}")
@@ -107,9 +107,13 @@ def friendly_error_mapping(error: ValidationError) -> str:
             vals = ", ".join([f"'{v}'" for v in values])
             message += f"{linesep}    The values {vals} map to the same URI-safe identifier '{key}'"
 
-    if hasattr(error ,"additional_explanation"):
-        if error.additional_explanation:
-            message += f"{linesep}Further details: {error.additional_explanation}"
+    if hasattr(error, "additional_explanation"):
+
+        # dont run pyright on next line, not all error types have an additional_explanation
+        additional_explanation = error.additional_explanation  # type: ignore
+
+        if additional_explanation:
+            message += f"{linesep}Further details: {additional_explanation}"
 
     return message
 

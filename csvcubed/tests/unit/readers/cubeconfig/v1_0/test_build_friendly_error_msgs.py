@@ -31,7 +31,7 @@ from csvcubed.models.cube.qb.components.validationerrors import (
     UndefinedAttributeValueUrisError,
     UndefinedMeasureUrisError,
     UndefinedUnitUrisError,
-    EmptyQbMultiUnitsError
+    EmptyQbMultiUnitsError,
 )
 
 from tests.unit.test_baseunit import get_test_cases_dir
@@ -375,7 +375,7 @@ def test_val_errors_empty_multi_units():
     assert isinstance(validation_errors[0], EmptyQbMultiUnitsError)
 
     assert _check_log(
-        "csvcubed.cli.build - ERROR - Validation Error: A unit column has been detected, but no units are defined within it"
+        "csvcubed.cli.build - ERROR - Validation Error: A Unit column has been defined but no units have been defined within it"
     )
 
     assert _check_log(
@@ -404,7 +404,7 @@ def test_val_errors_empty_multi_measure_dimension():
     assert isinstance(validation_errors[0], EmptyQbMultiMeasureDimensionError)
 
     assert _check_log(
-        "csvcubed.cli.build - ERROR - Validation Error: A Measures dimension column has been detected, but no measured are defined within it"
+        "csvcubed.cli.build - ERROR - Validation Error: A Measure column has been defined but no measures have been defined within it"
     )
 
     assert _check_log(
