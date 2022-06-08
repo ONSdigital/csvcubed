@@ -20,9 +20,8 @@ from .unit import (
     NewQbUnit,
     ExistingQbUnit,
 )
-from .validationerrors import UndefinedUnitUrisError
+from .validationerrors import UndefinedUnitUrisError, EmptyQbMultiUnitsError
 from csvcubed.models.validationerror import ValidationError
-from csvcubed.utils.uri import uri_safe
 
 
 @dataclass
@@ -79,7 +78,9 @@ class QbMultiUnits(QbColumnStructuralDefinition):
         csv_column_uri_template: str,
         column_csv_title: str,
     ) -> List[ValidationError]:
-        if len(self.units) > 0:
+        if len(self.units) == 0:
+            return [EmptyQbMultiUnitsError()]
+        else:
             unique_values = set(data.unique())
 
             map_label_to_new_uri_value = {}

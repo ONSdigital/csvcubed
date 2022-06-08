@@ -1,5 +1,5 @@
-Measure,Measure2,Dim-0,Attr-1,Amount,Units
-Billions,Trillions,1,goods,100,Pounds
-Billions,Trillions,2,services,321,Pounds
-Billions,Trillions,3,services,88,Pounds
-Billions,Trillions,4,services,99,Dollars
+Measure,Dim-0,Attr-1,Amount,Units
+Expenditure,1,goods,100,Pounds
+Expenditure,2,services,321,Pounds
+Expenditure,3,services,88,Pounds
+Wage,4,services,99,Dollars

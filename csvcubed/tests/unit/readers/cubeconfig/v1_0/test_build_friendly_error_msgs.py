@@ -21,14 +21,17 @@ from csvcubed.models.cube import (
     NoObservedValuesColumnDefinedError,
     NoUnitsDefinedError,
     ObservationValuesMissing,
-    EmptyQbMultiMeasureDimensionError
+    EmptyQbMultiMeasureDimensionError,
 )
+
 
 from csvcubed.models.cube.qb.components.validationerrors import (
     ReservedUriValueError,
     ConflictingUriSafeValuesError,
     UndefinedAttributeValueUrisError,
     UndefinedMeasureUrisError,
+    UndefinedUnitUrisError,
+    EmptyQbMultiUnitsError
 )
 
 from tests.unit.test_baseunit import get_test_cases_dir
@@ -351,6 +354,35 @@ def test_val_errors_undefined_attr_uri():
     )
 
 
+def test_val_errors_empty_multi_units():
+    """
+    Test for:-
+        EmptyQbMultiUnitsError
+
+    Where we have a QbMultiMeasureDimension but the units field
+    is an empty list.
+    """
+    config = Path(_test_case_dir, "empty_unit_uris.json")
+    csv = Path(_test_case_dir, "empty_unit_uris.csv")
+    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
+        config, csv
+    )
+    _write_errors_to_log(json_schema_validation_errors, validation_errors)
+
+    assert isinstance(cube, Cube)
+    assert isinstance(validation_errors, list)
+    assert len(validation_errors) == 1
+    assert isinstance(validation_errors[0], EmptyQbMultiUnitsError)
+
+    assert _check_log(
+        "Validation Error: A validation error occurred when validating the cube: 'A units column must contain at least one defined unit'."
+    )
+
+    assert _check_log(
+        "More information: http://purl.org/csv-cubed/err/empty-multi-units"
+    )
+
+
 def test_val_errors_empty_multi_measure_dimension():
     """
     Test for:-
@@ -400,11 +432,39 @@ def test_val_errors_undefined_measure_uri():
     assert isinstance(validation_errors[0], UndefinedMeasureUrisError)
 
     assert _check_log(
-        "csvcubed.cli.build - ERROR - Validation Error: The Measure URI(s) {'Quintillions'} found in the data was not defined in the cube config."
+        "csvcubed.cli.build - ERROR - Validation Error: The Measure URI(s) {'Wage'} found in the data was not defined in the cube config."
     )
 
     assert _check_log(
         "csvcubed.cli.build - ERROR - More information: http://purl.org/csv-cubed/err/undef-meas"
+    )
+
+
+def test_val_errors_undefined_unit_uri():
+    """
+    Test for:-
+        UndefinedUnitUrisError
+
+    Where the data contains an undefined measure uri
+    """
+    config = Path(_test_case_dir, "undefined_unit_uris.json")
+    csv = Path(_test_case_dir, "undefined_unit_uris.csv")
+    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
+        config, csv
+    )
+    _write_errors_to_log(json_schema_validation_errors, validation_errors)
+
+    assert isinstance(cube, Cube)
+    assert isinstance(validation_errors, list)
+    assert len(validation_errors) == 1
+    assert isinstance(validation_errors[0], UndefinedUnitUrisError)
+
+    assert _check_log(
+        "csvcubed.cli.build - ERROR - Validation Error: The Unit URI(s) {'Dollars'} found in the data was not defined in the cube config."
+    )
+
+    assert _check_log(
+        "csvcubed.cli.build - ERROR - More information: http://purl.org/csv-cubed/err/undef-unit"
     )
 
 
