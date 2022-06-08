@@ -25,7 +25,7 @@ from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
 from csvcubed.cli.inspect.inspectsparqlmanager import (
     select_codelist_cols_by_dataset_url,
     select_codelist_dataset_url,
-    select_cols_where_supress_output_is_true,
+    select_cols_where_suppress_output_is_true,
     select_csvw_catalog_metadata,
     select_csvw_dsd_dataset_label_and_dsd_def_uri,
     select_csvw_dsd_qube_components,
@@ -159,7 +159,7 @@ class MetadataPrinter:
             self.csvw_metadata_json_path,
         )
         self.result_cols_with_suppress_output_true = (
-            select_cols_where_supress_output_is_true(self.csvw_metadata_rdf_graph)
+            select_cols_where_suppress_output_is_true(self.csvw_metadata_rdf_graph)
         )
         self.result_code_lists = select_dsd_code_list_and_cols(
             self.csvw_metadata_rdf_graph,

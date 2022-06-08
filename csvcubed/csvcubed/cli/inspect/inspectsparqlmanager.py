@@ -10,7 +10,8 @@ from enum import Enum
 from pathlib import Path
 from typing import List
 
-from rdflib import Graph, Literal, URIRef
+import rdflib
+from rdflib import Literal, URIRef
 from rdflib.query import ResultRow
 
 from csvcubed.models.inspectsparqlresults import (
@@ -112,7 +113,7 @@ def _get_query_string_from_file(queryType: SPARQLQueryName) -> str:
         ) from ex
 
 
-def ask_is_csvw_code_list(rdf_graph: Graph) -> bool:
+def ask_is_csvw_code_list(rdf_graph: rdflib.Graph) -> bool:
     """
     Queries whether the given rdf is a code list (i.e. skos:ConceptScheme).
 
@@ -127,7 +128,7 @@ def ask_is_csvw_code_list(rdf_graph: Graph) -> bool:
     )
 
 
-def ask_is_csvw_qb_dataset(rdf_graph: Graph) -> bool:
+def ask_is_csvw_qb_dataset(rdf_graph: rdflib.Graph) -> bool:
     """
     Queries whether the given rdf is a qb dataset (i.e. qb:Dataset).
 
@@ -142,7 +143,7 @@ def ask_is_csvw_qb_dataset(rdf_graph: Graph) -> bool:
     )
 
 
-def select_csvw_catalog_metadata(rdf_graph: Graph) -> CatalogMetadataResult:
+def select_csvw_catalog_metadata(rdf_graph: rdflib.Graph) -> CatalogMetadataResult:
     """
     Queries catalog metadata such as title, label, issued date/time, modified data/time, etc.
 
@@ -166,7 +167,7 @@ def select_csvw_catalog_metadata(rdf_graph: Graph) -> CatalogMetadataResult:
 
 
 def select_csvw_dsd_dataset_label_and_dsd_def_uri(
-    rdf_graph: Graph,
+    rdf_graph: rdflib.ConjunctiveGraph,
 ) -> DSDLabelURIResult:
     """
     Queries data structure definition dataset label and uri.
@@ -190,7 +191,7 @@ def select_csvw_dsd_dataset_label_and_dsd_def_uri(
 
 
 def select_csvw_dsd_qube_components(
-    rdf_graph: Graph, dsd_uri: str, json_path: Path
+    rdf_graph: rdflib.ConjunctiveGraph, dsd_uri: str, json_path: Path
 ) -> QubeComponentsResult:
     """
     Queries the list of qube components.
@@ -207,8 +208,8 @@ def select_csvw_dsd_qube_components(
     return map_qube_components_sparql_result(results, json_path)
 
 
-def select_cols_where_supress_output_is_true(
-    rdf_graph: Graph,
+def select_cols_where_suppress_output_is_true(
+    rdf_graph: rdflib.ConjunctiveGraph,
 ) -> ColsWithSuppressOutputTrueResult:
     """
     Queries the columns where suppress output is true.
@@ -225,7 +226,7 @@ def select_cols_where_supress_output_is_true(
 
 
 def select_dsd_code_list_and_cols(
-    rdf_graph: Graph, dsd_uri: str, json_path: Path
+    rdf_graph: rdflib.ConjunctiveGraph, dsd_uri: str, json_path: Path
 ) -> CodelistsResult:
     """
     Queries code lists and columns in the data cube.
@@ -243,7 +244,7 @@ def select_dsd_code_list_and_cols(
 
 
 def select_csvw_table_schema_file_dependencies(
-    rdf_graph: Graph,
+    rdf_graph: rdflib.ConjunctiveGraph,
 ) -> CSVWTableSchemaFileDependenciesResult:
     """
     Queries the table schemas of the given csvw json-ld.
@@ -263,7 +264,9 @@ def select_csvw_table_schema_file_dependencies(
     return map_csvw_table_schemas_result(results)
 
 
-def select_qb_dataset_url(rdf_graph: Graph, dataset_uri: str) -> DatasetURLResult:
+def select_qb_dataset_url(
+    rdf_graph: rdflib.ConjunctiveGraph, dataset_uri: str
+) -> DatasetURLResult:
     """
     Queries the url of the given qb:dataset.
 
@@ -290,7 +293,7 @@ def select_qb_dataset_url(rdf_graph: Graph, dataset_uri: str) -> DatasetURLResul
     return map_dataset_url_result(results[0])
 
 
-def select_codelist_dataset_url(rdf_graph: Graph) -> DatasetURLResult:
+def select_codelist_dataset_url(rdf_graph: rdflib.ConjunctiveGraph) -> DatasetURLResult:
     """
     Queries the url of the given skos:conceptScheme.
 
@@ -312,7 +315,7 @@ def select_codelist_dataset_url(rdf_graph: Graph) -> DatasetURLResult:
 
 
 def select_single_unit_from_dsd(
-    rdf_graph: Graph, dataset_uri: str, json_path: Path
+    rdf_graph: rdflib.ConjunctiveGraph, dataset_uri: str, json_path: Path
 ) -> DSDSingleUnitResult:
     """
     Queries the single unit uri and label from the data structure definition.
@@ -337,7 +340,7 @@ def select_single_unit_from_dsd(
 
 
 def select_codelist_cols_by_dataset_url(
-    rdf_graph: Graph, table_url: str
+    rdf_graph: rdflib.ConjunctiveGraph, table_url: str
 ) -> CodeListColsByDatasetUrlResult:
     """
     Queries the code list column property and value urls for the given table url.
@@ -363,7 +366,9 @@ def select_codelist_cols_by_dataset_url(
     return map_codelist_cols_by_dataset_url_result(results)
 
 
-def select_metadata_dependencies(rdf_graph: Graph) -> List[MetadataDependenciesResult]:
+def select_metadata_dependencies(
+    rdf_graph: rdflib.ConjunctiveGraph,
+) -> List[MetadataDependenciesResult]:
     """
     Queries a CSV-W and extracts metadata dependencies defined by void dataset dataDumps.
     """

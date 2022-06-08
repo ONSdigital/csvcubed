@@ -1,6 +1,8 @@
+import pytest
+
 from csvcubed.utils.sparql import path_to_file_uri_for_rdflib
 import dateutil.parser
-from rdflib import Graph, RDF, DCAT, URIRef
+from rdflib import Graph, RDF, DCAT, URIRef, RDFS, Literal
 
 from csvcubed.definitions import ROOT_DIR_PATH
 from csvcubed.models.inspectsparqlresults import (
@@ -20,7 +22,7 @@ from csvcubed.cli.inspect.inspectsparqlmanager import (
     ask_is_csvw_qb_dataset,
     select_codelist_cols_by_dataset_url,
     select_codelist_dataset_url,
-    select_cols_where_supress_output_is_true,
+    select_cols_where_suppress_output_is_true,
     select_csvw_catalog_metadata,
     select_csvw_dsd_dataset_label_and_dsd_def_uri,
     select_csvw_dsd_qube_components,
@@ -191,8 +193,8 @@ def test_select_cols_when_supress_output_cols_not_present():
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
-    result: ColsWithSuppressOutputTrueResult = select_cols_where_supress_output_is_true(
-        csvw_metadata_rdf_graph
+    result: ColsWithSuppressOutputTrueResult = (
+        select_cols_where_suppress_output_is_true(csvw_metadata_rdf_graph)
     )
     assert len(result.columns) == 0
 
@@ -207,8 +209,8 @@ def test_select_cols_when_supress_output_cols_present():
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
-    result: ColsWithSuppressOutputTrueResult = select_cols_where_supress_output_is_true(
-        csvw_metadata_rdf_graph
+    result: ColsWithSuppressOutputTrueResult = (
+        select_cols_where_suppress_output_is_true(csvw_metadata_rdf_graph)
     )
     assert len(result.columns) == 2
     assert str(result.columns[0]) == "Col1WithSuppressOutput"
@@ -378,7 +380,7 @@ def test_select_metadata_dependencies() -> None:
     )
 
 
-def test_rdf_dependencies_loaded() -> None:
+def test_rdf_dependency_loaded() -> None:
     """
     Ensure that the MetadataProcessor loads dependent RDF graphs to get a complete picture of the cube's metadata.
     """
@@ -394,4 +396,55 @@ def test_rdf_dependencies_loaded() -> None:
         URIRef(path_to_file_uri_for_rdflib(dimension_data_file) + "#code-list"),
         RDF.type,
         DCAT.Dataset,
+    ) in csvw_metadata_rdf_graph
+
+
+@pytest.mark.timeout(30)
+def test_cyclic_rdf_dependencies_loaded() -> None:
+    """
+    Ensure that the MetadataProcessor loads dependent RDF graphs even when there is a cyclic dependency
+    """
+    metadata_file = _test_case_base_dir / "dependencies" / "cyclic.csv-metadata.json"
+
+    metadata_processor = MetadataProcessor(metadata_file)
+    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+
+    # Assert that some RDF has been loaded.
+    assert any(csvw_metadata_rdf_graph)
+
+
+def test_transitive_rdf_dependency_loaded() -> None:
+    """
+    Ensure that the MetadataProcessor loads a transitive dependency.
+     transitive.csv-metadata.json -> transitive.1.json -> transitive.2.json
+    """
+    metadata_file = (
+        _test_case_base_dir / "dependencies" / "transitive.csv-metadata.json"
+    )
+
+    metadata_processor = MetadataProcessor(metadata_file)
+    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+
+    # Assert that some RDF has been loaded.
+    assert (
+        URIRef("http://example.com/transitive.2"),
+        RDFS.label,
+        Literal("This is in a transitive dependency"),
+    ) in csvw_metadata_rdf_graph
+
+
+def test_rdf_load_ttl_dependency() -> None:
+    """
+    Ensure that we can successfully load a turtle file as an RDF dependency.
+    """
+    metadata_file = _test_case_base_dir / "dependencies" / "turtle.csv-metadata.json"
+
+    metadata_processor = MetadataProcessor(metadata_file)
+    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+
+    # Assert that some RDF has been loaded.
+    assert (
+        URIRef("http://example.com/turtle.1"),
+        RDFS.label,
+        Literal("This is in a turtle dependency"),
     ) in csvw_metadata_rdf_graph

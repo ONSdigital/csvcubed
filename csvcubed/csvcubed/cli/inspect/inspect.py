@@ -39,7 +39,10 @@ def inspect(csvw_metadata_json_path: Path) -> None:
     if csvw_metadata_rdf_graph is None:
         raise FailedToLoadRDFGraphException(csvw_metadata_json_path)
 
-    csvw_metadata_rdf_validator = MetadataValidator(csvw_metadata_rdf_graph)
+    csvw_metadata_rdf_validator = MetadataValidator(
+        csvw_metadata_rdf_graph, csvw_metadata_json_path
+    )
+
     (
         valid_csvw_metadata,
         csvw_type,

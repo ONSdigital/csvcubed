@@ -8,7 +8,8 @@ import logging
 from pathlib import Path
 from typing import List, Set
 
-from rdflib import Graph
+import rdflib
+from rdflib import Graph, ConjunctiveGraph
 from rdflib.util import guess_format
 
 from csvcubed.models.inspectsparqlresults import MetadataDependenciesResult
@@ -65,7 +66,7 @@ class MetadataProcessor:
             len(dependencies_result.table_schema_file_dependencies),
         )
 
-    def load_json_ld_to_rdflib_graph(self) -> Graph:
+    def load_json_ld_to_rdflib_graph(self) -> rdflib.ConjunctiveGraph:
         """
         Loads CSV-W metadata json-ld to rdflib graph
 
@@ -73,7 +74,7 @@ class MetadataProcessor:
 
         :return: `Graph` - RDFLib Graph of CSV-W metadata json.
         """
-        csvw_metadata_rdf_graph = Graph()
+        csvw_metadata_rdf_graph = rdflib.ConjunctiveGraph()
         csvw_file_content: str
         csvw_metadata_file_path = self.csvw_metadata_file_path.absolute()
 
@@ -119,27 +120,27 @@ class MetadataProcessor:
             raise FailedToLoadRDFGraphException(self.csvw_metadata_file_path) from ex
 
     @staticmethod
-    def _get_rdf_from_dependencies(csvw_metadata_rdf_graph: Graph) -> Graph:
+    def _get_rdf_from_dependencies(
+        csvw_metadata_rdf_graph: Graph,
+    ) -> rdflib.ConjunctiveGraph:
         """
         Loads all dependent RDF metadata files, along with transitive dependencies.
         """
 
         _logger.debug("Loading RDF dependencies")
 
-        dependencies_already_loaded: Set[str] = set()
-        rdf = Graph()
+        rdf = rdflib.ConjunctiveGraph()
 
         dependencies_to_load = select_metadata_dependencies(csvw_metadata_rdf_graph)
 
         for dependency in dependencies_to_load:
-            if dependency.data_dump in dependencies_already_loaded:
+            this_dependency_rdf = rdf.get_context(dependency.data_dump)
+            if any(this_dependency_rdf):
                 _logger.debug(
                     "Skipping dependency '%s' as it has already been loaded.",
                     dependency.data_dump,
                 )
                 continue
-
-            dependencies_already_loaded.add(dependency.data_dump)
 
             _logger.debug(
                 "Loading dataset dependency '%s' covering uriSpace '%s' in dataset '%s'",
@@ -151,7 +152,6 @@ class MetadataProcessor:
             expected_format = guess_format(dependency.data_dump)
             _logger.debug("Anticipated RDF format: '%s'.", expected_format)
 
-            this_dependency_rdf = Graph()
             this_dependency_rdf.load(dependency.data_dump, format=expected_format)
 
             # Process all of the dependencies which this file requires.
