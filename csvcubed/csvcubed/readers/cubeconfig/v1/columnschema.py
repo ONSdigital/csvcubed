@@ -12,7 +12,6 @@ from abc import ABC
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Union, Optional, TypeVar, Tuple
-from pandas import describe_option
 
 import uritemplate
 
