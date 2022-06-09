@@ -6,20 +6,11 @@ pipeline {
         }
     }
     stages {
-        stage('Setup') {
+        stage('Clean') {
             steps {
                 script {
                     // Clean up any unwanted files lying about after the previous build.
                     sh "git clean -fxd --exclude='.venv'"
-
-                    dir('csvcubed') {
-                        sh 'poetry config virtualenvs.in-project true'
-                        sh 'poetry install'
-                        // Patch behave so that it can output the correct format for the Jenkins cucumber tool.
-                        def venv_location = sh script: 'poetry env info --path', returnStdout: true
-                        venv_location = venv_location.trim()
-                        sh "patch -Nf -d \"${venv_location}/lib/python3.9/site-packages/behave/formatter\" -p1 < /cucumber-format.patch || true"
-                    }
                 }
             }
         }
