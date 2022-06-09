@@ -29,9 +29,7 @@ from csvcubed.models.cube.qb.components import (
 from tests.unit.test_baseunit import get_test_cases_dir
 
 TEST_CASE_DIR = get_test_cases_dir().absolute() / "readers" / "cube-config" / "v1.0"
-SCHEMA_PATH_FILE = Path(
-    ROOT_DIR_PATH, "csvcubed", "schema", "cube-config", "v1_0", "schema.json"
-)
+SCHEMA_PATH_FILE = ROOT_DIR_PATH / "src" / "csvcubed" / "schema" / "cube-config"/ "v1_0" / "schema.json"
 
 
 def test_01_build_convention_ok():

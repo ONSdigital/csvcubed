@@ -73,8 +73,7 @@ def test_select_csvw_catalog_metadata_for_dataset():
         csvw_metadata_rdf_graph
     )
 
-    path = ROOT_DIR_PATH / "tests" / "test-cases" / "cli" / "inspect"
-    assert result.dataset_uri == f"{path_to_file_uri_for_rdflib(path)}/alcohol-bulletin.csv#dataset"
+    assert result.dataset_uri == f"{path_to_file_uri_for_rdflib(_test_case_base_dir)}/alcohol-bulletin.csv#dataset"
     assert result.title == "Alcohol Bulletin"
     assert result.label == "Alcohol Bulletin"
     assert (

@@ -15,7 +15,13 @@ def mock_http_session():
         session=session, real_http=True
     ) as mocker:
         templates_dir = (
-            ROOT_DIR_PATH / "csvcubed" / "readers" / "cubeconfig" / "v1_0" / "templates"
+            ROOT_DIR_PATH
+            / "src"
+            / "csvcubed"
+            / "readers"
+            / "cubeconfig"
+            / "v1_0"
+            / "templates"
         )
 
         template_files = templates_dir.rglob("**/*.json*")

@@ -20,7 +20,7 @@ However, it's understandable that only a small number of users will be comfortab
 
 In summary, csvcubed is a set of libraries which happen to contain some basic command line interfaces to help advanced users transform CSV data into qb-flavoured CSV-Ws.
 
-## Python Packages
+<!-- ## Python Packages
 
 There are currently four individual packages which can be found inside the csvcubed repository. Each of these directories represents an independent python package in its own right:
 
@@ -43,20 +43,22 @@ More information about each individual package can be found here:
 * [csvcubed](../csvcubed/csvcubed/README.md)
 * [csvcubed-pmd](../csvcubed-pmd/csvcubedpmd/README.md)
 * [csvcubed-models](../csvcubed-models/csvcubedmodels/README.md)
-* [csvcubed-devtools](../csvcubed-devtools/csvcubeddevtools/README.md)
+* [csvcubed-devtools](../csvcubed-devtools/csvcubeddevtools/README.md) -->
 
 ### Directory Structure
 
-Each package has the following file/directory structure:
+The csvcubed package has the following file/directory structure:
 
 ```text
 PackageName (e.g. csvcubed)
-├── PackageName - (e.g. csvcubed) all project python files go inside here.
-│   └── README.md - (optional) README file providing a summary of the package.
+├── src
+│    └── PackageName - (e.g. csvcubed) all project python files go inside here.
 ├── tests
 │   ├── behaviour - Behave/cucumber tests go in here.
 │   ├── test-cases - Test case example files go in here
 │   └── unit - pytest unit tests go in here.
+├── README.md - (optional) README file providing a summary of the package.
+├── LICENSE - Apache 2.0 License
 ├── docs
 │   └── conf.py - Configures the API Documentation generated.
 ├── poetry.lock - Locks all dependant packages (and transitive dependencies).
@@ -141,6 +143,8 @@ This project uses both *unit* and *behaviour* forms of testing. We use unit test
 [Pytest](https://docs.pytest.org) is used as the *unit* testing framework. All unit tests should be inside the [PackageName/PackageName/test/unit](#directory-structure) folder.
 
 [Behave](https://behave.readthedocs.io) is used as our *behaviour* testing framework in which test scripts are written using the cucumber/gherkin syntax. All *behaviour* tests should be inside the [PackageName/PackageName/test/behaviour](#directory-structure) folder. Generally speaking,  tests involving the use of *docker* (to run post-processing or validation of outputs) are written as behaviour tests.
+
+In order to run behave tests locally, run the following command from the `root` of the project: `behave tests/behaviour`. To run a specific scenario, use `behave tests/behaviour -n "<scenario name>"`. Similarly, `behave tests/behaviour -i <feature_name.feature>` can be used to run a specific feature.
 
 If any additional test files are required (for either *unit* or *behaviour* testing), they should be stored inside the [PackageName/PackageName/test/test-cases](#directory-structure) folder.
 
