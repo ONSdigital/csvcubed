@@ -1,6 +1,16 @@
 # Inspecting a CSV-W
 
-This page is designed to help you inspect an existing CSV-W. It assumes that you have already [installed csvcubed](./installation.md), [designed your CSV input](./designing-csv.md) and [built your CSV-W](./build.md).
+This page is designed to help you inspect an existing CSV-W. 
+
+## A transcribed video walkthrough
+
+<iframe src="https://share.descript.com/embed/Umk1wrKpSMV" width="640" height="360" frameborder="0" allowfullscreen></iframe>
+
+## Pre-requisites
+
+You should have already [installed csvcubed](./installation.md), [designed your CSV input](./designing-csv.md) and [built your CSV-W](./build.md).
+
+## Inspecting your CSV-W cube
 
 To inspect the `sweden-at-eurovision-no-missing.csv-metadata.json` data cube we built in [Building a CSV-W](build.md), we run the [csvcubed inspect](../guides/command-line/inspect-command.md) command:
 
@@ -91,6 +101,8 @@ language.csv#code-list                        Language
 people-on-stage  people     60
 ```
 
+## Inspect a CSV-W code lsit
+
 Now we inspect the `language.csv-metadata.json` code list we built in [Building a CSV-W](build.md):
 
 ```bash
@@ -148,10 +160,6 @@ root
 There are a number of errors that can occur when inspecting a CSV-W; most of them are designed to help ensure you get correct and valid outputs.
 
 Please see our documentation explaining a [number of common errors](../guides/errors/index.md) to see what you can do to diagnose and correct any errors which occur.
-
-## A transcribed audio screencast convering the contents of this page
-
-<iframe src="https://share.descript.com/embed/Umk1wrKpSMV" width="640" height="360" frameborder="0" allowfullscreen></iframe>
 
 ## Next
 

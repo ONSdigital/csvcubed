@@ -24,11 +24,11 @@ csvcubed has extensive user documentation which tracks the release of csvcubed w
 
 ## Related Packages
 
-| Name                                                                | Description                                                                                    |
-| :------------------------------------------------------------------ | :--------------------------------------------------------------------------------------------- |
-| [csvcubed](./csvcubed/csvcubed/README.md)                           | The key library helping to transform tidy-data into qb-flavoured CSV-W cubes.                  |
-| [csvcubed-models](https://github.com/gss-Cogs/csvcubed-models)       | Models and RDF serialisation functionality required by the csvcubed and csvcubed-pmd packages. |
-| [csvcubed-pmd](https://github.com/gss-Cogs/csvcubed-pmd)                | Transforms a CSV-qb into RDF which is compatible with the Publish My Data platform.            |
+| Name                                                               | Description                                                                                    |
+| :----------------------------------------------------------------- | :--------------------------------------------------------------------------------------------- |
+| [csvcubed](./README.md)                                            | The key library helping to transform tidy-data into qb-flavoured CSV-W cubes.                  |
+| [csvcubed-models](https://github.com/gss-Cogs/csvcubed-models)     | Models and RDF serialisation functionality required by the csvcubed and csvcubed-pmd packages. |
+| [csvcubed-pmd](https://github.com/gss-Cogs/csvcubed-pmd)           | Transforms a CSV-qb into RDF which is compatible with the Publish My Data platform.            |
 | [csvcubed-devtools](https://github.com/gss-Cogs/csvcubed-devtools) | Shared test functionality & dev dependencies which are commonly required.                      |
 
 ## Developer Documentation
