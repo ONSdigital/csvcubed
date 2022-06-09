@@ -1,6 +1,16 @@
 # Building a CSV-W
 
-This page is designed to help you build a CSV-W from a properly structured CSV file. It assumes that you have already [installed csvcubed](./installation.md) and have [designed your CSV input](./designing-csv.md).
+This page is designed to help you build a CSV-W from a properly structured CSV file.
+
+## A transcribed video walkthrough
+
+<iframe src="https://share.descript.com/embed/6tk6GM5GAAd" width="640" height="360" frameborder="0" allowfullscreen></iframe>
+
+## Pre-requisites
+
+This page assumes that you have already [installed csvcubed](./installation.md) and have [designed your CSV input](./designing-csv.md). We suggest you follow along with the [example dataset](https://raw.githubusercontent.com/GSS-Cogs/csvcubed-demo/v1.0/sweden_at_eurovision_no_missing.csv). Save this file to your terminal's current working directory.
+
+## Building a CSV-W
 
 To build a cube from the structured CSV we built in [Designing a CSV](designing-csv.md), we run the [csvcubed build](../guides/command-line/build-command.md) command:
 
@@ -10,7 +20,7 @@ csvcubed build sweden_at_eurovision_no_missing.csv
 
 All being well we get the following output:
 
-> `Build Complete`
+> `Build Complete @ [CSV-W output folder path]`
 
 This indicates that a cube was created and was written to the [output directory](../guides/command-line/build-command.md#output-directory) (default: `./out`).
 
@@ -58,10 +68,6 @@ csvcubed build your-data.csv --config your-configuration.json
 There are a number of errors which can occur when building a CSV-W; most of them are designed to help ensure you get correct and valid outputs.
 
 Please see our documentation explaining a [number of common errors](../guides/errors/index.md) to see what you can do to diagnose and correct any errors which occur.
-
-## A transcribed audio screencast convering the contents of this page
-
-<iframe src="https://share.descript.com/embed/6tk6GM5GAAd" width="640" height="360" frameborder="0" allowfullscreen></iframe>
 
 ## Next
 
