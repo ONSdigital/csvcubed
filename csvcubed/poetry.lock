@@ -200,7 +200,7 @@ tox = ">=3.24.4,<4.0.0"
 
 [[package]]
 name = "csvcubed-models"
-version = "0.1.2"
+version = "0.1.3rc1"
 description = "Models and RDF serialisation functionality useful to the csvcubed family of tools."
 category = "main"
 optional = false
@@ -1198,7 +1198,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "be09b713de9c035f008061cf1887d918dc82c838d505ba4e7825b387c5e1dcd4"
+content-hash = "6724ffcc397a0a04c7adaa5b18bddc6f97c76efda5b4dd1d0f9b48f4d22136d7"
 
 [metadata.files]
 alabaster = [
@@ -1289,7 +1289,7 @@ csvcubed-devtools = [
     {file = "csvcubed_devtools-0.1.1-py3-none-any.whl", hash = "sha256:c96829713f8f2cbc2436aab640eeab56dd17d440ef30bd2a36991823f2726c28"},
 ]
 csvcubed-models = [
-    {file = "csvcubed_models-0.1.2-py3-none-any.whl", hash = "sha256:608bbf84f80e8660b1bbc3c7740fceb11547d6e8a6baad1907b312478d9605cc"},
+    {file = "csvcubed_models-0.1.3rc1-py3-none-any.whl", hash = "sha256:724b6fd3a63fdfee96820225b8880d3592e87988b1e0c8897f204dcb63a4b9b2"},
 ]
 csvcubed-pydantic = [
     {file = "csvcubed_pydantic-1.9.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:47216ab6a6334f075ae8d592418974b0355da9cbf366747f3a6738c1beae9ecd"},
