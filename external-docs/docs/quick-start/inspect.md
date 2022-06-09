@@ -2,7 +2,7 @@
 
 This page is designed to help you inspect an existing CSV-W. 
 
-## A transcribed audio screencast convering the contents of this page
+## A transcribed video walkthrough
 
 <iframe src="https://share.descript.com/embed/Umk1wrKpSMV" width="640" height="360" frameborder="0" allowfullscreen></iframe>
 

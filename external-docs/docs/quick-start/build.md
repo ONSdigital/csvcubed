@@ -2,7 +2,7 @@
 
 This page is designed to help you build a CSV-W from a properly structured CSV file.
 
-## A transcribed audio screencast convering the contents of this page
+## A transcribed video walkthrough
 
 <iframe src="https://share.descript.com/embed/6tk6GM5GAAd" width="640" height="360" frameborder="0" allowfullscreen></iframe>
 

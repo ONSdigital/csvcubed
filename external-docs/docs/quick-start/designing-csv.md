@@ -1,6 +1,6 @@
 # Designing a CSV
 
-## A transcribed audio screencast convering the contents of this page
+## A transcribed video walkthrough
 
 <iframe src="https://share.descript.com/embed/SJiVPSziEkw" width="640" height="360" frameborder="0" allowfullscreen></iframe>
 

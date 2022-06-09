@@ -1,17 +1,12 @@
 # Installation
 
-## A transcribed audio screencast convering the contents of this page
+## A transcribed video walkthrough
 
 <iframe src="https://share.descript.com/embed/3P2Rgfr1GJ1" width="640" height="360" frameborder="0" allowfullscreen></iframe>
 
 ## Pre-requisites
 
-csvcubed supports the following python versions:
-
-* 3.9
-* 3.10
-
-For those who do not have a python environment or package manager, please see the [installing python guide](../guides/installing-python.md) before proceeding.
+csvcubed requires a modern version of python, for those who do not have a python environment or package manager, please see the [installing python guide](../guides/installing-python.md) before proceeding.
 
 ## Installing csvcubed
 

@@ -2,7 +2,7 @@
 
 csvcubed makes it straightforward to describe your data. Important information to provide includes a title, a description, themes, publisher, and publication date.
 
-## A transcribed audio screencast convering the contents of this page
+## A transcribed video walkthrough
 
 <iframe src="https://share.descript.com/embed/havTKRTeHVx" width="640" height="360" frameborder="0" allowfullscreen></iframe>
 
