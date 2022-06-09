@@ -76,7 +76,7 @@ The *observation* column are the numeric values of the observation being recorde
 
 ### Using templates
 
-To use or extend an existing template, provide a `"from_template": "month"` key-value pair referencing one of the [available templates](templates.md). csvcubed loads the reference template's key-value pairs making creating linked data much faster. The values for a column with a `from_template` set in `qube-config.json` override the values for the template. In the example below, the CSV contains a column called Marker, the `qube-config.json` file references the template [`observation-status`](https://github.com/GSS-Cogs/csvcubed/blob/main/csvcubed/csvcubed/readers/cubeconfig/v1_0/templates/observation-status.json) but csvcubed will override the template's label with the value provided.
+To use or extend an existing template, provide a `"from_template": "month"` key-value pair referencing one of the [available templates](templates.md). csvcubed loads the reference template's key-value pairs making creating linked data much faster. The values for a column with a `from_template` set in `qube-config.json` override the values for the template. In the example below, the CSV contains a column called Marker, the `qube-config.json` file references the template [`observation-status`](https://purl.org/csv-cubed/qube-config/templates/observation-status.json) but csvcubed will override the template's label with the value provided.
 
 ```json
    "columns" {
