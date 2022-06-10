@@ -71,15 +71,10 @@ pipeline {
         stage('Building Documentation') {
             steps {
                 script {
-                    sh "poetry run sphinx-apidoc -F -M -a -P --tocfile index.rst -d 10 -E --implicit-namespaces -o docs csvcubed \"setup*\" \"tests\""
-                    sh 'poetry run sphinx-build -W -b html docs docs/_build/html'
-                    
-
                     dir('external-docs'){
                         sh "python3 -m mkdocs build"
                     }
 
-                    stash name: 'docs', includes: '**/docs/_build/html/**/*'
                     stash name: 'mkdocs', includes: '**/external-docs/site/**/*'
                 }
             }
@@ -105,10 +100,6 @@ pipeline {
                                 if (fileExists("api-docs")) {
                                     sh 'git rm -rf api-docs'
                                 }
-                                sh 'mkdir api-docs'
-                                sh 'mkdir api-docs/csvcubed'
-
-                                sh 'cp -r ../csvcubed/docs/_build/html/* api-docs/csvcubed'
 
                                 sh 'touch .nojekyll'
 
@@ -151,12 +142,6 @@ pipeline {
                     unstash name: 'wheels'
                 } catch (Exception e) {
                     echo 'wheels stash does not exist'
-                }
-
-                try {
-                    unstash name: 'docs'
-                } catch (Exception e) {
-                    echo 'docs stash does not exist'
                 }
 
                 try {
