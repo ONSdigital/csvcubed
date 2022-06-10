@@ -6,20 +6,11 @@ pipeline {
         }
     }
     stages {
-        stage('Setup') {
+        stage('Clean') {
             steps {
                 script {
                     // Clean up any unwanted files lying about after the previous build.
                     sh "git clean -fxd --exclude='.venv'"
-
-                    dir('csvcubed') {
-                        sh 'poetry config virtualenvs.in-project true'
-                        sh 'poetry install'
-                        // Patch behave so that it can output the correct format for the Jenkins cucumber tool.
-                        def venv_location = sh script: 'poetry env info --path', returnStdout: true
-                        venv_location = venv_location.trim()
-                        sh "patch -Nf -d \"${venv_location}/lib/python3.9/site-packages/behave/formatter\" -p1 < /cucumber-format.patch || true"
-                    }
                 }
             }
         }
@@ -80,15 +71,10 @@ pipeline {
         stage('Building Documentation') {
             steps {
                 script {
-                    sh "poetry run sphinx-apidoc -F -M -a -P --tocfile index.rst -d 10 -E --implicit-namespaces -o docs csvcubed \"setup*\" \"tests\""
-                    sh 'poetry run sphinx-build -W -b html docs docs/_build/html'
-                    
-
                     dir('external-docs'){
                         sh "python3 -m mkdocs build"
                     }
 
-                    stash name: 'docs', includes: '**/docs/_build/html/**/*'
                     stash name: 'mkdocs', includes: '**/external-docs/site/**/*'
                 }
             }
@@ -114,10 +100,6 @@ pipeline {
                                 if (fileExists("api-docs")) {
                                     sh 'git rm -rf api-docs'
                                 }
-                                sh 'mkdir api-docs'
-                                sh 'mkdir api-docs/csvcubed'
-
-                                sh 'cp -r ../csvcubed/docs/_build/html/* api-docs/csvcubed'
 
                                 sh 'touch .nojekyll'
 
@@ -160,12 +142,6 @@ pipeline {
                     unstash name: 'wheels'
                 } catch (Exception e) {
                     echo 'wheels stash does not exist'
-                }
-
-                try {
-                    unstash name: 'docs'
-                } catch (Exception e) {
-                    echo 'docs stash does not exist'
                 }
 
                 try {
