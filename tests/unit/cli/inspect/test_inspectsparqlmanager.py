@@ -31,7 +31,10 @@ from csvcubed.cli.inspect.inspectsparqlmanager import (
     select_single_unit_from_dsd,
     select_metadata_dependencies,
 )
-from csvcubed.cli.inspect.metadataprocessor import MetadataProcessor
+from csvcubed.cli.inspect.metadataprocessor import (
+    MetadataProcessor,
+    get_triples_for_file_dependencies,
+)
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
@@ -444,3 +447,28 @@ def test_rdf_load_ttl_dependency() -> None:
         RDFS.label,
         Literal("This is in a turtle dependency"),
     ) in csvw_metadata_rdf_graph
+
+
+@pytest.mark.vcr
+def test_rdf_load_url_dependency() -> None:
+    """
+    Test that we can successfully load a URL-based dependency and have transitive relative dependencies work.
+    """
+    graph = Graph().parse(
+        data="""
+        @prefix void: <http://rdfs.org/ns/void#>.
+    
+        <http://example.com/dependency> a void:Dataset;
+             void:dataDump <https://raw.githubusercontent.com/GSS-Cogs/csvcubed/dc1b8df2cd306346e17778cb951417935c91e78b/tests/test-cases/cli/inspect/dependencies/transitive.1.json>;
+             void:uriSpace "http://example.com/some-uri-prefix".
+        """,
+        format="ttl",
+    )
+
+    dependency_file_triples = get_triples_for_file_dependencies(graph)
+
+    assert (
+        URIRef("http://example.com/transitive.2"),
+        RDFS.label,
+        Literal("This is in a transitive dependency"),
+    ) in dependency_file_triples
