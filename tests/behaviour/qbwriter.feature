@@ -483,7 +483,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     And the RDF should pass "qb, skos" SPARQL tests
 
   Scenario: Local Code List Metadata Dependencies are Well Defined
-    Given a single-measure QbCube named "A Qube"
+    Given a single-measure QbCube named "A Qube With Dependencies"
     When the cube is serialised to CSV-W
     Then the file at "a-code-list.csv-metadata.json" should exist
     And the file at "d-code-list.csv-metadata.json" should exist
@@ -493,11 +493,11 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     """
       @prefix void: <http://rdfs.org/ns/void#>.
 
-      <file:/tmp/a-qube.csv#dependency/a-code-list> a void:Dataset;
+      <file:/tmp/a-qube-with-dependencies.csv#dependency/a-code-list> a void:Dataset;
         void:dataDump <file:/tmp/a-code-list.csv-metadata.json>;
         void:uriSpace "a-code-list.csv#".
 
-      <file:/tmp/a-qube.csv#dependency/d-code-list> a void:Dataset;
+      <file:/tmp/a-qube-with-dependencies.csv#dependency/d-code-list> a void:Dataset;
         void:dataDump <file:/tmp/d-code-list.csv-metadata.json>;
         void:uriSpace "d-code-list.csv#".
     """

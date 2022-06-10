@@ -186,7 +186,7 @@ def _get_single_measure_cube_with_name_and_id(
 
     return Cube(
         get_standard_catalog_metadata_for_name(cube_name, cube_id),
-        _standard_data,
+        _standard_data.copy(deep=True),
         columns,
         uri_style=uri_style,
     )
