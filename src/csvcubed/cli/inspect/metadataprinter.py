@@ -8,9 +8,9 @@ Provides functionality for validating and detecting input metadata.json file.
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import List, Optional, Tuple
-from pandas import DataFrame
 
-from rdflib import Graph
+import rdflib
+from pandas import DataFrame
 
 from csvcubed.models.inspectsparqlresults import (
     CatalogMetadataResult,
@@ -62,7 +62,7 @@ class MetadataPrinter:
     """
 
     csvw_type: CSVWType
-    csvw_metadata_rdf_graph: Graph
+    csvw_metadata_rdf_graph: rdflib.ConjunctiveGraph
     csvw_metadata_json_path: Path
 
     csvw_type_str: str = field(init=False)
@@ -94,7 +94,7 @@ class MetadataPrinter:
 
     @staticmethod
     def get_dataset_url(
-        csvw_metadata_rdf_graph: Graph,
+        csvw_metadata_rdf_graph: rdflib.ConjunctiveGraph,
         csvw_type: CSVWType,
         dataset_uri: str,
     ) -> str:

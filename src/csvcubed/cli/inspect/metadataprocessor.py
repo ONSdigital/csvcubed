@@ -9,7 +9,6 @@ from pathlib import Path
 from typing import List, Set
 
 import rdflib
-from rdflib import Graph, ConjunctiveGraph
 from rdflib.util import guess_format
 
 from csvcubed.models.inspectsparqlresults import MetadataDependenciesResult
@@ -38,7 +37,9 @@ class MetadataProcessor:
         self.csvw_metadata_file_path = csvw_metadata_file_path
 
     @staticmethod
-    def _load_table_schema_dependencies_into_rdf_graph(graph: Graph) -> None:
+    def _load_table_schema_dependencies_into_rdf_graph(
+        graph: rdflib.ConjunctiveGraph,
+    ) -> None:
         """
         Loads the table schemas into rdf graph.
 
@@ -111,7 +112,7 @@ class MetadataProcessor:
             _logger.info("Successfully parsed csvw json-ld to rdf graph.")
 
             self._load_table_schema_dependencies_into_rdf_graph(csvw_metadata_rdf_graph)
-            csvw_metadata_rdf_graph += self._get_rdf_from_dependencies(
+            csvw_metadata_rdf_graph += get_triples_for_file_dependencies(
                 csvw_metadata_rdf_graph
             )
 
@@ -119,44 +120,48 @@ class MetadataProcessor:
         except Exception as ex:
             raise FailedToLoadRDFGraphException(self.csvw_metadata_file_path) from ex
 
-    @staticmethod
-    def _get_rdf_from_dependencies(
-        csvw_metadata_rdf_graph: Graph,
-    ) -> rdflib.ConjunctiveGraph:
-        """
-        Loads all dependent RDF metadata files, along with transitive dependencies.
-        """
 
-        _logger.debug("Loading RDF dependencies")
+def get_triples_for_file_dependencies(
+    csvw_metadata_rdf_graph: rdflib.Graph,
+) -> rdflib.ConjunctiveGraph:
+    """
+    Loads all dependent RDF metadata files, along with transitive dependencies.
 
-        rdf = rdflib.ConjunctiveGraph()
+    This is exposed publicly for re-use by the csvcubed-pmd project.
 
-        dependencies_to_load = select_metadata_dependencies(csvw_metadata_rdf_graph)
+    :return: An `rdflib.ConjunctiveGraph`
+    """
 
-        for dependency in dependencies_to_load:
-            this_dependency_rdf = rdf.get_context(dependency.data_dump)
-            if any(this_dependency_rdf):
-                _logger.debug(
-                    "Skipping dependency '%s' as it has already been loaded.",
-                    dependency.data_dump,
-                )
-                continue
+    _logger.debug("Loading RDF dependencies")
 
+    rdf = rdflib.ConjunctiveGraph()
+
+    dependencies_to_load = select_metadata_dependencies(csvw_metadata_rdf_graph)
+
+    for dependency in dependencies_to_load:
+        this_dependency_rdf = rdf.get_context(dependency.data_dump)
+        if any(this_dependency_rdf):
             _logger.debug(
-                "Loading dataset dependency '%s' covering uriSpace '%s' in dataset '%s'",
+                "Skipping dependency '%s' as it has already been loaded.",
                 dependency.data_dump,
-                dependency.uri_space,
-                dependency.data_set,
             )
+            continue
 
-            expected_format = guess_format(dependency.data_dump)
-            _logger.debug("Anticipated RDF format: '%s'.", expected_format)
+        _logger.debug(
+            "Loading dataset dependency '%s' covering uriSpace '%s' in dataset '%s'",
+            dependency.data_dump,
+            dependency.uri_space,
+            dependency.data_set,
+        )
 
-            this_dependency_rdf.load(dependency.data_dump, format=expected_format)
+        expected_format = guess_format(dependency.data_dump) or "json-ld"
+        _logger.debug("Anticipated RDF format: '%s'.", expected_format)
 
-            # Process all of the dependencies which this file requires.
-            dependencies_to_load += select_metadata_dependencies(this_dependency_rdf)
+        this_dependency_rdf.load(dependency.data_dump, format=expected_format)
 
-            rdf += this_dependency_rdf
+        # Process all of the dependencies which this file requires.
+        dependencies_to_load += select_metadata_dependencies(this_dependency_rdf)
 
-        return rdf
+        rdf += this_dependency_rdf
+
+    return rdf

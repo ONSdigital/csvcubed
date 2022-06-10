@@ -366,7 +366,7 @@ def select_codelist_cols_by_dataset_url(
 
 
 def select_metadata_dependencies(
-    rdf_graph: rdflib.ConjunctiveGraph,
+    rdf_graph: rdflib.Graph,
 ) -> List[MetadataDependenciesResult]:
     """
     Queries a CSV-W and extracts metadata dependencies defined by void dataset dataDumps.
