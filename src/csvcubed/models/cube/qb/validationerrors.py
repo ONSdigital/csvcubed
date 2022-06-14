@@ -308,3 +308,18 @@ class BothMeasureTypesDefinedError(IncompatibleComponentsError):
     @classmethod
     def get_error_url(cls) -> str:
         return 'http://purl.org/csv-cubed/err/both-meas-typ-def'
+
+
+@dataclass
+class EmptyQbMultiMeasureDimensionError(SpecificValidationError):
+    """
+    An error for when the user has a `QbMultiMeasureDimension` but its measure
+    field is an empty list.
+    """
+
+    @classmethod
+    def get_error_url(cls) -> str:
+        return 'http://purl.org/csv-cubed/err/empty-multi-meas-dimension'
+
+    def __post_init__(self):
+        self.message = 'The field attribute of a QbMultiMeasureDimension must be populated'

@@ -21,7 +21,6 @@ from .measure import (
 )
 from .validationerrors import UndefinedMeasureUrisError
 from csvcubed.models.validationerror import ValidationError
-from csvcubed.utils.uri import uri_safe
 from .datastructuredefinition import QbColumnStructuralDefinition
 
 
@@ -83,17 +82,34 @@ class QbMultiMeasureDimension(QbColumnStructuralDefinition):
         column_csv_title: str,
     ) -> List[ValidationError]:
         if len(self.measures) > 0:
-            unique_values = {uri_safe(v) for v in set(data.unique())}
+            unique_values = set(data.unique())
+
+            map_label_to_new_uri_value = {}
+            for u in self.measures:
+                if isinstance(u, NewQbMeasure):
+                    map_label_to_new_uri_value.update({u.label: u.uri_safe_identifier})
+
+            if map_label_to_new_uri_value:
+                unique_values = {
+                    map_label_to_new_uri_value.get(v, v) for v in unique_values
+                }
+
             unique_expanded_uris = {
                 uritemplate.expand(csv_column_uri_template, {csvw_column_name: s})
                 for s in unique_values
             }
+            
             expected_uris = set()
             for measure in self.measures:
                 if isinstance(measure, ExistingQbMeasure):
                     expected_uris.add(measure.measure_uri)
                 elif isinstance(measure, NewQbMeasure):
-                    expected_uris.add(measure.uri_safe_identifier)
+                    expected_uris.add(
+                        uritemplate.expand(
+                            csv_column_uri_template,
+                            {csvw_column_name: measure.uri_safe_identifier},
+                        )
+                    )
                 else:
                     raise Exception(f"Unhandled measure type {type(measure)}")
 

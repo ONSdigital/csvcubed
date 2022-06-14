@@ -6,12 +6,7 @@
   "columns": {
     "Measure": {
       "type": "measures",
-      "values": [
-        {
-          "label": "Expenditure"
-        }
-      ]
-
+      "values": []
     },
     "Dim-0": {
       "label": "Non Dimension",
