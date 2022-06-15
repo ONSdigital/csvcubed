@@ -481,3 +481,9 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     Then csvlint validation of all CSV-Ws should succeed
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should pass "qb, skos" SPARQL tests
+
+  Scenario: A QbCube with a dimension containing URI-unsafe chars can be correctly serialised.
+    Given a QbCube named "URI-Unsafe Cube" which has a dimension containing URI-unsafe chars
+    When the cube is serialised to CSV-W
+    Then csvlint validation of all CSV-Ws should succeed
+    And csv2rdf on all CSV-Ws should succeed

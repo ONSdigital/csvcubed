@@ -39,7 +39,7 @@ from csvcubed.models.csvcubedexception import (
     FeatureNotSupportedException,
     InvalidNumberOfRecordsException,
 )
-from csvcubed.definitions import ROOT_DIR_PATH
+from csvcubed.definitions import APP_ROOT_DIR_PATH
 
 _logger = logging.getLogger(__name__)
 
@@ -84,12 +84,10 @@ def _get_query_string_from_file(queryType: SPARQLQueryName) -> str:
 
     :return: `str` - String containing the sparql query.
     """
-    _logger.debug(f"Root path: {ROOT_DIR_PATH.absolute()}")
+    _logger.debug(f"Root path: {APP_ROOT_DIR_PATH.absolute()}")
 
     file_path: Path = (
-        ROOT_DIR_PATH
-        / "src"
-        / "csvcubed"
+        APP_ROOT_DIR_PATH
         / "cli"
         / "inspect"
         / "inspect_sparql_queries"
