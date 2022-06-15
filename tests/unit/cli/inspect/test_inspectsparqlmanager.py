@@ -1,4 +1,7 @@
+from pathlib import Path
+
 import pytest
+from csvcubed.utils.iterables import first
 
 from csvcubed.utils.sparql import path_to_file_uri_for_rdflib
 import dateutil.parser
@@ -79,10 +82,7 @@ def test_select_csvw_catalog_metadata_for_dataset():
         csvw_metadata_rdf_graph
     )
 
-    assert (
-        result.dataset_uri
-        == f"{path_to_file_uri_for_rdflib(_test_case_base_dir)}/alcohol-bulletin.csv#dataset"
-    )
+    assert result.dataset_uri == "alcohol-bulletin.csv#dataset"
     assert result.title == "Alcohol Bulletin"
     assert result.label == "Alcohol Bulletin"
     assert (
@@ -235,8 +235,10 @@ def test_select_dsd_code_list_and_cols_without_codelist_labels():
     )
 
     assert len(result.codelists) == 3
-    assert result.codelists[0].codeListLabel == ""
-    assert result.codelists[0].colsInUsed == "Alcohol Sub Type"
+    assert (
+        first(result.codelists, lambda c: c.cols_used_in == "Alcohol Sub Type")
+        is not None
+    )
 
 
 def test_select_qb_dataset_url():
@@ -297,12 +299,8 @@ def test_select_table_schema_dependencies():
     )
 
     assert set(table_schema_results.table_schema_file_dependencies) == {
-        path_to_file_uri_for_rdflib(
-            table_schema_dependencies_dir / "sector.table.json"
-        ),
-        path_to_file_uri_for_rdflib(
-            table_schema_dependencies_dir / "subsector.table.json"
-        ),
+        "sector.table.json",
+        "subsector.table.json",
     }
 
 
@@ -392,7 +390,7 @@ def test_rdf_dependency_loaded() -> None:
     # assert that the `<dimension.csv#code-list> a dcat:Dataset` triple has been loaded.
     # this triple lives in the dependent `dimension.csv-metadata.json` file.
     assert (
-        URIRef(path_to_file_uri_for_rdflib(dimension_data_file) + "#code-list"),
+        URIRef("dimension.csv#code-list"),
         RDF.type,
         DCAT.Dataset,
     ) in csvw_metadata_rdf_graph
@@ -465,7 +463,7 @@ def test_rdf_load_url_dependency() -> None:
         format="ttl",
     )
 
-    dependency_file_triples = get_triples_for_file_dependencies(graph)
+    dependency_file_triples = get_triples_for_file_dependencies(graph, Path("."))
 
     assert (
         URIRef("http://example.com/transitive.2"),

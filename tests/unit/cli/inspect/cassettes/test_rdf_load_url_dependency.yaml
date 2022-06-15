@@ -38,13 +38,13 @@ interactions:
       Content-Type:
       - text/plain; charset=utf-8
       Date:
-      - Fri, 10 Jun 2022 13:44:39 GMT
+      - Mon, 13 Jun 2022 10:35:32 GMT
       ETag:
       - '"3c016bf94866b582d107beb3a1c03e10d094295500fed6fac57695a8a9e2e71d"'
       Expires:
-      - Fri, 10 Jun 2022 13:49:39 GMT
+      - Mon, 13 Jun 2022 10:40:32 GMT
       Source-Age:
-      - '42'
+      - '68'
       Strict-Transport-Security:
       - max-age=31536000
       Vary:
@@ -58,82 +58,15 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Fastly-Request-ID:
-      - 138184f5896888d64b905c11fb553a7af6f507a5
+      - c0f6af577310a188fbebe7dfdc04cf88e5c859d8
       X-Frame-Options:
       - deny
       X-GitHub-Request-Id:
-      - C14A:7E9B:1E8AA:FA1A5:62A34A9C
+      - 526A:759B:1B1A2:282DB:62A712B0
       X-Served-By:
-      - cache-lon4249-LON
+      - cache-lon4229-LON
       X-Timer:
-      - S1654868679.995484,VS0,VE9
-      X-XSS-Protection:
-      - 1; mode=block
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/ld+json, application/json;q=0.9, */*;q=0.1
-      Connection:
-      - close
-      Host:
-      - raw.githubusercontent.com
-      User-Agent:
-      - rdflib-6.1.1 (http://rdflib.net/; eikeon@eikeon.com)
-    method: GET
-    uri: https://raw.githubusercontent.com/GSS-Cogs/csvcubed/dc1b8df2cd306346e17778cb951417935c91e78b/tests/test-cases/cli/inspect/dependencies/transitive.2.json
-  response:
-    body:
-      string: "{\n    \"@id\": \"http://example.com/transitive.2\",\n    \"http://www.w3.org/2000/01/rdf-schema#label\":
-        \"This is in a transitive dependency\"\n}"
-    headers:
-      Accept-Ranges:
-      - bytes
-      Access-Control-Allow-Origin:
-      - '*'
-      Cache-Control:
-      - max-age=300
-      Connection:
-      - close
-      Content-Length:
-      - '136'
-      Content-Security-Policy:
-      - default-src 'none'; style-src 'unsafe-inline'; sandbox
-      Content-Type:
-      - text/plain; charset=utf-8
-      Date:
-      - Fri, 10 Jun 2022 13:44:39 GMT
-      ETag:
-      - '"7b09574b730ce54674e9d6f611796e934fb7592901d4479f1d191dbb260b553b"'
-      Expires:
-      - Fri, 10 Jun 2022 13:49:39 GMT
-      Source-Age:
-      - '0'
-      Strict-Transport-Security:
-      - max-age=31536000
-      Vary:
-      - Authorization,Accept-Encoding,Origin
-      Via:
-      - 1.1 varnish
-      X-Cache:
-      - MISS
-      X-Cache-Hits:
-      - '0'
-      X-Content-Type-Options:
-      - nosniff
-      X-Fastly-Request-ID:
-      - 91576e33c61fc6cce926e33e6fc7595d611fc772
-      X-Frame-Options:
-      - deny
-      X-GitHub-Request-Id:
-      - 64B2:1612:18F9A:1EF8C:62A34AC7
-      X-Served-By:
-      - cache-lon4279-LON
-      X-Timer:
-      - S1654868679.164812,VS0,VE106
+      - S1655116532.080748,VS0,VE1
       X-XSS-Protection:
       - 1; mode=block
     status:

@@ -144,9 +144,9 @@ class CodelistResult(DataClassBase):
     Model to represent a codelist.
     """
 
-    codeList: str
-    codeListLabel: str
-    colsInUsed: str
+    code_list: str
+    code_list_label: str
+    cols_used_in: str
 
 
 @dataclass
@@ -360,11 +360,11 @@ def map_codelist_sparql_result(
     result_dict = sparql_result.asdict()
 
     result = CodelistResult(
-        codeList=get_component_property_as_relative_path(
+        code_list=get_component_property_as_relative_path(
             json_path, str(result_dict["codeList"])
         ),
-        codeListLabel=none_or_map(result_dict.get("codeListLabel"), str) or "",
-        colsInUsed=get_printable_tabular_list_str(
+        code_list_label=none_or_map(result_dict.get("codeListLabel"), str) or "",
+        cols_used_in=get_printable_tabular_list_str(
             str(result_dict["csvColumnsUsedIn"]).split("|")
         ),
     )

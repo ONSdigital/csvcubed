@@ -5,14 +5,20 @@ Metadata Processor
 Provides functionality for validating and detecting input metadata.json file.
 """
 import logging
+import os.path
 from pathlib import Path
-from typing import List, Set
+from typing import List, Set, Tuple
+from urllib.parse import urljoin
+from dataclasses import dataclass
 
 import rdflib
+from rdflib.term import Identifier
 from rdflib.util import guess_format
 
 from csvcubed.models.inspectsparqlresults import MetadataDependenciesResult
 from csvcubed.utils.csvw import load_table_schema_file_to_graph
+from csvcubed.utils.rdf import parse_graph_retain_relative
+from csvcubed.utils.uri import looks_like_uri
 from csvcubed.cli.inspect.inspectsparqlmanager import (
     select_csvw_table_schema_file_dependencies,
     select_metadata_dependencies,
@@ -28,17 +34,17 @@ from csvcubed.utils.sparql import path_to_file_uri_for_rdflib
 _logger = logging.getLogger(__name__)
 
 
+@dataclass
 class MetadataProcessor:
     """
     This class handles the loading of metadata jsons to RDFLib Graphs.
     """
 
-    def __init__(self, csvw_metadata_file_path: Path):
-        self.csvw_metadata_file_path = csvw_metadata_file_path
+    csvw_metadata_file_path: Path
 
     @staticmethod
     def _load_table_schema_dependencies_into_rdf_graph(
-        graph: rdflib.ConjunctiveGraph,
+        graph: rdflib.ConjunctiveGraph, csvw_metadata_file_path: Path
     ) -> None:
         """
         Loads the table schemas into rdf graph.
@@ -55,8 +61,17 @@ class MetadataProcessor:
                     "Loading dependent file containing table schema %s into RDF graph.",
                     table_schema_file,
                 )
+                table_schema_file_identifier = table_schema_file
 
-                load_table_schema_file_to_graph(table_schema_file, graph)
+                if not looks_like_uri(table_schema_file):
+                    table_schema_file = urljoin(
+                        path_to_file_uri_for_rdflib(csvw_metadata_file_path),
+                        table_schema_file,
+                    )
+
+                load_table_schema_file_to_graph(
+                    table_schema_file, table_schema_file_identifier, graph
+                )
             except Exception as ex:
                 raise FailedToLoadTableSchemaIntoRdfGraphException(
                     table_schema_file=table_schema_file
@@ -104,16 +119,21 @@ class MetadataProcessor:
             raise InvalidCsvwFileContentException()
 
         try:
-            csvw_metadata_rdf_graph.parse(
+            parse_graph_retain_relative(
                 data=csvw_file_content,
-                publicID=path_to_file_uri_for_rdflib(csvw_metadata_file_path),
                 format="json-ld",
+                graph=csvw_metadata_rdf_graph.get_context(
+                    path_to_file_uri_for_rdflib(self.csvw_metadata_file_path)
+                ),
             )
+
             _logger.info("Successfully parsed csvw json-ld to rdf graph.")
 
-            self._load_table_schema_dependencies_into_rdf_graph(csvw_metadata_rdf_graph)
+            self._load_table_schema_dependencies_into_rdf_graph(
+                csvw_metadata_rdf_graph, csvw_metadata_file_path
+            )
             csvw_metadata_rdf_graph += get_triples_for_file_dependencies(
-                csvw_metadata_rdf_graph
+                csvw_metadata_rdf_graph, self.csvw_metadata_file_path
             )
 
             return csvw_metadata_rdf_graph
@@ -123,9 +143,11 @@ class MetadataProcessor:
 
 def get_triples_for_file_dependencies(
     csvw_metadata_rdf_graph: rdflib.Graph,
+    csvw_metadata_rdf_path: Path,
+    follow_relative_path_dependencies_only: bool = False,
 ) -> rdflib.ConjunctiveGraph:
     """
-    Loads all dependent RDF metadata files, along with transitive dependencies.
+    Loads dependent RDF metadata files, along with transitive dependencies.
 
     This is exposed publicly for re-use by the csvcubed-pmd project.
 
@@ -137,6 +159,11 @@ def get_triples_for_file_dependencies(
     rdf = rdflib.ConjunctiveGraph()
 
     dependencies_to_load = select_metadata_dependencies(csvw_metadata_rdf_graph)
+
+    csvw_metadata_rdf_path_str = path_to_file_uri_for_rdflib(csvw_metadata_rdf_path)
+    for d in dependencies_to_load:
+        if not looks_like_uri(d.data_dump):
+            d.data_dump = urljoin(csvw_metadata_rdf_path_str, d.data_dump)
 
     for dependency in dependencies_to_load:
         this_dependency_rdf = rdf.get_context(dependency.data_dump)
@@ -157,10 +184,24 @@ def get_triples_for_file_dependencies(
         expected_format = guess_format(dependency.data_dump) or "json-ld"
         _logger.debug("Anticipated RDF format: '%s'.", expected_format)
 
-        this_dependency_rdf.load(dependency.data_dump, format=expected_format)
+        parse_graph_retain_relative(
+            dependency.data_dump, format=expected_format, graph=this_dependency_rdf
+        )
 
         # Process all of the dependencies which this file requires.
-        dependencies_to_load += select_metadata_dependencies(this_dependency_rdf)
+        new_dependencies = select_metadata_dependencies(this_dependency_rdf)
+
+        if follow_relative_path_dependencies_only:
+            new_dependencies = [
+                d for d in new_dependencies if not looks_like_uri(d.data_dump)
+            ]
+
+        for d in new_dependencies:
+            if not looks_like_uri(d.data_dump):
+                # Generates absolute path out of relative path
+                d.data_dump = urljoin(dependency.data_dump, d.data_dump)
+
+        dependencies_to_load += new_dependencies
 
         rdf += this_dependency_rdf
 

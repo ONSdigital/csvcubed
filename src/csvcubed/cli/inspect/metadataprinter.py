@@ -8,6 +8,7 @@ Provides functionality for validating and detecting input metadata.json file.
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import List, Optional, Tuple
+from urllib.parse import urljoin
 
 import rdflib
 from pandas import DataFrame
@@ -21,6 +22,7 @@ from csvcubed.models.inspectsparqlresults import (
     DSDLabelURIResult,
     QubeComponentsResult,
 )
+from csvcubed.utils.sparql import path_to_file_uri_for_rdflib
 from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
 from csvcubed.cli.inspect.inspectsparqlmanager import (
     select_codelist_cols_by_dataset_url,
@@ -53,6 +55,7 @@ from csvcubed.utils.skos.codelist import (
     CodelistPropertyUrl,
     get_codelist_col_title_by_property_url,
 )
+from csvcubed.utils.uri import looks_like_uri
 
 
 @dataclass
@@ -135,7 +138,9 @@ class MetadataPrinter:
         self.dataset_url = self.get_dataset_url(
             self.csvw_metadata_rdf_graph,
             self.csvw_type,
-            self.result_catalog_metadata.dataset_uri,
+            to_absolute_rdflib_file_path(
+                self.result_catalog_metadata.dataset_uri, self.csvw_metadata_json_path
+            ),
         )
         self.dataset = load_csv_to_dataframe(
             self.csvw_metadata_json_path, Path(self.dataset_url)
@@ -286,3 +291,10 @@ class MetadataPrinter:
         :return: `str` - user-friendly string which will be output to CLI.
         """
         return f"- The {self.csvw_type_str} has the following concepts information:{self.result_concepts_hierachy_info.output_str}"
+
+
+def to_absolute_rdflib_file_path(path: str, parent_document_path: Path) -> str:
+    if looks_like_uri(path):
+        return path
+    else:
+        return urljoin(path_to_file_uri_for_rdflib(parent_document_path), path)
