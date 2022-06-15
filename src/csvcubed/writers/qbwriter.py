@@ -1140,11 +1140,11 @@ class QbWriter(WriterBase):
             if isinstance(c, QbColumn):
                 if isinstance(c.structural_definition, QbDimension):
                     dimension_columns_templates.append(
-                        f"{{+{csvw_column_name_safe(c.uri_safe_identifier)}}}"
+                        f"{{{csvw_column_name_safe(c.uri_safe_identifier)}}}"
                     )
                 elif isinstance(c.structural_definition, QbMultiMeasureDimension):
                     multi_measure_col_template = (
-                        f"{{+{csvw_column_name_safe(c.uri_safe_identifier)}}}"
+                        f"{{{csvw_column_name_safe(c.uri_safe_identifier)}}}"
                     )
 
         about_url_template = self._new_uri_helper.get_observation_uri(
