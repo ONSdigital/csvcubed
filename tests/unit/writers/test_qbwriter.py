@@ -520,7 +520,9 @@ def test_output_new_code_list_csvws_urls():
         temp_dir = Path(temp_dir)
         qb_writer._output_new_code_list_csvws(temp_dir)
         graph = Graph()
-        graph.parse(temp_dir / "some-dimension.csv-metadata.json", publicID="file://relative/")
+        graph.parse(
+            temp_dir / "some-dimension.csv-metadata.json", publicID="file://relative/"
+        )
         assert (
             URIRef(f"file://relative/some-dimension.csv#code-list"),
             URIRef("http://www.w3.org/ns/csvw#url"),
@@ -546,7 +548,9 @@ def test_output_new_code_list_csvws_urls_with_uri_style_WithoutFileExtensions():
         temp_dir = Path(temp_dir)
         qb_writer._output_new_code_list_csvws(temp_dir)
         graph = Graph()
-        graph.parse(temp_dir / "some-dimension.csv-metadata.json", publicID="file://relative/")
+        graph.parse(
+            temp_dir / "some-dimension.csv-metadata.json", publicID="file://relative/"
+        )
         assert (
             URIRef(f"file://relative/some-dimension#code-list"),
             URIRef("http://www.w3.org/ns/csvw#url"),
@@ -820,7 +824,7 @@ def test_about_url_generation():
     cube = Cube(metadata, data, columns)
 
     actual_about_url = QbWriter(cube)._get_about_url()
-    expected_about_url = "some-dataset.csv#obs/{+existing_dimension},{+local_dimension}"
+    expected_about_url = "some-dataset.csv#obs/{existing_dimension},{local_dimension}"
     assert actual_about_url == expected_about_url
 
 
@@ -861,7 +865,7 @@ def test_about_url_generation_with_multiple_measures():
 
     actual_about_url = QbWriter(cube)._get_about_url()
     expected_about_url = (
-        "some-dataset.csv#obs/{+existing_dimension},{+local_dimension}@{+measure}"
+        "some-dataset.csv#obs/{existing_dimension},{local_dimension}@{measure}"
     )
     assert actual_about_url == expected_about_url
 
