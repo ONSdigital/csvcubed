@@ -11,11 +11,18 @@ def get_test_base_dir() -> Path:
         test_root_path = Path(*path_parts[0 : test_index + 1])
     else:  # Fine Rob, you win.
         # Use deepest instance of "csvcubed" so I can call my cloned repository folder "csvcubed" too.
-        csvwlib_index = len(path_parts) - (
-            1 + list(reversed(path_parts)).index("csvcubed")
-        )
-        # Removed double csvcubed because tox is run in the first csvcubed directory not csvcubed/tests.
-        csvcubed_path = Path(*path_parts[0 : csvwlib_index + 1])
+        if "csvcubed" in path_parts:
+            csvwlib_index = len(path_parts) - (
+                1 + list(reversed(path_parts)).index("csvcubed")
+            )
+            # Removed double csvcubed because tox is run in the first csvcubed directory not csvcubed/tests.
+            csvcubed_path = Path(*path_parts[0 : csvwlib_index + 1])
+        else:
+            # If we can't find a folder named 'csvcubed' we have to assume that the current working directory 
+            # is where it is. This happens on Jenkins since it has its own way of naming the checked-out 
+            # repo's folder.
+            csvcubed_path = Path(".") 
+
         tests_folders = list(csvcubed_path.rglob("tests"))
         if len(tests_folders) == 0:
             raise Exception(f"Could not find 'tests' folder in {csvcubed_path}")        
