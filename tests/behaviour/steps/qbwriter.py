@@ -796,6 +796,47 @@ def step_impl(context, cube_name: str):
     context.cube = cube
 
 
+@Given('a QbCube named "{cube_name}" which has a dimension containing URI-unsafe chars')
+def step_impl(context, cube_name: str):
+
+    data = pd.DataFrame(
+        {
+            "Location": [
+                "http://example.com/location#belfast",
+                "http://example.com/location#dublin",
+                "http://example.com/location#cardiff",
+            ],
+            "Measure": ["A", "A", "A"],
+            "Observed Value": [1, 2, 3],
+        }
+    )
+
+    columns = [
+        QbColumn(
+            "Location",
+            ExistingQbDimension("http://example.com/existing-location-dimension"),
+            csv_column_uri_template="{+location}",
+        ),
+        QbColumn(
+            "Measure",
+            QbMultiMeasureDimension.new_measures_from_data(data["Measure"]),
+        ),
+        QbColumn(
+            "Observed Value",
+            QbMultiMeasureObservationValue(unit=NewQbUnit("Num of students")),
+        ),
+    ]
+
+    cube = Cube(get_standard_catalog_metadata_for_name(cube_name), data, columns)
+
+    errors = cube.validate()
+    errors += validate_qb_component_constraints(cube)
+
+    assert len(errors) == 0, [e.message for e in errors]
+
+    context.cube = cube
+
+
 @Then("some additional turtle is appended to the resulting RDF")
 def step_impl(context):
     rdf_to_add = context.text.strip()

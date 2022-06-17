@@ -57,6 +57,7 @@ class UndefinedMeasureUrisError(UndefinedValuesError):
     @classmethod
     def get_error_url(cls) -> str:
         return "http://purl.org/csv-cubed/err/undef-meas"
+        
 
 
 @dataclass
@@ -169,3 +170,18 @@ class ConflictingUriSafeValuesError(PydanticThrowableSpecificValidationError):
     @classmethod
     def get_error_url(cls) -> str:
         return "https://purl.org/csv-cubed/err/conflict-uri"
+
+
+@dataclass
+class EmptyQbMultiUnitsError(SpecificValidationError):
+    """
+    An error for when the user has a `QbMultiUnits` but its units
+    field is an empty list.
+    """
+
+    @classmethod
+    def get_error_url(cls) -> str:
+        return 'http://purl.org/csv-cubed/err/empty-multi-units'
+
+    def __post_init__(self):
+        self.message = 'The units attribute of a QbMultiUnits must be populated'
