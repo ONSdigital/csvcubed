@@ -139,7 +139,7 @@ def _check_new_dimension_column(
 
 
 @pytest.mark.vcr
-def test_01_build_config_ok():
+def test_build_config_ok():
     """
     Valid Cube from Data using Convention (no config json)
     """
@@ -220,7 +220,7 @@ def test_01_build_config_ok():
 
 
 @pytest.mark.vcr
-def test_02_00_dimension_new_no_type():
+def test_dimension_new_no_type():
     """
     Checks a New dimension is created when omitting 'type'
     """
@@ -237,7 +237,7 @@ def test_02_00_dimension_new_no_type():
 
 
 @pytest.mark.vcr
-def test_02_01_dimension_new_ok():
+def test_dimension_new_ok():
     """
     Populates all options and confirms the New Dimension & CodeList classes are created
     and all properties are mapped through correctly
@@ -260,7 +260,7 @@ def test_02_01_dimension_new_ok():
 
 
 @pytest.mark.vcr
-def test_02_03_dimension_new_ok():
+def test_dimension_new_ok():
     """
     Check New dimension when omitting description, from_existing, definition_url and
     cell_uri_template
@@ -279,7 +279,7 @@ def test_02_03_dimension_new_ok():
 
 
 @pytest.mark.vcr
-def test_03_dimension_existing_ok():
+def test_dimension_existing_ok():
     """
     Populates options for an Existing Dimension & New CodeList classes are created
     and all properties are mapped through correctly
@@ -312,7 +312,7 @@ def test_03_dimension_existing_ok():
 
 
 @pytest.mark.vcr
-def test_04_01_attribute_new_ok():
+def test_attribute_new_ok():
     """
     Populates all options and confirms the New Attribute and checks all properties are mapped
     through correctly
@@ -336,7 +336,7 @@ def test_04_01_attribute_new_ok():
 
 
 @pytest.mark.vcr
-def test_04_03_attribute_new_ok():
+def test_attribute_new_ok():
     """
     Checks New attribute when description, values, from_existing and definition_uri options
     are omitted
@@ -358,7 +358,7 @@ def test_04_03_attribute_new_ok():
 
 
 @pytest.mark.vcr
-def test_04_04_attribute_new_ok():
+def test_attribute_new_ok():
     """
     Checks New attribute when description, values, from_existing and definition_uri options
     are omitted
@@ -392,7 +392,7 @@ def test_04_04_attribute_new_ok():
 
 
 @pytest.mark.vcr
-def test_05_01_attribute_existing_ok():
+def test_attribute_existing_ok():
     """
     Populates options for an Existing Attribute checks all properties are mapped through correctly
     """
@@ -420,7 +420,7 @@ def test_05_01_attribute_existing_ok():
 
 
 @pytest.mark.vcr
-def test_05_02_attribute_existing_ok():
+def test_attribute_existing_ok():
     """
     Checks that new (non nul) values are created from data for an existing attribute
     ** values: True
@@ -460,7 +460,7 @@ def test_05_02_attribute_existing_ok():
 
 
 @pytest.mark.vcr
-def test_06_measure_new_ok():
+def test_measure_new_ok():
     """
     Populates options for an New Measures checks all properties are mapped through correctly
     """
@@ -490,7 +490,7 @@ def test_06_measure_new_ok():
 
 
 @pytest.mark.vcr
-def test_07_measure_existing_ok():
+def test_measure_existing_ok():
     """
     Populates options for existing Measures checks all properties are mapped through correctly
     """
@@ -529,7 +529,7 @@ def test_07_measure_existing_ok():
 
 
 @pytest.mark.vcr
-def test_08_unit_new_ok():
+def test_unit_new_ok():
     """
     Populates options for an New Units checks all properties are mapped through correctly
     """
@@ -559,7 +559,7 @@ def test_08_unit_new_ok():
 
 
 @pytest.mark.vcr
-def test_09_units_existing_ok():
+def test_units_existing_ok():
     """
     Populates options for an Existing Units checks all properties are mapped through correctly
     """
@@ -597,7 +597,7 @@ def test_09_units_existing_ok():
 
 
 @pytest.mark.vcr
-def test_10_observation_ok():
+def test_observation_ok():
     column_data = ["a", "b", "c", "a"]
     column_config = {
         "type": "observations",
