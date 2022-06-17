@@ -38,13 +38,13 @@ interactions:
       Content-Type:
       - text/plain; charset=utf-8
       Date:
-      - Mon, 13 Jun 2022 10:35:32 GMT
+      - Fri, 17 Jun 2022 15:25:20 GMT
       ETag:
       - '"3c016bf94866b582d107beb3a1c03e10d094295500fed6fac57695a8a9e2e71d"'
       Expires:
-      - Mon, 13 Jun 2022 10:40:32 GMT
+      - Fri, 17 Jun 2022 15:30:20 GMT
       Source-Age:
-      - '68'
+      - '0'
       Strict-Transport-Security:
       - max-age=31536000
       Vary:
@@ -52,21 +52,88 @@ interactions:
       Via:
       - 1.1 varnish
       X-Cache:
-      - HIT
+      - MISS
       X-Cache-Hits:
-      - '1'
+      - '0'
       X-Content-Type-Options:
       - nosniff
       X-Fastly-Request-ID:
-      - c0f6af577310a188fbebe7dfdc04cf88e5c859d8
+      - 8e63c0a4932a8dbda6812a170ceda45b05e5cbf0
       X-Frame-Options:
       - deny
       X-GitHub-Request-Id:
-      - 526A:759B:1B1A2:282DB:62A712B0
+      - BF0C:531F:2BE2F6:3B22C1:62AC9CE0
       X-Served-By:
-      - cache-lon4229-LON
+      - cache-lon4240-LON
       X-Timer:
-      - S1655116532.080748,VS0,VE1
+      - S1655479520.446624,VS0,VE175
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/ld+json, application/json;q=0.9, */*;q=0.1
+      Connection:
+      - close
+      Host:
+      - raw.githubusercontent.com
+      User-Agent:
+      - rdflib-6.1.1 (http://rdflib.net/; eikeon@eikeon.com)
+    method: GET
+    uri: https://raw.githubusercontent.com/GSS-Cogs/csvcubed/dc1b8df2cd306346e17778cb951417935c91e78b/tests/test-cases/cli/inspect/dependencies/transitive.2.json
+  response:
+    body:
+      string: "{\n    \"@id\": \"http://example.com/transitive.2\",\n    \"http://www.w3.org/2000/01/rdf-schema#label\":
+        \"This is in a transitive dependency\"\n}"
+    headers:
+      Accept-Ranges:
+      - bytes
+      Access-Control-Allow-Origin:
+      - '*'
+      Cache-Control:
+      - max-age=300
+      Connection:
+      - close
+      Content-Length:
+      - '136'
+      Content-Security-Policy:
+      - default-src 'none'; style-src 'unsafe-inline'; sandbox
+      Content-Type:
+      - text/plain; charset=utf-8
+      Date:
+      - Fri, 17 Jun 2022 15:25:20 GMT
+      ETag:
+      - '"7b09574b730ce54674e9d6f611796e934fb7592901d4479f1d191dbb260b553b"'
+      Expires:
+      - Fri, 17 Jun 2022 15:30:20 GMT
+      Source-Age:
+      - '0'
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Authorization,Accept-Encoding,Origin
+      Via:
+      - 1.1 varnish
+      X-Cache:
+      - MISS
+      X-Cache-Hits:
+      - '0'
+      X-Content-Type-Options:
+      - nosniff
+      X-Fastly-Request-ID:
+      - c7f782e6c1bec21eb05b0bc83b664fa7eadb8b1b
+      X-Frame-Options:
+      - deny
+      X-GitHub-Request-Id:
+      - 3E28:B6A1:40FF74:456965:62AC9CE0
+      X-Served-By:
+      - cache-lcy19242-LCY
+      X-Timer:
+      - S1655479521.712593,VS0,VE202
       X-XSS-Protection:
       - 1; mode=block
     status:

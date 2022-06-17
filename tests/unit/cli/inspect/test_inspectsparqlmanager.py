@@ -5,7 +5,7 @@ from csvcubed.utils.iterables import first
 
 from csvcubed.utils.sparql import path_to_file_uri_for_rdflib
 import dateutil.parser
-from rdflib import Graph, RDF, DCAT, URIRef, RDFS, Literal
+from rdflib import Graph, RDF, DCAT, URIRef, RDFS, Literal, ConjunctiveGraph
 
 from csvcubed.models.inspectsparqlresults import (
     CatalogMetadataResult,
@@ -36,7 +36,7 @@ from csvcubed.cli.inspect.inspectsparqlmanager import (
 )
 from csvcubed.cli.inspect.metadataprocessor import (
     MetadataProcessor,
-    get_triples_for_file_dependencies,
+    add_triples_for_file_dependencies,
 )
 from tests.unit.test_baseunit import get_test_cases_dir
 
@@ -214,8 +214,7 @@ def test_select_cols_when_supress_output_cols_present():
         select_cols_where_suppress_output_is_true(csvw_metadata_rdf_graph)
     )
     assert len(result.columns) == 2
-    assert str(result.columns[0]) == "Col1WithSuppressOutput"
-    assert str(result.columns[1]) == "Col2WithSuppressOutput"
+    assert set(result.columns) == {"Col1WithSuppressOutput", "Col2WithSuppressOutput"}
 
 
 def test_select_dsd_code_list_and_cols_without_codelist_labels():
@@ -452,7 +451,8 @@ def test_rdf_load_url_dependency() -> None:
     """
     Test that we can successfully load a URL-based dependency and have transitive relative dependencies work.
     """
-    graph = Graph().parse(
+    graph = ConjunctiveGraph()
+    graph.get_context("Dynamic input").parse(
         data="""
         @prefix void: <http://rdfs.org/ns/void#>.
     
@@ -463,10 +463,10 @@ def test_rdf_load_url_dependency() -> None:
         format="ttl",
     )
 
-    dependency_file_triples = get_triples_for_file_dependencies(graph, Path("."))
+    add_triples_for_file_dependencies(graph, Path("."))
 
     assert (
         URIRef("http://example.com/transitive.2"),
         RDFS.label,
         Literal("This is in a transitive dependency"),
-    ) in dependency_file_triples
+    ) in graph

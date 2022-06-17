@@ -66,7 +66,7 @@ class MetadataValidator:
         """
 
         primary_graph_identifier = path_to_file_uri_for_rdflib(
-            self.csvw_metadata_json_path.absolute()
+            self.csvw_metadata_json_path
         )
         primary_graph = self.csvw_metadata_rdf_graph.get_context(
             primary_graph_identifier

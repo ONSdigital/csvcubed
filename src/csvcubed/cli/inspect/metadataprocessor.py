@@ -70,7 +70,9 @@ class MetadataProcessor:
                     )
 
                 load_table_schema_file_to_graph(
-                    table_schema_file, table_schema_file_identifier, graph
+                    table_schema_file,
+                    table_schema_file_identifier,
+                    graph.get_context(table_schema_file),
                 )
             except Exception as ex:
                 raise FailedToLoadTableSchemaIntoRdfGraphException(
@@ -132,7 +134,8 @@ class MetadataProcessor:
             self._load_table_schema_dependencies_into_rdf_graph(
                 csvw_metadata_rdf_graph, csvw_metadata_file_path
             )
-            csvw_metadata_rdf_graph += get_triples_for_file_dependencies(
+
+            add_triples_for_file_dependencies(
                 csvw_metadata_rdf_graph, self.csvw_metadata_file_path
             )
 
@@ -141,24 +144,20 @@ class MetadataProcessor:
             raise FailedToLoadRDFGraphException(self.csvw_metadata_file_path) from ex
 
 
-def get_triples_for_file_dependencies(
-    csvw_metadata_rdf_graph: rdflib.Graph,
+def add_triples_for_file_dependencies(
+    rdf_graph: rdflib.ConjunctiveGraph,
     csvw_metadata_rdf_path: Path,
     follow_relative_path_dependencies_only: bool = False,
-) -> rdflib.ConjunctiveGraph:
+) -> None:
     """
     Loads dependent RDF metadata files, along with transitive dependencies.
 
     This is exposed publicly for re-use by the csvcubed-pmd project.
-
-    :return: An `rdflib.ConjunctiveGraph`
     """
 
     _logger.debug("Loading RDF dependencies")
 
-    rdf = rdflib.ConjunctiveGraph()
-
-    dependencies_to_load = select_metadata_dependencies(csvw_metadata_rdf_graph)
+    dependencies_to_load = select_metadata_dependencies(rdf_graph)
 
     csvw_metadata_rdf_path_str = path_to_file_uri_for_rdflib(csvw_metadata_rdf_path)
     for d in dependencies_to_load:
@@ -166,7 +165,7 @@ def get_triples_for_file_dependencies(
             d.data_dump = urljoin(csvw_metadata_rdf_path_str, d.data_dump)
 
     for dependency in dependencies_to_load:
-        this_dependency_rdf = rdf.get_context(dependency.data_dump)
+        this_dependency_rdf = rdf_graph.get_context(dependency.data_dump)
         if any(this_dependency_rdf):
             _logger.debug(
                 "Skipping dependency '%s' as it has already been loaded.",
@@ -202,7 +201,3 @@ def get_triples_for_file_dependencies(
                 d.data_dump = urljoin(dependency.data_dump, d.data_dump)
 
         dependencies_to_load += new_dependencies
-
-        rdf += this_dependency_rdf
-
-    return rdf
