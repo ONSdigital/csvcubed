@@ -19,6 +19,7 @@ from csvcubed.models.inspectsparqlresults import (
     MetadataDependenciesResult,
 )
 from csvcubed.utils.qb.components import ComponentPropertyType
+from csvcubed.utils.rdf import parse_graph_retain_relative
 from csvcubed.cli.inspect.inspectsparqlmanager import (
     ask_is_csvw_code_list,
     ask_is_csvw_qb_dataset,
@@ -504,3 +505,32 @@ def test_rdf_load_relative_dependencies_only() -> None:
         RDFS.label,
         Literal("This is in a transitive dependency"),
     ) not in graph
+
+
+@pytest.mark.vcr
+def test_rdf_load_url_dependency() -> None:
+    """
+    Test that we can successfully load a URL-based dependency and have transitive relative dependencies work.
+    """
+    graph = ConjunctiveGraph()
+    remote_url = "https://raw.githubusercontent.com/GSS-Cogs/csvcubed/dc1b8df2cd306346e17778cb951417935c91e78b/tests/test-cases/cli/inspect/dependencies/transitive.1.json"
+
+    parse_graph_retain_relative(
+        remote_url, format="json-ld", graph=graph.get_context(remote_url)
+    )
+
+    # Assert that the dependency is defined in a relative fashion
+    assert (
+        URIRef("data.csv#dependency/transitive.2"),
+        URIRef("http://rdfs.org/ns/void#dataDump"),
+        URIRef("transitive.2.json"),
+    ) not in graph
+
+    # Testing that we can specify a URL as what paths are relative to.
+    add_triples_for_file_dependencies(graph, paths_relative_to=remote_url)
+
+    assert (
+        URIRef("http://example.com/transitive.2"),
+        RDFS.label,
+        Literal("This is in a transitive dependency"),
+    ) in graph

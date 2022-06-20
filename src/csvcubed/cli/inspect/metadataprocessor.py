@@ -7,7 +7,7 @@ Provides functionality for validating and detecting input metadata.json file.
 import logging
 import os.path
 from pathlib import Path
-from typing import List, Set, Tuple
+from typing import List, Set, Tuple, Union
 from urllib.parse import urljoin
 from dataclasses import dataclass
 
@@ -146,7 +146,7 @@ class MetadataProcessor:
 
 def add_triples_for_file_dependencies(
     rdf_graph: rdflib.ConjunctiveGraph,
-    csvw_metadata_rdf_path: Path,
+    paths_relative_to: Union[str, Path],
     follow_relative_path_dependencies_only: bool = False,
 ) -> None:
     """
@@ -159,7 +159,11 @@ def add_triples_for_file_dependencies(
 
     dependencies_to_load = select_metadata_dependencies(rdf_graph)
 
-    csvw_metadata_rdf_path_str = path_to_file_uri_for_rdflib(csvw_metadata_rdf_path)
+    paths_relative_to_str = (
+        path_to_file_uri_for_rdflib(paths_relative_to)
+        if isinstance(paths_relative_to, Path)
+        else paths_relative_to
+    )
 
     if follow_relative_path_dependencies_only:
         dependencies_to_load = [
@@ -168,7 +172,7 @@ def add_triples_for_file_dependencies(
 
     for d in dependencies_to_load:
         if not looks_like_uri(d.data_dump):
-            d.data_dump = urljoin(csvw_metadata_rdf_path_str, d.data_dump)
+            d.data_dump = urljoin(paths_relative_to_str, d.data_dump)
 
     for dependency in dependencies_to_load:
         this_dependency_rdf = rdf_graph.get_context(dependency.data_dump)
