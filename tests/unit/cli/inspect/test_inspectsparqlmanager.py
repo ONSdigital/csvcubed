@@ -470,3 +470,37 @@ def test_rdf_load_url_dependency() -> None:
         RDFS.label,
         Literal("This is in a transitive dependency"),
     ) in graph
+
+
+@pytest.mark.vcr
+def test_rdf_load_relative_dependencies_only() -> None:
+    """
+    Test that we can successfully load a URL-based dependency and have transitive relative dependencies work.
+    """
+    graph = ConjunctiveGraph()
+    graph.get_context("Dynamic input").parse(
+        data="""
+        @prefix void: <http://rdfs.org/ns/void#>.
+
+        <http://example.com/dependency> a void:Dataset;
+             void:dataDump <https://raw.githubusercontent.com/GSS-Cogs/csvcubed/dc1b8df2cd306346e17778cb951417935c91e78b/tests/test-cases/cli/inspect/dependencies/transitive.1.json>;
+             void:uriSpace "http://example.com/some-uri-prefix".
+        """,
+        format="ttl",
+    )
+
+    add_triples_for_file_dependencies(
+        graph, Path("."), follow_relative_path_dependencies_only=True
+    )
+
+    assert (
+        URIRef("data.csv#dependency/transitive.2"),
+        RDF.type,
+        URIRef("http://rdfs.org/ns/void#Dataset"),
+    ) not in graph
+
+    assert (
+        URIRef("http://example.com/transitive.2"),
+        RDFS.label,
+        Literal("This is in a transitive dependency"),
+    ) not in graph

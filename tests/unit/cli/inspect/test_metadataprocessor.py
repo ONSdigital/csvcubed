@@ -1,4 +1,3 @@
-from csvcubed.utils.sparql import path_to_file_uri_for_rdflib
 from csvcubedmodels.rdf.namespaces import CSVW
 from rdflib import Literal, URIRef
 

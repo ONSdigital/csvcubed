@@ -160,6 +160,12 @@ def add_triples_for_file_dependencies(
     dependencies_to_load = select_metadata_dependencies(rdf_graph)
 
     csvw_metadata_rdf_path_str = path_to_file_uri_for_rdflib(csvw_metadata_rdf_path)
+
+    if follow_relative_path_dependencies_only:
+        dependencies_to_load = [
+            d for d in dependencies_to_load if not looks_like_uri(d.data_dump)
+        ]
+
     for d in dependencies_to_load:
         if not looks_like_uri(d.data_dump):
             d.data_dump = urljoin(csvw_metadata_rdf_path_str, d.data_dump)
