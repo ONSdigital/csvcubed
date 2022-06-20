@@ -171,7 +171,10 @@ def add_triples_for_file_dependencies(
             d for d in dependencies_to_load if not looks_like_uri(d.data_dump)
         ]
 
-    for d in dependencies_to_load:
+    if not any(dependencies_to_load):
+        _logger.debug("Did not find any RDF dependencies to load.")
+
+    for dependency in dependencies_to_load:
         if not looks_like_uri(d.data_dump):
             absolute_url = urljoin(paths_relative_to_str, d.data_dump)
             _logger.debug(
@@ -181,10 +184,6 @@ def add_triples_for_file_dependencies(
             )
             d.data_dump = absolute_url
 
-    if not any(dependencies_to_load):
-        _logger.debug("Did not find any RDF dependencies to load.")
-
-    for dependency in dependencies_to_load:
         this_dependency_rdf = rdf_graph.get_context(dependency.data_dump)
         if any(this_dependency_rdf):
             _logger.debug(
