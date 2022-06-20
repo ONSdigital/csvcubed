@@ -175,14 +175,14 @@ def add_triples_for_file_dependencies(
         _logger.debug("Did not find any RDF dependencies to load.")
 
     for dependency in dependencies_to_load:
-        if not looks_like_uri(d.data_dump):
-            absolute_url = urljoin(paths_relative_to_str, d.data_dump)
+        if not looks_like_uri(dependency.data_dump):
+            absolute_url = urljoin(paths_relative_to_str, dependency.data_dump)
             _logger.debug(
                 "Treating relative dependency '%s' as absolute URL '%s'.",
-                d.data_dump,
+                dependency.data_dump,
                 absolute_url,
             )
-            d.data_dump = absolute_url
+            dependency.data_dump = absolute_url
 
         this_dependency_rdf = rdf_graph.get_context(dependency.data_dump)
         if any(this_dependency_rdf):
