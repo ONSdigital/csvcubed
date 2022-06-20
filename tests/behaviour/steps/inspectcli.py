@@ -1,3 +1,4 @@
+from difflib import ndiff
 from pathlib import Path
 
 from behave import *
@@ -127,9 +128,14 @@ def step_impl(context):
 
 @Then("the Code List Printable should be")
 def step_impl(context):
-    assert _unformat_multiline_string(
-        context.codelist_info_printable
-    ) == _unformat_multiline_string(context.text.strip())
+    actual_value = _unformat_multiline_string(context.codelist_info_printable)
+    expected_value = _unformat_multiline_string(context.text.strip())
+    assert expected_value == actual_value, "\n".join(
+        ndiff(
+            expected_value.splitlines(keepends=True),
+            actual_value.splitlines(keepends=True),
+        )
+    )
 
 
 @Then("the Dataset Information Printable should be")

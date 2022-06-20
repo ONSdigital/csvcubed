@@ -170,7 +170,10 @@ class CodelistsResult:
     @property
     def output_str(self) -> str:
         formatted_codelists = get_printable_tabular_str_from_list(
-            [codelist.as_dict() for codelist in self.codelists],
+            [
+                codelist.as_dict()
+                for codelist in sorted(self.codelists, key=lambda c: c.code_list)
+            ],
             column_names=["Code List", "Code List Label", "Columns Used In"],
         )
         return f"""
