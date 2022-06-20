@@ -165,7 +165,7 @@ def add_triples_for_file_dependencies(
         else paths_relative_to
     )
 
-    if follow_relative_path_dependencies_only:
+    if follow_relative_path_dependencies_only and any(dependencies_to_load):
         _logger.debug("Dropping non-relative dependencies.")
         dependencies_to_load = [
             d for d in dependencies_to_load if not looks_like_uri(d.data_dump)
@@ -180,6 +180,9 @@ def add_triples_for_file_dependencies(
                 absolute_url,
             )
             d.data_dump = absolute_url
+
+    if not any(dependencies_to_load):
+        _logger.debug("Did not find any RDF dependencies to load.")
 
     for dependency in dependencies_to_load:
         this_dependency_rdf = rdf_graph.get_context(dependency.data_dump)
@@ -207,7 +210,7 @@ def add_triples_for_file_dependencies(
         # Process all of the dependencies which this file requires.
         new_dependencies = select_metadata_dependencies(this_dependency_rdf)
 
-        if follow_relative_path_dependencies_only:
+        if follow_relative_path_dependencies_only and any(new_dependencies):
             _logger.debug("Dropping non-relative dependencies.")
             new_dependencies = [
                 d for d in new_dependencies if not looks_like_uri(d.data_dump)
