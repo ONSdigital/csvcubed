@@ -9,9 +9,10 @@ from enum import Enum
 from pathlib import Path
 from typing import List, Optional, Tuple
 from uuid import uuid1
-import pandas as pd
 
-from rdflib import Graph
+import pandas as pd
+import rdflib
+
 
 from csvcubed.cli.inspect.inspectsparqlmanager import select_single_unit_from_dsd
 from csvcubed.models.inspectsparqlresults import QubeComponentResult
@@ -26,7 +27,7 @@ def transform_dataset_to_canonical_shape(
     dataset: pd.DataFrame,
     qube_components: List[QubeComponentResult],
     dataset_uri: str,
-    csvw_metadata_rdf_graph: Graph,
+    csvw_metadata_rdf_graph: rdflib.ConjunctiveGraph,
     csvw_metadata_json_path: Path,
 ) -> Tuple[pd.DataFrame, str, str]:
     """

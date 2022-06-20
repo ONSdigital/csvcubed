@@ -105,13 +105,15 @@ def test_load_table_schema_file_to_graph():
         csvw_utils_test_cases / "table-schema-dependencies" / "sector.table.json"
     )
 
-    load_table_schema_file_to_graph(sector_table_schema_json_path, graph)
+    load_table_schema_file_to_graph(
+        sector_table_schema_json_path, "sector.table.json", graph
+    )
 
     assert len(graph) > 0
 
     # This triple is defined within the table schema JSON file.
     assert (
-        URIRef(sector_table_schema_json_path),
+        URIRef("sector.table.json"),
         CSVW.aboutUrl,
         Literal("sector.csv#{+notation}", datatype=CSVW.uriTemplate),
     ) in graph

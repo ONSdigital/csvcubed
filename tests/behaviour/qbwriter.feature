@@ -487,3 +487,23 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     When the cube is serialised to CSV-W
     Then csvlint validation of all CSV-Ws should succeed
     And csv2rdf on all CSV-Ws should succeed
+
+  Scenario: Local Code List Metadata Dependencies are Well Defined
+    Given a single-measure QbCube named "A Qube With Dependencies"
+    When the cube is serialised to CSV-W
+    Then the file at "a-code-list.csv-metadata.json" should exist
+    And the file at "d-code-list.csv-metadata.json" should exist
+    And csvlint validation of all CSV-Ws should succeed
+    And csv2rdf on all CSV-Ws should succeed
+    And the RDF should contain
+    """
+      @prefix void: <http://rdfs.org/ns/void#>.
+
+      <file:/tmp/a-qube-with-dependencies.csv#dependency/a-code-list> a void:Dataset;
+        void:dataDump <file:/tmp/a-code-list.csv-metadata.json>;
+        void:uriSpace "a-code-list.csv#".
+
+      <file:/tmp/a-qube-with-dependencies.csv#dependency/d-code-list> a void:Dataset;
+        void:dataDump <file:/tmp/d-code-list.csv-metadata.json>;
+        void:uriSpace "d-code-list.csv#".
+    """

@@ -8,9 +8,10 @@ Provides functionality for validating and detecting input metadata.json file.
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import List, Optional, Tuple
-from pandas import DataFrame
+from urllib.parse import urljoin
 
-from rdflib import Graph
+import rdflib
+from pandas import DataFrame
 
 from csvcubed.models.inspectsparqlresults import (
     CatalogMetadataResult,
@@ -21,11 +22,12 @@ from csvcubed.models.inspectsparqlresults import (
     DSDLabelURIResult,
     QubeComponentsResult,
 )
+from csvcubed.utils.sparql import path_to_file_uri_for_rdflib
 from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
 from csvcubed.cli.inspect.inspectsparqlmanager import (
     select_codelist_cols_by_dataset_url,
     select_codelist_dataset_url,
-    select_cols_where_supress_output_is_true,
+    select_cols_where_suppress_output_is_true,
     select_csvw_catalog_metadata,
     select_csvw_dsd_dataset_label_and_dsd_def_uri,
     select_csvw_dsd_qube_components,
@@ -53,6 +55,7 @@ from csvcubed.utils.skos.codelist import (
     CodelistPropertyUrl,
     get_codelist_col_title_by_property_url,
 )
+from csvcubed.utils.uri import looks_like_uri
 
 
 @dataclass
@@ -62,7 +65,7 @@ class MetadataPrinter:
     """
 
     csvw_type: CSVWType
-    csvw_metadata_rdf_graph: Graph
+    csvw_metadata_rdf_graph: rdflib.ConjunctiveGraph
     csvw_metadata_json_path: Path
 
     csvw_type_str: str = field(init=False)
@@ -94,7 +97,7 @@ class MetadataPrinter:
 
     @staticmethod
     def get_dataset_url(
-        csvw_metadata_rdf_graph: Graph,
+        csvw_metadata_rdf_graph: rdflib.ConjunctiveGraph,
         csvw_type: CSVWType,
         dataset_uri: str,
     ) -> str:
@@ -135,7 +138,9 @@ class MetadataPrinter:
         self.dataset_url = self.get_dataset_url(
             self.csvw_metadata_rdf_graph,
             self.csvw_type,
-            self.result_catalog_metadata.dataset_uri,
+            to_absolute_rdflib_file_path(
+                self.result_catalog_metadata.dataset_uri, self.csvw_metadata_json_path
+            ),
         )
         self.dataset = load_csv_to_dataframe(
             self.csvw_metadata_json_path, Path(self.dataset_url)
@@ -159,7 +164,7 @@ class MetadataPrinter:
             self.csvw_metadata_json_path,
         )
         self.result_cols_with_suppress_output_true = (
-            select_cols_where_supress_output_is_true(self.csvw_metadata_rdf_graph)
+            select_cols_where_suppress_output_is_true(self.csvw_metadata_rdf_graph)
         )
         self.result_code_lists = select_dsd_code_list_and_cols(
             self.csvw_metadata_rdf_graph,
@@ -286,3 +291,10 @@ class MetadataPrinter:
         :return: `str` - user-friendly string which will be output to CLI.
         """
         return f"- The {self.csvw_type_str} has the following concepts information:{self.result_concepts_hierachy_info.output_str}"
+
+
+def to_absolute_rdflib_file_path(path: str, parent_document_path: Path) -> str:
+    if looks_like_uri(path):
+        return path
+    else:
+        return urljoin(path_to_file_uri_for_rdflib(parent_document_path), path)

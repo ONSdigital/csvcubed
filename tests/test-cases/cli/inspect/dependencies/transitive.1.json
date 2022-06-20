@@ -1,0 +1,22 @@
+{
+    "@id": "transitive.1",
+    "rdfs:seeAlso": [
+        {
+            "@id": "data.csv#dependency/transitive.2",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://rdfs.org/ns/void#Dataset"
+            ],
+            "http://rdfs.org/ns/void#dataDump": [
+                {
+                    "@id": "./transitive.2.json"
+                }
+            ],
+            "http://rdfs.org/ns/void#uriSpace": [
+                {
+                    "@value": "transitive.2#"
+                }
+            ]
+        }
+    ]
+}

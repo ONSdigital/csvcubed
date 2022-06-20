@@ -6,7 +6,7 @@ Inspect SPARQL query results
 import json
 from os import linesep
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 from dataclasses import dataclass
 
 from rdflib.query import ResultRow
@@ -144,9 +144,9 @@ class CodelistResult(DataClassBase):
     Model to represent a codelist.
     """
 
-    codeList: str
-    codeListLabel: str
-    colsInUsed: str
+    code_list: str
+    code_list_label: str
+    cols_used_in: str
 
 
 @dataclass
@@ -170,7 +170,10 @@ class CodelistsResult:
     @property
     def output_str(self) -> str:
         formatted_codelists = get_printable_tabular_str_from_list(
-            [codelist.as_dict() for codelist in self.codelists],
+            [
+                codelist.as_dict()
+                for codelist in sorted(self.codelists, key=lambda c: c.code_list)
+            ],
             column_names=["Code List", "Code List Label", "Columns Used In"],
         )
         return f"""
@@ -207,6 +210,7 @@ class CodelistColumnResult(DataClassBase):
     column_value_url: Optional[str]
     column_title: Optional[str]
 
+
 @dataclass
 class CodeListColsByDatasetUrlResult:
     """
@@ -214,6 +218,17 @@ class CodeListColsByDatasetUrlResult:
     """
 
     columns: List[CodelistColumnResult]
+
+
+@dataclass
+class MetadataDependenciesResult:
+    """
+    Model representing a metadata dependency which should be loaded to make sense of the current graph.
+    """
+
+    data_set: str
+    data_dump: str
+    uri_space: str
 
 
 def map_catalog_metadata_result(sparql_result: ResultRow) -> CatalogMetadataResult:
@@ -348,11 +363,11 @@ def map_codelist_sparql_result(
     result_dict = sparql_result.asdict()
 
     result = CodelistResult(
-        codeList=get_component_property_as_relative_path(
+        code_list=get_component_property_as_relative_path(
             json_path, str(result_dict["codeList"])
         ),
-        codeListLabel=none_or_map(result_dict.get("codeListLabel"), str) or "",
-        colsInUsed=get_printable_tabular_list_str(
+        code_list_label=none_or_map(result_dict.get("codeListLabel"), str) or "",
+        cols_used_in=get_printable_tabular_list_str(
             str(result_dict["csvColumnsUsedIn"]).split("|")
         ),
     )
@@ -473,3 +488,16 @@ def map_codelist_cols_by_dataset_url_result(
     )
     result = CodeListColsByDatasetUrlResult(columns=columns)
     return result
+
+
+def map_metadata_dependency_results(
+    sparql_results: List[ResultRow],
+) -> List[MetadataDependenciesResult]:
+    def map_row(row_result: Dict[str, Any]) -> MetadataDependenciesResult:
+        return MetadataDependenciesResult(
+            data_set=str(row_result["dataset"]),
+            data_dump=str(row_result["dataDump"]),
+            uri_space=str(row_result["uriSpace"]),
+        )
+
+    return [map_row(row.asdict()) for row in sparql_results]
