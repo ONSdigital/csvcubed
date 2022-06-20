@@ -166,13 +166,20 @@ def add_triples_for_file_dependencies(
     )
 
     if follow_relative_path_dependencies_only:
+        _logger.debug("Dropping non-relative dependencies.")
         dependencies_to_load = [
             d for d in dependencies_to_load if not looks_like_uri(d.data_dump)
         ]
 
     for d in dependencies_to_load:
         if not looks_like_uri(d.data_dump):
-            d.data_dump = urljoin(paths_relative_to_str, d.data_dump)
+            absolute_url = urljoin(paths_relative_to_str, d.data_dump)
+            _logger.debug(
+                "Treating relative dependency '%s' as absolute URL '%s'.",
+                d.data_dump,
+                absolute_url,
+            )
+            d.data_dump = absolute_url
 
     for dependency in dependencies_to_load:
         this_dependency_rdf = rdf_graph.get_context(dependency.data_dump)
@@ -201,6 +208,7 @@ def add_triples_for_file_dependencies(
         new_dependencies = select_metadata_dependencies(this_dependency_rdf)
 
         if follow_relative_path_dependencies_only:
+            _logger.debug("Dropping non-relative dependencies.")
             new_dependencies = [
                 d for d in new_dependencies if not looks_like_uri(d.data_dump)
             ]
@@ -208,6 +216,12 @@ def add_triples_for_file_dependencies(
         for d in new_dependencies:
             if not looks_like_uri(d.data_dump):
                 # Generates absolute path out of relative path
-                d.data_dump = urljoin(dependency.data_dump, d.data_dump)
+                absolute_url = urljoin(dependency.data_dump, d.data_dump)
+                _logger.debug(
+                    "Treating relative dependency '%s' as absolute URL '%s'.",
+                    d.data_dump,
+                    absolute_url,
+                )
+                d.data_dump = absolute_url
 
         dependencies_to_load += new_dependencies

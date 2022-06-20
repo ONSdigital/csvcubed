@@ -524,7 +524,7 @@ def test_rdf_load_url_dependency() -> None:
         URIRef("data.csv#dependency/transitive.2"),
         URIRef("http://rdfs.org/ns/void#dataDump"),
         URIRef("transitive.2.json"),
-    ) not in graph
+    ) in graph
 
     # Testing that we can specify a URL as what paths are relative to.
     add_triples_for_file_dependencies(graph, paths_relative_to=remote_url)
