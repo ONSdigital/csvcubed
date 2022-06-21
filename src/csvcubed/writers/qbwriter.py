@@ -11,6 +11,8 @@ import re
 from dataclasses import field
 from pathlib import Path
 from typing import Tuple, Dict, Any, List, Iterable, Set
+
+from csvcubedmodels.rdf.dependency import RdfGraphDependency
 from csvcubedmodels import rdf
 from csvcubedmodels.rdf import skos, rdfs
 from csvcubedmodels.rdf.resource import (
@@ -21,7 +23,6 @@ from csvcubedmodels.rdf.resource import (
 )
 
 from csvcubed.models.cube import *
-from csvcubed.models.cube.uristyle import URIStyle
 from csvcubed.utils.uri import (
     get_last_uri_part,
     csvw_column_name_safe,
@@ -74,6 +75,10 @@ class QbWriter(WriterBase):
     raise_missing_uri_safe_value_exceptions: bool = field(default=True, repr=False)
     _new_uri_helper: QbCubeNewUriHelper = field(init=False)
 
+    @property
+    def csv_metadata_file_name(self) -> str:
+        return f"{self.csv_file_name}-metadata.json"
+
     def __post_init__(self):
         self.csv_file_name = f"{self.cube.metadata.uri_safe_identifier}.csv"
         _logger.debug(
@@ -118,9 +123,7 @@ class QbWriter(WriterBase):
             "rdfs:seeAlso": self._get_additional_rdf_metadata(),
         }
 
-        metadata_json_output_path = (
-            output_folder / f"{self.csv_file_name}-metadata.json"
-        )
+        metadata_json_output_path = output_folder / self.csv_metadata_file_name
         with open(metadata_json_output_path, "w+") as f:
             _logger.debug("Writing CSV-W JSON-LD to %s", metadata_json_output_path)
             json.dump(csvw_metadata, f, indent=4)
@@ -135,6 +138,9 @@ class QbWriter(WriterBase):
         :return: the additional RDF metadata to be serialised in the CSV-W.
         """
         see_also = rdf_resource_to_json_ld(self._generate_qb_dataset_dsd_definitions())
+
+        for dependencies in self._get_rdf_file_dependencies():
+            see_also += rdf_resource_to_json_ld(dependencies)
 
         for attribute_value in self._get_new_attribute_value_resources():
             see_also += rdf_resource_to_json_ld(attribute_value)
@@ -152,9 +158,7 @@ class QbWriter(WriterBase):
                     "Writing code list %s to '%s' directory.", code_list, output_folder
                 )
 
-                code_list_writer = SkosCodeListWriter(
-                    code_list, default_uri_style=self.cube.uri_style
-                )
+                code_list_writer = self._get_writer_for_code_list(code_list)
                 code_list_writer.write(output_folder)
             elif isinstance(code_list, NewQbCodeListInCsvW):
                 # find the CSV-W codelist and all dependent relative files and copy them into the output_folder
@@ -633,6 +637,41 @@ class QbWriter(WriterBase):
         )
 
         return component
+
+    def _get_rdf_file_dependencies(self) -> List[RdfGraphDependency]:
+        """
+        Define RDF dependencies of this CSV-W file which help the end-user understand the triples expressed by this CSV-W.
+
+        :return: RDF resource models to define dependencies on other RDF files.
+        """
+        rdf_file_dependencies: List[RdfGraphDependency] = []
+
+        dimension_columns = get_columns_of_dsd_type(self.cube, NewQbDimension)
+        for column in dimension_columns:
+            dimension = column.structural_definition
+            code_list = dimension.code_list
+            if isinstance(code_list, NewQbCodeList):
+                dependency = RdfGraphDependency(
+                    self._new_uri_helper.get_void_dataset_dependency_uri(
+                        code_list.metadata.uri_safe_identifier
+                    )
+                )
+
+                code_list_writer = self._get_writer_for_code_list(code_list)
+                dependency.uri_space = (
+                    code_list_writer.uri_helper.get_uri_prefix_for_doc()
+                )
+
+                dependency.dependent_rdf_file_location = ExistingResource(
+                    f"./{code_list_writer.csv_metadata_file_name}"
+                )
+
+                rdf_file_dependencies.append(dependency)
+
+        return rdf_file_dependencies
+
+    def _get_writer_for_code_list(self, code_list) -> SkosCodeListWriter:
+        return SkosCodeListWriter(code_list, self.cube.uri_style)
 
     def _get_new_attribute_value_resources(self) -> List[NewAttributeValueResource]:
         """

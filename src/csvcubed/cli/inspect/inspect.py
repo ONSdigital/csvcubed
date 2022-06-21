@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Tuple
 from os import linesep
 
-from rdflib import Graph
+import rdflib
 
 from csvcubed.cli.inspect.metadatainputvalidator import (
     CSVWType,
@@ -39,7 +39,10 @@ def inspect(csvw_metadata_json_path: Path) -> None:
     if csvw_metadata_rdf_graph is None:
         raise FailedToLoadRDFGraphException(csvw_metadata_json_path)
 
-    csvw_metadata_rdf_validator = MetadataValidator(csvw_metadata_rdf_graph)
+    csvw_metadata_rdf_validator = MetadataValidator(
+        csvw_metadata_rdf_graph, csvw_metadata_json_path
+    )
+
     (
         valid_csvw_metadata,
         csvw_type,
@@ -76,7 +79,9 @@ def inspect(csvw_metadata_json_path: Path) -> None:
 
 
 def _generate_printables(
-    csvw_type: CSVWType, csvw_metadata_rdf_graph: Graph, csvw_metadata_json_path: Path
+    csvw_type: CSVWType,
+    csvw_metadata_rdf_graph: rdflib.ConjunctiveGraph,
+    csvw_metadata_json_path: Path,
 ) -> Tuple[str, str, str, str, str, str, str]:
     """
     Generates printables of type, metadata, dsd, code list, head/tail and value count information.

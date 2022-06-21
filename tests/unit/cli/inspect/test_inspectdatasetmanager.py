@@ -1,4 +1,5 @@
 from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
+from csvcubed.cli.inspect.metadataprinter import to_absolute_rdflib_file_path
 from csvcubed.utils.skos.codelist import (
     CodelistPropertyUrl,
     get_codelist_col_title_by_property_url,
@@ -205,7 +206,10 @@ def _get_arguments_qb_dataset(
     """
     Produces the dataset, qube components and dsd uri arguments for qb:dataset.
     """
-    dataset_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
+    dataset_uri = to_absolute_rdflib_file_path(
+        select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri,
+        csvw_metadata_json_path,
+    )
     dataset_url = select_qb_dataset_url(
         csvw_metadata_rdf_graph, dataset_uri
     ).dataset_url

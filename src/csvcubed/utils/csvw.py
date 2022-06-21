@@ -9,13 +9,13 @@ import logging
 from typing import Set, List, Optional, Union, Tuple
 from pathlib import Path
 import urllib.parse
-from csvcubed.utils.sparql import path_to_file_uri_for_rdflib
 import requests
 from rdflib import Graph
 
 from .json import load_json_document
 from .uri import looks_like_uri
-
+from csvcubed.utils.sparql import path_to_file_uri_for_rdflib
+from csvcubed.utils.rdf import parse_graph_retain_relative
 
 _logger = logging.getLogger(__name__)
 
@@ -161,7 +161,9 @@ def _get_base_path(preliminary_base_path: Path, table_group: dict) -> Union[Path
 
 
 def load_table_schema_file_to_graph(
-    table_schema_file_path: Union[str, Path], graph: Graph
+    table_schema_file_path: Union[str, Path],
+    table_schema_file_identifier: str,
+    graph: Graph,
 ) -> None:
     """
     Given a tableSchema file definition at :obj:`table_schema_file_path`,
@@ -173,7 +175,7 @@ def load_table_schema_file_to_graph(
     # > normalized schema description, and thus the value of the schema annotation on the table.
     #
     # https://www.w3.org/TR/2015/REC-tabular-metadata-20151217/#table-schema
-    table_schema_document["@id"] = str(table_schema_file_path)
+    table_schema_document["@id"] = table_schema_file_identifier
 
     # Provide the context to help generate all of the necessary RDF.
     table_schema_document["@context"] = "http://www.w3.org/ns/csvw"
@@ -185,8 +187,6 @@ def load_table_schema_file_to_graph(
     else:
         table_schema_file_uri = table_schema_file_path
 
-    graph.parse(
-        data=table_schema_document_json,
-        publicID=table_schema_file_uri,
-        format="json-ld",
+    parse_graph_retain_relative(
+        data=table_schema_document_json, format="json-ld", graph=graph
     )

@@ -32,7 +32,11 @@ class SkosCodeListWriter(WriterBase):
     new_code_list: NewQbCodeList
     default_uri_style: URIStyle = URIStyle.Standard
     csv_file_name: str = field(init=False)
-    _new_uri_helper: SkosCodeListNewUriHelper = field(init=False)
+    uri_helper: SkosCodeListNewUriHelper = field(init=False)
+
+    @property
+    def csv_metadata_file_name(self) -> str:
+        return f"{self.csv_file_name}-metadata.json"
 
     def __post_init__(self):
         self.csv_file_name = f"{self.new_code_list.metadata.uri_safe_identifier}.csv"
@@ -41,15 +45,13 @@ class SkosCodeListWriter(WriterBase):
             SkosCodeListWriter.__name__,
             self.csv_file_name,
         )
-        self._new_uri_helper = SkosCodeListNewUriHelper(
+        self.uri_helper = SkosCodeListNewUriHelper(
             self.new_code_list, default_uri_style=self.default_uri_style
         )
 
     def write(self, output_directory: Path) -> None:
         csv_file_path = (output_directory / self.csv_file_name).absolute()
-        metadata_file_path = (
-            output_directory / f"{self.csv_file_name}-metadata.json"
-        ).absolute()
+        metadata_file_path = (output_directory / self.csv_metadata_file_name).absolute()
         table_json_schema_file_path = (
             output_directory
             / f"{self.new_code_list.metadata.uri_safe_identifier}.table.json"
@@ -91,7 +93,7 @@ class SkosCodeListWriter(WriterBase):
                 "name": "parent_notation",
                 "required": False,
                 "propertyUrl": "skos:broader",
-                "valueUrl": self._new_uri_helper.get_concept_uri("{+parent_notation}"),
+                "valueUrl": self.uri_helper.get_concept_uri("{+parent_notation}"),
             },
             {
                 "titles": "Sort Priority",
@@ -127,7 +129,7 @@ class SkosCodeListWriter(WriterBase):
                 "name": "virt_inScheme",
                 "required": True,
                 "propertyUrl": "skos:inScheme",
-                "valueUrl": self._new_uri_helper.get_scheme_uri(),
+                "valueUrl": self.uri_helper.get_scheme_uri(),
             }
         )
 
@@ -142,12 +144,12 @@ class SkosCodeListWriter(WriterBase):
         )
         return {
             "columns": csvw_columns,
-            "aboutUrl": self._new_uri_helper.get_concept_uri("{+notation}"),
+            "aboutUrl": self.uri_helper.get_concept_uri("{+notation}"),
             "primaryKey": CODE_LIST_NOTATION_COLUMN_NAME,
         }
 
     def _get_csvw_metadata(self) -> dict:
-        scheme_uri = self._new_uri_helper.get_scheme_uri()
+        scheme_uri = self.uri_helper.get_scheme_uri()
         additional_metadata = self._get_catalog_metadata(scheme_uri)
         return {
             "@context": "http://www.w3.org/ns/csvw",

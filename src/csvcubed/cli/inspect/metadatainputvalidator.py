@@ -4,16 +4,18 @@ Metadata Input Handler
 
 Provides functionality for validating the input metadata.json and detecting its type (i.e. DataCube, CodeList or other) file.
 """
-
+from dataclasses import dataclass
 from enum import Enum, auto
+from pathlib import Path
 from typing import Tuple
 
-from rdflib import Graph
+import rdflib
 
 from csvcubed.cli.inspect.inspectsparqlmanager import (
     ask_is_csvw_code_list,
     ask_is_csvw_qb_dataset,
 )
+from csvcubed.utils.sparql import path_to_file_uri_for_rdflib
 
 
 class CSVWType(Enum):
@@ -31,13 +33,14 @@ class CSVWType(Enum):
     """ The metadata file is not of types data cube and code list. This type of metadata files is not supported."""
 
 
+@dataclass
 class MetadataValidator:
     """
     This class validates the input metadata files and detects the metadata type.
     """
 
-    def __init__(self, csvw_metadata_rdf_graph: Graph):
-        self.csvw_metadata_rdf_graph = csvw_metadata_rdf_graph
+    csvw_metadata_rdf_graph: rdflib.ConjunctiveGraph
+    csvw_metadata_json_path: Path
 
     def validate_and_detect_type(self) -> Tuple[bool, CSVWType]:
         """
@@ -62,9 +65,16 @@ class MetadataValidator:
         :return: `CSVWType` - The `CSVWType` provides the type of metadata file.
         """
 
-        if ask_is_csvw_code_list(self.csvw_metadata_rdf_graph):
+        primary_graph_identifier = path_to_file_uri_for_rdflib(
+            self.csvw_metadata_json_path
+        )
+        primary_graph = self.csvw_metadata_rdf_graph.get_context(
+            primary_graph_identifier
+        )
+
+        if ask_is_csvw_code_list(primary_graph):
             return CSVWType.CodeList
-        elif ask_is_csvw_qb_dataset(self.csvw_metadata_rdf_graph):
+        elif ask_is_csvw_qb_dataset(primary_graph):
             return CSVWType.QbDataSet
         else:
             return CSVWType.Other
