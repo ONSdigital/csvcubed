@@ -36,6 +36,7 @@ nav:
       - Raise an issue: guides/raise-issue.md
       - Shape your data: guides/shape-data.md
       - Working with URIs: guides/uris.md
+      - CSV-to-CSV-W GitHub Action: guides/csv-to-csvw-github-action.md
   - Glossary:
       - glossary/index.md
 theme:
