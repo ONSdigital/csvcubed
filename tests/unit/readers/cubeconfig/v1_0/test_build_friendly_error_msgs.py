@@ -22,6 +22,7 @@ from csvcubed.models.cube import (
     NoUnitsDefinedError,
     ObservationValuesMissing,
     EmptyQbMultiMeasureDimensionError,
+    UriTemplateNameError,
 )
 
 
@@ -267,6 +268,33 @@ def test_val_errors_both_unit_types():
     )
     assert _check_log(
         "csvcubed.cli.build - ERROR - More information: http://purl.org/csv-cubed/err/both-unit-typ-def"
+    )
+
+
+def test_val_errors_invalid_uri_template():
+    """
+    Test for:-
+        TBD
+    """
+    config = Path(_test_case_dir, "invalid_uri_template.json")
+    csv = Path(_test_case_dir, "invalid_uri_template.csv")
+    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
+        config, csv
+    )
+    _write_errors_to_log(json_schema_validation_errors, validation_errors)
+
+    assert isinstance(cube, Cube)
+    assert isinstance(validation_errors, list)
+    assert len(validation_errors) == 1
+
+    assert isinstance(validation_errors[0], UriTemplateNameError)
+
+    assert _check_log(
+        "csvcubed.cli.build - ERROR - Validation Error: Uri template: http://example.com/dimensions/{+not_a_column_name} is referencing a column that is not defined in the config. Currently defined columns are: dim_1, dim_2, amount, measure, units."
+    )
+
+    assert _check_log(
+        "csvcubed.cli.build - ERROR - More information: http://purl.org/csv-cubed/err/missing-uri-template-name-error"
     )
 
 

@@ -112,3 +112,19 @@ def ensure_values_in_lists_looks_like_uris(values: list[str]) -> None:
             raise ValueError(f"'{value}' does not look like a URI.")
 
     _logger.debug("Values %s all look like URIs.", values)
+
+
+def extract_uri_template_variable_name_by_index(uri: str, index: int = 0) -> str:
+    """
+    Extract variable names from a uri template by index.
+
+    Usage:
+    index 0: "http://example.com/something/{+foo}" = "foo" 
+    
+    index 0: "http://example.com/something/{bar}" = "bar"
+    
+    index 0: "http://example.com/{one}/segment/{two}#stuff = "one"
+    
+    index 1: "http://example.com/{one}/segment/{two}#stuff = "two"
+    """
+    return uri.split("{")[index].split("}")[0].lstrip("+")

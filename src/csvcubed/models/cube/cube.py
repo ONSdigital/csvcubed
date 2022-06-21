@@ -4,8 +4,7 @@ Cube
 """
 import logging
 from dataclasses import dataclass, field
-from enum import Enum
-from typing import List, Optional, Set, TypeVar, Generic
+from typing import List, Optional, Set, TypeVar, Generic, Tuple
 import pandas as pd
 
 from csvcubed.models.validationerror import (
@@ -17,12 +16,18 @@ from csvcubed.models.cube.validationerrors import (
     ColumnNotFoundInDataError,
     MissingColumnDefinitionError,
     ColumnValidationError,
+    UriTemplateNameError,
 )
 from csvcubed.models.cube.columns import CsvColumn
+
 
 from csvcubed.models.cube.catalog import CatalogMetadataBase
 from csvcubed.models.pydanticmodel import PydanticModel
 from csvcubed.utils.log import log_exception
+from csvcubed.utils.uri import (
+    csvw_column_name_safe,
+    extract_uri_template_variable_name_by_index,
+)
 from .uristyle import URIStyle
 
 _logger = logging.getLogger(__name__)
@@ -96,4 +101,39 @@ class Cube(Generic[TMetadata], PydanticModel):
                         self._get_validation_error_for_exception_in_col(column, e)
                     )
 
+        safe_column_names = [
+            csvw_column_name_safe(c.uri_safe_identifier) for c in self.columns
+        ]
+        for uri_template, name in self._csv_column_uri_templates_to_names():
+            if name not in safe_column_names:
+                errors.append(UriTemplateNameError(safe_column_names, uri_template))
+
         return errors
+
+
+    def _csv_column_uri_templates_to_names(self) -> Tuple[str, str]:
+        """
+        Generates tuples of each configured csv column uri template
+        along with the column name specified within it.
+
+        Example:
+        A cube containing just the following csv column uri templates
+
+        "http://example.com/dimensions/{+foo}"
+        "http://example.com/dimensions/{bar}#things"
+
+        yields:
+        - "http://example.com/dimensions/{+foo}": "foo",
+        then
+        - "http://example.com/dimensions/{bar}#things": "bar"
+        """
+        csv_column_uri_templates = [
+            c.csv_column_uri_template for c in self.columns if c.csv_column_uri_template
+        ]
+        template_to_name_map = {
+            c: extract_uri_template_variable_name_by_index(c)
+            for c in csv_column_uri_templates
+        }
+
+        for uri_template, name in template_to_name_map.items():
+            yield uri_template, name
