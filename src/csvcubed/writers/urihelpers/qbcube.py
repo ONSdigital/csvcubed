@@ -21,7 +21,7 @@ class QbCubeNewUriHelper:
     cube: QbCube
 
     def get_identifier_for_document(self) -> str:
-        identifier = self.cube.metadata.uri_safe_identifier;
+        identifier = self.cube.metadata.uri_safe_identifier
         if self.cube.uri_style == URIStyle.Standard:
             return identifier + ".csv"
         elif self.cube.uri_style == URIStyle.WithoutFileExtensions:
@@ -73,6 +73,9 @@ class QbCubeNewUriHelper:
 
     def get_dataset_uri(self) -> str:
         return self._uri_in_doc("dataset")
+
+    def get_void_dataset_dependency_uri(self, identifier: str) -> str:
+        return self._uri_in_doc(f"dependency/{identifier}")
 
     def get_structure_uri(self) -> str:
         return self._uri_in_doc("structure")

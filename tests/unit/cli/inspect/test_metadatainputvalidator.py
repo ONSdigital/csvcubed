@@ -1,3 +1,6 @@
+import os
+from pathlib import Path
+
 from csvcubed.cli.inspect.metadatainputvalidator import CSVWType, MetadataValidator
 from csvcubed.cli.inspect.metadataprocessor import MetadataProcessor
 from tests.unit.test_baseunit import get_test_cases_dir
@@ -12,7 +15,32 @@ def test_detect_valid_csvw_metadata_datacube_input():
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
-    csvw_metadata_rdf_validator = MetadataValidator(csvw_metadata_rdf_graph)
+    csvw_metadata_rdf_validator = MetadataValidator(
+        csvw_metadata_rdf_graph, csvw_metadata_json_path
+    )
+
+    (
+        valid_csvw_metadata_datacube,
+        _,
+    ) = csvw_metadata_rdf_validator.validate_and_detect_type()
+
+    assert valid_csvw_metadata_datacube is True
+
+
+def test_detect_valid_csvw_metadata_datacube_relative_path():
+    """
+    Test that providing relative paths to the `MetadataValidator` results in detection of the correct CSV-W type
+    """
+    csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
+    csvw_metadata_json_path = Path(os.path.relpath(csvw_metadata_json_path, Path(".")))
+
+    assert not csvw_metadata_json_path.is_absolute()
+
+    metadata_processor = MetadataProcessor(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+    csvw_metadata_rdf_validator = MetadataValidator(
+        csvw_metadata_rdf_graph, csvw_metadata_json_path
+    )
 
     (
         valid_csvw_metadata_datacube,
@@ -29,7 +57,9 @@ def test_detect_valid_csvw_metadata_codelist_input():
     csvw_metadata_json_path = _test_case_base_dir / "codelist.csv-metadata.json"
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
-    csvw_metadata_rdf_validator = MetadataValidator(csvw_metadata_rdf_graph)
+    csvw_metadata_rdf_validator = MetadataValidator(
+        csvw_metadata_rdf_graph, csvw_metadata_json_path
+    )
 
     (
         valid_csvw_metadata_codelist,
@@ -47,7 +77,9 @@ def test_detect_invalid_csvw_metadata_input():
     csvw_metadata_json_path = _test_case_base_dir / "json.table.json"
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
-    csvw_metadata_rdf_validator = MetadataValidator(csvw_metadata_rdf_graph)
+    csvw_metadata_rdf_validator = MetadataValidator(
+        csvw_metadata_rdf_graph, csvw_metadata_json_path
+    )
 
     (
         valid_csvw_metadata,
@@ -64,7 +96,9 @@ def test_detect_type_datacube():
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
-    csvw_metadata_rdf_validator = MetadataValidator(csvw_metadata_rdf_graph)
+    csvw_metadata_rdf_validator = MetadataValidator(
+        csvw_metadata_rdf_graph, csvw_metadata_json_path
+    )
 
     (
         _,
@@ -81,7 +115,9 @@ def test_detect_type_codelist():
     csvw_metadata_json_path = _test_case_base_dir / "codelist.csv-metadata.json"
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
-    csvw_metadata_rdf_validator = MetadataValidator(csvw_metadata_rdf_graph)
+    csvw_metadata_rdf_validator = MetadataValidator(
+        csvw_metadata_rdf_graph, csvw_metadata_json_path
+    )
 
     (
         _,
@@ -98,7 +134,9 @@ def test_detect_type_other():
     csvw_metadata_json_path = _test_case_base_dir / "json.table.json"
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
-    csvw_metadata_rdf_validator = MetadataValidator(csvw_metadata_rdf_graph)
+    csvw_metadata_rdf_validator = MetadataValidator(
+        csvw_metadata_rdf_graph, csvw_metadata_json_path
+    )
 
     (
         _,

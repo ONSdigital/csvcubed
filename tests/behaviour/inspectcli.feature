@@ -95,8 +95,8 @@ Feature: Behaviour testing of csvcubed inspect.
         - Number of Code Lists: 3
         - Code Lists:
                                                 Code List   Code List Label   Columns Used In
-             alcohol-sub-type.csv#scheme/alcohol-sub-type                    Alcohol Sub Type
                alcohol-content.csv#scheme/alcohol-content                     Alcohol Content
+             alcohol-sub-type.csv#scheme/alcohol-sub-type                    Alcohol Sub Type
              clearance-origin.csv#scheme/clearance-origin                    Clearance Origin
         """
         And the Dataset Information Printable should be
@@ -275,17 +275,17 @@ Feature: Behaviour testing of csvcubed inspect.
                 - Number of Code Lists: 11
                 - Code Lists:
                                                  Code List Code List Label                   Columns Used In
-           national-communication-sub-sector.csv#code-list                 National Communication Sub-sector
                                activity-name.csv#code-list                                     Activity Name
-             national-communication-category.csv#code-list                   National Communication Category
                                  ghg-grouped.csv#code-list                                       GHG Grouped
-                                      source.csv#code-list                                            Source
-                                   ipcc-code.csv#code-list                                         IPCC Code
-           national-communication-fuel-group.csv#code-list                 National Communication Fuel Group
-                                        year.csv#code-list                                              Year
                                          ghg.csv#code-list                                               GHG
+                                   ipcc-code.csv#code-list                                         IPCC Code
+             national-communication-category.csv#code-list                   National Communication Category
+           national-communication-fuel-group.csv#code-list                 National Communication Fuel Group
+                 national-communication-fuel.csv#code-list                       National Communication Fuel
                national-communication-sector.csv#code-list                     National Communication Sector
-                 national-communication-fuel.csv#code-list                       National Communication Fuel        
+           national-communication-sub-sector.csv#code-list                 National Communication Sub-sector
+                                      source.csv#code-list                                            Source
+                                        year.csv#code-list                                              Year
         """
         And the Dataset Information Printable should be
         """
@@ -443,17 +443,17 @@ Feature: Behaviour testing of csvcubed inspect.
                 - Number of Code Lists: 11
                 - Code Lists:
                                              Code List Code List Label                    Columns Used In
-                                     year.csv#code-list                                              Year
-                                      ghg.csv#code-list                                               GHG
-        national-communication-fuel-group.csv#code-list                 National Communication Fuel Group
-            national-communication-sector.csv#code-list                     National Communication Sector
-              national-communication-fuel.csv#code-list                       National Communication Fuel
-        national-communication-sub-sector.csv#code-list                 National Communication Sub-sector
                             activity-name.csv#code-list                                     Activity Name
-          national-communication-category.csv#code-list                   National Communication Category
-                                ipcc-code.csv#code-list                                         IPCC Code
                               ghg-grouped.csv#code-list                                       GHG Grouped
-                                   source.csv#code-list                                            Source   
+                                      ghg.csv#code-list                                               GHG
+                                ipcc-code.csv#code-list                                         IPCC Code
+          national-communication-category.csv#code-list                   National Communication Category
+        national-communication-fuel-group.csv#code-list                 National Communication Fuel Group
+              national-communication-fuel.csv#code-list                       National Communication Fuel
+            national-communication-sector.csv#code-list                     National Communication Sector
+        national-communication-sub-sector.csv#code-list                 National Communication Sub-sector
+                                   source.csv#code-list                                            Source
+                                     year.csv#code-list                                              Year
         """
         And the Dataset Information Printable should be
         """

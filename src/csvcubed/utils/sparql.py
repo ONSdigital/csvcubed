@@ -6,6 +6,7 @@ Utilities to help when running SPARQL queries.
 """
 from pathlib import Path
 from typing import List, Optional, Any, Callable
+import os.path
 
 from rdflib import Graph, Literal
 from rdflib.query import ResultRow
@@ -75,4 +76,5 @@ def path_to_file_uri_for_rdflib(file: Path) -> str:
 
     This is necessary due to windows paths being altered by rdflib when they're loaded.
     """
-    return "file://" + str(file).replace("\\", "/")
+
+    return "file://" + os.path.normpath(str(file.absolute())).replace("\\", "/")
