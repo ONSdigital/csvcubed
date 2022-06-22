@@ -4,7 +4,7 @@ Cube
 """
 import logging
 from dataclasses import dataclass, field
-from typing import List, Optional, Set, TypeVar, Generic, Tuple
+from typing import List, Optional, Set, TypeVar, Generic, Iterable, Tuple
 import pandas as pd
 
 from csvcubed.models.validationerror import (
@@ -42,6 +42,7 @@ class Cube(Generic[TMetadata], PydanticModel):
     data: Optional[pd.DataFrame] = field(default=None, repr=False)
     columns: List[CsvColumn] = field(default_factory=lambda: [], repr=False)
     uri_style: URIStyle = URIStyle.Standard
+    
 
     def validate(self) -> List[ValidationError]:
         errors: List[ValidationError] = []
@@ -114,7 +115,7 @@ class Cube(Generic[TMetadata], PydanticModel):
         return errors
 
 
-    def _csv_column_uri_templates_to_names(self) -> Tuple[str, str]:
+    def _csv_column_uri_templates_to_names(self) -> Iterable[Tuple[str, str]]:
         """
         Generates tuples of any configured and not None csv column
         uri templates within the cube, along with the column name
@@ -132,7 +133,7 @@ class Cube(Generic[TMetadata], PydanticModel):
         - "http://example.com/dimensions/{bar}#things": "bar"
         """
         csv_column_uri_templates = [
-            c.csv_column_uri_template for c in self.columns if hasattr(c, "csv_column_uri_template")
+            c.csv_column_uri_template for c in self.columns if hasattr(c, "csv_column_uri_template") # pyright: ignore
         ]
         template_to_name_map = {
             c: extract_uri_template_variable_name_by_index(c)

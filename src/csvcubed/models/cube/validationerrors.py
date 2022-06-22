@@ -104,7 +104,7 @@ class UriTemplateNameError(SpecificValidationError):
 
     column_names: List[str]
     csv_column_uri_template: str
-    column_names_concatenated: Optional[str] = str
+    column_names_concatenated: Optional[str] = None
 
     @classmethod
     def get_error_url(cls) -> str:
