@@ -4,13 +4,13 @@ CSV-to-CSV-W GitHub builds CSV-Ws for users from [CSVs in standard form](../quic
 
 ## Key Steps Performed by the Action
 
-The GitHub action is available at [CSV-to-CSV-W GitHub Action](https://github.com/GDonRanasinghe/CSV-to-csvw). In this section, an introduction to the key steps performed by this action is provided.
+The GitHub action is available at [CSV-to-CSV-W GitHub Action](https://github.com/GSS-Cogs/csv-to-csvw/CSV-to-csvw). In this section, an introduction to the key steps performed by this action is provided.
 
 ![Repository Overview](../images/guides/csv-to-csvw-github-action/repo_overview.png)
 
 #### Listen to CSV and configuration JSON files commits
 
-The action is triggered when the user commits a CSV, and optionally a configuration file, to the `csv/` folder at the root of the repository. The user can commit these files in any preferred folder structure. An example set of files committed to the repository with various folder structures is available [here](https://github.com/GDonRanasinghe/CSV-to-csvw/tree/main/csv).
+The action is triggered when the user commits a CSV, and optionally a configuration file, to the `csv/` folder at the root of the repository. The user can commit these files in any preferred folder structure. An example set of files committed to the repository with various folder structures is available [here](https://github.com/GSS-Cogs/csv-to-csvw/CSV-to-csvw/tree/main/csv).
 
 Commiting a file to any other location within the repository will NOT trigger the action.
 
@@ -46,7 +46,7 @@ CSV-to-CSV-W GitHub action can be used through the GitHub web console. Users who
 
 To use the CSV-to-CSV-W GitHub action,
 
-1. First fork our example [GitHub repository](https://github.com/GDonRanasinghe/csv-to-csvw). Select your GitHub username as the `Owner` and leave the `Repository name` as it is.
+1. First fork our example [GitHub repository](https://github.com/GSS-Cogs/csv-to-csvw/csv-to-csvw). Select your GitHub username as the `Owner` and leave the `Repository name` as it is.
 ![Fork Repository](../images/guides/csv-to-csvw-github-action/fork_repository.png)
 
 2. Then go to the repository settings and set the branch for GitHub pages - under the `Source` section, set the `Branch` to `gh-pages` and set the folder location to `/(root)`. Also, keep a note of the URL at which your GitHub Pages site is published at.
