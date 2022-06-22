@@ -2,7 +2,7 @@
 
 ## When it occurs
 
-You are referencing a column name in the uri template but that column does not exist.
+You are referencing a column name in a uri template but that column does not exist.
 
 ## How to fix
 
@@ -19,7 +19,7 @@ For example, this:
       },
 ```
 
-is **valid** because `dim_1` is just a correctly formatted variable expressing the column `Dim-1`, i.e it exists.
+is **valid** because `dim_1` is just a correctly formatted variable expressing a column name (i.e `Dim-1` is a column that exists).
 
 Whereas this:
 
@@ -28,33 +28,12 @@ Whereas this:
       "Dim-1": {
         "type": "dimension",
         "code_list": true,
-        "cell_uri_template": "http://example.com/dimensions/{+i-dont-exist}"
+        "cell_uri_template": "http://example.com/dimensions/{+i_dont_exist}"
       },
 ```
 
 is **not** valid, as we're referencing a non existent column.
 
-
------
-
-Please note, it is valid to reuse a defined column name variable between columns, so:
-
-```json
-"columns": {
-      "Dim-1": {
-        "type": "dimension",
-        "code_list": true,
-      },
-      "Dim-2": {
-        "type": "dimension",
-        "code_list": true,
-        "cell_uri_template": "http://example.com/dimensions/{+dim_1}"
-      },
-```
-
-Is a valid configuration.
-
-Upon encountering this error, the message itself will tell you what currently defined column variable names you have in your configuration.
-
+Alternatively, you can also include [built-in supported special csvw variables](https://www.w3.org/TR/2015/REC-tabular-metadata-20151217/#h-uri-template-properties) in place of a column name variable.
 
 <!-- TODO: Link to somewhere which helps the user define multi-measure dimensions. -->

@@ -20,6 +20,7 @@ from csvcubed.models.cube.validationerrors import (
 )
 from csvcubed.models.cube.columns import CsvColumn
 
+from csvcubed.definitions import URI_TEMPLATE_SPECIAL_PROPERTIES
 
 from csvcubed.models.cube.catalog import CatalogMetadataBase
 from csvcubed.models.pydanticmodel import PydanticModel
@@ -106,7 +107,7 @@ class Cube(Generic[TMetadata], PydanticModel):
             csvw_column_name_safe(c.uri_safe_identifier) for c in self.columns
         ]
         for uri_template, name in self._csv_column_uri_templates_to_names():
-            if name not in safe_column_names:
+            if name not in (safe_column_names + URI_TEMPLATE_SPECIAL_PROPERTIES):
                 _logger.debug('Unable to find name %s in %s', name, safe_column_names)
                 errors.append(UriTemplateNameError(safe_column_names, uri_template))
 

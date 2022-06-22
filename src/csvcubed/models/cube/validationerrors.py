@@ -112,4 +112,6 @@ class UriTemplateNameError(SpecificValidationError):
 
     def __post_init__(self):
         self.column_names_concatenated = ", ".join(self.column_names)
-        self.message = f'Uri template: {self.csv_column_uri_template} is referencing a non existent column name. Currently defined choices are: {self.column_names_concatenated}'
+        self.message = (f'Uri template: {self.csv_column_uri_template} is referencing an unknown variable. '
+        'Known variables are: {self.column_names_concatenated}'
+        )
