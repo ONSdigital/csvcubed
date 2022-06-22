@@ -116,7 +116,7 @@ def ensure_values_in_lists_looks_like_uris(values: list[str]) -> None:
 
 def extract_uri_template_variable_name_by_index(uri_template: str, index: int = 0) -> str:
     """
-    Extract variable names from a uri template by index.
+    Extract variable name from a uri template by index.
 
     Usage:
     
@@ -128,7 +128,5 @@ def extract_uri_template_variable_name_by_index(uri_template: str, index: int = 
     
     index 1: "http://example.com/{one}/segment/{two}#stuff = "two"
     """
-
-    var = uri_template.split("}")[index].split("{")[1].lstrip("+")
-    _logger.debug('Got %s as indexed variable %s from %s', var, 1, uri_template)
-    return var
+    vars = [x.split("{")[1] for x in uri_template.split("}")[:-1]]
+    return vars[index].lstrip("+")
