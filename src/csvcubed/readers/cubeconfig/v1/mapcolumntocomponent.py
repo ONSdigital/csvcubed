@@ -119,7 +119,6 @@ def map_column_to_qb_component(
     else:
         raise ValueError(f"Unmatched column type {type(schema_mapping)}")
 
-_logger = logging.getLogger(__name__)
 
 def _from_column_dict_to_schema_model(
     column_title: str,
