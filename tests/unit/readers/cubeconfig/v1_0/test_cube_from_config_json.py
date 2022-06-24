@@ -237,10 +237,10 @@ def test_dimension_new_no_type():
 
 
 @pytest.mark.vcr
-def test_dimension_new_ok():
+def test_dimension_new_config_common():
     """
-    Populates all options and confirms the New Dimension & CodeList classes are created
-    and all properties are mapped through correctly
+    Using a common/typical config, populates all options and confirms the New Dimension & 
+    CodeList classes are created and all properties are mapped through correctly
     """
     column_data = ["a", "b", "c", "a"]
     dimension_config = {
@@ -260,7 +260,7 @@ def test_dimension_new_ok():
 
 
 @pytest.mark.vcr
-def test_dimension_new_ok():
+def test_dimension_new_config_omissions():
     """
     Check New dimension when omitting description, from_existing, definition_url and
     cell_uri_template
@@ -279,10 +279,10 @@ def test_dimension_new_ok():
 
 
 @pytest.mark.vcr
-def test_dimension_existing_ok():
+def test_dimension_existing_config_common():
     """
-    Populates options for an Existing Dimension & New CodeList classes are created
-    and all properties are mapped through correctly
+    Using a common/typical config, populates options for an Existing Dimension & New
+    CodeList classes are created and all properties are mapped through correctly
     """
     column_data = ["a", "b", "c", "a"]
     dimension_config = {
@@ -312,10 +312,10 @@ def test_dimension_existing_ok():
 
 
 @pytest.mark.vcr
-def test_attribute_new_ok():
+def test_attribute_new_config_common():
     """
-    Populates all options and confirms the New Attribute and checks all properties are mapped
-    through correctly
+    Using a common/typical config, populates all options and confirms the New Attribute
+    and checks all properties are mapped through correctly
     """
     column_data = ["a", "b", "c", "a"]
     column_config = {
@@ -336,7 +336,26 @@ def test_attribute_new_ok():
 
 
 @pytest.mark.vcr
-def test_attribute_new_ok():
+def test_attribute_new_config_literal():
+    """
+    Using the configuration for a literal attribute, populates all options and confirms
+    the New Attribute and checks all properties are mapped through correctly
+    """
+    column_data = ["1", "2", "3", "4"]
+    column_config = {
+        "type": "attribute",
+        "data_type": "int"
+    }
+    data = pd.Series(column_data, name="Attribute Heading")
+
+    (column, _) = map_column_to_qb_component(
+        "New Attribute", column_config, data, cube_config_minor_version=0
+    )
+    _check_new_attribute_column(column, column_config, column_data, "New Attribute")
+
+
+@pytest.mark.vcr
+def test_attribute_new_config_omissions_false_values():
     """
     Checks New attribute when description, values, from_existing and definition_uri options
     are omitted
@@ -358,7 +377,7 @@ def test_attribute_new_ok():
 
 
 @pytest.mark.vcr
-def test_attribute_new_ok():
+def test_attribute_new_config_has_values():
     """
     Checks New attribute when description, values, from_existing and definition_uri options
     are omitted
@@ -392,7 +411,7 @@ def test_attribute_new_ok():
 
 
 @pytest.mark.vcr
-def test_attribute_existing_ok():
+def test_attribute_existing_config_common():
     """
     Populates options for an Existing Attribute checks all properties are mapped through correctly
     """

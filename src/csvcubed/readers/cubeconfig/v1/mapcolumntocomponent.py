@@ -14,6 +14,9 @@ from csvcubed.models.cube.qb.columns import QbColumn
 from csvcubed.inputs import PandasDataTypes
 import csvcubed.readers.cubeconfig.v1.columnschema as schema
 
+import logging
+_logger = logging.getLogger(__name__)
+
 
 def map_column_to_qb_component(
     column_title: str,
@@ -119,6 +122,7 @@ def map_column_to_qb_component(
     else:
         raise ValueError(f"Unmatched column type {type(schema_mapping)}")
 
+_logger = logging.getLogger(__name__)
 
 def _from_column_dict_to_schema_model(
     column_title: str,
@@ -158,6 +162,11 @@ def _from_column_dict_to_schema_model(
             if schema.ExistingAttribute.dict_fields_match_class(column_without_type):
                 return schema.ExistingAttribute.from_dict(column_without_type)
             else:
+                # Override values to False for attribute literals
+                # newattr = schema.NewAttribute.from_dict(column_without_type)
+                # if "values" not in column_without_type:
+                #     newattr.values = False
+                # return newattr
                 return schema.NewAttribute.from_dict(column_without_type)
         elif schema.ExistingAttribute.dict_fields_match_class(column_without_type):
             return schema.ExistingAttribute.from_dict(column_without_type)

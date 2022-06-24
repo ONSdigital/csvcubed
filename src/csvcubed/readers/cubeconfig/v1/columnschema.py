@@ -296,7 +296,7 @@ class NewAttribute(SchemaBaseClass):
                 is_required=self.required,
             )
         else:
-            if isinstance(self.values, list) or self.values:
+            if isinstance(self.values, list) and self.data_type:
                 raise Exception(
                     "Attributes cannot represent both literal values and attribute (resource) values"
                 )
