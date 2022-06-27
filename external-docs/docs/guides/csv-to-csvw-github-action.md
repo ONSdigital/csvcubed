@@ -53,7 +53,7 @@ To use the CSV-to-CSV-W GitHub action,
 
 1. Ensure that you [created](https://github.com/signup) and/or [logged into](https://github.com/login) your GitHub user account.
 
-2. Create a fork the [CSV-to-CSVw](https://github.com/GSS-Cogs/csv-to-csvw). Select your GitHub username as the `Owner` and leave the `Repository name` as it is.
+2. Create a fork of the [CSV-to-CSVw](https://github.com/GSS-Cogs/csv-to-csvw) repository. Select your GitHub username as the `Owner` and leave the `Repository name` as it is.
 ![Fork Repository](../images/guides/csv-to-csvw-github-action/fork_repository.png)
 
 3. Then go to the newly forked repository's settings and set the branch for GitHub pages - under the `Source` section, set the `Branch` to `gh-pages` and set the folder location to `/(root)`. Also, keep a note of the URL at which your GitHub Pages site is published at.
@@ -75,6 +75,6 @@ A more detailed view of the progress of the action can be seen by clicking on th
 8. Now we are ready to explore the outputs produced by the action. First look at the `out/` folder within the repository. If you are using the GitHub Desktop Client or the Github Command Line Interface, make sure to run `git pull` beforehand. The `out/` folder now consists of the CSV-Ws and inspect command logs generated for inputs committed to the repository.
 ![Out Folder](../images/guides/csv-to-csvw-github-action/out_folder.png)
 Then download the artifacts produced by the GitHub action. The downloaded folder consists of the CSV-Ws and inspect command logs.
-![Artifact Folder](../images/guides/csv-to-csvw-github-action/Artifact_folder.png)
+![Artifact Folder](../images/guides/csv-to-csvw-github-action/artifact_folder.png)
 Finally, open the GitHub pages URL noted in Step 2 in the preferred web browser. A web page with all the outputs listed with downloadable links will appear in the browser.
 ![GitHub Pages Web Page](../images/guides/csv-to-csvw-github-action/github_pages_web_page.png).
