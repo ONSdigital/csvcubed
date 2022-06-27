@@ -137,6 +137,7 @@ def test_val_errors_col_not_in_data():
 
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, list)
+
     assert len(validation_errors) == 1
     err_msgs = ["Column 'Dim-1' not found in data provided."]
     for err in validation_errors:

@@ -57,7 +57,16 @@ def map_column_to_qb_component(
             [],
         )
 
-    elif isinstance(schema_mapping, schema.NewAttribute):
+    elif isinstance(schema_mapping, schema.NewAttributeLiteral):
+        return (
+            QbColumn(
+                column_title,
+                schema_mapping.map_to_new_qb_attribute(column_title),
+            ),
+            [],
+        )
+
+    elif isinstance(schema_mapping, schema.NewAttributeResource):
         return (
             QbColumn(
                 column_title,
@@ -67,7 +76,16 @@ def map_column_to_qb_component(
             [],
         )
 
-    elif isinstance(schema_mapping, schema.ExistingAttribute):
+    elif isinstance(schema_mapping, schema.ExistingAttributeLiteral):
+        return (
+            QbColumn(
+                column_title,
+                schema_mapping.map_to_existing_qb_attribute()
+            ),
+            [],
+        )
+
+    elif isinstance(schema_mapping, schema.ExistingAttributeResource):
         return (
             QbColumn(
                 column_title,
@@ -126,8 +144,10 @@ def _from_column_dict_to_schema_model(
 ) -> Union[
     schema.NewDimension,
     schema.ExistingDimension,
-    schema.NewAttribute,
-    schema.ExistingAttribute,
+    schema.NewAttributeLiteral,
+    schema.NewAttributeResource,
+    schema.ExistingAttributeLiteral,
+    schema.ExistingAttributeResource,
     schema.NewUnits,
     schema.ExistingUnits,
     schema.NewMeasures,
@@ -154,17 +174,18 @@ def _from_column_dict_to_schema_model(
                 f"either New or Existing Dimension using schema"
             )
     elif column_type == "attribute":
-        if schema.NewAttribute.dict_fields_match_class(column_without_type):
-            if schema.ExistingAttribute.dict_fields_match_class(column_without_type):
-                return schema.ExistingAttribute.from_dict(column_without_type)
-            else:
-                return schema.NewAttribute.from_dict(column_without_type)
-        elif schema.ExistingAttribute.dict_fields_match_class(column_without_type):
-            return schema.ExistingAttribute.from_dict(column_without_type)
+        if schema.NewAttributeResource.dict_fields_match_class(column_without_type):
+            return schema.NewAttributeResource.from_dict(column_without_type)
+        elif schema.ExistingAttributeResource.dict_fields_match_class(column_without_type):
+            return schema.ExistingAttributeResource.from_dict(column_without_type)
+        elif schema.NewAttributeLiteral.dict_fields_match_class(column_without_type):
+            return schema.NewAttributeLiteral.from_dict(column_without_type)
+        elif schema.ExistingAttributeLiteral.dict_fields_match_class(column_without_type):
+            return schema.ExistingAttributeLiteral.from_dict(column_without_type)
         else:
             raise Exception(
                 f"Column with config '{column}' did not match either New or "
-                f"Existing Attribute schema"
+                f"Existing schema as either a Literal or Resource attribute"
             )
     elif column_type == "units":
         if schema.ExistingUnits.dict_fields_match_class(column_without_type):
