@@ -1,6 +1,6 @@
 # Build with GitHub actions
 
-The csvcubed [GitHub Actions script](https://github.com/GSS-Cogs/csv-to-csvw/blob/main/.github/workflows/csv-to-csvw.yml) enables you to build CSV-Ws by pushing CSV and qube-config.json files to a Git repository configured with [Github Actions](https://docs.github.com/en/actions). It is designed to bring csvcubed to users who have difficulty installing software in corporate environments, or for those who want to keep a versioned history of their publications.
+The csvcubed [GitHub Actions script](https://github.com/GSS-Cogs/csv-to-csvw/blob/main/.github/workflows/csv-to-csvw.yml) enables you to build CSV-Ws by pushing CSV and [qube-config.json](configuration/qube-config.md) files to a Git repository configured with [Github Actions](https://docs.github.com/en/actions). It is designed to bring csvcubed to users who have difficulty installing software in corporate environments, or for those who want to keep a versioned history of their publications.
 
 For information on how to install csvcubed locally, take a look at the [installation quick start](../quick-start/installation.md).
 
