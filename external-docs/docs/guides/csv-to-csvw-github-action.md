@@ -1,10 +1,14 @@
-# CSV-to-CSV-W GitHub Action
+# Build with GitHub actions
 
-CSV-to-CSV-W GitHub builds CSV-Ws for users from [CSVs in standard form](../quick-start/designing-csv.md) or CSVs plus their [configuration JSON counterpart](configuration/qube-config.md) from a GitHub repository. This tool uses csvcubed to build CSV-Ws in the cloud, and it automatically selects the appropriate command line options.
+The csvcubed [GitHub Actions script](https://github.com/GSS-Cogs/csv-to-csvw/blob/main/.github/workflows/csv-to-csvw.yml) enables you to build CSV-Ws by pushing CSV and qube-config.json files to a Git repository configured with [Github Actions](https://docs.github.com/en/actions). It is designed to bring csvcubed to users who have difficulty installing software in corporate environments, or for those who want to keep a versioned of their publications.
+
+For information on how to install csvcubed locally, take a look at the [installation quick start](../quick-start/installation.md).
+
+The remainder of this guide walks you through the process of creating your own GitHub repository which converts your CSV inputs into CSV-Ws.
 
 ## Key Steps Performed by the Action
 
-The GitHub action is available at [CSV-to-CSV-W GitHub Action](https://github.com/GSS-Cogs/csv-to-csvw/CSV-to-csvw). In this section, an introduction to the key steps performed by this action is provided.
+The GitHub action is available in the [CSV-to-CSV-W repository](https://github.com/GSS-Cogs/csv-to-csvw). In this section, an introduction to the key steps performed by this action is provided.
 
 ![Repository Overview](../images/guides/csv-to-csvw-github-action/repo_overview.png)
 
