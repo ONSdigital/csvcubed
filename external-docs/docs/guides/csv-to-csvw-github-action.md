@@ -1,77 +1,80 @@
 # Build with GitHub actions
 
-The csvcubed [GitHub Actions script](https://github.com/GSS-Cogs/csv-to-csvw/blob/main/.github/workflows/csv-to-csvw.yml) enables you to build CSV-Ws by pushing CSV and qube-config.json files to a Git repository configured with [Github Actions](https://docs.github.com/en/actions). It is designed to bring csvcubed to users who have difficulty installing software in corporate environments, or for those who want to keep a versioned of their publications.
+The csvcubed [GitHub Actions script](https://github.com/GSS-Cogs/csv-to-csvw/blob/main/.github/workflows/csv-to-csvw.yml) enables you to build CSV-Ws by pushing CSV and qube-config.json files to a Git repository configured with [Github Actions](https://docs.github.com/en/actions). It is designed to bring csvcubed to users who have difficulty installing software in corporate environments, or for those who want to keep a versioned history of their publications.
 
 For information on how to install csvcubed locally, take a look at the [installation quick start](../quick-start/installation.md).
 
-The remainder of this guide walks you through the process of creating your own GitHub repository which converts your CSV inputs into CSV-Ws.
+The remainder of this guide walks you through the process of creating your own GitHub repository which converts CSV inputs into CSV-Ws.
+
+## Inputs 
+
+The CSV-to-CSV-W GitHub action expects the user to organise the inputs as follows:
+
+* The CSV files and their configuration JSONs need to be inside the `csv/` folder.
+* If a CSV file has a configuration JSON, the filename of the configuration JSON needs to match the filename of the CSV file. For example, `my_data.csv` and `my_data.csv-metadata.json`.
 
 ## Key Steps Performed by the Action
 
-The GitHub action is available in the [CSV-to-CSV-W repository](https://github.com/GSS-Cogs/csv-to-csvw). In this section, an introduction to the key steps performed by this action is provided.
+In this section, an introduction to the key steps performed by this action is provided.
+
+The GitHub action script can be observed in the [CSV-to-CSVw repository](https://github.com/GSS-Cogs/csv-to-csvw).
 
 ![Repository Overview](../images/guides/csv-to-csvw-github-action/repo_overview.png)
 
-#### Listen to CSV and configuration JSON files commits
+### 1. Triggering the job
 
-The action is triggered when the user commits a CSV, and optionally a configuration file, to the `csv/` folder at the root of the repository. The user can commit these files in any preferred folder structure. An example set of files committed to the repository with various folder structures is available [here](https://github.com/GSS-Cogs/csv-to-csvw/CSV-to-csvw/tree/main/csv).
+The action is triggered when the user commits a CSV, and optionally a configuration file, to the `csv/` folder at the root of the repository. The user can commit these files in any preferred folder structure. An example set of files committed to the repository with various folder structures is available [here](https://github.com/GSS-Cogs/csv-to-csvw/tree/main/csv).
 
-Commiting a file to any other location within the repository will NOT trigger the action.
+Commiting a file to any other location within the repository will NOT trigger a CSV-W build.
 
-#### Process committed files
+### 2. Building and inspecting CSV-Ws
 
-Once the files are committed, the action runs the [`csvcubed build`](command-line/build-command.md) and [`csvcubed inspect`](command-line/inspect-command.md) commands. The outputs produced by the build command are saved at the `out/` folder at the root of the repository. The action replicates the `csv/` structure in the `out/` folder. For example, for the `my_data.csv` file at `csv/my_folder/my_data.csv`, the action stores the CSV-Ws at `out/my_folder/my_data/`. 
+On a new commit, the action runs the [`csvcubed build`](command-line/build-command.md) on any CSV or JSON files which have been changed. The outputs produced by the build command are saved using the same folder structure inside the `out/` folder at the root of the repository. For example, given a CSV file located at `my_folder/my_data.csv`, outputs will be written to the `out/my_folder/my_data/` folder.
 
-After running the build command, the action runs the `csvcubed inspect` command on the metadata JSON file within the CSV-W outputs. The inspect command output will also be saved at the `out/` folder similar to the build command output above. For example, for the metadata JSON file at `out/my_folder/my_data/my_data.csv-metadata.json`, a log file called `inspect_output.txt` will be produced and stored at `out/my_folder/my_data/`. This file consists of the inspect command output.
+The [`csvcubed inspect` command] is then run on all new or updated CSV-Ws; the output is then saved in an `inspect.txt` file next to each CSV-W output. For example, for the metadata JSON file at `out/my_folder/my_data/my_data.csv-metadata.json` a file, containing the [`csvcubed inspect` command](command-line/inspect-command.md) output, named `out/my_folder/my_data/inspect_output.txt` is also created. 
 
-#### Commit generated CSV-Ws and logs to repository
+### 3. Outputs
 
-The action commits the `out/` folder to the repository after running the build and inspect commands, which maintains the history of the outputs produced.
+#### Direct to git 
 
-#### Publish generated CSV-Ws and logs to GitHub artefacts
+The action creates an `out/` folder in the root of the repository upon completition, this helps to maintains a history of the outputs produced.
 
-The action then publishes the CSV-Ws and logs to GitHub artefacts. The user can download a zip file consisting of the CSV-Ws and inspect command output from the artefacts section within the GitHub action run. More information on how to download the artefacts is available in [Download GitHub Action Artefacts](https://docs.github.com/en/actions/managing-workflow-runs/downloading-workflow-artefacts).
+#### GitHub artifacts
 
-#### Publish generated CSV-Ws and logs to GitHub Pages
+The action publishes CSV-Ws and inspect command outputs to GitHub artifacts. The user can download a zip file consisting of the CSV-Ws and inspect command output from the artifacts section within the GitHub action run. More information on how to download the artifacts is available in the GitHub guide on how to [Download GitHub Action artifacts](https://docs.github.com/en/actions/managing-workflow-runs/downloading-workflow-artifacts).
 
-The action also presents the user with the generated CSV-Ws and logs in a user-friendly GitHub page. In this page, the files in the `out/` folder are listed as downloadable links. The URL to access the GitHub page is provided in GitHub pages setting which is discussed in the [User Manual](#user-manual) section below.
+### GitHub Pages
 
-## Required naming convention
+The action also publishes the CSV-Ws and inspect command outputs to [GitHub Pages](https://pages.github.com/)' static file hosting. The script generates an `index.html` page listing the CSV-W outputs. The URL to access the GitHub page is provided in GitHub pages setting which is discussed in the [Setup](#setup) section below.
 
-The CSV-to-CSV-W GitHub action expects the user to organise the inputs as per the below criteria.
-
-* The CSV files and their configuration JSONs need to be inside the `csv/` folder.
-  
-* If a CSV file has a configuration JSON, the filename of the configuration JSON needs to match the filename of the CSV file. For example, `my_data.CSV` and `my_data.csv.json`.
-
-## User Manual
-
-CSV-to-CSV-W GitHub action can be used through the GitHub web console. Users who are experienced with GitHub can also clone the repository to the local machine and then commit files using the [GitHub Desktop Client](https://desktop.github.com/) or the [GitHub Command Line Interface](https://cli.github.com/).
+## Setup
 
 To use the CSV-to-CSV-W GitHub action,
 
-1. First fork our example [GitHub repository](https://github.com/GSS-Cogs/csv-to-csvw/csv-to-csvw). Select your GitHub username as the `Owner` and leave the `Repository name` as it is.
+1. Ensure that you [created](https://github.com/signup) and/or [logged into](https://github.com/login) your GitHub user account.
+
+2. Create a fork the [CSV-to-CSVw](https://github.com/GSS-Cogs/csv-to-csvw). Select your GitHub username as the `Owner` and leave the `Repository name` as it is.
 ![Fork Repository](../images/guides/csv-to-csvw-github-action/fork_repository.png)
 
-2. Then go to the repository settings and set the branch for GitHub pages - under the `Source` section, set the `Branch` to `gh-pages` and set the folder location to `/(root)`. Also, keep a note of the URL at which your GitHub Pages site is published at.
+3. Then go to the newly forked repository's settings and set the branch for GitHub pages - under the `Source` section, set the `Branch` to `gh-pages` and set the folder location to `/(root)`. Also, keep a note of the URL at which your GitHub Pages site is published at.
 ![GitHub Pages Setting](../images/guides/csv-to-csvw-github-action/github_pages_setting.png)
 
-3. The repository already consists of example inputs (see the `csv/` folder) and the generated outputs (see the `out/` folder). The users can use these input examples to familiarise themselves with the criteria discussed in [Organising Inputs](#organising-inputs).
+4. The repository already consists of example inputs (see the `csv/` folder) and the generated outputs (see the `out/` folder). The users can use these input examples to familiarise themselves with the criteria discussed in [Organising Inputs](#organising-inputs).
 
-4. Now that the repository is forked and the GitHub pages settings are configured, the inputs can be committed using the GitHub web console.
+5. Now that the repository has been forked and the GitHub pages settings are configured, you can commit & push your inputs using the GitHub web console.
 ![Commit Inputs](../images/guides/csv-to-csvw-github-action/commit_files.png)
 
-5. Once the inputs are committed, the action will run and will perform the steps discussed in [Key Steps Performed by the Action](#key-steps-performed-by-the-action). To see the progress of the action, go to the `Actions` section in the GitHub web console.
+6. Once the inputs have been committed, the action will automatically [run](#key-steps-performed-by-the-action). To see the progress of the action, go to the `Actions` section in the GitHub web console.
 ![GitHub Action Running](../images/guides/csv-to-csvw-github-action/action_running.png)
 A more detailed view of the progress of the action can be seen by clicking on the action.
 ![GitHub Action Running Detailed](../images/guides/csv-to-csvw-github-action/action_running_detailed.png)
 
-6. Once the CSV-to-CSV-W action is completed, another action called `pages build and deployment` will run. This action is responsible for deploying the outputs to the GitHub pages.
+7. Once the CSV-to-CSVw action has finished, another action called `pages build and deployment` will run. This action is responsible for deploying the outputs to the GitHub pages.
 ![Pages Build and Deployment Action](../images/guides/csv-to-csvw-github-action/pages_build_action.png)
 
-7. Now we are ready to explore the outputs produced by the action. First look at the `out/` folder within the repository. If you are using the GitHub Desktop Client or the Github Command Line Interface, make sure to run `git pull` beforehand. The `out/` folder now consists of the CSV-Ws and inspect command logs generated for inputs committed to the repository.
+8. Now we are ready to explore the outputs produced by the action. First look at the `out/` folder within the repository. If you are using the GitHub Desktop Client or the Github Command Line Interface, make sure to run `git pull` beforehand. The `out/` folder now consists of the CSV-Ws and inspect command logs generated for inputs committed to the repository.
 ![Out Folder](../images/guides/csv-to-csvw-github-action/out_folder.png)
-Then download the artefacts produced by the GitHub action. The downloaded folder consists of the CSV-Ws and inspect command logs.
-![Artefact Folder](../images/guides/csv-to-csvw-github-action/artefact_folder.png)
+Then download the artifacts produced by the GitHub action. The downloaded folder consists of the CSV-Ws and inspect command logs.
+![Artifact Folder](../images/guides/csv-to-csvw-github-action/Artifact_folder.png)
 Finally, open the GitHub pages URL noted in Step 2 in the preferred web browser. A web page with all the outputs listed with downloadable links will appear in the browser.
 ![GitHub Pages Web Page](../images/guides/csv-to-csvw-github-action/github_pages_web_page.png).
