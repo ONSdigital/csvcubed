@@ -4,7 +4,7 @@ The csvcubed [GitHub Actions script](https://github.com/GSS-Cogs/csv-to-csvw/blo
 
 For information on how to install csvcubed locally, take a look at the [installation quick start](../quick-start/installation.md).
 
-The remainder of this guide walks you through the process of creating your own GitHub repository which converts CSV inputs into CSV-Ws.
+The remainder of this guide walks you through how the script works, and then guides you through the process of [setting up](#setup) your own GitHub repository which converts CSV inputs into CSV-Ws.
 
 ## Inputs 
 
@@ -13,7 +13,7 @@ The CSV-to-CSV-W GitHub action expects the user to organise the inputs as follow
 * The CSV files and their configuration JSONs need to be inside the `csv/` folder.
 * If a CSV file has a configuration JSON, the filename of the configuration JSON needs to match the filename of the CSV file. For example, `my_data.csv` and `my_data.csv-metadata.json`.
 
-## Key Steps Performed by the Action
+## Build process
 
 In this section, an introduction to the key steps performed by this action is provided.
 
@@ -35,7 +35,7 @@ The [`csvcubed inspect` command] is then run on all new or updated CSV-Ws; the o
 
 ### 3. Outputs
 
-#### Direct to git 
+#### `out` folder
 
 The action creates an `out/` folder in the root of the repository upon completition, this helps to maintains a history of the outputs produced.
 
