@@ -11,6 +11,7 @@ import uritemplate
 
 from csvcubed.definitions import URI_TEMPLATE_SPECIAL_PROPERTIES
 from csvcubed.models.cube.columns import CsvColumn
+from csvcubed.models.cube.qb.columns import QbColumn
 from csvcubed.models.cube.catalog import CatalogMetadataBase
 from csvcubed.models.cube.validationerrors import (
     DuplicateColumnTitleError,
@@ -134,7 +135,7 @@ class Cube(Generic[TMetadata], PydanticModel):
         """
 
         csv_column_uri_templates = [
-            c.csv_column_uri_template for c in self.columns if hasattr(c, "csv_column_uri_template") # pyright: ignore
+            c.csv_column_uri_template for c in self.columns if isinstance(c, QbColumn)
         ]
 
         template_to_name_map = {
