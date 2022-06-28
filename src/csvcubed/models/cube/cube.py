@@ -115,7 +115,7 @@ class Cube(Generic[TMetadata], PydanticModel):
         return errors
 
 
-    def _csv_column_uri_templates_to_names(self) -> Iterable[Tuple[str]]:
+    def _csv_column_uri_templates_to_names(self) -> Iterable[Tuple]:
         """
         Generates tuples of any configured and not None csv column
         uri templates within the cube, along with the column name
