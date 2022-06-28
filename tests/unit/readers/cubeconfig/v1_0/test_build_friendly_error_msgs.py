@@ -35,7 +35,7 @@ from csvcubed.models.cube.qb.components.validationerrors import (
     EmptyQbMultiUnitsError,
 )
 
-from tests.unit.test_baseunit import get_test_cases_dir
+from tests.unit.test_baseunit import assert_num_validation_errors, get_test_cases_dir
 
 _test_case_dir = Path(
     get_test_cases_dir().absolute(), "readers", "cube-config", "v1.0", "error_mappings"
@@ -98,7 +98,7 @@ def test_val_errors_no_measure():
     _write_errors_to_log(json_schema_validation_errors, validation_errors)
 
     assert isinstance(validation_errors, list)
-    assert len(validation_errors) == 2
+    assert_num_validation_errors(validation_errors, 2)
     err_msgs = [
         "Found neither QbObservationValue.measure nor QbMultiMeasureDimension defined. One of these must be defined.",
         "Found neither QbObservationValue.unit nor QbMultiUnits defined. One of these must be defined.",
@@ -138,7 +138,7 @@ def test_val_errors_col_not_in_data():
 
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, list)
-    assert len(validation_errors) == 1
+    assert_num_validation_errors(validation_errors, 1)
     err_msgs = ["Column 'Dim-1' not found in data provided."]
     for err in validation_errors:
         assert err.message in err_msgs
@@ -167,7 +167,7 @@ def test_val_errors_duplicate_col():
 
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, list)
-    assert len(validation_errors) == 1
+    assert_num_validation_errors(validation_errors, 1)
     assert validation_errors[0].message == "Duplicate column title 'Dim-2'"
 
     assert isinstance(validation_errors[0], DuplicateColumnTitleError)
@@ -194,7 +194,7 @@ def test_val_errors_missing_obs_vals():
 
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, list)
-    assert len(validation_errors) == 1
+    assert_num_validation_errors(validation_errors, 1)
     assert (
         validation_errors[0].message
         == "Missing value(s) found for 'Amount' in row(s) 2, 3."
@@ -225,7 +225,7 @@ def test_val_errors_both_measure_types():
 
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, list)
-    assert len(validation_errors) == 1
+    assert_num_validation_errors(validation_errors, 1)
 
     assert isinstance(validation_errors[0], BothMeasureTypesDefinedError)
     assert _check_log(
@@ -254,7 +254,7 @@ def test_val_errors_both_unit_types():
 
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, list)
-    assert len(validation_errors) == 1
+    assert_num_validation_errors(validation_errors, 1)
 
     assert isinstance(validation_errors[0], BothUnitTypesDefinedError)
     assert (
@@ -274,7 +274,7 @@ def test_val_errors_both_unit_types():
 def test_val_errors_invalid_uri_template():
     """
     Test for:-
-        TBD
+        UriTemplateNameError
     """
     config = Path(_test_case_dir, "invalid_uri_template.json")
     csv = Path(_test_case_dir, "invalid_uri_template.csv")
@@ -285,7 +285,7 @@ def test_val_errors_invalid_uri_template():
 
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, list)
-    assert len(validation_errors) == 1
+    assert_num_validation_errors(validation_errors, 1)
 
     assert isinstance(validation_errors[0], UriTemplateNameError)
 
@@ -312,7 +312,7 @@ def test_val_errors_more_than_one_observation():
 
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, list)
-    assert len(validation_errors) == 1
+    assert_num_validation_errors(validation_errors, 1)
     assert isinstance(validation_errors[0], MoreThanOneObservationsColumnError)
     assert (
         validation_errors[0].message
@@ -341,7 +341,7 @@ def test_val_errors_more_than_one_measure():
 
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, list)
-    assert len(validation_errors) == 1
+    assert_num_validation_errors(validation_errors, 1)
     assert isinstance(validation_errors[0], MoreThanOneMeasureColumnError)
     assert (
         validation_errors[0].message
@@ -369,7 +369,7 @@ def test_val_errors_undefined_attr_uri():
 
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, list)
-    assert len(validation_errors) == 1
+    assert_num_validation_errors(validation_errors, 1)
     assert isinstance(validation_errors[0], UndefinedAttributeValueUrisError)
 
     assert _check_log(
@@ -399,7 +399,7 @@ def test_val_errors_empty_multi_units():
 
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, list)
-    assert len(validation_errors) == 1
+    assert_num_validation_errors(validation_errors, 1)
     assert isinstance(validation_errors[0], EmptyQbMultiUnitsError)
 
     assert _check_log(
@@ -428,7 +428,7 @@ def test_val_errors_empty_multi_measure_dimension():
 
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, list)
-    assert len(validation_errors) == 1
+    assert_num_validation_errors(validation_errors, 1)
     assert isinstance(validation_errors[0], EmptyQbMultiMeasureDimensionError)
 
     assert _check_log(
@@ -456,7 +456,7 @@ def test_val_errors_undefined_measure_uri():
 
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, list)
-    assert len(validation_errors) == 1
+    assert_num_validation_errors(validation_errors, 1)
     assert isinstance(validation_errors[0], UndefinedMeasureUrisError)
 
     assert _check_log(
@@ -484,7 +484,7 @@ def test_val_errors_undefined_unit_uri():
 
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, list)
-    assert len(validation_errors) == 1
+    assert_num_validation_errors(validation_errors, 1)
     assert isinstance(validation_errors[0], UndefinedUnitUrisError)
 
     assert _check_log(
@@ -510,7 +510,7 @@ def test_val_errors_uri_conflict():
 
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, list)
-    assert len(validation_errors) == 1
+    assert_num_validation_errors(validation_errors, 1)
     assert isinstance(validation_errors[0], ConflictingUriSafeValuesError)
     assert _check_log(
         "csvcubed.cli.build - ERROR - Validation Error: A URI collision has been detected in an attribute column."
@@ -539,7 +539,7 @@ def test_val_errors_reserved_uri():
 
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, list)
-    assert len(validation_errors) == 1
+    assert_num_validation_errors(validation_errors, 1)
     assert isinstance(validation_errors[0], ReservedUriValueError)
 
     assert (
@@ -572,7 +572,7 @@ def test_val_errors_no_dimensions():
 
     assert isinstance(cube, Cube)
     assert isinstance(validation_errors, list)
-    assert len(validation_errors) == 1
+    assert_num_validation_errors(validation_errors, 1)
     assert isinstance(validation_errors[0], NoDimensionsDefinedError)
 
     assert (

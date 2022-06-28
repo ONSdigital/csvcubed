@@ -6,8 +6,7 @@ from csvcubed.utils.uri import (
     csvw_column_name_safe,
     looks_like_uri,
     ensure_looks_like_uri,
-    ensure_values_in_lists_looks_like_uris,
-    extract_uri_template_variable_name_by_index
+    ensure_values_in_lists_looks_like_uris
 )
 
 
@@ -53,26 +52,6 @@ def test_ensure_all_look_like_uri():
     ensure_values_in_lists_looks_like_uris(
         ["http://some-domain.org/", "http://some-other-domain.org/"]
     )
-
-def test_extract_uri_template_variable_name_by_index():
-
-    @dataclass
-    class Case:
-        uri: str
-        expected: str
-        index: int = 0
-
-    for case in [
-        Case("http://example.com/something/{+foo}", "foo"),
-        Case("http://example.com/something/{foo}", "foo"),
-        Case("http://example.com/something/{+foo}/thing/{+bar}", "bar", 1),
-        Case("something/{i}{+am}{lots}{+of}{tokens}/something#else{ontheend}", "lots", 2),
-        Case("something/{i}{+am}{lots}{+of}{tokens}/something#else{ontheend}", "of", 3),
-        Case("something/{i}{+am}{lots}{+of}{tokens}/something#else{ontheend}", "ontheend", 5)
-    ]:
-
-        var_got = extract_uri_template_variable_name_by_index(case.uri, case.index)
-        assert var_got == case.expected, f'Expected var {case.expected} from {case.uri}, got {var_got}'
 
 if __name__ == "__main__":
     pytest.main()

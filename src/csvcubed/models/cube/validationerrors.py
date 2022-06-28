@@ -3,8 +3,8 @@ Cube Validation Errors
 ----------------------
 """
 from collections.abc import Set
-from dataclasses import dataclass
-from typing import List, Optional
+from dataclasses import dataclass, field
+from typing import List
 
 from csvcubed.models.validationerror import SpecificValidationError
 
@@ -104,7 +104,7 @@ class UriTemplateNameError(SpecificValidationError):
 
     column_names: List[str]
     csv_column_uri_template: str
-    column_names_concatenated: Optional[str] = None
+    column_names_concatenated: str = field(init=False)
 
     @classmethod
     def get_error_url(cls) -> str:
