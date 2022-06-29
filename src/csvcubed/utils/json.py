@@ -5,6 +5,7 @@ JSON Utilities
 Utilities for working with JSON
 """
 import json
+import os.path
 from typing import Dict, Any, Union
 from pathlib import Path
 import logging
@@ -30,7 +31,7 @@ def load_json_document(file_uri_or_path: Union[str, Path]) -> Dict[str, Any]:
     else:
         url = urlparse(file_uri_or_path)
         if url.scheme == "file":
-            file_path = Path(file_uri_or_path.removeprefix("file://"))
+            file_path = Path(str(os.path.normpath(file_uri_or_path)).removeprefix("file:\\").removeprefix("file://"))
             return _load_json_from_path(file_path)
         else:
             # Treat it as a URL
