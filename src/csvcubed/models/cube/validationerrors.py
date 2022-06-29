@@ -3,7 +3,8 @@ Cube Validation Errors
 ----------------------
 """
 from collections.abc import Set
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from typing import List
 
 from csvcubed.models.validationerror import SpecificValidationError
 
@@ -92,3 +93,25 @@ class ObservationValuesMissing(SpecificValidationError):
     def __post_init__(self):
         row_nums_str = ", ".join([str(i) for i in sorted(self.row_numbers)])
         self.message = f"Missing value(s) found for '{self.csv_column_title}' in row(s) {row_nums_str}."
+
+
+@dataclass
+class UriTemplateNameError(SpecificValidationError):
+    """
+    An error to inform the user that they the column name they are referring to in a csv uri template
+    does not exist.
+    """
+
+    column_names: List[str]
+    csv_column_uri_template: str
+    column_names_concatenated: str = field(init=False)
+
+    @classmethod
+    def get_error_url(cls) -> str:
+        return "http://purl.org/csv-cubed/err/missing-uri-template-name-error"
+
+    def __post_init__(self):
+        self.column_names_concatenated = ", ".join(self.column_names)
+        self.message = (f'Uri template: {self.csv_column_uri_template} is referencing an unknown variable. '
+        'Known variables are: {self.column_names_concatenated}'
+        )

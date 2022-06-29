@@ -4,25 +4,30 @@ Cube
 """
 import logging
 from dataclasses import dataclass, field
-from enum import Enum
-from typing import List, Optional, Set, TypeVar, Generic
+from typing import List, Optional, Set, TypeVar, Generic, Iterable, Tuple
+
 import pandas as pd
+import uritemplate
 
-from csvcubed.models.validationerror import (
-    ValidationError,
-)
-
+from csvcubed.definitions import URI_TEMPLATE_SPECIAL_PROPERTIES
+from csvcubed.models.cube.columns import CsvColumn
+from csvcubed.models.cube.qb.columns import QbColumn
+from csvcubed.models.cube.catalog import CatalogMetadataBase
 from csvcubed.models.cube.validationerrors import (
     DuplicateColumnTitleError,
     ColumnNotFoundInDataError,
     MissingColumnDefinitionError,
     ColumnValidationError,
+    UriTemplateNameError,
 )
-from csvcubed.models.cube.columns import CsvColumn
-
-from csvcubed.models.cube.catalog import CatalogMetadataBase
 from csvcubed.models.pydanticmodel import PydanticModel
+from csvcubed.models.validationerror import (
+    ValidationError,
+)
 from csvcubed.utils.log import log_exception
+from csvcubed.utils.uri import (
+    csvw_column_name_safe,
+)
 from .uristyle import URIStyle
 
 _logger = logging.getLogger(__name__)
@@ -36,6 +41,7 @@ class Cube(Generic[TMetadata], PydanticModel):
     data: Optional[pd.DataFrame] = field(default=None, repr=False)
     columns: List[CsvColumn] = field(default_factory=lambda: [], repr=False)
     uri_style: URIStyle = URIStyle.Standard
+    
 
     def validate(self) -> List[ValidationError]:
         errors: List[ValidationError] = []
@@ -96,4 +102,45 @@ class Cube(Generic[TMetadata], PydanticModel):
                         self._get_validation_error_for_exception_in_col(column, e)
                     )
 
+        # Check for uri template naming errors
+        safe_column_names = [
+            csvw_column_name_safe(c.uri_safe_identifier) for c in self.columns
+        ]
+        for uri_template, names in self._csv_column_uri_templates_to_names():
+            defined_names = safe_column_names + URI_TEMPLATE_SPECIAL_PROPERTIES
+            for name in names:
+                if name not in defined_names:
+                    _logger.debug('Unable to find name %s in %s', name, safe_column_names)
+                    errors.append(UriTemplateNameError(safe_column_names, uri_template))
+
         return errors
+
+
+    def _csv_column_uri_templates_to_names(self) -> Iterable[Tuple]:
+        """
+        Generates tuples of any configured and not None csv column
+        uri templates within the cube, along with the column name
+        specified within it.
+
+        Example:
+        A cube containing just the following csv column uri templates
+
+        "http://example.com/dimensions/{+foo}"
+        "http://example.com/dimensions/{bar}#things"
+
+        yields:
+        - "http://example.com/dimensions/{+foo}": "foo",
+        then
+        - "http://example.com/dimensions/{bar}#things": "bar"
+        """
+
+        csv_column_uri_templates = [
+            c.csv_column_uri_template for c in self.columns if isinstance(c, QbColumn)
+        ]
+
+        template_to_name_map = {
+            c: uritemplate.variables(c)
+            for c in csv_column_uri_templates if c
+        }
+
+        return template_to_name_map.items()
