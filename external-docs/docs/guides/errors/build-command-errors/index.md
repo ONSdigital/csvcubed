@@ -25,3 +25,4 @@
 * [Column Validation Error](./column-validation.md) 
 * [Label Uri Collision Error](./label-uri-collision.md)
 * [Unknown Pydantic Validation Error](./unknown-pydantic-error.md)
+* [Missing Uri Template Name Error](/.missing-uri-template-name-error.md)
