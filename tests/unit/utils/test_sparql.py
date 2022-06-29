@@ -11,7 +11,7 @@ def test_path_to_file_uri_for_rdflib():
         windows_path_uri = path_to_file_uri_for_rdflib(
             WindowsPath("C:\\Users\\someone\\Code\\something")
         )
-        assert windows_path_uri == "file://C:/Users/someone/Code/something"
+        assert windows_path_uri == "file:///C:/Users/someone/Code/something"
     elif os.name == "posix":
         unix_path_uri = path_to_file_uri_for_rdflib(
             PosixPath("/home/someone/Code/something")
