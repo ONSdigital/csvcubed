@@ -3,7 +3,6 @@ from pathlib import Path
 import pytest
 from csvcubed.utils.iterables import first
 
-from csvcubed.utils.sparql import path_to_file_uri_for_rdflib
 import dateutil.parser
 from rdflib import Graph, RDF, DCAT, URIRef, RDFS, Literal, ConjunctiveGraph
 

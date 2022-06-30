@@ -1,6 +1,5 @@
 import pytest
 import rdflib
-from csvcubed.utils.sparql import path_to_file_uri_for_rdflib
 from rdflib import URIRef, RDFS, Literal
 
 from csvcubed.utils.rdf import parse_graph_retain_relative
