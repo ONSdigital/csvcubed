@@ -14,17 +14,16 @@ def test_loading_graph_relative_paths():
     """Ensure we can load rdflib graphs whilst retaining relative paths."""
     ttl_path = _test_cases_base_dir / "relative_path.ttl"
     graph_without_relative_paths = rdflib.Graph().parse(ttl_path)
+    some_file_path = ttl_path.parent / "some-file.json"
     assert (
         URIRef(
-            f"{path_to_file_uri_for_rdflib(ttl_path.parent)}/some-file.json#some-identifier"
+            f"{some_file_path.as_uri()}#some-identifier"
         ),
         RDFS.label,
         Literal("Hello, World", lang="en"),
     ) in graph_without_relative_paths
 
-    graph_with_relative_paths = parse_graph_retain_relative(
-        _test_cases_base_dir / "relative_path.ttl"
-    )
+    graph_with_relative_paths = parse_graph_retain_relative(ttl_path)
     assert (
         URIRef("some-file.json#some-identifier"),
         RDFS.label,

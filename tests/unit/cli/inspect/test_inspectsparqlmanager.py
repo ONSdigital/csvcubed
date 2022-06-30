@@ -371,8 +371,8 @@ def test_select_metadata_dependencies() -> None:
     dependency = dependencies[0]
 
     assert dependency == MetadataDependenciesResult(
-        data_set=f"{path_to_file_uri_for_rdflib(data_file)}#dependency/dimension",
-        data_dump=path_to_file_uri_for_rdflib(expected_dependency_file.absolute()),
+        data_set=f"{data_file.as_uri()}#dependency/dimension",
+        data_dump=expected_dependency_file.absolute().as_uri(),
         uri_space="dimension.csv#",
     )
 
