@@ -258,3 +258,35 @@ Feature: Cube!
           {'csv_column_title': 'Unit', 'structural_definition': {'units': [{'label': 'cm', 'description': None, 'source_uri': None, 'uri_safe_identifier_override': None, 'arbitrary_rdf': [], 'base_unit': None, 'base_unit_scaling_factor': None, 'qudt_quantity_kind_uri': None, 'si_base_unit_conversion_multiplier': None}]}, 'csv_column_uri_template': None, 'uri_safe_identifier_override': None}
       ]
     """
+
+    Scenario: Output a cube when the code list is defined using code list config schema v1.0 and when there are references to concepts defined elsewhere.
+    Given The config json file "v1.1/cube_config_with_concepts_defined_elsewhere.json" and the existing tidy data csv file "v1.1/data.csv"
+    When The cube is created
+    Then The cube Metadata should match
+      """
+      {
+        "title": "Test cube config",
+        "identifier": None,
+        "summary": "Test cube config summary",
+        "description": "Test cube config description",
+        "creator_uri": "http://statistics.data.gov.uk",
+        "publisher_uri": "http://statistics.data.gov.uk",
+        "landing_page_uris": [],
+        "theme_uris": [],
+        "keywords": ["Test cube"],
+        "dataset_issued": "2022-04-08",
+        "dataset_modified": None,
+        "license_uri": "https://creativecommons.org/licenses/by/4.0/",
+        "public_contact_point_uri": None,
+        "uri_safe_identifier_override": None
+      }
+      """
+    Then The cube Columns should match
+    """
+      [
+          {'csv_column_title': 'Dimension', 'structural_definition': {'label': 'Dimension', 'description': None, 'code_list': {'metadata': {'title': 'Title of the code list', 'identifier': None, 'summary': 'Summary of the code list', 'description': 'Description of the code list', 'creator_uri': 'http://purl.org/dc/aboutdcmi#DCMI', 'publisher_uri': 'http://purl.org/dc/aboutdcmi#DCMI', 'landing_page_uris': [], 'theme_uris': ['http://example.com/themes/theme'], 'keywords': ['keyword1'], 'dataset_issued': '2022-03-31T12:54:30+00:00', 'dataset_modified': '2022-04-01T12:54:30+00:00', 'license_uri': 'https://creativecommons.org/licenses/by/4.0/', 'public_contact_point_uri': None, 'uri_safe_identifier_override': None}, 'concepts': [{'label': 'B', 'code': 'b', 'parent_code': None, 'sort_order': 0, 'description': 'B data record', 'uri_safe_identifier_override': None}, {'existing_concept_uri': 'http://example.com/concepts/some-existing-concept', 'label': 'A', 'code': 'a', 'parent_code': None, 'sort_order': 1, 'description': 'A data record', 'uri_safe_identifier_override': None}, {'label': 'C', 'code': 'c', 'parent_code': None, 'sort_order': 2, 'description': 'C data record', 'uri_safe_identifier_override': None}, {'label': 'D', 'code': 'd', 'parent_code': 'b', 'sort_order': 0, 'description': 'D data record', 'uri_safe_identifier_override': None},  {'existing_concept_uri': 'http://example.com/concepts/some-existing-concept', 'label': 'E', 'code': 'e', 'parent_code': 'd', 'sort_order': 0, 'description': 'E data record', 'uri_safe_identifier_override': None}], 'arbitrary_rdf': [], 'uri_style': None}, 'parent_dimension_uri': None, 'source_uri': None, 'range_uri': None, 'uri_safe_identifier_override': None, 'arbitrary_rdf': []}, 'csv_column_uri_template': None, 'uri_safe_identifier_override': None}, 
+          {'csv_column_title': 'Value', 'structural_definition': {'data_type': 'decimal', 'unit': None}, 'csv_column_uri_template': None, 'uri_safe_identifier_override': None}, 
+          {'csv_column_title': 'Measure', 'structural_definition': {'measures': [{'label': 'Length', 'description': None, 'parent_measure_uri': None, 'source_uri': None, 'uri_safe_identifier_override': None, 'arbitrary_rdf': []}]}, 'csv_column_uri_template': None, 'uri_safe_identifier_override': None}, 
+          {'csv_column_title': 'Unit', 'structural_definition': {'units': [{'label': 'cm', 'description': None, 'source_uri': None, 'uri_safe_identifier_override': None, 'arbitrary_rdf': [], 'base_unit': None, 'base_unit_scaling_factor': None, 'qudt_quantity_kind_uri': None, 'si_base_unit_conversion_multiplier': None}]}, 'csv_column_uri_template': None, 'uri_safe_identifier_override': None}
+      ]
+    """
