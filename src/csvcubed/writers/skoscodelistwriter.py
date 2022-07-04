@@ -15,6 +15,7 @@ from csvcubed.models.cube.qb.components import (
     RdfSerialisationHint,
     NewQbCodeList,
     CompositeQbCodeList,
+    DuplicatedQbConcept,
 )
 from csvcubed.models.cube.uristyle import URIStyle
 from csvcubed.utils.dict import rdf_resource_to_json_ld
@@ -37,6 +38,15 @@ class SkosCodeListWriter(WriterBase):
     @property
     def csv_metadata_file_name(self) -> str:
         return f"{self.csv_file_name}-metadata.json"
+
+    @staticmethod
+    def has_duplicated_qb_concepts(code_list: NewQbCodeList) -> bool:
+        duplicated_qb_concepts: list[DuplicatedQbConcept] = [
+            concept
+            for concept in code_list.concepts
+            if isinstance(concept, DuplicatedQbConcept)
+        ]
+        return len(duplicated_qb_concepts) > 0
 
     def __post_init__(self):
         self.csv_file_name = f"{self.new_code_list.metadata.uri_safe_identifier}.csv"
@@ -110,8 +120,12 @@ class SkosCodeListWriter(WriterBase):
             },
         ]
 
-        if isinstance(self.new_code_list, CompositeQbCodeList):
-            _logger.debug("Code list is composite. Linking to original concept URIs.")
+        if isinstance(
+            self.new_code_list, CompositeQbCodeList
+        ) or self.has_duplicated_qb_concepts(self.new_code_list):
+            _logger.debug(
+                "Code list is composite has a duplicated concept. Linking to original concept URIs."
+            )
 
             csvw_columns.append(
                 {
@@ -187,9 +201,12 @@ class SkosCodeListWriter(WriterBase):
             }
         )
 
-        if isinstance(self.new_code_list, CompositeQbCodeList):
+        if isinstance(
+            self.new_code_list, CompositeQbCodeList
+        ) or self.has_duplicated_qb_concepts(self.new_code_list):
             data_frame["Original Concept URI"] = [
-                c.existing_concept_uri for c in self.new_code_list.concepts
+                c.existing_concept_uri if isinstance(c, DuplicatedQbConcept) else None
+                for c in self.new_code_list.concepts
             ]
 
         return data_frame
