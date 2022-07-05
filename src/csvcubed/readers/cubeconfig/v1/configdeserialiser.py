@@ -14,9 +14,9 @@ from jsonschema.exceptions import ValidationError as JsonSchemaValidationError
 
 from csvcubed.models.cube.qb.columns import QbColumn
 
+from csvcubed.models.cube import QbCube
 from csvcubed.models.cube.columns import CsvColumn
 from csvcubed.models.cube.cube import Cube
-from csvcubed.models.cube.qb import QbCube
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.validationerror import ValidationError
 from csvcubed.utils.iterables import first

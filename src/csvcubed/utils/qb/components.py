@@ -94,6 +94,9 @@ def get_component_property_as_relative_path(
     if not component_property.startswith("file://"):
         return component_property
 
+    if not input_file_path.is_absolute():
+        input_file_path = input_file_path.absolute()
+
     try:
         return _relative_path(component_property, input_file_path.parent)
     except Exception:
@@ -111,7 +114,7 @@ def _relative_path(path_uri: str, relative_to: Path) -> str:
 
     if len(url.fragment) > 0:
         fragment_part = "#" + url.fragment
-        file_path = Path(path_uri.removesuffix(fragment_part).removeprefix("file://"))
+        file_path = Path(os.path.normpath(path_uri.removesuffix(fragment_part)).removeprefix("file:\\").removeprefix("file:"))
         relative_file_path: str = os.path.relpath(file_path, relative_to)
         return relative_file_path + fragment_part
 

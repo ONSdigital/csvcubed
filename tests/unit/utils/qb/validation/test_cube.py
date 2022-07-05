@@ -30,7 +30,7 @@ def test_new_qb_attribute_literal_string_with_template():
             QbColumn(
                 "Some Attribute",
                 NewQbAttributeLiteral(data_type="date", label="Some Attribute"),
-                csv_column_uri_template="https://example.org/some_attribute/{+Some_attribute}",
+                csv_column_uri_template="https://example.org/some_attribute/{+some_attribute}",
             ),
         ],
     )

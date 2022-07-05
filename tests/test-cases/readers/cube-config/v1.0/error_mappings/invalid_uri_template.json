@@ -1,0 +1,30 @@
+{
+  "$schema": "https://purl.org/csv-cubed/qube-config/v1.0",
+  "id": "schema-id",
+  "title": "Tests/test-cases/config/schema-cube-data-config-ok",
+  "description": "Schema for testing",
+    "columns": {
+      "Dim-1": {
+        "label": "Column label 1 that exists",
+        "type": "dimension",
+        "code_list": true,
+        "cell_uri_template": "http://example.com/dimensions/{+not_a_column_name}"
+      },
+      "Dim-2": {
+        "label": "Column label 2 that exists",
+        "type": "dimension",
+        "code_list": true
+      },
+      "Amount": {
+        "type": "observations"
+      },
+      "Measure": {
+        "type": "measures",
+        "values": true
+      },
+      "Units": {
+        "type": "units",
+        "values": true
+      }
+    }
+}

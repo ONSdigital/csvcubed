@@ -12,6 +12,7 @@ from typing import Union, Optional, Tuple
 from jsonschema.exceptions import ValidationError
 
 from csvcubed.models.cube.qb.columns import QbColumn
+from csvcubed.models.cube.qb.components.codelist import CompositeQbCodeList
 from csvcubed.inputs import PandasDataTypes
 import csvcubed.readers.cubeconfig.v1.columnschema as schema
 
@@ -39,11 +40,20 @@ def map_column_to_qb_component(
             cube_config_minor_version,
             config_path=config_path,
         )
+
+        # If the code list is a CompositeQbCodeList, the uri template needs to be reset to point at the newly
+        # created composite code list
+        cell_uri_template = (
+            None
+            if isinstance(structural_definition.code_list, CompositeQbCodeList)
+            else schema_mapping.cell_uri_template
+        )
+
         return (
             QbColumn(
                 column_title,
                 structural_definition,
-                csv_column_uri_template=schema_mapping.cell_uri_template,
+                csv_column_uri_template=cell_uri_template,
             ),
             code_list_schema_validation_errors,
         )
