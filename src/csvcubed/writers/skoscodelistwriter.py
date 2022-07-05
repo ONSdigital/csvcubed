@@ -41,12 +41,11 @@ class SkosCodeListWriter(WriterBase):
 
     @staticmethod
     def has_duplicated_qb_concepts(code_list: NewQbCodeList) -> bool:
-        duplicated_qb_concepts: list[DuplicatedQbConcept] = [
-            concept
+        return any(
+            True
             for concept in code_list.concepts
             if isinstance(concept, DuplicatedQbConcept)
-        ]
-        return len(duplicated_qb_concepts) > 0
+        )
 
     def __post_init__(self):
         self.csv_file_name = f"{self.new_code_list.metadata.uri_safe_identifier}.csv"
