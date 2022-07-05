@@ -1,7 +1,7 @@
 import datetime
 from pathlib import Path
 import json
-import os
+from os import linesep
 import pandas as pd
 from tempfile import TemporaryDirectory
 from typing import List
@@ -143,6 +143,7 @@ def test_build_config_ok():
     """
     Valid Cube from Data using Convention (no config json)
     """
+
     with TemporaryDirectory() as temp_dir_path:
         temp_dir = Path(temp_dir_path)
         csv = Path(TEST_CASE_DIR, "cube_data_config_ok.csv")
@@ -344,6 +345,7 @@ def test_attribute_new_config_literal():
     column_data = ["1", "2", "3", "4"]
     column_config = {
         "type": "attribute",
+        "label": "I'm an attribute",
         "data_type": "int"
     }
     data = pd.Series(column_data, name="Attribute Heading")

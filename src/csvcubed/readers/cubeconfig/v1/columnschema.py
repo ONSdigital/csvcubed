@@ -241,37 +241,34 @@ class AttributeValue(SchemaBaseClass):
 
 @dataclass
 class ExistingAttributeLiteral(SchemaBaseClass):
-    label: Optional[str] = None
-    description: Optional[str] = None
-    from_existing: Optional[str] = None
-    definition_uri: Optional[str] = None
-    data_type: Optional[str] = None
+    from_existing: str
     required: bool = False
+    data_type: Optional[str] = None
 
     def map_to_existing_qb_attribute(
         self
     ) -> ExistingQbAttributeLiteral:
 
+        _logger.debug(f'Identified {self.as_dict()} as ExistingAttributeLiteral')
+
         return ExistingQbAttributeLiteral(
             attribute_uri=self.from_existing,
-            data_type=self.data_type,
             is_required=self.required,
+            data_type=self.data_type,
         )
 
 
 @dataclass
 class ExistingAttributeResource(SchemaBaseClass):
-    label: Optional[str] = None
-    description: Optional[str] = None
-    from_existing: Optional[str] = None
-    definition_uri: Optional[str] = None
-    required: bool = False
+    from_existing: str
     values: Union[bool, List[AttributeValue]] = True
-    cell_uri_template: Optional[str] = None
+    required: bool = False
 
     def map_to_existing_qb_attribute(
         self, data: PandasDataTypes
-    ) -> Union[ExistingQbAttribute, ExistingQbAttributeLiteral]:
+    ) -> ExistingQbAttribute:
+
+        _logger.debug(f'Identified {self.as_dict()} as ExistingAttributeResource')
 
         return ExistingQbAttribute(
             self.from_existing,
@@ -282,18 +279,21 @@ class ExistingAttributeResource(SchemaBaseClass):
 
 @dataclass
 class NewAttributeLiteral(SchemaBaseClass):
-    label: Optional[str] = None
+    label: str
+    data_type: str
     description: Optional[str] = None
     from_existing: Optional[str] = None
     definition_uri: Optional[str] = None
-    data_type: Optional[str] = None
     required: bool = False
+    cell_uri_template: Optional[str] = None
 
     def map_to_new_qb_attribute(
         self, column_title: str
     ) -> NewQbAttributeLiteral:
         label = self.label or column_title
-        
+
+        _logger.debug(f'Identified {self.as_dict()} as NewAttributeLiteral')
+
         return NewQbAttributeLiteral(
             label=label,
             description=self.description,
@@ -318,6 +318,8 @@ class NewAttributeResource(SchemaBaseClass):
         self, column_title: str, data: PandasDataTypes
     ) -> NewQbAttribute:
         label = self.label or column_title
+
+        _logger.debug(f'Identified {self.as_dict()} as NewAttributeResource')
 
         return NewQbAttribute(
             label=label,
