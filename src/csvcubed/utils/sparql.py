@@ -4,7 +4,7 @@ SPARQL
 
 Utilities to help when running SPARQL queries.
 """
-from pathlib import Path
+from pathlib import Path, PosixPath
 from typing import List, Optional, Any, Callable
 import os.path
 
@@ -77,4 +77,6 @@ def path_to_file_uri_for_rdflib(file: Path) -> str:
     This is necessary due to windows paths being altered by rdflib when they're loaded.
     """
 
-    return "file://" + os.path.normpath(str(file.absolute())).replace("\\", "/")
+    file_uri_prefix = "file://" if isinstance(file, PosixPath) else "file:///"
+
+    return file_uri_prefix + os.path.normpath(str(file.absolute())).replace("\\", "/")

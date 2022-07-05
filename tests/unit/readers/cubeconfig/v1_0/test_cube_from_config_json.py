@@ -689,12 +689,6 @@ def test_column_template_expansion():
     dimension = column.structural_definition
     assert dimension.label == "Year"
 
-    # Ensure that the `<column_name>` value gets replaced with the column's CSV-W safe name.
-    assert (
-        column.csv_column_uri_template
-        == "http://reference.data.gov.uk/id/year/{+the_column}"
-    )
-
 
 def test_load_catalog_metadata():
     with open(TEST_CASE_DIR / "cube_data_config_ok.json") as f:
@@ -771,6 +765,10 @@ def test_date_time_column_extraction():
             "http://reference.data.gov.uk/id/year/2012", label="2012", code="2012"
         ),
     }
+
+    # csv_column_uri_template must be reset to None so that the URI automatically points to the
+    # newly created QbCompositeCodeList
+    assert column.csv_column_uri_template is None
 
 
 if __name__ == "__main__":
