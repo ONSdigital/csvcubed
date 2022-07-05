@@ -242,8 +242,8 @@ class AttributeValue(SchemaBaseClass):
 @dataclass
 class ExistingAttributeLiteral(SchemaBaseClass):
     from_existing: str
+    data_type: str
     required: bool = False
-    data_type: Optional[str] = None
 
     def map_to_existing_qb_attribute(
         self
