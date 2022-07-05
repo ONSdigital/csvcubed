@@ -11,7 +11,7 @@ The remainder of this guide walks you through how the script works, and then gui
 The CSV-to-CSV-W GitHub action expects the user to organise the inputs as follows:
 
 * The CSV files and their configuration JSONs need to be inside the `csv/` folder.
-* If a CSV file has a configuration JSON, the filename of the configuration JSON needs to match the filename of the CSV file. For example, `my_data.csv` and `my_data.csv-metadata.json`.
+* If a CSV file has a configuration JSON, the filename of the configuration JSON needs to match the filename of the CSV file. For example, `my_data.csv` and `my_data.json`.
 
 ## Build process
 
