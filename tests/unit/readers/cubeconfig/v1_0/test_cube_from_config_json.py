@@ -689,12 +689,6 @@ def test_column_template_expansion():
     dimension = column.structural_definition
     assert dimension.label == "Year"
 
-    # Ensure that the `<column_name>` value gets replaced with the column's CSV-W safe name.
-    assert (
-        column.csv_column_uri_template
-        == "http://reference.data.gov.uk/id/year/{+the_column}"
-    )
-
 
 def test_load_catalog_metadata():
     with open(TEST_CASE_DIR / "cube_data_config_ok.json") as f:
