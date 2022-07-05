@@ -245,11 +245,9 @@ class ExistingAttributeLiteral(SchemaBaseClass):
     data_type: str
     required: bool = False
 
-    def map_to_existing_qb_attribute(
-        self
-    ) -> ExistingQbAttributeLiteral:
+    def map_to_existing_qb_attribute(self) -> ExistingQbAttributeLiteral:
 
-        _logger.debug(f'Identified {self.as_dict()} as ExistingAttributeLiteral')
+        _logger.debug(f"Identified {self.as_dict()} as ExistingAttributeLiteral")
 
         return ExistingQbAttributeLiteral(
             attribute_uri=self.from_existing,
@@ -268,7 +266,7 @@ class ExistingAttributeResource(SchemaBaseClass):
         self, data: PandasDataTypes
     ) -> ExistingQbAttribute:
 
-        _logger.debug(f'Identified {self.as_dict()} as ExistingAttributeResource')
+        _logger.debug(f"Identified {self.as_dict()} as ExistingAttributeResource")
 
         return ExistingQbAttribute(
             self.from_existing,
@@ -287,12 +285,10 @@ class NewAttributeLiteral(SchemaBaseClass):
     required: bool = False
     cell_uri_template: Optional[str] = None
 
-    def map_to_new_qb_attribute(
-        self, column_title: str
-    ) -> NewQbAttributeLiteral:
+    def map_to_new_qb_attribute(self, column_title: str) -> NewQbAttributeLiteral:
         label = self.label or column_title
 
-        _logger.debug(f'Identified {self.as_dict()} as NewAttributeLiteral')
+        _logger.debug(f"Identified {self.as_dict()} as NewAttributeLiteral")
 
         return NewQbAttributeLiteral(
             label=label,
@@ -319,7 +315,7 @@ class NewAttributeResource(SchemaBaseClass):
     ) -> NewQbAttribute:
         label = self.label or column_title
 
-        _logger.debug(f'Identified {self.as_dict()} as NewAttributeResource')
+        _logger.debug(f"Identified {self.as_dict()} as NewAttributeResource")
 
         return NewQbAttribute(
             label=label,
@@ -388,9 +384,8 @@ class Measure(SchemaBaseClass):
             label=self.label,
             description=self.description,
             parent_measure_uri=self.from_existing,
-            source_uri=self.definition_uri
+            source_uri=self.definition_uri,
         )
-
 
 
 @dataclass

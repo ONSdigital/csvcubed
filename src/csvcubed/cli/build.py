@@ -26,6 +26,7 @@ from csvcubed.writers.qbwriter import QbWriter
 
 _logger = logging.getLogger(__name__)
 
+
 def build(
     csv_path: Path,
     config_path: Optional[Path] = None,

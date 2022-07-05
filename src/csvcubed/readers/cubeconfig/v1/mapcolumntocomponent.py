@@ -5,7 +5,6 @@ Mapping
 Map info.json v1.* definitions to QB column components
 """
 import copy
-import logging
 from pathlib import Path
 from typing import Union, Optional, Tuple
 
@@ -89,19 +88,13 @@ def map_column_to_qb_component(
 
     elif isinstance(schema_mapping, schema.ExistingAttributeLiteral):
         return (
-            QbColumn(
-                column_title,
-                schema_mapping.map_to_existing_qb_attribute()
-            ),
+            QbColumn(column_title, schema_mapping.map_to_existing_qb_attribute()),
             [],
         )
 
     elif isinstance(schema_mapping, schema.ExistingAttributeResource):
         return (
-            QbColumn(
-                column_title,
-                schema_mapping.map_to_existing_qb_attribute(data)
-            ),
+            QbColumn(column_title, schema_mapping.map_to_existing_qb_attribute(data)),
             [],
         )
 
@@ -184,9 +177,13 @@ def _from_column_dict_to_schema_model(
                 f"either New or Existing Dimension using schema"
             )
     elif column_type == "attribute":
-        if schema.ExistingAttributeResource.dict_fields_match_class(column_without_type):
+        if schema.ExistingAttributeResource.dict_fields_match_class(
+            column_without_type
+        ):
             return schema.ExistingAttributeResource.from_dict(column_without_type)
-        elif schema.ExistingAttributeLiteral.dict_fields_match_class(column_without_type):
+        elif schema.ExistingAttributeLiteral.dict_fields_match_class(
+            column_without_type
+        ):
             return schema.ExistingAttributeLiteral.from_dict(column_without_type)
         elif schema.NewAttributeLiteral.dict_fields_match_class(column_without_type):
             return schema.NewAttributeLiteral.from_dict(column_without_type)

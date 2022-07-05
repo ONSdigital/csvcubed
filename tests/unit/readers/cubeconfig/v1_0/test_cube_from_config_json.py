@@ -1,7 +1,6 @@
 import datetime
 from pathlib import Path
 import json
-from os import linesep
 import pandas as pd
 from tempfile import TemporaryDirectory
 from typing import List
@@ -240,7 +239,7 @@ def test_dimension_new_no_type():
 @pytest.mark.vcr
 def test_dimension_new_config_common():
     """
-    Using a common/typical config, populates all options and confirms the New Dimension & 
+    Using a common/typical config, populates all options and confirms the New Dimension &
     CodeList classes are created and all properties are mapped through correctly
     """
     column_data = ["a", "b", "c", "a"]
@@ -346,7 +345,7 @@ def test_attribute_new_config_literal():
     column_config = {
         "type": "attribute",
         "label": "I'm an attribute",
-        "data_type": "int"
+        "data_type": "int",
     }
     data = pd.Series(column_data, name="Attribute Heading")
 
