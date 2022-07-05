@@ -772,6 +772,10 @@ def test_date_time_column_extraction():
         ),
     }
 
+    # csv_column_uri_template must be reset to None so that the URI automatically points to the
+    # newly created QbCompositeCodeList
+    assert column.csv_column_uri_template is None
+
 
 if __name__ == "__main__":
     pytest.main()
