@@ -28,6 +28,7 @@ from csvcubed.models.cube.qb.components.attributevalue import (
 )
 from csvcubed.models.cube.qb.components.observedvalue import (
     QbMultiMeasureObservationValue,
+    QbSingleMeasureObservationValue,
 )
 from csvcubed.readers.cubeconfig.v1.mapcolumntocomponent import (
     map_column_to_qb_component,
@@ -769,6 +770,31 @@ def test_date_time_column_extraction():
     # csv_column_uri_template must be reset to None so that the URI automatically points to the
     # newly created QbCompositeCodeList
     assert column.csv_column_uri_template is None
+
+
+def test_observation_value_data_type_extraction():
+    """
+    Ensure that the data_type can be correctly extracted from an observation's JSON config.
+    """
+    data = pd.DataFrame({"The Column": [1, 2, 3]})
+
+    (column, _) = _get_qb_column_from_json(
+        {
+            "type": "observations",
+            "data_type": "integer",
+            "unit": "http://example.com/some-unit",
+            "measure": "http://example.com/some-measure",
+        },
+        "The Column",
+        data,
+        1,
+    )
+
+    assert isinstance(
+        column.structural_definition, QbSingleMeasureObservationValue
+    ), column.structural_definition
+    obs_val = column.structural_definition
+    assert obs_val.data_type == "integer"
 
 
 if __name__ == "__main__":
