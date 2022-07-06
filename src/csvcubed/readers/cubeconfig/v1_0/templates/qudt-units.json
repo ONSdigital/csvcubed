@@ -1,0 +1,6 @@
+{
+    "type": "unit",
+    "from_existing": "http://qudt.org/2.1/vocab/unit",
+    "label": "qudt",
+    "cell_uri_template": "http://qudt.org/vocab/unit/{+<column_name>}"
+}

@@ -545,6 +545,13 @@
                     "enum": [
                         "observation-status"
                     ]
+                },
+                "units": {
+                    "description": "Templates for common unit columns",
+                    "type": "string",
+                    "enum": [
+                        "qudt-units.json"
+                    ]
                 }
             }
         }
