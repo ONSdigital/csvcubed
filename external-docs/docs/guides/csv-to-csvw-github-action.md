@@ -29,7 +29,7 @@ Commiting a file to any other location within the repository will NOT trigger a 
 
 ### 2. Building and inspecting CSV-Ws
 
-On a new commit, the action runs the [`csvcubed build`](command-line/build-command.md) on any CSV or JSON files which have been changed. The outputs produced by the build command are saved using the same folder structure inside the `out/` folder at the root of the repository. For example, given a CSV file located at `my_folder/my_data.csv`, outputs will be written to the `out/my_folder/my_data/` folder.
+On a new commit, the action runs the [`csvcubed build`](command-line/build-command.md) on any CSV or JSON files which have been changed. The outputs produced by the build command are saved using the same folder structure inside the `out/` folder at the root of the repository. For example, give a CSV file located at `out/my_folder/my_data.csv`, outputs will outputs will be written to the `out/my_folder/my_data/` folder.
 
 The [`csvcubed inspect`](command-line/inspect-command.md) command is then run on all new or updated CSV-Ws; the output is then saved in an `inspect.txt` file next to each CSV-W output. For example, for the metadata JSON file at `out/my_folder/my_data/my_data.csv-metadata.json` a file, containing the [`csvcubed inspect`](command-line/inspect-command.md) command output, named `out/my_folder/my_data/inspect_output.txt` is also created. 
 
