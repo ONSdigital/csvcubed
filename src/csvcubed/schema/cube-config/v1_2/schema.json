@@ -81,6 +81,9 @@
                     },
                     {
                         "$ref": "#/definitions/v1.0/columnTypes/Units"
+                    },
+                    {
+                        "$ref": "#/definitions/v1.0/columnTypes/Units"
                     }
                 ]
             }
@@ -291,14 +294,26 @@
                 "Units": {
                     "description": "This column represents the unit of measure in which observations were recorded",
                     "type": "object",
-                    "required": [
-                        "type"
+                    "oneOf": [
+                        {
+                            "required": [
+                                "type"
+                            ]
+                        },
+                        {
+                            "required": [
+                                "from_template"
+                            ]
+                        }
                     ],
                     "properties": {
                         "type": {
                             "description": "This column represents the unit of measure in which observations were recorded",
                             "type": "string",
                             "const": "units"
+                        },
+                        "from_template": {
+                            "$ref": "#/definitions/v1.0/column_templates/units"
                         },
                         "values": {
                             "description": "The Units used in this dataset.",
@@ -316,6 +331,11 @@
                                     }
                                 }
                             ]
+                        },
+                        "cell_uri_template": {
+                            "type": "string",
+                            "format": "uri",
+                            "description": "A template used to map the cell values in this column into URIs, e.g. 'http://example.com/measures/{+column_csvw_name}'"
                         }
                     },
                     "additionalProperties": false
@@ -544,6 +564,13 @@
                     "type": "string",
                     "enum": [
                         "observation-status"
+                    ]
+                },
+                "units": {
+                    "description": "Templates for common unit columns",
+                    "type": "string",
+                    "enum": [
+                        "qudt"
                     ]
                 }
             }
