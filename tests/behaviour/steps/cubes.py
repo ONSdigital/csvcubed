@@ -1,17 +1,21 @@
 import datetime
 import json
 from pathlib import Path
-from typing import Dict
+from typing import Dict, List, Optional
 
 import requests_mock
 from behave import *
 import vcr
+import pandas as pd
+from pandas.testing import assert_frame_equal
+import numpy as np
 
 from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
 from csvcubeddevtools.helpers.file import get_test_cases_dir
 
 from csvcubed.cli.build import build as cli_build
 from csvcubed.definitions import APP_ROOT_DIR_PATH
+from csvcubed.models.cube.columns import CsvColumn
 
 _test_case_dir = get_test_cases_dir()
 _cube_config_test_case_dir = _test_case_dir / "readers" / "cube-config"
@@ -118,20 +122,18 @@ def step_impl(context):
     assert expected_meta == result_dict
 
 
-@then("The cube Columns should match")
+@then("The cube columns should match")
 def step_impl(context):
-    expected_columns = eval(context.text.strip())
-    result = [col.as_json_dict() for col in context.cube.columns]
-    for i, col in enumerate(expected_columns):
-        if expected_columns[i] != result[i]:
-            # Print the mis-matched values in each row if the row dict is not equal
-            raise Exception(
-                f"{json.dumps(expected_columns[i], indent=4)} ??? {json.dumps(result[i], indent=4)}"
-            )
-            for k, v in col.items():
-                if expected_columns[i].get(k) != col[k]:
-                    print(
-                        f"Key: {k} - result: {col[k]} does not match expected "
-                        f":{expected_columns[i][k]}"
-                    )
-        assert expected_columns[i] == result[i]
+    cols: List[CsvColumn] = context.cube.columns
+    print("cols:", cols)
+    expected_cols: List[str] = json.loads(context.text)
+    for col in cols:
+        assert col.csv_column_title in expected_cols
+
+
+@then("The cube data should match")
+def step_impl(context):
+    data: Optional[pd.DataFrame] = context.cube.data
+    print("data:", data)
+    expected_data = pd.read_json(context.text, orient="records", dtype=False)
+    assert_frame_equal(expected_data, data, check_dtype=False, check_categorical=False)
