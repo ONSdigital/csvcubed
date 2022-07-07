@@ -45,7 +45,6 @@ from csvcubed.models.cube.qb.components import (
     NewQbAttributeLiteral,
     NewQbCodeList,
     QbCodeList,
-    codelist,
 )
 from csvcubed.inputs import PandasDataTypes
 from csvcubed.utils.uri import (
@@ -247,8 +246,6 @@ class ExistingAttributeLiteral(SchemaBaseClass):
 
     def map_to_existing_qb_attribute(self) -> ExistingQbAttributeLiteral:
 
-        _logger.debug(f"Identified {self.as_dict()} as ExistingAttributeLiteral")
-
         return ExistingQbAttributeLiteral(
             attribute_uri=self.from_existing,
             is_required=self.required,
@@ -261,12 +258,11 @@ class ExistingAttributeResource(SchemaBaseClass):
     from_existing: str
     values: Union[bool, List[AttributeValue]] = True
     required: bool = False
+    cell_uri_template: Optional[str] = None
 
     def map_to_existing_qb_attribute(
         self, data: PandasDataTypes
     ) -> ExistingQbAttribute:
-
-        _logger.debug(f"Identified {self.as_dict()} as ExistingAttributeResource")
 
         return ExistingQbAttribute(
             self.from_existing,
@@ -283,12 +279,9 @@ class NewAttributeLiteral(SchemaBaseClass):
     from_existing: Optional[str] = None
     definition_uri: Optional[str] = None
     required: bool = False
-    cell_uri_template: Optional[str] = None
 
     def map_to_new_qb_attribute(self, column_title: str) -> NewQbAttributeLiteral:
         label = self.label or column_title
-
-        _logger.debug(f"Identified {self.as_dict()} as NewAttributeLiteral")
 
         return NewQbAttributeLiteral(
             label=label,
@@ -314,8 +307,6 @@ class NewAttributeResource(SchemaBaseClass):
         self, column_title: str, data: PandasDataTypes
     ) -> NewQbAttribute:
         label = self.label or column_title
-
-        _logger.debug(f"Identified {self.as_dict()} as NewAttributeResource")
 
         return NewQbAttribute(
             label=label,

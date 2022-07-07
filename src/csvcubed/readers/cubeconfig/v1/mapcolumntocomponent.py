@@ -6,6 +6,7 @@ Map info.json v1.* definitions to QB column components
 """
 import copy
 from pathlib import Path
+import logging
 from typing import Union, Optional, Tuple
 
 from jsonschema.exceptions import ValidationError
@@ -15,6 +16,7 @@ from csvcubed.models.cube.qb.components.codelist import CompositeQbCodeList
 from csvcubed.inputs import PandasDataTypes
 import csvcubed.readers.cubeconfig.v1.columnschema as schema
 
+_logger = logging.getLogger(__name__)
 
 def map_column_to_qb_component(
     column_title: str,
@@ -30,6 +32,7 @@ def map_column_to_qb_component(
     schema_mapping = _from_column_dict_to_schema_model(column_title, column)
 
     if isinstance(schema_mapping, schema.NewDimension):
+        _logger.debug(f"Identified {schema_mapping.as_dict()} as NewDimension")
         (
             structural_definition,
             code_list_schema_validation_errors,
@@ -58,6 +61,7 @@ def map_column_to_qb_component(
         )
 
     elif isinstance(schema_mapping, schema.ExistingDimension):
+        _logger.debug(f"Identified {schema_mapping.as_dict()} as ExistingDimension")
         return (
             QbColumn(
                 column_title,
@@ -68,6 +72,7 @@ def map_column_to_qb_component(
         )
 
     elif isinstance(schema_mapping, schema.NewAttributeLiteral):
+        _logger.debug(f"Identified {schema_mapping.as_dict()} as NewAttributeLiteral")
         return (
             QbColumn(
                 column_title,
@@ -77,6 +82,7 @@ def map_column_to_qb_component(
         )
 
     elif isinstance(schema_mapping, schema.NewAttributeResource):
+        _logger.debug(f"Identified {schema_mapping.as_dict()} as NewAttributeResource")
         return (
             QbColumn(
                 column_title,
@@ -87,24 +93,28 @@ def map_column_to_qb_component(
         )
 
     elif isinstance(schema_mapping, schema.ExistingAttributeLiteral):
+        _logger.debug(f"Identified {schema_mapping.as_dict()} as ExistingAttributeLiteral")
         return (
             QbColumn(column_title, schema_mapping.map_to_existing_qb_attribute()),
             [],
         )
 
     elif isinstance(schema_mapping, schema.ExistingAttributeResource):
+        _logger.debug(f"Identified {schema_mapping.as_dict()} as ExistingAttributeResource")
         return (
-            QbColumn(column_title, schema_mapping.map_to_existing_qb_attribute(data)),
+            QbColumn(column_title, schema_mapping.map_to_existing_qb_attribute(data), csv_column_uri_template=schema_mapping.cell_uri_template),
             [],
         )
 
     elif isinstance(schema_mapping, schema.NewUnits):
+        _logger.debug(f"Identified {schema_mapping.as_dict()} as NewUnits")
         return (
             QbColumn(column_title, schema_mapping.map_to_new_qb_multi_units(data)),
             [],
         )
 
     elif isinstance(schema_mapping, schema.ExistingUnits):
+        _logger.debug(f"Identified {schema_mapping.as_dict()} as ExistingUnits")
         return (
             QbColumn(
                 column_title,
@@ -115,6 +125,7 @@ def map_column_to_qb_component(
         )
 
     elif isinstance(schema_mapping, schema.NewMeasures):
+        _logger.debug(f"Identified {schema_mapping.as_dict()} as NewMeasures")
         return (
             QbColumn(
                 column_title, schema_mapping.map_to_new_multi_measure_dimension(data)
@@ -123,6 +134,7 @@ def map_column_to_qb_component(
         )
 
     elif isinstance(schema_mapping, schema.ExistingMeasures):
+        _logger.debug(f"Identified {schema_mapping.as_dict()} as ExistingMeasures")
         return (
             QbColumn(
                 column_title,
@@ -135,6 +147,7 @@ def map_column_to_qb_component(
         )
 
     elif isinstance(schema_mapping, schema.ObservationValue):
+        _logger.debug(f"Identified {schema_mapping.as_dict()} as ObservationValue")
         return (QbColumn(column_title, schema_mapping.map_to_qb_observation()), [])
 
     else:
@@ -174,7 +187,7 @@ def _from_column_dict_to_schema_model(
         else:
             raise Exception(
                 f"Column with config: '{column}' did not match "
-                f"either New or Existing Dimension using schema"
+                "Existing Literal or Resource attribute types from schema"
             )
     elif column_type == "attribute":
         if schema.ExistingAttributeResource.dict_fields_match_class(
