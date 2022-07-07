@@ -329,11 +329,10 @@ def test_attribute_new_literal():
 @pytest.mark.vcr
 def test_attribute_new_resource_with_values():
     """
-    Checks New attribute resource when description, values, from_existing and definition_uri options
-    are omitted
+    Checks New attribute resource where values are provided inline.
     """
     column_data = ["a", "b", "c", "a"]
-    column_config = vc.ATTRIBUTE_NEW_RESOURCE
+    column_config = vc.ATTRIBUTE_NEW_RESOURCE_WITH_VALUES
     data = pd.Series(column_data, name="Attribute Heading")
 
     (column, _) = map_column_to_qb_component(
