@@ -8,7 +8,6 @@ from behave import *
 import vcr
 import pandas as pd
 from pandas.testing import assert_frame_equal
-import numpy as np
 
 from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
 from csvcubeddevtools.helpers.file import get_test_cases_dir
