@@ -18,6 +18,7 @@ import csvcubed.readers.cubeconfig.v1.columnschema as schema
 
 _logger = logging.getLogger(__name__)
 
+
 def map_column_to_qb_component(
     column_title: str,
     column: dict,
@@ -93,16 +94,24 @@ def map_column_to_qb_component(
         )
 
     elif isinstance(schema_mapping, schema.ExistingAttributeLiteral):
-        _logger.debug(f"Identified {schema_mapping.as_dict()} as ExistingAttributeLiteral")
+        _logger.debug(
+            f"Identified {schema_mapping.as_dict()} as ExistingAttributeLiteral"
+        )
         return (
             QbColumn(column_title, schema_mapping.map_to_existing_qb_attribute()),
             [],
         )
 
     elif isinstance(schema_mapping, schema.ExistingAttributeResource):
-        _logger.debug(f"Identified {schema_mapping.as_dict()} as ExistingAttributeResource")
+        _logger.debug(
+            f"Identified {schema_mapping.as_dict()} as ExistingAttributeResource"
+        )
         return (
-            QbColumn(column_title, schema_mapping.map_to_existing_qb_attribute(data), csv_column_uri_template=schema_mapping.cell_uri_template),
+            QbColumn(
+                column_title,
+                schema_mapping.map_to_existing_qb_attribute(data),
+                csv_column_uri_template=schema_mapping.cell_uri_template,
+            ),
             [],
         )
 
