@@ -25,17 +25,17 @@ QubeConfigDeserialiser = Callable[
 
 _v1_0_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.0"
 _v1_1_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.1"
-#_v1_2_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.2"
+_v1_2_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.2"
 _v1_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1"  # v1 defaults to the latest minor version of v1.*.
 
-_LATEST_V1_SCHEMA_URL = _v1_1_SCHEMA_URL
+_LATEST_V1_SCHEMA_URL = _v1_2_SCHEMA_URL
 """
     This holds the URL identifying the latest minor version of the V1 schema.
 
     When adding a new minor version to the V1 schema, you must update this variable.
 """
 
-_LATEST_SCHEMA_URL = _v1_1_SCHEMA_URL
+_LATEST_SCHEMA_URL = _v1_2_SCHEMA_URL
 """
     This holds the URL identifying the latest version of the schema.
 
@@ -99,8 +99,11 @@ def _get_schema_version(
             QubeConfigJsonSchemaMajorVersion.v1,
             QubeConfigJsonSchemaMinorVersion.v1,
         )
-    elif schema_path == _v1_1_SCHEMA_URL:
-        pass
+    elif schema_path == _v1_2_SCHEMA_URL:
+        return (
+            QubeConfigJsonSchemaMajorVersion.v1,
+            QubeConfigJsonSchemaMinorVersion.v2,
+        )
     else:
         raise ValueError(
             f"The $schema '{schema_path}' referenced in the cube config file is not recognised."
