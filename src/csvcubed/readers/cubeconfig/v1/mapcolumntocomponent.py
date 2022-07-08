@@ -196,7 +196,7 @@ def _from_column_dict_to_schema_model(
         else:
             raise Exception(
                 f"Column with config: '{column}' did not match "
-                "Existing Literal or Resource attribute types from schema"
+                "either New or Existing Dimension using schema"
             )
     elif column_type == "attribute":
         if schema.ExistingAttributeResource.dict_fields_match_class(
