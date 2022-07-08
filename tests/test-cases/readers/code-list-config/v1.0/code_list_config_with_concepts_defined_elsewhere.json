@@ -22,7 +22,8 @@
     {
       "label": "A",
       "description": "A data record",
-      "notation": "a"
+      "notation": "a",
+      "same_as": "http://example.com/concepts/some-existing-concept"
     },
     {
       "label": "C",
@@ -44,7 +45,8 @@
             {
               "label": "E",
               "description": "E data record",
-              "notation": "e"
+              "notation": "e",
+              "same_as": "http://example.com/concepts/some-existing-concept"
             }
           ]
         }
