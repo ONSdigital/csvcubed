@@ -97,11 +97,11 @@ class SkosCodeListWriter(WriterBase):
                 "propertyUrl": "skos:notation",
             },
             {
-                "titles": "Parent URI Identifier",
+                "titles": "Parent Uri Identifier",
                 "name": "parent_uri_identifier",
                 "required": False,
                 "propertyUrl": "skos:broader",
-                "valueUrl": self.uri_helper.get_concept_uri("{+parent_uri_identifier}"),
+                "valueUrl": self.uri_helper.get_concept_uri("{+parent_uri_identifier}")
             },
             {
                 "titles": "Sort Priority",
