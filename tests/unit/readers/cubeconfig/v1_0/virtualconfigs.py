@@ -235,10 +235,3 @@ class VirtualConfigurations:
         "cell_uri_template": "http://example.org/unit/{+existing_unit}",
     }
     """
-
-
-vc = VirtualConfigurations()
-"""
-"Virtual Configurations" are a selection of dictionaries representing
-specific configuration use cases for use and reuse while testing.
-"""

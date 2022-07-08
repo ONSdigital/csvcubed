@@ -48,7 +48,7 @@ from csvcubed.models.cube.qb.components import (
     NewQbConcept,
 )
 
-from .virtualconfigs import vc
+from .virtualconfigs import VirtualConfigurations as vc
 
 TEST_CASE_DIR = get_test_cases_dir().absolute() / "readers" / "cube-config" / "v1.0"
 SCHEMA_PATH_FILE = Path(
