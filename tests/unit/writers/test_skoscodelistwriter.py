@@ -17,13 +17,12 @@ basic_code_list = NewQbCodeList(
     [
         NewQbConcept(
             "First Concept",
-            code="1st-concept",
+            code="1st-20%concept",
             description="This is the first concept.",
         ),
-        NewQbConcept("Second Concept", parent_code="1st-concept", sort_order=20),
+        NewQbConcept("Second%20 Concept", parent_code="1st-20%concept", sort_order=20),
     ],
 )
-
 
 def test_csvw_metadata_url_withoutFileExtension_style():
     """
@@ -46,24 +45,27 @@ def test_code_list_data_mapping():
     data = writer._get_code_list_data()
     actual_column_names = {str(c) for c in data.columns}
     assert {
+        "Uri Identifier",
         "Label",
         "Notation",
-        "Parent Notation",
+        "Parent Uri Identifier",
         "Sort Priority",
         "Description",
     } == actual_column_names
 
     first_concept: Dict[str, Any] = data.iloc[[0]].to_dict("records")[0]
+    assert first_concept["Uri Identifier"] == "1st-20-concept"
     assert first_concept["Label"] == "First Concept"
-    assert first_concept["Notation"] == "1st-concept"
-    assert first_concept.get("Parent Notation") is None
+    assert first_concept["Notation"] == "1st-20%concept"
+    assert first_concept.get("Parent Uri Identifier") is None
     assert first_concept["Sort Priority"] == 0
     assert first_concept["Description"] == "This is the first concept."
 
     second_concept: Dict[str, Any] = data.iloc[[1]].to_dict("records")[0]
-    assert second_concept["Label"] == "Second Concept"
-    assert second_concept["Notation"] == "second-concept"
-    assert second_concept["Parent Notation"] == "1st-concept"
+    assert second_concept["Uri Identifier"] == "second-20-concept"
+    assert second_concept["Label"] == "Second%20 Concept"
+    assert second_concept["Notation"] == "second-20-concept"
+    assert second_concept["Parent Uri Identifier"] == "1st-20-concept"
     assert second_concept["Sort Priority"] == 20
     assert second_concept.get("Description") is None
 

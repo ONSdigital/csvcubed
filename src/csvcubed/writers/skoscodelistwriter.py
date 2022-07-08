@@ -9,6 +9,7 @@ import logging
 from dataclasses import dataclass, field
 from pathlib import Path
 import pandas as pd
+
 from csvcubedmodels.rdf import ExistingResource
 
 from csvcubed.models.cube.qb.components import (
@@ -19,6 +20,7 @@ from csvcubed.models.cube.qb.components import (
 from csvcubed.models.cube.uristyle import URIStyle
 from csvcubed.utils.dict import rdf_resource_to_json_ld
 from csvcubed.models.rdf.conceptschemeincatalog import ConceptSchemeInCatalog
+from csvcubed.utils.uri import uri_safe
 from csvcubed.writers.urihelpers.skoscodelist import SkosCodeListNewUriHelper
 from csvcubed.writers.writerbase import WriterBase
 
@@ -77,6 +79,12 @@ class SkosCodeListWriter(WriterBase):
     def _get_csvw_table_schema(self) -> dict:
         csvw_columns = [
             {
+                "titles": "Uri Identifier",
+                "name": "uri_identifier",
+                "required": True,
+                "suppressOutput": True,
+            },
+            {
                 "titles": "Label",
                 "name": "label",
                 "required": True,
@@ -89,11 +97,11 @@ class SkosCodeListWriter(WriterBase):
                 "propertyUrl": "skos:notation",
             },
             {
-                "titles": "Parent Notation",
-                "name": "parent_notation",
+                "titles": "Parent URI Identifier",
+                "name": "parent_uri_identifier",
                 "required": False,
                 "propertyUrl": "skos:broader",
-                "valueUrl": self.uri_helper.get_concept_uri("{+parent_notation}"),
+                "valueUrl": self.uri_helper.get_concept_uri("{+parent_uri_identifier}"),
             },
             {
                 "titles": "Sort Priority",
@@ -144,7 +152,7 @@ class SkosCodeListWriter(WriterBase):
         )
         return {
             "columns": csvw_columns,
-            "aboutUrl": self.uri_helper.get_concept_uri("{+notation}"),
+            "aboutUrl": self.uri_helper.get_concept_uri("{+uri_identifier}"),
             "primaryKey": CODE_LIST_NOTATION_COLUMN_NAME,
         }
 
@@ -177,9 +185,15 @@ class SkosCodeListWriter(WriterBase):
     def _get_code_list_data(self) -> pd.DataFrame:
         data_frame = pd.DataFrame(
             {
+                "Uri Identifier": [
+                    c.get_uri_safe_identifier() for c in self.new_code_list.concepts
+                ],
                 "Label": [c.label for c in self.new_code_list.concepts],
                 "Notation": [c.code for c in self.new_code_list.concepts],
-                "Parent Notation": [c.parent_code for c in self.new_code_list.concepts],
+                "Parent Uri Identifier": [
+                    uri_safe(c.parent_code) if c.parent_code else None
+                    for c in self.new_code_list.concepts
+                ],
                 "Sort Priority": [
                     c.sort_order or i for i, c in enumerate(self.new_code_list.concepts)
                 ],

@@ -26,6 +26,9 @@ class NewQbConcept(SecondaryQbStructuralDefinition, UriIdentifiable):
 
     def get_identifier(self) -> str:
         return self.code
+    
+    def get_uri_safe_identifier(self) -> str:
+        return uri_safe(self.code)
 
     def __post_init__(self):
         if self.code.strip() == "":
