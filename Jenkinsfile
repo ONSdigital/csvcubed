@@ -125,10 +125,11 @@ pipeline {
 //             }
             steps {
                 script {
-                    twine check dist/csvcubed*.whl
+                    sh "twine check dist/csvcubed*.whl"
 
                     withCredentials([usernamePassword(credentialsId: 'testpypi-robons', passwordVariable: 'TWINE_PASSWORD')]) {
-                        TWINE_USERNAME='__token__' twine upload -r testpypi dist/csvcubed*.whl
+                        env.TWINE_USERNAME='__token__'
+                        sh "twine upload -r testpypi dist/csvcubed*.whl"
                     }
                 }
             }
