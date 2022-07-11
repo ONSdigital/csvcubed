@@ -65,7 +65,7 @@ interactions:
       content-type:
       - text/html; charset=utf-8
       date:
-      - Fri, 08 Jul 2022 11:04:47 GMT
+      - Mon, 04 Jul 2022 09:01:00 GMT
       location:
       - https://raw.githubusercontent.com/GSS-Cogs/reusable-rdf-resources/main/organisations.json
       server:
@@ -323,13 +323,13 @@ interactions:
       Content-Type:
       - text/plain; charset=utf-8
       Date:
-      - Fri, 08 Jul 2022 11:04:47 GMT
+      - Mon, 04 Jul 2022 09:01:00 GMT
       ETag:
       - W/"66ba1608ff13ded941df56cf0063c658c458b99ee509f910d73935c85fd7e7b1"
       Expires:
-      - Fri, 08 Jul 2022 11:09:47 GMT
+      - Mon, 04 Jul 2022 09:06:00 GMT
       Source-Age:
-      - '246'
+      - '0'
       Strict-Transport-Security:
       - max-age=31536000
       Vary:
@@ -337,21 +337,21 @@ interactions:
       Via:
       - 1.1 varnish
       X-Cache:
-      - HIT
+      - MISS
       X-Cache-Hits:
-      - '1'
+      - '0'
       X-Content-Type-Options:
       - nosniff
       X-Fastly-Request-ID:
-      - 468d6c827d22b50437bc91d8fbc0729d28f5e3f1
+      - cb1e5c8134df123daccd7d44b2969596c01d980a
       X-Frame-Options:
       - deny
       X-GitHub-Request-Id:
-      - D396:19FD:BFDD4A:104B83D:62C80E59
+      - 13FC:01E9:A14420:AEDBD3:62C2AC4C
       X-Served-By:
-      - cache-lhr7349-LHR
+      - cache-lcy19244-LCY
       X-Timer:
-      - S1657278287.397249,VS0,VE1
+      - S1656925261.528557,VS0,VE184
       X-XSS-Protection:
       - 1; mode=block
     status:
@@ -423,7 +423,7 @@ interactions:
       content-type:
       - text/html; charset=utf-8
       date:
-      - Fri, 08 Jul 2022 11:04:48 GMT
+      - Mon, 04 Jul 2022 09:01:01 GMT
       location:
       - https://raw.githubusercontent.com/GSS-Cogs/reusable-rdf-resources/main/licenses.json
       server:
@@ -474,13 +474,13 @@ interactions:
       Content-Type:
       - text/plain; charset=utf-8
       Date:
-      - Fri, 08 Jul 2022 11:04:48 GMT
+      - Mon, 04 Jul 2022 09:01:01 GMT
       ETag:
       - W/"b9f9c9f8f29e57eb27e38090f59d8881aa0f77e6e41b910bdaa744b5fb15f3a3"
       Expires:
-      - Fri, 08 Jul 2022 11:09:48 GMT
+      - Mon, 04 Jul 2022 09:06:01 GMT
       Source-Age:
-      - '191'
+      - '0'
       Strict-Transport-Security:
       - max-age=31536000
       Vary:
@@ -494,15 +494,15 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Fastly-Request-ID:
-      - a132fa590280ba1fadc03a9574dcede355e9f58c
+      - 221a0a0b99a232dde0286ea2a359ea11da34154d
       X-Frame-Options:
       - deny
       X-GitHub-Request-Id:
-      - 28A4:8FEB:6877E0:A68046:62C80E90
+      - 55E2:113F:229E1D:3B088C:62C29F77
       X-Served-By:
       - cache-lhr7340-LHR
       X-Timer:
-      - S1657278288.170015,VS0,VE1
+      - S1656925262.782193,VS0,VE152
       X-XSS-Protection:
       - 1; mode=block
     status:
@@ -574,7 +574,7 @@ interactions:
       content-type:
       - text/html; charset=utf-8
       date:
-      - Fri, 08 Jul 2022 11:04:48 GMT
+      - Mon, 04 Jul 2022 09:01:02 GMT
       location:
       - https://raw.githubusercontent.com/GSS-Cogs/reusable-rdf-resources/main/code-lists.json
       server:
@@ -620,13 +620,13 @@ interactions:
       Content-Type:
       - text/plain; charset=utf-8
       Date:
-      - Fri, 08 Jul 2022 11:04:48 GMT
+      - Mon, 04 Jul 2022 09:01:02 GMT
       ETag:
       - W/"5d98e347bb4b48a18824aaaf31821122285847cddc22718361989a187f963577"
       Expires:
-      - Fri, 08 Jul 2022 11:09:48 GMT
+      - Mon, 04 Jul 2022 09:06:02 GMT
       Source-Age:
-      - '271'
+      - '17'
       Strict-Transport-Security:
       - max-age=31536000
       Vary:
@@ -640,15 +640,15 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Fastly-Request-ID:
-      - 105393f3f5ee20c1f4ce785ce679f36f9d516be1
+      - 4effef2f5cfa2bd2483e733eb7a3d9433b0d45a3
       X-Frame-Options:
       - deny
       X-GitHub-Request-Id:
-      - 8E62:117A:6498CB:9C6171:62C80E42
+      - 0AA0:01C1:2CEFFC:480A43:62C2A04E
       X-Served-By:
-      - cache-lhr7354-LHR
+      - cache-lhr7357-LHR
       X-Timer:
-      - S1657278289.945065,VS0,VE1
+      - S1656925263.780696,VS0,VE1
       X-XSS-Protection:
       - 1; mode=block
     status:
