@@ -118,6 +118,21 @@ pipeline {
                 }
             }
         }
+        stage('Publish to Pypi') {
+//             when {
+//                 buildingTag()
+//                 tag pattern: "v\\d+\\.\\d+\\.\\d+(-RC\\d)?", comparator: "REGEXP"
+//             }
+            steps {
+                script {
+                    twine check dist/csvcubed*.whl
+
+                    withCredentials([usernamePassword(credentialsId: 'testpypi-robons', passwordVariable: 'TWINE_PASSWORD')]) {
+                        TWINE_USERNAME='__token__' twine upload -r testpypi dist/csvcubed*.whl
+                    }
+                }
+            }
+        }
     }
     post {
         always {
