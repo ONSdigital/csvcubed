@@ -24,8 +24,6 @@ from csvcubed.utils.uri import uri_safe
 from csvcubed.writers.urihelpers.skoscodelist import SkosCodeListNewUriHelper
 from csvcubed.writers.writerbase import WriterBase
 
-CODE_LIST_NOTATION_COLUMN_NAME = "notation"
-
 _logger = logging.getLogger(__name__)
 
 
@@ -92,7 +90,7 @@ class SkosCodeListWriter(WriterBase):
             },
             {
                 "titles": "Notation",
-                "name": CODE_LIST_NOTATION_COLUMN_NAME,
+                "name": "notation",
                 "required": True,
                 "propertyUrl": "skos:notation",
             },
@@ -101,7 +99,7 @@ class SkosCodeListWriter(WriterBase):
                 "name": "parent_uri_identifier",
                 "required": False,
                 "propertyUrl": "skos:broader",
-                "valueUrl": self.uri_helper.get_concept_uri("{+parent_uri_identifier}")
+                "valueUrl": self.uri_helper.get_concept_uri("{+parent_uri_identifier}"),
             },
             {
                 "titles": "Sort Priority",
@@ -153,7 +151,7 @@ class SkosCodeListWriter(WriterBase):
         return {
             "columns": csvw_columns,
             "aboutUrl": self.uri_helper.get_concept_uri("{+uri_identifier}"),
-            "primaryKey": CODE_LIST_NOTATION_COLUMN_NAME,
+            "primaryKey": "Uri Identifier",
         }
 
     def _get_csvw_metadata(self) -> dict:

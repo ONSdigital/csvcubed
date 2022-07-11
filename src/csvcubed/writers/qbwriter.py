@@ -39,10 +39,7 @@ from csvcubed.utils.qb.standardise import (
     ensure_int_columns_are_ints,
 )
 from csvcubed.utils.file import copy_files_to_directory_with_structure
-from .skoscodelistwriter import (
-    SkosCodeListWriter,
-    CODE_LIST_NOTATION_COLUMN_NAME,
-)
+from .skoscodelistwriter import SkosCodeListWriter
 from .urihelpers.skoscodelist import SkosCodeListNewUriHelper
 from .urihelpers.qbcube import QbCubeNewUriHelper
 from .urihelpers.skoscodelistconstants import SCHEMA_URI_IDENTIFIER
@@ -244,7 +241,7 @@ class QbWriter(WriterBase):
                         ),
                         "reference": {
                             "resource": f"{code_list.metadata.uri_safe_identifier}.csv",
-                            "columnReference": CODE_LIST_NOTATION_COLUMN_NAME,
+                            "columnReference": "Uri Identifier",
                         },
                     }
                 )
@@ -261,7 +258,7 @@ class QbWriter(WriterBase):
                         ),
                         "reference": {
                             "resource": code_list.csv_file_relative_path_or_uri,
-                            "columnReference": CODE_LIST_NOTATION_COLUMN_NAME,
+                            "columnReference": "Uri Identifier",
                         },
                     }
                 )
