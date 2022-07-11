@@ -34,13 +34,13 @@
       "label": "B",
       "description": "B data record",
       "notation": "b",
-      "sort_order": 0,
+      "sort_order": 1,
       "children": [
         {
           "label": "D",
           "description": "D data record",
           "notation": "d",
-          "sort_order": 0,
+          "sort_order": 1,
           "children": [
             {
               "label": "E",

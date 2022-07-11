@@ -91,7 +91,7 @@ def test_code_list_config_model():
     )
     _assert_code_list_concept_sorting(
         code_list_config.concepts,
-        expected_sort_orders={"a": 2, "b": 3, "c": 1, "d": 4, "e": 0},
+        expected_sort_orders={"a": 2, "b": 3, "c": 1, "d": 4, "e": 1},
     )
 
 
@@ -113,7 +113,7 @@ def test_code_list_config_model_without_schema():
     )
     _assert_code_list_concept_sorting(
         code_list_config.concepts,
-        expected_sort_orders={"a": 0, "b": 1, "c": 2, "d": 3, "e": 4},
+        expected_sort_orders={"a": 1, "b": 2, "c": 3, "d": 4, "e": 5},
     )
 
 def test_code_list_config_model_with_hierarchy():
@@ -135,5 +135,5 @@ def test_code_list_config_model_with_hierarchy():
     )
     _assert_code_list_concept_sorting(
         code_list_config.concepts,
-        expected_sort_orders={"a": 1, "b": 0, "c": 2, "d": 0, "e": 0},
+        expected_sort_orders={"a": 2, "b": 1, "c": 3, "d": 1, "e": 1},
     )

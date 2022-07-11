@@ -44,7 +44,7 @@
       "label": "E",
       "description": "E data record",
       "notation": "e",
-      "sort_order": 0
+      "sort_order": 1
     }
   ]
 }
