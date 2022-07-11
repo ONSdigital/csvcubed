@@ -68,9 +68,7 @@ pipeline {
                 // It sets the version of the project to something containing the decimalised version of the
                 // git commit id so that the package can be automatically deployed to testpypi.
 
-                sh 'revision="$(git rev-parse HEAD)"'
-                sh 'decimal_rev=$(echo "obase=10; ibase=16; ${revision^^}" | bc)'
-                sh 'poetry version "0.1.0-dev$decimal_rev"'
+                sh 'revision="$(git rev-parse HEAD)"; decimal_rev=$(echo "obase=10; ibase=16; ${revision^^}" | bc); poetry version "0.1.0-dev$decimal_rev"'
             }
         }
         stage('Package') {
@@ -136,8 +134,14 @@ pipeline {
                 script {
                     sh "twine check dist/csvcubed*.whl"
 
-                    withCredentials([usernamePassword(credentialsId: 'testpypi-robons', passwordVariable: 'TWINE_PASSWORD')]) {
-                        sh 'TWINE_USERNAME="__token__" twine upload -r testpypi dist/csvcubed*.whl'
+                    try {
+                        echo "Outside credentials"
+                        withCredentials([usernamePassword(credentialsId: 'testpypi-robons', passwordVariable: 'TWINE_PASSWORD')]) {
+                            echo "inside credentials"
+                            sh 'TWINE_USERNAME="__token__" twine upload -r testpypi dist/csvcubed*.whl'
+                        }
+                    } catch(ex) {
+                        echo "Found an exception $ex"
                     }
                 }
             }
