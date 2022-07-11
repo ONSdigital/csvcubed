@@ -258,7 +258,7 @@ class QbWriter(WriterBase):
                         ),
                         "reference": {
                             "resource": code_list.csv_file_relative_path_or_uri,
-                            "columnReference": "uri_identifier",
+                            "columnReference": "notation", # NewQbCodeListInCsvW are used for historic reasons and they always use the notation key for their primary key. External uses cannot create NewQbCodeListInCsvW.
                         },
                     }
                 )

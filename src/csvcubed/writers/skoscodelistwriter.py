@@ -206,7 +206,7 @@ class SkosCodeListWriter(WriterBase):
                     for c in self.new_code_list.concepts
                 ],
                 "Sort Priority": [
-                    c.sort_order or i for i, c in enumerate(self.new_code_list.concepts)
+                    i if c.sort_order is None else c.sort_order for i, c in enumerate(self.new_code_list.concepts)
                 ],
                 "Description": [c.description for c in self.new_code_list.concepts],
             }

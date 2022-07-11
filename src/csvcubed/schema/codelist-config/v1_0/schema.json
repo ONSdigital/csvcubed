@@ -114,7 +114,7 @@
             "format": "uri"
           },
           "sort_order": {
-            "description": "Sort order of the concept. The sort order must start from 1, and NOT 0.",
+            "description": "Sort order of the concept.",
             "type": "integer"
           },
           "children": {
