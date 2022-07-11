@@ -367,8 +367,9 @@ class Measure(SchemaBaseClass):
             label=self.label,
             description=self.description,
             parent_measure_uri=self.from_existing,
-            source_uri=self.definition_uri,
+            source_uri=self.definition_uri
         )
+
 
 
 @dataclass
@@ -410,7 +411,7 @@ class ExistingMeasures(SchemaBaseClass):
 
 @dataclass
 class ObservationValue(SchemaBaseClass):
-    data_type: str = "decimal"
+    datatype: str = "decimal"
     unit: Union[None, str, Unit] = None
     measure: Union[None, str, Measure] = None
 
@@ -427,7 +428,7 @@ class ObservationValue(SchemaBaseClass):
 
         if self.measure is None:
             # Multi-measure cube
-            return QbMultiMeasureObservationValue(data_type=self.data_type, unit=unit)
+            return QbMultiMeasureObservationValue(data_type=self.datatype, unit=unit)
         else:
             # Single measure qb
             measure = None
@@ -441,7 +442,7 @@ class ObservationValue(SchemaBaseClass):
                 raise ValueError(f"Unhandled measure type: {self.measure}")
 
             return QbSingleMeasureObservationValue(
-                measure=measure, unit=unit, data_type=self.data_type or "decimal"
+                measure=measure, unit=unit, data_type=self.datatype or "decimal"
             )
 
 
