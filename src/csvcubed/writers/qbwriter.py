@@ -241,7 +241,7 @@ class QbWriter(WriterBase):
                         ),
                         "reference": {
                             "resource": f"{code_list.metadata.uri_safe_identifier}.csv",
-                            "columnReference": "Uri Identifier",
+                            "columnReference": "uri_identifier",
                         },
                     }
                 )
@@ -258,7 +258,7 @@ class QbWriter(WriterBase):
                         ),
                         "reference": {
                             "resource": code_list.csv_file_relative_path_or_uri,
-                            "columnReference": "Uri Identifier",
+                            "columnReference": "uri_identifier",
                         },
                     }
                 )

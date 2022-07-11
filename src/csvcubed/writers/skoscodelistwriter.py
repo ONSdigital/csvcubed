@@ -164,7 +164,7 @@ class SkosCodeListWriter(WriterBase):
         return {
             "columns": csvw_columns,
             "aboutUrl": self.uri_helper.get_concept_uri("{+uri_identifier}"),
-            "primaryKey": "Uri Identifier",
+            "primaryKey": "uri_identifier",
         }
 
     def _get_csvw_metadata(self) -> dict:
