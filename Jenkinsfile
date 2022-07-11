@@ -20,25 +20,25 @@ pipeline {
                 sh 'poetry run pyright . --lib'    
             }
         }
-//         stage('Test') {
-//             when { not { buildingTag() } }
-//             steps {
-//                 script {
-//                     try {
-//                         sh 'poetry run behave tests/behaviour --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json'
-//                         dir('tests/unit') {
-//                             sh "poetry run pytest --junitxml=pytest_results_csvcubed.xml"
-//                         }
-//                     } catch (ex) {
-//                         echo "An error occurred when testing: ${ex}"
-//                         stash name: 'test-results', includes: '**/test-results.json,**/*results*.xml' // Ensure test reports are available to be reported on.
-//                         throw ex
-//                     }
-//
-//                     stash name: 'test-results', includes: '**/test-results.json,**/*results*.xml' // Ensure test reports are available to be reported on.
-//                 }
-//             }
-//         }
+        stage('Test') {
+            when { not { buildingTag() } }
+            steps {
+                script {
+                    try {
+                        sh 'poetry run behave tests/behaviour --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json'
+                        dir('tests/unit') {
+                            sh "poetry run pytest --junitxml=pytest_results_csvcubed.xml"
+                        }
+                    } catch (ex) {
+                        echo "An error occurred when testing: ${ex}"
+                        stash name: 'test-results', includes: '**/test-results.json,**/*results*.xml' // Ensure test reports are available to be reported on.
+                        throw ex
+                    }
+
+                    stash name: 'test-results', includes: '**/test-results.json,**/*results*.xml' // Ensure test reports are available to be reported on.
+                }
+            }
+        }
         stage('Tox') {
             when { 
                 buildingTag()
