@@ -128,8 +128,9 @@ pipeline {
                     sh "twine check dist/csvcubed*.whl"
 
                     withCredentials([usernamePassword(credentialsId: 'testpypi-robons', passwordVariable: 'TWINE_PASSWORD')]) {
-                        env.TWINE_USERNAME='__token__'
-                        sh "twine upload -r testpypi dist/csvcubed*.whl"
+                        withEnv(["TWINE_USERNAME= __token__"]) {
+                            sh "twine upload -r testpypi dist/csvcubed*.whl"
+                        }
                     }
                 }
             }
