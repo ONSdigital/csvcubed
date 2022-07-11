@@ -61,10 +61,22 @@ pipeline {
                 }
             }
         }
+        stage('Set dev version') {
+            when { not { buildingTag() } }
+            steps {
+                // This runs when we're not building a release or release candidate
+                // It sets the version of the project to something containing the decimalised version of the
+                // git commit id so that the package can be automatically deployed to testpypi.
+
+                sh 'rev=$(git rev-parse HEAD)'
+                sh 'decimal_rev=$(echo "ibase=16; obase=10; ${rev^^}" | bc)'
+                sh 'poetry version "v0.1.0-dev$decimal_rev"'
+            }
+        }
         stage('Package') {
             steps {
                 sh 'poetry build'
-                
+
                 stash name: 'wheels', includes: '**/dist/*.whl'
             }
         }
@@ -118,11 +130,9 @@ pipeline {
                 }
             }
         }
-        stage('Publish to Pypi') {
-//             when {
-//                 buildingTag()
-//                 tag pattern: "v\\d+\\.\\d+\\.\\d+(-RC\\d)?", comparator: "REGEXP"
-//             }
+        stage('Publish to Test-pypi') {
+            when { not { buildingTag() } }
+
             environment {
                 TWINE_USERNAME = "__token__"
             }
@@ -136,6 +146,24 @@ pipeline {
                 }
             }
         }
+//         stage('Publish to Pypi') {
+//             when {
+//                 buildingTag()
+//                 tag pattern: "v\\d+\\.\\d+\\.\\d+(-RC\\d)?", comparator: "REGEXP"
+//             }
+//             environment {
+//                 TWINE_USERNAME = "__token__"
+//             }
+//             steps {
+//                 script {
+//                     sh "twine check dist/csvcubed*.whl"
+//
+//                     withCredentials([usernamePassword(credentialsId: 'pypi-robons', passwordVariable: 'TWINE_PASSWORD')]) {
+//                         sh "twine upload dist/csvcubed*.whl"
+//                     }
+//                 }
+//             }
+//         }
     }
     post {
         always {
