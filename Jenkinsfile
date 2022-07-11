@@ -20,25 +20,25 @@ pipeline {
                 sh 'poetry run pyright . --lib'    
             }
         }
-        stage('Test') {
-            when { not { buildingTag() } }
-            steps {
-                script {
-                    try {
-                        sh 'poetry run behave tests/behaviour --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json'
-                        dir('tests/unit') {
-                            sh "poetry run pytest --junitxml=pytest_results_csvcubed.xml"
-                        }
-                    } catch (ex) {
-                        echo "An error occurred when testing: ${ex}"
-                        stash name: 'test-results', includes: '**/test-results.json,**/*results*.xml' // Ensure test reports are available to be reported on.
-                        throw ex
-                    }
-
-                    stash name: 'test-results', includes: '**/test-results.json,**/*results*.xml' // Ensure test reports are available to be reported on.
-                }
-            }
-        }
+//         stage('Test') {
+//             when { not { buildingTag() } }
+//             steps {
+//                 script {
+//                     try {
+//                         sh 'poetry run behave tests/behaviour --tags=-skip -f json.cucumber -o tests/behaviour/test-results.json'
+//                         dir('tests/unit') {
+//                             sh "poetry run pytest --junitxml=pytest_results_csvcubed.xml"
+//                         }
+//                     } catch (ex) {
+//                         echo "An error occurred when testing: ${ex}"
+//                         stash name: 'test-results', includes: '**/test-results.json,**/*results*.xml' // Ensure test reports are available to be reported on.
+//                         throw ex
+//                     }
+//
+//                     stash name: 'test-results', includes: '**/test-results.json,**/*results*.xml' // Ensure test reports are available to be reported on.
+//                 }
+//             }
+//         }
         stage('Tox') {
             when { 
                 buildingTag()
@@ -68,9 +68,9 @@ pipeline {
                 // It sets the version of the project to something containing the decimalised version of the
                 // git commit id so that the package can be automatically deployed to testpypi.
 
-                sh 'rev="$(git rev-parse HEAD)"'
-                sh 'decimal_rev=$(echo "ibase=16; obase=10; ${rev^^}" | bc)'
-                sh 'poetry version "v0.1.0-dev$decimal_rev"'
+                sh 'revision="$(git rev-parse HEAD)"'
+                sh 'decimal_rev=$(echo "obase=10; ibase=16; ${revision^^}" | bc)'
+                sh 'poetry version "0.1.0-dev$decimal_rev"'
             }
         }
         stage('Package') {
