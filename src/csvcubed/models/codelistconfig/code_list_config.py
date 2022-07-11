@@ -74,7 +74,7 @@ class CodeListConfig(DataClassBase):
     ) -> List[CodeListConfigConcept]:
         """Assinging a sort order to concepts without sort order whilst avoiding conflicts with the sort orders already used by the user."""
 
-        sort_order: int = 0
+        sort_order: int = 1 # Sort order starts from 1.
         concepts: List[CodeListConfigConcept] = []
         for concept in concepts_without_sort_order:
             while sort_order in user_defined_sort_orders:
