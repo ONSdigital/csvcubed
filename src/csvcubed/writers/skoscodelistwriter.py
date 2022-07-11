@@ -197,7 +197,7 @@ class SkosCodeListWriter(WriterBase):
         data_frame = pd.DataFrame(
             {
                 "Uri Identifier": [
-                    c.get_uri_safe_identifier() for c in self.new_code_list.concepts
+                    c.uri_safe_identifier for c in self.new_code_list.concepts
                 ],
                 "Label": [c.label for c in self.new_code_list.concepts],
                 "Notation": [c.code for c in self.new_code_list.concepts],
