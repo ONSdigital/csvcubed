@@ -123,14 +123,15 @@ pipeline {
 //                 buildingTag()
 //                 tag pattern: "v\\d+\\.\\d+\\.\\d+(-RC\\d)?", comparator: "REGEXP"
 //             }
+            environment {
+                TWINE_USERNAME = "__token__"
+            }
             steps {
                 script {
                     sh "twine check dist/csvcubed*.whl"
 
                     withCredentials([usernamePassword(credentialsId: 'testpypi-robons', passwordVariable: 'TWINE_PASSWORD')]) {
-                        withEnv(["TWINE_USERNAME= __token__"]) {
-                            sh "twine upload -r testpypi dist/csvcubed*.whl"
-                        }
+                        sh "twine upload -r testpypi dist/csvcubed*.whl"
                     }
                 }
             }
