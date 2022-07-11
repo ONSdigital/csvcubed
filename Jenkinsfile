@@ -68,7 +68,7 @@ pipeline {
                 // It sets the version of the project to something containing the decimalised version of the
                 // git commit id so that the package can be automatically deployed to testpypi.
 
-                sh 'revision="$(git rev-parse HEAD)"; decimal_rev=$(echo "obase=10; ibase=16; ${revision^^}" | bc); poetry version "0.1.0-dev$decimal_rev"'
+                sh 'revision="$(git rev-parse HEAD | tr \'[:lower:]\' \'[:upper:]\')"; decimal_rev=$(echo "obase=10; ibase=16; $revision" | bc); poetry version "0.1.0-dev$decimal_rev"'
             }
         }
         stage('Package') {
