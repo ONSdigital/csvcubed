@@ -62,7 +62,9 @@ pipeline {
             }
         }
         stage('Set dev version') {
-            when { not { buildingTag() } }
+            when {
+                branch 'main'
+            }
             steps {
                 // This runs when we're not building a release or release candidate
                 // It sets the version of the project to something containing the decimalised version of the
@@ -129,7 +131,9 @@ pipeline {
             }
         }
         stage('Publish to Test-pypi') {
-            when { not { buildingTag() } }
+            when {
+                branch 'main'
+            }
             steps {
                 script {
                     sh "twine check dist/csvcubed*.whl"
@@ -140,24 +144,24 @@ pipeline {
                 }
             }
         }
-//         stage('Publish to Pypi') {
-//             when {
-//                 buildingTag()
-//                 tag pattern: "v\\d+\\.\\d+\\.\\d+(-RC\\d)?", comparator: "REGEXP"
-//             }
-//             environment {
-//                 TWINE_USERNAME = "__token__"
-//             }
-//             steps {
-//                 script {
-//                     sh "twine check dist/csvcubed*.whl"
-//
-//                     withCredentials([usernamePassword(credentialsId: 'pypi-robons', passwordVariable: 'TWINE_PASSWORD')]) {
-//                         sh "twine upload dist/csvcubed*.whl"
-//                     }
-//                 }
-//             }
-//         }
+        stage('Publish to Pypi') {
+            when {
+                buildingTag()
+                tag pattern: "v\\d+\\.\\d+\\.\\d+(-RC\\d)?", comparator: "REGEXP"
+            }
+            environment {
+                TWINE_USERNAME = "__token__"
+            }
+            steps {
+                script {
+                    sh "twine check dist/csvcubed*.whl"
+
+                    withCredentials([usernamePassword(credentialsId: 'pypi-robons', usernameVariable:'TWINE_USERNAME', passwordVariable: 'TWINE_PASSWORD')]) {
+                        sh 'twine upload dist/csvcubed*.whl'
+                    }
+                }
+            }
+        }
     }
     post {
         always {
