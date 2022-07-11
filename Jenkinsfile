@@ -136,9 +136,9 @@ pipeline {
 
                     try {
                         echo "Outside credentials"
-                        withCredentials([usernamePassword(credentialsId: 'testpypi-robons', passwordVariable: 'TWINE_PASSWORD')]) {
+                        withCredentials([usernamePassword(credentialsId: 'testpypi-robons', usernameVariable:'TWINE_USERNAME', passwordVariable: 'TWINE_PASSWORD')]) {
                             echo "inside credentials"
-                            sh 'TWINE_USERNAME="__token__" twine upload -r testpypi dist/csvcubed*.whl'
+                            sh 'twine upload -r testpypi dist/csvcubed*.whl'
                         }
                     } catch(ex) {
                         echo "Found an exception $ex"
