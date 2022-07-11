@@ -149,9 +149,6 @@ pipeline {
                 buildingTag()
                 tag pattern: "v\\d+\\.\\d+\\.\\d+(-RC\\d)?", comparator: "REGEXP"
             }
-            environment {
-                TWINE_USERNAME = "__token__"
-            }
             steps {
                 script {
                     sh "twine check dist/csvcubed*.whl"
