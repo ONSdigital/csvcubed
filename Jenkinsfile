@@ -134,14 +134,8 @@ pipeline {
                 script {
                     sh "twine check dist/csvcubed*.whl"
 
-                    try {
-                        echo "Outside credentials"
-                        withCredentials([usernamePassword(credentialsId: 'testpypi-robons', usernameVariable:'TWINE_USERNAME', passwordVariable: 'TWINE_PASSWORD')]) {
-                            echo "inside credentials"
-                            sh 'twine upload -r testpypi dist/csvcubed*.whl'
-                        }
-                    } catch(ex) {
-                        echo "Found an exception $ex"
+                    withCredentials([usernamePassword(credentialsId: 'testpypi-robons', usernameVariable:'TWINE_USERNAME', passwordVariable: 'TWINE_PASSWORD')]) {
+                        sh 'twine upload -r testpypi dist/csvcubed*.whl'
                     }
                 }
             }
