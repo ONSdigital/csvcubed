@@ -1,6 +1,6 @@
 {
     "$schema": "https://json-schema.org/draft-07/schema",
-    "id": "https://purl.org/csv-cubed/qube-config/v1.1",
+    "id": "https://purl.org/csv-cubed/qube-config/v1.2",
     "title": "Schema for a qb-config cube",
     "description": "Schema to be used for creation & validation of a single csv-cubed-flavoured linked data cube in CSV-W format",
     "type": "object",
