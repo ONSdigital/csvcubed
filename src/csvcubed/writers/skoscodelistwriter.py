@@ -23,7 +23,6 @@ from csvcubed.models.cube.qb.components.concept import NewQbConcept
 from csvcubed.models.cube.uristyle import URIStyle
 from csvcubed.utils.dict import rdf_resource_to_json_ld
 from csvcubed.models.rdf.conceptschemeincatalog import ConceptSchemeInCatalog
-from csvcubed.utils.uri import uri_safe
 from csvcubed.writers.urihelpers.skoscodelist import SkosCodeListNewUriHelper
 from csvcubed.writers.writerbase import WriterBase
 
