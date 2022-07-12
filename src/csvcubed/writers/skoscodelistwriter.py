@@ -19,7 +19,7 @@ from csvcubed.models.cube.qb.components import (
     CompositeQbCodeList,
     DuplicatedQbConcept,
 )
-from csvcubed.models.cube.qb.components.codelist import TNewQbConcept
+from csvcubed.models.cube.qb.components.concept import NewQbConcept
 from csvcubed.models.cube.uristyle import URIStyle
 from csvcubed.utils.dict import rdf_resource_to_json_ld
 from csvcubed.models.rdf.conceptschemeincatalog import ConceptSchemeInCatalog
@@ -195,9 +195,9 @@ class SkosCodeListWriter(WriterBase):
         )
         return concept_scheme_with_metadata
 
-    def _get_parent_concept(self, parent_code: str) -> TNewQbConcept:
-        filtered_concepts: List[TNewQbConcept] = [
-            c for c in self.new_code_list.concepts if c.parent_code == parent_code
+    def _get_parent_concept(self, parent_code: str) -> NewQbConcept:
+        filtered_concepts: List[NewQbConcept] = [
+            c for c in self.new_code_list.concepts if c.code == parent_code
         ]
         if len(filtered_concepts) == 0:
             raise Exception(
