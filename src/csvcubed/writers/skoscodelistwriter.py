@@ -8,6 +8,7 @@ import json
 import logging
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import List
 import pandas as pd
 
 from csvcubedmodels.rdf import ExistingResource
@@ -18,6 +19,7 @@ from csvcubed.models.cube.qb.components import (
     CompositeQbCodeList,
     DuplicatedQbConcept,
 )
+from csvcubed.models.cube.qb.components.codelist import TNewQbConcept
 from csvcubed.models.cube.uristyle import URIStyle
 from csvcubed.utils.dict import rdf_resource_to_json_ld
 from csvcubed.models.rdf.conceptschemeincatalog import ConceptSchemeInCatalog
@@ -193,6 +195,21 @@ class SkosCodeListWriter(WriterBase):
         )
         return concept_scheme_with_metadata
 
+    def _get_parent_concept(self, parent_code: str) -> TNewQbConcept:
+        filtered_concepts: List[TNewQbConcept] = [
+            c for c in self.new_code_list.concepts if c.parent_code == parent_code
+        ]
+        if len(filtered_concepts) == 0:
+            raise Exception(
+                f"Unable to find parent concept with parent code {parent_code}"
+            )
+        elif len(filtered_concepts) > 1:
+            raise Exception(
+                f"More than one concept found for parent code {parent_code}"
+            )
+
+        return filtered_concepts[0]
+
     def _get_code_list_data(self) -> pd.DataFrame:
         data_frame = pd.DataFrame(
             {
@@ -202,11 +219,14 @@ class SkosCodeListWriter(WriterBase):
                 "Label": [c.label for c in self.new_code_list.concepts],
                 "Notation": [c.code for c in self.new_code_list.concepts],
                 "Parent Uri Identifier": [
-                    uri_safe(c.parent_code) if c.parent_code else None
+                    self._get_parent_concept(c.parent_code).uri_safe_identifier
+                    if c.parent_code
+                    else None
                     for c in self.new_code_list.concepts
                 ],
                 "Sort Priority": [
-                    i if c.sort_order is None else c.sort_order for i, c in enumerate(self.new_code_list.concepts)
+                    i if c.sort_order is None else c.sort_order
+                    for i, c in enumerate(self.new_code_list.concepts)
                 ],
                 "Description": [c.description for c in self.new_code_list.concepts],
             }
