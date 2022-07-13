@@ -1,7 +1,6 @@
 import datetime
 from pathlib import Path
 import json
-import os
 import pandas as pd
 from tempfile import TemporaryDirectory
 from typing import List
@@ -28,6 +27,7 @@ from csvcubed.models.cube.qb.components.attributevalue import (
 )
 from csvcubed.models.cube.qb.components.observedvalue import (
     QbMultiMeasureObservationValue,
+    QbSingleMeasureObservationValue,
 )
 from csvcubed.readers.cubeconfig.v1.mapcolumntocomponent import (
     map_column_to_qb_component,
@@ -48,6 +48,8 @@ from csvcubed.models.cube.qb.components import (
     NewQbAttribute,
     NewQbConcept,
 )
+
+from .virtualconfigs import VirtualConfigurations as vc
 
 TEST_CASE_DIR = get_test_cases_dir().absolute() / "readers" / "cube-config" / "v1.0"
 SCHEMA_PATH_FILE = Path(
@@ -143,6 +145,7 @@ def test_build_config_ok():
     """
     Valid Cube from Data using Convention (no config json)
     """
+
     with TemporaryDirectory() as temp_dir_path:
         temp_dir = Path(temp_dir_path)
         csv = Path(TEST_CASE_DIR, "cube_data_config_ok.csv")
@@ -225,9 +228,7 @@ def test_dimension_new_no_type():
     Checks a New dimension is created when omitting 'type'
     """
     column_data = ["a", "b", "c", "a"]
-    dimension_config = {
-        "label": "The New Dimension",
-    }
+    dimension_config = vc.LABEL_ONLY
     data = pd.Series(column_data, name="Dimension Heading")
 
     (column, _) = map_column_to_qb_component(
@@ -237,20 +238,13 @@ def test_dimension_new_no_type():
 
 
 @pytest.mark.vcr
-def test_dimension_new_ok():
+def test_dimension_new_config_common():
     """
-    Populates all options and confirms the New Dimension & CodeList classes are created
-    and all properties are mapped through correctly
+    Using a common/typical config, populates all options and confirms the New Dimension &
+    CodeList classes are created and all properties are mapped through correctly
     """
     column_data = ["a", "b", "c", "a"]
-    dimension_config = {
-        "type": "dimension",
-        "label": "The New Dimension",
-        "description": "A description of the dimension",
-        "from_existing": "http://gss-cogs/dimesions/#period",
-        "definition_uri": "http://wikipedia.com/#periods",
-        # 'code_list': '', -> defaults to True so should be a NewQbCodeList
-    }
+    dimension_config = vc.DIMENSION_CONFIG_POPULATED
     data = pd.Series(column_data, name="Dimension Heading")
 
     (column, _) = map_column_to_qb_component(
@@ -260,16 +254,12 @@ def test_dimension_new_ok():
 
 
 @pytest.mark.vcr
-def test_dimension_new_ok():
+def test_dimension_new_minimal_config():
     """
-    Check New dimension when omitting description, from_existing, definition_url and
-    cell_uri_template
+    Confirm we can create a new dimension with the minimal explicit dimension configuration.
     """
     column_data = ["a", "b", "c", "a"]
-    dimension_config = {
-        "type": "dimension",
-        "label": "The New Dimension",
-    }
+    dimension_config = vc.DIMENSION_WITH_LABEL
     data = pd.Series(column_data, name="Dimension Heading")
 
     (column, _) = map_column_to_qb_component(
@@ -279,17 +269,12 @@ def test_dimension_new_ok():
 
 
 @pytest.mark.vcr
-def test_dimension_existing_ok():
+def test_dimension_existing():
     """
-    Populates options for an Existing Dimension & New CodeList classes are created
-    and all properties are mapped through correctly
+    Confirm we can create a new attribute resurce from configuration.
     """
     column_data = ["a", "b", "c", "a"]
-    dimension_config = {
-        "type": "dimension",
-        "from_existing": "http://gss-cogs/dimesions/#period",
-        "cell_uri_template": "http://example.org/code-list/{+some_column}",
-    }
+    dimension_config = vc.DIMENSION_EXISTING
     data = pd.Series(column_data, name="Dimension Heading")
 
     (column, _) = map_column_to_qb_component(
@@ -312,99 +297,63 @@ def test_dimension_existing_ok():
 
 
 @pytest.mark.vcr
-def test_attribute_new_ok():
+def test_attribute_new_resource():
     """
-    Populates all options and confirms the New Attribute and checks all properties are mapped
+    Confirm we can create a new attribute resurce from configuration.
+    """
+    column_data = ["a", "b", "c", "a"]
+    column_config = vc.ATTRIBUTE_NEW_RESOURCE
+    data = pd.Series(column_data, name="Attribute Heading")
+
+    (column, _) = map_column_to_qb_component(
+        "New Attribute", column_config, data, cube_config_minor_version=0
+    )
+    _check_new_attribute_column(column, column_config, column_data, "New Attribute")
+
+
+@pytest.mark.vcr
+def test_attribute_new_literal():
+    """
+    Confirm we can create a new attribute literal from configuration.
+    """
+    column_data = ["1", "2", "3", "4"]
+    column_config = vc.ATTRIBUTE_NEW_LITERAL
+    data = pd.Series(column_data, name="Attribute Heading")
+
+
+    (column, _) = map_column_to_qb_component(
+        "New Attribute", column_config, data, cube_config_minor_version=0
+    )
+    _check_new_attribute_column(column, column_config, column_data, "New Attribute")
+
+
+@pytest.mark.vcr
+def test_attribute_new_resource_with_values():
+    """
+    Checks New attribute resource where values are provided inline.
+    """
+    column_data = ["a", "b", "c", "a"]
+    column_config = vc.ATTRIBUTE_NEW_RESOURCE_WITH_VALUES
+    data = pd.Series(column_data, name="Attribute Heading")
+
+    (column, _) = map_column_to_qb_component(
+        "New Attribute", column_config, data, cube_config_minor_version=0
+    )
+    _check_new_attribute_column(column, column_config, column_data, "New Attribute")
+
+
+@pytest.mark.vcr
+def test_attribute_existing_resource():
+    """
+    Populates options for an Existing Attribute resource, checking all properties are mapped
     through correctly
     """
     column_data = ["a", "b", "c", "a"]
-    column_config = {
-        "type": "attribute",
-        "label": "The New Attribute",
-        "description": "A description of the attribute",
-        "values": True,
-        "required": True,
-        "from_existing": "http://gss-cogs/dimesions/#period",
-        "definition_uri": "http://wikipedia.com/#periods",
-    }
+    column_config = vc.ATTRIBUTE_EXISTING_RESOURCE
     data = pd.Series(column_data, name="Attribute Heading")
 
     (column, _) = map_column_to_qb_component(
-        "New Attribute", column_config, data, cube_config_minor_version=0
-    )
-    _check_new_attribute_column(column, column_config, column_data, "New Attribute")
-
-
-@pytest.mark.vcr
-def test_attribute_new_ok():
-    """
-    Checks New attribute when description, values, from_existing and definition_uri options
-    are omitted
-    ** Values False
-    """
-    column_data = ["a", "b", "c", "a"]
-    column_config = {
-        "type": "attribute",
-        "label": "Attribute Label",
-        "description": "A description of the attribute",
-        "values": False,
-    }
-    data = pd.Series(column_data, name="Attribute Heading")
-
-    (column, _) = map_column_to_qb_component(
-        "New Attribute", column_config, data, cube_config_minor_version=0
-    )
-    _check_new_attribute_column(column, column_config, column_data, "New Attribute")
-
-
-@pytest.mark.vcr
-def test_attribute_new_ok():
-    """
-    Checks New attribute when description, values, from_existing and definition_uri options
-    are omitted
-    """
-    column_data = ["a", "b", "c", "a"]
-    column_config = {
-        "type": "attribute",
-        "label": "Attribute Label",
-        "description": "A description of the attribute",
-        "values": [
-            {
-                "label": "Value Label A",
-                "description": "Value Description A",
-                "from_existing": "http://example.org/sources/A",
-                "definition_uri": "http://example.org/definitions/A",
-            },
-            {
-                "label": "Value Label B",
-                "description": "Value Description B",
-                "from_existing": "http://example.org/sources/B",
-                "definition_uri": "http://example.org/definitions/B/",
-            },
-        ],
-    }
-    data = pd.Series(column_data, name="Attribute Heading")
-
-    (column, _) = map_column_to_qb_component(
-        "New Attribute", column_config, data, cube_config_minor_version=0
-    )
-    _check_new_attribute_column(column, column_config, column_data, "New Attribute")
-
-
-@pytest.mark.vcr
-def test_attribute_existing_ok():
-    """
-    Populates options for an Existing Attribute checks all properties are mapped through correctly
-    """
-    column_data = ["a", "b", "c", "a"]
-    column_config = {
-        "type": "attribute",
-        "from_existing": "http://gss-cogs/dimesions/#period",
-    }
-    data = pd.Series(column_data, name="Attribute Heading")
-
-    (column, _) = map_column_to_qb_component(
-        "Existing Attribute", column_config, data, cube_config_minor_version=0
+        "Existing Resource Attribute", column_config, data, cube_config_minor_version=0
     )
 
     # Confirm a Column is returned
@@ -420,18 +369,34 @@ def test_attribute_existing_ok():
 
 
 @pytest.mark.vcr
-def test_attribute_existing_ok():
+def test_attribute_existing_literal():
+    """
+    Populates options for an Existing Attribute checks all properties are mapped through correctly
+    """
+    column_config = vc.ATTRIBUTE_EXISTING_LITERAL
+    (column, _) = map_column_to_qb_component(
+        "Existing Literal Attribute", column_config, "", cube_config_minor_version=0
+    )
+
+    # Confirm a Column is returned
+    assert isinstance(column, QbColumn)
+    assert hasattr(column, "type") is False
+
+    # And the Column is of the expected type
+    assert isinstance(column.structural_definition, ExistingQbAttribute)
+    assert not hasattr(column.structural_definition, "code_list")
+    assert column.structural_definition.attribute_uri == column_config["from_existing"]
+    assert isinstance(column.structural_definition.arbitrary_rdf, list)
+    assert column.structural_definition.arbitrary_rdf == []
+
+
+@pytest.mark.vcr
+def test_attribute_existing_resource_has_values():
     """
     Checks that new (non nul) values are created from data for an existing attribute
-    ** values: True
     """
     column_data = ["a", "b", None, "a"]
-    column_config = {
-        "type": "attribute",
-        "from_existing": "http://gss-cofs.github.io/attributes/trade-direction",
-        "required": False,
-        "values": True,
-    }
+    column_config = vc.ATTRIBUTE_EXISTING_RESOURCE
     data = pd.Series(column_data, name="Attribute Heading")
 
     (column, _) = map_column_to_qb_component(
@@ -460,12 +425,12 @@ def test_attribute_existing_ok():
 
 
 @pytest.mark.vcr
-def test_measure_new_ok():
+def test_measure_new():
     """
     Populates options for an New Measures checks all properties are mapped through correctly
     """
     column_data = ["a", "b", "c", "a"]
-    column_config = {"type": "measures", "values": True}
+    column_config = vc.MEASURE_NEW
     data = pd.Series(column_data, name="New Measure")
 
     (column, _) = map_column_to_qb_component(
@@ -490,15 +455,12 @@ def test_measure_new_ok():
 
 
 @pytest.mark.vcr
-def test_measure_existing_ok():
+def test_measure_existing():
     """
     Populates options for existing Measures checks all properties are mapped through correctly
     """
     column_data = ["a", "b", "c", "a"]
-    column_config = {
-        "type": "measures",
-        "cell_uri_template": "http://example.org/measures/{+existing_measure}",
-    }
+    column_config = vc.MEASURE_EXISTING
     data = pd.Series(column_data, name="Existing Measure Series")
 
     (column, _) = map_column_to_qb_component(
@@ -529,12 +491,12 @@ def test_measure_existing_ok():
 
 
 @pytest.mark.vcr
-def test_unit_new_ok():
+def test_unit_new():
     """
     Populates options for an New Units checks all properties are mapped through correctly
     """
     column_data = ["a", "b", "c", "a"]
-    column_config = {"type": "units", "values": True}
+    column_config = vc.UNIT_NEW
     data = pd.Series(column_data, name="New Units")
 
     (column, _) = map_column_to_qb_component(
@@ -559,15 +521,12 @@ def test_unit_new_ok():
 
 
 @pytest.mark.vcr
-def test_units_existing_ok():
+def test_units_existing():
     """
     Populates options for an Existing Units checks all properties are mapped through correctly
     """
     column_data = ["a", "b", "c", "a"]
-    column_config = {
-        "type": "units",
-        "cell_uri_template": "http://example.org/unit/{+existing_unit}",
-    }
+    column_config = vc.UNIT_EXISTING
     data = pd.Series(column_data, name="Existing Unit Series")
 
     (column, _) = map_column_to_qb_component(
@@ -645,11 +604,7 @@ def test_new_dimension_existing_code_list():
     Ensure we can correctly define a new dimension using an existing code-list
     """
     column_data = ["a", "b", "c", "a"]
-    dimension_config = {
-        "label": "The New Dimension",
-        "code_list": "http://example.com/code-list#scheme",
-        "cell_uri_template": "http://example.com/code-list#{+new_dimension}",
-    }
+    dimension_config = vc.DIMENSION_EXISTING_CODELIST
     data = pd.Series(column_data, name="Dimension Heading")
 
     (column, _) = map_column_to_qb_component(
@@ -688,12 +643,6 @@ def test_column_template_expansion():
     assert isinstance(column.structural_definition, NewQbDimension)
     dimension = column.structural_definition
     assert dimension.label == "Year"
-
-    # Ensure that the `<column_name>` value gets replaced with the column's CSV-W safe name.
-    assert (
-        column.csv_column_uri_template
-        == "http://reference.data.gov.uk/id/year/{+the_column}"
-    )
 
 
 def test_load_catalog_metadata():
@@ -771,6 +720,35 @@ def test_date_time_column_extraction():
             "http://reference.data.gov.uk/id/year/2012", label="2012", code="2012"
         ),
     }
+
+    # csv_column_uri_template must be reset to None so that the URI automatically points to the
+    # newly created QbCompositeCodeList
+    assert column.csv_column_uri_template is None
+
+
+def test_observation_value_data_type_extraction():
+    """
+    Ensure that the data_type can be correctly extracted from an observation's JSON config.
+    """
+    data = pd.DataFrame({"The Column": [1, 2, 3]})
+
+    (column, _) = _get_qb_column_from_json(
+        {
+            "type": "observations",
+            "data_type": "integer",
+            "unit": "http://example.com/some-unit",
+            "measure": "http://example.com/some-measure",
+        },
+        "The Column",
+        data,
+        1,
+    )
+
+    assert isinstance(
+        column.structural_definition, QbSingleMeasureObservationValue
+    ), column.structural_definition
+    obs_val = column.structural_definition
+    assert obs_val.data_type == "integer"
 
 
 if __name__ == "__main__":

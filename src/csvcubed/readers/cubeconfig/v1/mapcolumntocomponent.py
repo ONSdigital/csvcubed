@@ -6,13 +6,17 @@ Map info.json v1.* definitions to QB column components
 """
 import copy
 from pathlib import Path
+import logging
 from typing import Union, Optional, Tuple
 
 from jsonschema.exceptions import ValidationError
 
 from csvcubed.models.cube.qb.columns import QbColumn
+from csvcubed.models.cube.qb.components.codelist import CompositeQbCodeList
 from csvcubed.inputs import PandasDataTypes
 import csvcubed.readers.cubeconfig.v1.columnschema as schema
+
+_logger = logging.getLogger(__name__)
 
 
 def map_column_to_qb_component(
@@ -29,6 +33,7 @@ def map_column_to_qb_component(
     schema_mapping = _from_column_dict_to_schema_model(column_title, column)
 
     if isinstance(schema_mapping, schema.NewDimension):
+        _logger.debug(f"Identified {schema_mapping.as_dict()} as NewDimension")
         (
             structural_definition,
             code_list_schema_validation_errors,
@@ -38,16 +43,26 @@ def map_column_to_qb_component(
             cube_config_minor_version,
             config_path=config_path,
         )
+
+        # If the code list is a CompositeQbCodeList, the uri template needs to be reset to point at the newly
+        # created composite code list
+        cell_uri_template = (
+            None
+            if isinstance(structural_definition.code_list, CompositeQbCodeList)
+            else schema_mapping.cell_uri_template
+        )
+
         return (
             QbColumn(
                 column_title,
                 structural_definition,
-                csv_column_uri_template=schema_mapping.cell_uri_template,
+                csv_column_uri_template=cell_uri_template,
             ),
             code_list_schema_validation_errors,
         )
 
     elif isinstance(schema_mapping, schema.ExistingDimension):
+        _logger.debug(f"Identified {schema_mapping.as_dict()} as ExistingDimension")
         return (
             QbColumn(
                 column_title,
@@ -57,7 +72,18 @@ def map_column_to_qb_component(
             [],
         )
 
-    elif isinstance(schema_mapping, schema.NewAttribute):
+    elif isinstance(schema_mapping, schema.NewAttributeLiteral):
+        _logger.debug(f"Identified {schema_mapping.as_dict()} as NewAttributeLiteral")
+        return (
+            QbColumn(
+                column_title,
+                schema_mapping.map_to_new_qb_attribute(column_title),
+            ),
+            [],
+        )
+
+    elif isinstance(schema_mapping, schema.NewAttributeResource):
+        _logger.debug(f"Identified {schema_mapping.as_dict()} as NewAttributeResource")
         return (
             QbColumn(
                 column_title,
@@ -67,7 +93,19 @@ def map_column_to_qb_component(
             [],
         )
 
-    elif isinstance(schema_mapping, schema.ExistingAttribute):
+    elif isinstance(schema_mapping, schema.ExistingAttributeLiteral):
+        _logger.debug(
+            f"Identified {schema_mapping.as_dict()} as ExistingAttributeLiteral"
+        )
+        return (
+            QbColumn(column_title, schema_mapping.map_to_existing_qb_attribute()),
+            [],
+        )
+
+    elif isinstance(schema_mapping, schema.ExistingAttributeResource):
+        _logger.debug(
+            f"Identified {schema_mapping.as_dict()} as ExistingAttributeResource"
+        )
         return (
             QbColumn(
                 column_title,
@@ -78,12 +116,14 @@ def map_column_to_qb_component(
         )
 
     elif isinstance(schema_mapping, schema.NewUnits):
+        _logger.debug(f"Identified {schema_mapping.as_dict()} as NewUnits")
         return (
             QbColumn(column_title, schema_mapping.map_to_new_qb_multi_units(data)),
             [],
         )
 
     elif isinstance(schema_mapping, schema.ExistingUnits):
+        _logger.debug(f"Identified {schema_mapping.as_dict()} as ExistingUnits")
         return (
             QbColumn(
                 column_title,
@@ -94,6 +134,7 @@ def map_column_to_qb_component(
         )
 
     elif isinstance(schema_mapping, schema.NewMeasures):
+        _logger.debug(f"Identified {schema_mapping.as_dict()} as NewMeasures")
         return (
             QbColumn(
                 column_title, schema_mapping.map_to_new_multi_measure_dimension(data)
@@ -102,6 +143,7 @@ def map_column_to_qb_component(
         )
 
     elif isinstance(schema_mapping, schema.ExistingMeasures):
+        _logger.debug(f"Identified {schema_mapping.as_dict()} as ExistingMeasures")
         return (
             QbColumn(
                 column_title,
@@ -114,6 +156,7 @@ def map_column_to_qb_component(
         )
 
     elif isinstance(schema_mapping, schema.ObservationValue):
+        _logger.debug(f"Identified {schema_mapping.as_dict()} as ObservationValue")
         return (QbColumn(column_title, schema_mapping.map_to_qb_observation()), [])
 
     else:
@@ -126,8 +169,10 @@ def _from_column_dict_to_schema_model(
 ) -> Union[
     schema.NewDimension,
     schema.ExistingDimension,
-    schema.NewAttribute,
-    schema.ExistingAttribute,
+    schema.NewAttributeLiteral,
+    schema.NewAttributeResource,
+    schema.ExistingAttributeLiteral,
+    schema.ExistingAttributeResource,
     schema.NewUnits,
     schema.ExistingUnits,
     schema.NewMeasures,
@@ -151,20 +196,25 @@ def _from_column_dict_to_schema_model(
         else:
             raise Exception(
                 f"Column with config: '{column}' did not match "
-                f"either New or Existing Dimension using schema"
+                "either New or Existing Dimension using schema"
             )
     elif column_type == "attribute":
-        if schema.NewAttribute.dict_fields_match_class(column_without_type):
-            if schema.ExistingAttribute.dict_fields_match_class(column_without_type):
-                return schema.ExistingAttribute.from_dict(column_without_type)
-            else:
-                return schema.NewAttribute.from_dict(column_without_type)
-        elif schema.ExistingAttribute.dict_fields_match_class(column_without_type):
-            return schema.ExistingAttribute.from_dict(column_without_type)
+        if schema.ExistingAttributeResource.dict_fields_match_class(
+            column_without_type
+        ):
+            return schema.ExistingAttributeResource.from_dict(column_without_type)
+        elif schema.ExistingAttributeLiteral.dict_fields_match_class(
+            column_without_type
+        ):
+            return schema.ExistingAttributeLiteral.from_dict(column_without_type)
+        elif schema.NewAttributeLiteral.dict_fields_match_class(column_without_type):
+            return schema.NewAttributeLiteral.from_dict(column_without_type)
+        elif schema.NewAttributeResource.dict_fields_match_class(column_without_type):
+            return schema.NewAttributeResource.from_dict(column_without_type)
         else:
             raise Exception(
                 f"Column with config '{column}' did not match either New or "
-                f"Existing Attribute schema"
+                f"Existing schema as either a Literal or Resource attribute"
             )
     elif column_type == "units":
         if schema.ExistingUnits.dict_fields_match_class(column_without_type):

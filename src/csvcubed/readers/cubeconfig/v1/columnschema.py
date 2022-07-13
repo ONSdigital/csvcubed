@@ -45,7 +45,6 @@ from csvcubed.models.cube.qb.components import (
     NewQbAttributeLiteral,
     NewQbCodeList,
     QbCodeList,
-    codelist,
 )
 from csvcubed.inputs import PandasDataTypes
 from csvcubed.utils.uri import (
@@ -240,43 +239,66 @@ class AttributeValue(SchemaBaseClass):
 
 
 @dataclass
-class ExistingAttribute(SchemaBaseClass):
+class ExistingAttributeLiteral(SchemaBaseClass):
     from_existing: str
-    data_type: Optional[str] = None
+    data_type: str
     required: bool = False
+
+    def map_to_existing_qb_attribute(self) -> ExistingQbAttributeLiteral:
+
+        return ExistingQbAttributeLiteral(
+            attribute_uri=self.from_existing,
+            is_required=self.required,
+            data_type=self.data_type,
+        )
+
+
+@dataclass
+class ExistingAttributeResource(SchemaBaseClass):
+    from_existing: str
     values: Union[bool, List[AttributeValue]] = True
+    required: bool = False
     cell_uri_template: Optional[str] = None
 
     def map_to_existing_qb_attribute(
         self, data: PandasDataTypes
-    ) -> Union[ExistingQbAttribute, ExistingQbAttributeLiteral]:
+    ) -> ExistingQbAttribute:
 
-        if self.data_type is None:
-            return ExistingQbAttribute(
-                self.from_existing,
-                new_attribute_values=_get_new_attribute_values(data, self.values),
-                is_required=self.required,
-            )
-
-        else:
-            if self.values:
-                raise Exception(
-                    "Attributes cannot represent both literal values and attribute (resource) values"
-                )
-            return ExistingQbAttributeLiteral(
-                attribute_uri=self.from_existing,
-                data_type=self.data_type,
-                is_required=self.required,
-            )
+        return ExistingQbAttribute(
+            self.from_existing,
+            new_attribute_values=_get_new_attribute_values(data, self.values),
+            is_required=self.required,
+        )
 
 
 @dataclass
-class NewAttribute(SchemaBaseClass):
+class NewAttributeLiteral(SchemaBaseClass):
+    label: str
+    data_type: str
+    description: Optional[str] = None
+    from_existing: Optional[str] = None
+    definition_uri: Optional[str] = None
+    required: bool = False
+
+    def map_to_new_qb_attribute(self, column_title: str) -> NewQbAttributeLiteral:
+        label = self.label or column_title
+
+        return NewQbAttributeLiteral(
+            label=label,
+            description=self.description,
+            data_type=self.data_type,
+            parent_attribute_uri=self.from_existing,
+            source_uri=self.definition_uri,
+            is_required=self.required,
+        )
+
+
+@dataclass
+class NewAttributeResource(SchemaBaseClass):
     label: Optional[str] = None
     description: Optional[str] = None
     from_existing: Optional[str] = None
     definition_uri: Optional[str] = None
-    data_type: Optional[str] = None
     required: bool = False
     values: Union[bool, List[AttributeValue]] = True
     cell_uri_template: Optional[str] = None
@@ -286,28 +308,14 @@ class NewAttribute(SchemaBaseClass):
     ) -> NewQbAttribute:
         label = self.label or column_title
 
-        if self.data_type is None:
-            return NewQbAttribute(
-                label=label,
-                description=self.description,
-                new_attribute_values=_get_new_attribute_values(data, self.values),
-                parent_attribute_uri=self.from_existing,
-                source_uri=self.definition_uri,
-                is_required=self.required,
-            )
-        else:
-            if isinstance(self.values, list) or self.values:
-                raise Exception(
-                    "Attributes cannot represent both literal values and attribute (resource) values"
-                )
-            return NewQbAttributeLiteral(
-                label=label,
-                description=self.description,
-                data_type=self.data_type,
-                parent_attribute_uri=self.from_existing,
-                source_uri=self.definition_uri,
-                is_required=self.required,
-            )
+        return NewQbAttribute(
+            label=label,
+            description=self.description,
+            new_attribute_values=_get_new_attribute_values(data, self.values),
+            parent_attribute_uri=self.from_existing,
+            source_uri=self.definition_uri,
+            is_required=self.required,
+        )
 
 
 @dataclass
@@ -367,9 +375,8 @@ class Measure(SchemaBaseClass):
             label=self.label,
             description=self.description,
             parent_measure_uri=self.from_existing,
-            source_uri=self.definition_uri
+            source_uri=self.definition_uri,
         )
-
 
 
 @dataclass
@@ -411,7 +418,7 @@ class ExistingMeasures(SchemaBaseClass):
 
 @dataclass
 class ObservationValue(SchemaBaseClass):
-    datatype: str = "decimal"
+    data_type: str = "decimal"
     unit: Union[None, str, Unit] = None
     measure: Union[None, str, Measure] = None
 
@@ -428,7 +435,7 @@ class ObservationValue(SchemaBaseClass):
 
         if self.measure is None:
             # Multi-measure cube
-            return QbMultiMeasureObservationValue(data_type=self.datatype, unit=unit)
+            return QbMultiMeasureObservationValue(data_type=self.data_type, unit=unit)
         else:
             # Single measure qb
             measure = None
@@ -442,7 +449,7 @@ class ObservationValue(SchemaBaseClass):
                 raise ValueError(f"Unhandled measure type: {self.measure}")
 
             return QbSingleMeasureObservationValue(
-                measure=measure, unit=unit, data_type=self.datatype or "decimal"
+                measure=measure, unit=unit, data_type=self.data_type or "decimal"
             )
 
 

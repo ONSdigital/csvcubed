@@ -9,7 +9,7 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - python-requests/2.27.1
+      - python-requests/2.28.0
     method: GET
     uri: https://purl.org/csv-cubed/qube-config/templates/preset_column_config.json
   response:
@@ -28,7 +28,7 @@ interactions:
 
         <h1>Found</h1>
 
-        <p>The resource requested is available <a href="https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/csvcubed/csvcubed/readers/cubeconfig/v1_0/templates/preset_column_config.json">here</a>.<p>
+        <p>The resource requested is available <a href="https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/src/csvcubed/readers/cubeconfig/v1_0/templates/preset_column_config.json">here</a>.<p>
 
         </body>
 
@@ -37,13 +37,13 @@ interactions:
       access-control-allow-origin:
       - '*'
       content-length:
-      - '297'
+      - '292'
       content-type:
       - text/html; charset=utf-8
       date:
-      - Tue, 10 May 2022 16:53:33 GMT
+      - Fri, 08 Jul 2022 11:16:33 GMT
       location:
-      - https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/csvcubed/csvcubed/readers/cubeconfig/v1_0/templates/preset_column_config.json
+      - https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/src/csvcubed/readers/cubeconfig/v1_0/templates/preset_column_config.json
       server:
       - gunicorn
     status:
@@ -59,9 +59,9 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - python-requests/2.27.1
+      - python-requests/2.28.0
     method: GET
-    uri: https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/csvcubed/csvcubed/readers/cubeconfig/v1_0/templates/preset_column_config.json
+    uri: https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/src/csvcubed/readers/cubeconfig/v1_0/templates/preset_column_config.json
   response:
     body:
       string: !!binary |
@@ -87,13 +87,13 @@ interactions:
       Content-Type:
       - text/plain; charset=utf-8
       Date:
-      - Tue, 10 May 2022 16:53:33 GMT
+      - Fri, 08 Jul 2022 11:16:33 GMT
       ETag:
       - W/"f900c7f65494a650d725890b29bb676e2adcb73776a1406c770143117cf368de"
       Expires:
-      - Tue, 10 May 2022 16:58:33 GMT
+      - Fri, 08 Jul 2022 11:21:33 GMT
       Source-Age:
-      - '0'
+      - '24'
       Strict-Transport-Security:
       - max-age=31536000
       Vary:
@@ -101,21 +101,21 @@ interactions:
       Via:
       - 1.1 varnish
       X-Cache:
-      - MISS
+      - HIT
       X-Cache-Hits:
-      - '0'
+      - '1'
       X-Content-Type-Options:
       - nosniff
       X-Fastly-Request-ID:
-      - 274f1b183a53d30b30e477b30a7d76ae8908b7c6
+      - fd61fec346cf412c833b6aecf74a4ccb4a4fdd9d
       X-Frame-Options:
       - deny
       X-GitHub-Request-Id:
-      - 23E6:6878:4F8DE:6F70F:627A988D
+      - 6E72:4F2B:249594:321167:62C80E3E
       X-Served-By:
-      - cache-lhr7362-LHR
+      - cache-lhr7351-LHR
       X-Timer:
-      - S1652201614.753015,VS0,VE188
+      - S1657278994.733525,VS0,VE0
       X-XSS-Protection:
       - 1; mode=block
     status:
@@ -131,7 +131,7 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - python-requests/2.27.1
+      - python-requests/2.28.0
     method: GET
     uri: https://purl.org/csv-cubed/qube-config/templates/calendar-year.json
   response:
@@ -150,7 +150,7 @@ interactions:
 
         <h1>Found</h1>
 
-        <p>The resource requested is available <a href="https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/csvcubed/csvcubed/readers/cubeconfig/v1_0/templates/calendar-year.json">here</a>.<p>
+        <p>The resource requested is available <a href="https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/src/csvcubed/readers/cubeconfig/v1_0/templates/calendar-year.json">here</a>.<p>
 
         </body>
 
@@ -159,13 +159,13 @@ interactions:
       access-control-allow-origin:
       - '*'
       content-length:
-      - '290'
+      - '285'
       content-type:
       - text/html; charset=utf-8
       date:
-      - Tue, 10 May 2022 16:53:34 GMT
+      - Fri, 08 Jul 2022 11:16:34 GMT
       location:
-      - https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/csvcubed/csvcubed/readers/cubeconfig/v1_0/templates/calendar-year.json
+      - https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/src/csvcubed/readers/cubeconfig/v1_0/templates/calendar-year.json
       server:
       - gunicorn
     status:
@@ -181,9 +181,9 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - python-requests/2.27.1
+      - python-requests/2.28.0
     method: GET
-    uri: https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/csvcubed/csvcubed/readers/cubeconfig/v1_0/templates/calendar-year.json
+    uri: https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/src/csvcubed/readers/cubeconfig/v1_0/templates/calendar-year.json
   response:
     body:
       string: !!binary |
@@ -209,13 +209,13 @@ interactions:
       Content-Type:
       - text/plain; charset=utf-8
       Date:
-      - Tue, 10 May 2022 16:53:34 GMT
+      - Fri, 08 Jul 2022 11:16:34 GMT
       ETag:
       - W/"ec3cbf1671d9608474b67bac5ef1b2f7f391d45e3cae700fb9988deef9e4c237"
       Expires:
-      - Tue, 10 May 2022 16:58:34 GMT
+      - Fri, 08 Jul 2022 11:21:34 GMT
       Source-Age:
-      - '0'
+      - '24'
       Strict-Transport-Security:
       - max-age=31536000
       Vary:
@@ -223,21 +223,21 @@ interactions:
       Via:
       - 1.1 varnish
       X-Cache:
-      - MISS
+      - HIT
       X-Cache-Hits:
-      - '0'
+      - '1'
       X-Content-Type-Options:
       - nosniff
       X-Fastly-Request-ID:
-      - 5236a28d810972a8a71065283c99ac71fd56f792
+      - 2319fcb4f5ebc0250a193dbe00dc139f91fa848b
       X-Frame-Options:
       - deny
       X-GitHub-Request-Id:
-      - 4988:90A2:93FB0:B769A:627A988E
+      - BB24:6E52:E7D459:1115809:62C80E3F
       X-Served-By:
-      - cache-lhr7362-LHR
+      - cache-lhr7351-LHR
       X-Timer:
-      - S1652201615.548773,VS0,VE394
+      - S1657278994.156435,VS0,VE0
       X-XSS-Protection:
       - 1; mode=block
     status:
