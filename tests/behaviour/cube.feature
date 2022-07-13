@@ -260,7 +260,7 @@ Feature: Cube!
     """
 
     Scenario: This should succeed in accepting schema cube-config v1.2 producing valid output
-    Given The config json file "v1.0/cube_data_part_config.json" and the existing tidy data csv file "v1.0/cube_data_part_config.csv"
+    Given The config json file "v1.2/cube_data_part_config.json" and the existing tidy data csv file "v1.2/cube_data_part_config.csv"
     When The cube is created
     Then The cube Metadata should match
       """
