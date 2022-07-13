@@ -62,6 +62,11 @@ def step_impl(context):
         / "cube-config"
         / "v1_1"
         / "schema.json",
+        "https://purl.org/csv-cubed/qube-config/v1.2": APP_ROOT_DIR_PATH
+        / "schema"
+        / "cube-config"
+        / "v1_2"
+        / "schema.json",
         "https://purl.org/csv-cubed/qube-config/v1": APP_ROOT_DIR_PATH
         / "schema"
         / "cube-config"

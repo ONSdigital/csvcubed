@@ -61,3 +61,11 @@ The templates are currently in version 1.0; with future development planned. You
 | Template                                                                                                                                         | Description                                                 | Example    |
 | ------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------- | ---------- |
 | [observation-status](https://purl.org/csv-cubed/qube-config/templates/observation-status.json) | A template which describes the status of the observed value | Suppressed |
+
+### Unit templates
+
+Units used, have to match the terminal part of the URI exactly including case sensitivity.
+
+| Template                                                                                                                                         | Description                                                 | Example    |
+| ------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------- | ---------- |
+| [qudt-units](https://purl.org/csv-cubed/qube-config/templates/qudt-units.json) | A template which contains units of measurement | Suppressed |
