@@ -260,6 +260,29 @@ Feature: Cube!
     """
 
     Scenario: This should succeed in accepting schema cube-config v1.2 producing valid output
+    Given The config json file "v1.0/cube_data_part_config.json" and the existing tidy data csv file "v1.0/cube_data_part_config.csv"
+    When The cube is created
+    Then The cube Metadata should match
+      """
+        {"title": "Tests/test-cases/config/schema-cube-data-config-ok",
+        "identifier": "schema-id",
+        "summary": "a summary",
+        "description": "Schema for testing",
+        "creator_uri": "https://www.gov.uk/government/organisations/office-for-national-statistics",
+        "publisher_uri": "http://statistics.data.gov.uk",
+        "landing_page_uris": [],
+        "theme_uris": ["A Theme"],
+        "keywords": ["two"],
+        "dataset_issued": "2022-03-04T17:00:00",
+        "dataset_modified": "2022-03-04T18:00:00",
+        "license_uri": "the license",
+        "public_contact_point_uri": None,
+        "uri_safe_identifier_override": None
+        }
+
+      """
+    
+    Scenario: Output a cube using cube-config schema 1.2, when the sort object is not defined but the sort order is defined
     Given The config json file "v1.2/cube_config_hierarchical_without_sort.json" and the existing tidy data csv file "v1.2/data.csv"
     When The cube is created
     Then The cube Metadata should match
@@ -290,4 +313,3 @@ Feature: Cube!
           {'csv_column_title': 'Unit', 'structural_definition': {'units': [{'label': 'cm', 'description': None, 'source_uri': None, 'uri_safe_identifier_override': None, 'arbitrary_rdf': [], 'base_unit': None, 'base_unit_scaling_factor': None, 'qudt_quantity_kind_uri': None, 'si_base_unit_conversion_multiplier': None}]}, 'csv_column_uri_template': None, 'uri_safe_identifier_override': None}
       ]
     """
-    #Scenario: This should succeed in identifying units as a valid cloumn template
