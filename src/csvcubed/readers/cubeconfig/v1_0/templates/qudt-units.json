@@ -1,5 +1,5 @@
 {
-    "type": "unit",
+    "type": "units",
     "label": "qudt",
     "cell_uri_template": "http://qudt.org/vocab/unit/{+<column_name>}"
 }
