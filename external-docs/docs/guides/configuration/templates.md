@@ -68,4 +68,4 @@ Units used, have to match the terminal part of the URI exactly including case se
 
 | Template                                                                                                                                         | Description                                                 | Example    |
 | ------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------- | ---------- |
-| [qudt-units](https://purl.org/csv-cubed/qube-config/templates/qudt-units.json) | A template which contains units of measurement | Suppressed |
+| [qudt-units](https://purl.org/csv-cubed/qube-config/templates/qudt-units.json) | A template which contains units of measurement | http://qudt.org/vocab/unit/PoundSterling|
