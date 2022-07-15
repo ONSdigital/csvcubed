@@ -84,7 +84,6 @@ def get_deserialiser(
         Generates a Cube structure from a config.json input.
         :return: tuple of cube and json schema errors (if any)
         """
-        data, data_errors = read_and_check_csv(csv_path)
 
         # If we have a config json file then load it and validate against its reference schema
         if config_path:
@@ -97,7 +96,7 @@ def get_deserialiser(
                 schema_validation_errors = validate_dict_against_schema(
                     value=config, schema=schema
                 )
-            except JSONDecodeError as err:
+            except JSONDecodeError:
                 log.warning(
                     "Validation of the config json is not currently available, continuing without validation."
                 )
@@ -107,6 +106,8 @@ def get_deserialiser(
         else:
             config = {"title": generate_title_from_file_name(csv_path)}
             schema_validation_errors = []
+
+        data, data_errors = read_and_check_csv(config, csv_path)
 
         (cube, code_list_schema_validation_errors) = _get_cube_from_config_json_dict(
             data,

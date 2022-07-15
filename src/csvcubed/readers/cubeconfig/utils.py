@@ -1,11 +1,11 @@
 from pathlib import Path
-from typing import Union, Tuple, List
+from typing import Dict, List, Tuple, Union
 from pandas import DataFrame
 
 from csvcubed.utils.json import load_json_document
 from csvcubed.utils.uri import looks_like_uri
 from csvcubed.models.validationerror import ValidationError
-from csvcubed.utils.pandas import read_csv
+from csvcubed.utils.pandas import read_csv, kwargs_with_dimension_dtypes
 
 
 def load_resource(resource_path: Union[str, Path]) -> dict:
@@ -35,14 +35,16 @@ def generate_title_from_file_name(csv_path: Path) -> str:
     )
 
 
-def read_and_check_csv(csv_path: Path) -> Tuple[DataFrame, List[ValidationError]]:
+def read_and_check_csv(config: Dict, csv_path: Path, **kwargs: Dict) -> Tuple[DataFrame, List[ValidationError]]:
     """
-    Reads the csv data file and performs rudimentary checks.
+    Reads the csv data file, sets any required default data types and performs rudimentary checks.
     """
-    data, data_errors = read_csv(csv_path)
+
+    kwargs, kwargs_with_dimension_dtypes(config, **kwargs)
+    data, data_errors = read_csv(csv_path, **kwargs)
 
     if isinstance(data, DataFrame):
-        if data.shape[0] < 2:
+        if len(data) < 2:
             # Must have 2 or more rows, a heading row and a data row
             raise ValueError(
                 "CSV input must contain header row and at least one row of data"

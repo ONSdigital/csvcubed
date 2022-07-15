@@ -12,7 +12,7 @@ from typing import List, Tuple
 
 from pathlib import Path
 from rdflib import Graph
-from treelib import Node, Tree
+from treelib import Tree
 
 from csvcubed.cli.inspect.inspectsparqlmanager import (
     select_codelist_cols_by_dataset_url,
