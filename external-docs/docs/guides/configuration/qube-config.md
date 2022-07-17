@@ -17,7 +17,7 @@ The `qube-config.json` file has two sections:
 A CSV-W file contains metadata which improves discoverability of data publications. In csvcubed, we use a selection of metadata entries from established namespaces to enable users to contribute to the web of data faster. The metadata fields available, their description and defaults are as follows.
 
 | **field name** | **description**                                                                                          | **default value**                           |
-|----------------|----------------------------------------------------------------------------------------------------------|---------------------------------------------|
+| -------------- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------- |
 | `title`        | the title of the cube                                                                                    | A capital case version of the csv file name |
 | `description`  | a description of the contents of the cube                                                                | *none*                                      |
 | `publisher`    | a link to the publisher of the cube                                                                      | *none*                                      |
@@ -54,6 +54,7 @@ A column is assumed to be a dimension unless otherwise configured using the `typ
 
 Think of the principle of [MECE](https://en.wikipedia.org/wiki/MECE_principle).
 
+Moreover, the code list that defines the unique values permitted in a diemension can be defined by writing a [code-list-config.json](code-list-config.md).
 ### Measures
 
 > The *measure* [column] represent[s] the phenomenon being observed.
@@ -114,7 +115,7 @@ Unless the component being reused is a literal attribute and you're providing a 
 There are several configuration options available across column types except observations.
 
 | **field name**   | **description**                                                                                                           | **default value**                                                                |
-|------------------|---------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
 | `type`           | The type of the column (Required)                                                                                         | *dimension*                                                                      |
 | `label`          | The title of the column (Optional)                                                                                        | The capital case of the header in the csv file with spaces replacing underscores |
 | `description`    | A description of the contents of the column (Optional)                                                                    | *none*                                                                           |
@@ -125,23 +126,23 @@ The `from_existing` value when set provides the basis of linked data; it allows 
 
 ## Dimension configuration
 
-| **field name**      | **description**                                                                                                                                          | **default value**                                                                |
-|---------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
-| `type`              | The type of the column (Required)                                                                                                                        | *dimension*                                                                      |
-| `label`             | The title of the column (Optional)                                                                                                                       | The capital case of the header in the csv file with spaces replacing underscores |
-| `description`       | A description of the contents of the column (Optional)                                                                                                   | *none*                                                                           |
-| `from_existing`     | The uri of the resource for reuse/extension (Optional)                                                                                                   | *none*                                                                           |
-| `definition_uri`    | A uri of a resource to show how the column is created/managed (i.e. a uri of a PDF explaining a list of units) (Optional)                                | *none*                                                                           |
-| `range_uri`         | A uri which describes the range of the values within the column (Optional)                                                                               | *none*                                                                           |
-| `uri_override`      | Override the uri created automatically for the column (Optional) (Advanced)                                                                              | `tidy_data.csv#uri_safe_column_header_from_csv`                                  |
-| `cell_uri_template` | Override the uri generated for values within the uri (Optional) (Advanced)                                                                               | **TODO** Look this up                                                            |
-| `code_list`         | Link to an existing code list (uri), supress a code-list (false), file path to a [code-list-config.json](code-list-config.md) (uri), [in-line code list](code-list-config.md) (json), or generate a code-list (true) | true                                                                             |
-| `from_template`     | Use a [column template](templates.md)                                                                                                                    | *none*                                                                           |
+| **field name**      | **description**                                                                                                           | **default value**                                                                |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `type`              | The type of the column (Required)                                                                                         | *dimension*                                                                      |
+| `label`             | The title of the column (Optional)                                                                                        | The capital case of the header in the csv file with spaces replacing underscores |
+| `description`       | A description of the contents of the column (Optional)                                                                    | *none*                                                                           |
+| `from_existing`     | The uri of the resource for reuse/extension (Optional)                                                                    | *none*                                                                           |
+| `definition_uri`    | A uri of a resource to show how the column is created/managed (i.e. a uri of a PDF explaining a list of units) (Optional) | *none*                                                                           |
+| `range_uri`         | A uri which describes the range of the values within the column (Optional)                                                | *none*                                                                           |
+| `uri_override`      | Override the uri created automatically for the column (Optional) (Advanced)                                               | `tidy_data.csv#uri_safe_column_header_from_csv`                                  |
+| `cell_uri_template` | Override the uri generated for values within the uri (Optional) (Advanced)                                                | **TODO** Look this up                                                            |
+| `code_list`         | Link to an existing code list (uri), supress a code-list (false), or generate a code-list (true)                          | true                                                                             |
+| `from_template`     | Use a [column template](templates.md)                                                                                     | *none*                                                                           |
 
 ## Attributes
 
 | **field name**   | **description**                                                                                                                                                                | **default value**                                                                |
-|------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------- |
 | `type`           | The type of the column (Required)                                                                                                                                              | *dimension*                                                                      |
 | `label`          | The title of the column (Optional)                                                                                                                                             | The capital case of the header in the csv file with spaces replacing underscores |
 | `description`    | A description of the contents of the column (Optional)                                                                                                                         | *none*                                                                           |
@@ -157,7 +158,7 @@ The `from_existing` value when set provides the basis of linked data; it allows 
 Observations are the most important component of a CSV-W data set. Observation columns can have measures and units defined against them to obviate the need for separate unit and measure columns in a single unit/measure data set.
 
 | **field name** | **description**                                                                                                                                                                                                            | **default value** |
-|----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------|
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
 | `data_type`    | The data type of the observations. This should generally be a decimal or integer. (Optional)                                                                                                                               | *decimal*         |
 | `unit`         | The unit for this observation column; this can a uri to an existing unit, or a dictionary containing a new or extended existing unit. If there is a unit column this value must not be provided. (Optional)                | *none*            |
 | `measure`      | The measure for this observation column; this can be a uri to an existing dimension, or a dictionary containing a new or extneded existing measure. If there is a measure column this key must not be provided. (Optional) | *none*            |
@@ -167,7 +168,7 @@ Observations are the most important component of a CSV-W data set. Observation c
 Measure and unit columns are treated slightly differently to dimension, attribute, and observation columns. Measure and unit columns contain references to discrete units and measures. In both cases by defining `"type": "measure column"` or `"type": "unit column"` provides the same behaviour. Do not put measures in units columns and units and measure columns.
 
 | **field name** | f**description**                                                                                                                                                                                                                                                                     | **default value** |
-|----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------|
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------- |
 | `type`         | The type of the column, provide `"measure column"` for the measure column type or `"unit column"` for the unit column (Required)                                                                                                                                                     | *dimension*       |
 | `values`       | If basic units/measures are desired, a boolean value of `true` is used to signify to csvcubed to create units/measures from values of this column; otherwise values is a dictionary which defines the units/measures using the notion from [Measures and Units](#Measures and Units) | `true`            |
 
@@ -181,7 +182,7 @@ Units can either be attached to a Unit Column if there are a mixture of units in
 Measures have no unique configuration options.
 
 | **field name**   | **description**                                                                                                             | **default value** |
-|------------------|-----------------------------------------------------------------------------------------------------------------------------|-------------------|
+| ---------------- | --------------------------------------------------------------------------------------------------------------------------- | ----------------- |
 | `label`          | The title of the measure (Required; Optional if `from_existing` defined)                                                    | *none*            |
 | `description`    | A description of the contents of the measure (Optional)                                                                     | *none*            |
 | `from_existing`  | The uri of the resource for reuse/extension (Optional)                                                                      | *none*            |
@@ -192,7 +193,7 @@ Measures have no unique configuration options.
 Units are effectively attributes with additional options.
 
 | **field name**      | **description**                                                                                                                                                                                         | **default value** |
-|---------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------|
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
 | `label`             | The title of the unit (Required; Optional if `from_existing` defined)                                                                                                                                   | *none*            |
 | `description`       | A description of the contents of the unit (Optional)                                                                                                                                                    | *none*            |
 | `from_existing`     | The uri of the resource for reuse/extension (Optional)                                                                                                                                                  | *none*            |
