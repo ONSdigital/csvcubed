@@ -54,7 +54,6 @@ A column is assumed to be a dimension unless otherwise configured using the `typ
 
 Think of the principle of [MECE](https://en.wikipedia.org/wiki/MECE_principle).
 
-Moreover, the code list that defines the unique values permitted in a diemension can be defined by writing a [code-list-config.json](code-list-config.md).
 ### Measures
 
 > The *measure* [column] represent[s] the phenomenon being observed.
