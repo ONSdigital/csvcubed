@@ -8,7 +8,7 @@ This page discusses how to configure your cube with the greatest control and fle
 The `qube-config.json` file has two sections:
 
 1. **Metadata**
-   This section is used to describe the data set's catalog information to aide discovery, provide provinance and publication information, and optionally define the scope of the data set.
+   This section is used to describe the data set's catalog information to aid discovery, provide provinance and publication information, and optionally define the scope of the data set.
 2. **Column Definitions**
    This section is used to describe each column in the `.csv` file, classifying the column and defining how the column data is both represented and how it links semantically to other data.
 
