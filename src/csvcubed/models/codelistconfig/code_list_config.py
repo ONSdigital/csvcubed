@@ -13,7 +13,7 @@ from csvcubedmodels.dataclassbase import DataClassBase
 
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.utils.json import load_json_document
-from csvcubed.models.cube.qb.components import NewQbConcept, DuplicatedQbConcept
+from csvcubed.models.cube.qb.components import NewQbConcept
 from csvcubed.readers.catalogmetadata.v1.catalog_metadata_reader import (
     metadata_from_dict,
 )
@@ -177,19 +177,8 @@ class CodeListConfig(DataClassBase):
             ] = [(c, None) for c in self.concepts]
 
             for (concept, maybe_parent_concept) in concepts_with_maybe_parent:
-                if concept.same_as:
-                    new_concept = DuplicatedQbConcept(
-                        label=concept.label,
-                        code=concept.notation,
-                        parent_code=maybe_parent_concept.notation
-                        if maybe_parent_concept
-                        else None,
-                        sort_order=concept.sort_order,
-                        description=concept.description,
-                        existing_concept_uri=concept.same_as,
-                    )
-                else:
-                    new_concept = NewQbConcept(
+                new_qb_concepts.append(
+                    NewQbConcept(
                         label=concept.label,
                         code=concept.notation,
                         parent_code=maybe_parent_concept.notation
@@ -198,8 +187,7 @@ class CodeListConfig(DataClassBase):
                         sort_order=concept.sort_order,
                         description=concept.description,
                     )
-                new_qb_concepts.append(new_concept)
-
+                )
                 if any(concept.children):
                     concepts_with_maybe_parent += [
                         (child, concept) for child in concept.children
