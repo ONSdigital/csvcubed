@@ -3,10 +3,6 @@
     "title": "Mixed Geographies Code List",
     "description": "This mixes together concepts from the NUTS and ONS Geographies code lists to solve the NUTS 'England' problem.",
     "license": "http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
-    "sort": {
-        "by": "label",
-        "method": "ascending"
-    },
     "concepts": [
         {
             "label": "United Kingdom",
@@ -16,8 +12,7 @@
                 {
                     "label": "Wales",
                     "notation": "UKL",
-                    "same_as": "http://data.europa.eu/nuts/code/UKL",
-                    "sort_order": 0
+                    "same_as": "http://data.europa.eu/nuts/code/UKL"
                 },
                 {
                     "label": "Scotland",
@@ -32,20 +27,17 @@
                         {
                             "label": "London",
                             "notation": "UKI",
-                            "same_as": "http://data.europa.eu/nuts/code/UKI",
-                            "sort_order": 0
+                            "same_as": "http://data.europa.eu/nuts/code/UKI"
                         },
                         {
                             "label": "North East (England)",
                             "notation": "UKC",
-                            "same_as": "http://data.europa.eu/nuts/code/UKC",
-                            "sort_order": 2
+                            "same_as": "http://data.europa.eu/nuts/code/UKC"
                         },
                         {
                             "label": "North West (England)",
                             "notation": "UKD",
-                            "same_as": "http://data.europa.eu/nuts/code/UKD",
-                            "sort_order": 1
+                            "same_as": "http://data.europa.eu/nuts/code/UKD"
                         }
                     ]
                 }
