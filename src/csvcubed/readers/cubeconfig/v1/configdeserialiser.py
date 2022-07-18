@@ -33,6 +33,7 @@ from csvcubed.readers.cubeconfig.v1.mapcolumntocomponent import (
     map_column_to_qb_component,
 )
 
+
 # Used to determine whether a column name matches accepted conventions
 from ...preconfiguredtemplates import apply_preconfigured_values_from_template
 
@@ -170,6 +171,7 @@ def _get_qb_column_from_json(
         column_config=column_config,
         column_name=column_title,
     )
+
     return map_column_to_qb_component(
         column_title,
         column_config,

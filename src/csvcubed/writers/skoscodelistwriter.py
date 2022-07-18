@@ -8,21 +8,23 @@ import json
 import logging
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import List
 import pandas as pd
+
 from csvcubedmodels.rdf import ExistingResource
 
 from csvcubed.models.cube.qb.components import (
     RdfSerialisationHint,
     NewQbCodeList,
     CompositeQbCodeList,
+    DuplicatedQbConcept,
 )
+from csvcubed.models.cube.qb.components.concept import NewQbConcept
 from csvcubed.models.cube.uristyle import URIStyle
 from csvcubed.utils.dict import rdf_resource_to_json_ld
 from csvcubed.models.rdf.conceptschemeincatalog import ConceptSchemeInCatalog
 from csvcubed.writers.urihelpers.skoscodelist import SkosCodeListNewUriHelper
 from csvcubed.writers.writerbase import WriterBase
-
-CODE_LIST_NOTATION_COLUMN_NAME = "notation"
 
 _logger = logging.getLogger(__name__)
 
@@ -37,6 +39,14 @@ class SkosCodeListWriter(WriterBase):
     @property
     def csv_metadata_file_name(self) -> str:
         return f"{self.csv_file_name}-metadata.json"
+
+    @staticmethod
+    def has_duplicated_qb_concepts(code_list: NewQbCodeList) -> bool:
+        return any(
+            True
+            for concept in code_list.concepts
+            if isinstance(concept, DuplicatedQbConcept)
+        )
 
     def __post_init__(self):
         self.csv_file_name = f"{self.new_code_list.metadata.uri_safe_identifier}.csv"
@@ -77,6 +87,12 @@ class SkosCodeListWriter(WriterBase):
     def _get_csvw_table_schema(self) -> dict:
         csvw_columns = [
             {
+                "titles": "Uri Identifier",
+                "name": "uri_identifier",
+                "required": True,
+                "suppressOutput": True,
+            },
+            {
                 "titles": "Label",
                 "name": "label",
                 "required": True,
@@ -84,16 +100,16 @@ class SkosCodeListWriter(WriterBase):
             },
             {
                 "titles": "Notation",
-                "name": CODE_LIST_NOTATION_COLUMN_NAME,
+                "name": "notation",
                 "required": True,
                 "propertyUrl": "skos:notation",
             },
             {
-                "titles": "Parent Notation",
-                "name": "parent_notation",
+                "titles": "Parent Uri Identifier",
+                "name": "parent_uri_identifier",
                 "required": False,
                 "propertyUrl": "skos:broader",
-                "valueUrl": self.uri_helper.get_concept_uri("{+parent_notation}"),
+                "valueUrl": self.uri_helper.get_concept_uri("{+parent_uri_identifier}"),
             },
             {
                 "titles": "Sort Priority",
@@ -110,8 +126,12 @@ class SkosCodeListWriter(WriterBase):
             },
         ]
 
-        if isinstance(self.new_code_list, CompositeQbCodeList):
-            _logger.debug("Code list is composite. Linking to original concept URIs.")
+        if isinstance(
+            self.new_code_list, CompositeQbCodeList
+        ) or self.has_duplicated_qb_concepts(self.new_code_list):
+            _logger.debug(
+                "Code list is composite has a duplicated concept. Linking to original concept URIs."
+            )
 
             csvw_columns.append(
                 {
@@ -144,8 +164,8 @@ class SkosCodeListWriter(WriterBase):
         )
         return {
             "columns": csvw_columns,
-            "aboutUrl": self.uri_helper.get_concept_uri("{+notation}"),
-            "primaryKey": CODE_LIST_NOTATION_COLUMN_NAME,
+            "aboutUrl": self.uri_helper.get_concept_uri("{+uri_identifier}"),
+            "primaryKey": "uri_identifier",
         }
 
     def _get_csvw_metadata(self) -> dict:
@@ -174,22 +194,49 @@ class SkosCodeListWriter(WriterBase):
         )
         return concept_scheme_with_metadata
 
+    def _get_parent_concept(self, parent_code: str) -> NewQbConcept:
+        filtered_concepts: List[NewQbConcept] = [
+            c for c in self.new_code_list.concepts if c.code == parent_code
+        ]
+        if len(filtered_concepts) == 0:
+            raise Exception(
+                f"Unable to find parent concept with parent code {parent_code}"
+            )
+        elif len(filtered_concepts) > 1:
+            raise Exception(
+                f"More than one concept found for parent code {parent_code}"
+            )
+
+        return filtered_concepts[0]
+
     def _get_code_list_data(self) -> pd.DataFrame:
         data_frame = pd.DataFrame(
             {
+                "Uri Identifier": [
+                    c.uri_safe_identifier for c in self.new_code_list.concepts
+                ],
                 "Label": [c.label for c in self.new_code_list.concepts],
                 "Notation": [c.code for c in self.new_code_list.concepts],
-                "Parent Notation": [c.parent_code for c in self.new_code_list.concepts],
+                "Parent Uri Identifier": [
+                    self._get_parent_concept(c.parent_code).uri_safe_identifier
+                    if c.parent_code
+                    else None
+                    for c in self.new_code_list.concepts
+                ],
                 "Sort Priority": [
-                    c.sort_order or i for i, c in enumerate(self.new_code_list.concepts)
+                    i if c.sort_order is None else c.sort_order
+                    for i, c in enumerate(self.new_code_list.concepts)
                 ],
                 "Description": [c.description for c in self.new_code_list.concepts],
             }
         )
 
-        if isinstance(self.new_code_list, CompositeQbCodeList):
+        if isinstance(
+            self.new_code_list, CompositeQbCodeList
+        ) or self.has_duplicated_qb_concepts(self.new_code_list):
             data_frame["Original Concept URI"] = [
-                c.existing_concept_uri for c in self.new_code_list.concepts
+                c.existing_concept_uri if isinstance(c, DuplicatedQbConcept) else None
+                for c in self.new_code_list.concepts
             ]
 
         return data_frame
