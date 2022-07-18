@@ -1,6 +1,3 @@
-Dimension,Value,Measure,Unit
-A,0,Length,cm
-B,1,Length,cm
-C,2,Length,cm
-D,3,Length,cm
-E,4,Length,cm
+Dim-1,Dim-2,Attr-1,Amount,Measure,Units
+2009,import,goods,100,Billions,Pounds
+2010,export,services,321,Billions,Pounds

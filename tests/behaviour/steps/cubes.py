@@ -73,7 +73,7 @@ def step_impl(context):
         "https://purl.org/csv-cubed/qube-config/v1": APP_ROOT_DIR_PATH
         / "schema"
         / "cube-config"
-        / "v1_1"
+        / "v1_2"
         / "schema.json",  # v1 defaults to latest minor version of v1.*.
         "https://purl.org/csv-cubed/code-list-config/v1.0": APP_ROOT_DIR_PATH
         / "schema"
@@ -86,6 +86,20 @@ def step_impl(context):
         / "v1_0"
         / "schema.json",  # v1 defaults to latest minor version of v1.*.
     }
+
+    templates_dir = (
+        APP_ROOT_DIR_PATH / "readers" / "cubeconfig" / "v1_0" / "templates"
+    )
+
+    template_files = templates_dir.rglob("**/*.json*")
+
+    if not any(template_files):
+        raise ValueError(f"Couldn't find template files in {templates_dir}.")
+
+    for template_file in template_files:
+        relative_file_path = str(template_file.relative_to(templates_dir))
+        paths_to_mock["https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/src/csvcubed/readers/cubeconfig/v1_0/templates/"+ relative_file_path] = template_file
+
 
     for uri, path in paths_to_mock.items():
         with open(path) as f:
@@ -106,6 +120,9 @@ def step_impl(context):
         context.cube = cube
         context.errors = errors
 
+@then("There are no errors")
+def step_impl(context):
+    assert len(context.errors) == 0
 
 @then("The cube Metadata should match")
 def step_impl(context):

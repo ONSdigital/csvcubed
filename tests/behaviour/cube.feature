@@ -555,92 +555,9 @@ Feature: Cube!
       }
     ]
     """
-
-    Scenario: Output a cube when the sort object is not defined but the sort order is defined using schema v1.2
-    Given The config json file "v1.2/cube_config_hierarchical_without_sort.json" and the existing tidy data csv file "v1.2/data.csv"
-    When The cube is created
-    Then The cube Metadata should match
-      """
-      {
-        "title": "Test cube config",
-        "identifier": None,
-        "summary": "Test cube config summary",
-        "description": "Test cube config description",
-        "creator_uri": "http://statistics.data.gov.uk",
-        "publisher_uri": "http://statistics.data.gov.uk",
-        "landing_page_uris": [],
-        "theme_uris": [],
-        "keywords": ["Test cube"],
-        "dataset_issued": "2022-04-08",
-        "dataset_modified": None,
-        "license_uri": "https://creativecommons.org/licenses/by/4.0/",
-        "public_contact_point_uri": None,
-        "uri_safe_identifier_override": None
-      }
-      """
-    Then The cube Columns should match
-    """
-    [
-      "Dimension",
-      "Value",
-      "Measure",
-      "Unit"
-    ]
-    """
-    Then The cube data should match
-    """
-    [
-      {
-        "Dimension":"a",
-        "Value":0,
-        "Measure":"length",
-        "Unit":"cm"
-      },
-      {
-        "Dimension":"b",
-        "Value":1,
-        "Measure":"length",
-        "Unit":"cm"
-      },
-      {
-        "Dimension":"c",
-        "Value":2,
-        "Measure":"length",
-        "Unit":"cm"
-      },
-      {
-        "Dimension":"d",
-        "Value":3,
-        "Measure":"length",
-        "Unit":"cm"
-      },
-      {
-        "Dimension":"e",
-        "Value":4,
-        "Measure":"length",
-        "Unit":"cm"
-      }
-    ]
-    """
     
     Scenario: Successfully outputs a cube combining config and convention using schema v1.2
-    Given The config json file "v1.0/cube_data_part_config.json" and the existing tidy data csv file "v1.0/cube_data_part_config.csv"
+    Given The config json file "v1.2/qudt-unit-template-testing.json" and the existing tidy data csv file "v1.2/data.csv"
     When The cube is created
-    Then The cube Metadata should match
-      """
-        {"title": "Tests/test-cases/config/schema-cube-data-config-ok",
-        "identifier": "schema-id",
-        "summary": "a summary",
-        "description": "Schema for testing",
-        "creator_uri": "https://www.gov.uk/government/organisations/office-for-national-statistics",
-        "publisher_uri": "http://statistics.data.gov.uk",
-        "landing_page_uris": [],
-        "theme_uris": ["A Theme"],
-        "keywords": ["two"],
-        "dataset_issued": "2022-03-04T17:00:00",
-        "dataset_modified": "2022-03-04T18:00:00",
-        "license_uri": "the license",
-        "public_contact_point_uri": None,
-        "uri_safe_identifier_override": None
-        }
-      """
+    Then There are no errors
+    

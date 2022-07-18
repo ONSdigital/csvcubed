@@ -37,7 +37,7 @@ def _get_template_file_from_template_lookup(template_value: str) -> str:
 
     template_file = template_lookup.get(template_value)
     if not template_file:
-        raise Exception("Couldn't find template your looking for.")
+        raise Exception(f"Couldn't find template your looking for '{template_value}'.")
 
     return template_file
 
