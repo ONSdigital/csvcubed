@@ -24,7 +24,7 @@ nav:
           - guides/configuration/qube-config.md
           - Templates: guides/configuration/templates.md
           - Units: guides/configuration/units.md
-          - Write a code-list-config.json: guides/configuration/code-list-config.md
+          - Code Lists: guides/configuration/code-list-config.md
       - Errors:
         - guides/errors/index.md 
         - build command errors: guides/errors/build-command-errors/index.md

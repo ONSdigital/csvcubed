@@ -1,6 +1,8 @@
 # Writing a code-list-config.json
 
-In addition to the [configuration by convention approach](convention.md), csvcubed allows defining a code list using a `code-list-config.json` file, and define an in-line code list within the `qube-config.json` file. This page discusses how to define a code list using these two approaches.
+By default, csvcubed generates code lists with the unique values of each [dimension]() in your data set. This makes it as quick as possible to get from data to CSV-W cube, but it doesn't always leave you with the best curated code list. To give you more control, csvcubed gives you the power to explicitly define code lists in a JSON format. 
+
+This guide details how to explicitly define a code list in the `code-list-config.json` style.
 
 > **Experience of writing basic JSON documents is assumed throughout this document.**
 > See this [tutorial from DigitalOcean](https://www.digitalocean.com/community/tutorials/an-introduction-to-json) for an introduction to writing JSON.
@@ -10,7 +12,7 @@ In addition to the [configuration by convention approach](convention.md), csvcub
 This approach allows defining a code list in a `code-list-config.json` file. This file has two sections:
 
 1. **Metadata**
-   This section is used to describe the code list's catalog information to aid discovery, provide provinance and publication information, and optionally define the scope of the code list.
+   This section is used to describe the code list's catalog information to aid discovery, provide provenance and publication information, and optionally define the scope of the code list.
 
 2. **Concepts**
    This section is used to define and describe the concepts in a code list.
