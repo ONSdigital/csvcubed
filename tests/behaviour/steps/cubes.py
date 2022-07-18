@@ -50,6 +50,8 @@ def step_impl(context, config_file, data_file):
 def step_impl(context):
     config_file = context.config_file if hasattr(context, "config_file") else None
     data_file = context.data_file
+    scenario_name = context.scenario.name
+    cassette_file_name = scenario_name.rsplit("]")[1]
 
     mocker = requests_mock.Mocker(real_http=True)
     mocker.start()
@@ -110,7 +112,7 @@ def step_impl(context):
 
     # print("config_file:", config_file)
 
-    with vcr.use_cassette(str(_cassettes_dir / "cube-created.yaml")):
+    with vcr.use_cassette(str(_cassettes_dir / f"{cassette_file_name}.yaml")):
         cube, errors = cli_build(
             data_file,
             config_file,
