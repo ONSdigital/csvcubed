@@ -556,7 +556,7 @@ Feature: Cube!
     ]
     """
     
-    Scenario: Successfully outputs a cube combining config and convention using schema v1.2
+    Scenario: Successfully outputs a cube using schema v1.2
     Given The config json file "v1.2/qudt-unit-template-testing.json" and the existing tidy data csv file "v1.2/data.csv"
     When The cube is created
     Then There are no errors
