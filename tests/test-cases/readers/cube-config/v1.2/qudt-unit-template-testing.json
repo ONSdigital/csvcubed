@@ -1,0 +1,11 @@
+{
+    "$schema": "https://purl.org/csv-cubed/qube-config/v1.2",
+    "columns": {
+        "Units": {
+            "from_template": "qudt"
+        },
+        "Amount":{
+            "type": "observations"
+        }
+    }
+}

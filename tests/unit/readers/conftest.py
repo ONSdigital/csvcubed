@@ -28,7 +28,7 @@ def mock_http_session():
             with open(template_file) as f:
                 mocker.register_uri(
                     "GET",
-                    "//raw.githubusercontent.com/GSS-Cogs/csvcubed/main/csvcubed/csvcubed/readers/v1_0/templates/"
+                    "//raw.githubusercontent.com/GSS-Cogs/csvcubed/main/src/csvcubed/readers/cubeconfig/v1_0/templates/"
                     + relative_file_path,
                     text=f.read(),
                 )
