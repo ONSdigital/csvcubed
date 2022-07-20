@@ -1,8 +1,8 @@
 # Writing a code-list-config.json
 
-By default, csvcubed generates code lists with the unique values of each [dimension]() in your data set. This makes it as quick as possible to get from data to CSV-W cube, but it doesn't always leave you with the best curated code list. To give you more control, csvcubed gives you the power to explicitly define code lists in a JSON format. 
+By default, csvcubed generates code lists with the unique values of each [dimension](./qube-config.md#dimensions) in a data set. This makes it as quick as possible to get from data to CSV-W cube, but it doesn't always leave you with the best representation of your code list's metadata, structure, hierarchy, or values. In order to provide more accurate representations of code lists, csvcubed allows users to explicitly configure code lists using JSON. 
 
-This guide details how to explicitly define a code list in the `code-list-config.json` style.
+This guide details how to explicitly define a code list using csvcubed.
 
 > **Experience of writing basic JSON documents is assumed throughout this document.**
 > See this [tutorial from DigitalOcean](https://www.digitalocean.com/community/tutorials/an-introduction-to-json) for an introduction to writing JSON.
