@@ -4,7 +4,7 @@ from pandas import DataFrame
 from treelib import Tree
 
 from csvcubed.cli.inspect.inspectdatasetmanager import load_csv_to_dataframe
-from csvcubed.cli.inspect.inspectsparqlmanager import (
+from csvcubed.utils.sparql_handler.sparqlmanager import (
     select_codelist_cols_by_dataset_url,
     select_codelist_dataset_url,
 )

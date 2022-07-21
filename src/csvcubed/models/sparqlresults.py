@@ -1,5 +1,5 @@
 """
-Inspect SPARQL query results
+SPARQL query results
 ----------------------------
 """
 
@@ -12,7 +12,7 @@ from dataclasses import dataclass
 from rdflib.query import ResultRow
 
 from csvcubedmodels.dataclassbase import DataClassBase
-from csvcubed.utils.sparql import none_or_map
+from csvcubed.utils.sparql_handler.sparql import none_or_map
 from csvcubed.utils.printable import (
     get_printable_list_str,
     get_printable_tabular_list_str,
@@ -235,7 +235,7 @@ def map_catalog_metadata_result(sparql_result: ResultRow) -> CatalogMetadataResu
     """
     Maps sparql query result to `CatalogMetadataResult`
 
-    Member of :file:`./models/inspectsparqlresults.py`
+    Member of :file:`./models/sparqlresults.py`
 
     :return: `CatalogMetadataResult`
     """
@@ -267,7 +267,7 @@ def map_dataset_label_dsd_uri_sparql_result(
     """
     Maps sparql query result to `DSDLabelURIResult`
 
-    Member of :file:`./models/inspectsparqlresults.py`
+    Member of :file:`./models/sparqlresults.py`
 
     :return: `DSDLabelURIResult`
     """
@@ -286,7 +286,7 @@ def map_qube_component_sparql_result(
     """
     Maps sparql query result to `QubeComponentResult`
 
-    Member of :file:`./models/inspectsparqlresults.py`
+    Member of :file:`./models/sparqlresults.py`
 
     :return: `QubeComponentResult`
     """
@@ -314,7 +314,7 @@ def map_qube_components_sparql_result(
     """
     Maps sparql query result to `QubeComponentsResult`
 
-    Member of :file:`./models/inspectsparqlresults.py`
+    Member of :file:`./models/sparqlresults.py`
 
     :return: `QubeComponentsResult`
     """
@@ -336,7 +336,7 @@ def map_cols_with_supress_output_true_sparql_result(
     """
     Maps sparql query result to `ColsWithSuppressOutputTrueResult`
 
-    Member of :file:`./models/inspectsparqlresults.py`
+    Member of :file:`./models/sparqlresults.py`
 
     :return: `ColsWithSuppressOutputTrueResult`
     """
@@ -356,7 +356,7 @@ def map_codelist_sparql_result(
     """
     Maps sparql query result to `CodelistResult`
 
-    Member of :file:`./models/inspectsparqlresults.py`
+    Member of :file:`./models/sparqlresults.py`
 
     :return: `CodelistResult`
     """
@@ -380,7 +380,7 @@ def map_codelists_sparql_result(
     """
     Maps sparql query result to `CodelistsModel`
 
-    Member of :file:`./models/inspectsparqlresults.py`
+    Member of :file:`./models/sparqlresults.py`
 
     :return: `CodelistsModel`
     """
@@ -400,7 +400,7 @@ def map_csvw_table_schemas_result(
     """
     Maps sparql query result to `CSVWTabelSchemasResult`
 
-    Member of :file:`./models/inspectsparqlresults.py`
+    Member of :file:`./models/sparqlresults.py`
 
     :return: `CSVWTabelSchemasResult`
     """
@@ -419,7 +419,7 @@ def map_dataset_url_result(
     """
     Maps sparql query result to `DatasetURLResult`
 
-    Member of :file:`./models/inspectsparqlresults.py`
+    Member of :file:`./models/sparqlresults.py`
 
     :return: `DatasetURLResult`
     """
@@ -435,7 +435,7 @@ def map_single_unit_from_dsd_result(
     """
     Maps sparql query result to `DSDSingleUnitResult`
 
-    Member of :file:`./models/inspectsparqlresults.py`
+    Member of :file:`./models/sparqlresults.py`
 
     :return: `DSDSingleUnitResult`
     """
@@ -455,7 +455,7 @@ def map_codelist_column_sparql_result(sparql_result: ResultRow) -> CodelistColum
     """
     Maps sparql query result to `CodelistColumnResult`
 
-    Member of :file:`./models/inspectsparqlresults.py`
+    Member of :file:`./models/sparqlresults.py`
 
     :return: `CodelistColumnResult`
     """
@@ -475,7 +475,7 @@ def map_codelist_cols_by_dataset_url_result(
     """
     Maps sparql query result to `CodeListColsByDatasetUrlResult`
 
-    Member of :file:`./models/inspectsparqlresults.py`
+    Member of :file:`./models/sparqlresults.py`
 
     :return: `CodeListColsByDatasetUrlResult`
     """

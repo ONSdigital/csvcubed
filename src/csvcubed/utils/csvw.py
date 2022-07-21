@@ -16,9 +16,9 @@ from rdflib import Graph
 
 from .json import load_json_document
 from .uri import looks_like_uri
-from csvcubed.utils.sparql import path_to_file_uri_for_rdflib
+from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.utils.rdf import parse_graph_retain_relative
-from csvcubed.cli.inspect.inspectsparqlmanager import (
+from csvcubed.utils.sparql_handler.sparqlmanager import (
     select_csvw_table_schema_file_dependencies,
 )
 from csvcubed.models.csvcubedexception import (
@@ -96,7 +96,9 @@ def get_table_schemas(csvw_metadata_file: Path) -> Optional[Tuple[Optional[str],
 
         _logger.info("Successfully parsed csvw json-ld to rdf graph.")
 
-        dependencies_result = select_csvw_table_schema_file_dependencies(csvw_metadata_rdf_graph)
+        dependencies_result = select_csvw_table_schema_file_dependencies(
+            csvw_metadata_rdf_graph
+        )
         return {}
     except Exception as ex:
         raise FailedToLoadRDFGraphException(csvw_metadata_file_path) from ex

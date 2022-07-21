@@ -2,7 +2,7 @@ import pytest
 from pathlib import PosixPath, WindowsPath
 import os
 
-from csvcubed.utils.sparql import path_to_file_uri_for_rdflib
+from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 
 
 def test_path_to_file_uri_for_rdflib():

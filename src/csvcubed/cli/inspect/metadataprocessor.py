@@ -14,12 +14,12 @@ from dataclasses import dataclass
 import rdflib
 from rdflib.util import guess_format
 
-from csvcubed.models.inspectsparqlresults import MetadataDependenciesResult
+from csvcubed.models.sparqlresults import MetadataDependenciesResult
 from csvcubed.utils.csvw import load_table_schema_file_to_graph
 from csvcubed.utils.rdf import parse_graph_retain_relative
 from csvcubed.utils.uri import looks_like_uri
-from csvcubed.cli.inspect.inspectsparqlmanager import (
-    select_csvw_table_schema_file_dependencies,
+from csvcubed.utils.sparql_handler.sparqlmanager import (
+    select_csvw_table_schema_file_dependencies_defined_elsewhere,
     select_metadata_dependencies,
 )
 from csvcubed.models.csvcubedexception import (
@@ -28,7 +28,7 @@ from csvcubed.models.csvcubedexception import (
     FailedToReadCsvwFileContentException,
     InvalidCsvwFileContentException,
 )
-from csvcubed.utils.sparql import path_to_file_uri_for_rdflib
+from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 
 _logger = logging.getLogger(__name__)
 
@@ -52,7 +52,9 @@ class MetadataProcessor:
 
         :return: `Graph` - RDFLib Graph of CSV-W metadata json.
         """
-        dependencies_result = select_csvw_table_schema_file_dependencies(graph)
+        dependencies_result = (
+            select_csvw_table_schema_file_dependencies_defined_elsewhere(graph)
+        )
 
         for table_schema_file in dependencies_result.table_schema_file_dependencies:
             try:

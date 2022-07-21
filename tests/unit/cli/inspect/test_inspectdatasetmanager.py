@@ -12,9 +12,9 @@ from typing import List, Tuple
 
 from pathlib import Path
 from rdflib import Graph
-from treelib import Node, Tree
+from treelib import Tree
 
-from csvcubed.cli.inspect.inspectsparqlmanager import (
+from csvcubed.utils.sparql_handler.sparqlmanager import (
     select_codelist_cols_by_dataset_url,
     select_codelist_dataset_url,
     select_csvw_catalog_metadata,
@@ -22,7 +22,7 @@ from csvcubed.cli.inspect.inspectsparqlmanager import (
     select_csvw_dsd_qube_components,
     select_qb_dataset_url,
 )
-from csvcubed.models.inspectsparqlresults import (
+from csvcubed.models.sparqlresults import (
     DSDLabelURIResult,
     QubeComponentResult,
     QubeComponentsResult,

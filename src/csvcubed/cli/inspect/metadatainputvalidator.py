@@ -11,11 +11,11 @@ from typing import Tuple
 
 import rdflib
 
-from csvcubed.cli.inspect.inspectsparqlmanager import (
+from csvcubed.utils.sparql_handler.sparqlmanager import (
     ask_is_csvw_code_list,
     ask_is_csvw_qb_dataset,
 )
-from csvcubed.utils.sparql import path_to_file_uri_for_rdflib
+from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 
 
 class CSVWType(Enum):

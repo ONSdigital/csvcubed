@@ -1,8 +1,8 @@
 """
-Inspect SPARQL Queries
+SPARQL Queries
 ----------------------
 
-Collection of SPARQL queries used in the inspect cli.
+Collection of SPARQL queries.
 """
 
 import logging
@@ -14,7 +14,7 @@ import rdflib
 from rdflib import Literal, URIRef
 from rdflib.query import ResultRow
 
-from csvcubed.models.inspectsparqlresults import (
+from csvcubed.models.sparqlresults import (
     CSVWTableSchemaFileDependenciesResult,
     CatalogMetadataResult,
     CodeListColsByDatasetUrlResult,
@@ -24,6 +24,7 @@ from csvcubed.models.inspectsparqlresults import (
     DSDSingleUnitResult,
     DatasetURLResult,
     QubeComponentsResult,
+    MetadataDependenciesResult,
     map_catalog_metadata_result,
     map_codelist_cols_by_dataset_url_result,
     map_codelists_sparql_result,
@@ -33,10 +34,9 @@ from csvcubed.models.inspectsparqlresults import (
     map_dataset_url_result,
     map_qube_components_sparql_result,
     map_single_unit_from_dsd_result,
-    MetadataDependenciesResult,
     map_metadata_dependency_results,
 )
-from csvcubed.utils.sparql import ask, select
+from csvcubed.utils.sparql_handler.sparql import ask, select
 from csvcubed.models.csvcubedexception import (
     FailedToReadSparqlQueryException,
     FeatureNotSupportedException,
@@ -72,6 +72,10 @@ class SPARQLQueryName(Enum):
 
     SELECT_SINGLE_UNIT_FROM_DSD = "select_single_unit_from_dsd"
 
+    SELECT_CSVW_TABLE_SCHEMA_FILE_DEPENDENCIES_DEFINED_ELSEWHERE = (
+        "select_csvw_table_schema_file_dependencies_defined_elsewhere"
+    )
+
     SELECT_CSVW_TABLE_SCHEMA_FILE_DEPENDENCIES = (
         "select_csvw_table_schema_file_dependencies"
     )
@@ -85,7 +89,7 @@ def _get_query_string_from_file(queryType: SPARQLQueryName) -> str:
     """
     Read the sparql query string from sparql file for the given query type.
 
-    Member of :file:`./inspectsparqlmanager.py`
+    Member of :file:`./sparqlmanager.py`
 
     :return: `str` - String containing the sparql query.
     """
@@ -93,9 +97,9 @@ def _get_query_string_from_file(queryType: SPARQLQueryName) -> str:
 
     file_path: Path = (
         APP_ROOT_DIR_PATH
-        / "cli"
-        / "inspect"
-        / "inspect_sparql_queries"
+        / "utils"
+        / "sparql_handler"
+        / "sparql_queries"
         / (queryType.value + ".sparql")
     )
     _logger.debug(f"{queryType.value} query file path: {file_path.absolute()}")
@@ -116,7 +120,7 @@ def ask_is_csvw_code_list(rdf_graph: rdflib.Graph) -> bool:
     """
     Queries whether the given rdf is a code list (i.e. skos:ConceptScheme).
 
-    Member of :file:`./inspectsparqlmanager.py`
+    Member of :file:`./sparqlmanager.py`
 
     :return: `bool` - Boolean specifying whether the rdf is code list (true) or not (false).
     """
@@ -131,7 +135,7 @@ def ask_is_csvw_qb_dataset(rdf_graph: rdflib.Graph) -> bool:
     """
     Queries whether the given rdf is a qb dataset (i.e. qb:Dataset).
 
-    Member of :file:`./inspectsparqlmanager.py`
+    Member of :file:`./sparqlmanager.py`
 
     :return: `bool` - Boolean specifying whether the rdf is code list (true) or not (false).
     """
@@ -146,7 +150,7 @@ def select_csvw_catalog_metadata(rdf_graph: rdflib.Graph) -> CatalogMetadataResu
     """
     Queries catalog metadata such as title, label, issued date/time, modified data/time, etc.
 
-    Member of :file:`./inspectsparqlmanager.py`
+    Member of :file:`./sparqlmanager.py`
 
     :return: `CatalogMetadataResult`
     """
@@ -171,7 +175,7 @@ def select_csvw_dsd_dataset_label_and_dsd_def_uri(
     """
     Queries data structure definition dataset label and uri.
 
-    Member of :file:`./inspectsparqlmanager.py`
+    Member of :file:`./sparqlmanager.py`
 
     :return: `DSDLabelURIResult`
     """
@@ -195,7 +199,7 @@ def select_csvw_dsd_qube_components(
     """
     Queries the list of qube components.
 
-    Member of :file:`./inspectsparqlmanager.py`
+    Member of :file:`./sparqlmanager.py`
 
     :return: `QubeComponentsResult`
     """
@@ -213,7 +217,7 @@ def select_cols_where_suppress_output_is_true(
     """
     Queries the columns where suppress output is true.
 
-    Member of :file:`./inspectsparqlmanager.py`
+    Member of :file:`./sparqlmanager.py`
 
     :return: `ColsWithSupressOutputTrueSparlqlResult`
     """
@@ -230,7 +234,7 @@ def select_dsd_code_list_and_cols(
     """
     Queries code lists and columns in the data cube.
 
-    Member of :file:`./inspectsparqlmanager.py`
+    Member of :file:`./sparqlmanager.py`
 
     :return: `CodelistInfoSparqlResult`
     """
@@ -248,7 +252,7 @@ def select_csvw_table_schema_file_dependencies(
     """
     Queries the table schemas of the given csvw json-ld.
 
-    Member of :file:`./inspectsparqlmanager.py`
+    Member of :file:`./sparqlmanager.py`
 
     :return: `CSVWTabelSchemasResult`
     """
@@ -263,19 +267,39 @@ def select_csvw_table_schema_file_dependencies(
     return map_csvw_table_schemas_result(results)
 
 
+def select_csvw_table_schema_file_dependencies_defined_elsewhere(
+    rdf_graph: rdflib.ConjunctiveGraph,
+) -> CSVWTableSchemaFileDependenciesResult:
+    """
+    Queries the table schemas that of the given csvw json-ld that are defined elsewhere.
+
+    Member of :file:`./sparqlmanager.py`
+
+    :return: `CSVWTabelSchemasResult`
+    """
+    results: List[ResultRow] = select(
+        _get_query_string_from_file(
+            SPARQLQueryName.SELECT_CSVW_TABLE_SCHEMA_FILE_DEPENDENCIES_DEFINED_ELSEWHERE
+        ),
+        rdf_graph,
+    )
+
+    return map_csvw_table_schemas_result(results)
+
+
 def select_qb_dataset_url(
     rdf_graph: rdflib.ConjunctiveGraph, dataset_uri: str
 ) -> DatasetURLResult:
     """
     Queries the url of the given qb:dataset.
 
-    Member of :file:`./inspectsparqlmanager.py`
+    Member of :file:`./sparqlmanager.py`
 
     :return: `DatasetURLResult`
     """
     if not dataset_uri.startswith("file://"):
         raise FeatureNotSupportedException(
-            explanation="Currently, the inspect command only supports reading the csv when the url is a file path. In the future, it will support reading the csv when the url is a web address"
+            explanation="This query is used by the inspect command. Currently, the inspect command only supports reading the csv when the url is a file path. In the future, it will support reading the csv when the url is a web address"
         )
 
     results: List[ResultRow] = select(
@@ -296,7 +320,7 @@ def select_codelist_dataset_url(rdf_graph: rdflib.ConjunctiveGraph) -> DatasetUR
     """
     Queries the url of the given skos:conceptScheme.
 
-    Member of :file:`./inspectsparqlmanager.py`
+    Member of :file:`./sparqlmanager.py`
 
     :return: `DatasetURLResult`
     """
@@ -319,7 +343,7 @@ def select_single_unit_from_dsd(
     """
     Queries the single unit uri and label from the data structure definition.
 
-    Member of :file:`./inspectsparqlmanager.py`
+    Member of :file:`./sparqlmanager.py`
 
     :return: `DSDSingleUnitResult`
     """
@@ -344,7 +368,7 @@ def select_codelist_cols_by_dataset_url(
     """
     Queries the code list column property and value urls for the given table url.
 
-    Member of :file:`./inspectsparqlmanager.py`
+    Member of :file:`./sparqlmanager.py`
 
     :return: `CodeListColsByDatasetUrlResult`
     """
