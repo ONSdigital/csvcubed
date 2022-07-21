@@ -30,7 +30,7 @@ from csvcubed.utils.sparql_handler.sparqlmanager import (
     select_csvw_dsd_qube_components,
     select_dsd_code_list_and_cols,
     select_qb_dataset_url,
-    select_csvw_table_schema_file_dependencies_defined_elsewhere,
+    select_csvw_table_schema_file_dependencies,
     select_single_unit_from_dsd,
     select_metadata_dependencies,
 )
@@ -293,7 +293,7 @@ def test_select_table_schema_dependencies():
     metadata_processor = MetadataProcessor(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
 
-    table_schema_results = select_csvw_table_schema_file_dependencies_defined_elsewhere(
+    table_schema_results = select_csvw_table_schema_file_dependencies(
         csvw_metadata_rdf_graph
     )
 
