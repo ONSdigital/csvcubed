@@ -8,14 +8,16 @@ Collection of SPARQL queries.
 import logging
 from enum import Enum
 from pathlib import Path
-from typing import List
+from tokenize import Triple
+from typing import List, Tuple
 
 import rdflib
-from rdflib import Literal, URIRef
+from rdflib import BNode, Literal, URIRef
 from rdflib.query import ResultRow
 
 from csvcubed.models.sparqlresults import (
     CSVWTableSchemaFileDependenciesResult,
+    CSVWTableSchemasInlineResult,
     CatalogMetadataResult,
     CodeListColsByDatasetUrlResult,
     CodelistsResult,
@@ -29,7 +31,8 @@ from csvcubed.models.sparqlresults import (
     map_codelist_cols_by_dataset_url_result,
     map_codelists_sparql_result,
     map_cols_with_supress_output_true_sparql_result,
-    map_csvw_table_schemas_result,
+    map_csvw_table_schemas_inline_result,
+    map_csvw_table_schemas_file_dependencies_result,
     map_dataset_label_dsd_uri_sparql_result,
     map_dataset_url_result,
     map_qube_components_sparql_result,
@@ -72,13 +75,11 @@ class SPARQLQueryName(Enum):
 
     SELECT_SINGLE_UNIT_FROM_DSD = "select_single_unit_from_dsd"
 
-    SELECT_CSVW_TABLE_SCHEMA_FILE_DEPENDENCIES_DEFINED_ELSEWHERE = (
-        "select_csvw_table_schema_file_dependencies_defined_elsewhere"
-    )
-
     SELECT_CSVW_TABLE_SCHEMA_FILE_DEPENDENCIES = (
         "select_csvw_table_schema_file_dependencies"
     )
+
+    SELECT_CSVW_TABLE_SCHEMAS_INLINE = "select_csvw_table_schemas_inline"
 
     SELECT_CODELIST_COLS_BY_DATASET_URL = "select_codelist_cols_by_dataset_url"
 
@@ -263,13 +264,12 @@ def select_csvw_table_schema_file_dependencies(
         rdf_graph,
     )
 
-    # TODO: Need to map from relative paths to absolute paths here.
-    return map_csvw_table_schemas_result(results)
+    return map_csvw_table_schemas_file_dependencies_result(results)
 
 
-def select_csvw_table_schema_file_dependencies_defined_elsewhere(
+def select_csvw_table_schemas_inline(
     rdf_graph: rdflib.ConjunctiveGraph,
-) -> CSVWTableSchemaFileDependenciesResult:
+) -> CSVWTableSchemasInlineResult:
     """
     Queries the table schemas that of the given csvw json-ld that are defined elsewhere.
 
@@ -278,13 +278,12 @@ def select_csvw_table_schema_file_dependencies_defined_elsewhere(
     :return: `CSVWTabelSchemasResult`
     """
     results: List[ResultRow] = select(
-        _get_query_string_from_file(
-            SPARQLQueryName.SELECT_CSVW_TABLE_SCHEMA_FILE_DEPENDENCIES_DEFINED_ELSEWHERE
-        ),
+        _get_query_string_from_file(SPARQLQueryName.SELECT_CSVW_TABLE_SCHEMAS_INLINE),
         rdf_graph,
     )
-
-    return map_csvw_table_schemas_result(results)
+    results_bnode_ids: List[str] = [str(result["tableSchema"]) for result in results]
+    # TODO: Check with Rob how to get the ResultRow given bnode - do I need to have a another sparql which queries by bnode id here?
+    return map_csvw_table_schemas_inline_result(results)
 
 
 def select_qb_dataset_url(

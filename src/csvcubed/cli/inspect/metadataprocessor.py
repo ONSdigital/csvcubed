@@ -19,7 +19,7 @@ from csvcubed.utils.csvw import load_table_schema_file_to_graph
 from csvcubed.utils.rdf import parse_graph_retain_relative
 from csvcubed.utils.uri import looks_like_uri
 from csvcubed.utils.sparql_handler.sparqlmanager import (
-    select_csvw_table_schema_file_dependencies_defined_elsewhere,
+    select_csvw_table_schema_file_dependencies,
     select_metadata_dependencies,
 )
 from csvcubed.models.csvcubedexception import (
@@ -53,7 +53,7 @@ class MetadataProcessor:
         :return: `Graph` - RDFLib Graph of CSV-W metadata json.
         """
         dependencies_result = (
-            select_csvw_table_schema_file_dependencies_defined_elsewhere(graph)
+            select_csvw_table_schema_file_dependencies(graph)
         )
 
         for table_schema_file in dependencies_result.table_schema_file_dependencies:

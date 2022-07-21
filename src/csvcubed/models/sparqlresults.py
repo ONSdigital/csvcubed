@@ -3,13 +3,13 @@ SPARQL query results
 ----------------------------
 """
 
-import json
 from os import linesep
 from pathlib import Path
 from typing import List, Optional, Dict, Any
 from dataclasses import dataclass
 
 from rdflib.query import ResultRow
+from rdflib.plugins.sparql.results.jsonresults import JSONResultSerializer
 
 from csvcubedmodels.dataclassbase import DataClassBase
 from csvcubed.utils.sparql_handler.sparql import none_or_map
@@ -150,9 +150,18 @@ class CodelistResult(DataClassBase):
 
 
 @dataclass
-class CSVWTableSchemaFileDependenciesResult:
+class CSVWTableSchemasInlineResult:
     """
     Model to represent select csvw table schemas result.
+    """
+
+    inline_table_schemas: List[dict]
+
+
+@dataclass
+class CSVWTableSchemaFileDependenciesResult:
+    """
+    Model to represent select csvw table schema file dependencies result.
     """
 
     table_schema_file_dependencies: List[str]
@@ -394,15 +403,34 @@ def map_codelists_sparql_result(
     return result
 
 
-def map_csvw_table_schemas_result(
+def map_csvw_table_schemas_inline_result(
     sparql_results: List[ResultRow],
-) -> CSVWTableSchemaFileDependenciesResult:
+) -> CSVWTableSchemasInlineResult:
     """
-    Maps sparql query result to `CSVWTabelSchemasResult`
+    Maps sparql query result to `CSVWTableSchemasInlineResult`
 
     Member of :file:`./models/sparqlresults.py`
 
-    :return: `CSVWTabelSchemasResult`
+    :return: `CSVWTableSchemasInlineResult`
+    """
+    
+    result = CSVWTableSchemasInlineResult(
+        inline_table_schemas=[
+            dict(sparql_result["tableSchema"]) for sparql_result in sparql_results
+        ]
+    )
+    return result
+
+
+def map_csvw_table_schemas_file_dependencies_result(
+    sparql_results: List[ResultRow],
+) -> CSVWTableSchemaFileDependenciesResult:
+    """
+    Maps sparql query result to `CSVWTableSchemaFileDependenciesResult`
+
+    Member of :file:`./models/sparqlresults.py`
+
+    :return: `CSVWTableSchemaFileDependenciesResult`
     """
 
     result = CSVWTableSchemaFileDependenciesResult(
