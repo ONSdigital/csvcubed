@@ -5,7 +5,7 @@ from pandas import DataFrame
 from csvcubed.utils.json import load_json_document
 from csvcubed.utils.uri import looks_like_uri
 from csvcubed.models.validationerror import ValidationError
-from csvcubed.utils.pandas import read_csv, kwargs_with_dimension_dtypes
+from csvcubed.utils.pandas import read_csv
 
 
 def load_resource(resource_path: Union[str, Path]) -> dict:
@@ -40,7 +40,6 @@ def read_and_check_csv(config: Dict, csv_path: Path, **kwargs: Dict) -> Tuple[Da
     Reads the csv data file, sets any required default data types and performs rudimentary checks.
     """
 
-    kwargs, kwargs_with_dimension_dtypes(config, **kwargs)
     data, data_errors = read_csv(csv_path, **kwargs)
 
     if isinstance(data, DataFrame):

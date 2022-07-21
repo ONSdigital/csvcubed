@@ -33,40 +33,14 @@ from csvcubed.readers.cubeconfig.v1.mapcolumntocomponent import (
     map_column_to_qb_component,
 )
 
+from csvcubed.readers.cubeconfig.v1 import datatypes
+from .constants import CONVENTION_NAMES
 
 # Used to determine whether a column name matches accepted conventions
 from ...preconfiguredtemplates import apply_preconfigured_values_from_template
 
-CONVENTION_NAMES = {
-    "measures": {
-        "measure",
-        "measures",
-        "measures column",
-        "measure column",
-        "measure type",
-        "measure types",
-    },
-    "observations": {
-        "observation",
-        "observations",
-        "obs",
-        "values",
-        "value",
-        "val",
-        "vals",
-    },
-    "units": {
-        "unit",
-        "units",
-        "units column",
-        "unit column",
-        "unit type",
-        "unit types",
-    },
-}
 
 log = logging.getLogger(__name__)
-
 
 def get_deserialiser(
     schema_path: str,
@@ -108,7 +82,8 @@ def get_deserialiser(
             config = {"title": generate_title_from_file_name(csv_path)}
             schema_validation_errors = []
 
-        data, data_errors = read_and_check_csv(config, csv_path)
+        dtype = datatypes.get_pandas_datatypes(csv_path, config=config)
+        data, data_errors = read_and_check_csv(config, csv_path, dtype=dtype)
 
         (cube, code_list_schema_validation_errors) = _get_cube_from_config_json_dict(
             data,
