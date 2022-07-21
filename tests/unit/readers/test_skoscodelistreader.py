@@ -1,13 +1,23 @@
 from pathlib import Path
-
+import pandas as pd
 import pytest
 
 from csvcubed.readers.skoscodelistreader import (
     extract_code_list_concept_scheme_info,
 )
+from csvcubed.models.cube.qb.columns import QbColumn
+from csvcubed.models.cube.qb import CatalogMetadata
+from csvcubed.models.cube import Cube, NewQbUnit, NewQbMeasure
+from csvcubed.models.cube.qb.components import (
+    NewQbDimension,
+    NewQbCodeListInCsvW,
+    QbSingleMeasureObservationValue,
+)
+
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir()
+_csvw_test_cases_dir = get_test_cases_dir() / "utils" / "csvw"
 _skos_codelist_reader_test_cases = (
     _test_case_base_dir / "readers" / "skoscodelistreader"
 )
@@ -86,6 +96,48 @@ def test_legacy_composite_code_list():
 
     # aboutUrl is actually `{+uri}` inside the CSV-W, but is standardised to `{+notation}`.
     assert concept_uri_template == "{+notation}"
+
+
+def test_temp():
+    """
+    TODO Add Intro
+    """
+    table_schema_dependencies_dir = _csvw_test_cases_dir / "table-schema-dependencies"
+    csvw_metadata_json_path = (
+        table_schema_dependencies_dir
+        / "sectors-economic-estimates-2018-trade-in-services.csv-metadata.json"
+    )
+
+    data = pd.DataFrame(
+        {
+            "Industry Grouping": [
+                "http://data.europa.eu/nuts/code/UKC",
+                "http://data.europa.eu/nuts/code/UKL",
+                "http://data.europa.eu/nuts/code/UKD",
+            ],
+            "Observed Value": [1, 2, 3],
+        }
+    )
+
+    metadata = CatalogMetadata("Some Dataset")
+    columns = [
+        QbColumn(
+            "Industry Grouping",
+            NewQbDimension(
+                "Industry Grouping",
+                code_list=NewQbCodeListInCsvW(csvw_metadata_json_path),
+            ),
+        ),
+        QbColumn(
+            "Observed Value",
+            QbSingleMeasureObservationValue(
+                unit=NewQbUnit("Num of students"), measure=NewQbMeasure("Total")
+            ),
+        ),
+    ]
+
+    cube = Cube(metadata, data, columns)
+    assert cube is not None
 
 
 if __name__ == "__main__":

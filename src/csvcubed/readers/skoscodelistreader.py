@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Tuple, Set
 from uritemplate import variables
 
-from csvcubed.utils.csvw import get_first_table_schema
+from csvcubed.utils.csvw import get_first_table_schema, get_table_schemas
 from csvcubed.utils.iterables import first
 
 
@@ -27,7 +27,8 @@ def extract_code_list_concept_scheme_info(
       `concept_uri_template` uses the standard `notation` uri template variable even if the underlying file uses a
        different column name.
     """
-    table_schema_result = get_first_table_schema(code_list_csvw_path)
+    #table_schema_result = get_first_table_schema(code_list_csvw_path)
+    table_schema_result = get_table_schemas(code_list_csvw_path)
     if table_schema_result is None:
         raise ValueError(f"Unable to find tableSchema in {code_list_csvw_path}")
 

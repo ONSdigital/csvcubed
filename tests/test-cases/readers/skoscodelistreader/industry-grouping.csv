@@ -1,0 +1,21 @@
+Label,Notation,Parent Notation,Sort Priority,Description
+All Industries,all-industries,,1,
+Primary and Utilities,primary-and-utilities,all-industries,2,
+Manufacturing,manufacturing,all-industries,3,"Service imports by the manufacturing industry can be directly linked to manufacturing, such as the installation of machinery, as well as other services that may be performed by manufacturers, such as 0% financing or offering extended warranties. It does not refer to the exports of manufactured goods."
+Non Manufacturing,non-manufacturing,all-industries,4,
+Construction ,construction,all-industries,5,
+Wholesale and Motor Trades,wholesale-and-motor-trades,all-industries,6,
+Retail (excluding motor trades),retail-excluding-motor-trades,all-industries,7,
+Transportation and Storage,transportation-and-storage,all-industries,8,
+Accommodation and Food Service activities,accommodation-and-food-service-activities,all-industries,9,
+Information and Communication,information-and-communication,all-industries,10,
+Financial and Insurance activities,financial-and-insurance-activities,all-industries,11,
+Real Estate activities,real-estate-activities,all-industries,12,
+"Real Estate Professional, Scientific and Technical Activities",real-estate-professional-scientific-and-technical-activities,all-industries,13,
+"Professional, Scientific and Technical activities",professional-scientific-and-technical-activities,all-industries,14,
+Administrative and Support Service activities,administrative-and-support-service-activities,all-industries,15,
+Other Service Industries,other-service-industries,all-industries,16,Also accounts for unknown/unallocated
+"Other Services (G-K, O-S)",other-services-g-k-o-s,all-industries,17,
+Travel-related Trade,travel-related-trade,all-industries,18,
+Business Based Professional Services (L-N),business-based-professional-services-l-n,all-industries,19,
+Production (A-F),production-a-f,all-industries,20,

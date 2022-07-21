@@ -7,12 +7,11 @@ Provides functionality for validating and detecting input metadata.json file.
 import logging
 import os.path
 from pathlib import Path
-from typing import List, Set, Tuple, Union
+from typing import Union
 from urllib.parse import urljoin
 from dataclasses import dataclass
 
 import rdflib
-from rdflib.term import Identifier
 from rdflib.util import guess_format
 
 from csvcubed.models.inspectsparqlresults import MetadataDependenciesResult

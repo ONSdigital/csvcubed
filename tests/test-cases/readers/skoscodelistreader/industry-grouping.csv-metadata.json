@@ -1,0 +1,183 @@
+{
+    "@context": "http://www.w3.org/ns/csvw",
+    "tables": [
+        {
+            "@id": "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services-by-subnational-areas-of-the-uk#scheme/industry-grouping/sic-mappings",
+            "url": "industry-grouping-mappings.csv",
+            "tableSchema": {
+                "columns": [
+                    {
+                        "titles": "Industry Grouping",
+                        "name": "industryGrouping",
+                        "required": true,
+                        "datatype": "string"
+                    },
+                    {
+                        "titles": "SIC07 Mapping",
+                        "name": "sic07Mapping",
+                        "required": true
+                    }
+                ],
+                "foreignKeys": [
+                    {
+                        "columnReference": "industryGrouping",
+                        "reference": {
+                            "resource": "industry-grouping.csv",
+                            "columnReference": "notation"
+                        }
+                    }
+                ],
+                "aboutUrl": "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services-by-subnational-areas-of-the-uk#concept/industry-grouping/{industryGrouping}",
+                "propertyUrl": "rdfs:seeAlso",
+                "valueUrl": "http://business.data.gov.uk/companies/def/sic-2007/{sic07Mapping}"
+            }
+        },
+        {
+            "@id": "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services-by-subnational-areas-of-the-uk#scheme/industry-grouping",
+            "url": "industry-grouping.csv",
+            "tableSchema": {
+                "columns": [
+                    {
+                        "titles": "Label",
+                        "name": "label",
+                        "datatype": "string",
+                        "required": true,
+                        "propertyUrl": "rdfs:label"
+                    },
+                    {
+                        "titles": "Notation",
+                        "name": "notation",
+                        "datatype": {
+                            "base": "string",
+                            "format": "^-?[\\w\\.\\/]+(-[\\w\\.\\/]+)*$"
+                        },
+                        "required": true,
+                        "propertyUrl": "skos:notation"
+                    },
+                    {
+                        "titles": "Parent Notation",
+                        "name": "parent_notation",
+                        "datatype": {
+                            "base": "string",
+                            "format": "^(-?[\\w\\.\\/]+(-[\\w\\.\\/]+)*|)$"
+                        },
+                        "required": false,
+                        "propertyUrl": "skos:broader",
+                        "valueUrl": "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services-by-subnational-areas-of-the-uk#concept/industry-grouping/{+parent_notation}"
+                    },
+                    {
+                        "titles": "Sort Priority",
+                        "name": "sort",
+                        "datatype": "integer",
+                        "required": false,
+                        "propertyUrl": "http://www.w3.org/ns/ui#sortPriority"
+                    },
+                    {
+                        "titles": "Description",
+                        "name": "description",
+                        "datatype": "string",
+                        "required": false,
+                        "propertyUrl": "rdfs:comment"
+                    },
+                    {
+                        "virtual": true,
+                        "propertyUrl": "rdf:type",
+                        "valueUrl": "skos:Concept"
+                    },
+                    {
+                        "virtual": true,
+                        "propertyUrl": "skos:inScheme",
+                        "valueUrl": "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services-by-subnational-areas-of-the-uk#scheme/industry-grouping"
+                    }
+                ],
+                "primaryKey": "notation",
+                "aboutUrl": "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services-by-subnational-areas-of-the-uk#concept/industry-grouping/{+notation}"
+            },
+            "prov:hadDerivation": {
+                "@id": "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services-by-subnational-areas-of-the-uk#scheme/industry-grouping",
+                "@type": [
+                    "skos:ConceptScheme",
+                    "http://publishmydata.com/pmdcat#ConceptScheme"
+                ]
+            },
+            "rdfs:label": "Industry Groupings",
+            "dc:title": "Industry Groupings",
+            "rdfs:seeAlso": [
+                {
+                    "@id": "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services-by-subnational-areas-of-the-uk#scheme/industry-grouping/dataset",
+                    "@type": [
+                        "dcat:Dataset",
+                        "http://publishmydata.com/pmdcat#Dataset"
+                    ],
+                    "http://publishmydata.com/pmdcat#datasetContents": {
+                        "@id": "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services-by-subnational-areas-of-the-uk#scheme/industry-grouping"
+                    },
+                    "http://publishmydata.com/pmdcat#graph": {
+                        "@id": "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services-by-subnational-areas-of-the-uk#scheme/industry-grouping"
+                    },
+                    "rdfs:label": "Industry Groupings",
+                    "dc:title": "Industry Groupings",
+                    "rdfs:comment": "Dataset representing the 'Industry Groupings' code list.",
+                    "dc:license": {
+                        "@id": "http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+                    },
+                    "dc:creator": {
+                        "@id": "https://www.ons.gov.uk/"
+                    },
+                    "dc:publisher": {
+                        "@id": "https://www.ons.gov.uk/"
+                    },
+                    "dcat:contactPoint": {
+                        "@id": "mailto:isabel.rogers@ons.gov.uk"
+                    },
+                    "dcat:landingPage": {
+                        "@id": "https://www.ons.gov.uk/businessindustryandtrade/internationaltrade/datasets/internationaltradeinservicesbysubnationalareasoftheuk"
+                    },
+                    "dc:issued": {
+                        "@type": "dateTime",
+                        "@value": "2020-09-10T00:00:00"
+                    },
+                    "dc:modified": {
+                        "@type": "dateTime",
+                        "@value": "2021-05-20T10:55:04.044094"
+                    },
+                    "http://publishmydata.com/pmdcat#markdownDescription": {
+                        "@type": "https://www.w3.org/ns/iana/media-types/text/markdown#Resource",
+                        "@value": "Codelist generated by COGS from values found in dataset."
+                    }
+                },
+                {
+                    "@id": "http://gss-data.org.uk/catalog/vocabularies",
+                    "dcat:record": {
+                        "@id": "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services-by-subnational-areas-of-the-uk#scheme/industry-grouping/catalog-record"
+                    }
+                },
+                {
+                    "@id": "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services-by-subnational-areas-of-the-uk#scheme/industry-grouping/catalog-record",
+                    "@type": "dcat:CatalogRecord",
+                    "foaf:primaryTopic": {
+                        "@id": "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services-by-subnational-areas-of-the-uk#scheme/industry-grouping/dataset"
+                    },
+                    "http://publishmydata.com/pmdcat#metadataGraph": {
+                        "@id": "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services-by-subnational-areas-of-the-uk#scheme/industry-grouping"
+                    },
+                    "dc:title": "Industry Groupings Catalog Record",
+                    "rdfs:label": "Industry Groupings Catalog Record",
+                    "dc:issued": {
+                        "@type": "dateTime",
+                        "@value": "2021-01-12T12:01:04.945573"
+                    },
+                    "dc:modified": {
+                        "@type": "dateTime",
+                        "@value": "2021-01-12T12:01:04.945573"
+                    }
+                }
+            ]
+        },
+        {
+            "url": "sector.csv",
+            "tableSchema": "sector.table.json",
+            "suppressOutput": true
+        }
+    ]
+}
