@@ -40,6 +40,7 @@ def extract_code_list_concept_scheme_info(
 
     columns = table_schema.get("columns", [])
 
+    # Rdf graph has the table
     in_scheme_column = first(columns, lambda c: c.get("propertyUrl") == "skos:inScheme")
     if in_scheme_column is None:
         raise ValueError(f"{code_list_csvw_path} is missing `skos:inScheme` column.")
@@ -58,7 +59,8 @@ def extract_code_list_concept_scheme_info(
             "Unexpected number of variables in aboutUrl Template. "
             + f"Expected 1, found {len(variables_in_about_url)}"
         )
-
+    # ----- 
+    
     variable_name_in_about_url = first(variables_in_about_url)
     assert variable_name_in_about_url is not None
 

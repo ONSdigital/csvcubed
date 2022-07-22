@@ -102,10 +102,9 @@ def test_temp():
     """
     TODO Add Intro
     """
-    table_schema_dependencies_dir = _csvw_test_cases_dir / "table-schema-dependencies"
     csvw_metadata_json_path = (
-        table_schema_dependencies_dir
-        / "sectors-economic-estimates-2018-trade-in-services.csv-metadata.json"
+        _csvw_test_cases_dir
+        / "industry-grouping.csv-metadata.json"
     )
 
     data = pd.DataFrame(
@@ -127,13 +126,7 @@ def test_temp():
                 "Industry Grouping",
                 code_list=NewQbCodeListInCsvW(csvw_metadata_json_path),
             ),
-        ),
-        QbColumn(
-            "Observed Value",
-            QbSingleMeasureObservationValue(
-                unit=NewQbUnit("Num of students"), measure=NewQbMeasure("Total")
-            ),
-        ),
+        )
     ]
 
     cube = Cube(metadata, data, columns)
