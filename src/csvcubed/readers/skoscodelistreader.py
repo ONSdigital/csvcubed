@@ -27,20 +27,21 @@ def extract_code_list_concept_scheme_info(
       `concept_uri_template` uses the standard `notation` uri template variable even if the underlying file uses a
        different column name.
     """
-    #table_schema_result = get_first_table_schema(code_list_csvw_path)
-    table_schema_result = get_table_schemas(code_list_csvw_path)
-    if table_schema_result is None:
-        raise ValueError(f"Unable to find tableSchema in {code_list_csvw_path}")
+    # table_schema_result = get_first_table_schema(code_list_csvw_path)
+    # table_schema_result = get_table_schemas(code_list_csvw_path)
+    # if table_schema_result is None:
+    #     raise ValueError(f"Unable to find tableSchema in {code_list_csvw_path}")
 
-    csv_url_or_relative_path, table_schema = table_schema_result
-    if csv_url_or_relative_path is None:
-        raise ValueError(
-            f"{code_list_csvw_path} is missing `url` property for code list table."
-        )
+    # csv_url_or_relative_path, table_schema = table_schema_result
+    # if csv_url_or_relative_path is None:
+    #     raise ValueError(
+    #         f"{code_list_csvw_path} is missing `url` property for code list table."
+    #     )
 
-    columns = table_schema.get("columns", [])
+    # columns = table_schema.get("columns", [])
 
-    # Rdf graph has the table
+    # 1. Do metadataprocess = MetaDataProcessor() here - Rdf graph should have the table
+    # 2. Get propertyUrl, valueUrl and aboutUrl using sparql on graph.
     in_scheme_column = first(columns, lambda c: c.get("propertyUrl") == "skos:inScheme")
     if in_scheme_column is None:
         raise ValueError(f"{code_list_csvw_path} is missing `skos:inScheme` column.")
@@ -59,8 +60,9 @@ def extract_code_list_concept_scheme_info(
             "Unexpected number of variables in aboutUrl Template. "
             + f"Expected 1, found {len(variables_in_about_url)}"
         )
-    # ----- 
-    
+    # -----
+
+    # 3. Plug in queried ropertyUrl, valueUrl and aboutUrl into below flow.
     variable_name_in_about_url = first(variables_in_about_url)
     assert variable_name_in_about_url is not None
 

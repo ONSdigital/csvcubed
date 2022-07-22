@@ -63,48 +63,48 @@ def get_dependent_local_files(csvw_metadata_file: Path) -> Set[Path]:
     return dependent_local_files
 
 
-def get_table_schemas(csvw_metadata_file: Path) -> Optional[Tuple[Optional[str], dict]]:
-    """
-    TODO: Add description
-    """
+# def get_table_schemas(csvw_metadata_file: Path) -> Optional[Tuple[Optional[str], dict]]:
+#     """
+#     TODO: Add description
+#     """
 
-    csvw_metadata_rdf_graph = rdflib.ConjunctiveGraph()
-    csvw_file_content: str
-    csvw_metadata_file_path = csvw_metadata_file.absolute()
+#     csvw_metadata_rdf_graph = rdflib.ConjunctiveGraph()
+#     csvw_file_content: str
+#     csvw_metadata_file_path = csvw_metadata_file.absolute()
 
-    try:
-        with open(
-            csvw_metadata_file_path,
-            "r",
-        ) as f:
-            csvw_file_content = f.read()
-    except Exception as ex:
-        raise FailedToReadCsvwFileContentException(
-            csvw_metadata_file_path=csvw_metadata_file_path
-        ) from ex
+#     try:
+#         with open(
+#             csvw_metadata_file_path,
+#             "r",
+#         ) as f:
+#             csvw_file_content = f.read()
+#     except Exception as ex:
+#         raise FailedToReadCsvwFileContentException(
+#             csvw_metadata_file_path=csvw_metadata_file_path
+#         ) from ex
 
-    if csvw_file_content is None:
-        raise InvalidCsvwFileContentException()
+#     if csvw_file_content is None:
+#         raise InvalidCsvwFileContentException()
 
-    try:
-        parse_graph_retain_relative(
-            data=csvw_file_content,
-            format="json-ld",
-            graph=csvw_metadata_rdf_graph.get_context(
-                path_to_file_uri_for_rdflib(csvw_metadata_file_path)
-            ),
-        )
+#     try:
+#         parse_graph_retain_relative(
+#             data=csvw_file_content,
+#             format="json-ld",
+#             graph=csvw_metadata_rdf_graph.get_context(
+#                 path_to_file_uri_for_rdflib(csvw_metadata_file_path)
+#             ),
+#         )
 
-        _logger.info("Successfully parsed csvw json-ld to rdf graph.")
+#         _logger.info("Successfully parsed csvw json-ld to rdf graph.")
 
-        table_schemas_inline = select_csvw_table_schemas_inline(csvw_metadata_rdf_graph)
-        table_schemas_file_depedendant = select_csvw_table_schema_file_dependencies(
-            csvw_metadata_rdf_graph
-        )
-        # TODO FROM HERE
-        return {}
-    except Exception as ex:
-        raise FailedToLoadRDFGraphException(csvw_metadata_file_path) from ex
+#         table_schemas_inline = select_csvw_table_schemas_inline(csvw_metadata_rdf_graph)
+#         table_schemas_file_depedendant = select_csvw_table_schema_file_dependencies(
+#             csvw_metadata_rdf_graph
+#         )
+#         # TODO FROM HERE
+#         return {}
+#     except Exception as ex:
+#         raise FailedToLoadRDFGraphException(csvw_metadata_file_path) from ex
 
 
 def get_first_table_schema(
