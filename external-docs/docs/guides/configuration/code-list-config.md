@@ -28,11 +28,11 @@ The following metadata can be defined in the metadata section of the `code-list-
 | `summary`          | Summary of the contents in code list                                                           | *none*                             |
 | `creator`          | Link to the creator of the code list                                                           | *none*                             |
 | `publisher`        | Link to the publisher of the code list                                                         | *none*                             |
-| `dataset_issued`   | Data set issued date/time                                                                      | *none*                             |
-| `dataset_modified` | Data set modified date/time                                                                    | *none*                             |
-| `license`          | Link to the license of the data set                                                            | *none*                             |
-| `themes`           | List or a single link of the theme(s) covered by the data                                      | *none*                             |
-| `keywords`         | List or a single string of the keywords(s) covered by the data                                 | *none*                             |
+| `dataset_issued`   | Code list issued date/time                                                                     | *none*                             |
+| `dataset_modified` | Code list modified date/time                                                                   | *none*                             |
+| `license`          | Link to the license of the code list                                                           | *none*                             |
+| `themes`           | List or a single link of the theme(s) covered by the code list                                 | *none*                             |
+| `keywords`         | List or a single string of the keywords(s) covered by the Code list                            | *none*                             |
 | `sort`             | Sort by (`label` or `notation`) and sort method (`ascending` or `descending`) of the code list | by (`label`), method (`ascending`) |
 
 #### Using `sort`
