@@ -150,15 +150,6 @@ class CodelistResult(DataClassBase):
 
 
 @dataclass
-class CSVWTableSchemasInlineResult:
-    """
-    Model to represent select csvw table schemas result.
-    """
-
-    inline_table_schemas: List[dict]
-
-
-@dataclass
 class CSVWTableSchemaFileDependenciesResult:
     """
     Model to represent select csvw table schema file dependencies result.
@@ -400,25 +391,6 @@ def map_codelists_sparql_result(
         )
     )
     result = CodelistsResult(codelists=codelists, num_codelists=len(codelists))
-    return result
-
-
-def map_csvw_table_schemas_inline_result(
-    sparql_results: List[ResultRow],
-) -> CSVWTableSchemasInlineResult:
-    """
-    Maps sparql query result to `CSVWTableSchemasInlineResult`
-
-    Member of :file:`./models/sparqlresults.py`
-
-    :return: `CSVWTableSchemasInlineResult`
-    """
-    
-    result = CSVWTableSchemasInlineResult(
-        inline_table_schemas=[
-            dict(sparql_result["tableSchema"]) for sparql_result in sparql_results
-        ]
-    )
     return result
 
 

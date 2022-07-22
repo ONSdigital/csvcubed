@@ -17,7 +17,6 @@ from rdflib.query import ResultRow
 
 from csvcubed.models.sparqlresults import (
     CSVWTableSchemaFileDependenciesResult,
-    CSVWTableSchemasInlineResult,
     CatalogMetadataResult,
     CodeListColsByDatasetUrlResult,
     CodelistsResult,
@@ -31,7 +30,6 @@ from csvcubed.models.sparqlresults import (
     map_codelist_cols_by_dataset_url_result,
     map_codelists_sparql_result,
     map_cols_with_supress_output_true_sparql_result,
-    map_csvw_table_schemas_inline_result,
     map_csvw_table_schemas_file_dependencies_result,
     map_dataset_label_dsd_uri_sparql_result,
     map_dataset_url_result,
@@ -78,8 +76,6 @@ class SPARQLQueryName(Enum):
     SELECT_CSVW_TABLE_SCHEMA_FILE_DEPENDENCIES = (
         "select_csvw_table_schema_file_dependencies"
     )
-
-    SELECT_CSVW_TABLE_SCHEMAS_INLINE = "select_csvw_table_schemas_inline"
 
     SELECT_CODELIST_COLS_BY_DATASET_URL = "select_codelist_cols_by_dataset_url"
 
@@ -265,26 +261,6 @@ def select_csvw_table_schema_file_dependencies(
     )
 
     return map_csvw_table_schemas_file_dependencies_result(results)
-
-
-def select_csvw_table_schemas_inline(
-    rdf_graph: rdflib.ConjunctiveGraph,
-) -> CSVWTableSchemasInlineResult:
-    """
-    Queries the table schemas that of the given csvw json-ld that are defined elsewhere.
-
-    Member of :file:`./sparqlmanager.py`
-
-    :return: `CSVWTabelSchemasResult`
-    """
-    results: List[ResultRow] = select(
-        _get_query_string_from_file(SPARQLQueryName.SELECT_CSVW_TABLE_SCHEMAS_INLINE),
-        rdf_graph,
-    )
-    results_bnode_ids: List[str] = [str(result["tableSchema"]) for result in results]
-    # TODO: Check with Rob how to get the ResultRow given bnode - do I need to have a another sparql which queries by bnode id here?
-    return map_csvw_table_schemas_inline_result(results)
-
 
 def select_qb_dataset_url(
     rdf_graph: rdflib.ConjunctiveGraph, dataset_uri: str
