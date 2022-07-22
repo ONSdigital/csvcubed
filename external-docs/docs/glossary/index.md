@@ -12,7 +12,7 @@ Predefined set of codified concepts which represent the distinct values that a d
 ### [CSV-W](https://www.w3.org/TR/tabular-data-primer/)
 Comma Separated Values on the Web – a standardised format to express metadata describing the contents of CSV files. For more information, see the [W3C project page](https://www.w3.org/TR/tabular-data-primer/) on this topic.
 
-### [Dimension](https://www.w3.org/TR/vocab-data-cube/#cubes-model) {#dimension}
+### [Dimension](https://www.w3.org/TR/vocab-data-cube/#cubes-model)
 Dimension components identify the subset of a population which has been observed. A set of values for all the dimension components is sufficient to identify a single observation. Examples of dimensions include the time to which the observation applies, or the geographic region that the observation covers.
 
 ### Literal
