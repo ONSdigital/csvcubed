@@ -26,6 +26,7 @@ from csvcubed.models.sparqlresults import (
     DatasetURLResult,
     QubeComponentsResult,
     MetadataDependenciesResult,
+    TableSchemaPropertiesResult,
     map_catalog_metadata_result,
     map_codelist_cols_by_dataset_url_result,
     map_codelists_sparql_result,
@@ -36,6 +37,7 @@ from csvcubed.models.sparqlresults import (
     map_qube_components_sparql_result,
     map_single_unit_from_dsd_result,
     map_metadata_dependency_results,
+    map_table_schema_properties_result,
 )
 from csvcubed.utils.sparql_handler.sparql import ask, select
 from csvcubed.models.csvcubedexception import (
@@ -80,6 +82,8 @@ class SPARQLQueryName(Enum):
     SELECT_CODELIST_COLS_BY_DATASET_URL = "select_codelist_cols_by_dataset_url"
 
     SELECT_METADATA_DEPENDENCIES = "select_metadata_dependencies"
+
+    SELECT_TABLE_SCHEMA_PROPERTIES = "select_table_schema_properties"
 
 
 def _get_query_string_from_file(queryType: SPARQLQueryName) -> str:
@@ -262,6 +266,7 @@ def select_csvw_table_schema_file_dependencies(
 
     return map_csvw_table_schemas_file_dependencies_result(results)
 
+
 def select_qb_dataset_url(
     rdf_graph: rdflib.ConjunctiveGraph, dataset_uri: str
 ) -> DatasetURLResult:
@@ -376,3 +381,18 @@ def select_metadata_dependencies(
     )
 
     return map_metadata_dependency_results(results)
+
+
+def select_table_schema_properties(
+    rdf_graph: rdflib.Graph,
+) -> TableSchemaPropertiesResult:
+    results: List[ResultRow] = select(
+        _get_query_string_from_file(SPARQLQueryName.SELECT_TABLE_SCHEMA_PROPERTIES),
+        rdf_graph,
+    )
+
+    if len(results) != 1:
+        # TODO create exception class
+        raise Exception("Expected one result but found ....")
+
+    return map_table_schema_properties_result(results[0])

@@ -173,11 +173,6 @@
                     }
                 }
             ]
-        },
-        {
-            "url": "sector.csv",
-            "tableSchema": "sector.table.json",
-            "suppressOutput": true
         }
     ]
 }

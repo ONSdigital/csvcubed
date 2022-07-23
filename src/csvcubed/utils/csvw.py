@@ -54,48 +54,28 @@ def get_dependent_local_files(csvw_metadata_file: Path) -> Set[Path]:
     return dependent_local_files
 
 
-# def get_table_schemas(csvw_metadata_file: Path) -> Optional[Tuple[Optional[str], dict]]:
-#     """
-#     TODO: Add description
-#     """
+def get_table_url_or_relative_path(
+    csvw_metadata_file: Path, table_schema: Optional[str], table_url: str
+) -> Optional[str]:
+    table_group = _load_table_group(csvw_metadata_file)
+    base_path = _get_base_path(csvw_metadata_file.parent, table_group)
 
-#     csvw_metadata_rdf_graph = rdflib.ConjunctiveGraph()
-#     csvw_file_content: str
-#     csvw_metadata_file_path = csvw_metadata_file.absolute()
-
-#     try:
-#         with open(
-#             csvw_metadata_file_path,
-#             "r",
-#         ) as f:
-#             csvw_file_content = f.read()
-#     except Exception as ex:
-#         raise FailedToReadCsvwFileContentException(
-#             csvw_metadata_file_path=csvw_metadata_file_path
-#         ) from ex
-
-#     if csvw_file_content is None:
-#         raise InvalidCsvwFileContentException()
-
-#     try:
-#         parse_graph_retain_relative(
-#             data=csvw_file_content,
-#             format="json-ld",
-#             graph=csvw_metadata_rdf_graph.get_context(
-#                 path_to_file_uri_for_rdflib(csvw_metadata_file_path)
-#             ),
-#         )
-
-#         _logger.info("Successfully parsed csvw json-ld to rdf graph.")
-
-#         table_schemas_inline = select_csvw_table_schemas_inline(csvw_metadata_rdf_graph)
-#         table_schemas_file_depedendant = select_csvw_table_schema_file_dependencies(
-#             csvw_metadata_rdf_graph
-#         )
-#         # TODO FROM HERE
-#         return {}
-#     except Exception as ex:
-#         raise FailedToLoadRDFGraphException(csvw_metadata_file_path) from ex
+    if table_schema is None:
+        return None
+    elif isinstance(table_schema, str):
+        if looks_like_uri(table_schema):
+            return table_url, json.loads(requests.get(table_schema).text)
+        else:
+            if isinstance(base_path, Path):
+                with open(base_path / table_schema, "r") as f:
+                    return table_url, json.load(f)
+            else:
+                schema_url = urllib.parse.urljoin(base_path + "/", table_schema)
+                return table_url, json.loads(requests.get(schema_url).text)
+    elif isinstance(table_schema, dict):
+        return table_url, table_schema
+    else:
+        raise ValueError(f"Unexpected type for tableSchema: {type(table_schema)}")
 
 
 def get_first_table_schema(

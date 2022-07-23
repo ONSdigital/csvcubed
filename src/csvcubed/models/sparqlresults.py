@@ -231,6 +231,18 @@ class MetadataDependenciesResult:
     uri_space: str
 
 
+@dataclass
+class TableSchemaPropertiesResult:
+    """
+    Model representing the table schema value url and about url.
+    """
+
+    about_url: Optional[str]
+    value_url: Optional[str]
+    table_url: str
+    table_schema: Optional[str]
+
+
 def map_catalog_metadata_result(sparql_result: ResultRow) -> CatalogMetadataResult:
     """
     Maps sparql query result to `CatalogMetadataResult`
@@ -501,3 +513,25 @@ def map_metadata_dependency_results(
         )
 
     return [map_row(row.asdict()) for row in sparql_results]
+
+
+def map_table_schema_properties_result(
+    sparql_result: ResultRow,
+) -> TableSchemaPropertiesResult:
+    """
+    Maps sparql query result to `TableSchemaPropertiesResult`
+
+    Member of :file:`./models/sparqlresults.py`
+
+    :return: `TableSchemaPropertiesResult`
+    """
+    result_dict = sparql_result.asdict()
+
+    result = TableSchemaPropertiesResult(
+        about_url=none_or_map(result_dict.get("tableAboutUrl"), str),
+        value_url=none_or_map(result_dict.get("columnValueUrl"), str),
+        # TODO: remove optional from table url
+        table_url=none_or_map(result_dict.get("tableUrl"), str),
+        table_schema=none_or_map(result_dict.get("tableTableSchema"), str),
+    )
+    return result

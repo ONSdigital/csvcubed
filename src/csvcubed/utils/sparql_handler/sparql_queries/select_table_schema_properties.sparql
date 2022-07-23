@@ -1,0 +1,27 @@
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX csvw: <http://www.w3.org/ns/csvw#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT DISTINCT ?tableAboutUrl ?columnValueUrl ?tableTableSchema ?tableUrl
+WHERE {   
+    
+    ?table csvw:primaryKey ?tablePrimaryKey.
+    # TODO: remove Optional from table url
+    OPTIONAL {
+        ?table csvw:url ?tableUrl.
+    }
+    OPTIONAL {
+        ?table csvw:tableSchema ?tableTableSchema.
+    }
+    OPTIONAL {
+        ?table csvw:aboutUrl ?tableAboutUrl.
+    }
+    
+    ?column csvw:propertyUrl ?columnPropertyUrl.
+    OPTIONAL{
+        ?column csvw:valueUrl ?columnValueUrl.
+    }
+    
+    FILTER (str(?columnPropertyUrl) IN (str(skos:inScheme), "skos:inScheme") && str(?tablePrimaryKey) = "notation").
+}
