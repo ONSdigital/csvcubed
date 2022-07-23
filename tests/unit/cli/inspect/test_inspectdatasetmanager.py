@@ -36,7 +36,7 @@ from csvcubed.cli.inspect.inspectdatasetmanager import (
     get_unit_col_name_from_dsd,
     load_csv_to_dataframe,
 )
-from csvcubed.cli.inspect.metadataprocessor import MetadataProcessor
+from csvcubed.utils.tableschema import TableSchemaManager
 from csvcubed.models.inspectdataframeresults import (
     DatasetObservationsByMeasureUnitInfoResult,
     DatasetObservationsInfoResult,
@@ -291,8 +291,8 @@ def test_get_measure_col_name_from_dsd_measure_col_present():
         / "multi-unit_multi-measure"
         / "alcohol-bulletin.csv-metadata.json"
     )
-    metadata_processor = MetadataProcessor(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+    table_schema_manager = TableSchemaManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = table_schema_manager.load_json_ld_to_rdflib_graph()
 
     result: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
         csvw_metadata_rdf_graph
@@ -315,8 +315,8 @@ def test_get_measure_col_name_from_dsd_measure_col_not_present():
         / "multi-unit_single-measure"
         / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
     )
-    metadata_processor = MetadataProcessor(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+    table_schema_manager = TableSchemaManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = table_schema_manager.load_json_ld_to_rdflib_graph()
 
     result: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
         csvw_metadata_rdf_graph
@@ -339,8 +339,8 @@ def test_get_unit_col_name_from_dsd_unit_col_present():
         / "multi-unit_multi-measure"
         / "alcohol-bulletin.csv-metadata.json"
     )
-    metadata_processor = MetadataProcessor(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+    table_schema_manager = TableSchemaManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = table_schema_manager.load_json_ld_to_rdflib_graph()
 
     result: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
         csvw_metadata_rdf_graph
@@ -363,8 +363,8 @@ def test_get_unit_col_name_from_dsd_unit_col_not_present():
         / "multi-unit_single-measure"
         / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
     )
-    metadata_processor = MetadataProcessor(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+    table_schema_manager = TableSchemaManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = table_schema_manager.load_json_ld_to_rdflib_graph()
 
     result: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
         csvw_metadata_rdf_graph
@@ -387,8 +387,8 @@ def test_get_single_measure_label_from_dsd():
         / "multi-unit_single-measure"
         / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
     )
-    metadata_processor = MetadataProcessor(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+    table_schema_manager = TableSchemaManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = table_schema_manager.load_json_ld_to_rdflib_graph()
 
     result: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
         csvw_metadata_rdf_graph
@@ -419,8 +419,8 @@ def test_get_val_counts_info_multi_unit_multi_measure_dataset():
         / "multi-unit_multi-measure"
         / "alcohol-bulletin.csv-metadata.json"
     )
-    metadata_processor = MetadataProcessor(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+    table_schema_manager = TableSchemaManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = table_schema_manager.load_json_ld_to_rdflib_graph()
 
     (dataset, qube_components, dsd_uri, _) = _get_arguments_qb_dataset(
         csvw_metadata_rdf_graph, csvw_metadata_json_path
@@ -465,8 +465,8 @@ def test_get_val_counts_info_multi_unit_single_measure_dataset():
         / "multi-unit_single-measure"
         / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
     )
-    metadata_processor = MetadataProcessor(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+    table_schema_manager = TableSchemaManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = table_schema_manager.load_json_ld_to_rdflib_graph()
 
     (dataset, qube_components, dsd_uri, _) = _get_arguments_qb_dataset(
         csvw_metadata_rdf_graph, csvw_metadata_json_path
@@ -511,8 +511,8 @@ def test_get_val_counts_info_single_unit_multi_measure_dataset():
         / "single-unit_multi-measure"
         / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv-metadata.json"
     )
-    metadata_processor = MetadataProcessor(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+    table_schema_manager = TableSchemaManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = table_schema_manager.load_json_ld_to_rdflib_graph()
 
     (dataset, qube_components, dsd_uri, _) = _get_arguments_qb_dataset(
         csvw_metadata_rdf_graph, csvw_metadata_json_path
@@ -557,8 +557,8 @@ def test_get_val_counts_info_single_unit_single_measure_dataset():
         / "single-unit_single-measure"
         / "energy-trends-uk-total-energy.csv-metadata.json"
     )
-    metadata_processor = MetadataProcessor(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+    table_schema_manager = TableSchemaManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = table_schema_manager.load_json_ld_to_rdflib_graph()
 
     (dataset, qube_components, dsd_uri, _) = _get_arguments_qb_dataset(
         csvw_metadata_rdf_graph, csvw_metadata_json_path
@@ -603,8 +603,8 @@ def test_get_concepts_hierarchy_info_hierarchy_with_depth_of_one():
         / "multi-unit_multi-measure"
         / "alcohol-content.csv-metadata.json"
     )
-    metadata_processor = MetadataProcessor(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+    table_schema_manager = TableSchemaManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = table_schema_manager.load_json_ld_to_rdflib_graph()
 
     (dataset, dataset_url) = _get_arguments_skos_codelist(
         csvw_metadata_rdf_graph, csvw_metadata_json_path
@@ -637,8 +637,8 @@ def test_get_concepts_hierarchy_info_hierarchy_with_depth_more_than_one():
     Should produce the expected tree structure for the given codelist.
     """
     csvw_metadata_json_path = _test_case_base_dir / "itis-industry.csv-metadata.json"
-    metadata_processor = MetadataProcessor(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+    table_schema_manager = TableSchemaManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = table_schema_manager.load_json_ld_to_rdflib_graph()
 
     (dataset, dataset_url) = _get_arguments_skos_codelist(
         csvw_metadata_rdf_graph, csvw_metadata_json_path

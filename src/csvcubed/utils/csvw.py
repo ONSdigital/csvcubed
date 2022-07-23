@@ -18,15 +18,6 @@ from .json import load_json_document
 from .uri import looks_like_uri
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.utils.rdf import parse_graph_retain_relative
-from csvcubed.utils.sparql_handler.sparqlmanager import (
-    select_csvw_table_schema_file_dependencies,
-    select_csvw_table_schemas_inline,
-)
-from csvcubed.models.csvcubedexception import (
-    FailedToLoadRDFGraphException,
-    FailedToReadCsvwFileContentException,
-    InvalidCsvwFileContentException,
-)
 
 _logger = logging.getLogger(__name__)
 

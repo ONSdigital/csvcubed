@@ -34,9 +34,9 @@ from csvcubed.utils.sparql_handler.sparqlmanager import (
     select_single_unit_from_dsd,
     select_metadata_dependencies,
 )
-from csvcubed.cli.inspect.metadataprocessor import (
-    MetadataProcessor,
-    add_triples_for_file_dependencies,
+from csvcubed.utils.tableschema import (
+    TableSchemaManager,
+    _add_triples_for_file_dependencies,
 )
 from tests.unit.test_baseunit import get_test_cases_dir
 
@@ -49,8 +49,8 @@ def test_ask_is_csvw_code_list():
     Should return true if the input rdf graph is a code list.
     """
     csvw_metadata_json_path = _test_case_base_dir / "codelist.csv-metadata.json"
-    metadata_processor = MetadataProcessor(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+    table_schema_manager = TableSchemaManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = table_schema_manager.load_json_ld_to_rdflib_graph()
 
     is_code_list = ask_is_csvw_code_list(csvw_metadata_rdf_graph)
 
@@ -62,8 +62,8 @@ def test_ask_is_csvw_qb_dataset():
     Should return true if the input rdf graph is a qb dataset.
     """
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
-    metadata_processor = MetadataProcessor(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+    table_schema_manager = TableSchemaManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = table_schema_manager.load_json_ld_to_rdflib_graph()
 
     is_qb_dataset = ask_is_csvw_qb_dataset(csvw_metadata_rdf_graph)
 
@@ -75,8 +75,8 @@ def test_select_csvw_catalog_metadata_for_dataset():
     Should return expected `CatalogMetadataResult`.
     """
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
-    metadata_processor = MetadataProcessor(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+    table_schema_manager = TableSchemaManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = table_schema_manager.load_json_ld_to_rdflib_graph()
 
     result: CatalogMetadataResult = select_csvw_catalog_metadata(
         csvw_metadata_rdf_graph
@@ -129,8 +129,8 @@ def test_select_csvw_catalog_metadata_for_codelist():
     Should return expected `CatalogMetadataResult`.
     """
     csvw_metadata_json_path = _test_case_base_dir / "codelist.csv-metadata.json"
-    metadata_processor = MetadataProcessor(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+    table_schema_manager = TableSchemaManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = table_schema_manager.load_json_ld_to_rdflib_graph()
 
     result: CatalogMetadataResult = select_csvw_catalog_metadata(
         csvw_metadata_rdf_graph
@@ -163,8 +163,8 @@ def test_select_csvw_dsd_dataset():
     Should return expected `DSDLabelURIResult`.
     """
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
-    metadata_processor = MetadataProcessor(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+    table_schema_manager = TableSchemaManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = table_schema_manager.load_json_ld_to_rdflib_graph()
 
     result: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
         csvw_metadata_rdf_graph
@@ -191,8 +191,8 @@ def test_select_cols_when_supress_output_cols_not_present():
     Should return expected `ColsWithSuppressOutputTrueResult`.
     """
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
-    metadata_processor = MetadataProcessor(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+    table_schema_manager = TableSchemaManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = table_schema_manager.load_json_ld_to_rdflib_graph()
 
     result: ColsWithSuppressOutputTrueResult = (
         select_cols_where_suppress_output_is_true(csvw_metadata_rdf_graph)
@@ -207,8 +207,8 @@ def test_select_cols_when_supress_output_cols_present():
     csvw_metadata_json_path = (
         _test_case_base_dir / "datacube_with_suppress_output_cols.csv-metadata.json"
     )
-    metadata_processor = MetadataProcessor(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+    table_schema_manager = TableSchemaManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = table_schema_manager.load_json_ld_to_rdflib_graph()
 
     result: ColsWithSuppressOutputTrueResult = (
         select_cols_where_suppress_output_is_true(csvw_metadata_rdf_graph)
@@ -222,8 +222,8 @@ def test_select_dsd_code_list_and_cols_without_codelist_labels():
     Should return expected `DSDLabelURIResult`.
     """
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
-    metadata_processor = MetadataProcessor(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+    table_schema_manager = TableSchemaManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = table_schema_manager.load_json_ld_to_rdflib_graph()
 
     result_dsd: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
         csvw_metadata_rdf_graph
@@ -245,8 +245,8 @@ def test_select_qb_dataset_url():
     Should return expected `DatasetURLResult`.
     """
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
-    metadata_processor = MetadataProcessor(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+    table_schema_manager = TableSchemaManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = table_schema_manager.load_json_ld_to_rdflib_graph()
 
     result: DatasetURLResult = select_qb_dataset_url(
         csvw_metadata_rdf_graph,
@@ -264,8 +264,8 @@ def test_select_single_unit_from_dsd():
         / "single-unit_multi-measure"
         / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv-metadata.json"
     )
-    metadata_processor = MetadataProcessor(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+    table_schema_manager = TableSchemaManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = table_schema_manager.load_json_ld_to_rdflib_graph()
     dataset_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
 
     result: DSDSingleUnitResult = select_single_unit_from_dsd(
@@ -290,8 +290,8 @@ def test_select_table_schema_dependencies():
         / "sectors-economic-estimates-2018-trade-in-services.csv-metadata.json"
     )
 
-    metadata_processor = MetadataProcessor(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+    table_schema_manager = TableSchemaManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = table_schema_manager.load_json_ld_to_rdflib_graph()
 
     table_schema_results = select_csvw_table_schema_file_dependencies(
         csvw_metadata_rdf_graph
@@ -308,8 +308,8 @@ def test_select_codelist_cols_by_dataset_url():
     Should return expected `CodeListColsByDatasetUrlResult`.
     """
     csvw_metadata_json_path = _test_case_base_dir / "alcohol-content.csv-metadata.json"
-    metadata_processor = MetadataProcessor(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+    table_schema_manager = TableSchemaManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = table_schema_manager.load_json_ld_to_rdflib_graph()
     dataset_url = select_codelist_dataset_url(csvw_metadata_rdf_graph).dataset_url
 
     result: CodeListColsByDatasetUrlResult = select_codelist_cols_by_dataset_url(
@@ -378,13 +378,13 @@ def test_select_metadata_dependencies() -> None:
 
 def test_rdf_dependency_loaded() -> None:
     """
-    Ensure that the MetadataProcessor loads dependent RDF graphs to get a complete picture of the cube's metadata.
+    Ensure that the TableSchemaManager loads dependent RDF graphs to get a complete picture of the cube's metadata.
     """
     dimension_data_file = _test_case_base_dir / "dependencies" / "dimension.csv"
     metadata_file = _test_case_base_dir / "dependencies" / "data.csv-metadata.json"
 
-    metadata_processor = MetadataProcessor(metadata_file)
-    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+    table_schema_manager = TableSchemaManager(metadata_file)
+    csvw_metadata_rdf_graph = table_schema_manager.load_json_ld_to_rdflib_graph()
 
     # assert that the `<dimension.csv#code-list> a dcat:Dataset` triple has been loaded.
     # this triple lives in the dependent `dimension.csv-metadata.json` file.
@@ -398,12 +398,12 @@ def test_rdf_dependency_loaded() -> None:
 @pytest.mark.timeout(30)
 def test_cyclic_rdf_dependencies_loaded() -> None:
     """
-    Ensure that the MetadataProcessor loads dependent RDF graphs even when there is a cyclic dependency
+    Ensure that the TableSchemaManager loads dependent RDF graphs even when there is a cyclic dependency
     """
     metadata_file = _test_case_base_dir / "dependencies" / "cyclic.csv-metadata.json"
 
-    metadata_processor = MetadataProcessor(metadata_file)
-    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+    table_schema_manager = TableSchemaManager(metadata_file)
+    csvw_metadata_rdf_graph = table_schema_manager.load_json_ld_to_rdflib_graph()
 
     # Assert that some RDF has been loaded.
     assert any(csvw_metadata_rdf_graph)
@@ -411,15 +411,15 @@ def test_cyclic_rdf_dependencies_loaded() -> None:
 
 def test_transitive_rdf_dependency_loaded() -> None:
     """
-    Ensure that the MetadataProcessor loads a transitive dependency.
+    Ensure that the TableSchemaManager loads a transitive dependency.
      transitive.csv-metadata.json -> transitive.1.json -> transitive.2.json
     """
     metadata_file = (
         _test_case_base_dir / "dependencies" / "transitive.csv-metadata.json"
     )
 
-    metadata_processor = MetadataProcessor(metadata_file)
-    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+    table_schema_manager = TableSchemaManager(metadata_file)
+    csvw_metadata_rdf_graph = table_schema_manager.load_json_ld_to_rdflib_graph()
 
     # Assert that some RDF has been loaded.
     assert (
@@ -435,8 +435,8 @@ def test_rdf_load_ttl_dependency() -> None:
     """
     metadata_file = _test_case_base_dir / "dependencies" / "turtle.csv-metadata.json"
 
-    metadata_processor = MetadataProcessor(metadata_file)
-    csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+    table_schema_manager = TableSchemaManager(metadata_file)
+    csvw_metadata_rdf_graph = table_schema_manager.load_json_ld_to_rdflib_graph()
 
     # Assert that some RDF has been loaded.
     assert (
@@ -463,7 +463,7 @@ def test_rdf_load_url_dependency() -> None:
         format="ttl",
     )
 
-    add_triples_for_file_dependencies(graph, Path("."))
+    _add_triples_for_file_dependencies(graph, Path("."))
 
     assert (
         URIRef("http://example.com/transitive.2"),
@@ -489,7 +489,7 @@ def test_rdf_load_relative_dependencies_only() -> None:
         format="ttl",
     )
 
-    add_triples_for_file_dependencies(
+    _add_triples_for_file_dependencies(
         graph, Path("."), follow_relative_path_dependencies_only=True
     )
 
@@ -526,7 +526,7 @@ def test_rdf_load_url_dependency() -> None:
     ) in graph
 
     # Testing that we can specify a URL as what paths are relative to.
-    add_triples_for_file_dependencies(graph, paths_relative_to=remote_url)
+    _add_triples_for_file_dependencies(graph, paths_relative_to=remote_url)
 
     assert (
         URIRef("http://example.com/transitive.2"),

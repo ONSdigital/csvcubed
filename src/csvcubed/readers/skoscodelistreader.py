@@ -10,7 +10,6 @@ from pathlib import Path
 from typing import Tuple, Set
 from uritemplate import variables
 
-from csvcubed.utils.csvw import get_first_table_schema, get_table_schemas
 from csvcubed.utils.iterables import first
 
 

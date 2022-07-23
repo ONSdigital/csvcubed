@@ -1,8 +1,8 @@
 """
-Metadata Processor
+Table Schme
 ------------------
 
-Provides functionality for validating and detecting input metadata.json file.
+Provides functionality for handling table schema related features.
 """
 import logging
 import os.path
@@ -14,7 +14,6 @@ from dataclasses import dataclass
 import rdflib
 from rdflib.util import guess_format
 
-from csvcubed.models.sparqlresults import MetadataDependenciesResult
 from csvcubed.utils.csvw import load_table_schema_file_to_graph
 from csvcubed.utils.rdf import parse_graph_retain_relative
 from csvcubed.utils.uri import looks_like_uri
@@ -34,7 +33,7 @@ _logger = logging.getLogger(__name__)
 
 
 @dataclass
-class MetadataProcessor:
+class TableSchemaManager:
     """
     This class handles the loading of metadata jsons to RDFLib Graphs.
     """
@@ -48,13 +47,11 @@ class MetadataProcessor:
         """
         Loads the table schemas into rdf graph.
 
-        Member of :class:`./MetadataProcessor`.
+        Member of :class:`./TableSchemaManager`.
 
         :return: `Graph` - RDFLib Graph of CSV-W metadata json.
         """
-        dependencies_result = (
-            select_csvw_table_schema_file_dependencies(graph)
-        )
+        dependencies_result = select_csvw_table_schema_file_dependencies(graph)
 
         for table_schema_file in dependencies_result.table_schema_file_dependencies:
             try:
@@ -89,7 +86,7 @@ class MetadataProcessor:
         """
         Loads CSV-W metadata json-ld to rdflib graph
 
-        Member of :class:`./MetadataProcessor`.
+        Member of :class:`./TableSchemaManager`.
 
         :return: `Graph` - RDFLib Graph of CSV-W metadata json.
         """
@@ -136,7 +133,7 @@ class MetadataProcessor:
                 csvw_metadata_rdf_graph, csvw_metadata_file_path
             )
 
-            add_triples_for_file_dependencies(
+            _add_triples_for_file_dependencies(
                 csvw_metadata_rdf_graph, self.csvw_metadata_file_path
             )
 
@@ -145,7 +142,7 @@ class MetadataProcessor:
             raise FailedToLoadRDFGraphException(self.csvw_metadata_file_path) from ex
 
 
-def add_triples_for_file_dependencies(
+def _add_triples_for_file_dependencies(
     rdf_graph: rdflib.ConjunctiveGraph,
     paths_relative_to: Union[str, Path],
     follow_relative_path_dependencies_only: bool = False,
