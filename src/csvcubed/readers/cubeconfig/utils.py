@@ -35,9 +35,9 @@ def generate_title_from_file_name(csv_path: Path) -> str:
     )
 
 
-def read_and_check_csv(config: Dict, csv_path: Path, **kwargs: Dict) -> Tuple[DataFrame, List[ValidationError]]:
+def read_and_check_csv(csv_path: Path, **kwargs: Dict) -> Tuple[DataFrame, List[ValidationError]]:
     """
-    Reads the csv data file, sets any required default data types and performs rudimentary checks.
+    Reads the csv data file and performs rudimentary checks.
     """
 
     data, data_errors = read_csv(csv_path, **kwargs)

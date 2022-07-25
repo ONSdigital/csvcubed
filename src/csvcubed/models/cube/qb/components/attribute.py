@@ -198,29 +198,34 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
         return self._validate_data_new_attribute_values(data)
 
 
-accepted_data_types = {
-    "anyURI",
-    "boolean",
-    "date",
-    "dateTime",
-    "dateTimeStamp",
-    "decimal",
-    "integer",
-    "long",
-    "int",
-    "short",
-    "nonNegativeInteger",
-    "positiveInteger",
-    "unsignedLong",
-    "unsignedInt",
-    "unsignedShort",
-    "nonPositiveInteger",
-    "negativeInteger",
-    "double",
-    "float",
-    "string",
-    "language",
-    "time",
+# A mapping of accepted datatypes from their csvw representation
+# to appropriate primitive pandas dtypes.
+# Please see:
+# - https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.dtypes.html
+# - https://numpy.org/doc/stable/reference/arrays.dtypes.html
+ACCEPTED_DATATYPE_MAPPING = {
+    "anyURI": "string",
+    "boolean": "bool",
+    "decimal": "float64",
+    "integer": "int64",
+    "long": "long",
+    "int": "int64",
+    "short": "short",
+    "nonNegativeInteger": "int64",
+    "positiveInteger": "int64",
+    "unsignedLong": "uint64",
+    "unsignedInt": "uint64",
+    "unsignedShort": "uint64",
+    "nonPositiveInteger": "int64",
+    "negativeInteger": "int64",
+    "double": "double",
+    "float": "float64",
+    "string": "string",
+    "language": "string",
+    "date": "string",
+    "dateTime": "string",
+    "dateTimeStamp": "string",
+    "time": "string"
 }
 
 
@@ -234,7 +239,7 @@ class QbAttributeLiteral(QbAttribute, ABC):
 
     @validator("data_type", pre=True, always=False)
     def data_type_value(cls, data_type):
-        if data_type not in accepted_data_types:
+        if data_type not in ACCEPTED_DATATYPE_MAPPING:
             raise ValueError(f"Literal type '{data_type}' not supported")
         return data_type
 

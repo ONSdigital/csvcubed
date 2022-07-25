@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 import pandas as pd
 
 from csvcubed.readers.cubeconfig.v1 import datatypes
@@ -8,7 +9,7 @@ from pathlib import Path
 import json
 
 TEST_CASE_DIR = (
-    get_test_cases_dir().absolute() / "readers" / "cube-config" / "v1.0" / "data_typing"
+    get_test_cases_dir().absolute() / "readers" / "cube-config" / "v1.0"
 )
 
 
@@ -19,7 +20,7 @@ def _assert_dict(got: dict, expected: dict):
     """
 
     assert len(got) == len(expected), (
-        'Unexpected number of items:\n'
+        "Unexpected number of items:\n"
         f'Got: {", ".join(got.keys())}\n'
         f'Expected: {",".join(expected.keys())}'
     )
@@ -48,7 +49,7 @@ def test_configured_dimension_dtypes():
     ]:
 
         # Assert expected dtype
-        dtype = datatypes.pandas_dtypes_from_columns_config({"Dimension": config})
+        dtype = datatypes.pandas_datatypes_from_columns_config({"Dimension": config})
         _assert_dict(dtype, {"Dimension": "string"})
 
 
@@ -62,80 +63,116 @@ def test_attribute_literal_dtypes():
     # test with both to be thorough
     for config in [vc.ATTRIBUTE_NEW_LITERAL, vc.ATTRIBUTE_EXISTING_LITERAL]:
 
-        for csvw_type, pandas_type in datatypes.PANDAS_DTYPE_MAPPING.items():
+        for csvw_type, pandas_type in datatypes.ACCEPTED_DATATYPE_MAPPING.items():
 
             # Reassign datatype for test
             config["data_type"] = csvw_type
 
             # Assert expected dtype
-            dtype = datatypes.pandas_dtypes_from_columns_config({"Attribute": config})
+            dtype = datatypes.pandas_datatypes_from_columns_config({"Attribute": config})
             _assert_dict(dtype, {"Attribute": pandas_type})
 
 
 def test_assignable_pandas_datatypes_are_valid():
     """
     Confirm that all pandas dtypes we are mapping to are valid and
-    can be used while loading a dataframe.
+    can be assigned to a series while loading a dataframe.
     """
 
-    pandas_dtypes = set(datatypes.PANDAS_DTYPE_MAPPING.values())
+    pandas_dtypes = set(datatypes.ACCEPTED_DATATYPE_MAPPING.values())
 
     for pdt in pandas_dtypes:
         df = pd.DataFrame({"column": [1, 2, 3, 4, 5]}, dtype=pdt)
         assert df["column"].dtype == pdt
 
 
-def test_datatypes_without_convention():
+def test_datatypes_by_expicit_definition():
     """
     Confirm expected datatypes when using a fully configured dataset.
     """
 
-    csv_path = Path(TEST_CASE_DIR / "datatypes_simple.csv")
-    config_path = Path(TEST_CASE_DIR / "datatypes_simple.json")
+    csv_path = Path(TEST_CASE_DIR / "cube_datatypes.csv")
+    config_path = Path(TEST_CASE_DIR / "cube_datatypes.json")
 
     with open(config_path) as f:
         config = json.load(f)
 
     dtype = datatypes.get_pandas_datatypes(csv_path, config=config)
+
     _assert_dict(
         dtype,
         {
             "Dim-0": "string",
             "Dim-1": "string",
             "Dim-2": "string",
-            "Attr-1": "uint64",
+            'Attr-anyURI': 'string',
+            'Attr-boolean': 'bool',
+            'Attr-decimal': 'float64',
+            'Attr-integer': 'int64',
+            'Attr-long': 'long',
+            'Attr-int': 'int64',
+            'Attr-short': 'short',
+            'Attr-nonNegativeInteger': 'int64',
+            'Attr-positiveInteger': 'int64',
+            'Attr-unsignedLong': 'uint64',
+            'Attr-unsignedInt': 'uint64',
+            'Attr-unsignedShort': 'uint64',
+            'Attr-nonPositiveInteger': 'int64',
+            'Attr-negativeInteger': 'int64',
+            'Attr-double': 'double',
+            'Attr-float': 'float64',
+            'Attr-string': 'string',
+            'Attr-language': 'string',
+            'Attr-date': 'string',
+            'Attr-dateTime': 'string',
+            'Attr-dateTimeStamp': 'string',
+            'Attr-time': 'string',
             "Value": "float64",
             "Measure": "string",
-            "Units": "string",
-        },
+            "Units": "string"
+        }
     )
 
 
-def test_datatypes_with_convention():
+def test_datatypes_by_convention():
     """
-    Confirm expected datatypes when using a fully configured by convention dataset.
+    Confirm expected datatypes when using a configured by convention dataset.
     """
 
-    csv_path = Path(TEST_CASE_DIR / "datatypes_simple.csv")
+    csv_path = Path(TEST_CASE_DIR / "cube_datatypes.csv")
+
     dtype = datatypes.get_pandas_datatypes(csv_path)
 
     _assert_dict(
         dtype,
-        {
+{
             "Dim-0": "string",
             "Dim-1": "string",
             "Dim-2": "string",
-            "Attr-1": "string",
+            'Attr-anyURI': 'string',
+            'Attr-boolean': 'string',
+            'Attr-decimal': 'string',
+            'Attr-integer': 'string',
+            'Attr-long': 'string',
+            'Attr-int': 'string',
+            'Attr-short': 'string',
+            'Attr-nonNegativeInteger': 'string',
+            'Attr-positiveInteger': 'string',
+            'Attr-unsignedLong': 'string',
+            'Attr-unsignedInt': 'string',
+            'Attr-unsignedShort': 'string',
+            'Attr-nonPositiveInteger': 'string',
+            'Attr-negativeInteger': 'string',
+            'Attr-double': 'string',
+            'Attr-float': 'string',
+            'Attr-string': 'string',
+            'Attr-language': 'string',
+            'Attr-date': 'string',
+            'Attr-dateTime': 'string',
+            'Attr-dateTimeStamp': 'string',
+            'Attr-time': 'string',
             "Value": "float64",
             "Measure": "string",
-            "Units": "string",
-        },
+            "Units": "string"
+        }
     )
-
-
-def test_datatypes_with_and_without_convention():
-    """
-    Confirm expected datatypes when using a mix of from explicit and by
-    convention configuration.
-    """
-    ...

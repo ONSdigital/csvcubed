@@ -1,30 +1,46 @@
 import logging
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 from pathlib import Path
 
 import pandas as pd
 
 import csvcubed.readers.cubeconfig.v1.columnschema as schema
 from csvcubed.readers.cubeconfig.v1.mapcolumntocomponent import (
-    _from_column_dict_to_schema_model, schema
+    _from_column_dict_to_schema_model,
+    schema,
 )
-from .constants import CONVENTION_NAMES, PANDAS_DTYPE_MAPPING
+from csvcubed.models.cube.qb.components.attribute import ACCEPTED_DATATYPE_MAPPING
+
+from .constants import CONVENTION_NAMES
+
 _logger = logging.getLogger(__name__)
 
 
 def _is_measures_column(column_label: str):
+    """
+    Does the column label signify a measure column using the configuration
+    by convention approach.
+    """
     return column_label in CONVENTION_NAMES["measures"]
 
 
 def _is_observations_column(column_label: str):
+    """
+    Does the column label signify an observation column using the configuration
+    by convention approach.
+    """
     return column_label in CONVENTION_NAMES["observations"]
 
 
 def _is_units_column(column_label: str):
+    """
+    Does the column label signify a units column using the configuration by
+    convention approach.
+    """
     return column_label in CONVENTION_NAMES["units"]
 
 
-def pandas_dtypes_from_columns_config(
+def pandas_datatypes_from_columns_config(
     columns_config: Dict[str, dict]
 ) -> Dict[str, str]:
     """
@@ -35,7 +51,7 @@ def pandas_dtypes_from_columns_config(
     }
 
     Returns a dictionary mapping column names to pandas
-    datatypes (which are decalred via strings).
+    datatypes (which are declared via strings)
     """
 
     dtype = {}
@@ -56,54 +72,45 @@ def pandas_dtype_from_schema(known_schema: schema.SchemaBaseClass) -> str:
     if isinstance(
         known_schema,
         (
-            schema.NewDimension,
-            schema.ExistingDimension,
-            schema.NewMeasures,
-            schema.ExistingMeasures,
-            schema.NewUnits,
-            schema.ExistingUnits,
-            schema.NewAttributeResource,
-            schema.ExistingAttributeResource,
-        ),
-    ):
-        return "string"
-    if isinstance(
-        known_schema,
-        (
             schema.NewAttributeLiteral,
             schema.ExistingAttributeLiteral,
             schema.ObservationValue,
         ),
     ):
-        return PANDAS_DTYPE_MAPPING[known_schema.data_type]
+        return ACCEPTED_DATATYPE_MAPPING[known_schema.data_type]
 
-    raise NotImplementedError(f"No handling for: {known_schema}")
+    return "string"
+
 
 def get_pandas_datatypes(
     csv_path: Path, config: Optional[dict] = None
 ) -> Dict[str, str]:
     """
-    Creates a dictionary of column_label:datatype for all columns in
-    the dataframe.
+    Creates a dictionary of column_label:datatype for all non time based
+    columns in the dataframe.
+
+    Also returns a simple list of those columns that are of a time based
+    type.
     """
 
     # Columns defined by explicit configuration
     dtype = {}
+    time_columns = {}
     if config:
         if "columns" in config:
-            dtype = pandas_dtypes_from_columns_config(config["columns"])
+            dtype = pandas_datatypes_from_columns_config(config["columns"])
 
     # Column configured by convention
-    column_list: List[str] = pd.read_csv(csv_path, nrows=0).columns.tolist() # type: ignore
-    untyped_column_list: List[str] = [x for x in column_list if x not in dtype.keys()]
+    column_list: List[str] = pd.read_csv(csv_path, nrows=0).columns.tolist()  # type: ignore
+    untyped_column_list: List[str] = [x for x in column_list if all([x not in dtype, x not in time_columns])]
     for uc in untyped_column_list:
         if _is_measures_column(uc.lower()):
-            dtype[uc] = PANDAS_DTYPE_MAPPING["string"]
+            dtype[uc] = ACCEPTED_DATATYPE_MAPPING["string"]
         if _is_units_column(uc.lower()):
-            dtype[uc] = PANDAS_DTYPE_MAPPING["string"]
+            dtype[uc] = ACCEPTED_DATATYPE_MAPPING["string"]
         if _is_observations_column(uc.lower()):
-            dtype[uc] = PANDAS_DTYPE_MAPPING["decimal"]
+            dtype[uc] = ACCEPTED_DATATYPE_MAPPING["decimal"]
         else:
-            dtype[uc] = PANDAS_DTYPE_MAPPING["string"]
+            dtype[uc] = ACCEPTED_DATATYPE_MAPPING["string"]
 
     return dtype

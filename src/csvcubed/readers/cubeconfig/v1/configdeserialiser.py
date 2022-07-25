@@ -32,10 +32,9 @@ from csvcubed.readers.catalogmetadata.v1.catalog_metadata_reader import (
 from csvcubed.readers.cubeconfig.v1.mapcolumntocomponent import (
     map_column_to_qb_component,
 )
-
 from csvcubed.readers.cubeconfig.v1 import datatypes
-from .constants import CONVENTION_NAMES
 
+from .constants import CONVENTION_NAMES
 # Used to determine whether a column name matches accepted conventions
 from ...preconfiguredtemplates import apply_preconfigured_values_from_template
 
@@ -83,7 +82,7 @@ def get_deserialiser(
             schema_validation_errors = []
 
         dtype = datatypes.get_pandas_datatypes(csv_path, config=config)
-        data, data_errors = read_and_check_csv(config, csv_path, dtype=dtype)
+        data, data_errors = read_and_check_csv(csv_path, dtype=dtype)
 
         (cube, code_list_schema_validation_errors) = _get_cube_from_config_json_dict(
             data,
