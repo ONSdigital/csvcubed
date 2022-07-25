@@ -13,8 +13,6 @@ from csvcubed.models.cube.qb.components.attribute import ACCEPTED_DATATYPE_MAPPI
 
 from .constants import CONVENTION_NAMES
 
-_logger = logging.getLogger(__name__)
-
 
 def _is_measures_column(column_label: str) -> bool:
     """
