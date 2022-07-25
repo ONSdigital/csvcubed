@@ -237,10 +237,9 @@ class TableSchemaPropertiesResult:
     Model representing the table schema value url and about url.
     """
 
-    about_url: Optional[str]
-    value_url: Optional[str]
+    about_url: str
+    value_url: str
     table_url: str
-    table_schema: Optional[str]
 
 
 def map_catalog_metadata_result(sparql_result: ResultRow) -> CatalogMetadataResult:
@@ -528,10 +527,8 @@ def map_table_schema_properties_result(
     result_dict = sparql_result.asdict()
 
     result = TableSchemaPropertiesResult(
-        about_url=none_or_map(result_dict.get("tableAboutUrl"), str),
-        value_url=none_or_map(result_dict.get("columnValueUrl"), str),
-        # TODO: remove optional from table url
-        table_url=none_or_map(result_dict.get("tableUrl"), str),
-        table_schema=none_or_map(result_dict.get("tableTableSchema"), str),
+        about_url=str(result_dict["tableAboutUrl"]),
+        value_url=str(result_dict["columnValueUrl"]),
+        table_url=str(result_dict["csvUrl"]),
     )
     return result
