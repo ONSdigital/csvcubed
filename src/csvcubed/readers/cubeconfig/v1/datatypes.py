@@ -16,7 +16,7 @@ from .constants import CONVENTION_NAMES
 _logger = logging.getLogger(__name__)
 
 
-def _is_measures_column(column_label: str):
+def _is_measures_column(column_label: str) -> bool:
     """
     Does the column label signify a measure column using the configuration
     by convention approach.
@@ -24,7 +24,7 @@ def _is_measures_column(column_label: str):
     return column_label in CONVENTION_NAMES["measures"]
 
 
-def _is_observations_column(column_label: str):
+def _is_observations_column(column_label: str) -> bool:
     """
     Does the column label signify an observation column using the configuration
     by convention approach.
@@ -32,7 +32,7 @@ def _is_observations_column(column_label: str):
     return column_label in CONVENTION_NAMES["observations"]
 
 
-def _is_units_column(column_label: str):
+def _is_units_column(column_label: str) -> bool:
     """
     Does the column label signify a units column using the configuration by
     convention approach.
@@ -86,23 +86,18 @@ def get_pandas_datatypes(
     csv_path: Path, config: Optional[dict] = None
 ) -> Dict[str, str]:
     """
-    Creates a dictionary of column_label:datatype for all non time based
-    columns in the dataframe.
-
-    Also returns a simple list of those columns that are of a time based
-    type.
+    Creates a dictionary of column_label:datatype for all columns in the dataframe.
     """
 
     # Columns defined by explicit configuration
     dtype = {}
-    time_columns = {}
     if config:
         if "columns" in config:
             dtype = pandas_datatypes_from_columns_config(config["columns"])
 
-    # Column configured by convention
+    # Columns configured by convention
     column_list: List[str] = pd.read_csv(csv_path, nrows=0).columns.tolist()  # type: ignore
-    untyped_column_list: List[str] = [x for x in column_list if all([x not in dtype, x not in time_columns])]
+    untyped_column_list: List[str] = [x for x in column_list if x not in dtype]
     for uc in untyped_column_list:
         if _is_measures_column(uc.lower()):
             dtype[uc] = ACCEPTED_DATATYPE_MAPPING["string"]
@@ -111,6 +106,7 @@ def get_pandas_datatypes(
         if _is_observations_column(uc.lower()):
             dtype[uc] = ACCEPTED_DATATYPE_MAPPING["decimal"]
         else:
+            # therefore, is a dimension
             dtype[uc] = ACCEPTED_DATATYPE_MAPPING["string"]
 
     return dtype

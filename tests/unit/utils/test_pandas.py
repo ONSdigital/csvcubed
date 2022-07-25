@@ -91,5 +91,6 @@ def test_duplicate_column_title_warning():
         DuplicateColumnTitleError("B"),
     }
 
+
 if __name__ == "__main__":
     pytest.main()

@@ -8,9 +8,7 @@ from tests.unit.test_baseunit import get_test_cases_dir
 from pathlib import Path
 import json
 
-TEST_CASE_DIR = (
-    get_test_cases_dir().absolute() / "readers" / "cube-config" / "v1.0"
-)
+TEST_CASE_DIR = get_test_cases_dir().absolute() / "readers" / "cube-config" / "v1.0"
 
 
 def _assert_dict(got: dict, expected: dict):
@@ -69,7 +67,9 @@ def test_attribute_literal_dtypes():
             config["data_type"] = csvw_type
 
             # Assert expected dtype
-            dtype = datatypes.pandas_datatypes_from_columns_config({"Attribute": config})
+            dtype = datatypes.pandas_datatypes_from_columns_config(
+                {"Attribute": config}
+            )
             _assert_dict(dtype, {"Attribute": pandas_type})
 
 
@@ -105,32 +105,32 @@ def test_datatypes_by_expicit_definition():
             "Dim-0": "string",
             "Dim-1": "string",
             "Dim-2": "string",
-            'Attr-anyURI': 'string',
-            'Attr-boolean': 'bool',
-            'Attr-decimal': 'float64',
-            'Attr-integer': 'int64',
-            'Attr-long': 'long',
-            'Attr-int': 'int64',
-            'Attr-short': 'short',
-            'Attr-nonNegativeInteger': 'int64',
-            'Attr-positiveInteger': 'int64',
-            'Attr-unsignedLong': 'uint64',
-            'Attr-unsignedInt': 'uint64',
-            'Attr-unsignedShort': 'uint64',
-            'Attr-nonPositiveInteger': 'int64',
-            'Attr-negativeInteger': 'int64',
-            'Attr-double': 'double',
-            'Attr-float': 'float64',
-            'Attr-string': 'string',
-            'Attr-language': 'string',
-            'Attr-date': 'string',
-            'Attr-dateTime': 'string',
-            'Attr-dateTimeStamp': 'string',
-            'Attr-time': 'string',
+            "Attr-anyURI": "string",
+            "Attr-boolean": "bool",
+            "Attr-decimal": "float64",
+            "Attr-integer": "int64",
+            "Attr-long": "long",
+            "Attr-int": "int64",
+            "Attr-short": "short",
+            "Attr-nonNegativeInteger": "int64",
+            "Attr-positiveInteger": "int64",
+            "Attr-unsignedLong": "uint64",
+            "Attr-unsignedInt": "uint64",
+            "Attr-unsignedShort": "uint64",
+            "Attr-nonPositiveInteger": "int64",
+            "Attr-negativeInteger": "int64",
+            "Attr-double": "double",
+            "Attr-float": "float64",
+            "Attr-string": "string",
+            "Attr-language": "string",
+            "Attr-date": "string",
+            "Attr-dateTime": "string",
+            "Attr-dateTimeStamp": "string",
+            "Attr-time": "string",
             "Value": "float64",
             "Measure": "string",
-            "Units": "string"
-        }
+            "Units": "string",
+        },
     )
 
 
@@ -145,34 +145,34 @@ def test_datatypes_by_convention():
 
     _assert_dict(
         dtype,
-{
+        {
             "Dim-0": "string",
             "Dim-1": "string",
             "Dim-2": "string",
-            'Attr-anyURI': 'string',
-            'Attr-boolean': 'string',
-            'Attr-decimal': 'string',
-            'Attr-integer': 'string',
-            'Attr-long': 'string',
-            'Attr-int': 'string',
-            'Attr-short': 'string',
-            'Attr-nonNegativeInteger': 'string',
-            'Attr-positiveInteger': 'string',
-            'Attr-unsignedLong': 'string',
-            'Attr-unsignedInt': 'string',
-            'Attr-unsignedShort': 'string',
-            'Attr-nonPositiveInteger': 'string',
-            'Attr-negativeInteger': 'string',
-            'Attr-double': 'string',
-            'Attr-float': 'string',
-            'Attr-string': 'string',
-            'Attr-language': 'string',
-            'Attr-date': 'string',
-            'Attr-dateTime': 'string',
-            'Attr-dateTimeStamp': 'string',
-            'Attr-time': 'string',
+            "Attr-anyURI": "string",
+            "Attr-boolean": "string",
+            "Attr-decimal": "string",
+            "Attr-integer": "string",
+            "Attr-long": "string",
+            "Attr-int": "string",
+            "Attr-short": "string",
+            "Attr-nonNegativeInteger": "string",
+            "Attr-positiveInteger": "string",
+            "Attr-unsignedLong": "string",
+            "Attr-unsignedInt": "string",
+            "Attr-unsignedShort": "string",
+            "Attr-nonPositiveInteger": "string",
+            "Attr-negativeInteger": "string",
+            "Attr-double": "string",
+            "Attr-float": "string",
+            "Attr-string": "string",
+            "Attr-language": "string",
+            "Attr-date": "string",
+            "Attr-dateTime": "string",
+            "Attr-dateTimeStamp": "string",
+            "Attr-time": "string",
             "Value": "float64",
             "Measure": "string",
-            "Units": "string"
-        }
+            "Units": "string",
+        },
     )

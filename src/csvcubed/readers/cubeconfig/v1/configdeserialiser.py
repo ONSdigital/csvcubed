@@ -35,11 +35,13 @@ from csvcubed.readers.cubeconfig.v1.mapcolumntocomponent import (
 from csvcubed.readers.cubeconfig.v1 import datatypes
 
 from .constants import CONVENTION_NAMES
+
 # Used to determine whether a column name matches accepted conventions
 from ...preconfiguredtemplates import apply_preconfigured_values_from_template
 
 
 log = logging.getLogger(__name__)
+
 
 def get_deserialiser(
     schema_path: str,

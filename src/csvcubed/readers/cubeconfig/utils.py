@@ -22,6 +22,7 @@ def load_resource(resource_path: Union[str, Path]) -> dict:
         resource_path = resource_path.resolve()
     return load_json_document(resource_path)
 
+
 def generate_title_from_file_name(csv_path: Path) -> str:
     """
     Formats a file Path, stripping -_ and returning the capitalised file name without extn
@@ -35,7 +36,9 @@ def generate_title_from_file_name(csv_path: Path) -> str:
     )
 
 
-def read_and_check_csv(csv_path: Path, **kwargs: Dict) -> Tuple[DataFrame, List[ValidationError]]:
+def read_and_check_csv(
+    csv_path: Path, **kwargs: Dict
+) -> Tuple[DataFrame, List[ValidationError]]:
     """
     Reads the csv data file and performs rudimentary checks.
     """

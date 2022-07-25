@@ -22,5 +22,5 @@ URI_TEMPLATE_SPECIAL_PROPERTIES = [
     "_sourceColumn",
     "_row",
     "_sourceRow",
-    "_name"
+    "_name",
 ]

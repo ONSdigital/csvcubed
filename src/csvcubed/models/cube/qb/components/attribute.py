@@ -225,7 +225,7 @@ ACCEPTED_DATATYPE_MAPPING = {
     "date": "string",
     "dateTime": "string",
     "dateTimeStamp": "string",
-    "time": "string"
+    "time": "string",
 }
 
 
