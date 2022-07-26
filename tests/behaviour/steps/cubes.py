@@ -50,6 +50,8 @@ def step_impl(context, config_file, data_file):
 def step_impl(context):
     config_file = context.config_file if hasattr(context, "config_file") else None
     data_file = context.data_file
+    scenario_name = context.scenario.name
+    cassette_file_name = scenario_name.rsplit("]")[1]
 
     mocker = requests_mock.Mocker(real_http=True)
     mocker.start()
@@ -65,10 +67,15 @@ def step_impl(context):
         / "cube-config"
         / "v1_1"
         / "schema.json",
+        "https://purl.org/csv-cubed/qube-config/v1.2": APP_ROOT_DIR_PATH
+        / "schema"
+        / "cube-config"
+        / "v1_2"
+        / "schema.json",
         "https://purl.org/csv-cubed/qube-config/v1": APP_ROOT_DIR_PATH
         / "schema"
         / "cube-config"
-        / "v1_1"
+        / "v1_2"
         / "schema.json",  # v1 defaults to latest minor version of v1.*.
         "https://purl.org/csv-cubed/code-list-config/v1.0": APP_ROOT_DIR_PATH
         / "schema"
@@ -82,6 +89,20 @@ def step_impl(context):
         / "schema.json",  # v1 defaults to latest minor version of v1.*.
     }
 
+    templates_dir = (
+        APP_ROOT_DIR_PATH / "readers" / "cubeconfig" / "v1_0" / "templates"
+    )
+
+    template_files = templates_dir.rglob("**/*.json*")
+
+    if not any(template_files):
+        raise ValueError(f"Couldn't find template files in {templates_dir}.")
+
+    for template_file in template_files:
+        relative_file_path = str(template_file.relative_to(templates_dir))
+        paths_to_mock["https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/src/csvcubed/readers/cubeconfig/v1_0/templates/"+ relative_file_path] = template_file
+
+
     for uri, path in paths_to_mock.items():
         with open(path) as f:
             mocker.register_uri("GET", uri, text=f.read())
@@ -91,7 +112,7 @@ def step_impl(context):
 
     # print("config_file:", config_file)
 
-    with vcr.use_cassette(str(_cassettes_dir / "cube-created.yaml")):
+    with vcr.use_cassette(str(_cassettes_dir / f"{cassette_file_name}.yaml")):
         cube, errors = cli_build(
             data_file,
             config_file,
@@ -101,6 +122,9 @@ def step_impl(context):
         context.cube = cube
         context.errors = errors
 
+@then("There are no errors")
+def step_impl(context):
+    assert len(context.errors) == 0
 
 @then("The cube Metadata should match")
 def step_impl(context):

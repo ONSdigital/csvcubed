@@ -152,7 +152,6 @@ Feature: Cube!
         "public_contact_point_uri": None,
         "uri_safe_identifier_override": None
         }
-
       """
 
   Scenario: Output a cube when the code list is defined using code list config schema v1.0 and when the concepts are hierarchical, and the sort order is defined with sort object
@@ -556,3 +555,9 @@ Feature: Cube!
       }
     ]
     """
+    
+    Scenario: Successfully outputs a cube using schema v1.2
+    Given The config json file "v1.2/qudt-unit-template-testing.json" and the existing tidy data csv file "v1.2/data.csv"
+    When The cube is created
+    Then There are no errors
+    

@@ -1,0 +1,4 @@
+{
+    "type": "units",
+    "cell_uri_template": "http://qudt.org/vocab/unit/{+<column_name>}"
+}
