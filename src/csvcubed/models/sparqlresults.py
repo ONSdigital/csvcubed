@@ -9,7 +9,6 @@ from typing import List, Optional, Dict, Any
 from dataclasses import dataclass
 
 from rdflib.query import ResultRow
-from rdflib.plugins.sparql.results.jsonresults import JSONResultSerializer
 
 from csvcubedmodels.dataclassbase import DataClassBase
 from csvcubed.utils.sparql_handler.sparql import none_or_map
