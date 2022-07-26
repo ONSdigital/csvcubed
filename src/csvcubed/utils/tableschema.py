@@ -6,6 +6,7 @@ Provides functionality for handling table schema related features.
 """
 import logging
 from pathlib import Path
+from typing import Union
 from urllib.parse import urljoin
 from dataclasses import dataclass
 
