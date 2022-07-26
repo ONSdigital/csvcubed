@@ -9,8 +9,8 @@ from typing import List, Optional, Dict, Any
 from dataclasses import dataclass
 
 from rdflib.query import ResultRow
-
 from csvcubedmodels.dataclassbase import DataClassBase
+
 from csvcubed.utils.sparql_handler.sparql import none_or_map
 from csvcubed.utils.printable import (
     get_printable_list_str,

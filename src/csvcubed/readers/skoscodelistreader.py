@@ -6,8 +6,9 @@ Read some information from a CSV-W `skos:ConceptScheme`.
 """
 import logging
 import re
-from pathlib import Path
 from typing import Tuple, Set
+
+from pathlib import Path
 from uritemplate import variables
 from csvcubed.models.csvcubedexception import FailedToLoadRDFGraphException
 
@@ -50,7 +51,7 @@ def extract_code_list_concept_scheme_info(
     variable_name_in_about_url = first(variables_in_about_url)
     if variable_name_in_about_url is None:
         raise ValueError("Variable name in about url cannot be none")
-        
+
     if variable_name_in_about_url != "notation":
         _logger.debug(
             'Replacing variable name "%s" in URI template with "notation" for consistency.',

@@ -8,11 +8,10 @@ Collection of SPARQL queries.
 import logging
 from enum import Enum
 from pathlib import Path
-from tokenize import Triple
-from typing import List, Tuple
+from typing import List
 
 import rdflib
-from rdflib import BNode, Literal, URIRef
+from rdflib import Literal, URIRef
 from rdflib.query import ResultRow
 
 from csvcubed.models.sparqlresults import (
@@ -386,6 +385,9 @@ def select_metadata_dependencies(
 def select_table_schema_properties(
     rdf_graph: rdflib.Graph,
 ) -> TableSchemaPropertiesResult:
+    """
+    Queries a CSV-W and extracts table url, about url and value url from the table with skos:inScheme property url.
+    """
     results: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryName.SELECT_TABLE_SCHEMA_PROPERTIES),
         rdf_graph,
