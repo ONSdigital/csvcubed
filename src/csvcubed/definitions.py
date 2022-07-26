@@ -5,7 +5,6 @@ Definitions
 Defines the root project path as well as holding the constants that represent uri templates special properties.
 """
 
-import os
 from pathlib import Path
 
 """

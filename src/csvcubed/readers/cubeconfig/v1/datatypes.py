@@ -4,6 +4,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from csvcubed.readers.preconfiguredtemplates import apply_preconfigured_values_from_template
 import csvcubed.readers.cubeconfig.v1.columnschema as schema
 from csvcubed.readers.cubeconfig.v1.mapcolumntocomponent import (
     _from_column_dict_to_schema_model,
@@ -54,6 +55,7 @@ def pandas_datatypes_from_columns_config(
 
     dtype = {}
     for column_label, column_dict in columns_config.items():
+        apply_preconfigured_values_from_template(column_dict, column_label)
         known_schema: schema.SchemaBaseClass = _from_column_dict_to_schema_model(
             column_label, column_dict
         )
