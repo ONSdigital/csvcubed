@@ -1,23 +1,13 @@
 from pathlib import Path
-import pandas as pd
 import pytest
 
 from csvcubed.readers.skoscodelistreader import (
     extract_code_list_concept_scheme_info,
 )
-from csvcubed.models.cube.qb.columns import QbColumn
-from csvcubed.models.cube.qb import CatalogMetadata
-from csvcubed.models.cube import Cube, NewQbUnit, NewQbMeasure
-from csvcubed.models.cube.qb.components import (
-    NewQbDimension,
-    NewQbCodeListInCsvW,
-    QbSingleMeasureObservationValue,
-)
 
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir()
-_csvw_test_cases_dir = get_test_cases_dir() / "utils" / "csvw"
 _skos_codelist_reader_test_cases = (
     _test_case_base_dir / "readers" / "skoscodelistreader"
 )
@@ -43,50 +33,26 @@ def test_skos_concept_scheme_csvw():
     )
 
 
-def test_skos_in_scheme_missing():
+def test_num_of_variables_in_about_url_invalid_exception():
     """
-    Ensure that we get an appropriate exception when the `skos:inScheme` triple column is missing.
+    Ensures that an exception is thrown when the number of variables in about url are invalid.
     """
     code_list_csvw = (
-        _skos_codelist_reader_test_cases / "skos-in-scheme-missing.csv-metadata.json"
+        _skos_codelist_reader_test_cases
+        / "about-url-invalid-variable.csv-metadata.json"
     )
 
     with pytest.raises(ValueError) as ex:
         extract_code_list_concept_scheme_info(code_list_csvw)
 
-    assert "is missing `skos:inScheme` column" in str(ex)
-
-
-def test_about_url_missing():
-    """
-    Ensure that we get an appropriate exception when the concept aboutUrl is missing.
-    """
-    code_list_csvw = (
-        _skos_codelist_reader_test_cases / "about-url-missing.csv-metadata.json"
+    assert (
+        "Unexpected number of variables in aboutUrl Template. Expected 1, found 2"
+        in str(ex)
     )
-
-    with pytest.raises(ValueError) as ex:
-        extract_code_list_concept_scheme_info(code_list_csvw)
-
-    assert "is missing `aboutUrl` property" in str(ex)
-
-
-def test_csv_url_missing():
-    """
-    Ensure that we get an appropriate exception when the table's URL is missing.
-    """
-    code_list_csvw = (
-        _skos_codelist_reader_test_cases / "csv-url-missing.csv-metadata.json"
-    )
-
-    with pytest.raises(ValueError) as ex:
-        extract_code_list_concept_scheme_info(code_list_csvw)
-
-    assert "is missing `url` property for code list table" in str(ex)
 
 
 def test_legacy_composite_code_list():
-    """Test that a legacy composite code list returns a sensible `aboutUrl`. Addresses bug in issue #389."""
+    """Test that a legacy composite code list returns a sensible `about-url-wriUrl`. Addresses bug in issue #389."""
     location_test_case: Path = (
         _skos_codelist_reader_test_cases / "location.csv-metadata.json"
     )
@@ -96,41 +62,6 @@ def test_legacy_composite_code_list():
 
     # aboutUrl is actually `{+uri}` inside the CSV-W, but is standardised to `{+notation}`.
     assert concept_uri_template == "{+notation}"
-
-
-def test_temp():
-    """
-    TODO Add Intro
-    """
-    csvw_metadata_json_path = (
-        _csvw_test_cases_dir
-        / "industry-grouping.csv-metadata.json"
-    )
-
-    data = pd.DataFrame(
-        {
-            "Industry Grouping": [
-                "http://data.europa.eu/nuts/code/UKC",
-                "http://data.europa.eu/nuts/code/UKL",
-                "http://data.europa.eu/nuts/code/UKD",
-            ],
-            "Observed Value": [1, 2, 3],
-        }
-    )
-
-    metadata = CatalogMetadata("Some Dataset")
-    columns = [
-        QbColumn(
-            "Industry Grouping",
-            NewQbDimension(
-                "Industry Grouping",
-                code_list=NewQbCodeListInCsvW(csvw_metadata_json_path),
-            ),
-        )
-    ]
-
-    cube = Cube(metadata, data, columns)
-    assert cube is not None
 
 
 if __name__ == "__main__":

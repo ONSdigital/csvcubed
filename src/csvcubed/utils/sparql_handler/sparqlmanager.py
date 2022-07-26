@@ -392,7 +392,10 @@ def select_table_schema_properties(
     )
 
     if len(results) != 1:
-        # TODO create exception class
-        raise Exception("Expected one result but found ....")
+        raise InvalidNumberOfRecordsException(
+            record_description=f"result for the {SPARQLQueryName.SELECT_TABLE_SCHEMA_PROPERTIES.value} sparql query",
+            excepted_num_of_records=1,
+            num_of_records=len(results),
+        )
 
     return map_table_schema_properties_result(results[0])

@@ -33,6 +33,7 @@ from csvcubed.utils.sparql_handler.sparqlmanager import (
     select_csvw_table_schema_file_dependencies,
     select_single_unit_from_dsd,
     select_metadata_dependencies,
+    select_table_schema_properties,
 )
 from csvcubed.utils.tableschema import (
     TableSchemaManager,
@@ -351,7 +352,7 @@ def test_select_codelist_cols_by_dataset_url():
     assert result.columns[6].column_value_url == "skos:Concept"
 
 
-def test_select_metadata_dependencies() -> None:
+def test_select_metadata_dependencies():
     """
     Test that we can extract `void:DataSet` dependencies from a csvcubed CSV-W output.
     """
@@ -373,6 +374,28 @@ def test_select_metadata_dependencies() -> None:
         data_set=f"{data_file.as_uri()}#dependency/dimension",
         data_dump=expected_dependency_file.absolute().as_uri(),
         uri_space="dimension.csv#",
+    )
+
+
+def test_select_table_schema_properties():
+    """
+    Test that we can extract correct table about url, value url and table url from csvw.
+    """
+    csvw_metadata_json_path = (
+        _csvw_test_cases_dir / "industry-grouping.csv-metadata.json"
+    )
+    table_schema_manager = TableSchemaManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = table_schema_manager.load_json_ld_to_rdflib_graph()
+    result = select_table_schema_properties(csvw_metadata_rdf_graph)
+
+    assert (
+        result.about_url
+        == "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services-by-subnational-areas-of-the-uk#concept/industry-grouping/{+notation}"
+    )
+    assert result.table_url == "industry-grouping.csv"
+    assert (
+        result.value_url
+        == "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services-by-subnational-areas-of-the-uk#scheme/industry-grouping"
     )
 
 

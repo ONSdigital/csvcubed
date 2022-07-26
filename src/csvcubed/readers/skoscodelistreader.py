@@ -40,12 +40,6 @@ def extract_code_list_concept_scheme_info(
     concept_scheme_uri = result.value_url
     table_url = result.table_url
 
-    if concept_scheme_uri is None:
-        raise ValueError(f"{code_list_csvw_path} is missing concept scheme's URI.")
-
-    if about_url is None:
-        raise ValueError(f"{code_list_csvw_path} is missing `aboutUrl` property.")
-
     variables_in_about_url: Set[str] = {v for v in variables(about_url)}
     if len(variables_in_about_url) != 1:
         raise ValueError(
@@ -54,7 +48,6 @@ def extract_code_list_concept_scheme_info(
         )
 
     variable_name_in_about_url = first(variables_in_about_url)
-    assert variable_name_in_about_url is not None
 
     if variable_name_in_about_url != "notation":
         _logger.debug(
