@@ -10,7 +10,6 @@ from typing import Tuple, Set
 
 from pathlib import Path
 from uritemplate import variables
-from csvcubed.models.csvcubedexception import FailedToLoadRDFGraphException
 
 from csvcubed.utils.iterables import first
 from csvcubed.utils.sparql_handler.sparqlmanager import select_table_schema_properties

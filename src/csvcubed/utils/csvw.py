@@ -6,10 +6,8 @@ Utils for working with CSV-Ws.
 """
 import json
 import logging
-from typing import Set, List, Optional, Union, Tuple
+from typing import Set, List, Union
 from pathlib import Path
-import urllib.parse
-import requests
 from rdflib import Graph
 
 from .json import load_json_document
