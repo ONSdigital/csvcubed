@@ -36,8 +36,8 @@ def step_impl(context, csv_file: str):
 
 @When("the Metadata File json-ld is loaded to a rdf graph")
 def step_impl(context):
-    table_schema_manager = CsvwRdfManager(context.csvw_metadata_json_path)
-    context.csvw_metadata_rdf_graph = table_schema_manager.load_json_ld_to_rdflib_graph()
+    csvw_rdf_manager = CsvwRdfManager(context.csvw_metadata_json_path)
+    context.csvw_metadata_rdf_graph = csvw_rdf_manager.load_json_ld_to_rdflib_graph()
     assert context.csvw_metadata_rdf_graph is not None
 
 

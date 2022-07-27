@@ -8,7 +8,7 @@ import logging
 from pathlib import Path
 from typing import Union
 from urllib.parse import urljoin
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import rdflib
 from rdflib.util import guess_format
@@ -38,6 +38,13 @@ class CsvwRdfManager:
     """
 
     csvw_metadata_file_path: Path
+    rdf_graph: rdflib.ConjunctiveGraph = field(init=False)
+
+    def __post_init__(self):
+        self.rdf_graph = self.load_json_ld_to_rdflib_graph()
+
+        if self.rdf_graph is None:
+            raise FailedToLoadRDFGraphException(self.csvw_metadata_file_path)
 
     @staticmethod
     def _load_table_schema_dependencies_into_rdf_graph(

@@ -30,13 +30,9 @@ def extract_code_list_concept_scheme_info(
       `concept_uri_template` uses the standard `notation` uri template variable even if the underlying file uses a
        different column name.
     """
-    table_schema_manager = CsvwRdfManager(code_list_csvw_path)
-    rdf_graph = table_schema_manager.load_json_ld_to_rdflib_graph()
+    csvw_rdf_manager = CsvwRdfManager(code_list_csvw_path)
+    result = select_table_schema_properties(csvw_rdf_manager.rdf_graph)
 
-    if rdf_graph is None:
-        raise FailedToLoadRDFGraphException(code_list_csvw_path)
-
-    result = select_table_schema_properties(rdf_graph)
     about_url = result.about_url
     concept_scheme_uri = result.value_url
     table_url = result.table_url

@@ -28,8 +28,8 @@ def test_get_codelist_col_title_by_property_url_label():
         / "multi-unit_multi-measure"
         / "alcohol-content.csv-metadata.json"
     )
-    table_schema_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = table_schema_manager.load_json_ld_to_rdflib_graph()
+    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = csvw_rdf_manager.load_json_ld_to_rdflib_graph()
     dataset_url = select_codelist_dataset_url(csvw_metadata_rdf_graph).dataset_url
 
     result_code_list_cols = select_codelist_cols_by_dataset_url(
@@ -51,8 +51,8 @@ def test_get_codelist_col_title_by_property_url_notation():
         / "multi-unit_multi-measure"
         / "alcohol-content.csv-metadata.json"
     )
-    table_schema_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = table_schema_manager.load_json_ld_to_rdflib_graph()
+    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = csvw_rdf_manager.load_json_ld_to_rdflib_graph()
     dataset_url = select_codelist_dataset_url(csvw_metadata_rdf_graph).dataset_url
 
     result_code_list_cols = select_codelist_cols_by_dataset_url(
@@ -74,8 +74,8 @@ def test_get_codelist_col_title_by_property_url_parent_notation():
         / "multi-unit_multi-measure"
         / "alcohol-content.csv-metadata.json"
     )
-    table_schema_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = table_schema_manager.load_json_ld_to_rdflib_graph()
+    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = csvw_rdf_manager.load_json_ld_to_rdflib_graph()
     dataset_url = select_codelist_dataset_url(csvw_metadata_rdf_graph).dataset_url
 
     result_code_list_cols = select_codelist_cols_by_dataset_url(
@@ -97,8 +97,8 @@ def test_get_codelist_col_title_by_property_url_sort_priority():
         / "multi-unit_multi-measure"
         / "alcohol-content.csv-metadata.json"
     )
-    table_schema_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = table_schema_manager.load_json_ld_to_rdflib_graph()
+    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = csvw_rdf_manager.load_json_ld_to_rdflib_graph()
     dataset_url = select_codelist_dataset_url(csvw_metadata_rdf_graph).dataset_url
 
     result_code_list_cols = select_codelist_cols_by_dataset_url(
@@ -120,8 +120,8 @@ def test_get_codelist_col_title_by_property_url_rdfs_comment():
         / "multi-unit_multi-measure"
         / "alcohol-content.csv-metadata.json"
     )
-    table_schema_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = table_schema_manager.load_json_ld_to_rdflib_graph()
+    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = csvw_rdf_manager.load_json_ld_to_rdflib_graph()
     dataset_url = select_codelist_dataset_url(csvw_metadata_rdf_graph).dataset_url
 
     result_code_list_cols = select_codelist_cols_by_dataset_url(
@@ -143,8 +143,8 @@ def test_get_codelist_col_title_by_property_url_rdfs_type():
         / "multi-unit_multi-measure"
         / "alcohol-content.csv-metadata.json"
     )
-    table_schema_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = table_schema_manager.load_json_ld_to_rdflib_graph()
+    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = csvw_rdf_manager.load_json_ld_to_rdflib_graph()
     dataset_url = select_codelist_dataset_url(csvw_metadata_rdf_graph).dataset_url
 
     result_code_list_cols = select_codelist_cols_by_dataset_url(
@@ -166,8 +166,8 @@ def test_build_concepts_hierarchy_tree_of_depth_one():
         / "multi-unit_multi-measure"
         / "alcohol-content.csv-metadata.json"
     )
-    table_schema_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = table_schema_manager.load_json_ld_to_rdflib_graph()
+    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = csvw_rdf_manager.load_json_ld_to_rdflib_graph()
     dataset_url = select_codelist_dataset_url(csvw_metadata_rdf_graph).dataset_url
     dataset: DataFrame = load_csv_to_dataframe(
         csvw_metadata_json_path, Path(dataset_url)
@@ -199,8 +199,8 @@ def test_build_concepts_hierarchy_tree_of_depth_more_than_one():
     Should return the expected Tree for the concepts with hierarchical depth of more than one.
     """
     csvw_metadata_json_path = _test_case_base_dir / "itis-industry.csv-metadata.json"
-    table_schema_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = table_schema_manager.load_json_ld_to_rdflib_graph()
+    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = csvw_rdf_manager.load_json_ld_to_rdflib_graph()
     dataset_url = select_codelist_dataset_url(csvw_metadata_rdf_graph).dataset_url
     dataset: DataFrame = load_csv_to_dataframe(
         csvw_metadata_json_path, Path(dataset_url)
