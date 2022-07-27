@@ -14,7 +14,7 @@ from csvcubed.models.csvcubedexception import FailedToLoadRDFGraphException
 
 from csvcubed.utils.iterables import first
 from csvcubed.utils.sparql_handler.sparqlmanager import select_table_schema_properties
-from csvcubed.utils.tableschema import TableSchemaManager
+from csvcubed.utils.tableschema import CsvwRdfManager
 
 
 _logger = logging.getLogger(__name__)
@@ -30,7 +30,7 @@ def extract_code_list_concept_scheme_info(
       `concept_uri_template` uses the standard `notation` uri template variable even if the underlying file uses a
        different column name.
     """
-    table_schema_manager = TableSchemaManager(code_list_csvw_path)
+    table_schema_manager = CsvwRdfManager(code_list_csvw_path)
     rdf_graph = table_schema_manager.load_json_ld_to_rdflib_graph()
 
     if rdf_graph is None:

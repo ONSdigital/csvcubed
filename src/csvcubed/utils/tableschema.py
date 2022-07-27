@@ -1,5 +1,5 @@
 """
-Table Schme
+Table Schema
 ------------------
 
 Provides functionality for handling table schema related features.
@@ -32,7 +32,7 @@ _logger = logging.getLogger(__name__)
 
 
 @dataclass
-class TableSchemaManager:
+class CsvwRdfManager:
     """
     This class handles the loading of metadata jsons to RDFLib Graphs.
     """
@@ -46,7 +46,7 @@ class TableSchemaManager:
         """
         Loads the table schemas into rdf graph.
 
-        Member of :class:`./TableSchemaManager`.
+        Member of :class:`./CsvwRdfManager`.
 
         :return: `Graph` - RDFLib Graph of CSV-W metadata json.
         """
@@ -85,7 +85,7 @@ class TableSchemaManager:
         """
         Loads CSV-W metadata json-ld to rdflib graph
 
-        Member of :class:`./TableSchemaManager`.
+        Member of :class:`./CsvwRdfManager`.
 
         :return: `Graph` - RDFLib Graph of CSV-W metadata json.
         """
@@ -132,7 +132,7 @@ class TableSchemaManager:
                 csvw_metadata_rdf_graph, csvw_metadata_file_path
             )
 
-            _add_triples_for_file_dependencies(
+            add_triples_for_file_dependencies(
                 csvw_metadata_rdf_graph, self.csvw_metadata_file_path
             )
 
@@ -141,7 +141,7 @@ class TableSchemaManager:
             raise FailedToLoadRDFGraphException(self.csvw_metadata_file_path) from ex
 
 
-def _add_triples_for_file_dependencies(
+def add_triples_for_file_dependencies(
     rdf_graph: rdflib.ConjunctiveGraph,
     paths_relative_to: Union[str, Path],
     follow_relative_path_dependencies_only: bool = False,

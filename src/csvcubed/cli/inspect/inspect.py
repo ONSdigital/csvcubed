@@ -17,7 +17,7 @@ from csvcubed.cli.inspect.metadatainputvalidator import (
     MetadataValidator,
 )
 from csvcubed.cli.inspect.metadataprinter import MetadataPrinter
-from csvcubed.utils.tableschema import TableSchemaManager
+from csvcubed.utils.tableschema import CsvwRdfManager
 from csvcubed.models.csvcubedexception import FailedToLoadRDFGraphException
 
 _logger = logging.getLogger(__name__)
@@ -33,7 +33,7 @@ def inspect(csvw_metadata_json_path: Path) -> None:
     """
     _logger.debug(f"Metadata json-ld path: {csvw_metadata_json_path.absolute()}")
 
-    table_schema_manager = TableSchemaManager(csvw_metadata_json_path)
+    table_schema_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = table_schema_manager.load_json_ld_to_rdflib_graph()
 
     if csvw_metadata_rdf_graph is None:
