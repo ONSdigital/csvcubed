@@ -9,7 +9,61 @@ This guide details how to explicitly define a code list using csvcubed.
 
 ## Defining a code list using code-list-config.json
 
-This approach allows defining a code list in a `code-list-config.json` file. This file has two sections:
+This approach allows defining a code list in a `code-list-config.json` file.
+
+```json
+{
+  "$schema": "https://purl.org/csv-cubed/code-list-config/v1.0",
+  "title": "Example code list",
+  "description": "This is an example code list demonstrating how to define a code list in a json file",
+  "summary": "This is an example code list",
+  "creator": "http://purl.org/dc/aboutdcmi#DCMI",
+  "publisher": "http://purl.org/dc/aboutdcmi#DCMI",
+  "dataset_issued": "2022-03-31T12:54:30Z",
+  "dataset_modified": "2022-04-01T12:54:30Z",
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "themes": [
+    "http://example.com/themes/theme"
+  ],
+  "keywords": [
+    "keyword1"
+  ],
+  "sort": {
+    "by": "label",
+    "method": "ascending"
+  },
+  "concepts": [
+    {
+      "label": "A",
+      "description": "A data record",
+      "notation": "a",
+      "same_as": "http://example.com/concepts/some-existing-concept",
+      "sort_order": 2,
+    },
+    {
+      "label": "C",
+      "description": "C data record",
+      "notation": "c",
+      "sort_order": 1,
+    },
+    {
+      "label": "B",
+      "description": "B data record",
+      "notation": "b",
+      "sort_order": 0,
+      "children": [
+        {
+          "label": "D",
+          "description": "D data record",
+          "notation": "d"
+        }
+      ]
+    }
+  ]
+}
+```
+
+As shown in the example above, the `code-list-config.json` file has two sections:
 
 1. **Metadata**
    This section is used to describe the code list's catalog information to aid discovery, provide provenance and publication information, and optionally define the scope of the code list.
@@ -22,7 +76,7 @@ This approach allows defining a code list in a `code-list-config.json` file. Thi
 The following metadata can be defined in the metadata section of the `code-list-config.json`:
 
 | **field name**     | **description**                                                                                | **default value**                  |
-|--------------------|------------------------------------------------------------------------------------------------|------------------------------------|
+| ------------------ | ---------------------------------------------------------------------------------------------- | ---------------------------------- |
 | `title`            | Title of the code list                                                                         | *none*                             |
 | `description`      | Description of the contents in code list                                                       | *none*                             |
 | `summary`          | Summary of the contents in code list                                                           | *none*                             |
@@ -46,7 +100,7 @@ The `sort` field allows defining the sort `by` and sort `method` fields of the c
 The following fields can be defined for each of the concept defined in the concepts section:
 
 | **field name** | **description**                                        | **default value** |
-|----------------|--------------------------------------------------------|-------------------|
+| -------------- | ------------------------------------------------------ | ----------------- |
 | `label`        | Label of the concept                                   | *none*            |
 | `description`  | Description of the concept                             | *none*            |
 | `notation`     | Notation of the concept                                | *none*            |
@@ -64,132 +118,93 @@ The `sort_order` field allows sorting a code list on per concept basis.
 
 The `same_as` field allows using a concept defined elsewhere in the internet (e.g. [E92 concept in Geography Linked Data](http://statistics.data.gov.uk/id/statistical-geography/E92000001)).
 
-### Example
+### Linking the code-list-config.json in qube-config.json
 
-```json
-{
-    "$schema": "https://purl.org/csv-cubed/code-list-config/v1.0",
-    "title": "Mixed Geographies Code List",
-    "description": "This mixes together concepts from the NUTS and ONS Geographies code lists to solve the NUTS 'England' problem.",
-    "summary": "Mix of NUTS and ONS Geographies concepts.",
-    "creator": "http://dbpedia.org/resource/Open_Knowledge_Foundation",
-    "publisher": "http://dbpedia.org/resource/Open_Knowledge_Foundation",
-    "dataset_issued": "2022-03-31T12:54:30Z",
-    "dataset_modified": "2022-04-01T12:54:30Z",
-    "license": "https://creativecommons.org/licenses/by/4.0/",    
-    "themes": [
-        "http://example.com/themes/theme"
-    ],
-    "keywords": [
-        "NUTS",
-        "ONS Geographies"
-    ],
-    "sort": {
-        "by": "label",
-        "method": "ascending"
-    },
-    "concepts": [
-        {
-            "label": "United Kingdom",
-            "notation": "UK",
-            "same_as": "http://data.europa.eu/nuts/code/UK",
-            "children": [
-                {
-                    "label": "Wales",
-                    "notation": "UKL",
-                    "same_as": "http://data.europa.eu/nuts/code/UKL",
-                    "sort_order": 0
-                },
-                {
-                    "label": "Scotland",
-                    "notation": "UKM",
-                    "same_as": "http://data.europa.eu/nuts/code/UKM"
-                },
-                {
-                    "label": "England",
-                    "notation": "E92000001",
-                    "same_as": "http://statistics.data.gov.uk/id/statistical-geography/E92000001",
-                    "children": [
-                        {
-                            "label": "London",
-                            "notation": "UKI",
-                            "same_as": "http://data.europa.eu/nuts/code/UKI",
-                            "sort_order": 0
-                        },
-                        {
-                            "label": "North East (England)",
-                            "notation": "UKC",
-                            "same_as": "http://data.europa.eu/nuts/code/UKC",
-                            "sort_order": 2
-                        },
-                        {
-                            "label": "North West (England)",
-                            "notation": "UKD",
-                            "same_as": "http://data.europa.eu/nuts/code/UKD",
-                            "sort_order": 1
-                        }
-                    ]
-                }
-            ]
-        }
-    ]
-}
-```
-
-
+Once the `code-list-config.json` is defined, it can be linked in the `qube-config.json` using the `code_list` field in [dimension configuration](./qube-config.md#dimension-configuration). More specifically, the path to the `code-list-config.json` needs to be given in the `code_list` field in `qube-config.json`.
 ## Defining an in-line code list
 
 This approach is recommended for defining simple code lists (e.g. code lists with a small number of concepts or simple hierarchy).
 
-As shown in the below example, an in-line code list is defined within the `qube-config.json` using the same fields discussed above. Moreover, as shown in the example, one can choose to define a `code-list-config.json` for a one dimension and define an in-line code list for another dimension.
 
 ```json
 {
-    "$schema": "https://purl.org/csv-cubed/qube-config/v1",
-    "title": "An example cube using a mixed code list",
-    "summary": "Mix of NUTS and ONS Geographies concepts.",
-    "creator": "http://dbpedia.org/resource/Open_Knowledge_Foundation",
-    "publisher": "http://dbpedia.org/resource/Open_Knowledge_Foundation",
-    "dataset_issued": "2022-03-31T12:54:30Z",
-    "dataset_modified": "2022-04-01T12:54:30Z",
-    "license": "http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",    
-    "themes": [
-        "http://example.com/themes/theme"
-    ],
+    "$schema": "https://purl.org/csv-cubed/qube-config/v1.1",
+    "title": "Example cube config with an inline code list",
+    "summary": "Cube config with an inline code list",
+    "description": "This is an example cube config demonstrating how to define an inline code list",
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "creator": "http://statistics.data.gov.uk",
+    "publisher": "http://statistics.data.gov.uk",
+    "dataset_issued": "2022-04-08T00:00:00Z",
     "keywords": [
-        "NUTS",
-        "ONS Geographies"
+        "Keyword1"
     ],
     "columns": {
-        "Location": {
-            "label": "Location",
-            "code_list": "./nuts-ons-code-list.json"
-        },
-        "Year": {
-            "label": "Financial Years",
+        "DimensionInline": {
+            "type": "dimension",
             "code_list": {
-                "title": "Financial Years",
-                "license": "http://www.opendatacommons.org/licenses/pddl/1.0/",
+                "title": "Example of an inline code list",
+                "description": "This is an inline code list defined inside a cube config",
+                "summary": "This is an inline code list",
+                "creator": "http://purl.org/dc/aboutdcmi#DCMI",
+                "publisher": "http://purl.org/dc/aboutdcmi#DCMI",
+                "dataset_issued": "2022-03-31T12:54:30Z",
+                "dataset_modified": "2022-04-01T12:54:30Z",
+                "license": "https://creativecommons.org/licenses/by/4.0/",
+                "themes": [
+                    "http://example.com/themes/theme"
+                ],
+                "keywords": [
+                    "keyword1"
+                ],
+                "sort": {
+                    "by": "label",
+                    "method": "ascending"
+                },
                 "concepts": [
                     {
-                        "label": "1992 - 1993",
-                        "notation": "92-93",
-                        "same_as": "http://reference.data.gov.uk/id/government-year/92-93",
-                        "sort_order": 0
+                        "label": "A",
+                        "description": "A data record",
+                        "notation": "a",
+                        "sort_order": 2,
                     },
                     {
-                        "label": "1994 - 1995",
-                        "notation": "94-95",
-                        "sort_order": 1
+                        "label": "C",
+                        "description": "C data record",
+                        "notation": "c",
+                        "sort_order": 1,
                     },
                     {
-                        "label": "1995 - 1996",
-                        "notation": "95-96",
-                        "sort_order": 2
+                        "label": "B",
+                        "description": "B data record",
+                        "notation": "b",
+                        "sort_order": 0,
+                        "children": [
+                            {
+                                "label": "D",
+                                "description": "D data record",
+                                "notation": "d"
+                            }
+                        ]
                     }
                 ]
-            }
+            },
+            "DimensionJsonFile": {
+                "type": "dimension",
+                "code_list": "./code-list-config.json"
+            },
+        },
+        "Value": {
+            "type": "observations"
+        },
+        "Measure": {
+            "type": "measures"
+        },
+        "Unit": {
+            "type": "units"
         }
     }
 }
 ```
+
+As shown in the above example, an in-line code list is defined within the `qube-config.json` using the same fields discussed above. Moreover, as shown in the example, one can choose to define a `code-list-config.json` for a one dimension and define an in-line code list for another dimension.
