@@ -25,6 +25,7 @@ from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_optional_s
 from .datastructuredefinition import (
     QbColumnStructuralDefinition,
 )
+from csvcubed.models.cube.qb.components.constants import ACCEPTED_DATATYPE_MAPPING
 from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.models.validationerror import ValidationError
 from csvcubed.utils.uri import uri_safe
@@ -196,37 +197,6 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
         column_csv_title: str,
     ) -> List[ValidationError]:
         return self._validate_data_new_attribute_values(data)
-
-
-# A mapping of accepted datatypes from their csvw representation
-# to appropriate primitive pandas dtypes.
-# Please see:
-# - https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.dtypes.html
-# - https://numpy.org/doc/stable/reference/arrays.dtypes.html
-ACCEPTED_DATATYPE_MAPPING = {
-    "anyURI": "string",
-    "boolean": "bool",
-    "decimal": "float64",
-    "integer": "int64",
-    "long": "long",
-    "int": "int64",
-    "short": "short",
-    "nonNegativeInteger": "int64",
-    "positiveInteger": "int64",
-    "unsignedLong": "uint64",
-    "unsignedInt": "uint64",
-    "unsignedShort": "uint64",
-    "nonPositiveInteger": "int64",
-    "negativeInteger": "int64",
-    "double": "double",
-    "float": "float64",
-    "string": "string",
-    "language": "string",
-    "date": "string",
-    "dateTime": "string",
-    "dateTimeStamp": "string",
-    "time": "string",
-}
 
 
 @dataclass

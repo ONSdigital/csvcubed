@@ -15,7 +15,7 @@ from csvcubed.models.cube.qb.components.attribute import ACCEPTED_DATATYPE_MAPPI
 from .constants import CONVENTION_NAMES
 
 
-def _is_measures_column(column_label: str) -> bool:
+def _is_conventional_measures_column(column_label: str) -> bool:
     """
     Does the column label signify a measure column using the configuration
     by convention approach.
@@ -23,7 +23,7 @@ def _is_measures_column(column_label: str) -> bool:
     return column_label in CONVENTION_NAMES["measures"]
 
 
-def _is_observations_column(column_label: str) -> bool:
+def _is_conventional_observations_column(column_label: str) -> bool:
     """
     Does the column label signify an observation column using the configuration
     by convention approach.
@@ -31,7 +31,7 @@ def _is_observations_column(column_label: str) -> bool:
     return column_label in CONVENTION_NAMES["observations"]
 
 
-def _is_units_column(column_label: str) -> bool:
+def _is_conventional_units_column(column_label: str) -> bool:
     """
     Does the column label signify a units column using the configuration by
     convention approach.
@@ -89,8 +89,9 @@ def get_pandas_datatypes(
     Creates a dictionary of column_label:datatype for all columns in the dataframe.
     """
 
+    dtype = {} # Mapping of column name to pandas datatype
+
     # Columns defined by explicit configuration
-    dtype = {}
     if config:
         if "columns" in config:
             dtype = pandas_datatypes_from_columns_config(config["columns"])
@@ -99,11 +100,11 @@ def get_pandas_datatypes(
     column_list: List[str] = pd.read_csv(csv_path, nrows=0).columns.tolist()  # type: ignore
     untyped_column_list: List[str] = [x for x in column_list if x not in dtype]
     for uc in untyped_column_list:
-        if _is_measures_column(uc.lower()):
+        if _is_conventional_measures_column(uc.lower()):
             dtype[uc] = ACCEPTED_DATATYPE_MAPPING["string"]
-        if _is_units_column(uc.lower()):
+        elif _is_conventional_units_column(uc.lower()):
             dtype[uc] = ACCEPTED_DATATYPE_MAPPING["string"]
-        if _is_observations_column(uc.lower()):
+        elif _is_conventional_observations_column(uc.lower()):
             dtype[uc] = ACCEPTED_DATATYPE_MAPPING["decimal"]
         else:
             # therefore, is a dimension
