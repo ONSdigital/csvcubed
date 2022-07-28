@@ -1,4 +1,4 @@
-# Writing a code-list-config.json
+# Configuring code lists
 
 By default, csvcubed generates code lists with the unique values of each [dimension](../../glossary/index.md#dimension) in a data set. This makes it as quick as possible to get from data to CSV-W cube, but it doesn't always leave you with the best representation of your code list's metadata, structure, hierarchy, or values. In order to provide more accurate representations of code lists, csvcubed allows users to explicitly configure code lists using JSON. 
 
@@ -7,26 +7,27 @@ This guide details how to explicitly define a code list using csvcubed.
 > **Experience of writing basic JSON documents is assumed throughout this document.**
 > See this [tutorial from DigitalOcean](https://www.digitalocean.com/community/tutorials/an-introduction-to-json) for an introduction to writing JSON.
 
-## Defining a code list using code-list-config.json
+## Defining a code list configuration file
 
-This approach allows defining a code list in a `code-list-config.json` file.
+This approach allows defining a code list in a *code list configuration file*. The following example demonstrates the structure of a *code list configuration file*:
 
 ```json
 {
-  "$schema": "https://purl.org/csv-cubed/code-list-config/v1.0",
-  "title": "Example code list",
-  "description": "This is an example code list demonstrating how to define a code list in a json file",
-  "summary": "This is an example code list",
-  "creator": "http://purl.org/dc/aboutdcmi#DCMI",
-  "publisher": "http://purl.org/dc/aboutdcmi#DCMI",
-  "dataset_issued": "2022-03-31T12:54:30Z",
-  "dataset_modified": "2022-04-01T12:54:30Z",
+  "$schema": "https://purl.org/csv-cubed/code-list-config/v1",
+  "title": "Biscuit Varieties",
+  "summary": "Common biscuit varieties.",
+  "description": "A code list of common generic biscuit varieties available in supermarkets across the UK.",
+  "creator": "http://statistics.data.gov.uk",
+  "publisher": "http://statistics.data.gov.uk",
+  "dataset_issued": "3000-01-01T00:00:00Z",
+  "dataset_modified": "3000-01-01T00:00:00Z",
   "license": "https://creativecommons.org/licenses/by/4.0/",
   "themes": [
-    "http://example.com/themes/theme"
+    "http://example.com/themes/biscuits"
   ],
   "keywords": [
-    "keyword1"
+    "Biscuits",
+    "Tasty"
   ],
   "sort": {
     "by": "label",
@@ -34,28 +35,30 @@ This approach allows defining a code list in a `code-list-config.json` file.
   },
   "concepts": [
     {
-      "label": "A",
-      "description": "A data record",
-      "notation": "a",
-      "same_as": "http://example.com/concepts/some-existing-concept",
-      "sort_order": 2,
+      "label": "Bourbon",
+      "description": "The common chocolate bourbon biscuit.",
+      "notation": "BB"
     },
     {
-      "label": "C",
-      "description": "C data record",
-      "notation": "c",
-      "sort_order": 1,
+      "label": "Custard Cream",
+      "description": "The custard flavoured sandwich biscuit.",
+      "notation": "CC"
     },
     {
-      "label": "B",
-      "description": "B data record",
-      "notation": "b",
+      "label": "Digestive",
+      "description": "The ever trusty digestive biscuit.",
+      "notation": "DG",
       "sort_order": 0,
       "children": [
         {
-          "label": "D",
-          "description": "D data record",
-          "notation": "d"
+          "label": "Milk Chocolate Digestive",
+          "description": "The milk chocolate digestive biscuit. An improvement on the basic digestive.",
+          "notation": "DG-M"
+        },
+        {
+          "label": "Dark Chocolate Digestive",
+          "description": "The dark chocolate digestive biscuit.",
+          "notation": "DG-D"
         }
       ]
     }
@@ -63,7 +66,18 @@ This approach allows defining a code list in a `code-list-config.json` file.
 }
 ```
 
-As shown in the example above, the `code-list-config.json` file has two sections:
+This code list configuration would generate a code list with the following structure: 
+
+```
+root
+├── Bourbon
+├── Custard Cream
+└── Digestive
+    ├── Dark Chocolate Digestive
+    └── Milk Chocolate Digestive
+```
+
+As can be seen in the code list configuration example, the *code list configuration file* has two sections:
 
 1. **Metadata**
    This section is used to describe the code list's catalog information to aid discovery, provide provenance and publication information, and optionally define the scope of the code list.
@@ -73,7 +87,7 @@ As shown in the example above, the `code-list-config.json` file has two sections
 
 ### Metadata
 
-The following metadata can be defined in the metadata section of the `code-list-config.json`:
+The following metadata can be defined in the metadata section of the *code list configuration file*:
 
 | **field name**     | **description**                                                                                | **default value**                  |
 | ------------------ | ---------------------------------------------------------------------------------------------- | ---------------------------------- |
@@ -120,91 +134,85 @@ The `same_as` field allows using a concept defined elsewhere in the internet (e.
 
 ### Linking the code-list-config.json in qube-config.json
 
-Once the `code-list-config.json` is defined, it can be linked in the `qube-config.json` using the `code_list` field in [dimension configuration](./qube-config.md#dimension-configuration). More specifically, the path to the `code-list-config.json` needs to be given in the `code_list` field in `qube-config.json`.
-## Defining an in-line code list
+Once the *code list configuration file* is defined, it can be linked in the `qube-config.json` using the `code_list` field in [dimension configuration](./qube-config.md#dimension-configuration). More specifically, the path to the *code list configuration file* needs to be given in the `code_list` field in `qube-config.json`.
 
-This approach is recommended for defining simple code lists (e.g. code lists with a small number of concepts or simple hierarchy).
+### Referencing a code list configuration file
 
+This new code list can be referenced in a [qube-config.json](./qube-config.md) file using the `code_list` field in [dimension configuration](./qube-config.md#dimension-configuration), e.g.
 
 ```json
 {
-    "$schema": "https://purl.org/csv-cubed/qube-config/v1.1",
-    "title": "Example cube config with an inline code list",
-    "summary": "Cube config with an inline code list",
-    "description": "This is an example cube config demonstrating how to define an inline code list",
-    "license": "https://creativecommons.org/licenses/by/4.0/",
-    "creator": "http://statistics.data.gov.uk",
-    "publisher": "http://statistics.data.gov.uk",
-    "dataset_issued": "2022-04-08T00:00:00Z",
-    "keywords": [
-        "Keyword1"
-    ],
-    "columns": {
-        "DimensionInline": {
-            "type": "dimension",
-            "code_list": {
-                "title": "Example of an inline code list",
-                "description": "This is an inline code list defined inside a cube config",
-                "summary": "This is an inline code list",
-                "creator": "http://purl.org/dc/aboutdcmi#DCMI",
-                "publisher": "http://purl.org/dc/aboutdcmi#DCMI",
-                "dataset_issued": "2022-03-31T12:54:30Z",
-                "dataset_modified": "2022-04-01T12:54:30Z",
-                "license": "https://creativecommons.org/licenses/by/4.0/",
-                "themes": [
-                    "http://example.com/themes/theme"
-                ],
-                "keywords": [
-                    "keyword1"
-                ],
-                "sort": {
-                    "by": "label",
-                    "method": "ascending"
-                },
-                "concepts": [
-                    {
-                        "label": "A",
-                        "description": "A data record",
-                        "notation": "a",
-                        "sort_order": 2,
-                    },
-                    {
-                        "label": "C",
-                        "description": "C data record",
-                        "notation": "c",
-                        "sort_order": 1,
-                    },
-                    {
-                        "label": "B",
-                        "description": "B data record",
-                        "notation": "b",
-                        "sort_order": 0,
-                        "children": [
-                            {
-                                "label": "D",
-                                "description": "D data record",
-                                "notation": "d"
-                            }
-                        ]
-                    }
-                ]
-            },
-            "DimensionJsonFile": {
-                "type": "dimension",
-                "code_list": "./code-list-config.json"
-            },
-        },
-        "Value": {
-            "type": "observations"
-        },
-        "Measure": {
-            "type": "measures"
-        },
-        "Unit": {
-            "type": "units"
-        }
+  "$schema": "https://purl.org/csv-cubed/qube-config/v1",
+  "columns": {
+    "Biscuit Variety": {
+      "type": "dimension",
+      "code_list": "./biscuit-varieties.json"
     }
+  }
 }
 ```
 
-As shown in the above example, an in-line code list is defined within the `qube-config.json` using the same fields discussed above. Moreover, as shown in the example, one can choose to define a `code-list-config.json` for a one dimension and define an in-line code list for another dimension.
+## Defining an in-line code list
+
+It is also possible to define a code list configuration inside a [qube-config.json](./qube-config.md) file. 
+
+This approach is recommended for defining simple code lists (e.g. code lists with a small number of concepts or simple hierarchy).
+
+```json
+{
+  "$schema": "https://purl.org/csv-cubed/qube-config/v1",
+  "title": "Biscuit Weightings",
+  "summary": "The average weights of different kinds of biscuits.",
+  "description": "A data set containing the average weights of a series of different kinds of biscuits. Recorded in the year 3000.",
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "creator": "http://statistics.data.gov.uk",
+  "publisher": "http://statistics.data.gov.uk",
+  "dataset_issued": "3000-01-01T00:00:00Z",
+  "keywords": [
+    "Biscuits",
+    "Tasty"
+  ],
+  "columns": {
+    "Biscuit Variety": {
+      "type": "dimension",
+      "code_list": {
+        "title": "Biscuit Varieties",
+        "summary": "Common biscuit varieties.",
+        "license": "https://creativecommons.org/licenses/by/4.0/",
+        "concepts": [
+          {
+            "label": "Bourbon",
+            "description": "The common chocolate bourbon biscuit.",
+            "notation": "BB"
+          },
+          {
+            "label": "Custard Cream",
+            "description": "The custard flavoured sandwich biscuit.",
+            "notation": "CC"
+          },
+          {
+            "label": "Digestive",
+            "description": "The ever trusty digestive biscuit.",
+            "notation": "DG",
+            "sort_order": 0,
+            "children": [
+              {
+                "label": "Milk Chocolate Digestive",
+                "description": "The milk chocolate digestive biscuit. An improvement on the basic digestive.",
+                "notation": "DG-M"
+              },
+              {
+                "label": "Dark Chocolate Digestive",
+                "description": "The dark chocolate digestive biscuit.",
+                "notation": "DG-D"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+As shown in the above example, an in-line code list is defined within the `qube-config.json` using the same fields discussed above. Moreover, one can choose to define a separate code list configuration file for one dimension and define an in-line code list for another dimension.
