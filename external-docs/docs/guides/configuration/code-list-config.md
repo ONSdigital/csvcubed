@@ -66,6 +66,8 @@ This approach allows defining a code list in a *code list configuration file*. T
 }
 ```
 
+File name: biscuit-varieties.json 
+
 This code list configuration would generate a code list with the following structure: 
 
 ```
