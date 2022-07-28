@@ -132,10 +132,6 @@ The `sort_order` field allows sorting a code list on per concept basis.
 
 The `same_as` field allows using a concept defined elsewhere in the internet (e.g. [E92 concept in Geography Linked Data](http://statistics.data.gov.uk/id/statistical-geography/E92000001)).
 
-### Linking the code-list-config.json in qube-config.json
-
-Once the *code list configuration file* is defined, it can be linked in the `qube-config.json` using the `code_list` field in [dimension configuration](./qube-config.md#dimension-configuration). More specifically, the path to the *code list configuration file* needs to be given in the `code_list` field in `qube-config.json`.
-
 ### Referencing a code list configuration file
 
 This new code list can be referenced in a [qube-config.json](./qube-config.md) file using the `code_list` field in [dimension configuration](./qube-config.md#dimension-configuration), e.g.
