@@ -58,6 +58,6 @@
             }
         ],
         "primaryKey": "notation",
-        "aboutUrl": "http://gss-data.org.uk/def/trade/concept/age-of-business/{+not_notation}"
+        "aboutUrl": "http://gss-data.org.uk/def/trade/concept/age-of-business/{+notation}{+anothervariable}"
     }
 }

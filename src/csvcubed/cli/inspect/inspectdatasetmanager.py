@@ -12,7 +12,7 @@ from typing import List, Optional
 import pandas as pd
 
 from csvcubed.utils.pandas import read_csv
-from csvcubed.models.inspectsparqlresults import (
+from csvcubed.models.sparqlresults import (
     QubeComponentResult,
 )
 from csvcubed.utils.qb.components import (

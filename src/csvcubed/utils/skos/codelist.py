@@ -12,7 +12,7 @@ import numpy as np
 
 from treelib import Tree
 
-from csvcubed.models.inspectsparqlresults import CodelistColumnResult
+from csvcubed.models.sparqlresults import CodelistColumnResult
 from csvcubed.models.csvcubedexception import (
     ErrorProcessingDataFrameException,
     InvalidNumberOfRecordsException,

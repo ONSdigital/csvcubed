@@ -1,25 +1,22 @@
 """
-Metadata Processor
+Table Schema
 ------------------
 
-Provides functionality for validating and detecting input metadata.json file.
+Provides functionality for handling table schema related features.
 """
 import logging
-import os.path
 from pathlib import Path
-from typing import List, Set, Tuple, Union
+from typing import Union
 from urllib.parse import urljoin
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import rdflib
-from rdflib.term import Identifier
 from rdflib.util import guess_format
 
-from csvcubed.models.inspectsparqlresults import MetadataDependenciesResult
 from csvcubed.utils.csvw import load_table_schema_file_to_graph
 from csvcubed.utils.rdf import parse_graph_retain_relative
 from csvcubed.utils.uri import looks_like_uri
-from csvcubed.cli.inspect.inspectsparqlmanager import (
+from csvcubed.utils.sparql_handler.sparqlmanager import (
     select_csvw_table_schema_file_dependencies,
     select_metadata_dependencies,
 )
@@ -29,18 +26,25 @@ from csvcubed.models.csvcubedexception import (
     FailedToReadCsvwFileContentException,
     InvalidCsvwFileContentException,
 )
-from csvcubed.utils.sparql import path_to_file_uri_for_rdflib
+from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 
 _logger = logging.getLogger(__name__)
 
 
 @dataclass
-class MetadataProcessor:
+class CsvwRdfManager:
     """
     This class handles the loading of metadata jsons to RDFLib Graphs.
     """
 
     csvw_metadata_file_path: Path
+    rdf_graph: rdflib.ConjunctiveGraph = field(init=False)
+
+    def __post_init__(self):
+        self.rdf_graph = self._load_json_ld_to_rdflib_graph()
+
+        if self.rdf_graph is None:
+            raise FailedToLoadRDFGraphException(self.csvw_metadata_file_path)
 
     @staticmethod
     def _load_table_schema_dependencies_into_rdf_graph(
@@ -49,7 +53,7 @@ class MetadataProcessor:
         """
         Loads the table schemas into rdf graph.
 
-        Member of :class:`./MetadataProcessor`.
+        Member of :class:`./CsvwRdfManager`.
 
         :return: `Graph` - RDFLib Graph of CSV-W metadata json.
         """
@@ -84,11 +88,11 @@ class MetadataProcessor:
             len(dependencies_result.table_schema_file_dependencies),
         )
 
-    def load_json_ld_to_rdflib_graph(self) -> rdflib.ConjunctiveGraph:
+    def _load_json_ld_to_rdflib_graph(self) -> rdflib.ConjunctiveGraph:
         """
         Loads CSV-W metadata json-ld to rdflib graph
 
-        Member of :class:`./MetadataProcessor`.
+        Member of :class:`./CsvwRdfManager`.
 
         :return: `Graph` - RDFLib Graph of CSV-W metadata json.
         """

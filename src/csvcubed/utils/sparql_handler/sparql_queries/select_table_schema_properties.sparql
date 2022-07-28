@@ -1,0 +1,19 @@
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX csvw: <http://www.w3.org/ns/csvw#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT DISTINCT ?csvUrl ?tableAboutUrl ?columnPropertyUrl ?columnValueUrl
+WHERE {   
+    
+    ?table csvw:tableSchema ?tableSchema;
+           csvw:url ?csvUrl.
+    
+    ?tableSchema csvw:aboutUrl ?tableAboutUrl;
+                 csvw:column/rdf:rest*/rdf:first ?column.
+
+
+    ?column csvw:propertyUrl ?columnPropertyUrl;
+            csvw:valueUrl ?columnValueUrl.
+    
+    FILTER (str(?columnPropertyUrl) IN (str(skos:inScheme), "skos:inScheme")).
+}
