@@ -14,7 +14,7 @@ def test_detect_valid_csvw_metadata_datacube_input():
     """
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.load_json_ld_to_rdflib_graph()
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     csvw_metadata_rdf_validator = MetadataValidator(
         csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
@@ -37,7 +37,7 @@ def test_detect_valid_csvw_metadata_datacube_relative_path():
     assert not csvw_metadata_json_path.is_absolute()
 
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.load_json_ld_to_rdflib_graph()
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     csvw_metadata_rdf_validator = MetadataValidator(
         csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
@@ -56,7 +56,7 @@ def test_detect_valid_csvw_metadata_codelist_input():
     """
     csvw_metadata_json_path = _test_case_base_dir / "codelist.csv-metadata.json"
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.load_json_ld_to_rdflib_graph()
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     csvw_metadata_rdf_validator = MetadataValidator(
         csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
@@ -76,7 +76,7 @@ def test_detect_invalid_csvw_metadata_input():
 
     csvw_metadata_json_path = _test_case_base_dir / "json.table.json"
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.load_json_ld_to_rdflib_graph()
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     csvw_metadata_rdf_validator = MetadataValidator(
         csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
@@ -95,7 +95,7 @@ def test_detect_type_datacube():
     """
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.load_json_ld_to_rdflib_graph()
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     csvw_metadata_rdf_validator = MetadataValidator(
         csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
@@ -114,7 +114,7 @@ def test_detect_type_codelist():
     """
     csvw_metadata_json_path = _test_case_base_dir / "codelist.csv-metadata.json"
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.load_json_ld_to_rdflib_graph()
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     csvw_metadata_rdf_validator = MetadataValidator(
         csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
@@ -133,7 +133,7 @@ def test_detect_type_other():
     """
     csvw_metadata_json_path = _test_case_base_dir / "json.table.json"
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.load_json_ld_to_rdflib_graph()
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     csvw_metadata_rdf_validator = MetadataValidator(
         csvw_metadata_rdf_graph, csvw_metadata_json_path
     )

@@ -29,7 +29,7 @@ def test_get_codelist_col_title_by_property_url_label():
         / "alcohol-content.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.load_json_ld_to_rdflib_graph()
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     dataset_url = select_codelist_dataset_url(csvw_metadata_rdf_graph).dataset_url
 
     result_code_list_cols = select_codelist_cols_by_dataset_url(
@@ -52,7 +52,7 @@ def test_get_codelist_col_title_by_property_url_notation():
         / "alcohol-content.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.load_json_ld_to_rdflib_graph()
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     dataset_url = select_codelist_dataset_url(csvw_metadata_rdf_graph).dataset_url
 
     result_code_list_cols = select_codelist_cols_by_dataset_url(
@@ -75,7 +75,7 @@ def test_get_codelist_col_title_by_property_url_parent_notation():
         / "alcohol-content.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.load_json_ld_to_rdflib_graph()
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     dataset_url = select_codelist_dataset_url(csvw_metadata_rdf_graph).dataset_url
 
     result_code_list_cols = select_codelist_cols_by_dataset_url(
@@ -98,7 +98,7 @@ def test_get_codelist_col_title_by_property_url_sort_priority():
         / "alcohol-content.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.load_json_ld_to_rdflib_graph()
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     dataset_url = select_codelist_dataset_url(csvw_metadata_rdf_graph).dataset_url
 
     result_code_list_cols = select_codelist_cols_by_dataset_url(
@@ -121,7 +121,7 @@ def test_get_codelist_col_title_by_property_url_rdfs_comment():
         / "alcohol-content.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.load_json_ld_to_rdflib_graph()
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     dataset_url = select_codelist_dataset_url(csvw_metadata_rdf_graph).dataset_url
 
     result_code_list_cols = select_codelist_cols_by_dataset_url(
@@ -144,7 +144,7 @@ def test_get_codelist_col_title_by_property_url_rdfs_type():
         / "alcohol-content.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.load_json_ld_to_rdflib_graph()
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     dataset_url = select_codelist_dataset_url(csvw_metadata_rdf_graph).dataset_url
 
     result_code_list_cols = select_codelist_cols_by_dataset_url(
@@ -167,7 +167,7 @@ def test_build_concepts_hierarchy_tree_of_depth_one():
         / "alcohol-content.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.load_json_ld_to_rdflib_graph()
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     dataset_url = select_codelist_dataset_url(csvw_metadata_rdf_graph).dataset_url
     dataset: DataFrame = load_csv_to_dataframe(
         csvw_metadata_json_path, Path(dataset_url)
@@ -200,7 +200,7 @@ def test_build_concepts_hierarchy_tree_of_depth_more_than_one():
     """
     csvw_metadata_json_path = _test_case_base_dir / "itis-industry.csv-metadata.json"
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.load_json_ld_to_rdflib_graph()
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     dataset_url = select_codelist_dataset_url(csvw_metadata_rdf_graph).dataset_url
     dataset: DataFrame = load_csv_to_dataframe(
         csvw_metadata_json_path, Path(dataset_url)

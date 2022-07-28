@@ -34,7 +34,7 @@ def inspect(csvw_metadata_json_path: Path) -> None:
     _logger.debug(f"Metadata json-ld path: {csvw_metadata_json_path.absolute()}")
 
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.load_json_ld_to_rdflib_graph()
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
     if csvw_metadata_rdf_graph is None:
         raise FailedToLoadRDFGraphException(csvw_metadata_json_path)

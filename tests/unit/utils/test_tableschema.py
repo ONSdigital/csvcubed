@@ -14,7 +14,7 @@ def test_metadata_dataset_json_ld_to_rdf_loading():
     """
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.load_json_ld_to_rdflib_graph()
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
     assert csvw_metadata_rdf_graph is not None
     assert any(csvw_metadata_rdf_graph)
@@ -28,7 +28,7 @@ def test_metadata_dataset_json_ld_to_rdf_loading_when_path_contains_url_encodabl
     csvw_metadata_json_path = dir_path / "alcohol-bulletin.csv-metadata.json"
 
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.load_json_ld_to_rdflib_graph()
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
     assert csvw_metadata_rdf_graph is not None
     assert any(csvw_metadata_rdf_graph)
@@ -46,7 +46,7 @@ def test_metadata_codelist_json_ld_to_rdf_loading_with_table_schema():
     """
     csvw_metadata_json_path = _test_case_base_dir / "codelist.csv-metadata.json"
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.load_json_ld_to_rdflib_graph()
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
     assert csvw_metadata_rdf_graph is not None
     assert any(csvw_metadata_rdf_graph)
@@ -63,7 +63,7 @@ def test_load_table_schema_file_dependencies_to_graph():
         / "sectors-economic-estimates-2018-trade-in-services.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.load_json_ld_to_rdflib_graph()
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
     # This triple is defined in subsector.table.json
     assert (

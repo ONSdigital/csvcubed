@@ -41,7 +41,7 @@ class CsvwRdfManager:
     rdf_graph: rdflib.ConjunctiveGraph = field(init=False)
 
     def __post_init__(self):
-        self.rdf_graph = self.load_json_ld_to_rdflib_graph()
+        self.rdf_graph = self._load_json_ld_to_rdflib_graph()
 
         if self.rdf_graph is None:
             raise FailedToLoadRDFGraphException(self.csvw_metadata_file_path)
@@ -88,7 +88,7 @@ class CsvwRdfManager:
             len(dependencies_result.table_schema_file_dependencies),
         )
 
-    def load_json_ld_to_rdflib_graph(self) -> rdflib.ConjunctiveGraph:
+    def _load_json_ld_to_rdflib_graph(self) -> rdflib.ConjunctiveGraph:
         """
         Loads CSV-W metadata json-ld to rdflib graph
 
