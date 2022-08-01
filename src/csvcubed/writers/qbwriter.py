@@ -89,10 +89,37 @@ class QbWriter(WriterBase):
         # Map all labels to their corresponding URI-safe-values, where possible.
         # Also converts all appropriate columns to the pandas categorical format.
 
-        _logger.info("Beginning CSV-W Generation")
+        _logger.info(f"Beginning CSV-W Generation: {self.csv_file_name}")
+        
+        # TODO - understand this
+        #ensure_int_columns_are_ints(self.cube)
 
-        ensure_int_columns_are_ints(self.cube)
+        def ensure_csvw_compliant_datatypes_from_pandas(cube):
+            """
+            The pandas representation of datatypes does not exactly match that
+            expected by the csvw spec.
 
+            For example consider a boolean:
+            True (pandas output) != true (csvw representation of same).
+
+            This function ensures per datatype output that is compliant with what
+            the csvw spec (and csvlint) expects.
+            """
+
+            for pandas_column_label in cube.data.columns.values:
+                
+                convertor = None
+
+                # True != true, False != false
+                if cube.data[pandas_column_label].dtype == "bool":
+                    convertor = lambda x: "true" if x is True else "false" if x is False else x
+                    
+                if convertor:
+                    cube.data[pandas_column_label] = cube.data[pandas_column_label].apply(convertor)
+                    
+        ensure_csvw_compliant_datatypes_from_pandas(self.cube)
+
+        _logger.info('Calling data values to uri safe values')
         convert_data_values_to_uri_safe_values(
             self.cube, self.raise_missing_uri_safe_value_exceptions
         )

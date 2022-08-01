@@ -46,10 +46,10 @@ def read_and_check_csv(
     data, data_errors = read_csv(csv_path, **kwargs)
 
     if isinstance(data, DataFrame):
-        if len(data) < 2:
+        if len(data) == 0:
             # Must have 2 or more rows, a heading row and a data row
             raise ValueError(
-                "CSV input must contain header row and at least one row of data"
+                "CSV input must contain header row and at least one row of data "
             )
     else:
         raise TypeError("There was a problem reading the csv file as a dataframe")

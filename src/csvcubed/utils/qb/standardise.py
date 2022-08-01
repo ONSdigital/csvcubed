@@ -4,6 +4,7 @@ Standardise
 
 Utilities for standardising cubes and their corresponding data values.
 """
+import logging
 from typing import List, Dict
 
 import pandas as pd
@@ -23,7 +24,6 @@ from csvcubed.models.cube.qb.components import (
     QbAttributeLiteral,
     QbObservationValue,
 )
-
 
 _unsigned_integer_data_types = {
     "unsignedLong",
@@ -109,6 +109,7 @@ def convert_data_values_to_uri_safe_values(
     ensure_qbcube_data_is_categorical(cube)
 
     new_units = [u for u in get_all_units(cube) if isinstance(u, NewQbUnit)]
+
     map_unit_label_to_uri_identifier = {
         u.label: u.uri_safe_identifier for u in new_units
     }
@@ -117,6 +118,7 @@ def convert_data_values_to_uri_safe_values(
         for c in get_columns_of_dsd_type(cube, QbMultiUnits)
         if all([isinstance(u, NewQbUnit) for u in c.structural_definition.units])
     ]
+
     _overwrite_labels_for_columns(
         cube,
         multi_units_columns_with_new_units,
@@ -135,6 +137,7 @@ def convert_data_values_to_uri_safe_values(
             [isinstance(m, NewQbMeasure) for m in meas.structural_definition.measures]
         )
     ]
+
     _overwrite_labels_for_columns(
         cube,
         multi_measure_dimension_columns_defining_new_measures,
@@ -145,7 +148,7 @@ def convert_data_values_to_uri_safe_values(
     for dimension_column in get_columns_of_dsd_type(cube, NewQbDimension):
         if isinstance(dimension_column.structural_definition.code_list, NewQbCodeList):
             new_code_list = dimension_column.structural_definition.code_list
-            map_attr_val_labels_to_uri_identifiers = dict(
+            map_dimension_val_labels_to_uri_identifiers = dict(
                 [
                     (concept.label, concept.uri_safe_identifier)
                     for concept in new_code_list.concepts
@@ -155,7 +158,7 @@ def convert_data_values_to_uri_safe_values(
             _overwrite_labels_for_columns(
                 cube,
                 [dimension_column],
-                map_attr_val_labels_to_uri_identifiers,
+                map_dimension_val_labels_to_uri_identifiers,
                 raise_missing_value_exceptions,
             )
 
@@ -202,8 +205,9 @@ def _overwrite_labels_for_columns(
             if new_category_label is None:
                 if raise_missing_values_exceptions:
                     raise ValueError(
-                        f"Unable to find new category label for term '{c}' in column '{column.csv_column_title}'."
-                    )
+                        f"Unable to find new category label for term '{c}' in column '{column.csv_column_title}'. "
+                        f"Known mappings for this qbComponent are: {map_unit_label_to_new_value}"
+                        )
                 else:
                     # Can't raise exception here, just leave the value as-is.
                     new_category_labels.append(c)

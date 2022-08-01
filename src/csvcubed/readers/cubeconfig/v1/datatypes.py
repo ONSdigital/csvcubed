@@ -10,7 +10,7 @@ from csvcubed.readers.cubeconfig.v1.mapcolumntocomponent import (
     _from_column_dict_to_schema_model,
     schema,
 )
-from csvcubed.models.cube.qb.components.attribute import ACCEPTED_DATATYPE_MAPPING
+from csvcubed.models.cube.qb.components.constants import ACCEPTED_DATATYPE_MAPPING
 
 from .constants import CONVENTION_NAMES
 

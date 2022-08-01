@@ -40,7 +40,7 @@ from .constants import CONVENTION_NAMES
 from ...preconfiguredtemplates import apply_preconfigured_values_from_template
 
 
-log = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
 
 def get_deserialiser(
@@ -73,7 +73,7 @@ def get_deserialiser(
                     value=config, schema=schema
                 )
             except JSONDecodeError:
-                log.warning(
+                _logger.warning(
                     "Validation of the config json is not currently available, continuing without validation."
                 )
                 schema_validation_errors = []
@@ -84,6 +84,7 @@ def get_deserialiser(
             schema_validation_errors = []
 
         dtype = datatypes.get_pandas_datatypes(csv_path, config=config)
+        _logger.info(f'csv {csv_path} has mapping of columns to datatypes: {dtype}')
         data, data_errors = read_and_check_csv(csv_path, dtype=dtype)
 
         (cube, code_list_schema_validation_errors) = _get_cube_from_config_json_dict(

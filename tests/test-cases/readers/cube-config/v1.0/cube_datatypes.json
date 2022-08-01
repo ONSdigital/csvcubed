@@ -118,7 +118,7 @@
             "label": "time attribute",
             "data_type": "time"
         },
-        "Value": {"type": "observations"},
+        "Value": {"type": "observations", "data_type": "integer"},
         "Measure": {"type": "measures", "values": true},
         "Units": {"type": "units", "values": true}
     }

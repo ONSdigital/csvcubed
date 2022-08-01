@@ -1,3 +1,5 @@
+from genericpath import exists
+from http.client import OK
 from typing import List
 from urllib.parse import urlparse
 import pandas as pd
@@ -427,6 +429,7 @@ def step_impl(context, file: str):
 def step_impl(context):
     writer = QbWriter(context.cube)
     temp_dir = get_context_temp_dir_path(context)
+    
     writer.write(temp_dir)
     context.csv_file_name = writer.csv_file_name
 
