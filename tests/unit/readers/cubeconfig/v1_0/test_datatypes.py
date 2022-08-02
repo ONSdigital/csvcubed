@@ -28,8 +28,8 @@ def _assert_dict(got: dict, expected: dict):
         ), f'Unexpected key found: "{k}". The expected keys were: {",".join(expected.keys())}'
         expected_v = expected[k]
         assert (
-            v == expected_v
-        ), f"For field {k}, expexcted value: {expected_v}, got value {v}"
+            expected_v == v
+        ), f'For field "{k}", expexcted datatype: {expected_v}, got value {v}'
 
 
 def test_configured_dimension_dtypes():
@@ -112,8 +112,8 @@ def test_datatypes_by_expicit_definition():
             "Attr-long": "long",
             "Attr-int": "int64",
             "Attr-short": "short",
-            "Attr-nonNegativeInteger": "int64",
-            "Attr-positiveInteger": "int64",
+            "Attr-nonNegativeInteger": "uint64",
+            "Attr-positiveInteger": "uint64",
             "Attr-unsignedLong": "uint64",
             "Attr-unsignedInt": "uint64",
             "Attr-unsignedShort": "uint64",
@@ -127,7 +127,7 @@ def test_datatypes_by_expicit_definition():
             "Attr-dateTime": "string",
             "Attr-dateTimeStamp": "string",
             "Attr-time": "string",
-            "Value": "float64",
+            "Value": "int64",
             "Measure": "string",
             "Units": "string",
         },

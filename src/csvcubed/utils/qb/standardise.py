@@ -4,7 +4,6 @@ Standardise
 
 Utilities for standardising cubes and their corresponding data values.
 """
-import logging
 from typing import List, Dict
 
 import pandas as pd
@@ -25,13 +24,14 @@ from csvcubed.models.cube.qb.components import (
     QbObservationValue,
 )
 
+
 _unsigned_integer_data_types = {
     "unsignedLong",
     "unsignedInt",
     "unsignedShort",
     "unsignedByte",
-    "nonPositiveInteger",
-    "negativeInteger",
+    "nonNegativeInteger",
+    "positiveInteger",
 }
 _signed_integer_data_types = {
     "integer",
@@ -39,8 +39,8 @@ _signed_integer_data_types = {
     "int",
     "short",
     "byte",
-    "nonNegativeInteger",
-    "positiveInteger",
+    "nonPositiveInteger",
+    "negativeInteger",
 }
 
 
@@ -77,10 +77,13 @@ def ensure_int_columns_are_ints(cube: QbCube) -> None:
 
     def _coerce_to_int_values_if_int(column_title: str, data_type: str):
         assert cube.data is not None
-        if data_type in _signed_integer_data_types:
-            cube.data[column_title] = cube.data[column_title].astype(pd.Int64Dtype())
-        elif data_type in _unsigned_integer_data_types:
-            cube.data[column_title] = cube.data[column_title].astype(pd.UInt64Dtype())
+        try:
+            if data_type in _signed_integer_data_types:
+                cube.data[column_title] = cube.data[column_title].astype(pd.Int64Dtype())
+            elif data_type in _unsigned_integer_data_types:
+                cube.data[column_title] = cube.data[column_title].astype(pd.UInt64Dtype())
+        except Exception as err:
+            raise Exception(f'Column {column_title} failing,csvw  data type was {data_type}, pandas data type was {cube.data[column_title].dtype}') from err
 
     for obs_val_col in get_columns_of_dsd_type(cube, QbObservationValue):
         _coerce_to_int_values_if_int(
@@ -109,7 +112,6 @@ def convert_data_values_to_uri_safe_values(
     ensure_qbcube_data_is_categorical(cube)
 
     new_units = [u for u in get_all_units(cube) if isinstance(u, NewQbUnit)]
-
     map_unit_label_to_uri_identifier = {
         u.label: u.uri_safe_identifier for u in new_units
     }
@@ -118,7 +120,6 @@ def convert_data_values_to_uri_safe_values(
         for c in get_columns_of_dsd_type(cube, QbMultiUnits)
         if all([isinstance(u, NewQbUnit) for u in c.structural_definition.units])
     ]
-
     _overwrite_labels_for_columns(
         cube,
         multi_units_columns_with_new_units,
@@ -137,7 +138,6 @@ def convert_data_values_to_uri_safe_values(
             [isinstance(m, NewQbMeasure) for m in meas.structural_definition.measures]
         )
     ]
-
     _overwrite_labels_for_columns(
         cube,
         multi_measure_dimension_columns_defining_new_measures,
@@ -148,7 +148,7 @@ def convert_data_values_to_uri_safe_values(
     for dimension_column in get_columns_of_dsd_type(cube, NewQbDimension):
         if isinstance(dimension_column.structural_definition.code_list, NewQbCodeList):
             new_code_list = dimension_column.structural_definition.code_list
-            map_dimension_val_labels_to_uri_identifiers = dict(
+            map_dim_val_labels_to_uri_identifiers = dict(
                 [
                     (concept.label, concept.uri_safe_identifier)
                     for concept in new_code_list.concepts
@@ -158,7 +158,7 @@ def convert_data_values_to_uri_safe_values(
             _overwrite_labels_for_columns(
                 cube,
                 [dimension_column],
-                map_dimension_val_labels_to_uri_identifiers,
+                map_dim_val_labels_to_uri_identifiers,
                 raise_missing_value_exceptions,
             )
 
@@ -205,9 +205,8 @@ def _overwrite_labels_for_columns(
             if new_category_label is None:
                 if raise_missing_values_exceptions:
                     raise ValueError(
-                        f"Unable to find new category label for term '{c}' in column '{column.csv_column_title}'. "
-                        f"Known mappings for this qbComponent are: {map_unit_label_to_new_value}"
-                        )
+                        f"Unable to find new category label for term '{c}' in column '{column.csv_column_title}'."
+                    )
                 else:
                     # Can't raise exception here, just leave the value as-is.
                     new_category_labels.append(c)
