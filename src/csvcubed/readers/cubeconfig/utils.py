@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 from pandas import DataFrame
 
 from csvcubed.utils.json import load_json_document
@@ -37,13 +37,13 @@ def generate_title_from_file_name(csv_path: Path) -> str:
 
 
 def read_and_check_csv(
-    csv_path: Path, **kwargs: Dict
+    csv_path: Path, dtype: Optional[Dict[str, str]] = None
 ) -> Tuple[DataFrame, List[ValidationError]]:
     """
     Reads the csv data file and performs rudimentary checks.
     """
 
-    data, data_errors = read_csv(csv_path, **kwargs)
+    data, data_errors = read_csv(csv_path, dtype=dtype)
 
     if isinstance(data, DataFrame):
         if len(data) == 0:

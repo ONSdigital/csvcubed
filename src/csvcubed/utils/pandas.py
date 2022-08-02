@@ -24,19 +24,14 @@ SPECIFIED_NA_VALUES = {
 }
 
 
-def read_csv(csv_path: Path, **kwargs) -> Tuple[pd.DataFrame, List[ValidationError]]:
+def read_csv(csv_path: Path, keep_default_na=False, na_values=SPECIFIED_NA_VALUES, dtype=None) -> Tuple[pd.DataFrame, List[ValidationError]]:
     """
     :returns: a tuple of
         pd.DataFrame without the default na values being changes into NaN
         list of ValidationExceptions
     """
-    # Set default but allow interventions for advanced users
-    if "keep_default_na" not in kwargs:
-        kwargs["keep_default_na"] = False
-    if "na_values" not in kwargs:
-        kwargs["na_values"] = SPECIFIED_NA_VALUES
 
-    df = pd.read_csv(csv_path, **kwargs)
+    df = pd.read_csv(csv_path, keep_default_na=keep_default_na, na_values=na_values, dtype=dtype)
     if not isinstance(df, pd.DataFrame):
         _logger.debug(
             "Expected a pandas dataframe when reading from CSV, value was %s", df
