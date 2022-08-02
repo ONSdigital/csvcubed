@@ -14,8 +14,8 @@ import pandas as pd
 import rdflib
 
 
-from csvcubed.cli.inspect.inspectsparqlmanager import select_single_unit_from_dsd
-from csvcubed.models.inspectsparqlresults import QubeComponentResult
+from csvcubed.utils.sparql_handler.sparqlmanager import select_single_unit_from_dsd
+from csvcubed.models.sparqlresults import QubeComponentResult
 from csvcubed.cli.inspect.inspectdatasetmanager import (
     get_measure_col_name_from_dsd,
     get_single_measure_from_dsd,

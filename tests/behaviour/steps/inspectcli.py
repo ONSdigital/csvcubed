@@ -6,7 +6,7 @@ from behave import *
 from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
 from csvcubed.cli.inspect.metadatainputvalidator import MetadataValidator
 from csvcubed.cli.inspect.metadataprinter import MetadataPrinter
-from csvcubed.cli.inspect.metadataprocessor import MetadataProcessor
+from csvcubed.utils.tableschema import CsvwRdfManager
 
 
 def _unformat_multiline_string(string: str) -> str:
@@ -36,8 +36,8 @@ def step_impl(context, csv_file: str):
 
 @When("the Metadata File json-ld is loaded to a rdf graph")
 def step_impl(context):
-    metadata_processor = MetadataProcessor(context.csvw_metadata_json_path)
-    context.csvw_metadata_rdf_graph = metadata_processor.load_json_ld_to_rdflib_graph()
+    csvw_rdf_manager = CsvwRdfManager(context.csvw_metadata_json_path)
+    context.csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     assert context.csvw_metadata_rdf_graph is not None
 
 

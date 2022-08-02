@@ -6,12 +6,14 @@ Read some information from a CSV-W `skos:ConceptScheme`.
 """
 import logging
 import re
-from pathlib import Path
 from typing import Tuple, Set
+
+from pathlib import Path
 from uritemplate import variables
 
-from csvcubed.utils.csvw import get_first_table_schema
 from csvcubed.utils.iterables import first
+from csvcubed.utils.sparql_handler.sparqlmanager import select_table_schema_properties
+from csvcubed.utils.tableschema import CsvwRdfManager
 
 
 _logger = logging.getLogger(__name__)
@@ -27,29 +29,12 @@ def extract_code_list_concept_scheme_info(
       `concept_uri_template` uses the standard `notation` uri template variable even if the underlying file uses a
        different column name.
     """
-    table_schema_result = get_first_table_schema(code_list_csvw_path)
-    if table_schema_result is None:
-        raise ValueError(f"Unable to find tableSchema in {code_list_csvw_path}")
+    csvw_rdf_manager = CsvwRdfManager(code_list_csvw_path)
+    result = select_table_schema_properties(csvw_rdf_manager.rdf_graph)
 
-    csv_url_or_relative_path, table_schema = table_schema_result
-    if csv_url_or_relative_path is None:
-        raise ValueError(
-            f"{code_list_csvw_path} is missing `url` property for code list table."
-        )
-
-    columns = table_schema.get("columns", [])
-
-    in_scheme_column = first(columns, lambda c: c.get("propertyUrl") == "skos:inScheme")
-    if in_scheme_column is None:
-        raise ValueError(f"{code_list_csvw_path} is missing `skos:inScheme` column.")
-
-    concept_scheme_uri = in_scheme_column.get("valueUrl")
-    if concept_scheme_uri is None:
-        raise ValueError(f"{code_list_csvw_path} is missing concept scheme's URI.")
-
-    about_url = table_schema.get("aboutUrl")
-    if about_url is None:
-        raise ValueError(f"{code_list_csvw_path} is missing `aboutUrl` property.")
+    about_url = result.about_url
+    concept_scheme_uri = result.value_url
+    table_url = result.table_url
 
     variables_in_about_url: Set[str] = {v for v in variables(about_url)}
     if len(variables_in_about_url) != 1:
@@ -59,7 +44,8 @@ def extract_code_list_concept_scheme_info(
         )
 
     variable_name_in_about_url = first(variables_in_about_url)
-    assert variable_name_in_about_url is not None
+    if variable_name_in_about_url is None:
+        raise ValueError("Variable name in about url cannot be none")
 
     if variable_name_in_about_url != "notation":
         _logger.debug(
@@ -71,5 +57,4 @@ def extract_code_list_concept_scheme_info(
             "{\\1notation}",
             about_url,
         )
-
-    return csv_url_or_relative_path, concept_scheme_uri, about_url
+    return table_url, concept_scheme_uri, about_url

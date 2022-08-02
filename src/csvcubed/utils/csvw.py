@@ -6,15 +6,13 @@ Utils for working with CSV-Ws.
 """
 import json
 import logging
-from typing import Set, List, Optional, Union, Tuple
+from typing import Set, List, Union
 from pathlib import Path
-import urllib.parse
-import requests
 from rdflib import Graph
 
 from .json import load_json_document
 from .uri import looks_like_uri
-from csvcubed.utils.sparql import path_to_file_uri_for_rdflib
+from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.utils.rdf import parse_graph_retain_relative
 
 _logger = logging.getLogger(__name__)
@@ -50,63 +48,6 @@ def get_dependent_local_files(csvw_metadata_file: Path) -> Set[Path]:
 
     _logger.debug("Found dependent local files %s", dependent_local_files)
     return dependent_local_files
-
-
-def get_first_table_schema(
-    csvw_metadata_file: Path,
-) -> Optional[Tuple[Optional[str], dict]]:
-    """
-    :return: the first table Schema found in the CSV-W metadata document, if there is one.
-    """
-
-    def _get_table_schema(
-        base_path: Union[Path, str], table: dict
-    ) -> Optional[Tuple[Optional[str], dict]]:
-        table_schema = table.get("tableSchema")
-        table_url = table.get("url")
-        if table_schema is None:
-            return None
-        elif isinstance(table_schema, str):
-            if looks_like_uri(table_schema):
-                return table_url, json.loads(requests.get(table_schema).text)
-            else:
-                if isinstance(base_path, Path):
-                    with open(base_path / table_schema, "r") as f:
-                        return table_url, json.load(f)
-                else:
-                    schema_url = urllib.parse.urljoin(base_path + "/", table_schema)
-                    return table_url, json.loads(requests.get(schema_url).text)
-        elif isinstance(table_schema, dict):
-            return table_url, table_schema
-        else:
-            raise ValueError(f"Unexpected type for tableSchema: {type(table_schema)}")
-
-    table_group = _load_table_group(csvw_metadata_file)
-    base_path = _get_base_path(csvw_metadata_file.parent, table_group)
-
-    table_group_schema = _get_table_schema(base_path, table_group)
-    if table_group_schema is not None:
-        _logger.debug(
-            "Found first table schema (%s) in CSV-W at %s",
-            table_group_schema[0],
-            csvw_metadata_file,
-        )
-        return table_group_schema
-
-    tables = table_group.get("tables")
-    if tables is not None and isinstance(tables, list) and len(tables) > 0:
-        for table in tables:
-            table_schema = _get_table_schema(base_path, table)
-            if table_schema is not None:
-                _logger.debug(
-                    f"Found first table schema (%s) in CSV-W at %s",
-                    table_schema[0],
-                    csvw_metadata_file,
-                )
-                return table_schema
-
-    _logger.warning("Could not find table schema in CSV-W at %s", csvw_metadata_file)
-    return None
 
 
 def _load_table_group(csvw_metadata_file: Path) -> dict:
@@ -181,11 +122,6 @@ def load_table_schema_file_to_graph(
     table_schema_document["@context"] = "http://www.w3.org/ns/csvw"
 
     table_schema_document_json = json.dumps(table_schema_document)
-
-    if isinstance(table_schema_document, Path):
-        table_schema_file_uri = path_to_file_uri_for_rdflib(table_schema_document)
-    else:
-        table_schema_file_uri = table_schema_file_path
 
     parse_graph_retain_relative(
         data=table_schema_document_json, format="json-ld", graph=graph

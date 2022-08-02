@@ -1,5 +1,5 @@
 from pathlib import Path
-from csvcubed.utils.sparql import path_to_file_uri_for_rdflib
+from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 import pytest
 
 from csvcubed.utils.qb.components import (

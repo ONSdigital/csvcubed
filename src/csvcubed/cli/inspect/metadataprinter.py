@@ -13,7 +13,7 @@ from urllib.parse import urljoin
 import rdflib
 from pandas import DataFrame
 
-from csvcubed.models.inspectsparqlresults import (
+from csvcubed.models.sparqlresults import (
     CatalogMetadataResult,
     CodeListColsByDatasetUrlResult,
     CodelistColumnResult,
@@ -22,9 +22,9 @@ from csvcubed.models.inspectsparqlresults import (
     DSDLabelURIResult,
     QubeComponentsResult,
 )
-from csvcubed.utils.sparql import path_to_file_uri_for_rdflib
+from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
-from csvcubed.cli.inspect.inspectsparqlmanager import (
+from csvcubed.utils.sparql_handler.sparqlmanager import (
     select_codelist_cols_by_dataset_url,
     select_codelist_dataset_url,
     select_cols_where_suppress_output_is_true,
