@@ -32,7 +32,7 @@ def build(
     config_path: Optional[Path] = None,
     output_directory: Path = Path(".", "out").resolve(),
     fail_when_validation_error_occurs: bool = False,
-    validation_errors_file_name: Optional[Path] = None,
+    validation_errors_file_name: Optional[str] = None,
 ) -> Tuple[QbCube, List[ValidationError]]:
     cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
         config_path, csv_path
