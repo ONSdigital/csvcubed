@@ -84,8 +84,8 @@ def build_command(
     validation_errors_to_file: bool,
 ):
     """Build a qb-flavoured CSV-W from a tidy CSV."""
-    validation_errors_file_out = (
-        out / "validation-errors.json" if validation_errors_to_file else None
+    validation_errors_file_name = (
+        "validation-errors.json" if validation_errors_to_file else None
     )
     out.mkdir(parents=True, exist_ok=True)
 
@@ -96,7 +96,7 @@ def build_command(
             output_directory=out,
             csv_path=csv,
             fail_when_validation_error_occurs=fail_when_validation_error,
-            validation_errors_file_out=validation_errors_file_out,
+            validation_errors_file_name=validation_errors_file_name,
         )
 
     except Exception as e:

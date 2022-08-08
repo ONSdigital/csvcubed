@@ -1,0 +1,25 @@
+{
+    "$schema": "https://purl.org/csv-cubed/qube-config/v1",
+    "id": "ons-international-trade-in-services-by-subnational-areas-of-the-uk",
+    "title": "International trade in services by subnational areas of the UK",
+    "description": "Experimental estimated value of exports and imports of services for 2018 for NUTS1, NUTS2, NUTS3 and 15 city regions, including industry and non-EU and EU split.",
+    "landingPage": "https://www.ons.gov.uk/businessindustryandtrade/internationaltrade/datasets/internationaltradeinservicesbysubnationalareasoftheuk",
+    "publisher": "https://example.com",
+    "published": "2020-09-10",
+    "families": [
+        "Trade"
+    ],
+    "extract": {
+        "source": "XLS"
+    },
+        "columns": {
+            "Period": {
+                "from_template": "year"
+            },
+            "Value": {
+                "type": "observations",
+                "unit": "http://gss-data.org.uk/def/concept/measurement-units/gbp-million",
+                "measure": "http://gss-data.org.uk/def/measure/trade"
+            }
+        }
+}

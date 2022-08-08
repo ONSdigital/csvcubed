@@ -32,7 +32,7 @@ def build(
     config_path: Optional[Path] = None,
     output_directory: Path = Path(".", "out").resolve(),
     fail_when_validation_error_occurs: bool = False,
-    validation_errors_file_out: Optional[Path] = None,
+    validation_errors_file_name: Optional[Path] = None,
 ) -> Tuple[QbCube, List[ValidationError]]:
     cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
         config_path, csv_path
@@ -45,7 +45,7 @@ def build(
     if len(validation_errors) > 0 or len(json_schema_validation_errors) > 0:
         _write_errors_to_log(json_schema_validation_errors, validation_errors)
 
-        if validation_errors_file_out is not None:
+        if validation_errors_file_name is not None:
             validation_errors_dict = [
                 e.as_json_dict()
                 if isinstance(e, DataClassBase)
@@ -56,7 +56,7 @@ def build(
                 e.message for e in json_schema_validation_errors
             ]
 
-            with open(output_directory / validation_errors_file_out, "w+") as f:
+            with open(output_directory / validation_errors_file_name, "w+") as f:
                 json.dump(all_errors, f, indent=4, default=serialize_sets)
 
         if len(validation_errors) > 0:
