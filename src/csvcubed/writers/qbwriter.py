@@ -95,7 +95,7 @@ class QbWriter(WriterBase):
         
         ensure_int_columns_are_ints(self.cube)
 
-        # Bring the pandas representation of bolleans inline with what the csvw spec requires
+        # Bring the pandas representation of booleans inline with what the csvw spec requires
         # True != true, False != false
         assert isinstance(self.cube.data, pd.DataFrame)
         for pandas_column_label in self.cube.data.columns.values:
