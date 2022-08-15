@@ -590,7 +590,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     <file:/tmp/cube-datatypes.csv#measure/count> <http://www.w3.org/2000/01/rdf-schema#label> "count"@en;
       <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#integer> .
     """
-    # The attribute values held against the observations should be output formatted as expected
+    # The attribute values output should be output formatted as expected
     And the RDF should contain
     """
     @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
