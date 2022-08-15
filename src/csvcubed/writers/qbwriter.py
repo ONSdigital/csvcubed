@@ -97,12 +97,12 @@ class QbWriter(WriterBase):
 
         # Bring the pandas representation of booleans inline with what the csvw spec requires
         # True != true, False != false
-        assert isinstance(self.cube.data, pd.DataFrame)
-        for pandas_column_label in self.cube.data.columns.values:
-            if self.cube.data[pandas_column_label].dtype == "bool":
-                self.cube.data[pandas_column_label] = self.cube.data[pandas_column_label].apply(
-                    lambda x: "true" if x is True else "false" if x is False else x
-                )
+        if isinstance(self.cube.data, pd.DataFrame):
+            for pandas_column_label in self.cube.data.columns.values:
+                if self.cube.data[pandas_column_label].dtype == "bool":
+                    self.cube.data[pandas_column_label] = self.cube.data[pandas_column_label].apply(
+                        lambda x: "true" if x is True else "false" if x is False else x
+                    )
 
         _logger.info('Calling data values to uri safe values')
         convert_data_values_to_uri_safe_values(

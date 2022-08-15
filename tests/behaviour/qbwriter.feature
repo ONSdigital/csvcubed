@@ -590,6 +590,34 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     <file:/tmp/cube-datatypes.csv#measure/count> <http://www.w3.org/2000/01/rdf-schema#label> "count"@en;
       <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#integer> .
     """
+    # The attribute values held against the observations should be output formatted as expected
+    And the RDF should contain
+    """
+    @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+    <file:/tmp/cube-datatypes.csv#obs/foo,bar,baz@count> <file:/tmp/cube-datatypes.csv#attribute/anyuri-attribute> "http://www.foo.com"^^xsd:anyURI ;
+      <file:/tmp/cube-datatypes.csv#attribute/boolean-attribute> true ;
+      <file:/tmp/cube-datatypes.csv#attribute/date-attribute> "2019-09-07"^^xsd:date ;
+      <file:/tmp/cube-datatypes.csv#attribute/datetime-attribute> "2019-09-07T15:50:00"^^xsd:dateTime ;
+      <file:/tmp/cube-datatypes.csv#attribute/datetimestamp-attribute> "2004-04-12T13:20:00Z"^^xsd:dateTimeStamp ;
+      <file:/tmp/cube-datatypes.csv#attribute/decimal-attribute> 0.11 ;
+      <file:/tmp/cube-datatypes.csv#attribute/double-attribute> 3.142e-02 ;
+      <file:/tmp/cube-datatypes.csv#attribute/float-attribute> "0.03142"^^xsd:float ;
+      <file:/tmp/cube-datatypes.csv#attribute/int-attribute> "-1"^^xsd:int ;
+      <file:/tmp/cube-datatypes.csv#attribute/integer-attribute> -1 ;
+      <file:/tmp/cube-datatypes.csv#attribute/language-attribute> "english"^^xsd:language ;
+      <file:/tmp/cube-datatypes.csv#attribute/long-attribute> "-2147483647"^^xsd:long ;
+      <file:/tmp/cube-datatypes.csv#attribute/negativeinteger-attribute> "-1"^^xsd:negativeInteger ;
+      <file:/tmp/cube-datatypes.csv#attribute/nonnegativeinteger-attribute> "1"^^xsd:nonNegativeInteger ;
+      <file:/tmp/cube-datatypes.csv#attribute/nonpositiveinteger-attribute> "-1"^^xsd:nonPositiveInteger ;
+      <file:/tmp/cube-datatypes.csv#attribute/positiveinteger-attribute> "1"^^xsd:positiveInteger ;
+      <file:/tmp/cube-datatypes.csv#attribute/short-attribute> "-32768"^^xsd:short ;
+      <file:/tmp/cube-datatypes.csv#attribute/string-attribute> "foo" ;
+      <file:/tmp/cube-datatypes.csv#attribute/time-attribute> "14:30:43"^^xsd:time ;
+      <file:/tmp/cube-datatypes.csv#attribute/unsignedint-attribute> "1"^^xsd:unsignedInt ;
+      <file:/tmp/cube-datatypes.csv#attribute/unsignedlong-attribute> "2147483646"^^xsd:unsignedLong ;
+      <file:/tmp/cube-datatypes.csv#attribute/unsignedshort-attribute> "32768"^^xsd:unsignedShort .
+    """
 
   Scenario: A QbCube configured by convention should contain appropriate datatypes
     Given the existing tidy data csv file "v1.0/cube_data_convention_ok.csv"
