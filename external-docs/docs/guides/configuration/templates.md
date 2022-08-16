@@ -1,6 +1,6 @@
 # Using column templates
 
-Column templates are pre-configured column definitions which speed up creating linked data. 
+Column templates are pre-configured column definitions which speed up creating linked data.
 
 This page aims to introduce column template functionality, show you how to make use of it in a [qube-config.json](qube-config.md) configuration file and list common templates you might wish to use yourself.
 
@@ -30,6 +30,7 @@ It is possible to override the configuration inherited from the template; do thi
 In the above example, we have reused the `year` template, but given the dimension created the label of `Competition Year`.
 
 ## Available templates
+
 The templates are currently in version 1.0; with future development planned. You can see the entire list of the templates inline below or on [csvcubed github](https://github.com/GSS-Cogs/csvcubed/tree/main/csvcubed/csvcubed/readers/cubeconfig/v1_0/templates). The `from_template` funcitonality fetches the most recent version of our templates from the web.
 
 ### Date/Time period template
@@ -47,7 +48,7 @@ The templates are currently in version 1.0; with future development planned. You
 | [second](https://purl.org/csv-cubed/qube-config/templates/calendar-second.json)                    | The calendar period of second                                                                                                | 2015-11-18T06:42:32 |
 | [government-year](https://purl.org/csv-cubed/qube-config/templates/government-year.json)           | The UK Government calendar period of year starting in April                                                                  | 2017-2018           |
 | [government-half-year](https://purl.org/csv-cubed/qube-config/templates/government-half-year.json) | The UK Government calendar period of half-year starting in April (April-September, October-March)                            | 2010-2011/H1        |
-| [government-quarter](https://purl.org/csv-cubed/qube-config/templates/government-quarter.json)     | The UK Government calendar period of quarter starting in April (April-June, July-September, October-December, January-March) | 2014-2018/Q2        |
+| [government-quarter](https://purl.org/csv-cubed/qube-config/templates/government-quarter.json)     | The UK Government calendar period of quarter starting in April (April-June, July-September, October-December, January-March) | 2014-2015/Q2        |
 | [government-week](https://purl.org/csv-cubed/qube-config/templates/government-week.json)           | The UK Government calendar period of week as defined at reference.data.gov.uk.                                               | 2019-2020/7         |
 
 ### Date/Time instant templates
@@ -68,4 +69,4 @@ Units used, have to match the terminal part of the URI exactly including case se
 
 | Template                                                                                                                                         | Description                                                 | Example    |
 | ------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------- | ---------- |
-| [qudt-units](https://purl.org/csv-cubed/qube-config/templates/qudt-units.json) | A template which contains units of measurement | http://qudt.org/vocab/unit/PoundSterling|
+| [qudt-units](https://purl.org/csv-cubed/qube-config/templates/qudt-units.json) | A template which contains units of measurement | [http://qudt.org/vocab/unit/PoundSterling](http://qudt.org/vocab/unit/PoundSterling) |
