@@ -68,22 +68,28 @@
                         "$ref": "#/definitions/v1.0/columnTypes/Dimension"
                     },
                     {
-                        "$ref": "#/definitions/v1.0/columnTypes/Attribute_Resource"
+                        "$ref": "#/definitions/v1.0/columnTypes/Attribute_Resource_New"
+                    },
+                    {
+                        "$ref": "#/definitions/v1.0/columnTypes/Attribute_Resource_Existing"
                     },
                     {
                         "$ref": "#/definitions/v1.0/columnTypes/Attribute_Literal"
                     },
                     {
-                        "$ref": "#/definitions/v1.0/columnTypes/Measures"
+                        "$ref": "#/definitions/v1.0/columnTypes/Measures_New"
+                    },
+                    {
+                        "$ref": "#/definitions/v1.0/columnTypes/Measures_Existing"
                     },
                     {
                         "$ref": "#/definitions/v1.0/columnTypes/Observations"
                     },
                     {
-                        "$ref": "#/definitions/v1.0/columnTypes/Units"
+                        "$ref": "#/definitions/v1.0/columnTypes/Units_New"
                     },
                     {
-                        "$ref": "#/definitions/v1.0/columnTypes/Units"
+                        "$ref": "#/definitions/v1.0/columnTypes/Units_Existing"
                     }
                 ]
             }
@@ -132,7 +138,7 @@
                         }
                     }
                 },
-                "Attribute_Resource": {
+                "Attribute_Resource_New": {
                     "type": "object",
                     "additionalProperties": false,
                     "oneOf": [
@@ -189,14 +195,67 @@
                                 }
                             ]
                         },
+                        "required": {
+                            "description": "Whether or not it is required that every observation has a value for this attribute",
+                            "type": "boolean",
+                            "default": false
+                        }
+                    }
+                },
+                "Attribute_Resource_Existing": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "oneOf": [
+                        {
+                            "required": [
+                                "type"
+                            ]
+                        },
+                        {
+                            "required": [
+                                "from_template"
+                            ]
+                        }
+                    ],
+                    "description": "This column represents an attribute (with literal values) of the cube",
+                    "properties": {
+                        "type": {
+                            "description": "This column represents an attribute of the cube",
+                            "type": "string",
+                            "const": "attribute"
+                        },
+                        "from_template": {
+                            "$ref": "#/definitions/v1.0/column_templates/attribute_resource"
+                        },
+                        "label": {
+                            "description": "Label describing the Attribute",
+                            "type": "string"
+                        },
+                        "description": {
+                            "description": "A explanation of what the Attribute represents",
+                            "type": "string"
+                        },
+                        "from_existing": {
+                            "description": "URI of an existing attribute to reuse or extend",
+                            "$ref": "http://purl.org/csv-cubed/resources/attributes.json#/uris/resourceValues"
+                        },
+                        "definition_uri": {
+                            "description": "Source URI for the definition of the Attribute",
+                            "$ref": "#/definitions/v1.0/types/definition_uri"
+                        },
                         "cell_uri_template": {
                             "description": "A template used to map the cell values in this column into URIs, e.g. 'http://example.com/attribute-values/{+column_csvw_name}'",
                             "type": "string",
                             "format": "uri"
+                        },
+                        "required": {
+                            "description": "Whether or not it is required that every observation has a value for this attribute",
+                            "type": "boolean",
+                            "default": false
                         }
                     }
                 },
-                "Dimension": {
+                "Dimension_New": {
                     "description": "This column represents a dimension of the cube",
                     "type": "object",
                     "required": [],
@@ -255,7 +314,7 @@
                         }
                     }
                 },
-                "Measures": {
+                "Measures_New": {
                     "description": "This column represents the phenomenon which has been measured",
                     "type": "object",
                     "additionalProperties": false,
@@ -267,11 +326,6 @@
                             "description": "This column represents the phenomenon which has been measured",
                             "type": "string",
                             "const": "measures"
-                        },
-                        "cell_uri_template": {
-                            "type": "string",
-                            "format": "uri",
-                            "description": "A template used to map the cell values in this column into URIs, e.g. 'http://example.com/measures/{+column_csvw_name}'"
                         },
                         "values": {
                             "oneOf": [
@@ -291,7 +345,26 @@
                         }
                     }
                 },
-                "Units": {
+                "Measures_Existing": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                        "type"
+                    ],
+                    "properties": {
+                        "type": {
+                            "description": "This column represents the phenomenon which has been measured",
+                            "type": "string",
+                            "const": "measures"
+                        },
+                        "cell_uri_template": {
+                            "type": "string",
+                            "format": "uri",
+                            "description": "A template used to map the cell values in this column into URIs, e.g. 'http://example.com/measures/{+column_csvw_name}'"
+                        }
+                    }
+                },
+                "Units_New": {
                     "description": "This column represents the unit of measure in which observations were recorded",
                     "type": "object",
                     "oneOf": [
@@ -331,6 +404,33 @@
                                     }
                                 }
                             ]
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "Units_Existing": {
+                    "description": "This column represents the unit of measure in which observations were recorded",
+                    "type": "object",
+                    "oneOf": [
+                        {
+                            "required": [
+                                "type"
+                            ]
+                        },
+                        {
+                            "required": [
+                                "from_template"
+                            ]
+                        }
+                    ],
+                    "properties": {
+                        "type": {
+                            "description": "This column represents the unit of measure in which observations were recorded",
+                            "type": "string",
+                            "const": "units"
+                        },
+                        "from_template": {
+                            "$ref": "#/definitions/v1.0/column_templates/units"
                         },
                         "cell_uri_template": {
                             "type": "string",
