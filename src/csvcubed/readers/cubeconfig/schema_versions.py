@@ -24,8 +24,8 @@ QubeConfigDeserialiser = Callable[
 ]
 
 """ 
-In order to update the MINOR versions of qube config, please follow the below steps.
-    Step 1: Define a new constant to hold the PURL of the new schema.
+In order to update the MINOR version of qube config, please follow the below steps.
+    Step 1: Define a new constant to hold the PURL of the new schema (e.g. _v1_3_SCHEMA_URL).
     Step 2: Update the _LATEST_V1_SCHEMA_URL and _LATEST_SCHEMA_URL so that they are assigned to the constant defined in Step 1.
     Step 3: Add a new enum to the QubeConfigJsonSchemaMinorVersion to represent the new version.
     Step 4: Add a new elif to the _get_schema_version() to represent the new version.
