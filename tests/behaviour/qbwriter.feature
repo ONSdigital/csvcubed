@@ -507,3 +507,125 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
         void:dataDump <file:/tmp/d-code-list.csv-metadata.json>;
         void:uriSpace "d-code-list.csv#".
     """
+
+  Scenario: A QbCube with complex datatypes should validate successfully and contain the expected types
+    Given The config json file "v1.0/cube_datatypes.json" and the existing tidy data csv file "v1.0/cube_datatypes.csv"
+    When the cube is created
+    Then csvlint validation of all CSV-Ws should succeed
+    And csv2rdf on all CSV-Ws should succeed
+    # The following checks for the expected datatypes as defined in models.cube.qb.components.constants
+    # and declared via v1.0/cube_datatypes.json.
+    # There is one one check per datatype and they follow the order of declaration.
+    And the RDF should contain
+    """
+    <file:/tmp/cube-datatypes.csv#attribute/anyuri-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "anyURI attribute"@en;
+      <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#anyURI> .
+
+    <file:/tmp/cube-datatypes.csv#attribute/boolean-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "boolean attribute"@en;
+      <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#boolean> .
+
+    <file:/tmp/cube-datatypes.csv#attribute/decimal-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "decimal attribute"@en;
+      <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#decimal> .
+
+    <file:/tmp/cube-datatypes.csv#attribute/int-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "int attribute"@en;
+      <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#int> .
+
+    <file:/tmp/cube-datatypes.csv#attribute/long-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "long attribute"@en;
+      <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#long> .
+
+    <file:/tmp/cube-datatypes.csv#attribute/integer-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "integer attribute"@en;
+      <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#integer> .
+
+    <file:/tmp/cube-datatypes.csv#attribute/short-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "short attribute"@en;
+      <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#short> .
+
+    <file:/tmp/cube-datatypes.csv#attribute/nonnegativeinteger-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "nonNegativeInteger attribute"@en;
+      <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#nonNegativeInteger> .
+
+    <file:/tmp/cube-datatypes.csv#attribute/positiveinteger-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "positiveInteger attribute"@en;
+      <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#positiveInteger> .
+
+    <file:/tmp/cube-datatypes.csv#attribute/unsignedlong-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "unsignedLong attribute"@en;
+      <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#unsignedLong> .
+ 
+    <file:/tmp/cube-datatypes.csv#attribute/unsignedint-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "unsignedInt attribute"@en;
+      <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#unsignedInt> .
+ 
+    <file:/tmp/cube-datatypes.csv#attribute/unsignedshort-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "unsignedShort attribute"@en;
+      <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#unsignedShort> .
+
+    <file:/tmp/cube-datatypes.csv#attribute/nonpositiveinteger-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "nonPositiveInteger attribute"@en;
+      <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#nonPositiveInteger> .
+
+    <file:/tmp/cube-datatypes.csv#attribute/negativeinteger-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "negativeInteger attribute"@en;
+      <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#negativeInteger> .
+
+    <file:/tmp/cube-datatypes.csv#attribute/double-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "double attribute"@en;
+      <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#double> .
+
+    <file:/tmp/cube-datatypes.csv#attribute/float-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "float attribute"@en;
+      <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#float> .
+
+    <file:/tmp/cube-datatypes.csv#attribute/string-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "string attribute"@en;
+      <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#string> .
+
+    <file:/tmp/cube-datatypes.csv#attribute/language-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "language attribute"@en;
+      <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#language> .
+
+    <file:/tmp/cube-datatypes.csv#attribute/date-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "date attribute"@en;
+      <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#date> .
+
+    <file:/tmp/cube-datatypes.csv#attribute/datetime-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "dateTime attribute"@en;
+      <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#dateTime> .
+
+    <file:/tmp/cube-datatypes.csv#attribute/datetimestamp-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "dateTimeStamp attribute"@en;
+      <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#dateTimeStamp> .
+
+    <file:/tmp/cube-datatypes.csv#attribute/time-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "time attribute"@en;
+      <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#time> .
+    """
+    # The datatype of the measure, we've set this to a non default datatype
+    And the RDF should contain
+    """
+    <file:/tmp/cube-datatypes.csv#measure/count> <http://www.w3.org/2000/01/rdf-schema#label> "count"@en;
+      <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#integer> .
+    """
+    # The attribute values output should be formatted as expected
+    And the RDF should contain
+    """
+    @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+    <file:/tmp/cube-datatypes.csv#obs/foo,bar,baz@count> <file:/tmp/cube-datatypes.csv#attribute/anyuri-attribute> "http://www.foo.com"^^xsd:anyURI ;
+      <file:/tmp/cube-datatypes.csv#attribute/boolean-attribute> true ;
+      <file:/tmp/cube-datatypes.csv#attribute/date-attribute> "2019-09-07"^^xsd:date ;
+      <file:/tmp/cube-datatypes.csv#attribute/datetime-attribute> "2019-09-07T15:50:00"^^xsd:dateTime ;
+      <file:/tmp/cube-datatypes.csv#attribute/datetimestamp-attribute> "2004-04-12T13:20:00Z"^^xsd:dateTimeStamp ;
+      <file:/tmp/cube-datatypes.csv#attribute/decimal-attribute> 0.11 ;
+      <file:/tmp/cube-datatypes.csv#attribute/double-attribute> 3.142e-02 ;
+      <file:/tmp/cube-datatypes.csv#attribute/float-attribute> "0.03142"^^xsd:float ;
+      <file:/tmp/cube-datatypes.csv#attribute/int-attribute> "-1"^^xsd:int ;
+      <file:/tmp/cube-datatypes.csv#attribute/integer-attribute> -1 ;
+      <file:/tmp/cube-datatypes.csv#attribute/language-attribute> "english"^^xsd:language ;
+      <file:/tmp/cube-datatypes.csv#attribute/long-attribute> "-2147483647"^^xsd:long ;
+      <file:/tmp/cube-datatypes.csv#attribute/negativeinteger-attribute> "-1"^^xsd:negativeInteger ;
+      <file:/tmp/cube-datatypes.csv#attribute/nonnegativeinteger-attribute> "1"^^xsd:nonNegativeInteger ;
+      <file:/tmp/cube-datatypes.csv#attribute/nonpositiveinteger-attribute> "-1"^^xsd:nonPositiveInteger ;
+      <file:/tmp/cube-datatypes.csv#attribute/positiveinteger-attribute> "1"^^xsd:positiveInteger ;
+      <file:/tmp/cube-datatypes.csv#attribute/short-attribute> "-32768"^^xsd:short ;
+      <file:/tmp/cube-datatypes.csv#attribute/string-attribute> "foo" ;
+      <file:/tmp/cube-datatypes.csv#attribute/time-attribute> "14:30:43"^^xsd:time ;
+      <file:/tmp/cube-datatypes.csv#attribute/unsignedint-attribute> "1"^^xsd:unsignedInt ;
+      <file:/tmp/cube-datatypes.csv#attribute/unsignedlong-attribute> "2147483646"^^xsd:unsignedLong ;
+      <file:/tmp/cube-datatypes.csv#attribute/unsignedshort-attribute> "32768"^^xsd:unsignedShort .
+    """
+
+  Scenario: A QbCube configured by convention should contain appropriate datatypes
+    Given the existing tidy data csv file "v1.0/cube_data_convention_ok.csv"
+    When the cube is created
+    Then csvlint validation of all CSV-Ws should succeed
+    And csv2rdf on all CSV-Ws should succeed
+    And the RDF should contain
+    """
+    <file:/tmp/cube-data-convention-ok.csv#measure/cost-of-living-index> <http://www.w3.org/2000/01/rdf-schema#label> "Cost of living index"@en;
+      <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#decimal> .
+    """
