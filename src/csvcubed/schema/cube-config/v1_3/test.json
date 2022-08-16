@@ -1,0 +1,9 @@
+{
+    "$schema": "./schema.json",
+    "columns": {
+        "Measure": {
+            "type": "measures",
+            "cell_uri_template": ""
+        }
+    }
+}

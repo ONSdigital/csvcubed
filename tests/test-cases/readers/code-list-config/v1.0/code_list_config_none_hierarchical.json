@@ -22,7 +22,8 @@
     {
       "label": "A",
       "description": "A data record",
-      "notation": "a"
+      "notation": "a",
+      "uri_safe_identifier_override":"first"
     },
     {
       "label": "B",

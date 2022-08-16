@@ -39,6 +39,7 @@ class CodeListConfigConcept(DataClassBase):
     sort_order: Optional[int] = field(default=None)
     same_as: Optional[str] = field(default=None)
     children: List["CodeListConfigConcept"] = field(default_factory=list)
+    uri_safe_identifier_override: Optional[str] = field(default=None)
 
 
 @dataclass
@@ -186,6 +187,7 @@ class CodeListConfig(DataClassBase):
                         else None,
                         sort_order=concept.sort_order,
                         description=concept.description,
+                        uri_safe_identifier_override=concept.uri_safe_identifier_override,
                     )
                 )
                 if any(concept.children):
