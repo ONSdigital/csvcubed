@@ -100,7 +100,7 @@
             "columnTypes": {
                 "Attribute_Literal": {
                     "type": "object",
-                    "description": "This column represents an attribute (with resource values) of the cube",
+                    "description": "This column represents an attribute (with literal values) of the cube",
                     "additionalProperties": false,
                     "required": [
                         "type"
@@ -153,7 +153,7 @@
                             ]
                         }
                     ],
-                    "description": "This column represents an attribute (with literal values) of the cube",
+                    "description": "This column represents an attribute (with resource values) of the cube",
                     "properties": {
                         "type": {
                             "description": "This column represents an attribute of the cube",
@@ -217,7 +217,7 @@
                             ]
                         }
                     ],
-                    "description": "This column represents an attribute (with literal values) of the cube",
+                    "description": "This column represents an attribute (with resource values) of the cube",
                     "properties": {
                         "type": {
                             "description": "This column represents an attribute of the cube",
@@ -255,10 +255,9 @@
                         }
                     }
                 },
-                "Dimension_New": {
+                "Dimension": {
                     "description": "This column represents a dimension of the cube",
                     "type": "object",
-                    "required": [],
                     "additionalProperties": false,
                     "properties": {
                         "type": {
@@ -367,26 +366,14 @@
                 "Units_New": {
                     "description": "This column represents the unit of measure in which observations were recorded",
                     "type": "object",
-                    "oneOf": [
-                        {
-                            "required": [
-                                "type"
-                            ]
-                        },
-                        {
-                            "required": [
-                                "from_template"
-                            ]
-                        }
+                    "required": [
+                        "type"
                     ],
                     "properties": {
                         "type": {
                             "description": "This column represents the unit of measure in which observations were recorded",
                             "type": "string",
                             "const": "units"
-                        },
-                        "from_template": {
-                            "$ref": "#/definitions/v1.0/column_templates/units"
                         },
                         "values": {
                             "description": "The Units used in this dataset.",
@@ -430,7 +417,7 @@
                             "const": "units"
                         },
                         "from_template": {
-                            "$ref": "#/definitions/v1.0/column_templates/units"
+                            "$ref": "#/definitions/v1.0/column_templates/units_existing"
                         },
                         "cell_uri_template": {
                             "type": "string",
@@ -666,8 +653,8 @@
                         "observation-status"
                     ]
                 },
-                "units": {
-                    "description": "Templates for common unit columns",
+                "units_existing": {
+                    "description": "Templates for common existing unit columns",
                     "type": "string",
                     "enum": [
                         "qudt"
