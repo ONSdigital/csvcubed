@@ -1,4 +1,3 @@
-from distutils.command.config import config
 from pathlib import Path
 from typing import Dict, List
 
