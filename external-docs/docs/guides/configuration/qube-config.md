@@ -132,13 +132,12 @@ The `from_existing` value when set provides the basis of linked data; it allows 
 | `description`       | A description of the contents of the column (Optional)                                                                    | *none*                                                                           |
 | `from_existing`     | The uri of the resource for reuse/extension (Optional)                                                                    | *none*                                                                           |
 | `definition_uri`    | A uri of a resource to show how the column is created/managed (i.e. a uri of a PDF explaining a list of units) (Optional) | *none*                                                                           |
-| `range_uri`         | A uri which describes the range of the values within the column (Optional)                                                | *none*                                                                           |
 | `uri_override`      | Override the uri created automatically for the column (Optional) (Advanced)                                               | `tidy_data.csv#uri_safe_column_header_from_csv`                                  |
 | `cell_uri_template` | Override the uri generated for values within the uri (Optional) (Advanced)                                                | **TODO** Look this up                                                            |
 | `code_list`         | Link to an existing code list (uri), supress a code-list (false), file path to a [code-list-config.json](code-list-config.md) (uri), [in-line code list](code-list-config.md) (json), or generate a code-list (true) | true                                                                             |
 | `from_template`     | Use a [column template](templates.md)                                                                                     | *none*                                                                           |
 
-## Attributes
+## Attributes Configuration
 
 | **field name**   | **description**                                                                                                                                                                | **default value**                                                                |
 | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------- |
@@ -149,10 +148,9 @@ The `from_existing` value when set provides the basis of linked data; it allows 
 | `definition_uri` | A uri of a resource to show how the column is created/managed (i.e. a uri of a PDF explaining a list of units) (Optional)                                                      | *none*                                                                           |
 | `data_type`      | The [xml data type](https://www.w3.org/TR/xmlschema-2/#built-in-datatypes) of the contents of the column, if this is provided it becomes a Literal Attribute column (Optional) | *none*                                                                           |
 | `required`       | If this boolean value is true csvcubed will flag to the user if there are blank values in this column                                                                          | *none*                                                                           |
-| `code_list`      | Link to an existing code list (Optional) (Advanced)                                                                                                                            | *none*                                                                           |
 | `from_template`  | Use a [column template](templates.md)                                                                                                                                          | *none*                                                                           |
 
-## Observations
+## Observations Configuration
 
 Observations are the most important component of a CSV-W data set. Observation columns can have measures and units defined against them to obviate the need for separate unit and measure columns in a single unit/measure data set.
 
@@ -163,7 +161,7 @@ Observations are the most important component of a CSV-W data set. Observation c
 | `unit`         | The unit for this observation column; this can a uri to an existing unit, or a dictionary containing a new or extended existing unit. If there is a unit column this value must not be provided. (Optional)                | *none*            |
 | `measure`      | The measure for this observation column; this can be a uri to an existing dimension, or a dictionary containing a new or extneded existing measure. If there is a measure column this key must not be provided. (Optional) | *none*            |
 
-## Measure and Unit Columns
+## Measure and Unit Columns Configuration
 
 Measure and unit columns are treated slightly differently to dimension, attribute, and observation columns. Measure and unit columns contain references to discrete units and measures. In both cases by defining `"type": "measure column"` or `"type": "unit column"` provides the same behaviour. Do not put measures in units columns and units and measure columns.
 
@@ -177,7 +175,7 @@ Measure and unit columns are treated slightly differently to dimension, attribut
 Measures can either be attached to a Measure Column if there are a mixture of measures in your data set, or to an Observation column if all observations in the cube have the same measure.
 Units can either be attached to a Unit Column if there are a mixture of units in your data set, or to an Observation column if all observations in the cube have the same unit.
 
-### Measures
+### Measures Configuration
 
 Measures have no unique configuration options.
 
@@ -188,7 +186,7 @@ Measures have no unique configuration options.
 | `from_existing`  | The uri of the resource for reuse/extension (Optional)                                                                      | *none*            |
 | `definition_uri` | A uri of a resource to show how the measure is created/managed (i.e. a uri of a PDF explaining the measure type) (Optional) | *none*            |
 
-### Units
+### Units Configuration
 
 Units are effectively attributes with additional options.
 
