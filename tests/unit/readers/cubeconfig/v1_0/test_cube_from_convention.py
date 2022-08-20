@@ -49,7 +49,7 @@ def test_01_build_convention_ok():
             output_directory=output,
             csv_path=csv,
             fail_when_validation_error_occurs=False,
-            validation_errors_file_out=Path(output, "validation_errors.json"),
+            validation_errors_file_name=Path(output, "validation_errors.json"),
         )
 
     assert isinstance(cube, Cube)

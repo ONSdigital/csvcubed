@@ -23,7 +23,7 @@ def test_build_with_fail():
                 output_directory=output,
                 csv_path=csv,
                 fail_when_validation_error_occurs=True,
-                validation_errors_file_out=Path(output, "validation_errors.json"),
+                validation_errors_file_name=Path(output, "validation_errors.json"),
             )
 
 @pytest.mark.vcr
@@ -38,7 +38,7 @@ def test_build_without_fail():
             output_directory=output,
             csv_path=csv,
             fail_when_validation_error_occurs=False,
-            validation_errors_file_out=Path(output, "validation_errors.json"),
+            validation_errors_file_name=Path(output, "validation_errors.json"),
         )
         assert isinstance(cube, Cube)
         assert isinstance(errors, list)
