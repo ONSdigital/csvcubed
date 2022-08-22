@@ -84,7 +84,7 @@ def get_deserialiser(
             schema_validation_errors = []
 
         dtype = datatypes.get_pandas_datatypes(csv_path, config=config)
-        _logger.info(f"csv {csv_path} has mapping of columns to datatypes: {dtype}")
+        _logger.info(f'csv {csv_path} has mapping of columns to datatypes: {dtype}')
         data, data_errors = read_and_check_csv(csv_path, dtype=dtype)
 
         """
