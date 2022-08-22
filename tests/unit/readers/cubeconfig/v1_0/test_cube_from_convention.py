@@ -1,4 +1,5 @@
 import datetime
+from operator import contains
 from pathlib import Path
 import json
 import os
@@ -137,6 +138,37 @@ def test_conventional_column_ordering_correct():
 
         column_titles_in_order = [c.csv_column_title for c in cube.columns]
         assert column_titles_in_order == list(data.columns)
+
+
+def test_colums_suppress():
+    """
+    The columns with false (i.e. "column_name": false) in the qube config json should be suppressed (i.e. skiped).
+    """
+    with TemporaryDirectory() as t:
+        temp_dir = Path(t)
+
+        cube_config = {"columns": {"Amount": {"type": "observations"}, "Rate": False}}
+        data = pd.DataFrame(
+            {
+                "Dimension": ["A", "B", "C"],
+                "Amount": [1.0, 2.0, 3.0],
+                "Rate": [2.0, 3.0, 4.0],
+            }
+        )
+
+        data_file_path = temp_dir / "data.csv"
+        config_file_path = temp_dir / "config.json"
+
+        with open(config_file_path, "w+") as config_file:
+            json.dump(cube_config, config_file, indent=4)
+
+        data.to_csv(str(data_file_path), index=False)
+
+        deserialiser = get_deserialiser(SCHEMA_PATH_FILE, 3)
+
+        cube, _, _ = deserialiser(data_file_path, config_file_path)
+        assert contains([c.csv_column_title for c in cube.columns], "Amount")
+        assert not contains([c.csv_column_title for c in cube.columns], "Rate")
 
 
 if __name__ == "__main__":

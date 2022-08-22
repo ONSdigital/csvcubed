@@ -1,10 +1,11 @@
-import logging
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Union
 from pathlib import Path
 
 import pandas as pd
 
-from csvcubed.readers.preconfiguredtemplates import apply_preconfigured_values_from_template
+from csvcubed.readers.preconfiguredtemplates import (
+    apply_preconfigured_values_from_template,
+)
 import csvcubed.readers.cubeconfig.v1.columnschema as schema
 from csvcubed.readers.cubeconfig.v1.mapcolumntocomponent import (
     _from_column_dict_to_schema_model,
@@ -40,7 +41,7 @@ def _is_conventional_units_column(column_label: str) -> bool:
 
 
 def pandas_datatypes_from_columns_config(
-    columns_config: Dict[str, dict]
+    columns_config: Union[Dict[str, dict], bool]
 ) -> Dict[str, str]:
     """
     Given a dictionary of column config in the form:
@@ -54,12 +55,18 @@ def pandas_datatypes_from_columns_config(
     """
 
     dtype = {}
-    for column_label, column_dict in columns_config.items():
-        apply_preconfigured_values_from_template(column_dict, column_label)
-        known_schema: schema.SchemaBaseClass = _from_column_dict_to_schema_model(
-            column_label, column_dict
-        )
-        dtype[column_label] = pandas_dtype_from_schema(known_schema)
+    for column_label, column_config in columns_config.items():
+        """
+        If the column is suppressed using below notation, it will be ignored.
+
+        {"column_name": false}
+        """
+        if column_config is not False:
+            apply_preconfigured_values_from_template(column_config, column_label)
+            known_schema: schema.SchemaBaseClass = _from_column_dict_to_schema_model(
+                column_label, column_config
+            )
+            dtype[column_label] = pandas_dtype_from_schema(known_schema)
 
     return dtype
 
@@ -89,7 +96,7 @@ def get_pandas_datatypes(
     Creates a dictionary of column_label:datatype for all columns in the dataframe.
     """
 
-    dtype = {} # Mapping of column name to pandas datatype
+    dtype = {}  # Mapping of column name to pandas datatype
 
     # Columns defined by explicit configuration
     if config:

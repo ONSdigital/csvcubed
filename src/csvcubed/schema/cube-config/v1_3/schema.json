@@ -60,10 +60,11 @@
             "format": "uri"
         },
         "columns": {
-            "description": "Map of CSV column titles to definitions of what the column represents (a dimension, an attribute, observations, units or measures)",
+            "description": "Map of CSV column titles to definitions of what the column represents (a dimension, an attribute, observations, units or measures). If a column needs to be suppressed (i.e. skipped), the following notation can be used: {'column_name': false}",
             "additionalProperties": {
                 "description": "Column's meaning in the data cube",
                 "anyOf": [
+                    false,
                     {
                         "$ref": "#/definitions/v1.0/columnTypes/Dimension"
                     },

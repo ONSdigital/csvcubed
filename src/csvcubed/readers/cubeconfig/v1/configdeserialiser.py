@@ -84,8 +84,22 @@ def get_deserialiser(
             schema_validation_errors = []
 
         dtype = datatypes.get_pandas_datatypes(csv_path, config=config)
-        _logger.info(f'csv {csv_path} has mapping of columns to datatypes: {dtype}')
+        _logger.info(f"csv {csv_path} has mapping of columns to datatypes: {dtype}")
         data, data_errors = read_and_check_csv(csv_path, dtype=dtype)
+
+        """
+        If a column is suppressed using below notation, it will be ignored when serialising.
+
+        {"column_name: False}
+        """
+        config_columns = config.get("columns", {})
+        processed_columns: Dict = {}
+        for (column_title, column_config) in config_columns.items():
+            if column_config == False:
+                data = data.drop(column_title, axis=1)
+            else:
+                processed_columns[column_title] = column_config
+        config["columns"] = processed_columns
 
         (cube, code_list_schema_validation_errors) = _get_cube_from_config_json_dict(
             data,
