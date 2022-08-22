@@ -1,21 +1,3 @@
 {
-    "$schema": "https://purl.org/csv-cubed/qube-config/v1",
-    "publisher": "https://example.com",
-    "published": "2020-09-10",
-    "families": [
-        "Trade"
-    ],
-    "extract": {
-        "source": "XLS"
-    },
-        "columns": {
-            "Period": {
-                "from_template": "year"
-            },
-            "Value": {
-                "type": "observations",
-                "unit": "http://gss-data.org.uk/def/concept/measurement-units/gbp-million",
-                "measure": "http://gss-data.org.uk/def/measure/trade"
-            }
-        }
+    "publisher": "https://im-not-a-real-publisher.com"
 }
