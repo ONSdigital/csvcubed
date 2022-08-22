@@ -22,32 +22,32 @@ def step_impl(context, arguments: str):
 def step_impl(context):
     (status_code, response) = context.csvcubed_cli_result
     assert status_code == 0, (status_code, response)
-    # assert "Build Complete" in response, response
+    assert "Build Complete" in response, response
 
 
 @then("the csvcubed CLI should fail with status code {status_code}")
 def step_impl(context, status_code: str):
-    (status_code, response) = context.csvcubed_cli_result
+    (status_code, _) = context.csvcubed_cli_result
     assert status_code == int(status_code), status_code
 
 
 @then('the csvcubed CLI should print "{printed_text}"')
 def step_impl(context, printed_text: str):
-    (status_code, response) = context.csvcubed_cli_result
+    (_, response) = context.csvcubed_cli_result
     assert printed_text in response, response
 
 
 @then('the csvcubed CLI should not print "{printed_text}"')
 def step_impl(context, printed_text: str):
-    (status_code, response) = context.csvcubed_cli_result
+    (_, response) = context.csvcubed_cli_result
     assert printed_text not in response, response
 
 
-@then('the validation-errors.json file in the "{out_dir}" directory should contain')
-def step_impl(context, out_dir: str):
+@then('the validation-errors.json file should contain')
+def step_impl(context):
     tmp_dir_path = get_context_temp_dir_path(context)
     expected_text_contents: str = context.text.strip()
-    validation_errors_file = tmp_dir_path / out_dir / "validation-errors.json"
+    validation_errors_file = tmp_dir_path / "out" / "validation-errors.json"
     assert validation_errors_file.exists()
 
     with open(validation_errors_file, "r") as f:
@@ -87,15 +87,28 @@ def step_impl(context):
 
 def run_command_in_temp_dir(context, command: str) -> Tuple[int, str]:
     tmp_dir_path = get_context_temp_dir_path(context)
-    process = subprocess.Popen(
-        command,
-        shell=True,
-        cwd=tmp_dir_path,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-    )
+
+    # Use temp files not a PIPE, a PIPE has a tiny buffer than
+    # can deadlock or result in eroneous resource exhaustion behaviour 
+    # where encountering some of our larger outputs (jsonSchemaErrors result
+    # in large writes to stdout)
+    Path(tmp_dir_path / "buffer").mkdir()
+    stdout_path = Path(tmp_dir_path / "buffer" / "stdout")
+    stderr_path = Path(tmp_dir_path / "buffer" / "stderr")
+
+    with open(stdout_path, "w") as stdout_file, open(stderr_path, "w") as stderr_file:
+
+        process = subprocess.Popen(
+            command,
+            shell=True,
+            cwd=tmp_dir_path.resolve(),
+            stdout=stdout_file,
+            stderr=stderr_file,
+        )
+
     status_code = process.wait()
-    response = process.stdout.read().decode("utf-8") + process.stderr.read().decode(
-        "utf-8"
-    )
+
+    with open(stdout_path) as stdout_file, open(stderr_path) as stderr_file:
+        response = stdout_file.read() + stderr_file.read()
+
     return status_code, response
