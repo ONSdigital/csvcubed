@@ -1,6 +1,8 @@
 import datetime
 import json
-from typing import List, Optional
+import copy
+from pathlib import Path
+from typing import List, Optional, Dict
 
 import requests_mock
 from behave import *
@@ -63,14 +65,15 @@ def step_impl(context):
     if not any(template_files):
         raise ValueError(f"Couldn't find template files in {templates_dir}.")
 
+    paths_to_mock: Dict[str, Path] = copy.deepcopy(PATHS_TO_MOCK)
     for template_file in template_files:
         relative_file_path = str(template_file.relative_to(templates_dir))
-        PATHS_TO_MOCK[
+        paths_to_mock[
             "https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/src/csvcubed/readers/cubeconfig/v1_0/templates/"
             + relative_file_path
         ] = template_file
 
-    for uri, path in PATHS_TO_MOCK.items():
+    for uri, path in paths_to_mock.items():
         with open(path) as f:
             mocker.register_uri("GET", uri, text=f.read())
 

@@ -29,6 +29,7 @@ In order to update the MINOR version of qube config, please follow the below ste
     Step 2: Update the _LATEST_V1_SCHEMA_URL and _LATEST_SCHEMA_URL so that they are assigned to the constant defined in Step 1.
     Step 3: Add a new enum to the QubeConfigJsonSchemaMinorVersion to represent the new version.
     Step 4: Add a new elif to the _get_schema_version() to represent the new version.
+    Step 5: Add a new behaviour test to cube.feature file for validating the cube generation using new version of the schema (e.g. "Successfully outputs a cube using schema v1.3" behave scenario).
 """
 
 _v1_0_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.0"
