@@ -122,5 +122,5 @@ def _get_schema_version(
         )
     else:
         raise ValueError(
-            f"The $schema '{schema_path}' referenced in the cube config file is not recognised."
+            f"The $schema '{schema_path}' referenced in the cube config file is not recognised. Please check for any updates to your csvcubed installation."
         )

@@ -4,11 +4,13 @@
     "title": "Schema for a codelist.",
     "description": "Schema to be used for creation and validation of a single codelist in CSV-W format.",
     "type": "object",
-    "required": [],
+    "required": [
+        "title"
+    ],
     "properties": {
         "$schema": {
             "type": "string",
-            "default": "https://purl.org/csv-cubed/code-list-config/v1.0"
+            "default": "https://purl.org/csv-cubed/code-list-config/v1.1"
         },
         "id": {
             "description": "A unique id for the code list.",
