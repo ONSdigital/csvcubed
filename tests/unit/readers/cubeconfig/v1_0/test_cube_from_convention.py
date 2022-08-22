@@ -167,8 +167,10 @@ def test_colums_suppress():
         deserialiser = get_deserialiser(SCHEMA_PATH_FILE, 3)
 
         cube, _, _ = deserialiser(data_file_path, config_file_path)
-        assert contains([c.csv_column_title for c in cube.columns], "Amount")
-        assert not contains([c.csv_column_title for c in cube.columns], "Rate")
+        columns = [c.csv_column_title for c in cube.columns]
+        
+        assert contains(columns, "Amount")
+        assert not contains(columns, "Rate")
 
 
 if __name__ == "__main__":
