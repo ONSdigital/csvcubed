@@ -50,6 +50,10 @@ class CsvcubedExceptionMsges(Enum):
         "An error occurred when performing {operation} operation on dataframe"
     )
 
+    UnsupportedColumnDefinition = (
+        "The definition for column with name {column_title} is not supported."
+    )
+
 
 class CsvcubedExceptionUrls(Enum):
     """
@@ -58,9 +62,7 @@ class CsvcubedExceptionUrls(Enum):
 
     InputNotSupported = "http://purl.org/csv-cubed/err/invalid-input"
 
-    FailedToReadCsvwFileContent = (
-        "http://purl.org/csv-cubed/err/csvw-read"
-    )
+    FailedToReadCsvwFileContent = "http://purl.org/csv-cubed/err/csvw-read"
 
     InvalidCsvwFileContent = "http://purl.org/csv-cubed/err/csvw-content"
 
@@ -74,29 +76,23 @@ class CsvcubedExceptionUrls(Enum):
 
     FailedToReadSparqlQuery = "http://purl.org/csv-cubed/err/sparql-query-read"
 
-    UnexpectedSparqlAskQueryResponseType = (
-        "http://purl.org/csv-cubed/err/ask-response"
-    )
+    UnexpectedSparqlAskQueryResponseType = "http://purl.org/csv-cubed/err/ask-response"
 
-    UnexpectedSparqlAskQueryResults = (
-        "http://purl.org/csv-cubed/err/ask-result"
-    )
+    UnexpectedSparqlAskQueryResults = "http://purl.org/csv-cubed/err/ask-result"
 
-    UnsupportedComponentPropertyType = (
-        "http://purl.org/csv-cubed/err/component-type"
-    )
+    UnsupportedComponentPropertyType = "http://purl.org/csv-cubed/err/component-type"
 
     InvalidNumberOfRecords = "http://purl.org/csv-cubed/err/num-records"
 
-    ErrorProcessingDataFrame = (
-        "http://purl.org/csv-cubed/err/dataframe-process"
-    )
+    ErrorProcessingDataFrame = "http://purl.org/csv-cubed/err/dataframe-process"
 
-    FailedToConvertDataFrameToString = (
-        "http://purl.org/csv-cubed/err/dataframe-string"
-    )
+    FailedToConvertDataFrameToString = "http://purl.org/csv-cubed/err/dataframe-string"
 
     FeatureNotSupported = "http://purl.org/csv-cubed/err/feature-not-supported"
+
+    UnsupportedColumnDefinition = (
+        "http://purl.org/csv-cubed/err/column-definition-not-supported"
+    )
 
 
 class CsvcubedException(Exception, HasErrorUrl, ABC):
@@ -301,3 +297,18 @@ class ErrorProcessingDataFrameException(CsvcubedException):
     @classmethod
     def get_error_url(cls) -> str:
         return CsvcubedExceptionUrls.ErrorProcessingDataFrame.value
+
+
+class UnsupportedColumnDefinitionException(CsvcubedException):
+    """Class representing the UnsupportedColumnDefinitionException model."""
+
+    def __init__(self, column_title: str):
+        super().__init__(
+            CsvcubedExceptionMsges.UnsupportedColumnDefinition.value.format(
+                column_title=column_title
+            )
+        )
+
+    @classmethod
+    def get_error_url(cls) -> str:
+        return CsvcubedExceptionUrls.UnsupportedColumnDefinition.value

@@ -2,6 +2,7 @@ from typing import Dict, List, Optional, Union
 from pathlib import Path
 
 import pandas as pd
+from csvcubed.models.csvcubedexception import UnsupportedColumnDefinitionException
 
 from csvcubed.readers.preconfiguredtemplates import (
     apply_preconfigured_values_from_template,
@@ -62,7 +63,7 @@ def pandas_datatypes_from_columns_config(
         {"column_name": false}
         """
         if type(column_config) is bool and not column_config:
-            # This column is being suppressed. Just bring the contents over wholesale.
+            # This column is being suppressed. Hence, the contents from the config is kept as is.
             dtype[column_label] = "string"
         elif isinstance(column_config, dict):
             apply_preconfigured_values_from_template(column_config, column_label)
@@ -71,8 +72,8 @@ def pandas_datatypes_from_columns_config(
             )
             dtype[column_label] = pandas_dtype_from_schema(known_schema)
         else:
-            pass
-            # TODO: Add Exception Class
+            raise UnsupportedColumnDefinitionException(column_title=column_label)
+
     return dtype
 
 

@@ -170,13 +170,44 @@ def test_colums_suppress():
 
         cube, _, _ = deserialiser(data_file_path, config_file_path)
         columns: List[str] = [c.csv_column_title for c in cube.columns]
-        
+
         assert "Amount" in columns
         assert "Rate" in columns
-        
+
         rate_column = first(cube.columns, lambda c: c.csv_column_title == "Rate")
         assert isinstance(rate_column, SuppressedCsvColumn)
-        
+
+
+def test_unsupported_col_definition_exception():
+    """
+    When a column is definited using an unsupported type, the UnsupportedColumnDefinitionException should be raised.
+    """
+    with TemporaryDirectory() as t:
+        temp_dir = Path(t)
+
+        cube_config = {"columns": {"Amount": {"type": "observations"}, "Rate": 2}}
+        data = pd.DataFrame(
+            {
+                "Dimension": ["A", "B", "C"],
+                "Amount": [1.0, 2.0, 3.0],
+                "Rate": [2.0, 3.0, 4.0],
+            }
+        )
+
+        data_file_path = temp_dir / "data.csv"
+        config_file_path = temp_dir / "config.json"
+
+        with open(config_file_path, "w+") as config_file:
+            json.dump(cube_config, config_file, indent=4)
+
+        data.to_csv(str(data_file_path), index=False)
+
+        deserialiser = get_deserialiser(SCHEMA_PATH_FILE, 3)
+
+        with pytest.raises(Exception) as msg:
+            _, _, _ = deserialiser(data_file_path, config_file_path)
+        assert f"The definition for column with name Rate is not supported." in str(msg)
+
 
 if __name__ == "__main__":
     pytest.main()
