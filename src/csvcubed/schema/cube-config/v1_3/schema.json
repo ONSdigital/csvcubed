@@ -64,7 +64,6 @@
             "additionalProperties": {
                 "description": "Column's meaning in the data cube",
                 "anyOf": [
-                    false,
                     {
                         "$ref": "#/definitions/v1.0/columnTypes/Dimension"
                     },
@@ -91,6 +90,11 @@
                     },
                     {
                         "$ref": "#/definitions/v1.0/columnTypes/Units_Existing"
+                    },
+                    {
+                        "description": "This column will be present in the CSV but will not be converted to RDF.",
+                        "type": "boolean",
+                        "const": false
                     }
                 ]
             }

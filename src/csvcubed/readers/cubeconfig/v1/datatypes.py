@@ -61,13 +61,18 @@ def pandas_datatypes_from_columns_config(
 
         {"column_name": false}
         """
-        if type(column_config) is not bool and column_config is not False:
+        if type(column_config) is bool and not column_config:
+            # This column is being suppressed. Just bring the contents over wholesale.
+            dtype[column_label] = "string"
+        elif isinstance(column_config, dict):
             apply_preconfigured_values_from_template(column_config, column_label)
             known_schema: schema.SchemaBaseClass = _from_column_dict_to_schema_model(
                 column_label, column_config
             )
             dtype[column_label] = pandas_dtype_from_schema(known_schema)
-
+        else:
+            pass
+            # TODO: Add Exception Class
     return dtype
 
 

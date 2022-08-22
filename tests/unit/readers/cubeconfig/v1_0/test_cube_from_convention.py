@@ -6,6 +6,7 @@ import os
 import pandas as pd
 from tempfile import TemporaryDirectory
 from typing import List
+from csvcubed.models.cube.columns import SuppressedCsvColumn
 from csvcubed.readers.cubeconfig.v1.configdeserialiser import get_deserialiser
 
 import pytest
@@ -27,6 +28,7 @@ from csvcubed.models.cube.qb.components import (
     QbMultiUnits,
     NewQbConcept,
 )
+from csvcubed.utils.iterables import first
 from tests.unit.test_baseunit import get_test_cases_dir
 
 TEST_CASE_DIR = get_test_cases_dir().absolute() / "readers" / "cube-config" / "v1.0"
@@ -167,11 +169,14 @@ def test_colums_suppress():
         deserialiser = get_deserialiser(SCHEMA_PATH_FILE, 3)
 
         cube, _, _ = deserialiser(data_file_path, config_file_path)
-        columns = [c.csv_column_title for c in cube.columns]
+        columns: List[str] = [c.csv_column_title for c in cube.columns]
         
-        assert contains(columns, "Amount")
-        assert not contains(columns, "Rate")
-
+        assert "Amount" in columns
+        assert "Rate" in columns
+        
+        rate_column = first(cube.columns, lambda c: c.csv_column_title == "Rate")
+        assert isinstance(rate_column, SuppressedCsvColumn)
+        
 
 if __name__ == "__main__":
     pytest.main()

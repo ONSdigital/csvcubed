@@ -11,11 +11,12 @@ from pathlib import Path
 from typing import Dict, Optional, Tuple, List, Callable, Union
 
 from jsonschema.exceptions import ValidationError as JsonSchemaValidationError
+from tomlkit import boolean
 
 from csvcubed.models.cube.qb.columns import QbColumn
 
 from csvcubed.models.cube import QbCube
-from csvcubed.models.cube.columns import CsvColumn
+from csvcubed.models.cube.columns import CsvColumn, SuppressedCsvColumn
 from csvcubed.models.cube.cube import Cube
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.validationerror import ValidationError
@@ -87,25 +88,6 @@ def get_deserialiser(
         _logger.info(f"csv {csv_path} has mapping of columns to datatypes: {dtype}")
         data, data_errors = read_and_check_csv(csv_path, dtype=dtype)
 
-        """
-        If a column is suppressed using below notation, it will be ignored when serialising.
-
-        {"column_name: False}
-        """
-        config_columns: Dict[str, Dict] = config.get("columns", {})
-        processed_config_columns: Dict[str, Dict] = {}
-        for (column_title, column_config) in config_columns.items():
-            if column_config == False and data is not None:
-                data = data.drop(column_title, axis=1)
-            else:
-                processed_config_columns[column_title] = column_config
-        config["columns"] = processed_config_columns
-
-        if data is None:
-            raise Exception(
-                "An error occured when processing suppressed columns: the data cannot be None."
-            )
-
         (cube, code_list_schema_validation_errors) = _get_cube_from_config_json_dict(
             data,
             config,
@@ -139,16 +121,25 @@ def _get_cube_from_config_json_dict(
     config_columns = config.get("columns", {})
     code_list_schema_validation_errors: list[JsonSchemaValidationError] = []
     for (column_title, column_config) in config_columns.items():
-        (qb_column, validation_errors) = _get_qb_column_from_json(
-            column_config,
-            column_title,
-            data,
-            cube_config_minor_version,
-            config_path=config_path,
-        )
-        columns.append(qb_column)
-        if validation_errors:
-            code_list_schema_validation_errors += validation_errors
+        if type(column_config) is bool and not column_config:
+            columns.append(SuppressedCsvColumn(column_title))
+        elif isinstance(column_config, dict):
+            (qb_column, validation_errors) = _get_qb_column_from_json(
+                column_config,
+                column_title,
+                data,
+                cube_config_minor_version,
+                config_path=config_path,
+            )
+            columns.append(qb_column)
+            if validation_errors:
+                code_list_schema_validation_errors += validation_errors
+        else:
+            code_list_schema_validation_errors.append(
+                JsonSchemaValidationError(
+                    f"Unrecognised column mapping for column '{column_title}'."
+                )
+            )
 
     return (Cube(metadata, data, columns), code_list_schema_validation_errors)
 
