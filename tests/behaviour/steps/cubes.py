@@ -86,7 +86,7 @@ def step_impl(context):
             data_file,
             config_file,
             output_directory=context.out_dir,
-            validation_errors_file_out=context.out_dir / "validation_errors.json",
+            validation_errors_file_name = "validation_errors.json",
         )
 
         context.cube = cube
