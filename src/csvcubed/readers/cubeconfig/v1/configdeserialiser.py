@@ -8,7 +8,7 @@ import logging
 from json import JSONDecodeError
 import pandas as pd
 from pathlib import Path
-from typing import Dict, Optional, Tuple, List, Callable
+from typing import Dict, Optional, Tuple, List, Callable, Union
 
 from jsonschema.exceptions import ValidationError as JsonSchemaValidationError
 
@@ -84,7 +84,7 @@ def get_deserialiser(
             schema_validation_errors = []
 
         dtype = datatypes.get_pandas_datatypes(csv_path, config=config)
-        _logger.info(f'csv {csv_path} has mapping of columns to datatypes: {dtype}')
+        _logger.info(f"csv {csv_path} has mapping of columns to datatypes: {dtype}")
         data, data_errors = read_and_check_csv(csv_path, dtype=dtype)
 
         """
@@ -92,14 +92,19 @@ def get_deserialiser(
 
         {"column_name: False}
         """
-        config_columns = config.get("columns", {})
-        processed_columns: Dict = {}
+        config_columns: Dict[str, Dict] = config.get("columns", {})
+        processed_config_columns: Dict[str, Dict] = {}
         for (column_title, column_config) in config_columns.items():
-            if column_config == False:
+            if column_config == False and data is not None:
                 data = data.drop(column_title, axis=1)
             else:
-                processed_columns[column_title] = column_config
-        config["columns"] = processed_columns
+                processed_config_columns[column_title] = column_config
+        config["columns"] = processed_config_columns
+
+        if data is None:
+            raise Exception(
+                "An error occured when processing suppressed columns: the data cannot be None."
+            )
 
         (cube, code_list_schema_validation_errors) = _get_cube_from_config_json_dict(
             data,

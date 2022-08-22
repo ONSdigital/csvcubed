@@ -41,7 +41,7 @@ def _is_conventional_units_column(column_label: str) -> bool:
 
 
 def pandas_datatypes_from_columns_config(
-    columns_config: Union[Dict[str, dict], bool]
+    columns_config: Union[Dict[str, Dict], Dict[str, bool]]
 ) -> Dict[str, str]:
     """
     Given a dictionary of column config in the form:
@@ -61,7 +61,7 @@ def pandas_datatypes_from_columns_config(
 
         {"column_name": false}
         """
-        if column_config is not False:
+        if type(column_config) is not bool and column_config is not False:
             apply_preconfigured_values_from_template(column_config, column_label)
             known_schema: schema.SchemaBaseClass = _from_column_dict_to_schema_model(
                 column_label, column_config
