@@ -31,6 +31,11 @@ def _assert_code_list_config_concepts(
                     _assert_code_list_config_concepts(
                         concept.children, concept_json["children"]
                     )
+                if concept.uri_safe_identifier_override:
+                    assert (
+                        concept.uri_safe_identifier_override
+                        == concept_json["uri_safe_identifier_override"]
+                    )
 
 
 def _assert_code_list_concept_sorting(
@@ -116,6 +121,7 @@ def test_code_list_config_without_schema():
         expected_sort_orders={"a": 0, "b": 1, "c": 2, "d": 3, "e": 4},
     )
 
+
 def test_code_list_config_with_hierarchy():
     """
     Should return CodeListConfig for config json path.
@@ -137,6 +143,7 @@ def test_code_list_config_with_hierarchy():
         code_list_config.concepts,
         expected_sort_orders={"a": 1, "b": 0, "c": 2, "d": 0, "e": 0},
     )
+
 
 def test_code_list_config_with_concepts_defined_elsewhere():
     """

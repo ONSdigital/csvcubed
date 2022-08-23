@@ -1,13 +1,16 @@
-import datetime
 from pathlib import Path
 import json
 import os
 import pandas as pd
 from tempfile import TemporaryDirectory
 from typing import List
-from csvcubed.readers.cubeconfig.v1.configdeserialiser import get_deserialiser
 
 import pytest
+
+from csvcubed.models.cube.columns import SuppressedCsvColumn
+from csvcubed.readers.cubeconfig.v1.configdeserialiser import get_deserialiser
+from csvcubed.models.csvcubedexception import UnsupportedColumnDefinitionException
+
 
 from csvcubed.models.cube.cube import Cube
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
@@ -26,6 +29,7 @@ from csvcubed.models.cube.qb.components import (
     QbMultiUnits,
     NewQbConcept,
 )
+from csvcubed.utils.iterables import first
 from tests.unit.test_baseunit import get_test_cases_dir
 
 TEST_CASE_DIR = get_test_cases_dir().absolute() / "readers" / "cube-config" / "v1.0"
@@ -49,7 +53,7 @@ def test_01_build_convention_ok():
             output_directory=output,
             csv_path=csv,
             fail_when_validation_error_occurs=False,
-            validation_errors_file_name= "validation_errors.json",
+            validation_errors_file_name="validation_errors.json",
         )
 
     assert isinstance(cube, Cube)
@@ -137,6 +141,75 @@ def test_conventional_column_ordering_correct():
 
         column_titles_in_order = [c.csv_column_title for c in cube.columns]
         assert column_titles_in_order == list(data.columns)
+
+
+def test_colums_suppress():
+    """
+    The columns with false (i.e. "column_name": false) in the qube config json should be suppressed (i.e. skiped).
+    """
+    with TemporaryDirectory() as t:
+        temp_dir = Path(t)
+
+        cube_config = {"columns": {"Amount": {"type": "observations"}, "Rate": False}}
+        data = pd.DataFrame(
+            {
+                "Dimension": ["A", "B", "C"],
+                "Amount": [1.0, 2.0, 3.0],
+                "Rate": [2.0, 3.0, 4.0],
+            }
+        )
+
+        data_file_path = temp_dir / "data.csv"
+        config_file_path = temp_dir / "config.json"
+
+        with open(config_file_path, "w+") as config_file:
+            json.dump(cube_config, config_file, indent=4)
+
+        data.to_csv(str(data_file_path), index=False)
+
+        deserialiser = get_deserialiser(SCHEMA_PATH_FILE, 3)
+
+        cube, _, _ = deserialiser(data_file_path, config_file_path)
+        columns: List[str] = [c.csv_column_title for c in cube.columns]
+
+        assert "Amount" in columns
+        assert "Rate" in columns
+
+        rate_column = first(cube.columns, lambda c: c.csv_column_title == "Rate")
+        assert isinstance(rate_column, SuppressedCsvColumn)
+
+
+def test_unsupported_col_definition_exception():
+    """
+    When a column is definited using an unsupported type, the UnsupportedColumnDefinitionException should be raised.
+    """
+    with TemporaryDirectory() as t:
+        temp_dir = Path(t)
+
+        cube_config = {"columns": {"Amount": {"type": "observations"}, "Rate": 2}}
+        data = pd.DataFrame(
+            {
+                "Dimension": ["A", "B", "C"],
+                "Amount": [1.0, 2.0, 3.0],
+                "Rate": [2.0, 3.0, 4.0],
+            }
+        )
+
+        data_file_path = temp_dir / "data.csv"
+        config_file_path = temp_dir / "config.json"
+
+        with open(config_file_path, "w+") as config_file:
+            json.dump(cube_config, config_file, indent=4)
+
+        data.to_csv(str(data_file_path), index=False)
+
+        deserialiser = get_deserialiser(SCHEMA_PATH_FILE, 3)
+
+        with pytest.raises(UnsupportedColumnDefinitionException) as msg:
+            _, _, _ = deserialiser(data_file_path, config_file_path)
+            assert f"The definition for column with name Rate is not supported." in str(
+                msg
+            )
 
 
 if __name__ == "__main__":

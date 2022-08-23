@@ -23,24 +23,35 @@ QubeConfigDeserialiser = Callable[
     Tuple[QbCube, List[JsonSchemaValidationError], List[ValidationError]],
 ]
 
+""" 
+In order to update the MINOR version of qube config, please follow the below steps.
+    Step 1: Define a new constant to hold the PURL of the new schema (e.g. _v1_3_SCHEMA_URL).
+    Step 2: Update the _LATEST_V1_SCHEMA_URL and _LATEST_SCHEMA_URL so that they are assigned to the constant defined in Step 1.
+    Step 3: Add a new enum to the QubeConfigJsonSchemaMinorVersion to represent the new version.
+    Step 4: Add a new elif to the _get_schema_version() to represent the new version.
+    Step 5: Add a new behaviour test to cube.feature file for validating the cube generation using new version of the schema (e.g. "Successfully outputs a cube using schema v1.3" behave scenario).
+"""
+
 _v1_0_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.0"
 _v1_1_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.1"
 _v1_2_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.2"
+_v1_3_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.3"
 _v1_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1"  # v1 defaults to the latest minor version of v1.*.
 
-_LATEST_V1_SCHEMA_URL = _v1_2_SCHEMA_URL
+_LATEST_V1_SCHEMA_URL = _v1_3_SCHEMA_URL
 """
     This holds the URL identifying the latest minor version of the V1 schema.
 
     When adding a new minor version to the V1 schema, you must update this variable.
 """
 
-_LATEST_SCHEMA_URL = _v1_2_SCHEMA_URL
+_LATEST_SCHEMA_URL = _v1_3_SCHEMA_URL
 """
     This holds the URL identifying the latest version of the schema.
 
     When adding a new schema version, you must update this variable.
 """
+
 
 class QubeConfigJsonSchemaMajorVersion(Enum):
     """
@@ -58,6 +69,7 @@ class QubeConfigJsonSchemaMinorVersion(Enum):
     v0 = 0
     v1 = 1
     v2 = 2
+    v3 = 3
 
 
 def get_deserialiser_for_schema(
@@ -104,7 +116,12 @@ def _get_schema_version(
             QubeConfigJsonSchemaMajorVersion.v1,
             QubeConfigJsonSchemaMinorVersion.v2,
         )
+    elif schema_path == _v1_3_SCHEMA_URL:
+        return (
+            QubeConfigJsonSchemaMajorVersion.v1,
+            QubeConfigJsonSchemaMinorVersion.v3,
+        )
     else:
         raise ValueError(
-            f"The $schema '{schema_path}' referenced in the cube config file is not recognised."
+            f"The $schema '{schema_path}' referenced in the cube config file is not recognised. Please check for any updates to your csvcubed installation."
         )

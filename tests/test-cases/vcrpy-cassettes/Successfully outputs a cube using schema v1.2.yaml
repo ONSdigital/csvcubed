@@ -41,7 +41,7 @@ interactions:
       content-type:
       - text/html; charset=utf-8
       date:
-      - Tue, 26 Jul 2022 08:33:40 GMT
+      - Tue, 23 Aug 2022 07:47:34 GMT
       location:
       - https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/src/csvcubed/readers/cubeconfig/v1_0/templates/preset_column_config.json
       server:
@@ -91,7 +91,7 @@ interactions:
       content-type:
       - text/html; charset=utf-8
       date:
-      - Tue, 26 Jul 2022 08:33:41 GMT
+      - Tue, 23 Aug 2022 07:47:34 GMT
       location:
       - https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/src/csvcubed/readers/cubeconfig/v1_0/templates/qudt-units.json
       server:
