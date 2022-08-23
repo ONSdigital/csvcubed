@@ -42,7 +42,7 @@ def _is_conventional_units_column(column_label: str) -> bool:
 
 
 def pandas_datatypes_from_columns_config(
-    columns_config: Union[Dict[str, Dict], Dict[str, bool]]
+    columns_config: Dict[str, Union[Dict, bool]]
 ) -> Dict[str, str]:
     """
     Given a dictionary of column config in the form:

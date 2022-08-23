@@ -1,15 +1,16 @@
-import datetime
-from operator import contains
 from pathlib import Path
 import json
 import os
 import pandas as pd
 from tempfile import TemporaryDirectory
 from typing import List
-from csvcubed.models.cube.columns import SuppressedCsvColumn
-from csvcubed.readers.cubeconfig.v1.configdeserialiser import get_deserialiser
 
 import pytest
+
+from csvcubed.models.cube.columns import SuppressedCsvColumn
+from csvcubed.readers.cubeconfig.v1.configdeserialiser import get_deserialiser
+from csvcubed.models.csvcubedexception import UnsupportedColumnDefinitionException
+
 
 from csvcubed.models.cube.cube import Cube
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
@@ -52,7 +53,7 @@ def test_01_build_convention_ok():
             output_directory=output,
             csv_path=csv,
             fail_when_validation_error_occurs=False,
-            validation_errors_file_name= "validation_errors.json",
+            validation_errors_file_name="validation_errors.json",
         )
 
     assert isinstance(cube, Cube)
@@ -204,9 +205,11 @@ def test_unsupported_col_definition_exception():
 
         deserialiser = get_deserialiser(SCHEMA_PATH_FILE, 3)
 
-        with pytest.raises(Exception) as msg:
+        with pytest.raises(UnsupportedColumnDefinitionException) as msg:
             _, _, _ = deserialiser(data_file_path, config_file_path)
-        assert f"The definition for column with name Rate is not supported." in str(msg)
+            assert f"The definition for column with name Rate is not supported." in str(
+                msg
+            )
 
 
 if __name__ == "__main__":
