@@ -5,6 +5,13 @@ import json
 from tempfile import TemporaryDirectory
 
 from csvcubed.models.cube import NewQbUnit, ExistingQbUnit
+from csvcubed.models.cube.qb.components.observedvalue import (
+    QbMultiMeasureObservationValue,
+)
+from csvcubed.models.cube.qb import QbColumn
+from csvcubed.readers.cubeconfig.v1.columnschema import (
+    EXISTING_UNIT_DEFAULT_SCALING_FACTOR,
+)
 from csvcubed.readers.cubeconfig.v1.configdeserialiser import get_deserialiser
 from csvcubed.definitions import APP_ROOT_DIR_PATH
 from tests.unit.test_baseunit import assert_num_validation_errors
@@ -19,15 +26,6 @@ def test_new_unit_base_unit_validation():
     Ensure that if :obj:`base_unit_scaling_factor` is specified and :obj:`base_unit` isn't,
     the user gets a suitable validation error.
     """
-    # _assert_both_properties_defined_error(
-    #     NewQbUnit(
-    #         "Some Unit",
-    #         base_unit=ExistingQbUnit("http://existing-unit"),
-    #         base_unit_scaling_factor=None,
-    #     ),
-    #     "base_unit",
-    #     "base_unit_scaling_factor",
-    # )
 
     _assert_both_properties_defined_error(
         NewQbUnit(
@@ -61,7 +59,7 @@ def test_scaling_factor_defined():
                 "Amount": {
                     "type": "observations",
                     "unit": {
-                        "label": "Length",
+                        "label": "Count",
                         "from_existing": "http://qudt.org/vocab/unit/NUM",
                         "scaling_factor": 0.1,
                     },
@@ -83,8 +81,16 @@ def test_scaling_factor_defined():
 
         cube, _, _ = deserialiser(data_file_path, config_file_path)
         amount_col = cube.columns[1]
+
         assert_num_validation_errors(amount_col.pydantic_validation(), 0)
-        # TODO: Check whether the scaling factor of col's unit is set to 0.1
+
+        assert isinstance(amount_col, QbColumn)
+        assert isinstance(
+            amount_col.structural_definition, QbMultiMeasureObservationValue
+        )
+        unit = amount_col.structural_definition.unit
+        assert isinstance(unit, NewQbUnit)
+        assert unit.base_unit_scaling_factor == 0.1
 
 
 def test_scaling_factor_not_defined():
@@ -96,7 +102,7 @@ def test_scaling_factor_not_defined():
                 "Amount": {
                     "type": "observations",
                     "unit": {
-                        "label": "Length",
+                        "label": "Count",
                         "from_existing": "http://qudt.org/vocab/unit/NUM",
                     },
                 }
@@ -119,7 +125,14 @@ def test_scaling_factor_not_defined():
         amount_col = cube.columns[1]
 
         assert_num_validation_errors(amount_col.pydantic_validation(), 0)
-        # TODO: Check whether the scaling factor of col's unit is set to default (i.e. 1.0)
+
+        assert isinstance(amount_col, QbColumn)
+        assert isinstance(
+            amount_col.structural_definition, QbMultiMeasureObservationValue
+        )
+        unit = amount_col.structural_definition.unit
+        assert isinstance(unit, NewQbUnit)
+        assert unit.base_unit_scaling_factor == EXISTING_UNIT_DEFAULT_SCALING_FACTOR
 
 
 def _assert_both_properties_defined_error(
