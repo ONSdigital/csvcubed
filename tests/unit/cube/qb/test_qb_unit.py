@@ -1,7 +1,17 @@
 import pytest
+from pathlib import Path
+import pandas as pd
+import json
+from tempfile import TemporaryDirectory
 
 from csvcubed.models.cube import NewQbUnit, ExistingQbUnit
+from csvcubed.readers.cubeconfig.v1.configdeserialiser import get_deserialiser
+from csvcubed.definitions import APP_ROOT_DIR_PATH
 from tests.unit.test_baseunit import assert_num_validation_errors
+from tests.unit.test_baseunit import get_test_cases_dir
+
+TEST_CASE_DIR = get_test_cases_dir().absolute() / "readers" / "cube-config" / "v1.0"
+SCHEMA_PATH_FILE = APP_ROOT_DIR_PATH / "schema" / "cube-config" / "v1_0" / "schema.json"
 
 
 def test_new_unit_base_unit_validation():
@@ -40,6 +50,76 @@ def test_new_unit_base_unit_validation():
         ).pydantic_validation(),
         0,
     )
+
+
+def test_scaling_factor_defined():
+    with TemporaryDirectory() as t:
+        temp_dir = Path(t)
+
+        cube_config = {
+            "columns": {
+                "Amount": {
+                    "type": "observations",
+                    "unit": {
+                        "label": "Length",
+                        "from_existing": "http://qudt.org/vocab/unit/NUM",
+                        "scaling_factor": 0.1,
+                    },
+                }
+            }
+        }
+
+        data = pd.DataFrame({"Dimension 1": ["A", "B", "C"], "Amount": [100, 200, 300]})
+
+        data_file_path = temp_dir / "data.csv"
+        config_file_path = temp_dir / "config.json"
+
+        with open(config_file_path, "w+") as config_file:
+            json.dump(cube_config, config_file, indent=4)
+
+        data.to_csv(str(data_file_path), index=False)
+
+        deserialiser = get_deserialiser(SCHEMA_PATH_FILE, 3)
+
+        cube, _, _ = deserialiser(data_file_path, config_file_path)
+        amount_col = cube.columns[1]
+        assert_num_validation_errors(amount_col.pydantic_validation(), 0)
+        # TODO: Check whether the scaling factor of col's unit is set to 0.1
+
+
+def test_scaling_factor_not_defined():
+    with TemporaryDirectory() as t:
+        temp_dir = Path(t)
+
+        cube_config = {
+            "columns": {
+                "Amount": {
+                    "type": "observations",
+                    "unit": {
+                        "label": "Length",
+                        "from_existing": "http://qudt.org/vocab/unit/NUM",
+                    },
+                }
+            }
+        }
+
+        data = pd.DataFrame({"Dimension 1": ["A", "B", "C"], "Amount": [100, 200, 300]})
+
+        data_file_path = temp_dir / "data.csv"
+        config_file_path = temp_dir / "config.json"
+
+        with open(config_file_path, "w+") as config_file:
+            json.dump(cube_config, config_file, indent=4)
+
+        data.to_csv(str(data_file_path), index=False)
+
+        deserialiser = get_deserialiser(SCHEMA_PATH_FILE, 3)
+
+        cube, _, _ = deserialiser(data_file_path, config_file_path)
+        amount_col = cube.columns[1]
+
+        assert_num_validation_errors(amount_col.pydantic_validation(), 0)
+        # TODO: Check whether the scaling factor of col's unit is set to default (i.e. 1.0)
 
 
 def _assert_both_properties_defined_error(
