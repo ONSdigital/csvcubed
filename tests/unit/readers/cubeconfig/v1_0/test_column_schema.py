@@ -25,7 +25,7 @@ def test_existing_unit_without_scaling_factor():
     )
     scaling_factor = _get_unit_scaling_factor(unit)
 
-    assert scaling_factor is EXISTING_UNIT_DEFAULT_SCALING_FACTOR
+    assert scaling_factor == EXISTING_UNIT_DEFAULT_SCALING_FACTOR
 
 
 def test_existing_unit_with_scaling_factor():
@@ -39,4 +39,4 @@ def test_existing_unit_with_scaling_factor():
     )
     scaling_factor = _get_unit_scaling_factor(unit)
 
-    assert scaling_factor is 0.01
+    assert scaling_factor == 0.01
