@@ -500,7 +500,10 @@ def _map_attribute_values(
 
 def _get_unit_scaling_factor(unit: Unit) -> Optional[float]:
     """
-    If the user wishes to, they should be able to specify the scaling factor (if relevant), but if they don't provide it we should just assume that it is 1 (i.e. there is a one-to-one relationship between the existing unit and their new more specialised unit). If the unit is not derived from an existing unit, there will be not scaling factor.
+    If the user wishes to, they should be able to specify the scaling factor (if relevant),
+    but if they don't provide it we should just assume that it is 1
+    (i.e. there is a one-to-one relationship between the existing unit and their new more specialised unit).
+    If the unit is not derived from an existing unit, there will be not scaling factor.
     """
     if unit.from_existing is None:
         return None
