@@ -58,6 +58,8 @@ _logger = logging.getLogger(__name__)
 
 T = TypeVar("T", bound=object)
 
+EXISTING_UNIT_DEFAULT_SCALING_FACTOR = 1.0
+
 
 @dataclass
 class SchemaBaseClass(DataClassBase, ABC):
@@ -462,7 +464,7 @@ def _map_unit(resource: Unit) -> NewQbUnit:
             if resource.from_existing is None
             else ExistingQbUnit(resource.from_existing)
         ),
-        base_unit_scaling_factor=resource.scaling_factor,
+        base_unit_scaling_factor=_get_unit_scaling_factor(resource),
         qudt_quantity_kind_uri=resource.quantity_kind,
         si_base_unit_conversion_multiplier=resource.si_scaling_factor,
     )
@@ -494,6 +496,21 @@ def _map_attribute_values(
             )
         )
     return new_attribute_values
+
+
+def _get_unit_scaling_factor(unit: Unit) -> Optional[float]:
+    """
+    If the user wishes to, they should be able to specify the scaling factor (if relevant),
+    but if they don't provide it we should just assume that it is 1
+    (i.e. there is a one-to-one relationship between the existing unit and their new more specialised unit).
+    If the unit is not derived from an existing unit, there will be not scaling factor.
+    """
+    if unit.from_existing is None:
+        return None
+    elif unit.scaling_factor is None:
+        return EXISTING_UNIT_DEFAULT_SCALING_FACTOR
+    else:
+        return unit.scaling_factor
 
 
 def _get_new_attribute_values(
