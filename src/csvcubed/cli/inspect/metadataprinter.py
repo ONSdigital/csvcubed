@@ -23,6 +23,7 @@ from csvcubed.models.sparqlresults import (
     DSDLabelURIResult,
     QubeComponentsResult,
 )
+from csvcubed.utils.iterables import first
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
 from csvcubed.utils.sparql_handler.sparqlmanager import (
@@ -124,8 +125,9 @@ class MetadataPrinter:
             columns, CodelistPropertyUrl.RDFLabel
         )
         notation_col_title = get_codelist_notation_col_title_from_primary_key(
-            columns, CodelistPropertyUrl.SkosNotation
+            columns, primary_key
         )
+
         return (parent_notation_col_title, label_col_title, notation_col_title)
 
     def generate_general_results(self):

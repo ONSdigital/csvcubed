@@ -49,6 +49,7 @@ def get_codelist_col_title_by_property_url(
 
     :return: `str` - dataset column title.
     """
+
     results = [
         column for column in columns if column.column_property_url == property_url.value
     ]
@@ -67,13 +68,12 @@ def get_codelist_notation_col_title_from_primary_key(
     columns: List[CodelistColumnResult], primary_key: str
 ) -> str:
     """
-    Returns dataset column title for the given property url.
+    Returns dataset notation column title for the primary key.
 
     Member of :class:`./codelist`.
 
     :return: `str` - dataset column title.
     """
-    print(columns)
 
     results = [column for column in columns if column.column_name == primary_key]
 
@@ -104,22 +104,18 @@ def build_concepts_hierarchy_tree(
     tree = Tree()
     tree.create_node("root", identifier="root")
 
-    # Replacing empty values with None and sorting consepts by Sort Priortiy to maintain the order when iterating below.
+    # Replacing empty values with None.
     concepts_df_na_replaced = concepts_df.replace({np.nan: None})
     if concepts_df_na_replaced is None:
         raise ErrorProcessingDataFrameException(operation="replace")
 
-    concepts_df_sorted = pd.DataFrame(concepts_df_na_replaced).sort_values(
-        by="Sort Priority"
-    )
-    if concepts_df_sorted is None:
+    if concepts_df_na_replaced is None:
         raise ErrorProcessingDataFrameException(operation="sort")
 
-    for _, concept_row in pd.DataFrame(concepts_df_sorted).iterrows():
+    for _, concept_row in pd.DataFrame(concepts_df_na_replaced).iterrows():
         node_id = concept_row[notation_col_name]
         node_label = concept_row[label_col_name]
         node_parent_id = concept_row[parent_notation_col_name] or "root"
-        print("parent_notation_col_name: ", parent_notation_col_name)
         tree.create_node(node_label, identifier=node_id, parent=node_parent_id)
 
     return tree

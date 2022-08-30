@@ -10,7 +10,9 @@ WHERE {
     ?table csvw:url ?tableUrl.
     ?table csvw:tableSchema/csvw:column/rdf:rest*/rdf:first ?column.
 
-    ?column csvw:propertyUrl ?columnPropertyUrl.
+    OPTIONAL{
+        ?column csvw:propertyUrl ?columnPropertyUrl.
+    }
     OPTIONAL{
         ?column csvw:valueUrl ?columnValueUrl.
     }

@@ -748,6 +748,66 @@ Feature: Behaviour testing of csvcubed inspect.
 						└── Wholesale & Retail
 		"""
 
+Scenario: inspect should produce printable for code list metadata json-ld input with concepts hierarchy depth of more than one
+        Given the existing test-case file "cli/inspect/itis-industry.csv-metadata.json"
+        And the existing test-case file "cli/inspect/itis-industry.csv"
+        When the Metadata file path is detected and validated "cli/inspect/itis-industry.csv-metadata.json"
+        And the csv file path is detected and validated "cli/inspect/itis-industry.csv"
+        And the Metadata File json-ld is loaded to a rdf graph
+        And the Metadata File is validated
+        And the Printables for code list are generated
+        Then the Type Printable should be "- This file is a code list."
+        And the Catalog Metadata Printable should be
+		"""
+		- The code list has the following catalog metadata:
+            - Title: Itis Industry
+            - Label: Itis Industry
+            - Issued: 2021-04-13T10:04:13.589262
+            - Modified: 2021-05-20T10:55:04.059085
+            - License: None
+            - Creator: None
+            - Publisher: None
+            - Landing Pages: None
+            - Themes: None
+            - Keywords: None
+            - Contact Point: None
+            - Identifier: None
+            - Comment: Dataset representing the 'Itis Industry' code list.
+            - Description: None
+        """
+        And the Dataset Information Printable should be
+        """
+        - The code list has the following dataset information:
+          - Number of Concepts: 9
+          - Number of Duplicates: 0
+          - Concepts:
+																   Label       														  Notation Parent Notation  Sort Priority  Description
+									   					  All industries  																   all             NaN              1          NaN
+														   Manufacturing   								 				manufacturing-industry             all              2          NaN
+			 									 	  Wholesale & Retail   											 wholesale-retail-industry             all              3          NaN
+							 			   Information and Communication   								information-and-communication-industry             all              4          NaN
+						  Professional, Scientific and Technical Support   				professional-scientific-and-technical-support-industry             all              5          NaN
+			 			   Administrative and Support Service Activities   				administrative-and-support-service-activities-industry             all              6          NaN
+            Arts, Entertainment, Recreation and Other Service Activities   arts-entertainment-recreation-and-other-service-activities-industry             all              7          NaN
+														   Film Industry   								film-industry-excluding-other-services             all              8          NaN
+													 Television Industry   						  television-industry-excluding-other-services             all              9          NaN
+        """
+		And the Concepts Information Printable should be
+		"""
+		- The code list has the following concepts information:
+			- Concepts hierarchy depth: 2
+			- Concepts hierarchy:
+				root
+				└── All industries
+						├── Administrative and Support Service Activities
+						├── Arts, Entertainment, Recreation and Other Service Activities
+						├── Film Industry
+						├── Information and Communication
+						├── Manufacturing
+						├── Professional, Scientific and Technical Support
+						├── Television Industry
+						└── Wholesale & Retail
+		"""
     Scenario: inspect should output error when the metadata json-ld input does not exist
         Given a none existing test-case file "cli/inspect/not_exists.csv-metadata.json"
         Then the file not found error is displayed "Could not find test-case file"

@@ -205,7 +205,7 @@ class CodelistColumnResult(DataClassBase):
     Model to represent a codelist column.
     """
 
-    column_property_url: str
+    column_property_url: Optional[str]
     column_value_url: Optional[str]
     column_title: Optional[str]
     column_name: Optional[str]
@@ -482,7 +482,7 @@ def map_codelist_column_sparql_result(sparql_result: ResultRow) -> CodelistColum
     result_dict = sparql_result.asdict()
 
     result = CodelistColumnResult(
-        column_property_url=str(result_dict["columnPropertyUrl"]),
+        column_property_url=none_or_map(result_dict.get("columnPropertyUrl"), str),
         column_value_url=none_or_map(result_dict.get("columnValueUrl"), str),
         column_title=none_or_map(result_dict.get("columnTitle"), str),
         column_name=none_or_map(result_dict.get("columnName"), str),

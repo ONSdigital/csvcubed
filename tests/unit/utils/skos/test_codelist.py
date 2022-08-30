@@ -7,12 +7,14 @@ from csvcubed.cli.inspect.inspectdatasetmanager import load_csv_to_dataframe
 from csvcubed.utils.sparql_handler.sparqlmanager import (
     select_codelist_cols_by_dataset_url,
     select_codelist_dataset_url,
+    select_codelist_primarykey_by_dataset_url,
 )
 from csvcubed.utils.tableschema import CsvwRdfManager
 from csvcubed.utils.skos.codelist import (
     CodelistPropertyUrl,
     build_concepts_hierarchy_tree,
     get_codelist_col_title_by_property_url,
+    get_codelist_notation_col_title_from_primary_key,
 )
 from tests.unit.test_baseunit import get_test_cases_dir
 
@@ -58,8 +60,12 @@ def test_get_codelist_col_title_by_property_url_notation():
     result_code_list_cols = select_codelist_cols_by_dataset_url(
         csvw_metadata_rdf_graph, dataset_url
     )
-    notation_col_name = get_codelist_col_title_by_property_url(
-        result_code_list_cols.columns, CodelistPropertyUrl.SkosNotation
+    result_code_list_primary_key = select_codelist_primarykey_by_dataset_url(
+        csvw_metadata_rdf_graph, dataset_url
+    )
+
+    notation_col_name = get_codelist_notation_col_title_from_primary_key(
+        result_code_list_cols.columns, result_code_list_primary_key.primary_key
     )
 
     assert notation_col_name == "Notation"
@@ -81,6 +87,7 @@ def test_get_codelist_col_title_by_property_url_parent_notation():
     result_code_list_cols = select_codelist_cols_by_dataset_url(
         csvw_metadata_rdf_graph, dataset_url
     )
+    
     parent_notation_col_name = get_codelist_col_title_by_property_url(
         result_code_list_cols.columns, CodelistPropertyUrl.SkosBroader
     )
