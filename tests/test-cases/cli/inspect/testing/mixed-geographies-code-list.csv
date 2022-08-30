@@ -1,0 +1,8 @@
+Uri Identifier,Label,Notation,Parent Uri Identifier,Sort Priority,Description
+uk,United Kingdom,UK,,0,
+ukl,Wales,UKL,uk,0,
+ukm,Scotland,UKM,uk,1,
+e92000001,England,E92000001,uk,2,
+uki,London,UKI,e92000001,0,
+ukc,North East (England),UKC,e92000001,1,
+ukd,North West (England),UKD,e92000001,2,

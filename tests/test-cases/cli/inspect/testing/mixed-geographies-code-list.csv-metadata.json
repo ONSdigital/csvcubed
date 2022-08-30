@@ -1,0 +1,57 @@
+{
+    "@context": "http://www.w3.org/ns/csvw",
+    "@id": "mixed-geographies-code-list.csv#code-list",
+    "url": "mixed-geographies-code-list.csv",
+    "tableSchema": "mixed-geographies-code-list.table.json",
+    "rdfs:seeAlso": [
+        {
+            "@id": "mixed-geographies-code-list.csv#code-list",
+            "@type": [
+                "http://www.w3.org/ns/dcat#Dataset",
+                "http://www.w3.org/2004/02/skos/core#ConceptScheme",
+                "http://www.w3.org/ns/dcat#Resource",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://purl.org/dc/terms/description": [
+                {
+                    "@type": "https://www.w3.org/ns/iana/media-types/text/markdown#Resource",
+                    "@value": "This mixes together concepts from the NUTS and ONS Geographies code lists to solve the NUTS 'England' problem."
+                }
+            ],
+            "http://purl.org/dc/terms/identifier": [
+                {
+                    "@value": "Mixed Geographies Code List"
+                }
+            ],
+            "http://purl.org/dc/terms/issued": [
+                {
+                    "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "@value": "2022-07-19T14:15:24.276739"
+                }
+            ],
+            "http://purl.org/dc/terms/license": [
+                {
+                    "@id": "http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+                }
+            ],
+            "http://purl.org/dc/terms/modified": [
+                {
+                    "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "@value": "2022-07-19T14:15:24.276739"
+                }
+            ],
+            "http://purl.org/dc/terms/title": [
+                {
+                    "@language": "en",
+                    "@value": "Mixed Geographies Code List"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Mixed Geographies Code List"
+                }
+            ]
+        }
+    ]
+}

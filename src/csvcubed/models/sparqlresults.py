@@ -208,6 +208,7 @@ class CodelistColumnResult(DataClassBase):
     column_property_url: str
     column_value_url: Optional[str]
     column_title: Optional[str]
+    column_name: Optional[str]
 
 
 @dataclass
@@ -217,6 +218,15 @@ class CodeListColsByDatasetUrlResult:
     """
 
     columns: List[CodelistColumnResult]
+
+
+@dataclass
+class CodeListPrimaryKeyByDatasetUrlResult:
+    """
+    Model to represent select codelist primary key by table url.
+    """
+
+    primary_key: str
 
 
 @dataclass
@@ -475,6 +485,7 @@ def map_codelist_column_sparql_result(sparql_result: ResultRow) -> CodelistColum
         column_property_url=str(result_dict["columnPropertyUrl"]),
         column_value_url=none_or_map(result_dict.get("columnValueUrl"), str),
         column_title=none_or_map(result_dict.get("columnTitle"), str),
+        column_name=none_or_map(result_dict.get("columnName"), str),
     )
     return result
 
@@ -497,6 +508,24 @@ def map_codelist_cols_by_dataset_url_result(
         )
     )
     result = CodeListColsByDatasetUrlResult(columns=columns)
+    return result
+
+
+def map_codelist_primary_key_by_dataset_url_result(
+    sparql_result: ResultRow,
+) -> CodeListPrimaryKeyByDatasetUrlResult:
+    """
+    Maps sparql query result to `CodeListPrimaryKeyByDatasetUrlResult`
+
+    Member of :file:`./models/sparqlresults.py`
+
+    :return: `CodeListPrimaryKeyByDatasetUrlResult`
+    """
+    result_dict = sparql_result.asdict()
+
+    result = CodeListPrimaryKeyByDatasetUrlResult(
+        primary_key=str(result_dict["tablePrimaryKey"]),
+    )
     return result
 
 

@@ -4,7 +4,7 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 
-SELECT DISTINCT ?columnPropertyUrl ?columnValueUrl ?columnTitle
+SELECT DISTINCT ?columnPropertyUrl ?columnValueUrl ?columnTitle ?columnName
 WHERE {   
 
     ?table csvw:url ?tableUrl.
@@ -17,7 +17,10 @@ WHERE {
     OPTIONAL{
         ?column csvw:title ?columnTitle.
     }
-    
+    OPTIONAL{
+        ?column csvw:name ?columnName.
+    }
+
     BIND (?table_url as ?tableUrlStr).
 
     FILTER (strends(str(?tableUrl), ?tableUrlStr)).

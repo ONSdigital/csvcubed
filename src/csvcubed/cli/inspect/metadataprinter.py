@@ -16,6 +16,7 @@ from pandas import DataFrame
 from csvcubed.models.sparqlresults import (
     CatalogMetadataResult,
     CodeListColsByDatasetUrlResult,
+    CodeListPrimaryKeyByDatasetUrlResult,
     CodelistColumnResult,
     CodelistsResult,
     ColsWithSuppressOutputTrueResult,
@@ -27,6 +28,7 @@ from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
 from csvcubed.utils.sparql_handler.sparqlmanager import (
     select_codelist_cols_by_dataset_url,
     select_codelist_dataset_url,
+    select_codelist_primarykey_by_dataset_url,
     select_cols_where_suppress_output_is_true,
     select_csvw_catalog_metadata,
     select_csvw_dsd_dataset_label_and_dsd_def_uri,
@@ -54,6 +56,7 @@ from csvcubed.models.csvcubedexception import (
 from csvcubed.utils.skos.codelist import (
     CodelistPropertyUrl,
     get_codelist_col_title_by_property_url,
+    get_codelist_notation_col_title_from_primary_key,
 )
 from csvcubed.utils.uri import looks_like_uri
 
@@ -111,19 +114,19 @@ class MetadataPrinter:
             raise InputNotSupportedException()
 
     @staticmethod
-    def get_parent_label_notation_col_names(
-        columns: List[CodelistColumnResult],
+    def get_parent_label_notation_col_titles(
+        columns: List[CodelistColumnResult], primary_key: str
     ) -> Tuple[Optional[str], Optional[str], Optional[str]]:
-        parent_notation_col_name = get_codelist_col_title_by_property_url(
+        parent_notation_col_title = get_codelist_col_title_by_property_url(
             columns, CodelistPropertyUrl.SkosBroader
         )
-        label_col_name = get_codelist_col_title_by_property_url(
+        label_col_title = get_codelist_col_title_by_property_url(
             columns, CodelistPropertyUrl.RDFLabel
         )
-        notation_col_name = get_codelist_col_title_by_property_url(
+        notation_col_title = get_codelist_notation_col_title_from_primary_key(
             columns, CodelistPropertyUrl.SkosNotation
         )
-        return (parent_notation_col_name, label_col_name, notation_col_name)
+        return (parent_notation_col_title, label_col_title, notation_col_title)
 
     def generate_general_results(self):
         """
@@ -195,13 +198,22 @@ class MetadataPrinter:
         self.result_code_list_cols = select_codelist_cols_by_dataset_url(
             self.csvw_metadata_rdf_graph, self.dataset_url
         )
+        # Retrieving the primary key of the code list to identify the notation column
+        result_code_list_primary_key: CodeListPrimaryKeyByDatasetUrlResult = (
+            select_codelist_primarykey_by_dataset_url(
+                self.csvw_metadata_rdf_graph, self.dataset_url
+            )
+        )
+
         (
-            parent_notation_col_name,
-            label_col_name,
-            notation_col_name,
-        ) = self.get_parent_label_notation_col_names(self.result_code_list_cols.columns)
+            parent_notation_col_title,
+            label_col_title,
+            notation_col_title,
+        ) = self.get_parent_label_notation_col_titles(
+            self.result_code_list_cols.columns, result_code_list_primary_key.primary_key
+        )
         self.result_concepts_hierachy_info = get_concepts_hierarchy_info(
-            self.dataset, parent_notation_col_name, label_col_name, notation_col_name
+            self.dataset, parent_notation_col_title, label_col_title, notation_col_title
         )
 
     def __post_init__(self):

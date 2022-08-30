@@ -63,6 +63,30 @@ def get_codelist_col_title_by_property_url(
     return results[0].column_title
 
 
+def get_codelist_notation_col_title_from_primary_key(
+    columns: List[CodelistColumnResult], primary_key: str
+) -> str:
+    """
+    Returns dataset column title for the given property url.
+
+    Member of :class:`./codelist`.
+
+    :return: `str` - dataset column title.
+    """
+    print(columns)
+
+    results = [column for column in columns if column.column_name == primary_key]
+
+    if len(results) != 1:
+        raise InvalidNumberOfRecordsException(
+            record_description="code lists",
+            excepted_num_of_records=1,
+            num_of_records=len(results),
+        )
+
+    return results[0].column_title
+
+
 def build_concepts_hierarchy_tree(
     concepts_df: pd.DataFrame,
     parent_notation_col_name: str,
@@ -95,6 +119,7 @@ def build_concepts_hierarchy_tree(
         node_id = concept_row[notation_col_name]
         node_label = concept_row[label_col_name]
         node_parent_id = concept_row[parent_notation_col_name] or "root"
+        print("parent_notation_col_name: ", parent_notation_col_name)
         tree.create_node(node_label, identifier=node_id, parent=node_parent_id)
 
     return tree
