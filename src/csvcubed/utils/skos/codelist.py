@@ -16,6 +16,7 @@ from csvcubed.models.sparqlresults import CodelistColumnResult
 from csvcubed.models.csvcubedexception import (
     ErrorProcessingDataFrameException,
     InvalidNumberOfRecordsException,
+    PrimaryKeyColumnTitleCannotBeNoneException,
 )
 
 
@@ -83,6 +84,9 @@ def get_codelist_notation_col_title_from_primary_key(
             excepted_num_of_records=1,
             num_of_records=len(results),
         )
+
+    if results[0].column_title is None:
+        raise PrimaryKeyColumnTitleCannotBeNoneException()
 
     return results[0].column_title
 

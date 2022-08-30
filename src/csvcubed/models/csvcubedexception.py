@@ -54,6 +54,10 @@ class CsvcubedExceptionMsges(Enum):
         "The definition for column with name {column_title} is not supported."
     )
 
+    PrimaryKeyColumnTitleCannotBeNone = (
+        "The column associated with the primary key does not contain the title."
+    )
+
 
 class CsvcubedExceptionUrls(Enum):
     """
@@ -92,6 +96,10 @@ class CsvcubedExceptionUrls(Enum):
 
     UnsupportedColumnDefinition = (
         "http://purl.org/csv-cubed/err/column-definition-not-supported"
+    )
+
+    PrimaryKeyColumnTitleCannotBeNone = (
+        "http://purl.org/csv-cubed/err/invalid_title_for_code_list_col_with_primary_key"
     )
 
 
@@ -312,3 +320,14 @@ class UnsupportedColumnDefinitionException(CsvcubedException):
     @classmethod
     def get_error_url(cls) -> str:
         return CsvcubedExceptionUrls.UnsupportedColumnDefinition.value
+
+
+class PrimaryKeyColumnTitleCannotBeNoneException(CsvcubedException):
+    """Class representing the PrimaryKeyColumnTitleCannotBeNoneException model."""
+
+    def __init__(self):
+        super().__init__(CsvcubedExceptionMsges.PrimaryKeyColumnTitleCannotBeNone.value)
+
+    @classmethod
+    def get_error_url(cls) -> str:
+        return CsvcubedExceptionUrls.PrimaryKeyColumnTitleCannotBeNone.value
