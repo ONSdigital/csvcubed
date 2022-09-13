@@ -8,19 +8,18 @@ import logging
 from json import JSONDecodeError
 import pandas as pd
 from pathlib import Path
-from typing import Dict, Optional, Tuple, List, Callable
-
-from jsonschema.exceptions import ValidationError as JsonSchemaValidationError
+from typing import Dict, Optional, Tuple, List, Callable, Union, Iterable
 
 from csvcubed.models.cube.qb.columns import QbColumn
-
 from csvcubed.models.cube import QbCube
 from csvcubed.models.cube.columns import CsvColumn, SuppressedCsvColumn
 from csvcubed.models.cube.cube import Cube
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.validationerror import ValidationError
+from csvcubed.models.jsonvalidationerrors import JsonSchemaValidationError
 from csvcubed.utils.iterables import first
 from csvcubed.utils.validators.schema import validate_dict_against_schema
+from csvcubed.utils.json import resolve_path
 from csvcubed.readers.cubeconfig.utils import (
     generate_title_from_file_name,
     load_resource,
@@ -33,6 +32,7 @@ from csvcubed.readers.cubeconfig.v1.mapcolumntocomponent import (
     map_column_to_qb_component,
 )
 from csvcubed.readers.cubeconfig.v1 import datatypes
+from csvcubed.utils.validators.schema import map_to_internal_validation_errors
 
 from .constants import CONVENTION_NAMES
 
@@ -69,8 +69,15 @@ def get_deserialiser(
                 config["title"] = generate_title_from_file_name(csv_path)
             try:
                 schema = load_resource(schema_path)
-                schema_validation_errors = validate_dict_against_schema(
+                unmappped_schema_errors = validate_dict_against_schema(
                     value=config, schema=schema
+                )
+                _override_qube_config_schema_validation_errors(
+                    schema, unmappped_schema_errors
+                )
+
+                schema_validation_errors = map_to_internal_validation_errors(
+                    unmappped_schema_errors
                 )
             except JSONDecodeError:
                 _logger.warning(
@@ -93,7 +100,9 @@ def get_deserialiser(
             cube_config_minor_version,
             config_path=config_path,
         )
-        schema_validation_errors += code_list_schema_validation_errors
+        schema_validation_errors += map_to_internal_validation_errors(
+            code_list_schema_validation_errors
+        )
 
         code_list_schema_validation_errors = _configure_remaining_columns_by_convention(
             cube,
@@ -101,11 +110,74 @@ def get_deserialiser(
             cube_config_minor_version,
             config_path=config_path,
         )
-        schema_validation_errors += code_list_schema_validation_errors
+        schema_validation_errors += map_to_internal_validation_errors(
+            code_list_schema_validation_errors
+        )
 
         return cube, schema_validation_errors, data_errors
 
+    def _override_qube_config_schema_validation_errors(
+        schema: dict,
+        schema_validation_errors: List[JsonSchemaValidationError],
+    ):
+        """Override some long and unhelpful validation error messages with more user friendly ones."""
+        for error in schema_validation_errors:
+            error_json_path = list(error.absolute_path)
+            if error_json_path == ["license"] and error.validator == "enum":
+                error.message = (
+                    f"License '{error.instance}' is not recognised by csvcubed."
+                )
+            elif error_json_path == ["publisher"] and error.validator == "enum":
+                error.message = (
+                    f"Publisher '{error.instance}' is not recognised by csvcubed."
+                )
+            elif error_json_path == ["creator"] and error.validator == "enum":
+                error.message = (
+                    f"Creator '{error.instance}' is not recognised by csvcubed."
+                )
+            elif (
+                len(error_json_path) == 2
+                and error_json_path[0] == "columns"
+                and error.validator == "anyOf"
+            ):
+                _override_schema_validation_errors_in_column(schema, error)
+
+    def _override_schema_validation_errors_in_column(
+        schema: dict,
+        error_for_whole_column: JsonSchemaValidationError,
+    ):
+        errors_within_column_definition: List[
+            JsonSchemaValidationError
+        ] = error_for_whole_column.context
+
+        for error in errors_within_column_definition:
+            json_path_within_column = list(error.relative_path)
+            if (
+                json_path_within_column == ["from_existing"]
+                and error.validator == "enum"
+            ):
+                col_type = _get_column_type_from_error(error, schema)
+
+                # error.schema_path
+                error.message = f"Existing {col_type} '{error.instance}' is not recognised by csvcubed."
+
     return get_cube_from_config_json
+
+
+def _get_column_type_from_error(
+    error: JsonSchemaValidationError, schema: dict
+) -> Optional[str]:
+    for schema_part in resolve_path(list(error.absolute_schema_path), schema):
+        if isinstance(schema_part, dict):
+            properties = schema_part.get("properties")
+            if properties:
+                type_info = properties.get("type")
+                if type_info:
+                    const_val = type_info.get("const")
+                    if const_val:
+                        return const_val
+
+    return None
 
 
 def _get_cube_from_config_json_dict(

@@ -15,6 +15,7 @@ from csvcubed.cli.error_mapping import friendly_error_mapping
 from csvcubed.models.cube import QbCube
 from csvcubed.models.errorurl import HasErrorUrl
 from csvcubed.models.validationerror import ValidationError
+from csvcubed.models.jsonvalidationerrors import JsonSchemaValidationError
 from csvcubed.readers.cubeconfig.schema_versions import (
     QubeConfigDeserialiser,
     get_deserialiser_for_schema,
@@ -46,18 +47,16 @@ def build(
         _write_errors_to_log(json_schema_validation_errors, validation_errors)
 
         if validation_errors_file_name is not None:
-            validation_errors_dict = [
+            all_errors = validation_errors + json_schema_validation_errors
+            all_errors_dict = [
                 e.as_json_dict()
                 if isinstance(e, DataClassBase)
                 else dataclasses.asdict(e)
-                for e in validation_errors
-            ]
-            all_errors = validation_errors_dict + [
-                e.message for e in json_schema_validation_errors
+                for e in all_errors
             ]
 
             with open(output_directory / validation_errors_file_name, "w+") as f:
-                json.dump(all_errors, f, indent=4, default=serialize_sets)
+                json.dump(all_errors_dict, f, indent=4, default=serialize_sets)
 
         if len(validation_errors) > 0:
             if fail_when_validation_error_occurs:
@@ -80,7 +79,7 @@ def build(
 
 
 def _write_errors_to_log(
-    json_schema_validation_errors: List[jsonschema.ValidationError],
+    json_schema_validation_errors: List[JsonSchemaValidationError],
     validation_errors: List[ValidationError],
 ) -> None:
     for error in validation_errors:
@@ -89,10 +88,12 @@ def _write_errors_to_log(
             _logger.error("More information: %s", error.get_error_url())
 
     for err in json_schema_validation_errors:
-        _logger.warning("Schema Validation Error: %s", err.message)
+        _logger.warning("Schema Validation Error: %s", err.to_display_string())
 
 
-def _extract_and_validate_cube(config_path: Optional[Path], csv_path: Path):
+def _extract_and_validate_cube(
+    config_path: Optional[Path], csv_path: Path
+) -> Tuple[QbCube, List[JsonSchemaValidationError], List[ValidationError]]:
     _logger.debug("CSV: %s", csv_path.absolute() if csv_path is not None else "")
     _logger.debug(
         "qube-config.json: %s",

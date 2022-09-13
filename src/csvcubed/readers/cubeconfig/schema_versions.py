@@ -10,10 +10,9 @@ from enum import Enum
 from pathlib import Path
 from typing import Optional, Callable, Tuple, List
 
-from jsonschema.exceptions import ValidationError as JsonSchemaValidationError
-
 from csvcubed.models.cube import QbCube
 from csvcubed.models.validationerror import ValidationError
+from csvcubed.models.jsonvalidationerrors import JsonSchemaValidationError
 from csvcubed.readers.cubeconfig.v1 import configdeserialiser as v1_configdeserialiser
 
 _logger = logging.getLogger(__name__)
@@ -36,7 +35,7 @@ _v1_0_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.0"
 _v1_1_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.1"
 _v1_2_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.2"
 _v1_3_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.3"
-_v1_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1"  # v1 defaults to the latest minor version of v1.*.
+V1_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1"  # v1 defaults to the latest minor version of v1.*.
 
 _LATEST_V1_SCHEMA_URL = _v1_3_SCHEMA_URL
 """
@@ -97,7 +96,7 @@ def get_deserialiser_for_schema(
 def _get_schema_version(
     schema_path: str,
 ) -> Tuple[QubeConfigJsonSchemaMajorVersion, QubeConfigJsonSchemaMinorVersion]:
-    if schema_path == _v1_SCHEMA_URL:
+    if schema_path == V1_SCHEMA_URL:
         schema_path = _LATEST_V1_SCHEMA_URL
 
     if schema_path == _v1_0_SCHEMA_URL:
