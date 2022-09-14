@@ -2,12 +2,12 @@ import pytest
 
 from csvcubed.utils.validators.schema import (
     validate_dict_against_schema,
-    validation_error_to_message,
+    map_to_internal_validation_errors,
 )
 
 
 def test_truncate_long_validation_error_message():
-    long_error_message_schema = {
+    schema = {
         "type": "object",
         "required": ["anEnumValue"],
         "properties": {
@@ -28,21 +28,17 @@ def test_truncate_long_validation_error_message():
             }
         },
     }
-    long_error_message_data = {"anEnumValue": "Not in enum"}
+    data = {"anEnumValue": "Not in enum"}
 
-    json_validation_errors = validate_dict_against_schema(
-        long_error_message_data, long_error_message_schema
-    )
+    json_validation_errors = validate_dict_against_schema(data, schema)
 
     assert len(json_validation_errors) == 1, [e.message for e in json_validation_errors]
-    error_message = validation_error_to_message(json_validation_errors[0])
-    [path_part, message_part] = error_message.split(" - ")
+    error = map_to_internal_validation_errors(schema, json_validation_errors)[0]
 
-    assert path_part == "$.anEnumValue", path_part
-    assert len(message_part) == 150, message_part
+    assert error.json_path == "$.anEnumValue", error.json_path
     assert (
-        message_part
-        == "'Not in enum' is not one of ['https://example.com/one', 'https://example.com/two', "
+        error.to_display_string()
+        == "$.anEnumValue - 'Not in enum' is not one of ['https://example.com/one', 'https://example.com/two', "
         "'https://example.com/three', 'https://example.com/four', 'https://…"
     )
 
@@ -67,10 +63,9 @@ def test_json_path_inside_array():
     json_validation_errors = validate_dict_against_schema(data, schema)
 
     assert len(json_validation_errors) == 1, [e.message for e in json_validation_errors]
-    error_message = validation_error_to_message(json_validation_errors[0])
-    [path_part, _] = error_message.split(" - ")
+    error = map_to_internal_validation_errors(schema, json_validation_errors)[0]
 
-    assert path_part == "$.anArray.[1].anEnumValue", path_part
+    assert error.json_path == "$.anArray[1].anEnumValue", error.json_path
 
 
 def test_json_path_with_dots():
@@ -84,10 +79,9 @@ def test_json_path_with_dots():
     json_validation_errors = validate_dict_against_schema(data, schema)
 
     assert len(json_validation_errors) == 1, [e.message for e in json_validation_errors]
-    error_message = validation_error_to_message(json_validation_errors[0])
-    [path_part, _] = error_message.split(" - ")
+    error = map_to_internal_validation_errors(schema, json_validation_errors)[0]
 
-    assert path_part == "$.'an.Enum.Value'", path_part
+    assert error.json_path == "$.'an.Enum.Value'", error.json_path
 
 
 def test_json_path_with_left_square_bracket():
@@ -101,8 +95,8 @@ def test_json_path_with_left_square_bracket():
     json_validation_errors = validate_dict_against_schema(data, schema)
 
     assert len(json_validation_errors) == 1, [e.message for e in json_validation_errors]
-    error_message = validation_error_to_message(json_validation_errors[0])
-    [path_part, _] = error_message.split(" - ")
+    error_message = map_to_internal_validation_errors(schema, json_validation_errors)[0]
+    path_part = error_message.json_path
 
     assert path_part == "$.'an[Enum[Value'", path_part
 
@@ -118,10 +112,9 @@ def test_json_path_with_right_square_bracket():
     json_validation_errors = validate_dict_against_schema(data, schema)
 
     assert len(json_validation_errors) == 1, [e.message for e in json_validation_errors]
-    error_message = validation_error_to_message(json_validation_errors[0])
-    [path_part, _] = error_message.split(" - ")
+    error = map_to_internal_validation_errors(schema, json_validation_errors)[0]
 
-    assert path_part == "$.'an]Enum]Value'", path_part
+    assert error.json_path == "$.'an]Enum]Value'", error.json_path
 
 
 def test_json_path_with_spaces():
@@ -135,10 +128,9 @@ def test_json_path_with_spaces():
     json_validation_errors = validate_dict_against_schema(data, schema)
 
     assert len(json_validation_errors) == 1, [e.message for e in json_validation_errors]
-    error_message = validation_error_to_message(json_validation_errors[0])
-    [path_part, _] = error_message.split(" - ")
+    error = map_to_internal_validation_errors(schema, json_validation_errors)[0]
 
-    assert path_part == "$.'an Enum Value'", path_part
+    assert error.json_path == "$.'an Enum Value'", error.json_path
 
 
 def test_json_path_quote_escape():
@@ -154,10 +146,9 @@ def test_json_path_quote_escape():
     json_validation_errors = validate_dict_against_schema(data, schema)
 
     assert len(json_validation_errors) == 1, [e.message for e in json_validation_errors]
-    error_message = validation_error_to_message(json_validation_errors[0])
-    [path_part, _] = error_message.split(" - ")
+    error = map_to_internal_validation_errors(schema, json_validation_errors)[0]
 
-    assert path_part == r"$.'an\'Enum\'Value'", path_part
+    assert error.json_path == r"$.'an\'Enum\'Value'", error.json_path
 
 
 if __name__ == "__main__":

@@ -9,10 +9,9 @@ from pathlib import Path
 import logging
 from typing import Union, Optional, Tuple
 
-from jsonschema.exceptions import ValidationError
-
 from csvcubed.models.cube.qb.columns import QbColumn
 from csvcubed.models.cube.qb.components.codelist import CompositeQbCodeList
+from csvcubed.models.jsonvalidationerrors import JsonSchemaValidationError
 from csvcubed.inputs import PandasDataTypes
 import csvcubed.readers.cubeconfig.v1.columnschema as schema
 
@@ -25,7 +24,7 @@ def map_column_to_qb_component(
     data: PandasDataTypes,
     cube_config_minor_version: Optional[int],
     config_path: Optional[Path] = None,
-) -> Tuple[QbColumn, list[ValidationError]]:
+) -> Tuple[QbColumn, list[JsonSchemaValidationError]]:
     """
     Takes a config.json v1.* column mapping and, if valid,
     returns a :obj:`~csvcubed.models.cube.qb.columns.QbColumn`.

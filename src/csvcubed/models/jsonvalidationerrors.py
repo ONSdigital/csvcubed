@@ -5,24 +5,73 @@ JSON Validation Errors
 Contains models holding information on JSON Schema Validation errors
 
 """
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from textwrap import indent
-from typing import List, Dict, Iterable, Tuple
+from typing import List, Dict, Iterable, Tuple, Any
 import os
+from abc import ABC, abstractmethod
+
+import jsonschema.exceptions
+from jsonschema import RefResolver
 
 from csvcubed.utils.text import truncate
+from csvcubed.utils.uri import looks_like_uri
 from .validationerror import ValidationError
 
 _indent = "    "
 
 
 @dataclass
-class JsonSchemaValidationError(ValidationError):
+class JsonSchemaValidationError(ValidationError, ABC):
     """Represents a JSON Schema Validation Error"""
 
+    schema: dict
     json_path: str
     message: str
-    children: List["JsonSchemaValidationError"]
+
+    offending_value: Any
+    """The offending value which does not meet schema expectations."""
+
+    schema_validator_type: str
+    """The type of schema validator which this error occurred under."""
+
+    @abstractmethod
+    def get_children(self) -> List["JsonSchemaValidationError"]:
+        """Return any child errors associated with this JsonSchemaValidationError"""
+        pass
+
+    @abstractmethod
+    def _child_error_messages_display_string(
+        self, invidual_message_truncation_at: int, depth_to_display: int
+    ) -> str:
+        pass
+
+    def to_display_string(
+        self, invidual_message_truncation_at: int = 149, depth_to_display: int = 1
+    ) -> str:
+        """Returns a string for display to the user detailing the error that occurred."""
+
+        message = ""
+
+        if self.json_path != "$":
+            message += f"{self.json_path} "
+
+        message += "- " + truncate(self.message, invidual_message_truncation_at)
+
+        if depth_to_display > 0:
+            message += self._child_error_messages_display_string(
+                invidual_message_truncation_at, depth_to_display
+            )
+
+        return message
+
+
+@dataclass
+class GenericJsonSchemaValidationError(JsonSchemaValidationError):
+    children: List[JsonSchemaValidationError]
+
+    def get_children(self) -> List[JsonSchemaValidationError]:
+        return self.children
 
     def _child_error_messages_display_string(
         self, invidual_message_truncation_at: int, depth_to_display: int
@@ -38,48 +87,49 @@ class JsonSchemaValidationError(ValidationError):
                     )
                     for e in self.children
                 ]
-            )
+            ),
+            _indent,
         )
-
-    def to_display_string(
-        self, invidual_message_truncation_at: int = 149, depth_to_display: int = 1
-    ) -> str:
-        """Returns a string for display to the user detailing the error that occurred."""
-
-        message = (
-            self.json_path
-            + " - "
-            + truncate(self.message, invidual_message_truncation_at)
-        )
-
-        if depth_to_display > 0:
-            message += self._child_error_messages_display_string(
-                invidual_message_truncation_at, depth_to_display
-            )
-
-        return message
 
 
 @dataclass
-class AnyOfJsonSchemaValidationError(JsonSchemaValidationError):
-    possible_types_with_grouped_errors: Iterable[Tuple[dict, List[ValidationError]]]
+class AnyOneOfJsonSchemaValidationError(JsonSchemaValidationError):
+    """
+    A JSON validation error associated with a `oneOf` or `anyOf` definintion.
+
+    Groups together errors by the types which are possible under the one/anyOf relationship for ease of user
+      understanding.
+    """
+
+    possible_types_with_grouped_errors: List[
+        Tuple[dict, List[JsonSchemaValidationError]]
+    ]
+
+    def get_children(self) -> List[JsonSchemaValidationError]:
+        return [
+            e for (_, errors) in self.possible_types_with_grouped_errors for e in errors
+        ]
 
     def _child_error_messages_display_string(
         self, invidual_message_truncation_at: int, depth_to_display: int
     ):
-        """
-        This overrides JsonSchemaValidationError._child_error_messages_display_string
-        """
+        ref_resolver: RefResolver = RefResolver(self.schema)
         child_error_messages = ""
 
         for (possible_type, errors) in self.possible_types_with_grouped_errors:
-            # todo: Sort out resolving references so we can bring the description through
-            # if "$ref" in possible_type:
-            #     RefResolver.from_schema(sc)
-            #     possible_type =
+            description = possible_type.get("description")
+
+            if "$ref" in possible_type:
+                possible_type = self._resolve_reference_in_schema(
+                    ref_resolver, possible_type
+                )
+                description = possible_type.get("description", description)
+
+            if description is None:
+                description = truncate(possible_type, 149)
 
             child_error_messages += (
-                f"{os.linesep}Assuming {possible_type} --{os.linesep}"
+                f"{os.linesep + os.linesep}If you meant to declare '{description}', then:{os.linesep}"
                 + indent(
                     os.linesep.join(
                         [
@@ -93,4 +143,15 @@ class AnyOfJsonSchemaValidationError(JsonSchemaValidationError):
                 )
             )
 
-        return child_error_messages
+        return indent(child_error_messages, _indent)
+
+    @staticmethod
+    def _resolve_reference_in_schema(
+        ref_resolver: RefResolver, ref_object: dict
+    ) -> dict:
+        ref_value = ref_object["$ref"]
+        if looks_like_uri(ref_value):
+            return _ref_resolver.resolve_from_url(ref_value)
+        else:
+            _, referenced_type = _ref_resolver.resolve(ref_value)
+            return referenced_type

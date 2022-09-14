@@ -11,7 +11,8 @@ from csvcubed.utils.json import to_json_path
 from csvcubed.utils.text import truncate
 from csvcubed.models.jsonvalidationerrors import (
     JsonSchemaValidationError,
-    AnyOfJsonSchemaValidationError,
+    GenericJsonSchemaValidationError,
+    AnyOneOfJsonSchemaValidationError,
 )
 
 log = logging.getLogger(__name__)
@@ -47,32 +48,43 @@ def validate_dict_against_schema(
 
 
 def map_to_internal_validation_errors(
+    schema: dict,
     errors: List[jsonschema.exceptions.ValidationError],
+    use_relative_path: bool = False,
 ) -> List[JsonSchemaValidationError]:
     """Maps from `jsonschema.exceptions.ValidationError` into our internal `JsonSchemaValidationError` models."""
     mapped_errors = []
 
     for error in errors:
-        mapped_children = map_to_internal_validation_errors(error.context)
-        if error.validator == "anyOf":
-            # There are a series of options the user has to select between.
-            # This code shows them the different options and which error messages are associated with them.
+        json_path = to_json_path(
+            error.relative_path if use_relative_path else error.absolute_path
+        )
+        if error.validator in {"anyOf", "oneOf"}:
             mapped_errors.append(
-                AnyOfJsonSchemaValidationError(
-                    json_path=to_json_path(error.absolute_path),
+                AnyOneOfJsonSchemaValidationError(
+                    schema=schema,
+                    json_path=json_path,
                     message=error.message,
-                    children=mapped_children,
-                    possible_types_with_grouped_errors=_get_possible_types_with_grouped_errors(
-                        error
+                    possible_types_with_grouped_errors=list(
+                        _get_possible_types_with_grouped_errors(schema, error)
                     ),
+                    offending_value=error.instance,
+                    schema_validator_type=error.validator,
                 )
             )
         else:
+            mapped_children = map_to_internal_validation_errors(
+                schema, error.context, True
+            )
+
             mapped_errors.append(
-                JsonSchemaValidationError(
-                    json_path=to_json_path(error.absolute_path),
+                GenericJsonSchemaValidationError(
+                    schema=schema,
+                    json_path=json_path,
                     message=error.message,
                     children=mapped_children,
+                    offending_value=error.instance,
+                    schema_validator_type=error.validator,
                 )
             )
 
@@ -80,6 +92,7 @@ def map_to_internal_validation_errors(
 
 
 def _get_possible_types_with_grouped_errors(
+    schema: dict,
     error: jsonschema.exceptions.ValidationError,
 ) -> Iterable[Tuple[dict, List[JsonSchemaValidationError]]]:
     map_type_index_to_errors: Dict[
@@ -96,5 +109,7 @@ def _get_possible_types_with_grouped_errors(
     for (i, possible_type) in enumerate(error.validator_value):
         yield (
             possible_type,
-            map_to_internal_validation_errors(map_type_index_to_errors[i]),
+            map_to_internal_validation_errors(
+                schema, map_type_index_to_errors[i], True
+            ),
         )

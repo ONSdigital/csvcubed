@@ -81,6 +81,7 @@ def build(
 def _write_errors_to_log(
     json_schema_validation_errors: List[JsonSchemaValidationError],
     validation_errors: List[ValidationError],
+    schema_validation_errors_depth: int = 2,
 ) -> None:
     for error in validation_errors:
         _logger.error("Validation Error: %s", friendly_error_mapping(error))
@@ -88,7 +89,10 @@ def _write_errors_to_log(
             _logger.error("More information: %s", error.get_error_url())
 
     for err in json_schema_validation_errors:
-        _logger.warning("Schema Validation Error: %s", err.to_display_string())
+        _logger.warning(
+            "Schema Validation Error: %s",
+            err.to_display_string(depth_to_display=schema_validation_errors_depth),
+        )
 
 
 def _extract_and_validate_cube(

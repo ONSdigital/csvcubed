@@ -15,12 +15,11 @@ from typing import List, Union, Optional, TypeVar, Tuple
 
 import uritemplate
 
-from jsonschema.exceptions import ValidationError
-
 from csvcubedmodels.dataclassbase import DataClassBase
 
 from csvcubed.utils.validators.schema import validate_dict_against_schema
 from csvcubed.inputs import pandas_input_to_columnar_optional_str
+from csvcubed.models.jsonvalidationerrors import JsonSchemaValidationError
 from csvcubed.models.cube import CatalogMetadata, NewQbConcept
 from csvcubed.models.cube.qb.components import (
     NewQbDimension,
@@ -53,6 +52,7 @@ from csvcubed.utils.uri import (
 from csvcubed.models.codelistconfig.code_list_config import CodeListConfig
 from csvcubed.utils.file import code_list_config_json_exists
 from csvcubed.readers.cubeconfig.utils import load_resource
+from csvcubed.utils.validators.schema import map_to_internal_validation_errors
 
 _logger = logging.getLogger(__name__)
 
@@ -84,7 +84,7 @@ class NewDimension(SchemaBaseClass):
         data: PandasDataTypes,
         cube_config_minor_version: Optional[int],
         config_path: Optional[Path] = None,
-    ) -> Tuple[NewQbDimension, list[ValidationError]]:
+    ) -> Tuple[NewQbDimension, List[JsonSchemaValidationError]]:
 
         new_dimension = NewQbDimension.from_data(
             label=self.label or csv_column_title,
@@ -112,7 +112,7 @@ class NewDimension(SchemaBaseClass):
         csv_column_title: str,
         cube_config_minor_version: Optional[int],
         cube_config_path: Optional[Path],
-    ) -> Tuple[Optional[QbCodeList], list[ValidationError]]:
+    ) -> Tuple[Optional[QbCodeList], List[JsonSchemaValidationError]]:
         if isinstance(self.code_list, str):
             if looks_like_uri(self.code_list):
                 return (ExistingQbCodeList(self.code_list), [])
@@ -140,8 +140,12 @@ class NewDimension(SchemaBaseClass):
                 )
                 schema = load_resource(code_list_config.schema)
 
-                code_list_schema_validation_errors = validate_dict_against_schema(
+                unmapped_schema_validation_errors = validate_dict_against_schema(
                     value=code_list_config_dict, schema=schema
+                )
+
+                code_list_schema_validation_errors = map_to_internal_validation_errors(
+                    schema, unmapped_schema_validation_errors
                 )
 
                 return (
