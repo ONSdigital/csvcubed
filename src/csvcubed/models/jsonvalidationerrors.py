@@ -113,7 +113,7 @@ class AnyOneOfJsonSchemaValidationError(JsonSchemaValidationError):
     def _child_error_messages_display_string(
         self, invidual_message_truncation_at: int, depth_to_display: int
     ):
-        ref_resolver: RefResolver = RefResolver(self.schema)
+        ref_resolver = RefResolver.from_schema(self.schema)
         child_error_messages = ""
 
         for (possible_type, errors) in self.possible_types_with_grouped_errors:
@@ -151,7 +151,7 @@ class AnyOneOfJsonSchemaValidationError(JsonSchemaValidationError):
     ) -> dict:
         ref_value = ref_object["$ref"]
         if looks_like_uri(ref_value):
-            return _ref_resolver.resolve_from_url(ref_value)
+            return ref_resolver.resolve_from_url(ref_value)
         else:
-            _, referenced_type = _ref_resolver.resolve(ref_value)
+            _, referenced_type = ref_resolver.resolve(ref_value)
             return referenced_type
