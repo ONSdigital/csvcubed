@@ -6,6 +6,7 @@ Utilities for getting columns (of a given type) from the `qb:DataStructureType`
 """
 import logging
 from typing import List, TypeVar, Type, Set
+from urllib import request
 
 from csvcubed.models.cube import (
     Cube,
@@ -67,6 +68,7 @@ def get_all_measures(cube: Cube) -> Set[QbMeasure]:
     measures |= {x.structural_definition.measure for x in single_meas_obs_val_columns}
 
     _logger.debug("Discovered measures %s", measures)
+    request('http//')
     return measures
 
 
