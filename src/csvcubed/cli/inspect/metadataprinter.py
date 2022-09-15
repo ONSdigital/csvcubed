@@ -16,20 +16,20 @@ from pandas import DataFrame
 from csvcubed.models.sparqlresults import (
     CatalogMetadataResult,
     CodeListColsByDatasetUrlResult,
-    CodeListPrimaryKeyByDatasetUrlResult,
+    PrimaryKeyByDatasetUrlResult,
     CodelistColumnResult,
     CodelistsResult,
     ColsWithSuppressOutputTrueResult,
     DSDLabelURIResult,
+    PrimaryKeysByDatasetUrlResult,
     QubeComponentsResult,
 )
-from csvcubed.utils.iterables import first
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
 from csvcubed.utils.sparql_handler.sparqlmanager import (
     select_codelist_cols_by_dataset_url,
     select_codelist_dataset_url,
-    select_codelist_primarykey_by_dataset_url,
+    select_primary_keys_by_dataset_url,
     select_cols_where_suppress_output_is_true,
     select_csvw_catalog_metadata,
     select_csvw_dsd_dataset_label_and_dsd_def_uri,
@@ -53,11 +53,13 @@ from csvcubed.utils.csvdataset import (
 )
 from csvcubed.models.csvcubedexception import (
     InputNotSupportedException,
+    InvalidNumberOfRecordsException,
+    UnsupportedNumOfPrimaryKeysException,
 )
 from csvcubed.utils.skos.codelist import (
     CodelistPropertyUrl,
     get_codelist_col_title_by_property_url,
-    get_codelist_notation_col_title_from_primary_key,
+    get_codelist_unique_identifier_from_primary_key,
 )
 from csvcubed.utils.uri import looks_like_uri
 
@@ -124,11 +126,11 @@ class MetadataPrinter:
         label_col_title = get_codelist_col_title_by_property_url(
             columns, CodelistPropertyUrl.RDFLabel
         )
-        notation_col_title = get_codelist_notation_col_title_from_primary_key(
+        unique_identifier = get_codelist_unique_identifier_from_primary_key(
             columns, primary_key
         )
 
-        return (parent_notation_col_title, label_col_title, notation_col_title)
+        return (parent_notation_col_title, label_col_title, unique_identifier)
 
     def generate_general_results(self):
         """
@@ -200,19 +202,26 @@ class MetadataPrinter:
         self.result_code_list_cols = select_codelist_cols_by_dataset_url(
             self.csvw_metadata_rdf_graph, self.dataset_url
         )
-        # Retrieving the primary key of the code list to identify the notation column
-        result_code_list_primary_key: CodeListPrimaryKeyByDatasetUrlResult = (
-            select_codelist_primarykey_by_dataset_url(
+        # Retrieving the primary key of the code list to identify the unique identifier
+        result_primary_keys_by_dataset_url: PrimaryKeysByDatasetUrlResult = (
+            select_primary_keys_by_dataset_url(
                 self.csvw_metadata_rdf_graph, self.dataset_url
             )
         )
-
+        primary_keys = result_primary_keys_by_dataset_url.primary_keys
+        
+        # Currently, we do not support composite primary keys.
+        if len(primary_keys) != 1:
+            raise UnsupportedNumOfPrimaryKeysException(
+                num_of_primary_keys=len(primary_keys),
+                table_url=self.dataset_url
+            )        
         (
             parent_notation_col_title,
             label_col_title,
             notation_col_title,
         ) = self.get_parent_label_notation_col_titles(
-            self.result_code_list_cols.columns, result_code_list_primary_key.primary_key
+            self.result_code_list_cols.columns, primary_keys[0]
         )
         self.result_concepts_hierachy_info = get_concepts_hierarchy_info(
             self.dataset, parent_notation_col_title, label_col_title, notation_col_title

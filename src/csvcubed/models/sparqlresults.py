@@ -221,13 +221,20 @@ class CodeListColsByDatasetUrlResult:
 
 
 @dataclass
-class CodeListPrimaryKeyByDatasetUrlResult:
+class PrimaryKeyByDatasetUrlResult:
     """
-    Model to represent select codelist primary key by table url.
+    Model to represent select primary key by table url.
     """
 
     primary_key: str
 
+@dataclass
+class PrimaryKeysByDatasetUrlResult:
+    """
+    Model to represent select primary keys by table url.
+    """
+
+    primary_keys: List[str]
 
 @dataclass
 class MetadataDependenciesResult:
@@ -510,24 +517,39 @@ def map_codelist_cols_by_dataset_url_result(
     result = CodeListColsByDatasetUrlResult(columns=columns)
     return result
 
-
-def map_codelist_primary_key_by_dataset_url_result(
-    sparql_result: ResultRow,
-) -> CodeListPrimaryKeyByDatasetUrlResult:
+def map_primary_key_by_dataset_url_result(sparql_result: ResultRow) -> PrimaryKeyByDatasetUrlResult:
     """
-    Maps sparql query result to `CodeListPrimaryKeyByDatasetUrlResult`
+    Maps sparql query result to `PrimaryKeyByDatasetUrlResult`
 
     Member of :file:`./models/sparqlresults.py`
 
-    :return: `CodeListPrimaryKeyByDatasetUrlResult`
+    :return: `PrimaryKeyByDatasetUrlResult`
     """
     result_dict = sparql_result.asdict()
 
-    result = CodeListPrimaryKeyByDatasetUrlResult(
+    result = PrimaryKeyByDatasetUrlResult(
         primary_key=str(result_dict["tablePrimaryKey"]),
     )
-    return result
+    return result   
 
+def map_primary_keys_by_dataset_url_result(
+    sparql_results: List[ResultRow],
+) -> PrimaryKeysByDatasetUrlResult:
+    """
+    Maps sparql query result to `PrimaryKeysByDatasetUrlResult`
+
+    Member of :file:`./models/sparqlresults.py`
+
+    :return: `PrimaryKeysByDatasetUrlResult`
+    """
+    primary_keys = list(
+        map(
+            lambda result: map_primary_key_by_dataset_url_result(result),
+            sparql_results,
+        )
+    )
+    result = PrimaryKeysByDatasetUrlResult(primary_keys==primary_keys)
+    return result
 
 def map_metadata_dependency_results(
     sparql_results: List[ResultRow],

@@ -65,11 +65,11 @@ def get_codelist_col_title_by_property_url(
     return results[0].column_title
 
 
-def get_codelist_notation_col_title_from_primary_key(
+def get_codelist_unique_identifier_from_primary_key(
     columns: List[CodelistColumnResult], primary_key: str
 ) -> str:
     """
-    Returns dataset notation column title for the primary key.
+    Returns dataset unique identifier from the primary key.
 
     Member of :class:`./codelist`.
 

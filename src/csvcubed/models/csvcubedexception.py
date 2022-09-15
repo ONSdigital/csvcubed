@@ -58,6 +58,9 @@ class CsvcubedExceptionMsges(Enum):
         "The column associated with the primary key does not contain the title."
     )
 
+    UnsupportedNumberOfPrimaryKeys = (
+        "Only 1 primary key is supported but found {num_of_primary_keys} primary keys for the table with url {table_url}."
+    )
 
 class CsvcubedExceptionUrls(Enum):
     """
@@ -99,7 +102,11 @@ class CsvcubedExceptionUrls(Enum):
     )
 
     PrimaryKeyColumnTitleCannotBeNone = (
-        "http://purl.org/csv-cubed/err/invalid_title_for_code_list_col_with_primary_key"
+        "http://purl.org/csv-cubed/err/invalid-pk-col-title"
+    )
+
+    UnsupportedNumberOfPrimaryKeys = (
+         "http://purl.org/csv-cubed/err/unsupported-num-of-primary-keys"
     )
 
 
@@ -331,3 +338,18 @@ class PrimaryKeyColumnTitleCannotBeNoneException(CsvcubedException):
     @classmethod
     def get_error_url(cls) -> str:
         return CsvcubedExceptionUrls.PrimaryKeyColumnTitleCannotBeNone.value
+
+class UnsupportedNumOfPrimaryKeysException(CsvcubedException):
+    """Class representing the UnsupportedNumOfPrimaryKeysException model."""
+
+    def __init__(self, num_of_primary_keys: int, table_url:str):
+        super().__init__(
+            CsvcubedExceptionMsges.UnsupportedNumberOfPrimaryKeys.value.format(
+                num_of_primary_keys=num_of_primary_keys,
+                table_url=table_url
+            )
+        )
+
+    @classmethod
+    def get_error_url(cls) -> str:
+        return CsvcubedExceptionUrls.UnsupportedNumberOfPrimaryKeys.value
