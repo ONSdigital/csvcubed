@@ -88,7 +88,7 @@ def to_json_path(path_parts: Iterable[Union[str, int]]) -> str:
     string_path_parts = []
     for path_part in path_parts:
         if isinstance(path_part, str):
-            if re.search("[.\[\]'\s]", path_part):
+            if re.search(r"[.\[\]'\s]", path_part):
                 # Path part contains a reserved character and needs escaping
                 escaped_path_part = path_part.replace("'", r"\'")
                 string_path_parts.append(f".'{escaped_path_part}'")

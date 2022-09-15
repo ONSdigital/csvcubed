@@ -126,7 +126,9 @@ class AnyOneOfJsonSchemaValidationError(JsonSchemaValidationError):
                 description = possible_type.get("description", description)
 
             if description is None:
-                description = truncate(possible_type, 149)
+                description = truncate(
+                    str(possible_type), invidual_message_truncation_at
+                )
 
             child_error_messages += (
                 f"{os.linesep + os.linesep}If you meant to declare '{description}', then:{os.linesep}"

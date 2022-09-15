@@ -57,7 +57,7 @@ def map_to_internal_validation_errors(
 
     for error in errors:
         json_path = to_json_path(
-            error.relative_path if use_relative_path else error.absolute_path
+            error.relative_path if use_relative_path else error.absolute_path  # type: ignore
         )
         if error.validator in {"anyOf", "oneOf"}:
             mapped_errors.append(

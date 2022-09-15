@@ -197,7 +197,9 @@ class NewDimension(SchemaBaseClass):
                 NewQbCodeList(
                     code_list_config.metadata, code_list_config.new_qb_concepts
                 ),
-                code_list_schema_validation_errors,
+                map_to_internal_validation_errors(
+                    schema, code_list_schema_validation_errors
+                ),
             )
         else:
             raise ValueError(f"Unmatched code_list value {self.code_list}")

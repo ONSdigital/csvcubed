@@ -65,7 +65,7 @@ interactions:
       content-type:
       - text/html; charset=utf-8
       date:
-      - Tue, 23 Aug 2022 07:47:07 GMT
+      - Thu, 15 Sep 2022 08:49:47 GMT
       location:
       - https://raw.githubusercontent.com/GSS-Cogs/reusable-rdf-resources/main/organisations.json
       server:
@@ -323,11 +323,11 @@ interactions:
       Content-Type:
       - text/plain; charset=utf-8
       Date:
-      - Tue, 23 Aug 2022 07:47:08 GMT
+      - Thu, 15 Sep 2022 08:49:47 GMT
       ETag:
       - W/"66ba1608ff13ded941df56cf0063c658c458b99ee509f910d73935c85fd7e7b1"
       Expires:
-      - Tue, 23 Aug 2022 07:52:08 GMT
+      - Thu, 15 Sep 2022 08:54:47 GMT
       Source-Age:
       - '7'
       Strict-Transport-Security:
@@ -343,15 +343,15 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Fastly-Request-ID:
-      - f77b56deb5aff2b4a251bd3cc3399bda3b0395d8
+      - 117d520777d5c966fc13846ddf472d479b2b740d
       X-Frame-Options:
       - deny
       X-GitHub-Request-Id:
-      - BD7C:5288:ECB70:103788:630485F5
+      - 3714:11115:18E32E:1B1CB7:6322DBF7
       X-Served-By:
-      - cache-lcy19243-LCY
+      - cache-lon4243-LON
       X-Timer:
-      - S1661240828.136752,VS0,VE1
+      - S1663231788.963258,VS0,VE0
       X-XSS-Protection:
       - 1; mode=block
     status:
@@ -423,7 +423,7 @@ interactions:
       content-type:
       - text/html; charset=utf-8
       date:
-      - Tue, 23 Aug 2022 07:47:08 GMT
+      - Thu, 15 Sep 2022 08:49:48 GMT
       location:
       - https://raw.githubusercontent.com/GSS-Cogs/reusable-rdf-resources/main/licenses.json
       server:
@@ -474,11 +474,11 @@ interactions:
       Content-Type:
       - text/plain; charset=utf-8
       Date:
-      - Tue, 23 Aug 2022 07:47:09 GMT
+      - Thu, 15 Sep 2022 08:49:48 GMT
       ETag:
       - W/"b9f9c9f8f29e57eb27e38090f59d8881aa0f77e6e41b910bdaa744b5fb15f3a3"
       Expires:
-      - Tue, 23 Aug 2022 07:52:09 GMT
+      - Thu, 15 Sep 2022 08:54:48 GMT
       Source-Age:
       - '6'
       Strict-Transport-Security:
@@ -494,15 +494,15 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Fastly-Request-ID:
-      - cbe920ef62b86ecc50d82d06130217d35ce96559
+      - 718c95e6a5bfde0b7db6790817d578f8fc3f22db
       X-Frame-Options:
       - deny
       X-GitHub-Request-Id:
-      - CA14:3323:78FFB:8CD5F:630485F6
+      - 8744:CDD9:1CC05A:1F23D3:6322E597
       X-Served-By:
-      - cache-lcy19278-LCY
+      - cache-lcy19225-LCY
       X-Timer:
-      - S1661240829.000180,VS0,VE1
+      - S1663231789.835373,VS0,VE1
       X-XSS-Protection:
       - 1; mode=block
     status:
@@ -574,7 +574,7 @@ interactions:
       content-type:
       - text/html; charset=utf-8
       date:
-      - Tue, 23 Aug 2022 07:47:10 GMT
+      - Thu, 15 Sep 2022 08:49:49 GMT
       location:
       - https://raw.githubusercontent.com/GSS-Cogs/reusable-rdf-resources/main/code-lists.json
       server:
@@ -620,11 +620,149 @@ interactions:
       Content-Type:
       - text/plain; charset=utf-8
       Date:
-      - Tue, 23 Aug 2022 07:47:10 GMT
+      - Thu, 15 Sep 2022 08:49:50 GMT
       ETag:
       - W/"5d98e347bb4b48a18824aaaf31821122285847cddc22718361989a187f963577"
       Expires:
-      - Tue, 23 Aug 2022 07:52:10 GMT
+      - Thu, 15 Sep 2022 08:54:50 GMT
+      Source-Age:
+      - '5'
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Authorization,Accept-Encoding,Origin
+      Via:
+      - 1.1 varnish
+      X-Cache:
+      - HIT
+      X-Cache-Hits:
+      - '1'
+      X-Content-Type-Options:
+      - nosniff
+      X-Fastly-Request-ID:
+      - d7a9072dd434b24f75a71a5e52b3afe8aa40164f
+      X-Frame-Options:
+      - deny
+      X-GitHub-Request-Id:
+      - D312:55C6:18EE00:1B2FC4:6322DBE2
+      X-Served-By:
+      - cache-lcy19263-LCY
+      X-Timer:
+      - S1663231790.033546,VS0,VE1
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.28.0
+    method: GET
+    uri: https://purl.org/csv-cubed/code-list-config/v1.0
+  response:
+    body:
+      string: '<!DOCTYPE HTML>
+
+        <html>
+
+        <head>
+
+        <title>302 Found</title>
+
+        </head>
+
+        <body>
+
+        <h1>Found</h1>
+
+        <p>The resource requested is available <a href="https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/src/csvcubed/schema/codelist-config/v1_0/schema.json">here</a>.<p>
+
+        </body>
+
+        </html>'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '272'
+      content-type:
+      - text/html; charset=utf-8
+      date:
+      - Thu, 15 Sep 2022 08:49:50 GMT
+      location:
+      - https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/src/csvcubed/schema/codelist-config/v1_0/schema.json
+      server:
+      - gunicorn
+    status:
+      code: 302
+      message: FOUND
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.28.0
+    method: GET
+    uri: https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/src/csvcubed/schema/codelist-config/v1_0/schema.json
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA8VXW2/bNhR+968g3D60gG05ybYWeQvalwDDOjTZBmwwAlo6sthRokpSCYzA/728
+        SSZliXadYX1JrKPD71z4nYueJwhNX4u0gBJPr9G0kLIW10nyRbBqbsULxjdJxnEu58t3iVOd6XMk
+        84/UDadGNxWP87RZQ5akLIM5JULOU1blZJM8XiyW9qwkkoI+fmcAUc44wkgf0PoLq5SBSDmpJWGV
+        pyoZWgNqBGTmVMoBaw2Eqww9Ykoy+8hyBShItaHQ4SJSoQ93f87/0idL3NqR29r4wtZfIJVWxuFr
+        QzjoEP9ZGUnNWQ1cEhBK9qwkQeqswAMTkivjBszIM8hxQ+VZKTMYOwtl0/68hw1ydIOainxtABGb
+        HVnY6NE+rUNeBgbauxm3YTTOxg/hxq1QVm2QJ9VXeo490ZQl5tuoLVEwLpHTPNeQoSLjEUP3GtVq
+        HRhBbxpO3nqmXnPIW7oMs4WDYA1PQSRKjisiDPXFQpfvq0TBidDBulkrSwUcc7HT+xFOqvrFAuQD
+        EaKBGNc/YgmKiqX6U2DZ8/MJC1XtRBJM6bYLKNMd4PbuE3r/y/LCNYEZgsVmgS6Xl5fz5dX86gKp
+        y9k/3V9cXv/80/XV8u9T6e38L1lGcvKyCChWP1qg/zUKSlKoRKwN/PH51rrNoVZ3DJUULoJ6y8mm
+        kMhhIFzXdKss6NYtCyIGC+t7iOSAxzmk/Ci9Pu3Bv0pUIzbEUBw03TUxyvcqFz2Qf2H7xHh2KoxT
+        HwASqrdEEnlnWo/kigybrddVqxRqKQbuy5tTRu7PKidT0vW201BPJciCZVMnWHVnB6Zae9p/PvSa
+        4jVQ9MaNtbeabhWTprY9u+MD0byDqim11xZtOkPTDmM1C41309Oqdi93h0HGHcdCkSfTdAyc11pW
+        fob7eH/W2nNPo0HsD+wDmfj/u5niaHAiCTv1SQu1c6tUp7jfXsxu4eEO2DpM36+6N6mx0CrrXjQy
+        LL3sYc5xwEe7ptxKKLU5yRvwXhInDq7xeNQDuZz1YouGdtMGdVpMvTIcK0TUUjbgQsfzTuhxZawq
+        O6hQOHBJpji74W2CWgQOjLT/XtoGsOOGPw6tay8z32XqmO3fnOJ/ZVjgEh5w/wYO7X6GHDgoW3q+
+        4Y5DhqVqVgMV8KR2KTjmSO+tnev6vZpvES/V9HhQcydY6oYdNYPGqJ6aIlKpmaSQR62nBaGZCv7Q
+        9slNysFGatcb0PHyNYq6mVPXpOweYNcUq70GE3jO0kZE9nyFjrPMOI3p76PVyCr4lPeqHfUycWT5
+        0GHZFWQaHNvN4pjmiG7GB6kfzk2Ykv6NW8iRZt0pDPXlFwVpAp3Env2nVYQjwfYVZ4lT9XnSrnpq
+        l6XwiCtpV9Uxagxd++n0t9lwJkdLq4cXu5vReznLizDn+9+rg5zLw2TbO44vYDdIfzq4ctR7GLak
+        DDn5XR8EjtT9z4FeUluSHPXPNuTQRXd2Ed0Ox5Y5vYdNdt8Asz61X24TAAA=
+    headers:
+      Accept-Ranges:
+      - bytes
+      Access-Control-Allow-Origin:
+      - '*'
+      Cache-Control:
+      - max-age=300
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1127'
+      Content-Security-Policy:
+      - default-src 'none'; style-src 'unsafe-inline'; sandbox
+      Content-Type:
+      - text/plain; charset=utf-8
+      Date:
+      - Thu, 15 Sep 2022 08:49:50 GMT
+      ETag:
+      - W/"c2258c03df118878581dd9865d8e6823ccb2830f7ea1dd8cd0971955c3cd0bc2"
+      Expires:
+      - Thu, 15 Sep 2022 08:54:50 GMT
       Source-Age:
       - '0'
       Strict-Transport-Security:
@@ -640,15 +778,15 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Fastly-Request-ID:
-      - 767b70b6e2aeac53048b43c387db4b1a69dcaa1a
+      - a26830e324f752a62a7a997f82179767fa0aca25
       X-Frame-Options:
       - deny
       X-GitHub-Request-Id:
-      - 59F0:CBDA:F7333:10E554:630485FE
+      - 529A:669F:E67C6:131435:6322E72E
       X-Served-By:
-      - cache-lcy19242-LCY
+      - cache-lcy19238-LCY
       X-Timer:
-      - S1661240831.534617,VS0,VE111
+      - S1663231791.810661,VS0,VE156
       X-XSS-Protection:
       - 1; mode=block
     status:
@@ -720,7 +858,7 @@ interactions:
       content-type:
       - text/html; charset=utf-8
       date:
-      - Tue, 23 Aug 2022 07:47:11 GMT
+      - Thu, 15 Sep 2022 08:49:51 GMT
       location:
       - https://raw.githubusercontent.com/GSS-Cogs/reusable-rdf-resources/main/organisations.json
       server:
@@ -978,13 +1116,13 @@ interactions:
       Content-Type:
       - text/plain; charset=utf-8
       Date:
-      - Tue, 23 Aug 2022 07:47:11 GMT
+      - Thu, 15 Sep 2022 08:49:52 GMT
       ETag:
       - W/"66ba1608ff13ded941df56cf0063c658c458b99ee509f910d73935c85fd7e7b1"
       Expires:
-      - Tue, 23 Aug 2022 07:52:11 GMT
+      - Thu, 15 Sep 2022 08:54:52 GMT
       Source-Age:
-      - '0'
+      - '13'
       Strict-Transport-Security:
       - max-age=31536000
       Vary:
@@ -992,21 +1130,21 @@ interactions:
       Via:
       - 1.1 varnish
       X-Cache:
-      - MISS
+      - HIT
       X-Cache-Hits:
-      - '0'
+      - '1'
       X-Content-Type-Options:
       - nosniff
       X-Fastly-Request-ID:
-      - 3f120b500aaa331aa223164887a59db323f7d602
+      - 67c76f7a12dea91e56a3ba3521b0da617705f449
       X-Frame-Options:
       - deny
       X-GitHub-Request-Id:
-      - 1676:BB50:72222:85FDD:630485FF
+      - 0811:C69A:1B1240:1D6236:6322DDFF
       X-Served-By:
-      - cache-lon4236-LON
+      - cache-lcy19258-LCY
       X-Timer:
-      - S1661240832.512793,VS0,VE138
+      - S1663231792.064186,VS0,VE1
       X-XSS-Protection:
       - 1; mode=block
     status:
@@ -1078,7 +1216,7 @@ interactions:
       content-type:
       - text/html; charset=utf-8
       date:
-      - Tue, 23 Aug 2022 07:47:12 GMT
+      - Thu, 15 Sep 2022 08:49:52 GMT
       location:
       - https://raw.githubusercontent.com/GSS-Cogs/reusable-rdf-resources/main/licenses.json
       server:
@@ -1129,13 +1267,13 @@ interactions:
       Content-Type:
       - text/plain; charset=utf-8
       Date:
-      - Tue, 23 Aug 2022 07:47:12 GMT
+      - Thu, 15 Sep 2022 08:49:52 GMT
       ETag:
       - W/"b9f9c9f8f29e57eb27e38090f59d8881aa0f77e6e41b910bdaa744b5fb15f3a3"
       Expires:
-      - Tue, 23 Aug 2022 07:52:12 GMT
+      - Thu, 15 Sep 2022 08:54:52 GMT
       Source-Age:
-      - '10'
+      - '6'
       Strict-Transport-Security:
       - max-age=31536000
       Vary:
@@ -1149,15 +1287,15 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Fastly-Request-ID:
-      - d1ce91d53569cf8ffc6ac04f71e9a0766911211c
+      - 6151dc8d1a994a2e277b677fafa6183ca1a4ccb3
       X-Frame-Options:
       - deny
       X-GitHub-Request-Id:
-      - CA14:3323:78FFB:8CD5F:630485F6
+      - A0DC:4BB1:1AE97B:1D49BA:6322E72A
       X-Served-By:
-      - cache-lcy19261-LCY
+      - cache-lon4279-LON
       X-Timer:
-      - S1661240833.517245,VS0,VE1
+      - S1663231793.941738,VS0,VE1
       X-XSS-Protection:
       - 1; mode=block
     status:

@@ -37,7 +37,7 @@ from csvcubed.readers.cubeconfig.v1.mapcolumntocomponent import (
 )
 from csvcubed.readers.cubeconfig.v1 import datatypes
 from csvcubed.utils.validators.schema import map_to_internal_validation_errors
-
+from csvcubed.utils.json import to_json_path
 from .constants import CONVENTION_NAMES
 
 # Used to determine whether a column name matches accepted conventions
@@ -177,8 +177,13 @@ def _get_cube_from_config_json_dict(
                 code_list_schema_validation_errors += validation_errors
         else:
             code_list_schema_validation_errors.append(
-                JsonSchemaValidationError(
-                    f"Unrecognised column mapping for column '{column_title}'."
+                GenericJsonSchemaValidationError(
+                    schema={},
+                    json_path=to_json_path(["columns", column_title]),
+                    message=f"Unrecognised column mapping for column '{column_title}'.",
+                    offending_value=column_config,
+                    schema_validator_type="Csvcubed-Specific",
+                    children=[],
                 )
             )
 

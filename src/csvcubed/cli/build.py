@@ -47,12 +47,11 @@ def build(
         _write_errors_to_log(json_schema_validation_errors, validation_errors)
 
         if validation_errors_file_name is not None:
-            all_errors = validation_errors + json_schema_validation_errors
+            all_errors: List[ValidationError] = (
+                validation_errors + json_schema_validation_errors  # type: ignore
+            )
             all_errors_dict = [
-                e.as_json_dict()
-                if isinstance(e, DataClassBase)
-                else dataclasses.asdict(e)
-                for e in all_errors
+                _validation_error_to_display_json_dict(e) for e in all_errors
             ]
 
             with open(output_directory / validation_errors_file_name, "w+") as f:
@@ -76,6 +75,20 @@ def build(
 
     print(f"Build Complete @ {output_directory.resolve()}")
     return cube, validation_errors
+
+
+def _validation_error_to_display_json_dict(error: ValidationError) -> dict:
+    dict_value: dict
+    if isinstance(error, DataClassBase):
+        dict_value = error.as_json_dict()
+    else:
+        dict_value = dataclasses.asdict(error)
+
+    if isinstance(error, JsonSchemaValidationError):
+        # Remove schema from output since it's verbose and unhelpful for users.
+        del dict_value["schema"]
+
+    return dict_value
 
 
 def _write_errors_to_log(
