@@ -67,7 +67,7 @@ def get_deserialiser(
 
         # If we have a config json file then load it and validate against its reference schema
         config, schema_validation_errors = _get_config_json_with_validation_errors(
-            config_path, csv_path, schema_path
+            csv_path, config_path, schema_path
         )
 
         dtype = datatypes.get_pandas_datatypes(csv_path, config=config)
@@ -75,7 +75,11 @@ def get_deserialiser(
         data, data_errors = read_and_check_csv(csv_path, dtype=dtype)
 
         cube, schema_validation_errors = _generate_cube_config_from_json_dict(
-            config, config_path, data, schema_validation_errors
+            config,
+            config_path,
+            data,
+            schema_validation_errors,
+            cube_config_minor_version,
         )
 
         return cube, schema_validation_errors, data_errors
@@ -84,8 +88,8 @@ def get_deserialiser(
 
 
 def _get_config_json_with_validation_errors(
-    csv_path: Path, config_path: Optional[Path], schema_path: Path
-) -> (dict, List[JsonSchemaValidationError]):
+    csv_path: Path, config_path: Optional[Path], schema_path: str
+) -> Tuple[dict, List[JsonSchemaValidationError]]:
     if config_path:
         config, schema_validation_errors = _load_json_config_from_file(
             config_path, csv_path, schema_path
@@ -125,8 +129,8 @@ def _override_qube_config_schema_validation_errors(
 
 
 def _load_json_config_from_file(
-    config_path: Path, csv_path: Path, schema_path: Path
-) -> (dict, List[JsonSchemaValidationError]):
+    config_path: Path, csv_path: Path, schema_path: str
+) -> Tuple[dict, List[JsonSchemaValidationError]]:
     config = load_resource(config_path.resolve())
     # Update loaded config's title if not defined, setting title from csv data file path.
     if config.get("title") is None:
@@ -154,7 +158,8 @@ def _generate_cube_config_from_json_dict(
     config_path: Optional[Path],
     data: pd.DataFrame,
     schema_validation_errors: List[JsonSchemaValidationError],
-) -> (QbCube, List[JsonSchemaValidationError]):
+    cube_config_minor_version: int,
+) -> Tuple[QbCube, List[JsonSchemaValidationError]]:
     (cube, code_list_schema_validation_errors) = _get_cube_from_config_json_dict(
         data,
         config,
