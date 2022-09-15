@@ -66,88 +66,110 @@ def get_deserialiser(
         """
 
         # If we have a config json file then load it and validate against its reference schema
-        if config_path:
-            config = load_resource(config_path.resolve())
-            # Update loaded config's title if not defined, setting title from csv data file path.
-            if config.get("title") is None:
-                config["title"] = generate_title_from_file_name(csv_path)
-            try:
-                schema = load_resource(schema_path)
-                unmappped_schema_errors = validate_dict_against_schema(
-                    value=config, schema=schema
-                )
-                schema_validation_errors = map_to_internal_validation_errors(
-                    schema, unmappped_schema_errors
-                )
-                _override_qube_config_schema_validation_errors(
-                    schema, schema_validation_errors
-                )
-
-            except JSONDecodeError:
-                _logger.warning(
-                    "Validation of the config json is not currently available, continuing without validation."
-                )
-                schema_validation_errors = []
-
-        # Create a default config, setting title from csv data file path.
-        else:
-            config = {"title": generate_title_from_file_name(csv_path)}
-            schema_validation_errors = []
+        config, schema_validation_errors = _get_config_json_with_validation_errors(
+            config_path, csv_path, schema_path
+        )
 
         dtype = datatypes.get_pandas_datatypes(csv_path, config=config)
         _logger.info(f"csv {csv_path} has mapping of columns to datatypes: {dtype}")
         data, data_errors = read_and_check_csv(csv_path, dtype=dtype)
 
-        (cube, code_list_schema_validation_errors) = _get_cube_from_config_json_dict(
-            data,
-            config,
-            cube_config_minor_version,
-            config_path=config_path,
+        cube, schema_validation_errors = _generate_cube_config_from_json_dict(
+            config, config_path, data, schema_validation_errors
         )
-        schema_validation_errors += code_list_schema_validation_errors
-
-        code_list_schema_validation_errors = _configure_remaining_columns_by_convention(
-            cube,
-            data,
-            cube_config_minor_version,
-            config_path=config_path,
-        )
-        schema_validation_errors += code_list_schema_validation_errors
 
         return cube, schema_validation_errors, data_errors
 
-    def _override_qube_config_schema_validation_errors(
-        schema: dict,
-        schema_validation_errors: List[JsonSchemaValidationError],
-    ):
-        """Override some long and unhelpful validation error messages with more user friendly ones."""
-        for error in schema_validation_errors:
-            if error.json_path == "$.license" and error.schema_validator_type == "enum":
-                error.message = (
-                    f"License '{error.offending_value}' is not recognised by csvcubed."
-                )
-            elif (
-                error.json_path == "$.publisher"
-                and error.schema_validator_type == "enum"
-            ):
-                error.message = f"Publisher '{error.offending_value}' is not recognised by csvcubed."
-            elif (
-                error.json_path == "$.creator" and error.schema_validator_type == "enum"
-            ):
-                error.message = (
-                    f"Creator '{error.offending_value}' is not recognised by csvcubed."
-                )
-            elif error.schema_validator_type == "enum":
-                error.message = (
-                    f"'{error.offending_value}' is not recognised by csvcubed."
-                )
-            elif error.schema_validator_type in {"anyOf", "oneOf"}:
-                error.message = f"Unable to identify {error.offending_value}"
-
-            # Recurse down tree structure to override all error messages.
-            _override_qube_config_schema_validation_errors(schema, error.get_children())
-
     return get_cube_from_config_json
+
+
+def _get_config_json_with_validation_errors(
+    csv_path: Path, config_path: Optional[Path], schema_path: Path
+) -> (dict, List[JsonSchemaValidationError]):
+    if config_path:
+        config, schema_validation_errors = _load_json_config_from_file(
+            config_path, csv_path, schema_path
+        )
+    else:
+        # Create a default config, setting title from csv data file path.
+        config = {"title": generate_title_from_file_name(csv_path)}
+        schema_validation_errors = []
+    return config, schema_validation_errors
+
+
+def _override_qube_config_schema_validation_errors(
+    schema: dict,
+    schema_validation_errors: List[JsonSchemaValidationError],
+):
+    """Override some long and unhelpful validation error messages with more user friendly ones."""
+    for error in schema_validation_errors:
+        if error.json_path == "$.license" and error.schema_validator_type == "enum":
+            error.message = (
+                f"License '{error.offending_value}' is not recognised by csvcubed."
+            )
+        elif error.json_path == "$.publisher" and error.schema_validator_type == "enum":
+            error.message = (
+                f"Publisher '{error.offending_value}' is not recognised by csvcubed."
+            )
+        elif error.json_path == "$.creator" and error.schema_validator_type == "enum":
+            error.message = (
+                f"Creator '{error.offending_value}' is not recognised by csvcubed."
+            )
+        elif error.schema_validator_type == "enum":
+            error.message = f"'{error.offending_value}' is not recognised by csvcubed."
+        elif error.schema_validator_type in {"anyOf", "oneOf"}:
+            error.message = f"Unable to identify {error.offending_value}"
+
+        # Recurse down tree structure to override all error messages.
+        _override_qube_config_schema_validation_errors(schema, error.get_children())
+
+
+def _load_json_config_from_file(
+    config_path: Path, csv_path: Path, schema_path: Path
+) -> (dict, List[JsonSchemaValidationError]):
+    config = load_resource(config_path.resolve())
+    # Update loaded config's title if not defined, setting title from csv data file path.
+    if config.get("title") is None:
+        config["title"] = generate_title_from_file_name(csv_path)
+    try:
+        schema = load_resource(schema_path)
+        unmappped_schema_errors = validate_dict_against_schema(
+            value=config, schema=schema
+        )
+        schema_validation_errors = map_to_internal_validation_errors(
+            schema, unmappped_schema_errors
+        )
+        _override_qube_config_schema_validation_errors(schema, schema_validation_errors)
+
+    except JSONDecodeError:
+        _logger.warning(
+            "Validation of the config json is not currently available, continuing without validation."
+        )
+        schema_validation_errors = []
+    return config, schema_validation_errors
+
+
+def _generate_cube_config_from_json_dict(
+    config: dict,
+    config_path: Optional[Path],
+    data: pd.DataFrame,
+    schema_validation_errors: List[JsonSchemaValidationError],
+) -> (QbCube, List[JsonSchemaValidationError]):
+    (cube, code_list_schema_validation_errors) = _get_cube_from_config_json_dict(
+        data,
+        config,
+        cube_config_minor_version,
+        config_path=config_path,
+    )
+    schema_validation_errors += code_list_schema_validation_errors
+    code_list_schema_validation_errors = _configure_remaining_columns_by_convention(
+        cube,
+        data,
+        cube_config_minor_version,
+        config_path=config_path,
+    )
+    schema_validation_errors += code_list_schema_validation_errors
+    return cube, schema_validation_errors
 
 
 def _get_cube_from_config_json_dict(
