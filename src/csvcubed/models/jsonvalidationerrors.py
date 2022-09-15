@@ -7,7 +7,7 @@ Contains models holding information on JSON Schema Validation errors
 """
 from dataclasses import dataclass, field
 from textwrap import indent
-from typing import List, Dict, Iterable, Tuple, Any
+from typing import List, Dict, Iterable, Tuple, Any, Optional
 import os
 from abc import ABC, abstractmethod
 
@@ -32,7 +32,7 @@ class JsonSchemaValidationError(ValidationError, ABC):
     offending_value: Any
     """The offending value which does not meet schema expectations."""
 
-    schema_validator_type: str
+    schema_validator_type: Optional[str]
     """The type of schema validator which this error occurred under."""
 
     @abstractmethod

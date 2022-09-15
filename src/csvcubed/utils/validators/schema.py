@@ -74,7 +74,7 @@ def map_to_internal_validation_errors(
             )
         else:
             mapped_children = map_to_internal_validation_errors(
-                schema, error.context, True
+                schema, error.context or [], True
             )
 
             mapped_errors.append(
@@ -84,7 +84,7 @@ def map_to_internal_validation_errors(
                     message=error.message,
                     children=mapped_children,
                     offending_value=error.instance,
-                    schema_validator_type=error.validator,
+                    schema_validator_type=str(error.validator),
                 )
             )
 
@@ -98,8 +98,13 @@ def _get_possible_types_with_grouped_errors(
     map_type_index_to_errors: Dict[
         int, List[jsonschema.exceptions.ValidationError]
     ] = {}
-    for child_error in error.context:
+
+    child_errors = error.context or []
+    for child_error in child_errors:
         possible_type_id = list(child_error.relative_schema_path)[0]
+
+        if isinstance(possible_type_id, str):
+            raise ValueError(f"Unexpected possible_type_id '{possible_type_id}'")
 
         if possible_type_id not in map_type_index_to_errors:
             map_type_index_to_errors[possible_type_id] = []
