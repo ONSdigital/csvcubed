@@ -107,9 +107,10 @@ def _get_possible_types_with_grouped_errors(
         map_type_index_to_errors[possible_type_id].append(child_error)
 
     for (i, possible_type) in enumerate(error.validator_value):
-        yield (
-            possible_type,
-            map_to_internal_validation_errors(
-                schema, map_type_index_to_errors[i], True
-            ),
-        )
+        if i in map_type_index_to_errors:
+            yield (
+                possible_type,
+                map_to_internal_validation_errors(
+                    schema, map_type_index_to_errors[i], True
+                ),
+            )

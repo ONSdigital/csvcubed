@@ -206,7 +206,7 @@ def test_unsupported_col_definition_exception():
         deserialiser = get_deserialiser(SCHEMA_PATH_FILE, 3)
 
         with pytest.raises(UnsupportedColumnDefinitionException) as msg:
-            _, _, _ = deserialiser(data_file_path, config_file_path)
+            deserialiser(data_file_path, config_file_path)
             assert f"The definition for column with name Rate is not supported." in str(
                 msg
             )
