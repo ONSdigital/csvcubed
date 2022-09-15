@@ -1,0 +1,6 @@
+Uri Identifier,Label,Notation,Parent Uri Identifier,Sort Priority,Description
+b,B,b,,0,B data record
+first,A,a,,1,A data record
+c,C,c,,2,C data record
+d,D,d,b,0,D data record
+e,E,e,d,0,E data record

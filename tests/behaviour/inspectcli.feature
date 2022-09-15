@@ -751,3 +751,60 @@ Feature: Behaviour testing of csvcubed inspect.
     Scenario: inspect should output error when the metadata json-ld input does not exist
         Given a none existing test-case file "cli/inspect/not_exists.csv-metadata.json"
         Then the file not found error is displayed "Could not find test-case file"
+
+    Scenario: inspect should produce the expected printable for code list metadata json-ld with concepts that uses uri safe identifier override.
+        Given the existing test-case file "cli/inspect/uri_safe_identifier_override/code-list-with-uri-safe-identifier-override.csv-metadata.json"
+        And the existing test-case file "cli/inspect/uri_safe_identifier_override/code-list-with-uri-safe-identifier-override.csv"
+        And the existing test-case file "cli/inspect/uri_safe_identifier_override/code-list-with-uri-safe-identifier-override.table.json"
+        
+        When the Metadata file path is detected and validated "cli/inspect/uri_safe_identifier_override/code-list-with-uri-safe-identifier-override.csv-metadata.json"
+        And the csv file path is detected and validated "cli/inspect/uri_safe_identifier_override/code-list-with-uri-safe-identifier-override.csv"
+        And the Metadata File json-ld is loaded to a rdf graph
+        And the Metadata File is validated
+        And the Printables for code list are generated
+        Then the Type Printable should be "- This file is a code list."
+        And the Catalog Metadata Printable should be
+        """
+        - The code list has the following catalog metadata:
+            - Title: Code list with uri safe identifier override
+            - Label: Code list with uri safe identifier override
+            - Issued: 2022-03-31T12:54:30+00:00
+            - Modified: 2022-04-01T12:54:30+00:00
+            - License: https://creativecommons.org/licenses/by/4.0/
+            - Creator: http://purl.org/dc/aboutdcmi#DCMI
+            - Publisher: http://purl.org/dc/aboutdcmi#DCMI
+            - Landing Pages: None
+            - Themes: 
+                    -- http://example.com/themes/theme
+            - Keywords: 
+                    -- keyword1
+            - Contact Point: None
+            - Identifier: Code list with uri safe identifier override
+            - Comment: Summary of the code list
+            - Description: Description of the code list
+        """
+        And the Dataset Information Printable should be
+        """
+        - The code list has the following dataset information:
+            - Number of Concepts: 5
+            - Number of Duplicates: 0
+            - Concepts: 
+            Uri Identifier Label Notation Parent Uri Identifier  Sort Priority   Description
+                        b     B        b                   NaN              0 B data record
+                    first     A        a                   NaN              1 A data record
+                        c     C        c                   NaN              2 C data record
+                        d     D        d                     b              0 D data record
+                        e     E        e                     d              0 E data record
+        """
+        And the Concepts Information Printable should be
+        """
+        - The code list has the following concepts information:
+                - Concepts hierarchy depth: 3
+                - Concepts hierarchy:
+                    root
+                    ├── A
+                    ├── B
+                    │   └── D
+                    │       └── E
+                    └── C
+        """

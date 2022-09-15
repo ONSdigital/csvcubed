@@ -1,8 +1,8 @@
 {
     "$schema": "https://purl.org/csv-cubed/qube-config/v1.3",
-    "title": "Test cube config",
-    "summary": "Test cube config summary",
-    "description": "Test cube config description",
+    "title": "Uri safe identifier override",
+    "summary": "Uri safe identifier override over summary",
+    "description": "Uri safe identifier override over description",
     "license": "https://creativecommons.org/licenses/by/4.0/",
     "creator": "http://statistics.data.gov.uk",
     "publisher": "http://statistics.data.gov.uk",
@@ -14,7 +14,7 @@
         "Dimension": {
             "type": "dimension",
             "code_list": {
-                "title": "Title of the code list",
+                "title": "Code list with uri safe identifier override",
                 "description": "Description of the code list",
                 "summary": "Summary of the code list",
                 "creator": "http://purl.org/dc/aboutdcmi#DCMI",

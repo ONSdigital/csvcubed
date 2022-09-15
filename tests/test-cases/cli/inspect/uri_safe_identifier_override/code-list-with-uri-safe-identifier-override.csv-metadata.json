@@ -1,0 +1,84 @@
+{
+    "@context": "http://www.w3.org/ns/csvw",
+    "@id": "code-list-with-uri-safe-identifier-override.csv#code-list",
+    "url": "code-list-with-uri-safe-identifier-override.csv",
+    "tableSchema": "code-list-with-uri-safe-identifier-override.table.json",
+    "rdfs:seeAlso": [
+        {
+            "@id": "code-list-with-uri-safe-identifier-override.csv#code-list",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.w3.org/ns/dcat#Resource",
+                "http://www.w3.org/ns/dcat#Dataset",
+                "http://www.w3.org/2004/02/skos/core#ConceptScheme"
+            ],
+            "http://purl.org/dc/terms/creator": [
+                {
+                    "@id": "http://purl.org/dc/aboutdcmi#DCMI"
+                }
+            ],
+            "http://purl.org/dc/terms/description": [
+                {
+                    "@type": "https://www.w3.org/ns/iana/media-types/text/markdown#Resource",
+                    "@value": "Description of the code list"
+                }
+            ],
+            "http://purl.org/dc/terms/identifier": [
+                {
+                    "@value": "Code list with uri safe identifier override"
+                }
+            ],
+            "http://purl.org/dc/terms/issued": [
+                {
+                    "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "@value": "2022-03-31T12:54:30+00:00"
+                }
+            ],
+            "http://purl.org/dc/terms/license": [
+                {
+                    "@id": "https://creativecommons.org/licenses/by/4.0/"
+                }
+            ],
+            "http://purl.org/dc/terms/modified": [
+                {
+                    "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "@value": "2022-04-01T12:54:30+00:00"
+                }
+            ],
+            "http://purl.org/dc/terms/publisher": [
+                {
+                    "@id": "http://purl.org/dc/aboutdcmi#DCMI"
+                }
+            ],
+            "http://purl.org/dc/terms/title": [
+                {
+                    "@language": "en",
+                    "@value": "Code list with uri safe identifier override"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#comment": [
+                {
+                    "@language": "en",
+                    "@value": "Summary of the code list"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Code list with uri safe identifier override"
+                }
+            ],
+            "http://www.w3.org/ns/dcat#keyword": [
+                {
+                    "@language": "en",
+                    "@value": "keyword1"
+                }
+            ],
+            "http://www.w3.org/ns/dcat#theme": [
+                {
+                    "@id": "http://example.com/themes/theme"
+                }
+            ]
+        }
+    ]
+}
