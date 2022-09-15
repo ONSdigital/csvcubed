@@ -18,7 +18,7 @@ from csvcubed.models.sparqlresults import (
     CSVWTableSchemaFileDependenciesResult,
     CatalogMetadataResult,
     CodeListColsByDatasetUrlResult,
-    PrimaryKeyByDatasetUrlResult,
+    PrimaryKeysByDatasetUrlResult,
     CodelistsResult,
     ColsWithSuppressOutputTrueResult,
     DSDLabelURIResult,
@@ -375,7 +375,7 @@ def select_codelist_cols_by_dataset_url(
 
 def select_primary_keys_by_dataset_url(
     rdf_graph: rdflib.ConjunctiveGraph, table_url: str
-) -> PrimaryKeyByDatasetUrlResult:
+) -> PrimaryKeysByDatasetUrlResult:
     """
     Queries the primary keys for the given table url.
 

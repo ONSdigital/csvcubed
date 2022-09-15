@@ -226,7 +226,7 @@ class PrimaryKeyByDatasetUrlResult:
     Model to represent select primary key by table url.
     """
 
-    primary_key: str
+    key: str
 
 @dataclass
 class PrimaryKeysByDatasetUrlResult:
@@ -234,7 +234,7 @@ class PrimaryKeysByDatasetUrlResult:
     Model to represent select primary keys by table url.
     """
 
-    primary_keys: List[str]
+    primary_keys: List[PrimaryKeyByDatasetUrlResult]
 
 @dataclass
 class MetadataDependenciesResult:
@@ -528,7 +528,7 @@ def map_primary_key_by_dataset_url_result(sparql_result: ResultRow) -> PrimaryKe
     result_dict = sparql_result.asdict()
 
     result = PrimaryKeyByDatasetUrlResult(
-        primary_key=str(result_dict["tablePrimaryKey"]),
+        key=str(result_dict["tablePrimaryKey"]),
     )
     return result   
 
@@ -548,7 +548,7 @@ def map_primary_keys_by_dataset_url_result(
             sparql_results,
         )
     )
-    result = PrimaryKeysByDatasetUrlResult(primary_keys==primary_keys)
+    result = PrimaryKeysByDatasetUrlResult(primary_keys=primary_keys)
     return result
 
 def map_metadata_dependency_results(

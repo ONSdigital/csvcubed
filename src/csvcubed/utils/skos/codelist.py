@@ -80,7 +80,7 @@ def get_codelist_unique_identifier_from_primary_key(
 
     if len(results) != 1:
         raise InvalidNumberOfRecordsException(
-            record_description="code lists",
+            record_description="columns",
             excepted_num_of_records=1,
             num_of_records=len(results),
         )

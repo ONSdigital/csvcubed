@@ -16,7 +16,6 @@ from pandas import DataFrame
 from csvcubed.models.sparqlresults import (
     CatalogMetadataResult,
     CodeListColsByDatasetUrlResult,
-    PrimaryKeyByDatasetUrlResult,
     CodelistColumnResult,
     CodelistsResult,
     ColsWithSuppressOutputTrueResult,
@@ -53,7 +52,6 @@ from csvcubed.utils.csvdataset import (
 )
 from csvcubed.models.csvcubedexception import (
     InputNotSupportedException,
-    InvalidNumberOfRecordsException,
     UnsupportedNumOfPrimaryKeysException,
 )
 from csvcubed.utils.skos.codelist import (
@@ -221,7 +219,7 @@ class MetadataPrinter:
             label_col_title,
             notation_col_title,
         ) = self.get_parent_label_notation_col_titles(
-            self.result_code_list_cols.columns, primary_keys[0]
+            self.result_code_list_cols.columns, primary_keys[0].key
         )
         self.result_concepts_hierachy_info = get_concepts_hierarchy_info(
             self.dataset, parent_notation_col_title, label_col_title, notation_col_title
