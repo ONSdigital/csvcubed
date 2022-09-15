@@ -6,6 +6,10 @@
         },
         "Amount":{
             "type": "observations"
+        },
+        "Dim-1": {
+            "type": "dimension",
+            "from_existing": "https://example.com/some-existing-dimension"
         }
     }
 }
