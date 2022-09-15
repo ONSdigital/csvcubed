@@ -11,6 +11,56 @@ interactions:
       User-Agent:
       - python-requests/2.28.0
     method: GET
+    uri: https://purl.org/csv-cubed/qube-config/v1
+  response:
+    body:
+      string: '<!DOCTYPE HTML>
+
+        <html>
+
+        <head>
+
+        <title>302 Found</title>
+
+        </head>
+
+        <body>
+
+        <h1>Found</h1>
+
+        <p>The resource requested is available <a href="https://purl.org/csv-cubed/qube-config/v1.3">here</a>.<p>
+
+        </body>
+
+        </html>'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '206'
+      content-type:
+      - text/html; charset=utf-8
+      date:
+      - Thu, 15 Sep 2022 16:18:14 GMT
+      location:
+      - https://purl.org/csv-cubed/qube-config/v1.3
+      server:
+      - gunicorn
+    status:
+      code: 302
+      message: FOUND
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.28.0
+    method: GET
     uri: http://purl.org/csv-cubed/resources/code-lists.json
   response:
     body:
@@ -65,7 +115,7 @@ interactions:
       content-type:
       - text/html; charset=utf-8
       date:
-      - Thu, 15 Sep 2022 08:54:13 GMT
+      - Thu, 15 Sep 2022 16:18:14 GMT
       location:
       - https://raw.githubusercontent.com/GSS-Cogs/reusable-rdf-resources/main/code-lists.json
       server:
@@ -111,13 +161,13 @@ interactions:
       Content-Type:
       - text/plain; charset=utf-8
       Date:
-      - Thu, 15 Sep 2022 08:54:13 GMT
+      - Thu, 15 Sep 2022 16:18:15 GMT
       ETag:
       - W/"5d98e347bb4b48a18824aaaf31821122285847cddc22718361989a187f963577"
       Expires:
-      - Thu, 15 Sep 2022 08:59:13 GMT
+      - Thu, 15 Sep 2022 16:23:15 GMT
       Source-Age:
-      - '269'
+      - '246'
       Strict-Transport-Security:
       - max-age=31536000
       Vary:
@@ -131,15 +181,15 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Fastly-Request-ID:
-      - 08b9d01801611bf8b80eedb990498612a22fc6ec
+      - 5c7e075b66268e6f1296aac94e32bc564efe925b
       X-Frame-Options:
       - deny
       X-GitHub-Request-Id:
-      - D312:55C6:18EE00:1B2FC4:6322DBE2
+      - F9FA:21E0:B8E72:11B191:63233AF4
       X-Served-By:
-      - cache-lcy19234-LCY
+      - cache-lhr7324-LHR
       X-Timer:
-      - S1663232054.658471,VS0,VE1
+      - S1663258695.236123,VS0,VE1
       X-XSS-Protection:
       - 1; mode=block
     status:
@@ -187,7 +237,7 @@ interactions:
       content-type:
       - text/html; charset=utf-8
       date:
-      - Thu, 15 Sep 2022 08:54:14 GMT
+      - Thu, 15 Sep 2022 16:18:22 GMT
       location:
       - https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/src/csvcubed/schema/codelist-config/v1_1/schema.json
       server:
@@ -251,13 +301,13 @@ interactions:
       Content-Type:
       - text/plain; charset=utf-8
       Date:
-      - Thu, 15 Sep 2022 08:54:14 GMT
+      - Thu, 15 Sep 2022 16:18:22 GMT
       ETag:
       - W/"0e845be7271ed9b03d745ba2fd37ddd1c7476c07faa6ea4c71d79aca0d2b49ec"
       Expires:
-      - Thu, 15 Sep 2022 08:59:14 GMT
+      - Thu, 15 Sep 2022 16:23:22 GMT
       Source-Age:
-      - '229'
+      - '194'
       Strict-Transport-Security:
       - max-age=31536000
       Vary:
@@ -267,19 +317,19 @@ interactions:
       X-Cache:
       - HIT
       X-Cache-Hits:
-      - '2'
+      - '1'
       X-Content-Type-Options:
       - nosniff
       X-Fastly-Request-ID:
-      - cb26dcee72cfa2ca2cd66f41add460e34f60a6a4
+      - eb6f696bfc25a5166d28826ec4c7dba816c2cee0
       X-Frame-Options:
       - deny
       X-GitHub-Request-Id:
-      - BD8A:55C5:E3890:10511D:6322E5A6
+      - 2DEE:319C:A910A:E1462:63233AF7
       X-Served-By:
-      - cache-lcy19234-LCY
+      - cache-lhr7357-LHR
       X-Timer:
-      - S1663232055.565738,VS0,VE0
+      - S1663258703.580722,VS0,VE1
       X-XSS-Protection:
       - 1; mode=block
     status:

@@ -65,7 +65,7 @@ interactions:
       content-type:
       - text/html; charset=utf-8
       date:
-      - Thu, 15 Sep 2022 08:49:45 GMT
+      - Thu, 15 Sep 2022 16:14:11 GMT
       location:
       - https://raw.githubusercontent.com/GSS-Cogs/reusable-rdf-resources/main/organisations.json
       server:
@@ -323,13 +323,13 @@ interactions:
       Content-Type:
       - text/plain; charset=utf-8
       Date:
-      - Thu, 15 Sep 2022 08:49:45 GMT
+      - Thu, 15 Sep 2022 16:14:12 GMT
       ETag:
       - W/"66ba1608ff13ded941df56cf0063c658c458b99ee509f910d73935c85fd7e7b1"
       Expires:
-      - Thu, 15 Sep 2022 08:54:45 GMT
+      - Thu, 15 Sep 2022 16:19:12 GMT
       Source-Age:
-      - '7'
+      - '13'
       Strict-Transport-Security:
       - max-age=31536000
       Vary:
@@ -343,15 +343,15 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Fastly-Request-ID:
-      - 8a13186829422667b9e870672805625d880eb9e9
+      - 14628d382e7ac309f556173358cdc5ba8f4af055
       X-Frame-Options:
       - deny
       X-GitHub-Request-Id:
-      - 0811:C69A:1B1240:1D6236:6322DDFF
+      - 080C:7A7A:7FF04:DBFDB:632337F4
       X-Served-By:
-      - cache-lcy19227-LCY
+      - cache-lhr7368-LHR
       X-Timer:
-      - S1663231786.712350,VS0,VE1
+      - S1663258452.200452,VS0,VE1
       X-XSS-Protection:
       - 1; mode=block
     status:
@@ -423,7 +423,7 @@ interactions:
       content-type:
       - text/html; charset=utf-8
       date:
-      - Thu, 15 Sep 2022 08:49:46 GMT
+      - Thu, 15 Sep 2022 16:14:13 GMT
       location:
       - https://raw.githubusercontent.com/GSS-Cogs/reusable-rdf-resources/main/licenses.json
       server:
@@ -474,13 +474,13 @@ interactions:
       Content-Type:
       - text/plain; charset=utf-8
       Date:
-      - Thu, 15 Sep 2022 08:49:46 GMT
+      - Thu, 15 Sep 2022 16:14:13 GMT
       ETag:
       - W/"b9f9c9f8f29e57eb27e38090f59d8881aa0f77e6e41b910bdaa744b5fb15f3a3"
       Expires:
-      - Thu, 15 Sep 2022 08:54:46 GMT
+      - Thu, 15 Sep 2022 16:19:13 GMT
       Source-Age:
-      - '0'
+      - '9'
       Strict-Transport-Security:
       - max-age=31536000
       Vary:
@@ -488,21 +488,21 @@ interactions:
       Via:
       - 1.1 varnish
       X-Cache:
-      - MISS
+      - HIT
       X-Cache-Hits:
-      - '0'
+      - '1'
       X-Content-Type-Options:
       - nosniff
       X-Fastly-Request-ID:
-      - e69c873640e3ae12c15eb97ad4fafa5e98f44a26
+      - 4251c1af48af596388411c0cdfe19d673788dabd
       X-Frame-Options:
       - deny
       X-GitHub-Request-Id:
-      - A0DC:4BB1:1AE97B:1D49BA:6322E72A
+      - FF48:4B97:B80DB:119630:632337F6
       X-Served-By:
-      - cache-lon4220-LON
+      - cache-lhr7373-LHR
       X-Timer:
-      - S1663231787.829813,VS0,VE169
+      - S1663258454.635071,VS0,VE1
       X-XSS-Protection:
       - 1; mode=block
     status:
