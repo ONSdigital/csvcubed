@@ -1,8 +1,8 @@
 {
     "$schema": "https://purl.org/csv-cubed/qube-config/v1.3",
     "title": "Uri safe identifier override",
-    "summary": "Uri safe identifier override over summary",
-    "description": "Uri safe identifier override over description",
+    "summary": "Uri safe identifier override summary",
+    "description": "Uri safe identifier override description",
     "license": "https://creativecommons.org/licenses/by/4.0/",
     "creator": "http://statistics.data.gov.uk",
     "publisher": "http://statistics.data.gov.uk",

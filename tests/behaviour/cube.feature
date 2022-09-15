@@ -567,20 +567,20 @@ Feature: Cube!
     Then The cube Metadata should match
       """
       {
-      "title": "Test cube config",
-      "identifier": None,
-      "summary": "Test cube config summary",
-      "description": "Test cube config description",
-      "creator_uri": "http://statistics.data.gov.uk",
-      "publisher_uri": "http://statistics.data.gov.uk",
-      "landing_page_uris": [],
-      "theme_uris": [],
-      "keywords": ["Test cube"],
-      "dataset_issued": "2022-04-08",
-      "dataset_modified": None,
-      "license_uri": "https://creativecommons.org/licenses/by/4.0/",
-      "public_contact_point_uri": None,
-      "uri_safe_identifier_override": None
+        "title": "Uri safe identifier override",
+        "identifier": None,
+        "summary": "Uri safe identifier override summary",
+        "description": "Uri safe identifier override description",
+        "creator_uri": "http://statistics.data.gov.uk",
+        "publisher_uri": "http://statistics.data.gov.uk",
+        "landing_page_uris": [],
+        "theme_uris": [],
+        "keywords": ["Test cube"],
+        "dataset_issued": "2022-04-08",
+        "dataset_modified": None,
+        "license_uri": "https://creativecommons.org/licenses/by/4.0/",
+        "public_contact_point_uri": None,
+        "uri_safe_identifier_override": None
       }
       """
     Then The cube Columns should match
@@ -595,36 +595,36 @@ Feature: Cube!
     Then The cube data should match
       """
       [
-      {
-      "Dimension": "first",
-      "Value": 0,
-      "Measure": "length",
-      "Unit": "cm",
-      },
-      {
-      "Dimension": "b",
-      "Value": 1,
-      "Measure": "length",
-      "Unit": "cm"
-      },
-      {
-      "Dimension": "c",
-      "Value": 2,
-      "Measure": "length",
-      "Unit": "cm"
-      },
-      {
-      "Dimension": "d",
-      "Value": 3,
-      "Measure": "length",
-      "Unit": "cm"
-      },
-      {
-      "Dimension": "e",
-      "Value": 4,
-      "Measure": "length",
-      "Unit": "cm"
-      }
+        {
+          "Dimension": "first",
+          "Value": 0,
+          "Measure": "length",
+          "Unit": "cm",
+          },
+        {
+          "Dimension": "b",
+          "Value": 1,
+          "Measure": "length",
+          "Unit": "cm"
+        },
+        {
+          "Dimension": "c",
+          "Value": 2,
+          "Measure": "length",
+          "Unit": "cm"
+        },
+        {
+          "Dimension": "d",
+          "Value": 3,
+          "Measure": "length",
+          "Unit": "cm"
+        },
+        {
+          "Dimension": "e",
+          "Value": 4,
+          "Measure": "length",
+          "Unit": "cm"
+        }
       ]
       """
 

@@ -87,7 +87,7 @@
             "http://purl.org/dc/terms/description": [
                 {
                     "@type": "https://www.w3.org/ns/iana/media-types/text/markdown#Resource",
-                    "@value": "Uri safe identifier override over description"
+                    "@value": "Uri safe identifier override description"
                 }
             ],
             "http://purl.org/dc/terms/identifier": [
@@ -131,7 +131,7 @@
             "http://www.w3.org/2000/01/rdf-schema#comment": [
                 {
                     "@language": "en",
-                    "@value": "Uri safe identifier override over summary"
+                    "@value": "Uri safe identifier override summary"
                 }
             ],
             "http://www.w3.org/2000/01/rdf-schema#label": [
