@@ -1,10 +1,7 @@
 import datetime
 import json
-import copy
-from pathlib import Path
-from typing import List, Optional, Dict
+from typing import List, Optional
 
-import requests_mock
 from behave import *
 import vcr
 import pandas as pd
@@ -14,9 +11,8 @@ from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
 from csvcubeddevtools.helpers.file import get_test_cases_dir
 
 from csvcubed.cli.build import build as cli_build
-from csvcubed.definitions import APP_ROOT_DIR_PATH
 from csvcubed.models.cube.columns import CsvColumn
-from schema_paths_to_mock import PATHS_TO_MOCK
+from tests.helpers.schema_mocking import mock_json_schemas
 
 _test_case_dir = get_test_cases_dir()
 _cube_config_test_case_dir = _test_case_dir / "readers" / "cube-config"
@@ -55,38 +51,17 @@ def step_impl(context):
     scenario_name = context.scenario.name
     cassette_file_name = scenario_name.rsplit("]")[1]
 
-    mocker = requests_mock.Mocker(real_http=True)
-    mocker.start()
-
-    templates_dir = APP_ROOT_DIR_PATH / "readers" / "cubeconfig" / "v1_0" / "templates"
-
-    template_files = templates_dir.rglob("**/*.json*")
-
-    if not any(template_files):
-        raise ValueError(f"Couldn't find template files in {templates_dir}.")
-
-    paths_to_mock: Dict[str, Path] = copy.deepcopy(PATHS_TO_MOCK)
-    for template_file in template_files:
-        relative_file_path = str(template_file.relative_to(templates_dir))
-        paths_to_mock[
-            "https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/src/csvcubed/readers/cubeconfig/v1_0/templates/"
-            + relative_file_path
-        ] = template_file
-
-    for uri, path in paths_to_mock.items():
-        with open(path) as f:
-            mocker.register_uri("GET", uri, text=f.read())
-
-    context.out_dir = get_context_temp_dir_path(context) / "out"
+    mocker = mock_json_schemas()
     context.add_cleanup(lambda: mocker.stop())
 
-    with vcr.use_cassette(str(_cassettes_dir / f"{cassette_file_name}.yaml")):
+    context.out_dir = get_context_temp_dir_path(context) / "out"
 
+    with vcr.use_cassette(str(_cassettes_dir / f"{cassette_file_name}.yaml")):
         cube, errors = cli_build(
             data_file,
             config_file,
             output_directory=context.out_dir,
-            validation_errors_file_name = "validation_errors.json",
+            validation_errors_file_name="validation_errors.json",
         )
 
         context.cube = cube

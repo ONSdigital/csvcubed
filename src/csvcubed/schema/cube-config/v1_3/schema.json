@@ -92,7 +92,7 @@
                         "$ref": "#/definitions/v1.0/columnTypes/Units_Existing"
                     },
                     {
-                        "description": "This column will be present in the CSV but will not be converted to RDF.",
+                        "description": "This column will be present in the CSV but will not be converted to RDF",
                         "type": "boolean",
                         "const": false
                     }
@@ -137,7 +137,7 @@
                             "$ref": "#/definitions/v1.0/dataTypes"
                         },
                         "required": {
-                            "description": "Whether or not it is required that every observation has a value for this attribute",
+                            "description": "true/false - whether or not it is required that every observation has a value for this attribute",
                             "type": "boolean",
                             "default": false
                         }
@@ -158,7 +158,7 @@
                             ]
                         }
                     ],
-                    "description": "This column represents an attribute (with resource values) of the cube",
+                    "description": "This column represents an attribute (with resource values) of the cube (creating a new attribute)",
                     "properties": {
                         "type": {
                             "description": "This column represents an attribute of the cube",
@@ -187,7 +187,7 @@
                         "values": {
                             "oneOf": [
                                 {
-                                    "description": "Whether to automatically generate attribute value resources for each unique value in the column",
+                                    "description": "true/false - whether to automatically generate attribute value resources for each unique value in the column",
                                     "type": "boolean",
                                     "default": true
                                 },
@@ -201,7 +201,7 @@
                             ]
                         },
                         "required": {
-                            "description": "Whether or not it is required that every observation has a value for this attribute",
+                            "description": "true/false - whether it is required that every observation has a value for this attribute",
                             "type": "boolean",
                             "default": false
                         }
@@ -222,7 +222,7 @@
                             ]
                         }
                     ],
-                    "description": "This column represents an attribute (with resource values) of the cube",
+                    "description": "This column represents an attribute (with resource values) of the cube (reusing an existing attribute definition)",
                     "properties": {
                         "type": {
                             "description": "This column represents an attribute of the cube",
@@ -254,7 +254,7 @@
                             "format": "uri"
                         },
                         "required": {
-                            "description": "Whether or not it is required that every observation has a value for this attribute",
+                            "description": "true/false - whether it is required that every observation has a value for this attribute",
                             "type": "boolean",
                             "default": false
                         }
@@ -298,7 +298,7 @@
                             "description": "A code list defines the unique values permitted in a dimension",
                             "oneOf": [
                                 {
-                                    "description": "Whether or not to generate a code list defining the unique values permitted in this dimension",
+                                    "description": "true/false - whether to generate a code list defining the unique values permitted in this dimension",
                                     "type": "boolean",
                                     "default": true
                                 },
@@ -319,7 +319,7 @@
                     }
                 },
                 "Measures_New": {
-                    "description": "This column represents the phenomenon which has been measured",
+                    "description": "This column represents the phenomenon which has been measured (defining new measures)",
                     "type": "object",
                     "additionalProperties": false,
                     "required": [
@@ -334,13 +334,13 @@
                         "values": {
                             "oneOf": [
                                 {
-                                    "description": "Whether to automatically measure resources for each unique value in the column",
+                                    "description": "true/false - whether to automatically generate measures for each unique value in the column",
                                     "type": "boolean",
                                     "default": true
                                 },
                                 {
                                     "type": "array",
-                                    "description": "A list of measures permitted in this column.",
+                                    "description": "The list of measures permitted in this column",
                                     "items": {
                                         "$ref": "#/definitions/v1.0/valueTypes/measureType"
                                     }
@@ -350,6 +350,7 @@
                     }
                 },
                 "Measures_Existing": {
+                    "description": "This column represents the phenomenon which has been measured (reusing existing measure definitions)",
                     "type": "object",
                     "additionalProperties": false,
                     "required": [
@@ -369,7 +370,7 @@
                     }
                 },
                 "Units_New": {
-                    "description": "This column represents the unit of measure in which observations were recorded",
+                    "description": "This column represents the unit of measure in which observations were recorded (defining new units)",
                     "type": "object",
                     "required": [
                         "type"
@@ -381,15 +382,15 @@
                             "const": "units"
                         },
                         "values": {
-                            "description": "The Units used in this dataset.",
+                            "description": "The Units used in this dataset",
                             "oneOf": [
                                 {
-                                    "description": "Whether to automatically generate new units from the unique values in this column.",
+                                    "description": "true/false - whether to automatically generate new units from the unique values in this column",
                                     "type": "boolean",
                                     "default": true
                                 },
                                 {
-                                    "description": "A list of units permitted in this column.",
+                                    "description": "The list of distinct units in this column",
                                     "type": "array",
                                     "items": {
                                         "$ref": "#/definitions/v1.0/valueTypes/unitType"
@@ -401,7 +402,7 @@
                     "additionalProperties": false
                 },
                 "Units_Existing": {
-                    "description": "This column represents the unit of measure in which observations were recorded",
+                    "description": "This column represents the unit of measure in which observations were recorded (reusing existing unit definitions)",
                     "type": "object",
                     "oneOf": [
                         {
@@ -441,7 +442,7 @@
                     ],
                     "properties": {
                         "type": {
-                            "description": "Column type.",
+                            "description": "Column type",
                             "type": "string",
                             "const": "observations"
                         },
@@ -461,6 +462,7 @@
             },
             "valueTypes": {
                 "attributeValueType": {
+                    "description": "A new attribute value",
                     "type": "object",
                     "additionalProperties": false,
                     "required": [
@@ -487,6 +489,7 @@
                     }
                 },
                 "measureType": {
+                    "description": "A new measure",
                     "type": "object",
                     "additionalProperties": false,
                     "required": [
@@ -512,6 +515,7 @@
                     }
                 },
                 "unitType": {
+                    "description": "A new unit",
                     "type": "object",
                     "additionalProperties": false,
                     "required": [
@@ -612,7 +616,7 @@
             },
             "types": {
                 "organisation": {
-                    "description": "A URI defining an organisation.",
+                    "description": "A URI defining an organisation",
                     "$ref": "http://purl.org/csv-cubed/resources/organisations.json#/uris"
                 },
                 "theme": {
