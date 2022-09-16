@@ -5,7 +5,7 @@ JSON Validation Errors
 Contains models holding information on JSON Schema Validation errors
 
 """
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, asdict, fields
 from textwrap import indent
 from typing import List, Dict, Iterable, Tuple, Any, Optional
 import os
@@ -64,6 +64,30 @@ class JsonSchemaValidationError(ValidationError, ABC):
             )
 
         return message
+
+    def as_dict(self) -> dict:
+        """
+        Overrides DataClassBase.as_dict to ensure we don't serialise the schema field.
+
+        This function makes sure we recursively apply the `schema` deletion down the tree.
+        """
+        return asdict(self, dict_factory=self._dict_factory)
+
+    @staticmethod
+    def _dict_factory(values: List[Tuple[str, str]]) -> dict:
+        """Removes `schema` field from the dict value of this class."""
+
+        dict_values = {k: v for (k, v) in values}
+
+        # Unfortunately we don't know the type of the class at this point so this is the best way of
+        # attempting to ensure we don't accidentally remove `schema` from another dataclass.
+        fields_match_this_class = not any(
+            [f.name not in dict_values for f in fields(JsonSchemaValidationError)]
+        )
+        if fields_match_this_class:
+            del dict_values["schema"]
+
+        return dict_values
 
 
 @dataclass

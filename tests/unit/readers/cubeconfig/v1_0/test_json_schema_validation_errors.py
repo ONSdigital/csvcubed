@@ -1,6 +1,8 @@
 from pathlib import Path
+from typing import Optional
 
 import pytest
+from csvcubed.models.jsonvalidationerrors import JsonSchemaValidationError
 
 from csvcubed.readers.cubeconfig.schema_versions import get_deserialiser_for_schema
 
@@ -69,15 +71,33 @@ def test_json_schema_from_existing_measure_error_deep_mapping():
     )
 
 
+@pytest.mark.vcr
+def test_json_schema_validation_error_to_dict():
+    error = _assert_single_json_schema_validation_error_message(
+        TEST_CASE_DIR
+        / "schema_validation_errors"
+        / "from_existing_meas_not_in_enum.json"
+    )
+    dict = error.as_json_dict()
+    assert "schema" not in dict
+
+    # Ensure the functionality to remove the `schema` variable applies recursively to child errors.
+    child_error = dict["possible_types_with_grouped_errors"][0][1][1]
+    assert "message" in child_error
+    assert "schema" not in child_error
+
+
 def _assert_single_json_schema_validation_error_message(
-    config_path: Path, expected_error_message: str
-):
+    config_path: Path, expected_error_message: Optional[str] = None
+) -> JsonSchemaValidationError:
     deserialiser = get_deserialiser_for_schema(None)
     csv_path = TEST_CASE_DIR / "schema_validation_errors" / "data.csv"
     _, json_schema_errors, _ = deserialiser(csv_path, config_path)
     assert len(json_schema_errors) == 1
     error = json_schema_errors[0]
-    assert error.message == expected_error_message
+    if expected_error_message is not None:
+        assert error.message == expected_error_message
+
     return error
 
 

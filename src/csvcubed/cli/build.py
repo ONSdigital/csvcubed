@@ -84,10 +84,6 @@ def _validation_error_to_display_json_dict(error: ValidationError) -> dict:
     else:
         dict_value = dataclasses.asdict(error)
 
-    if isinstance(error, JsonSchemaValidationError):
-        # Remove schema from output since it's verbose and unhelpful for users.
-        del dict_value["schema"]
-
     return dict_value
 
 
