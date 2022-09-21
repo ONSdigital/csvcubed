@@ -20,7 +20,7 @@ from csvcubed.models.sparqlresults import (
     CodelistsResult,
     ColsWithSuppressOutputTrueResult,
     DSDLabelURIResult,
-    PrimaryKeysByDatasetUrlResult,
+    PrimaryKeyColNamesByDatasetUrlResult,
     QubeComponentsResult,
 )
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
@@ -28,7 +28,7 @@ from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
 from csvcubed.utils.sparql_handler.sparqlmanager import (
     select_codelist_cols_by_dataset_url,
     select_codelist_dataset_url,
-    select_primary_keys_by_dataset_url,
+    select_primary_key_col_names_by_dataset_url,
     select_cols_where_suppress_output_is_true,
     select_csvw_catalog_metadata,
     select_csvw_dsd_dataset_label_and_dsd_def_uri,
@@ -52,12 +52,12 @@ from csvcubed.utils.csvdataset import (
 )
 from csvcubed.models.csvcubedexception import (
     InputNotSupportedException,
-    UnsupportedNumOfPrimaryKeysException,
+    UnsupportedNumOfPrimaryKeyColNamesException,
 )
 from csvcubed.utils.skos.codelist import (
     CodelistPropertyUrl,
     get_codelist_col_title_by_property_url,
-    get_codelist_unique_identifier_from_primary_key,
+    get_codelist_col_title_from_col_name,
 )
 from csvcubed.utils.uri import looks_like_uri
 
@@ -115,8 +115,8 @@ class MetadataPrinter:
             raise InputNotSupportedException()
 
     @staticmethod
-    def get_parent_label_notation_col_titles(
-        columns: List[CodelistColumnResult], primary_key: str
+    def get_parent_label_unique_id_col_titles(
+        columns: List[CodelistColumnResult], primary_key_col: str
     ) -> Tuple[Optional[str], Optional[str], Optional[str]]:
         parent_notation_col_title = get_codelist_col_title_by_property_url(
             columns, CodelistPropertyUrl.SkosBroader
@@ -124,8 +124,8 @@ class MetadataPrinter:
         label_col_title = get_codelist_col_title_by_property_url(
             columns, CodelistPropertyUrl.RDFLabel
         )
-        unique_identifier = get_codelist_unique_identifier_from_primary_key(
-            columns, primary_key
+        unique_identifier = get_codelist_col_title_from_col_name(
+            columns, primary_key_col
         )
 
         return (parent_notation_col_title, label_col_title, unique_identifier)
@@ -200,29 +200,29 @@ class MetadataPrinter:
         self.result_code_list_cols = select_codelist_cols_by_dataset_url(
             self.csvw_metadata_rdf_graph, self.dataset_url
         )
-        # Retrieving the primary key of the code list to identify the unique identifier
-        result_primary_keys_by_dataset_url: PrimaryKeysByDatasetUrlResult = (
-            select_primary_keys_by_dataset_url(
+        # Retrieving the primary key column names of the code list to identify the unique identifier
+        result_primary_key_col_names_by_dataset_url: PrimaryKeyColNamesByDatasetUrlResult = (
+            select_primary_key_col_names_by_dataset_url(
                 self.csvw_metadata_rdf_graph, self.dataset_url
             )
         )
-        primary_keys = result_primary_keys_by_dataset_url.primary_keys
+        primary_key_col_names = result_primary_key_col_names_by_dataset_url.primary_key_col_names
         
         # Currently, we do not support composite primary keys.
-        if len(primary_keys) != 1:
-            raise UnsupportedNumOfPrimaryKeysException(
-                num_of_primary_keys=len(primary_keys),
+        if len(primary_key_col_names) != 1:
+            raise UnsupportedNumOfPrimaryKeyColNamesException(
+                num_of_primary_key_col_names=len(primary_key_col_names),
                 table_url=self.dataset_url
             )        
         (
-            parent_notation_col_title,
+            parent_col_title,
             label_col_title,
-            notation_col_title,
-        ) = self.get_parent_label_notation_col_titles(
-            self.result_code_list_cols.columns, primary_keys[0].key
+            unique_identifier,
+        ) = self.get_parent_label_unique_id_col_titles(
+            self.result_code_list_cols.columns, primary_key_col_names[0].value
         )
         self.result_concepts_hierachy_info = get_concepts_hierarchy_info(
-            self.dataset, parent_notation_col_title, label_col_title, notation_col_title
+            self.dataset, parent_col_title, label_col_title, unique_identifier
         )
 
     def __post_init__(self):

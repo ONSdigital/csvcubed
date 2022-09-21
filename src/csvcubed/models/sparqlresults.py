@@ -221,20 +221,20 @@ class CodeListColsByDatasetUrlResult:
 
 
 @dataclass
-class PrimaryKeyByDatasetUrlResult:
+class PrimaryKeyColNameByDatasetUrlResult:
     """
-    Model to represent select primary key by table url.
+    Model to represent select primary key column name by table url.
     """
 
-    key: str
+    value: str
 
 @dataclass
-class PrimaryKeysByDatasetUrlResult:
+class PrimaryKeyColNamesByDatasetUrlResult:
     """
     Model to represent select primary keys by table url.
     """
 
-    primary_keys: List[PrimaryKeyByDatasetUrlResult]
+    primary_key_col_names: List[PrimaryKeyColNameByDatasetUrlResult]
 
 @dataclass
 class MetadataDependenciesResult:
@@ -307,7 +307,7 @@ def map_dataset_label_dsd_uri_sparql_result(
     return result
 
 
-def map_qube_component_sparql_result(
+def _map_qube_component_sparql_result(
     sparql_result: ResultRow, json_path: Path
 ) -> QubeComponentResult:
     """
@@ -347,7 +347,7 @@ def map_qube_components_sparql_result(
     """
     components = list(
         map(
-            lambda result: map_qube_component_sparql_result(result, json_path),
+            lambda result: _map_qube_component_sparql_result(result, json_path),
             sparql_results,
         )
     )
@@ -377,7 +377,7 @@ def map_cols_with_supress_output_true_sparql_result(
     return result
 
 
-def map_codelist_sparql_result(
+def _map_codelist_sparql_result(
     sparql_result: ResultRow, json_path: Path
 ) -> CodelistResult:
     """
@@ -413,7 +413,7 @@ def map_codelists_sparql_result(
     """
     codelists = list(
         map(
-            lambda result: map_codelist_sparql_result(result, json_path),
+            lambda result: _map_codelist_sparql_result(result, json_path),
             sparql_results,
         )
     )
@@ -478,7 +478,7 @@ def map_single_unit_from_dsd_result(
     return result
 
 
-def map_codelist_column_sparql_result(sparql_result: ResultRow) -> CodelistColumnResult:
+def _map_codelist_column_sparql_result(sparql_result: ResultRow) -> CodelistColumnResult:
     """
     Maps sparql query result to `CodelistColumnResult`
 
@@ -510,45 +510,45 @@ def map_codelist_cols_by_dataset_url_result(
 
     columns = list(
         map(
-            lambda result: map_codelist_column_sparql_result(result),
+            lambda result: _map_codelist_column_sparql_result(result),
             sparql_results,
         )
     )
     result = CodeListColsByDatasetUrlResult(columns=columns)
     return result
 
-def map_primary_key_by_dataset_url_result(sparql_result: ResultRow) -> PrimaryKeyByDatasetUrlResult:
+def _map_primary_key_col_name_by_dataset_url_result(sparql_result: ResultRow) -> PrimaryKeyColNameByDatasetUrlResult:
     """
-    Maps sparql query result to `PrimaryKeyByDatasetUrlResult`
+    Maps sparql query result to `PrimaryKeyColNameByDatasetUrlResult`
 
     Member of :file:`./models/sparqlresults.py`
 
-    :return: `PrimaryKeyByDatasetUrlResult`
+    :return: `PrimaryKeyColNameByDatasetUrlResult`
     """
     result_dict = sparql_result.asdict()
 
-    result = PrimaryKeyByDatasetUrlResult(
-        key=str(result_dict["tablePrimaryKey"]),
+    result = PrimaryKeyColNameByDatasetUrlResult(
+        value=str(result_dict["tablePrimaryKey"]),
     )
     return result   
 
-def map_primary_keys_by_dataset_url_result(
+def map_primary_key_col_names_by_dataset_url_result(
     sparql_results: List[ResultRow],
-) -> PrimaryKeysByDatasetUrlResult:
+) -> PrimaryKeyColNamesByDatasetUrlResult:
     """
-    Maps sparql query result to `PrimaryKeysByDatasetUrlResult`
+    Maps sparql query result to `PrimaryKeyColNamesByDatasetUrlResult`
 
     Member of :file:`./models/sparqlresults.py`
 
-    :return: `PrimaryKeysByDatasetUrlResult`
+    :return: `PrimaryKeyColNamesByDatasetUrlResult`
     """
-    primary_keys = list(
+    primary_key_col_names = list(
         map(
-            lambda result: map_primary_key_by_dataset_url_result(result),
+            lambda result: _map_primary_key_col_name_by_dataset_url_result(result),
             sparql_results,
         )
     )
-    result = PrimaryKeysByDatasetUrlResult(primary_keys=primary_keys)
+    result = PrimaryKeyColNamesByDatasetUrlResult(primary_key_col_names=primary_key_col_names)
     return result
 
 def map_metadata_dependency_results(

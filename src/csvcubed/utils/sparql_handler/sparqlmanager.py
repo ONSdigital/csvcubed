@@ -18,7 +18,7 @@ from csvcubed.models.sparqlresults import (
     CSVWTableSchemaFileDependenciesResult,
     CatalogMetadataResult,
     CodeListColsByDatasetUrlResult,
-    PrimaryKeysByDatasetUrlResult,
+    PrimaryKeyColNamesByDatasetUrlResult,
     CodelistsResult,
     ColsWithSuppressOutputTrueResult,
     DSDLabelURIResult,
@@ -29,7 +29,7 @@ from csvcubed.models.sparqlresults import (
     TableSchemaPropertiesResult,
     map_catalog_metadata_result,
     map_codelist_cols_by_dataset_url_result,
-    map_primary_keys_by_dataset_url_result,
+    map_primary_key_col_names_by_dataset_url_result,
     map_codelists_sparql_result,
     map_cols_with_supress_output_true_sparql_result,
     map_csvw_table_schemas_file_dependencies_result,
@@ -373,15 +373,15 @@ def select_codelist_cols_by_dataset_url(
         )
     return map_codelist_cols_by_dataset_url_result(results)
 
-def select_primary_keys_by_dataset_url(
+def select_primary_key_col_names_by_dataset_url(
     rdf_graph: rdflib.ConjunctiveGraph, table_url: str
-) -> PrimaryKeysByDatasetUrlResult:
+) -> PrimaryKeyColNamesByDatasetUrlResult:
     """
     Queries the primary keys for the given table url.
 
     Member of :file:`./sparqlmanager.py`
 
-    :return: `PrimaryKeysByDatasetUrlResult`
+    :return: `PrimaryKeyColNamesByDatasetUrlResult`
     """
     results: List[ResultRow] = select(
         _get_query_string_from_file(
@@ -391,7 +391,7 @@ def select_primary_keys_by_dataset_url(
         init_bindings={"table_url": Literal(table_url)},
     )
 
-    return map_primary_keys_by_dataset_url_result(results)
+    return map_primary_key_col_names_by_dataset_url_result(results)
 
 
 def select_metadata_dependencies(

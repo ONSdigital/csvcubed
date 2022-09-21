@@ -58,8 +58,8 @@ class CsvcubedExceptionMsges(Enum):
         "The column associated with the primary key does not contain the title."
     )
 
-    UnsupportedNumberOfPrimaryKeys = (
-        "Only 1 primary key is supported but found {num_of_primary_keys} primary keys for the table with url {table_url}."
+    UnsupportedNumberOfPrimaryKeyColNames = (
+        "Only 1 primary key column name is supported but found {num_of_primary_key_col_names} primary key column names for the table with url {table_url}."
     )
 
 class CsvcubedExceptionUrls(Enum):
@@ -105,7 +105,7 @@ class CsvcubedExceptionUrls(Enum):
         "http://purl.org/csv-cubed/err/invalid-pk-col-title"
     )
 
-    UnsupportedNumberOfPrimaryKeys = (
+    UnsupportedNumberOfPrimaryKeyColNames = (
          "http://purl.org/csv-cubed/err/unsupported-num-of-primary-keys"
     )
 
@@ -339,17 +339,17 @@ class PrimaryKeyColumnTitleCannotBeNoneException(CsvcubedException):
     def get_error_url(cls) -> str:
         return CsvcubedExceptionUrls.PrimaryKeyColumnTitleCannotBeNone.value
 
-class UnsupportedNumOfPrimaryKeysException(CsvcubedException):
-    """Class representing the UnsupportedNumOfPrimaryKeysException model."""
+class UnsupportedNumOfPrimaryKeyColNamesException(CsvcubedException):
+    """Class representing the UnsupportedNumOfPrimaryKeyColNamesException model."""
 
-    def __init__(self, num_of_primary_keys: int, table_url:str):
+    def __init__(self, num_of_primary_key_col_names: int, table_url:str):
         super().__init__(
-            CsvcubedExceptionMsges.UnsupportedNumberOfPrimaryKeys.value.format(
-                num_of_primary_keys=num_of_primary_keys,
+            CsvcubedExceptionMsges.UnsupportedNumberOfPrimaryKeyColNames.value.format(
+                num_of_primary_key_col_names=num_of_primary_key_col_names,
                 table_url=table_url
             )
         )
 
     @classmethod
     def get_error_url(cls) -> str:
-        return CsvcubedExceptionUrls.UnsupportedNumberOfPrimaryKeys.value
+        return CsvcubedExceptionUrls.UnsupportedNumberOfPrimaryKeyColNames.value

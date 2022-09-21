@@ -65,18 +65,18 @@ def get_codelist_col_title_by_property_url(
     return results[0].column_title
 
 
-def get_codelist_unique_identifier_from_primary_key(
-    columns: List[CodelistColumnResult], primary_key: str
+def get_codelist_col_title_from_col_name(
+    columns: List[CodelistColumnResult], col_name: str
 ) -> str:
     """
-    Returns dataset unique identifier from the primary key.
+    Returns the column title for the column name.
 
     Member of :class:`./codelist`.
 
     :return: `str` - dataset column title.
     """
 
-    results = [column for column in columns if column.column_name == primary_key]
+    results = [column for column in columns if column.column_name == col_name]
 
     if len(results) != 1:
         raise InvalidNumberOfRecordsException(
