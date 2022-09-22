@@ -108,4 +108,4 @@ def log_exception(logger: logging.Logger, error: Exception) -> None:
     stack_trace: str = file_stream.read()
     logger.critical(stack_trace)
 
-url = "http://example.com/cheese"
+url = "http://example.com"
