@@ -112,10 +112,7 @@ def build_concepts_hierarchy_tree(
     concepts_df_na_replaced = concepts_df.replace({np.nan: None})
     if concepts_df_na_replaced is None:
         raise ErrorProcessingDataFrameException(operation="replace")
-
-    if concepts_df_na_replaced is None:
-        raise ErrorProcessingDataFrameException(operation="sort")
-
+    
     for _, concept_row in pd.DataFrame(concepts_df_na_replaced).iterrows():
         node_id = concept_row[notation_col_name]
         node_label = concept_row[label_col_name]
