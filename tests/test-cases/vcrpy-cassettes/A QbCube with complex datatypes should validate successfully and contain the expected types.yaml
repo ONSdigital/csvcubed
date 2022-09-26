@@ -65,7 +65,7 @@ interactions:
       content-type:
       - text/html; charset=utf-8
       date:
-      - Tue, 23 Aug 2022 07:49:16 GMT
+      - Mon, 26 Sep 2022 14:05:11 GMT
       location:
       - https://raw.githubusercontent.com/GSS-Cogs/reusable-rdf-resources/main/code-lists.json
       server:
@@ -111,13 +111,13 @@ interactions:
       Content-Type:
       - text/plain; charset=utf-8
       Date:
-      - Tue, 23 Aug 2022 07:49:16 GMT
+      - Mon, 26 Sep 2022 14:05:12 GMT
       ETag:
       - W/"5d98e347bb4b48a18824aaaf31821122285847cddc22718361989a187f963577"
       Expires:
-      - Tue, 23 Aug 2022 07:54:16 GMT
+      - Mon, 26 Sep 2022 14:10:12 GMT
       Source-Age:
-      - '133'
+      - '0'
       Strict-Transport-Security:
       - max-age=31536000
       Vary:
@@ -131,15 +131,15 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Fastly-Request-ID:
-      - ea11d365ffdd0d1e1bb94cdd75754c0b5dda55b8
+      - f75b9370b60d37ed3614a14e5bd14fc9e7b8a72d
       X-Frame-Options:
       - deny
       X-GitHub-Request-Id:
-      - FA90:BB51:ED08E:10391A:630485F8
+      - F8DA:2516:7958B:9B27C:6331ACEE
       X-Served-By:
-      - cache-lon4273-LON
+      - cache-lhr7345-LHR
       X-Timer:
-      - S1661240957.901077,VS0,VE1
+      - S1664201112.982749,VS0,VE395
       X-XSS-Protection:
       - 1; mode=block
     status:
