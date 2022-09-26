@@ -6,10 +6,16 @@ Utilities for working with JSON
 """
 import json
 import os.path
-from typing import Dict, Any, Union
+from typing import Dict, Any, Union, Iterable, List
 from pathlib import Path
 import logging
 from urllib.parse import urlparse
+import re
+
+from jsonschema import RefResolver, RefResolutionError
+
+from csvcubed.utils.uri import looks_like_uri
+
 
 from .cache import session
 
@@ -31,7 +37,11 @@ def load_json_document(file_uri_or_path: Union[str, Path]) -> Dict[str, Any]:
     else:
         url = urlparse(file_uri_or_path)
         if url.scheme == "file":
-            file_path = Path(os.path.normpath(file_uri_or_path).removeprefix("file:\\").removeprefix("file:"))
+            file_path = Path(
+                os.path.normpath(file_uri_or_path)
+                .removeprefix("file:\\")
+                .removeprefix("file:")
+            )
             return _load_json_from_path(file_path)
         else:
             # Treat it as a URL
@@ -68,3 +78,61 @@ def serialize_sets(obj):
         return list(obj)
 
     return obj
+
+
+def to_json_path(path_parts: Iterable[Union[str, int]]) -> str:
+    """
+    Converts an iterable of path parts into a JSON path compatible with https://pypi.org/project/jsonpath-ng/
+    https://goessner.net/articles/JsonPath/
+    """
+    string_path_parts = []
+    for path_part in path_parts:
+        if isinstance(path_part, str):
+            if re.search(r"[.\[\]'\s]", path_part):
+                # Path part contains a reserved character and needs escaping
+                escaped_path_part = path_part.replace("'", r"\'")
+                string_path_parts.append(f".'{escaped_path_part}'")
+            else:
+                string_path_parts.append(f".{path_part}")
+        elif isinstance(path_part, int):
+            string_path_parts.append(f"[{path_part}]")
+        else:
+            raise ValueError(
+                f"Unhandled JSON path_part '{path_part}' of type {type(path_part)}."
+            )
+
+    return "$" + "".join(string_path_parts)
+
+
+def resolve_path(
+    path_to_resolve: List[Union[str, int]], within: dict
+) -> Iterable[dict]:
+    """
+    Returns an iterable containing the JSON objects along the entire `path_to_resolve` ensuring to follow JSON schema
+      `$ref` links.
+    """
+    if not any(path_to_resolve):
+        return []
+
+    resolver = RefResolver.from_schema(within)
+    pointer = 1
+
+    while pointer <= len(path_to_resolve):
+        _, value = resolver.resolve(
+            "#/" + "/".join([str(e) for e in path_to_resolve][:pointer])
+        )
+        yield value
+
+        if "$ref" in value:
+            next_ref = value["$ref"]
+            if looks_like_uri(next_ref):
+                value = resolver.resolve_from_url(next_ref)
+            else:
+                _, value = resolver.resolve(next_ref)
+
+            yield value
+
+            yield from resolve_path(path_to_resolve[pointer:], value)
+            break
+
+        pointer += 1

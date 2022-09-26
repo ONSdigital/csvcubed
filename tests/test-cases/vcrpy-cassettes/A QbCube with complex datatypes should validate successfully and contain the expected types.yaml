@@ -11,6 +11,56 @@ interactions:
       User-Agent:
       - python-requests/2.28.0
     method: GET
+    uri: https://purl.org/csv-cubed/qube-config/v1
+  response:
+    body:
+      string: '<!DOCTYPE HTML>
+
+        <html>
+
+        <head>
+
+        <title>302 Found</title>
+
+        </head>
+
+        <body>
+
+        <h1>Found</h1>
+
+        <p>The resource requested is available <a href="https://purl.org/csv-cubed/qube-config/v1.3">here</a>.<p>
+
+        </body>
+
+        </html>'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '206'
+      content-type:
+      - text/html; charset=utf-8
+      date:
+      - Thu, 15 Sep 2022 16:18:14 GMT
+      location:
+      - https://purl.org/csv-cubed/qube-config/v1.3
+      server:
+      - gunicorn
+    status:
+      code: 302
+      message: FOUND
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.28.0
+    method: GET
     uri: http://purl.org/csv-cubed/resources/code-lists.json
   response:
     body:

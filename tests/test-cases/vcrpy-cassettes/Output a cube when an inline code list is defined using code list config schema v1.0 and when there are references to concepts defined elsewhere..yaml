@@ -65,7 +65,7 @@ interactions:
       content-type:
       - text/html; charset=utf-8
       date:
-      - Tue, 23 Aug 2022 07:47:31 GMT
+      - Thu, 15 Sep 2022 16:15:25 GMT
       location:
       - https://raw.githubusercontent.com/GSS-Cogs/reusable-rdf-resources/main/organisations.json
       server:
@@ -323,13 +323,13 @@ interactions:
       Content-Type:
       - text/plain; charset=utf-8
       Date:
-      - Tue, 23 Aug 2022 07:47:31 GMT
+      - Thu, 15 Sep 2022 16:15:26 GMT
       ETag:
       - W/"66ba1608ff13ded941df56cf0063c658c458b99ee509f910d73935c85fd7e7b1"
       Expires:
-      - Tue, 23 Aug 2022 07:52:31 GMT
+      - Thu, 15 Sep 2022 16:20:26 GMT
       Source-Age:
-      - '20'
+      - '87'
       Strict-Transport-Security:
       - max-age=31536000
       Vary:
@@ -343,15 +343,15 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Fastly-Request-ID:
-      - b184bdcc80fffe7b141395b148395bd4c75d5469
+      - 8a6783929042a189f9c239b0315e149bc1b12351
       X-Frame-Options:
       - deny
       X-GitHub-Request-Id:
-      - 1676:BB50:72222:85FDD:630485FF
+      - 080C:7A7A:7FF04:DBFDB:632337F4
       X-Served-By:
-      - cache-lon4237-LON
+      - cache-lhr7361-LHR
       X-Timer:
-      - S1661240851.164467,VS0,VE0
+      - S1663258526.043252,VS0,VE1
       X-XSS-Protection:
       - 1; mode=block
     status:
@@ -423,7 +423,7 @@ interactions:
       content-type:
       - text/html; charset=utf-8
       date:
-      - Tue, 23 Aug 2022 07:47:31 GMT
+      - Thu, 15 Sep 2022 16:15:26 GMT
       location:
       - https://raw.githubusercontent.com/GSS-Cogs/reusable-rdf-resources/main/licenses.json
       server:
@@ -474,13 +474,13 @@ interactions:
       Content-Type:
       - text/plain; charset=utf-8
       Date:
-      - Tue, 23 Aug 2022 07:47:32 GMT
+      - Thu, 15 Sep 2022 16:15:27 GMT
       ETag:
       - W/"b9f9c9f8f29e57eb27e38090f59d8881aa0f77e6e41b910bdaa744b5fb15f3a3"
       Expires:
-      - Tue, 23 Aug 2022 07:52:32 GMT
+      - Thu, 15 Sep 2022 16:20:27 GMT
       Source-Age:
-      - '25'
+      - '83'
       Strict-Transport-Security:
       - max-age=31536000
       Vary:
@@ -494,15 +494,15 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Fastly-Request-ID:
-      - f8329673fb086ed25e981ce1b900554c8e5cbc2e
+      - 17ba1514500b1c79b5c09616750e96adb23c0f3f
       X-Frame-Options:
       - deny
       X-GitHub-Request-Id:
-      - 2676:3323:790FD:8CE66:630485FA
+      - FF48:4B97:B80DB:119630:632337F6
       X-Served-By:
-      - cache-lon4279-LON
+      - cache-lhr7369-LHR
       X-Timer:
-      - S1661240852.025687,VS0,VE0
+      - S1663258527.203473,VS0,VE1
       X-XSS-Protection:
       - 1; mode=block
     status:
@@ -574,7 +574,7 @@ interactions:
       content-type:
       - text/html; charset=utf-8
       date:
-      - Tue, 23 Aug 2022 07:47:32 GMT
+      - Thu, 15 Sep 2022 16:15:28 GMT
       location:
       - https://raw.githubusercontent.com/GSS-Cogs/reusable-rdf-resources/main/code-lists.json
       server:
@@ -620,13 +620,13 @@ interactions:
       Content-Type:
       - text/plain; charset=utf-8
       Date:
-      - Tue, 23 Aug 2022 07:47:32 GMT
+      - Thu, 15 Sep 2022 16:15:28 GMT
       ETag:
       - W/"5d98e347bb4b48a18824aaaf31821122285847cddc22718361989a187f963577"
       Expires:
-      - Tue, 23 Aug 2022 07:52:32 GMT
+      - Thu, 15 Sep 2022 16:20:28 GMT
       Source-Age:
-      - '22'
+      - '79'
       Strict-Transport-Security:
       - max-age=31536000
       Vary:
@@ -640,15 +640,437 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Fastly-Request-ID:
-      - 7a9ec668c826ea91165a1cfa6cd9a4414ecd8ac9
+      - f641ead728f04a3b5068da08b9bcd0eb7faf962e
       X-Frame-Options:
       - deny
       X-GitHub-Request-Id:
-      - 59F0:CBDA:F7333:10E554:630485FE
+      - F9FA:21E0:B8E72:11B191:63233AF4
       X-Served-By:
-      - cache-lcy19245-LCY
+      - cache-lhr7337-LHR
       X-Timer:
-      - S1661240853.876861,VS0,VE1
+      - S1663258528.437665,VS0,VE1
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.28.0
+    method: GET
+    uri: https://purl.org/csv-cubed/code-list-config/v1.0
+  response:
+    body:
+      string: '<!DOCTYPE HTML>
+
+        <html>
+
+        <head>
+
+        <title>302 Found</title>
+
+        </head>
+
+        <body>
+
+        <h1>Found</h1>
+
+        <p>The resource requested is available <a href="https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/src/csvcubed/schema/codelist-config/v1_0/schema.json">here</a>.<p>
+
+        </body>
+
+        </html>'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '272'
+      content-type:
+      - text/html; charset=utf-8
+      date:
+      - Thu, 15 Sep 2022 16:15:29 GMT
+      location:
+      - https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/src/csvcubed/schema/codelist-config/v1_0/schema.json
+      server:
+      - gunicorn
+    status:
+      code: 302
+      message: FOUND
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.28.0
+    method: GET
+    uri: https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/src/csvcubed/schema/codelist-config/v1_0/schema.json
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA8VXW2/bNhR+968g3D60gG05ybYWeQvalwDDOjTZBmwwAlo6sthRokpSCYzA/728
+        SSZliXadYX1JrKPD71z4nYueJwhNX4u0gBJPr9G0kLIW10nyRbBqbsULxjdJxnEu58t3iVOd6XMk
+        84/UDadGNxWP87RZQ5akLIM5JULOU1blZJM8XiyW9qwkkoI+fmcAUc44wkgf0PoLq5SBSDmpJWGV
+        pyoZWgNqBGTmVMoBaw2Eqww9Ykoy+8hyBShItaHQ4SJSoQ93f87/0idL3NqR29r4wtZfIJVWxuFr
+        QzjoEP9ZGUnNWQ1cEhBK9qwkQeqswAMTkivjBszIM8hxQ+VZKTMYOwtl0/68hw1ydIOainxtABGb
+        HVnY6NE+rUNeBgbauxm3YTTOxg/hxq1QVm2QJ9VXeo490ZQl5tuoLVEwLpHTPNeQoSLjEUP3GtVq
+        HRhBbxpO3nqmXnPIW7oMs4WDYA1PQSRKjisiDPXFQpfvq0TBidDBulkrSwUcc7HT+xFOqvrFAuQD
+        EaKBGNc/YgmKiqX6U2DZ8/MJC1XtRBJM6bYLKNMd4PbuE3r/y/LCNYEZgsVmgS6Xl5fz5dX86gKp
+        y9k/3V9cXv/80/XV8u9T6e38L1lGcvKyCChWP1qg/zUKSlKoRKwN/PH51rrNoVZ3DJUULoJ6y8mm
+        kMhhIFzXdKss6NYtCyIGC+t7iOSAxzmk/Ci9Pu3Bv0pUIzbEUBw03TUxyvcqFz2Qf2H7xHh2KoxT
+        HwASqrdEEnlnWo/kigybrddVqxRqKQbuy5tTRu7PKidT0vW201BPJciCZVMnWHVnB6Zae9p/PvSa
+        4jVQ9MaNtbeabhWTprY9u+MD0byDqim11xZtOkPTDmM1C41309Oqdi93h0HGHcdCkSfTdAyc11pW
+        fob7eH/W2nNPo0HsD+wDmfj/u5niaHAiCTv1SQu1c6tUp7jfXsxu4eEO2DpM36+6N6mx0CrrXjQy
+        LL3sYc5xwEe7ptxKKLU5yRvwXhInDq7xeNQDuZz1YouGdtMGdVpMvTIcK0TUUjbgQsfzTuhxZawq
+        O6hQOHBJpji74W2CWgQOjLT/XtoGsOOGPw6tay8z32XqmO3fnOJ/ZVjgEh5w/wYO7X6GHDgoW3q+
+        4Y5DhqVqVgMV8KR2KTjmSO+tnev6vZpvES/V9HhQcydY6oYdNYPGqJ6aIlKpmaSQR62nBaGZCv7Q
+        9slNysFGatcb0PHyNYq6mVPXpOweYNcUq70GE3jO0kZE9nyFjrPMOI3p76PVyCr4lPeqHfUycWT5
+        0GHZFWQaHNvN4pjmiG7GB6kfzk2Ykv6NW8iRZt0pDPXlFwVpAp3Env2nVYQjwfYVZ4lT9XnSrnpq
+        l6XwiCtpV9Uxagxd++n0t9lwJkdLq4cXu5vReznLizDn+9+rg5zLw2TbO44vYDdIfzq4ctR7GLak
+        DDn5XR8EjtT9z4FeUluSHPXPNuTQRXd2Ed0Ox5Y5vYdNdt8Asz61X24TAAA=
+    headers:
+      Accept-Ranges:
+      - bytes
+      Access-Control-Allow-Origin:
+      - '*'
+      Cache-Control:
+      - max-age=300
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1127'
+      Content-Security-Policy:
+      - default-src 'none'; style-src 'unsafe-inline'; sandbox
+      Content-Type:
+      - text/plain; charset=utf-8
+      Date:
+      - Thu, 15 Sep 2022 16:15:29 GMT
+      ETag:
+      - W/"c2258c03df118878581dd9865d8e6823ccb2830f7ea1dd8cd0971955c3cd0bc2"
+      Expires:
+      - Thu, 15 Sep 2022 16:20:29 GMT
+      Source-Age:
+      - '65'
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Authorization,Accept-Encoding,Origin
+      Via:
+      - 1.1 varnish
+      X-Cache:
+      - HIT
+      X-Cache-Hits:
+      - '1'
+      X-Content-Type-Options:
+      - nosniff
+      X-Fastly-Request-ID:
+      - e6467db5afdf10bf4d51d09d17c5151d6abdf634
+      X-Frame-Options:
+      - deny
+      X-GitHub-Request-Id:
+      - 457E:4130:A3BA3:109463:63234F60
+      X-Served-By:
+      - cache-lhr7337-LHR
+      X-Timer:
+      - S1663258529.348581,VS0,VE1
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.28.0
+    method: GET
+    uri: http://purl.org/csv-cubed/resources/code-lists.json
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      location:
+      - https://purl.org/csv-cubed/resources/code-lists.json
+    status:
+      code: 301
+      message: Moved Permanently
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.28.0
+    method: GET
+    uri: https://purl.org/csv-cubed/resources/code-lists.json
+  response:
+    body:
+      string: '<!DOCTYPE HTML>
+
+        <html>
+
+        <head>
+
+        <title>302 Found</title>
+
+        </head>
+
+        <body>
+
+        <h1>Found</h1>
+
+        <p>The resource requested is available <a href="https://raw.githubusercontent.com/GSS-Cogs/reusable-rdf-resources/main/code-lists.json">here</a>.<p>
+
+        </body>
+
+        </html>'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '249'
+      content-type:
+      - text/html; charset=utf-8
+      date:
+      - Thu, 15 Sep 2022 16:15:30 GMT
+      location:
+      - https://raw.githubusercontent.com/GSS-Cogs/reusable-rdf-resources/main/code-lists.json
+      server:
+      - gunicorn
+    status:
+      code: 302
+      message: FOUND
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.28.0
+    method: GET
+    uri: https://raw.githubusercontent.com/GSS-Cogs/reusable-rdf-resources/main/code-lists.json
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA6WQywrCMBBF9/2KEl3aJioo9lfERWimD20e5gGV0n83SUvpRhCdTWbunXMZMiSp
+        L7Q1ZQOcoiJFjbWqwPhupMgmNZe6xkzTymbkjOfN3QQ63RpPDXGKin0pCDnG6lbU8150Kqk5tcHz
+        1NoA4biXr4sS1fkQRi3NwWmpwoOFs2a6AfCB7E+rnO+p408U+UApp7v4R10rHsCykIIN472HyAWX
+        ksHGQP8HXWl4ooW+xW5MxjfRG/G5vQEAAA==
+    headers:
+      Accept-Ranges:
+      - bytes
+      Access-Control-Allow-Origin:
+      - '*'
+      Cache-Control:
+      - max-age=300
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '196'
+      Content-Security-Policy:
+      - default-src 'none'; style-src 'unsafe-inline'; sandbox
+      Content-Type:
+      - text/plain; charset=utf-8
+      Date:
+      - Thu, 15 Sep 2022 16:15:30 GMT
+      ETag:
+      - W/"5d98e347bb4b48a18824aaaf31821122285847cddc22718361989a187f963577"
+      Expires:
+      - Thu, 15 Sep 2022 16:20:30 GMT
+      Source-Age:
+      - '81'
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Authorization,Accept-Encoding,Origin
+      Via:
+      - 1.1 varnish
+      X-Cache:
+      - HIT
+      X-Cache-Hits:
+      - '1'
+      X-Content-Type-Options:
+      - nosniff
+      X-Fastly-Request-ID:
+      - 43c774b347ce5ef6d5b308ad70dbb35e710e2150
+      X-Frame-Options:
+      - deny
+      X-GitHub-Request-Id:
+      - F9FA:21E0:B8E72:11B191:63233AF4
+      X-Served-By:
+      - cache-lhr7378-LHR
+      X-Timer:
+      - S1663258531.773404,VS0,VE1
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.28.0
+    method: GET
+    uri: https://purl.org/csv-cubed/code-list-config/v1.0
+  response:
+    body:
+      string: '<!DOCTYPE HTML>
+
+        <html>
+
+        <head>
+
+        <title>302 Found</title>
+
+        </head>
+
+        <body>
+
+        <h1>Found</h1>
+
+        <p>The resource requested is available <a href="https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/src/csvcubed/schema/codelist-config/v1_0/schema.json">here</a>.<p>
+
+        </body>
+
+        </html>'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '272'
+      content-type:
+      - text/html; charset=utf-8
+      date:
+      - Thu, 15 Sep 2022 16:15:31 GMT
+      location:
+      - https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/src/csvcubed/schema/codelist-config/v1_0/schema.json
+      server:
+      - gunicorn
+    status:
+      code: 302
+      message: FOUND
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.28.0
+    method: GET
+    uri: https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/src/csvcubed/schema/codelist-config/v1_0/schema.json
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA8VXW2/bNhR+968g3D60gG05ybYWeQvalwDDOjTZBmwwAlo6sthRokpSCYzA/728
+        SSZliXadYX1JrKPD71z4nYueJwhNX4u0gBJPr9G0kLIW10nyRbBqbsULxjdJxnEu58t3iVOd6XMk
+        84/UDadGNxWP87RZQ5akLIM5JULOU1blZJM8XiyW9qwkkoI+fmcAUc44wkgf0PoLq5SBSDmpJWGV
+        pyoZWgNqBGTmVMoBaw2Eqww9Ykoy+8hyBShItaHQ4SJSoQ93f87/0idL3NqR29r4wtZfIJVWxuFr
+        QzjoEP9ZGUnNWQ1cEhBK9qwkQeqswAMTkivjBszIM8hxQ+VZKTMYOwtl0/68hw1ydIOainxtABGb
+        HVnY6NE+rUNeBgbauxm3YTTOxg/hxq1QVm2QJ9VXeo490ZQl5tuoLVEwLpHTPNeQoSLjEUP3GtVq
+        HRhBbxpO3nqmXnPIW7oMs4WDYA1PQSRKjisiDPXFQpfvq0TBidDBulkrSwUcc7HT+xFOqvrFAuQD
+        EaKBGNc/YgmKiqX6U2DZ8/MJC1XtRBJM6bYLKNMd4PbuE3r/y/LCNYEZgsVmgS6Xl5fz5dX86gKp
+        y9k/3V9cXv/80/XV8u9T6e38L1lGcvKyCChWP1qg/zUKSlKoRKwN/PH51rrNoVZ3DJUULoJ6y8mm
+        kMhhIFzXdKss6NYtCyIGC+t7iOSAxzmk/Ci9Pu3Bv0pUIzbEUBw03TUxyvcqFz2Qf2H7xHh2KoxT
+        HwASqrdEEnlnWo/kigybrddVqxRqKQbuy5tTRu7PKidT0vW201BPJciCZVMnWHVnB6Zae9p/PvSa
+        4jVQ9MaNtbeabhWTprY9u+MD0byDqim11xZtOkPTDmM1C41309Oqdi93h0HGHcdCkSfTdAyc11pW
+        fob7eH/W2nNPo0HsD+wDmfj/u5niaHAiCTv1SQu1c6tUp7jfXsxu4eEO2DpM36+6N6mx0CrrXjQy
+        LL3sYc5xwEe7ptxKKLU5yRvwXhInDq7xeNQDuZz1YouGdtMGdVpMvTIcK0TUUjbgQsfzTuhxZawq
+        O6hQOHBJpji74W2CWgQOjLT/XtoGsOOGPw6tay8z32XqmO3fnOJ/ZVjgEh5w/wYO7X6GHDgoW3q+
+        4Y5DhqVqVgMV8KR2KTjmSO+tnev6vZpvES/V9HhQcydY6oYdNYPGqJ6aIlKpmaSQR62nBaGZCv7Q
+        9slNysFGatcb0PHyNYq6mVPXpOweYNcUq70GE3jO0kZE9nyFjrPMOI3p76PVyCr4lPeqHfUycWT5
+        0GHZFWQaHNvN4pjmiG7GB6kfzk2Ykv6NW8iRZt0pDPXlFwVpAp3Env2nVYQjwfYVZ4lT9XnSrnpq
+        l6XwiCtpV9Uxagxd++n0t9lwJkdLq4cXu5vReznLizDn+9+rg5zLw2TbO44vYDdIfzq4ctR7GLak
+        DDn5XR8EjtT9z4FeUluSHPXPNuTQRXd2Ed0Ox5Y5vYdNdt8Asz61X24TAAA=
+    headers:
+      Accept-Ranges:
+      - bytes
+      Access-Control-Allow-Origin:
+      - '*'
+      Cache-Control:
+      - max-age=300
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1127'
+      Content-Security-Policy:
+      - default-src 'none'; style-src 'unsafe-inline'; sandbox
+      Content-Type:
+      - text/plain; charset=utf-8
+      Date:
+      - Thu, 15 Sep 2022 16:15:31 GMT
+      ETag:
+      - W/"c2258c03df118878581dd9865d8e6823ccb2830f7ea1dd8cd0971955c3cd0bc2"
+      Expires:
+      - Thu, 15 Sep 2022 16:20:31 GMT
+      Source-Age:
+      - '67'
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Authorization,Accept-Encoding,Origin
+      Via:
+      - 1.1 varnish
+      X-Cache:
+      - HIT
+      X-Cache-Hits:
+      - '1'
+      X-Content-Type-Options:
+      - nosniff
+      X-Fastly-Request-ID:
+      - 6fdaeb1cfc7f0247b998ed8e07fc6daa654b327c
+      X-Frame-Options:
+      - deny
+      X-GitHub-Request-Id:
+      - 457E:4130:A3BA3:109463:63234F60
+      X-Served-By:
+      - cache-lhr7348-LHR
+      X-Timer:
+      - S1663258532.614629,VS0,VE1
       X-XSS-Protection:
       - 1; mode=block
     status:

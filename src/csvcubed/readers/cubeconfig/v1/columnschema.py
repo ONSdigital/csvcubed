@@ -15,12 +15,11 @@ from typing import List, Union, Optional, TypeVar, Tuple
 
 import uritemplate
 
-from jsonschema.exceptions import ValidationError
-
 from csvcubedmodels.dataclassbase import DataClassBase
 
 from csvcubed.utils.validators.schema import validate_dict_against_schema
 from csvcubed.inputs import pandas_input_to_columnar_optional_str
+from csvcubed.models.jsonvalidationerrors import JsonSchemaValidationError
 from csvcubed.models.cube import CatalogMetadata, NewQbConcept
 from csvcubed.models.cube.qb.components import (
     NewQbDimension,
@@ -53,10 +52,13 @@ from csvcubed.utils.uri import (
 from csvcubed.models.codelistconfig.code_list_config import CodeListConfig
 from csvcubed.utils.file import code_list_config_json_exists
 from csvcubed.readers.cubeconfig.utils import load_resource
+from csvcubed.utils.validators.schema import map_to_internal_validation_errors
 
 _logger = logging.getLogger(__name__)
 
 T = TypeVar("T", bound=object)
+
+EXISTING_UNIT_DEFAULT_SCALING_FACTOR = 1.0
 
 
 @dataclass
@@ -82,7 +84,7 @@ class NewDimension(SchemaBaseClass):
         data: PandasDataTypes,
         cube_config_minor_version: Optional[int],
         config_path: Optional[Path] = None,
-    ) -> Tuple[NewQbDimension, list[ValidationError]]:
+    ) -> Tuple[NewQbDimension, List[JsonSchemaValidationError]]:
 
         new_dimension = NewQbDimension.from_data(
             label=self.label or csv_column_title,
@@ -110,7 +112,7 @@ class NewDimension(SchemaBaseClass):
         csv_column_title: str,
         cube_config_minor_version: Optional[int],
         cube_config_path: Optional[Path],
-    ) -> Tuple[Optional[QbCodeList], list[ValidationError]]:
+    ) -> Tuple[Optional[QbCodeList], List[JsonSchemaValidationError]]:
         if isinstance(self.code_list, str):
             if looks_like_uri(self.code_list):
                 return (ExistingQbCodeList(self.code_list), [])
@@ -138,8 +140,12 @@ class NewDimension(SchemaBaseClass):
                 )
                 schema = load_resource(code_list_config.schema)
 
-                code_list_schema_validation_errors = validate_dict_against_schema(
+                unmapped_schema_validation_errors = validate_dict_against_schema(
                     value=code_list_config_dict, schema=schema
+                )
+
+                code_list_schema_validation_errors = map_to_internal_validation_errors(
+                    schema, unmapped_schema_validation_errors
                 )
 
                 return (
@@ -191,7 +197,9 @@ class NewDimension(SchemaBaseClass):
                 NewQbCodeList(
                     code_list_config.metadata, code_list_config.new_qb_concepts
                 ),
-                code_list_schema_validation_errors,
+                map_to_internal_validation_errors(
+                    schema, code_list_schema_validation_errors
+                ),
             )
         else:
             raise ValueError(f"Unmatched code_list value {self.code_list}")
@@ -462,7 +470,7 @@ def _map_unit(resource: Unit) -> NewQbUnit:
             if resource.from_existing is None
             else ExistingQbUnit(resource.from_existing)
         ),
-        base_unit_scaling_factor=resource.scaling_factor,
+        base_unit_scaling_factor=_get_unit_scaling_factor(resource),
         qudt_quantity_kind_uri=resource.quantity_kind,
         si_base_unit_conversion_multiplier=resource.si_scaling_factor,
     )
@@ -494,6 +502,21 @@ def _map_attribute_values(
             )
         )
     return new_attribute_values
+
+
+def _get_unit_scaling_factor(unit: Unit) -> Optional[float]:
+    """
+    If the user wishes to, they should be able to specify the scaling factor (if relevant),
+    but if they don't provide it we should just assume that it is 1
+    (i.e. there is a one-to-one relationship between the existing unit and their new more specialised unit).
+    If the unit is not derived from an existing unit, there will be not scaling factor.
+    """
+    if unit.from_existing is None:
+        return None
+    elif unit.scaling_factor is None:
+        return EXISTING_UNIT_DEFAULT_SCALING_FACTOR
+    else:
+        return unit.scaling_factor
 
 
 def _get_new_attribute_values(

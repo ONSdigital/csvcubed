@@ -4,6 +4,7 @@ import json
 import pandas as pd
 from tempfile import TemporaryDirectory
 from typing import List
+import re
 
 from csvcubed.models.cube.qb.components.attribute import ExistingQbAttribute
 from csvcubed.models.cube.qb.components.codelist import (
@@ -34,6 +35,7 @@ from csvcubed.readers.cubeconfig.v1.mapcolumntocomponent import (
 )
 from csvcubed.utils.uri import uri_safe
 from csvcubed.cli.build import build as cli_build
+from csvcubed.readers.cubeconfig.schema_versions import get_deserialiser_for_schema
 from csvcubed.readers.cubeconfig.v1.configdeserialiser import _get_qb_column_from_json
 from tests.unit.test_baseunit import get_test_cases_dir, assert_num_validation_errors
 from csvcubed.definitions import APP_ROOT_DIR_PATH
@@ -69,7 +71,7 @@ def test_build():
             output_directory=output,
             csv_path=csv,
             fail_when_validation_error_occurs=True,
-            validation_errors_file_name = "validation_errors.json",
+            validation_errors_file_name="validation_errors.json",
         )
 
 
@@ -157,7 +159,7 @@ def test_build_config_ok():
             config_path=config,
             output_directory=output,
             fail_when_validation_error_occurs=True,
-            validation_errors_file_name = "validation_errors.json",
+            validation_errors_file_name="validation_errors.json",
         )
 
     assert isinstance(cube, Cube)
@@ -319,7 +321,6 @@ def test_attribute_new_literal():
     column_data = ["1", "2", "3", "4"]
     column_config = vc.ATTRIBUTE_NEW_LITERAL
     data = pd.Series(column_data, name="Attribute Heading")
-
 
     (column, _) = map_column_to_qb_component(
         "New Attribute", column_config, data, cube_config_minor_version=0
