@@ -202,7 +202,7 @@ def get_dataset_val_counts_info(
 
 
 def get_concepts_hierarchy_info(
-    dataset: pd.DataFrame, parent_notation_col, label_col, notation_col
+    dataset: pd.DataFrame, parent_col, label_col, unique_identifier
 ) -> CodelistHierarchyInfoResult:
     """
     Generates the `CodelistHierarchyInfoResult` from the codelist.
@@ -212,7 +212,7 @@ def get_concepts_hierarchy_info(
     :return: `CodelistHierarchyInfoResult`
     """
     concepts_tree = build_concepts_hierarchy_tree(
-        dataset, parent_notation_col, label_col, notation_col
+        dataset, parent_col, label_col, unique_identifier
     )
 
     return CodelistHierarchyInfoResult(tree=concepts_tree)
