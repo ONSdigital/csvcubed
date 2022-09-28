@@ -22,10 +22,10 @@ from csvcubed.models.cube.qb.components import (
 from csvcubed.models.cube.qb.components.concept import NewQbConcept
 from csvcubed.models.cube.uristyle import URIStyle
 from csvcubed.utils.dict import rdf_resource_to_json_ld
+from csvcubed.utils.version import _get_csvcubed_version
 from csvcubed.models.rdf.conceptschemeincatalog import ConceptSchemeInCatalog
 from csvcubed.writers.urihelpers.skoscodelist import SkosCodeListNewUriHelper
 from csvcubed.writers.writerbase import WriterBase
-from csvcubed.__init__ import __version__
 
 _logger = logging.getLogger(__name__)
 
@@ -169,10 +169,6 @@ class SkosCodeListWriter(WriterBase):
             "primaryKey": "uri_identifier",
         }
 
-    def _get_csvcubed_version(self):
-        versionNumber = f"https://github.com/GSS-Cogs/csvcubed/releases/tag/v{__version__}"
-        return versionNumber
-
     def _get_csvw_metadata(self) -> dict:
         scheme_uri = self.uri_helper.get_scheme_uri()
         additional_metadata = self._get_catalog_metadata(scheme_uri)
@@ -181,17 +177,16 @@ class SkosCodeListWriter(WriterBase):
             "@id": scheme_uri,
             "url": self.csv_file_name,
             "tableSchema": f"{self.new_code_list.metadata.uri_safe_identifier}.table.json",
-            "rdfs:seeAlso": rdf_resource_to_json_ld(additional_metadata),            
+            "rdfs:seeAlso": rdf_resource_to_json_ld(additional_metadata),
         }
 
     def _get_catalog_metadata(self, scheme_uri: str) -> ConceptSchemeInCatalog:
         concept_scheme_with_metadata = ConceptSchemeInCatalog(scheme_uri)
-        
-        from csvcubed.models.rdf import prov
-        
-        generation_activity = prov.Activity("http://example.com/thing#todo-activity-uri")
-        generation_activity.used = ExistingResource(self._get_csvcubed_version())
 
+        from csvcubed.models.rdf import prov
+
+        generation_activity = prov.Activity(self.uri_helper.get_activity_uri())
+        generation_activity.used = ExistingResource(_get_csvcubed_version())
         concept_scheme_with_metadata.was_generated_by = generation_activity
 
         if isinstance(self.new_code_list, CompositeQbCodeList):
@@ -206,7 +201,7 @@ class SkosCodeListWriter(WriterBase):
             }
         )
         return concept_scheme_with_metadata
-    
+
     def _get_parent_concept(self, parent_code: str) -> NewQbConcept:
         filtered_concepts: List[NewQbConcept] = [
             c for c in self.new_code_list.concepts if c.code == parent_code

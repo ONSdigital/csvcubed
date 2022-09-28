@@ -79,3 +79,6 @@ class QbCubeNewUriHelper:
 
     def get_structure_uri(self) -> str:
         return self._uri_in_doc("structure")
+
+    def get_activity_uri(self) -> str:
+        return self._uri_in_doc("csvcubed-build-activity")

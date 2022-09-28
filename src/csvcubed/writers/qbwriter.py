@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Tuple, Dict, Any, List, Iterable, Set
 
 import pandas as pd
+from csvcubed.models.rdf import conceptschemeincatalog
 
 from csvcubedmodels.rdf.dependency import RdfGraphDependency
 from csvcubedmodels import rdf
@@ -60,6 +61,7 @@ from ..models.rdf.newunitresource import NewUnitResource
 from ..models.cube.qb.components.arbitraryrdf import RdfSerialisationHint
 from csvcubed.models.rdf.qbdatasetincatalog import QbDataSetInCatalog
 from ..utils.qb.validation.observations import get_observation_status_columns
+from csvcubed.__init__ import __version__
 
 
 _logger = logging.getLogger(__name__)
@@ -92,7 +94,7 @@ class QbWriter(WriterBase):
         # Also converts all appropriate columns to the pandas categorical format.
 
         _logger.info(f"Beginning CSV-W Generation: {self.csv_file_name}")
-        
+
         ensure_int_columns_are_ints(self.cube)
 
         # Bring the pandas representation of booleans inline with what the csvw spec requires
@@ -100,11 +102,13 @@ class QbWriter(WriterBase):
         if isinstance(self.cube.data, pd.DataFrame):
             for pandas_column_label in self.cube.data.columns.values:
                 if self.cube.data[pandas_column_label].dtype == "bool":
-                    self.cube.data[pandas_column_label] = self.cube.data[pandas_column_label].apply(
+                    self.cube.data[pandas_column_label] = self.cube.data[
+                        pandas_column_label
+                    ].apply(
                         lambda x: "true" if x is True else "false" if x is False else x
                     )
 
-        _logger.info('Calling data values to uri safe values')
+        _logger.info("Calling data values to uri safe values")
         convert_data_values_to_uri_safe_values(
             self.cube, self.raise_missing_uri_safe_value_exceptions
         )
@@ -141,6 +145,13 @@ class QbWriter(WriterBase):
             csv_output_file_path = output_folder / self.csv_file_name
             _logger.debug("Writing CSV to %s", csv_output_file_path)
             self.cube.data.to_csv(csv_output_file_path, index=False)
+
+    def _get_csvcubed_version(self):
+
+        versionNumber = (
+            f"https://github.com/GSS-Cogs/csvcubed/releases/tag/v{__version__}"
+        )
+        return versionNumber
 
     def _get_additional_rdf_metadata(self) -> List[dict]:
         """
@@ -270,7 +281,7 @@ class QbWriter(WriterBase):
                         ),
                         "reference": {
                             "resource": code_list.csv_file_relative_path_or_uri,
-                            "columnReference": "notation", # NewQbCodeListInCsvW are used for historic reasons and they always use the notation key for their primary key. External users cannot create NewQbCodeListInCsvW.
+                            "columnReference": "notation",  # NewQbCodeListInCsvW are used for historic reasons and they always use the notation key for their primary key. External users cannot create NewQbCodeListInCsvW.
                         },
                     }
                 )
@@ -341,6 +352,13 @@ class QbWriter(WriterBase):
 
     def _generate_qb_dataset_dsd_definitions(self) -> QbDataSetInCatalog:
         dataset = self._get_qb_dataset_with_catalog_metadata()
+
+        from csvcubed.models.rdf import prov
+
+        generation_activity = prov.Activity(self._new_uri_helper.get_activity_uri())
+        generation_activity.used = ExistingResource(self._get_csvcubed_version())
+        dataset.was_generated_by = generation_activity
+
         dataset.structure = rdf.qb.DataStructureDefinition(
             self._new_uri_helper.get_structure_uri()
         )
