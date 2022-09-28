@@ -62,7 +62,6 @@ from ..models.rdf.newunitresource import NewUnitResource
 from ..models.cube.qb.components.arbitraryrdf import RdfSerialisationHint
 from csvcubed.models.rdf.qbdatasetincatalog import QbDataSetInCatalog
 from ..utils.qb.validation.observations import get_observation_status_columns
-from csvcubed.__init__ import __version__
 
 
 _logger = logging.getLogger(__name__)
@@ -146,13 +145,6 @@ class QbWriter(WriterBase):
             csv_output_file_path = output_folder / self.csv_file_name
             _logger.debug("Writing CSV to %s", csv_output_file_path)
             self.cube.data.to_csv(csv_output_file_path, index=False)
-
-    def _get_csvcubed_version(self):
-
-        versionNumber = (
-            f"https://github.com/GSS-Cogs/csvcubed/releases/tag/v{__version__}"
-        )
-        return versionNumber
 
     def _get_additional_rdf_metadata(self) -> List[dict]:
         """

@@ -41,7 +41,6 @@ Feature: Test outputting CSV-Ws containing `SKOS:ConceptScheme`s.
       <http://www.w3.org/2004/02/skos/core#notation> "second-concept";
       <http://www.w3.org/ns/ui#sortPriority> 20 .
 
-
       @prefix prov: <http://www.w3.org/ns/prov#> .
 
       basicCodeList:code-list a prov:Entity;

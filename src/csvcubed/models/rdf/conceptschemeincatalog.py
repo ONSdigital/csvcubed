@@ -8,12 +8,6 @@ from csvcubedmodels.rdf import dcat, skos
 
 from csvcubed.models.rdf import prov
 
-# activity = prov_Activity("#activity-uri")
-# activity.used = ExistingResource("http://github.com/v0.1.4")
-
-# entity = prov_Entity("#code-list-identi")
-# entity.was_generated_by = activity
-
 
 class ConceptSchemeInCatalog(prov.Entity, skos.ConceptScheme, dcat.Dataset):
     """
