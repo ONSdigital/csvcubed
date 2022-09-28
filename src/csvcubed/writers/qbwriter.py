@@ -25,8 +25,8 @@ from csvcubedmodels.rdf.resource import (
     maybe_existing_resource,
 )
 
-from csvcubed.models.cube import *
 from csvcubed.models.rdf import prov
+from csvcubed.models.cube import *
 from csvcubed.utils.uri import (
     get_last_uri_part,
     csvw_column_name_safe,
