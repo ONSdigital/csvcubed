@@ -24,6 +24,7 @@ from csvcubed.models.cube.uristyle import URIStyle
 from csvcubed.utils.dict import rdf_resource_to_json_ld
 from csvcubed.utils.version import _get_csvcubed_version
 from csvcubed.models.rdf.conceptschemeincatalog import ConceptSchemeInCatalog
+from csvcubed.models.rdf import prov
 from csvcubed.writers.urihelpers.skoscodelist import SkosCodeListNewUriHelper
 from csvcubed.writers.writerbase import WriterBase
 
@@ -182,8 +183,6 @@ class SkosCodeListWriter(WriterBase):
 
     def _get_catalog_metadata(self, scheme_uri: str) -> ConceptSchemeInCatalog:
         concept_scheme_with_metadata = ConceptSchemeInCatalog(scheme_uri)
-
-        from csvcubed.models.rdf import prov
 
         generation_activity = prov.Activity(self.uri_helper.get_activity_uri())
         generation_activity.used = ExistingResource(_get_csvcubed_version())

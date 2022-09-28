@@ -26,6 +26,7 @@ from csvcubedmodels.rdf.resource import (
 )
 
 from csvcubed.models.cube import *
+from csvcubed.models.rdf import prov
 from csvcubed.utils.uri import (
     get_last_uri_part,
     csvw_column_name_safe,
@@ -352,8 +353,6 @@ class QbWriter(WriterBase):
 
     def _generate_qb_dataset_dsd_definitions(self) -> QbDataSetInCatalog:
         dataset = self._get_qb_dataset_with_catalog_metadata()
-
-        from csvcubed.models.rdf import prov
 
         generation_activity = prov.Activity(self._new_uri_helper.get_activity_uri())
         generation_activity.used = ExistingResource(self._get_csvcubed_version())
