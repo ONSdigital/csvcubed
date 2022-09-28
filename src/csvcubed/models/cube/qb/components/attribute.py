@@ -34,6 +34,7 @@ from csvcubed.utils.validators.uri import validate_uri
 
 @dataclass
 class QbAttribute(QbColumnStructuralDefinition, ArbitraryRdf, ABC):
+    
     @abstractmethod
     def get_is_required(self) -> bool:
         pass
@@ -75,7 +76,7 @@ class ExistingQbAttribute(QbAttribute):
     )
     is_required: bool = field(default=False, repr=False)
     arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
-    observed_value_col_title: Optional[str] = field(default=None)
+    observed_value_col_title: Optional[str] = field(default=None, repr=False)
 
     def get_observed_value_col_title(self) -> Optional[str]:
         return self.observed_value_col_title
@@ -133,7 +134,7 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
     is_required: bool = field(default=False, repr=False)
     uri_safe_identifier_override: Optional[str] = field(default=None, repr=False)
     arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
-    observed_value_col_title: Optional[str] = field(default=None)
+    observed_value_col_title: Optional[str] = field(default=None, repr=False)
 
     def get_observed_value_col_title(self) -> Optional[str]:
         return self.observed_value_col_title
@@ -218,11 +219,7 @@ class QbAttributeLiteral(QbAttribute, ABC):
     """
 
     data_type: str = field(repr=False)
-    observed_value_col_title: Optional[str] = field(default=None)
-
-    def get_observed_value_col_title(self) -> Optional[str]:
-        return self.observed_value_col_title
-
+    
     @validator("data_type", pre=True, always=False)
     def data_type_value(cls, data_type):
         if data_type not in ACCEPTED_DATATYPE_MAPPING:
@@ -236,6 +233,10 @@ class ExistingQbAttributeLiteral(ExistingQbAttribute, QbAttributeLiteral):
         default_factory=list, init=False, repr=False
     )
     arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
+    observed_value_col_title: Optional[str] = field(default=None, repr=False)
+
+    def get_observed_value_col_title(self) -> Optional[str]:
+        return self.observed_value_col_title
 
     def validate_data(
         self,
@@ -254,6 +255,10 @@ class NewQbAttributeLiteral(NewQbAttribute, QbAttributeLiteral):
         default_factory=list, init=False, repr=False
     )
     arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
+    observed_value_col_title: Optional[str] = field(default=None, repr=False)
+
+    def get_observed_value_col_title(self) -> Optional[str]:
+        return self.observed_value_col_title
 
     def _get_arbitrary_rdf(self) -> List[TripleFragmentBase]:
         return self.arbitrary_rdf
