@@ -160,7 +160,7 @@ def test_convert_data_values_to_uri_safe_values_missing_value_mapping():
             ),
             QbColumn(
                 "Observed Value",
-                QbSingleMeasureObservationValue(
+                QbPivotedObservationValue(
                     NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
                 ),
             ),
@@ -192,7 +192,7 @@ def test_qbcube_catagorical_numeric():
             ),
             QbColumn(
                 "Observed Value",
-                QbSingleMeasureObservationValue(
+                QbPivotedObservationValue(
                     NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
                 ),
             ),
@@ -233,7 +233,7 @@ def test_coerce_signed_integer_with_missing_obs_values():
             ),
             QbColumn(
                 "Value",
-                QbSingleMeasureObservationValue(
+                QbPivotedObservationValue(
                     NewQbMeasure("Some Measure"),
                     NewQbUnit("Some Unit"),
                     data_type="int",
@@ -268,7 +268,7 @@ def test_coerce_unsigned_integer_with_missing_obs_values():
             ),
             QbColumn(
                 "Value",
-                QbSingleMeasureObservationValue(
+                QbPivotedObservationValue(
                     NewQbMeasure("Some Measure"),
                     NewQbUnit("Some Unit"),
                     data_type="unsignedInt",
@@ -305,7 +305,7 @@ def test_coerce_attribute_value_with_missing_values():
             ),
             QbColumn(
                 "Value",
-                QbSingleMeasureObservationValue(
+                QbPivotedObservationValue(
                     NewQbMeasure("Some Measure"),
                     NewQbUnit("Some Unit"),
                     data_type="unsignedInt",

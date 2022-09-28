@@ -54,7 +54,7 @@ class QbMultiMeasureObservationValue(QbObservationValue):
 
 
 @dataclass
-class QbSingleMeasureObservationValue(QbObservationValue):
+class QbPivotedObservationValue(QbObservationValue):
     """
     Represents the unit/measure/datatype components necessary to define a simple qb:Observation.
 

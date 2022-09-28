@@ -12,7 +12,7 @@ from abc import ABC
 from ..qb import (
     QbMultiMeasureDimension,
     QbDimension,
-    QbSingleMeasureObservationValue,
+    QbPivotedObservationValue,
     QbMultiMeasureObservationValue,
     QbObservationValue,
     QbMultiUnits,
@@ -252,7 +252,7 @@ class NoObservedValuesColumnDefinedError(NeitherDefinedError):
     An error for when the user has not defined any observed value columns for the dataset.
     """
 
-    component_one: ComponentTypeDescription = QbSingleMeasureObservationValue
+    component_one: ComponentTypeDescription = QbPivotedObservationValue
     component_two: ComponentTypeDescription = QbMultiMeasureObservationValue
 
     @classmethod

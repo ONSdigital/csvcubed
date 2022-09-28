@@ -11,7 +11,7 @@ from csvcubed.models.cube import (
     NewQbAttribute,
     NewQbUnit,
     NewQbMeasure,
-    QbSingleMeasureObservationValue,
+    QbPivotedObservationValue,
     NewQbDimension,
     CatalogMetadata,
     Cube,
@@ -31,7 +31,7 @@ def test_find_sdmxa_obs_status_columns():
             QbColumn("Some Dimension", NewQbDimension(label="Some Dimension")),
             QbColumn(
                 "Values",
-                QbSingleMeasureObservationValue(
+                QbPivotedObservationValue(
                     NewQbMeasure("Some Measure"),
                     NewQbUnit("Some Unit"),
                 ),

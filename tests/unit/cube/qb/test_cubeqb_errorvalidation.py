@@ -44,7 +44,7 @@ def test_single_measure_qb_definition():
         ),
         QbColumn(
             "Value",
-            QbSingleMeasureObservationValue(
+            QbPivotedObservationValue(
                 ExistingQbMeasure("http://example.com/measures/existing_measure"),
                 NewQbUnit("some new unit"),
             ),
@@ -109,7 +109,7 @@ def test_existing_dimension_csv_column_uri_template():
             ),
             QbColumn(
                 "Value",
-                QbSingleMeasureObservationValue(
+                QbPivotedObservationValue(
                     ExistingQbMeasure("http://some/measure"),
                     ExistingQbUnit("http://some/unit"),
                 ),
@@ -140,7 +140,7 @@ def test_no_dimensions_validation_error():
         [
             QbColumn(
                 "Value",
-                QbSingleMeasureObservationValue(
+                QbPivotedObservationValue(
                     NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
                 ),
             )
@@ -177,7 +177,7 @@ def test_multiple_incompatible_unit_definitions():
             QbColumn("Some Unit", QbMultiUnits.new_units_from_data(data["Some Unit"])),
             QbColumn(
                 "Value",
-                QbSingleMeasureObservationValue(
+                QbPivotedObservationValue(
                     NewQbMeasure("Some New Measure"), NewQbUnit("Some New Unit")
                 ),
             ),
@@ -215,7 +215,7 @@ def test_no_unit_defined():
             ),
             QbColumn(
                 "Value",
-                QbSingleMeasureObservationValue(NewQbMeasure("Some New Measure")),
+                QbPivotedObservationValue(NewQbMeasure("Some New Measure")),
             ),
         ],
     )
@@ -254,7 +254,7 @@ def test_multiple_units_columns():
             ),
             QbColumn(
                 "Value",
-                QbSingleMeasureObservationValue(NewQbMeasure("Some New Measure")),
+                QbPivotedObservationValue(NewQbMeasure("Some New Measure")),
             ),
         ],
     )
@@ -289,13 +289,13 @@ def test_multiple_obs_val_columns():
             ),
             QbColumn(
                 "Value1",
-                QbSingleMeasureObservationValue(
+                QbPivotedObservationValue(
                     NewQbMeasure("Some New Measure 1"), NewQbUnit("Some New Unit 1")
                 ),
             ),
             QbColumn(
                 "Value2",
-                QbSingleMeasureObservationValue(
+                QbPivotedObservationValue(
                     NewQbMeasure("Some New Measure 2"), NewQbUnit("Some New Unit 2")
                 ),
             ),
@@ -415,7 +415,7 @@ def test_measure_dimension_with_single_measure_obs_val():
             ),
             QbColumn(
                 "Value",
-                QbSingleMeasureObservationValue(
+                QbPivotedObservationValue(
                     NewQbMeasure("Some New Measure"), NewQbUnit("Some New Unit 1")
                 ),
             ),
@@ -423,7 +423,7 @@ def test_measure_dimension_with_single_measure_obs_val():
     )
     error = _get_single_validation_error_for_qube(cube)
     assert isinstance(error, BothMeasureTypesDefinedError)
-    assert error.component_one == f"{QbSingleMeasureObservationValue.__name__}.measure"
+    assert error.component_one == f"{QbPivotedObservationValue.__name__}.measure"
     assert error.component_two == QbMultiMeasureDimension
     assert (
         error.additional_explanation
@@ -473,7 +473,7 @@ def test_existing_attribute_csv_column_uri_template_required():
             ),
             QbColumn(
                 "Obs",
-                QbSingleMeasureObservationValue(
+                QbPivotedObservationValue(
                     ExistingQbMeasure("http://example.org/single/measure/example"),
                     NewQbUnit("GBP"),
                 ),
@@ -529,7 +529,7 @@ def test_new_attribute_csv_column_uri_template_required():
             ),
             QbColumn(
                 "Obs",
-                QbSingleMeasureObservationValue(
+                QbPivotedObservationValue(
                     ExistingQbMeasure("http://example.org/single/measure/example"),
                     NewQbUnit("GBP"),
                 ),
@@ -591,7 +591,7 @@ def test_new_qb_attribute_literal_int():
             QbColumn("Some Dimension", NewQbDimension(label="Some Dimension")),
             QbColumn(
                 "Values",
-                QbSingleMeasureObservationValue(
+                QbPivotedObservationValue(
                     NewQbMeasure("Some Measure"),
                     NewQbUnit("Some Unit"),
                 ),
@@ -614,7 +614,7 @@ def test_existing_qb_attribute_literal_date():
             QbColumn("Some Dimension", NewQbDimension(label="Some Dimension")),
             QbColumn(
                 "Values",
-                QbSingleMeasureObservationValue(
+                QbPivotedObservationValue(
                     NewQbMeasure("Some Measure"),
                     NewQbUnit("Some Unit"),
                 ),
@@ -645,7 +645,7 @@ def test_attribute_numeric_resources_validation():
             QbColumn("Some Dimension", NewQbDimension(label="Some Dimension")),
             QbColumn(
                 "Values",
-                QbSingleMeasureObservationValue(
+                QbPivotedObservationValue(
                     NewQbMeasure("Some Measure"),
                     NewQbUnit("Some Unit"),
                 ),
@@ -684,7 +684,7 @@ def test_code_list_concept_identifier_reserved():
             ),
             QbColumn(
                 "Value",
-                QbSingleMeasureObservationValue(
+                QbPivotedObservationValue(
                     NewQbMeasure("Some Measure"),
                     NewQbUnit("Some Unit"),
                 ),
@@ -720,7 +720,7 @@ def test_conflict_concept_uri_values_error():
             ),
             QbColumn(
                 "Value",
-                QbSingleMeasureObservationValue(
+                QbPivotedObservationValue(
                     NewQbMeasure("Some Measure"),
                     NewQbUnit("Some Unit"),
                 ),
@@ -766,7 +766,7 @@ def test_conflict_new_attribute_value_uri_values_error():
             ),
             QbColumn(
                 "Value",
-                QbSingleMeasureObservationValue(
+                QbPivotedObservationValue(
                     NewQbMeasure("Some Measure"),
                     NewQbUnit("Some Unit"),
                 ),
@@ -809,7 +809,7 @@ def test_conflict_existing_attribute_value_uri_values_error():
             ),
             QbColumn(
                 "Value",
-                QbSingleMeasureObservationValue(
+                QbPivotedObservationValue(
                     NewQbMeasure("Some Measure"),
                     NewQbUnit("Some Unit"),
                 ),
@@ -849,7 +849,7 @@ def test_conflict_new_units_uri_values_error():
             ),
             QbColumn(
                 "Value",
-                QbSingleMeasureObservationValue(NewQbMeasure("Some Measure")),
+                QbPivotedObservationValue(NewQbMeasure("Some Measure")),
             ),
         ],
     )

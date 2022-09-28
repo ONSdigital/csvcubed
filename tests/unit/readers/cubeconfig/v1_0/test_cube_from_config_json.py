@@ -28,7 +28,7 @@ from csvcubed.models.cube.qb.components.attributevalue import (
 )
 from csvcubed.models.cube.qb.components.observedvalue import (
     QbMultiMeasureObservationValue,
-    QbSingleMeasureObservationValue,
+    QbPivotedObservationValue,
 )
 from csvcubed.readers.cubeconfig.v1.mapcolumntocomponent import (
     map_column_to_qb_component,
@@ -746,7 +746,7 @@ def test_observation_value_data_type_extraction():
     )
 
     assert isinstance(
-        column.structural_definition, QbSingleMeasureObservationValue
+        column.structural_definition, QbPivotedObservationValue
     ), column.structural_definition
     obs_val = column.structural_definition
     assert obs_val.data_type == "integer"
