@@ -30,8 +30,6 @@ from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.models.validationerror import ValidationError
 from csvcubed.utils.uri import uri_safe
 from csvcubed.utils.validators.uri import validate_uri
-from csvcubed.models.cube.qb import QbObservationValue
-from csvcubed.models.cube.qb.columns import QbColumn
 
 
 @dataclass
@@ -81,7 +79,7 @@ class ExistingQbAttribute(QbAttribute):
 
     def get_observed_value_col_title(self) -> Optional[str]:
         return self.observed_value_col_title
-        
+
     @validator("new_attribute_values")
     def _validate_concepts_non_conflicting(
         cls, new_attribute_values: List[NewQbAttributeValue]
