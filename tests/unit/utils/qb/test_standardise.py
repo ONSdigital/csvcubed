@@ -54,7 +54,7 @@ def test_qbcube_data_is_categorical():
                 QbMultiMeasureDimension.new_measures_from_data(data["Measure"]),
             ),
             QbColumn("Unit", QbMultiUnits.new_units_from_data(data["Unit"])),
-            QbColumn("Observed Value", QbMultiMeasureObservationValue()),
+            QbColumn("Observed Value", QbStandardShapeObservationValue()),
         ],
     )
 
@@ -111,7 +111,7 @@ def test_convert_data_values_to_uri_safe_values():
                 QbMultiMeasureDimension.new_measures_from_data(data["Measure"]),
             ),
             QbColumn("Unit", QbMultiUnits.new_units_from_data(data["Unit"])),
-            QbColumn("Observed Value", QbMultiMeasureObservationValue()),
+            QbColumn("Observed Value", QbStandardShapeObservationValue()),
         ],
     )
 

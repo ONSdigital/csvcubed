@@ -27,7 +27,7 @@ from csvcubed.models.cube.qb.components.attributevalue import (
     NewQbAttributeValue,
 )
 from csvcubed.models.cube.qb.components.observedvalue import (
-    QbMultiMeasureObservationValue,
+    QbStandardShapeObservationValue,
     QbPivotedObservationValue,
 )
 from csvcubed.readers.cubeconfig.v1.mapcolumntocomponent import (
@@ -208,7 +208,7 @@ def test_build_config_ok():
 
     col_observation = cube.columns[4]
     assert isinstance(
-        col_observation.structural_definition, QbMultiMeasureObservationValue
+        col_observation.structural_definition, QbStandardShapeObservationValue
     )
     assert col_observation.structural_definition.unit is None
     assert col_observation.structural_definition.data_type == "decimal"
@@ -595,7 +595,7 @@ def test_observation_ok():
     assert column.uri_safe_identifier_override is None
 
     sd = column.structural_definition
-    assert isinstance(sd, QbMultiMeasureObservationValue)
+    assert isinstance(sd, QbStandardShapeObservationValue)
     assert sd.unit is None
     assert sd.data_type == "decimal"
 

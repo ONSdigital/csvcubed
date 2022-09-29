@@ -31,7 +31,7 @@ from csvcubed.models.cube.qb.components import (
     ExistingQbUnit,
     QbMultiUnits,
     QbMultiMeasureDimension,
-    QbMultiMeasureObservationValue,
+    QbStandardShapeObservationValue,
     QbPivotedObservationValue,
     ExistingQbMeasure,
     NewQbMeasure,
@@ -442,7 +442,7 @@ class ObservationValue(SchemaBaseClass):
 
         if self.measure is None:
             # Multi-measure cube
-            return QbMultiMeasureObservationValue(data_type=self.data_type, unit=unit)
+            return QbStandardShapeObservationValue(data_type=self.data_type, unit=unit)
         else:
             # Single measure qb
             measure = None

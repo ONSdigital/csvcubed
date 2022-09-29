@@ -1,6 +1,6 @@
 from csvcubed.models.cube.qb.components.measure import ExistingQbMeasure
 from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureDimension
-from csvcubed.models.cube.qb.components.observedvalue import QbMultiMeasureObservationValue
+from csvcubed.models.cube.qb.components.observedvalue import QbStandardShapeObservationValue
 from csvcubed.models.cube.qb.validationerrors import CsvColumnUriTemplateMissingError
 import pytest
 
@@ -75,7 +75,7 @@ def test_value_uri_template_is_present_in_existing_measure_dimention():
             QbColumn("Some Dimension", NewQbDimension(label="Some Dimension")),
             QbColumn(
                 "Values",
-                QbMultiMeasureObservationValue(
+                QbStandardShapeObservationValue(
                     unit=NewQbUnit("Some Unit"),
                 ),
             ),
@@ -104,7 +104,7 @@ def test_value_uri_template_is_missing_in_existing_measure_dimention():
             QbColumn("Some Dimension", NewQbDimension(label="Some Dimension")),
             QbColumn(
                 "Values",
-                QbMultiMeasureObservationValue(
+                QbStandardShapeObservationValue(
                     unit=NewQbUnit("Some Unit"),
                 ),
             ),

@@ -430,7 +430,7 @@ class QbWriter(WriterBase):
             specs.append(
                 self._get_qb_measure_component_specification(observation_value.measure)
             )
-        elif isinstance(observation_value, QbMultiMeasureObservationValue):
+        elif isinstance(observation_value, QbStandardShapeObservationValue):
             pass
         else:
             raise Exception(
@@ -969,7 +969,7 @@ class QbWriter(WriterBase):
                 observation_value.measure,
             )
             return self._get_measure_uri(observation_value.measure), None
-        elif isinstance(observation_value, QbMultiMeasureObservationValue):
+        elif isinstance(observation_value, QbStandardShapeObservationValue):
             multi_measure_dimension_col = self._get_single_column_of_type(
                 QbMultiMeasureDimension
             )

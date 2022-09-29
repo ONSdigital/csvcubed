@@ -13,7 +13,7 @@ from ..qb import (
     QbMultiMeasureDimension,
     QbDimension,
     QbPivotedObservationValue,
-    QbMultiMeasureObservationValue,
+    QbStandardShapeObservationValue,
     QbObservationValue,
     QbMultiUnits,
     QbStructuralDefinition,
@@ -253,7 +253,7 @@ class NoObservedValuesColumnDefinedError(NeitherDefinedError):
     """
 
     component_one: ComponentTypeDescription = QbPivotedObservationValue
-    component_two: ComponentTypeDescription = QbMultiMeasureObservationValue
+    component_two: ComponentTypeDescription = QbStandardShapeObservationValue
 
     @classmethod
     def get_error_url(cls) -> str:

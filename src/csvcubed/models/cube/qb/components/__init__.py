@@ -24,7 +24,7 @@ from .measure import QbMeasure, NewQbMeasure, ExistingQbMeasure
 from .measuresdimension import QbMultiMeasureDimension
 from .observedvalue import (
     QbObservationValue,
-    QbMultiMeasureObservationValue,
+    QbStandardShapeObservationValue,
     QbPivotedObservationValue,
 )
 from .unit import QbUnit, NewQbUnit, ExistingQbUnit

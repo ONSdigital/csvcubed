@@ -6,7 +6,7 @@ from csvcubed.models.cube import (
     QbObservationValue,
     Cube,
     QbPivotedObservationValue,
-    QbMultiMeasureObservationValue,
+    QbStandardShapeObservationValue,
     QbColumn,
     QbAttribute,
     ExistingQbAttribute,
@@ -52,7 +52,7 @@ def validate_observations(cube: Cube) -> List[ValidationError]:
             cube, QbPivotedObservationValue
         )
         multi_measure_obs_val_columns = get_columns_of_dsd_type(
-            cube, QbMultiMeasureObservationValue
+            cube, QbStandardShapeObservationValue
         )
         if len(multi_measure_obs_val_columns) == 1:
             obs_val_column = multi_measure_obs_val_columns[0]
@@ -146,7 +146,7 @@ def _validate_observation_value(
 
 
 def _validate_multi_measure_cube(
-    cube: Cube, obs_val_column: QbColumn[QbMultiMeasureObservationValue]
+    cube: Cube, obs_val_column: QbColumn[QbStandardShapeObservationValue]
 ) -> List[ValidationError]:
     errors: List[ValidationError] = []
 

@@ -316,7 +316,7 @@ def step_impl(context, cube_name: str):
         ),
         QbColumn(
             "Value",
-            QbMultiMeasureObservationValue(unit=NewQbUnit("meters")),
+            QbStandardShapeObservationValue(unit=NewQbUnit("meters")),
         ),
     ]
 
@@ -341,7 +341,7 @@ def step_impl(context, cube_name: str):
         ),
         QbColumn(
             "Value",
-            QbMultiMeasureObservationValue(unit=NewQbUnit("meters")),
+            QbStandardShapeObservationValue(unit=NewQbUnit("meters")),
         ),
     ]
 
@@ -613,7 +613,7 @@ def step_impl(context, cube_name: str):
         ),
         QbColumn(
             "Observed Value",
-            QbMultiMeasureObservationValue(unit=NewQbUnit("Num of students")),
+            QbStandardShapeObservationValue(unit=NewQbUnit("Num of students")),
         ),
         QbColumn(
             "Measure", QbMultiMeasureDimension.new_measures_from_data(data["Measure"])
@@ -719,7 +719,7 @@ def step_impl(context, cube_name: str):
         ),
         QbColumn(
             "Observed Value",
-            QbMultiMeasureObservationValue("number"),
+            QbStandardShapeObservationValue("number"),
         ),
         QbColumn(
             "Units",
@@ -826,7 +826,7 @@ def step_impl(context, cube_name: str):
         ),
         QbColumn(
             "Observed Value",
-            QbMultiMeasureObservationValue(unit=NewQbUnit("Num of students")),
+            QbStandardShapeObservationValue(unit=NewQbUnit("Num of students")),
         ),
     ]
 

@@ -560,9 +560,9 @@ def test_output_new_code_list_csvws_urls_with_uri_style_WithoutFileExtensions():
 
 def test_default_property_value_uris_multi_measure_obs_val():
     """
-    There should be no `valueUrl` for a `QbMultiMeasureObservationValue`.
+    There should be no `valueUrl` for a `QbStandardShapeObservationValue`.
     """
-    column = QbColumn("Some Column", QbMultiMeasureObservationValue())
+    column = QbColumn("Some Column", QbStandardShapeObservationValue())
 
     cube = Cube(
         CatalogMetadata("Cube Name"),
@@ -584,7 +584,7 @@ def test_default_property_value_uris_multi_existing_measure_obs_val():
     The `propertyUrl` for a multi-existing-measure observation value should match the measure column's
     value URI template.
     """
-    column = QbColumn("Some Column", QbMultiMeasureObservationValue())
+    column = QbColumn("Some Column", QbStandardShapeObservationValue())
 
     cube = Cube(
         CatalogMetadata("Cube Name"),
@@ -773,10 +773,10 @@ def test_virtual_columns_generated_for_single_obs_val():
 
 def test_virtual_columns_generated_for_multi_meas_obs_val():
     """
-    Ensure that the virtual column generated for a `QbMultiMeasureObservationValue`'s unit and measure are
+    Ensure that the virtual column generated for a `QbStandardShapeObservationValue`'s unit and measure are
     correct.
     """
-    obs_val = QbMultiMeasureObservationValue(unit=NewQbUnit("Some Unit"))
+    obs_val = QbStandardShapeObservationValue(unit=NewQbUnit("Some Unit"))
     virtual_columns = empty_qbwriter._generate_virtual_columns_for_obs_val(obs_val)
 
     virt_unit = first(virtual_columns, lambda x: x["name"] == "virt_unit")
@@ -857,7 +857,7 @@ def test_about_url_generation_with_multiple_measures():
             "Local Dimension",
             NewQbDimension.from_data("Name of New Dimension", data["Local Dimension"]),
         ),
-        QbColumn("Value", QbMultiMeasureObservationValue("number")),
+        QbColumn("Value", QbStandardShapeObservationValue("number")),
         QbColumn("Units", QbMultiUnits.new_units_from_data(data["Units"])),
     ]
 

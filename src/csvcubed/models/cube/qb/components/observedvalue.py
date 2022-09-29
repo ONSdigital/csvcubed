@@ -39,7 +39,7 @@ class QbObservationValue(QbColumnStructuralDefinition, ABC):
 
 
 @dataclass
-class QbMultiMeasureObservationValue(QbObservationValue):
+class QbStandardShapeObservationValue(QbObservationValue):
     data_type: str = field(default="decimal", repr=False)
     unit: Optional[QbUnit] = None
 

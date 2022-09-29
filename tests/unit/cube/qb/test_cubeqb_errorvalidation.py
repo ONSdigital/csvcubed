@@ -78,7 +78,7 @@ def test_multi_measure_qb_definition():
             ExistingQbDimension("https://example.org/dimensions/existing_dimension"),
             csv_column_uri_template="https://example.org/concept-scheme/existing_scheme/{+existing_dimension}",
         ),
-        QbColumn("Value", QbMultiMeasureObservationValue(data_type="number")),
+        QbColumn("Value", QbStandardShapeObservationValue(data_type="number")),
         QbColumn(
             "Measure",
             QbMultiMeasureDimension.new_measures_from_data(data["Measure"]),
@@ -330,7 +330,7 @@ def test_multi_measure_obs_val_without_measure_dimension():
             ),
             QbColumn(
                 "Value",
-                QbMultiMeasureObservationValue(unit=NewQbUnit("Some New Unit 1")),
+                QbStandardShapeObservationValue(unit=NewQbUnit("Some New Unit 1")),
             ),
         ],
     )
@@ -376,7 +376,7 @@ def test_multi_measure_obs_val_with_multiple_measure_dimensions():
             ),
             QbColumn(
                 "Value",
-                QbMultiMeasureObservationValue(unit=NewQbUnit("Some New Unit 1")),
+                QbStandardShapeObservationValue(unit=NewQbUnit("Some New Unit 1")),
             ),
         ],
     )
@@ -886,7 +886,7 @@ def test_conflict_new_measures_uri_values_error():
             ),
             QbColumn(
                 "Value",
-                QbMultiMeasureObservationValue(unit=NewQbUnit("Some Unit")),
+                QbStandardShapeObservationValue(unit=NewQbUnit("Some Unit")),
             ),
         ],
     )

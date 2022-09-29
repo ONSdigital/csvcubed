@@ -110,7 +110,7 @@ QbColumnStructuralDefinition
 ├── QbMultiUnits                        - The column values describe the unit that the row's measured/observed value was recorded in.
 └── QbObservationValue                  - The column values represent observed values of some population characteristic.
     ├── QbPivotedObservationValue     - Each row will hold observed values for one or more population characteristics.
-    └── QbMultiMeasureObservationValue      - Each row declares what its measure is (and also possibly what its unit is).
+    └── QbStandardShapeObservationValue      - Each row declares what its measure is (and also possibly what its unit is).
 ```
 
 **Note that**:
