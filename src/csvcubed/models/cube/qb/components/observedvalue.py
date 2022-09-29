@@ -61,7 +61,7 @@ class QbPivotedObservationValue(QbObservationValue):
     N.B. Requires `virt_unit` and `virt_measure` columns to be added to CSV-W metadata
     """
 
-    measure: QbMeasure
+    measure: Optional[QbMeasure] = None
     unit: Optional[QbUnit] = None
     data_type: str = field(default="decimal", repr=False)
 
