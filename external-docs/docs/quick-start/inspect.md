@@ -101,7 +101,7 @@ language.csv#code-list                        Language
 people-on-stage  people     60
 ```
 
-## Inspect a CSV-W code lsit
+## Inspect a CSV-W code list
 
 Now we inspect the `language.csv-metadata.json` code list we built in [Building a CSV-W](build.md):
 

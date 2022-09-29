@@ -1,0 +1,46 @@
+{
+    "@context": "http://www.w3.org/ns/csvw",
+    "@id": "dim-2.csv#code-list",
+    "url": "dim-2.csv",
+    "tableSchema": "dim-2.table.json",
+    "rdfs:seeAlso": [
+        {
+            "@id": "dim-2.csv#code-list",
+            "@type": [
+                "http://www.w3.org/ns/dcat#Dataset",
+                "http://www.w3.org/2004/02/skos/core#ConceptScheme",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.w3.org/ns/dcat#Resource"
+            ],
+            "http://purl.org/dc/terms/identifier": [
+                {
+                    "@value": "Dim-2"
+                }
+            ],
+            "http://purl.org/dc/terms/issued": [
+                {
+                    "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "@value": "2022-09-26T14:01:42.258772"
+                }
+            ],
+            "http://purl.org/dc/terms/modified": [
+                {
+                    "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "@value": "2022-09-26T14:01:42.258772"
+                }
+            ],
+            "http://purl.org/dc/terms/title": [
+                {
+                    "@language": "en",
+                    "@value": "Dim-2"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Dim-2"
+                }
+            ]
+        }
+    ]
+}
