@@ -22,7 +22,7 @@ from csvcubed.models.cube.qb.components import (
 from csvcubed.models.cube.qb.components.concept import NewQbConcept
 from csvcubed.models.cube.uristyle import URIStyle
 from csvcubed.utils.dict import rdf_resource_to_json_ld
-from csvcubed.utils.version import _get_csvcubed_version
+from csvcubed.utils.version import get_csvcubed_version
 from csvcubed.models.rdf.conceptschemeincatalog import ConceptSchemeInCatalog
 from csvcubed.models.rdf import prov
 from csvcubed.writers.urihelpers.skoscodelist import SkosCodeListNewUriHelper
@@ -185,7 +185,7 @@ class SkosCodeListWriter(WriterBase):
         concept_scheme_with_metadata = ConceptSchemeInCatalog(scheme_uri)
 
         generation_activity = prov.Activity(self.uri_helper.get_activity_uri())
-        generation_activity.used = ExistingResource(_get_csvcubed_version())
+        generation_activity.used = ExistingResource(get_csvcubed_version())
         concept_scheme_with_metadata.was_generated_by = generation_activity
 
         if isinstance(self.new_code_list, CompositeQbCodeList):

@@ -1,6 +1,6 @@
 Feature: Test outputting CSV-Ws containing `SKOS:ConceptScheme`s.
 
-  Scenario: A basic code list can be serialised to a valid CSV-W described in SKOS.
+  Scenario: A basic code list can be serialised to a valid CSV-W described in SKOS containing csvcubed version specific rdf.
     Given a NewQbCodeList named "Basic Code-list"
     When the code list is serialised to CSV-W
     Then the file at "basic-code-list.csv" should exist
