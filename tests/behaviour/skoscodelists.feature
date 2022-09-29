@@ -14,7 +14,7 @@ Feature: Test outputting CSV-Ws containing `SKOS:ConceptScheme`s.
       @prefix basicCodeList: <file:/tmp/basic-code-list.csv#>.
 
       basicCodeList:code-list a <http://www.w3.org/2004/02/skos/core#ConceptScheme>,
-      <http://www.w3.org/ns/dcat#Dataset>, <http://www.w3.org/ns/dcat#Resource>;
+        <http://www.w3.org/ns/dcat#Dataset>, <http://www.w3.org/ns/dcat#Resource>;
       <http://purl.org/dc/terms/license> <http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/>;
       <http://purl.org/dc/terms/publisher> <https://www.gov.uk/government/organisations/office-for-national-statistics>;
       <http://purl.org/dc/terms/creator> <https://www.gov.uk/government/organisations/office-for-national-statistics>;
@@ -69,7 +69,7 @@ Feature: Test outputting CSV-Ws containing `SKOS:ConceptScheme`s.
       @prefix compositeCodeList: <file:/tmp/composite-code-list.csv#>.
 
       compositeCodeList:code-list a <http://www.w3.org/2004/02/skos/core#ConceptScheme>,
-      <http://www.w3.org/ns/dcat#Dataset>, <http://www.w3.org/ns/dcat#Resource>;
+        <http://www.w3.org/ns/dcat#Dataset>, <http://www.w3.org/ns/dcat#Resource>;
       <http://purl.org/dc/terms/license> <http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/>;
       <http://purl.org/dc/terms/publisher> <https://www.gov.uk/government/organisations/office-for-national-statistics>;
       <http://purl.org/dc/terms/creator> <https://www.gov.uk/government/organisations/office-for-national-statistics>;
@@ -82,8 +82,8 @@ Feature: Test outputting CSV-Ws containing `SKOS:ConceptScheme`s.
       <http://www.w3.org/ns/dcat#theme> <http://gss-data.org.uk/def/gdp#some-test-theme>;
       <http://www.w3.org/ns/dcat#contactPoint> <mailto:something@example.org>;
       <http://rdf-vocabulary.ddialliance.org/xkos#variant>
-      <http://data.europa.eu/nuts/scheme/2016>,
-      <http://gss-data.org.uk/def/concept-scheme/geography-hierarchy/administrative>.
+          <http://data.europa.eu/nuts/scheme/2016>,
+          <http://gss-data.org.uk/def/concept-scheme/geography-hierarchy/administrative>.
 
       compositeCodeList:wales a <http://www.w3.org/2004/02/skos/core#Concept>;
       <http://www.w3.org/2002/07/owl#sameAs> <http://data.europa.eu/nuts/code/UKL>;
