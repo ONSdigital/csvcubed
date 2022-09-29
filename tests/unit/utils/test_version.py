@@ -2,7 +2,7 @@ from ensurepip import version
 import requests
 import pytest
 
-from csvcubed.utils.version import get_csvcubed_version
+from csvcubed.utils.version import get_csvcubed_version_uri
 
 
 def test_get_csvcubed_version():
@@ -11,7 +11,7 @@ def test_get_csvcubed_version():
     # So we check the prefix to this which should exist or if no .dev0 the whole URI is
     # checked.
 
-    versionNumber = get_csvcubed_version()
+    versionNumber = get_csvcubed_version_uri()
 
     assert (
         "https://github.com/GSS-Cogs/csvcubed/releases/tag/v" in versionNumber
