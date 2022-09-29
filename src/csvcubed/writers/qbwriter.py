@@ -62,7 +62,7 @@ from ..models.rdf.newunitresource import NewUnitResource
 from ..models.cube.qb.components.arbitraryrdf import RdfSerialisationHint
 from csvcubed.models.rdf.qbdatasetincatalog import QbDataSetInCatalog
 from ..utils.qb.validation.observations import get_observation_status_columns
-from csvcubed.utils.version import get_csvcubed_version
+from csvcubed.utils.version import get_csvcubed_version_uri
 
 
 _logger = logging.getLogger(__name__)
@@ -348,7 +348,7 @@ class QbWriter(WriterBase):
         dataset = self._get_qb_dataset_with_catalog_metadata()
 
         generation_activity = prov.Activity(self._new_uri_helper.get_activity_uri())
-        generation_activity.used = ExistingResource(get_csvcubed_version())
+        generation_activity.used = ExistingResource(get_csvcubed_version_uri())
         dataset.was_generated_by = generation_activity
 
         dataset.structure = rdf.qb.DataStructureDefinition(
