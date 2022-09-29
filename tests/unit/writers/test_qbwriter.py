@@ -78,7 +78,7 @@ def test_structure_defined():
             ),
             QbColumn(
                 "Observed Value",
-                QbPivotedObservationValue(
+                QbObservationValue(
                     ExistingQbMeasure("http://example.org/units/some-existing-measure"),
                     ExistingQbUnit("http://example.org/units/some-existing-unit"),
                 ),
@@ -487,11 +487,11 @@ def test_default_property_value_uris_multi_measure_local_and_existing():
 
 def test_default_property_value_uris_single_measure_obs_val():
     """
-    There should be no `propertyUrl` or `valueUrl` for a `QbPivotedObservationValue`.
+    There should be no `propertyUrl` or `valueUrl` for a `QbObservationValue`.
     """
     column = QbColumn(
         "Some Column",
-        QbPivotedObservationValue(
+        QbObservationValue(
             unit=NewQbUnit("New Unit"), measure=NewQbMeasure("New Qb Measure")
         ),
     )
@@ -674,7 +674,7 @@ def test_csv_col_required():
         QbColumn("Some Measure Dimension", QbMultiMeasureDimension([])),
         QbColumn(
             "Some Obs Val",
-            QbPivotedObservationValue(NewQbMeasure("Some Measure")),
+            QbObservationValue(NewQbMeasure("Some Measure")),
         ),
     ]
 
@@ -703,7 +703,7 @@ def test_csv_col_required_observed_value_with_obs_status_attribute():
     attribute column is defined in the same cube."""
     observed_values_column = QbColumn(
         "Values",
-        QbPivotedObservationValue(
+        QbObservationValue(
             NewQbMeasure("Some Measure"),
             NewQbUnit("Some Unit"),
         ),
@@ -747,10 +747,10 @@ def test_csv_col_definition_suppressed():
 
 def test_virtual_columns_generated_for_single_obs_val():
     """
-    Ensure that the virtual columns generated for a `QbPivotedObservationValue`'s unit and measure are
+    Ensure that the virtual columns generated for a `QbObservationValue`'s unit and measure are
     correct.
     """
-    obs_val = QbPivotedObservationValue(
+    obs_val = QbObservationValue(
         NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
     )
     virtual_columns = empty_qbwriter._generate_virtual_columns_for_obs_val(obs_val)
@@ -814,7 +814,7 @@ def test_about_url_generation():
         ),
         QbColumn(
             "Value",
-            QbPivotedObservationValue(
+            QbObservationValue(
                 ExistingQbMeasure("http://example.com/measures/existing_measure"),
                 NewQbUnit("New Unit"),
             ),
@@ -892,7 +892,7 @@ def test_serialise_new_attribute_values():
         ),
         QbColumn(
             "Value",
-            QbPivotedObservationValue(
+            QbObservationValue(
                 ExistingQbMeasure("http://example.org/existing/measure"),
                 ExistingQbUnit("http://example.org/some/existing/unit"),
             ),
@@ -1004,7 +1004,7 @@ def test_serialise_unit():
         ),
         QbColumn(
             "Value",
-            QbPivotedObservationValue(
+            QbObservationValue(
                 ExistingQbMeasure("http://example.org/existing/measure")
             ),
         ),
@@ -1107,7 +1107,7 @@ def test_arbitrary_rdf_serialisation_existing_attribute():
             ),
             QbColumn(
                 "Value",
-                QbPivotedObservationValue(
+                QbObservationValue(
                     NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
                 ),
             ),
@@ -1158,7 +1158,7 @@ def test_arbitrary_rdf_serialisation_new_attribute():
             ),
             QbColumn(
                 "Value",
-                QbPivotedObservationValue(
+                QbObservationValue(
                     NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
                 ),
             ),
@@ -1224,7 +1224,7 @@ def test_arbitrary_rdf_serialisation_existing_dimension():
             ),
             QbColumn(
                 "Value",
-                QbPivotedObservationValue(
+                QbObservationValue(
                     NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
                 ),
             ),
@@ -1269,7 +1269,7 @@ def test_arbitrary_rdf_serialisation_new_dimension():
             ),
             QbColumn(
                 "Value",
-                QbPivotedObservationValue(
+                QbObservationValue(
                     NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
                 ),
             ),
@@ -1320,7 +1320,7 @@ def test_arbitrary_rdf_serialisation_new_dimension_with_cube_uri_style_WithoutFi
             ),
             QbColumn(
                 "Value",
-                QbPivotedObservationValue(
+                QbObservationValue(
                     NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
                 ),
             ),
@@ -1369,7 +1369,7 @@ def test_arbitrary_rdf_serialisation_existing_dimension():
             ),
             QbColumn(
                 "Value",
-                QbPivotedObservationValue(
+                QbObservationValue(
                     ExistingQbMeasure(
                         "http://some/uri/existing-measure-uri",
                         arbitrary_rdf=[
@@ -1409,7 +1409,7 @@ def test_arbitrary_rdf_serialisation_new_measure():
             ),
             QbColumn(
                 "Value",
-                QbPivotedObservationValue(
+                QbObservationValue(
                     NewQbMeasure(
                         "Some Measure",
                         arbitrary_rdf=[
@@ -1460,7 +1460,7 @@ def test_qb_order_of_components():
             ),
             QbColumn(
                 "Value",
-                QbPivotedObservationValue(
+                QbObservationValue(
                     NewQbMeasure("Some Measure"),
                     NewQbUnit("Some Unit"),
                 ),
@@ -1515,7 +1515,7 @@ def test_output_integer_obs_val_with_missing_values():
             ),
             QbColumn(
                 "Value",
-                QbPivotedObservationValue(
+                QbObservationValue(
                     NewQbMeasure("Some Measure"),
                     NewQbUnit("Some Unit"),
                     data_type="int",

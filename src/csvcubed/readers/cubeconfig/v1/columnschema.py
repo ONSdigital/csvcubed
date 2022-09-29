@@ -32,7 +32,7 @@ from csvcubed.models.cube.qb.components import (
     QbMultiUnits,
     QbMultiMeasureDimension,
     QbStandardShapeObservationValue,
-    QbPivotedObservationValue,
+    QbObservationValue,
     ExistingQbMeasure,
     NewQbMeasure,
     QbObservationValue,
@@ -455,7 +455,7 @@ class ObservationValue(SchemaBaseClass):
             else:
                 raise ValueError(f"Unhandled measure type: {self.measure}")
 
-            return QbPivotedObservationValue(
+            return QbObservationValue(
                 measure=measure, unit=unit, data_type=self.data_type or "decimal"
             )
 

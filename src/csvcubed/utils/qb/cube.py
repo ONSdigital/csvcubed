@@ -15,7 +15,7 @@ from csvcubed.models.cube import (
     QbMultiUnits,
     QbUnit,
     QbObservationValue,
-    QbPivotedObservationValue,
+    QbObservationValue,
     QbColumnStructuralDefinition,
 )
 
@@ -57,7 +57,7 @@ def get_all_measures(cube: Cube) -> Set[QbMeasure]:
         cube, QbMultiMeasureDimension
     )
     single_meas_obs_val_columns = get_columns_of_dsd_type(
-        cube, QbPivotedObservationValue
+        cube, QbObservationValue
     )
     measures: Set[QbMeasure] = {
         meas

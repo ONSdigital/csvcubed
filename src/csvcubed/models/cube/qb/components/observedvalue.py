@@ -17,6 +17,12 @@ from csvcubed.models.validationerror import ValidationError
 
 @dataclass
 class QbObservationValue(QbColumnStructuralDefinition, ABC):
+    """
+    Represents the unit/measure/datatype components necessary to define a simple qb:Observation.
+
+    N.B. Requires `virt_unit` and `virt_measure` columns to be added to CSV-W metadata
+    """
+
     @property
     @abstractmethod
     def data_type(self) -> str:
@@ -37,11 +43,9 @@ class QbObservationValue(QbColumnStructuralDefinition, ABC):
     def unit(self, value: Optional[QbUnit]):
         pass
 
-
-@dataclass
-class QbStandardShapeObservationValue(QbObservationValue):
-    data_type: str = field(default="decimal", repr=False)
+    measure: Optional[QbMeasure] = None
     unit: Optional[QbUnit] = None
+    data_type: str = field(default="decimal", repr=False)
 
     def validate_data(
         self,
@@ -54,16 +58,9 @@ class QbStandardShapeObservationValue(QbObservationValue):
 
 
 @dataclass
-class QbPivotedObservationValue(QbObservationValue):
-    """
-    Represents the unit/measure/datatype components necessary to define a simple qb:Observation.
-
-    N.B. Requires `virt_unit` and `virt_measure` columns to be added to CSV-W metadata
-    """
-
-    measure: Optional[QbMeasure] = None
-    unit: Optional[QbUnit] = None
+class QbStandardShapeObservationValue(QbObservationValue):
     data_type: str = field(default="decimal", repr=False)
+    unit: Optional[QbUnit] = None
 
     def validate_data(
         self,

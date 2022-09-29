@@ -5,7 +5,7 @@ from csvcubed.models.cube import (
     QbMultiUnits,
     QbObservationValue,
     Cube,
-    QbPivotedObservationValue,
+    QbObservationValue,
     QbStandardShapeObservationValue,
     QbColumn,
     QbAttribute,
@@ -49,7 +49,7 @@ def validate_observations(cube: Cube) -> List[ValidationError]:
         errors.append(MoreThanOneObservationsColumnError(num_obs_val_columns))
     else:
         single_measure_obs_val_columns = get_columns_of_dsd_type(
-            cube, QbPivotedObservationValue
+            cube, QbObservationValue
         )
         multi_measure_obs_val_columns = get_columns_of_dsd_type(
             cube, QbStandardShapeObservationValue
@@ -179,7 +179,7 @@ def _validate_multi_measure_cube(
 
 
 def _validate_single_measure_cube(
-    cube: Cube, obs_val_column: QbColumn[QbPivotedObservationValue]
+    cube: Cube, obs_val_column: QbColumn[QbObservationValue]
 ) -> List[ValidationError]:
     errors: List[ValidationError] = []
 
@@ -187,7 +187,7 @@ def _validate_single_measure_cube(
     if len(multi_measure_columns) > 0:
         errors.append(
             BothMeasureTypesDefinedError(
-                f"{QbPivotedObservationValue.__name__}.measure",
+                f"{QbObservationValue.__name__}.measure",
                 QbMultiMeasureDimension,
                 additional_explanation="A single-measure cube cannot have a measure dimension.",
             )

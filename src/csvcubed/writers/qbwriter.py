@@ -320,7 +320,7 @@ class QbWriter(WriterBase):
                     "valueUrl": self._get_unit_uri(unit),
                 }
             )
-        if isinstance(obs_val, QbPivotedObservationValue):
+        if isinstance(obs_val, QbObservationValue):
             _logger.debug("Adding virtual measure column.")
             virtual_columns.append(
                 {
@@ -426,7 +426,7 @@ class QbWriter(WriterBase):
         if unit is not None:
             specs.append(self._get_qb_units_column_specification("unit"))
 
-        if isinstance(observation_value, QbPivotedObservationValue):
+        if isinstance(observation_value, QbObservationValue):
             specs.append(
                 self._get_qb_measure_component_specification(observation_value.measure)
             )
@@ -963,7 +963,7 @@ class QbWriter(WriterBase):
         self,
         observation_value: QbObservationValue,
     ):
-        if isinstance(observation_value, QbPivotedObservationValue):
+        if isinstance(observation_value, QbObservationValue):
             _logger.debug(
                 "Single-measure observation value propertyUrl defined by measure %s",
                 observation_value.measure,

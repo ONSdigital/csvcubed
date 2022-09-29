@@ -25,7 +25,7 @@ def test_attribute_property_validation():
         ),
         QbColumn(
             "Value",
-            QbPivotedObservationValue(
+            QbObservationValue(
                 NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
             ),
         ),
@@ -95,7 +95,7 @@ def test_deep_custom_validator():
         ),
         QbColumn(
             "Value",
-            QbPivotedObservationValue(
+            QbObservationValue(
                 NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
             ),
         ),

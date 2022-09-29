@@ -6,7 +6,7 @@ from csvcubed.models.cube import (
     QbColumn,
     NewQbUnit,
     NewQbMeasure,
-    QbPivotedObservationValue,
+    QbObservationValue,
     NewQbDimension,
     CatalogMetadata,
     Cube,
@@ -22,7 +22,7 @@ def test_new_qb_attribute_literal_string_with_template():
             QbColumn("Some Dimension", NewQbDimension(label="Some Dimension")),
             QbColumn(
                 "Values",
-                QbPivotedObservationValue(
+                QbObservationValue(
                     NewQbMeasure("Some Measure"),
                     NewQbUnit("Some Unit"),
                 ),
