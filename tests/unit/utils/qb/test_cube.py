@@ -18,7 +18,7 @@ def test_get_all_units():
             ),
             QbColumn(
                 "Some Multi Measure Obs Val",
-                QbStandardShapeObservationValue(unit=NewQbUnit("Unit 3")),
+                QbObservationValue(unit=NewQbUnit("Unit 3")),
             ),
             QbColumn(
                 "Some Single Measure Obs Val",

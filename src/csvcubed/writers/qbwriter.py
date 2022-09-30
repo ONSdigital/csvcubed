@@ -320,7 +320,7 @@ class QbWriter(WriterBase):
                     "valueUrl": self._get_unit_uri(unit),
                 }
             )
-        if isinstance(obs_val, QbObservationValue):
+        if isinstance(obs_val, QbObservationValue) and obs_val.is_pivoted_shape_observation:
             _logger.debug("Adding virtual measure column.")
             virtual_columns.append(
                 {
@@ -426,15 +426,9 @@ class QbWriter(WriterBase):
         if unit is not None:
             specs.append(self._get_qb_units_column_specification("unit"))
 
-        if isinstance(observation_value, QbObservationValue):
+        if observation_value.is_pivoted_shape_observation:
             specs.append(
                 self._get_qb_measure_component_specification(observation_value.measure)
-            )
-        elif isinstance(observation_value, QbStandardShapeObservationValue):
-            pass
-        else:
-            raise Exception(
-                f"Unmatched Observation value component of type {type(observation_value)}."
             )
 
         return specs
@@ -963,13 +957,14 @@ class QbWriter(WriterBase):
         self,
         observation_value: QbObservationValue,
     ):
-        if isinstance(observation_value, QbObservationValue):
+        if observation_value.is_pivoted_shape_observation:
             _logger.debug(
                 "Single-measure observation value propertyUrl defined by measure %s",
                 observation_value.measure,
             )
             return self._get_measure_uri(observation_value.measure), None
-        elif isinstance(observation_value, QbStandardShapeObservationValue):
+        else:
+            # In the standard shape
             multi_measure_dimension_col = self._get_single_column_of_type(
                 QbMultiMeasureDimension
             )
@@ -984,10 +979,6 @@ class QbWriter(WriterBase):
                 )
             )
             return measure_uri_template, None
-        else:
-            raise ValueError(
-                f"Unmatched Observation Value type {type(observation_value)}"
-            )
 
     def _get_single_column_of_type(
         self, t: Type[QbColumnarDsdType]

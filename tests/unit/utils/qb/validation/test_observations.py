@@ -1,6 +1,6 @@
 from csvcubed.models.cube.qb.components.measure import ExistingQbMeasure
 from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureDimension
-from csvcubed.models.cube.qb.components.observedvalue import QbStandardShapeObservationValue
+from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
 from csvcubed.models.cube.qb.validationerrors import CsvColumnUriTemplateMissingError
 import pytest
 
@@ -17,7 +17,7 @@ from csvcubed.models.cube import (
     Cube,
 )
 
-from csvcubed.utils.qb.validation.observations import get_observation_status_columns, _validate_multi_measure_cube
+from csvcubed.utils.qb.validation.observations import get_observation_status_columns, _validate_standard_shape_cube
 
 
 def test_find_sdmxa_obs_status_columns():
@@ -75,7 +75,7 @@ def test_value_uri_template_is_present_in_existing_measure_dimention():
             QbColumn("Some Dimension", NewQbDimension(label="Some Dimension")),
             QbColumn(
                 "Values",
-                QbStandardShapeObservationValue(
+                QbObservationValue(
                     unit=NewQbUnit("Some Unit"),
                 ),
             ),
@@ -88,7 +88,7 @@ def test_value_uri_template_is_present_in_existing_measure_dimention():
             )
         ],
     )
-    errors = _validate_multi_measure_cube(qube, None)
+    errors = _validate_standard_shape_cube(qube)
     assert len(errors) == 0, [e.message for e in errors]
 
 
@@ -104,7 +104,7 @@ def test_value_uri_template_is_missing_in_existing_measure_dimention():
             QbColumn("Some Dimension", NewQbDimension(label="Some Dimension")),
             QbColumn(
                 "Values",
-                QbStandardShapeObservationValue(
+                QbObservationValue(
                     unit=NewQbUnit("Some Unit"),
                 ),
             ),
@@ -116,7 +116,7 @@ def test_value_uri_template_is_missing_in_existing_measure_dimention():
             )
         ],
     )
-    errors = _validate_multi_measure_cube(qube, None)
+    errors = _validate_standard_shape_cube(qube)
     assert len(errors) == 1, [e.message for e in errors]
     error = errors[0]
     assert isinstance(error, CsvColumnUriTemplateMissingError)

@@ -15,7 +15,7 @@ from csvcubed.models.csvcubedexception import UnsupportedColumnDefinitionExcepti
 from csvcubed.models.cube.cube import Cube
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.cube.qb.components.observedvalue import (
-    QbStandardShapeObservationValue,
+    QbObservationValue,
 )
 from csvcubed.cli.build import build as cli_build
 from csvcubed.definitions import APP_ROOT_DIR_PATH
@@ -85,7 +85,7 @@ def test_01_build_convention_ok():
 
     col_observation = cube.columns[2]
     assert isinstance(
-        col_observation.structural_definition, QbStandardShapeObservationValue
+        col_observation.structural_definition, QbObservationValue
     )
     assert col_observation.structural_definition.unit is None
     assert col_observation.structural_definition.data_type == "decimal"
