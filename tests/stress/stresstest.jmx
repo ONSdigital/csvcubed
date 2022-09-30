@@ -26,7 +26,7 @@
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
-          <stringProp name="LoopController.loops">1</stringProp>
+          <stringProp name="LoopController.loops">5</stringProp>
         </elementProp>
         <stringProp name="ThreadGroup.num_threads">1</stringProp>
         <stringProp name="ThreadGroup.ramp_time">1</stringProp>
@@ -54,7 +54,17 @@
               </elementProp>
               <elementProp name="" elementType="Argument">
                 <stringProp name="Argument.name"></stringProp>
-                <stringProp name="Argument.value">sweden_at_eurovision_no_missing_bigger.csv</stringProp>
+                <stringProp name="Argument.value">mytest2.csv</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Argument">
+                <stringProp name="Argument.name"></stringProp>
+                <stringProp name="Argument.value">-c</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Argument">
+                <stringProp name="Argument.name"></stringProp>
+                <stringProp name="Argument.value">test-qube-config.json</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
             </collectionProp>
@@ -117,13 +127,13 @@
             <boolProp name="include_checkbox_state">false</boolProp>
             <boolProp name="exclude_checkbox_state">false</boolProp>
             <collectionProp name="metricConnections">
-              <collectionProp name="917687241">
+              <collectionProp name="917712290">
                 <stringProp name="-1204607085">localhost</stringProp>
                 <stringProp name="1600768">4444</stringProp>
                 <stringProp name="66952">CPU</stringProp>
                 <stringProp name="0"></stringProp>
               </collectionProp>
-              <collectionProp name="-1383027080">
+              <collectionProp name="-1383002031">
                 <stringProp name="-1204607085">localhost</stringProp>
                 <stringProp name="1600768">4444</stringProp>
                 <stringProp name="-1993889503">Memory</stringProp>

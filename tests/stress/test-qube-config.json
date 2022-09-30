@@ -1,0 +1,9 @@
+{
+    "$schema": "https://purl.org/csv-cubed/qube-config/v1.3",
+    "title": "test data set",
+    "summary": "Procedurally generated data for testing",
+    "description": "Generated data for purposes of stress testing the csvcubed library.",
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "publisher": "https://www.gov.uk/government/organisations/office-for-national-statistics",
+    "dataset_issued": "2022-09-30T00:00:00Z"
+}
