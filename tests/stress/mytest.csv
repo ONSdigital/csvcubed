@@ -1,2 +1,4 @@
-Year,Attribute1,Attribute2,Attribute3,Attribute4,Attribute5,Measure,Unit
-value1,value2,value3,value4,value5,value6,value7
+Dim1,Dim2,Dim3,Dim4,Dim5,Dim6,Dim7,Dim8,Dim9,Dim10,Attribute1,Attribute2,Attribute3,Attribute4,obs,Measure,Unit
+A Dimension1,A Dimension2,A Dimension3,A Dimension4,A Dimension5,A Dimension6,A Dimension7,A Dimension8,A Dimension9,A Dimension10,value11,value12,value13,value14,30,8.0,some Unit17
+A Dimension18,A Dimension19,A Dimension20,A Dimension21,A Dimension22,A Dimension23,A Dimension24,A Dimension25,A Dimension26,A Dimension27,value28,value29,value30,value31,64,16.5,some Unit34
+A Dimension35,A Dimension36,A Dimension37,A Dimension38,A Dimension39,A Dimension40,A Dimension41,A Dimension42,A Dimension43,A Dimension44,value45,value46,value47,value48,98,25.0,some Unit51

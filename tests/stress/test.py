@@ -16,21 +16,21 @@ with open("mytest.csv", "w", newline="") as f:
     unique_number = 0
 
     collum_array = [
-        "Year",
-        # "Dim2",
-        # "Dim3",
-        # "Dim4",
-        # "Dim5",
-        # "Dim6",
-        # "Dim7",
-        # "Dim8",
-        # "Dim9",
-        # "Dim10",
+        "Dim1",
+        "Dim2",
+        "Dim3",
+        "Dim4",
+        "Dim5",
+        "Dim6",
+        "Dim7",
+        "Dim8",
+        "Dim9",
+        "Dim10",
         "Attribute1",
         "Attribute2",
         "Attribute3",
         "Attribute4",
-        "Attribute5",
+        "obs",
         "Measure",
         "Unit",
     ]
@@ -45,10 +45,23 @@ with open("mytest.csv", "w", newline="") as f:
     # this for loop will append each rows maching the number of colums
     for x in range(1, numb_rows + 1):
 
-        for i in range(1, len(collum_array)):
+        for i in range(0, len(collum_array)):
             unique_number += 1
-            row_value = "value" + str(unique_number)
-            rows_array.append(row_value)
+            if i < 10:
+                row_value = "A Dimension" + str(unique_number)
+                rows_array.append(row_value)
+            elif i == 14:
+                row_value = unique_number * 2
+                rows_array.append(row_value)
+            elif i == 15:
+                row_value = float(unique_number / 2)
+                rows_array.append(row_value)
+            elif i == 16:
+                row_value = "some Unit" + str(unique_number)
+                rows_array.append(row_value)
+            else:
+                row_value = "value" + str(unique_number)
+                rows_array.append(row_value)
 
         thewriter.writerow(rows_array)
 
