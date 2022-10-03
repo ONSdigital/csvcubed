@@ -5,8 +5,6 @@ from csvcubed.models.cube import (
     QbMultiUnits,
     QbObservationValue,
     Cube,
-    QbObservationValue,
-    QbObservationValue,
     QbColumn,
     QbAttribute,
     ExistingQbAttribute,

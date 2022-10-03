@@ -27,8 +27,7 @@ from csvcubed.models.cube.qb.components.attributevalue import (
     NewQbAttributeValue,
 )
 from csvcubed.models.cube.qb.components.observedvalue import (
-    QbObservationValue,
-    QbObservationValue,
+    QbObservationValue
 )
 from csvcubed.readers.cubeconfig.v1.mapcolumntocomponent import (
     map_column_to_qb_component,

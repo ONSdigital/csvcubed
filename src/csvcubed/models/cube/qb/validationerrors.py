@@ -13,8 +13,6 @@ from ..qb import (
     QbMultiMeasureDimension,
     QbDimension,
     QbObservationValue,
-    QbObservationValue,
-    QbObservationValue,
     QbMultiUnits,
     QbStructuralDefinition,
 )

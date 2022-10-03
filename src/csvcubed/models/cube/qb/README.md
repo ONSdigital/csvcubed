@@ -108,9 +108,7 @@ QbColumnStructuralDefinition
 │   └── NewQbDimension                      - Define a new dimension property.
 ├── QbMultiMeasureDimension             - The values describe which population characteristic was observed and is recorded in the row.
 ├── QbMultiUnits                        - The column values describe the unit that the row's measured/observed value was recorded in.
-└── QbObservationValue                  - The column values represent observed values of some population characteristic.
-    ├── QbObservationValue     - Each row will hold observed values for one or more population characteristics.
-    └── QbObservationValue      - Each row declares what its measure is (and also possibly what its unit is).
+└── QbObservationValue                  - Each row will hold observed values for one or more population characteristics.
 ```
 
 **Note that**:

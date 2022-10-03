@@ -39,18 +39,3 @@ class QbObservationValue(QbColumnStructuralDefinition, ABC):
         column_csv_title: str,
     ) -> List[ValidationError]:
         return []  # TODO: implement this
-
-
-# @dataclass
-# class QbObservationValue(QbObservationValue):
-#     data_type: str = field(default="decimal", repr=False)
-#     unit: Optional[QbUnit] = None
-
-#     def validate_data(
-#         self,
-#         data: pd.Series,
-#         column_csvw_name: str,
-#         csv_column_uri_template: str,
-#         column_csv_title: str,
-#     ) -> List[ValidationError]:
-#         return []  # TODO: implement this

@@ -32,7 +32,6 @@ from csvcubed.models.cube.qb.components import (
     QbMultiUnits,
     QbMultiMeasureDimension,
     QbObservationValue,
-    QbObservationValue,
     ExistingQbMeasure,
     NewQbMeasure,
     QbObservationValue,

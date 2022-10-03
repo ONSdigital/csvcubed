@@ -15,7 +15,6 @@ from csvcubed.models.cube import (
     QbMultiUnits,
     QbUnit,
     QbObservationValue,
-    QbObservationValue,
     QbColumnStructuralDefinition,
 )
 
