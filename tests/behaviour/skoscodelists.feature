@@ -46,8 +46,7 @@ Feature: Test outputting CSV-Ws containing `SKOS:ConceptScheme`s.
       basicCodeList:code-list a prov:Entity;
       prov:wasGeneratedBy basicCodeList:csvcubed-build-activity.
 
-      basicCodeList:csvcubed-build-activity a prov:Activity;
-      prov:used <https://github.com/GSS-Cogs/csvcubed/releases/tag/v0.1.0.dev0>.
+      basicCodeList:csvcubed-build-activity a prov:Activity.
       """
 
   Scenario: A code list with duplicate notations fails validation.

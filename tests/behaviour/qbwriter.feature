@@ -644,6 +644,5 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
       <file:/tmp/a-code-list.csv#code-list> a prov:Entity ;
         prov:wasGeneratedBy <file:/tmp/a-code-list.csv#csvcubed-build-activity> .
 
-      <file:/tmp/qb-id-10002.csv#csvcubed-build-activity> a prov:Activity ;
-        prov:used <https://github.com/GSS-Cogs/csvcubed/releases/tag/v0.1.0.dev0> .
+      <file:/tmp/qb-id-10002.csv#csvcubed-build-activity> a prov:Activity.
       """
