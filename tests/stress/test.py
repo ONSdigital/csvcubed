@@ -14,6 +14,7 @@ with open("mytest.csv", "w", newline="") as f:
     collum_array = []
     rows_array = []
     unique_number = 0
+    measure_number = 0
 
     collum_array = [
         "Dim1",
@@ -54,8 +55,11 @@ with open("mytest.csv", "w", newline="") as f:
                 row_value = unique_number * 2
                 rows_array.append(row_value)
             elif i == 15:
-                row_value = float(unique_number / 2)
+                measure_number += 1
+                row_value = "A measure" + str(measure_number)
                 rows_array.append(row_value)
+                if measure_number > 19:
+                    measure_number = 0
             elif i == 16:
                 row_value = "some Unit" + str(unique_number)
                 rows_array.append(row_value)

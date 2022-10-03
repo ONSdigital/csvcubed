@@ -5,5 +5,58 @@
     "description": "Generated data for purposes of stress testing the csvcubed library.",
     "license": "https://creativecommons.org/licenses/by/4.0/",
     "publisher": "https://www.gov.uk/government/organisations/office-for-national-statistics",
-    "dataset_issued": "2022-09-30T00:00:00Z"
+    "dataset_issued": "2022-09-30T00:00:00Z",
+    "columns": {
+        "Dim1": {
+            "type": "dimension"
+        },
+        "Dim2": {
+            "type": "dimension"
+        },
+        "Dim3": {
+            "type": "dimension"
+        },
+        "Dim4": {
+            "type": "dimension"
+        },
+        "Dim5": {
+            "type": "dimension"
+        },
+        "Dim6": {
+            "type": "dimension"
+        },
+        "Dim7": {
+            "type": "dimension"
+        },
+        "Dim8": {
+            "type": "dimension"
+        },
+        "Dim9": {
+            "type": "dimension"
+        },
+        "Dim10": {
+            "type": "dimension"
+        },
+        "Attribute1": {
+            "type": "attribute"
+        },
+        "Attribute2": {
+            "type": "attribute"
+        },
+        "Attribute3": {
+            "type": "attribute"
+        },
+        "Attribute4": {
+            "type": "attribute"
+        },
+        "obs": {
+            "type": "observations"
+        },
+        "Measure": {
+            "type": "measures"
+        },
+        "Unit": {
+            "type": "units"
+        }
+    }
 }
