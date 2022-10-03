@@ -23,26 +23,6 @@ class QbObservationValue(QbColumnStructuralDefinition, ABC):
     N.B. Requires `virt_unit` and `virt_measure` columns to be added to CSV-W metadata
     """
 
-    @property
-    @abstractmethod
-    def data_type(self) -> str:
-        pass
-
-    @data_type.setter
-    @abstractmethod
-    def data_type(self, value: str):
-        pass
-
-    @property
-    @abstractmethod
-    def unit(self) -> Optional[QbUnit]:
-        pass
-
-    @unit.setter
-    @abstractmethod
-    def unit(self, value: Optional[QbUnit]):
-        pass
-
     measure: Optional[QbMeasure] = None
     unit: Optional[QbUnit] = None
     data_type: str = field(default="decimal", repr=False)

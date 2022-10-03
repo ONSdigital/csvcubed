@@ -719,7 +719,7 @@ def step_impl(context, cube_name: str):
         ),
         QbColumn(
             "Observed Value",
-            QbObservationValue("number"),
+            QbObservationValue(data_type="number"),
         ),
         QbColumn(
             "Units",
