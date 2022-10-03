@@ -56,15 +56,19 @@ def get_all_measures(cube: Cube) -> Set[QbMeasure]:
     multi_measure_dimension_columns = get_columns_of_dsd_type(
         cube, QbMultiMeasureDimension
     )
-    single_meas_obs_val_columns = get_columns_of_dsd_type(
-        cube, QbObservationValue
-    )
+    obs_val_columns = get_columns_of_dsd_type(cube, QbObservationValue)
+    pivoted_obs_vals: List[QbObservationValue] = [
+        c.structural_definition
+        for c in obs_val_columns
+        if c.structural_definition.is_pivoted_shape_observation
+    ]
+
     measures: Set[QbMeasure] = {
         meas
         for dim in multi_measure_dimension_columns
         for meas in dim.structural_definition.measures
     }
-    measures |= {x.structural_definition.measure for x in single_meas_obs_val_columns}
+    measures |= {o.measure for o in pivoted_obs_vals}  # type: ignore
 
     _logger.debug("Discovered measures %s", measures)
     return measures

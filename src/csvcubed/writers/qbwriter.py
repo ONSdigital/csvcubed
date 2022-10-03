@@ -321,13 +321,14 @@ class QbWriter(WriterBase):
                 }
             )
         if isinstance(obs_val, QbObservationValue) and obs_val.is_pivoted_shape_observation:
+            assert obs_val.measure is not None
             _logger.debug("Adding virtual measure column.")
             virtual_columns.append(
                 {
                     "name": "virt_measure",
                     "virtual": True,
                     "propertyUrl": "http://purl.org/linked-data/cube#measureType",
-                    "valueUrl": self._get_measure_uri(obs_val.measure),
+                    "valueUrl": self._get_measure_uri(obs_val.measure), 
                 }
             )
         return virtual_columns
@@ -426,7 +427,9 @@ class QbWriter(WriterBase):
         if unit is not None:
             specs.append(self._get_qb_units_column_specification("unit"))
 
+        
         if observation_value.is_pivoted_shape_observation:
+            assert observation_value.measure is not None
             specs.append(
                 self._get_qb_measure_component_specification(observation_value.measure)
             )
@@ -958,6 +961,7 @@ class QbWriter(WriterBase):
         observation_value: QbObservationValue,
     ):
         if observation_value.is_pivoted_shape_observation:
+            assert observation_value.measure is not None
             _logger.debug(
                 "Single-measure observation value propertyUrl defined by measure %s",
                 observation_value.measure,
