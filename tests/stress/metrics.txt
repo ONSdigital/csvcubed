@@ -1,0 +1,5 @@
+timeStamp,elapsed,label,responseCode,responseMessage,threadName,dataType,success,failureMessage,bytes,sentBytes,grpThreads,allThreads,URL,Latency,IdleTime,Connect
+1664797686814,50065,localhost Memory,,,,,true,,0,0,0,0,null,0,0,0
+1664797686815,10489,localhost CPU,,,,,true,,0,0,0,0,null,0,0,0
+1664797687819,50067,localhost Memory,,,,,true,,0,0,0,0,null,0,0,0
+1664797687819,5324,localhost CPU,,,,,true,,0,0,0,0,null,0,0,0

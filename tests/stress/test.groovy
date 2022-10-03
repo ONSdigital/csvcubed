@@ -6,7 +6,7 @@ log.info("This is the baseDir: ${baseDir}")
 //def proc = "python3 HelloWorld.py".execute()
 //def proc = ["python3 HelloWorld.py"].execute()
 //println "Found the following: ${proc.text}"
-def proc = "python3 test.py 10000".execute(null, new File(baseDir))
+def proc = "python3 test.py 100".execute(null, new File(baseDir))
 //def args = 'echo hiya'
 //def proc = args.execute()
 
