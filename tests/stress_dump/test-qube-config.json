@@ -1,8 +1,8 @@
 {
     "$schema": "https://purl.org/csv-cubed/qube-config/v1.3",
-    "title": "stress test data set",
-    "summary": "Procedurally generated data for stress testing",
-    "description": "Generated data for purposes of stress testing the csvcubed library. 10 dimension columns, 4 attribute columns, 1 obs column, 1 units columns and 1 measures columns containing a maximum of 20 measures.",
+    "title": "test data set",
+    "summary": "Procedurally generated data for testing",
+    "description": "Generated data for purposes of stress testing the csvcubed library.",
     "license": "https://creativecommons.org/licenses/by/4.0/",
     "publisher": "https://www.gov.uk/government/organisations/office-for-national-statistics",
     "dataset_issued": "2022-09-30T00:00:00Z",
