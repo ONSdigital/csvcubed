@@ -1,0 +1,56 @@
+{
+    "$schema": "https://purl.org/csv-cubed/qube-config/v1",
+    "title": "Net annual change in forest carbon",
+    "columns": {
+        "Geography": {
+            "type": "dimension",
+            "label": "Geography",
+            "code_list": {
+                "title": "Geography",
+                "license": "http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
+                "concepts": [
+                    {
+                        "label": "United Kingdom",
+                        "notation": "United Kingdom",
+                        "same_as": "http://statistics.data.gov.uk/id/statistical-geography/K02000001",
+                        "children": [
+                            {
+                                "label": "England",
+                                "notation": "England",
+                                "same_as": "http://statistics.data.gov.uk/id/statistical-geography/E92000001"
+                            },
+                            {
+                                "label": "Northern Ireland",
+                                "notation": "Northern Ireland",
+                                "same_as": "http://statistics.data.gov.uk/id/statistical-geography/N92000002"
+                            },
+                            {
+                                "label": "Scotland",
+                                "notation": "Scotland",
+                                "same_as": "http://statistics.data.gov.uk/id/statistical-geography/S92000003"
+                            },
+                            {
+                                "label": "Wales",
+                                "notation": "Wales",
+                                "same_as": "http://statistics.data.gov.uk/id/statistical-geography/W92000004"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "Observation": {
+            "type": "observations",
+            "unit": {
+                "from_existing": "http://qudt.org/vocab/unit/TONNE",
+                "label": "million tonnes",
+                "quantity_kind": "http://qudt.org/vocab/quantitykind/Weight",
+                "scaling_factor": 1000000
+            },
+            "measure": {
+                "label": "CO_2 equivalent",
+                "from_existing": "http://gss-data.org.uk/def/measure/count"
+            }
+        }
+    }
+}

@@ -1,0 +1,306 @@
+Year,Geography,Observation
+1990,England,6.1
+1991,England,6.5
+1992,England,6.7
+1993,England,7.0
+1994,England,7.0
+1995,England,7.0
+1996,England,7.2
+1997,England,7.3
+1998,England,7.6
+1999,England,7.7
+2000,England,7.9
+2001,England,8.0
+2002,England,8.1
+2003,England,8.2
+2004,England,8.2
+2005,England,8.2
+2006,England,8.3
+2007,England,8.3
+2008,England,8.4
+2009,England,8.4
+2010,England,8.5
+2011,England,8.5
+2012,England,8.2
+2013,England,8.3
+2014,England,8.4
+2015,England,8.3
+2016,England,8.4
+2017,England,8.4
+2018,England,8.3
+2019,England,8.2
+2020,England,8.2
+2021,England,8.1
+2022,England,8.0
+2023,England,7.9
+2024,England,7.8
+2025,England,7.6
+2026,England,7.5
+2027,England,7.3
+2028,England,7.2
+2029,England,7.0
+2030,England,6.8
+2031,England,6.6
+2032,England,6.4
+2033,England,6.2
+2034,England,6.0
+2035,England,5.9
+2036,England,5.7
+2037,England,5.5
+2038,England,5.3
+2039,England,5.1
+2040,England,5.0
+2041,England,4.8
+2042,England,4.6
+2043,England,4.5
+2044,England,4.3
+2045,England,4.2
+2046,England,4.1
+2047,England,4.0
+2048,England,4.0
+2049,England,3.9
+2050,England,3.8
+1990,Wales,1.5
+1991,Wales,1.5
+1992,Wales,1.5
+1993,Wales,1.5
+1994,Wales,1.6
+1995,Wales,1.6
+1996,Wales,1.6
+1997,Wales,1.5
+1998,Wales,1.6
+1999,Wales,1.5
+2000,Wales,1.6
+2001,Wales,1.6
+2002,Wales,1.5
+2003,Wales,1.5
+2004,Wales,1.6
+2005,Wales,1.6
+2006,Wales,1.7
+2007,Wales,1.6
+2008,Wales,1.7
+2009,Wales,1.6
+2010,Wales,1.6
+2011,Wales,1.5
+2012,Wales,1.2
+2013,Wales,1.3
+2014,Wales,1.2
+2015,Wales,1.2
+2016,Wales,1.2
+2017,Wales,1.2
+2018,Wales,1.2
+2019,Wales,1.2
+2020,Wales,1.2
+2021,Wales,1.2
+2022,Wales,1.2
+2023,Wales,1.2
+2024,Wales,1.2
+2025,Wales,1.3
+2026,Wales,1.3
+2027,Wales,1.3
+2028,Wales,1.3
+2029,Wales,1.3
+2030,Wales,1.3
+2031,Wales,1.4
+2032,Wales,1.4
+2033,Wales,1.4
+2034,Wales,1.5
+2035,Wales,1.5
+2036,Wales,1.5
+2037,Wales,1.5
+2038,Wales,1.6
+2039,Wales,1.6
+2040,Wales,1.6
+2041,Wales,1.6
+2042,Wales,1.6
+2043,Wales,1.6
+2044,Wales,1.7
+2045,Wales,1.7
+2046,Wales,1.7
+2047,Wales,1.6
+2048,Wales,1.6
+2049,Wales,1.6
+2050,Wales,1.6
+1990,Scotland,6.8
+1991,Scotland,7.1
+1992,Scotland,7.4
+1993,Scotland,7.4
+1994,Scotland,7.3
+1995,Scotland,7.4
+1996,Scotland,7.6
+1997,Scotland,7.7
+1998,Scotland,7.9
+1999,Scotland,8.1
+2000,Scotland,8.1
+2001,Scotland,8.4
+2002,Scotland,8.6
+2003,Scotland,8.5
+2004,Scotland,8.5
+2005,Scotland,8.5
+2006,Scotland,8.6
+2007,Scotland,8.5
+2008,Scotland,8.9
+2009,Scotland,9.0
+2010,Scotland,8.7
+2011,Scotland,8.4
+2012,Scotland,7.0
+2013,Scotland,7.8
+2014,Scotland,8.0
+2015,Scotland,8.0
+2016,Scotland,8.1
+2017,Scotland,8.0
+2018,Scotland,7.9
+2019,Scotland,7.7
+2020,Scotland,7.6
+2021,Scotland,7.4
+2022,Scotland,7.2
+2023,Scotland,6.9
+2024,Scotland,6.5
+2025,Scotland,6.2
+2026,Scotland,5.8
+2027,Scotland,5.4
+2028,Scotland,4.9
+2029,Scotland,4.5
+2030,Scotland,4.1
+2031,Scotland,3.8
+2032,Scotland,3.5
+2033,Scotland,3.3
+2034,Scotland,3.1
+2035,Scotland,2.9
+2036,Scotland,2.8
+2037,Scotland,2.7
+2038,Scotland,2.6
+2039,Scotland,2.6
+2040,Scotland,2.6
+2041,Scotland,2.6
+2042,Scotland,2.8
+2043,Scotland,2.9
+2044,Scotland,3.1
+2045,Scotland,3.3
+2046,Scotland,3.6
+2047,Scotland,3.9
+2048,Scotland,4.2
+2049,Scotland,4.4
+2050,Scotland,4.6
+1990,Northern Ireland,0.6
+1991,Northern Ireland,0.6
+1992,Northern Ireland,0.6
+1993,Northern Ireland,0.6
+1994,Northern Ireland,0.6
+1995,Northern Ireland,0.6
+1996,Northern Ireland,0.6
+1997,Northern Ireland,0.6
+1998,Northern Ireland,0.6
+1999,Northern Ireland,0.6
+2000,Northern Ireland,0.6
+2001,Northern Ireland,0.6
+2002,Northern Ireland,0.6
+2003,Northern Ireland,0.6
+2004,Northern Ireland,0.6
+2005,Northern Ireland,0.6
+2006,Northern Ireland,0.6
+2007,Northern Ireland,0.6
+2008,Northern Ireland,0.6
+2009,Northern Ireland,0.6
+2010,Northern Ireland,0.6
+2011,Northern Ireland,0.6
+2012,Northern Ireland,0.5
+2013,Northern Ireland,0.6
+2014,Northern Ireland,0.6
+2015,Northern Ireland,0.6
+2016,Northern Ireland,0.6
+2017,Northern Ireland,0.6
+2018,Northern Ireland,0.6
+2019,Northern Ireland,0.6
+2020,Northern Ireland,0.6
+2021,Northern Ireland,0.6
+2022,Northern Ireland,0.5
+2023,Northern Ireland,0.5
+2024,Northern Ireland,0.5
+2025,Northern Ireland,0.5
+2026,Northern Ireland,0.5
+2027,Northern Ireland,0.5
+2028,Northern Ireland,0.5
+2029,Northern Ireland,0.5
+2030,Northern Ireland,0.5
+2031,Northern Ireland,0.5
+2032,Northern Ireland,0.5
+2033,Northern Ireland,0.5
+2034,Northern Ireland,0.5
+2035,Northern Ireland,0.5
+2036,Northern Ireland,0.5
+2037,Northern Ireland,0.5
+2038,Northern Ireland,0.5
+2039,Northern Ireland,0.5
+2040,Northern Ireland,0.6
+2041,Northern Ireland,0.6
+2042,Northern Ireland,0.6
+2043,Northern Ireland,0.6
+2044,Northern Ireland,0.6
+2045,Northern Ireland,0.6
+2046,Northern Ireland,0.6
+2047,Northern Ireland,0.5
+2048,Northern Ireland,0.5
+2049,Northern Ireland,0.5
+2050,Northern Ireland,0.5
+1990,United Kingdom,15.0
+1991,United Kingdom,15.6
+1992,United Kingdom,16.2
+1993,United Kingdom,16.5
+1994,United Kingdom,16.5
+1995,United Kingdom,16.5
+1996,United Kingdom,17.0
+1997,United Kingdom,17.2
+1998,United Kingdom,17.7
+1999,United Kingdom,17.9
+2000,United Kingdom,18.2
+2001,United Kingdom,18.5
+2002,United Kingdom,18.8
+2003,United Kingdom,18.9
+2004,United Kingdom,18.8
+2005,United Kingdom,19.0
+2006,United Kingdom,19.2
+2007,United Kingdom,19.1
+2008,United Kingdom,19.6
+2009,United Kingdom,19.7
+2010,United Kingdom,19.5
+2011,United Kingdom,19.1
+2012,United Kingdom,16.8
+2013,United Kingdom,18.0
+2014,United Kingdom,18.2
+2015,United Kingdom,18.2
+2016,United Kingdom,18.3
+2017,United Kingdom,18.2
+2018,United Kingdom,18.0
+2019,United Kingdom,17.7
+2020,United Kingdom,17.5
+2021,United Kingdom,17.3
+2022,United Kingdom,16.9
+2023,United Kingdom,16.6
+2024,United Kingdom,16.1
+2025,United Kingdom,15.6
+2026,United Kingdom,15.1
+2027,United Kingdom,14.5
+2028,United Kingdom,13.9
+2029,United Kingdom,13.3
+2030,United Kingdom,12.8
+2031,United Kingdom,12.3
+2032,United Kingdom,11.9
+2033,United Kingdom,11.5
+2034,United Kingdom,11.1
+2035,United Kingdom,10.8
+2036,United Kingdom,10.5
+2037,United Kingdom,10.2
+2038,United Kingdom,10.0
+2039,United Kingdom,9.8
+2040,United Kingdom,9.8
+2041,United Kingdom,9.6
+2042,United Kingdom,9.6
+2043,United Kingdom,9.6
+2044,United Kingdom,9.6
+2045,United Kingdom,9.8
+2046,United Kingdom,9.9
+2047,United Kingdom,10.1
+2048,United Kingdom,10.3
+2049,United Kingdom,10.5
+2050,United Kingdom,10.6
