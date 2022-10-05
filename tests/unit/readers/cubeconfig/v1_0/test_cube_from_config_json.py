@@ -27,8 +27,7 @@ from csvcubed.models.cube.qb.components.attributevalue import (
     NewQbAttributeValue,
 )
 from csvcubed.models.cube.qb.components.observedvalue import (
-    QbMultiMeasureObservationValue,
-    QbSingleMeasureObservationValue,
+    QbObservationValue
 )
 from csvcubed.readers.cubeconfig.v1.mapcolumntocomponent import (
     map_column_to_qb_component,
@@ -208,8 +207,9 @@ def test_build_config_ok():
 
     col_observation = cube.columns[4]
     assert isinstance(
-        col_observation.structural_definition, QbMultiMeasureObservationValue
+        col_observation.structural_definition, QbObservationValue
     )
+    assert col_observation.structural_definition.measure is None
     assert col_observation.structural_definition.unit is None
     assert col_observation.structural_definition.data_type == "decimal"
 
@@ -595,7 +595,8 @@ def test_observation_ok():
     assert column.uri_safe_identifier_override is None
 
     sd = column.structural_definition
-    assert isinstance(sd, QbMultiMeasureObservationValue)
+    assert isinstance(sd, QbObservationValue)
+    assert sd.measure is None
     assert sd.unit is None
     assert sd.data_type == "decimal"
 
@@ -746,8 +747,9 @@ def test_observation_value_data_type_extraction():
     )
 
     assert isinstance(
-        column.structural_definition, QbSingleMeasureObservationValue
+        column.structural_definition, QbObservationValue
     ), column.structural_definition
+    assert column.structural_definition.measure is not None
     obs_val = column.structural_definition
     assert obs_val.data_type == "integer"
 

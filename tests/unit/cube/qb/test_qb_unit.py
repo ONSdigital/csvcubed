@@ -6,7 +6,7 @@ from tempfile import TemporaryDirectory
 
 from csvcubed.models.cube import NewQbUnit, ExistingQbUnit
 from csvcubed.models.cube.qb.components.observedvalue import (
-    QbMultiMeasureObservationValue,
+    QbObservationValue,
 )
 from csvcubed.models.cube.qb import QbColumn
 from csvcubed.readers.cubeconfig.v1.columnschema import (
@@ -86,8 +86,9 @@ def test_scaling_factor_defined():
 
         assert isinstance(amount_col, QbColumn)
         assert isinstance(
-            amount_col.structural_definition, QbMultiMeasureObservationValue
+            amount_col.structural_definition, QbObservationValue
         )
+        assert amount_col.structural_definition.measure is None
         unit = amount_col.structural_definition.unit
         assert isinstance(unit, NewQbUnit)
         assert unit.base_unit_scaling_factor == 0.1
@@ -128,8 +129,9 @@ def test_scaling_factor_not_defined():
 
         assert isinstance(amount_col, QbColumn)
         assert isinstance(
-            amount_col.structural_definition, QbMultiMeasureObservationValue
+            amount_col.structural_definition, QbObservationValue
         )
+        assert amount_col.structural_definition.measure is None
         unit = amount_col.structural_definition.unit
         assert isinstance(unit, NewQbUnit)
         assert unit.base_unit_scaling_factor == EXISTING_UNIT_DEFAULT_SCALING_FACTOR

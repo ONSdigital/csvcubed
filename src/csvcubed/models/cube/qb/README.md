@@ -24,7 +24,7 @@ cube = Cube(
         QbColumn("A Dimension", NewQbDimension.from_data("The Dimension's Name", data["A Dimension"])),
         QbColumn(
             "An Observation",
-            QbSingleMeasureObservationValue(
+            QbObservationValue(
                 measure=NewQbMeasure("Some Measure"),
                 unit=NewQbUnit("Some Unit")
             )
@@ -108,9 +108,7 @@ QbColumnStructuralDefinition
 │   └── NewQbDimension                      - Define a new dimension property.
 ├── QbMultiMeasureDimension             - The values describe which population characteristic was observed and is recorded in the row.
 ├── QbMultiUnits                        - The column values describe the unit that the row's measured/observed value was recorded in.
-└── QbObservationValue                  - The column values represent observed values of some population characteristic.
-    ├── QbSingleMeasureObservationValue     - All rows measure the same population characteristic in the same unit.
-    └── QbMultiMeasureObservationValue      - Each row declares what its measure is (and also possibly what its unit is).
+└── QbObservationValue                  - Each row will hold observed values for one or more population characteristics.
 ```
 
 **Note that**:
@@ -197,7 +195,7 @@ cube = Cube(
         QbColumn("A Dimension", NewQbDimension.from_data("The Dimension's Name", data["A Dimension"])),
         QbColumn(
             "An Observation",
-            QbSingleMeasureObservationValue(
+            QbObservationValue(
                 measure=NewQbMeasure("Some Measure"),
                 unit=NewQbUnit("Some Unit")
             )

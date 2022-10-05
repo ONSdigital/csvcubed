@@ -12,8 +12,6 @@ from abc import ABC
 from ..qb import (
     QbMultiMeasureDimension,
     QbDimension,
-    QbSingleMeasureObservationValue,
-    QbMultiMeasureObservationValue,
     QbObservationValue,
     QbMultiUnits,
     QbStructuralDefinition,
@@ -247,13 +245,14 @@ class NoMeasuresDefinedError(NeitherDefinedError):
 
 
 @dataclass
-class NoObservedValuesColumnDefinedError(NeitherDefinedError):
+class NoObservedValuesColumnDefinedError(MinNumComponentsNotSatisfiedError):
     """
     An error for when the user has not defined any observed value columns for the dataset.
     """
 
-    component_one: ComponentTypeDescription = QbSingleMeasureObservationValue
-    component_two: ComponentTypeDescription = QbMultiMeasureObservationValue
+    component_type: ComponentTypeDescription = QbObservationValue
+    minimum_number: int = 1
+    actual_number: int = 0
 
     @classmethod
     def get_error_url(cls) -> str:

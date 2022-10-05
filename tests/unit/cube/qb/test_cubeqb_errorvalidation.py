@@ -44,7 +44,7 @@ def test_single_measure_qb_definition():
         ),
         QbColumn(
             "Value",
-            QbSingleMeasureObservationValue(
+            QbObservationValue(
                 ExistingQbMeasure("http://example.com/measures/existing_measure"),
                 NewQbUnit("some new unit"),
             ),
@@ -78,7 +78,7 @@ def test_multi_measure_qb_definition():
             ExistingQbDimension("https://example.org/dimensions/existing_dimension"),
             csv_column_uri_template="https://example.org/concept-scheme/existing_scheme/{+existing_dimension}",
         ),
-        QbColumn("Value", QbMultiMeasureObservationValue(data_type="number")),
+        QbColumn("Value", QbObservationValue(data_type="number")),
         QbColumn(
             "Measure",
             QbMultiMeasureDimension.new_measures_from_data(data["Measure"]),
@@ -109,7 +109,7 @@ def test_existing_dimension_csv_column_uri_template():
             ),
             QbColumn(
                 "Value",
-                QbSingleMeasureObservationValue(
+                QbObservationValue(
                     ExistingQbMeasure("http://some/measure"),
                     ExistingQbUnit("http://some/unit"),
                 ),
@@ -140,7 +140,7 @@ def test_no_dimensions_validation_error():
         [
             QbColumn(
                 "Value",
-                QbSingleMeasureObservationValue(
+                QbObservationValue(
                     NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
                 ),
             )
@@ -177,7 +177,7 @@ def test_multiple_incompatible_unit_definitions():
             QbColumn("Some Unit", QbMultiUnits.new_units_from_data(data["Some Unit"])),
             QbColumn(
                 "Value",
-                QbSingleMeasureObservationValue(
+                QbObservationValue(
                     NewQbMeasure("Some New Measure"), NewQbUnit("Some New Unit")
                 ),
             ),
@@ -215,7 +215,7 @@ def test_no_unit_defined():
             ),
             QbColumn(
                 "Value",
-                QbSingleMeasureObservationValue(NewQbMeasure("Some New Measure")),
+                QbObservationValue(NewQbMeasure("Some New Measure")),
             ),
         ],
     )
@@ -254,7 +254,7 @@ def test_multiple_units_columns():
             ),
             QbColumn(
                 "Value",
-                QbSingleMeasureObservationValue(NewQbMeasure("Some New Measure")),
+                QbObservationValue(NewQbMeasure("Some New Measure")),
             ),
         ],
     )
@@ -289,13 +289,13 @@ def test_multiple_obs_val_columns():
             ),
             QbColumn(
                 "Value1",
-                QbSingleMeasureObservationValue(
+                QbObservationValue(
                     NewQbMeasure("Some New Measure 1"), NewQbUnit("Some New Unit 1")
                 ),
             ),
             QbColumn(
                 "Value2",
-                QbSingleMeasureObservationValue(
+                QbObservationValue(
                     NewQbMeasure("Some New Measure 2"), NewQbUnit("Some New Unit 2")
                 ),
             ),
@@ -330,7 +330,7 @@ def test_multi_measure_obs_val_without_measure_dimension():
             ),
             QbColumn(
                 "Value",
-                QbMultiMeasureObservationValue(unit=NewQbUnit("Some New Unit 1")),
+                QbObservationValue(unit=NewQbUnit("Some New Unit 1")),
             ),
         ],
     )
@@ -376,7 +376,7 @@ def test_multi_measure_obs_val_with_multiple_measure_dimensions():
             ),
             QbColumn(
                 "Value",
-                QbMultiMeasureObservationValue(unit=NewQbUnit("Some New Unit 1")),
+                QbObservationValue(unit=NewQbUnit("Some New Unit 1")),
             ),
         ],
     )
@@ -415,7 +415,7 @@ def test_measure_dimension_with_single_measure_obs_val():
             ),
             QbColumn(
                 "Value",
-                QbSingleMeasureObservationValue(
+                QbObservationValue(
                     NewQbMeasure("Some New Measure"), NewQbUnit("Some New Unit 1")
                 ),
             ),
@@ -423,11 +423,11 @@ def test_measure_dimension_with_single_measure_obs_val():
     )
     error = _get_single_validation_error_for_qube(cube)
     assert isinstance(error, BothMeasureTypesDefinedError)
-    assert error.component_one == f"{QbSingleMeasureObservationValue.__name__}.measure"
+    assert error.component_one == f"{QbObservationValue.__name__}.measure"
     assert error.component_two == QbMultiMeasureDimension
     assert (
         error.additional_explanation
-        == "A single-measure cube cannot have a measure dimension."
+        == "A pivoted shape cube cannot have a measure dimension."
     )
 
 
@@ -473,7 +473,7 @@ def test_existing_attribute_csv_column_uri_template_required():
             ),
             QbColumn(
                 "Obs",
-                QbSingleMeasureObservationValue(
+                QbObservationValue(
                     ExistingQbMeasure("http://example.org/single/measure/example"),
                     NewQbUnit("GBP"),
                 ),
@@ -529,7 +529,7 @@ def test_new_attribute_csv_column_uri_template_required():
             ),
             QbColumn(
                 "Obs",
-                QbSingleMeasureObservationValue(
+                QbObservationValue(
                     ExistingQbMeasure("http://example.org/single/measure/example"),
                     NewQbUnit("GBP"),
                 ),
@@ -591,7 +591,7 @@ def test_new_qb_attribute_literal_int():
             QbColumn("Some Dimension", NewQbDimension(label="Some Dimension")),
             QbColumn(
                 "Values",
-                QbSingleMeasureObservationValue(
+                QbObservationValue(
                     NewQbMeasure("Some Measure"),
                     NewQbUnit("Some Unit"),
                 ),
@@ -614,7 +614,7 @@ def test_existing_qb_attribute_literal_date():
             QbColumn("Some Dimension", NewQbDimension(label="Some Dimension")),
             QbColumn(
                 "Values",
-                QbSingleMeasureObservationValue(
+                QbObservationValue(
                     NewQbMeasure("Some Measure"),
                     NewQbUnit("Some Unit"),
                 ),
@@ -645,7 +645,7 @@ def test_attribute_numeric_resources_validation():
             QbColumn("Some Dimension", NewQbDimension(label="Some Dimension")),
             QbColumn(
                 "Values",
-                QbSingleMeasureObservationValue(
+                QbObservationValue(
                     NewQbMeasure("Some Measure"),
                     NewQbUnit("Some Unit"),
                 ),
@@ -684,7 +684,7 @@ def test_code_list_concept_identifier_reserved():
             ),
             QbColumn(
                 "Value",
-                QbSingleMeasureObservationValue(
+                QbObservationValue(
                     NewQbMeasure("Some Measure"),
                     NewQbUnit("Some Unit"),
                 ),
@@ -720,7 +720,7 @@ def test_conflict_concept_uri_values_error():
             ),
             QbColumn(
                 "Value",
-                QbSingleMeasureObservationValue(
+                QbObservationValue(
                     NewQbMeasure("Some Measure"),
                     NewQbUnit("Some Unit"),
                 ),
@@ -766,7 +766,7 @@ def test_conflict_new_attribute_value_uri_values_error():
             ),
             QbColumn(
                 "Value",
-                QbSingleMeasureObservationValue(
+                QbObservationValue(
                     NewQbMeasure("Some Measure"),
                     NewQbUnit("Some Unit"),
                 ),
@@ -809,7 +809,7 @@ def test_conflict_existing_attribute_value_uri_values_error():
             ),
             QbColumn(
                 "Value",
-                QbSingleMeasureObservationValue(
+                QbObservationValue(
                     NewQbMeasure("Some Measure"),
                     NewQbUnit("Some Unit"),
                 ),
@@ -849,7 +849,7 @@ def test_conflict_new_units_uri_values_error():
             ),
             QbColumn(
                 "Value",
-                QbSingleMeasureObservationValue(NewQbMeasure("Some Measure")),
+                QbObservationValue(NewQbMeasure("Some Measure")),
             ),
         ],
     )
@@ -886,7 +886,7 @@ def test_conflict_new_measures_uri_values_error():
             ),
             QbColumn(
                 "Value",
-                QbMultiMeasureObservationValue(unit=NewQbUnit("Some Unit")),
+                QbObservationValue(unit=NewQbUnit("Some Unit")),
             ),
         ],
     )
