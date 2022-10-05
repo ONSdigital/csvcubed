@@ -234,6 +234,7 @@ def test_should_not_detect_duplicated_concepts():
 def test_same_as_field_in_output_csv():
     """
     The output csv should contain existing concept uri when the concepts has the same as field defined.
+    And whether the expected uris are present in the column.
     """
     with TemporaryDirectory() as temp_dir_path:
         temp_dir = Path(temp_dir_path)
@@ -246,4 +247,26 @@ def test_same_as_field_in_output_csv():
         )
 
         output_df = pd.read_csv(output_dir / "geography.csv")
+
         assert "Original Concept URI" in output_df.columns
+
+        assert (
+            output_df.iloc[0]["Original Concept URI"]
+            == "http://statistics.data.gov.uk/id/statistical-geography/K02000001"
+        )
+        assert (
+            output_df.iloc[1]["Original Concept URI"]
+            == "http://statistics.data.gov.uk/id/statistical-geography/E92000001"
+        )
+        assert (
+            output_df.iloc[2]["Original Concept URI"]
+            == "http://statistics.data.gov.uk/id/statistical-geography/N92000002"
+        )
+        assert (
+            output_df.iloc[3]["Original Concept URI"]
+            == "http://statistics.data.gov.uk/id/statistical-geography/S92000003"
+        )
+        assert (
+            output_df.iloc[4]["Original Concept URI"]
+            == "http://statistics.data.gov.uk/id/statistical-geography/W92000004"
+        )
