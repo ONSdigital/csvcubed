@@ -43,7 +43,7 @@ class SkosCodeListWriter(WriterBase):
         return f"{self.csv_file_name}-metadata.json"
 
     @staticmethod
-    def has_duplicated_qb_concepts(code_list) -> bool:
+    def has_duplicated_qb_concepts(code_list: NewQbCodeList) -> bool:
         return any(
             True
             for concept in code_list.concepts
@@ -84,7 +84,6 @@ class SkosCodeListWriter(WriterBase):
             json.dump(table_schema, f, indent=4)
 
         _logger.debug("Writing CSV to %s", csv_file_path)
-        print(data.head())
         data.to_csv(str(csv_file_path), index=False)
 
     def _get_csvw_table_schema(self) -> dict:
