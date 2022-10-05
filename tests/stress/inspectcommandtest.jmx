@@ -62,7 +62,7 @@
           <elementProp name="SystemSampler.environment" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments"/>
           </elementProp>
-          <stringProp name="SystemSampler.directory">/Users/charlesrendle/git/csvcubed/csvcubed/tests/stress/out</stringProp>
+          <stringProp name="SystemSampler.directory">/Users/jozefkrajcsirik/Documnets/GitHub/csvcubed/tests/stress/out</stringProp>
         </SystemSampler>
         <hashTree>
           <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor" enabled="true">
@@ -107,7 +107,7 @@
                 <connectTime>true</connectTime>
               </value>
             </objProp>
-            <stringProp name="filename">/Users/charlesrendle/git/csvcubed/csvcubed/tests/stress/metrics</stringProp>
+            <stringProp name="filename">/Users/jozefkrajcsirik/Documnets/GitHub/csvcubed/tests/stress/metrics</stringProp>
             <longProp name="interval_grouping">1000</longProp>
             <boolProp name="graph_aggregated">false</boolProp>
             <stringProp name="include_sample_labels"></stringProp>
