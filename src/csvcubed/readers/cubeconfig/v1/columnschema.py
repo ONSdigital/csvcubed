@@ -440,10 +440,10 @@ class ObservationValue(SchemaBaseClass):
             raise ValueError(f"Unexpected unit: {self.unit}")
 
         if self.measure is None:
-            # Multi-measure cube
+            # Standard shape cube
             return QbObservationValue(data_type=self.data_type, unit=unit)
         else:
-            # Single measure qb
+            # Pivoted shape cube
             measure = None
             if isinstance(self.measure, str):
                 measure = ExistingQbMeasure(self.measure)

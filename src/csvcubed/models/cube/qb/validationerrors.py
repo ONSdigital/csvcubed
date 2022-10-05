@@ -245,13 +245,14 @@ class NoMeasuresDefinedError(NeitherDefinedError):
 
 
 @dataclass
-class NoObservedValuesColumnDefinedError(NeitherDefinedError):
+class NoObservedValuesColumnDefinedError(MinNumComponentsNotSatisfiedError):
     """
     An error for when the user has not defined any observed value columns for the dataset.
     """
 
-    component_one: ComponentTypeDescription = QbObservationValue
-    component_two: ComponentTypeDescription = QbObservationValue
+    component_type: ComponentTypeDescription = QbObservationValue
+    minimum_number: int = 1
+    actual_number: int = 0
 
     @classmethod
     def get_error_url(cls) -> str:

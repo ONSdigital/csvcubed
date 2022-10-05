@@ -427,7 +427,7 @@ def test_measure_dimension_with_single_measure_obs_val():
     assert error.component_two == QbMultiMeasureDimension
     assert (
         error.additional_explanation
-        == "A single-measure cube cannot have a measure dimension."
+        == "A pivoted shape cube cannot have a measure dimension."
     )
 
 

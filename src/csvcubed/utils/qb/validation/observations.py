@@ -194,7 +194,7 @@ def _validate_pivoted_shape_cube(
             BothMeasureTypesDefinedError(
                 f"{QbObservationValue.__name__}.measure",
                 QbMultiMeasureDimension,
-                additional_explanation="A single-measure cube cannot have a measure dimension.",
+                additional_explanation="A pivoted shape cube cannot have a measure dimension.",
             )
         )
 

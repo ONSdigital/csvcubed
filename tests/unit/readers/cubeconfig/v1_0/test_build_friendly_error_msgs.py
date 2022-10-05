@@ -233,7 +233,7 @@ def test_val_errors_both_measure_types():
         "may only be defined in one location."
     )
     assert _check_log(
-        "Further details: A single-measure cube cannot have a measure dimension."
+        "Further details: A pivoted shape cube cannot have a measure dimension."
     )
     assert _check_log(
         "csvcubed.cli.build - ERROR - More information: http://purl.org/csv-cubed/err/both-meas-typ-def"

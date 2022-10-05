@@ -16,7 +16,7 @@ from csvcubed.models.validationerror import ValidationError
 
 
 @dataclass
-class QbObservationValue(QbColumnStructuralDefinition, ABC):
+class QbObservationValue(QbColumnStructuralDefinition):
     """
     Represents the unit/measure/datatype components necessary to define a simple qb:Observation.
 

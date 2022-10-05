@@ -32,6 +32,9 @@ class QbMultiUnits(QbColumnStructuralDefinition):
 
     units: List[QbUnit]
     observed_value_col_title: Optional[str] = field(default=None)
+    """
+    Helps identify which observed values column this units column describes
+    """
 
     @validator("units")
     def _validate_units_non_conflicting(cls, units: List[QbUnit]) -> List[QbUnit]:
