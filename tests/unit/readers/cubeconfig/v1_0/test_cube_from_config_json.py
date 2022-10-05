@@ -209,7 +209,7 @@ def test_build_config_ok():
     assert isinstance(
         col_observation.structural_definition, QbObservationValue
     )
-    #assert col_observation.structural_definition.measure is None
+    assert col_observation.structural_definition.measure is None
     assert col_observation.structural_definition.unit is None
     assert col_observation.structural_definition.data_type == "decimal"
 
