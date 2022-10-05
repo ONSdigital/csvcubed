@@ -596,6 +596,7 @@ def test_observation_ok():
 
     sd = column.structural_definition
     assert isinstance(sd, QbObservationValue)
+    assert sd.measure is None
     assert sd.unit is None
     assert sd.data_type == "decimal"
 
@@ -748,6 +749,7 @@ def test_observation_value_data_type_extraction():
     assert isinstance(
         column.structural_definition, QbObservationValue
     ), column.structural_definition
+    assert column.structural_definition.measure is not None
     obs_val = column.structural_definition
     assert obs_val.data_type == "integer"
 

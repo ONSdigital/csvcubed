@@ -131,6 +131,7 @@ def test_scaling_factor_not_defined():
         assert isinstance(
             amount_col.structural_definition, QbObservationValue
         )
+        assert amount_col.structural_definition.measure is None
         unit = amount_col.structural_definition.unit
         assert isinstance(unit, NewQbUnit)
         assert unit.base_unit_scaling_factor == EXISTING_UNIT_DEFAULT_SCALING_FACTOR
