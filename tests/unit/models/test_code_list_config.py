@@ -233,7 +233,7 @@ def test_should_not_detect_duplicated_concepts():
 
 def test_same_as_field_in_output_csv():
     """
-    The output csv should contain a column called Original Concept URI, and the concepts with same_as should have a value in this column.
+    The output csv should contain existing concept uri when the concepts has the same as field defined.
     """
     with TemporaryDirectory() as temp_dir_path:
         temp_dir = Path(temp_dir_path)
@@ -245,7 +245,5 @@ def test_same_as_field_in_output_csv():
             output_directory=output_dir, csv_path=csv_path, config_path=config_path
         )
 
-        #output_df = pd.read_csv(output_dir / "year.csv")    
         output_df = pd.read_csv(output_dir / "geography.csv")
-        print(output_df.head())
         assert "Original Concept URI" in output_df.columns
