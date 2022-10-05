@@ -210,7 +210,7 @@ def test_should_detect_duplicated_concepts():
 
 def test_should_not_detect_duplicated_concepts():
     """
-    Should return false as not duplicated concepts are defined.
+    Should return false as no duplicated concepts are defined.
     """
 
     code_list = NewQbCodeList(
