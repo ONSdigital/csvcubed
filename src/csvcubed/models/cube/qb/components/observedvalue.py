@@ -29,6 +29,9 @@ class QbObservationValue(QbColumnStructuralDefinition):
 
     @property
     def is_pivoted_shape_observation(self) -> bool:
+        """
+        Represents whether this observation is being represented in a pivoted or standard shape cube.
+        """
         return self.measure is not None
 
     def validate_data(
