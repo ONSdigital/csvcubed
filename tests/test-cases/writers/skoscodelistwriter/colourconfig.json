@@ -12,17 +12,16 @@
                         "label": "Red",
                         "notation": "Red",
                         "same_as": "http://example.org/red"
-                    },
-                    {
-                        "label": "Blue",
-                        "notation": "Blue",
-                        "same_as": "http://example.org/blue"
                     }
                 ]
             }
         },
         "Observation": {
             "type": "observations",
+            "unit": {
+                "label": "some unit",
+                "from_existing": "http://qudt.org/vocab/unit/NUM"
+            },
             "measure": {
                 "label": "arbitrary",
                 "from_existing": "http://gss-data.org.uk/def/measure/count"
