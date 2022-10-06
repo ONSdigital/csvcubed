@@ -12,6 +12,7 @@ from pathlib import Path
 from csvcubedmodels.dataclassbase import DataClassBase
 
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
+from csvcubed.models.cube.qb.components.concept import DuplicatedQbConcept
 from csvcubed.utils.json import load_json_document
 from csvcubed.models.cube.qb.components import NewQbConcept
 from csvcubed.readers.catalogmetadata.v1.catalog_metadata_reader import (
@@ -178,18 +179,32 @@ class CodeListConfig(DataClassBase):
             ] = [(c, None) for c in self.concepts]
 
             for (concept, maybe_parent_concept) in concepts_with_maybe_parent:
-                new_qb_concepts.append(
-                    NewQbConcept(
-                        label=concept.label,
-                        code=concept.notation,
-                        parent_code=maybe_parent_concept.notation
-                        if maybe_parent_concept
-                        else None,
-                        sort_order=concept.sort_order,
-                        description=concept.description,
-                        uri_safe_identifier_override=concept.uri_safe_identifier_override,
-                    )
+                parent_code = (
+                    maybe_parent_concept.notation if maybe_parent_concept else None
                 )
+                if concept.same_as:
+                    new_qb_concepts.append(
+                        DuplicatedQbConcept(
+                            label=concept.label,
+                            code=concept.notation,
+                            parent_code=parent_code,
+                            sort_order=concept.sort_order,
+                            description=concept.description,
+                            uri_safe_identifier_override=concept.uri_safe_identifier_override,
+                            existing_concept_uri=concept.same_as,
+                        )
+                    )
+                else:
+                    new_qb_concepts.append(
+                        NewQbConcept(
+                            label=concept.label,
+                            code=concept.notation,
+                            parent_code=parent_code,
+                            sort_order=concept.sort_order,
+                            description=concept.description,
+                            uri_safe_identifier_override=concept.uri_safe_identifier_override,
+                        )
+                    )
                 if any(concept.children):
                     concepts_with_maybe_parent += [
                         (child, concept) for child in concept.children

@@ -1,16 +1,30 @@
 from pathlib import Path
+from tempfile import TemporaryDirectory
 from typing import Dict, List
+import pandas as pd
 
 from csvcubed.models.codelistconfig.code_list_config import (
     CODE_LIST_CONFIG_DEFAULT_URL,
     CodeListConfig,
     CodeListConfigConcept,
 )
+from csvcubed.models.cube.cube import Cube
+from csvcubed.models.cube.qb.catalog import CatalogMetadata
+from csvcubed.models.cube.qb.components.codelist import (
+    CompositeQbCodeList,
+    NewQbCodeList,
+)
+from csvcubed.models.cube.qb.components.concept import DuplicatedQbConcept, NewQbConcept
 from csvcubed.utils.datetime import parse_iso_8601_date_time
 from csvcubed.utils.dict import get_with_func_or_none
+from csvcubed.writers.skoscodelistwriter import SkosCodeListWriter
 from tests.unit.test_baseunit import get_test_cases_dir
+from csvcubed.cli.build import build as cli_build
 
-_test_case_base_dir = get_test_cases_dir() / "readers" / "code-list-config" / "v1.0"
+_test_case_readers_base_dir = (
+    get_test_cases_dir() / "readers" / "code-list-config" / "v1.0"
+)
+_test_case_writers_base_dir = get_test_cases_dir() / "writers"
 
 
 def _assert_code_list_config_concepts(
@@ -83,7 +97,7 @@ def test_code_list_config():
     Should return CodeListConfig for config json path.
     """
     code_list_config_json_path = (
-        _test_case_base_dir / "code_list_config_none_hierarchical.json"
+        _test_case_readers_base_dir / "code_list_config_none_hierarchical.json"
     )
     code_list_config, code_list_config_json = CodeListConfig.from_json_file(
         Path(code_list_config_json_path)
@@ -105,7 +119,8 @@ def test_code_list_config_without_schema():
     Should return CodeListConfig for config json path.
     """
     code_list_config_json_path = (
-        _test_case_base_dir / "code_list_config_none_hierarchical_without_schema.json"
+        _test_case_readers_base_dir
+        / "code_list_config_none_hierarchical_without_schema.json"
     )
     code_list_config, code_list_config_json = CodeListConfig.from_json_file(
         Path(code_list_config_json_path)
@@ -128,7 +143,7 @@ def test_code_list_config_with_hierarchy():
     """
 
     code_list_config_json_path = (
-        _test_case_base_dir / "code_list_config_hierarchical.json"
+        _test_case_readers_base_dir / "code_list_config_hierarchical.json"
     )
     code_list_config, code_list_config_json = CodeListConfig.from_json_file(
         Path(code_list_config_json_path)
@@ -151,7 +166,8 @@ def test_code_list_config_with_concepts_defined_elsewhere():
     """
 
     code_list_config_json_path = (
-        _test_case_base_dir / "code_list_config_with_concepts_defined_elsewhere.json"
+        _test_case_readers_base_dir
+        / "code_list_config_with_concepts_defined_elsewhere.json"
     )
     code_list_config, code_list_config_json = CodeListConfig.from_json_file(
         Path(code_list_config_json_path)
@@ -166,3 +182,74 @@ def test_code_list_config_with_concepts_defined_elsewhere():
         code_list_config.concepts,
         expected_sort_orders={"a": 1, "b": 0, "c": 2, "d": 0, "e": 0},
     )
+
+
+def test_should_detect_duplicated_concepts():
+    """
+    Should return true as duplicated concepts are defined.
+    """
+
+    code_list = NewQbCodeList(
+        CatalogMetadata("Some CodeList"),
+        [
+            NewQbConcept(
+                label="Wales",
+                code="wales",
+            ),
+            DuplicatedQbConcept(
+                existing_concept_uri="http://data.europa.eu/nuts/code/UKM",
+                label="Scotland",
+                code="scotland",
+            ),
+        ],
+    )
+
+    writer = SkosCodeListWriter(code_list)
+    assert writer.has_duplicated_qb_concepts(code_list) == True
+
+
+def test_should_not_detect_duplicated_concepts():
+    """
+    Should return false as no duplicated concepts are defined.
+    """
+
+    code_list = NewQbCodeList(
+        CatalogMetadata("Some CodeList"),
+        [
+            NewQbConcept(
+                label="Wales",
+                code="wales",
+            ),
+            NewQbConcept(
+                label="Scotland",
+                code="scotland",
+            ),
+        ],
+    )
+
+    writer = SkosCodeListWriter(code_list)
+    assert writer.has_duplicated_qb_concepts(code_list) == False
+
+
+def test_same_as_field_in_output_csv():
+    """
+    The output csv should contain existing concept uri when the concepts has the same as field defined.
+    And whether the expected uris are present in the column.
+    """
+    with TemporaryDirectory() as temp_dir_path:
+        temp_dir = Path(temp_dir_path)
+        output_dir = temp_dir / "out"
+        config_path = (
+            _test_case_writers_base_dir / "skoscodelistwriter" / "colourconfig.json"
+        )
+        csv_path = _test_case_writers_base_dir / "skoscodelistwriter" / "colours.csv"
+
+        cli_build(
+            output_directory=output_dir, csv_path=csv_path, config_path=config_path
+        )
+
+        output_df = pd.read_csv(output_dir / "colours.csv")
+
+        assert "Original Concept URI" in output_df.columns
+
+        assert output_df.iloc[0]["Original Concept URI"] == "http://example.org/red"
