@@ -1,13 +1,21 @@
 import csv
 import sys
-
+import tempfile
+import os
+from pathlib import Path
 # this program will generate a csv file with a predefined number of colums and rows (preferabli each value unique)
 
 # taking in a commandline argument to determine the number of rows
 numb_rows = int(sys.argv[1])
 
-# creating a csv file
-with open("mytest.csv", "w", newline="") as f:
+
+#creating a temp file 
+temp_dir = Path("temp_dir")
+temp_dir.mkdir()
+
+
+#filling up the csv file with random unique data for testing 
+with open(temp_dir / "stress.csv", "w+", newline="") as f:
     thewriter = csv.writer(f)
 
     # creating arrays to temporarely hold the data that will be placed in the csv file

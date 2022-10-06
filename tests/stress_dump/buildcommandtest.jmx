@@ -26,7 +26,7 @@
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
-          <stringProp name="LoopController.loops">5</stringProp>
+          <stringProp name="LoopController.loops">1</stringProp>
         </elementProp>
         <stringProp name="ThreadGroup.num_threads">1</stringProp>
         <stringProp name="ThreadGroup.ramp_time">1</stringProp>
@@ -49,12 +49,22 @@
             <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="Argument">
                 <stringProp name="Argument.name"></stringProp>
-                <stringProp name="Argument.value">inspect</stringProp>
+                <stringProp name="Argument.value">build</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="" elementType="Argument">
                 <stringProp name="Argument.name"></stringProp>
-                <stringProp name="Argument.value">test-data-set.csv-metadata.json</stringProp>
+                <stringProp name="Argument.value">mytest.csv</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Argument">
+                <stringProp name="Argument.name"></stringProp>
+                <stringProp name="Argument.value">-c</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Argument">
+                <stringProp name="Argument.name"></stringProp>
+                <stringProp name="Argument.value">test-qube-config.json</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
             </collectionProp>
@@ -62,7 +72,7 @@
           <elementProp name="SystemSampler.environment" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments"/>
           </elementProp>
-          <stringProp name="SystemSampler.directory">/Users/jozefkrajcsirik/Documnets/GitHub/csvcubed/tests/stress/out</stringProp>
+          <stringProp name="SystemSampler.directory">${SCRIPT_PATH}</stringProp>
         </SystemSampler>
         <hashTree>
           <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor" enabled="true">
@@ -90,12 +100,12 @@
                 <encoding>false</encoding>
                 <assertions>true</assertions>
                 <subresults>true</subresults>
-                <responseData>false</responseData>
-                <samplerData>false</samplerData>
+                <responseData>true</responseData>
+                <samplerData>true</samplerData>
                 <xml>false</xml>
                 <fieldNames>true</fieldNames>
-                <responseHeaders>false</responseHeaders>
-                <requestHeaders>false</requestHeaders>
+                <responseHeaders>true</responseHeaders>
+                <requestHeaders>true</requestHeaders>
                 <responseDataOnError>false</responseDataOnError>
                 <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
                 <assertionsResultsToSave>0</assertionsResultsToSave>
@@ -107,7 +117,11 @@
                 <connectTime>true</connectTime>
               </value>
             </objProp>
-            <stringProp name="filename">/Users/jozefkrajcsirik/Documnets/GitHub/csvcubed/tests/stress/metrics</stringProp>
+<<<<<<< HEAD:tests/stress/buildcommandtest.jmx
+            <stringProp name="filename">~/metrics.txt</stringProp>
+=======
+            <stringProp name="filename">/Users/charlesrendle/git/csvcubed/csvcubed/tests/stress/metrics.csv</stringProp>
+>>>>>>> d01715e7b1bcef087c20c98f15becfda495b143e:tests/stress_dump/buildcommandtest.jmx
             <longProp name="interval_grouping">1000</longProp>
             <boolProp name="graph_aggregated">false</boolProp>
             <stringProp name="include_sample_labels"></stringProp>

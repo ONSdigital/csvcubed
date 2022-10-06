@@ -1,2 +1,0 @@
-timeStamp,elapsed,label,responseCode,responseMessage,threadName,dataType,success,failureMessage,bytes,sentBytes,grpThreads,allThreads,URL,Latency,IdleTime,Connect
-1664797475070,4870,csvcubed build sampler,0,OK,csvcubed build command Thread Group 1-1,text,true,,77,0,1,1,null,0,0,0
