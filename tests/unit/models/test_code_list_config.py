@@ -253,4 +253,3 @@ def test_same_as_field_in_output_csv():
         assert "Original Concept URI" in output_df.columns
 
         assert output_df.iloc[0]["Original Concept URI"] == "http://example.org/red"
-        assert output_df.iloc[1]["Original Concept URI"] == "http://example.org/blue"
