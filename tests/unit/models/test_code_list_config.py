@@ -239,34 +239,18 @@ def test_same_as_field_in_output_csv():
     with TemporaryDirectory() as temp_dir_path:
         temp_dir = Path(temp_dir_path)
         output_dir = temp_dir / "out"
-        config_path = _test_case_writers_base_dir / "skoscodelistwriter" / "config.json"
-        csv_path = _test_case_writers_base_dir / "skoscodelistwriter" / "data.csv"
+        config_path = (
+            _test_case_writers_base_dir / "skoscodelistwriter" / "colourconfig.json"
+        )
+        csv_path = _test_case_writers_base_dir / "skoscodelistwriter" / "colours.csv"
 
         cli_build(
             output_directory=output_dir, csv_path=csv_path, config_path=config_path
         )
 
-        output_df = pd.read_csv(output_dir / "geography.csv")
+        output_df = pd.read_csv(output_dir / "colours.csv")
 
         assert "Original Concept URI" in output_df.columns
 
-        assert (
-            output_df.iloc[0]["Original Concept URI"]
-            == "http://statistics.data.gov.uk/id/statistical-geography/K02000001"
-        )
-        assert (
-            output_df.iloc[1]["Original Concept URI"]
-            == "http://statistics.data.gov.uk/id/statistical-geography/E92000001"
-        )
-        assert (
-            output_df.iloc[2]["Original Concept URI"]
-            == "http://statistics.data.gov.uk/id/statistical-geography/N92000002"
-        )
-        assert (
-            output_df.iloc[3]["Original Concept URI"]
-            == "http://statistics.data.gov.uk/id/statistical-geography/S92000003"
-        )
-        assert (
-            output_df.iloc[4]["Original Concept URI"]
-            == "http://statistics.data.gov.uk/id/statistical-geography/W92000004"
-        )
+        assert output_df.iloc[0]["Original Concept URI"] == "http://example.org/red"
+        assert output_df.iloc[1]["Original Concept URI"] == "http://example.org/blue"
