@@ -2,11 +2,13 @@ from genericpath import exists
 from http.client import OK
 from typing import List
 from urllib.parse import urlparse
+import os
 import pandas as pd
 from pathlib import Path
 from behave import Given, When, Then, Step
 from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
 from csvcubeddevtools.helpers.file import get_test_cases_dir
+from csvcubeddevtools.behaviour.rdf import test_graph_diff
 from rdflib import Graph
 
 from csvcubed.models.cube import *
@@ -24,6 +26,7 @@ from csvcubed.readers.skoscodelistreader import extract_code_list_concept_scheme
 from csvcubed.writers.qbwriter import QbWriter
 from csvcubed.utils.qb.validation.cube import validate_qb_component_constraints
 from csvcubed.utils.pandas import read_csv
+from csvcubed.utils.version import get_csvcubed_version_uri
 
 _test_case_dir = get_test_cases_dir()
 
@@ -429,7 +432,7 @@ def step_impl(context, file: str):
 def step_impl(context):
     writer = QbWriter(context.cube)
     temp_dir = get_context_temp_dir_path(context)
-    
+
     writer.write(temp_dir)
     context.csv_file_name = writer.csv_file_name
 
@@ -891,3 +894,12 @@ def assert_uri_style_for_uri(uri_style: URIStyle, uri: str, node):
         assert path.endswith(".csv") or path.endswith(
             ".json"
         ), f"expected {node} to end with .csv or .json"
+
+@then(u'the RDF should contain version specific triples')
+def step_impl(context):
+    context.version_triples = context.text + os.linesep + f"prov:used <{get_csvcubed_version_uri()}> ."
+
+    test_graph_diff(
+        Graph().parse(format="turtle", data=context.turtle),
+        Graph().parse(format="turtle", data=context.version_triples.strip()),
+    )
