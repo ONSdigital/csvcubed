@@ -629,7 +629,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     <file:/tmp/cube-data-convention-ok.csv#measure/cost-of-living-index> <http://www.w3.org/2000/01/rdf-schema#label> "Cost of living index"@en;
       <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#decimal> .
     """
-  @wip
+    
   Scenario: A QbCube should generate csvcubed version specific rdf
     Given a single-measure QbCube with identifier "qb-id-10002" named "Some Qube"
     When the cube is serialised to CSV-W
