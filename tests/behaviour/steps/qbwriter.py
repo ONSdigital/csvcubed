@@ -7,6 +7,7 @@ from pathlib import Path
 from behave import Given, When, Then, Step
 from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
 from csvcubeddevtools.helpers.file import get_test_cases_dir
+from csvcubeddevtools.behaviour.rdf import test_graph_diff
 from rdflib import Graph
 
 from csvcubed.models.cube import *
@@ -24,6 +25,7 @@ from csvcubed.readers.skoscodelistreader import extract_code_list_concept_scheme
 from csvcubed.writers.qbwriter import QbWriter
 from csvcubed.utils.qb.validation.cube import validate_qb_component_constraints
 from csvcubed.utils.pandas import read_csv
+from csvcubed.utils.version import get_csvcubed_version_uri
 
 _test_case_dir = get_test_cases_dir()
 
@@ -88,9 +90,7 @@ def step_impl(context, cube_name: str):
         ),
         QbColumn(
             "Value",
-            QbObservationValue(
-                NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
-            ),
+            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
 
@@ -124,9 +124,7 @@ def step_impl(context, cube_name: str):
         ),
         QbColumn(
             "Value",
-            QbObservationValue(
-                NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
-            ),
+            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
 
@@ -149,9 +147,7 @@ def step_impl(context, cube_name: str, csvw_file_path: str):
         ),
         QbColumn(
             "Value",
-            QbObservationValue(
-                NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
-            ),
+            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
 
@@ -180,9 +176,7 @@ def _get_single_measure_cube_with_name_and_id(
         QbColumn("D", NewQbDimension.from_data("D code list", _standard_data["D"])),
         QbColumn(
             "Value",
-            QbObservationValue(
-                NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
-            ),
+            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
 
@@ -209,9 +203,7 @@ def step_impl(context, cube_name: str):
         ),
         QbColumn(
             "Value",
-            QbObservationValue(
-                NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
-            ),
+            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
 
@@ -227,9 +219,7 @@ def step_impl(context, cube_name: str):
         QbColumn("A", NewQbDimension.from_data("A Dimension", data["A"])),
         QbColumn(
             "Value",
-            QbObservationValue(
-                NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
-            ),
+            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
 
@@ -256,9 +246,7 @@ def step_impl(context, cube_name: str):
         QbColumn("D", NewQbDimension.from_data("D code list", _standard_data["D"])),
         QbColumn(
             "Value",
-            QbObservationValue(
-                NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
-            ),
+            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
 
@@ -289,9 +277,7 @@ def step_impl(context, cube_name: str):
         ),
         QbColumn(
             "Value",
-            QbObservationValue(
-                NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
-            ),
+            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
 
@@ -371,9 +357,7 @@ def step_impl(context, cube_name: str):
         ),
         QbColumn(
             "Value",
-            QbObservationValue(
-                NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
-            ),
+            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
 
@@ -429,7 +413,7 @@ def step_impl(context, file: str):
 def step_impl(context):
     writer = QbWriter(context.cube)
     temp_dir = get_context_temp_dir_path(context)
-    
+
     writer.write(temp_dir)
     context.csv_file_name = writer.csv_file_name
 
@@ -481,9 +465,7 @@ def step_impl(context, cube_name: str, type: str, data_type: str):
     dim = QbColumn("A", NewQbDimension.from_data("A Dimension", data["A"]))
     val = QbColumn(
         "Value",
-        QbObservationValue(
-            NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
-        ),
+        QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
     )
     if data_type == "int":
         if type == "new":
@@ -567,9 +549,7 @@ def step_impl(context, cube_name: str):
         ),
         QbColumn(
             "Observed Value",
-            QbObservationValue(
-                NewQbMeasure("Part-time"), NewQbUnit("Num of Students")
-            ),
+            QbObservationValue(NewQbMeasure("Part-time"), NewQbUnit("Num of Students")),
         ),
     ]
 
@@ -891,3 +871,13 @@ def assert_uri_style_for_uri(uri_style: URIStyle, uri: str, node):
         assert path.endswith(".csv") or path.endswith(
             ".json"
         ), f"expected {node} to end with .csv or .json"
+
+@then(u'the RDF should contain version specific triples')
+def step_impl(context):
+
+    context.version_triples = context.text + "\n" + f"prov:used <{get_csvcubed_version_uri()}> ."
+
+    test_graph_diff(
+        Graph().parse(format="turtle", data=context.turtle),
+        Graph().parse(format="turtle", data=context.version_triples.strip()),
+    )

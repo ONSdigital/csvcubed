@@ -1,5 +1,5 @@
 Feature: Test outputting CSV-Ws containing `SKOS:ConceptScheme`s.
-
+  @wip
   Scenario: A basic code list can be serialised to a valid CSV-W described in SKOS containing csvcubed version specific rdf.
     Given a NewQbCodeList named "Basic Code-list"
     When the code list is serialised to CSV-W
@@ -43,12 +43,19 @@ Feature: Test outputting CSV-Ws containing `SKOS:ConceptScheme`s.
 
       @prefix prov: <http://www.w3.org/ns/prov#> .
 
-      basicCodeList:code-list a prov:Entity;
-      prov:wasGeneratedBy basicCodeList:csvcubed-build-activity.
+      basicCodeList:code-list a prov:Entity ;
+        prov:wasGeneratedBy basicCodeList:csvcubed-build-activity.
 
-      basicCodeList:csvcubed-build-activity a prov:Activity;
-      prov:used <https://github.com/GSS-Cogs/csvcubed/releases/tag/v0.1.0.dev0>.
+      basicCodeList:csvcubed-build-activity a prov:Activity.
+
       """
+    And the RDF should contain version specific triples
+    """
+      @prefix basicCodeList: <file:/tmp/basic-code-list.csv#>.
+      @prefix prov: <http://www.w3.org/ns/prov#> .
+        
+      basicCodeList:csvcubed-build-activity a prov:Activity;
+    """
 
   Scenario: A code list with duplicate notations fails validation.
     Given a NewQbCodeList named "Contains Duplicates" containing duplicates
