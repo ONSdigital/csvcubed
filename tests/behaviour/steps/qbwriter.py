@@ -2,6 +2,7 @@ from genericpath import exists
 from http.client import OK
 from typing import List
 from urllib.parse import urlparse
+import os
 import pandas as pd
 from pathlib import Path
 from behave import Given, When, Then, Step
@@ -896,8 +897,7 @@ def assert_uri_style_for_uri(uri_style: URIStyle, uri: str, node):
 
 @then(u'the RDF should contain version specific triples')
 def step_impl(context):
-
-    context.version_triples = context.text + "\n" + f"prov:used <{get_csvcubed_version_uri()}> ."
+    context.version_triples = context.text + os.linesep + f"prov:used <{get_csvcubed_version_uri()}> ."
 
     test_graph_diff(
         Graph().parse(format="turtle", data=context.turtle),
