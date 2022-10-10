@@ -21,4 +21,4 @@ void runProcessJMeter(String command) {
 }
 
 
-runProcessJMeter("python3 buildpreprocess.py 100")
+runProcessJMeter("python3 preprocess.py 10")

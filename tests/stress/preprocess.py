@@ -78,11 +78,3 @@ with open(temp_dir / "stress.csv", "w+", newline="") as f:
         thewriter.writerow(rows_array)
 
         rows_array = []
-
-"""
-    "columns": {
-        "dim1": {
-            "type": "dimension"
-        }
-    }
-"""

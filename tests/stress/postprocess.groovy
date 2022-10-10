@@ -21,4 +21,4 @@ void runProcessJMeter(String command) {
 }
 
 
-runProcessJMeter("clean_up.py")
+runProcessJMeter("python3 postprocess.py")
