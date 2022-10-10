@@ -81,6 +81,29 @@ class QbWriter(WriterBase):
     def csv_metadata_file_name(self) -> str:
         return f"{self.csv_file_name}-metadata.json"
 
+    @property
+    def is_cube_in_pivoted_shape(self) -> bool:
+        obs_val_columns = get_columns_of_dsd_type(self.cube, QbObservationValue)
+
+        all_pivoted = True
+        all_standard_shape = True
+        for obs_val_col in obs_val_columns:
+            all_pivoted = (
+                all_pivoted
+                and obs_val_col.structural_definition.is_pivoted_shape_observation
+            )
+            all_standard_shape = (
+                all_standard_shape
+                and not obs_val_col.structural_definition.is_pivoted_shape_observation
+            )
+
+        if all_pivoted:
+            return True
+        elif all_standard:
+            return False
+        else:
+            raise Exception("The cube cannot be in both standard and pivoted shape")
+
     def __post_init__(self):
         self.csv_file_name = f"{self.cube.metadata.uri_safe_identifier}.csv"
         _logger.debug(
@@ -95,6 +118,8 @@ class QbWriter(WriterBase):
         # Also converts all appropriate columns to the pandas categorical format.
 
         _logger.info(f"Beginning CSV-W Generation: {self.csv_file_name}")
+
+        # TODO:
 
         ensure_int_columns_are_ints(self.cube)
 
@@ -325,7 +350,10 @@ class QbWriter(WriterBase):
                     "valueUrl": self._get_unit_uri(unit),
                 }
             )
-        if isinstance(obs_val, QbObservationValue) and obs_val.is_pivoted_shape_observation:
+        if (
+            isinstance(obs_val, QbObservationValue)
+            and obs_val.is_pivoted_shape_observation
+        ):
             assert obs_val.measure is not None
             _logger.debug("Adding virtual measure column.")
             virtual_columns.append(
@@ -333,7 +361,7 @@ class QbWriter(WriterBase):
                     "name": "virt_measure",
                     "virtual": True,
                     "propertyUrl": "http://purl.org/linked-data/cube#measureType",
-                    "valueUrl": self._get_measure_uri(obs_val.measure), 
+                    "valueUrl": self._get_measure_uri(obs_val.measure),
                 }
             )
         return virtual_columns
@@ -437,7 +465,6 @@ class QbWriter(WriterBase):
         if unit is not None:
             specs.append(self._get_qb_units_column_specification("unit"))
 
-        
         if observation_value.is_pivoted_shape_observation:
             assert observation_value.measure is not None
             specs.append(
@@ -1200,8 +1227,14 @@ class QbWriter(WriterBase):
                         f"{{{csvw_column_name_safe(c.uri_safe_identifier)}}}"
                     )
 
-        about_url_template = self._new_uri_helper.get_observation_uri(
-            dimension_columns_templates, multi_measure_col_template
+        about_url_template = (
+            self._new_uri_helper.get_slice_across_measures_uri(
+                dimension_columns_templates
+            )
+            if self.is_cube_in_pivoted_shape
+            else self._new_uri_helper.get_observation_uri(
+                dimension_columns_templates, multi_measure_col_template
+            )
         )
 
         _logger.debug("aboutUrl template is %s", about_url_template)

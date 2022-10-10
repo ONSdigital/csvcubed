@@ -48,6 +48,11 @@ class QbCubeNewUriHelper:
 
         return self._uri_in_doc(f"obs/{identifying_parts}")
 
+    #TODO: Write a unit test
+    def get_slice_across_measures_uri(self, dimension_identifying_values: List[str]) -> str:
+        identifying_parts = ",".join(dimension_identifying_values)
+        return self._uri_in_doc(f"slice/{identifying_parts}")
+
     def get_component_uri(self, component_identifier: str) -> str:
         return self._uri_in_doc(f"component/{component_identifier}")
 
