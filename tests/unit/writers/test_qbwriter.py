@@ -824,7 +824,7 @@ def test_about_url_generation():
     cube = Cube(metadata, data, columns)
 
     actual_about_url = QbWriter(cube)._get_about_url()
-    expected_about_url = "some-dataset.csv#obs/{existing_dimension},{local_dimension}"
+    expected_about_url = "some-dataset.csv#slice/{existing_dimension},{local_dimension}"
     assert actual_about_url == expected_about_url
 
 
@@ -865,7 +865,7 @@ def test_about_url_generation_with_multiple_measures():
 
     actual_about_url = QbWriter(cube)._get_about_url()
     expected_about_url = (
-        "some-dataset.csv#obs/{existing_dimension},{local_dimension}@{measure}"
+        "some-dataset.csv#slice/{existing_dimension},{local_dimension}"
     )
     assert actual_about_url == expected_about_url
 

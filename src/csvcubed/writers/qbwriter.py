@@ -99,7 +99,7 @@ class QbWriter(WriterBase):
 
         if all_pivoted:
             return True
-        elif all_standard:
+        elif all_standard_shape:
             return False
         else:
             raise Exception("The cube cannot be in both standard and pivoted shape")
