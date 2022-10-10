@@ -78,3 +78,9 @@ with open(temp_dir / "stress.csv", "w+", newline="") as f:
         thewriter.writerow(rows_array)
 
         rows_array = []
+
+
+# Run the build command using the created stress.csv in the temp_dir
+os.chdir(temp_dir)
+os.system("csvcubed build stress.csv -c ../test-qube-config.json")
+
