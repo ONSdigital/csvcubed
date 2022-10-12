@@ -222,7 +222,7 @@ class QbWriter(WriterBase):
     def _generate_csvw_columns_for_cube(self) -> List[Dict[str, Any]]:
         columns = [self._generate_csvqb_column(c) for c in self.cube.columns]
         if self.is_cube_in_pivoted_shape:
-            columns += self._generate_virtual_columns_for_pivoted_cube()
+            columns += self._generate_virtual_columns_for_obs_val_in_pivoted_cube()
         else:
             columns += self._generate_virtual_columns_for_standard_shape_cube()
         return columns
@@ -314,10 +314,10 @@ class QbWriter(WriterBase):
 
         return foreign_keys
 
-    def _generate_virtual_columns_for_pivoted_cube(self) -> List[Dict[str, Any]]:
+    def _generate_virtual_columns_for_obs_val_in_pivoted_cube(self) -> List[Dict[str, Any]]:
         virtual_columns: List[dict] = []
 
-        # 1. Generate the virtual col defining the `?sliceUri rdf:type qb:Slice` triple.
+        # Generate the virtual col defining the `?sliceUri rdf:type qb:Slice` triple.
         virtual_columns.append(
             {
                 "name": "virt_slice",
@@ -327,12 +327,12 @@ class QbWriter(WriterBase):
             }
         )
 
-        # 2. For each obs val column returned by dsd_type function
+        # For each obs val column returned by dsd_type function
         observation_value_columns = get_columns_of_dsd_type(
             self.cube, QbObservationValue
         )
         for obs_column in observation_value_columns:
-            # 2.1 Create a virtual col for `?sliceUri qb:observation ?obsUri`
+            # Creating a virtual col for `?sliceUri qb:observation ?obsUri`
             observation_uri = self._get_observation_uri_for_pivoted_shape_data_set(
                 obs_column
             )
@@ -348,7 +348,7 @@ class QbWriter(WriterBase):
                 }
             )
 
-            # 2.2 For each dimension in the cube, create the `?obsUri ?dimUri ?valueUri` triple.
+            # For each dimension in the cube, create the `?obsUri ?dimUri ?valueUri` triple.
             dimension_columns = get_columns_of_dsd_type(self.cube, QbDimension)
             for dimension_col in dimension_columns:
                 (
@@ -380,7 +380,7 @@ class QbWriter(WriterBase):
                 }
             )
 
-            # 2.4 Create a virtual col for `?obsUri qb:dataSet ?dataSetUri`
+            # Create a virtual col for `?obsUri qb:dataSet ?dataSetUri`
             virtual_columns.append(
                 {
                     "name": f"virt_dataSet_{csvw_safe_obs_column_name}",
@@ -391,7 +391,7 @@ class QbWriter(WriterBase):
                 }
             )
 
-            # 2.5 For each units column associated with this obs val column (if one exists): `?obsUri <http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure> ?unitValueUri`. N.B match col title to observed_value_col_title in QbMultiUnits. Get list of units cols by calling dsd_type with QbMultiUnits
+            # For each units column associated with this obs val column (if one exists): `?obsUri <http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure> ?unitValueUri`. N.B match col title to observed_value_col_title in QbMultiUnits. Get list of units cols by calling dsd_type with QbMultiUnits
             unit_columns_for_obs_val_column = [
                 unit_column
                 for unit_column in get_columns_of_dsd_type(self.cube, QbMultiUnits)
@@ -417,7 +417,7 @@ class QbWriter(WriterBase):
                     }
                 )
 
-            # 2.6 For each attribute column associated with this obs val column (if one or more exist): `?obsUri ?attrUri ?attrValue` N.B match col title to observed_value_col_title in QbAttribute. Get list of attribute cols by calling dsd_type with QbAttribute
+            # For each attribute column associated with this obs val column (if one or more exist): `?obsUri ?attrUri ?attrValue` N.B match col title to observed_value_col_title in QbAttribute. Get list of attribute cols by calling dsd_type with QbAttribute
             attribute_columns_for_obs_val_column = [
                 attribute_column
                 for attribute_column in get_columns_of_dsd_type(self.cube, QbAttribute)
