@@ -32,6 +32,7 @@ from csvcubed.utils.uri import (
     get_last_uri_part,
     csvw_column_name_safe,
     get_data_type_uri_from_str,
+    uri_safe,
 )
 from csvcubed.utils.csvw import get_dependent_local_files
 from csvcubed.utils.qb.cube import (
@@ -312,56 +313,113 @@ class QbWriter(WriterBase):
 
     def _generate_vitual_columns_for_pivoted_cube(self) -> List[Dict[str, Any]]:
         virtual_columns = List[dict] = []
+
+        # 1. Generate the virtual col defining the `?sliceUri rdf:type qb:Slice` triple.
         virtual_columns.append(
             {
                 "name": "virt_slice",
                 "virtual": True,
                 "propertyUrl": "rdf:type",
-                "valueUrl": "qb:Slice"
+                "valueUrl": "qb:Slice",
             }
         )
-        
-        observation_value_columns = get_columns_of_dsd_type(self.cube, QbObservationValue)
-        for observation_value_column in observation_value_columns:
-            observation:QbObservationValue = observation_value_column.structural_definition
 
+        # 2. For each obs val column returned by dsd_type function
+        observation_value_columns = get_columns_of_dsd_type(
+            self.cube, QbObservationValue
+        )
+        for obs_column in observation_value_columns:
+            # 2.1 Create a virtual col for `?sliceUri qb:observation ?obsUri`
+            observation_uri = self._get_observation_uri_for_pivoted_shape_data_set(obs_column)
             virtual_columns.append(
                 {
                     "name": "virt_obs",
                     "virtual": True,
                     "propertyUrl": "qb:Observation",
-                    "valueUrl": self._new_uri_helper.get_observation_uri(obs)
+                    "valueUrl": observation_uri,
                 }
             )
-            
-            cube_dimension_columns = get_columns_of_dsd_type(self.cube, QbDimension)
-            for cube_dimension_column in cube_dimension_columns:
 
+            # 2.2 For each dimension in the cube, create the `?obsUri ?dimUri ?valueUri` triple.
+            dimension_columns = get_columns_of_dsd_type(self.cube, QbDimension)
+            for dimension in dimension_columns:
                 virtual_columns.append(
+                    {
+                        "name": "virt_dim",
+                        "virtual": True,
+                        "aboutUrl": observation_uri,
+                        "propertyUrl": self._new_uri_helper.get_dimension_uri(
+                            dimension.uri_safe_identifier
+                        ),
+                        "valueUrl": "TODO",
+                    }
+                )
+
+            # 2.3 Create a virtual col for `?obsUri rdf:type qb:Observation`
+            virtual_columns.append(
                 {
-                    "name": "virt_dim",
+                    "name": "virt_obs",
                     "virtual": True,
-                    "propertyUrl": cube_dimension.structural_definition,
-                    "valueUrl": "TODO"
+                    "aboutUrl": observation_uri,
+                    "propertyUrl": "rdf:type",
+                    "valueUrl": "qb:Observation",
                 }
             )
 
+            # 2.4 Create a virtual col for `?obsUri qb:dataSet ?dataSetUri`
+            virtual_columns.append(
+                {
+                    "name": "virt_dataSet",
+                    "virtual": True,
+                    "aboutUrl": observation_uri,
+                    "propertyUrl": "qb:dataSet",
+                    "valueUrl": self._new_uri_helper.get_dataset_uri(),
+                }
+            )
 
-        # Another function that will take a list of observation values in pivoted
-        # def _generate_vitual_columns_for_pivoted_cube(self) -> List[Dict[str, Any]]:
-        #     1. [DONE] Generate the virtual col defining the `?sliceUri rdf:type qb:Slice` triple
-        #     2. For each obs val column returned by dsd_type function
-        #         2.1 Create a virtual col for `?sliceUri qb:observation ?obsUri`
-        #         2.2 For each dimension in the cube, create the `?obsUri ?dimUri ?valueUri` triple.
-        #         2.3 Create a virtual col for `?obsUri rdf:type qb:Observation`
-        #         2.4 Create a virtual col for `?obsUri qb:dataSet ?dataSetUri`
-        #         2.5 For each units column associated with this obs val column (if one exists): `?obsUri <http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure> ?unitValueUri`. N.B match col title to observed_value_col_title in QbMultiUnits. Get list of units cols by calling dsd_type with QbMultiUnits
-        #         2.5 For each attribute column associated with this obs val column (if one or more exist): `?obsUri ?attrUri ?attrValue` N.B match col title to observed_value_col_title in QbAttribute. Get list of attribute cols by calling dsd_type with QbAttribute
-        #     pass
+            # 2.5 For each units column associated with this obs val column (if one exists): `?obsUri <http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure> ?unitValueUri`. N.B match col title to observed_value_col_title in QbMultiUnits. Get list of units cols by calling dsd_type with QbMultiUnits
+            unit_columns = get_columns_of_dsd_type(self.cube, QbMultiUnits)
+            unit_columns_for_obs_val_column = [
+                unit_column
+                for unit_column in unit_columns
+                if unit_column.get_identifier() == observation.get_identifier()
+            ]
+            for unit_column in unit_columns_for_obs_val_column:
+                virtual_columns.append(
+                    {
+                        "name": "virt_unit",
+                        "virtual": True,
+                        "aboutUrl": observation_uri,
+                        "propertyUrl": "<http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure>",
+                        "valueUrl": self._new_uri_helper.get_unit_uri(
+                            unit_column.get_identifier()
+                        ),
+                    }
+                )
+
+            # 2.6 For each attribute column associated with this obs val column (if one or more exist): `?obsUri ?attrUri ?attrValue` N.B match col title to observed_value_col_title in QbAttribute. Get list of attribute cols by calling dsd_type with QbAttribute
+            attribute_columns = get_columns_of_dsd_type(self.cube, QbAttribute)
+            attribute_columns_for_obs_val_column = [
+                attribute_column
+                for attribute_column in attribute_columns
+                if attribute_column.get_identifier() == observation.get_identifier()
+            ]
+            for attribute_column in attribute_columns_for_obs_val_column:
+                virtual_columns.append(
+                    {
+                        "name": "virt_attribute",
+                        "virtual": True,
+                        "aboutUrl": observation_uri,
+                        "propertyUrl": self._new_uri_helper.get_attribute_uri(
+                            attribute_column.get_identifier()
+                        ),
+                        "valueUrl": self._new_uri_helper.get_attribute_value_uri(
+                            attribute_column.get_identifier()
+                        ),
+                    }
+                )
 
         return virtual_columns
-
-   
 
     def _generate_virtual_columns_for_standard_shape_cube(self) -> List[Dict[str, Any]]:
         virtual_columns = []
@@ -1262,11 +1320,7 @@ class QbWriter(WriterBase):
         else:
             raise Exception(f"Unmatched measure type {type(measure)}")
 
-    def _get_about_url(self) -> str:
-        # Todo: Dimensions are currently appended in the order in which the appear in the cube.
-        #       We may want to alter this in the future so that the ordering is from
-        #       least entropic dimension -> most entropic.
-        #       E.g. http://base-uri/observations/male/1996/all-males-1996
+    def _get_observation_uri_for_standard_shape_data_set(self) -> str:
         dimension_columns_templates: List[str] = []
         multi_measure_col_template: Optional[str] = None
 
@@ -1280,15 +1334,56 @@ class QbWriter(WriterBase):
                     multi_measure_col_template = (
                         f"{{{csvw_column_name_safe(c.uri_safe_identifier)}}}"
                     )
+        return self._new_uri_helper.get_observation_uri(
+            dimension_columns_templates, multi_measure_col_template
+        )
 
+    def _get_observation_uri_for_pivoted_shape_data_set(
+        self, obs_val_column: QbColumn[QbObservationValue]
+    ) -> str:
+        dimension_columns_templates: List[str] = []
+
+        for c in self.cube.columns:
+            if isinstance(c, QbColumn):
+                if isinstance(c.structural_definition, QbDimension):
+                    dimension_columns_templates.append(
+                        f"{{{csvw_column_name_safe(c.uri_safe_identifier)}}}"
+                    )
+
+        obs_val_measure = obs_val_column.structural_definition.measure
+        assert obs_val_measure is not None
+        if isinstance(obs_val_measure, NewQbMeasure):
+            measure_id = obs_val_measure.uri_safe_identifier
+        elif isinstance(obs_val_measure, ExistingQbMeasure):
+            # Yes, this is absolutely nasty, but what else can we do?
+            measure_id = uri_safe(obs_val_measure.measure_uri)
+        else:
+            raise ValueError(f"Unhandled QbMeasure type {type(obs_val_measure)}")
+
+        return self._new_uri_helper.get_observation_uri(
+            dimension_columns_templates, measure_id
+        )
+
+    def _get_pivoted_cube_slice_uri(self) -> str:
+        # TODO: Dimensions are currently appended in the order in which the appear in the cube.
+        #       We may want to alter this in the future so that the ordering is from
+        #       least entropic dimension -> most entropic.
+        #       E.g. http://base-uri/observations/male/1996/all-males-1996
+
+        dimension_columns_templates: List[str] = [
+            f"{{{csvw_column_name_safe(c.uri_safe_identifier)}}}"
+            for c in get_columns_of_dsd_type(self.cube, QbDimension)
+        ]
+
+        return self._new_uri_helper.get_slice_across_measures_uri(
+            dimension_columns_templates
+        )
+
+    def _get_about_url(self) -> str:
         about_url_template = (
-            self._new_uri_helper.get_slice_across_measures_uri(
-                dimension_columns_templates
-            )
+            self._get_pivoted_cube_slice_uri()
             if self.is_cube_in_pivoted_shape
-            else self._new_uri_helper.get_observation_uri(
-                dimension_columns_templates, multi_measure_col_template
-            )
+            else self._get_observation_uri_for_standard_shape_data_set()
         )
 
         _logger.debug("aboutUrl template is %s", about_url_template)
