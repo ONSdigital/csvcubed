@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Tuple, Dict, Any, List, Iterable, Set
 
 import pandas as pd
+from pyparsing import col
 from csvcubed.models.rdf import conceptschemeincatalog
 
 from csvcubedmodels.rdf.dependency import RdfGraphDependency
@@ -219,7 +220,7 @@ class QbWriter(WriterBase):
 
     def _generate_csvw_columns_for_cube(self) -> List[Dict[str, Any]]:
         columns = [self._generate_csvqb_column(c) for c in self.cube.columns]
-        virtual_columns = self._generate_virtual_columns_for_cube()
+        virtual_columns = self._generate_virtual_columns_for_standard_shape_cube()
         return columns + virtual_columns
 
     def _get_columns_for_foreign_keys(self) -> List[QbColumn[NewQbDimension]]:
@@ -309,18 +310,71 @@ class QbWriter(WriterBase):
 
         return foreign_keys
 
-    def _generate_virtual_columns_for_cube(self) -> List[Dict[str, Any]]:
+    def _generate_vitual_columns_for_pivoted_cube(self) -> List[Dict[str, Any]]:
+        virtual_columns = List[dict] = []
+        virtual_columns.append(
+            {
+                "name": "virt_slice",
+                "virtual": True,
+                "propertyUrl": "rdf:type",
+                "valueUrl": "qb:Slice"
+            }
+        )
+        
+        observation_value_columns = get_columns_of_dsd_type(self.cube, QbObservationValue)
+        for observation_value_column in observation_value_columns:
+            observation:QbObservationValue = observation_value_column.structural_definition
+
+            virtual_columns.append(
+                {
+                    "name": "virt_obs",
+                    "virtual": True,
+                    "propertyUrl": "qb:Observation",
+                    "valueUrl": self._new_uri_helper.get_observation_uri(obs)
+                }
+            )
+            
+            cube_dimension_columns = get_columns_of_dsd_type(self.cube, QbDimension)
+            for cube_dimension_column in cube_dimension_columns:
+
+                virtual_columns.append(
+                {
+                    "name": "virt_dim",
+                    "virtual": True,
+                    "propertyUrl": cube_dimension.structural_definition,
+                    "valueUrl": "TODO"
+                }
+            )
+
+
+        # Another function that will take a list of observation values in pivoted
+        # def _generate_vitual_columns_for_pivoted_cube(self) -> List[Dict[str, Any]]:
+        #     1. [DONE] Generate the virtual col defining the `?sliceUri rdf:type qb:Slice` triple
+        #     2. For each obs val column returned by dsd_type function
+        #         2.1 Create a virtual col for `?sliceUri qb:observation ?obsUri`
+        #         2.2 For each dimension in the cube, create the `?obsUri ?dimUri ?valueUri` triple.
+        #         2.3 Create a virtual col for `?obsUri rdf:type qb:Observation`
+        #         2.4 Create a virtual col for `?obsUri qb:dataSet ?dataSetUri`
+        #         2.5 For each units column associated with this obs val column (if one exists): `?obsUri <http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure> ?unitValueUri`. N.B match col title to observed_value_col_title in QbMultiUnits. Get list of units cols by calling dsd_type with QbMultiUnits
+        #         2.5 For each attribute column associated with this obs val column (if one or more exist): `?obsUri ?attrUri ?attrValue` N.B match col title to observed_value_col_title in QbAttribute. Get list of attribute cols by calling dsd_type with QbAttribute
+        #     pass
+
+        return virtual_columns
+
+   
+
+    def _generate_virtual_columns_for_standard_shape_cube(self) -> List[Dict[str, Any]]:
         virtual_columns = []
         for column in self.cube.columns:
             if isinstance(column, QbColumn):
                 if isinstance(column.structural_definition, QbObservationValue):
-                    virtual_columns += self._generate_virtual_columns_for_obs_val(
+                    virtual_columns += self._generate_virtual_columns_for_obs_val_in_standard_shape_cube(
                         column.structural_definition
                     )
 
         return virtual_columns
 
-    def _generate_virtual_columns_for_obs_val(
+    def _generate_virtual_columns_for_obs_val_in_standard_shape_cube(
         self, obs_val: QbObservationValue
     ) -> List[Dict[str, Any]]:
         _logger.debug("Configuring per-row virtual columns.")

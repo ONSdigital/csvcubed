@@ -753,7 +753,7 @@ def test_virtual_columns_generated_for_single_obs_val():
     obs_val = QbObservationValue(
         NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
     )
-    virtual_columns = empty_qbwriter._generate_virtual_columns_for_obs_val(obs_val)
+    virtual_columns = empty_qbwriter._generate_virtual_columns_for_obs_val_in_standard_shape_cube(obs_val)
 
     virt_unit = first(virtual_columns, lambda x: x["name"] == "virt_unit")
     assert virt_unit is not None
@@ -777,7 +777,7 @@ def test_virtual_columns_generated_for_multi_meas_obs_val():
     correct.
     """
     obs_val = QbObservationValue(unit=NewQbUnit("Some Unit"))
-    virtual_columns = empty_qbwriter._generate_virtual_columns_for_obs_val(obs_val)
+    virtual_columns = empty_qbwriter._generate_virtual_columns_for_obs_val_in_standard_shape_cube(obs_val)
 
     virt_unit = first(virtual_columns, lambda x: x["name"] == "virt_unit")
     assert virt_unit is not None
