@@ -339,12 +339,24 @@ class QbWriter(WriterBase):
             csvw_safe_obs_column_name = csvw_column_name_safe(
                 obs_column.csv_column_title
             )
+            measure = obs_column.structural_definition.measure
+            assert measure is not None
+
             virtual_columns.append(
                 {
                     "name": f"virt_obs_{csvw_safe_obs_column_name}",
                     "virtual": True,
                     "propertyUrl": "qb:Observation",
                     "valueUrl": observation_uri,
+                }
+            )
+            virtual_columns.append(
+                {
+                    "name": f"virt_obs_{csvw_safe_obs_column_name}_meas",
+                    "virtual": True,
+                    "aboutUrl": observation_uri,
+                    "propertyUrl": "qb:measureType",
+                    "valueUrl": self._get_measure_uri(measure),
                 }
             )
 
@@ -963,7 +975,7 @@ class QbWriter(WriterBase):
         return csvw_col
 
     def _get_observation_value_col_for_column(
-        self, column: QbColumn
+        self, col_title: str
     ) -> QbColumn[QbObservationValue]:
         """
         Gets the matching observation value column for the given attributes/units column (if there is one).
@@ -972,11 +984,12 @@ class QbWriter(WriterBase):
         obs_columns_for_column = [
             obs_col
             for obs_col in obs_value_columns
-            if column.structural_definition.get_observed_value_col_title()
-            == obs_col.csv_column_title
+            if col_title == obs_col.csv_column_title
         ]
         if len(obs_columns_for_column) != 1:
-            raise Exception("Could not find one observation value column")
+            raise Exception(
+                f'Could not find one observation value column. Found {len(obs_columns_for_column)} for title: "{col_title}".'
+            )
         return obs_columns_for_column[0]
 
     def _define_csvw_column_for_qb_column(
@@ -988,23 +1001,40 @@ class QbWriter(WriterBase):
             column.structural_definition.__class__.__name__,
         )
 
-        obs_val_col: QbColumn[QbObservationValue]
-        # If the cube is in pivoted shape, check what the column represents to set the aboutUrl 
+        obs_val_col: Optional[QbColumn[QbObservationValue]]
+        obs_val_cols = get_columns_of_dsd_type(self.cube, QbObservationValue)
+        is_single_measure = len(obs_val_cols) == 1
+
+        # If the cube is in pivoted shape, check what the column represents to set the aboutUrl
         if self.is_cube_in_pivoted_shape:
             # If the column represents a QbObservationValue, then simply assign the obs_val_column to this column.
             if isinstance(column.structural_definition, QbObservationValue):
                 obs_val_col = column
+                #TODO:
+                _logger.info("")
             # If the column represents an attribute, set the valueUrl using the _get_observation_value_col_for_column function
             elif isinstance(column.structural_definition, QbAttribute):
-                obs_val_col = self._get_observation_value_col_for_column(column)
+                if is_single_measure:
+                    obs_val_col = obs_val_cols[0]
+                else:
+                    obs_val_col = self._get_observation_value_col_for_column(
+                        column.structural_definition.get_observed_value_col_title()
+                    )
             # If the column represents units, set the valueUrl using the _get_observation_value_col_for_column function
             elif isinstance(column.structural_definition, QbMultiUnits):
-                obs_val_col = self._get_observation_value_col_for_column(column)
+                if is_single_measure:
+                    obs_val_col = obs_val_cols[0]
+                else:
+                    obs_val_col = self._get_observation_value_col_for_column(
+                        column.structural_definition.observed_value_col_title
+                    )
+            else:
+                obs_val_col = None
 
-        if obs_val_col is not None:
-            csvw_col["aboutUrl"] = self._get_observation_uri_for_pivoted_shape_data_set(
-                obs_val_col
-            )
+            if obs_val_col is not None:
+                csvw_col[
+                    "aboutUrl"
+                ] = self._get_observation_uri_for_pivoted_shape_data_set(obs_val_col)
 
         (
             property_url,
