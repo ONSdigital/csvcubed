@@ -747,29 +747,50 @@ def test_csv_col_definition_suppressed():
 
 def test_virtual_columns_generated_for_single_obs_val():
     """
-    Ensure that the virtual columns generated for a `QbObservationValue`'s unit and measure are
-    correct.
+    Ensure that the virtual columns generated for a `QbObservationValue`'s unit and measure are correct.
     """
-    obs_val = QbObservationValue(
-        NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
+    cube = Cube(CatalogMetadata("Cube"), columns=[
+        QbColumn("Some Dimension", NewQbDimension("Some Dimension")),
+        QbColumn("Some Obs Val", QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")))
+    ])
+    writer = QbWriter(cube)
+
+    virtual_columns = (
+        writer._generate_virtual_columns_for_obs_val_in_pivoted_shape_cube()
     )
-    virtual_columns = empty_qbwriter._generate_virtual_columns_for_obs_val_in_standard_shape_cube(obs_val)
 
-    virt_unit = first(virtual_columns, lambda x: x["name"] == "virt_unit")
-    assert virt_unit is not None
-    assert virt_unit["virtual"]
-    assert (
-        "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
-        == virt_unit["propertyUrl"]
-    )
-    assert "cube-name.csv#unit/some-unit" == virt_unit["valueUrl"]
+    virt_col = first(virtual_columns, lambda x: x["name"] == "virt_slice")
+    assert virt_col is not None
+    assert virt_col["virtual"] == True
+    assert virt_col["propertyUrl"] == "rdf:type"
+    assert virt_col["valueUrl"] == "qb:Slice"
 
-    virt_measure = first(virtual_columns, lambda x: x["name"] == "virt_measure")
-    assert virt_measure is not None
-    assert virt_measure["virtual"]
-    assert "http://purl.org/linked-data/cube#measureType" == virt_measure["propertyUrl"]
-    assert "cube-name.csv#measure/some-measure" == virt_measure["valueUrl"]
+    virt_col = first(virtual_columns, lambda x: x["name"] == "virt_obs_some_obs_val")
+    assert virt_col is not None
+    assert virt_col["virtual"] == True
+    assert virt_col["propertyUrl"] == "qb:Observation"
+    assert virt_col["valueUrl"] == "cube.csv#obs/{some_dimension}@some-measure"
+    
+    virt_col = first(virtual_columns, lambda x: x["name"] == "virt_dim_some_obs_val_some_dimension")
+    assert virt_col is not None
+    assert virt_col["virtual"] == True
+    assert virt_col["aboutUrl"] == "cube.csv#obs/{some_dimension}@some-measure"
+    assert virt_col["propertyUrl"] == "cube.csv#dimension/some-dimension"
+    assert virt_col["valueUrl"] == "{+some_dimension}"
 
+    virt_col = first(virtual_columns, lambda x: x["name"] == "virt_obs_some_obs_val")
+    assert virt_col is not None
+    assert virt_col["virtual"] == True
+    assert virt_col["aboutUrl"] == "cube.csv#obs/{some_dimension}@some-measure"
+    assert virt_col["propertyUrl"] == "rdf:type"
+    assert virt_col["valueUrl"] == "qb:Observation"
+
+    virt_col = first(virtual_columns, lambda x: x["name"] == "virt_dataSet_some_obs_val")
+    assert virt_col is not None
+    assert virt_col["virtual"] == True
+    assert virt_col["aboutUrl"] == "cube.csv#obs/{some_dimension}@some-measure"
+    assert virt_col["propertyUrl"] == "qb:dataSet"
+    assert virt_col["valueUrl"] == "cube.csv#dataset"
 
 def test_virtual_columns_generated_for_multi_meas_obs_val():
     """
@@ -777,7 +798,11 @@ def test_virtual_columns_generated_for_multi_meas_obs_val():
     correct.
     """
     obs_val = QbObservationValue(unit=NewQbUnit("Some Unit"))
-    virtual_columns = empty_qbwriter._generate_virtual_columns_for_obs_val_in_standard_shape_cube(obs_val)
+    virtual_columns = (
+        empty_qbwriter._generate_virtual_columns_for_obs_val_in_standard_shape_cube(
+            obs_val
+        )
+    )
 
     virt_unit = first(virtual_columns, lambda x: x["name"] == "virt_unit")
     assert virt_unit is not None
@@ -864,9 +889,7 @@ def test_about_url_generation_with_multiple_measures():
     cube = Cube(metadata, data, columns)
 
     actual_about_url = QbWriter(cube)._get_about_url()
-    expected_about_url = (
-        "some-dataset.csv#slice/{existing_dimension},{local_dimension}"
-    )
+    expected_about_url = "some-dataset.csv#slice/{existing_dimension},{local_dimension}"
     assert actual_about_url == expected_about_url
 
 

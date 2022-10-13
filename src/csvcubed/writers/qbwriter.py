@@ -222,7 +222,7 @@ class QbWriter(WriterBase):
     def _generate_csvw_columns_for_cube(self) -> List[Dict[str, Any]]:
         columns = [self._generate_csvqb_column(c) for c in self.cube.columns]
         if self.is_cube_in_pivoted_shape:
-            columns += self._generate_virtual_columns_for_obs_val_in_pivoted_cube()
+            columns += self._generate_virtual_columns_for_obs_val_in_pivoted_shape_cube()
         else:
             columns += self._generate_virtual_columns_for_standard_shape_cube()
         return columns
@@ -314,7 +314,7 @@ class QbWriter(WriterBase):
 
         return foreign_keys
 
-    def _generate_virtual_columns_for_obs_val_in_pivoted_cube(self) -> List[Dict[str, Any]]:
+    def _generate_virtual_columns_for_obs_val_in_pivoted_shape_cube(self) -> List[Dict[str, Any]]:
         virtual_columns: List[dict] = []
 
         # Generate the virtual col defining the `?sliceUri rdf:type qb:Slice` triple.
@@ -487,20 +487,7 @@ class QbWriter(WriterBase):
                     "valueUrl": self._get_unit_uri(unit),
                 }
             )
-        if (
-            isinstance(obs_val, QbObservationValue)
-            and obs_val.is_pivoted_shape_observation
-        ):
-            assert obs_val.measure is not None
-            _logger.debug("Adding virtual measure column.")
-            virtual_columns.append(
-                {
-                    "name": "virt_measure",
-                    "virtual": True,
-                    "propertyUrl": "http://purl.org/linked-data/cube#measureType",
-                    "valueUrl": self._get_measure_uri(obs_val.measure),
-                }
-            )
+            
         return virtual_columns
 
     def _get_qb_dataset_with_catalog_metadata(self) -> QbDataSetInCatalog:
