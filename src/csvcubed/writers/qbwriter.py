@@ -967,7 +967,7 @@ class QbWriter(WriterBase):
         self, column: QbColumn[QbAttribute, QbMultiUnits]
     ) -> QbColumn[QbObservationValue]:
         """
-        TODO: Describe the purpose of this function.
+        Gets the matching observation value column for the given attributes/units column (if there is one).
         """
         obs_value_columns = get_columns_of_dsd_type(self.cube, QbObservationValue)
         obs_columns_for_column = [
@@ -989,15 +989,16 @@ class QbWriter(WriterBase):
             column.structural_definition.__class__.__name__,
         )
 
-        # TODO: sort out this comment: If the cube is in pivoted shape AND (if the column represents a unit, attribute or observed val col), then set the about url to be observed value's uri.
-        # if qb:Obersation pass to the function and get uri
-        # if qb:Attribute or qb:MultiUnits then we need to get the observation by matching the col title. Then pass the obs to the function to get the uri.
         obs_val_col: QbColumn[QbObservationValue]
+        # If the cube is in pivoted shape, check what the column represents to set the aboutUrl 
         if self.is_cube_in_pivoted_shape:
+            # If the column represents a QbObservationValue, then simply assign the obs_val_column to this column.
             if isinstance(column.structural_definition, QbObservationValue):
                 obs_val_col = column
+            # If the column represents an attribute, set the valueUrl using the _get_observation_value_col_for_column function
             elif isinstance(column.structural_definition, QbAttribute):
                 obs_val_col = self._get_observation_value_col_for_column(column)
+            # If the column represents units, set the valueUrl using the _get_observation_value_col_for_column function
             elif isinstance(column.structural_definition, QbMultiUnits):
                 obs_val_col = self._get_observation_value_col_for_column(column)
 
