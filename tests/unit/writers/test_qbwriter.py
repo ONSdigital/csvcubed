@@ -745,6 +745,9 @@ def test_csv_col_definition_suppressed():
     assert "valueUrl" not in csv_col
 
 
+def test_get_observation_value_col_for_column():
+    pass
+
 def test_virtual_columns_generated_for_single_obs_val():
     """
     Ensure that the virtual columns generated for a `QbObservationValue`'s unit and measure are correct.

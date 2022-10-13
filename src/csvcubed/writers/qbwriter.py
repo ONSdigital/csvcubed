@@ -436,26 +436,7 @@ class QbWriter(WriterBase):
                 if attribute_column.structural_definition.get_observed_value_col_title()
                 == obs_column.csv_column_title
             ]
-
-            # for attribute_column in attribute_columns_for_obs_val_column:
-            #     (
-            #         property_url,
-            #         value_url,
-            #     ) = self._get_default_property_value_uris_for_attribute(
-            #         attribute_column
-            #     )
-
-            #     virtual_columns.append(
-            #         {
-            #             "name": f"virt_attribute_{csvw_safe_obs_column_name}"
-            #             + csvw_column_name_safe(dimension_col.csv_column_title),
-            #             "virtual": True,
-            #             "aboutUrl": observation_uri,
-            #             "propertyUrl": property_url,
-            #             "valueUrl": value_url,
-            #         }
-            #     )
-
+            
         return virtual_columns
 
     def _generate_virtual_columns_for_standard_shape_cube(self) -> List[Dict[str, Any]]:
