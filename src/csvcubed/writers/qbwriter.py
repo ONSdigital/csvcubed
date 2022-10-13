@@ -118,10 +118,7 @@ class QbWriter(WriterBase):
     def write(self, output_folder: Path):
         # Map all labels to their corresponding URI-safe-values, where possible.
         # Also converts all appropriate columns to the pandas categorical format.
-
         _logger.info(f"Beginning CSV-W Generation: {self.csv_file_name}")
-
-        # TODO:
 
         ensure_int_columns_are_ints(self.cube)
 
@@ -222,7 +219,9 @@ class QbWriter(WriterBase):
     def _generate_csvw_columns_for_cube(self) -> List[Dict[str, Any]]:
         columns = [self._generate_csvqb_column(c) for c in self.cube.columns]
         if self.is_cube_in_pivoted_shape:
-            columns += self._generate_virtual_columns_for_obs_val_in_pivoted_shape_cube()
+            columns += (
+                self._generate_virtual_columns_for_obs_val_in_pivoted_shape_cube()
+            )
         else:
             columns += self._generate_virtual_columns_for_standard_shape_cube()
         return columns
@@ -314,7 +313,9 @@ class QbWriter(WriterBase):
 
         return foreign_keys
 
-    def _generate_virtual_columns_for_obs_val_in_pivoted_shape_cube(self) -> List[Dict[str, Any]]:
+    def _generate_virtual_columns_for_obs_val_in_pivoted_shape_cube(
+        self,
+    ) -> List[Dict[str, Any]]:
         virtual_columns: List[dict] = []
 
         # Generate the virtual col defining the `?sliceUri rdf:type qb:Slice` triple.
@@ -372,7 +373,7 @@ class QbWriter(WriterBase):
             # 2.3 Create a virtual col for `?obsUri rdf:type qb:Observation`
             virtual_columns.append(
                 {
-                    "name": f"virt_obs_{csvw_safe_obs_column_name}",
+                    "name": f"virt_obs_{csvw_safe_obs_column_name}_type",
                     "virtual": True,
                     "aboutUrl": observation_uri,
                     "propertyUrl": "rdf:type",
@@ -391,33 +392,33 @@ class QbWriter(WriterBase):
                 }
             )
 
-            # For each units column associated with this obs val column (if one exists): `?obsUri <http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure> ?unitValueUri`. N.B match col title to observed_value_col_title in QbMultiUnits. Get list of units cols by calling dsd_type with QbMultiUnits
-            unit_columns_for_obs_val_column = [
-                unit_column
-                for unit_column in get_columns_of_dsd_type(self.cube, QbMultiUnits)
-                if unit_column.structural_definition.observed_value_col_title
-                == obs_column.csv_column_title
-            ]
+            # # For each units column associated with this obs val column (if one exists): `?obsUri <http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure> ?unitValueUri`. N.B match col title to observed_value_col_title in QbMultiUnits. Get list of units cols by calling dsd_type with QbMultiUnits
+            # unit_columns_for_obs_val_column = [
+            #     unit_column
+            #     for unit_column in get_columns_of_dsd_type(self.cube, QbMultiUnits)
+            #     if unit_column.structural_definition.observed_value_col_title
+            #     == obs_column.csv_column_title
+            # ]
 
-            for unit_column in unit_columns_for_obs_val_column:
-                (
-                    property_url,
-                    value_url,
-                ) = self._get_default_property_value_uris_for_multi_units(
-                    unit_column, unit_column.structural_definition
-                )
+            # for unit_column in unit_columns_for_obs_val_column:
+            #     (
+            #         property_url,
+            #         value_url,
+            #     ) = self._get_default_property_value_uris_for_multi_units(
+            #         unit_column, unit_column.structural_definition
+            #     )
 
-                virtual_columns.append(
-                    {
-                        "name": f"virt_unit_{csvw_safe_obs_column_name}",
-                        "virtual": True,
-                        "aboutUrl": observation_uri,
-                        "propertyUrl": property_url,
-                        "valueUrl": value_url,
-                    }
-                )
+            #     virtual_columns.append(
+            #         {
+            #             "name": f"virt_unit_{csvw_safe_obs_column_name}",
+            #             "virtual": True,
+            #             "aboutUrl": observation_uri,
+            #             "propertyUrl": property_url,
+            #             "valueUrl": value_url,
+            #         }
+            #     )
 
-            # For each attribute column associated with this obs val column (if one or more exist): `?obsUri ?attrUri ?attrValue` N.B match col title to observed_value_col_title in QbAttribute. Get list of attribute cols by calling dsd_type with QbAttribute
+            # # For each attribute column associated with this obs val column (if one or more exist): `?obsUri ?attrUri ?attrValue` N.B match col title to observed_value_col_title in QbAttribute. Get list of attribute cols by calling dsd_type with QbAttribute
             attribute_columns_for_obs_val_column = [
                 attribute_column
                 for attribute_column in get_columns_of_dsd_type(self.cube, QbAttribute)
@@ -425,24 +426,24 @@ class QbWriter(WriterBase):
                 == obs_column.csv_column_title
             ]
 
-            for attribute_column in attribute_columns_for_obs_val_column:
-                (
-                    property_url,
-                    value_url,
-                ) = self._get_default_property_value_uris_for_attribute(
-                    attribute_column
-                )
+            # for attribute_column in attribute_columns_for_obs_val_column:
+            #     (
+            #         property_url,
+            #         value_url,
+            #     ) = self._get_default_property_value_uris_for_attribute(
+            #         attribute_column
+            #     )
 
-                virtual_columns.append(
-                    {
-                        "name": f"virt_attribute_{csvw_safe_obs_column_name}"
-                        + csvw_column_name_safe(dimension_col.csv_column_title),
-                        "virtual": True,
-                        "aboutUrl": observation_uri,
-                        "propertyUrl": property_url,
-                        "valueUrl": value_url,
-                    }
-                )
+            #     virtual_columns.append(
+            #         {
+            #             "name": f"virt_attribute_{csvw_safe_obs_column_name}"
+            #             + csvw_column_name_safe(dimension_col.csv_column_title),
+            #             "virtual": True,
+            #             "aboutUrl": observation_uri,
+            #             "propertyUrl": property_url,
+            #             "valueUrl": value_url,
+            #         }
+            #     )
 
         return virtual_columns
 
@@ -487,7 +488,7 @@ class QbWriter(WriterBase):
                     "valueUrl": self._get_unit_uri(unit),
                 }
             )
-            
+
         return virtual_columns
 
     def _get_qb_dataset_with_catalog_metadata(self) -> QbDataSetInCatalog:
@@ -962,6 +963,23 @@ class QbWriter(WriterBase):
 
         return csvw_col
 
+    def _get_observation_value_col_for_column(
+        self, column: QbColumn[QbAttribute, QbMultiUnits]
+    ) -> QbColumn[QbObservationValue]:
+        """
+        TODO: Describe the purpose of this function.
+        """
+        obs_value_columns = get_columns_of_dsd_type(self.cube, QbObservationValue)
+        obs_columns_for_column = [
+            obs_col
+            for obs_col in obs_value_columns
+            if column.structural_definition.get_observed_value_col_title()
+            == obs_col.csv_column_title
+        ]
+        if len(obs_columns_for_column) != 1:
+            raise Exception("Could not find one observation value column")
+        return obs_columns_for_column[0]
+
     def _define_csvw_column_for_qb_column(
         self, csvw_col: dict, column: QbColumn
     ) -> None:
@@ -970,6 +988,23 @@ class QbWriter(WriterBase):
             column.csv_column_title,
             column.structural_definition.__class__.__name__,
         )
+
+        # TODO: sort out this comment: If the cube is in pivoted shape AND (if the column represents a unit, attribute or observed val col), then set the about url to be observed value's uri.
+        # if qb:Obersation pass to the function and get uri
+        # if qb:Attribute or qb:MultiUnits then we need to get the observation by matching the col title. Then pass the obs to the function to get the uri.
+        obs_val_col: QbColumn[QbObservationValue]
+        if self.is_cube_in_pivoted_shape:
+            if isinstance(column.structural_definition, QbObservationValue):
+                obs_val_col = column
+            elif isinstance(column.structural_definition, QbAttribute):
+                obs_val_col = self._get_observation_value_col_for_column(column)
+            elif isinstance(column.structural_definition, QbMultiUnits):
+                obs_val_col = self._get_observation_value_col_for_column(column)
+
+        if obs_val_col is not None:
+            csvw_col["aboutUrl"] = self._get_observation_uri_for_pivoted_shape_data_set(
+                obs_val_col
+            )
 
         (
             property_url,
