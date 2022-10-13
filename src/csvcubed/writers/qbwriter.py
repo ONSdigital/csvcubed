@@ -13,7 +13,6 @@ from pathlib import Path
 from typing import Tuple, Dict, Any, List, Iterable, Set
 
 import pandas as pd
-from pyparsing import col
 from csvcubed.models.rdf import conceptschemeincatalog
 
 from csvcubedmodels.rdf.dependency import RdfGraphDependency
@@ -964,7 +963,7 @@ class QbWriter(WriterBase):
         return csvw_col
 
     def _get_observation_value_col_for_column(
-        self, column: QbColumn[QbAttribute, QbMultiUnits]
+        self, column: QbColumn
     ) -> QbColumn[QbObservationValue]:
         """
         Gets the matching observation value column for the given attributes/units column (if there is one).
