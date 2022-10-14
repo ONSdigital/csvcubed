@@ -74,6 +74,13 @@ class QbCubeNewUriHelper:
     def get_dimension_uri(self, dimension_identifier: str) -> str:
         return self._uri_in_doc(f"dimension/{dimension_identifier}")
 
+    def get_slice_uri(self, slice_identifier: str) -> str:
+        return self._uri_in_doc(f"slice/{slice_identifier}")
+
+    def get_slice_key_across_measures_uri(self) -> str:
+        return self.get_slice_uri("cross-measures")
+
+
     def get_class_uri(self, class_identifier: str) -> str:
         return self._uri_in_doc(f"class/{class_identifier}")
 

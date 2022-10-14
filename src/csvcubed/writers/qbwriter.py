@@ -11,6 +11,7 @@ import re
 from dataclasses import field
 from pathlib import Path
 from typing import Tuple, Dict, Any, List, Iterable, Set
+from numpy import isin
 
 import pandas as pd
 from csvcubed.models.rdf import conceptschemeincatalog
@@ -327,6 +328,15 @@ class QbWriter(WriterBase):
             }
         )
 
+        virtual_columns.append(
+            {
+                "name": "virt_slice_structure",
+                "virtual": True,
+                "propertyUrl": "qb:sliceStructure",
+                "valueUrl": self._new_uri_helper.get_slice_key_across_measures_uri(),
+            }
+        )
+
         # For each obs val column returned by dsd_type function
         observation_value_columns = get_columns_of_dsd_type(
             self.cube, QbObservationValue
@@ -518,7 +528,30 @@ class QbWriter(WriterBase):
 
                 dataset.structure.components |= set(component_specs_for_col)
 
+        if self.is_cube_in_pivoted_shape: 
+            dataset.structure.sliceKey.add(
+                self._get_cross_measures_slice_key()
+            )
+
         return dataset
+
+    def _get_cross_measures_slice_key(self) -> rdf.qb.SliceKey:
+        # Setting up Slice Key for slices which range over measures.
+        slice_key = rdf.qb.SliceKey(self._new_uri_helper.get_slice_key_across_measures_uri())
+        
+        for dimension_column in get_columns_of_dsd_type(self.cube, QbDimension):
+            dimension = dimension_column.structural_definition
+            dimension_uri: str
+            if isinstance(dimension, NewQbDimension):
+                dimension_uri = self._new_uri_helper.get_dimension_uri(dimension.uri_safe_identifier)
+            elif isinstance(dimension, ExistingQbDimension):
+                dimension_uri = dimension.dimension_uri
+            else:
+                raise ValueError(f"Unmatched QbDimension type {type(dimension)}")
+
+            slice_key.componentProperties.add(ExistingResource(dimension_uri))
+
+        return slice_key
 
     def _get_qb_component_specs_for_col(
         self, column_name_uri_safe: str, component: QbStructuralDefinition

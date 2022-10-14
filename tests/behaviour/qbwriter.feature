@@ -271,6 +271,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
       <file:/tmp/a-new-codelist.csv#a> a <http://www.w3.org/2004/02/skos/core#Concept>.
       """
   
+  @wip
   Scenario: A single-measure dataset (with code-list) having existing resources can be serialised to a standard CSV-qb
     Given a single measure QbCube named "single-measure qube with existing resources" with existing units/measure/dimensions/attribute/codelists
     When the cube is serialised to CSV-W
@@ -445,11 +446,11 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
       """
       @prefix qb: <http://purl.org/linked-data/cube#>.
 
-      <file:/tmp/some-qube.csv#obs/a,e> a qb:Observation;
+      <file:/tmp/some-qube.csv#obs/a,e@some-measure> a qb:Observation;
       qb:dataSet <file:/tmp/some-qube.csv#dataset>.
-      <file:/tmp/some-qube.csv#obs/b,f> a qb:Observation;
+      <file:/tmp/some-qube.csv#obs/b,f@some-measure> a qb:Observation;
       qb:dataSet <file:/tmp/some-qube.csv#dataset>.
-      <file:/tmp/some-qube.csv#obs/c,g> a qb:Observation;
+      <file:/tmp/some-qube.csv#obs/c,g@some-measure> a qb:Observation;
       qb:dataSet <file:/tmp/some-qube.csv#dataset>.
       """
   
