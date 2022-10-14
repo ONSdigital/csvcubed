@@ -15,7 +15,7 @@ temp_dir.mkdir()
 
 
 #filling up the csv file with random unique data for testing 
-with open(temp_dir / "stress.csv", "w+", newline="") as f:
+with open(temp_dir / "buildmetrics.csv", "w+", newline="") as f:
     thewriter = csv.writer(f)
 
     # creating arrays to temporarely hold the data that will be placed in the csv file
