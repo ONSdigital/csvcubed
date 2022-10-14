@@ -820,6 +820,70 @@ def test_get_cross_measures_slice_key_for_existing_dimension():
     assert str(component_properties[0].uri) == "Some Dimension"
 
 
+def test_is_cube_in_pivoted_shape_true():
+    """
+    Ensure that the boolean returned for an input cube of pivoted shape is true.
+    """
+    cube = Cube(CatalogMetadata("Cube"), columns=[
+        QbColumn("Some Dimension", ExistingQbDimension("Some Dimension")),
+        QbColumn("Some Attribute", NewQbAttribute(label = "Some Attribute")),
+        QbColumn("Some Obs Val", QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit"))),
+    ])
+
+    writer = QbWriter(cube)
+    is_cube_pivoted = writer.is_cube_in_pivoted_shape
+    assert is_cube_pivoted == True
+
+#TODO: CHECK WITH ROB
+def test_is_cube_in_pivoted_shape_false():
+    """
+    Ensure that the boolean returned for an input cube of pivoted shape is false.
+    """
+    cube = Cube(CatalogMetadata("Cube"), columns=[
+        QbColumn("Some Dimension", ExistingQbDimension("Some Dimension")),
+        QbColumn("Some Attribute", NewQbAttribute(label = "Some Attribute")),
+        QbColumn("Some Obs Val", QbObservationValue(NewQbUnit("Some Unit"))),
+    ])
+
+    writer = QbWriter(cube)
+    is_cube_pivoted = writer.is_cube_in_pivoted_shape
+    assert is_cube_pivoted == False
+
+#TODO: CHECK WITH ROB
+def test_is_cube_in_pivoted_shape_raise_exception():
+    pass
+
+def test_get_observation_uri_for_pivoted_shape_data_set_new_qbmeasure():
+    """
+    Ensures that the observation value's URI is returned for an observation with a new Qbmeasure.
+    """
+    pass
+
+def test_get_observation_uri_for_pivoted_shape_data_set_existing_qbmeasure():
+    """
+    Ensures that the observation value's URI is returned for an observation with an existing Qbmeasure.
+    """
+    pass
+
+def test_get_observation_uri_for_pivoted_shape_data_set_raise_exception():
+    """
+    Ensures that the observation value's URI raises an exception when given an unhandled QbMeasure type.
+    """
+    pass
+
+
+def test_get_pivoted_cube_slice_uri():
+    """
+    Ensures that the pivoted shape cube slice URI is returned.
+    """
+    pass
+
+def test_get_about_url():
+    """
+    Ensures that the pivotes shape cube about URL is returned.
+    """
+    pass
+
 def test_virtual_columns_generated_for_single_obs_val():
     """
     Ensure that the virtual columns generated for a `QbObservationValue`'s unit and measure are correct.
