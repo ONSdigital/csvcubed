@@ -15,9 +15,16 @@ from requests import delete
 #getting for the csv file name
 file_name = sys.argv[1]
 runtype = sys.argv[2]
+stress_start_time = sys.argv[3]
+
+def check_path(path):
+    if os.path.exists(path) == False:
+        new = Path(path)
+        new.mkdir()
+
 
 path_to_csvfile = Path(file_name)
-#taking in the fliepath which sadly is absolute for now
+#taking in the fliepath
 data = pd.read_csv(path_to_csvfile)
 
 
@@ -62,16 +69,19 @@ df2.index = temp_array
 df2.index.name = "Timestamp"
 creation_date = creation_date[0:19]
 #creating the cvs file where the results will be saved
-if os.path.exists("metrics_folder") == False:
-    metrics_folder = Path("metrics_folder")
-    metrics_folder.mkdir()
+#if os.path.exists("metrics") == False:
+#    metrics = Path("metrics")
+#    metrics.mkdir()
+
+check_path("metrics")
+check_path(f"metrics/{stress_start_time}")
 
 result_file = runtype + "metrics-" + str(creation_date) + ".csv"
 
-open("metrics_folder/" + result_file, 'w+')
+open(f"metrics/{stress_start_time}/" + result_file, 'w+')
 
 #getting the path to the generated file
-path_to_metrics_folder = Path("metrics_folder/" + result_file)
+path_to_metrics = Path(f"metrics/{stress_start_time}/" + result_file)
 
 #printing to the terminal 
 print("<=========================================>\n")
@@ -87,5 +97,6 @@ print("\n<=========================================>")
 os.remove(path_to_csvfile)
 log_path = Path("jmeter.log")
 if os.path.isfile(log_path) == True:
-    os.remove(log_path)
-df2.to_csv(path_to_metrics_folder, encoding='utf-8')
+    os.rename(log_path, f"metrics/{stress_start_time}/{log_path}")
+
+df2.to_csv(path_to_metrics, encoding='utf-8')
