@@ -797,22 +797,27 @@ def test_get_cross_measures_slice_key_for_new_dimension():
     actual_slice_key = writer._get_cross_measures_slice_key()
     assert str(actual_slice_key.uri) == "cube.csv#slice/cross-measures"
 
-    component_propeties = list(actual_slice_key.componentProperties)
-    assert len(component_propeties) == 1
-    assert str(component_propeties[0].uri) == "cube.csv#dimension/some-dimension"
+    component_properties = list(actual_slice_key.componentProperties)
+    assert len(component_properties) == 1
+    assert str(component_properties[0].uri) == "cube.csv#dimension/some-dimension"
 
 def test_get_cross_measures_slice_key_for_existing_dimension():
     """
     Ensure that given a cube with ExistingQbDimension, the function returns the correct slice key.
     """
-    pass
+    cube = Cube(CatalogMetadata("Cube"), columns=[
+        QbColumn("Some Dimension", ExistingQbDimension("Some Dimension")),
+        QbColumn("Some Attribute", NewQbAttribute(label = "Some Attribute")),
+        QbColumn("Some Obs Val", QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")))    
+    ])
+    writer = QbWriter(cube)
+    
+    actual_slice_key = writer._get_cross_measures_slice_key()
+    assert str(actual_slice_key.uri) == "cube.csv#slice/cross-measures"
 
-
-def test_get_cross_measures_slice_key_for_and_unsupported_dimension_type():
-    """
-    Ensure that given a cube with an unsupported dimension type, the function should raise an exception
-    """
-    pass
+    component_properties = list(actual_slice_key.componentProperties)
+    assert len(component_properties) == 1
+    assert str(component_properties[0].uri) == "Some Dimension"
 
 
 def test_virtual_columns_generated_for_single_obs_val():
