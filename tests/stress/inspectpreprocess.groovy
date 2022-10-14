@@ -20,5 +20,12 @@ void runProcessJMeter(String command) {
 	log.info("Found the following: ${textOut}");
 }
 
+// Assign the number of rows to be tested as either 10
+// when running the .jmx files in GUI mode or as 
+// whatever value is supplied to the bash script.
+def rows = 10
+if (args) {
+	rows = args[0]
+}
 
-runProcessJMeter("python3 inspectpreprocess.py 1")
+runProcessJMeter("python3 inspectpreprocess.py ${rows}")

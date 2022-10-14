@@ -1,3 +1,4 @@
+from genericpath import exists
 from os import mkfifo
 import os
 from tracemalloc import start
@@ -61,8 +62,9 @@ df2.index = temp_array
 df2.index.name = "Timestamp"
 creation_date = creation_date[0:19]
 #creating the cvs file where the results will be saved
-metrics_folder = Path("metrics_folder")
-metrics_folder.mkdir()
+if os.path.exists("metrics_folder") == False:
+    metrics_folder = Path("metrics_folder")
+    metrics_folder.mkdir()
 
 result_file = runtype + "metrics-" + str(creation_date) + ".csv"
 
@@ -83,4 +85,7 @@ print("\nAvarage Memory Usage % : " + str(average_value_Memory))
 print("\n<=========================================>")
 
 os.remove(path_to_csvfile)
+log_path = Path("jmeter.log")
+if os.path.isfile(log_path) == True:
+    os.remove(log_path)
 df2.to_csv(path_to_metrics_folder, encoding='utf-8')
