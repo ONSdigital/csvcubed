@@ -1,7 +1,5 @@
 import csv
 import sys
-import tempfile
-import os
 from pathlib import Path
 # this program will generate a csv file with a predefined number of colums and rows (preferabli each value unique)
 
@@ -19,12 +17,12 @@ with open(temp_dir / "buildmetrics.csv", "w+", newline="") as f:
     thewriter = csv.writer(f)
 
     # creating arrays to temporarely hold the data that will be placed in the csv file
-    collum_array = []
+    column_array = []
     rows_array = []
     unique_number = 0
     measure_number = 0
 
-    collum_array = [
+    column_array = [
         "Dim1",
         "Dim2",
         "Dim3",
@@ -49,12 +47,12 @@ with open(temp_dir / "buildmetrics.csv", "w+", newline="") as f:
     #    colum_name = "colum" + str(i)
     #    collum_array.append(colum_name)
 
-    thewriter.writerow(collum_array)
+    thewriter.writerow(column_array)
 
     # this for loop will append each rows maching the number of colums
     for x in range(1, numb_rows + 1):
 
-        for i in range(0, len(collum_array)):
+        for i in range(0, len(column_array)):
             unique_number += 1
             if i < 10:
                 row_value = "A Dimension" + str(unique_number)

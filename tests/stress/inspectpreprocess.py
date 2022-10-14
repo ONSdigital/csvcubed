@@ -1,6 +1,5 @@
 import csv
 import sys
-import tempfile
 import os
 from pathlib import Path
 # this program will generate a csv file with a predefined number of colums and rows (preferabli each value unique)

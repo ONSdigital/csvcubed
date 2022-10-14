@@ -1,15 +1,8 @@
-from genericpath import exists
-from os import mkfifo
 import os
-from tracemalloc import start
-from numpy import average, diff
-import pandas as pd
-from datetime import datetime
-from datetime import timedelta
-from pathlib import Path
 import sys
-
-from requests import delete
+from datetime import datetime, timedelta
+from pathlib import Path
+import pandas as pd
 
 
 #getting for the csv file name
@@ -68,11 +61,8 @@ df2.index = temp_array
 #giving a name to the index
 df2.index.name = "Timestamp"
 creation_date = creation_date[0:19]
-#creating the cvs file where the results will be saved
-#if os.path.exists("metrics") == False:
-#    metrics = Path("metrics")
-#    metrics.mkdir()
 
+#creating the cvs file where the results will be saved
 check_path("metrics")
 check_path(f"metrics/{stress_start_time}")
 
