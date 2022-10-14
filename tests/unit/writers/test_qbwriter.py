@@ -23,6 +23,7 @@ from csvcubed.models.cube.qb.components.arbitraryrdf import (
     RdfSerialisationHint,
 )
 from csvcubed.utils.iterables import first
+from csvcubed.utils.qb.cube import get_columns_of_dsd_type
 from csvcubed.writers.qbwriter import QbWriter
 from csvcubed.writers.urihelpers.skoscodelistconstants import SCHEMA_URI_IDENTIFIER
 
@@ -746,7 +747,40 @@ def test_csv_col_definition_suppressed():
 
 
 def test_get_observation_value_col_for_column():
-    pass
+    """
+    Ensure that the column title for the QbObservationValue returned matches the input column title.
+    """
+    expected_obs_val_col = QbColumn("Some Obs Val", QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")))
+
+    cube = Cube(CatalogMetadata("Cube"), columns=[
+        QbColumn("Some Dimension", NewQbDimension("Some Dimension")),
+        QbColumn("Some Attribute", NewQbAttribute(label = "Some Attribute")),
+        expected_obs_val_col
+    ])
+    
+    writer = QbWriter(cube)
+    actual_obs_val_col = writer._get_observation_value_col_for_column("Some Obs Val")
+
+    assert actual_obs_val_col == expected_obs_val_col     
+
+
+def test_get_observation_value_col_for_column_when_col_title_is_invalid():
+    """
+    Ensure that the column title for the QbObservationValue returned matches the input column title.
+    """
+    
+    cube = Cube(CatalogMetadata("Cube"), columns=[
+        QbColumn("Invalid Col Title", NewQbDimension("Some Dimension")),
+        QbColumn("Some Attribute", NewQbAttribute(label = "Some Attribute")),
+        QbColumn("Some Obs Val", QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")))    
+    ])
+    
+    writer = QbWriter(cube)
+    with pytest.raises(Exception) as err:
+        writer._get_observation_value_col_for_column("Invalid Col Title")
+
+    assert str(err.value) == "Could not find one observation value column. Found 0 for title: \"Invalid Col Title\"."
+    
 
 def test_virtual_columns_generated_for_single_obs_val():
     """
@@ -774,6 +808,13 @@ def test_virtual_columns_generated_for_single_obs_val():
     assert virt_col["propertyUrl"] == "qb:Observation"
     assert virt_col["valueUrl"] == "cube.csv#obs/{some_dimension}@some-measure"
     
+    virt_col = first(virtual_columns, lambda x: x["name"] == "virt_obs_some_obs_val_meas")
+    assert virt_col is not None
+    assert virt_col["virtual"] == True
+    assert virt_col["aboutUrl"] == "cube.csv#obs/{some_dimension}@some-measure"
+    assert virt_col["propertyUrl"] == "qb:measureType"
+    assert virt_col["valueUrl"] == "cube.csv#measure/some-measure"
+
     virt_col = first(virtual_columns, lambda x: x["name"] == "virt_dim_some_obs_val_some_dimension")
     assert virt_col is not None
     assert virt_col["virtual"] == True
