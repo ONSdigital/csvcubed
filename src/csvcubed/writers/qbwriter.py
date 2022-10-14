@@ -412,40 +412,6 @@ class QbWriter(WriterBase):
                     "valueUrl": self._new_uri_helper.get_dataset_uri(),
                 }
             )
-
-            # # For each units column associated with this obs val column (if one exists): `?obsUri <http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure> ?unitValueUri`. N.B match col title to observed_value_col_title in QbMultiUnits. Get list of units cols by calling dsd_type with QbMultiUnits
-            # unit_columns_for_obs_val_column = [
-            #     unit_column
-            #     for unit_column in get_columns_of_dsd_type(self.cube, QbMultiUnits)
-            #     if unit_column.structural_definition.observed_value_col_title
-            #     == obs_column.csv_column_title
-            # ]
-
-            # for unit_column in unit_columns_for_obs_val_column:
-            #     (
-            #         property_url,
-            #         value_url,
-            #     ) = self._get_default_property_value_uris_for_multi_units(
-            #         unit_column, unit_column.structural_definition
-            #     )
-
-            #     virtual_columns.append(
-            #         {
-            #             "name": f"virt_unit_{csvw_safe_obs_column_name}",
-            #             "virtual": True,
-            #             "aboutUrl": observation_uri,
-            #             "propertyUrl": property_url,
-            #             "valueUrl": value_url,
-            #         }
-            #     )
-
-            # # For each attribute column associated with this obs val column (if one or more exist): `?obsUri ?attrUri ?attrValue` N.B match col title to observed_value_col_title in QbAttribute. Get list of attribute cols by calling dsd_type with QbAttribute
-            attribute_columns_for_obs_val_column = [
-                attribute_column
-                for attribute_column in get_columns_of_dsd_type(self.cube, QbAttribute)
-                if attribute_column.structural_definition.get_observed_value_col_title()
-                == obs_column.csv_column_title
-            ]
             
         return virtual_columns
 

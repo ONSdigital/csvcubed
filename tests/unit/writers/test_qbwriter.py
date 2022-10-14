@@ -1,3 +1,4 @@
+from importlib.resources import Resource
 from tempfile import TemporaryDirectory
 from typing import List
 from copy import deepcopy
@@ -766,7 +767,7 @@ def test_get_observation_value_col_for_column():
 
 def test_get_observation_value_col_for_column_when_col_title_is_invalid():
     """
-    Ensure that the column title for the QbObservationValue returned matches the input column title.
+    Ensure that the invalid column title raises an exception.
     """
     
     cube = Cube(CatalogMetadata("Cube"), columns=[
@@ -780,7 +781,39 @@ def test_get_observation_value_col_for_column_when_col_title_is_invalid():
         writer._get_observation_value_col_for_column("Invalid Col Title")
 
     assert str(err.value) == "Could not find one observation value column. Found 0 for title: \"Invalid Col Title\"."
+
+
+def test_get_cross_measures_slice_key_for_new_dimension():
+    """
+    Ensure that given a cube with NewQbDimension, the function returns the correct slice key.
+    """
+    cube = Cube(CatalogMetadata("Cube"), columns=[
+        QbColumn("Some Dimension", NewQbDimension("Some Dimension")),
+        QbColumn("Some Attribute", NewQbAttribute(label = "Some Attribute")),
+        QbColumn("Some Obs Val", QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")))    
+    ])
+    writer = QbWriter(cube)
     
+    actual_slice_key = writer._get_cross_measures_slice_key()
+    assert str(actual_slice_key.uri) == "cube.csv#slice/cross-measures"
+
+    component_propeties = list(actual_slice_key.componentProperties)
+    assert len(component_propeties) == 1
+    assert str(component_propeties[0].uri) == "cube.csv#dimension/some-dimension"
+
+def test_get_cross_measures_slice_key_for_existing_dimension():
+    """
+    Ensure that given a cube with ExistingQbDimension, the function returns the correct slice key.
+    """
+    pass
+
+
+def test_get_cross_measures_slice_key_for_and_unsupported_dimension_type():
+    """
+    Ensure that given a cube with an unsupported dimension type, the function should raise an exception
+    """
+    pass
+
 
 def test_virtual_columns_generated_for_single_obs_val():
     """
