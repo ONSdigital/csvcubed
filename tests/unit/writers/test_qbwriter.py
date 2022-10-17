@@ -35,7 +35,7 @@ class TestQbMeasure(QbMeasure, UriIdentifiable):
 
     def _get_arbitrary_rdf(self) -> List[TripleFragmentBase]:
         pass
-    
+
     def get_permitted_rdf_fragment_hints(self) -> Set[RdfSerialisationHint]:
         pass
 
@@ -1011,14 +1011,87 @@ def test_get_pivoted_cube_slice_uri():
     """
     Ensures that the pivoted shape cube slice URI is returned.
     """
-    pass
+
+    cube = Cube(
+        CatalogMetadata("Cube"),
+        columns=[
+            QbColumn("Some Dimension", NewQbDimension("Some Dimension")),
+            QbColumn("Some Attribute", NewQbAttribute(label="Some Attribute")),
+            QbColumn(
+                "Some Obs Val",
+                QbObservationValue(
+                    TestQbMeasure("Some Measure"),
+                    NewQbUnit("Some Unit"),
+                ),
+            ),
+        ],
+    )
+
+    writer = QbWriter(cube)
+
+    expected_slice_uri = "cube.csv#slice/{some_dimension}"
+
+    actual_slice_uri = writer._get_pivoted_cube_slice_uri()
+
+    assert actual_slice_uri == expected_slice_uri
 
 
-def test_get_about_url():
+def test_get_about_url_for_pivoted_shape_cube():
     """
-    Ensures that the pivotes shape cube about URL is returned.
+    Ensures that the pivoted shape cube about URL is returned.
     """
-    pass
+    cube = Cube(
+        CatalogMetadata("Cube"),
+        columns=[
+            QbColumn("Some Dimension", NewQbDimension("Some Dimension")),
+            QbColumn("Some Attribute", NewQbAttribute(label="Some Attribute")),
+            QbColumn(
+                "Some Obs Val",
+                QbObservationValue(
+                    TestQbMeasure("Some Measure"),
+                    NewQbUnit("Some Unit"),
+                ),
+            ),
+        ],
+    )
+
+    writer = QbWriter(cube)
+
+    expected_about_url = "cube.csv#slice/{some_dimension}"
+
+    actual_about_url = writer._get_about_url()
+
+    assert actual_about_url == expected_about_url
+
+
+# TODO: Check with Rob
+def test_get_about_url_for_standard_shape_cube():
+    """
+    Ensures that the standard shape cube about URL is returned.
+    """
+
+    cube = Cube(
+        CatalogMetadata("Cube"),
+        columns=[
+            QbColumn("Some Dimension", NewQbDimension("Some Dimension")),
+            QbColumn("Some Attribute", NewQbAttribute(label="Some Attribute")),
+            QbColumn(
+                "Some Obs Val",
+                QbObservationValue(
+                    TestQbMeasure("Some Measure"),
+                    NewQbUnit("Some Unit"),
+                ),
+            ),
+        ],
+    )
+
+    writer = QbWriter(cube)
+
+    expected_about_url = "cube.csv#slice/{some_dimension}"
+
+    actual_about_url = writer._get_about_url()
+
+    assert actual_about_url == expected_about_url
 
 
 def test_virtual_columns_generated_for_single_obs_val():
