@@ -62,7 +62,7 @@ df2.index = temp_array
 df2.index.name = "Timestamp"
 creation_date = creation_date[0:19]
 
-#creating the cvs file where the results will be saved
+#creating the csv file where the results will be saved
 check_path("metrics")
 check_path(f"metrics/{stress_start_time}")
 
@@ -87,6 +87,6 @@ print("\n<=========================================>")
 os.remove(path_to_csvfile)
 log_path = Path("jmeter.log")
 if os.path.isfile(log_path) == True:
-    os.rename(log_path, f"metrics/{stress_start_time}/{log_path}")
+    os.rename(log_path, f"metrics/{stress_start_time}/jmeter.log")
 
 df2.to_csv(path_to_metrics, encoding='utf-8')
