@@ -71,7 +71,6 @@ _logger = logging.getLogger(__name__)
 
 VIRT_UNIT_COLUMN_NAME = "virt_unit"
 
-
 @dataclass
 class QbWriter(WriterBase):
     cube: QbCube
@@ -1398,6 +1397,9 @@ class QbWriter(WriterBase):
     def _get_observation_uri_for_pivoted_shape_data_set(
         self, obs_val_column: QbColumn[QbObservationValue]
     ) -> str:
+        """
+        Provide the obervation uri for the pivoted shape data set
+        """
         dimension_columns_templates: List[str] = []
 
         for c in self.cube.columns:
@@ -1410,7 +1412,7 @@ class QbWriter(WriterBase):
         obs_val_measure = obs_val_column.structural_definition.measure
         assert obs_val_measure is not None
         if isinstance(obs_val_measure, NewQbMeasure):
-            measure_id = obs_val_measure.uri_safe_identifier
+            measure_id = obs_val_measure.uri_safe_identifier            
         elif isinstance(obs_val_measure, ExistingQbMeasure):
             # Yes, this is absolutely nasty, but what else can we do?
             measure_id = uri_safe(obs_val_measure.measure_uri)

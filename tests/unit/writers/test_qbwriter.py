@@ -1,14 +1,12 @@
-from importlib.resources import Resource
 from tempfile import TemporaryDirectory
 from typing import List
 from copy import deepcopy
 import csv
 from pathlib import Path
-from urllib.parse import urlparse
 
 import pytest
 import pandas as pd
-from rdflib import RDFS, XSD, Graph, URIRef, Literal, Namespace
+from rdflib import RDFS, XSD, Graph, URIRef, Literal
 from csvcubedmodels import rdf
 
 from csvcubed.models.cube import *
@@ -24,7 +22,6 @@ from csvcubed.models.cube.qb.components.arbitraryrdf import (
     RdfSerialisationHint,
 )
 from csvcubed.utils.iterables import first
-from csvcubed.utils.qb.cube import get_columns_of_dsd_type
 from csvcubed.writers.qbwriter import QbWriter
 from csvcubed.writers.urihelpers.skoscodelistconstants import SCHEMA_URI_IDENTIFIER
 
@@ -751,49 +748,74 @@ def test_get_observation_value_col_for_column():
     """
     Ensure that the column title for the QbObservationValue returned matches the input column title.
     """
-    expected_obs_val_col = QbColumn("Some Obs Val", QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")))
+    expected_obs_val_col = QbColumn(
+        "Some Obs Val",
+        QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
+    )
 
-    cube = Cube(CatalogMetadata("Cube"), columns=[
-        QbColumn("Some Dimension", NewQbDimension("Some Dimension")),
-        QbColumn("Some Attribute", NewQbAttribute(label = "Some Attribute")),
-        expected_obs_val_col
-    ])
-    
+    cube = Cube(
+        CatalogMetadata("Cube"),
+        columns=[
+            QbColumn("Some Dimension", NewQbDimension("Some Dimension")),
+            QbColumn("Some Attribute", NewQbAttribute(label="Some Attribute")),
+            expected_obs_val_col,
+        ],
+    )
+
     writer = QbWriter(cube)
     actual_obs_val_col = writer._get_observation_value_col_for_column("Some Obs Val")
 
-    assert actual_obs_val_col == expected_obs_val_col     
+    assert actual_obs_val_col == expected_obs_val_col
 
 
 def test_get_observation_value_col_for_column_when_col_title_is_invalid():
     """
     Ensure that the invalid column title raises an exception.
     """
-    
-    cube = Cube(CatalogMetadata("Cube"), columns=[
-        QbColumn("Invalid Col Title", NewQbDimension("Some Dimension")),
-        QbColumn("Some Attribute", NewQbAttribute(label = "Some Attribute")),
-        QbColumn("Some Obs Val", QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")))    
-    ])
-    
+
+    cube = Cube(
+        CatalogMetadata("Cube"),
+        columns=[
+            QbColumn("Invalid Col Title", NewQbDimension("Some Dimension")),
+            QbColumn("Some Attribute", NewQbAttribute(label="Some Attribute")),
+            QbColumn(
+                "Some Obs Val",
+                QbObservationValue(
+                    NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
+                ),
+            ),
+        ],
+    )
+
     writer = QbWriter(cube)
     with pytest.raises(Exception) as err:
         writer._get_observation_value_col_for_column("Invalid Col Title")
 
-    assert str(err.value) == "Could not find one observation value column. Found 0 for title: \"Invalid Col Title\"."
+    assert (
+        str(err.value)
+        == 'Could not find one observation value column. Found 0 for title: "Invalid Col Title".'
+    )
 
 
 def test_get_cross_measures_slice_key_for_new_dimension():
     """
     Ensure that given a cube with NewQbDimension, the function returns the correct slice key.
     """
-    cube = Cube(CatalogMetadata("Cube"), columns=[
-        QbColumn("Some Dimension", NewQbDimension("Some Dimension")),
-        QbColumn("Some Attribute", NewQbAttribute(label = "Some Attribute")),
-        QbColumn("Some Obs Val", QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")))    
-    ])
+    cube = Cube(
+        CatalogMetadata("Cube"),
+        columns=[
+            QbColumn("Some Dimension", NewQbDimension("Some Dimension")),
+            QbColumn("Some Attribute", NewQbAttribute(label="Some Attribute")),
+            QbColumn(
+                "Some Obs Val",
+                QbObservationValue(
+                    NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
+                ),
+            ),
+        ],
+    )
     writer = QbWriter(cube)
-    
+
     actual_slice_key = writer._get_cross_measures_slice_key()
     assert str(actual_slice_key.uri) == "cube.csv#slice/cross-measures"
 
@@ -801,17 +823,26 @@ def test_get_cross_measures_slice_key_for_new_dimension():
     assert len(component_properties) == 1
     assert str(component_properties[0].uri) == "cube.csv#dimension/some-dimension"
 
+
 def test_get_cross_measures_slice_key_for_existing_dimension():
     """
     Ensure that given a cube with ExistingQbDimension, the function returns the correct slice key.
     """
-    cube = Cube(CatalogMetadata("Cube"), columns=[
-        QbColumn("Some Dimension", ExistingQbDimension("Some Dimension")),
-        QbColumn("Some Attribute", NewQbAttribute(label = "Some Attribute")),
-        QbColumn("Some Obs Val", QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")))    
-    ])
+    cube = Cube(
+        CatalogMetadata("Cube"),
+        columns=[
+            QbColumn("Some Dimension", ExistingQbDimension("Some Dimension")),
+            QbColumn("Some Attribute", NewQbAttribute(label="Some Attribute")),
+            QbColumn(
+                "Some Obs Val",
+                QbObservationValue(
+                    NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
+                ),
+            ),
+        ],
+    )
     writer = QbWriter(cube)
-    
+
     actual_slice_key = writer._get_cross_measures_slice_key()
     assert str(actual_slice_key.uri) == "cube.csv#slice/cross-measures"
 
@@ -824,52 +855,133 @@ def test_is_cube_in_pivoted_shape_true():
     """
     Ensure that the boolean returned for an input cube of pivoted shape is true.
     """
-    cube = Cube(CatalogMetadata("Cube"), columns=[
-        QbColumn("Some Dimension", ExistingQbDimension("Some Dimension")),
-        QbColumn("Some Attribute", NewQbAttribute(label = "Some Attribute")),
-        QbColumn("Some Obs Val", QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit"))),
-    ])
+    cube = Cube(
+        CatalogMetadata("Cube"),
+        columns=[
+            QbColumn("Some Dimension", ExistingQbDimension("Some Dimension")),
+            QbColumn("Some Attribute", NewQbAttribute(label="Some Attribute")),
+            QbColumn(
+                "Some Obs Val",
+                QbObservationValue(
+                    NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
+                ),
+            ),
+        ],
+    )
 
     writer = QbWriter(cube)
     is_cube_pivoted = writer.is_cube_in_pivoted_shape
     assert is_cube_pivoted == True
 
-#TODO: CHECK WITH ROB
+
+# TODO: CHECK WITH ROB
 def test_is_cube_in_pivoted_shape_false():
     """
     Ensure that the boolean returned for an input cube of pivoted shape is false.
     """
-    cube = Cube(CatalogMetadata("Cube"), columns=[
-        QbColumn("Some Dimension", ExistingQbDimension("Some Dimension")),
-        QbColumn("Some Attribute", NewQbAttribute(label = "Some Attribute")),
-        QbColumn("Some Obs Val", QbObservationValue(NewQbUnit("Some Unit"))),
-    ])
+    cube = Cube(
+        CatalogMetadata("Cube"),
+        columns=[
+            QbColumn("Some Dimension", ExistingQbDimension("Some Dimension")),
+            QbColumn("Some Attribute", NewQbAttribute(label="Some Attribute")),
+            QbColumn("Some Obs Val", QbObservationValue(NewQbUnit("Some Unit"))),
+        ],
+    )
 
     writer = QbWriter(cube)
     is_cube_pivoted = writer.is_cube_in_pivoted_shape
     assert is_cube_pivoted == False
 
-#TODO: CHECK WITH ROB
+
+# TODO: CHECK WITH ROB
 def test_is_cube_in_pivoted_shape_raise_exception():
     pass
+
 
 def test_get_observation_uri_for_pivoted_shape_data_set_new_qbmeasure():
     """
     Ensures that the observation value's URI is returned for an observation with a new Qbmeasure.
     """
-    pass
+    obs_val_column = QbColumn(
+        "Some Obs Val",
+        QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
+    )
+    cube = Cube(
+        CatalogMetadata("Cube"),
+        columns=[
+            QbColumn("Some Dimension", NewQbDimension("Some Dimension")),
+            QbColumn("Some Attribute", NewQbAttribute(label="Some Attribute")),
+            obs_val_column,
+        ],
+    )
+    expected_observation_uri = "cube.csv#obs/{some_dimension}@some-measure"
+
+    writer = QbWriter(cube)
+    actual_observation_uri = writer._get_observation_uri_for_pivoted_shape_data_set(
+        obs_val_column
+    )
+
+    assert actual_observation_uri == expected_observation_uri
+
 
 def test_get_observation_uri_for_pivoted_shape_data_set_existing_qbmeasure():
     """
-    Ensures that the observation value's URI is returned for an observation with an existing Qbmeasure.
+    Ensures that the observation value's URI is returned for an observation with a new Qbmeasure.
     """
-    pass
+    obs_val_column = QbColumn(
+        "Some Obs Val",
+        QbObservationValue(
+            ExistingQbMeasure("http://example.com/measures/existing_measure"),
+            NewQbUnit("Some Unit"),
+        ),
+    )
+
+    cube = Cube(
+        CatalogMetadata("Cube"),
+        columns=[
+            QbColumn("Some Dimension", NewQbDimension("Some Dimension")),
+            QbColumn("Some Attribute", NewQbAttribute(label="Some Attribute")),
+            obs_val_column,
+        ],
+    )
+    expected_observation_uri = "cube.csv#obs/{some_dimension}@http-//example-com/measures/existing_measure"
+
+    writer = QbWriter(cube)
+    actual_observation_uri = writer._get_observation_uri_for_pivoted_shape_data_set(
+        obs_val_column
+    )
+
+    assert actual_observation_uri == expected_observation_uri
+
 
 def test_get_observation_uri_for_pivoted_shape_data_set_raise_exception():
     """
     Ensures that the observation value's URI raises an exception when given an unhandled QbMeasure type.
     """
-    pass
+
+    obs_val_column = QbColumn(
+        "Some Obs Val",
+        QbObservationValue(
+            QbMeasure(),
+            NewQbUnit("Some Unit"),
+        ),
+    )
+
+    cube = Cube(
+        CatalogMetadata("Cube"),
+        columns=[
+            QbColumn("Some Dimension", NewQbDimension("Some Dimension")),
+            QbColumn("Some Attribute", NewQbAttribute(label="Some Attribute")),
+            obs_val_column,
+        ],
+    )
+
+    writer = QbWriter(cube)
+    with pytest.raises(Exception) as exception:
+        writer._get_observation_uri_for_pivoted_shape_data_set(
+            obs_val_column
+        )
+
 
 
 def test_get_pivoted_cube_slice_uri():
@@ -878,20 +990,30 @@ def test_get_pivoted_cube_slice_uri():
     """
     pass
 
+
 def test_get_about_url():
     """
     Ensures that the pivotes shape cube about URL is returned.
     """
     pass
 
+
 def test_virtual_columns_generated_for_single_obs_val():
     """
     Ensure that the virtual columns generated for a `QbObservationValue`'s unit and measure are correct.
     """
-    cube = Cube(CatalogMetadata("Cube"), columns=[
-        QbColumn("Some Dimension", NewQbDimension("Some Dimension")),
-        QbColumn("Some Obs Val", QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")))
-    ])
+    cube = Cube(
+        CatalogMetadata("Cube"),
+        columns=[
+            QbColumn("Some Dimension", NewQbDimension("Some Dimension")),
+            QbColumn(
+                "Some Obs Val",
+                QbObservationValue(
+                    NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
+                ),
+            ),
+        ],
+    )
     writer = QbWriter(cube)
 
     virtual_columns = (
@@ -909,34 +1031,43 @@ def test_virtual_columns_generated_for_single_obs_val():
     assert virt_col["virtual"] == True
     assert virt_col["propertyUrl"] == "qb:Observation"
     assert virt_col["valueUrl"] == "cube.csv#obs/{some_dimension}@some-measure"
-    
-    virt_col = first(virtual_columns, lambda x: x["name"] == "virt_obs_some_obs_val_meas")
+
+    virt_col = first(
+        virtual_columns, lambda x: x["name"] == "virt_obs_some_obs_val_meas"
+    )
     assert virt_col is not None
     assert virt_col["virtual"] == True
     assert virt_col["aboutUrl"] == "cube.csv#obs/{some_dimension}@some-measure"
     assert virt_col["propertyUrl"] == "qb:measureType"
     assert virt_col["valueUrl"] == "cube.csv#measure/some-measure"
 
-    virt_col = first(virtual_columns, lambda x: x["name"] == "virt_dim_some_obs_val_some_dimension")
+    virt_col = first(
+        virtual_columns, lambda x: x["name"] == "virt_dim_some_obs_val_some_dimension"
+    )
     assert virt_col is not None
     assert virt_col["virtual"] == True
     assert virt_col["aboutUrl"] == "cube.csv#obs/{some_dimension}@some-measure"
     assert virt_col["propertyUrl"] == "cube.csv#dimension/some-dimension"
     assert virt_col["valueUrl"] == "{+some_dimension}"
 
-    virt_col = first(virtual_columns, lambda x: x["name"] == "virt_obs_some_obs_val_type")
+    virt_col = first(
+        virtual_columns, lambda x: x["name"] == "virt_obs_some_obs_val_type"
+    )
     assert virt_col is not None
     assert virt_col["virtual"] == True
     assert virt_col["aboutUrl"] == "cube.csv#obs/{some_dimension}@some-measure"
     assert virt_col["propertyUrl"] == "rdf:type"
     assert virt_col["valueUrl"] == "qb:Observation"
 
-    virt_col = first(virtual_columns, lambda x: x["name"] == "virt_dataSet_some_obs_val")
+    virt_col = first(
+        virtual_columns, lambda x: x["name"] == "virt_dataSet_some_obs_val"
+    )
     assert virt_col is not None
     assert virt_col["virtual"] == True
     assert virt_col["aboutUrl"] == "cube.csv#obs/{some_dimension}@some-measure"
     assert virt_col["propertyUrl"] == "qb:dataSet"
     assert virt_col["valueUrl"] == "cube.csv#dataset"
+
 
 def test_virtual_columns_generated_for_multi_meas_obs_val():
     """
