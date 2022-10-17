@@ -35,16 +35,7 @@ class TestQbMeasure(QbMeasure, UriIdentifiable):
 
     def _get_arbitrary_rdf(self) -> List[TripleFragmentBase]:
         pass
-
-    def _get_identifiable_state(self) -> tuple:
-        pass
-
-    def __eq__(self, _):
-        Pass
-
-    def __hash__(self):
-        pass
-
+    
     def get_permitted_rdf_fragment_hints(self) -> Set[RdfSerialisationHint]:
         pass
 
