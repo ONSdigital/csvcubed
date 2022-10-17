@@ -1,3 +1,4 @@
+from ast import Pass
 from tempfile import TemporaryDirectory
 from typing import List
 from copy import deepcopy
@@ -20,10 +21,38 @@ from csvcubed.models.cube.uristyle import URIStyle
 from csvcubed.models.cube.qb.components.arbitraryrdf import (
     TripleFragment,
     RdfSerialisationHint,
+    TripleFragmentBase,
 )
+from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.utils.iterables import first
 from csvcubed.writers.qbwriter import QbWriter
 from csvcubed.writers.urihelpers.skoscodelistconstants import SCHEMA_URI_IDENTIFIER
+
+
+@dataclass
+class TestQbMeasure(QbMeasure, UriIdentifiable):
+    uri_safe_identifier_override: Optional[str] = field(default=None, repr=False)
+
+    def _get_arbitrary_rdf(self) -> List[TripleFragmentBase]:
+        pass
+
+    def _get_identifiable_state(self) -> tuple:
+        pass
+
+    def __eq__(self, _):
+        Pass
+
+    def __hash__(self):
+        pass
+
+    def get_permitted_rdf_fragment_hints(self) -> Set[RdfSerialisationHint]:
+        pass
+
+    def get_default_node_serialisation_hint(self) -> RdfSerialisationHint:
+        pass
+
+    def get_identifier(self) -> str:
+        pass
 
 
 def _get_standard_cube_for_columns(columns: List[CsvColumn]) -> Cube:
@@ -944,7 +973,9 @@ def test_get_observation_uri_for_pivoted_shape_data_set_existing_qbmeasure():
             obs_val_column,
         ],
     )
-    expected_observation_uri = "cube.csv#obs/{some_dimension}@http-//example-com/measures/existing_measure"
+    expected_observation_uri = (
+        "cube.csv#obs/{some_dimension}@http-//example-com/measures/existing_measure"
+    )
 
     writer = QbWriter(cube)
     actual_observation_uri = writer._get_observation_uri_for_pivoted_shape_data_set(
@@ -962,7 +993,7 @@ def test_get_observation_uri_for_pivoted_shape_data_set_raise_exception():
     obs_val_column = QbColumn(
         "Some Obs Val",
         QbObservationValue(
-            QbMeasure(),
+            TestQbMeasure("Some Measure"),
             NewQbUnit("Some Unit"),
         ),
     )
@@ -975,13 +1006,14 @@ def test_get_observation_uri_for_pivoted_shape_data_set_raise_exception():
             obs_val_column,
         ],
     )
+    obs_val_measure = obs_val_column.structural_definition.measure
 
     writer = QbWriter(cube)
     with pytest.raises(Exception) as exception:
-        writer._get_observation_uri_for_pivoted_shape_data_set(
-            obs_val_column
+        writer._get_observation_uri_for_pivoted_shape_data_set(obs_val_column)
+        assert (
+            str(exception.value) == f"Unhandled QbMeasure type {type(obs_val_measure)}"
         )
-
 
 
 def test_get_pivoted_cube_slice_uri():
