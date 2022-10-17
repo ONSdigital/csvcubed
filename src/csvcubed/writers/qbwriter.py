@@ -377,6 +377,9 @@ class QbWriter(WriterBase):
                     value_url,
                 ) = self._get_default_property_value_uris_for_dimension(dimension_col)
 
+                if dimension_col.csv_column_uri_template is not None:
+                    value_url = dimension_col.csv_column_uri_template
+
                 virtual_columns.append(
                     {
                         "name": (

@@ -271,7 +271,6 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
       <file:/tmp/a-new-codelist.csv#a> a <http://www.w3.org/2004/02/skos/core#Concept>.
       """
   
-  @wip
   Scenario: A single-measure dataset (with code-list) having existing resources can be serialised to a standard CSV-qb
     Given a single measure QbCube named "single-measure qube with existing resources" with existing units/measure/dimensions/attribute/codelists
     When the cube is serialised to CSV-W
@@ -405,6 +404,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
       """
     And the RDF should pass "skos, qb" SPARQL tests
   
+  @wip
   Scenario: A codelist defined in a CSV-W should be copied to the output directory
     Given the existing test-case file "qbwriter/code-list.csv-metadata.json"
     And the existing test-case file "qbwriter/code-list.table.json"
@@ -424,7 +424,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
       <file:/tmp/some-qube.csv#component/d-code-list> <http://purl.org/linked-data/cube#dimension> <file:/tmp/some-qube.csv#dimension/d-code-list>.
       <file:/tmp/some-qube.csv#dimension/d-code-list> <http://purl.org/linked-data/cube#codeList> <http://gss-data.org.uk/def/trade/concept-scheme/age-of-business>.
 
-      <file:/tmp/some-qube.csv#obs/a,10-20> <file:/tmp/some-qube.csv#dimension/d-code-list> <http://gss-data.org.uk/def/trade/concept/age-of-business/10-20>.
+      <file:/tmp/some-qube.csv#obs/a,10-20@some-measure> <file:/tmp/some-qube.csv#dimension/d-code-list> <http://gss-data.org.uk/def/trade/concept/age-of-business/10-20>.
 
       <http://gss-data.org.uk/def/trade/concept-scheme/age-of-business> a <http://www.w3.org/2004/02/skos/core#ConceptScheme>.
       <http://gss-data.org.uk/def/trade/concept/age-of-business/10-20> a <http://www.w3.org/2004/02/skos/core#Concept>;

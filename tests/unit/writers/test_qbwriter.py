@@ -871,7 +871,7 @@ def test_get_cross_measures_slice_key_for_existing_dimension():
     assert str(component_properties[0].uri) == "Some Dimension"
 
 
-def test_is_cube_in_pivoted_shape_true():
+def test_is_cube_in_pivoted_shape_true_for_pivoted_shape_cube():
     """
     Ensure that the boolean returned for an input cube of pivoted shape is true.
     """
@@ -886,6 +886,12 @@ def test_is_cube_in_pivoted_shape_true():
                     NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
                 ),
             ),
+            QbColumn(
+                "Some Other Obs Val",
+                QbObservationValue(
+                    NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
+                ),
+            ),
         ],
     )
 
@@ -894,8 +900,7 @@ def test_is_cube_in_pivoted_shape_true():
     assert is_cube_pivoted == True
 
 
-# TODO: CHECK WITH ROB
-def test_is_cube_in_pivoted_shape_false():
+def test_is_cube_in_pivoted_shape_false_for_standard_shape_cube():
     """
     Ensure that the boolean returned for an input cube of pivoted shape is false.
     """
@@ -904,7 +909,8 @@ def test_is_cube_in_pivoted_shape_false():
         columns=[
             QbColumn("Some Dimension", ExistingQbDimension("Some Dimension")),
             QbColumn("Some Attribute", NewQbAttribute(label="Some Attribute")),
-            QbColumn("Some Obs Val", QbObservationValue(NewQbUnit("Some Unit"))),
+            QbColumn("Some Obs Val", QbObservationValue(unit=NewQbUnit("Some Unit"))),
+            QbColumn("Some Measure", QbMultiMeasureDimension([NewQbMeasure("New Measure")]))
         ],
     )
 
@@ -913,9 +919,27 @@ def test_is_cube_in_pivoted_shape_false():
     assert is_cube_pivoted == False
 
 
-# TODO: CHECK WITH ROB
 def test_is_cube_in_pivoted_shape_raise_exception():
-    pass
+    
+    cube = Cube(
+        CatalogMetadata("Cube"),
+        columns=[
+            QbColumn("Some Dimension", ExistingQbDimension("Some Dimension")),
+            QbColumn("Some Attribute", NewQbAttribute(label="Some Attribute")),
+            QbColumn("Some Obs Val", QbObservationValue(unit=NewQbUnit("Some Unit"))),
+            QbColumn("Some Other Obs Val", QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit"))),
+        ],
+    )
+
+    writer = QbWriter(cube)
+  
+    with pytest.raises(Exception) as err:
+        writer.is_cube_in_pivoted_shape
+
+    assert (
+        str(err.value)
+        == 'The cube cannot be in both standard and pivoted shape'
+    )
 
 
 def test_get_observation_uri_for_pivoted_shape_data_set_new_qbmeasure():
@@ -1020,7 +1044,7 @@ def test_get_pivoted_cube_slice_uri():
             QbColumn(
                 "Some Obs Val",
                 QbObservationValue(
-                    TestQbMeasure("Some Measure"),
+                    NewQbMeasure("Some Measure"),
                     NewQbUnit("Some Unit"),
                 ),
             ),
@@ -1030,7 +1054,6 @@ def test_get_pivoted_cube_slice_uri():
     writer = QbWriter(cube)
 
     expected_slice_uri = "cube.csv#slice/{some_dimension}"
-
     actual_slice_uri = writer._get_pivoted_cube_slice_uri()
 
     assert actual_slice_uri == expected_slice_uri
@@ -1048,7 +1071,7 @@ def test_get_about_url_for_pivoted_shape_cube():
             QbColumn(
                 "Some Obs Val",
                 QbObservationValue(
-                    TestQbMeasure("Some Measure"),
+                    NewQbMeasure("Some Measure"),
                     NewQbUnit("Some Unit"),
                 ),
             ),
@@ -1056,15 +1079,12 @@ def test_get_about_url_for_pivoted_shape_cube():
     )
 
     writer = QbWriter(cube)
-
     expected_about_url = "cube.csv#slice/{some_dimension}"
-
     actual_about_url = writer._get_about_url()
 
     assert actual_about_url == expected_about_url
 
 
-# TODO: Check with Rob
 def test_get_about_url_for_standard_shape_cube():
     """
     Ensures that the standard shape cube about URL is returned.
@@ -1078,17 +1098,16 @@ def test_get_about_url_for_standard_shape_cube():
             QbColumn(
                 "Some Obs Val",
                 QbObservationValue(
-                    TestQbMeasure("Some Measure"),
-                    NewQbUnit("Some Unit"),
+                    unit=NewQbUnit("Some Unit"),
                 ),
             ),
+            QbColumn("Some Measure", QbMultiMeasureDimension([NewQbMeasure("New Measure")]))
         ],
     )
 
     writer = QbWriter(cube)
 
-    expected_about_url = "cube.csv#slice/{some_dimension}"
-
+    expected_about_url = "cube.csv#obs/{some_dimension}@{some_measure}"
     actual_about_url = writer._get_about_url()
 
     assert actual_about_url == expected_about_url
