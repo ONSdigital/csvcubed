@@ -629,8 +629,8 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
       """
       <file:/tmp/cube-data-convention-ok.csv#measure/cost-of-living-index> <http://www.w3.org/2000/01/rdf-schema#label> "Cost of living index"@en;
       <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#decimal> .
-      """
-  
+    """
+
   Scenario: A QbCube should generate csvcubed version specific rdf
     Given a single-measure QbCube with identifier "qb-id-10002" named "Some Qube"
     When the cube is serialised to CSV-W
@@ -639,11 +639,11 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     And csvlint validation of all CSV-Ws should succeed
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should contain version specific triples
-      """
-      @prefix prov: <http://www.w3.org/ns/prov#> .
-
-      <file:/tmp/a-code-list.csv#code-list> a prov:Entity ;
-      prov:wasGeneratedBy <file:/tmp/a-code-list.csv#csvcubed-build-activity> .
-
-      <file:/tmp/qb-id-10002.csv#csvcubed-build-activity> a prov:Activity;
-      """
+    """
+    @prefix prov: <http://www.w3.org/ns/prov#>. 
+    
+    <file:/tmp/a-code-list.csv#code-list> a prov:Entity; 
+      prov:wasGeneratedBy <file:/tmp/a-code-list.csv#csvcubed-build-activity>. 
+    
+    <file:/tmp/qb-id-10002.csv#csvcubed-build-activity> a prov:Activity;
+    """
