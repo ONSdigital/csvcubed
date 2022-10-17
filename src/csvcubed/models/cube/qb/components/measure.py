@@ -86,5 +86,3 @@ class NewQbMeasure(QbMeasure, UriIdentifiable):
 
     def get_identifier(self) -> str:
         return self.label
-
-
