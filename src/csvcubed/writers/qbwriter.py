@@ -773,9 +773,7 @@ class QbWriter(WriterBase):
                 attribute.parent_attribute_uri
             )
             component.attribute.source = maybe_existing_resource(attribute.source_uri)
-            # todo: Find some way to link the codelist we have to the
-            #  ComponentProperty?
-
+            # TODO: Find some way to link the codelist we have to the ComponentProperty?
             if isinstance(attribute, QbAttributeLiteral):
                 component.attribute.range = ExistingResource(
                     get_data_type_uri_from_str(attribute.data_type)
@@ -993,8 +991,6 @@ class QbWriter(WriterBase):
             # If the column represents a QbObservationValue, then simply assign the obs_val_column to this column.
             if isinstance(column.structural_definition, QbObservationValue):
                 obs_val_col = column
-                # TODO:
-                _logger.info("")
             # If the column represents an attribute, set the valueUrl using the _get_observation_value_col_for_column function
             elif isinstance(column.structural_definition, QbAttribute):
                 if is_single_measure:
@@ -1100,7 +1096,7 @@ class QbWriter(WriterBase):
             _logger.debug("All units are existing.")
             unit_value_uri = column_template_fragment
         else:
-            # todo: Come up with a solution for this!
+            # TODO: Come up with a solution for this.
             raise Exception(
                 "Cannot handle a mix of new units and existing defined units."
             )
@@ -1144,7 +1140,7 @@ class QbWriter(WriterBase):
                 )
             return column.csv_column_uri_template
         else:
-            # todo: Come up with a solution for this!
+            # TODO: Come up with a solution for this.
             raise Exception(
                 "Cannot handle a mix of new measures and existing defined measures."
             )
