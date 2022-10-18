@@ -809,34 +809,6 @@ Scenario: A pivoted shape cube should be produced as the output for the pivoted 
             rdfs:Resource ;
         rdfs:label "Some Attribute"@en .
     
-    <file:/tmp/qb-id-10003.csv#dataset> a ns2:Attachable,
-            ns2:DataSet,
-            rdfs:Resource,
-            <http://www.w3.org/ns/dcat#Dataset>,
-            <http://www.w3.org/ns/dcat#Resource> ;
-        rdfs:label "Pivoted Shape Cube"@en ;
-        ns1:identifier "qb-id-10003" ;
-        ns1:issued "2022-10-18T15:21:38.234353"^^xsd:dateTime ;
-        ns1:modified "2022-10-18T15:21:38.234353"^^xsd:dateTime ;
-        ns1:title "Pivoted Shape Cube"@en ;
-        ns2:structure <file:/tmp/qb-id-10003.csv#structure> ;
-        rdfs:seeAlso ns4:some-attribute,
-            <file:/tmp/qb-id-10003.csv#class/some-dimension>,
-            <file:/tmp/qb-id-10003.csv#component/measure-type>,
-            <file:/tmp/qb-id-10003.csv#component/some-attribute>,
-            <file:/tmp/qb-id-10003.csv#component/some-dimension>,
-            <file:/tmp/qb-id-10003.csv#component/some-measure>,
-            <file:/tmp/qb-id-10003.csv#component/unit>,
-            <file:/tmp/qb-id-10003.csv#csvcubed-build-activity>,
-            <file:/tmp/qb-id-10003.csv#dataset>,
-            <file:/tmp/qb-id-10003.csv#dependency/some-dimension>,
-            ns7:some-dimension,
-            ns5:some-measure,
-            <file:/tmp/qb-id-10003.csv#slice/cross-measures>,
-            <file:/tmp/qb-id-10003.csv#structure>,
-            <file:/tmp/qb-id-10003.csv#unit/some-unit> ;
-        ns6:wasGeneratedBy <file:/tmp/qb-id-10003.csv#csvcubed-build-activity> .
-    
     ns7:some-dimension a ns2:CodedProperty,
             ns2:ComponentProperty,
             ns2:DimensionProperty,
@@ -850,20 +822,6 @@ Scenario: A pivoted shape cube should be produced as the output for the pivoted 
             ns2:SliceKey,
             rdfs:Resource ;
         ns2:componentProperty ns7:some-dimension .
-    
-    <file:/tmp/some-dimension.csv#code-list> a rdfs:Resource,
-            ns8:ConceptScheme,
-            <http://www.w3.org/ns/dcat#Dataset>,
-            <http://www.w3.org/ns/dcat#Resource>,
-            ns6:Entity ;
-        rdfs:label "Some Dimension"@en ;
-        ns1:identifier "Some Dimension" ;
-        ns1:issued "2022-10-18T15:21:38.217077"^^xsd:dateTime ;
-        ns1:modified "2022-10-18T15:21:38.217077"^^xsd:dateTime ;
-        ns1:title "Some Dimension"@en ;
-        rdfs:seeAlso <file:/tmp/some-dimension.csv#code-list>,
-            <file:/tmp/some-dimension.csv#csvcubed-build-activity> ;
-        ns6:wasGeneratedBy <file:/tmp/some-dimension.csv#csvcubed-build-activity> .
     
     ns5:some-measure a ns2:ComponentProperty,
             ns2:MeasureProperty,
