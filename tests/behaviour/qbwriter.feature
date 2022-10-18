@@ -649,6 +649,16 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     """
 
 Scenario: A pivoted shape cube should be produced as the output for the pivoted shape inputs
-  Given a pivoted shape cube named "Pivoted Shape Cube"
+  Given a pivoted shape cube with identifier "qb-id-10003" named "Pivoted Shape Cube"
+  # TODO: Check why the qbwriter.write() is failing
   When the cube is serialised to CSV-W
+  # TODO: Remove below once the qbwriter.write() is working.
   Then output csv file name
+  Then the file at "qb-id-10003.csv" should exist
+  And the file at "qb-id-10003.csv-metadata.json" should exist
+  And csvlint validation of all CSV-Ws should succeed
+  And csv2rdf on all CSV-Ws should succeed
+  And the RDF should contain version specific triples
+  """
+  TODO Add the expected triples into here
+  """

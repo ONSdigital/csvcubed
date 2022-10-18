@@ -889,9 +889,9 @@ def step_impl(context):
     )
 
 
-@Given('a pivoted shape cube named "{cube_name}"')
-def step_impl(context, cube_name: str):
-    metadata = CatalogMetadata(cube_name)
+@Given('a pivoted shape cube named with identifier "{identifier}" named "{cube_name}"')
+def step_impl(context, identifier: str, cube_name: str):
+    metadata = CatalogMetadata(title=cube_name, identifier=identifier)
     data = pd.DataFrame(
         {
             "Some Dimension": ["a", "b", "c"],
@@ -916,7 +916,8 @@ def step_impl(context, cube_name: str):
     cube = Cube(metadata=metadata, data=data, columns=columns)
     print("Cube title:", cube.metadata.title, "\n")
     context.cube = cube
-    
+
+# TODO: Remove below step once the qbwriter.write() is working.
 @Then("output csv file name")
 def step_impl(context):
     print("Csv file name:", context.csv_file_name, "\n")
