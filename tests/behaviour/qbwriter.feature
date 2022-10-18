@@ -657,69 +657,69 @@ Scenario: A pivoted shape cube should be produced as the output for the pivoted 
   And csv2rdf on all CSV-Ws should succeed
   And the RDF should contain
   """
-    @prefix ns2: <http://purl.org/linked-data/cube#> .
-    @prefix ns4: <file:/tmp/qb-id-10003.csv#attribute/> .
-    @prefix ns5: <file:/tmp/qb-id-10003.csv#measure/> .
-    @prefix ns7: <file:/tmp/qb-id-10003.csv#dimension/> .
+    @prefix cube: <http://purl.org/linked-data/cube#> .
+    @prefix attribute: <file:/tmp/qb-id-10003.csv#attribute/> .
+    @prefix measure: <file:/tmp/qb-id-10003.csv#measure/> .
+    @prefix dimension: <file:/tmp/qb-id-10003.csv#dimension/> .
     @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
     
-    <file:/tmp/qb-id-10003.csv#slice/a> a ns2:Slice ;
-        ns7:some-dimension <file:/tmp/some-dimension.csv#a> ;
-        ns2:Observation <file:/tmp/qb-id-10003.csv#obs/a@some-measure> ;
-        ns2:sliceStructure <file:/tmp/qb-id-10003.csv#slice/cross-measures> .
+    <file:/tmp/qb-id-10003.csv#slice/a> a cube:Slice ;
+        dimension:some-dimension <file:/tmp/some-dimension.csv#a> ;
+        cube:Observation <file:/tmp/qb-id-10003.csv#obs/a@some-measure> ;
+        cube:sliceStructure <file:/tmp/qb-id-10003.csv#slice/cross-measures> .
     
-    <file:/tmp/qb-id-10003.csv#slice/b> a ns2:Slice ;
-        ns7:some-dimension <file:/tmp/some-dimension.csv#b> ;
-        ns2:Observation <file:/tmp/qb-id-10003.csv#obs/b@some-measure> ;
-        ns2:sliceStructure <file:/tmp/qb-id-10003.csv#slice/cross-measures> .
+    <file:/tmp/qb-id-10003.csv#slice/b> a cube:Slice ;
+        dimension:some-dimension <file:/tmp/some-dimension.csv#b> ;
+        cube:Observation <file:/tmp/qb-id-10003.csv#obs/b@some-measure> ;
+        cube:sliceStructure <file:/tmp/qb-id-10003.csv#slice/cross-measures> .
     
-    <file:/tmp/qb-id-10003.csv#slice/c> a ns2:Slice ;
-        ns7:some-dimension <file:/tmp/some-dimension.csv#c> ;
-        ns2:Observation <file:/tmp/qb-id-10003.csv#obs/c@some-measure> ;
-        ns2:sliceStructure <file:/tmp/qb-id-10003.csv#slice/cross-measures> .
+    <file:/tmp/qb-id-10003.csv#slice/c> a cube:Slice ;
+        dimension:some-dimension <file:/tmp/some-dimension.csv#c> ;
+        cube:Observation <file:/tmp/qb-id-10003.csv#obs/c@some-measure> ;
+        cube:sliceStructure <file:/tmp/qb-id-10003.csv#slice/cross-measures> .
     
-    <file:/tmp/qb-id-10003.csv#obs/a@some-measure> a ns2:Observation ;
-        ns4:some-attribute <file:/tmp/attr-a> ;
-        ns7:some-dimension <file:/tmp/some-dimension.csv#a> ;
-        ns5:some-measure 1.0,
+    <file:/tmp/qb-id-10003.csv#obs/a@some-measure> a cube:Observation ;
+        attribute:some-attribute <file:/tmp/attr-a> ;
+        dimension:some-dimension <file:/tmp/some-dimension.csv#a> ;
+        measure:some-measure 1.0,
             2.0 ;
-        ns2:dataSet <file:/tmp/qb-id-10003.csv#dataset> ;
-        ns2:measureType ns5:some-measure .
+        cube:dataSet <file:/tmp/qb-id-10003.csv#dataset> ;
+        cube:measureType measure:some-measure .
     
-    <file:/tmp/qb-id-10003.csv#obs/b@some-measure> a ns2:Observation ;
-        ns4:some-attribute <file:/tmp/attr-b> ;
-        ns7:some-dimension <file:/tmp/some-dimension.csv#b> ;
-        ns5:some-measure 2.0,
+    <file:/tmp/qb-id-10003.csv#obs/b@some-measure> a cube:Observation ;
+        attribute:some-attribute <file:/tmp/attr-b> ;
+        dimension:some-dimension <file:/tmp/some-dimension.csv#b> ;
+        measure:some-measure 2.0,
             4.0 ;
-        ns2:dataSet <file:/tmp/qb-id-10003.csv#dataset> ;
-        ns2:measureType ns5:some-measure .
+        cube:dataSet <file:/tmp/qb-id-10003.csv#dataset> ;
+        cube:measureType measure:some-measure .
     
-    <file:/tmp/qb-id-10003.csv#obs/c@some-measure> a ns2:Observation ;
-        ns4:some-attribute <file:/tmp/attr-c> ;
-        ns7:some-dimension <file:/tmp/some-dimension.csv#c> ;
-        ns5:some-measure 3.0,
+    <file:/tmp/qb-id-10003.csv#obs/c@some-measure> a cube:Observation ;
+        attribute:some-attribute <file:/tmp/attr-c> ;
+        dimension:some-dimension <file:/tmp/some-dimension.csv#c> ;
+        measure:some-measure 3.0,
             6.0 ;
-        ns2:dataSet <file:/tmp/qb-id-10003.csv#dataset> ;
-        ns2:measureType ns5:some-measure .
+        cube:dataSet <file:/tmp/qb-id-10003.csv#dataset> ;
+        cube:measureType measure:some-measure .
     
-    <file:/tmp/qb-id-10003.csv#structure> a ns2:ComponentSet,
-            ns2:DataStructureDefinition,
+    <file:/tmp/qb-id-10003.csv#structure> a cube:ComponentSet,
+            cube:DataStructureDefinition,
             rdfs:Resource ;
-        ns2:component <file:/tmp/qb-id-10003.csv#component/measure-type>,
+        cube:component <file:/tmp/qb-id-10003.csv#component/measure-type>,
             <file:/tmp/qb-id-10003.csv#component/some-attribute>,
             <file:/tmp/qb-id-10003.csv#component/some-dimension>,
             <file:/tmp/qb-id-10003.csv#component/some-measure>,
             <file:/tmp/qb-id-10003.csv#component/unit> ;
-        ns2:componentProperty ns4:some-attribute,
-            ns7:some-dimension,
-            ns5:some-measure,
-            ns2:measureType,
+        cube:componentProperty attribute:some-attribute,
+            dimension:some-dimension,
+            measure:some-measure,
+            cube:measureType,
             <http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure> ;
-        ns2:sliceKey <file:/tmp/qb-id-10003.csv#slice/cross-measures> .
+        cube:sliceKey <file:/tmp/qb-id-10003.csv#slice/cross-measures> .
     
-    <file:/tmp/qb-id-10003.csv#slice/cross-measures> a ns2:ComponentSet,
-            ns2:SliceKey,
+    <file:/tmp/qb-id-10003.csv#slice/cross-measures> a cube:ComponentSet,
+            cube:SliceKey,
             rdfs:Resource ;
-        ns2:componentProperty ns7:some-dimension .
+        cube:componentProperty dimension:some-dimension .
   """
   
