@@ -11,10 +11,8 @@ import re
 from dataclasses import field
 from pathlib import Path
 from typing import Tuple, Dict, Any, List, Iterable, Set
-from numpy import isin
 
 import pandas as pd
-from csvcubed.models.rdf import conceptschemeincatalog
 
 from csvcubedmodels.rdf.dependency import RdfGraphDependency
 from csvcubedmodels import rdf
@@ -58,18 +56,19 @@ from ..models.cube import (
     QbMultiUnits,
     QbAttributeLiteral,
 )
+from csvcubed.utils.version import get_csvcubed_version_uri
+from csvcubed.models.rdf.qbdatasetincatalog import QbDataSetInCatalog
 from ..models.cube.qb.components.codelist import NewQbCodeListInCsvW
 from ..models.rdf.newattributevalueresource import NewAttributeValueResource
 from ..models.rdf.newunitresource import NewUnitResource
 from ..models.cube.qb.components.arbitraryrdf import RdfSerialisationHint
-from csvcubed.models.rdf.qbdatasetincatalog import QbDataSetInCatalog
 from ..utils.qb.validation.observations import get_observation_status_columns
-from csvcubed.utils.version import get_csvcubed_version_uri
 
 
 _logger = logging.getLogger(__name__)
 
 VIRT_UNIT_COLUMN_NAME = "virt_unit"
+
 
 @dataclass
 class QbWriter(WriterBase):
@@ -414,7 +413,7 @@ class QbWriter(WriterBase):
                     "valueUrl": self._new_uri_helper.get_dataset_uri(),
                 }
             )
-            
+
         return virtual_columns
 
     def _generate_virtual_columns_for_standard_shape_cube(self) -> List[Dict[str, Any]]:
@@ -496,22 +495,24 @@ class QbWriter(WriterBase):
 
                 dataset.structure.components |= set(component_specs_for_col)
 
-        if self.is_cube_in_pivoted_shape: 
-            dataset.structure.sliceKey.add(
-                self._get_cross_measures_slice_key()
-            )
+        if self.is_cube_in_pivoted_shape:
+            dataset.structure.sliceKey.add(self._get_cross_measures_slice_key())
 
         return dataset
 
     def _get_cross_measures_slice_key(self) -> rdf.qb.SliceKey:
         # Setting up Slice Key for slices which range over measures.
-        slice_key = rdf.qb.SliceKey(self._new_uri_helper.get_slice_key_across_measures_uri())
-        
+        slice_key = rdf.qb.SliceKey(
+            self._new_uri_helper.get_slice_key_across_measures_uri()
+        )
+
         for dimension_column in get_columns_of_dsd_type(self.cube, QbDimension):
             dimension = dimension_column.structural_definition
             dimension_uri: str
             if isinstance(dimension, NewQbDimension):
-                dimension_uri = self._new_uri_helper.get_dimension_uri(dimension.uri_safe_identifier)
+                dimension_uri = self._new_uri_helper.get_dimension_uri(
+                    dimension.uri_safe_identifier
+                )
             elif isinstance(dimension, ExistingQbDimension):
                 dimension_uri = dimension.dimension_uri
             else:
@@ -983,7 +984,7 @@ class QbWriter(WriterBase):
             column.structural_definition.__class__.__name__,
         )
 
-        obs_val_col: Optional[QbColumn[QbObservationValue]]
+        obs_val_col: Optional[QbColumn[QbObservationValue]] = None
         obs_val_cols = get_columns_of_dsd_type(self.cube, QbObservationValue)
         is_single_measure = len(obs_val_cols) == 1
 
@@ -992,24 +993,30 @@ class QbWriter(WriterBase):
             # If the column represents a QbObservationValue, then simply assign the obs_val_column to this column.
             if isinstance(column.structural_definition, QbObservationValue):
                 obs_val_col = column
-                #TODO:
+                # TODO:
                 _logger.info("")
             # If the column represents an attribute, set the valueUrl using the _get_observation_value_col_for_column function
             elif isinstance(column.structural_definition, QbAttribute):
                 if is_single_measure:
                     obs_val_col = obs_val_cols[0]
                 else:
-                    obs_val_col = self._get_observation_value_col_for_column(
+                    col_title = (
                         column.structural_definition.get_observed_value_col_title()
                     )
+                    if col_title is not None:
+                        obs_val_col = self._get_observation_value_col_for_column(
+                            col_title
+                        )
             # If the column represents units, set the valueUrl using the _get_observation_value_col_for_column function
             elif isinstance(column.structural_definition, QbMultiUnits):
                 if is_single_measure:
                     obs_val_col = obs_val_cols[0]
                 else:
-                    obs_val_col = self._get_observation_value_col_for_column(
-                        column.structural_definition.observed_value_col_title
-                    )
+                    col_title = column.structural_definition.observed_value_col_title
+                    if col_title is not None:
+                        obs_val_col = self._get_observation_value_col_for_column(
+                            col_title
+                        )
             else:
                 obs_val_col = None
 
@@ -1415,7 +1422,7 @@ class QbWriter(WriterBase):
         obs_val_measure = obs_val_column.structural_definition.measure
         assert obs_val_measure is not None
         if isinstance(obs_val_measure, NewQbMeasure):
-            measure_id = obs_val_measure.uri_safe_identifier            
+            measure_id = obs_val_measure.uri_safe_identifier
         elif isinstance(obs_val_measure, ExistingQbMeasure):
             # Yes, this is absolutely nasty, but what else can we do?
             measure_id = uri_safe(obs_val_measure.measure_uri)
