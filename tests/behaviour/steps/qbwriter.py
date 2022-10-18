@@ -889,7 +889,7 @@ def step_impl(context):
     )
 
 
-@Given('a pivoted shape cube named with identifier "{identifier}" named "{cube_name}"')
+@Given('a pivoted shape cube with identifier "{identifier}" named "{cube_name}"')
 def step_impl(context, identifier: str, cube_name: str):
     metadata = CatalogMetadata(title=cube_name, identifier=identifier)
     data = pd.DataFrame(
@@ -901,8 +901,8 @@ def step_impl(context, identifier: str, cube_name: str):
         }
     )
     columns = [
-        QbColumn("Some Dimension", ExistingQbDimension("Some Dimension")),
-        QbColumn("Some Attribute", NewQbAttribute("Some Attribute")),
+        QbColumn("Some Dimension", NewQbDimension.from_data("Some Dimension", data["Some Dimension"])),
+        QbColumn("Some Attribute", NewQbAttribute("Some Attribute", observed_value_col_title="Some Obs Val")),
         QbColumn(
             "Some Obs Val",
             QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
