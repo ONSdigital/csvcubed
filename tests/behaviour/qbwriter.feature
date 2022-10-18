@@ -657,21 +657,11 @@ Scenario: A pivoted shape cube should be produced as the output for the pivoted 
   And csv2rdf on all CSV-Ws should succeed
   And the RDF should contain
   """
-    @prefix ns1: <http://purl.org/dc/terms/> .
     @prefix ns2: <http://purl.org/linked-data/cube#> .
-    @prefix ns3: <http://www.w3.org/ns/ui#> .
     @prefix ns4: <file:/tmp/qb-id-10003.csv#attribute/> .
     @prefix ns5: <file:/tmp/qb-id-10003.csv#measure/> .
-    @prefix ns6: <http://www.w3.org/ns/prov#> .
     @prefix ns7: <file:/tmp/qb-id-10003.csv#dimension/> .
-    @prefix ns8: <http://www.w3.org/2004/02/skos/core#> .
-    @prefix ns9: <http://rdfs.org/ns/void#> .
-    @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
     @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-    @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-    
-    <file:/tmp/qb-id-10003.csv#class/some-dimension> a rdfs:Class,
-            rdfs:Resource .
     
     <file:/tmp/qb-id-10003.csv#slice/a> a ns2:Slice ;
         ns7:some-dimension <file:/tmp/some-dimension.csv#a> ;
@@ -687,11 +677,6 @@ Scenario: A pivoted shape cube should be produced as the output for the pivoted 
         ns7:some-dimension <file:/tmp/some-dimension.csv#c> ;
         ns2:Observation <file:/tmp/qb-id-10003.csv#obs/c@some-measure> ;
         ns2:sliceStructure <file:/tmp/qb-id-10003.csv#slice/cross-measures> .
-    
-    <file:/tmp/qb-id-10003.csv#dependency/some-dimension> a ns9:Dataset,
-            rdfs:Resource ;
-        ns9:dataDump <file:/tmp/some-dimension.csv-metadata.json> ;
-        ns9:uriSpace "some-dimension.csv#" .
     
     <file:/tmp/qb-id-10003.csv#obs/a@some-measure> a ns2:Observation ;
         ns4:some-attribute <file:/tmp/attr-a> ;
@@ -717,55 +702,6 @@ Scenario: A pivoted shape cube should be produced as the output for the pivoted 
         ns2:dataSet <file:/tmp/qb-id-10003.csv#dataset> ;
         ns2:measureType ns5:some-measure .
     
-    <file:/tmp/qb-id-10003.csv#unit/some-unit> a <http://qudt.org/schema/qudt/Unit>,
-            <http://www.ontology-of-units-of-measure.org/resource/om-2/Unit>,
-            rdfs:Resource ;
-        rdfs:label "Some Unit"@en .
-    
-    <file:/tmp/qb-id-10003.csv#component/measure-type> a ns2:ComponentSet,
-            ns2:ComponentSpecification,
-            rdfs:Resource ;
-        ns2:componentProperty ns2:measureType ;
-        ns2:dimension ns2:measureType ;
-        ns2:order "3",
-            "6" .
-    
-    <file:/tmp/qb-id-10003.csv#component/some-attribute> a ns2:ComponentSet,
-            ns2:ComponentSpecification,
-            rdfs:Resource ;
-        ns2:attribute ns4:some-attribute ;
-        ns2:componentProperty ns4:some-attribute ;
-        ns2:componentRequired "false" ;
-        ns2:order "2" .
-    
-    <file:/tmp/qb-id-10003.csv#component/some-dimension> a ns2:ComponentSet,
-            ns2:ComponentSpecification,
-            rdfs:Resource ;
-        ns2:componentProperty ns7:some-dimension ;
-        ns2:dimension ns7:some-dimension ;
-        ns2:order "1" .
-    
-    <file:/tmp/qb-id-10003.csv#component/some-measure> a ns2:ComponentSet,
-            ns2:ComponentSpecification,
-            rdfs:Resource ;
-        ns2:componentProperty ns5:some-measure ;
-        ns2:measure ns5:some-measure ;
-        ns2:order "5",
-            "8" .
-    
-    <file:/tmp/qb-id-10003.csv#component/unit> a ns2:ComponentSet,
-            ns2:ComponentSpecification,
-            rdfs:Resource ;
-        ns2:attribute <http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure> ;
-        ns2:componentProperty <http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure> ;
-        ns2:componentRequired "true" ;
-        ns2:order "4",
-            "7" .
-    
-    <file:/tmp/qb-id-10003.csv#csvcubed-build-activity> a rdfs:Resource,
-            ns6:Activity ;
-        ns6:used <https://github.com/GSS-Cogs/csvcubed/releases/tag/v0.1.0.dev0> .
-    
     <file:/tmp/qb-id-10003.csv#structure> a ns2:ComponentSet,
             ns2:DataStructureDefinition,
             rdfs:Resource ;
@@ -781,53 +717,9 @@ Scenario: A pivoted shape cube should be produced as the output for the pivoted 
             <http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure> ;
         ns2:sliceKey <file:/tmp/qb-id-10003.csv#slice/cross-measures> .
     
-    <file:/tmp/some-dimension.csv#a> a ns8:Concept ;
-        rdfs:label "a" ;
-        ns8:inScheme <file:/tmp/some-dimension.csv#code-list> ;
-        ns8:notation "a" ;
-        ns3:sortPriority 0 .
-    
-    <file:/tmp/some-dimension.csv#b> a ns8:Concept ;
-        rdfs:label "b" ;
-        ns8:inScheme <file:/tmp/some-dimension.csv#code-list> ;
-        ns8:notation "b" ;
-        ns3:sortPriority 1 .
-    
-    <file:/tmp/some-dimension.csv#c> a ns8:Concept ;
-        rdfs:label "c" ;
-        ns8:inScheme <file:/tmp/some-dimension.csv#code-list> ;
-        ns8:notation "c" ;
-        ns3:sortPriority 2 .
-    
-    <file:/tmp/some-dimension.csv#csvcubed-build-activity> a rdfs:Resource,
-            ns6:Activity ;
-        ns6:used <https://github.com/GSS-Cogs/csvcubed/releases/tag/v0.1.0.dev0> .
-    
-    ns4:some-attribute a ns2:AttributeProperty,
-            ns2:ComponentProperty,
-            rdf:Property,
-            rdfs:Resource ;
-        rdfs:label "Some Attribute"@en .
-    
-    ns7:some-dimension a ns2:CodedProperty,
-            ns2:ComponentProperty,
-            ns2:DimensionProperty,
-            rdf:Property,
-            rdfs:Resource ;
-        rdfs:label "Some Dimension"@en ;
-        ns2:codeList <file:/tmp/some-dimension.csv#code-list> ;
-        rdfs:range <file:/tmp/qb-id-10003.csv#class/some-dimension> .
-    
     <file:/tmp/qb-id-10003.csv#slice/cross-measures> a ns2:ComponentSet,
             ns2:SliceKey,
             rdfs:Resource ;
         ns2:componentProperty ns7:some-dimension .
-    
-    ns5:some-measure a ns2:ComponentProperty,
-            ns2:MeasureProperty,
-            rdf:Property,
-            rdfs:Resource ;
-        rdfs:label "Some Measure"@en ;
-        rdfs:range xsd:decimal .
   """
   
