@@ -896,6 +896,7 @@ def test_is_cube_in_pivoted_shape_true_for_pivoted_shape_cube():
     )
 
     writer = QbWriter(cube)
+    #writer.write("/")
     is_cube_pivoted = writer.is_cube_in_pivoted_shape
     assert is_cube_pivoted == True
 

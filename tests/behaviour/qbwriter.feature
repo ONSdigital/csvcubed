@@ -647,3 +647,8 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     
     <file:/tmp/qb-id-10002.csv#csvcubed-build-activity> a prov:Activity;
     """
+
+Scenario: A pivoted shape cube should be produced as the output for the pivoted shape inputs
+  Given a pivoted shape cube named "Pivoted Shape Cube"
+  When the cube is serialised to CSV-W
+  Then output csv file name
