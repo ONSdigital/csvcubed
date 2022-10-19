@@ -1,6 +1,3 @@
-from genericpath import exists
-from http.client import OK
-from importlib.metadata import metadata
 from typing import List
 from urllib.parse import urlparse
 import re
