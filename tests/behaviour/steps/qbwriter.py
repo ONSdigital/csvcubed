@@ -900,14 +900,14 @@ def step_impl(context, identifier: str, cube_name: str):
     )
     columns = [
         QbColumn("Some Dimension", NewQbDimension.from_data("Some Dimension", data["Some Dimension"])),
-        QbColumn("Some Attribute", NewQbAttribute("Some Attribute", observed_value_col_title="Some Obs Val")),
+        QbColumn("Some Attribute", NewQbAttribute.from_data("Some Attribute", data["Some Attribute"], observed_value_col_title="Some Obs Val")),
         QbColumn(
             "Some Obs Val",
             QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
         QbColumn(
             "Some Other Obs Val",
-            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
+            QbObservationValue(NewQbMeasure("Some Other Measure"), NewQbUnit("Some Unit")),
         ),
     ]
 
@@ -915,10 +915,10 @@ def step_impl(context, identifier: str, cube_name: str):
     context.cube = cube
 
 @Given('the environment variable "{env_var_name}" is "{env_var_value}"')
-def step_impl(_, env_var_name: str, env_var_value: bool):
+def step_impl(context, env_var_name: str, env_var_value: bool):
     os.environ[env_var_name] = env_var_value
 
-@Then('the environment variable "{env_var_name}" is deleted')
-def step_impl(_, env_var_name: str):
-    if env_var_name in os.environ:
+    def _delete_env_var():
         del os.environ[env_var_name]
+
+    context.add_cleanup(_delete_env_var)

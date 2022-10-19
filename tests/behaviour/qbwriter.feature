@@ -660,68 +660,69 @@ Scenario: A pivoted shape cube should be produced as the output for the pivoted 
   And the RDF should contain
   """
   @prefix cube: <http://purl.org/linked-data/cube#> .
-  @prefix attribute: <file:/tmp/qb-id-10003.csv#attribute/> .
   @prefix measure: <file:/tmp/qb-id-10003.csv#measure/> .
   @prefix dimension: <file:/tmp/qb-id-10003.csv#dimension/> .
+  @prefix attribute: <file:/tmp/qb-id-10003.csv#attribute/> .
+  @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
   @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+  @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
   
-  <file:/tmp/qb-id-10003.csv#slice/a> a cube:Slice ;
+  <file:/tmp/qb-id-10003.csv#obs/a@some-other-measure> a cube:Observation ;
       dimension:some-dimension <file:/tmp/some-dimension.csv#a> ;
-      cube:Observation <file:/tmp/qb-id-10003.csv#obs/a@some-measure> ;
-      cube:sliceStructure <file:/tmp/qb-id-10003.csv#slice/cross-measures> .
+      measure:some-other-measure 2.0 ;
+      cube:dataSet <file:/tmp/qb-id-10003.csv#dataset> ;
+      cube:measureType measure:some-other-measure .
   
-  <file:/tmp/qb-id-10003.csv#slice/b> a cube:Slice ;
+  <file:/tmp/qb-id-10003.csv#obs/b@some-other-measure> a cube:Observation ;
       dimension:some-dimension <file:/tmp/some-dimension.csv#b> ;
-      cube:Observation <file:/tmp/qb-id-10003.csv#obs/b@some-measure> ;
-      cube:sliceStructure <file:/tmp/qb-id-10003.csv#slice/cross-measures> .
+      measure:some-other-measure 4.0 ;
+      cube:dataSet <file:/tmp/qb-id-10003.csv#dataset> ;
+      cube:measureType measure:some-other-measure .
   
-  <file:/tmp/qb-id-10003.csv#slice/c> a cube:Slice ;
+  <file:/tmp/qb-id-10003.csv#obs/c@some-other-measure> a cube:Observation ;
       dimension:some-dimension <file:/tmp/some-dimension.csv#c> ;
-      cube:Observation <file:/tmp/qb-id-10003.csv#obs/c@some-measure> ;
-      cube:sliceStructure <file:/tmp/qb-id-10003.csv#slice/cross-measures> .
+      measure:some-other-measure 6.0 ;
+      cube:dataSet <file:/tmp/qb-id-10003.csv#dataset> ;
+      cube:measureType measure:some-other-measure .
+  
+  <file:/tmp/qb-id-10003.csv#slice/a> cube:Observation <file:/tmp/qb-id-10003.csv#obs/a@some-measure> .
+  
+  <file:/tmp/qb-id-10003.csv#slice/b> cube:Observation <file:/tmp/qb-id-10003.csv#obs/b@some-measure> .
+  
+  <file:/tmp/qb-id-10003.csv#slice/c> cube:Observation <file:/tmp/qb-id-10003.csv#obs/c@some-measure> .
   
   <file:/tmp/qb-id-10003.csv#obs/a@some-measure> a cube:Observation ;
-      attribute:some-attribute <file:/tmp/attr-a> ;
+      attribute:some-attribute <file:/tmp/qb-id-10003.csv#attribute/some-attribute/attr-a> ;
       dimension:some-dimension <file:/tmp/some-dimension.csv#a> ;
-      measure:some-measure 1.0,
-          2.0 ;
+      measure:some-measure 1.0 ;
       cube:dataSet <file:/tmp/qb-id-10003.csv#dataset> ;
       cube:measureType measure:some-measure .
   
   <file:/tmp/qb-id-10003.csv#obs/b@some-measure> a cube:Observation ;
-      attribute:some-attribute <file:/tmp/attr-b> ;
+      attribute:some-attribute <file:/tmp/qb-id-10003.csv#attribute/some-attribute/attr-b> ;
       dimension:some-dimension <file:/tmp/some-dimension.csv#b> ;
-      measure:some-measure 2.0,
-          4.0 ;
+      measure:some-measure 2.0 ;
       cube:dataSet <file:/tmp/qb-id-10003.csv#dataset> ;
       cube:measureType measure:some-measure .
   
   <file:/tmp/qb-id-10003.csv#obs/c@some-measure> a cube:Observation ;
-      attribute:some-attribute <file:/tmp/attr-c> ;
+      attribute:some-attribute <file:/tmp/qb-id-10003.csv#attribute/some-attribute/attr-c> ;
       dimension:some-dimension <file:/tmp/some-dimension.csv#c> ;
-      measure:some-measure 3.0,
-          6.0 ;
+      measure:some-measure 3.0 ;
       cube:dataSet <file:/tmp/qb-id-10003.csv#dataset> ;
       cube:measureType measure:some-measure .
   
-  <file:/tmp/qb-id-10003.csv#structure> a cube:ComponentSet,
-          cube:DataStructureDefinition,
+  measure:some-measure a cube:ComponentProperty,
+          cube:MeasureProperty,
+          rdf:Property,
           rdfs:Resource ;
-      cube:component <file:/tmp/qb-id-10003.csv#component/measure-type>,
-          <file:/tmp/qb-id-10003.csv#component/some-attribute>,
-          <file:/tmp/qb-id-10003.csv#component/some-dimension>,
-          <file:/tmp/qb-id-10003.csv#component/some-measure>,
-          <file:/tmp/qb-id-10003.csv#component/unit> ;
-      cube:componentProperty attribute:some-attribute,
-          dimension:some-dimension,
-          measure:some-measure,
-          cube:measureType,
-          <http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure> ;
-      cube:sliceKey <file:/tmp/qb-id-10003.csv#slice/cross-measures> .
+      rdfs:label "Some Measure"@en ;
+      rdfs:range xsd:decimal .
   
-  <file:/tmp/qb-id-10003.csv#slice/cross-measures> a cube:ComponentSet,
-          cube:SliceKey,
+  measure:some-other-measure a cube:ComponentProperty,
+          cube:MeasureProperty,
+          rdf:Property,
           rdfs:Resource ;
-      cube:componentProperty dimension:some-dimension .
+      rdfs:label "Some Other Measure"@en ;
+      rdfs:range xsd:decimal .
   """
-  Then the environment variable "PIVOTED_MULTI_MEASURE" is deleted

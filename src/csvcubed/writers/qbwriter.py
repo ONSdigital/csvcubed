@@ -116,7 +116,7 @@ class QbWriter(WriterBase):
     def write(self, output_folder: Path):
         # Map all labels to their corresponding URI-safe-values, where possible.
         # Also converts all appropriate columns to the pandas categorical format.
-        _logger.info(f"Beginning CSV-W Generation: {self.csv_file_name}")
+        _logger.debug("Beginning CSV-W Generation: '%s'", self.csv_file_name)
 
         ensure_int_columns_are_ints(self.cube)
 
@@ -131,7 +131,7 @@ class QbWriter(WriterBase):
                         lambda x: "true" if x is True else "false" if x is False else x
                     )
 
-        _logger.info("Calling data values to uri safe values")
+        _logger.debug("Calling data values to uri safe values")
         convert_data_values_to_uri_safe_values(
             self.cube, self.raise_missing_uri_safe_value_exceptions
         )
@@ -217,10 +217,12 @@ class QbWriter(WriterBase):
     def _generate_csvw_columns_for_cube(self) -> List[Dict[str, Any]]:
         columns = [self._generate_csvqb_column(c) for c in self.cube.columns]
         if self.is_cube_in_pivoted_shape:
+            _logger.debug("The cube is in pivoted shape")
             columns += (
                 self._generate_virtual_columns_for_obs_vals_in_pivoted_shape_cube()
             )
         else:
+            _logger.debug("The cube is in standard shape")
             columns += self._generate_virtual_columns_for_standard_shape_cube()
         return columns
 
@@ -314,6 +316,11 @@ class QbWriter(WriterBase):
     def _generate_virtual_columns_for_obs_val_in_pivoted_shape_cube(
         self, obs_column: QbColumn[QbObservationValue]
     ) -> List[dict]:
+        _logger.debug(
+            "Generating virtual columns for obs val col '%s' in pivoted shape cube",
+            obs_column.csv_column_title,
+        )
+
         virtual_columns: List[dict] = []
 
         observation_uri = self._get_observation_uri_for_pivoted_shape_data_set(
@@ -345,12 +352,20 @@ class QbWriter(WriterBase):
         # For each dimension in the cube, creates the `?obsUri ?dimUri ?valueUri` triple.
         dimension_columns = get_columns_of_dsd_type(self.cube, QbDimension)
         for dimension_col in dimension_columns:
+            _logger.debug(
+                "Generating virtual column for dimension column with title '%s'",
+                dimension_col.csv_column_title,
+            )
             (
                 property_url,
                 value_url,
             ) = self._get_default_property_value_uris_for_dimension(dimension_col)
 
             if dimension_col.csv_column_uri_template is not None:
+                _logger.debug(
+                    "Dimension column with title '%s'has a csv column uri template defined",
+                    dimension_col.csv_column_title,
+                )
                 value_url = dimension_col.csv_column_uri_template
 
             virtual_columns.append(
@@ -391,6 +406,8 @@ class QbWriter(WriterBase):
     def _generate_virtual_columns_for_obs_vals_in_pivoted_shape_cube(
         self,
     ) -> List[Dict[str, Any]]:
+        _logger.debug("Generating virtual columns for pivoted shape cube")
+
         virtual_columns: List[dict] = []
 
         # Generates the virtual column defining the `?sliceUri rdf:type qb:Slice` triple.
@@ -402,7 +419,6 @@ class QbWriter(WriterBase):
                 "valueUrl": "qb:Slice",
             }
         )
-        _logger.info("Successfully created virtual column for '?sliceUri rdf:type qb:Slice' triple")
 
         # Generates the virtual column defining the `?sliceUri qb:sliceStructure ?valueUrl` triple.
         virtual_columns.append(
@@ -427,10 +443,16 @@ class QbWriter(WriterBase):
         return virtual_columns
 
     def _generate_virtual_columns_for_standard_shape_cube(self) -> List[Dict[str, Any]]:
+        _logger.debug("Generating virtual columns for standard shape cube")
+
         virtual_columns = []
         for column in self.cube.columns:
             if isinstance(column, QbColumn):
                 if isinstance(column.structural_definition, QbObservationValue):
+                    _logger.debug(
+                        "The column with title '%s' is an observation value column.",
+                        column.csv_column_title,
+                    )
                     virtual_columns += self._generate_virtual_columns_for_obs_val_in_standard_shape_cube(
                         column.structural_definition
                     )
@@ -440,7 +462,7 @@ class QbWriter(WriterBase):
     def _generate_virtual_columns_for_obs_val_in_standard_shape_cube(
         self, obs_val: QbObservationValue
     ) -> List[Dict[str, Any]]:
-        _logger.debug("Configuring per-row virtual columns.")
+        _logger.debug("Generating virtual columns for standard shape cube")
 
         virtual_columns: List[dict] = [
             {
