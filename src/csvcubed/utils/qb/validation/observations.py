@@ -31,7 +31,6 @@ from csvcubed.utils.qb.cube import get_columns_of_dsd_type
 
 SDMX_A_OBS_STATUS_URI: str = str(SDMX_Attribute.obsStatus)
 
-
 def validate_observations(cube: Cube) -> List[ValidationError]:
     errors: List[ValidationError] = []
     observed_value_columns = get_columns_of_dsd_type(cube, QbObservationValue)
@@ -44,6 +43,7 @@ def validate_observations(cube: Cube) -> List[ValidationError]:
     if num_obs_val_columns == 0:
         errors.append(NoObservedValuesColumnDefinedError())
     elif num_obs_val_columns > 1:
+        # If it is set to true dont do line below
         errors.append(MoreThanOneObservationsColumnError(num_obs_val_columns))
     else:
         pivoted_obs_val_columns = [

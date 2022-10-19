@@ -265,7 +265,7 @@ class QbWriter(WriterBase):
                     }
                 )
             else:
-                raise ValueError(f"Unmatched codelist type {type(code_list)}")
+                raise TypeError(f"Unmatched codelist type {type(code_list)}")
 
         return tables
 
@@ -307,7 +307,7 @@ class QbWriter(WriterBase):
                     }
                 )
             else:
-                raise ValueError(f"Unmatched codelist type {type(code_list)}")
+                raise TypeError(f"Unmatched codelist type {type(code_list)}")
 
         return foreign_keys
 
@@ -516,7 +516,7 @@ class QbWriter(WriterBase):
             elif isinstance(dimension, ExistingQbDimension):
                 dimension_uri = dimension.dimension_uri
             else:
-                raise ValueError(f"Unmatched QbDimension type {type(dimension)}")
+                raise TypeError(f"Unmatched QbDimension type {type(dimension)}")
 
             slice_key.componentProperties.add(ExistingResource(dimension_uri))
 
@@ -540,7 +540,7 @@ class QbWriter(WriterBase):
         elif isinstance(component, QbObservationValue):
             return self._get_qb_obs_val_specifications(component)
         else:
-            raise Exception(f"Unhandled component type {type(component)}")
+            raise TypeError(f"Unhandled component type {type(component)}")
 
     def _get_obs_val_data_type(self) -> str:
         observation_value_columns = get_columns_of_dsd_type(
@@ -611,7 +611,7 @@ class QbWriter(WriterBase):
         elif isinstance(unit, NewQbUnit):
             return unit.uri_safe_identifier
         else:
-            raise Exception(f"Unhandled unit type {type(unit)}")
+            raise TypeError(f"Unhandled unit type {type(unit)}")
 
     def _get_qb_measure_dimension_specifications(
         self, measure_dimension: QbMultiMeasureDimension
@@ -660,7 +660,7 @@ class QbWriter(WriterBase):
             )
 
         else:
-            raise Exception(f"Unhandled measure type {type(measure)}")
+            raise TypeError(f"Unhandled measure type {type(measure)}")
 
         _logger.debug(
             "Generated component %s with measure %s.",
@@ -711,7 +711,7 @@ class QbWriter(WriterBase):
                 )
 
         else:
-            raise Exception(f"Unhandled dimension component type {type(dimension)}.")
+            raise TypeError(f"Unhandled dimension component type {type(dimension)}.")
 
         component.componentProperties.add(component.dimension)
 
@@ -738,7 +738,7 @@ class QbWriter(WriterBase):
         elif isinstance(code_list, NewQbCodeListInCsvW):
             return ExistingResource(code_list.concept_scheme_uri)
         else:
-            raise Exception(f"Unhandled codelist type {type(code_list)}")
+            raise TypeError(f"Unhandled codelist type {type(code_list)}")
 
     def _get_qb_attribute_specification(
         self, column_name_uri_safe: str, attribute: QbAttribute
@@ -785,7 +785,7 @@ class QbWriter(WriterBase):
                 }
             )
         else:
-            raise Exception(f"Unhandled attribute component type {type(attribute)}.")
+            raise TypeError(f"Unhandled attribute component type {type(attribute)}.")
 
         component.componentRequired = attribute.is_required
         component.componentProperties.add(component.attribute)
@@ -949,7 +949,7 @@ class QbWriter(WriterBase):
         elif isinstance(column, QbColumn):
             self._define_csvw_column_for_qb_column(csvw_col, column)
         else:
-            raise Exception(
+            raise TypeError(
                 f"Unhandled column type ({type(column)}) with title '{column.csv_column_title}'"
             )
 
@@ -1163,7 +1163,7 @@ class QbWriter(WriterBase):
                 column.structural_definition
             )
         else:
-            raise Exception(
+            raise TypeError(
                 f"Unhandled component type {type(column.structural_definition)}"
             )
 
@@ -1233,7 +1233,7 @@ class QbWriter(WriterBase):
                 )
             return local_dimension_uri, value_uri
         else:
-            raise Exception(f"Unhandled dimension type {type(dimension)}")
+            raise TypeError(f"Unhandled dimension type {type(dimension)}")
 
     def _get_default_property_value_uris_for_attribute(
         self, column: QbColumn[QbAttribute]
@@ -1276,7 +1276,7 @@ class QbWriter(WriterBase):
 
             return local_attribute_uri, value_uri
         else:
-            raise Exception(f"Unhandled attribute type {type(attribute)}")
+            raise TypeError(f"Unhandled attribute type {type(attribute)}")
 
     def _get_column_uri_template_fragment(
         self, column: CsvColumn, escape_value: bool = False
@@ -1364,7 +1364,7 @@ class QbWriter(WriterBase):
                 r"\{.?notation\}", column_uri_fragment, code_list.concept_template_uri
             )
         else:
-            raise Exception(f"Unhandled codelist type {type(code_list)}")
+            raise TypeError(f"Unhandled codelist type {type(code_list)}")
 
     def _get_unit_uri(self, unit: QbUnit) -> str:
         if isinstance(unit, ExistingQbUnit):
@@ -1372,7 +1372,7 @@ class QbWriter(WriterBase):
         elif isinstance(unit, NewQbUnit):
             return self._new_uri_helper.get_unit_uri(unit.uri_safe_identifier)
         else:
-            raise Exception(f"Unmatched unit type {type(unit)}")
+            raise TypeError(f"Unmatched unit type {type(unit)}")
 
     def _get_measure_uri(self, measure: QbMeasure) -> str:
         if isinstance(measure, ExistingQbMeasure):
@@ -1380,7 +1380,7 @@ class QbWriter(WriterBase):
         elif isinstance(measure, NewQbMeasure):
             return self._new_uri_helper.get_measure_uri(measure.uri_safe_identifier)
         else:
-            raise Exception(f"Unmatched measure type {type(measure)}")
+            raise TypeError(f"Unmatched measure type {type(measure)}")
 
     def _get_observation_uri_for_standard_shape_data_set(self) -> str:
         dimension_columns_templates: List[str] = []
@@ -1423,7 +1423,7 @@ class QbWriter(WriterBase):
             # Yes, this is absolutely nasty, but what else can we do?
             measure_id = uri_safe(obs_val_measure.measure_uri)
         else:
-            raise ValueError(f"Unhandled QbMeasure type {type(obs_val_measure)}")
+            raise TypeError(f"Unhandled QbMeasure type {type(obs_val_measure)}")
 
         return self._new_uri_helper.get_observation_uri(
             dimension_columns_templates, measure_id
