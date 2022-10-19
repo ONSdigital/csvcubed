@@ -1,3 +1,5 @@
+from distutils.util import strtobool
+import os
 from typing import List
 
 from csvcubed.models.cube import (
@@ -40,10 +42,10 @@ def validate_observations(cube: Cube) -> List[ValidationError]:
         errors.append(MoreThanOneUnitsColumnError(len(multi_units_columns)))
 
     num_obs_val_columns = len(observed_value_columns)
+    is_pivoted_multi_measure = strtobool(os.environ.get("PIVOTED_MULTI_MEASURE", 'False'))
     if num_obs_val_columns == 0:
         errors.append(NoObservedValuesColumnDefinedError())
-    elif num_obs_val_columns > 1:
-        # If it is set to true dont do line below
+    elif num_obs_val_columns > 1 and not is_pivoted_multi_measure:
         errors.append(MoreThanOneObservationsColumnError(num_obs_val_columns))
     else:
         pivoted_obs_val_columns = [

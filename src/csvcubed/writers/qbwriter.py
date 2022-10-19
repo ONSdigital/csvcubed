@@ -218,7 +218,7 @@ class QbWriter(WriterBase):
         columns = [self._generate_csvqb_column(c) for c in self.cube.columns]
         if self.is_cube_in_pivoted_shape:
             columns += (
-                self._generate_virtual_columns_for_obs_val_in_pivoted_shape_cube()
+                self._generate_virtual_columns_for_obs_vals_in_pivoted_shape_cube()
             )
         else:
             columns += self._generate_virtual_columns_for_standard_shape_cube()
@@ -312,6 +312,83 @@ class QbWriter(WriterBase):
         return foreign_keys
 
     def _generate_virtual_columns_for_obs_val_in_pivoted_shape_cube(
+        self, obs_column: QbColumn[QbObservationValue]
+    ) -> List[dict]:
+        virtual_columns: List[dict] = []
+
+        observation_uri = self._get_observation_uri_for_pivoted_shape_data_set(
+            obs_column
+        )
+        csvw_safe_obs_column_name = csvw_column_name_safe(obs_column.csv_column_title)
+        measure = obs_column.structural_definition.measure
+        assert measure is not None
+
+        # Creates a virtual col for `?sliceUri qb:observation ?obsUri`
+        virtual_columns.append(
+            {
+                "name": f"virt_obs_{csvw_safe_obs_column_name}",
+                "virtual": True,
+                "propertyUrl": "qb:Observation",
+                "valueUrl": observation_uri,
+            }
+        )
+        # Creates a virtual col for `?obsUri qb:measureType ?measureUri`
+        virtual_columns.append(
+            {
+                "name": f"virt_obs_{csvw_safe_obs_column_name}_meas",
+                "virtual": True,
+                "aboutUrl": observation_uri,
+                "propertyUrl": "qb:measureType",
+                "valueUrl": self._get_measure_uri(measure),
+            }
+        )
+        # For each dimension in the cube, creates the `?obsUri ?dimUri ?valueUri` triple.
+        dimension_columns = get_columns_of_dsd_type(self.cube, QbDimension)
+        for dimension_col in dimension_columns:
+            (
+                property_url,
+                value_url,
+            ) = self._get_default_property_value_uris_for_dimension(dimension_col)
+
+            if dimension_col.csv_column_uri_template is not None:
+                value_url = dimension_col.csv_column_uri_template
+
+            virtual_columns.append(
+                {
+                    "name": (
+                        f"virt_dim_{csvw_safe_obs_column_name}_"
+                        + csvw_column_name_safe(dimension_col.csv_column_title)
+                    ),
+                    "virtual": True,
+                    "aboutUrl": observation_uri,
+                    "propertyUrl": property_url,
+                    "valueUrl": value_url,
+                }
+            )
+        # Creates the virtual column for the triple `?obsUri rdf:type qb:Observation`
+        virtual_columns.append(
+            {
+                "name": f"virt_obs_{csvw_safe_obs_column_name}_type",
+                "virtual": True,
+                "aboutUrl": observation_uri,
+                "propertyUrl": "rdf:type",
+                "valueUrl": "qb:Observation",
+            }
+        )
+        # Creates a virtual column for the triple `?obsUri qb:dataSet ?dataSetUri`
+        virtual_columns.append(
+            {
+                "name": f"virt_dataSet_{csvw_safe_obs_column_name}",
+                "virtual": True,
+                "aboutUrl": observation_uri,
+                "propertyUrl": "qb:dataSet",
+                "valueUrl": self._new_uri_helper.get_dataset_uri(),
+            }
+        )
+
+        return virtual_columns
+
+    def _generate_virtual_columns_for_obs_vals_in_pivoted_shape_cube(
         self,
     ) -> List[Dict[str, Any]]:
         virtual_columns: List[dict] = []
@@ -325,7 +402,9 @@ class QbWriter(WriterBase):
                 "valueUrl": "qb:Slice",
             }
         )
+        _logger.info("Successfully created virtual column for '?sliceUri rdf:type qb:Slice' triple")
 
+        # Generates the virtual column defining the `?sliceUri qb:sliceStructure ?valueUrl` triple.
         virtual_columns.append(
             {
                 "name": "virt_slice_structure",
@@ -335,84 +414,14 @@ class QbWriter(WriterBase):
             }
         )
 
-        # Loops through observation value columns
         observation_value_columns = get_columns_of_dsd_type(
             self.cube, QbObservationValue
         )
         for obs_column in observation_value_columns:
-            
-            observation_uri = self._get_observation_uri_for_pivoted_shape_data_set(
-                obs_column
-            )
-            csvw_safe_obs_column_name = csvw_column_name_safe(
-                obs_column.csv_column_title
-            )
-            measure = obs_column.structural_definition.measure
-            assert measure is not None
-
-            # Creates a virtual col for `?sliceUri qb:observation ?obsUri`
-            virtual_columns.append(
-                {
-                    "name": f"virt_obs_{csvw_safe_obs_column_name}",
-                    "virtual": True,
-                    "propertyUrl": "qb:Observation",
-                    "valueUrl": observation_uri,
-                }
-            )
-            virtual_columns.append(
-                {
-                    "name": f"virt_obs_{csvw_safe_obs_column_name}_meas",
-                    "virtual": True,
-                    "aboutUrl": observation_uri,
-                    "propertyUrl": "qb:measureType",
-                    "valueUrl": self._get_measure_uri(measure),
-                }
-            )
-
-            # For each dimension in the cube, creates the `?obsUri ?dimUri ?valueUri` triple.
-            dimension_columns = get_columns_of_dsd_type(self.cube, QbDimension)
-            for dimension_col in dimension_columns:
-                (
-                    property_url,
-                    value_url,
-                ) = self._get_default_property_value_uris_for_dimension(dimension_col)
-
-                if dimension_col.csv_column_uri_template is not None:
-                    value_url = dimension_col.csv_column_uri_template
-
-                virtual_columns.append(
-                    {
-                        "name": (
-                            f"virt_dim_{csvw_safe_obs_column_name}_"
-                            + csvw_column_name_safe(dimension_col.csv_column_title)
-                        ),
-                        "virtual": True,
-                        "aboutUrl": observation_uri,
-                        "propertyUrl": property_url,
-                        "valueUrl": value_url,
-                    }
+            virtual_columns.extend(
+                self._generate_virtual_columns_for_obs_val_in_pivoted_shape_cube(
+                    obs_column
                 )
-
-            # Creates the virtual column for the triple `?obsUri rdf:type qb:Observation`
-            virtual_columns.append(
-                {
-                    "name": f"virt_obs_{csvw_safe_obs_column_name}_type",
-                    "virtual": True,
-                    "aboutUrl": observation_uri,
-                    "propertyUrl": "rdf:type",
-                    "valueUrl": "qb:Observation",
-                }
-            )
-
-            # Creates a virtual column for the triple `?obsUri qb:dataSet ?dataSetUri`
-            virtual_columns.append(
-                {
-                    "name": f"virt_dataSet_{csvw_safe_obs_column_name}",
-                    "virtual": True,
-                    "aboutUrl": observation_uri,
-                    "propertyUrl": "qb:dataSet",
-                    "valueUrl": self._new_uri_helper.get_dataset_uri(),
-                }
             )
 
         return virtual_columns

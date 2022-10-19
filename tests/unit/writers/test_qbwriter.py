@@ -1133,7 +1133,7 @@ def test_virtual_columns_generated_for_single_obs_val():
     writer = QbWriter(cube)
 
     virtual_columns = (
-        writer._generate_virtual_columns_for_obs_val_in_pivoted_shape_cube()
+        writer._generate_virtual_columns_for_obs_vals_in_pivoted_shape_cube()
     )
 
     virt_col = first(virtual_columns, lambda x: x["name"] == "virt_slice")

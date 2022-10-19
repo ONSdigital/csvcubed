@@ -649,7 +649,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
 
 Scenario: A pivoted shape cube should be produced as the output for the pivoted shape inputs
   Given a pivoted shape cube with identifier "qb-id-10003" named "Pivoted Shape Cube"
-  # And the environment variable "PIVOTED_MULTI_MEASURE" is "true"
+  And the environment variable "PIVOTED_MULTI_MEASURE" is "True"
   Then the CSVqb should pass all validations
   When the cube is serialised to CSV-W
   Then the file at "qb-id-10003.csv" should exist
@@ -724,3 +724,4 @@ Scenario: A pivoted shape cube should be produced as the output for the pivoted 
           rdfs:Resource ;
       cube:componentProperty dimension:some-dimension .
   """
+  Then the environment variable "PIVOTED_MULTI_MEASURE" is deleted

@@ -1,3 +1,4 @@
+import os
 from typing import List
 from urllib.parse import urlparse
 import re
@@ -913,3 +914,12 @@ def step_impl(context, identifier: str, cube_name: str):
     cube = Cube(metadata=metadata, data=data, columns=columns)
     print("Cube title:", cube.metadata.title, "\n")
     context.cube = cube
+
+@Given('the environment variable "{env_var_name}" is "{env_var_value}"')
+def step_impl(_, env_var_name: str, env_var_value: bool):
+    os.environ[env_var_name] = env_var_value
+
+@Then('the environment variable "{env_var_name}" is deleted')
+def step_impl(_, env_var_name: str):
+    if env_var_name in os.environ:
+        del os.environ[env_var_name]
