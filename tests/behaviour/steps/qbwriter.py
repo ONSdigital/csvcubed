@@ -912,7 +912,6 @@ def step_impl(context, identifier: str, cube_name: str):
     ]
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
-    print("Cube title:", cube.metadata.title, "\n")
     context.cube = cube
 
 @Given('the environment variable "{env_var_name}" is "{env_var_value}"')
