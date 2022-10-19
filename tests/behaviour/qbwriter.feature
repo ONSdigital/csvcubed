@@ -284,39 +284,39 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
       @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
 
       <http://existing/dimension>
-      rdfs:label "Some Existing Dimension"@en;
-      a qb:DimensionProperty;
-      qb:codeList <http://existing/dimension/code-list>;
-      rdfs:range <http://some/range/thingy>.
+        rdfs:label "Some Existing Dimension"@en;
+        a qb:DimensionProperty;
+        qb:codeList <http://existing/dimension/code-list>;
+        rdfs:range <http://some/range/thingy>.
 
       <http://existing/dimension/code-list> a skos:ConceptScheme;
-      skos:hasTopConcept <http://existing/dimension/code-list/all>.
+        skos:hasTopConcept <http://existing/dimension/code-list/all>.
 
       <http://existing/dimension/code-list/all> a skos:Concept;
-      rdfs:label "All possible things"@en;
-      skos:inScheme <http://existing/dimension/code-list>.
+        rdfs:label "All possible things"@en;
+        skos:inScheme <http://existing/dimension/code-list>.
 
       <http://existing/dimension/code-list/a> a skos:Concept;
-      rdfs:label "A"@en;
-      skos:inScheme <http://existing/dimension/code-list>;
-      skos:broader <http://existing/dimension/code-list/all>.
+        rdfs:label "A"@en;
+        skos:inScheme <http://existing/dimension/code-list>;
+        skos:broader <http://existing/dimension/code-list/all>.
 
       <http://existing/dimension/code-list/b> a skos:Concept;
-      rdfs:label "B"@en;
-      skos:inScheme <http://existing/dimension/code-list>;
-      skos:broader <http://existing/dimension/code-list/all>.
+        rdfs:label "B"@en;
+        skos:inScheme <http://existing/dimension/code-list>;
+        skos:broader <http://existing/dimension/code-list/all>.
 
       <http://existing/dimension/code-list/c> a skos:Concept;
-      rdfs:label "C"@en;
-      skos:inScheme <http://existing/dimension/code-list>;
-      skos:broader <http://existing/dimension/code-list/all>.
+        rdfs:label "C"@en;
+        skos:inScheme <http://existing/dimension/code-list>;
+        skos:broader <http://existing/dimension/code-list/all>.
 
       <http://existing/attribute> a qb:AttributeProperty;
-      rdfs:label "Some existing attribute property"@en.
+        rdfs:label "Some existing attribute property"@en.
 
       <http://existing/measure> a qb:MeasureProperty;
-      rdfs:label "Some existing measure property"@en;
-      rdfs:range xsd:decimal.
+        rdfs:label "Some existing measure property"@en;
+        rdfs:range xsd:decimal.
 
       <http://existing/unit> rdfs:label "Some Existing Unit"@en.
       """
