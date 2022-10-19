@@ -102,7 +102,7 @@ class QbWriter(WriterBase):
         elif all_standard_shape:
             return False
         else:
-            raise Exception("The cube cannot be in both standard and pivoted shape")
+            raise TypeError("The cube cannot be in both standard and pivoted shape")
 
     def __post_init__(self):
         self.csv_file_name = f"{self.cube.metadata.uri_safe_identifier}.csv"
@@ -316,7 +316,7 @@ class QbWriter(WriterBase):
     ) -> List[Dict[str, Any]]:
         virtual_columns: List[dict] = []
 
-        # Generate the virtual col defining the `?sliceUri rdf:type qb:Slice` triple.
+        # Generates the virtual column defining the `?sliceUri rdf:type qb:Slice` triple.
         virtual_columns.append(
             {
                 "name": "virt_slice",
@@ -335,12 +335,12 @@ class QbWriter(WriterBase):
             }
         )
 
-        # For each obs val column returned by dsd_type function
+        # Loops through observation value columns
         observation_value_columns = get_columns_of_dsd_type(
             self.cube, QbObservationValue
         )
         for obs_column in observation_value_columns:
-            # Creating a virtual col for `?sliceUri qb:observation ?obsUri`
+            
             observation_uri = self._get_observation_uri_for_pivoted_shape_data_set(
                 obs_column
             )
@@ -350,6 +350,7 @@ class QbWriter(WriterBase):
             measure = obs_column.structural_definition.measure
             assert measure is not None
 
+            # Creates a virtual col for `?sliceUri qb:observation ?obsUri`
             virtual_columns.append(
                 {
                     "name": f"virt_obs_{csvw_safe_obs_column_name}",
@@ -368,7 +369,7 @@ class QbWriter(WriterBase):
                 }
             )
 
-            # For each dimension in the cube, create the `?obsUri ?dimUri ?valueUri` triple.
+            # For each dimension in the cube, creates the `?obsUri ?dimUri ?valueUri` triple.
             dimension_columns = get_columns_of_dsd_type(self.cube, QbDimension)
             for dimension_col in dimension_columns:
                 (
@@ -392,7 +393,7 @@ class QbWriter(WriterBase):
                     }
                 )
 
-            # 2.3 Create a virtual col for `?obsUri rdf:type qb:Observation`
+            # Creates the virtual column for the triple `?obsUri rdf:type qb:Observation`
             virtual_columns.append(
                 {
                     "name": f"virt_obs_{csvw_safe_obs_column_name}_type",
@@ -403,7 +404,7 @@ class QbWriter(WriterBase):
                 }
             )
 
-            # Create a virtual col for `?obsUri qb:dataSet ?dataSetUri`
+            # Creates a virtual column for the triple `?obsUri qb:dataSet ?dataSetUri`
             virtual_columns.append(
                 {
                     "name": f"virt_dataSet_{csvw_safe_obs_column_name}",
@@ -955,7 +956,7 @@ class QbWriter(WriterBase):
 
         return csvw_col
 
-    def _get_observation_value_col_for_column(
+    def _get_observation_value_col_for_title(
         self, col_title: str
     ) -> QbColumn[QbObservationValue]:
         """
@@ -982,16 +983,17 @@ class QbWriter(WriterBase):
             column.structural_definition.__class__.__name__,
         )
 
-        obs_val_col: Optional[QbColumn[QbObservationValue]] = None
-        obs_val_cols = get_columns_of_dsd_type(self.cube, QbObservationValue)
-        is_single_measure = len(obs_val_cols) == 1
-
         # If the cube is in pivoted shape, check what the column represents to set the aboutUrl
         if self.is_cube_in_pivoted_shape:
+
+            obs_val_col: Optional[QbColumn[QbObservationValue]] = None
+            obs_val_cols = get_columns_of_dsd_type(self.cube, QbObservationValue)
+            is_single_measure = len(obs_val_cols) == 1
+
             # If the column represents a QbObservationValue, then simply assign the obs_val_column to this column.
             if isinstance(column.structural_definition, QbObservationValue):
                 obs_val_col = column
-            # If the column represents an attribute, set the valueUrl using the _get_observation_value_col_for_column function
+            # If the column represents an attribute, set the valueUrl using the _get_observation_value_col_for_title function
             elif isinstance(column.structural_definition, QbAttribute):
                 if is_single_measure:
                     obs_val_col = obs_val_cols[0]
@@ -1000,17 +1002,17 @@ class QbWriter(WriterBase):
                         column.structural_definition.get_observed_value_col_title()
                     )
                     if col_title is not None:
-                        obs_val_col = self._get_observation_value_col_for_column(
+                        obs_val_col = self._get_observation_value_col_for_title(
                             col_title
                         )
-            # If the column represents units, set the valueUrl using the _get_observation_value_col_for_column function
+            # If the column represents units, set the valueUrl using the _get_observation_value_col_for_title function
             elif isinstance(column.structural_definition, QbMultiUnits):
                 if is_single_measure:
                     obs_val_col = obs_val_cols[0]
                 else:
                     col_title = column.structural_definition.observed_value_col_title
                     if col_title is not None:
-                        obs_val_col = self._get_observation_value_col_for_column(
+                        obs_val_col = self._get_observation_value_col_for_title(
                             col_title
                         )
             else:

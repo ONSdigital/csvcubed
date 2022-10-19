@@ -763,7 +763,7 @@ def test_csv_col_definition_suppressed():
     assert "valueUrl" not in csv_col
 
 
-def test_get_observation_value_col_for_column():
+def test_get_observation_value_col_for_title():
     """
     Ensure that the column title for the QbObservationValue returned matches the input column title.
     """
@@ -782,12 +782,12 @@ def test_get_observation_value_col_for_column():
     )
 
     writer = QbWriter(cube)
-    actual_obs_val_col = writer._get_observation_value_col_for_column("Some Obs Val")
+    actual_obs_val_col = writer._get_observation_value_col_for_title("Some Obs Val")
 
     assert actual_obs_val_col == expected_obs_val_col
 
 
-def test_get_observation_value_col_for_column_when_col_title_is_invalid():
+def test_get_observation_value_col_for_title_when_col_title_is_invalid():
     """
     Ensure that the invalid column title raises an exception.
     """
@@ -808,7 +808,7 @@ def test_get_observation_value_col_for_column_when_col_title_is_invalid():
 
     writer = QbWriter(cube)
     with pytest.raises(Exception) as err:
-        writer._get_observation_value_col_for_column("Invalid Col Title")
+        writer._get_observation_value_col_for_title("Invalid Col Title")
 
     assert (
         str(err.value)
