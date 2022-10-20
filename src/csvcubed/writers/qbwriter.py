@@ -1076,7 +1076,7 @@ class QbWriter(WriterBase):
 
     def _get_obs_val_col_for_col_title(
         self,
-        col_title: str,
+        col_title: Optional[str],
         obs_val_cols: List[QbColumn[QbObservationValue]],
         is_single_measure: bool,
     ) -> Optional[QbColumn[QbObservationValue]]:
@@ -1176,7 +1176,7 @@ class QbWriter(WriterBase):
 
         is_required = self._determine_whether_the_column_is_required(column)
         if is_required:
-            _logger.debug("Column with title %s is required.")
+            _logger.debug("Column is required.")
         else:
             _logger.debug("Column is not required.")
 
