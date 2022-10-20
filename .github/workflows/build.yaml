@@ -7,10 +7,12 @@ jobs:
   build_in_environments:
     strategy:
       matrix:
-        python-version: ['3.9', '3.10']
+        python-version: ['3.9'] #, '3.10']
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
+      - uses: actions/checkout@v3
+
       - uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
@@ -22,6 +24,17 @@ jobs:
       - name: Install pyright
         run: npm install -g pyright
 
+      - name: Install poetry
+        run: pip install poetry
+
+      - uses: actions/cache@v2
+          with:
+            path: ~/.cache/pypoetry/virtualenvs
+            key: ${{ matrix.os }}-poetry-${{ hashFiles('poetry.lock') }}
+
+      - name: Install python packages
+        run: poetry install
+
       - name: Print versions on Windows
         if: matrix.os == 'windows-latest'
         run: |
@@ -29,6 +42,8 @@ jobs:
           python --version
           node --version
           pyright --version
+          poetry --version
+          poetry run csvcubed version
         shell: pwsh
 
       - name: Print versions on Ubuntu
@@ -38,4 +53,6 @@ jobs:
           python --version
           node --version
           pyright --version
+          poetry --version
+          poetry run csvcubed version
         shell: bash
