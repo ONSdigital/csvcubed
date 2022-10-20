@@ -19,13 +19,12 @@ def test_stress_metrics():
         tmp_dir = Path(tmp)
 
         copy(_stress_test_cases_dir / "buildmetrics.csv", tmp_dir)
-        copy(_stress_test_cases_dir / "inspectmetrics.csv", tmp_dir)
 
         build_metrics = get_metrics(tmp_dir / "buildmetrics.csv", "build", "Some Identifier")
     
-        # Cut off precision of time value over seconds.
-        assert build_metrics.start_time[:8] == "09:04:18"
-        assert build_metrics.end_time[:8] == "09:04:22"
+        # Cut off precision of time value over seconds (currently returns the time in GMT).
+        assert build_metrics.start_time[:8] == "08:04:18"
+        assert build_metrics.end_time[:8] == "08:04:22"
 
         # Round time value to 2 decimal places
         assert round(build_metrics.average_time, 2) == 0.8
@@ -33,7 +32,7 @@ def test_stress_metrics():
         assert build_metrics.total_test_time.seconds == 4
 
         # Round metrics values to closest number of d.p we could calulate from data
-        assert round(build_metrics.max_value_cpu, 2) == 24.673
+        assert round(build_metrics.max_value_cpu, 2) == 24.67
         assert round(build_metrics.max_value_memory, 2) == 42.61
         assert round(build_metrics.average_value_cpu, 4) == 12.2024
         assert round(build_metrics.average_value_memory, 4) == 42.5142
@@ -43,22 +42,18 @@ def test_empty_metrics():
         tmp_dir = Path(tmp)
 
         copy(_stress_test_cases_dir / "buildmetrics_empty.csv", tmp_dir)
-        copy(_stress_test_cases_dir / "inspectmetrics.csv", tmp_dir)
 
-        build_metrics = get_metrics(tmp_dir / "buildmetrics_empty.csv", "build", "Some Identifier")
-    
-        #assert am error is shown which states that no values have been recorded by the listener 
+        assert pytest.raises(IndexError, get_metrics, tmp_dir / "buildmetrics_empty.csv", "build", "Some Identifier")
 
 def test_resultant_path():
     with TemporaryDirectory() as tmp:
         tmp_dir = Path(tmp)
 
         copy(_stress_test_cases_dir / "buildmetrics.csv", tmp_dir)
-        copy(_stress_test_cases_dir / "inspectmetrics.csv", tmp_dir)
 
         build_metrics = get_metrics(tmp_dir / "buildmetrics.csv", "build", "Some Identifier")
     
-        start_time = "09:04:18"
+        start_time = "08:04:18"
         assert os.path.exists(Path("metrics/"))
         assert os.path.exists(Path("metrics/Some Identifier/"))
         assert os.path.isfile(Path(f"metrics/Some Identifier/Buildmetrics-2022-10-18 {start_time}.csv"))

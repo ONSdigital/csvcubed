@@ -1,9 +1,9 @@
-#! /bin/bash
+#!/bin/bash
 
 trap "exit" INT TERM ERR
 trap "kill 0" EXIT
 
-timestamp=$(date +%F_%T)
+timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
 startAgent.sh &
 # Gets the process that was started in the last command run

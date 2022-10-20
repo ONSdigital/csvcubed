@@ -31,7 +31,11 @@ def get_metrics(path_to_csvfile: Path, run_type: str, run_identifier: str, n_run
 
     df2 = data.pivot(index="timeStamp",columns="label",values="elapsed")
     df2.index = df2.index.map(lambda v: datetime.utcfromtimestamp(v / 1000).strftime('%Y-%m-%d %H:%M:%S.%f'))
-    creation_date = df2.index[0]
+    try:
+        creation_date = df2.index[0]
+    except:
+        raise IndexError(f"The generated CSV file {path_to_csvfile} appears to be empty. This could be caused by the performance monitor failing to initiate.")
+
     # Remove date information from time value : > 11th char
     df2.index = df2.index.str.slice(start=11)
     df2["localhost Memory"] = df2["localhost Memory"] / 1000.0
@@ -108,7 +112,7 @@ if __name__ == "__main__":
     #printing to the terminal 
     print("<=========================================>\n")
     print("The results are from a " + run_type + " command\n")
-    print("Starting time : " + metrics.start_time + "      " + "Finishing time : " + metrics.end_time)
+    print("Starting time <UTC>: " + metrics.start_time + "      " + "Finishing time <UTC>: " + metrics.end_time)
     print("Avarage run time :{:0>8} ".format(str(timedelta(seconds=metrics.average_time))) + " Total test time :{:0>8}".format(str(metrics.total_test_time)))
     print("\nMax CPU Usage % : " + str(metrics.max_value_cpu))
     print("\nMax Memory Usage % : " + str(metrics.max_value_memory))
