@@ -44,12 +44,13 @@ jobs:
       - name: Upload unittests test results from xml file
         uses: actions/upload-artifact@v3
         with:
-          name: unitests tests
+          name: ${{ matrix.os }}-python${{ matrix.python-version }} unit tests tests
           path: pytest_results.xml
 
       - name: Publish Unit Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
+          check_name: ${{ matrix.os }}-python${{ matrix.python-version }} unit test results 
           files: "pytest_results.xml"
 
       - name: Run behaviour tests
@@ -63,13 +64,13 @@ jobs:
       - name: Upload behave test results from xml files
         uses: actions/upload-artifact@v3
         with:
-          name: behave tests
+          name: ${{ matrix.os }}-python${{ matrix.python-version }} behave test results 
           path: reports/*.xml
 
       - name: Publish Behave Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
-          check_name: "Behave Test Results"
+          check_name: ${{ matrix.os }}-python${{ matrix.python-version }} behave test results 
           files: 'reports/*.xml'
 
       # - name: Print versions on Windows
