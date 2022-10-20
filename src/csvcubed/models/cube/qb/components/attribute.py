@@ -184,6 +184,7 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
         is_required: bool = False,
         uri_safe_identifier_override: Optional[str] = None,
         arbitrary_rdf: List[TripleFragmentBase] = list(),
+        observed_value_col_title: Optional[str] = None
     ) -> "NewQbAttribute":
         columnar_data = pandas_input_to_columnar_optional_str(data)
         new_attribute_values_from_column = [
@@ -200,6 +201,7 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
             is_required=is_required,
             uri_safe_identifier_override=uri_safe_identifier_override,
             arbitrary_rdf=arbitrary_rdf,
+            observed_value_col_title=observed_value_col_title
         )
 
     def validate_data(

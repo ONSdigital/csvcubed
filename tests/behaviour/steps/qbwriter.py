@@ -1,5 +1,4 @@
-from genericpath import exists
-from http.client import OK
+import os
 from typing import List
 from urllib.parse import urlparse
 import re
@@ -91,9 +90,7 @@ def step_impl(context, cube_name: str):
         ),
         QbColumn(
             "Value",
-            QbObservationValue(
-                NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
-            ),
+            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
 
@@ -127,9 +124,7 @@ def step_impl(context, cube_name: str):
         ),
         QbColumn(
             "Value",
-            QbObservationValue(
-                NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
-            ),
+            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
 
@@ -152,9 +147,7 @@ def step_impl(context, cube_name: str, csvw_file_path: str):
         ),
         QbColumn(
             "Value",
-            QbObservationValue(
-                NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
-            ),
+            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
 
@@ -183,9 +176,7 @@ def _get_single_measure_cube_with_name_and_id(
         QbColumn("D", NewQbDimension.from_data("D code list", _standard_data["D"])),
         QbColumn(
             "Value",
-            QbObservationValue(
-                NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
-            ),
+            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
 
@@ -212,9 +203,7 @@ def step_impl(context, cube_name: str):
         ),
         QbColumn(
             "Value",
-            QbObservationValue(
-                NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
-            ),
+            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
 
@@ -230,9 +219,7 @@ def step_impl(context, cube_name: str):
         QbColumn("A", NewQbDimension.from_data("A Dimension", data["A"])),
         QbColumn(
             "Value",
-            QbObservationValue(
-                NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
-            ),
+            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
 
@@ -259,9 +246,7 @@ def step_impl(context, cube_name: str):
         QbColumn("D", NewQbDimension.from_data("D code list", _standard_data["D"])),
         QbColumn(
             "Value",
-            QbObservationValue(
-                NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
-            ),
+            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
 
@@ -292,9 +277,7 @@ def step_impl(context, cube_name: str):
         ),
         QbColumn(
             "Value",
-            QbObservationValue(
-                NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
-            ),
+            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
 
@@ -374,9 +357,7 @@ def step_impl(context, cube_name: str):
         ),
         QbColumn(
             "Value",
-            QbObservationValue(
-                NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
-            ),
+            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
 
@@ -484,9 +465,7 @@ def step_impl(context, cube_name: str, type: str, data_type: str):
     dim = QbColumn("A", NewQbDimension.from_data("A Dimension", data["A"]))
     val = QbColumn(
         "Value",
-        QbObservationValue(
-            NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
-        ),
+        QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
     )
     if data_type == "int":
         if type == "new":
@@ -570,9 +549,7 @@ def step_impl(context, cube_name: str):
         ),
         QbColumn(
             "Observed Value",
-            QbObservationValue(
-                NewQbMeasure("Part-time"), NewQbUnit("Num of Students")
-            ),
+            QbObservationValue(NewQbMeasure("Part-time"), NewQbUnit("Num of Students")),
         ),
     ]
 
@@ -895,13 +872,53 @@ def assert_uri_style_for_uri(uri_style: URIStyle, uri: str, node):
             ".json"
         ), f"expected {node} to end with .csv or .json"
 
-@then(u'the RDF should contain version specific triples')
+
+@then("the RDF should contain version specific triples")
 def step_impl(context):
-    version_triples = (context.text + f" prov:used <{get_csvcubed_version_uri()}> .").strip()
-    version_triples = re.sub("\r", "", version_triples) # windows problem   
+    version_triples = (
+        context.text + f" prov:used <{get_csvcubed_version_uri()}> ."
+    ).strip()
+    version_triples = re.sub("\r", "", version_triples)  # windows problem
 
     version_triples_graph = Graph().parse(format="turtle", data=version_triples)
     test_graph_diff(
         Graph().parse(format="turtle", data=context.turtle),
         version_triples_graph,
     )
+
+
+@Given('a pivoted shape cube with identifier "{identifier}" named "{cube_name}"')
+def step_impl(context, identifier: str, cube_name: str):
+    metadata = CatalogMetadata(title=cube_name, identifier=identifier)
+    data = pd.DataFrame(
+        {
+            "Some Dimension": ["a", "b", "c"],
+            "Some Attribute": ["attr-a", "attr-b", "attr-c"],
+            "Some Obs Val": [1, 2, 3],
+            "Some Other Obs Val": [2, 4, 6],
+        }
+    )
+    columns = [
+        QbColumn("Some Dimension", NewQbDimension.from_data("Some Dimension", data["Some Dimension"])),
+        QbColumn("Some Attribute", NewQbAttribute.from_data("Some Attribute", data["Some Attribute"], observed_value_col_title="Some Obs Val")),
+        QbColumn(
+            "Some Obs Val",
+            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
+        ),
+        QbColumn(
+            "Some Other Obs Val",
+            QbObservationValue(NewQbMeasure("Some Other Measure"), NewQbUnit("Some Unit")),
+        ),
+    ]
+
+    cube = Cube(metadata=metadata, data=data, columns=columns)
+    context.cube = cube
+
+@Given('the environment variable "{env_var_name}" is "{env_var_value}"')
+def step_impl(context, env_var_name: str, env_var_value: str):
+    os.environ[env_var_name] = env_var_value
+    
+    def _delete_env_var():
+        del os.environ[env_var_name]
+
+    context.add_cleanup(_delete_env_var)

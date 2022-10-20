@@ -1,3 +1,5 @@
+from distutils.util import strtobool
+import os
 from typing import List
 
 from csvcubed.models.cube import (
@@ -31,7 +33,6 @@ from csvcubed.utils.qb.cube import get_columns_of_dsd_type
 
 SDMX_A_OBS_STATUS_URI: str = str(SDMX_Attribute.obsStatus)
 
-
 def validate_observations(cube: Cube) -> List[ValidationError]:
     errors: List[ValidationError] = []
     observed_value_columns = get_columns_of_dsd_type(cube, QbObservationValue)
@@ -41,9 +42,12 @@ def validate_observations(cube: Cube) -> List[ValidationError]:
         errors.append(MoreThanOneUnitsColumnError(len(multi_units_columns)))
 
     num_obs_val_columns = len(observed_value_columns)
+    # strtobool will work for "True" and "true" inputs. And similarly, for "False" and "false". 
+    is_pivoted_multi_measure = strtobool(os.environ.get("PIVOTED_MULTI_MEASURE", 'False'))
+            
     if num_obs_val_columns == 0:
         errors.append(NoObservedValuesColumnDefinedError())
-    elif num_obs_val_columns > 1:
+    elif num_obs_val_columns > 1 and not is_pivoted_multi_measure:
         errors.append(MoreThanOneObservationsColumnError(num_obs_val_columns))
     else:
         pivoted_obs_val_columns = [

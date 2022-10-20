@@ -48,6 +48,10 @@ class QbCubeNewUriHelper:
 
         return self._uri_in_doc(f"obs/{identifying_parts}")
 
+    def get_slice_across_measures_uri(self, dimension_identifying_values: List[str]) -> str:
+        identifying_parts = ",".join(dimension_identifying_values)
+        return self._uri_in_doc(f"slice/{identifying_parts}")
+
     def get_component_uri(self, component_identifier: str) -> str:
         return self._uri_in_doc(f"component/{component_identifier}")
 
@@ -67,6 +71,13 @@ class QbCubeNewUriHelper:
 
     def get_dimension_uri(self, dimension_identifier: str) -> str:
         return self._uri_in_doc(f"dimension/{dimension_identifier}")
+
+    def get_slice_uri(self, slice_identifier: str) -> str:
+        return self._uri_in_doc(f"slice/{slice_identifier}")
+
+    def get_slice_key_across_measures_uri(self) -> str:
+        return self.get_slice_uri("cross-measures")
+
 
     def get_class_uri(self, class_identifier: str) -> str:
         return self._uri_in_doc(f"class/{class_identifier}")
