@@ -20,9 +20,7 @@ jobs:
           node-version: 16
 
       - name: Install pyright
-        run: |
-          npm init -y
-          npm install pyright
+        run: npm install -g pyright
 
       - name: Print versions on Windows
         if: matrix.os == 'windows-latest'
