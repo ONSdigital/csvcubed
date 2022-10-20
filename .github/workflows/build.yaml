@@ -53,7 +53,7 @@ jobs:
           files: "pytest_results.xml"
 
       - name: Run behaviour tests
-        run: poetry run behave tests/features --tags=-skip --junit
+        run: poetry run behave tests/behaviour --tags=-skip --junit
 
       - name: Remove broken characters from xml test files
         # By removing broken characters from the xml unit/behave test files, we can then publish the tests results stored 
