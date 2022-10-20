@@ -915,9 +915,9 @@ def step_impl(context, identifier: str, cube_name: str):
     context.cube = cube
 
 @Given('the environment variable "{env_var_name}" is "{env_var_value}"')
-def step_impl(context, env_var_name: str, env_var_value: bool):
+def step_impl(context, env_var_name: str, env_var_value: str):
     os.environ[env_var_name] = env_var_value
-
+    
     def _delete_env_var():
         del os.environ[env_var_name]
 
