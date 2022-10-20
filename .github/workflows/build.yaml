@@ -44,14 +44,14 @@ jobs:
       - name: Upload unittests test results from xml file
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ matrix.os }}-python${{ matrix.python-version }} unit tests tests
+          name: ${{ matrix.os }}-python${{ matrix.python-version }} unit test results
           path: pytest_results.xml
 
       - name: Publish Unit Test Results
         uses: EnricoMi/publish-unit-test-result-action/composite@v2
         with:
           check_name: ${{ matrix.os }}-python${{ matrix.python-version }} unit test results 
-          files: "pytest_results.xml"
+          junit_files: "pytest_results.xml"
 
       - name: Run behaviour tests
         run: poetry run behave tests/behaviour --tags=-skip --junit
@@ -71,7 +71,17 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action/composite@v2
         with:
           check_name: ${{ matrix.os }}-python${{ matrix.python-version }} behave test results 
-          files: 'reports/*.xml'
+          junit_files: 'reports/*.xml'
+
+      # todo: Need to build documentation and save it as an artifact
+      # todo: Need to build python `.whl` package.
+
+      # todo: iff in a release tag
+      # todo: Need to publish the documentation to the github repo
+      # todo: Need to publish the `.whl` package to pypi
+
+      # todo: Ensure we only do Windows testing when in a release tag or is a commit on the main branch.
+      # todo: Ensure we only do python3.9 testing in most cases, but also do python3.10 testing in all environments when in a release tag.
 
       # - name: Print versions on Windows
       #   if: matrix.os == 'windows-latest'
