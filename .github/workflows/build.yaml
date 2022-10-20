@@ -35,24 +35,61 @@ jobs:
       - name: Install python packages
         run: poetry install
 
-      - name: Print versions on Windows
-        if: matrix.os == 'windows-latest'
-        run: |
-          echo "Hello from Windows"
-          python --version
-          node --version
-          pyright --version
-          poetry --version
-          poetry run csvcubed version
-        shell: pwsh
+      - name: Run pyright
+        run: poetry run pyright . --lib
 
-      - name: Print versions on Ubuntu
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          echo "Hello from Ubuntu"
-          python --version
-          node --version
-          pyright --version
-          poetry --version
-          poetry run csvcubed version
-        shell: bash
+      - name: Run unittests
+        run: poetry run pytest --junitxml=pytest_results.xml
+
+      - name: Upload unittests test results from xml file
+        uses: actions/upload-artifact@v3
+        with:
+          name: unitests tests
+          path: pytest_results.xml
+
+      - name: Publish Unit Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v1
+        with:
+          files: "pytest_results.xml"
+
+      - name: Run behaviour tests
+        run: poetry run behave tests/features --tags=-skip --junit
+
+      - name: Remove broken characters from xml test files
+        # By removing broken characters from the xml unit/behave test files, we can then publish the tests results stored 
+        # in those files in a user friendly way on github actions using 'EnricoMi/publish-unit-test-result-action@v1'.
+        run: sed -i -e 's/[\x0A\x1B]//g' reports/TESTS-*.xml
+          
+      - name: Upload behave test results from xml files
+        uses: actions/upload-artifact@v3
+        with:
+          name: behave tests
+          path: reports/*.xml
+
+      - name: Publish Behave Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v1
+        with:
+          check_name: "Behave Test Results"
+          files: 'reports/*.xml'
+
+      # - name: Print versions on Windows
+      #   if: matrix.os == 'windows-latest'
+      #   run: |
+      #     echo "Hello from Windows"
+      #     python --version
+      #     node --version
+      #     pyright --version
+      #     poetry --version
+      #     poetry run csvcubed version
+      #   shell: pwsh
+
+      # - name: Print versions on Ubuntu
+      #   if: matrix.os == 'ubuntu-latest'
+      #   run: |
+      #     echo "Hello from Ubuntu"
+      #     python --version
+      #     node --version
+      #     pyright --version
+      #     poetry --version
+      #     poetry run csvcubed version
+      #   shell: bash
