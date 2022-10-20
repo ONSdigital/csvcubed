@@ -104,7 +104,9 @@ jobs:
 
       - name: Build documentation
         working-directory: external-docs
-        run: python3 -m mkdocs build
+        run: |
+          python3 -m pip install mkdocs mkdocs-material mkdocs-mermaid2-plugin
+          python3 -m mkdocs build
 
       - name: Archive package and documentation
         uses: actions/upload-artifact@v3
