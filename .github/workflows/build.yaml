@@ -11,21 +11,32 @@ jobs:
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      # todo: Add the step definitions for the build.
       - uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Print python version on Windows
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'npm'
+
+      - name: Install pyright
+        run: npm install -g pyright
+
+      - name: Print versions on Windows
         if: matrix.os == 'windows-latest'
         run: |
           echo "Hello from Windows"
           python --version
+          node --version
+          pyright --version
         shell: pwsh
 
-      - name: Print Python version on Ubuntu
+      - name: Print versions on Ubuntu
         if: matrix.os == 'ubuntu-latest'
         run: |
           echo "Hello from Ubuntu"
           python --version
+          node --version
+          pyright --version
         shell: bash
