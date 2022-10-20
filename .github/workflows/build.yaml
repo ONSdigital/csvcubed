@@ -1,0 +1,31 @@
+name: Build csvcubed
+on:
+  push
+
+
+jobs:
+  build_in_environments:
+    strategy:
+      matrix:
+        python-version: [3.9, 3.10]
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      # todo: Add the step definitions for the build.
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Print python version on Windows
+        if: ${{ matrix.os == "windows-latest" }}
+        run: |
+          echo "Hello from Windows"
+          python --version
+        shell: pwsh
+
+      - name: Print Python version on Ubuntu
+        if: ${{ matrix.os == "ubuntu-latest" }}
+        run: |
+          echo "Hello from Ubuntu"
+          python --version
+        shell: bash
