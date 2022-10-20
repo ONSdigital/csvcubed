@@ -21,7 +21,9 @@ jobs:
           cache: 'npm'
 
       - name: Install pyright
-        run: npm install -g pyright
+        run: |
+          npm init -y
+          npm install pyright
 
       - name: Print versions on Windows
         if: matrix.os == 'windows-latest'
