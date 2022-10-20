@@ -48,7 +48,7 @@ jobs:
           path: pytest_results.xml
 
       - name: Publish Unit Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v2
+        uses: EnricoMi/publish-unit-test-result-action/composite@v2
         with:
           check_name: ${{ matrix.os }}-python${{ matrix.python-version }} unit test results 
           files: "pytest_results.xml"
@@ -68,7 +68,7 @@ jobs:
           path: reports/*.xml
 
       - name: Publish Behave Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v2
+        uses: EnricoMi/publish-unit-test-result-action/composite@v2
         with:
           check_name: ${{ matrix.os }}-python${{ matrix.python-version }} behave test results 
           files: 'reports/*.xml'
