@@ -15,65 +15,65 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
+      # - uses: actions/setup-python@v4
+      #   with:
+      #     python-version: ${{ matrix.python-version }}
 
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
+      # - uses: actions/setup-node@v3
+      #   with:
+      #     node-version: 16
 
-      - name: Install pyright
-        run: npm install -g pyright
+      # - name: Install pyright
+      #   run: npm install -g pyright
 
-      - name: Install poetry
-        run: pip install poetry
+      # - name: Install poetry
+      #   run: pip install poetry
 
-      - uses: actions/cache@v2
-        with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ matrix.os }}-poetry-${{ hashFiles('poetry.lock') }}
+      # - uses: actions/cache@v2
+      #   with:
+      #     path: ~/.cache/pypoetry/virtualenvs
+      #     key: ${{ matrix.os }}-poetry-${{ hashFiles('poetry.lock') }}
 
-      - name: Install python packages
-        run: poetry install
+      # - name: Install python packages
+      #   run: poetry install
 
-      - name: Run pyright
-        run: poetry run pyright . --lib
+      # - name: Run pyright
+      #   run: poetry run pyright . --lib
 
-      - name: Run unittests
-        run: poetry run pytest --junitxml=pytest_results.xml
+      # - name: Run unittests
+      #   run: poetry run pytest --junitxml=pytest_results.xml
 
-      - name: Upload unittests test results from xml file
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ matrix.os }}-python${{ matrix.python-version }} unit test results
-          path: pytest_results.xml
+      # - name: Upload unittests test results from xml file
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: ${{ matrix.os }}-python${{ matrix.python-version }} unit test results
+      #     path: pytest_results.xml
 
-      - name: Publish Unit Test Results
-        uses: EnricoMi/publish-unit-test-result-action/composite@v2
-        with:
-          check_name: ${{ matrix.os }}-python${{ matrix.python-version }} unit test results 
-          junit_files: "pytest_results.xml"
+      # - name: Publish Unit Test Results
+      #   uses: EnricoMi/publish-unit-test-result-action/composite@v2
+      #   with:
+      #     check_name: ${{ matrix.os }}-python${{ matrix.python-version }} unit test results 
+      #     junit_files: "pytest_results.xml"
 
-      - name: Run behaviour tests
-        run: poetry run behave tests/behaviour --tags=-skip --junit
+      # - name: Run behaviour tests
+      #   run: poetry run behave tests/behaviour --tags=-skip --junit
 
-      - name: Remove broken characters from xml test files
-        # By removing broken characters from the xml unit/behave test files, we can then publish the tests results stored 
-        # in those files in a user friendly way on github actions using 'EnricoMi/publish-unit-test-result-action@v1'.
-        run: sed -i -e 's/[\x0A\x1B]//g' reports/TESTS-*.xml
+      # - name: Remove broken characters from xml test files
+      #   # By removing broken characters from the xml unit/behave test files, we can then publish the tests results stored 
+      #   # in those files in a user friendly way on github actions using 'EnricoMi/publish-unit-test-result-action@v1'.
+      #   run: sed -i -e 's/[\x0A\x1B]//g' reports/TESTS-*.xml
           
-      - name: Upload behave test results from xml files
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ matrix.os }}-python${{ matrix.python-version }} behave test results 
-          path: reports/*.xml
+      # - name: Upload behave test results from xml files
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: ${{ matrix.os }}-python${{ matrix.python-version }} behave test results 
+      #     path: reports/*.xml
 
-      - name: Publish Behave Test Results
-        uses: EnricoMi/publish-unit-test-result-action/composite@v2
-        with:
-          check_name: ${{ matrix.os }}-python${{ matrix.python-version }} behave test results 
-          junit_files: 'reports/*.xml'
+      # - name: Publish Behave Test Results
+      #   uses: EnricoMi/publish-unit-test-result-action/composite@v2
+      #   with:
+      #     check_name: ${{ matrix.os }}-python${{ matrix.python-version }} behave test results 
+      #     junit_files: 'reports/*.xml'
 
       # todo: Ensure we only do Windows testing when in a release tag or is a commit on the main branch.
       # todo: Ensure we only do python3.9 testing in most cases, but also do python3.10 testing in all environments when in a release tag.
@@ -88,11 +88,11 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-
+ 
       # todo: Set the version identifier appropriately
       - name: Update pyproject.toml version from latest tag
         if: startsWith(github.ref, 'refs/tags/v')
-        run: poetry version  $(echo $GIT_REF | sed -e 's/^.*\/v\(.*\)/\1/')
+        run: poetry version $(echo $GIT_REF | sed -e 's/^.*\/v\(.*\)/\1/')
 
       - name: Update version for dev
         # uses a version identifier derived from the Git hash for this commit.
@@ -104,7 +104,7 @@ jobs:
 
       - name: Build documentation
         working-directory: external-docs
-        run: mkdocs build
+        run: python3 -m mkdocs build
 
       - name: Archive package and documentation
         uses: actions/upload-artifact@v3
