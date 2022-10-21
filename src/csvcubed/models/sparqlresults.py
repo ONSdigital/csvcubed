@@ -94,6 +94,7 @@ class QubeComponentResult(DataClassBase):
     property_label: Optional[str]
     property_type: str
     csv_col_title: Optional[str]
+    observation_value_column_title: Optional[str]
     required: bool
 
 
@@ -115,6 +116,7 @@ class QubeComponentsResult:
                 "Property Label",
                 "Property Type",
                 "Column Title",
+                "Observation Value Column",
                 "Required",
             ],
         )
@@ -330,6 +332,7 @@ def _map_qube_component_sparql_result(
             str(result_dict["componentPropertyType"])
         ),
         csv_col_title=none_or_map(result_dict.get("csvColumnTitle"), str) or "",
+        observation_value_column_title="",
         required=none_or_map(result_dict.get("required"), bool) or False,
     )
     return result

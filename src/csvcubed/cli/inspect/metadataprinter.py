@@ -163,6 +163,7 @@ class MetadataPrinter:
         self.result_dataset_label_dsd_uri = (
             select_csvw_dsd_dataset_label_and_dsd_def_uri(self.csvw_metadata_rdf_graph)
         )
+        #TODO: FROM HERE
         self.result_qube_components = select_csvw_dsd_qube_components(
             self.csvw_metadata_rdf_graph,
             self.result_dataset_label_dsd_uri.dsd_uri,
