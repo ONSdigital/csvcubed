@@ -895,6 +895,39 @@ def test_conflict_new_measures_uri_values_error():
     assert error.component_type == QbMultiMeasureDimension
     assert error.map_uri_safe_values_to_conflicting_labels == {"a-b": {"A B", "A.B"}}
 
+def test_pivoted_vlaidation_error():
+    """
+
+    
+    """
+    metadata = CatalogMetadata(title="cube_name", identifier="identifier")
+    data = pd.DataFrame(
+        {
+            "Some Dimension": ["a", "b", "c"],
+            "Some Attribute": ["attr-a", "attr-b", "attr-c"],
+            "Some Measure": ["abc","def","ghi"],
+            "Some Obs Val": [1, 2, 3],
+            "Some Other Obs Val": [2, 4, 6],
+        }
+    )
+    columns = [
+        QbColumn("Some Dimension", NewQbDimension.from_data("Some Dimension", data["Some Dimension"])),
+        QbColumn("Some Attribute", NewQbAttribute.from_data("Some Attribute", data["Some Attribute"], observed_value_col_title="Some Obs Val")),
+        QbColumn("Some Measure", NewQbMeasure("Some Measure")),
+        QbColumn(
+            "Some Obs Val",
+            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
+        ),
+        QbColumn(
+            "Some Other Obs Val",
+            QbObservationValue(NewQbMeasure("Some Other Measure"), NewQbUnit("Some Unit")),
+        ),
+    ]
+
+    cube = Cube(metadata=metadata, data=data, columns=columns)
+
+    error = _get_single_validation_error_for_qube(cube)
+    assert isinstance(error, ConflictingUriSafeValuesError)
 
 def _get_single_validation_error_for_qube(qube: QbCube) -> ValidationError:
     errors = qube.validate() + validate_qb_component_constraints(qube)
