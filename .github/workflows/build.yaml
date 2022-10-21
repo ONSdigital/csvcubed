@@ -144,7 +144,7 @@ jobs:
           git clone 'https://csvcubed:${{ secrets.CSVCUBED_GIT_COMMIT_TOKEN }}@github.com/GSS-Cogs/csvcubed-docs.git' --depth 1
           cd csvcubed-docs
           
-          git checkout test-pages # gh-pages
+          git checkout -b test-pages # gh-pages
           
           git rm -rf external --ignore-unmatch
 
