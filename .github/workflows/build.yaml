@@ -145,7 +145,8 @@ jobs:
           cd csvcubed-docs
           
           git checkout -b test-pages # gh-pages
-          
+          git push --set-upstream origin test-pages
+
           git rm -rf external --ignore-unmatch
 
           mkdir external
