@@ -895,9 +895,9 @@ def test_conflict_new_measures_uri_values_error():
     assert error.component_type == QbMultiMeasureDimension
     assert error.map_uri_safe_values_to_conflicting_labels == {"a-b": {"A B", "A.B"}}
 
-def test_pivoted_vlaidation_error():
+def test_pivoted_validation_measure_error():
     """
-
+        First scenario where there aare more then one measure columns defined
     
     """
     metadata = CatalogMetadata(title="cube_name", identifier="identifier")
@@ -929,6 +929,96 @@ def test_pivoted_vlaidation_error():
     error = _get_single_validation_error_for_qube(cube)
     assert isinstance(error, ConflictingUriSafeValuesError)
 
+def test_pivoted_validation_obs_value__error():
+    """
+        This scenario will test a cube with the observation column will not have a measure defined
+    """
+    metadata = CatalogMetadata(title="cube_name", identifier="identifier")
+    data = pd.DataFrame(
+        {
+            "Some Dimension": ["a", "b", "c"],
+            "Some Attribute": ["attr-a", "attr-b", "attr-c"],
+            "Some Obs Val": [1, 2, 3],
+            "Some Other Obs Val": [2, 4, 6],
+        }
+    )
+    columns = [
+        QbColumn("Some Dimension", NewQbDimension.from_data("Some Dimension", data["Some Dimension"])),
+        QbColumn("Some Attribute", NewQbAttribute.from_data("Some Attribute", data["Some Attribute"], observed_value_col_title="Some Obs Val")),
+        QbColumn(
+            "Some Obs Val",
+            QbObservationValue(NewQbUnit("Some Unit")),
+        ),
+        QbColumn(
+            "Some Other Obs Val",
+            QbObservationValue(NewQbMeasure("Some Other Measure"), NewQbUnit("Some Unit")),
+        ),
+    ]
+
+    cube = Cube(metadata=metadata, data=data, columns=columns)
+
+    error = _get_single_validation_error_for_qube(cube)
+    assert isinstance(error, ConflictingUriSafeValuesError)
+
+def test_pivoted_validation_obs_value_no_unit_defined_error():
+    """
+        This scenario will test a cube that has an observation value column does not
+        have a unit defined and there does not exist a units column which is linked to this obs val column
+    """
+    metadata = CatalogMetadata(title="cube_name", identifier="identifier")
+    data = pd.DataFrame(
+        {
+            "Some Dimension": ["a", "b", "c"],
+            "Some Attribute": ["attr-a", "attr-b", "attr-c"],
+            "Some Obs Val": [1, 2, 3],
+            "Some Other Obs Val": [2, 4, 6],
+        }
+    )
+    columns = [
+        QbColumn("Some Dimension", NewQbDimension.from_data("Some Dimension", data["Some Dimension"])),
+        QbColumn("Some Attribute", NewQbAttribute.from_data("Some Attribute", data["Some Attribute"], observed_value_col_title="Some Obs Val")),
+        QbColumn(
+            "Some Other Obs Val",
+            QbObservationValue(NewQbMeasure("Some Other Measure"), NewQbUnit("Some Unit")),
+        ),
+    ]
+
+    cube = Cube(metadata=metadata, data=data, columns=columns)
+
+    error = _get_single_validation_error_for_qube(cube)
+    assert isinstance(error, ConflictingUriSafeValuesError)
+
+def test_pivoted_validation_unit_column_not_linked_error():
+    """
+        This cenario will test a cube that has a units or attribute column has been defined without being linked to an obs val column
+    """
+    metadata = CatalogMetadata(title="cube_name", identifier="identifier")
+    data = pd.DataFrame(
+        {
+            "Some Dimension": ["a", "b", "c"],
+            "Some Attribute": ["attr-a", "attr-b", "attr-c"],
+            "Some Obs Val": [1, 2, 3],
+            "Some Other Obs Val": [2, 4, 6],
+        }
+    )
+    columns = [
+        QbColumn("Some Dimension", NewQbDimension.from_data("Some Dimension", data["Some Dimension"])),
+        QbColumn("Some Attribute", NewQbAttribute.from_data("Some Attribute", data["Some Attribute"], observed_value_col_title="Some Obs Val")),
+        QbColumn(
+            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
+        ),
+        QbColumn(
+            "Some Other Obs Val",
+            QbObservationValue(NewQbMeasure("Some Other Measure"), NewQbUnit("Some Unit")),
+        ),
+    ]
+    
+    cube = Cube(metadata=metadata, data=data, columns=columns)
+
+    error = _get_single_validation_error_for_qube(cube)
+    assert isinstance(error, ConflictingUriSafeValuesError)
+
+    cube = Cube(metadata=metadata, data=data, columns=columns)
 def _get_single_validation_error_for_qube(qube: QbCube) -> ValidationError:
     errors = qube.validate() + validate_qb_component_constraints(qube)
     assert_num_validation_errors(errors, 1)
