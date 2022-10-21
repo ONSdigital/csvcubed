@@ -159,6 +159,6 @@ jobs:
 
           git commit -m "Updating documentation."
           
-          sh 'git push'
+          git push
 
 
