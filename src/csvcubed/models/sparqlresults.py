@@ -3,6 +3,8 @@ SPARQL query results
 ----------------------------
 """
 
+from logging import Logger
+import logging
 from os import linesep
 from pathlib import Path
 from typing import List, Optional, Dict, Any
@@ -22,6 +24,7 @@ from csvcubed.utils.qb.components import (
     get_component_property_type,
 )
 
+_logger = logging.getLogger(__name__)
 
 @dataclass
 class CatalogMetadataResult:
@@ -116,7 +119,7 @@ class QubeComponentsResult:
                 "Property Label",
                 "Property Type",
                 "Column Title",
-                "Observation Value Column",
+                "Observation Value Column Title",
                 "Required",
             ],
         )
@@ -320,6 +323,7 @@ def _map_qube_component_sparql_result(
     :return: `QubeComponentResult`
     """
     result_dict = sparql_result.asdict()
+    _logger.debug("result_dict: %s", result_dict)
 
     result = QubeComponentResult(
         property=get_component_property_as_relative_path(
@@ -332,7 +336,7 @@ def _map_qube_component_sparql_result(
             str(result_dict["componentPropertyType"])
         ),
         csv_col_title=none_or_map(result_dict.get("csvColumnTitle"), str) or "",
-        observation_value_column_title="",
+        observation_value_column_title=none_or_map(result_dict.get("observationValueColumnTitle"), str) or "",
         required=none_or_map(result_dict.get("required"), bool) or False,
     )
     return result

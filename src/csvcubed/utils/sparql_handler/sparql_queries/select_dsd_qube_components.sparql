@@ -3,11 +3,11 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX csvw: <http://www.w3.org/ns/csvw#>
 
 SELECT DISTINCT 
-    ?componentProperty ?componentPropertyLabel ?componentOrder ?componentPropertyType ?csvColumnTitle 
+    ?componentProperty ?componentPropertyLabel ?componentOrder ?componentPropertyType ?csvColumnTitle ?observationValueColumnTitle
     (COALESCE(?csvColumnRequired, false) || ?componentRequired as ?required) 
 WHERE {   
     { 
-        SELECT DISTINCT ?csvColumnTitle ?csvColumnRequired ?component ?componentProperty ?componentOrder 
+        SELECT DISTINCT ?csvColumnTitle ?observationValueColumnTitle ?csvColumnRequired ?component ?componentProperty ?componentOrder 
         WHERE {
             ?dsd_uri qb:component ?component.
 
@@ -17,6 +17,8 @@ WHERE {
             OPTIONAL {
                 ?csvColumn csvw:propertyUrl ?csvColumnPropertyUrl;
                         csvw:title ?csvColumnTitle.
+
+                ?csvColumn csvw:title ?observationValueColumnTitle.
 
                 {
                     ?csvColumn csvw:required ?csvColumnRequired.
