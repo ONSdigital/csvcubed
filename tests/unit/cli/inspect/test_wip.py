@@ -7,11 +7,11 @@ from tests.unit.test_baseunit import get_test_cases_dir
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
 
 
-def test_wip_inspect_pivoted_shape():
+def test_pivoted_shape():
     csvw_metadata_json_path = (
         _test_case_base_dir
-        / "multi-unit_multi-measure"
-        / "alcohol-bulletin.csv-metadata.json"
+        / "pivoted-shape-dataset"
+        / "qb-id-10003.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
