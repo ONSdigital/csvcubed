@@ -34,7 +34,7 @@ jobs:
           gem install bundle
           echo  "gem 'i18n', '~>1.12.0'" >> Gemfile
           bundle
-          bundle install --standalone
+          bundle install
 
       - name: Set Environment Variables (Ubuntu)
         if: matrix.os == 'ubuntu-latest'
