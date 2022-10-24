@@ -4,7 +4,7 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
-from tests.stress.buildpreprocess import _generate_maximally_complex_csv
+from tests.stress.buildpreprocess import generate_maximally_complex_csv
 
 
 def test_generated_csv_exists():
@@ -17,7 +17,7 @@ def test_generated_csv_exists():
 
         numb_rows = 100
 
-        _generate_maximally_complex_csv(numb_rows, tmp_dir)
+        generate_maximally_complex_csv(numb_rows, tmp_dir)
 
 
         assert (tmp_dir / "stress.csv").exists()
@@ -33,7 +33,7 @@ def test_generated_csv_shape_and_num_unique_values():
 
         numb_rows = 50
 
-        _generate_maximally_complex_csv(numb_rows, tmp_dir)
+        generate_maximally_complex_csv(numb_rows, tmp_dir)
 
         df = pd.read_csv(tmp_dir / "stress.csv")
 
