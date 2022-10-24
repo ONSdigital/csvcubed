@@ -25,10 +25,12 @@ jobs:
             ${{ matrix.os }}-gems-
 
       - uses: ruby/setup-ruby@v1
+        if: matrix.os == 'windows-latest'
         with:
           ruby-version: '2.4'
 
-      - name: Install csvlint
+      - name: Install csvlint (Windows)
+        if: matrix.os == 'windows-latest'
         run: |
           wget https://raw.githubusercontent.com/GSS-Cogs/csvlint-docker/master/Gemfile
           gem install bundle
@@ -37,19 +39,21 @@ jobs:
           bundle install
 
       # Setting up csv2rdf
-
       - name: Install csv2rdf (Windows)
+        if: matrix.os == 'windows-latest'
         run: |
           wget https://github.com/Swirrl/csv2rdf/releases/download/0.4.7/csv2rdf-0.4.7-standalone.jar
-          doskey csv2rdf=java -jar /usr/local/bin/csv2rdf-0.4.7-standalone.jar $*
-          csv2rdf --help
+          $csv2rdfPath = Get-Item csv2rdf-0.4.7-standalone.jar | Resolve-Path
+          echo "@REM Forwarder script\n@echo off\njava -jar $$csv2rdfPath %*" > csv2rdf.bat
         shell: pwsh
 
       - name: Set Environment Variables (Windows)
         if: matrix.os == 'windows-latest'
         run: |
           $csvLintInstallationFolder = bundle info csvlint --path
-          $env:PATH += ";$csvLintInstallationFolder/bin"
+          $currentWorkingDirectory = Get-Item . | Resolve-Path
+          $env:PATH += ";$csvLintInstallationFolder/bin;$currentWorkingDirectory"
+          csv2rdf --help
         shell: pwsh
 
 
@@ -127,11 +131,10 @@ jobs:
 #        with:
 #          fetch-depth: 0
 #
-#      # todo: Set the version identifier appropriately
 #      - name: Update version for release
 #        if: startsWith(github.ref, 'refs/tags/v')
-#        run: poetry version $(echo $GIT_REF | sed -e 's/^.*\/v\(.*\)/\1/')
-#
+#        run: |
+#          poetry version "$(echo "${{ github.ref_name }}" | sed -e 's/^.*\/v\(.*\)/\1/')"
 #      - name: Update version for dev
 #        # uses a version identifier derived from the Git hash for this commit.
 #        if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
