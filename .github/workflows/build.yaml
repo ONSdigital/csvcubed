@@ -39,15 +39,15 @@ jobs:
       - name: Set Environment Variables (Ubuntu)
         if: matrix.os == 'ubuntu-latest'
         run: |
-          export PATH="$PATH:$(readlink -f ./bundle/ruby/2.4.0/bin)"
+          export PATH="$PATH:$(bundle info csvlint --path)/bin"
           csvlint
         shell: bash
 
       - name: Set Environment Variables (Ubuntu)
         if: matrix.os == 'ubuntu-latest'
         run: |
-          $installationFolder = Get-Item bundle/ruby/2.4.0/bin | Resolve-Path
-          $env:PATH += ";$installationFolder"
+          $installationFolder = bundle info csvlint --path
+          $env:PATH += ";$installationFolder/bin"
           csvlint
         shell: pwsh
 

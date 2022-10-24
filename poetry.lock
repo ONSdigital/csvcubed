@@ -153,7 +153,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [[package]]
 name = "csvcubed-devtools"
-version = "0.1.6"
+version = "0.1.7"
 description = "Development tools and dependencies for use in the csvcubed tooling."
 category = "dev"
 optional = false
@@ -1040,7 +1040,7 @@ testing = ["func-timeout", "jaraco.itertools", "pytest (>=6)", "pytest-black (>=
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "2640bbc6f0d49030b529f1d066e4e4a192df0a56866e71d49aac981af2c585f8"
+content-hash = "11c8d15bb81f81f0c9e7de037667a11b5df33fc0b667a85ddeef8aa76ecb657f"
 
 [metadata.files]
 alabaster = [
@@ -1117,7 +1117,7 @@ colorama = [
     {file = "colorama-0.4.5.tar.gz", hash = "sha256:e6c6b4334fc50988a639d9b98aa429a0b57da6e17b9a44f0451f930b6967b7a4"},
 ]
 csvcubed-devtools = [
-    {file = "csvcubed_devtools-0.1.6-py3-none-any.whl", hash = "sha256:e2d9f190594e0195a8ff87e0033b79757a39f0a24445b203aa5e67150e5b1dde"},
+    {file = "csvcubed_devtools-0.1.7-py3-none-any.whl", hash = "sha256:4916722c74240ee9fdf653094f42c3ba997195a93afa24218618409c5c0156cb"},
 ]
 csvcubed-models = [
     {file = "csvcubed_models-0.1.5-py3-none-any.whl", hash = "sha256:4169200999d0024d511fffff2add26d087f971a9e7f42fc4ccee3428b1871dfd"},
