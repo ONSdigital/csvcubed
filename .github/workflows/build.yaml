@@ -40,7 +40,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: |
           export PATH="$PATH:$(bundle info csvlint --path)/bin"
-          csvlint
+          csvlint || true
         shell: bash
 
       - name: Set Environment Variables (Ubuntu)
