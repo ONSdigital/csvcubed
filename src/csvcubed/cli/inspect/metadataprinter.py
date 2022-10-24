@@ -163,7 +163,6 @@ class MetadataPrinter:
         self.result_dataset_label_dsd_uri = (
             select_csvw_dsd_dataset_label_and_dsd_def_uri(self.csvw_metadata_rdf_graph)
         )
-        #TODO: FROM HERE
         self.result_qube_components = select_csvw_dsd_qube_components(
             self.csvw_metadata_rdf_graph,
             self.result_dataset_label_dsd_uri.dsd_uri,
@@ -177,20 +176,26 @@ class MetadataPrinter:
             self.result_dataset_label_dsd_uri.dsd_uri,
             self.csvw_metadata_json_path,
         )
-        (
-            canonical_shape_dataset,
-            measure_col,
-            unit_col,
-        ) = transform_dataset_to_canonical_shape(
-            self.dataset,
-            self.result_qube_components.qube_components,
-            self.result_dataset_label_dsd_uri.dsd_uri,
-            self.csvw_metadata_rdf_graph,
-            self.csvw_metadata_json_path,
-        )
-        self.result_dataset_value_counts = get_dataset_val_counts_info(
-            canonical_shape_dataset, measure_col, unit_col
-        )
+        #TODO: ENV VAR
+        if True:
+            data = DataFrame(data=[], columns=["Measure", "Unit", "Count"])
+            self.result_dataset_value_counts = DatasetObservationsByMeasureUnitInfoResult(data)
+        else:
+            (
+                canonical_shape_dataset,
+                measure_col,
+                unit_col,
+            ) = transform_dataset_to_canonical_shape(
+                self.dataset,
+                self.result_qube_components.qube_components,
+                self.result_dataset_label_dsd_uri.dsd_uri,
+                self.csvw_metadata_rdf_graph,
+                self.csvw_metadata_json_path,
+            )
+            self.result_dataset_value_counts = get_dataset_val_counts_info(
+                canonical_shape_dataset, measure_col, unit_col
+            )
+   
 
     def generate_codelist_results(self):
         """

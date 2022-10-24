@@ -1,0 +1,247 @@
+@prefix csvw: <http://www.w3.org/ns/csvw#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix qb: <http://purl.org/linked-data/cube#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix void: <http://rdfs.org/ns/void#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#class/some-dimension> a rdfs:Class,
+        rdfs:Resource .
+
+<file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#attribute/some-attribute/attr-a> a rdfs:Resource ;
+    rdfs:label "attr-a"@en .
+
+<file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#attribute/some-attribute/attr-b> a rdfs:Resource ;
+    rdfs:label "attr-b"@en .
+
+<file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#attribute/some-attribute/attr-c> a rdfs:Resource ;
+    rdfs:label "attr-c"@en .
+
+<file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#dataset> a qb:Attachable,
+        qb:DataSet,
+        rdfs:Resource,
+        dcat:Dataset,
+        dcat:Resource ;
+    rdfs:label "Pivoted Shape Cube"@en ;
+    dcterms:identifier "qb-id-10003" ;
+    dcterms:issued "2022-10-24T09:38:44.200549"^^xsd:dateTime ;
+    dcterms:modified "2022-10-24T09:38:44.200549"^^xsd:dateTime ;
+    dcterms:title "Pivoted Shape Cube"@en ;
+    qb:structure <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#structure> ;
+    rdfs:seeAlso <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#attribute/some-attribute>,
+        <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#attribute/some-attribute/attr-a>,
+        <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#attribute/some-attribute/attr-b>,
+        <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#attribute/some-attribute/attr-c>,
+        <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#class/some-dimension>,
+        <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#component/measure-type>,
+        <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#component/some-attribute>,
+        <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#component/some-dimension>,
+        <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#component/some-measure>,
+        <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#component/some-other-measure>,
+        <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#component/unit>,
+        <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#csvcubed-build-activity>,
+        <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#dataset>,
+        <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#dependency/some-dimension>,
+        <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#dimension/some-dimension>,
+        <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#measure/some-measure>,
+        <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#measure/some-other-measure>,
+        <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#slice/cross-measures>,
+        <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#structure>,
+        <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#unit/some-unit> ;
+    csvw:table [ csvw:suppressOutput true ;
+            csvw:tableSchema <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/some-dimension.table.json> ;
+            csvw:url "some-dimension.csv"^^xsd:anyURI ],
+        [ csvw:tableSchema [ csvw:aboutUrl "qb-id-10003.csv#slice/{some_dimension}"^^csvw:uriTemplate ;
+                    csvw:column ( [ csvw:name "some_dimension" ;
+                                csvw:propertyUrl "qb-id-10003.csv#dimension/some-dimension"^^csvw:uriTemplate ;
+                                csvw:required true ;
+                                csvw:title "Some Dimension" ;
+                                csvw:valueUrl "some-dimension.csv#{+some_dimension}"^^csvw:uriTemplate ] [ csvw:aboutUrl "qb-id-10003.csv#obs/{some_dimension}@some-measure"^^csvw:uriTemplate ;
+                                csvw:name "some_attribute" ;
+                                csvw:propertyUrl "qb-id-10003.csv#attribute/some-attribute"^^csvw:uriTemplate ;
+                                csvw:required false ;
+                                csvw:title "Some Attribute" ;
+                                csvw:valueUrl "qb-id-10003.csv#attribute/some-attribute/{+some_attribute}"^^csvw:uriTemplate ] [ csvw:aboutUrl "qb-id-10003.csv#obs/{some_dimension}@some-measure"^^csvw:uriTemplate ;
+                                csvw:datatype xsd:decimal ;
+                                csvw:name "some_obs_val" ;
+                                csvw:propertyUrl "qb-id-10003.csv#measure/some-measure"^^csvw:uriTemplate ;
+                                csvw:required true ;
+                                csvw:title "Some Obs Val" ] [ csvw:aboutUrl "qb-id-10003.csv#obs/{some_dimension}@some-other-measure"^^csvw:uriTemplate ;
+                                csvw:datatype xsd:decimal ;
+                                csvw:name "some_other_obs_val" ;
+                                csvw:propertyUrl "qb-id-10003.csv#measure/some-other-measure"^^csvw:uriTemplate ;
+                                csvw:required true ;
+                                csvw:title "Some Other Obs Val" ] [ csvw:name "virt_slice" ;
+                                csvw:propertyUrl "rdf:type"^^csvw:uriTemplate ;
+                                csvw:valueUrl "qb:Slice"^^csvw:uriTemplate ;
+                                csvw:virtual true ] [ csvw:name "virt_slice_structure" ;
+                                csvw:propertyUrl "qb:sliceStructure"^^csvw:uriTemplate ;
+                                csvw:valueUrl "qb-id-10003.csv#slice/cross-measures"^^csvw:uriTemplate ;
+                                csvw:virtual true ] [ csvw:name "virt_obs_some_obs_val" ;
+                                csvw:propertyUrl "qb:Observation"^^csvw:uriTemplate ;
+                                csvw:valueUrl "qb-id-10003.csv#obs/{some_dimension}@some-measure"^^csvw:uriTemplate ;
+                                csvw:virtual true ] [ csvw:aboutUrl "qb-id-10003.csv#obs/{some_dimension}@some-measure"^^csvw:uriTemplate ;
+                                csvw:name "virt_obs_some_obs_val_meas" ;
+                                csvw:propertyUrl "qb:measureType"^^csvw:uriTemplate ;
+                                csvw:valueUrl "qb-id-10003.csv#measure/some-measure"^^csvw:uriTemplate ;
+                                csvw:virtual true ] [ csvw:aboutUrl "qb-id-10003.csv#obs/{some_dimension}@some-measure"^^csvw:uriTemplate ;
+                                csvw:name "virt_obs_some_obs_val_unit" ;
+                                csvw:propertyUrl "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"^^csvw:uriTemplate ;
+                                csvw:valueUrl "qb-id-10003.csv#unit/some-unit"^^csvw:uriTemplate ;
+                                csvw:virtual true ] [ csvw:aboutUrl "qb-id-10003.csv#obs/{some_dimension}@some-measure"^^csvw:uriTemplate ;
+                                csvw:name "virt_dim_some_obs_val_some_dimension" ;
+                                csvw:propertyUrl "qb-id-10003.csv#dimension/some-dimension"^^csvw:uriTemplate ;
+                                csvw:valueUrl "some-dimension.csv#{+some_dimension}"^^csvw:uriTemplate ;
+                                csvw:virtual true ] [ csvw:aboutUrl "qb-id-10003.csv#obs/{some_dimension}@some-measure"^^csvw:uriTemplate ;
+                                csvw:name "virt_obs_some_obs_val_type" ;
+                                csvw:propertyUrl "rdf:type"^^csvw:uriTemplate ;
+                                csvw:valueUrl "qb:Observation"^^csvw:uriTemplate ;
+                                csvw:virtual true ] [ csvw:aboutUrl "qb-id-10003.csv#obs/{some_dimension}@some-measure"^^csvw:uriTemplate ;
+                                csvw:name "virt_dataSet_some_obs_val" ;
+                                csvw:propertyUrl "qb:dataSet"^^csvw:uriTemplate ;
+                                csvw:valueUrl "qb-id-10003.csv#dataset"^^csvw:uriTemplate ;
+                                csvw:virtual true ] [ csvw:name "virt_obs_some_other_obs_val" ;
+                                csvw:propertyUrl "qb:Observation"^^csvw:uriTemplate ;
+                                csvw:valueUrl "qb-id-10003.csv#obs/{some_dimension}@some-other-measure"^^csvw:uriTemplate ;
+                                csvw:virtual true ] [ csvw:aboutUrl "qb-id-10003.csv#obs/{some_dimension}@some-other-measure"^^csvw:uriTemplate ;
+                                csvw:name "virt_obs_some_other_obs_val_meas" ;
+                                csvw:propertyUrl "qb:measureType"^^csvw:uriTemplate ;
+                                csvw:valueUrl "qb-id-10003.csv#measure/some-other-measure"^^csvw:uriTemplate ;
+                                csvw:virtual true ] [ csvw:aboutUrl "qb-id-10003.csv#obs/{some_dimension}@some-other-measure"^^csvw:uriTemplate ;
+                                csvw:name "virt_obs_some_other_obs_val_unit" ;
+                                csvw:propertyUrl "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"^^csvw:uriTemplate ;
+                                csvw:valueUrl "qb-id-10003.csv#unit/some-unit"^^csvw:uriTemplate ;
+                                csvw:virtual true ] [ csvw:aboutUrl "qb-id-10003.csv#obs/{some_dimension}@some-other-measure"^^csvw:uriTemplate ;
+                                csvw:name "virt_dim_some_other_obs_val_some_dimension" ;
+                                csvw:propertyUrl "qb-id-10003.csv#dimension/some-dimension"^^csvw:uriTemplate ;
+                                csvw:valueUrl "some-dimension.csv#{+some_dimension}"^^csvw:uriTemplate ;
+                                csvw:virtual true ] [ csvw:aboutUrl "qb-id-10003.csv#obs/{some_dimension}@some-other-measure"^^csvw:uriTemplate ;
+                                csvw:name "virt_obs_some_other_obs_val_type" ;
+                                csvw:propertyUrl "rdf:type"^^csvw:uriTemplate ;
+                                csvw:valueUrl "qb:Observation"^^csvw:uriTemplate ;
+                                csvw:virtual true ] [ csvw:aboutUrl "qb-id-10003.csv#obs/{some_dimension}@some-other-measure"^^csvw:uriTemplate ;
+                                csvw:name "virt_dataSet_some_other_obs_val" ;
+                                csvw:propertyUrl "qb:dataSet"^^csvw:uriTemplate ;
+                                csvw:valueUrl "qb-id-10003.csv#dataset"^^csvw:uriTemplate ;
+                                csvw:virtual true ] ) ;
+                    csvw:foreignKey [ csvw:columnReference ( "some_dimension" ) ;
+                            csvw:reference [ csvw:columnReference ( "uri_identifier" ) ;
+                                    csvw:resource "some-dimension.csv"^^xsd:anyURI ] ] ;
+                    csvw:primaryKey "some_dimension" ] ;
+            csvw:url "qb-id-10003.csv"^^xsd:anyURI ] ;
+    prov:wasGeneratedBy <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#csvcubed-build-activity> .
+
+<file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#dependency/some-dimension> a void:Dataset,
+        rdfs:Resource ;
+    void:dataDump <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/some-dimension.csv-metadata.json> ;
+    void:uriSpace "some-dimension.csv#" .
+
+<file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#unit/some-unit> a <http://qudt.org/schema/qudt/Unit>,
+        <http://www.ontology-of-units-of-measure.org/resource/om-2/Unit>,
+        rdfs:Resource ;
+    rdfs:label "Some Unit"@en .
+
+<file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#component/measure-type> a qb:ComponentSet,
+        qb:ComponentSpecification,
+        rdfs:Resource ;
+    qb:componentProperty qb:measureType ;
+    qb:dimension qb:measureType ;
+    qb:order 3,
+        6 .
+
+<file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#component/some-attribute> a qb:ComponentSet,
+        qb:ComponentSpecification,
+        rdfs:Resource ;
+    qb:attribute <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#attribute/some-attribute> ;
+    qb:componentProperty <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#attribute/some-attribute> ;
+    qb:componentRequired false ;
+    qb:order 2 .
+
+<file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#component/some-dimension> a qb:ComponentSet,
+        qb:ComponentSpecification,
+        rdfs:Resource ;
+    qb:componentProperty <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#dimension/some-dimension> ;
+    qb:dimension <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#dimension/some-dimension> ;
+    qb:order 1 .
+
+<file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#component/some-measure> a qb:ComponentSet,
+        qb:ComponentSpecification,
+        rdfs:Resource ;
+    qb:componentProperty <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#measure/some-measure> ;
+    qb:measure <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#measure/some-measure> ;
+    qb:order 5 .
+
+<file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#component/some-other-measure> a qb:ComponentSet,
+        qb:ComponentSpecification,
+        rdfs:Resource ;
+    qb:componentProperty <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#measure/some-other-measure> ;
+    qb:measure <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#measure/some-other-measure> ;
+    qb:order 8 .
+
+<file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#component/unit> a qb:ComponentSet,
+        qb:ComponentSpecification,
+        rdfs:Resource ;
+    qb:attribute <http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure> ;
+    qb:componentProperty <http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure> ;
+    qb:componentRequired true ;
+    qb:order 4,
+        7 .
+
+<file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#csvcubed-build-activity> a rdfs:Resource,
+        prov:Activity ;
+    prov:used <https://github.com/GSS-Cogs/csvcubed/releases/tag/v0.1.0.dev0> .
+
+<file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#slice/cross-measures> a qb:ComponentSet,
+        qb:SliceKey,
+        rdfs:Resource ;
+    qb:componentProperty <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#dimension/some-dimension> .
+
+<file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#structure> a qb:ComponentSet,
+        qb:DataStructureDefinition,
+        rdfs:Resource ;
+    qb:component <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#component/measure-type>,
+        <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#component/some-attribute>,
+        <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#component/some-dimension>,
+        <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#component/some-measure>,
+        <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#component/some-other-measure>,
+        <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#component/unit> ;
+    qb:componentProperty <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#attribute/some-attribute>,
+        <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#dimension/some-dimension>,
+        <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#measure/some-measure>,
+        <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#measure/some-other-measure>,
+        qb:measureType,
+        <http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure> ;
+    qb:sliceKey <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#slice/cross-measures> .
+
+<file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#attribute/some-attribute> a qb:AttributeProperty,
+        qb:ComponentProperty,
+        rdf:Property,
+        rdfs:Resource ;
+    rdfs:label "Some Attribute"@en .
+
+<file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#measure/some-measure> a qb:ComponentProperty,
+        qb:MeasureProperty,
+        rdf:Property,
+        rdfs:Resource ;
+    rdfs:label "Some Measure"@en ;
+    rdfs:range xsd:decimal .
+
+<file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#measure/some-other-measure> a qb:ComponentProperty,
+        qb:MeasureProperty,
+        rdf:Property,
+        rdfs:Resource ;
+    rdfs:label "Some Other Measure"@en ;
+    rdfs:range xsd:decimal .
+
+<file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#dimension/some-dimension> a qb:CodedProperty,
+        qb:ComponentProperty,
+        qb:DimensionProperty,
+        rdf:Property,
+        rdfs:Resource ;
+    rdfs:label "Some Dimension"@en ;
+    qb:codeList <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/some-dimension.csv#code-list> ;
+    rdfs:range <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-shape-dataset/qb-id-10003.csv#class/some-dimension> .
+

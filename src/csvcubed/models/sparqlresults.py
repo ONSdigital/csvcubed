@@ -336,7 +336,7 @@ def _map_qube_component_sparql_result(
             str(result_dict["componentPropertyType"])
         ),
         csv_col_title=none_or_map(result_dict.get("csvColumnTitle"), str) or "",
-        observation_value_column_title=none_or_map(result_dict.get("observationValueColumnTitle"), str) or "",
+        observation_value_column_title=none_or_map(result_dict.get("observationValueColumnTitles"), str) or "",
         required=none_or_map(result_dict.get("required"), bool) or False,
     )
     return result

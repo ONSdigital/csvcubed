@@ -349,6 +349,18 @@ class QbWriter(WriterBase):
                 "valueUrl": self._get_measure_uri(measure),
             }
         )
+
+        if obs_column.structural_definition.unit is not None:
+            virtual_columns.append(
+                {
+                    "name": f"virt_obs_{csvw_safe_obs_column_name}_unit",
+                    "virtual": True,
+                    "aboutUrl": observation_uri,
+                    "propertyUrl": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
+                    "valueUrl": self._get_unit_uri(obs_column.structural_definition.unit),
+                }
+            )
+
         # For each dimension in the cube, creates the `?obsUri ?dimUri ?valueUri` triple.
         dimension_columns = get_columns_of_dsd_type(self.cube, QbDimension)
         for dimension_col in dimension_columns:
