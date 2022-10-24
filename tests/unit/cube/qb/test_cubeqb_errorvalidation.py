@@ -17,6 +17,7 @@ from csvcubed.models.cube.qb.validationerrors import (
 )
 from tests.unit.test_baseunit import *
 from csvcubed.utils.qb.validation.cube import validate_qb_component_constraints
+from csvcubed.utils.qb.validation.observations import _validate_pivoted_shape_cube
 
 
 def test_single_measure_qb_definition():
@@ -895,9 +896,9 @@ def test_conflict_new_measures_uri_values_error():
     assert error.component_type == QbMultiMeasureDimension
     assert error.map_uri_safe_values_to_conflicting_labels == {"a-b": {"A B", "A.B"}}
 
-def test_pivoted_validation_measure_error():
+def test_pivoted_validation_multiple_measure_columns():
     """
-        First scenario where there aare more then one measure columns defined
+        First scenario where there aare more then one or more measure columns defined
     
     """
     metadata = CatalogMetadata(title="cube_name", identifier="identifier")
@@ -926,8 +927,8 @@ def test_pivoted_validation_measure_error():
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
 
-    error = _get_single_validation_error_for_qube(cube)
-    assert isinstance(error, ConflictingUriSafeValuesError)
+    error = _validate_pivoted_shape_cube(cube)
+    assert isinstance(error, BothMeasureTypesDefinedError)
 
 def test_pivoted_validation_obs_value__error():
     """
@@ -978,8 +979,12 @@ def test_pivoted_validation_obs_value_no_unit_defined_error():
         QbColumn("Some Dimension", NewQbDimension.from_data("Some Dimension", data["Some Dimension"])),
         QbColumn("Some Attribute", NewQbAttribute.from_data("Some Attribute", data["Some Attribute"], observed_value_col_title="Some Obs Val")),
         QbColumn(
+            "Some Obs Val",
+            QbObservationValue(NewQbMeasure("Some Measure")),
+        ),
+        QbColumn(
             "Some Other Obs Val",
-            QbObservationValue(NewQbMeasure("Some Other Measure"), NewQbUnit("Some Unit")),
+            QbObservationValue(NewQbMeasure("Some Other Measure")),
         ),
     ]
 
@@ -990,7 +995,7 @@ def test_pivoted_validation_obs_value_no_unit_defined_error():
 
 def test_pivoted_validation_unit_column_not_linked_error():
     """
-        This cenario will test a cube that has a units or attribute column has been defined without being linked to an obs val column
+        This scenario will test a cube that has a units or attribute column has been defined without being linked to an obs val column
     """
     metadata = CatalogMetadata(title="cube_name", identifier="identifier")
     data = pd.DataFrame(
@@ -1003,8 +1008,9 @@ def test_pivoted_validation_unit_column_not_linked_error():
     )
     columns = [
         QbColumn("Some Dimension", NewQbDimension.from_data("Some Dimension", data["Some Dimension"])),
-        QbColumn("Some Attribute", NewQbAttribute.from_data("Some Attribute", data["Some Attribute"], observed_value_col_title="Some Obs Val")),
+        QbColumn("Some Attribute", NewQbAttribute.from_data("Some Attribute", data["Some Attribute"])),
         QbColumn(
+            "Some Obs Val",
             QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
         QbColumn(
@@ -1018,7 +1024,106 @@ def test_pivoted_validation_unit_column_not_linked_error():
     error = _get_single_validation_error_for_qube(cube)
     assert isinstance(error, ConflictingUriSafeValuesError)
 
+
+def test_pivoted_validation_obs_calumn_doesnt_exist():
+    """
+        This scenario will test the cube with units or attribute column is defined for which obs val column doesn't appear to exist.
+    """
+
+    metadata = CatalogMetadata(title="cube_name", identifier="identifier")
+    data = pd.DataFrame(
+        {
+            "Some Dimension": ["a", "b", "c"],
+            "Some Attribute": ["attr-a", "attr-b", "attr-c"],
+            "Some Obs Val": [1, 2, 3],
+            "Some Other Obs Val": [2, 4, 6],
+        }
+    )
+    columns = [
+        QbColumn("Some Dimension", NewQbDimension.from_data("Some Dimension", data["Some Dimension"])),
+        QbColumn("Some Attribute", NewQbAttribute.from_data("Some Attribute", data["Some Attribute"], observed_value_col_title="Not Obs Val")),
+        QbColumn(
+            "Some Obs Val",
+            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
+        ),
+        QbColumn(
+            "Some Other Obs Val",
+            QbObservationValue(NewQbMeasure("Some Other Measure"), NewQbUnit("Some Unit")),
+        ),
+    ]
+
     cube = Cube(metadata=metadata, data=data, columns=columns)
+
+    error = _get_single_validation_error_for_qube(cube)
+    assert isinstance(error, ConflictingUriSafeValuesError)
+
+def test_pivoted_validation_link_attribe_to_non_obs_column():
+    """
+        This scenarion will produce an error where the units or attribute column is defined in which
+         the linked obs val column isn't actually an observations column.
+    """
+
+    metadata = CatalogMetadata(title="cube_name", identifier="identifier")
+    data = pd.DataFrame(
+        {
+            "Some Dimension": ["a", "b", "c"],
+            "Some Attribute": ["attr-a", "attr-b", "attr-c"],
+            "Some Obs Val": [1, 2, 3],
+            "Some Other Obs Val": [2, 4, 6],
+        }
+    )
+    columns = [
+        QbColumn("Some Dimension", NewQbDimension.from_data("Some Dimension", data["Some Dimension"])),
+        QbColumn("Some Attribute", NewQbAttribute.from_data("Some Attribute", data["Some Attribute"], observed_value_col_title="Some Dimension")),
+        QbColumn(
+            "Some Obs Val",
+            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
+        ),
+        QbColumn(
+            "Some Other Obs Val",
+            QbObservationValue(NewQbMeasure("Some Other Measure"), NewQbUnit("Some Unit")),
+        ),
+    ]
+
+    cube = Cube(metadata=metadata, data=data, columns=columns)
+
+    error = _get_single_validation_error_for_qube(cube)
+    assert isinstance(error, ConflictingUriSafeValuesError)
+
+def test_pivoted_validation_measure_dupication():
+
+    """
+    This scenario will produce an arror for each pivoted multi-measure observation column has a unique measure.
+     i.e. the same measure cannot be used twice in the same data set.
+    """ 
+    metadata = CatalogMetadata(title="cube_name", identifier="identifier")
+    data = pd.DataFrame(
+        {
+            "Some Dimension": ["a", "b", "c"],
+            "Some Attribute": ["attr-a", "attr-b", "attr-c"],
+            "Some Obs Val": [1, 2, 3],
+            "Some Other Obs Val": [2, 4, 6],
+        }
+    )
+    columns = [
+        QbColumn("Some Dimension", NewQbDimension.from_data("Some Dimension", data["Some Dimension"])),
+        QbColumn("Some Attribute", NewQbAttribute.from_data("Some Attribute", data["Some Attribute"], observed_value_col_title="Some Obs Val")),
+        QbColumn(
+            "Some Obs Val",
+            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
+        ),
+        QbColumn(
+            "Some Other Obs Val",
+            QbObservationValue(ExistingQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
+        ),
+    ]
+
+    cube = Cube(metadata=metadata, data=data, columns=columns)
+
+    error = _get_single_validation_error_for_qube(cube)
+    assert isinstance(error, ConflictingUriSafeValuesError)
+
+
 def _get_single_validation_error_for_qube(qube: QbCube) -> ValidationError:
     errors = qube.validate() + validate_qb_component_constraints(qube)
     assert_num_validation_errors(errors, 1)

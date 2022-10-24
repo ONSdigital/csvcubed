@@ -27,6 +27,7 @@ from csvcubed.models.cube.qb.components.measure import ExistingQbMeasure
 from csvcubed.models.cube.qb.validationerrors import CsvColumnUriTemplateMissingError
 
 from csvcubedmodels.rdf.namespaces import SDMX_Attribute
+from csvcubed.models.cube.validationerrors import MultipleMeasuresPivotedShapeError
 
 from csvcubed.models.validationerror import ValidationError
 from csvcubed.utils.qb.cube import get_columns_of_dsd_type
@@ -193,7 +194,7 @@ def _validate_pivoted_shape_cube(
     errors: List[ValidationError] = []
 
     multi_measure_columns = get_columns_of_dsd_type(cube, QbMultiMeasureDimension)
-    if len(multi_measure_columns) > 0:
+    if len(multi_measure_columns) >= 0:
         errors.append(
             BothMeasureTypesDefinedError(
                 f"{QbObservationValue.__name__}.measure",
