@@ -34,8 +34,24 @@ jobs:
           gem install bundle
           echo  "gem 'i18n', '~>1.12.0'" >> Gemfile
           bundle
-          bundle install
+          bundle install --standalone
+
+      - name: Set Environment Variables (Ubuntu)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          export PATH="$PATH:$(readlink -f ./bundle/ruby/2.4.0/bin)"
           csvlint
+        shell: bash
+
+      - name: Set Environment Variables (Ubuntu)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          $installationFolder = Get-Item bundle/ruby/2.4.0/bin | Resolve-Path
+          $env:PATH += ";$installationFolder"
+          csvlint
+        shell: pwsh
+
+
 
       # - uses: actions/setup-python@v4
       #   with:
