@@ -9,6 +9,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import List, Optional, Tuple
 from urllib.parse import urljoin
+from distutils.util import strtobool
+import os
 
 import rdflib
 from pandas import DataFrame
@@ -176,8 +178,10 @@ class MetadataPrinter:
             self.result_dataset_label_dsd_uri.dsd_uri,
             self.csvw_metadata_json_path,
         )
-        #TODO: ENV VAR
-        if True:
+        
+        # strtobool is not case sensitive and will work the same way with "True" or "true" inputs, also with "False" or "false".
+        is_pivoted_multi_measure = strtobool(os.environ.get("PIVOTED_MULTI_MEASURE", "False"))
+        if is_pivoted_multi_measure:
             data = DataFrame(data=[], columns=["Measure", "Unit", "Count"])
             self.result_dataset_value_counts = DatasetObservationsByMeasureUnitInfoResult(data)
         else:
