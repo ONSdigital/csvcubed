@@ -1,6 +1,7 @@
 name: Build csvcubed
 on:
-  push
+  push:
+  pull_request:
 
 
 jobs:
@@ -8,12 +9,33 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.9'] #, '3.10']
-        os: [ubuntu-latest] #, windows-latest]
+        os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+
+      # Setting up csvlint
+      - uses: actions/cache@v2
+        with:
+          path: vendor/bundle
+          key: ${{ matrix.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ matrix.os }}-gems-
+
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: '2.4.3'
+        run: gem install bundle
+
+      - name: Install csvlint
+        run: |
+          wget https://raw.githubusercontent.com/GSS-Cogs/csvlint-docker/master/Gemfile
+          echo  "gem 'i18n', '~>1.12.0'" >> Gemfile
+          bundle
+          bundle install
+          csvlint
 
       # - uses: actions/setup-python@v4
       #   with:
@@ -56,7 +78,7 @@ jobs:
       #     junit_files: "pytest_results.xml"
 
       # - name: Run behaviour tests
-      #   run: poetry run behave tests/behaviour --tags=-skip --junit
+      #   run: NO_DOCKER="true" poetry run behave tests/behaviour --tags=-skip --junit
 
       # - name: Remove broken characters from xml test files
       #   # By removing broken characters from the xml unit/behave test files, we can then publish the tests results stored 
@@ -78,88 +100,88 @@ jobs:
       # todo: Ensure we only do Windows testing when in a release tag or is a commit on the main branch.
       # todo: Ensure we only do python3.9 testing in most cases, but also do python3.10 testing in all environments when in a release tag.
 
-  build_package_and_documentation:
-    if: needs.build_in_environments.result == 'success'
-    needs: [build_in_environments]
-    runs-on: ubuntu-latest
-    container:
-      image: gsscogs/pythonversiontesting
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
- 
-      # todo: Set the version identifier appropriately
-      - name: Update version for release
-        if: startsWith(github.ref, 'refs/tags/v')
-        run: poetry version $(echo $GIT_REF | sed -e 's/^.*\/v\(.*\)/\1/')
-
-      - name: Update version for dev
-        # uses a version identifier derived from the Git hash for this commit.
-        if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
-        run: |
-          revision="$(git rev-parse HEAD | tr \'[:lower:]\' \'[:upper:]\')"
-          decimal_rev=$(echo "obase=10; ibase=16; $revision" | bc)
-          poetry version "0.1.0-dev$decimal_rev"
-
-      - name: Build whl package
-        run: poetry build
-
-      - name: Build documentation
-        working-directory: external-docs
-        run: |
-          python3 -m pip install mkdocs mkdocs-material mkdocs-mermaid2-plugin
-          python3 -m mkdocs build
-
-      - name: Archive package and documentation
-        uses: actions/upload-artifact@v3
-        with:
-          name: package-and-documentation
-          path: | 
-            **/dist/*.whl 
-            **/external-docs/site/**/*
-
-  publish_package_and_documentation:
-    if: needs.build_package_and_documentation.result == 'success' # && startsWith(github.ref, 'refs/tags/v')
-    needs: [build_package_and_documentation]
-    runs-on: ubuntu-latest
-    steps:
-      # todo: iff in a release tag
-      # todo: Need to publish the documentation to the github repo
-      # todo: Need to publish the `.whl` package to pypi
-      - uses: actions/download-artifact@v3
-        with:
-          name: package-and-documentation
-
-      # - name: Publish a Python distribution to PyPI
-      #   uses: pypa/gh-action-pypi-publish@release/v1
-      #   with:
-      #     password: ${{ secrets.TEST_PYPI_API_TOKEN }}
-      #     repository_url: https://test.pypi.org/legacy/
-
-      - name: Publish Docs
-        run: |
-          git config --global user.email "csvcubed@gsscogs.uk" && git config --global user.name "csvcubed"
-
-          git clone 'https://csvcubed:${{ secrets.CSVCUBED_GIT_COMMIT_TOKEN }}@github.com/GSS-Cogs/csvcubed-docs.git' --depth 1
-          cd csvcubed-docs
-          
-          git checkout -b test-pages # gh-pages
-          git push --set-upstream origin test-pages
-
-          git rm -rf external --ignore-unmatch
-
-          mkdir external
-
-          cp -r ../external-docs/site/* external
-
-          touch .nojekyll
-
-          git add *
-          git add .nojekyll
-
-          git commit -m "Updating documentation."
-          
-          git push
-
-
+#  build_package_and_documentation:
+#    if: needs.build_in_environments.result == 'success'
+#    needs: [build_in_environments]
+#    runs-on: ubuntu-latest
+#    container:
+#      image: gsscogs/pythonversiontesting
+#    steps:
+#      - uses: actions/checkout@v3
+#        with:
+#          fetch-depth: 0
+#
+#      # todo: Set the version identifier appropriately
+#      - name: Update version for release
+#        if: startsWith(github.ref, 'refs/tags/v')
+#        run: poetry version $(echo $GIT_REF | sed -e 's/^.*\/v\(.*\)/\1/')
+#
+#      - name: Update version for dev
+#        # uses a version identifier derived from the Git hash for this commit.
+#        if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
+#        run: |
+#          revision="$(git rev-parse HEAD | tr \'[:lower:]\' \'[:upper:]\')"
+#          decimal_rev=$(echo "obase=10; ibase=16; $revision" | bc)
+#          poetry version "0.1.0-dev$decimal_rev"
+#
+#      - name: Build whl package
+#        run: poetry build
+#
+#      - name: Build documentation
+#        working-directory: external-docs
+#        run: |
+#          python3 -m pip install mkdocs mkdocs-material mkdocs-mermaid2-plugin
+#          python3 -m mkdocs build
+#
+#      - name: Archive package and documentation
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: package-and-documentation
+#          path: |
+#            **/dist/*.whl
+#            **/external-docs/site/**/*
+#
+#  publish_package_and_documentation:
+#    if: needs.build_package_and_documentation.result == 'success' # && startsWith(github.ref, 'refs/tags/v')
+#    needs: [build_package_and_documentation]
+#    runs-on: ubuntu-latest
+#    steps:
+#      # todo: iff in a release tag
+#      # todo: Need to publish the documentation to the github repo
+#      # todo: Need to publish the `.whl` package to pypi
+#      - uses: actions/download-artifact@v3
+#        with:
+#          name: package-and-documentation
+#
+#      # - name: Publish a Python distribution to PyPI
+#      #   uses: pypa/gh-action-pypi-publish@release/v1
+#      #   with:
+#      #     password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+#      #     repository_url: https://test.pypi.org/legacy/
+#
+#      - name: Publish Docs
+#        run: |
+#          git config --global user.email "csvcubed@gsscogs.uk" && git config --global user.name "csvcubed"
+#
+#          git clone 'https://csvcubed:${{ secrets.CSVCUBED_GIT_COMMIT_TOKEN }}@github.com/GSS-Cogs/csvcubed-docs.git' --depth 1
+#          cd csvcubed-docs
+#
+#          git checkout -b test-pages # gh-pages
+#          git push --set-upstream origin test-pages
+#
+#          git rm -rf external --ignore-unmatch
+#
+#          mkdir external
+#
+#          cp -r ../external-docs/site/* external
+#
+#          touch .nojekyll
+#
+#          git add *
+#          git add .nojekyll
+#
+#          git commit -m "Updating documentation."
+#
+#          git push
+#
+#
