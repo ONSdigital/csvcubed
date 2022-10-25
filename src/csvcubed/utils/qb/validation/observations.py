@@ -34,6 +34,7 @@ from csvcubed.utils.qb.cube import get_columns_of_dsd_type
 
 SDMX_A_OBS_STATUS_URI: str = str(SDMX_Attribute.obsStatus)
 
+
 def validate_observations(cube: Cube) -> List[ValidationError]:
     errors: List[ValidationError] = []
     observed_value_columns = get_columns_of_dsd_type(cube, QbObservationValue)
@@ -43,9 +44,11 @@ def validate_observations(cube: Cube) -> List[ValidationError]:
         errors.append(MoreThanOneUnitsColumnError(len(multi_units_columns)))
 
     num_obs_val_columns = len(observed_value_columns)
-    # strtobool will work for "True" and "true" inputs. And similarly, for "False" and "false". 
-    is_pivoted_multi_measure = strtobool(os.environ.get("PIVOTED_MULTI_MEASURE", 'False'))
-            
+    # strtobool will work for "True" and "true" inputs. And similarly, for "False" and "false".
+    is_pivoted_multi_measure = strtobool(
+        os.environ.get("PIVOTED_MULTI_MEASURE", "False")
+    )
+
     if num_obs_val_columns == 0:
         errors.append(NoObservedValuesColumnDefinedError())
     elif num_obs_val_columns > 1 and not is_pivoted_multi_measure:
@@ -61,14 +64,17 @@ def validate_observations(cube: Cube) -> List[ValidationError]:
             for c in observed_value_columns
             if not c.structural_definition.is_pivoted_shape_observation
         ]
-        
+
         if len(standard_shape_obs_val_columns) == 1:
             obs_val_column = standard_shape_obs_val_columns[0]
             errors += _validate_observation_value(obs_val_column, multi_units_columns)
             errors += _validate_standard_shape_cube(cube)
-        elif len(pivoted_obs_val_columns) == 1:
-            obs_val_column = pivoted_obs_val_columns[0]
-            errors += _validate_observation_value(obs_val_column, multi_units_columns)
+        elif len(pivoted_obs_val_columns) >= 1:
+            for col in pivoted_obs_val_columns:
+                obs_val_column = col
+                errors += _validate_observation_value(
+                    obs_val_column, multi_units_columns
+                )
             errors += _validate_pivoted_shape_cube(cube)
 
         errors += _validate_missing_observation_values(cube, observed_value_columns[0])
@@ -153,9 +159,7 @@ def _validate_observation_value(
     return errors
 
 
-def _validate_standard_shape_cube(
-    cube: Cube
-) -> List[ValidationError]:
+def _validate_standard_shape_cube(cube: Cube) -> List[ValidationError]:
     errors: List[ValidationError] = []
 
     multi_measure_columns: List[
@@ -188,13 +192,11 @@ def _validate_standard_shape_cube(
     return errors
 
 
-def _validate_pivoted_shape_cube(
-    cube: Cube
-) -> List[ValidationError]:
+def _validate_pivoted_shape_cube(cube: Cube) -> List[ValidationError]:
     errors: List[ValidationError] = []
 
     multi_measure_columns = get_columns_of_dsd_type(cube, QbMultiMeasureDimension)
-    if len(multi_measure_columns) >= 0:
+    if len(multi_measure_columns) > 0:
         errors.append(
             BothMeasureTypesDefinedError(
                 f"{QbObservationValue.__name__}.measure",
