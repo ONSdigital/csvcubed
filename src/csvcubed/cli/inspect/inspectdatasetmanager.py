@@ -161,7 +161,7 @@ def get_single_measure_from_dsd(
 
 
 def get_dataset_observations_info(
-    dataset: pd.DataFrame, csvw_type: CSVWType
+    dataset: pd.DataFrame, csvw_type: CSVWType, csv_shape: CSVWShape
 ) -> DatasetObservationsInfoResult:
     """
     Generates the `DatasetObservationsInfoResult` from the dataset.
@@ -173,7 +173,7 @@ def get_dataset_observations_info(
     # TODO: Remove the hardcoded value before and replace it with the calculated value.
     return DatasetObservationsInfoResult(
         csvw_type,
-        CSVWShape.Pivoted,
+        csv_shape,
         len(dataset.index),
         dataset.duplicated().sum(),
         dataset.head(n=10),

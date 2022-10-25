@@ -39,28 +39,24 @@ class DatasetObservationsInfoResult:
             self.dataset_tail
         )
         
-        # If the csw_type is data cube, and if the cube is a pivoted shape cube:
-                    #if self.csvw_shape == CSVWShape.Pivoted:
-            #obs_or_concepts_str = "Rows"
-        # else if the csw_type is data cube, and if the cube is not in pivoted shape cube
-            #obs_or_concepts_str = "Observations"
-        #else
-            #obs_or_concepts_str = "Concepts"
-
-        obs_or_concepts_str = (
-            "Observations" if self.csvw_type == CSVWType.QbDataSet else "Concepts"
-        )
+        title_of_data_samples: str
+        if self.csvw_shape == CSVWShape.Standard:
+            title_of_data_samples = "Observations"
+        elif self.csvw_shape == CSVWShape.Pivoted:
+            title_of_data_samples = "Rows"
+        else:
+            title_of_data_samples = "Concepts"
 
         if self.num_of_observations < DATASET_HEAD_TAIL_LIMIT:
             observations_str = (
-                f"""- {obs_or_concepts_str}: {linesep}{formatted_dataset_head}"""
+                f"""- {title_of_data_samples}: {linesep}{formatted_dataset_head}"""
             )
         else:
-            observations_str = f"""- First 10 {obs_or_concepts_str}: {linesep}{formatted_dataset_head}
-        - Last 10 {obs_or_concepts_str}: {linesep}{formatted_dataset_tail}"""
+            observations_str = f"""- First 10 {title_of_data_samples}: {linesep}{formatted_dataset_head}
+        - Last 10 {title_of_data_samples}: {linesep}{formatted_dataset_tail}"""
 
         return f"""
-        - Number of {obs_or_concepts_str}: {self.num_of_observations}
+        - Number of {title_of_data_samples}: {self.num_of_observations}
         - Number of Duplicates: {self.num_of_duplicates}
         {observations_str}
         """
