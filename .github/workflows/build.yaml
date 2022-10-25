@@ -53,6 +53,7 @@ jobs:
           $csvLintInstallationFolder = bundle info csvlint --path
           $currentWorkingDirectory = Get-Item . | Resolve-Path
           $env:PATH += ";$csvLintInstallationFolder/bin;$currentWorkingDirectory"
+          echo $env:PATH
           csv2rdf --help
         shell: pwsh
 
