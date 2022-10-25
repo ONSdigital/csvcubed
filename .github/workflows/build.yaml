@@ -134,6 +134,7 @@ jobs:
            $sparqlTestsDir = (Get-Item gdp-sparql-tests/tests | Resolve-Path).Path.Substring(38)
 
            NO_DOCKER="true" CSV2RDF="$csv2rdfLocation" SPARQL_TESTS_DIR="$sparqlTestsDir" poetry run behave tests/behaviour --tags=-skip --junit
+         shell: pwsh
 
        - name: Run behaviour tests (Ubuntu)
          if: matrix.os == 'ubuntu-latest'
