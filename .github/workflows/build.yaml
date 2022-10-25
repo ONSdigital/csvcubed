@@ -43,8 +43,8 @@ jobs:
       - name: Install csv2rdf (Windows)
         if: matrix.os == 'windows-latest'
         run: |
-          wget https://github.com/Swirrl/csv2rdf/releases/download/0.4.7/csv2rdf-0.4.7-standalone.jar
-          $csv2rdfPath = Get-Item csv2rdf-0.4.7-standalone.jar | Resolve-Path
+          Invoke-WebRequest -Uri "https://github.com/Swirrl/csv2rdf/releases/download/0.4.7/csv2rdf-0.4.7-standalone.jar" -OutFile "csv2rdf.jar"
+          $csv2rdfPath = Get-Item csv2rdf.jar | Resolve-Path
           echo "@REM Forwarder script\n@echo off\necho Attempting to launch csv2rdf at $csv2rdfPath\njava -jar $csv2rdfPath %*" > csv2rdf.bat
         shell: pwsh
 
