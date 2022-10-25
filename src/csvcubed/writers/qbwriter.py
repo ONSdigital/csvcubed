@@ -358,7 +358,9 @@ class QbWriter(WriterBase):
                     "virtual": True,
                     "aboutUrl": observation_uri,
                     "propertyUrl": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
-                    "valueUrl": self._get_unit_uri(obs_column.structural_definition.unit),
+                    "valueUrl": self._get_unit_uri(
+                        obs_column.structural_definition.unit
+                    ),
                 }
             )
 
@@ -640,13 +642,11 @@ class QbWriter(WriterBase):
         self, observation_value: QbObservationValue
     ) -> List[rdf.qb.ComponentSpecification]:
         specs: List[rdf.qb.ComponentSpecification] = []
-        
+
         if self.created_measure_type_and_unit_col_specs == False:
             # We always output the measure-dimension style of the QB spec.
             # so each observation need to have a dimension specifying the measure type.
-            specs.append(
-                 self._get_measure_type_dimension_component_spec()
-            )
+            specs.append(self._get_measure_type_dimension_component_spec())
 
             unit = observation_value.unit
             if unit is not None:
