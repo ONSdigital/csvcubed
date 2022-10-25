@@ -33,34 +33,50 @@ jobs:
 #      - name: Install csvlint (Windows)
 #        if: matrix.os == 'windows-latest'
 #        run: |
-#          wget https://raw.githubusercontent.com/GSS-Cogs/csvlint-docker/master/Gemfile
+#          Invoke-WebRequest -Uri "https://raw.githubusercontent.com/GSS-Cogs/csvlint-docker/master/Gemfile" -OutFile "Gemfile"
 #          gem install bundle
 #          echo  "gem 'i18n', '~>1.12.0'" >> Gemfile
 #          bundle
 #          bundle install
+#
+#          $csvLintInstallationFolder = bundle info csvlint --path
+#          $oldPath = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
+#          $newPath += "$oldPath;$csvLintInstallationFolder"
+#          Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $newPath
+#          echo $newPath
+#        shell: pwsh
 
       # Setting up csv2rdf
-      - name: Install csv2rdf (Windows)
+#      - name: Install csv2rdf (Windows)
+#        if: matrix.os == 'windows-latest'
+#        run: |
+#          Invoke-WebRequest -Uri "https://github.com/Swirrl/csv2rdf/releases/download/0.4.7/csv2rdf-0.4.7-standalone.jar" -OutFile "csv2rdf.jar"
+#          $csv2rdfPath = (Get-Item csv2rdf.jar | Resolve-Path).Path.Substring(38)
+#          echo "@REM Forwarder script`n@echo off`necho Attempting to launch csv2rdf at $csv2rdfPath`njava -jar $csv2rdfPath %*" > csv2rdf.bat
+#
+#          $oldPath = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
+#          $newPath += "$oldPath;$pwd"
+#          Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $newPath
+#          echo $newPath
+#        shell: pwsh
+
+      # Setting up sparql-test-runner
+      - name: Install sparql-test-runner (Windows)
         if: matrix.os == 'windows-latest'
         run: |
-          Invoke-WebRequest -Uri "https://github.com/Swirrl/csv2rdf/releases/download/0.4.7/csv2rdf-0.4.7-standalone.jar" -OutFile "csv2rdf.jar"
-          $csv2rdfPath = (Get-Item csv2rdf.jar | Resolve-Path).Path.Substring(38)
-          echo "@REM Forwarder script`n@echo off`necho Attempting to launch csv2rdf at $csv2rdfPath`njava -jar $csv2rdfPath %*" > csv2rdf.bat
+          Invoke-WebRequest -Uri "https://github.com/GSS-Cogs/sparql-test-runner/releases/download/v0.0.1/sparql-test-runner-1.4.zip" -OutFile "sparql-test-runner.zip"
+          Expand-Archive -LiteralPath sparql-test-runner.zip -DestinationPath .
+
+          $sparqlTestRunnerBinDir = (Get-Item sparql-test-runner-1.4/bin | Resolve-Path).Path.Substring(38)
+          $oldPath = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
+          $newPath += "$oldPath;$sparqlTestRunnerBinDir"
+          Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $newPath
+          echo $newPath
+
+          git clone --depth 1 https://github.com/GSS-Cogs/gdp-sparql-tests.git
+
+          sparql-test-runner --help
         shell: pwsh
-
-      - name: Set Environment Variables (Windows)
-        if: matrix.os == 'windows-latest'
-        run: |
-          $env:PATH += ";$pwd"
-          echo $env:PATH
-          csv2rdf --help
-          cat csv2rdf.bat
-        shell: pwsh
-
-#          $csvLintInstallationFolder = bundle info csvlint --path
-#          $env:PATH += ";$csvLintInstallationFolder/bin;$pwd"
-#          java -jar csv2rdf-0.4.7-standalone.jar --help
-
 
       # - uses: actions/setup-python@v4
       #   with:
