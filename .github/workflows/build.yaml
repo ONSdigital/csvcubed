@@ -107,28 +107,27 @@ jobs:
        - name: Install python packages
          run: poetry install
 
-       - name: Run pyright
-         run: poetry run pyright . --lib
-
-       - name: Run unittests
-         run: poetry run pytest --junitxml=pytest_results.xml
-
-       - name: Upload unittests test results from xml file
-         uses: actions/upload-artifact@v3
-         with:
-           name: ${{ matrix.os }}-python${{ matrix.python-version }} unit test results
-           path: pytest_results.xml
-
-       - name: Publish Unit Test Results
-         uses: EnricoMi/publish-unit-test-result-action/composite@v2
-         with:
-           check_name: ${{ matrix.os }}-python${{ matrix.python-version }} unit test results
-           junit_files: "pytest_results.xml"
+#       - name: Run pyright
+#         run: poetry run pyright . --lib
+#
+#       - name: Run unittests
+#         run: poetry run pytest --junitxml=pytest_results.xml
+#
+#       - name: Upload unittests test results from xml file
+#         uses: actions/upload-artifact@v3
+#         with:
+#           name: ${{ matrix.os }}-python${{ matrix.python-version }} unit test results
+#           path: pytest_results.xml
+#
+#       - name: Publish Unit Test Results
+#         uses: EnricoMi/publish-unit-test-result-action/composite@v2
+#         with:
+#           check_name: ${{ matrix.os }}-python${{ matrix.python-version }} unit test results
+#           junit_files: "pytest_results.xml"
 
        - name: Run behaviour tests (Windows)
          if: matrix.os == 'windows-latest'
          run: |
-           # Load stored environmental variables
            $env:PATH = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
 
            $csv2rdfLocation = (where csv2rdf)
