@@ -41,7 +41,8 @@ jobs:
 #
 #          $csvLintInstallationFolder = bundle info csvlint --path
 #          $oldPath = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
-#          $newPath += "$oldPath;$csvLintInstallationFolder"
+#          $newPath = "$oldPath;$csvLintInstallationFolder"
+#          $env:PATH += ";$csvLintInstallationFolder"
 #          Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $newPath
 #          echo $newPath
 #        shell: pwsh
@@ -55,7 +56,8 @@ jobs:
 #          echo "@REM Forwarder script`n@echo off`necho Attempting to launch csv2rdf at $csv2rdfPath`njava -jar $csv2rdfPath %*" > csv2rdf.bat
 #
 #          $oldPath = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
-#          $newPath += "$oldPath;$pwd"
+#          $newPath = "$oldPath;$pwd"
+#          $env:PATH += ";$pwd"
 #          Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $newPath
 #          echo $newPath
 #        shell: pwsh
@@ -69,18 +71,17 @@ jobs:
 
           $sparqlTestRunnerBinDir = (Get-Item sparql-test-runner-1.4/bin | Resolve-Path).Path.Substring(38)
           $oldPath = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
-          $newPath += "$oldPath;$sparqlTestRunnerBinDir"
+          $newPath = "$oldPath;$sparqlTestRunnerBinDir"
+          $env:PATH += ";$sparqlTestRunnerBinDir"
           Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $newPath
           echo $newPath
 
           git clone --depth 1 https://github.com/GSS-Cogs/gdp-sparql-tests.git
-
         shell: pwsh
 
       - name: Try running sparql-test-runner (Windows)
         if: matrix.os == 'windows-latest'
         run: |
-          $env:PATH = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
           sparql-test-runner --help
         shell: pwsh
 
