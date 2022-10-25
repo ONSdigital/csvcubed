@@ -23,6 +23,7 @@ from csvcubedmodels.rdf.resource import (
     ExistingResource,
     maybe_existing_resource,
 )
+from csvcubed.cli.inspect.metadatainputvalidator import CSVWShape
 
 from csvcubed.models.rdf import prov
 from csvcubed.models.cube import *
@@ -34,6 +35,7 @@ from csvcubed.utils.uri import (
 )
 from csvcubed.utils.csvw import get_dependent_local_files
 from csvcubed.utils.qb.cube import (
+    detect_shape_of_cube,
     get_columns_of_dsd_type,
     QbColumnarDsdType,
 )
@@ -84,26 +86,7 @@ class QbWriter(WriterBase):
 
     @property
     def is_cube_in_pivoted_shape(self) -> bool:
-        obs_val_columns = get_columns_of_dsd_type(self.cube, QbObservationValue)
-
-        all_pivoted = True
-        all_standard_shape = True
-        for obs_val_col in obs_val_columns:
-            all_pivoted = (
-                all_pivoted
-                and obs_val_col.structural_definition.is_pivoted_shape_observation
-            )
-            all_standard_shape = (
-                all_standard_shape
-                and not obs_val_col.structural_definition.is_pivoted_shape_observation
-            )
-
-        if all_pivoted:
-            return True
-        elif all_standard_shape:
-            return False
-        else:
-            raise TypeError("The cube cannot be in both standard and pivoted shape")
+        return detect_shape_of_cube(self.cube) == CSVWShape.Pivoted
 
     def __post_init__(self):
         self.csv_file_name = f"{self.cube.metadata.uri_safe_identifier}.csv"

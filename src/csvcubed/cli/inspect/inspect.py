@@ -13,10 +13,12 @@ from os import linesep
 import rdflib
 
 from csvcubed.cli.inspect.metadatainputvalidator import (
+    CSVWShape,
     CSVWType,
     MetadataValidator,
 )
 from csvcubed.cli.inspect.metadataprinter import MetadataPrinter
+from csvcubed.utils.qb.cube import detect_shape_of_cube
 from csvcubed.utils.tableschema import CsvwRdfManager
 from csvcubed.models.csvcubedexception import FailedToLoadRDFGraphException
 
@@ -48,6 +50,9 @@ def inspect(csvw_metadata_json_path: Path) -> None:
         csvw_type,
     ) = csvw_metadata_rdf_validator.validate_and_detect_type()
 
+    #TODO: Read dataset shape using sparql.
+    csvw_shape: CSVWShape = CSVWShape.Pivoted
+
     if valid_csvw_metadata:
         (
             type_printable,
@@ -58,7 +63,7 @@ def inspect(csvw_metadata_json_path: Path) -> None:
             val_counts_by_measure_unit_printable,
             codelist_hierarchy_info_printable,
         ) = _generate_printables(
-            csvw_type, csvw_metadata_rdf_graph, csvw_metadata_json_path
+            csvw_type, csvw_shape, csvw_metadata_rdf_graph, csvw_metadata_json_path
         )
 
         print(f"{linesep}{type_printable}")
@@ -80,6 +85,7 @@ def inspect(csvw_metadata_json_path: Path) -> None:
 
 def _generate_printables(
     csvw_type: CSVWType,
+    csvw_shape: CSVWShape,
     csvw_metadata_rdf_graph: rdflib.ConjunctiveGraph,
     csvw_metadata_json_path: Path,
 ) -> Tuple[str, str, str, str, str, str, str]:
@@ -91,7 +97,7 @@ def _generate_printables(
     :return: `Tuple[str, str, str, str, str]` - printables of metadata information.
     """
     metadata_printer = MetadataPrinter(
-        csvw_type, csvw_metadata_rdf_graph, csvw_metadata_json_path
+        csvw_type, csvw_shape, csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
 
     type_info_printable: str = metadata_printer.type_info_printable

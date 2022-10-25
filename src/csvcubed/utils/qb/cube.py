@@ -7,6 +7,7 @@ Utilities for getting columns (of a given type) from the `qb:DataStructureType`
 import logging
 from typing import List, TypeVar, Type, Set
 
+from csvcubed.cli.inspect.metadatainputvalidator import CSVWShape
 from csvcubed.models.cube import (
     Cube,
     QbColumn,
@@ -91,3 +92,28 @@ def get_all_units(cube: Cube) -> Set[QbUnit]:
 
     _logger.debug("Discovered units %s", units)
     return units
+
+def detect_shape_of_cube(cube: Cube) -> CSVWShape:
+    """
+    Given a cube as input, returns the shape of that cube (Standard or Pivoted)
+    """
+    obs_val_columns = get_columns_of_dsd_type(cube, QbObservationValue)
+
+    all_pivoted = True
+    all_standard_shape = True
+    for obs_val_col in obs_val_columns:
+        all_pivoted = (
+            all_pivoted
+            and obs_val_col.structural_definition.is_pivoted_shape_observation
+        )
+        all_standard_shape = (
+            all_standard_shape
+            and not obs_val_col.structural_definition.is_pivoted_shape_observation
+        )
+
+    if all_pivoted:
+        return CSVWShape.Pivoted
+    elif all_standard_shape:
+        return CSVWShape.Standard
+    else:
+        raise TypeError("The cube cannot be in both standard and pivoted shape")
