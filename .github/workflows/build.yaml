@@ -56,6 +56,7 @@ jobs:
           echo $env:PATH
           csv2rdf --help
           csv2rdf.bat --help
+          java -jar csv2rdf-0.4.7-standalone.jar --help
         shell: pwsh
 
 
