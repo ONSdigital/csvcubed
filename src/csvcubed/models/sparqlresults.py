@@ -119,7 +119,7 @@ class QubeComponentsResult:
                 "Property Label",
                 "Property Type",
                 "Column Title",
-                "Observation Value Column Title",
+                "Observation Value Column Titles",
                 "Required",
             ],
         )
