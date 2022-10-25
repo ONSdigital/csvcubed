@@ -75,8 +75,8 @@ def validate_observations(cube: Cube) -> List[ValidationError]:
                 errors += _validate_observation_value(
                     obs_val_column, multi_units_columns
                 )
-                errors +=_validate_associated_measure(obs_val_column)
-                errors +=_validate_associated_unit(obs_val_column)
+                errors += _validate_associated_measure(obs_val_column)
+                errors += _validate_associated_unit(obs_val_column)
             errors += _validate_pivoted_shape_cube(cube)
 
         errors += _validate_missing_observation_values(cube, observed_value_columns[0])
@@ -193,8 +193,9 @@ def _validate_standard_shape_cube(cube: Cube) -> List[ValidationError]:
 
     return errors
 
+
 def _validate_associated_measure(
-    observation_value: QbColumn[QbObservationValue]
+    observation_value: QbColumn[QbObservationValue],
 ) -> List[ValidationError]:
     errors: List[ValidationError] = []
     if observation_value.structural_definition.measure is None:
@@ -202,14 +203,16 @@ def _validate_associated_measure(
 
     return errors
 
+
 def _validate_associated_unit(
-    observation_value: QbColumn[QbObservationValue]
+    observation_value: QbColumn[QbObservationValue],
 ) -> List[ValidationError]:
     errors: List[ValidationError] = []
     if observation_value.structural_definition.unit is None:
         errors.append(NoUnitsDefinedError())
 
     return errors
+
 
 def _validate_pivoted_shape_cube(cube: Cube) -> List[ValidationError]:
     errors: List[ValidationError] = []

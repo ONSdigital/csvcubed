@@ -18,7 +18,10 @@ from csvcubed.models.cube.qb.validationerrors import (
 )
 from tests.unit.test_baseunit import *
 from csvcubed.utils.qb.validation.cube import validate_qb_component_constraints
-from csvcubed.utils.qb.validation.observations import _validate_observation_value, _validate_pivoted_shape_cube
+from csvcubed.utils.qb.validation.observations import (
+    _validate_observation_value,
+    _validate_pivoted_shape_cube,
+)
 
 
 def test_single_measure_qb_definition():
@@ -946,7 +949,7 @@ def test_pivoted_validation_multiple_measure_columns():
     validate_with_environ(cube, BothMeasureTypesDefinedError)
 
 
-def test_pivoted_validation_obs_value__error():
+def test_pivoted_validation_no_measure_defined_error():
     """
     This scenario will test a cube with the observation column will not have a measure defined
     """
@@ -987,7 +990,7 @@ def test_pivoted_validation_obs_value__error():
     validate_with_environ(cube, NoMeasuresDefinedError)
 
 
-def test_pivoted_validation_obs_value_no_unit_defined_error():
+def test_pivoted_validation_no_unit_defined_error():
     """
     This scenario will test a cube that has an observation value column does not
     have a unit defined and there does not exist a units column which is linked to this obs val column
@@ -1016,18 +1019,17 @@ def test_pivoted_validation_obs_value_no_unit_defined_error():
         ),
         QbColumn(
             "Some Obs Val",
-            QbObservationValue(NewQbMeasure("Some Measure"), None),
+            QbObservationValue(NewQbMeasure("Some Measure")),
         ),
         QbColumn(
             "Some Other Obs Val",
-            QbObservationValue(NewQbMeasure("Some Other Measure"), None),
+            QbObservationValue(NewQbMeasure("Some Other Measure")),
         ),
     ]
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
 
     validate_with_environ(cube, NoUnitsDefinedError)
-
 
 
 def test_pivoted_validation_unit_column_not_linked_error():
