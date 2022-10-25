@@ -45,7 +45,7 @@ jobs:
         run: |
           wget https://github.com/Swirrl/csv2rdf/releases/download/0.4.7/csv2rdf-0.4.7-standalone.jar
           $csv2rdfPath = Get-Item csv2rdf-0.4.7-standalone.jar | Resolve-Path
-          echo "@REM Forwarder script\n@echo off\njava -jar $$csv2rdfPath %*" > csv2rdf.bat
+          echo "@REM Forwarder script\n@echo off\njava -jar $csv2rdfPath %*" > csv2rdf.bat
         shell: pwsh
 
       - name: Set Environment Variables (Windows)
