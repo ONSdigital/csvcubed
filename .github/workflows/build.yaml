@@ -133,12 +133,6 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: poetry run behave tests/behaviour --tags=-skip --junit --format progress
 
-      - name: Remove broken characters from xml test files
-        if: always()
-        # By removing broken characters from the xml unit/behave test files, we can then publish the tests results stored
-        # in those files in a user friendly way on github actions using 'EnricoMi/publish-unit-test-result-action@v1'.
-        run: sed -i -e 's/[\x0A\x1B]//g' reports/TESTS-*.xml
-          
       - name: Upload behave test results from xml files
         if: always()
         uses: actions/upload-artifact@v3
