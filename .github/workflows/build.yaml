@@ -75,8 +75,11 @@ jobs:
 
           git clone --depth 1 https://github.com/GSS-Cogs/gdp-sparql-tests.git
 
-          sparql-test-runner --help
         shell: pwsh
+
+      - name: Try running sparql-test-runner (Windows)
+        if: matrix.os == 'windows-latest'
+        run: sparql-test-runner --help
 
       # - uses: actions/setup-python@v4
       #   with:
