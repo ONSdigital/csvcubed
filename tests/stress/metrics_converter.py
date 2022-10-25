@@ -26,7 +26,6 @@ def get_metrics(
     run_identifier: str,
     n_runs: int = 5,
     metrics_out_folder: Path = Path("metrics"),
-    working_dir: Path = Path("/"),
 ) -> RunMetrics:
 
     # taking in the fliepath
@@ -116,7 +115,7 @@ if __name__ == "__main__":
     run_type = sys.argv[2]
     run_identifier = sys.argv[3]
 
-    metrics = get_metrics(csv_file_path, working_dir, run_type, run_identifier)
+    metrics = get_metrics(csv_file_path, run_type, run_identifier)
 
     # printing to the terminal
     print("<=========================================>\n")
