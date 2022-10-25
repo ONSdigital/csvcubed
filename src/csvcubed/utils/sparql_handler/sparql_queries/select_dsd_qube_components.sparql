@@ -4,11 +4,11 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX csvw: <http://www.w3.org/ns/csvw#>
 
 SELECT DISTINCT 
-    ?componentProperty ?componentPropertyLabel ?componentOrder ?componentPropertyType ?csvColumnTitle ?observationValueColumnTitles
+    ?componentProperty ?componentPropertyLabel ?componentOrder ?componentPropertyType ?csvColumnTitle
     (COALESCE(?csvColumnRequired, false) || ?componentRequired as ?required) 
 WHERE {   
     { 
-        SELECT DISTINCT ?csvColumnTitle ?observationValueColumnTitles ?csvColumnRequired ?component ?componentProperty ?componentOrder 
+        SELECT DISTINCT ?csvColumnTitle ?csvColumnRequired ?component ?componentProperty ?componentOrder 
         WHERE {
             ?dsd_uri a qb:DataStructureDefinition.
             ?dsd_uri qb:component ?component.
@@ -31,46 +31,6 @@ WHERE {
                     }
                 }
             } 
-
-            OPTIONAL {
-                FILTER(STRENDS(str(?componentProperty), str(?csvColumnPropertyUrl))).
-
-                {
-                    
-                    SELECT ?csvColumnPropertyUrl (GROUP_CONCAT(?observationValueColumnTitle; separator=', ') as ?observationValueColumnTitles)
-                    WHERE 
-                    {
-                        ?tableSchema csvw:column/rdf:rest*/rdf:first ?csvColumn.
-
-                        OPTIONAL {
-                            ?csvColumn csvw:aboutUrl ?csvColumnAboutUrl;
-                                       csvw:propertyUrl ?csvColumnPropertyUrl.
-
-
-                            ?tableSchema csvw:column/rdf:rest*/rdf:first ?observedValueColumn.
-                            FILTER NOT EXISTS {
-                                ?observedValueColumn csvw:virtual true.
-                            }
-
-                            # The obs val column for this column is the one matching on the aboutUrl with a 
-                            # valid measureUri in the propertyUrl field.
-                            ?observedValueColumn csvw:aboutUrl ?csvColumnAboutUrl;
-                                                csvw:propertyUrl ?observedValueColPropertyUrl;
-                                                csvw:title ?observationValueColumnTitle.
-
-                            FILTER EXISTS {
-                                ?dsd_uri a qb:DataStructureDefinition;
-                                        # Get list of possible measures in this DSD
-                                        qb:component/qb:measure ?measureUri.
-                                FILTER (strends(str(?observedValueColPropertyUrl), str(?measureUri)) || strends(str(?measureUri), str(?observedValueColPropertyUrl))).
-                            }                       
-                        }
-                        FILTER(STRLEN(str(?observedValueColPropertyUrl)) > 0)                    
-                    }
-                    GROUP BY ?csvColumnPropertyUrl
-                }
-            }
-
         }
     }
 
