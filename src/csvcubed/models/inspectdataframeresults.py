@@ -10,7 +10,7 @@ from dataclasses import dataclass
 
 from treelib import Tree
 
-from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
+from csvcubed.cli.inspect.metadatainputvalidator import CSVWShape, CSVWType
 from csvcubed.utils.printable import get_printable_tabuler_str_from_dataframe
 
 HIERARCHY_TREE_CONCEPTS_LIMIT = 100
@@ -24,6 +24,7 @@ class DatasetObservationsInfoResult:
     """
 
     csvw_type: CSVWType
+    csvw_shape: CSVWShape
     num_of_observations: int
     num_of_duplicates: int
     dataset_head: pd.DataFrame
@@ -37,6 +38,14 @@ class DatasetObservationsInfoResult:
         formatted_dataset_tail = get_printable_tabuler_str_from_dataframe(
             self.dataset_tail
         )
+        
+        # If the csw_type is data cube, and if the cube is a pivoted shape cube:
+                    #if self.csvw_shape == CSVWShape.Pivoted:
+            #obs_or_concepts_str = "Rows"
+        # else if the csw_type is data cube, and if the cube is not in pivoted shape cube
+            #obs_or_concepts_str = "Observations"
+        #else
+            #obs_or_concepts_str = "Concepts"
 
         obs_or_concepts_str = (
             "Observations" if self.csvw_type == CSVWType.QbDataSet else "Concepts"

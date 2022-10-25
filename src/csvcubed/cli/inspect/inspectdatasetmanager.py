@@ -32,7 +32,7 @@ from csvcubed.models.csvcubedexception import (
     InvalidNumberOfRecordsException,
 )
 from csvcubed.cli.error_mapping import friendly_error_mapping
-from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
+from csvcubed.cli.inspect.metadatainputvalidator import CSVWShape, CSVWType
 from csvcubed.utils.skos.codelist import build_concepts_hierarchy_tree
 
 _logger = logging.getLogger(__name__)
@@ -170,8 +170,10 @@ def get_dataset_observations_info(
 
     :return: `DatasetObservationsInfoResult`
     """
+    # TODO: Remove the hardcoded value before and replace it with the calculated value.
     return DatasetObservationsInfoResult(
         csvw_type,
+        CSVWShape.Pivoted,
         len(dataset.index),
         dataset.duplicated().sum(),
         dataset.head(n=10),
