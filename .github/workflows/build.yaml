@@ -51,11 +51,12 @@ jobs:
       - name: Set Environment Variables (Windows)
         if: matrix.os == 'windows-latest'
         run: |
-           $env:PATH += ";$pwd"
+          $env:PATH += ";$pwd"
           echo $env:PATH
           csv2rdf --help
           ./csv2rdf.bat --help
         shell: pwsh
+
 #          $csvLintInstallationFolder = bundle info csvlint --path
 #          $env:PATH += ";$csvLintInstallationFolder/bin;$pwd"
 #          java -jar csv2rdf-0.4.7-standalone.jar --help
