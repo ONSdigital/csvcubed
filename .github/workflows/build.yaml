@@ -18,6 +18,7 @@ jobs:
 
       # Setting up csvlint
       - uses: actions/cache@v2
+        if: matrix.os == 'windows-latest'
         with:
           path: vendor/bundle
           key: ${{ matrix.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
@@ -51,8 +52,7 @@ jobs:
         if: matrix.os == 'windows-latest'
         run: |
           $csvLintInstallationFolder = bundle info csvlint --path
-          $currentWorkingDirectory = Get-Item . | Resolve-Path
-          $env:PATH += ";$csvLintInstallationFolder/bin;$currentWorkingDirectory"
+          $env:PATH += ";$csvLintInstallationFolder/bin;$pwd"
           echo $env:PATH
           csv2rdf --help
         shell: pwsh
