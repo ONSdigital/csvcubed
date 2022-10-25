@@ -17,50 +17,48 @@ jobs:
           fetch-depth: 0
 
       # Setting up csvlint
-#      - uses: actions/cache@v2
-#        if: matrix.os == 'windows-latest'
-#        with:
-#          path: vendor/bundle
-#          key: ${{ matrix.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
-#          restore-keys: |
-#            ${{ matrix.os }}-gems-
-#
-#      - uses: ruby/setup-ruby@v1
-#        if: matrix.os == 'windows-latest'
-#        with:
-#          ruby-version: '2.4'
-#
-#      - name: Install csvlint (Windows)
-#        if: matrix.os == 'windows-latest'
-#        run: |
-#          Invoke-WebRequest -Uri "https://raw.githubusercontent.com/GSS-Cogs/csvlint-docker/master/Gemfile" -OutFile "Gemfile"
-#          gem install bundle
-#          echo  "gem 'i18n', '~>1.12.0'" >> Gemfile
-#          bundle
-#          bundle install
-#
-#          $csvLintInstallationFolder = bundle info csvlint --path
-#          $oldPath = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
-#          $newPath = "$oldPath;$csvLintInstallationFolder"
-#          $env:PATH += ";$csvLintInstallationFolder"
-#          Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $newPath
-#          echo $newPath
-#        shell: pwsh
+      - uses: actions/cache@v2
+        if: matrix.os == 'windows-latest'
+        with:
+          path: vendor/bundle
+          key: ${{ matrix.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ matrix.os }}-gems-
+
+      - uses: ruby/setup-ruby@v1
+        if: matrix.os == 'windows-latest'
+        with:
+          ruby-version: '2.4'
+
+      - name: Install csvlint (Windows)
+        if: matrix.os == 'windows-latest'
+        run: |
+          Invoke-WebRequest -Uri "https://raw.githubusercontent.com/GSS-Cogs/csvlint-docker/master/Gemfile" -OutFile "Gemfile"
+          gem install bundle
+          echo  "gem 'i18n', '~>1.12.0'" >> Gemfile
+          bundle
+          bundle install
+
+          $csvLintInstallationFolder = bundle info csvlint --path
+          $oldPath = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
+          $newPath = "$oldPath;$csvLintInstallationFolder"
+          Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $newPath
+          echo $newPath
+        shell: pwsh
 
       # Setting up csv2rdf
-#      - name: Install csv2rdf (Windows)
-#        if: matrix.os == 'windows-latest'
-#        run: |
-#          Invoke-WebRequest -Uri "https://github.com/Swirrl/csv2rdf/releases/download/0.4.7/csv2rdf-0.4.7-standalone.jar" -OutFile "csv2rdf.jar"
-#          $csv2rdfPath = (Get-Item csv2rdf.jar | Resolve-Path).Path.Substring(38)
-#          echo "@REM Forwarder script`n@echo off`necho Attempting to launch csv2rdf at $csv2rdfPath`njava -jar $csv2rdfPath %*" > csv2rdf.bat
-#
-#          $oldPath = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
-#          $newPath = "$oldPath;$pwd"
-#          $env:PATH += ";$pwd"
-#          Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $newPath
-#          echo $newPath
-#        shell: pwsh
+      - name: Install csv2rdf (Windows)
+        if: matrix.os == 'windows-latest'
+        run: |
+          Invoke-WebRequest -Uri "https://github.com/Swirrl/csv2rdf/releases/download/0.4.7/csv2rdf-0.4.7-standalone.jar" -OutFile "csv2rdf.jar"
+          $csv2rdfPath = (Get-Item csv2rdf.jar | Resolve-Path).Path.Substring(38)
+          echo "@REM Forwarder script`n@echo off`necho Attempting to launch csv2rdf at $csv2rdfPath`njava -jar $csv2rdfPath %*" > csv2rdf.bat
+
+          $oldPath = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
+          $newPath = "$oldPath;$pwd"
+          Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $newPath
+          echo $newPath
+        shell: pwsh
 
       # Setting up sparql-test-runner
       - name: Install sparql-test-runner (Windows)
@@ -72,78 +70,92 @@ jobs:
           $sparqlTestRunnerBinDir = (Get-Item sparql-test-runner-1.4/bin | Resolve-Path).Path.Substring(38)
           $oldPath = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
           $newPath = "$oldPath;$sparqlTestRunnerBinDir"
-          $env:PATH += ";$sparqlTestRunnerBinDir"
           Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $newPath
           echo $newPath
 
           git clone --depth 1 https://github.com/GSS-Cogs/gdp-sparql-tests.git
         shell: pwsh
 
-      - name: Try running sparql-test-runner (Windows)
-        if: matrix.os == 'windows-latest'
-        run: |
-          sparql-test-runner --help
-        shell: pwsh
+#      - name: Try running sparql-test-runner (Windows)
+#        if: matrix.os == 'windows-latest'
+#        run: |
+#          # Load stored environmental variables
+#          $env:PATH = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
+#
+#          sparql-test-runner --help
+#        shell: pwsh
 
-      # - uses: actions/setup-python@v4
-      #   with:
-      #     python-version: ${{ matrix.python-version }}
+       - uses: actions/setup-python@v4
+         with:
+           python-version: ${{ matrix.python-version }}
 
-      # - uses: actions/setup-node@v3
-      #   with:
-      #     node-version: 16
+       - uses: actions/setup-node@v3
+         with:
+           node-version: 16
 
-      # - name: Install pyright
-      #   run: npm install -g pyright
+       - name: Install pyright
+         run: npm install -g pyright
 
-      # - name: Install poetry
-      #   run: pip install poetry
+       - name: Install poetry
+         run: pip install poetry
 
-      # - uses: actions/cache@v2
-      #   with:
-      #     path: ~/.cache/pypoetry/virtualenvs
-      #     key: ${{ matrix.os }}-poetry-${{ hashFiles('poetry.lock') }}
+       - uses: actions/cache@v2
+         with:
+           path: ~/.cache/pypoetry/virtualenvs
+           key: ${{ matrix.os }}-poetry-${{ hashFiles('poetry.lock') }}
 
-      # - name: Install python packages
-      #   run: poetry install
+       - name: Install python packages
+         run: poetry install
 
-      # - name: Run pyright
-      #   run: poetry run pyright . --lib
+       - name: Run pyright
+         run: poetry run pyright . --lib
 
-      # - name: Run unittests
-      #   run: poetry run pytest --junitxml=pytest_results.xml
+       - name: Run unittests
+         run: poetry run pytest --junitxml=pytest_results.xml
 
-      # - name: Upload unittests test results from xml file
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: ${{ matrix.os }}-python${{ matrix.python-version }} unit test results
-      #     path: pytest_results.xml
+       - name: Upload unittests test results from xml file
+         uses: actions/upload-artifact@v3
+         with:
+           name: ${{ matrix.os }}-python${{ matrix.python-version }} unit test results
+           path: pytest_results.xml
 
-      # - name: Publish Unit Test Results
-      #   uses: EnricoMi/publish-unit-test-result-action/composite@v2
-      #   with:
-      #     check_name: ${{ matrix.os }}-python${{ matrix.python-version }} unit test results 
-      #     junit_files: "pytest_results.xml"
+       - name: Publish Unit Test Results
+         uses: EnricoMi/publish-unit-test-result-action/composite@v2
+         with:
+           check_name: ${{ matrix.os }}-python${{ matrix.python-version }} unit test results
+           junit_files: "pytest_results.xml"
 
-      # - name: Run behaviour tests
-      #   run: NO_DOCKER="${{ TODO: figure this expression out so linux runs inside the docker containers }}" poetry run behave tests/behaviour --tags=-skip --junit
+       - name: Run behaviour tests (Windows)
+         if: matrix.os == 'windows-latest'
+         run: |
+           # Load stored environmental variables
+           $env:PATH = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
 
-      # - name: Remove broken characters from xml test files
-      #   # By removing broken characters from the xml unit/behave test files, we can then publish the tests results stored 
-      #   # in those files in a user friendly way on github actions using 'EnricoMi/publish-unit-test-result-action@v1'.
-      #   run: sed -i -e 's/[\x0A\x1B]//g' reports/TESTS-*.xml
+           $csv2rdfLocation = (where csv2rdf)
+           $sparqlTestsDir = (Get-Item gdp-sparql-tests/tests | Resolve-Path).Path.Substring(38)
+
+           NO_DOCKER="true" CSV2RDF="$csv2rdfLocation" SPARQL_TESTS_DIR="$sparqlTestsDir" poetry run behave tests/behaviour --tags=-skip --junit
+
+       - name: Run behaviour tests (Ubuntu)
+         if: matrix.os == 'ubuntu-latest'
+         run: poetry run behave tests/behaviour --tags=-skip --junit
+
+       - name: Remove broken characters from xml test files
+         # By removing broken characters from the xml unit/behave test files, we can then publish the tests results stored
+         # in those files in a user friendly way on github actions using 'EnricoMi/publish-unit-test-result-action@v1'.
+         run: sed -i -e 's/[\x0A\x1B]//g' reports/TESTS-*.xml
           
-      # - name: Upload behave test results from xml files
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: ${{ matrix.os }}-python${{ matrix.python-version }} behave test results 
-      #     path: reports/*.xml
+       - name: Upload behave test results from xml files
+         uses: actions/upload-artifact@v3
+         with:
+           name: ${{ matrix.os }}-python${{ matrix.python-version }} behave test results
+           path: reports/*.xml
 
-      # - name: Publish Behave Test Results
-      #   uses: EnricoMi/publish-unit-test-result-action/composite@v2
-      #   with:
-      #     check_name: ${{ matrix.os }}-python${{ matrix.python-version }} behave test results 
-      #     junit_files: 'reports/*.xml'
+       - name: Publish Behave Test Results
+         uses: EnricoMi/publish-unit-test-result-action/composite@v2
+         with:
+           check_name: ${{ matrix.os }}-python${{ matrix.python-version }} behave test results
+           junit_files: 'reports/*.xml'
 
       # todo: Ensure we only do Windows testing when in a release tag or is a commit on the main branch.
       # todo: Ensure we only do python3.9 testing in most cases, but also do python3.10 testing in all environments when in a release tag.
