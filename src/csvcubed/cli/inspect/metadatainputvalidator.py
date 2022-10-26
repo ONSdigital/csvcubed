@@ -32,17 +32,6 @@ class CSVWType(Enum):
     Other = auto()
     """ The metadata file is not of types data cube and code list. This type of metadata files is not supported."""
 
-class CSVWShape(Enum):
-    """
-    The shape of cube represented by the metadata file.
-    """
-
-    Standard = auto()
-    """ The cube represented by the metadata file is in the standard shape. """
-
-    Pivoted = auto()
-    """ The cube represented by the metadata file is in the pivoted shape. """
-
 @dataclass
 class MetadataValidator:
     """

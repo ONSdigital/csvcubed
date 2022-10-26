@@ -26,8 +26,9 @@ from csvcubed.models.sparqlresults import (
     QubeComponentsResult,
 )
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
-from csvcubed.cli.inspect.metadatainputvalidator import CSVWShape, CSVWType
+from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
 from csvcubed.utils.sparql_handler.sparqlmanager import (
+    CSVWShape,
     select_codelist_cols_by_dataset_url,
     select_codelist_dataset_url,
     select_primary_key_col_names_by_dataset_url,
@@ -167,9 +168,10 @@ class MetadataPrinter:
             select_csvw_dsd_dataset_label_and_dsd_def_uri(self.csvw_metadata_rdf_graph)
         )
         self.result_qube_components = select_csvw_dsd_qube_components(
+            self.csvw_shape,
             self.csvw_metadata_rdf_graph,
             self.result_dataset_label_dsd_uri.dsd_uri,
-            self.csvw_metadata_json_path,
+            self.csvw_metadata_json_path
         )
         self.result_cols_with_suppress_output_true = (
             select_cols_where_suppress_output_is_true(self.csvw_metadata_rdf_graph)
@@ -179,12 +181,16 @@ class MetadataPrinter:
             self.result_dataset_label_dsd_uri.dsd_uri,
             self.csvw_metadata_json_path,
         )
-        
+
         # strtobool is not case sensitive and will work the same way with "True" or "true" inputs, also with "False" or "false".
-        is_pivoted_multi_measure = strtobool(os.environ.get("PIVOTED_MULTI_MEASURE", "False"))
+        is_pivoted_multi_measure = strtobool(
+            os.environ.get("PIVOTED_MULTI_MEASURE", "True")
+        )
         if is_pivoted_multi_measure:
             data = DataFrame(data=[], columns=["Measure", "Unit", "Count"])
-            self.result_dataset_value_counts = DatasetObservationsByMeasureUnitInfoResult(data)
+            self.result_dataset_value_counts = (
+                DatasetObservationsByMeasureUnitInfoResult(data)
+            )
         else:
             (
                 canonical_shape_dataset,
@@ -200,7 +206,6 @@ class MetadataPrinter:
             self.result_dataset_value_counts = get_dataset_val_counts_info(
                 canonical_shape_dataset, measure_col, unit_col
             )
-   
 
     def generate_codelist_results(self):
         """
@@ -212,19 +217,19 @@ class MetadataPrinter:
             self.csvw_metadata_rdf_graph, self.dataset_url
         )
         # Retrieving the primary key column names of the code list to identify the unique identifier
-        result_primary_key_col_names_by_dataset_url: PrimaryKeyColNamesByDatasetUrlResult = (
-            select_primary_key_col_names_by_dataset_url(
-                self.csvw_metadata_rdf_graph, self.dataset_url
-            )
+        result_primary_key_col_names_by_dataset_url: PrimaryKeyColNamesByDatasetUrlResult = select_primary_key_col_names_by_dataset_url(
+            self.csvw_metadata_rdf_graph, self.dataset_url
         )
-        primary_key_col_names = result_primary_key_col_names_by_dataset_url.primary_key_col_names
-        
+        primary_key_col_names = (
+            result_primary_key_col_names_by_dataset_url.primary_key_col_names
+        )
+
         # Currently, we do not support composite primary keys.
         if len(primary_key_col_names) != 1:
             raise UnsupportedNumOfPrimaryKeyColNamesException(
                 num_of_primary_key_col_names=len(primary_key_col_names),
-                table_url=self.dataset_url
-            )        
+                table_url=self.dataset_url,
+            )
         (
             parent_col_title,
             label_col_title,

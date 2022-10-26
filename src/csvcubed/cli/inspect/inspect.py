@@ -13,12 +13,11 @@ from os import linesep
 import rdflib
 
 from csvcubed.cli.inspect.metadatainputvalidator import (
-    CSVWShape,
     CSVWType,
     MetadataValidator,
 )
 from csvcubed.cli.inspect.metadataprinter import MetadataPrinter
-from csvcubed.utils.qb.cube import detect_shape_of_cube
+from csvcubed.utils.sparql_handler.sparqlmanager import CSVWShape
 from csvcubed.utils.tableschema import CsvwRdfManager
 from csvcubed.models.csvcubedexception import FailedToLoadRDFGraphException
 

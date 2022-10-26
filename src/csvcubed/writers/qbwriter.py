@@ -23,10 +23,9 @@ from csvcubedmodels.rdf.resource import (
     ExistingResource,
     maybe_existing_resource,
 )
-from csvcubed.cli.inspect.metadatainputvalidator import CSVWShape
-
 from csvcubed.models.rdf import prov
 from csvcubed.models.cube import *
+from csvcubed.utils.sparql_handler.sparqlmanager import CSVWShape
 from csvcubed.utils.uri import (
     get_last_uri_part,
     csvw_column_name_safe,

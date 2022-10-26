@@ -9,6 +9,7 @@ from os import linesep
 from pathlib import Path
 from typing import List, Optional, Dict, Any
 from dataclasses import dataclass
+from attr import field
 
 from rdflib.query import ResultRow
 from csvcubedmodels.dataclassbase import DataClassBase
@@ -25,6 +26,7 @@ from csvcubed.utils.qb.components import (
 )
 
 _logger = logging.getLogger(__name__)
+
 
 @dataclass
 class CatalogMetadataResult:
@@ -97,8 +99,18 @@ class QubeComponentResult(DataClassBase):
     property_label: Optional[str]
     property_type: str
     csv_col_title: Optional[str]
-    observation_value_column_title: Optional[str]
+    observation_value_column_titles: Optional[str]
     required: bool
+
+
+@dataclass
+class ObsValDsdComponentResult(DataClassBase):
+    """
+    Model to represent a observation value result.
+    """
+
+    csv_column_property_url: Optional[str]
+    observation_value_column_titles: Optional[str]
 
 
 @dataclass
@@ -233,6 +245,7 @@ class PrimaryKeyColNameByDatasetUrlResult:
 
     value: str
 
+
 @dataclass
 class PrimaryKeyColNamesByDatasetUrlResult:
     """
@@ -240,6 +253,7 @@ class PrimaryKeyColNamesByDatasetUrlResult:
     """
 
     primary_key_col_names: List[PrimaryKeyColNameByDatasetUrlResult]
+
 
 @dataclass
 class MetadataDependenciesResult:
@@ -336,14 +350,35 @@ def _map_qube_component_sparql_result(
             str(result_dict["componentPropertyType"])
         ),
         csv_col_title=none_or_map(result_dict.get("csvColumnTitle"), str) or "",
-        observation_value_column_title=none_or_map(result_dict.get("observationValueColumnTitles"), str) or "",
+        observation_value_column_titles="",
         required=none_or_map(result_dict.get("required"), bool) or False,
     )
     return result
 
 
+def _map_obs_val_for_dsd_component_properties_results(
+    sparql_results: List[ResultRow],
+) -> List[ObsValDsdComponentResult]:
+    obs_val_results: List[ObsValDsdComponentResult] = list(
+        map(
+            lambda result: ObsValDsdComponentResult(
+                csv_column_property_url=none_or_map(
+                    result.asdict().get("csvColumnPropertyUrl"), str
+                ),
+                observation_value_column_titles=none_or_map(
+                    result.asdict().get("observationValueColumnTitles"), str
+                ),
+            ),
+            sparql_results,
+        )
+    )
+    return obs_val_results
+
+
 def map_qube_components_sparql_result(
-    sparql_results: List[ResultRow], json_path: Path
+    sparql_results_dsd_components: List[ResultRow],
+    sparql_results_obs_val_col_titles: Optional[List[ResultRow]],
+    json_path: Path,
 ) -> QubeComponentsResult:
     """
     Maps sparql query result to `QubeComponentsResult`
@@ -352,12 +387,32 @@ def map_qube_components_sparql_result(
 
     :return: `QubeComponentsResult`
     """
-    components = list(
-        map(
-            lambda result: _map_qube_component_sparql_result(result, json_path),
-            sparql_results,
+    obs_val_col_title_results: List[ObsValDsdComponentResult] = None
+    if sparql_results_obs_val_col_titles is not None:
+        obs_val_col_title_results = _map_obs_val_for_dsd_component_properties_results(
+            sparql_results_obs_val_col_titles
         )
-    )
+
+    components: List[QubeComponentResult] = []
+    for result in sparql_results_dsd_components:
+        dsd_component_result: QubeComponentResult = _map_qube_component_sparql_result(
+            result, json_path
+        )
+        if sparql_results_obs_val_col_titles is not None:
+            obs_val_col_title_result_for_component = [
+                obs_val_col_title_result
+                for obs_val_col_title_result in obs_val_col_title_results
+                if obs_val_col_title_result.csv_column_property_url
+                == dsd_component_result.property
+            ]
+
+            if len(obs_val_col_title_result_for_component) == 1:
+                dsd_component_result.observation_value_column_titles = (
+                    obs_val_col_title_result_for_component[0].observation_value_column_titles
+                )
+                
+        components.append(dsd_component_result)
+
     result = QubeComponentsResult(
         qube_components=components, num_components=len(components)
     )
@@ -485,7 +540,9 @@ def map_single_unit_from_dsd_result(
     return result
 
 
-def _map_codelist_column_sparql_result(sparql_result: ResultRow) -> CodelistColumnResult:
+def _map_codelist_column_sparql_result(
+    sparql_result: ResultRow,
+) -> CodelistColumnResult:
     """
     Maps sparql query result to `CodelistColumnResult`
 
@@ -524,7 +581,10 @@ def map_codelist_cols_by_dataset_url_result(
     result = CodeListColsByDatasetUrlResult(columns=columns)
     return result
 
-def _map_primary_key_col_name_by_dataset_url_result(sparql_result: ResultRow) -> PrimaryKeyColNameByDatasetUrlResult:
+
+def _map_primary_key_col_name_by_dataset_url_result(
+    sparql_result: ResultRow,
+) -> PrimaryKeyColNameByDatasetUrlResult:
     """
     Maps sparql query result to `PrimaryKeyColNameByDatasetUrlResult`
 
@@ -537,7 +597,8 @@ def _map_primary_key_col_name_by_dataset_url_result(sparql_result: ResultRow) ->
     result = PrimaryKeyColNameByDatasetUrlResult(
         value=str(result_dict["tablePrimaryKey"]),
     )
-    return result   
+    return result
+
 
 def map_primary_key_col_names_by_dataset_url_result(
     sparql_results: List[ResultRow],
@@ -555,8 +616,11 @@ def map_primary_key_col_names_by_dataset_url_result(
             sparql_results,
         )
     )
-    result = PrimaryKeyColNamesByDatasetUrlResult(primary_key_col_names=primary_key_col_names)
+    result = PrimaryKeyColNamesByDatasetUrlResult(
+        primary_key_col_names=primary_key_col_names
+    )
     return result
+
 
 def map_metadata_dependency_results(
     sparql_results: List[ResultRow],

@@ -6,7 +6,7 @@ Collection of SPARQL queries.
 """
 
 import logging
-from enum import Enum
+from enum import Enum, auto
 from pathlib import Path
 from typing import List
 
@@ -50,6 +50,16 @@ from csvcubed.definitions import APP_ROOT_DIR_PATH
 
 _logger = logging.getLogger(__name__)
 
+class CSVWShape(Enum):
+    """
+    The shape of cube represented by the metadata file.
+    """
+
+    Standard = auto()
+    """ The cube represented by the metadata file is in the standard shape. """
+
+    Pivoted = auto()
+    """ The cube represented by the metadata file is in the pivoted shape. """
 
 class SPARQLQueryName(Enum):
     """
@@ -65,6 +75,10 @@ class SPARQLQueryName(Enum):
     SELECT_DSD_DATASETLABEL_AND_URI = "select_dsd_datasetlabel_and_uri"
 
     SELECT_DSD_QUBE_COMPONENTS = "select_dsd_qube_components"
+
+    SELECT_OBS_VAL_FOR_DSD_COMPONENT_PROPERTIES = (
+        "select_obs_val_for_dsd_component_properties"
+    )
 
     SELECT_COLS_W_SUPPRESS_OUTPUT = "select_cols_w_suppress_output"
 
@@ -200,7 +214,7 @@ def select_csvw_dsd_dataset_label_and_dsd_def_uri(
 
 
 def select_csvw_dsd_qube_components(
-    rdf_graph: rdflib.ConjunctiveGraph, dsd_uri: str, json_path: Path
+    csvw_shape: CSVWShape, rdf_graph: rdflib.ConjunctiveGraph, dsd_uri: str, json_path: Path
 ) -> QubeComponentsResult:
     """
     Queries the list of qube components.
@@ -209,12 +223,25 @@ def select_csvw_dsd_qube_components(
 
     :return: `QubeComponentsResult`
     """
-    results: List[ResultRow] = select(
+    result_dsd_components: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryName.SELECT_DSD_QUBE_COMPONENTS),
         rdf_graph,
         init_bindings={"dsd_uri": URIRef(dsd_uri)},
     )
-    return map_qube_components_sparql_result(results, json_path)
+    
+    result_observation_val_col_titles: List[ResultRow]
+    if csvw_shape == CSVWShape.Pivoted:
+        result_observation_val_col_titles: List[ResultRow] = select(
+            _get_query_string_from_file(
+                SPARQLQueryName.SELECT_OBS_VAL_FOR_DSD_COMPONENT_PROPERTIES
+            ),
+            rdf_graph,
+            init_bindings={"dsd_uri": URIRef(dsd_uri)},
+        )
+
+    return map_qube_components_sparql_result(
+        result_dsd_components, result_observation_val_col_titles, json_path
+    )
 
 
 def select_cols_where_suppress_output_is_true(
@@ -372,6 +399,7 @@ def select_codelist_cols_by_dataset_url(
             num_of_records=len(results),
         )
     return map_codelist_cols_by_dataset_url_result(results)
+
 
 def select_primary_key_col_names_by_dataset_url(
     rdf_graph: rdflib.ConjunctiveGraph, table_url: str

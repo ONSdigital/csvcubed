@@ -7,7 +7,6 @@ Utilities for getting columns (of a given type) from the `qb:DataStructureType`
 import logging
 from typing import List, TypeVar, Type, Set
 
-from csvcubed.cli.inspect.metadatainputvalidator import CSVWShape
 from csvcubed.models.cube import (
     Cube,
     QbColumn,
@@ -18,6 +17,7 @@ from csvcubed.models.cube import (
     QbObservationValue,
     QbColumnStructuralDefinition,
 )
+from csvcubed.utils.sparql_handler.sparqlmanager import CSVWShape
 
 
 _logger = logging.getLogger(__name__)
