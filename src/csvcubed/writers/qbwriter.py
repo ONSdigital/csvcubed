@@ -77,7 +77,7 @@ class QbWriter(WriterBase):
     csv_file_name: str = field(init=False)
     raise_missing_uri_safe_value_exceptions: bool = field(default=True, repr=False)
     _new_uri_helper: QbCubeNewUriHelper = field(init=False)
-    created_measure_type_and_unit_col_specs: bool = field(default=False, init=False)
+    _created_measure_type_and_unit_col_specs: bool = field(default=False, init=False)
 
     @property
     def csv_metadata_file_name(self) -> str:
@@ -625,7 +625,7 @@ class QbWriter(WriterBase):
     ) -> List[rdf.qb.ComponentSpecification]:
         specs: List[rdf.qb.ComponentSpecification] = []
 
-        if self.created_measure_type_and_unit_col_specs == False:
+        if self._created_measure_type_and_unit_col_specs == False:
             # We always output the measure-dimension style of the QB spec.
             # so each observation need to have a dimension specifying the measure type.
             specs.append(self._get_measure_type_dimension_component_spec())
@@ -634,7 +634,7 @@ class QbWriter(WriterBase):
             if unit is not None:
                 specs.append(self._get_qb_units_column_specification("unit"))
 
-            self.created_measure_type_and_unit_col_specs = True
+            self._created_measure_type_and_unit_col_specs = True
 
         if observation_value.is_pivoted_shape_observation:
             assert observation_value.measure is not None

@@ -3,13 +3,11 @@ SPARQL query results
 ----------------------------
 """
 
-from logging import Logger
 import logging
 from os import linesep
 from pathlib import Path
 from typing import List, Optional, Dict, Any
 from dataclasses import dataclass
-from attr import field
 
 from rdflib.query import ResultRow
 from csvcubedmodels.dataclassbase import DataClassBase
