@@ -1019,7 +1019,7 @@ def test_pivoted_validation_no_unit_defined_error():
         ),
         QbColumn(
             "Some Obs Val",
-            QbObservationValue(NewQbMeasure("Some Measure")),
+            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
         QbColumn(
             "Some Other Obs Val",
@@ -1032,7 +1032,7 @@ def test_pivoted_validation_no_unit_defined_error():
     validate_with_environ(cube, NoUnitsDefinedError)
 
 
-def test_pivoted_validation_unit_column_not_linked_error():
+def test_pivoted_validation_attribute_column_not_linked_error():
     """
     This scenario will test a cube that has a units or attribute column has been defined without being linked to an obs val column
     """
@@ -1052,7 +1052,9 @@ def test_pivoted_validation_unit_column_not_linked_error():
         ),
         QbColumn(
             "Some Attribute",
-            NewQbAttribute.from_data("Some Attribute", data["Some Attribute"]),
+            NewQbAttribute.from_data(
+                "Some Attribute", data["Some Attribute"], observed_value_col_title=None
+            ),
         ),
         QbColumn(
             "Some Obs Val",
@@ -1068,11 +1070,10 @@ def test_pivoted_validation_unit_column_not_linked_error():
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
 
-    error = _get_single_validation_error_for_qube(cube)
-    assert isinstance(error, ConflictingUriSafeValuesError)
+    validate_with_environ(cube, NoMeasuresDefinedError)
 
 
-def test_pivoted_validation_obs_calumn_doesnt_exist():
+def test_pivoted_validation_obs_column_doesnt_exist():
     """
     This scenario will test the cube with units or attribute column is defined for which obs val column doesn't appear to exist.
     """
@@ -1096,7 +1097,7 @@ def test_pivoted_validation_obs_calumn_doesnt_exist():
             NewQbAttribute.from_data(
                 "Some Attribute",
                 data["Some Attribute"],
-                observed_value_col_title="Not Obs Val",
+                observed_value_col_title="Doesn't Exist",
             ),
         ),
         QbColumn(
@@ -1113,8 +1114,7 @@ def test_pivoted_validation_obs_calumn_doesnt_exist():
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
 
-    error = _get_single_validation_error_for_qube(cube)
-    assert isinstance(error, ConflictingUriSafeValuesError)
+    validate_with_environ(cube, NoMeasuresDefinedError)
 
 
 def test_pivoted_validation_link_attribe_to_non_obs_column():
@@ -1159,8 +1159,7 @@ def test_pivoted_validation_link_attribe_to_non_obs_column():
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
 
-    error = _get_single_validation_error_for_qube(cube)
-    assert isinstance(error, ConflictingUriSafeValuesError)
+    validate_with_environ(cube, NoUnitsDefinedError)
 
 
 def test_pivoted_validation_measure_dupication():

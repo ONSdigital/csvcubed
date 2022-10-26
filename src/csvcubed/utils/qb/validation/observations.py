@@ -70,14 +70,15 @@ def validate_observations(cube: Cube) -> List[ValidationError]:
             errors += _validate_observation_value(obs_val_column, multi_units_columns)
             errors += _validate_standard_shape_cube(cube)
         elif len(pivoted_obs_val_columns) >= 1:
+            obs_col_names = []
             for col in pivoted_obs_val_columns:
+                obs_col_names.append(col.csv_column_title)
                 obs_val_column = col
                 errors += _validate_observation_value(
                     obs_val_column, multi_units_columns
                 )
                 errors += _validate_associated_measure(obs_val_column)
-                errors += _validate_associated_unit(obs_val_column)
-            errors += _validate_pivoted_shape_cube(cube)
+            errors += _validate_pivoted_shape_cube(cube, obs_col_names)
 
         errors += _validate_missing_observation_values(cube, observed_value_columns[0])
 
@@ -204,17 +205,9 @@ def _validate_associated_measure(
     return errors
 
 
-def _validate_associated_unit(
-    observation_value: QbColumn[QbObservationValue],
+def _validate_pivoted_shape_cube(
+    cube: Cube, obs_col_names: List
 ) -> List[ValidationError]:
-    errors: List[ValidationError] = []
-    if observation_value.structural_definition.unit is None:
-        errors.append(NoUnitsDefinedError())
-
-    return errors
-
-
-def _validate_pivoted_shape_cube(cube: Cube) -> List[ValidationError]:
     errors: List[ValidationError] = []
 
     multi_measure_columns = get_columns_of_dsd_type(cube, QbMultiMeasureDimension)
@@ -226,4 +219,33 @@ def _validate_pivoted_shape_cube(cube: Cube) -> List[ValidationError]:
                 additional_explanation="A pivoted shape cube cannot have a measure dimension.",
             )
         )
+
+    attribute_columns = get_columns_of_dsd_type(cube, QbAttribute)
+    for attribute_col in attribute_columns:
+        if attribute_col.structural_definition.get_observed_value_col_title() is None:
+            # ADD THIS ERROR errors.append(AttributeNotLinkedError())
+            errors.append(NoMeasuresDefinedError())
+
+        all_col_names = []
+        for col in cube.columns:
+            all_col_names.append(col.csv_column_title)
+
+        subtracted_names = [name for name in all_col_names if name not in obs_col_names]
+
+        if (
+            attribute_col.structural_definition.get_observed_value_col_title()
+            not in obs_col_names
+            and attribute_col.structural_definition.get_observed_value_col_title()
+            not in subtracted_names
+        ):
+            # ADD THIS ERROR errors.append(LinkedObsColumnDoesntExistError)
+            errors.append(NoMeasuresDefinedError())
+
+        if (
+            attribute_col.structural_definition.get_observed_value_col_title()
+            not in subtracted_names
+        ):
+            # ADD THIS ERROR errors.append(LinkedToNonObsColumnError)
+            errors.append(NoUnitsDefinedError())
+
     return errors
