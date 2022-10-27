@@ -8,7 +8,7 @@ Collection of SPARQL queries.
 import logging
 from enum import Enum, auto
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 
 import rdflib
 from rdflib import Literal, URIRef
@@ -229,7 +229,7 @@ def select_csvw_dsd_qube_components(
         init_bindings={"dsd_uri": URIRef(dsd_uri)},
     )
     
-    result_observation_val_col_titles: List[ResultRow]
+    result_observation_val_col_titles: Optional[List[ResultRow]] = None
     if csvw_shape == CSVWShape.Pivoted:
         result_observation_val_col_titles: List[ResultRow] = select(
             _get_query_string_from_file(
