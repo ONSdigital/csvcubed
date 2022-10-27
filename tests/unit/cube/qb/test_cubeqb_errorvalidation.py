@@ -1052,9 +1052,7 @@ def test_pivoted_validation_attribute_column_not_linked_error():
         ),
         QbColumn(
             "Some Attribute",
-            NewQbAttribute.from_data(
-                "Some Attribute", data["Some Attribute"], observed_value_col_title=None
-            ),
+            NewQbAttribute.from_data("Some Attribute", data["Some Attribute"]),
         ),
         QbColumn(
             "Some Obs Val",

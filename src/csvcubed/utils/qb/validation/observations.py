@@ -226,26 +226,26 @@ def _validate_pivoted_shape_cube(
             # ADD THIS ERROR errors.append(AttributeNotLinkedError())
             errors.append(NoMeasuresDefinedError())
 
-        all_col_names = []
-        for col in cube.columns:
-            all_col_names.append(col.csv_column_title)
+    #     all_col_names = []
+    #     for col in cube.columns:
+    #         all_col_names.append(col.csv_column_title)
 
-        subtracted_names = [name for name in all_col_names if name not in obs_col_names]
+    #     subtracted_names = [name for name in all_col_names if name not in obs_col_names]
 
-        if (
-            attribute_col.structural_definition.get_observed_value_col_title()
-            not in obs_col_names
-            and attribute_col.structural_definition.get_observed_value_col_title()
-            not in subtracted_names
-        ):
-            # ADD THIS ERROR errors.append(LinkedObsColumnDoesntExistError)
-            errors.append(NoMeasuresDefinedError())
+    #     if (
+    #         attribute_col.structural_definition.get_observed_value_col_title()
+    #         not in obs_col_names
+    #         and attribute_col.structural_definition.get_observed_value_col_title()
+    #         not in subtracted_names
+    #     ):
+    #         # ADD THIS ERROR errors.append(LinkedObsColumnDoesntExistError)
+    #         errors.append(NoMeasuresDefinedError())
 
-        if (
-            attribute_col.structural_definition.get_observed_value_col_title()
-            not in subtracted_names
-        ):
-            # ADD THIS ERROR errors.append(LinkedToNonObsColumnError)
-            errors.append(NoUnitsDefinedError())
+    #     if (
+    #         attribute_col.structural_definition.get_observed_value_col_title()
+    #         not in subtracted_names
+    #     ):
+    #         # ADD THIS ERROR errors.append(LinkedToNonObsColumnError)
+    #         errors.append(NoUnitsDefinedError())
 
     return errors
