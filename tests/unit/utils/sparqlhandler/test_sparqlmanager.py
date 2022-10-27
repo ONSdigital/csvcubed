@@ -20,6 +20,7 @@ from csvcubed.models.sparqlresults import (
 from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.rdf import parse_graph_retain_relative
 from csvcubed.utils.sparql_handler.sparqlmanager import (
+    CSVWShape,
     ask_is_csvw_code_list,
     ask_is_csvw_qb_dataset,
     select_codelist_cols_by_dataset_url,
@@ -171,7 +172,10 @@ def test_select_csvw_dsd_dataset():
         csvw_metadata_rdf_graph
     )
     component_result: QubeComponentsResult = select_csvw_dsd_qube_components(
-        csvw_metadata_rdf_graph, result.dsd_uri, csvw_metadata_json_path
+        CSVWShape.Pivoted,
+        csvw_metadata_rdf_graph,
+        result.dsd_uri,
+        csvw_metadata_json_path,
     )
     components = component_result.qube_components
 
