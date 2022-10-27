@@ -172,7 +172,10 @@ def test_select_csvw_dsd_dataset():
         csvw_metadata_rdf_graph
     )
     component_result: QubeComponentsResult = select_csvw_dsd_qube_components(
-        CSVWShape.Pivoted, csvw_metadata_rdf_graph, result.dsd_uri, csvw_metadata_json_path
+        CSVWShape.Pivoted,
+        csvw_metadata_rdf_graph,
+        result.dsd_uri,
+        csvw_metadata_json_path,
     )
     components = component_result.qube_components
 
