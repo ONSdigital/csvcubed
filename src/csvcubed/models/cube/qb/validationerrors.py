@@ -5,8 +5,8 @@ Qb-Cube Validation Errors
 :obj:`ValidationError <csvcubed.models.validationerror.ValidationError>` models specific to :mod:`qb`.
 """
 
-from dataclasses import dataclass
-from typing import Optional, Type, Union
+from dataclasses import dataclass, field
+from typing import List, Optional, Type, Union
 from abc import ABC
 
 from ..qb import (

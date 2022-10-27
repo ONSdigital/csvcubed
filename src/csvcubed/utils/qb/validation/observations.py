@@ -33,8 +33,6 @@ from csvcubed.models.cube.qb.validationerrors import (
 )
 
 from csvcubedmodels.rdf.namespaces import SDMX_Attribute
-from csvcubed.models.cube.validationerrors import MultipleMeasuresPivotedShapeError
-
 from csvcubed.models.validationerror import ValidationError
 from csvcubed.utils.qb.cube import get_columns_of_dsd_type
 
