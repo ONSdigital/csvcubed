@@ -22,6 +22,7 @@ from csvcubed.models.cube import (
     MoreThanOneObservationsColumnError,
     EmptyQbMultiMeasureDimensionError,
 )
+from csvcubed.models.cube.qb.components import observedvalue
 
 from csvcubed.models.cube.qb.components.measure import ExistingQbMeasure, QbMeasure
 from csvcubed.models.cube.qb.validationerrors import CsvColumnUriTemplateMissingError
@@ -225,6 +226,16 @@ def _validate_pivoted_shape_cube(
         all_col_names.append(col.csv_column_title)
 
     subtracted_names = [name for name in all_col_names if name not in obs_col_names]
+
+    observed_value_columns = get_columns_of_dsd_type(cube, QbObservationValue)
+
+    elements_of_obs_colums = []
+    for element in observed_value_columns:
+        elements_of_obs_colums.append(element.structural_definition.measure)
+    
+    if len(set(elements_of_obs_colums)) != len(elements_of_obs_colums):
+        # ADD THIS ERROR errors.append(DuplicateMeasureError())
+        errors.append(NoUnitsDefinedError()) 
 
     attribute_columns = get_columns_of_dsd_type(cube, QbAttribute)
     for attribute_col in attribute_columns:

@@ -1163,8 +1163,8 @@ def test_pivoted_validation_link_attribe_to_non_obs_column():
 def test_pivoted_validation_measure_dupication():
 
     """
-    This scenario will produce an arror for each pivoted multi-measure observation column has a unique measure.
-     i.e. the same measure cannot be used twice in the same data set.
+    This scenario will produce an error Each pivoted multi-measure observation column has a unique measure.
+     i.e. the same measure cannot be used twice in the same data set. 
     """
     metadata = CatalogMetadata(title="cube_name", identifier="identifier")
     data = pd.DataFrame(
@@ -1195,15 +1195,14 @@ def test_pivoted_validation_measure_dupication():
         QbColumn(
             "Some Other Obs Val",
             QbObservationValue(
-                ExistingQbMeasure("Some Measure"), NewQbUnit("Some Unit")
+                NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
             ),
         ),
     ]
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
 
-    error = _get_single_validation_error_for_qube(cube)
-    assert isinstance(error, ConflictingUriSafeValuesError)
+    validate_with_environ(cube, NoUnitsDefinedError)
 
 
 def validate_with_environ(cube, expected_error):
