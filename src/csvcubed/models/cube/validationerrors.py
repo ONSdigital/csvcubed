@@ -116,19 +116,3 @@ class UriTemplateNameError(SpecificValidationError):
         'Known variables are: {self.column_names_concatenated}'
         )
 
-@dataclass
-class MultipleMeasuresPivotedShapeError(SpecificValidationError):
-    """
-    An error to inform the user that they have attempted to define a pivoted shape cube with multiple measure columns
-    """
-    column_names: List[str]
-    csv_column_uri_template: str
-    column_names_concatenated: str = field(init=False)
-    
-    @classmethod
-    def get_error_url(cls) -> str:
-        return "https://gss-cogs.github.io/csvcubed-docs/external/guides/errors/build-command-errors/multiple-measure-columns/"
-
-    def __post_init__(self):
-        self.column_names_concatenated = ", ".join(self.column_names)
-        self.message = (f"The csv file contains more than 1 Measure column {self.column_names}")

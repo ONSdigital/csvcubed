@@ -22,10 +22,15 @@ from csvcubed.models.cube import (
     MoreThanOneObservationsColumnError,
     EmptyQbMultiMeasureDimensionError,
 )
+
 from csvcubed.models.cube.qb.components import observedvalue
 
 from csvcubed.models.cube.qb.components.measure import ExistingQbMeasure, QbMeasure
-from csvcubed.models.cube.qb.validationerrors import CsvColumnUriTemplateMissingError
+from csvcubed.models.cube.qb.validationerrors import (
+    CsvColumnUriTemplateMissingError,
+    MultipleMeasuresPivotedShapeError
+
+)
 
 from csvcubedmodels.rdf.namespaces import SDMX_Attribute
 from csvcubed.models.cube.validationerrors import MultipleMeasuresPivotedShapeError
@@ -214,7 +219,7 @@ def _validate_pivoted_shape_cube(
     multi_measure_columns = get_columns_of_dsd_type(cube, QbMultiMeasureDimension)
     if len(multi_measure_columns) > 0:
         errors.append(
-            BothMeasureTypesDefinedError(
+            MultipleMeasuresPivotedShapeError(
                 f"{QbObservationValue.__name__}.measure",
                 QbMultiMeasureDimension,
                 additional_explanation="A pivoted shape cube cannot have a measure dimension.",

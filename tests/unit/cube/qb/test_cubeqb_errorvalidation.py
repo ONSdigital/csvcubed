@@ -15,6 +15,7 @@ from csvcubed.models.cube.qb.validationerrors import (
     NoUnitsDefinedError,
     BothUnitTypesDefinedError,
     MaxNumComponentsExceededError,
+    MultipleMeasuresPivotedShapeError,
 )
 from tests.unit.test_baseunit import *
 from csvcubed.utils.qb.validation.cube import validate_qb_component_constraints
@@ -946,7 +947,7 @@ def test_pivoted_validation_multiple_measure_columns():
     ]
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
-    validate_with_environ(cube, BothMeasureTypesDefinedError)
+    validate_with_environ(cube, MultipleMeasuresPivotedShapeError)
 
 
 def test_pivoted_validation_no_measure_defined_error():
