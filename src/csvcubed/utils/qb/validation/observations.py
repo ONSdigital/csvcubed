@@ -220,32 +220,34 @@ def _validate_pivoted_shape_cube(
             )
         )
 
+    all_col_names = []
+    for col in cube.columns:
+        all_col_names.append(col.csv_column_title)
+
+    subtracted_names = [name for name in all_col_names if name not in obs_col_names]
+
     attribute_columns = get_columns_of_dsd_type(cube, QbAttribute)
     for attribute_col in attribute_columns:
         if attribute_col.structural_definition.get_observed_value_col_title() is None:
             # ADD THIS ERROR errors.append(AttributeNotLinkedError())
             errors.append(NoMeasuresDefinedError())
 
-    #     all_col_names = []
-    #     for col in cube.columns:
-    #         all_col_names.append(col.csv_column_title)
+        if (
+            attribute_col.structural_definition.get_observed_value_col_title()
+            not in obs_col_names
+            and attribute_col.structural_definition.get_observed_value_col_title()
+            is not None
+            and attribute_col.structural_definition.get_observed_value_col_title()
+            not in subtracted_names
+        ):
+            # ADD THIS ERROR errors.append(LinkedObsColumnDoesntExistError)
+            errors.append(NoMeasuresDefinedError())
 
-    #     subtracted_names = [name for name in all_col_names if name not in obs_col_names]
-
-    #     if (
-    #         attribute_col.structural_definition.get_observed_value_col_title()
-    #         not in obs_col_names
-    #         and attribute_col.structural_definition.get_observed_value_col_title()
-    #         not in subtracted_names
-    #     ):
-    #         # ADD THIS ERROR errors.append(LinkedObsColumnDoesntExistError)
-    #         errors.append(NoMeasuresDefinedError())
-
-    #     if (
-    #         attribute_col.structural_definition.get_observed_value_col_title()
-    #         not in subtracted_names
-    #     ):
-    #         # ADD THIS ERROR errors.append(LinkedToNonObsColumnError)
-    #         errors.append(NoUnitsDefinedError())
+        if (
+            attribute_col.structural_definition.get_observed_value_col_title()
+            in subtracted_names
+        ):
+            # ADD THIS ERROR errors.append(LinkedToNonObsColumnError)
+            errors.append(NoUnitsDefinedError())
 
     return errors
