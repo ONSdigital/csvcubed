@@ -180,6 +180,7 @@ def test_select_csvw_dsd_dataset():
     components = component_result.qube_components
 
     assert result.dataset_label == "Alcohol Bulletin"
+    assert result.dsd_uri == "alcohol-bulletin.csv#structure"
     assert len(components) == 17
     assert (
         components[0].property
@@ -189,7 +190,57 @@ def test_select_csvw_dsd_dataset():
     assert components[0].property_type == ComponentPropertyType.Dimension.value
     assert components[0].csv_col_title == "Period"
     assert components[0].required is True
+    assert components[0].observation_value_column_titles == ""
 
+
+def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
+    """
+    TODO:
+    """
+    csvw_metadata_json_path = _test_case_base_dir / "pivoted-shape-dataset" / "qb-id-10003.csv-metadata.json"
+    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
+
+    result: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
+        csvw_metadata_rdf_graph
+    )
+    component_result: QubeComponentsResult = select_csvw_dsd_qube_components(
+        CSVWShape.Pivoted,
+        csvw_metadata_rdf_graph,
+        result.dsd_uri,
+        csvw_metadata_json_path,
+    )
+    components = component_result.qube_components
+
+    assert result.dataset_label == "Pivoted Shape Cube"
+    assert result.dsd_uri == "qb-id-10003.csv#structure"
+    assert len(components) == 9
+    
+    assert (
+        components[0].property
+        == "qb-id-10003.csv#dimension/some-dimension"
+    )
+    assert components[0].property_label == "Some Dimension"
+    assert components[0].property_type == ComponentPropertyType.Dimension.value
+    assert components[0].csv_col_title == ""
+    assert components[0].required is True
+    # Asserts whether the observation value column is linked to a dimension column
+    assert components[0].observation_value_column_titles == "Some Obs Val, Some Other Obs Val"
+
+    # Asserts whether the observation value column is not linked to a dimension column
+
+    # Asserts whether the observation value column is linked to an attribute column
+
+    # Asserts whether the observation value column is not linked to an attribute column
+
+    # Asserts whether the observation value column is linked to a measure column
+
+    # Asserts whether the observation value column is linked to another measure column
+
+def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
+    # TODO: 1. Generate the proper input from a behave test in which the cube has two obs val cols with some measure.
+    # TODO: 2. Replicate the above test for the newly generated input.
+    pass
 
 def test_select_cols_when_supress_output_cols_not_present():
     """
