@@ -1,3 +1,4 @@
+from email.errors import ObsoleteHeaderDefect
 from pathlib import Path
 
 import pytest
@@ -195,7 +196,7 @@ def test_select_csvw_dsd_dataset():
 
 def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
     """
-    TODO:
+    Ensures that the cube components in a pivoted multi measure dataset correctly link to observation value columns.
     """
     csvw_metadata_json_path = _test_case_base_dir / "pivoted-shape-dataset" / "qb-id-10003.csv-metadata.json"
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
@@ -216,6 +217,7 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
     assert result.dsd_uri == "qb-id-10003.csv#structure"
     assert len(components) == 9
     
+    # Asserts whether the observation value column is correctly linked to a dimension column
     assert (
         components[0].property
         == "qb-id-10003.csv#dimension/some-dimension"
@@ -223,19 +225,52 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
     assert components[0].property_label == "Some Dimension"
     assert components[0].property_type == ComponentPropertyType.Dimension.value
     assert components[0].csv_col_title == ""
-    assert components[0].required is True
-    # Asserts whether the observation value column is linked to a dimension column
+    assert components[0].required is True 
     assert components[0].observation_value_column_titles == "Some Obs Val, Some Other Obs Val"
-
-    # Asserts whether the observation value column is not linked to a dimension column
-
-    # Asserts whether the observation value column is linked to an attribute column
-
-    # Asserts whether the observation value column is not linked to an attribute column
-
-    # Asserts whether the observation value column is linked to a measure column
-
-    # Asserts whether the observation value column is linked to another measure column
+    
+    # Asserts whether the observation value column is correctly not linked to a dimension column
+    assert (
+        components[3].property
+        == "http://purl.org/linked-data/cube#measureType"
+    )
+    assert components[3].property_label == ""
+    assert components[3].property_type == ComponentPropertyType.Dimension.value
+    assert components[3].csv_col_title == ""
+    assert components[3].required is True 
+    assert components[3].observation_value_column_titles == ""
+    
+    # Asserts whether the observation value column is correctly linked to an attribute column
+    assert (
+        components[2].property
+        == "qb-id-10003.csv#attribute/some-attribute"
+    )
+    assert components[2].property_label == "Some Attribute"
+    assert components[2].property_type == ComponentPropertyType.Attribute.value
+    assert components[2].csv_col_title == "Some Attribute"
+    assert components[2].required is False
+    assert components[2].observation_value_column_titles == "Some Obs Val"
+    
+    # Asserts whether the observation value column is correctly linked to a measure column
+    assert (
+        components[5].property
+        == "qb-id-10003.csv#measure/some-measure"
+    )
+    assert components[5].property_label == "Some Measure"
+    assert components[5].property_type == ComponentPropertyType.Measure.value
+    assert components[5].csv_col_title == "Some Obs Val"
+    assert components[5].required is True
+    assert components[5].observation_value_column_titles == "Some Obs Val"
+    
+    # Asserts whether the observation value column is correctly linked to another measure column
+    assert (
+        components[8].property
+        == "qb-id-10003.csv#measure/some-other-measure"
+    )
+    assert components[8].property_label == "Some Other Measure"
+    assert components[8].property_type == ComponentPropertyType.Measure.value
+    assert components[8].csv_col_title == "Some Other Obs Val"
+    assert components[8].required is True
+    assert components[8].observation_value_column_titles == "Some Other Obs Val"
 
 def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
     # TODO: 1. Generate the proper input from a behave test in which the cube has two obs val cols with some measure.
