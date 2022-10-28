@@ -15,7 +15,7 @@ def test_pivoted_shape():
         os.environ["PIVOTED_MULTI_MEASURE"] = "True"
         csvw_metadata_json_path = (
             _test_case_base_dir
-            / "pivoted-shape-dataset"
+            / "pivoted-multi-measure-dataset"
             / "qb-id-10003.csv-metadata.json"
         )
         csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)

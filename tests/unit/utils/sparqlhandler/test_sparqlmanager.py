@@ -198,7 +198,7 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
     """
     Ensures that the cube components in a pivoted multi measure dataset correctly link to observation value columns.
     """
-    csvw_metadata_json_path = _test_case_base_dir / "pivoted-shape-dataset" / "qb-id-10003.csv-metadata.json"
+    csvw_metadata_json_path = _test_case_base_dir / "pivoted-multi-measure-dataset" / "qb-id-10003.csv-metadata.json"
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
