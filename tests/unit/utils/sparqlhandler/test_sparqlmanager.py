@@ -261,7 +261,7 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
     assert result.dsd_uri == "qb-id-10004.csv#structure"
     assert len(components) == 6
     
-    # Asserts whether the observation value column is correctly linked to a dimension column
+    # Asserts whether the observation value column is correctly linked to a dimension column.
     assert (
         components[0].property
         == "qb-id-10004.csv#dimension/some-dimension"
@@ -272,13 +272,38 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
     assert components[0].required is True 
     assert components[0].observation_value_column_titles == "Some Obs Val"
     
-    #TODO FROM HERE:
-    # Asserts whether ....
+    # Asserts whether the observation value column correctly does not link to an existing dimension column (No observation value.)
+    assert (
+        components[3].property
+        == "http://purl.org/linked-data/cube#measureType"
+    )
+    assert components[3].property_label == ""
+    assert components[3].property_type == ComponentPropertyType.Dimension.value
+    assert components[3].csv_col_title == ""
+    assert components[3].required is True 
+    assert components[3].observation_value_column_titles == ""
 
+    # Asserts whether the observation value column correctly links to an attribute column.
+    assert (
+        components[2].property
+        == "qb-id-10004.csv#attribute/some-attribute"
+    )
+    assert components[2].property_label == "Some Attribute"
+    assert components[2].property_type == ComponentPropertyType.Attribute.value
+    assert components[2].csv_col_title == "Some Attribute"
+    assert components[2].required is False
+    assert components[2].observation_value_column_titles == "Some Obs Val"
 
-    # Asserts whether ....
-
-    # Asserts whether ....
+    # Asserts whether the observation value column correctly links to the measure.
+    assert (
+        components[5].property
+        == "qb-id-10004.csv#measure/some-measure"
+    )
+    assert components[5].property_label == "Some Measure"
+    assert components[5].property_type == ComponentPropertyType.Measure.value
+    assert components[5].csv_col_title == "Some Obs Val"
+    assert components[5].required is True
+    assert components[5].observation_value_column_titles == "Some Obs Val"
 
 
 def test_select_cols_when_supress_output_cols_not_present():
