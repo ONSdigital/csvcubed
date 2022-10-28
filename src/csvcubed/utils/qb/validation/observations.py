@@ -1,3 +1,4 @@
+from distutils.errors import LinkError
 from distutils.util import strtobool
 import os
 from typing import List
@@ -28,7 +29,11 @@ from csvcubed.models.cube.qb.components import observedvalue
 from csvcubed.models.cube.qb.components.measure import ExistingQbMeasure, QbMeasure
 from csvcubed.models.cube.qb.validationerrors import (
     CsvColumnUriTemplateMissingError,
-    MultipleMeasuresPivotedShapeError
+    MultipleMeasuresPivotedShapeError,
+    DuplicateMeasureError,
+    AttributeNotLinkedError,
+    LinkedObsColumnDoesntExistError,
+    LinkedToNonObsColumnError
 
 )
 
@@ -150,7 +155,7 @@ def _attribute_represents_observation_status(attribute: QbAttribute) -> bool:
 
     return False
 
-
+#erro for test3
 def _validate_observation_value(
     observation_value: QbColumn[QbObservationValue],
     multi_unit_columns: List[QbColumn[QbMultiUnits]],
@@ -204,6 +209,7 @@ def _validate_associated_measure(
 ) -> List[ValidationError]:
     errors: List[ValidationError] = []
     if observation_value.structural_definition.measure is None:
+        #error for test2
         errors.append(NoMeasuresDefinedError())
 
     return errors
@@ -217,10 +223,10 @@ def _validate_pivoted_shape_cube(
     multi_measure_columns = get_columns_of_dsd_type(cube, QbMultiMeasureDimension)
     if len(multi_measure_columns) > 0:
         errors.append(
+            #error for test1
             MultipleMeasuresPivotedShapeError(
                 f"{QbObservationValue.__name__}.measure",
-                QbMultiMeasureDimension,
-                #additional_explanation="A pivoted shape cube cannot have a measure dimension.",
+                QbMultiMeasureDimension
             )
         )
 
@@ -237,14 +243,19 @@ def _validate_pivoted_shape_cube(
         elements_of_obs_colums.append(element.structural_definition.measure)
     
     if len(set(elements_of_obs_colums)) != len(elements_of_obs_colums):
-        # ADD THIS ERROR errors.append(DuplicateMeasureError())
-        errors.append(NoUnitsDefinedError()) 
+        errors.append(DuplicateMeasureError(
+            f"{QbObservationValue.__name__}.value", 
+            QbMultiUnits
+        )) 
 
     attribute_columns = get_columns_of_dsd_type(cube, QbAttribute)
     for attribute_col in attribute_columns:
         if attribute_col.structural_definition.get_observed_value_col_title() is None:
-            # ADD THIS ERROR errors.append(AttributeNotLinkedError())
-            errors.append(NoMeasuresDefinedError())
+            # ADD THIS ERROR errors.append(AttributeNotLinkedError()) test4
+            errors.append(AttributeNotLinkedError(
+                f"{QbObservationValue.__name__}.attribute", 
+                LinkError
+            ))
 
         if (
             attribute_col.structural_definition.get_observed_value_col_title()
@@ -254,14 +265,20 @@ def _validate_pivoted_shape_cube(
             and attribute_col.structural_definition.get_observed_value_col_title()
             not in subtracted_names
         ):
-            # ADD THIS ERROR errors.append(LinkedObsColumnDoesntExistError)
-            errors.append(NoMeasuresDefinedError())
+            # ADD THIS ERROR errors.append(LinkedObsColumnDoesntExistError) test5
+            errors.append(LinkedObsColumnDoesntExistError(
+                f"{QbObservationValue.__name__}.value",
+                LinkError
+            ))
 
         if (
             attribute_col.structural_definition.get_observed_value_col_title()
             in subtracted_names
         ):
-            # ADD THIS ERROR errors.append(LinkedToNonObsColumnError)
-            errors.append(NoUnitsDefinedError())
+            # ADD THIS ERROR errors.append(LinkedToNonObsColumnError)test6
+            errors.append(LinkedToNonObsColumnError(
+                f"{QbObservationValue.__name__}.value",
+                QbObservationValue
+            ))
 
     return errors

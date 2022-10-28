@@ -16,6 +16,10 @@ from csvcubed.models.cube.qb.validationerrors import (
     BothUnitTypesDefinedError,
     MaxNumComponentsExceededError,
     MultipleMeasuresPivotedShapeError,
+    DuplicateMeasureError,
+    AttributeNotLinkedError,
+    LinkedObsColumnDoesntExistError,
+    LinkedToNonObsColumnError
 )
 from tests.unit.test_baseunit import *
 from csvcubed.utils.qb.validation.cube import validate_qb_component_constraints
@@ -1069,7 +1073,7 @@ def test_pivoted_validation_attribute_column_not_linked_error():
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
 
-    validate_with_environ(cube, NoMeasuresDefinedError)
+    validate_with_environ(cube, AttributeNotLinkedError)
 
 
 def test_pivoted_validation_obs_column_doesnt_exist():
@@ -1113,7 +1117,7 @@ def test_pivoted_validation_obs_column_doesnt_exist():
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
 
-    validate_with_environ(cube, NoMeasuresDefinedError)
+    validate_with_environ(cube, LinkedObsColumnDoesntExistError)
 
 
 def test_pivoted_validation_link_attribe_to_non_obs_column():
@@ -1158,7 +1162,8 @@ def test_pivoted_validation_link_attribe_to_non_obs_column():
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
 
-    validate_with_environ(cube, NoUnitsDefinedError)
+    validate_with_environ(cube, LinkedToNonObsColumnError)
+
 
 
 def test_pivoted_validation_measure_dupication():
@@ -1203,7 +1208,7 @@ def test_pivoted_validation_measure_dupication():
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
 
-    validate_with_environ(cube, NoUnitsDefinedError)
+    validate_with_environ(cube, DuplicateMeasureError)
 
 
 def validate_with_environ(cube, expected_error):

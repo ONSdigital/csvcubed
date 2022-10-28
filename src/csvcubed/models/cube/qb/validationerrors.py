@@ -326,7 +326,7 @@ class EmptyQbMultiMeasureDimensionError(SpecificValidationError):
 @dataclass
 class MultipleMeasuresPivotedShapeError(SpecificValidationError):
     """
-    An error to inform the user that they have attempted to define a pivoted shape cube with multiple measure columns
+        An error to inform the user that they have attempted to define a pivoted shape cube with multiple measure columns
     """
     column_names: List[str]
     csv_column_uri_template: str
@@ -340,3 +340,77 @@ class MultipleMeasuresPivotedShapeError(SpecificValidationError):
         self.column_names_concatenated = ", ".join(self.column_names)
         self.message = (f"The csv file contains more than 1 Measure column {self.column_names}")
 
+@dataclass
+class DuplicateMeasureError(SpecificValidationError):
+    """
+        An error to inform the user that the obesrvation colums contain duplicate values
+    """
+
+    column_names: List[str]
+    csv_column_uri_template: str
+    column_names_concatenated: str = field(init=False)
+    
+    @classmethod
+    def get_error_url(cls) -> str:
+        return "https://gss-cogs.github.io/csvcubed-docs/external/guides/errors/build-command-errors/"
+
+    def __post_init__(self):
+        self.column_names_concatenated = ", ".join(self.column_names)
+        self.message = (f"The columns contaion duplicate values {self.column_names}")
+
+
+@dataclass
+class AttributeNotLinkedError(SpecificValidationError):
+    """
+        An error to infrom the user that the units or attribute column is defined but it is not linked to the obs column
+    """
+
+    column_names: List[str]
+    csv_column_uri_template: str
+    column_names_concatenated: str = field(init=False)
+
+    @classmethod
+    def get_error_url(cls) -> str:
+        return "https://gss-cogs.github.io/csvcubed-docs/external/guides/errors/build-command-errors/"
+
+    def __post_init__(self):
+        self.column_names_concatenated = ", ".join(self.column_names)
+        self.message = (f"Units or attribute column is defined but it is not linked to the obs column {self.column_names}")
+
+
+@dataclass
+class LinkedObsColumnDoesntExistError(SpecificValidationError):
+    """
+        An error to infrom the user that the units or attribute column is defined for which obs val column doesn't appear to exist.
+    """
+
+    column_names: List[str]
+    csv_column_uri_template: str
+    column_names_concatenated: str = field(init=False)
+
+    @classmethod
+    def get_error_url(cls) -> str:
+        return "https://gss-cogs.github.io/csvcubed-docs/external/guides/errors/build-command-errors/"
+
+    def __post_init__(self):
+        self.column_names_concatenated = ", ".join(self.column_names)
+        self.message = (f"The unit or attribute column is defined for a Obs value column that doesn't appear to exist, {self.column_names}")
+
+@dataclass
+class LinkedToNonObsColumnError(SpecificValidationError):
+    """
+        An error to infrom the user that units or attribute column is defined in which 
+        the linked obs val column isn't actually an observations column.
+    """
+
+    column_names: List[str]
+    csv_column_uri_template: str
+    column_names_concatenated: str = field(init=False)
+
+    @classmethod
+    def get_error_url(cls) -> str:
+        return "https://gss-cogs.github.io/csvcubed-docs/external/guides/errors/build-command-errors/"
+
+    def __post_init__(self):
+        self.column_names_concatenated = ", ".join(self.column_names)
+        self.message = (f"Units or attribute column is defined but the linked observation column is not actually an observation column {self.column_names}")
