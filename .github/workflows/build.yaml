@@ -37,6 +37,7 @@ jobs:
           Expand-Archive -LiteralPath curl.zip -DestinationPath .
           echo "Before"
           ls C:\hostedtoolcache\windows\Ruby\2.4.10\x64\bin
+          cp curl-7.86.0-win64-mingw\bin\libcurl-x64.dll curl-7.86.0-win64-mingw\bin\libcurl.dll 
           cp curl-7.86.0-win64-mingw\bin\* C:\hostedtoolcache\windows\Ruby\2.4.10\x64\bin
           echo "After"
           ls C:\hostedtoolcache\windows\Ruby\2.4.10\x64\bin
