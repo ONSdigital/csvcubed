@@ -18,6 +18,7 @@ from csvcubed.models.sparqlresults import (
     CSVWTableSchemaFileDependenciesResult,
     CatalogMetadataResult,
     CodeListColsByDatasetUrlResult,
+    IsPivotedShapeMeasureResult,
     PrimaryKeyColNamesByDatasetUrlResult,
     CodelistsResult,
     ColsWithSuppressOutputTrueResult,
@@ -29,6 +30,7 @@ from csvcubed.models.sparqlresults import (
     TableSchemaPropertiesResult,
     map_catalog_metadata_result,
     map_codelist_cols_by_dataset_url_result,
+    map_is_pivoted_shape_for_measures_in_data_set,
     map_primary_key_col_names_by_dataset_url_result,
     map_codelists_sparql_result,
     map_cols_with_supress_output_true_sparql_result,
@@ -104,6 +106,7 @@ class SPARQLQueryName(Enum):
 
     SELECT_TABLE_SCHEMA_PROPERTIES = "select_table_schema_properties"
 
+    SELECT_IS_PIVOTED_SHAPE_FOR_MEASURES_IN_DATA_SET = "select_is_pivoted_shape_for_measures_in_data_set"
 
 def _get_query_string_from_file(queryType: SPARQLQueryName) -> str:
     """
@@ -243,6 +246,16 @@ def select_csvw_dsd_qube_components(
         result_dsd_components, result_observation_val_col_titles, json_path
     )
 
+def select_is_pivoted_shape_for_measures_in_data_set(rdf_graph: rdflib.ConjunctiveGraph) -> List[IsPivotedShapeMeasureResult]:
+    """
+    TODO:
+    """
+    result_is_pivoted_shape: List[ResultRow] = select(
+        _get_query_string_from_file(SPARQLQueryName.SELECT_IS_PIVOTED_SHAPE_FOR_MEASURES_IN_DATA_SET),
+        rdf_graph
+    )
+    
+    return map_is_pivoted_shape_for_measures_in_data_set(result_is_pivoted_shape)
 
 def select_cols_where_suppress_output_is_true(
     rdf_graph: rdflib.ConjunctiveGraph,

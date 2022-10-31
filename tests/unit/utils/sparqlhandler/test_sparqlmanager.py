@@ -31,6 +31,7 @@ from csvcubed.utils.sparql_handler.sparqlmanager import (
     select_csvw_dsd_dataset_label_and_dsd_def_uri,
     select_csvw_dsd_qube_components,
     select_dsd_code_list_and_cols,
+    select_is_pivoted_shape_for_measures_in_data_set,
     select_qb_dataset_url,
     select_csvw_table_schema_file_dependencies,
     select_single_unit_from_dsd,
@@ -242,6 +243,8 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
     """
     Ensures that the cube components in a pivoted single-measure dataset correctly link to observation value columns.
     """
+    # TODO: CHECK csv col title inconsistency with Rob.
+    
     csvw_metadata_json_path = _test_case_base_dir / "pivoted-single-measure-dataset" / "qb-id-10004.csv-metadata.json"
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
@@ -517,6 +520,35 @@ def test_select_table_schema_properties():
         == "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services-by-subnational-areas-of-the-uk#scheme/industry-grouping"
     )
 
+def test_select_is_pivoted_shape_for_measures_in_pivoted_shape_data_set():
+    """
+    TODO: Description
+    """
+    csvw_metadata_json_path = _test_case_base_dir / "pivoted-multi-measure-dataset" / "qb-id-10003.csv-metadata.json"
+    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
+    results = select_is_pivoted_shape_for_measures_in_data_set(csvw_metadata_rdf_graph)
+    
+    assert results is not None
+    # TODO:
+        # 1. Check the length of the list
+        # 2. Check the measure and isPivotedShape in first obj
+        # 3. Check the measure and isPivotedShape in second obj
+
+def test_select_is_pivoted_shape_for_measures_in_standard_shape_data_set():
+    """
+    TODO: Description
+    """
+    csvw_metadata_json_path = _test_case_base_dir / "single-unit_single-measure" / "energy-trends-uk-total-energy.csv-metadata.json"
+    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
+    results = select_is_pivoted_shape_for_measures_in_data_set(csvw_metadata_rdf_graph)
+    
+    assert results is not None
+    # TODO:
+        # 1. Check the length of the list
+        # 2. Check the measure and isPivotedShape in first obj
+        # 3. Check the measure and isPivotedShape in second obj
 
 def test_rdf_dependency_loaded() -> None:
     """

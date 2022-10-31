@@ -7,11 +7,13 @@ Provides functionality for validating the input metadata.json and detecting its 
 from dataclasses import dataclass
 from enum import Enum, auto
 from pathlib import Path
-from typing import Tuple
+from typing import List, Tuple
 
 import rdflib
+from csvcubed.models.sparqlresults import IsPivotedShapeMeasureResult
 
 from csvcubed.utils.sparql_handler.sparqlmanager import (
+    CSVWShape,
     ask_is_csvw_code_list,
     ask_is_csvw_qb_dataset,
 )
@@ -40,19 +42,20 @@ class MetadataValidator:
 
     csvw_metadata_rdf_graph: rdflib.ConjunctiveGraph
     csvw_metadata_json_path: Path
+    is_pivoted_measures: List[IsPivotedShapeMeasureResult]
 
-    def validate_and_detect_type(self) -> Tuple[bool, CSVWType]:
+    def validate_csvw(self) -> Tuple[bool, CSVWType, CSVWShape]:
         """
-        Detects the validity and type of metadata file.
-
-        Member of :class:`./MetadataValidator`.
-
-        :return: `Tuple[bool, MetadataType]` - the boolean shows whether the metadata file is valid (`True`) or invalid (`False`). The `MetadataType` provides the type of metadata file.
+        Detects the validity, type and shape of the csvw.
         """
-        metadata_type = self._detect_type()
+        validity = CSVWType.QbDataSet or csvw_type == CSVWType.CodeList
+        csvw_type = self._detect_type()
+        csvw_shape = self._detect_shape()
+
         return (
-            metadata_type == CSVWType.QbDataSet or metadata_type == CSVWType.CodeList,
-            metadata_type,
+            validity,
+            csvw_type,
+            csvw_shape
         )
 
     def _detect_type(self) -> CSVWType:
@@ -77,3 +80,16 @@ class MetadataValidator:
             return CSVWType.QbDataSet
         else:
             return CSVWType.Other
+    
+    def _detect_shape(self) -> CSVWShape:
+        """
+        TODO: Description
+        """
+
+        # Csvw is a pivoted shape csvw, if all the measures are pivoted shape
+        # Csvw is a standard shape csvw, if all the measures are NOT pivoted shape
+        # Otherwise, it is not a supported csvw, hence throw a user-friendly error with inspect error types
+
+        #self.is_pivoted_measures[0].is_pivoted_shape
+        
+        return CSVWShape.Standard

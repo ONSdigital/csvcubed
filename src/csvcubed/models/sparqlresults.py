@@ -274,6 +274,15 @@ class TableSchemaPropertiesResult:
     value_url: str
     table_url: str
 
+@dataclass
+class IsPivotedShapeMeasureResult:
+    """
+    TODO:
+    """
+
+    measure: str
+    is_pivoted_shape: bool
+
 
 def map_catalog_metadata_result(sparql_result: ResultRow) -> CatalogMetadataResult:
     """
@@ -651,3 +660,18 @@ def map_table_schema_properties_result(
         table_url=str(result_dict["csvUrl"]),
     )
     return result
+
+def map_is_pivoted_shape_for_measures_in_data_set(sparql_results: List[ResultRow]) -> List[IsPivotedShapeMeasureResult]:
+    """
+    TODO:
+    """
+    is_pivoted_shape_measure_results = list(
+        map(
+            lambda result: IsPivotedShapeMeasureResult(
+                measure=str(result.asdict()["measure"]),
+                is_pivoted_shape=bool(result.asdict()["isPivotedShape"])
+            ),
+            sparql_results
+        )
+    )
+    return is_pivoted_shape_measure_results

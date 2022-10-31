@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 
 from csvcubed.cli.inspect.metadatainputvalidator import CSVWType, MetadataValidator
+from csvcubed.utils.sparql_handler.sparqlmanager import CSVWShape, select_is_pivoted_shape_for_measures_in_data_set
 from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.unit.test_baseunit import get_test_cases_dir
 
@@ -144,3 +145,45 @@ def test_detect_type_other():
     ) = csvw_metadata_rdf_validator.validate_and_detect_type()
 
     assert csvw_type == CSVWType.Other
+
+def test_detect_csvw_shape_pivoted():
+    """
+    TODO: Description
+    """
+    csvw_metadata_json_path = _test_case_base_dir / "pivoted-multi-measure-dataset" / "qb-id-10003.csv-metadata.json"
+    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
+    is_pivoted_shape_measures = select_is_pivoted_shape_for_measures_in_data_set(csvw_metadata_rdf_graph)
+
+    csvw_metadata_rdf_validator = MetadataValidator(
+        csvw_metadata_rdf_graph, csvw_metadata_json_path, is_pivoted_shape_measures
+    )
+
+    (
+        _,
+        _,
+        csvw_shape
+    ) = csvw_metadata_rdf_validator.validate_csvw()
+
+    assert csvw_shape == CSVWShape.Pivoted
+
+def test_detect_csvw_shape_pivoted():
+    """
+    TODO: Description
+    """
+    csvw_metadata_json_path = _test_case_base_dir / "single-unit_single-measure" / "energy-trends-uk-total-energy.csv-metadata.json"
+    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
+    is_pivoted_shape_measures = select_is_pivoted_shape_for_measures_in_data_set(csvw_metadata_rdf_graph)
+
+    csvw_metadata_rdf_validator = MetadataValidator(
+        csvw_metadata_rdf_graph, csvw_metadata_json_path, is_pivoted_shape_measures
+    )
+
+    (
+        _,
+        _,
+        csvw_shape
+    ) = csvw_metadata_rdf_validator.validate_csvw()
+
+    assert csvw_shape == CSVWShape.Standard

@@ -17,7 +17,7 @@ from csvcubed.cli.inspect.metadatainputvalidator import (
     MetadataValidator,
 )
 from csvcubed.cli.inspect.metadataprinter import MetadataPrinter
-from csvcubed.utils.sparql_handler.sparqlmanager import CSVWShape
+from csvcubed.utils.sparql_handler.sparqlmanager import CSVWShape, select_is_pivoted_shape_for_measures_in_data_set
 from csvcubed.utils.tableschema import CsvwRdfManager
 from csvcubed.models.csvcubedexception import FailedToLoadRDFGraphException
 
@@ -40,19 +40,19 @@ def inspect(csvw_metadata_json_path: Path) -> None:
     if csvw_metadata_rdf_graph is None:
         raise FailedToLoadRDFGraphException(csvw_metadata_json_path)
 
+    is_pivoted_shape_measures = select_is_pivoted_shape_for_measures_in_data_set(csvw_metadata_rdf_graph)
+
     csvw_metadata_rdf_validator = MetadataValidator(
-        csvw_metadata_rdf_graph, csvw_metadata_json_path
+        csvw_metadata_rdf_graph, csvw_metadata_json_path, is_pivoted_shape_measures
     )
 
     (
-        valid_csvw_metadata,
+        validity,
         csvw_type,
-    ) = csvw_metadata_rdf_validator.validate_and_detect_type()
+        csvw_shape
+    ) = csvw_metadata_rdf_validator.validate_csvw()
 
-    #TODO: Read dataset shape using sparql.
-    csvw_shape: CSVWShape = CSVWShape.Pivoted
-
-    if valid_csvw_metadata:
+    if validity:
         (
             type_printable,
             catalog_metadata_printable,
