@@ -33,11 +33,11 @@ jobs:
       - name: Install csvlint (Windows)
         if: matrix.os == 'windows-latest'
         run: |
-          Invoke-WebRequest -Uri https://curl.se/windows/dl-7.86.0/curl-7.86.0-win32-mingw.zip -OutFile "curl.zip"
+          Invoke-WebRequest -Uri https://curl.se/windows/dl-7.86.0/curl-7.86.0-win64-mingw.zip -OutFile "curl.zip"
           Expand-Archive -LiteralPath curl.zip -DestinationPath .
           echo "Before"
           ls C:\hostedtoolcache\windows\Ruby\2.4.10\x64\bin
-          cp curl-7.86.0-win32-mingw\bin\* C:\hostedtoolcache\windows\Ruby\2.4.10\x64\bin
+          cp curl-7.86.0-win64-mingw\bin\* C:\hostedtoolcache\windows\Ruby\2.4.10\x64\bin
           echo "After"
           C:\hostedtoolcache\windows\Ruby\2.4.10\x64\bin
 
