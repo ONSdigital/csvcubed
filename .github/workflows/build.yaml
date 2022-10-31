@@ -58,6 +58,9 @@ jobs:
           $newPath = "$oldPath;$pwd"
           Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $newPath
           echo $newPath
+
+
+          C:\hostedtoolcache\windows\Ruby\2.4.10\x64\lib\ruby\gems\2.4.0\bundler\gems\csvlint.rb-41ab43152d1c\bin\csvlint --help
         shell: pwsh
 
       # Setting up sparql-test-runner
