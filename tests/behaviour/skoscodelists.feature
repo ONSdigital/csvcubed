@@ -11,7 +11,7 @@ Feature: Test outputting CSV-Ws containing `SKOS:ConceptScheme`s.
     And the RDF should pass "skos" SPARQL tests
     And the RDF should contain
       """
-      @prefix basicCodeList: <file:/tmp/basic-code-list.csv#>.
+      @prefix basicCodeList: <{{rdf_input_directory}}/basic-code-list.csv#>.
 
       basicCodeList:code-list a <http://www.w3.org/2004/02/skos/core#ConceptScheme>,
         <http://www.w3.org/ns/dcat#Dataset>, <http://www.w3.org/ns/dcat#Resource>;
@@ -49,12 +49,14 @@ Feature: Test outputting CSV-Ws containing `SKOS:ConceptScheme`s.
       basicCodeList:csvcubed-build-activity a prov:Activity.
 
       """
-    And the RDF should contain version specific triples
+    Given the version identifier
+    Then the RDF should contain
     """
-      @prefix basicCodeList: <file:/tmp/basic-code-list.csv#>.
+      @prefix basicCodeList: <{{rdf_input_directory}}/basic-code-list.csv#>.
       @prefix prov: <http://www.w3.org/ns/prov#> .
         
       basicCodeList:csvcubed-build-activity a prov:Activity;
+                                            prov:used <{{csvcubed_version_identifier}}>.
     """
 
   Scenario: A code list with duplicate notations fails validation.
@@ -73,7 +75,7 @@ Feature: Test outputting CSV-Ws containing `SKOS:ConceptScheme`s.
     And the RDF should pass "skos" SPARQL tests
     And the RDF should contain
       """
-      @prefix compositeCodeList: <file:/tmp/composite-code-list.csv#>.
+      @prefix compositeCodeList: <{{rdf_input_directory}}/composite-code-list.csv#>.
 
       compositeCodeList:code-list a <http://www.w3.org/2004/02/skos/core#ConceptScheme>,
         <http://www.w3.org/ns/dcat#Dataset>, <http://www.w3.org/ns/dcat#Resource>;
