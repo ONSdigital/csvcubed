@@ -35,7 +35,11 @@ jobs:
         run: |
           Invoke-WebRequest -Uri https://curl.se/windows/dl-7.86.0/curl-7.86.0-win32-mingw.zip -OutFile "curl.zip"
           Expand-Archive -LiteralPath curl.zip -DestinationPath .
-          cp curl-7.86.0-win32-mingw/bin/* C:\hostedtoolcache\windows\Ruby\2.4.10\x64\bin
+          echo "Before"
+          ls C:\hostedtoolcache\windows\Ruby\2.4.10\x64\bin
+          cp curl-7.86.0-win32-mingw\bin\* C:\hostedtoolcache\windows\Ruby\2.4.10\x64\bin
+          echo "After"
+          C:\hostedtoolcache\windows\Ruby\2.4.10\x64\bin
 
           Invoke-WebRequest -Uri "https://raw.githubusercontent.com/GSS-Cogs/csvlint-docker/master/Gemfile" -OutFile "Gemfile"
           gem install bundle
@@ -53,7 +57,7 @@ jobs:
           echo $newPath
 
           bundle exec csvlint
-          
+
           $env:PATH = $newPath
           csvlint --help
         shell: pwsh
