@@ -41,7 +41,7 @@ jobs:
 
           $csvLintInstallationFolder = bundle info csvlint --path | % {$_ -replace '/','\'}
           $oldPath = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
-          $newPath = "$oldPath;$csvLintInstallationFolder/bin"
+          $newPath = "$oldPath;$csvLintInstallationFolder\bin"
           Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $newPath
           echo $newPath
         shell: pwsh
