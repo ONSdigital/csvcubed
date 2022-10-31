@@ -39,7 +39,7 @@ jobs:
           ls C:\hostedtoolcache\windows\Ruby\2.4.10\x64\bin
           cp curl-7.86.0-win64-mingw\bin\* C:\hostedtoolcache\windows\Ruby\2.4.10\x64\bin
           echo "After"
-          C:\hostedtoolcache\windows\Ruby\2.4.10\x64\bin
+          ls C:\hostedtoolcache\windows\Ruby\2.4.10\x64\bin
 
           Invoke-WebRequest -Uri "https://raw.githubusercontent.com/GSS-Cogs/csvlint-docker/master/Gemfile" -OutFile "Gemfile"
           gem install bundle
