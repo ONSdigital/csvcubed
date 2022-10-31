@@ -37,7 +37,9 @@ jobs:
           gem install bundle
           "gem 'i18n', '~>1.12.0'" | Add-Content -Path .\Gemfile
           bundle
-          bundle install --system
+          bundle install
+
+          gem list
 
           $csvLintInstallationFolder = bundle info csvlint --path | % {$_ -replace '/','\'}
 
