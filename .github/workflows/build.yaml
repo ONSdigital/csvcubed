@@ -52,7 +52,8 @@ jobs:
           Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $newPath
           echo $newPath
 
-
+          bundle exec csvlint
+          
           $env:PATH = $newPath
           csvlint --help
         shell: pwsh
