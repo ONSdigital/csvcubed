@@ -35,12 +35,8 @@ jobs:
         run: |
           Invoke-WebRequest -Uri https://curl.se/windows/dl-7.86.0/curl-7.86.0-win64-mingw.zip -OutFile "curl.zip"
           Expand-Archive -LiteralPath curl.zip -DestinationPath .
-          echo "Before"
-          ls C:\hostedtoolcache\windows\Ruby\2.4.10\x64\bin
           cp curl-7.86.0-win64-mingw\bin\libcurl-x64.dll curl-7.86.0-win64-mingw\bin\libcurl.dll 
           cp curl-7.86.0-win64-mingw\bin\* C:\hostedtoolcache\windows\Ruby\2.4.10\x64\bin
-          echo "After"
-          ls C:\hostedtoolcache\windows\Ruby\2.4.10\x64\bin
 
           Invoke-WebRequest -Uri "https://raw.githubusercontent.com/GSS-Cogs/csvlint-docker/master/Gemfile" -OutFile "Gemfile"
           gem install bundle
@@ -49,8 +45,9 @@ jobs:
           bundle install --system
 
           $csvLintInstallationFolder = bundle info csvlint --path | % {$_ -replace '/','\'}
+          $gemFilePath = (Get-Item Gemfile | Resolve-Path).Path.Substring(38)
 
-          echo "@REM Forwarder script`n@echo off`necho Attempting to launch csvlint`nruby $csvLintInstallationFolder\bin\csvlint %*" > "$csvLintInstallationFolder\bin\csvlint.bat"
+          echo "@REM Forwarder script`n@echo off`necho Attempting to launch csvlint`nbundle exec --gemfile '$gemFilePath' csvlint %*" > "$csvLintInstallationFolder\bin\csvlint.bat"
 
           $oldPath = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
           $newPath = "$oldPath;$csvLintInstallationFolder\bin"
