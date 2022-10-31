@@ -41,14 +41,14 @@ jobs:
 
           $csvLintInstallationFolder = bundle info csvlint --path | % {$_ -replace '/','\'}
 
-          echo "@REM Forwarder script`n@echo off`necho Attempting to launch csvlint`nruby $csvLintInstallationFolder\bin\csvlint %*" > $csvLintInstallationFolder\bin\csvlint.bat
+          echo "@REM Forwarder script`n@echo off`necho Attempting to launch csvlint`nruby $csvLintInstallationFolder\bin\csvlint %*" > "$csvLintInstallationFolder\bin\csvlint.bat"
 
           $oldPath = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
           $newPath = "$oldPath;$csvLintInstallationFolder\bin"
           Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $newPath
           echo $newPath
 
-          $csvLintInstallationFolder\bin\csvlint.bat --help
+          "$csvLintInstallationFolder\bin\csvlint.bat" --help
         shell: pwsh
 
       # Setting up csv2rdf
