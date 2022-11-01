@@ -55,9 +55,6 @@ jobs:
           $newPath = "$oldPath;$csvLintInstallationFolder"
           Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $newPath
           echo $newPath
-
-          $env:PATH += ";$csvLintInstallationFolder"
-          csvlint
         shell: pwsh
 
       # Setting up csv2rdf
