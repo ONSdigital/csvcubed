@@ -94,7 +94,7 @@ def get_metrics(
 
     path_to_log_file = csv_metrics_in.parent / "jmeter.log"
     if path_to_log_file.exists():
-        shutil.move(path_to_log_file, out_folder_for_run / "jmeter.log")
+        shutil.move(path_to_log_file, out_folder_for_run / f"jmeter.{run_type}.log")
     else:
         raise ValueError("jmeter.log doesn't exist")
 
