@@ -284,6 +284,42 @@ def test_get_dataset_observations_info():
     assert_frame_equal(result.dataset_head, _expected_dataframe.head(n=10))
     assert_frame_equal(result.dataset_tail, _expected_dataframe.tail(n=10))
 
+def test_get_dataset_observations_info_for_pivoted_single_measure_shape_dataset():
+    """
+    Ensures the expected 'DatasetObservationsInfoResult' object is returned from a pivoted single measure shape input.
+    """
+    csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
+    dataset = load_csv_to_dataframe(csvw_metadata_json_path, "csv_file.csv")
+
+    result: DatasetObservationsInfoResult = get_dataset_observations_info(
+        dataset, CSVWType.QbDataSet, CSVWShape.Pivoted
+    )
+
+    assert result.num_of_observations == 11
+    assert result.num_of_duplicates == 2
+    
+    # Leave below to fix with Gishan
+    assert_frame_equal(result.dataset_head, _expected_dataframe.head(n=10))
+    assert_frame_equal(result.dataset_tail, _expected_dataframe.tail(n=10))
+
+def test_get_dataset_observations_info_for_pivoted_multi_measure_shape_dataset():
+    """
+    Ensures the expected 'DatasetObservationsInfoResult' object is returned from a pivoted single measure shape input.
+    """
+    csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
+    dataset = load_csv_to_dataframe(csvw_metadata_json_path, "csv_file.csv")
+
+    result: DatasetObservationsInfoResult = get_dataset_observations_info(
+        dataset, CSVWType.QbDataSet, CSVWShape.Pivoted
+    )
+
+    assert result.num_of_observations == 11
+    assert result.num_of_duplicates == 2
+    
+    # Leave below to fix with Gishan
+    assert_frame_equal(result.dataset_head, _expected_dataframe.head(n=10))
+    assert_frame_equal(result.dataset_tail, _expected_dataframe.tail(n=10))
+
 
 def test_get_measure_col_name_from_dsd_measure_col_present():
     """

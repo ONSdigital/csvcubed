@@ -248,7 +248,7 @@ def select_csvw_dsd_qube_components(
 
 def select_is_pivoted_shape_for_measures_in_data_set(rdf_graph: rdflib.ConjunctiveGraph) -> List[IsPivotedShapeMeasureResult]:
     """
-    TODO:
+    Queries the measure and whether it is a part of a pivoted or standard shape cube.
     """
     result_is_pivoted_shape: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryName.SELECT_IS_PIVOTED_SHAPE_FOR_MEASURES_IN_DATA_SET),

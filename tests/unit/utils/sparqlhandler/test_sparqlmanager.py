@@ -513,7 +513,8 @@ def _get_measure_by_measure_uri(
     results: List[IsPivotedShapeMeasureResult], measure_uri: str
 ) -> IsPivotedShapeMeasureResult:
     """
-    TODO: Add description
+    Filters measures so the correct measure is being retrieved from a list of IsPivotedShapeMeasureResults.
+    This ensures the order of the result list elements is retained when result components are being accessed by other functions.
     """
     filtered_results = [result for result in results if result.measure == measure_uri]
     assert len(filtered_results) == 1

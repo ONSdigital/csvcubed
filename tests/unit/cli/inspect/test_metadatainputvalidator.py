@@ -135,14 +135,17 @@ def test_detect_type_other():
     csvw_metadata_json_path = _test_case_base_dir / "json.table.json"
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
+    
+    is_pivoted_shape_measures = select_is_pivoted_shape_for_measures_in_data_set(csvw_metadata_rdf_graph)
     csvw_metadata_rdf_validator = MetadataValidator(
-        csvw_metadata_rdf_graph, csvw_metadata_json_path
+        csvw_metadata_rdf_graph, csvw_metadata_json_path, is_pivoted_shape_measures
     )
 
     (
         _,
         csvw_type,
-    ) = csvw_metadata_rdf_validator.validate_and_detect_type()
+        _,
+    ) = csvw_metadata_rdf_validator.validate_csvw()
 
     assert csvw_type == CSVWType.Other
 
