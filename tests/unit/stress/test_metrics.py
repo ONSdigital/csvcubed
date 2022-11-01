@@ -15,13 +15,24 @@ _stress_test_cases_dir = get_test_cases_dir() / "stress"
 
 
 def test_stress_metrics():
+    """ """
     with TemporaryDirectory() as tmp:
         tmp_dir = Path(tmp)
 
-        copy(_stress_test_cases_dir / "buildmetrics.csv", tmp_dir)
+        copy(
+            _stress_test_cases_dir / "buildmetrics.csv",
+            tmp_dir,
+        )
+        copy(
+            _stress_test_cases_dir / "jmeter.log",
+            tmp_dir,
+        )
 
         build_metrics = get_metrics(
-            tmp_dir / "buildmetrics.csv", "build", "Some Identifier"
+            csv_metrics_in=tmp_dir / "buildmetrics.csv",
+            run_type="build",
+            run_identifier="someidentifier",
+            metrics_out_folder=tmp_dir / "metrics",
         )
 
         # Cut off precision of time value over seconds (currently returns the time in GMT).
@@ -41,6 +52,7 @@ def test_stress_metrics():
 
 
 def test_empty_metrics():
+    """ """
     with TemporaryDirectory() as tmp:
         tmp_dir = Path(tmp)
 
@@ -56,25 +68,38 @@ def test_empty_metrics():
 
 
 def test_resultant_path():
+    """ """
     with TemporaryDirectory() as tmp:
         tmp_dir = Path(tmp)
 
-        copy(_stress_test_cases_dir / "buildmetrics.csv", tmp_dir)
+        copy(
+            _stress_test_cases_dir / "buildmetrics.csv",
+            tmp_dir,
+        )
+        copy(
+            _stress_test_cases_dir / "jmeter.log",
+            tmp_dir,
+        )
 
+        run_identifier = "Some Identifier"
         build_metrics = get_metrics(
             tmp_dir / "buildmetrics.csv",
             "build",
-            "Some Identifier",
+            run_identifier,
             metrics_out_folder=tmp_dir / "metrics",
         )
 
         start_time = "08:04:18"
         assert (tmp_dir / "metrics").exists()
-        assert (tmp_dir / "metrics / Some Identifier").exists()
-        assert (tmp_dir / "metrics").exists()
+        assert (tmp_dir / "metrics" / run_identifier).exists()
         assert (
-            f"{tmp_dir} / metrics/ Some Identifier / Buildmetrics-2022-10-18 {start_time}.csv"
+            tmp_dir
+            / "metrics"
+            / run_identifier
+            / f"buildmetrics-2022-10-18 {start_time}.csv"
         ).exists()
+        assert not (tmp_dir / "jmeter.log").exists()
+        assert (tmp_dir / "metrics" / run_identifier / "jmeter.log").exists()
 
 
 if __name__ == "__main__":

@@ -21,7 +21,7 @@ class RunMetrics:
 
 
 def get_metrics(
-    path_to_csvfile: Path,
+    csv_metrics_in: Path,
     run_type: str,
     run_identifier: str,
     n_runs: int = 5,
@@ -29,11 +29,11 @@ def get_metrics(
 ) -> RunMetrics:
 
     # taking in the fliepath
-    data = pd.read_csv(path_to_csvfile)
+    data = pd.read_csv(csv_metrics_in)
 
     if data.shape[0] == 1:
         raise IndexError(
-            f"The generated CSV file {path_to_csvfile} appears to be empty. This could be caused by the performance monitor failing to initiate."
+            f"The generated CSV file {csv_metrics_in} appears to be empty. This could be caused by the performance monitor failing to initiate."
         )
 
     df2 = data.pivot(index="timeStamp", columns="label", values="elapsed")
@@ -81,7 +81,7 @@ def get_metrics(
     # creating the csv file where the results will be saved
     metrics_out_folder.mkdir(exist_ok=True)
     out_folder_for_run = metrics_out_folder / run_identifier
-    out_folder_for_run.mkdir()
+    out_folder_for_run.mkdir(exist_ok=True)
 
     result_file = run_type + "metrics-" + str(creation_date) + ".csv"
 
@@ -90,10 +90,11 @@ def get_metrics(
 
     # getting the path to the generated file
     df2.to_csv(path_to_metrics, encoding="utf-8")
-    os.remove(path_to_csvfile)
-    log_path = Path("jmeter.log")
-    if log_path.exists():
-        shutil.move(log_path, out_folder_for_run / "jmeter.log")
+    csv_metrics_in.unlink()
+
+    path_to_log_file = csv_metrics_in.parent / "jmeter.log"
+    if path_to_log_file.exists():
+        shutil.move(path_to_log_file, out_folder_for_run / "jmeter.log")
     else:
         raise ValueError("jmeter.log doesn't exist")
 
