@@ -41,18 +41,23 @@ jobs:
           Invoke-WebRequest -Uri "https://raw.githubusercontent.com/GSS-Cogs/csvlint-docker/master/Gemfile" -OutFile "Gemfile"
           gem install bundle
           "gem 'i18n', '~>1.12.0'" | Add-Content -Path .\Gemfile
-          bundle
+
+          bundle config set bin bin
+          bundle config set --local path 'vendor/bundle'
           bundle install
 
-          $csvLintInstallationFolder = bundle info csvlint --path | % {$_ -replace '/','\'}
+          $csvLintInstallationFolder = (Get-Item bin | Resolve-Path).Path.Substring(38)
           $gemFilePath = (Get-Item Gemfile | Resolve-Path).Path.Substring(38)
 
-          echo "@REM Forwarder script`n@echo off`necho Attempting to launch csvlint`nbundle exec --gemfile '$gemFilePath' csvlint %*" > "$csvLintInstallationFolder\bin\csvlint.bat"
+          echo "@REM Forwarder script`n@echo off`necho Attempting to launch csvlint`nruby $csvLintInstallationFolder\csvlint %*" > "$csvLintInstallationFolder\csvlint.bat"
 
           $oldPath = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
-          $newPath = "$oldPath;$csvLintInstallationFolder\bin"
+          $newPath = "$oldPath;$csvLintInstallationFolder"
           Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $newPath
           echo $newPath
+
+          $env:PATH += ";$csvLintInstallationFolder"
+          csvlint
         shell: pwsh
 
       # Setting up csv2rdf
