@@ -33,6 +33,9 @@ jobs:
       - name: Install csvlint (Windows)
         if: matrix.os == 'windows-latest'
         run: |
+          mkdir csvlint
+          cd csvlint
+
           Invoke-WebRequest -Uri https://curl.se/windows/dl-7.86.0/curl-7.86.0-win64-mingw.zip -OutFile "curl.zip"
           Expand-Archive -LiteralPath curl.zip -DestinationPath .
           cp curl-7.86.0-win64-mingw\bin\libcurl-x64.dll curl-7.86.0-win64-mingw\bin\libcurl.dll 
@@ -48,7 +51,6 @@ jobs:
           bundle install
 
           $csvLintInstallationFolder = (Get-Item bin | Resolve-Path).Path.Substring(38)
-          $gemFilePath = (Get-Item Gemfile | Resolve-Path).Path.Substring(38)
 
           echo "@REM Forwarder script`n@echo off`necho Attempting to launch csvlint`nruby $csvLintInstallationFolder\csvlint %*" > "$csvLintInstallationFolder\csvlint.bat"
 
@@ -57,6 +59,10 @@ jobs:
           Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $newPath
           echo $newPath
         shell: pwsh
+
+      - name: Test csvlint (windows)
+        if: matrix.os == 'windows-latest'
+        run: csvlint
 
       # Setting up csv2rdf
       - name: Install csv2rdf (Windows)
@@ -107,8 +113,16 @@ jobs:
           path: ~/.cache/pypoetry/virtualenvs
           key: ${{ matrix.os }}-poetry-${{ hashFiles('poetry.lock') }}
 
+      # - uses: actions/cache@v2
+      #   if: matrix.os == 'windows-latest'
+      #   with:
+      #     path: TODO
+      #     key: ${{ matrix.os }}-gems-${{ hashFiles('poetry.lock') }}
+
       - name: Install python packages
-        run: poetry install
+        run: |
+          poetry install
+          poetry env info
 
 #       - name: Run pyright
 #         run: poetry run pyright . --lib
