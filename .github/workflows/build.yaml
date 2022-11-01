@@ -47,8 +47,9 @@ jobs:
 
           $gemDir = gem environment gemdir
           $gemSearchDirs = gem environment gempath
+          $correctVersionRubyPath = where ruby
 
-          echo "Gemdir is $gemDir and it wants to search $gemSearchDirs"
+          echo "Gemdir is $gemDir and it wants to search $gemSearchDirs. Ruby path: $$correctVersionRubyPath"
 
           bundle config set bin bin
           bundle config set path "$gemDir"
@@ -57,7 +58,7 @@ jobs:
 
           $csvLintInstallationFolder = (Get-Item bin | Resolve-Path).Path.Substring(38)
 
-          echo "@REM Forwarder script`n@echo off`necho Attempting to launch csvlint`nruby $csvLintInstallationFolder\csvlint %*" > "$csvLintInstallationFolder\csvlint.bat"
+          echo "@REM Forwarder script`n@echo off`necho Attempting to launch csvlint`n$correctVersionRubyPath $csvLintInstallationFolder\csvlint %*" > "$csvLintInstallationFolder\csvlint.bat"
 
           $oldPath = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
           $newPath = "$oldPath;$csvLintInstallationFolder"
