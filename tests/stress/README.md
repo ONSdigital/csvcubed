@@ -6,13 +6,15 @@ The test plans are run consecutively via a bash script and follow broadly the sa
 
 - Start running a performance monitor in the background
 - Generate a "maximally complex" CSV file with the number of rows the user has given as a parameter to the bash script.
-  1. The inspect command test then runs 1 build command on this CSV file so that a `.csv-metadata.json` file can be used.
+  1. This is a preprocess which is a groovy script which in turn runs a python script because JMeter will not execute `.py` files.
+      - The inspect command test then runs 1 build command on this CSV file so that a `.csv-metadata.json` file can be used.
 - Run the test's designated command 5 times using the results of the preprocess step above as inputs.
   1. The performance monitor records CPU and Memory usage throughout the duration of the test's 5 runs.
 - A postprocess removes any unwanted resultant files.
+  1. Also a groovy script which in turn runs a python script.
 - Steps 2 - 4 are repeated for the second command
-- The metrics files are cleaned up and placed into relevant folders.
-- Finally, the performance monitor is terminated.
+- The performance monitor is terminated.
+- Finally, metrics files are cleaned up and placed into relevant folders.
 
 ## Installation Guide
 - Install JMeter: https://jmeter.apache.org/download_jmeter.cgi

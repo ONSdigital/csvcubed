@@ -15,7 +15,10 @@ _stress_test_cases_dir = get_test_cases_dir() / "stress"
 
 
 def test_stress_metrics():
-    """ """
+    """
+    Test to check that the logic behind the calculations is correct. Values
+    calculated by hand and compared to their coded results.
+    """
     with TemporaryDirectory() as tmp:
         tmp_dir = Path(tmp)
 
@@ -47,12 +50,15 @@ def test_stress_metrics():
         # Round metrics values to closest number of d.p we could calulate from data
         assert round(build_metrics.max_value_cpu, 2) == 24.67
         assert round(build_metrics.max_value_memory, 2) == 42.61
-        assert round(build_metrics.average_value_cpu, 4) == 12.2024
-        assert round(build_metrics.average_value_memory, 4) == 42.5142
+        assert round(build_metrics.average_value_cpu, 2) == 12.20
+        assert round(build_metrics.average_value_memory, 2) == 42.51
 
 
 def test_empty_metrics():
-    """ """
+    """
+    Test to check that an error is thrown in the event a metrics file is empty
+    which would suggest that the serverAgent has failed to start properly.
+    """
     with TemporaryDirectory() as tmp:
         tmp_dir = Path(tmp)
 
@@ -68,7 +74,10 @@ def test_empty_metrics():
 
 
 def test_resultant_path():
-    """ """
+    """
+    Test to check that the metrics_converter script will process, place and
+    rename files in the correct locations.
+    """
     with TemporaryDirectory() as tmp:
         tmp_dir = Path(tmp)
 

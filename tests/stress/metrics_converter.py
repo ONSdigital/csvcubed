@@ -65,10 +65,10 @@ def get_metrics(
     average_time = temp_array[len(temp_array) - 1] / n_runs
     total_test_time = timedelta(seconds=temp_array[len(temp_array) - 1])
 
-    max_value_cpu = df2["localhost CPU"].max()
-    max_value_memory = df2["localhost Memory"].max()
-    average_value_cpu = df2["localhost CPU"].mean()
-    average_value_memory = df2["localhost Memory"].mean()
+    max_value_cpu = round(df2["localhost CPU"].max(), 2)
+    max_value_memory = round(df2["localhost Memory"].max(), 2)
+    average_value_cpu = round(df2["localhost CPU"].mean(), 2)
+    average_value_memory = round(df2["localhost Memory"].mean(), 2)
 
     # setting the first index to 0
     temp_array[0] = 0
@@ -132,6 +132,7 @@ if __name__ == "__main__":
         "Avarage run time :{:0>8} ".format(str(timedelta(seconds=metrics.average_time)))
         + " Total test time :{:0>8}".format(str(metrics.total_test_time))
     )
+    # Round printed metrics to 2 d.p
     print("\nMax CPU Usage % : " + str(metrics.max_value_cpu))
     print("\nMax Memory Usage % : " + str(metrics.max_value_memory))
     print("\nAvarage CPU Usage % : " + str(metrics.average_value_cpu))
