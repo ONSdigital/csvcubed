@@ -45,9 +45,14 @@ jobs:
           gem install bundle
           "gem 'i18n', '~>1.12.0'" | Add-Content -Path .\Gemfile
 
-          bundle config set --global auto_install true
+          $gemDir = gem environment gemdir
+          $gemSearchDirs = gem environment gempath
+
+          echo "Gemdir is $gemDir and it wants to search $gemSearchDirs"
+
           bundle config set bin bin
-          bundle config set --local path 'vendor/bundle'
+          bundle config set path "$gemDir"
+          # bundle config set --local path 'vendor/bundle'
           bundle install
 
           $csvLintInstallationFolder = (Get-Item bin | Resolve-Path).Path.Substring(38)
