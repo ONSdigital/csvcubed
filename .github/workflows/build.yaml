@@ -20,7 +20,7 @@ jobs:
       - uses: actions/cache@v2
         if: matrix.os == 'windows-latest'
         with:
-          path: vendor/bundle
+          path: csvlint/vendor/bundle
           key: ${{ matrix.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
           restore-keys: |
             ${{ matrix.os }}-gems-
@@ -62,7 +62,9 @@ jobs:
 
       - name: Test csvlint (windows)
         if: matrix.os == 'windows-latest'
-        run: csvlint
+        run: |
+          $env:PATH = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
+          csvlint
 
       # Setting up csv2rdf
       - name: Install csv2rdf (Windows)
