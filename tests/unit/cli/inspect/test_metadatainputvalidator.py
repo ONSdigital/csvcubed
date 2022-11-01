@@ -148,7 +148,7 @@ def test_detect_type_other():
 
 def test_detect_csvw_shape_pivoted():
     """
-    TODO: Description
+    Ensures that the shape of the cube represented by the input metadata is correctly returned as Pivoted.
     """
     csvw_metadata_json_path = _test_case_base_dir / "pivoted-multi-measure-dataset" / "qb-id-10003.csv-metadata.json"
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
@@ -167,9 +167,9 @@ def test_detect_csvw_shape_pivoted():
 
     assert csvw_shape == CSVWShape.Pivoted
 
-def test_detect_csvw_shape_pivoted():
+def test_detect_csvw_shape_standard():
     """
-    TODO: Description
+    Ensures that the shape of the cube represented by the input metadata is correctly returned as Standard.
     """
     csvw_metadata_json_path = _test_case_base_dir / "single-unit_single-measure" / "energy-trends-uk-total-energy.csv-metadata.json"
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)

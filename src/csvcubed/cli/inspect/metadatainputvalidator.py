@@ -83,13 +83,22 @@ class MetadataValidator:
     
     def _detect_shape(self) -> CSVWShape:
         """
-        TODO: Description
+        Given a metadata validator as input, returns the shape of the cube that metadata describes (Pivoted or Standard).
         """
-
-        # Csvw is a pivoted shape csvw, if all the measures are pivoted shape
-        # Csvw is a standard shape csvw, if all the measures are NOT pivoted shape
-        # Otherwise, it is not a supported csvw, hence throw a user-friendly error with inspect error types
-
-        #self.is_pivoted_measures[0].is_pivoted_shape
+        #TODO: Gishan to abstract this and detect_shape_of_cube in cube.py to a single function.
+        all_pivoted = True
+        all_standard_shape = True
+        for measure in self.is_pivoted_measures:
+            all_pivoted = (
+                all_pivoted and measure.is_pivoted_shape
+            )
+            all_standard_shape = (
+                all_standard_shape and not measure.is_pivoted_shape
+            )
         
-        return CSVWShape.Standard
+        if all_pivoted:
+            return CSVWShape.Pivoted
+        elif all_standard_shape:
+            return CSVWShape.Standard
+        else:
+            raise TypeError("The input metadata is invalid as the shape of the cube it represents is not supported.")

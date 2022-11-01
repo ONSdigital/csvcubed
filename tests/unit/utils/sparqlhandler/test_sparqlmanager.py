@@ -1,5 +1,6 @@
 from email.errors import ObsoleteHeaderDefect
 from pathlib import Path
+from typing import List
 
 import pytest
 from csvcubed.utils.iterables import first
@@ -15,6 +16,7 @@ from csvcubed.models.sparqlresults import (
     DSDLabelURIResult,
     DSDSingleUnitResult,
     DatasetURLResult,
+    IsPivotedShapeMeasureResult,
     QubeComponentsResult,
     MetadataDependenciesResult,
 )
@@ -161,11 +163,16 @@ def test_select_csvw_catalog_metadata_for_codelist():
     assert result.contact_point == "None"
     assert result.identifier == "Alcohol Content"
 
+
 def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
     """
     Ensures that the cube components in a pivoted multi-measure dataset correctly link to observation value columns.
     """
-    csvw_metadata_json_path = _test_case_base_dir / "pivoted-multi-measure-dataset" / "qb-id-10003.csv-metadata.json"
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-multi-measure-dataset"
+        / "qb-id-10003.csv-metadata.json"
+    )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
@@ -183,69 +190,62 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
     assert result.dataset_label == "Pivoted Shape Cube"
     assert result.dsd_uri == "qb-id-10003.csv#structure"
     assert len(components) == 9
-    
+
     # Asserts whether the observation value column is correctly linked to a dimension column
-    assert (
-        components[0].property
-        == "qb-id-10003.csv#dimension/some-dimension"
-    )
+    assert components[0].property == "qb-id-10003.csv#dimension/some-dimension"
     assert components[0].property_label == "Some Dimension"
     assert components[0].property_type == ComponentPropertyType.Dimension.value
     assert components[0].csv_col_title == ""
-    assert components[0].required is True 
-    assert components[0].observation_value_column_titles == "Some Obs Val, Some Other Obs Val"
-    
-    # Asserts whether the observation value column is correctly not linked to a dimension column
+    assert components[0].required is True
     assert (
-        components[3].property
-        == "http://purl.org/linked-data/cube#measureType"
+        components[0].observation_value_column_titles
+        == "Some Obs Val, Some Other Obs Val"
     )
+
+    # Asserts whether the observation value column is correctly not linked to a dimension column
+    assert components[3].property == "http://purl.org/linked-data/cube#measureType"
     assert components[3].property_label == ""
     assert components[3].property_type == ComponentPropertyType.Dimension.value
     assert components[3].csv_col_title == ""
-    assert components[3].required is True 
+    assert components[3].required is True
     assert components[3].observation_value_column_titles == ""
-    
+
     # Asserts whether the observation value column is correctly linked to an attribute column
-    assert (
-        components[2].property
-        == "qb-id-10003.csv#attribute/some-attribute"
-    )
+    assert components[2].property == "qb-id-10003.csv#attribute/some-attribute"
     assert components[2].property_label == "Some Attribute"
     assert components[2].property_type == ComponentPropertyType.Attribute.value
     assert components[2].csv_col_title == "Some Attribute"
     assert components[2].required is False
     assert components[2].observation_value_column_titles == "Some Obs Val"
-    
+
     # Asserts whether the observation value column is correctly linked to a measure column
-    assert (
-        components[5].property
-        == "qb-id-10003.csv#measure/some-measure"
-    )
+    assert components[5].property == "qb-id-10003.csv#measure/some-measure"
     assert components[5].property_label == "Some Measure"
     assert components[5].property_type == ComponentPropertyType.Measure.value
     assert components[5].csv_col_title == "Some Obs Val"
     assert components[5].required is True
     assert components[5].observation_value_column_titles == "Some Obs Val"
-    
+
     # Asserts whether the observation value column is correctly linked to another measure column
-    assert (
-        components[8].property
-        == "qb-id-10003.csv#measure/some-other-measure"
-    )
+    assert components[8].property == "qb-id-10003.csv#measure/some-other-measure"
     assert components[8].property_label == "Some Other Measure"
     assert components[8].property_type == ComponentPropertyType.Measure.value
     assert components[8].csv_col_title == "Some Other Obs Val"
     assert components[8].required is True
     assert components[8].observation_value_column_titles == "Some Other Obs Val"
 
+
 def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
     """
     Ensures that the cube components in a pivoted single-measure dataset correctly link to observation value columns.
     """
     # TODO: CHECK csv col title inconsistency with Rob.
-    
-    csvw_metadata_json_path = _test_case_base_dir / "pivoted-single-measure-dataset" / "qb-id-10004.csv-metadata.json"
+
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-single-measure-dataset"
+        / "qb-id-10004.csv-metadata.json"
+    )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
@@ -263,34 +263,25 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
     assert result.dataset_label == "Pivoted Shape Cube"
     assert result.dsd_uri == "qb-id-10004.csv#structure"
     assert len(components) == 6
-    
+
     # Asserts whether the observation value column is correctly linked to a dimension column.
-    assert (
-        components[0].property
-        == "qb-id-10004.csv#dimension/some-dimension"
-    )
+    assert components[0].property == "qb-id-10004.csv#dimension/some-dimension"
     assert components[0].property_label == "Some Dimension"
     assert components[0].property_type == ComponentPropertyType.Dimension.value
     assert components[0].csv_col_title == ""
-    assert components[0].required is True 
+    assert components[0].required is True
     assert components[0].observation_value_column_titles == "Some Obs Val"
-    
+
     # Asserts whether the observation value column correctly does not link to an existing dimension column (No observation value.)
-    assert (
-        components[3].property
-        == "http://purl.org/linked-data/cube#measureType"
-    )
+    assert components[3].property == "http://purl.org/linked-data/cube#measureType"
     assert components[3].property_label == ""
     assert components[3].property_type == ComponentPropertyType.Dimension.value
     assert components[3].csv_col_title == ""
-    assert components[3].required is True 
+    assert components[3].required is True
     assert components[3].observation_value_column_titles == ""
 
     # Asserts whether the observation value column correctly links to an attribute column.
-    assert (
-        components[2].property
-        == "qb-id-10004.csv#attribute/some-attribute"
-    )
+    assert components[2].property == "qb-id-10004.csv#attribute/some-attribute"
     assert components[2].property_label == "Some Attribute"
     assert components[2].property_type == ComponentPropertyType.Attribute.value
     assert components[2].csv_col_title == "Some Attribute"
@@ -298,10 +289,7 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
     assert components[2].observation_value_column_titles == "Some Obs Val"
 
     # Asserts whether the observation value column correctly links to the measure.
-    assert (
-        components[5].property
-        == "qb-id-10004.csv#measure/some-measure"
-    )
+    assert components[5].property == "qb-id-10004.csv#measure/some-measure"
     assert components[5].property_label == "Some Measure"
     assert components[5].property_type == ComponentPropertyType.Measure.value
     assert components[5].csv_col_title == "Some Obs Val"
@@ -520,35 +508,72 @@ def test_select_table_schema_properties():
         == "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services-by-subnational-areas-of-the-uk#scheme/industry-grouping"
     )
 
+
+def _get_measure_by_measure_uri(
+    results: List[IsPivotedShapeMeasureResult], measure_uri: str
+) -> IsPivotedShapeMeasureResult:
+    """
+    TODO: Add description
+    """
+    filtered_results = [result for result in results if result.measure == measure_uri]
+    assert len(filtered_results) == 1
+
+    return filtered_results[0]
+
+
 def test_select_is_pivoted_shape_for_measures_in_pivoted_shape_data_set():
     """
-    TODO: Description
+    Checks that the measures retrieved from a metadata file that represents a pivoted shape cube are as expected.
     """
-    csvw_metadata_json_path = _test_case_base_dir / "pivoted-multi-measure-dataset" / "qb-id-10003.csv-metadata.json"
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-multi-measure-dataset"
+        / "qb-id-10003.csv-metadata.json"
+    )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     results = select_is_pivoted_shape_for_measures_in_data_set(csvw_metadata_rdf_graph)
-    
+
     assert results is not None
-    # TODO:
-        # 1. Check the length of the list
-        # 2. Check the measure and isPivotedShape in first obj
-        # 3. Check the measure and isPivotedShape in second obj
+    assert len(results) == 2
+
+    result = _get_measure_by_measure_uri(
+        results, "qb-id-10003.csv#measure/some-measure"
+    )
+    assert result.measure == "qb-id-10003.csv#measure/some-measure"
+    assert result.is_pivoted_shape == True
+
+    result = _get_measure_by_measure_uri(
+        results, "qb-id-10003.csv#measure/some-other-measure"
+    )
+    assert result.measure == "qb-id-10003.csv#measure/some-other-measure"
+    assert result.is_pivoted_shape == True
+
 
 def test_select_is_pivoted_shape_for_measures_in_standard_shape_data_set():
     """
-    TODO: Description
+    Checks that the measures retrieved from a metadata file that represents a standard shape cube are as expected.
     """
-    csvw_metadata_json_path = _test_case_base_dir / "single-unit_single-measure" / "energy-trends-uk-total-energy.csv-metadata.json"
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "single-unit_single-measure"
+        / "energy-trends-uk-total-energy.csv-metadata.json"
+    )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     results = select_is_pivoted_shape_for_measures_in_data_set(csvw_metadata_rdf_graph)
-    
+
     assert results is not None
-    # TODO:
-        # 1. Check the length of the list
-        # 2. Check the measure and isPivotedShape in first obj
-        # 3. Check the measure and isPivotedShape in second obj
+    assert len(results) == 1
+
+    result = _get_measure_by_measure_uri(
+        results, "energy-trends-uk-total-energy.csv#measure/energy-consumption"
+    )
+    assert (
+        result.measure == "energy-trends-uk-total-energy.csv#measure/energy-consumption"
+    )
+    assert result.is_pivoted_shape == False
+
 
 def test_rdf_dependency_loaded() -> None:
     """
