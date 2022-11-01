@@ -288,15 +288,18 @@ def test_get_dataset_observations_info_for_pivoted_single_measure_shape_dataset(
     """
     Ensures the expected 'DatasetObservationsInfoResult' object is returned from a pivoted single measure shape input.
     """
-    csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
-    dataset = load_csv_to_dataframe(csvw_metadata_json_path, "csv_file.csv")
+    _test_case_dir = get_test_cases_dir() / "cli" / "inspect" / "pivoted-single-measure-dataset"
+    csvw_metadata_json_path = _test_case_dir / "qb-id-10004.csv-metadata.json"
+    dataset = load_csv_to_dataframe(csvw_metadata_json_path, "qb-id-10004.csv")
+
+    
 
     result: DatasetObservationsInfoResult = get_dataset_observations_info(
         dataset, CSVWType.QbDataSet, CSVWShape.Pivoted
     )
 
-    assert result.num_of_observations == 11
-    assert result.num_of_duplicates == 2
+    assert result.num_of_observations == 3
+    assert result.num_of_duplicates == 0
     
     # Leave below to fix with Gishan
     assert_frame_equal(result.dataset_head, _expected_dataframe.head(n=10))
@@ -306,15 +309,16 @@ def test_get_dataset_observations_info_for_pivoted_multi_measure_shape_dataset()
     """
     Ensures the expected 'DatasetObservationsInfoResult' object is returned from a pivoted single measure shape input.
     """
-    csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
-    dataset = load_csv_to_dataframe(csvw_metadata_json_path, "csv_file.csv")
+    _test_case_dir = get_test_cases_dir() / "cli" / "inspect" / "pivoted-multi-measure-dataset"
+    csvw_metadata_json_path = _test_case_dir / "qb-id-10003.csv-metadata.json"
+    dataset = load_csv_to_dataframe(csvw_metadata_json_path, "qb-id-10003.csv")
 
     result: DatasetObservationsInfoResult = get_dataset_observations_info(
         dataset, CSVWType.QbDataSet, CSVWShape.Pivoted
     )
 
-    assert result.num_of_observations == 11
-    assert result.num_of_duplicates == 2
+    assert result.num_of_observations == 3
+    assert result.num_of_duplicates == 0
     
     # Leave below to fix with Gishan
     assert_frame_equal(result.dataset_head, _expected_dataframe.head(n=10))
