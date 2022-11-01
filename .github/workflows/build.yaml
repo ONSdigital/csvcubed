@@ -163,6 +163,12 @@ jobs:
           name: ${{ matrix.os }}-python${{ matrix.python-version }} behave test results
           path: reports/*.xml
 
+      - name: Remove broken characters from xml test files
+        # By removing broken characters from the xml unit/behave test files, we can then publish the tests results stored 
+        # in those files in a user friendly way on github actions using 'EnricoMi/publish-unit-test-result-action@v1'.
+        if: always()
+        run: sed -i -e 's/[\x0A\x1B]//g' reports/TESTS-*.xml
+
       - name: Publish Behave Test Results
         if: always()
         uses: EnricoMi/publish-unit-test-result-action/composite@v2
