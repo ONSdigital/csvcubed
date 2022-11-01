@@ -99,7 +99,7 @@ def test_resultant_path():
             / f"buildmetrics-2022-10-18 {start_time}.csv"
         ).exists()
         assert not (tmp_dir / "jmeter.log").exists()
-        assert (tmp_dir / "metrics" / run_identifier / "jmeter.log").exists()
+        assert (tmp_dir / "metrics" / run_identifier / "jmeter.build.log").exists()
 
 
 if __name__ == "__main__":
