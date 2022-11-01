@@ -46,10 +46,6 @@ jobs:
           "gem 'i18n', '~>1.12.0'" | Add-Content -Path .\Gemfile
 
           $gemDir = gem environment gemdir
-          $gemSearchDirs = gem environment gempath
-          $correctVersionRubyPath = where ruby
-
-          echo "Gemdir is $gemDir and it wants to search $gemSearchDirs. Ruby path: $correctVersionRubyPath"
 
           bundle config set bin bin
           bundle config set path "$gemDir"
@@ -64,12 +60,6 @@ jobs:
           Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $newPath
           echo $newPath
         shell: pwsh
-
-      - name: Test csvlint (windows)
-        if: matrix.os == 'windows-latest'
-        run: |
-          $env:PATH = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
-          csvlint
 
       # Setting up csv2rdf
       - name: Install csv2rdf (Windows)
