@@ -830,5 +830,5 @@ Feature: Behaviour testing of csvcubed inspect.
         And the Catalog Metadata printable is validated for multi-measure pivoted data set
         And the Data Structure Definition printable is validated for multi-measure pivoted data set
         And the Code List printable is validated for multi-measure pivoted data set
-        And the Data Set Information printable is validated for multi-measure pivoted data set
+        #And the Data Set Information printable is validated for multi-measure pivoted data set
         And the Value Counts printable is validated for multi-measure pivoted data set
