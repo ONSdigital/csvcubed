@@ -234,7 +234,7 @@ def select_csvw_dsd_qube_components(
     
     result_observation_val_col_titles: Optional[List[ResultRow]] = None
     if csvw_shape == CSVWShape.Pivoted:
-        result_observation_val_col_titles: List[ResultRow] = select(
+        result_observation_val_col_titles = select(
             _get_query_string_from_file(
                 SPARQLQueryName.SELECT_OBS_VAL_FOR_DSD_COMPONENT_PROPERTIES
             ),

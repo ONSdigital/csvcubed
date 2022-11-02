@@ -133,7 +133,7 @@ _expected_dataframe = DataFrame(
     ]
 ).replace("", np.NAN)
 
-_expected_dataframe_pivoted_single_measure = DataFrame(
+expected_dataframe_pivoted_single_measure = DataFrame(
     [
         {"Some Dimension": "a", "Some Attribute": "attr-a", "Some Obs Val": 1},
         {"Some Dimension": "b", "Some Attribute": "attr-b", "Some Obs Val": 2},
@@ -141,7 +141,7 @@ _expected_dataframe_pivoted_single_measure = DataFrame(
     ]
 ).replace("", np.NAN)
 
-_expected_dataframe_pivoted_multi_measure = DataFrame(
+expected_dataframe_pivoted_multi_measure = DataFrame(
     [
         {
             "Some Dimension": "a",
@@ -333,10 +333,10 @@ def test_get_dataset_observations_info_for_pivoted_single_measure_shape_dataset(
     assert result.num_of_observations == 3
     assert result.num_of_duplicates == 0
     assert_frame_equal(
-        result.dataset_head, _expected_dataframe_pivoted_single_measure.head(n=3)
+        result.dataset_head, expected_dataframe_pivoted_single_measure.head(n=3)
     )
     assert_frame_equal(
-        result.dataset_tail, _expected_dataframe_pivoted_single_measure.tail(n=3)
+        result.dataset_tail, expected_dataframe_pivoted_single_measure.tail(n=3)
     )
 
 
@@ -357,10 +357,10 @@ def test_get_dataset_observations_info_for_pivoted_multi_measure_shape_dataset()
     assert result.num_of_observations == 3
     assert result.num_of_duplicates == 0
     assert_frame_equal(
-        result.dataset_head, _expected_dataframe_pivoted_multi_measure.head(n=3)
+        result.dataset_head, expected_dataframe_pivoted_multi_measure.head(n=3)
     )
     assert_frame_equal(
-        result.dataset_tail, _expected_dataframe_pivoted_multi_measure.tail(n=3)
+        result.dataset_tail, expected_dataframe_pivoted_multi_measure.tail(n=3)
     )
 
 

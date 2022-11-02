@@ -394,7 +394,7 @@ def map_qube_components_sparql_result(
 
     :return: `QubeComponentsResult`
     """
-    obs_val_col_title_results: List[ObsValDsdComponentResult] = None
+    obs_val_col_title_results: Optional[List[ObsValDsdComponentResult]] = None
     if sparql_results_obs_val_col_titles is not None:
         obs_val_col_title_results = _map_obs_val_for_dsd_component_properties_results(
             sparql_results_obs_val_col_titles
@@ -405,7 +405,7 @@ def map_qube_components_sparql_result(
         dsd_component_result: QubeComponentResult = _map_qube_component_sparql_result(
             result, json_path
         )
-        if sparql_results_obs_val_col_titles is not None:
+        if sparql_results_obs_val_col_titles is not None and obs_val_col_title_results is not None:
             obs_val_col_title_result_for_component = [
                 obs_val_col_title_result
                 for obs_val_col_title_result in obs_val_col_title_results

@@ -792,4 +792,43 @@ Feature: Behaviour testing of csvcubed inspect.
                     ├── services
         """
 
+    
+    Scenario: inspect command should accurately inspect a pivoted single-measure cube
+        Given the existing test-case file "cli/inspect/pivoted-single-measure-dataset/qb-id-10004.csv-metadata.json"
+        And the existing test-case file "cli/inspect/pivoted-single-measure-dataset/qb-id-10004.csv"
+        And the existing test-case file "cli/inspect/pivoted-single-measure-dataset/some-dimension.csv-metadata.json"
+        And the existing test-case file "cli/inspect/pivoted-single-measure-dataset/some-dimension.table.json"
+        And the existing test-case file "cli/inspect/pivoted-single-measure-dataset/some-dimension.csv"
+    
+        When the Metadata file path is detected and validated "cli/inspect/pivoted-single-measure-dataset/qb-id-10004.csv-metadata.json"
+        And the csv file path is detected and validated "cli/inspect/pivoted-single-measure-dataset/qb-id-10004.csv"
+        And the Metadata File json-ld is loaded to a rdf graph
+        And the Metadata File is validated
+        And the Printables for data cube are generated    
         
+        Then the Type printable is validated for single-measure pivoted data set
+        And the Catalog Metadata printable is validated for single-measure pivoted data set
+        And the Data Structure Definition printable is validated for single-measure pivoted data set
+        And the Code List printable is validated for single-measure pivoted data set
+        And the Data Set Information printable is validated for single-measure pivoted data set
+        And the Value Counts printable is validated for single-measure pivoted data set
+
+    Scenario: inspect command should accurately inspect a pivoted multi-measure cube
+        Given the existing test-case file "cli/inspect/pivoted-multi-measure-dataset/qb-id-10003.csv-metadata.json"
+        And the existing test-case file "cli/inspect/pivoted-multi-measure-dataset/qb-id-10003.csv"
+        And the existing test-case file "cli/inspect/pivoted-multi-measure-dataset/some-dimension.csv-metadata.json"
+        And the existing test-case file "cli/inspect/pivoted-multi-measure-dataset/some-dimension.table.json"
+        And the existing test-case file "cli/inspect/pivoted-multi-measure-dataset/some-dimension.csv"
+    
+        When the Metadata file path is detected and validated "cli/inspect/pivoted-multi-measure-dataset/qb-id-10003.csv-metadata.json"
+        And the csv file path is detected and validated "cli/inspect/pivoted-multi-measure-dataset/qb-id-10003.csv"
+        And the Metadata File json-ld is loaded to a rdf graph
+        And the Metadata File is validated
+        And the Printables for data cube are generated    
+        
+        Then the Type printable is validated for multi-measure pivoted data set
+        And the Catalog Metadata printable is validated for multi-measure pivoted data set
+        And the Data Structure Definition printable is validated for multi-measure pivoted data set
+        And the Code List printable is validated for multi-measure pivoted data set
+        And the Data Set Information printable is validated for multi-measure pivoted data set
+        And the Value Counts printable is validated for multi-measure pivoted data set

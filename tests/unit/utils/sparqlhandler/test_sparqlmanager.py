@@ -163,7 +163,7 @@ def test_select_csvw_catalog_metadata_for_codelist():
     assert result.contact_point == "None"
     assert result.identifier == "Alcohol Content"
 
-
+# TODO: CHECK csv col title inconsistency with Rob.
 def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
     """
     Ensures that the cube components in a pivoted multi-measure dataset correctly link to observation value columns.
@@ -235,11 +235,11 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
     assert components[8].observation_value_column_titles == "Some Other Obs Val"
 
 
+# TODO: CHECK csv col title inconsistency with Rob.
 def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
     """
     Ensures that the cube components in a pivoted single-measure dataset correctly link to observation value columns.
     """
-    # TODO: CHECK csv col title inconsistency with Rob.
 
     csvw_metadata_json_path = (
         _test_case_base_dir
