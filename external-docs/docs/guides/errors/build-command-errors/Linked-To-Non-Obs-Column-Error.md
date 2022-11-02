@@ -2,12 +2,12 @@
 
 ## When it occurs
 
-When the units or attribute column is defined in which the linked obs val column isn't actually an observations column.
+When the units or attribute column is linked to an observation value column that isn't actually an observation value column. E.g. linked to a dimension column.
 
 ## How to fix
 
 
-Ensure that the linked column is an actual observaation column, and the system recognises it as.
+Ensure that the linked column is an actual observation value column.
 
 
 <!-- TODO: Link to somewhere which helps the user define measures. -->

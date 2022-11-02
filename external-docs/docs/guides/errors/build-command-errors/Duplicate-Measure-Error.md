@@ -2,10 +2,10 @@
 
 ## When it occurs
 
-The obesrvation colums contains duplicate values.
+In the pivoted shape, two or more observation value columns cannot be represented by identical measures.
 
 ## How to fix
 
-Ensure that the datasets Obs columns only conation unique values.
+Ensure that each observation value column is linked to a unique measure.
 
 <!-- TODO: Link to somewhere which helps the user define measures. -->
