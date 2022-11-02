@@ -91,7 +91,7 @@ def test_resultant_path():
         )
 
         run_identifier = "Some Identifier"
-        build_metrics = get_metrics(
+        _ = get_metrics(
             tmp_dir / "buildmetrics.csv",
             "build",
             run_identifier,
