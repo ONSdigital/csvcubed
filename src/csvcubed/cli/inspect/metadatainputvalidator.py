@@ -48,10 +48,10 @@ class MetadataValidator:
         """
         Detects the validity, type and shape of the csvw.
         """
-        validity = CSVWType.QbDataSet or csvw_type == CSVWType.CodeList
         csvw_type = self._detect_type()
         csvw_shape = self._detect_shape()
-
+        validity = csvw_type == CSVWType.QbDataSet or csvw_type == CSVWType.CodeList
+        
         return (
             validity,
             csvw_type,

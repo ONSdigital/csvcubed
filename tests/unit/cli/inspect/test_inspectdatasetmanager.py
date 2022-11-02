@@ -133,6 +133,37 @@ _expected_dataframe = DataFrame(
     ]
 ).replace("", np.NAN)
 
+_expected_dataframe_pivoted_single_measure = DataFrame(
+    [
+        {"Some Dimension": "a", "Some Attribute": "attr-a", "Some Obs Val": 1},
+        {"Some Dimension": "b", "Some Attribute": "attr-b", "Some Obs Val": 2},
+        {"Some Dimension": "c", "Some Attribute": "attr-c", "Some Obs Val": 3},
+    ]
+).replace("", np.NAN)
+
+_expected_dataframe_pivoted_multi_measure = DataFrame(
+    [
+        {
+            "Some Dimension": "a",
+            "Some Attribute": "attr-a",
+            "Some Obs Val": 1,
+            "Some Other Obs Val": 2,
+        },
+        {
+            "Some Dimension": "b",
+            "Some Attribute": "attr-b",
+            "Some Obs Val": 2,
+            "Some Other Obs Val": 4,
+        },
+        {
+            "Some Dimension": "c",
+            "Some Attribute": "attr-c",
+            "Some Obs Val": 3,
+            "Some Other Obs Val": 6,
+        },
+    ]
+).replace("", np.NAN)
+
 _expected_by_measure_and_unit_val_counts_df_single_unit_single_measure = DataFrame(
     [
         {
@@ -284,15 +315,16 @@ def test_get_dataset_observations_info():
     assert_frame_equal(result.dataset_head, _expected_dataframe.head(n=10))
     assert_frame_equal(result.dataset_tail, _expected_dataframe.tail(n=10))
 
+
 def test_get_dataset_observations_info_for_pivoted_single_measure_shape_dataset():
     """
     Ensures the expected 'DatasetObservationsInfoResult' object is returned from a pivoted single measure shape input.
     """
-    _test_case_dir = get_test_cases_dir() / "cli" / "inspect" / "pivoted-single-measure-dataset"
+    _test_case_dir = (
+        get_test_cases_dir() / "cli" / "inspect" / "pivoted-single-measure-dataset"
+    )
     csvw_metadata_json_path = _test_case_dir / "qb-id-10004.csv-metadata.json"
     dataset = load_csv_to_dataframe(csvw_metadata_json_path, "qb-id-10004.csv")
-
-    
 
     result: DatasetObservationsInfoResult = get_dataset_observations_info(
         dataset, CSVWType.QbDataSet, CSVWShape.Pivoted
@@ -300,16 +332,21 @@ def test_get_dataset_observations_info_for_pivoted_single_measure_shape_dataset(
 
     assert result.num_of_observations == 3
     assert result.num_of_duplicates == 0
-    
-    # Leave below to fix with Gishan
-    assert_frame_equal(result.dataset_head, _expected_dataframe.head(n=10))
-    assert_frame_equal(result.dataset_tail, _expected_dataframe.tail(n=10))
+    assert_frame_equal(
+        result.dataset_head, _expected_dataframe_pivoted_single_measure.head(n=3)
+    )
+    assert_frame_equal(
+        result.dataset_tail, _expected_dataframe_pivoted_single_measure.tail(n=3)
+    )
+
 
 def test_get_dataset_observations_info_for_pivoted_multi_measure_shape_dataset():
     """
     Ensures the expected 'DatasetObservationsInfoResult' object is returned from a pivoted single measure shape input.
     """
-    _test_case_dir = get_test_cases_dir() / "cli" / "inspect" / "pivoted-multi-measure-dataset"
+    _test_case_dir = (
+        get_test_cases_dir() / "cli" / "inspect" / "pivoted-multi-measure-dataset"
+    )
     csvw_metadata_json_path = _test_case_dir / "qb-id-10003.csv-metadata.json"
     dataset = load_csv_to_dataframe(csvw_metadata_json_path, "qb-id-10003.csv")
 
@@ -319,10 +356,12 @@ def test_get_dataset_observations_info_for_pivoted_multi_measure_shape_dataset()
 
     assert result.num_of_observations == 3
     assert result.num_of_duplicates == 0
-    
-    # Leave below to fix with Gishan
-    assert_frame_equal(result.dataset_head, _expected_dataframe.head(n=10))
-    assert_frame_equal(result.dataset_tail, _expected_dataframe.tail(n=10))
+    assert_frame_equal(
+        result.dataset_head, _expected_dataframe_pivoted_multi_measure.head(n=3)
+    )
+    assert_frame_equal(
+        result.dataset_tail, _expected_dataframe_pivoted_multi_measure.tail(n=3)
+    )
 
 
 def test_get_measure_col_name_from_dsd_measure_col_present():
@@ -341,7 +380,10 @@ def test_get_measure_col_name_from_dsd_measure_col_present():
         csvw_metadata_rdf_graph
     )
     result_qube_components: QubeComponentsResult = select_csvw_dsd_qube_components(
-        CSVWShape.Pivoted, csvw_metadata_rdf_graph, result.dsd_uri, csvw_metadata_json_path
+        CSVWShape.Pivoted,
+        csvw_metadata_rdf_graph,
+        result.dsd_uri,
+        csvw_metadata_json_path,
     )
 
     measure_col = get_measure_col_name_from_dsd(result_qube_components.qube_components)
@@ -365,7 +407,10 @@ def test_get_measure_col_name_from_dsd_measure_col_not_present():
         csvw_metadata_rdf_graph
     )
     result_qube_components: QubeComponentsResult = select_csvw_dsd_qube_components(
-        CSVWShape.Pivoted, csvw_metadata_rdf_graph, result.dsd_uri, csvw_metadata_json_path
+        CSVWShape.Pivoted,
+        csvw_metadata_rdf_graph,
+        result.dsd_uri,
+        csvw_metadata_json_path,
     )
 
     measure_col = get_measure_col_name_from_dsd(result_qube_components.qube_components)
@@ -389,7 +434,10 @@ def test_get_unit_col_name_from_dsd_unit_col_present():
         csvw_metadata_rdf_graph
     )
     result_qube_components: QubeComponentsResult = select_csvw_dsd_qube_components(
-        CSVWShape.Pivoted, csvw_metadata_rdf_graph, result.dsd_uri, csvw_metadata_json_path
+        CSVWShape.Pivoted,
+        csvw_metadata_rdf_graph,
+        result.dsd_uri,
+        csvw_metadata_json_path,
     )
 
     unit_col = get_unit_col_name_from_dsd(result_qube_components.qube_components)
@@ -413,7 +461,10 @@ def test_get_unit_col_name_from_dsd_unit_col_not_present():
         csvw_metadata_rdf_graph
     )
     result_qube_components: QubeComponentsResult = select_csvw_dsd_qube_components(
-        CSVWShape.Pivoted, csvw_metadata_rdf_graph, result.dsd_uri, csvw_metadata_json_path
+        CSVWShape.Pivoted,
+        csvw_metadata_rdf_graph,
+        result.dsd_uri,
+        csvw_metadata_json_path,
     )
 
     unit_col = get_unit_col_name_from_dsd(result_qube_components.qube_components)
@@ -437,7 +488,10 @@ def test_get_single_measure_label_from_dsd():
         csvw_metadata_rdf_graph
     )
     result_qube_components: QubeComponentsResult = select_csvw_dsd_qube_components(
-        CSVWShape.Pivoted, csvw_metadata_rdf_graph, result.dsd_uri, csvw_metadata_json_path
+        CSVWShape.Pivoted,
+        csvw_metadata_rdf_graph,
+        result.dsd_uri,
+        csvw_metadata_json_path,
     )
 
     measure_col = get_measure_col_name_from_dsd(result_qube_components.qube_components)
@@ -656,8 +710,10 @@ def test_get_concepts_hierarchy_info_hierarchy_with_depth_of_one():
     result_code_list_cols = select_codelist_cols_by_dataset_url(
         csvw_metadata_rdf_graph, dataset_url
     )
-    result_primary_key_col_names_by_dataset_url = select_primary_key_col_names_by_dataset_url(
-        csvw_metadata_rdf_graph, dataset_url
+    result_primary_key_col_names_by_dataset_url = (
+        select_primary_key_col_names_by_dataset_url(
+            csvw_metadata_rdf_graph, dataset_url
+        )
     )
 
     parent_notation_col_name = get_codelist_col_title_by_property_url(
@@ -667,7 +723,8 @@ def test_get_concepts_hierarchy_info_hierarchy_with_depth_of_one():
         result_code_list_cols.columns, CodelistPropertyUrl.RDFLabel
     )
     unique_identifier = get_codelist_col_title_from_col_name(
-        result_code_list_cols.columns, result_primary_key_col_names_by_dataset_url.primary_key_col_names[0].value
+        result_code_list_cols.columns,
+        result_primary_key_col_names_by_dataset_url.primary_key_col_names[0].value,
     )
 
     result = get_concepts_hierarchy_info(
@@ -694,8 +751,10 @@ def test_get_concepts_hierarchy_info_hierarchy_with_depth_more_than_one():
     result_code_list_cols = select_codelist_cols_by_dataset_url(
         csvw_metadata_rdf_graph, dataset_url
     )
-    result_primary_key_col_names_by_dataset_url = select_primary_key_col_names_by_dataset_url(
-        csvw_metadata_rdf_graph, dataset_url
+    result_primary_key_col_names_by_dataset_url = (
+        select_primary_key_col_names_by_dataset_url(
+            csvw_metadata_rdf_graph, dataset_url
+        )
     )
 
     parent_notation_col_name = get_codelist_col_title_by_property_url(
@@ -705,7 +764,8 @@ def test_get_concepts_hierarchy_info_hierarchy_with_depth_more_than_one():
         result_code_list_cols.columns, CodelistPropertyUrl.RDFLabel
     )
     unique_identifier = get_codelist_col_title_from_col_name(
-        result_code_list_cols.columns, result_primary_key_col_names_by_dataset_url.primary_key_col_names[0].value
+        result_code_list_cols.columns,
+        result_primary_key_col_names_by_dataset_url.primary_key_col_names[0].value,
     )
 
     result = get_concepts_hierarchy_info(
