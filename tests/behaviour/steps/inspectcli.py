@@ -44,13 +44,14 @@ def step_impl(context):
 @When("the Metadata File is validated")
 def step_impl(context):
     csvw_metadata_rdf_validator = MetadataValidator(
-        context.csvw_metadata_rdf_graph, context.csvw_metadata_json_path
+        context.csvw_metadata_rdf_graph, context.csvw_metadata_json_path, context.is_pivoted_measures
     )
 
     (
         context.valid_csvw_metadata,
         context.csvw_type,
-    ) = csvw_metadata_rdf_validator.validate_and_detect_type()
+        context.csvw_shape
+    ) = csvw_metadata_rdf_validator.validate_csvw()
 
     assert context.valid_csvw_metadata is True
 
