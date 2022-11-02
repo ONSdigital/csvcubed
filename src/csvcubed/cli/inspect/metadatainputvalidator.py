@@ -85,7 +85,6 @@ class MetadataValidator:
         """
         Given a metadata validator as input, returns the shape of the cube that metadata describes (Pivoted or Standard).
         """
-        #TODO: Gishan to abstract this and detect_shape_of_cube in cube.py to a single function.
         all_pivoted = True
         all_standard_shape = True
         for measure in self.is_pivoted_measures:
