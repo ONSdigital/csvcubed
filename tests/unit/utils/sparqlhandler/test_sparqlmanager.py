@@ -163,7 +163,7 @@ def test_select_csvw_catalog_metadata_for_codelist():
     assert result.contact_point == "None"
     assert result.identifier == "Alcohol Content"
 
-# TODO: CHECK csv col title inconsistency with Rob.
+# TODO: Nick
 def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
     """
     Ensures that the cube components in a pivoted multi-measure dataset correctly link to observation value columns.
@@ -203,12 +203,12 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
     )
 
     # Asserts whether the observation value column is correctly not linked to a dimension column
-    assert components[3].property == "http://purl.org/linked-data/cube#measureType"
+    assert components[3].property == "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
     assert components[3].property_label == ""
-    assert components[3].property_type == ComponentPropertyType.Dimension.value
+    assert components[3].property_type == ComponentPropertyType.Attribute.value
     assert components[3].csv_col_title == ""
     assert components[3].required is True
-    assert components[3].observation_value_column_titles == ""
+    assert components[3].observation_value_column_titles == "Some Obs Val, Some Other Obs Val"
 
     # Asserts whether the observation value column is correctly linked to an attribute column
     assert components[2].property == "qb-id-10003.csv#attribute/some-attribute"
@@ -235,7 +235,7 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
     assert components[8].observation_value_column_titles == "Some Other Obs Val"
 
 
-# TODO: CHECK csv col title inconsistency with Rob.
+# TODO: Nick
 def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
     """
     Ensures that the cube components in a pivoted single-measure dataset correctly link to observation value columns.
