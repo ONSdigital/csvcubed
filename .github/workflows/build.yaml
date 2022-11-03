@@ -41,9 +41,10 @@ jobs:
           cp curl-7.86.0-win64-mingw\bin\libcurl-x64.dll curl-7.86.0-win64-mingw\bin\libcurl.dll 
           cp curl-7.86.0-win64-mingw\bin\* C:\hostedtoolcache\windows\Ruby\2.4.10\x64\bin
 
-          Invoke-WebRequest -Uri "https://raw.githubusercontent.com/GSS-Cogs/csvlint-docker/master/Gemfile" -OutFile "Gemfile"
           gem install bundle
-          "gem 'i18n', '~>1.12.0'" | Add-Content -Path .\Gemfile
+          bundle init
+          bundle add i18n --version "~>1.12.0"
+          bundle add csvlint --git https://github.com/GSS-Cogs/csvlint.rb --tag v0.6.7
 
           $gemDir = gem environment gemdir
 
@@ -167,7 +168,7 @@ jobs:
         # By removing broken characters from the xml unit/behave test files, we can then publish the tests results stored 
         # in those files in a user friendly way on github actions using 'EnricoMi/publish-unit-test-result-action@v1'.
         if: always()
-        run: sed -i -e "s/[\\x0A\\x1B]//g" reports/TESTS-*.xml
+        run: LC_ALL=C sed -i -e "s/[\x0A\x1B]//g" reports/TESTS-*.xml
 
       - name: Publish Behave Test Results
         if: always()
