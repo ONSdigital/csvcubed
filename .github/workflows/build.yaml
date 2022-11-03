@@ -44,7 +44,7 @@ jobs:
           gem install bundle
           bundle init
           bundle add i18n --version "~>1.12.0"
-          bundle add csvlint --git https://github.com/GSS-Cogs/csvlint.rb --tag v0.6.7
+          bundle add csvlint --git https://github.com/GSS-Cogs/csvlint.rb --ref v0.6.7
 
           $gemDir = gem environment gemdir
 
