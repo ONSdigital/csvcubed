@@ -52,6 +52,7 @@ from csvcubed.definitions import APP_ROOT_DIR_PATH
 
 _logger = logging.getLogger(__name__)
 
+
 class CSVWShape(Enum):
     """
     The shape of cube represented by the metadata file.
@@ -62,6 +63,7 @@ class CSVWShape(Enum):
 
     Pivoted = auto()
     """ The cube represented by the metadata file is in the pivoted shape. """
+
 
 class SPARQLQueryName(Enum):
     """
@@ -106,7 +108,10 @@ class SPARQLQueryName(Enum):
 
     SELECT_TABLE_SCHEMA_PROPERTIES = "select_table_schema_properties"
 
-    SELECT_IS_PIVOTED_SHAPE_FOR_MEASURES_IN_DATA_SET = "select_is_pivoted_shape_for_measures_in_data_set"
+    SELECT_IS_PIVOTED_SHAPE_FOR_MEASURES_IN_DATA_SET = (
+        "select_is_pivoted_shape_for_measures_in_data_set"
+    )
+
 
 def _get_query_string_from_file(queryType: SPARQLQueryName) -> str:
     """
@@ -217,7 +222,10 @@ def select_csvw_dsd_dataset_label_and_dsd_def_uri(
 
 
 def select_csvw_dsd_qube_components(
-    csvw_shape: Optional[CSVWShape], rdf_graph: rdflib.ConjunctiveGraph, dsd_uri: str, json_path: Path
+    csvw_shape: Optional[CSVWShape],
+    rdf_graph: rdflib.ConjunctiveGraph,
+    dsd_uri: str,
+    json_path: Path,
 ) -> QubeComponentsResult:
     """
     Queries the list of qube components.
@@ -231,7 +239,7 @@ def select_csvw_dsd_qube_components(
         rdf_graph,
         init_bindings={"dsd_uri": URIRef(dsd_uri)},
     )
-    
+
     result_observation_val_col_titles: Optional[List[ResultRow]] = None
     if csvw_shape == CSVWShape.Pivoted:
         result_observation_val_col_titles = select(
@@ -246,16 +254,22 @@ def select_csvw_dsd_qube_components(
         result_dsd_components, result_observation_val_col_titles, json_path
     )
 
-def select_is_pivoted_shape_for_measures_in_data_set(rdf_graph: rdflib.ConjunctiveGraph) -> List[IsPivotedShapeMeasureResult]:
+
+def select_is_pivoted_shape_for_measures_in_data_set(
+    rdf_graph: rdflib.ConjunctiveGraph,
+) -> List[IsPivotedShapeMeasureResult]:
     """
     Queries the measure and whether it is a part of a pivoted or standard shape cube.
     """
     result_is_pivoted_shape: List[ResultRow] = select(
-        _get_query_string_from_file(SPARQLQueryName.SELECT_IS_PIVOTED_SHAPE_FOR_MEASURES_IN_DATA_SET),
-        rdf_graph
+        _get_query_string_from_file(
+            SPARQLQueryName.SELECT_IS_PIVOTED_SHAPE_FOR_MEASURES_IN_DATA_SET
+        ),
+        rdf_graph,
     )
-    
+
     return map_is_pivoted_shape_for_measures_in_data_set(result_is_pivoted_shape)
+
 
 def select_cols_where_suppress_output_is_true(
     rdf_graph: rdflib.ConjunctiveGraph,

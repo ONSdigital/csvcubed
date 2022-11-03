@@ -887,7 +887,9 @@ def step_impl(context):
     )
 
 
-@Given('a multi-measure pivoted shape cube with identifier "{identifier}" named "{cube_name}"')
+@Given(
+    'a multi-measure pivoted shape cube with identifier "{identifier}" named "{cube_name}"'
+)
 def step_impl(context, identifier: str, cube_name: str):
     metadata = CatalogMetadata(title=cube_name, identifier=identifier)
     data = pd.DataFrame(
@@ -899,15 +901,27 @@ def step_impl(context, identifier: str, cube_name: str):
         }
     )
     columns = [
-        QbColumn("Some Dimension", NewQbDimension.from_data("Some Dimension", data["Some Dimension"])),
-        QbColumn("Some Attribute", NewQbAttribute.from_data("Some Attribute", data["Some Attribute"], observed_value_col_title="Some Obs Val")),
+        QbColumn(
+            "Some Dimension",
+            NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
+        ),
+        QbColumn(
+            "Some Attribute",
+            NewQbAttribute.from_data(
+                "Some Attribute",
+                data["Some Attribute"],
+                observed_value_col_title="Some Obs Val",
+            ),
+        ),
         QbColumn(
             "Some Obs Val",
             QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
         QbColumn(
             "Some Other Obs Val",
-            QbObservationValue(NewQbMeasure("Some Other Measure"), NewQbUnit("Some Unit")),
+            QbObservationValue(
+                NewQbMeasure("Some Other Measure"), NewQbUnit("Some Unit")
+            ),
         ),
     ]
 
@@ -915,32 +929,45 @@ def step_impl(context, identifier: str, cube_name: str):
     context.cube = cube
 
 
-@Given('a single-measure pivoted shape cube with identifier "{identifier}" named "{cube_name}"')
+@Given(
+    'a single-measure pivoted shape cube with identifier "{identifier}" named "{cube_name}"'
+)
 def step_impl(context, identifier: str, cube_name: str):
     metadata = CatalogMetadata(title=cube_name, identifier=identifier)
     data = pd.DataFrame(
         {
             "Some Dimension": ["a", "b", "c"],
             "Some Attribute": ["attr-a", "attr-b", "attr-c"],
-            "Some Obs Val": [1, 2, 3]
+            "Some Obs Val": [1, 2, 3],
         }
     )
     columns = [
-        QbColumn("Some Dimension", NewQbDimension.from_data("Some Dimension", data["Some Dimension"])),
-        QbColumn("Some Attribute", NewQbAttribute.from_data("Some Attribute", data["Some Attribute"], observed_value_col_title="Some Obs Val")),
+        QbColumn(
+            "Some Dimension",
+            NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
+        ),
+        QbColumn(
+            "Some Attribute",
+            NewQbAttribute.from_data(
+                "Some Attribute",
+                data["Some Attribute"],
+                observed_value_col_title="Some Obs Val",
+            ),
+        ),
         QbColumn(
             "Some Obs Val",
             QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
-        )
+        ),
     ]
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
     context.cube = cube
 
+
 @Given('the environment variable "{env_var_name}" is "{env_var_value}"')
 def step_impl(context, env_var_name: str, env_var_value: str):
     os.environ[env_var_name] = env_var_value
-    
+
     def _delete_env_var():
         del os.environ[env_var_name]
 

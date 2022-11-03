@@ -5,12 +5,12 @@ Metadata Printer
 Provides functionality for validating and detecting input metadata.json file.
 """
 
+import os
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import List, Optional, Tuple
 from urllib.parse import urljoin
 from distutils.util import strtobool
-import os
 
 import rdflib
 from pandas import DataFrame
@@ -171,7 +171,7 @@ class MetadataPrinter:
             self.csvw_shape,
             self.csvw_metadata_rdf_graph,
             self.result_dataset_label_dsd_uri.dsd_uri,
-            self.csvw_metadata_json_path
+            self.csvw_metadata_json_path,
         )
         self.result_cols_with_suppress_output_true = (
             select_cols_where_suppress_output_is_true(self.csvw_metadata_rdf_graph)

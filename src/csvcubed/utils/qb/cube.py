@@ -93,6 +93,7 @@ def get_all_units(cube: Cube) -> Set[QbUnit]:
     _logger.debug("Discovered units %s", units)
     return units
 
+
 def detect_shape_of_cube(cube: Cube) -> CSVWShape:
     """
     Given a cube as input, returns the shape of that cube (Standard or Pivoted)

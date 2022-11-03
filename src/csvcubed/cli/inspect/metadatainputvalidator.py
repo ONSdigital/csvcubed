@@ -34,6 +34,7 @@ class CSVWType(Enum):
     Other = auto()
     """ The metadata file is not of types data cube and code list. This type of metadata files is not supported."""
 
+
 @dataclass
 class MetadataValidator:
     """
@@ -51,12 +52,8 @@ class MetadataValidator:
         csvw_type = self._detect_type()
         csvw_shape = self._detect_shape() if csvw_type == CSVWType.QbDataSet else None
         validity = csvw_type == CSVWType.QbDataSet or csvw_type == CSVWType.CodeList
-        
-        return (
-            validity,
-            csvw_type,
-            csvw_shape
-        )
+
+        return (validity, csvw_type, csvw_shape)
 
     def _detect_type(self) -> CSVWType:
         """
@@ -80,7 +77,7 @@ class MetadataValidator:
             return CSVWType.QbDataSet
         else:
             return CSVWType.Other
-    
+
     def _detect_shape(self) -> CSVWShape:
         """
         Given a metadata validator as input, returns the shape of the cube that metadata describes (Pivoted or Standard).
@@ -88,16 +85,14 @@ class MetadataValidator:
         all_pivoted = True
         all_standard_shape = True
         for measure in self.is_pivoted_measures:
-            all_pivoted = (
-                all_pivoted and measure.is_pivoted_shape
-            )
-            all_standard_shape = (
-                all_standard_shape and not measure.is_pivoted_shape
-            )
-        
+            all_pivoted = all_pivoted and measure.is_pivoted_shape
+            all_standard_shape = all_standard_shape and not measure.is_pivoted_shape
+
         if all_pivoted:
             return CSVWShape.Pivoted
         elif all_standard_shape:
             return CSVWShape.Standard
         else:
-            raise TypeError("The input metadata is invalid as the shape of the cube it represents is not supported.")
+            raise TypeError(
+                "The input metadata is invalid as the shape of the cube it represents is not supported."
+            )

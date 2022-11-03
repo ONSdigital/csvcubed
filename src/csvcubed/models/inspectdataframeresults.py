@@ -39,7 +39,7 @@ class DatasetObservationsInfoResult:
         formatted_dataset_tail = get_printable_tabuler_str_from_dataframe(
             self.dataset_tail
         )
-        
+
         title_of_data_samples: str
         if self.csvw_shape is None:
             title_of_data_samples = "Concepts"

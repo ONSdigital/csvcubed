@@ -274,6 +274,7 @@ class TableSchemaPropertiesResult:
     value_url: str
     table_url: str
 
+
 @dataclass
 class IsPivotedShapeMeasureResult:
     """
@@ -415,9 +416,11 @@ def map_qube_components_sparql_result(
 
             if len(obs_val_col_title_result_for_component) == 1:
                 dsd_component_result.observation_value_column_titles = (
-                    obs_val_col_title_result_for_component[0].observation_value_column_titles
+                    obs_val_col_title_result_for_component[
+                        0
+                    ].observation_value_column_titles
                 )
-                
+
         components.append(dsd_component_result)
 
     result = QubeComponentsResult(
@@ -661,7 +664,10 @@ def map_table_schema_properties_result(
     )
     return result
 
-def map_is_pivoted_shape_for_measures_in_data_set(sparql_results: List[ResultRow]) -> List[IsPivotedShapeMeasureResult]:
+
+def map_is_pivoted_shape_for_measures_in_data_set(
+    sparql_results: List[ResultRow],
+) -> List[IsPivotedShapeMeasureResult]:
     """
     Maps the sparql query result to objects of type IsPivotedMeasureResult that are then returned.
     """
@@ -669,9 +675,9 @@ def map_is_pivoted_shape_for_measures_in_data_set(sparql_results: List[ResultRow
         map(
             lambda result: IsPivotedShapeMeasureResult(
                 measure=str(result.asdict()["measure"]),
-                is_pivoted_shape=bool(result.asdict()["isPivotedShape"])
+                is_pivoted_shape=bool(result.asdict()["isPivotedShape"]),
             ),
-            sparql_results
+            sparql_results,
         )
     )
     return is_pivoted_shape_measure_results
