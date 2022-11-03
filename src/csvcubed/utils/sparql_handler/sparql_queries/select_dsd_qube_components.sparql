@@ -8,7 +8,7 @@ SELECT DISTINCT
     (COALESCE(?csvColumnRequired, false) || ?componentRequired as ?required) 
 WHERE {   
     { 
-        SELECT DISTINCT ?csvColumnTitle ?csvColumnRequired ?component ?componentProperty ?componentOrder 
+        SELECT DISTINCT ?csvColumnTitle (COALESCE(?required, false) as ?csvColumnRequired) ?component ?componentProperty ?componentOrder 
         WHERE {
             ?dsd_uri a qb:DataStructureDefinition.
             ?dsd_uri qb:component ?component.
@@ -18,18 +18,16 @@ WHERE {
 
             OPTIONAL {
                 ?csvColumn csvw:propertyUrl ?csvColumnPropertyUrl.
+
+                FILTER NOT EXISTS {
+                    ?csvColumn csvw:virtual true.
+                }
+
                 FILTER(STRENDS(str(?componentProperty), str(?csvColumnPropertyUrl))).
 
                 OPTIONAL { ?csvColumn csvw:title ?csvColumnTitle. }
 
-                {
-                    ?csvColumn csvw:required ?csvColumnRequired.
-                } UNION {
-                    BIND(false as ?csvColumnRequired).
-                    FILTER NOT EXISTS {
-                        ?csvColumn csvw:required ?csvColumnRequired.
-                    }
-                }
+                OPTIONAL { ?csvColumn csvw:required ?required. }
             } 
         }
     }

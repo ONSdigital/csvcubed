@@ -189,13 +189,13 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
 
     assert result.dataset_label == "Pivoted Shape Cube"
     assert result.dsd_uri == "qb-id-10003.csv#structure"
-    assert len(components) == 9
+    assert len(components) == 8
 
     # Asserts whether the observation value column is correctly linked to a dimension column
     assert components[0].property == "qb-id-10003.csv#dimension/some-dimension"
     assert components[0].property_label == "Some Dimension"
     assert components[0].property_type == ComponentPropertyType.Dimension.value
-    assert components[0].csv_col_title == ""
+    assert components[0].csv_col_title == "Some Dimension"
     assert components[0].required is True
     assert (
         components[0].observation_value_column_titles
