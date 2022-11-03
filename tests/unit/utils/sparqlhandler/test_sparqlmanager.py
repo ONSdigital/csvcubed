@@ -266,7 +266,7 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
 
     assert result.dataset_label == "Pivoted Shape Cube"
     assert result.dsd_uri == "qb-id-10003.csv#structure"
-    assert len(components) == 8
+    assert len(components) == 6
 
     component = get_dsd_component_by_property_url(
         components, "qb-id-10003.csv#dimension/some-dimension"
