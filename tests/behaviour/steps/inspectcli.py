@@ -384,13 +384,12 @@ def step_impl(context):
 def step_impl(context):
     result_dataset_observations_info: DatasetObservationsInfoResult = context.result_dataset_observations_info
     assert result_dataset_observations_info is not None
-
     assert result_dataset_observations_info.csvw_type == CSVWType.QbDataSet
     assert result_dataset_observations_info.csvw_shape == CSVWShape.Pivoted
     assert result_dataset_observations_info.num_of_observations == 3
     assert result_dataset_observations_info.num_of_duplicates == 0
-    assert_frame_equal(result_dataset_observations_info.dataset_head, expected_dataframe_pivoted_single_measure.head(n=3))
-    assert_frame_equal(result_dataset_observations_info.dataset_tail, expected_dataframe_pivoted_single_measure.tail(n=3))
+    assert_frame_equal(result_dataset_observations_info.dataset_head, expected_dataframe_pivoted_multi_measure.head(n=3))
+    assert_frame_equal(result_dataset_observations_info.dataset_tail, expected_dataframe_pivoted_multi_measure.tail(n=3))
 
 
 @Then("the Value Counts printable is validated for multi-measure pivoted data set")
