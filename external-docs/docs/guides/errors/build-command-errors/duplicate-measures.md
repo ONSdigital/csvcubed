@@ -1,4 +1,4 @@
-# Error - both measure types defined
+# Error - Duplicate Measures Error
 
 ## When it occurs
 

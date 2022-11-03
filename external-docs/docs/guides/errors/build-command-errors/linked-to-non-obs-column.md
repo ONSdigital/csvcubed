@@ -1,4 +1,4 @@
-# Error - both measure types defined
+# Error - Linked To Non-Observation Column Error
 
 ## When it occurs
 

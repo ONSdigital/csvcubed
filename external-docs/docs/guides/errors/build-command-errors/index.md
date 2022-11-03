@@ -26,3 +26,7 @@
 * [Label Uri Collision Error](./label-uri-collision.md)
 * [Unknown Pydantic Validation Error](./unknown-pydantic-error.md)
 * [Missing Uri Template Name Error](/.missing-uri-template-name-error.md)
+* [Attribute Not Linked Error](./attribute-not-linked.md)
+* [Duplicate Measure Error](./duplicate-measures.md)
+* [Linked Obs Column Doesn't Exist Error](./linked-obs-column-doesnt-exist.md)
+* [Linked To Non-Obs Column Error](./linked-to-non-obs-column.md)

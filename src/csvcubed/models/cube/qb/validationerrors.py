@@ -352,11 +352,11 @@ class DuplicateMeasureError(SpecificValidationError):
     
     @classmethod
     def get_error_url(cls) -> str:
-        return "https://gss-cogs.github.io/csvcubed-docs/external/guides/errors/build-command-errors/"
+        return "http://purl.org/csv-cubed/err/dup-measure"
 
     def __post_init__(self):
         self.column_names_concatenated = ", ".join(self.column_names)
-        self.message = (f"The columns contaion duplicate values {self.column_names}")
+        self.message = (f"In the pivoted shape, two or more observation value columns cannot be represented by identical measures. {self.column_names}")
 
 
 @dataclass
@@ -371,7 +371,7 @@ class AttributeNotLinkedError(SpecificValidationError):
 
     @classmethod
     def get_error_url(cls) -> str:
-        return "https://gss-cogs.github.io/csvcubed-docs/external/guides/errors/build-command-errors/"
+        return "http://purl.org/csv-cubed/err/att-not-linked"
 
     def __post_init__(self):
         self.column_names_concatenated = ", ".join(self.column_names)
@@ -390,7 +390,7 @@ class LinkedObsColumnDoesntExistError(SpecificValidationError):
 
     @classmethod
     def get_error_url(cls) -> str:
-        return "https://gss-cogs.github.io/csvcubed-docs/external/guides/errors/build-command-errors/"
+        return "http://purl.org/csv-cubed/err/link-obs-col-not-exist"
 
     def __post_init__(self):
         self.column_names_concatenated = ", ".join(self.column_names)
@@ -409,7 +409,7 @@ class LinkedToNonObsColumnError(SpecificValidationError):
 
     @classmethod
     def get_error_url(cls) -> str:
-        return "https://gss-cogs.github.io/csvcubed-docs/external/guides/errors/build-command-errors/"
+        return "http://purl.org/csv-cubed/err/link-non-obs-col"
 
     def __post_init__(self):
         self.column_names_concatenated = ", ".join(self.column_names)

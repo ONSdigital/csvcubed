@@ -1,4 +1,4 @@
-# Error - both measure types defined
+# Error - Attribute Not Linked
 
 ## When it occurs
 

@@ -1,4 +1,4 @@
-# Error - both measure types defined
+# Error - Linked Observation Column Doesn't Exist Error
 
 ## When it occurs
 
