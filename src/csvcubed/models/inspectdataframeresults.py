@@ -25,7 +25,7 @@ class DatasetObservationsInfoResult:
     """
 
     csvw_type: CSVWType
-    csvw_shape: CSVWShape
+    csvw_shape: Optional[CSVWShape]
     num_of_observations: int
     num_of_duplicates: int
     dataset_head: pd.DataFrame
@@ -41,12 +41,12 @@ class DatasetObservationsInfoResult:
         )
         
         title_of_data_samples: str
-        if self.csvw_shape == CSVWShape.Standard:
-            title_of_data_samples = "Observations"
-        elif self.csvw_shape == CSVWShape.Pivoted:
-            title_of_data_samples = "Rows"
-        else:
+        if self.csvw_shape is None:
             title_of_data_samples = "Concepts"
+        elif self.csvw_shape == CSVWShape.Standard:
+            title_of_data_samples = "Observations"
+        else:
+            title_of_data_samples = "Rows"
 
         if self.num_of_observations < DATASET_HEAD_TAIL_LIMIT:
             observations_str = (

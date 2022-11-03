@@ -72,7 +72,7 @@ class MetadataPrinter:
     """
 
     csvw_type: CSVWType
-    csvw_shape: CSVWShape
+    csvw_shape: Optional[CSVWShape]
     csvw_metadata_rdf_graph: rdflib.ConjunctiveGraph
     csvw_metadata_json_path: Path
 
@@ -184,7 +184,7 @@ class MetadataPrinter:
 
         # strtobool is not case sensitive and will work the same way with "True" or "true" inputs, also with "False" or "false".
         is_pivoted_multi_measure = strtobool(
-            os.environ.get("PIVOTED_MULTI_MEASURE", "True")
+            os.environ.get("PIVOTED_MULTI_MEASURE", "False")
         )
         if is_pivoted_multi_measure:
             data = DataFrame(data=[], columns=["Measure", "Unit", "Count"])

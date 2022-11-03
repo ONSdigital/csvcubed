@@ -7,7 +7,7 @@ Provides functionality for validating the input metadata.json and detecting its 
 from dataclasses import dataclass
 from enum import Enum, auto
 from pathlib import Path
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 import rdflib
 from csvcubed.models.sparqlresults import IsPivotedShapeMeasureResult
@@ -44,12 +44,12 @@ class MetadataValidator:
     csvw_metadata_json_path: Path
     is_pivoted_measures: List[IsPivotedShapeMeasureResult]
 
-    def validate_csvw(self) -> Tuple[bool, CSVWType, CSVWShape]:
+    def validate_csvw(self) -> Tuple[bool, CSVWType, Optional[CSVWShape]]:
         """
         Detects the validity, type and shape of the csvw.
         """
         csvw_type = self._detect_type()
-        csvw_shape = self._detect_shape()
+        csvw_shape = self._detect_shape() if csvw_type == CSVWType.QbDataSet else None
         validity = csvw_type == CSVWType.QbDataSet or csvw_type == CSVWType.CodeList
         
         return (

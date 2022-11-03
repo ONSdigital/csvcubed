@@ -290,9 +290,9 @@ Feature: Behaviour testing of csvcubed inspect.
         And the Dataset Information Printable should be
         """
         - The data cube has the following dataset information:
-                - Number of Observations: 41508
+                - Number of Rows: 41508
                 - Number of Duplicates: 0
-                - First 10 Observations:
+                - First 10 Rows:
         GHG GHG Grouped IPCC Code  Year National Communication Sector National Communication Sub-sector National Communication Category                          Source National Communication Fuel Group National Communication Fuel       Activity Name  Value
         c2f6        pfcs     2b9b3  1990          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.001
         c2f6        pfcs     2b9b3  1991          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.001
@@ -305,7 +305,7 @@ Feature: Behaviour testing of csvcubed inspect.
         c2f6        pfcs     2b9b3  1998          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.005
         c2f6        pfcs     2b9b3  1999          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.002
 
-                - Last 10 Observations:
+                - Last 10 Rows:
         GHG GHG Grouped IPCC Code  Year National Communication Sector National Communication Sub-sector                                                                National Communication Category     Source National Communication Fuel Group National Communication Fuel      Activity Name  Value
         sf6         sf6      2g2e  2010                      business                    not-applicable electronics-electrical-insulation-scientific-research-military-applications-and-sporting-goods tracer-gas                   other-emissions             other-emissions halocarbon-use-sf6  0.001
         sf6         sf6      2g2e  2011                      business                    not-applicable electronics-electrical-insulation-scientific-research-military-applications-and-sporting-goods tracer-gas                   other-emissions             other-emissions halocarbon-use-sf6  0.029
@@ -799,13 +799,11 @@ Feature: Behaviour testing of csvcubed inspect.
         And the existing test-case file "cli/inspect/pivoted-single-measure-dataset/some-dimension.csv-metadata.json"
         And the existing test-case file "cli/inspect/pivoted-single-measure-dataset/some-dimension.table.json"
         And the existing test-case file "cli/inspect/pivoted-single-measure-dataset/some-dimension.csv"
-    
         When the Metadata file path is detected and validated "cli/inspect/pivoted-single-measure-dataset/qb-id-10004.csv-metadata.json"
         And the csv file path is detected and validated "cli/inspect/pivoted-single-measure-dataset/qb-id-10004.csv"
         And the Metadata File json-ld is loaded to a rdf graph
         And the Metadata File is validated
-        And the Printables for data cube are generated    
-        
+        And the Printables for data cube are generated            
         Then the Type printable is validated for single-measure pivoted data set
         And the Catalog Metadata printable is validated for single-measure pivoted data set
         And the Data Structure Definition printable is validated for single-measure pivoted data set
@@ -819,13 +817,12 @@ Feature: Behaviour testing of csvcubed inspect.
         And the existing test-case file "cli/inspect/pivoted-multi-measure-dataset/some-dimension.csv-metadata.json"
         And the existing test-case file "cli/inspect/pivoted-multi-measure-dataset/some-dimension.table.json"
         And the existing test-case file "cli/inspect/pivoted-multi-measure-dataset/some-dimension.csv"
-    
+        And the environment variable "PIVOTED_MULTI_MEASURE" is "True"
         When the Metadata file path is detected and validated "cli/inspect/pivoted-multi-measure-dataset/qb-id-10003.csv-metadata.json"
         And the csv file path is detected and validated "cli/inspect/pivoted-multi-measure-dataset/qb-id-10003.csv"
         And the Metadata File json-ld is loaded to a rdf graph
         And the Metadata File is validated
-        And the Printables for data cube are generated    
-        
+        And the Printables for data cube are generated            
         Then the Type printable is validated for multi-measure pivoted data set
         And the Catalog Metadata printable is validated for multi-measure pivoted data set
         And the Data Structure Definition printable is validated for multi-measure pivoted data set

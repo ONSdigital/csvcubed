@@ -162,7 +162,7 @@ def get_single_measure_from_dsd(
 
 
 def get_dataset_observations_info(
-    dataset: pd.DataFrame, csvw_type: CSVWType, csvw_shape: CSVWShape
+    dataset: pd.DataFrame, csvw_type: CSVWType, csvw_shape: Optional[CSVWShape]
 ) -> DatasetObservationsInfoResult:
     """
     Generates the `DatasetObservationsInfoResult` from the dataset.

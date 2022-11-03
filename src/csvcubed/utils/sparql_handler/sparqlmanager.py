@@ -217,7 +217,7 @@ def select_csvw_dsd_dataset_label_and_dsd_def_uri(
 
 
 def select_csvw_dsd_qube_components(
-    csvw_shape: CSVWShape, rdf_graph: rdflib.ConjunctiveGraph, dsd_uri: str, json_path: Path
+    csvw_shape: Optional[CSVWShape], rdf_graph: rdflib.ConjunctiveGraph, dsd_uri: str, json_path: Path
 ) -> QubeComponentsResult:
     """
     Queries the list of qube components.

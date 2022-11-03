@@ -1,7 +1,7 @@
+import numpy as np
+import pandas as pd
 from difflib import ndiff
 from pathlib import Path
-import pandas as pd
-import numpy as np
 
 from behave import *
 from pandas.util.testing import assert_frame_equal
@@ -107,6 +107,7 @@ def step_impl(context):
 def step_impl(context):
     metadata_printer = MetadataPrinter(
         context.csvw_type,
+        None,
         context.csvw_metadata_rdf_graph,
         context.csvw_metadata_json_path,
     )
@@ -160,6 +161,7 @@ def step_impl(context):
 
 @Then("the Dataset Information Printable should be")
 def step_impl(context):
+    print(context.dataset_observations_info_printable)
     assert _unformat_multiline_string(
         context.dataset_observations_info_printable
     ) == _unformat_multiline_string(context.text.strip())
@@ -288,8 +290,17 @@ def step_impl(context):
     result_dataset_value_counts: DatasetObservationsByMeasureUnitInfoResult = context.result_dataset_value_counts
     assert result_dataset_value_counts is not None
 
-    assert result_dataset_value_counts.by_measure_and_unit_val_counts_df.empty == True
-
+    expected_df = pd.DataFrame(
+        [
+            {
+                "Measure": "Some Measure",
+                "Unit": "Some Unit",
+                "Count": 3,
+            }
+        ]
+    )
+    assert result_dataset_value_counts.by_measure_and_unit_val_counts_df.empty == False
+    assert_frame_equal(result_dataset_value_counts.by_measure_and_unit_val_counts_df, expected_df)
 
 @Then("the Type printable is validated for multi-measure pivoted data set")
 def step_impl(context):
@@ -371,7 +382,7 @@ def step_impl(context):
     )
 
 #TODO: This step causes an issue, DataFrame mismatch?
-@Then("the Data Set Information printable is validated for single-measure pivoted data set")
+@Then("the Data Set Information printable is validated for multi-measure pivoted data set")
 def step_impl(context):
     result_dataset_observations_info: DatasetObservationsInfoResult = context.result_dataset_observations_info
     assert result_dataset_observations_info is not None

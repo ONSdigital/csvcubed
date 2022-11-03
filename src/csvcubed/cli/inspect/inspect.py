@@ -7,7 +7,7 @@ Output CSV-W metadata in a user-friendly format to the CLI for validation.
 
 import logging
 from pathlib import Path
-from typing import Tuple
+from typing import Optional, Tuple
 from os import linesep
 
 import rdflib
@@ -84,7 +84,7 @@ def inspect(csvw_metadata_json_path: Path) -> None:
 
 def _generate_printables(
     csvw_type: CSVWType,
-    csvw_shape: CSVWShape,
+    csvw_shape: Optional[CSVWShape],
     csvw_metadata_rdf_graph: rdflib.ConjunctiveGraph,
     csvw_metadata_json_path: Path,
 ) -> Tuple[str, str, str, str, str, str, str]:
