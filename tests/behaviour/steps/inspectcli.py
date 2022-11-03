@@ -369,7 +369,6 @@ def step_impl(context):
     assert components[5].required is True
     assert components[5].observation_value_column_titles == "Some Obs Val"
 
-# note: This can probably be abstracted out or simply re-use the single measure one as they are the same
 @Then("the Code List printable is validated for multi-measure pivoted data set")
 def step_impl(context):
     result_code_lists: CodelistsResult = context.result_code_lists
@@ -381,7 +380,6 @@ def step_impl(context):
         is not None
     )
 
-#TODO: This step causes an issue, DataFrame mismatch?
 @Then("the Data Set Information printable is validated for multi-measure pivoted data set")
 def step_impl(context):
     result_dataset_observations_info: DatasetObservationsInfoResult = context.result_dataset_observations_info
@@ -395,7 +393,6 @@ def step_impl(context):
     assert_frame_equal(result_dataset_observations_info.dataset_tail, expected_dataframe_pivoted_single_measure.tail(n=3))
 
 
-# this can probably also be abstracted/re-use the single measure one
 @Then("the Value Counts printable is validated for multi-measure pivoted data set")
 def step_impl(context):
     result_dataset_value_counts: DatasetObservationsByMeasureUnitInfoResult = context.result_dataset_value_counts
