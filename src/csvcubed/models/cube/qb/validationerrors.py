@@ -324,21 +324,17 @@ class EmptyQbMultiMeasureDimensionError(SpecificValidationError):
         self.message = 'The field attribute of a QbMultiMeasureDimension must be populated'
 
 @dataclass
-class MultipleMeasuresPivotedShapeError(SpecificValidationError):
+class PivotedShapeMeasureColumnsExistError(SpecificValidationError):
     """
-        An error to inform the user that they have attempted to define a pivoted shape cube with multiple measure columns
+        An error to inform the user that they have attempted to define a pivoted shape cube with measure columns.
     """
-    column_names: List[str]
-    csv_column_uri_template: str
-    column_names_concatenated: str = field(init=False)
     
     @classmethod
     def get_error_url(cls) -> str:
         return "https://gss-cogs.github.io/csvcubed-docs/external/guides/errors/build-command-errors/multiple-measure-columns/"
 
     def __post_init__(self):
-        self.column_names_concatenated = ", ".join(self.column_names)
-        self.message = (f"The csv file contains more than 1 Measure column {self.column_names}")
+        self.message = f"The cube is in pivoted shape, but you have defined 1 or more Measure columns. These two approaches are incompatible."
 
 @dataclass
 class DuplicateMeasureError(SpecificValidationError):
@@ -347,35 +343,30 @@ class DuplicateMeasureError(SpecificValidationError):
     """
 
     column_names: List[str]
-    csv_column_uri_template: str
-    column_names_concatenated: str = field(init=False)
     
     @classmethod
     def get_error_url(cls) -> str:
         return "http://purl.org/csv-cubed/err/dup-measure"
 
     def __post_init__(self):
-        self.column_names_concatenated = ", ".join(self.column_names)
-        self.message = (f"In the pivoted shape, two or more observation value columns cannot be represented by identical measures. {self.column_names}")
+        column_names_concatenated = ", ".join(self.column_names)
+        self.message = (f"In the pivoted shape, two or more observation value columns cannot be represented by identical measures. {column_names_concatenated}")
 
 
 @dataclass
 class AttributeNotLinkedError(SpecificValidationError):
     """
-        An error to infrom the user that the units or attribute column is defined but it is not linked to the obs column
+        An error to inform the user that the units or attribute column is defined but it is not linked to the obs column
     """
 
-    column_names: List[str]
-    csv_column_uri_template: str
-    column_names_concatenated: str = field(init=False)
+    attribute_column_title: str
 
     @classmethod
     def get_error_url(cls) -> str:
         return "http://purl.org/csv-cubed/err/att-not-linked"
 
     def __post_init__(self):
-        self.column_names_concatenated = ", ".join(self.column_names)
-        self.message = (f"Units or attribute column is defined but it is not linked to the obs column {self.column_names}")
+        self.message = (f"Units or attribute column '{self.attribute_column_title}' is defined but it is not linked to an observed values column")
 
 
 @dataclass
@@ -384,17 +375,15 @@ class LinkedObsColumnDoesntExistError(SpecificValidationError):
         An error to infrom the user that the units or attribute column is defined for which obs val column doesn't appear to exist.
     """
 
-    column_names: List[str]
-    csv_column_uri_template: str
-    column_names_concatenated: str = field(init=False)
+    alleged_obs_val_column_title: str
+    attribute_column_title: str
 
     @classmethod
     def get_error_url(cls) -> str:
         return "http://purl.org/csv-cubed/err/link-obs-col-not-exist"
 
     def __post_init__(self):
-        self.column_names_concatenated = ", ".join(self.column_names)
-        self.message = (f"The unit or attribute column is defined for a Obs value column that doesn't appear to exist, {self.column_names}")
+        self.message = f"The unit or attribute column '{self.attribute_column_title}' is defined for an observed value column '{self.alleged_obs_val_column_title}' that doesn't appear to exist."
 
 @dataclass
 class LinkedToNonObsColumnError(SpecificValidationError):
@@ -403,14 +392,13 @@ class LinkedToNonObsColumnError(SpecificValidationError):
         the linked obs val column isn't actually an observations column.
     """
 
-    column_names: List[str]
-    csv_column_uri_template: str
-    column_names_concatenated: str = field(init=False)
+    alleged_obs_val_column_title: str
+    attribute_column_title: str
+
 
     @classmethod
     def get_error_url(cls) -> str:
         return "http://purl.org/csv-cubed/err/link-non-obs-col"
 
     def __post_init__(self):
-        self.column_names_concatenated = ", ".join(self.column_names)
-        self.message = (f"Units or attribute column is defined but the linked observation column is not actually an observation column {self.column_names}")
+        self.message = (f"Units or attribute column '{self.attribute_column_title}' is defined but the linked observation column '{self.alleged_obs_val_column_title}' is not actually an observation column")

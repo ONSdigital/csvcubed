@@ -29,7 +29,7 @@ from csvcubed.models.cube.qb.components import observedvalue
 from csvcubed.models.cube.qb.components.measure import ExistingQbMeasure, QbMeasure
 from csvcubed.models.cube.qb.validationerrors import (
     CsvColumnUriTemplateMissingError,
-    MultipleMeasuresPivotedShapeError,
+    PivotedShapeMeasureColumnsExistError,
     DuplicateMeasureError,
     AttributeNotLinkedError,
     LinkedObsColumnDoesntExistError,
@@ -209,32 +209,23 @@ def _validate_associated_measure(
 ) -> List[ValidationError]:
     errors: List[ValidationError] = []
     if observation_value.structural_definition.measure is None:
-        #error for test2
         errors.append(NoMeasuresDefinedError())
 
     return errors
 
 
 def _validate_pivoted_shape_cube(
-    cube: Cube, obs_col_names: List
+    cube: Cube, obs_col_names: List[str]
 ) -> List[ValidationError]:
     errors: List[ValidationError] = []
 
     multi_measure_columns = get_columns_of_dsd_type(cube, QbMultiMeasureDimension)
     if len(multi_measure_columns) > 0:
         errors.append(
-            #error for test1
-            MultipleMeasuresPivotedShapeError(
-                f"{QbObservationValue.__name__}.measure",
-                QbMultiMeasureDimension
-            )
+            PivotedShapeMeasureColumnsExistError(obs_col_names)
         )
 
-    all_col_names = []
-    for col in cube.columns:
-        all_col_names.append(col.csv_column_title)
-
-    subtracted_names = [name for name in all_col_names if name not in obs_col_names]
+    defined_col_names = {col.csv_column_title for col in cube.columns}
 
     observed_value_columns = get_columns_of_dsd_type(cube, QbObservationValue)
 
@@ -243,42 +234,17 @@ def _validate_pivoted_shape_cube(
         elements_of_obs_colums.append(element.structural_definition.measure)
     
     if len(set(elements_of_obs_colums)) != len(elements_of_obs_colums):
-        errors.append(DuplicateMeasureError(
-            f"{QbObservationValue.__name__}.value", 
-            QbMultiUnits
-        )) 
+        errors.append(DuplicateMeasureError(obs_col_names)) 
 
     attribute_columns = get_columns_of_dsd_type(cube, QbAttribute)
     for attribute_col in attribute_columns:
-        if attribute_col.structural_definition.get_observed_value_col_title() is None:
-            # ADD THIS ERROR errors.append(AttributeNotLinkedError()) test4
-            errors.append(AttributeNotLinkedError(
-                f"{QbObservationValue.__name__}.attribute", 
-                LinkError
-            ))
+        observed_value_col_title = attribute_col.structural_definition.get_observed_value_col_title()
 
-        if (
-            attribute_col.structural_definition.get_observed_value_col_title()
-            not in obs_col_names
-            and attribute_col.structural_definition.get_observed_value_col_title()
-            is not None
-            and attribute_col.structural_definition.get_observed_value_col_title()
-            not in subtracted_names
-        ):
-            # ADD THIS ERROR errors.append(LinkedObsColumnDoesntExistError) test5
-            errors.append(LinkedObsColumnDoesntExistError(
-                f"{QbObservationValue.__name__}.value",
-                LinkError
-            ))
-
-        if (
-            attribute_col.structural_definition.get_observed_value_col_title()
-            in subtracted_names
-        ):
-            # ADD THIS ERROR errors.append(LinkedToNonObsColumnError)test6
-            errors.append(LinkedToNonObsColumnError(
-                f"{QbObservationValue.__name__}.value",
-                QbObservationValue
-            ))
+        if observed_value_col_title is None:
+            errors.append(AttributeNotLinkedError(attribute_col.csv_column_title))
+        elif observed_value_col_title not in defined_col_names:
+            errors.append(LinkedObsColumnDoesntExistError(observed_value_col_title, attribute_col.csv_column_title))
+        elif observed_value_col_title not in obs_col_names:
+            errors.append(LinkedToNonObsColumnError(observed_value_col_title, attribute_col.csv_column_title))
 
     return errors
