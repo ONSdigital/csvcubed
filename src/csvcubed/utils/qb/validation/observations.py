@@ -221,9 +221,7 @@ def _validate_pivoted_shape_cube(
 
     multi_measure_columns = get_columns_of_dsd_type(cube, QbMultiMeasureDimension)
     if len(multi_measure_columns) > 0:
-        errors.append(
-            PivotedShapeMeasureColumnsExistError(obs_col_names)
-        )
+        errors.append(PivotedShapeMeasureColumnsExistError())
 
     defined_col_names = {col.csv_column_title for col in cube.columns}
 

@@ -15,7 +15,7 @@ from csvcubed.models.cube.qb.validationerrors import (
     NoUnitsDefinedError,
     BothUnitTypesDefinedError,
     MaxNumComponentsExceededError,
-    MultipleMeasuresPivotedShapeError,
+    PivotedShapeMeasureColumnsExistError,
     DuplicateMeasureError,
     AttributeNotLinkedError,
     LinkedObsColumnDoesntExistError,
@@ -951,7 +951,7 @@ def test_pivoted_validation_multiple_measure_columns():
     ]
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
-    validate_with_environ(cube, MultipleMeasuresPivotedShapeError)
+    validate_with_environ(cube, PivotedShapeMeasureColumnsExistError)
 
 
 def test_pivoted_validation_no_measure_defined_error():
