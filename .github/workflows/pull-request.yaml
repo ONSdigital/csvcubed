@@ -1,0 +1,15 @@
+name: Test csvcubed on pull request
+on:
+  pull_request:
+
+jobs:
+  test_in_environments:
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10']
+        os: [ubuntu-latest, windows-latest]
+    uses: ./.github/workflows/reusable/test-csvcubed.yaml
+    with:
+      os: ${{ matrix.os }}
+      python-version: ${{ matrix.python-version }}
+  

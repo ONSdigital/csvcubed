@@ -35,6 +35,9 @@ Invoke-WebRequest -Uri "https://github.com/Swirrl/csv2rdf/releases/download/0.4.
 $csv2rdfPath = (Get-Item csv2rdf.jar | Resolve-Path).Path.Substring(38)
 echo "@REM Forwarder script`n@echo off`necho Attempting to launch csv2rdf at $csv2rdfPath`njava -jar $csv2rdfPath %*" > csv2rdf.bat
 
+$csv2rdfLocation = (Get-Item csv2rdf.bat | Resolve-Path).Path.Substring(38)
+echo "csv2rdf Location: $csv2rdfLocation"
+
 $path = "$path;$pwd"
 
 echo "=== Installing sparql-test-runner ==="

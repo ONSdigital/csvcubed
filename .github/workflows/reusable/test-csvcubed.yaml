@@ -101,7 +101,7 @@ jobs:
 
       # Slightly more performant to run the non-composite action in ubuntu.
       - name: Publish Unit & Behave Test Results (Ubuntu)
-        if: always() && inputs.os == 'latest'
+        if: always() && inputs.os == 'ubuntu-latest'
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
           check_name: ${{ inputs.os }}-python${{ inputs.python-version }} test results
