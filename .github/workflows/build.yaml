@@ -10,6 +10,8 @@ jobs:
       matrix:
         python-version: ['3.9'] #, '3.10']
         os: [windows-latest] #[ubuntu-latest, windows-latest]
+        include: 
+          - os: 'windows-latest'
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
@@ -93,7 +95,7 @@ jobs:
         if: always() && matrix.os == 'windows-latest'
         uses: EnricoMi/publish-unit-test-result-action/composite@v2
         with:
-          check_name: ${{ matrix.os }}-python${{ matrix.python-version }} behave test results
+          check_name: ${{ matrix.os }}-python${{ matrix.python-version }} test results
           junit_files: |
             reports/*.xml
             pytest_results.xml
@@ -103,7 +105,7 @@ jobs:
         if: always() && matrix.os == 'latest'
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
-          check_name: ${{ matrix.os }}-python${{ matrix.python-version }} behave test results
+          check_name: ${{ matrix.os }}-python${{ matrix.python-version }} test results
           junit_files: |
             reports/*.xml
             pytest_results.xml

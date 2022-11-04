@@ -27,9 +27,11 @@ echo "@REM Forwarder script`n@echo off`necho Attempting to launch csvlint`nC:\ho
 
 $path = "$path;$csvLintInstallationFolder"
 
+cd ..
+
 echo "=== Installing csv2rdf ==="
 
- Invoke-WebRequest -Uri "https://github.com/Swirrl/csv2rdf/releases/download/0.4.7/csv2rdf-0.4.7-standalone.jar" -OutFile "csv2rdf.jar"
+Invoke-WebRequest -Uri "https://github.com/Swirrl/csv2rdf/releases/download/0.4.7/csv2rdf-0.4.7-standalone.jar" -OutFile "csv2rdf.jar"
 $csv2rdfPath = (Get-Item csv2rdf.jar | Resolve-Path).Path.Substring(38)
 echo "@REM Forwarder script`n@echo off`necho Attempting to launch csv2rdf at $csv2rdfPath`njava -jar $csv2rdfPath %*" > csv2rdf.bat
 
