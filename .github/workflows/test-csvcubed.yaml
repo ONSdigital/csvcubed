@@ -113,10 +113,10 @@ jobs:
   build_package_and_documentation:
     if: needs.build_in_environments.result == 'success'
     needs: [build_in_environments]
-    uses: './build-csvcubed.yaml'
+    uses: ./.github/workflows/build-csvcubed.yaml
     secrets: inherit
 
   publish_package_and_documentation:
     if: needs.build_package_and_documentation.result == 'success' && (startsWith(github.ref, 'refs/tags/v') || github.ref_name == 'main')
     needs: [build_package_and_documentation]
-    uses: './deploy-csvcubed.yaml'
+    uses: ./.github/workflows/deploy-csvcubed.yaml
