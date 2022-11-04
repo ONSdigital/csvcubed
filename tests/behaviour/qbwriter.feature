@@ -415,7 +415,8 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     And the file at "code-list.table.json" should exist
     And the file at "code-list.csv" should exist
     And csvlint validation of all CSV-Ws should succeed
-    And csv2rdf on all CSV-Ws should succeed
+    Given we delete the "qbwriter" folder
+    Then csv2rdf on all CSV-Ws should succeed
     And the RDF should pass "skos, qb" SPARQL tests
     And the RDF should contain
     """
@@ -428,17 +429,6 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
       <http://gss-data.org.uk/def/trade/concept-scheme/age-of-business> a <http://www.w3.org/2004/02/skos/core#ConceptScheme>.
       <http://gss-data.org.uk/def/trade/concept/age-of-business/10-20> a <http://www.w3.org/2004/02/skos/core#Concept>;
         <http://www.w3.org/2004/02/skos/core#inScheme> <http://gss-data.org.uk/def/trade/concept-scheme/age-of-business>.
-    """
-
-    """
-    <file:/private/var/folders/0p/5mskt39n2l9_bw46x82hm6d80000gq/T/tmp9ewlpbn5/some-qube.csv#obs/a,10-20> a ns3:Observation ;
-    ns6:a-code-list <file:/private/var/folders/0p/5mskt39n2l9_bw46x82hm6d80000gq/T/tmp9ewlpbn5/a-code-list.csv#a> ;
-    ns6:d-code-list <http://gss-data.org.uk/def/trade/concept/age-of-business/10-20> ;
-    ns12:some-measure 1.0 ;
-    ns3:dataSet <file:/private/var/folders/0p/5mskt39n2l9_bw46x82hm6d80000gq/T/tmp9ewlpbn5/some-qube.csv#dataset> ;
-    ns3:measureType ns12:some-measure ;
-    ns4:unitMeasure <file:/private/var/folders/0p/5mskt39n2l9_bw46x82hm6d80000gq/T/tmp9ewlpbn5/some-qube.csv#unit/some-unit> .
-
     """
 
   Scenario: A cube with an option attribute which has missing data values should validate successfully
