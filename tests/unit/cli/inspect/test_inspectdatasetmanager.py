@@ -234,7 +234,7 @@ _expected_by_measure_and_unit_val_counts_df_multi_unit_multi_measure = DataFrame
 ).replace("", np.NAN)
 
 
-def _get_arguments_qb_dataset(
+def get_arguments_qb_dataset(
     csvw_shape: CSVWShape, csvw_metadata_rdf_graph: Graph, csvw_metadata_json_path: Path
 ) -> Tuple[DataFrame, List[QubeComponentResult], str, str]:
     """
@@ -519,7 +519,7 @@ def test_get_val_counts_info_multi_unit_multi_measure_dataset():
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
-    (dataset, qube_components, dsd_uri, _) = _get_arguments_qb_dataset(
+    (dataset, qube_components, dsd_uri, _) = get_arguments_qb_dataset(
         CSVWShape.Pivoted, csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
     (
@@ -565,7 +565,7 @@ def test_get_val_counts_info_multi_unit_single_measure_dataset():
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
-    (dataset, qube_components, dsd_uri, _) = _get_arguments_qb_dataset(
+    (dataset, qube_components, dsd_uri, _) = get_arguments_qb_dataset(
         CSVWShape.Standard, csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
     (
@@ -611,7 +611,7 @@ def test_get_val_counts_info_single_unit_multi_measure_dataset():
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
-    (dataset, qube_components, dsd_uri, _) = _get_arguments_qb_dataset(
+    (dataset, qube_components, dsd_uri, _) = get_arguments_qb_dataset(
         CSVWShape.Standard, csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
     (
@@ -657,7 +657,7 @@ def test_get_val_counts_info_single_unit_single_measure_dataset():
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
-    (dataset, qube_components, dsd_uri, _) = _get_arguments_qb_dataset(
+    (dataset, qube_components, dsd_uri, _) = get_arguments_qb_dataset(
         CSVWShape.Standard, csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
     (
