@@ -215,14 +215,14 @@ def _validate_associated_measure(
 
     return errors
 
-def column_error_checker(colum: QbColumn, errors: list[ValidationError], observed_column_title: str, defined_col_names: set[str], obs_col_names: list[str]):
+def column_error_checker(column: QbColumn, errors: list[ValidationError], observed_column_title: str, defined_col_names: set[str], obs_col_names: list[str]):
 
     if observed_column_title is None:
-        errors.append(AttributeNotLinkedError(colum.csv_column_title))
+        errors.append(AttributeNotLinkedError(column.csv_column_title))
     elif observed_column_title not in defined_col_names:
-        errors.append(LinkedObsColumnDoesntExistError(colum, colum.csv_column_title))
+        errors.append(LinkedObsColumnDoesntExistError(observed_column_title, column.csv_column_title))
     elif observed_column_title not in obs_col_names:
-        errors.append(LinkedToNonObsColumnError(colum, colum.csv_column_title))
+        errors.append(LinkedToNonObsColumnError(observed_column_title, column.csv_column_title))
 
 def _validate_pivoted_shape_cube(
     cube: Cube, obs_col_names: List[str]
