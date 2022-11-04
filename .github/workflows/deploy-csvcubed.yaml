@@ -1,0 +1,50 @@
+name: Deploy csvcubed whl and documentation
+on:
+  workflow_call:
+
+jobs:
+  publish_package_and_documentation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: package-and-documentation
+
+      - name: Publish whl to test pypi
+        if: github.ref_name == 'main'
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+          repository_url: https://test.pypi.org/legacy/
+
+      - name: Publish whl to pypi
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
+
+      - name: Publish Docs
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          git config --global user.email "csvcubed@gsscogs.uk" && git config --global user.name "csvcubed"
+
+          git clone 'https://csvcubed:${{ secrets.CSVCUBED_GIT_COMMIT_TOKEN }}@github.com/GSS-Cogs/csvcubed-docs.git' --depth 1
+          cd csvcubed-docs
+
+          git checkout -b test-pages # gh-pages
+          git push --set-upstream origin test-pages
+
+          git rm -rf external --ignore-unmatch
+
+          mkdir external
+
+          cp -r ../external-docs/site/* external
+
+          touch .nojekyll
+
+          git add *
+          git add .nojekyll
+
+          git commit -m "Updating documentation."
+
+          git push
