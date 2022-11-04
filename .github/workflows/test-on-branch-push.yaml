@@ -1,0 +1,27 @@
+name: Test csvcubed on branch push
+on:
+  push:
+
+
+jobs:
+  test_in_environments:
+    strategy:
+      matrix:
+        python-version: ['3.9'] #, '3.10']
+        os: [windows-latest] #[ubuntu-latest, windows-latest]
+    uses: ./.github/workflows/test-csvcubed.yaml
+    with:
+      os: ${{ matrix.os }}
+      python-version: ${{ matrix.python-version }}
+  
+  build_package_and_documentation:
+    if: needs.build_in_environments.result == 'success'
+    needs: [test_in_environments]
+    uses: ./.github/workflows/build-csvcubed.yaml
+    secrets: inherit
+
+  publish_package_and_documentation:
+    if: needs.build_package_and_documentation.result == 'success' && (startsWith(github.ref, 'refs/tags/v') || github.ref_name == 'main')
+    needs: [build_package_and_documentation]
+    uses: ./.github/workflows/deploy-csvcubed.yaml
+    secrets: inherit

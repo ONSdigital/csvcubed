@@ -1,18 +1,17 @@
 name: Test csvcubed
 on:
-  push:
-  pull_request:
-
+  workflow_call:
+    inputs: 
+      os:
+        required: true
+        type: string
+      python-version:
+        required: true
+        type: string
 
 jobs:
   test_in_environments:
-    strategy:
-      matrix:
-        python-version: ['3.9'] #, '3.10']
-        os: [windows-latest] #[ubuntu-latest, windows-latest]
-        include: 
-          - os: 'windows-latest'
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ inputs.os }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -20,19 +19,19 @@ jobs:
 
       # Necessary for running csvlint inside the Windows VM.
       - uses: ruby/setup-ruby@v1
-        if: matrix.os == 'windows-latest'
+        if: inputs.os == 'windows-latest'
         with:
           ruby-version: '2.4'
 
       - name: Install csvlint, csv2rdf and sparql-test-runner (Windows)
-        if: matrix.os == 'windows-latest'
+        if: inputs.os == 'windows-latest'
         run: |
           "$env:GITHUB_ACTION_PATH\windows-testing-setup.ps1"
         shell: pwsh
 
       - uses: actions/setup-python@v4
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ inputs.python-version }}
 
       - uses: actions/setup-node@v3
         with:
@@ -47,7 +46,7 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ matrix.os }}-poetry-${{ hashFiles('poetry.lock') }}
+          key: ${{ inputs.os }}-poetry-${{ hashFiles('poetry.lock') }}
 
       - name: Install python packages
         run: |
@@ -61,7 +60,7 @@ jobs:
         run: poetry run pytest --junitxml=pytest_results.xml
 
       - name: Run behaviour tests (Windows)
-        if: matrix.os == 'windows-latest'
+        if: inputs.os == 'windows-latest'
         run: |
           $env:PATH = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
 
@@ -72,14 +71,14 @@ jobs:
         shell: pwsh
 
       - name: Run behaviour tests (Ubuntu)
-        if: matrix.os == 'ubuntu-latest'
+        if: inputs.os == 'ubuntu-latest'
         run: poetry run behave tests/behaviour --tags=-skip --junit --format progress
 
       - name: Upload unit & behave test results from xml files
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ matrix.os }}-python${{ matrix.python-version }} behave test results
+          name: ${{ inputs.os }}-python${{ inputs.python-version }} behave test results
           path: |
             pytest_results.xml
             reports/*.xml
@@ -92,32 +91,20 @@ jobs:
 
       # Windows needs to run the `composite` action
       - name: Publish Unit & Behave Test Results (Windows)
-        if: always() && matrix.os == 'windows-latest'
+        if: always() && inputs.os == 'windows-latest'
         uses: EnricoMi/publish-unit-test-result-action/composite@v2
         with:
-          check_name: ${{ matrix.os }}-python${{ matrix.python-version }} test results
+          check_name: ${{ inputs.os }}-python${{ inputs.python-version }} test results
           junit_files: |
             reports/*.xml
             pytest_results.xml
 
       # Slightly more performant to run the non-composite action in ubuntu.
       - name: Publish Unit & Behave Test Results (Ubuntu)
-        if: always() && matrix.os == 'latest'
+        if: always() && inputs.os == 'latest'
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
-          check_name: ${{ matrix.os }}-python${{ matrix.python-version }} test results
+          check_name: ${{ inputs.os }}-python${{ inputs.python-version }} test results
           junit_files: |
             reports/*.xml
             pytest_results.xml
-  
-  build_package_and_documentation:
-    if: needs.build_in_environments.result == 'success'
-    needs: [test_in_environments]
-    uses: ./.github/workflows/build-csvcubed.yaml
-    secrets: inherit
-
-  publish_package_and_documentation:
-    if: needs.build_package_and_documentation.result == 'success' && (startsWith(github.ref, 'refs/tags/v') || github.ref_name == 'main')
-    needs: [build_package_and_documentation]
-    uses: ./.github/workflows/deploy-csvcubed.yaml
-    secrets: inherit
