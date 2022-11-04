@@ -16,6 +16,7 @@ jobs:
         with:
           fetch-depth: 0
 
+      # Necessary for running csvlint inside the Windows VM.
       - uses: ruby/setup-ruby@v1
         if: matrix.os == 'windows-latest'
         with:
@@ -44,12 +45,6 @@ jobs:
         with:
           path: ~/.cache/pypoetry/virtualenvs
           key: ${{ matrix.os }}-poetry-${{ hashFiles('poetry.lock') }}
-
-      - uses: actions/cache@v2
-        if: matrix.os == 'windows-latest'
-        with:
-          path: TODO
-          key: ${{ matrix.os }}-gems-${{ hashFiles('poetry.lock') }}
 
       - name: Install python packages
         run: |
