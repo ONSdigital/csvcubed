@@ -24,7 +24,8 @@ jobs:
 
       - name: Install csvlint, csv2rdf and sparql-test-runner (Windows)
         if: matrix.os == 'windows-latest'
-        run: windows-testing-setup.ps1
+        run: |
+          "$env:GITHUB_ACTION_PATH\windows-testing-setup.ps1"
         shell: pwsh
 
       - uses: actions/setup-python@v4
@@ -87,8 +88,19 @@ jobs:
         if: always()
         run: sed -i -e "s/[\\x0A\\x1B]//g" reports/TESTS-*.xml
 
-      - name: Publish Unit & Behave Test Results
-        if: always()
+      # Windows needs to run the `composite` action
+      - name: Publish Unit & Behave Test Results (Windows)
+        if: always() && matrix.os == 'windows-latest'
+        uses: EnricoMi/publish-unit-test-result-action/composite@v2
+        with:
+          check_name: ${{ matrix.os }}-python${{ matrix.python-version }} behave test results
+          junit_files: |
+            reports/*.xml
+            pytest_results.xml
+
+      # Slightly more performant to run the non-composite action in ubuntu.
+      - name: Publish Unit & Behave Test Results (Ubuntu)
+        if: always() && matrix.os == 'latest'
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
           check_name: ${{ matrix.os }}-python${{ matrix.python-version }} behave test results
