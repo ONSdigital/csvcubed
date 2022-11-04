@@ -22,11 +22,13 @@ from csvcubed.models.cube import (
     NoObservedValuesColumnDefinedError,
     MoreThanOneObservationsColumnError,
     EmptyQbMultiMeasureDimensionError,
+    validationerrors,
 )
 
 from csvcubed.models.cube.qb.components import observedvalue
 
 from csvcubed.models.cube.qb.components.measure import ExistingQbMeasure, QbMeasure
+from csvcubed.models.cube.qb.components.unit import QbUnit
 from csvcubed.models.cube.qb.validationerrors import (
     CsvColumnUriTemplateMissingError,
     PivotedShapeMeasureColumnsExistError,
@@ -213,6 +215,14 @@ def _validate_associated_measure(
 
     return errors
 
+def column_error_checker(colum: QbColumn, errors: list[ValidationError], observed_column_title: str, defined_col_names: set[str], obs_col_names: list[str]):
+
+    if observed_column_title is None:
+        errors.append(AttributeNotLinkedError(colum.csv_column_title))
+    elif observed_column_title not in defined_col_names:
+        errors.append(LinkedObsColumnDoesntExistError(colum, colum.csv_column_title))
+    elif observed_column_title not in obs_col_names:
+        errors.append(LinkedToNonObsColumnError(colum, colum.csv_column_title))
 
 def _validate_pivoted_shape_cube(
     cube: Cube, obs_col_names: List[str]
@@ -237,12 +247,13 @@ def _validate_pivoted_shape_cube(
     attribute_columns = get_columns_of_dsd_type(cube, QbAttribute)
     for attribute_col in attribute_columns:
         observed_value_col_title = attribute_col.structural_definition.get_observed_value_col_title()
+        column_error_checker(attribute_col, errors, observed_value_col_title,defined_col_names,obs_col_names)
 
-        if observed_value_col_title is None:
-            errors.append(AttributeNotLinkedError(attribute_col.csv_column_title))
-        elif observed_value_col_title not in defined_col_names:
-            errors.append(LinkedObsColumnDoesntExistError(observed_value_col_title, attribute_col.csv_column_title))
-        elif observed_value_col_title not in obs_col_names:
-            errors.append(LinkedToNonObsColumnError(observed_value_col_title, attribute_col.csv_column_title))
-
+    unit_columns = get_columns_of_dsd_type(cube, QbUnit)
+    for unit_col in unit_columns:
+        observed_value_col_title = unit_col.structural_definition.get_observed_value_col_title()
+        column_error_checker(unit_col, errors, observed_value_col_title, defined_col_names, obs_col_names)
+    
     return errors
+
+
