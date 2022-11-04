@@ -168,7 +168,7 @@ jobs:
         # By removing broken characters from the xml unit/behave test files, we can then publish the tests results stored 
         # in those files in a user friendly way on github actions using 'EnricoMi/publish-unit-test-result-action@v1'.
         if: always()
-        run: LC_ALL=C sed -i -e "s/[\x0A\x1B]//g" reports/TESTS-*.xml
+        run: sed -i -e "s/[\\x0A\\x1B]//g" reports/TESTS-*.xml
 
       - name: Publish Behave Test Results
         if: always()
