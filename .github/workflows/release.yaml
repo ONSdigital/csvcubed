@@ -2,14 +2,14 @@ name: Release csvcubed
 on:
   release:
     types: [published]
-    
+
 jobs:
   test_in_environments:
     strategy:
       matrix:
         python-version: ['3.9', '3.10']
         os: [ubuntu-latest, windows-latest]
-    uses: ./.github/workflows/reusable/test-csvcubed.yaml
+    uses: ./.github/workflows/reusable-test.yaml
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
@@ -17,10 +17,10 @@ jobs:
   build_package_and_documentation:
     if: needs.build_in_environments.result == 'success'
     needs: [test_in_environments]
-    uses: ./.github/workflows/reusable/build-csvcubed.yaml
+    uses: ./.github/workflows/reusable-build.yaml
 
   publish_package_and_documentation:
     if: needs.build_package_and_documentation.result == 'success'
     needs: [build_package_and_documentation]
-    uses: ./.github/workflows/reusable/deploy-csvcubed.yaml
+    uses: ./.github/workflows/reusable-deploy.yaml
     secrets: inherit
