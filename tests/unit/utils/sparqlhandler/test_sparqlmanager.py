@@ -310,7 +310,6 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
     component = get_dsd_component_by_property_url(
         components, "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
     )
-
     assert_dsd_component_equal(
         component,
         "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
@@ -320,7 +319,7 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
         "Some Obs Val, Some Other Obs Val",
         True,
     )
-
+    
     component = get_dsd_component_by_property_url(
         components, "qb-id-10003.csv#measure/some-measure"
     )
@@ -335,32 +334,6 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
     )
 
     component = get_dsd_component_by_property_url(
-        components, "http://purl.org/linked-data/cube#measureType"
-    )
-    assert_dsd_component_equal(
-        component,
-        "http://purl.org/linked-data/cube#measureType",
-        ComponentPropertyType.Dimension,
-        "",
-        "",
-        "",
-        True,
-    )
-
-    component = get_dsd_component_by_property_url(
-        components, "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
-    )
-    assert_dsd_component_equal(
-        component,
-        "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
-        ComponentPropertyType.Attribute,
-        "",
-        "",
-        "",
-        True,
-    )
-
-    component = get_dsd_component_by_property_url(
         components, "qb-id-10003.csv#measure/some-other-measure"
     )
     assert_dsd_component_equal(
@@ -368,11 +341,10 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
         "qb-id-10003.csv#measure/some-other-measure",
         ComponentPropertyType.Measure,
         "Some Other Measure",
-        "Some Other Measure",
+        "Some Other Obs Val",
         "Some Other Obs Val",
         True,
     )
-
 
 def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
     """

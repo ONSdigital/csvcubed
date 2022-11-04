@@ -403,8 +403,8 @@ def step_impl(context):
     assert result_catalog_metadata is not None
     assert result_catalog_metadata.title == "Pivoted Shape Cube"
     assert result_catalog_metadata.label == "Pivoted Shape Cube"
-    assert result_catalog_metadata.issued == "2022-10-24T09:38:44.200549"
-    assert result_catalog_metadata.modified == "2022-10-24T09:38:44.200549"
+    assert result_catalog_metadata.issued == "2022-11-03T16:45:47.750555"
+    assert result_catalog_metadata.modified == "2022-11-03T16:45:47.750555"
     assert result_catalog_metadata.license == "None"
     assert result_catalog_metadata.creator == "None"
     assert result_catalog_metadata.publisher == "None"
@@ -432,9 +432,9 @@ def step_impl(context):
 def step_impl(context):
     result_qube_components: QubeComponentsResult = context.result_qube_components
     assert result_qube_components is not None
-
+        
     components = result_qube_components.qube_components
-    assert len(components) == 8
+    assert len(components) == 6
 
     component = get_dsd_component_by_property_url(
         components, "qb-id-10003.csv#dimension/some-dimension"
@@ -478,7 +478,6 @@ def step_impl(context):
     component = get_dsd_component_by_property_url(
         components, "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
     )
-
     assert_dsd_component_equal(
         component,
         "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
@@ -488,7 +487,7 @@ def step_impl(context):
         "Some Obs Val, Some Other Obs Val",
         True,
     )
-
+    
     component = get_dsd_component_by_property_url(
         components, "qb-id-10003.csv#measure/some-measure"
     )
@@ -503,32 +502,6 @@ def step_impl(context):
     )
 
     component = get_dsd_component_by_property_url(
-        components, "http://purl.org/linked-data/cube#measureType"
-    )
-    assert_dsd_component_equal(
-        component,
-        "http://purl.org/linked-data/cube#measureType",
-        ComponentPropertyType.Dimension,
-        "",
-        "",
-        "",
-        True,
-    )
-
-    component = get_dsd_component_by_property_url(
-        components, "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
-    )
-    assert_dsd_component_equal(
-        component,
-        "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
-        ComponentPropertyType.Attribute,
-        "",
-        "",
-        "",
-        True,
-    )
-
-    component = get_dsd_component_by_property_url(
         components, "qb-id-10003.csv#measure/some-other-measure"
     )
     assert_dsd_component_equal(
@@ -536,7 +509,7 @@ def step_impl(context):
         "qb-id-10003.csv#measure/some-other-measure",
         ComponentPropertyType.Measure,
         "Some Other Measure",
-        "Some Other Measure",
+        "Some Other Obs Val",
         "Some Other Obs Val",
         True,
     )
