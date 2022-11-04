@@ -23,31 +23,76 @@ _expected_dataset_standard_shape_cube = pd.DataFrame(
             "Value": 221.4
         },
         {
-
+            "Period": "year/1996",
+            "Region": "K02000001",
+            "Fuel": "all",
+            "Measure Type": "energy-consumption",
+            "Unit": "millions-of-tonnes-of-oil-equivalent",
+            "Value": 230.8
         },
         {
-
+            "Period": "year/1997",
+            "Region": "K02000001",
+            "Fuel": "all",
+            "Measure Type": "energy-consumption",
+            "Unit": "millions-of-tonnes-of-oil-equivalent",
+            "Value": 224.5
         },
         {
-
+            "Period": "year/1998",
+            "Region": "K02000001",
+            "Fuel": "all",
+            "Measure Type": "energy-consumption",
+            "Unit": "millions-of-tonnes-of-oil-equivalent",
+            "Value": 230.7
         },
         {
-            
+            "Period": "year/1999",
+            "Region": "K02000001",
+            "Fuel": "all",
+            "Measure Type": "energy-consumption",
+            "Unit": "millions-of-tonnes-of-oil-equivalent",
+            "Value": 231.4
         },
         {
-
+            "Period": "year/2000",
+            "Region": "K02000001",
+            "Fuel": "all",
+            "Measure Type": "energy-consumption",
+            "Unit": "millions-of-tonnes-of-oil-equivalent",
+            "Value": 234.8
         },
         {
-
+            "Period": "year/2001",
+            "Region": "K02000001",
+            "Fuel": "all",
+            "Measure Type": "energy-consumption",
+            "Unit": "millions-of-tonnes-of-oil-equivalent",
+            "Value": 236.9
         },
         {
-            
+            "Period": "year/2002",
+            "Region": "K02000001",
+            "Fuel": "all",
+            "Measure Type": "energy-consumption",
+            "Unit": "millions-of-tonnes-of-oil-equivalent",
+            "Value": 229.6
         },
         {
-
+            "Period": "year/2003",
+            "Region": "K02000001",
+            "Fuel": "all",
+            "Measure Type": "energy-consumption",
+            "Unit": "millions-of-tonnes-of-oil-equivalent",
+            "Value": 231.9
         },
         {
-
+            "Period": "year/2004",
+            "Region": "K02000001",
+            "Fuel": "all",
+            "Measure Type": "energy-consumption",
+            "Unit": "millions-of-tonnes-of-oil-equivalent",
+            "Value": 233.7
         }
     ]
 ).replace("", np.NAN)
@@ -92,8 +137,8 @@ def test_transform_to_canonical_shape_for_standard_shape_data_set():
         csvw_metadata_json_path,
     )
 
-    generated_dataset = canonical_shape_dataset.head(n=2)
-    row = generated_dataset.iloc[1]
+    generated_dataset = canonical_shape_dataset.head(n=10)
+    row = generated_dataset.iloc[9]
 
     assert_frame_equal(generated_dataset, _expected_dataset_standard_shape_cube)
     assert measure_col == "Measure Type"
