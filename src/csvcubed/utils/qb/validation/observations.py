@@ -65,31 +65,74 @@ def validate_observations(cube: Cube) -> List[ValidationError]:
     elif num_obs_val_columns > 1 and not is_pivoted_multi_measure:
         errors.append(MoreThanOneObservationsColumnError(num_obs_val_columns))
     else:
-        pivoted_obs_val_columns = [
+        obs_val_columns_with_measure = [
             c
             for c in observed_value_columns
-            if c.structural_definition.is_pivoted_shape_observation
+            if c.structural_definition.measure is not None
         ]
-        standard_shape_obs_val_columns = [
+        obs_val_columns_without_measure = [
             c
             for c in observed_value_columns
-            if not c.structural_definition.is_pivoted_shape_observation
+            if not c.structural_definition.measure is None
         ]
 
-        if len(standard_shape_obs_val_columns) == 1:
-            obs_val_column = standard_shape_obs_val_columns[0]
+        if any(obs_val_columns_with_measure) and any(obs_val_columns_without_measure) :
+            # In this case we have some obs vals with measures and some without.
+
+            if there_exists_a_measure_column:
+                """
+                 Example of an input that might result in a user ending up here:
+
+                 Location, Average Income (meas defined), Value (no meas defined), Other Measure
+                 Birmingham, 22, 45.6, Average Age
+                 """
+            #     # Some obs vals have measures, some don't and a measure column exists.
+            #     # This is an erroneous hybrid state between pivoted and standard shape.
+                errors.append(BothMeasureTypesDefinedError(
+                     f"{QbObservationValue.__name__}.measure",
+                     QbMultiMeasureDimension,
+                     additional_explanation="A pivoted shape cube cannot have a measure dimension.",
+                 ))
+
+            else:
+                # There are multiple obs val columns and no measure columns, so it looks like the user is aiming for a 
+                # pivoted shape. We assume the user wants a pivoted shape, so let them know that they're missing measures
+                # against some of their obs val columns.
+                errors.append(NoMeasuresDefinedError([col.csv_column_title for col in obs_val_columns_without_measure]))
+        elif len(obs_val_columns_without_measure) > 1:
+
+            if there_exists_a_measure_column:
+                """
+                Example of an input that might result in a user ending up here:
+
+                Location, Income (no meas defined), Average Age (no meas defined), Income Measure, Average Age Measure
+                Birmingham, 22, 45.6, Average Income, Average Age
+                """
+                # There are mutliple obs val columns defined without measures, and at least one measure column defined.
+                # This is an erroneous hybrid between standard and pivoted shape. 
+                # todo: Need too come up with a new validation error here to communicate this to the user.
+                # todo: Tell them to go look at the distinctions between the standard and pivoted shape.
+                pass
+            else:
+                # There are multiple obs val columns defined without measures, so it looks like the user is aiming for a 
+                # pivoted shape. We assume the user wants a pivoted shape, so let them know that they're missing measures
+                # against some of their obs val columns.
+                errors.append(NoMeasuresDefinedError([col.csv_column_title for col in obs_val_columns_without_measure]))
+        elif len(obs_val_columns_without_measure) == 1:
+            obs_val_column = obs_val_columns_without_measure[0]
             errors += _validate_observation_value(obs_val_column, multi_units_columns)
             errors += _validate_standard_shape_cube(cube)
-        elif len(pivoted_obs_val_columns) >= 1:
+        elif any(obs_val_columns_with_measure):
             obs_col_names = []
-            for col in pivoted_obs_val_columns:
+            for col in obs_val_columns_with_measure:
                 obs_col_names.append(col.csv_column_title)
                 obs_val_column = col
                 errors += _validate_observation_value(
                     obs_val_column, multi_units_columns
                 )
-                errors += _validate_associated_measure(obs_val_column)
+                # errors += _validate_associated_measure(obs_val_column) # todo: remove
             errors += _validate_pivoted_shape_cube(cube, obs_col_names)
+        # But we know there is a least one obs val column defined, so no need for an else here
 
         errors += _validate_missing_observation_values(cube, observed_value_columns[0])
 
@@ -231,6 +274,13 @@ def _validate_pivoted_shape_cube(
 
     multi_measure_columns = get_columns_of_dsd_type(cube, QbMultiMeasureDimension)
     if len(multi_measure_columns) > 0:
+        """
+        In this case, the user has defined a redundant measure column. 
+        All obs val columns already have their own measures declared.
+
+        Location, Average Income (meas defined), Average Age (meas defined), Measure
+        Birmingham, 22, 45.6, ???
+        """
         errors.append(PivotedShapeMeasureColumnsExistError())
 
     defined_col_names = {col.csv_column_title for col in cube.columns}
@@ -249,9 +299,9 @@ def _validate_pivoted_shape_cube(
         observed_value_col_title = attribute_col.structural_definition.get_observed_value_col_title()
         column_error_checker(attribute_col, errors, observed_value_col_title,defined_col_names,obs_col_names)
 
-    unit_columns = get_columns_of_dsd_type(cube, QbUnit)
+    unit_columns = get_columns_of_dsd_type(cube, QbMultiUnits)
     for unit_col in unit_columns:
-        observed_value_col_title = unit_col.structural_definition.get_observed_value_col_title()
+        observed_value_col_title = unit_col.structural_definition.observed_value_col_title
         column_error_checker(unit_col, errors, observed_value_col_title, defined_col_names, obs_col_names)
     
     return errors

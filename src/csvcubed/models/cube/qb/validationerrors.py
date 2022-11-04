@@ -324,7 +324,7 @@ class EmptyQbMultiMeasureDimensionError(SpecificValidationError):
         self.message = 'The field attribute of a QbMultiMeasureDimension must be populated'
 
 @dataclass
-class PivotedShapeMeasureColumnsExistError(SpecificValidationError):
+class PivotedShapeMeasureColumnsExistError(BothMeasureTypesDefinedError):
     """
         An error to inform the user that they have attempted to define a pivoted shape cube with measure columns.
     """
