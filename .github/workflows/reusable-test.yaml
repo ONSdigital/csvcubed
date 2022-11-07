@@ -34,12 +34,12 @@ jobs:
         with:
           python-version: ${{ inputs.python-version }}
 
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
+      # - uses: actions/setup-node@v3
+      #   with:
+      #     node-version: 16
 
-      - name: Install pyright
-        run: npm install -g pyright
+      # - name: Install pyright
+      #   run: npm install -g pyright
 
       - name: Install poetry
         run: pip install poetry
@@ -66,8 +66,10 @@ jobs:
           $env:PATH = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
 
           $csv2rdfLocation = ${{ steps.windows-install.outputs.CSV2RDF_LOCATION }}
+          echo "csv2rdf it at: $csv2rdfLocation"
           $sparqlTestsDir = ${{ steps.windows-install.outputs.SPARQL_TESTS_LOCATION }}
-          
+          echo "sparql tests dir is at: $sparqlTestsDir"
+
           $env:NO_DOCKER="true"; $env:CSV2RDF="$csv2rdfLocation"; $env:SPARQL_TESTS_DIR="$sparqlTestsDir"; poetry run behave tests/behaviour --tags=-skip --junit --format progress
         shell: pwsh
 
