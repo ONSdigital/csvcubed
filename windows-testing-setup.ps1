@@ -2,7 +2,7 @@
 This script is used to install csv2rdf, csvlint and the sparql-test-runner inside the Windows environment of a GitHub Action Runner.  
 """
 
-$path = $env:PATH
+$path = ""
 
 $initialWorkingDir = $pwd
 
@@ -31,7 +31,7 @@ $csvLintInstallationFolder = (Get-Item bin | Resolve-Path).Path.Substring(38)
 
 Set-Content -Path "$csvLintInstallationFolder\csvlint.bat" -Value "@REM Forwarder script`n@echo off`necho Attempting to launch csvlint`nC:\hostedtoolcache\windows\Ruby\2.4.10\x64\bin\ruby $csvLintInstallationFolder\csvlint %*"
 
-$path = "$path;$csvLintInstallationFolder"
+$path += ";$csvLintInstallationFolder"
 
 cd $initialWorkingDir
 
@@ -45,7 +45,7 @@ $csv2rdfLocation = (Get-Item csv2rdf.bat | Resolve-Path).Path.Substring(38)
 echo "CSV2RDF_LOCATION=$csv2rdfLocation" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
 Write-Output = "csv2rdf location: $csv2rdfLocation"
 
-$path = "$path;$pwd"
+$path += ";$pwd"
 
 Write-Output "=== Installing sparql-test-runner ==="
 
@@ -53,7 +53,7 @@ Invoke-WebRequest -Uri "https://github.com/GSS-Cogs/sparql-test-runner/releases/
 Expand-Archive -LiteralPath sparql-test-runner.zip -DestinationPath .
 
 $sparqlTestRunnerBinDir = (Get-Item sparql-test-runner-1.4/bin | Resolve-Path).Path.Substring(38)
-$path = "$path;$sparqlTestRunnerBinDir"
+$path += ";$sparqlTestRunnerBinDir"
 
 # sparql tests need to be available as well.
 git clone --depth 1 https://github.com/GSS-Cogs/gdp-sparql-tests.git
