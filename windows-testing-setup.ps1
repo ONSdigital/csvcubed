@@ -38,7 +38,7 @@ $csv2rdfPath = (Get-Item csv2rdf.jar | Resolve-Path).Path.Substring(38)
 Set-Content -Path csv2rdf.bat -Value "@REM Forwarder script`n@echo off`necho Attempting to launch csv2rdf at $csv2rdfPath`njava -jar $csv2rdfPath %*" 
 
 $csv2rdfLocation = (Get-Item csv2rdf.bat | Resolve-Path).Path.Substring(38)
-echo "CSV2RDF_LOCATION=$csv2rdfLocation" >> $env:GITHUB_OUTPUT
+$env:GITHUB_OUTPUT += "`nCSV2RDF_LOCATION=$csv2rdfLocation" 
 
 $path = "$path;$pwd"
 
@@ -54,7 +54,7 @@ $path = "$path;$sparqlTestRunnerBinDir"
 git clone --depth 1 https://github.com/GSS-Cogs/gdp-sparql-tests.git
 
 $sparqlTestsLocation = (Get-Item gdp-sparql-tests/tests | Resolve-Path).Path.Substring(38)
-echo "SPARQL_TESTS_LOCATION=$sparqlTestsLocation" >> $env:GITHUB_OUTPUT
+$env:GITHUB_OUTPUT += "`nSPARQL_TESTS_LOCATION=$sparqlTestsLocation"
 
 
 echo "Setting path"
