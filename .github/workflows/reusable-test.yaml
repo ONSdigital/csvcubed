@@ -27,7 +27,7 @@ jobs:
         id: windows-install
         if: inputs.os == 'windows-latest'
         run: |
-          "$env:GITHUB_ACTION_PATH\windows-testing-setup.ps1"
+          "$env:GITHUB_ACTION_PATH\windows-testing-setup.ps1" -Verbose
         shell: pwsh
 
       - uses: actions/setup-python@v4
