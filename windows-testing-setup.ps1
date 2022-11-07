@@ -2,7 +2,7 @@
 This script is used to install csv2rdf, csvlint and the sparql-test-runner inside the Windows environment of a GitHub Action Runner.  
 """
 
-$path = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
+$path = $env:PATH
 
 $initialWorkingDir = $pwd
 
@@ -63,5 +63,5 @@ Write-Output = "Sparql test location: $sparqlTestsLocation"
 echo "SPARQL_TESTS_LOCATION=$sparqlTestsLocation" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
 
 Write-Output "Setting path"
-Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $path
+echo "PATH=$path" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 Write-Output $path

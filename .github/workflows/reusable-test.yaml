@@ -62,12 +62,10 @@ jobs:
       - name: Run behaviour tests (Windows)
         if: inputs.os == 'windows-latest'
         run: |
-          $env:PATH = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
-
           $csv2rdfLocation = "${{ steps.windows-install.outputs.CSV2RDF_LOCATION }}"
           $sparqlTestsDir = "${{ steps.windows-install.outputs.SPARQL_TESTS_LOCATION }}"
 
-          $env:NO_DOCKER="true"; $env:CSV2RDF="$csv2rdfLocation"; $env:SPARQL_TESTS_DIR="$sparqlTestsDir"; python -m poetry run behave tests/behaviour --tags=-skip --junit --format progress
+          $env:NO_DOCKER="true"; $env:CSV2RDF="$csv2rdfLocation"; $env:SPARQL_TESTS_DIR="$sparqlTestsDir"; poetry run behave tests/behaviour --tags=-skip --junit --format progress
         shell: pwsh
 
       - name: Run behaviour tests (Ubuntu)
