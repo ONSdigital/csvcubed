@@ -99,7 +99,28 @@ _expected_dataset_standard_shape_cube = pd.DataFrame(
 
 _expected_dataset_pivoted_single_measure_shape_cube = pd.DataFrame(
     [
-        {}
+        {
+            "Some Dimension": "a",
+            "Some Attribute": "attr-a",
+            "Some Obs Val": 1,
+            "Unit": "Some Unit",
+            "Measure": "Some Measure"
+        },
+        {
+            "Some Dimension": "b",
+            "Some Attribute": "attr-b",
+            "Some Obs Val": 2,
+            "Unit": "Some Unit",
+            "Measure": "Some Measure"
+        },
+        {
+            "Some Dimension": "c",
+            "Some Attribute": "attr-c",
+            "Some Obs Val": 3,
+            "Unit": "Some Unit",
+            "Measure": "Some Measure"
+        }
+        
     ]
 )
 
@@ -112,7 +133,7 @@ _expected_dataset_pivoted_multi_measure_shape_cube = pd.DataFrame(
 
 def test_transform_to_canonical_shape_for_standard_shape_data_set():
     """
-    TODO: Add description
+    Ensures that the correct canonical shape data set is generated for the standard shape data set.
     """
     csvw_metadata_json_path = (
         _test_case_base_dir
@@ -130,6 +151,7 @@ def test_transform_to_canonical_shape_for_standard_shape_data_set():
         measure_col,
         unit_col,
     ) = transform_dataset_to_canonical_shape(
+        CSVWShape.Standard,
         dataset,
         qube_components,
         dsd_uri,
@@ -138,7 +160,6 @@ def test_transform_to_canonical_shape_for_standard_shape_data_set():
     )
 
     generated_dataset = canonical_shape_dataset.head(n=10)
-    row = generated_dataset.iloc[9]
 
     assert_frame_equal(generated_dataset, _expected_dataset_standard_shape_cube)
     assert measure_col == "Measure Type"
@@ -146,7 +167,7 @@ def test_transform_to_canonical_shape_for_standard_shape_data_set():
 
 def test_transform_to_canonical_shape_for_pivoted_single_measure_shape_data_set():
     """
-    TODO: Add description
+    Ensures that the correct canonical shape data set is generated for the pivoted shape single measure data set.
     """
     csvw_metadata_json_path = (
         _test_case_base_dir
@@ -164,24 +185,33 @@ def test_transform_to_canonical_shape_for_pivoted_single_measure_shape_data_set(
         measure_col,
         unit_col,
     ) = transform_dataset_to_canonical_shape(
+        CSVWShape.Pivoted,
         dataset,
         qube_components,
         dsd_uri,
         csvw_metadata_rdf_graph,
         csvw_metadata_json_path,
     )
-    
+
+    _expected_dataset_pivoted_single_measure_shape_cube.rename(
+        columns={
+            "Measure": measure_col,
+            "Unit": unit_col,
+        },
+        inplace=True,
+    )
+
+    assert "Measure" in measure_col
+    assert "Unit" in unit_col
     assert_frame_equal(canonical_shape_dataset, _expected_dataset_pivoted_single_measure_shape_cube)
-    assert measure_col == "Measure col name"
-    assert unit_col == "Unit col name"
 
 def test_transform_to_canonical_shape_for_pivoted_multi_measure_shape_data_set():
     """
-    TODO: Add description
+    Ensures that the correct canonical shape data set is generated for the pivoted shape multi measure data set.
     """
     csvw_metadata_json_path = (
         _test_case_base_dir
-        / "pivoted-single-measure-dataset"
+        / "pivoted-multi-measure-dataset"
         / "qb-id-10003.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
@@ -195,6 +225,7 @@ def test_transform_to_canonical_shape_for_pivoted_multi_measure_shape_data_set()
         measure_col,
         unit_col,
     ) = transform_dataset_to_canonical_shape(
+        CSVWShape.Pivoted,
         dataset,
         qube_components,
         dsd_uri,
@@ -202,6 +233,7 @@ def test_transform_to_canonical_shape_for_pivoted_multi_measure_shape_data_set()
         csvw_metadata_json_path,
     )
 
-    assert_frame_equal(canonical_shape_dataset, _expected_dataset_pivoted_multi_measure_shape_cube)
     assert measure_col == "Measure col name"
     assert unit_col == "Unit col name"
+    
+    assert_frame_equal(canonical_shape_dataset, _expected_dataset_pivoted_multi_measure_shape_cube)

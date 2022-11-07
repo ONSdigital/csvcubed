@@ -34,9 +34,9 @@ from csvcubed.cli.inspect.inspectdatasetmanager import (
     get_concepts_hierarchy_info,
     get_dataset_observations_info,
     get_dataset_val_counts_info,
-    get_measure_col_name_from_dsd,
+    get_standard_shape_measure_col_name_from_dsd,
     get_single_measure_from_dsd,
-    get_unit_col_name_from_dsd,
+    get_standard_shape_unit_col_name_from_dsd,
     load_csv_to_dataframe,
 )
 from csvcubed.utils.tableschema import CsvwRdfManager
@@ -386,7 +386,7 @@ def test_get_measure_col_name_from_dsd_measure_col_present():
         csvw_metadata_json_path,
     )
 
-    measure_col = get_measure_col_name_from_dsd(result_qube_components.qube_components)
+    measure_col = get_standard_shape_measure_col_name_from_dsd(result_qube_components.qube_components)
 
     assert measure_col == "Measure Type"
 
@@ -413,7 +413,7 @@ def test_get_measure_col_name_from_dsd_measure_col_not_present():
         csvw_metadata_json_path,
     )
 
-    measure_col = get_measure_col_name_from_dsd(result_qube_components.qube_components)
+    measure_col = get_standard_shape_measure_col_name_from_dsd(result_qube_components.qube_components)
 
     assert measure_col is None
 
@@ -440,7 +440,7 @@ def test_get_unit_col_name_from_dsd_unit_col_present():
         csvw_metadata_json_path,
     )
 
-    unit_col = get_unit_col_name_from_dsd(result_qube_components.qube_components)
+    unit_col = get_standard_shape_unit_col_name_from_dsd(result_qube_components.qube_components)
 
     assert unit_col == "Unit"
 
@@ -467,7 +467,7 @@ def test_get_unit_col_name_from_dsd_unit_col_not_present():
         csvw_metadata_json_path,
     )
 
-    unit_col = get_unit_col_name_from_dsd(result_qube_components.qube_components)
+    unit_col = get_standard_shape_unit_col_name_from_dsd(result_qube_components.qube_components)
 
     assert unit_col is None
 
@@ -494,7 +494,7 @@ def test_get_single_measure_label_from_dsd():
         csvw_metadata_json_path,
     )
 
-    measure_col = get_measure_col_name_from_dsd(result_qube_components.qube_components)
+    measure_col = get_standard_shape_measure_col_name_from_dsd(result_qube_components.qube_components)
     assert measure_col is None
 
     result_measure = get_single_measure_from_dsd(

@@ -192,11 +192,12 @@ class MetadataPrinter:
                 DatasetObservationsByMeasureUnitInfoResult(data)
             )
         else:
-            (
+            (   
                 canonical_shape_dataset,
                 measure_col,
                 unit_col,
             ) = transform_dataset_to_canonical_shape(
+                self.csvw_shape,
                 self.dataset,
                 self.result_qube_components.qube_components,
                 self.result_dataset_label_dsd_uri.dsd_uri,
