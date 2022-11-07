@@ -25,7 +25,7 @@ bundle install
 
 $csvLintInstallationFolder = (Get-Item bin | Resolve-Path).Path.Substring(38)
 
-echo "@REM Forwarder script`n@echo off`necho Attempting to launch csvlint`nC:\hostedtoolcache\windows\Ruby\2.4.10\x64\bin\ruby $csvLintInstallationFolder\csvlint %*" > "$csvLintInstallationFolder\csvlint.bat"
+Set-Content -Path "$csvLintInstallationFolder\csvlint.bat" -Value "@REM Forwarder script`n@echo off`necho Attempting to launch csvlint`nC:\hostedtoolcache\windows\Ruby\2.4.10\x64\bin\ruby $csvLintInstallationFolder\csvlint %*"
 
 $path = "$path;$csvLintInstallationFolder"
 

@@ -45,13 +45,13 @@ jobs:
 
       - uses: actions/cache@v2
         with:
-          path: ~/.cache/pypoetry/virtualenvs
+          path: |
+            ~/.cache/pypoetry/virtualenvs
+            C:\Users\runneradmin\AppData\Local\pypoetry\Cache\virtualenvs
           key: ${{ inputs.os }}-poetry-${{ hashFiles('poetry.lock') }}
 
       - name: Install python packages
-        run: |
-          poetry install
-          poetry env info
+        run: poetry install
 
       - name: Run pyright
         run: poetry run pyright . --lib
@@ -64,7 +64,7 @@ jobs:
         run: |
           $env:PATH = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
 
-          $csv2rdfLocation = (Get-Item csv2rdf.bat | Resolve-Path).Path.Substring(38)
+          $csv2rdfLocation = where csv2rdf
           $sparqlTestsDir = (Get-Item gdp-sparql-tests/tests | Resolve-Path).Path.Substring(38)
           
           $env:NO_DOCKER="true"; $env:CSV2RDF="$csv2rdfLocation"; $env:SPARQL_TESTS_DIR="$sparqlTestsDir"; poetry run behave tests/behaviour --tags=-skip --junit --format progress
