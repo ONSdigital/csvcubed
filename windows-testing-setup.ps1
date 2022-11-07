@@ -2,7 +2,7 @@ $path = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentCont
 
 $initialWorkingDir = $pwd
 
-echo "=== Installing csvlint ==="
+Write-Host "=== Installing csvlint ==="
 
 mkdir csvlint
 cd csvlint
@@ -31,18 +31,18 @@ $path = "$path;$csvLintInstallationFolder"
 
 cd "$initialWorkingDir"
 
-echo "=== Installing csv2rdf ==="
+Write-Host "=== Installing csv2rdf ==="
 
 Invoke-WebRequest -Uri "https://github.com/Swirrl/csv2rdf/releases/download/0.4.7/csv2rdf-0.4.7-standalone.jar" -OutFile "csv2rdf.jar"
 $csv2rdfPath = (Get-Item csv2rdf.jar | Resolve-Path).Path.Substring(38)
 Set-Content -Path csv2rdf.bat -Value "@REM Forwarder script`n@echo off`necho Attempting to launch csv2rdf at $csv2rdfPath`njava -jar $csv2rdfPath %*" 
 
 $csv2rdfLocation = (Get-Item csv2rdf.bat | Resolve-Path).Path.Substring(38)
-$env:GITHUB_OUTPUT += "`nCSV2RDF_LOCATION=$csv2rdfLocation" 
+echo "CSV2RDF_LOCATION=$csv2rdfLocation" | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf8 -Append
 
 $path = "$path;$pwd"
 
-echo "=== Installing sparql-test-runner ==="
+Write-Host "=== Installing sparql-test-runner ==="
 
 Invoke-WebRequest -Uri "https://github.com/GSS-Cogs/sparql-test-runner/releases/download/v0.0.1/sparql-test-runner-1.4.zip" -OutFile "sparql-test-runner.zip"
 Expand-Archive -LiteralPath sparql-test-runner.zip -DestinationPath .
@@ -54,9 +54,8 @@ $path = "$path;$sparqlTestRunnerBinDir"
 git clone --depth 1 https://github.com/GSS-Cogs/gdp-sparql-tests.git
 
 $sparqlTestsLocation = (Get-Item gdp-sparql-tests/tests | Resolve-Path).Path.Substring(38)
-$env:GITHUB_OUTPUT += "`nSPARQL_TESTS_LOCATION=$sparqlTestsLocation"
+echo "SPARQL_TESTS_LOCATION=$sparqlTestsLocation" | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf8 -Append
 
-
-echo "Setting path"
+Write-Host "Setting path"
 Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $path
-echo $path
+Write-Host $path
