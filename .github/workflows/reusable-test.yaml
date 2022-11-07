@@ -33,12 +33,12 @@ jobs:
         with:
           python-version: ${{ inputs.python-version }}
 
-      # - uses: actions/setup-node@v3
-      #   with:
-      #     node-version: 16
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
 
-      # - name: Install pyright
-      #   run: npm install -g pyright
+      - name: Install pyright
+        run: npm install -g pyright
 
       - name: Install poetry
         run: pip install poetry
@@ -53,11 +53,11 @@ jobs:
       - name: Install python packages
         run: poetry install
 
-      # - name: Run pyright
-      #   run: poetry run pyright . --lib
+      - name: Run pyright
+        run: poetry run pyright . --lib
 
-      # - name: Run unittests
-      #   run: poetry run pytest --junitxml=pytest_results.xml
+      - name: Run unittests
+        run: poetry run pytest --junitxml=pytest_results.xml
 
       - name: Run behaviour tests (Windows)
         if: inputs.os == 'windows-latest'
