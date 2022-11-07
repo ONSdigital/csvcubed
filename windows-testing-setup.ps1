@@ -29,7 +29,7 @@ Set-Content -Path "$csvLintInstallationFolder\csvlint.bat" -Value "@REM Forwarde
 
 $path = "$path;$csvLintInstallationFolder"
 
-cd "$initialWorkingDir"
+cd $initialWorkingDir
 
 Write-Output "=== Installing csv2rdf ==="
 
