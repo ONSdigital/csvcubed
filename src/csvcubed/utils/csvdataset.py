@@ -63,23 +63,22 @@ def transform_dataset_to_canonical_shape(
         measure_obs_val_components = filter_components_from_dsd(qube_components, ComponentField.PropertyType, ComponentPropertyType.Measure.value)
 
 
-
         # We need to melt the dataset if the shape is pivoted. To melt the dataset:
-                # STEP 1: Find the observation value columns by filtering components array by property type Measure. Keep a record of the measure uri also.
-                # STEP 2: Use the measure uri to get the measure label.
-                # STEP 3: The values in the measure column in the melted dataset will be the measure label if one exists. Otherwise, use the measure uri.
-                # STEP 4: Once we know the measure column values, melt the dataset using pandas melt. First try melting the below dataset, using pandas melt in the terminal.
-                # Input pivoted dataset
-                    # Some Dimension, Obs Val 1, Obs Val 2
-                    # Birmingham, 22.5, 46
-                    # Manchester, 26.7, 44
-                    
-                # Expected melted dataset
-                    # Some Dimension, Value, Measure, Unit
-                    # Birmingham, 22.5, Measure 1, Unit 1
-                    # Manchester, 26.7, Measure 1, Unit 1
-                    # Birmingham, 46, Measure 2, Unit 2
-                    # Manchester, 44, Measure 2, Unit 2
+            # STEP 1: Find the observation value columns by filtering components array by property type Measure. Keep a record of the measure uri also.
+            # STEP 2: Use the measure uri to get the measure label.
+            # STEP 3: The values in the measure column in the melted dataset will be the measure label if one exists. Otherwise, use the measure uri.
+            # STEP 4: Once we know the measure column values, melt the dataset using pandas melt. First try melting the below dataset, using pandas melt in the terminal.
+            # Input pivoted dataset
+                # Some Dimension, Obs Val 1, Obs Val 2
+                # Birmingham, 22.5, 46
+                # Manchester, 26.7, 44
+                
+            # Expected melted dataset
+                # Some Dimension, Value, Measure, Unit
+                # Birmingham, 22.5, Measure 1, Unit 1
+                # Manchester, 26.7, Measure 1, Unit 1
+                # Birmingham, 46, Measure 2, Unit 2
+                # Manchester, 44, Measure 2, Unit 2
                 
         measure_col = f"Measure_{str(uuid1())}"
         result = get_single_measure_from_dsd(qube_components, csvw_metadata_json_path)
