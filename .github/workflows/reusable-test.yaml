@@ -64,10 +64,8 @@ jobs:
         run: |
           $env:PATH = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
 
-          $csv2rdfLocation = ${{ steps.windows-install.outputs.CSV2RDF_LOCATION }}
-          Write-Host "csv2rdf it at: $csv2rdfLocation"
-          $sparqlTestsDir = ${{ steps.windows-install.outputs.SPARQL_TESTS_LOCATION }}
-          Write-Host "sparql tests dir is at: $sparqlTestsDir"
+          $csv2rdfLocation = "${{ steps.windows-install.outputs.CSV2RDF_LOCATION }}"
+          $sparqlTestsDir = "${{ steps.windows-install.outputs.SPARQL_TESTS_LOCATION }}"
 
           $env:NO_DOCKER="true"; $env:CSV2RDF="$csv2rdfLocation"; $env:SPARQL_TESTS_DIR="$sparqlTestsDir"; poetry run behave tests/behaviour --tags=-skip --junit --format progress
         shell: pwsh
