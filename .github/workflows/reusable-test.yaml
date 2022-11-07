@@ -54,19 +54,19 @@ jobs:
       - name: Install python packages
         run: poetry install
 
-      - name: Run pyright
-        run: poetry run pyright . --lib
+      # - name: Run pyright
+      #   run: poetry run pyright . --lib
 
-      - name: Run unittests
-        run: poetry run pytest --junitxml=pytest_results.xml
+      # - name: Run unittests
+      #   run: poetry run pytest --junitxml=pytest_results.xml
 
       - name: Run behaviour tests (Windows)
         if: inputs.os == 'windows-latest'
         run: |
           $env:PATH = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
 
-          $csv2rdfLocation = ${{ steps.windows-install.CSV2RDF_LOCATION }}
-          $sparqlTestsDir = ${{ steps.windows-install.SPARQL_TESTS_LOCATION }}
+          $csv2rdfLocation = ${{ steps.windows-install.outputs.CSV2RDF_LOCATION }}
+          $sparqlTestsDir = ${{ steps.windows-install.outputs.SPARQL_TESTS_LOCATION }}
           
           $env:NO_DOCKER="true"; $env:CSV2RDF="$csv2rdfLocation"; $env:SPARQL_TESTS_DIR="$sparqlTestsDir"; poetry run behave tests/behaviour --tags=-skip --junit --format progress
         shell: pwsh
