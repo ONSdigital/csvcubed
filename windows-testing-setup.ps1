@@ -2,7 +2,7 @@
 This script is used to install csv2rdf, csvlint and the sparql-test-runner inside the Windows environment of a GitHub Action Runner.  
 """
 
-$path = ""
+$path = $env:PATH
 
 $initialWorkingDir = $pwd
 
