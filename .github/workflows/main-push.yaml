@@ -1,4 +1,4 @@
-name: Test csvcubed on branch push
+name: Test csvcubed on main branch push
 on:
   push:
     branches:
