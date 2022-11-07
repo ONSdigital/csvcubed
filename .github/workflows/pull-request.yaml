@@ -6,8 +6,8 @@ jobs:
   test_in_environments:
     strategy:
       matrix:
-        python-version: ['3.9', '3.10']
-        os: [ubuntu-latest, windows-latest]
+        python-version: ['3.9'] #, '3.10']
+        os: [windows-latest] #, ubuntu-latest]
     uses: ./.github/workflows/reusable-test.yaml
     with:
       os: ${{ matrix.os }}

@@ -1,5 +1,7 @@
 $path = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
 
+$initialWorkingDir = $pwd
+
 echo "=== Installing csvlint ==="
 
 mkdir csvlint
@@ -27,16 +29,15 @@ echo "@REM Forwarder script`n@echo off`necho Attempting to launch csvlint`nC:\ho
 
 $path = "$path;$csvLintInstallationFolder"
 
-cd ..
+cd "$initialWorkingDir"
 
 echo "=== Installing csv2rdf ==="
 
 Invoke-WebRequest -Uri "https://github.com/Swirrl/csv2rdf/releases/download/0.4.7/csv2rdf-0.4.7-standalone.jar" -OutFile "csv2rdf.jar"
 $csv2rdfPath = (Get-Item csv2rdf.jar | Resolve-Path).Path.Substring(38)
-echo "@REM Forwarder script`n@echo off`necho Attempting to launch csv2rdf at $csv2rdfPath`njava -jar $csv2rdfPath %*" > csv2rdf.bat
+Set-Content -Path csv2rdf.bat -Value "@REM Forwarder script`n@echo off`necho Attempting to launch csv2rdf at $csv2rdfPath`njava -jar $csv2rdfPath %*" 
 
 $csv2rdfLocation = (Get-Item csv2rdf.bat | Resolve-Path).Path.Substring(38)
-echo "csv2rdf Location: $csv2rdfLocation"
 
 $path = "$path;$pwd"
 
@@ -51,6 +52,6 @@ $path = "$path;$sparqlTestRunnerBinDir"
 # sparql tests need to be available as well.
 git clone --depth 1 https://github.com/GSS-Cogs/gdp-sparql-tests.git
 
-Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $path
 echo "Setting path"
+Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $path
 echo $path
