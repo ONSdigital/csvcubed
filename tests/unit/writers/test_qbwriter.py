@@ -7,8 +7,8 @@ from pathlib import Path
 import pytest
 import pandas as pd
 from rdflib import RDFS, XSD, Graph, URIRef, Literal
-from csvcubedmodels import rdf
 
+from csvcubedmodels import rdf
 from csvcubed.models.cube import *
 from csvcubed.models.cube import (
     ExistingQbAttribute,
