@@ -8,6 +8,7 @@ Qb-Cube Validation Errors
 from dataclasses import dataclass, field
 from typing import List, Optional, Type, Union
 from abc import ABC
+import os
 
 from ..qb import (
     QbMultiMeasureDimension,
@@ -402,3 +403,33 @@ class LinkedToNonObsColumnError(SpecificValidationError):
 
     def __post_init__(self):
         self.message = (f"Units or attribute column '{self.attribute_column_title}' is defined but the linked observation column '{self.alleged_obs_val_column_title}' is not actually an observation column")
+
+@dataclass
+class HybridShapeError(SpecificValidationError):
+    """
+        An Error where there are mutliple obs val columns defined without measures, and at least one measure column defined.
+        This is an erroneous hybrid between standard and pivoted shape. 
+    """
+
+    linked_obs_val_cols: List[QbObservationValue]
+    not_linked_obs_val_cols: List[QbObservationValue]
+    measure_cols: List[QbMultiMeasureDimension]
+
+    @classmethod
+    def get_error_url(cls) -> str:
+        return "http://purl.org/csv-cubed/err/hybrid-shape"
+    
+    def __post_init__(self):
+
+        linked_cols = ", ".join(self.linked_obs_val_cols)
+        not_linked_cols = ", ".join(self.not_linked_obs_val_cols)
+        measure_cols = ", ".join(self.measure_cols)
+        self.message = (
+            f"Found these observation value columns with measures linked: '{linked_cols}'."+ os.linsep + 
+            f" Found these observation value columns without measures linked: '{not_linked_cols}'." + os.linsep + 
+            f" But found these measure columns '{measure_cols}. " + os.linsep + 
+            " This does not conform with either the standard or pivoted shape of expected data."
+        )
+        
+
+

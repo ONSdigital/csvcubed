@@ -19,7 +19,8 @@ from csvcubed.models.cube.qb.validationerrors import (
     DuplicateMeasureError,
     AttributeNotLinkedError,
     LinkedObsColumnDoesntExistError,
-    LinkedToNonObsColumnError
+    LinkedToNonObsColumnError,
+    HybridShapeError
 )
 from tests.unit.test_baseunit import *
 from csvcubed.utils.qb.validation.cube import validate_qb_component_constraints
@@ -1209,6 +1210,112 @@ def test_pivoted_validation_measure_dupication():
     cube = Cube(metadata=metadata, data=data, columns=columns)
 
     validate_with_environ(cube, DuplicateMeasureError)
+
+def test_both_measure_types_defined():
+    """
+        Testing the case where we have some obs vals with measures and some without.
+        Some obs vals have measures, some don't and a measure column exists.
+        This is an erroneous hybrid state between pivoted and standard shape.
+
+                 Example of an input that might result in a user ending up here:
+
+                 Location, Average Income (meas defined), Value (no meas defined), Other Measure
+                 Birmingham, 22, 45.6, Average Age
+    """
+
+    metadata = CatalogMetadata(title="cube_name", identifier="identifier")
+    data = pd.DataFrame(
+        {
+            "Some Dimension": ["a", "b", "c"],
+            "Some Attribute": ["attr-a", "attr-b", "attr-c"],
+            "Some Obs Val": [1, 2, 3],
+            "Some Other Obs Val": [2, 4, 6],
+            "Other Measure": ["az", "bz", "cz"]
+        }
+    )
+    columns = [
+        QbColumn(
+            "Some Dimension",
+            NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
+        ),
+        QbColumn(
+            "Some Attribute",
+            NewQbAttribute.from_data(
+                "Some Attribute",
+                data["Some Attribute"],
+                observed_value_col_title="Some Obs Val",
+            ),
+        ),
+        QbColumn(
+            "Some Obs Val",
+            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
+        ),
+        QbColumn(
+            "Some Other Obs Val",
+            QbObservationValue(
+                NewQbUnit("Some Unit")
+            ),
+        ),
+        QbColumn(
+            "Other Measure",
+            QbMultiMeasureDimension.new_measures_from_data(data["Other Measure"]),
+        )
+    ]
+
+    cube = Cube(metadata=metadata, data=data, columns=columns)
+
+    validate_with_environ(cube, BothMeasureTypesDefinedError())
+
+def test_erroneous_hybrid_error():
+    """
+    Test for when there are mutliple obs val columns defined without measures, and at least one measure column defined.
+    This is an erroneous hybrid between standard and pivoted shape.
+    """
+    metadata = CatalogMetadata(title="cube_name", identifier="identifier")
+    data = pd.DataFrame(
+        {
+            "Some Dimension": ["a", "b", "c"],
+            "Some Attribute": ["attr-a", "attr-b", "attr-c"],
+            "Some Obs Val": [1, 2, 3],
+            "Some Other Obs Val": [2, 4, 6],
+            "Some Measure": ["az", "bz", "cz"],
+            "Some Other Measure": ["ak", "al", "ap"]
+        }
+    )
+    columns = [
+        QbColumn(
+            "Some Dimension",
+            NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
+        ),
+        QbColumn(
+            "Some Attribute",
+            NewQbAttribute.from_data(
+                "Some Attribute",
+                data["Some Attribute"],
+                observed_value_col_title="Some Obs Val",
+            ),
+        ),
+        QbColumn(
+            "Some Obs Val",
+            QbObservationValue(NewQbMeasure("Linked Measure"), NewQbUnit("Some Unit")),
+        ),
+        QbColumn(
+            "Some Other Obs Val",
+            QbObservationValue(NewQbUnit("Some Unit")),
+        ),
+        QbColumn(
+            "Some Measure",
+            QbMultiMeasureDimension.new_measures_from_data(data["Some Measure"]),
+        ),
+        QbColumn(
+            "Some Other Measure",
+            QbMultiMeasureDimension.new_measures_from_data(data["Some Other Measure"]),
+        )
+    ]
+
+    cube = Cube(metadata=metadata, data=data, columns=columns)
+
+    validate_with_environ(cube, HybridShapeError())
 
 
 def validate_with_environ(cube, expected_error):
