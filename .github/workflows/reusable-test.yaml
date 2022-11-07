@@ -26,7 +26,7 @@ jobs:
       - name: Install csvlint, csv2rdf and sparql-test-runner (Windows)
         id: windows-install
         if: inputs.os == 'windows-latest'
-        run: windows-testing-setup.ps1 -verbose
+        run: .\windows-testing-setup.ps1 -verbose
         shell: pwsh
 
       - uses: actions/setup-python@v4
