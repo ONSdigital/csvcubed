@@ -5,6 +5,7 @@ CSV Dataset
 Utilities for CSV Datasets
 """
 
+import numpy as np
 from enum import Enum
 from pathlib import Path
 from typing import List, Optional, Tuple
@@ -24,6 +25,24 @@ from csvcubed.cli.inspect.inspectdatasetmanager import (
     get_standard_shape_unit_col_name_from_dsd,
 )
 
+def _create_unit_col_in_melted_data_set(data_set: pd.DataFrame) -> pd.DataFrame:
+    """
+    TODO: Add Description
+    """
+    return data_set
+
+def _create_measure_col_in_melted_data_set(data_set: pd.DataFrame, measure_obs_val_components: List[QubeComponentResult]) -> pd.DataFrame:
+    """
+    TODO: Add Description
+    """
+    return pd.DataFrame([])
+
+def _melt_data_set(data_set: pd.DataFrame, measure_obs_val_components: List[QubeComponentResult]) -> pd.DataFrame:
+    """
+    TODO: Add Description
+    """
+
+    return pd.DataFrame([])
 
 def transform_dataset_to_canonical_shape(
     csvw_shape: CSVWShape,
@@ -59,10 +78,45 @@ def transform_dataset_to_canonical_shape(
     else:
         # In pivoted shape
         
-        # STEP 1: Find the observation value columns by filtering components array by property type Measure. Keep a record of the measure uri also.
+        # Finding the observation value columns by filtering components by property type Measure.
         measure_obs_val_components = filter_components_from_dsd(qube_components, ComponentField.PropertyType, ComponentPropertyType.Measure.value)
+        
+        melted_df = _melt_data_set(dataset, measure_obs_val_components)
+        melted_df = _create_measure_col_in_melted_data_set(melted_df, measure_obs_val_components)
+        melted_df = _create_unit_col_in_melted_data_set(melted_df)
 
+        """
+        # Finding the value cols and id cols for melting the data set.
+        value_cols = [
+                        measure_obs_val_component.csv_col_title 
+                        for measure_obs_val_component in measure_obs_val_components
+                    ]
+        # TODO: Check with Rob how to get the id vars for melting. For now, we are using all the other cols apart from the obs val cols.
+        id_cols = list(set(dataset.columns) - set(value_cols))
 
+        # Melting the data set using pandas melt function.
+        melted_df = pd.melt(
+            canonical_shape_dataset, id_vars=id_cols, value_vars=value_cols, value_name="Value"
+        )
+        """
+
+        """
+        # Adding the Measure column into the melted data set.
+        melted_df["Measure"] = ""
+        for idx, row in melted_df.iterrows():
+            obs_val_col_title = row["variable"]
+            filtered_obs_val_component = filter_components_from_dsd(measure_obs_val_components,ComponentField.CsvColumnTitle, obs_val_col_title)
+            
+            if len(filtered_obs_val_component) != 1:
+                #TODO: Create new exception in inspect exceptions
+                raise Exception("Expected one observation value component")
+            
+            obs_val_component = filtered_obs_val_component[0]
+            # Using the measure label if it exists as it is more user-friendly. Otherwise, we use the measure uri.
+            melted_df.loc[idx, "Measure"] = obs_val_component.property_label if obs_val_component.property_label else obs_val_component.property
+        """
+        
+        
         # We need to melt the dataset if the shape is pivoted. To melt the dataset:
             # STEP 1: Find the observation value columns by filtering components array by property type Measure. Keep a record of the measure uri also.
             # STEP 2: Use the measure uri to get the measure label.
@@ -78,31 +132,21 @@ def transform_dataset_to_canonical_shape(
                 # Birmingham, 22.5, Measure 1, Unit 1
                 # Manchester, 26.7, Measure 1, Unit 1
                 # Birmingham, 46, Measure 2, Unit 2
-                # Manchester, 44, Measure 2, Unit 2
-                
-        measure_col = f"Measure_{str(uuid1())}"
-        result = get_single_measure_from_dsd(qube_components, csvw_metadata_json_path)
-        canonical_shape_dataset[measure_col] = (
-            result.measure_label
-            if result.measure_label is not None
-            else result.measure_uri
-        )
+                # Manchester, 44, Measure 2, Unit 2   
 
-        # UNIT - TODO REDO STRUCTURE BELOW
+        # UNIT
         # Step 5: If the unit col title is none, get the unit from obs val column. 
         # Step 6: Otherwise, write a sparql that will first find the csvw virtual col definition for the unit given the property url http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure. Then use the aboutUrl of that def to find the Obs Val col that unit is associated with. Then use the valueUrl to find the unit uri from the obs val col.
         # Step 7: Use the unit uri to get the label of the unit. The unit label can none.
 
-        if unit_col is None:
-            unit_col = f"Unit_{str(uuid1())}"
-            result = select_single_unit_from_dsd(
-                csvw_metadata_rdf_graph,
-                dataset_uri,
-                csvw_metadata_json_path,
-            )
-            canonical_shape_dataset[unit_col] = (
-                result.unit_label if result.unit_label is not None else result.unit_uri
-            )
-    
-    
+        # if unit_col is None:
+        #     unit_col = f"Unit_{str(uuid1())}"
+        #     result = select_single_unit_from_dsd(
+        #         csvw_metadata_rdf_graph,
+        #         dataset_uri,
+        #         csvw_metadata_json_path,
+        #     )
+        #     canonical_shape_dataset[unit_col] = (
+        #         result.unit_label if result.unit_label is not None else result.unit_uri
+        #     )
     return (canonical_shape_dataset, measure_col, unit_col)

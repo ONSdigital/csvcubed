@@ -18,6 +18,8 @@ class ComponentField(Enum):
     The fields of `QubeComponentResult` model that are relevant for filtering the `QubeComponentsResult`.
     """
 
+    CsvColumnTitle = "csv_col_title"
+    
     Property = "property"
 
     PropertyType = "property_type"
