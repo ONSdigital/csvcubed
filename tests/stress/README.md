@@ -17,6 +17,38 @@ The test plans are run consecutively via a bash script and follow broadly the sa
 - Finally, metrics files are cleaned up and placed into relevant folders.
 
 ## Installation Guide
+
+### From Bash Script
+  #!/bin/bash
+
+  #Script to install jmeter and associated tools necessary for running the stress test on OSX.
+
+  brew install jmeter wget
+
+  #Install perfmon ServerAgent
+
+  SERVER_AGENT_VERSION="2.2.3"
+  SERVER_AGENT_ID="ServerAgent-$SERVER_AGENT_VERSION"
+  wget "https://github.com/undera/perfmon-agent/releases/download/$SERVER_AGENT_VERSION/$SERVER_AGENT_ID.zip"
+  unzip "$SERVER_AGENT_ID.zip"
+  rm "$SERVER_AGENT_ID.zip"
+  chmod +x "$SERVER_AGENT_ID/startAgent.sh"
+  mv "$SERVER_AGENT_ID" /usr/local/share
+  echo "#\!/bin/bash\n/usr/local/share/$SERVER_AGENT_ID/startAgent.sh \$@" > /usr/local/bin/startAgent.sh
+  chmod +x /usr/local/bin/startAgent.sh
+
+  #Installing perfmon plugin for jmeter
+
+  PLUGIN_VERSION="2.1"
+  PLUGIN_IDENTIFIER="jpgc-perfmon-$PLUGIN_VERSION"
+
+  wget "https://jmeter-plugins.org/files/packages/$PLUGIN_IDENTIFIER.zip"
+
+  #Add plugin to jmeter installation directory
+  JMETER_INSTALLATION_DIR="$(brew --prefix jmeter)"
+  unzip "$PLUGIN_IDENTIFIER.zip" -d "$JMETER_INSTALLATION_DIR/libexec"
+  rm "$PLUGIN_IDENTIFIER.zip"
+### Manual Method
 - Install JMeter: https://jmeter.apache.org/download_jmeter.cgi
   1. Choose either of the binaries to download
   2. Once extracted in a location of your choosing, navigate to the `/bin` folder
