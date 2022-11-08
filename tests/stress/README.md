@@ -19,6 +19,7 @@ The test plans are run consecutively via a bash script and follow broadly the sa
 ## Installation Guide
 
 ### From Bash Script
+*For OS X
 ```
   #!/bin/bash
 
