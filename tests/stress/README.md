@@ -19,6 +19,7 @@ The test plans are run consecutively via a bash script and follow broadly the sa
 ## Installation Guide
 
 ### From Bash Script
+```
   #!/bin/bash
 
   #Script to install jmeter and associated tools necessary for running the stress test on OSX.
@@ -48,6 +49,8 @@ The test plans are run consecutively via a bash script and follow broadly the sa
   JMETER_INSTALLATION_DIR="$(brew --prefix jmeter)"
   unzip "$PLUGIN_IDENTIFIER.zip" -d "$JMETER_INSTALLATION_DIR/libexec"
   rm "$PLUGIN_IDENTIFIER.zip"
+```
+
 ### Manual Method
 - Install JMeter: https://jmeter.apache.org/download_jmeter.cgi
   1. Choose either of the binaries to download
