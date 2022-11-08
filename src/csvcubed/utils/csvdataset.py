@@ -31,13 +31,13 @@ def _create_unit_col_in_melted_data_set(data_set: pd.DataFrame) -> pd.DataFrame:
     """
     return data_set
 
-def _create_measure_col_in_melted_data_set(data_set: pd.DataFrame, measure_obs_val_components: List[QubeComponentResult]) -> pd.DataFrame:
+def _create_measure_col_in_melted_data_set(data_set: pd.DataFrame, measure_components: List[QubeComponentResult]) -> pd.DataFrame:
     """
     TODO: Add Description
     """
     return pd.DataFrame([])
 
-def _melt_data_set(data_set: pd.DataFrame, measure_obs_val_components: List[QubeComponentResult]) -> pd.DataFrame:
+def _melt_data_set(data_set: pd.DataFrame, measure_components: List[QubeComponentResult]) -> pd.DataFrame:
     """
     TODO: Add Description
     """
@@ -62,6 +62,7 @@ def transform_dataset_to_canonical_shape(
     canonical_shape_dataset = dataset.copy()
 
     unit_col: Optional[str] = get_standard_shape_unit_col_name_from_dsd(qube_components)
+    measure_col: Optional[str] = None
 
     if csvw_shape == CSVWShape.Standard:
         if unit_col is None:
@@ -74,47 +75,41 @@ def transform_dataset_to_canonical_shape(
             canonical_shape_dataset[unit_col] = (
                 result.unit_label if result.unit_label is not None else result.unit_uri
             )
-        measure_col: Optional[str] = get_standard_shape_measure_col_name_from_dsd(qube_components)
+        measure_col = get_standard_shape_measure_col_name_from_dsd(qube_components)
     else:
         # In pivoted shape
-        
         # Finding the observation value columns by filtering components by property type Measure.
-        measure_obs_val_components = filter_components_from_dsd(qube_components, ComponentField.PropertyType, ComponentPropertyType.Measure.value)
+        measure_components = filter_components_from_dsd(qube_components, ComponentField.PropertyType, ComponentPropertyType.Measure.value)
         
-        melted_df = _melt_data_set(dataset, measure_obs_val_components)
-        melted_df = _create_measure_col_in_melted_data_set(melted_df, measure_obs_val_components)
-        melted_df = _create_unit_col_in_melted_data_set(melted_df)
+        # melted_df = _melt_data_set(dataset, measure_components)
+        # melted_df = _create_measure_col_in_melted_data_set(melted_df, measure_components)
+        # melted_df = _create_unit_col_in_melted_data_set(melted_df)
 
-        """
         # Finding the value cols and id cols for melting the data set.
         value_cols = [
-                        measure_obs_val_component.csv_col_title 
-                        for measure_obs_val_component in measure_obs_val_components
+                        measure_component.csv_col_title 
+                        for measure_component in measure_components
                     ]
-        # TODO: Check with Rob how to get the id vars for melting. For now, we are using all the other cols apart from the obs val cols.
         id_cols = list(set(dataset.columns) - set(value_cols))
 
         # Melting the data set using pandas melt function.
         melted_df = pd.melt(
-            canonical_shape_dataset, id_vars=id_cols, value_vars=value_cols, value_name="Value"
+            canonical_shape_dataset, id_vars=id_cols, value_vars=value_cols, value_name="Value", var_name="Observation Value"
         )
-        """
 
-        """
         # Adding the Measure column into the melted data set.
         melted_df["Measure"] = ""
         for idx, row in melted_df.iterrows():
-            obs_val_col_title = row["variable"]
-            filtered_obs_val_component = filter_components_from_dsd(measure_obs_val_components,ComponentField.CsvColumnTitle, obs_val_col_title)
+            obs_val_col_title = row["Observation Value"]
+            filtered_measure_components = filter_components_from_dsd(measure_components, ComponentField.CsvColumnTitle, obs_val_col_title)
             
-            if len(filtered_obs_val_component) != 1:
+            if len(filtered_measure_components) != 1:
                 #TODO: Create new exception in inspect exceptions
                 raise Exception("Expected one observation value component")
             
-            obs_val_component = filtered_obs_val_component[0]
+            measure_component = filtered_measure_components[0]
             # Using the measure label if it exists as it is more user-friendly. Otherwise, we use the measure uri.
-            melted_df.loc[idx, "Measure"] = obs_val_component.property_label if obs_val_component.property_label else obs_val_component.property
-        """
+            melted_df.loc[idx, "Measure"] = measure_component.property_label if measure_component.property_label else measure_component.property
         
         
         # We need to melt the dataset if the shape is pivoted. To melt the dataset:
