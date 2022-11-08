@@ -773,7 +773,8 @@ def test_conflict_new_attribute_value_uri_values_error():
             ),
             QbColumn(
                 "New Attribute",
-                NewQbAttribute.from_data("New Attribute", data["New Attribute"]),
+                NewQbAttribute.from_data("New Attribute", data["New Attribute"],
+                observed_value_col_title="Value"),
             ),
             QbColumn(
                 "Value",
@@ -816,6 +817,7 @@ def test_conflict_existing_attribute_value_uri_values_error():
                 ExistingQbAttribute(
                     "http://example.com/attributes/existing-attribute",
                     [NewQbAttributeValue("A B"), NewQbAttributeValue("A.B")],
+                    observed_value_col_title="Value",
                 ),
             ),
             QbColumn(
@@ -856,7 +858,9 @@ def test_conflict_new_units_uri_values_error():
             ),
             QbColumn(
                 "Units",
-                QbMultiUnits.new_units_from_data(data["Units"]),
+                #QbMultiUnits.new_units_from_data(data["Units"]),
+                QbMultiUnits(observed_value_col_title="Value", units=QbMultiUnits.new_units_from_data(data["Units"])),
+                
             ),
             QbColumn(
                 "Value",
@@ -957,7 +961,7 @@ def test_pivoted_validation_multiple_measure_columns():
 
 def test_pivoted_validation_no_measure_defined_error():
     """
-    This scenario will test a cube with the observation column will not have a measure defined
+    This scenario will test a pivoted cube where the observation column will not have a measure defined
     """
     metadata = CatalogMetadata(title="cube_name", identifier="identifier")
     data = pd.DataFrame(
@@ -1225,7 +1229,6 @@ def test_both_measure_types_defined():
     data = pd.DataFrame(
         {
             "Some Dimension": ["a", "b", "c"],
-            "Some Attribute": ["attr-a", "attr-b", "attr-c"],
             "Some Obs Val": [1, 2, 3],
             "Some Other Obs Val": [2, 4, 6],
             "Other Measure": ["az", "bz", "cz"],
@@ -1237,20 +1240,12 @@ def test_both_measure_types_defined():
             NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
         ),
         QbColumn(
-            "Some Attribute",
-            NewQbAttribute.from_data(
-                "Some Attribute",
-                data["Some Attribute"],
-                observed_value_col_title="Some Obs Val",
-            ),
-        ),
-        QbColumn(
             "Some Obs Val",
             QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
         QbColumn(
             "Some Other Obs Val",
-            QbObservationValue(NewQbUnit("Some Unit")),
+            QbObservationValue(unit=NewQbUnit("Some Unit")),
         ),
         QbColumn(
             "Other Measure",
@@ -1262,7 +1257,6 @@ def test_both_measure_types_defined():
 
     validate_with_environ(cube, BothMeasureTypesDefinedError)
 
-
 def test_erroneous_hybrid_error():
     """
     Test for when there are mutliple obs val columns defined without measures, and at least one measure column defined.
@@ -1272,7 +1266,6 @@ def test_erroneous_hybrid_error():
     data = pd.DataFrame(
         {
             "Some Dimension": ["a", "b", "c"],
-            "Some Attribute": ["attr-a", "attr-b", "attr-c"],
             "Some Obs Val": [1, 2, 3],
             "Some Other Obs Val": [2, 4, 6],
             "Some Measure": ["az", "bz", "cz"],
@@ -1285,20 +1278,12 @@ def test_erroneous_hybrid_error():
             NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
         ),
         QbColumn(
-            "Some Attribute",
-            NewQbAttribute.from_data(
-                "Some Attribute",
-                data["Some Attribute"],
-                observed_value_col_title="Some Obs Val",
-            ),
-        ),
-        QbColumn(
             "Some Obs Val",
-            QbObservationValue(NewQbMeasure("Linked Measure"), NewQbUnit("Some Unit")),
+            QbObservationValue(unit=NewQbUnit("Some Unit")),
         ),
         QbColumn(
             "Some Other Obs Val",
-            QbObservationValue(NewQbUnit("Some Unit")),
+            QbObservationValue(unit=NewQbUnit("Some Unit")),
         ),
         QbColumn(
             "Some Measure",

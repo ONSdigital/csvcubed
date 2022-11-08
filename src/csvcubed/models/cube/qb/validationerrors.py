@@ -421,13 +421,13 @@ class HybridShapeError(SpecificValidationError):
     
     def __post_init__(self):
 
-        linked_cols = ", ".join(self.linked_obs_val_cols)
-        not_linked_cols = ", ".join(self.not_linked_obs_val_cols)
-        measure_cols = ", ".join(self.measure_cols)
+        linked_cols = ", ".join(str(self.linked_obs_val_cols))
+        not_linked_cols = ", ".join(str(self.not_linked_obs_val_cols))
+        measure_cols = ", ".join(str(self.measure_cols))
         self.message = (
-            f"Found these observation value columns with measures linked: '{linked_cols}'."+ os.linsep + 
-            f" Found these observation value columns without measures linked: '{not_linked_cols}'." + os.linsep + 
-            f" But found these measure columns '{measure_cols}. " + os.linsep + 
+            f"Found these observation value columns with measures linked: '{linked_cols}'."+ os.linesep + 
+            f" Found these observation value columns without measures linked: '{not_linked_cols}'." + os.linesep + 
+            f" But found these measure columns '{measure_cols}. " + os.linesep + 
             " This does not conform with either the standard or pivoted shape of expected data."
         )
         
