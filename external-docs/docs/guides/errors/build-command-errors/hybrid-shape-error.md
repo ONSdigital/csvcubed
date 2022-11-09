@@ -2,9 +2,7 @@
 
 ## When it occurs
 
-There are mutliple observation value columns defined without measures linked and at least one measure column defined.
-But there are also observation value column(s) with linked measures.
-This is an erroneous hybrid between standard and pivoted shape. 
+There are mutliple observation value columns defined without measures linked and at least one measure column defined. This is an erroneous hybrid between standard and pivoted shape. 
 
 ## How to fix
 

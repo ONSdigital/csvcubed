@@ -41,7 +41,7 @@ class CsvColumnUriTemplateMissingError(SpecificValidationError):
 
     @classmethod
     def get_error_url(cls) -> str:
-        return 'http://purl.org/csv-cubed/err/csv-col-uri-temp-mis'
+        return "http://purl.org/csv-cubed/err/csv-col-uri-temp-mis"
 
     def __post_init__(self):
         self.message = (
@@ -61,7 +61,7 @@ class CsvColumnLiteralWithUriTemplate(SpecificValidationError):
 
     @classmethod
     def get_error_url(cls) -> str:
-        return 'http://purl.org/csv-cubed/err/csv-col-lit-uri-temp'
+        return "http://purl.org/csv-cubed/err/csv-col-lit-uri-temp"
 
     def __post_init__(self):
         self.message = (
@@ -111,7 +111,7 @@ class MoreThanOneMeasureColumnError(MaxNumComponentsExceededError):
 
     @classmethod
     def get_error_url(cls) -> str:
-        return 'http://purl.org/csv-cubed/err/multi-meas-col'
+        return "http://purl.org/csv-cubed/err/multi-meas-col"
 
 
 @dataclass
@@ -125,7 +125,7 @@ class MoreThanOneUnitsColumnError(MaxNumComponentsExceededError):
 
     @classmethod
     def get_error_url(cls) -> str:
-        return 'http://purl.org/csv-cubed/err/multi-unit-col'
+        return "http://purl.org/csv-cubed/err/multi-unit-col"
 
 
 @dataclass
@@ -139,7 +139,7 @@ class MoreThanOneObservationsColumnError(MaxNumComponentsExceededError):
 
     @classmethod
     def get_error_url(cls) -> str:
-        return 'http://purl.org/csv-cubed/err/multi-obsv-col'
+        return "http://purl.org/csv-cubed/err/multi-obsv-col"
 
 
 @dataclass
@@ -174,7 +174,7 @@ class NoDimensionsDefinedError(MinNumComponentsNotSatisfiedError):
 
     @classmethod
     def get_error_url(cls) -> str:
-        return 'http://purl.org/csv-cubed/err/no-dim'
+        return "http://purl.org/csv-cubed/err/no-dim"
 
 
 @dataclass
@@ -228,7 +228,7 @@ class NoUnitsDefinedError(NeitherDefinedError):
 
     @classmethod
     def get_error_url(cls) -> str:
-        return 'http://purl.org/csv-cubed/err/no-unit'
+        return "http://purl.org/csv-cubed/err/no-unit"
 
 
 @dataclass
@@ -242,7 +242,7 @@ class NoMeasuresDefinedError(NeitherDefinedError):
 
     @classmethod
     def get_error_url(cls) -> str:
-        return 'http://purl.org/csv-cubed/err/no-meas'
+        return "http://purl.org/csv-cubed/err/no-meas"
 
 
 @dataclass
@@ -257,7 +257,7 @@ class NoObservedValuesColumnDefinedError(MinNumComponentsNotSatisfiedError):
 
     @classmethod
     def get_error_url(cls) -> str:
-        return 'http://purl.org/csv-cubed/err/no-obsv-col'
+        return "http://purl.org/csv-cubed/err/no-obsv-col"
 
 
 @dataclass
@@ -292,7 +292,7 @@ class BothUnitTypesDefinedError(IncompatibleComponentsError):
 
     @classmethod
     def get_error_url(cls) -> str:
-        return 'http://purl.org/csv-cubed/err/both-unit-typ-def'
+        return "http://purl.org/csv-cubed/err/both-unit-typ-def"
 
 
 @dataclass
@@ -307,7 +307,7 @@ class BothMeasureTypesDefinedError(IncompatibleComponentsError):
 
     @classmethod
     def get_error_url(cls) -> str:
-        return 'http://purl.org/csv-cubed/err/both-meas-typ-def'
+        return "http://purl.org/csv-cubed/err/both-meas-typ-def"
 
 
 @dataclass
@@ -319,17 +319,20 @@ class EmptyQbMultiMeasureDimensionError(SpecificValidationError):
 
     @classmethod
     def get_error_url(cls) -> str:
-        return 'http://purl.org/csv-cubed/err/empty-multi-meas-dimension'
+        return "http://purl.org/csv-cubed/err/empty-multi-meas-dimension"
 
     def __post_init__(self):
-        self.message = 'The field attribute of a QbMultiMeasureDimension must be populated'
+        self.message = (
+            "The field attribute of a QbMultiMeasureDimension must be populated"
+        )
+
 
 @dataclass
 class PivotedShapeMeasureColumnsExistError(BothMeasureTypesDefinedError):
     """
-        An error to inform the user that they have attempted to define a pivoted shape cube with measure columns.
+    An error to inform the user that they have attempted to define a pivoted shape cube with measure columns.
     """
-    
+
     @classmethod
     def get_error_url(cls) -> str:
         return "https://gss-cogs.github.io/csvcubed-docs/external/guides/errors/build-command-errors/multiple-measure-columns/"
@@ -337,27 +340,28 @@ class PivotedShapeMeasureColumnsExistError(BothMeasureTypesDefinedError):
     def __post_init__(self):
         self.message = f"The cube is in pivoted shape, but you have defined 1 or more Measure columns. These two approaches are incompatible."
 
+
 @dataclass
 class DuplicateMeasureError(SpecificValidationError):
     """
-        An error to inform the user that the obesrvation colums contain duplicate values
+    An error to inform the user that the obesrvation colums contain duplicate values
     """
 
     column_names: List[str]
-    
+
     @classmethod
     def get_error_url(cls) -> str:
         return "http://purl.org/csv-cubed/err/dup-measure"
 
     def __post_init__(self):
         column_names_concatenated = ", ".join(self.column_names)
-        self.message = (f"In the pivoted shape, two or more observation value columns cannot be represented by identical measures. {column_names_concatenated}")
+        self.message = f"In the pivoted shape, two or more observation value columns cannot be represented by identical measures. {column_names_concatenated}"
 
 
 @dataclass
 class AttributeNotLinkedError(SpecificValidationError):
     """
-        An error to inform the user that the units or attribute column is defined but it is not linked to the obs column
+    An error to inform the user that the units or attribute column is defined but it is not linked to the obs column
     """
 
     attribute_column_title: str
@@ -367,13 +371,13 @@ class AttributeNotLinkedError(SpecificValidationError):
         return "http://purl.org/csv-cubed/err/att-not-linked"
 
     def __post_init__(self):
-        self.message = (f"Units or attribute column '{self.attribute_column_title}' is defined but it is not linked to an observed values column")
+        self.message = f"Units or attribute column '{self.attribute_column_title}' is defined but it is not linked to an observed values column"
 
 
 @dataclass
 class LinkedObsColumnDoesntExistError(SpecificValidationError):
     """
-        An error to infrom the user that the units or attribute column is defined for which obs val column doesn't appear to exist.
+    An error to infrom the user that the units or attribute column is defined for which obs val column doesn't appear to exist.
     """
 
     alleged_obs_val_column_title: str
@@ -386,50 +390,47 @@ class LinkedObsColumnDoesntExistError(SpecificValidationError):
     def __post_init__(self):
         self.message = f"The unit or attribute column '{self.attribute_column_title}' is defined for an observed value column '{self.alleged_obs_val_column_title}' that doesn't appear to exist."
 
+
 @dataclass
 class LinkedToNonObsColumnError(SpecificValidationError):
     """
-        An error to infrom the user that units or attribute column is defined in which 
-        the linked obs val column isn't actually an observations column.
+    An error to infrom the user that units or attribute column is defined in which
+    the linked obs val column isn't actually an observations column.
     """
 
     alleged_obs_val_column_title: str
     attribute_column_title: str
-
 
     @classmethod
     def get_error_url(cls) -> str:
         return "http://purl.org/csv-cubed/err/link-non-obs-col"
 
     def __post_init__(self):
-        self.message = (f"Units or attribute column '{self.attribute_column_title}' is defined but the linked observation column '{self.alleged_obs_val_column_title}' is not actually an observation column")
+        self.message = f"Units or attribute column '{self.attribute_column_title}' is defined but the linked observation column '{self.alleged_obs_val_column_title}' is not actually an observation column"
+
 
 @dataclass
 class HybridShapeError(SpecificValidationError):
     """
-        An Error where there are mutliple obs val columns defined without measures, and at least one measure column defined.
-        This is an erroneous hybrid between standard and pivoted shape. 
+    An Error where there are mutliple obs val columns defined without measures, and at least one measure column defined.
+    This is an erroneous hybrid between standard and pivoted shape.
     """
 
-    linked_obs_val_cols: List[QbObservationValue]
     not_linked_obs_val_cols: List[QbObservationValue]
     measure_cols: List[QbMultiMeasureDimension]
 
     @classmethod
     def get_error_url(cls) -> str:
         return "http://purl.org/csv-cubed/err/hybrid-shape"
-    
+
     def __post_init__(self):
 
-        linked_cols = ", ".join(str(self.linked_obs_val_cols))
         not_linked_cols = ", ".join(str(self.not_linked_obs_val_cols))
         measure_cols = ", ".join(str(self.measure_cols))
         self.message = (
-            f"Found these observation value columns with measures linked: '{linked_cols}'."+ os.linesep + 
-            f" Found these observation value columns without measures linked: '{not_linked_cols}'." + os.linesep + 
-            f" But found these measure columns '{measure_cols}. " + os.linesep + 
-            " This does not conform with either the standard or pivoted shape of expected data."
+            f" Found these observation value columns without measures linked: '{not_linked_cols}'."
+            + os.linesep
+            + f" But found these measure columns '{measure_cols}. "
+            + os.linesep
+            + " This does not conform with either the standard or pivoted shape of expected data."
         )
-        
-
-

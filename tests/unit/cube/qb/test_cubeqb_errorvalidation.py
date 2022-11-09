@@ -398,50 +398,6 @@ def test_multi_measure_obs_val_with_multiple_measure_dimensions():
     assert error.actual_number == 2
 
 
-def test_measure_dimension_with_single_measure_obs_val():
-    """
-    Ensure that when a user defines a measure dimension with a single-measure observation value, they get an error.
-    """
-    data = pd.DataFrame(
-        {
-            "Some Dimension": ["a", "b", "c"],
-            "Measure Dimension": ["A Measure", "B Measure", "C Measure"],
-            "Value": [1, 2, 3],
-        }
-    )
-
-    cube = Cube(
-        CatalogMetadata("Some Qube"),
-        data,
-        [
-            QbColumn(
-                "Some Dimension",
-                NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
-            ),
-            QbColumn(
-                "Measure Dimension",
-                QbMultiMeasureDimension.new_measures_from_data(
-                    data["Measure Dimension"]
-                ),
-            ),
-            QbColumn(
-                "Value",
-                QbObservationValue(
-                    NewQbMeasure("Some New Measure"), NewQbUnit("Some New Unit 1")
-                ),
-            ),
-        ],
-    )
-    error = _get_single_validation_error_for_qube(cube)
-    assert isinstance(error, BothMeasureTypesDefinedError)
-    assert error.component_one == f"{QbObservationValue.__name__}.measure"
-    assert error.component_two == QbMultiMeasureDimension
-    assert (
-        error.additional_explanation
-        == "A pivoted shape cube cannot have a measure dimension."
-    )
-
-
 def test_existing_attribute_csv_column_uri_template_required():
     """
     An ExistingQbAttribute using Existing Attribute Values must have an csv_column_uri_template defined by the user,
@@ -773,8 +729,10 @@ def test_conflict_new_attribute_value_uri_values_error():
             ),
             QbColumn(
                 "New Attribute",
-                NewQbAttribute.from_data("New Attribute", data["New Attribute"],
-                observed_value_col_title="Value"),
+                NewQbAttribute.from_data(
+                    "New Attribute",
+                    data["New Attribute"],
+                ),
             ),
             QbColumn(
                 "Value",
@@ -817,7 +775,6 @@ def test_conflict_existing_attribute_value_uri_values_error():
                 ExistingQbAttribute(
                     "http://example.com/attributes/existing-attribute",
                     [NewQbAttributeValue("A B"), NewQbAttributeValue("A.B")],
-                    observed_value_col_title="Value",
                 ),
             ),
             QbColumn(
@@ -858,9 +815,7 @@ def test_conflict_new_units_uri_values_error():
             ),
             QbColumn(
                 "Units",
-                #QbMultiUnits.new_units_from_data(data["Units"]),
-                QbMultiUnits(observed_value_col_title="Value", units=QbMultiUnits.new_units_from_data(data["Units"])),
-                
+                QbMultiUnits.new_units_from_data(data["Units"]),
             ),
             QbColumn(
                 "Value",
@@ -1256,6 +1211,7 @@ def test_both_measure_types_defined():
     cube = Cube(metadata=metadata, data=data, columns=columns)
 
     validate_with_environ(cube, BothMeasureTypesDefinedError)
+
 
 def test_erroneous_hybrid_error():
     """
