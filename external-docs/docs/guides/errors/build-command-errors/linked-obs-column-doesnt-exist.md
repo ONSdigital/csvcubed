@@ -2,7 +2,7 @@
 
 ## When it occurs
 
-The unit or attribute column is linked to an observation value column that doesn't appear to exist.
+A unit or attribute column is linked to an observation value column that doesn't appear to exist.
 
 ## How to fix
 

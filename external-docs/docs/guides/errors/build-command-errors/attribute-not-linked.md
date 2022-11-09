@@ -2,7 +2,7 @@
 
 ## When it occurs
 
-The units or attribute column is defined but it is not linked to the obs column.
+A units or attribute column is defined but it is not linked to any observation value column.
 
 ## How to fix
 

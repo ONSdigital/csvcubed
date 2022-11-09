@@ -27,7 +27,12 @@ from csvcubed.models.cube import (
     QbObservationValue,
     QbStructuralDefinition,
     EmptyQbMultiMeasureDimensionError,
-    UriTemplateNameError
+    UriTemplateNameError,
+    DuplicateMeasureError,
+    AttributeNotLinkedError,
+    LinkedObsColumnDoesntExistError,
+    LinkedToNonObsColumnError,
+    HybridShapeError,
 )
 from csvcubed.models.cube.qb.components.validationerrors import (
     UndefinedMeasureUrisError,
@@ -52,6 +57,7 @@ def friendly_error_mapping(error: ValidationError) -> str:
     """
 
     _map = {
+        AttributeNotLinkedError: "A units or attribute column is defined but it is not linked to any observation value column.",
         BothMeasureTypesDefinedError: "Measures defined in multiple locations. Measures may only be defined in one location.",
         BothUnitTypesDefinedError: "Units defined in multiple locations. Units may only be defined in one location.",
         ColumnNotFoundInDataError: "Configuration found for column '{error.csv_column_title}' but no corresponding column found in CSV.",
@@ -62,8 +68,12 @@ def friendly_error_mapping(error: ValidationError) -> str:
         CsvColumnUriTemplateMissingError: "The '{error.csv_column_name}' column definition is missing a 'cell_uri_template'; a suitable "
         "value could not be inferred.",
         DuplicateColumnTitleError: "There are multiple CSV columns with the title: '{error.csv_column_title}'.",
+        DuplicateMeasureError: "In the pivoted shape, two or more observation value columns cannot be represented by identical measures.",
         EmptyQbMultiMeasureDimensionError: "A Measure column has been defined but no measures have been defined within it",
         EmptyQbMultiUnitsError: "A Unit column has been defined but no units have been defined within it",
+        HybridShapeError: "There are mutliple observation value columns defined without measures linked and at least one measure column defined.",
+        LinkedObsColumnDoesntExistError: "The unit or attribute column is linked to an observation value column that doesn't appear to exist.",
+        LinkedToNonObsColumnError: "A units or attribute column is linked to an observation value column that isn't actually an observation value column.",
         MoreThanOneObservationsColumnError: "Found {error.actual_number} observed values columns. Only 1 is permitted.",
         MoreThanOneMeasureColumnError: "Found {error.actual_number} measures columns. Only 1 is permitted.",
         MoreThanOneUnitsColumnError: "Found {error.actual_number} units columns. Only 1 is permitted.",
@@ -88,8 +98,8 @@ def friendly_error_mapping(error: ValidationError) -> str:
         UndefinedMeasureUrisError: "The Measure URI(s) {error.undefined_values} found in the data was not defined in the cube config.",
         UndefinedUnitUrisError: "The Unit URI(s) {error.undefined_values} found in the data was not defined in the cube config.",
         UriTemplateNameError: (
-            'Uri template: {error.csv_column_uri_template} is referencing a column that is not defined in the config. '
-            'Currently defined columns are: {error.column_names_concatenated}.'
+            "Uri template: {error.csv_column_uri_template} is referencing a column that is not defined in the config. "
+            "Currently defined columns are: {error.column_names_concatenated}."
         ),
         ValidationError: (
             "A validation error occurred when validating the cube: '{error.message}'."

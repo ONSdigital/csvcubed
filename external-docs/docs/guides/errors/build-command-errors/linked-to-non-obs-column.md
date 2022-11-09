@@ -2,7 +2,7 @@
 
 ## When it occurs
 
-When the units or attribute column is linked to an observation value column that isn't actually an observation value column. E.g. linked to a dimension column.
+A units or attribute column is linked to an observation value column that isn't actually an observation value column. E.g. linked to a dimension column.
 
 ## How to fix
 
