@@ -34,6 +34,16 @@ def mock_json_schemas(session: Optional[Session] = None) -> requests_mock.Mocker
         / "cube-config"
         / "v1_3"
         / "schema.json",
+        "//purl.org/csv-cubed/qube-config/v1.4": APP_ROOT_DIR_PATH
+        / "schema"
+        / "cube-config"
+        / "v1_4"
+        / "schema.json",
+        "//purl.org/csv-cubed/qube-config/v1": APP_ROOT_DIR_PATH
+        / "schema"
+        / "cube-config"
+        / "v1_4"
+        / "schema.json",
         "//purl.org/csv-cubed/qube-config/v1": APP_ROOT_DIR_PATH
         / "schema"
         / "cube-config"

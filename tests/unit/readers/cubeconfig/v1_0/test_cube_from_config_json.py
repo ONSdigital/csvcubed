@@ -6,7 +6,7 @@ from tempfile import TemporaryDirectory
 from typing import List
 import re
 
-from csvcubed.models.cube.qb.components.attribute import ExistingQbAttribute
+from csvcubed.models.cube.qb.components.attribute import ExistingQbAttribute, ExistingQbAttributeLiteral, NewQbAttributeLiteral
 from csvcubed.models.cube.qb.components.codelist import (
     CompositeQbCodeList,
     ExistingQbCodeList,
@@ -752,6 +752,150 @@ def test_observation_value_data_type_extraction():
     assert column.structural_definition.measure is not None
     obs_val = column.structural_definition
     assert obs_val.data_type == "integer"
+
+def test_describes_new_unit_column():
+    """
+    test that the describes_column variable 
+    """
+    data = pd.DataFrame({"The Column": ["1", "2", "3"]})
+
+    (column, _) = _get_qb_column_from_json(
+        {
+            "type": "units",
+            "describes_column": "test"
+        },
+        "The Column",
+        data,
+        1,
+    )
+
+    assert isinstance(
+        column.structural_definition, QbMultiUnits
+    ), column.structural_definition
+    column_title = column.structural_definition.observed_value_col_title
+    assert column_title == "test" 
+
+
+def test_describes_existing_unit_column():
+    """
+    test that the describes_column variable 
+    """
+    data = pd.DataFrame({"The Column": ["1", "2", "3"]})
+
+    (column, _) = _get_qb_column_from_json(
+        {
+            "type": "units",
+            "describes_column": "test",
+            "cell_uri_template": "http://qudt.com/units/{+the_column}"
+        },
+        "The Column",
+        data,
+        1,
+    )
+
+    assert isinstance(
+        column.structural_definition, QbMultiUnits
+    ), column.structural_definition
+    column_title = column.structural_definition.observed_value_col_title
+    assert column_title == "test"
+
+def test_describes_existing_attribute_literal_column():
+    """
+    test that the describes_column variable 
+    """
+    data = pd.DataFrame({"The Column": ["1", "2", "3"]})
+
+    (column, _) = _get_qb_column_from_json(
+        {
+            "type": "attribute",
+            "describes_column": "test",
+            "data_type": "integer",
+            "from_existing": "not sure",
+            "required": False
+        },
+        "The Column",
+        data,
+        1,
+    )
+
+    assert isinstance(
+        column.structural_definition, ExistingQbAttributeLiteral
+    ), column.structural_definition
+    column_title = column.structural_definition.observed_value_col_title
+    assert column_title == "test" 
+
+def test_describes_existing_attribute_resource_column():
+    """
+    test that the describes_column variable 
+    """
+    data = pd.DataFrame({"The Column": ["1", "2", "3"]})
+
+    (column, _) = _get_qb_column_from_json(
+        {
+            "type": "attribute",
+            "from_existing": "not sure",
+            "values": False,
+            "cell_uri_template": "http://qudt.com/units/{+the_column}",
+            "describes_column": "test"
+        },
+        "The Column",
+        data,
+        1,
+    )
+
+    assert isinstance(
+        column.structural_definition, ExistingQbAttribute
+    ), column.structural_definition
+    column_title = column.structural_definition.observed_value_col_title
+    assert column_title == "test"
+
+def test_describes_new_attribute_literal_column():
+    """
+    test that the describes_column variable 
+    """
+    data = pd.DataFrame({"The Column": ["1", "2", "3"]})
+
+    (column, _) = _get_qb_column_from_json(
+        {   
+            "type": "attribute",
+            "label": "Yay",
+            "data_type": "whatever",
+            "required": False,
+            "describes_column": "test"
+        },
+        "The Column",
+        data,
+        1,
+    )
+
+    assert isinstance(
+        column.structural_definition, NewQbAttributeLiteral
+    ), column.structural_definition
+    column_title = column.structural_definition.observed_value_col_title
+    assert column_title == "test"
+
+def test_describes_new_attribute_resource_column():
+    """
+    test that the describes_column variable 
+    """
+    data = pd.DataFrame({"The Column": ["1", "2", "3"]})
+
+    (column, _) = _get_qb_column_from_json(
+        {   
+            "type": "attribute",
+            "describes_column": "test"
+        },
+        "The Column",
+        data,
+        1,
+    )
+
+    assert isinstance(
+        column.structural_definition, NewQbAttribute
+    ), column.structural_definition
+    column_title = column.structural_definition.observed_value_col_title
+    assert column_title == "test" 
+
 
 
 if __name__ == "__main__":
