@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from pandas.util.testing import assert_frame_equal
+import pytest
 from csvcubed.cli.inspect.inspectdatasetmanager import filter_components_from_dsd
 from csvcubed.models.sparqlresults import QubeComponentResult
 
@@ -133,70 +134,131 @@ _expected_dataset_pivoted_single_measure_shape_cube = pd.DataFrame(
 _expected_dataset_pivoted_multi_measure_shape_cube = pd.DataFrame([{}])
 
 _expected_melted_dataset_for_pivoted_shape = pd.DataFrame(
-        [
-            {   
-                "Some Attribute": "attr-a",
-                "Some Dimension": "a",
-                "Observation Value": "Some Obs Val",
-                "Value": 1
-            },
-
-            {   
-                "Some Attribute": "attr-b",
-                "Some Dimension": "b",
-                "Observation Value": "Some Obs Val",
-                "Value": 2
-            },
-
-            {   
-                "Some Attribute": "attr-c",
-                "Some Dimension": "c",
-                "Observation Value": "Some Obs Val",
-                "Value": 3
-            },
-
-            {   
-                "Some Attribute": "attr-a",
-                "Some Dimension": "a",
-                "Observation Value": "Some Other Obs Val",
-                "Value": 2
-            },
-
-            {   
-                "Some Attribute": "attr-b",
-                "Some Dimension": "b",
-                "Observation Value": "Some Other Obs Val",
-                "Value": 4
-            },
-
-            {   
-                "Some Attribute": "attr-c",
-                "Some Dimension": "c",
-                "Observation Value": "Some Other Obs Val",
-                "Value": 6
-            },
-        ]
+    [
+        {
+            "Some Attribute": "attr-a",
+            "Some Dimension": "a",
+            "Observation Value": "Some Obs Val",
+            "Value": 1,
+        },
+        {
+            "Some Attribute": "attr-b",
+            "Some Dimension": "b",
+            "Observation Value": "Some Obs Val",
+            "Value": 2,
+        },
+        {
+            "Some Attribute": "attr-c",
+            "Some Dimension": "c",
+            "Observation Value": "Some Obs Val",
+            "Value": 3,
+        },
+        {
+            "Some Attribute": "attr-a",
+            "Some Dimension": "a",
+            "Observation Value": "Some Other Obs Val",
+            "Value": 2,
+        },
+        {
+            "Some Attribute": "attr-b",
+            "Some Dimension": "b",
+            "Observation Value": "Some Other Obs Val",
+            "Value": 4,
+        },
+        {
+            "Some Attribute": "attr-c",
+            "Some Dimension": "c",
+            "Observation Value": "Some Other Obs Val",
+            "Value": 6,
+        },
+    ]
 ).replace("", np.NAN)
 
 
-_measure_components_for_multi_measure_pivoted_shape = [
-        QubeComponentResult(
-            "qb-id-10003.csv#measure/some-measure",
-            "Some Measure",
-            "Measure",
-            "Some Obs Val",
-            ComponentPropertyType.Measure.value,
-            True,
-        ),
-        QubeComponentResult(
-            "qb-id-10003.csv#measure/some-other-measure",
-            "Some Other Measure",
-            "Measure",
-            "Some Other Obs Val",
-            ComponentPropertyType.Measure.value,
-            True,
-        ),
+_expected_melted_dataset_with_measure_col_for_pivoted_shape = pd.DataFrame(
+    [
+        {
+            "Some Attribute": "attr-a",
+            "Some Dimension": "a",
+            "Observation Value": "Some Obs Val",
+            "Value": 1,
+            "Measure": "Some Measure",
+        },
+        {
+            "Some Attribute": "attr-b",
+            "Some Dimension": "b",
+            "Observation Value": "Some Obs Val",
+            "Value": 2,
+            "Measure": "Some Measure",
+        },
+        {
+            "Some Attribute": "attr-c",
+            "Some Dimension": "c",
+            "Observation Value": "Some Obs Val",
+            "Value": 3,
+            "Measure": "Some Measure",
+        },
+        {
+            "Some Attribute": "attr-a",
+            "Some Dimension": "a",
+            "Observation Value": "Some Other Obs Val",
+            "Value": 2,
+            "Measure": "Some Other Measure",
+        },
+        {
+            "Some Attribute": "attr-b",
+            "Some Dimension": "b",
+            "Observation Value": "Some Other Obs Val",
+            "Value": 4,
+            "Measure": "Some Other Measure",
+        },
+        {
+            "Some Attribute": "attr-c",
+            "Some Dimension": "c",
+            "Observation Value": "Some Other Obs Val",
+            "Value": 6,
+            "Measure": "Some Other Measure",
+        },
     ]
+).replace("", np.NAN)
+
+_measure_components_for_multi_measure_pivoted_shape = [
+    QubeComponentResult(
+        "qb-id-10003.csv#measure/some-measure",
+        "Some Measure",
+        "Measure",
+        "Some Obs Val",
+        ComponentPropertyType.Measure.value,
+        True,
+    ),
+    QubeComponentResult(
+        "qb-id-10003.csv#measure/some-other-measure",
+        "Some Other Measure",
+        "Measure",
+        "Some Other Obs Val",
+        ComponentPropertyType.Measure.value,
+        True,
+    ),
+]
+
+_measure_components_for_multi_measure_pivoted_shape_same_measure = [
+    QubeComponentResult(
+        "qb-id-10003.csv#measure/some-measure",
+        "Some Measure",
+        "Measure",
+        "Some Obs Val",
+        ComponentPropertyType.Measure.value,
+        True,
+    ),
+    QubeComponentResult(
+        "qb-id-10003.csv#measure/some-other-measure",
+        "Some Other Measure",
+        "Measure",
+        "Some Obs Val",
+        ComponentPropertyType.Measure.value,
+        True,
+    ),
+]
 
 def test_transform_to_canonical_shape_for_standard_shape_data_set():
     """
@@ -320,7 +382,9 @@ def test_melt_data_set_for_pivoted_shape():
         _test_case_base_dir / "pivoted-multi-measure-dataset" / "qb-id-10003.csv"
     )
     pivoted_df = pd.read_csv(test_csv_file)
-    melted_df = _melt_data_set(pivoted_df, _measure_components_for_multi_measure_pivoted_shape)
+    melted_df = _melt_data_set(
+        pivoted_df, _measure_components_for_multi_measure_pivoted_shape
+    )
 
     assert melted_df is not None
     # Asserting the number of rows in the melted dataframe
@@ -330,20 +394,49 @@ def test_melt_data_set_for_pivoted_shape():
     # Asserting the columns and data in the melted dataframe.
     assert_frame_equal(melted_df, _expected_melted_dataset_for_pivoted_shape)
 
+
 def test_create_measure_col_in_melted_data_set():
     """
-    TODO: Add description
+    Ensure that the correct measure column information is added to the melted dataframe.
     """
     test_csv_file = (
         _test_case_base_dir / "pivoted-multi-measure-dataset" / "qb-id-10003.csv"
     )
     pivoted_df = pd.read_csv(test_csv_file)
-    melted_df = _melt_data_set(pivoted_df, _measure_components_for_multi_measure_pivoted_shape)
+    melted_df = _melt_data_set(
+        pivoted_df, _measure_components_for_multi_measure_pivoted_shape
+    )
 
-    melted_df_with_measure_col = _create_measure_col_in_melted_data_set(melted_df, _measure_components_for_multi_measure_pivoted_shape)
+    _create_measure_col_in_melted_data_set(
+        melted_df, _measure_components_for_multi_measure_pivoted_shape
+    )
 
-    #1. assert whether the melted_df_with_measure_col is none or not
-    #2. assert whether the melted_df_with_measure_col has the correct number of rows
-    #3. assert whether the melted_df_with_measure_col has the correct number of columns.
-    #4. assert whether the melted_df_with_measure_col dataframe equals to the expected dataframe.
-    assert True
+    assert melted_df is not None
+    # assert whether the melted_df_with_measure_col has the correct number of rows
+    assert melted_df.shape[0] == 6
+    # assert whether the melted_df_with_measure_col has the correct number of columns.
+    assert melted_df.shape[1] == 5
+    # assert whether the melted_df_with_measure_col dataframe equals to the expected dataframe.
+    assert_frame_equal(
+        melted_df, _expected_melted_dataset_with_measure_col_for_pivoted_shape
+    )
+
+
+def test_create_measure_in_melted_data_set_exception_for_more_than_one_matching_component_results():
+    """
+    Ensure that if there is more than one matching measure component that an exception is raised
+    """
+
+    test_csv_file = (
+        _test_case_base_dir / "pivoted-multi-measure-dataset" / "qb-id-10003.csv"
+    )
+    pivoted_df = pd.read_csv(test_csv_file)
+    melted_df = _melt_data_set(
+        pivoted_df, _measure_components_for_multi_measure_pivoted_shape_same_measure
+    )
+
+    with pytest.raises(Exception) as exception:
+        _create_measure_col_in_melted_data_set(
+            melted_df, _measure_components_for_multi_measure_pivoted_shape_same_measure
+        )
+    assert str(exception.value) == f"Expected one observation value component"
