@@ -98,7 +98,7 @@ def test_resultant_path():
             metrics_out_folder=tmp_dir / "metrics",
         )
 
-        start_time = "08:04:18"
+        start_time = "08_04_18"
         assert (tmp_dir / "metrics").exists()
         assert (tmp_dir / "metrics" / run_identifier).exists()
         assert (
