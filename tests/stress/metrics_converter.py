@@ -80,10 +80,10 @@ def get_metrics(
 
     # creating the csv file where the results will be saved
     metrics_out_folder.mkdir(exist_ok=True)
-    out_folder_for_run = metrics_out_folder / run_identifier
+    out_folder_for_run = metrics_out_folder / run_identifier.replace(":", "_")
     out_folder_for_run.mkdir(exist_ok=True)
 
-    result_file = run_type + "metrics-" + str(creation_date) + ".csv"
+    result_file = run_type + "metrics-" + str(creation_date.replace(":", "_")) + ".csv"
 
     path_to_metrics = out_folder_for_run / result_file
     open(path_to_metrics, "w+")
