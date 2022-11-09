@@ -52,6 +52,7 @@ def step_impl(context):
     cassette_file_name = scenario_name.rsplit("]")[1]
 
     mocker = mock_json_schemas()
+    mocker.start()
     context.add_cleanup(lambda: mocker.stop())
 
     context.out_dir = get_context_temp_dir_path(context) / "out"
