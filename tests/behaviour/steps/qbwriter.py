@@ -25,7 +25,6 @@ from csvcubed.readers.skoscodelistreader import extract_code_list_concept_scheme
 from csvcubed.writers.qbwriter import QbWriter
 from csvcubed.utils.qb.validation.cube import validate_qb_component_constraints
 from csvcubed.utils.pandas import read_csv
-from csvcubed.utils.version import get_csvcubed_version_uri
 
 _test_case_dir = get_test_cases_dir()
 
