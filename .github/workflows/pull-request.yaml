@@ -1,0 +1,21 @@
+name: Test csvcubed on pull request
+on:
+  pull_request:
+
+jobs:
+  test_in_environments:
+    strategy:
+      matrix:
+        # Test on linux with the oldest and newest versions of python.
+        python-version: ['3.9', '3.10']
+        os: [ubuntu-latest]
+        include:
+          # Test in windows with the newest supported version of python.
+          - os: windows-latest
+            python-version: '3.10'
+
+    uses: ./.github/workflows/reusable-test.yaml
+    with:
+      os: ${{ matrix.os }}
+      python-version: ${{ matrix.python-version }}
+  
