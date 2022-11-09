@@ -3,6 +3,7 @@ from csvcubed.cli.inspect.metadataprinter import to_absolute_rdflib_file_path
 from csvcubed.utils.skos.codelist import (
     CodelistPropertyUrl,
     get_codelist_col_title_by_property_url,
+    get_codelist_col_title_from_col_name,
 )
 import pytest
 import numpy as np
@@ -17,6 +18,7 @@ from treelib import Tree
 from csvcubed.utils.sparql_handler.sparqlmanager import (
     select_codelist_cols_by_dataset_url,
     select_codelist_dataset_url,
+    select_primary_key_col_names_by_dataset_url,
     select_csvw_catalog_metadata,
     select_csvw_dsd_dataset_label_and_dsd_def_uri,
     select_csvw_dsd_qube_components,
@@ -613,18 +615,22 @@ def test_get_concepts_hierarchy_info_hierarchy_with_depth_of_one():
     result_code_list_cols = select_codelist_cols_by_dataset_url(
         csvw_metadata_rdf_graph, dataset_url
     )
+    result_primary_key_col_names_by_dataset_url = select_primary_key_col_names_by_dataset_url(
+        csvw_metadata_rdf_graph, dataset_url
+    )
+
     parent_notation_col_name = get_codelist_col_title_by_property_url(
         result_code_list_cols.columns, CodelistPropertyUrl.SkosBroader
     )
     label_col_name = get_codelist_col_title_by_property_url(
         result_code_list_cols.columns, CodelistPropertyUrl.RDFLabel
     )
-    notation_col_name = get_codelist_col_title_by_property_url(
-        result_code_list_cols.columns, CodelistPropertyUrl.SkosNotation
+    unique_identifier = get_codelist_col_title_from_col_name(
+        result_code_list_cols.columns, result_primary_key_col_names_by_dataset_url.primary_key_col_names[0].value
     )
 
     result = get_concepts_hierarchy_info(
-        dataset, parent_notation_col_name, label_col_name, notation_col_name
+        dataset, parent_notation_col_name, label_col_name, unique_identifier
     )
 
     assert isinstance(result.tree, Tree)
@@ -647,18 +653,22 @@ def test_get_concepts_hierarchy_info_hierarchy_with_depth_more_than_one():
     result_code_list_cols = select_codelist_cols_by_dataset_url(
         csvw_metadata_rdf_graph, dataset_url
     )
+    result_primary_key_col_names_by_dataset_url = select_primary_key_col_names_by_dataset_url(
+        csvw_metadata_rdf_graph, dataset_url
+    )
+
     parent_notation_col_name = get_codelist_col_title_by_property_url(
         result_code_list_cols.columns, CodelistPropertyUrl.SkosBroader
     )
     label_col_name = get_codelist_col_title_by_property_url(
         result_code_list_cols.columns, CodelistPropertyUrl.RDFLabel
     )
-    notation_col_name = get_codelist_col_title_by_property_url(
-        result_code_list_cols.columns, CodelistPropertyUrl.SkosNotation
+    unique_identifier = get_codelist_col_title_from_col_name(
+        result_code_list_cols.columns, result_primary_key_col_names_by_dataset_url.primary_key_col_names[0].value
     )
 
     result = get_concepts_hierarchy_info(
-        dataset, parent_notation_col_name, label_col_name, notation_col_name
+        dataset, parent_notation_col_name, label_col_name, unique_identifier
     )
 
     assert isinstance(result.tree, Tree)

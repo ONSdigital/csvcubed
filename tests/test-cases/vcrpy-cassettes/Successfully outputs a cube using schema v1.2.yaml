@@ -9,7 +9,7 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - python-requests/2.28.0
+      - python-requests/2.28.1
     method: GET
     uri: https://purl.org/csv-cubed/qube-config/templates/preset_column_config.json
   response:
@@ -41,7 +41,7 @@ interactions:
       content-type:
       - text/html; charset=utf-8
       date:
-      - Tue, 23 Aug 2022 07:47:34 GMT
+      - Thu, 29 Sep 2022 09:56:36 GMT
       location:
       - https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/src/csvcubed/readers/cubeconfig/v1_0/templates/preset_column_config.json
       server:
@@ -59,7 +59,79 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - python-requests/2.28.0
+      - python-requests/2.28.1
+    method: GET
+    uri: https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/src/csvcubed/readers/cubeconfig/v1_0/templates/preset_column_config.json
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA3WSWw6CMBBF/1kF4du6AHczwohVmMZ2iiHGvctL4i3Sn6an5zaTm76yfFhFz+SL
+        U16U1LBU5M0IjrfgpDjMxpWai9loKwX3Eckro7kw8FonegVrIuA8me+gjACMinoQhjNO7mIy9ABw
+        DitRGQeZEFiBSycVWDMKoNWuYy8ti651JWhPh4r/8b3gT99buhf6Fpsg1D3XzlsSYyUoiU6BFELE
+        nQP7jtQ6McOtxjBmtjT5MNX09LibKFaX6+z9Accf2dOgAgAA
+    headers:
+      Accept-Ranges:
+      - bytes
+      Access-Control-Allow-Origin:
+      - '*'
+      Cache-Control:
+      - max-age=300
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '207'
+      Content-Security-Policy:
+      - default-src 'none'; style-src 'unsafe-inline'; sandbox
+      Content-Type:
+      - text/plain; charset=utf-8
+      Date:
+      - Thu, 29 Sep 2022 09:56:37 GMT
+      ETag:
+      - W/"02f3b129239a058964e7c968363b63374777cc01f1195f72e27833aee04150ab"
+      Expires:
+      - Thu, 29 Sep 2022 10:01:37 GMT
+      Source-Age:
+      - '0'
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Authorization,Accept-Encoding,Origin
+      Via:
+      - 1.1 varnish
+      X-Cache:
+      - MISS
+      X-Cache-Hits:
+      - '0'
+      X-Content-Type-Options:
+      - nosniff
+      X-Fastly-Request-ID:
+      - 76b9698890cf581c111c442f2d3d220d670e6be0
+      X-Frame-Options:
+      - deny
+      X-GitHub-Request-Id:
+      - 0808:E9E2:8ABFCB:9411CD:63356BD5
+      X-Served-By:
+      - cache-lcy19262-LCY
+      X-Timer:
+      - S1664445397.095173,VS0,VE182
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.28.1
     method: GET
     uri: https://purl.org/csv-cubed/qube-config/templates/qudt-units.json
   response:
@@ -91,7 +163,7 @@ interactions:
       content-type:
       - text/html; charset=utf-8
       date:
-      - Tue, 23 Aug 2022 07:47:34 GMT
+      - Thu, 29 Sep 2022 09:56:39 GMT
       location:
       - https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/src/csvcubed/readers/cubeconfig/v1_0/templates/qudt-units.json
       server:
@@ -99,4 +171,74 @@ interactions:
     status:
       code: 302
       message: FOUND
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.28.1
+    method: GET
+    uri: https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/src/csvcubed/readers/cubeconfig/v1_0/templates/qudt-units.json
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA6vmUgACpZLKglQlKwWl0rzMkmIlHYhgcmpOTnxpUWZ8SWpuQU5iCVhFRklJgZW+
+        fmFpSoleflG6fll+cmKSPkiffrW2TXJ+TmluXnxeYm6qXa0SVy0A5tE0Cl8AAAA=
+    headers:
+      Accept-Ranges:
+      - bytes
+      Access-Control-Allow-Origin:
+      - '*'
+      Cache-Control:
+      - max-age=300
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '104'
+      Content-Security-Policy:
+      - default-src 'none'; style-src 'unsafe-inline'; sandbox
+      Content-Type:
+      - text/plain; charset=utf-8
+      Date:
+      - Thu, 29 Sep 2022 09:56:40 GMT
+      ETag:
+      - W/"1e22af73117755191a9d5a8f4f38bb2078e4b8543b3bb39dd27f942744683c05"
+      Expires:
+      - Thu, 29 Sep 2022 10:01:40 GMT
+      Source-Age:
+      - '0'
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Authorization,Accept-Encoding,Origin
+      Via:
+      - 1.1 varnish
+      X-Cache:
+      - MISS
+      X-Cache-Hits:
+      - '0'
+      X-Content-Type-Options:
+      - nosniff
+      X-Fastly-Request-ID:
+      - 3becae63407da96f0ee7d7efe9705d6bf947dc46
+      X-Frame-Options:
+      - deny
+      X-GitHub-Request-Id:
+      - 0855:4559:5BD494:618E27:63356BD8
+      X-Served-By:
+      - cache-lcy19262-LCY
+      X-Timer:
+      - S1664445400.027879,VS0,VE210
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
 version: 1

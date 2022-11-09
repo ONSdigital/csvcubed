@@ -2,7 +2,7 @@
     "$schema": "https://json-schema.org/draft-07/schema",
     "id": "https://purl.org/csv-cubed/code-list-config/v1.1",
     "title": "Schema for a codelist.",
-    "description": "Schema to be used for creation and validation of a single codelist in CSV-W format.",
+    "description": "A new code list to be associated with a dimension.",
     "type": "object",
     "required": [
         "title"

@@ -364,7 +364,7 @@ def test_select_metadata_dependencies():
     )
 
     graph = Graph()
-    graph.load(metadata_file, format="json-ld")
+    graph.parse(metadata_file, format="json-ld")
     dependencies = select_metadata_dependencies(graph)
 
     assert len(dependencies) == 1

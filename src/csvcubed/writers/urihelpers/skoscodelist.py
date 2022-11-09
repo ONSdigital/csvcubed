@@ -64,3 +64,9 @@ class SkosCodeListNewUriHelper:
         Return the URI for the scheme
         """
         return self._uri_in_doc(SCHEMA_URI_IDENTIFIER)
+
+    def get_activity_uri(self) -> str:
+        """
+        Return the URI for the build activity
+        """
+        return self._uri_in_doc("csvcubed-build-activity")

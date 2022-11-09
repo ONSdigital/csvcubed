@@ -22,11 +22,7 @@ from .concept import NewQbConcept, ExistingQbConcept, DuplicatedQbConcept
 from .dimension import QbDimension, NewQbDimension, ExistingQbDimension
 from .measure import QbMeasure, NewQbMeasure, ExistingQbMeasure
 from .measuresdimension import QbMultiMeasureDimension
-from .observedvalue import (
-    QbObservationValue,
-    QbMultiMeasureObservationValue,
-    QbSingleMeasureObservationValue,
-)
+from .observedvalue import QbObservationValue
 from .unit import QbUnit, NewQbUnit, ExistingQbUnit
 from .unitscolumn import QbMultiUnits
 from .arbitraryrdf import RdfSerialisationHint

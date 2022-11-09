@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Tuple, Dict, Any, List, Iterable, Set
 
 import pandas as pd
+from csvcubed.models.rdf import conceptschemeincatalog
 
 from csvcubedmodels.rdf.dependency import RdfGraphDependency
 from csvcubedmodels import rdf
@@ -24,6 +25,7 @@ from csvcubedmodels.rdf.resource import (
     maybe_existing_resource,
 )
 
+from csvcubed.models.rdf import prov
 from csvcubed.models.cube import *
 from csvcubed.utils.uri import (
     get_last_uri_part,
@@ -60,6 +62,7 @@ from ..models.rdf.newunitresource import NewUnitResource
 from ..models.cube.qb.components.arbitraryrdf import RdfSerialisationHint
 from csvcubed.models.rdf.qbdatasetincatalog import QbDataSetInCatalog
 from ..utils.qb.validation.observations import get_observation_status_columns
+from csvcubed.utils.version import get_csvcubed_version_uri
 
 
 _logger = logging.getLogger(__name__)
@@ -92,7 +95,7 @@ class QbWriter(WriterBase):
         # Also converts all appropriate columns to the pandas categorical format.
 
         _logger.info(f"Beginning CSV-W Generation: {self.csv_file_name}")
-        
+
         ensure_int_columns_are_ints(self.cube)
 
         # Bring the pandas representation of booleans inline with what the csvw spec requires
@@ -100,11 +103,13 @@ class QbWriter(WriterBase):
         if isinstance(self.cube.data, pd.DataFrame):
             for pandas_column_label in self.cube.data.columns.values:
                 if self.cube.data[pandas_column_label].dtype == "bool":
-                    self.cube.data[pandas_column_label] = self.cube.data[pandas_column_label].apply(
+                    self.cube.data[pandas_column_label] = self.cube.data[
+                        pandas_column_label
+                    ].apply(
                         lambda x: "true" if x is True else "false" if x is False else x
                     )
 
-        _logger.info('Calling data values to uri safe values')
+        _logger.info("Calling data values to uri safe values")
         convert_data_values_to_uri_safe_values(
             self.cube, self.raise_missing_uri_safe_value_exceptions
         )
@@ -270,7 +275,7 @@ class QbWriter(WriterBase):
                         ),
                         "reference": {
                             "resource": code_list.csv_file_relative_path_or_uri,
-                            "columnReference": "notation", # NewQbCodeListInCsvW are used for historic reasons and they always use the notation key for their primary key. External users cannot create NewQbCodeListInCsvW.
+                            "columnReference": "notation",  # NewQbCodeListInCsvW are used for historic reasons and they always use the notation key for their primary key. External users cannot create NewQbCodeListInCsvW.
                         },
                     }
                 )
@@ -320,14 +325,15 @@ class QbWriter(WriterBase):
                     "valueUrl": self._get_unit_uri(unit),
                 }
             )
-        if isinstance(obs_val, QbSingleMeasureObservationValue):
+        if isinstance(obs_val, QbObservationValue) and obs_val.is_pivoted_shape_observation:
+            assert obs_val.measure is not None
             _logger.debug("Adding virtual measure column.")
             virtual_columns.append(
                 {
                     "name": "virt_measure",
                     "virtual": True,
                     "propertyUrl": "http://purl.org/linked-data/cube#measureType",
-                    "valueUrl": self._get_measure_uri(obs_val.measure),
+                    "valueUrl": self._get_measure_uri(obs_val.measure), 
                 }
             )
         return virtual_columns
@@ -341,6 +347,11 @@ class QbWriter(WriterBase):
 
     def _generate_qb_dataset_dsd_definitions(self) -> QbDataSetInCatalog:
         dataset = self._get_qb_dataset_with_catalog_metadata()
+
+        generation_activity = prov.Activity(self._new_uri_helper.get_activity_uri())
+        generation_activity.used = ExistingResource(get_csvcubed_version_uri())
+        dataset.was_generated_by = generation_activity
+
         dataset.structure = rdf.qb.DataStructureDefinition(
             self._new_uri_helper.get_structure_uri()
         )
@@ -426,15 +437,11 @@ class QbWriter(WriterBase):
         if unit is not None:
             specs.append(self._get_qb_units_column_specification("unit"))
 
-        if isinstance(observation_value, QbSingleMeasureObservationValue):
+        
+        if observation_value.is_pivoted_shape_observation:
+            assert observation_value.measure is not None
             specs.append(
                 self._get_qb_measure_component_specification(observation_value.measure)
-            )
-        elif isinstance(observation_value, QbMultiMeasureObservationValue):
-            pass
-        else:
-            raise Exception(
-                f"Unmatched Observation value component of type {type(observation_value)}."
             )
 
         return specs
@@ -963,13 +970,15 @@ class QbWriter(WriterBase):
         self,
         observation_value: QbObservationValue,
     ):
-        if isinstance(observation_value, QbSingleMeasureObservationValue):
+        if observation_value.is_pivoted_shape_observation:
+            assert observation_value.measure is not None
             _logger.debug(
                 "Single-measure observation value propertyUrl defined by measure %s",
                 observation_value.measure,
             )
             return self._get_measure_uri(observation_value.measure), None
-        elif isinstance(observation_value, QbMultiMeasureObservationValue):
+        else:
+            # In the standard shape
             multi_measure_dimension_col = self._get_single_column_of_type(
                 QbMultiMeasureDimension
             )
@@ -984,10 +993,6 @@ class QbWriter(WriterBase):
                 )
             )
             return measure_uri_template, None
-        else:
-            raise ValueError(
-                f"Unmatched Observation Value type {type(observation_value)}"
-            )
 
     def _get_single_column_of_type(
         self, t: Type[QbColumnarDsdType]

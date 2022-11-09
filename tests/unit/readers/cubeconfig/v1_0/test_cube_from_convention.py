@@ -15,7 +15,7 @@ from csvcubed.models.csvcubedexception import UnsupportedColumnDefinitionExcepti
 from csvcubed.models.cube.cube import Cube
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.cube.qb.components.observedvalue import (
-    QbMultiMeasureObservationValue,
+    QbObservationValue,
 )
 from csvcubed.cli.build import build as cli_build
 from csvcubed.definitions import APP_ROOT_DIR_PATH
@@ -85,8 +85,9 @@ def test_01_build_convention_ok():
 
     col_observation = cube.columns[2]
     assert isinstance(
-        col_observation.structural_definition, QbMultiMeasureObservationValue
+        col_observation.structural_definition, QbObservationValue
     )
+    assert col_observation.structural_definition.measure is None
     assert col_observation.structural_definition.unit is None
     assert col_observation.structural_definition.data_type == "decimal"
 
@@ -206,7 +207,7 @@ def test_unsupported_col_definition_exception():
         deserialiser = get_deserialiser(SCHEMA_PATH_FILE, 3)
 
         with pytest.raises(UnsupportedColumnDefinitionException) as msg:
-            _, _, _ = deserialiser(data_file_path, config_file_path)
+            deserialiser(data_file_path, config_file_path)
             assert f"The definition for column with name Rate is not supported." in str(
                 msg
             )

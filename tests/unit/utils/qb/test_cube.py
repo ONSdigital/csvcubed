@@ -18,11 +18,11 @@ def test_get_all_units():
             ),
             QbColumn(
                 "Some Multi Measure Obs Val",
-                QbMultiMeasureObservationValue(unit=NewQbUnit("Unit 3")),
+                QbObservationValue(unit=NewQbUnit("Unit 3")),
             ),
             QbColumn(
                 "Some Single Measure Obs Val",
-                QbSingleMeasureObservationValue(
+                QbObservationValue(
                     NewQbMeasure("Some Measure"), unit=NewQbUnit("Unit 4")
                 ),
             ),
@@ -56,7 +56,7 @@ def test_get_all_measures():
             ),
             QbColumn(
                 "Some Single Measure Obs Val",
-                QbSingleMeasureObservationValue(NewQbMeasure("Measure 3")),
+                QbObservationValue(NewQbMeasure("Measure 3")),
             ),
         ],
     )

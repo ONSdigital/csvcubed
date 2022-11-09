@@ -54,6 +54,13 @@ class CsvcubedExceptionMsges(Enum):
         "The definition for column with name {column_title} is not supported."
     )
 
+    PrimaryKeyColumnTitleCannotBeNone = (
+        "The column associated with the primary key does not contain the title."
+    )
+
+    UnsupportedNumberOfPrimaryKeyColNames = (
+        "Only 1 primary key column name is supported but found {num_of_primary_key_col_names} primary key column names for the table with url {table_url}."
+    )
 
 class CsvcubedExceptionUrls(Enum):
     """
@@ -92,6 +99,14 @@ class CsvcubedExceptionUrls(Enum):
 
     UnsupportedColumnDefinition = (
         "http://purl.org/csv-cubed/err/column-definition-not-supported"
+    )
+
+    PrimaryKeyColumnTitleCannotBeNone = (
+        "http://purl.org/csv-cubed/err/invalid-pk-col-title"
+    )
+
+    UnsupportedNumberOfPrimaryKeyColNames = (
+         "http://purl.org/csv-cubed/err/unsupported-num-of-primary-keys"
     )
 
 
@@ -312,3 +327,29 @@ class UnsupportedColumnDefinitionException(CsvcubedException):
     @classmethod
     def get_error_url(cls) -> str:
         return CsvcubedExceptionUrls.UnsupportedColumnDefinition.value
+
+
+class PrimaryKeyColumnTitleCannotBeNoneException(CsvcubedException):
+    """Class representing the PrimaryKeyColumnTitleCannotBeNoneException model."""
+
+    def __init__(self):
+        super().__init__(CsvcubedExceptionMsges.PrimaryKeyColumnTitleCannotBeNone.value)
+
+    @classmethod
+    def get_error_url(cls) -> str:
+        return CsvcubedExceptionUrls.PrimaryKeyColumnTitleCannotBeNone.value
+
+class UnsupportedNumOfPrimaryKeyColNamesException(CsvcubedException):
+    """Class representing the UnsupportedNumOfPrimaryKeyColNamesException model."""
+
+    def __init__(self, num_of_primary_key_col_names: int, table_url:str):
+        super().__init__(
+            CsvcubedExceptionMsges.UnsupportedNumberOfPrimaryKeyColNames.value.format(
+                num_of_primary_key_col_names=num_of_primary_key_col_names,
+                table_url=table_url
+            )
+        )
+
+    @classmethod
+    def get_error_url(cls) -> str:
+        return CsvcubedExceptionUrls.UnsupportedNumberOfPrimaryKeyColNames.value

@@ -1,0 +1,43 @@
+name: Build csvcubed whl and documentation
+on:
+  workflow_call:
+
+jobs:
+  build_package_and_documentation:
+    runs-on: ubuntu-latest
+    container:
+      image: gsscogs/pythonversiontesting
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Update version for release
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          poetry version "$(echo "${{ github.ref_name }}" | sed -e 's/^.*\/v\(.*\)/\1/')"
+
+      - name: Update version for dev
+        # uses a version identifier derived from the Git hash for this commit.
+        if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
+        run: |
+          revision="$(git rev-parse HEAD | tr \'[:lower:]\' \'[:upper:]\')"
+          decimal_rev=$(echo "obase=10; ibase=16; $revision" | bc)
+          poetry version "0.1.0-dev$decimal_rev"
+
+      - name: Build whl package
+        run: poetry build
+
+      - name: Build documentation
+        working-directory: external-docs
+        run: |
+          python3 -m pip install mkdocs mkdocs-material mkdocs-mermaid2-plugin
+          python3 -m mkdocs build
+
+      - name: Archive package and documentation
+        uses: actions/upload-artifact@v3
+        with:
+          name: package-and-documentation
+          path: |
+            **/dist/*.whl
+            **/external-docs/site/**/*

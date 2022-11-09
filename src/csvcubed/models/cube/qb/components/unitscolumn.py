@@ -5,8 +5,8 @@ Units Column
 Define a units column in an RDF Data Cube.
 """
 
-from dataclasses import dataclass
-from typing import List
+from dataclasses import dataclass,field
+from typing import List, Optional
 
 import pandas as pd
 import uritemplate
@@ -23,14 +23,18 @@ from .unit import (
 from .validationerrors import UndefinedUnitUrisError, EmptyQbMultiUnitsError
 from csvcubed.models.validationerror import ValidationError
 
-
 @dataclass
 class QbMultiUnits(QbColumnStructuralDefinition):
+
     """
     Represents multiple units used/defined in a cube, typically used in multi-measure cubes.
     """
 
     units: List[QbUnit]
+    observed_value_col_title: Optional[str] = field(default=None)
+    """
+    Helps identify which observed values column this units column describes
+    """
 
     @validator("units")
     def _validate_units_non_conflicting(cls, units: List[QbUnit]) -> List[QbUnit]:
