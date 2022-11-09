@@ -2,12 +2,15 @@ import csv
 import sys
 from pathlib import Path
 
-# this program will generate a csv file with a predefined number of colums and rows (preferabli each value unique)
+# This program will generate a "maximally complex" csv file with a predefined number of columns and rows.
 
 
 def generate_maximally_complex_csv(
     numb_rows: int, temp_dir: Path = Path("temp_dir"), max_num_measures: int = 20
 ):
+    # The output of this function (stress.csv) is to be paired with "test-qube-config.json" when
+    # performing the build command to ensure we correctly identify the type of each column when
+    # constructing the CSV-W.
 
     temp_dir.mkdir(exist_ok=True)
 

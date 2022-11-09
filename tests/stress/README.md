@@ -2,7 +2,7 @@
 
 ## Intro
 To stress test csvcubed, we use a tool called JMeter to run two separate test plans for the build command and inspect command respectively.  
-The test plans are run consecutively via a bash script and follow broadly the same structure:
+The test plans are run sequentially (not in parallel) via a bash script and follow broadly the same structure:
 
 - Start running a performance monitor in the background
 - Generate a "maximally complex" CSV file with the number of rows the user has given as a parameter to the bash script.
@@ -114,11 +114,12 @@ performance during Non-GUI mode execution.
 
 ## Results
 As well as printing times, maximum and average values to the terminal, each run of the stress tests will generate a new folder in the csvcubed/tests/stress/metrics directory
-marked by the timestamp from when the test was initiated. Inside this folder there will be 3 files:
+marked by the timestamp from when the test was initiated. Inside this folder there will be 4 files:
 
 - Buildmetrics-timestamp.csv
 - Inspectmetrics-timestamp.csv
-- jmeter.log
+- jmeter-Build.log
+- jmeter-Inspect.log
     1. Where timestamp is replaced by the time at which the first metric was recorded for that particular test  
 
 The two .CSV files contain metric values and the times at which they were recorded for each test and should be the starting point for deeper analysis.  
