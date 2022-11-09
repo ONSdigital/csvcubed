@@ -107,7 +107,6 @@ def validate_observations(cube: Cube) -> List[ValidationError]:
         elif len(obs_val_columns_without_measure) > 1:
             measure_columns = get_columns_of_dsd_type(cube, QbMultiMeasureDimension)
             if any(measure_columns):
-                # if there_exists_a_measure_column:
                 """
                 Example of an input that might result in a user ending up here:
 
@@ -222,12 +221,10 @@ def _validate_observation_value(
 ) -> List[ValidationError]:
     errors: List[ValidationError] = []
     if observation_value.structural_definition.unit is None:
-        # if not any(multi_unit_columns):
-        if len(multi_unit_columns) == 0:
+        if not any(multi_unit_columns):
             errors.append(NoUnitsDefinedError())
     else:
-        # if any(multi_unit_columns):
-        if len(multi_unit_columns) > 0:
+        if any(multi_unit_columns):
             errors.append(BothUnitTypesDefinedError())
 
     return errors
@@ -239,15 +236,13 @@ def _validate_standard_shape_cube(cube: Cube) -> List[ValidationError]:
     multi_measure_columns: List[
         QbColumn[QbMultiMeasureDimension]
     ] = get_columns_of_dsd_type(cube, QbMultiMeasureDimension)
-    # if not any(multi_measure_columns):
-    if len(multi_measure_columns) == 0:
+    if not any(multi_measure_columns):
         errors.append(NoMeasuresDefinedError())
     elif len(multi_measure_columns) > 1:
         errors.append(MoreThanOneMeasureColumnError(len(multi_measure_columns)))
     else:
         measure_column: QbColumn[QbMultiMeasureDimension] = multi_measure_columns[0]
-        # if not any(measure_columns.structural_definition.measures)
-        if len(measure_column.structural_definition.measures) == 0:
+        if not any(measure_column.structural_definition.measures):
             errors.append(EmptyQbMultiMeasureDimensionError())
         else:
             all_measures_existing = all(
@@ -295,8 +290,7 @@ def _validate_pivoted_shape_cube(
     errors: List[ValidationError] = []
 
     multi_measure_columns = get_columns_of_dsd_type(cube, QbMultiMeasureDimension)
-    # if any(multi_measure_columns):
-    if len(multi_measure_columns) > 0:
+    if any(multi_measure_columns):
         """
         In this case, the user has defined a redundant measure column.
         All obs val columns already have their own measures declared.
