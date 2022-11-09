@@ -5,6 +5,7 @@ from csvcubed.cli.inspect.inspectdatasetmanager import filter_components_from_ds
 from csvcubed.models.sparqlresults import QubeComponentResult
 
 from csvcubed.utils.csvdataset import (
+    _create_measure_col_in_melted_data_set,
     _melt_data_set,
     transform_dataset_to_canonical_shape,
 )
@@ -178,6 +179,25 @@ _expected_melted_dataset_for_pivoted_shape = pd.DataFrame(
 ).replace("", np.NAN)
 
 
+_measure_components_for_multi_measure_pivoted_shape = [
+        QubeComponentResult(
+            "qb-id-10003.csv#measure/some-measure",
+            "Some Measure",
+            "Measure",
+            "Some Obs Val",
+            ComponentPropertyType.Measure.value,
+            True,
+        ),
+        QubeComponentResult(
+            "qb-id-10003.csv#measure/some-other-measure",
+            "Some Other Measure",
+            "Measure",
+            "Some Other Obs Val",
+            ComponentPropertyType.Measure.value,
+            True,
+        ),
+    ]
+
 def test_transform_to_canonical_shape_for_standard_shape_data_set():
     """
     Ensures that the correct canonical shape data set is generated for the standard shape data set.
@@ -299,28 +319,8 @@ def test_melt_data_set_for_pivoted_shape():
     test_csv_file = (
         _test_case_base_dir / "pivoted-multi-measure-dataset" / "qb-id-10003.csv"
     )
-    df = pd.read_csv(test_csv_file)
-
-    measure_components = [
-        QubeComponentResult(
-            "qb-id-10003.csv#measure/some-measure",
-            "Some Measure",
-            "Measure",
-            "Some Obs Val",
-            ComponentPropertyType.Measure.value,
-            True,
-        ),
-        QubeComponentResult(
-            "qb-id-10003.csv#measure/some-other-measure",
-            "Some Other Measure",
-            "Measure",
-            "Some Other Obs Val",
-            ComponentPropertyType.Measure.value,
-            True,
-        ),
-    ]
-
-    melted_df = _melt_data_set(df, measure_components)
+    pivoted_df = pd.read_csv(test_csv_file)
+    melted_df = _melt_data_set(pivoted_df, _measure_components_for_multi_measure_pivoted_shape)
 
     assert melted_df is not None
     # Asserting the number of rows in the melted dataframe
@@ -329,3 +329,21 @@ def test_melt_data_set_for_pivoted_shape():
     assert melted_df.shape[1] == 4
     # Asserting the columns and data in the melted dataframe.
     assert_frame_equal(melted_df, _expected_melted_dataset_for_pivoted_shape)
+
+def test_create_measure_col_in_melted_data_set():
+    """
+    TODO: Add description
+    """
+    test_csv_file = (
+        _test_case_base_dir / "pivoted-multi-measure-dataset" / "qb-id-10003.csv"
+    )
+    pivoted_df = pd.read_csv(test_csv_file)
+    melted_df = _melt_data_set(pivoted_df, _measure_components_for_multi_measure_pivoted_shape)
+
+    melted_df_with_measure_col = _create_measure_col_in_melted_data_set(melted_df, _measure_components_for_multi_measure_pivoted_shape)
+
+    #1. assert whether the melted_df_with_measure_col is none or not
+    #2. assert whether the melted_df_with_measure_col has the correct number of rows
+    #3. assert whether the melted_df_with_measure_col has the correct number of columns.
+    #4. assert whether the melted_df_with_measure_col dataframe equals to the expected dataframe.
+    assert True
