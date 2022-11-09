@@ -1,7 +1,6 @@
-Feature: Cube!
-  As a data engineer.
-  I want to create a cube from a tidy data csv, with or without a config json file
-  That conforms to the documented conventions for column headings.
+Feature: cube-config.json
+  As an external data publisher, 
+  I want to be able to create a cube from a tidy data csv, with or without a qube-config json file.
 
   Scenario: Output a cube and errors when created from both config and data
     Given The config json file "v1.0/cube_data_config_ok.json" and the existing tidy data csv file "v1.0/cube_data_config_ok.csv"
@@ -630,5 +629,10 @@ Feature: Cube!
 
   Scenario: Successfully outputs a cube using schema v1.3
     Given The config json file "v1.3/qudt-unit-template-testing.json" and the existing tidy data csv file "v1.3/data.csv"
+    When The cube is created
+    Then There are no errors
+
+  Scenario: Successfully outputs a cube using schema v1.4
+    Given The config json file "v1.4/attribute-and-units-linked-to-obs-vals.json" and the existing tidy data csv file "v1.4/data.csv"
     When The cube is created
     Then There are no errors
