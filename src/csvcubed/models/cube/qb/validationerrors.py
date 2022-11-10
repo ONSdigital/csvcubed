@@ -16,6 +16,7 @@ from ..qb import (
     QbObservationValue,
     QbMultiUnits,
     QbStructuralDefinition,
+    QbColumn,
 )
 from csvcubed.models.validationerror import SpecificValidationError
 
@@ -416,8 +417,8 @@ class HybridShapeError(SpecificValidationError):
     This is an erroneous hybrid between standard and pivoted shape.
     """
 
-    not_linked_obs_val_cols: List[QbObservationValue]
-    measure_cols: List[QbMultiMeasureDimension]
+    not_linked_obs_val_cols: List[QbColumn[QbObservationValue]]
+    measure_cols: List[QbColumn[QbMultiMeasureDimension]]
 
     @classmethod
     def get_error_url(cls) -> str:

@@ -211,6 +211,8 @@ def test_val_errors_missing_obs_vals():
     )
 
 
+# Todo: re-implement this test when we have the ability to construct multimeasure pivoted cubes
+#       from config.json files (see ticket #636)
 # def test_val_errors_both_measure_types():
 #     """
 #     Test for:-
