@@ -48,11 +48,10 @@ def inspect(csvw_metadata_json_path: Path) -> None:
     )
 
     csvw_metadata_rdf_validator = MetadataValidator(
-        csvw_metadata_rdf_graph, csvw_metadata_json_path, is_pivoted_shape_measures
+        csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
-
-    (csvw_type, cube_shape) = csvw_metadata_rdf_validator.validate_csvw()
-
+    (csvw_type, cube_shape) = csvw_metadata_rdf_validator.detect_type_and_shape(is_pivoted_shape_measures)
+    
     (
         type_printable,
         catalog_metadata_printable,
