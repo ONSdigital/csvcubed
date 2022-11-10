@@ -216,7 +216,7 @@ class QbDsdHelper:
     def _generate_qb_dataset_dsd_definitions(self) -> QbDataSetInCatalog:
         dataset = self._get_qb_dataset_with_catalog_metadata()
 
-        generation_activity = prov.Activity(self._uris.get_activity_uri())
+        generation_activity = prov.Activity(self._uris.get_build_activity_uri())
         generation_activity.used = ExistingResource(get_csvcubed_version_uri())
         dataset.was_generated_by = generation_activity
 

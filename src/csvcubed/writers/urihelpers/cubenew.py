@@ -63,6 +63,9 @@ class QbUriHelper:
     def get_void_dataset_dependency_uri(self, identifier: str) -> str:
         return self._new_uri_helper.get_void_dataset_dependency_uri(identifier)
 
+    def get_build_activity_uri(self) -> str:
+        return self._new_uri_helper.get_build_activity_uri()
+
     def get_new_attribute_value_uri(
         self, attribute_identifier: str, attribute_value_identifier: str
     ) -> str:
