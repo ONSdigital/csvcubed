@@ -46,7 +46,7 @@ class MetadataValidator:
 
     def detect_type_and_shape(self, is_pivoted_measures: List[IsPivotedShapeMeasureResult]) -> Tuple[CSVWType, Optional[CubeShape]]:
         """
-        Detects the validity, type and shape of the csvw.
+        Detects the type and shape of the csvw.
         """
         csvw_type = self._detect_type()
         cube_shape = self._detect_shape(is_pivoted_measures) if csvw_type == CSVWType.QbDataSet else None

@@ -1,6 +1,8 @@
 import os
 from pathlib import Path
 
+import pytest
+
 from csvcubed.cli.inspect.metadatainputvalidator import CSVWType, MetadataValidator
 from csvcubed.utils.sparql_handler.sparqlmanager import (
     CubeShape,
@@ -87,7 +89,6 @@ def test_detect_valid_csvw_metadata_codelist_input():
     assert shape is None
 
 
-#TODO: Sarah
 def test_detect_invalid_csvw_metadata_input():
     """
     Should throw an exception if the csv-w metadata input is not a data cube or code list.
@@ -97,23 +98,14 @@ def test_detect_invalid_csvw_metadata_input():
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
-    is_pivoted_measures = select_is_pivoted_shape_for_measures_in_data_set(
-        csvw_metadata_rdf_graph
-    )
     csvw_metadata_rdf_validator = MetadataValidator(
         csvw_metadata_rdf_graph, csvw_metadata_json_path,
     )
 
-    #1. Assert whether an exception was thrown.
-    #2. Assert the msg in the exception.
+    with pytest.raises(Exception) as exception:
+        csvw_metadata_rdf_validator._detect_type()
+    assert str(exception.value) == f"The input metadata is invalid as it is not a data cube or a code list."
 
-    # (
-    #     _,
-    #     _,
-    # ) = csvw_metadata_rdf_validator.detect_type_and_shape(is_pivoted_measures)
-
-    # assert is_valid is False
-    assert True
 
 def test_detect_type_datacube():
     """
