@@ -754,12 +754,12 @@ def test_observation_value_data_type_extraction():
 
 def test_describes_obs_val_new_units_column():
     """
-    Ensure that the `describes_column` property value is passed to a QbMultiUnits column with new units.
+    Ensure that the `describes_observations` property value is passed to a QbMultiUnits column with new units.
     """
     data = pd.DataFrame({"The Column": ["1", "2", "3"]})
 
     (column, _) = _get_qb_column_from_json(
-        {"type": "units", "describes_column": "Obs Val Column Title"},
+        {"type": "units", "describes_observations": "Obs Val Column Title"},
         "The Column",
         data,
         4,
@@ -774,14 +774,14 @@ def test_describes_obs_val_new_units_column():
 
 def test_describes_obs_val_existing_units_column():
     """
-    Ensure that the `describes_column` property value is passed to a QbMultiUnits column with existing units.
+    Ensure that the `describes_observations` property value is passed to a QbMultiUnits column with existing units.
     """
     data = pd.DataFrame({"The Column": ["1", "2", "3"]})
 
     (column, _) = _get_qb_column_from_json(
         {
             "type": "units",
-            "describes_column": "Obs Val Column Title",
+            "describes_observations": "Obs Val Column Title",
             "cell_uri_template": "http://qudt.com/units/{+the_column}",
         },
         "The Column",
@@ -798,7 +798,7 @@ def test_describes_obs_val_existing_units_column():
 
 def test_describes_obs_val_existing_attribute_literal_column():
     """
-    Ensure that the `describes_column` property value is passed to a column which represents a
+    Ensure that the `describes_observations` property value is passed to a column which represents a
     ExistingQbAttributeLiteral.
     """
     data = pd.DataFrame({"The Column": ["1", "2", "3"]})
@@ -806,7 +806,7 @@ def test_describes_obs_val_existing_attribute_literal_column():
     (column, _) = _get_qb_column_from_json(
         {
             "type": "attribute",
-            "describes_column": "Obs Val Column Title",
+            "describes_observations": "Obs Val Column Title",
             "data_type": "integer",
             "from_existing": "http://example.com/attributes/some-existing-attribute",
             "required": False,
@@ -825,7 +825,7 @@ def test_describes_obs_val_existing_attribute_literal_column():
 
 def test_describes_obs_val_existing_attribute_resource_column():
     """
-    Ensure that the `describes_column` property value is passed to a column which represents a ExistingQbAttribute.
+    Ensure that the `describes_observations` property value is passed to a column which represents a ExistingQbAttribute.
     """
     data = pd.DataFrame({"The Column": ["1", "2", "3"]})
 
@@ -835,7 +835,7 @@ def test_describes_obs_val_existing_attribute_resource_column():
             "from_existing": "http://example.com/attributes/some-existing-attribute",
             "values": False,
             "cell_uri_template": "http://qudt.com/units/{+the_column}",
-            "describes_column": "Obs Val Column Title",
+            "describes_observations": "Obs Val Column Title",
         },
         "The Column",
         data,
@@ -851,7 +851,7 @@ def test_describes_obs_val_existing_attribute_resource_column():
 
 def test_describes_obs_val_new_attribute_literal_column():
     """
-    Ensure that the `describes_column` property value is passed to a column which represents a NewQbAttributeLiteral.
+    Ensure that the `describes_observations` property value is passed to a column which represents a NewQbAttributeLiteral.
     """
     data = pd.DataFrame({"The Column": ["1", "2", "3"]})
 
@@ -860,7 +860,7 @@ def test_describes_obs_val_new_attribute_literal_column():
             "type": "attribute",
             "label": "Yay",
             "data_type": "decimal",
-            "describes_column": "Obs Val Column Title",
+            "describes_observations": "Obs Val Column Title",
         },
         "The Column",
         data,
@@ -876,12 +876,12 @@ def test_describes_obs_val_new_attribute_literal_column():
 
 def test_describes_obs_val_new_attribute_resource_column():
     """
-    Ensure that the `describes_column` property value is passed to a column which represents a NewQbAttribute.
+    Ensure that the `describes_observations` property value is passed to a column which represents a NewQbAttribute.
     """
     data = pd.DataFrame({"The Column": ["1", "2", "3"]})
 
     (column, _) = _get_qb_column_from_json(
-        {"type": "attribute", "describes_column": "Obs Val Column Title"},
+        {"type": "attribute", "describes_observations": "Obs Val Column Title"},
         "The Column",
         data,
         4,
