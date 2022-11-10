@@ -10,7 +10,6 @@ Feature: Behaviour testing of csvcubed inspect.
         When the Metadata file path is detected and validated "cli/inspect/multi-unit_multi-measure/alcohol-bulletin.csv-metadata.json"
         And the csv file path is detected and validated "cli/inspect/multi-unit_multi-measure/alcohol-bulletin.csv"
         And the Metadata File json-ld is loaded to a rdf graph
-        And the Metadata File is validated
         And the Printables for data cube are generated
         Then the Type Printable should be "- This file is a data cube."
         
@@ -167,7 +166,6 @@ Feature: Behaviour testing of csvcubed inspect.
         
         When the Metadata file path is detected and validated "cli/inspect/multi-unit_single-measure/final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
         And the Metadata File json-ld is loaded to a rdf graph
-        And the Metadata File is validated
         And the Printables for data cube are generated
         Then the Type Printable should be "- This file is a data cube."
         
@@ -343,7 +341,6 @@ Feature: Behaviour testing of csvcubed inspect.
 
         When the Metadata file path is detected and validated "cli/inspect/single-unit_multi-measure/final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv-metadata.json"
         And the Metadata File json-ld is loaded to a rdf graph
-        And the Metadata File is validated
         And the Printables for data cube are generated
         Then the Type Printable should be "- This file is a data cube."
         And the Catalog Metadata Printable should be
@@ -503,7 +500,6 @@ Feature: Behaviour testing of csvcubed inspect.
         And the csv file path is detected and validated "cli/inspect/single-unit_single-measure/energy-trends-uk-total-energy.csv"
         
         And the Metadata File json-ld is loaded to a rdf graph
-        And the Metadata File is validated
         And the Printables for data cube are generated
         Then the Type Printable should be "- This file is a data cube."
         And the Catalog Metadata Printable should be
@@ -638,7 +634,6 @@ Feature: Behaviour testing of csvcubed inspect.
         When the Metadata file path is detected and validated "cli/inspect/alcohol-content.csv-metadata.json"
         And the csv file path is detected and validated "cli/inspect/alcohol-content.csv"
         And the Metadata File json-ld is loaded to a rdf graph
-        And the Metadata File is validated
         And the Printables for code list are generated
         Then the Type Printable should be "- This file is a code list."
         And the Catalog Metadata Printable should be
@@ -693,7 +688,6 @@ Feature: Behaviour testing of csvcubed inspect.
         When the Metadata file path is detected and validated "cli/inspect/itis-industry.csv-metadata.json"
         And the csv file path is detected and validated "cli/inspect/itis-industry.csv"
         And the Metadata File json-ld is loaded to a rdf graph
-        And the Metadata File is validated
         And the Printables for code list are generated
         Then the Type Printable should be "- This file is a code list."
         And the Catalog Metadata Printable should be
@@ -760,7 +754,6 @@ Feature: Behaviour testing of csvcubed inspect.
         When the Metadata file path is detected and validated "cli/inspect/code-list-with-notation-as-identifier/attr-1.csv-metadata.json"
         And the csv file path is detected and validated "cli/inspect/code-list-with-notation-as-identifier/attr-1.csv"
         And the Metadata File json-ld is loaded to a rdf graph
-        And the Metadata File is validated
         And the Printables for code list are generated
         Then the Concepts Information Printable should be
         """
@@ -780,7 +773,6 @@ Feature: Behaviour testing of csvcubed inspect.
         When the Metadata file path is detected and validated "cli/inspect/code-list-with-uri-identifier-as-identifier/attr-1.csv-metadata.json"
         And the csv file path is detected and validated "cli/inspect/code-list-with-uri-identifier-as-identifier/attr-1.csv"
         And the Metadata File json-ld is loaded to a rdf graph
-        And the Metadata File is validated
         And the Printables for code list are generated
         Then the Concepts Information Printable should be
         """
@@ -802,7 +794,6 @@ Feature: Behaviour testing of csvcubed inspect.
         When the Metadata file path is detected and validated "cli/inspect/pivoted-single-measure-dataset/qb-id-10004.csv-metadata.json"
         And the csv file path is detected and validated "cli/inspect/pivoted-single-measure-dataset/qb-id-10004.csv"
         And the Metadata File json-ld is loaded to a rdf graph
-        And the Metadata File is validated
         And the Printables for data cube are generated            
         Then the Type printable is validated for single-measure pivoted data set
         And the Catalog Metadata printable is validated for single-measure pivoted data set
@@ -821,7 +812,6 @@ Feature: Behaviour testing of csvcubed inspect.
         When the Metadata file path is detected and validated "cli/inspect/pivoted-multi-measure-dataset/qb-id-10003.csv-metadata.json"
         And the csv file path is detected and validated "cli/inspect/pivoted-multi-measure-dataset/qb-id-10003.csv"
         And the Metadata File json-ld is loaded to a rdf graph
-        And the Metadata File is validated
         And the Printables for data cube are generated            
         Then the Type printable is validated for multi-measure pivoted data set
         And the Catalog Metadata printable is validated for multi-measure pivoted data set

@@ -64,27 +64,7 @@ def step_impl(context):
     csvw_rdf_manager = CsvwRdfManager(context.csvw_metadata_json_path)
     context.csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     assert context.csvw_metadata_rdf_graph is not None
-
-
-@When("the Metadata File is validated")
-def step_impl(context):
-    is_pivoted_measures = select_is_pivoted_shape_for_measures_in_data_set(
-        context.csvw_metadata_rdf_graph
-    )
-    csvw_metadata_rdf_validator = MetadataValidator(
-        context.csvw_metadata_rdf_graph,
-        context.csvw_metadata_json_path,
-        is_pivoted_measures,
-    )
-
-    (
-        context.valid_csvw_metadata,
-        context.csvw_type,
-        context.cube_shape,
-    ) = csvw_metadata_rdf_validator.validate_csvw()
-
-    assert context.valid_csvw_metadata is True
-
+    
 
 @When("the Printables for data cube are generated")
 def step_impl(context):

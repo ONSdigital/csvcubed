@@ -45,15 +45,14 @@ class MetadataValidator:
     csvw_metadata_json_path: Path
     is_pivoted_measures: List[IsPivotedShapeMeasureResult]
 
-    def validate_csvw(self) -> Tuple[bool, CSVWType, Optional[CubeShape]]:
+    def validate_csvw(self) -> Tuple[CSVWType, Optional[CubeShape]]:
         """
         Detects the validity, type and shape of the csvw.
         """
         csvw_type = self._detect_type()
         cube_shape = self._detect_shape() if csvw_type == CSVWType.QbDataSet else None
-        is_valid = csvw_type == CSVWType.QbDataSet or csvw_type == CSVWType.CodeList
 
-        return (is_valid, csvw_type, cube_shape)
+        return (csvw_type, cube_shape)
 
     def _detect_type(self) -> CSVWType:
         """
@@ -76,7 +75,9 @@ class MetadataValidator:
         elif ask_is_csvw_qb_dataset(primary_graph):
             return CSVWType.QbDataSet
         else:
-            return CSVWType.Other
+            raise TypeError(
+                "The input metadata is invalid as it is not a data cube or a code list."
+            )
 
     def _detect_shape(self) -> CubeShape:
         """

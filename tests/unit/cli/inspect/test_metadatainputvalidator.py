@@ -14,7 +14,7 @@ _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
 
 def test_detect_valid_csvw_metadata_datacube_input():
     """
-    Should return true if the csv-w metadata input is a data cube or code list.
+    Should return the correct type and shape for the csv-w metadata input.
     """
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
@@ -28,12 +28,12 @@ def test_detect_valid_csvw_metadata_datacube_input():
     )
 
     (
-        is_valid,
-        _,
-        _,
+        type,
+        shape,
     ) = csvw_metadata_rdf_validator.validate_csvw()
 
-    assert is_valid is True
+    assert type == CSVWType.QbDataSet
+    assert shape == CubeShape.Standard
 
 
 def test_detect_valid_csvw_metadata_datacube_relative_path():
@@ -56,17 +56,16 @@ def test_detect_valid_csvw_metadata_datacube_relative_path():
     )
 
     (
-        is_valid,
-        _,
-        _,
+        type,
+        shape,
     ) = csvw_metadata_rdf_validator.validate_csvw()
 
-    assert is_valid is True
-
+    assert type == CSVWType.QbDataSet
+    assert shape == CubeShape.Standard
 
 def test_detect_valid_csvw_metadata_codelist_input():
     """
-    Should return true if the csv-w metadata input is a data cube or code list.
+    Should return the correct type and shape for the code list csv-w metadata input.
     """
     csvw_metadata_json_path = _test_case_base_dir / "codelist.csv-metadata.json"
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
@@ -80,17 +79,18 @@ def test_detect_valid_csvw_metadata_codelist_input():
     )
 
     (
-        is_valid,
-        _,
-        _,
+        type,
+        shape,
     ) = csvw_metadata_rdf_validator.validate_csvw()
 
-    assert is_valid is True
+    assert type == CSVWType.CodeList
+    assert shape is None
 
 
+#TODO: Sarah
 def test_detect_invalid_csvw_metadata_input():
     """
-    Should return false if the csv-w metadata input is not a data cube or code list.
+    Should throw an exception if the csv-w metadata input is not a data cube or code list.
     """
 
     csvw_metadata_json_path = _test_case_base_dir / "json.table.json"
@@ -104,14 +104,16 @@ def test_detect_invalid_csvw_metadata_input():
         csvw_metadata_rdf_graph, csvw_metadata_json_path, is_pivoted_measures
     )
 
-    (
-        is_valid,
-        _,
-        _,
-    ) = csvw_metadata_rdf_validator.validate_csvw()
+    #1. Assert whether an exception was thrown.
+    #2. Assert the msg in the exception.
 
-    assert is_valid is False
+    # (
+    #     _,
+    #     _,
+    # ) = csvw_metadata_rdf_validator.validate_csvw()
 
+    # assert is_valid is False
+    assert True
 
 def test_detect_type_datacube():
     """
@@ -128,7 +130,7 @@ def test_detect_type_datacube():
         csvw_metadata_rdf_graph, csvw_metadata_json_path, is_pivoted_measures
     )
 
-    (_, csvw_type, _) = csvw_metadata_rdf_validator.validate_csvw()
+    (csvw_type, _) = csvw_metadata_rdf_validator.validate_csvw()
 
     assert csvw_type == CSVWType.QbDataSet
 
@@ -148,34 +150,9 @@ def test_detect_type_codelist():
         csvw_metadata_rdf_graph, csvw_metadata_json_path, is_pivoted_measures
     )
 
-    (_, csvw_type, _) = csvw_metadata_rdf_validator.validate_csvw()
+    (csvw_type, _) = csvw_metadata_rdf_validator.validate_csvw()
 
     assert csvw_type == CSVWType.CodeList
-
-
-def test_detect_type_other():
-    """
-    Should return CSVWType.Other is the input csv-w is neither a db:Dataset nor a skos:ConceptScheme.
-    """
-    csvw_metadata_json_path = _test_case_base_dir / "json.table.json"
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-
-    is_pivoted_shape_measures = select_is_pivoted_shape_for_measures_in_data_set(
-        csvw_metadata_rdf_graph
-    )
-    csvw_metadata_rdf_validator = MetadataValidator(
-        csvw_metadata_rdf_graph, csvw_metadata_json_path, is_pivoted_shape_measures
-    )
-
-    (
-        _,
-        csvw_type,
-        _,
-    ) = csvw_metadata_rdf_validator.validate_csvw()
-
-    assert csvw_type == CSVWType.Other
-
 
 def test_detect_csvw_shape_pivoted():
     """
@@ -196,7 +173,7 @@ def test_detect_csvw_shape_pivoted():
         csvw_metadata_rdf_graph, csvw_metadata_json_path, is_pivoted_shape_measures
     )
 
-    (_, _, cube_shape) = csvw_metadata_rdf_validator.validate_csvw()
+    (_, cube_shape) = csvw_metadata_rdf_validator.validate_csvw()
 
     assert cube_shape == CubeShape.Pivoted
 
@@ -220,6 +197,6 @@ def test_detect_csvw_shape_standard():
         csvw_metadata_rdf_graph, csvw_metadata_json_path, is_pivoted_shape_measures
     )
 
-    (_, _, cube_shape) = csvw_metadata_rdf_validator.validate_csvw()
+    (_, cube_shape) = csvw_metadata_rdf_validator.validate_csvw()
 
     assert cube_shape == CubeShape.Standard
