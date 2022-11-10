@@ -19,7 +19,7 @@ from .datastructuredefinition import SecondaryQbStructuralDefinition
 from csvcubed.utils.validators.uri import validate_uri
 
 
-@dataclass
+@dataclass(unsafe_hash=True)
 class QbUnit(SecondaryQbStructuralDefinition, ABC):
     pass
 
@@ -84,7 +84,7 @@ class NewQbUnit(QbUnit, UriIdentifiable, ArbitraryRdf):
     optional_attribute_dependencies = enforce_optional_attribute_dependencies(
         {
             "base_unit_scaling_factor": ["base_unit"],
-            "si_base_unit_conversion_multiplier": ["qudt_quantity_kind_uri"]
+            "si_base_unit_conversion_multiplier": ["qudt_quantity_kind_uri"],
         }
     )
 
