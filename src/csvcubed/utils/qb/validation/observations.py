@@ -1,7 +1,7 @@
 from distutils.errors import LinkError
 from distutils.util import strtobool
 import os
-from typing import List
+from typing import List, Union
 
 from csvcubed.models.cube import (
     ObservationValuesMissing,
@@ -265,7 +265,7 @@ def _validate_standard_shape_cube(cube: Cube) -> List[ValidationError]:
 def _ensure_obs_val_col_linked(
     column: QbColumn,
     errors: list[ValidationError],
-    observed_column_title: str,
+    observed_column_title: Union[str, None],
     defined_col_names: set[str],
     obs_col_names: list[str],
 ):
