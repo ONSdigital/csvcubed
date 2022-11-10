@@ -17,7 +17,7 @@ from csvcubed.models.cube import (
     QbObservationValue,
     QbColumnStructuralDefinition,
 )
-from csvcubed.utils.sparql_handler.sparqlmanager import CSVWShape
+from csvcubed.utils.sparql_handler.sparqlmanager import CubeShape
 
 
 _logger = logging.getLogger(__name__)
@@ -94,7 +94,7 @@ def get_all_units(cube: Cube) -> Set[QbUnit]:
     return units
 
 
-def detect_shape_of_cube(cube: Cube) -> CSVWShape:
+def detect_shape_of_cube(cube: Cube) -> CubeShape:
     """
     Given a cube as input, returns the shape of that cube (Standard or Pivoted)
     """
@@ -113,8 +113,8 @@ def detect_shape_of_cube(cube: Cube) -> CSVWShape:
         )
 
     if all_pivoted:
-        return CSVWShape.Pivoted
+        return CubeShape.Pivoted
     elif all_standard_shape:
-        return CSVWShape.Standard
+        return CubeShape.Standard
     else:
         raise TypeError("The cube cannot be in both standard and pivoted shape")

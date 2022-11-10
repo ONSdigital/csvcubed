@@ -20,7 +20,7 @@ from csvcubed.models.sparqlresults import (
 )
 from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.sparql_handler.sparqlmanager import (
-    CSVWShape,
+    CubeShape,
     select_is_pivoted_shape_for_measures_in_data_set,
 )
 from csvcubed.utils.tableschema import CsvwRdfManager
@@ -80,7 +80,7 @@ def step_impl(context):
     (
         context.valid_csvw_metadata,
         context.csvw_type,
-        context.csvw_shape,
+        context.cube_shape,
     ) = csvw_metadata_rdf_validator.validate_csvw()
 
     assert context.valid_csvw_metadata is True
@@ -90,7 +90,7 @@ def step_impl(context):
 def step_impl(context):
     metadata_printer = MetadataPrinter(
         context.csvw_type,
-        context.csvw_shape,
+        context.cube_shape,
         context.csvw_metadata_rdf_graph,
         context.csvw_metadata_json_path,
     )
@@ -355,7 +355,7 @@ def step_impl(context):
     assert result_dataset_observations_info is not None
 
     assert result_dataset_observations_info.csvw_type == CSVWType.QbDataSet
-    assert result_dataset_observations_info.csvw_shape == CSVWShape.Pivoted
+    assert result_dataset_observations_info.cube_shape == CubeShape.Pivoted
     assert result_dataset_observations_info.num_of_observations == 3
     assert result_dataset_observations_info.num_of_duplicates == 0
     assert_frame_equal(
@@ -536,7 +536,7 @@ def step_impl(context):
     )
     assert result_dataset_observations_info is not None
     assert result_dataset_observations_info.csvw_type == CSVWType.QbDataSet
-    assert result_dataset_observations_info.csvw_shape == CSVWShape.Pivoted
+    assert result_dataset_observations_info.cube_shape == CubeShape.Pivoted
     assert result_dataset_observations_info.num_of_observations == 3
     assert result_dataset_observations_info.num_of_duplicates == 0
     assert_frame_equal(

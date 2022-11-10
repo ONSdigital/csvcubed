@@ -18,7 +18,7 @@ from csvcubed.cli.inspect.metadatainputvalidator import (
 )
 from csvcubed.cli.inspect.metadataprinter import MetadataPrinter
 from csvcubed.utils.sparql_handler.sparqlmanager import (
-    CSVWShape,
+    CubeShape,
     select_is_pivoted_shape_for_measures_in_data_set,
 )
 from csvcubed.utils.tableschema import CsvwRdfManager
@@ -51,9 +51,9 @@ def inspect(csvw_metadata_json_path: Path) -> None:
         csvw_metadata_rdf_graph, csvw_metadata_json_path, is_pivoted_shape_measures
     )
 
-    (validity, csvw_type, csvw_shape) = csvw_metadata_rdf_validator.validate_csvw()
+    (is_valid, csvw_type, cube_shape) = csvw_metadata_rdf_validator.validate_csvw()
 
-    if validity:
+    if is_valid:
         (
             type_printable,
             catalog_metadata_printable,
@@ -63,7 +63,7 @@ def inspect(csvw_metadata_json_path: Path) -> None:
             val_counts_by_measure_unit_printable,
             codelist_hierarchy_info_printable,
         ) = _generate_printables(
-            csvw_type, csvw_shape, csvw_metadata_rdf_graph, csvw_metadata_json_path
+            csvw_type, cube_shape, csvw_metadata_rdf_graph, csvw_metadata_json_path
         )
 
         print(f"{linesep}{type_printable}")
@@ -85,7 +85,7 @@ def inspect(csvw_metadata_json_path: Path) -> None:
 
 def _generate_printables(
     csvw_type: CSVWType,
-    csvw_shape: Optional[CSVWShape],
+    cube_shape: Optional[CubeShape],
     csvw_metadata_rdf_graph: rdflib.ConjunctiveGraph,
     csvw_metadata_json_path: Path,
 ) -> Tuple[str, str, str, str, str, str, str]:
@@ -97,7 +97,7 @@ def _generate_printables(
     :return: `Tuple[str, str, str, str, str]` - printables of metadata information.
     """
     metadata_printer = MetadataPrinter(
-        csvw_type, csvw_shape, csvw_metadata_rdf_graph, csvw_metadata_json_path
+        csvw_type, cube_shape, csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
 
     type_info_printable: str = metadata_printer.type_info_printable

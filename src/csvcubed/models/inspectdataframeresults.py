@@ -12,7 +12,7 @@ from treelib import Tree
 
 from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
 from csvcubed.utils.printable import get_printable_tabuler_str_from_dataframe
-from csvcubed.utils.sparql_handler.sparqlmanager import CSVWShape
+from csvcubed.utils.sparql_handler.sparqlmanager import CubeShape
 
 HIERARCHY_TREE_CONCEPTS_LIMIT = 100
 DATASET_HEAD_TAIL_LIMIT = 10
@@ -25,7 +25,7 @@ class DatasetObservationsInfoResult:
     """
 
     csvw_type: CSVWType
-    csvw_shape: Optional[CSVWShape]
+    cube_shape: Optional[CubeShape]
     num_of_observations: int
     num_of_duplicates: int
     dataset_head: pd.DataFrame
@@ -41,9 +41,9 @@ class DatasetObservationsInfoResult:
         )
 
         title_of_data_samples: str
-        if self.csvw_shape is None:
+        if self.cube_shape is None:
             title_of_data_samples = "Concepts"
-        elif self.csvw_shape == CSVWShape.Standard:
+        elif self.cube_shape == CubeShape.Standard:
             title_of_data_samples = "Observations"
         else:
             title_of_data_samples = "Rows"

@@ -3,7 +3,7 @@ from pathlib import Path
 
 from csvcubed.cli.inspect.metadatainputvalidator import CSVWType, MetadataValidator
 from csvcubed.utils.sparql_handler.sparqlmanager import (
-    CSVWShape,
+    CubeShape,
     select_is_pivoted_shape_for_measures_in_data_set,
 )
 from csvcubed.utils.tableschema import CsvwRdfManager
@@ -28,12 +28,12 @@ def test_detect_valid_csvw_metadata_datacube_input():
     )
 
     (
-        valid_csvw_metadata_datacube,
+        is_valid,
         _,
         _,
     ) = csvw_metadata_rdf_validator.validate_csvw()
 
-    assert valid_csvw_metadata_datacube is True
+    assert is_valid is True
 
 
 def test_detect_valid_csvw_metadata_datacube_relative_path():
@@ -56,12 +56,12 @@ def test_detect_valid_csvw_metadata_datacube_relative_path():
     )
 
     (
-        valid_csvw_metadata_datacube,
+        is_valid,
         _,
         _,
     ) = csvw_metadata_rdf_validator.validate_csvw()
 
-    assert valid_csvw_metadata_datacube is True
+    assert is_valid is True
 
 
 def test_detect_valid_csvw_metadata_codelist_input():
@@ -80,12 +80,12 @@ def test_detect_valid_csvw_metadata_codelist_input():
     )
 
     (
-        valid_csvw_metadata_codelist,
+        is_valid,
         _,
         _,
     ) = csvw_metadata_rdf_validator.validate_csvw()
 
-    assert valid_csvw_metadata_codelist is True
+    assert is_valid is True
 
 
 def test_detect_invalid_csvw_metadata_input():
@@ -105,12 +105,12 @@ def test_detect_invalid_csvw_metadata_input():
     )
 
     (
-        valid_csvw_metadata,
+        is_valid,
         _,
         _,
     ) = csvw_metadata_rdf_validator.validate_csvw()
 
-    assert valid_csvw_metadata is False
+    assert is_valid is False
 
 
 def test_detect_type_datacube():
@@ -196,9 +196,9 @@ def test_detect_csvw_shape_pivoted():
         csvw_metadata_rdf_graph, csvw_metadata_json_path, is_pivoted_shape_measures
     )
 
-    (_, _, csvw_shape) = csvw_metadata_rdf_validator.validate_csvw()
+    (_, _, cube_shape) = csvw_metadata_rdf_validator.validate_csvw()
 
-    assert csvw_shape == CSVWShape.Pivoted
+    assert cube_shape == CubeShape.Pivoted
 
 
 def test_detect_csvw_shape_standard():
@@ -220,6 +220,6 @@ def test_detect_csvw_shape_standard():
         csvw_metadata_rdf_graph, csvw_metadata_json_path, is_pivoted_shape_measures
     )
 
-    (_, _, csvw_shape) = csvw_metadata_rdf_validator.validate_csvw()
+    (_, _, cube_shape) = csvw_metadata_rdf_validator.validate_csvw()
 
-    assert csvw_shape == CSVWShape.Standard
+    assert cube_shape == CubeShape.Standard

@@ -25,7 +25,7 @@ from csvcubedmodels.rdf.resource import (
 )
 from csvcubed.models.rdf import prov
 from csvcubed.models.cube import *
-from csvcubed.utils.sparql_handler.sparqlmanager import CSVWShape
+from csvcubed.utils.sparql_handler.sparqlmanager import CubeShape
 from csvcubed.utils.uri import (
     get_last_uri_part,
     csvw_column_name_safe,
@@ -85,7 +85,7 @@ class QbWriter(WriterBase):
 
     @property
     def is_cube_in_pivoted_shape(self) -> bool:
-        return detect_shape_of_cube(self.cube) == CSVWShape.Pivoted
+        return detect_shape_of_cube(self.cube) == CubeShape.Pivoted
 
     def __post_init__(self):
         self.csv_file_name = f"{self.cube.metadata.uri_safe_identifier}.csv"

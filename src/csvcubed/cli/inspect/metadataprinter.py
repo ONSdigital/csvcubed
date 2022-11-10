@@ -28,7 +28,7 @@ from csvcubed.models.sparqlresults import (
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
 from csvcubed.utils.sparql_handler.sparqlmanager import (
-    CSVWShape,
+    CubeShape,
     select_codelist_cols_by_dataset_url,
     select_codelist_dataset_url,
     select_primary_key_col_names_by_dataset_url,
@@ -72,7 +72,7 @@ class MetadataPrinter:
     """
 
     csvw_type: CSVWType
-    csvw_shape: Optional[CSVWShape]
+    cube_shape: Optional[CubeShape]
     csvw_metadata_rdf_graph: rdflib.ConjunctiveGraph
     csvw_metadata_json_path: Path
 
@@ -155,7 +155,7 @@ class MetadataPrinter:
             self.csvw_metadata_json_path, Path(self.dataset_url)
         )
         self.result_dataset_observations_info = get_dataset_observations_info(
-            self.dataset, self.csvw_type, self.csvw_shape
+            self.dataset, self.csvw_type, self.cube_shape
         )
 
     def get_datacube_results(self):
@@ -168,7 +168,7 @@ class MetadataPrinter:
             select_csvw_dsd_dataset_label_and_dsd_def_uri(self.csvw_metadata_rdf_graph)
         )
         self.result_qube_components = select_csvw_dsd_qube_components(
-            self.csvw_shape,
+            self.cube_shape,
             self.csvw_metadata_rdf_graph,
             self.result_dataset_label_dsd_uri.dsd_uri,
             self.csvw_metadata_json_path,

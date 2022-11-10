@@ -16,7 +16,7 @@ from rdflib import Graph
 from treelib import Tree
 
 from csvcubed.utils.sparql_handler.sparqlmanager import (
-    CSVWShape,
+    CubeShape,
     select_codelist_cols_by_dataset_url,
     select_codelist_dataset_url,
     select_primary_key_col_names_by_dataset_url,
@@ -235,7 +235,7 @@ _expected_by_measure_and_unit_val_counts_df_multi_unit_multi_measure = DataFrame
 
 
 def _get_arguments_qb_dataset(
-    csvw_shape: CSVWShape, csvw_metadata_rdf_graph: Graph, csvw_metadata_json_path: Path
+    cube_shape: CubeShape, csvw_metadata_rdf_graph: Graph, csvw_metadata_json_path: Path
 ) -> Tuple[DataFrame, List[QubeComponentResult], str, str]:
     """
     Produces the dataset, qube components and dsd uri arguments for qb:dataset.
@@ -257,7 +257,7 @@ def _get_arguments_qb_dataset(
     ).dsd_uri
 
     qube_components = select_csvw_dsd_qube_components(
-        csvw_shape, csvw_metadata_rdf_graph, dsd_uri, csvw_metadata_json_path
+        cube_shape, csvw_metadata_rdf_graph, dsd_uri, csvw_metadata_json_path
     ).qube_components
 
     return (dataset, qube_components, dsd_uri, dataset_url)
@@ -307,7 +307,7 @@ def test_get_dataset_observations_info():
     dataset = load_csv_to_dataframe(csvw_metadata_json_path, "csv_file.csv")
 
     result: DatasetObservationsInfoResult = get_dataset_observations_info(
-        dataset, CSVWType.QbDataSet, CSVWShape.Pivoted
+        dataset, CSVWType.QbDataSet, CubeShape.Pivoted
     )
 
     assert result.num_of_observations == 11
@@ -327,7 +327,7 @@ def test_get_dataset_observations_info_for_pivoted_single_measure_shape_dataset(
     dataset = load_csv_to_dataframe(csvw_metadata_json_path, "qb-id-10004.csv")
 
     result: DatasetObservationsInfoResult = get_dataset_observations_info(
-        dataset, CSVWType.QbDataSet, CSVWShape.Pivoted
+        dataset, CSVWType.QbDataSet, CubeShape.Pivoted
     )
 
     assert result.num_of_observations == 3
@@ -351,7 +351,7 @@ def test_get_dataset_observations_info_for_pivoted_multi_measure_shape_dataset()
     dataset = load_csv_to_dataframe(csvw_metadata_json_path, "qb-id-10003.csv")
 
     result: DatasetObservationsInfoResult = get_dataset_observations_info(
-        dataset, CSVWType.QbDataSet, CSVWShape.Pivoted
+        dataset, CSVWType.QbDataSet, CubeShape.Pivoted
     )
 
     assert result.num_of_observations == 3
@@ -380,7 +380,7 @@ def test_get_measure_col_name_from_dsd_measure_col_present():
         csvw_metadata_rdf_graph
     )
     result_qube_components: QubeComponentsResult = select_csvw_dsd_qube_components(
-        CSVWShape.Pivoted,
+        CubeShape.Pivoted,
         csvw_metadata_rdf_graph,
         result.dsd_uri,
         csvw_metadata_json_path,
@@ -407,7 +407,7 @@ def test_get_measure_col_name_from_dsd_measure_col_not_present():
         csvw_metadata_rdf_graph
     )
     result_qube_components: QubeComponentsResult = select_csvw_dsd_qube_components(
-        CSVWShape.Pivoted,
+        CubeShape.Pivoted,
         csvw_metadata_rdf_graph,
         result.dsd_uri,
         csvw_metadata_json_path,
@@ -434,7 +434,7 @@ def test_get_unit_col_name_from_dsd_unit_col_present():
         csvw_metadata_rdf_graph
     )
     result_qube_components: QubeComponentsResult = select_csvw_dsd_qube_components(
-        CSVWShape.Pivoted,
+        CubeShape.Pivoted,
         csvw_metadata_rdf_graph,
         result.dsd_uri,
         csvw_metadata_json_path,
@@ -461,7 +461,7 @@ def test_get_unit_col_name_from_dsd_unit_col_not_present():
         csvw_metadata_rdf_graph
     )
     result_qube_components: QubeComponentsResult = select_csvw_dsd_qube_components(
-        CSVWShape.Pivoted,
+        CubeShape.Pivoted,
         csvw_metadata_rdf_graph,
         result.dsd_uri,
         csvw_metadata_json_path,
@@ -488,7 +488,7 @@ def test_get_single_measure_label_from_dsd():
         csvw_metadata_rdf_graph
     )
     result_qube_components: QubeComponentsResult = select_csvw_dsd_qube_components(
-        CSVWShape.Pivoted,
+        CubeShape.Pivoted,
         csvw_metadata_rdf_graph,
         result.dsd_uri,
         csvw_metadata_json_path,
@@ -520,7 +520,7 @@ def test_get_val_counts_info_multi_unit_multi_measure_dataset():
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
     (dataset, qube_components, dsd_uri, _) = _get_arguments_qb_dataset(
-        CSVWShape.Pivoted, csvw_metadata_rdf_graph, csvw_metadata_json_path
+        CubeShape.Pivoted, csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
     (
         canonical_shape_dataset,
@@ -566,7 +566,7 @@ def test_get_val_counts_info_multi_unit_single_measure_dataset():
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
     (dataset, qube_components, dsd_uri, _) = _get_arguments_qb_dataset(
-        CSVWShape.Standard, csvw_metadata_rdf_graph, csvw_metadata_json_path
+        CubeShape.Standard, csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
     (
         canonical_shape_dataset,
@@ -612,7 +612,7 @@ def test_get_val_counts_info_single_unit_multi_measure_dataset():
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
     (dataset, qube_components, dsd_uri, _) = _get_arguments_qb_dataset(
-        CSVWShape.Standard, csvw_metadata_rdf_graph, csvw_metadata_json_path
+        CubeShape.Standard, csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
     (
         canonical_shape_dataset,
@@ -658,7 +658,7 @@ def test_get_val_counts_info_single_unit_single_measure_dataset():
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
     (dataset, qube_components, dsd_uri, _) = _get_arguments_qb_dataset(
-        CSVWShape.Standard, csvw_metadata_rdf_graph, csvw_metadata_json_path
+        CubeShape.Standard, csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
     (
         canonical_shape_dataset,

@@ -13,7 +13,7 @@ import rdflib
 from csvcubed.models.sparqlresults import IsPivotedShapeMeasureResult
 
 from csvcubed.utils.sparql_handler.sparqlmanager import (
-    CSVWShape,
+    CubeShape,
     ask_is_csvw_code_list,
     ask_is_csvw_qb_dataset,
 )
@@ -45,15 +45,15 @@ class MetadataValidator:
     csvw_metadata_json_path: Path
     is_pivoted_measures: List[IsPivotedShapeMeasureResult]
 
-    def validate_csvw(self) -> Tuple[bool, CSVWType, Optional[CSVWShape]]:
+    def validate_csvw(self) -> Tuple[bool, CSVWType, Optional[CubeShape]]:
         """
         Detects the validity, type and shape of the csvw.
         """
         csvw_type = self._detect_type()
-        csvw_shape = self._detect_shape() if csvw_type == CSVWType.QbDataSet else None
-        validity = csvw_type == CSVWType.QbDataSet or csvw_type == CSVWType.CodeList
+        cube_shape = self._detect_shape() if csvw_type == CSVWType.QbDataSet else None
+        is_valid = csvw_type == CSVWType.QbDataSet or csvw_type == CSVWType.CodeList
 
-        return (validity, csvw_type, csvw_shape)
+        return (is_valid, csvw_type, cube_shape)
 
     def _detect_type(self) -> CSVWType:
         """
@@ -78,7 +78,7 @@ class MetadataValidator:
         else:
             return CSVWType.Other
 
-    def _detect_shape(self) -> CSVWShape:
+    def _detect_shape(self) -> CubeShape:
         """
         Given a metadata validator as input, returns the shape of the cube that metadata describes (Pivoted or Standard).
         """
@@ -89,9 +89,9 @@ class MetadataValidator:
             all_standard_shape = all_standard_shape and not measure.is_pivoted_shape
 
         if all_pivoted:
-            return CSVWShape.Pivoted
+            return CubeShape.Pivoted
         elif all_standard_shape:
-            return CSVWShape.Standard
+            return CubeShape.Standard
         else:
             raise TypeError(
                 "The input metadata is invalid as the shape of the cube it represents is not supported."
