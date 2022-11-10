@@ -4,9 +4,12 @@ import json
 import pandas as pd
 from tempfile import TemporaryDirectory
 from typing import List
-import re
 
-from csvcubed.models.cube.qb.components.attribute import ExistingQbAttribute, ExistingQbAttributeLiteral, NewQbAttributeLiteral
+from csvcubed.models.cube.qb.components.attribute import (
+    ExistingQbAttribute,
+    ExistingQbAttributeLiteral,
+    NewQbAttributeLiteral,
+)
 from csvcubed.models.cube.qb.components.codelist import (
     CompositeQbCodeList,
     ExistingQbCodeList,
@@ -26,15 +29,12 @@ from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.cube.qb.components.attributevalue import (
     NewQbAttributeValue,
 )
-from csvcubed.models.cube.qb.components.observedvalue import (
-    QbObservationValue
-)
+from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
 from csvcubed.readers.cubeconfig.v1.mapcolumntocomponent import (
     map_column_to_qb_component,
 )
 from csvcubed.utils.uri import uri_safe
 from csvcubed.cli.build import build as cli_build
-from csvcubed.readers.cubeconfig.schema_versions import get_deserialiser_for_schema
 from csvcubed.readers.cubeconfig.v1.configdeserialiser import _get_qb_column_from_json
 from tests.unit.test_baseunit import get_test_cases_dir, assert_num_validation_errors
 from csvcubed.definitions import APP_ROOT_DIR_PATH
@@ -206,9 +206,7 @@ def test_build_config_ok():
     )
 
     col_observation = cube.columns[4]
-    assert isinstance(
-        col_observation.structural_definition, QbObservationValue
-    )
+    assert isinstance(col_observation.structural_definition, QbObservationValue)
     assert col_observation.structural_definition.measure is None
     assert col_observation.structural_definition.unit is None
     assert col_observation.structural_definition.data_type == "decimal"
@@ -753,149 +751,147 @@ def test_observation_value_data_type_extraction():
     obs_val = column.structural_definition
     assert obs_val.data_type == "integer"
 
-def test_describes_new_unit_column():
+
+def test_describes_obs_val_new_units_column():
     """
-    test that the describes_column variable 
+    Ensure that the `describes_column` property value is passed to a QbMultiUnits column with new units.
     """
     data = pd.DataFrame({"The Column": ["1", "2", "3"]})
 
     (column, _) = _get_qb_column_from_json(
-        {
-            "type": "units",
-            "describes_column": "test"
-        },
+        {"type": "units", "describes_column": "Obs Val Column Title"},
         "The Column",
         data,
-        1,
+        4,
     )
 
     assert isinstance(
         column.structural_definition, QbMultiUnits
     ), column.structural_definition
     column_title = column.structural_definition.observed_value_col_title
-    assert column_title == "test" 
+    assert column_title == "Obs Val Column Title"
 
 
-def test_describes_existing_unit_column():
+def test_describes_obs_val_existing_units_column():
     """
-    test that the describes_column variable 
+    Ensure that the `describes_column` property value is passed to a QbMultiUnits column with existing units.
     """
     data = pd.DataFrame({"The Column": ["1", "2", "3"]})
 
     (column, _) = _get_qb_column_from_json(
         {
             "type": "units",
-            "describes_column": "test",
-            "cell_uri_template": "http://qudt.com/units/{+the_column}"
+            "describes_column": "Obs Val Column Title",
+            "cell_uri_template": "http://qudt.com/units/{+the_column}",
         },
         "The Column",
         data,
-        1,
+        4,
     )
 
     assert isinstance(
         column.structural_definition, QbMultiUnits
     ), column.structural_definition
     column_title = column.structural_definition.observed_value_col_title
-    assert column_title == "test"
+    assert column_title == "Obs Val Column Title"
 
-def test_describes_existing_attribute_literal_column():
+
+def test_describes_obs_val_existing_attribute_literal_column():
     """
-    test that the describes_column variable 
+    Ensure that the `describes_column` property value is passed to a column which represents a
+    ExistingQbAttributeLiteral.
     """
     data = pd.DataFrame({"The Column": ["1", "2", "3"]})
 
     (column, _) = _get_qb_column_from_json(
         {
             "type": "attribute",
-            "describes_column": "test",
+            "describes_column": "Obs Val Column Title",
             "data_type": "integer",
-            "from_existing": "not sure",
-            "required": False
+            "from_existing": "http://example.com/attributes/some-existing-attribute",
+            "required": False,
         },
         "The Column",
         data,
-        1,
+        4,
     )
 
     assert isinstance(
         column.structural_definition, ExistingQbAttributeLiteral
     ), column.structural_definition
     column_title = column.structural_definition.observed_value_col_title
-    assert column_title == "test" 
+    assert column_title == "Obs Val Column Title"
 
-def test_describes_existing_attribute_resource_column():
+
+def test_describes_obs_val_existing_attribute_resource_column():
     """
-    test that the describes_column variable 
+    Ensure that the `describes_column` property value is passed to a column which represents a ExistingQbAttribute.
     """
     data = pd.DataFrame({"The Column": ["1", "2", "3"]})
 
     (column, _) = _get_qb_column_from_json(
         {
             "type": "attribute",
-            "from_existing": "not sure",
+            "from_existing": "http://example.com/attributes/some-existing-attribute",
             "values": False,
             "cell_uri_template": "http://qudt.com/units/{+the_column}",
-            "describes_column": "test"
+            "describes_column": "Obs Val Column Title",
         },
         "The Column",
         data,
-        1,
+        4,
     )
 
     assert isinstance(
         column.structural_definition, ExistingQbAttribute
     ), column.structural_definition
     column_title = column.structural_definition.observed_value_col_title
-    assert column_title == "test"
+    assert column_title == "Obs Val Column Title"
 
-def test_describes_new_attribute_literal_column():
+
+def test_describes_obs_val_new_attribute_literal_column():
     """
-    test that the describes_column variable 
+    Ensure that the `describes_column` property value is passed to a column which represents a NewQbAttributeLiteral.
     """
     data = pd.DataFrame({"The Column": ["1", "2", "3"]})
 
     (column, _) = _get_qb_column_from_json(
-        {   
+        {
             "type": "attribute",
             "label": "Yay",
-            "data_type": "whatever",
-            "required": False,
-            "describes_column": "test"
+            "data_type": "decimal",
+            "describes_column": "Obs Val Column Title",
         },
         "The Column",
         data,
-        1,
+        4,
     )
 
     assert isinstance(
         column.structural_definition, NewQbAttributeLiteral
     ), column.structural_definition
     column_title = column.structural_definition.observed_value_col_title
-    assert column_title == "test"
+    assert column_title == "Obs Val Column Title"
 
-def test_describes_new_attribute_resource_column():
+
+def test_describes_obs_val_new_attribute_resource_column():
     """
-    test that the describes_column variable 
+    Ensure that the `describes_column` property value is passed to a column which represents a NewQbAttribute.
     """
     data = pd.DataFrame({"The Column": ["1", "2", "3"]})
 
     (column, _) = _get_qb_column_from_json(
-        {   
-            "type": "attribute",
-            "describes_column": "test"
-        },
+        {"type": "attribute", "describes_column": "Obs Val Column Title"},
         "The Column",
         data,
-        1,
+        4,
     )
 
     assert isinstance(
         column.structural_definition, NewQbAttribute
     ), column.structural_definition
     column_title = column.structural_definition.observed_value_col_title
-    assert column_title == "test" 
-
+    assert column_title == "Obs Val Column Title"
 
 
 if __name__ == "__main__":
