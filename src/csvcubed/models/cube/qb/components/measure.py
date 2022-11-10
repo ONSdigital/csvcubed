@@ -18,7 +18,7 @@ from .datastructuredefinition import SecondaryQbStructuralDefinition
 from csvcubed.utils.validators.uri import validate_uri
 
 
-@dataclass
+@dataclass(unsafe_hash=True)
 class QbMeasure(SecondaryQbStructuralDefinition, ArbitraryRdf, ABC):
     pass
 
