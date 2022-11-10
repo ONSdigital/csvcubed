@@ -94,5 +94,5 @@ class MetadataValidator:
             return CubeShape.Standard
         else:
             raise TypeError(
-                "The input metadata is invalid as the shape of the cube it represents is not supported."
+                "The input metadata is invalid as the shape of the cube it represents is not supported. More specifically, the input contains some observation values that are pivoted and some are not pivoted."
             )
