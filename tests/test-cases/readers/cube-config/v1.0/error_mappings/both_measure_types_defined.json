@@ -4,29 +4,27 @@
   "title": "Tests/test-cases/config/schema-cube-data-config-ok",
   "description": "Schema for testing",
   "columns": {
-    "Some Dimension": {
-      "type": "dimension"
+    "Measure": {
+      "type": "measures",
+      "values": true
     },
-    "Some Obs Val": {
+    "Dim-0": {
+      "label": "Non Dimension",
+      "type": "dimension",
+      "code_list": true
+    },
+    "Attr-1": {
+      "type": "attribute",
+      "label": "My best attribute"
+    },
+    "Amount": {
       "type": "observations",
       "measure": {
-        "label": "Some Measure",
-        "definition_uri": "http:/some/measure"
-      },
-      "unit": {
-        "label": "Some Unit",
-        "definition_uri": "http:/some/unit"
+        "label": "Lbs"
       }
     },
-    "Some Other Obs Val": {
-      "type": "observations",
-      "unit": {
-        "label": "Some Unit",
-        "definition_uri": "http:/some/unit"
-      }
-    },
-    "Other Measure": {
-      "type": "measures",
+    "Units": {
+      "type": "units",
       "values": true
     }
   }

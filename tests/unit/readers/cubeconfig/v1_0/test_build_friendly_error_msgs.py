@@ -211,33 +211,33 @@ def test_val_errors_missing_obs_vals():
     )
 
 
-def test_val_errors_both_measure_types():
-    """
-    Test for:-
-        BothMeasureTypesDefinedError
-    """
-    config = Path(_test_case_dir, "both_measure_types_defined.json")
-    csv = Path(_test_case_dir, "both_measure_types_defined.csv")
-    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
-        config, csv
-    )
-    _write_errors_to_log(json_schema_validation_errors, validation_errors)
+# def test_val_errors_both_measure_types():
+#     """
+#     Test for:-
+#         BothMeasureTypesDefinedError
+#     """
+#     config = Path(_test_case_dir, "both_measure_types_defined.json")
+#     csv = Path(_test_case_dir, "both_measure_types_defined.csv")
+#     cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
+#         config, csv
+#     )
+#     _write_errors_to_log(json_schema_validation_errors, validation_errors)
 
-    assert isinstance(cube, Cube)
-    assert isinstance(validation_errors, list)
-    assert_num_validation_errors(validation_errors, 1)
+#     assert isinstance(cube, Cube)
+#     assert isinstance(validation_errors, list)
+#     assert_num_validation_errors(validation_errors, 1)
 
-    assert isinstance(validation_errors[0], BothMeasureTypesDefinedError)
-    assert _check_log(
-        "csvcubed.cli.build - ERROR - Validation Error: Measures defined in multiple locations. Measures "
-        "may only be defined in one location."
-    )
-    assert _check_log(
-        "Further details: A pivoted shape cube cannot have a measure dimension."
-    )
-    assert _check_log(
-        "csvcubed.cli.build - ERROR - More information: http://purl.org/csv-cubed/err/both-meas-typ-def"
-    )
+#     assert isinstance(validation_errors[0], BothMeasureTypesDefinedError)
+#     assert _check_log(
+#         "csvcubed.cli.build - ERROR - Validation Error: Measures defined in multiple locations. Measures "
+#         "may only be defined in one location."
+#     )
+#     assert _check_log(
+#         "Further details: A pivoted shape cube cannot have a measure dimension."
+#     )
+#     assert _check_log(
+#         "csvcubed.cli.build - ERROR - More information: http://purl.org/csv-cubed/err/both-meas-typ-def"
+#     )
 
 
 def test_val_errors_both_unit_types():
