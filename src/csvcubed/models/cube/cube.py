@@ -28,7 +28,9 @@ from csvcubed.utils.log import log_exception
 from csvcubed.utils.uri import (
     csvw_column_name_safe,
 )
+from . import QbObservationValue
 from .uristyle import URIStyle
+from ...utils.qb.cube import get_columns_of_dsd_type
 
 _logger = logging.getLogger(__name__)
 
@@ -41,7 +43,29 @@ class Cube(Generic[TMetadata], PydanticModel):
     data: Optional[pd.DataFrame] = field(default=None, repr=False)
     columns: List[CsvColumn] = field(default_factory=lambda: [], repr=False)
     uri_style: URIStyle = URIStyle.Standard
-    
+
+    @property
+    def is_pivoted_shape(self) -> bool:
+        obs_val_columns = get_columns_of_dsd_type(self, QbObservationValue)
+
+        all_pivoted = True
+        all_standard_shape = True
+        for obs_val_col in obs_val_columns:
+            all_pivoted = (
+                all_pivoted
+                and obs_val_col.structural_definition.is_pivoted_shape_observation
+            )
+            all_standard_shape = (
+                all_standard_shape
+                and not obs_val_col.structural_definition.is_pivoted_shape_observation
+            )
+
+        if all_pivoted:
+            return True
+        elif all_standard_shape:
+            return False
+        else:
+            raise TypeError("The cube cannot be in both standard and pivoted shape")
 
     def validate(self) -> List[ValidationError]:
         errors: List[ValidationError] = []
@@ -110,11 +134,12 @@ class Cube(Generic[TMetadata], PydanticModel):
             defined_names = safe_column_names + URI_TEMPLATE_SPECIAL_PROPERTIES
             for name in names:
                 if name not in defined_names:
-                    _logger.debug('Unable to find name %s in %s', name, safe_column_names)
+                    _logger.debug(
+                        "Unable to find name %s in %s", name, safe_column_names
+                    )
                     errors.append(UriTemplateNameError(safe_column_names, uri_template))
 
         return errors
-
 
     def _csv_column_uri_templates_to_names(self) -> Iterable[Tuple]:
         """
@@ -139,8 +164,7 @@ class Cube(Generic[TMetadata], PydanticModel):
         ]
 
         template_to_name_map = {
-            c: uritemplate.variables(c)
-            for c in csv_column_uri_templates if c
+            c: uritemplate.variables(c) for c in csv_column_uri_templates if c
         }
 
         return template_to_name_map.items()
