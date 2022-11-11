@@ -405,7 +405,7 @@ class UriHelper:
         _logger.debug(
             "Getting observation value column for column title '%s'", col_title
         )
-        obs_val_col: Optional[QbColumn[QbObservationValue]]
+        obs_val_col: Optional[QbColumn[QbObservationValue]] = None
 
         if len(obs_val_cols) == 1:
             # Only one obs val column so it's clear which one our column describes.
