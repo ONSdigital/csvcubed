@@ -7,12 +7,12 @@ Output writer for CSV-qb
 import itertools
 import json
 import logging
+from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, Any, Iterable
+from typing import Dict, Any, Iterable, List
 
 import pandas as pd
 
-from csvcubed.models.cube import *
 from csvcubed.utils.uri import (
     csvw_column_name_safe,
 )
@@ -31,8 +31,15 @@ from ..models.cube import (
     QbMultiMeasureDimension,
     QbMultiUnits,
     QbAttributeLiteral,
+    NewQbDimension,
+    QbColumn,
+    QbObservationValue,
+    QbDimension,
+    CsvColumn,
+    SuppressedCsvColumn,
+    QbCube,
 )
-from ..models.cube.qb.components.codelist import NewQbCodeListInCsvW
+from ..models.cube.qb.components.codelist import NewQbCodeListInCsvW, NewQbCodeList
 from ..utils.qb.validation.observations import get_observation_status_columns
 
 
