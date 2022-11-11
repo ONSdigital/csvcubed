@@ -546,7 +546,11 @@ def test_qb_order_of_components():
         Literal(1),
     ) in graph
 
-    assert (URIRef("some-dataset.csv#component/measure-type"), rdf.QB.order, Literal(2))
+    assert (
+        URIRef("some-dataset.csv#component/measure-type"),
+        rdf.QB.order,
+        Literal(2),
+    ) in graph
 
     assert (
         URIRef("some-dataset.csv#component/unit"),
