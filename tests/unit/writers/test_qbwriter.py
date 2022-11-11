@@ -634,7 +634,7 @@ def test_csv_col_definition_default_property_value_urls():
     values inferred from the component.
     """
     column = QbColumn("Some Column", QbMultiUnits([NewQbUnit("Some Unit")]))
-    csv_col = empty_qbwriter._generate_csvqb_column(column)
+    csv_col = empty_qbwriter._generate_csvw_column_definition(column)
     assert (
         "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
         == csv_col["propertyUrl"]
@@ -652,7 +652,7 @@ def test_csv_col_definition_csv_column_uri_template_override():
         ExistingQbDimension("http://base-uri/dimensions/some-dimension"),
         csv_column_uri_template="http://base-uri/some-alternative-output-uri/{+some_column}",
     )
-    csv_col = empty_qbwriter._generate_csvqb_column(column)
+    csv_col = empty_qbwriter._generate_csvw_column_definition(column)
     assert "http://base-uri/dimensions/some-dimension" == csv_col["propertyUrl"]
     assert (
         "http://base-uri/some-alternative-output-uri/{+some_column}"
@@ -668,7 +668,7 @@ def test_csv_col_definition():
         "Some Column",
         ExistingQbDimension("http://base-uri/dimensions/some-dimension"),
     )
-    csv_col = empty_qbwriter._generate_csvqb_column(column)
+    csv_col = empty_qbwriter._generate_csvw_column_definition(column)
     assert "suppressOutput" not in csv_col
     assert csv_col["titles"] == "Some Column"
     assert csv_col["name"] == "some_column"
@@ -704,13 +704,13 @@ def test_csv_col_required():
     ]
 
     for col in required_columns:
-        csv_col = empty_qbwriter._generate_csvqb_column(col)
+        csv_col = empty_qbwriter._generate_csvw_column_definition(col)
         required = csv_col["required"]
         assert isinstance(required, bool)
         assert required
 
     for col in optional_columns:
-        csv_col = empty_qbwriter._generate_csvqb_column(col)
+        csv_col = empty_qbwriter._generate_csvw_column_definition(col)
         required = csv_col["required"]
         assert isinstance(required, bool)
         assert not required
@@ -743,7 +743,7 @@ def test_csv_col_required_observed_value_with_obs_status_attribute():
         ],
     )
     writer = QbWriter(qube)
-    observed_values_column_is_required = writer._generate_csvqb_column(
+    observed_values_column_is_required = writer._generate_csvw_column_definition(
         observed_values_column
     )["required"]
     assert isinstance(observed_values_column_is_required, bool)
@@ -755,7 +755,7 @@ def test_csv_col_definition_suppressed():
     Test basic configuration of a *suppressed* CSV-W column definition.
     """
     column = SuppressedCsvColumn("Some Column")
-    csv_col = empty_qbwriter._generate_csvqb_column(column)
+    csv_col = empty_qbwriter._generate_csvw_column_definition(column)
     assert csv_col["suppressOutput"]
     assert "Some Column" == csv_col["titles"]
     assert "some_column" == csv_col["name"]

@@ -148,7 +148,7 @@ class QbWriter(WriterBase):
                 )
 
     def _generate_csvw_columns_for_cube(self) -> List[Dict[str, Any]]:
-        columns = [self._generate_csvqb_column(c) for c in self.cube.columns]
+        columns = [self._generate_csvw_column_definition(c) for c in self.cube.columns]
         if self.cube.is_pivoted_shape:
             _logger.debug("The cube is in pivoted shape")
             columns += (
@@ -343,27 +343,22 @@ class QbWriter(WriterBase):
     ) -> List[Dict[str, Any]]:
         _logger.debug("Generating virtual columns for pivoted shape cube")
 
-        virtual_columns: List[dict] = []
-
-        # Generates the virtual column defining the `?sliceUri rdf:type qb:Slice` triple.
-        virtual_columns.append(
+        virtual_columns: List[dict] = [
+            # Generates the virtual column defining the `?sliceUri rdf:type qb:Slice` triple.
             {
                 "name": "virt_slice",
                 "virtual": True,
                 "propertyUrl": "rdf:type",
                 "valueUrl": "qb:Slice",
-            }
-        )
-
-        # Generates the virtual column defining the `?sliceUri qb:sliceStructure ?valueUrl` triple.
-        virtual_columns.append(
+            },
+            # Generates the virtual column defining the `?sliceUri qb:sliceStructure ?valueUrl` triple.
             {
                 "name": "virt_slice_structure",
                 "virtual": True,
                 "propertyUrl": "qb:sliceStructure",
                 "valueUrl": self._uris.get_slice_key_across_measures_uri(),
-            }
-        )
+            },
+        ]
 
         observation_value_columns = self.cube.get_columns_of_dsd_type(
             QbObservationValue
@@ -430,7 +425,7 @@ class QbWriter(WriterBase):
     def _get_writer_for_code_list(self, code_list) -> SkosCodeListWriter:
         return SkosCodeListWriter(code_list, self.cube.uri_style)
 
-    def _generate_csvqb_column(self, column: CsvColumn) -> Dict[str, Any]:
+    def _generate_csvw_column_definition(self, column: CsvColumn) -> Dict[str, Any]:
         _logger.debug(
             "Generating CSV-W Column Definition for '%s'", column.csv_column_title
         )
@@ -451,24 +446,6 @@ class QbWriter(WriterBase):
             )
 
         return csvw_col
-
-    def _determine_whether_column_is_required(self, column: QbColumn) -> bool:
-        return (
-            isinstance(
-                column.structural_definition,
-                (QbDimension, QbMultiUnits, QbMultiMeasureDimension),
-            )
-            or (
-                isinstance(column.structural_definition, QbAttribute)
-                and column.structural_definition.get_is_required()
-            )
-            or (
-                isinstance(column.structural_definition, QbObservationValue)
-                and len(get_observation_status_columns(self.cube)) == 0
-                # We cannot mark an observation value column as `required` if there are `obsStatus` columns defined
-                # since we permit missing observation values where an `obsStatus` explains the reason.
-            )
-        )
 
     def _define_csvw_column_for_qb_column(
         self, csvw_col: dict, column: QbColumn
@@ -510,8 +487,7 @@ class QbWriter(WriterBase):
             # User-specified value overrides our default guess.
             csvw_col["valueUrl"] = column.csv_column_uri_template
         elif isinstance(column.structural_definition, QbAttributeLiteral):
-            _logger.debug("Column valueUrl is left unset.")
-            pass
+            _logger.debug("Column is Attribute Literal; valueUrl is left unset.")
         elif default_value_url is not None:
             csvw_col["valueUrl"] = default_value_url
 
@@ -546,3 +522,21 @@ class QbWriter(WriterBase):
 
         _logger.debug("Primary key columns are %s", primary_key_columns)
         return primary_key_columns
+
+    def _determine_whether_column_is_required(self, column: QbColumn) -> bool:
+        return (
+            isinstance(
+                column.structural_definition,
+                (QbDimension, QbMultiUnits, QbMultiMeasureDimension),
+            )
+            or (
+                isinstance(column.structural_definition, QbAttribute)
+                and column.structural_definition.get_is_required()
+            )
+            or (
+                isinstance(column.structural_definition, QbObservationValue)
+                and len(get_observation_status_columns(self.cube)) == 0
+                # We cannot mark an observation value column as `required` if there are `obsStatus` columns defined
+                # since we permit missing observation values where an `obsStatus` explains the reason.
+            )
+        )
