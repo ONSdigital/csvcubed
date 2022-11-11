@@ -56,7 +56,7 @@ def assert_dsd_component_equal(
     property_type: ComponentPropertyType,
     property_label: str,
     csv_col_title: str,
-    observation_value_column_titles: str,
+    observation_value_column_titles: Optional[str],
     required: bool,
 ):
     assert component.property == property
@@ -239,6 +239,32 @@ def test_select_csvw_catalog_metadata_for_codelist():
     assert result.contact_point == "None"
     assert result.identifier == "Alcohol Content"
 
+def test_select_csvw_dsd_dataset_for_old_style_data_set():
+    """
+    Should return expected `DSDLabelURIResult`.
+    """
+    csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
+    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
+
+    result: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
+        csvw_metadata_rdf_graph
+    )
+    component_result: QubeComponentsResult = select_csvw_dsd_qube_components(
+        csvw_metadata_rdf_graph, result.dsd_uri, csvw_metadata_json_path
+    )
+    components = component_result.qube_components
+
+    assert result.dataset_label == "Alcohol Bulletin"
+    assert len(components) == 17
+    assert (
+        components[0].property
+        == "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod"
+    )
+    assert components[0].property_label == ""
+    assert components[0].property_type == ComponentPropertyType.Dimension.value
+    assert components[0].csv_col_title == "Period"
+    assert components[0].required is True
 
 def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
     """

@@ -939,7 +939,7 @@ def test_is_cube_in_pivoted_shape_raise_exception():
 
     assert (
         str(err.value)
-        == 'The cube cannot be in both standard and pivoted shape'
+        == "The input metadata is invalid as the shape of the cube it represents is not supported. More specifically, the input contains some observation values that are pivoted and some are not pivoted."
     )
 
 

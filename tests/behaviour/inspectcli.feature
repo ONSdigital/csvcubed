@@ -796,7 +796,7 @@ Feature: Behaviour testing of csvcubed inspect.
         And the Metadata File json-ld is loaded to a rdf graph
         And the Printables for data cube are generated            
         Then the Type printable is validated for single-measure pivoted data set
-        And the Catalog Metadata printable is validated for single-measure pivoted data set
+        And the Catalog Metadata printable is validated for single-measure pivoted data set with identifier qb-id-10004
         And the Data Structure Definition printable is validated for single-measure pivoted data set
         And the Code List printable is validated for single-measure pivoted data set
         And the Data Set Information printable is validated for single-measure pivoted data set
@@ -814,7 +814,7 @@ Feature: Behaviour testing of csvcubed inspect.
         And the Metadata File json-ld is loaded to a rdf graph
         And the Printables for data cube are generated            
         Then the Type printable is validated for multi-measure pivoted data set
-        And the Catalog Metadata printable is validated for multi-measure pivoted data set
+        And the Catalog Metadata printable is validated for multi-measure pivoted data set with identifier qb-id-10003
         And the Data Structure Definition printable is validated for multi-measure pivoted data set
         And the Code List printable is validated for multi-measure pivoted data set
         And the Data Set Information printable is validated for multi-measure pivoted data set

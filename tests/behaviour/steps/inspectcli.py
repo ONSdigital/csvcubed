@@ -204,7 +204,7 @@ def step_impl(context):
     assert result_type_info == CSVWType.QbDataSet
 
 
-@Then("the Catalog Metadata printable is validated for single-measure pivoted data set")
+@Then("the Catalog Metadata printable is validated for single-measure pivoted data set with identifier qb-id-10004")
 def step_impl(context):
     result_catalog_metadata: CatalogMetadataResult = context.result_catalog_metadata
     assert result_catalog_metadata is not None
@@ -373,7 +373,7 @@ def step_impl(context):
     assert result_type_info == CSVWType.QbDataSet
 
 
-@Then("the Catalog Metadata printable is validated for multi-measure pivoted data set")
+@Then("the Catalog Metadata printable is validated for multi-measure pivoted data set with identifier qb-id-10003")
 def step_impl(context):
     result_catalog_metadata: CatalogMetadataResult = context.result_catalog_metadata
     assert result_catalog_metadata is not None
