@@ -25,7 +25,7 @@ from csvcubed.models.cube.qb.components.arbitraryrdf import (
 from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.utils.iterables import first
 from csvcubed.writers.qbwriter import QbWriter
-from csvcubed.writers.urihelpers.skoscodelistconstants import SCHEMA_URI_IDENTIFIER
+from csvcubed.writers.helpers.skoscodelistwriter.constants import SCHEMA_URI_IDENTIFIER
 
 
 @dataclass

@@ -22,9 +22,9 @@ from csvcubed.utils.qb.standardise import (
     ensure_int_columns_are_ints,
 )
 from csvcubed.utils.file import copy_files_to_directory_with_structure
-from .dsdhelper import QbDsdHelper
+from csvcubed.writers.helpers.qbwriter.dsdtordfmodelshelper import DsdToRdfModelsHelper
 from .skoscodelistwriter import SkosCodeListWriter
-from .urihelpers.cubenew import QbUriHelper
+from .helpers.qbwriter.urihelper import UriHelper
 from .writerbase import WriterBase
 from ..models.cube import (
     QbAttribute,
@@ -46,8 +46,8 @@ class QbWriter(WriterBase):
     cube: QbCube
     csv_file_name: str = field(init=False)
     raise_missing_uri_safe_value_exceptions: bool = field(default=True, repr=False)
-    _uris: QbUriHelper = field(init=False)
-    _dsd: QbDsdHelper = field(init=False)
+    _uris: UriHelper = field(init=False)
+    _dsd: DsdToRdfModelsHelper = field(init=False)
 
     @property
     def csv_metadata_file_name(self) -> str:
@@ -60,8 +60,8 @@ class QbWriter(WriterBase):
             QbWriter.__name__,
             self.csv_file_name,
         )
-        self._uris = QbUriHelper(self.cube)
-        self._dsd = QbDsdHelper(self.cube, self._uris)
+        self._uris = UriHelper(self.cube)
+        self._dsd = DsdToRdfModelsHelper(self.cube, self._uris)
 
     def write(self, output_folder: Path):
         # Map all labels to their corresponding URI-safe-values, where possible.

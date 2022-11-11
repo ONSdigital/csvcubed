@@ -13,7 +13,7 @@ from csvcubed.models.cube.uristyle import URIStyle
 
 
 @dataclass
-class QbNewUriHelper:
+class NewResourceUriGenerator:
     """
     Defines all of the URIs for new resources defined in a QbCube CSV-W.
     """

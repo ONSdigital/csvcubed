@@ -12,7 +12,7 @@ from abc import ABC
 from pydantic import root_validator, validator
 
 from csvcubed.utils.qb.validation.uri_safe import ensure_no_uri_safe_conflicts
-from csvcubed.writers.urihelpers.skoscodelistconstants import SCHEMA_URI_IDENTIFIER
+from csvcubed.writers.helpers.skoscodelistwriter.constants import SCHEMA_URI_IDENTIFIER
 from .concept import NewQbConcept, DuplicatedQbConcept
 from csvcubed.readers.skoscodelistreader import extract_code_list_concept_scheme_info
 from .arbitraryrdf import (
@@ -148,7 +148,9 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
 
     @staticmethod
     def from_data(
-        metadata: CatalogMetadata, data: PandasDataTypes, uri_style: Optional[URIStyle] = None
+        metadata: CatalogMetadata,
+        data: PandasDataTypes,
+        uri_style: Optional[URIStyle] = None,
     ) -> "NewQbCodeList":
         columnar_data = pandas_input_to_columnar_str(data)
         concepts = [NewQbConcept(c) for c in sorted(set(columnar_data))]

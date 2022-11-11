@@ -25,7 +25,9 @@ from csvcubed.utils.dict import rdf_resource_to_json_ld
 from csvcubed.utils.version import get_csvcubed_version_uri
 from csvcubed.models.rdf.conceptschemeincatalog import ConceptSchemeInCatalog
 from csvcubed.models.rdf import prov
-from csvcubed.writers.urihelpers.skoscodelist import SkosCodeListNewUriHelper
+from csvcubed.writers.helpers.skoscodelistwriter.newresourceurigenerator import (
+    NewResourceUriGenerator,
+)
 from csvcubed.writers.writerbase import WriterBase
 
 _logger = logging.getLogger(__name__)
@@ -36,7 +38,7 @@ class SkosCodeListWriter(WriterBase):
     new_code_list: NewQbCodeList
     default_uri_style: URIStyle = URIStyle.Standard
     csv_file_name: str = field(init=False)
-    uri_helper: SkosCodeListNewUriHelper = field(init=False)
+    uri_helper: NewResourceUriGenerator = field(init=False)
 
     @property
     def csv_metadata_file_name(self) -> str:
@@ -57,7 +59,7 @@ class SkosCodeListWriter(WriterBase):
             SkosCodeListWriter.__name__,
             self.csv_file_name,
         )
-        self.uri_helper = SkosCodeListNewUriHelper(
+        self.uri_helper = NewResourceUriGenerator(
             self.new_code_list, default_uri_style=self.default_uri_style
         )
 

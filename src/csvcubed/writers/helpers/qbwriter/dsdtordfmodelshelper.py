@@ -53,16 +53,18 @@ from csvcubed.utils.dict import rdf_resource_to_json_ld
 from csvcubed.utils.uri import get_last_uri_part, get_data_type_uri_from_str
 from csvcubed.utils.version import get_csvcubed_version_uri
 from csvcubed.writers.skoscodelistwriter import SkosCodeListWriter
-from csvcubed.writers.urihelpers.cubenew import QbUriHelper
-from csvcubed.writers.urihelpers.skoscodelist import SkosCodeListNewUriHelper
+from csvcubed.writers.helpers.skoscodelistwriter.newresourceurigenerator import (
+    NewResourceUriGenerator as SkosCodeListNewResourceUriGenerator,
+)
+from .urihelper import UriHelper
 
 _logger = logging.getLogger(__name__)
 
 
 @dataclass
-class QbDsdHelper:
+class DsdToRdfModelsHelper:
     cube: QbCube
-    _uris: QbUriHelper
+    _uris: UriHelper
 
     def generate_data_structure_definitions(self) -> List[dict]:
         """
@@ -522,7 +524,7 @@ class QbDsdHelper:
         elif isinstance(code_list, NewQbCodeList):
             # The resource is created elsewhere. There is a separate CSV-W definition for the code-list
             return ExistingResource(
-                SkosCodeListNewUriHelper(
+                SkosCodeListNewResourceUriGenerator(
                     code_list, self.cube.uri_style
                 ).get_scheme_uri()
             )

@@ -29,57 +29,61 @@ from csvcubed.models.cube import (
 )
 from csvcubed.models.cube.cube import QbColumnarDsdType
 from csvcubed.utils.uri import csvw_column_name_safe, uri_safe
-from csvcubed.writers.urihelpers.qbcube import QbNewUriHelper
-from csvcubed.writers.urihelpers.skoscodelist import SkosCodeListNewUriHelper
-from csvcubed.writers.urihelpers.skoscodelistconstants import SCHEMA_URI_IDENTIFIER
+from .newresourceurigenerator import NewResourceUriGenerator
+from csvcubed.writers.helpers.skoscodelistwriter.newresourceurigenerator import (
+    NewResourceUriGenerator as SkosCodeListNewResourceUriGenerator,
+)
+from csvcubed.writers.helpers.skoscodelistwriter.constants import SCHEMA_URI_IDENTIFIER
 
 _logger = logging.getLogger(__name__)
 
 
 @dataclass
-class QbUriHelper:
+class UriHelper:
     """
     Defines all of the URIs and URI templates used in an RDF Data Cube CSV-W.
     """
 
     cube: QbCube
-    _new_uri_helper: QbNewUriHelper = field(init=False)
+    _new_resource_uri_generator: NewResourceUriGenerator = field(init=False)
 
     def __post_init__(self):
-        _logger.debug("Initialising %s", QbUriHelper.__name__)
-        self._new_uri_helper = QbNewUriHelper(self.cube)
+        _logger.debug("Initialising %s", UriHelper.__name__)
+        self._new_resource_uri_generator = NewResourceUriGenerator(self.cube)
 
     def get_dataset_uri(self) -> str:
-        return self._new_uri_helper.get_dataset_uri()
+        return self._new_resource_uri_generator.get_dataset_uri()
 
     def get_slice_key_across_measures_uri(self) -> str:
-        return self._new_uri_helper.get_slice_key_across_measures_uri()
+        return self._new_resource_uri_generator.get_slice_key_across_measures_uri()
 
     def get_structure_uri(self) -> str:
-        return self._new_uri_helper.get_structure_uri()
+        return self._new_resource_uri_generator.get_structure_uri()
 
     def get_component_uri(self, component_identifier: str) -> str:
-        return self._new_uri_helper.get_component_uri(component_identifier)
+        return self._new_resource_uri_generator.get_component_uri(component_identifier)
 
     def get_class_uri(self, class_identifier: str) -> str:
-        return self._new_uri_helper.get_class_uri(class_identifier)
+        return self._new_resource_uri_generator.get_class_uri(class_identifier)
 
     def get_void_dataset_dependency_uri(self, identifier: str) -> str:
-        return self._new_uri_helper.get_void_dataset_dependency_uri(identifier)
+        return self._new_resource_uri_generator.get_void_dataset_dependency_uri(
+            identifier
+        )
 
     def get_build_activity_uri(self) -> str:
-        return self._new_uri_helper.get_build_activity_uri()
+        return self._new_resource_uri_generator.get_build_activity_uri()
 
     def get_new_attribute_value_uri(
         self, attribute_identifier: str, attribute_value_identifier: str
     ) -> str:
-        return self._new_uri_helper.get_attribute_value_uri(
+        return self._new_resource_uri_generator.get_attribute_value_uri(
             attribute_identifier, attribute_value_identifier
         )
 
     def get_dimension_uri(self, dimension: QbDimension) -> str:
         if isinstance(dimension, NewQbDimension):
-            dimension_uri = self._new_uri_helper.get_dimension_uri(
+            dimension_uri = self._new_resource_uri_generator.get_dimension_uri(
                 dimension.uri_safe_identifier
             )
             _logger.debug(
@@ -99,7 +103,7 @@ class QbUriHelper:
 
     def get_measure_uri(self, measure: QbMeasure) -> str:
         if isinstance(measure, NewQbMeasure):
-            measure_uri = self._new_uri_helper.get_measure_uri(
+            measure_uri = self._new_resource_uri_generator.get_measure_uri(
                 measure.uri_safe_identifier
             )
             _logger.debug(
@@ -121,14 +125,16 @@ class QbUriHelper:
         if isinstance(unit, ExistingQbUnit):
             return unit.unit_uri
         elif isinstance(unit, NewQbUnit):
-            return self._new_uri_helper.get_unit_uri(unit.uri_safe_identifier)
+            return self._new_resource_uri_generator.get_unit_uri(
+                unit.uri_safe_identifier
+            )
         else:
             raise TypeError(f"Unmatched unit type {type(unit)}")
 
     def get_attribute_uri(self, attribute: QbAttribute) -> str:
         if isinstance(attribute, NewQbAttribute):
             _logger.debug("The attribute is a new attribute")
-            attribute_uri = self._new_uri_helper.get_attribute_uri(
+            attribute_uri = self._new_resource_uri_generator.get_attribute_uri(
                 attribute.uri_safe_identifier
             )
             _logger.debug(
@@ -267,7 +273,7 @@ class QbUriHelper:
         else:
             raise TypeError(f"Unhandled QbMeasure type {type(obs_val_measure)}")
 
-        return self._new_uri_helper.get_observation_uri(
+        return self._new_resource_uri_generator.get_observation_uri(
             dimension_columns_templates, measure_id
         )
 
@@ -331,7 +337,7 @@ class QbUriHelper:
                 "valueUrl defined by new dataset-local code list %s",
                 code_list.metadata.title,
             )
-            return SkosCodeListNewUriHelper(
+            return SkosCodeListNewResourceUriGenerator(
                 code_list, self.cube.uri_style
             ).get_concept_uri(column_uri_fragment)
         elif isinstance(code_list, NewQbCodeListInCsvW):
@@ -438,7 +444,7 @@ class QbUriHelper:
             len(dimension_columns_templates),
         )
 
-        return self._new_uri_helper.get_slice_across_measures_uri(
+        return self._new_resource_uri_generator.get_slice_across_measures_uri(
             dimension_columns_templates
         )
 
@@ -462,7 +468,7 @@ class QbUriHelper:
                     multi_measure_col_template = (
                         f"{{{csvw_column_name_safe(c.uri_safe_identifier)}}}"
                     )
-        return self._new_uri_helper.get_observation_uri(
+        return self._new_resource_uri_generator.get_observation_uri(
             dimension_columns_templates, multi_measure_col_template
         )
 
@@ -509,7 +515,7 @@ class QbUriHelper:
                     "Existing Attribute has new attribute values which define the valueUrl."
                 )
                 # NewQbAttributeValues defined here.
-                value_uri = self._new_uri_helper.get_attribute_value_uri(
+                value_uri = self._new_resource_uri_generator.get_attribute_value_uri(
                     column.uri_safe_identifier, column_uri_fragment
                 )
             else:
@@ -594,7 +600,9 @@ class QbUriHelper:
         unit_value_uri: str
         if all_units_new:
             _logger.debug("All units are new; they define the column's valueUrl.")
-            unit_value_uri = self._new_uri_helper.get_unit_uri(column_template_fragment)
+            unit_value_uri = self._new_resource_uri_generator.get_unit_uri(
+                column_template_fragment
+            )
         elif all_units_existing:
             _logger.debug("All units are existing.")
             unit_value_uri = column_template_fragment
@@ -621,7 +629,9 @@ class QbUriHelper:
         column_template_fragment = self._get_column_uri_template_fragment(column)
         if all_measures_new:
             _logger.debug("All measures are new; they define the column's valueUrl.")
-            return self._new_uri_helper.get_measure_uri(column_template_fragment)
+            return self._new_resource_uri_generator.get_measure_uri(
+                column_template_fragment
+            )
         elif all_measures_existing:
             _logger.debug("All measures are existing.")
             if column.csv_column_uri_template is None:
