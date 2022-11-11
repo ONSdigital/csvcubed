@@ -6,7 +6,7 @@ Contains all of the URI definitions & configuration necessary to serialise a sko
 """
 from dataclasses import dataclass
 
-from csvcubed.models.cube import NewQbCodeList
+from csvcubed.models.cube.qb.components.codelist import NewQbCodeList
 from csvcubed.models.cube.uristyle import URIStyle
 from csvcubed.writers.urihelpers.skoscodelistconstants import SCHEMA_URI_IDENTIFIER
 

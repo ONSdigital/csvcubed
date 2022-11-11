@@ -4,12 +4,14 @@ import pytest
 from pandas.core.arrays.categorical import Categorical
 
 from csvcubed.models.cube import *
-from csvcubed.models.cube import (
-    NewQbAttribute,
-    NewQbConcept,
-    QbMultiMeasureDimension,
-    QbMultiUnits,
-)
+from csvcubed.models.cube.cube import Cube
+from csvcubed.models.cube.qb.catalog import CatalogMetadata
+from csvcubed.models.cube.qb.columns import QbColumn
+from csvcubed.models.cube.qb.components.attribute import NewQbAttribute, NewQbAttributeLiteral
+from csvcubed.models.cube.qb.components.dimension import NewQbDimension
+from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureDimension
+from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
+from csvcubed.models.cube.qb.components.unitscolumn import QbMultiUnits
 from csvcubed.utils.qb.standardise import (
     ensure_qbcube_data_is_categorical,
     convert_data_values_to_uri_safe_values,

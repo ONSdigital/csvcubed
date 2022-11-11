@@ -7,15 +7,14 @@ Utilities for getting columns (of a given type) from the `qb:DataStructureType`
 import logging
 from typing import List, TypeVar, Type, Set
 
-from csvcubed.models.cube import (
-    Cube,
-    QbColumn,
+from csvcubed.models.cube.cube import Cube
+from csvcubed.models.cube.qb.columns import QbColumn
+from csvcubed.models.cube.qb.components import (QbColumnStructuralDefinition,
     QbMeasure,
     QbMultiMeasureDimension,
     QbMultiUnits,
     QbUnit,
-    QbObservationValue,
-    QbColumnStructuralDefinition,
+    QbObservationValue
 )
 from csvcubed.models.cube.cube_shape import CubeShape
 

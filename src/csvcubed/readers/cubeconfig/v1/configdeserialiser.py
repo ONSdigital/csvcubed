@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Dict, Optional, Tuple, List, Callable, Union, Iterable
 
 from csvcubed.models.cube.qb.columns import QbColumn
-from csvcubed.models.cube import QbCube
+from csvcubed.models.cube.cube import QbCube
 from csvcubed.models.cube.columns import CsvColumn, SuppressedCsvColumn
 from csvcubed.models.cube.cube import Cube
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
