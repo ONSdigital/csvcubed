@@ -29,7 +29,6 @@ from csvcubed.readers.skoscodelistreader import extract_code_list_concept_scheme
 from csvcubed.writers.qbwriter import QbWriter
 from csvcubed.utils.qb.validation.cube import validate_qb_component_constraints
 from csvcubed.utils.pandas import read_csv
-from csvcubed.utils.version import get_csvcubed_version_uri
 
 _test_case_dir = get_test_cases_dir()
 
@@ -877,23 +876,7 @@ def assert_uri_style_for_uri(uri_style: URIStyle, uri: str, node):
         ), f"expected {node} to end with .csv or .json"
 
 
-@Then("the RDF should contain version specific triples")
-def step_impl(context):
-    version_triples = (
-        context.text + f" prov:used <{get_csvcubed_version_uri()}> ."
-    ).strip()
-    version_triples = re.sub("\r", "", version_triples)  # windows problem
-
-    version_triples_graph = Graph().parse(format="turtle", data=version_triples)
-    test_graph_diff(
-        Graph().parse(format="turtle", data=context.turtle),
-        version_triples_graph,
-    )
-
-
-@Given(
-    'a multi-measure pivoted shape cube with identifier "{identifier}" named "{cube_name}"'
-)
+@Given('a pivoted shape cube with identifier "{identifier}" named "{cube_name}"')
 def step_impl(context, identifier: str, cube_name: str):
     metadata = CatalogMetadata(title=cube_name, identifier=identifier)
     data = pd.DataFrame(
@@ -926,41 +909,6 @@ def step_impl(context, identifier: str, cube_name: str):
             QbObservationValue(
                 NewQbMeasure("Some Other Measure"), NewQbUnit("Some Unit")
             ),
-        ),
-    ]
-
-    cube = Cube(metadata=metadata, data=data, columns=columns)
-    context.cube = cube
-
-
-@Given(
-    'a single-measure pivoted shape cube with identifier "{identifier}" named "{cube_name}"'
-)
-def step_impl(context, identifier: str, cube_name: str):
-    metadata = CatalogMetadata(title=cube_name, identifier=identifier)
-    data = pd.DataFrame(
-        {
-            "Some Dimension": ["a", "b", "c"],
-            "Some Attribute": ["attr-a", "attr-b", "attr-c"],
-            "Some Obs Val": [1, 2, 3],
-        }
-    )
-    columns = [
-        QbColumn(
-            "Some Dimension",
-            NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
-        ),
-        QbColumn(
-            "Some Attribute",
-            NewQbAttribute.from_data(
-                "Some Attribute",
-                data["Some Attribute"],
-                observed_value_col_title="Some Obs Val",
-            ),
-        ),
-        QbColumn(
-            "Some Obs Val",
-            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
 

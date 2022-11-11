@@ -1,0 +1,108 @@
+name: Test csvcubed
+on:
+  workflow_call:
+    inputs: 
+      os:
+        required: true
+        type: string
+      python-version:
+        required: true
+        type: string
+
+jobs:
+  test_in_environments:
+    runs-on: ${{ inputs.os }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      # Necessary for running csvlint inside the Windows VM.
+      - uses: ruby/setup-ruby@v1
+        if: inputs.os == 'windows-latest'
+        with:
+          ruby-version: '2.4'
+
+      - name: Install csvlint, csv2rdf and sparql-test-runner (Windows)
+        id: windows-install
+        if: inputs.os == 'windows-latest'
+        run: .\windows-testing-setup.ps1 -verbose
+        shell: pwsh
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ inputs.python-version }}
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Install pyright
+        run: npm install -g pyright
+
+      - name: Install poetry
+        run: pip install poetry
+
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/pypoetry/virtualenvs
+            C:\Users\runneradmin\AppData\Local\pypoetry\Cache\virtualenvs
+          key: ${{ inputs.os }}-poetry-${{ hashFiles('poetry.lock') }}
+
+      - name: Install python packages
+        run: poetry install
+
+      - name: Run pyright
+        run: poetry run pyright . --lib
+
+      - name: Run unittests
+        run: poetry run pytest --junitxml=pytest_results.xml
+
+      - name: Run behaviour tests (Windows)
+        if: inputs.os == 'windows-latest'
+        run: |
+          $csv2rdfLocation = "${{ steps.windows-install.outputs.CSV2RDF_LOCATION }}"
+          $sparqlTestsDir = "${{ steps.windows-install.outputs.SPARQL_TESTS_LOCATION }}"
+
+          $env:NO_DOCKER="true"; $env:CSV2RDF="$csv2rdfLocation"; $env:SPARQL_TESTS_DIR="$sparqlTestsDir"; poetry run behave tests/behaviour --tags=-skip --junit --format progress
+        shell: pwsh
+
+      - name: Run behaviour tests (Ubuntu)
+        if: inputs.os == 'ubuntu-latest'
+        run: poetry run behave tests/behaviour --tags=-skip --junit --format progress
+
+      - name: Upload unit & behave test results from xml files
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ inputs.os }}-python${{ inputs.python-version }} behave test results
+          path: |
+            pytest_results.xml
+            reports/*.xml
+
+      - name: Remove broken characters from xml test files
+        # By removing broken characters from the xml unit/behave test files, we can then publish the tests results stored 
+        # in those files in a user friendly way on github actions using 'EnricoMi/publish-unit-test-result-action@v1'.
+        if: always()
+        run: sed -i -e "s/[\\x0A\\x1B]//g" reports/TESTS-*.xml
+
+      # Windows needs to run the `composite` action
+      - name: Publish Unit & Behave Test Results (Windows)
+        if: always() && inputs.os == 'windows-latest'
+        uses: EnricoMi/publish-unit-test-result-action/composite@v2
+        with:
+          check_name: ${{ inputs.os }}-python${{ inputs.python-version }} test results
+          junit_files: |
+            reports/*.xml
+            pytest_results.xml
+
+      # Slightly more performant to run the non-composite action in ubuntu.
+      - name: Publish Unit & Behave Test Results (Ubuntu)
+        if: always() && inputs.os == 'ubuntu-latest'
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        with:
+          check_name: ${{ inputs.os }}-python${{ inputs.python-version }} test results
+          junit_files: |
+            reports/*.xml
+            pytest_results.xml
