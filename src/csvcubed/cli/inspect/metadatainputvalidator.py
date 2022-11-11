@@ -13,11 +13,11 @@ import rdflib
 from csvcubed.models.sparqlresults import IsPivotedShapeMeasureResult
 
 from csvcubed.utils.sparql_handler.sparqlmanager import (
-    CubeShape,
     ask_is_csvw_code_list,
     ask_is_csvw_qb_dataset,
 )
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
+from csvcubed.models.cube.cube_shape import CubeShape
 
 
 class CSVWType(Enum):

@@ -17,8 +17,8 @@ from csvcubed.cli.inspect.metadatainputvalidator import (
     MetadataValidator,
 )
 from csvcubed.cli.inspect.metadataprinter import MetadataPrinter
+from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.utils.sparql_handler.sparqlmanager import (
-    CubeShape,
     select_is_pivoted_shape_for_measures_in_data_set,
 )
 from csvcubed.utils.tableschema import CsvwRdfManager

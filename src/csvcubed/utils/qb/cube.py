@@ -17,7 +17,7 @@ from csvcubed.models.cube import (
     QbObservationValue,
     QbColumnStructuralDefinition,
 )
-from csvcubed.utils.sparql_handler.sparqlmanager import CubeShape
+from csvcubed.models.cube.cube_shape import CubeShape
 
 
 _logger = logging.getLogger(__name__)

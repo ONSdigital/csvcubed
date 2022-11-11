@@ -12,7 +12,7 @@ from treelib import Tree
 
 from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
 from csvcubed.utils.printable import get_printable_tabuler_str_from_dataframe
-from csvcubed.utils.sparql_handler.sparqlmanager import CubeShape
+from csvcubed.models.cube.cube_shape import CubeShape
 
 HIERARCHY_TREE_CONCEPTS_LIMIT = 100
 DATASET_HEAD_TAIL_LIMIT = 10

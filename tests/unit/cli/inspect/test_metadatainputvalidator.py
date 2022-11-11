@@ -5,11 +5,11 @@ import pytest
 
 from csvcubed.cli.inspect.metadatainputvalidator import CSVWType, MetadataValidator
 from csvcubed.utils.sparql_handler.sparqlmanager import (
-    CubeShape,
     select_is_pivoted_shape_for_measures_in_data_set,
 )
 from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.unit.test_baseunit import get_test_cases_dir
+from csvcubed.models.cube.cube_shape import CubeShape
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
 

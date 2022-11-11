@@ -19,7 +19,6 @@ from csvcubed.models.sparqlresults import (
 )
 from csvcubed.utils.iterables import first
 from csvcubed.utils.qb.components import ComponentPropertyType
-from csvcubed.utils.sparql_handler.sparqlmanager import CubeShape
 from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.unit.cli.inspect.test_inspectdatasetmanager import (
     expected_dataframe_pivoted_single_measure,
@@ -29,6 +28,7 @@ from tests.unit.utils.sparqlhandler.test_sparqlmanager import (
     assert_dsd_component_equal,
     get_dsd_component_by_property_url,
 )
+from csvcubed.models.cube.cube_shape import CubeShape
 
 
 def _unformat_multiline_string(string: str) -> str:

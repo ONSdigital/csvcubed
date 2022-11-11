@@ -6,7 +6,7 @@ Collection of SPARQL queries.
 """
 
 import logging
-from enum import Enum, auto
+from enum import Enum
 from pathlib import Path
 from typing import List, Optional
 
@@ -49,21 +49,9 @@ from csvcubed.models.csvcubedexception import (
     InvalidNumberOfRecordsException,
 )
 from csvcubed.definitions import APP_ROOT_DIR_PATH
+from csvcubed.models.cube.cube_shape import CubeShape
 
 _logger = logging.getLogger(__name__)
-
-
-class CubeShape(Enum):
-    """
-    The shape of the cube.
-    """
-
-    Standard = auto()
-    """ The cube is in the standard shape. """
-
-    Pivoted = auto()
-    """ The cube is in the pivoted shape. """
-
 
 class SPARQLQueryName(Enum):
     """

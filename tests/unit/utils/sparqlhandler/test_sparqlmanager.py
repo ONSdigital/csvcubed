@@ -5,7 +5,6 @@ import pytest
 import dateutil.parser
 from rdflib import Graph, RDF, DCAT, URIRef, RDFS, Literal, ConjunctiveGraph
 
-from csvcubed.cli.inspect.metadatainputvalidator import CubeShape
 from csvcubed.utils.iterables import first
 from csvcubed.models.sparqlresults import (
     CatalogMetadataResult,
@@ -45,6 +44,7 @@ from csvcubed.utils.tableschema import (
     add_triples_for_file_dependencies,
 )
 from tests.unit.test_baseunit import get_test_cases_dir
+from csvcubed.models.cube.cube_shape import CubeShape
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
 _csvw_test_cases_dir = get_test_cases_dir() / "utils" / "csvw"

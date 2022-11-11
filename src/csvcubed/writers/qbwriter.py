@@ -25,7 +25,6 @@ from csvcubedmodels.rdf.resource import (
 )
 from csvcubed.models.rdf import prov
 from csvcubed.models.cube import *
-from csvcubed.utils.sparql_handler.sparqlmanager import CubeShape
 from csvcubed.utils.uri import (
     get_last_uri_part,
     csvw_column_name_safe,
@@ -64,6 +63,7 @@ from ..models.rdf.newattributevalueresource import NewAttributeValueResource
 from ..models.rdf.newunitresource import NewUnitResource
 from ..models.cube.qb.components.arbitraryrdf import RdfSerialisationHint
 from ..utils.qb.validation.observations import get_observation_status_columns
+from csvcubed.models.cube.cube_shape import CubeShape
 
 
 _logger = logging.getLogger(__name__)

@@ -34,7 +34,7 @@ from csvcubed.models.csvcubedexception import (
 from csvcubed.cli.error_mapping import friendly_error_mapping
 from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
 from csvcubed.utils.skos.codelist import build_concepts_hierarchy_tree
-from csvcubed.utils.sparql_handler.sparqlmanager import CubeShape
+from csvcubed.models.cube.cube_shape import CubeShape
 
 _logger = logging.getLogger(__name__)
 
