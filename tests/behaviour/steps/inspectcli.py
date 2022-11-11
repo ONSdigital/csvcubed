@@ -6,6 +6,7 @@ from behave import *
 from pandas.util.testing import assert_frame_equal
 
 from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
+from csvcubed.cli.inspect.metadatainputvalidator import MetadataValidator
 from csvcubed.cli.inspect.metadataprinter import MetadataPrinter
 from csvcubed.models.inspectdataframeresults import (
     DatasetObservationsByMeasureUnitInfoResult,
@@ -18,6 +19,7 @@ from csvcubed.models.sparqlresults import (
 )
 from csvcubed.utils.iterables import first
 from csvcubed.utils.qb.components import ComponentPropertyType
+from csvcubed.utils.sparql_handler.sparqlmanager import select_is_pivoted_shape_for_measures_in_data_set
 from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.unit.cli.inspect.test_inspectdatasetmanager import (
     expected_dataframe_pivoted_single_measure,
@@ -62,6 +64,19 @@ def step_impl(context):
     context.csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     assert context.csvw_metadata_rdf_graph is not None
     
+@When("the Metadata File is validated")
+def step_impl(context):
+
+    csvw_metadata_rdf_validator = MetadataValidator(
+        context.csvw_metadata_rdf_graph, context.csvw_metadata_json_path
+    )
+    is_pivoted_measures = select_is_pivoted_shape_for_measures_in_data_set(context.csvw_metadata_rdf_graph)
+    (
+        context.csvw_type,
+        context.cube_shape,
+    ) = csvw_metadata_rdf_validator.detect_type_and_shape(is_pivoted_measures)
+
+    assert context.csvw_type is not None
 
 @When("the Printables for data cube are generated")
 def step_impl(context):
