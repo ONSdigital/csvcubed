@@ -8,7 +8,7 @@ import itertools
 import json
 import logging
 from pathlib import Path
-from typing import Tuple, Dict, Any, Iterable
+from typing import Dict, Any, Iterable
 
 import pandas as pd
 
@@ -17,7 +17,6 @@ from csvcubed.utils.uri import (
     csvw_column_name_safe,
 )
 from csvcubed.utils.csvw import get_dependent_local_files
-from csvcubed.utils.qb.cube import QbColumnarDsdType
 from csvcubed.utils.qb.standardise import (
     convert_data_values_to_uri_safe_values,
     ensure_int_columns_are_ints,
@@ -29,8 +28,6 @@ from .urihelpers.cubenew import QbUriHelper
 from .writerbase import WriterBase
 from ..models.cube import (
     QbAttribute,
-    ExistingQbAttribute,
-    NewQbAttribute,
     QbMultiMeasureDimension,
     QbMultiUnits,
     QbAttributeLiteral,
@@ -240,7 +237,9 @@ class QbWriter(WriterBase):
                         ),
                         "reference": {
                             "resource": code_list.csv_file_relative_path_or_uri,
-                            "columnReference": "notation",  # NewQbCodeListInCsvW are used for historic reasons and they always use the notation key for their primary key. External users cannot create NewQbCodeListInCsvW.
+                            "columnReference": "notation",
+                            # NewQbCodeListInCsvW are used for historic reasons and they always use the notation key
+                            # for their primary key. External users cannot create NewQbCodeListInCsvW.
                         },
                     }
                 )
@@ -295,7 +294,7 @@ class QbWriter(WriterBase):
             (
                 property_url,
                 value_url,
-            ) = self._get_default_property_value_uris_for_dimension(dimension_col)
+            ) = self._uris.get_default_property_value_uris_for_column(dimension_col)
 
             if dimension_col.csv_column_uri_template is not None:
                 _logger.debug(
@@ -453,7 +452,7 @@ class QbWriter(WriterBase):
 
         return csvw_col
 
-    def _determine_whether_the_column_is_required(self, column: QbColumn) -> bool:
+    def _determine_whether_column_is_required(self, column: QbColumn) -> bool:
         return (
             isinstance(
                 column.structural_definition,
@@ -496,7 +495,7 @@ class QbWriter(WriterBase):
         (
             property_url,
             default_value_url,
-        ) = self._get_default_property_value_uris_for_column(column)
+        ) = self._uris.get_default_property_value_uris_for_column(column)
 
         _logger.debug(
             "Column has default propertyUrl '%s' and default valueUrl '%s'.",
@@ -527,170 +526,13 @@ class QbWriter(WriterBase):
             )
             csvw_col["datatype"] = column.structural_definition.data_type
 
-        is_required = self._determine_whether_the_column_is_required(column)
+        is_required = self._determine_whether_column_is_required(column)
         if is_required:
             _logger.debug("Column is required.")
         else:
             _logger.debug("Column is not required.")
 
         csvw_col["required"] = is_required
-
-    def _get_default_property_value_uris_for_multi_units(
-        self, column: QbColumn[QbMultiUnits]
-    ) -> Tuple[str, str]:
-        unit_value_uri = self._uris.get_unit_column_unit_template_uri(column)
-
-        return (
-            "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
-            unit_value_uri,
-        )
-
-    def _get_default_property_value_uris_for_multi_measure(
-        self, column: QbColumn[QbMultiMeasureDimension]
-    ) -> Tuple[str, str]:
-        measure_value_uri = (
-            self._uris.get_measure_dimension_column_measure_template_uri(column)
-        )
-
-        return "http://purl.org/linked-data/cube#measureType", measure_value_uri
-
-    def _get_default_property_value_uris_for_column(
-        self, column: QbColumn
-    ) -> Tuple[Optional[str], Optional[str]]:
-        _logger.debug(
-            "Getting default property value uris for column with title '%s'",
-            column.csv_column_title,
-        )
-
-        if isinstance(column.structural_definition, QbDimension):
-            _logger.debug("Column is a dimension column")
-            return self._get_default_property_value_uris_for_dimension(column)
-        elif isinstance(column.structural_definition, QbAttribute):
-            _logger.debug("Column is an attribute column")
-            return self._get_default_property_value_uris_for_attribute(column)
-        elif isinstance(column.structural_definition, QbMultiUnits):
-            _logger.debug("Column is a multi-units column")
-            return self._get_default_property_value_uris_for_multi_units(column)
-        elif isinstance(column.structural_definition, QbMultiMeasureDimension):
-            _logger.debug("Column is a multi-measure dimension column")
-            return self._get_default_property_value_uris_for_multi_measure(column)
-        elif isinstance(column.structural_definition, QbObservationValue):
-            _logger.debug("Column is an observation value column")
-            return self._get_default_property_value_uris_for_observation_value(
-                column.structural_definition
-            )
-        else:
-            raise TypeError(
-                f"Unhandled component type {type(column.structural_definition)}"
-            )
-
-    def _get_default_property_value_uris_for_dimension(
-        self, column: QbColumn[QbDimension]
-    ) -> Tuple[str, Optional[str]]:
-        dimension = column.structural_definition
-        dimension_uri = self._uris.get_dimension_uri(dimension)
-        if isinstance(dimension, ExistingQbDimension):
-            return (
-                dimension_uri,
-                self._uris.get_column_uri_template_fragment(column),
-            )
-        elif isinstance(dimension, NewQbDimension):
-            value_uri = self._uris.get_column_uri_template_fragment(column)
-            if dimension.code_list is None:
-                _logger.debug(
-                    "Dimension does not have code list; valueUrl defaults directly to column's value."
-                )
-            else:
-                _logger.debug(
-                    "Dimension valueUrl determined by code list %s.",
-                    dimension.code_list,
-                )
-                value_uri = self._uris.get_default_value_uri_for_code_list_concepts(
-                    column, dimension.code_list
-                )
-            return dimension_uri, value_uri
-        else:
-            raise TypeError(f"Unhandled dimension type {type(dimension)}")
-
-    def _get_default_property_value_uris_for_attribute(
-        self, column: QbColumn[QbAttribute]
-    ) -> Tuple[str, str]:
-        attribute = column.structural_definition
-        column_uri_fragment = self._uris.get_column_uri_template_fragment(column)
-        value_uri = self._uris.get_column_uri_template_fragment(column)
-
-        attribute_uri = self._uris.get_attribute_uri(attribute)
-
-        if isinstance(attribute, ExistingQbAttribute):
-            if len(attribute.new_attribute_values) > 0:
-                _logger.debug(
-                    "Existing Attribute has new attribute values which define the valueUrl."
-                )
-                # NewQbAttributeValues defined here.
-                value_uri = self._new_uri_helper.get_attribute_value_uri(
-                    column.uri_safe_identifier, column_uri_fragment
-                )
-            else:
-                _logger.debug("Existing Attribute does not have new attribute values.")
-
-            # N.B. We can't do mix-and-match New/Existing attribute values.
-
-            return attribute_uri, value_uri
-        elif isinstance(attribute, NewQbAttribute):
-            if len(attribute.new_attribute_values) > 0:
-                _logger.debug(
-                    "New Attribute has new attribute values which define the valueUrl."
-                )
-                # NewQbAttributeValues defined here.
-                value_uri = self._uris.get_new_attribute_value_uri(
-                    attribute.uri_safe_identifier, column_uri_fragment
-                )
-            else:
-                _logger.debug("New Attribute does not have new attribute values.")
-
-            # N.B. We can't do mix-and-match New/Existing attribute values.
-
-            return attribute_uri, value_uri
-        else:
-            raise TypeError(f"Unhandled attribute type {type(attribute)}")
-
-    def _get_default_property_value_uris_for_observation_value(
-        self,
-        observation_value: QbObservationValue,
-    ):
-        if observation_value.is_pivoted_shape_observation:
-            assert observation_value.measure is not None
-            _logger.debug(
-                "Single-measure observation value propertyUrl defined by measure %s",
-                observation_value.measure,
-            )
-            return self._uris.get_measure_uri(observation_value.measure), None
-        else:
-            # In the standard shape
-            multi_measure_dimension_col = self._get_single_column_of_type(
-                QbMultiMeasureDimension
-            )
-            _logger.debug(
-                "Multi-measure observation value propertyUrl defined by measure column %s",
-                multi_measure_dimension_col.csv_column_title,
-            )
-
-            measure_uri_template = (
-                self._uris.get_measure_dimension_column_measure_template_uri(
-                    multi_measure_dimension_col
-                )
-            )
-            return measure_uri_template, None
-
-    def _get_single_column_of_type(
-        self, t: Type[QbColumnarDsdType]
-    ) -> QbColumn[QbColumnarDsdType]:
-        cols = self.cube.get_columns_of_dsd_type(t)
-        if len(cols) != 1:
-            raise ValueError(
-                f"Found {len(cols)} columns with component type {t} in cube. Expected 1."
-            )
-        return cols[0]
 
     def _get_primary_key_columns(self) -> List[str]:
         dimension_columns: Iterable[QbColumn] = itertools.chain(

@@ -15,7 +15,7 @@ from csvcubed.models.cube.uristyle import URIStyle
 @dataclass
 class QbNewUriHelper:
     """
-    Defines all of the URIs in a QbCube CSV-W which is serialised to disk.
+    Defines all of the URIs for new resources defined in a QbCube CSV-W.
     """
 
     cube: QbCube

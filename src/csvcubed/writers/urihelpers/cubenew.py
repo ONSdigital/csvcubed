@@ -1,7 +1,7 @@
 import logging
 import re
 from dataclasses import dataclass, field
-from typing import Optional, List
+from typing import Optional, List, Tuple, Type
 
 from csvcubed.models.cube import (
     ExistingQbUnit,
@@ -27,6 +27,7 @@ from csvcubed.models.cube import (
     QbMeasure,
     QbMultiMeasureDimension,
 )
+from csvcubed.models.cube.cube import QbColumnarDsdType
 from csvcubed.utils.uri import csvw_column_name_safe, uri_safe
 from csvcubed.writers.urihelpers.qbcube import QbNewUriHelper
 from csvcubed.writers.urihelpers.skoscodelist import SkosCodeListNewUriHelper
@@ -37,6 +38,10 @@ _logger = logging.getLogger(__name__)
 
 @dataclass
 class QbUriHelper:
+    """
+    Defines all of the URIs and URI templates used in an RDF Data Cube CSV-W.
+    """
+
     cube: QbCube
     _new_uri_helper: QbNewUriHelper = field(init=False)
 
@@ -155,7 +160,6 @@ class QbUriHelper:
         self, column: QbColumn
     ) -> Optional[str]:
         obs_val_cols = self.cube.get_columns_of_dsd_type(QbObservationValue)
-        is_single_measure = len(obs_val_cols) == 1
         _logger.debug(
             "Getting about url for column with title '%s'", column.csv_column_title
         )
@@ -170,15 +174,15 @@ class QbUriHelper:
             # function
             _logger.debug("Column is a an attribute column")
             col_title = column.structural_definition.get_observed_value_col_title()
-            obs_val_col = self._get_obs_val_col_for_col_title(
-                col_title, obs_val_cols, is_single_measure
+            obs_val_col = self._get_obs_val_col_described_by_csv_col(
+                col_title, obs_val_cols
             )
         # If the column represents units, set the valueUrl using the _get_observation_value_col_for_title function
         elif isinstance(column.structural_definition, QbMultiUnits):
-            _logger.debug("Column is a a multi-unit column")
+            _logger.debug("Column is a a multi-units column")
             col_title = column.structural_definition.observed_value_col_title
-            obs_val_col = self._get_obs_val_col_for_col_title(
-                col_title, obs_val_cols, is_single_measure
+            obs_val_col = self._get_obs_val_col_described_by_csv_col(
+                col_title, obs_val_cols
             )
         else:
             obs_val_col = None
@@ -189,124 +193,41 @@ class QbUriHelper:
             else None
         )
 
-    def get_unit_column_unit_template_uri(self, column: QbColumn[QbMultiUnits]):
-        column_template_fragment = self.get_column_uri_template_fragment(column)
-        all_units_new = all(
-            [isinstance(u, NewQbUnit) for u in column.structural_definition.units]
-        )
-        all_units_existing = all(
-            [isinstance(u, ExistingQbUnit) for u in column.structural_definition.units]
-        )
-        unit_value_uri: str
-        if all_units_new:
-            _logger.debug("All units are new; they define the column's valueUrl.")
-            unit_value_uri = self._new_uri_helper.get_unit_uri(column_template_fragment)
-        elif all_units_existing:
-            _logger.debug("All units are existing.")
-            unit_value_uri = column_template_fragment
-        else:
-            # TODO: Come up with a solution for this.
-            raise Exception(
-                "Cannot handle a mix of new units and existing defined units."
-            )
-        return unit_value_uri
-
-    def get_measure_dimension_column_measure_template_uri(
-        self, column: QbColumn[QbMultiMeasureDimension]
-    ):
-        all_measures_new = all(
-            [isinstance(m, NewQbMeasure) for m in column.structural_definition.measures]
-        )
-        all_measures_existing = all(
-            [
-                isinstance(m, ExistingQbMeasure)
-                for m in column.structural_definition.measures
-            ]
-        )
-
-        column_template_fragment = self.get_column_uri_template_fragment(column)
-        if all_measures_new:
-            _logger.debug("All measures are new; they define the column's valueUrl.")
-            return self._new_uri_helper.get_measure_uri(column_template_fragment)
-        elif all_measures_existing:
-            _logger.debug("All measures are existing.")
-            if column.csv_column_uri_template is None:
-                raise ValueError(
-                    "A URI value template must be defined when a measures column reuses existing measures."
-                )
-            return column.csv_column_uri_template
-        else:
-            # TODO: Come up with a solution for this.
-            raise Exception(
-                "Cannot handle a mix of new measures and existing defined measures."
-            )
-
-    @staticmethod
-    def get_column_uri_template_fragment(
-        column: CsvColumn, escape_value: bool = False
-    ) -> str:
-        if escape_value:
-            return "{" + csvw_column_name_safe(column.uri_safe_identifier) + "}"
-
-        return "{+" + csvw_column_name_safe(column.uri_safe_identifier) + "}"
-
-    def _get_observation_value_col_for_title(
-        self, col_title: str
-    ) -> QbColumn[QbObservationValue]:
+    def get_default_property_value_uris_for_column(
+        self, column: QbColumn
+    ) -> Tuple[Optional[str], Optional[str]]:
         """
-        Gets the matching observation value column for the given attributes/units column (if there is one).
+        Returns `propertyUrl` and `valueUrl` templates for the associated CSV-W column.
+
+        Overrides such as the `cell_uri_template` are not applied in this function. This returns the default values for
+        the column.
         """
         _logger.debug(
-            "Getting the matching observation value column for the column with title '%s'",
-            col_title,
+            "Getting default property value uris for column with title '%s'",
+            column.csv_column_title,
         )
 
-        obs_value_columns = self.cube.get_columns_of_dsd_type(QbObservationValue)
-        obs_columns_for_column = [
-            obs_col
-            for obs_col in obs_value_columns
-            if col_title == obs_col.csv_column_title
-        ]
-
-        num_of_obs_val_cols = len(obs_columns_for_column)
-        _logger.debug(
-            "Found %d observation value column(s) for the column with title '%s'",
-            num_of_obs_val_cols,
-            col_title,
-        )
-        if num_of_obs_val_cols != 1:
-            raise Exception(
-                f'Could not find one observation value column. Found {num_of_obs_val_cols} for title: "{col_title}".'
+        if isinstance(column.structural_definition, QbDimension):
+            _logger.debug("Column is a dimension column")
+            return self._get_default_property_value_uris_for_dimension(column)
+        elif isinstance(column.structural_definition, QbAttribute):
+            _logger.debug("Column is an attribute column")
+            return self._get_default_property_value_uris_for_attribute(column)
+        elif isinstance(column.structural_definition, QbMultiUnits):
+            _logger.debug("Column is a multi-units column")
+            return self._get_default_property_value_uris_for_multi_units(column)
+        elif isinstance(column.structural_definition, QbMultiMeasureDimension):
+            _logger.debug("Column is a multi-measure dimension column")
+            return self._get_default_property_value_uris_for_multi_measure(column)
+        elif isinstance(column.structural_definition, QbObservationValue):
+            _logger.debug("Column is an observation value column")
+            return self._get_default_property_value_uris_for_observation_value(
+                column.structural_definition
             )
-        return obs_columns_for_column[0]
-
-    def _get_obs_val_col_for_col_title(
-        self,
-        col_title: Optional[str],
-        obs_val_cols: List[QbColumn[QbObservationValue]],
-        is_single_measure: bool,
-    ) -> Optional[QbColumn[QbObservationValue]]:
-        _logger.debug(
-            "Getting observation value column for column title '%s'", col_title
-        )
-        obs_val_col: Optional[QbColumn[QbObservationValue]] = None
-
-        if is_single_measure:
-            obs_val_col = obs_val_cols[0]
-            _logger.debug("The cube is a single measure cube.")
         else:
-            _logger.debug("The cube is a multi measure cube.")
-            if col_title is not None:
-                obs_val_col = self._get_observation_value_col_for_title(col_title)
-
-        if obs_val_col is not None:
-            _logger.debug(
-                "Observation value column for column title '%s' is '%s'",
-                col_title,
-                obs_val_col.csv_column_title,
+            raise TypeError(
+                f"Unhandled component type {type(column.structural_definition)}"
             )
-
-        return obs_val_col
 
     def get_observation_uri_for_pivoted_shape_data_set(
         self, obs_val_column: QbColumn[QbObservationValue]
@@ -350,35 +271,10 @@ class QbUriHelper:
             dimension_columns_templates, measure_id
         )
 
-    def _get_pivoted_cube_slice_uri(self) -> str:
-        # TODO: Dimensions are currently appended in the order in which the appear in the cube.
-        #       We may want to alter this in the future so that the ordering is from
-        #       least entropic dimension -> most entropic.
-        #       E.g. http://base-uri/observations/male/1996/all-males-1996
-
-        dimension_columns_templates: List[str] = [
-            f"{{{csvw_column_name_safe(c.uri_safe_identifier)}}}"
-            for c in self.cube.get_columns_of_dsd_type(QbDimension)
-        ]
-        _logger.debug(
-            "The cube has %d dimension column templates",
-            len(dimension_columns_templates),
-        )
-
-        return self._new_uri_helper.get_slice_across_measures_uri(
-            dimension_columns_templates
-        )
-
-    _legacy_external_code_list_pattern = re.compile("^(.*)/concept-scheme/(.*)$")
-    _legacy_dataset_local_code_list_pattern = re.compile("^(.*)#scheme/(.*)$")
-    _csvcubed_code_list_pattern = re.compile(
-        "^(.*)#" + re.escape(SCHEMA_URI_IDENTIFIER) + "$"
-    )
-
-    def get_default_value_uri_for_code_list_concepts(
+    def _get_default_value_uri_for_code_list_concepts(
         self, column: CsvColumn, code_list: QbCodeList
     ) -> str:
-        column_uri_fragment = self.get_column_uri_template_fragment(column)
+        column_uri_fragment = self._get_column_uri_template_fragment(column)
 
         if isinstance(code_list, ExistingQbCodeList):
             legacy_external_match = self._legacy_external_code_list_pattern.match(
@@ -449,6 +345,109 @@ class QbUriHelper:
         else:
             raise TypeError(f"Unhandled codelist type {type(code_list)}")
 
+    @staticmethod
+    def _get_column_uri_template_fragment(
+        column: CsvColumn, escape_value: bool = False
+    ) -> str:
+        if escape_value:
+            return "{" + csvw_column_name_safe(column.uri_safe_identifier) + "}"
+
+        return "{+" + csvw_column_name_safe(column.uri_safe_identifier) + "}"
+
+    def _get_observation_value_col_for_title(
+        self, col_title: str
+    ) -> QbColumn[QbObservationValue]:
+        """
+        Gets the matching observation value column for the given attributes/units column (if there is one).
+        """
+        _logger.debug(
+            "Getting the matching observation value column for the column with title '%s'",
+            col_title,
+        )
+
+        obs_value_columns = self.cube.get_columns_of_dsd_type(QbObservationValue)
+        obs_columns_for_column = [
+            obs_col
+            for obs_col in obs_value_columns
+            if col_title == obs_col.csv_column_title
+        ]
+
+        num_of_obs_val_cols = len(obs_columns_for_column)
+        _logger.debug(
+            "Found %d observation value column(s) for the column with title '%s'",
+            num_of_obs_val_cols,
+            col_title,
+        )
+        if num_of_obs_val_cols != 1:
+            raise Exception(
+                f'Could not find one observation value column. Found {num_of_obs_val_cols} for title: "{col_title}".'
+            )
+        return obs_columns_for_column[0]
+
+    def _get_obs_val_col_described_by_csv_col(
+        self,
+        col_title: Optional[str],
+        obs_val_cols: List[QbColumn[QbObservationValue]],
+    ) -> Optional[QbColumn[QbObservationValue]]:
+        """
+        Return the obs val column which a particular CSV column describes.
+
+        Looks up the obs val column by its `col_title`, but this is optional in data sets where there is only
+        one obs val column.
+        """
+
+        _logger.debug(
+            "Getting observation value column for column title '%s'", col_title
+        )
+        obs_val_col: Optional[QbColumn[QbObservationValue]]
+
+        if len(obs_val_cols) == 1:
+            # Only one obs val column so it's clear which one our column describes.
+            _logger.debug("The cube has a single obs val column.")
+            obs_val_col = obs_val_cols[0]
+        else:
+            _logger.debug("The cube has multiple obs val columns.")
+            if col_title is not None:
+                obs_val_col = self._get_observation_value_col_for_title(col_title)
+
+        if obs_val_col is not None:
+            _logger.debug(
+                "Observation value column for column title '%s' is '%s'",
+                col_title,
+                obs_val_col.csv_column_title,
+            )
+        else:
+            _logger.warning(
+                "Could not find observation value column for title '%s'", col_title
+            )
+
+        return obs_val_col
+
+    def _get_pivoted_cube_slice_uri(self) -> str:
+        # TODO: Dimensions are currently appended in the order in which the appear in the cube.
+        #       We may want to alter this in the future so that the ordering is from
+        #       least entropic dimension -> most entropic.
+        #       E.g. http://base-uri/observations/male/1996/all-males-1996
+
+        dimension_columns_templates: List[str] = [
+            f"{{{csvw_column_name_safe(c.uri_safe_identifier)}}}"
+            for c in self.cube.get_columns_of_dsd_type(QbDimension)
+        ]
+        _logger.debug(
+            "The cube has %d dimension column templates",
+            len(dimension_columns_templates),
+        )
+
+        return self._new_uri_helper.get_slice_across_measures_uri(
+            dimension_columns_templates
+        )
+
+    _legacy_external_code_list_pattern = re.compile("^(.*)/concept-scheme/(.*)$")
+    _legacy_dataset_local_code_list_pattern = re.compile("^(.*)#scheme/(.*)$")
+    _csvcubed_code_list_pattern = re.compile(
+        "^(.*)#" + re.escape(SCHEMA_URI_IDENTIFIER) + "$"
+    )
+
     def _get_observation_uri_for_standard_shape_data_set(self) -> str:
         dimension_columns_templates: List[str] = []
         multi_measure_col_template: Optional[str] = None
@@ -466,3 +465,182 @@ class QbUriHelper:
         return self._new_uri_helper.get_observation_uri(
             dimension_columns_templates, multi_measure_col_template
         )
+
+    def _get_default_property_value_uris_for_dimension(
+        self, column: QbColumn[QbDimension]
+    ) -> Tuple[str, Optional[str]]:
+        dimension = column.structural_definition
+        dimension_uri = self.get_dimension_uri(dimension)
+        if isinstance(dimension, ExistingQbDimension):
+            return (
+                dimension_uri,
+                self._get_column_uri_template_fragment(column),
+            )
+        elif isinstance(dimension, NewQbDimension):
+            value_uri = self._get_column_uri_template_fragment(column)
+            if dimension.code_list is None:
+                _logger.debug(
+                    "Dimension does not have code list; valueUrl defaults directly to column's value."
+                )
+            else:
+                _logger.debug(
+                    "Dimension valueUrl determined by code list %s.",
+                    dimension.code_list,
+                )
+                value_uri = self._get_default_value_uri_for_code_list_concepts(
+                    column, dimension.code_list
+                )
+            return dimension_uri, value_uri
+        else:
+            raise TypeError(f"Unhandled dimension type {type(dimension)}")
+
+    def _get_default_property_value_uris_for_attribute(
+        self, column: QbColumn[QbAttribute]
+    ) -> Tuple[str, str]:
+        attribute = column.structural_definition
+        column_uri_fragment = self._get_column_uri_template_fragment(column)
+        value_uri = self._get_column_uri_template_fragment(column)
+
+        attribute_uri = self.get_attribute_uri(attribute)
+
+        if isinstance(attribute, ExistingQbAttribute):
+            if len(attribute.new_attribute_values) > 0:
+                _logger.debug(
+                    "Existing Attribute has new attribute values which define the valueUrl."
+                )
+                # NewQbAttributeValues defined here.
+                value_uri = self._new_uri_helper.get_attribute_value_uri(
+                    column.uri_safe_identifier, column_uri_fragment
+                )
+            else:
+                _logger.debug("Existing Attribute does not have new attribute values.")
+
+            # N.B. We can't do mix-and-match New/Existing attribute values.
+
+            return attribute_uri, value_uri
+        elif isinstance(attribute, NewQbAttribute):
+            if len(attribute.new_attribute_values) > 0:
+                _logger.debug(
+                    "New Attribute has new attribute values which define the valueUrl."
+                )
+                # NewQbAttributeValues defined here.
+                value_uri = self.get_new_attribute_value_uri(
+                    attribute.uri_safe_identifier, column_uri_fragment
+                )
+            else:
+                _logger.debug("New Attribute does not have new attribute values.")
+
+            # N.B. We can't do mix-and-match New/Existing attribute values.
+
+            return attribute_uri, value_uri
+        else:
+            raise TypeError(f"Unhandled attribute type {type(attribute)}")
+
+    def _get_default_property_value_uris_for_multi_units(
+        self, column: QbColumn[QbMultiUnits]
+    ) -> Tuple[str, str]:
+        unit_value_uri = self._get_unit_column_unit_template_uri(column)
+
+        return (
+            "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
+            unit_value_uri,
+        )
+
+    def _get_default_property_value_uris_for_multi_measure(
+        self, column: QbColumn[QbMultiMeasureDimension]
+    ) -> Tuple[str, str]:
+        measure_value_uri = self._get_measure_dimension_column_measure_template_uri(
+            column
+        )
+
+        return "http://purl.org/linked-data/cube#measureType", measure_value_uri
+
+    def _get_default_property_value_uris_for_observation_value(
+        self,
+        observation_value: QbObservationValue,
+    ):
+        if observation_value.is_pivoted_shape_observation:
+            assert observation_value.measure is not None
+            _logger.debug(
+                "Single-measure observation value propertyUrl defined by measure %s",
+                observation_value.measure,
+            )
+            return self.get_measure_uri(observation_value.measure), None
+        else:
+            # In the standard shape
+            multi_measure_dimension_col = self._get_single_column_of_type(
+                QbMultiMeasureDimension
+            )
+            _logger.debug(
+                "Multi-measure observation value propertyUrl defined by measure column %s",
+                multi_measure_dimension_col.csv_column_title,
+            )
+
+            measure_uri_template = (
+                self._get_measure_dimension_column_measure_template_uri(
+                    multi_measure_dimension_col
+                )
+            )
+            return measure_uri_template, None
+
+    def _get_unit_column_unit_template_uri(self, column: QbColumn[QbMultiUnits]):
+        column_template_fragment = self._get_column_uri_template_fragment(column)
+        all_units_new = all(
+            [isinstance(u, NewQbUnit) for u in column.structural_definition.units]
+        )
+        all_units_existing = all(
+            [isinstance(u, ExistingQbUnit) for u in column.structural_definition.units]
+        )
+        unit_value_uri: str
+        if all_units_new:
+            _logger.debug("All units are new; they define the column's valueUrl.")
+            unit_value_uri = self._new_uri_helper.get_unit_uri(column_template_fragment)
+        elif all_units_existing:
+            _logger.debug("All units are existing.")
+            unit_value_uri = column_template_fragment
+        else:
+            # TODO: Come up with a solution for this.
+            raise Exception(
+                "Cannot handle a mix of new units and existing defined units."
+            )
+        return unit_value_uri
+
+    def _get_measure_dimension_column_measure_template_uri(
+        self, column: QbColumn[QbMultiMeasureDimension]
+    ):
+        all_measures_new = all(
+            [isinstance(m, NewQbMeasure) for m in column.structural_definition.measures]
+        )
+        all_measures_existing = all(
+            [
+                isinstance(m, ExistingQbMeasure)
+                for m in column.structural_definition.measures
+            ]
+        )
+
+        column_template_fragment = self._get_column_uri_template_fragment(column)
+        if all_measures_new:
+            _logger.debug("All measures are new; they define the column's valueUrl.")
+            return self._new_uri_helper.get_measure_uri(column_template_fragment)
+        elif all_measures_existing:
+            _logger.debug("All measures are existing.")
+            if column.csv_column_uri_template is None:
+                raise ValueError(
+                    "A URI value template must be defined when a measures column reuses existing measures."
+                )
+            return column.csv_column_uri_template
+        else:
+            # TODO: Come up with a solution for this.
+            raise Exception(
+                "Cannot handle a mix of new measures and existing defined measures."
+            )
+
+    def _get_single_column_of_type(
+        self, t: Type[QbColumnarDsdType]
+    ) -> QbColumn[QbColumnarDsdType]:
+        cols = self.cube.get_columns_of_dsd_type(t)
+        if len(cols) != 1:
+            raise ValueError(
+                f"Found {len(cols)} columns with component type {t} in cube. Expected 1."
+            )
+        return cols[0]
