@@ -26,9 +26,8 @@ from csvcubed.models.sparqlresults import (
     QubeComponentsResult,
 )
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
-from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
+from csvcubed.models.csvwtype import CSVWType
 from csvcubed.utils.sparql_handler.sparqlmanager import (
-    CubeShape,
     select_codelist_cols_by_dataset_url,
     select_codelist_dataset_url,
     select_primary_key_col_names_by_dataset_url,
@@ -63,6 +62,7 @@ from csvcubed.utils.skos.codelist import (
     get_codelist_col_title_from_col_name,
 )
 from csvcubed.utils.uri import looks_like_uri
+from csvcubed.models.cube.cube_shape import CubeShape
 
 
 @dataclass

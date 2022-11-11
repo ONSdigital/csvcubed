@@ -1,4 +1,3 @@
-from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
 from csvcubed.cli.inspect.metadataprinter import to_absolute_rdflib_file_path
 from csvcubed.utils.skos.codelist import (
     CodelistPropertyUrl,
@@ -16,7 +15,6 @@ from rdflib import Graph
 from treelib import Tree
 
 from csvcubed.utils.sparql_handler.sparqlmanager import (
-    CubeShape,
     select_codelist_cols_by_dataset_url,
     select_codelist_dataset_url,
     select_primary_key_col_names_by_dataset_url,
@@ -48,6 +46,8 @@ from csvcubed.utils.csvdataset import (
     transform_dataset_to_canonical_shape,
 )
 from tests.unit.test_baseunit import get_test_cases_dir
+from csvcubed.models.cube.cube_shape import CubeShape
+from csvcubed.models.csvwtype import CSVWType
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
 

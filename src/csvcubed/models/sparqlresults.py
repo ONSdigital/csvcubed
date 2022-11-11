@@ -667,7 +667,7 @@ def map_is_pivoted_shape_for_measures_in_data_set(
     """
     Maps the sparql query result to objects of type IsPivotedMeasureResult that are then returned.
     """
-    def map_row(row_result: Dict[str, Any]) -> ObsValDsdComponentResult:
+    def map_row(row_result: Dict[str, Any]) -> IsPivotedShapeMeasureResult:
         return IsPivotedShapeMeasureResult(
             measure=str(row_result["measure"]),
             is_pivoted_shape=bool(row_result["isPivotedShape"]),

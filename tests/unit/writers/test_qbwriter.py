@@ -1,32 +1,38 @@
-from tempfile import TemporaryDirectory
-from typing import List
-from copy import deepcopy
 import csv
+from copy import deepcopy
+from dataclasses import dataclass, field
 from pathlib import Path
+from tempfile import TemporaryDirectory
+from typing import List, Optional, Set
 
-import pytest
 import pandas as pd
-from rdflib import RDFS, XSD, Graph, URIRef, Literal
-
+import pytest
 from csvcubedmodels import rdf
+from rdflib import RDFS, XSD, Graph, Literal, URIRef
+
 from csvcubed.models.cube import *
-from csvcubed.models.cube import (
-    ExistingQbAttribute,
-    NewQbAttribute,
-    QbMultiMeasureDimension,
-    QbMultiUnits,
-)
-from csvcubed.models.cube.uristyle import URIStyle
+from csvcubed.models.cube.columns import CsvColumn, SuppressedCsvColumn
+from csvcubed.models.cube.cube import Cube
+from csvcubed.models.cube.qb.catalog import CatalogMetadata
+from csvcubed.models.cube.qb.columns import QbColumn
 from csvcubed.models.cube.qb.components.arbitraryrdf import (
-    TripleFragment,
-    RdfSerialisationHint,
-    TripleFragmentBase,
-)
+    RdfSerialisationHint, TripleFragment, TripleFragmentBase)
+from csvcubed.models.cube.qb.components.attribute import ExistingQbAttribute, NewQbAttribute
+from csvcubed.models.cube.qb.components.attributevalue import NewQbAttributeValue
+from csvcubed.models.cube.qb.components.codelist import ExistingQbCodeList, NewQbCodeList
+from csvcubed.models.cube.qb.components.dimension import ExistingQbDimension, NewQbDimension
+from csvcubed.models.cube.qb.components.measure import (ExistingQbMeasure, NewQbMeasure,
+                                                        QbMeasure)
+from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureDimension
+from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
+from csvcubed.models.cube.qb.components.unit import ExistingQbUnit, NewQbUnit
+from csvcubed.models.cube.uristyle import URIStyle
 from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.utils.iterables import first
 from csvcubed.writers.qbwriter import QbWriter
-from csvcubed.writers.urihelpers.skoscodelistconstants import SCHEMA_URI_IDENTIFIER
-
+from csvcubed.writers.urihelpers.skoscodelistconstants import \
+    SCHEMA_URI_IDENTIFIER
+from csvcubed.models.cube.qb.components import QbMultiUnits
 
 @dataclass
 class TestQbMeasure(QbMeasure, UriIdentifiable):
