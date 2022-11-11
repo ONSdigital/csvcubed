@@ -183,6 +183,7 @@ class MetadataPrinter:
         )
 
         # strtobool is not case sensitive and will work the same way with "True" or "true" inputs, also with "False" or "false".
+        # Below is a temporary workaround until we complete the other pivoted shape tickets. The value is set by the related behave tests.
         is_pivoted_multi_measure = strtobool(
             os.environ.get("PIVOTED_MULTI_MEASURE", "False")
         )

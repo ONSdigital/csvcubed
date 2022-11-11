@@ -4,7 +4,6 @@ from pathlib import Path
 
 from behave import *
 from pandas.util.testing import assert_frame_equal
-from more_itertools import first
 
 from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
 from csvcubed.cli.inspect.metadatainputvalidator import CSVWType, MetadataValidator
@@ -18,11 +17,9 @@ from csvcubed.models.sparqlresults import (
     CodelistsResult,
     QubeComponentsResult,
 )
+from csvcubed.utils.iterables import first
 from csvcubed.utils.qb.components import ComponentPropertyType
-from csvcubed.utils.sparql_handler.sparqlmanager import (
-    CubeShape,
-    select_is_pivoted_shape_for_measures_in_data_set,
-)
+from csvcubed.utils.sparql_handler.sparqlmanager import CubeShape
 from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.unit.cli.inspect.test_inspectdatasetmanager import (
     expected_dataframe_pivoted_single_measure,
@@ -167,7 +164,6 @@ def step_impl(context):
 
 @Then("the Dataset Information Printable should be")
 def step_impl(context):
-    print(context.dataset_observations_info_printable)
     assert _unformat_multiline_string(
         context.dataset_observations_info_printable
     ) == _unformat_multiline_string(context.text.strip())

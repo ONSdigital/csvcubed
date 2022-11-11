@@ -2,11 +2,11 @@ from pathlib import Path
 from typing import List, Optional
 
 import pytest
-from csvcubed.utils.iterables import first
-
 import dateutil.parser
 from rdflib import Graph, RDF, DCAT, URIRef, RDFS, Literal, ConjunctiveGraph
 
+from csvcubed.cli.inspect.metadatainputvalidator import CubeShape
+from csvcubed.utils.iterables import first
 from csvcubed.models.sparqlresults import (
     CatalogMetadataResult,
     CodeListColsByDatasetUrlResult,
@@ -24,7 +24,6 @@ from csvcubed.models.sparqlresults import (
 from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.rdf import parse_graph_retain_relative
 from csvcubed.utils.sparql_handler.sparqlmanager import (
-    CubeShape,
     ask_is_csvw_code_list,
     ask_is_csvw_qb_dataset,
     select_codelist_cols_by_dataset_url,
