@@ -1,4 +1,3 @@
-from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
 from csvcubed.cli.inspect.metadataprinter import to_absolute_rdflib_file_path
 from csvcubed.utils.skos.codelist import (
     CodelistPropertyUrl,
@@ -48,6 +47,7 @@ from csvcubed.utils.csvdataset import (
 )
 from tests.unit.test_baseunit import get_test_cases_dir
 from csvcubed.models.cube.cube_shape import CubeShape
+from csvcubed.models.csvwtype import CSVWType
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
 

@@ -6,7 +6,6 @@ from behave import *
 from pandas.util.testing import assert_frame_equal
 
 from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
-from csvcubed.cli.inspect.metadatainputvalidator import CSVWType, MetadataValidator
 from csvcubed.cli.inspect.metadataprinter import MetadataPrinter
 from csvcubed.models.inspectdataframeresults import (
     DatasetObservationsByMeasureUnitInfoResult,
@@ -29,6 +28,7 @@ from tests.unit.utils.sparqlhandler.test_sparqlmanager import (
     get_dsd_component_by_property_url,
 )
 from csvcubed.models.cube.cube_shape import CubeShape
+from csvcubed.models.csvwtype import CSVWType
 
 
 def _unformat_multiline_string(string: str) -> str:

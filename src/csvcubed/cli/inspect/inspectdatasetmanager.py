@@ -32,7 +32,7 @@ from csvcubed.models.csvcubedexception import (
     InvalidNumberOfRecordsException,
 )
 from csvcubed.cli.error_mapping import friendly_error_mapping
-from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
+from csvcubed.models.csvwtype import CSVWType
 from csvcubed.utils.skos.codelist import build_concepts_hierarchy_tree
 from csvcubed.models.cube.cube_shape import CubeShape
 
