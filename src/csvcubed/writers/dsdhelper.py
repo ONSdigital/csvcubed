@@ -18,7 +18,7 @@ from csvcubedmodels.rdf import (
 )
 from csvcubedmodels.rdf.dependency import RdfGraphDependency
 
-from csvcubed.models import rdf
+from csvcubedmodels import rdf
 from csvcubed.models.cube import (
     NewQbDimension,
     NewQbCodeList,
@@ -50,9 +50,9 @@ from csvcubed.models.rdf.newattributevalueresource import NewAttributeValueResou
 from csvcubed.models.rdf.newunitresource import NewUnitResource
 from csvcubed.models.rdf.qbdatasetincatalog import QbDataSetInCatalog
 from csvcubed.utils.dict import rdf_resource_to_json_ld
-from csvcubed.utils.qb.cube import get_columns_of_dsd_type
 from csvcubed.utils.uri import get_last_uri_part, get_data_type_uri_from_str
 from csvcubed.utils.version import get_csvcubed_version_uri
+from csvcubed.writers.skoscodelistwriter import SkosCodeListWriter
 from csvcubed.writers.urihelpers.cubenew import QbUriHelper
 from csvcubed.writers.urihelpers.skoscodelist import SkosCodeListNewUriHelper
 
@@ -89,7 +89,7 @@ class QbDsdHelper:
         """
         rdf_file_dependencies: List[RdfGraphDependency] = []
 
-        dimension_columns = get_columns_of_dsd_type(self.cube, NewQbDimension)
+        dimension_columns = self.cube.get_columns_of_dsd_type(NewQbDimension)
         for column in dimension_columns:
             dimension = column.structural_definition
             code_list = dimension.code_list
@@ -100,7 +100,7 @@ class QbDsdHelper:
                     )
                 )
 
-                code_list_writer = self._get_writer_for_code_list(code_list)
+                code_list_writer = SkosCodeListWriter(code_list, self.cube.uri_style)
                 dependency.uri_space = (
                     code_list_writer.uri_helper.get_uri_prefix_for_doc()
                 )
@@ -118,7 +118,7 @@ class QbDsdHelper:
         :return: RDF resource models to define New Attribute Values
         """
         new_attribute_value_resources: List[NewAttributeValueResource] = []
-        attribute_columns = get_columns_of_dsd_type(self.cube, QbAttribute)
+        attribute_columns = self.cube.get_columns_of_dsd_type(QbAttribute)
         for column in attribute_columns:
             if isinstance(column.structural_definition, NewQbAttribute):
                 column_identifier = column.structural_definition.uri_safe_identifier
@@ -158,13 +158,13 @@ class QbDsdHelper:
         """
         units: Set[QbUnit] = {
             u
-            for col in get_columns_of_dsd_type(self.cube, QbMultiUnits)
+            for col in self.cube.get_columns_of_dsd_type(QbMultiUnits)
             for u in col.structural_definition.units  # type: ignore
         }
 
         units |= {
             col.structural_definition.unit
-            for col in get_columns_of_dsd_type(self.cube, QbObservationValue)
+            for col in self.cube.get_columns_of_dsd_type(QbObservationValue)
             if col.structural_definition.unit is not None
         }
 
@@ -187,17 +187,21 @@ class QbDsdHelper:
 
         new_unit_resources: List[NewUnitResource] = []
         for unit in new_units:
-            unit_uri = self._get_unit_uri(unit)
+            unit_uri = self._uris.get_unit_uri(unit)
             new_unit_resource = NewUnitResource(unit_uri)
             new_unit_resource.label = unit.label
             new_unit_resource.comment = unit.description
             new_unit_resource.source_uri = maybe_existing_resource(unit.source_uri)
 
-            maybe_unit_uri = (
-                None if unit.base_unit is None else self._get_unit_uri(unit.base_unit)
+            maybe_base_unit_uri = (
+                None
+                if unit.base_unit is None
+                else self._uris.get_unit_uri(unit.base_unit)
             )
 
-            new_unit_resource.base_unit_uri = maybe_existing_resource(maybe_unit_uri)
+            new_unit_resource.base_unit_uri = maybe_existing_resource(
+                maybe_base_unit_uri
+            )
             new_unit_resource.base_unit_scaling_factor = unit.base_unit_scaling_factor
 
             new_unit_resource.has_qudt_quantity_kind = maybe_existing_resource(
@@ -241,7 +245,7 @@ class QbDsdHelper:
 
                 dataset.structure.components |= set(component_specs_for_col)
 
-        if self.is_cube_in_pivoted_shape:
+        if self.cube.is_pivoted_shape:
             dataset.structure.sliceKey.add(self._get_cross_measures_slice_key())
 
         return dataset
@@ -258,7 +262,7 @@ class QbDsdHelper:
         slice_key = rdf.qb.SliceKey(self._uris.get_slice_key_across_measures_uri())
         _logger.debug("Slice key uri across measures is '%s'", slice_key.uri)
 
-        for dimension_column in get_columns_of_dsd_type(self.cube, QbDimension):
+        for dimension_column in self.cube.get_columns_of_dsd_type(QbDimension):
             _logger.debug(
                 "Adding the component property for dimension column with title '%s' into the slice key",
                 dimension_column.csv_column_title,
@@ -528,8 +532,8 @@ class QbDsdHelper:
             raise TypeError(f"Unhandled codelist type {type(code_list)}")
 
     def _get_obs_val_data_type(self) -> str:
-        observation_value_columns = get_columns_of_dsd_type(
-            self.cube, QbObservationValue
+        observation_value_columns = self.cube.get_columns_of_dsd_type(
+            QbObservationValue
         )
         # Given the data shapes we accept as input, there should always be one (and only one) Observation Value
         # column in a cube.

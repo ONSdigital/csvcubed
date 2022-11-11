@@ -27,35 +27,15 @@ QbColumnarDsdType = TypeVar("QbColumnarDsdType", bound=QbColumnStructuralDefinit
     <csvcubed.models.cube.qb.components.datastructuredefinition.ColumnarQbDataStructureDefinition>`."""
 
 
-def get_columns_of_dsd_type(
-    cube: Cube, t: Type[QbColumnarDsdType]
-) -> List[QbColumn[QbColumnarDsdType]]:
-    """
-    e.g. `get_columns_of_dsd_type(cube, QbDimension)`
-
-    :return: The :class:`QbColumn <csvcubed.models.cube.qb.columns.QbColumn>` s in :obj:`cube` which have
-        :attr:`components` of the requested type :obj:`t`.
-    """
-    columns_of_type = [
-        c
-        for c in cube.columns
-        if isinstance(c, QbColumn) and isinstance(c.structural_definition, t)
-    ]
-
-    _logger.debug("Found columns of type %s: %s", t, columns_of_type)
-
-    return columns_of_type
-
-
 def get_all_measures(cube: Cube) -> Set[QbMeasure]:
     """
     :return: The :obj:`set` of :class:`~csvcubed.models.cube.qb.components.measure.QbMeasure` instances defined against the
       cube's columns.
     """
-    multi_measure_dimension_columns = get_columns_of_dsd_type(
-        cube, QbMultiMeasureDimension
+    multi_measure_dimension_columns = cube.get_columns_of_dsd_type(
+        QbMultiMeasureDimension
     )
-    obs_val_columns = get_columns_of_dsd_type(cube, QbObservationValue)
+    obs_val_columns = cube.get_columns_of_dsd_type(QbObservationValue)
     pivoted_obs_vals: List[QbObservationValue] = [
         c.structural_definition
         for c in obs_val_columns
@@ -78,8 +58,8 @@ def get_all_units(cube: Cube) -> Set[QbUnit]:
     :return: The :obj:`set` of :class:`~csvcubed.models.cube.qb.components.unit.QbUnit` instances defined against the
       cube's columns.
     """
-    multi_units_columns = get_columns_of_dsd_type(cube, QbMultiUnits)
-    obs_val_columns = get_columns_of_dsd_type(cube, QbObservationValue)
+    multi_units_columns = cube.get_columns_of_dsd_type(QbMultiUnits)
+    obs_val_columns = cube.get_columns_of_dsd_type(QbObservationValue)
     units: Set[QbUnit] = {
         unit for dim in multi_units_columns for unit in dim.structural_definition.units
     }

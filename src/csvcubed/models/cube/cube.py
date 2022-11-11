@@ -4,7 +4,7 @@ Cube
 """
 import logging
 from dataclasses import dataclass, field
-from typing import List, Optional, Set, TypeVar, Generic, Iterable, Tuple
+from typing import List, Optional, Set, TypeVar, Generic, Iterable, Tuple, Type
 
 import pandas as pd
 import uritemplate
@@ -28,13 +28,17 @@ from csvcubed.utils.log import log_exception
 from csvcubed.utils.uri import (
     csvw_column_name_safe,
 )
-from . import QbObservationValue
+from .qb.components.datastructuredefinition import QbColumnStructuralDefinition
+from .qb.components.observedvalue import QbObservationValue
 from .uristyle import URIStyle
-from ...utils.qb.cube import get_columns_of_dsd_type
 
 _logger = logging.getLogger(__name__)
 
 TMetadata = TypeVar("TMetadata", bound=CatalogMetadataBase, covariant=True)
+
+QbColumnarDsdType = TypeVar("QbColumnarDsdType", bound=QbColumnStructuralDefinition)
+"""Anything which inherits from :class:`ColumnarQbDataStructureDefinition 
+    <csvcubed.models.cube.qb.components.datastructuredefinition.ColumnarQbDataStructureDefinition>`."""
 
 
 @dataclass
@@ -46,7 +50,7 @@ class Cube(Generic[TMetadata], PydanticModel):
 
     @property
     def is_pivoted_shape(self) -> bool:
-        obs_val_columns = get_columns_of_dsd_type(self, QbObservationValue)
+        obs_val_columns = self.get_columns_of_dsd_type(QbObservationValue)
 
         all_pivoted = True
         all_standard_shape = True
@@ -80,6 +84,25 @@ class Cube(Generic[TMetadata], PydanticModel):
             )
 
         return errors
+
+    def get_columns_of_dsd_type(
+        self, t: Type[QbColumnarDsdType]
+    ) -> List[QbColumn[QbColumnarDsdType]]:
+        """
+        e.g. `cube.get_columns_of_dsd_type(QbDimension)`
+
+        :return: The :class:`QbColumn <csvcubed.models.cube.qb.columns.QbColumn>` s in :obj:`cube` which have
+            :attr:`components` of the requested type :obj:`t`.
+        """
+        columns_of_type = [
+            c
+            for c in self.columns
+            if isinstance(c, QbColumn) and isinstance(c.structural_definition, t)
+        ]
+
+        _logger.debug("Found columns of type %s: %s", t, columns_of_type)
+
+        return columns_of_type
 
     @staticmethod
     def _get_validation_error_for_exception_in_col(

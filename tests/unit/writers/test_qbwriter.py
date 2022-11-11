@@ -850,7 +850,12 @@ def test_get_cross_measures_slice_key_for_existing_dimension():
     cube = Cube(
         CatalogMetadata("Cube"),
         columns=[
-            QbColumn("Some Dimension", ExistingQbDimension("https://example.org/dimensions/existing_dimension")),
+            QbColumn(
+                "Some Dimension",
+                ExistingQbDimension(
+                    "https://example.org/dimensions/existing_dimension"
+                ),
+            ),
             QbColumn("Some Attribute", NewQbAttribute(label="Some Attribute")),
             QbColumn(
                 "Some Obs Val",
@@ -867,7 +872,10 @@ def test_get_cross_measures_slice_key_for_existing_dimension():
 
     component_properties = list(actual_slice_key.componentProperties)
     assert len(component_properties) == 1
-    assert str(component_properties[0].uri) == "https://example.org/dimensions/existing_dimension"
+    assert (
+        str(component_properties[0].uri)
+        == "https://example.org/dimensions/existing_dimension"
+    )
 
 
 def test_is_cube_in_pivoted_shape_true_for_pivoted_shape_cube():
@@ -877,7 +885,12 @@ def test_is_cube_in_pivoted_shape_true_for_pivoted_shape_cube():
     cube = Cube(
         CatalogMetadata("Cube"),
         columns=[
-            QbColumn("Some Dimension", ExistingQbDimension("https://example.org/dimensions/existing_dimension")),
+            QbColumn(
+                "Some Dimension",
+                ExistingQbDimension(
+                    "https://example.org/dimensions/existing_dimension"
+                ),
+            ),
             QbColumn("Some Attribute", NewQbAttribute(label="Some Attribute")),
             QbColumn(
                 "Some Obs Val",
@@ -906,10 +919,17 @@ def test_is_cube_in_pivoted_shape_false_for_standard_shape_cube():
     cube = Cube(
         CatalogMetadata("Cube"),
         columns=[
-            QbColumn("Some Dimension", ExistingQbDimension("https://example.org/dimensions/existing_dimension")),
+            QbColumn(
+                "Some Dimension",
+                ExistingQbDimension(
+                    "https://example.org/dimensions/existing_dimension"
+                ),
+            ),
             QbColumn("Some Attribute", NewQbAttribute(label="Some Attribute")),
             QbColumn("Some Obs Val", QbObservationValue(unit=NewQbUnit("Some Unit"))),
-            QbColumn("Some Measure", QbMultiMeasureDimension([NewQbMeasure("New Measure")]))
+            QbColumn(
+                "Some Measure", QbMultiMeasureDimension([NewQbMeasure("New Measure")])
+            ),
         ],
     )
 
@@ -920,27 +940,34 @@ def test_is_cube_in_pivoted_shape_false_for_standard_shape_cube():
 
 def test_is_cube_in_pivoted_shape_raise_exception():
     """
-    Ensures that an exception is raised when the cube is in both the pivoted and standard shape. 
+    Ensures that an exception is raised when the cube is in both the pivoted and standard shape.
     """
     cube = Cube(
         CatalogMetadata("Cube"),
         columns=[
-            QbColumn("Some Dimension", ExistingQbDimension("https://example.org/dimensions/existing_dimension")),
+            QbColumn(
+                "Some Dimension",
+                ExistingQbDimension(
+                    "https://example.org/dimensions/existing_dimension"
+                ),
+            ),
             QbColumn("Some Attribute", NewQbAttribute(label="Some Attribute")),
             QbColumn("Some Obs Val", QbObservationValue(unit=NewQbUnit("Some Unit"))),
-            QbColumn("Some Other Obs Val", QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit"))),
+            QbColumn(
+                "Some Other Obs Val",
+                QbObservationValue(
+                    NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
+                ),
+            ),
         ],
     )
 
     writer = QbWriter(cube)
-  
+
     with pytest.raises(Exception) as err:
         writer.is_cube_in_pivoted_shape
 
-    assert (
-        str(err.value)
-        == 'The cube cannot be in both standard and pivoted shape'
-    )
+    assert str(err.value) == "The cube cannot be in both standard and pivoted shape"
 
 
 def test_get_observation_uri_for_pivoted_shape_data_set_new_qbmeasure():
@@ -1102,14 +1129,16 @@ def test_get_about_url_for_standard_shape_cube():
                     unit=NewQbUnit("Some Unit"),
                 ),
             ),
-            QbColumn("Some Measure", QbMultiMeasureDimension([NewQbMeasure("New Measure")]))
+            QbColumn(
+                "Some Measure", QbMultiMeasureDimension([NewQbMeasure("New Measure")])
+            ),
         ],
     )
 
     writer = QbWriter(cube)
 
     expected_about_url = "cube.csv#obs/{some_dimension}@{some_measure}"
-    actual_about_url = writer._get_about_url()
+    actual_about_url = writer._uri.get_about_url()
 
     assert actual_about_url == expected_about_url
 
