@@ -251,7 +251,7 @@ def test_select_csvw_dsd_dataset_for_old_style_data_set():
         csvw_metadata_rdf_graph
     )
     component_result: QubeComponentsResult = select_csvw_dsd_qube_components(
-        csvw_metadata_rdf_graph, result.dsd_uri, csvw_metadata_json_path
+        CubeShape.Standard, csvw_metadata_rdf_graph, result.dsd_uri, csvw_metadata_json_path
     )
     components = component_result.qube_components
 
