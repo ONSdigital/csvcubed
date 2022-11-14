@@ -48,7 +48,9 @@ def step_impl(context):
     config_file = context.config_file if hasattr(context, "config_file") else None
     data_file = context.data_file
     scenario_name = context.scenario.name
-    cassette_file_name = scenario_name.rsplit("]")[1]
+    cassette_file_name = (
+        scenario_name.rsplit("]")[1] if "]" in scenario_name else scenario_name
+    )
 
     mocker = mock_json_schemas()
     context.add_cleanup(lambda: mocker.stop())
