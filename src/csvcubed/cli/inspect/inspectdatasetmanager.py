@@ -32,8 +32,9 @@ from csvcubed.models.csvcubedexception import (
     InvalidNumberOfRecordsException,
 )
 from csvcubed.cli.error_mapping import friendly_error_mapping
-from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
+from csvcubed.models.csvwtype import CSVWType
 from csvcubed.utils.skos.codelist import build_concepts_hierarchy_tree
+from csvcubed.models.cube.cube_shape import CubeShape
 
 _logger = logging.getLogger(__name__)
 
@@ -161,7 +162,7 @@ def get_single_measure_from_dsd(
 
 
 def get_dataset_observations_info(
-    dataset: pd.DataFrame, csvw_type: CSVWType
+    dataset: pd.DataFrame, csvw_type: CSVWType, cube_shape: Optional[CubeShape]
 ) -> DatasetObservationsInfoResult:
     """
     Generates the `DatasetObservationsInfoResult` from the dataset.
@@ -170,8 +171,10 @@ def get_dataset_observations_info(
 
     :return: `DatasetObservationsInfoResult`
     """
+
     return DatasetObservationsInfoResult(
         csvw_type,
+        cube_shape,
         len(dataset.index),
         dataset.duplicated().sum(),
         dataset.head(n=10),

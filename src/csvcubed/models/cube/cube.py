@@ -4,36 +4,29 @@ Cube
 """
 import logging
 from dataclasses import dataclass, field
-from typing import List, Optional, Set, TypeVar, Generic, Iterable, Tuple
+from typing import Generic, Iterable, List, Optional, Set, Tuple, TypeVar
 
 import pandas as pd
 import uritemplate
 
 from csvcubed.definitions import URI_TEMPLATE_SPECIAL_PROPERTIES
+from csvcubed.models.cube.catalog import CatalogMetadataBase
 from csvcubed.models.cube.columns import CsvColumn
 from csvcubed.models.cube.qb.columns import QbColumn
-from csvcubed.models.cube.catalog import CatalogMetadataBase
 from csvcubed.models.cube.validationerrors import (
-    DuplicateColumnTitleError,
-    ColumnNotFoundInDataError,
-    MissingColumnDefinitionError,
-    ColumnValidationError,
-    UriTemplateNameError,
-)
+    ColumnNotFoundInDataError, ColumnValidationError,
+    DuplicateColumnTitleError, MissingColumnDefinitionError,
+    UriTemplateNameError)
 from csvcubed.models.pydanticmodel import PydanticModel
-from csvcubed.models.validationerror import (
-    ValidationError,
-)
+from csvcubed.models.validationerror import ValidationError
 from csvcubed.utils.log import log_exception
-from csvcubed.utils.uri import (
-    csvw_column_name_safe,
-)
+from csvcubed.utils.uri import csvw_column_name_safe
+from .qb.catalog import CatalogMetadata
 from .uristyle import URIStyle
 
 _logger = logging.getLogger(__name__)
 
 TMetadata = TypeVar("TMetadata", bound=CatalogMetadataBase, covariant=True)
-
 
 @dataclass
 class Cube(Generic[TMetadata], PydanticModel):
@@ -144,3 +137,5 @@ class Cube(Generic[TMetadata], PydanticModel):
         }
 
         return template_to_name_map.items()
+
+QbCube = Cube[CatalogMetadata]

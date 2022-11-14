@@ -23,9 +23,11 @@ from csvcubedmodels.rdf.resource import (
     ExistingResource,
     maybe_existing_resource,
 )
-
 from csvcubed.models.rdf import prov
-from csvcubed.models.cube import *
+from csvcubed.models.cube.qb import *
+from csvcubed.models.cube.cube import QbCube
+from csvcubed.models.cube.columns import SuppressedCsvColumn, CsvColumn
+from csvcubed.models.cube.qb.columns import QbColumn
 from csvcubed.utils.uri import (
     get_last_uri_part,
     csvw_column_name_safe,
@@ -34,6 +36,7 @@ from csvcubed.utils.uri import (
 )
 from csvcubed.utils.csvw import get_dependent_local_files
 from csvcubed.utils.qb.cube import (
+    detect_shape_of_cube,
     get_columns_of_dsd_type,
     QbColumnarDsdType,
 )
@@ -48,14 +51,7 @@ from .urihelpers.skoscodelist import SkosCodeListNewUriHelper
 from .urihelpers.qbcube import QbCubeNewUriHelper
 from .urihelpers.skoscodelistconstants import SCHEMA_URI_IDENTIFIER
 from .writerbase import WriterBase
-from ..models.cube import (
-    QbAttribute,
-    ExistingQbAttribute,
-    NewQbAttribute,
-    QbMultiMeasureDimension,
-    QbMultiUnits,
-    QbAttributeLiteral,
-)
+
 from csvcubed.utils.version import get_csvcubed_version_uri
 from csvcubed.models.rdf.qbdatasetincatalog import QbDataSetInCatalog
 from ..models.cube.qb.components.codelist import NewQbCodeListInCsvW
@@ -63,6 +59,7 @@ from ..models.rdf.newattributevalueresource import NewAttributeValueResource
 from ..models.rdf.newunitresource import NewUnitResource
 from ..models.cube.qb.components.arbitraryrdf import RdfSerialisationHint
 from ..utils.qb.validation.observations import get_observation_status_columns
+from csvcubed.models.cube.cube_shape import CubeShape
 
 
 _logger = logging.getLogger(__name__)
@@ -76,6 +73,7 @@ class QbWriter(WriterBase):
     csv_file_name: str = field(init=False)
     raise_missing_uri_safe_value_exceptions: bool = field(default=True, repr=False)
     _new_uri_helper: QbCubeNewUriHelper = field(init=False)
+    _created_measure_type_and_unit_col_specs: bool = field(default=False, init=False)
 
     @property
     def csv_metadata_file_name(self) -> str:
@@ -83,26 +81,7 @@ class QbWriter(WriterBase):
 
     @property
     def is_cube_in_pivoted_shape(self) -> bool:
-        obs_val_columns = get_columns_of_dsd_type(self.cube, QbObservationValue)
-
-        all_pivoted = True
-        all_standard_shape = True
-        for obs_val_col in obs_val_columns:
-            all_pivoted = (
-                all_pivoted
-                and obs_val_col.structural_definition.is_pivoted_shape_observation
-            )
-            all_standard_shape = (
-                all_standard_shape
-                and not obs_val_col.structural_definition.is_pivoted_shape_observation
-            )
-
-        if all_pivoted:
-            return True
-        elif all_standard_shape:
-            return False
-        else:
-            raise TypeError("The cube cannot be in both standard and pivoted shape")
+        return detect_shape_of_cube(self.cube) == CubeShape.Pivoted
 
     def __post_init__(self):
         self.csv_file_name = f"{self.cube.metadata.uri_safe_identifier}.csv"
@@ -349,6 +328,20 @@ class QbWriter(WriterBase):
                 "valueUrl": self._get_measure_uri(measure),
             }
         )
+
+        if obs_column.structural_definition.unit is not None:
+            virtual_columns.append(
+                {
+                    "name": f"virt_obs_{csvw_safe_obs_column_name}_unit",
+                    "virtual": True,
+                    "aboutUrl": observation_uri,
+                    "propertyUrl": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
+                    "valueUrl": self._get_unit_uri(
+                        obs_column.structural_definition.unit
+                    ),
+                }
+            )
+
         # For each dimension in the cube, creates the `?obsUri ?dimUri ?valueUri` triple.
         dimension_columns = get_columns_of_dsd_type(self.cube, QbDimension)
         for dimension_col in dimension_columns:
@@ -626,15 +619,18 @@ class QbWriter(WriterBase):
     def _get_qb_obs_val_specifications(
         self, observation_value: QbObservationValue
     ) -> List[rdf.qb.ComponentSpecification]:
-        specs: List[rdf.qb.ComponentSpecification] = [
+        specs: List[rdf.qb.ComponentSpecification] = []
+
+        if self._created_measure_type_and_unit_col_specs == False:
             # We always output the measure-dimension style of the QB spec.
             # so each observation need to have a dimension specifying the measure type.
-            self._get_measure_type_dimension_component_spec()
-        ]
+            specs.append(self._get_measure_type_dimension_component_spec())
 
-        unit = observation_value.unit
-        if unit is not None:
-            specs.append(self._get_qb_units_column_specification("unit"))
+            unit = observation_value.unit
+            if unit is not None:
+                specs.append(self._get_qb_units_column_specification("unit"))
+
+            self._created_measure_type_and_unit_col_specs = True
 
         if observation_value.is_pivoted_shape_observation:
             assert observation_value.measure is not None

@@ -650,8 +650,8 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
       prov:used <{{csvcubed_version_identifier}}>.
     """
 
-Scenario: A pivoted shape cube should be produced as the output for the pivoted shape inputs
-  Given a pivoted shape cube with identifier "qb-id-10003" named "Pivoted Shape Cube"
+Scenario: A multi-measure pivoted shape cube should be produced as the output for the multi-measure pivoted shape inputs
+  Given a multi-measure pivoted shape cube with identifier "qb-id-10003" named "Pivoted Shape Cube"
   And the environment variable "PIVOTED_MULTI_MEASURE" is "True"
   Then the CSVqb should pass all validations
   When the cube is serialised to CSV-W
@@ -663,56 +663,56 @@ Scenario: A pivoted shape cube should be produced as the output for the pivoted 
   And the RDF should contain
   """
   @prefix cube: <http://purl.org/linked-data/cube#> .
-  @prefix measure: <file:/tmp/qb-id-10003.csv#measure/> .
-  @prefix dimension: <file:/tmp/qb-id-10003.csv#dimension/> .
-  @prefix attribute: <file:/tmp/qb-id-10003.csv#attribute/> .
+  @prefix measure: <{{rdf_input_directory}}/qb-id-10003.csv#measure/> .
+  @prefix dimension: <{{rdf_input_directory}}/qb-id-10003.csv#dimension/> .
+  @prefix attribute: <{{rdf_input_directory}}/qb-id-10003.csv#attribute/> .
   @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
   @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
   @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
   
-  <file:/tmp/qb-id-10003.csv#obs/a@some-other-measure> a cube:Observation ;
-      dimension:some-dimension <file:/tmp/some-dimension.csv#a> ;
+  <{{rdf_input_directory}}/qb-id-10003.csv#obs/a@some-other-measure> a cube:Observation ;
+      dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#a> ;
       measure:some-other-measure 2.0 ;
-      cube:dataSet <file:/tmp/qb-id-10003.csv#dataset> ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#dataset> ;
       cube:measureType measure:some-other-measure .
   
-  <file:/tmp/qb-id-10003.csv#obs/b@some-other-measure> a cube:Observation ;
-      dimension:some-dimension <file:/tmp/some-dimension.csv#b> ;
+  <{{rdf_input_directory}}/qb-id-10003.csv#obs/b@some-other-measure> a cube:Observation ;
+      dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#b> ;
       measure:some-other-measure 4.0 ;
-      cube:dataSet <file:/tmp/qb-id-10003.csv#dataset> ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#dataset> ;
       cube:measureType measure:some-other-measure .
   
-  <file:/tmp/qb-id-10003.csv#obs/c@some-other-measure> a cube:Observation ;
-      dimension:some-dimension <file:/tmp/some-dimension.csv#c> ;
+  <{{rdf_input_directory}}/qb-id-10003.csv#obs/c@some-other-measure> a cube:Observation ;
+      dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#c> ;
       measure:some-other-measure 6.0 ;
-      cube:dataSet <file:/tmp/qb-id-10003.csv#dataset> ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#dataset> ;
       cube:measureType measure:some-other-measure .
   
-  <file:/tmp/qb-id-10003.csv#slice/a> cube:Observation <file:/tmp/qb-id-10003.csv#obs/a@some-measure> .
+  <{{rdf_input_directory}}/qb-id-10003.csv#slice/a> cube:Observation <{{rdf_input_directory}}/qb-id-10003.csv#obs/a@some-measure> .
   
-  <file:/tmp/qb-id-10003.csv#slice/b> cube:Observation <file:/tmp/qb-id-10003.csv#obs/b@some-measure> .
+  <{{rdf_input_directory}}/qb-id-10003.csv#slice/b> cube:Observation <{{rdf_input_directory}}/qb-id-10003.csv#obs/b@some-measure> .
   
-  <file:/tmp/qb-id-10003.csv#slice/c> cube:Observation <file:/tmp/qb-id-10003.csv#obs/c@some-measure> .
+  <{{rdf_input_directory}}/qb-id-10003.csv#slice/c> cube:Observation <{{rdf_input_directory}}/qb-id-10003.csv#obs/c@some-measure> .
   
-  <file:/tmp/qb-id-10003.csv#obs/a@some-measure> a cube:Observation ;
-      attribute:some-attribute <file:/tmp/qb-id-10003.csv#attribute/some-attribute/attr-a> ;
-      dimension:some-dimension <file:/tmp/some-dimension.csv#a> ;
+  <{{rdf_input_directory}}/qb-id-10003.csv#obs/a@some-measure> a cube:Observation ;
+      attribute:some-attribute <{{rdf_input_directory}}/qb-id-10003.csv#attribute/some-attribute/attr-a> ;
+      dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#a> ;
       measure:some-measure 1.0 ;
-      cube:dataSet <file:/tmp/qb-id-10003.csv#dataset> ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#dataset> ;
       cube:measureType measure:some-measure .
   
-  <file:/tmp/qb-id-10003.csv#obs/b@some-measure> a cube:Observation ;
-      attribute:some-attribute <file:/tmp/qb-id-10003.csv#attribute/some-attribute/attr-b> ;
-      dimension:some-dimension <file:/tmp/some-dimension.csv#b> ;
+  <{{rdf_input_directory}}/qb-id-10003.csv#obs/b@some-measure> a cube:Observation ;
+      attribute:some-attribute <{{rdf_input_directory}}/qb-id-10003.csv#attribute/some-attribute/attr-b> ;
+      dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#b> ;
       measure:some-measure 2.0 ;
-      cube:dataSet <file:/tmp/qb-id-10003.csv#dataset> ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#dataset> ;
       cube:measureType measure:some-measure .
   
-  <file:/tmp/qb-id-10003.csv#obs/c@some-measure> a cube:Observation ;
-      attribute:some-attribute <file:/tmp/qb-id-10003.csv#attribute/some-attribute/attr-c> ;
-      dimension:some-dimension <file:/tmp/some-dimension.csv#c> ;
+  <{{rdf_input_directory}}/qb-id-10003.csv#obs/c@some-measure> a cube:Observation ;
+      attribute:some-attribute <{{rdf_input_directory}}/qb-id-10003.csv#attribute/some-attribute/attr-c> ;
+      dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#c> ;
       measure:some-measure 3.0 ;
-      cube:dataSet <file:/tmp/qb-id-10003.csv#dataset> ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#dataset> ;
       cube:measureType measure:some-measure .
   
   measure:some-measure a cube:ComponentProperty,
@@ -729,3 +729,57 @@ Scenario: A pivoted shape cube should be produced as the output for the pivoted 
       rdfs:label "Some Other Measure"@en ;
       rdfs:range xsd:decimal .
   """
+
+  Scenario: A single-measure pivoted shape cube should be produced as the output for the single-measure pivoted shape inputs
+    Given a single-measure pivoted shape cube with identifier "qb-id-10004" named "Pivoted Shape Cube"
+    Then the CSVqb should pass all validations
+    When the cube is serialised to CSV-W
+    Then the file at "qb-id-10004.csv" should exist
+    And the file at "qb-id-10004.csv-metadata.json" should exist
+    And csvlint validation of all CSV-Ws should succeed
+    And csv2rdf on all CSV-Ws should succeed
+    And the RDF should pass "qb, skos" SPARQL tests
+    And the RDF should contain
+    """
+    @prefix cube: <http://purl.org/linked-data/cube#> .
+    @prefix measure: <{{rdf_input_directory}}/qb-id-10004.csv#measure/> .
+    @prefix dimension: <{{rdf_input_directory}}/qb-id-10004.csv#dimension/> .
+    @prefix attribute: <{{rdf_input_directory}}/qb-id-10004.csv#attribute/> .
+    @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+    @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+    
+    <{{rdf_input_directory}}/qb-id-10004.csv#slice/a> cube:Observation <{{rdf_input_directory}}/qb-id-10004.csv#obs/a@some-measure> .
+    
+    <{{rdf_input_directory}}/qb-id-10004.csv#slice/b> cube:Observation <{{rdf_input_directory}}/qb-id-10004.csv#obs/b@some-measure> .
+    
+    <{{rdf_input_directory}}/qb-id-10004.csv#slice/c> cube:Observation <{{rdf_input_directory}}/qb-id-10004.csv#obs/c@some-measure> .
+    
+    <{{rdf_input_directory}}/qb-id-10004.csv#obs/a@some-measure> a cube:Observation ;
+        attribute:some-attribute <{{rdf_input_directory}}/qb-id-10004.csv#attribute/some-attribute/attr-a> ;
+        dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#a> ;
+        measure:some-measure 1.0 ;
+        cube:dataSet <{{rdf_input_directory}}/qb-id-10004.csv#dataset> ;
+        cube:measureType measure:some-measure .
+    
+    <{{rdf_input_directory}}/qb-id-10004.csv#obs/b@some-measure> a cube:Observation ;
+        attribute:some-attribute <{{rdf_input_directory}}/qb-id-10004.csv#attribute/some-attribute/attr-b> ;
+        dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#b> ;
+        measure:some-measure 2.0 ;
+        cube:dataSet <{{rdf_input_directory}}/qb-id-10004.csv#dataset> ;
+        cube:measureType measure:some-measure .
+    
+    <{{rdf_input_directory}}/qb-id-10004.csv#obs/c@some-measure> a cube:Observation ;
+        attribute:some-attribute <{{rdf_input_directory}}/qb-id-10004.csv#attribute/some-attribute/attr-c> ;
+        dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#c> ;
+        measure:some-measure 3.0 ;
+        cube:dataSet <{{rdf_input_directory}}/qb-id-10004.csv#dataset> ;
+        cube:measureType measure:some-measure .
+    
+    measure:some-measure a cube:ComponentProperty,
+            cube:MeasureProperty,
+            rdf:Property,
+            rdfs:Resource ;
+        rdfs:label "Some Measure"@en ;
+        rdfs:range xsd:decimal .
+    """

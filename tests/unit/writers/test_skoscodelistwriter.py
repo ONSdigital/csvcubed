@@ -3,11 +3,13 @@ from typing import Dict, Any
 from rdflib import RDFS, Literal, URIRef, Graph
 
 from csvcubed.models.cube import *
-from csvcubed.models.cube import NewQbConcept
+from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.cube.qb.components.arbitraryrdf import (
     RdfSerialisationHint,
     TripleFragment,
 )
+from csvcubed.models.cube.qb.components.codelist import NewQbCodeList
+from csvcubed.models.cube.qb.components.concept import NewQbConcept
 from csvcubed.models.cube.uristyle import URIStyle
 from csvcubed.writers.skoscodelistwriter import SkosCodeListWriter
 

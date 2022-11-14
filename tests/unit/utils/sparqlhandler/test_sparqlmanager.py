@@ -1,19 +1,22 @@
 from pathlib import Path
+from typing import List, Optional
 
 import pytest
-from csvcubed.utils.iterables import first
-
 import dateutil.parser
 from rdflib import Graph, RDF, DCAT, URIRef, RDFS, Literal, ConjunctiveGraph
 
+from csvcubed.utils.iterables import first
 from csvcubed.models.sparqlresults import (
     CatalogMetadataResult,
     CodeListColsByDatasetUrlResult,
+    CodelistColumnResult,
     CodelistsResult,
     ColsWithSuppressOutputTrueResult,
     DSDLabelURIResult,
     DSDSingleUnitResult,
     DatasetURLResult,
+    IsPivotedShapeMeasureResult,
+    QubeComponentResult,
     QubeComponentsResult,
     MetadataDependenciesResult,
 )
@@ -29,6 +32,7 @@ from csvcubed.utils.sparql_handler.sparqlmanager import (
     select_csvw_dsd_dataset_label_and_dsd_def_uri,
     select_csvw_dsd_qube_components,
     select_dsd_code_list_and_cols,
+    select_is_pivoted_shape_for_measures_in_data_set,
     select_qb_dataset_url,
     select_csvw_table_schema_file_dependencies,
     select_single_unit_from_dsd,
@@ -40,9 +44,86 @@ from csvcubed.utils.tableschema import (
     add_triples_for_file_dependencies,
 )
 from tests.unit.test_baseunit import get_test_cases_dir
+from csvcubed.models.cube.cube_shape import CubeShape
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
 _csvw_test_cases_dir = get_test_cases_dir() / "utils" / "csvw"
+
+
+def assert_dsd_component_equal(
+    component: QubeComponentResult,
+    property: str,
+    property_type: ComponentPropertyType,
+    property_label: str,
+    csv_col_title: str,
+    observation_value_column_titles: Optional[str],
+    required: bool,
+):
+    assert component.property == property
+    assert component.property_type == property_type.value
+    assert component.property_label == property_label
+    assert component.csv_col_title == csv_col_title
+    assert component.observation_value_column_titles == observation_value_column_titles
+    assert component.required == required
+
+
+def _assert_code_list_column_equal(
+    column: CodelistColumnResult,
+    column_title: Optional[str],
+    column_property_url: str,
+    column_value_url: Optional[str],
+):
+    assert (
+        column.column_title == column_title
+        if column_title is not None
+        else column.column_title is None
+    )
+    assert column.column_property_url == column_property_url
+    assert (
+        column.column_value_url == column_value_url
+        if column_value_url is not None
+        else column.column_value_url is None
+    )
+
+
+def get_dsd_component_by_property_url(
+    components: List[QubeComponentResult], property_url: str
+) -> QubeComponentResult:
+    """
+    Filters dsd components by property url.
+    """
+    filtered_results = [
+        component for component in components if component.property == property_url
+    ]
+    assert len(filtered_results) == 1
+
+    return filtered_results[0]
+
+
+def _get_measure_by_measure_uri(
+    results: List[IsPivotedShapeMeasureResult], measure_uri: str
+) -> IsPivotedShapeMeasureResult:
+    """
+    Filters measures by measure uri.
+    """
+    filtered_results = [result for result in results if result.measure == measure_uri]
+    assert len(filtered_results) == 1
+
+    return filtered_results[0]
+
+
+def _get_code_list_column_by_property_url(
+    columns: List[CodelistColumnResult], property_url: str
+) -> CodelistColumnResult:
+    """
+    Filters code list columns by column property url.
+    """
+    filtered_results = [
+        result for result in columns if result.column_property_url == property_url
+    ]
+    assert len(filtered_results) == 1
+
+    return filtered_results[0]
 
 
 def test_ask_is_csvw_code_list():
@@ -158,8 +239,7 @@ def test_select_csvw_catalog_metadata_for_codelist():
     assert result.contact_point == "None"
     assert result.identifier == "Alcohol Content"
 
-
-def test_select_csvw_dsd_dataset():
+def test_select_csvw_dsd_dataset_for_old_style_data_set():
     """
     Should return expected `DSDLabelURIResult`.
     """
@@ -171,7 +251,7 @@ def test_select_csvw_dsd_dataset():
         csvw_metadata_rdf_graph
     )
     component_result: QubeComponentsResult = select_csvw_dsd_qube_components(
-        csvw_metadata_rdf_graph, result.dsd_uri, csvw_metadata_json_path
+        CubeShape.Standard, csvw_metadata_rdf_graph, result.dsd_uri, csvw_metadata_json_path
     )
     components = component_result.qube_components
 
@@ -185,6 +265,204 @@ def test_select_csvw_dsd_dataset():
     assert components[0].property_type == ComponentPropertyType.Dimension.value
     assert components[0].csv_col_title == "Period"
     assert components[0].required is True
+
+def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
+    """
+    Ensures that the cube components in a pivoted multi-measure dataset correctly link to observation value columns.
+    """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-multi-measure-dataset"
+        / "qb-id-10003.csv-metadata.json"
+    )
+    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
+
+    result: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
+        csvw_metadata_rdf_graph
+    )
+    component_result: QubeComponentsResult = select_csvw_dsd_qube_components(
+        CubeShape.Pivoted,
+        csvw_metadata_rdf_graph,
+        result.dsd_uri,
+        csvw_metadata_json_path,
+    )
+    components = component_result.qube_components
+
+    assert result.dataset_label == "Pivoted Shape Cube"
+    assert result.dsd_uri == "qb-id-10003.csv#structure"
+    assert len(components) == 6
+
+    component = get_dsd_component_by_property_url(
+        components, "qb-id-10003.csv#dimension/some-dimension"
+    )
+    assert_dsd_component_equal(
+        component,
+        "qb-id-10003.csv#dimension/some-dimension",
+        ComponentPropertyType.Dimension,
+        "Some Dimension",
+        "Some Dimension",
+        "Some Obs Val, Some Other Obs Val",
+        True,
+    )
+
+    component = get_dsd_component_by_property_url(
+        components, "qb-id-10003.csv#attribute/some-attribute"
+    )
+    assert_dsd_component_equal(
+        component,
+        "qb-id-10003.csv#attribute/some-attribute",
+        ComponentPropertyType.Attribute,
+        "Some Attribute",
+        "Some Attribute",
+        "Some Obs Val",
+        False,
+    )
+
+    component = get_dsd_component_by_property_url(
+        components, "http://purl.org/linked-data/cube#measureType"
+    )
+    assert_dsd_component_equal(
+        component,
+        "http://purl.org/linked-data/cube#measureType",
+        ComponentPropertyType.Dimension,
+        "",
+        "",
+        "",
+        True,
+    )
+
+    component = get_dsd_component_by_property_url(
+        components, "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
+    )
+    assert_dsd_component_equal(
+        component,
+        "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
+        ComponentPropertyType.Attribute,
+        "",
+        "",
+        "Some Obs Val, Some Other Obs Val",
+        True,
+    )
+    
+    component = get_dsd_component_by_property_url(
+        components, "qb-id-10003.csv#measure/some-measure"
+    )
+    assert_dsd_component_equal(
+        component,
+        "qb-id-10003.csv#measure/some-measure",
+        ComponentPropertyType.Measure,
+        "Some Measure",
+        "Some Obs Val",
+        "Some Obs Val",
+        True,
+    )
+
+    component = get_dsd_component_by_property_url(
+        components, "qb-id-10003.csv#measure/some-other-measure"
+    )
+    assert_dsd_component_equal(
+        component,
+        "qb-id-10003.csv#measure/some-other-measure",
+        ComponentPropertyType.Measure,
+        "Some Other Measure",
+        "Some Other Obs Val",
+        "Some Other Obs Val",
+        True,
+    )
+
+def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
+    """
+    Ensures that the cube components in a pivoted single-measure dataset correctly link to observation value columns.
+    """
+
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-single-measure-dataset"
+        / "qb-id-10004.csv-metadata.json"
+    )
+    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
+
+    result: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
+        csvw_metadata_rdf_graph
+    )
+    component_result: QubeComponentsResult = select_csvw_dsd_qube_components(
+        CubeShape.Pivoted,
+        csvw_metadata_rdf_graph,
+        result.dsd_uri,
+        csvw_metadata_json_path,
+    )
+    components = component_result.qube_components
+
+    assert result.dataset_label == "Pivoted Shape Cube"
+    assert result.dsd_uri == "qb-id-10004.csv#structure"
+    assert len(components) == 5
+
+    component = get_dsd_component_by_property_url(
+        components, "qb-id-10004.csv#dimension/some-dimension"
+    )
+    assert_dsd_component_equal(
+        component,
+        "qb-id-10004.csv#dimension/some-dimension",
+        ComponentPropertyType.Dimension,
+        "Some Dimension",
+        "Some Dimension",
+        "Some Obs Val",
+        True,
+    )
+
+    component = get_dsd_component_by_property_url(
+        components, "qb-id-10004.csv#attribute/some-attribute"
+    )
+    assert_dsd_component_equal(
+        component,
+        "qb-id-10004.csv#attribute/some-attribute",
+        ComponentPropertyType.Attribute,
+        "Some Attribute",
+        "Some Attribute",
+        "Some Obs Val",
+        False,
+    )
+
+    component = get_dsd_component_by_property_url(
+        components, "http://purl.org/linked-data/cube#measureType"
+    )
+    assert_dsd_component_equal(
+        component,
+        "http://purl.org/linked-data/cube#measureType",
+        ComponentPropertyType.Dimension,
+        "",
+        "",
+        "",
+        True,
+    )
+
+    component = get_dsd_component_by_property_url(
+        components, "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
+    )
+    assert_dsd_component_equal(
+        component,
+        "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
+        ComponentPropertyType.Attribute,
+        "",
+        "",
+        "Some Obs Val",
+        True,
+    )
+
+    component = get_dsd_component_by_property_url(
+        components, "qb-id-10004.csv#measure/some-measure"
+    )
+    assert_dsd_component_equal(
+        component,
+        "qb-id-10004.csv#measure/some-measure",
+        ComponentPropertyType.Measure,
+        "Some Measure",
+        "Some Obs Val",
+        "Some Obs Val",
+        True,
+    )
 
 
 def test_select_cols_when_supress_output_cols_not_present():
@@ -316,40 +594,39 @@ def test_select_codelist_cols_by_dataset_url():
     result: CodeListColsByDatasetUrlResult = select_codelist_cols_by_dataset_url(
         csvw_metadata_rdf_graph, dataset_url
     )
-
     assert len(result.columns) == 7
 
-    assert result.columns[0].column_title == "Label"
-    assert result.columns[0].column_property_url == "rdfs:label"
-    assert result.columns[0].column_value_url is None
+    column = _get_code_list_column_by_property_url(result.columns, "rdfs:label")
+    _assert_code_list_column_equal(column, "Label", "rdfs:label", None)
 
-    assert result.columns[1].column_title == "Notation"
-    assert result.columns[1].column_property_url == "skos:notation"
-    assert result.columns[1].column_value_url is None
+    column = _get_code_list_column_by_property_url(result.columns, "skos:notation")
+    _assert_code_list_column_equal(column, "Notation", "skos:notation", None)
 
-    assert result.columns[2].column_title == "Parent Notation"
-    assert result.columns[2].column_property_url == "skos:broader"
-    assert (
-        result.columns[2].column_value_url == "alcohol-content.csv#{+parent_notation}"
+    column = _get_code_list_column_by_property_url(result.columns, "skos:broader")
+    _assert_code_list_column_equal(
+        column,
+        "Parent Notation",
+        "skos:broader",
+        "alcohol-content.csv#{+parent_notation}",
     )
 
-    assert result.columns[3].column_title == "Sort Priority"
-    assert (
-        result.columns[3].column_property_url == "http://www.w3.org/ns/ui#sortPriority"
+    column = _get_code_list_column_by_property_url(
+        result.columns, "http://www.w3.org/ns/ui#sortPriority"
     )
-    assert result.columns[3].column_value_url is None
+    _assert_code_list_column_equal(
+        column, "Sort Priority", "http://www.w3.org/ns/ui#sortPriority", None
+    )
 
-    assert result.columns[4].column_title == "Description"
-    assert result.columns[4].column_property_url == "rdfs:comment"
-    assert result.columns[4].column_value_url is None
+    column = _get_code_list_column_by_property_url(result.columns, "rdfs:comment")
+    _assert_code_list_column_equal(column, "Description", "rdfs:comment", None)
 
-    assert result.columns[5].column_title is None
-    assert result.columns[5].column_property_url == "skos:inScheme"
-    assert result.columns[5].column_value_url == "alcohol-content.csv#code-list"
+    column = _get_code_list_column_by_property_url(result.columns, "skos:inScheme")
+    _assert_code_list_column_equal(
+        column, None, "skos:inScheme", "alcohol-content.csv#code-list"
+    )
 
-    assert result.columns[6].column_title is None
-    assert result.columns[6].column_property_url == "rdf:type"
-    assert result.columns[6].column_value_url == "skos:Concept"
+    column = _get_code_list_column_by_property_url(result.columns, "rdf:type")
+    _assert_code_list_column_equal(column, None, "rdf:type", "skos:Concept")
 
 
 def test_select_metadata_dependencies():
@@ -397,6 +674,60 @@ def test_select_table_schema_properties():
         result.value_url
         == "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services-by-subnational-areas-of-the-uk#scheme/industry-grouping"
     )
+
+
+def test_select_is_pivoted_shape_for_measures_in_pivoted_shape_data_set():
+    """
+    Checks that the measures retrieved from a metadata file that represents a pivoted shape cube are as expected.
+    """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-multi-measure-dataset"
+        / "qb-id-10003.csv-metadata.json"
+    )
+    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
+    results = select_is_pivoted_shape_for_measures_in_data_set(csvw_metadata_rdf_graph)
+
+    assert results is not None
+    assert len(results) == 2
+
+    result = _get_measure_by_measure_uri(
+        results, "qb-id-10003.csv#measure/some-measure"
+    )
+    assert result.measure == "qb-id-10003.csv#measure/some-measure"
+    assert result.is_pivoted_shape == True
+
+    result = _get_measure_by_measure_uri(
+        results, "qb-id-10003.csv#measure/some-other-measure"
+    )
+    assert result.measure == "qb-id-10003.csv#measure/some-other-measure"
+    assert result.is_pivoted_shape == True
+
+
+def test_select_is_pivoted_shape_for_measures_in_standard_shape_data_set():
+    """
+    Checks that the measures retrieved from a metadata file that represents a standard shape cube are as expected.
+    """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "single-unit_single-measure"
+        / "energy-trends-uk-total-energy.csv-metadata.json"
+    )
+    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
+    results = select_is_pivoted_shape_for_measures_in_data_set(csvw_metadata_rdf_graph)
+
+    assert results is not None
+    assert len(results) == 1
+
+    result = _get_measure_by_measure_uri(
+        results, "energy-trends-uk-total-energy.csv#measure/energy-consumption"
+    )
+    assert (
+        result.measure == "energy-trends-uk-total-energy.csv#measure/energy-consumption"
+    )
+    assert result.is_pivoted_shape == False
 
 
 def test_rdf_dependency_loaded() -> None:

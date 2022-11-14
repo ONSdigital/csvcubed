@@ -10,7 +10,7 @@ import pandas as pd
 from pandas.core.arrays.categorical import Categorical
 
 from .cube import get_all_units, get_all_measures, get_columns_of_dsd_type
-from csvcubed.models.cube import QbCube, QbColumn
+from csvcubed.models.cube.cube import QbCube, QbColumn
 from csvcubed.models.cube.qb.components import (
     NewQbMeasure,
     NewQbUnit,
