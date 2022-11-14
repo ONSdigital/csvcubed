@@ -3,6 +3,7 @@ SPARQL query results
 ----------------------------
 """
 
+import logging
 from os import linesep
 from pathlib import Path
 from typing import List, Optional, Dict, Any
@@ -21,6 +22,8 @@ from csvcubed.utils.qb.components import (
     get_component_property_as_relative_path,
     get_component_property_type,
 )
+
+_logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -94,7 +97,18 @@ class QubeComponentResult(DataClassBase):
     property_label: Optional[str]
     property_type: str
     csv_col_title: Optional[str]
+    observation_value_column_titles: Optional[str]
     required: bool
+
+
+@dataclass
+class ObsValDsdComponentResult(DataClassBase):
+    """
+    Model to represent a observation value result.
+    """
+
+    csv_column_property_url: Optional[str]
+    observation_value_column_titles: Optional[str]
 
 
 @dataclass
@@ -115,6 +129,7 @@ class QubeComponentsResult:
                 "Property Label",
                 "Property Type",
                 "Column Title",
+                "Observation Value Column Titles",
                 "Required",
             ],
         )
@@ -228,6 +243,7 @@ class PrimaryKeyColNameByDatasetUrlResult:
 
     value: str
 
+
 @dataclass
 class PrimaryKeyColNamesByDatasetUrlResult:
     """
@@ -235,6 +251,7 @@ class PrimaryKeyColNamesByDatasetUrlResult:
     """
 
     primary_key_col_names: List[PrimaryKeyColNameByDatasetUrlResult]
+
 
 @dataclass
 class MetadataDependenciesResult:
@@ -256,6 +273,16 @@ class TableSchemaPropertiesResult:
     about_url: str
     value_url: str
     table_url: str
+
+
+@dataclass
+class IsPivotedShapeMeasureResult:
+    """
+    A dataclass that is used to return the measure of from a cube's metadata and whether that measure is part of a pivoted or standard shape cube.
+    """
+
+    measure: str
+    is_pivoted_shape: bool
 
 
 def map_catalog_metadata_result(sparql_result: ResultRow) -> CatalogMetadataResult:
@@ -318,6 +345,7 @@ def _map_qube_component_sparql_result(
     :return: `QubeComponentResult`
     """
     result_dict = sparql_result.asdict()
+    _logger.debug("result_dict: %s", result_dict)
 
     result = QubeComponentResult(
         property=get_component_property_as_relative_path(
@@ -330,13 +358,31 @@ def _map_qube_component_sparql_result(
             str(result_dict["componentPropertyType"])
         ),
         csv_col_title=none_or_map(result_dict.get("csvColumnTitle"), str) or "",
+        observation_value_column_titles="", # This value is popuated after runnning the SELECT_OBS_VAL_FOR_DSD_COMPONENT_PROPERTIES sparql query. The _map_obs_val_for_dsd_component_properties_results will set the value for this property.
         required=none_or_map(result_dict.get("required"), bool) or False,
     )
     return result
 
 
+def _map_obs_val_for_dsd_component_properties_results(
+    sparql_results: List[ResultRow],
+) -> List[ObsValDsdComponentResult]:
+    def map_row(row_result: Dict[str, Any]) -> ObsValDsdComponentResult:
+        return ObsValDsdComponentResult(
+            csv_column_property_url=none_or_map(
+               row_result.get("csvColumnPropertyUrl"), str
+            ),
+            observation_value_column_titles=none_or_map(
+               row_result.get("observationValueColumnTitles"), str
+            )
+        )
+
+    return [map_row(row.asdict()) for row in sparql_results]
+
 def map_qube_components_sparql_result(
-    sparql_results: List[ResultRow], json_path: Path
+    sparql_results_dsd_components: List[ResultRow],
+    sparql_results_obs_val_col_titles: Optional[List[ResultRow]],
+    json_path: Path,
 ) -> QubeComponentsResult:
     """
     Maps sparql query result to `QubeComponentsResult`
@@ -345,12 +391,34 @@ def map_qube_components_sparql_result(
 
     :return: `QubeComponentsResult`
     """
-    components = list(
-        map(
-            lambda result: _map_qube_component_sparql_result(result, json_path),
-            sparql_results,
+    obs_val_col_title_results: Optional[List[ObsValDsdComponentResult]] = None
+    if sparql_results_obs_val_col_titles is not None:
+        obs_val_col_title_results = _map_obs_val_for_dsd_component_properties_results(
+            sparql_results_obs_val_col_titles
         )
-    )
+
+    components: List[QubeComponentResult] = []
+    for result in sparql_results_dsd_components:
+        dsd_component_result: QubeComponentResult = _map_qube_component_sparql_result(
+            result, json_path
+        )
+        if obs_val_col_title_results is not None:
+            obs_val_col_title_result_for_component = [
+                obs_val_col_title_result
+                for obs_val_col_title_result in obs_val_col_title_results
+                if obs_val_col_title_result.csv_column_property_url
+                == dsd_component_result.property
+            ]
+
+            if len(obs_val_col_title_result_for_component) == 1:
+                dsd_component_result.observation_value_column_titles = (
+                    obs_val_col_title_result_for_component[
+                        0
+                    ].observation_value_column_titles
+                )
+
+        components.append(dsd_component_result)
+
     result = QubeComponentsResult(
         qube_components=components, num_components=len(components)
     )
@@ -478,7 +546,9 @@ def map_single_unit_from_dsd_result(
     return result
 
 
-def _map_codelist_column_sparql_result(sparql_result: ResultRow) -> CodelistColumnResult:
+def _map_codelist_column_sparql_result(
+    sparql_result: ResultRow,
+) -> CodelistColumnResult:
     """
     Maps sparql query result to `CodelistColumnResult`
 
@@ -517,7 +587,10 @@ def map_codelist_cols_by_dataset_url_result(
     result = CodeListColsByDatasetUrlResult(columns=columns)
     return result
 
-def _map_primary_key_col_name_by_dataset_url_result(sparql_result: ResultRow) -> PrimaryKeyColNameByDatasetUrlResult:
+
+def _map_primary_key_col_name_by_dataset_url_result(
+    sparql_result: ResultRow,
+) -> PrimaryKeyColNameByDatasetUrlResult:
     """
     Maps sparql query result to `PrimaryKeyColNameByDatasetUrlResult`
 
@@ -530,7 +603,8 @@ def _map_primary_key_col_name_by_dataset_url_result(sparql_result: ResultRow) ->
     result = PrimaryKeyColNameByDatasetUrlResult(
         value=str(result_dict["tablePrimaryKey"]),
     )
-    return result   
+    return result
+
 
 def map_primary_key_col_names_by_dataset_url_result(
     sparql_results: List[ResultRow],
@@ -548,8 +622,11 @@ def map_primary_key_col_names_by_dataset_url_result(
             sparql_results,
         )
     )
-    result = PrimaryKeyColNamesByDatasetUrlResult(primary_key_col_names=primary_key_col_names)
+    result = PrimaryKeyColNamesByDatasetUrlResult(
+        primary_key_col_names=primary_key_col_names
+    )
     return result
+
 
 def map_metadata_dependency_results(
     sparql_results: List[ResultRow],
@@ -582,3 +659,17 @@ def map_table_schema_properties_result(
         table_url=str(result_dict["csvUrl"]),
     )
     return result
+
+
+def map_is_pivoted_shape_for_measures_in_data_set(
+    sparql_results: List[ResultRow],
+) -> List[IsPivotedShapeMeasureResult]:
+    """
+    Maps the sparql query result to objects of type IsPivotedMeasureResult that are then returned.
+    """
+    def map_row(row_result: Dict[str, Any]) -> IsPivotedShapeMeasureResult:
+        return IsPivotedShapeMeasureResult(
+            measure=str(row_result["measure"]),
+            is_pivoted_shape=bool(row_result["isPivotedShape"]),
+        )
+    return [map_row(row.asdict()) for row in sparql_results]

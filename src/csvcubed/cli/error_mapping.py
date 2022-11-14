@@ -3,7 +3,7 @@ import logging
 from os import linesep
 from typing import Type, Union
 
-from csvcubed.models.cube import (
+from csvcubed.models.cube.qb import (
     QbAttribute,
     QbCodeList,
     QbDimension,
@@ -19,21 +19,28 @@ from csvcubed.models.cube import (
     MoreThanOneUnitsColumnError,
     BothMeasureTypesDefinedError,
     BothUnitTypesDefinedError,
+    QbObservationValue,
+    QbStructuralDefinition,
+    EmptyQbMultiMeasureDimensionError,
+)
+
+from csvcubed.models.cube.validationerrors import (
     ObservationValuesMissing,
     MissingColumnDefinitionError,
     DuplicateColumnTitleError,
     ColumnValidationError,
     ColumnNotFoundInDataError,
-    QbObservationValue,
-    QbStructuralDefinition,
-    EmptyQbMultiMeasureDimensionError,
     UriTemplateNameError,
+    UriTemplateNameError,
+)
+from csvcubed.models.cube.qb.validationerrors import (
     DuplicateMeasureError,
     AttributeNotLinkedError,
     LinkedObsColumnDoesntExistError,
     LinkedToNonObsColumnError,
     HybridShapeError,
 )
+
 from csvcubed.models.cube.qb.components.validationerrors import (
     UndefinedMeasureUrisError,
     UndefinedUnitUrisError,

@@ -1,36 +1,30 @@
-from distutils.errors import LinkError
-from distutils.util import strtobool
 import os
+from distutils.util import strtobool
 from typing import List, Union
 
-from csvcubed.models.cube import (
-    ObservationValuesMissing,
-    QbMultiUnits,
-    QbObservationValue,
-    Cube,
-    QbColumn,
-    QbAttribute,
+from csvcubedmodels.rdf.namespaces import SDMX_Attribute
+
+from csvcubed.models.cube.cube import Cube
+from csvcubed.models.cube.qb.columns import QbColumn
+from csvcubed.models.cube.qb.components.attribute import (
     ExistingQbAttribute,
     NewQbAttribute,
-    QbMultiMeasureDimension,
-    NoUnitsDefinedError,
-    BothUnitTypesDefinedError,
+    QbAttribute,
+)
+from csvcubed.models.cube.qb.components.measure import ExistingQbMeasure
+from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureDimension
+from csvcubed.models.cube.qb.components.unitscolumn import QbMultiUnits
+from csvcubed.models.cube.qb.validationerrors import (
     BothMeasureTypesDefinedError,
-    MoreThanOneUnitsColumnError,
+    BothUnitTypesDefinedError,
+    CsvColumnUriTemplateMissingError,
+    EmptyQbMultiMeasureDimensionError,
     MoreThanOneMeasureColumnError,
+    MoreThanOneObservationsColumnError,
+    MoreThanOneUnitsColumnError,
     NoMeasuresDefinedError,
     NoObservedValuesColumnDefinedError,
-    MoreThanOneObservationsColumnError,
-    EmptyQbMultiMeasureDimensionError,
-    validationerrors,
-)
-
-from csvcubed.models.cube.qb.components import observedvalue
-
-from csvcubed.models.cube.qb.components.measure import ExistingQbMeasure, QbMeasure
-from csvcubed.models.cube.qb.components.unit import QbUnit
-from csvcubed.models.cube.qb.validationerrors import (
-    CsvColumnUriTemplateMissingError,
+    NoUnitsDefinedError,
     PivotedShapeMeasureColumnsExistError,
     DuplicateMeasureError,
     AttributeNotLinkedError,
@@ -38,9 +32,9 @@ from csvcubed.models.cube.qb.validationerrors import (
     LinkedToNonObsColumnError,
     HybridShapeError,
 )
-
-from csvcubedmodels.rdf.namespaces import SDMX_Attribute
+from csvcubed.models.cube.validationerrors import ObservationValuesMissing
 from csvcubed.models.validationerror import ValidationError
+from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
 from csvcubed.utils.qb.cube import get_columns_of_dsd_type
 
 SDMX_A_OBS_STATUS_URI: str = str(SDMX_Attribute.obsStatus)
