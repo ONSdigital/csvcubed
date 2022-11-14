@@ -16,7 +16,7 @@ import rdflib
 from csvcubed.utils.qb.components import ComponentField, ComponentPropertyType
 
 
-from csvcubed.utils.sparql_handler.sparqlmanager import CSVWShape, select_single_unit_from_dsd
+from csvcubed.utils.sparql_handler.sparqlmanager import CubeShape, select_single_unit_from_dsd
 from csvcubed.models.sparqlresults import QubeComponentResult
 from csvcubed.cli.inspect.inspectdatasetmanager import (
     filter_components_from_dsd,
@@ -67,7 +67,7 @@ def _melt_data_set(data_set: pd.DataFrame, measure_components: List[QubeComponen
     )
     
 def transform_dataset_to_canonical_shape(
-    csvw_shape: CSVWShape,
+    csvw_shape: CubeShape,
     dataset: pd.DataFrame,
     qube_components: List[QubeComponentResult],
     dataset_uri: str,
@@ -86,7 +86,7 @@ def transform_dataset_to_canonical_shape(
     unit_col: Optional[str] = get_standard_shape_unit_col_name_from_dsd(qube_components)
     measure_col: Optional[str] = None
 
-    if csvw_shape == CSVWShape.Standard:
+    if csvw_shape == CubeShape.Standard:
         if unit_col is None:
             unit_col = f"Unit_{str(uuid1())}"
             result = select_single_unit_from_dsd(

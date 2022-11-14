@@ -28,7 +28,6 @@ from csvcubed.models.sparqlresults import (
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.models.csvwtype import CSVWType
 from csvcubed.utils.sparql_handler.sparqlmanager import (
-    CSVWShape,
     select_codelist_cols_by_dataset_url,
     select_codelist_dataset_url,
     select_primary_key_col_names_by_dataset_url,

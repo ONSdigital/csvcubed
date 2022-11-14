@@ -3,6 +3,7 @@ import pandas as pd
 from pandas.util.testing import assert_frame_equal
 import pytest
 from csvcubed.cli.inspect.inspectdatasetmanager import filter_components_from_dsd
+from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import QubeComponentResult
 
 from csvcubed.utils.csvdataset import (
@@ -11,7 +12,6 @@ from csvcubed.utils.csvdataset import (
     transform_dataset_to_canonical_shape,
 )
 from csvcubed.utils.qb.components import ComponentField, ComponentPropertyType
-from csvcubed.utils.sparql_handler.sparqlmanager import CSVWShape
 from csvcubed.utils.tableschema import CsvwRdfManager
 
 from tests.unit.cli.inspect.test_inspectdatasetmanager import get_arguments_qb_dataset
@@ -273,14 +273,14 @@ def test_transform_to_canonical_shape_for_standard_shape_data_set():
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
     (dataset, qube_components, dsd_uri, _) = get_arguments_qb_dataset(
-        CSVWShape.Standard, csvw_metadata_rdf_graph, csvw_metadata_json_path
+        CubeShape.Standard, csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
     (
         canonical_shape_dataset,
         measure_col,
         unit_col,
     ) = transform_dataset_to_canonical_shape(
-        CSVWShape.Standard,
+        CubeShape.Standard,
         dataset,
         qube_components,
         dsd_uri,
@@ -308,14 +308,14 @@ def test_transform_to_canonical_shape_for_pivoted_single_measure_shape_data_set(
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
     (dataset, qube_components, dsd_uri, _) = get_arguments_qb_dataset(
-        CSVWShape.Pivoted, csvw_metadata_rdf_graph, csvw_metadata_json_path
+        CubeShape.Pivoted, csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
     (
         canonical_shape_dataset,
         measure_col,
         unit_col,
     ) = transform_dataset_to_canonical_shape(
-        CSVWShape.Pivoted,
+        CubeShape.Pivoted,
         dataset,
         qube_components,
         dsd_uri,
@@ -351,14 +351,14 @@ def test_transform_to_canonical_shape_for_pivoted_multi_measure_shape_data_set()
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
     (dataset, qube_components, dsd_uri, _) = get_arguments_qb_dataset(
-        CSVWShape.Pivoted, csvw_metadata_rdf_graph, csvw_metadata_json_path
+        CubeShape.Pivoted, csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
     (
         canonical_shape_dataset,
         measure_col,
         unit_col,
     ) = transform_dataset_to_canonical_shape(
-        CSVWShape.Pivoted,
+        CubeShape.Pivoted,
         dataset,
         qube_components,
         dsd_uri,

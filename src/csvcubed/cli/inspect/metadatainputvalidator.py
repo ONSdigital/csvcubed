@@ -12,7 +12,6 @@ import rdflib
 from csvcubed.models.sparqlresults import IsPivotedShapeMeasureResult
 
 from csvcubed.utils.sparql_handler.sparqlmanager import (
-    CSVWShape,
     ask_is_csvw_code_list,
     ask_is_csvw_qb_dataset,
 )

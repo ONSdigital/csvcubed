@@ -15,7 +15,6 @@ from rdflib import Graph
 from treelib import Tree
 
 from csvcubed.utils.sparql_handler.sparqlmanager import (
-    CSVWShape,
     select_codelist_cols_by_dataset_url,
     select_codelist_dataset_url,
     select_primary_key_col_names_by_dataset_url,
