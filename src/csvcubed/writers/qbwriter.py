@@ -24,8 +24,10 @@ from csvcubedmodels.rdf.resource import (
     maybe_existing_resource,
 )
 from csvcubed.models.rdf import prov
-from csvcubed.models.cube import *
-from csvcubed.utils.sparql_handler.sparqlmanager import CSVWShape
+from csvcubed.models.cube.qb import *
+from csvcubed.models.cube.cube import QbCube
+from csvcubed.models.cube.columns import SuppressedCsvColumn, CsvColumn
+from csvcubed.models.cube.qb.columns import QbColumn
 from csvcubed.utils.uri import (
     get_last_uri_part,
     csvw_column_name_safe,
@@ -49,14 +51,7 @@ from .urihelpers.skoscodelist import SkosCodeListNewUriHelper
 from .urihelpers.qbcube import QbCubeNewUriHelper
 from .urihelpers.skoscodelistconstants import SCHEMA_URI_IDENTIFIER
 from .writerbase import WriterBase
-from ..models.cube import (
-    QbAttribute,
-    ExistingQbAttribute,
-    NewQbAttribute,
-    QbMultiMeasureDimension,
-    QbMultiUnits,
-    QbAttributeLiteral,
-)
+
 from csvcubed.utils.version import get_csvcubed_version_uri
 from csvcubed.models.rdf.qbdatasetincatalog import QbDataSetInCatalog
 from ..models.cube.qb.components.codelist import NewQbCodeListInCsvW
@@ -64,6 +59,7 @@ from ..models.rdf.newattributevalueresource import NewAttributeValueResource
 from ..models.rdf.newunitresource import NewUnitResource
 from ..models.cube.qb.components.arbitraryrdf import RdfSerialisationHint
 from ..utils.qb.validation.observations import get_observation_status_columns
+from csvcubed.models.cube.cube_shape import CubeShape
 
 
 _logger = logging.getLogger(__name__)
@@ -85,7 +81,7 @@ class QbWriter(WriterBase):
 
     @property
     def is_cube_in_pivoted_shape(self) -> bool:
-        return detect_shape_of_cube(self.cube) == CSVWShape.Pivoted
+        return detect_shape_of_cube(self.cube) == CubeShape.Pivoted
 
     def __post_init__(self):
         self.csv_file_name = f"{self.cube.metadata.uri_safe_identifier}.csv"

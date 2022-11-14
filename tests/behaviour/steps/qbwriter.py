@@ -1,5 +1,5 @@
 import os
-from typing import List
+from typing import List, Optional
 from urllib.parse import urlparse
 import re
 import pandas as pd
@@ -9,15 +9,19 @@ from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
 from csvcubeddevtools.helpers.file import get_test_cases_dir
 from csvcubeddevtools.behaviour.rdf import test_graph_diff
 from rdflib import Graph
-
-from csvcubed.models.cube import *
-from csvcubed.models.cube import (
-    ExistingQbAttribute,
-    NewQbAttribute,
-    NewQbConcept,
-    QbMultiMeasureDimension,
-    QbMultiUnits,
-)
+from csvcubed.models.cube.columns import SuppressedCsvColumn
+from csvcubed.models.cube.cube import Cube, QbCube
+from csvcubed.models.cube.qb.catalog import CatalogMetadata
+from csvcubed.models.cube.qb.columns import QbColumn
+from csvcubed.models.cube.qb.components.attribute import ExistingQbAttribute, ExistingQbAttributeLiteral, NewQbAttribute, NewQbAttributeLiteral
+from csvcubed.models.cube.qb.components.codelist import ExistingQbCodeList, NewQbCodeList, NewQbCodeListInCsvW
+from csvcubed.models.cube.qb.components.concept import NewQbConcept
+from csvcubed.models.cube.qb.components.dimension import ExistingQbDimension, NewQbDimension
+from csvcubed.models.cube.qb.components.measure import ExistingQbMeasure, NewQbMeasure
+from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureDimension
+from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
+from csvcubed.models.cube.qb.components.unit import ExistingQbUnit, NewQbUnit
+from csvcubed.models.cube.qb.components.unitscolumn import QbMultiUnits
 
 from csvcubed.models.validationerror import ValidationError
 from csvcubed.models.cube.uristyle import URIStyle
@@ -870,20 +874,6 @@ def assert_uri_style_for_uri(uri_style: URIStyle, uri: str, node):
         assert path.endswith(".csv") or path.endswith(
             ".json"
         ), f"expected {node} to end with .csv or .json"
-
-
-@then("the RDF should contain version specific triples")
-def step_impl(context):
-    version_triples = (
-        context.text + f" prov:used <{get_csvcubed_version_uri()}> ."
-    ).strip()
-    version_triples = re.sub("\r", "", version_triples)  # windows problem
-
-    version_triples_graph = Graph().parse(format="turtle", data=version_triples)
-    test_graph_diff(
-        Graph().parse(format="turtle", data=context.turtle),
-        version_triples_graph,
-    )
 
 
 @Given(

@@ -12,7 +12,7 @@ from typing import Optional, Tuple, List
 import jsonschema
 from csvcubedmodels.dataclassbase import DataClassBase
 from csvcubed.cli.error_mapping import friendly_error_mapping
-from csvcubed.models.cube import QbCube
+from csvcubed.models.cube.cube import QbCube
 from csvcubed.models.errorurl import HasErrorUrl
 from csvcubed.models.validationerror import ValidationError
 from csvcubed.models.jsonvalidationerrors import JsonSchemaValidationError

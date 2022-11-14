@@ -49,21 +49,9 @@ from csvcubed.models.csvcubedexception import (
     InvalidNumberOfRecordsException,
 )
 from csvcubed.definitions import APP_ROOT_DIR_PATH
+from csvcubed.models.cube.cube_shape import CubeShape
 
 _logger = logging.getLogger(__name__)
-
-
-class CSVWShape(Enum):
-    """
-    The shape of cube represented by the metadata file.
-    """
-
-    Standard = auto()
-    """ The cube represented by the metadata file is in the standard shape. """
-
-    Pivoted = auto()
-    """ The cube represented by the metadata file is in the pivoted shape. """
-
 
 class SPARQLQueryName(Enum):
     """
@@ -222,7 +210,7 @@ def select_csvw_dsd_dataset_label_and_dsd_def_uri(
 
 
 def select_csvw_dsd_qube_components(
-    csvw_shape: Optional[CSVWShape],
+    cube_shape: Optional[CubeShape],
     rdf_graph: rdflib.ConjunctiveGraph,
     dsd_uri: str,
     json_path: Path,
@@ -241,7 +229,7 @@ def select_csvw_dsd_qube_components(
     )
 
     result_observation_val_col_titles: Optional[List[ResultRow]] = None
-    if csvw_shape == CSVWShape.Pivoted:
+    if cube_shape == CubeShape.Pivoted:
         result_observation_val_col_titles = select(
             _get_query_string_from_file(
                 SPARQLQueryName.SELECT_OBS_VAL_FOR_DSD_COMPONENT_PROPERTIES

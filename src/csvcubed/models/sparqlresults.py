@@ -358,7 +358,7 @@ def _map_qube_component_sparql_result(
             str(result_dict["componentPropertyType"])
         ),
         csv_col_title=none_or_map(result_dict.get("csvColumnTitle"), str) or "",
-        observation_value_column_titles="",
+        observation_value_column_titles="", # This value is popuated after runnning the SELECT_OBS_VAL_FOR_DSD_COMPONENT_PROPERTIES sparql query. The _map_obs_val_for_dsd_component_properties_results will set the value for this property.
         required=none_or_map(result_dict.get("required"), bool) or False,
     )
     return result
@@ -367,21 +367,17 @@ def _map_qube_component_sparql_result(
 def _map_obs_val_for_dsd_component_properties_results(
     sparql_results: List[ResultRow],
 ) -> List[ObsValDsdComponentResult]:
-    obs_val_results: List[ObsValDsdComponentResult] = list(
-        map(
-            lambda result: ObsValDsdComponentResult(
-                csv_column_property_url=none_or_map(
-                    result.asdict().get("csvColumnPropertyUrl"), str
-                ),
-                observation_value_column_titles=none_or_map(
-                    result.asdict().get("observationValueColumnTitles"), str
-                ),
+    def map_row(row_result: Dict[str, Any]) -> ObsValDsdComponentResult:
+        return ObsValDsdComponentResult(
+            csv_column_property_url=none_or_map(
+               row_result.get("csvColumnPropertyUrl"), str
             ),
-            sparql_results,
+            observation_value_column_titles=none_or_map(
+               row_result.get("observationValueColumnTitles"), str
+            )
         )
-    )
-    return obs_val_results
 
+    return [map_row(row.asdict()) for row in sparql_results]
 
 def map_qube_components_sparql_result(
     sparql_results_dsd_components: List[ResultRow],
@@ -671,13 +667,9 @@ def map_is_pivoted_shape_for_measures_in_data_set(
     """
     Maps the sparql query result to objects of type IsPivotedMeasureResult that are then returned.
     """
-    is_pivoted_shape_measure_results = list(
-        map(
-            lambda result: IsPivotedShapeMeasureResult(
-                measure=str(result.asdict()["measure"]),
-                is_pivoted_shape=bool(result.asdict()["isPivotedShape"]),
-            ),
-            sparql_results,
+    def map_row(row_result: Dict[str, Any]) -> IsPivotedShapeMeasureResult:
+        return IsPivotedShapeMeasureResult(
+            measure=str(row_result["measure"]),
+            is_pivoted_shape=bool(row_result["isPivotedShape"]),
         )
-    )
-    return is_pivoted_shape_measure_results
+    return [map_row(row.asdict()) for row in sparql_results]

@@ -10,13 +10,27 @@ from dataclasses import dataclass
 
 from treelib import Tree
 
-from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
-from csvcubed.utils.printable import get_printable_tabuler_str_from_dataframe
-from csvcubed.utils.sparql_handler.sparqlmanager import CSVWShape
+from csvcubed.models.cube.cube_shape import CubeShape
+from csvcubed.models.csvwtype import CSVWType
+from csvcubed.models.csvcubedexception import FailedToConvertDataFrameToStringException
 
 HIERARCHY_TREE_CONCEPTS_LIMIT = 100
 DATASET_HEAD_TAIL_LIMIT = 10
 
+def _get_printable_tabuler_str_from_dataframe(df: pd.DataFrame, column_names=None) -> str:
+    """
+    Converts the given dataframe into a printable tabular.
+
+    Member of :file:`./utils/printable`.
+
+    :return: `str` - string representation of the given dataframe
+    """
+    if column_names:
+        df.columns = column_names
+    output_str = df.to_string(index=False)
+    if output_str:
+        return output_str
+    raise FailedToConvertDataFrameToStringException()
 
 @dataclass
 class DatasetObservationsInfoResult:
@@ -25,7 +39,7 @@ class DatasetObservationsInfoResult:
     """
 
     csvw_type: CSVWType
-    csvw_shape: Optional[CSVWShape]
+    cube_shape: Optional[CubeShape]
     num_of_observations: int
     num_of_duplicates: int
     dataset_head: pd.DataFrame
@@ -33,17 +47,17 @@ class DatasetObservationsInfoResult:
 
     @property
     def output_str(self) -> str:
-        formatted_dataset_head = get_printable_tabuler_str_from_dataframe(
+        formatted_dataset_head = _get_printable_tabuler_str_from_dataframe(
             self.dataset_head
         )
-        formatted_dataset_tail = get_printable_tabuler_str_from_dataframe(
+        formatted_dataset_tail = _get_printable_tabuler_str_from_dataframe(
             self.dataset_tail
         )
 
         title_of_data_samples: str
-        if self.csvw_shape is None:
+        if self.cube_shape is None:
             title_of_data_samples = "Concepts"
-        elif self.csvw_shape == CSVWShape.Standard:
+        elif self.cube_shape == CubeShape.Standard:
             title_of_data_samples = "Observations"
         else:
             title_of_data_samples = "Rows"
@@ -80,7 +94,7 @@ class DatasetObservationsByMeasureUnitInfoResult:
     @property
     def output_str(self) -> str:
         formatted_by_measure_and_unit_val_counts = (
-            get_printable_tabuler_str_from_dataframe(
+            _get_printable_tabuler_str_from_dataframe(
                 self.by_measure_and_unit_val_counts_df,
                 column_names=["Measure", "Unit", "Count"],
             )

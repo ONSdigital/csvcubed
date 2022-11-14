@@ -5,7 +5,6 @@ Metadata Input Handler
 Provides functionality for validating the input metadata.json and detecting its type (i.e. DataCube, CodeList or other) file.
 """
 from dataclasses import dataclass
-from enum import Enum, auto
 from pathlib import Path
 from typing import List, Optional, Tuple
 
@@ -18,21 +17,8 @@ from csvcubed.utils.sparql_handler.sparqlmanager import (
     ask_is_csvw_qb_dataset,
 )
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
-
-
-class CSVWType(Enum):
-    """
-    The type of metadata file.
-    """
-
-    QbDataSet = auto()
-    """ The metadata file is of type data cube dataset. """
-
-    CodeList = auto()
-    """ The metadata file is of type code list/concept scheme. """
-
-    Other = auto()
-    """ The metadata file is not of types data cube and code list. This type of metadata files is not supported."""
+from csvcubed.models.cube.cube_shape import CubeShape
+from csvcubed.models.csvwtype import CSVWType
 
 
 @dataclass
@@ -45,15 +31,14 @@ class MetadataValidator:
     csvw_metadata_json_path: Path
     is_pivoted_measures: List[IsPivotedShapeMeasureResult]
 
-    def validate_csvw(self) -> Tuple[bool, CSVWType, Optional[CSVWShape]]:
+    def detect_type_and_shape(self, is_pivoted_measures: List[IsPivotedShapeMeasureResult]) -> Tuple[CSVWType, Optional[CubeShape]]:
         """
-        Detects the validity, type and shape of the csvw.
+        Detects the type and shape of the csvw.
         """
         csvw_type = self._detect_type()
-        csvw_shape = self._detect_shape() if csvw_type == CSVWType.QbDataSet else None
-        validity = csvw_type == CSVWType.QbDataSet or csvw_type == CSVWType.CodeList
+        cube_shape = self._detect_shape(is_pivoted_measures) if csvw_type == CSVWType.QbDataSet else None
 
-        return (validity, csvw_type, csvw_shape)
+        return (csvw_type, cube_shape)
 
     def _detect_type(self) -> CSVWType:
         """
@@ -76,23 +61,25 @@ class MetadataValidator:
         elif ask_is_csvw_qb_dataset(primary_graph):
             return CSVWType.QbDataSet
         else:
-            return CSVWType.Other
+            raise TypeError(
+                "The input metadata is invalid as it is not a data cube or a code list."
+            )
 
-    def _detect_shape(self) -> CSVWShape:
+    def _detect_shape(self, is_pivoted_measures: List[IsPivotedShapeMeasureResult]) -> CubeShape:
         """
         Given a metadata validator as input, returns the shape of the cube that metadata describes (Pivoted or Standard).
         """
         all_pivoted = True
         all_standard_shape = True
-        for measure in self.is_pivoted_measures:
+        for measure in is_pivoted_measures:
             all_pivoted = all_pivoted and measure.is_pivoted_shape
             all_standard_shape = all_standard_shape and not measure.is_pivoted_shape
 
         if all_pivoted:
-            return CSVWShape.Pivoted
+            return CubeShape.Pivoted
         elif all_standard_shape:
-            return CSVWShape.Standard
+            return CubeShape.Standard
         else:
             raise TypeError(
-                "The input metadata is invalid as the shape of the cube it represents is not supported."
+                "The input metadata is invalid as the shape of the cube it represents is not supported. More specifically, the input contains some observation values that are pivoted and some are not pivoted."
             )

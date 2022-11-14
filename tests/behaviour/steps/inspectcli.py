@@ -4,10 +4,9 @@ from pathlib import Path
 
 from behave import *
 from pandas.util.testing import assert_frame_equal
-from more_itertools import first
 
 from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
-from csvcubed.cli.inspect.metadatainputvalidator import CSVWType, MetadataValidator
+from csvcubed.cli.inspect.metadatainputvalidator import MetadataValidator
 from csvcubed.cli.inspect.metadataprinter import MetadataPrinter
 from csvcubed.models.inspectdataframeresults import (
     DatasetObservationsByMeasureUnitInfoResult,
@@ -18,11 +17,9 @@ from csvcubed.models.sparqlresults import (
     CodelistsResult,
     QubeComponentsResult,
 )
+from csvcubed.utils.iterables import first
 from csvcubed.utils.qb.components import ComponentPropertyType
-from csvcubed.utils.sparql_handler.sparqlmanager import (
-    CSVWShape,
-    select_is_pivoted_shape_for_measures_in_data_set,
-)
+from csvcubed.utils.sparql_handler.sparqlmanager import select_is_pivoted_shape_for_measures_in_data_set
 from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.unit.cli.inspect.test_inspectdatasetmanager import (
     expected_dataframe_pivoted_single_measure,
@@ -32,6 +29,8 @@ from tests.unit.utils.sparqlhandler.test_sparqlmanager import (
     assert_dsd_component_equal,
     get_dsd_component_by_property_url,
 )
+from csvcubed.models.cube.cube_shape import CubeShape
+from csvcubed.models.csvwtype import CSVWType
 
 
 def _unformat_multiline_string(string: str) -> str:
@@ -64,33 +63,26 @@ def step_impl(context):
     csvw_rdf_manager = CsvwRdfManager(context.csvw_metadata_json_path)
     context.csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     assert context.csvw_metadata_rdf_graph is not None
-
-
+    
 @When("the Metadata File is validated")
 def step_impl(context):
-    is_pivoted_measures = select_is_pivoted_shape_for_measures_in_data_set(
-        context.csvw_metadata_rdf_graph
-    )
+
     csvw_metadata_rdf_validator = MetadataValidator(
-        context.csvw_metadata_rdf_graph,
-        context.csvw_metadata_json_path,
-        is_pivoted_measures,
+        context.csvw_metadata_rdf_graph, context.csvw_metadata_json_path
     )
-
+    is_pivoted_measures = select_is_pivoted_shape_for_measures_in_data_set(context.csvw_metadata_rdf_graph)
     (
-        context.valid_csvw_metadata,
         context.csvw_type,
-        context.csvw_shape,
-    ) = csvw_metadata_rdf_validator.validate_csvw()
+        context.cube_shape,
+    ) = csvw_metadata_rdf_validator.detect_type_and_shape(is_pivoted_measures)
 
-    assert context.valid_csvw_metadata is True
-
+    assert context.csvw_type is not None
 
 @When("the Printables for data cube are generated")
 def step_impl(context):
     metadata_printer = MetadataPrinter(
         context.csvw_type,
-        context.csvw_shape,
+        context.cube_shape,
         context.csvw_metadata_rdf_graph,
         context.csvw_metadata_json_path,
     )
@@ -187,7 +179,6 @@ def step_impl(context):
 
 @Then("the Dataset Information Printable should be")
 def step_impl(context):
-    print(context.dataset_observations_info_printable)
     assert _unformat_multiline_string(
         context.dataset_observations_info_printable
     ) == _unformat_multiline_string(context.text.strip())
@@ -228,7 +219,7 @@ def step_impl(context):
     assert result_type_info == CSVWType.QbDataSet
 
 
-@Then("the Catalog Metadata printable is validated for single-measure pivoted data set")
+@Then("the Catalog Metadata printable is validated for single-measure pivoted data set with identifier qb-id-10004")
 def step_impl(context):
     result_catalog_metadata: CatalogMetadataResult = context.result_catalog_metadata
     assert result_catalog_metadata is not None
@@ -355,7 +346,7 @@ def step_impl(context):
     assert result_dataset_observations_info is not None
 
     assert result_dataset_observations_info.csvw_type == CSVWType.QbDataSet
-    assert result_dataset_observations_info.csvw_shape == CSVWShape.Pivoted
+    assert result_dataset_observations_info.cube_shape == CubeShape.Pivoted
     assert result_dataset_observations_info.num_of_observations == 3
     assert result_dataset_observations_info.num_of_duplicates == 0
     assert_frame_equal(
@@ -397,7 +388,7 @@ def step_impl(context):
     assert result_type_info == CSVWType.QbDataSet
 
 
-@Then("the Catalog Metadata printable is validated for multi-measure pivoted data set")
+@Then("the Catalog Metadata printable is validated for multi-measure pivoted data set with identifier qb-id-10003")
 def step_impl(context):
     result_catalog_metadata: CatalogMetadataResult = context.result_catalog_metadata
     assert result_catalog_metadata is not None
@@ -536,7 +527,7 @@ def step_impl(context):
     )
     assert result_dataset_observations_info is not None
     assert result_dataset_observations_info.csvw_type == CSVWType.QbDataSet
-    assert result_dataset_observations_info.csvw_shape == CSVWShape.Pivoted
+    assert result_dataset_observations_info.cube_shape == CubeShape.Pivoted
     assert result_dataset_observations_info.num_of_observations == 3
     assert result_dataset_observations_info.num_of_duplicates == 0
     assert_frame_equal(
