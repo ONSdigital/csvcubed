@@ -59,37 +59,57 @@ def validate_observations(cube: Cube) -> List[ValidationError]:
     elif num_obs_val_columns > 1 and not is_pivoted_multi_measure:
         errors.append(MoreThanOneObservationsColumnError(num_obs_val_columns))
     else:
-        split_obs_val_cols = _split_obs_val_columns_with_and_without_measures(
-            observed_value_columns
+        obs_val_columns_with_measure = [
+            c
+            for c in observed_value_columns
+            if c.structural_definition.measure is not None
+        ]
+        obs_val_columns_without_measure = [
+            c for c in observed_value_columns if c.structural_definition.measure is None
+        ]
+
+        errors += _get_shape_related_errors(
+            cube,
+            obs_val_columns_with_measure,
+            obs_val_columns_without_measure,
+            multi_units_columns,
+            observed_value_columns,
         )
-        obs_val_columns_with_measure = split_obs_val_cols[0]
-        obs_val_columns_without_measure = split_obs_val_cols[1]
 
-        if any(obs_val_columns_with_measure) and any(obs_val_columns_without_measure):
-            errors += (
-                _get_error_when_cube_contains_obs_val_cols_with_and_without_measures(
-                    cube
-                )
-            )
+    return errors
 
-        elif len(obs_val_columns_without_measure) > 1:
-            errors += _get_error_when_cube_only_contains_obs_val_cols_without_measures(
-                cube, obs_val_columns_without_measure
-            )
 
-        elif len(obs_val_columns_without_measure) == 1:
-            errors += _get_errors_for_standard_shape_cube(
-                cube, obs_val_columns_without_measure, multi_units_columns
-            )
+def _get_shape_related_errors(
+    cube: Cube,
+    obs_val_columns_with_measure: list[QbColumn[QbObservationValue]],
+    obs_val_columns_without_measure: list[QbColumn[QbObservationValue]],
+    multi_units_columns: List[QbColumn[QbMultiUnits]],
+    observed_value_columns: list[QbColumn[QbObservationValue]],
+) -> List[ValidationError]:
+    errors: List[ValidationError] = []
 
-        elif any(obs_val_columns_with_measure):
-            errors += _get_errors_when_cube_only_contains_obs_val_cols_with_measures(
-                cube, obs_val_columns_with_measure, multi_units_columns
-            )
+    if any(obs_val_columns_with_measure) and any(obs_val_columns_without_measure):
+        errors += _get_error_when_cube_contains_obs_val_cols_with_and_without_measures(
+            cube
+        )
 
-        # But we know there is a least one obs val column defined, so no need for an else here
+    elif len(obs_val_columns_without_measure) > 1:
+        errors += _get_error_when_cube_only_contains_obs_val_cols_without_measures(
+            cube, obs_val_columns_without_measure
+        )
 
-        errors += _validate_missing_observation_values(cube, observed_value_columns[0])
+    elif len(obs_val_columns_without_measure) == 1:
+        errors += _get_errors_for_standard_shape_cube(
+            cube, obs_val_columns_without_measure, multi_units_columns
+        )
+
+    elif any(obs_val_columns_with_measure):
+        errors += _get_errors_when_cube_only_contains_obs_val_cols_with_measures(
+            cube, obs_val_columns_with_measure, multi_units_columns
+        )
+
+    # But we know there is a least one obs val column defined, so no need for an else here
+    errors += _validate_missing_observation_values(cube, observed_value_columns[0])
 
     return errors
 
@@ -388,18 +408,3 @@ def _get_errors_when_cube_only_contains_obs_val_cols_with_measures(
     errors += _validate_pivoted_shape_cube(cube, obs_col_names)
 
     return errors
-
-
-def _split_obs_val_columns_with_and_without_measures(
-    observed_value_columns: List[QbColumn[QbObservationValue]],
-) -> List[List[QbColumn[QbObservationValue]]]:
-
-    obs_val_columns_with_measure = [
-        c for c in observed_value_columns if c.structural_definition.measure is not None
-    ]
-    obs_val_columns_without_measure = [
-        c for c in observed_value_columns if c.structural_definition.measure is None
-    ]
-
-    split_obs_val_cols = [obs_val_columns_with_measure, obs_val_columns_without_measure]
-    return split_obs_val_cols
