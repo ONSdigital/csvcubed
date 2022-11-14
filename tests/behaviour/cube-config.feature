@@ -656,7 +656,7 @@ Feature: cube-config.json
         <#measure/imports-monetary-value> 150.0;
         qb:dataSet <#dataset>;
         qb:measureType <#measure/imports-monetary-value>;
-        sdmxa:unitMeasure <#unit/ps-millions> .
+        sdmxa:unitMeasure <#unit/pounds-millions> .
 
     <#obs/2021,services@exports-monetary-value> a qb:Observation;
         <#attribute/exports-status> <#attribute/exports-status/final>;
@@ -665,6 +665,6 @@ Feature: cube-config.json
         <#measure/exports-monetary-value> 80.0;
         qb:dataSet <#dataset>;
         qb:measureType <#measure/exports-monetary-value>;
-        sdmxa:unitMeasure <#unit/ps-millions>.
+        sdmxa:unitMeasure <#unit/pounds-millions>.
     """
 

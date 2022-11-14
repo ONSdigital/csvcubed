@@ -15,7 +15,7 @@
                 "from_existing": "http://example.com/measures/monetary-value"
             },
             "unit": {
-                "label": "£ (Millions)"
+                "label": "Pounds (Millions)"
             }
         },
         "Imports Status": {
