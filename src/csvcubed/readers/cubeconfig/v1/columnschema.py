@@ -16,11 +16,12 @@ from typing import List, Union, Optional, TypeVar, Tuple
 import uritemplate
 
 from csvcubedmodels.dataclassbase import DataClassBase
+from csvcubed.models.cube.qb.components.concept import NewQbConcept
 
 from csvcubed.utils.validators.schema import validate_dict_against_schema
 from csvcubed.inputs import pandas_input_to_columnar_optional_str
 from csvcubed.models.jsonvalidationerrors import JsonSchemaValidationError
-from csvcubed.models.cube import CatalogMetadata, NewQbConcept
+from csvcubed.models.cube.cube import CatalogMetadata
 from csvcubed.models.cube.qb.components import (
     NewQbDimension,
     ExistingQbDimension,

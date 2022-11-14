@@ -7,16 +7,16 @@ Utilities for getting columns (of a given type) from the `qb:DataStructureType`
 import logging
 from typing import List, TypeVar, Type, Set
 
-from csvcubed.models.cube import (
-    Cube,
-    QbColumn,
+from csvcubed.models.cube.cube import Cube
+from csvcubed.models.cube.qb.columns import QbColumn
+from csvcubed.models.cube.qb.components import (QbColumnStructuralDefinition,
     QbMeasure,
     QbMultiMeasureDimension,
     QbMultiUnits,
     QbUnit,
-    QbObservationValue,
-    QbColumnStructuralDefinition,
+    QbObservationValue
 )
+from csvcubed.models.cube.cube_shape import CubeShape
 
 
 _logger = logging.getLogger(__name__)
@@ -91,3 +91,29 @@ def get_all_units(cube: Cube) -> Set[QbUnit]:
 
     _logger.debug("Discovered units %s", units)
     return units
+
+
+def detect_shape_of_cube(cube: Cube) -> CubeShape:
+    """
+    Given a cube as input, returns the shape of that cube (Standard or Pivoted)
+    """
+    obs_val_columns = get_columns_of_dsd_type(cube, QbObservationValue)
+
+    all_pivoted = True
+    all_standard_shape = True
+    for obs_val_col in obs_val_columns:
+        all_pivoted = (
+            all_pivoted
+            and obs_val_col.structural_definition.is_pivoted_shape_observation
+        )
+        all_standard_shape = (
+            all_standard_shape
+            and not obs_val_col.structural_definition.is_pivoted_shape_observation
+        )
+
+    if all_pivoted:
+        return CubeShape.Pivoted
+    elif all_standard_shape:
+        return CubeShape.Standard
+    else:
+        raise TypeError("The input metadata is invalid as the shape of the cube it represents is not supported. More specifically, the input contains some observation values that are pivoted and some are not pivoted.")

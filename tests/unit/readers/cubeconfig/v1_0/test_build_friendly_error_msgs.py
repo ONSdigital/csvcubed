@@ -1,41 +1,25 @@
 """
 Tests for friendly error messages being logged
 """
-import appdirs
 from pathlib import Path
 
-from csvcubed.cli.build import (
-    _extract_and_validate_cube,
-    _write_errors_to_log,
-)
-from csvcubed.models.cube import (
-    Cube,
-    BothMeasureTypesDefinedError,
-    BothUnitTypesDefinedError,
-    ColumnNotFoundInDataError,
-    DuplicateColumnTitleError,
-    MoreThanOneMeasureColumnError,
-    MoreThanOneObservationsColumnError,
-    NoDimensionsDefinedError,
-    NoMeasuresDefinedError,
-    NoObservedValuesColumnDefinedError,
-    NoUnitsDefinedError,
-    ObservationValuesMissing,
-    EmptyQbMultiMeasureDimensionError,
-    UriTemplateNameError,
-)
+import appdirs
 
-
+from csvcubed.cli.build import _extract_and_validate_cube, _write_errors_to_log
+from csvcubed.models.cube.cube import (ColumnNotFoundInDataError, Cube,
+                                       DuplicateColumnTitleError,
+                                       UriTemplateNameError)
 from csvcubed.models.cube.qb.components.validationerrors import (
-    ReservedUriValueError,
-    ConflictingUriSafeValuesError,
-    UndefinedAttributeValueUrisError,
-    UndefinedMeasureUrisError,
-    UndefinedUnitUrisError,
-    EmptyQbMultiUnitsError,
-)
-
-from tests.unit.test_baseunit import assert_num_validation_errors, get_test_cases_dir
+    ConflictingUriSafeValuesError, EmptyQbMultiUnitsError,
+    ReservedUriValueError, UndefinedAttributeValueUrisError,
+    UndefinedMeasureUrisError, UndefinedUnitUrisError)
+from csvcubed.models.cube.qb.validationerrors import (
+    BothMeasureTypesDefinedError, BothUnitTypesDefinedError, EmptyQbMultiMeasureDimensionError, MoreThanOneMeasureColumnError, MoreThanOneObservationsColumnError, NoDimensionsDefinedError,
+    NoMeasuresDefinedError, NoObservedValuesColumnDefinedError,
+    NoUnitsDefinedError)
+from csvcubed.models.cube.validationerrors import ObservationValuesMissing
+from tests.unit.test_baseunit import (assert_num_validation_errors,
+                                      get_test_cases_dir)
 
 _test_case_dir = Path(
     get_test_cases_dir().absolute(), "readers", "cube-config", "v1.0", "error_mappings"
