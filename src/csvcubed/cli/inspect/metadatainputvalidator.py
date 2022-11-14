@@ -28,7 +28,6 @@ class MetadataValidator:
 
     csvw_metadata_rdf_graph: rdflib.ConjunctiveGraph
     csvw_metadata_json_path: Path
-    is_pivoted_measures: List[IsPivotedShapeMeasureResult]
 
     def detect_type_and_shape(self, is_pivoted_measures: List[IsPivotedShapeMeasureResult]) -> Tuple[CSVWType, Optional[CubeShape]]:
         """

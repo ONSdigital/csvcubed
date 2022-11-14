@@ -239,6 +239,7 @@ def test_select_csvw_catalog_metadata_for_codelist():
     assert result.contact_point == "None"
     assert result.identifier == "Alcohol Content"
 
+#TODO: Complete below test for an old style data set
 def test_select_csvw_dsd_dataset_for_old_style_data_set():
     """
     Ensures that the cube components in a pivoted multi-measure dataset correctly link to observation value columns.

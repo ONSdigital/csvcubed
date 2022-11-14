@@ -107,7 +107,8 @@ def transform_dataset_to_canonical_shape(
         _create_unit_col_in_melted_data_set(melted_df)
 
         
-        # We need to melt the dataset if the shape is pivoted. To melt the dataset:
+        # MEASURE - DONE
+        #  We need to melt the dataset if the shape is pivoted. To melt the dataset:
             # STEP 1: Find the observation value columns by filtering components array by property type Measure. Keep a record of the measure uri also.
             # STEP 2: Use the measure uri to get the measure label.
             # STEP 3: The values in the measure column in the melted dataset will be the measure label if one exists. Otherwise, use the measure uri.
@@ -124,7 +125,7 @@ def transform_dataset_to_canonical_shape(
                 # Birmingham, 46, Measure 2, Unit 2
                 # Manchester, 44, Measure 2, Unit 2   
 
-        # UNIT
+        # UNIT - TODO
         # Step 5: If the unit col title is none, get the unit from obs val column. 
         # Step 6: Otherwise, write a sparql that will first find the csvw virtual col definition for the unit given the property url http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure. Then use the aboutUrl of that def to find the Obs Val col that unit is associated with. Then use the valueUrl to find the unit uri from the obs val col.
         # Step 7: Use the unit uri to get the label of the unit. The unit label can none.
