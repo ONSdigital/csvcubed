@@ -7,17 +7,17 @@ Utilities for skos:codelists
 
 from enum import Enum
 from typing import List, Optional
-import pandas as pd
-import numpy as np
 
+import numpy as np
+import pandas as pd
 from treelib import Tree
 
-from csvcubed.models.sparqlresults import CodelistColumnResult
 from csvcubed.models.csvcubedexception import (
     ErrorProcessingDataFrameException,
     InvalidNumberOfRecordsException,
     PrimaryKeyColumnTitleCannotBeNoneException,
 )
+from csvcubed.models.sparqlresults import CodelistColumnResult
 
 
 class CodelistPropertyUrl(Enum):
@@ -112,7 +112,7 @@ def build_concepts_hierarchy_tree(
     concepts_df_na_replaced = concepts_df.replace({np.nan: None})
     if concepts_df_na_replaced is None:
         raise ErrorProcessingDataFrameException(operation="replace")
-    
+
     for _, concept_row in pd.DataFrame(concepts_df_na_replaced).iterrows():
         node_id = concept_row[notation_col_name]
         node_label = concept_row[label_col_name]

@@ -2,13 +2,12 @@ import datetime
 import json
 from typing import List, Optional
 
-from behave import *
-import vcr
 import pandas as pd
-from pandas.testing import assert_frame_equal
-
+import vcr
+from behave import *
 from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
 from csvcubeddevtools.helpers.file import get_test_cases_dir
+from pandas.testing import assert_frame_equal
 
 from csvcubed.cli.build import build as cli_build
 from csvcubed.models.cube.columns import CsvColumn

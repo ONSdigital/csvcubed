@@ -1,6 +1,7 @@
-import pytest
-from tempfile import TemporaryDirectory
 from pathlib import Path
+from tempfile import TemporaryDirectory
+
+import pytest
 
 from csvcubed.utils.file import copy_files_to_directory_with_structure
 

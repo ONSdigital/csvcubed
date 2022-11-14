@@ -5,19 +5,18 @@ QbCube
 Utilities for getting columns (of a given type) from the `qb:DataStructureType`
 """
 import logging
-from typing import List, TypeVar, Type, Set
+from typing import List, TypeVar, Set
 
 from csvcubed.models.cube.cube import Cube
-from csvcubed.models.cube.qb.columns import QbColumn
-from csvcubed.models.cube.qb.components import (QbColumnStructuralDefinition,
+from csvcubed.models.cube.cube_shape import CubeShape
+from csvcubed.models.cube.qb.components import (
+    QbColumnStructuralDefinition,
     QbMeasure,
     QbMultiMeasureDimension,
     QbMultiUnits,
     QbUnit,
-    QbObservationValue
+    QbObservationValue,
 )
-from csvcubed.models.cube.cube_shape import CubeShape
-
 
 _logger = logging.getLogger(__name__)
 
@@ -77,7 +76,7 @@ def detect_shape_of_cube(cube: Cube) -> CubeShape:
     """
     Given a cube as input, returns the shape of that cube (Standard or Pivoted)
     """
-    obs_val_columns = get_columns_of_dsd_type(cube, QbObservationValue)
+    obs_val_columns = cube.get_columns_of_dsd_type(QbObservationValue)
 
     all_pivoted = True
     all_standard_shape = True
@@ -96,4 +95,6 @@ def detect_shape_of_cube(cube: Cube) -> CubeShape:
     elif all_standard_shape:
         return CubeShape.Standard
     else:
-        raise TypeError("The input metadata is invalid as the shape of the cube it represents is not supported. More specifically, the input contains some observation values that are pivoted and some are not pivoted.")
+        raise TypeError(
+            "The input metadata is invalid as the shape of the cube it represents is not supported. More specifically, the input contains some observation values that are pivoted and some are not pivoted."
+        )

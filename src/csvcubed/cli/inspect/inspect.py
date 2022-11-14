@@ -6,9 +6,9 @@ Output CSV-W metadata in a user-friendly format to the CLI for validation.
 """
 
 import logging
+from os import linesep
 from pathlib import Path
 from typing import Optional, Tuple
-from os import linesep
 
 import rdflib
 
@@ -16,13 +16,13 @@ from csvcubed.cli.inspect.metadatainputvalidator import (
     MetadataValidator,
 )
 from csvcubed.cli.inspect.metadataprinter import MetadataPrinter
+from csvcubed.models.csvcubedexception import FailedToLoadRDFGraphException
+from csvcubed.models.csvwtype import CSVWType
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.utils.sparql_handler.sparqlmanager import (
     select_is_pivoted_shape_for_measures_in_data_set,
 )
 from csvcubed.utils.tableschema import CsvwRdfManager
-from csvcubed.models.csvcubedexception import FailedToLoadRDFGraphException
-from csvcubed.models.csvwtype import CSVWType
 
 _logger = logging.getLogger(__name__)
 
@@ -50,8 +50,10 @@ def inspect(csvw_metadata_json_path: Path) -> None:
     csvw_metadata_rdf_validator = MetadataValidator(
         csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
-    (csvw_type, cube_shape) = csvw_metadata_rdf_validator.detect_type_and_shape(is_pivoted_shape_measures)
-    
+    (csvw_type, cube_shape) = csvw_metadata_rdf_validator.detect_type_and_shape(
+        is_pivoted_shape_measures
+    )
+
     (
         type_printable,
         catalog_metadata_printable,

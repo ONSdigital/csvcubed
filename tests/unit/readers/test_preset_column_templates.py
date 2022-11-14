@@ -1,7 +1,7 @@
-from requests.exceptions import HTTPError
 from copy import deepcopy
 
 import pytest
+from requests.exceptions import HTTPError
 
 from csvcubed.readers.preconfiguredtemplates import (
     TEMPLATE_BASE_URL,

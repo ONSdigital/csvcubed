@@ -2,11 +2,11 @@ import pytest
 from csvcubedmodels.rdf import CSVW
 from rdflib import Graph, Literal, URIRef
 
-from tests.unit.test_baseunit import get_test_cases_dir
 from csvcubed.utils.csvw import (
     get_dependent_local_files,
     load_table_schema_file_to_graph,
 )
+from tests.unit.test_baseunit import get_test_cases_dir
 
 csvw_utils_test_cases = get_test_cases_dir() / "utils" / "csvw"
 
@@ -39,6 +39,7 @@ def test_no_dependent_local_files_when_base_is_uri():
 
     dependent_files = get_dependent_local_files(csvw_file)
     assert len(dependent_files) == 0
+
 
 def test_load_table_schema_file_to_graph():
     """

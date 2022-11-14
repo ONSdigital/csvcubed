@@ -8,6 +8,7 @@ import logging
 from dataclasses import dataclass
 from typing import List, Set, Iterable
 
+from csvcubedmodels import rdf
 from csvcubedmodels.rdf import (
     ExistingResource,
     maybe_existing_resource,
@@ -18,33 +19,39 @@ from csvcubedmodels.rdf import (
 )
 from csvcubedmodels.rdf.dependency import RdfGraphDependency
 
-from csvcubedmodels import rdf
-from csvcubed.models.cube import (
-    NewQbDimension,
-    NewQbCodeList,
-    QbUnit,
-    QbMultiUnits,
-    QbObservationValue,
-    NewQbUnit,
+from csvcubed.models.cube.cube import QbCube
+from csvcubed.models.cube.qb.columns import QbColumn
+from csvcubed.models.cube.qb.components.arbitraryrdf import RdfSerialisationHint
+from csvcubed.models.cube.qb.components.attribute import (
     QbAttribute,
     NewQbAttribute,
     NewQbAttributeValue,
-    QbColumn,
-    QbStructuralDefinition,
-    QbDimension,
-    QbMultiMeasureDimension,
-    QbCube,
-    RdfSerialisationHint,
-    ExistingQbDimension,
-    NewQbMeasure,
-    ExistingQbMeasure,
-    QbMeasure,
-    ExistingQbAttribute,
     QbAttributeLiteral,
+    ExistingQbAttribute,
+)
+from csvcubed.models.cube.qb.components.codelist import (
     QbCodeList,
+    NewQbCodeList,
     ExistingQbCodeList,
     NewQbCodeListInCsvW,
 )
+from csvcubed.models.cube.qb.components.datastructuredefinition import (
+    QbStructuralDefinition,
+)
+from csvcubed.models.cube.qb.components.dimension import (
+    QbDimension,
+    NewQbDimension,
+    ExistingQbDimension,
+)
+from csvcubed.models.cube.qb.components.measure import (
+    QbMeasure,
+    NewQbMeasure,
+    ExistingQbMeasure,
+)
+from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureDimension
+from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
+from csvcubed.models.cube.qb.components.unit import QbUnit, NewQbUnit
+from csvcubed.models.cube.qb.components.unitscolumn import QbMultiUnits
 from csvcubed.models.rdf import prov
 from csvcubed.models.rdf.newattributevalueresource import NewAttributeValueResource
 from csvcubed.models.rdf.newunitresource import NewUnitResource
@@ -52,10 +59,10 @@ from csvcubed.models.rdf.qbdatasetincatalog import QbDataSetInCatalog
 from csvcubed.utils.dict import rdf_resource_to_json_ld
 from csvcubed.utils.uri import get_last_uri_part, get_data_type_uri_from_str
 from csvcubed.utils.version import get_csvcubed_version_uri
-from csvcubed.writers.skoscodelistwriter import SkosCodeListWriter
 from csvcubed.writers.helpers.skoscodelistwriter.newresourceurigenerator import (
     NewResourceUriGenerator as SkosCodeListNewResourceUriGenerator,
 )
+from csvcubed.writers.skoscodelistwriter import SkosCodeListWriter
 from .urihelper import UriHelper
 
 _logger = logging.getLogger(__name__)

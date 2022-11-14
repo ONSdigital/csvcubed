@@ -6,15 +6,14 @@ Component Validation Errors
 """
 import os
 from abc import ABC
-from dataclasses import dataclass, field
-from typing import Set, List, Dict, Type, ClassVar, Optional, Union
+from dataclasses import dataclass
+from typing import Set, List, Dict, Type, ClassVar, Union
 
-from .datastructuredefinition import QbStructuralDefinition
 from csvcubed.models.validationerror import (
     SpecificValidationError,
-    PydanticValidationError,
     PydanticThrowableSpecificValidationError,
 )
+from .datastructuredefinition import QbStructuralDefinition
 
 
 @dataclass
@@ -57,7 +56,6 @@ class UndefinedMeasureUrisError(UndefinedValuesError):
     @classmethod
     def get_error_url(cls) -> str:
         return "http://purl.org/csv-cubed/err/undef-meas"
-        
 
 
 @dataclass
@@ -181,7 +179,7 @@ class EmptyQbMultiUnitsError(SpecificValidationError):
 
     @classmethod
     def get_error_url(cls) -> str:
-        return 'http://purl.org/csv-cubed/err/empty-multi-units'
+        return "http://purl.org/csv-cubed/err/empty-multi-units"
 
     def __post_init__(self):
-        self.message = 'The units attribute of a QbMultiUnits must be populated'
+        self.message = "The units attribute of a QbMultiUnits must be populated"

@@ -9,8 +9,8 @@ import logging
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import List
-import pandas as pd
 
+import pandas as pd
 from csvcubedmodels.rdf import ExistingResource
 
 from csvcubed.models.cube.qb.components import (
@@ -21,10 +21,10 @@ from csvcubed.models.cube.qb.components import (
 )
 from csvcubed.models.cube.qb.components.concept import NewQbConcept
 from csvcubed.models.cube.uristyle import URIStyle
+from csvcubed.models.rdf import prov
+from csvcubed.models.rdf.conceptschemeincatalog import ConceptSchemeInCatalog
 from csvcubed.utils.dict import rdf_resource_to_json_ld
 from csvcubed.utils.version import get_csvcubed_version_uri
-from csvcubed.models.rdf.conceptschemeincatalog import ConceptSchemeInCatalog
-from csvcubed.models.rdf import prov
 from csvcubed.writers.helpers.skoscodelistwriter.newresourceurigenerator import (
     NewResourceUriGenerator,
 )

@@ -1,29 +1,38 @@
-from tempfile import TemporaryDirectory
 import csv
+from dataclasses import dataclass, field
 from pathlib import Path
+from tempfile import TemporaryDirectory
+from typing import Optional, List, Set
 
-import pytest
 import pandas as pd
-from rdflib import RDFS, XSD, Graph, URIRef, Literal
-from csvcubedmodels import rdf
+import pytest
+from rdflib import XSD, Graph, URIRef, Literal
 
-from csvcubed.models.cube import *
-from csvcubed.models.cube import (
-    ExistingQbAttribute,
-    NewQbAttribute,
-    QbMultiMeasureDimension,
-    QbMultiUnits,
-)
-from csvcubed.models.cube.uristyle import URIStyle
+from csvcubed.models.cube.columns import SuppressedCsvColumn
+from csvcubed.models.cube.cube import Cube
+from csvcubed.models.cube.qb.catalog import CatalogMetadata
+from csvcubed.models.cube.qb.columns import QbColumn
 from csvcubed.models.cube.qb.components.arbitraryrdf import (
-    TripleFragment,
     RdfSerialisationHint,
     TripleFragmentBase,
 )
+from csvcubed.models.cube.qb.components.attribute import (
+    NewQbAttribute,
+    ExistingQbAttribute,
+)
+from csvcubed.models.cube.qb.components.dimension import (
+    NewQbDimension,
+    ExistingQbDimension,
+)
+from csvcubed.models.cube.qb.components.measure import QbMeasure, NewQbMeasure
+from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureDimension
+from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
+from csvcubed.models.cube.qb.components.unit import NewQbUnit
+from csvcubed.models.cube.qb.components.unitscolumn import QbMultiUnits
+from csvcubed.models.cube.uristyle import URIStyle
 from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.utils.iterables import first
 from csvcubed.writers.qbwriter import QbWriter
-from csvcubed.writers.helpers.skoscodelistwriter.constants import SCHEMA_URI_IDENTIFIER
 
 
 @dataclass

@@ -2,11 +2,12 @@
 ValidationError
 ---------------
 """
-from dataclasses import dataclass, field
 from abc import ABC
+from dataclasses import dataclass, field
 from typing import List, Optional
 
 from csvcubedmodels.dataclassbase import DataClassBase
+
 from csvcubed.models.errorurl import HasErrorUrl
 
 

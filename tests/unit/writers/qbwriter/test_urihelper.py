@@ -1,28 +1,32 @@
 import pandas as pd
 import pytest
-from csvcubedmodels import rdf
 
-from csvcubed.models.cube import (
-    URIStyle,
-    Cube,
-    CatalogMetadata,
-    QbColumn,
-    ExistingQbDimension,
-    ExistingQbAttribute,
-    QbObservationValue,
-    ExistingQbMeasure,
-    ExistingQbUnit,
-    SuppressedCsvColumn,
-    ExistingQbCodeList,
-    NewQbDimension,
-    NewQbCodeList,
-    NewQbAttributeValue,
+from csvcubed.models.cube.columns import SuppressedCsvColumn
+from csvcubed.models.cube.cube import Cube
+from csvcubed.models.cube.qb.catalog import CatalogMetadata
+from csvcubed.models.cube.qb.columns import QbColumn
+from csvcubed.models.cube.qb.components.attribute import (
     NewQbAttribute,
-    QbMultiUnits,
-    NewQbUnit,
-    QbMultiMeasureDimension,
-    NewQbMeasure,
+    ExistingQbAttribute,
 )
+from csvcubed.models.cube.qb.components.attributevalue import NewQbAttributeValue
+from csvcubed.models.cube.qb.components.codelist import (
+    NewQbCodeList,
+    ExistingQbCodeList,
+)
+from csvcubed.models.cube.qb.components.dimension import (
+    NewQbDimension,
+    ExistingQbDimension,
+)
+from csvcubed.models.cube.qb.components.measure import (
+    NewQbMeasure,
+    ExistingQbMeasure,
+)
+from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureDimension
+from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
+from csvcubed.models.cube.qb.components.unit import NewQbUnit, ExistingQbUnit
+from csvcubed.models.cube.qb.components.unitscolumn import QbMultiUnits
+from csvcubed.models.cube.uristyle import URIStyle
 from csvcubed.writers.helpers.qbwriter.urihelper import UriHelper
 from csvcubed.writers.helpers.skoscodelistwriter.constants import SCHEMA_URI_IDENTIFIER
 from tests.unit.writers.qbwriter.test_qbwriter import TestQbMeasure
