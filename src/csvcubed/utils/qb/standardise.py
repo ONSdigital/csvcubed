@@ -9,8 +9,7 @@ from typing import List, Dict
 import pandas as pd
 from pandas.core.arrays.categorical import Categorical
 
-from .cube import get_all_units, get_all_measures
-from csvcubed.models.cube import QbCube, QbColumn
+from csvcubed.models.cube.cube import QbCube, QbColumn
 from csvcubed.models.cube.qb.components import (
     NewQbMeasure,
     NewQbUnit,
@@ -23,7 +22,7 @@ from csvcubed.models.cube.qb.components import (
     QbAttributeLiteral,
     QbObservationValue,
 )
-
+from .cube import get_all_units, get_all_measures
 
 _unsigned_integer_data_types = {
     "unsignedLong",

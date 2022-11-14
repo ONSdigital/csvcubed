@@ -8,7 +8,7 @@ Collection of SPARQL queries.
 import logging
 from enum import Enum
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 
 import rdflib
 from rdflib import Literal, URIRef
@@ -18,6 +18,7 @@ from csvcubed.models.sparqlresults import (
     CSVWTableSchemaFileDependenciesResult,
     CatalogMetadataResult,
     CodeListColsByDatasetUrlResult,
+    IsPivotedShapeMeasureResult,
     PrimaryKeyColNamesByDatasetUrlResult,
     CodelistsResult,
     ColsWithSuppressOutputTrueResult,
@@ -29,6 +30,7 @@ from csvcubed.models.sparqlresults import (
     TableSchemaPropertiesResult,
     map_catalog_metadata_result,
     map_codelist_cols_by_dataset_url_result,
+    map_is_pivoted_shape_for_measures_in_data_set,
     map_primary_key_col_names_by_dataset_url_result,
     map_codelists_sparql_result,
     map_cols_with_supress_output_true_sparql_result,
@@ -47,9 +49,9 @@ from csvcubed.models.csvcubedexception import (
     InvalidNumberOfRecordsException,
 )
 from csvcubed.definitions import APP_ROOT_DIR_PATH
+from csvcubed.models.cube.cube_shape import CubeShape
 
 _logger = logging.getLogger(__name__)
-
 
 class SPARQLQueryName(Enum):
     """
@@ -65,6 +67,10 @@ class SPARQLQueryName(Enum):
     SELECT_DSD_DATASETLABEL_AND_URI = "select_dsd_datasetlabel_and_uri"
 
     SELECT_DSD_QUBE_COMPONENTS = "select_dsd_qube_components"
+
+    SELECT_OBS_VAL_FOR_DSD_COMPONENT_PROPERTIES = (
+        "select_obs_val_for_dsd_component_properties"
+    )
 
     SELECT_COLS_W_SUPPRESS_OUTPUT = "select_cols_w_suppress_output"
 
@@ -89,6 +95,10 @@ class SPARQLQueryName(Enum):
     SELECT_METADATA_DEPENDENCIES = "select_metadata_dependencies"
 
     SELECT_TABLE_SCHEMA_PROPERTIES = "select_table_schema_properties"
+
+    SELECT_IS_PIVOTED_SHAPE_FOR_MEASURES_IN_DATA_SET = (
+        "select_is_pivoted_shape_for_measures_in_data_set"
+    )
 
 
 def _get_query_string_from_file(queryType: SPARQLQueryName) -> str:
@@ -200,7 +210,10 @@ def select_csvw_dsd_dataset_label_and_dsd_def_uri(
 
 
 def select_csvw_dsd_qube_components(
-    rdf_graph: rdflib.ConjunctiveGraph, dsd_uri: str, json_path: Path
+    cube_shape: Optional[CubeShape],
+    rdf_graph: rdflib.ConjunctiveGraph,
+    dsd_uri: str,
+    json_path: Path,
 ) -> QubeComponentsResult:
     """
     Queries the list of qube components.
@@ -209,12 +222,41 @@ def select_csvw_dsd_qube_components(
 
     :return: `QubeComponentsResult`
     """
-    results: List[ResultRow] = select(
+    result_dsd_components: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryName.SELECT_DSD_QUBE_COMPONENTS),
         rdf_graph,
         init_bindings={"dsd_uri": URIRef(dsd_uri)},
     )
-    return map_qube_components_sparql_result(results, json_path)
+
+    result_observation_val_col_titles: Optional[List[ResultRow]] = None
+    if cube_shape == CubeShape.Pivoted:
+        result_observation_val_col_titles = select(
+            _get_query_string_from_file(
+                SPARQLQueryName.SELECT_OBS_VAL_FOR_DSD_COMPONENT_PROPERTIES
+            ),
+            rdf_graph,
+            init_bindings={"dsd_uri": URIRef(dsd_uri)},
+        )
+
+    return map_qube_components_sparql_result(
+        result_dsd_components, result_observation_val_col_titles, json_path
+    )
+
+
+def select_is_pivoted_shape_for_measures_in_data_set(
+    rdf_graph: rdflib.ConjunctiveGraph,
+) -> List[IsPivotedShapeMeasureResult]:
+    """
+    Queries the measure and whether it is a part of a pivoted or standard shape cube.
+    """
+    result_is_pivoted_shape: List[ResultRow] = select(
+        _get_query_string_from_file(
+            SPARQLQueryName.SELECT_IS_PIVOTED_SHAPE_FOR_MEASURES_IN_DATA_SET
+        ),
+        rdf_graph,
+    )
+
+    return map_is_pivoted_shape_for_measures_in_data_set(result_is_pivoted_shape)
 
 
 def select_cols_where_suppress_output_is_true(
@@ -372,6 +414,7 @@ def select_codelist_cols_by_dataset_url(
             num_of_records=len(results),
         )
     return map_codelist_cols_by_dataset_url_result(results)
+
 
 def select_primary_key_col_names_by_dataset_url(
     rdf_graph: rdflib.ConjunctiveGraph, table_url: str

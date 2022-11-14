@@ -13,35 +13,30 @@ from typing import Dict, Any, Iterable, List
 
 import pandas as pd
 
-from csvcubed.utils.uri import (
-    csvw_column_name_safe,
+from csvcubed.models.cube.columns import CsvColumn, SuppressedCsvColumn
+from csvcubed.models.cube.cube import QbCube
+from csvcubed.models.cube.qb.columns import QbColumn
+from csvcubed.models.cube.qb.components.attribute import QbAttribute, QbAttributeLiteral
+from csvcubed.models.cube.qb.components.codelist import (
+    NewQbCodeListInCsvW,
+    NewQbCodeList,
 )
+from csvcubed.models.cube.qb.components.dimension import QbDimension, NewQbDimension
+from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureDimension
+from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
+from csvcubed.models.cube.qb.components.unitscolumn import QbMultiUnits
 from csvcubed.utils.csvw import get_dependent_local_files
-from csvcubed.utils.qb.standardise import (
-    convert_data_values_to_uri_safe_values,
-    ensure_int_columns_are_ints,
-)
 from csvcubed.utils.file import copy_files_to_directory_with_structure
-from csvcubed.writers.helpers.qbwriter.dsdtordfmodelshelper import DsdToRdfModelsHelper
-from .skoscodelistwriter import SkosCodeListWriter
-from .helpers.qbwriter.urihelper import UriHelper
-from .writerbase import WriterBase
-from ..models.cube import (
-    QbAttribute,
-    QbMultiMeasureDimension,
-    QbMultiUnits,
-    QbAttributeLiteral,
-    NewQbDimension,
-    QbColumn,
-    QbObservationValue,
-    QbDimension,
-    CsvColumn,
-    SuppressedCsvColumn,
-    QbCube,
+from csvcubed.utils.qb.standardise import (
+    ensure_int_columns_are_ints,
+    convert_data_values_to_uri_safe_values,
 )
-from ..models.cube.qb.components.codelist import NewQbCodeListInCsvW, NewQbCodeList
-from ..utils.qb.validation.observations import get_observation_status_columns
-
+from csvcubed.utils.qb.validation.observations import get_observation_status_columns
+from csvcubed.utils.uri import csvw_column_name_safe
+from csvcubed.writers.helpers.qbwriter.dsdtordfmodelshelper import DsdToRdfModelsHelper
+from csvcubed.writers.helpers.qbwriter.urihelper import UriHelper
+from csvcubed.writers.skoscodelistwriter import SkosCodeListWriter
+from csvcubed.writers.writerbase import WriterBase
 
 _logger = logging.getLogger(__name__)
 
@@ -291,6 +286,20 @@ class QbWriter(WriterBase):
                 "valueUrl": self._uris.get_measure_uri(measure),
             }
         )
+
+        if obs_column.structural_definition.unit is not None:
+            virtual_columns.append(
+                {
+                    "name": f"virt_obs_{csvw_safe_obs_column_name}_unit",
+                    "virtual": True,
+                    "aboutUrl": observation_uri,
+                    "propertyUrl": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
+                    "valueUrl": self._uris.get_unit_uri(
+                        obs_column.structural_definition.unit
+                    ),
+                }
+            )
+
         # For each dimension in the cube, creates the `?obsUri ?dimUri ?valueUri` triple.
         dimension_columns = self.cube.get_columns_of_dsd_type(QbDimension)
         for dimension_col in dimension_columns:

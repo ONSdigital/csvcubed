@@ -1,5 +1,5 @@
 import os
-from typing import List
+from typing import List, Optional
 from urllib.parse import urlparse
 import re
 import pandas as pd
@@ -9,15 +9,19 @@ from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
 from csvcubeddevtools.helpers.file import get_test_cases_dir
 from csvcubeddevtools.behaviour.rdf import test_graph_diff
 from rdflib import Graph
-
-from csvcubed.models.cube import *
-from csvcubed.models.cube import (
-    ExistingQbAttribute,
-    NewQbAttribute,
-    NewQbConcept,
-    QbMultiMeasureDimension,
-    QbMultiUnits,
-)
+from csvcubed.models.cube.columns import SuppressedCsvColumn
+from csvcubed.models.cube.cube import Cube, QbCube
+from csvcubed.models.cube.qb.catalog import CatalogMetadata
+from csvcubed.models.cube.qb.columns import QbColumn
+from csvcubed.models.cube.qb.components.attribute import ExistingQbAttribute, ExistingQbAttributeLiteral, NewQbAttribute, NewQbAttributeLiteral
+from csvcubed.models.cube.qb.components.codelist import ExistingQbCodeList, NewQbCodeList, NewQbCodeListInCsvW
+from csvcubed.models.cube.qb.components.concept import NewQbConcept
+from csvcubed.models.cube.qb.components.dimension import ExistingQbDimension, NewQbDimension
+from csvcubed.models.cube.qb.components.measure import ExistingQbMeasure, NewQbMeasure
+from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureDimension
+from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
+from csvcubed.models.cube.qb.components.unit import ExistingQbUnit, NewQbUnit
+from csvcubed.models.cube.qb.components.unitscolumn import QbMultiUnits
 
 from csvcubed.models.validationerror import ValidationError
 from csvcubed.models.cube.uristyle import URIStyle
@@ -872,7 +876,9 @@ def assert_uri_style_for_uri(uri_style: URIStyle, uri: str, node):
         ), f"expected {node} to end with .csv or .json"
 
 
-@Given('a pivoted shape cube with identifier "{identifier}" named "{cube_name}"')
+@Given(
+    'a multi-measure pivoted shape cube with identifier "{identifier}" named "{cube_name}"'
+)
 def step_impl(context, identifier: str, cube_name: str):
     metadata = CatalogMetadata(title=cube_name, identifier=identifier)
     data = pd.DataFrame(
@@ -905,6 +911,41 @@ def step_impl(context, identifier: str, cube_name: str):
             QbObservationValue(
                 NewQbMeasure("Some Other Measure"), NewQbUnit("Some Unit")
             ),
+        ),
+    ]
+
+    cube = Cube(metadata=metadata, data=data, columns=columns)
+    context.cube = cube
+
+
+@Given(
+    'a single-measure pivoted shape cube with identifier "{identifier}" named "{cube_name}"'
+)
+def step_impl(context, identifier: str, cube_name: str):
+    metadata = CatalogMetadata(title=cube_name, identifier=identifier)
+    data = pd.DataFrame(
+        {
+            "Some Dimension": ["a", "b", "c"],
+            "Some Attribute": ["attr-a", "attr-b", "attr-c"],
+            "Some Obs Val": [1, 2, 3],
+        }
+    )
+    columns = [
+        QbColumn(
+            "Some Dimension",
+            NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
+        ),
+        QbColumn(
+            "Some Attribute",
+            NewQbAttribute.from_data(
+                "Some Attribute",
+                data["Some Attribute"],
+                observed_value_col_title="Some Obs Val",
+            ),
+        ),
+        QbColumn(
+            "Some Obs Val",
+            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
 

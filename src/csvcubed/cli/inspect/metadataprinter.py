@@ -5,10 +5,12 @@ Metadata Printer
 Provides functionality for validating and detecting input metadata.json file.
 """
 
+import os
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import List, Optional, Tuple
 from urllib.parse import urljoin
+from distutils.util import strtobool
 
 import rdflib
 from pandas import DataFrame
@@ -24,7 +26,7 @@ from csvcubed.models.sparqlresults import (
     QubeComponentsResult,
 )
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
-from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
+from csvcubed.models.csvwtype import CSVWType
 from csvcubed.utils.sparql_handler.sparqlmanager import (
     select_codelist_cols_by_dataset_url,
     select_codelist_dataset_url,
@@ -60,6 +62,7 @@ from csvcubed.utils.skos.codelist import (
     get_codelist_col_title_from_col_name,
 )
 from csvcubed.utils.uri import looks_like_uri
+from csvcubed.models.cube.cube_shape import CubeShape
 
 
 @dataclass
@@ -69,6 +72,7 @@ class MetadataPrinter:
     """
 
     csvw_type: CSVWType
+    cube_shape: Optional[CubeShape]
     csvw_metadata_rdf_graph: rdflib.ConjunctiveGraph
     csvw_metadata_json_path: Path
 
@@ -151,7 +155,7 @@ class MetadataPrinter:
             self.csvw_metadata_json_path, Path(self.dataset_url)
         )
         self.result_dataset_observations_info = get_dataset_observations_info(
-            self.dataset, self.csvw_type
+            self.dataset, self.csvw_type, self.cube_shape
         )
 
     def get_datacube_results(self):
@@ -164,6 +168,7 @@ class MetadataPrinter:
             select_csvw_dsd_dataset_label_and_dsd_def_uri(self.csvw_metadata_rdf_graph)
         )
         self.result_qube_components = select_csvw_dsd_qube_components(
+            self.cube_shape,
             self.csvw_metadata_rdf_graph,
             self.result_dataset_label_dsd_uri.dsd_uri,
             self.csvw_metadata_json_path,
@@ -176,20 +181,32 @@ class MetadataPrinter:
             self.result_dataset_label_dsd_uri.dsd_uri,
             self.csvw_metadata_json_path,
         )
-        (
-            canonical_shape_dataset,
-            measure_col,
-            unit_col,
-        ) = transform_dataset_to_canonical_shape(
-            self.dataset,
-            self.result_qube_components.qube_components,
-            self.result_dataset_label_dsd_uri.dsd_uri,
-            self.csvw_metadata_rdf_graph,
-            self.csvw_metadata_json_path,
+
+        # strtobool is not case sensitive and will work the same way with "True" or "true" inputs, also with "False" or "false".
+        # Below is a temporary workaround until we complete the other pivoted shape tickets. The value is set by the related behave tests.
+        is_pivoted_multi_measure = strtobool(
+            os.environ.get("PIVOTED_MULTI_MEASURE", "False")
         )
-        self.result_dataset_value_counts = get_dataset_val_counts_info(
-            canonical_shape_dataset, measure_col, unit_col
-        )
+        if is_pivoted_multi_measure:
+            data = DataFrame(data=[], columns=["Measure", "Unit", "Count"])
+            self.result_dataset_value_counts = (
+                DatasetObservationsByMeasureUnitInfoResult(data)
+            )
+        else:
+            (
+                canonical_shape_dataset,
+                measure_col,
+                unit_col,
+            ) = transform_dataset_to_canonical_shape(
+                self.dataset,
+                self.result_qube_components.qube_components,
+                self.result_dataset_label_dsd_uri.dsd_uri,
+                self.csvw_metadata_rdf_graph,
+                self.csvw_metadata_json_path,
+            )
+            self.result_dataset_value_counts = get_dataset_val_counts_info(
+                canonical_shape_dataset, measure_col, unit_col
+            )
 
     def generate_codelist_results(self):
         """
@@ -201,19 +218,19 @@ class MetadataPrinter:
             self.csvw_metadata_rdf_graph, self.dataset_url
         )
         # Retrieving the primary key column names of the code list to identify the unique identifier
-        result_primary_key_col_names_by_dataset_url: PrimaryKeyColNamesByDatasetUrlResult = (
-            select_primary_key_col_names_by_dataset_url(
-                self.csvw_metadata_rdf_graph, self.dataset_url
-            )
+        result_primary_key_col_names_by_dataset_url: PrimaryKeyColNamesByDatasetUrlResult = select_primary_key_col_names_by_dataset_url(
+            self.csvw_metadata_rdf_graph, self.dataset_url
         )
-        primary_key_col_names = result_primary_key_col_names_by_dataset_url.primary_key_col_names
-        
+        primary_key_col_names = (
+            result_primary_key_col_names_by_dataset_url.primary_key_col_names
+        )
+
         # Currently, we do not support composite primary keys.
         if len(primary_key_col_names) != 1:
             raise UnsupportedNumOfPrimaryKeyColNamesException(
                 num_of_primary_key_col_names=len(primary_key_col_names),
-                table_url=self.dataset_url
-            )        
+                table_url=self.dataset_url,
+            )
         (
             parent_col_title,
             label_col_title,

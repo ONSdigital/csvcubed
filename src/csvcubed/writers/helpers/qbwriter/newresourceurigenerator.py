@@ -8,7 +8,7 @@ Contains all of the URI definitions & configuration necessary to serialise a QbC
 from dataclasses import dataclass
 from typing import List, Optional
 
-from csvcubed.models.cube import QbCube
+from csvcubed.models.cube.cube import QbCube
 from csvcubed.models.cube.uristyle import URIStyle
 
 
