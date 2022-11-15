@@ -57,6 +57,10 @@ empty_qbwriter = QbWriter(empty_cube)
 
 
 def test_output_new_code_list_csvws_urls():
+    """
+    Ensure that a new code list is referenced as a table in the CSV-W.
+    """
+
     data = pd.DataFrame({"New Dimension": ["A", "B", "C"], "Value": [1, 2, 3]})
     cube = Cube(
         CatalogMetadata("Cube Name"),
@@ -83,7 +87,11 @@ def test_output_new_code_list_csvws_urls():
         ) in graph
 
 
-def test_output_new_code_list_csvws_urls_with_uri_style_without_file_extensions():
+def test_output_new_code_list_csws_urls_with_uri_style_without_file_extensions():
+    """
+    Ensure that a new code list is correctly referenced as a table in the CSV-W even when
+    the URIStyle is set to output URIs without file extensions.
+    """
     data = pd.DataFrame({"New Dimension": ["A", "B", "C"], "Value": [1, 2, 3]})
     cube = Cube(
         CatalogMetadata("Cube Name"),

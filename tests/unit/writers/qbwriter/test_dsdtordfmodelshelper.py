@@ -66,6 +66,9 @@ def test_structure_defined():
 
 
 def test_structure_uri():
+    """
+    Ensure that the data structure definition's URI is defined relative to the cube's CSV file.
+    """
     cube = Cube(CatalogMetadata("Cube Name"))
     dsd_helper = DsdToRdfModelsHelper(cube, UriHelper(cube))
 
@@ -74,6 +77,11 @@ def test_structure_uri():
 
 
 def test_structure_uri_standard_pattern():
+    """
+    Ensure that the data structure definition's URI is defined relative to the cube's CSV file when
+    the URIStyle is set to output in the standard format (i.e. with file extensions).
+    """
+
     cube = Cube(CatalogMetadata("Cube Name"), uri_style=URIStyle.Standard)
     dsd_helper = DsdToRdfModelsHelper(cube, UriHelper(cube))
 
@@ -82,6 +90,10 @@ def test_structure_uri_standard_pattern():
 
 
 def test_structure_uri_without_file_extensions_pattern():
+    """
+    Ensure that the data structure definition's URI is defined relative to the cube's CSV file even when
+    the URIStyle is set to output URIs without file extensions.
+    """
     cube = Cube(CatalogMetadata("Cube Name"), uri_style=URIStyle.WithoutFileExtensions)
     dsd_helper = DsdToRdfModelsHelper(cube, UriHelper(cube))
 
