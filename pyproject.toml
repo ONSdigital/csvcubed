@@ -1,11 +1,17 @@
 [tool.poetry]
 authors = ["Integrated Data Service - Dissemination <csvcubed@gsscogs.uk>"]
 description = "A tool to generate RDF Data Cube style CSV-W cubes from tidy CSV files. Part of the csvcubed family."
-exclude = ["docs/*"]
+exclude = [
+  "docs/*",
+  "tests/*"
+]
 license = "Apache-2.0"
 name = "csvcubed"
 packages = [
   {include = "csvcubed", from = "src"},
+  # Adding tests package so we can import in unit/behaviour/stress/profiling tests, but the exlucde above makes sure the 
+  # package doesn't actually include any of theses files.
+  {include = "tests"}
 ]
 readme = "README.md"
 version = "0.1.0-dev"
