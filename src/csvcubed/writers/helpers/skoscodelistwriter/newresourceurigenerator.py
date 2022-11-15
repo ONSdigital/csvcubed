@@ -8,13 +8,13 @@ from dataclasses import dataclass
 
 from csvcubed.models.cube.qb.components.codelist import NewQbCodeList
 from csvcubed.models.cube.uristyle import URIStyle
-from csvcubed.writers.urihelpers.skoscodelistconstants import SCHEMA_URI_IDENTIFIER
+from .constants import SCHEMA_URI_IDENTIFIER
 
 
 @dataclass
-class SkosCodeListNewUriHelper:
+class NewResourceUriGenerator:
     """
-    Defines all of the URIs in a NewQbCodeList CSV-W which is serialised to disk.
+    Defines all of the URIs in a Code List CSV-W which is serialised to disk.
     """
 
     code_list: NewQbCodeList

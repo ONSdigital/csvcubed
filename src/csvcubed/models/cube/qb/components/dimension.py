@@ -4,14 +4,14 @@ Dimensions
 
 Represent dimensions inside an RDF Data Cube.
 """
+from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Optional, List, Set
-from abc import ABC, abstractmethod
+
 import pandas as pd
 
 from csvcubed.inputs import PandasDataTypes
-from csvcubed.models.cube.uristyle import URIStyle
-from csvcubed.models.uriidentifiable import UriIdentifiable
+from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.cube.qb.components.arbitraryrdf import (
     ArbitraryRdf,
     RdfSerialisationHint,
@@ -20,13 +20,14 @@ from csvcubed.models.cube.qb.components.arbitraryrdf import (
 from csvcubed.models.cube.qb.components.datastructuredefinition import (
     QbColumnStructuralDefinition,
 )
+from csvcubed.models.cube.uristyle import URIStyle
+from csvcubed.models.uriidentifiable import UriIdentifiable
+from csvcubed.models.validationerror import ValidationError
+from csvcubed.utils.validators.uri import validate_uri
 from .codelist import (
     QbCodeList,
     NewQbCodeList,
 )
-from csvcubed.models.validationerror import ValidationError
-from csvcubed.models.cube.qb.catalog import CatalogMetadata
-from csvcubed.utils.validators.uri import validate_uri
 
 
 @dataclass
@@ -105,7 +106,9 @@ class NewQbDimension(QbDimension, UriIdentifiable):
         return NewQbDimension(
             label=label,
             description=description,
-            code_list=NewQbCodeList.from_data(CatalogMetadata(label), data, code_list_uri_style),
+            code_list=NewQbCodeList.from_data(
+                CatalogMetadata(label), data, code_list_uri_style
+            ),
             parent_dimension_uri=parent_dimension_uri,
             source_uri=source_uri,
             range_uri=range_uri,

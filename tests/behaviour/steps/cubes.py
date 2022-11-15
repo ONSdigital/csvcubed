@@ -2,13 +2,12 @@ import datetime
 import json
 from typing import List, Optional
 
-from behave import *
-import vcr
 import pandas as pd
-from pandas.testing import assert_frame_equal
-
+import vcr
+from behave import *
 from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
 from csvcubeddevtools.helpers.file import get_test_cases_dir
+from pandas.testing import assert_frame_equal
 
 from csvcubed.cli.build import build as cli_build
 from csvcubed.models.cube.columns import CsvColumn
@@ -49,7 +48,9 @@ def step_impl(context):
     config_file = context.config_file if hasattr(context, "config_file") else None
     data_file = context.data_file
     scenario_name = context.scenario.name
-    cassette_file_name = scenario_name.rsplit("]")[1]
+    cassette_file_name = (
+        scenario_name.rsplit("]")[1] if "]" in scenario_name else scenario_name
+    )
 
     mocker = mock_json_schemas()
     context.add_cleanup(lambda: mocker.stop())

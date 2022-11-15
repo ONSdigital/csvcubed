@@ -4,12 +4,13 @@ Arbitrary RDF Container
 
 Defines a mixin permitting arbitrary RDF to be added to a qb component.
 """
-from abc import ABC, abstractmethod, abstractproperty
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from enum import Enum
-from typing import Set, Dict, Union, List, Tuple
-from rdflib.term import Identifier, URIRef, Literal
+from typing import Set, Dict, Union, List
+
 from csvcubedmodels.rdf import NewResource, InversePredicate
+from rdflib.term import Identifier, URIRef, Literal
 
 from csvcubed.models.pydanticmodel import PydanticModel
 from csvcubed.utils.uri import looks_like_uri
@@ -98,7 +99,7 @@ class ArbitraryRdf(ABC):
         ...
 
     def get_arbitrary_rdf_fragments(self) -> Set[TripleFragmentBase]:
-        return set(self._get_arbitrary_rdf()) 
+        return set(self._get_arbitrary_rdf())
 
     def copy_arbitrary_triple_fragments_to_resources(
         self,

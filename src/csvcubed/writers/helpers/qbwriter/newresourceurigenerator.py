@@ -13,9 +13,9 @@ from csvcubed.models.cube.uristyle import URIStyle
 
 
 @dataclass
-class QbCubeNewUriHelper:
+class NewResourceUriGenerator:
     """
-    Defines all of the URIs in a QbCube CSV-W which is serialised to disk.
+    Defines all of the URIs for new resources defined in a QbCube CSV-W.
     """
 
     cube: QbCube
@@ -48,7 +48,9 @@ class QbCubeNewUriHelper:
 
         return self._uri_in_doc(f"obs/{identifying_parts}")
 
-    def get_slice_across_measures_uri(self, dimension_identifying_values: List[str]) -> str:
+    def get_slice_across_measures_uri(
+        self, dimension_identifying_values: List[str]
+    ) -> str:
         identifying_parts = ",".join(dimension_identifying_values)
         return self._uri_in_doc(f"slice/{identifying_parts}")
 
@@ -78,7 +80,6 @@ class QbCubeNewUriHelper:
     def get_slice_key_across_measures_uri(self) -> str:
         return self.get_slice_uri("cross-measures")
 
-
     def get_class_uri(self, class_identifier: str) -> str:
         return self._uri_in_doc(f"class/{class_identifier}")
 
@@ -91,5 +92,5 @@ class QbCubeNewUriHelper:
     def get_structure_uri(self) -> str:
         return self._uri_in_doc("structure")
 
-    def get_activity_uri(self) -> str:
+    def get_build_activity_uri(self) -> str:
         return self._uri_in_doc("csvcubed-build-activity")

@@ -5,10 +5,11 @@ Qb-Cube Validation Errors
 :obj:`ValidationError <csvcubed.models.validationerror.ValidationError>` models specific to :mod:`qb`.
 """
 
+from abc import ABC
 from dataclasses import dataclass
 from typing import Optional, Type, Union
-from abc import ABC
 
+from csvcubed.models.validationerror import SpecificValidationError
 from ..qb import (
     QbMultiMeasureDimension,
     QbDimension,
@@ -16,7 +17,6 @@ from ..qb import (
     QbMultiUnits,
     QbStructuralDefinition,
 )
-from csvcubed.models.validationerror import SpecificValidationError
 
 ComponentTypeDescription = Union[str, Type[QbStructuralDefinition]]
 
@@ -40,7 +40,7 @@ class CsvColumnUriTemplateMissingError(SpecificValidationError):
 
     @classmethod
     def get_error_url(cls) -> str:
-        return 'http://purl.org/csv-cubed/err/csv-col-uri-temp-mis'
+        return "http://purl.org/csv-cubed/err/csv-col-uri-temp-mis"
 
     def __post_init__(self):
         self.message = (
@@ -60,7 +60,7 @@ class CsvColumnLiteralWithUriTemplate(SpecificValidationError):
 
     @classmethod
     def get_error_url(cls) -> str:
-        return 'http://purl.org/csv-cubed/err/csv-col-lit-uri-temp'
+        return "http://purl.org/csv-cubed/err/csv-col-lit-uri-temp"
 
     def __post_init__(self):
         self.message = (
@@ -110,7 +110,7 @@ class MoreThanOneMeasureColumnError(MaxNumComponentsExceededError):
 
     @classmethod
     def get_error_url(cls) -> str:
-        return 'http://purl.org/csv-cubed/err/multi-meas-col'
+        return "http://purl.org/csv-cubed/err/multi-meas-col"
 
 
 @dataclass
@@ -124,7 +124,7 @@ class MoreThanOneUnitsColumnError(MaxNumComponentsExceededError):
 
     @classmethod
     def get_error_url(cls) -> str:
-        return 'http://purl.org/csv-cubed/err/multi-unit-col'
+        return "http://purl.org/csv-cubed/err/multi-unit-col"
 
 
 @dataclass
@@ -138,7 +138,7 @@ class MoreThanOneObservationsColumnError(MaxNumComponentsExceededError):
 
     @classmethod
     def get_error_url(cls) -> str:
-        return 'http://purl.org/csv-cubed/err/multi-obsv-col'
+        return "http://purl.org/csv-cubed/err/multi-obsv-col"
 
 
 @dataclass
@@ -173,7 +173,7 @@ class NoDimensionsDefinedError(MinNumComponentsNotSatisfiedError):
 
     @classmethod
     def get_error_url(cls) -> str:
-        return 'http://purl.org/csv-cubed/err/no-dim'
+        return "http://purl.org/csv-cubed/err/no-dim"
 
 
 @dataclass
@@ -227,7 +227,7 @@ class NoUnitsDefinedError(NeitherDefinedError):
 
     @classmethod
     def get_error_url(cls) -> str:
-        return 'http://purl.org/csv-cubed/err/no-unit'
+        return "http://purl.org/csv-cubed/err/no-unit"
 
 
 @dataclass
@@ -241,7 +241,7 @@ class NoMeasuresDefinedError(NeitherDefinedError):
 
     @classmethod
     def get_error_url(cls) -> str:
-        return 'http://purl.org/csv-cubed/err/no-meas'
+        return "http://purl.org/csv-cubed/err/no-meas"
 
 
 @dataclass
@@ -256,7 +256,7 @@ class NoObservedValuesColumnDefinedError(MinNumComponentsNotSatisfiedError):
 
     @classmethod
     def get_error_url(cls) -> str:
-        return 'http://purl.org/csv-cubed/err/no-obsv-col'
+        return "http://purl.org/csv-cubed/err/no-obsv-col"
 
 
 @dataclass
@@ -291,7 +291,7 @@ class BothUnitTypesDefinedError(IncompatibleComponentsError):
 
     @classmethod
     def get_error_url(cls) -> str:
-        return 'http://purl.org/csv-cubed/err/both-unit-typ-def'
+        return "http://purl.org/csv-cubed/err/both-unit-typ-def"
 
 
 @dataclass
@@ -306,7 +306,7 @@ class BothMeasureTypesDefinedError(IncompatibleComponentsError):
 
     @classmethod
     def get_error_url(cls) -> str:
-        return 'http://purl.org/csv-cubed/err/both-meas-typ-def'
+        return "http://purl.org/csv-cubed/err/both-meas-typ-def"
 
 
 @dataclass
@@ -318,7 +318,9 @@ class EmptyQbMultiMeasureDimensionError(SpecificValidationError):
 
     @classmethod
     def get_error_url(cls) -> str:
-        return 'http://purl.org/csv-cubed/err/empty-multi-meas-dimension'
+        return "http://purl.org/csv-cubed/err/empty-multi-meas-dimension"
 
     def __post_init__(self):
-        self.message = 'The field attribute of a QbMultiMeasureDimension must be populated'
+        self.message = (
+            "The field attribute of a QbMultiMeasureDimension must be populated"
+        )

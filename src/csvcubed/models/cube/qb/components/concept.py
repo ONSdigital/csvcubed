@@ -8,10 +8,10 @@ Represent individual concepts inside a `skos:ConceptScheme`.
 from dataclasses import dataclass, field
 from typing import Optional
 
-from .datastructuredefinition import SecondaryQbStructuralDefinition
 from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.utils.uri import uri_safe
 from csvcubed.utils.validators.uri import validate_uri
+from .datastructuredefinition import SecondaryQbStructuralDefinition
 
 
 @dataclass(eq=False, unsafe_hash=False)

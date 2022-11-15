@@ -5,8 +5,9 @@ Csvcubed DateTime Utils
 Functions for handling date time within csvcubed.
 """
 import datetime
-from dateutil import parser
 from typing import Union
+
+from dateutil import parser
 
 
 def parse_iso_8601_date_time(
