@@ -4,7 +4,6 @@ New Unit
 """
 from typing import Annotated, Optional
 
-from csvcubedmodels.rdf.namespaces import OM2, QUDT, RDFS, XSD
 from csvcubedmodels.rdf import (
     NewMetadataResource,
     Triple,
@@ -14,6 +13,7 @@ from csvcubedmodels.rdf import (
     ExistingResource,
     MaybeResource,
 )
+from csvcubedmodels.rdf.namespaces import OM2, QUDT, RDFS, XSD
 
 
 class NewUnitResource(NewMetadataResource):

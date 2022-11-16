@@ -1,4 +1,5 @@
 import pandas as pd
+
 from csvcubed.models.cube.qb.components import (
     NewQbDimension,
     NewQbCodeList,

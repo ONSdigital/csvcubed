@@ -1,44 +1,17 @@
 import datetime
-from pathlib import Path
 import json
-import pandas as pd
+from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import List
 
-from csvcubed.models.cube.qb.components.attribute import (
-    ExistingQbAttribute,
-    ExistingQbAttributeLiteral,
-    NewQbAttributeLiteral,
-)
-from csvcubed.models.cube.qb.components.codelist import (
-    CompositeQbCodeList,
-    ExistingQbCodeList,
-)
-from csvcubed.models.cube.qb.components.concept import DuplicatedQbConcept
-from csvcubed.models.cube.qb.components.dimension import ExistingQbDimension
-from csvcubed.models.cube.qb.components.measure import ExistingQbMeasure
-from csvcubed.models.cube.qb.components.unit import ExistingQbUnit
-from csvcubed.readers.catalogmetadata.v1.catalog_metadata_reader import (
-    metadata_from_dict,
-)
-
+import pandas as pd
 import pytest
 
-from csvcubed.models.cube.cube import Cube
-from csvcubed.models.cube.qb.catalog import CatalogMetadata
-from csvcubed.models.cube.qb.components.attributevalue import (
-    NewQbAttributeValue,
-)
-from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
-from csvcubed.readers.cubeconfig.v1.mapcolumntocomponent import (
-    map_column_to_qb_component,
-)
-from csvcubed.utils.uri import uri_safe
 from csvcubed.cli.build import build as cli_build
-from csvcubed.readers.cubeconfig.v1.configdeserialiser import _get_qb_column_from_json
-from tests.unit.test_baseunit import get_test_cases_dir, assert_num_validation_errors
 from csvcubed.definitions import APP_ROOT_DIR_PATH
+from csvcubed.models.cube.cube import Cube
 from csvcubed.models.cube.qb import QbColumn
+from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.cube.qb.components import (
     NewQbMeasure,
     NewQbUnit,
@@ -49,7 +22,32 @@ from csvcubed.models.cube.qb.components import (
     NewQbAttribute,
     NewQbConcept,
 )
-
+from csvcubed.models.cube.qb.components.attribute import (
+    ExistingQbAttribute,
+    ExistingQbAttributeLiteral,
+    NewQbAttributeLiteral
+)
+from csvcubed.models.cube.qb.components.attributevalue import (
+    NewQbAttributeValue,
+)
+from csvcubed.models.cube.qb.components.codelist import (
+    CompositeQbCodeList,
+    ExistingQbCodeList,
+)
+from csvcubed.models.cube.qb.components.concept import DuplicatedQbConcept
+from csvcubed.models.cube.qb.components.dimension import ExistingQbDimension
+from csvcubed.models.cube.qb.components.measure import ExistingQbMeasure
+from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
+from csvcubed.models.cube.qb.components.unit import ExistingQbUnit
+from csvcubed.readers.catalogmetadata.v1.catalog_metadata_reader import (
+    metadata_from_dict,
+)
+from csvcubed.readers.cubeconfig.v1.configdeserialiser import _get_qb_column_from_json
+from csvcubed.readers.cubeconfig.v1.mapcolumntocomponent import (
+    map_column_to_qb_component,
+)
+from csvcubed.utils.uri import uri_safe
+from tests.unit.test_baseunit import get_test_cases_dir, assert_num_validation_errors
 from .virtualconfigs import VirtualConfigurations as vc
 
 TEST_CASE_DIR = get_test_cases_dir().absolute() / "readers" / "cube-config" / "v1.0"

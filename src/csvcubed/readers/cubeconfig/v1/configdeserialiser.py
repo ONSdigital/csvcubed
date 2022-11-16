@@ -6,43 +6,41 @@ A loader for the v1.* config.json.
 """
 import logging
 from json import JSONDecodeError
-import pandas as pd
 from pathlib import Path
-from typing import Dict, Optional, Tuple, List, Callable, Union, Iterable
+from typing import Dict, Optional, Tuple, List, Callable
 
-from csvcubed.models.cube.qb.columns import QbColumn
-from csvcubed.models.cube.cube import QbCube
+import pandas as pd
+
 from csvcubed.models.cube.columns import CsvColumn, SuppressedCsvColumn
 from csvcubed.models.cube.cube import Cube
+from csvcubed.models.cube.cube import QbCube
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
-from csvcubed.models.validationerror import ValidationError
+from csvcubed.models.cube.qb.columns import QbColumn
 from csvcubed.models.jsonvalidationerrors import (
     JsonSchemaValidationError,
     GenericJsonSchemaValidationError,
-    AnyOneOfJsonSchemaValidationError,
 )
-from csvcubed.utils.iterables import first
-from csvcubed.utils.validators.schema import validate_dict_against_schema
-from csvcubed.utils.json import resolve_path
+from csvcubed.models.validationerror import ValidationError
+from csvcubed.readers.catalogmetadata.v1.catalog_metadata_reader import (
+    metadata_from_dict,
+)
 from csvcubed.readers.cubeconfig.utils import (
     generate_title_from_file_name,
     load_resource,
     read_and_check_csv,
 )
-from csvcubed.readers.catalogmetadata.v1.catalog_metadata_reader import (
-    metadata_from_dict,
-)
+from csvcubed.readers.cubeconfig.v1 import datatypes
 from csvcubed.readers.cubeconfig.v1.mapcolumntocomponent import (
     map_column_to_qb_component,
 )
-from csvcubed.readers.cubeconfig.v1 import datatypes
-from csvcubed.utils.validators.schema import map_to_internal_validation_errors
+from csvcubed.utils.iterables import first
 from csvcubed.utils.json import to_json_path
+from csvcubed.utils.validators.schema import map_to_internal_validation_errors
+from csvcubed.utils.validators.schema import validate_dict_against_schema
 from .constants import CONVENTION_NAMES
 
 # Used to determine whether a column name matches accepted conventions
 from ...preconfiguredtemplates import apply_preconfigured_values_from_template
-
 
 _logger = logging.getLogger(__name__)
 

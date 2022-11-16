@@ -3,14 +3,14 @@ Log
 ---
 Utilities to help with logging.
 """
+import io
 import logging
 import logging.handlers
 import sys
-import io
 import traceback
-
-from typing import Union
 from pathlib import Path
+from typing import Union
+
 from appdirs import AppDirs
 
 

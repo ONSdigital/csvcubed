@@ -2,7 +2,6 @@
 Concept Scheme In Catalog
 -------------------------
 """
-from typing import Annotated
 
 from csvcubedmodels.rdf import dcat, skos
 

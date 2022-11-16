@@ -1,15 +1,22 @@
+import pandas as pd
 import pytest
 
-import pandas as pd
-
-from csvcubed.models.cube import *
 from csvcubed.models.cube.cube import Cube, QbCube
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.cube.qb.columns import QbColumn
-from csvcubed.models.cube.qb.components.attribute import ExistingQbAttribute, ExistingQbAttributeLiteral, NewQbAttribute, NewQbAttributeLiteral
+from csvcubed.models.cube.qb.components.attribute import (
+    ExistingQbAttribute,
+    ExistingQbAttributeLiteral,
+    NewQbAttribute,
+    NewQbAttributeLiteral,
+)
 from csvcubed.models.cube.qb.components.attributevalue import NewQbAttributeValue
 from csvcubed.models.cube.qb.components.codelist import NewQbCodeList
-from csvcubed.models.cube.qb.components.dimension import ExistingQbDimension, NewQbDimension, QbDimension
+from csvcubed.models.cube.qb.components.dimension import (
+    ExistingQbDimension,
+    NewQbDimension,
+    QbDimension,
+)
 from csvcubed.models.cube.qb.components.measure import ExistingQbMeasure, NewQbMeasure
 from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureDimension
 from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
@@ -29,8 +36,8 @@ from csvcubed.models.cube.qb.validationerrors import (
     BothUnitTypesDefinedError,
     MaxNumComponentsExceededError,
 )
-from tests.unit.test_baseunit import *
 from csvcubed.utils.qb.validation.cube import validate_qb_component_constraints
+from tests.unit.test_baseunit import *
 
 
 def test_single_measure_qb_definition():

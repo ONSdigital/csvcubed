@@ -1,17 +1,17 @@
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Dict, List
+
 import pandas as pd
 
+from csvcubed.cli.build import build as cli_build
 from csvcubed.models.codelistconfig.code_list_config import (
     CODE_LIST_CONFIG_DEFAULT_URL,
     CodeListConfig,
     CodeListConfigConcept,
 )
-from csvcubed.models.cube.cube import Cube
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.cube.qb.components.codelist import (
-    CompositeQbCodeList,
     NewQbCodeList,
 )
 from csvcubed.models.cube.qb.components.concept import DuplicatedQbConcept, NewQbConcept
@@ -19,7 +19,6 @@ from csvcubed.utils.datetime import parse_iso_8601_date_time
 from csvcubed.utils.dict import get_with_func_or_none
 from csvcubed.writers.skoscodelistwriter import SkosCodeListWriter
 from tests.unit.test_baseunit import get_test_cases_dir
-from csvcubed.cli.build import build as cli_build
 
 _test_case_readers_base_dir = (
     get_test_cases_dir() / "readers" / "code-list-config" / "v1.0"

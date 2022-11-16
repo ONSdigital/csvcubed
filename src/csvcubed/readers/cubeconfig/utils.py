@@ -1,11 +1,12 @@
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Union
+
 from pandas import DataFrame
 
-from csvcubed.utils.json import load_json_document
-from csvcubed.utils.uri import looks_like_uri
 from csvcubed.models.validationerror import ValidationError
+from csvcubed.utils.json import load_json_document
 from csvcubed.utils.pandas import read_csv
+from csvcubed.utils.uri import looks_like_uri
 
 
 def load_resource(resource_path: Union[str, Path]) -> dict:

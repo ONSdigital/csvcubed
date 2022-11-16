@@ -4,9 +4,10 @@ Data Structure Definitions
 
 Provides the structure or mapping to components of an RDF Cube (i.e. `qb:DataStructureDefintion`)
 """
-from dataclasses import dataclass
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 from typing import List, Optional
+
 import pandas as pd
 
 from csvcubed.models.pydanticmodel import PydanticModel

@@ -3,8 +3,8 @@ Pandas Inputs
 -------------
 """
 from typing import Union, Iterable, Optional, Any, List
-import pandas as pd
 
+import pandas as pd
 
 PandasDataTypes = Union[pd.DataFrame, pd.Series, None]
 

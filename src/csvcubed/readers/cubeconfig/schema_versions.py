@@ -9,10 +9,10 @@ import logging
 from enum import Enum
 from pathlib import Path
 from typing import Optional, Callable, Tuple, List
-from csvcubed.models.cube.cube import QbCube
 
-from csvcubed.models.validationerror import ValidationError
+from csvcubed.models.cube.cube import QbCube
 from csvcubed.models.jsonvalidationerrors import JsonSchemaValidationError
+from csvcubed.models.validationerror import ValidationError
 from csvcubed.readers.cubeconfig.v1 import configdeserialiser as v1_configdeserialiser
 
 _logger = logging.getLogger(__name__)

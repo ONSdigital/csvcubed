@@ -6,10 +6,10 @@ Functions to help when working with URIs.
 """
 import logging
 import re
-from unidecode import unidecode
 from urllib.parse import urlparse
-import rdflib
 
+import rdflib
+from unidecode import unidecode
 
 _logger = logging.getLogger(__name__)
 
@@ -36,7 +36,7 @@ def csvw_column_name_safe(label: str) -> str:
     """
     Converts a generic string into a string which is safe as the :attr:`name` property in a CSV-W column.
 
-    :return: A :obj:`str` based on :obj:`label` which is safe to use to :attr:`name` columns in a CSV-W metadata file.    
+    :return: A :obj:`str` based on :obj:`label` which is safe to use to :attr:`name` columns in a CSV-W metadata file.
     """
     csvw_safe_col_name = _multiple_non_word_chars_regex.sub("_", label).lower()
     _logger.debug(
@@ -112,4 +112,3 @@ def ensure_values_in_lists_looks_like_uris(values: list[str]) -> None:
             raise ValueError(f"'{value}' does not look like a URI.")
 
     _logger.debug("Values %s all look like URIs.", values)
-
