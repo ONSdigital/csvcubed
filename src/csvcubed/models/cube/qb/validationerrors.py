@@ -349,14 +349,15 @@ class DuplicateMeasureError(SpecificValidationError):
     """
 
     column_names: List[str]
+    column_names_concatenated: str = field(init=False)
 
     @classmethod
     def get_error_url(cls) -> str:
         return "http://purl.org/csv-cubed/err/dup-measure"
 
     def __post_init__(self):
-        column_names_concatenated = ", ".join(self.column_names)
-        self.message = f"In the pivoted shape, two or more observation value columns cannot be represented by identical measures. {column_names_concatenated}"
+        self.column_names_concatenated = ", ".join(self.column_names)
+        self.message = f"In the pivoted shape, two or more observation value columns cannot be represented by identical measures. {self.column_names_concatenated}"
 
 
 @dataclass

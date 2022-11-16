@@ -64,7 +64,7 @@ def friendly_error_mapping(error: ValidationError) -> str:
     """
 
     _map = {
-        AttributeNotLinkedError: "A units or attribute column is defined but it is not linked to any observation value column.",
+        AttributeNotLinkedError: "Unable to tell which observed values column '{error.attribute_column_title}' describes. Please set the `describes_observations` property in this column's configuration.",
         BothMeasureTypesDefinedError: "Measures defined in multiple locations. Measures may only be defined in one location.",
         BothUnitTypesDefinedError: "Units defined in multiple locations. Units may only be defined in one location.",
         ColumnNotFoundInDataError: "Configuration found for column '{error.csv_column_title}' but no corresponding column found in CSV.",
@@ -75,12 +75,12 @@ def friendly_error_mapping(error: ValidationError) -> str:
         CsvColumnUriTemplateMissingError: "The '{error.csv_column_name}' column definition is missing a 'cell_uri_template'; a suitable "
         "value could not be inferred.",
         DuplicateColumnTitleError: "There are multiple CSV columns with the title: '{error.csv_column_title}'.",
-        DuplicateMeasureError: "In the pivoted shape, two or more observation value columns cannot be represented by identical measures.",
+        DuplicateMeasureError: "In the pivoted shape, each observation value column must use a unique measure. Affected columns: {error.column_names_concatenated}",
         EmptyQbMultiMeasureDimensionError: "A Measure column has been defined but no measures have been defined within it",
         EmptyQbMultiUnitsError: "A Unit column has been defined but no units have been defined within it",
-        HybridShapeError: "There are mutliple observation value columns defined without measures linked and at least one measure column defined.",
-        LinkedObsColumnDoesntExistError: "The unit or attribute column is linked to an observation value column that doesn't appear to exist.",
-        LinkedToNonObsColumnError: "A units or attribute column is linked to an observation value column that isn't actually an observation value column.",
+        HybridShapeError: "Mutliple observation value columns have been at the same time as a standard shape measure column defined.",
+        LinkedObsColumnDoesntExistError: "The '{error.attribute_column_title}' column has `describes_observations` set to '{error.alleged_obs_val_column_title}'. The column does not appear to exist.",
+        LinkedToNonObsColumnError: "The '{error.attribute_column_title}' column has `describes_observations` set to '{error.alleged_obs_val_column_title}'. This column does not represent observed values.",
         MoreThanOneObservationsColumnError: "Found {error.actual_number} observed values columns. Only 1 is permitted.",
         MoreThanOneMeasureColumnError: "Found {error.actual_number} measures columns. Only 1 is permitted.",
         MoreThanOneUnitsColumnError: "Found {error.actual_number} units columns. Only 1 is permitted.",
