@@ -1,0 +1,41 @@
+{
+    "$schema": "https://purl.org/csv-cubed/qube-config/v1",
+    "columns": {
+        "Year": {
+            "type": "dimension",
+            "from_template": "year"
+        },
+        "Sector": {
+            "type": "dimension"
+        },
+        "Imports": {
+            "type": "observations",
+            "measure": {
+                "label": "Imports Monetary Value",
+                "from_existing": "http://example.com/measures/monetary-value"
+            },
+            "unit": {
+                "label": "Pounds (Millions)"
+            }
+        },
+        "Imports Status": {
+            "type": "attribute",
+            "describes_observations": "Imports"
+        },
+        "Exports": {
+            "type": "observations",
+            "measure": {
+                "label": "Exports Monetary Value",
+                "from_existing": "http://example.com/measures/monetary-value"
+            }
+        },
+        "Exports Status": {
+            "type": "attribute",
+            "describes_observations": "Exports"
+        },
+        "Exports Unit": {
+            "type": "units",
+            "describes_observations": "Exports"
+        }
+    }
+}

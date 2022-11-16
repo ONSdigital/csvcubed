@@ -24,6 +24,7 @@ from .unit import (
 from .validationerrors import UndefinedUnitUrisError, EmptyQbMultiUnitsError
 
 
+
 @dataclass
 class QbMultiUnits(QbColumnStructuralDefinition):
 
@@ -54,17 +55,23 @@ class QbMultiUnits(QbColumnStructuralDefinition):
         return units
 
     @staticmethod
-    def new_units_from_data(data: PandasDataTypes) -> "QbMultiUnits":
+    def new_units_from_data(
+        data: PandasDataTypes, observed_value_col_title: Optional[str] = None
+    ) -> "QbMultiUnits":
         """
         Automatically generates new units from a units column.
         """
         return QbMultiUnits(
-            [NewQbUnit(label=u) for u in set(pandas_input_to_columnar_str(data))]
+            [NewQbUnit(label=u) for u in set(pandas_input_to_columnar_str(data))],
+            observed_value_col_title=observed_value_col_title,
         )
 
     @staticmethod
     def existing_units_from_data(
-        data: PandasDataTypes, csvw_column_name: str, csv_column_uri_template: str
+        data: PandasDataTypes,
+        csvw_column_name: str,
+        csv_column_uri_template: str,
+        observed_value_col_title: Optional[str] = None,
     ) -> "QbMultiUnits":
         columnar_data = pandas_input_to_columnar_str(data)
         return QbMultiUnits(
@@ -73,7 +80,8 @@ class QbMultiUnits(QbColumnStructuralDefinition):
                     uritemplate.expand(csv_column_uri_template, {csvw_column_name: m})
                 )
                 for m in sorted(set(columnar_data))
-            ]
+            ],
+            observed_value_col_title=observed_value_col_title,
         )
 
     def validate_data(

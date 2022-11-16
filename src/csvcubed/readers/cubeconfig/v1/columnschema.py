@@ -248,6 +248,7 @@ class ExistingAttributeLiteral(SchemaBaseClass):
     from_existing: str
     data_type: str
     required: bool = False
+    describes_observations: Optional[str] = None
 
     def map_to_existing_qb_attribute(self) -> ExistingQbAttributeLiteral:
 
@@ -255,6 +256,7 @@ class ExistingAttributeLiteral(SchemaBaseClass):
             attribute_uri=self.from_existing,
             is_required=self.required,
             data_type=self.data_type,
+            observed_value_col_title=self.describes_observations,
         )
 
 
@@ -264,6 +266,7 @@ class ExistingAttributeResource(SchemaBaseClass):
     values: Union[bool, List[AttributeValue]] = True
     required: bool = False
     cell_uri_template: Optional[str] = None
+    describes_observations: Optional[str] = None
 
     def map_to_existing_qb_attribute(
         self, data: PandasDataTypes
@@ -273,6 +276,7 @@ class ExistingAttributeResource(SchemaBaseClass):
             self.from_existing,
             new_attribute_values=_get_new_attribute_values(data, self.values),
             is_required=self.required,
+            observed_value_col_title=self.describes_observations,
         )
 
 
@@ -284,6 +288,7 @@ class NewAttributeLiteral(SchemaBaseClass):
     from_existing: Optional[str] = None
     definition_uri: Optional[str] = None
     required: bool = False
+    describes_observations: Optional[str] = None
 
     def map_to_new_qb_attribute(self, column_title: str) -> NewQbAttributeLiteral:
         label = self.label or column_title
@@ -295,6 +300,7 @@ class NewAttributeLiteral(SchemaBaseClass):
             parent_attribute_uri=self.from_existing,
             source_uri=self.definition_uri,
             is_required=self.required,
+            observed_value_col_title=self.describes_observations,
         )
 
 
@@ -307,6 +313,7 @@ class NewAttributeResource(SchemaBaseClass):
     required: bool = False
     values: Union[bool, List[AttributeValue]] = True
     cell_uri_template: Optional[str] = None
+    describes_observations: Optional[str] = None
 
     def map_to_new_qb_attribute(
         self, column_title: str, data: PandasDataTypes
@@ -320,6 +327,7 @@ class NewAttributeResource(SchemaBaseClass):
             parent_attribute_uri=self.from_existing,
             source_uri=self.definition_uri,
             is_required=self.required,
+            observed_value_col_title=self.describes_observations,
         )
 
 
@@ -337,22 +345,29 @@ class Unit(SchemaBaseClass):
 @dataclass
 class ExistingUnits(SchemaBaseClass):
     cell_uri_template: str
+    describes_observations: Optional[str] = None
 
     def map_to_existing_qb_multi_units(
         self, data: PandasDataTypes, column_title: str
     ) -> QbMultiUnits:
         return QbMultiUnits.existing_units_from_data(
-            data, csvw_column_name_safe(column_title), self.cell_uri_template
+            data,
+            csvw_column_name_safe(column_title),
+            self.cell_uri_template,
+            observed_value_col_title=self.describes_observations,
         )
 
 
 @dataclass
 class NewUnits(SchemaBaseClass):
     values: Union[bool, List[Unit]] = True
+    describes_observations: Optional[str] = None
 
     def map_to_new_qb_multi_units(self, data: PandasDataTypes) -> QbMultiUnits:
         if isinstance(self.values, bool) and self.values is True:
-            return QbMultiUnits.new_units_from_data(data)
+            return QbMultiUnits.new_units_from_data(
+                data, observed_value_col_title=self.describes_observations
+            )
 
         elif isinstance(self.values, list):
 
