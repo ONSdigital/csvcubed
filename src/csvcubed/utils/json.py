@@ -8,11 +8,13 @@ import json
 import logging
 import os.path
 import re
+import requests
 from pathlib import Path
 from typing import Dict, Any, Union, Iterable, List
 from urllib.parse import urlparse
 
 from jsonschema import RefResolver
+from csvcubed.readers.cubeconfig.utils import get_url_to_file_path_map
 
 from csvcubed.utils.uri import looks_like_uri
 from .cache import session
@@ -44,6 +46,8 @@ def load_json_document(file_uri_or_path: Union[str, Path]) -> Dict[str, Any]:
         else:
             # Treat it as a URL
             _logger.debug("Loading JSON from URL %s", file_uri_or_path)
+            #session.hooks["response"] = ["function name goes here"]
+            #http_response = session.get(file_uri_or_path, hooks={"response": [hook_for_http_failure]})
             http_response = session.get(file_uri_or_path)
             if not http_response.ok:
                 raise Exception(
@@ -134,3 +138,17 @@ def resolve_path(
             break
 
         pointer += 1
+
+
+def hook_for_http_failure(response: requests.Response, *args, **kwargs):
+    print(f"The status code is: {response.status_code}")
+    if response.status_code >= 200 and response.status_code <= 399:
+        print("This was successful")
+    else:
+        print("Not successful")
+        #print(f"could not retrieve the document at: {response.url}")
+        trimmed_url = str(response.url).removeprefix("https:")
+        path_to_local_file = get_url_to_file_path_map[trimmed_url]
+        print(f"This is something {path_to_local_file}")
+        response.url = path_to_local_file
+    
