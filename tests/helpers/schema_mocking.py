@@ -10,7 +10,7 @@ import requests_mock
 from requests.sessions import Session
 
 from csvcubed.definitions import APP_ROOT_DIR_PATH
-from csvcubed.readers.cubeconfig.utils import get_url_to_file_path_map
+from csvcubed.utils.uri import get_url_to_file_path_map
 
 
 def mock_json_schemas(session: Optional[Session] = None) -> requests_mock.Mocker:

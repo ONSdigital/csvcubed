@@ -42,5 +42,15 @@ def test_loading_json_from_url():
         assert isinstance(document.get("columns"), list)
 
 
+def test_load_local_when_http_request_fails():
+    """
+    Ensure that a local copy of a document is returned when an http request fails in any
+    instance. Most likley due to lack of internet connectivity.
+    """
+
+    document = load_json_document("https://purl.org/csv-cubed/qube-config/v1.4X")
+    assert document == True
+
+
 if __name__ == "__main__":
     pytest.main()
