@@ -29,6 +29,7 @@ uritemplate = "^4.1.1"
 python-dateutil = "^2.8.2"
 csvcubed-pydantic = ">=1.9.0"
 csvcubed-models = "0.1.5"
+memory-profiler = "^0.61.0"
 
 [tool.poetry.dev-dependencies]
 csvcubed-devtools = "0.1.8"
@@ -36,9 +37,7 @@ requests-mock = "~1.9.3"
 pytest-vcr = "~1.0.2"
 pytest-timeout = "^2.1.0"
 scalene = "^1.5.14"
-
-[tool.poetry.group.dev.dependencies]
-flameprof = "^0.4"
+py-spy = "^0.3.14"
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
