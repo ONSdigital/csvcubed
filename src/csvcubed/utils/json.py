@@ -153,7 +153,18 @@ def hook_for_http_failure(response: requests.Response, *args, **kwargs):
         path_to_local_file = get_local_version_instead[
             trimmed_url[: len(trimmed_url) - 1]
         ]
-        print(f"This is something {path_to_local_file}")
-        load_json_document(path_to_local_file)
+        print(f"The local file path is: {path_to_local_file}")
+        try:
+            #1 We could warn the user here about the request failure and inform about attempting to use the local file, or see #2
+            _logger.warning(f"Unable to load json document from given URL. Attempting to load local storage copy of file {path_to_local_file} instead.")
+            #Should we call load_json_document again, or perhaps just use load_json_from_path? note this is not the cause of function running twice problem
+            load_json_document(path_to_local_file)
+
+            #2 Or perhaps we could log the warning here only after the local copy has been succcessfully retrieved?
+            #logger.warning("Unable to load json document from given URL. File has been loaded from local storage instead.")
+
+        except Exception as e: #What type of error are we expecting? Maybe FileNotFound?
+            raise Exception(f"Error loading JSON from file at '{path_to_local_file}'") from e
+            
         # response.url = path_to_local_file
         # return response
