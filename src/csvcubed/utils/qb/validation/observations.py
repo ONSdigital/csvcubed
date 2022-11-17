@@ -68,7 +68,7 @@ def validate_observations(cube: Cube) -> List[ValidationError]:
             c for c in observed_value_columns if c.structural_definition.measure is None
         ]
 
-        errors += _get_shape_related_errors(
+        errors += _validate_against_shape_related_errors(
             cube,
             obs_val_columns_with_measure,
             obs_val_columns_without_measure,
@@ -79,12 +79,12 @@ def validate_observations(cube: Cube) -> List[ValidationError]:
     return errors
 
 
-def _get_shape_related_errors(
+def _validate_against_shape_related_errors(
     cube: Cube,
-    obs_val_columns_with_measure: list[QbColumn[QbObservationValue]],
-    obs_val_columns_without_measure: list[QbColumn[QbObservationValue]],
+    obs_val_columns_with_measure: List[QbColumn[QbObservationValue]],
+    obs_val_columns_without_measure: List[QbColumn[QbObservationValue]],
     multi_units_columns: List[QbColumn[QbMultiUnits]],
-    observed_value_columns: list[QbColumn[QbObservationValue]],
+    observed_value_columns: List[QbColumn[QbObservationValue]],
 ) -> List[ValidationError]:
     errors: List[ValidationError] = []
 
@@ -94,17 +94,17 @@ def _get_shape_related_errors(
         )
 
     elif len(obs_val_columns_without_measure) > 1:
-        errors += _get_error_when_cube_only_contains_obs_val_cols_without_measures(
+        errors += _get_error_when_multi_measure_pivoted_cube_only_contains_obs_val_cols_without_measures(
             cube, obs_val_columns_without_measure
         )
 
     elif len(obs_val_columns_without_measure) == 1:
-        errors += _get_errors_for_standard_shape_cube(
+        errors += _validate_standard_shape_cube(
             cube, obs_val_columns_without_measure, multi_units_columns
         )
 
     elif any(obs_val_columns_with_measure):
-        errors += _get_errors_when_cube_only_contains_obs_val_cols_with_measures(
+        errors += _validate_cube_only_containing_obs_val_cols_with_measures(
             cube, obs_val_columns_with_measure, multi_units_columns
         )
 
@@ -176,7 +176,6 @@ def _attribute_represents_observation_status(attribute: QbAttribute) -> bool:
     return False
 
 
-# erro for test3
 def _validate_observation_value(
     observation_value: QbColumn[QbObservationValue],
     multi_unit_columns: List[QbColumn[QbMultiUnits]],
@@ -192,7 +191,7 @@ def _validate_observation_value(
     return errors
 
 
-def _validate_standard_shape_cube(cube: Cube) -> List[ValidationError]:
+def _get_errors_for_standard_shape_cube(cube: Cube) -> List[ValidationError]:
     errors: List[ValidationError] = []
 
     multi_measure_columns: List[
@@ -226,10 +225,10 @@ def _validate_standard_shape_cube(cube: Cube) -> List[ValidationError]:
 
 def _ensure_obs_val_col_linked(
     column: QbColumn,
-    errors: list[ValidationError],
+    errors: List[ValidationError],
     observed_column_title: Union[str, None],
     defined_col_names: set[str],
-    obs_col_names: list[str],
+    obs_col_names: List[str],
 ):
 
     if observed_column_title is None:
@@ -254,11 +253,13 @@ def _validate_pivoted_shape_cube(
     multi_measure_columns = get_columns_of_dsd_type(cube, QbMultiMeasureDimension)
     if any(multi_measure_columns):
         """
-        In this case, the user has defined a redundant measure column.
-        All obs val columns already have their own measures declared.
+        Example of an input that might result in a user ending up here:
 
         Location, Average Income (meas defined), Average Age (meas defined), Measure
         Birmingham, 22, 45.6, ???
+
+        In this case, the user has defined a redundant measure column.
+        All obs val columns already have their own measures declared.
         """
         errors.append(PivotedShapeMeasureColumnsExistError())
 
@@ -266,11 +267,11 @@ def _validate_pivoted_shape_cube(
 
     observed_value_columns = get_columns_of_dsd_type(cube, QbObservationValue)
 
-    elements_of_obs_colums = []
+    obs_val_col_measures = []
     for element in observed_value_columns:
-        elements_of_obs_colums.append(element.structural_definition.measure)
+        obs_val_col_measures.append(element.structural_definition.measure)
 
-    if len(set(elements_of_obs_colums)) != len(elements_of_obs_colums):
+    if len(set(obs_val_col_measures)) != len(obs_val_col_measures):
         errors.append(DuplicateMeasureError(obs_col_names))
 
     if len(obs_col_names) > 1:
@@ -317,9 +318,10 @@ def _get_error_when_cube_contains_obs_val_cols_with_and_without_measures(
 
         Location, Average Income (meas defined), Value (no meas defined), Other Measure
         Birmingham, 22, 45.6, Average Age
+
+        Some obs vals have measures, some don't and a measure column exists.
+        This is an erroneous hybrid state between pivoted and standard shape.
         """
-        # Some obs vals have measures, some don't and a measure column exists.
-        # This is an erroneous hybrid state between pivoted and standard shape.
         errors.append(
             BothMeasureTypesDefinedError(
                 f"{QbObservationValue.__name__}.measure",
@@ -329,11 +331,16 @@ def _get_error_when_cube_contains_obs_val_cols_with_and_without_measures(
         )
 
     else:
-        # There are multiple obs val columns and no measure columns, so it looks like the user is aiming for a
-        # pivoted shape. We assume the user wants a pivoted shape, so let them know that they're missing measures
-        # against some of their obs val columns.
+        """
+        Example of an input that might result in a user ending up here:
+
         "Location, Average Income (meas defined), Value (no meas defined)"
         "Birmingham, 22, 45.6"
+
+        There are multiple obs val columns and no measure columns, so it looks like the user is aiming for a
+        pivoted shape. We assume the user wants a pivoted shape, so let them know that they're missing measures
+        against some of their obs val columns.
+        """
         errors.append(
             NoMeasuresDefinedError(
                 additional_explanation="Data apears to attempt the pivoted shape, however observation value column(s) have been found without a measure linked."
@@ -343,8 +350,8 @@ def _get_error_when_cube_contains_obs_val_cols_with_and_without_measures(
     return errors
 
 
-def _get_error_when_cube_only_contains_obs_val_cols_without_measures(
-    cube: Cube, obs_val_columns_without_measure: list[QbColumn[QbObservationValue]]
+def _get_error_when_multi_measure_pivoted_cube_only_contains_obs_val_cols_without_measures(
+    cube: Cube, obs_val_columns_without_measure: List[QbColumn[QbObservationValue]]
 ) -> List[ValidationError]:
     errors: List[ValidationError] = []
 
@@ -355,9 +362,10 @@ def _get_error_when_cube_only_contains_obs_val_cols_without_measures(
 
         Location, Income (no meas defined), Average Age (no meas defined), Income Measure, Average Age Measure
         Birmingham, 22, 45.6, Average Income, Average Age
+
+        There are mutliple obs val columns defined without measures, and at least one measure column defined.
+        This is an erroneous hybrid between standard and pivoted shape.
         """
-        # There are mutliple obs val columns defined without measures, and at least one measure column defined.
-        # This is an erroneous hybrid between standard and pivoted shape.
         errors.append(
             HybridShapeError(
                 obs_val_columns_without_measure,
@@ -365,11 +373,16 @@ def _get_error_when_cube_only_contains_obs_val_cols_without_measures(
             )
         )
     else:
-        # There are multiple obs val columns defined without measures, so it looks like the user is aiming for a
-        # pivoted shape. We assume the user wants a pivoted shape, so let them know that they're missing measures
-        # against some of their obs val columns.
+        """
+        Example of an input that might result in a user ending up here:
+
         "Location, Income (no meas defined), Average Age (no meas defined)"
         "Birmingham, 22, 45.6"
+
+        There are multiple obs val columns defined without measures, so it looks like the user is aiming for a
+        pivoted shape. We assume the user wants a pivoted shape, so let them know that they're missing measures
+        against some of their obs val columns.
+        """
         errors.append(
             NoMeasuresDefinedError(
                 additional_explanation="Data apears to attempt the pivoted shape, however observation value columns have been found without a measure linked."
@@ -379,23 +392,23 @@ def _get_error_when_cube_only_contains_obs_val_cols_without_measures(
     return errors
 
 
-def _get_errors_for_standard_shape_cube(
+def _validate_standard_shape_cube(
     cube: Cube,
-    obs_val_columns_without_measure: list[QbColumn[QbObservationValue]],
+    obs_val_columns_without_measure: List[QbColumn[QbObservationValue]],
     multi_units_columns: List[QbColumn[QbMultiUnits]],
 ) -> List[ValidationError]:
     errors: List[ValidationError] = []
 
     obs_val_column = obs_val_columns_without_measure[0]
     errors += _validate_observation_value(obs_val_column, multi_units_columns)
-    errors += _validate_standard_shape_cube(cube)
+    errors += _get_errors_for_standard_shape_cube(cube)
 
     return errors
 
 
-def _get_errors_when_cube_only_contains_obs_val_cols_with_measures(
+def _validate_cube_only_containing_obs_val_cols_with_measures(
     cube: Cube,
-    obs_val_columns_with_measure: list[QbColumn[QbObservationValue]],
+    obs_val_columns_with_measure: List[QbColumn[QbObservationValue]],
     multi_units_columns: List[QbColumn[QbMultiUnits]],
 ) -> List[ValidationError]:
     errors: List[ValidationError] = []

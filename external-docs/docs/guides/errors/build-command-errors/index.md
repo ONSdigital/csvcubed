@@ -31,3 +31,4 @@
 * [Linked Obs Column Doesn't Exist Error](./linked-obs-column-doesnt-exist.md)
 * [Linked To Non-Obs Column Error](./linked-to-non-obs-column.md)
 * [Hybrid Shape Error](./hybrid-shape-error.md)
+* [Pivoted Shape Measure Column Exists Error](./pivoted-shape-measure-col-exist.md)

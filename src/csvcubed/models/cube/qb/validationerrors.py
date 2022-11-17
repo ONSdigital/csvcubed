@@ -345,7 +345,8 @@ class PivotedShapeMeasureColumnsExistError(BothMeasureTypesDefinedError):
 @dataclass
 class DuplicateMeasureError(SpecificValidationError):
     """
-    An error to inform the user that the obesrvation colums contain duplicate values
+    An error to inform the user that they have defined a pivoted cube in which multiple
+    observation value columns are described using the same measure.
     """
 
     column_names: List[str]
@@ -429,10 +430,8 @@ class HybridShapeError(SpecificValidationError):
 
         not_linked_cols = ", ".join(str(self.not_linked_obs_val_cols))
         measure_cols = ", ".join(str(self.measure_cols))
-        self.message = (
-            f" Found these observation value columns without measures linked: '{not_linked_cols}'."
-            + os.linesep
-            + f" But found these measure columns '{measure_cols}. "
-            + os.linesep
-            + " This does not conform with either the standard or pivoted shape of expected data."
-        )
+        self.message = f"""
+            Found these observation value columns without measures linked: {not_linked_cols}.
+            But found these measure columns {measure_cols}.
+            This does not conform with either the standard or pivoted shape of expected data.
+            """

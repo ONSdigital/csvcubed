@@ -7,10 +7,19 @@ from csvcubed.models.cube import *
 from csvcubed.models.cube.cube import Cube, QbCube
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.cube.qb.columns import QbColumn
-from csvcubed.models.cube.qb.components.attribute import ExistingQbAttribute, ExistingQbAttributeLiteral, NewQbAttribute, NewQbAttributeLiteral
+from csvcubed.models.cube.qb.components.attribute import (
+    ExistingQbAttribute,
+    ExistingQbAttributeLiteral,
+    NewQbAttribute,
+    NewQbAttributeLiteral,
+)
 from csvcubed.models.cube.qb.components.attributevalue import NewQbAttributeValue
 from csvcubed.models.cube.qb.components.codelist import NewQbCodeList
-from csvcubed.models.cube.qb.components.dimension import ExistingQbDimension, NewQbDimension, QbDimension
+from csvcubed.models.cube.qb.components.dimension import (
+    ExistingQbDimension,
+    NewQbDimension,
+    QbDimension,
+)
 from csvcubed.models.cube.qb.components.measure import ExistingQbMeasure, NewQbMeasure
 from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureDimension
 from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
@@ -882,7 +891,8 @@ def test_conflict_new_measures_uri_values_error():
 
 def test_pivoted_validation_multiple_measure_columns():
     """
-    First scenario where there are one or more measure columns defined
+    Tests a multi-measure pivoted shape cube in which each obs val column has a measure linked
+    but there also exists a measure column.
 
     """
     metadata = CatalogMetadata(title="cube_name", identifier="identifier")
