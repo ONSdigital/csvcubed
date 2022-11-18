@@ -9,7 +9,7 @@ from tests.stress.buildpreprocess import generate_maximally_complex_csv
 # import the generate_maximaly_complex_scvfile function the create a csv file after that wun the build command in a temp directory(feed that directory to the inpect command bellow) then the inspect command will function.
 
 
-@profile(precision=4)
+@profile()
 def main(csvw_path: Path):
     from csvcubed.cli.inspect.inspect import inspect
 
