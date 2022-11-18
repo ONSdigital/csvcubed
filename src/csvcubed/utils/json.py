@@ -15,7 +15,7 @@ from urllib.parse import urlparse
 
 from jsonschema import RefResolver
 
-from csvcubed.utils.uri import looks_like_uri, get_url_to_file_path_map
+from csvcubed.utils.uri import looks_like_uri
 from .cache import session
 
 _logger = logging.getLogger(__name__)
@@ -45,7 +45,6 @@ def load_json_document(file_uri_or_path: Union[str, Path]) -> Dict[str, Any]:
         else:
             # Treat it as a URL
             _logger.debug("Loading JSON from URL %s", file_uri_or_path)
-            session.hooks["response"] = [hook_for_http_failure]
             # http_response = session.get(
             #    file_uri_or_path, hooks={"response": [hook_for_http_failure]}
             # )
@@ -139,32 +138,3 @@ def resolve_path(
             break
 
         pointer += 1
-
-
-def hook_for_http_failure(response: requests.Response, *args, **kwargs):
-    print(f"The status code is: {response.status_code}")
-    get_local_version_instead = get_url_to_file_path_map()
-    if response.status_code >= 200 and response.status_code <= 399:
-        print("This was successful")
-    else:
-        print("Not successful")
-        # print(f"could not retrieve the document at: {response.url}")
-        trimmed_url = str(response.url).removeprefix("https:")
-        path_to_local_file = get_local_version_instead[
-            trimmed_url[: len(trimmed_url) - 1]
-        ]
-        print(f"The local file path is: {path_to_local_file}")
-        try:
-            #1 We could warn the user here about the request failure and inform about attempting to use the local file, or see #2
-            _logger.warning(f"Unable to load json document from given URL. Attempting to load local storage copy of file {path_to_local_file} instead.")
-            #Should we call load_json_document again, or perhaps just use load_json_from_path? note this is not the cause of function running twice problem
-            load_json_document(path_to_local_file)
-
-            #2 Or perhaps we could log the warning here only after the local copy has been succcessfully retrieved?
-            #logger.warning("Unable to load json document from given URL. File has been loaded from local storage instead.")
-
-        except Exception as e: #What type of error are we expecting? Maybe FileNotFound?
-            raise Exception(f"Error loading JSON from file at '{path_to_local_file}'") from e
-            
-        # response.url = path_to_local_file
-        # return response
