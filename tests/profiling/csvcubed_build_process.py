@@ -1,9 +1,11 @@
 from tempfile import TemporaryDirectory
 from pathlib import Path
-
+from memory_profiler import profile
 from csvcubeddevtools.helpers.file import get_test_cases_dir
 from tests.stress.buildpreprocess import generate_maximally_complex_csv
 
+
+@profile
 def main(csv_path: Path, qube_config_json_path: Path, tmp_dir: Path):
     from csvcubed.cli.build import build
 
@@ -14,6 +16,7 @@ def main(csv_path: Path, qube_config_json_path: Path, tmp_dir: Path):
         fail_when_validation_error_occurs=True,
         validation_errors_file_name=None,
     )
+
 
 test_cases_dir = get_test_cases_dir() / "profiling"
 qube_config_json_path = test_cases_dir / "config.json"

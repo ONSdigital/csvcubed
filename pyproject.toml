@@ -29,7 +29,6 @@ uritemplate = "^4.1.1"
 python-dateutil = "^2.8.2"
 csvcubed-pydantic = ">=1.9.0"
 csvcubed-models = "0.1.5"
-memory-profiler = "^0.61.0"
 
 [tool.poetry.dev-dependencies]
 csvcubed-devtools = "0.1.8"
@@ -38,6 +37,8 @@ pytest-vcr = "~1.0.2"
 pytest-timeout = "^2.1.0"
 scalene = "^1.5.14"
 py-spy = "^0.3.14"
+memory-profiler = "^0.61.0"
+matplotlib = "^3.6.2"  # Necessary for memory-profiler graphs
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
