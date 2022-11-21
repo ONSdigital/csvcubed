@@ -30,8 +30,35 @@ def _create_unit_col_in_melted_data_set(melted_df: pd.DataFrame, unit_components
     TODO: Add Description
     """
     melted_df["Unit"] = ""
+    for idx, row in melted_df.iterrows():
+        obs_val_col_title = row["Observation Value"]
 
-    # UNIT - TODO
+        # Step 1: Use the observation value col title to get the unit col value url.
+        results_unit_col_about_value_urls = []
+        results_observed_value_url_and_col_title = []
+
+        # First use the obs col title from for loop to get the about url from query 2 result.
+        filtered_results_observed_value_url_and_col_title  = [result_observed_value_url_and_col_title for result_observed_value_url_and_col_title in results_observed_value_url_and_col_title if result_observed_value_url_and_col_title.observationValueColumnTitle == obs_val_col_title]
+        if(len(filtered_results_observed_value_url_and_col_title) > 1):
+            raise Exception("")
+
+        filtered_result_observed_value_url_and_col_title = filtered_results_observed_value_url_and_col_title[0]
+        about_url = filtered_result_observed_value_url_and_col_title.about_url
+
+        # Then use the about url to get the unit col's value url from query 1 result.
+        filtered_results_unit_col_about_value_urls  = [result_unit_col_about_value_urls for result_unit_col_about_value_urls in results_unit_col_about_value_urls if result_unit_col_about_value_urls.observationValueColumnAboutUrl == about_url]
+        if(len(filtered_results_unit_col_about_value_urls) > 1):
+            raise Exception("")
+
+        filtered_result_unit_col_about_value_urls = filtered_results_unit_col_about_value_urls[0]
+        unit_col_value_url = filtered_result_unit_col_about_value_urls.valueUrl
+
+        # Step 2: Use the uri template lib to tell me what the variables defined inside the unit value url are. These variables are col names.
+            # If there are no varibales in unit value url, then set the unit column to be the unit value url.
+            # Otherwise, for each variable named in the template uri, look up the csv column titles for each of them - query 3.  The variable names are the column names.
+                # Get the values for col titles in this row, and provide a map to url template lib with a map of variable name and value to substitute. We are building the true url in here (only for this case.)
+
+    # UNIT
     # Sparql query 1:
     # Filter on cols which are unit cols whether they are virtul or not. Pull out about url and value url both for the unit col.
         # About Url, Unit Value Url
@@ -39,9 +66,9 @@ def _create_unit_col_in_melted_data_set(melted_df: pd.DataFrame, unit_components
     # # Sparql query 2:
     # Observed Value URL, Observed Val Col Title
 
-    # # Sparql query 3:
-    # Column Title, Column Names
-    # Units Column Title, units_column_name
+    # # Sparql query 3: Returns a table of col names and titles.
+    # Column Names, Column Title, 
+    # units_column_name, Units Column Title, 
 
     
     # Input pivoted dataset
@@ -138,6 +165,7 @@ def transform_dataset_to_canonical_shape(
         _create_measure_col_in_melted_data_set(melted_df, measure_components)
 
         unit_components = filter_components_from_dsd(qube_components, ComponentField.Property, ComponentPropertyAttributeURI.UnitMeasure)
+        
         _create_unit_col_in_melted_data_set(melted_df, unit_components)
         canonical_shape_dataset = melted_df
 

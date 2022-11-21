@@ -3,13 +3,13 @@ PREFIX csvw: <http://www.w3.org/ns/csvw#>
 
 SELECT ?aboutUrl ?valueUrl
 WHERE {
-    { # Virtual column case
+    { # Virtual columns 
         BIND(true as ?isVirtual).
         ?tableSchema csvw:column/rdf:rest*/rdf:first ?observedValueColumn.
         FILTER EXISTS {
             ?observedValueColumn csvw:virtual true.
         }
-    } UNION { # Real column case
+    } UNION { # Real columns 
         BIND(false as ?isVirtual).
         ?tableSchema csvw:column/rdf:rest*/rdf:first ?observedValueColumn.
         FILTER NOT EXISTS {
