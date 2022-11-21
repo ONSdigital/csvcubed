@@ -33,16 +33,16 @@ def _create_unit_col_in_melted_data_set(melted_df: pd.DataFrame, unit_components
 
     # UNIT - TODO
     # Sparql query 1:
-    Obs Val Col, Unit column's valueUrl Template
-    Observed Val Column Title (Found via the about Url of the units col), http://example.com/units/the-unit (uri of the unit) <- virtual col case
-    Observed Val Column Title (Found via the about Url of the units col), http://example.com/units/{+units_column_name} <- real col case
+    # Obs Val Col, Unit column's valueUrl Template
+    # Observed Val Column Title (Found via the about Url of the units col), http://example.com/units/the-unit (uri of the unit) <- virtual col case
+    # Observed Val Column Title (Found via the about Url of the units col), http://example.com/units/{+units_column_name} <- real col case
 
-    # Sparql query 2:
-    Observed Value URL, Observed Val Col Title
+    # # Sparql query 2:
+    # Observed Value URL, Observed Val Col Title
 
-    # Sparql query 3:
-    Column Title, Column Names
-    Units Column Title, units_column_name
+    # # Sparql query 3:
+    # Column Title, Column Names
+    # Units Column Title, units_column_name
 
     
     # Input pivoted dataset
