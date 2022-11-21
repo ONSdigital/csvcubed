@@ -79,11 +79,17 @@ def ensure_int_columns_are_ints(cube: QbCube) -> None:
         assert cube.data is not None
         try:
             if data_type in _signed_integer_data_types:
-                cube.data[column_title] = cube.data[column_title].astype(pd.Int64Dtype())
+                cube.data[column_title] = cube.data[column_title].astype(
+                    pd.Int64Dtype()
+                )
             elif data_type in _unsigned_integer_data_types:
-                cube.data[column_title] = cube.data[column_title].astype(pd.UInt64Dtype())
+                cube.data[column_title] = cube.data[column_title].astype(
+                    pd.UInt64Dtype()
+                )
         except Exception as err:
-            raise Exception(f'Column {column_title} failing,csvw  data type was {data_type}, pandas data type was {cube.data[column_title].dtype}') from err
+            raise Exception(
+                f"Column {column_title} failing,csvw  data type was {data_type}, pandas data type was {cube.data[column_title].dtype}"
+            ) from err
 
     for obs_val_col in get_columns_of_dsd_type(cube, QbObservationValue):
         _coerce_to_int_values_if_int(
@@ -192,7 +198,7 @@ def _overwrite_labels_for_columns(
 ) -> None:
     if cube.data is None:
         return
-        
+
     for column in affected_columns:
         column_data = cube.data[column.csv_column_title]
         assert column_data is not None
@@ -213,4 +219,6 @@ def _overwrite_labels_for_columns(
             else:
                 new_category_labels.append(new_category_label)
 
-        column_values.categories = new_category_labels
+        cube.data[column.csv_column_title] = column_values.rename_categories(
+            new_category_labels
+        )
