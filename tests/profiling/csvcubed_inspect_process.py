@@ -1,3 +1,5 @@
+# This script will generate a csvw file and then run the Inspect command on said file.
+# To measure CPU and Memory usage and show which part of the application takes up most of the resources.
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from csvcubeddevtools.helpers.file import get_test_cases_dir

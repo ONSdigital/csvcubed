@@ -1,3 +1,4 @@
+# This script will run the build command and generate a csvw file, while monitoring CPU and Ram usage across the application.
 from tempfile import TemporaryDirectory
 from pathlib import Path
 from memory_profiler import profile
