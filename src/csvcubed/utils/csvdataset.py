@@ -33,9 +33,8 @@ def _create_unit_col_in_melted_data_set(melted_df: pd.DataFrame, unit_components
 
     # UNIT - TODO
     # Sparql query 1:
-    # Obs Val Col, Unit column's valueUrl Template
-    # Observed Val Column Title (Found via the about Url of the units col), http://example.com/units/the-unit (uri of the unit) <- virtual col case
-    # Observed Val Column Title (Found via the about Url of the units col), http://example.com/units/{+units_column_name} <- real col case
+    # Filter on cols which are unit cols whether they are virtul or not. Pull out about url and value url both for the unit col.
+        # About Url, Unit Value Url
 
     # # Sparql query 2:
     # Observed Value URL, Observed Val Col Title

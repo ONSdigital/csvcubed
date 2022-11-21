@@ -1,0 +1,25 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX csvw: <http://www.w3.org/ns/csvw#>
+
+SELECT ?aboutUrl ?valueUrl
+WHERE {
+    { # Virtual column case
+        BIND(true as ?isVirtual).
+        ?tableSchema csvw:column/rdf:rest*/rdf:first ?observedValueColumn.
+        FILTER EXISTS {
+            ?observedValueColumn csvw:virtual true.
+        }
+    } UNION { # Real column case
+        BIND(false as ?isVirtual).
+        ?tableSchema csvw:column/rdf:rest*/rdf:first ?observedValueColumn.
+        FILTER NOT EXISTS {
+            ?observedValueColumn csvw:virtual true.
+        }
+    }
+
+    ?observedValueColumn csvw:propertyUrl ?observedValueColumnPropertyUrl.
+    FILTER (str(?observedValueColumnPropertyUrl) IN (str("http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"^^csvw:uriTemplate))).
+
+    ?observedValueColumn csvw:aboutUrl ?aboutUrl;
+                         csvw:valueUrl ?valueUrl.
+}
