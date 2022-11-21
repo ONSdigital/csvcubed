@@ -443,18 +443,19 @@ def test_get_val_counts_info_multi_unit_multi_measure_dataset():
         canonical_shape_dataset, measure_col, unit_col
     )
 
-    _expected_by_measure_and_unit_val_counts_df_multi_unit_multi_measure.rename(
-        columns={
-            "Measure": measure_col,
-            "Unit": unit_col,
-        },
-        inplace=True,
+    expected_by_measure_and_unit_val_counts_df_multi_unit_multi_measure = (
+        _expected_by_measure_and_unit_val_counts_df_multi_unit_multi_measure.rename(
+            columns={
+                "Measure": measure_col,
+                "Unit": unit_col,
+            },
+        )
     )
 
     assert result is not None
     assert_frame_equal(
         result.by_measure_and_unit_val_counts_df,
-        _expected_by_measure_and_unit_val_counts_df_multi_unit_multi_measure,
+        expected_by_measure_and_unit_val_counts_df_multi_unit_multi_measure,
     )
 
 
@@ -489,18 +490,19 @@ def test_get_val_counts_info_multi_unit_single_measure_dataset():
         canonical_shape_dataset, measure_col, unit_col
     )
 
-    _expected_by_measure_and_unit_val_counts_df_multi_unit_single_measure.rename(
-        columns={
-            "Measure": measure_col,
-            "Unit": unit_col,
-        },
-        inplace=True,
+    expected_by_measure_and_unit_val_counts_df_multi_unit_single_measure = (
+        _expected_by_measure_and_unit_val_counts_df_multi_unit_single_measure.rename(
+            columns={
+                "Measure": measure_col,
+                "Unit": unit_col,
+            }
+        )
     )
 
     assert result is not None
     assert_frame_equal(
         result.by_measure_and_unit_val_counts_df,
-        _expected_by_measure_and_unit_val_counts_df_multi_unit_single_measure,
+        expected_by_measure_and_unit_val_counts_df_multi_unit_single_measure,
     )
 
 
@@ -535,18 +537,19 @@ def test_get_val_counts_info_single_unit_multi_measure_dataset():
         canonical_shape_dataset, measure_col, unit_col
     )
 
-    _expected_by_measure_and_unit_val_counts_df_single_unit_multi_measure.rename(
-        columns={
-            "Measure": measure_col,
-            "Unit": unit_col,
-        },
-        inplace=True,
+    expected_by_measure_and_unit_val_counts_df_single_unit_multi_measure = (
+        _expected_by_measure_and_unit_val_counts_df_single_unit_multi_measure.rename(
+            columns={
+                "Measure": measure_col,
+                "Unit": unit_col,
+            },
+        )
     )
 
     assert result is not None
     assert_frame_equal(
         result.by_measure_and_unit_val_counts_df,
-        _expected_by_measure_and_unit_val_counts_df_single_unit_multi_measure,
+        expected_by_measure_and_unit_val_counts_df_single_unit_multi_measure,
     )
 
 
@@ -581,18 +584,19 @@ def test_get_val_counts_info_single_unit_single_measure_dataset():
         canonical_shape_dataset, measure_col, unit_col
     )
 
-    _expected_by_measure_and_unit_val_counts_df_single_unit_single_measure.rename(
-        columns={
-            "Measure": measure_col,
-            "Unit": unit_col,
-        },
-        inplace=True,
+    expected_by_measure_and_unit_val_counts_df_single_unit_single_measure = (
+        _expected_by_measure_and_unit_val_counts_df_single_unit_single_measure.rename(
+            columns={
+                "Measure": measure_col,
+                "Unit": unit_col,
+            },
+        )
     )
 
     assert result is not None
     assert_frame_equal(
         result.by_measure_and_unit_val_counts_df,
-        _expected_by_measure_and_unit_val_counts_df_single_unit_single_measure,
+        expected_by_measure_and_unit_val_counts_df_single_unit_single_measure,
     )
 
 
@@ -615,8 +619,10 @@ def test_get_concepts_hierarchy_info_hierarchy_with_depth_of_one():
     result_code_list_cols = select_codelist_cols_by_dataset_url(
         csvw_metadata_rdf_graph, dataset_url
     )
-    result_primary_key_col_names_by_dataset_url = select_primary_key_col_names_by_dataset_url(
-        csvw_metadata_rdf_graph, dataset_url
+    result_primary_key_col_names_by_dataset_url = (
+        select_primary_key_col_names_by_dataset_url(
+            csvw_metadata_rdf_graph, dataset_url
+        )
     )
 
     parent_notation_col_name = get_codelist_col_title_by_property_url(
@@ -626,7 +632,8 @@ def test_get_concepts_hierarchy_info_hierarchy_with_depth_of_one():
         result_code_list_cols.columns, CodelistPropertyUrl.RDFLabel
     )
     unique_identifier = get_codelist_col_title_from_col_name(
-        result_code_list_cols.columns, result_primary_key_col_names_by_dataset_url.primary_key_col_names[0].value
+        result_code_list_cols.columns,
+        result_primary_key_col_names_by_dataset_url.primary_key_col_names[0].value,
     )
 
     result = get_concepts_hierarchy_info(
@@ -653,8 +660,10 @@ def test_get_concepts_hierarchy_info_hierarchy_with_depth_more_than_one():
     result_code_list_cols = select_codelist_cols_by_dataset_url(
         csvw_metadata_rdf_graph, dataset_url
     )
-    result_primary_key_col_names_by_dataset_url = select_primary_key_col_names_by_dataset_url(
-        csvw_metadata_rdf_graph, dataset_url
+    result_primary_key_col_names_by_dataset_url = (
+        select_primary_key_col_names_by_dataset_url(
+            csvw_metadata_rdf_graph, dataset_url
+        )
     )
 
     parent_notation_col_name = get_codelist_col_title_by_property_url(
@@ -664,7 +673,8 @@ def test_get_concepts_hierarchy_info_hierarchy_with_depth_more_than_one():
         result_code_list_cols.columns, CodelistPropertyUrl.RDFLabel
     )
     unique_identifier = get_codelist_col_title_from_col_name(
-        result_code_list_cols.columns, result_primary_key_col_names_by_dataset_url.primary_key_col_names[0].value
+        result_code_list_cols.columns,
+        result_primary_key_col_names_by_dataset_url.primary_key_col_names[0].value,
     )
 
     result = get_concepts_hierarchy_info(
