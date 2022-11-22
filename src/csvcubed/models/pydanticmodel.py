@@ -58,7 +58,7 @@ class PydanticModel(DataClassBase, ABC):
         """
         Converts this model to a pydantic dataclass. Captures any validation errors in the process.
 
-        Returns: Either a pydantic dataclass is validation was successful **OTHERWISE** it returns a list of errors.
+        Returns: Either a pydantic dataclass if validation was successful **OTHERWISE** it returns a list of errors.
         """
         pydantic_class_constructor = self.__class__._get_pydantic_constructor()
         try:

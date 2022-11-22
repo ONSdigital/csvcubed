@@ -1,11 +1,17 @@
 [tool.poetry]
 authors = ["Integrated Data Service - Dissemination <csvcubed@gsscogs.uk>"]
 description = "A tool to generate RDF Data Cube style CSV-W cubes from tidy CSV files. Part of the csvcubed family."
-exclude = ["docs/*"]
+exclude = [
+  "docs/*",
+  "tests/*"
+]
 license = "Apache-2.0"
 name = "csvcubed"
 packages = [
   {include = "csvcubed", from = "src"},
+  # Adding tests package so we can import in unit/behaviour/stress/profiling tests, but the exlucde above makes sure the 
+  # package doesn't actually include any of theses files.
+  {include = "tests"}
 ]
 readme = "README.md"
 version = "0.1.0-dev"
@@ -29,6 +35,9 @@ csvcubed-devtools = "0.1.8"
 requests-mock = "~1.9.3"
 pytest-vcr = "~1.0.2"
 pytest-timeout = "^2.1.0"
+py-spy = "^0.3.14"
+memory-profiler = "^0.61.0"
+matplotlib = "^3.6.2"  # Necessary for memory-profiler graphs
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
