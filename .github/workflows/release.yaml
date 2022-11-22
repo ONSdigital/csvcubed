@@ -16,7 +16,7 @@ jobs:
       python-version: ${{ matrix.python-version }}
   
   build_package_and_documentation:
-    if: needs.build_in_environments.result == 'success'
+    if: needs.test_in_environments.result == 'success'
     needs: [test_in_environments]
     uses: ./.github/workflows/reusable-build.yaml
 
