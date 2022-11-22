@@ -287,7 +287,7 @@ class IsPivotedShapeMeasureResult:
 @dataclass
 class UnitColumnAboutValueUrlResult:
     """
-    TODO: Add description
+    Model representing the About URL and Value URL of the unit column
     """
     about_url: str
     value_url: str
@@ -295,7 +295,7 @@ class UnitColumnAboutValueUrlResult:
 @dataclass
 class ObservationValueColumnTitleAboutUrlResult:
     """
-    TODO: Add description
+    Model representing the Column Title and About URL of an observation value
     """
     observation_value_col_title: str
     observation_value_col_about_url: str
@@ -693,7 +693,7 @@ def map_unit_col_about_value_urls_result(
     sparql_results: List[ResultRow]
 ) -> List[UnitColumnAboutValueUrlResult]:
     """
-    TODO: Add description
+    Maps SPARQL query results to 'UnitColumnAboutValueUrlResult'
     """
     def map_row(row_result: Dict[str, Any]) -> UnitColumnAboutValueUrlResult:
         return UnitColumnAboutValueUrlResult(
@@ -707,7 +707,7 @@ def map_observation_value_col_title_and_about_url_result(
     sparql_results: List[ResultRow]
 ) -> List[ObservationValueColumnTitleAboutUrlResult]:
     """
-    TODO: Add description
+    Maps SPARQL query results to 'ObservationValueColumnTitleAboutUrlResult'
     """
     def map_row(row_result: Dict[str, Any]) -> ObservationValueColumnTitleAboutUrlResult:
         return ObservationValueColumnTitleAboutUrlResult(

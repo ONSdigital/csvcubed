@@ -484,7 +484,7 @@ def select_unit_col_about_value_urls(
     rdf_graph: rdflib.Graph,
 ) -> List[UnitColumnAboutValueUrlResult]:
     """
-    TODO: Add description
+    Queries a CSV-W and extracts the unit column's About and Value URLs
     """
     results: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryName.SELECT_UNIT_COL_ABOUT_AND_VALUE_URLS),
@@ -504,7 +504,7 @@ def select_observation_value_column_title_and_about_url(
     rdf_graph: rdflib.Graph,
 ) -> List[ObservationValueColumnTitleAboutUrlResult]:
     """
-    TODO: Add description
+    Queries a CSV-W and extracts the observation value column title and About URL
     """
     results: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryName.SELECT_UNIT_COL_OBSERVED_COL_TITLE_AND_ABOUT_URL),

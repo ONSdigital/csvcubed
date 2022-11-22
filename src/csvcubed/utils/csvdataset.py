@@ -89,7 +89,7 @@ def _create_unit_col_in_melted_data_set(melted_df: pd.DataFrame, unit_col_about_
 
 def _create_measure_col_in_melted_data_set(melted_df: pd.DataFrame, measure_components: List[QubeComponentResult]):
     """
-    TODO: Add Description
+    Associates the relevant measure information with each observation value
     """
     # Adding the Measure column into the melted data set.
     melted_df["Measure"] = ""
@@ -107,7 +107,7 @@ def _create_measure_col_in_melted_data_set(melted_df: pd.DataFrame, measure_comp
        
 def _melt_data_set(data_set: pd.DataFrame, measure_components: List[QubeComponentResult]) -> pd.DataFrame:
     """
-    TODO: Add Description
+    Melts a pivoted shape data set in preparation for extracting the measure and unit information as separate columns
     """
     # MEASURE - DONE
     #  We need to melt the dataset if the shape is pivoted. To melt the dataset:
