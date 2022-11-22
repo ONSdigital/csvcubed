@@ -31,8 +31,7 @@ jobs:
           git clone 'https://csvcubed:${{ secrets.CSVCUBED_GIT_COMMIT_TOKEN }}@github.com/GSS-Cogs/csvcubed-docs.git' --depth 1
           cd csvcubed-docs
 
-          git checkout -b test-pages # gh-pages
-          git push --set-upstream origin test-pages
+          git checkout gh-pages
 
           git rm -rf external --ignore-unmatch
 
