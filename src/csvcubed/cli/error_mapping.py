@@ -99,7 +99,7 @@ def friendly_error_mapping(error: ValidationError) -> str:
         NoMeasuresDefinedError: "At least one measure must be defined in a cube.",
         NoUnitsDefinedError: "At least one unit must be defined in a cube.",
         ObservationValuesMissing: "Observed values missing in '{error.csv_column_title}' on rows: {error.row_numbers}",
-        PivotedShapeMeasureColumnsExistError: "The cube is in pivoted shape, but you have defined 1 or more Measure columns. These two approaches are incompatible.",
+        PivotedShapeMeasureColumnsExistError: "The cube is in pivoted shape, but you have defined 1 or more Measure columns: '{error.measure_column_title}'. These two approaches are incompatible.",
         ReservedUriValueError: (
             "The URI value(s) {error.conflicting_values} conflict with the reserved value: "
             "{error.reserved_identifier}'."

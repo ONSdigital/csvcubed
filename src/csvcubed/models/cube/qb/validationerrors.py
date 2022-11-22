@@ -334,12 +334,16 @@ class PivotedShapeMeasureColumnsExistError(BothMeasureTypesDefinedError):
     An error to inform the user that they have attempted to define a pivoted shape cube with measure columns.
     """
 
+    column_names: List[str]
+    column_names_concatenated: str = field(init=False)
+
     @classmethod
     def get_error_url(cls) -> str:
         return "https://gss-cogs.github.io/csvcubed-docs/external/guides/errors/build-command-errors/multiple-measure-columns/"
 
     def __post_init__(self):
-        self.message = f"The cube is in pivoted shape, but you have defined 1 or more Measure columns. These two approaches are incompatible."
+        self.column_names_concatenated = ", ".join(self.column_names)
+        self.message = f"The cube is in pivoted shape, but you have defined 1 or more Measure columns: {self.column_names_concatenated}. These two approaches are incompatible."
 
 
 @dataclass
