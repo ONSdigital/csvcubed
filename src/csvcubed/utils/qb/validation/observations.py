@@ -1,6 +1,6 @@
 import os
 from distutils.util import strtobool
-from typing import List, Union
+from typing import Dict, List, Union
 
 from csvcubedmodels.rdf.namespaces import SDMX_Attribute
 
@@ -11,7 +11,7 @@ from csvcubed.models.cube.qb.components.attribute import (
     NewQbAttribute,
     QbAttribute,
 )
-from csvcubed.models.cube.qb.components.measure import ExistingQbMeasure
+from csvcubed.models.cube.qb.components.measure import ExistingQbMeasure, QbMeasure
 from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureDimension
 from csvcubed.models.cube.qb.components.unitscolumn import QbMultiUnits
 from csvcubed.models.cube.qb.validationerrors import (
@@ -272,7 +272,22 @@ def _validate_pivoted_shape_cube(
         obs_val_col_measures.append(element.structural_definition.measure)
 
     if len(set(obs_val_col_measures)) != len(obs_val_col_measures):
-        errors.append(DuplicateMeasureError(obs_col_names))
+        map_measure_to_columns: Dict[QbMeasure, List[QbColumn[QbObservationValue]]] = {}
+        for column in observed_value_columns:
+            measure = column.structural_definition.measure
+
+            columns_using_measure = map_measure_to_columns.get(measure, [])
+            columns_using_measure.append(column)
+            map_measure_to_columns[measure] = columns_using_measure
+
+        obs_val_col_titles_with_duplicate_measures: List[str] = []
+        for _, obs_val_columns_using_same_measure in map_measure_to_columns.items():
+            if len(obs_val_columns_using_same_measure) > 1:
+                obs_val_col_titles_with_duplicate_measures += [
+                    c.csv_column_title for c in obs_val_columns_using_same_measure
+                ]
+
+        errors.append(DuplicateMeasureError(obs_val_col_titles_with_duplicate_measures))
 
     if len(obs_col_names) > 1:
         # Ensure that attribute and units columns correctly define their linked obs val column
