@@ -1,13 +1,14 @@
-import math
 import pandas as pd
 import pytest
 from pandas.core.arrays.categorical import Categorical
 
-from csvcubed.models.cube import *
 from csvcubed.models.cube.cube import Cube
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.cube.qb.columns import QbColumn
-from csvcubed.models.cube.qb.components.attribute import NewQbAttribute, NewQbAttributeLiteral
+from csvcubed.models.cube.qb.components.attribute import (
+    NewQbAttribute,
+    NewQbAttributeLiteral,
+)
 from csvcubed.models.cube.qb.components.codelist import NewQbCodeList
 from csvcubed.models.cube.qb.components.concept import NewQbConcept
 from csvcubed.models.cube.qb.components.dimension import NewQbDimension

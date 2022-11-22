@@ -50,6 +50,14 @@ from csvcubed.models.cube.qb.components.validationerrors import (
     ConflictingUriSafeValuesError,
     EmptyQbMultiUnitsError,
 )
+from csvcubed.models.cube.validationerrors import (
+    ObservationValuesMissing,
+    MissingColumnDefinitionError,
+    DuplicateColumnTitleError,
+    ColumnValidationError,
+    ColumnNotFoundInDataError,
+    UriTemplateNameError,
+)
 from csvcubed.models.validationerror import (
     ValidationError,
     UnknownPydanticValidationError,

@@ -5,9 +5,10 @@ Catalog Metadata (DCAT)
 import json
 from dataclasses import dataclass, field
 from datetime import datetime, date, time
-from typing import Optional, Union
-from csvcubedmodels.rdf import dcat
 from pathlib import Path
+from typing import Optional, Union
+
+from csvcubedmodels.rdf import dcat
 
 from csvcubed.models.cube.catalog import CatalogMetadataBase
 from csvcubed.models.uriidentifiable import UriIdentifiable

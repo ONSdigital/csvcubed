@@ -6,14 +6,14 @@ The functionality necessary to repurpose pydantic so that we can validate at a p
 """
 
 import dataclasses
+from abc import ABC
 from dataclasses import dataclass, fields, is_dataclass
+from typing import Dict, Type, List, Iterable, Union, Any
+
 import pydantic
 import pydantic.dataclasses
-from pydantic import BaseConfig, Extra
-from typing import Dict, Type, List, Iterable, Union, Any
-from abc import ABC
-
 from csvcubedmodels.dataclassbase import DataClassBase
+from pydantic import BaseConfig, Extra
 
 from .validationerror import (
     ValidationError,

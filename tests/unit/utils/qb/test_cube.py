@@ -1,6 +1,5 @@
 import pytest
 
-from csvcubed.models.cube import *
 from csvcubed.models.cube.cube import Cube
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.cube.qb.columns import QbColumn

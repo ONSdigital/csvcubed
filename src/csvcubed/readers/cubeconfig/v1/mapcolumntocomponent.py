@@ -5,15 +5,15 @@ Mapping
 Map info.json v1.* definitions to QB column components
 """
 import copy
-from pathlib import Path
 import logging
+from pathlib import Path
 from typing import Union, Optional, Tuple, List
 
+import csvcubed.readers.cubeconfig.v1.columnschema as schema
+from csvcubed.inputs import PandasDataTypes
 from csvcubed.models.cube.qb.columns import QbColumn
 from csvcubed.models.cube.qb.components.codelist import CompositeQbCodeList
 from csvcubed.models.jsonvalidationerrors import JsonSchemaValidationError
-from csvcubed.inputs import PandasDataTypes
-import csvcubed.readers.cubeconfig.v1.columnschema as schema
 
 _logger = logging.getLogger(__name__)
 

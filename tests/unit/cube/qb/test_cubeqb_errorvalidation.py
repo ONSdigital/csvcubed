@@ -1,9 +1,8 @@
-import pytest
 import os
 
 import pandas as pd
+import pytest
 
-from csvcubed.models.cube import *
 from csvcubed.models.cube.cube import Cube, QbCube
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.cube.qb.columns import QbColumn
@@ -45,12 +44,8 @@ from csvcubed.models.cube.qb.validationerrors import (
     LinkedToNonObsColumnError,
     HybridShapeError,
 )
-from tests.unit.test_baseunit import *
 from csvcubed.utils.qb.validation.cube import validate_qb_component_constraints
-from csvcubed.utils.qb.validation.observations import (
-    _validate_observation_value,
-    _validate_pivoted_shape_cube,
-)
+from tests.unit.test_baseunit import *
 
 
 def test_single_measure_qb_definition():

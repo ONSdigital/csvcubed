@@ -1,2 +1,2 @@
-from .unit import *
 from .behaviour import *
+from .unit import *

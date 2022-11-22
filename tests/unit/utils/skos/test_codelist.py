@@ -4,18 +4,18 @@ from pandas import DataFrame
 from treelib import Tree
 
 from csvcubed.cli.inspect.inspectdatasetmanager import load_csv_to_dataframe
-from csvcubed.utils.sparql_handler.sparqlmanager import (
-    select_codelist_cols_by_dataset_url,
-    select_codelist_dataset_url,
-    select_primary_key_col_names_by_dataset_url,
-)
-from csvcubed.utils.tableschema import CsvwRdfManager
 from csvcubed.utils.skos.codelist import (
     CodelistPropertyUrl,
     build_concepts_hierarchy_tree,
     get_codelist_col_title_by_property_url,
     get_codelist_col_title_from_col_name,
 )
+from csvcubed.utils.sparql_handler.sparqlmanager import (
+    select_codelist_cols_by_dataset_url,
+    select_codelist_dataset_url,
+    select_primary_key_col_names_by_dataset_url,
+)
+from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
@@ -60,12 +60,15 @@ def test_get_codelist_col_title_by_property_url_notation():
     result_code_list_cols = select_codelist_cols_by_dataset_url(
         csvw_metadata_rdf_graph, dataset_url
     )
-    result_primary_key_col_names_by_dataset_url = select_primary_key_col_names_by_dataset_url(
-        csvw_metadata_rdf_graph, dataset_url
+    result_primary_key_col_names_by_dataset_url = (
+        select_primary_key_col_names_by_dataset_url(
+            csvw_metadata_rdf_graph, dataset_url
+        )
     )
 
     unique_identifier = get_codelist_col_title_from_col_name(
-        result_code_list_cols.columns, result_primary_key_col_names_by_dataset_url.primary_key_col_names[0].value
+        result_code_list_cols.columns,
+        result_primary_key_col_names_by_dataset_url.primary_key_col_names[0].value,
     )
 
     assert unique_identifier == "Notation"
@@ -87,7 +90,7 @@ def test_get_codelist_col_title_by_property_url_parent_notation():
     result_code_list_cols = select_codelist_cols_by_dataset_url(
         csvw_metadata_rdf_graph, dataset_url
     )
-    
+
     parent_notation_col_name = get_codelist_col_title_by_property_url(
         result_code_list_cols.columns, CodelistPropertyUrl.SkosBroader
     )

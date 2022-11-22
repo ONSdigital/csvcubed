@@ -5,7 +5,6 @@ CSV Dataset
 Utilities for CSV Datasets
 """
 
-from enum import Enum
 from pathlib import Path
 from typing import List, Optional, Tuple
 from uuid import uuid1
@@ -13,14 +12,13 @@ from uuid import uuid1
 import pandas as pd
 import rdflib
 
-
-from csvcubed.utils.sparql_handler.sparqlmanager import select_single_unit_from_dsd
-from csvcubed.models.sparqlresults import QubeComponentResult
 from csvcubed.cli.inspect.inspectdatasetmanager import (
     get_measure_col_name_from_dsd,
     get_single_measure_from_dsd,
     get_unit_col_name_from_dsd,
 )
+from csvcubed.models.sparqlresults import QubeComponentResult
+from csvcubed.utils.sparql_handler.sparqlmanager import select_single_unit_from_dsd
 
 
 def transform_dataset_to_canonical_shape(

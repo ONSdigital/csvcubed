@@ -8,8 +8,8 @@ Qb-Cube Validation Errors
 from dataclasses import dataclass, field
 from typing import List, Optional, Type, Union
 from abc import ABC
-import os
 
+from csvcubed.models.validationerror import SpecificValidationError
 from ..qb import (
     QbMultiMeasureDimension,
     QbDimension,
@@ -18,7 +18,6 @@ from ..qb import (
     QbStructuralDefinition,
     QbColumn,
 )
-from csvcubed.models.validationerror import SpecificValidationError
 
 ComponentTypeDescription = Union[str, Type[QbStructuralDefinition]]
 
