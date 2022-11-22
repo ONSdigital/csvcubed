@@ -284,6 +284,21 @@ class IsPivotedShapeMeasureResult:
     measure: str
     is_pivoted_shape: bool
 
+@dataclass
+class UnitColumnAboutValueUrlResult:
+    """
+    TODO: Add description
+    """
+    about_url: str
+    value_url: str
+
+@dataclass
+class ObservationValueColumnTitleAboutUrlResult:
+    """
+    TODO: Add description
+    """
+    observation_value_col_title: str
+    observation_value_col_about_url: str
 
 def map_catalog_metadata_result(sparql_result: ResultRow) -> CatalogMetadataResult:
     """
@@ -671,5 +686,32 @@ def map_is_pivoted_shape_for_measures_in_data_set(
         return IsPivotedShapeMeasureResult(
             measure=str(row_result["measure"]),
             is_pivoted_shape=bool(row_result["isPivotedShape"]),
+        )
+    return [map_row(row.asdict()) for row in sparql_results]
+
+def map_unit_col_about_value_urls_result(
+    sparql_results: List[ResultRow]
+) -> List[UnitColumnAboutValueUrlResult]:
+    """
+    TODO: Add description
+    """
+    def map_row(row_result: Dict[str, Any]) -> UnitColumnAboutValueUrlResult:
+        return UnitColumnAboutValueUrlResult(
+            about_url=str(row_result["aboutUrl"]),
+            value_url=str(row_result["valueUrl"])
+        )
+    return [map_row(row.asdict()) for row in sparql_results]
+
+
+def map_observation_value_col_title_and_about_url_result(
+    sparql_results: List[ResultRow]
+) -> List[ObservationValueColumnTitleAboutUrlResult]:
+    """
+    TODO: Add description
+    """
+    def map_row(row_result: Dict[str, Any]) -> ObservationValueColumnTitleAboutUrlResult:
+        return ObservationValueColumnTitleAboutUrlResult(
+            observation_value_col_title=str(row_result["observationValueColumnTitle"]),
+            observation_value_col_about_url=str(row_result["observationValueColumnAboutUrl"])
         )
     return [map_row(row.asdict()) for row in sparql_results]

@@ -17,7 +17,7 @@ from csvcubed.utils.qb.components import ComponentField, ComponentPropertyAttrib
 
 
 from csvcubed.utils.sparql_handler.sparqlmanager import CubeShape, select_single_unit_from_dsd
-from csvcubed.models.sparqlresults import QubeComponentResult
+from csvcubed.models.sparqlresults import ObservationValueColumnTitleAboutUrlResult, QubeComponentResult, UnitColumnAboutValueUrlResult
 from csvcubed.cli.inspect.inspectdatasetmanager import (
     filter_components_from_dsd,
     get_standard_shape_measure_col_name_from_dsd,
@@ -25,7 +25,7 @@ from csvcubed.cli.inspect.inspectdatasetmanager import (
     get_standard_shape_unit_col_name_from_dsd,
 )
 
-def _create_unit_col_in_melted_data_set(melted_df: pd.DataFrame, unit_components: List[QubeComponentResult]):
+def _create_unit_col_in_melted_data_set(melted_df: pd.DataFrame, unit_col_about_urls_value_urls: List[UnitColumnAboutValueUrlResult], observation_value_col_titles_about_urls: List[ObservationValueColumnTitleAboutUrlResult]):
     """
     TODO: Add Description
     """
@@ -34,24 +34,27 @@ def _create_unit_col_in_melted_data_set(melted_df: pd.DataFrame, unit_components
         obs_val_col_title = row["Observation Value"]
 
         # Step 1: Use the observation value col title to get the unit col value url.
-        results_unit_col_about_value_urls = []
-        results_observed_value_url_and_col_title = []
+            # Step 1.1: First use the obs col title from for loop to get the about url from query 2 result. [DONE]
+        
+        filtered_observation_value_col_titles_about_urls = [observation_value_col_title_about_url for observation_value_col_title_about_url in observation_value_col_titles_about_urls if observation_value_col_title_about_url.observation_value_col_title == obs_val_col_title]
 
-        # First use the obs col title from for loop to get the about url from query 2 result.
-        filtered_results_observed_value_url_and_col_title  = [result_observed_value_url_and_col_title for result_observed_value_url_and_col_title in results_observed_value_url_and_col_title if result_observed_value_url_and_col_title.observationValueColumnTitle == obs_val_col_title]
-        if(len(filtered_results_observed_value_url_and_col_title) > 1):
-            raise Exception("")
+        if(len(filtered_observation_value_col_titles_about_urls) != 1):
+            #TODO: Add relevant exception with inspect exceptions
+            raise Exception("No matching result")
 
-        filtered_result_observed_value_url_and_col_title = filtered_results_observed_value_url_and_col_title[0]
-        about_url = filtered_result_observed_value_url_and_col_title.about_url
+        observation_value_col_title_about_url = filtered_observation_value_col_titles_about_urls[0]
+        about_url = observation_value_col_title_about_url.observation_value_col_about_url
 
-        # Then use the about url to get the unit col's value url from query 1 result.
-        filtered_results_unit_col_about_value_urls  = [result_unit_col_about_value_urls for result_unit_col_about_value_urls in results_unit_col_about_value_urls if result_unit_col_about_value_urls.observationValueColumnAboutUrl == about_url]
-        if(len(filtered_results_unit_col_about_value_urls) > 1):
-            raise Exception("")
+            # Step 1.2: Then use the about url to get the unit col's value url from query 1 result. [DONE]
 
-        filtered_result_unit_col_about_value_urls = filtered_results_unit_col_about_value_urls[0]
-        unit_col_value_url = filtered_result_unit_col_about_value_urls.valueUrl
+        filtered_unit_col_about_urls_value_urls = [unit_col_about_url_value_url for unit_col_about_url_value_url in unit_col_about_urls_value_urls if unit_col_about_url_value_url.about_url == about_url]
+        
+        if(len(filtered_unit_col_about_urls_value_urls) != 1):
+            #TODO: Add relevant exception with inspect exceptions
+            raise Exception("No matching result")
+
+        unit_col_about_url_value_url = filtered_unit_col_about_urls_value_urls[0]
+        unit_col_value_url = unit_col_about_url_value_url.value_url
 
         # Step 2: Use the uri template lib to tell me what the variables defined inside the unit value url are. These variables are col names.
             # If there are no varibales in unit value url, then set the unit column to be the unit value url.
@@ -126,10 +129,12 @@ def _melt_data_set(data_set: pd.DataFrame, measure_components: List[QubeComponen
     )
     
 def transform_dataset_to_canonical_shape(
-    csvw_shape: CubeShape,
+    cube_shape: CubeShape,
     dataset: pd.DataFrame,
     qube_components: List[QubeComponentResult],
     dataset_uri: str,
+    unit_col_about_urls_value_urls: Optional[List[UnitColumnAboutValueUrlResult]],
+    observation_value_col_titles_about_urls: Optional[List[ObservationValueColumnTitleAboutUrlResult]],
     csvw_metadata_rdf_graph: rdflib.ConjunctiveGraph,
     csvw_metadata_json_path: Path,
 ) -> Tuple[pd.DataFrame, str, str]:
@@ -145,7 +150,7 @@ def transform_dataset_to_canonical_shape(
     unit_col: Optional[str] = None
     measure_col: Optional[str] = None
 
-    if csvw_shape == CubeShape.Standard:
+    if cube_shape == CubeShape.Standard:
         unit_col = get_standard_shape_unit_col_name_from_dsd(qube_components)
         if unit_col is None:
             unit_col = f"Unit_{str(uuid1())}"
@@ -162,11 +167,10 @@ def transform_dataset_to_canonical_shape(
         # In pivoted shape
         measure_components = filter_components_from_dsd(qube_components, ComponentField.PropertyType, ComponentPropertyType.Measure.value)        
         melted_df = _melt_data_set(canonical_shape_dataset, measure_components)
-        _create_measure_col_in_melted_data_set(melted_df, measure_components)
-
-        unit_components = filter_components_from_dsd(qube_components, ComponentField.Property, ComponentPropertyAttributeURI.UnitMeasure)
         
-        _create_unit_col_in_melted_data_set(melted_df, unit_components)
+        _create_measure_col_in_melted_data_set(melted_df, measure_components)
+        
+        _create_unit_col_in_melted_data_set(melted_df, unit_col_about_urls_value_urls, observation_value_col_titles_about_urls)
         canonical_shape_dataset = melted_df
 
     return (canonical_shape_dataset, measure_col, unit_col)

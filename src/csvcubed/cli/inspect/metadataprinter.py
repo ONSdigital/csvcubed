@@ -22,14 +22,17 @@ from csvcubed.models.sparqlresults import (
     CodelistsResult,
     ColsWithSuppressOutputTrueResult,
     DSDLabelURIResult,
+    ObservationValueColumnTitleAboutUrlResult,
     PrimaryKeyColNamesByDatasetUrlResult,
     QubeComponentsResult,
+    UnitColumnAboutValueUrlResult,
 )
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.models.csvwtype import CSVWType
 from csvcubed.utils.sparql_handler.sparqlmanager import (
     select_codelist_cols_by_dataset_url,
     select_codelist_dataset_url,
+    select_observation_value_column_title_and_about_url,
     select_primary_key_col_names_by_dataset_url,
     select_cols_where_suppress_output_is_true,
     select_csvw_catalog_metadata,
@@ -37,6 +40,7 @@ from csvcubed.utils.sparql_handler.sparqlmanager import (
     select_csvw_dsd_qube_components,
     select_dsd_code_list_and_cols,
     select_qb_dataset_url,
+    select_unit_col_about_value_urls,
 )
 from csvcubed.cli.inspect.inspectdatasetmanager import (
     get_concepts_hierarchy_info,
@@ -93,6 +97,8 @@ class MetadataPrinter:
     )
     result_code_list_cols: CodeListColsByDatasetUrlResult = field(init=False)
     result_concepts_hierachy_info: CodelistHierarchyInfoResult = field(init=False)
+    results_unit_col_about_and_value_urls: List[UnitColumnAboutValueUrlResult] = field(init=False)
+    results_observation_value_column_title_about_url: List[ObservationValueColumnTitleAboutUrlResult] = field(init=False)
 
     @staticmethod
     def get_csvw_type_str(csvw_type: CSVWType) -> str:
@@ -182,31 +188,40 @@ class MetadataPrinter:
             self.csvw_metadata_json_path,
         )
 
-        # strtobool is not case sensitive and will work the same way with "True" or "true" inputs, also with "False" or "false".
-        # Below is a temporary workaround until we complete the other pivoted shape tickets. The value is set by the related behave tests.
-        is_pivoted_multi_measure = strtobool(
-            os.environ.get("PIVOTED_MULTI_MEASURE", "False")
+        # # strtobool is not case sensitive and will work the same way with "True" or "true" inputs, also with "False" or "false".
+        # # Below is a temporary workaround until we complete the other pivoted shape tickets. The value is set by the related behave tests.
+        # is_pivoted_multi_measure = strtobool(
+        #     os.environ.get("PIVOTED_MULTI_MEASURE", "False")
+        # )
+        # if is_pivoted_multi_measure:
+        #     data = DataFrame(data=[], columns=["Measure", "Unit", "Count"])
+        #     self.result_dataset_value_counts = (
+        #         DatasetObservationsByMeasureUnitInfoResult(data)
+        #     )
+        # else:
+
+        if self.cube_shape == CubeShape.Pivoted:
+            self.results_unit_col_about_and_value_urls = select_unit_col_about_value_urls(self.csvw_metadata_rdf_graph)
+
+            self.results_observation_value_column_title_about_url = select_observation_value_column_title_and_about_url(self.csvw_metadata_rdf_graph)
+
+        (
+            canonical_shape_dataset,
+            measure_col,
+            unit_col,
+        ) = transform_dataset_to_canonical_shape(
+            self.cube_shape,
+            self.dataset,
+            self.result_qube_components.qube_components,
+            self.result_dataset_label_dsd_uri.dsd_uri,
+            self.results_unit_col_about_and_value_urls,
+            self.results_observation_value_column_title_about_url,
+            self.csvw_metadata_rdf_graph,
+            self.csvw_metadata_json_path,
         )
-        if is_pivoted_multi_measure:
-            data = DataFrame(data=[], columns=["Measure", "Unit", "Count"])
-            self.result_dataset_value_counts = (
-                DatasetObservationsByMeasureUnitInfoResult(data)
-            )
-        else:
-            (
-                canonical_shape_dataset,
-                measure_col,
-                unit_col,
-            ) = transform_dataset_to_canonical_shape(
-                self.dataset,
-                self.result_qube_components.qube_components,
-                self.result_dataset_label_dsd_uri.dsd_uri,
-                self.csvw_metadata_rdf_graph,
-                self.csvw_metadata_json_path,
-            )
-            self.result_dataset_value_counts = get_dataset_val_counts_info(
-                canonical_shape_dataset, measure_col, unit_col
-            )
+        self.result_dataset_value_counts = get_dataset_val_counts_info(
+            canonical_shape_dataset, measure_col, unit_col
+        )
 
     def generate_codelist_results(self):
         """

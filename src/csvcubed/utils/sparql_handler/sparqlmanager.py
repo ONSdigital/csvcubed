@@ -19,6 +19,7 @@ from csvcubed.models.sparqlresults import (
     CatalogMetadataResult,
     CodeListColsByDatasetUrlResult,
     IsPivotedShapeMeasureResult,
+    ObservationValueColumnTitleAboutUrlResult,
     PrimaryKeyColNamesByDatasetUrlResult,
     CodelistsResult,
     ColsWithSuppressOutputTrueResult,
@@ -28,9 +29,11 @@ from csvcubed.models.sparqlresults import (
     QubeComponentsResult,
     MetadataDependenciesResult,
     TableSchemaPropertiesResult,
+    UnitColumnAboutValueUrlResult,
     map_catalog_metadata_result,
     map_codelist_cols_by_dataset_url_result,
     map_is_pivoted_shape_for_measures_in_data_set,
+    map_observation_value_col_title_and_about_url_result,
     map_primary_key_col_names_by_dataset_url_result,
     map_codelists_sparql_result,
     map_cols_with_supress_output_true_sparql_result,
@@ -41,6 +44,7 @@ from csvcubed.models.sparqlresults import (
     map_single_unit_from_dsd_result,
     map_metadata_dependency_results,
     map_table_schema_properties_result,
+    map_unit_col_about_value_urls_result,
 )
 from csvcubed.utils.sparql_handler.sparql import ask, select
 from csvcubed.models.csvcubedexception import (
@@ -100,6 +104,10 @@ class SPARQLQueryName(Enum):
         "select_is_pivoted_shape_for_measures_in_data_set"
     )
 
+    SELECT_UNIT_COL_ABOUT_AND_VALUE_URLS = "select_unit_col_about_and_value_urls"
+    
+    SELECT_UNIT_COL_OBSERVED_COL_TITLE_AND_ABOUT_URL = "select_unit_col_observed_col_title_and_about_url"
+    
 
 def _get_query_string_from_file(queryType: SPARQLQueryName) -> str:
     """
@@ -470,3 +478,44 @@ def select_table_schema_properties(
         )
 
     return map_table_schema_properties_result(results[0])
+
+
+def select_unit_col_about_value_urls(
+    rdf_graph: rdflib.Graph,
+) -> List[UnitColumnAboutValueUrlResult]:
+    """
+    TODO: Add description
+    """
+    results: List[ResultRow] = select(
+        _get_query_string_from_file(SPARQLQueryName.SELECT_UNIT_COL_ABOUT_AND_VALUE_URLS),
+        rdf_graph,
+    )
+
+    if len(results) < 1:
+        raise InvalidNumberOfRecordsException(
+            record_description=f"result for the {SPARQLQueryName.SELECT_UNIT_COL_ABOUT_AND_VALUE_URLS.value} sparql query",
+            excepted_num_of_records=1,
+            num_of_records=len(results),
+        )
+
+    return map_unit_col_about_value_urls_result(results)
+
+def select_observation_value_column_title_and_about_url(
+    rdf_graph: rdflib.Graph,
+) -> List[ObservationValueColumnTitleAboutUrlResult]:
+    """
+    TODO: Add description
+    """
+    results: List[ResultRow] = select(
+        _get_query_string_from_file(SPARQLQueryName.SELECT_UNIT_COL_OBSERVED_COL_TITLE_AND_ABOUT_URL),
+        rdf_graph,
+    )
+
+    if len(results) < 1:
+        raise InvalidNumberOfRecordsException(
+            record_description=f"result for the {SPARQLQueryName.SELECT_UNIT_COL_OBSERVED_COL_TITLE_AND_ABOUT_URL.value} sparql query",
+            excepted_num_of_records=1,
+            num_of_records=len(results),
+        )
+
+    return map_observation_value_col_title_and_about_url_result(results)
