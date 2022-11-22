@@ -28,10 +28,8 @@ jobs:
         run: |
           git config --global user.email "csvcubed@gsscogs.uk" && git config --global user.name "csvcubed"
 
-          git clone 'https://csvcubed:${{ secrets.CSVCUBED_GIT_COMMIT_TOKEN }}@github.com/GSS-Cogs/csvcubed-docs.git' --depth 1
+          git clone 'https://csvcubed:${{ secrets.CSVCUBED_GIT_COMMIT_TOKEN }}@github.com/GSS-Cogs/csvcubed-docs.git' --depth 1 --branch gh-pages
           cd csvcubed-docs
-
-          git checkout gh-pages
 
           git rm -rf external --ignore-unmatch
 
