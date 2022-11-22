@@ -8,6 +8,7 @@ Qb-Cube Validation Errors
 from dataclasses import dataclass, field
 from typing import List, Optional, Type, Union
 from abc import ABC
+import os
 
 from csvcubed.models.validationerror import SpecificValidationError
 from ..qb import (
@@ -429,8 +430,10 @@ class HybridShapeError(SpecificValidationError):
 
         not_linked_cols = ", ".join(str(self.not_linked_obs_val_cols))
         measure_cols = ", ".join(str(self.measure_cols))
-        self.message = f"""
-            Found these observation value columns without measures linked: {not_linked_cols}.
-            But found these measure columns {measure_cols}.
-            This does not conform with either the standard or pivoted shape of expected data.
-            """
+        self.message = (
+            f"Found these observation value columns without measures linked: '{not_linked_cols}'."
+            + os.linesep
+            + f"But found these measure columns '{measure_cols}. "
+            + os.linesep
+            + "This does not conform with either the standard or pivoted shape of expected data."
+        )

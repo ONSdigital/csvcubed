@@ -298,21 +298,9 @@ def _validate_pivoted_shape_cube(
         obs_val_col_measures.append(element.structural_definition.measure)
 
     if len(set(obs_val_col_measures)) != len(obs_val_col_measures):
-        map_measure_to_columns: Dict[QbMeasure, List[QbColumn[QbObservationValue]]] = {}
-        for column in observed_value_columns:
-            measure = column.structural_definition.measure
-
-            columns_using_measure = map_measure_to_columns.get(measure, [])
-            columns_using_measure.append(column)
-            map_measure_to_columns[measure] = columns_using_measure
-
-        obs_val_col_titles_with_duplicate_measures: List[str] = []
-        for _, obs_val_columns_using_same_measure in map_measure_to_columns.items():
-            if len(obs_val_columns_using_same_measure) > 1:
-                obs_val_col_titles_with_duplicate_measures += [
-                    c.csv_column_title for c in obs_val_columns_using_same_measure
-                ]
-
+        obs_val_col_titles_with_duplicate_measures = (
+            _get_obs_val_col_titles_with_duplicate_measures(observed_value_columns)
+        )
         errors.append(DuplicateMeasureError(obs_val_col_titles_with_duplicate_measures))
 
     if len(obs_col_names) > 1:
@@ -468,3 +456,24 @@ def _validate_cube_only_containing_obs_val_cols_with_measures(
     errors += _validate_pivoted_shape_cube(cube, obs_col_names)
 
     return errors
+
+
+def _get_obs_val_col_titles_with_duplicate_measures(
+    observed_value_columns: List[QbColumn[QbObservationValue]],
+) -> List[str]:
+    map_measure_to_columns: Dict[QbMeasure, List[QbColumn[QbObservationValue]]] = {}
+    for column in observed_value_columns:
+        measure = column.structural_definition.measure
+
+        columns_using_measure = map_measure_to_columns.get(measure, [])
+        columns_using_measure.append(column)
+        map_measure_to_columns[measure] = columns_using_measure
+
+    obs_val_col_titles_with_duplicate_measures: List[str] = []
+    for _, obs_val_columns_using_same_measure in map_measure_to_columns.items():
+        if len(obs_val_columns_using_same_measure) > 1:
+            obs_val_col_titles_with_duplicate_measures += [
+                c.csv_column_title for c in obs_val_columns_using_same_measure
+            ]
+
+    return obs_val_col_titles_with_duplicate_measures
