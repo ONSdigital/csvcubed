@@ -8,7 +8,7 @@ packages = [
   {include = "csvcubed", from = "src"},
 ]
 readme = "README.md"
-version = "0.1.0-dev"
+version = "0.1.12-rc1"
 
 [tool.poetry.dependencies]
 pandas = "^1.3.3"
