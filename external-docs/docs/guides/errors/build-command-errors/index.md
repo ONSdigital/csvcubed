@@ -32,3 +32,4 @@
 * [Linked To Non-Obs Column Error](./linked-to-non-obs-column.md)
 * [Hybrid Shape Error](./hybrid-shape-error.md)
 * [Pivoted Shape Measure Column Exists Error](./pivoted-shape-measure-col-exist.md)
+* [Pivoted Observation Value Column Without Measure Error](./pivoted-obs-val-col-without-measure.md)

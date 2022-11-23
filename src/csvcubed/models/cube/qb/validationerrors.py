@@ -452,13 +452,11 @@ class PivotedObsValColWithoutMeasureError(SpecificValidationError):
     """
 
     additional_explanation: Optional[str] = None
-    # column_names: List[str]
-    # column_names_concatenated: str = field(init=False)
 
     @classmethod
     def get_error_url(cls) -> str:
+        # todo: add correct purl link
         return "http://purl.org/csv-cubed/err/dup-measure"
 
     def __post_init__(self):
-        # self.column_names_concatenated = ", ".join(self.column_names)
-        self.message = f"An observation value column has been defined without a measure linked either within the column or from a measure column."
+        self.message = f"An observation value column has been defined without a measure linked within the column definition."
