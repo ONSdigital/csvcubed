@@ -43,6 +43,7 @@ from csvcubed.models.cube.qb.validationerrors import (
     LinkedObsColumnDoesntExistError,
     LinkedToNonObsColumnError,
     HybridShapeError,
+    PivotedObsValColWithoutMeasureError,
 )
 from csvcubed.utils.qb.validation.cube import validate_qb_component_constraints
 from tests.unit.test_baseunit import *
@@ -935,7 +936,51 @@ def test_pivoted_validation_multiple_measure_columns():
 
 def test_pivoted_validation_no_measure_defined_error():
     """
-    This scenario will test a pivoted cube where the observation column will not have a measure defined
+    This scenario will test a pivoted cube where no observation column has a measure defined either within
+    the column definition or by linking a measure column.
+    """
+    metadata = CatalogMetadata(title="cube_name", identifier="identifier")
+    data = pd.DataFrame(
+        {
+            "Some Dimension": ["a", "b", "c"],
+            "Some Attribute": ["attr-a", "attr-b", "attr-c"],
+            "Some Obs Val": [1, 2, 3],
+            "Some Other Obs Val": [2, 4, 6],
+        }
+    )
+    columns = [
+        QbColumn(
+            "Some Dimension",
+            NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
+        ),
+        QbColumn(
+            "Some Attribute",
+            NewQbAttribute.from_data(
+                "Some Attribute",
+                data["Some Attribute"],
+                observed_value_col_title="Some Obs Val",
+            ),
+        ),
+        QbColumn(
+            "Some Obs Val",
+            QbObservationValue(unit=NewQbUnit("Some Unit")),
+        ),
+        QbColumn(
+            "Some Other Obs Val",
+            QbObservationValue(unit=NewQbUnit("Another Unit")),
+        ),
+    ]
+
+    cube = Cube(metadata=metadata, data=data, columns=columns)
+
+    validate_with_environ(cube, NoMeasuresDefinedError)
+
+
+def test_pivoted_obs_val_col_without_measure_error():
+    """
+    This scenario will test a pivoted cube where one observation column has a measure defined either within
+    the column definition or by linking a measure column but the other has no measure defined using either
+    linking methods.
     """
     metadata = CatalogMetadata(title="cube_name", identifier="identifier")
     data = pd.DataFrame(
@@ -971,7 +1016,7 @@ def test_pivoted_validation_no_measure_defined_error():
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
 
-    validate_with_environ(cube, NoMeasuresDefinedError)
+    validate_with_environ(cube, PivotedObsValColWithoutMeasureError)
 
 
 def test_pivoted_validation_no_unit_defined_error():

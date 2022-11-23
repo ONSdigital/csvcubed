@@ -32,6 +32,7 @@ from csvcubed.models.cube.qb.validationerrors import (
     LinkedObsColumnDoesntExistError,
     LinkedToNonObsColumnError,
     HybridShapeError,
+    PivotedObsValColWithoutMeasureError,
 )
 from csvcubed.models.cube.validationerrors import ObservationValuesMissing
 from csvcubed.models.validationerror import ValidationError
@@ -287,10 +288,16 @@ def _validate_pivoted_shape_cube(
         In this case, the user has defined a redundant measure column.
         All obs val columns already have their own measures declared.
         """
+        multi_measure_column_titles: List[str] = []
         multi_measure_column_titles = [
             c.csv_column_title for c in multi_measure_columns
         ]
-        errors.append(PivotedShapeMeasureColumnsExistError(multi_measure_column_titles))
+        errors.append(
+            PivotedShapeMeasureColumnsExistError(
+                f"{QbObservationValue.__name__}.measure",
+                QbMultiMeasureDimension,
+            )
+        )
 
     defined_col_names = {col.csv_column_title for col in cube.columns}
 
@@ -374,7 +381,7 @@ def _get_error_when_cube_contains_obs_val_cols_with_and_without_measures(
         against some of their obs val columns.
         """
         errors.append(
-            NoMeasuresDefinedError(
+            PivotedObsValColWithoutMeasureError(
                 additional_explanation="Data apears to attempt the pivoted shape, however observation value column(s) have been found without a measure linked."
             )
         )
