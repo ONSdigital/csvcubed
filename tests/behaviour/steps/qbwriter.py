@@ -887,6 +887,7 @@ def step_impl(context, identifier: str, cube_name: str):
             "Some Attribute": ["attr-a", "attr-b", "attr-c"],
             "Some Obs Val": [1, 2, 3],
             "Some Other Obs Val": [2, 4, 6],
+            "Some Unit": ["Percent", "Percent", "Percent"]
         }
     )
     columns = [
@@ -909,9 +910,20 @@ def step_impl(context, identifier: str, cube_name: str):
         QbColumn(
             "Some Other Obs Val",
             QbObservationValue(
-                NewQbMeasure("Some Other Measure"), NewQbUnit("Some Unit")
+                NewQbMeasure("Some Other Measure"), 
             ),
         ),
+        QbColumn(
+            "Some Unit",
+            QbMultiUnits(
+                [
+                    NewQbUnit(
+                        "Percent"
+                    )
+                ],
+                observed_value_col_title="Some Obs Val"
+            )
+        )
     ]
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
