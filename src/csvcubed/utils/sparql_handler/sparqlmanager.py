@@ -18,6 +18,7 @@ from csvcubed.models.sparqlresults import (
     CSVWTableSchemaFileDependenciesResult,
     CatalogMetadataResult,
     CodeListColsByDatasetUrlResult,
+    ColTitlesAndNamesResult,
     IsPivotedShapeMeasureResult,
     ObservationValueColumnTitleAboutUrlResult,
     PrimaryKeyColNamesByDatasetUrlResult,
@@ -32,6 +33,7 @@ from csvcubed.models.sparqlresults import (
     UnitColumnAboutValueUrlResult,
     map_catalog_metadata_result,
     map_codelist_cols_by_dataset_url_result,
+    map_col_tiles_and_names_result,
     map_is_pivoted_shape_for_measures_in_data_set,
     map_observation_value_col_title_and_about_url_result,
     map_primary_key_col_names_by_dataset_url_result,
@@ -108,6 +110,7 @@ class SPARQLQueryName(Enum):
     
     SELECT_UNIT_COL_OBSERVED_COL_TITLE_AND_ABOUT_URL = "select_unit_col_observed_col_title_and_about_url"
     
+    SELECT_COL_TITLES_AND_NAMES = "select_col_titles_and_names"
 
 def _get_query_string_from_file(queryType: SPARQLQueryName) -> str:
     """
@@ -519,3 +522,16 @@ def select_observation_value_column_title_and_about_url(
         )
 
     return map_observation_value_col_title_and_about_url_result(results)
+
+def select_col_titles_and_names(
+    rdf_graph: rdflib.Graph,
+) -> List[ColTitlesAndNamesResult]:
+    """
+    Selects the column names and corresponding column titles.
+    """
+    results: List[ResultRow] = select(
+        _get_query_string_from_file(SPARQLQueryName.SELECT_COL_TITLES_AND_NAMES),
+        rdf_graph,
+    )
+
+    return map_col_tiles_and_names_result(results)

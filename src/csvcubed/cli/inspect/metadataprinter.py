@@ -20,6 +20,7 @@ from csvcubed.models.sparqlresults import (
     CodeListColsByDatasetUrlResult,
     CodelistColumnResult,
     CodelistsResult,
+    ColTitlesAndNamesResult,
     ColsWithSuppressOutputTrueResult,
     DSDLabelURIResult,
     ObservationValueColumnTitleAboutUrlResult,
@@ -32,6 +33,7 @@ from csvcubed.models.csvwtype import CSVWType
 from csvcubed.utils.sparql_handler.sparqlmanager import (
     select_codelist_cols_by_dataset_url,
     select_codelist_dataset_url,
+    select_col_titles_and_names,
     select_observation_value_column_title_and_about_url,
     select_primary_key_col_names_by_dataset_url,
     select_cols_where_suppress_output_is_true,
@@ -99,7 +101,8 @@ class MetadataPrinter:
     result_concepts_hierachy_info: CodelistHierarchyInfoResult = field(init=False)
     results_unit_col_about_and_value_urls: List[UnitColumnAboutValueUrlResult] = field(init=False)
     results_observation_value_column_title_about_url: List[ObservationValueColumnTitleAboutUrlResult] = field(init=False)
-
+    results_col_name_col_title: List[ColTitlesAndNamesResult] = field(init=False)
+    
     @staticmethod
     def get_csvw_type_str(csvw_type: CSVWType) -> str:
         if csvw_type == CSVWType.QbDataSet:
@@ -205,6 +208,7 @@ class MetadataPrinter:
 
             self.results_observation_value_column_title_about_url = select_observation_value_column_title_and_about_url(self.csvw_metadata_rdf_graph)
 
+            self.results_col_name_col_title = select_col_titles_and_names(self.csvw_metadata_rdf_graph)
         (
             canonical_shape_dataset,
             measure_col,
@@ -216,6 +220,7 @@ class MetadataPrinter:
             self.result_dataset_label_dsd_uri.dsd_uri,
             self.results_unit_col_about_and_value_urls,
             self.results_observation_value_column_title_about_url,
+            self.results_col_name_col_title,
             self.csvw_metadata_rdf_graph,
             self.csvw_metadata_json_path,
         )

@@ -1,0 +1,14 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX csvw: <http://www.w3.org/ns/csvw#>
+
+SELECT ?columnName ?columnTitle
+WHERE {
+    ?table csvw:tableSchema/csvw:column/rdf:rest*/rdf:first ?column.
+    
+    OPTIONAL{
+        ?column csvw:title ?columnTitle.
+    }
+    OPTIONAL{
+        ?column csvw:name ?columnName.
+    }
+}

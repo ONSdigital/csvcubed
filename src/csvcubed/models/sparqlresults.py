@@ -300,6 +300,14 @@ class ObservationValueColumnTitleAboutUrlResult:
     observation_value_col_title: str
     observation_value_col_about_url: str
 
+@dataclass
+class ColTitlesAndNamesResult:
+    """
+    Model representing the Column Titles and Column Names of a data set.
+    """
+    column_name: str
+    column_title: Optional[str]
+
 def map_catalog_metadata_result(sparql_result: ResultRow) -> CatalogMetadataResult:
     """
     Maps sparql query result to `CatalogMetadataResult`
@@ -713,5 +721,16 @@ def map_observation_value_col_title_and_about_url_result(
         return ObservationValueColumnTitleAboutUrlResult(
             observation_value_col_title=str(row_result["observationValueColumnTitle"]),
             observation_value_col_about_url=str(row_result["observationValueColumnAboutUrl"])
+        )
+    return [map_row(row.asdict()) for row in sparql_results]
+
+def map_col_tiles_and_names_result(sparql_results: List[ResultRow]) -> List[ColTitlesAndNamesResult]:
+    """
+    Maps SPARQL query results to 'ColTitlesAndNamesResult'
+    """
+    def map_row(row_result: Dict[str, Any]) -> ColTitlesAndNamesResult:
+        return ColTitlesAndNamesResult(
+            column_name=str(row_result["columnName"]),
+            column_title=none_or_map(row_result.get("columnTitle"), str)
         )
     return [map_row(row.asdict()) for row in sparql_results]

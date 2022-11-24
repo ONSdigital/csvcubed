@@ -12,7 +12,7 @@ from csvcubed.utils.csvdataset import (
     transform_dataset_to_canonical_shape,
 )
 from csvcubed.utils.qb.components import ComponentField, ComponentPropertyType
-from csvcubed.utils.sparql_handler.sparqlmanager import select_observation_value_column_title_and_about_url, select_unit_col_about_value_urls
+from csvcubed.utils.sparql_handler.sparqlmanager import select_col_titles_and_names, select_observation_value_column_title_and_about_url, select_unit_col_about_value_urls
 from csvcubed.utils.tableschema import CsvwRdfManager
 
 from tests.unit.cli.inspect.test_inspectdatasetmanager import get_arguments_qb_dataset
@@ -356,9 +356,9 @@ def test_transform_to_canonical_shape_for_pivoted_multi_measure_shape_data_set()
     )
 
     results_unit_col_about_and_value_urls = select_unit_col_about_value_urls(csvw_metadata_rdf_graph)
-
     results_observation_value_column_title_about_url = select_observation_value_column_title_and_about_url(csvw_metadata_rdf_graph)
-
+    results_col_name_col_title = select_col_titles_and_names(csvw_metadata_rdf_graph)
+    
     (
         canonical_shape_dataset,
         measure_col,
@@ -370,6 +370,7 @@ def test_transform_to_canonical_shape_for_pivoted_multi_measure_shape_data_set()
         dsd_uri,
         results_unit_col_about_and_value_urls,
         results_observation_value_column_title_about_url,
+        results_col_name_col_title,
         csvw_metadata_rdf_graph,
         csvw_metadata_json_path,
     )

@@ -28,8 +28,8 @@
         dcat:Resource ;
     rdfs:label "Pivoted Shape Cube"@en ;
     dcterms:identifier "qb-id-10003" ;
-    dcterms:issued "2022-11-03T16:45:47.750555"^^xsd:dateTime ;
-    dcterms:modified "2022-11-03T16:45:47.750555"^^xsd:dateTime ;
+    dcterms:issued "2022-11-24T11:45:07.291860"^^xsd:dateTime ;
+    dcterms:modified "2022-11-24T11:45:07.291860"^^xsd:dateTime ;
     dcterms:title "Pivoted Shape Cube"@en ;
     qb:structure <qb-id-10003.csv#structure> ;
     rdfs:seeAlso <qb-id-10003.csv#attribute/some-attribute>,
@@ -42,6 +42,7 @@
         <qb-id-10003.csv#component/some-dimension>,
         <qb-id-10003.csv#component/some-measure>,
         <qb-id-10003.csv#component/some-other-measure>,
+        <qb-id-10003.csv#component/some-unit>,
         <qb-id-10003.csv#component/unit>,
         <qb-id-10003.csv#csvcubed-build-activity>,
         <qb-id-10003.csv#dataset>,
@@ -51,6 +52,7 @@
         <qb-id-10003.csv#measure/some-other-measure>,
         <qb-id-10003.csv#slice/cross-measures>,
         <qb-id-10003.csv#structure>,
+        <qb-id-10003.csv#unit/percent>,
         <qb-id-10003.csv#unit/some-unit> ;
     csvw:table [ csvw:suppressOutput true ;
             csvw:tableSchema <some-dimension.table.json> ;
@@ -75,7 +77,12 @@
                                 csvw:name "some_other_obs_val" ;
                                 csvw:propertyUrl "qb-id-10003.csv#measure/some-other-measure"^^csvw:uriTemplate ;
                                 csvw:required true ;
-                                csvw:title "Some Other Obs Val" ] [ csvw:name "virt_slice" ;
+                                csvw:title "Some Other Obs Val" ] [ csvw:aboutUrl "qb-id-10003.csv#obs/{some_dimension}@some-other-measure"^^csvw:uriTemplate ;
+                                csvw:name "some_unit" ;
+                                csvw:propertyUrl "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"^^csvw:uriTemplate ;
+                                csvw:required true ;
+                                csvw:title "Some Unit" ;
+                                csvw:valueUrl "qb-id-10003.csv#unit/{+some_unit}"^^csvw:uriTemplate ] [ csvw:name "virt_slice" ;
                                 csvw:propertyUrl "rdf:type"^^csvw:uriTemplate ;
                                 csvw:valueUrl "qb:Slice"^^csvw:uriTemplate ;
                                 csvw:virtual true ] [ csvw:name "virt_slice_structure" ;
@@ -112,10 +119,6 @@
                                 csvw:propertyUrl "qb:measureType"^^csvw:uriTemplate ;
                                 csvw:valueUrl "qb-id-10003.csv#measure/some-other-measure"^^csvw:uriTemplate ;
                                 csvw:virtual true ] [ csvw:aboutUrl "qb-id-10003.csv#obs/{some_dimension}@some-other-measure"^^csvw:uriTemplate ;
-                                csvw:name "virt_obs_some_other_obs_val_unit" ;
-                                csvw:propertyUrl "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"^^csvw:uriTemplate ;
-                                csvw:valueUrl "qb-id-10003.csv#unit/some-unit"^^csvw:uriTemplate ;
-                                csvw:virtual true ] [ csvw:aboutUrl "qb-id-10003.csv#obs/{some_dimension}@some-other-measure"^^csvw:uriTemplate ;
                                 csvw:name "virt_dim_some_other_obs_val_some_dimension" ;
                                 csvw:propertyUrl "qb-id-10003.csv#dimension/some-dimension"^^csvw:uriTemplate ;
                                 csvw:valueUrl "some-dimension.csv#{+some_dimension}"^^csvw:uriTemplate ;
@@ -139,6 +142,11 @@
         rdfs:Resource ;
     void:dataDump <some-dimension.csv-metadata.json> ;
     void:uriSpace "some-dimension.csv#" .
+
+<qb-id-10003.csv#unit/percent> a <http://qudt.org/schema/qudt/Unit>,
+        <http://www.ontology-of-units-of-measure.org/resource/om-2/Unit>,
+        rdfs:Resource ;
+    rdfs:label "Percent"@en .
 
 <qb-id-10003.csv#unit/some-unit> a <http://qudt.org/schema/qudt/Unit>,
         <http://www.ontology-of-units-of-measure.org/resource/om-2/Unit>,
@@ -181,6 +189,14 @@
     qb:measure <qb-id-10003.csv#measure/some-other-measure> ;
     qb:order 6 .
 
+<qb-id-10003.csv#component/some-unit> a qb:ComponentSet,
+        qb:ComponentSpecification,
+        rdfs:Resource ;
+    qb:attribute <http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure> ;
+    qb:componentProperty <http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure> ;
+    qb:componentRequired true ;
+    qb:order 7 .
+
 <qb-id-10003.csv#component/unit> a qb:ComponentSet,
         qb:ComponentSpecification,
         rdfs:Resource ;
@@ -206,6 +222,7 @@
         <qb-id-10003.csv#component/some-dimension>,
         <qb-id-10003.csv#component/some-measure>,
         <qb-id-10003.csv#component/some-other-measure>,
+        <qb-id-10003.csv#component/some-unit>,
         <qb-id-10003.csv#component/unit> ;
     qb:componentProperty qb:measureType,
         <http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure>,
@@ -222,8 +239,8 @@
         prov:Entity ;
     rdfs:label "Some Dimension"@en ;
     dcterms:identifier "Some Dimension" ;
-    dcterms:issued "2022-11-03T16:45:47.740985"^^xsd:dateTime ;
-    dcterms:modified "2022-11-03T16:45:47.740985"^^xsd:dateTime ;
+    dcterms:issued "2022-11-24T11:45:07.279306"^^xsd:dateTime ;
+    dcterms:modified "2022-11-24T11:45:07.279306"^^xsd:dateTime ;
     dcterms:title "Some Dimension"@en ;
     rdfs:seeAlso <some-dimension.csv#code-list>,
         <some-dimension.csv#csvcubed-build-activity> ;
