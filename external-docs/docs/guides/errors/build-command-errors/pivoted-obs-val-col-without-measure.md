@@ -50,4 +50,4 @@ In the pivoted shape an observation value column must have a measure linked dire
 }
 ```
 
-For further guidance, please refer to the [shaping your data documentation](https://gss-cogs.github.io/csvcubed-docs/external/guides/shape-data/).
+For further guidance, please refer to the [shaping your data documentation](../../shape-data.md).

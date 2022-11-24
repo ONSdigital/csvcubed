@@ -45,4 +45,4 @@ A pivoted shape cube can only have measures defined against an observation value
 
 This error may be a sign that your data is too complex to be represented in the pivoted shape; you may need to represent your data in the standard shape. If you wish to continue with the pivoted shape approach then you must remove the `measures` column.
 
-For further guidance, please refer to the [shaping your data documentation](https://gss-cogs.github.io/csvcubed-docs/external/guides/shape-data/).
+For further guidance, please refer to the [shaping your data documentation](../../shape-data.md).

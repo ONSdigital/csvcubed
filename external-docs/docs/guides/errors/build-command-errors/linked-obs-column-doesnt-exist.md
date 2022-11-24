@@ -29,4 +29,4 @@ Note that the `Mean income / GBP` column does not exist in the CSV file.
 
 Ensure that the linked observation value column has the correct name corresponding to a existing observed values column in the CSV.
 
-For further guidance, please refer to the [shaping your data documentation](https://gss-cogs.github.io/csvcubed-docs/external/guides/shape-data/).
+For further guidance, please refer to the [shaping your data documentation](../../shape-data.md).
