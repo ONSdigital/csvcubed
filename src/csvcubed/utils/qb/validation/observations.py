@@ -288,10 +288,6 @@ def _validate_pivoted_shape_cube(
         In this case, the user has defined a redundant measure column.
         All obs val columns already have their own measures declared.
         """
-        # multi_measure_column_titles: List[str] = []
-        # multi_measure_column_titles = [
-        #    c.csv_column_title for c in multi_measure_columns
-        # ]
         errors.append(
             PivotedShapeMeasureColumnsExistError(
                 f"{QbObservationValue.__name__}.measure",
