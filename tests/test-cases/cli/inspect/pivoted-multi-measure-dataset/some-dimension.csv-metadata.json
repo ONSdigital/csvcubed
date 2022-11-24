@@ -7,11 +7,11 @@
         {
             "@id": "some-dimension.csv#code-list",
             "@type": [
-                "http://www.w3.org/ns/prov#Entity",
-                "http://www.w3.org/ns/dcat#Dataset",
                 "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://www.w3.org/2004/02/skos/core#ConceptScheme",
-                "http://www.w3.org/ns/dcat#Resource"
+                "http://www.w3.org/ns/prov#Entity",
+                "http://www.w3.org/ns/dcat#Resource",
+                "http://www.w3.org/ns/dcat#Dataset",
+                "http://www.w3.org/2004/02/skos/core#ConceptScheme"
             ],
             "http://purl.org/dc/terms/identifier": [
                 {
@@ -21,13 +21,13 @@
             "http://purl.org/dc/terms/issued": [
                 {
                     "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
-                    "@value": "2022-11-23T14:12:10.899679"
+                    "@value": "2022-11-24T11:45:07.279306"
                 }
             ],
             "http://purl.org/dc/terms/modified": [
                 {
                     "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
-                    "@value": "2022-11-23T14:12:10.899679"
+                    "@value": "2022-11-24T11:45:07.279306"
                 }
             ],
             "http://purl.org/dc/terms/title": [

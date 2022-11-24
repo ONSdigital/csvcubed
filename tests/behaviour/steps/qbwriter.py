@@ -921,7 +921,7 @@ def step_impl(context, identifier: str, cube_name: str):
                         "Percent"
                     )
                 ],
-                observed_value_col_title="Some Obs Val"
+                observed_value_col_title="Some Other Obs Val"
             )
         )
     ]
