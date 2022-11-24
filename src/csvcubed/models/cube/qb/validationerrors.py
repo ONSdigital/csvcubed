@@ -340,7 +340,7 @@ class PivotedShapeMeasureColumnsExistError(BothMeasureTypesDefinedError):
 
     @classmethod
     def get_error_url(cls) -> str:
-        return "https://gss-cogs.github.io/csvcubed-docs/external/guides/errors/build-command-errors/multiple-measure-columns/"
+        return "http://purl.org/csv-cubed/err/piv-shape-meas-cols-exist"
 
     def __post_init__(self):
         self.message = f"The cube is in pivoted shape, but 1 or more measure columns have been defined. These two approaches are incompatible."
@@ -455,8 +455,7 @@ class PivotedObsValColWithoutMeasureError(SpecificValidationError):
 
     @classmethod
     def get_error_url(cls) -> str:
-        # todo: add correct purl link
-        return "http://purl.org/csv-cubed/err/dup-measure"
+        return "http://purl.org/csv-cubed/err/piv-obsv-col-no-measure"
 
     def __post_init__(self):
         self.message = f"An observation value column has been defined without a measure linked within the column definition."
