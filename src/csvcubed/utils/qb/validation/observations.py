@@ -473,7 +473,7 @@ def _get_obs_val_col_titles_with_duplicate_measures(
 ) -> List[str]:
     map_measure_to_columns: Dict[QbMeasure, List[QbColumn[QbObservationValue]]] = {}
     for column in observed_value_columns:
-        measure = column.structural_definition.measure
+        measure: QbMeasure = column.structural_definition.measure
 
         columns_using_measure = map_measure_to_columns.get(measure, [])
         columns_using_measure.append(column)
