@@ -6,35 +6,43 @@ There are measure columns defined in a pivoted shape cube.
 
 An example cube structre which would result in this error looks like this:
 
-| Dimension | Some Measure | Obs 1 (a measure linked) | Obs 2 (another measure linked) |
-|---|---|---|---|
-| A | X | 1 | 2 |
+| Location  | Median Commute Distance / miles | Another Observed Value | Measure             | Unit    |
+|-----------|---------------------------------|------------------------|---------------------|---------|
+| Sheffield | 2.1                             | 15.3                   | Median commute time | Minutes |
+| Aberdeen  | 13.4                            | 22.9                   | Median commute time | Minutes |
 
 But the cube's config could take the following form:
+
+With the following [qube-config.json](../../configuration/qube-config.md) column mapping configuration:
+
 ```json
 "columns": {
-    "Some Measure": {
-        "Type": "measure"
+  "Median Commute Distance / miles": {
+    "type": "observations",
+    "measure": {
+      "label": "Median commute distance"
     },
-      "Obs 1 (a measure linked)": {
-        "type": "observations",
-        "measure": {
-                "label": "A Measure",
-                "from_existing": "http://example.com/measures/a-measure"
-            },
-      },
-      "Obs 2 (another measure linked)": {
-        "type": "observations",
-        "measure": {
-                "label": "Another Measure",
-                "from_existing": "http://example.com/measures/another-measure"
-            },
-      }
-    },
+    "unit": {
+      "label": "Miles"
+    }
+  },
+  "Median commute time / mins": {
+    "type": "observations"
+  },
+  "Measure": {
+    "type": "measures"
+  },
+  "Unit": {
+    "type": "units",
+    "describes_observations":  "Another Observed Value"
+  }
+},
 ```
 
 ## How to fix
 
-A pivoted shape cube can only have measures defined against an observation value column instead of in their own column. Remove measure columns from the pivoted shape cube and ensure that existing linked measures are correct.
-   
+A pivoted shape cube can only have measures defined against an observation value column. The measure column approach used in the standard shape is incompatible with the pivoted shape.
+
+This error may be a sign that your data is too complex to be represented in the pivoted shape; you may need to represent your data in the standard shape. If you wish to continue with the pivoted shape approach then you must remove the `measures` column.
+
 For further guidance, please refer to the [shaping your data documentation](https://gss-cogs.github.io/csvcubed-docs/external/guides/shape-data/).

@@ -2,32 +2,52 @@
 
 ## When it occurs
 
-An observation value column has been defined without a measure linked within the column definition. 
+An observation value column has been defined without a measure linked within the column definition.
 
-An example cube structre which would result in this error looks like this:
+For example in the following cube:
 
-| Dimension | Attribute | Obs 1 (measure linked) | Obs 2 (no measure linked) |
-|---|---|---|---|
-| A  | X | 1 | 2 |
+| Location  | Median Commute Distance / miles | Median commute time / mins |
+|-----------|---------------------------------|----------------------------|
+| Sheffield | 2.1                             | 15.3                       |
+| Aberdeen  | 13.4                            | 22.9                       |
 
-But the cube's observation value columns could have been configured like the following:
+With the following [qube-config.json](../../configuration/qube-config.md) column mapping configuration:
+
 ```json
 "columns": {
-      "Obs 1 (measure linked)": {
-        "type": "observations",
-        "measure": {
-                "label": "Measure",
-                "from_existing": "http://example.com/measures/some-measure"
-            },
-      },
-      "Obs 2 (no measure linked)": {
-        "type": "observations",
-      }
+  "Median Commute Distance / miles": {
+    "type": "observations"
+  },
+  "Median commute time / mins": {
+    "type": "observations",
+    "measure": {
+      "label": "Median commute time"
     },
+    "unit": {
+      "label": "Minutes"
+    }
+  }
+},
 ```
+
+Note that the `Median Commute Distance / miles` column does not have a measure defined against it.
 
 ## How to fix
 
-In the pivoted shape an observation value column must have a measure linked directly from within the column definition.   
- 
+In the pivoted shape an observation value column must have a measure linked directly against the column definition, e.g.
+
+```json
+{
+  "Median Commute Distance / miles": {
+    "type": "observations",
+    "measure": {
+      "label": "Median commute distance"
+    },
+    "unit": {
+      "label": "Miles"
+    }
+  },
+}
+```
+
 For further guidance, please refer to the [shaping your data documentation](https://gss-cogs.github.io/csvcubed-docs/external/guides/shape-data/).

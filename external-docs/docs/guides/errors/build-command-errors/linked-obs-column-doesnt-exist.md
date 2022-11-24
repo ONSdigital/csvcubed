@@ -2,26 +2,31 @@
 
 ## When it occurs
 
-A unit or attribute column is linked to an observation value column that doesn't appear to exist.   
+A units or attribute column is linked to an observation value column that doesn't exist in the CSV file.
 
-An example cube structre which would result in this error looks like this:
+For example in the following cube:
 
-| Dimension | Attribute | Obs 1  | Obs 2  |
-|---|---|---|---|
-| A | X | 1 | 2 |
+| Location  | Median Commute Distance / miles | Median commute time / mins | Commute Time Notes                                        |
+|-----------|---------------------------------|----------------------------|-----------------------------------------------------------|
+| Sheffield | 2.1                             | 15.3                       | Excludes individuals teleporting to work.                 |
+| Aberdeen  | 13.4                            | 22.9                       | Includes oil rig workers commuting to offshore platforms. |
 
-But the cube's attribute (or unit) columns could have been configured like the following:
+With the following [qube-config.json](../../configuration/qube-config.md) column mapping configuration:
+
 ```json
-"columns": {
-      "Attribute": {
-        "type": "attribute",
-        "describes_observations": "Obs 3 (doesn't exist)"
-      }
-    },
+{
+  "Commute Time Notes": {
+    "type": "attribute",
+    "data_type": "string",
+    "describes_observations": "Mean income / GBP"
+  }
+},
 ```
+
+Note that the `Mean income / GBP` column does not exist in the CSV file.
 
 ## How to fix
 
-Ensure that the linked observation value column has the correct name corresponding to a existing observation value column in the cube.    
+Ensure that the linked observation value column has the correct name corresponding to a existing observed values column in the CSV.
 
 For further guidance, please refer to the [shaping your data documentation](https://gss-cogs.github.io/csvcubed-docs/external/guides/shape-data/).

@@ -1,40 +1,57 @@
-# Error - Attribute not linked
+# Error - Attribute not linked to observed value column
 
 ## When it occurs
 
-A units or attribute column is defined but it is not linked to any observation value column.    
+In a multi-unit pivoted data set, each units or attribute column must be linked to an observation values column.
 
-An example cube structre which would result in this error looks like this:
+For example in the following cube:
 
-| Dimension | Attribute | Obs 1 | Obs 2 |
-|---|---|---|---|
-| A | X | 1 | 2 |
+| Location  | Median Commute Distance / miles | Median commute time / mins | Commute Time Notes                                        |
+|-----------|---------------------------------|----------------------------|-----------------------------------------------------------|
+| Sheffield | 2.1                             | 15.3                       | Excludes individuals teleporting to work.                 |
+| Aberdeen  | 13.4                            | 22.9                       | Includes oil rig workers commuting to offshore platforms. |
 
-But the cube's attribute (or unit) columns could have been configured like the following:
+With the following [qube-config.json](../../configuration/qube-config.md) column mapping configuration:
+
 ```json
 "columns": {
-      "Attribute": {
-        "type": "attribute",
-      },
-      "Obs 1": {
-        "type": "observations",
-        "measure": {
-                "label": "Measure",
-                "from_existing": "http://example.com/measures/some-measure"
-            },
-      },
-      "Obs 2": {
-        "type": "observations",
-        "measure": {
-                "label": "Another Measure",
-                "from_existing": "http://example.com/measures/another-measure"
-            },
-      }
+  "Median Commute Distance / miles": {
+    "type": "observations",
+    "measure": {
+      "label": "Median commute distance"
     },
+    "unit": {
+      "label": "Miles"
+    }
+  },
+  "Median commute time / mins": {
+    "type": "observations",
+    "measure": {
+      "label": "Median commute time"
+    },
+    "unit": {
+      "label": "Minutes"
+    }
+  },
+  "Commute Time Notes": {
+    "type": "attribute",
+    "data_type": "string"
+  }
+},
 ```
 
 ## How to fix
 
-In the pivoted shape a unit or attribute column must be directly linked to a observation column.   
- 
+Specify the observed values colummn which the units or attribute column describes, e.g.
+
+```json
+{
+  "Commute Time Notes": {
+    "type": "attribute",
+    "data_type": "string",
+    "describes_observations": "Median commute time / mins"
+  }
+}
+```
+
 For further guidance, please refer to the [shaping your data documentation](https://gss-cogs.github.io/csvcubed-docs/external/guides/shape-data/).
