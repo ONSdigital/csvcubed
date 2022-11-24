@@ -2,7 +2,36 @@
 
 ## When it occurs
 
-There are meaasure columns defined in a pivoted shape cube. 
+There are measure columns defined in a pivoted shape cube.  
+
+An example cube structre which would result in this error looks like this:
+
+| Dimension | Some Measure | Obs 1 (a measure linked) | Obs 2 (another measure linked) |
+|---|---|---|---|
+| A | X | 1 | 2 |
+
+But the cube's config could take the following form:
+```json
+"columns": {
+    "Some Measure": {
+        "Type": "measure"
+    },
+      "Obs 1 (a measure linked)": {
+        "type": "observations",
+        "measure": {
+                "label": "A Measure",
+                "from_existing": "http://example.com/measures/a-measure"
+            },
+      },
+      "Obs 2 (another measure linked)": {
+        "type": "observations",
+        "measure": {
+                "label": "Another Measure",
+                "from_existing": "http://example.com/measures/another-measure"
+            },
+      }
+    },
+```
 
 ## How to fix
 

@@ -2,7 +2,29 @@
 
 ## When it occurs
 
-An observation value column has been defined without a measure linked within the column definition.
+An observation value column has been defined without a measure linked within the column definition. 
+
+An example cube structre which would result in this error looks like this:
+
+| Dimension | Attribute | Obs 1 (measure linked) | Obs 2 (no measure linked) |
+|---|---|---|---|
+| A  | X | 1 | 2 |
+
+But the cube's observation value columns could have been configured like the following:
+```json
+"columns": {
+      "Obs 1 (measure linked)": {
+        "type": "observations",
+        "measure": {
+                "label": "Measure",
+                "from_existing": "http://example.com/measures/some-measure"
+            },
+      },
+      "Obs 2 (no measure linked)": {
+        "type": "observations",
+      }
+    },
+```
 
 ## How to fix
 

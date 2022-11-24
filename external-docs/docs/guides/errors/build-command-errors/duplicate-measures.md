@@ -2,7 +2,33 @@
 
 ## When it occurs
 
-In the pivoted shape, two or more observation value columns cannot be represented by identical measures.
+In the pivoted shape, two or more observation value columns cannot be represented by identical measures.    
+
+An example cube structre which would result in this error looks like this:
+
+| Dimension | Obs 1 (a measure linked) | Obs 2 (a measure linked) |
+|---|---|---|
+| A | 1 | 2 |
+
+But the cube's config could take the following form:
+```json
+"columns": {
+      "Obs 1 (a measure linked)": {
+        "type": "observations",
+        "measure": {
+                "label": "A Measure",
+                "from_existing": "http://example.com/measures/a-measure"
+            },
+      },
+      "Obs 2 (a measure linked)": {
+        "type": "observations",
+        "measure": {
+                "label": "Another Measure",
+                "from_existing": "http://example.com/measures/a-measure"
+            },
+      }
+    },
+```
 
 ## How to fix
 

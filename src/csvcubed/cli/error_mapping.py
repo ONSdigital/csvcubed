@@ -31,7 +31,6 @@ from csvcubed.models.cube.validationerrors import (
     ColumnValidationError,
     ColumnNotFoundInDataError,
     UriTemplateNameError,
-    UriTemplateNameError,
 )
 from csvcubed.models.cube.qb.validationerrors import (
     DuplicateMeasureError,

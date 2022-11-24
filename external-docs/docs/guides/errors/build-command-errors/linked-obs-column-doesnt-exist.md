@@ -2,7 +2,23 @@
 
 ## When it occurs
 
-A unit or attribute column is linked to an observation value column that doesn't appear to exist.
+A unit or attribute column is linked to an observation value column that doesn't appear to exist.   
+
+An example cube structre which would result in this error looks like this:
+
+| Dimension | Attribute | Obs 1  | Obs 2  |
+|---|---|---|---|
+| A | X | 1 | 2 |
+
+But the cube's attribute (or unit) columns could have been configured like the following:
+```json
+"columns": {
+      "Attribute": {
+        "type": "attribute",
+        "describes_observations": "Obs 3 (doesn't exist)"
+      }
+    },
+```
 
 ## How to fix
 
