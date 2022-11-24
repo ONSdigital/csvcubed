@@ -288,10 +288,10 @@ def _validate_pivoted_shape_cube(
         In this case, the user has defined a redundant measure column.
         All obs val columns already have their own measures declared.
         """
-        multi_measure_column_titles: List[str] = []
-        multi_measure_column_titles = [
-            c.csv_column_title for c in multi_measure_columns
-        ]
+        # multi_measure_column_titles: List[str] = []
+        # multi_measure_column_titles = [
+        #    c.csv_column_title for c in multi_measure_columns
+        # ]
         errors.append(
             PivotedShapeMeasureColumnsExistError(
                 f"{QbObservationValue.__name__}.measure",
@@ -473,11 +473,11 @@ def _get_obs_val_col_titles_with_duplicate_measures(
 ) -> List[str]:
     map_measure_to_columns: Dict[QbMeasure, List[QbColumn[QbObservationValue]]] = {}
     for column in observed_value_columns:
-        measure: QbMeasure = column.structural_definition.measure
-
-        columns_using_measure = map_measure_to_columns.get(measure, [])
-        columns_using_measure.append(column)
-        map_measure_to_columns[measure] = columns_using_measure
+        measure = column.structural_definition.measure
+        if measure is not None:
+            columns_using_measure = map_measure_to_columns.get(measure, [])
+            columns_using_measure.append(column)
+            map_measure_to_columns[measure] = columns_using_measure
 
     obs_val_col_titles_with_duplicate_measures: List[str] = []
     for _, obs_val_columns_using_same_measure in map_measure_to_columns.items():
