@@ -934,7 +934,7 @@ def test_pivoted_validation_multiple_measure_columns():
     validate_with_environ(cube, PivotedShapeMeasureColumnsExistError)
 
 
-def test_pivoted_validation_no_measure_defined_error():
+def test_pivoted_validation_no_measures_defined_error():
     """
     This scenario will test a pivoted cube where no observation column has a measure defined either within
     the column definition or by linking a measure column.
@@ -1144,10 +1144,10 @@ def test_pivoted_validation_obs_column_doesnt_exist():
     validate_with_environ(cube, LinkedObsColumnDoesntExistError)
 
 
-def test_pivoted_validation_link_attribe_to_non_obs_column():
+def test_pivoted_validation_link_attribute_to_non_obs_column():
     """
-    This scenarion will produce an error where the units or attribute column is defined in which
-     the linked obs val column isn't actually an observations column.
+    This scenario will produce an error where the units or attribute column is defined in which
+    the linked obs val column isn't actually an observations column.
     """
 
     metadata = CatalogMetadata(title="cube_name", identifier="identifier")
@@ -1238,10 +1238,10 @@ def test_both_measure_types_defined():
     Some obs vals have measures, some don't and a measure column exists.
     This is an erroneous hybrid state between pivoted and standard shape.
 
-             Example of an input that might result in a user ending up here:
+    Example of an input that might result in a user ending up here:
 
-             Location, Average Income (meas defined), Value (no meas defined), Other Measure
-             Birmingham, 22, 45.6, Average Age
+    Location, Average Income (meas defined), Value (no meas defined), Other Measure
+    Birmingham, 22, 45.6, Average Age
     """
 
     metadata = CatalogMetadata(title="cube_name", identifier="identifier")
@@ -1318,6 +1318,125 @@ def test_erroneous_hybrid_error():
     cube = Cube(metadata=metadata, data=data, columns=columns)
 
     validate_with_environ(cube, HybridShapeError)
+
+
+def test_pivoted_validation_unit_column_not_linked_error():
+    """
+    This scenario will test a cube that has a units or attribute column has been defined without being linked to an obs val column
+    """
+    metadata = CatalogMetadata(title="cube_name", identifier="identifier")
+    data = pd.DataFrame(
+        {
+            "Some Dimension": ["a", "b", "c"],
+            "Some Obs Val": [1, 2, 3],
+            "Some Other Obs Val": [2, 4, 6],
+            "Some Other Units": ["d", "e", "f"],
+        }
+    )
+    columns = [
+        QbColumn(
+            "Some Dimension",
+            NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
+        ),
+        QbColumn(
+            "Some Obs Val",
+            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
+        ),
+        QbColumn(
+            "Some Other Obs Val",
+            QbObservationValue(NewQbMeasure("Some Other Measure")),
+        ),
+        QbColumn(
+            "Some Other Units",
+            QbMultiUnits.new_units_from_data(data["Some Other Units"]),
+        ),
+    ]
+
+    cube = Cube(metadata=metadata, data=data, columns=columns)
+
+    validate_with_environ(cube, AttributeNotLinkedError)
+
+
+def test_pivoted_validation_link_unit_to_non_obs_column():
+    """
+    This scenario will produce an error where the units or attribute column is defined in which
+    the linked obs val column isn't actually an observations column.
+    """
+
+    metadata = CatalogMetadata(title="cube_name", identifier="identifier")
+    data = pd.DataFrame(
+        {
+            "Some Dimension": ["a", "b", "c"],
+            "Some Obs Val": [1, 2, 3],
+            "Some Other Obs Val": [2, 4, 6],
+            "Some Other Units": ["d", "e", "f"],
+        }
+    )
+    columns = [
+        QbColumn(
+            "Some Dimension",
+            NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
+        ),
+        QbColumn(
+            "Some Obs Val",
+            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
+        ),
+        QbColumn(
+            "Some Other Obs Val",
+            QbObservationValue(NewQbMeasure("Some Other Measure")),
+        ),
+        QbColumn(
+            "Some Other Units",
+            QbMultiUnits.new_units_from_data(
+                data["Some Other Units"], observed_value_col_title="Some Dimension"
+            ),
+        ),
+    ]
+
+    cube = Cube(metadata=metadata, data=data, columns=columns)
+
+    validate_with_environ(cube, LinkedToNonObsColumnError)
+
+
+def test_pivoted_validation_units_linked_obs_column_doesnt_exist():
+    """
+    This scenario will test the cube with units or attribute column is defined for which obs val column doesn't appear to exist.
+    """
+
+    metadata = CatalogMetadata(title="cube_name", identifier="identifier")
+    data = pd.DataFrame(
+        {
+            "Some Dimension": ["a", "b", "c"],
+            "Some Obs Val": [1, 2, 3],
+            "Some Other Obs Val": [2, 4, 6],
+            "Some Other Units": ["d", "e", "f"],
+        }
+    )
+    columns = [
+        QbColumn(
+            "Some Dimension",
+            NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
+        ),
+        QbColumn(
+            "Some Obs Val",
+            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
+        ),
+        QbColumn(
+            "Some Other Obs Val",
+            QbObservationValue(NewQbMeasure("Some Other Measure")),
+        ),
+        QbColumn(
+            "Some Other Units",
+            QbMultiUnits.new_units_from_data(
+                data["Some Other Units"],
+                observed_value_col_title="Obs Val Col Which Doesnt Exist",
+            ),
+        ),
+    ]
+
+    cube = Cube(metadata=metadata, data=data, columns=columns)
+
+    validate_with_environ(cube, LinkedObsColumnDoesntExistError)
 
 
 def validate_with_environ(cube, expected_error):
