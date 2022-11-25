@@ -5,8 +5,6 @@ CSV Dataset
 Utilities for CSV Datasets
 """
 
-import numpy as np
-from enum import Enum
 from pathlib import Path
 from typing import List, Optional, Tuple, Dict
 from uuid import uuid1
@@ -14,21 +12,20 @@ import uritemplate
 
 import pandas as pd
 import rdflib
-from csvcubed.utils.qb.components import ComponentField, ComponentPropertyAttributeURI, ComponentPropertyType
 
-
-from csvcubed.utils.sparql_handler.sparqlmanager import CubeShape, select_single_unit_from_dsd
+from csvcubed.models.csvcubedexception import InvalidNumOfColsForColNameException, InvalidNumOfDSDComponentsForObsValColTitleException, InvalidNumOfUnitColsForObsValColTitleException, InvalidNumOfValUrlsForAboutUrlException
+from csvcubed.utils.qb.components import ComponentField, ComponentPropertyType
 from csvcubed.models.sparqlresults import ColTitlesAndNamesResult, ObservationValueColumnTitleAboutUrlResult, QubeComponentResult, UnitColumnAboutValueUrlResult
 from csvcubed.cli.inspect.inspectdatasetmanager import (
     filter_components_from_dsd,
     get_standard_shape_measure_col_name_from_dsd,
-    get_single_measure_from_dsd,
     get_standard_shape_unit_col_name_from_dsd,
 )
+from csvcubed.utils.sparql_handler.sparqlmanager import CubeShape, select_single_unit_from_dsd
 
 def _create_unit_col_in_melted_data_set(melted_df: pd.DataFrame, unit_col_about_urls_value_urls: List[UnitColumnAboutValueUrlResult], obs_val_col_titles_about_urls: List[ObservationValueColumnTitleAboutUrlResult], col_names_col_titles: List[ColTitlesAndNamesResult]):
     """
-    TODO: Add Description
+    Adds the unit column to the melted data set for the pivoted shape data set input.
     """
     melted_df["Unit"] = ""
     for idx, row in melted_df.iterrows():
@@ -37,16 +34,20 @@ def _create_unit_col_in_melted_data_set(melted_df: pd.DataFrame, unit_col_about_
         # Use the observation value col title to get the unit col's about url.
         filtered_obs_val_col_titles_about_urls = [obs_val_col_title_about_url for obs_val_col_title_about_url in obs_val_col_titles_about_urls if obs_val_col_title_about_url.observation_value_col_title == obs_val_col_title]
         if(len(filtered_obs_val_col_titles_about_urls) != 1):
-            #TODO: Add relevant exception with inspect exceptions
-            raise Exception("No matching result")
+            raise InvalidNumOfUnitColsForObsValColTitleException(
+                obs_val_col_title=obs_val_col_title,
+                num_of_unit_cols=len(filtered_obs_val_col_titles_about_urls)
+            )
         obs_val_col_title_about_url = filtered_obs_val_col_titles_about_urls[0]
         about_url = obs_val_col_title_about_url.observation_value_col_about_url
 
         # Use the uit col's about url to get the unit col's value url.
         filtered_unit_col_about_urls_value_urls = [unit_col_about_url_value_url for unit_col_about_url_value_url in unit_col_about_urls_value_urls if unit_col_about_url_value_url.about_url == about_url]
         if(len(filtered_unit_col_about_urls_value_urls) != 1):
-            #TODO: Add relevant exception with inspect exceptions
-            raise Exception("No matching result")
+            raise InvalidNumOfValUrlsForAboutUrlException(
+                about_url=about_url,
+                num_of_value_urls=len(filtered_unit_col_about_urls_value_urls)
+            )
         unit_col_about_url_value_url = filtered_unit_col_about_urls_value_urls[0]
         unit_col_value_url = unit_col_about_url_value_url.value_url
 
@@ -61,8 +62,10 @@ def _create_unit_col_in_melted_data_set(melted_df: pd.DataFrame, unit_col_about_
             for unit_val_url_variable_name in unit_val_url_variable_names:
                 filtered_col_names_titles = [col_name_col_title for col_name_col_title in col_names_col_titles if col_name_col_title.column_name == unit_val_url_variable_name]
                 if(len(filtered_col_names_titles) != 1):
-                    #TODO: Add relevant exception with inspect exceptions
-                    raise Exception("No matching result")
+                    raise InvalidNumOfColsForColNameException(
+                        column_name=unit_val_url_variable_name,
+                        num_of_cols=len(filtered_col_names_titles)
+                    )
                 col_title = filtered_col_names_titles[0].column_title
                 col_name_value_map[unit_val_url_variable_name] = row[col_title]
             
@@ -80,8 +83,10 @@ def _create_measure_col_in_melted_data_set(melted_df: pd.DataFrame, measure_comp
         filtered_measure_components = filter_components_from_dsd(measure_components, ComponentField.CsvColumnTitle, obs_val_col_title)
         
         if len(filtered_measure_components) != 1:
-            #TODO: Create new exception in inspect exceptions
-            raise Exception("Expected one observation value component")
+            raise InvalidNumOfDSDComponentsForObsValColTitleException(
+                obs_val_col_title=obs_val_col_title,
+                num_of_components=len(filtered_measure_components)
+            )
         
         measure_component = filtered_measure_components[0]
         # Using the measure label if it exists as it is more user-friendly. Otherwise, we use the measure uri.
@@ -122,9 +127,8 @@ def transform_dataset_to_canonical_shape(
     :return: `Tuple[pd.DataFrame, str, str]` - canonical dataframe, measure column name, unit column name.
     """
     canonical_shape_dataset = dataset.copy()
-
-    unit_col: Optional[str] = None
-    measure_col: Optional[str] = None
+    unit_col: str
+    measure_col: str
 
     if cube_shape == CubeShape.Standard:
         unit_col = get_standard_shape_unit_col_name_from_dsd(qube_components)
@@ -148,6 +152,8 @@ def transform_dataset_to_canonical_shape(
         
         _create_unit_col_in_melted_data_set(melted_df, unit_col_about_urls_value_urls, obs_val_col_titles_about_urls, col_names_col_titles)
         
-        canonical_shape_dataset = melted_df
-        
+        canonical_shape_dataset = melted_df.drop("Observation Value", axis=1)
+        unit_col = f"Unit_{str(uuid1())}"
+        measure_col = f"Measure_{str(uuid1())}"
+
     return (canonical_shape_dataset, measure_col, unit_col)

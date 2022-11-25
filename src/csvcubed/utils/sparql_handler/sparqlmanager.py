@@ -487,19 +487,12 @@ def select_unit_col_about_value_urls(
     rdf_graph: rdflib.Graph,
 ) -> List[UnitColumnAboutValueUrlResult]:
     """
-    Queries a CSV-W and extracts the unit column's About and Value URLs
+    Queries a CSV-W and extracts the unit column's about and value urls.
     """
     results: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryName.SELECT_UNIT_COL_ABOUT_AND_VALUE_URLS),
         rdf_graph,
     )
-
-    if len(results) < 1:
-        raise InvalidNumberOfRecordsException(
-            record_description=f"result for the {SPARQLQueryName.SELECT_UNIT_COL_ABOUT_AND_VALUE_URLS.value} sparql query",
-            excepted_num_of_records=1,
-            num_of_records=len(results),
-        )
 
     return map_unit_col_about_value_urls_result(results)
 
@@ -507,19 +500,12 @@ def select_observation_value_column_title_and_about_url(
     rdf_graph: rdflib.Graph,
 ) -> List[ObservationValueColumnTitleAboutUrlResult]:
     """
-    Queries a CSV-W and extracts the observation value column title and About URL
+    Queries a CSV-W and extracts the observation value column title and about url.
     """
     results: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryName.SELECT_UNIT_COL_OBSERVED_COL_TITLE_AND_ABOUT_URL),
         rdf_graph,
     )
-
-    if len(results) < 1:
-        raise InvalidNumberOfRecordsException(
-            record_description=f"result for the {SPARQLQueryName.SELECT_UNIT_COL_OBSERVED_COL_TITLE_AND_ABOUT_URL.value} sparql query",
-            excepted_num_of_records=1,
-            num_of_records=len(results),
-        )
 
     return map_observation_value_col_title_and_about_url_result(results)
 
