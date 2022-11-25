@@ -1,11 +1,10 @@
-FROM gsscogs/pythonversiontesting:v1.0.3
-
+FROM gsscogs/pythonversiontesting:v1.0.4
 ARG VENV_PATH=/csvcubed-venv
 ARG VENV_PIP=${VENV_PATH}/bin/pip
 ARG VENV_POETRY=${VENV_PATH}/bin/poetry
 
 
-RUN pyenv global 3.10.0
+RUN pyenv global 3.11.0
 
 RUN mkdir -p /workspace
 
@@ -31,7 +30,7 @@ RUN ${VENV_PIP} install poetry
 RUN python3 -m pip install mkdocs mkdocs-material mkdocs-mermaid2-plugin
 
 # Patch behave
-RUN patch -Nf -d "${VENV_PATH}/lib/python3.10/site-packages/behave/formatter" -p1 < /cucumber-format.patch
+RUN patch -Nf -d "${VENV_PATH}/lib/python3.11/site-packages/behave/formatter" -p1 < /cucumber-format.patch
 
 RUN rm -rf /workspace/*
 
