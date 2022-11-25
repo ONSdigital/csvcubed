@@ -5,10 +5,11 @@ import pytest
 from csvcubed.cli.inspect.inspectdatasetmanager import filter_components_from_dsd
 from csvcubed.models.csvcubedexception import InvalidNumOfDSDComponentsForObsValColTitleException
 from csvcubed.models.cube.cube_shape import CubeShape
-from csvcubed.models.sparqlresults import QubeComponentResult
+from csvcubed.models.sparqlresults import ColTitlesAndNamesResult, ObservationValueColumnTitleAboutUrlResult, QubeComponentResult, UnitColumnAboutValueUrlResult
 
 from csvcubed.utils.csvdataset import (
     _create_measure_col_in_melted_data_set,
+    _create_unit_col_in_melted_data_set,
     _melt_data_set,
     transform_dataset_to_canonical_shape,
 )
@@ -302,6 +303,105 @@ _measure_components_for_multi_measure_pivoted_shape = [
     ),
 ]
 
+_expected_dataset_pivoted_multi_measure_with_unit = pd.DataFrame(
+    [
+        {
+            "Some Dimension": "a",
+            "Some Attribute": "attr-a",
+            "Some Unit": "percent",
+            "Observation Value": "Some Obs Val",
+            "Value": 1,
+            "Unit": "qb-id-10003.csv#unit/some-unit",
+        },
+        {
+            "Some Dimension": "b",
+            "Some Attribute": "attr-b",
+            "Some Unit": "percent",
+            "Observation Value": "Some Obs Val",
+            "Value": 2,
+            "Unit": "qb-id-10003.csv#unit/some-unit",
+        },
+        {
+            "Some Dimension": "c",
+            "Some Attribute": "attr-c",
+            "Some Unit": "percent",
+            "Observation Value": "Some Obs Val",
+            "Value": 3,
+            "Unit": "qb-id-10003.csv#unit/some-unit",
+        },
+                {
+            "Some Attribute": "attr-a",
+            "Some Dimension": "a",
+            "Some Unit": "percent",
+            "Observation Value": "Some Other Obs Val",
+            "Value": 2,
+            "Unit": "qb-id-10003.csv#unit/percent",
+        },
+        {
+            "Some Attribute": "attr-b",
+            "Some Dimension": "b",
+            "Some Unit": "percent",
+            "Observation Value": "Some Other Obs Val",
+            "Value": 4,
+            "Unit": "qb-id-10003.csv#unit/percent",
+        },
+        {
+            "Some Attribute": "attr-c",
+            "Some Dimension": "c",
+            "Some Unit": "percent",
+            "Observation Value": "Some Other Obs Val",
+            "Value": 6,
+            "Unit": "qb-id-10003.csv#unit/percent",
+        },
+    ]
+).replace("", np.NAN)
+_expected_dataset_pivoted_multi_measure_with_unit = _expected_dataset_pivoted_multi_measure_with_unit.reindex(["Some Attribute", "Some Dimension", "Some Unit", "Observation Value", "Value", "Unit"], axis=1)
+
+_unit_col_about_urls_value_urls = [
+    UnitColumnAboutValueUrlResult(
+        "qb-id-10003.csv#obs/some-dimension@some-measure",
+        "qb-id-10003.csv#unit/some-unit"
+    ),
+    UnitColumnAboutValueUrlResult(
+        "qb-id-10003.csv#obs/some-dimension@some-other-measure",
+        "qb-id-10003.csv#unit/percent"
+    )
+]
+
+_obs_val_col_titles_about_urls = [
+    ObservationValueColumnTitleAboutUrlResult(
+        "Some Obs Val",
+        "qb-id-10003.csv#obs/some-dimension@some-measure"
+    ),
+    ObservationValueColumnTitleAboutUrlResult(
+        "Some Other Obs Val",
+        "qb-id-10003.csv#obs/some-dimension@some-other-measure"
+    ),
+]
+
+_col_names_col_titles = [
+    ColTitlesAndNamesResult(
+        "some_dimension",
+        "Some Dimension"
+    ),
+    ColTitlesAndNamesResult(
+        "some_attribute",
+        "Some Attribute"
+    ),
+    ColTitlesAndNamesResult(
+        "some_obs_val",
+        "Some Obs Val"
+    ),
+    ColTitlesAndNamesResult(
+        "some_other_obs_val",
+        "Some Other Obs Val"
+    ),
+    ColTitlesAndNamesResult(
+        "some_unit",
+        "Some Unit"
+    ),
+]
+
 _measure_components_for_multi_measure_pivoted_shape_same_measure = [
     QubeComponentResult(
         "qb-id-10003.csv#measure/some-measure",
@@ -378,7 +478,7 @@ def test_transform_to_canonical_shape_for_pivoted_single_measure_shape_data_set(
     results_unit_col_about_and_value_urls = select_unit_col_about_value_urls(csvw_metadata_rdf_graph)
     results_observation_value_column_title_about_url = select_observation_value_column_title_and_about_url(csvw_metadata_rdf_graph)
     results_col_name_col_title = select_col_titles_and_names(csvw_metadata_rdf_graph)
-    
+
     (
         canonical_shape_dataset,
         measure_col,
@@ -422,7 +522,7 @@ def test_transform_to_canonical_shape_for_pivoted_multi_measure_shape_data_set()
     results_unit_col_about_and_value_urls = select_unit_col_about_value_urls(csvw_metadata_rdf_graph)
     results_observation_value_column_title_about_url = select_observation_value_column_title_and_about_url(csvw_metadata_rdf_graph)
     results_col_name_col_title = select_col_titles_and_names(csvw_metadata_rdf_graph)
-    
+
     (
         canonical_shape_dataset,
         measure_col,
@@ -521,12 +621,37 @@ def test_create_unit_col_in_melted_data_set():
     """
     Ensures that the correct unit column information is added to the melted dataframe.
     """
+    test_csv_file = (
+        _test_case_base_dir / "pivoted-multi-measure-dataset" / "qb-id-10003.csv"
+    )
+    pivoted_df = pd.read_csv(test_csv_file)
+    melted_df = _melt_data_set(
+        pivoted_df, _measure_components_for_multi_measure_pivoted_shape
+    )
+
+    _create_unit_col_in_melted_data_set(
+        melted_df,
+        _unit_col_about_urls_value_urls,
+        _obs_val_col_titles_about_urls,
+        _col_names_col_titles,
+    )
+
+    assert melted_df is not None
+    # assert whether the melted_df_with_unit_col has the correct number of rows
+    assert melted_df.shape[0] == 6
+    # assert whether the melted_df_with_unit_col has the correct number of columns.
+    assert melted_df.shape[1] == 6
+    # assert whether the melted_df_with_unit_col dataframe equals to the expected dataframe.
+    melted_df = melted_df.reindex(["Some Attribute", "Some Dimension", "Some Unit", "Observation Value", "Value", "Unit"], axis=1)
+    assert_frame_equal(
+        melted_df, _expected_dataset_pivoted_multi_measure_with_unit
+    )
     pass
 
 # TODO: Sarah
 def test_create_unit_col_in_melted_data_set_should_throw_invalid_num_of_unit_cols_exception():
     """
-    Ensures the InvalidNumOfUnitColsForObsValColTitleException is thown.
+    Ensures the InvalidNumOfUnitColsForObsValColTitleException is thrown.
     """
     pass
 
@@ -534,13 +659,13 @@ def test_create_unit_col_in_melted_data_set_should_throw_invalid_num_of_unit_col
 # TODO: Sarah
 def test_create_unit_col_in_melted_data_set_should_throw_invalid_num_of_val_urls_exception():
     """
-    Ensures the InvalidNumOfValUrlsForAboutUrlException is thown.
+    Ensures the InvalidNumOfValUrlsForAboutUrlException is thrown.
     """
     pass
 
 # TODO: Sarah
 def test_create_unit_col_in_melted_data_set_should_throw_invalid_num_of_cols_exception():
     """
-    Ensures the InvalidNumOfColsForColNameException is thown.
+    Ensures the InvalidNumOfColsForColNameException is thrown.
     """
     pass
