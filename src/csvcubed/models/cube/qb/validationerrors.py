@@ -336,6 +336,9 @@ class PivotedShapeMeasureColumnsExistError(BothMeasureTypesDefinedError):
 
     component_one: ComponentTypeDescription = f"{QbObservationValue.__name__}.measure"
     component_two: ComponentTypeDescription = QbMultiMeasureDimension
+
+    # measure_col_titles =
+
     additional_explanation: Optional[str] = None
 
     @classmethod
@@ -423,8 +426,8 @@ class HybridShapeError(SpecificValidationError):
     This is an erroneous hybrid between standard and pivoted shape.
     """
 
-    not_linked_obs_val_cols: List[QbColumn[QbObservationValue]]
-    measure_cols: List[QbColumn[QbMultiMeasureDimension]]
+    not_linked_obs_val_cols: List[str]
+    measure_cols: List[str]
 
     @classmethod
     def get_error_url(cls) -> str:

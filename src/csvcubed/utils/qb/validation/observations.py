@@ -190,18 +190,14 @@ def _validate_observation_value(
     num_obs_val_columns: int,
 ) -> List[ValidationError]:
     errors: List[ValidationError] = []
-    is_single_obs_val_data_set = False
-
-    if num_obs_val_columns == 1:
-        is_single_obs_val_data_set = True
 
     if observation_value.structural_definition.unit is None:
         if not any(multi_unit_columns):
             errors.append(NoUnitsDefinedError())
     else:
-        if is_single_obs_val_data_set and any(multi_unit_columns):
+        if num_obs_val_columns == 1 and any(multi_unit_columns):
             errors.append(BothUnitTypesDefinedError())
-        elif not is_single_obs_val_data_set and any(
+        elif not (num_obs_val_columns == 1) and any(
             [
                 c
                 for c in multi_unit_columns
@@ -401,11 +397,13 @@ def _get_error_when_multi_measure_pivoted_cube_only_contains_obs_val_cols_withou
         There are mutliple obs val columns defined without measures, and at least one measure column defined.
         This is an erroneous hybrid between standard and pivoted shape.
         """
+        not_linked_obs_val_cols_titles = [
+            c.csv_column_title for c in obs_val_columns_without_measure
+        ]
+        measure_col_titles = [c.csv_column_title for c in measure_columns]
+
         errors.append(
-            HybridShapeError(
-                obs_val_columns_without_measure,
-                measure_columns,
-            )
+            HybridShapeError(not_linked_obs_val_cols_titles, measure_col_titles)
         )
     else:
         """
