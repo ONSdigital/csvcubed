@@ -52,7 +52,7 @@ def test_get_obs_val_col_title_about_url_for_csv():
     Ensures that the valid obs_val_col_title_about_url_for_csv property is returned for the given csv.
     """
 
-    assert True
+    assert False
 
 
 def test_get_col_name_col_title_for_csv():
@@ -60,7 +60,7 @@ def test_get_col_name_col_title_for_csv():
     Ensures that the valid obs_val_col_title_about_url_for_csv property is returned for the given csv.
     """
 
-    assert True
+    assert False
 
 def test_exception_is_thrown_for_invalid_csv_url():
     """

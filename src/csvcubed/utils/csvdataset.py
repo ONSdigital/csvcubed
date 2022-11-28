@@ -6,7 +6,7 @@ Utilities for CSV Datasets
 """
 
 from pathlib import Path
-from typing import List, Optional, Tuple, Dict
+from typing import List, Optional, Tuple, Dict, Any
 from uuid import uuid1
 import uritemplate
 
@@ -88,7 +88,7 @@ def _create_unit_col_in_melted_data_set(
             melted_df.loc[idx, col_name] = unit_col_value_url
         else:
             # If there are variable names, identify the column titles for the variable names and generate the unit value url, and set it as the unit.
-            col_name_value_map: Dict[str, str] = {}
+            col_name_value_map: Dict[str, Any] = {}
             for unit_val_url_variable_name in unit_val_url_variable_names:
                 filtered_col_names_titles = [
                     col_name_col_title
@@ -181,8 +181,8 @@ def transform_dataset_to_canonical_shape(
     :return: `Tuple[pd.DataFrame, str, str]` - canonical dataframe, measure column name, unit column name.
     """
     canonical_shape_dataset = dataset.copy()
-    unit_col: str
-    measure_col: str
+    unit_col: Optional[str]
+    measure_col: Optional[str]
 
     if cube_shape == CubeShape.Standard:
         unit_col = get_standard_shape_unit_col_name_from_dsd(qube_components)
@@ -207,6 +207,9 @@ def transform_dataset_to_canonical_shape(
             )
     else:
         # In pivoted shape
+        if unit_col_about_urls_value_urls is None or obs_val_col_titles_about_urls is None or col_names_col_titles is None:
+            raise ValueError("Sparql results for unit_col_about_urls_value_urls, obs_val_col_titles_about_urls and col_names_col_titles cannot be none.")
+
         measure_components = filter_components_from_dsd(
             qube_components,
             ComponentField.PropertyType,

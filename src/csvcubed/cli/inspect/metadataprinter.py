@@ -181,18 +181,9 @@ class MetadataPrinter:
             self.result_dataset_label_dsd_uri.dsd_uri,
             self.csvw_metadata_json_path,
         )
-
-        # # strtobool is not case sensitive and will work the same way with "True" or "true" inputs, also with "False" or "false".
-        # # Below is a temporary workaround until we complete the other pivoted shape tickets. The value is set by the related behave tests.
-        # is_pivoted_multi_measure = strtobool(
-        #     os.environ.get("PIVOTED_MULTI_MEASURE", "False")
-        # )
-        # if is_pivoted_multi_measure:
-        #     data = DataFrame(data=[], columns=["Measure", "Unit", "Count"])
-        #     self.result_dataset_value_counts = (
-        #         DatasetObservationsByMeasureUnitInfoResult(data)
-        #     )
-        # else:            
+        
+        if self.cube_shape is None:  
+            raise ValueError("Cube shape cannot be None")
         (
             canonical_shape_dataset,
             measure_col,

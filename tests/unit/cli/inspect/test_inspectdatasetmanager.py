@@ -13,6 +13,7 @@ from typing import List, Tuple
 from pathlib import Path
 from rdflib import Graph
 from treelib import Tree
+from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
 
 from csvcubed.utils.sparql_handler.sparqlmanager import (
     select_codelist_cols_by_dataset_url,
@@ -236,6 +237,30 @@ _expected_by_measure_and_unit_val_counts_df_multi_unit_multi_measure = DataFrame
     ]
 ).replace("", np.NAN)
 
+_expected_by_measure_and_unit_val_counts_df_pivoted_single_measure = DataFrame(
+    [
+        {
+            "Measure": "Some Measure",
+            "Unit": "qb-id-10004.csv#unit/some-unit",
+            0: 3,
+        }
+    ]
+).replace("", np.NAN)
+
+_expected_by_measure_and_unit_val_counts_df_pivoted_multi_measure = DataFrame(
+    [
+        {
+            "Measure": "Some Measure",
+            "Unit": "qb-id-10003.csv#unit/some-unit",
+            0: 3,
+        },
+         {
+            "Measure": "Some Other Measure",
+            "Unit": "qb-id-10003.csv#unit/percent",
+            0: 3,
+        }
+    ]
+).replace("", np.NAN)
 
 def get_arguments_qb_dataset(
     cube_shape: CubeShape, csvw_metadata_rdf_graph: Graph, csvw_metadata_json_path: Path
@@ -709,19 +734,123 @@ def test_get_val_counts_info_single_unit_single_measure_dataset():
         _expected_by_measure_and_unit_val_counts_df_single_unit_single_measure,
     )
 
-#TODO: Implement test
 def test_get_val_counts_info_pivoted_single_measure_dataset():
     """
-    TODO: Add description
+    Should produce expected `DatasetObservationsByMeasureUnitInfoResult` for pivoted single measure dataset.
     """
-    assert False
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-single-measure-dataset"
+        / "qb-id-10004.csv-metadata.json"
+    )
+    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
-#TODO: Implement test
+    data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
+    
+    data_set_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
+    data_set_uri = to_absolute_rdflib_file_path(
+                data_set_uri, csvw_metadata_json_path
+            )
+    data_set_url = select_qb_dataset_url(
+                csvw_metadata_rdf_graph, data_set_uri
+            ).dataset_url
+    
+    (dataset, qube_components, dsd_uri, _) = get_arguments_qb_dataset(
+        CubeShape.Standard, csvw_metadata_rdf_graph, csvw_metadata_json_path
+    )
+    (
+        canonical_shape_dataset,
+        measure_col,
+        unit_col,
+    ) = transform_dataset_to_canonical_shape(
+        CubeShape.Pivoted,
+        dataset,
+        qube_components,
+        dsd_uri,
+        data_cube_state.get_unit_col_about_value_urls_for_csv(data_set_url),
+        data_cube_state.get_obs_val_col_title_about_url_for_csv(data_set_url),
+        data_cube_state.get_col_name_col_title_for_csv(data_set_url),
+        csvw_metadata_rdf_graph,
+        csvw_metadata_json_path,
+    )
+
+    result: DatasetObservationsByMeasureUnitInfoResult = get_dataset_val_counts_info(
+        canonical_shape_dataset, measure_col, unit_col
+    )
+
+    _expected_by_measure_and_unit_val_counts_df_pivoted_single_measure.rename(
+        columns={
+            "Measure": measure_col,
+            "Unit": unit_col,
+        },
+        inplace=True,
+    )
+
+    assert result is not None
+    assert_frame_equal(
+        result.by_measure_and_unit_val_counts_df,
+        _expected_by_measure_and_unit_val_counts_df_pivoted_single_measure,
+    )
+
 def test_get_val_counts_info_pivoted_multi_measure_dataset():
     """
-    TODO: Add description
+    Should produce expected `DatasetObservationsByMeasureUnitInfoResult` for pivoted multi measure dataset.
     """
-    assert False
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-multi-measure-dataset"
+        / "qb-id-10003.csv-metadata.json"
+    )
+    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
+
+    data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
+    
+    data_set_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
+    data_set_uri = to_absolute_rdflib_file_path(
+                data_set_uri, csvw_metadata_json_path
+            )
+    data_set_url = select_qb_dataset_url(
+                csvw_metadata_rdf_graph, data_set_uri
+            ).dataset_url
+    
+    (dataset, qube_components, dsd_uri, _) = get_arguments_qb_dataset(
+        CubeShape.Standard, csvw_metadata_rdf_graph, csvw_metadata_json_path
+    )
+    (
+        canonical_shape_dataset,
+        measure_col,
+        unit_col,
+    ) = transform_dataset_to_canonical_shape(
+        CubeShape.Pivoted,
+        dataset,
+        qube_components,
+        dsd_uri,
+        data_cube_state.get_unit_col_about_value_urls_for_csv(data_set_url),
+        data_cube_state.get_obs_val_col_title_about_url_for_csv(data_set_url),
+        data_cube_state.get_col_name_col_title_for_csv(data_set_url),
+        csvw_metadata_rdf_graph,
+        csvw_metadata_json_path,
+    )
+
+    result: DatasetObservationsByMeasureUnitInfoResult = get_dataset_val_counts_info(
+        canonical_shape_dataset, measure_col, unit_col
+    )
+
+    _expected_by_measure_and_unit_val_counts_df_pivoted_multi_measure.rename(
+        columns={
+            "Measure": measure_col,
+            "Unit": unit_col,
+        },
+        inplace=True,
+    )
+
+    assert result is not None
+    assert_frame_equal(
+        result.by_measure_and_unit_val_counts_df,
+        _expected_by_measure_and_unit_val_counts_df_pivoted_multi_measure,
+    )
 
 def test_get_concepts_hierarchy_info_hierarchy_with_depth_of_one():
     """

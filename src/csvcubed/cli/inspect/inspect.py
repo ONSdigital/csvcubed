@@ -17,6 +17,7 @@ from csvcubed.cli.inspect.metadatainputvalidator import (
 )
 from csvcubed.cli.inspect.metadataprinter import MetadataPrinter
 from csvcubed.models.cube.cube_shape import CubeShape
+from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
 from csvcubed.utils.sparql_handler.sparqlmanager import (
     select_is_pivoted_shape_for_measures_in_data_set,
 )
@@ -89,8 +90,9 @@ def _generate_printables(
 
     :return: `Tuple[str, str, str, str, str]` - printables of metadata information.
     """
+    data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
     metadata_printer = MetadataPrinter(
-        csvw_type, cube_shape, csvw_metadata_rdf_graph, csvw_metadata_json_path
+        data_cube_state, csvw_type, cube_shape, csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
 
     type_info_printable: str = metadata_printer.type_info_printable

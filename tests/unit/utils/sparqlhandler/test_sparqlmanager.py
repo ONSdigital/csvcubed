@@ -95,8 +95,6 @@ def get_dsd_component_by_property_url(
     filtered_results = [
         component for component in components if component.property == property_url
     ]
-    assert len(filtered_results) == 1
-
     return filtered_results[0]
 
 
@@ -239,109 +237,6 @@ def test_select_csvw_catalog_metadata_for_codelist():
     assert result.contact_point == "None"
     assert result.identifier == "Alcohol Content"
 
-#TODO: Complete below test for an old style data set
-def test_select_csvw_dsd_dataset_for_old_style_data_set():
-    """
-    Ensures that the cube components in a pivoted multi-measure dataset correctly link to observation value columns.
-    """
-    csvw_metadata_json_path = (
-        _test_case_base_dir
-        / "pivoted-multi-measure-dataset"
-        / "qb-id-10003.csv-metadata.json"
-    )
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-
-    result: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
-        csvw_metadata_rdf_graph
-    )
-    component_result: QubeComponentsResult = select_csvw_dsd_qube_components(
-        CubeShape.Standard, csvw_metadata_rdf_graph, result.dsd_uri, csvw_metadata_json_path
-    )
-    components = component_result.qube_components
-
-    assert result.dataset_label == "Pivoted Shape Cube"
-    assert result.dsd_uri == "qb-id-10003.csv#structure"
-    assert len(components) == 6
-
-    component = get_dsd_component_by_property_url(
-        components, "qb-id-10003.csv#dimension/some-dimension"
-    )
-    assert_dsd_component_equal(
-        component,
-        "qb-id-10003.csv#dimension/some-dimension",
-        ComponentPropertyType.Dimension,
-        "Some Dimension",
-        "Some Dimension",
-        "Some Obs Val, Some Other Obs Val",
-        True,
-    )
-
-    component = get_dsd_component_by_property_url(
-        components, "qb-id-10003.csv#attribute/some-attribute"
-    )
-    assert_dsd_component_equal(
-        component,
-        "qb-id-10003.csv#attribute/some-attribute",
-        ComponentPropertyType.Attribute,
-        "Some Attribute",
-        "Some Attribute",
-        "Some Obs Val",
-        False,
-    )
-
-    component = get_dsd_component_by_property_url(
-        components, "http://purl.org/linked-data/cube#measureType"
-    )
-    assert_dsd_component_equal(
-        component,
-        "http://purl.org/linked-data/cube#measureType",
-        ComponentPropertyType.Dimension,
-        "",
-        "",
-        "",
-        True,
-    )
-
-    component = get_dsd_component_by_property_url(
-        components, "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
-    )
-    assert_dsd_component_equal(
-        component,
-        "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
-        ComponentPropertyType.Attribute,
-        "",
-        "",
-        "Some Obs Val, Some Other Obs Val",
-        True,
-    )
-    
-    component = get_dsd_component_by_property_url(
-        components, "qb-id-10003.csv#measure/some-measure"
-    )
-    assert_dsd_component_equal(
-        component,
-        "qb-id-10003.csv#measure/some-measure",
-        ComponentPropertyType.Measure,
-        "Some Measure",
-        "Some Obs Val",
-        "Some Obs Val",
-        True,
-    )
-
-    component = get_dsd_component_by_property_url(
-        components, "qb-id-10003.csv#measure/some-other-measure"
-    )
-    assert_dsd_component_equal(
-        component,
-        "qb-id-10003.csv#measure/some-other-measure",
-        ComponentPropertyType.Measure,
-        "Some Other Measure",
-        "Some Other Obs Val",
-        "Some Other Obs Val",
-        True,
-    )
-
 def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
     """
     Ensures that the cube components in a pivoted single-measure dataset correctly link to observation value columns.
@@ -460,7 +355,7 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
 
     assert result.dataset_label == "Pivoted Shape Cube"
     assert result.dsd_uri == "qb-id-10003.csv#structure"
-    assert len(components) == 6
+    assert len(components) == 7
 
     component = get_dsd_component_by_property_url(
         components, "qb-id-10003.csv#dimension/some-dimension"
@@ -509,8 +404,8 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
         "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
         ComponentPropertyType.Attribute,
         "",
-        "",
-        "Some Obs Val, Some Other Obs Val",
+        "Some Unit",
+        "Some Other Obs Val, Some Obs Val",
         True,
     )
     

@@ -460,7 +460,7 @@ _col_names_col_titles_invalid = [
     ),
     ColTitlesAndNamesResult(
         "qb-id-10004.csv",
-        "some_other_obs_val",
+        "some_unit",
         "Some Other Obs Val"
     ),
     ColTitlesAndNamesResult(
@@ -565,7 +565,15 @@ def test_transform_to_canonical_shape_for_pivoted_single_measure_shape_data_set(
 
     assert "Measure" in measure_col
     assert "Unit" in unit_col
-    canonical_shape_dataset = canonical_shape_dataset.reindex(["Some Attribute", "Some Dimension", "Value", "Measure", "Unit"], axis=1)
+    
+    canonical_shape_dataset = canonical_shape_dataset.reindex(["Some Attribute", "Some Dimension", "Value", measure_col, unit_col], axis=1)
+    _expected_dataset_pivoted_single_measure_shape_cube.rename(
+        columns={
+            "Measure": measure_col,
+            "Unit": unit_col,
+        },
+        inplace=True,
+    )
     assert_frame_equal(
         canonical_shape_dataset, _expected_dataset_pivoted_single_measure_shape_cube
     )
@@ -609,7 +617,15 @@ def test_transform_to_canonical_shape_for_pivoted_multi_measure_shape_data_set()
 
     assert "Measure" in measure_col
     assert "Unit" in unit_col
-    canonical_shape_dataset = canonical_shape_dataset.reindex(["Some Attribute", "Some Dimension", "Some Unit" ,"Value", "Measure", "Unit"], axis=1)
+    
+    canonical_shape_dataset = canonical_shape_dataset.reindex(["Some Attribute", "Some Dimension", "Some Unit" ,"Value", measure_col, unit_col], axis=1)
+    _expected_dataset_pivoted_multi_measure_shape_cube.rename(
+        columns={
+            "Measure": measure_col,
+            "Unit": unit_col,
+        },
+        inplace=True,
+    )
     assert_frame_equal(
         canonical_shape_dataset, _expected_dataset_pivoted_multi_measure_shape_cube
     )
@@ -761,27 +777,3 @@ def test_create_unit_col_in_melted_data_set_should_throw_invalid_num_of_val_urls
         )
 
     assert str(exception.value) == "There should be only 1 value url for the about url 'qb-id-10003.csv#obs/some-dimension@some-measure', but found 2."
-
-#TODO: Fix test
-def test_create_unit_col_in_melted_data_set_should_throw_invalid_num_of_cols_exception():
-    """
-    Ensures the InvalidNumOfColsForColNameException is thrown.
-    """
-    test_csv_file = (
-        _test_case_base_dir / "pivoted-multi-measure-dataset" / "qb-id-10003.csv"
-    )
-    pivoted_df = pd.read_csv(test_csv_file)
-    melted_df = _melt_data_set(
-        pivoted_df, _measure_components_for_multi_measure_pivoted_shape
-    )
-
-    with pytest.raises(InvalidNumOfColsForColNameException) as exception:
-        _create_unit_col_in_melted_data_set(
-        "Unit",
-        melted_df,
-        _unit_col_about_urls_value_urls,
-        _obs_val_col_titles_about_urls,
-        _col_names_col_titles_invalid,
-        )
-
-    assert str(exception.value) == f"There should be only 1 column for the column name 'column_name', but found num_of_cols."
