@@ -665,7 +665,6 @@ def test_create_measure_in_melted_data_set_exception_for_more_than_one_matching_
         )
     assert str(exception.value) == f"There should be only 1 component for the observation value column with title 'Some Obs Val', but found 2."
 
-# TODO: Sarah
 def test_create_unit_col_in_melted_data_set():
     """
     Ensures that the correct unit column information is added to the melted dataframe.
@@ -697,7 +696,6 @@ def test_create_unit_col_in_melted_data_set():
     )
     pass
 
-# TODO: Sarah
 def test_create_unit_col_in_melted_data_set_should_throw_invalid_num_of_unit_cols_exception():
     """
     Ensures the InvalidNumOfUnitColsForObsValColTitleException is thrown.
@@ -720,7 +718,6 @@ def test_create_unit_col_in_melted_data_set_should_throw_invalid_num_of_unit_col
 
     assert str(exception.value) == f"There should be 1 unit column for the observation value column title 'Some Obs Val', but found 2 unit columns."
 
-# TODO: Sarah
 def test_create_unit_col_in_melted_data_set_should_throw_invalid_num_of_val_urls_exception():
     """
     Ensures the InvalidNumOfValUrlsForAboutUrlException is thrown.
@@ -743,7 +740,6 @@ def test_create_unit_col_in_melted_data_set_should_throw_invalid_num_of_val_urls
 
     assert str(exception.value) == f"There should be only 1 value url for the about url 'qb-id-10003.csv#obs/some-dimension@some-measure', but found 2."
 
-# TODO: Sarah
 def test_create_unit_col_in_melted_data_set_should_throw_invalid_num_of_cols_exception():
     """
     Ensures the InvalidNumOfColsForColNameException is thrown.
