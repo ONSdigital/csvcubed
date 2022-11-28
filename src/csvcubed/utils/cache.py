@@ -126,5 +126,64 @@ def get_url_to_file_path_map() -> Dict[str, Path]:
 
     return map_uri_to_file_path
 
+from requests.adapters import BaseAdapter, HTTPAdapter
+from urllib3.exceptions import NewConnectionError
+class CustomAdapterServeSomeFilesLocally(BaseAdapter):
+    http_adapter: HTTPAdapter
+
+    def __init__(self):
+        self.http_adapter = HTTPAdapter()
+
+    def send(
+        self, request, stream=False, timeout=None, verify=True, cert=None, proxies=None
+    ):
+        print(f"This is the HTTP(s) adapter sending the request: {request.url}")
+        try:
+            response = self.http_adapter.send(request, stream=stream, timeout=timeout, verify=verify, cert=cert, proxies=proxies)
+        except NewConnectionError:
+        #except requests.exceptions.RequestException as e:
+                print("The connection error has been found")
+
+            #     get_local_version_instead = get_url_to_file_path_map()
+            #     trimmed_url = str(response.url).removeprefix("https:")
+            #     path_to_local_file = get_local_version_instead[
+            #     trimmed_url[: len(trimmed_url) - 1]
+            #     ]
+            #     print(f"The local file path is: {path_to_local_file}")
+
+            #     _logger.warning(f"Unable to load json document from given URL. Attempting to load local storage copy of file {path_to_local_file} instead.")
+
+            #     # The below is a response object that can be used to manually return the local copy of the file successfully.
+
+            #     successful_response = requests.Response()
+
+            #     successful_response.status_code = 200
+
+            #     successful_response.raw = BytesIO(bytes(path_to_local_file.read_text(), "utf-8"))
+
+            #     successful_response.url = path_to_local_file.as_uri()
+
+            #     successful_response.encoding = "utf-8"
+
+            #     successful_response.history = [response]
+            #     successful_response.reason = "OK"
+            #     successful_response.request = response.request
+
+            #     return successful_response
+
+            # except FileNotFoundError as e:
+            #     raise Exception(f"Error loading JSON from file at '{path_to_local_file}'") from e
+
+        
+        
+        return response
+    
+    def close(self) -> None:
+        self.http_adapter.close()
+
+
 session = CachedSession(cache_control=True, use_cache_dir=True)
+session.mount("http://", CustomAdapterServeSomeFilesLocally())
+session.mount("https://", CustomAdapterServeSomeFilesLocally())
+
 session.hooks["response"] = [_hook_for_http_failure]

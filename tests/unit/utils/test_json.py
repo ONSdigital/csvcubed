@@ -49,7 +49,7 @@ def test_load_local_when_http_request_fails():
     """
     from csvcubed.utils.cache import session
     with session.cache_disabled():  
-        document = load_json_document("https://purl.org/csv-cubed/qube-config/v1.4X")
+        document = load_json_document("https://purl.org/csv-cubed/qube-config/v1.3")
         assert document == True
 
 
