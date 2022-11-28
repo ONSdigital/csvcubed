@@ -9,7 +9,7 @@ jobs:
     strategy:
       matrix:
         # Test on Windows + Ubuntu on oldest + newest supported versions of python.
-        python-version: ['3.9', '3.10']
+        python-version: ['3.9', '3.11']
         os: [ubuntu-latest, windows-latest]
     uses: ./.github/workflows/reusable-test.yaml
     with:
