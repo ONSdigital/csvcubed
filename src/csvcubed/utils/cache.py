@@ -128,6 +128,7 @@ def get_url_to_file_path_map() -> Dict[str, Path]:
 
 from requests.adapters import BaseAdapter, HTTPAdapter
 from urllib3.exceptions import NewConnectionError
+from requests.exceptions import JSONDecodeError
 
 class CustomAdapterServeSomeFilesLocally(BaseAdapter):
     http_adapter: HTTPAdapter

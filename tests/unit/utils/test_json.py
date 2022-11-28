@@ -53,5 +53,13 @@ def test_load_local_when_http_request_fails():
         assert document == True
 
 
+        
+def test_testing_test():
+    from requests.exceptions import ConnectionError
+    
+    with pytest.raises(ConnectionError):
+        #requests.get("http://twitter.com/api/1/foobar")
+        document = load_json_document("https://purl.org/csv-cubed/qube-config/v1.3")
+
 if __name__ == "__main__":
     pytest.main()
