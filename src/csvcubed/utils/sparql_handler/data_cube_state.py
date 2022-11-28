@@ -34,7 +34,7 @@ class DataCubeState:
         assert len(results) > 0
         val = {results[0].csv_url:results}
         return val
-    
+
     @cached_property
     def _obs_val_col_title_about_url(self) -> Dict[str, List[ObservationValueColumnTitleAboutUrlResult]]:
         """
