@@ -38,10 +38,10 @@ def _get_obs_val_col_title_about_url_result_by_about_url(
     return results[0]
 
 
-def _get_col_name_col_title_result_by_about_url(
-    about_url: str, results: List[ColTitlesAndNamesResult]
+def _get_col_name_col_title_result_by_col_name(
+    column_name: str, results: List[ColTitlesAndNamesResult]
 ) -> ColTitlesAndNamesResult:
-    results = [result for result in results if result.about_url == about_url]
+    results = [result for result in results if result.column_name == column_name]
     assert len(results) == 1
     return results[0]
 
@@ -135,10 +135,17 @@ def test_get_col_name_col_title_for_csv():
 
     results = data_cube_state.get_col_name_col_title_for_csv(data_set_url)
 
-    result = _get_col_name_col_title_result_by_about_url()
+    result = _get_col_name_col_title_result_by_col_name("some_dimension", results)
+    result.column_name == "some_dimension"
+    result.column_title == "Some Dimension"
+    
+    result = _get_col_name_col_title_result_by_col_name("some_attribute", results)
+    result.column_name == "some_attribute"
+    result.column_title == "Some Attribute"
 
-    assert True
-
+    result = _get_col_name_col_title_result_by_col_name("some_obs_val", results)
+    result.column_name == "some_obs_val"
+    result.column_title == "Some Obs Val"
 
 def test_exception_is_thrown_for_invalid_csv_url():
     """
