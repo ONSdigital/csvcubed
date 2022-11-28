@@ -97,6 +97,11 @@ jobs:
             reports/*.xml
             pytest_results.xml
 
+      - uses: actions/setup-python@v4
+        if: always() && inputs.os == 'ubuntu-latest'
+        with:
+          python-version: 3.8
+
       # Slightly more performant to run the non-composite action in ubuntu.
       - name: Publish Unit & Behave Test Results (Ubuntu)
         if: always() && inputs.os == 'ubuntu-latest'
