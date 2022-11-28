@@ -3,7 +3,7 @@ import pandas as pd
 from pandas.util.testing import assert_frame_equal
 import pytest
 from csvcubed.cli.inspect.inspectdatasetmanager import filter_components_from_dsd
-from csvcubed.models.csvcubedexception import InvalidNumOfDSDComponentsForObsValColTitleException
+from csvcubed.models.csvcubedexception import InvalidNumOfColsForColNameException, InvalidNumOfDSDComponentsForObsValColTitleException, InvalidNumOfUnitColsForObsValColTitleException, InvalidNumOfValUrlsForAboutUrlException
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import ColTitlesAndNamesResult, ObservationValueColumnTitleAboutUrlResult, QubeComponentResult, UnitColumnAboutValueUrlResult
 
@@ -402,6 +402,55 @@ _col_names_col_titles = [
     ),
 ]
 
+_obs_val_col_titles_about_urls_invalid = [
+    ObservationValueColumnTitleAboutUrlResult(
+        "Some Obs Val",
+        "qb-id-10003.csv#obs/some-dimension@some-measure"
+    ),
+    ObservationValueColumnTitleAboutUrlResult(
+        "Some Obs Val",
+        "qb-id-10003.csv#obs/some-dimension@some-other-measure"
+    ),
+]
+
+_unit_col_about_urls_value_urls_invalid = [
+    UnitColumnAboutValueUrlResult(
+        "qb-id-10003.csv#obs/some-dimension@some-measure",
+        "qb-id-10003.csv#unit/some-unit"
+    ),
+    UnitColumnAboutValueUrlResult(
+        "qb-id-10003.csv#obs/some-dimension@some-measure",
+        "qb-id-10003.csv#unit/percent"
+    )
+]
+
+_col_names_col_titles_invalid = [
+    ColTitlesAndNamesResult(
+        "some_dimension",
+        "Some Dimension"
+    ),
+    ColTitlesAndNamesResult(
+        "some_dimension",
+        "Some Other Dimension"
+    ),
+    ColTitlesAndNamesResult(
+        "some_attribute",
+        "Some Attribute"
+    ),
+    ColTitlesAndNamesResult(
+        "some_obs_val",
+        "Some Obs Val"
+    ),
+    ColTitlesAndNamesResult(
+        "some_other_obs_val",
+        "Some Other Obs Val"
+    ),
+    ColTitlesAndNamesResult(
+        "some_unit",
+        "Some Unit"
+    ),
+]
+
 _measure_components_for_multi_measure_pivoted_shape_same_measure = [
     QubeComponentResult(
         "qb-id-10003.csv#measure/some-measure",
@@ -653,19 +702,66 @@ def test_create_unit_col_in_melted_data_set_should_throw_invalid_num_of_unit_col
     """
     Ensures the InvalidNumOfUnitColsForObsValColTitleException is thrown.
     """
-    pass
+    test_csv_file = (
+        _test_case_base_dir / "pivoted-multi-measure-dataset" / "qb-id-10003.csv"
+    )
+    pivoted_df = pd.read_csv(test_csv_file)
+    melted_df = _melt_data_set(
+        pivoted_df, _measure_components_for_multi_measure_pivoted_shape
+    )
 
+    with pytest.raises(InvalidNumOfUnitColsForObsValColTitleException) as exception:
+        _create_unit_col_in_melted_data_set(
+        melted_df,
+        _unit_col_about_urls_value_urls,
+        _obs_val_col_titles_about_urls_invalid,
+        _col_names_col_titles,
+        )
+
+    assert str(exception.value) == f"There should be 1 unit column for the observation value column title 'Some Obs Val', but found 2 unit columns."
 
 # TODO: Sarah
 def test_create_unit_col_in_melted_data_set_should_throw_invalid_num_of_val_urls_exception():
     """
     Ensures the InvalidNumOfValUrlsForAboutUrlException is thrown.
     """
-    pass
+    test_csv_file = (
+        _test_case_base_dir / "pivoted-multi-measure-dataset" / "qb-id-10003.csv"
+    )
+    pivoted_df = pd.read_csv(test_csv_file)
+    melted_df = _melt_data_set(
+        pivoted_df, _measure_components_for_multi_measure_pivoted_shape
+    )
+
+    with pytest.raises(InvalidNumOfValUrlsForAboutUrlException) as exception:
+        _create_unit_col_in_melted_data_set(
+        melted_df,
+        _unit_col_about_urls_value_urls_invalid,
+        _obs_val_col_titles_about_urls,
+        _col_names_col_titles,
+        )
+
+    assert str(exception.value) == f"There should be only 1 value url for the about url 'qb-id-10003.csv#obs/some-dimension@some-measure', but found 2."
 
 # TODO: Sarah
 def test_create_unit_col_in_melted_data_set_should_throw_invalid_num_of_cols_exception():
     """
     Ensures the InvalidNumOfColsForColNameException is thrown.
     """
-    pass
+    test_csv_file = (
+        _test_case_base_dir / "pivoted-multi-measure-dataset" / "qb-id-10003.csv"
+    )
+    pivoted_df = pd.read_csv(test_csv_file)
+    melted_df = _melt_data_set(
+        pivoted_df, _measure_components_for_multi_measure_pivoted_shape
+    )
+
+    with pytest.raises(InvalidNumOfColsForColNameException) as exception:
+        _create_unit_col_in_melted_data_set(
+        melted_df,
+        _unit_col_about_urls_value_urls,
+        _obs_val_col_titles_about_urls,
+        _col_names_col_titles_invalid,
+        )
+
+    assert str(exception.value) == f"There should be only 1 column for the column name 'column_name', but found num_of_cols."
