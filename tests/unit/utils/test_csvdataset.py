@@ -650,7 +650,7 @@ def test_create_measure_col_in_melted_data_set():
     )
 
     _create_measure_col_in_melted_data_set(
-        melted_df, _measure_components_for_multi_measure_pivoted_shape
+        "Measure", melted_df, _measure_components_for_multi_measure_pivoted_shape
     )
 
     assert melted_df is not None
@@ -680,7 +680,7 @@ def test_create_measure_in_melted_data_set_exception_for_more_than_one_matching_
 
     with pytest.raises(InvalidNumOfDSDComponentsForObsValColTitleException) as exception:
         _create_measure_col_in_melted_data_set(
-            melted_df, _measure_components_for_multi_measure_pivoted_shape_same_measure
+            "Measure", melted_df, _measure_components_for_multi_measure_pivoted_shape_same_measure
         )
     assert str(exception.value) == f"There should be only 1 component for the observation value column with title 'Some Obs Val', but found 2."
 
@@ -697,6 +697,7 @@ def test_create_unit_col_in_melted_data_set():
     )
 
     _create_unit_col_in_melted_data_set(
+        "Unit",
         melted_df,
         _unit_col_about_urls_value_urls,
         _obs_val_col_titles_about_urls,
@@ -729,6 +730,7 @@ def test_create_unit_col_in_melted_data_set_should_throw_invalid_num_of_unit_col
 
     with pytest.raises(InvalidNumOfUnitColsForObsValColTitleException) as exception:
         _create_unit_col_in_melted_data_set(
+        "Unit",
         melted_df,
         _unit_col_about_urls_value_urls,
         _obs_val_col_titles_about_urls_invalid,
@@ -751,6 +753,7 @@ def test_create_unit_col_in_melted_data_set_should_throw_invalid_num_of_val_urls
 
     with pytest.raises(InvalidNumOfValUrlsForAboutUrlException) as exception:
         _create_unit_col_in_melted_data_set(
+        "Unit",
         melted_df,
         _unit_col_about_urls_value_urls_invalid,
         _obs_val_col_titles_about_urls,
@@ -774,6 +777,7 @@ def test_create_unit_col_in_melted_data_set_should_throw_invalid_num_of_cols_exc
 
     with pytest.raises(InvalidNumOfColsForColNameException) as exception:
         _create_unit_col_in_melted_data_set(
+        "Unit",
         melted_df,
         _unit_col_about_urls_value_urls,
         _obs_val_col_titles_about_urls,

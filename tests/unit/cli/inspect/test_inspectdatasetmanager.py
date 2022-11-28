@@ -148,18 +148,21 @@ expected_dataframe_pivoted_multi_measure = DataFrame(
             "Some Attribute": "attr-a",
             "Some Obs Val": 1,
             "Some Other Obs Val": 2,
+            "Some Unit": "percent"
         },
         {
             "Some Dimension": "b",
             "Some Attribute": "attr-b",
             "Some Obs Val": 2,
             "Some Other Obs Val": 4,
+            "Some Unit": "percent"
         },
         {
             "Some Dimension": "c",
             "Some Attribute": "attr-c",
             "Some Obs Val": 3,
             "Some Other Obs Val": 6,
+            "Some Unit": "percent"
         },
     ]
 ).replace("", np.NAN)
@@ -527,9 +530,13 @@ def test_get_val_counts_info_multi_unit_multi_measure_dataset():
         measure_col,
         unit_col,
     ) = transform_dataset_to_canonical_shape(
+        CubeShape.Standard,
         dataset,
         qube_components,
         dsd_uri,
+        None,
+        None,
+        None,
         csvw_metadata_rdf_graph,
         csvw_metadata_json_path,
     )
@@ -573,9 +580,13 @@ def test_get_val_counts_info_multi_unit_single_measure_dataset():
         measure_col,
         unit_col,
     ) = transform_dataset_to_canonical_shape(
+        CubeShape.Standard,
         dataset,
         qube_components,
         dsd_uri,
+        None,
+        None,
+        None,
         csvw_metadata_rdf_graph,
         csvw_metadata_json_path,
     )
@@ -619,9 +630,13 @@ def test_get_val_counts_info_single_unit_multi_measure_dataset():
         measure_col,
         unit_col,
     ) = transform_dataset_to_canonical_shape(
+        CubeShape.Standard,
         dataset,
         qube_components,
         dsd_uri,
+        None,
+        None,
+        None,
         csvw_metadata_rdf_graph,
         csvw_metadata_json_path,
     )
@@ -665,9 +680,13 @@ def test_get_val_counts_info_single_unit_single_measure_dataset():
         measure_col,
         unit_col,
     ) = transform_dataset_to_canonical_shape(
+        CubeShape.Standard,
         dataset,
         qube_components,
         dsd_uri,
+        None,
+        None,
+        None,
         csvw_metadata_rdf_graph,
         csvw_metadata_json_path,
     )
@@ -695,14 +714,14 @@ def test_get_val_counts_info_pivoted_single_measure_dataset():
     """
     TODO: Add description
     """
-    assert True
+    assert False
 
 #TODO: Implement test
 def test_get_val_counts_info_pivoted_multi_measure_dataset():
     """
     TODO: Add description
     """
-    assert True
+    assert False
 
 def test_get_concepts_hierarchy_info_hierarchy_with_depth_of_one():
     """

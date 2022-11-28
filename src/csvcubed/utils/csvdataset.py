@@ -28,6 +28,7 @@ from csvcubed.models.sparqlresults import (
 )
 from csvcubed.cli.inspect.inspectdatasetmanager import (
     filter_components_from_dsd,
+    get_single_measure_from_dsd,
     get_standard_shape_measure_col_name_from_dsd,
     get_standard_shape_unit_col_name_from_dsd,
 )
@@ -38,6 +39,7 @@ from csvcubed.utils.sparql_handler.sparqlmanager import (
 
 
 def _create_unit_col_in_melted_data_set(
+    col_name: str,
     melted_df: pd.DataFrame,
     unit_col_about_urls_value_urls: List[UnitColumnAboutValueUrlResult],
     obs_val_col_titles_about_urls: List[ObservationValueColumnTitleAboutUrlResult],
@@ -46,7 +48,7 @@ def _create_unit_col_in_melted_data_set(
     """
     Adds the unit column to the melted data set for the pivoted shape data set input.
     """
-    melted_df["Unit"] = ""
+    melted_df[col_name] = ""
     for idx, row in melted_df.iterrows():
         obs_val_col_title = row["Observation Value"]
 
@@ -83,7 +85,7 @@ def _create_unit_col_in_melted_data_set(
         unit_val_url_variable_names = uritemplate.variables(unit_col_value_url)
         # If there are no variable names, the unit is the unit col's value url.
         if len(unit_val_url_variable_names) == 0:
-            melted_df.loc[idx, "Unit"] = unit_col_value_url
+            melted_df.loc[idx, col_name] = unit_col_value_url
         else:
             # If there are variable names, identify the column titles for the variable names and generate the unit value url, and set it as the unit.
             col_name_value_map: Dict[str, str] = {}
@@ -104,17 +106,17 @@ def _create_unit_col_in_melted_data_set(
             processed_unit_value_url = uritemplate.expand(
                 unit_col_value_url, col_name_value_map
             )
-            melted_df.loc[idx, "Unit"] = processed_unit_value_url
+            melted_df.loc[idx, col_name] = processed_unit_value_url
 
 
 def _create_measure_col_in_melted_data_set(
-    melted_df: pd.DataFrame, measure_components: List[QubeComponentResult]
+    col_name: str, melted_df: pd.DataFrame, measure_components: List[QubeComponentResult]
 ):
     """
     Associates the relevant measure information with each observation value
     """
     # Adding the Measure column into the melted data set.
-    melted_df["Measure"] = ""
+    melted_df[col_name] = ""
     for idx, row in melted_df.iterrows():
         obs_val_col_title = row["Observation Value"]
         filtered_measure_components = filter_components_from_dsd(
@@ -129,7 +131,7 @@ def _create_measure_col_in_melted_data_set(
 
         measure_component = filtered_measure_components[0]
         # Using the measure label if it exists as it is more user-friendly. Otherwise, we use the measure uri.
-        melted_df.loc[idx, "Measure"] = (
+        melted_df.loc[idx, col_name] = (
             measure_component.property_label
             if measure_component.property_label
             else measure_component.property
@@ -195,6 +197,14 @@ def transform_dataset_to_canonical_shape(
                 result.unit_label if result.unit_label is not None else result.unit_uri
             )
         measure_col = get_standard_shape_measure_col_name_from_dsd(qube_components)
+        if measure_col is None:
+            measure_col = f"Measure_{str(uuid1())}"
+            result = get_single_measure_from_dsd(qube_components, csvw_metadata_json_path)
+            canonical_shape_dataset[measure_col] = (
+                result.measure_label
+                if result.measure_label is not None
+                else result.measure_uri
+            )
     else:
         # In pivoted shape
         measure_components = filter_components_from_dsd(
@@ -204,17 +214,17 @@ def transform_dataset_to_canonical_shape(
         )
         melted_df = _melt_data_set(canonical_shape_dataset, measure_components)
 
-        _create_measure_col_in_melted_data_set(melted_df, measure_components)
-
+        measure_col = f"Measure_{str(uuid1())}"
+        unit_col = f"Unit_{str(uuid1())}"
+        _create_measure_col_in_melted_data_set(measure_col, melted_df, measure_components)
         _create_unit_col_in_melted_data_set(
+            unit_col,
             melted_df,
             unit_col_about_urls_value_urls,
             obs_val_col_titles_about_urls,
             col_names_col_titles,
         )
 
-        canonical_shape_dataset = melted_df.drop("Observation Value", axis=1)
-        unit_col = f"Unit_{str(uuid1())}"
-        measure_col = f"Measure_{str(uuid1())}"
+        canonical_shape_dataset = melted_df.drop("Observation Value", axis=1)    
 
     return (canonical_shape_dataset, measure_col, unit_col)
