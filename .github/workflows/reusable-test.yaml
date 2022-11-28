@@ -96,7 +96,7 @@ jobs:
         run: sed -i -e "s/[\\x0A\\x1B]//g" reports/TESTS-*.xml
 
       - name: Publish Unit & Behave Test Results
-        if: always() && inputs.os == 'ubuntu-latest'
+        if: always()
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
           check_name: ${{ inputs.os }}-python${{ inputs.python-version }} test results
