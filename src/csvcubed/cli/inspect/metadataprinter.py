@@ -5,12 +5,10 @@ Metadata Printer
 Provides functionality for validating and detecting input metadata.json file.
 """
 
-import os
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import List, Optional, Tuple
 from urllib.parse import urljoin
-from distutils.util import strtobool
 
 import rdflib
 from pandas import DataFrame
@@ -20,21 +18,17 @@ from csvcubed.models.sparqlresults import (
     CodeListColsByDatasetUrlResult,
     CodelistColumnResult,
     CodelistsResult,
-    ColTitlesAndNamesResult,
     ColsWithSuppressOutputTrueResult,
     DSDLabelURIResult,
-    ObservationValueColumnTitleAboutUrlResult,
     PrimaryKeyColNamesByDatasetUrlResult,
     QubeComponentsResult,
-    UnitColumnAboutValueUrlResult,
 )
+from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.models.csvwtype import CSVWType
 from csvcubed.utils.sparql_handler.sparqlmanager import (
     select_codelist_cols_by_dataset_url,
     select_codelist_dataset_url,
-    select_col_titles_and_names,
-    select_observation_value_column_title_and_about_url,
     select_primary_key_col_names_by_dataset_url,
     select_cols_where_suppress_output_is_true,
     select_csvw_catalog_metadata,
@@ -42,7 +36,6 @@ from csvcubed.utils.sparql_handler.sparqlmanager import (
     select_csvw_dsd_qube_components,
     select_dsd_code_list_and_cols,
     select_qb_dataset_url,
-    select_unit_col_about_value_urls,
 )
 from csvcubed.cli.inspect.inspectdatasetmanager import (
     get_concepts_hierarchy_info,
@@ -76,7 +69,8 @@ class MetadataPrinter:
     """
     This class produces the printables necessary for producing outputs to the CLI.
     """
-
+    data_cube_state: DataCubeState
+    
     csvw_type: CSVWType
     cube_shape: Optional[CubeShape]
     csvw_metadata_rdf_graph: rdflib.ConjunctiveGraph
@@ -99,9 +93,6 @@ class MetadataPrinter:
     )
     result_code_list_cols: CodeListColsByDatasetUrlResult = field(init=False)
     result_concepts_hierachy_info: CodelistHierarchyInfoResult = field(init=False)
-    results_unit_col_about_and_value_urls: List[UnitColumnAboutValueUrlResult] = field(init=False)
-    results_observation_value_column_title_about_url: List[ObservationValueColumnTitleAboutUrlResult] = field(init=False)
-    results_col_name_col_title: List[ColTitlesAndNamesResult] = field(init=False)
     
     @staticmethod
     def get_csvw_type_str(csvw_type: CSVWType) -> str:
@@ -201,14 +192,7 @@ class MetadataPrinter:
         #     self.result_dataset_value_counts = (
         #         DatasetObservationsByMeasureUnitInfoResult(data)
         #     )
-        # else:
-
-        if self.cube_shape == CubeShape.Pivoted:
-            self.results_unit_col_about_and_value_urls = select_unit_col_about_value_urls(self.csvw_metadata_rdf_graph)
-
-            self.results_observation_value_column_title_about_url = select_observation_value_column_title_and_about_url(self.csvw_metadata_rdf_graph)
-
-            self.results_col_name_col_title = select_col_titles_and_names(self.csvw_metadata_rdf_graph)
+        # else:            
         (
             canonical_shape_dataset,
             measure_col,
@@ -218,9 +202,9 @@ class MetadataPrinter:
             self.dataset,
             self.result_qube_components.qube_components,
             self.result_dataset_label_dsd_uri.dsd_uri,
-            self.results_unit_col_about_and_value_urls,
-            self.results_observation_value_column_title_about_url,
-            self.results_col_name_col_title,
+            self.data_cube_state.get_unit_col_about_value_urls_for_csv(self.dataset_url) if self.cube_shape == CubeShape.Pivoted else None,
+            self.data_cube_state.get_obs_val_col_title_about_url_for_csv(self.dataset_url)  if self.cube_shape == CubeShape.Pivoted else None,
+            self.data_cube_state.get_col_name_col_title_for_csv(self.dataset_url)  if self.cube_shape == CubeShape.Pivoted else None,
             self.csvw_metadata_rdf_graph,
             self.csvw_metadata_json_path,
         )
@@ -263,8 +247,9 @@ class MetadataPrinter:
         )
 
     def __post_init__(self):
-        self.generate_general_results()
+        self.data_cube_state = DataCubeState(self.csvw_metadata_rdf_graph)
 
+        self.generate_general_results()
         if self.csvw_type == CSVWType.QbDataSet:
             self.get_datacube_results()
         elif self.csvw_type == CSVWType.CodeList:

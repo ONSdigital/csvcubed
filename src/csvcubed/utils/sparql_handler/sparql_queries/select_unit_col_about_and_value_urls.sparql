@@ -1,8 +1,11 @@
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX csvw: <http://www.w3.org/ns/csvw#>
 
-SELECT ?aboutUrl ?valueUrl
+SELECT ?csvUrl ?aboutUrl ?valueUrl
 WHERE {
+    ?table csvw:tableSchema ?tableSchema;
+           csvw:url ?csvUrl.
+
     { # Virtual columns 
         BIND(true as ?isVirtual).
         ?tableSchema csvw:column/rdf:rest*/rdf:first ?observedValueColumn.

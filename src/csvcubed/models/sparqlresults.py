@@ -289,6 +289,7 @@ class UnitColumnAboutValueUrlResult:
     """
     Model representing the About URL and Value URL of the unit column
     """
+    csv_url: str
     about_url: str
     value_url: str
 
@@ -297,6 +298,7 @@ class ObservationValueColumnTitleAboutUrlResult:
     """
     Model representing the Column Title and About URL of an observation value
     """
+    csv_url: str
     observation_value_col_title: str
     observation_value_col_about_url: str
 
@@ -305,6 +307,7 @@ class ColTitlesAndNamesResult:
     """
     Model representing the Column Titles and Column Names of a data set.
     """
+    csv_url: str
     column_name: str
     column_title: Optional[str]
 
@@ -705,6 +708,7 @@ def map_unit_col_about_value_urls_result(
     """
     def map_row(row_result: Dict[str, Any]) -> UnitColumnAboutValueUrlResult:
         return UnitColumnAboutValueUrlResult(
+            csv_url=str(row_result["csvUrl"]),
             about_url=str(row_result["aboutUrl"]),
             value_url=str(row_result["valueUrl"])
         )
@@ -719,6 +723,7 @@ def map_observation_value_col_title_and_about_url_result(
     """
     def map_row(row_result: Dict[str, Any]) -> ObservationValueColumnTitleAboutUrlResult:
         return ObservationValueColumnTitleAboutUrlResult(
+            csv_url=str(row_result["csvUrl"]),
             observation_value_col_title=str(row_result["observationValueColumnTitle"]),
             observation_value_col_about_url=str(row_result["observationValueColumnAboutUrl"])
         )
@@ -730,6 +735,7 @@ def map_col_tiles_and_names_result(sparql_results: List[ResultRow]) -> List[ColT
     """
     def map_row(row_result: Dict[str, Any]) -> ColTitlesAndNamesResult:
         return ColTitlesAndNamesResult(
+            csv_url=str(row_result["csvUrl"]),
             column_name=str(row_result["columnName"]),
             column_title=none_or_map(row_result.get("columnTitle"), str)
         )

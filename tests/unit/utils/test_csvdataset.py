@@ -359,10 +359,12 @@ _expected_dataset_pivoted_multi_measure_with_unit = _expected_dataset_pivoted_mu
 
 _unit_col_about_urls_value_urls = [
     UnitColumnAboutValueUrlResult(
+        "qb-id-10004.csv",
         "qb-id-10003.csv#obs/some-dimension@some-measure",
         "qb-id-10003.csv#unit/some-unit"
     ),
     UnitColumnAboutValueUrlResult(
+        "qb-id-10004.csv",
         "qb-id-10003.csv#obs/some-dimension@some-other-measure",
         "qb-id-10003.csv#unit/percent"
     )
@@ -370,10 +372,12 @@ _unit_col_about_urls_value_urls = [
 
 _obs_val_col_titles_about_urls = [
     ObservationValueColumnTitleAboutUrlResult(
+        "qb-id-10004.csv",
         "Some Obs Val",
         "qb-id-10003.csv#obs/some-dimension@some-measure"
     ),
     ObservationValueColumnTitleAboutUrlResult(
+        "qb-id-10004.csv",
         "Some Other Obs Val",
         "qb-id-10003.csv#obs/some-dimension@some-other-measure"
     ),
@@ -381,22 +385,27 @@ _obs_val_col_titles_about_urls = [
 
 _col_names_col_titles = [
     ColTitlesAndNamesResult(
+        "qb-id-10004.csv",
         "some_dimension",
         "Some Dimension"
     ),
     ColTitlesAndNamesResult(
+        "qb-id-10004.csv",
         "some_attribute",
         "Some Attribute"
     ),
     ColTitlesAndNamesResult(
+        "qb-id-10004.csv",        
         "some_obs_val",
         "Some Obs Val"
     ),
     ColTitlesAndNamesResult(
+        "qb-id-10004.csv",
         "some_other_obs_val",
         "Some Other Obs Val"
     ),
     ColTitlesAndNamesResult(
+        "qb-id-10004.csv",
         "some_unit",
         "Some Unit"
     ),
@@ -404,10 +413,12 @@ _col_names_col_titles = [
 
 _obs_val_col_titles_about_urls_invalid = [
     ObservationValueColumnTitleAboutUrlResult(
+        "qb-id-10004.csv",
         "Some Obs Val",
         "qb-id-10003.csv#obs/some-dimension@some-measure"
     ),
     ObservationValueColumnTitleAboutUrlResult(
+        "qb-id-10004.csv",
         "Some Obs Val",
         "qb-id-10003.csv#obs/some-dimension@some-other-measure"
     ),
@@ -415,10 +426,12 @@ _obs_val_col_titles_about_urls_invalid = [
 
 _unit_col_about_urls_value_urls_invalid = [
     UnitColumnAboutValueUrlResult(
+        "qb-id-10004.csv",
         "qb-id-10003.csv#obs/some-dimension@some-measure",
         "qb-id-10003.csv#unit/some-unit"
     ),
     UnitColumnAboutValueUrlResult(
+        "qb-id-10004.csv",
         "qb-id-10003.csv#obs/some-dimension@some-measure",
         "qb-id-10003.csv#unit/percent"
     )
@@ -426,26 +439,32 @@ _unit_col_about_urls_value_urls_invalid = [
 
 _col_names_col_titles_invalid = [
     ColTitlesAndNamesResult(
+        "qb-id-10004.csv",
         "some_dimension",
         "Some Dimension"
     ),
     ColTitlesAndNamesResult(
+        "qb-id-10004.csv",
         "some_dimension",
         "Some Other Dimension"
     ),
     ColTitlesAndNamesResult(
+        "qb-id-10004.csv",
         "some_attribute",
         "Some Attribute"
     ),
     ColTitlesAndNamesResult(
+        "qb-id-10004.csv",
         "some_obs_val",
         "Some Obs Val"
     ),
     ColTitlesAndNamesResult(
+        "qb-id-10004.csv",
         "some_other_obs_val",
         "Some Other Obs Val"
     ),
     ColTitlesAndNamesResult(
+        "qb-id-10004.csv",
         "some_unit",
         "Some Unit"
     ),
@@ -716,7 +735,7 @@ def test_create_unit_col_in_melted_data_set_should_throw_invalid_num_of_unit_col
         _col_names_col_titles,
         )
 
-    assert str(exception.value) == f"There should be 1 unit column for the observation value column title 'Some Obs Val', but found 2 unit columns."
+    assert str(exception.value) == "There should be 1 unit column for the observation value column title 'Some Obs Val', but found 2 unit columns."
 
 def test_create_unit_col_in_melted_data_set_should_throw_invalid_num_of_val_urls_exception():
     """
@@ -738,8 +757,9 @@ def test_create_unit_col_in_melted_data_set_should_throw_invalid_num_of_val_urls
         _col_names_col_titles,
         )
 
-    assert str(exception.value) == f"There should be only 1 value url for the about url 'qb-id-10003.csv#obs/some-dimension@some-measure', but found 2."
+    assert str(exception.value) == "There should be only 1 value url for the about url 'qb-id-10003.csv#obs/some-dimension@some-measure', but found 2."
 
+#TODO: Fix test
 def test_create_unit_col_in_melted_data_set_should_throw_invalid_num_of_cols_exception():
     """
     Ensures the InvalidNumOfColsForColNameException is thrown.

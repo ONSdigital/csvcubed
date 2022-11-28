@@ -690,6 +690,19 @@ def test_get_val_counts_info_single_unit_single_measure_dataset():
         _expected_by_measure_and_unit_val_counts_df_single_unit_single_measure,
     )
 
+#TODO: Implement test
+def test_get_val_counts_info_pivoted_single_measure_dataset():
+    """
+    TODO: Add description
+    """
+    assert True
+
+#TODO: Implement test
+def test_get_val_counts_info_pivoted_multi_measure_dataset():
+    """
+    TODO: Add description
+    """
+    assert True
 
 def test_get_concepts_hierarchy_info_hierarchy_with_depth_of_one():
     """
