@@ -9,4 +9,3 @@ jobs:
   Trigger_gss-utils_workflow:
     runs-on: ubuntu-latest
     uses: https://github.com/GSS-Cogs/gss-utils/blob/MuazzamChaud/issue527/.github/workflows/updateCsvcubedPackage.yaml
-    secrets: inherit
