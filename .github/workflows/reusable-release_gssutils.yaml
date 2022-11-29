@@ -8,4 +8,4 @@ on:
 jobs:
   Trigger_gss-utils_workflow:
     runs-on: ubuntu-latest
-    uses: https://github.com/GSS-Cogs/gss-utils/blob/MuazzamChaud/issue527/.github/workflows/updateCsvcubedPackage.yaml
+    runs: gh workflow run updateCsvcubedPackage.yaml --repo github.com/GSS-Cogs/gss-utils
