@@ -6,9 +6,9 @@ from dataclasses import dataclass, field
 from typing import Set, List
 
 import pytest
+from csvcubedmodels.rdf import NewResource, InversePredicate
 from rdflib import RDFS, FOAF
 from rdflib.term import URIRef, Literal
-from csvcubedmodels.rdf import NewResource, InversePredicate
 
 from csvcubed.models.cube.qb.components.arbitraryrdf import (
     ArbitraryRdf,

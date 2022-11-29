@@ -511,7 +511,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
 
   Scenario: A QbCube with complex datatypes should validate successfully and contain the expected types
     Given The config json file "v1.0/cube_datatypes.json" and the existing tidy data csv file "v1.0/cube_datatypes.csv"
-    When the cube is created
+    When a valid cube is built and serialised to CSV-W
     Then csvlint validation of all CSV-Ws should succeed
     And csv2rdf on all CSV-Ws should succeed
     # The following checks for the expected datatypes as defined in models.cube.qb.components.constants
@@ -622,7 +622,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
 
   Scenario: A QbCube configured by convention should contain appropriate datatypes
     Given the existing tidy data csv file "v1.0/cube_data_convention_ok.csv"
-    When the cube is created
+    When a valid cube is built and serialised to CSV-W
     Then csvlint validation of all CSV-Ws should succeed
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should contain

@@ -9,15 +9,15 @@ from pathlib import Path
 from typing import List, Optional, Tuple
 
 import rdflib
-from csvcubed.models.sparqlresults import IsPivotedShapeMeasureResult
 
+from csvcubed.models.csvwtype import CSVWType
+from csvcubed.models.cube.cube_shape import CubeShape
+from csvcubed.models.sparqlresults import IsPivotedShapeMeasureResult
+from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.utils.sparql_handler.sparqlmanager import (
     ask_is_csvw_code_list,
     ask_is_csvw_qb_dataset,
 )
-from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
-from csvcubed.models.cube.cube_shape import CubeShape
-from csvcubed.models.csvwtype import CSVWType
 
 
 @dataclass
@@ -29,12 +29,18 @@ class MetadataValidator:
     csvw_metadata_rdf_graph: rdflib.ConjunctiveGraph
     csvw_metadata_json_path: Path
 
-    def detect_type_and_shape(self, is_pivoted_measures: List[IsPivotedShapeMeasureResult]) -> Tuple[CSVWType, Optional[CubeShape]]:
+    def detect_type_and_shape(
+        self, is_pivoted_measures: List[IsPivotedShapeMeasureResult]
+    ) -> Tuple[CSVWType, Optional[CubeShape]]:
         """
         Detects the type and shape of the csvw.
         """
         csvw_type = self._detect_type()
-        cube_shape = self._detect_shape(is_pivoted_measures) if csvw_type == CSVWType.QbDataSet else None
+        cube_shape = (
+            self._detect_shape(is_pivoted_measures)
+            if csvw_type == CSVWType.QbDataSet
+            else None
+        )
 
         return (csvw_type, cube_shape)
 
@@ -63,7 +69,9 @@ class MetadataValidator:
                 "The input metadata is invalid as it is not a data cube or a code list."
             )
 
-    def _detect_shape(self, is_pivoted_measures: List[IsPivotedShapeMeasureResult]) -> CubeShape:
+    def _detect_shape(
+        self, is_pivoted_measures: List[IsPivotedShapeMeasureResult]
+    ) -> CubeShape:
         """
         Given a metadata validator as input, returns the shape of the cube that metadata describes (Pivoted or Standard).
         """

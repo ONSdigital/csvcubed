@@ -1,9 +1,8 @@
-import os
+import shutil
 import sys
+from dataclasses import dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
-from dataclasses import dataclass
-import shutil
 
 import pandas as pd
 

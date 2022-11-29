@@ -7,6 +7,7 @@ Functionality to help augment JSON files with configuration from some pre-config
 import logging
 from os import linesep
 from typing import Dict, Any
+
 from requests.exceptions import JSONDecodeError, HTTPError
 
 from csvcubed.utils.cache import session
@@ -75,7 +76,10 @@ def apply_preconfigured_values_from_template(
     """
     # if column_config doesn't have the `from_template` property, just terminate the function now
     if "from_template" not in column_config:
-        _logger.debug('Column config for "%s" has no preset template to collect from.', column_name)
+        _logger.debug(
+            'Column config for "%s" has no preset template to collect from.',
+            column_name,
+        )
         return
 
     # if column_config has `from_template` property, extract that value

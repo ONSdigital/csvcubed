@@ -2,13 +2,12 @@ import datetime
 import json
 from typing import List, Optional
 
-from behave import *
-import vcr
 import pandas as pd
-from pandas.testing import assert_frame_equal
-
+import vcr
+from behave import *
 from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
 from csvcubeddevtools.helpers.file import get_test_cases_dir
+from pandas.testing import assert_frame_equal
 
 from csvcubed.cli.build import build as cli_build
 from csvcubed.models.cube.columns import CsvColumn
@@ -19,7 +18,7 @@ _cube_config_test_case_dir = _test_case_dir / "readers" / "cube-config"
 _cassettes_dir = _test_case_dir / "vcrpy-cassettes"
 
 
-@given('The existing tidy data csv file "{data_file}"')
+@given('the existing tidy data csv file "{data_file}"')
 def step_impl(context, data_file):
     data_file = _cube_config_test_case_dir / data_file
     if not data_file.exists():
@@ -28,7 +27,7 @@ def step_impl(context, data_file):
 
 
 @given(
-    'The config json file "{config_file}" and the existing tidy data csv file '
+    'the config json file "{config_file}" and the existing tidy data csv file '
     '"{data_file}"'
 )
 def step_impl(context, config_file, data_file):
@@ -44,19 +43,33 @@ def step_impl(context, config_file, data_file):
     context.data_file = data_file
 
 
-@when("The cube is created")
+@when("a valid cube is built and serialised to CSV-W")
 def step_impl(context):
+    _build_valid_cube(context)
+
+
+@then("a valid cube can be built and serialised to CSV-W")
+def step_impl(context):
+    _build_valid_cube(context)
+
+
+def _build_valid_cube(context):
     config_file = context.config_file if hasattr(context, "config_file") else None
     data_file = context.data_file
     scenario_name = context.scenario.name
-    cassette_file_name = scenario_name.rsplit("]")[1]
+    cassette_file_name = (
+        scenario_name.rsplit("]")[1] if "]" in scenario_name else scenario_name
+    )
 
     mocker = mock_json_schemas()
+    mocker.start()
     context.add_cleanup(lambda: mocker.stop())
 
     context.out_dir = get_context_temp_dir_path(context) / "out"
 
-    with vcr.use_cassette(str(_cassettes_dir / f"{cassette_file_name}.yaml")):
+    with vcr.use_cassette(
+        str(_cassettes_dir / f"build-cube-{cassette_file_name}.yaml")
+    ):
         cube, errors = cli_build(
             data_file,
             config_file,
@@ -65,15 +78,11 @@ def step_impl(context):
         )
 
         context.cube = cube
-        context.errors = errors
+
+        assert not any(errors), [e.message for e in errors]
 
 
-@then("There are no errors")
-def step_impl(context):
-    assert len(context.errors) == 0
-
-
-@then("The cube Metadata should match")
+@then("the cube Metadata should match")
 def step_impl(context):
     expected_meta = eval(context.text.strip().replace("\r\n", ""))
     result_dict = context.cube.metadata.as_json_dict()
@@ -92,7 +101,7 @@ def step_impl(context):
     assert expected_meta == result_dict
 
 
-@then("The cube columns should match")
+@then("the cube columns should match")
 def step_impl(context):
     cols: List[CsvColumn] = context.cube.columns
     print("cols:", cols)
@@ -101,7 +110,7 @@ def step_impl(context):
         assert col.csv_column_title in expected_cols
 
 
-@then("The cube data should match")
+@then("the cube data should match")
 def step_impl(context):
     data: Optional[pd.DataFrame] = context.cube.data
     print("data:", data)

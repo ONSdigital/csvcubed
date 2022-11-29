@@ -1,13 +1,15 @@
-import pandas as pd
 from difflib import ndiff
 from pathlib import Path
 
+import pandas as pd
 from behave import *
+from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
 from pandas.util.testing import assert_frame_equal
 
-from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
 from csvcubed.cli.inspect.metadatainputvalidator import MetadataValidator
 from csvcubed.cli.inspect.metadataprinter import MetadataPrinter
+from csvcubed.models.csvwtype import CSVWType
+from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.inspectdataframeresults import (
     DatasetObservationsByMeasureUnitInfoResult,
     DatasetObservationsInfoResult,
@@ -22,6 +24,9 @@ from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.sparql_handler.code_list_state import CodeListState
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
 from csvcubed.utils.sparql_handler.sparqlmanager import select_is_pivoted_shape_for_measures_in_data_set
+from csvcubed.utils.sparql_handler.sparqlmanager import (
+    select_is_pivoted_shape_for_measures_in_data_set,
+)
 from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.unit.cli.inspect.test_inspectdatasetmanager import (
     expected_dataframe_pivoted_single_measure,
@@ -31,8 +36,6 @@ from tests.unit.utils.sparqlhandler.test_sparqlmanager import (
     assert_dsd_component_equal,
     get_dsd_component_by_property_url,
 )
-from csvcubed.models.cube.cube_shape import CubeShape
-from csvcubed.models.csvwtype import CSVWType
 
 
 def _unformat_multiline_string(string: str) -> str:
@@ -65,20 +68,24 @@ def step_impl(context):
     csvw_rdf_manager = CsvwRdfManager(context.csvw_metadata_json_path)
     context.csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     assert context.csvw_metadata_rdf_graph is not None
-    
+
+
 @When("the Metadata File is validated")
 def step_impl(context):
 
     csvw_metadata_rdf_validator = MetadataValidator(
         context.csvw_metadata_rdf_graph, context.csvw_metadata_json_path
     )
-    is_pivoted_measures = select_is_pivoted_shape_for_measures_in_data_set(context.csvw_metadata_rdf_graph)
+    is_pivoted_measures = select_is_pivoted_shape_for_measures_in_data_set(
+        context.csvw_metadata_rdf_graph
+    )
     (
         context.csvw_type,
         context.cube_shape,
     ) = csvw_metadata_rdf_validator.detect_type_and_shape(is_pivoted_measures)
 
     assert context.csvw_type is not None
+
 
 @When("the Printables for data cube are generated")
 def step_impl(context):
@@ -227,7 +234,9 @@ def step_impl(context):
     assert result_type_info == CSVWType.QbDataSet
 
 
-@Then("the Catalog Metadata printable is validated for single-measure pivoted data set with identifier qb-id-10004")
+@Then(
+    "the Catalog Metadata printable is validated for single-measure pivoted data set with identifier qb-id-10004"
+)
 def step_impl(context):
     result_catalog_metadata: CatalogMetadataResult = context.result_catalog_metadata
     assert result_catalog_metadata is not None
@@ -396,7 +405,9 @@ def step_impl(context):
     assert result_type_info == CSVWType.QbDataSet
 
 
-@Then("the Catalog Metadata printable is validated for multi-measure pivoted data set with identifier qb-id-10003")
+@Then(
+    "the Catalog Metadata printable is validated for multi-measure pivoted data set with identifier qb-id-10003"
+)
 def step_impl(context):
     result_catalog_metadata: CatalogMetadataResult = context.result_catalog_metadata
     assert result_catalog_metadata is not None
@@ -431,7 +442,7 @@ def step_impl(context):
 def step_impl(context):
     result_qube_components: QubeComponentsResult = context.result_qube_components
     assert result_qube_components is not None
-        
+
     components = result_qube_components.qube_components
     assert len(components) == 7
 
@@ -486,7 +497,7 @@ def step_impl(context):
         "Some Other Obs Val, Some Obs Val",
         True,
     )
-    
+
     component = get_dsd_component_by_property_url(
         components, "qb-id-10003.csv#measure/some-measure"
     )

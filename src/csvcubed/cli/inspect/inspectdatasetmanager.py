@@ -9,32 +9,33 @@ Collection of functions handling csv-related operations used in the inspect cli.
 import logging
 from pathlib import Path
 from typing import List, Optional
+
 import pandas as pd
 
-from csvcubed.utils.pandas import read_csv
-from csvcubed.models.sparqlresults import (
-    QubeComponentResult,
+from csvcubed.cli.error_mapping import friendly_error_mapping
+from csvcubed.models.csvcubedexception import (
+    CsvToDataFrameLoadFailedException,
+    InvalidNumberOfRecordsException,
 )
-from csvcubed.utils.qb.components import (
-    ComponentField,
-    ComponentPropertyAttributeURI,
-    ComponentPropertyType,
-    get_component_property_as_relative_path,
-)
+from csvcubed.models.csvwtype import CSVWType
+from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.inspectdataframeresults import (
     CodelistHierarchyInfoResult,
     DatasetObservationsByMeasureUnitInfoResult,
     DatasetObservationsInfoResult,
     DatasetSingleMeasureResult,
 )
-from csvcubed.models.csvcubedexception import (
-    CsvToDataFrameLoadFailedException,
-    InvalidNumberOfRecordsException,
+from csvcubed.models.sparqlresults import (
+    QubeComponentResult,
 )
-from csvcubed.cli.error_mapping import friendly_error_mapping
-from csvcubed.models.csvwtype import CSVWType
+from csvcubed.utils.pandas import read_csv
+from csvcubed.utils.qb.components import (
+    ComponentField,
+    ComponentPropertyAttributeURI,
+    ComponentPropertyType,
+    get_component_property_as_relative_path,
+)
 from csvcubed.utils.skos.codelist import build_concepts_hierarchy_tree
-from csvcubed.models.cube.cube_shape import CubeShape
 
 _logger = logging.getLogger(__name__)
 

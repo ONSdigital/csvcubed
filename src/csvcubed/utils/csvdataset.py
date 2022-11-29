@@ -36,6 +36,8 @@ from csvcubed.utils.sparql_handler.sparqlmanager import (
     CubeShape,
     select_single_unit_from_dsd,
 )
+from csvcubed.models.sparqlresults import QubeComponentResult
+from csvcubed.utils.sparql_handler.sparqlmanager import select_single_unit_from_dsd
 
 
 def _create_unit_col_in_melted_data_set(

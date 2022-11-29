@@ -21,15 +21,7 @@ from csvcubed.models.cube.qb import (
     BothUnitTypesDefinedError,
     QbObservationValue,
     QbStructuralDefinition,
-    EmptyQbMultiMeasureDimensionError
-    )
-from csvcubed.models.cube.validationerrors import (
-    ObservationValuesMissing,
-    MissingColumnDefinitionError,
-    DuplicateColumnTitleError,
-    ColumnValidationError,
-    ColumnNotFoundInDataError,
-    UriTemplateNameError
+    EmptyQbMultiMeasureDimensionError,
 )
 from csvcubed.models.cube.qb.components.validationerrors import (
     UndefinedMeasureUrisError,
@@ -38,6 +30,14 @@ from csvcubed.models.cube.qb.components.validationerrors import (
     ReservedUriValueError,
     ConflictingUriSafeValuesError,
     EmptyQbMultiUnitsError,
+)
+from csvcubed.models.cube.validationerrors import (
+    ObservationValuesMissing,
+    MissingColumnDefinitionError,
+    DuplicateColumnTitleError,
+    ColumnValidationError,
+    ColumnNotFoundInDataError,
+    UriTemplateNameError,
 )
 from csvcubed.models.validationerror import (
     ValidationError,
@@ -90,8 +90,8 @@ def friendly_error_mapping(error: ValidationError) -> str:
         UndefinedMeasureUrisError: "The Measure URI(s) {error.undefined_values} found in the data was not defined in the cube config.",
         UndefinedUnitUrisError: "The Unit URI(s) {error.undefined_values} found in the data was not defined in the cube config.",
         UriTemplateNameError: (
-            'Uri template: {error.csv_column_uri_template} is referencing a column that is not defined in the config. '
-            'Currently defined columns are: {error.column_names_concatenated}.'
+            "Uri template: {error.csv_column_uri_template} is referencing a column that is not defined in the config. "
+            "Currently defined columns are: {error.column_names_concatenated}."
         ),
         ValidationError: (
             "A validation error occurred when validating the cube: '{error.message}'."

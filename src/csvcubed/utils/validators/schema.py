@@ -1,19 +1,15 @@
 import logging
-import os
-import re
-from typing import Iterable, Union, Dict, List, Tuple
-from textwrap import indent
+from typing import Iterable, Dict, List, Tuple
 
 import jsonschema
 import jsonschema.exceptions
 
-from csvcubed.utils.json import to_json_path
-from csvcubed.utils.text import truncate
 from csvcubed.models.jsonvalidationerrors import (
     JsonSchemaValidationError,
     GenericJsonSchemaValidationError,
     AnyOneOfJsonSchemaValidationError,
 )
+from csvcubed.utils.json import to_json_path
 
 log = logging.getLogger(__name__)
 

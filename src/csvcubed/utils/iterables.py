@@ -4,8 +4,8 @@ Iterables
 
 Function to help when working with lists/iterables.
 """
-from typing import Callable, TypeVar, Optional
 from collections.abc import Iterable
+from typing import Callable, TypeVar, Optional
 
 T = TypeVar("T")
 

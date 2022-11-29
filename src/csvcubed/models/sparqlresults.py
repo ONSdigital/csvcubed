@@ -4,15 +4,14 @@ SPARQL query results
 """
 
 import logging
+from dataclasses import dataclass
 from os import linesep
 from pathlib import Path
 from typing import List, Optional, Dict, Any
-from dataclasses import dataclass
 
-from rdflib.query import ResultRow
 from csvcubedmodels.dataclassbase import DataClassBase
+from rdflib.query import ResultRow
 
-from csvcubed.utils.sparql_handler.sparql import none_or_map
 from csvcubed.utils.printable import (
     get_printable_list_str,
     get_printable_tabular_list_str,
@@ -22,6 +21,7 @@ from csvcubed.utils.qb.components import (
     get_component_property_as_relative_path,
     get_component_property_type,
 )
+from csvcubed.utils.sparql_handler.sparql import none_or_map
 
 _logger = logging.getLogger(__name__)
 
@@ -384,7 +384,7 @@ def _map_qube_component_sparql_result(
             str(result_dict["componentPropertyType"])
         ),
         csv_col_title=none_or_map(result_dict.get("csvColumnTitle"), str) or "",
-        observation_value_column_titles="", # This value is popuated after runnning the SELECT_OBS_VAL_FOR_DSD_COMPONENT_PROPERTIES sparql query. The _map_obs_val_for_dsd_component_properties_results will set the value for this property.
+        observation_value_column_titles="",  # This value is popuated after runnning the SELECT_OBS_VAL_FOR_DSD_COMPONENT_PROPERTIES sparql query. The _map_obs_val_for_dsd_component_properties_results will set the value for this property.
         required=none_or_map(result_dict.get("required"), bool) or False,
     )
     return result
@@ -396,14 +396,15 @@ def _map_obs_val_for_dsd_component_properties_results(
     def map_row(row_result: Dict[str, Any]) -> ObsValDsdComponentResult:
         return ObsValDsdComponentResult(
             csv_column_property_url=none_or_map(
-               row_result.get("csvColumnPropertyUrl"), str
+                row_result.get("csvColumnPropertyUrl"), str
             ),
             observation_value_column_titles=none_or_map(
-               row_result.get("observationValueColumnTitles"), str
-            )
+                row_result.get("observationValueColumnTitles"), str
+            ),
         )
 
     return [map_row(row.asdict()) for row in sparql_results]
+
 
 def map_qube_components_sparql_result(
     sparql_results_dsd_components: List[ResultRow],
@@ -693,11 +694,13 @@ def map_is_pivoted_shape_for_measures_in_data_set(
     """
     Maps the sparql query result to objects of type IsPivotedMeasureResult that are then returned.
     """
+
     def map_row(row_result: Dict[str, Any]) -> IsPivotedShapeMeasureResult:
         return IsPivotedShapeMeasureResult(
             measure=str(row_result["measure"]),
             is_pivoted_shape=bool(row_result["isPivotedShape"]),
         )
+
     return [map_row(row.asdict()) for row in sparql_results]
 
 def map_unit_col_about_value_urls_result(

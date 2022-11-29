@@ -1,6 +1,5 @@
 import pytest
 
-from csvcubed.models.cube import *
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from tests.unit.test_baseunit import assert_num_validation_errors
 

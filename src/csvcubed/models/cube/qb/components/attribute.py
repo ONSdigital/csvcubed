@@ -12,29 +12,27 @@ from typing import List, Set, Optional
 import pandas as pd
 from pydantic import validator
 
+from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_optional_str
+from csvcubed.models.cube.qb.components.constants import ACCEPTED_DATATYPE_MAPPING
+from csvcubed.models.uriidentifiable import UriIdentifiable
+from csvcubed.models.validationerror import ValidationError
 from csvcubed.utils.qb.validation.uri_safe import ensure_no_uri_safe_conflicts
-from .attributevalue import NewQbAttributeValue
+from csvcubed.utils.uri import uri_safe
+from csvcubed.utils.validators.uri import validate_uri
 from .arbitraryrdf import (
     ArbitraryRdf,
     TripleFragmentBase,
     RdfSerialisationHint,
 )
-from .validationerrors import UndefinedAttributeValueUrisError
-from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_optional_str
-
+from .attributevalue import NewQbAttributeValue
 from .datastructuredefinition import (
     QbColumnStructuralDefinition,
 )
-from csvcubed.models.cube.qb.components.constants import ACCEPTED_DATATYPE_MAPPING
-from csvcubed.models.uriidentifiable import UriIdentifiable
-from csvcubed.models.validationerror import ValidationError
-from csvcubed.utils.uri import uri_safe
-from csvcubed.utils.validators.uri import validate_uri
+from .validationerrors import UndefinedAttributeValueUrisError
 
 
 @dataclass
 class QbAttribute(QbColumnStructuralDefinition, ArbitraryRdf, ABC):
-    
     @abstractmethod
     def get_is_required(self) -> bool:
         pass
@@ -184,7 +182,7 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
         is_required: bool = False,
         uri_safe_identifier_override: Optional[str] = None,
         arbitrary_rdf: List[TripleFragmentBase] = list(),
-        observed_value_col_title: Optional[str] = None
+        observed_value_col_title: Optional[str] = None,
     ) -> "NewQbAttribute":
         columnar_data = pandas_input_to_columnar_optional_str(data)
         new_attribute_values_from_column = [
@@ -201,7 +199,7 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
             is_required=is_required,
             uri_safe_identifier_override=uri_safe_identifier_override,
             arbitrary_rdf=arbitrary_rdf,
-            observed_value_col_title=observed_value_col_title
+            observed_value_col_title=observed_value_col_title,
         )
 
     def validate_data(
@@ -221,7 +219,7 @@ class QbAttributeLiteral(QbAttribute, ABC):
     """
 
     data_type: str = field(repr=False)
-    
+
     @validator("data_type", pre=True, always=False)
     def data_type_value(cls, data_type):
         if data_type not in ACCEPTED_DATATYPE_MAPPING:

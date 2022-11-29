@@ -1,6 +1,7 @@
 from os import linesep
-from pandas import DataFrame
 from typing import Dict, List
+
+from pandas import DataFrame
 
 from csvcubed.models.csvcubedexception import FailedToConvertDataFrameToStringException
 
@@ -57,4 +58,3 @@ def get_printable_tabular_str_from_list(items: List[Dict], column_names=None) ->
     if output_str:
         return output_str
     raise FailedToConvertDataFrameToStringException()
-

@@ -5,18 +5,16 @@ JSON Utilities
 Utilities for working with JSON
 """
 import json
-import os.path
-from typing import Dict, Any, Union, Iterable, List
-from pathlib import Path
 import logging
-from urllib.parse import urlparse
+import os.path
 import re
+from pathlib import Path
+from typing import Dict, Any, Union, Iterable, List
+from urllib.parse import urlparse
 
-from jsonschema import RefResolver, RefResolutionError
+from jsonschema import RefResolver
 
 from csvcubed.utils.uri import looks_like_uri
-
-
 from .cache import session
 
 _logger = logging.getLogger(__name__)

@@ -1,15 +1,11 @@
-from datetime import timedelta
-import os
-from distutils.command.build import build
-from genericpath import exists
-from importlib.machinery import BuiltinImporter
-from tempfile import TemporaryDirectory
 from pathlib import Path
-from shutil import copy, rmtree
+from shutil import copy
+from tempfile import TemporaryDirectory
 
 import pytest
-from tests.unit.test_baseunit import get_test_cases_dir
+
 from tests.stress.metrics_converter import get_metrics
+from tests.unit.test_baseunit import get_test_cases_dir
 
 _stress_test_cases_dir = get_test_cases_dir() / "stress"
 

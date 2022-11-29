@@ -4,13 +4,12 @@ Dictionary
 
 Functions to help when working with dictionaries.
 """
+import json
 import logging
 from typing import Any, Optional, Callable, List, Dict
+
 import rdflib
-import json
-
 from csvcubedmodels.rdf.resource import NewResource
-
 
 _logger = logging.getLogger(__name__)
 

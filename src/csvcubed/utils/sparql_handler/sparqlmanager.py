@@ -14,6 +14,13 @@ import rdflib
 from rdflib import Literal, URIRef
 from rdflib.query import ResultRow
 
+from csvcubed.definitions import APP_ROOT_DIR_PATH
+from csvcubed.models.csvcubedexception import (
+    FailedToReadSparqlQueryException,
+    FeatureNotSupportedException,
+    InvalidNumberOfRecordsException,
+)
+from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import (
     CSVWTableSchemaFileDependenciesResult,
     CatalogMetadataResult,
@@ -49,15 +56,9 @@ from csvcubed.models.sparqlresults import (
     map_unit_col_about_value_urls_result,
 )
 from csvcubed.utils.sparql_handler.sparql import ask, select
-from csvcubed.models.csvcubedexception import (
-    FailedToReadSparqlQueryException,
-    FeatureNotSupportedException,
-    InvalidNumberOfRecordsException,
-)
-from csvcubed.definitions import APP_ROOT_DIR_PATH
-from csvcubed.models.cube.cube_shape import CubeShape
 
 _logger = logging.getLogger(__name__)
+
 
 class SPARQLQueryName(Enum):
     """

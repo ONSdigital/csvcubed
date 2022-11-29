@@ -13,15 +13,15 @@ import uritemplate
 from pydantic import validator
 
 from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_str
+from csvcubed.models.validationerror import ValidationError
 from csvcubed.utils.qb.validation.uri_safe import ensure_no_uri_safe_conflicts
+from .datastructuredefinition import QbColumnStructuralDefinition
 from .measure import (
     QbMeasure,
     NewQbMeasure,
     ExistingQbMeasure,
 )
 from .validationerrors import UndefinedMeasureUrisError
-from csvcubed.models.validationerror import ValidationError
-from .datastructuredefinition import QbColumnStructuralDefinition
 
 
 @dataclass
@@ -53,16 +53,14 @@ class QbMultiMeasureDimension(QbColumnStructuralDefinition):
     @staticmethod
     def new_measures_from_data(data: PandasDataTypes) -> "QbMultiMeasureDimension":
         columnar_data = pandas_input_to_columnar_str(data)
-        qb_measures: List[QbMeasure] = [NewQbMeasure(m) for m in sorted(set(columnar_data))]
-        return QbMultiMeasureDimension(
-            qb_measures
-        )
+        qb_measures: List[QbMeasure] = [
+            NewQbMeasure(m) for m in sorted(set(columnar_data))
+        ]
+        return QbMultiMeasureDimension(qb_measures)
 
     @staticmethod
     def existing_measures_from_data(
-        data: PandasDataTypes,
-        csvw_column_name: str,
-        csv_column_uri_template: str
+        data: PandasDataTypes, csvw_column_name: str, csv_column_uri_template: str
     ) -> "QbMultiMeasureDimension":
         columnar_data = pandas_input_to_columnar_str(data)
         return QbMultiMeasureDimension(
@@ -98,7 +96,7 @@ class QbMultiMeasureDimension(QbColumnStructuralDefinition):
                 uritemplate.expand(csv_column_uri_template, {csvw_column_name: s})
                 for s in unique_values
             }
-            
+
             expected_uris = set()
             for measure in self.measures:
                 if isinstance(measure, ExistingQbMeasure):

@@ -3,21 +3,24 @@ Inspect Dataframe query results
 -------------------------------
 """
 
+from dataclasses import dataclass
 from os import linesep
 from typing import Optional
-import pandas as pd
-from dataclasses import dataclass
 
+import pandas as pd
 from treelib import Tree
 
-from csvcubed.models.cube.cube_shape import CubeShape
-from csvcubed.models.csvwtype import CSVWType
 from csvcubed.models.csvcubedexception import FailedToConvertDataFrameToStringException
+from csvcubed.models.csvwtype import CSVWType
+from csvcubed.models.cube.cube_shape import CubeShape
 
 HIERARCHY_TREE_CONCEPTS_LIMIT = 100
 DATASET_HEAD_TAIL_LIMIT = 10
 
-def _get_printable_tabuler_str_from_dataframe(df: pd.DataFrame, column_names=None) -> str:
+
+def _get_printable_tabuler_str_from_dataframe(
+    df: pd.DataFrame, column_names=None
+) -> str:
     """
     Converts the given dataframe into a printable tabular.
 
@@ -31,6 +34,7 @@ def _get_printable_tabuler_str_from_dataframe(df: pd.DataFrame, column_names=Non
     if output_str:
         return output_str
     raise FailedToConvertDataFrameToStringException()
+
 
 @dataclass
 class DatasetObservationsInfoResult:

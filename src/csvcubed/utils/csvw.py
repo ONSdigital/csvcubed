@@ -6,14 +6,14 @@ Utils for working with CSV-Ws.
 """
 import json
 import logging
-from typing import Set, List, Union
 from pathlib import Path
+from typing import Set, List, Union
+
 from rdflib import Graph
 
+from csvcubed.utils.rdf import parse_graph_retain_relative
 from .json import load_json_document
 from .uri import looks_like_uri
-from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
-from csvcubed.utils.rdf import parse_graph_retain_relative
 
 _logger = logging.getLogger(__name__)
 

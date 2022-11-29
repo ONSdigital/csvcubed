@@ -13,6 +13,23 @@ from urllib.parse import urljoin
 import rdflib
 from pandas import DataFrame
 
+from csvcubed.cli.inspect.inspectdatasetmanager import (
+    get_concepts_hierarchy_info,
+    get_dataset_observations_info,
+    get_dataset_val_counts_info,
+    load_csv_to_dataframe,
+)
+from csvcubed.models.csvcubedexception import (
+    InputNotSupportedException,
+    UnsupportedNumOfPrimaryKeyColNamesException,
+)
+from csvcubed.models.csvwtype import CSVWType
+from csvcubed.models.cube.cube_shape import CubeShape
+from csvcubed.models.inspectdataframeresults import (
+    CodelistHierarchyInfoResult,
+    DatasetObservationsByMeasureUnitInfoResult,
+    DatasetObservationsInfoResult,
+)
 from csvcubed.models.sparqlresults import (
     CatalogMetadataResult,
     CodeListColsByDatasetUrlResult,
@@ -25,8 +42,15 @@ from csvcubed.models.sparqlresults import (
 )
 from csvcubed.utils.sparql_handler.code_list_state import CodeListState
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
+from csvcubed.utils.csvdataset import (
+    transform_dataset_to_canonical_shape,
+)
+from csvcubed.utils.skos.codelist import (
+    CodelistPropertyUrl,
+    get_codelist_col_title_by_property_url,
+    get_codelist_col_title_from_col_name,
+)
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
-from csvcubed.models.csvwtype import CSVWType
 from csvcubed.utils.sparql_handler.sparqlmanager import (
     select_codelist_cols_by_dataset_url,
     select_codelist_dataset_url,
@@ -38,31 +62,7 @@ from csvcubed.utils.sparql_handler.sparqlmanager import (
     select_dsd_code_list_and_cols,
     select_qb_dataset_url,
 )
-from csvcubed.cli.inspect.inspectdatasetmanager import (
-    get_concepts_hierarchy_info,
-    get_dataset_observations_info,
-    get_dataset_val_counts_info,
-    load_csv_to_dataframe,
-)
-from csvcubed.models.inspectdataframeresults import (
-    CodelistHierarchyInfoResult,
-    DatasetObservationsByMeasureUnitInfoResult,
-    DatasetObservationsInfoResult,
-)
-from csvcubed.utils.csvdataset import (
-    transform_dataset_to_canonical_shape,
-)
-from csvcubed.models.csvcubedexception import (
-    InputNotSupportedException,
-    UnsupportedNumOfPrimaryKeyColNamesException,
-)
-from csvcubed.utils.skos.codelist import (
-    CodelistPropertyUrl,
-    get_codelist_col_title_by_property_url,
-    get_codelist_col_title_from_col_name,
-)
 from csvcubed.utils.uri import looks_like_uri
-from csvcubed.models.cube.cube_shape import CubeShape
 
 
 @dataclass

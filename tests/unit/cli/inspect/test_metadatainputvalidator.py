@@ -4,13 +4,13 @@ from pathlib import Path
 import pytest
 
 from csvcubed.cli.inspect.metadatainputvalidator import MetadataValidator
+from csvcubed.models.csvwtype import CSVWType
+from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.utils.sparql_handler.sparqlmanager import (
     select_is_pivoted_shape_for_measures_in_data_set,
 )
 from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.unit.test_baseunit import get_test_cases_dir
-from csvcubed.models.cube.cube_shape import CubeShape
-from csvcubed.models.csvwtype import CSVWType
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
 
@@ -66,6 +66,7 @@ def test_detect_valid_csvw_metadata_datacube_relative_path():
     assert type == CSVWType.QbDataSet
     assert shape == CubeShape.Standard
 
+
 def test_detect_valid_csvw_metadata_codelist_input():
     """
     Should return the correct type and shape for the code list csv-w metadata input.
@@ -103,7 +104,10 @@ def test_detect_invalid_csvw_metadata_input():
 
     with pytest.raises(Exception) as exception:
         csvw_metadata_rdf_validator._detect_type()
-    assert str(exception.value) == f"The input metadata is invalid as it is not a data cube or a code list."
+    assert (
+        str(exception.value)
+        == f"The input metadata is invalid as it is not a data cube or a code list."
+    )
 
 
 def test_detect_type_datacube():
@@ -121,7 +125,9 @@ def test_detect_type_datacube():
         csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
 
-    (csvw_type, _) = csvw_metadata_rdf_validator.detect_type_and_shape(is_pivoted_measures)
+    (csvw_type, _) = csvw_metadata_rdf_validator.detect_type_and_shape(
+        is_pivoted_measures
+    )
 
     assert csvw_type == CSVWType.QbDataSet
 
@@ -141,9 +147,12 @@ def test_detect_type_codelist():
         csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
 
-    (csvw_type, _) = csvw_metadata_rdf_validator.detect_type_and_shape(is_pivoted_measures)
+    (csvw_type, _) = csvw_metadata_rdf_validator.detect_type_and_shape(
+        is_pivoted_measures
+    )
 
     assert csvw_type == CSVWType.CodeList
+
 
 def test_detect_csvw_shape_pivoted():
     """
@@ -164,7 +173,9 @@ def test_detect_csvw_shape_pivoted():
         csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
 
-    (_, cube_shape) = csvw_metadata_rdf_validator.detect_type_and_shape(is_pivoted_shape_measures)
+    (_, cube_shape) = csvw_metadata_rdf_validator.detect_type_and_shape(
+        is_pivoted_shape_measures
+    )
 
     assert cube_shape == CubeShape.Pivoted
 
@@ -187,6 +198,8 @@ def test_detect_csvw_shape_standard():
         csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
 
-    (_, cube_shape) = csvw_metadata_rdf_validator.detect_type_and_shape(is_pivoted_shape_measures)
+    (_, cube_shape) = csvw_metadata_rdf_validator.detect_type_and_shape(
+        is_pivoted_shape_measures
+    )
 
     assert cube_shape == CubeShape.Standard
