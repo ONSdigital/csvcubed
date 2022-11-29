@@ -7,5 +7,8 @@ on:
 
 jobs:
   Trigger_gss-utils_workflow:
+    name: Trigger_gss-utils_workflow
     runs-on: ubuntu-latest
-    runs: gh workflow run updateCsvcubedPackage.yaml --repo github.com/GSS-Cogs/gss-utils
+    steps:
+      - name: Trigger workflow
+        runs: gh workflow run updateCsvcubedPackage.yaml --repo github.com/GSS-Cogs/gss-utils
