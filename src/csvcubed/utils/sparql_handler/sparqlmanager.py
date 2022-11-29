@@ -6,7 +6,7 @@ Collection of SPARQL queries.
 """
 
 import logging
-from enum import Enum, auto
+from enum import Enum
 from pathlib import Path
 from typing import List, Optional
 
