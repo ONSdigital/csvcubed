@@ -1,0 +1,11 @@
+name: Trigger a workflow at gssutils that updates csvcubed package
+on:
+  # workflow_call:
+  push:
+    branches:
+      - 'MuazzamChaud/issue527'
+
+jobs:
+  Trigger_gss-utils_workflow:
+    uses: https://github.com/GSS-Cogs/gss-utils/blob/MuazzamChaud/issue527/.github/workflows/updateCsvcubedPackage.yaml
+    secrets: inherit
