@@ -5,6 +5,13 @@ on:
     branches:
       - 'MuazzamChaud/issue527'
 
+permissions:
+  contents: write
+  pull-requests: write 
+  issues: read
+  packages: none
+  repository-projects: write
+
 jobs:
   Trigger_gss-utils_workflow:
     name: Trigger_gss-utils_workflow
@@ -13,4 +20,4 @@ jobs:
       - name: Trigger workflow
         run: gh workflow run updateCsvcubedPackage.yaml --repo github.com/MuazzamChaud/gss-utils
         env:
-          GITHUB_TOKEN: ${{ GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
