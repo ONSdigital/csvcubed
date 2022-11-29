@@ -13,4 +13,5 @@ jobs:
       - name: Trigger workflow
         run: gh workflow run updateCsvcubedPackage.yaml --repo github.com/MuazzamChaud/gss-utils
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
