@@ -24,7 +24,6 @@ class DataCubeState:
     """
     Private cached properties.
     """
-
     @cached_property
     def _unit_col_about_value_urls(self) -> Dict[str, List[UnitColumnAboutValueUrlResult]]:
         """
@@ -52,6 +51,7 @@ class DataCubeState:
         results = select_col_titles_and_names(self.rdf_graph)
         assert len(results) > 0
         return {results[0].csv_url:results}
+
 
     """
     Public getters for the cached properties.

@@ -23,6 +23,7 @@ from csvcubed.models.sparqlresults import (
     PrimaryKeyColNamesByDatasetUrlResult,
     QubeComponentsResult,
 )
+from csvcubed.utils.sparql_handler.code_list_state import CodeListState
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.models.csvwtype import CSVWType
@@ -69,8 +70,8 @@ class MetadataPrinter:
     """
     This class produces the printables necessary for producing outputs to the CLI.
     """
-    data_cube_state: DataCubeState
-    
+    data_cube_state: Optional[DataCubeState]
+    code_list_state: Optional[CodeListState]
     csvw_type: CSVWType
     cube_shape: Optional[CubeShape]
     csvw_metadata_rdf_graph: rdflib.ConjunctiveGraph

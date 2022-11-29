@@ -92,7 +92,7 @@ def _generate_printables(
     """
     data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
     metadata_printer = MetadataPrinter(
-        data_cube_state, csvw_type, cube_shape, csvw_metadata_rdf_graph, csvw_metadata_json_path
+        data_cube_state, None, csvw_type, cube_shape, csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
 
     type_info_printable: str = metadata_printer.type_info_printable
