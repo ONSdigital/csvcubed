@@ -183,8 +183,8 @@ class MetadataPrinter:
             self.csvw_metadata_json_path,
         )
         
-        if self.cube_shape is None:  
-            raise ValueError("Cube shape cannot be None")
+        if self.cube_shape is None or self.data_cube_state is None:  
+            raise ValueError("Cube shape and/or data cube state cannot be None")
         (
             canonical_shape_dataset,
             measure_col,
