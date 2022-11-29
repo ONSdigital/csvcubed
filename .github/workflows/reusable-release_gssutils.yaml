@@ -10,9 +10,5 @@ jobs:
     name: Trigger_gss-utils_workflow
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout files
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
       - name: Trigger workflow
-        runs: gh workflow run updateCsvcubedPackage.yaml --repo github.com/GSS-Cogs/gss-utils
+        run: gh workflow run updateCsvcubedPackage.yaml --repo github.com/GSS-Cogs/gss-utils
