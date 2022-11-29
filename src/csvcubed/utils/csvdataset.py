@@ -52,7 +52,7 @@ def _create_unit_col_in_melted_data_set(
     """
     melted_df[col_name] = ""
     for idx, row in melted_df.iterrows():
-        obs_val_col_title = row["Observation Value"]
+        obs_val_col_title = str(row["Observation Value"])
 
         # Use the observation value col title to get the unit col's about url.
         filtered_obs_val_col_titles_about_urls = [
@@ -120,7 +120,7 @@ def _create_measure_col_in_melted_data_set(
     # Adding the Measure column into the melted data set.
     melted_df[col_name] = ""
     for idx, row in melted_df.iterrows():
-        obs_val_col_title = row["Observation Value"]
+        obs_val_col_title = str(row["Observation Value"])
         filtered_measure_components = filter_components_from_dsd(
             measure_components, ComponentField.CsvColumnTitle, obs_val_col_title
         )
