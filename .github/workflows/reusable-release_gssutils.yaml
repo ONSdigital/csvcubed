@@ -11,6 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Trigger workflow
-        run: gh workflow run updateCsvcubedPackage.yaml --repo https://github.com/GSS-Cogs/gss-utils
+        run: gh workflow run updateCsvcubedPackage.yaml --repo https://github.com/GSS-Cogs/gss-utils/tree/MuazzamChaud/issue527
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
