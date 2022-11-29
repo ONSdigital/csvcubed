@@ -23,6 +23,8 @@ WHERE {
     ?observedValueColumn csvw:propertyUrl ?observedValueColumnPropertyUrl.
     FILTER (str(?observedValueColumnPropertyUrl) IN (str("http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"^^csvw:uriTemplate))).
 
-    ?observedValueColumn csvw:aboutUrl ?aboutUrl;
-                         csvw:valueUrl ?valueUrl.
+    OPTIONAL{
+        ?observedValueColumn csvw:aboutUrl ?aboutUrl.
+    }
+    ?observedValueColumn csvw:valueUrl ?valueUrl.
 }

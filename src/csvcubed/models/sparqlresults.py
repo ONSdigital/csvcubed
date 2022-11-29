@@ -290,7 +290,7 @@ class UnitColumnAboutValueUrlResult:
     Model representing the About URL and Value URL of the unit column
     """
     csv_url: str
-    about_url: str
+    about_url: Optional[str]
     value_url: str
 
 @dataclass
@@ -300,7 +300,7 @@ class ObservationValueColumnTitleAboutUrlResult:
     """
     csv_url: str
     observation_value_col_title: str
-    observation_value_col_about_url: str
+    observation_value_col_about_url: Optional[str]
 
 @dataclass
 class ColTitlesAndNamesResult:
@@ -709,7 +709,7 @@ def map_unit_col_about_value_urls_result(
     def map_row(row_result: Dict[str, Any]) -> UnitColumnAboutValueUrlResult:
         return UnitColumnAboutValueUrlResult(
             csv_url=str(row_result["csvUrl"]),
-            about_url=str(row_result["aboutUrl"]),
+            about_url=none_or_map(row_result.get("aboutUrl"), str),
             value_url=str(row_result["valueUrl"])
         )
     return [map_row(row.asdict()) for row in sparql_results]
@@ -725,7 +725,7 @@ def map_observation_value_col_title_and_about_url_result(
         return ObservationValueColumnTitleAboutUrlResult(
             csv_url=str(row_result["csvUrl"]),
             observation_value_col_title=str(row_result["observationValueColumnTitle"]),
-            observation_value_col_about_url=str(row_result["observationValueColumnAboutUrl"])
+            observation_value_col_about_url=none_or_map(row_result.get("observationValueColumnAboutUrl"), str)
         )
     return [map_row(row.asdict()) for row in sparql_results]
 

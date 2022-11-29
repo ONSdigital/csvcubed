@@ -319,7 +319,7 @@ Feature: Behaviour testing of csvcubed inspect.
         - The data cube has the following value counts:
             - Value counts broken-down by measure and unit (of measure):
                        Measure                                          Unit  Count
-        gas emissions(gwp-ar4) millions of tonnes of carbon dioxide (mt co2)  41508
+        gas emissions(gwp-ar4) final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#unit/millions-of-tonnes-of-carbon-dioxide-mt-co2  41508
         """
 
     Scenario: inspect should produce the expected printable for data cube metadata json-ld input of type single-unit multi-measure.

@@ -75,7 +75,7 @@ def _create_unit_col_in_melted_data_set(
         ]
         if len(filtered_unit_col_about_urls_value_urls) != 1:
             raise InvalidNumOfValUrlsForAboutUrlException(
-                about_url=about_url,
+                about_url=about_url or "None",
                 num_of_value_urls=len(filtered_unit_col_about_urls_value_urls),
             )
         unit_col_about_url_value_url = filtered_unit_col_about_urls_value_urls[0]
