@@ -19,6 +19,7 @@ from csvcubed.models.sparqlresults import (
 )
 from csvcubed.utils.iterables import first
 from csvcubed.utils.qb.components import ComponentPropertyType
+from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
 from csvcubed.utils.sparql_handler.sparqlmanager import select_is_pivoted_shape_for_measures_in_data_set
 from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.unit.cli.inspect.test_inspectdatasetmanager import (
@@ -80,7 +81,9 @@ def step_impl(context):
 
 @When("the Printables for data cube are generated")
 def step_impl(context):
+    data_cube_state = DataCubeState(context.csvw_metadata_rdf_graph)
     metadata_printer = MetadataPrinter(
+        data_cube_state,
         context.csvw_type,
         context.cube_shape,
         context.csvw_metadata_rdf_graph,
