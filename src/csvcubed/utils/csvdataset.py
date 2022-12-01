@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import List, Optional, Tuple, Dict, Any
 from uuid import uuid1
 import uritemplate
+from uritemplate.orderedset import OrderedSet
 
 import pandas as pd
 import rdflib
@@ -38,6 +39,33 @@ from csvcubed.utils.sparql_handler.sparqlmanager import (
 )
 from csvcubed.models.sparqlresults import QubeComponentResult
 from csvcubed.utils.sparql_handler.sparqlmanager import select_single_unit_from_dsd
+
+
+def _generate_unit_value_url_from_template(
+    unit_val_url_variable_names: OrderedSet,
+    col_names_col_titles: List[ColTitlesAndNamesResult],
+    unit_col_value_url: str,
+    record: pd.Series,
+):
+    """
+    Generates the unit column value url from the template.
+    """
+    col_name_value_map: Dict[str, Any] = {}
+    for unit_val_url_variable_name in unit_val_url_variable_names:
+        filtered_col_names_titles = [
+            col_name_col_title
+            for col_name_col_title in col_names_col_titles
+            if col_name_col_title.column_name == unit_val_url_variable_name
+        ]
+        if len(filtered_col_names_titles) != 1:
+            raise InvalidNumOfColsForColNameException(
+                column_name=unit_val_url_variable_name,
+                num_of_cols=len(filtered_col_names_titles),
+            )
+        col_title = filtered_col_names_titles[0].column_title
+        col_name_value_map[unit_val_url_variable_name] = record[col_title]
+
+    return uritemplate.expand(unit_col_value_url, col_name_value_map)
 
 
 def _create_unit_col_in_melted_data_set(
@@ -90,29 +118,19 @@ def _create_unit_col_in_melted_data_set(
             melted_df.loc[idx, col_name] = unit_col_value_url
         else:
             # If there are variable names, identify the column titles for the variable names and generate the unit value url, and set it as the unit.
-            col_name_value_map: Dict[str, Any] = {}
-            for unit_val_url_variable_name in unit_val_url_variable_names:
-                filtered_col_names_titles = [
-                    col_name_col_title
-                    for col_name_col_title in col_names_col_titles
-                    if col_name_col_title.column_name == unit_val_url_variable_name
-                ]
-                if len(filtered_col_names_titles) != 1:
-                    raise InvalidNumOfColsForColNameException(
-                        column_name=unit_val_url_variable_name,
-                        num_of_cols=len(filtered_col_names_titles),
-                    )
-                col_title = filtered_col_names_titles[0].column_title
-                col_name_value_map[unit_val_url_variable_name] = row[col_title]
-
-            processed_unit_value_url = uritemplate.expand(
-                unit_col_value_url, col_name_value_map
+            processed_unit_value_url = _generate_unit_value_url_from_template(
+                unit_val_url_variable_names,
+                col_names_col_titles,
+                unit_col_value_url,
+                row,
             )
             melted_df.loc[idx, col_name] = processed_unit_value_url
 
 
 def _create_measure_col_in_melted_data_set(
-    col_name: str, melted_df: pd.DataFrame, measure_components: List[QubeComponentResult]
+    col_name: str,
+    melted_df: pd.DataFrame,
+    measure_components: List[QubeComponentResult],
 ):
     """
     Associates the relevant measure information with each observation value
@@ -201,7 +219,9 @@ def transform_dataset_to_canonical_shape(
         measure_col = get_standard_shape_measure_col_name_from_dsd(qube_components)
         if measure_col is None:
             measure_col = f"Measure_{str(uuid1())}"
-            result = get_single_measure_from_dsd(qube_components, csvw_metadata_json_path)
+            result = get_single_measure_from_dsd(
+                qube_components, csvw_metadata_json_path
+            )
             canonical_shape_dataset[measure_col] = (
                 result.measure_label
                 if result.measure_label is not None
@@ -209,8 +229,14 @@ def transform_dataset_to_canonical_shape(
             )
     else:
         # In pivoted shape
-        if unit_col_about_urls_value_urls is None or obs_val_col_titles_about_urls is None or col_names_col_titles is None:
-            raise ValueError("Sparql results for unit_col_about_urls_value_urls, obs_val_col_titles_about_urls and col_names_col_titles cannot be none.")
+        if (
+            unit_col_about_urls_value_urls is None
+            or obs_val_col_titles_about_urls is None
+            or col_names_col_titles is None
+        ):
+            raise ValueError(
+                "Sparql results for unit_col_about_urls_value_urls, obs_val_col_titles_about_urls and col_names_col_titles cannot be none."
+            )
 
         measure_components = filter_components_from_dsd(
             qube_components,
@@ -221,7 +247,9 @@ def transform_dataset_to_canonical_shape(
 
         measure_col = f"Measure_{str(uuid1())}"
         unit_col = f"Unit_{str(uuid1())}"
-        _create_measure_col_in_melted_data_set(measure_col, melted_df, measure_components)
+        _create_measure_col_in_melted_data_set(
+            measure_col, melted_df, measure_components
+        )
         _create_unit_col_in_melted_data_set(
             unit_col,
             melted_df,
@@ -230,6 +258,6 @@ def transform_dataset_to_canonical_shape(
             col_names_col_titles,
         )
 
-        canonical_shape_dataset = melted_df.drop("Observation Value", axis=1)    
+        canonical_shape_dataset = melted_df.drop("Observation Value", axis=1)
 
     return (canonical_shape_dataset, measure_col, unit_col)
