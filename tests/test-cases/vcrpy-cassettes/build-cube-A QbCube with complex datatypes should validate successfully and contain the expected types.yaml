@@ -65,7 +65,7 @@ interactions:
       content-type:
       - text/html; charset=utf-8
       date:
-      - Tue, 29 Nov 2022 16:52:53 GMT
+      - Tue, 22 Nov 2022 14:42:31 GMT
       location:
       - https://raw.githubusercontent.com/GSS-Cogs/reusable-rdf-resources/main/code-lists.json
       server:
@@ -111,13 +111,13 @@ interactions:
       Content-Type:
       - text/plain; charset=utf-8
       Date:
-      - Tue, 29 Nov 2022 16:52:53 GMT
+      - Tue, 22 Nov 2022 14:42:31 GMT
       ETag:
       - W/"5d98e347bb4b48a18824aaaf31821122285847cddc22718361989a187f963577"
       Expires:
-      - Tue, 29 Nov 2022 16:57:53 GMT
+      - Tue, 22 Nov 2022 14:47:31 GMT
       Source-Age:
-      - '150'
+      - '289'
       Strict-Transport-Security:
       - max-age=31536000
       Vary:
@@ -131,15 +131,15 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Fastly-Request-ID:
-      - 88dd212f516ef44239a981ffc046f58a58492993
+      - bf007cba0392801fe3098c0d5454875ca98153f5
       X-Frame-Options:
       - deny
       X-GitHub-Request-Id:
-      - 3B88:100E:F0C55:FB76E:63863478
+      - 3A1E:74B9:62FFFC:68A9A3:637CDEB5
       X-Served-By:
-      - cache-lhr7384-LHR
+      - cache-lcy-eglc8600053-LCY
       X-Timer:
-      - S1669740774.985919,VS0,VE1
+      - S1669128151.206055,VS0,VE1
       X-XSS-Protection:
       - 1; mode=block
     status:
@@ -187,7 +187,7 @@ interactions:
       content-type:
       - text/html; charset=utf-8
       date:
-      - Tue, 29 Nov 2022 16:52:56 GMT
+      - Tue, 22 Nov 2022 14:42:31 GMT
       location:
       - https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/src/csvcubed/schema/codelist-config/v1_1/schema.json
       server:
@@ -251,13 +251,13 @@ interactions:
       Content-Type:
       - text/plain; charset=utf-8
       Date:
-      - Tue, 29 Nov 2022 16:52:56 GMT
+      - Tue, 22 Nov 2022 14:42:32 GMT
       ETag:
       - W/"f58600e567f59e279a956de20b9455d9b890b4bf43861015943b6928eb8990fe"
       Expires:
-      - Tue, 29 Nov 2022 16:57:56 GMT
+      - Tue, 22 Nov 2022 14:47:32 GMT
       Source-Age:
-      - '150'
+      - '289'
       Strict-Transport-Security:
       - max-age=31536000
       Vary:
@@ -271,15 +271,15 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Fastly-Request-ID:
-      - 2b40ad14220cb6627931d72cdbd9b3a906eb7b74
+      - 23b5285074534f8aefc26d3cd87761a73eddc39f
       X-Frame-Options:
       - deny
       X-GitHub-Request-Id:
-      - C738:44ED:379B9B:3B572B:6386347A
+      - 31A6:B52C:662297:6BDC43:637CDEB6
       X-Served-By:
-      - cache-lhr7369-LHR
+      - cache-lcy-eglc8600058-LCY
       X-Timer:
-      - S1669740776.179661,VS0,VE1
+      - S1669128152.150286,VS0,VE0
       X-XSS-Protection:
       - 1; mode=block
     status:

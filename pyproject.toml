@@ -29,6 +29,9 @@ csvcubed-devtools = "0.1.8"
 requests-mock = "~1.9.3"
 pytest-vcr = "~1.0.2"
 pytest-timeout = "^2.1.0"
+mkdocs = "1.4.2"
+mkdocs-material = "8.5.7"
+mkdocs-mermaid2-plugin = "0.6.0"
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
