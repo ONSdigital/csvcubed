@@ -54,7 +54,7 @@ def _materialise_unit_uri_for_row(
     col_name_value_map: Dict[str, Any] = {}
     for unit_val_url_variable_name in unit_val_url_variable_names:
         col_name_col_title = first(
-            col_names_col_titles, lambda o: o.column_name == unit_val_url_variable_name
+            col_names_col_titles, lambda u: u.column_name == unit_val_url_variable_name
         )
 
         if col_name_col_title:      
