@@ -63,9 +63,12 @@ def assert_dsd_component_equal(
     assert component.property_type == property_type.value
     assert component.property_label == property_label
     assert component.csv_col_title == csv_col_title
-    assert component.observation_value_column_titles == observation_value_column_titles
     assert component.required == required
-
+    
+    if observation_value_column_titles is not None and len(observation_value_column_titles) > 0:
+        expected_obs_val_col_titles = [title.strip() for title in observation_value_column_titles.split(',')]
+        actual_obs_val_col_titles = [title.strip() for title in component.observation_value_column_titles.split(',')]
+        assert len(expected_obs_val_col_titles) == len(actual_obs_val_col_titles) and sorted(expected_obs_val_col_titles) == sorted(actual_obs_val_col_titles)
 
 def _assert_code_list_column_equal(
     column: CodelistColumnResult,
@@ -366,7 +369,7 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
         ComponentPropertyType.Dimension,
         "Some Dimension",
         "Some Dimension",
-        "Some Obs Val, Some Other Obs Val",
+        "Some Other Obs Val,Some Obs Val",
         True,
     )
 
