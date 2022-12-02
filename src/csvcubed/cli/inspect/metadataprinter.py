@@ -191,13 +191,12 @@ class MetadataPrinter:
             measure_col,
             unit_col,
         ) = transform_dataset_to_canonical_shape(
+            self.data_cube_state,
             self.cube_shape,
             self.dataset,
             self.result_qube_components.qube_components,
+            self.dataset_url,
             self.result_dataset_label_dsd_uri.dsd_uri,
-            self.data_cube_state.get_unit_col_about_value_urls_for_csv(self.dataset_url) if self.cube_shape == CubeShape.Pivoted else None,
-            self.data_cube_state.get_obs_val_col_title_about_url_for_csv(self.dataset_url)  if self.cube_shape == CubeShape.Pivoted else None,
-            self.data_cube_state.get_col_name_col_title_for_csv(self.dataset_url)  if self.cube_shape == CubeShape.Pivoted else None,
             self.csvw_metadata_rdf_graph,
             self.csvw_metadata_json_path,
         )
@@ -240,8 +239,6 @@ class MetadataPrinter:
         )
 
     def __post_init__(self):
-        self.data_cube_state = DataCubeState(self.csvw_metadata_rdf_graph)
-
         self.generate_general_results()
         if self.csvw_type == CSVWType.QbDataSet:
             self.get_datacube_results()

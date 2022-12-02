@@ -546,22 +546,23 @@ def test_get_val_counts_info_multi_unit_multi_measure_dataset():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
+    data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
 
     (dataset, qube_components, dsd_uri, _) = get_arguments_qb_dataset(
         CubeShape.Pivoted, csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
+
     (
         canonical_shape_dataset,
         measure_col,
         unit_col,
     ) = transform_dataset_to_canonical_shape(
+        data_cube_state,
         CubeShape.Standard,
         dataset,
         qube_components,
+        None,
         dsd_uri,
-        None,
-        None,
-        None,
         csvw_metadata_rdf_graph,
         csvw_metadata_json_path,
     )
@@ -596,6 +597,7 @@ def test_get_val_counts_info_multi_unit_single_measure_dataset():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
+    data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
 
     (dataset, qube_components, dsd_uri, _) = get_arguments_qb_dataset(
         CubeShape.Standard, csvw_metadata_rdf_graph, csvw_metadata_json_path
@@ -605,13 +607,12 @@ def test_get_val_counts_info_multi_unit_single_measure_dataset():
         measure_col,
         unit_col,
     ) = transform_dataset_to_canonical_shape(
+        data_cube_state,
         CubeShape.Standard,
         dataset,
         qube_components,
+        None,
         dsd_uri,
-        None,
-        None,
-        None,
         csvw_metadata_rdf_graph,
         csvw_metadata_json_path,
     )
@@ -646,6 +647,7 @@ def test_get_val_counts_info_single_unit_multi_measure_dataset():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
+    data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
 
     (dataset, qube_components, dsd_uri, _) = get_arguments_qb_dataset(
         CubeShape.Standard, csvw_metadata_rdf_graph, csvw_metadata_json_path
@@ -655,13 +657,12 @@ def test_get_val_counts_info_single_unit_multi_measure_dataset():
         measure_col,
         unit_col,
     ) = transform_dataset_to_canonical_shape(
+        data_cube_state,
         CubeShape.Standard,
         dataset,
         qube_components,
+        None,
         dsd_uri,
-        None,
-        None,
-        None,
         csvw_metadata_rdf_graph,
         csvw_metadata_json_path,
     )
@@ -696,6 +697,7 @@ def test_get_val_counts_info_single_unit_single_measure_dataset():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
+    data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
 
     (dataset, qube_components, dsd_uri, _) = get_arguments_qb_dataset(
         CubeShape.Standard, csvw_metadata_rdf_graph, csvw_metadata_json_path
@@ -705,13 +707,12 @@ def test_get_val_counts_info_single_unit_single_measure_dataset():
         measure_col,
         unit_col,
     ) = transform_dataset_to_canonical_shape(
+        data_cube_state,
         CubeShape.Standard,
         dataset,
         qube_components,
+        None,
         dsd_uri,
-        None,
-        None,
-        None,
         csvw_metadata_rdf_graph,
         csvw_metadata_json_path,
     )
@@ -745,7 +746,6 @@ def test_get_val_counts_info_pivoted_single_measure_dataset():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-
     data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
     
     data_set_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
@@ -764,13 +764,12 @@ def test_get_val_counts_info_pivoted_single_measure_dataset():
         measure_col,
         unit_col,
     ) = transform_dataset_to_canonical_shape(
+        data_cube_state,
         CubeShape.Pivoted,
         dataset,
         qube_components,
+        data_set_url,
         dsd_uri,
-        data_cube_state.get_unit_col_about_value_urls_for_csv(data_set_url),
-        data_cube_state.get_obs_val_col_title_about_url_for_csv(data_set_url),
-        data_cube_state.get_col_name_col_title_for_csv(data_set_url),
         csvw_metadata_rdf_graph,
         csvw_metadata_json_path,
     )
@@ -804,7 +803,6 @@ def test_get_val_counts_info_pivoted_multi_measure_dataset():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-
     data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
     
     data_set_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
@@ -823,13 +821,12 @@ def test_get_val_counts_info_pivoted_multi_measure_dataset():
         measure_col,
         unit_col,
     ) = transform_dataset_to_canonical_shape(
+        data_cube_state,
         CubeShape.Pivoted,
         dataset,
         qube_components,
+        data_set_url,
         dsd_uri,
-        data_cube_state.get_unit_col_about_value_urls_for_csv(data_set_url),
-        data_cube_state.get_obs_val_col_title_about_url_for_csv(data_set_url),
-        data_cube_state.get_col_name_col_title_for_csv(data_set_url),
         csvw_metadata_rdf_graph,
         csvw_metadata_json_path,
     )

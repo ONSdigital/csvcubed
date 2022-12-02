@@ -20,6 +20,7 @@ from csvcubed.models.csvcubedexception import FailedToLoadRDFGraphException
 from csvcubed.models.csvwtype import CSVWType
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
+from csvcubed.utils.sparql_handler.code_list_state import CodeListState
 from csvcubed.utils.sparql_handler.sparqlmanager import (
     select_is_pivoted_shape_for_measures_in_data_set,
 )
@@ -92,10 +93,28 @@ def _generate_printables(
 
     :return: `Tuple[str, str, str, str, str]` - printables of metadata information.
     """
-    data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
-    metadata_printer = MetadataPrinter(
-        data_cube_state, None, csvw_type, cube_shape, csvw_metadata_rdf_graph, csvw_metadata_json_path
-    )
+    metadata_printer: MetadataPrinter
+
+    if csvw_type == CSVWType.QbDataSet:
+        data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
+        metadata_printer = MetadataPrinter(
+            data_cube_state=data_cube_state,
+            code_list_state=None,
+            csvw_type=csvw_type,
+            cube_shape=cube_shape,
+            csvw_metadata_rdf_graph=csvw_metadata_rdf_graph,
+            csvw_metadata_json_path=csvw_metadata_json_path,
+        )
+    else:
+        code_list_state = CodeListState(csvw_metadata_rdf_graph)
+        metadata_printer = MetadataPrinter(
+            data_cube_state=None,
+            code_list_state=code_list_state,
+            csvw_type=csvw_type,
+            cube_shape=cube_shape,
+            csvw_metadata_rdf_graph=csvw_metadata_rdf_graph,
+            csvw_metadata_json_path=csvw_metadata_json_path,
+        )
 
     type_info_printable: str = metadata_printer.type_info_printable
     catalog_metadata_printable: str = metadata_printer.catalog_metadata_printable

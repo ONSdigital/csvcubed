@@ -66,8 +66,6 @@ class CsvcubedExceptionMsges(Enum):
 
     InvalidNumOfValUrlsForAboutUrl = "There should be only 1 value url for the about url '{about_url}', but found {num_of_value_urls}."
 
-    InvalidNumOfColsForColName = "There should be only 1 column for the column name '{column_name}', but found {num_of_cols}."
-
     InvalidNumOfDSDComponentsForObsValColTitle = "There should be only 1 component for the observation value column with title '{obs_val_col_title}', but found {num_of_components}."
 
 class CsvcubedExceptionUrls(Enum):
@@ -121,8 +119,6 @@ class CsvcubedExceptionUrls(Enum):
 
     InvalidNumOfValUrlsForAboutUrl = "http://purl.org/csv-cubed/err/invalid-num-of-value-urls-for-about-url"
     
-    InvalidNumOfColsForColName = "http://purl.org/csv-cubed/err/invalid-num-of-cols-for-col-name"
-
     InvalidNumOfDSDComponentsForObsValColTitle = "http://purl.org/csv-cubed/err/invalid-num-of-dsd-comps-for-obs-val-col"
 
 class CsvcubedException(Exception, HasErrorUrl, ABC):
@@ -398,21 +394,6 @@ class InvalidNumOfValUrlsForAboutUrlException(CsvcubedException):
     @classmethod
     def get_error_url(cls) -> str:
         return CsvcubedExceptionUrls.InvalidNumOfValUrlsForAboutUrl.value
-
-class InvalidNumOfColsForColNameException(CsvcubedException):
-    """Class representing the InvalidNumOfColsForColNameException model."""
-
-    def __init__(self, column_name: str, num_of_cols: int):
-        super().__init__(
-            CsvcubedExceptionMsges.InvalidNumOfColsForColName.value.format(
-                column_name=column_name,
-                num_of_cols=num_of_cols
-            ) 
-        )
-
-    @classmethod
-    def get_error_url(cls) -> str:
-        return CsvcubedExceptionUrls.InvalidNumOfColsForColName.value
 
 class InvalidNumOfDSDComponentsForObsValColTitleException(CsvcubedException):
     """Class representing the InvalidNumOfDSDComponentsForObsValColTitleException model."""

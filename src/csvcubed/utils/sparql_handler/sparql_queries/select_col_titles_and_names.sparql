@@ -9,7 +9,7 @@ WHERE {
     OPTIONAL{
         ?column csvw:title ?columnTitle.
     }
-    OPTIONAL{
-        ?column csvw:name ?columnName.
-    }
+    
+    ?column csvw:name ?columnName.
+    
 }

@@ -501,7 +501,8 @@ def test_transform_to_canonical_shape_for_standard_shape_data_set():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-
+    data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
+    
     (dataset, qube_components, dsd_uri, _) = get_arguments_qb_dataset(
         CubeShape.Standard, csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
@@ -510,13 +511,12 @@ def test_transform_to_canonical_shape_for_standard_shape_data_set():
         measure_col,
         unit_col,
     ) = transform_dataset_to_canonical_shape(
+        data_cube_state,
         CubeShape.Standard,
         dataset,
         qube_components,
+        None,
         dsd_uri,
-        None,
-        None,
-        None,
         csvw_metadata_rdf_graph,
         csvw_metadata_json_path,
     )
@@ -548,20 +548,19 @@ def test_transform_to_canonical_shape_for_pivoted_single_measure_shape_data_set(
         select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri,
     csvw_metadata_json_path,
     )
-    dataset_url = select_qb_dataset_url(csvw_metadata_rdf_graph, dataset_uri).dataset_url
+    data_set_url = select_qb_dataset_url(csvw_metadata_rdf_graph, dataset_uri).dataset_url
 
     (
         canonical_shape_dataset,
         measure_col,
         unit_col,
     ) = transform_dataset_to_canonical_shape(
+        data_cube_state,
         CubeShape.Pivoted,
         dataset,
         qube_components,
+        data_set_url,
         dsd_uri,
-        data_cube_state.get_unit_col_about_value_urls_for_csv(dataset_url),
-        data_cube_state.get_obs_val_col_title_about_url_for_csv(dataset_url),
-        data_cube_state.get_col_name_col_title_for_csv(dataset_url),
         csvw_metadata_rdf_graph,
         csvw_metadata_json_path,
     )
@@ -613,13 +612,12 @@ def test_transform_to_canonical_shape_for_pivoted_multi_measure_shape_data_set()
         measure_col,
         unit_col,
     ) = transform_dataset_to_canonical_shape(
+        data_cube_state,
         CubeShape.Pivoted,
         dataset,
         qube_components,
+        dataset_url,
         dsd_uri,
-        data_cube_state.get_unit_col_about_value_urls_for_csv(dataset_url),
-        data_cube_state.get_obs_val_col_title_about_url_for_csv(dataset_url),
-        data_cube_state.get_col_name_col_title_for_csv(dataset_url),
         csvw_metadata_rdf_graph,
         csvw_metadata_json_path,
     )

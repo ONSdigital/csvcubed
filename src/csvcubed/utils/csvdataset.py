@@ -15,7 +15,6 @@ import pandas as pd
 import rdflib
 
 from csvcubed.models.csvcubedexception import (
-    InvalidNumOfColsForColNameException,
     InvalidNumOfDSDComponentsForObsValColTitleException,
     InvalidNumOfUnitColsForObsValColTitleException,
     InvalidNumOfValUrlsForAboutUrlException,
@@ -33,6 +32,7 @@ from csvcubed.cli.inspect.inspectdatasetmanager import (
     get_standard_shape_measure_col_name_from_dsd,
     get_standard_shape_unit_col_name_from_dsd,
 )
+from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
 from csvcubed.utils.sparql_handler.sparqlmanager import (
     CubeShape,
     select_single_unit_from_dsd,
@@ -57,11 +57,6 @@ def _generate_unit_value_url_from_template(
             for col_name_col_title in col_names_col_titles
             if col_name_col_title.column_name == unit_val_url_variable_name
         ]
-        if len(filtered_col_names_titles) != 1:
-            raise InvalidNumOfColsForColNameException(
-                column_name=unit_val_url_variable_name,
-                num_of_cols=len(filtered_col_names_titles),
-            )
         col_title = filtered_col_names_titles[0].column_title
         col_name_value_map[unit_val_url_variable_name] = record[col_title]
 
@@ -181,15 +176,12 @@ def _melt_data_set(
 
 
 def transform_dataset_to_canonical_shape(
+    data_cube_state: DataCubeState,
     cube_shape: CubeShape,
     dataset: pd.DataFrame,
     qube_components: List[QubeComponentResult],
+    dataset_url: Optional[str],
     dataset_uri: str,
-    unit_col_about_urls_value_urls: Optional[List[UnitColumnAboutValueUrlResult]],
-    obs_val_col_titles_about_urls: Optional[
-        List[ObservationValueColumnTitleAboutUrlResult]
-    ],
-    col_names_col_titles: Optional[List[ColTitlesAndNamesResult]],
     csvw_metadata_rdf_graph: rdflib.ConjunctiveGraph,
     csvw_metadata_json_path: Path,
 ) -> Tuple[pd.DataFrame, str, str]:
@@ -229,14 +221,20 @@ def transform_dataset_to_canonical_shape(
             )
     else:
         # In pivoted shape
-        if (
-            unit_col_about_urls_value_urls is None
-            or obs_val_col_titles_about_urls is None
-            or col_names_col_titles is None
-        ):
+        if dataset_url is None:
             raise ValueError(
-                "Sparql results for unit_col_about_urls_value_urls, obs_val_col_titles_about_urls and col_names_col_titles cannot be none."
+                "data_set_url cannot be None."
             )
+
+        unit_col_about_urls_value_urls = (
+            data_cube_state.get_unit_col_about_value_urls_for_csv(dataset_url)
+        )
+        obs_val_col_titles_about_urls = (
+            data_cube_state.get_obs_val_col_title_about_url_for_csv(dataset_url)
+        )
+        col_names_col_titles = data_cube_state.get_col_name_col_title_for_csv(
+            dataset_url
+        )
 
         measure_components = filter_components_from_dsd(
             qube_components,
