@@ -287,7 +287,11 @@ def _validate_pivoted_shape_cube(
         measure_column_titles: List[str] = [
             title.csv_column_title for title in multi_measure_columns
         ]
-        errors.append(PivotedShapeMeasureColumnsExistError(measure_column_titles))
+        errors.append(
+            PivotedShapeMeasureColumnsExistError(
+                measure_col_titles=measure_column_titles
+            )
+        )
 
     defined_col_names = {col.csv_column_title for col in cube.columns}
 
