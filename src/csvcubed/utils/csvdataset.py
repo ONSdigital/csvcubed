@@ -91,6 +91,7 @@ def _create_unit_col_in_melted_data_set_for_pivoted_shape(
         observation_uri = obs_val_col_title_about_url.observation_value_col_about_url
 
         # Use the unit col's about url to get the unit col's value url.
+        # N.B., for a old-style single measure pivoted shape, the following filter still works as the about url and observation uri are both None (i.e. equal).
         unit_col_about_url_value_url = first(
             unit_col_about_urls_value_urls,  lambda u: u.about_url == observation_uri
         )
