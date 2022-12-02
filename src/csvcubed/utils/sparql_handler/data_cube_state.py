@@ -35,7 +35,7 @@ class DataCubeState:
         return val
 
     @cached_property
-    def _obs_val_col_title_about_url(self) -> Dict[str, List[ObservationValueColumnTitleAboutUrlResult]]:
+    def _obs_val_col_titles_about_urls(self) -> Dict[str, List[ObservationValueColumnTitleAboutUrlResult]]:
         """
         Queries and caches observation value column titles and about urls.
         """
@@ -44,7 +44,7 @@ class DataCubeState:
         return {results[0].csv_url:results}
 
     @cached_property
-    def _col_name_col_title(self) -> Dict[str, List[ColTitlesAndNamesResult]]:
+    def _col_names_col_titles(self) -> Dict[str, List[ColTitlesAndNamesResult]]:
         """
         Queries and caches column names and titles.
         """
@@ -63,16 +63,16 @@ class DataCubeState:
         value: List[UnitColumnAboutValueUrlResult] = self._get_value_for_key(csv_url, self._unit_col_about_value_urls)
         return value
 
-    def get_obs_val_col_title_about_url_for_csv(self, csv_url: str) -> List[ObservationValueColumnTitleAboutUrlResult]:
+    def get_obs_val_col_titles_about_urls_for_csv(self, csv_url: str) -> List[ObservationValueColumnTitleAboutUrlResult]:
         """
-        Getter for _obs_val_col_title_about_url cached property.
+        Getter for _obs_val_col_titles_about_urls cached property.
         """
-        value: List[ObservationValueColumnTitleAboutUrlResult] = self._get_value_for_key(csv_url, self._obs_val_col_title_about_url)
+        value: List[ObservationValueColumnTitleAboutUrlResult] = self._get_value_for_key(csv_url, self._obs_val_col_titles_about_urls)
         return value
 
     def get_col_name_col_title_for_csv(self, csv_url: str) -> List[ColTitlesAndNamesResult]:
         """
-        Getter for _col_name_col_title cached property.
+        Getter for _col_names_col_titles cached property.
         """
-        value: List[ColTitlesAndNamesResult] = self._get_value_for_key(csv_url, self._col_name_col_title)
+        value: List[ColTitlesAndNamesResult] = self._get_value_for_key(csv_url, self._col_names_col_titles)
         return value

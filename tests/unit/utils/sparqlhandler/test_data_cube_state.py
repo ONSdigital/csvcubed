@@ -99,7 +99,7 @@ def test_get_obs_val_col_title_about_url_for_csv():
         csvw_metadata_rdf_graph, data_set_uri
     ).dataset_url
 
-    results = data_cube_state.get_obs_val_col_title_about_url_for_csv(data_set_url)
+    results = data_cube_state.get_obs_val_col_titles_about_urls_for_csv(data_set_url)
 
     result = _get_obs_val_col_title_about_url_result_by_about_url(
         "qb-id-10004.csv#obs/{some_dimension}@some-measure", results
