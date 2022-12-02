@@ -9,9 +9,7 @@ WHERE {
     { # Virtual columns 
         BIND(true as ?isVirtual).
         ?tableSchema csvw:column/rdf:rest*/rdf:first ?observedValueColumn.
-        FILTER EXISTS {
-            ?observedValueColumn csvw:virtual true.
-        }
+        ?observedValueColumn csvw:virtual true.
     } UNION { # Real columns 
         BIND(false as ?isVirtual).
         ?tableSchema csvw:column/rdf:rest*/rdf:first ?observedValueColumn.

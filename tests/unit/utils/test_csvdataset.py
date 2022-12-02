@@ -8,8 +8,8 @@ from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import ColTitlesAndNamesResult, ObservationValueColumnTitleAboutUrlResult, QubeComponentResult, UnitColumnAboutValueUrlResult
 
 from csvcubed.utils.csvdataset import (
-    _create_measure_col_in_melted_data_set,
-    _create_unit_col_in_melted_data_set,
+    _create_measure_col_in_melted_data_set_for_pivoted_shape,
+    _create_unit_col_in_melted_data_set_for_pivoted_shape,
     _melt_data_set,
     transform_dataset_to_canonical_shape,
 )
@@ -660,7 +660,7 @@ def test_melt_data_set_for_pivoted_shape():
     assert_frame_equal(melted_df, _expected_melted_dataset_for_pivoted_shape)
 
 
-def test_create_measure_col_in_melted_data_set():
+def test_create_measure_col_in_melted_data_set_for_pivoted_shape():
     """
     Ensures that the correct measure column information is added to the melted dataframe.
     """
@@ -672,7 +672,7 @@ def test_create_measure_col_in_melted_data_set():
         pivoted_df, _measure_components_for_multi_measure_pivoted_shape
     )
 
-    _create_measure_col_in_melted_data_set(
+    _create_measure_col_in_melted_data_set_for_pivoted_shape(
         "Measure", melted_df, _measure_components_for_multi_measure_pivoted_shape
     )
 
@@ -702,12 +702,12 @@ def test_create_measure_in_melted_data_set_exception_for_more_than_one_matching_
     )
 
     with pytest.raises(InvalidNumOfDSDComponentsForObsValColTitleException) as exception:
-        _create_measure_col_in_melted_data_set(
+        _create_measure_col_in_melted_data_set_for_pivoted_shape(
             "Measure", melted_df, _measure_components_for_multi_measure_pivoted_shape_same_measure
         )
     assert str(exception.value) == f"There should be only 1 component for the observation value column with title 'Some Obs Val', but found 2."
 
-def test_create_unit_col_in_melted_data_set():
+def test_create_unit_col_in_melted_data_set_for_pivoted_shape():
     """
     Ensures that the correct unit column information is added to the melted dataframe.
     """
@@ -719,7 +719,7 @@ def test_create_unit_col_in_melted_data_set():
         pivoted_df, _measure_components_for_multi_measure_pivoted_shape
     )
 
-    _create_unit_col_in_melted_data_set(
+    _create_unit_col_in_melted_data_set_for_pivoted_shape(
         "Unit",
         melted_df,
         _unit_col_about_urls_value_urls,
@@ -738,7 +738,7 @@ def test_create_unit_col_in_melted_data_set():
         melted_df, _expected_dataset_pivoted_multi_measure_with_unit
     )
 
-def test_create_unit_col_in_melted_data_set_should_throw_invalid_num_of_unit_cols_exception():
+def test_create_unit_col_in_melted_data_set_for_pivoted_shape_should_throw_invalid_num_of_unit_cols_exception():
     """
     Ensures the InvalidNumOfUnitColsForObsValColTitleException is thrown.
     """
@@ -751,7 +751,7 @@ def test_create_unit_col_in_melted_data_set_should_throw_invalid_num_of_unit_col
     )
 
     with pytest.raises(InvalidNumOfUnitColsForObsValColTitleException) as exception:
-        _create_unit_col_in_melted_data_set(
+        _create_unit_col_in_melted_data_set_for_pivoted_shape(
         "Unit",
         melted_df,
         _unit_col_about_urls_value_urls,
@@ -761,7 +761,7 @@ def test_create_unit_col_in_melted_data_set_should_throw_invalid_num_of_unit_col
 
     assert str(exception.value) == "There should be 1 unit column for the observation value column title 'Some Other Obs Val', but found 0 unit columns."
 
-def test_create_unit_col_in_melted_data_set_should_throw_invalid_num_of_val_urls_exception():
+def test_create_unit_col_in_melted_data_set_for_pivoted_shape_should_throw_invalid_num_of_val_urls_exception():
     """
     Ensures the InvalidNumOfValUrlsForAboutUrlException is thrown.
     """
@@ -774,7 +774,7 @@ def test_create_unit_col_in_melted_data_set_should_throw_invalid_num_of_val_urls
     )
 
     with pytest.raises(InvalidNumOfValUrlsForAboutUrlException) as exception:
-        _create_unit_col_in_melted_data_set(
+        _create_unit_col_in_melted_data_set_for_pivoted_shape(
         "Unit",
         melted_df,
         _unit_col_about_urls_value_urls_invalid,
