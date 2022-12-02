@@ -14,7 +14,7 @@ from csvcubed.models.sparqlresults import (
     ColsWithSuppressOutputTrueResult,
     DSDLabelURIResult,
     DSDSingleUnitResult,
-    DatasetURLResult,
+    CsvUrlResult,
     IsPivotedShapeMeasureResult,
     QubeComponentResult,
     QubeComponentsResult,
@@ -25,15 +25,15 @@ from csvcubed.utils.rdf import parse_graph_retain_relative
 from csvcubed.utils.sparql_handler.sparqlmanager import (
     ask_is_csvw_code_list,
     ask_is_csvw_qb_dataset,
-    select_codelist_cols_by_dataset_url,
-    select_codelist_dataset_url,
+    select_codelist_cols_by_csv_url,
+    select_codelist_csv_url,
     select_cols_where_suppress_output_is_true,
     select_csvw_catalog_metadata,
     select_csvw_dsd_dataset_label_and_dsd_def_uri,
     select_csvw_dsd_qube_components,
     select_dsd_code_list_and_cols,
     select_is_pivoted_shape_for_measures_in_data_set,
-    select_qb_dataset_url,
+    select_qb_csv_url,
     select_csvw_table_schema_file_dependencies,
     select_single_unit_from_dsd,
     select_metadata_dependencies,
@@ -586,19 +586,19 @@ def test_select_dsd_code_list_and_cols_without_codelist_labels():
     )
 
 
-def test_select_qb_dataset_url():
+def test_select_qb_csv_url():
     """
-    Should return expected `DatasetURLResult`.
+    Should return expected `CsvUrlResult`.
     """
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
-    result: DatasetURLResult = select_qb_dataset_url(
+    result: CsvUrlResult = select_qb_csv_url(
         csvw_metadata_rdf_graph,
         f"file://{str(_test_case_base_dir)}/alcohol-bulletin.csv#dataset",
     )
-    assert result.dataset_url == "alcohol-bulletin.csv"
+    assert result.csv_url == "alcohol-bulletin.csv"
 
 
 def test_select_single_unit_from_dsd():
@@ -649,17 +649,17 @@ def test_select_table_schema_dependencies():
     }
 
 
-def test_select_codelist_cols_by_dataset_url():
+def test_select_codelist_cols_by_csv_url():
     """
     Should return expected `CodeListColsByDatasetUrlResult`.
     """
     csvw_metadata_json_path = _test_case_base_dir / "alcohol-content.csv-metadata.json"
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    dataset_url = select_codelist_dataset_url(csvw_metadata_rdf_graph).dataset_url
+    csv_url = select_codelist_csv_url(csvw_metadata_rdf_graph).csv_url
 
-    result: CodeListColsByDatasetUrlResult = select_codelist_cols_by_dataset_url(
-        csvw_metadata_rdf_graph, dataset_url
+    result: CodeListColsByDatasetUrlResult = select_codelist_cols_by_csv_url(
+        csvw_metadata_rdf_graph, csv_url
     )
     assert len(result.columns) == 7
 

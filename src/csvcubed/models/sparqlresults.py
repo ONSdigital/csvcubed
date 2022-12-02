@@ -196,12 +196,12 @@ class CodelistsResult:
 
 
 @dataclass
-class DatasetURLResult:
+class CsvUrlResult:
     """
-    Model to represent select dataset url result.
+    Model to represent select csv url result.
     """
 
-    dataset_url: str
+    csv_url: str
 
 
 @dataclass
@@ -535,19 +535,19 @@ def map_csvw_table_schemas_file_dependencies_result(
     return result
 
 
-def map_dataset_url_result(
+def map_csv_url_result(
     sparql_result: ResultRow,
-) -> DatasetURLResult:
+) -> CsvUrlResult:
     """
-    Maps sparql query result to `DatasetURLResult`
+    Maps sparql query result to `CsvUrlResult`
 
     Member of :file:`./models/sparqlresults.py`
 
-    :return: `DatasetURLResult`
+    :return: `CsvUrlResult`
     """
     result_dict = sparql_result.asdict()
 
-    result = DatasetURLResult(dataset_url=str(result_dict["tableUrl"]))
+    result = CsvUrlResult(csv_url=str(result_dict["tableUrl"]))
     return result
 
 

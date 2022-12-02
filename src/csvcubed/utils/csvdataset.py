@@ -176,7 +176,7 @@ def transform_dataset_to_canonical_shape(
     cube_shape: CubeShape,
     dataset: pd.DataFrame,
     qube_components: List[QubeComponentResult],
-    dataset_url: Optional[str],
+    csv_url: Optional[str],
     dataset_uri: str,
     csvw_metadata_rdf_graph: rdflib.ConjunctiveGraph,
     csvw_metadata_json_path: Path,
@@ -222,19 +222,19 @@ def transform_dataset_to_canonical_shape(
             measure_col = measure_col_retrived
     else:
         # In pivoted shape
-        if dataset_url is None:
+        if csv_url is None:
             raise ValueError(
-                "dataset_url cannot be None."
+                "csv_url cannot be None."
             )
 
         unit_col_about_urls_value_urls = (
-            data_cube_state.get_unit_col_about_value_urls_for_csv(dataset_url)
+            data_cube_state.get_unit_col_about_value_urls_for_csv(csv_url)
         )
         obs_val_col_titles_about_urls = (
-            data_cube_state.get_obs_val_col_titles_about_urls_for_csv(dataset_url)
+            data_cube_state.get_obs_val_col_titles_about_urls_for_csv(csv_url)
         )
         col_names_col_titles = data_cube_state.get_col_name_col_title_for_csv(
-            dataset_url
+            csv_url
         )
 
         measure_components = filter_components_from_dsd(

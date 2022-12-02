@@ -15,7 +15,7 @@ from csvcubed.utils.csvdataset import (
 )
 from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
-from csvcubed.utils.sparql_handler.sparqlmanager import select_csvw_catalog_metadata, select_qb_dataset_url
+from csvcubed.utils.sparql_handler.sparqlmanager import select_csvw_catalog_metadata, select_qb_csv_url
 from csvcubed.utils.tableschema import CsvwRdfManager
 
 from tests.unit.cli.inspect.test_inspectdatasetmanager import get_arguments_qb_dataset
@@ -548,7 +548,7 @@ def test_transform_to_canonical_shape_for_pivoted_single_measure_shape_data_set(
         select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri,
     csvw_metadata_json_path,
     )
-    data_set_url = select_qb_dataset_url(csvw_metadata_rdf_graph, dataset_uri).dataset_url
+    data_set_url = select_qb_csv_url(csvw_metadata_rdf_graph, dataset_uri).csv_url
 
     (
         canonical_shape_dataset,
@@ -605,7 +605,7 @@ def test_transform_to_canonical_shape_for_pivoted_multi_measure_shape_data_set()
         select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri,
     csvw_metadata_json_path,
     )
-    dataset_url = select_qb_dataset_url(csvw_metadata_rdf_graph, dataset_uri).dataset_url
+    csv_url = select_qb_csv_url(csvw_metadata_rdf_graph, dataset_uri).csv_url
 
     (
         canonical_shape_dataset,
@@ -616,7 +616,7 @@ def test_transform_to_canonical_shape_for_pivoted_multi_measure_shape_data_set()
         CubeShape.Pivoted,
         dataset,
         qube_components,
-        dataset_url,
+        csv_url,
         dsd_uri,
         csvw_metadata_rdf_graph,
         csvw_metadata_json_path,

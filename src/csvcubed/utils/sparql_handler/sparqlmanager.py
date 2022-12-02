@@ -33,7 +33,7 @@ from csvcubed.models.sparqlresults import (
     ColsWithSuppressOutputTrueResult,
     DSDLabelURIResult,
     DSDSingleUnitResult,
-    DatasetURLResult,
+    CsvUrlResult,
     QubeComponentsResult,
     MetadataDependenciesResult,
     TableSchemaPropertiesResult,
@@ -48,7 +48,7 @@ from csvcubed.models.sparqlresults import (
     map_cols_with_supress_output_true_sparql_result,
     map_csvw_table_schemas_file_dependencies_result,
     map_dataset_label_dsd_uri_sparql_result,
-    map_dataset_url_result,
+    map_csv_url_result,
     map_qube_components_sparql_result,
     map_single_unit_from_dsd_result,
     map_metadata_dependency_results,
@@ -83,9 +83,9 @@ class SPARQLQueryName(Enum):
 
     SELECT_CODELISTS_AND_COLS = "select_codelists_and_cols"
 
-    SELECT_QB_DATASET_URL = "select_qb_dataset_url"
+    SELECT_QB_DATASET_URL = "select_qb_csv_url"
 
-    SELECT_CODELIST_DATASET_URL = "select_codelist_dataset_url"
+    SELECT_CODELIST_DATASET_URL = "select_codelist_csv_url"
 
     SELECT_SINGLE_UNIT_FROM_DSD = "select_single_unit_from_dsd"
 
@@ -93,7 +93,7 @@ class SPARQLQueryName(Enum):
         "select_csvw_table_schema_file_dependencies"
     )
 
-    SELECT_CODELIST_COLS_BY_DATASET_URL = "select_codelist_cols_by_dataset_url"
+    SELECT_CODELIST_COLS_BY_DATASET_URL = "select_codelist_cols_by_csv_url"
 
     SELECT_CODELIST_PRIMARY_KEY_BY_DATASET_URL = (
         "select_codelist_primary_key_by_dataset_url"
@@ -326,15 +326,15 @@ def select_csvw_table_schema_file_dependencies(
     return map_csvw_table_schemas_file_dependencies_result(results)
 
 
-def select_qb_dataset_url(
+def select_qb_csv_url(
     rdf_graph: rdflib.ConjunctiveGraph, dataset_uri: str
-) -> DatasetURLResult:
+) -> CsvUrlResult:
     """
     Queries the url of the given qb:dataset.
 
     Member of :file:`./sparqlmanager.py`
 
-    :return: `DatasetURLResult`
+    :return: `CsvUrlResult`
     """
     if not dataset_uri.startswith("file://"):
         raise FeatureNotSupportedException(
@@ -352,16 +352,16 @@ def select_qb_dataset_url(
             excepted_num_of_records=1,
             num_of_records=len(results),
         )
-    return map_dataset_url_result(results[0])
+    return map_csv_url_result(results[0])
 
 
-def select_codelist_dataset_url(rdf_graph: rdflib.ConjunctiveGraph) -> DatasetURLResult:
+def select_codelist_csv_url(rdf_graph: rdflib.ConjunctiveGraph) -> CsvUrlResult:
     """
     Queries the url of the given skos:conceptScheme.
 
     Member of :file:`./sparqlmanager.py`
 
-    :return: `DatasetURLResult`
+    :return: `CsvUrlResult`
     """
     results: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryName.SELECT_CODELIST_DATASET_URL),
@@ -373,7 +373,7 @@ def select_codelist_dataset_url(rdf_graph: rdflib.ConjunctiveGraph) -> DatasetUR
             excepted_num_of_records=1,
             num_of_records=len(results),
         )
-    return map_dataset_url_result(results[0])
+    return map_csv_url_result(results[0])
 
 
 def select_single_unit_from_dsd(
@@ -401,7 +401,7 @@ def select_single_unit_from_dsd(
     return map_single_unit_from_dsd_result(results[0], json_path)
 
 
-def select_codelist_cols_by_dataset_url(
+def select_codelist_cols_by_csv_url(
     rdf_graph: rdflib.ConjunctiveGraph, table_url: str
 ) -> CodeListColsByDatasetUrlResult:
     """

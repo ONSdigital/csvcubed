@@ -8,7 +8,7 @@ from csvcubed.models.sparqlresults import (
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
 from csvcubed.utils.sparql_handler.sparqlmanager import (
     select_csvw_catalog_metadata,
-    select_qb_dataset_url,
+    select_qb_csv_url,
 )
 from csvcubed.utils.tableschema import CsvwRdfManager
 from typing import List
@@ -62,9 +62,9 @@ def test_get_unit_col_about_value_urls_for_csv():
 
     data_set_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
     data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
-    data_set_url = select_qb_dataset_url(
+    data_set_url = select_qb_csv_url(
         csvw_metadata_rdf_graph, data_set_uri
-    ).dataset_url
+    ).csv_url
 
     results = data_cube_state.get_unit_col_about_value_urls_for_csv(data_set_url)
 
@@ -95,9 +95,9 @@ def test_get_obs_val_col_title_about_url_for_csv():
 
     data_set_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
     data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
-    data_set_url = select_qb_dataset_url(
+    data_set_url = select_qb_csv_url(
         csvw_metadata_rdf_graph, data_set_uri
-    ).dataset_url
+    ).csv_url
 
     results = data_cube_state.get_obs_val_col_titles_about_urls_for_csv(data_set_url)
 
@@ -129,9 +129,9 @@ def test_get_col_name_col_title_for_csv():
 
     data_set_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
     data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
-    data_set_url = select_qb_dataset_url(
+    data_set_url = select_qb_csv_url(
         csvw_metadata_rdf_graph, data_set_uri
-    ).dataset_url
+    ).csv_url
 
     results = data_cube_state.get_col_name_col_title_for_csv(data_set_url)
 

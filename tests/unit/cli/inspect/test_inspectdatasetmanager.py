@@ -39,13 +39,13 @@ from csvcubed.utils.skos.codelist import (
     get_codelist_col_title_from_col_name,
 )
 from csvcubed.utils.sparql_handler.sparqlmanager import (
-    select_codelist_cols_by_dataset_url,
-    select_codelist_dataset_url,
+    select_codelist_cols_by_csv_url,
+    select_codelist_csv_url,
     select_primary_key_col_names_by_dataset_url,
     select_csvw_catalog_metadata,
     select_csvw_dsd_dataset_label_and_dsd_def_uri,
     select_csvw_dsd_qube_components,
-    select_qb_dataset_url,
+    select_qb_csv_url,
 )
 from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.unit.test_baseunit import get_test_cases_dir
@@ -272,12 +272,12 @@ def get_arguments_qb_dataset(
         select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri,
         csvw_metadata_json_path,
     )
-    dataset_url = select_qb_dataset_url(
+    csv_url = select_qb_csv_url(
         csvw_metadata_rdf_graph, dataset_uri
-    ).dataset_url
+    ).csv_url
 
     dataset: DataFrame = load_csv_to_dataframe(
-        csvw_metadata_json_path, Path(dataset_url)
+        csvw_metadata_json_path, Path(csv_url)
     )
 
     dsd_uri = select_csvw_dsd_dataset_label_and_dsd_def_uri(
@@ -288,7 +288,7 @@ def get_arguments_qb_dataset(
         cube_shape, csvw_metadata_rdf_graph, dsd_uri, csvw_metadata_json_path
     ).qube_components
 
-    return (dataset, qube_components, dsd_uri, dataset_url)
+    return (dataset, qube_components, dsd_uri, csv_url)
 
 
 def _get_arguments_skos_codelist(
@@ -297,12 +297,12 @@ def _get_arguments_skos_codelist(
     """
     Produces the dataset, qube components and dsd uri arguments for skos:codelist.
     """
-    dataset_url = select_codelist_dataset_url(csvw_metadata_rdf_graph).dataset_url
+    csv_url = select_codelist_csv_url(csvw_metadata_rdf_graph).csv_url
 
     dataset: DataFrame = load_csv_to_dataframe(
-        csvw_metadata_json_path, Path(dataset_url)
+        csvw_metadata_json_path, Path(csv_url)
     )
-    return (dataset, dataset_url)
+    return (dataset, csv_url)
 
 
 def test_load_csv_to_dataframe_success():
@@ -752,9 +752,9 @@ def test_get_val_counts_info_pivoted_single_measure_dataset():
     data_set_uri = to_absolute_rdflib_file_path(
                 data_set_uri, csvw_metadata_json_path
             )
-    data_set_url = select_qb_dataset_url(
+    data_set_url = select_qb_csv_url(
                 csvw_metadata_rdf_graph, data_set_uri
-            ).dataset_url
+            ).csv_url
     
     (dataset, qube_components, dsd_uri, _) = get_arguments_qb_dataset(
         CubeShape.Standard, csvw_metadata_rdf_graph, csvw_metadata_json_path
@@ -809,9 +809,9 @@ def test_get_val_counts_info_pivoted_multi_measure_dataset():
     data_set_uri = to_absolute_rdflib_file_path(
                 data_set_uri, csvw_metadata_json_path
             )
-    data_set_url = select_qb_dataset_url(
+    data_set_url = select_qb_csv_url(
                 csvw_metadata_rdf_graph, data_set_uri
-            ).dataset_url
+            ).csv_url
     
     (dataset, qube_components, dsd_uri, _) = get_arguments_qb_dataset(
         CubeShape.Standard, csvw_metadata_rdf_graph, csvw_metadata_json_path
@@ -861,16 +861,16 @@ def test_get_concepts_hierarchy_info_hierarchy_with_depth_of_one():
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
-    (dataset, dataset_url) = _get_arguments_skos_codelist(
+    (dataset, csv_url) = _get_arguments_skos_codelist(
         csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
 
-    result_code_list_cols = select_codelist_cols_by_dataset_url(
-        csvw_metadata_rdf_graph, dataset_url
+    result_code_list_cols = select_codelist_cols_by_csv_url(
+        csvw_metadata_rdf_graph, csv_url
     )
     result_primary_key_col_names_by_dataset_url = (
         select_primary_key_col_names_by_dataset_url(
-            csvw_metadata_rdf_graph, dataset_url
+            csvw_metadata_rdf_graph, csv_url
         )
     )
 
@@ -902,16 +902,16 @@ def test_get_concepts_hierarchy_info_hierarchy_with_depth_more_than_one():
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
-    (dataset, dataset_url) = _get_arguments_skos_codelist(
+    (dataset, csv_url) = _get_arguments_skos_codelist(
         csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
 
-    result_code_list_cols = select_codelist_cols_by_dataset_url(
-        csvw_metadata_rdf_graph, dataset_url
+    result_code_list_cols = select_codelist_cols_by_csv_url(
+        csvw_metadata_rdf_graph, csv_url
     )
     result_primary_key_col_names_by_dataset_url = (
         select_primary_key_col_names_by_dataset_url(
-            csvw_metadata_rdf_graph, dataset_url
+            csvw_metadata_rdf_graph, csv_url
         )
     )
 
