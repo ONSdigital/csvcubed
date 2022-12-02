@@ -3,7 +3,7 @@ import pandas as pd
 from pandas.util.testing import assert_frame_equal
 import pytest
 from csvcubed.cli.inspect.metadataprinter import to_absolute_rdflib_file_path
-from csvcubed.models.csvcubedexception import InvalidNumOfDSDComponentsForObsValColTitleException
+from csvcubed.models.csvcubedexception import InvalidNumOfDSDComponentsForObsValColTitleException, InvalidNumOfUnitColsForObsValColTitleException, InvalidNumOfValUrlsForAboutUrlException
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import ColTitlesAndNamesResult, ObservationValueColumnTitleAboutUrlResult, QubeComponentResult, UnitColumnAboutValueUrlResult
 
@@ -737,4 +737,49 @@ def test_create_unit_col_in_melted_data_set():
     assert_frame_equal(
         melted_df, _expected_dataset_pivoted_multi_measure_with_unit
     )
-    
+
+def test_create_unit_col_in_melted_data_set_should_throw_invalid_num_of_unit_cols_exception():
+    """
+    Ensures the InvalidNumOfUnitColsForObsValColTitleException is thrown.
+    """
+    test_csv_file = (
+        _test_case_base_dir / "pivoted-multi-measure-dataset" / "qb-id-10003.csv"
+    )
+    pivoted_df = pd.read_csv(test_csv_file)
+    melted_df = _melt_data_set(
+        pivoted_df, _measure_components_for_multi_measure_pivoted_shape
+    )
+
+    with pytest.raises(InvalidNumOfUnitColsForObsValColTitleException) as exception:
+        _create_unit_col_in_melted_data_set(
+        "Unit",
+        melted_df,
+        _unit_col_about_urls_value_urls,
+        _obs_val_col_titles_about_urls_invalid,
+        _col_names_col_titles,
+        )
+
+    assert str(exception.value) == "There should be 1 unit column for the observation value column title 'Some Other Obs Val', but found 0 unit columns."
+
+def test_create_unit_col_in_melted_data_set_should_throw_invalid_num_of_val_urls_exception():
+    """
+    Ensures the InvalidNumOfValUrlsForAboutUrlException is thrown.
+    """
+    test_csv_file = (
+        _test_case_base_dir / "pivoted-multi-measure-dataset" / "qb-id-10003.csv"
+    )
+    pivoted_df = pd.read_csv(test_csv_file)
+    melted_df = _melt_data_set(
+        pivoted_df, _measure_components_for_multi_measure_pivoted_shape
+    )
+
+    with pytest.raises(InvalidNumOfValUrlsForAboutUrlException) as exception:
+        _create_unit_col_in_melted_data_set(
+        "Unit",
+        melted_df,
+        _unit_col_about_urls_value_urls_invalid,
+        _obs_val_col_titles_about_urls,
+        _col_names_col_titles,
+        )
+
+    assert str(exception.value) == "There should be only 1 value url for the about url 'qb-id-10003.csv#obs/some-dimension@some-other-measure', but found 0."
