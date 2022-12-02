@@ -13,7 +13,7 @@ from csvcubed.utils.skos.codelist import (
 from csvcubed.utils.sparql_handler.sparqlmanager import (
     select_codelist_cols_by_csv_url,
     select_codelist_csv_url,
-    select_primary_key_col_names_by_dataset_url,
+    select_primary_key_col_names_by_csv_url,
 )
 from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.unit.test_baseunit import get_test_cases_dir
@@ -60,15 +60,15 @@ def test_get_codelist_col_title_by_property_url_notation():
     result_code_list_cols = select_codelist_cols_by_csv_url(
         csvw_metadata_rdf_graph, csv_url
     )
-    result_primary_key_col_names_by_dataset_url = (
-        select_primary_key_col_names_by_dataset_url(
+    result_primary_key_col_names_by_csv_url = (
+        select_primary_key_col_names_by_csv_url(
             csvw_metadata_rdf_graph, csv_url
         )
     )
 
     unique_identifier = get_codelist_col_title_from_col_name(
         result_code_list_cols.columns,
-        result_primary_key_col_names_by_dataset_url.primary_key_col_names[0].value,
+        result_primary_key_col_names_by_csv_url.primary_key_col_names[0].value,
     )
 
     assert unique_identifier == "Notation"

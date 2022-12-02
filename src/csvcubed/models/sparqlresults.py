@@ -594,7 +594,7 @@ def _map_codelist_column_sparql_result(
     return result
 
 
-def map_codelist_cols_by_dataset_url_result(
+def map_codelist_cols_by_csv_url_result(
     sparql_results: List[ResultRow],
 ) -> CodeListColsByDatasetUrlResult:
     """
@@ -615,7 +615,7 @@ def map_codelist_cols_by_dataset_url_result(
     return result
 
 
-def _map_primary_key_col_name_by_dataset_url_result(
+def _map_primary_key_col_name_by_csv_url_result(
     sparql_result: ResultRow,
 ) -> PrimaryKeyColNameByDatasetUrlResult:
     """
@@ -633,7 +633,7 @@ def _map_primary_key_col_name_by_dataset_url_result(
     return result
 
 
-def map_primary_key_col_names_by_dataset_url_result(
+def map_primary_key_col_names_by_csv_url_result(
     sparql_results: List[ResultRow],
 ) -> PrimaryKeyColNamesByDatasetUrlResult:
     """
@@ -645,7 +645,7 @@ def map_primary_key_col_names_by_dataset_url_result(
     """
     primary_key_col_names = list(
         map(
-            lambda result: _map_primary_key_col_name_by_dataset_url_result(result),
+            lambda result: _map_primary_key_col_name_by_csv_url_result(result),
             sparql_results,
         )
     )
