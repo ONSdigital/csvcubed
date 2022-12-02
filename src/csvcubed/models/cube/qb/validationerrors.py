@@ -334,10 +334,8 @@ class PivotedShapeMeasureColumnsExistError(BothMeasureTypesDefinedError):
     An error to inform the user that they have attempted to define a pivoted shape cube with measure columns.
     """
 
-    component_one: ComponentTypeDescription = f"{QbObservationValue.__name__}.measure"
-    component_two: ComponentTypeDescription = QbMultiMeasureDimension
-
-    # measure_col_titles =
+    measure_col_titles: List[str] = field(default_factory=list)
+    column_names_concatenated: str = field(init=False)
 
     additional_explanation: Optional[str] = None
 
@@ -346,6 +344,7 @@ class PivotedShapeMeasureColumnsExistError(BothMeasureTypesDefinedError):
         return "http://purl.org/csv-cubed/err/piv-shape-meas-cols-exist"
 
     def __post_init__(self):
+        self.column_names_concatenated = ", ".join(self.measure_col_titles)
         self.message = f"The cube is in pivoted shape, but 1 or more measure columns have been defined. These two approaches are incompatible."
 
 
@@ -454,6 +453,8 @@ class PivotedObsValColWithoutMeasureError(SpecificValidationError):
     the column or from a measure column.
     """
 
+    no_measure_obs_col_titles: List[str] = field(default_factory=list)
+    column_names_concatenated: str = field(init=False)
     additional_explanation: Optional[str] = None
 
     @classmethod
@@ -461,4 +462,5 @@ class PivotedObsValColWithoutMeasureError(SpecificValidationError):
         return "http://purl.org/csv-cubed/err/piv-obsv-col-no-measure"
 
     def __post_init__(self):
-        self.message = f"An observation value column has been defined without a measure linked within the column definition."
+        no_measure_obs_cols = ", ".join(str(self.no_measure_obs_col_titles))
+        self.message = f"Cube is in the pivoted shape but observation value column(s): '{no_measure_obs_cols}' have been defined without a measure linked within the column definition."

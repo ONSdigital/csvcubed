@@ -284,12 +284,10 @@ def _validate_pivoted_shape_cube(
         In this case, the user has defined a redundant measure column.
         All obs val columns already have their own measures declared.
         """
-        errors.append(
-            PivotedShapeMeasureColumnsExistError(
-                f"{QbObservationValue.__name__}.measure",
-                QbMultiMeasureDimension,
-            )
-        )
+        measure_column_titles: List[str] = [
+            title.csv_column_title for title in multi_measure_columns
+        ]
+        errors.append(PivotedShapeMeasureColumnsExistError(measure_column_titles))
 
     defined_col_names = {col.csv_column_title for col in cube.columns}
 
@@ -372,9 +370,16 @@ def _get_error_when_cube_contains_obs_val_cols_with_and_without_measures(
         pivoted shape. We assume the user wants a pivoted shape, so let them know that they're missing measures
         against some of their obs val columns.
         """
+        obs_val_cols = cube.get_columns_of_dsd_type(QbObservationValue)
+        obs_val_cols_without_measure_titles: List[str] = [
+            title.csv_column_title
+            for title in obs_val_cols
+            if title.structural_definition.measure is None
+        ]
         errors.append(
             PivotedObsValColWithoutMeasureError(
-                additional_explanation="Data apears to attempt the pivoted shape, however observation value column(s) have been found without a measure linked."
+                obs_val_cols_without_measure_titles,
+                additional_explanation="Data apears to attempt the pivoted shape, however observation value column(s) have been found without a measure linked.",
             )
         )
 
