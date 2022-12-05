@@ -1,3 +1,4 @@
+import copy
 from io import BytesIO, StringIO
 import logging
 from pathlib import Path
@@ -51,63 +52,63 @@ _logger = logging.getLogger(__name__)
 
 #         except Exception as e: #What type of error are we expecting? Maybe FileNotFound?
 #             raise Exception(f"Error loading JSON from file at '{path_to_local_file}'") from e
-            
+
 #         # response.url = path_to_local_file
 #         return response
 
+_hard_codes_map_url_to_file_path = {
+    "//purl.org/csv-cubed/qube-config/v1.0": APP_ROOT_DIR_PATH
+    / "schema"
+    / "cube-config"
+    / "v1_0"
+    / "schema.json",
+    "//purl.org/csv-cubed/qube-config/v1.1": APP_ROOT_DIR_PATH
+    / "schema"
+    / "cube-config"
+    / "v1_1"
+    / "schema.json",
+    "//purl.org/csv-cubed/qube-config/v1.2": APP_ROOT_DIR_PATH
+    / "schema"
+    / "cube-config"
+    / "v1_2"
+    / "schema.json",
+    "//purl.org/csv-cubed/qube-config/v1.3": APP_ROOT_DIR_PATH
+    / "schema"
+    / "cube-config"
+    / "v1_3"
+    / "schema.json",
+    "//purl.org/csv-cubed/qube-config/v1.4": APP_ROOT_DIR_PATH
+    / "schema"
+    / "cube-config"
+    / "v1_4"
+    / "schema.json",
+    "//purl.org/csv-cubed/qube-config/v1": APP_ROOT_DIR_PATH
+    / "schema"
+    / "cube-config"
+    / "v1_4"
+    / "schema.json",  # v1 defaults to latest minor version of v1.*.
+    "//purl.org/csv-cubed/codelist-config/v1.0": APP_ROOT_DIR_PATH
+    / "schema"
+    / "codelist-config"
+    / "v1_0"
+    / "schema.json",
+    "//purl.org/csv-cubed/codelist-config/v1.1": APP_ROOT_DIR_PATH
+    / "schema"
+    / "codelist-config"
+    / "v1_1"
+    / "schema.json",
+    "//purl.org/csv-cubed/code-list-config/v1": APP_ROOT_DIR_PATH
+    / "schema"
+    / "codelist-config"
+    / "v1_1"
+    / "schema.json",  # v1 defaults to latest minor version of v1.*.
+}
 
-def get_url_to_file_path_map() -> Dict[str, Path]:
+
+def _get_url_to_file_path_map() -> Dict[str, Path]:
     """
     todo: add comment here
     """
-
-    map_uri_to_file_path = {
-        "//purl.org/csv-cubed/qube-config/v1.0": APP_ROOT_DIR_PATH
-        / "schema"
-        / "cube-config"
-        / "v1_0"
-        / "schema.json",
-        "//purl.org/csv-cubed/qube-config/v1.1": APP_ROOT_DIR_PATH
-        / "schema"
-        / "cube-config"
-        / "v1_1"
-        / "schema.json",
-        "//purl.org/csv-cubed/qube-config/v1.2": APP_ROOT_DIR_PATH
-        / "schema"
-        / "cube-config"
-        / "v1_2"
-        / "schema.json",
-        "//purl.org/csv-cubed/qube-config/v1.3": APP_ROOT_DIR_PATH
-        / "schema"
-        / "cube-config"
-        / "v1_3"
-        / "schema.json",
-        "//purl.org/csv-cubed/qube-config/v1.4": APP_ROOT_DIR_PATH
-        / "schema"
-        / "cube-config"
-        / "v1_4"
-        / "schema.json",
-        "//purl.org/csv-cubed/qube-config/v1": APP_ROOT_DIR_PATH
-        / "schema"
-        / "cube-config"
-        / "v1_4"
-        / "schema.json",  # v1 defaults to latest minor version of v1.*.
-        "//purl.org/csv-cubed/codelist-config/v1.0": APP_ROOT_DIR_PATH
-        / "schema"
-        / "codelist-config"
-        / "v1_0"
-        / "schema.json",
-        "//purl.org/csv-cubed/codelist-config/v1.1": APP_ROOT_DIR_PATH
-        / "schema"
-        / "codelist-config"
-        / "v1_1"
-        / "schema.json",
-        "//purl.org/csv-cubed/code-list-config/v1": APP_ROOT_DIR_PATH
-        / "schema"
-        / "codelist-config"
-        / "v1_1"
-        / "schema.json",  # v1 defaults to latest minor version of v1.*.
-    }
 
     templates_dir = APP_ROOT_DIR_PATH / "readers" / "cubeconfig" / "v1_0" / "templates"
 
@@ -115,6 +116,8 @@ def get_url_to_file_path_map() -> Dict[str, Path]:
 
     if not any(template_files):
         raise ValueError(f"Couldn't find template files in {templates_dir}.")
+
+    map_uri_to_file_path = copy.deepcopy(_hard_codes_map_url_to_file_path)
 
     for template_file in template_files:
         relative_file_path = str(template_file.relative_to(templates_dir))
@@ -126,9 +129,13 @@ def get_url_to_file_path_map() -> Dict[str, Path]:
 
     return map_uri_to_file_path
 
+
+_map_url_to_file_path = _get_url_to_file_path_map()
+
 from requests.adapters import BaseAdapter, HTTPAdapter
 from urllib3.exceptions import NewConnectionError
 from requests.exceptions import JSONDecodeError
+
 
 class CustomAdapterServeSomeFilesLocally(BaseAdapter):
     http_adapter: HTTPAdapter
@@ -141,20 +148,28 @@ class CustomAdapterServeSomeFilesLocally(BaseAdapter):
     ):
         print(f"This is the HTTP(s) adapter sending the request: {request.url}")
         try:
-            response = self.http_adapter.send(request, stream=stream, timeout=timeout, verify=verify, cert=cert, proxies=proxies)
+            response = self.http_adapter.send(
+                request,
+                stream=stream,
+                timeout=timeout,
+                verify=verify,
+                cert=cert,
+                proxies=proxies,
+            )
         except requests.exceptions.ConnectionError as e:
-        #except requests.exceptions.RequestException as e:
+            # except requests.exceptions.RequestException as e:
             try:
                 print("The connection error has been found")
 
-                get_local_version_instead = get_url_to_file_path_map()
-                trimmed_url = str(response.url).removeprefix("https:")
-                path_to_local_file = get_local_version_instead[
-                trimmed_url[: len(trimmed_url) - 1]
+                trimmed_url = str(request.url).removeprefix("https:")
+                path_to_local_file = _map_url_to_file_path[
+                    trimmed_url[: len(trimmed_url) - 1]
                 ]
                 print(f"The local file path is: {path_to_local_file}")
 
-                _logger.warning(f"Unable to load json document from given URL. Attempting to load local storage copy of file {path_to_local_file} instead.")
+                _logger.warning(
+                    f"Unable to load json document from given URL. Attempting to load local storage copy of file {path_to_local_file} instead."
+                )
 
                 # The below is a response object that can be used to manually return the local copy of the file successfully.
 
@@ -162,25 +177,29 @@ class CustomAdapterServeSomeFilesLocally(BaseAdapter):
 
                 successful_response.status_code = 200
 
-                successful_response.raw = BytesIO(bytes(path_to_local_file.read_text(), "utf-8"))
+                successful_response.raw = BytesIO(
+                    bytes(path_to_local_file.read_text(), "utf-8")
+                )
 
                 successful_response.url = path_to_local_file.as_uri()
 
                 successful_response.encoding = "utf-8"
 
-                successful_response.history = [response]
+                # successful_response.history = [response]
                 successful_response.reason = "OK"
-                successful_response.request = response.request
+                successful_response.request = request
 
                 return successful_response
 
             except FileNotFoundError as e:
-                raise Exception(f"Error loading JSON from file at '{path_to_local_file}'") from e
+                raise Exception(
+                    f"Error loading JSON from file at '{path_to_local_file}'"
+                ) from e
 
-        
-        
+        # if response.status_code in (4**, 5**)
+        # then try recovering to a local copy of the file
         return response
-    
+
     def close(self) -> None:
         self.http_adapter.close()
 
@@ -189,4 +208,4 @@ session = CachedSession(cache_control=True, use_cache_dir=True)
 session.mount("http://", CustomAdapterServeSomeFilesLocally())
 session.mount("https://", CustomAdapterServeSomeFilesLocally())
 
-#session.hooks["response"] = [_hook_for_http_failure]
+# session.hooks["response"] = [_hook_for_http_failure]

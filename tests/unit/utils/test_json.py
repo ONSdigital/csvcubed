@@ -1,8 +1,11 @@
 import pytest
 import requests_mock
+import json
 
 from tests.unit.test_baseunit import get_test_cases_dir
 from csvcubed.utils.json import load_json_document
+from csvcubed.utils.cache import _map_url_to_file_path, session
+from csvcubed.definitions import APP_ROOT_DIR_PATH
 
 _json_test_cases_dir = get_test_cases_dir() / "utils" / "json"
 
@@ -42,24 +45,34 @@ def test_loading_json_from_url():
         assert isinstance(document.get("columns"), list)
 
 
+@pytest.fixture(autouse=True)
+def dummy_mapped_url():
+    _map_url_to_file_path["//thisisatestfornickandcharlesons.com"] = (
+        APP_ROOT_DIR_PATH / "schema" / "cube-config" / "v1_3" / "schema.json"
+    )
+    yield None
+    del _map_url_to_file_path["//thisisatestfornickandcharlesons.com"]
+
+
 def test_load_local_when_http_request_fails():
     """
     Ensure that a local copy of a document is returned when an http request fails in any
     instance. Most likley due to lack of internet connectivity.
     """
-    from csvcubed.utils.cache import session
-    with session.cache_disabled():  
-        document = load_json_document("https://purl.org/csv-cubed/qube-config/v1.3X")
-        assert document == True
 
+    with session.cache_disabled():
+        json_document = load_json_document(
+            "https://thisisatestfornickandcharlesons.com"
+        )
 
-        
-def test_testing_test():
-    from requests.exceptions import ConnectionError
-    
-    with pytest.raises(ConnectionError):
-        #requests.get("http://twitter.com/api/1/foobar")
-        document = load_json_document("https://purl.org/csv-cubed/qube-config/v1.3")
+        expected_document = (
+            APP_ROOT_DIR_PATH / "schema" / "cube-config" / "v1_3" / "schema.json"
+        )
+        with open(expected_document, "r") as f:
+            expected = json.load(f)
+            assert json_document == expected
+            return expected
+
 
 if __name__ == "__main__":
     pytest.main()
