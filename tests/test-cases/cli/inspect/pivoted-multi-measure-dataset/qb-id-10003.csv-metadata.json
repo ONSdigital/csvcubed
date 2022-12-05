@@ -38,6 +38,14 @@
                         "required": true
                     },
                     {
+                        "titles": "Some Unit",
+                        "name": "some_unit",
+                        "aboutUrl": "qb-id-10003.csv#obs/{some_dimension}@some-other-measure",
+                        "propertyUrl": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
+                        "valueUrl": "qb-id-10003.csv#unit/{+some_unit}",
+                        "required": true
+                    },
+                    {
                         "name": "virt_slice",
                         "virtual": true,
                         "propertyUrl": "rdf:type",
@@ -104,13 +112,6 @@
                         "valueUrl": "qb-id-10003.csv#measure/some-other-measure"
                     },
                     {
-                        "name": "virt_obs_some_other_obs_val_unit",
-                        "virtual": true,
-                        "aboutUrl": "qb-id-10003.csv#obs/{some_dimension}@some-other-measure",
-                        "propertyUrl": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
-                        "valueUrl": "qb-id-10003.csv#unit/some-unit"
-                    },
-                    {
                         "name": "virt_dim_some_other_obs_val_some_dimension",
                         "virtual": true,
                         "aboutUrl": "qb-id-10003.csv#obs/{some_dimension}@some-other-measure",
@@ -155,136 +156,13 @@
     ],
     "rdfs:seeAlso": [
         {
-            "@id": "qb-id-10003.csv#structure",
-            "@type": [
-                "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://purl.org/linked-data/cube#DataStructureDefinition",
-                "http://purl.org/linked-data/cube#ComponentSet"
-            ],
-            "http://purl.org/linked-data/cube#component": [
-                {
-                    "@id": "qb-id-10003.csv#component/some-dimension"
-                },
-                {
-                    "@id": "qb-id-10003.csv#component/some-measure"
-                },
-                {
-                    "@id": "qb-id-10003.csv#component/measure-type"
-                },
-                {
-                    "@id": "qb-id-10003.csv#component/some-other-measure"
-                },
-                {
-                    "@id": "qb-id-10003.csv#component/unit"
-                },
-                {
-                    "@id": "qb-id-10003.csv#component/some-attribute"
-                }
-            ],
-            "http://purl.org/linked-data/cube#componentProperty": [
-                {
-                    "@id": "qb-id-10003.csv#attribute/some-attribute"
-                },
-                {
-                    "@id": "qb-id-10003.csv#dimension/some-dimension"
-                },
-                {
-                    "@id": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
-                },
-                {
-                    "@id": "qb-id-10003.csv#measure/some-measure"
-                },
-                {
-                    "@id": "qb-id-10003.csv#measure/some-other-measure"
-                },
-                {
-                    "@id": "http://purl.org/linked-data/cube#measureType"
-                }
-            ],
-            "http://purl.org/linked-data/cube#sliceKey": [
-                {
-                    "@id": "qb-id-10003.csv#slice/cross-measures"
-                }
-            ]
-        },
-        {
-            "@id": "qb-id-10003.csv#csvcubed-build-activity",
-            "@type": [
-                "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://www.w3.org/ns/prov#Activity"
-            ],
-            "http://www.w3.org/ns/prov#used": [
-                {
-                    "@id": "https://github.com/GSS-Cogs/csvcubed/releases/tag/v0.1.0.dev0"
-                }
-            ]
-        },
-        {
-            "@id": "qb-id-10003.csv#component/some-attribute",
-            "@type": [
-                "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://purl.org/linked-data/cube#ComponentSet",
-                "http://purl.org/linked-data/cube#ComponentSpecification"
-            ],
-            "http://purl.org/linked-data/cube#attribute": [
-                {
-                    "@id": "qb-id-10003.csv#attribute/some-attribute"
-                }
-            ],
-            "http://purl.org/linked-data/cube#componentProperty": [
-                {
-                    "@id": "qb-id-10003.csv#attribute/some-attribute"
-                }
-            ],
-            "http://purl.org/linked-data/cube#componentRequired": [
-                {
-                    "@value": false
-                }
-            ],
-            "http://purl.org/linked-data/cube#order": [
-                {
-                    "@value": 2
-                }
-            ]
-        },
-        {
-            "@id": "qb-id-10003.csv#component/measure-type",
-            "@type": [
-                "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://purl.org/linked-data/cube#ComponentSet",
-                "http://purl.org/linked-data/cube#ComponentSpecification"
-            ],
-            "http://purl.org/linked-data/cube#componentProperty": [
-                {
-                    "@id": "http://purl.org/linked-data/cube#measureType"
-                }
-            ],
-            "http://purl.org/linked-data/cube#dimension": [
-                {
-                    "@id": "http://purl.org/linked-data/cube#measureType"
-                }
-            ],
-            "http://purl.org/linked-data/cube#order": [
-                {
-                    "@value": 3
-                }
-            ]
-        },
-        {
-            "@id": "qb-id-10003.csv#class/some-dimension",
-            "@type": [
-                "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://www.w3.org/2000/01/rdf-schema#Class"
-            ]
-        },
-        {
             "@id": "qb-id-10003.csv#dataset",
             "@type": [
-                "http://www.w3.org/ns/dcat#Dataset",
-                "http://www.w3.org/2000/01/rdf-schema#Resource",
                 "http://purl.org/linked-data/cube#DataSet",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
                 "http://www.w3.org/ns/dcat#Resource",
-                "http://purl.org/linked-data/cube#Attachable"
+                "http://purl.org/linked-data/cube#Attachable",
+                "http://www.w3.org/ns/dcat#Dataset"
             ],
             "http://purl.org/dc/terms/identifier": [
                 {
@@ -294,13 +172,13 @@
             "http://purl.org/dc/terms/issued": [
                 {
                     "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
-                    "@value": "2022-11-03T16:45:47.750555"
+                    "@value": "2022-11-24T11:45:07.291860"
                 }
             ],
             "http://purl.org/dc/terms/modified": [
                 {
                     "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
-                    "@value": "2022-11-03T16:45:47.750555"
+                    "@value": "2022-11-24T11:45:07.291860"
                 }
             ],
             "http://purl.org/dc/terms/title": [
@@ -327,25 +205,86 @@
             ]
         },
         {
-            "@id": "qb-id-10003.csv#component/some-measure",
+            "@id": "qb-id-10003.csv#structure",
             "@type": [
-                "http://www.w3.org/2000/01/rdf-schema#Resource",
                 "http://purl.org/linked-data/cube#ComponentSet",
-                "http://purl.org/linked-data/cube#ComponentSpecification"
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#DataStructureDefinition"
+            ],
+            "http://purl.org/linked-data/cube#component": [
+                {
+                    "@id": "qb-id-10003.csv#component/some-other-measure"
+                },
+                {
+                    "@id": "qb-id-10003.csv#component/some-measure"
+                },
+                {
+                    "@id": "qb-id-10003.csv#component/some-dimension"
+                },
+                {
+                    "@id": "qb-id-10003.csv#component/measure-type"
+                },
+                {
+                    "@id": "qb-id-10003.csv#component/unit"
+                },
+                {
+                    "@id": "qb-id-10003.csv#component/some-unit"
+                },
+                {
+                    "@id": "qb-id-10003.csv#component/some-attribute"
+                }
             ],
             "http://purl.org/linked-data/cube#componentProperty": [
                 {
                     "@id": "qb-id-10003.csv#measure/some-measure"
+                },
+                {
+                    "@id": "qb-id-10003.csv#attribute/some-attribute"
+                },
+                {
+                    "@id": "qb-id-10003.csv#measure/some-other-measure"
+                },
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
+                },
+                {
+                    "@id": "http://purl.org/linked-data/cube#measureType"
+                },
+                {
+                    "@id": "qb-id-10003.csv#dimension/some-dimension"
                 }
             ],
-            "http://purl.org/linked-data/cube#measure": [
+            "http://purl.org/linked-data/cube#sliceKey": [
                 {
-                    "@id": "qb-id-10003.csv#measure/some-measure"
+                    "@id": "qb-id-10003.csv#slice/cross-measures"
+                }
+            ]
+        },
+        {
+            "@id": "qb-id-10003.csv#component/some-attribute",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSpecification"
+            ],
+            "http://purl.org/linked-data/cube#attribute": [
+                {
+                    "@id": "qb-id-10003.csv#attribute/some-attribute"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "qb-id-10003.csv#attribute/some-attribute"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentRequired": [
+                {
+                    "@value": false
                 }
             ],
             "http://purl.org/linked-data/cube#order": [
                 {
-                    "@value": 5
+                    "@value": 2
                 }
             ]
         },
@@ -367,8 +306,8 @@
         {
             "@id": "qb-id-10003.csv#component/some-other-measure",
             "@type": [
-                "http://www.w3.org/2000/01/rdf-schema#Resource",
                 "http://purl.org/linked-data/cube#ComponentSet",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
                 "http://purl.org/linked-data/cube#ComponentSpecification"
             ],
             "http://purl.org/linked-data/cube#componentProperty": [
@@ -388,10 +327,156 @@
             ]
         },
         {
-            "@id": "qb-id-10003.csv#component/unit",
+            "@id": "qb-id-10003.csv#csvcubed-build-activity",
             "@type": [
                 "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.w3.org/ns/prov#Activity"
+            ],
+            "http://www.w3.org/ns/prov#used": [
+                {
+                    "@id": "https://github.com/GSS-Cogs/csvcubed/releases/tag/v0.1.0.dev0"
+                }
+            ]
+        },
+        {
+            "@id": "qb-id-10003.csv#component/some-dimension",
+            "@type": [
                 "http://purl.org/linked-data/cube#ComponentSet",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSpecification"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "qb-id-10003.csv#dimension/some-dimension"
+                }
+            ],
+            "http://purl.org/linked-data/cube#dimension": [
+                {
+                    "@id": "qb-id-10003.csv#dimension/some-dimension"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 1
+                }
+            ]
+        },
+        {
+            "@id": "qb-id-10003.csv#component/some-unit",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSpecification"
+            ],
+            "http://purl.org/linked-data/cube#attribute": [
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentRequired": [
+                {
+                    "@value": true
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 7
+                }
+            ]
+        },
+        {
+            "@id": "qb-id-10003.csv#measure/some-other-measure",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#MeasureProperty",
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://purl.org/linked-data/cube#ComponentProperty"
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Some Other Measure"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#range": [
+                {
+                    "@id": "http://www.w3.org/2001/XMLSchema#decimal"
+                }
+            ]
+        },
+        {
+            "@id": "qb-id-10003.csv#slice/cross-measures",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#SliceKey",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "qb-id-10003.csv#dimension/some-dimension"
+                }
+            ]
+        },
+        {
+            "@id": "qb-id-10003.csv#class/some-dimension",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Class",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ]
+        },
+        {
+            "@id": "qb-id-10003.csv#measure/some-measure",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#MeasureProperty",
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://purl.org/linked-data/cube#ComponentProperty"
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Some Measure"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#range": [
+                {
+                    "@id": "http://www.w3.org/2001/XMLSchema#decimal"
+                }
+            ]
+        },
+        {
+            "@id": "qb-id-10003.csv#component/measure-type",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSpecification"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "http://purl.org/linked-data/cube#measureType"
+                }
+            ],
+            "http://purl.org/linked-data/cube#dimension": [
+                {
+                    "@id": "http://purl.org/linked-data/cube#measureType"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 3
+                }
+            ]
+        },
+        {
+            "@id": "qb-id-10003.csv#component/unit",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
                 "http://purl.org/linked-data/cube#ComponentSpecification"
             ],
             "http://purl.org/linked-data/cube#attribute": [
@@ -416,76 +501,36 @@
             ]
         },
         {
-            "@id": "qb-id-10003.csv#measure/some-other-measure",
+            "@id": "qb-id-10003.csv#component/some-measure",
             "@type": [
-                "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
-                "http://purl.org/linked-data/cube#MeasureProperty",
-                "http://purl.org/linked-data/cube#ComponentProperty"
-            ],
-            "http://www.w3.org/2000/01/rdf-schema#label": [
-                {
-                    "@language": "en",
-                    "@value": "Some Other Measure"
-                }
-            ],
-            "http://www.w3.org/2000/01/rdf-schema#range": [
-                {
-                    "@id": "http://www.w3.org/2001/XMLSchema#decimal"
-                }
-            ]
-        },
-        {
-            "@id": "qb-id-10003.csv#component/some-dimension",
-            "@type": [
-                "http://www.w3.org/2000/01/rdf-schema#Resource",
                 "http://purl.org/linked-data/cube#ComponentSet",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
                 "http://purl.org/linked-data/cube#ComponentSpecification"
             ],
             "http://purl.org/linked-data/cube#componentProperty": [
                 {
-                    "@id": "qb-id-10003.csv#dimension/some-dimension"
+                    "@id": "qb-id-10003.csv#measure/some-measure"
                 }
             ],
-            "http://purl.org/linked-data/cube#dimension": [
+            "http://purl.org/linked-data/cube#measure": [
                 {
-                    "@id": "qb-id-10003.csv#dimension/some-dimension"
+                    "@id": "qb-id-10003.csv#measure/some-measure"
                 }
             ],
             "http://purl.org/linked-data/cube#order": [
                 {
-                    "@value": 1
-                }
-            ]
-        },
-        {
-            "@id": "qb-id-10003.csv#measure/some-measure",
-            "@type": [
-                "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
-                "http://purl.org/linked-data/cube#MeasureProperty",
-                "http://purl.org/linked-data/cube#ComponentProperty"
-            ],
-            "http://www.w3.org/2000/01/rdf-schema#label": [
-                {
-                    "@language": "en",
-                    "@value": "Some Measure"
-                }
-            ],
-            "http://www.w3.org/2000/01/rdf-schema#range": [
-                {
-                    "@id": "http://www.w3.org/2001/XMLSchema#decimal"
+                    "@value": 5
                 }
             ]
         },
         {
             "@id": "qb-id-10003.csv#dimension/some-dimension",
             "@type": [
+                "http://purl.org/linked-data/cube#CodedProperty",
                 "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://purl.org/linked-data/cube#DimensionProperty",
-                "http://purl.org/linked-data/cube#ComponentProperty",
                 "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
-                "http://purl.org/linked-data/cube#CodedProperty"
+                "http://purl.org/linked-data/cube#ComponentProperty",
+                "http://purl.org/linked-data/cube#DimensionProperty"
             ],
             "http://purl.org/linked-data/cube#codeList": [
                 {
@@ -501,19 +546,6 @@
             "http://www.w3.org/2000/01/rdf-schema#range": [
                 {
                     "@id": "qb-id-10003.csv#class/some-dimension"
-                }
-            ]
-        },
-        {
-            "@id": "qb-id-10003.csv#slice/cross-measures",
-            "@type": [
-                "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://purl.org/linked-data/cube#SliceKey",
-                "http://purl.org/linked-data/cube#ComponentSet"
-            ],
-            "http://purl.org/linked-data/cube#componentProperty": [
-                {
-                    "@id": "qb-id-10003.csv#dimension/some-dimension"
                 }
             ]
         },
@@ -571,11 +603,25 @@
             ]
         },
         {
+            "@id": "qb-id-10003.csv#unit/percent",
+            "@type": [
+                "http://qudt.org/schema/qudt/Unit",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.ontology-of-units-of-measure.org/resource/om-2/Unit"
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Percent"
+                }
+            ]
+        },
+        {
             "@id": "qb-id-10003.csv#unit/some-unit",
             "@type": [
-                "http://www.ontology-of-units-of-measure.org/resource/om-2/Unit",
+                "http://qudt.org/schema/qudt/Unit",
                 "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://qudt.org/schema/qudt/Unit"
+                "http://www.ontology-of-units-of-measure.org/resource/om-2/Unit"
             ],
             "http://www.w3.org/2000/01/rdf-schema#label": [
                 {

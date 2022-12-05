@@ -40,7 +40,7 @@ from csvcubed.utils.skos.codelist import build_concepts_hierarchy_tree
 _logger = logging.getLogger(__name__)
 
 
-def _filter_components_from_dsd(
+def filter_components_from_dsd(
     components: List[QubeComponentResult],
     field: ComponentField,
     filter: str,
@@ -83,7 +83,7 @@ def load_csv_to_dataframe(json_path: Path, csv_path: Path) -> pd.DataFrame:
         raise CsvToDataFrameLoadFailedException() from ex
 
 
-def get_measure_col_name_from_dsd(
+def get_standard_shape_measure_col_name_from_dsd(
     components: List[QubeComponentResult],
 ) -> Optional[str]:
     """
@@ -93,7 +93,7 @@ def get_measure_col_name_from_dsd(
 
     :return: `Optional[str]`
     """
-    filtered_components = _filter_components_from_dsd(
+    filtered_components = filter_components_from_dsd(
         components,
         ComponentField.Property,
         ComponentPropertyAttributeURI.MeasureType.value,
@@ -108,7 +108,7 @@ def get_measure_col_name_from_dsd(
         return filtered_components[0].csv_col_title
 
 
-def get_unit_col_name_from_dsd(
+def get_standard_shape_unit_col_name_from_dsd(
     components: List[QubeComponentResult],
 ) -> Optional[str]:
     """
@@ -118,7 +118,7 @@ def get_unit_col_name_from_dsd(
 
     :return: `Optional[str]`
     """
-    filtered_components = _filter_components_from_dsd(
+    filtered_components = filter_components_from_dsd(
         components,
         ComponentField.Property,
         ComponentPropertyAttributeURI.UnitMeasure.value,
@@ -143,7 +143,7 @@ def get_single_measure_from_dsd(
 
     :return: `DatasetSingleMeasureResult`
     """
-    filtered_components = _filter_components_from_dsd(
+    filtered_components = filter_components_from_dsd(
         components, ComponentField.PropertyType, ComponentPropertyType.Measure.value
     )
 

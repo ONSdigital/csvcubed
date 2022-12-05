@@ -1,0 +1,27 @@
+PREFIX qb: <http://purl.org/linked-data/cube#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX csvw: <http://www.w3.org/ns/csvw#>
+
+SELECT ?csvUrl ?observationValueColumnTitle ?observationValueColumnAboutUrl
+WHERE {
+    ?table csvw:tableSchema ?tableSchema;
+           csvw:url ?csvUrl.
+        
+    ?tableSchema csvw:column/rdf:rest*/rdf:first ?observedValueColumn.
+    FILTER NOT EXISTS {
+        ?observedValueColumn csvw:virtual true.
+    }
+
+    OPTIONAL{
+        ?observedValueColumn csvw:aboutUrl ?observationValueColumnAboutUrl.
+    }
+    ?observedValueColumn csvw:propertyUrl ?observedValueColPropertyUrl;
+                         csvw:title ?observationValueColumnTitle.
+
+    FILTER EXISTS {
+            ?dsd_uri a qb:DataStructureDefinition;
+                    # Get list of possible measures in this DSD
+                    qb:component/qb:measure ?measureUri.
+            FILTER (strends(str(?observedValueColPropertyUrl), str(?measureUri)) || strends(str(?measureUri), str(?observedValueColPropertyUrl))).
+    }     
+}

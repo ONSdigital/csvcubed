@@ -90,7 +90,6 @@ def test_detect_valid_csvw_metadata_codelist_input():
     assert type == CSVWType.CodeList
     assert shape is None
 
-
 def test_detect_invalid_csvw_metadata_input():
     """
     Should throw an exception if the csv-w metadata input is not a data cube or code list.
@@ -99,10 +98,8 @@ def test_detect_invalid_csvw_metadata_input():
     csvw_metadata_json_path = _test_case_base_dir / "json.table.json"
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-
     csvw_metadata_rdf_validator = MetadataValidator(
-        csvw_metadata_rdf_graph,
-        csvw_metadata_json_path,
+        csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
 
     with pytest.raises(Exception) as exception:
@@ -181,7 +178,6 @@ def test_detect_csvw_shape_pivoted():
     )
 
     assert cube_shape == CubeShape.Pivoted
-
 
 def test_detect_csvw_shape_standard():
     """
