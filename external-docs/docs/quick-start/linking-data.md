@@ -16,7 +16,7 @@ We saw in the [describing your CSV](./describing-csv.md) section that we can pro
 
 ```json
 {
-    "$schema": "https://purl.org/csv-cubed/qube-config/v1.0",
+    "$schema": "https://purl.org/csv-cubed/qube-config/v1",
     "title": "Sweden at Eurovision",
     "summary": "List of Swedish entries to the Eurovision Song Contest since 1958.",
     "description": "Sweden has been competing in Eurovision since 1958, with an enviable track record of wins. This dataset covers all contests since 1958, their artists, the song names, language (if mono-lingual), and some observations covering points in final, rank in final, and number of artists on stage. Data originally sourced from https://en.wikipedia.org/w/index.php?title=Sweden_in_the_Eurovision_Song_Contest&oldid=1081060799 and https://sixonstage.com/",

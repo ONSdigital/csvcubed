@@ -14,7 +14,7 @@ A data set like the one defined below can be paired with a JSON configuration al
 
 ```json
 {
-    "$schema": "https://purl.org/csv-cubed/qube-config/v1.0",
+    "$schema": "https://purl.org/csv-cubed/qube-config/v1",
     "columns": {
         "Unit": {
             "type": "units",
@@ -54,7 +54,7 @@ In the following example, we'll show how to define new units for `Pounds Sterlin
 
 ```json
 {
-    "$schema": "https://purl.org/csv-cubed/qube-config/v1.0",
+    "$schema": "https://purl.org/csv-cubed/qube-config/v1",
     "columns": {
         "Unit": {
             "type": "units",

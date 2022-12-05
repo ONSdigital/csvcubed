@@ -74,7 +74,7 @@ Indicates that a cube was created and was written to the [output directory](#out
 
 This is referred to as the [configuration by convention approach](../configuration/convention.md)  
 
-The cube config json file must adhere to the structures defined in the [cube config schema](https://purl.org/csv-cubed/qube-config/v1.0).  
+The cube config json file must adhere to the structures defined in the [cube config schema](https://purl.org/csv-cubed/qube-config/v1).  
 
 For help on constructing the config json refer to the quick start guides on [designing a csv](../../quick-start/designing-csv.md) and [linking data](../../quick-start/linking-data.md) or the more detailed [Configuration Guide](../configuration/qube-config.md)
 

@@ -49,7 +49,7 @@ The simplest [qube-config.json](./configuration/qube-config.md) we can define fo
 
 ```json
 {
-    "$schema": "http://purl.org/csv-cubed/qube-config/v1.0",
+    "$schema": "http://purl.org/csv-cubed/qube-config/v1",
     "title": "'Arthur's Bakes' stores in UK cities from 2020 to 2022",
     "description": "The number of 'Arthurs' Bakes' stores in cities across the UK between 2020 and 2022.",
     "creator": "HM Revenue & Customs",
@@ -210,7 +210,7 @@ Note that this shape doesn't require that you add any additional columns to the 
 
 ```json
 {
-    "$schema": "http://purl.org/csv-cubed/qube-config/v1.0",
+    "$schema": "http://purl.org/csv-cubed/qube-config/v1",
     "title": "'Arthur's Bakes' stores in UK cities from 2020 to 2022",
     "description": "The number of 'Arthurs' Bakes' stores in cities across the UK between 2020 and 2022.",
     "creator": "HM Revenue & Customs",
