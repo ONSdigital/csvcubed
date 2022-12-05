@@ -363,7 +363,7 @@ class DuplicateMeasureError(SpecificValidationError):
         return "http://purl.org/csv-cubed/err/dup-measure"
 
     def __post_init__(self):
-        self.column_names_concatenated = ", ".join(self.column_names)
+        self.column_names_concatenated = ", ".join(sorted(self.column_names))
         self.message = f"In the pivoted shape, two or more observation value columns cannot be represented by identical measures. {self.column_names_concatenated}"
 
 

@@ -7,6 +7,9 @@
     "Location": {
       "type": "dimension"
     },
+    "Country": {
+      "type": "dimension"
+    },
     "Average Income": {
       "type": "observations",
       "measure": {
@@ -16,14 +19,14 @@
         "label": "GBP"
       }
     },
-    "Value": {
+    "GDP": {
       "type": "observations",
+      "measure": {
+        "label": "Average Income"
+      },
       "unit": {
         "label": "Billions of POUNDS"
       }
-    },
-    "Other Measure": {
-      "type": "measures"
     }
   }
 }

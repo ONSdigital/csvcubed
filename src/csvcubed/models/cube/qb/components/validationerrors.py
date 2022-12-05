@@ -151,7 +151,7 @@ class ConflictingUriSafeValuesError(PydanticThrowableSpecificValidationError):
         uri_val: str, conflicting_labels: Set[str]
     ) -> str:
         return f"{uri_val}: " + ", ".join(
-            [f"'{label}'" for label in conflicting_labels]
+            [f"'{label}'" for label in sorted(conflicting_labels)]
         )
 
     def __post_init__(self):
