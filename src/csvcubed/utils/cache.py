@@ -105,7 +105,7 @@ _hard_codes_map_url_to_file_path = {
 }
 
 
-def _get_url_to_file_path_map() -> Dict[str, Path]:
+def get_url_to_file_path_map() -> Dict[str, Path]:
     """
     todo: add comment here
     """
@@ -130,7 +130,7 @@ def _get_url_to_file_path_map() -> Dict[str, Path]:
     return map_uri_to_file_path
 
 
-_map_url_to_file_path = _get_url_to_file_path_map()
+_map_url_to_file_path = get_url_to_file_path_map()
 
 from requests.adapters import BaseAdapter, HTTPAdapter
 from urllib3.exceptions import NewConnectionError
