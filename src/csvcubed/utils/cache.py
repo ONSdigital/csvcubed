@@ -161,8 +161,34 @@ class CustomAdapterServeSomeFilesLocally(BaseAdapter):
             try:
                 print("The connection error has been found")
 
-                path_to_local_file = _generate_path_to_local_file(request.url)
-                successful_response = _simulate_successful_http_response(request, path_to_local_file)
+                trimmed_url = str(request.url).removeprefix("https:")
+                path_to_local_file = _map_url_to_file_path[
+                    trimmed_url[: len(trimmed_url) - 1]
+                ]
+                print(f"The local file path is: {path_to_local_file}")
+
+                _logger.warning(
+                    f"Unable to load json document from given URL. Attempting to load local storage copy of file {path_to_local_file} instead."
+                )
+
+                # The below is a response object that can be used to manually return the local copy of the file successfully.
+
+                successful_response = requests.Response()
+
+                successful_response.status_code = 200
+
+                successful_response.raw = BytesIO(
+                    bytes(path_to_local_file.read_text(), "utf-8")
+                )
+
+                successful_response.url = path_to_local_file.as_uri()
+
+                successful_response.encoding = "utf-8"
+
+                # successful_response.history = [response]
+                successful_response.reason = "OK"
+                successful_response.request = request
+
                 return successful_response
 
             except FileNotFoundError as e:
@@ -172,8 +198,6 @@ class CustomAdapterServeSomeFilesLocally(BaseAdapter):
 
         # if response.status_code in (4**, 5**)
         # then try recovering to a local copy of the file
-        #if response.status_code >= 400 and response.status_code <600:
-        #    successful_response = _simulate_successful_http_response(request, path_to_local_file)
         return response
 
     def close(self) -> None:
@@ -185,43 +209,3 @@ session.mount("http://", CustomAdapterServeSomeFilesLocally())
 session.mount("https://", CustomAdapterServeSomeFilesLocally())
 
 # session.hooks["response"] = [_hook_for_http_failure]
-
-def _generate_path_to_local_file(request_url: str) -> Path:
-    trimmed_url = str(request_url).removeprefix("https:")
-    path_to_local_file = _map_url_to_file_path[
-    trimmed_url[: len(trimmed_url)]
-    ]
-
-    return path_to_local_file
-
-
-def _simulate_successful_http_response(request: requests.PreparedRequest, path_to_local_file: Path) -> requests.Response:
-    """
-    Creates a new response object that contains the file path to the local copy of the requested file, that can then be retrieved.
-    """
-    
-    print(f"The local file path is: {path_to_local_file}")
-
-    _logger.warning(
-        f"Unable to load json document from given URL. Attempting to load local storage copy of file {path_to_local_file} instead."
-    )
-
-    # The below is a response object that can be used to manually return the local copy of the file successfully.
-
-    successful_response = requests.Response()
-
-    successful_response.status_code = 200
-    import json
-    f = open(path_to_local_file)
-    successful_response.raw = json.load(f)
-    f.close()
-
-    successful_response.url = path_to_local_file.as_uri()
-
-    successful_response.encoding = "utf-8"
-
-    # successful_response.history = [response]
-    successful_response.reason = "OK"
-    successful_response.request = request
-
-    return successful_response
