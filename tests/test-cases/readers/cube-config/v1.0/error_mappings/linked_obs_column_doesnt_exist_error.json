@@ -7,6 +7,11 @@
     "Location": {
       "type": "dimension"
     },
+    "Attribute": {
+      "type": "attribute",
+      "label": "Average Population",
+      "describes_observations": "Doesn't Exist"
+    },
     "Average Income": {
       "type": "observations",
       "measure": {
@@ -18,12 +23,12 @@
     },
     "Value": {
       "type": "observations",
+      "measure": {
+        "label": "Avarage GDP"
+      },
       "unit": {
         "label": "Billions of POUNDS"
       }
-    },
-    "Other Measure": {
-      "type": "measures"
     }
   }
 }
