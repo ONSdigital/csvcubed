@@ -128,21 +128,6 @@ class MoreThanOneUnitsColumnError(MaxNumComponentsExceededError):
     def get_error_url(cls) -> str:
         return "http://purl.org/csv-cubed/err/multi-unit-col"
 
-
-@dataclass
-class MoreThanOneObservationsColumnError(MaxNumComponentsExceededError):
-    """
-    An error where more than one observations column has been defined in a cube.
-    """
-
-    maximum_number: int = 1
-    component_type: ComponentTypeDescription = QbObservationValue
-
-    @classmethod
-    def get_error_url(cls) -> str:
-        return "http://purl.org/csv-cubed/err/multi-obsv-col"
-
-
 @dataclass
 class MinNumComponentsNotSatisfiedError(SpecificValidationError, ABC):
     """
