@@ -202,9 +202,6 @@ def test_val_errors_missing_obs_vals():
         "csvcubed.cli.build - ERROR - More information: http://purl.org/csv-cubed/err/obsv-val-mis"
     )
 
-
-# Todo: re-implement this test when we have the ability to construct multimeasure pivoted cubes
-#       from config.json files (see ticket #636)
 def test_val_errors_both_measure_types():
     """
     Test for:-
