@@ -10,52 +10,6 @@ from csvcubed.definitions import APP_ROOT_DIR_PATH
 
 _logger = logging.getLogger(__name__)
 
-
-# def _hook_for_http_failure(response: requests.Response, *args, **kwargs):
-#     print(f"The status code is: {response.status_code}")
-#     get_local_version_instead = get_url_to_file_path_map()
-#     if response.status_code >= 200 and response.status_code <= 399:
-#         print("This was successful")
-#     else:
-#         print("Not successful")
-#         # print(f"could not retrieve the document at: {response.url}")
-#         trimmed_url = str(response.url).removeprefix("https:")
-#         path_to_local_file = get_local_version_instead[
-#             trimmed_url[: len(trimmed_url) - 1]
-#         ]
-#         print(f"The local file path is: {path_to_local_file}")
-#         try:
-#             #1 We could warn the user here about the request failure and inform about attempting to use the local file, or see #2
-#             _logger.warning(f"Unable to load json document from given URL. Attempting to load local storage copy of file {path_to_local_file} instead.")
-
-#             # The below is a response object that can be used to manually return the local copy of the file successfully.
-
-#             successful_response = requests.Response()
-
-#             successful_response.status_code = 200
-
-#             successful_response.raw = BytesIO(bytes(path_to_local_file.read_text(), "utf-8"))
-
-#             successful_response.url = path_to_local_file.as_uri()
-
-#             successful_response.encoding = "utf-8"
-
-#             successful_response.history = [response]
-#             successful_response.reason = "OK"
-#             successful_response.request = response.request
-
-
-#             return successful_response
-
-#             #2 Or perhaps we could log the warning here only if/after the local copy has been succcessfully retrieved?
-#             #logger.warning("Unable to load json document from given URL. File has been loaded from local storage instead.")
-
-#         except Exception as e: #What type of error are we expecting? Maybe FileNotFound?
-#             raise Exception(f"Error loading JSON from file at '{path_to_local_file}'") from e
-
-#         # response.url = path_to_local_file
-#         return response
-
 _hard_codes_map_url_to_file_path = {
     "//purl.org/csv-cubed/qube-config/v1.0": APP_ROOT_DIR_PATH
     / "schema"
@@ -161,35 +115,11 @@ class CustomAdapterServeSomeFilesLocally(BaseAdapter):
             try:
                 print("The connection error has been found")
 
-                trimmed_url = str(request.url).removeprefix("https:")
-                path_to_local_file = _map_url_to_file_path[
-                    trimmed_url[: len(trimmed_url) - 1]
-                ]
+                path_to_local_file = generate_path_to_local_file(request.url)
+
                 print(f"The local file path is: {path_to_local_file}")
 
-                _logger.warning(
-                    f"Unable to load json document from given URL. Attempting to load local storage copy of file {path_to_local_file} instead."
-                )
-
-                # The below is a response object that can be used to manually return the local copy of the file successfully.
-
-                successful_response = requests.Response()
-
-                successful_response.status_code = 200
-
-                successful_response.raw = BytesIO(
-                    bytes(path_to_local_file.read_text(), "utf-8")
-                )
-
-                successful_response.url = path_to_local_file.as_uri()
-
-                successful_response.encoding = "utf-8"
-
-                # successful_response.history = [response]
-                successful_response.reason = "OK"
-                successful_response.request = request
-
-                return successful_response
+                return create_local_copy_response(path_to_local_file, request)
 
             except FileNotFoundError as e:
                 raise Exception(
@@ -203,6 +133,42 @@ class CustomAdapterServeSomeFilesLocally(BaseAdapter):
     def close(self) -> None:
         self.http_adapter.close()
 
+
+def generate_path_to_local_file(request_url: str) -> Path:
+    trimmed_url = str(request_url).removeprefix("https:")
+    path_to_local_file = _map_url_to_file_path[
+        trimmed_url[: len(trimmed_url) - 1]
+    ]
+    return path_to_local_file
+
+
+def create_local_copy_response(path_to_local_file: Path, request: requests.PreparedRequest) -> requests.Response:
+    """
+    Generates the response object that contains the local copy file path of the requested file and then returns it.
+    """
+    _logger.warning(
+            f"Unable to load json document from given URL. Attempting to load local storage copy of file {path_to_local_file} instead."
+        )
+
+    # The below is a response object that can be used to manually return the local copy of the file successfully.
+
+    successful_response = requests.Response()
+
+    successful_response.status_code = 200
+
+    successful_response.raw = BytesIO(
+        bytes(path_to_local_file.read_text(), "utf-8")
+    )
+
+    successful_response.url = path_to_local_file.as_uri()
+
+    successful_response.encoding = "utf-8"
+
+    # successful_response.history = [response]
+    successful_response.reason = "OK"
+    successful_response.request = request
+
+    return successful_response
 
 session = CachedSession(cache_control=True, use_cache_dir=True)
 session.mount("http://", CustomAdapterServeSomeFilesLocally())
