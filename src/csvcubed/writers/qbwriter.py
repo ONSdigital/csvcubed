@@ -16,7 +16,7 @@ import pandas as pd
 from csvcubed.models.cube.columns import CsvColumn, SuppressedCsvColumn
 from csvcubed.models.cube.cube import QbCube
 from csvcubed.models.cube.qb.columns import QbColumn
-from csvcubed.models.cube.qb.components.attribute import QbAttribute, QbAttributeLiteral
+from csvcubed.models.cube.qb.components.attribute import QbAttribute, QbAttributeLiteral, ExistingQbAttribute, NewQbAttribute
 from csvcubed.models.cube.qb.components.codelist import (
     NewQbCodeListInCsvW,
     NewQbCodeList,
@@ -484,6 +484,15 @@ class QbWriter(WriterBase):
             )
             if about_url is not None:
                 csvw_col["aboutUrl"] = about_url
+
+        # If the cube is in pivoted shape, and any attribute columns are required, set these columns to not be required
+        if self.cube.is_pivoted_shape:
+            if isinstance(column.structural_definition, ExistingQbAttribute) and self._determine_whether_column_is_required(column):
+                ExistingQbAttribute.is_required = False
+                _logger.warning("Attribute set as not required")
+            elif isinstance(column.structural_definition, NewQbAttribute) and self._determine_whether_column_is_required(column):
+                NewQbAttribute.is_required = False
+                _logger.warning("Attribute set as not required")
 
         (
             property_url,
