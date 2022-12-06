@@ -2,7 +2,7 @@ import copy
 from io import BytesIO, StringIO
 import logging
 from pathlib import Path
-from typing import Dict
+from typing import Dict, Optional
 import requests
 from requests_cache import CachedSession
 
@@ -110,6 +110,14 @@ class CustomAdapterServeSomeFilesLocally(BaseAdapter):
                 cert=cert,
                 proxies=proxies,
             )
+
+            if response.status_code >=400 and response.status_code <600:
+                print(f"The status code is {response.status_code}")
+
+                path_to_local_file = generate_path_to_local_file(request.url)
+
+                return create_local_copy_response(path_to_local_file, request, response)
+
         except requests.exceptions.ConnectionError as e:
             # except requests.exceptions.RequestException as e:
             try:
@@ -128,6 +136,7 @@ class CustomAdapterServeSomeFilesLocally(BaseAdapter):
 
         # if response.status_code in (4**, 5**)
         # then try recovering to a local copy of the file
+
         return response
 
     def close(self) -> None:
@@ -142,7 +151,7 @@ def generate_path_to_local_file(request_url: str) -> Path:
     return path_to_local_file
 
 
-def create_local_copy_response(path_to_local_file: Path, request: requests.PreparedRequest) -> requests.Response:
+def create_local_copy_response(path_to_local_file: Path, request: requests.PreparedRequest, response: Optional[requests.Response] = None) -> requests.Response:
     """
     Generates the response object that contains the local copy file path of the requested file and then returns it.
     """
@@ -161,10 +170,11 @@ def create_local_copy_response(path_to_local_file: Path, request: requests.Prepa
     )
 
     successful_response.url = path_to_local_file.as_uri()
-
     successful_response.encoding = "utf-8"
 
-    # successful_response.history = [response]
+    if response is not None and response.status_code >=400 and response.status_code < 600:
+        successful_response.history = [response]
+
     successful_response.reason = "OK"
     successful_response.request = request
 
