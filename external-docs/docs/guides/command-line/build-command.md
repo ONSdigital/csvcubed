@@ -36,6 +36,7 @@ csvcubed build my-data-file.csv -c my-qube-config.json
 ```
 
 ## Saving Validation Errors
+
 ### `--validation-errors-to-file`
 
 Setting this flag will result in any validation errors being written to the `validation-errors.json` file in the [output directory](#output-directory).  If no errors are encountered then the file is not written.

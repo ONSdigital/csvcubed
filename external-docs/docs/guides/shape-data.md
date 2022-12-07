@@ -4,8 +4,8 @@
 
 csvcubed requires that all CSV data inputs are provided in one of two specialised form of [tidy data](../glossary/index.md#tidy-data):
 
-* the [standard approach](#standard-shape) - the **default recommended shape** accepted by csvcubed. It is the **most flexible** approach as it allows you to vary measures and units within the same cube, but it is also the most **verbose** shape.
-* the [pivoted approach](#pivoted-shape) - a **terser** shape currently only compatible with data sets containing a **single measure**.
+* the [pivoted approach](#pivoted-shape) - the recommended shape for dense data cubes.
+* the [standard approach](#standard-shape) -  the recommended shape for sparse multi-measure data cubes.
 
 These two shapes share a number of similarities in how they require data to be structured; this is explored in the following section on the [common structure](#common-structure).
 
@@ -13,14 +13,14 @@ These two shapes share a number of similarities in how they require data to be s
 
 Both data shapes expect that data is structured as per the following example:
 
-_Data set representing the number of 'Arthur's Bakes' stores in UK cities from 2020 to 2022_
-
 | Year | Location  | Value |      Status |
 |:-----|:----------|------:|------------:|
 | 2022 | London    |    35 | Provisional |
 | 2021 | Cardiff   |    26 |       Final |
 | 2020 | Edinburgh |    90 |       Final |
 | 2021 | Belfast   |     0 |       Final |
+
+> Data set representing the number of 'Arthur's Bakes' stores in UK cities from 2020 to 2022
 
 **Note that**:
 
@@ -36,7 +36,11 @@ _Data set representing the number of 'Arthur's Bakes' stores in UK cities from 2
 
 ## Standard shape
 
-The standard shape extends the [common structure](#common-structure) by requiring that **each row** has a _measures_ column and a _units_ column; these columns define the measure and unit (of measure) for each row. In our example, the measure observed is `Number of 'Arthur's Bakes'` and the corresponding unit is `Count`.
+The standard shape extends the [common structure](#common-structure) by requiring that **each row** has a _measures_ column and a _units_ column; these columns define the measure and unit (of measure) for each row.
+
+The shape is most at home where you have a sparse data cube, i.e. there are a large number of possible combinations of dimension values, but very few of them have observed values recorded. If your data cube is dense, then consider using the [pivoted shape](#pivoted-shape).
+
+In our example, the measure observed is `Number of 'Arthur's Bakes'` and the corresponding unit is `Count`.
 
 | Year | Location  | Value |      Status |                    Measure |  Unit |
 |:-----|:----------|------:|------------:|---------------------------:|------:|
@@ -52,8 +56,8 @@ The simplest [qube-config.json](./configuration/qube-config.md) we can define fo
     "$schema": "http://purl.org/csv-cubed/qube-config/v1",
     "title": "'Arthur's Bakes' stores in UK cities from 2020 to 2022",
     "description": "The number of 'Arthurs' Bakes' stores in cities across the UK between 2020 and 2022.",
-    "creator": "HM Revenue & Customs",
-    "publisher": "HM Revenue & Customs",
+    "creator": "https://www.gov.uk/government/organisations/hm-revenue-customs",
+    "publisher": "https://www.gov.uk/government/organisations/hm-revenue-customs",
     "columns": {
         "Year": {
             "type": "dimension"
@@ -92,18 +96,16 @@ We can extend our example data set so that it now includes revenue values for th
 | 2021 | Cardiff  |    26 |       Final | Number of 'Arthur's Bakes' |                  Count |
 | 2021 | Cardiff  |    18 |       Final |                    Revenue | GBP Sterling, Millions |
 
-The same data could be more naturally represented in the equivalent pivoted shape:
+The same data could be represented in the [equivalent pivoted shape](#multiple-pivoted-measures):
 
-| Year | Location | Number of 'Arthur's Bakes' | Revenue (GBP Sterling, Millions) |
-|:-----|:---------|---------------------------:|---------------------------------:|
-| 2022 | London   |                         35 |                               25 |
-| 2021 | Cardiff  |                         26 |                               18 |
+| Year | Location | Number of 'Arthur's Bakes' | Number of Stores Status | Revenue (GBP Sterling, Millions) | Revenue Status |
+|:-----|:---------|---------------------------:|:------------------------|---------------------------------:|:---------------|
+| 2022 | London   |                         35 | Provisional             |                               25 | Provisional    |
+| 2021 | Cardiff  |                         26 | Final                   |                               18 | Final          |
 
-**csvcubed does not currently support data sets containing multiple measures in the [pivoted shape](#pivoted-shape).**
+## Converting to the standard shape
 
-### Converting to the standard shape
-
-Since csvcubed doesn't currently support multi-measure data sets in the [pivoted shape](#pivoted-shape), it is often necessary to convert your data from the [pivoted shape](#pivoted-shape) into the [standard shape](#standard-shape). See the following examples using the [pandas library](https://pandas.pydata.org/) in python and the [tidyverse library](https://tidyverse.org/) in R to convert from the pivoted to the standard shape.
+It is possible to convert from the [pivoted shape](#pivoted-shape) into the [standard shape](#standard-shape); see the following examples using the [pandas library](https://pandas.pydata.org/) in python and the [tidyverse library](https://tidyverse.org/) in R.
 
 Starting with a dataframe in the pivoted shape:
 
@@ -195,16 +197,14 @@ The data is now in standard form:
 
 ## Pivoted Shape
 
-> csvcubed currently only accepts the pivoted data shape if your cube contains a single measure type and a single unit type.
+The [standard shape](#standard-shape) is flexible but it also has a lot of redundancy which can often be removed by using the more concise pivoted form. Our dataset on the distribution of the number of `Arthur's Bakes' stores can be expressed in the following way in the pivoted shape:
 
-The [standard shape](#standard-shape) is flexible but it also has a lot of redudancy which can often be removed by using the more concise pivoted form. Our dataset on the distribution of the number of `Arthur's Bakes' stores can be expressed in the following way in the pivoted shape:
-
-| Year | Location  | Number of 'Arthur's Bakes' |      Status |
-|:-----|:----------|---------------------------:|------------:|
+| Year | Location  | Number of 'Arthur's Bakes' | Status      |
+|:-----|:----------|---------------------------:|:------------|
 | 2022 | London    |                         35 | Provisional |
-| 2021 | Cardiff   |                         26 |       Final |
-| 2020 | Edinburgh |                         90 |       Final |
-| 2021 | Belfast   |                          0 |       Final |
+| 2021 | Cardiff   |                         26 | Final       |
+| 2020 | Edinburgh |                         90 | Final       |
+| 2021 | Belfast   |                          0 | Final       |
 
 Note that this shape doesn't require that you add any additional columns to the underlying [common structure](#common-structure), however it does require a different [qube-config.json](./configuration/qube-config.md) configuration; we must ensure that the measure and corresponding unit are attached to the _observations_ column:
 
@@ -213,8 +213,8 @@ Note that this shape doesn't require that you add any additional columns to the 
     "$schema": "http://purl.org/csv-cubed/qube-config/v1",
     "title": "'Arthur's Bakes' stores in UK cities from 2020 to 2022",
     "description": "The number of 'Arthurs' Bakes' stores in cities across the UK between 2020 and 2022.",
-    "creator": "HM Revenue & Customs",
-    "publisher": "HM Revenue & Customs",
+    "creator": "https://www.gov.uk/government/organisations/hm-revenue-customs",
+    "publisher": "https://www.gov.uk/government/organisations/hm-revenue-customs",
     "columns": {
         "Year": {
             "type": "dimension"
@@ -238,4 +238,13 @@ Note that this shape doesn't require that you add any additional columns to the 
 }
 ```
 
-**Is is not possible to create a pivoted shape data set relying solely on the [configuration by convention approach](./configuration/convention.md); the observations column _must_ be configured inside a [qube-config.json](./configuration/qube-config.md).**
+### Multiple Pivoted Measures
+
+| Year | Location  | Number of 'Arthur's Bakes' | Revenue (GBP Sterling, Millions) | Revenue Status |
+|:-----|:----------|---------------------------:|---------------------------------:|:---------------|
+| 2022 | London    |                         35 |                               25 | Provisional    |
+| 2021 | Cardiff   |                         26 |                               18 | Final          |
+| 2020 | Edinburgh |                         90 |                               67 | Final          |
+| 2021 | Belfast   |                          0 |                                0 | Final          |
+
+todo: Complete me.
