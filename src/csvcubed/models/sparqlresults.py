@@ -119,6 +119,7 @@ class QubeComponentsResult:
 
     qube_components: list[QubeComponentResult]
     num_components: int
+    csv_url: str
 
     @property
     def output_str(self) -> str:
@@ -135,7 +136,8 @@ class QubeComponentsResult:
         )
         return f"""
         - Number of Components: {self.num_components}
-        - Components:{linesep}{formatted_components}"""
+        - Components:{linesep}{formatted_components}
+        - CSV URL: {self.csv_url}"""
 
 
 @dataclass

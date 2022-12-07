@@ -1,15 +1,20 @@
 from dataclasses import dataclass
 from functools import cached_property
+from pathlib import Path
 from typing import Dict, List, Any
 
 import rdflib
+from csvcubed.models.cube.cube_shape import CubeShape
 
-from csvcubed.models.sparqlresults import ColTitlesAndNamesResult, ObservationValueColumnTitleAboutUrlResult, QubeComponentResult, UnitColumnAboutValueUrlResult
-from csvcubed.utils.sparql_handler.sparqlmanager import select_col_titles_and_names, select_observation_value_column_title_and_about_url, select_unit_col_about_value_urls 
+from csvcubed.models.sparqlresults import ColTitlesAndNamesResult, DSDLabelURIResult, ObservationValueColumnTitleAboutUrlResult, QubeComponentsResult, UnitColumnAboutValueUrlResult
+from csvcubed.utils.sparql_handler.sparqlmanager import select_col_titles_and_names, select_csvw_dsd_qube_components, select_observation_value_column_title_and_about_url, select_unit_col_about_value_urls 
 
 @dataclass
 class DataCubeState:
+    cube_shape: CubeShape
     rdf_graph: rdflib.Graph
+    dsd_uri: DSDLabelURIResult
+    json_path: Path
 
     """
     Private utility functions.
@@ -52,6 +57,15 @@ class DataCubeState:
         assert len(results) > 0
         return {results[0].csv_url:results}
 
+    @cached_property
+    def _dsd_qube_components(self) -> Dict[str, List[QubeComponentsResult]]:
+        """
+        Queries and caches qube components
+        """
+        results = select_csvw_dsd_qube_components(self.cube_shape, self.rdf_graph, self.dsd_uri, self.json_path)
+        assert len(results) > 0
+        return {results[0].csv_url: results}
+
 
     """
     Public getters for the cached properties.
@@ -75,4 +89,11 @@ class DataCubeState:
         Getter for _col_names_col_titles cached property.
         """
         value: List[ColTitlesAndNamesResult] = self._get_value_for_key(csv_url, self._col_names_col_titles)
+        return value
+    
+    def get_dsd_qube_components(self, csv_url: str) -> List[QubeComponentsResult]:
+        """
+        Getter for DSD Qube Components cached property
+        """
+        value: List[QubeComponentsResult] = self._get_value_for_key(csv_url, self._dsd_qube_components)
         return value
