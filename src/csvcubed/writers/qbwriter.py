@@ -485,15 +485,6 @@ class QbWriter(WriterBase):
             if about_url is not None:
                 csvw_col["aboutUrl"] = about_url
 
-        # If the cube is in pivoted shape, and any attribute columns are required, set these columns to not be required
-        if self.cube.is_pivoted_shape:
-            if isinstance(column.structural_definition, ExistingQbAttribute) and self._determine_whether_column_is_required(column):
-                ExistingQbAttribute.is_required = False
-                _logger.warning("Attribute set as not required")
-            elif isinstance(column.structural_definition, NewQbAttribute) and self._determine_whether_column_is_required(column):
-                NewQbAttribute.is_required = False
-                _logger.warning("Attribute set as not required")
-
         (
             property_url,
             default_value_url,
@@ -549,19 +540,19 @@ class QbWriter(WriterBase):
         return primary_key_columns
 
     def _determine_whether_column_is_required(self, column: QbColumn) -> bool:
-        return (
-            isinstance(
-                column.structural_definition,
-                (QbDimension, QbMultiUnits, QbMultiMeasureDimension),
-            )
-            or (
-                isinstance(column.structural_definition, QbAttribute)
-                and column.structural_definition.get_is_required()
-            )
-            or (
-                isinstance(column.structural_definition, QbObservationValue)
-                and len(get_observation_status_columns(self.cube)) == 0
-                # We cannot mark an observation value column as `required` if there are `obsStatus` columns defined
-                # since we permit missing observation values where an `obsStatus` explains the reason.
-            )
-        )
+        if isinstance(column.structural_definition,(QbDimension, QbMultiUnits, QbMultiMeasureDimension)):
+            return True
+        elif (isinstance(column.structural_definition, QbAttribute) and column.structural_definition.get_is_required()):
+            if self.cube.is_pivoted_shape:
+                #If the cube is in pivoted shape, the attribute columns cannot be set to required.
+                _logger.warning(
+                    "Setting the column '%s' to not required as the cube is in pivoted shape.", column.csv_column_title
+                )
+                return False                        
+            return True
+        elif (isinstance(column.structural_definition, QbObservationValue) and len(get_observation_status_columns(self.cube)) == 0):
+            # We cannot mark an observation value column as `required` if there are `obsStatus` columns defined
+            # since we permit missing observation values where an `obsStatus` explains the reason.
+            return True
+
+        return False
