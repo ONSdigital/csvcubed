@@ -4,7 +4,7 @@ import json
 
 from tests.unit.test_baseunit import get_test_cases_dir
 from csvcubed.utils.json import load_json_document
-from csvcubed.utils.cache import _map_url_to_file_path, session
+from csvcubed.utils.cache import map_url_to_file_path, session
 from csvcubed.definitions import APP_ROOT_DIR_PATH
 
 _json_test_cases_dir = get_test_cases_dir() / "utils" / "json"
@@ -47,11 +47,11 @@ def test_loading_json_from_url():
 
 @pytest.fixture(autouse=True)
 def dummy_mapped_url():
-    _map_url_to_file_path["//thisisatestfornickandcharlesons.com"] = (
+    map_url_to_file_path["//thisisatestfornickandcharlesons.com"] = (
         APP_ROOT_DIR_PATH / "schema" / "cube-config" / "v1_3" / "schema.json"
     )
     yield None
-    del _map_url_to_file_path["//thisisatestfornickandcharlesons.com"]
+    del map_url_to_file_path["//thisisatestfornickandcharlesons.com"]
 
 
 def test_load_local_when_http_request_fails():
@@ -71,7 +71,6 @@ def test_load_local_when_http_request_fails():
         with open(expected_document, "r") as f:
             expected = json.load(f)
             assert json_document == expected
-            return expected
 
 
 if __name__ == "__main__":

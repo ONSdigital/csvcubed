@@ -59,7 +59,7 @@ _hard_codes_map_url_to_file_path = {
 }
 
 
-def get_url_to_file_path_map() -> Dict[str, Path]:
+def _get_url_to_file_path_map() -> Dict[str, Path]:
     """
     todo: add comment here
     """
@@ -84,10 +84,11 @@ def get_url_to_file_path_map() -> Dict[str, Path]:
     return map_uri_to_file_path
 
 
-_map_url_to_file_path = get_url_to_file_path_map()
+map_url_to_file_path = _get_url_to_file_path_map()
 
 from requests.adapters import BaseAdapter, HTTPAdapter
-from urllib3.exceptions import NewConnectionError
+from urllib3.exceptions import NewConnectionError, ConnectionError as ce, MaxRetryError
+from jsonschema.exceptions import RefResolutionError as rre
 from requests.exceptions import JSONDecodeError
 
 
@@ -100,7 +101,9 @@ class CustomAdapterServeSomeFilesLocally(BaseAdapter):
     def send(
         self, request, stream=False, timeout=None, verify=True, cert=None, proxies=None
     ):
-        print(f"This is the HTTP(s) adapter sending the request: {request.url}")
+        _logger.debug(
+            "This is the HTTP(s) adapter sending the request: %s", request.url
+        )
         try:
             response = self.http_adapter.send(
                 request,
@@ -111,7 +114,8 @@ class CustomAdapterServeSomeFilesLocally(BaseAdapter):
                 proxies=proxies,
             )
 
-            if response.status_code >=400 and response.status_code <600:
+            if response.status_code >= 400 and response.status_code < 600:
+                # Move this to below try/except
                 print(f"The status code is {response.status_code}")
 
                 path_to_local_file = generate_path_to_local_file(request.url)
@@ -119,6 +123,15 @@ class CustomAdapterServeSomeFilesLocally(BaseAdapter):
                 return create_local_copy_response(path_to_local_file, request, response)
 
         except requests.exceptions.ConnectionError as e:
+            # except (
+            #     requests.exceptions.ConnectionError,
+            #     NewConnectionError,
+            #     ce,
+            #     MaxRetryError,
+            #     rre,
+            # ) as e:
+            # except rre as e:
+            # except Exception as e:
             # except requests.exceptions.RequestException as e:
             try:
                 print("The connection error has been found")
@@ -126,6 +139,7 @@ class CustomAdapterServeSomeFilesLocally(BaseAdapter):
                 path_to_local_file = generate_path_to_local_file(request.url)
 
                 print(f"The local file path is: {path_to_local_file}")
+                # if path is none raise an error
 
                 return create_local_copy_response(path_to_local_file, request)
 
@@ -144,20 +158,23 @@ class CustomAdapterServeSomeFilesLocally(BaseAdapter):
 
 
 def generate_path_to_local_file(request_url: str) -> Path:
+    # .get instead of [] to get item from map which may not exist, then decide to raise an error
     trimmed_url = str(request_url).removeprefix("https:")
-    path_to_local_file = _map_url_to_file_path[
-        trimmed_url[: len(trimmed_url) - 1]
-    ]
+    path_to_local_file = map_url_to_file_path[trimmed_url[: len(trimmed_url) - 1]]
     return path_to_local_file
 
 
-def create_local_copy_response(path_to_local_file: Path, request: requests.PreparedRequest, response: Optional[requests.Response] = None) -> requests.Response:
+def create_local_copy_response(
+    path_to_local_file: Path,
+    request: requests.PreparedRequest,
+    response: Optional[requests.Response] = None,
+) -> requests.Response:
     """
     Generates the response object that contains the local copy file path of the requested file and then returns it.
     """
     _logger.warning(
-            f"Unable to load json document from given URL. Attempting to load local storage copy of file {path_to_local_file} instead."
-        )
+        f"Unable to load json document from given URL. Attempting to load local storage copy of file {path_to_local_file} instead."
+    )
 
     # The below is a response object that can be used to manually return the local copy of the file successfully.
 
@@ -165,20 +182,19 @@ def create_local_copy_response(path_to_local_file: Path, request: requests.Prepa
 
     successful_response.status_code = 200
 
-    successful_response.raw = BytesIO(
-        bytes(path_to_local_file.read_text(), "utf-8")
-    )
+    successful_response.raw = BytesIO(bytes(path_to_local_file.read_text(), "utf-8"))
 
     successful_response.url = path_to_local_file.as_uri()
     successful_response.encoding = "utf-8"
 
-    if response is not None and response.status_code >=400 and response.status_code < 600:
+    if response is not None:
         successful_response.history = [response]
 
     successful_response.reason = "OK"
     successful_response.request = request
 
     return successful_response
+
 
 session = CachedSession(cache_control=True, use_cache_dir=True)
 session.mount("http://", CustomAdapterServeSomeFilesLocally())
