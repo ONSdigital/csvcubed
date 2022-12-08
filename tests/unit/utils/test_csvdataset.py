@@ -501,11 +501,11 @@ def test_transform_to_canonical_shape_for_standard_shape_data_set():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
-    
     (dataset, qube_components, dsd_uri, _) = get_arguments_qb_dataset(
         CubeShape.Standard, csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
+    data_cube_state = DataCubeState(CubeShape.Standard, csvw_metadata_rdf_graph, dsd_uri, csvw_metadata_json_path)
+
     (
         canonical_shape_dataset,
         measure_col,
@@ -539,11 +539,11 @@ def test_transform_to_canonical_shape_for_pivoted_single_measure_shape_data_set(
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
-
     (dataset, qube_components, dsd_uri, _) = get_arguments_qb_dataset(
         CubeShape.Pivoted, csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
+    data_cube_state = DataCubeState(CubeShape.Pivoted, csvw_metadata_rdf_graph, dsd_uri, csvw_metadata_json_path)
+
     dataset_uri = to_absolute_rdflib_file_path(
         select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri,
     csvw_metadata_json_path,
@@ -596,16 +596,16 @@ def test_transform_to_canonical_shape_for_pivoted_multi_measure_shape_data_set()
     (dataset, qube_components, dsd_uri, _) = get_arguments_qb_dataset(
         CubeShape.Pivoted, csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
-    data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
+    data_cube_state = DataCubeState(CubeShape.Pivoted, csvw_metadata_rdf_graph, dsd_uri, csvw_metadata_json_path)
 
-    (dataset, qube_components, dsd_uri, _) = get_arguments_qb_dataset(
+    (dataset, qube_components, dsd_uri, csv_url) = get_arguments_qb_dataset(
         CubeShape.Pivoted, csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
     dataset_uri = to_absolute_rdflib_file_path(
         select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri,
     csvw_metadata_json_path,
     )
-    csv_url = select_qb_csv_url(csvw_metadata_rdf_graph, dataset_uri).csv_url
+    # csv_url = select_qb_csv_url(csvw_metadata_rdf_graph, dataset_uri).csv_url
 
     (
         canonical_shape_dataset,

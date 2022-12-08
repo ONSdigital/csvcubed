@@ -1,5 +1,6 @@
 import pytest
 from csvcubed.cli.inspect.metadataprinter import to_absolute_rdflib_file_path
+from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import (
     ColTitlesAndNamesResult,
     ObservationValueColumnTitleAboutUrlResult,
@@ -8,6 +9,7 @@ from csvcubed.models.sparqlresults import (
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
 from csvcubed.utils.sparql_handler.sparqlmanager import (
     select_csvw_catalog_metadata,
+    select_csvw_dsd_dataset_label_and_dsd_def_uri,
     select_qb_csv_url,
 )
 from csvcubed.utils.tableschema import CsvwRdfManager
@@ -57,8 +59,11 @@ def test_get_unit_col_about_value_urls_for_csv():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
+    dsd_uri = select_csvw_dsd_dataset_label_and_dsd_def_uri(
+        csvw_metadata_rdf_graph
+    ).dsd_uri
 
-    data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
+    data_cube_state = DataCubeState(CubeShape.Pivoted, csvw_metadata_rdf_graph, dsd_uri, csvw_metadata_json_path)
 
     data_set_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
     data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
@@ -90,8 +95,11 @@ def test_get_obs_val_col_title_about_url_for_csv():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
+    dsd_uri = select_csvw_dsd_dataset_label_and_dsd_def_uri(
+        csvw_metadata_rdf_graph
+    ).dsd_uri
 
-    data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
+    data_cube_state = DataCubeState(CubeShape.Pivoted, csvw_metadata_rdf_graph, dsd_uri, csvw_metadata_json_path)
 
     data_set_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
     data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
@@ -113,6 +121,27 @@ def test_get_obs_val_col_title_about_url_for_csv():
     )
 
 
+def test_get_dsd_qube_components_for_csv():
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-single-measure-dataset"
+        / "qb-id-10004.csv-metadata.json"
+    )
+    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
+    dsd_uri = select_csvw_dsd_dataset_label_and_dsd_def_uri(
+        csvw_metadata_rdf_graph
+    ).dsd_uri
+
+    data_cube_state = DataCubeState(CubeShape.Pivoted, csvw_metadata_rdf_graph, dsd_uri, csvw_metadata_json_path)
+
+    data_set_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
+    data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
+    data_set_url = select_qb_csv_url(csvw_metadata_rdf_graph, data_set_uri).csv_url
+    results = data_cube_state.get_dsd_qube_components_for_csv(data_set_url)
+    assert True
+
+
 def test_get_col_name_col_title_for_csv():
     """
     Ensures that the valid obs_val_col_title_about_url_for_csv property is returned for the given csv.
@@ -124,8 +153,11 @@ def test_get_col_name_col_title_for_csv():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
+    dsd_uri = select_csvw_dsd_dataset_label_and_dsd_def_uri(
+        csvw_metadata_rdf_graph
+    ).dsd_uri
 
-    data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
+    data_cube_state = DataCubeState(CubeShape.Pivoted, csvw_metadata_rdf_graph, dsd_uri, csvw_metadata_json_path)
 
     data_set_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
     data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
@@ -158,8 +190,11 @@ def test_exception_is_thrown_for_invalid_csv_url():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
+    dsd_uri = select_csvw_dsd_dataset_label_and_dsd_def_uri(
+        csvw_metadata_rdf_graph
+    ).dsd_uri
 
-    data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
+    data_cube_state = DataCubeState(CubeShape.Pivoted, csvw_metadata_rdf_graph, dsd_uri, csvw_metadata_json_path)
 
     input_dict = {"a": 1, "b": 2}
 

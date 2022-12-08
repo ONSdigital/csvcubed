@@ -546,11 +546,11 @@ def test_get_val_counts_info_multi_unit_multi_measure_dataset():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
-
     (dataset, qube_components, dsd_uri, _) = get_arguments_qb_dataset(
+
         CubeShape.Pivoted, csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
+    data_cube_state = DataCubeState(CubeShape.Pivoted, csvw_metadata_rdf_graph, dsd_uri, csvw_metadata_json_path)
 
     (
         canonical_shape_dataset,
@@ -597,11 +597,11 @@ def test_get_val_counts_info_multi_unit_single_measure_dataset():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
 
     (dataset, qube_components, dsd_uri, _) = get_arguments_qb_dataset(
         CubeShape.Standard, csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
+    data_cube_state = DataCubeState(CubeShape.Standard, csvw_metadata_rdf_graph, dsd_uri, csvw_metadata_json_path)
     (
         canonical_shape_dataset,
         measure_col,
@@ -647,11 +647,11 @@ def test_get_val_counts_info_single_unit_multi_measure_dataset():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
 
     (dataset, qube_components, dsd_uri, _) = get_arguments_qb_dataset(
         CubeShape.Standard, csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
+    data_cube_state = DataCubeState(CubeShape.Standard, csvw_metadata_rdf_graph, dsd_uri, csvw_metadata_json_path)
     (
         canonical_shape_dataset,
         measure_col,
@@ -697,11 +697,11 @@ def test_get_val_counts_info_single_unit_single_measure_dataset():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
 
     (dataset, qube_components, dsd_uri, _) = get_arguments_qb_dataset(
         CubeShape.Standard, csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
+    data_cube_state = DataCubeState(CubeShape.Standard, csvw_metadata_rdf_graph, dsd_uri, csvw_metadata_json_path)
     (
         canonical_shape_dataset,
         measure_col,
@@ -746,7 +746,6 @@ def test_get_val_counts_info_pivoted_single_measure_dataset():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
     
     data_set_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
     data_set_uri = to_absolute_rdflib_file_path(
@@ -759,6 +758,7 @@ def test_get_val_counts_info_pivoted_single_measure_dataset():
     (dataset, qube_components, dsd_uri, _) = get_arguments_qb_dataset(
         CubeShape.Standard, csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
+    data_cube_state = DataCubeState(CubeShape.Standard, csvw_metadata_rdf_graph, dsd_uri, csvw_metadata_json_path)
     (
         canonical_shape_dataset,
         measure_col,
@@ -803,7 +803,6 @@ def test_get_val_counts_info_pivoted_multi_measure_dataset():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
     
     data_set_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
     data_set_uri = to_absolute_rdflib_file_path(
@@ -816,6 +815,7 @@ def test_get_val_counts_info_pivoted_multi_measure_dataset():
     (dataset, qube_components, dsd_uri, _) = get_arguments_qb_dataset(
         CubeShape.Standard, csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
+    data_cube_state = DataCubeState(CubeShape.Standard, csvw_metadata_rdf_graph, dsd_uri, csvw_metadata_json_path)
     (
         canonical_shape_dataset,
         measure_col,

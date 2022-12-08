@@ -58,13 +58,12 @@ class DataCubeState:
         return {results[0].csv_url:results}
 
     @cached_property
-    def _dsd_qube_components(self) -> Dict[str, List[QubeComponentsResult]]:
+    def _dsd_qube_components(self) -> Dict[str, QubeComponentsResult]:
         """
         Queries and caches qube components
         """
-        results = select_csvw_dsd_qube_components(self.cube_shape, self.rdf_graph, self.dsd_uri, self.json_path)
-        assert len(results) > 0
-        return {results[0].csv_url: results}
+        result = select_csvw_dsd_qube_components(self.cube_shape, self.rdf_graph, self.dsd_uri, self.json_path)
+        return {result.csv_url: result}
 
 
     """
@@ -91,9 +90,9 @@ class DataCubeState:
         value: List[ColTitlesAndNamesResult] = self._get_value_for_key(csv_url, self._col_names_col_titles)
         return value
     
-    def get_dsd_qube_components(self, csv_url: str) -> List[QubeComponentsResult]:
+    def get_dsd_qube_components_for_csv(self, csv_url: str) -> List[QubeComponentsResult]:
         """
         Getter for DSD Qube Components cached property
         """
-        value: List[QubeComponentsResult] = self._get_value_for_key(csv_url, self._dsd_qube_components)
+        value: QubeComponentsResult = self._get_value_for_key(csv_url, self._dsd_qube_components)
         return value

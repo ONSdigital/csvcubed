@@ -286,32 +286,39 @@ class IsPivotedShapeMeasureResult:
     measure: str
     is_pivoted_shape: bool
 
+
 @dataclass
 class UnitColumnAboutValueUrlResult:
     """
     Model representing the About URL and Value URL of the unit column
     """
+
     csv_url: str
     about_url: Optional[str]
     value_url: str
+
 
 @dataclass
 class ObservationValueColumnTitleAboutUrlResult:
     """
     Model representing the Column Title and About URL of an observation value
     """
+
     csv_url: str
     observation_value_col_title: str
     observation_value_col_about_url: Optional[str]
+
 
 @dataclass
 class ColTitlesAndNamesResult:
     """
     Model representing the Column Titles and Column Names of a data set.
     """
+
     csv_url: str
     column_name: str
     column_title: Optional[str]
+
 
 def map_catalog_metadata_result(sparql_result: ResultRow) -> CatalogMetadataResult:
     """
@@ -411,6 +418,7 @@ def _map_obs_val_for_dsd_component_properties_results(
 def map_qube_components_sparql_result(
     sparql_results_dsd_components: List[ResultRow],
     sparql_results_obs_val_col_titles: Optional[List[ResultRow]],
+    sparql_result_csv_url: List[ResultRow],
     json_path: Path,
 ) -> QubeComponentsResult:
     """
@@ -445,11 +453,16 @@ def map_qube_components_sparql_result(
                         0
                     ].observation_value_column_titles
                 )
-
         components.append(dsd_component_result)
 
+    # TODO - QubeComponentsResults needs csv_url argument
+    csv_url: List[CsvUrlResult] = []
+    csv_url = map_csv_url_result(sparql_result_csv_url)
+
     result = QubeComponentsResult(
-        qube_components=components, num_components=len(components)
+        qube_components=components,
+        num_components=len(components),
+        csv_url=csv_url
     )
     return result
 
@@ -705,43 +718,57 @@ def map_is_pivoted_shape_for_measures_in_data_set(
 
     return [map_row(row.asdict()) for row in sparql_results]
 
+
 def map_unit_col_about_value_urls_result(
-    sparql_results: List[ResultRow]
+    sparql_results: List[ResultRow],
 ) -> List[UnitColumnAboutValueUrlResult]:
     """
     Maps SPARQL query results to 'UnitColumnAboutValueUrlResult'
     """
+
     def map_row(row_result: Dict[str, Any]) -> UnitColumnAboutValueUrlResult:
         return UnitColumnAboutValueUrlResult(
             csv_url=str(row_result["csvUrl"]),
             about_url=none_or_map(row_result.get("aboutUrl"), str),
-            value_url=str(row_result["valueUrl"])
+            value_url=str(row_result["valueUrl"]),
         )
+
     return [map_row(row.asdict()) for row in sparql_results]
 
 
 def map_observation_value_col_title_and_about_url_result(
-    sparql_results: List[ResultRow]
+    sparql_results: List[ResultRow],
 ) -> List[ObservationValueColumnTitleAboutUrlResult]:
     """
     Maps SPARQL query results to 'ObservationValueColumnTitleAboutUrlResult'
     """
-    def map_row(row_result: Dict[str, Any]) -> ObservationValueColumnTitleAboutUrlResult:
+
+    def map_row(
+        row_result: Dict[str, Any]
+    ) -> ObservationValueColumnTitleAboutUrlResult:
         return ObservationValueColumnTitleAboutUrlResult(
             csv_url=str(row_result["csvUrl"]),
             observation_value_col_title=str(row_result["observationValueColumnTitle"]),
-            observation_value_col_about_url=none_or_map(row_result.get("observationValueColumnAboutUrl"), str)
+            observation_value_col_about_url=none_or_map(
+                row_result.get("observationValueColumnAboutUrl"), str
+            ),
         )
+
     return [map_row(row.asdict()) for row in sparql_results]
 
-def map_col_tiles_and_names_result(sparql_results: List[ResultRow]) -> List[ColTitlesAndNamesResult]:
+
+def map_col_tiles_and_names_result(
+    sparql_results: List[ResultRow],
+) -> List[ColTitlesAndNamesResult]:
     """
     Maps SPARQL query results to 'ColTitlesAndNamesResult'
     """
+
     def map_row(row_result: Dict[str, Any]) -> ColTitlesAndNamesResult:
         return ColTitlesAndNamesResult(
             csv_url=str(row_result["csvUrl"]),
             column_name=str(row_result["columnName"]),
-            column_title=none_or_map(row_result.get("columnTitle"), str)
+            column_title=none_or_map(row_result.get("columnTitle"), str),
         )
+
     return [map_row(row.asdict()) for row in sparql_results]

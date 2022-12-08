@@ -22,6 +22,7 @@ from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
 from csvcubed.utils.sparql_handler.code_list_state import CodeListState
 from csvcubed.utils.sparql_handler.sparqlmanager import (
+    select_csvw_dsd_dataset_label_and_dsd_def_uri,
     select_is_pivoted_shape_for_measures_in_data_set,
 )
 from csvcubed.utils.tableschema import CsvwRdfManager
@@ -49,6 +50,11 @@ def inspect(csvw_metadata_json_path: Path) -> None:
         csvw_metadata_rdf_graph
     )
 
+    # DONE: RUN SPARQL TO GET THE DSD URI HERE
+    dsd_uri = select_csvw_dsd_dataset_label_and_dsd_def_uri(
+        csvw_metadata_rdf_graph
+    ).dsd_uri
+
     csvw_metadata_rdf_validator = MetadataValidator(
         csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
@@ -65,7 +71,8 @@ def inspect(csvw_metadata_json_path: Path) -> None:
         val_counts_by_measure_unit_printable,
         codelist_hierarchy_info_printable,
     ) = _generate_printables(
-        csvw_type, cube_shape, csvw_metadata_rdf_graph, csvw_metadata_json_path
+        csvw_type, cube_shape, csvw_metadata_rdf_graph, csvw_metadata_json_path, dsd_uri
+        # DONE: PASS THE DSD URI AS A ARGUMENT TO _GENERATE_PRINTABLES
     )
 
     print(f"{linesep}{type_printable}")
@@ -85,6 +92,7 @@ def _generate_printables(
     cube_shape: Optional[CubeShape],
     csvw_metadata_rdf_graph: rdflib.ConjunctiveGraph,
     csvw_metadata_json_path: Path,
+    dsd_uri: str, # DONE: TAKE DSD_URI AS AN ARGUMENT
 ) -> Tuple[str, str, str, str, str, str, str]:
     """
     Generates printables of type, metadata, dsd, code list, head/tail and value count information.
@@ -96,7 +104,8 @@ def _generate_printables(
     metadata_printer: MetadataPrinter
 
     if csvw_type == CSVWType.QbDataSet:
-        data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
+        data_cube_state = DataCubeState(cube_shape, csvw_metadata_rdf_graph, dsd_uri, csvw_metadata_json_path) # DONE: INIT WITH cube_shape, csvw_metadata_json_path, dsd_uri
+
         metadata_printer = MetadataPrinter(
             data_cube_state=data_cube_state,
             code_list_state=None,
