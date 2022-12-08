@@ -114,32 +114,18 @@ class CustomAdapterServeSomeFilesLocally(BaseAdapter):
                 proxies=proxies,
             )
 
-            if response.status_code >= 400 and response.status_code < 600:
-                # Move this to below try/except
-                print(f"The status code is {response.status_code}")
-
-                path_to_local_file = generate_path_to_local_file(request.url)
-
-                return create_local_copy_response(path_to_local_file, request, response)
-
         except requests.exceptions.ConnectionError as e:
-            # except (
-            #     requests.exceptions.ConnectionError,
-            #     NewConnectionError,
-            #     ce,
-            #     MaxRetryError,
-            #     rre,
-            # ) as e:
-            # except rre as e:
-            # except Exception as e:
-            # except requests.exceptions.RequestException as e:
             try:
-                print("The connection error has been found")
+                _logger.debug("The connection error has been found")
 
                 path_to_local_file = generate_path_to_local_file(request.url)
+                if path_to_local_file is None:
+                    raise FileNotFoundError(
+                        "The corresponding local file to %s could not be found.",
+                        request.url,
+                    )
 
-                print(f"The local file path is: {path_to_local_file}")
-                # if path is none raise an error
+                _logger.debug("The local file path is: %s", path_to_local_file)
 
                 return create_local_copy_response(path_to_local_file, request)
 
@@ -148,8 +134,12 @@ class CustomAdapterServeSomeFilesLocally(BaseAdapter):
                     f"Error loading JSON from file at '{path_to_local_file}'"
                 ) from e
 
-        # if response.status_code in (4**, 5**)
-        # then try recovering to a local copy of the file
+        if response.status_code >= 400 and response.status_code < 600:
+            print(f"The status code is {response.status_code}")
+
+            path_to_local_file = generate_path_to_local_file(request.url)
+
+            return create_local_copy_response(path_to_local_file, request, response)
 
         return response
 
@@ -158,12 +148,17 @@ class CustomAdapterServeSomeFilesLocally(BaseAdapter):
 
 
 def generate_path_to_local_file(request_url: str) -> Path:
-    # .get instead of [] to get item from map which may not exist, then decide to raise an error
     trimmed_url = str(request_url).removeprefix("https:")
-    if request_url[len(request_url) - 1] == "/":
-        path_to_local_file = map_url_to_file_path[trimmed_url[: len(trimmed_url) - 1]]
-    else:
-        path_to_local_file = map_url_to_file_path[trimmed_url]
+    try:
+        if request_url[len(request_url) - 1] == "/":
+            path_to_local_file = map_url_to_file_path.get(
+                trimmed_url[: len(trimmed_url) - 1]
+            )
+        else:
+            path_to_local_file = map_url_to_file_path[trimmed_url]
+    except KeyError:
+        raise Exception("Local file could not be found in the URL to path mapping.")
+
     return path_to_local_file
 
 

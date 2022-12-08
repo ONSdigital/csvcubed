@@ -39,7 +39,7 @@ def validate_dict_against_schema(
         )
         raise err
     except jsonschema.exceptions.RefResolutionError as err:
-        log_exception(err)
+        log_exception(log, err)
         log.error(
             "Could not resolve schema dependency. You may have internet connectivity problems."
         )
