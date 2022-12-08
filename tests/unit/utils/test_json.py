@@ -1,6 +1,7 @@
 import pytest
 import requests_mock
 import json
+from typing import List
 
 from tests.unit.test_baseunit import get_test_cases_dir
 from csvcubed.utils.json import load_json_document
@@ -47,11 +48,17 @@ def test_loading_json_from_url():
 
 @pytest.fixture(autouse=True)
 def dummy_mapped_url():
-    map_url_to_file_path["//thisisatestfornickandcharlesons.com"] = (
-        APP_ROOT_DIR_PATH / "schema" / "cube-config" / "v1_3" / "schema.json"
-    )
+
+    test_dictionary = {"//thisisatestfornickandcharlesons.com" : APP_ROOT_DIR_PATH / "schema" / "cube-config" / "v1_3" / "schema.json",
+                    "//purl.org/csv-cubed/qube-config/badinput" : APP_ROOT_DIR_PATH / "schema" / "cube-config" / "v1_3" / "schema.json"}
+    map_url_to_file_path.update(test_dictionary)
+    import logging
+    _logger = logging.getLogger(__name__)
+    _logger.debug(map_url_to_file_path)
     yield None
-    del map_url_to_file_path["//thisisatestfornickandcharlesons.com"]
+    #[a.pop(key) for key in ['key1', 'key3']]
+    [map_url_to_file_path.pop(key) for key in list(test_dictionary.keys())]
+    _logger.debug(map_url_to_file_path)
 
 
 def test_load_local_when_http_request_fails():
@@ -74,26 +81,26 @@ def test_load_local_when_http_request_fails():
 
 # This fixture is a WIP way of possibly using the same fixture for multiple tests instead of duplicating them and changing the input url.
 # May not keep it, may improve it further.
-@pytest.fixture(autouse=True)
-def err_code_dummy_map_url():
-    def add_dummy_url(input_url):
-        map_url_to_file_path[input_url] = (
-        APP_ROOT_DIR_PATH / "schema" / "cube-config" / "v1_3" / "schema.json"
-        )
-        yield None
-        del map_url_to_file_path[input_url]
-    return add_dummy_url
+# @pytest.fixture(autouse=True)
+# def err_code_dummy_map_url():
+#     def add_dummy_url(input_url):
+#         map_url_to_file_path[input_url] = (
+#         APP_ROOT_DIR_PATH / "schema" / "cube-config" / "v1_3" / "schema.json"
+#         )
+#         yield None
+#         del map_url_to_file_path[input_url]
+#     return add_dummy_url
 
-def test_load_local_when_bad_status_code(err_code_dummy_map_url):
+def test_load_local_when_bad_status_code():
     """
     Ensures that a local copy of a document is returned when a HTTP request returns a response
      with a 4**/5** status code.
     """
-    input_url = "https://purl.org/csv-cubed/qube-config/v1.3X"
-    err_code_dummy_map_url("https://purl.org/csv-cubed/qube-config/v1.3X")
+    # input_url = "https://purl.org/csv-cubed/qube-config/v1.3X"
+    # err_code_dummy_map_url("https://purl.org/csv-cubed/qube-config/v1.3X")
     with session.cache_disabled():
         json_document = load_json_document(
-            input_url
+            "https://purl.org/csv-cubed/qube-config/badinput"
         )
 
         expected_document = (

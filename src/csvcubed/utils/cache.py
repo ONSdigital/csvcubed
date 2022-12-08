@@ -160,7 +160,10 @@ class CustomAdapterServeSomeFilesLocally(BaseAdapter):
 def generate_path_to_local_file(request_url: str) -> Path:
     # .get instead of [] to get item from map which may not exist, then decide to raise an error
     trimmed_url = str(request_url).removeprefix("https:")
-    path_to_local_file = map_url_to_file_path[trimmed_url[: len(trimmed_url) - 1]]
+    if request_url[len(request_url) - 1] == "/":
+        path_to_local_file = map_url_to_file_path[trimmed_url[: len(trimmed_url) - 1]]
+    else:
+        path_to_local_file = map_url_to_file_path[trimmed_url]
     return path_to_local_file
 
 
