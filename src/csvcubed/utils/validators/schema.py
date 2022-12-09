@@ -10,7 +10,7 @@ from csvcubed.models.jsonvalidationerrors import (
     AnyOneOfJsonSchemaValidationError,
 )
 from csvcubed.utils.json import to_json_path
-from csvcubed.utils.log import log_exception
+from csvcubed.utils.log import debug_log_exception
 
 log = logging.getLogger(__name__)
 
@@ -39,7 +39,7 @@ def validate_dict_against_schema(
         )
         raise err
     except jsonschema.exceptions.RefResolutionError as err:
-        log_exception(log, err)
+        debug_log_exception(log, err)
         log.error(
             "Could not resolve schema dependency. You may have internet connectivity problems."
         )
