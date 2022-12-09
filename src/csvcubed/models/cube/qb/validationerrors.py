@@ -5,9 +5,10 @@ Qb-Cube Validation Errors
 :obj:`ValidationError <csvcubed.models.validationerror.ValidationError>` models specific to :mod:`qb`.
 """
 
+from dataclasses import dataclass, field
+from typing import List, Optional, Type, Union
 from abc import ABC
-from dataclasses import dataclass
-from typing import Optional, Type, Union
+import os
 
 from csvcubed.models.validationerror import SpecificValidationError
 from ..qb import (
@@ -16,6 +17,7 @@ from ..qb import (
     QbObservationValue,
     QbMultiUnits,
     QbStructuralDefinition,
+    QbColumn,
 )
 
 ComponentTypeDescription = Union[str, Type[QbStructuralDefinition]]
@@ -324,3 +326,141 @@ class EmptyQbMultiMeasureDimensionError(SpecificValidationError):
         self.message = (
             "The field attribute of a QbMultiMeasureDimension must be populated"
         )
+
+
+@dataclass
+class PivotedShapeMeasureColumnsExistError(BothMeasureTypesDefinedError):
+    """
+    An error to inform the user that they have attempted to define a pivoted shape cube with measure columns.
+    """
+
+    measure_col_titles: List[str] = field(default_factory=list)
+    column_names_concatenated: str = field(init=False)
+
+    additional_explanation: Optional[str] = None
+
+    @classmethod
+    def get_error_url(cls) -> str:
+        return "http://purl.org/csv-cubed/err/piv-shape-meas-cols-exist"
+
+    def __post_init__(self):
+        self.column_names_concatenated = ", ".join(self.measure_col_titles)
+        self.message = f"The cube is in pivoted shape, but 1 or more measure columns have been defined. These two approaches are incompatible."
+
+
+@dataclass
+class DuplicateMeasureError(SpecificValidationError):
+    """
+    An error to inform the user that they have defined a pivoted cube in which multiple
+    observation value columns are described using the same measure.
+    """
+
+    column_names: List[str]
+    column_names_concatenated: str = field(init=False)
+
+    @classmethod
+    def get_error_url(cls) -> str:
+        return "http://purl.org/csv-cubed/err/dup-measure"
+
+    def __post_init__(self):
+        self.column_names_concatenated = ", ".join(sorted(self.column_names))
+        self.message = f"In the pivoted shape, two or more observation value columns cannot be represented by identical measures. {self.column_names_concatenated}"
+
+
+@dataclass
+class AttributeNotLinkedError(SpecificValidationError):
+    """
+    An error to inform the user that the units or attribute column is defined but it is not linked to the obs column
+    """
+
+    attribute_column_title: str
+
+    @classmethod
+    def get_error_url(cls) -> str:
+        return "http://purl.org/csv-cubed/err/att-not-linked"
+
+    def __post_init__(self):
+        self.message = f"Units or attribute column '{self.attribute_column_title}' is defined but it is not linked to an observed values column"
+
+
+@dataclass
+class LinkedObsColumnDoesntExistError(SpecificValidationError):
+    """
+    An error to infrom the user that the units or attribute column is defined for which obs val column doesn't appear to exist.
+    """
+
+    alleged_obs_val_column_title: str
+    attribute_column_title: str
+
+    @classmethod
+    def get_error_url(cls) -> str:
+        return "http://purl.org/csv-cubed/err/link-obs-col-not-exist"
+
+    def __post_init__(self):
+        self.message = f"The unit or attribute column '{self.attribute_column_title}' is defined for an observed value column '{self.alleged_obs_val_column_title}' that doesn't appear to exist."
+
+
+@dataclass
+class LinkedToNonObsColumnError(SpecificValidationError):
+    """
+    An error to infrom the user that units or attribute column is defined in which
+    the linked obs val column isn't actually an observations column.
+    """
+
+    alleged_obs_val_column_title: str
+    attribute_column_title: str
+
+    @classmethod
+    def get_error_url(cls) -> str:
+        return "http://purl.org/csv-cubed/err/link-non-obs-col"
+
+    def __post_init__(self):
+        self.message = f"Units or attribute column '{self.attribute_column_title}' is defined but the linked observation column '{self.alleged_obs_val_column_title}' is not actually an observation column"
+
+
+@dataclass
+class HybridShapeError(SpecificValidationError):
+    """
+    An Error where there are mutliple obs val columns defined without measures, and at least one measure column defined.
+    This is an erroneous hybrid between standard and pivoted shape.
+    """
+
+    not_linked_obs_val_cols: List[str]
+    measure_cols: List[str]
+
+    @classmethod
+    def get_error_url(cls) -> str:
+        return "http://purl.org/csv-cubed/err/hybrid-shape"
+
+    def __post_init__(self):
+
+        not_linked_cols = ", ".join(str(self.not_linked_obs_val_cols))
+        measure_cols = ", ".join(str(self.measure_cols))
+        self.message = (
+            f"Found these observation value columns without measures linked: '{not_linked_cols}'."
+            + os.linesep
+            + f"But found these measure columns '{measure_cols}. "
+            + os.linesep
+            + "This does not conform with either the standard or pivoted shape of expected data."
+        )
+
+
+@dataclass
+class PivotedObsValColWithoutMeasureError(SpecificValidationError):
+    """
+    An error to inform the user that they have defined a pivoted cube in which an
+    observation value column has been defined without a measure linked either within
+    the column or from a measure column.
+    """
+
+    no_measure_obs_col_titles: List[str] = field(default_factory=list)
+    column_names_concatenated: str = field(init=False)
+    additional_explanation: Optional[str] = None
+
+    @classmethod
+    def get_error_url(cls) -> str:
+        return "http://purl.org/csv-cubed/err/piv-obsv-col-no-measure"
+
+    def __post_init__(self):
+        no_measure_obs_cols = ", ".join(str(self.no_measure_obs_col_titles))
+        self.message = f"Cube is in the pivoted shape but observation value column(s): '{no_measure_obs_cols}' have been defined without a measure linked within the column definition."

@@ -9,11 +9,8 @@
     },
     "Average Income": {
       "type": "observations",
-      "measure": {
-        "label": "Average Income"
-      },
       "unit": {
-        "label": "GBP"
+        "label": "Pound"
       }
     },
     "Value": {
@@ -22,7 +19,10 @@
         "label": "Billions of POUNDS"
       }
     },
-    "Other Measure": {
+    "GDP": {
+      "type": "measures"
+    },
+    "Currency": {
       "type": "measures"
     }
   }

@@ -21,6 +21,9 @@ from csvcubed.models.sparqlresults import (
 )
 from csvcubed.utils.iterables import first
 from csvcubed.utils.qb.components import ComponentPropertyType
+from csvcubed.utils.sparql_handler.code_list_state import CodeListState
+from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
+from csvcubed.utils.sparql_handler.sparqlmanager import select_is_pivoted_shape_for_measures_in_data_set
 from csvcubed.utils.sparql_handler.sparqlmanager import (
     select_is_pivoted_shape_for_measures_in_data_set,
 )
@@ -86,7 +89,10 @@ def step_impl(context):
 
 @When("the Printables for data cube are generated")
 def step_impl(context):
+    data_cube_state = DataCubeState(context.csvw_metadata_rdf_graph)
     metadata_printer = MetadataPrinter(
+        data_cube_state,
+        None,
         context.csvw_type,
         context.cube_shape,
         context.csvw_metadata_rdf_graph,
@@ -129,7 +135,10 @@ def step_impl(context):
 
 @When("the Printables for code list are generated")
 def step_impl(context):
+    code_list_state = CodeListState(context.csvw_metadata_rdf_graph)
     metadata_printer = MetadataPrinter(
+        None,
+        code_list_state,
         context.csvw_type,
         None,
         context.csvw_metadata_rdf_graph,
@@ -378,7 +387,7 @@ def step_impl(context):
         [
             {
                 "Measure": "Some Measure",
-                "Unit": "Some Unit",
+                "Unit": "qb-id-10004.csv#unit/some-unit",
                 "Count": 3,
             }
         ]
@@ -404,8 +413,8 @@ def step_impl(context):
     assert result_catalog_metadata is not None
     assert result_catalog_metadata.title == "Pivoted Shape Cube"
     assert result_catalog_metadata.label == "Pivoted Shape Cube"
-    assert result_catalog_metadata.issued == "2022-11-03T16:45:47.750555"
-    assert result_catalog_metadata.modified == "2022-11-03T16:45:47.750555"
+    assert result_catalog_metadata.issued == "2022-11-24T11:45:07.291860"
+    assert result_catalog_metadata.modified == "2022-11-24T11:45:07.291860"
     assert result_catalog_metadata.license == "None"
     assert result_catalog_metadata.creator == "None"
     assert result_catalog_metadata.publisher == "None"
@@ -435,7 +444,7 @@ def step_impl(context):
     assert result_qube_components is not None
 
     components = result_qube_components.qube_components
-    assert len(components) == 6
+    assert len(components) == 7
 
     component = get_dsd_component_by_property_url(
         components, "qb-id-10003.csv#dimension/some-dimension"
@@ -484,8 +493,8 @@ def step_impl(context):
         "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
         ComponentPropertyType.Attribute,
         "",
-        "",
-        "Some Obs Val, Some Other Obs Val",
+        "Some Unit",
+        "Some Other Obs Val, Some Obs Val",
         True,
     )
 
@@ -556,5 +565,22 @@ def step_impl(context):
         context.result_dataset_value_counts
     )
     assert result_dataset_value_counts is not None
-
-    assert result_dataset_value_counts.by_measure_and_unit_val_counts_df.empty == True
+    
+    expected_df = pd.DataFrame(
+        [
+            {
+                "Measure": "Some Measure",
+                "Unit": "qb-id-10003.csv#unit/some-unit",
+                "Count": 3,
+            },
+                {
+                "Measure": "Some Other Measure",
+                "Unit": "qb-id-10003.csv#unit/percent",
+                "Count": 3,
+            }
+        ]
+    )
+    assert result_dataset_value_counts.by_measure_and_unit_val_counts_df.empty == False
+    assert_frame_equal(
+        result_dataset_value_counts.by_measure_and_unit_val_counts_df, expected_df
+    )

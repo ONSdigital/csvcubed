@@ -196,12 +196,12 @@ class CodelistsResult:
 
 
 @dataclass
-class DatasetURLResult:
+class CsvUrlResult:
     """
-    Model to represent select dataset url result.
+    Model to represent select csv url result.
     """
 
-    dataset_url: str
+    csv_url: str
 
 
 @dataclass
@@ -284,6 +284,32 @@ class IsPivotedShapeMeasureResult:
     measure: str
     is_pivoted_shape: bool
 
+@dataclass
+class UnitColumnAboutValueUrlResult:
+    """
+    Model representing the About URL and Value URL of the unit column
+    """
+    csv_url: str
+    about_url: Optional[str]
+    value_url: str
+
+@dataclass
+class ObservationValueColumnTitleAboutUrlResult:
+    """
+    Model representing the Column Title and About URL of an observation value
+    """
+    csv_url: str
+    observation_value_col_title: str
+    observation_value_col_about_url: Optional[str]
+
+@dataclass
+class ColTitlesAndNamesResult:
+    """
+    Model representing the Column Titles and Column Names of a data set.
+    """
+    csv_url: str
+    column_name: str
+    column_title: Optional[str]
 
 def map_catalog_metadata_result(sparql_result: ResultRow) -> CatalogMetadataResult:
     """
@@ -509,19 +535,19 @@ def map_csvw_table_schemas_file_dependencies_result(
     return result
 
 
-def map_dataset_url_result(
+def map_csv_url_result(
     sparql_result: ResultRow,
-) -> DatasetURLResult:
+) -> CsvUrlResult:
     """
-    Maps sparql query result to `DatasetURLResult`
+    Maps sparql query result to `CsvUrlResult`
 
     Member of :file:`./models/sparqlresults.py`
 
-    :return: `DatasetURLResult`
+    :return: `CsvUrlResult`
     """
     result_dict = sparql_result.asdict()
 
-    result = DatasetURLResult(dataset_url=str(result_dict["tableUrl"]))
+    result = CsvUrlResult(csv_url=str(result_dict["tableUrl"]))
     return result
 
 
@@ -568,7 +594,7 @@ def _map_codelist_column_sparql_result(
     return result
 
 
-def map_codelist_cols_by_dataset_url_result(
+def map_codelist_cols_by_csv_url_result(
     sparql_results: List[ResultRow],
 ) -> CodeListColsByDatasetUrlResult:
     """
@@ -589,7 +615,7 @@ def map_codelist_cols_by_dataset_url_result(
     return result
 
 
-def _map_primary_key_col_name_by_dataset_url_result(
+def _map_primary_key_col_name_by_csv_url_result(
     sparql_result: ResultRow,
 ) -> PrimaryKeyColNameByDatasetUrlResult:
     """
@@ -607,7 +633,7 @@ def _map_primary_key_col_name_by_dataset_url_result(
     return result
 
 
-def map_primary_key_col_names_by_dataset_url_result(
+def map_primary_key_col_names_by_csv_url_result(
     sparql_results: List[ResultRow],
 ) -> PrimaryKeyColNamesByDatasetUrlResult:
     """
@@ -619,7 +645,7 @@ def map_primary_key_col_names_by_dataset_url_result(
     """
     primary_key_col_names = list(
         map(
-            lambda result: _map_primary_key_col_name_by_dataset_url_result(result),
+            lambda result: _map_primary_key_col_name_by_csv_url_result(result),
             sparql_results,
         )
     )
@@ -675,4 +701,45 @@ def map_is_pivoted_shape_for_measures_in_data_set(
             is_pivoted_shape=bool(row_result["isPivotedShape"]),
         )
 
+    return [map_row(row.asdict()) for row in sparql_results]
+
+def map_unit_col_about_value_urls_result(
+    sparql_results: List[ResultRow]
+) -> List[UnitColumnAboutValueUrlResult]:
+    """
+    Maps SPARQL query results to 'UnitColumnAboutValueUrlResult'
+    """
+    def map_row(row_result: Dict[str, Any]) -> UnitColumnAboutValueUrlResult:
+        return UnitColumnAboutValueUrlResult(
+            csv_url=str(row_result["csvUrl"]),
+            about_url=none_or_map(row_result.get("aboutUrl"), str),
+            value_url=str(row_result["valueUrl"])
+        )
+    return [map_row(row.asdict()) for row in sparql_results]
+
+
+def map_observation_value_col_title_and_about_url_result(
+    sparql_results: List[ResultRow]
+) -> List[ObservationValueColumnTitleAboutUrlResult]:
+    """
+    Maps SPARQL query results to 'ObservationValueColumnTitleAboutUrlResult'
+    """
+    def map_row(row_result: Dict[str, Any]) -> ObservationValueColumnTitleAboutUrlResult:
+        return ObservationValueColumnTitleAboutUrlResult(
+            csv_url=str(row_result["csvUrl"]),
+            observation_value_col_title=str(row_result["observationValueColumnTitle"]),
+            observation_value_col_about_url=none_or_map(row_result.get("observationValueColumnAboutUrl"), str)
+        )
+    return [map_row(row.asdict()) for row in sparql_results]
+
+def map_col_tiles_and_names_result(sparql_results: List[ResultRow]) -> List[ColTitlesAndNamesResult]:
+    """
+    Maps SPARQL query results to 'ColTitlesAndNamesResult'
+    """
+    def map_row(row_result: Dict[str, Any]) -> ColTitlesAndNamesResult:
+        return ColTitlesAndNamesResult(
+            csv_url=str(row_result["csvUrl"]),
+            column_name=str(row_result["columnName"]),
+            column_title=none_or_map(row_result.get("columnTitle"), str)
+        )
     return [map_row(row.asdict()) for row in sparql_results]

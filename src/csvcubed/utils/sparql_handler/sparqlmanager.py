@@ -25,29 +25,35 @@ from csvcubed.models.sparqlresults import (
     CSVWTableSchemaFileDependenciesResult,
     CatalogMetadataResult,
     CodeListColsByDatasetUrlResult,
+    ColTitlesAndNamesResult,
     IsPivotedShapeMeasureResult,
+    ObservationValueColumnTitleAboutUrlResult,
     PrimaryKeyColNamesByDatasetUrlResult,
     CodelistsResult,
     ColsWithSuppressOutputTrueResult,
     DSDLabelURIResult,
     DSDSingleUnitResult,
-    DatasetURLResult,
+    CsvUrlResult,
     QubeComponentsResult,
     MetadataDependenciesResult,
     TableSchemaPropertiesResult,
+    UnitColumnAboutValueUrlResult,
     map_catalog_metadata_result,
-    map_codelist_cols_by_dataset_url_result,
+    map_codelist_cols_by_csv_url_result,
+    map_col_tiles_and_names_result,
     map_is_pivoted_shape_for_measures_in_data_set,
-    map_primary_key_col_names_by_dataset_url_result,
+    map_observation_value_col_title_and_about_url_result,
+    map_primary_key_col_names_by_csv_url_result,
     map_codelists_sparql_result,
     map_cols_with_supress_output_true_sparql_result,
     map_csvw_table_schemas_file_dependencies_result,
     map_dataset_label_dsd_uri_sparql_result,
-    map_dataset_url_result,
+    map_csv_url_result,
     map_qube_components_sparql_result,
     map_single_unit_from_dsd_result,
     map_metadata_dependency_results,
     map_table_schema_properties_result,
+    map_unit_col_about_value_urls_result,
 )
 from csvcubed.utils.sparql_handler.sparql import ask, select
 
@@ -77,9 +83,9 @@ class SPARQLQueryName(Enum):
 
     SELECT_CODELISTS_AND_COLS = "select_codelists_and_cols"
 
-    SELECT_QB_DATASET_URL = "select_qb_dataset_url"
+    SELECT_QB_CSV_URL = "select_qb_csv_url"
 
-    SELECT_CODELIST_DATASET_URL = "select_codelist_dataset_url"
+    SELECT_CODELIST_CSV_URL = "select_codelist_csv_url"
 
     SELECT_SINGLE_UNIT_FROM_DSD = "select_single_unit_from_dsd"
 
@@ -87,10 +93,10 @@ class SPARQLQueryName(Enum):
         "select_csvw_table_schema_file_dependencies"
     )
 
-    SELECT_CODELIST_COLS_BY_DATASET_URL = "select_codelist_cols_by_dataset_url"
+    SELECT_CODELIST_COLS_BY_CSV_URL = "select_codelist_cols_by_csv_url"
 
-    SELECT_CODELIST_PRIMARY_KEY_BY_DATASET_URL = (
-        "select_codelist_primary_key_by_dataset_url"
+    SELECT_CODELIST_PRIMARY_KEY_BY_CSV_URL = (
+        "select_codelist_primary_key_by_csv_url"
     )
 
     SELECT_METADATA_DEPENDENCIES = "select_metadata_dependencies"
@@ -101,6 +107,11 @@ class SPARQLQueryName(Enum):
         "select_is_pivoted_shape_for_measures_in_data_set"
     )
 
+    SELECT_UNIT_COL_ABOUT_AND_VALUE_URLS = "select_unit_col_about_and_value_urls"
+    
+    SELECT_UNIT_COL_OBSERVED_COL_TITLE_AND_ABOUT_URL = "select_unit_col_observed_col_title_and_about_url"
+    
+    SELECT_COL_TITLES_AND_NAMES = "select_col_titles_and_names"
 
 def _get_query_string_from_file(queryType: SPARQLQueryName) -> str:
     """
@@ -315,15 +326,15 @@ def select_csvw_table_schema_file_dependencies(
     return map_csvw_table_schemas_file_dependencies_result(results)
 
 
-def select_qb_dataset_url(
+def select_qb_csv_url(
     rdf_graph: rdflib.ConjunctiveGraph, dataset_uri: str
-) -> DatasetURLResult:
+) -> CsvUrlResult:
     """
     Queries the url of the given qb:dataset.
 
     Member of :file:`./sparqlmanager.py`
 
-    :return: `DatasetURLResult`
+    :return: `CsvUrlResult`
     """
     if not dataset_uri.startswith("file://"):
         raise FeatureNotSupportedException(
@@ -331,38 +342,38 @@ def select_qb_dataset_url(
         )
 
     results: List[ResultRow] = select(
-        _get_query_string_from_file(SPARQLQueryName.SELECT_QB_DATASET_URL),
+        _get_query_string_from_file(SPARQLQueryName.SELECT_QB_CSV_URL),
         rdf_graph,
         init_bindings={"dataset_uri": Literal(dataset_uri)},
     )
     if len(results) != 1:
         raise InvalidNumberOfRecordsException(
-            record_description=f"result for the {SPARQLQueryName.SELECT_QB_DATASET_URL.value} sparql query",
+            record_description=f"result for the {SPARQLQueryName.SELECT_QB_CSV_URL.value} sparql query",
             excepted_num_of_records=1,
             num_of_records=len(results),
         )
-    return map_dataset_url_result(results[0])
+    return map_csv_url_result(results[0])
 
 
-def select_codelist_dataset_url(rdf_graph: rdflib.ConjunctiveGraph) -> DatasetURLResult:
+def select_codelist_csv_url(rdf_graph: rdflib.ConjunctiveGraph) -> CsvUrlResult:
     """
     Queries the url of the given skos:conceptScheme.
 
     Member of :file:`./sparqlmanager.py`
 
-    :return: `DatasetURLResult`
+    :return: `CsvUrlResult`
     """
     results: List[ResultRow] = select(
-        _get_query_string_from_file(SPARQLQueryName.SELECT_CODELIST_DATASET_URL),
+        _get_query_string_from_file(SPARQLQueryName.SELECT_CODELIST_CSV_URL),
         rdf_graph,
     )
     if len(results) != 1:
         raise InvalidNumberOfRecordsException(
-            record_description=f"result for the {SPARQLQueryName.SELECT_CODELIST_DATASET_URL.value} sparql query",
+            record_description=f"result for the {SPARQLQueryName.SELECT_CODELIST_CSV_URL.value} sparql query",
             excepted_num_of_records=1,
             num_of_records=len(results),
         )
-    return map_dataset_url_result(results[0])
+    return map_csv_url_result(results[0])
 
 
 def select_single_unit_from_dsd(
@@ -390,7 +401,7 @@ def select_single_unit_from_dsd(
     return map_single_unit_from_dsd_result(results[0], json_path)
 
 
-def select_codelist_cols_by_dataset_url(
+def select_codelist_cols_by_csv_url(
     rdf_graph: rdflib.ConjunctiveGraph, table_url: str
 ) -> CodeListColsByDatasetUrlResult:
     """
@@ -402,7 +413,7 @@ def select_codelist_cols_by_dataset_url(
     """
     results: List[ResultRow] = select(
         _get_query_string_from_file(
-            SPARQLQueryName.SELECT_CODELIST_COLS_BY_DATASET_URL
+            SPARQLQueryName.SELECT_CODELIST_COLS_BY_CSV_URL
         ),
         rdf_graph,
         init_bindings={"table_url": Literal(table_url)},
@@ -410,14 +421,14 @@ def select_codelist_cols_by_dataset_url(
 
     if len(results) < 1:
         raise InvalidNumberOfRecordsException(
-            record_description=f"result for the {SPARQLQueryName.SELECT_CODELIST_COLS_BY_DATASET_URL.value} sparql query",
+            record_description=f"result for the {SPARQLQueryName.SELECT_CODELIST_COLS_BY_CSV_URL.value} sparql query",
             excepted_num_of_records=1,
             num_of_records=len(results),
         )
-    return map_codelist_cols_by_dataset_url_result(results)
+    return map_codelist_cols_by_csv_url_result(results)
 
 
-def select_primary_key_col_names_by_dataset_url(
+def select_primary_key_col_names_by_csv_url(
     rdf_graph: rdflib.ConjunctiveGraph, table_url: str
 ) -> PrimaryKeyColNamesByDatasetUrlResult:
     """
@@ -429,13 +440,13 @@ def select_primary_key_col_names_by_dataset_url(
     """
     results: List[ResultRow] = select(
         _get_query_string_from_file(
-            SPARQLQueryName.SELECT_CODELIST_PRIMARY_KEY_BY_DATASET_URL
+            SPARQLQueryName.SELECT_CODELIST_PRIMARY_KEY_BY_CSV_URL
         ),
         rdf_graph,
         init_bindings={"table_url": Literal(table_url)},
     )
 
-    return map_primary_key_col_names_by_dataset_url_result(results)
+    return map_primary_key_col_names_by_csv_url_result(results)
 
 
 def select_metadata_dependencies(
@@ -471,3 +482,43 @@ def select_table_schema_properties(
         )
 
     return map_table_schema_properties_result(results[0])
+
+
+def select_unit_col_about_value_urls(
+    rdf_graph: rdflib.Graph,
+) -> List[UnitColumnAboutValueUrlResult]:
+    """
+    Queries a CSV-W and extracts the unit column's about and value urls.
+    """
+    results: List[ResultRow] = select(
+        _get_query_string_from_file(SPARQLQueryName.SELECT_UNIT_COL_ABOUT_AND_VALUE_URLS),
+        rdf_graph,
+    )
+
+    return map_unit_col_about_value_urls_result(results)
+
+def select_observation_value_column_title_and_about_url(
+    rdf_graph: rdflib.Graph,
+) -> List[ObservationValueColumnTitleAboutUrlResult]:
+    """
+    Queries a CSV-W and extracts the observation value column title and about url.
+    """
+    results: List[ResultRow] = select(
+        _get_query_string_from_file(SPARQLQueryName.SELECT_UNIT_COL_OBSERVED_COL_TITLE_AND_ABOUT_URL),
+        rdf_graph,
+    )
+
+    return map_observation_value_col_title_and_about_url_result(results)
+
+def select_col_titles_and_names(
+    rdf_graph: rdflib.Graph,
+) -> List[ColTitlesAndNamesResult]:
+    """
+    Selects the column names and corresponding column titles.
+    """
+    results: List[ResultRow] = select(
+        _get_query_string_from_file(SPARQLQueryName.SELECT_COL_TITLES_AND_NAMES),
+        rdf_graph,
+    )
+
+    return map_col_tiles_and_names_result(results)
