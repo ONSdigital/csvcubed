@@ -4,18 +4,18 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX csvw: <http://www.w3.org/ns/csvw#>
 
 SELECT DISTINCT 
-    ?componentProperty ?componentPropertyLabel ?componentOrder ?componentPropertyType ?csvColumnTitle
+    ?dsdUri ?component ?componentProperty ?componentPropertyLabel ?componentOrder ?componentPropertyType ?csvColumnTitle
     (COALESCE(?csvColumnRequired, false) || ?componentRequired as ?required) 
 WHERE {   
+    
     { 
-        SELECT DISTINCT ?csvColumnTitle (COALESCE(?required, false) as ?csvColumnRequired) ?component ?componentProperty ?componentOrder 
+        SELECT DISTINCT ?dsdUri ?csvColumnTitle (COALESCE(?required, false) as ?csvColumnRequired) ?component ?componentProperty ?componentOrder 
         WHERE {
-            ?dsd_uri a qb:DataStructureDefinition.
-            ?dsd_uri qb:component ?component.
-
+            ?dsdUri qb:component ?component.
+        
             ?component qb:componentProperty|qb:dimension|qb:measureDimension|qb:measure|qb:attribute ?componentProperty;
                     qb:order ?componentOrder.
-
+        
             OPTIONAL {
                 ?csvColumn csvw:propertyUrl ?csvColumnPropertyUrl.
 

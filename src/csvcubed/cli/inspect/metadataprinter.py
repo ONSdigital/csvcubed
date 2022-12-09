@@ -37,6 +37,7 @@ from csvcubed.models.sparqlresults import (
     CodelistsResult,
     ColsWithSuppressOutputTrueResult,
     DSDLabelURIResult,
+    DataSetDsdUriCsvUrlResult,
     PrimaryKeyColNamesByDatasetUrlResult,
     QubeComponentsResult,
 )
@@ -83,6 +84,7 @@ class MetadataPrinter:
 
     result_catalog_metadata: CatalogMetadataResult = field(init=False)
     result_dataset_label_dsd_uri: DSDLabelURIResult = field(init=False)
+    result_data_set_dsd_csv_url: DataSetDsdUriCsvUrlResult = field(init=False)
     result_qube_components: QubeComponentsResult = field(init=False)
     result_cols_with_suppress_output_true: ColsWithSuppressOutputTrueResult = field(
         init=False
@@ -168,12 +170,16 @@ class MetadataPrinter:
         self.result_dataset_label_dsd_uri = (
             select_csvw_dsd_dataset_label_and_dsd_def_uri(self.csvw_metadata_rdf_graph)
         )
-        self.result_qube_components = select_csvw_dsd_qube_components(
-            self.cube_shape,
-            self.csvw_metadata_rdf_graph,
-            self.result_dataset_label_dsd_uri.dsd_uri,
-            self.csvw_metadata_json_path,
-        )
+        
+        self.result_data_set_dsd_csv_url = self.data_cube_state.get_data_set_dsd_and_csv_url_for_csv_url(self.csv_url)
+        self.result_qube_components = self.data_cube_state.get_dsd_qube_components_for_csv(self.result_data_set_dsd_csv_url.dsd_uri, self.result_data_set_dsd_csv_url.csv_url)
+
+        # self.result_qube_components = select_csvw_dsd_qube_components(
+        #     self.cube_shape,
+        #     self.csvw_metadata_rdf_graph,
+        #     self.result_dataset_label_dsd_uri.dsd_uri,
+        #     self.csvw_metadata_json_path,
+        # )
         self.result_cols_with_suppress_output_true = (
             select_cols_where_suppress_output_is_true(self.csvw_metadata_rdf_graph)
         )

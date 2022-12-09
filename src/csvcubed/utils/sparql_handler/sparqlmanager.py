@@ -26,6 +26,7 @@ from csvcubed.models.sparqlresults import (
     CatalogMetadataResult,
     CodeListColsByDatasetUrlResult,
     ColTitlesAndNamesResult,
+    DataSetDsdUriCsvUrlResult,
     IsPivotedShapeMeasureResult,
     ObservationValueColumnTitleAboutUrlResult,
     PrimaryKeyColNamesByDatasetUrlResult,
@@ -38,6 +39,7 @@ from csvcubed.models.sparqlresults import (
     MetadataDependenciesResult,
     TableSchemaPropertiesResult,
     UnitColumnAboutValueUrlResult,
+    _map_data_set_dsd_csv_url_result,
     map_catalog_metadata_result,
     map_codelist_cols_by_csv_url_result,
     map_col_tiles_and_names_result,
@@ -72,6 +74,8 @@ class SPARQLQueryName(Enum):
     SELECT_CATALOG_METADATA = "select_catalog_metadata"
 
     SELECT_DSD_DATASETLABEL_AND_URI = "select_dsd_datasetlabel_and_uri"
+
+    SELECT_DATA_SET_DSD_CSV_URL = "select_data_set_dsd_csv_url"
 
     SELECT_DSD_QUBE_COMPONENTS = "select_dsd_qube_components"
 
@@ -221,12 +225,28 @@ def select_csvw_dsd_dataset_label_and_dsd_def_uri(
     return map_dataset_label_dsd_uri_sparql_result(results[0])
 
 
+def select_data_set_dsd_and_csv_url(rdf_graph: rdflib.ConjunctiveGraph) -> List[DataSetDsdUriCsvUrlResult]:
+    """
+    TODO: Add description
+    """
+    results: List[ResultRow] = select(
+        _get_query_string_from_file(SPARQLQueryName.SELECT_DATA_SET_DSD_CSV_URL),
+        rdf_graph,
+    )
+
+    if len(results) == 0:
+        raise InvalidNumberOfRecordsException(
+            record_description=f"result for the {SPARQLQueryName.SELECT_DATA_SET_DSD_CSV_URL.value} sparql query",
+            excepted_num_of_records=1,
+            num_of_records=len(results),
+        )
+    return _map_data_set_dsd_csv_url_result(results)
+
 def select_csvw_dsd_qube_components(
     cube_shape: Optional[CubeShape],
     rdf_graph: rdflib.ConjunctiveGraph,
-    dsd_uri: str,
     json_path: Path,
-) -> QubeComponentsResult:
+) -> List[QubeComponentsResult]:
     """
     Queries the list of qube components.
 
@@ -237,7 +257,7 @@ def select_csvw_dsd_qube_components(
     result_dsd_components: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryName.SELECT_DSD_QUBE_COMPONENTS),
         rdf_graph,
-        init_bindings={"dsd_uri": URIRef(dsd_uri)},
+        # init_bindings={"dsd_uri": URIRef(dsd_uri)},
     )
 
     result_observation_val_col_titles: Optional[List[ResultRow]] = None
@@ -247,7 +267,7 @@ def select_csvw_dsd_qube_components(
                 SPARQLQueryName.SELECT_OBS_VAL_FOR_DSD_COMPONENT_PROPERTIES
             ),
             rdf_graph,
-            init_bindings={"dsd_uri": URIRef(dsd_uri)},
+            # init_bindings={"dsd_uri": URIRef(dsd_uri)},
         )
 
     return map_qube_components_sparql_result(

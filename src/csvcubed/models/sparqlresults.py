@@ -88,27 +88,28 @@ class DSDLabelURIResult:
 
 
 @dataclass
+class DataSetDsdUriCsvUrlResult(DataClassBase):
+    """
+    TODO: Add description
+    """
+    csv_url: str
+    data_set_url: str
+    dsd_uri: str
+        
+@dataclass
 class QubeComponentResult(DataClassBase):
     """
     Model to represent a qube component.
     """
-
+    csv_url: str
+    component: str
+    dsd_uri: str
     property: str
     property_label: Optional[str]
     property_type: str
     csv_col_title: Optional[str]
     observation_value_column_titles: Optional[str]
     required: bool
-
-
-@dataclass
-class ObsValDsdComponentResult(DataClassBase):
-    """
-    Model to represent a observation value result.
-    """
-
-    csv_column_property_url: Optional[str]
-    observation_value_column_titles: Optional[str]
 
 
 @dataclass
@@ -119,7 +120,7 @@ class QubeComponentsResult:
 
     qube_components: list[QubeComponentResult]
     num_components: int
-
+    
     @property
     def output_str(self) -> str:
         formatted_components = get_printable_tabular_str_from_list(
@@ -136,6 +137,16 @@ class QubeComponentsResult:
         return f"""
         - Number of Components: {self.num_components}
         - Components:{linesep}{formatted_components}"""
+
+
+@dataclass
+class ObsValDsdComponentResult(DataClassBase):
+    """
+    Model to represent a observation value result.
+    """
+
+    csv_column_property_url: Optional[str]
+    observation_value_column_titles: Optional[str]
 
 
 @dataclass
@@ -359,7 +370,21 @@ def map_dataset_label_dsd_uri_sparql_result(
     )
     return result
 
+def _map_data_set_dsd_csv_url_result(
+    sparql_results: List[ResultRow],
+) -> List[DataSetDsdUriCsvUrlResult]:
+    """
+    TODO: Add description
+    """
+    def map_row(row_result: Dict[str, Any]) -> DataSetDsdUriCsvUrlResult:
+        return DataSetDsdUriCsvUrlResult(
+            csv_url=str(row_result["csvUrl"]),
+            data_set_url=str(row_result["dataSet"]),
+            dsd_uri=str(row_result["dsd"])
+        )
 
+    return [map_row(row.asdict()) for row in sparql_results]
+    
 def _map_qube_component_sparql_result(
     sparql_result: ResultRow, json_path: Path
 ) -> QubeComponentResult:
@@ -374,6 +399,9 @@ def _map_qube_component_sparql_result(
     _logger.debug("result_dict: %s", result_dict)
 
     result = QubeComponentResult(
+        csv_url="",
+        component=str(result_dict["component"]),
+        dsd_uri=str(result_dict["dsdUri"]),
         property=get_component_property_as_relative_path(
             json_path, str(result_dict["componentProperty"])
         ),

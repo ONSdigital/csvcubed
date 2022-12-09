@@ -1,5 +1,6 @@
 import pytest
 from csvcubed.cli.inspect.metadataprinter import to_absolute_rdflib_file_path
+from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import (
     ColTitlesAndNamesResult,
     ObservationValueColumnTitleAboutUrlResult,
@@ -8,6 +9,7 @@ from csvcubed.models.sparqlresults import (
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
 from csvcubed.utils.sparql_handler.sparqlmanager import (
     select_csvw_catalog_metadata,
+    select_csvw_dsd_dataset_label_and_dsd_def_uri,
     select_qb_csv_url,
 )
 from csvcubed.utils.tableschema import CsvwRdfManager
@@ -62,11 +64,11 @@ def test_get_unit_col_about_value_urls_for_csv():
 
     data_set_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
     data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
-    data_set_url = select_qb_csv_url(
+    csv_url = select_qb_csv_url(
         csvw_metadata_rdf_graph, data_set_uri
     ).csv_url
 
-    results = data_cube_state.get_unit_col_about_value_urls_for_csv(data_set_url)
+    results = data_cube_state.get_unit_col_about_value_urls_for_csv(csv_url)
 
     assert len(results) == 1
 
@@ -95,11 +97,11 @@ def test_get_obs_val_col_title_about_url_for_csv():
 
     data_set_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
     data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
-    data_set_url = select_qb_csv_url(
+    csv_url = select_qb_csv_url(
         csvw_metadata_rdf_graph, data_set_uri
     ).csv_url
 
-    results = data_cube_state.get_obs_val_col_titles_about_urls_for_csv(data_set_url)
+    results = data_cube_state.get_obs_val_col_titles_about_urls_for_csv(csv_url)
 
     result = _get_obs_val_col_title_about_url_result_by_about_url(
         "qb-id-10004.csv#obs/{some_dimension}@some-measure", results
@@ -129,11 +131,11 @@ def test_get_col_name_col_title_for_csv():
 
     data_set_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
     data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
-    data_set_url = select_qb_csv_url(
+    csv_url = select_qb_csv_url(
         csvw_metadata_rdf_graph, data_set_uri
     ).csv_url
 
-    results = data_cube_state.get_col_name_col_title_for_csv(data_set_url)
+    results = data_cube_state.get_col_name_col_title_for_csv(csv_url)
 
     result = _get_col_name_col_title_result_by_col_name("some_dimension", results)
     result.column_name == "some_dimension"
@@ -167,3 +169,54 @@ def test_exception_is_thrown_for_invalid_csv_url():
         assert data_cube_state._get_value_for_key("c", input_dict)
 
     assert str(exception.value) == "Could not find the definition for key 'c'"
+
+def test_get_data_set_dsd_csv_url_for_csv_url():
+    """
+    TODO: Add description
+    """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-single-measure-dataset"
+        / "qb-id-10004.csv-metadata.json"
+    )
+    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
+    data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
+
+    data_set_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
+    data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
+    csv_url = select_qb_csv_url(
+        csvw_metadata_rdf_graph, data_set_uri
+    ).csv_url
+    
+    data_set_dsd_csv_url_result = data_cube_state.get_data_set_dsd_and_csv_url_for_csv_url(csv_url)
+    
+    assert data_set_dsd_csv_url_result is not None
+    assert data_set_dsd_csv_url_result.csv_url == "qb-id-10004.csv"
+    assert data_set_dsd_csv_url_result.data_set_url == "qb-id-10004.csv#dataset"
+    assert data_set_dsd_csv_url_result.dsd_uri == "qb-id-10004.csv#structure"
+
+def test_get_dsd_qube_components_for_csv():
+    """
+    TODO: Add description
+    """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-single-measure-dataset"
+        / "qb-id-10004.csv-metadata.json"
+    )
+    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
+    data_cube_state = DataCubeState(csvw_metadata_rdf_graph, CubeShape.Pivoted, csvw_metadata_json_path)
+
+    data_set_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
+    data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
+    csv_url = select_qb_csv_url(
+        csvw_metadata_rdf_graph, data_set_uri
+    ).csv_url
+    
+    result_data_set_dsd_csv_url = data_cube_state.get_data_set_dsd_and_csv_url_for_csv_url(csv_url)
+    
+    result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(result_data_set_dsd_csv_url.dsd_uri, result_data_set_dsd_csv_url.csv_url)
+    
+    assert len(result_qube_components.qube_components) == 10
