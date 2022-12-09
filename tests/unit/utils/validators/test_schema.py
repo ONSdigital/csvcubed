@@ -151,5 +151,11 @@ def test_json_path_quote_escape():
     assert error.json_path == r"$.'an\'Enum\'Value'", error.json_path
 
 
+def test_schema_validation_when_offline():
+    """
+    todo: add desc
+    """
+    
+
 if __name__ == "__main__":
     pytest.main()

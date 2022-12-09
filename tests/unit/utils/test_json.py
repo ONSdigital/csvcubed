@@ -46,9 +46,14 @@ def test_loading_json_from_url():
         assert isinstance(document.get("columns"), list)
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture()
 def dummy_mapped_url():
-
+    """
+    This fixture is used to enable some tests to pass "bad input" URLs without causing an error
+    due to a corresponding local file path not existing. It maps the URLs used in those tests to
+    a file path that is known to exist. This allows connection errors and other such exceptions
+    to happen in a testing scenario.
+    """
     test_dictionary = {"//thisisatestfornickandcharlesons.com" : APP_ROOT_DIR_PATH / "schema" / "cube-config" / "v1_3" / "schema.json",
                     "//purl.org/csv-cubed/qube-config/badinput" : APP_ROOT_DIR_PATH / "schema" / "cube-config" / "v1_3" / "schema.json"}
     map_url_to_file_path.update(test_dictionary)
@@ -61,10 +66,10 @@ def dummy_mapped_url():
     _logger.debug(map_url_to_file_path)
 
 
-def test_load_local_when_http_request_fails():
+def test_load_local_when_http_request_fails(dummy_mapped_url):
     """
     Ensure that a local copy of a document is returned when an http request fails in any
-    instance. Most likley due to lack of internet connectivity.
+    instance. Most likely due to lack of internet connectivity.
     """
 
     with session.cache_disabled():
@@ -79,25 +84,12 @@ def test_load_local_when_http_request_fails():
             expected = json.load(f)
             assert json_document == expected
 
-# This fixture is a WIP way of possibly using the same fixture for multiple tests instead of duplicating them and changing the input url.
-# May not keep it, may improve it further.
-# @pytest.fixture(autouse=True)
-# def err_code_dummy_map_url():
-#     def add_dummy_url(input_url):
-#         map_url_to_file_path[input_url] = (
-#         APP_ROOT_DIR_PATH / "schema" / "cube-config" / "v1_3" / "schema.json"
-#         )
-#         yield None
-#         del map_url_to_file_path[input_url]
-#     return add_dummy_url
 
-def test_load_local_when_bad_status_code():
+def test_load_local_when_bad_status_code(dummy_mapped_url):
     """
     Ensures that a local copy of a document is returned when a HTTP request returns a response
-     with a 4**/5** status code.
+     with a 4**/5** status code. (In this case 404)
     """
-    # input_url = "https://purl.org/csv-cubed/qube-config/v1.3X"
-    # err_code_dummy_map_url("https://purl.org/csv-cubed/qube-config/v1.3X")
     with session.cache_disabled():
         json_document = load_json_document(
             "https://purl.org/csv-cubed/qube-config/badinput"
@@ -109,6 +101,37 @@ def test_load_local_when_bad_status_code():
         with open(expected_document, "r") as f:
             expected = json.load(f)
             assert json_document == expected
+
+
+#Unsure if this test will be implemented as it may be unnecessary, map function is implicitly shown to work in previous tests.
+def test_url_to_path_map():
+    """
+    Ensures that a given URL is properly mapped to a corresponding file path for rerieving
+    files (e.g. cube config files) from local storage.
+    """
+
+
+def test_connection_error_for_bad_url():
+    """
+    Todo: rewrite
+    """
+    
+    with pytest.raises(FileNotFoundError) as err:
+        with session.cache_disabled():
+            json_document = load_json_document("https://thistesturlwillnotproducearesponse.org")
+
+    assert str(err.value) == 'URL https://thistesturlwillnotproducearesponse.org/ did not produce a response and a local copy could not be found at the corresponding mapped path.'
+
+def test_connection_error__url():
+    """
+    Todo: rewrite desc
+    """
+    
+    with pytest.raises(FileNotFoundError) as err:
+        with session.cache_disabled():
+            json_document = load_json_document("https://purl.org/csv-cubed/qube-config/produces404")
+
+    assert str(err.value) == 'URL https://purl.org/csv-cubed/qube-config/produces404 produced a invalid response and a local copy could not be found at the corresponding mapped path.'
 
 
 if __name__ == "__main__":

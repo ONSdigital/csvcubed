@@ -119,25 +119,22 @@ class CustomAdapterServeSomeFilesLocally(BaseAdapter):
                 _logger.debug("The connection error has been found")
 
                 path_to_local_file = generate_path_to_local_file(request.url)
-                if path_to_local_file is None:
-                    raise FileNotFoundError(
-                        "The corresponding local file to %s could not be found.",
-                        request.url,
-                    )
 
                 _logger.debug("The local file path is: %s", path_to_local_file)
 
                 return create_local_copy_response(path_to_local_file, request)
 
-            except FileNotFoundError as e:
-                raise Exception(
-                    f"Error loading JSON from file at '{path_to_local_file}'"
+            except Exception:
+                raise FileNotFoundError(
+                    f"URL {request.url} did not produce a response and a local copy could not be found at the corresponding mapped path."
                 ) from e
 
         if response.status_code >= 400 and response.status_code < 600:
             print(f"The status code is {response.status_code}")
-
-            path_to_local_file = generate_path_to_local_file(request.url)
+            try:
+                path_to_local_file = generate_path_to_local_file(request.url)
+            except Exception:
+                raise FileNotFoundError(f"URL {request.url} produced a invalid response and a local copy could not be found at the corresponding mapped path.")
 
             return create_local_copy_response(path_to_local_file, request, response)
 
@@ -149,15 +146,12 @@ class CustomAdapterServeSomeFilesLocally(BaseAdapter):
 
 def generate_path_to_local_file(request_url: str) -> Path:
     trimmed_url = str(request_url).removeprefix("https:")
-    try:
-        if request_url[len(request_url) - 1] == "/":
-            path_to_local_file = map_url_to_file_path.get(
-                trimmed_url[: len(trimmed_url) - 1]
-            )
-        else:
-            path_to_local_file = map_url_to_file_path[trimmed_url]
-    except KeyError:
-        raise Exception("Local file could not be found in the URL to path mapping.")
+    if request_url[len(request_url) - 1] == "/":
+        path_to_local_file = map_url_to_file_path.get(
+            trimmed_url[: len(trimmed_url) - 1]
+        )
+    else:
+        path_to_local_file = map_url_to_file_path[trimmed_url]
 
     return path_to_local_file
 
@@ -197,5 +191,3 @@ def create_local_copy_response(
 session = CachedSession(cache_control=True, use_cache_dir=True)
 session.mount("http://", CustomAdapterServeSomeFilesLocally())
 session.mount("https://", CustomAdapterServeSomeFilesLocally())
-
-# session.hooks["response"] = [_hook_for_http_failure]
