@@ -13,6 +13,9 @@
         "European Broadcasting Union"
     ],
     "columns": {
+        "Year":{
+            "from_template": "government-year"
+        },
         "Player Name": {
             "type": "dimension"
         },

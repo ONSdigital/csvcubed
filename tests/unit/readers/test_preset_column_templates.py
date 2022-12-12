@@ -62,5 +62,15 @@ def test_exception_is_raised_when_given_wrong_template_file_path():
         assert "Couldn't find template your looking for." in str(excinfo)
 
 
+def test_get_template_file_when_http_request_fails():
+    """
+    todo: add desc
+    """
+    template_url = "//raw.githubusercontent.com/GSS-Cogs/csvcubed/main/src/csvcubed/readers/cubeconfig/v1_0/templates/calendar-hour.json"
+    # template_file = _get_template_file_from_template_lookup(template_url)
+    template_json = _get_properties_from_template_file(template_url)
+    assert template_json == True
+
+
 if __name__ == "__main__":
     pytest.main()
