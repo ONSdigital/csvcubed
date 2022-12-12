@@ -79,21 +79,15 @@ def main():
     # list all dataclasses(the classes that have the datacall decorator)
     all_data_classes = check_for_dataclass(all_classes)
 
-    dict = {"": []}
-    dict_keys = []
+    list_validatons = []
     for x in all_data_classes:
-        if issubclass(x, ValidatedModel) and x.__name__ is not "ValidatedModel":
-            testclass = x
-            fornow = fields(x)
-            dict_keys.append(x.__name__)
-            dict[x.__name__] = [f.name for f in fornow]
+        if issubclass(x, ValidatedModel) and x.__name__ != "ValidatedModel":
+            # testclass = x
+            list_validatons.append(x)
 
-    for z in dict_keys:
-        print(f"class name : {z} \n")
-        print(dict[z])
-        print("\n \n")
+    for j in list_validatons:
 
-    assert len(testclass._get_validations()) == len(fields(testclass))
+        assert len(j._get_validations()) == len(fields(j))
 
     # create a validatemodell class
     # filter out the classes to get the subclasses of the validatedModel class with issubclass function
