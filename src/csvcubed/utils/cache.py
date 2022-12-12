@@ -61,7 +61,8 @@ _hard_codes_map_url_to_file_path = {
 
 def _get_url_to_file_path_map() -> Dict[str, Path]:
     """
-    todo: add comment here
+    Creates a dictionary that maps URLs requested by load_json_document to their corresponding local storage files, so they can be retrieved
+    in case the HTTP request fails during csvcubed build process.
     """
 
     templates_dir = APP_ROOT_DIR_PATH / "readers" / "cubeconfig" / "v1_0" / "templates"

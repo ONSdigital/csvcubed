@@ -113,7 +113,8 @@ def test_url_to_path_map():
 
 def test_connection_error_for_bad_url():
     """
-    Todo: rewrite
+    Ensures a FileNotFound error is successfully produced when a request is made with load_json_document
+    using a non-existent URL as input, meaning no response is returned and no local copy can be found.
     """
     
     with pytest.raises(FileNotFoundError) as err:
@@ -124,7 +125,9 @@ def test_connection_error_for_bad_url():
 
 def test_connection_error__url():
     """
-    Todo: rewrite desc
+    Ensures a FileNotFound exception is successfully produced when a request is made with load_json_document
+    which causes a response to be returned, but with a client or server error status code
+    (in this case 404 due to valid endpoint but non-existent resource requested) and no local copy to be found.
     """
     
     with pytest.raises(FileNotFoundError) as err:
