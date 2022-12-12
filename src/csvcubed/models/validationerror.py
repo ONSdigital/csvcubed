@@ -60,3 +60,11 @@ class PydanticThrowableSpecificValidationError(
     """
 
     pass
+
+@dataclass
+class ValidateModelProperiesError(ValidationError):
+
+    """
+    This error will be returned with the name of the class attribute.
+    """
+    property_name: str
