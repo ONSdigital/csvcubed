@@ -82,18 +82,11 @@ def main():
     list_validatons = []
     for x in all_data_classes:
         if issubclass(x, ValidatedModel) and x.__name__ != "ValidatedModel":
-            # testclass = x
             list_validatons.append(x)
 
     for j in list_validatons:
 
         assert len(j._get_validations()) == len(fields(j))
-
-    # create a validatemodell class
-    # filter out the classes to get the subclasses of the validatedModel class with issubclass function
-    # run _get_validation_errors()
-    # do a comparison between the fields and the _get_validation_error() and if the to values don't match fail
-    # in the reusablle-test.yaml file add in a run that will call this script and if it fails stop the build
 
 
 if __name__ == "__main__":
