@@ -54,7 +54,7 @@ jobs:
         run: poetry install
 
       - name: Check for validation
-        run: python tests/pref_improvement/pref_check.py
+        run: python ./tests/pref_improvement/pref_check.py
 
       - name: Run pyright
         run: poetry run pyright . --lib
