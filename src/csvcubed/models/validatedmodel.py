@@ -1,4 +1,4 @@
-#this class will be class attributes and returns an array of errors
+# this class will be class attributes and returns an array of errors
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
@@ -10,8 +10,8 @@ from csvcubed.models.validationerror import ValidateModelProperiesError
 
 ValidationFunction = Callable[[Any, str], List[ValidateModelProperiesError]]
 
-class ValidatedModel(DataClassBase):
 
+class ValidatedModel(DataClassBase):
     def validate(self) -> List[ValidateModelProperiesError]:
         validation_errors: List[ValidateModelProperiesError] = []
         for (property_name, validation_function) in self._get_validations().items():
@@ -24,3 +24,10 @@ class ValidatedModel(DataClassBase):
     @abstractmethod
     def _get_validations(self) -> Dict[str, ValidationFunction]:
         pass
+
+
+class ValidationTester(ValidatedModel):
+    string_variable: str
+
+    def _get_validations() -> Dict[str, ValidationFunction]:
+        return {}

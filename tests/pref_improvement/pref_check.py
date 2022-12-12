@@ -7,6 +7,7 @@ from dataclasses import is_dataclass, fields
 import csvcubed
 from csvcubed.definitions import APP_ROOT_DIR_PATH
 from pathlib import Path
+from csvcubed.models.validatedmodel import ValidatedModel
 
 # scan throught each file and check if the members are classes
 def list_classes_in_file(imported_module, file_name: Path) -> Iterable[type]:
@@ -81,17 +82,24 @@ def main():
     dict = {"": []}
     dict_keys = []
     for x in all_data_classes:
-        fornow = fields(x)
-        dict_keys.append(x.__name__)
-        dict[x.__name__] = fornow
+        if issubclass(x, ValidatedModel) and x.__name__ is not "ValidatedModel":
+            testclass = x
+            fornow = fields(x)
+            dict_keys.append(x.__name__)
+            dict[x.__name__] = [f.name for f in fornow]
 
     for z in dict_keys:
-        print(f"Function name : {z} \n")
+        print(f"class name : {z} \n")
         print(dict[z])
         print("\n \n")
 
+    assert len(testclass._get_validations()) == len(fields(testclass))
+
+    # create a validatemodell class
     # filter out the classes to get the subclasses of the validatedModel class with issubclass function
     # run _get_validation_errors()
+    # do a comparison between the fields and the _get_validation_error() and if the to values don't match fail
+    # in the reusablle-test.yaml file add in a run that will call this script and if it fails stop the build
 
 
 if __name__ == "__main__":
