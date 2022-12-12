@@ -59,7 +59,7 @@ jobs:
       - name: Run unittests
         run: poetry run pytest --junitxml=pytest_results.xml
       
-      -name: Check for validation
+      - name: Check for validation
         run: python pref_check.py
 
       - name: Run behaviour tests (Windows)
