@@ -53,14 +53,15 @@ jobs:
       - name: Install python packages
         run: poetry install
 
+      - name: Check for validation
+        run: python pref_check.py
+        
       - name: Run pyright
         run: poetry run pyright . --lib
 
       - name: Run unittests
         run: poetry run pytest --junitxml=pytest_results.xml
       
-      - name: Check for validation
-        run: python pref_check.py
 
       - name: Run behaviour tests (Windows)
         if: inputs.os == 'windows-latest'
