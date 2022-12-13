@@ -42,12 +42,14 @@ def _map_the_thing(path_part: str) -> str:
         return path_part
 
 
-def generate_modules(path_to_file: Path, path_to_root_dir: Path):
+def generate_modules(
+    path_to_file: Path, path_to_root_dir: Path, root_package_name: str = "csvcubed"
+):
 
     path_parts = [
         _map_the_thing(p) for p in path_to_file.relative_to(path_to_root_dir).parts
     ]
-    path_parts = ["csvcubed"] + [p for p in path_parts if p is not None]
+    path_parts = [root_package_name] + [p for p in path_parts if p is not None]
     module_name = ".".join(path_parts)
 
     # check if the module(file) has already ben loaded
