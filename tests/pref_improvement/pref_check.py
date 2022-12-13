@@ -5,9 +5,9 @@ import sys
 from dataclasses import is_dataclass, fields
 
 # import csvcubed
-from csvcubed.definitions import APP_ROOT_DIR_PATH
+from src.csvcubed.definitions import APP_ROOT_DIR_PATH
 from pathlib import Path
-from csvcubed.models.validatedmodel import ValidatedModel
+from src.csvcubed.models.validatedmodel import ValidatedModel
 
 # scan throught each file and check if the members are classes
 def list_classes_in_file(imported_module, file_name: Path) -> Iterable[type]:
