@@ -52,7 +52,10 @@ jobs:
 
       - name: Install python packages
         run: poetry install
-
+      
+      - name: Print current path
+        run: pwd
+        
       - name: Check for validation
         run: python ~/.tests/pref_improvement/pref_check.py
 
