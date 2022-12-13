@@ -1,7 +1,10 @@
+import sys
+
+sys.path.append("../")
+
 import inspect
 import importlib
 from typing import Iterable
-import sys
 from dataclasses import is_dataclass, fields
 from pathlib import Path
 
