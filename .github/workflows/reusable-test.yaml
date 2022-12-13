@@ -52,18 +52,18 @@ jobs:
 
       - name: Install python packages
         run: poetry install
-      
-      - name: Opening Poetry Shell
-        run: poetry shell
-      
+    
       - name: Print current path
         run: pwd
         
       - name: List current folder
         run: ls
 
+      - name: Go inside tests folder
+        run: cd tests/pref_improvement/
+
       - name: Check for validation
-        run: python tests/pref_improvement/pref_check.py
+        run: python pref_check.py
 
       - name: Run pyright
         run: poetry run pyright . --lib
