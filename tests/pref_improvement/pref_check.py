@@ -3,10 +3,9 @@ import importlib
 from typing import Iterable
 import sys
 from dataclasses import is_dataclass, fields
-
-import csvcubed
-from csvcubed.definitions import APP_ROOT_DIR_PATH
 from pathlib import Path
+
+from csvcubed.definitions import APP_ROOT_DIR_PATH
 from csvcubed.models.validatedmodel import ValidatedModel
 
 # scan throught each file and check if the members are classes
