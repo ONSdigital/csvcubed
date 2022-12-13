@@ -53,14 +53,11 @@ jobs:
       - name: Install python packages
         run: poetry install
     
-      - name: Print current path
-        run: pwd
-        
-      - name: List current folder
-        run: ls
+      - name: List working folder
+        run: pwd && ls
 
       - name: Check for validation
-        run: python tests/pref_improvement/pref_check.py
+        run: poetry run python tests/pref_improvement/pref_check.py
 
       - name: Run pyright
         run: poetry run pyright . --lib

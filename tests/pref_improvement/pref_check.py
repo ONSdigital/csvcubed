@@ -1,7 +1,3 @@
-import sys
-
-sys.path.append("../")
-
 import inspect
 import importlib
 from typing import Iterable
