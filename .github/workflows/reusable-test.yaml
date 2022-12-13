@@ -60,7 +60,7 @@ jobs:
         run: poetry run python tests/pref_improvement/pref_check.py
 
       - name: Run pyright
-        run: poetry run pyright . --lib
+        run: cd src/ && poetry run pyright . --lib
 
       - name: Run unittests
         run: poetry run pytest --junitxml=pytest_results.xml
