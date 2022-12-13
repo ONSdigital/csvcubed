@@ -8,6 +8,7 @@ from typing import Iterable
 from dataclasses import is_dataclass, fields
 from pathlib import Path
 
+import csvcubed
 from csvcubed.definitions import APP_ROOT_DIR_PATH
 from csvcubed.models.validatedmodel import ValidatedModel
 
