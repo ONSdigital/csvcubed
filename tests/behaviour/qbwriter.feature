@@ -652,7 +652,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
 
 Scenario: A multi-measure pivoted shape cube should be produced as the output for the multi-measure pivoted shape inputs
   Given a multi-measure pivoted shape cube with identifier "qb-id-10003" named "Pivoted Shape Cube"
-  When the CSVqb should pass all validations
+  Then the CSVqb should pass all validations
   When the cube is serialised to CSV-W
   Then the file at "qb-id-10003.csv" should exist
   And the file at "qb-id-10003.csv-metadata.json" should exist

@@ -13,6 +13,7 @@ from csvcubed.models.cube.cube import (
     UriTemplateNameError,
 )
 from csvcubed.models.cube.qb.components.validationerrors import (
+    ConflictingUriSafeValuesError,
     EmptyQbMultiUnitsError,
     ReservedUriValueError,
     UndefinedAttributeValueUrisError,
@@ -56,7 +57,9 @@ def test_val_errors_no_observation():
     """
     config = Path(_test_case_dir, "no_observed_values_column_defined_error.json")
     csv = Path(_test_case_dir, "no_observed_values_column_defined_error.csv")
-    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(config, csv)
+    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
+        config, csv
+    )
     _write_errors_to_log(json_schema_validation_errors, validation_errors)
 
     # Check cube
@@ -204,12 +207,11 @@ def test_val_errors_both_measure_types():
     """
     config = Path(_test_case_dir, "both_measure_types_defined.json")
     csv = Path(_test_case_dir, "both_measure_types_defined.csv")
-
+    
     cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
-        config, csv
+            config, csv
     )
-
-
+    
     _write_errors_to_log(json_schema_validation_errors, validation_errors)
 
     assert isinstance(cube, Cube)
@@ -456,6 +458,33 @@ def test_val_errors_undefined_unit_uri():
     )
 
 
+def test_val_errors_uri_conflict():
+    """
+    Test for:-
+        ConflictingUriSafeValuesError
+    """
+    config = Path(_test_case_dir, "conflicting_uri_safe_values.json")
+    csv = Path(_test_case_dir, "conflicting_uri_safe_values.csv")
+    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
+        config, csv
+    )
+    _write_errors_to_log(json_schema_validation_errors, validation_errors)
+
+    assert isinstance(cube, Cube)
+    assert isinstance(validation_errors, list)
+    assert_num_validation_errors(validation_errors, 1)
+    assert isinstance(validation_errors[0], ConflictingUriSafeValuesError)
+    _assert_in_log(
+        "csvcubed.cli.build - ERROR - Validation Error: A URI collision has been detected in an attribute column."
+    )
+    _assert_in_log(
+        "The values 'Software Sales', 'software-sales' map to the same URI-safe identifier 'software-sales'"
+    )
+    _assert_in_log(
+        "csvcubed.cli.build - ERROR - More information: https://purl.org/csv-cubed/err/conflict-uri"
+    )
+
+
 def test_val_errors_reserved_uri():
     """
     Test for:-
@@ -528,7 +557,9 @@ def test_duplicate_measure_error():
     config = Path(_test_case_dir, "duplicate_measure_types_error.json")
     csv = Path(_test_case_dir, "duplicate_measure_types_error.csv")
 
-    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(config, csv)
+    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
+        config, csv
+    )
 
     _write_errors_to_log(json_schema_validation_errors, validation_errors)
 
@@ -549,7 +580,9 @@ def test_attribute_not_linked_error():
     config = Path(_test_case_dir, "attribute_not_linked_error.json")
     csv = Path(_test_case_dir, "attribute_not_linked_error.csv")
 
-    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(config, csv)
+    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
+        config, csv
+    )
 
     _write_errors_to_log(json_schema_validation_errors, validation_errors)
 
@@ -570,8 +603,10 @@ def test_linked_obs_column_doesnt_exist_error():
     config = Path(_test_case_dir, "linked_obs_column_doesnt_exist_error.json")
     csv = Path(_test_case_dir, "linked_obs_column_doesnt_exist_error.csv")
 
-    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(config, csv)
-    
+    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
+        config, csv
+    )
+
     _write_errors_to_log(json_schema_validation_errors, validation_errors)
 
     assert isinstance(cube, Cube)
@@ -591,7 +626,9 @@ def test_linked_to_non_obs_colums_error():
     config = Path(_test_case_dir, "linked_to_non_obs_column_error.json")
     csv = Path(_test_case_dir, "linked_to_non_obs_column_error.csv")
 
-    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(config, csv)
+    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
+        config, csv
+    )
 
     _write_errors_to_log(json_schema_validation_errors, validation_errors)
 
@@ -612,7 +649,9 @@ def test_hybrid_shape_error():
     config = Path(_test_case_dir, "hybrid_shape_error.json")
     csv = Path(_test_case_dir, "hybrid_shape_error.csv")
 
-    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(config, csv)
+    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
+        config, csv
+    )
 
     _write_errors_to_log(json_schema_validation_errors, validation_errors)
 
@@ -624,4 +663,3 @@ def test_hybrid_shape_error():
     _assert_in_log(
         "Mutliple observation value columns have been at the same time as a standard shape measure column defined.",
     )
-
