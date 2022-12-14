@@ -3,8 +3,10 @@ from tempfile import TemporaryDirectory
 from typing import Dict, List
 
 import pandas as pd
+import pytest
 
 from csvcubed.cli.build import build as cli_build
+from csvcubed.definitions import APP_ROOT_DIR_PATH
 from csvcubed.models.codelistconfig.code_list_config import (
     CODE_LIST_CONFIG_DEFAULT_URL,
     CodeListConfig,
@@ -252,3 +254,37 @@ def test_same_as_field_in_output_csv():
         assert "Original Concept URI" in output_df.columns
 
         assert output_df.iloc[0]["Original Concept URI"] == "http://example.org/red"
+
+from csvcubed.utils.cache import map_url_to_file_path
+@pytest.fixture()
+def dummy_mapped_url():
+    """
+    This fixture is used to enable some tests to pass "bad input" URLs without causing an error
+    due to a corresponding local file path not existing. It maps the URLs used in those tests to
+    a file path that is known to exist. This allows connection errors and other such exceptions
+    to happen in a testing scenario.
+    """
+    # Add test URL to dictionary when ready to use fixture
+    test_dictionary = {"//purl.org/csv-cubed/codelist-config/v1.0x": APP_ROOT_DIR_PATH
+    / "schema"
+    / "codelist-config"
+    / "v1_0"
+    / "schema.json",}
+    map_url_to_file_path.update(test_dictionary)
+    import logging
+
+    _logger = logging.getLogger(__name__)
+    _logger.debug(map_url_to_file_path)
+    yield None
+    [map_url_to_file_path.pop(key) for key in list(test_dictionary.keys())]
+    _logger.debug(map_url_to_file_path)
+
+def test_retrieve_local_codelist_config_while_offline(dummy_mapped_url):
+    """
+    todo: insert desc
+    """
+    from csvcubed.models.codelistconfig.code_list_config import CodeListConfig
+
+    codelist_config_url = "https://purl.org/csv-cubed/codelist-config/v1.0x"
+    codelist_config_json = CodeListConfig.from_json_file(codelist_config_url)
+    assert codelist_config_json[1] == True
