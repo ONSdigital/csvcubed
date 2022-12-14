@@ -155,31 +155,12 @@ def test_schema_validation_when_offline():
     """
     todo: add desc
     """
-    # schema = {
-    #     "$schema": "https://json-schema.org/draft-07/schema",
-    #     "type": "object",
-    #     "required": ["$schema"],
-    #     "properties": {
-    #         "$schema": {
-    #             "type": "string",
-    #             "default": "https://purl.org/csv-cubed/qube-config/v1.0",
-    #         },
-    #         "publisher": {
-    #             "description": "The publisher of the data set (uri)",
-    #             "$ref": "http://purl.org/csv-cubed/resources/organisations.json#/uris",
-    #         },
-    #     },
-    # }
-    # data = {
-    #     "publisher": "https://www.gov.uk/government/organisations/youth-justice-board-for-england-and-wales"
-    # }
-
     schema = {
         "type": "object",
         "properties": {
             "publisher": {
                 "description": "The publisher of the data set (uri)",
-                "$ref": "http://purl.org/csv-cubed/resources/organisations.json#/uris",
+                "$ref": "http://thisisaurltoadocument/that/does/not/exist.json",
             },
         },
     }
@@ -188,8 +169,6 @@ def test_schema_validation_when_offline():
     }
 
     json_validation_errors = validate_dict_against_schema(data, schema)
-    from jsonschema.exceptions import RefResolutionError
-
     assert len(json_validation_errors) == 0
 
 
