@@ -3,7 +3,6 @@ from copy import deepcopy
 import pytest
 from requests.exceptions import HTTPError
 from csvcubed.definitions import APP_ROOT_DIR_PATH
-from csvcubed.utils.cache import map_url_to_file_path, session
 
 from csvcubed.readers.preconfiguredtemplates import (
     TEMPLATE_BASE_URL,
@@ -52,7 +51,7 @@ def test_raise_error_works_for_none_existing_template_lookup_path():
 
 def test_raise_error_works_for_none_existing_template_path():
     template_url = f"{TEMPLATE_BASE_URL}/year.json"
-    with pytest.raises(HTTPError) as excinfo:
+    with pytest.raises(FileNotFoundError) as excinfo:
         _get_properties_from_template_file("year.json")
         assert f"Unable to get from url {template_url}. Status code:" in str(excinfo)
 
@@ -64,36 +63,27 @@ def test_exception_is_raised_when_given_wrong_template_file_path():
         assert "Couldn't find template your looking for." in str(excinfo)
 
 
-@pytest.fixture()
-def dummy_mapped_url():
-    """
-    This fixture is used to enable some tests to pass "bad input" URLs without causing an error
-    due to a corresponding local file path not existing. It maps the URLs used in those tests to
-    a file path that is known to exist. This allows connection errors and other such exceptions
-    to happen in a testing scenario.
-    """
-    # Add test URL to dictionary when ready to use fixture
-    test_dictionary = {}
-    map_url_to_file_path.update(test_dictionary)
-    import logging
-
-    _logger = logging.getLogger(__name__)
-    _logger.debug(map_url_to_file_path)
-    yield None
-    [map_url_to_file_path.pop(key) for key in list(test_dictionary.keys())]
-    _logger.debug(map_url_to_file_path)
-
-
-# Add fixture name to test when ready to use it
-def test_get_template_file_when_http_request_fails():
+from csvcubed.readers.preconfiguredtemplates import _get_properties_from_template_file
+def test_get_template_file_when_bad_status_code(dummy_mapped_url):
     """
     todo: add desc
+    ensure we explain why there can only be the possibility of a bad status code (hard-coded url prefix)
+    expected_document = (
+            APP_ROOT_DIR_PATH / "schema" / "cube-config" / "v1_3" / "schema.json"
+        )
+        with open(expected_document, "r") as f:
+            expected = json.load(f)
+            assert json_document == expected
     """
-    with session.cache_disabled():
-        template_url = "//raw.githubusercontent.com/GSS-Cogs/csvcubed/main/src/csvcubed/readers/cubeconfig/v1_0/templates/calendar-hour.json"
-        # template_file = _get_template_file_from_template_lookup(template_url)
-        template_json = _get_properties_from_template_file(template_url)
-        assert template_json == True
+    expected_template_json = (APP_ROOT_DIR_PATH / "readers" / "cubeconfig" / "v1_0" / "templates" / "calendar-year.json")
+
+    template_url_suffix = "calendar-hourx.json"
+    template_json = _get_properties_from_template_file(template_url_suffix)
+
+    import json
+    with open(expected_template_json, "r") as f:
+        expected = json.load(f)
+        assert template_json == expected
 
 
 if __name__ == "__main__":

@@ -5,7 +5,7 @@ from typing import List
 
 from tests.unit.test_baseunit import get_test_cases_dir
 from csvcubed.utils.json import load_json_document
-from csvcubed.utils.cache import map_url_to_file_path, session
+from csvcubed.utils.cache import session
 from csvcubed.definitions import APP_ROOT_DIR_PATH
 
 _json_test_cases_dir = get_test_cases_dir() / "utils" / "json"
@@ -44,26 +44,6 @@ def test_loading_json_from_url():
 
         document = load_json_document("http://url/file.json")
         assert isinstance(document.get("columns"), list)
-
-
-@pytest.fixture()
-def dummy_mapped_url():
-    """
-    This fixture is used to enable some tests to pass "bad input" URLs without causing an error
-    due to a corresponding local file path not existing. It maps the URLs used in those tests to
-    a file path that is known to exist. This allows connection errors and other such exceptions
-    to happen in a testing scenario.
-    """
-    test_dictionary = {"//thisisatestfornickandcharlesons.com" : APP_ROOT_DIR_PATH / "schema" / "cube-config" / "v1_3" / "schema.json",
-                    "//purl.org/csv-cubed/qube-config/badinput" : APP_ROOT_DIR_PATH / "schema" / "cube-config" / "v1_3" / "schema.json"}
-    map_url_to_file_path.update(test_dictionary)
-    import logging
-    _logger = logging.getLogger(__name__)
-    _logger.debug(map_url_to_file_path)
-    yield None
-    #[a.pop(key) for key in ['key1', 'key3']]
-    [map_url_to_file_path.pop(key) for key in list(test_dictionary.keys())]
-    _logger.debug(map_url_to_file_path)
 
 
 def test_load_local_when_http_request_fails(dummy_mapped_url):
@@ -123,7 +103,7 @@ def test_connection_error_for_bad_url():
 
     assert str(err.value) == 'URL https://thistesturlwillnotproducearesponse.org/ did not produce a response and a local copy could not be found at the corresponding mapped path.'
 
-def test_connection_error__url():
+def test_connection_error_url():
     """
     Ensures a FileNotFound exception is successfully produced when a request is made with load_json_document
     which causes a response to be returned, but with a client or server error status code
