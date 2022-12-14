@@ -16,7 +16,7 @@ import pandas as pd
 from csvcubed.models.cube.columns import CsvColumn, SuppressedCsvColumn
 from csvcubed.models.cube.cube import QbCube
 from csvcubed.models.cube.qb.columns import QbColumn
-from csvcubed.models.cube.qb.components.attribute import QbAttribute, QbAttributeLiteral, ExistingQbAttribute, NewQbAttribute
+from csvcubed.models.cube.qb.components.attribute import QbAttribute, QbAttributeLiteral
 from csvcubed.models.cube.qb.components.codelist import (
     NewQbCodeListInCsvW,
     NewQbCodeList,
@@ -546,7 +546,7 @@ class QbWriter(WriterBase):
             if self.cube.is_pivoted_shape:
                 #If the cube is in pivoted shape, the attribute columns cannot be set to required.
                 _logger.warning(
-                    "Setting the column '%s' to not required as the cube is in pivoted shape.", column.csv_column_title
+                    "Attribute column '%s' was marked as required, but the cube has multiple observed values columns. Attributes in multi-measure pivoted cubes cannot currently be marked as required.", column.csv_column_title
                 )
                 return False                        
             return True
