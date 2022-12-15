@@ -513,7 +513,7 @@ def test_transform_to_canonical_shape_for_standard_shape_data_set():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
+    data_cube_state = DataCubeState(csvw_metadata_rdf_graph, CubeShape.Pivoted, csvw_metadata_json_path)
     
     (dataset, qube_components, dsd_uri, _) = get_arguments_qb_dataset(
         CubeShape.Standard, csvw_metadata_rdf_graph, csvw_metadata_json_path
@@ -551,7 +551,7 @@ def test_transform_to_canonical_shape_for_pivoted_single_measure_shape_data_set(
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
+    data_cube_state = DataCubeState(csvw_metadata_rdf_graph, CubeShape.Pivoted, csvw_metadata_json_path)
 
     (dataset, qube_components, dsd_uri, _) = get_arguments_qb_dataset(
         CubeShape.Pivoted, csvw_metadata_rdf_graph, csvw_metadata_json_path
@@ -604,11 +604,11 @@ def test_transform_to_canonical_shape_for_pivoted_multi_measure_shape_data_set()
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-
+    data_cube_state = DataCubeState(csvw_metadata_rdf_graph, CubeShape.Pivoted, csvw_metadata_json_path)
+    
     (dataset, qube_components, dsd_uri, _) = get_arguments_qb_dataset(
         CubeShape.Pivoted, csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
-    data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
 
     (dataset, qube_components, dsd_uri, _) = get_arguments_qb_dataset(
         CubeShape.Pivoted, csvw_metadata_rdf_graph, csvw_metadata_json_path

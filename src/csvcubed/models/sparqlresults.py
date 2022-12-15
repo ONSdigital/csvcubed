@@ -147,7 +147,7 @@ class ObsValDsdComponentResult(DataClassBase):
 
     csv_column_property_url: Optional[str]
     observation_value_column_titles: Optional[str]
-
+    dsd_uri: str
 
 @dataclass
 class ColsWithSuppressOutputTrueResult:
@@ -429,6 +429,7 @@ def _map_obs_val_for_dsd_component_properties_results(
             observation_value_column_titles=none_or_map(
                 row_result.get("observationValueColumnTitles"), str
             ),
+            dsd_uri=str(row_result["dsd_uri"])
         )
 
     return [map_row(row.asdict()) for row in sparql_results]
@@ -462,7 +463,7 @@ def map_qube_components_sparql_result(
                 obs_val_col_title_result
                 for obs_val_col_title_result in obs_val_col_title_results
                 if obs_val_col_title_result.csv_column_property_url
-                == dsd_component_result.property
+                == dsd_component_result.property and obs_val_col_title_result.dsd_uri == dsd_component_result.dsd_uri
             ]
 
             if len(obs_val_col_title_result_for_component) == 1:

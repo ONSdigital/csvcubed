@@ -7,6 +7,7 @@ import rdflib
 from csvcubed.models.cube.cube_shape import CubeShape
 
 from csvcubed.models.sparqlresults import ColTitlesAndNamesResult, DataSetDsdUriCsvUrlResult, ObservationValueColumnTitleAboutUrlResult, QubeComponentResult, QubeComponentsResult, UnitColumnAboutValueUrlResult
+from csvcubed.utils.sparql_handler.sparql import none_or_map
 from csvcubed.utils.sparql_handler.sparqlmanager import select_col_titles_and_names, select_csvw_dsd_qube_components, select_data_set_dsd_and_csv_url, select_observation_value_column_title_and_about_url, select_unit_col_about_value_urls 
 
 @dataclass
@@ -70,18 +71,16 @@ class DataCubeState:
         return results_dict
 
     @cached_property
-    def _dsd_qube_components(self) -> Dict[str, QubeComponentsResult]:
+    def _dsd_qube_components(self) -> Dict[str, List[QubeComponentResult]]:
         """
         Queries and caches qube components
         """
-        #TODO: Check with Rob about the design decision here
-        results = select_csvw_dsd_qube_components(self.cube_shape, self.rdf_graph, self.csvw_json_path)
-        assert len(results) > 0
-
-        results_dict:Dict[str, QubeComponentsResult] = {}
-        
-        for result in results:
-            results_dict[result.qube_components[0].dsd_uri] = result
+        result = select_csvw_dsd_qube_components(self.cube_shape, self.rdf_graph, self.csvw_json_path)
+        results_dict:Dict[str, List[QubeComponentResult]] = {}
+        for component in result.qube_components:
+            components = none_or_map(results_dict.get(component.dsd_uri), list[QubeComponentResult]) or []
+            components.append(component)
+            results_dict[component.dsd_uri] = components
         return results_dict
 
     """
@@ -110,7 +109,7 @@ class DataCubeState:
 
     def get_data_set_dsd_and_csv_url_for_csv_url(self, csv_url) -> DataSetDsdUriCsvUrlResult:
         """
-        TODO: Add description
+        Getter for data_set_dsd_and_csv_url_for_csv_url cached property.
         """
         result: DataSetDsdUriCsvUrlResult = self._get_value_for_key(csv_url, self._data_set_dsd_and_csv_url)
         return result
@@ -119,7 +118,7 @@ class DataCubeState:
         """
         Getter for DSD Qube Components cached property.
         """
-        result: QubeComponentsResult = self._get_value_for_key(dsd_uri, self._dsd_qube_components)
-        for component in result.qube_components:
+        components: List[QubeComponentResult] = self._get_value_for_key(dsd_uri, self._dsd_qube_components)
+        for component in components:
             component.csv_url = csv_url
-        return result
+        return QubeComponentsResult(components, len(components))

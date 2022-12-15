@@ -59,7 +59,6 @@ from csvcubed.utils.sparql_handler.sparqlmanager import (
     select_cols_where_suppress_output_is_true,
     select_csvw_catalog_metadata,
     select_csvw_dsd_dataset_label_and_dsd_def_uri,
-    select_csvw_dsd_qube_components,
     select_dsd_code_list_and_cols,
     select_qb_csv_url,
 )

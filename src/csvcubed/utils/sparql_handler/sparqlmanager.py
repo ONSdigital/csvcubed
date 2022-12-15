@@ -246,7 +246,7 @@ def select_csvw_dsd_qube_components(
     cube_shape: Optional[CubeShape],
     rdf_graph: rdflib.ConjunctiveGraph,
     json_path: Path,
-) -> List[QubeComponentsResult]:
+) -> QubeComponentsResult:
     """
     Queries the list of qube components.
 
@@ -257,7 +257,6 @@ def select_csvw_dsd_qube_components(
     result_dsd_components: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryName.SELECT_DSD_QUBE_COMPONENTS),
         rdf_graph,
-        # init_bindings={"dsd_uri": URIRef(dsd_uri)},
     )
 
     result_observation_val_col_titles: Optional[List[ResultRow]] = None
@@ -267,7 +266,6 @@ def select_csvw_dsd_qube_components(
                 SPARQLQueryName.SELECT_OBS_VAL_FOR_DSD_COMPONENT_PROPERTIES
             ),
             rdf_graph,
-            # init_bindings={"dsd_uri": URIRef(dsd_uri)},
         )
 
     return map_qube_components_sparql_result(

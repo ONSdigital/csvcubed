@@ -6,6 +6,7 @@ from csvcubed.models.sparqlresults import (
     ObservationValueColumnTitleAboutUrlResult,
     UnitColumnAboutValueUrlResult,
 )
+from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
 from csvcubed.utils.sparql_handler.sparqlmanager import (
     select_csvw_catalog_metadata,
@@ -16,6 +17,7 @@ from csvcubed.utils.tableschema import CsvwRdfManager
 from typing import List
 
 from tests.unit.test_baseunit import get_test_cases_dir
+from tests.unit.utils.sparqlhandler.test_sparqlmanager import get_dsd_component_by_property_url, assert_dsd_component_equal
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
 
@@ -59,8 +61,7 @@ def test_get_unit_col_about_value_urls_for_csv():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-
-    data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
+    data_cube_state = DataCubeState(csvw_metadata_rdf_graph, CubeShape.Pivoted, csvw_metadata_json_path)
 
     data_set_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
     data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
@@ -92,9 +93,8 @@ def test_get_obs_val_col_title_about_url_for_csv():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-
-    data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
-
+    data_cube_state = DataCubeState(csvw_metadata_rdf_graph, CubeShape.Pivoted, csvw_metadata_json_path)
+    
     data_set_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
     data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
     csv_url = select_qb_csv_url(
@@ -126,8 +126,7 @@ def test_get_col_name_col_title_for_csv():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-
-    data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
+    data_cube_state = DataCubeState(csvw_metadata_rdf_graph, CubeShape.Pivoted, csvw_metadata_json_path)
 
     data_set_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
     data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
@@ -160,8 +159,7 @@ def test_exception_is_thrown_for_invalid_csv_url():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-
-    data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
+    data_cube_state = DataCubeState(csvw_metadata_rdf_graph, CubeShape.Pivoted, csvw_metadata_json_path)
 
     input_dict = {"a": 1, "b": 2}
 
@@ -172,7 +170,7 @@ def test_exception_is_thrown_for_invalid_csv_url():
 
 def test_get_data_set_dsd_csv_url_for_csv_url():
     """
-    TODO: Add description
+    Ensures that the valid data_set_dsd_and_csv_url_for_csv_url property is returned.
     """
     csvw_metadata_json_path = (
         _test_case_base_dir
@@ -181,7 +179,7 @@ def test_get_data_set_dsd_csv_url_for_csv_url():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
+    data_cube_state = DataCubeState(csvw_metadata_rdf_graph, CubeShape.Pivoted, csvw_metadata_json_path)
 
     data_set_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
     data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
@@ -198,7 +196,7 @@ def test_get_data_set_dsd_csv_url_for_csv_url():
 
 def test_get_dsd_qube_components_for_csv():
     """
-    TODO: Add description
+    Ensures that the valid dsd_qube_components_for_csv property is returned.
     """
     csvw_metadata_json_path = (
         _test_case_base_dir
@@ -216,7 +214,82 @@ def test_get_dsd_qube_components_for_csv():
     ).csv_url
     
     result_data_set_dsd_csv_url = data_cube_state.get_data_set_dsd_and_csv_url_for_csv_url(csv_url)
-    
     result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(result_data_set_dsd_csv_url.dsd_uri, result_data_set_dsd_csv_url.csv_url)
     
-    assert len(result_qube_components.qube_components) == 10
+    components = result_qube_components.qube_components
+    assert len(components) == 5
+    
+    component = get_dsd_component_by_property_url(
+        components, "qb-id-10004.csv#dimension/some-dimension"
+    )
+    assert_dsd_component_equal(
+        component,
+        "qb-id-10004.csv#dimension/some-dimension",
+        ComponentPropertyType.Dimension,
+        "Some Dimension",
+        "Some Dimension",
+        "Some Obs Val",
+        "qb-id-10004.csv",
+        "qb-id-10004.csv#structure",
+        True,
+    )
+
+    component = get_dsd_component_by_property_url(
+        components, "qb-id-10004.csv#attribute/some-attribute"
+    )
+    assert_dsd_component_equal(
+        component,
+        "qb-id-10004.csv#attribute/some-attribute",
+        ComponentPropertyType.Attribute,
+        "Some Attribute",
+        "Some Attribute",
+        "Some Obs Val",
+        "qb-id-10004.csv",
+        "qb-id-10004.csv#structure",
+        False,
+    )
+
+    component = get_dsd_component_by_property_url(
+        components, "http://purl.org/linked-data/cube#measureType"
+    )
+    assert_dsd_component_equal(
+        component,
+        "http://purl.org/linked-data/cube#measureType",
+        ComponentPropertyType.Dimension,
+        "",
+        "",
+        "",
+        "qb-id-10004.csv",
+        "qb-id-10004.csv#structure",
+        True,
+    )
+
+    component = get_dsd_component_by_property_url(
+        components, "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
+    )
+    assert_dsd_component_equal(
+        component,
+        "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
+        ComponentPropertyType.Attribute,
+        "",
+        "",
+        "Some Obs Val",
+        "qb-id-10004.csv",
+        "qb-id-10004.csv#structure",
+        True,
+    )
+
+    component = get_dsd_component_by_property_url(
+        components, "qb-id-10004.csv#measure/some-measure"
+    )
+    assert_dsd_component_equal(
+        component,
+        "qb-id-10004.csv#measure/some-measure",
+        ComponentPropertyType.Measure,
+        "Some Measure",
+        "Some Obs Val",
+        "Some Obs Val",
+        "qb-id-10004.csv",
+        "qb-id-10004.csv#structure",
+        True,
+    )
