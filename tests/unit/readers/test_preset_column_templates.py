@@ -1,7 +1,6 @@
 from copy import deepcopy
 
 import pytest
-from requests.exceptions import HTTPError
 from csvcubed.definitions import APP_ROOT_DIR_PATH
 
 from csvcubed.readers.preconfiguredtemplates import (
@@ -66,14 +65,10 @@ def test_exception_is_raised_when_given_wrong_template_file_path():
 from csvcubed.readers.preconfiguredtemplates import _get_properties_from_template_file
 def test_get_template_file_when_bad_status_code(dummy_mapped_url):
     """
-    todo: add desc
-    ensure we explain why there can only be the possibility of a bad status code (hard-coded url prefix)
-    expected_document = (
-            APP_ROOT_DIR_PATH / "schema" / "cube-config" / "v1_3" / "schema.json"
-        )
-        with open(expected_document, "r") as f:
-            expected = json.load(f)
-            assert json_document == expected
+    Ensures that a template file can still be retrieved locally when the request from load_json_document
+    returns a response with an error status code, in this case by giving a URL to a non-existent resource.
+    Note that since the URL prefix for templates is "hard-coded", it has to be as seen in the test,
+    meaning that making a test for not getting a response at all is unnecessary/impossible.
     """
     expected_template_json = (APP_ROOT_DIR_PATH / "readers" / "cubeconfig" / "v1_0" / "templates" / "calendar-year.json")
 

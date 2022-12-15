@@ -153,7 +153,8 @@ def test_json_path_quote_escape():
 
 def test_schema_validation_when_offline():
     """
-    todo: add desc
+    Ensures that a schema can be validated successfully when encountering connection errors,
+    in this case the error is forced by giving a bad input url as the $ref.
     """
     schema = {
         "type": "object",

@@ -1,7 +1,6 @@
 import pytest
 import requests_mock
 import json
-from typing import List
 
 from tests.unit.test_baseunit import get_test_cases_dir
 from csvcubed.utils.json import load_json_document
@@ -48,8 +47,8 @@ def test_loading_json_from_url():
 
 def test_load_local_when_http_request_fails(dummy_mapped_url):
     """
-    Ensure that a local copy of a document is returned when an http request fails in any
-    instance. Most likely due to lack of internet connectivity.
+    Ensure that a local copy of a document is returned when an http request fails and does not
+    return a response at all. Most likely due to lack of internet connectivity.
     """
 
     with session.cache_disabled():
@@ -68,7 +67,7 @@ def test_load_local_when_http_request_fails(dummy_mapped_url):
 def test_load_local_when_bad_status_code(dummy_mapped_url):
     """
     Ensures that a local copy of a document is returned when a HTTP request returns a response
-     with a 4**/5** status code. (In this case 404)
+    with a 4**/5** status code. (In this case 404)
     """
     with session.cache_disabled():
         json_document = load_json_document(
@@ -106,8 +105,7 @@ def test_connection_error_for_bad_url():
 def test_connection_error_url():
     """
     Ensures a FileNotFound exception is successfully produced when a request is made with load_json_document
-    which causes a response to be returned, but with a client or server error status code
-    (in this case 404 due to valid endpoint but non-existent resource requested) and no local copy to be found.
+    which causes a response to be returned, but with a client or server error status code and no local copy to be found.
     """
     
     with pytest.raises(FileNotFoundError) as err:
