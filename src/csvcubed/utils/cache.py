@@ -4,7 +4,9 @@ import logging
 from pathlib import Path
 from typing import Dict, Optional
 import requests
+from requests.adapters import BaseAdapter, HTTPAdapter
 from requests_cache import CachedSession
+
 
 from csvcubed.definitions import APP_ROOT_DIR_PATH
 
@@ -87,12 +89,6 @@ def _get_url_to_file_path_map() -> Dict[str, Path]:
 
 map_url_to_file_path = _get_url_to_file_path_map()
 
-from requests.adapters import BaseAdapter, HTTPAdapter
-from urllib3.exceptions import NewConnectionError, ConnectionError as ce, MaxRetryError
-from jsonschema.exceptions import RefResolutionError as rre
-from requests.exceptions import JSONDecodeError
-
-
 class CustomAdapterServeSomeFilesLocally(BaseAdapter):
     http_adapter: HTTPAdapter
 
@@ -131,7 +127,7 @@ class CustomAdapterServeSomeFilesLocally(BaseAdapter):
                 ) from e
 
         if response.status_code >= 400 and response.status_code < 600:
-            print(f"The status code is {response.status_code}")
+            _logger.info(f"The status code is {response.status_code}")
             try:
                 path_to_local_file = generate_path_to_local_file(request.url)
             except Exception:
@@ -168,8 +164,6 @@ def create_local_copy_response(
     _logger.warning(
         f"Unable to load json document from given URL. Attempting to load local storage copy of file {path_to_local_file} instead."
     )
-
-    # The below is a response object that can be used to manually return the local copy of the file successfully.
 
     successful_response = requests.Response()
 

@@ -8,7 +8,6 @@ import json
 import logging
 import os.path
 import re
-import requests
 from pathlib import Path
 from typing import Dict, Any, Union, Iterable, List
 from urllib.parse import urlparse
@@ -45,14 +44,7 @@ def load_json_document(file_uri_or_path: Union[str, Path]) -> Dict[str, Any]:
         else:
             # Treat it as a URL
             _logger.debug("Loading JSON from URL %s", file_uri_or_path)
-            # http_response = session.get(
-            #    file_uri_or_path, hooks={"response": [hook_for_http_failure]}
-            # )
             http_response = session.get(file_uri_or_path)
-            # if not http_response.ok:
-            #     raise Exception(
-            #         f"Error loading JSON from URL '{file_uri_or_path}'. HTTP response: {http_response}."
-            #     )
 
             try:
                 return http_response.json()

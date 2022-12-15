@@ -37,7 +37,7 @@ def dummy_mapped_url():
     """
     # Add test URL to dictionary when ready to use fixture
     test_dictionary = {
-        "//thisisatestfornickandcharlesons.com": APP_ROOT_DIR_PATH
+        "//thisinputurlwillcauseanerror.com": APP_ROOT_DIR_PATH
         / "schema"
         / "cube-config"
         / "v1_3"

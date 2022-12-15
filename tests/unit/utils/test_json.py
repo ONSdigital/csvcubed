@@ -53,7 +53,7 @@ def test_load_local_when_http_request_fails(dummy_mapped_url):
 
     with session.cache_disabled():
         json_document = load_json_document(
-            "https://thisisatestfornickandcharlesons.com"
+            "https://thisinputurlwillcauseanerror.com"
         )
 
         expected_document = (
@@ -80,14 +80,6 @@ def test_load_local_when_bad_status_code(dummy_mapped_url):
         with open(expected_document, "r") as f:
             expected = json.load(f)
             assert json_document == expected
-
-
-#Unsure if this test will be implemented as it may be unnecessary, map function is implicitly shown to work in previous tests.
-def test_url_to_path_map():
-    """
-    Ensures that a given URL is properly mapped to a corresponding file path for rerieving
-    files (e.g. cube config files) from local storage.
-    """
 
 
 def test_connection_error_for_bad_url():
