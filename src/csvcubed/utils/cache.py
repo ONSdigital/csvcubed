@@ -145,6 +145,9 @@ class CustomAdapterServeSomeFilesLocally(BaseAdapter):
 
 
 def generate_path_to_local_file(request_url: Union[str, None]) -> Union[Path, None]:
+    if request_url is None:
+        raise Exception
+
     trimmed_url = str(request_url).removeprefix("https:")
     if request_url[len(request_url) - 1] == "/":
         path_to_local_file = map_url_to_file_path.get(
@@ -172,7 +175,10 @@ def create_local_copy_response(
 
     successful_response.status_code = 200
 
-    successful_response.raw = BytesIO(bytes(path_to_local_file.read_text(), "utf-8"))
+    if path_to_local_file is not None:
+        successful_response.raw = BytesIO(
+            bytes(path_to_local_file.read_text(), "utf-8")
+        )
 
     successful_response.url = path_to_local_file.as_uri()
     successful_response.encoding = "utf-8"
