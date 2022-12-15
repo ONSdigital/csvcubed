@@ -257,6 +257,7 @@ def test_csv_col_required_for_pivoted_multi_measure():
         if isinstance(col.structural_definition, QbAttribute):
             # Determine if the cube is pivoted multi-measure
             if cube.is_pivoted_shape and len(obs_val_cols) > 1:
+                #If the cube is in pivoted multi-measure shape, the attribute columns cannot be set to required.
                 assert required == False
         else:
             assert required == True
