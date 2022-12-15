@@ -88,7 +88,7 @@ def main():
 
     for j in list_validatons:
 
-        if len(j._get_validations()) == len(fields(j)):
+        if len(j._get_validations()) != len(fields(j)):
             # print out all the class attribute names with a message to check validations for the class.
             # or even better to just print out the name of the variables that miss the validation
             # Altho simply printing out the class variable names should also work
