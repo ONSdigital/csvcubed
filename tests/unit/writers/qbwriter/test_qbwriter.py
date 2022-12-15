@@ -19,7 +19,6 @@ from csvcubed.models.cube.qb.components.arbitraryrdf import (
 from csvcubed.models.cube.qb.components.attribute import (
     NewQbAttribute,
     ExistingQbAttribute,
-    QbAttribute,
 )
 from csvcubed.models.cube.qb.components.dimension import (
     NewQbDimension,
@@ -200,10 +199,7 @@ def test_csv_col_required():
         csv_col = empty_qbwriter._generate_csvw_column_definition(col)
         required = csv_col["required"]
         assert isinstance(required, bool)
-        if isinstance(col.structural_definition, QbAttribute):
-            assert required == False
-        else:
-            assert required == True
+        assert required
 
     for col in optional_columns:
         csv_col = empty_qbwriter._generate_csvw_column_definition(col)
