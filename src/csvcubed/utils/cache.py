@@ -131,12 +131,13 @@ class CustomAdapterServeSomeFilesLocally(BaseAdapter):
             _logger.info(f"The status code is {response.status_code}")
             try:
                 path_to_local_file = generate_path_to_local_file(request.url)
+                return create_local_copy_response(path_to_local_file, request, response)
             except Exception:
                 raise FileNotFoundError(
                     f"URL {request.url} produced a invalid response and a local copy could not be found at the corresponding mapped path."
                 )
 
-            return create_local_copy_response(path_to_local_file, request, response)
+            # return create_local_copy_response(path_to_local_file, request, response)
 
         return response
 
@@ -179,8 +180,8 @@ def create_local_copy_response(
         successful_response.raw = BytesIO(
             bytes(path_to_local_file.read_text(), "utf-8")
         )
-
     successful_response.url = path_to_local_file.as_uri()
+
     successful_response.encoding = "utf-8"
 
     if response is not None:
