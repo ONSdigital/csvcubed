@@ -146,7 +146,7 @@ class CustomAdapterServeSomeFilesLocally(BaseAdapter):
         self.http_adapter.close()
 
 
-def generate_path_to_local_file(request_url: Union[str, None]) -> Union[Path, None]:
+def generate_path_to_local_file(request_url: Union[str, None]) -> Path:
     if request_url is None:
         raise Exception
 
@@ -165,7 +165,7 @@ def generate_path_to_local_file(request_url: Union[str, None]) -> Union[Path, No
 
 
 def create_local_copy_response(
-    path_to_local_file: Union[Path, None],
+    path_to_local_file: Path,
     request: requests.PreparedRequest,
     response: Optional[requests.Response] = None,
 ) -> requests.Response:
