@@ -52,9 +52,7 @@ def test_load_local_when_http_request_fails(dummy_mapped_url):
     """
 
     with session.cache_disabled():
-        json_document = load_json_document(
-            "https://thisinputurlwillcauseanerror.com"
-        )
+        json_document = load_json_document("https://thisinputurlwillcauseanerror.com")
 
         expected_document = (
             APP_ROOT_DIR_PATH / "schema" / "cube-config" / "v1_3" / "schema.json"
@@ -87,24 +85,31 @@ def test_connection_error_for_bad_url():
     Ensures a FileNotFound error is successfully produced when a request is made with load_json_document
     using a non-existent URL as input, meaning no response is returned and no local copy can be found.
     """
-    
+
     with pytest.raises(FileNotFoundError) as err:
         with session.cache_disabled():
-            json_document = load_json_document("https://thistesturlwillnotproducearesponse.org")
+            _ = load_json_document("https://thistesturlwillnotproducearesponse.org")
 
-    assert str(err.value) == 'URL https://thistesturlwillnotproducearesponse.org/ did not produce a response and a local copy could not be found at the corresponding mapped path.'
+    assert (
+        str(err.value)
+        == "URL https://thistesturlwillnotproducearesponse.org/ did not produce a response and a local copy could not be found at the corresponding mapped path."
+    )
+
 
 def test_connection_error_url():
     """
     Ensures a FileNotFound exception is successfully produced when a request is made with load_json_document
     which causes a response to be returned, but with a client or server error status code and no local copy to be found.
     """
-    
+
     with pytest.raises(FileNotFoundError) as err:
         with session.cache_disabled():
-            json_document = load_json_document("https://purl.org/csv-cubed/qube-config/produces404")
+            _ = load_json_document("https://purl.org/csv-cubed/qube-config/produces404")
 
-    assert str(err.value) == 'URL https://purl.org/csv-cubed/qube-config/produces404 produced a invalid response and a local copy could not be found at the corresponding mapped path.'
+    assert (
+        str(err.value)
+        == "URL https://purl.org/csv-cubed/qube-config/produces404 produced a invalid response and a local copy could not be found at the corresponding mapped path."
+    )
 
 
 if __name__ == "__main__":
