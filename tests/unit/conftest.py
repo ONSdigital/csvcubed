@@ -55,7 +55,6 @@ def dummy_mapped_url():
         / "calendar-year.json",
     }
     map_url_to_file_path.update(test_dictionary)
-    import logging
 
     _logger = logging.getLogger(__name__)
     _logger.debug(map_url_to_file_path)

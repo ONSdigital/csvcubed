@@ -1,8 +1,9 @@
 from copy import deepcopy
 
+import json
 import pytest
-from csvcubed.definitions import APP_ROOT_DIR_PATH
 
+from csvcubed.definitions import APP_ROOT_DIR_PATH
 from csvcubed.readers.preconfiguredtemplates import (
     TEMPLATE_BASE_URL,
     _get_properties_from_template_file,
@@ -62,7 +63,6 @@ def test_exception_is_raised_when_given_wrong_template_file_path():
         assert "Couldn't find template your looking for." in str(excinfo)
 
 
-from csvcubed.readers.preconfiguredtemplates import _get_properties_from_template_file
 def test_get_template_file_when_bad_status_code(dummy_mapped_url):
     """
     Ensures that a template file can still be retrieved locally when the request from load_json_document
@@ -70,12 +70,18 @@ def test_get_template_file_when_bad_status_code(dummy_mapped_url):
     Note that since the URL prefix for templates is "hard-coded", it has to be as seen in the test,
     meaning that making a test for not getting a response at all is unnecessary/impossible.
     """
-    expected_template_json = (APP_ROOT_DIR_PATH / "readers" / "cubeconfig" / "v1_0" / "templates" / "calendar-year.json")
+    expected_template_json = (
+        APP_ROOT_DIR_PATH
+        / "readers"
+        / "cubeconfig"
+        / "v1_0"
+        / "templates"
+        / "calendar-year.json"
+    )
 
     template_url_suffix = "calendar-hourx.json"
     template_json = _get_properties_from_template_file(template_url_suffix)
 
-    import json
     with open(expected_template_json, "r") as f:
         expected = json.load(f)
         assert template_json == expected

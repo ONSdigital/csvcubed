@@ -3,10 +3,8 @@ from tempfile import TemporaryDirectory
 from typing import Dict, List
 
 import pandas as pd
-import pytest
 
 from csvcubed.cli.build import build as cli_build
-from csvcubed.definitions import APP_ROOT_DIR_PATH
 from csvcubed.models.codelistconfig.code_list_config import (
     CODE_LIST_CONFIG_DEFAULT_URL,
     CodeListConfig,

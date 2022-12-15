@@ -6,8 +6,6 @@ Functions to help when working with URIs.
 """
 import logging
 import re
-from pathlib import Path
-from typing import Dict
 from urllib.parse import urlparse
 
 import rdflib
