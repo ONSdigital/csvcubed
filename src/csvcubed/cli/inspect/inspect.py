@@ -96,7 +96,9 @@ def _generate_printables(
     metadata_printer: MetadataPrinter
 
     if csvw_type == CSVWType.QbDataSet:
-        data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
+        if cube_shape is None:
+            raise ValueError("The cube shape cannot be None for a Data Cube input")
+        data_cube_state = DataCubeState(csvw_metadata_rdf_graph, cube_shape, csvw_metadata_json_path)
         metadata_printer = MetadataPrinter(
             data_cube_state=data_cube_state,
             code_list_state=None,

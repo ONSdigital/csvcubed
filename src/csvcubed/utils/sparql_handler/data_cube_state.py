@@ -11,7 +11,7 @@ from csvcubed.utils.sparql_handler.sparqlmanager import select_col_titles_and_na
 
 @dataclass
 class DataCubeState:
-    rdf_graph: rdflib.Graph
+    rdf_graph: rdflib.ConjunctiveGraph
     cube_shape: CubeShape
     csvw_json_path: Path
 
@@ -74,6 +74,7 @@ class DataCubeState:
         """
         Queries and caches qube components
         """
+        #TODO: Check with Rob about the design decision here
         results = select_csvw_dsd_qube_components(self.cube_shape, self.rdf_graph, self.csvw_json_path)
         assert len(results) > 0
 

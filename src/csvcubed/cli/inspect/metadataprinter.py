@@ -167,19 +167,14 @@ class MetadataPrinter:
 
         Member of :class:`./MetadataPrinter`.
         """
+        if self.cube_shape is None or self.data_cube_state is None:  
+            raise ValueError("Cube shape and/or data cube state cannot be None")
+        
         self.result_dataset_label_dsd_uri = (
             select_csvw_dsd_dataset_label_and_dsd_def_uri(self.csvw_metadata_rdf_graph)
         )
-        
         self.result_data_set_dsd_csv_url = self.data_cube_state.get_data_set_dsd_and_csv_url_for_csv_url(self.csv_url)
         self.result_qube_components = self.data_cube_state.get_dsd_qube_components_for_csv(self.result_data_set_dsd_csv_url.dsd_uri, self.result_data_set_dsd_csv_url.csv_url)
-
-        # self.result_qube_components = select_csvw_dsd_qube_components(
-        #     self.cube_shape,
-        #     self.csvw_metadata_rdf_graph,
-        #     self.result_dataset_label_dsd_uri.dsd_uri,
-        #     self.csvw_metadata_json_path,
-        # )
         self.result_cols_with_suppress_output_true = (
             select_cols_where_suppress_output_is_true(self.csvw_metadata_rdf_graph)
         )
@@ -188,9 +183,6 @@ class MetadataPrinter:
             self.result_dataset_label_dsd_uri.dsd_uri,
             self.csvw_metadata_json_path,
         )
-        
-        if self.cube_shape is None or self.data_cube_state is None:  
-            raise ValueError("Cube shape and/or data cube state cannot be None")
         
         (
             canonical_shape_dataset,
