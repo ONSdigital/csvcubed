@@ -2,7 +2,7 @@ import copy
 from io import BytesIO, StringIO
 import logging
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Dict, Optional, Union
 import requests
 from requests.adapters import BaseAdapter, HTTPAdapter
 from requests_cache import CachedSession
@@ -89,6 +89,7 @@ def _get_url_to_file_path_map() -> Dict[str, Path]:
 
 map_url_to_file_path = _get_url_to_file_path_map()
 
+
 class CustomAdapterServeSomeFilesLocally(BaseAdapter):
     http_adapter: HTTPAdapter
 
@@ -131,7 +132,9 @@ class CustomAdapterServeSomeFilesLocally(BaseAdapter):
             try:
                 path_to_local_file = generate_path_to_local_file(request.url)
             except Exception:
-                raise FileNotFoundError(f"URL {request.url} produced a invalid response and a local copy could not be found at the corresponding mapped path.")
+                raise FileNotFoundError(
+                    f"URL {request.url} produced a invalid response and a local copy could not be found at the corresponding mapped path."
+                )
 
             return create_local_copy_response(path_to_local_file, request, response)
 
@@ -141,14 +144,14 @@ class CustomAdapterServeSomeFilesLocally(BaseAdapter):
         self.http_adapter.close()
 
 
-def generate_path_to_local_file(request_url: str) -> Path:
+def generate_path_to_local_file(request_url: str) -> Union[Path, None]:
     trimmed_url = str(request_url).removeprefix("https:")
     if request_url[len(request_url) - 1] == "/":
         path_to_local_file = map_url_to_file_path.get(
             trimmed_url[: len(trimmed_url) - 1]
         )
     else:
-        path_to_local_file = map_url_to_file_path[trimmed_url]
+        path_to_local_file = map_url_to_file_path.get(trimmed_url)
 
     return path_to_local_file
 
