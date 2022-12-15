@@ -1,4 +1,3 @@
-import os
 
 import pandas as pd
 import pytest
@@ -32,7 +31,6 @@ from csvcubed.models.cube.qb.validationerrors import (
     BothMeasureTypesDefinedError,
     CsvColumnUriTemplateMissingError,
     MinNumComponentsNotSatisfiedError,
-    MoreThanOneObservationsColumnError,
     NoMeasuresDefinedError,
     NoUnitsDefinedError,
     BothUnitTypesDefinedError,
@@ -293,50 +291,6 @@ def test_multiple_units_columns():
     assert error.component_type == QbMultiUnits
     assert error.maximum_number == 1
     assert error.actual_number == 2
-
-
-def test_multiple_obs_val_columns():
-    """
-    Ensure that when a user defines multiple observation value columns, we get an error.
-
-    We only currently accept the `MeasureDimension` style of multi-measure datasets.
-    """
-    data = pd.DataFrame(
-        {
-            "Some Dimension": ["a", "b", "c"],
-            "Value1": [3, 2, 1],
-            "Value2": [1, 2, 3],
-        }
-    )
-
-    cube = Cube(
-        CatalogMetadata("Some Qube"),
-        data,
-        [
-            QbColumn(
-                "Some Dimension",
-                NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
-            ),
-            QbColumn(
-                "Value1",
-                QbObservationValue(
-                    NewQbMeasure("Some New Measure 1"), NewQbUnit("Some New Unit 1")
-                ),
-            ),
-            QbColumn(
-                "Value2",
-                QbObservationValue(
-                    NewQbMeasure("Some New Measure 2"), NewQbUnit("Some New Unit 2")
-                ),
-            ),
-        ],
-    )
-    error = _get_single_validation_error_for_qube(cube)
-    assert isinstance(error, MoreThanOneObservationsColumnError)
-    assert error.component_type == QbObservationValue
-    assert error.maximum_number == 1
-    assert error.actual_number == 2
-
 
 def test_multi_measure_obs_val_without_measure_dimension():
     """
@@ -931,8 +885,9 @@ def test_pivoted_validation_multiple_measure_columns():
     ]
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
-    validate_with_environ(cube, PivotedShapeMeasureColumnsExistError)
-
+    error = _get_single_validation_error_for_qube(cube)
+    
+    assert isinstance(error, PivotedShapeMeasureColumnsExistError)
 
 def test_pivoted_validation_no_measures_defined_error():
     """
@@ -972,9 +927,9 @@ def test_pivoted_validation_no_measures_defined_error():
     ]
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
-
-    validate_with_environ(cube, NoMeasuresDefinedError)
-
+    error = _get_single_validation_error_for_qube(cube)
+    
+    assert isinstance(error, NoMeasuresDefinedError)
 
 def test_pivoted_obs_val_col_without_measure_error():
     """
@@ -1015,9 +970,9 @@ def test_pivoted_obs_val_col_without_measure_error():
     ]
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
-
-    validate_with_environ(cube, PivotedObsValColWithoutMeasureError)
-
+    error = _get_single_validation_error_for_qube(cube)
+    
+    assert isinstance(error, PivotedObsValColWithoutMeasureError)
 
 def test_pivoted_validation_no_unit_defined_error():
     """
@@ -1057,9 +1012,9 @@ def test_pivoted_validation_no_unit_defined_error():
     ]
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
-
-    validate_with_environ(cube, NoUnitsDefinedError)
-
+    error = _get_single_validation_error_for_qube(cube)
+    
+    assert isinstance(error, NoUnitsDefinedError)
 
 def test_pivoted_validation_attribute_column_not_linked_error():
     """
@@ -1096,9 +1051,9 @@ def test_pivoted_validation_attribute_column_not_linked_error():
     ]
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
-
-    validate_with_environ(cube, AttributeNotLinkedError)
-
+    error = _get_single_validation_error_for_qube(cube)
+    
+    assert isinstance(error, AttributeNotLinkedError)
 
 def test_pivoted_validation_obs_column_doesnt_exist():
     """
@@ -1140,9 +1095,9 @@ def test_pivoted_validation_obs_column_doesnt_exist():
     ]
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
-
-    validate_with_environ(cube, LinkedObsColumnDoesntExistError)
-
+    error = _get_single_validation_error_for_qube(cube)
+    
+    assert isinstance(error, LinkedObsColumnDoesntExistError)
 
 def test_pivoted_validation_link_attribute_to_non_obs_column():
     """
@@ -1185,9 +1140,9 @@ def test_pivoted_validation_link_attribute_to_non_obs_column():
     ]
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
-
-    validate_with_environ(cube, LinkedToNonObsColumnError)
-
+    error = _get_single_validation_error_for_qube(cube)
+    
+    assert isinstance(error, LinkedToNonObsColumnError)
 
 def test_pivoted_validation_measure_dupication():
 
@@ -1228,9 +1183,9 @@ def test_pivoted_validation_measure_dupication():
     ]
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
-
-    validate_with_environ(cube, DuplicateMeasureError)
-
+    error = _get_single_validation_error_for_qube(cube)
+    
+    assert isinstance(error, DuplicateMeasureError)
 
 def test_both_measure_types_defined():
     """
@@ -1273,8 +1228,9 @@ def test_both_measure_types_defined():
     ]
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
-
-    validate_with_environ(cube, BothMeasureTypesDefinedError)
+    error = _get_single_validation_error_for_qube(cube)
+    
+    assert isinstance(error, BothMeasureTypesDefinedError)
 
 
 def test_erroneous_hybrid_error():
@@ -1316,8 +1272,9 @@ def test_erroneous_hybrid_error():
     ]
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
-
-    validate_with_environ(cube, HybridShapeError)
+    error = _get_single_validation_error_for_qube(cube)
+    
+    assert isinstance(error, HybridShapeError)
 
 
 def test_pivoted_validation_unit_column_not_linked_error():
@@ -1353,8 +1310,9 @@ def test_pivoted_validation_unit_column_not_linked_error():
     ]
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
-
-    validate_with_environ(cube, AttributeNotLinkedError)
+    error = _get_single_validation_error_for_qube(cube)
+    
+    assert isinstance(error, AttributeNotLinkedError)
 
 
 def test_pivoted_validation_link_unit_to_non_obs_column():
@@ -1394,8 +1352,9 @@ def test_pivoted_validation_link_unit_to_non_obs_column():
     ]
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
-
-    validate_with_environ(cube, LinkedToNonObsColumnError)
+    error = _get_single_validation_error_for_qube(cube)
+    
+    assert isinstance(error, LinkedToNonObsColumnError)
 
 
 def test_pivoted_validation_units_linked_obs_column_doesnt_exist():
@@ -1435,9 +1394,9 @@ def test_pivoted_validation_units_linked_obs_column_doesnt_exist():
     ]
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
-
-    validate_with_environ(cube, LinkedObsColumnDoesntExistError)
-
+    error = _get_single_validation_error_for_qube(cube)
+    
+    assert isinstance(error, LinkedObsColumnDoesntExistError)
 
 def test_pivoted_multi_obs_and_multi_units_linked_to_obs_with_internal_unit():
     """
@@ -1480,9 +1439,9 @@ def test_pivoted_multi_obs_and_multi_units_linked_to_obs_with_internal_unit():
     ]
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
+    error = _get_single_validation_error_for_qube(cube)
 
-    validate_with_environ(cube, BothUnitTypesDefinedError)
-
+    assert isinstance(error, BothUnitTypesDefinedError)
 
 def test_pivoted_single_obs_and_multi_units_error():
     """
@@ -1516,17 +1475,9 @@ def test_pivoted_single_obs_and_multi_units_error():
     ]
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
+    error = _get_single_validation_error_for_qube(cube)
 
-    validate_with_environ(cube, BothUnitTypesDefinedError)
-
-
-def validate_with_environ(cube, expected_error):
-    try:
-        os.environ["PIVOTED_MULTI_MEASURE"] = "true"
-        error = _get_single_validation_error_for_qube(cube)
-        assert isinstance(error, expected_error)
-    finally:
-        del os.environ["PIVOTED_MULTI_MEASURE"]
+    assert isinstance(error, BothUnitTypesDefinedError)
 
 
 def _get_single_validation_error_for_qube(qube: QbCube) -> ValidationError:
