@@ -144,7 +144,7 @@ class CustomAdapterServeSomeFilesLocally(BaseAdapter):
         self.http_adapter.close()
 
 
-def generate_path_to_local_file(request_url: str) -> Union[Path, None]:
+def generate_path_to_local_file(request_url: Union[str, None]) -> Union[Path, None]:
     trimmed_url = str(request_url).removeprefix("https:")
     if request_url[len(request_url) - 1] == "/":
         path_to_local_file = map_url_to_file_path.get(
@@ -157,7 +157,7 @@ def generate_path_to_local_file(request_url: str) -> Union[Path, None]:
 
 
 def create_local_copy_response(
-    path_to_local_file: Path,
+    path_to_local_file: Union[Path, None],
     request: requests.PreparedRequest,
     response: Optional[requests.Response] = None,
 ) -> requests.Response:
