@@ -35,4 +35,4 @@ class ValidationTester(ValidatedModel):
     string_variable: str
 
     def _get_validations() -> Dict[str, ValidationFunction]:
-        return {"string_variable": validate_str_type}
+        return {"strong_variable": validate_str_type}

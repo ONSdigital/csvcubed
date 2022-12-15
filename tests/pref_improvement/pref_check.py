@@ -87,12 +87,20 @@ def main():
             list_validatons.append(x)
 
     for j in list_validatons:
+        one = j._get_validations()
+        field_names_validated = set(one.keys())
+        field_names = {f.name for f in fields(j)}
 
-        if len(j._get_validations()) != len(fields(j)):
+        if field_names_validated != field_names:
+
+            not_validated = field_names - field_names_validated
+            print(
+                f"In {j.__name__} ({inspect.getfile(j)}) you have not validated {', '.join(not_validated)}"
+            )
             # print out all the class attribute names with a message to check validations for the class.
             # or even better to just print out the name of the variables that miss the validation
             # Altho simply printing out the class variable names should also work
-            print(format(vars(j)))  # This returns empty
+            print(format(field_names))  # This returns empty
             exit(1)
 
 
