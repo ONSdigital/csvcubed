@@ -132,6 +132,7 @@ class CustomAdapterServeSomeFilesLocally(BaseAdapter):
             try:
                 path_to_local_file = generate_path_to_local_file(request.url)
                 return create_local_copy_response(path_to_local_file, request, response)
+
             except Exception:
                 raise FileNotFoundError(
                     f"URL {request.url} produced a invalid response and a local copy could not be found at the corresponding mapped path."
@@ -156,6 +157,9 @@ def generate_path_to_local_file(request_url: Union[str, None]) -> Union[Path, No
         )
     else:
         path_to_local_file = map_url_to_file_path.get(trimmed_url)
+
+    if path_to_local_file is None:
+        raise Exception
 
     return path_to_local_file
 
