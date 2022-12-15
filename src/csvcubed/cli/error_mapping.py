@@ -137,7 +137,7 @@ def friendly_error_mapping(error: ValidationError) -> str:
     # map of conflicting uris and labels
     if isinstance(error, ConflictingUriSafeValuesError):
         for (key, values) in error.map_uri_safe_values_to_conflicting_labels.items():
-            vals = ", ".join([f"'{v}'" for v in values])
+            vals = ", ".join([f"'{v}'" for v in sorted(values)])
             message += f"{linesep}    The values {vals} map to the same URI-safe identifier '{key}'"
 
     if hasattr(error, "additional_explanation"):
