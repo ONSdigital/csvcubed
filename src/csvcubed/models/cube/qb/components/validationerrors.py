@@ -162,7 +162,7 @@ class ConflictingUriSafeValuesError(PydanticThrowableSpecificValidationError):
 
         self.message = (
             f"Conflicting URIs: {self._indented_line_sep}"
-            + self._indented_line_sep.join(conflicting_values_lines)
+            + self._indented_line_sep.join(sorted(conflicting_values_lines))
         )
 
     @classmethod
