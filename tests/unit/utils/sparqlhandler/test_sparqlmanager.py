@@ -288,6 +288,8 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
         "Some Dimension",
         "Some Dimension",
         "Some Obs Val",
+        "qb-id-10004.csv",
+        "qb-id-10004.csv#structure",
         True,
     )
 
@@ -301,6 +303,8 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
         "Some Attribute",
         "Some Attribute",
         "Some Obs Val",
+        "qb-id-10004.csv",
+        "qb-id-10004.csv#structure",
         False,
     )
 
@@ -314,6 +318,8 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
         "",
         "",
         "",
+        "qb-id-10004.csv",
+        "qb-id-10004.csv#structure",
         True,
     )
 
@@ -327,6 +333,8 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
         "",
         "",
         "Some Obs Val",
+        "qb-id-10004.csv",
+        "qb-id-10004.csv#structure",
         True,
     )
 
@@ -340,6 +348,8 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
         "Some Measure",
         "Some Obs Val",
         "Some Obs Val",
+        "qb-id-10004.csv",
+        "qb-id-10004.csv#structure",
         True,
     )
 
@@ -385,6 +395,8 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
         "Some Dimension",
         "Some Dimension",
         "Some Other Obs Val,Some Obs Val",
+        "qb-id-10003.csv",
+        "qb-id-10003.csv#structure",
         True,
     )
 
@@ -398,6 +410,8 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
         "Some Attribute",
         "Some Attribute",
         "Some Obs Val",
+        "qb-id-10003.csv",
+        "qb-id-10003.csv#structure",
         False,
     )
 
@@ -411,6 +425,8 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
         "",
         "",
         "",
+        "qb-id-10003.csv",
+        "qb-id-10003.csv#structure",
         True,
     )
 
@@ -424,6 +440,8 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
         "",
         "Some Unit",
         "Some Other Obs Val, Some Obs Val",
+        "qb-id-10003.csv",
+        "qb-id-10003.csv#structure",
         True,
     )
     
@@ -437,6 +455,8 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
         "Some Measure",
         "Some Obs Val",
         "Some Obs Val",
+        "qb-id-10003.csv",
+        "qb-id-10003.csv#structure",
         True,
     )
 
@@ -450,6 +470,8 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
         "Some Other Measure",
         "Some Other Obs Val",
         "Some Other Obs Val",
+        "qb-id-10003.csv",
+        "qb-id-10003.csv#structure",
         True,
     )
 
@@ -496,6 +518,8 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
         "Some Dimension",
         "Some Dimension",
         "Some Obs Val",
+        "qb-id-10004.csv",
+        "qb-id-10004.csv#structure",
         True,
     )
 
@@ -509,6 +533,8 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
         "Some Attribute",
         "Some Attribute",
         "Some Obs Val",
+        "qb-id-10004.csv",
+        "qb-id-10004.csv#structure",
         False,
     )
 
@@ -522,6 +548,8 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
         "",
         "",
         "",
+        "qb-id-10004.csv",
+        "qb-id-10004.csv#structure",
         True,
     )
 
@@ -535,6 +563,8 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
         "",
         "",
         "Some Obs Val",
+        "qb-id-10004.csv",
+        "qb-id-10004.csv#structure",
         True,
     )
 
@@ -548,6 +578,8 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
         "Some Measure",
         "Some Obs Val",
         "Some Obs Val",
+        "qb-id-10004.csv",
+        "qb-id-10004.csv#structure",
         True,
     )
 
