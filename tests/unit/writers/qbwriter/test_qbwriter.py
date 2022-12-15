@@ -200,16 +200,66 @@ def test_csv_col_required():
         csv_col = empty_qbwriter._generate_csvw_column_definition(col)
         required = csv_col["required"]
         assert isinstance(required, bool)
-        if isinstance(col.structural_definition, QbAttribute):
-            assert required == False
-        else:
-            assert required == True
+        assert required == True
 
     for col in optional_columns:
         csv_col = empty_qbwriter._generate_csvw_column_definition(col)
         required = csv_col["required"]
         assert isinstance(required, bool)
         assert not required
+
+def test_csv_col_required_for_pivoted_multi_measure():
+    """Test that the :attr:`required` key is set correctly for various different component types for a pivoted multi-measure input."""
+    data = pd.DataFrame(
+        {
+            "New Dimension": ["A", "B"],
+            "Units": ["A B", "A.B"],
+            "Value": [2, 2],
+        }
+    )
+    cube = Cube(
+        metadata=CatalogMetadata("Some Qube"),
+        data=data,
+        columns=[
+            QbColumn(
+                "New Dimension",
+                NewQbDimension.from_data("New Dimension", data["New Dimension"]),
+            ),
+            QbColumn(
+                "Units",
+                QbMultiUnits.new_units_from_data(data["Units"]),
+            ),
+            QbColumn(
+                "Some Required Attribute",
+                NewQbAttribute("Some Attribute", is_required=True),
+            ),
+            QbColumn(
+                "Some Optional Attribute",
+                NewQbAttribute("Some Attribute", is_required=False),
+            ),
+            QbColumn(
+                "Some Obs Value",
+                QbObservationValue(NewQbMeasure("Some Measure")),
+            ),
+            QbColumn(
+                "Some Other Obs Value",
+                QbObservationValue(NewQbMeasure("Some Other Measure")),
+            ),
+        ]
+    )
+    
+    qb_writer = QbWriter(cube)
+    obs_val_cols = cube.get_columns_of_dsd_type(QbObservationValue)
+    for col in cube.columns:
+        csv_col = qb_writer._generate_csvw_column_definition(col)
+        required = csv_col["required"]
+        assert isinstance(required, bool)
+        if isinstance(col.structural_definition, QbAttribute):
+            # Determine if the cube is pivoted multi-measure
+            if cube.is_pivoted_shape and len(obs_val_cols) > 1:
+                assert required == False
+        else:
+            assert required == True
 
 
 def test_csv_col_required_observed_value_with_obs_status_attribute():

@@ -543,8 +543,9 @@ class QbWriter(WriterBase):
         if isinstance(column.structural_definition,(QbDimension, QbMultiUnits, QbMultiMeasureDimension)):
             return True
         elif (isinstance(column.structural_definition, QbAttribute) and column.structural_definition.get_is_required()):
-            if self.cube.is_pivoted_shape:
-                #If the cube is in pivoted shape, the attribute columns cannot be set to required.
+            obs_val_cols = self.cube.get_columns_of_dsd_type(QbObservationValue)
+            if self.cube.is_pivoted_shape and len(obs_val_cols) > 1:
+                #If the cube is in pivoted multi-measure shape, the attribute columns cannot be set to required.
                 _logger.warning(
                     "Attribute column '%s' was marked as required, but the cube has multiple observed values columns. Attributes in multi-measure pivoted cubes cannot currently be marked as required.", column.csv_column_title
                 )
