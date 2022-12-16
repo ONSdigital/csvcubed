@@ -97,9 +97,6 @@ def main():
             print(
                 f"In {j.__name__} ({inspect.getfile(j)}) you have not validated {', '.join(not_validated)}"
             )
-            # print out all the class attribute names with a message to check validations for the class.
-            # or even better to just print out the name of the variables that miss the validation
-            # Altho simply printing out the class variable names should also work
             print(format(field_names))  # This returns empty
             exit(1)
 
