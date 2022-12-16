@@ -636,7 +636,6 @@ Feature: cube-config.json
 
   Scenario: Generate a valid multi-measure pivoted data set containing attributes and units columns
     Given the config json file "v1.4/multi-measure-pivoted-dataset-units-and-attributes.json" and the existing tidy data csv file "v1.4/multi-measure-pivoted-dataset-units-and-attributes.csv"
-    And the environment variable "PIVOTED_MULTI_MEASURE" is "True"
     When a valid cube is built and serialised to CSV-W
     Then csvlint validation of all CSV-Ws should succeed
     And csv2rdf on all CSV-Ws should succeed
