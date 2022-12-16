@@ -37,5 +37,6 @@ class ValidationTester(ValidatedModel):
     def __init_subclass__(cls) -> None:
         return super().__init_subclass__()
 
-    def _get_validations() -> Dict[str, ValidationFunction]:
+    @classmethod
+    def _get_validations(cls) -> Dict[str, ValidationFunction]:
         return {"string_variable": validate_str_type}
