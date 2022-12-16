@@ -140,7 +140,6 @@ class CustomAdapterServeSomeFilesLocally(BaseAdapter):
                     f"URL {request.url} produced a invalid response and a local copy could not be found at the corresponding mapped path."
                 )
 
-            # return create_local_copy_response(path_to_local_file, request, response)
 
         return response
 
