@@ -102,6 +102,8 @@ class CustomAdapterServeSomeFilesLocally(BaseAdapter):
         _logger.debug(
             "This is the HTTP(s) adapter sending the request: %s", request.url
         )
+        if request.url is None:
+            raise requests.exceptions.URLRequired
         try:
             response = self.http_adapter.send(
                 request,
@@ -122,7 +124,7 @@ class CustomAdapterServeSomeFilesLocally(BaseAdapter):
 
                 return create_local_copy_response(path_to_local_file, request)
 
-            except Exception:
+            except KeyError:
                 raise FileNotFoundError(
                     f"URL {request.url} did not produce a response and a local copy could not be found at the corresponding mapped path."
                 ) from e
@@ -133,7 +135,7 @@ class CustomAdapterServeSomeFilesLocally(BaseAdapter):
                 path_to_local_file = generate_path_to_local_file(request.url)
                 return create_local_copy_response(path_to_local_file, request, response)
 
-            except Exception:
+            except KeyError:
                 raise FileNotFoundError(
                     f"URL {request.url} produced a invalid response and a local copy could not be found at the corresponding mapped path."
                 )
@@ -146,10 +148,7 @@ class CustomAdapterServeSomeFilesLocally(BaseAdapter):
         self.http_adapter.close()
 
 
-def generate_path_to_local_file(request_url: Union[str, None]) -> Path:
-    if request_url is None:
-        raise Exception
-
+def generate_path_to_local_file(request_url: str) -> Path:
     trimmed_url = str(request_url).removeprefix("https:")
     if request_url[len(request_url) - 1] == "/":
         path_to_local_file = map_url_to_file_path.get(
@@ -159,7 +158,7 @@ def generate_path_to_local_file(request_url: Union[str, None]) -> Path:
         path_to_local_file = map_url_to_file_path.get(trimmed_url)
 
     if path_to_local_file is None:
-        raise Exception
+        raise KeyError
 
     return path_to_local_file
 
@@ -180,10 +179,7 @@ def create_local_copy_response(
 
     successful_response.status_code = 200
 
-    if path_to_local_file is not None:
-        successful_response.raw = BytesIO(
-            bytes(path_to_local_file.read_text(), "utf-8")
-        )
+    successful_response.raw = BytesIO(bytes(path_to_local_file.read_text(), "utf-8"))
     successful_response.url = path_to_local_file.as_uri()
 
     successful_response.encoding = "utf-8"
