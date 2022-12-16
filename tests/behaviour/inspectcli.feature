@@ -809,7 +809,6 @@ Feature: Behaviour testing of csvcubed inspect.
         And the existing test-case file "cli/inspect/pivoted-multi-measure-dataset/some-dimension.csv-metadata.json"
         And the existing test-case file "cli/inspect/pivoted-multi-measure-dataset/some-dimension.table.json"
         And the existing test-case file "cli/inspect/pivoted-multi-measure-dataset/some-dimension.csv"
-        And the environment variable "PIVOTED_MULTI_MEASURE" is "True"
         When the Metadata file path is detected and validated "cli/inspect/pivoted-multi-measure-dataset/qb-id-10003.csv-metadata.json"
         And the csv file path is detected and validated "cli/inspect/pivoted-multi-measure-dataset/qb-id-10003.csv"
         And the Metadata File json-ld is loaded to a rdf graph
