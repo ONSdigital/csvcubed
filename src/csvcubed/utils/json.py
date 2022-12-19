@@ -45,11 +45,11 @@ def load_json_document(file_uri_or_path: Union[str, Path]) -> Dict[str, Any]:
             # Treat it as a URL
             _logger.debug("Loading JSON from URL %s", file_uri_or_path)
             http_response = session.get(file_uri_or_path)
-
+        
             try:
                 return http_response.json()
             except Exception as e:
-                raise Warning(
+                raise Exception(
                     f"Error loading JSON from URL '{file_uri_or_path}'"
                 ) from e
 

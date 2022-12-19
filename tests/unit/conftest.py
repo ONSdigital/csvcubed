@@ -37,16 +37,19 @@ def dummy_mapped_url():
     """
     # Add test URL to dictionary when ready to use fixture
     test_dictionary = {
+        # When a request is made with this URL in tests, the request will fail completely and not return any response as the domain does not exist.
         "//thisinputurlwillcauseanerror.com": APP_ROOT_DIR_PATH
         / "schema"
         / "cube-config"
         / "v1_3"
         / "schema.json",
+        # When this URL is used in a test, a response will successfully be returned as purl.org exists, but the resource (/badinput) cannot be found.
         "//purl.org/csv-cubed/qube-config/badinput": APP_ROOT_DIR_PATH
         / "schema"
         / "cube-config"
         / "v1_3"
         / "schema.json",
+        # When used in tests, this URL has the correct suffix to request template files and get a response, but this template doesn't exist/can't be found.
         "//raw.githubusercontent.com/GSS-Cogs/csvcubed/main/src/csvcubed/readers/cubeconfig/v1_0/templates/calendar-hourx.json": APP_ROOT_DIR_PATH
         / "readers"
         / "cubeconfig"

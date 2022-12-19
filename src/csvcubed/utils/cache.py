@@ -6,6 +6,7 @@ from typing import Dict, Optional, Union
 import requests
 from requests.adapters import BaseAdapter, HTTPAdapter
 from requests_cache import CachedSession
+from csvcubed.utils.createlocalcopyresponse import _create_local_copy_response
 
 
 from csvcubed.definitions import APP_ROOT_DIR_PATH
@@ -118,11 +119,11 @@ class CustomAdapterServeSomeFilesLocally(BaseAdapter):
             try:
                 _logger.debug("The connection error has been found")
 
-                path_to_local_file = generate_path_to_local_file(request.url)
+                path_to_local_file = _generate_path_to_local_file(request.url)
 
                 _logger.debug("The local file path is: %s", path_to_local_file)
 
-                return create_local_copy_response(path_to_local_file, request)
+                return _create_local_copy_response(path_to_local_file, request)
 
             except KeyError:
                 raise FileNotFoundError(
@@ -132,8 +133,8 @@ class CustomAdapterServeSomeFilesLocally(BaseAdapter):
         if response.status_code >= 400 and response.status_code < 600:
             _logger.info(f"The status code is {response.status_code}")
             try:
-                path_to_local_file = generate_path_to_local_file(request.url)
-                return create_local_copy_response(path_to_local_file, request, response)
+                path_to_local_file = _generate_path_to_local_file(request.url)
+                return _create_local_copy_response(path_to_local_file, request, response)
 
             except KeyError:
                 raise FileNotFoundError(
@@ -147,7 +148,7 @@ class CustomAdapterServeSomeFilesLocally(BaseAdapter):
         self.http_adapter.close()
 
 
-def generate_path_to_local_file(request_url: str) -> Path:
+def _generate_path_to_local_file(request_url: str) -> Path:
     trimmed_url = str(request_url).removeprefix("https:")
     if request_url[len(request_url) - 1] == "/":
         path_to_local_file = map_url_to_file_path.get(
@@ -160,36 +161,6 @@ def generate_path_to_local_file(request_url: str) -> Path:
         raise KeyError
 
     return path_to_local_file
-
-
-def create_local_copy_response(
-    path_to_local_file: Path,
-    request: requests.PreparedRequest,
-    response: Optional[requests.Response] = None,
-) -> requests.Response:
-    """
-    Generates the response object that contains the local copy file path of the requested file and then returns it.
-    """
-    _logger.warning(
-        f"Unable to load json document from given URL. Attempting to load local storage copy of file {path_to_local_file} instead."
-    )
-
-    successful_response = requests.Response()
-
-    successful_response.status_code = 200
-
-    successful_response.raw = BytesIO(bytes(path_to_local_file.read_text(), "utf-8"))
-    successful_response.url = path_to_local_file.as_uri()
-
-    successful_response.encoding = "utf-8"
-
-    if response is not None:
-        successful_response.history = [response]
-
-    successful_response.reason = "OK"
-    successful_response.request = request
-
-    return successful_response
 
 
 session = CachedSession(cache_control=True, use_cache_dir=True)
