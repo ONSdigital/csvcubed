@@ -7,7 +7,7 @@ Represent code lists in an RDF Data Cube.
 from abc import ABC
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import List, Optional, Set, Generic, TypeVar
+from typing import List, Optional, Set, Generic, TypeVar, Callable
 
 from pydantic import root_validator, validator
 
@@ -24,6 +24,7 @@ from .arbitraryrdf import (
     RdfSerialisationHint,
     TripleFragmentBase,
 )
+from csvcubed.models.validationerror import ValidateModelProperiesError
 from .concept import NewQbConcept, DuplicatedQbConcept
 from .datastructuredefinition import (
     SecondaryQbStructuralDefinition,
@@ -179,3 +180,16 @@ class CompositeQbCodeList(NewQbCodeList[DuplicatedQbConcept]):
     """Represents a :class:`NewQbCodeList` made from a set of :class:`DuplicatedQbConcept` instances."""
 
     variant_of_uris: List[str] = field(default_factory=list)
+
+
+def validate_codelist(
+    item: QbCodeList, property_name: str
+) -> List[ValidateModelProperiesError]:
+    if not isinstance(item, QbCodeList):
+        return [
+            ValidateModelProperiesError(
+                f"This variable should be a QbCodeList, check the following variable:",
+                property_name,
+            )
+        ]
+    return []

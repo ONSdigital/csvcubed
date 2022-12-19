@@ -5,8 +5,8 @@ from dataclasses import dataclass
 
 from csvcubed.utils.validations import (
     validate_int_type,
-    validate_list_of_str,
     validate_str_type,
+    validate_list,
 )
 from csvcubed.models.validatedmodel import ValidatedModel
 from csvcubed.models.validationerror import ValidateModelProperiesError
@@ -24,7 +24,7 @@ class TestClass(ValidatedModel):
         return {
             "str_test_variable": validate_str_type,
             "int_test_variable": validate_int_type,
-            "list_test_variable": validate_list_of_str,
+            "list_test_variable": validate_list(validate_str_type),
         }
 
 
@@ -87,7 +87,7 @@ def test_validate_list_type_incorrect():
     )
     assert result[0].property_name == "list_test_variable"
 
-    my_list: [int] = [5, 8, 5]
+    my_list: List[int] = [5, 8, 5]
 
     test_instance = TestClass("test", 8, my_list)
 
@@ -103,7 +103,7 @@ def test_validate_list_type_incorrect():
 
 def test_validate_list_type_correct():
 
-    my_list: [str] = ["test", "test2"]
+    my_list: List[str] = ["test", "test2"]
     test_instance = TestClass("test", 8, my_list)
 
     result = test_instance.validate()

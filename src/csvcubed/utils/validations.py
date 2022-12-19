@@ -1,23 +1,33 @@
 # This script contain a set of function that can be used to validate specific class attributes/ member variables
 from csvcubed.models.validationerror import ValidateModelProperiesError
 
-from typing import List
+from typing import List, TypeVar, Type, Callable
 
 
-def validate_list_of_str(
-    value: List[str], property_name: str
-) -> List[ValidateModelProperiesError]:
-    is_valid = isinstance(value, list) and all(isinstance(v, str) for v in value)
+T = TypeVar("T")
 
-    if not is_valid:
+
+def validate_list(
+    validate_list_item: Callable[[T], List[ValidateModelProperiesError]],
+) -> Callable[[List[T], str], List[ValidateModelProperiesError]]:
+    def _validate(
+        list_items: List[T], property_name: str
+    ) -> List[ValidateModelProperiesError]:
+        if not isinstance(list_items, list):
+            return [
+                ValidateModelProperiesError(
+                    f"This variable should be a list, check the following variable:",
+                    property_name,
+                )
+            ]
+
         return [
-            ValidateModelProperiesError(
-                "This variable should be a list of string values, check the following variable:",
-                property_name,
-            )
+            err
+            for list_item in list_items
+            for err in validate_list_item(list_item, property_name)
         ]
 
-    return []
+    return _validate
 
 
 def validate_str_type(
@@ -46,3 +56,20 @@ def validate_int_type(
         ]
 
     return []
+
+
+from typing import Optional
+
+
+def validate_optional(
+    validate_item: Callable[[T, str], List[ValidateModelProperiesError]]
+) -> Callable[[Optional[T], str], List[ValidateModelProperiesError]]:
+    def _validate(
+        maybe_item: Optional[T], property_name: str
+    ) -> List[ValidateModelProperiesError]:
+        if maybe_item is None:
+            return []
+
+        return validate_item(maybe_item, property_name)
+
+    return _validate

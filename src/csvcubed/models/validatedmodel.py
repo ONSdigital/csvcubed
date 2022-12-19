@@ -8,8 +8,8 @@ from csvcubedmodels.dataclassbase import DataClassBase
 from csvcubed.models.validationerror import ValidateModelProperiesError
 from csvcubed.utils.validations import (
     validate_str_type,
-    validate_list_of_str,
     validate_int_type,
+    validate_list,
 )
 
 ValidationFunction = Callable[[Any, str], List[ValidateModelProperiesError]]
