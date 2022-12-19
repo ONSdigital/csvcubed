@@ -83,11 +83,11 @@ def test_validate_list_type_incorrect():
     assert len(result) == 1
     assert (
         result[0].message
-        == "This variable should be a list of string values, check the following variable:"
+        == "This variable should be a list, check the following variable:"
     )
     assert result[0].property_name == "list_test_variable"
 
-    my_list: List[int] = [5, 8, 5]
+    my_list = ["Something", 8, "Something Else"]
 
     test_instance = TestClass("test", 8, my_list)
 
@@ -96,7 +96,7 @@ def test_validate_list_type_incorrect():
     assert len(result) == 1
     assert (
         result[0].message
-        == "This variable should be a list of string values, check the following variable:"
+        == "This variable should be a string value, check the following variable:"
     )
     assert result[0].property_name == "list_test_variable"
 

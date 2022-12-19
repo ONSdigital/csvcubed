@@ -174,7 +174,8 @@ def validate_triple_fragment(
     if not isinstance(fragment, TripleFragmentBase):
         return [
             ValidateModelProperiesError(
-                f"I was expecting this to be a {TripleFragmentBase.__name__}, but it isn't."
+                f"I was expecting this to be a {TripleFragmentBase.__name__}, but it isn't.",
+                property_name,
             )
         ]
 
