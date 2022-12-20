@@ -1,4 +1,9 @@
+"""
+The inspect module helps to  get information about live objects such as modules, classes, methods, 
+functions, tracebacks, frame objects, and code objects.
+"""
 import inspect
+
 import importlib
 import sys
 from typing import Iterable
@@ -9,7 +14,7 @@ import csvcubed
 from csvcubed.definitions import APP_ROOT_DIR_PATH
 from csvcubed.models.validatedmodel import ValidatedModel
 
-# scan throught each file and check if the members are classes
+
 def list_classes_in_file(imported_module, file_name: Path) -> Iterable[type]:
 
     for (name, value) in inspect.getmembers(imported_module):
@@ -20,19 +25,23 @@ def list_classes_in_file(imported_module, file_name: Path) -> Iterable[type]:
                 yield value
 
 
-# checks for the class it a dataclass
+"""scan throught each file and check if the members are classes"""
+
+
 def check_for_dataclass(classes: Iterable[type]) -> Iterable[type]:
     for clazz in classes:
         if is_dataclass(clazz):
             yield clazz
 
 
+"""checks for the class it a dataclass"""
+
+
 def acess_all_folders_return_all_files(path_name: Path) -> list[str]:
-    # acessing all files from the path directory that ends with .py
+    """acessing all files from the path directory that ends with .py"""
     return list(path_name.glob("**/*.py"))
 
 
-# check for the path conains an init file or is it a python sript (ends with a .py) and returns the module name
 def _map_the_thing(path_part: str) -> str:
     if path_part == "__init__.py":
         return None
@@ -40,6 +49,9 @@ def _map_the_thing(path_part: str) -> str:
         return inspect.getmodulename(path_part)
     else:
         return path_part
+
+
+"""check for the path conains an init file or is it a python sript (ends with a .py) and returns the module name"""
 
 
 def generate_modules(

@@ -9,6 +9,11 @@ from csvcubed.utils.uri import looks_like_uri
 
 T = TypeVar("T")
 
+"""
+This function will valide if the argument provided is in fact a list and,
+in a loop will check each member of the list and return an error if the item in the list is not the correct type. 
+"""
+
 
 def validate_list(
     validate_list_item: Callable[[T], List[ValidateModelProperiesError]],
