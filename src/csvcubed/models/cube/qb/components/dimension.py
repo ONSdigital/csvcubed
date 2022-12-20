@@ -24,7 +24,7 @@ from csvcubed.models.cube.qb.components.datastructuredefinition import (
 from csvcubed.models.cube.uristyle import URIStyle
 from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.models.validationerror import ValidationError, ValidateModelProperiesError
-from csvcubed.models.validatedmodel import ValidatedModel
+from csvcubed.models.validatedmodel import ValidatedModel, ValidationFunction
 from csvcubed.utils.validators.uri import validate_uri as pydantic_validate_uri
 from .codelist import QbCodeList, NewQbCodeList, validate_codelist
 
@@ -35,8 +35,6 @@ from csvcubed.utils.validations import (
     validate_optional,
     validate_uri,
 )
-
-ValidationFunction = Callable[[Any, str], List[ValidateModelProperiesError]]
 
 
 @dataclass
