@@ -20,7 +20,7 @@ from csvcubed.utils.validations import (
 
 
 @dataclasses.dataclass
-class UriIdentifiable(ValidatedModel, ABC):
+class UriIdentifiable(ABC):
     """
     Mixin which allows a class to represent something which is URI addressable.
 
