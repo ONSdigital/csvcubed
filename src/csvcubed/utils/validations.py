@@ -1,7 +1,10 @@
 # This script contain a set of function that can be used to validate specific class attributes/ member variables
+from typing import Optional
 from csvcubed.models.validationerror import ValidateModelProperiesError
 
 from typing import List, TypeVar, Type, Callable
+
+from csvcubed.utils.uri import looks_like_uri
 
 
 T = TypeVar("T")
@@ -44,6 +47,21 @@ def validate_str_type(
     return []
 
 
+def validate_uri(value: str, property_name: str) -> List[ValidateModelProperiesError]:
+    errors = validate_str_type(value, property_name)
+    if any(errors):
+        return errors
+
+    if not looks_like_uri(value):
+        return [
+            ValidateModelProperiesError(
+                "This variable is not a valid uri.", property_name
+            )
+        ]
+
+    return []
+
+
 def validate_int_type(
     value: int, property_name: str
 ) -> List[ValidateModelProperiesError]:
@@ -56,9 +74,6 @@ def validate_int_type(
         ]
 
     return []
-
-
-from typing import Optional
 
 
 def validate_optional(

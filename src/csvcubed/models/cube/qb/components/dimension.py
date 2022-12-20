@@ -25,7 +25,7 @@ from csvcubed.models.cube.uristyle import URIStyle
 from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.models.validationerror import ValidationError, ValidateModelProperiesError
 from csvcubed.models.validatedmodel import ValidatedModel
-from csvcubed.utils.validators.uri import validate_uri
+from csvcubed.utils.validators.uri import validate_uri as pydantic_validate_uri
 from .codelist import QbCodeList, NewQbCodeList, validate_codelist
 
 from csvcubed.utils.validations import (
@@ -33,6 +33,7 @@ from csvcubed.utils.validations import (
     validate_int_type,
     validate_list,
     validate_optional,
+    validate_uri,
 )
 
 ValidationFunction = Callable[[Any, str], List[ValidateModelProperiesError]]
@@ -51,7 +52,7 @@ class QbDimension(QbColumnStructuralDefinition, ValidatedModel, ArbitraryRdf, AB
         pass
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
-        return {"range_uri": validate_optional(validate_str_type)}
+        return {"range_uri": validate_optional(validate_uri)}
 
 
 @dataclass
@@ -70,9 +71,9 @@ class ExistingQbDimension(QbDimension):
     def get_default_node_serialisation_hint(self) -> RdfSerialisationHint:
         return RdfSerialisationHint.Component
 
-    _dimension_uri_validator = validate_uri("dimension_uri")
+    _dimension_uri_validator = pydantic_validate_uri("dimension_uri")
 
-    _range_uri_validator = validate_uri("range_uri", is_optional=True)
+    _range_uri_validator = pydantic_validate_uri("range_uri", is_optional=True)
 
     def validate_data(
         self,
@@ -88,7 +89,7 @@ class ExistingQbDimension(QbDimension):
 
         return {
             **QbDimension._get_validations(self),
-            "dimension_uri": validate_str_type,
+            "dimension_uri": validate_uri,
             "arbitrary_rdf": validate_list(validate_triple_fragment),
         }
 
@@ -163,8 +164,8 @@ class NewQbDimension(QbDimension, UriIdentifiable):
             "label": validate_str_type,
             "description": validate_optional(validate_str_type),
             "code_list": validate_optional(validate_codelist),
-            "parent_dimension_uri": validate_optional(validate_str_type),
-            "source_uri": validate_optional(validate_str_type),
+            "parent_dimension_uri": validate_optional(validate_uri),
+            "source_uri": validate_optional(validate_uri),
             **UriIdentifiable._get_validations(self),
             "arbitrary_rdf": validate_list(validate_triple_fragment),
         }
