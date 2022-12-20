@@ -16,7 +16,7 @@ in a loop will check each member of the list and return an error if the item in 
 
 
 def validate_list(
-    validate_list_item: Callable[[T], List[ValidateModelProperiesError]],
+    validate_list_item: Callable[[T, str], List[ValidateModelProperiesError]],
 ) -> Callable[[List[T], str], List[ValidateModelProperiesError]]:
     def _validate(
         list_items: List[T], property_name: str
