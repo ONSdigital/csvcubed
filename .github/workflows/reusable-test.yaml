@@ -56,7 +56,7 @@ jobs:
       - name: Run pyright
         run: poetry run pyright src/ --lib
       
-      - name: Run validation for all class attributes and variables that has a dataclass decorator, before build
+      - name: Ensure ValidatedModel properties have validations provided
         run: poetry run python tests/pref_improvement/pref_check.py
 
       - name: Run unittests

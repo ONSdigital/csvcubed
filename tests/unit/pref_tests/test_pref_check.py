@@ -1,29 +1,27 @@
-import sys
 import importlib
 from csvcubeddevtools.helpers.file import get_test_cases_dir
 from tests.pref_improvement.pref_check import (
     list_classes_in_file,
     generate_modules,
     check_for_dataclass,
-    _map_the_thing,
-    _get_all_classes,
+    _map_to_module_name,
     acess_all_folders_return_all_files,
 )
 
 from pathlib import Path
 
 # test to ensure it returns the corrects name
-def test_map_that_thing():
+def test_map_to_module_name():
 
     path = get_test_cases_dir() / "test_class_collector" / "test_file.py"
 
-    pyscript = _map_the_thing(str(path))
+    pyscript = _map_to_module_name(str(path))
 
     assert pyscript == "test_file"
 
     path = Path("__init__.py")
 
-    init_file = _map_the_thing(str(path))
+    init_file = _map_to_module_name(str(path))
 
     assert init_file is None
 

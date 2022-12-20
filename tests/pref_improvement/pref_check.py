@@ -16,6 +16,7 @@ from csvcubed.models.validatedmodel import ValidatedModel
 
 
 def list_classes_in_file(imported_module, file_name: Path) -> Iterable[type]:
+    """scan throught each file and check if the members are classes"""
 
     for (name, value) in inspect.getmembers(imported_module):
         if inspect.isclass(value):
@@ -25,16 +26,11 @@ def list_classes_in_file(imported_module, file_name: Path) -> Iterable[type]:
                 yield value
 
 
-"""scan throught each file and check if the members are classes"""
-
-
 def check_for_dataclass(classes: Iterable[type]) -> Iterable[type]:
+    """checks for the class it a dataclass"""
     for clazz in classes:
         if is_dataclass(clazz):
             yield clazz
-
-
-"""checks for the class it a dataclass"""
 
 
 def acess_all_folders_return_all_files(path_name: Path) -> list[str]:
@@ -42,7 +38,8 @@ def acess_all_folders_return_all_files(path_name: Path) -> list[str]:
     return list(path_name.glob("**/*.py"))
 
 
-def _map_the_thing(path_part: str) -> str:
+def _map_to_module_name(path_part: str) -> str:
+    """check for the path conains an init file or is it a python sript (ends with a .py) and returns the module name"""
     if path_part == "__init__.py":
         return None
     elif path_part.endswith(".py"):
@@ -51,15 +48,12 @@ def _map_the_thing(path_part: str) -> str:
         return path_part
 
 
-"""check for the path conains an init file or is it a python sript (ends with a .py) and returns the module name"""
-
-
 def generate_modules(
     path_to_file: Path, path_to_root_dir: Path, root_package_name: str = "csvcubed"
 ):
 
     path_parts = [
-        _map_the_thing(p) for p in path_to_file.relative_to(path_to_root_dir).parts
+        _map_to_module_name(p) for p in path_to_file.relative_to(path_to_root_dir).parts
     ]
     path_parts = [root_package_name] + [p for p in path_parts if p is not None]
     module_name = ".".join(path_parts)
@@ -93,21 +87,21 @@ def main():
     # list all dataclasses(the classes that have the datacall decorator)
     all_data_classes = check_for_dataclass(all_classes)
 
-    list_validatons = []
-    for x in all_data_classes:
-        if issubclass(x, ValidatedModel) and x.__name__ != "ValidatedModel":
-            list_validatons.append(x)
+    validated_model_classes = []
+    for clazz in all_data_classes:
+        if issubclass(clazz, ValidatedModel) and not inspect.isabstract(clazz):
+            validated_model_classes.append(clazz)
 
-    for j in list_validatons:
-        one = j._get_validations()
-        field_names_validated = set(one.keys())
-        field_names = {f.name for f in fields(j)}
+    for validated_model_class in validated_model_classes:
+        validated_model = validated_model_class.__new__(validated_model_class)
+        field_names_validated = set(validated_model._get_validations().keys())
+        field_names = {f.name for f in fields(validated_model)}
 
         if field_names_validated != field_names:
 
             not_validated = field_names - field_names_validated
             print(
-                f"In {j.__name__} ({inspect.getfile(j)}) you have not validated {', '.join(not_validated)}"
+                f"In {validated_model_class.__name__} ({inspect.getfile(validated_model_class)}) you have not validated {', '.join(not_validated)}"
             )
             print(format(field_names))  # This returns empty
             exit(1)
