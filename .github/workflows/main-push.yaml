@@ -9,7 +9,7 @@ jobs:
     strategy:
       matrix:
         # Test on Windows + Ubuntu on oldest + newest supported versions of python.
-        python-version: ['3.9', '3.11']
+        python-version: ['3.9', '3.10']
         os: [ubuntu-latest, windows-latest]
     uses: ./.github/workflows/reusable-test.yaml
     with:
@@ -17,7 +17,7 @@ jobs:
       python-version: ${{ matrix.python-version }}
   
   build_package_and_documentation:
-    if: needs.test_in_environments.result == 'success'
+    if: needs.build_in_environments.result == 'success'
     needs: [test_in_environments]
     uses: ./.github/workflows/reusable-build.yaml
 

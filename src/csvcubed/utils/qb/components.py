@@ -5,9 +5,9 @@ Cube Components
 Utilities to help when handling qube components data.
 """
 
+import os
 from enum import Enum
 from pathlib import Path
-import os
 from urllib.parse import urlparse
 
 from csvcubed.models.csvcubedexception import UnsupportedComponentPropertyTypeException
@@ -18,6 +18,8 @@ class ComponentField(Enum):
     The fields of `QubeComponentResult` model that are relevant for filtering the `QubeComponentsResult`.
     """
 
+    CsvColumnTitle = "csv_col_title"
+    
     Property = "property"
 
     PropertyType = "property_type"
@@ -114,7 +116,11 @@ def _relative_path(path_uri: str, relative_to: Path) -> str:
 
     if len(url.fragment) > 0:
         fragment_part = "#" + url.fragment
-        file_path = Path(os.path.normpath(path_uri.removesuffix(fragment_part)).removeprefix("file:\\").removeprefix("file:"))
+        file_path = Path(
+            os.path.normpath(path_uri.removesuffix(fragment_part))
+            .removeprefix("file:\\")
+            .removeprefix("file:")
+        )
         relative_file_path: str = os.path.relpath(file_path, relative_to)
         return relative_file_path + fragment_part
 

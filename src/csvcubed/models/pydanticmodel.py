@@ -6,14 +6,14 @@ The functionality necessary to repurpose pydantic so that we can validate at a p
 """
 
 import dataclasses
+from abc import ABC
 from dataclasses import dataclass, fields, is_dataclass
+from typing import Dict, Type, List, Iterable, Union, Any
+
 import pydantic
 import pydantic.dataclasses
-from pydantic import BaseConfig, Extra
-from typing import Dict, Type, List, Iterable, Union, Any
-from abc import ABC
-
 from csvcubedmodels.dataclassbase import DataClassBase
+from pydantic import BaseConfig, Extra
 
 from .validationerror import (
     ValidationError,
@@ -58,7 +58,7 @@ class PydanticModel(DataClassBase, ABC):
         """
         Converts this model to a pydantic dataclass. Captures any validation errors in the process.
 
-        Returns: Either a pydantic dataclass if validation was successful **OTHERWISE** it returns a list of errors.
+        Returns: Either a pydantic dataclass is validation was successful **OTHERWISE** it returns a list of errors.
         """
         pydantic_class_constructor = self.__class__._get_pydantic_constructor()
         try:
