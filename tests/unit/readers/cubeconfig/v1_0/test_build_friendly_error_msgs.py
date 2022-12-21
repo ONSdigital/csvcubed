@@ -50,6 +50,7 @@ def _assert_in_log(text: str) -> None:
         contents = log_file.read()
     assert text in contents, contents
 
+
 def test_val_errors_no_observation():
     """
     Test for:-
@@ -200,6 +201,7 @@ def test_val_errors_missing_obs_vals():
         "csvcubed.cli.build - ERROR - More information: http://purl.org/csv-cubed/err/obsv-val-mis"
     )
 
+
 def test_val_errors_both_measure_types():
     """
     Test for:-
@@ -207,11 +209,11 @@ def test_val_errors_both_measure_types():
     """
     config = Path(_test_case_dir, "both_measure_types_defined.json")
     csv = Path(_test_case_dir, "both_measure_types_defined.csv")
-    
+
     cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
-            config, csv
+        config, csv
     )
-    
+
     _write_errors_to_log(json_schema_validation_errors, validation_errors)
 
     assert isinstance(cube, Cube)
@@ -549,6 +551,7 @@ def test_val_errors_no_dimensions():
         "csvcubed.cli.build - ERROR - More information: http://purl.org/csv-cubed/err/no-dim"
     )
 
+
 def test_duplicate_measure_error():
     """
     Test for:-
@@ -571,6 +574,7 @@ def test_duplicate_measure_error():
     _assert_in_log(
         "In the pivoted shape, each observation value column must use a unique measure. Affected columns: Average Income, GDP"
     )
+
 
 def test_attribute_not_linked_error():
     """
@@ -595,6 +599,7 @@ def test_attribute_not_linked_error():
         "Unable to tell which observed values column 'Attribute' describes. Please set the `describes_observations` property in this column's configuration."
     )
 
+
 def test_linked_obs_column_doesnt_exist_error():
     """
     Test for:-
@@ -618,6 +623,7 @@ def test_linked_obs_column_doesnt_exist_error():
         "The 'Attribute' column has `describes_observations` set to 'Doesn't Exist'. The column does not appear to exist."
     )
 
+
 def test_linked_to_non_obs_colums_error():
     """
     Test for:-
@@ -638,8 +644,9 @@ def test_linked_to_non_obs_colums_error():
 
     assert isinstance(validation_errors[0], LinkedToNonObsColumnError)
     _assert_in_log(
-       "The 'Attribute' column has `describes_observations` set to 'Location'. This column does not represent observed values."
+        "The 'Attribute' column has `describes_observations` set to 'Location'. This column does not represent observed values."
     )
+
 
 def test_hybrid_shape_error():
     """

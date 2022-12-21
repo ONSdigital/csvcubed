@@ -8,10 +8,12 @@ from behave import *
 from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
 from csvcubeddevtools.helpers.file import get_test_cases_dir
 from pandas.testing import assert_frame_equal
+from contextlib import ExitStack
 
 from csvcubed.cli.build import build as cli_build
 from csvcubed.models.cube.columns import CsvColumn
 from tests.helpers.schema_mocking import mock_json_schemas
+from csvcubed.utils.cache import session
 
 _test_case_dir = get_test_cases_dir()
 _cube_config_test_case_dir = _test_case_dir / "readers" / "cube-config"
@@ -61,6 +63,11 @@ def _build_valid_cube(context):
         scenario_name.rsplit("]")[1] if "]" in scenario_name else scenario_name
     )
 
+    # Disable HTTP cache, don't want to be competing with vcrpy here.
+    exit_stack = ExitStack()
+    exit_stack.enter_context(session.cache_disabled())
+    context.add_cleanup(lambda: exit_stack.pop_all().close())
+
     mocker = mock_json_schemas()
     mocker.start()
     context.add_cleanup(lambda: mocker.stop())
@@ -68,7 +75,8 @@ def _build_valid_cube(context):
     context.out_dir = get_context_temp_dir_path(context) / "out"
 
     with vcr.use_cassette(
-        str(_cassettes_dir / f"build-cube-{cassette_file_name}.yaml")
+        str(_cassettes_dir / f"build-cube-{cassette_file_name}.yaml"),
+        record_mode=vcr.record_mode.RecordMode.ONCE,
     ):
         cube, errors = cli_build(
             data_file,

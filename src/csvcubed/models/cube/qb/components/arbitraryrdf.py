@@ -14,6 +14,7 @@ from rdflib.term import Identifier, URIRef, Literal
 
 from csvcubed.models.pydanticmodel import PydanticModel
 from csvcubed.utils.uri import looks_like_uri
+from csvcubed.models.validationerror import ValidateModelProperiesError
 
 
 class RdfSerialisationHint(Enum):
@@ -165,3 +166,17 @@ class ArbitraryRdf(ABC):
                     )
             else:
                 raise Exception(f"Unmatched TripleFragment type {type(fragment)}")
+
+
+def validate_triple_fragment(
+    fragment: TripleFragmentBase, property_name: str
+) -> List[ValidateModelProperiesError]:
+    if not isinstance(fragment, TripleFragmentBase):
+        return [
+            ValidateModelProperiesError(
+                f"I was expecting this to be a {TripleFragmentBase.__name__}, but it isn't.",
+                property_name,
+            )
+        ]
+
+    return []
