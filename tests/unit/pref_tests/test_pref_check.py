@@ -55,8 +55,6 @@ def test_list_classes_in_file():
 
 def test_generate_modules():
 
-    path_to_folder = get_test_cases_dir() / "test_class_collector"
-
     path = get_test_cases_dir() / "test_class_collector" / "test_file.py"
 
     result = generate_modules(

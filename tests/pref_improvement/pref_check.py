@@ -63,7 +63,6 @@ def generate_modules(
         imported_module = sys.modules[module_name]
     else:
         # if not then get the module name from the path then load it into memory
-        module_spec = importlib.util.spec_from_file_location(module_name, path_to_file)
         imported_module = importlib.import_module(module_name)
 
     return imported_module
