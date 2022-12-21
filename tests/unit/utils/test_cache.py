@@ -54,7 +54,7 @@ def test_connection_error_for_bad_url():
 
     assert (
         str(err.value)
-        == "URL https://thistesturlwillnotproducearesponse.org/ did not produce a response and a local copy could not be found at the corresponding mapped path."
+        == "URL 'https://thistesturlwillnotproducearesponse.org/' did not produce a response and a local copy could not be found."
     )
 
 
@@ -70,7 +70,7 @@ def test_connection_error_url():
 
     assert (
         str(err.value)
-        == "URL https://purl.org/csv-cubed/qube-config/produces404 produced a invalid response and a local copy could not be found at the corresponding mapped path."
+        == "URL 'https://purl.org/csv-cubed/qube-config/produces404' produced a invalid response and a local copy could not be found."
     )
 
 
