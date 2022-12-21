@@ -54,7 +54,7 @@ jobs:
         run: poetry install
 
       - name: Run pyright
-        run: poetry run pyright src/ --lib
+        run: poetry run pyright . --lib
       
       - name: Ensure ValidatedModel properties have validations provided
         run: poetry run python tests/pref_improvement/pref_check.py

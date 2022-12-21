@@ -14,7 +14,7 @@ from csvcubed.utils.validations import (
 ValidationFunction = Callable[[Any, str], List[ValidateModelProperiesError]]
 
 """This abrstract class that will act as a parent class for class attribute validations.
-The _get_validations function will return a dictionary containing the names of the variables and corespondinv validatin methods.
+The class will run a valdiation function for each attribute that is passed in and return either a list of errors or an emtpry list.
 """
 
 
@@ -38,14 +38,13 @@ class ValidatedModel(DataClassBase):
         pass
 
 
-"""
-As the example class below shows the implementation is required for each class varibale (including optional ones as well),
-in the _get_validations function the class variable name has to present paired with the correct validation fucntion in a dictionary format.
-"""
-
-
 @dataclass
 class ValidationTester(ValidatedModel):
+    """
+    As the example class below shows the implementation is required for each class varibale (including optional ones as well),
+    in the _get_validations function the class variable name has to present paired with the correct validation fucntion in a dictionary format.
+    """
+
     string_variable: str
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:

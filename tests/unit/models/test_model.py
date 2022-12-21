@@ -10,16 +10,14 @@ from csvcubed.utils.validations import (
     validate_uri,
     validate_optional,
 )
-from csvcubed.models.validatedmodel import ValidatedModel
+from csvcubed.models.validatedmodel import ValidatedModel, ValidationFunction
 from csvcubed.models.validationerror import ValidateModelProperiesError
-
-ValidationFunction = Callable[[Any, str], List[ValidateModelProperiesError]]
-
-"""This the test class that will be used in the tests below"""
 
 
 @dataclass
 class TestClass(ValidatedModel):
+    """This the test class that will be used in the tests below"""
+
     str_test_variable: str
     int_test_variable: int
     list_test_variable: List[str]
@@ -34,13 +32,11 @@ class TestClass(ValidatedModel):
         }
 
 
-"""
-This test will validate if the class has been instanciated with a variable that was expecting an integer,
-but it was provided with a non int type variable.
-"""
-
-
 def test_validate_int_type_incorrect():
+    """
+    This test will validate if the class has been instanciated with a variable that was expecting an integer,
+    but it was provided with a non int type variable.
+    """
 
     test_instance = TestClass("test", "test", [])
 
@@ -54,10 +50,8 @@ def test_validate_int_type_incorrect():
     assert result[0].property_name == "int_test_variable"
 
 
-"""This test will check if the class with the correct argument types will pass the validation"""
-
-
 def test_validate_int_type_correct():
+    """This test will check if the class with the correct argument types will pass the validation"""
 
     test_instance = TestClass("test", 5, [])
 
@@ -66,13 +60,11 @@ def test_validate_int_type_correct():
     assert len(result) == 0
 
 
-"""
-This test will validate if the class has been instanciated with a variable that was expecting an string,
-but it was provided with a non string type variable.
-"""
-
-
 def test_validate_str_type_incorrect():
+    """
+    This test will validate if the class has been instanciated with a variable that was expecting an string,
+    but it was provided with a non string type variable.
+    """
 
     test_instance = TestClass(5, 8, [])
 
@@ -86,10 +78,8 @@ def test_validate_str_type_incorrect():
     assert result[0].property_name == "str_test_variable"
 
 
-"""This test will check if the class with the correct argument types will pass the validation"""
-
-
 def test_validate_str_type_correct():
+    """This test will check if the class with the correct argument types will pass the validation"""
 
     test_instance = TestClass("test", 8, [])
 
@@ -98,13 +88,11 @@ def test_validate_str_type_correct():
     assert len(result) == 0
 
 
-"""
-This test will validate if the class has been instanciated with a variable that was expecting an List of string,
-but it was provided with a non List type variable, also a List with a non string type item.
-"""
-
-
 def test_validate_list_type_incorrect():
+    """
+    This test will validate if the class has been instanciated with a variable that was expecting an List of string,
+    but it was provided with a non List type variable, also a List with a non string type item.
+    """
 
     test_instance = TestClass("test", 8, "nope")
 
@@ -131,10 +119,8 @@ def test_validate_list_type_incorrect():
     assert result[0].property_name == "list_test_variable"
 
 
-"""This test will check if the class with the correct argument types will pass the validation"""
-
-
 def test_validate_list_type_correct():
+    """This test will check if the class with the correct argument types will pass the validation"""
 
     my_list: List[str] = ["test", "test2"]
     test_instance = TestClass("test", 8, my_list)
@@ -144,10 +130,8 @@ def test_validate_list_type_correct():
     assert len(result) == 0
 
 
-"""This test will check if the string variable that should be a uri is in fact a uri."""
-
-
 def test_validate_uri_incorrect():
+    """This test will check if the string variable that should be a uri is in fact a uri."""
 
     my_list: List[str] = ["test", "test2"]
     test_instance = TestClass("test", 8, my_list, "whatever")
@@ -158,10 +142,8 @@ def test_validate_uri_incorrect():
     assert result[0].message == "This variable is not a valid uri."
 
 
-"""This test will check is the optional variable(by default None) is a None and will pass the validation """
-
-
 def test_validate_uri_none_correct():
+    """This test will check is the optional variable(by default None) is a None and will pass the validation"""
     my_list: List[str] = ["test", "test2"]
     test_instance = TestClass("test", 8, my_list)
 
@@ -170,10 +152,8 @@ def test_validate_uri_none_correct():
     assert len(result) == 0
 
 
-"""This test will check if the class with the correct argument types will pass the validation"""
-
-
 def test_validate_uri_correct():
+    """This test will check if the class with the correct argument types will pass the validation"""
     my_list: List[str] = ["test", "test2"]
     test_instance = TestClass("test", 8, my_list, "http://example.com")
 

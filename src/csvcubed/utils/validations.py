@@ -9,9 +9,10 @@ from csvcubed.utils.uri import looks_like_uri
 
 T = TypeVar("T")
 
+
 """
-This function will valide if the argument provided is in fact a list and,
-in a loop will check each member of the list and return an error if the item in the list is not the correct type. 
+This function will validate if the argument provided is in fact a list and,
+in a loop will check each member of the list and returns any errors returned by the item validation function. 
 """
 
 
@@ -38,6 +39,12 @@ def validate_list(
     return _validate
 
 
+"""
+This function will validate if the argument provided is in fact a string type and,
+returns any errors returned by the item validation function. 
+"""
+
+
 def validate_str_type(
     value: str, property_name: str
 ) -> List[ValidateModelProperiesError]:
@@ -50,6 +57,12 @@ def validate_str_type(
         ]
 
     return []
+
+
+"""
+This function will validate if the argument provided is in fact a string type and,
+check is the string contains a uri. Either checks fail it returns any errors returned by the item validation function. 
+"""
 
 
 def validate_uri(value: str, property_name: str) -> List[ValidateModelProperiesError]:
@@ -67,6 +80,12 @@ def validate_uri(value: str, property_name: str) -> List[ValidateModelProperiesE
     return []
 
 
+"""
+This function will validate if the argument provided is in fact a integer type and,
+returns any errors returned by the item validation function. 
+"""
+
+
 def validate_int_type(
     value: int, property_name: str
 ) -> List[ValidateModelProperiesError]:
@@ -79,6 +98,12 @@ def validate_int_type(
         ]
 
     return []
+
+
+"""
+This function will validate if the Optional argument provided is a None value it will return an empty list,
+else it returns any errors returned by the item validation function . 
+"""
 
 
 def validate_optional(

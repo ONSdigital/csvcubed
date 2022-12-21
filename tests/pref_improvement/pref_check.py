@@ -99,12 +99,15 @@ def main():
 
         if field_names_validated != field_names:
 
+            failed = True
             not_validated = field_names - field_names_validated
             print(
                 f"In {validated_model_class.__name__} ({inspect.getfile(validated_model_class)}) you have not validated {', '.join(not_validated)}"
             )
             print(format(field_names))  # This returns empty
-            exit(1)
+
+    if failed:
+        exit(1)
 
 
 if __name__ == "__main__":
