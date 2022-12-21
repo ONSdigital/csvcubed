@@ -109,8 +109,8 @@ class AdapterToServeLocalFileWhenHTTPRequestFails(BaseAdapter):
         _logger.debug(
             "This is the HTTP(s) adapter sending the request: %s", request.url
         )
-        # if request.url is None:
-        #    raise requests.exceptions.URLRequired
+        if request.url is None:
+            raise requests.exceptions.URLRequired
         try:
             response = self.http_adapter.send(
                 request,
@@ -151,7 +151,7 @@ class AdapterToServeLocalFileWhenHTTPRequestFails(BaseAdapter):
         self.http_adapter.close()
 
 
-def _generate_path_to_local_file(request_url: Union(str, None)) -> Optional[Path]:
+def _generate_path_to_local_file(request_url: str) -> Optional[Path]:
     trimmed_url = (
         str(request_url).removeprefix("https:").removeprefix("http:").removesuffix("/")
     )
