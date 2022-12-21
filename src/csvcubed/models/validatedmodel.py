@@ -13,15 +13,16 @@ from csvcubed.utils.validations import (
 
 ValidationFunction = Callable[[Any, str], List[ValidateModelProperiesError]]
 
-"""This abrstract class that will act as a parent class for class attribute validations.
-The class will run a valdiation function for each attribute that is passed in and return either a list of errors or an emtpry list.
-"""
-
-
 class ValidatedModel(DataClassBase):
-    """The validate function will go through each attribue and the corresponding validation function and collect the validation errors(if there is any) and return the variable names and the error messages"""
+    """This abrstract class that will act as a parent class for class attribute validations.
+    The class will run a valdiation function for each attribute that is passed in and return either a list of errors or an emtpry list.
+    """
 
     def validate(self) -> List[ValidateModelProperiesError]:
+        """
+        The validate function will go through each attribute and the corresponding validation function and
+         collect the validation errors(if there is any) and return the variable names and the error messages.
+        """
         validation_errors: List[ValidateModelProperiesError] = []
         for (property_name, validation_function) in self._get_validations().items():
             logging.debug("Validating %s", property_name)

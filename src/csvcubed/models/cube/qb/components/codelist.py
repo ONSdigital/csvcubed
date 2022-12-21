@@ -192,13 +192,13 @@ def validate_codelist(
                 property_name,
             )
         ]
+
+    """ 
+    TODO: when the class is inctanciated for the validations the function has to be called.
+    example: 
+    test = Myclass(argument1, argument2, argument3)
+    test.validate()
+    """
     return []
 
 
-""" 
-TODO
-when the class is inctanciated for the validations the function has to be called.
-example: 
-test = Myclass(argument1, argument2, argument3)
-test.validate()
-"""

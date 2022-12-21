@@ -10,8 +10,10 @@ from tests.pref_improvement.pref_check import (
 
 from pathlib import Path
 
-# test to ensure it returns the corrects name
 def test_map_to_module_name():
+    """
+    test to ensure it returns the corrects name
+    """
 
     path = get_test_cases_dir() / "test_class_collector" / "test_file.py"
 
