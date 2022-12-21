@@ -209,11 +209,11 @@ def test_val_errors_both_measure_types():
     """
     config = Path(_test_case_dir, "both_measure_types_defined.json")
     csv = Path(_test_case_dir, "both_measure_types_defined.csv")
-    
+
     cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
-            config, csv
+        config, csv
     )
-    
+
     _write_errors_to_log(json_schema_validation_errors, validation_errors)
 
     assert isinstance(cube, Cube)
@@ -460,31 +460,31 @@ def test_val_errors_undefined_unit_uri():
     )
 
 
-# def test_val_errors_uri_conflict():
-#     """
-#     Test for:-
-#         ConflictingUriSafeValuesError
-#     """
-#     config = Path(_test_case_dir, "conflicting_uri_safe_values.json")
-#     csv = Path(_test_case_dir, "conflicting_uri_safe_values.csv")
-#     cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
-#         config, csv
-#     )
-#     _write_errors_to_log(json_schema_validation_errors, validation_errors)
+def test_val_errors_uri_conflict():
+    """
+    Test for:-
+        ConflictingUriSafeValuesError
+    """
+    config = Path(_test_case_dir, "conflicting_uri_safe_values.json")
+    csv = Path(_test_case_dir, "conflicting_uri_safe_values.csv")
+    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
+        config, csv
+    )
+    _write_errors_to_log(json_schema_validation_errors, validation_errors)
 
-#     assert isinstance(cube, Cube)
-#     assert isinstance(validation_errors, list)
-#     assert_num_validation_errors(validation_errors, 1)
-#     assert isinstance(validation_errors[0], ConflictingUriSafeValuesError)
-#     _assert_in_log(
-#         "csvcubed.cli.build - ERROR - Validation Error: A URI collision has been detected in an attribute column."
-#     )
-#     _assert_in_log(
-#         "The values 'Software Sales', 'software-sales' map to the same URI-safe identifier 'software-sales'"
-#     )
-#     _assert_in_log(
-#         "csvcubed.cli.build - ERROR - More information: https://purl.org/csv-cubed/err/conflict-uri"
-#     )
+    assert isinstance(cube, Cube)
+    assert isinstance(validation_errors, list)
+    assert_num_validation_errors(validation_errors, 1)
+    assert isinstance(validation_errors[0], ConflictingUriSafeValuesError)
+    _assert_in_log(
+        "csvcubed.cli.build - ERROR - Validation Error: A URI collision has been detected in an attribute column."
+    )
+    _assert_in_log(
+        "The values 'Software Sales', 'software-sales' map to the same URI-safe identifier 'software-sales'"
+    )
+    _assert_in_log(
+        "csvcubed.cli.build - ERROR - More information: https://purl.org/csv-cubed/err/conflict-uri"
+    )
 
 
 def test_val_errors_reserved_uri():

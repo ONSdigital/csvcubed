@@ -86,7 +86,7 @@ def main():
 
     # list all dataclasses(the classes that have the datacall decorator)
     all_data_classes = check_for_dataclass(all_classes)
-
+    failed = False
     validated_model_classes = []
     for clazz in all_data_classes:
         if issubclass(clazz, ValidatedModel) and not inspect.isabstract(clazz):
