@@ -6,8 +6,8 @@ from typing import Dict, Optional, Union
 import requests
 from requests.adapters import BaseAdapter, HTTPAdapter
 from requests_cache import CachedSession
-from csvcubed.utils.createlocalcopyresponse import _create_local_copy_response
 
+from csvcubed.utils.createlocalcopyresponse import create_local_copy_response
 from csvcubed.utils.log import debug_log_exception
 from csvcubed.definitions import APP_ROOT_DIR_PATH
 
@@ -109,8 +109,8 @@ class AdapterToServeLocalFileWhenHTTPRequestFails(BaseAdapter):
         _logger.debug(
             "This is the HTTP(s) adapter sending the request: %s", request.url
         )
-        if request.url is None:
-            raise requests.exceptions.URLRequired
+        # if request.url is None:
+        #    raise requests.exceptions.URLRequired
         try:
             response = self.http_adapter.send(
                 request,
@@ -133,7 +133,7 @@ class AdapterToServeLocalFileWhenHTTPRequestFails(BaseAdapter):
 
             _logger.error("The local file path is: %s", path_to_local_file)
 
-            return _create_local_copy_response(path_to_local_file, request)
+            return create_local_copy_response(path_to_local_file, request)
 
         if response.status_code >= 400 and response.status_code < 600:
             _logger.info(f"The status code is {response.status_code}")
@@ -143,7 +143,7 @@ class AdapterToServeLocalFileWhenHTTPRequestFails(BaseAdapter):
                     f"URL {request.url} produced a invalid response and a local copy could not be found at the corresponding mapped path."
                 )
 
-            return _create_local_copy_response(path_to_local_file, request, response)
+            return create_local_copy_response(path_to_local_file, request, response)
 
         return response
 

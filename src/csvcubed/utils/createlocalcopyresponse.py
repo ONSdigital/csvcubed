@@ -1,12 +1,15 @@
 from io import BytesIO
 import logging
 from typing import Optional
-from click import Path
+from pathlib import Path
+
+# from click import Path
 import requests
 
 _logger = logging.getLogger(__name__)
 
-def _create_local_copy_response(
+
+def create_local_copy_response(
     path_to_local_file: Path,
     request: requests.PreparedRequest,
     response: Optional[requests.Response] = None,
