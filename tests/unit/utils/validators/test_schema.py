@@ -1,9 +1,20 @@
 import pytest
+import appdirs
+from pathlib import Path
 
 from csvcubed.utils.validators.schema import (
     validate_dict_against_schema,
     map_to_internal_validation_errors,
 )
+
+_user_log_dir = Path(appdirs.AppDirs("csvcubed_testing", "csvcubed").user_log_dir)
+_log_file_path = _user_log_dir / "out.log"
+
+
+def _assert_in_log(text: str) -> None:
+    with open(_log_file_path) as log_file:
+        contents = log_file.read()
+    assert text in contents, contents
 
 
 def test_truncate_long_validation_error_message():
@@ -170,6 +181,12 @@ def test_schema_validation_when_offline():
     }
 
     json_validation_errors = validate_dict_against_schema(data, schema)
+    _assert_in_log(
+        "Could not resolve schema dependency. You may have internet connectivity problems."
+    )
+    _assert_in_log(
+        "Unable to perform JSON Schema Validation. There may be undiscovered errors. Attempting to continue."
+    )
     assert len(json_validation_errors) == 0
 
 

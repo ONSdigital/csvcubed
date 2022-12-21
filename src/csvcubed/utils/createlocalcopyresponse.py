@@ -1,10 +1,9 @@
-from io import BytesIO
 import logging
+import requests
+from io import BytesIO
 from typing import Optional
 from pathlib import Path
 
-# from click import Path
-import requests
 
 _logger = logging.getLogger(__name__)
 

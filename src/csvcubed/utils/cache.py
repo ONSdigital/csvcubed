@@ -109,8 +109,6 @@ class AdapterToServeLocalFileWhenHTTPRequestFails(BaseAdapter):
         _logger.debug(
             "This is the HTTP(s) adapter sending the request: %s", request.url
         )
-        if request.url is None:
-            raise requests.exceptions.URLRequired
         try:
             response = self.http_adapter.send(
                 request,
@@ -128,7 +126,7 @@ class AdapterToServeLocalFileWhenHTTPRequestFails(BaseAdapter):
             path_to_local_file = _generate_path_to_local_file(request.url)
             if path_to_local_file is None:
                 raise FileNotFoundError(
-                    f"URL {request.url} did not produce a response and a local copy could not be found at the corresponding mapped path."
+                    f"URL '{request.url}' did not produce a response and a local copy could not be found."
                 ) from e
 
             _logger.error("The local file path is: %s", path_to_local_file)
@@ -140,7 +138,7 @@ class AdapterToServeLocalFileWhenHTTPRequestFails(BaseAdapter):
             path_to_local_file = _generate_path_to_local_file(request.url)
             if path_to_local_file is None:
                 raise FileNotFoundError(
-                    f"URL {request.url} produced a invalid response and a local copy could not be found at the corresponding mapped path."
+                    f"URL '{request.url}' produced a invalid response and a local copy could not be found."
                 )
 
             return create_local_copy_response(path_to_local_file, request, response)
@@ -151,11 +149,22 @@ class AdapterToServeLocalFileWhenHTTPRequestFails(BaseAdapter):
         self.http_adapter.close()
 
 
-def _generate_path_to_local_file(request_url: str) -> Optional[Path]:
+def _generate_path_to_local_file(request_url: Optional[str]) -> Optional[Path]:
+    _logger.debug(
+        "Attempting to find local file to served up for failed HTTP request '%s'",
+        request_url,
+    )
+
+    if request_url is None:
+        _logger.debug("Request URL is None, no matching local file.")
+        return None
+
     trimmed_url = (
         str(request_url).removeprefix("https:").removeprefix("http:").removesuffix("/")
     )
     path_to_local_file = map_url_to_file_path.get(trimmed_url)
+
+    _logger.debug("Proposed matching local file: '%s'", path_to_local_file)
 
     return path_to_local_file
 
