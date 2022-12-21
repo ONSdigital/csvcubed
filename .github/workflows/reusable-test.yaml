@@ -43,21 +43,25 @@ jobs:
       - name: Install poetry
         run: pip install poetry
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: |
             ~/.cache/pypoetry/virtualenvs
             C:\Users\runneradmin\AppData\Local\pypoetry\Cache\virtualenvs
-          key: ${{ inputs.os }}-poetry-${{ hashFiles('poetry.lock') }}
+          key: ${{ inputs.os }}-${{ inputs.python-version }}-poetry-${{ hashFiles('poetry.lock') }}
 
       - name: Install python packages
         run: poetry install
 
       - name: Run pyright
         run: poetry run pyright . --lib
+      
+      - name: Ensure ValidatedModel properties have validations provided
+        run: poetry run python tests/pref_improvement/pref_check.py
 
       - name: Run unittests
         run: poetry run pytest --junitxml=pytest_results.xml
+      
 
       - name: Run behaviour tests (Windows)
         if: inputs.os == 'windows-latest'

@@ -5,9 +5,18 @@ URI Identifiable
 
 import dataclasses
 from abc import ABC, abstractmethod
-from typing import Optional
+from typing import Dict, Optional
 
 from csvcubed.utils.uri import uri_safe
+
+from csvcubed.models.validatedmodel import ValidatedModel, ValidationFunction
+
+from csvcubed.utils.validations import (
+    validate_str_type,
+    validate_int_type,
+    validate_list,
+    validate_optional,
+)
 
 
 @dataclasses.dataclass
@@ -46,3 +55,6 @@ class UriIdentifiable(ABC):
     @uri_safe_identifier.setter
     def uri_safe_identifier(self, uri_safe_identifier: str) -> None:
         self.uri_safe_identifier_override = uri_safe_identifier
+
+    def _get_validations(self) -> Dict[str, ValidationFunction]:
+        return {"uri_safe_identifier_override": validate_optional(validate_str_type)}
