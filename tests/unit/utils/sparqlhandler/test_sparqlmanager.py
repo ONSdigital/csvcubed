@@ -12,13 +12,16 @@ from csvcubed.models.sparqlresults import (
     CodelistsResult,
     ColsWithSuppressOutputTrueResult,
     DSDLabelURIResult,
-    DSDSingleUnitResult,
-    DatasetURLResult,
+    UnitResult,
+    CsvUrlResult,
+    IsPivotedShapeMeasureResult,
+    QubeComponentResult,
     QubeComponentsResult,
     MetadataDependenciesResult,
 )
 from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.rdf import parse_graph_retain_relative
+from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
 from csvcubed.utils.sparql_handler.sparqlmanager import (
     ask_is_csvw_code_list,
     ask_is_csvw_qb_dataset,
@@ -31,7 +34,7 @@ from csvcubed.utils.sparql_handler.sparqlmanager import (
     select_dsd_code_list_and_cols,
     select_qb_dataset_url,
     select_csvw_table_schema_file_dependencies,
-    select_single_unit_from_dsd,
+    select_units,
     select_metadata_dependencies,
     select_table_schema_properties,
 )
@@ -258,7 +261,7 @@ def test_select_qb_dataset_url():
 
 def test_select_single_unit_from_dsd():
     """
-    Should return expected `DSDSingleUnitResult`.
+    Should return expected `UnitResult`.
     """
     csvw_metadata_json_path = (
         _test_case_base_dir
@@ -267,11 +270,10 @@ def test_select_single_unit_from_dsd():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    dataset_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
+    data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
 
-    result: DSDSingleUnitResult = select_single_unit_from_dsd(
-        csvw_metadata_rdf_graph, dataset_uri, csvw_metadata_json_path
-    )
+    result: UnitResult = data_cube_state.get_unit_for_uri("final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#unit/mtco2e")
+    
     assert result.unit_label == "MtCO2e"
     assert (
         result.unit_uri

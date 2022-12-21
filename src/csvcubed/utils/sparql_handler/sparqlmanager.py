@@ -22,8 +22,8 @@ from csvcubed.models.sparqlresults import (
     CodelistsResult,
     ColsWithSuppressOutputTrueResult,
     DSDLabelURIResult,
-    DSDSingleUnitResult,
-    DatasetURLResult,
+    UnitResult,
+    CsvUrlResult,
     QubeComponentsResult,
     MetadataDependenciesResult,
     TableSchemaPropertiesResult,
@@ -36,7 +36,7 @@ from csvcubed.models.sparqlresults import (
     map_dataset_label_dsd_uri_sparql_result,
     map_dataset_url_result,
     map_qube_components_sparql_result,
-    map_single_unit_from_dsd_result,
+    map_units,
     map_metadata_dependency_results,
     map_table_schema_properties_result,
 )
@@ -74,7 +74,7 @@ class SPARQLQueryName(Enum):
 
     SELECT_CODELIST_DATASET_URL = "select_codelist_dataset_url"
 
-    SELECT_SINGLE_UNIT_FROM_DSD = "select_single_unit_from_dsd"
+    SELECT_UNITS = "select_units"
 
     SELECT_CSVW_TABLE_SCHEMA_FILE_DEPENDENCIES = (
         "select_csvw_table_schema_file_dependencies"
@@ -322,29 +322,22 @@ def select_codelist_dataset_url(rdf_graph: rdflib.ConjunctiveGraph) -> DatasetUR
     return map_dataset_url_result(results[0])
 
 
-def select_single_unit_from_dsd(
-    rdf_graph: rdflib.ConjunctiveGraph, dataset_uri: str, json_path: Path
-) -> DSDSingleUnitResult:
+def select_units(
+    rdf_graph: rdflib.ConjunctiveGraph
+) -> List[UnitResult]:
     """
-    Queries the single unit uri and label from the data structure definition.
+    Queries the units from data set.
 
     Member of :file:`./sparqlmanager.py`
 
-    :return: `DSDSingleUnitResult`
+    :return: `List[UnitResult]`
     """
     results: List[ResultRow] = select(
-        _get_query_string_from_file(SPARQLQueryName.SELECT_SINGLE_UNIT_FROM_DSD),
+        _get_query_string_from_file(SPARQLQueryName.SELECT_UNITS),
         rdf_graph,
-        init_bindings={"dataset_uri": Literal(dataset_uri)},
     )
 
-    if len(results) != 1:
-        raise InvalidNumberOfRecordsException(
-            record_description=f"result for the {SPARQLQueryName.SELECT_SINGLE_UNIT_FROM_DSD.value} sparql query",
-            excepted_num_of_records=1,
-            num_of_records=len(results),
-        )
-    return map_single_unit_from_dsd_result(results[0], json_path)
+    return map_units(results)
 
 
 def select_codelist_cols_by_dataset_url(
