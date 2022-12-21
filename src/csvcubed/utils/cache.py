@@ -109,8 +109,6 @@ class AdapterToServeLocalFileWhenHTTPRequestFails(BaseAdapter):
         _logger.debug(
             "This is the HTTP(s) adapter sending the request: %s", request.url
         )
-        if request.url is None:
-            raise requests.exceptions.URLRequired
         try:
             response = self.http_adapter.send(
                 request,
