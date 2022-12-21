@@ -267,7 +267,7 @@ def get_arguments_qb_dataset(
     """
     Produces the dataset, qube components and dsd uri arguments for qb:dataset.
     """
-    data_cube_state = DataCubeState(csvw_metadata_rdf_graph, CubeShape.Pivoted, csvw_metadata_json_path)
+    data_cube_state = DataCubeState(csvw_metadata_rdf_graph, cube_shape, csvw_metadata_json_path)
     
     dataset_uri = to_absolute_rdflib_file_path(
         select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri,
@@ -287,7 +287,7 @@ def get_arguments_qb_dataset(
 
     data_set_dsd_csv_url = data_cube_state.get_data_set_dsd_and_csv_url_for_csv_url(csv_url)
 
-    qube_components = data_cube_state.get_dsd_qube_components_for_csv(data_set_dsd_csv_url.dsd_uri, data_set_dsd_csv_url.csv_url)
+    qube_components = data_cube_state.get_dsd_qube_components_for_csv(data_set_dsd_csv_url.dsd_uri, data_set_dsd_csv_url.csv_url).qube_components
     
     return (dataset, qube_components, dsd_uri, csv_url)
 
