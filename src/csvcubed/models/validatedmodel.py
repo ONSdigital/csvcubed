@@ -27,9 +27,12 @@ class ValidatedModel(DataClassBase):
             logging.debug("Validating %s", property_name)
 
             property_value = getattr(self, property_name)
-            validation_errors += validation_function(property_value, property_name)
+            errs = validation_function(property_value, property_name)
 
-            logging.debug("Function name  %s", validation_function)
+            if any(errs):
+                logging.debug("'%s' generated errors: %s", property_name, errs)
+
+            validation_errors += errs
 
         return validation_errors
 

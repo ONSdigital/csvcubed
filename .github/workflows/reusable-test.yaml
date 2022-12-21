@@ -48,7 +48,7 @@ jobs:
           path: |
             ~/.cache/pypoetry/virtualenvs
             C:\Users\runneradmin\AppData\Local\pypoetry\Cache\virtualenvs
-          key: ${{ inputs.os }}-poetry-${{ hashFiles('poetry.lock') }}
+          key: ${{ inputs.os }}-${{ inputs.python-version }}-poetry-${{ hashFiles('poetry.lock') }}
 
       - name: Install python packages
         run: poetry install
