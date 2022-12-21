@@ -6,7 +6,7 @@ import inspect
 
 import importlib
 import sys
-from typing import Iterable
+from typing import Iterable, Optional
 from dataclasses import is_dataclass, fields
 from pathlib import Path
 
@@ -38,7 +38,7 @@ def acess_all_folders_return_all_files(path_name: Path) -> list[str]:
     return list(path_name.glob("**/*.py"))
 
 
-def _map_to_module_name(path_part: str) -> str:
+def _map_to_module_name(path_part: str) -> Optional[str]:
     """check for the path conains an init file or is it a python sript (ends with a .py) and returns the module name"""
     if path_part == "__init__.py":
         return None
