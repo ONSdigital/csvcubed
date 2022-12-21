@@ -12,7 +12,7 @@ from typing import Tuple, Set
 from uritemplate import variables
 
 from csvcubed.utils.iterables import first
-from csvcubed.utils.sparql_handler.sparqlmanager import select_table_schema_properties
+from csvcubed.utils.sparql_handler.sparqlquerymanager import select_table_schema_properties
 from csvcubed.utils.tableschema import CsvwRdfManager
 
 _logger = logging.getLogger(__name__)

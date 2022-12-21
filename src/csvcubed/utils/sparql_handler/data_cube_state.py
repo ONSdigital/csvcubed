@@ -8,7 +8,7 @@ from csvcubed.models.cube.cube_shape import CubeShape
 
 from csvcubed.models.sparqlresults import ColTitlesAndNamesResult, DataSetDsdUriCsvUrlResult, ObservationValueColumnTitleAboutUrlResult, QubeComponentResult, QubeComponentsResult, UnitColumnAboutValueUrlResult
 from csvcubed.utils.sparql_handler.sparql import none_or_map
-from csvcubed.utils.sparql_handler.sparqlmanager import select_col_titles_and_names, select_csvw_dsd_qube_components, select_data_set_dsd_and_csv_url, select_observation_value_column_title_and_about_url, select_unit_col_about_value_urls 
+from csvcubed.utils.sparql_handler.sparqlquerymanager import select_col_titles_and_names, select_csvw_dsd_qube_components, select_data_set_dsd_and_csv_url, select_observation_value_column_title_and_about_url, select_unit_col_about_value_urls 
 
 @dataclass
 class DataCubeState:

@@ -8,7 +8,7 @@ from csvcubed.models.sparqlresults import (
 )
 from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
-from csvcubed.utils.sparql_handler.sparqlmanager import (
+from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_csvw_catalog_metadata,
     select_csvw_dsd_dataset_label_and_dsd_def_uri,
     select_qb_csv_url,
@@ -17,7 +17,7 @@ from csvcubed.utils.tableschema import CsvwRdfManager
 from typing import List
 
 from tests.unit.test_baseunit import get_test_cases_dir
-from tests.unit.utils.sparqlhandler.test_sparqlmanager import get_dsd_component_by_property_url, assert_dsd_component_equal
+from tests.unit.utils.sparqlhandler.test_sparqlquerymanager import get_dsd_component_by_property_url, assert_dsd_component_equal
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
 

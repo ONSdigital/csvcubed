@@ -121,7 +121,7 @@ def _get_query_string_from_file(queryType: SPARQLQueryName) -> str:
     """
     Read the sparql query string from sparql file for the given query type.
 
-    Member of :file:`./sparqlmanager.py`
+    Member of :file:`./sparqlquerymanager.py`
 
     :return: `str` - String containing the sparql query.
     """
@@ -152,7 +152,7 @@ def ask_is_csvw_code_list(rdf_graph: rdflib.Graph) -> bool:
     """
     Queries whether the given rdf is a code list (i.e. skos:ConceptScheme).
 
-    Member of :file:`./sparqlmanager.py`
+    Member of :file:`./sparqlquerymanager.py`
 
     :return: `bool` - Boolean specifying whether the rdf is code list (true) or not (false).
     """
@@ -167,7 +167,7 @@ def ask_is_csvw_qb_dataset(rdf_graph: rdflib.Graph) -> bool:
     """
     Queries whether the given rdf is a qb dataset (i.e. qb:Dataset).
 
-    Member of :file:`./sparqlmanager.py`
+    Member of :file:`./sparqlquerymanager.py`
 
     :return: `bool` - Boolean specifying whether the rdf is code list (true) or not (false).
     """
@@ -182,7 +182,7 @@ def select_csvw_catalog_metadata(rdf_graph: rdflib.Graph) -> CatalogMetadataResu
     """
     Queries catalog metadata such as title, label, issued date/time, modified data/time, etc.
 
-    Member of :file:`./sparqlmanager.py`
+    Member of :file:`./sparqlquerymanager.py`
 
     :return: `CatalogMetadataResult`
     """
@@ -207,7 +207,7 @@ def select_csvw_dsd_dataset_label_and_dsd_def_uri(
     """
     Queries data structure definition dataset label and uri.
 
-    Member of :file:`./sparqlmanager.py`
+    Member of :file:`./sparqlquerymanager.py`
 
     :return: `DSDLabelURIResult`
     """
@@ -250,7 +250,7 @@ def select_csvw_dsd_qube_components(
     """
     Queries the list of qube components.
 
-    Member of :file:`./sparqlmanager.py`
+    Member of :file:`./sparqlquerymanager.py`
 
     :return: `QubeComponentsResult`
     """
@@ -295,7 +295,7 @@ def select_cols_where_suppress_output_is_true(
     """
     Queries the columns where suppress output is true.
 
-    Member of :file:`./sparqlmanager.py`
+    Member of :file:`./sparqlquerymanager.py`
 
     :return: `ColsWithSupressOutputTrueSparlqlResult`
     """
@@ -312,7 +312,7 @@ def select_dsd_code_list_and_cols(
     """
     Queries code lists and columns in the data cube.
 
-    Member of :file:`./sparqlmanager.py`
+    Member of :file:`./sparqlquerymanager.py`
 
     :return: `CodelistInfoSparqlResult`
     """
@@ -330,7 +330,7 @@ def select_csvw_table_schema_file_dependencies(
     """
     Queries the table schemas of the given csvw json-ld.
 
-    Member of :file:`./sparqlmanager.py`
+    Member of :file:`./sparqlquerymanager.py`
 
     :return: `CSVWTabelSchemasResult`
     """
@@ -350,7 +350,7 @@ def select_qb_csv_url(
     """
     Queries the url of the given qb:dataset.
 
-    Member of :file:`./sparqlmanager.py`
+    Member of :file:`./sparqlquerymanager.py`
 
     :return: `CsvUrlResult`
     """
@@ -377,7 +377,7 @@ def select_codelist_csv_url(rdf_graph: rdflib.ConjunctiveGraph) -> CsvUrlResult:
     """
     Queries the url of the given skos:conceptScheme.
 
-    Member of :file:`./sparqlmanager.py`
+    Member of :file:`./sparqlquerymanager.py`
 
     :return: `CsvUrlResult`
     """
@@ -400,7 +400,7 @@ def select_single_unit_from_dsd(
     """
     Queries the single unit uri and label from the data structure definition.
 
-    Member of :file:`./sparqlmanager.py`
+    Member of :file:`./sparqlquerymanager.py`
 
     :return: `DSDSingleUnitResult`
     """
@@ -425,7 +425,7 @@ def select_codelist_cols_by_csv_url(
     """
     Queries the code list column property and value urls for the given table url.
 
-    Member of :file:`./sparqlmanager.py`
+    Member of :file:`./sparqlquerymanager.py`
 
     :return: `CodeListColsByDatasetUrlResult`
     """
@@ -452,7 +452,7 @@ def select_primary_key_col_names_by_csv_url(
     """
     Queries the primary keys for the given table url.
 
-    Member of :file:`./sparqlmanager.py`
+    Member of :file:`./sparqlquerymanager.py`
 
     :return: `PrimaryKeyColNamesByDatasetUrlResult`
     """

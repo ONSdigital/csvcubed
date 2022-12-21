@@ -123,7 +123,7 @@ class QubeComponentsResult:
     
     @property
     def output_str(self) -> str:
-        component_dicts: List[Dict[str,str]] = []
+        component_dicts: List[Dict] = []
         for component in self.qube_components:
             component_dicts.append({
                 "Property": component.property,

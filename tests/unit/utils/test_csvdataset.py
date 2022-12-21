@@ -15,7 +15,7 @@ from csvcubed.utils.csvdataset import (
 )
 from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
-from csvcubed.utils.sparql_handler.sparqlmanager import select_csvw_catalog_metadata, select_qb_csv_url
+from csvcubed.utils.sparql_handler.sparqlquerymanager import select_csvw_catalog_metadata, select_qb_csv_url
 from csvcubed.utils.tableschema import CsvwRdfManager
 
 from tests.unit.cli.inspect.test_inspectdatasetmanager import get_arguments_qb_dataset
