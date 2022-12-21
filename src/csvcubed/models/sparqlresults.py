@@ -123,8 +123,19 @@ class QubeComponentsResult:
     
     @property
     def output_str(self) -> str:
+        component_dicts: List[Dict[str,str]] = []
+        for component in self.qube_components:
+            component_dicts.append({
+                "Property": component.property,
+                "Property Label": component.property_label,
+                "Property Type": component.property_type,
+                "Column Title": component.csv_col_title,
+                "Observation Value Column Titles": component.observation_value_column_titles,
+                "Required": component.required
+            })
+
         formatted_components = get_printable_tabular_str_from_list(
-            [component.as_dict() for component in self.qube_components],
+            component_dicts,
             column_names=[
                 "Property",
                 "Property Label",

@@ -353,7 +353,6 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
         True,
     )
 
-#TODO: Fix Sarah as discussed
 def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
     """
     Ensures that the cube components in a pivoted multi-measure dataset correctly link to observation value columns.
@@ -475,7 +474,7 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
         True,
     )
 
-#TODO: Fix Sarah as discussed
+
 def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
     """
     Ensures that the cube components in a pivoted single-measure dataset correctly link to observation value columns.

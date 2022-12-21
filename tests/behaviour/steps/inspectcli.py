@@ -89,7 +89,7 @@ def step_impl(context):
 
 @When("the Printables for data cube are generated")
 def step_impl(context):
-    data_cube_state = DataCubeState(context.csvw_metadata_rdf_graph)
+    data_cube_state = DataCubeState(context.csvw_metadata_rdf_graph, context.cube_shape, context.csvw_metadata_json_path)
     metadata_printer = MetadataPrinter(
         data_cube_state,
         None,
@@ -285,6 +285,8 @@ def step_impl(context):
         "Some Dimension",
         "Some Dimension",
         "Some Obs Val",
+        "qb-id-10004.csv",
+        "qb-id-10004.csv#structure",
         True,
     )
 
@@ -298,6 +300,8 @@ def step_impl(context):
         "Some Attribute",
         "Some Attribute",
         "Some Obs Val",
+        "qb-id-10004.csv",
+        "qb-id-10004.csv#structure",
         False,
     )
 
@@ -311,6 +315,8 @@ def step_impl(context):
         "",
         "",
         "",
+        "qb-id-10004.csv",
+        "qb-id-10004.csv#structure",
         True,
     )
 
@@ -324,6 +330,8 @@ def step_impl(context):
         "",
         "",
         "Some Obs Val",
+        "qb-id-10004.csv",
+        "qb-id-10004.csv#structure",
         True,
     )
 
@@ -337,6 +345,8 @@ def step_impl(context):
         "Some Measure",
         "Some Obs Val",
         "Some Obs Val",
+        "qb-id-10004.csv",
+        "qb-id-10004.csv#structure",
         True,
     )
 
@@ -456,6 +466,8 @@ def step_impl(context):
         "Some Dimension",
         "Some Dimension",
         "Some Obs Val, Some Other Obs Val",
+        "qb-id-10003.csv",
+        "qb-id-10003.csv#structure",
         True,
     )
 
@@ -469,6 +481,8 @@ def step_impl(context):
         "Some Attribute",
         "Some Attribute",
         "Some Obs Val",
+        "qb-id-10003.csv",
+        "qb-id-10003.csv#structure",
         False,
     )
 
@@ -482,6 +496,8 @@ def step_impl(context):
         "",
         "",
         "",
+        "qb-id-10003.csv",
+        "qb-id-10003.csv#structure",
         True,
     )
 
@@ -495,6 +511,8 @@ def step_impl(context):
         "",
         "Some Unit",
         "Some Other Obs Val, Some Obs Val",
+        "qb-id-10003.csv",
+        "qb-id-10003.csv#structure",
         True,
     )
 
@@ -508,6 +526,8 @@ def step_impl(context):
         "Some Measure",
         "Some Obs Val",
         "Some Obs Val",
+        "qb-id-10003.csv",
+        "qb-id-10003.csv#structure",
         True,
     )
 
@@ -521,6 +541,8 @@ def step_impl(context):
         "Some Other Measure",
         "Some Other Obs Val",
         "Some Other Obs Val",
+        "qb-id-10003.csv",
+        "qb-id-10003.csv#structure",
         True,
     )
 
