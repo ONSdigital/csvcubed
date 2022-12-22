@@ -20,7 +20,13 @@ def list_classes_in_file(imported_module, file_name: Path) -> Iterable[type]:
 
     for (name, value) in inspect.getmembers(imported_module):
         if inspect.isclass(value):
-            defined_in = inspect.getfile(value)
+            try:
+                defined_in = inspect.getfile(value)
+            except TypeError as e:
+                if "is a built-in class" in str(e):
+                    continue
+                else:
+                    raise e
             # check if the class is localy defined (checks if the definition adress anad the file adress matches)
             if defined_in == str(file_name.absolute()):
                 yield value
@@ -89,21 +95,18 @@ def main():
     validated_model_classes = []
     for clazz in all_data_classes:
         if issubclass(clazz, ValidatedModel) and not inspect.isabstract(clazz):
-            validated_model_classes.append(clazz)
+            validated_model = clazz.__new__(clazz)
+            field_names_validated = set(validated_model._get_validations().keys())
+            field_names = {f.name for f in fields(validated_model)}
 
-    for validated_model_class in validated_model_classes:
-        validated_model = validated_model_class.__new__(validated_model_class)
-        field_names_validated = set(validated_model._get_validations().keys())
-        field_names = {f.name for f in fields(validated_model)}
+            if field_names_validated != field_names:
 
-        if field_names_validated != field_names:
-
-            failed = True
-            not_validated = field_names - field_names_validated
-            print(
-                f"In {validated_model_class.__name__} ({inspect.getfile(validated_model_class)}) you have not validated {', '.join(not_validated)}"
-            )
-            print(format(field_names))  # This returns empty
+                failed = True
+                not_validated = field_names - field_names_validated
+                print(
+                    f"In {clazz.__name__} ({inspect.getfile(clazz)}) you have not validated {', '.join(not_validated)}"
+                )
+                print(format(field_names))  # This returns empty
 
     if failed:
         exit(1)
