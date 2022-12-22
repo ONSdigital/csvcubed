@@ -1,9 +1,8 @@
-import logging
 from requests_cache import CachedSession
 
-from csvcubed.utils.createlocalcopyresponse import AdapterToServeLocalFileWhenHTTPRequestFails
-
-_logger = logging.getLogger(__name__)
+from csvcubed.utils.createlocalcopyresponse import (
+    AdapterToServeLocalFileWhenHTTPRequestFails,
+)
 
 
 session = CachedSession(cache_control=True, use_cache_dir=True)
