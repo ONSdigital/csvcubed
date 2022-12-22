@@ -51,22 +51,13 @@ _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
 _csvw_test_cases_dir = get_test_cases_dir() / "utils" / "csvw"
 
 
-def assert_dsd_component_equal(
-    component: QubeComponentResult,
-    property: str,
-    property_type: ComponentPropertyType,
-    property_label: str,
-    csv_col_title: str,
-    observation_value_column_titles: Optional[str],
-    csv_url: str,
-    dsd_uri: str,
-    required: bool,
-):
+def assert_dsd_component_equal(component: QubeComponentResult, property: str, property_type: ComponentPropertyType,
+                               property_label: str, csv_col_title: str, observation_value_column_titles: Optional[str],
+                               dsd_uri: str, required: bool):
     assert component.property == property
     assert component.property_type == property_type.value
     assert component.property_label == property_label
     assert component.csv_col_title == csv_col_title
-    assert component.csv_url == csv_url
     assert component.dsd_uri == dsd_uri
     assert component.required == required
     
@@ -281,77 +272,33 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
     component = get_dsd_component_by_property_url(
         components, "qb-id-10004.csv#dimension/some-dimension"
     )
-    assert_dsd_component_equal(
-        component,
-        "qb-id-10004.csv#dimension/some-dimension",
-        ComponentPropertyType.Dimension,
-        "Some Dimension",
-        "Some Dimension",
-        "Some Obs Val",
-        "qb-id-10004.csv",
-        "qb-id-10004.csv#structure",
-        True,
-    )
+    assert_dsd_component_equal(component, "qb-id-10004.csv#dimension/some-dimension", ComponentPropertyType.Dimension,
+                               "Some Dimension", "Some Dimension", "Some Obs Val", "qb-id-10004.csv#structure", True)
 
     component = get_dsd_component_by_property_url(
         components, "qb-id-10004.csv#attribute/some-attribute"
     )
-    assert_dsd_component_equal(
-        component,
-        "qb-id-10004.csv#attribute/some-attribute",
-        ComponentPropertyType.Attribute,
-        "Some Attribute",
-        "Some Attribute",
-        "Some Obs Val",
-        "qb-id-10004.csv",
-        "qb-id-10004.csv#structure",
-        False,
-    )
+    assert_dsd_component_equal(component, "qb-id-10004.csv#attribute/some-attribute", ComponentPropertyType.Attribute,
+                               "Some Attribute", "Some Attribute", "Some Obs Val", "qb-id-10004.csv#structure", False)
 
     component = get_dsd_component_by_property_url(
         components, "http://purl.org/linked-data/cube#measureType"
     )
-    assert_dsd_component_equal(
-        component,
-        "http://purl.org/linked-data/cube#measureType",
-        ComponentPropertyType.Dimension,
-        "",
-        "",
-        "",
-        "qb-id-10004.csv",
-        "qb-id-10004.csv#structure",
-        True,
-    )
+    assert_dsd_component_equal(component, "http://purl.org/linked-data/cube#measureType",
+                               ComponentPropertyType.Dimension, "", "", "", "qb-id-10004.csv#structure", True)
 
     component = get_dsd_component_by_property_url(
         components, "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
     )
-    assert_dsd_component_equal(
-        component,
-        "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
-        ComponentPropertyType.Attribute,
-        "",
-        "",
-        "Some Obs Val",
-        "qb-id-10004.csv",
-        "qb-id-10004.csv#structure",
-        True,
-    )
+    assert_dsd_component_equal(component, "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
+                               ComponentPropertyType.Attribute, "", "", "Some Obs Val", "qb-id-10004.csv#structure",
+                               True)
 
     component = get_dsd_component_by_property_url(
         components, "qb-id-10004.csv#measure/some-measure"
     )
-    assert_dsd_component_equal(
-        component,
-        "qb-id-10004.csv#measure/some-measure",
-        ComponentPropertyType.Measure,
-        "Some Measure",
-        "Some Obs Val",
-        "Some Obs Val",
-        "qb-id-10004.csv",
-        "qb-id-10004.csv#structure",
-        True,
-    )
+    assert_dsd_component_equal(component, "qb-id-10004.csv#measure/some-measure", ComponentPropertyType.Measure,
+                               "Some Measure", "Some Obs Val", "Some Obs Val", "qb-id-10004.csv#structure", True)
 
 def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
     """
@@ -375,9 +322,7 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
         csvw_metadata_rdf_graph, data_set_uri
     ).csv_url
     
-    result_data_set_dsd_csv_url = data_cube_state.get_data_set_dsd_and_csv_url_for_csv_url(csv_url)
-
-    result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(result_data_set_dsd_csv_url.dsd_uri, result_data_set_dsd_csv_url.csv_url)
+    result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(csv_url)
     components = result_qube_components.qube_components
 
     assert result.dataset_label == "Pivoted Shape Cube"
@@ -387,92 +332,41 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
     component = get_dsd_component_by_property_url(
         components, "qb-id-10003.csv#dimension/some-dimension"
     )
-    assert_dsd_component_equal(
-        component,
-        "qb-id-10003.csv#dimension/some-dimension",
-        ComponentPropertyType.Dimension,
-        "Some Dimension",
-        "Some Dimension",
-        "Some Other Obs Val,Some Obs Val",
-        "qb-id-10003.csv",
-        "qb-id-10003.csv#structure",
-        True,
-    )
+    assert_dsd_component_equal(component, "qb-id-10003.csv#dimension/some-dimension", ComponentPropertyType.Dimension,
+                               "Some Dimension", "Some Dimension", "Some Other Obs Val,Some Obs Val",
+                               "qb-id-10003.csv#structure", True)
 
     component = get_dsd_component_by_property_url(
         components, "qb-id-10003.csv#attribute/some-attribute"
     )
-    assert_dsd_component_equal(
-        component,
-        "qb-id-10003.csv#attribute/some-attribute",
-        ComponentPropertyType.Attribute,
-        "Some Attribute",
-        "Some Attribute",
-        "Some Obs Val",
-        "qb-id-10003.csv",
-        "qb-id-10003.csv#structure",
-        False,
-    )
+    assert_dsd_component_equal(component, "qb-id-10003.csv#attribute/some-attribute", ComponentPropertyType.Attribute,
+                               "Some Attribute", "Some Attribute", "Some Obs Val", "qb-id-10003.csv#structure", False)
 
     component = get_dsd_component_by_property_url(
         components, "http://purl.org/linked-data/cube#measureType"
     )
-    assert_dsd_component_equal(
-        component,
-        "http://purl.org/linked-data/cube#measureType",
-        ComponentPropertyType.Dimension,
-        "",
-        "",
-        "",
-        "qb-id-10003.csv",
-        "qb-id-10003.csv#structure",
-        True,
-    )
+    assert_dsd_component_equal(component, "http://purl.org/linked-data/cube#measureType",
+                               ComponentPropertyType.Dimension, "", "", "", "qb-id-10003.csv#structure", True)
 
     component = get_dsd_component_by_property_url(
         components, "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
     )
-    assert_dsd_component_equal(
-        component,
-        "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
-        ComponentPropertyType.Attribute,
-        "",
-        "Some Unit",
-        "Some Other Obs Val, Some Obs Val",
-        "qb-id-10003.csv",
-        "qb-id-10003.csv#structure",
-        True,
-    )
+    assert_dsd_component_equal(component, "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
+                               ComponentPropertyType.Attribute, "", "Some Unit", "Some Other Obs Val, Some Obs Val",
+                               "qb-id-10003.csv#structure", True)
     
     component = get_dsd_component_by_property_url(
         components, "qb-id-10003.csv#measure/some-measure"
     )
-    assert_dsd_component_equal(
-        component,
-        "qb-id-10003.csv#measure/some-measure",
-        ComponentPropertyType.Measure,
-        "Some Measure",
-        "Some Obs Val",
-        "Some Obs Val",
-        "qb-id-10003.csv",
-        "qb-id-10003.csv#structure",
-        True,
-    )
+    assert_dsd_component_equal(component, "qb-id-10003.csv#measure/some-measure", ComponentPropertyType.Measure,
+                               "Some Measure", "Some Obs Val", "Some Obs Val", "qb-id-10003.csv#structure", True)
 
     component = get_dsd_component_by_property_url(
         components, "qb-id-10003.csv#measure/some-other-measure"
     )
-    assert_dsd_component_equal(
-        component,
-        "qb-id-10003.csv#measure/some-other-measure",
-        ComponentPropertyType.Measure,
-        "Some Other Measure",
-        "Some Other Obs Val",
-        "Some Other Obs Val",
-        "qb-id-10003.csv",
-        "qb-id-10003.csv#structure",
-        True,
-    )
+    assert_dsd_component_equal(component, "qb-id-10003.csv#measure/some-other-measure", ComponentPropertyType.Measure,
+                               "Some Other Measure", "Some Other Obs Val", "Some Other Obs Val",
+                               "qb-id-10003.csv#structure", True)
 
 
 def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
@@ -498,9 +392,7 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
         csvw_metadata_rdf_graph, data_set_uri
     ).csv_url
     
-    result_data_set_dsd_csv_url = data_cube_state.get_data_set_dsd_and_csv_url_for_csv_url(csv_url)
-
-    result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(result_data_set_dsd_csv_url.dsd_uri, result_data_set_dsd_csv_url.csv_url)
+    result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(csv_url)
     components = result_qube_components.qube_components
 
     assert result.dataset_label == "Pivoted Shape Cube"
@@ -510,77 +402,33 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
     component = get_dsd_component_by_property_url(
         components, "qb-id-10004.csv#dimension/some-dimension"
     )
-    assert_dsd_component_equal(
-        component,
-        "qb-id-10004.csv#dimension/some-dimension",
-        ComponentPropertyType.Dimension,
-        "Some Dimension",
-        "Some Dimension",
-        "Some Obs Val",
-        "qb-id-10004.csv",
-        "qb-id-10004.csv#structure",
-        True,
-    )
+    assert_dsd_component_equal(component, "qb-id-10004.csv#dimension/some-dimension", ComponentPropertyType.Dimension,
+                               "Some Dimension", "Some Dimension", "Some Obs Val", "qb-id-10004.csv#structure", True)
 
     component = get_dsd_component_by_property_url(
         components, "qb-id-10004.csv#attribute/some-attribute"
     )
-    assert_dsd_component_equal(
-        component,
-        "qb-id-10004.csv#attribute/some-attribute",
-        ComponentPropertyType.Attribute,
-        "Some Attribute",
-        "Some Attribute",
-        "Some Obs Val",
-        "qb-id-10004.csv",
-        "qb-id-10004.csv#structure",
-        False,
-    )
+    assert_dsd_component_equal(component, "qb-id-10004.csv#attribute/some-attribute", ComponentPropertyType.Attribute,
+                               "Some Attribute", "Some Attribute", "Some Obs Val", "qb-id-10004.csv#structure", False)
 
     component = get_dsd_component_by_property_url(
         components, "http://purl.org/linked-data/cube#measureType"
     )
-    assert_dsd_component_equal(
-        component,
-        "http://purl.org/linked-data/cube#measureType",
-        ComponentPropertyType.Dimension,
-        "",
-        "",
-        "",
-        "qb-id-10004.csv",
-        "qb-id-10004.csv#structure",
-        True,
-    )
+    assert_dsd_component_equal(component, "http://purl.org/linked-data/cube#measureType",
+                               ComponentPropertyType.Dimension, "", "", "", "qb-id-10004.csv#structure", True)
 
     component = get_dsd_component_by_property_url(
         components, "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
     )
-    assert_dsd_component_equal(
-        component,
-        "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
-        ComponentPropertyType.Attribute,
-        "",
-        "",
-        "Some Obs Val",
-        "qb-id-10004.csv",
-        "qb-id-10004.csv#structure",
-        True,
-    )
+    assert_dsd_component_equal(component, "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
+                               ComponentPropertyType.Attribute, "", "", "Some Obs Val", "qb-id-10004.csv#structure",
+                               True)
 
     component = get_dsd_component_by_property_url(
         components, "qb-id-10004.csv#measure/some-measure"
     )
-    assert_dsd_component_equal(
-        component,
-        "qb-id-10004.csv#measure/some-measure",
-        ComponentPropertyType.Measure,
-        "Some Measure",
-        "Some Obs Val",
-        "Some Obs Val",
-        "qb-id-10004.csv",
-        "qb-id-10004.csv#structure",
-        True,
-    )
+    assert_dsd_component_equal(component, "qb-id-10004.csv#measure/some-measure", ComponentPropertyType.Measure,
+                               "Some Measure", "Some Obs Val", "Some Obs Val", "qb-id-10004.csv#structure", True)
 
 
 def test_select_cols_when_supress_output_cols_not_present():

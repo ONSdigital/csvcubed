@@ -70,6 +70,7 @@ class MetadataPrinter:
     """
     This class produces the printables necessary for producing outputs to the CLI.
     """
+
     data_cube_state: Optional[DataCubeState]
     code_list_state: Optional[CodeListState]
     csvw_type: CSVWType
@@ -95,7 +96,7 @@ class MetadataPrinter:
     )
     result_code_list_cols: CodeListColsByDatasetUrlResult = field(init=False)
     result_concepts_hierachy_info: CodelistHierarchyInfoResult = field(init=False)
-    
+
     @staticmethod
     def get_csvw_type_str(csvw_type: CSVWType) -> str:
         if csvw_type == CSVWType.QbDataSet:
@@ -112,9 +113,7 @@ class MetadataPrinter:
         dataset_uri: str,
     ) -> str:
         if csvw_type == CSVWType.QbDataSet:
-            return select_qb_csv_url(
-                csvw_metadata_rdf_graph, dataset_uri
-            ).csv_url
+            return select_qb_csv_url(csvw_metadata_rdf_graph, dataset_uri).csv_url
         elif csvw_type == CSVWType.CodeList:
             return select_codelist_csv_url(csvw_metadata_rdf_graph).csv_url
         else:
@@ -166,14 +165,15 @@ class MetadataPrinter:
 
         Member of :class:`./MetadataPrinter`.
         """
-        if self.cube_shape is None or self.data_cube_state is None:  
+        if self.cube_shape is None or self.data_cube_state is None:
             raise ValueError("Cube shape and/or data cube state cannot be None")
-        
+
         self.result_dataset_label_dsd_uri = (
             select_csvw_dsd_dataset_label_and_dsd_def_uri(self.csvw_metadata_rdf_graph)
         )
-        self.result_data_set_dsd_csv_url = self.data_cube_state.get_data_set_dsd_and_csv_url_for_csv_url(self.csv_url)
-        self.result_qube_components = self.data_cube_state.get_dsd_qube_components_for_csv(self.result_data_set_dsd_csv_url.dsd_uri, self.result_data_set_dsd_csv_url.csv_url)
+        self.result_qube_components = (
+            self.data_cube_state.get_dsd_qube_components_for_csv(self.csv_url)
+        )
         self.result_cols_with_suppress_output_true = (
             select_cols_where_suppress_output_is_true(self.csvw_metadata_rdf_graph)
         )
@@ -182,7 +182,7 @@ class MetadataPrinter:
             self.result_dataset_label_dsd_uri.dsd_uri,
             self.csvw_metadata_json_path,
         )
-        
+
         (
             canonical_shape_dataset,
             measure_col,

@@ -289,7 +289,6 @@ _measure_components_for_multi_measure_pivoted_shape = [
     QubeComponentResult(
         "",
         "",
-        "",
         "qb-id-10003.csv#measure/some-measure",
         "Some Measure",
         "Measure",
@@ -298,7 +297,6 @@ _measure_components_for_multi_measure_pivoted_shape = [
         True,
     ),
     QubeComponentResult(
-        "",
         "",
         "",
         "qb-id-10003.csv#measure/some-other-measure",
@@ -481,7 +479,6 @@ _measure_components_for_multi_measure_pivoted_shape_same_measure = [
     QubeComponentResult(
         "",
         "",
-        "",
         "qb-id-10003.csv#measure/some-measure",
         "Some Measure",
         "Measure",
@@ -490,7 +487,6 @@ _measure_components_for_multi_measure_pivoted_shape_same_measure = [
         True,
     ),
     QubeComponentResult(
-        "",
         "",
         "",
         "qb-id-10003.csv#measure/some-other-measure",

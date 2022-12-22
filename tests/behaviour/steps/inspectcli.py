@@ -278,77 +278,33 @@ def step_impl(context):
     component = get_dsd_component_by_property_url(
         components, "qb-id-10004.csv#dimension/some-dimension"
     )
-    assert_dsd_component_equal(
-        component,
-        "qb-id-10004.csv#dimension/some-dimension",
-        ComponentPropertyType.Dimension,
-        "Some Dimension",
-        "Some Dimension",
-        "Some Obs Val",
-        "qb-id-10004.csv",
-        "qb-id-10004.csv#structure",
-        True,
-    )
+    assert_dsd_component_equal(component, "qb-id-10004.csv#dimension/some-dimension", ComponentPropertyType.Dimension,
+                               "Some Dimension", "Some Dimension", "Some Obs Val", "qb-id-10004.csv#structure", True)
 
     component = get_dsd_component_by_property_url(
         components, "qb-id-10004.csv#attribute/some-attribute"
     )
-    assert_dsd_component_equal(
-        component,
-        "qb-id-10004.csv#attribute/some-attribute",
-        ComponentPropertyType.Attribute,
-        "Some Attribute",
-        "Some Attribute",
-        "Some Obs Val",
-        "qb-id-10004.csv",
-        "qb-id-10004.csv#structure",
-        False,
-    )
+    assert_dsd_component_equal(component, "qb-id-10004.csv#attribute/some-attribute", ComponentPropertyType.Attribute,
+                               "Some Attribute", "Some Attribute", "Some Obs Val", "qb-id-10004.csv#structure", False)
 
     component = get_dsd_component_by_property_url(
         components, "http://purl.org/linked-data/cube#measureType"
     )
-    assert_dsd_component_equal(
-        component,
-        "http://purl.org/linked-data/cube#measureType",
-        ComponentPropertyType.Dimension,
-        "",
-        "",
-        "",
-        "qb-id-10004.csv",
-        "qb-id-10004.csv#structure",
-        True,
-    )
+    assert_dsd_component_equal(component, "http://purl.org/linked-data/cube#measureType",
+                               ComponentPropertyType.Dimension, "", "", "", "qb-id-10004.csv#structure", True)
 
     component = get_dsd_component_by_property_url(
         components, "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
     )
-    assert_dsd_component_equal(
-        component,
-        "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
-        ComponentPropertyType.Attribute,
-        "",
-        "",
-        "Some Obs Val",
-        "qb-id-10004.csv",
-        "qb-id-10004.csv#structure",
-        True,
-    )
+    assert_dsd_component_equal(component, "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
+                               ComponentPropertyType.Attribute, "", "", "Some Obs Val", "qb-id-10004.csv#structure",
+                               True)
 
     component = get_dsd_component_by_property_url(
         components, "qb-id-10004.csv#measure/some-measure"
     )
-    assert_dsd_component_equal(
-        component,
-        "qb-id-10004.csv#measure/some-measure",
-        ComponentPropertyType.Measure,
-        "Some Measure",
-        "Some Obs Val",
-        "Some Obs Val",
-        "qb-id-10004.csv",
-        "qb-id-10004.csv#structure",
-        True,
-    )
+    assert_dsd_component_equal(component, "qb-id-10004.csv#measure/some-measure", ComponentPropertyType.Measure,
+                               "Some Measure", "Some Obs Val", "Some Obs Val", "qb-id-10004.csv#structure", True)
 
 
 @Then("the Code List printable is validated for single-measure pivoted data set")
@@ -459,92 +415,41 @@ def step_impl(context):
     component = get_dsd_component_by_property_url(
         components, "qb-id-10003.csv#dimension/some-dimension"
     )
-    assert_dsd_component_equal(
-        component,
-        "qb-id-10003.csv#dimension/some-dimension",
-        ComponentPropertyType.Dimension,
-        "Some Dimension",
-        "Some Dimension",
-        "Some Obs Val, Some Other Obs Val",
-        "qb-id-10003.csv",
-        "qb-id-10003.csv#structure",
-        True,
-    )
+    assert_dsd_component_equal(component, "qb-id-10003.csv#dimension/some-dimension", ComponentPropertyType.Dimension,
+                               "Some Dimension", "Some Dimension", "Some Obs Val, Some Other Obs Val",
+                               "qb-id-10003.csv#structure", True)
 
     component = get_dsd_component_by_property_url(
         components, "qb-id-10003.csv#attribute/some-attribute"
     )
-    assert_dsd_component_equal(
-        component,
-        "qb-id-10003.csv#attribute/some-attribute",
-        ComponentPropertyType.Attribute,
-        "Some Attribute",
-        "Some Attribute",
-        "Some Obs Val",
-        "qb-id-10003.csv",
-        "qb-id-10003.csv#structure",
-        False,
-    )
+    assert_dsd_component_equal(component, "qb-id-10003.csv#attribute/some-attribute", ComponentPropertyType.Attribute,
+                               "Some Attribute", "Some Attribute", "Some Obs Val", "qb-id-10003.csv#structure", False)
 
     component = get_dsd_component_by_property_url(
         components, "http://purl.org/linked-data/cube#measureType"
     )
-    assert_dsd_component_equal(
-        component,
-        "http://purl.org/linked-data/cube#measureType",
-        ComponentPropertyType.Dimension,
-        "",
-        "",
-        "",
-        "qb-id-10003.csv",
-        "qb-id-10003.csv#structure",
-        True,
-    )
+    assert_dsd_component_equal(component, "http://purl.org/linked-data/cube#measureType",
+                               ComponentPropertyType.Dimension, "", "", "", "qb-id-10003.csv#structure", True)
 
     component = get_dsd_component_by_property_url(
         components, "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
     )
-    assert_dsd_component_equal(
-        component,
-        "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
-        ComponentPropertyType.Attribute,
-        "",
-        "Some Unit",
-        "Some Other Obs Val, Some Obs Val",
-        "qb-id-10003.csv",
-        "qb-id-10003.csv#structure",
-        True,
-    )
+    assert_dsd_component_equal(component, "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
+                               ComponentPropertyType.Attribute, "", "Some Unit", "Some Other Obs Val, Some Obs Val",
+                               "qb-id-10003.csv#structure", True)
 
     component = get_dsd_component_by_property_url(
         components, "qb-id-10003.csv#measure/some-measure"
     )
-    assert_dsd_component_equal(
-        component,
-        "qb-id-10003.csv#measure/some-measure",
-        ComponentPropertyType.Measure,
-        "Some Measure",
-        "Some Obs Val",
-        "Some Obs Val",
-        "qb-id-10003.csv",
-        "qb-id-10003.csv#structure",
-        True,
-    )
+    assert_dsd_component_equal(component, "qb-id-10003.csv#measure/some-measure", ComponentPropertyType.Measure,
+                               "Some Measure", "Some Obs Val", "Some Obs Val", "qb-id-10003.csv#structure", True)
 
     component = get_dsd_component_by_property_url(
         components, "qb-id-10003.csv#measure/some-other-measure"
     )
-    assert_dsd_component_equal(
-        component,
-        "qb-id-10003.csv#measure/some-other-measure",
-        ComponentPropertyType.Measure,
-        "Some Other Measure",
-        "Some Other Obs Val",
-        "Some Other Obs Val",
-        "qb-id-10003.csv",
-        "qb-id-10003.csv#structure",
-        True,
-    )
+    assert_dsd_component_equal(component, "qb-id-10003.csv#measure/some-other-measure", ComponentPropertyType.Measure,
+                               "Some Other Measure", "Some Other Obs Val", "Some Other Obs Val",
+                               "qb-id-10003.csv#structure", True)
 
 
 @Then("the Code List printable is validated for multi-measure pivoted data set")

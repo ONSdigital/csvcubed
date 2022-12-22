@@ -285,9 +285,7 @@ def get_arguments_qb_dataset(
         csvw_metadata_rdf_graph
     ).dsd_uri
 
-    data_set_dsd_csv_url = data_cube_state.get_data_set_dsd_and_csv_url_for_csv_url(csv_url)
-
-    qube_components = data_cube_state.get_dsd_qube_components_for_csv(data_set_dsd_csv_url.dsd_uri, data_set_dsd_csv_url.csv_url).qube_components
+    qube_components = data_cube_state.get_dsd_qube_components_for_csv(csv_url).qube_components
     
     return (dataset, qube_components, dsd_uri, csv_url)
 
@@ -412,9 +410,7 @@ def test_get_measure_col_name_from_dsd_measure_col_present():
         csvw_metadata_rdf_graph, data_set_uri
     ).csv_url
 
-    result_data_set_dsd_csv_url = data_cube_state.get_data_set_dsd_and_csv_url_for_csv_url(csv_url)
-
-    result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(result_data_set_dsd_csv_url.dsd_uri, result_data_set_dsd_csv_url.csv_url)
+    result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(csv_url)
 
     measure_col = get_standard_shape_measure_col_name_from_dsd(result_qube_components.qube_components)
 
@@ -440,9 +436,7 @@ def test_get_measure_col_name_from_dsd_measure_col_not_present():
         csvw_metadata_rdf_graph, data_set_uri
     ).csv_url
 
-    result_data_set_dsd_csv_url = data_cube_state.get_data_set_dsd_and_csv_url_for_csv_url(csv_url)
-
-    result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(result_data_set_dsd_csv_url.dsd_uri, result_data_set_dsd_csv_url.csv_url)
+    result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(csv_url)
 
     measure_col = get_standard_shape_measure_col_name_from_dsd(result_qube_components.qube_components)
 
@@ -468,10 +462,8 @@ def test_get_unit_col_name_from_dsd_unit_col_present():
         csvw_metadata_rdf_graph, data_set_uri
     ).csv_url
 
-    result_data_set_dsd_csv_url = data_cube_state.get_data_set_dsd_and_csv_url_for_csv_url(csv_url)
+    result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(csv_url)
 
-    result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(result_data_set_dsd_csv_url.dsd_uri, result_data_set_dsd_csv_url.csv_url)
-    
     unit_col = get_standard_shape_unit_col_name_from_dsd(result_qube_components.qube_components)
 
     assert unit_col == "Unit"
@@ -495,10 +487,8 @@ def test_get_unit_col_name_from_dsd_unit_col_not_present():
     csv_url = select_qb_csv_url(
         csvw_metadata_rdf_graph, data_set_uri
     ).csv_url
-    
-    result_data_set_dsd_csv_url = data_cube_state.get_data_set_dsd_and_csv_url_for_csv_url(csv_url)
 
-    result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(result_data_set_dsd_csv_url.dsd_uri, result_data_set_dsd_csv_url.csv_url)
+    result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(csv_url)
 
     unit_col = get_standard_shape_unit_col_name_from_dsd(result_qube_components.qube_components)
 
@@ -525,9 +515,7 @@ def test_get_single_measure_label_from_dsd():
         csvw_metadata_rdf_graph, data_set_uri
     ).csv_url
 
-    result_data_set_dsd_csv_url = data_cube_state.get_data_set_dsd_and_csv_url_for_csv_url(csv_url)
-
-    result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(result_data_set_dsd_csv_url.dsd_uri, result_data_set_dsd_csv_url.csv_url)
+    result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(csv_url)
 
     measure_col = get_standard_shape_measure_col_name_from_dsd(result_qube_components.qube_components)
     assert measure_col is None
