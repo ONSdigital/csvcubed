@@ -9,7 +9,7 @@ from typing import Optional
 import requests_mock
 from requests.sessions import Session
 
-from csvcubed.utils.cache import map_url_to_file_path
+from csvcubed.utils.createlocalcopyresponse import map_url_to_file_path
 
 
 def mock_json_schemas(session: Optional[Session] = None) -> requests_mock.Mocker:
