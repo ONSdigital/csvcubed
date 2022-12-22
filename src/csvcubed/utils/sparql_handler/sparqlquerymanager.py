@@ -99,9 +99,7 @@ class SPARQLQueryName(Enum):
 
     SELECT_CODELIST_COLS_BY_CSV_URL = "select_codelist_cols_by_csv_url"
 
-    SELECT_CODELIST_PRIMARY_KEY_BY_CSV_URL = (
-        "select_codelist_primary_key_by_csv_url"
-    )
+    SELECT_CODELIST_PRIMARY_KEY_BY_CSV_URL = "select_codelist_primary_key_by_csv_url"
 
     SELECT_METADATA_DEPENDENCIES = "select_metadata_dependencies"
 
@@ -112,12 +110,15 @@ class SPARQLQueryName(Enum):
     )
 
     SELECT_UNIT_COL_ABOUT_AND_VALUE_URLS = "select_unit_col_about_and_value_urls"
-    
-    SELECT_UNIT_COL_OBSERVED_COL_TITLE_AND_ABOUT_URL = "select_unit_col_observed_col_title_and_about_url"
-    
+
+    SELECT_UNIT_COL_OBSERVED_COL_TITLE_AND_ABOUT_URL = (
+        "select_unit_col_observed_col_title_and_about_url"
+    )
+
     SELECT_COL_TITLES_AND_NAMES = "select_col_titles_and_names"
 
-def _get_query_string_from_file(queryType: SPARQLQueryName) -> str:
+
+def _get_query_string_from_file(query_type: SPARQLQueryName) -> str:
     """
     Read the sparql query string from sparql file for the given query type.
 
@@ -132,9 +133,9 @@ def _get_query_string_from_file(queryType: SPARQLQueryName) -> str:
         / "utils"
         / "sparql_handler"
         / "sparql_queries"
-        / (queryType.value + ".sparql")
+        / (query_type.value + ".sparql")
     )
-    _logger.debug(f"{queryType.value} query file path: {file_path.absolute()}")
+    _logger.debug(f"{query_type.value} query file path: {file_path.absolute()}")
 
     try:
         with open(
@@ -225,7 +226,9 @@ def select_csvw_dsd_dataset_label_and_dsd_def_uri(
     return map_dataset_label_dsd_uri_sparql_result(results[0])
 
 
-def select_data_set_dsd_and_csv_url(rdf_graph: rdflib.ConjunctiveGraph) -> List[DataSetDsdUriCsvUrlResult]:
+def select_data_set_dsd_and_csv_url(
+    rdf_graph: rdflib.ConjunctiveGraph,
+) -> List[DataSetDsdUriCsvUrlResult]:
     """
     TODO: Add description
     """
@@ -241,6 +244,7 @@ def select_data_set_dsd_and_csv_url(rdf_graph: rdflib.ConjunctiveGraph) -> List[
             num_of_records=len(results),
         )
     return _map_data_set_dsd_csv_url_result(results)
+
 
 def select_csvw_dsd_qube_components(
     cube_shape: Optional[CubeShape],
@@ -430,9 +434,7 @@ def select_codelist_cols_by_csv_url(
     :return: `CodeListColsByDatasetUrlResult`
     """
     results: List[ResultRow] = select(
-        _get_query_string_from_file(
-            SPARQLQueryName.SELECT_CODELIST_COLS_BY_CSV_URL
-        ),
+        _get_query_string_from_file(SPARQLQueryName.SELECT_CODELIST_COLS_BY_CSV_URL),
         rdf_graph,
         init_bindings={"table_url": Literal(table_url)},
     )
@@ -509,11 +511,14 @@ def select_unit_col_about_value_urls(
     Queries a CSV-W and extracts the unit column's about and value urls.
     """
     results: List[ResultRow] = select(
-        _get_query_string_from_file(SPARQLQueryName.SELECT_UNIT_COL_ABOUT_AND_VALUE_URLS),
+        _get_query_string_from_file(
+            SPARQLQueryName.SELECT_UNIT_COL_ABOUT_AND_VALUE_URLS
+        ),
         rdf_graph,
     )
 
     return map_unit_col_about_value_urls_result(results)
+
 
 def select_observation_value_column_title_and_about_url(
     rdf_graph: rdflib.Graph,
@@ -522,11 +527,14 @@ def select_observation_value_column_title_and_about_url(
     Queries a CSV-W and extracts the observation value column title and about url.
     """
     results: List[ResultRow] = select(
-        _get_query_string_from_file(SPARQLQueryName.SELECT_UNIT_COL_OBSERVED_COL_TITLE_AND_ABOUT_URL),
+        _get_query_string_from_file(
+            SPARQLQueryName.SELECT_UNIT_COL_OBSERVED_COL_TITLE_AND_ABOUT_URL
+        ),
         rdf_graph,
     )
 
     return map_observation_value_col_title_and_about_url_result(results)
+
 
 def select_col_titles_and_names(
     rdf_graph: rdflib.Graph,
