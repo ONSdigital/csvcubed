@@ -3,6 +3,8 @@ import requests_mock
 
 from tests.unit.test_baseunit import get_test_cases_dir
 from csvcubed.utils.json import load_json_document
+from csvcubed.utils.cache import session
+from csvcubed.definitions import APP_ROOT_DIR_PATH
 
 _json_test_cases_dir = get_test_cases_dir() / "utils" / "json"
 
