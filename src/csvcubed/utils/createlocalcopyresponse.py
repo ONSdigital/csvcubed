@@ -60,6 +60,7 @@ _hard_coded_map_url_to_file_path = {
     / "schema.json",  # v1 defaults to latest minor version of v1.*.
 }
 
+
 def _get_url_to_file_path_map() -> Dict[str, Path]:
     """
     Dynamically adds template URLs + corresponding files to the hardcoded map:
@@ -153,7 +154,7 @@ class AdapterToServeLocalFileWhenHTTPRequestFails(BaseAdapter):
 
             _logger.error("The local file path is: %s", path_to_local_file)
 
-            return create_local_copy_response(path_to_local_file, request)
+            return _create_local_copy_response(path_to_local_file, request)
 
         if response.status_code >= 400 and response.status_code < 600:
             _logger.info(f"The status code is {response.status_code}")
@@ -163,7 +164,7 @@ class AdapterToServeLocalFileWhenHTTPRequestFails(BaseAdapter):
                     f"URL '{request.url}' produced a invalid response and a local copy could not be found."
                 )
 
-            return create_local_copy_response(path_to_local_file, request, response)
+            return _create_local_copy_response(path_to_local_file, request, response)
 
         return response
 
@@ -171,7 +172,7 @@ class AdapterToServeLocalFileWhenHTTPRequestFails(BaseAdapter):
         self.http_adapter.close()
 
 
-def create_local_copy_response(
+def _create_local_copy_response(
     path_to_local_file: Path,
     request: requests.PreparedRequest,
     response: Optional[requests.Response] = None,
