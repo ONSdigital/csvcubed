@@ -90,7 +90,7 @@ class DSDLabelURIResult:
 @dataclass
 class DataSetDsdUriCsvUrlResult(DataClassBase):
     """
-    TODO: Add description
+    Links the CSV, DataSet and DataStructureDefinition URIs for a given cube.
     """
 
     csv_url: str
