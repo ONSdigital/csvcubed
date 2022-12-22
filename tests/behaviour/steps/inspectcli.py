@@ -23,7 +23,9 @@ from csvcubed.utils.iterables import first
 from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.sparql_handler.code_list_state import CodeListState
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
-from csvcubed.utils.sparql_handler.sparqlmanager import select_is_pivoted_shape_for_measures_in_data_set
+from csvcubed.utils.sparql_handler.sparqlmanager import (
+    select_is_pivoted_shape_for_measures_in_data_set,
+)
 from csvcubed.utils.sparql_handler.sparqlmanager import (
     select_is_pivoted_shape_for_measures_in_data_set,
 )
@@ -203,7 +205,9 @@ def step_impl(context):
 def step_impl(context):
     assert _unformat_multiline_string(
         context.dataset_val_counts_by_measure_unit_info_printable
-    ) == _unformat_multiline_string(context.text.strip())
+    ) == _unformat_multiline_string(
+        context.text.strip()
+    ), context.dataset_val_counts_by_measure_unit_info_printable
 
 
 @Then("the Concepts Information Printable should be")
@@ -387,7 +391,7 @@ def step_impl(context):
         [
             {
                 "Measure": "Some Measure",
-                "Unit": "qb-id-10004.csv#unit/some-unit",
+                "Unit": "Some Unit",
                 "Count": 3,
             }
         ]
@@ -565,19 +569,19 @@ def step_impl(context):
         context.result_dataset_value_counts
     )
     assert result_dataset_value_counts is not None
-    
+
     expected_df = pd.DataFrame(
         [
             {
                 "Measure": "Some Measure",
-                "Unit": "qb-id-10003.csv#unit/some-unit",
+                "Unit": "Some Unit",
                 "Count": 3,
             },
-                {
+            {
                 "Measure": "Some Other Measure",
-                "Unit": "qb-id-10003.csv#unit/percent",
+                "Unit": "Percent",
                 "Count": 3,
-            }
+            },
         ]
     )
     assert result_dataset_value_counts.by_measure_and_unit_val_counts_df.empty == False
