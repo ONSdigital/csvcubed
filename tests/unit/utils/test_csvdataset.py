@@ -3,9 +3,18 @@ import pandas as pd
 from pandas.util.testing import assert_frame_equal
 import pytest
 from csvcubed.cli.inspect.metadataprinter import to_absolute_rdflib_file_path
-from csvcubed.models.csvcubedexception import InvalidNumOfDSDComponentsForObsValColTitleException, InvalidNumOfUnitColsForObsValColTitleException, InvalidNumOfValUrlsForAboutUrlException
+from csvcubed.models.csvcubedexception import (
+    InvalidNumOfDSDComponentsForObsValColTitleException,
+    InvalidNumOfUnitColsForObsValColTitleException,
+    InvalidNumOfValUrlsForAboutUrlException,
+)
 from csvcubed.models.cube.cube_shape import CubeShape
-from csvcubed.models.sparqlresults import ColTitlesAndNamesResult, ObservationValueColumnTitleAboutUrlResult, QubeComponentResult, UnitColumnAboutValueUrlResult
+from csvcubed.models.sparqlresults import (
+    ColTitlesAndNamesResult,
+    ObservationValueColumnTitleAboutUrlResult,
+    QubeComponentResult,
+    UnitColumnAboutValueUrlResult,
+)
 
 from csvcubed.utils.csvdataset import (
     _create_measure_col_in_melted_data_set_for_pivoted_shape,
@@ -15,7 +24,10 @@ from csvcubed.utils.csvdataset import (
 )
 from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
-from csvcubed.utils.sparql_handler.sparqlmanager import select_csvw_catalog_metadata, select_qb_csv_url
+from csvcubed.utils.sparql_handler.sparqlmanager import (
+    select_csvw_catalog_metadata,
+    select_qb_csv_url,
+)
 from csvcubed.utils.tableschema import CsvwRdfManager
 
 from tests.unit.cli.inspect.test_inspectdatasetmanager import get_arguments_qb_dataset
@@ -116,25 +128,29 @@ _expected_dataset_pivoted_single_measure_shape_cube = pd.DataFrame(
             "Some Attribute": "attr-a",
             "Value": 1,
             "Measure": "Some Measure",
-            "Unit": "qb-id-10004.csv#unit/some-unit",
+            "Unit": "Some Unit",
         },
         {
             "Some Dimension": "b",
             "Some Attribute": "attr-b",
             "Value": 2,
             "Measure": "Some Measure",
-            "Unit": "qb-id-10004.csv#unit/some-unit",
+            "Unit": "Some Unit",
         },
         {
             "Some Dimension": "c",
             "Some Attribute": "attr-c",
             "Value": 3,
             "Measure": "Some Measure",
-            "Unit": "qb-id-10004.csv#unit/some-unit",
+            "Unit": "Some Unit",
         },
     ]
 ).replace("", np.NAN)
-_expected_dataset_pivoted_single_measure_shape_cube = _expected_dataset_pivoted_single_measure_shape_cube.reindex(["Some Attribute", "Some Dimension", "Value", "Measure", "Unit"], axis=1)
+_expected_dataset_pivoted_single_measure_shape_cube = (
+    _expected_dataset_pivoted_single_measure_shape_cube.reindex(
+        ["Some Attribute", "Some Dimension", "Value", "Measure", "Unit"], axis=1
+    )
+)
 
 _expected_dataset_pivoted_multi_measure_shape_cube = pd.DataFrame(
     [
@@ -144,7 +160,7 @@ _expected_dataset_pivoted_multi_measure_shape_cube = pd.DataFrame(
             "Some Unit": "percent",
             "Value": 1,
             "Measure": "Some Measure",
-            "Unit": "qb-id-10003.csv#unit/some-unit",
+            "Unit": "Some Unit",
         },
         {
             "Some Attribute": "attr-b",
@@ -152,7 +168,7 @@ _expected_dataset_pivoted_multi_measure_shape_cube = pd.DataFrame(
             "Some Unit": "percent",
             "Value": 2,
             "Measure": "Some Measure",
-            "Unit": "qb-id-10003.csv#unit/some-unit",
+            "Unit": "Some Unit",
         },
         {
             "Some Attribute": "attr-c",
@@ -160,15 +176,15 @@ _expected_dataset_pivoted_multi_measure_shape_cube = pd.DataFrame(
             "Some Unit": "percent",
             "Value": 3,
             "Measure": "Some Measure",
-            "Unit": "qb-id-10003.csv#unit/some-unit",
+            "Unit": "Some Unit",
         },
-                {
+        {
             "Some Attribute": "attr-a",
             "Some Dimension": "a",
             "Some Unit": "percent",
             "Value": 2,
             "Measure": "Some Other Measure",
-            "Unit": "qb-id-10003.csv#unit/percent",
+            "Unit": "Percent",
         },
         {
             "Some Attribute": "attr-b",
@@ -176,7 +192,7 @@ _expected_dataset_pivoted_multi_measure_shape_cube = pd.DataFrame(
             "Some Unit": "percent",
             "Value": 4,
             "Measure": "Some Other Measure",
-            "Unit": "qb-id-10003.csv#unit/percent",
+            "Unit": "Percent",
         },
         {
             "Some Attribute": "attr-c",
@@ -184,11 +200,16 @@ _expected_dataset_pivoted_multi_measure_shape_cube = pd.DataFrame(
             "Some Unit": "percent",
             "Value": 6,
             "Measure": "Some Other Measure",
-            "Unit": "qb-id-10003.csv#unit/percent",
+            "Unit": "Percent",
         },
     ]
 ).replace("", np.NAN)
-_expected_dataset_pivoted_multi_measure_shape_cube = _expected_dataset_pivoted_multi_measure_shape_cube.reindex(["Some Attribute", "Some Dimension", "Some Unit", "Value", "Measure", "Unit"], axis=1)
+_expected_dataset_pivoted_multi_measure_shape_cube = (
+    _expected_dataset_pivoted_multi_measure_shape_cube.reindex(
+        ["Some Attribute", "Some Dimension", "Some Unit", "Value", "Measure", "Unit"],
+        axis=1,
+    )
+)
 
 _expected_melted_dataset_for_pivoted_shape = pd.DataFrame(
     [
@@ -236,7 +257,12 @@ _expected_melted_dataset_for_pivoted_shape = pd.DataFrame(
         },
     ]
 ).replace("", np.NAN)
-_expected_melted_dataset_for_pivoted_shape = _expected_melted_dataset_for_pivoted_shape.reindex(["Some Attribute", "Some Dimension", "Some Unit", "Observation Value", "Value"], axis=1)
+_expected_melted_dataset_for_pivoted_shape = (
+    _expected_melted_dataset_for_pivoted_shape.reindex(
+        ["Some Attribute", "Some Dimension", "Some Unit", "Observation Value", "Value"],
+        axis=1,
+    )
+)
 
 _expected_melted_dataset_with_measure_col_for_pivoted_shape = pd.DataFrame(
     [
@@ -312,7 +338,7 @@ _expected_dataset_pivoted_multi_measure_with_unit = pd.DataFrame(
             "Some Unit": "percent",
             "Observation Value": "Some Obs Val",
             "Value": 1,
-            "Unit": "qb-id-10003.csv#unit/some-unit",
+            "Unit": "Some Unit",
         },
         {
             "Some Dimension": "b",
@@ -320,7 +346,7 @@ _expected_dataset_pivoted_multi_measure_with_unit = pd.DataFrame(
             "Some Unit": "percent",
             "Observation Value": "Some Obs Val",
             "Value": 2,
-            "Unit": "qb-id-10003.csv#unit/some-unit",
+            "Unit": "Some Unit",
         },
         {
             "Some Dimension": "c",
@@ -328,15 +354,15 @@ _expected_dataset_pivoted_multi_measure_with_unit = pd.DataFrame(
             "Some Unit": "percent",
             "Observation Value": "Some Obs Val",
             "Value": 3,
-            "Unit": "qb-id-10003.csv#unit/some-unit",
+            "Unit": "Some Unit",
         },
-                {
+        {
             "Some Attribute": "attr-a",
             "Some Dimension": "a",
             "Some Unit": "percent",
             "Observation Value": "Some Other Obs Val",
             "Value": 2,
-            "Unit": "qb-id-10003.csv#unit/percent",
+            "Unit": "Percent",
         },
         {
             "Some Attribute": "attr-b",
@@ -344,7 +370,7 @@ _expected_dataset_pivoted_multi_measure_with_unit = pd.DataFrame(
             "Some Unit": "percent",
             "Observation Value": "Some Other Obs Val",
             "Value": 4,
-            "Unit": "qb-id-10003.csv#unit/percent",
+            "Unit": "Percent",
         },
         {
             "Some Attribute": "attr-c",
@@ -352,76 +378,70 @@ _expected_dataset_pivoted_multi_measure_with_unit = pd.DataFrame(
             "Some Unit": "percent",
             "Observation Value": "Some Other Obs Val",
             "Value": 6,
-            "Unit": "qb-id-10003.csv#unit/percent",
+            "Unit": "Percent",
         },
     ]
 ).replace("", np.NAN)
-_expected_dataset_pivoted_multi_measure_with_unit = _expected_dataset_pivoted_multi_measure_with_unit.reindex(["Some Attribute", "Some Dimension", "Some Unit", "Observation Value", "Value", "Unit"], axis=1)
+_expected_dataset_pivoted_multi_measure_with_unit = (
+    _expected_dataset_pivoted_multi_measure_with_unit.reindex(
+        [
+            "Some Attribute",
+            "Some Dimension",
+            "Some Unit",
+            "Observation Value",
+            "Value",
+            "Unit",
+        ],
+        axis=1,
+    )
+)
 
 _unit_col_about_urls_value_urls = [
     UnitColumnAboutValueUrlResult(
         "qb-id-10004.csv",
         "qb-id-10003.csv#obs/some-dimension@some-measure",
-        "qb-id-10003.csv#unit/some-unit"
+        "qb-id-10003.csv#unit/some-unit",
     ),
     UnitColumnAboutValueUrlResult(
         "qb-id-10004.csv",
         "qb-id-10003.csv#obs/some-dimension@some-other-measure",
-        "qb-id-10003.csv#unit/percent"
-    )
+        "qb-id-10003.csv#unit/percent",
+    ),
 ]
 
 _obs_val_col_titles_about_urls = [
     ObservationValueColumnTitleAboutUrlResult(
         "qb-id-10004.csv",
         "Some Obs Val",
-        "qb-id-10003.csv#obs/some-dimension@some-measure"
+        "qb-id-10003.csv#obs/some-dimension@some-measure",
     ),
     ObservationValueColumnTitleAboutUrlResult(
         "qb-id-10004.csv",
         "Some Other Obs Val",
-        "qb-id-10003.csv#obs/some-dimension@some-other-measure"
+        "qb-id-10003.csv#obs/some-dimension@some-other-measure",
     ),
 ]
 
 _col_names_col_titles = [
+    ColTitlesAndNamesResult("qb-id-10004.csv", "some_dimension", "Some Dimension"),
+    ColTitlesAndNamesResult("qb-id-10004.csv", "some_attribute", "Some Attribute"),
+    ColTitlesAndNamesResult("qb-id-10004.csv", "some_obs_val", "Some Obs Val"),
     ColTitlesAndNamesResult(
-        "qb-id-10004.csv",
-        "some_dimension",
-        "Some Dimension"
+        "qb-id-10004.csv", "some_other_obs_val", "Some Other Obs Val"
     ),
-    ColTitlesAndNamesResult(
-        "qb-id-10004.csv",
-        "some_attribute",
-        "Some Attribute"
-    ),
-    ColTitlesAndNamesResult(
-        "qb-id-10004.csv",        
-        "some_obs_val",
-        "Some Obs Val"
-    ),
-    ColTitlesAndNamesResult(
-        "qb-id-10004.csv",
-        "some_other_obs_val",
-        "Some Other Obs Val"
-    ),
-    ColTitlesAndNamesResult(
-        "qb-id-10004.csv",
-        "some_unit",
-        "Some Unit"
-    ),
+    ColTitlesAndNamesResult("qb-id-10004.csv", "some_unit", "Some Unit"),
 ]
 
 _obs_val_col_titles_about_urls_invalid = [
     ObservationValueColumnTitleAboutUrlResult(
         "qb-id-10004.csv",
         "Some Obs Val",
-        "qb-id-10003.csv#obs/some-dimension@some-measure"
+        "qb-id-10003.csv#obs/some-dimension@some-measure",
     ),
     ObservationValueColumnTitleAboutUrlResult(
         "qb-id-10004.csv",
         "Some Obs Val",
-        "qb-id-10003.csv#obs/some-dimension@some-other-measure"
+        "qb-id-10003.csv#obs/some-dimension@some-other-measure",
     ),
 ]
 
@@ -429,46 +449,24 @@ _unit_col_about_urls_value_urls_invalid = [
     UnitColumnAboutValueUrlResult(
         "qb-id-10004.csv",
         "qb-id-10003.csv#obs/some-dimension@some-measure",
-        "qb-id-10003.csv#unit/some-unit"
+        "qb-id-10003.csv#unit/some-unit",
     ),
     UnitColumnAboutValueUrlResult(
         "qb-id-10004.csv",
         "qb-id-10003.csv#obs/some-dimension@some-measure",
-        "qb-id-10003.csv#unit/percent"
-    )
+        "qb-id-10003.csv#unit/percent",
+    ),
 ]
 
 _col_names_col_titles_invalid = [
+    ColTitlesAndNamesResult("qb-id-10004.csv", "some_dimension", "Some Dimension"),
     ColTitlesAndNamesResult(
-        "qb-id-10004.csv",
-        "some_dimension",
-        "Some Dimension"
+        "qb-id-10004.csv", "some_dimension", "Some Other Dimension"
     ),
-    ColTitlesAndNamesResult(
-        "qb-id-10004.csv",
-        "some_dimension",
-        "Some Other Dimension"
-    ),
-    ColTitlesAndNamesResult(
-        "qb-id-10004.csv",
-        "some_attribute",
-        "Some Attribute"
-    ),
-    ColTitlesAndNamesResult(
-        "qb-id-10004.csv",
-        "some_obs_val",
-        "Some Obs Val"
-    ),
-    ColTitlesAndNamesResult(
-        "qb-id-10004.csv",
-        "some_unit",
-        "Some Other Obs Val"
-    ),
-    ColTitlesAndNamesResult(
-        "qb-id-10004.csv",
-        "some_unit",
-        "Some Unit"
-    ),
+    ColTitlesAndNamesResult("qb-id-10004.csv", "some_attribute", "Some Attribute"),
+    ColTitlesAndNamesResult("qb-id-10004.csv", "some_obs_val", "Some Obs Val"),
+    ColTitlesAndNamesResult("qb-id-10004.csv", "some_unit", "Some Other Obs Val"),
+    ColTitlesAndNamesResult("qb-id-10004.csv", "some_unit", "Some Unit"),
 ]
 
 _measure_components_for_multi_measure_pivoted_shape_same_measure = [
@@ -490,6 +488,7 @@ _measure_components_for_multi_measure_pivoted_shape_same_measure = [
     ),
 ]
 
+
 def test_transform_to_canonical_shape_for_standard_shape_data_set():
     """
     Ensures that the correct canonical shape data set is generated for the standard shape data set.
@@ -502,7 +501,7 @@ def test_transform_to_canonical_shape_for_standard_shape_data_set():
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
-    
+
     (dataset, qube_components, dsd_uri, _) = get_arguments_qb_dataset(
         CubeShape.Standard, csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
@@ -546,7 +545,7 @@ def test_transform_to_canonical_shape_for_pivoted_single_measure_shape_data_set(
     )
     dataset_uri = to_absolute_rdflib_file_path(
         select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri,
-    csvw_metadata_json_path,
+        csvw_metadata_json_path,
     )
     data_set_url = select_qb_csv_url(csvw_metadata_rdf_graph, dataset_uri).csv_url
 
@@ -567,8 +566,10 @@ def test_transform_to_canonical_shape_for_pivoted_single_measure_shape_data_set(
 
     assert "Measure" in measure_col
     assert "Unit" in unit_col
-    
-    canonical_shape_dataset = canonical_shape_dataset.reindex(["Some Attribute", "Some Dimension", "Value", measure_col, unit_col], axis=1)
+
+    canonical_shape_dataset = canonical_shape_dataset.reindex(
+        ["Some Attribute", "Some Dimension", "Value", measure_col, unit_col], axis=1
+    )
     _expected_dataset_pivoted_single_measure_shape_cube.rename(
         columns={
             "Measure": measure_col,
@@ -603,7 +604,7 @@ def test_transform_to_canonical_shape_for_pivoted_multi_measure_shape_data_set()
     )
     dataset_uri = to_absolute_rdflib_file_path(
         select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri,
-    csvw_metadata_json_path,
+        csvw_metadata_json_path,
     )
     csv_url = select_qb_csv_url(csvw_metadata_rdf_graph, dataset_uri).csv_url
 
@@ -624,8 +625,18 @@ def test_transform_to_canonical_shape_for_pivoted_multi_measure_shape_data_set()
 
     assert "Measure" in measure_col
     assert "Unit" in unit_col
-    
-    canonical_shape_dataset = canonical_shape_dataset.reindex(["Some Attribute", "Some Dimension", "Some Unit" ,"Value", measure_col, unit_col], axis=1)
+
+    canonical_shape_dataset = canonical_shape_dataset.reindex(
+        [
+            "Some Attribute",
+            "Some Dimension",
+            "Some Unit",
+            "Value",
+            measure_col,
+            unit_col,
+        ],
+        axis=1,
+    )
     _expected_dataset_pivoted_multi_measure_shape_cube.rename(
         columns={
             "Measure": measure_col,
@@ -656,7 +667,10 @@ def test_melt_data_set_for_pivoted_shape():
     # Asserting the number of columns in the melted dataframe
     assert melted_df.shape[1] == 5
     # Asserting the columns and data in the melted dataframe.
-    melted_df = melted_df.reindex(["Some Attribute", "Some Dimension", "Some Unit", "Observation Value", "Value"], axis=1)
+    melted_df = melted_df.reindex(
+        ["Some Attribute", "Some Dimension", "Some Unit", "Observation Value", "Value"],
+        axis=1,
+    )
     assert_frame_equal(melted_df, _expected_melted_dataset_for_pivoted_shape)
 
 
@@ -682,7 +696,10 @@ def test_create_measure_col_in_melted_data_set_for_pivoted_shape():
     # assert whether the melted_df_with_measure_col has the correct number of columns.
     assert melted_df.shape[1] == 6
     # assert whether the melted_df_with_measure_col dataframe equals to the expected dataframe.
-    melted_df = melted_df.reindex(["Some Attribute", "Some Dimension", "Observation Value", "Value", "Measure"], axis=1)
+    melted_df = melted_df.reindex(
+        ["Some Attribute", "Some Dimension", "Observation Value", "Value", "Measure"],
+        axis=1,
+    )
     assert_frame_equal(
         melted_df, _expected_melted_dataset_with_measure_col_for_pivoted_shape
     )
@@ -701,11 +718,19 @@ def test_create_measure_in_melted_data_set_exception_for_more_than_one_matching_
         pivoted_df, _measure_components_for_multi_measure_pivoted_shape_same_measure
     )
 
-    with pytest.raises(InvalidNumOfDSDComponentsForObsValColTitleException) as exception:
+    with pytest.raises(
+        InvalidNumOfDSDComponentsForObsValColTitleException
+    ) as exception:
         _create_measure_col_in_melted_data_set_for_pivoted_shape(
-            "Measure", melted_df, _measure_components_for_multi_measure_pivoted_shape_same_measure
+            "Measure",
+            melted_df,
+            _measure_components_for_multi_measure_pivoted_shape_same_measure,
         )
-    assert str(exception.value) == f"There should be only 1 component for the observation value column with title 'Some Obs Val', but found 2."
+    assert (
+        str(exception.value)
+        == f"There should be only 1 component for the observation value column with title 'Some Obs Val', but found 2."
+    )
+
 
 def test_create_unit_col_in_melted_data_set_for_pivoted_shape():
     """
@@ -719,12 +744,23 @@ def test_create_unit_col_in_melted_data_set_for_pivoted_shape():
         pivoted_df, _measure_components_for_multi_measure_pivoted_shape
     )
 
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-multi-measure-dataset"
+        / "qb-id-10003.csv-metadata.json"
+    )
+    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
+
+    data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
+
     _create_unit_col_in_melted_data_set_for_pivoted_shape(
         "Unit",
         melted_df,
         _unit_col_about_urls_value_urls,
         _obs_val_col_titles_about_urls,
         _col_names_col_titles,
+        data_cube_state,
     )
 
     assert melted_df is not None
@@ -733,10 +769,19 @@ def test_create_unit_col_in_melted_data_set_for_pivoted_shape():
     # assert whether the melted_df_with_unit_col has the correct number of columns.
     assert melted_df.shape[1] == 6
     # assert whether the melted_df_with_unit_col dataframe equals to the expected dataframe.
-    melted_df = melted_df.reindex(["Some Attribute", "Some Dimension", "Some Unit", "Observation Value", "Value", "Unit"], axis=1)
-    assert_frame_equal(
-        melted_df, _expected_dataset_pivoted_multi_measure_with_unit
+    melted_df = melted_df.reindex(
+        [
+            "Some Attribute",
+            "Some Dimension",
+            "Some Unit",
+            "Observation Value",
+            "Value",
+            "Unit",
+        ],
+        axis=1,
     )
+    assert_frame_equal(melted_df, _expected_dataset_pivoted_multi_measure_with_unit)
+
 
 def test_create_unit_col_in_melted_data_set_for_pivoted_shape_should_throw_invalid_num_of_unit_cols_exception():
     """
@@ -750,16 +795,31 @@ def test_create_unit_col_in_melted_data_set_for_pivoted_shape_should_throw_inval
         pivoted_df, _measure_components_for_multi_measure_pivoted_shape
     )
 
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-multi-measure-dataset"
+        / "qb-id-10003.csv-metadata.json"
+    )
+    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
+
+    data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
+
     with pytest.raises(InvalidNumOfUnitColsForObsValColTitleException) as exception:
         _create_unit_col_in_melted_data_set_for_pivoted_shape(
-        "Unit",
-        melted_df,
-        _unit_col_about_urls_value_urls,
-        _obs_val_col_titles_about_urls_invalid,
-        _col_names_col_titles,
+            "Unit",
+            melted_df,
+            _unit_col_about_urls_value_urls,
+            _obs_val_col_titles_about_urls_invalid,
+            _col_names_col_titles,
+            data_cube_state,
         )
 
-    assert str(exception.value) == "There should be 1 unit column for the observation value column title 'Some Other Obs Val', but found 0 unit columns."
+    assert (
+        str(exception.value)
+        == "There should be 1 unit column for the observation value column title 'Some Other Obs Val', but found 0 unit columns."
+    )
+
 
 def test_create_unit_col_in_melted_data_set_for_pivoted_shape_should_throw_invalid_num_of_val_urls_exception():
     """
@@ -773,13 +833,27 @@ def test_create_unit_col_in_melted_data_set_for_pivoted_shape_should_throw_inval
         pivoted_df, _measure_components_for_multi_measure_pivoted_shape
     )
 
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-multi-measure-dataset"
+        / "qb-id-10003.csv-metadata.json"
+    )
+    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
+
+    data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
+
     with pytest.raises(InvalidNumOfValUrlsForAboutUrlException) as exception:
         _create_unit_col_in_melted_data_set_for_pivoted_shape(
-        "Unit",
-        melted_df,
-        _unit_col_about_urls_value_urls_invalid,
-        _obs_val_col_titles_about_urls,
-        _col_names_col_titles,
+            "Unit",
+            melted_df,
+            _unit_col_about_urls_value_urls_invalid,
+            _obs_val_col_titles_about_urls,
+            _col_names_col_titles,
+            data_cube_state,
         )
 
-    assert str(exception.value) == "There should be only 1 value url for the about url 'qb-id-10003.csv#obs/some-dimension@some-other-measure', but found 0."
+    assert (
+        str(exception.value)
+        == "There should be only 1 value url for the about url 'qb-id-10003.csv#obs/some-dimension@some-other-measure', but found 0."
+    )

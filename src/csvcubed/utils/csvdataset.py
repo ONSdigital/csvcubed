@@ -67,6 +67,7 @@ def _create_unit_col_in_melted_data_set_for_pivoted_shape(
     unit_col_about_urls_value_urls: List[UnitColumnAboutValueUrlResult],
     obs_val_col_titles_about_urls: List[ObservationValueColumnTitleAboutUrlResult],
     col_names_col_titles: List[ColTitlesAndNamesResult],
+    data_cube_state: DataCubeState,
 ):
     """
     Adds the unit column to the melted data set for the pivoted shape data set input.
@@ -99,24 +100,35 @@ def _create_unit_col_in_melted_data_set_for_pivoted_shape(
                 about_url=observation_uri or "None",
                 num_of_value_urls=0,
             )
-        unit_col_value_url = unit_col_about_url_value_url.value_url
 
-        # Get the variable names in the unit col's value url.
-        unit_val_url_variable_names = uritemplate.variables(unit_col_value_url)
-        # If there are no variable names, the unit is the unit col's value url.
-        if not any(unit_val_url_variable_names):
-            melted_df.loc[idx, col_name] = unit_col_value_url
+        unit_uri = _get_unit_uri_for_maybe_template(
+            unit_col_about_url_value_url.value_url, col_names_col_titles, row
+        )
+        maybe_unit = data_cube_state.get_unit_for_uri(unit_uri)
+        if maybe_unit is None:
+            melted_df.loc[idx, col_name] = unit_uri
         else:
-            # If there are variable names, identify the column titles for the variable names and generate the unit value url, and set it as the unit.
-            processed_unit_value_url = _materialise_unit_uri_for_row(
-                unit_val_url_variable_names,
-                col_names_col_titles,
-                unit_col_value_url,
-                row,
-            )
-            # STEP 1: Call the new sparql query which returns a mapping between unit uris and unit lables.
-            # STEP 2: If there is a unit label for the unit uri, replace processed_unit_value_url with the unit label. Otherwise use the unit uri (i.e. dont replace processed_unit_value_url).
-            melted_df.loc[idx, col_name] = processed_unit_value_url
+            melted_df.loc[idx, col_name] = maybe_unit.unit_label
+
+
+def _get_unit_uri_for_maybe_template(
+    template_url: str,
+    col_names_col_titles: List[ColTitlesAndNamesResult],
+    row: pd.Series,
+) -> str:
+    # Get the variable names in the unit col's value url.
+    unit_val_url_variable_names = uritemplate.variables(template_url)
+    # If there are no variable names, the unit is the unit col's value url.
+    if not any(unit_val_url_variable_names):
+        return template_url
+    else:
+        # If there are variable names, identify the column titles for the variable names and generate the unit value url, and set it as the unit.
+        return _materialise_unit_uri_for_row(
+            unit_val_url_variable_names,
+            col_names_col_titles,
+            template_url,
+            row,
+        )
 
 
 def _create_measure_col_in_melted_data_set_for_pivoted_shape(
@@ -256,6 +268,7 @@ def transform_dataset_to_canonical_shape(
             unit_col_about_urls_value_urls,
             obs_val_col_titles_about_urls,
             col_names_col_titles,
+            data_cube_state,
         )
 
         canonical_shape_dataset = melted_df.drop("Observation Value", axis=1)

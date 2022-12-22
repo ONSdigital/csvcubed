@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from functools import cached_property
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Optional, TypeVar
 
 import rdflib
 
@@ -18,6 +18,9 @@ from csvcubed.utils.sparql_handler.sparqlmanager import (
 )
 
 
+T = TypeVar("T")
+
+
 @dataclass
 class DataCubeState:
     rdf_graph: rdflib.Graph
@@ -26,7 +29,7 @@ class DataCubeState:
     Private utility functions.
     """
 
-    def _get_value_for_key(self, key: str, dict: Dict) -> Any:
+    def _get_value_for_key(self, key: str, dict: Dict[str, T]) -> T:
         maybe_value = dict.get(key)
         if maybe_value is None:
             raise ValueError(f"Could not find the definition for key '{key}'")
@@ -111,11 +114,10 @@ class DataCubeState:
         )
         return value
 
-    def get_unit_for_uri(self, uri: str) -> UnitResult:
+    def get_unit_for_uri(self, uri: str) -> Optional[UnitResult]:
         """ """
-        value: UnitResult = self._get_value_for_key(uri, self._units)
-        return value
+        return self._units.get(uri)
 
     def get_units(self) -> List[UnitResult]:
         """ """
-        return self._units.values()
+        return list(self._units.values())

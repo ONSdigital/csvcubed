@@ -149,21 +149,21 @@ expected_dataframe_pivoted_multi_measure = DataFrame(
             "Some Attribute": "attr-a",
             "Some Obs Val": 1,
             "Some Other Obs Val": 2,
-            "Some Unit": "percent"
+            "Some Unit": "percent",
         },
         {
             "Some Dimension": "b",
             "Some Attribute": "attr-b",
             "Some Obs Val": 2,
             "Some Other Obs Val": 4,
-            "Some Unit": "percent"
+            "Some Unit": "percent",
         },
         {
             "Some Dimension": "c",
             "Some Attribute": "attr-c",
             "Some Obs Val": 3,
             "Some Other Obs Val": 6,
-            "Some Unit": "percent"
+            "Some Unit": "percent",
         },
     ]
 ).replace("", np.NAN)
@@ -241,7 +241,7 @@ _expected_by_measure_and_unit_val_counts_df_pivoted_single_measure = DataFrame(
     [
         {
             "Measure": "Some Measure",
-            "Unit": "qb-id-10004.csv#unit/some-unit",
+            "Unit": "Some Unit",
             0: 3,
         }
     ]
@@ -251,16 +251,17 @@ _expected_by_measure_and_unit_val_counts_df_pivoted_multi_measure = DataFrame(
     [
         {
             "Measure": "Some Measure",
-            "Unit": "qb-id-10003.csv#unit/some-unit",
+            "Unit": "Some Unit",
             0: 3,
         },
-         {
+        {
             "Measure": "Some Other Measure",
-            "Unit": "qb-id-10003.csv#unit/percent",
+            "Unit": "Percent",
             0: 3,
-        }
+        },
     ]
 ).replace("", np.NAN)
+
 
 def get_arguments_qb_dataset(
     cube_shape: CubeShape, csvw_metadata_rdf_graph: Graph, csvw_metadata_json_path: Path
@@ -272,13 +273,9 @@ def get_arguments_qb_dataset(
         select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri,
         csvw_metadata_json_path,
     )
-    csv_url = select_qb_csv_url(
-        csvw_metadata_rdf_graph, dataset_uri
-    ).csv_url
+    csv_url = select_qb_csv_url(csvw_metadata_rdf_graph, dataset_uri).csv_url
 
-    dataset: DataFrame = load_csv_to_dataframe(
-        csvw_metadata_json_path, Path(csv_url)
-    )
+    dataset: DataFrame = load_csv_to_dataframe(csvw_metadata_json_path, Path(csv_url))
 
     dsd_uri = select_csvw_dsd_dataset_label_and_dsd_def_uri(
         csvw_metadata_rdf_graph
@@ -299,9 +296,7 @@ def _get_arguments_skos_codelist(
     """
     csv_url = select_codelist_csv_url(csvw_metadata_rdf_graph).csv_url
 
-    dataset: DataFrame = load_csv_to_dataframe(
-        csvw_metadata_json_path, Path(csv_url)
-    )
+    dataset: DataFrame = load_csv_to_dataframe(csvw_metadata_json_path, Path(csv_url))
     return (dataset, csv_url)
 
 
@@ -414,7 +409,9 @@ def test_get_measure_col_name_from_dsd_measure_col_present():
         csvw_metadata_json_path,
     )
 
-    measure_col = get_standard_shape_measure_col_name_from_dsd(result_qube_components.qube_components)
+    measure_col = get_standard_shape_measure_col_name_from_dsd(
+        result_qube_components.qube_components
+    )
 
     assert measure_col == "Measure Type"
 
@@ -441,7 +438,9 @@ def test_get_measure_col_name_from_dsd_measure_col_not_present():
         csvw_metadata_json_path,
     )
 
-    measure_col = get_standard_shape_measure_col_name_from_dsd(result_qube_components.qube_components)
+    measure_col = get_standard_shape_measure_col_name_from_dsd(
+        result_qube_components.qube_components
+    )
 
     assert measure_col is None
 
@@ -468,7 +467,9 @@ def test_get_unit_col_name_from_dsd_unit_col_present():
         csvw_metadata_json_path,
     )
 
-    unit_col = get_standard_shape_unit_col_name_from_dsd(result_qube_components.qube_components)
+    unit_col = get_standard_shape_unit_col_name_from_dsd(
+        result_qube_components.qube_components
+    )
 
     assert unit_col == "Unit"
 
@@ -495,7 +496,9 @@ def test_get_unit_col_name_from_dsd_unit_col_not_present():
         csvw_metadata_json_path,
     )
 
-    unit_col = get_standard_shape_unit_col_name_from_dsd(result_qube_components.qube_components)
+    unit_col = get_standard_shape_unit_col_name_from_dsd(
+        result_qube_components.qube_components
+    )
 
     assert unit_col is None
 
@@ -522,7 +525,9 @@ def test_get_single_measure_label_from_dsd():
         csvw_metadata_json_path,
     )
 
-    measure_col = get_standard_shape_measure_col_name_from_dsd(result_qube_components.qube_components)
+    measure_col = get_standard_shape_measure_col_name_from_dsd(
+        result_qube_components.qube_components
+    )
     assert measure_col is None
 
     result_measure = get_single_measure_from_dsd(
@@ -735,6 +740,7 @@ def test_get_val_counts_info_single_unit_single_measure_dataset():
         _expected_by_measure_and_unit_val_counts_df_single_unit_single_measure,
     )
 
+
 def test_get_val_counts_info_pivoted_single_measure_dataset():
     """
     Should produce expected `DatasetObservationsByMeasureUnitInfoResult` for pivoted single measure dataset.
@@ -747,15 +753,11 @@ def test_get_val_counts_info_pivoted_single_measure_dataset():
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
-    
+
     data_set_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
-    data_set_uri = to_absolute_rdflib_file_path(
-                data_set_uri, csvw_metadata_json_path
-            )
-    data_set_url = select_qb_csv_url(
-                csvw_metadata_rdf_graph, data_set_uri
-            ).csv_url
-    
+    data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
+    data_set_url = select_qb_csv_url(csvw_metadata_rdf_graph, data_set_uri).csv_url
+
     (dataset, qube_components, dsd_uri, _) = get_arguments_qb_dataset(
         CubeShape.Standard, csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
@@ -792,6 +794,7 @@ def test_get_val_counts_info_pivoted_single_measure_dataset():
         _expected_by_measure_and_unit_val_counts_df_pivoted_single_measure,
     )
 
+
 def test_get_val_counts_info_pivoted_multi_measure_dataset():
     """
     Should produce expected `DatasetObservationsByMeasureUnitInfoResult` for pivoted multi measure dataset.
@@ -804,15 +807,11 @@ def test_get_val_counts_info_pivoted_multi_measure_dataset():
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
-    
+
     data_set_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
-    data_set_uri = to_absolute_rdflib_file_path(
-                data_set_uri, csvw_metadata_json_path
-            )
-    data_set_url = select_qb_csv_url(
-                csvw_metadata_rdf_graph, data_set_uri
-            ).csv_url
-    
+    data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
+    data_set_url = select_qb_csv_url(csvw_metadata_rdf_graph, data_set_uri).csv_url
+
     (dataset, qube_components, dsd_uri, _) = get_arguments_qb_dataset(
         CubeShape.Standard, csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
@@ -849,6 +848,7 @@ def test_get_val_counts_info_pivoted_multi_measure_dataset():
         _expected_by_measure_and_unit_val_counts_df_pivoted_multi_measure,
     )
 
+
 def test_get_concepts_hierarchy_info_hierarchy_with_depth_of_one():
     """
     Should produce the expected tree structure for the given codelist.
@@ -868,10 +868,8 @@ def test_get_concepts_hierarchy_info_hierarchy_with_depth_of_one():
     result_code_list_cols = select_codelist_cols_by_csv_url(
         csvw_metadata_rdf_graph, csv_url
     )
-    result_primary_key_col_names_by_csv_url = (
-        select_primary_key_col_names_by_csv_url(
-            csvw_metadata_rdf_graph, csv_url
-        )
+    result_primary_key_col_names_by_csv_url = select_primary_key_col_names_by_csv_url(
+        csvw_metadata_rdf_graph, csv_url
     )
 
     parent_notation_col_name = get_codelist_col_title_by_property_url(
@@ -909,10 +907,8 @@ def test_get_concepts_hierarchy_info_hierarchy_with_depth_more_than_one():
     result_code_list_cols = select_codelist_cols_by_csv_url(
         csvw_metadata_rdf_graph, csv_url
     )
-    result_primary_key_col_names_by_csv_url = (
-        select_primary_key_col_names_by_csv_url(
-            csvw_metadata_rdf_graph, csv_url
-        )
+    result_primary_key_col_names_by_csv_url = select_primary_key_col_names_by_csv_url(
+        csvw_metadata_rdf_graph, csv_url
     )
 
     parent_notation_col_name = get_codelist_col_title_by_property_url(
