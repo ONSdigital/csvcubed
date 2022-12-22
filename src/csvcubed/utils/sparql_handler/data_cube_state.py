@@ -1,11 +1,13 @@
 from dataclasses import dataclass
 from functools import cached_property
 from pathlib import Path
-from typing import Dict, List, Any, Tuple
+from typing import Dict, List, Any
 
 import rdflib
-from csvcubed.models.cube.cube_shape import CubeShape
 
+
+from csvcubed.models.cube.cube_shape import CubeShape
+from csvcubed.utils.iterables import group_by
 from csvcubed.models.sparqlresults import (
     ColTitlesAndNamesResult,
     DataSetDsdUriCsvUrlResult,
@@ -14,7 +16,6 @@ from csvcubed.models.sparqlresults import (
     QubeComponentsResult,
     UnitColumnAboutValueUrlResult,
 )
-from csvcubed.utils.sparql_handler.sparql import none_or_map
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_col_titles_and_names,
     select_csvw_dsd_qube_components,
@@ -52,9 +53,7 @@ class DataCubeState:
         Queries and caches unit column about and value urls.
         """
         results = select_unit_col_about_value_urls(self.rdf_graph)
-        assert len(results) > 0
-        val = {results[0].csv_url: results}
-        return val
+        return group_by(results, lambda r: r.csv_url)
 
     @cached_property
     def _obs_val_col_titles_about_urls(
@@ -64,8 +63,7 @@ class DataCubeState:
         Queries and caches observation value column titles and about urls.
         """
         results = select_observation_value_column_title_and_about_url(self.rdf_graph)
-        assert len(results) > 0
-        return {results[0].csv_url: results}
+        return group_by(results, lambda r: r.csv_url)
 
     @cached_property
     def _col_names_col_titles(self) -> Dict[str, List[ColTitlesAndNamesResult]]:
@@ -73,8 +71,7 @@ class DataCubeState:
         Queries and caches column names and titles.
         """
         results = select_col_titles_and_names(self.rdf_graph)
-        assert len(results) > 0
-        return {results[0].csv_url: results}
+        return group_by(results, lambda r: r.csv_url)
 
     @cached_property
     def _data_set_dsd_and_csv_url(self) -> Dict[str, DataSetDsdUriCsvUrlResult]:
@@ -84,7 +81,6 @@ class DataCubeState:
         """
         results = select_data_set_dsd_and_csv_url(self.rdf_graph)
         results_dict: Dict[str, DataSetDsdUriCsvUrlResult] = {}
-        assert len(results) > 0
         for result in results:
             results_dict[result.csv_url] = result
         return results_dict
@@ -97,17 +93,7 @@ class DataCubeState:
         result = select_csvw_dsd_qube_components(
             self.cube_shape, self.rdf_graph, self.csvw_json_path
         )
-        results_dict: Dict[str, List[QubeComponentResult]] = {}
-        for component in result.qube_components:
-            components = (
-                none_or_map(
-                    results_dict.get(component.dsd_uri), list[QubeComponentResult]
-                )
-                or []
-            )
-            components.append(component)
-            results_dict[component.dsd_uri] = components
-        return results_dict
+        return group_by(result.qube_components, lambda c: c.dsd_uri)
 
     """
     Public getters for the cached properties.
