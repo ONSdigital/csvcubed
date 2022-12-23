@@ -857,3 +857,45 @@ def test_create_unit_col_in_melted_data_set_for_pivoted_shape_should_throw_inval
         str(exception.value)
         == "There should be only 1 value url for the about url 'qb-id-10003.csv#obs/some-dimension@some-other-measure', but found 0."
     )
+
+
+def test_unit_not_defined_locally():
+    pass
+
+    # copy one of the tests
+    # make a new json file where the unit is not defined locally???????
+    # use the method above to create the pivoted shape
+    # which will be like myself (perfect)
+
+    test_csv_file = (
+        _test_case_base_dir / "pivoted-multi-measure-dataset" / "qb-id-10003.csv"
+    )
+    pivoted_df = pd.read_csv(test_csv_file)
+    melted_df = _melt_data_set(
+        pivoted_df, _measure_components_for_multi_measure_pivoted_shape
+    )
+
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-multi-measure-dataset"
+        / "unit_not_locally_defined.csv-metadata.json"
+    )
+    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
+
+    data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
+
+    with pytest.raises(InvalidNumOfValUrlsForAboutUrlException) as exception:
+        _create_unit_col_in_melted_data_set_for_pivoted_shape(
+            "Unit",
+            melted_df,
+            _unit_col_about_urls_value_urls_invalid,
+            _obs_val_col_titles_about_urls,
+            _col_names_col_titles,
+            data_cube_state,
+        )
+
+    assert (
+        str(exception.value)
+        == "There should be only 1 value url for the about url 'qb-id-10003.csv#obs/some-dimension@some-other-measure', but found 0."
+    )
