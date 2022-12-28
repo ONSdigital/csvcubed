@@ -18,12 +18,8 @@ from csvcubed.cli.inspect.metadatainputvalidator import (
 from csvcubed.cli.inspect.metadataprinter import MetadataPrinter
 from csvcubed.models.csvcubedexception import FailedToLoadRDFGraphException
 from csvcubed.models.csvwtype import CSVWType
-from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
 from csvcubed.utils.sparql_handler.code_list_state import CodeListState
-from csvcubed.utils.sparql_handler.sparqlquerymanager import (
-    select_is_pivoted_shape_for_measures_in_data_set,
-)
 from csvcubed.utils.tableschema import CsvwRdfManager
 
 _logger = logging.getLogger(__name__)
@@ -45,16 +41,10 @@ def inspect(csvw_metadata_json_path: Path) -> None:
     if csvw_metadata_rdf_graph is None:
         raise FailedToLoadRDFGraphException(csvw_metadata_json_path)
 
-    is_pivoted_shape_measures = select_is_pivoted_shape_for_measures_in_data_set(
-        csvw_metadata_rdf_graph
-    )
-
     csvw_metadata_rdf_validator = MetadataValidator(
         csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
-    (csvw_type, cube_shape) = csvw_metadata_rdf_validator.detect_type_and_shape(
-        is_pivoted_shape_measures
-    )
+    csvw_type = csvw_metadata_rdf_validator.detect_csvw_type()
 
     (
         type_printable,
@@ -65,7 +55,7 @@ def inspect(csvw_metadata_json_path: Path) -> None:
         val_counts_by_measure_unit_printable,
         codelist_hierarchy_info_printable,
     ) = _generate_printables(
-        csvw_type, cube_shape, csvw_metadata_rdf_graph, csvw_metadata_json_path
+        csvw_type, csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
 
     print(f"{linesep}{type_printable}")
@@ -82,7 +72,6 @@ def inspect(csvw_metadata_json_path: Path) -> None:
 
 def _generate_printables(
     csvw_type: CSVWType,
-    cube_shape: Optional[CubeShape],
     csvw_metadata_rdf_graph: rdflib.ConjunctiveGraph,
     csvw_metadata_json_path: Path,
 ) -> Tuple[str, str, str, str, str, str, str]:
@@ -96,14 +85,13 @@ def _generate_printables(
     metadata_printer: MetadataPrinter
 
     if csvw_type == CSVWType.QbDataSet:
-        if cube_shape is None:
-            raise ValueError("The cube shape cannot be None for a Data Cube input")
-        data_cube_state = DataCubeState(csvw_metadata_rdf_graph, cube_shape, csvw_metadata_json_path)
+        data_cube_state = DataCubeState(
+            csvw_metadata_rdf_graph, csvw_metadata_json_path
+        )
         metadata_printer = MetadataPrinter(
             data_cube_state=data_cube_state,
             code_list_state=None,
             csvw_type=csvw_type,
-            cube_shape=cube_shape,
             csvw_metadata_rdf_graph=csvw_metadata_rdf_graph,
             csvw_metadata_json_path=csvw_metadata_json_path,
         )
@@ -113,7 +101,6 @@ def _generate_printables(
             data_cube_state=None,
             code_list_state=code_list_state,
             csvw_type=csvw_type,
-            cube_shape=cube_shape,
             csvw_metadata_rdf_graph=csvw_metadata_rdf_graph,
             csvw_metadata_json_path=csvw_metadata_json_path,
         )

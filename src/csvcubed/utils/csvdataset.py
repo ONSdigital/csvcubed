@@ -18,7 +18,7 @@ from csvcubed.utils.iterables import first
 from csvcubed.models.csvcubedexception import (
     InvalidNumOfDSDComponentsForObsValColTitleException,
     InvalidNumOfUnitColsForObsValColTitleException,
-    InvalidNumOfValUrlsForAboutUrlException
+    InvalidNumOfValUrlsForAboutUrlException,
 )
 from csvcubed.utils.qb.components import ComponentField, ComponentPropertyType
 from csvcubed.models.sparqlresults import (
@@ -57,8 +57,10 @@ def _materialise_unit_uri_for_row(
             col_names_col_titles, lambda u: u.column_name == unit_val_url_variable_name
         )
 
-        if col_name_col_title:      
-            col_name_value_map[unit_val_url_variable_name] = row[col_name_col_title.column_title]
+        if col_name_col_title:
+            col_name_value_map[unit_val_url_variable_name] = row[
+                col_name_col_title.column_title
+            ]
 
     return uritemplate.expand(unit_col_value_url, col_name_value_map)
 
@@ -81,7 +83,8 @@ def _create_unit_col_in_melted_data_set_for_pivoted_shape(
 
         # Use the observation value col title to get the unit col's about url.
         obs_val_col_title_about_url = first(
-            obs_val_col_titles_about_urls,  lambda o: o.observation_value_col_title == obs_val_col_title
+            obs_val_col_titles_about_urls,
+            lambda o: o.observation_value_col_title == obs_val_col_title,
         )
         if obs_val_col_title_about_url is None:
             raise InvalidNumOfUnitColsForObsValColTitleException(
@@ -93,7 +96,7 @@ def _create_unit_col_in_melted_data_set_for_pivoted_shape(
         # Use the unit col's about url to get the unit col's value url.
         # N.B., for a old-style single measure pivoted shape, the following filter still works as the about url and observation uri are both None (i.e. equal).
         unit_col_about_url_value_url = first(
-            unit_col_about_urls_value_urls,  lambda u: u.about_url == observation_uri
+            unit_col_about_urls_value_urls, lambda u: u.about_url == observation_uri
         )
         if unit_col_about_url_value_url is None:
             raise InvalidNumOfValUrlsForAboutUrlException(
@@ -174,11 +177,9 @@ def _melt_data_set(
 
 def transform_dataset_to_canonical_shape(
     data_cube_state: DataCubeState,
-    cube_shape: CubeShape,
     dataset: pd.DataFrame,
     qube_components: List[QubeComponentResult],
-    csv_url: Optional[str],
-    dataset_uri: str,
+    csv_url: str,
     csvw_metadata_rdf_graph: rdflib.ConjunctiveGraph,
     csvw_metadata_json_path: Path,
 ) -> Tuple[pd.DataFrame, str, str]:
@@ -193,13 +194,16 @@ def transform_dataset_to_canonical_shape(
     unit_col: str
     measure_col: str
 
+    cube_identifiers = data_cube_state.get_cube_identifiers_for_csv(csv_url)
+    cube_shape = data_cube_state.get_shape_for_csv(csv_url)
+
     if cube_shape == CubeShape.Standard:
         unit_col_retrived = get_standard_shape_unit_col_name_from_dsd(qube_components)
         if unit_col_retrived is None:
             unit_col = f"Unit_{str(uuid1())}"
             result = select_single_unit_from_dsd(
                 csvw_metadata_rdf_graph,
-                dataset_uri,
+                cube_identifiers.dsd_uri,
                 csvw_metadata_json_path,
             )
             canonical_shape_dataset[unit_col] = (
@@ -208,7 +212,9 @@ def transform_dataset_to_canonical_shape(
         else:
             unit_col = unit_col_retrived
 
-        measure_col_retrived = get_standard_shape_measure_col_name_from_dsd(qube_components)
+        measure_col_retrived = get_standard_shape_measure_col_name_from_dsd(
+            qube_components
+        )
         if measure_col_retrived is None:
             measure_col = f"Measure_{str(uuid1())}"
             result = get_single_measure_from_dsd(
@@ -224,9 +230,7 @@ def transform_dataset_to_canonical_shape(
     else:
         # In pivoted shape
         if csv_url is None:
-            raise ValueError(
-                "csv_url cannot be None."
-            )
+            raise ValueError("csv_url cannot be None.")
 
         unit_col_about_urls_value_urls = (
             data_cube_state.get_unit_col_about_value_urls_for_csv(csv_url)
@@ -234,9 +238,7 @@ def transform_dataset_to_canonical_shape(
         obs_val_col_titles_about_urls = (
             data_cube_state.get_obs_val_col_titles_about_urls_for_csv(csv_url)
         )
-        col_names_col_titles = data_cube_state.get_col_name_col_title_for_csv(
-            csv_url
-        )
+        col_names_col_titles = data_cube_state.get_col_name_col_title_for_csv(csv_url)
 
         measure_components = filter_components_from_dsd(
             qube_components,

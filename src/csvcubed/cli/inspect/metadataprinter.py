@@ -37,7 +37,7 @@ from csvcubed.models.sparqlresults import (
     CodelistsResult,
     ColsWithSuppressOutputTrueResult,
     DSDLabelURIResult,
-    DataSetDsdUriCsvUrlResult,
+    CubeTableIdentifiers,
     PrimaryKeyColNamesByDatasetUrlResult,
     QubeComponentsResult,
 )
@@ -74,7 +74,6 @@ class MetadataPrinter:
     data_cube_state: Optional[DataCubeState]
     code_list_state: Optional[CodeListState]
     csvw_type: CSVWType
-    cube_shape: Optional[CubeShape]
     csvw_metadata_rdf_graph: rdflib.ConjunctiveGraph
     csvw_metadata_json_path: Path
 
@@ -84,7 +83,7 @@ class MetadataPrinter:
 
     result_catalog_metadata: CatalogMetadataResult = field(init=False)
     result_dataset_label_dsd_uri: DSDLabelURIResult = field(init=False)
-    result_data_set_dsd_csv_url: DataSetDsdUriCsvUrlResult = field(init=False)
+    result_data_set_dsd_csv_url: CubeTableIdentifiers = field(init=False)
     result_qube_components: QubeComponentsResult = field(init=False)
     result_cols_with_suppress_output_true: ColsWithSuppressOutputTrueResult = field(
         init=False
@@ -156,7 +155,11 @@ class MetadataPrinter:
             self.csvw_metadata_json_path, Path(self.csv_url)
         )
         self.result_dataset_observations_info = get_dataset_observations_info(
-            self.dataset, self.csvw_type, self.cube_shape
+            self.dataset,
+            self.csvw_type,
+            self.data_cube_state.get_shape_for_csv(self.csv_url)
+            if self.csvw_type == CSVWType.QbDataSet
+            else None,
         )
 
     def get_datacube_results(self):
@@ -165,9 +168,6 @@ class MetadataPrinter:
 
         Member of :class:`./MetadataPrinter`.
         """
-        if self.cube_shape is None or self.data_cube_state is None:
-            raise ValueError("Cube shape and/or data cube state cannot be None")
-
         self.result_dataset_label_dsd_uri = (
             select_csvw_dsd_dataset_label_and_dsd_def_uri(self.csvw_metadata_rdf_graph)
         )
@@ -189,11 +189,9 @@ class MetadataPrinter:
             unit_col,
         ) = transform_dataset_to_canonical_shape(
             self.data_cube_state,
-            self.cube_shape,
             self.dataset,
             self.result_qube_components.qube_components,
             self.csv_url,
-            self.result_dataset_label_dsd_uri.dsd_uri,
             self.csvw_metadata_rdf_graph,
             self.csvw_metadata_json_path,
         )

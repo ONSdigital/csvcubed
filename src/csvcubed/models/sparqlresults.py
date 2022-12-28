@@ -9,6 +9,7 @@ from os import linesep
 from pathlib import Path
 from typing import List, Optional, Dict, Any
 
+import rdflib
 from csvcubedmodels.dataclassbase import DataClassBase
 from rdflib.query import ResultRow
 
@@ -24,6 +25,7 @@ from csvcubed.utils.qb.components import (
 from csvcubed.utils.sparql_handler.sparql import none_or_map
 
 _logger = logging.getLogger(__name__)
+
 
 
 @dataclass
@@ -88,7 +90,7 @@ class DSDLabelURIResult:
 
 
 @dataclass
-class DataSetDsdUriCsvUrlResult(DataClassBase):
+class CubeTableIdentifiers(DataClassBase):
     """
     Links the CSV, DataSet and DataStructureDefinition URIs for a given cube.
     """
@@ -305,9 +307,11 @@ class TableSchemaPropertiesResult:
 @dataclass
 class IsPivotedShapeMeasureResult:
     """
-    A dataclass that is used to return the measure of from a cube's metadata and whether that measure is part of a pivoted or standard shape cube.
+    A dataclass that is used to return the measure of from a cube's metadata and whether that measure is part of a
+    pivoted or standard shape cube.
     """
 
+    csv_url: str
     measure: str
     is_pivoted_shape: bool
 
@@ -396,13 +400,13 @@ def map_dataset_label_dsd_uri_sparql_result(
 
 def _map_data_set_dsd_csv_url_result(
     sparql_results: List[ResultRow],
-) -> List[DataSetDsdUriCsvUrlResult]:
+) -> List[CubeTableIdentifiers]:
     """
     TODO: Add description
     """
 
-    def map_row(row_result: Dict[str, Any]) -> DataSetDsdUriCsvUrlResult:
-        return DataSetDsdUriCsvUrlResult(
+    def map_row(row_result: Dict[str, Any]) -> CubeTableIdentifiers:
+        return CubeTableIdentifiers(
             csv_url=str(row_result["csvUrl"]),
             data_set_url=str(row_result["dataSet"]),
             dsd_uri=str(row_result["dsd"]),
@@ -462,7 +466,7 @@ def _map_obs_val_for_dsd_component_properties_results(
 
 def map_qube_components_sparql_result(
     sparql_results_dsd_components: List[ResultRow],
-    sparql_results_obs_val_col_titles: Optional[List[ResultRow]],
+    sparql_results_obs_val_col_titles: List[ResultRow],
     json_path: Path,
 ) -> QubeComponentsResult:
     """
@@ -472,18 +476,18 @@ def map_qube_components_sparql_result(
 
     :return: `QubeComponentsResult`
     """
-    obs_val_col_title_results: Optional[List[ObsValDsdComponentResult]] = None
-    if sparql_results_obs_val_col_titles is not None:
-        obs_val_col_title_results = _map_obs_val_for_dsd_component_properties_results(
-            sparql_results_obs_val_col_titles
-        )
+    obs_val_col_title_results: List[
+        ObsValDsdComponentResult
+    ] = _map_obs_val_for_dsd_component_properties_results(
+        sparql_results_obs_val_col_titles
+    )
 
     components: List[QubeComponentResult] = []
     for result in sparql_results_dsd_components:
         dsd_component_result: QubeComponentResult = _map_qube_component_sparql_result(
             result, json_path
         )
-        if obs_val_col_title_results is not None:
+        if any(obs_val_col_title_results):
             obs_val_col_title_result_for_component = [
                 obs_val_col_title_result
                 for obs_val_col_title_result in obs_val_col_title_results
@@ -752,6 +756,7 @@ def map_is_pivoted_shape_for_measures_in_data_set(
 
     def map_row(row_result: Dict[str, Any]) -> IsPivotedShapeMeasureResult:
         return IsPivotedShapeMeasureResult(
+            csv_url=str(row_result["csvUrl"]),
             measure=str(row_result["measure"]),
             is_pivoted_shape=bool(row_result["isPivotedShape"]),
         )

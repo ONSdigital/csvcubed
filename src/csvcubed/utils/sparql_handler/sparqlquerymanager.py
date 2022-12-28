@@ -21,12 +21,13 @@ from csvcubed.models.csvcubedexception import (
     InvalidNumberOfRecordsException,
 )
 from csvcubed.models.cube.cube_shape import CubeShape
+from csvcubed.models.sparql.valuesbinding import ValuesBinding
 from csvcubed.models.sparqlresults import (
     CSVWTableSchemaFileDependenciesResult,
     CatalogMetadataResult,
     CodeListColsByDatasetUrlResult,
     ColTitlesAndNamesResult,
-    DataSetDsdUriCsvUrlResult,
+    CubeTableIdentifiers,
     IsPivotedShapeMeasureResult,
     ObservationValueColumnTitleAboutUrlResult,
     PrimaryKeyColNamesByDatasetUrlResult,
@@ -55,7 +56,7 @@ from csvcubed.models.sparqlresults import (
     map_single_unit_from_dsd_result,
     map_metadata_dependency_results,
     map_table_schema_properties_result,
-    map_unit_col_about_value_urls_result,
+    map_unit_col_about_value_urls_result
 )
 from csvcubed.utils.sparql_handler.sparql import ask, select
 
@@ -228,7 +229,7 @@ def select_csvw_dsd_dataset_label_and_dsd_def_uri(
 
 def select_data_set_dsd_and_csv_url(
     rdf_graph: rdflib.ConjunctiveGraph,
-) -> List[DataSetDsdUriCsvUrlResult]:
+) -> List[CubeTableIdentifiers]:
     """
     TODO: Add description
     """
@@ -247,7 +248,6 @@ def select_data_set_dsd_and_csv_url(
 
 
 def select_csvw_dsd_qube_components(
-    cube_shape: Optional[CubeShape],
     rdf_graph: rdflib.ConjunctiveGraph,
     json_path: Path,
 ) -> QubeComponentsResult:
@@ -263,14 +263,12 @@ def select_csvw_dsd_qube_components(
         rdf_graph,
     )
 
-    result_observation_val_col_titles: Optional[List[ResultRow]] = None
-    if cube_shape == CubeShape.Pivoted:
-        result_observation_val_col_titles = select(
-            _get_query_string_from_file(
-                SPARQLQueryName.SELECT_OBS_VAL_FOR_DSD_COMPONENT_PROPERTIES
-            ),
-            rdf_graph,
-        )
+    result_observation_val_col_titles: List[ResultRow] = select(
+        _get_query_string_from_file(
+            SPARQLQueryName.SELECT_OBS_VAL_FOR_DSD_COMPONENT_PROPERTIES
+        ),
+        rdf_graph,
+    )
 
     return map_qube_components_sparql_result(
         result_dsd_components, result_observation_val_col_titles, json_path
@@ -279,6 +277,7 @@ def select_csvw_dsd_qube_components(
 
 def select_is_pivoted_shape_for_measures_in_data_set(
     rdf_graph: rdflib.ConjunctiveGraph,
+    cube_table_identifiers: List[CubeTableIdentifiers],
 ) -> List[IsPivotedShapeMeasureResult]:
     """
     Queries the measure and whether it is a part of a pivoted or standard shape cube.
@@ -288,9 +287,28 @@ def select_is_pivoted_shape_for_measures_in_data_set(
             SPARQLQueryName.SELECT_IS_PIVOTED_SHAPE_FOR_MEASURES_IN_DATA_SET
         ),
         rdf_graph,
+        values_bindings=[
+            _cube_table_identifiers_to_values_binding(cube_table_identifiers)
+        ],
     )
 
     return map_is_pivoted_shape_for_measures_in_data_set(result_is_pivoted_shape)
+
+
+def _cube_table_identifiers_to_values_binding(
+    csv_dsd_dataset_uris: List[CubeTableIdentifiers],
+) -> ValuesBinding:
+    return ValuesBinding(
+        variable_names=["csvUrl", "dataSet", "dsd"],
+        rows=[
+            [
+                URIRef(uris.csv_url),
+                URIRef(uris.data_set_url),
+                URIRef(uris.dsd_uri),
+            ]
+            for uris in csv_dsd_dataset_uris
+        ],
+    )
 
 
 def select_cols_where_suppress_output_is_true(

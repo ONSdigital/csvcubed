@@ -20,6 +20,7 @@ from csvcubed.models.sparqlresults import (
     QubeComponentResult,
     QubeComponentsResult,
     MetadataDependenciesResult,
+    CubeTableIdentifiers,
 )
 from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.rdf import parse_graph_retain_relative
@@ -268,9 +269,7 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
-    data_cube_state = DataCubeState(
-        csvw_metadata_rdf_graph, CubeShape.Pivoted, csvw_metadata_json_path
-    )
+    data_cube_state = DataCubeState(csvw_metadata_rdf_graph, csvw_metadata_json_path)
 
     result: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
         csvw_metadata_rdf_graph
@@ -368,9 +367,7 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    data_cube_state = DataCubeState(
-        csvw_metadata_rdf_graph, CubeShape.Pivoted, csvw_metadata_json_path
-    )
+    data_cube_state = DataCubeState(csvw_metadata_rdf_graph, csvw_metadata_json_path)
 
     result: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
         csvw_metadata_rdf_graph
@@ -483,9 +480,7 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    data_cube_state = DataCubeState(
-        csvw_metadata_rdf_graph, CubeShape.Pivoted, csvw_metadata_json_path
-    )
+    data_cube_state = DataCubeState(csvw_metadata_rdf_graph, csvw_metadata_json_path)
 
     result: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
         csvw_metadata_rdf_graph
@@ -794,7 +789,16 @@ def test_select_is_pivoted_shape_for_measures_in_pivoted_shape_data_set():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    results = select_is_pivoted_shape_for_measures_in_data_set(csvw_metadata_rdf_graph)
+    results = select_is_pivoted_shape_for_measures_in_data_set(
+        csvw_metadata_rdf_graph,
+        [
+            CubeTableIdentifiers(
+                "qb-id-10003.csv",
+                "qb-id-10003.csv#dataset",
+                "qb-id-10003.csv#structure",
+            )
+        ],
+    )
 
     assert results is not None
     assert len(results) == 2
@@ -823,7 +827,16 @@ def test_select_is_pivoted_shape_for_measures_in_standard_shape_data_set():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    results = select_is_pivoted_shape_for_measures_in_data_set(csvw_metadata_rdf_graph)
+    results = select_is_pivoted_shape_for_measures_in_data_set(
+        csvw_metadata_rdf_graph,
+        [
+            CubeTableIdentifiers(
+                "energy-trends-uk-total-energy.csv",
+                "energy-trends-uk-total-energy.csv#dataset",
+                "energy-trends-uk-total-energy.csv#structure",
+            )
+        ],
+    )
 
     assert results is not None
     assert len(results) == 1

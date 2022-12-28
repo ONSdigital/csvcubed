@@ -29,22 +29,7 @@ class MetadataValidator:
     csvw_metadata_rdf_graph: rdflib.ConjunctiveGraph
     csvw_metadata_json_path: Path
 
-    def detect_type_and_shape(
-        self, is_pivoted_measures: List[IsPivotedShapeMeasureResult]
-    ) -> Tuple[CSVWType, Optional[CubeShape]]:
-        """
-        Detects the type and shape of the csvw.
-        """
-        csvw_type = self._detect_type()
-        cube_shape = (
-            self._detect_shape(is_pivoted_measures)
-            if csvw_type == CSVWType.QbDataSet
-            else None
-        )
-
-        return (csvw_type, cube_shape)
-
-    def _detect_type(self) -> CSVWType:
+    def detect_csvw_type(self) -> CSVWType:
         """
         Detects the type of metadata file.
 
@@ -67,25 +52,4 @@ class MetadataValidator:
         else:
             raise TypeError(
                 "The input metadata is invalid as it is not a data cube or a code list."
-            )
-
-    def _detect_shape(
-        self, is_pivoted_measures: List[IsPivotedShapeMeasureResult]
-    ) -> CubeShape:
-        """
-        Given a metadata validator as input, returns the shape of the cube that metadata describes (Pivoted or Standard).
-        """
-        all_pivoted = True
-        all_standard_shape = True
-        for measure in is_pivoted_measures:
-            all_pivoted = all_pivoted and measure.is_pivoted_shape
-            all_standard_shape = all_standard_shape and not measure.is_pivoted_shape
-
-        if all_pivoted:
-            return CubeShape.Pivoted
-        elif all_standard_shape:
-            return CubeShape.Standard
-        else:
-            raise TypeError(
-                "The input metadata is invalid as the shape of the cube it represents is not supported. More specifically, the input contains some observation values that are pivoted and some are not pivoted."
             )

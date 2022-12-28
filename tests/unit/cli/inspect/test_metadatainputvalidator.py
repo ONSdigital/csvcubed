@@ -5,10 +5,6 @@ import pytest
 
 from csvcubed.cli.inspect.metadatainputvalidator import MetadataValidator
 from csvcubed.models.csvwtype import CSVWType
-from csvcubed.models.cube.cube_shape import CubeShape
-from csvcubed.utils.sparql_handler.sparqlquerymanager import (
-    select_is_pivoted_shape_for_measures_in_data_set,
-)
 from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.unit.test_baseunit import get_test_cases_dir
 
@@ -23,20 +19,13 @@ def test_detect_valid_csvw_metadata_datacube_input():
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
-    is_pivoted_measures = select_is_pivoted_shape_for_measures_in_data_set(
-        csvw_metadata_rdf_graph
-    )
     csvw_metadata_rdf_validator = MetadataValidator(
         csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
 
-    (
-        type,
-        shape,
-    ) = csvw_metadata_rdf_validator.detect_type_and_shape(is_pivoted_measures)
+    csvw_type = csvw_metadata_rdf_validator.detect_csvw_type()
 
-    assert type == CSVWType.QbDataSet
-    assert shape == CubeShape.Standard
+    assert csvw_type == CSVWType.QbDataSet
 
 
 def test_detect_valid_csvw_metadata_datacube_relative_path():
@@ -51,20 +40,13 @@ def test_detect_valid_csvw_metadata_datacube_relative_path():
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
-    is_pivoted_measures = select_is_pivoted_shape_for_measures_in_data_set(
-        csvw_metadata_rdf_graph
-    )
     csvw_metadata_rdf_validator = MetadataValidator(
         csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
 
-    (
-        type,
-        shape,
-    ) = csvw_metadata_rdf_validator.detect_type_and_shape(is_pivoted_measures)
+    csvw_type = csvw_metadata_rdf_validator.detect_csvw_type()
 
-    assert type == CSVWType.QbDataSet
-    assert shape == CubeShape.Standard
+    assert csvw_type == CSVWType.QbDataSet
 
 
 def test_detect_valid_csvw_metadata_codelist_input():
@@ -75,20 +57,14 @@ def test_detect_valid_csvw_metadata_codelist_input():
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
-    is_pivoted_measures = select_is_pivoted_shape_for_measures_in_data_set(
-        csvw_metadata_rdf_graph
-    )
     csvw_metadata_rdf_validator = MetadataValidator(
         csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
 
-    (
-        type,
-        shape,
-    ) = csvw_metadata_rdf_validator.detect_type_and_shape(is_pivoted_measures)
+    csvw_type = csvw_metadata_rdf_validator.detect_csvw_type()
 
-    assert type == CSVWType.CodeList
-    assert shape is None
+    assert csvw_type == CSVWType.CodeList
+
 
 def test_detect_invalid_csvw_metadata_input():
     """
@@ -103,7 +79,8 @@ def test_detect_invalid_csvw_metadata_input():
     )
 
     with pytest.raises(Exception) as exception:
-        csvw_metadata_rdf_validator._detect_type()
+        csvw_metadata_rdf_validator.detect_csvw_type()
+
     assert (
         str(exception.value)
         == f"The input metadata is invalid as it is not a data cube or a code list."
@@ -118,16 +95,11 @@ def test_detect_type_datacube():
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
-    is_pivoted_measures = select_is_pivoted_shape_for_measures_in_data_set(
-        csvw_metadata_rdf_graph
-    )
     csvw_metadata_rdf_validator = MetadataValidator(
         csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
 
-    (csvw_type, _) = csvw_metadata_rdf_validator.detect_type_and_shape(
-        is_pivoted_measures
-    )
+    csvw_type = csvw_metadata_rdf_validator.detect_csvw_type()
 
     assert csvw_type == CSVWType.QbDataSet
 
@@ -140,66 +112,10 @@ def test_detect_type_codelist():
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
-    is_pivoted_measures = select_is_pivoted_shape_for_measures_in_data_set(
-        csvw_metadata_rdf_graph
-    )
     csvw_metadata_rdf_validator = MetadataValidator(
         csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
 
-    (csvw_type, _) = csvw_metadata_rdf_validator.detect_type_and_shape(
-        is_pivoted_measures
-    )
+    csvw_type = csvw_metadata_rdf_validator.detect_csvw_type()
 
     assert csvw_type == CSVWType.CodeList
-
-
-def test_detect_csvw_shape_pivoted():
-    """
-    Ensures that the shape of the cube represented by the input metadata is correctly returned as Pivoted.
-    """
-    csvw_metadata_json_path = (
-        _test_case_base_dir
-        / "pivoted-multi-measure-dataset"
-        / "qb-id-10003.csv-metadata.json"
-    )
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    is_pivoted_shape_measures = select_is_pivoted_shape_for_measures_in_data_set(
-        csvw_metadata_rdf_graph
-    )
-
-    csvw_metadata_rdf_validator = MetadataValidator(
-        csvw_metadata_rdf_graph, csvw_metadata_json_path
-    )
-
-    (_, cube_shape) = csvw_metadata_rdf_validator.detect_type_and_shape(
-        is_pivoted_shape_measures
-    )
-
-    assert cube_shape == CubeShape.Pivoted
-
-def test_detect_csvw_shape_standard():
-    """
-    Ensures that the shape of the cube represented by the input metadata is correctly returned as Standard.
-    """
-    csvw_metadata_json_path = (
-        _test_case_base_dir
-        / "single-unit_single-measure"
-        / "energy-trends-uk-total-energy.csv-metadata.json"
-    )
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    is_pivoted_shape_measures = select_is_pivoted_shape_for_measures_in_data_set(
-        csvw_metadata_rdf_graph
-    )
-
-    csvw_metadata_rdf_validator = MetadataValidator(
-        csvw_metadata_rdf_graph, csvw_metadata_json_path
-    )
-
-    (_, cube_shape) = csvw_metadata_rdf_validator.detect_type_and_shape(
-        is_pivoted_shape_measures
-    )
-
-    assert cube_shape == CubeShape.Standard

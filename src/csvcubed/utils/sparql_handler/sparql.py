@@ -6,15 +6,18 @@ Utilities to help when running SPARQL queries.
 """
 import os.path
 from pathlib import Path, PosixPath
-from typing import List, Optional, Any, Callable
+from typing import List, Optional, Any, Callable, Dict, Union
 
+import rdflib
 from rdflib import Graph, Literal
 from rdflib.query import ResultRow
+from rdflib.term import Node
 
 from csvcubed.models.csvcubedexception import (
     UnexpectedSparqlAskQueryResponseTypeException,
     UnexpectedSparqlAskQueryResultsException,
 )
+from csvcubed.models.sparql.valuesbinding import ValuesBinding
 
 
 def none_or_map(val: Optional[Any], map_func: Callable[[Any], Any]) -> Optional[Any]:
@@ -46,7 +49,12 @@ def ask(query_name: str, query: str, graph: Graph) -> bool:
         raise UnexpectedSparqlAskQueryResultsException(query_name, len(results))
 
 
-def select(query: str, graph: Graph, init_bindings=None) -> List[ResultRow]:
+def select(
+    query: str,
+    graph: Graph,
+    init_bindings: Optional[Dict[str, Node]] = None,
+    values_bindings: List[ValuesBinding] = [],
+) -> List[ResultRow]:
     """
     Executes the given SELECT query on the rdf graph.
 
@@ -55,6 +63,22 @@ def select(query: str, graph: Graph, init_bindings=None) -> List[ResultRow]:
     :return: `List[ResultRow]` - List containing the results.
 
     """
+    if values_bindings is not None:
+        # A little hack to add support for init bindings with lists of parameters
+        for binding in values_bindings:
+            # todo: move this out into a separate function for testing.
+            keys = " ".join(f"?{k}" for k in binding.variable_names)
+
+            def _gen_values_row(
+                row: List[
+                    Union[rdflib.term.URIRef, rdflib.term.BNode, rdflib.term.Literal]
+                ]
+            ) -> str:
+                return " ".join(v.n3() for v in row)
+
+            values = "\n".join(f"( {_gen_values_row(r)} )" for r in binding.rows)
+            query += f"\n VALUES ( {keys} ) \n {{ \n {values} \n }}"
+
     results: List[ResultRow] = [
         result
         for result in graph.query(query, initBindings=init_bindings)
