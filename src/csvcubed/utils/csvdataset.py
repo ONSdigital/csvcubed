@@ -79,22 +79,13 @@ def _create_unit_col_in_melted_data_set_for_pivoted_shape(
     melted_df[col_name] = ""
 
     for idx, row in melted_df.iterrows():
-        obs_val_col_title = str(row["Observation Value"])
-
-        # Use the observation value col title to get the unit col's about url.
-        obs_val_col_title_about_url = first(
-            obs_val_col_titles_about_urls,
-            lambda o: o.observation_value_col_title == obs_val_col_title,
+        observation_uri = _get_observation_uri_for_melted_df_row(
+            obs_val_col_titles_about_urls, row
         )
-        if obs_val_col_title_about_url is None:
-            raise InvalidNumOfUnitColsForObsValColTitleException(
-                obs_val_col_title=obs_val_col_title,
-                num_of_unit_cols=0,
-            )
-        observation_uri = obs_val_col_title_about_url.observation_value_col_about_url
 
         # Use the unit col's about url to get the unit col's value url.
-        # N.B., for a old-style single measure pivoted shape, the following filter still works as the about url and observation uri are both None (i.e. equal).
+        # N.B., for an old-style single measure pivoted shape, the following filter still works as the
+        # about url and observation uri are both None (i.e. equal).
         unit_col_about_url_value_url = first(
             unit_col_about_urls_value_urls, lambda u: u.about_url == observation_uri
         )
@@ -111,7 +102,8 @@ def _create_unit_col_in_melted_data_set_for_pivoted_shape(
         if not any(unit_val_url_variable_names):
             melted_df.loc[idx, col_name] = unit_col_value_url
         else:
-            # If there are variable names, identify the column titles for the variable names and generate the unit value url, and set it as the unit.
+            # If there are variable names, identify the column titles for the variable names and generate
+            # the unit value url, and set it as the unit.
             processed_unit_value_url = _materialise_unit_uri_for_row(
                 unit_val_url_variable_names,
                 col_names_col_titles,
@@ -119,6 +111,24 @@ def _create_unit_col_in_melted_data_set_for_pivoted_shape(
                 row,
             )
             melted_df.loc[idx, col_name] = processed_unit_value_url
+
+
+def _get_observation_uri_for_melted_df_row(
+    obs_val_col_titles_about_urls: List[ObservationValueColumnTitleAboutUrlResult],
+    row: pd.Series,
+) -> str:
+    obs_val_col_title = str(row["Observation Value"])
+    # Use the observation value col title to get the unit col's about url.
+    obs_val_col_title_about_url = first(
+        obs_val_col_titles_about_urls,
+        lambda o: o.observation_value_col_title == obs_val_col_title,
+    )
+    if obs_val_col_title_about_url is None:
+        raise InvalidNumOfUnitColsForObsValColTitleException(
+            obs_val_col_title=obs_val_col_title,
+            num_of_unit_cols=0,
+        )
+    return obs_val_col_title_about_url.observation_value_col_about_url
 
 
 def _create_measure_col_in_melted_data_set_for_pivoted_shape(

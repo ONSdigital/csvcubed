@@ -13,4 +13,4 @@ WHERE {
 
     BIND((STRENDS(str(?measureColumnPropertyUrl), str(?measure)) || STRENDS(str(?measure), str(?measureColumnPropertyUrl))) as ?isPivoted).
 }
-GROUP BY ?csvUri ?measure
+GROUP BY ?csvUrl ?measure

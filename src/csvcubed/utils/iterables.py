@@ -22,7 +22,7 @@ def first(
 
 def group_by(xs: Iterable[T], get_key: Callable[[T], str]) -> Dict[str, List[T]]:
     """
-    Generates a dictionary containing items grouped by a each key.
+    Generates a dictionary containing items grouped by each key.
     """
     groups: Dict[str, List[T]] = {}
     for x in xs:

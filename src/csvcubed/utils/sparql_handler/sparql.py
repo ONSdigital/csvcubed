@@ -64,20 +64,7 @@ def select(
 
     """
     if values_bindings is not None:
-        # A little hack to add support for init bindings with lists of parameters
-        for binding in values_bindings:
-            # todo: move this out into a separate function for testing.
-            keys = " ".join(f"?{k}" for k in binding.variable_names)
-
-            def _gen_values_row(
-                row: List[
-                    Union[rdflib.term.URIRef, rdflib.term.BNode, rdflib.term.Literal]
-                ]
-            ) -> str:
-                return " ".join(v.n3() for v in row)
-
-            values = "\n".join(f"( {_gen_values_row(r)} )" for r in binding.rows)
-            query += f"\n VALUES ( {keys} ) \n {{ \n {values} \n }}"
+        query += _convert_values_bindings_to_sparql(values_bindings)
 
     results: List[ResultRow] = [
         result
@@ -92,6 +79,25 @@ def select(
         )
     ]
     return results
+
+
+def _convert_values_bindings_to_sparql(values_bindings: List[ValuesBinding]) -> str:
+    """
+    A little hack to add support for init bindings with lists of parameters.
+    """
+    bindings_sparql = ""
+
+    for binding in values_bindings:
+        keys = " ".join(f"?{k}" for k in binding.variable_names)
+
+        def _gen_values_row(
+            row: List[Union[rdflib.term.URIRef, rdflib.term.BNode, rdflib.term.Literal]]
+        ) -> str:
+            return " ".join(v.n3() for v in row)
+
+        values = "\n".join(f"( {_gen_values_row(r)} )" for r in binding.rows)
+        bindings_sparql += f"\n VALUES ( {keys} ) \n {{ \n {values} \n }}"
+    return bindings_sparql
 
 
 def path_to_file_uri_for_rdflib(file: Path) -> str:
