@@ -116,7 +116,7 @@ def _create_unit_col_in_melted_data_set_for_pivoted_shape(
 def _get_observation_uri_for_melted_df_row(
     obs_val_col_titles_about_urls: List[ObservationValueColumnTitleAboutUrlResult],
     row: pd.Series,
-) -> str:
+) -> Optional[str]:
     obs_val_col_title = str(row["Observation Value"])
     # Use the observation value col title to get the unit col's about url.
     obs_val_col_title_about_url = first(

@@ -78,12 +78,11 @@ class MetadataPrinter:
     csvw_metadata_json_path: Path
 
     csvw_type_str: str = field(init=False)
-    csv_url: str = field(init=False)
+    primary_csv_url: str = field(init=False)
     dataset: DataFrame = field(init=False)
 
     result_catalog_metadata: CatalogMetadataResult = field(init=False)
     result_dataset_label_dsd_uri: DSDLabelURIResult = field(init=False)
-    result_data_set_dsd_csv_url: CubeTableIdentifiers = field(init=False)
     result_qube_components: QubeComponentsResult = field(init=False)
     result_cols_with_suppress_output_true: ColsWithSuppressOutputTrueResult = field(
         init=False
@@ -106,13 +105,17 @@ class MetadataPrinter:
             raise InputNotSupportedException()
 
     @staticmethod
-    def get_csv_url(
+    def get_primary_csv_url(
         csvw_metadata_rdf_graph: rdflib.ConjunctiveGraph,
         csvw_type: CSVWType,
-        dataset_uri: str,
+        catalogue_data_set_uri: str,
     ) -> str:
+        """Return the csv_url for the primary table in the graph."""
+
         if csvw_type == CSVWType.QbDataSet:
-            return select_qb_csv_url(csvw_metadata_rdf_graph, dataset_uri).csv_url
+            return select_qb_csv_url(
+                csvw_metadata_rdf_graph, catalogue_data_set_uri
+            ).csv_url
         elif csvw_type == CSVWType.CodeList:
             return select_codelist_csv_url(csvw_metadata_rdf_graph).csv_url
         else:
@@ -144,7 +147,7 @@ class MetadataPrinter:
         self.result_catalog_metadata = select_csvw_catalog_metadata(
             self.csvw_metadata_rdf_graph
         )
-        self.csv_url = self.get_csv_url(
+        self.primary_csv_url = self.get_primary_csv_url(
             self.csvw_metadata_rdf_graph,
             self.csvw_type,
             to_absolute_rdflib_file_path(
@@ -152,12 +155,12 @@ class MetadataPrinter:
             ),
         )
         self.dataset = load_csv_to_dataframe(
-            self.csvw_metadata_json_path, Path(self.csv_url)
+            self.csvw_metadata_json_path, Path(self.primary_csv_url)
         )
         self.result_dataset_observations_info = get_dataset_observations_info(
             self.dataset,
             self.csvw_type,
-            self.data_cube_state.get_shape_for_csv(self.csv_url)
+            self.data_cube_state.get_shape_for_csv(self.primary_csv_url)
             if self.csvw_type == CSVWType.QbDataSet and self.data_cube_state is not None
             else None,
         )
@@ -174,7 +177,7 @@ class MetadataPrinter:
             select_csvw_dsd_dataset_label_and_dsd_def_uri(self.csvw_metadata_rdf_graph)
         )
         self.result_qube_components = (
-            self.data_cube_state.get_dsd_qube_components_for_csv(self.csv_url)
+            self.data_cube_state.get_dsd_qube_components_for_csv(self.primary_csv_url)
         )
         self.result_cols_with_suppress_output_true = (
             select_cols_where_suppress_output_is_true(self.csvw_metadata_rdf_graph)
@@ -193,7 +196,7 @@ class MetadataPrinter:
             self.data_cube_state,
             self.dataset,
             self.result_qube_components.qube_components,
-            self.csv_url,
+            self.primary_csv_url,
             self.csvw_metadata_rdf_graph,
             self.csvw_metadata_json_path,
         )
@@ -208,11 +211,11 @@ class MetadataPrinter:
         Member of :class:`./MetadataPrinter`.
         """
         self.result_code_list_cols = select_codelist_cols_by_csv_url(
-            self.csvw_metadata_rdf_graph, self.csv_url
+            self.csvw_metadata_rdf_graph, self.primary_csv_url
         )
         # Retrieving the primary key column names of the code list to identify the unique identifier
         result_primary_key_col_names_by_csv_url: PrimaryKeyColNamesByDatasetUrlResult = select_primary_key_col_names_by_csv_url(
-            self.csvw_metadata_rdf_graph, self.csv_url
+            self.csvw_metadata_rdf_graph, self.primary_csv_url
         )
         primary_key_col_names = (
             result_primary_key_col_names_by_csv_url.primary_key_col_names
@@ -222,7 +225,7 @@ class MetadataPrinter:
         if len(primary_key_col_names) != 1:
             raise UnsupportedNumOfPrimaryKeyColNamesException(
                 num_of_primary_key_col_names=len(primary_key_col_names),
-                table_url=self.csv_url,
+                table_url=self.primary_csv_url,
             )
         (
             parent_col_title,
