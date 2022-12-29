@@ -9,7 +9,6 @@ from os import linesep
 from pathlib import Path
 from typing import List, Optional, Dict, Any
 
-import rdflib
 from csvcubedmodels.dataclassbase import DataClassBase
 from rdflib.query import ResultRow
 
@@ -25,7 +24,6 @@ from csvcubed.utils.qb.components import (
 from csvcubed.utils.sparql_handler.sparql import none_or_map
 
 _logger = logging.getLogger(__name__)
-
 
 
 @dataclass

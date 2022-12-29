@@ -158,7 +158,7 @@ class MetadataPrinter:
             self.dataset,
             self.csvw_type,
             self.data_cube_state.get_shape_for_csv(self.csv_url)
-            if self.csvw_type == CSVWType.QbDataSet
+            if self.csvw_type == CSVWType.QbDataSet and self.data_cube_state is not None
             else None,
         )
 
@@ -168,6 +168,8 @@ class MetadataPrinter:
 
         Member of :class:`./MetadataPrinter`.
         """
+        assert self.data_cube_state is not None  # Make pyright happier
+
         self.result_dataset_label_dsd_uri = (
             select_csvw_dsd_dataset_label_and_dsd_def_uri(self.csvw_metadata_rdf_graph)
         )

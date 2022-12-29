@@ -131,7 +131,7 @@ class DataCubeState:
                 )
 
         results = select_is_pivoted_shape_for_measures_in_data_set(
-            self.rdf_graph, self._cube_table_identifiers.values()
+            self.rdf_graph, list(self._cube_table_identifiers.values())
         )
 
         map_csv_url_to_measure_shape = group_by(results, lambda r: r.csv_url)
