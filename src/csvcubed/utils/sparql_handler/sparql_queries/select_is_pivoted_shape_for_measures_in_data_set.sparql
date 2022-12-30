@@ -8,6 +8,8 @@ WHERE {
     ?dsd a qb:DataStructureDefinition;
          qb:component/qb:measure ?measure.
 
+    # N.B. The join between ?dsd and ?csvUrl is injected as a `VALUES` table when the query is executed.
+
     [] csvw:url ?csvUrl;
        csvw:tableSchema/csvw:column/rdf:rest*/rdf:first [ csvw:propertyUrl ?measureColumnPropertyUrl ].
 
