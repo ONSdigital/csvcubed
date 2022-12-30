@@ -27,7 +27,7 @@ from csvcubed.models.csvcubedexception import (
 )
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import (
-    ColTitlesAndNamesResult,
+    ColumnDefinition,
     ObservationValueColumnTitleAboutUrlResult,
     UnitColumnAboutValueUrlResult,
 )
@@ -40,7 +40,7 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import select_single_unit_
 
 def _materialise_unit_uri_for_row(
     unit_val_url_variable_names: OrderedSet,
-    col_names_col_titles: List[ColTitlesAndNamesResult],
+    col_names_col_titles: List[ColumnDefinition],
     unit_col_value_url: str,
     row: pd.Series,
 ):
@@ -55,7 +55,7 @@ def _materialise_unit_uri_for_row(
 
         if col_name_col_title:
             col_name_value_map[unit_val_url_variable_name] = row[
-                col_name_col_title.column_title
+                col_name_col_title.title
             ]
 
     return uritemplate.expand(unit_col_value_url, col_name_value_map)
@@ -66,7 +66,7 @@ def _create_unit_col_in_melted_data_set_for_pivoted_shape(
     melted_df: pd.DataFrame,
     unit_col_about_urls_value_urls: List[UnitColumnAboutValueUrlResult],
     obs_val_col_titles_about_urls: List[ObservationValueColumnTitleAboutUrlResult],
-    col_names_col_titles: List[ColTitlesAndNamesResult],
+    col_names_col_titles: List[ColumnDefinition],
 ):
     """
     Adds the unit column to the melted data set for the pivoted shape data set input.
@@ -244,7 +244,7 @@ def transform_dataset_to_canonical_shape(
         obs_val_col_titles_about_urls = (
             data_cube_state.get_obs_val_col_titles_about_urls_for_csv(csv_url)
         )
-        col_names_col_titles = data_cube_state.get_col_name_col_title_for_csv(csv_url)
+        col_names_col_titles = data_cube_state.get_column_definitions_for_csv(csv_url)
 
         measure_components = filter_components_from_dsd(
             qube_components,

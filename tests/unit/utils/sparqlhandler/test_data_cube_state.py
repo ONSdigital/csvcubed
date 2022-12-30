@@ -5,7 +5,7 @@ import pytest
 from csvcubed.cli.inspect.metadataprinter import to_absolute_rdflib_file_path
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import (
-    ColTitlesAndNamesResult,
+    ColumnDefinition,
     ObservationValueColumnTitleAboutUrlResult,
     UnitColumnAboutValueUrlResult,
 )
@@ -41,14 +41,6 @@ def _get_obs_val_col_title_about_url_result_by_about_url(
         for result in results
         if result.observation_value_col_about_url == about_url
     ]
-    assert len(results) == 1
-    return results[0]
-
-
-def _get_col_name_col_title_result_by_col_name(
-    column_name: str, results: List[ColTitlesAndNamesResult]
-) -> ColTitlesAndNamesResult:
-    results = [result for result in results if result.column_name == column_name]
     assert len(results) == 1
     return results[0]
 
@@ -114,7 +106,7 @@ def test_get_obs_val_col_title_about_url_for_csv():
     )
 
 
-def test_get_col_name_col_title_for_csv():
+def test_get_column_definitions_for_csv():
     """
     Ensures that the valid obs_val_col_title_about_url_for_csv property is returned for the given csv.
     """
@@ -124,26 +116,80 @@ def test_get_col_name_col_title_for_csv():
         / "qb-id-10004.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    data_cube_state = DataCubeState(csvw_metadata_rdf_graph, csvw_metadata_json_path)
+    data_cube_state = DataCubeState(csvw_rdf_manager.rdf_graph, csvw_metadata_json_path)
 
-    data_set_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
-    data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
-    csv_url = select_qb_csv_url(csvw_metadata_rdf_graph, data_set_uri).csv_url
+    results = {
+        c.name: c
+        for c in data_cube_state.get_column_definitions_for_csv("qb-id-10004.csv")
+    }
 
-    results = data_cube_state.get_col_name_col_title_for_csv(csv_url)
+    assert len(results) == 12
 
-    result = _get_col_name_col_title_result_by_col_name("some_dimension", results)
-    result.column_name == "some_dimension"
-    result.column_title == "Some Dimension"
+    """
+    Testing: csv_url, name, property_url, required=True, suppress_output=False,
+              title, value_url, virtual=False
+    """
+    assert results["some_dimension"] == ColumnDefinition(
+        csv_url="qb-id-10004.csv",
+        about_url=None,
+        data_type=None,
+        name="some_dimension",
+        property_url="qb-id-10004.csv#dimension/some-dimension",
+        required=True,
+        suppress_output=False,
+        title="Some Dimension",
+        value_url="some-dimension.csv#{+some_dimension}",
+        virtual=False,
+    )
 
-    result = _get_col_name_col_title_result_by_col_name("some_attribute", results)
-    result.column_name == "some_attribute"
-    result.column_title == "Some Attribute"
+    """
+    Testing: about_url, required=False
+    """
+    # Testing about_url + required: false
+    assert results["some_attribute"] == ColumnDefinition(
+        csv_url="qb-id-10004.csv",
+        about_url="qb-id-10004.csv#obs/{some_dimension}@some-measure",
+        data_type=None,
+        name="some_attribute",
+        property_url="qb-id-10004.csv#attribute/some-attribute",
+        required=False,
+        suppress_output=False,
+        title="Some Attribute",
+        value_url="qb-id-10004.csv#attribute/some-attribute/{+some_attribute}",
+        virtual=False,
+    )
 
-    result = _get_col_name_col_title_result_by_col_name("some_obs_val", results)
-    result.column_name == "some_obs_val"
-    result.column_title == "Some Obs Val"
+    """
+    Testing: data_type
+    """
+    assert results["some_obs_val"] == ColumnDefinition(
+        csv_url="qb-id-10004.csv",
+        about_url="qb-id-10004.csv#obs/{some_dimension}@some-measure",
+        data_type="http://www.w3.org/2001/XMLSchema#decimal",
+        name="some_obs_val",
+        property_url="qb-id-10004.csv#measure/some-measure",
+        required=True,
+        suppress_output=False,
+        title="Some Obs Val",
+        value_url=None,
+        virtual=False,
+    )
+
+    """
+    Testing: virtual=True, suppress_output=True
+    """
+    assert results["virt_suppressed_test"] == ColumnDefinition(
+        csv_url="qb-id-10004.csv",
+        about_url="http://example.com/about",
+        data_type=None,
+        name="virt_suppressed_test",
+        property_url="http://example.com/property",
+        required=False,
+        suppress_output=True,
+        title=None,
+        value_url="http://example.com/value",
+        virtual=True,
+    )
 
 
 def test_exception_is_thrown_for_invalid_csv_url():

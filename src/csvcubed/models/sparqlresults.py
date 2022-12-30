@@ -336,15 +336,29 @@ class ObservationValueColumnTitleAboutUrlResult:
     observation_value_col_about_url: Optional[str]
 
 
-@dataclass
-class ColTitlesAndNamesResult:
+@dataclass(unsafe_hash=True)
+class ColumnDefinition:
     """
     Model representing the Column Titles and Column Names of a data set.
+
+    See https://www.w3.org/TR/2015/REC-tabular-data-model-20151217/#dfn-column for the full list of properties a CSV-W
+    column can have.
+
+    N.B. This does not contain all possible CSV-W column properties, just the ones currently used by csvcubed.
     """
 
     csv_url: str
-    column_name: str
-    column_title: Optional[str]
+    """CSV that this column is defined against."""
+    about_url: Optional[str]
+    data_type: Optional[str]
+    name: str
+    property_url: Optional[str]
+    required: bool
+    suppress_output: bool
+    title: Optional[str]
+    """This should technically be a list according to the W3C spec."""
+    value_url: Optional[str]
+    virtual: bool
 
 
 def map_catalog_metadata_result(sparql_result: ResultRow) -> CatalogMetadataResult:
@@ -800,18 +814,25 @@ def map_observation_value_col_title_and_about_url_result(
     return [map_row(row.asdict()) for row in sparql_results]
 
 
-def map_col_tiles_and_names_result(
+def map_column_definition_results(
     sparql_results: List[ResultRow],
-) -> List[ColTitlesAndNamesResult]:
+) -> List[ColumnDefinition]:
     """
-    Maps SPARQL query results to 'ColTitlesAndNamesResult'
+    Maps SPARQL query results to 'ColumnDefinition's.
     """
 
-    def map_row(row_result: Dict[str, Any]) -> ColTitlesAndNamesResult:
-        return ColTitlesAndNamesResult(
+    def map_row(row_result: Dict[str, Any]) -> ColumnDefinition:
+        return ColumnDefinition(
             csv_url=str(row_result["csvUrl"]),
-            column_name=str(row_result["columnName"]),
-            column_title=none_or_map(row_result.get("columnTitle"), str),
+            about_url=none_or_map(row_result.get("aboutUrl"), str),
+            data_type=none_or_map(row_result.get("dataType"), str),
+            name=str(row_result["name"]),
+            property_url=none_or_map(row_result.get("propertyUrl"), str),
+            required=bool(row_result["required"]),
+            suppress_output=bool(row_result["suppressOutput"]),
+            title=none_or_map(row_result.get("title"), str),
+            value_url=none_or_map(row_result.get("valueUrl"), str),
+            virtual=bool(row_result.get("virtual")),
         )
 
     return [map_row(row.asdict()) for row in sparql_results]

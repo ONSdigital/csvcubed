@@ -9,7 +9,7 @@ from csvcubed.models.csvcubedexception import (
     InvalidNumOfValUrlsForAboutUrlException,
 )
 from csvcubed.models.sparqlresults import (
-    ColTitlesAndNamesResult,
+    ColumnDefinition,
     ObservationValueColumnTitleAboutUrlResult,
     QubeComponentResult,
     UnitColumnAboutValueUrlResult,
@@ -419,13 +419,13 @@ _obs_val_col_titles_about_urls = [
 ]
 
 _col_names_col_titles = [
-    ColTitlesAndNamesResult("qb-id-10004.csv", "some_dimension", "Some Dimension"),
-    ColTitlesAndNamesResult("qb-id-10004.csv", "some_attribute", "Some Attribute"),
-    ColTitlesAndNamesResult("qb-id-10004.csv", "some_obs_val", "Some Obs Val"),
-    ColTitlesAndNamesResult(
+    ColumnDefinition("qb-id-10004.csv", "some_dimension", "Some Dimension"),
+    ColumnDefinition("qb-id-10004.csv", "some_attribute", "Some Attribute"),
+    ColumnDefinition("qb-id-10004.csv", "some_obs_val", "Some Obs Val"),
+    ColumnDefinition(
         "qb-id-10004.csv", "some_other_obs_val", "Some Other Obs Val"
     ),
-    ColTitlesAndNamesResult("qb-id-10004.csv", "some_unit", "Some Unit"),
+    ColumnDefinition("qb-id-10004.csv", "some_unit", "Some Unit"),
 ]
 
 _obs_val_col_titles_about_urls_invalid = [
@@ -455,14 +455,14 @@ _unit_col_about_urls_value_urls_invalid = [
 ]
 
 _col_names_col_titles_invalid = [
-    ColTitlesAndNamesResult("qb-id-10004.csv", "some_dimension", "Some Dimension"),
-    ColTitlesAndNamesResult(
+    ColumnDefinition("qb-id-10004.csv", "some_dimension", "Some Dimension"),
+    ColumnDefinition(
         "qb-id-10004.csv", "some_dimension", "Some Other Dimension"
     ),
-    ColTitlesAndNamesResult("qb-id-10004.csv", "some_attribute", "Some Attribute"),
-    ColTitlesAndNamesResult("qb-id-10004.csv", "some_obs_val", "Some Obs Val"),
-    ColTitlesAndNamesResult("qb-id-10004.csv", "some_unit", "Some Other Obs Val"),
-    ColTitlesAndNamesResult("qb-id-10004.csv", "some_unit", "Some Unit"),
+    ColumnDefinition("qb-id-10004.csv", "some_attribute", "Some Attribute"),
+    ColumnDefinition("qb-id-10004.csv", "some_obs_val", "Some Obs Val"),
+    ColumnDefinition("qb-id-10004.csv", "some_unit", "Some Other Obs Val"),
+    ColumnDefinition("qb-id-10004.csv", "some_unit", "Some Unit"),
 ]
 
 _measure_components_for_multi_measure_pivoted_shape_same_measure = [

@@ -7,7 +7,7 @@ import rdflib
 
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import (
-    ColTitlesAndNamesResult,
+    ColumnDefinition,
     CubeTableIdentifiers,
     ObservationValueColumnTitleAboutUrlResult,
     QubeComponentResult,
@@ -17,7 +17,7 @@ from csvcubed.models.sparqlresults import (
 )
 from csvcubed.utils.iterables import group_by, first
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
-    select_col_titles_and_names,
+    select_column_definitions,
     select_csvw_dsd_qube_components,
     select_data_set_dsd_and_csv_url,
     select_observation_value_column_title_and_about_url,
@@ -66,11 +66,11 @@ class DataCubeState:
         return group_by(results, lambda r: r.csv_url)
 
     @cached_property
-    def _col_names_col_titles(self) -> Dict[str, List[ColTitlesAndNamesResult]]:
+    def _column_definitions(self) -> Dict[str, List[ColumnDefinition]]:
         """
-        Queries and caches column names and titles.
+        Map of csv_url to the list of column definitions for the given CSV file.
         """
-        results = select_col_titles_and_names(self.rdf_graph)
+        results = select_column_definitions(self.rdf_graph)
         return group_by(results, lambda r: r.csv_url)
 
     @cached_property
@@ -166,14 +166,14 @@ class DataCubeState:
         ] = self._get_value_for_key(csv_url, self._obs_val_col_titles_about_urls)
         return result
 
-    def get_col_name_col_title_for_csv(
+    def get_column_definitions_for_csv(
         self, csv_url: str
-    ) -> List[ColTitlesAndNamesResult]:
+    ) -> List[ColumnDefinition]:
         """
         Getter for _col_names_col_titles cached property.
         """
-        result: List[ColTitlesAndNamesResult] = self._get_value_for_key(
-            csv_url, self._col_names_col_titles
+        result: List[ColumnDefinition] = self._get_value_for_key(
+            csv_url, self._column_definitions
         )
         return result
 
