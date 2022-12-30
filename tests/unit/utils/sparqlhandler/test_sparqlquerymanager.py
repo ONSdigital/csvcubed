@@ -63,7 +63,7 @@ def assert_dsd_component_equal(
     assert component.property == property
     assert component.property_type == property_type.value
     assert component.property_label == property_label
-    assert component.csv_col_title == csv_col_title
+    assert component.used_in_columns == csv_col_title
     assert component.dsd_uri == dsd_uri
     assert component.required == required
 
@@ -76,7 +76,7 @@ def assert_dsd_component_equal(
         ]
         actual_obs_val_col_titles = [
             title.strip()
-            for title in component.observation_value_column_titles.split(",")
+            for title in component.used_by_observed_value_columns.split(",")
         ]
         assert len(expected_obs_val_col_titles) == len(
             actual_obs_val_col_titles

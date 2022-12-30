@@ -28,6 +28,7 @@ from csvcubed.models.inspectdataframeresults import (
 from csvcubed.models.sparqlresults import (
     QubeComponentResult,
 )
+from csvcubed.utils.iterables import first
 from csvcubed.utils.pandas import read_csv
 from csvcubed.utils.qb.components import (
     ComponentField,
@@ -36,6 +37,7 @@ from csvcubed.utils.qb.components import (
     get_component_property_as_relative_path,
 )
 from csvcubed.utils.skos.codelist import build_concepts_hierarchy_tree
+from csvcubed.utils.sparql_handler.sparql import none_or_map
 
 _logger = logging.getLogger(__name__)
 
@@ -99,13 +101,15 @@ def get_standard_shape_measure_col_name_from_dsd(
         ComponentPropertyAttributeURI.MeasureType.value,
     )
 
-    if len(filtered_components) == 0 or filtered_components[0].csv_col_title == "":
+    if len(filtered_components) == 0 or filtered_components[0].used_in_columns == "":
         _logger.warn(
             "Could not find measure column name from the DSD, hence returning None"
         )
         return None
     else:
-        return filtered_components[0].csv_col_title
+        return none_or_map(
+            first(filtered_components[0].used_in_columns), lambda c: c.title
+        )
 
 
 def get_standard_shape_unit_col_name_from_dsd(
@@ -124,13 +128,15 @@ def get_standard_shape_unit_col_name_from_dsd(
         ComponentPropertyAttributeURI.UnitMeasure.value,
     )
 
-    if len(filtered_components) == 0 or filtered_components[0].csv_col_title == "":
+    if len(filtered_components) == 0 or filtered_components[0].used_in_columns == "":
         _logger.warn(
             "Could not find unit column name from the DSD, hence returning None"
         )
         return None
     else:
-        return filtered_components[0].csv_col_title
+        return none_or_map(
+            first(filtered_components[0].used_in_columns), lambda c: c.title
+        )
 
 
 def get_single_measure_from_dsd(

@@ -40,7 +40,7 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import select_single_unit_
 
 def _materialise_unit_uri_for_row(
     unit_val_url_variable_names: OrderedSet,
-    col_names_col_titles: List[ColumnDefinition],
+    column_definitions: List[ColumnDefinition],
     unit_col_value_url: str,
     row: pd.Series,
 ):
@@ -49,13 +49,13 @@ def _materialise_unit_uri_for_row(
     """
     col_name_value_map: Dict[str, Any] = {}
     for unit_val_url_variable_name in unit_val_url_variable_names:
-        col_name_col_title = first(
-            col_names_col_titles, lambda u: u.column_name == unit_val_url_variable_name
+        unit_column_definition = first(
+            column_definitions, lambda u: u.name == unit_val_url_variable_name
         )
 
-        if col_name_col_title:
+        if unit_column_definition:
             col_name_value_map[unit_val_url_variable_name] = row[
-                col_name_col_title.title
+                unit_column_definition.title
             ]
 
     return uritemplate.expand(unit_col_value_url, col_name_value_map)
@@ -140,9 +140,11 @@ def _create_measure_col_in_melted_data_set_for_pivoted_shape(
 
     for idx, row in melted_df.iterrows():
         obs_val_col_title = str(row["Observation Value"])
-        filtered_measure_components = filter_components_from_dsd(
-            measure_components, ComponentField.CsvColumnTitle, obs_val_col_title
-        )
+        filtered_measure_components = [
+            comp
+            for comp in measure_components
+            if obs_val_col_title in {col.title for col in comp.used_in_columns}
+        ]
 
         if len(filtered_measure_components) != 1:
             raise InvalidNumOfDSDComponentsForObsValColTitleException(
@@ -150,7 +152,7 @@ def _create_measure_col_in_melted_data_set_for_pivoted_shape(
                 num_of_components=len(filtered_measure_components),
             )
 
-        measure_component = filtered_measure_components[0]
+        measure_component = first(filtered_measure_components)
         # Using the measure label if it exists as it is more user-friendly. Otherwise, we use the measure uri.
         melted_df.loc[idx, col_name] = (
             measure_component.property_label
@@ -167,7 +169,9 @@ def _melt_data_set(
     """
     # Finding the value cols and id cols for melting the data set.
     value_cols = [
-        measure_component.csv_col_title for measure_component in measure_components
+        c.title
+        for measure_component in measure_components
+        for c in measure_component.used_in_columns
     ]
     id_cols = list(set(data_set.columns) - set(value_cols))
 

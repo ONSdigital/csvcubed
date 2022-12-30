@@ -8,7 +8,7 @@ Collection of SPARQL queries.
 import logging
 from enum import Enum
 from pathlib import Path
-from typing import List
+from typing import List, Dict
 
 import rdflib
 from csvcubedmodels.rdf.namespaces import XSD
@@ -79,10 +79,6 @@ class SPARQLQueryName(Enum):
     SELECT_DATA_SET_DSD_CSV_URL = "select_data_set_dsd_csv_url"
 
     SELECT_DSD_QUBE_COMPONENTS = "select_dsd_qube_components"
-
-    SELECT_OBS_VAL_FOR_DSD_COMPONENT_PROPERTIES = (
-        "select_obs_val_for_dsd_component_properties"
-    )
 
     SELECT_COLS_W_SUPPRESS_OUTPUT = "select_cols_w_suppress_output"
 
@@ -250,28 +246,28 @@ def select_data_set_dsd_and_csv_url(
 def select_csvw_dsd_qube_components(
     rdf_graph: rdflib.ConjunctiveGraph,
     json_path: Path,
-) -> QubeComponentsResult:
+    map_dsd_uri_to_csv_url: Dict[str, str],
+    map_csv_url_to_column_definitions: Dict[str, List[ColumnDefinition]],
+) -> Dict[str, QubeComponentsResult]:
     """
     Queries the list of qube components.
 
+    Returns a map of csv_url to the `QubeComponentsResult`.
+
     Member of :file:`./sparqlquerymanager.py`
 
-    :return: `QubeComponentsResult`
+    :return: `Dict[str, QubeComponentsResult]`
     """
     result_dsd_components: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryName.SELECT_DSD_QUBE_COMPONENTS),
         rdf_graph,
     )
 
-    result_observation_val_col_titles: List[ResultRow] = select(
-        _get_query_string_from_file(
-            SPARQLQueryName.SELECT_OBS_VAL_FOR_DSD_COMPONENT_PROPERTIES
-        ),
-        rdf_graph,
-    )
-
     return map_qube_components_sparql_result(
-        result_dsd_components, result_observation_val_col_titles, json_path
+        result_dsd_components,
+        json_path,
+        map_dsd_uri_to_csv_url,
+        map_csv_url_to_column_definitions,
     )
 
 

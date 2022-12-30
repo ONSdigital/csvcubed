@@ -87,16 +87,19 @@ class DataCubeState:
         return results_dict
 
     @cached_property
-    def _dsd_qube_components(self) -> Dict[str, List[QubeComponentResult]]:
+    def _dsd_qube_components(self) -> Dict[str, QubeComponentsResult]:
         """
-        Queries and caches qube components
+        Maps csv_url to the qb:DataStructureDefinition components associated with it.
         """
-        result = select_csvw_dsd_qube_components(self.rdf_graph, self.csvw_json_path)
         map_dsd_uri_to_csv_url = {
             i.dsd_uri: i.csv_url for i in self._cube_table_identifiers.values()
         }
-        return group_by(
-            result.qube_components, lambda c: map_dsd_uri_to_csv_url[c.dsd_uri]
+
+        return select_csvw_dsd_qube_components(
+            self.rdf_graph,
+            self.csvw_json_path,
+            map_dsd_uri_to_csv_url,
+            self._column_definitions,
         )
 
     @cached_property
@@ -166,9 +169,7 @@ class DataCubeState:
         ] = self._get_value_for_key(csv_url, self._obs_val_col_titles_about_urls)
         return result
 
-    def get_column_definitions_for_csv(
-        self, csv_url: str
-    ) -> List[ColumnDefinition]:
+    def get_column_definitions_for_csv(self, csv_url: str) -> List[ColumnDefinition]:
         """
         Getter for _col_names_col_titles cached property.
         """
@@ -205,10 +206,7 @@ class DataCubeState:
         """
         Getter for DSD Qube Components cached property.
         """
-        components: List[QubeComponentResult] = self._get_value_for_key(
-            csv_url, self._dsd_qube_components
-        )
-        return QubeComponentsResult(components, len(components))
+        return self._get_value_for_key(csv_url, self._dsd_qube_components)
 
     def get_shape_for_csv(self, csv_url: str) -> CubeShape:
         return self._get_value_for_key(csv_url, self._cube_shapes)
