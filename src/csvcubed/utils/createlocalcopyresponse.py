@@ -198,6 +198,5 @@ def _create_local_copy_response(
 
     successful_response.reason = "OK"
     successful_response.request = request
-    successful_response.ok
 
     return successful_response
