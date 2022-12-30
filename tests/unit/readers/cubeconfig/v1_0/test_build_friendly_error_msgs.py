@@ -1,7 +1,6 @@
 """
 Tests for friendly error messages being logged
 """
-import os
 from pathlib import Path
 
 import appdirs
@@ -26,7 +25,6 @@ from csvcubed.models.cube.qb.validationerrors import (
     BothUnitTypesDefinedError,
     EmptyQbMultiMeasureDimensionError,
     MoreThanOneMeasureColumnError,
-    MoreThanOneObservationsColumnError,
     NoDimensionsDefinedError,
     NoMeasuresDefinedError,
     NoObservedValuesColumnDefinedError,
@@ -212,15 +210,9 @@ def test_val_errors_both_measure_types():
     config = Path(_test_case_dir, "both_measure_types_defined.json")
     csv = Path(_test_case_dir, "both_measure_types_defined.csv")
 
-    try:
-        os.environ["PIVOTED_MULTI_MEASURE"] = "true"
-        (
-            cube,
-            json_schema_validation_errors,
-            validation_errors,
-        ) = _extract_and_validate_cube(config, csv)
-    finally:
-        del os.environ["PIVOTED_MULTI_MEASURE"]
+    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
+        config, csv
+    )
 
     _write_errors_to_log(json_schema_validation_errors, validation_errors)
 
@@ -296,35 +288,6 @@ def test_val_errors_invalid_uri_template():
 
     _assert_in_log(
         "csvcubed.cli.build - ERROR - More information: http://purl.org/csv-cubed/err/missing-uri-template-name-error"
-    )
-
-
-def test_val_errors_more_than_one_observation():
-    """
-    Test for:-
-        MoreThanOneObservationsColumnError
-    """
-    config = Path(_test_case_dir, "more_than_one_observations_col.json")
-    csv = Path(_test_case_dir, "more_than_one_observations_col.csv")
-    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
-        config, csv
-    )
-    _write_errors_to_log(json_schema_validation_errors, validation_errors)
-
-    assert isinstance(cube, Cube)
-    assert isinstance(validation_errors, list)
-    assert_num_validation_errors(validation_errors, 1)
-    assert isinstance(validation_errors[0], MoreThanOneObservationsColumnError)
-    assert (
-        validation_errors[0].message
-        == "Found 2 of QbObservationValues. Expected a maximum of 1."
-    )
-    _assert_in_log(
-        "csvcubed.cli.build - ERROR - Validation Error: Found 2 observed values columns. Only 1 is "
-        "permitted."
-    )
-    _assert_in_log(
-        "csvcubed.cli.build - ERROR - More information: http://purl.org/csv-cubed/err/multi-obsv-col"
     )
 
 
@@ -597,15 +560,9 @@ def test_duplicate_measure_error():
     config = Path(_test_case_dir, "duplicate_measure_types_error.json")
     csv = Path(_test_case_dir, "duplicate_measure_types_error.csv")
 
-    try:
-        os.environ["PIVOTED_MULTI_MEASURE"] = "true"
-        (
-            cube,
-            json_schema_validation_errors,
-            validation_errors,
-        ) = _extract_and_validate_cube(config, csv)
-    finally:
-        del os.environ["PIVOTED_MULTI_MEASURE"]
+    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
+        config, csv
+    )
 
     _write_errors_to_log(json_schema_validation_errors, validation_errors)
 
@@ -627,15 +584,9 @@ def test_attribute_not_linked_error():
     config = Path(_test_case_dir, "attribute_not_linked_error.json")
     csv = Path(_test_case_dir, "attribute_not_linked_error.csv")
 
-    try:
-        os.environ["PIVOTED_MULTI_MEASURE"] = "true"
-        (
-            cube,
-            json_schema_validation_errors,
-            validation_errors,
-        ) = _extract_and_validate_cube(config, csv)
-    finally:
-        del os.environ["PIVOTED_MULTI_MEASURE"]
+    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
+        config, csv
+    )
 
     _write_errors_to_log(json_schema_validation_errors, validation_errors)
 
@@ -657,15 +608,9 @@ def test_linked_obs_column_doesnt_exist_error():
     config = Path(_test_case_dir, "linked_obs_column_doesnt_exist_error.json")
     csv = Path(_test_case_dir, "linked_obs_column_doesnt_exist_error.csv")
 
-    try:
-        os.environ["PIVOTED_MULTI_MEASURE"] = "true"
-        (
-            cube,
-            json_schema_validation_errors,
-            validation_errors,
-        ) = _extract_and_validate_cube(config, csv)
-    finally:
-        del os.environ["PIVOTED_MULTI_MEASURE"]
+    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
+        config, csv
+    )
 
     _write_errors_to_log(json_schema_validation_errors, validation_errors)
 
@@ -687,15 +632,9 @@ def test_linked_to_non_obs_colums_error():
     config = Path(_test_case_dir, "linked_to_non_obs_column_error.json")
     csv = Path(_test_case_dir, "linked_to_non_obs_column_error.csv")
 
-    try:
-        os.environ["PIVOTED_MULTI_MEASURE"] = "true"
-        (
-            cube,
-            json_schema_validation_errors,
-            validation_errors,
-        ) = _extract_and_validate_cube(config, csv)
-    finally:
-        del os.environ["PIVOTED_MULTI_MEASURE"]
+    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
+        config, csv
+    )
 
     _write_errors_to_log(json_schema_validation_errors, validation_errors)
 
@@ -717,15 +656,9 @@ def test_hybrid_shape_error():
     config = Path(_test_case_dir, "hybrid_shape_error.json")
     csv = Path(_test_case_dir, "hybrid_shape_error.csv")
 
-    try:
-        os.environ["PIVOTED_MULTI_MEASURE"] = "true"
-        (
-            cube,
-            json_schema_validation_errors,
-            validation_errors,
-        ) = _extract_and_validate_cube(config, csv)
-    finally:
-        del os.environ["PIVOTED_MULTI_MEASURE"]
+    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
+        config, csv
+    )
 
     _write_errors_to_log(json_schema_validation_errors, validation_errors)
 

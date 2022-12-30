@@ -49,7 +49,6 @@ def load_json_document(file_uri_or_path: Union[str, Path]) -> Dict[str, Any]:
                 raise Exception(
                     f"Error loading JSON from URL '{file_uri_or_path}'. HTTP response: {http_response}."
                 )
-
             try:
                 return http_response.json()
             except Exception as e:
