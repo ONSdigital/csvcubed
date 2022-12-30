@@ -3,12 +3,16 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX csvw: <http://www.w3.org/ns/csvw#>
 PREFIX qb: <http://purl.org/linked-data/cube#>
 
-SELECT ?measure (max(?isPivoted) as ?isPivotedShape)
+SELECT ?csvUrl ?measure (max(?isPivoted) as ?isPivotedShape)
 WHERE {
-    [] a qb:DataStructureDefinition;
-       qb:component/qb:measure ?measure.
+    ?dsd a qb:DataStructureDefinition;
+         qb:component/qb:measure ?measure.
 
-    [] csvw:column/rdf:rest*/rdf:first [ csvw:propertyUrl ?measureColumnPropertyUrl ].
+    # N.B. The join between ?dsd and ?csvUrl is injected as a `VALUES` table when the query is executed.
+
+    [] csvw:url ?csvUrl;
+       csvw:tableSchema/csvw:column/rdf:rest*/rdf:first [ csvw:propertyUrl ?measureColumnPropertyUrl ].
+
     BIND((STRENDS(str(?measureColumnPropertyUrl), str(?measure)) || STRENDS(str(?measure), str(?measureColumnPropertyUrl))) as ?isPivoted).
 }
-GROUP BY ?measure
+GROUP BY ?csvUrl ?measure

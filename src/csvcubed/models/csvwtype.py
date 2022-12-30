@@ -1,5 +1,6 @@
 from enum import Enum, auto
 
+
 class CSVWType(Enum):
     """
     The type of metadata file.

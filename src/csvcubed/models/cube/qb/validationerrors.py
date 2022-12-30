@@ -5,10 +5,10 @@ Qb-Cube Validation Errors
 :obj:`ValidationError <csvcubed.models.validationerror.ValidationError>` models specific to :mod:`qb`.
 """
 
+import os
+from abc import ABC
 from dataclasses import dataclass, field
 from typing import List, Optional, Type, Union
-from abc import ABC
-import os
 
 from csvcubed.models.validationerror import SpecificValidationError
 from ..qb import (
@@ -17,7 +17,6 @@ from ..qb import (
     QbObservationValue,
     QbMultiUnits,
     QbStructuralDefinition,
-    QbColumn,
 )
 
 ComponentTypeDescription = Union[str, Type[QbStructuralDefinition]]

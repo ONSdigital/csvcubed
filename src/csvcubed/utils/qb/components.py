@@ -19,7 +19,7 @@ class ComponentField(Enum):
     """
 
     CsvColumnTitle = "csv_col_title"
-    
+
     Property = "property"
 
     PropertyType = "property_type"

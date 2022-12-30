@@ -1,5 +1,6 @@
 from enum import Enum, auto
 
+
 class CubeShape(Enum):
     """
     The shape of the cube.

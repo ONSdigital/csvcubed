@@ -287,7 +287,7 @@ Feature: Behaviour testing of csvcubed inspect.
         And the Dataset Information Printable should be
         """
         - The data cube has the following dataset information:
-                - Number of Rows: 41508
+                - Number of Rows: 19
                 - Number of Duplicates: 0
                 - First 10 Rows:
         GHG GHG Grouped IPCC Code  Year National Communication Sector National Communication Sub-sector National Communication Category                          Source National Communication Fuel Group National Communication Fuel       Activity Name  Value
@@ -303,24 +303,24 @@ Feature: Behaviour testing of csvcubed inspect.
         c2f6        pfcs     2b9b3  1999          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.002
 
                 - Last 10 Rows:
-        GHG GHG Grouped IPCC Code  Year National Communication Sector National Communication Sub-sector                                                                National Communication Category     Source National Communication Fuel Group National Communication Fuel      Activity Name  Value
-        sf6         sf6      2g2e  2010                      business                    not-applicable electronics-electrical-insulation-scientific-research-military-applications-and-sporting-goods tracer-gas                   other-emissions             other-emissions halocarbon-use-sf6  0.001
-        sf6         sf6      2g2e  2011                      business                    not-applicable electronics-electrical-insulation-scientific-research-military-applications-and-sporting-goods tracer-gas                   other-emissions             other-emissions halocarbon-use-sf6  0.029
-        sf6         sf6      2g2e  2012                      business                    not-applicable electronics-electrical-insulation-scientific-research-military-applications-and-sporting-goods tracer-gas                   other-emissions             other-emissions halocarbon-use-sf6  0.033
-        sf6         sf6      2g2e  2013                      business                    not-applicable electronics-electrical-insulation-scientific-research-military-applications-and-sporting-goods tracer-gas                   other-emissions             other-emissions halocarbon-use-sf6  0.007
-        sf6         sf6      2g2e  2014                      business                    not-applicable electronics-electrical-insulation-scientific-research-military-applications-and-sporting-goods tracer-gas                   other-emissions             other-emissions halocarbon-use-sf6  0.007
-        sf6         sf6      2g2e  2015                      business                    not-applicable electronics-electrical-insulation-scientific-research-military-applications-and-sporting-goods tracer-gas                   other-emissions             other-emissions halocarbon-use-sf6  0.001
-        sf6         sf6      2g2e  2016                      business                    not-applicable electronics-electrical-insulation-scientific-research-military-applications-and-sporting-goods tracer-gas                   other-emissions             other-emissions halocarbon-use-sf6  0.001
-        sf6         sf6      2g2e  2017                      business                    not-applicable electronics-electrical-insulation-scientific-research-military-applications-and-sporting-goods tracer-gas                   other-emissions             other-emissions halocarbon-use-sf6  0.001
-        sf6         sf6      2g2e  2018                      business                    not-applicable electronics-electrical-insulation-scientific-research-military-applications-and-sporting-goods tracer-gas                   other-emissions             other-emissions halocarbon-use-sf6  0.001
-        sf6         sf6      2g2e  2019                      business                    not-applicable electronics-electrical-insulation-scientific-research-military-applications-and-sporting-goods tracer-gas                   other-emissions             other-emissions halocarbon-use-sf6  0.001        
-        """
+        GHG GHG Grouped IPCC Code  Year National Communication Sector National Communication Sub-sector National Communication Category                          Source National Communication Fuel Group National Communication Fuel       Activity Name  Value
+        c2f6        pfcs     2b9b3  1999          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.002
+        c2f6        pfcs     2b9b3  2000          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.003
+        c2f6        pfcs     2b9b3  2001          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.007
+        c2f6        pfcs     2b9b3  2002          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.007
+        c2f6        pfcs     2b9b3  2003          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.008
+        c2f6        pfcs     2b9b3  2004          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.013
+        c2f6        pfcs     2b9b3  2005          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.016
+        c2f6        pfcs     2b9b3  2006          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.013
+        c2f6        pfcs     2b9b3  2007          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.008
+        c2f6        pfcs     2b9b3  2008          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.002
+           """
         And the Dataset Value Counts Printable should be
         """
         - The data cube has the following value counts:
             - Value counts broken-down by measure and unit (of measure):
                        Measure                                          Unit  Count
-        gas emissions(gwp-ar4) final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#unit/millions-of-tonnes-of-carbon-dioxide-mt-co2  41508
+        gas emissions(gwp-ar4) final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#unit/millions-of-tonnes-of-carbon-dioxide-mt-co2  19
         """
 
     Scenario: inspect should produce the expected printable for data cube metadata json-ld input of type single-unit multi-measure.

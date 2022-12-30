@@ -1,11 +1,11 @@
 from pathlib import Path
 from typing import List, Optional
 
-import pytest
 import dateutil.parser
+import pytest
 from rdflib import Graph, RDF, DCAT, URIRef, RDFS, Literal, ConjunctiveGraph
 
-from csvcubed.utils.iterables import first
+from csvcubed.cli.inspect.metadataprinter import to_absolute_rdflib_file_path
 from csvcubed.models.sparqlresults import (
     CatalogMetadataResult,
     CodeListColsByDatasetUrlResult,
@@ -17,12 +17,14 @@ from csvcubed.models.sparqlresults import (
     CsvUrlResult,
     IsPivotedShapeMeasureResult,
     QubeComponentResult,
-    QubeComponentsResult,
     MetadataDependenciesResult,
+    CubeTableIdentifiers,
 )
+from csvcubed.utils.iterables import first
 from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.rdf import parse_graph_retain_relative
-from csvcubed.utils.sparql_handler.sparqlmanager import (
+from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
+from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     ask_is_csvw_code_list,
     ask_is_csvw_qb_dataset,
     select_codelist_cols_by_csv_url,
@@ -30,7 +32,6 @@ from csvcubed.utils.sparql_handler.sparqlmanager import (
     select_cols_where_suppress_output_is_true,
     select_csvw_catalog_metadata,
     select_csvw_dsd_dataset_label_and_dsd_def_uri,
-    select_csvw_dsd_qube_components,
     select_dsd_code_list_and_cols,
     select_is_pivoted_shape_for_measures_in_data_set,
     select_qb_csv_url,
@@ -44,7 +45,6 @@ from csvcubed.utils.tableschema import (
     add_triples_for_file_dependencies,
 )
 from tests.unit.test_baseunit import get_test_cases_dir
-from csvcubed.models.cube.cube_shape import CubeShape
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
 _csvw_test_cases_dir = get_test_cases_dir() / "utils" / "csvw"
@@ -57,18 +57,31 @@ def assert_dsd_component_equal(
     property_label: str,
     csv_col_title: str,
     observation_value_column_titles: Optional[str],
+    dsd_uri: str,
     required: bool,
 ):
     assert component.property == property
     assert component.property_type == property_type.value
     assert component.property_label == property_label
     assert component.csv_col_title == csv_col_title
+    assert component.dsd_uri == dsd_uri
     assert component.required == required
-    
-    if observation_value_column_titles is not None and len(observation_value_column_titles) > 0:
-        expected_obs_val_col_titles = [title.strip() for title in observation_value_column_titles.split(',')]
-        actual_obs_val_col_titles = [title.strip() for title in component.observation_value_column_titles.split(',')]
-        assert len(expected_obs_val_col_titles) == len(actual_obs_val_col_titles) and sorted(expected_obs_val_col_titles) == sorted(actual_obs_val_col_titles)
+
+    if (
+        observation_value_column_titles is not None
+        and len(observation_value_column_titles) > 0
+    ):
+        expected_obs_val_col_titles = [
+            title.strip() for title in observation_value_column_titles.split(",")
+        ]
+        actual_obs_val_col_titles = [
+            title.strip()
+            for title in component.observation_value_column_titles.split(",")
+        ]
+        assert len(expected_obs_val_col_titles) == len(
+            actual_obs_val_col_titles
+        ) and sorted(expected_obs_val_col_titles) == sorted(actual_obs_val_col_titles)
+
 
 def _assert_code_list_column_equal(
     column: CodelistColumnResult,
@@ -240,6 +253,7 @@ def test_select_csvw_catalog_metadata_for_codelist():
     assert result.contact_point == "None"
     assert result.identifier == "Alcohol Content"
 
+
 def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
     """
     Ensures that the cube components in a pivoted single-measure dataset correctly link to observation value columns.
@@ -253,16 +267,17 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
+    data_cube_state = DataCubeState(csvw_metadata_rdf_graph, csvw_metadata_json_path)
+
     result: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
         csvw_metadata_rdf_graph
     )
-    component_result: QubeComponentsResult = select_csvw_dsd_qube_components(
-        CubeShape.Pivoted,
-        csvw_metadata_rdf_graph,
-        result.dsd_uri,
-        csvw_metadata_json_path,
-    )
-    components = component_result.qube_components
+    data_set_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
+    data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
+    csv_url = select_qb_csv_url(csvw_metadata_rdf_graph, data_set_uri).csv_url
+
+    result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(csv_url)
+    components = result_qube_components.qube_components
 
     assert result.dataset_label == "Pivoted Shape Cube"
     assert result.dsd_uri == "qb-id-10004.csv#structure"
@@ -278,6 +293,7 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
         "Some Dimension",
         "Some Dimension",
         "Some Obs Val",
+        "qb-id-10004.csv#structure",
         True,
     )
 
@@ -291,6 +307,7 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
         "Some Attribute",
         "Some Attribute",
         "Some Obs Val",
+        "qb-id-10004.csv#structure",
         False,
     )
 
@@ -304,6 +321,7 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
         "",
         "",
         "",
+        "qb-id-10004.csv#structure",
         True,
     )
 
@@ -317,6 +335,7 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
         "",
         "",
         "Some Obs Val",
+        "qb-id-10004.csv#structure",
         True,
     )
 
@@ -330,8 +349,10 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
         "Some Measure",
         "Some Obs Val",
         "Some Obs Val",
+        "qb-id-10004.csv#structure",
         True,
     )
+
 
 def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
     """
@@ -344,17 +365,17 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
+    data_cube_state = DataCubeState(csvw_metadata_rdf_graph, csvw_metadata_json_path)
 
     result: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
         csvw_metadata_rdf_graph
     )
-    component_result: QubeComponentsResult = select_csvw_dsd_qube_components(
-        CubeShape.Pivoted,
-        csvw_metadata_rdf_graph,
-        result.dsd_uri,
-        csvw_metadata_json_path,
-    )
-    components = component_result.qube_components
+    data_set_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
+    data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
+    csv_url = select_qb_csv_url(csvw_metadata_rdf_graph, data_set_uri).csv_url
+
+    result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(csv_url)
+    components = result_qube_components.qube_components
 
     assert result.dataset_label == "Pivoted Shape Cube"
     assert result.dsd_uri == "qb-id-10003.csv#structure"
@@ -370,6 +391,7 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
         "Some Dimension",
         "Some Dimension",
         "Some Other Obs Val,Some Obs Val",
+        "qb-id-10003.csv#structure",
         True,
     )
 
@@ -383,6 +405,7 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
         "Some Attribute",
         "Some Attribute",
         "Some Obs Val",
+        "qb-id-10003.csv#structure",
         False,
     )
 
@@ -396,6 +419,7 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
         "",
         "",
         "",
+        "qb-id-10003.csv#structure",
         True,
     )
 
@@ -409,9 +433,10 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
         "",
         "Some Unit",
         "Some Other Obs Val, Some Obs Val",
+        "qb-id-10003.csv#structure",
         True,
     )
-    
+
     component = get_dsd_component_by_property_url(
         components, "qb-id-10003.csv#measure/some-measure"
     )
@@ -422,6 +447,7 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
         "Some Measure",
         "Some Obs Val",
         "Some Obs Val",
+        "qb-id-10003.csv#structure",
         True,
     )
 
@@ -435,8 +461,10 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
         "Some Other Measure",
         "Some Other Obs Val",
         "Some Other Obs Val",
+        "qb-id-10003.csv#structure",
         True,
     )
+
 
 def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
     """
@@ -450,17 +478,17 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
+    data_cube_state = DataCubeState(csvw_metadata_rdf_graph, csvw_metadata_json_path)
 
     result: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
         csvw_metadata_rdf_graph
     )
-    component_result: QubeComponentsResult = select_csvw_dsd_qube_components(
-        CubeShape.Pivoted,
-        csvw_metadata_rdf_graph,
-        result.dsd_uri,
-        csvw_metadata_json_path,
-    )
-    components = component_result.qube_components
+    data_set_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
+    data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
+    csv_url = select_qb_csv_url(csvw_metadata_rdf_graph, data_set_uri).csv_url
+
+    result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(csv_url)
+    components = result_qube_components.qube_components
 
     assert result.dataset_label == "Pivoted Shape Cube"
     assert result.dsd_uri == "qb-id-10004.csv#structure"
@@ -476,6 +504,7 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
         "Some Dimension",
         "Some Dimension",
         "Some Obs Val",
+        "qb-id-10004.csv#structure",
         True,
     )
 
@@ -489,6 +518,7 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
         "Some Attribute",
         "Some Attribute",
         "Some Obs Val",
+        "qb-id-10004.csv#structure",
         False,
     )
 
@@ -502,6 +532,7 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
         "",
         "",
         "",
+        "qb-id-10004.csv#structure",
         True,
     )
 
@@ -515,6 +546,7 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
         "",
         "",
         "Some Obs Val",
+        "qb-id-10004.csv#structure",
         True,
     )
 
@@ -528,6 +560,7 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
         "Some Measure",
         "Some Obs Val",
         "Some Obs Val",
+        "qb-id-10004.csv#structure",
         True,
     )
 
@@ -754,7 +787,16 @@ def test_select_is_pivoted_shape_for_measures_in_pivoted_shape_data_set():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    results = select_is_pivoted_shape_for_measures_in_data_set(csvw_metadata_rdf_graph)
+    results = select_is_pivoted_shape_for_measures_in_data_set(
+        csvw_metadata_rdf_graph,
+        [
+            CubeTableIdentifiers(
+                "qb-id-10003.csv",
+                "qb-id-10003.csv#dataset",
+                "qb-id-10003.csv#structure",
+            )
+        ],
+    )
 
     assert results is not None
     assert len(results) == 2
@@ -783,7 +825,16 @@ def test_select_is_pivoted_shape_for_measures_in_standard_shape_data_set():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    results = select_is_pivoted_shape_for_measures_in_data_set(csvw_metadata_rdf_graph)
+    results = select_is_pivoted_shape_for_measures_in_data_set(
+        csvw_metadata_rdf_graph,
+        [
+            CubeTableIdentifiers(
+                "energy-trends-uk-total-energy.csv",
+                "energy-trends-uk-total-energy.csv#dataset",
+                "energy-trends-uk-total-energy.csv#structure",
+            )
+        ],
+    )
 
     assert results is not None
     assert len(results) == 1
