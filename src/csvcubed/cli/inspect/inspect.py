@@ -8,7 +8,7 @@ Output CSV-W metadata in a user-friendly format to the CLI for validation.
 import logging
 from os import linesep
 from pathlib import Path
-from typing import Optional, Tuple
+from typing import Tuple
 
 import rdflib
 
@@ -18,8 +18,8 @@ from csvcubed.cli.inspect.metadatainputvalidator import (
 from csvcubed.cli.inspect.metadataprinter import MetadataPrinter
 from csvcubed.models.csvcubedexception import FailedToLoadRDFGraphException
 from csvcubed.models.csvwtype import CSVWType
-from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
 from csvcubed.utils.sparql_handler.code_list_state import CodeListState
+from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
 from csvcubed.utils.tableschema import CsvwRdfManager
 
 _logger = logging.getLogger(__name__)

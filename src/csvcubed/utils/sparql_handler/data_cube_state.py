@@ -5,9 +5,7 @@ from typing import Dict, List, Any
 
 import rdflib
 
-
 from csvcubed.models.cube.cube_shape import CubeShape
-from csvcubed.utils.iterables import group_by, first
 from csvcubed.models.sparqlresults import (
     ColTitlesAndNamesResult,
     CubeTableIdentifiers,
@@ -17,6 +15,7 @@ from csvcubed.models.sparqlresults import (
     UnitColumnAboutValueUrlResult,
     IsPivotedShapeMeasureResult,
 )
+from csvcubed.utils.iterables import group_by, first
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_col_titles_and_names,
     select_csvw_dsd_qube_components,

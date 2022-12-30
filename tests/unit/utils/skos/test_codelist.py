@@ -60,10 +60,8 @@ def test_get_codelist_col_title_by_property_url_notation():
     result_code_list_cols = select_codelist_cols_by_csv_url(
         csvw_metadata_rdf_graph, csv_url
     )
-    result_primary_key_col_names_by_csv_url = (
-        select_primary_key_col_names_by_csv_url(
-            csvw_metadata_rdf_graph, csv_url
-        )
+    result_primary_key_col_names_by_csv_url = select_primary_key_col_names_by_csv_url(
+        csvw_metadata_rdf_graph, csv_url
     )
 
     unique_identifier = get_codelist_col_title_from_col_name(
@@ -179,9 +177,7 @@ def test_build_concepts_hierarchy_tree_of_depth_one():
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     csv_url = select_codelist_csv_url(csvw_metadata_rdf_graph).csv_url
-    dataset: DataFrame = load_csv_to_dataframe(
-        csvw_metadata_json_path, Path(csv_url)
-    )
+    dataset: DataFrame = load_csv_to_dataframe(csvw_metadata_json_path, Path(csv_url))
     result_code_list_cols = select_codelist_cols_by_csv_url(
         csvw_metadata_rdf_graph, csv_url
     )
@@ -212,9 +208,7 @@ def test_build_concepts_hierarchy_tree_of_depth_more_than_one():
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     csv_url = select_codelist_csv_url(csvw_metadata_rdf_graph).csv_url
-    dataset: DataFrame = load_csv_to_dataframe(
-        csvw_metadata_json_path, Path(csv_url)
-    )
+    dataset: DataFrame = load_csv_to_dataframe(csvw_metadata_json_path, Path(csv_url))
     result_code_list_cols = select_codelist_cols_by_csv_url(
         csvw_metadata_rdf_graph, csv_url
     )

@@ -1,21 +1,19 @@
 import numpy as np
 import pandas as pd
-from pandas.util.testing import assert_frame_equal
 import pytest
-from csvcubed.cli.inspect.metadataprinter import to_absolute_rdflib_file_path
+from pandas.util.testing import assert_frame_equal
+
 from csvcubed.models.csvcubedexception import (
     InvalidNumOfDSDComponentsForObsValColTitleException,
     InvalidNumOfUnitColsForObsValColTitleException,
     InvalidNumOfValUrlsForAboutUrlException,
 )
-from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import (
     ColTitlesAndNamesResult,
     ObservationValueColumnTitleAboutUrlResult,
     QubeComponentResult,
     UnitColumnAboutValueUrlResult,
 )
-
 from csvcubed.utils.csvdataset import (
     _create_measure_col_in_melted_data_set_for_pivoted_shape,
     _create_unit_col_in_melted_data_set_for_pivoted_shape,
@@ -24,14 +22,8 @@ from csvcubed.utils.csvdataset import (
 )
 from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
-from csvcubed.utils.sparql_handler.sparqlquerymanager import (
-    select_csvw_catalog_metadata,
-    select_qb_csv_url,
-)
 from csvcubed.utils.tableschema import CsvwRdfManager
-
 from tests.unit.cli.inspect.test_inspectdatasetmanager import get_arguments_qb_dataset
-
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"

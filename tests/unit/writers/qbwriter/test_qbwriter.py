@@ -208,6 +208,7 @@ def test_csv_col_required():
         assert isinstance(required, bool)
         assert not required
 
+
 def test_csv_col_required_for_pivoted_multi_measure():
     """Test that the :attr:`required` key is set correctly for various different component types for a pivoted multi-measure input."""
     data = pd.DataFrame(
@@ -245,9 +246,9 @@ def test_csv_col_required_for_pivoted_multi_measure():
                 "Some Other Obs Value",
                 QbObservationValue(NewQbMeasure("Some Other Measure")),
             ),
-        ]
+        ],
     )
-    
+
     qb_writer = QbWriter(cube)
     obs_val_cols = cube.get_columns_of_dsd_type(QbObservationValue)
     for col in cube.columns:
@@ -257,7 +258,7 @@ def test_csv_col_required_for_pivoted_multi_measure():
         if isinstance(col.structural_definition, QbAttribute):
             # Determine if the cube is pivoted multi-measure
             if cube.is_pivoted_shape and len(obs_val_cols) > 1:
-                #If the cube is in pivoted multi-measure shape, the attribute columns cannot be set to required.
+                # If the cube is in pivoted multi-measure shape, the attribute columns cannot be set to required.
                 assert required == False
         else:
             assert required == True

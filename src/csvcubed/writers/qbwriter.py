@@ -9,7 +9,7 @@ import json
 import logging
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, Any, Iterable, List, Union
+from typing import Dict, Any, Iterable, List
 
 import pandas as pd
 

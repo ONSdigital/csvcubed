@@ -6,13 +6,10 @@ Provides functionality for validating the input metadata.json and detecting its 
 """
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Optional, Tuple
 
 import rdflib
 
 from csvcubed.models.csvwtype import CSVWType
-from csvcubed.models.cube.cube_shape import CubeShape
-from csvcubed.models.sparqlresults import IsPivotedShapeMeasureResult
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     ask_is_csvw_code_list,

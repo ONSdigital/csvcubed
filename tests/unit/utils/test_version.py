@@ -1,7 +1,3 @@
-from ensurepip import version
-import requests
-import pytest
-
 from csvcubed.utils.version import get_csvcubed_version_uri
 
 

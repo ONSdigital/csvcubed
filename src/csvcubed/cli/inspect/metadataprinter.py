@@ -24,7 +24,6 @@ from csvcubed.models.csvcubedexception import (
     UnsupportedNumOfPrimaryKeyColNamesException,
 )
 from csvcubed.models.csvwtype import CSVWType
-from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.inspectdataframeresults import (
     CodelistHierarchyInfoResult,
     DatasetObservationsByMeasureUnitInfoResult,
@@ -37,12 +36,9 @@ from csvcubed.models.sparqlresults import (
     CodelistsResult,
     ColsWithSuppressOutputTrueResult,
     DSDLabelURIResult,
-    CubeTableIdentifiers,
     PrimaryKeyColNamesByDatasetUrlResult,
     QubeComponentsResult,
 )
-from csvcubed.utils.sparql_handler.code_list_state import CodeListState
-from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
 from csvcubed.utils.csvdataset import (
     transform_dataset_to_canonical_shape,
 )
@@ -51,6 +47,8 @@ from csvcubed.utils.skos.codelist import (
     get_codelist_col_title_by_property_url,
     get_codelist_col_title_from_col_name,
 )
+from csvcubed.utils.sparql_handler.code_list_state import CodeListState
+from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_codelist_cols_by_csv_url,

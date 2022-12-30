@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import List
 
 import rdflib
+from csvcubedmodels.rdf.namespaces import XSD
 from rdflib import Literal, URIRef
 from rdflib.query import ResultRow
 
@@ -20,7 +21,6 @@ from csvcubed.models.csvcubedexception import (
     FeatureNotSupportedException,
     InvalidNumberOfRecordsException,
 )
-from csvcubedmodels.rdf.namespaces import XSD
 from csvcubed.models.sparql.valuesbinding import ValuesBinding
 from csvcubed.models.sparqlresults import (
     CSVWTableSchemaFileDependenciesResult,

@@ -1,4 +1,7 @@
+from typing import List
+
 import pytest
+
 from csvcubed.cli.inspect.metadataprinter import to_absolute_rdflib_file_path
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import (
@@ -13,8 +16,6 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_qb_csv_url,
 )
 from csvcubed.utils.tableschema import CsvwRdfManager
-from typing import List
-
 from tests.unit.test_baseunit import get_test_cases_dir
 from tests.unit.utils.sparqlhandler.test_sparqlquerymanager import (
     get_dsd_component_by_property_url,

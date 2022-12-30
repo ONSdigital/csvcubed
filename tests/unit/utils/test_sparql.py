@@ -1,7 +1,7 @@
-import pytest
-from pathlib import PosixPath, WindowsPath
 import os
+from pathlib import PosixPath, WindowsPath
 
+import pytest
 import rdflib
 
 from csvcubed.models.sparql.valuesbinding import ValuesBinding

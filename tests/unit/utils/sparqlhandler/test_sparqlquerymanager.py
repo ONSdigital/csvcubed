@@ -1,12 +1,11 @@
 from pathlib import Path
 from typing import List, Optional
 
-import pytest
 import dateutil.parser
+import pytest
 from rdflib import Graph, RDF, DCAT, URIRef, RDFS, Literal, ConjunctiveGraph
-from csvcubed.cli.inspect.metadataprinter import to_absolute_rdflib_file_path
 
-from csvcubed.utils.iterables import first
+from csvcubed.cli.inspect.metadataprinter import to_absolute_rdflib_file_path
 from csvcubed.models.sparqlresults import (
     CatalogMetadataResult,
     CodeListColsByDatasetUrlResult,
@@ -18,10 +17,10 @@ from csvcubed.models.sparqlresults import (
     CsvUrlResult,
     IsPivotedShapeMeasureResult,
     QubeComponentResult,
-    QubeComponentsResult,
     MetadataDependenciesResult,
     CubeTableIdentifiers,
 )
+from csvcubed.utils.iterables import first
 from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.rdf import parse_graph_retain_relative
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
@@ -46,7 +45,6 @@ from csvcubed.utils.tableschema import (
     add_triples_for_file_dependencies,
 )
 from tests.unit.test_baseunit import get_test_cases_dir
-from csvcubed.models.cube.cube_shape import CubeShape
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
 _csvw_test_cases_dir = get_test_cases_dir() / "utils" / "csvw"

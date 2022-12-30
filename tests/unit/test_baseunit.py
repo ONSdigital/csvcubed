@@ -18,8 +18,8 @@ def get_test_base_dir() -> Path:
             # Removed double csvcubed because tox is run in the first csvcubed directory not csvcubed/tests.
             csvcubed_path = Path(*path_parts[0 : csvwlib_index + 1])
         else:
-            # If we can't find a folder named 'csvcubed' we have to assume that the current working directory 
-            # is where it is. This happens on Jenkins since it has its own way of naming the checked-out 
+            # If we can't find a folder named 'csvcubed' we have to assume that the current working directory
+            # is where it is. This happens on Jenkins since it has its own way of naming the checked-out
             # repo's folder.
             csvcubed_path = Path(".").absolute()
 

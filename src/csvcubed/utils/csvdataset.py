@@ -8,34 +8,33 @@ Utilities for CSV Datasets
 from pathlib import Path
 from typing import List, Optional, Tuple, Dict, Any
 from uuid import uuid1
-import uritemplate
-from uritemplate.orderedset import OrderedSet
 
 import pandas as pd
 import rdflib
+import uritemplate
+from uritemplate.orderedset import OrderedSet
 
-from csvcubed.models.cube.cube_shape import CubeShape
-from csvcubed.utils.iterables import first
-from csvcubed.models.csvcubedexception import (
-    InvalidNumOfDSDComponentsForObsValColTitleException,
-    InvalidNumOfUnitColsForObsValColTitleException,
-    InvalidNumOfValUrlsForAboutUrlException,
-)
-from csvcubed.utils.qb.components import ComponentField, ComponentPropertyType
-from csvcubed.models.sparqlresults import (
-    ColTitlesAndNamesResult,
-    ObservationValueColumnTitleAboutUrlResult,
-    QubeComponentResult,
-    UnitColumnAboutValueUrlResult,
-)
 from csvcubed.cli.inspect.inspectdatasetmanager import (
     filter_components_from_dsd,
     get_single_measure_from_dsd,
     get_standard_shape_measure_col_name_from_dsd,
     get_standard_shape_unit_col_name_from_dsd,
 )
-from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
+from csvcubed.models.csvcubedexception import (
+    InvalidNumOfDSDComponentsForObsValColTitleException,
+    InvalidNumOfUnitColsForObsValColTitleException,
+    InvalidNumOfValUrlsForAboutUrlException,
+)
+from csvcubed.models.cube.cube_shape import CubeShape
+from csvcubed.models.sparqlresults import (
+    ColTitlesAndNamesResult,
+    ObservationValueColumnTitleAboutUrlResult,
+    UnitColumnAboutValueUrlResult,
+)
 from csvcubed.models.sparqlresults import QubeComponentResult
+from csvcubed.utils.iterables import first
+from csvcubed.utils.qb.components import ComponentField, ComponentPropertyType
+from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
 from csvcubed.utils.sparql_handler.sparqlquerymanager import select_single_unit_from_dsd
 
 
