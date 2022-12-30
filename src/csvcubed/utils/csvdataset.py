@@ -14,6 +14,7 @@ from uritemplate.orderedset import OrderedSet
 import pandas as pd
 import rdflib
 
+from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.utils.iterables import first
 from csvcubed.models.csvcubedexception import (
     InvalidNumOfDSDComponentsForObsValColTitleException,
@@ -34,10 +35,6 @@ from csvcubed.cli.inspect.inspectdatasetmanager import (
     get_standard_shape_unit_col_name_from_dsd,
 )
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
-from csvcubed.utils.sparql_handler.sparqlquerymanager import (
-    CubeShape,
-    select_single_unit_from_dsd,
-)
 from csvcubed.models.sparqlresults import QubeComponentResult
 from csvcubed.utils.sparql_handler.sparqlquerymanager import select_single_unit_from_dsd
 

@@ -8,7 +8,7 @@ Collection of SPARQL queries.
 import logging
 from enum import Enum
 from pathlib import Path
-from typing import List, Optional
+from typing import List
 
 import rdflib
 from rdflib import Literal, URIRef
@@ -20,7 +20,7 @@ from csvcubed.models.csvcubedexception import (
     FeatureNotSupportedException,
     InvalidNumberOfRecordsException,
 )
-from csvcubed.models.cube.cube_shape import CubeShape
+from csvcubedmodels.rdf.namespaces import XSD
 from csvcubed.models.sparql.valuesbinding import ValuesBinding
 from csvcubed.models.sparqlresults import (
     CSVWTableSchemaFileDependenciesResult,
@@ -56,7 +56,7 @@ from csvcubed.models.sparqlresults import (
     map_single_unit_from_dsd_result,
     map_metadata_dependency_results,
     map_table_schema_properties_result,
-    map_unit_col_about_value_urls_result
+    map_unit_col_about_value_urls_result,
 )
 from csvcubed.utils.sparql_handler.sparql import ask, select
 
@@ -302,7 +302,7 @@ def _cube_table_identifiers_to_values_binding(
         variable_names=["csvUrl", "dataSet", "dsd"],
         rows=[
             [
-                URIRef(uris.csv_url),
+                Literal(uris.csv_url, datatype=XSD.anyURI),
                 URIRef(uris.data_set_url),
                 URIRef(uris.dsd_uri),
             ]

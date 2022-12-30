@@ -63,8 +63,20 @@ def select(
     :return: `List[ResultRow]` - List containing the results.
 
     """
-    if values_bindings is not None:
-        query += _convert_values_bindings_to_sparql(values_bindings)
+    if any(values_bindings):
+        # We should be able to just add the `VALUES` on after the query, but this falls down when done in combination
+        # with a `GROUP BY` due to a bug in rdflib (https://github.com/RDFLib/rdflib/pull/2188).
+        # So, until that is merged in and released, we'll have to insert these `VALUES` within the query.
+        # todo: Undo this once https://github.com/RDFLib/rdflib/pull/2188 is merged and complete.
+        # query += _convert_values_bindings_to_sparql(values_bindings)
+        last_closing_brace_index = query.rindex("}")
+        query = (
+            query[0:last_closing_brace_index]
+            + "\n"
+            + _convert_values_bindings_to_sparql(values_bindings)
+            + "\n"
+            + query[last_closing_brace_index:]
+        )
 
     results: List[ResultRow] = [
         result
