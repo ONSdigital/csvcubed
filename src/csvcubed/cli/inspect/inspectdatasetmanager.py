@@ -89,54 +89,62 @@ def get_standard_shape_measure_col_name_from_dsd(
     components: List[QubeComponentResult],
 ) -> Optional[str]:
     """
-    Identifies the name of measure column.
+    Identifies the name of the measure column in a standard shape data set.
 
     Member of :file:`./inspectdatasetmanager.py`
 
     :return: `Optional[str]`
     """
-    filtered_components = filter_components_from_dsd(
+    measure_components = filter_components_from_dsd(
         components,
         ComponentField.Property,
         ComponentPropertyAttributeURI.MeasureType.value,
     )
 
-    if len(filtered_components) == 0 or filtered_components[0].used_in_columns == "":
-        _logger.warn(
+    first_measure_component = first(measure_components)
+
+    if (
+        first_measure_component is not None
+        and len(first_measure_component.used_in_columns) == 1
+    ):
+        csv_measure_column = first_measure_component.used_in_columns[0]
+        return csv_measure_column.title
+    else:
+        _logger.warning(
             "Could not find measure column name from the DSD, hence returning None"
         )
         return None
-    else:
-        return none_or_map(
-            first(filtered_components[0].used_in_columns), lambda c: c.title
-        )
 
 
 def get_standard_shape_unit_col_name_from_dsd(
     components: List[QubeComponentResult],
 ) -> Optional[str]:
     """
-    Identifies the name of unit column.
+    Identifies the name of unit column in a standard shaped data set.
 
     Member of :file:`./inspectdatasetmanager.py`
 
     :return: `Optional[str]`
     """
-    filtered_components = filter_components_from_dsd(
+    unit_components = filter_components_from_dsd(
         components,
         ComponentField.Property,
         ComponentPropertyAttributeURI.UnitMeasure.value,
     )
 
-    if len(filtered_components) == 0 or filtered_components[0].used_in_columns == "":
-        _logger.warn(
+    first_unit_component = first(unit_components)
+
+    if (
+        first_unit_component is not None
+        and len(first_unit_component.used_in_columns) == 1
+    ):
+        csv_units_column = first(first_unit_component.used_in_columns)
+        return csv_units_column.title
+    else:
+        _logger.warning(
             "Could not find unit column name from the DSD, hence returning None"
         )
         return None
-    else:
-        return none_or_map(
-            first(filtered_components[0].used_in_columns), lambda c: c.title
-        )
 
 
 def get_single_measure_from_dsd(
