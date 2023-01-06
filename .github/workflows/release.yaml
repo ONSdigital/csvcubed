@@ -25,3 +25,9 @@ jobs:
     needs: [build_package_and_documentation]
     uses: ./.github/workflows/reusable-deploy.yaml
     secrets: inherit
+
+  Trigger_gss-utils_workflow:
+    if: needs.publish_package_and_documentation.result == 'success'
+    needs: [publish_package_and_documentation]
+    uses: ./.github/workflows/reusable-release_gssutils.yaml
+    secrets: inherit
