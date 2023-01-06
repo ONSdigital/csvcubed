@@ -449,9 +449,10 @@ def _map_qube_component_sparql_result(
         property_type=get_component_property_type(
             str(result_dict["componentPropertyType"])
         ),
-        used_in_columns=none_or_map(result_dict.get("csvColumnTitle"), str) or "",
-        used_by_observed_value_columns="",  # This value is popuated after runnning the SELECT_OBS_VAL_FOR_DSD_COMPONENT_PROPERTIES sparql query. The _map_obs_val_for_dsd_component_properties_results will set the value for this property.
         required=none_or_map(result_dict.get("required"), bool) or False,
+        # The following two properties are populated later using the results from the CSV-W columns query.
+        used_in_columns=[],
+        used_by_observed_value_columns=[],
     )
     return result
 
@@ -491,19 +492,15 @@ def map_qube_components_sparql_result(
         ]
 
         for component in components:
-            columns_using_this_component = [
+            component.used_in_columns = [
                 c
                 for c in csv_column_definitions
                 if (not c.virtual) and c.property_url == component.property
             ]
 
-            component.used_in_columns = [
-                c for c in columns_using_this_component if c.title is not None
-            ]
-
             columns_using_this_component_about_urls = {
                 c.about_url
-                for c in columns_using_this_component
+                for c in component.used_in_columns
                 if c.about_url is not None
             }
 
@@ -511,7 +508,6 @@ def map_qube_components_sparql_result(
                 c
                 for c in observed_value_columns
                 if c.about_url in columns_using_this_component_about_urls
-                and c.title is not None
             ]
 
     return {
