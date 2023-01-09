@@ -16,6 +16,10 @@ Predefined set of codified concepts which represent the distinct values that a d
 
 Comma Separated Values on the Web – a standardised format to express metadata describing the contents of CSV files. For more information, see the [W3C project page](https://www.w3.org/TR/tabular-data-primer/) on this topic.
 
+## Dense Data
+
+A dense data set is one where the majority of dimension combinations have observed values recorded. Compare to [sparse](#sparse-data) data sets.
+
 ## [Dimension](https://www.w3.org/TR/vocab-data-cube/#cubes-model)
 
 Dimension components identify the subset of a population which has been observed. A set of values for all the dimension components is sufficient to identify a single observation. Examples of dimensions include the time to which the observation applies, or the geographic region that the observation covers.
@@ -46,6 +50,10 @@ A property of a population which can be measured or observed. For example, heigh
 ## [Semantic Web](https://www.w3.org/RDF/Metalog/docs/sw-easy)
 
 An extension to the world wide web in which information is given structured meaning using vocabularies such as [Simple Knowledge Organisation System (SKOS)](https://www.w3.org/2004/02/skos/intro) and the [RDF Data Cube vocabulary](https://www.w3.org/TR/vocab-data-cube/). The csvcubed tools help you build statistics which fit into the semantic web of linked data.
+
+## Sparse Data
+
+A sparse data set is one where there are a large number of possible combinations of dimension values, but very few of them have observed values recorded. Compare to [dense](#dense-data) data sets.
 
 ## Tidy Data
 
