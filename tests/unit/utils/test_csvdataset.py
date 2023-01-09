@@ -732,7 +732,7 @@ def test_create_unit_col_in_melted_data_set_for_pivoted_shape():
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
-    data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
+    data_cube_state = DataCubeState(csvw_metadata_rdf_graph, csvw_metadata_json_path)
 
     _create_unit_col_in_melted_data_set_for_pivoted_shape(
         "Unit",
@@ -783,7 +783,7 @@ def test_create_unit_col_in_melted_data_set_for_pivoted_shape_should_throw_inval
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
-    data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
+    data_cube_state = DataCubeState(csvw_metadata_rdf_graph, csvw_metadata_json_path)
 
     with pytest.raises(InvalidNumOfUnitColsForObsValColTitleException) as exception:
         _create_unit_col_in_melted_data_set_for_pivoted_shape(
@@ -821,7 +821,7 @@ def test_create_unit_col_in_melted_data_set_for_pivoted_shape_should_throw_inval
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
-    data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
+    data_cube_state = DataCubeState(csvw_metadata_rdf_graph, csvw_metadata_json_path)
 
     with pytest.raises(InvalidNumOfValUrlsForAboutUrlException) as exception:
         _create_unit_col_in_melted_data_set_for_pivoted_shape(
@@ -850,11 +850,9 @@ def test_unit_not_defined_locally():
         / "unit_not_locally_defined.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    data_cube_state = DataCubeState(csvw_rdf_manager.rdf_graph)
+    data_cube_state = DataCubeState(csvw_rdf_manager.rdf_graph, csvw_metadata_json_path)
 
-    (dataset, qube_components, dsd_uri, csv_url) = get_arguments_qb_dataset(
-        CubeShape.Standard, csvw_rdf_manager.rdf_graph, csvw_metadata_json_path
-    )
+    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
 
     (
         canonical_shape_dataset,
@@ -862,11 +860,9 @@ def test_unit_not_defined_locally():
         unit_col,
     ) = transform_dataset_to_canonical_shape(
         data_cube_state,
-        CubeShape.Pivoted,
         dataset,
         qube_components,
         csv_url,
-        dsd_uri,
         csvw_rdf_manager.rdf_graph,
         csvw_metadata_json_path,
     )
