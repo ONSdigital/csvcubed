@@ -31,7 +31,7 @@ RUN ${VENV_PIP} install poetry
 RUN python3 -m pip install mkdocs mkdocs-material mkdocs-mermaid2-plugin
 
 # Patch behave
-RUN patch -Nf -d "${VENV_PATH}/lib/python3.10/site-packages/behave/formatter" -p1 < /cucumber-format.patch
+RUN patch -Nf -d "${VENV_PATH}/lib/python3.11/site-packages/behave/formatter" -p1 < /cucumber-format.patch
 
 RUN rm -rf /workspace/*
 
