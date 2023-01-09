@@ -42,7 +42,7 @@
                         "name": "some_unit",
                         "aboutUrl": "qb-id-10003.csv#obs/{some_dimension}@some-other-measure",
                         "propertyUrl": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
-                        "valueUrl": "qb-id-10003.csv#unit/{+some_unit}",
+                        "valueUrl": "http://example.com/units/{+some_unit}",
                         "required": true
                     },
                     {
@@ -75,7 +75,7 @@
                         "virtual": true,
                         "aboutUrl": "qb-id-10003.csv#obs/{some_dimension}@some-measure",
                         "propertyUrl": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
-                        "valueUrl": "qb-id-10003.csv#unit/some-unit"
+                        "valueUrl": "http://example.com/units/some-unit"
                     },
                     {
                         "name": "virt_dim_some_obs_val_some_dimension",
@@ -599,34 +599,6 @@
                 {
                     "@language": "en",
                     "@value": "attr-c"
-                }
-            ]
-        },
-        {
-            "@id": "qb-id-10003.csv#unit/percent",
-            "@type": [
-                "http://qudt.org/schema/qudt/Unit",
-                "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://www.ontology-of-units-of-measure.org/resource/om-2/Unit"
-            ],
-            "http://www.w3.org/2000/01/rdf-schema#label": [
-                {
-                    "@language": "en",
-                    "@value": "Percent"
-                }
-            ]
-        },
-        {
-            "@id": "qb-id-10003.csv#unit/some-unit",
-            "@type": [
-                "http://qudt.org/schema/qudt/Unit",
-                "http://www.w3.org/2000/01/rdf-schema#Resource",
-                "http://www.ontology-of-units-of-measure.org/resource/om-2/Unit"
-            ],
-            "http://www.w3.org/2000/01/rdf-schema#label": [
-                {
-                    "@language": "en",
-                    "@value": "Some Unit"
                 }
             ]
         }
