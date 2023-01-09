@@ -6,24 +6,37 @@ from pathlib import Path
 import appdirs
 
 from csvcubed.cli.build import _extract_and_validate_cube, _write_errors_to_log
-from csvcubed.models.cube.cube import (ColumnNotFoundInDataError, Cube,
-                                       DuplicateColumnTitleError,
-                                       UriTemplateNameError)
+from csvcubed.models.cube.cube import (
+    ColumnNotFoundInDataError,
+    Cube,
+    DuplicateColumnTitleError,
+    UriTemplateNameError,
+)
 from csvcubed.models.cube.qb.components.validationerrors import (
-    ConflictingUriSafeValuesError, EmptyQbMultiUnitsError,
-    ReservedUriValueError, UndefinedAttributeValueUrisError,
-    UndefinedMeasureUrisError, UndefinedUnitUrisError)
+    ConflictingUriSafeValuesError,
+    EmptyQbMultiUnitsError,
+    ReservedUriValueError,
+    UndefinedAttributeValueUrisError,
+    UndefinedMeasureUrisError,
+    UndefinedUnitUrisError,
+)
 from csvcubed.models.cube.qb.validationerrors import (
-    AttributeNotLinkedError, BothMeasureTypesDefinedError,
-    BothUnitTypesDefinedError, DuplicateMeasureError,
-    EmptyQbMultiMeasureDimensionError, HybridShapeError,
-    LinkedObsColumnDoesntExistError, LinkedToNonObsColumnError,
-    MoreThanOneMeasureColumnError, NoDimensionsDefinedError,
-    NoMeasuresDefinedError, NoObservedValuesColumnDefinedError,
-    NoUnitsDefinedError)
+    AttributeNotLinkedError,
+    BothMeasureTypesDefinedError,
+    BothUnitTypesDefinedError,
+    DuplicateMeasureError,
+    EmptyQbMultiMeasureDimensionError,
+    HybridShapeError,
+    LinkedObsColumnDoesntExistError,
+    LinkedToNonObsColumnError,
+    MoreThanOneMeasureColumnError,
+    NoDimensionsDefinedError,
+    NoMeasuresDefinedError,
+    NoObservedValuesColumnDefinedError,
+    NoUnitsDefinedError,
+)
 from csvcubed.models.cube.validationerrors import ObservationValuesMissing
-from tests.unit.test_baseunit import (assert_num_validation_errors,
-                                      get_test_cases_dir)
+from tests.unit.test_baseunit import assert_num_validation_errors, get_test_cases_dir
 
 _test_case_dir = Path(
     get_test_cases_dir().absolute(), "readers", "cube-config", "v1.0", "error_mappings"

@@ -13,18 +13,25 @@ import pandas as pd
 from csvcubed.inputs import PandasDataTypes
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.cube.qb.components.arbitraryrdf import (
-    ArbitraryRdf, RdfSerialisationHint, TripleFragmentBase,
-    validate_triple_fragment)
-from csvcubed.models.cube.qb.components.datastructuredefinition import \
-    QbColumnStructuralDefinition
+    ArbitraryRdf,
+    RdfSerialisationHint,
+    TripleFragmentBase,
+    validate_triple_fragment,
+)
+from csvcubed.models.cube.qb.components.datastructuredefinition import (
+    QbColumnStructuralDefinition,
+)
 from csvcubed.models.cube.uristyle import URIStyle
 from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.models.validatedmodel import ValidatedModel, ValidationFunction
-from csvcubed.models.validationerror import (ValidateModelProperiesError,
-                                             ValidationError)
-from csvcubed.utils.validations import (validate_int_type, validate_list,
-                                        validate_optional, validate_str_type,
-                                        validate_uri)
+from csvcubed.models.validationerror import ValidateModelProperiesError, ValidationError
+from csvcubed.utils.validations import (
+    validate_int_type,
+    validate_list,
+    validate_optional,
+    validate_str_type,
+    validate_uri,
+)
 from csvcubed.utils.validators.uri import validate_uri as pydantic_validate_uri
 
 from .codelist import NewQbCodeList, QbCodeList, validate_codelist

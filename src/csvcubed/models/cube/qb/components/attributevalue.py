@@ -10,8 +10,7 @@ from typing import List, Optional, Set
 
 from csvcubed.models.uriidentifiable import UriIdentifiable
 
-from .arbitraryrdf import (ArbitraryRdf, RdfSerialisationHint,
-                           TripleFragmentBase)
+from .arbitraryrdf import ArbitraryRdf, RdfSerialisationHint, TripleFragmentBase
 from .datastructuredefinition import SecondaryQbStructuralDefinition
 
 

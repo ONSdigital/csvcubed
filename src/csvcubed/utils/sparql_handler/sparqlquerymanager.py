@@ -17,29 +17,47 @@ from rdflib.query import ResultRow
 
 from csvcubed.definitions import APP_ROOT_DIR_PATH
 from csvcubed.models.csvcubedexception import (
-    FailedToReadSparqlQueryException, FeatureNotSupportedException,
-    InvalidNumberOfRecordsException)
+    FailedToReadSparqlQueryException,
+    FeatureNotSupportedException,
+    InvalidNumberOfRecordsException,
+)
 from csvcubed.models.sparql.valuesbinding import ValuesBinding
 from csvcubed.models.sparqlresults import (
-    CatalogMetadataResult, CodeListColsByDatasetUrlResult, CodelistsResult,
-    ColsWithSuppressOutputTrueResult, ColTitlesAndNamesResult, CsvUrlResult,
-    CSVWTableSchemaFileDependenciesResult, CubeTableIdentifiers,
-    DSDLabelURIResult, IsPivotedShapeMeasureResult, MetadataDependenciesResult,
+    CatalogMetadataResult,
+    CodeListColsByDatasetUrlResult,
+    CodelistsResult,
+    ColsWithSuppressOutputTrueResult,
+    ColTitlesAndNamesResult,
+    CsvUrlResult,
+    CSVWTableSchemaFileDependenciesResult,
+    CubeTableIdentifiers,
+    DSDLabelURIResult,
+    IsPivotedShapeMeasureResult,
+    MetadataDependenciesResult,
     ObservationValueColumnTitleAboutUrlResult,
-    PrimaryKeyColNamesByDatasetUrlResult, QubeComponentsResult,
-    TableSchemaPropertiesResult, UnitColumnAboutValueUrlResult, UnitResult,
-    _map_data_set_dsd_csv_url_result, map_catalog_metadata_result,
-    map_codelist_cols_by_csv_url_result, map_codelists_sparql_result,
+    PrimaryKeyColNamesByDatasetUrlResult,
+    QubeComponentsResult,
+    TableSchemaPropertiesResult,
+    UnitColumnAboutValueUrlResult,
+    UnitResult,
+    _map_data_set_dsd_csv_url_result,
+    map_catalog_metadata_result,
+    map_codelist_cols_by_csv_url_result,
+    map_codelists_sparql_result,
     map_col_tiles_and_names_result,
-    map_cols_with_supress_output_true_sparql_result, map_csv_url_result,
+    map_cols_with_supress_output_true_sparql_result,
+    map_csv_url_result,
     map_csvw_table_schemas_file_dependencies_result,
     map_dataset_label_dsd_uri_sparql_result,
     map_is_pivoted_shape_for_measures_in_data_set,
     map_metadata_dependency_results,
     map_observation_value_col_title_and_about_url_result,
     map_primary_key_col_names_by_csv_url_result,
-    map_qube_components_sparql_result, map_table_schema_properties_result,
-    map_unit_col_about_value_urls_result, map_units)
+    map_qube_components_sparql_result,
+    map_table_schema_properties_result,
+    map_unit_col_about_value_urls_result,
+    map_units,
+)
 from csvcubed.utils.sparql_handler.sparql import ask, select
 
 _logger = logging.getLogger(__name__)

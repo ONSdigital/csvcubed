@@ -12,6 +12,7 @@ from csvcubed.utils.validations import validate_str_type
 
 ValidationFunction = Callable[[Any, str], List[ValidateModelProperiesError]]
 
+
 class ValidatedModel(DataClassBase):
     """This abrstract class that will act as a parent class for class attribute validations.
     The class will run a valdiation function for each attribute that is passed in and return either a list of errors or an emtpry list.

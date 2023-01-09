@@ -14,9 +14,12 @@ from csvcubed.models.cube.catalog import CatalogMetadataBase
 from csvcubed.models.cube.columns import CsvColumn
 from csvcubed.models.cube.qb.columns import QbColumn
 from csvcubed.models.cube.validationerrors import (
-    ColumnNotFoundInDataError, ColumnValidationError,
-    DuplicateColumnTitleError, MissingColumnDefinitionError,
-    UriTemplateNameError)
+    ColumnNotFoundInDataError,
+    ColumnValidationError,
+    DuplicateColumnTitleError,
+    MissingColumnDefinitionError,
+    UriTemplateNameError,
+)
 from csvcubed.models.pydanticmodel import PydanticModel
 from csvcubed.models.validationerror import ValidationError
 from csvcubed.utils.log import log_exception

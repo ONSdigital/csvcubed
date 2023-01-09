@@ -6,8 +6,7 @@ from csvcubed.models.cube.qb.components.dimension import NewQbDimension
 from csvcubed.models.cube.qb.components.measure import NewQbMeasure
 from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
 from csvcubed.models.cube.qb.components.unit import NewQbUnit
-from csvcubed.models.cube.qb.validationerrors import \
-    CsvColumnLiteralWithUriTemplate
+from csvcubed.models.cube.qb.validationerrors import CsvColumnLiteralWithUriTemplate
 from csvcubed.utils.qb.validation.cube import validate_qb_component_constraints
 
 

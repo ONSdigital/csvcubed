@@ -16,12 +16,16 @@ from rdflib.util import guess_format
 from csvcubed.models.csvcubedexception import (
     FailedToLoadRDFGraphException,
     FailedToLoadTableSchemaIntoRdfGraphException,
-    FailedToReadCsvwFileContentException, InvalidCsvwFileContentException)
+    FailedToReadCsvwFileContentException,
+    InvalidCsvwFileContentException,
+)
 from csvcubed.utils.csvw import load_table_schema_file_to_graph
 from csvcubed.utils.rdf import parse_graph_retain_relative
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
-    select_csvw_table_schema_file_dependencies, select_metadata_dependencies)
+    select_csvw_table_schema_file_dependencies,
+    select_metadata_dependencies,
+)
 from csvcubed.utils.uri import looks_like_uri
 
 _logger = logging.getLogger(__name__)

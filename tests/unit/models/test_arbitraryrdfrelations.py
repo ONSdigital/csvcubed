@@ -11,8 +11,12 @@ from rdflib import FOAF, RDFS
 from rdflib.term import Literal, URIRef
 
 from csvcubed.models.cube.qb.components.arbitraryrdf import (
-    ArbitraryRdf, InverseTripleFragment, RdfSerialisationHint, TripleFragment,
-    TripleFragmentBase)
+    ArbitraryRdf,
+    InverseTripleFragment,
+    RdfSerialisationHint,
+    TripleFragment,
+    TripleFragmentBase,
+)
 
 
 @dataclass

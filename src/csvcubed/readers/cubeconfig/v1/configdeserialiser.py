@@ -16,20 +16,28 @@ from csvcubed.models.cube.cube import Cube, QbCube
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.cube.qb.columns import QbColumn
 from csvcubed.models.jsonvalidationerrors import (
-    GenericJsonSchemaValidationError, JsonSchemaValidationError)
+    GenericJsonSchemaValidationError,
+    JsonSchemaValidationError,
+)
 from csvcubed.models.validationerror import ValidationError
-from csvcubed.readers.catalogmetadata.v1.catalog_metadata_reader import \
-    metadata_from_dict
-from csvcubed.readers.cubeconfig.utils import (generate_title_from_file_name,
-                                               load_resource,
-                                               read_and_check_csv)
+from csvcubed.readers.catalogmetadata.v1.catalog_metadata_reader import (
+    metadata_from_dict,
+)
+from csvcubed.readers.cubeconfig.utils import (
+    generate_title_from_file_name,
+    load_resource,
+    read_and_check_csv,
+)
 from csvcubed.readers.cubeconfig.v1 import datatypes
-from csvcubed.readers.cubeconfig.v1.mapcolumntocomponent import \
-    map_column_to_qb_component
+from csvcubed.readers.cubeconfig.v1.mapcolumntocomponent import (
+    map_column_to_qb_component,
+)
 from csvcubed.utils.iterables import first
 from csvcubed.utils.json import to_json_path
 from csvcubed.utils.validators.schema import (
-    map_to_internal_validation_errors, validate_dict_against_schema)
+    map_to_internal_validation_errors,
+    validate_dict_against_schema,
+)
 
 # Used to determine whether a column name matches accepted conventions
 from ...preconfiguredtemplates import apply_preconfigured_values_from_template

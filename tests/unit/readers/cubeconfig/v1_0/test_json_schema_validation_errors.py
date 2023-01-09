@@ -4,8 +4,7 @@ from typing import Optional
 import pytest
 
 from csvcubed.models.jsonvalidationerrors import JsonSchemaValidationError
-from csvcubed.readers.cubeconfig.schema_versions import \
-    get_deserialiser_for_schema
+from csvcubed.readers.cubeconfig.schema_versions import get_deserialiser_for_schema
 from tests.unit.test_baseunit import get_test_cases_dir
 
 TEST_CASE_DIR = get_test_cases_dir().absolute() / "readers" / "cube-config" / "v1.0"

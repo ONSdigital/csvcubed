@@ -13,18 +13,21 @@ from typing import List
 import pandas as pd
 from csvcubedmodels.rdf import ExistingResource
 
-from csvcubed.models.cube.qb.components import (CompositeQbCodeList,
-                                                DuplicatedQbConcept,
-                                                NewQbCodeList,
-                                                RdfSerialisationHint)
+from csvcubed.models.cube.qb.components import (
+    CompositeQbCodeList,
+    DuplicatedQbConcept,
+    NewQbCodeList,
+    RdfSerialisationHint,
+)
 from csvcubed.models.cube.qb.components.concept import NewQbConcept
 from csvcubed.models.cube.uristyle import URIStyle
 from csvcubed.models.rdf import prov
 from csvcubed.models.rdf.conceptschemeincatalog import ConceptSchemeInCatalog
 from csvcubed.utils.dict import rdf_resource_to_json_ld
 from csvcubed.utils.version import get_csvcubed_version_uri
-from csvcubed.writers.helpers.skoscodelistwriter.newresourceurigenerator import \
-    NewResourceUriGenerator
+from csvcubed.writers.helpers.skoscodelistwriter.newresourceurigenerator import (
+    NewResourceUriGenerator,
+)
 from csvcubed.writers.writerbase import WriterBase
 
 _logger = logging.getLogger(__name__)

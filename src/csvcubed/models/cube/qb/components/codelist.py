@@ -13,19 +13,15 @@ from pydantic import root_validator, validator
 
 from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_str
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
-from csvcubed.models.validationerror import (ValidateModelProperiesError,
-                                             ValidationError)
-from csvcubed.readers.skoscodelistreader import \
-    extract_code_list_concept_scheme_info
+from csvcubed.models.validationerror import ValidateModelProperiesError, ValidationError
+from csvcubed.readers.skoscodelistreader import extract_code_list_concept_scheme_info
 from csvcubed.utils.qb.validation.uri_safe import ensure_no_uri_safe_conflicts
 from csvcubed.utils.validators.file import validate_file_exists
 from csvcubed.utils.validators.uri import validate_uri
-from csvcubed.writers.helpers.skoscodelistwriter.constants import \
-    SCHEMA_URI_IDENTIFIER
+from csvcubed.writers.helpers.skoscodelistwriter.constants import SCHEMA_URI_IDENTIFIER
 
 from ...uristyle import URIStyle
-from .arbitraryrdf import (ArbitraryRdf, RdfSerialisationHint,
-                           TripleFragmentBase)
+from .arbitraryrdf import ArbitraryRdf, RdfSerialisationHint, TripleFragmentBase
 from .concept import DuplicatedQbConcept, NewQbConcept
 from .datastructuredefinition import SecondaryQbStructuralDefinition
 from .validationerrors import ReservedUriValueError
@@ -198,5 +194,3 @@ def validate_codelist(
     test.validate()
     """
     return []
-
-

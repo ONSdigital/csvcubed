@@ -3,34 +3,54 @@ import logging
 from os import linesep
 from typing import Type, Union
 
-from csvcubed.models.cube.qb import (BothMeasureTypesDefinedError,
-                                     BothUnitTypesDefinedError,
-                                     CsvColumnUriTemplateMissingError,
-                                     EmptyQbMultiMeasureDimensionError,
-                                     MoreThanOneMeasureColumnError,
-                                     MoreThanOneUnitsColumnError,
-                                     NoDimensionsDefinedError,
-                                     NoMeasuresDefinedError,
-                                     NoObservedValuesColumnDefinedError,
-                                     NoUnitsDefinedError, QbAttribute,
-                                     QbCodeList, QbDimension,
-                                     QbMultiMeasureDimension, QbMultiUnits,
-                                     QbObservationValue,
-                                     QbStructuralDefinition)
+from csvcubed.models.cube.qb import (
+    BothMeasureTypesDefinedError,
+    BothUnitTypesDefinedError,
+    CsvColumnUriTemplateMissingError,
+    EmptyQbMultiMeasureDimensionError,
+    MoreThanOneMeasureColumnError,
+    MoreThanOneUnitsColumnError,
+    NoDimensionsDefinedError,
+    NoMeasuresDefinedError,
+    NoObservedValuesColumnDefinedError,
+    NoUnitsDefinedError,
+    QbAttribute,
+    QbCodeList,
+    QbDimension,
+    QbMultiMeasureDimension,
+    QbMultiUnits,
+    QbObservationValue,
+    QbStructuralDefinition,
+)
 from csvcubed.models.cube.qb.components.validationerrors import (
-    ConflictingUriSafeValuesError, EmptyQbMultiUnitsError,
-    ReservedUriValueError, UndefinedAttributeValueUrisError,
-    UndefinedMeasureUrisError, UndefinedUnitUrisError)
+    ConflictingUriSafeValuesError,
+    EmptyQbMultiUnitsError,
+    ReservedUriValueError,
+    UndefinedAttributeValueUrisError,
+    UndefinedMeasureUrisError,
+    UndefinedUnitUrisError,
+)
 from csvcubed.models.cube.qb.validationerrors import (
-    AttributeNotLinkedError, DuplicateMeasureError, HybridShapeError,
-    LinkedObsColumnDoesntExistError, LinkedToNonObsColumnError,
-    PivotedObsValColWithoutMeasureError, PivotedShapeMeasureColumnsExistError)
+    AttributeNotLinkedError,
+    DuplicateMeasureError,
+    HybridShapeError,
+    LinkedObsColumnDoesntExistError,
+    LinkedToNonObsColumnError,
+    PivotedObsValColWithoutMeasureError,
+    PivotedShapeMeasureColumnsExistError,
+)
 from csvcubed.models.cube.validationerrors import (
-    ColumnNotFoundInDataError, ColumnValidationError,
-    DuplicateColumnTitleError, MissingColumnDefinitionError,
-    ObservationValuesMissing, UriTemplateNameError)
-from csvcubed.models.validationerror import (UnknownPydanticValidationError,
-                                             ValidationError)
+    ColumnNotFoundInDataError,
+    ColumnValidationError,
+    DuplicateColumnTitleError,
+    MissingColumnDefinitionError,
+    ObservationValuesMissing,
+    UriTemplateNameError,
+)
+from csvcubed.models.validationerror import (
+    UnknownPydanticValidationError,
+    ValidationError,
+)
 
 _logger = logging.getLogger(__name__)
 

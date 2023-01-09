@@ -15,7 +15,8 @@ from rdflib.term import Node
 
 from csvcubed.models.csvcubedexception import (
     UnexpectedSparqlAskQueryResponseTypeException,
-    UnexpectedSparqlAskQueryResultsException)
+    UnexpectedSparqlAskQueryResultsException,
+)
 from csvcubed.models.sparql.valuesbinding import ValuesBinding
 
 

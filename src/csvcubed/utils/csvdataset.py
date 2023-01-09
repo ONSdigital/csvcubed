@@ -15,18 +15,24 @@ import uritemplate
 from uritemplate.orderedset import OrderedSet
 
 from csvcubed.cli.inspect.inspectdatasetmanager import (
-    filter_components_from_dsd, get_single_measure_from_dsd,
+    filter_components_from_dsd,
+    get_single_measure_from_dsd,
     get_standard_shape_measure_col_name_from_dsd,
-    get_standard_shape_unit_col_name_from_dsd)
+    get_standard_shape_unit_col_name_from_dsd,
+)
 from csvcubed.models.csvcubedexception import (
     InvalidNumberOfRecordsException,
     InvalidNumOfDSDComponentsForObsValColTitleException,
     InvalidNumOfUnitColsForObsValColTitleException,
-    InvalidNumOfValUrlsForAboutUrlException)
+    InvalidNumOfValUrlsForAboutUrlException,
+)
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import (
-    ColTitlesAndNamesResult, ObservationValueColumnTitleAboutUrlResult,
-    QubeComponentResult, UnitColumnAboutValueUrlResult)
+    ColTitlesAndNamesResult,
+    ObservationValueColumnTitleAboutUrlResult,
+    QubeComponentResult,
+    UnitColumnAboutValueUrlResult,
+)
 from csvcubed.utils.iterables import first
 from csvcubed.utils.qb.components import ComponentField, ComponentPropertyType
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState

@@ -10,7 +10,9 @@ from dataclasses import dataclass
 from typing import ClassVar, Dict, List, Set, Type, Union
 
 from csvcubed.models.validationerror import (
-    PydanticThrowableSpecificValidationError, SpecificValidationError)
+    PydanticThrowableSpecificValidationError,
+    SpecificValidationError,
+)
 
 from .datastructuredefinition import QbStructuralDefinition
 

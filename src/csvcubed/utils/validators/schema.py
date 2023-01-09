@@ -5,8 +5,10 @@ import jsonschema
 import jsonschema.exceptions
 
 from csvcubed.models.jsonvalidationerrors import (
-    AnyOneOfJsonSchemaValidationError, GenericJsonSchemaValidationError,
-    JsonSchemaValidationError)
+    AnyOneOfJsonSchemaValidationError,
+    GenericJsonSchemaValidationError,
+    JsonSchemaValidationError,
+)
 from csvcubed.utils.json import to_json_path
 from csvcubed.utils.log import debug_log_exception
 

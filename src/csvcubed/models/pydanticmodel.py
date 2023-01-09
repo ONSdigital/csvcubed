@@ -15,9 +15,12 @@ import pydantic.dataclasses
 from csvcubedmodels.dataclassbase import DataClassBase
 from pydantic import BaseConfig, Extra
 
-from .validationerror import (PydanticThrowableSpecificValidationError,
-                              PydanticValidationError,
-                              UnknownPydanticValidationError, ValidationError)
+from .validationerror import (
+    PydanticThrowableSpecificValidationError,
+    PydanticValidationError,
+    UnknownPydanticValidationError,
+    ValidationError,
+)
 
 _map_class_to_pydantic_constructor: Dict[Type, Type] = dict()
 """_map_class_to_pydantic_constructor - Cache of pydantic constructor corresponding to a given class."""

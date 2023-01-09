@@ -9,17 +9,20 @@ import pytest
 
 from csvcubed.cli.build import build as cli_build
 from csvcubed.definitions import APP_ROOT_DIR_PATH
-from csvcubed.models.csvcubedexception import \
-    UnsupportedColumnDefinitionException
+from csvcubed.models.csvcubedexception import UnsupportedColumnDefinitionException
 from csvcubed.models.cube.columns import SuppressedCsvColumn
 from csvcubed.models.cube.cube import Cube
 from csvcubed.models.cube.qb import QbColumn
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
-from csvcubed.models.cube.qb.components import (NewQbCodeList, NewQbConcept,
-                                                NewQbDimension, NewQbMeasure,
-                                                NewQbUnit,
-                                                QbMultiMeasureDimension,
-                                                QbMultiUnits)
+from csvcubed.models.cube.qb.components import (
+    NewQbCodeList,
+    NewQbConcept,
+    NewQbDimension,
+    NewQbMeasure,
+    NewQbUnit,
+    QbMultiMeasureDimension,
+    QbMultiUnits,
+)
 from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
 from csvcubed.readers.cubeconfig.v1.configdeserialiser import get_deserialiser
 from csvcubed.utils.iterables import first

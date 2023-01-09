@@ -4,9 +4,14 @@ New Attribute Value
 """
 from typing import Annotated, Optional
 
-from csvcubedmodels.rdf import (ExistingResource, MaybeResource,
-                                NewMetadataResource, PropertyStatus, Triple,
-                                map_resource_to_uri)
+from csvcubedmodels.rdf import (
+    ExistingResource,
+    MaybeResource,
+    NewMetadataResource,
+    PropertyStatus,
+    Triple,
+    map_resource_to_uri,
+)
 from csvcubedmodels.rdf.namespaces import RDFS, SKOS
 
 

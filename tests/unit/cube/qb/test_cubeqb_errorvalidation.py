@@ -1,4 +1,3 @@
-
 import pandas as pd
 import pytest
 
@@ -6,31 +5,43 @@ from csvcubed.models.cube.cube import Cube, QbCube
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.cube.qb.columns import QbColumn
 from csvcubed.models.cube.qb.components.attribute import (
-    ExistingQbAttribute, ExistingQbAttributeLiteral, NewQbAttribute,
-    NewQbAttributeLiteral)
-from csvcubed.models.cube.qb.components.attributevalue import \
-    NewQbAttributeValue
+    ExistingQbAttribute,
+    ExistingQbAttributeLiteral,
+    NewQbAttribute,
+    NewQbAttributeLiteral,
+)
+from csvcubed.models.cube.qb.components.attributevalue import NewQbAttributeValue
 from csvcubed.models.cube.qb.components.codelist import NewQbCodeList
-from csvcubed.models.cube.qb.components.dimension import (ExistingQbDimension,
-                                                          NewQbDimension,
-                                                          QbDimension)
-from csvcubed.models.cube.qb.components.measure import (ExistingQbMeasure,
-                                                        NewQbMeasure)
-from csvcubed.models.cube.qb.components.measuresdimension import \
-    QbMultiMeasureDimension
+from csvcubed.models.cube.qb.components.dimension import (
+    ExistingQbDimension,
+    NewQbDimension,
+    QbDimension,
+)
+from csvcubed.models.cube.qb.components.measure import ExistingQbMeasure, NewQbMeasure
+from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureDimension
 from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
 from csvcubed.models.cube.qb.components.unit import ExistingQbUnit, NewQbUnit
 from csvcubed.models.cube.qb.components.unitscolumn import QbMultiUnits
 from csvcubed.models.cube.qb.components.validationerrors import (
-    ConflictingUriSafeValuesError, ReservedUriValueError)
+    ConflictingUriSafeValuesError,
+    ReservedUriValueError,
+)
 from csvcubed.models.cube.qb.validationerrors import (
-    AttributeNotLinkedError, BothMeasureTypesDefinedError,
-    BothUnitTypesDefinedError, CsvColumnUriTemplateMissingError,
-    DuplicateMeasureError, HybridShapeError, LinkedObsColumnDoesntExistError,
-    LinkedToNonObsColumnError, MaxNumComponentsExceededError,
-    MinNumComponentsNotSatisfiedError, NoMeasuresDefinedError,
-    NoUnitsDefinedError, PivotedObsValColWithoutMeasureError,
-    PivotedShapeMeasureColumnsExistError)
+    AttributeNotLinkedError,
+    BothMeasureTypesDefinedError,
+    BothUnitTypesDefinedError,
+    CsvColumnUriTemplateMissingError,
+    DuplicateMeasureError,
+    HybridShapeError,
+    LinkedObsColumnDoesntExistError,
+    LinkedToNonObsColumnError,
+    MaxNumComponentsExceededError,
+    MinNumComponentsNotSatisfiedError,
+    NoMeasuresDefinedError,
+    NoUnitsDefinedError,
+    PivotedObsValColWithoutMeasureError,
+    PivotedShapeMeasureColumnsExistError,
+)
 from csvcubed.utils.qb.validation.cube import validate_qb_component_constraints
 from tests.unit.test_baseunit import *
 
@@ -279,6 +290,7 @@ def test_multiple_units_columns():
     assert error.component_type == QbMultiUnits
     assert error.maximum_number == 1
     assert error.actual_number == 2
+
 
 def test_multi_measure_obs_val_without_measure_dimension():
     """
@@ -874,8 +886,9 @@ def test_pivoted_validation_multiple_measure_columns():
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
     error = _get_single_validation_error_for_qube(cube)
-    
+
     assert isinstance(error, PivotedShapeMeasureColumnsExistError)
+
 
 def test_pivoted_validation_no_measures_defined_error():
     """
@@ -916,8 +929,9 @@ def test_pivoted_validation_no_measures_defined_error():
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
     error = _get_single_validation_error_for_qube(cube)
-    
+
     assert isinstance(error, NoMeasuresDefinedError)
+
 
 def test_pivoted_obs_val_col_without_measure_error():
     """
@@ -959,8 +973,9 @@ def test_pivoted_obs_val_col_without_measure_error():
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
     error = _get_single_validation_error_for_qube(cube)
-    
+
     assert isinstance(error, PivotedObsValColWithoutMeasureError)
+
 
 def test_pivoted_validation_no_unit_defined_error():
     """
@@ -1001,8 +1016,9 @@ def test_pivoted_validation_no_unit_defined_error():
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
     error = _get_single_validation_error_for_qube(cube)
-    
+
     assert isinstance(error, NoUnitsDefinedError)
+
 
 def test_pivoted_validation_attribute_column_not_linked_error():
     """
@@ -1040,8 +1056,9 @@ def test_pivoted_validation_attribute_column_not_linked_error():
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
     error = _get_single_validation_error_for_qube(cube)
-    
+
     assert isinstance(error, AttributeNotLinkedError)
+
 
 def test_pivoted_validation_obs_column_doesnt_exist():
     """
@@ -1084,8 +1101,9 @@ def test_pivoted_validation_obs_column_doesnt_exist():
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
     error = _get_single_validation_error_for_qube(cube)
-    
+
     assert isinstance(error, LinkedObsColumnDoesntExistError)
+
 
 def test_pivoted_validation_link_attribute_to_non_obs_column():
     """
@@ -1129,8 +1147,9 @@ def test_pivoted_validation_link_attribute_to_non_obs_column():
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
     error = _get_single_validation_error_for_qube(cube)
-    
+
     assert isinstance(error, LinkedToNonObsColumnError)
+
 
 def test_pivoted_validation_measure_dupication():
 
@@ -1172,8 +1191,9 @@ def test_pivoted_validation_measure_dupication():
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
     error = _get_single_validation_error_for_qube(cube)
-    
+
     assert isinstance(error, DuplicateMeasureError)
+
 
 def test_both_measure_types_defined():
     """
@@ -1217,7 +1237,7 @@ def test_both_measure_types_defined():
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
     error = _get_single_validation_error_for_qube(cube)
-    
+
     assert isinstance(error, BothMeasureTypesDefinedError)
 
 
@@ -1261,7 +1281,7 @@ def test_erroneous_hybrid_error():
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
     error = _get_single_validation_error_for_qube(cube)
-    
+
     assert isinstance(error, HybridShapeError)
 
 
@@ -1299,7 +1319,7 @@ def test_pivoted_validation_unit_column_not_linked_error():
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
     error = _get_single_validation_error_for_qube(cube)
-    
+
     assert isinstance(error, AttributeNotLinkedError)
 
 
@@ -1341,7 +1361,7 @@ def test_pivoted_validation_link_unit_to_non_obs_column():
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
     error = _get_single_validation_error_for_qube(cube)
-    
+
     assert isinstance(error, LinkedToNonObsColumnError)
 
 
@@ -1383,8 +1403,9 @@ def test_pivoted_validation_units_linked_obs_column_doesnt_exist():
 
     cube = Cube(metadata=metadata, data=data, columns=columns)
     error = _get_single_validation_error_for_qube(cube)
-    
+
     assert isinstance(error, LinkedObsColumnDoesntExistError)
+
 
 def test_pivoted_multi_obs_and_multi_units_linked_to_obs_with_internal_unit():
     """
@@ -1430,6 +1451,7 @@ def test_pivoted_multi_obs_and_multi_units_linked_to_obs_with_internal_unit():
     error = _get_single_validation_error_for_qube(cube)
 
     assert isinstance(error, BothUnitTypesDefinedError)
+
 
 def test_pivoted_single_obs_and_multi_units_error():
     """

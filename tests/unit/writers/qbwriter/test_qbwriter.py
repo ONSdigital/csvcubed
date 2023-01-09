@@ -13,15 +13,20 @@ from csvcubed.models.cube.cube import Cube
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.cube.qb.columns import QbColumn
 from csvcubed.models.cube.qb.components.arbitraryrdf import (
-    RdfSerialisationHint, TripleFragmentBase)
-from csvcubed.models.cube.qb.components.attribute import (ExistingQbAttribute,
-                                                          NewQbAttribute,
-                                                          QbAttribute)
-from csvcubed.models.cube.qb.components.dimension import (ExistingQbDimension,
-                                                          NewQbDimension)
+    RdfSerialisationHint,
+    TripleFragmentBase,
+)
+from csvcubed.models.cube.qb.components.attribute import (
+    ExistingQbAttribute,
+    NewQbAttribute,
+    QbAttribute,
+)
+from csvcubed.models.cube.qb.components.dimension import (
+    ExistingQbDimension,
+    NewQbDimension,
+)
 from csvcubed.models.cube.qb.components.measure import NewQbMeasure, QbMeasure
-from csvcubed.models.cube.qb.components.measuresdimension import \
-    QbMultiMeasureDimension
+from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureDimension
 from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
 from csvcubed.models.cube.qb.components.unit import NewQbUnit
 from csvcubed.models.cube.qb.components.unitscolumn import QbMultiUnits

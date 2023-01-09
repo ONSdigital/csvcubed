@@ -6,9 +6,13 @@ import pytest
 
 from csvcubed.models.validatedmodel import ValidatedModel, ValidationFunction
 from csvcubed.models.validationerror import ValidateModelProperiesError
-from csvcubed.utils.validations import (validate_int_type, validate_list,
-                                        validate_optional, validate_str_type,
-                                        validate_uri)
+from csvcubed.utils.validations import (
+    validate_int_type,
+    validate_list,
+    validate_optional,
+    validate_str_type,
+    validate_uri,
+)
 
 
 @dataclass

@@ -5,7 +5,9 @@ from rdflib import RDFS, Graph, Literal, URIRef
 
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.cube.qb.components.arbitraryrdf import (
-    RdfSerialisationHint, TripleFragment)
+    RdfSerialisationHint,
+    TripleFragment,
+)
 from csvcubed.models.cube.qb.components.codelist import NewQbCodeList
 from csvcubed.models.cube.qb.components.concept import NewQbConcept
 from csvcubed.models.cube.uristyle import URIStyle

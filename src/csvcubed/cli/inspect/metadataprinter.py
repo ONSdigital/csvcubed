@@ -14,32 +14,50 @@ import rdflib
 from pandas import DataFrame
 
 from csvcubed.cli.inspect.inspectdatasetmanager import (
-    get_concepts_hierarchy_info, get_dataset_observations_info,
-    get_dataset_val_counts_info, load_csv_to_dataframe)
+    get_concepts_hierarchy_info,
+    get_dataset_observations_info,
+    get_dataset_val_counts_info,
+    load_csv_to_dataframe,
+)
 from csvcubed.models.csvcubedexception import (
-    InputNotSupportedException, UnsupportedNumOfPrimaryKeyColNamesException)
+    InputNotSupportedException,
+    UnsupportedNumOfPrimaryKeyColNamesException,
+)
 from csvcubed.models.csvwtype import CSVWType
 from csvcubed.models.inspectdataframeresults import (
-    CodelistHierarchyInfoResult, DatasetObservationsByMeasureUnitInfoResult,
-    DatasetObservationsInfoResult)
+    CodelistHierarchyInfoResult,
+    DatasetObservationsByMeasureUnitInfoResult,
+    DatasetObservationsInfoResult,
+)
 from csvcubed.models.sparqlresults import (
-    CatalogMetadataResult, CodeListColsByDatasetUrlResult,
-    CodelistColumnResult, CodelistsResult, ColsWithSuppressOutputTrueResult,
-    DSDLabelURIResult, PrimaryKeyColNamesByDatasetUrlResult,
-    QubeComponentsResult)
+    CatalogMetadataResult,
+    CodeListColsByDatasetUrlResult,
+    CodelistColumnResult,
+    CodelistsResult,
+    ColsWithSuppressOutputTrueResult,
+    DSDLabelURIResult,
+    PrimaryKeyColNamesByDatasetUrlResult,
+    QubeComponentsResult,
+)
 from csvcubed.utils.csvdataset import transform_dataset_to_canonical_shape
 from csvcubed.utils.skos.codelist import (
-    CodelistPropertyUrl, get_codelist_col_title_by_property_url,
-    get_codelist_col_title_from_col_name)
+    CodelistPropertyUrl,
+    get_codelist_col_title_by_property_url,
+    get_codelist_col_title_from_col_name,
+)
 from csvcubed.utils.sparql_handler.code_list_state import CodeListState
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
-    select_codelist_cols_by_csv_url, select_codelist_csv_url,
-    select_cols_where_suppress_output_is_true, select_csvw_catalog_metadata,
+    select_codelist_cols_by_csv_url,
+    select_codelist_csv_url,
+    select_cols_where_suppress_output_is_true,
+    select_csvw_catalog_metadata,
     select_csvw_dsd_dataset_label_and_dsd_def_uri,
-    select_dsd_code_list_and_cols, select_primary_key_col_names_by_csv_url,
-    select_qb_csv_url)
+    select_dsd_code_list_and_cols,
+    select_primary_key_col_names_by_csv_url,
+    select_qb_csv_url,
+)
 from csvcubed.utils.uri import looks_like_uri
 
 

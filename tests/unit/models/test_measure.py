@@ -2,12 +2,11 @@ import pandas as pd
 import pytest
 
 from csvcubed.models.cube.qb.columns import QbColumn
-from csvcubed.models.cube.qb.components.measure import (ExistingQbMeasure,
-                                                        NewQbMeasure)
-from csvcubed.models.cube.qb.components.measuresdimension import \
-    QbMultiMeasureDimension
-from csvcubed.models.cube.qb.components.validationerrors import \
-    UndefinedMeasureUrisError
+from csvcubed.models.cube.qb.components.measure import ExistingQbMeasure, NewQbMeasure
+from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureDimension
+from csvcubed.models.cube.qb.components.validationerrors import (
+    UndefinedMeasureUrisError,
+)
 from tests.unit.test_baseunit import assert_num_validation_errors
 
 

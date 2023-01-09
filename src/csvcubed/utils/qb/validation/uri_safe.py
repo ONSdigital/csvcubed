@@ -4,8 +4,9 @@ URI Safe Validations
 """
 from typing import Dict, List, Set, Tuple, Type, Union
 
-from csvcubed.models.cube.qb.components.validationerrors import \
-    ConflictingUriSafeValuesError
+from csvcubed.models.cube.qb.components.validationerrors import (
+    ConflictingUriSafeValuesError,
+)
 
 
 def ensure_no_uri_safe_conflicts(

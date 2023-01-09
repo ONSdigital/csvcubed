@@ -9,25 +9,36 @@ from rdflib import Graph
 from treelib import Tree
 
 from csvcubed.cli.inspect.inspectdatasetmanager import (
-    get_concepts_hierarchy_info, get_dataset_observations_info,
-    get_dataset_val_counts_info, get_single_measure_from_dsd,
+    get_concepts_hierarchy_info,
+    get_dataset_observations_info,
+    get_dataset_val_counts_info,
     get_standard_shape_measure_col_name_from_dsd,
-    get_standard_shape_unit_col_name_from_dsd, load_csv_to_dataframe)
+    get_single_measure_from_dsd,
+    get_standard_shape_unit_col_name_from_dsd,
+    load_csv_to_dataframe,
+)
 from csvcubed.cli.inspect.metadataprinter import to_absolute_rdflib_file_path
 from csvcubed.models.csvwtype import CSVWType
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.inspectdataframeresults import (
-    DatasetObservationsByMeasureUnitInfoResult, DatasetObservationsInfoResult)
+    DatasetObservationsByMeasureUnitInfoResult,
+    DatasetObservationsInfoResult,
+)
 from csvcubed.models.sparqlresults import QubeComponentResult
 from csvcubed.utils.csvdataset import transform_dataset_to_canonical_shape
 from csvcubed.utils.skos.codelist import (
-    CodelistPropertyUrl, get_codelist_col_title_by_property_url,
-    get_codelist_col_title_from_col_name)
+    CodelistPropertyUrl,
+    get_codelist_col_title_by_property_url,
+    get_codelist_col_title_from_col_name,
+)
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
-    select_codelist_cols_by_csv_url, select_codelist_csv_url,
-    select_csvw_catalog_metadata, select_primary_key_col_names_by_csv_url,
-    select_qb_csv_url)
+    select_codelist_cols_by_csv_url,
+    select_codelist_csv_url,
+    select_primary_key_col_names_by_csv_url,
+    select_csvw_catalog_metadata,
+    select_qb_csv_url,
+)
 from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.unit.test_baseunit import get_test_cases_dir
 

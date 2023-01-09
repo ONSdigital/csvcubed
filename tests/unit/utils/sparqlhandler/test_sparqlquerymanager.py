@@ -6,31 +6,41 @@ import pytest
 from rdflib import DCAT, RDF, RDFS, ConjunctiveGraph, Graph, Literal, URIRef
 
 from csvcubed.cli.inspect.metadataprinter import to_absolute_rdflib_file_path
-from csvcubed.models.sparqlresults import (CatalogMetadataResult,
-                                           CodeListColsByDatasetUrlResult,
-                                           CodelistColumnResult,
-                                           CodelistsResult,
-                                           ColsWithSuppressOutputTrueResult,
-                                           CsvUrlResult, CubeTableIdentifiers,
-                                           DSDLabelURIResult,
-                                           IsPivotedShapeMeasureResult,
-                                           MetadataDependenciesResult,
-                                           QubeComponentResult, UnitResult)
+from csvcubed.models.sparqlresults import (
+    CatalogMetadataResult,
+    CodeListColsByDatasetUrlResult,
+    CodelistColumnResult,
+    CodelistsResult,
+    ColsWithSuppressOutputTrueResult,
+    CsvUrlResult,
+    CubeTableIdentifiers,
+    DSDLabelURIResult,
+    IsPivotedShapeMeasureResult,
+    MetadataDependenciesResult,
+    QubeComponentResult,
+    UnitResult,
+)
 from csvcubed.utils.iterables import first
 from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.rdf import parse_graph_retain_relative
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
-    ask_is_csvw_code_list, ask_is_csvw_qb_dataset,
-    select_codelist_cols_by_csv_url, select_codelist_csv_url,
-    select_cols_where_suppress_output_is_true, select_csvw_catalog_metadata,
+    ask_is_csvw_code_list,
+    ask_is_csvw_qb_dataset,
+    select_codelist_cols_by_csv_url,
+    select_codelist_csv_url,
+    select_cols_where_suppress_output_is_true,
+    select_csvw_catalog_metadata,
     select_csvw_dsd_dataset_label_and_dsd_def_uri,
-    select_csvw_table_schema_file_dependencies, select_dsd_code_list_and_cols,
+    select_csvw_table_schema_file_dependencies,
+    select_dsd_code_list_and_cols,
     select_is_pivoted_shape_for_measures_in_data_set,
-    select_metadata_dependencies, select_qb_csv_url,
-    select_table_schema_properties, select_units)
-from csvcubed.utils.tableschema import (CsvwRdfManager,
-                                        add_triples_for_file_dependencies)
+    select_metadata_dependencies,
+    select_qb_csv_url,
+    select_table_schema_properties,
+    select_units,
+)
+from csvcubed.utils.tableschema import CsvwRdfManager, add_triples_for_file_dependencies
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"

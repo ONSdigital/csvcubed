@@ -2,13 +2,17 @@ from typing import List
 
 from csvcubed.models.cube.cube import Cube
 from csvcubed.models.cube.qb.columns import QbColumn
-from csvcubed.models.cube.qb.components import (ExistingQbDimension,
-                                                QbAttribute,
-                                                QbAttributeLiteral,
-                                                QbDimension)
+from csvcubed.models.cube.qb.components import (
+    ExistingQbDimension,
+    QbAttribute,
+    QbAttributeLiteral,
+    QbDimension,
+)
 from csvcubed.models.cube.qb.validationerrors import (
-    CsvColumnLiteralWithUriTemplate, CsvColumnUriTemplateMissingError,
-    NoDimensionsDefinedError)
+    CsvColumnLiteralWithUriTemplate,
+    CsvColumnUriTemplateMissingError,
+    NoDimensionsDefinedError,
+)
 from csvcubed.models.validationerror import ValidationError
 from csvcubed.utils.qb.validation.observations import validate_observations
 
