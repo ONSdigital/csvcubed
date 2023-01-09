@@ -5,10 +5,8 @@ import pytest
 import rdflib
 
 from csvcubed.models.sparql.valuesbinding import ValuesBinding
-from csvcubed.utils.sparql_handler.sparql import (
-    path_to_file_uri_for_rdflib,
-    select,
-)
+from csvcubed.utils.sparql_handler.sparql import (path_to_file_uri_for_rdflib,
+                                                  select)
 
 
 def test_path_to_file_uri_for_rdflib():

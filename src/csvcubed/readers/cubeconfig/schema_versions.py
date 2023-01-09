@@ -8,12 +8,13 @@ Contains an enum listing the qube-config.json schema versions recognised by csvc
 import logging
 from enum import Enum
 from pathlib import Path
-from typing import Optional, Callable, Tuple, List
+from typing import Callable, List, Optional, Tuple
 
 from csvcubed.models.cube.cube import QbCube
 from csvcubed.models.jsonvalidationerrors import JsonSchemaValidationError
 from csvcubed.models.validationerror import ValidationError
-from csvcubed.readers.cubeconfig.v1 import configdeserialiser as v1_configdeserialiser
+from csvcubed.readers.cubeconfig.v1 import \
+    configdeserialiser as v1_configdeserialiser
 
 _logger = logging.getLogger(__name__)
 

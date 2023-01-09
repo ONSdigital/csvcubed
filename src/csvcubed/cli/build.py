@@ -7,7 +7,7 @@ import dataclasses
 import json
 import logging
 from pathlib import Path
-from typing import Optional, Tuple, List
+from typing import List, Optional, Tuple
 
 from csvcubedmodels.dataclassbase import DataClassBase
 
@@ -17,9 +17,7 @@ from csvcubed.models.errorurl import HasErrorUrl
 from csvcubed.models.jsonvalidationerrors import JsonSchemaValidationError
 from csvcubed.models.validationerror import ValidationError
 from csvcubed.readers.cubeconfig.schema_versions import (
-    QubeConfigDeserialiser,
-    get_deserialiser_for_schema,
-)
+    QubeConfigDeserialiser, get_deserialiser_for_schema)
 from csvcubed.readers.cubeconfig.utils import load_resource
 from csvcubed.utils.json import serialize_sets
 from csvcubed.utils.qb.validation.cube import validate_qb_component_constraints

@@ -4,7 +4,7 @@ Cube
 """
 import logging
 from dataclasses import dataclass, field
-from typing import Generic, Iterable, List, Optional, Set, Tuple, TypeVar, Type
+from typing import Generic, Iterable, List, Optional, Set, Tuple, Type, TypeVar
 
 import pandas as pd
 import uritemplate
@@ -14,16 +14,14 @@ from csvcubed.models.cube.catalog import CatalogMetadataBase
 from csvcubed.models.cube.columns import CsvColumn
 from csvcubed.models.cube.qb.columns import QbColumn
 from csvcubed.models.cube.validationerrors import (
-    ColumnNotFoundInDataError,
-    ColumnValidationError,
-    DuplicateColumnTitleError,
-    MissingColumnDefinitionError,
-    UriTemplateNameError,
-)
+    ColumnNotFoundInDataError, ColumnValidationError,
+    DuplicateColumnTitleError, MissingColumnDefinitionError,
+    UriTemplateNameError)
 from csvcubed.models.pydanticmodel import PydanticModel
 from csvcubed.models.validationerror import ValidationError
 from csvcubed.utils.log import log_exception
 from csvcubed.utils.uri import csvw_column_name_safe
+
 from .qb.catalog import CatalogMetadata
 from .qb.components.datastructuredefinition import QbColumnStructuralDefinition
 from .qb.components.observedvalue import QbObservationValue

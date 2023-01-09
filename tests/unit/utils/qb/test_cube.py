@@ -4,11 +4,12 @@ from csvcubed.models.cube.cube import Cube
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.cube.qb.columns import QbColumn
 from csvcubed.models.cube.qb.components.measure import NewQbMeasure
-from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureDimension
+from csvcubed.models.cube.qb.components.measuresdimension import \
+    QbMultiMeasureDimension
 from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
 from csvcubed.models.cube.qb.components.unit import NewQbUnit
 from csvcubed.models.cube.qb.components.unitscolumn import QbMultiUnits
-from csvcubed.utils.qb.cube import get_all_units, get_all_measures
+from csvcubed.utils.qb.cube import get_all_measures, get_all_units
 
 
 def test_get_all_units():

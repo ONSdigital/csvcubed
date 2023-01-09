@@ -13,10 +13,8 @@ import pandas as pd
 from treelib import Tree
 
 from csvcubed.models.csvcubedexception import (
-    ErrorProcessingDataFrameException,
-    InvalidNumberOfRecordsException,
-    PrimaryKeyColumnTitleCannotBeNoneException,
-)
+    ErrorProcessingDataFrameException, InvalidNumberOfRecordsException,
+    PrimaryKeyColumnTitleCannotBeNoneException)
 from csvcubed.models.sparqlresults import CodelistColumnResult
 
 

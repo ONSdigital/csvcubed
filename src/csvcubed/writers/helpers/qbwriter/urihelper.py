@@ -1,42 +1,36 @@
 import logging
 import re
 from dataclasses import dataclass, field
-from typing import Optional, List, Tuple, Type
+from typing import List, Optional, Tuple, Type
 
 from csvcubed.models.cube.columns import CsvColumn
-from csvcubed.models.cube.cube import QbColumnarDsdType
-from csvcubed.models.cube.cube import QbCube
+from csvcubed.models.cube.cube import QbColumnarDsdType, QbCube
 from csvcubed.models.cube.qb.columns import QbColumn
-from csvcubed.models.cube.qb.components.attribute import (
-    QbAttribute,
-    NewQbAttribute,
-    ExistingQbAttribute,
-)
-from csvcubed.models.cube.qb.components.codelist import (
-    QbCodeList,
-    NewQbCodeList,
-    ExistingQbCodeList,
-    NewQbCodeListInCsvW,
-)
-from csvcubed.models.cube.qb.components.dimension import (
-    QbDimension,
-    NewQbDimension,
-    ExistingQbDimension,
-)
-from csvcubed.models.cube.qb.components.measure import (
-    QbMeasure,
-    NewQbMeasure,
-    ExistingQbMeasure,
-)
-from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureDimension
+from csvcubed.models.cube.qb.components.attribute import (ExistingQbAttribute,
+                                                          NewQbAttribute,
+                                                          QbAttribute)
+from csvcubed.models.cube.qb.components.codelist import (ExistingQbCodeList,
+                                                         NewQbCodeList,
+                                                         NewQbCodeListInCsvW,
+                                                         QbCodeList)
+from csvcubed.models.cube.qb.components.dimension import (ExistingQbDimension,
+                                                          NewQbDimension,
+                                                          QbDimension)
+from csvcubed.models.cube.qb.components.measure import (ExistingQbMeasure,
+                                                        NewQbMeasure,
+                                                        QbMeasure)
+from csvcubed.models.cube.qb.components.measuresdimension import \
+    QbMultiMeasureDimension
 from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
-from csvcubed.models.cube.qb.components.unit import QbUnit, NewQbUnit, ExistingQbUnit
+from csvcubed.models.cube.qb.components.unit import (ExistingQbUnit, NewQbUnit,
+                                                     QbUnit)
 from csvcubed.models.cube.qb.components.unitscolumn import QbMultiUnits
 from csvcubed.utils.uri import csvw_column_name_safe, uri_safe
-from csvcubed.writers.helpers.skoscodelistwriter.constants import SCHEMA_URI_IDENTIFIER
-from csvcubed.writers.helpers.skoscodelistwriter.newresourceurigenerator import (
-    NewResourceUriGenerator as SkosCodeListNewResourceUriGenerator,
-)
+from csvcubed.writers.helpers.skoscodelistwriter.constants import \
+    SCHEMA_URI_IDENTIFIER
+from csvcubed.writers.helpers.skoscodelistwriter.newresourceurigenerator import \
+    NewResourceUriGenerator as SkosCodeListNewResourceUriGenerator
+
 from .newresourceurigenerator import NewResourceUriGenerator
 
 _logger = logging.getLogger(__name__)

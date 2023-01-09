@@ -1,7 +1,6 @@
 import csvcubed.readers.cubeconfig.v1.columnschema as schema
-from csvcubed.readers.cubeconfig.v1.mapcolumntocomponent import (
-    _from_column_dict_to_schema_model,
-)
+from csvcubed.readers.cubeconfig.v1.mapcolumntocomponent import \
+    _from_column_dict_to_schema_model
 
 from .virtualconfigs import VirtualConfigurations as vc
 

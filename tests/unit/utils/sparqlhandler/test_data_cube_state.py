@@ -5,22 +5,16 @@ import pytest
 from csvcubed.cli.inspect.metadataprinter import to_absolute_rdflib_file_path
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import (
-    ColTitlesAndNamesResult,
-    ObservationValueColumnTitleAboutUrlResult,
-    UnitColumnAboutValueUrlResult,
-)
+    ColTitlesAndNamesResult, ObservationValueColumnTitleAboutUrlResult,
+    UnitColumnAboutValueUrlResult)
 from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
-    select_csvw_catalog_metadata,
-    select_qb_csv_url,
-)
+    select_csvw_catalog_metadata, select_qb_csv_url)
 from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.unit.test_baseunit import get_test_cases_dir
 from tests.unit.utils.sparqlhandler.test_sparqlquerymanager import (
-    get_dsd_component_by_property_url,
-    assert_dsd_component_equal,
-)
+    assert_dsd_component_equal, get_dsd_component_by_property_url)
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
 

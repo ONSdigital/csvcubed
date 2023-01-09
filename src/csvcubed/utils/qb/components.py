@@ -10,7 +10,8 @@ from enum import Enum
 from pathlib import Path
 from urllib.parse import urlparse
 
-from csvcubed.models.csvcubedexception import UnsupportedComponentPropertyTypeException
+from csvcubed.models.csvcubedexception import \
+    UnsupportedComponentPropertyTypeException
 
 
 class ComponentField(Enum):

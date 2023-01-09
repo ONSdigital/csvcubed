@@ -6,7 +6,8 @@ from csvcubed.models.cube.qb.columns import QbColumn
 from csvcubed.models.cube.qb.components.attribute import NewQbAttribute
 from csvcubed.models.cube.qb.components.dimension import ExistingQbDimension
 from csvcubed.models.cube.qb.components.measure import NewQbMeasure
-from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureDimension
+from csvcubed.models.cube.qb.components.measuresdimension import \
+    QbMultiMeasureDimension
 from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
 from csvcubed.models.cube.qb.components.unit import NewQbUnit
 

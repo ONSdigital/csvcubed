@@ -8,6 +8,7 @@ from dataclasses import dataclass
 
 from csvcubed.models.cube.qb.components.codelist import NewQbCodeList
 from csvcubed.models.cube.uristyle import URIStyle
+
 from .constants import SCHEMA_URI_IDENTIFIER
 
 

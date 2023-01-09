@@ -1,14 +1,12 @@
 import importlib
-from csvcubeddevtools.helpers.file import get_test_cases_dir
-from tests.pref_improvement.pref_check import (
-    list_classes_in_file,
-    generate_modules,
-    check_for_dataclass,
-    _map_to_module_name,
-    acess_all_folders_return_all_files,
-)
-
 from pathlib import Path
+
+from csvcubeddevtools.helpers.file import get_test_cases_dir
+
+from tests.pref_improvement.pref_check import (
+    _map_to_module_name, acess_all_folders_return_all_files,
+    check_for_dataclass, generate_modules, list_classes_in_file)
+
 
 def test_map_to_module_name():
     """

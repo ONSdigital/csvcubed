@@ -11,13 +11,9 @@ from dataclasses import dataclass, field
 from typing import List, Optional, Type, Union
 
 from csvcubed.models.validationerror import SpecificValidationError
-from ..qb import (
-    QbMultiMeasureDimension,
-    QbDimension,
-    QbObservationValue,
-    QbMultiUnits,
-    QbStructuralDefinition,
-)
+
+from ..qb import (QbDimension, QbMultiMeasureDimension, QbMultiUnits,
+                  QbObservationValue, QbStructuralDefinition)
 
 ComponentTypeDescription = Union[str, Type[QbStructuralDefinition]]
 

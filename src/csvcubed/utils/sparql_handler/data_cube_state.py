@@ -1,31 +1,22 @@
 from dataclasses import dataclass
 from functools import cached_property
-from typing import Dict, List, Any, Optional, TypeVar
 from pathlib import Path
+from typing import Any, Dict, List, Optional, TypeVar
 
 import rdflib
 
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import (
-    ColTitlesAndNamesResult,
-    CubeTableIdentifiers,
-    ObservationValueColumnTitleAboutUrlResult,
-    QubeComponentResult,
-    QubeComponentsResult,
-    UnitColumnAboutValueUrlResult,
-    IsPivotedShapeMeasureResult,
-    UnitResult,
-)
-from csvcubed.utils.iterables import group_by, first
+    ColTitlesAndNamesResult, CubeTableIdentifiers, IsPivotedShapeMeasureResult,
+    ObservationValueColumnTitleAboutUrlResult, QubeComponentResult,
+    QubeComponentsResult, UnitColumnAboutValueUrlResult, UnitResult)
+from csvcubed.utils.iterables import first, group_by
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
-    select_col_titles_and_names,
-    select_csvw_dsd_qube_components,
+    select_col_titles_and_names, select_csvw_dsd_qube_components,
     select_data_set_dsd_and_csv_url,
-    select_observation_value_column_title_and_about_url,
-    select_unit_col_about_value_urls,
     select_is_pivoted_shape_for_measures_in_data_set,
-    select_units,
-)
+    select_observation_value_column_title_and_about_url,
+    select_unit_col_about_value_urls, select_units)
 
 T = TypeVar("T")
 

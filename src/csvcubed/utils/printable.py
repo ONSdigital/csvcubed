@@ -3,7 +3,8 @@ from typing import Dict, List
 
 from pandas import DataFrame
 
-from csvcubed.models.csvcubedexception import FailedToConvertDataFrameToStringException
+from csvcubed.models.csvcubedexception import \
+    FailedToConvertDataFrameToStringException
 
 
 def get_printable_list_str(items: List) -> str:

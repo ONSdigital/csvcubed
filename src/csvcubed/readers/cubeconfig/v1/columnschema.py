@@ -11,46 +11,38 @@ import logging
 from abc import ABC
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Union, Optional, TypeVar, Tuple
+from typing import List, Optional, Tuple, TypeVar, Union
 
 import uritemplate
 from csvcubedmodels.dataclassbase import DataClassBase
 
-from csvcubed.inputs import PandasDataTypes
-from csvcubed.inputs import pandas_input_to_columnar_optional_str
+from csvcubed.inputs import (PandasDataTypes,
+                             pandas_input_to_columnar_optional_str)
 from csvcubed.models.codelistconfig.code_list_config import CodeListConfig
 from csvcubed.models.cube.cube import CatalogMetadata
-from csvcubed.models.cube.qb.components import (
-    NewQbDimension,
-    ExistingQbDimension,
-    NewQbAttribute,
-    NewQbAttributeValue,
-    ExistingQbAttribute,
-    NewQbUnit,
-    ExistingQbUnit,
-    QbMultiUnits,
-    QbMultiMeasureDimension,
-    ExistingQbMeasure,
-    NewQbMeasure,
-    QbObservationValue,
-    CompositeQbCodeList,
-    DuplicatedQbConcept,
-    ExistingQbAttributeLiteral,
-    ExistingQbCodeList,
-    NewQbAttributeLiteral,
-    NewQbCodeList,
-    QbCodeList,
-)
+from csvcubed.models.cube.qb.components import (CompositeQbCodeList,
+                                                DuplicatedQbConcept,
+                                                ExistingQbAttribute,
+                                                ExistingQbAttributeLiteral,
+                                                ExistingQbCodeList,
+                                                ExistingQbDimension,
+                                                ExistingQbMeasure,
+                                                ExistingQbUnit, NewQbAttribute,
+                                                NewQbAttributeLiteral,
+                                                NewQbAttributeValue,
+                                                NewQbCodeList, NewQbDimension,
+                                                NewQbMeasure, NewQbUnit,
+                                                QbCodeList,
+                                                QbMultiMeasureDimension,
+                                                QbMultiUnits,
+                                                QbObservationValue)
 from csvcubed.models.cube.qb.components.concept import NewQbConcept
 from csvcubed.models.jsonvalidationerrors import JsonSchemaValidationError
 from csvcubed.readers.cubeconfig.utils import load_resource
 from csvcubed.utils.file import code_list_config_json_exists
-from csvcubed.utils.uri import (
-    csvw_column_name_safe,
-    looks_like_uri,
-)
-from csvcubed.utils.validators.schema import map_to_internal_validation_errors
-from csvcubed.utils.validators.schema import validate_dict_against_schema
+from csvcubed.utils.uri import csvw_column_name_safe, looks_like_uri
+from csvcubed.utils.validators.schema import (
+    map_to_internal_validation_errors, validate_dict_against_schema)
 
 _logger = logging.getLogger(__name__)
 

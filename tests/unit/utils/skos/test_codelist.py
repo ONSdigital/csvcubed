@@ -5,16 +5,12 @@ from treelib import Tree
 
 from csvcubed.cli.inspect.inspectdatasetmanager import load_csv_to_dataframe
 from csvcubed.utils.skos.codelist import (
-    CodelistPropertyUrl,
-    build_concepts_hierarchy_tree,
+    CodelistPropertyUrl, build_concepts_hierarchy_tree,
     get_codelist_col_title_by_property_url,
-    get_codelist_col_title_from_col_name,
-)
+    get_codelist_col_title_from_col_name)
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
-    select_codelist_cols_by_csv_url,
-    select_codelist_csv_url,
-    select_primary_key_col_names_by_csv_url,
-)
+    select_codelist_cols_by_csv_url, select_codelist_csv_url,
+    select_primary_key_col_names_by_csv_url)
 from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.unit.test_baseunit import get_test_cases_dir
 

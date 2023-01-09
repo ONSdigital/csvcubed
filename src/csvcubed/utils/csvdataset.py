@@ -6,7 +6,7 @@ Utilities for CSV Datasets
 """
 
 from pathlib import Path
-from typing import List, Optional, Tuple, Dict, Any
+from typing import Any, Dict, List, Optional, Tuple
 from uuid import uuid1
 
 import pandas as pd
@@ -15,36 +15,21 @@ import uritemplate
 from uritemplate.orderedset import OrderedSet
 
 from csvcubed.cli.inspect.inspectdatasetmanager import (
-    filter_components_from_dsd,
-    get_single_measure_from_dsd,
+    filter_components_from_dsd, get_single_measure_from_dsd,
     get_standard_shape_measure_col_name_from_dsd,
-    get_standard_shape_unit_col_name_from_dsd,
-)
+    get_standard_shape_unit_col_name_from_dsd)
 from csvcubed.models.csvcubedexception import (
+    InvalidNumberOfRecordsException,
     InvalidNumOfDSDComponentsForObsValColTitleException,
     InvalidNumOfUnitColsForObsValColTitleException,
-    InvalidNumOfValUrlsForAboutUrlException,
-    InvalidNumberOfRecordsException,
-)
+    InvalidNumOfValUrlsForAboutUrlException)
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import (
-    ColTitlesAndNamesResult,
-    ObservationValueColumnTitleAboutUrlResult,
-    UnitColumnAboutValueUrlResult,
-)
-from csvcubed.cli.inspect.inspectdatasetmanager import (
-    filter_components_from_dsd,
-    get_single_measure_from_dsd,
-    get_standard_shape_measure_col_name_from_dsd,
-    get_standard_shape_unit_col_name_from_dsd,
-)
-from csvcubed.models.sparqlresults import QubeComponentResult
+    ColTitlesAndNamesResult, ObservationValueColumnTitleAboutUrlResult,
+    QubeComponentResult, UnitColumnAboutValueUrlResult)
 from csvcubed.utils.iterables import first
 from csvcubed.utils.qb.components import ComponentField, ComponentPropertyType
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
-from csvcubed.utils.sparql_handler.sparqlquerymanager import (
-    CubeShape,
-)
 
 
 def _materialise_unit_uri_for_row(

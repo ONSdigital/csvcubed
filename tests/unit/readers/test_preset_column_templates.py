@@ -1,15 +1,13 @@
+import json
 from copy import deepcopy
 
-import json
 import pytest
 
 from csvcubed.definitions import APP_ROOT_DIR_PATH
 from csvcubed.readers.preconfiguredtemplates import (
-    TEMPLATE_BASE_URL,
-    _get_properties_from_template_file,
+    TEMPLATE_BASE_URL, _get_properties_from_template_file,
     _get_template_file_from_template_lookup,
-    apply_preconfigured_values_from_template,
-)
+    apply_preconfigured_values_from_template)
 
 
 def test_func_accepts_dict_with_template():

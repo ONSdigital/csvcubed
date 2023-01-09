@@ -7,20 +7,16 @@ import logging
 from dataclasses import dataclass
 from os import linesep
 from pathlib import Path
-from typing import List, Optional, Dict, Any
+from typing import Any, Dict, List, Optional
 
 from csvcubedmodels.dataclassbase import DataClassBase
 from rdflib.query import ResultRow
 
-from csvcubed.utils.printable import (
-    get_printable_list_str,
-    get_printable_tabular_list_str,
-    get_printable_tabular_str_from_list,
-)
+from csvcubed.utils.printable import (get_printable_list_str,
+                                      get_printable_tabular_list_str,
+                                      get_printable_tabular_str_from_list)
 from csvcubed.utils.qb.components import (
-    get_component_property_as_relative_path,
-    get_component_property_type,
-)
+    get_component_property_as_relative_path, get_component_property_type)
 from csvcubed.utils.sparql_handler.sparql import none_or_map
 
 _logger = logging.getLogger(__name__)
@@ -617,8 +613,8 @@ def map_units(sparql_results: List[ResultRow]) -> List[UnitResult]:
     :return: `UnitResult`
     """
 
-    def map_row(row_result: Dict[str, Any]) -> ColTitlesAndNamesResult:
-        return ColTitlesAndNamesResult(
+    def map_row(row_result: Dict[str, Any]) -> UnitResult:
+        return UnitResult(
             unit_uri=str(row_result["unit"]), unit_label=str(row_result["unitLabel"])
         )
 

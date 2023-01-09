@@ -2,8 +2,8 @@ import json
 
 import pytest
 
-from csvcubed.utils.cache import session
 from csvcubed.definitions import APP_ROOT_DIR_PATH
+from csvcubed.utils.cache import session
 from csvcubed.utils.json import load_json_document
 
 

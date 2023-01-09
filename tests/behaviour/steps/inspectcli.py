@@ -11,30 +11,22 @@ from csvcubed.cli.inspect.metadataprinter import MetadataPrinter
 from csvcubed.models.csvwtype import CSVWType
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.inspectdataframeresults import (
-    DatasetObservationsByMeasureUnitInfoResult,
-    DatasetObservationsInfoResult,
-)
-from csvcubed.models.sparqlresults import (
-    CatalogMetadataResult,
-    CodelistsResult,
-    QubeComponentsResult,
-)
+    DatasetObservationsByMeasureUnitInfoResult, DatasetObservationsInfoResult)
+from csvcubed.models.sparqlresults import (CatalogMetadataResult,
+                                           CodelistsResult,
+                                           QubeComponentsResult)
 from csvcubed.utils.iterables import first
 from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.sparql_handler.code_list_state import CodeListState
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
-from csvcubed.utils.sparql_handler.sparqlquerymanager import (
-    select_is_pivoted_shape_for_measures_in_data_set,
-)
+from csvcubed.utils.sparql_handler.sparqlquerymanager import \
+    select_is_pivoted_shape_for_measures_in_data_set
 from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.unit.cli.inspect.test_inspectdatasetmanager import (
-    expected_dataframe_pivoted_single_measure,
     expected_dataframe_pivoted_multi_measure,
-)
+    expected_dataframe_pivoted_single_measure)
 from tests.unit.utils.sparqlhandler.test_sparqlquerymanager import (
-    assert_dsd_component_equal,
-    get_dsd_component_by_property_url,
-)
+    assert_dsd_component_equal, get_dsd_component_by_property_url)
 
 
 def _unformat_multiline_string(string: str) -> str:

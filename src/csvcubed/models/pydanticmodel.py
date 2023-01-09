@@ -8,19 +8,16 @@ The functionality necessary to repurpose pydantic so that we can validate at a p
 import dataclasses
 from abc import ABC
 from dataclasses import dataclass, fields, is_dataclass
-from typing import Dict, Type, List, Iterable, Union, Any
+from typing import Any, Dict, Iterable, List, Type, Union
 
 import pydantic
 import pydantic.dataclasses
 from csvcubedmodels.dataclassbase import DataClassBase
 from pydantic import BaseConfig, Extra
 
-from .validationerror import (
-    ValidationError,
-    PydanticValidationError,
-    UnknownPydanticValidationError,
-    PydanticThrowableSpecificValidationError,
-)
+from .validationerror import (PydanticThrowableSpecificValidationError,
+                              PydanticValidationError,
+                              UnknownPydanticValidationError, ValidationError)
 
 _map_class_to_pydantic_constructor: Dict[Type, Type] = dict()
 """_map_class_to_pydantic_constructor - Cache of pydantic constructor corresponding to a given class."""

@@ -5,18 +5,15 @@ QbCube
 Utilities for getting columns (of a given type) from the `qb:DataStructureType`
 """
 import logging
-from typing import List, TypeVar, Set
+from typing import List, Set, TypeVar
 
 from csvcubed.models.cube.cube import Cube
 from csvcubed.models.cube.cube_shape import CubeShape
-from csvcubed.models.cube.qb.components import (
-    QbColumnStructuralDefinition,
-    QbMeasure,
-    QbMultiMeasureDimension,
-    QbMultiUnits,
-    QbUnit,
-    QbObservationValue,
-)
+from csvcubed.models.cube.qb.components import (QbColumnStructuralDefinition,
+                                                QbMeasure,
+                                                QbMultiMeasureDimension,
+                                                QbMultiUnits,
+                                                QbObservationValue, QbUnit)
 
 _logger = logging.getLogger(__name__)
 

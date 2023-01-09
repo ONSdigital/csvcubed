@@ -3,15 +3,15 @@ from typing import Dict, List, Optional, Union
 
 import pandas as pd
 
-from csvcubed.models.csvcubedexception import UnsupportedColumnDefinitionException
-from csvcubed.models.cube.qb.components.constants import ACCEPTED_DATATYPE_MAPPING
+from csvcubed.models.csvcubedexception import \
+    UnsupportedColumnDefinitionException
+from csvcubed.models.cube.qb.components.constants import \
+    ACCEPTED_DATATYPE_MAPPING
 from csvcubed.readers.cubeconfig.v1.mapcolumntocomponent import (
-    _from_column_dict_to_schema_model,
-    schema,
-)
-from csvcubed.readers.preconfiguredtemplates import (
-    apply_preconfigured_values_from_template,
-)
+    _from_column_dict_to_schema_model, schema)
+from csvcubed.readers.preconfiguredtemplates import \
+    apply_preconfigured_values_from_template
+
 from .constants import CONVENTION_NAMES
 
 

@@ -7,11 +7,12 @@ Utils for working with CSV-Ws.
 import json
 import logging
 from pathlib import Path
-from typing import Set, List, Union
+from typing import List, Set, Union
 
 from rdflib import Graph
 
 from csvcubed.utils.rdf import parse_graph_retain_relative
+
 from .json import load_json_document
 from .uri import looks_like_uri
 

@@ -6,15 +6,13 @@ Represent measures inside an RDF Data Cube.
 """
 from abc import ABC
 from dataclasses import dataclass, field
-from typing import Optional, List, Set
+from typing import List, Optional, Set
 
 from csvcubed.models.cube.qb.components.arbitraryrdf import (
-    ArbitraryRdf,
-    RdfSerialisationHint,
-    TripleFragmentBase,
-)
+    ArbitraryRdf, RdfSerialisationHint, TripleFragmentBase)
 from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.utils.validators.uri import validate_uri
+
 from .datastructuredefinition import SecondaryQbStructuralDefinition
 
 

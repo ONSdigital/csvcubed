@@ -3,10 +3,8 @@ from pathlib import Path
 import pytest
 
 from csvcubed.utils.qb.components import (
-    ComponentPropertyType,
-    get_component_property_as_relative_path,
-    get_component_property_type,
-)
+    ComponentPropertyType, get_component_property_as_relative_path,
+    get_component_property_type)
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 
 

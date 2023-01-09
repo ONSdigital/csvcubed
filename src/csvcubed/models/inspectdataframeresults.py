@@ -10,7 +10,8 @@ from typing import Optional
 import pandas as pd
 from treelib import Tree
 
-from csvcubed.models.csvcubedexception import FailedToConvertDataFrameToStringException
+from csvcubed.models.csvcubedexception import \
+    FailedToConvertDataFrameToStringException
 from csvcubed.models.csvwtype import CSVWType
 from csvcubed.models.cube.cube_shape import CubeShape
 

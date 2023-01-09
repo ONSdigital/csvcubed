@@ -1,8 +1,5 @@
 from csvcubed.readers.cubeconfig.v1.columnschema import (
-    EXISTING_UNIT_DEFAULT_SCALING_FACTOR,
-    Unit,
-    _get_unit_scaling_factor,
-)
+    EXISTING_UNIT_DEFAULT_SCALING_FACTOR, Unit, _get_unit_scaling_factor)
 
 
 def test_new_unit():

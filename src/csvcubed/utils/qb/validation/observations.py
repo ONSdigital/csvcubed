@@ -6,33 +6,24 @@ from csvcubedmodels.rdf.namespaces import SDMX_Attribute
 
 from csvcubed.models.cube.cube import Cube
 from csvcubed.models.cube.qb.columns import QbColumn
-from csvcubed.models.cube.qb.components.attribute import (
-    ExistingQbAttribute,
-    NewQbAttribute,
-    QbAttribute,
-)
-from csvcubed.models.cube.qb.components.measure import ExistingQbMeasure, QbMeasure
-from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureDimension
+from csvcubed.models.cube.qb.components.attribute import (ExistingQbAttribute,
+                                                          NewQbAttribute,
+                                                          QbAttribute)
+from csvcubed.models.cube.qb.components.measure import (ExistingQbMeasure,
+                                                        QbMeasure)
+from csvcubed.models.cube.qb.components.measuresdimension import \
+    QbMultiMeasureDimension
 from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
 from csvcubed.models.cube.qb.components.unitscolumn import QbMultiUnits
 from csvcubed.models.cube.qb.validationerrors import (
-    BothMeasureTypesDefinedError,
-    BothUnitTypesDefinedError,
-    CsvColumnUriTemplateMissingError,
-    EmptyQbMultiMeasureDimensionError,
-    MoreThanOneMeasureColumnError,
-    MoreThanOneUnitsColumnError,
-    NoMeasuresDefinedError,
-    NoObservedValuesColumnDefinedError,
-    NoUnitsDefinedError,
-    PivotedShapeMeasureColumnsExistError,
-    DuplicateMeasureError,
-    AttributeNotLinkedError,
-    LinkedObsColumnDoesntExistError,
-    LinkedToNonObsColumnError,
-    HybridShapeError,
-    PivotedObsValColWithoutMeasureError,
-)
+    AttributeNotLinkedError, BothMeasureTypesDefinedError,
+    BothUnitTypesDefinedError, CsvColumnUriTemplateMissingError,
+    DuplicateMeasureError, EmptyQbMultiMeasureDimensionError, HybridShapeError,
+    LinkedObsColumnDoesntExistError, LinkedToNonObsColumnError,
+    MoreThanOneMeasureColumnError, MoreThanOneUnitsColumnError,
+    NoMeasuresDefinedError, NoObservedValuesColumnDefinedError,
+    NoUnitsDefinedError, PivotedObsValColWithoutMeasureError,
+    PivotedShapeMeasureColumnsExistError)
 from csvcubed.models.cube.validationerrors import ObservationValuesMissing
 from csvcubed.models.validationerror import ValidationError
 

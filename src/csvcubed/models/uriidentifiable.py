@@ -7,16 +7,10 @@ import dataclasses
 from abc import ABC, abstractmethod
 from typing import Dict, Optional
 
-from csvcubed.utils.uri import uri_safe
-
 from csvcubed.models.validatedmodel import ValidatedModel, ValidationFunction
-
-from csvcubed.utils.validations import (
-    validate_str_type,
-    validate_int_type,
-    validate_list,
-    validate_optional,
-)
+from csvcubed.utils.uri import uri_safe
+from csvcubed.utils.validations import (validate_int_type, validate_list,
+                                        validate_optional, validate_str_type)
 
 
 @dataclasses.dataclass

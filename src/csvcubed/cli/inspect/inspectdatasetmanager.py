@@ -14,27 +14,17 @@ import pandas as pd
 
 from csvcubed.cli.error_mapping import friendly_error_mapping
 from csvcubed.models.csvcubedexception import (
-    CsvToDataFrameLoadFailedException,
-    InvalidNumberOfRecordsException,
-)
+    CsvToDataFrameLoadFailedException, InvalidNumberOfRecordsException)
 from csvcubed.models.csvwtype import CSVWType
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.inspectdataframeresults import (
-    CodelistHierarchyInfoResult,
-    DatasetObservationsByMeasureUnitInfoResult,
-    DatasetObservationsInfoResult,
-    DatasetSingleMeasureResult,
-)
-from csvcubed.models.sparqlresults import (
-    QubeComponentResult,
-)
+    CodelistHierarchyInfoResult, DatasetObservationsByMeasureUnitInfoResult,
+    DatasetObservationsInfoResult, DatasetSingleMeasureResult)
+from csvcubed.models.sparqlresults import QubeComponentResult
 from csvcubed.utils.pandas import read_csv
 from csvcubed.utils.qb.components import (
-    ComponentField,
-    ComponentPropertyAttributeURI,
-    ComponentPropertyType,
-    get_component_property_as_relative_path,
-)
+    ComponentField, ComponentPropertyAttributeURI, ComponentPropertyType,
+    get_component_property_as_relative_path)
 from csvcubed.utils.skos.codelist import build_concepts_hierarchy_tree
 
 _logger = logging.getLogger(__name__)

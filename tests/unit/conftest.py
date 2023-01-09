@@ -5,9 +5,9 @@ from pathlib import Path
 import appdirs
 import pytest
 
-from csvcubed.utils.log import start_logging
-from csvcubed.utils.createlocalcopyresponse import map_url_to_file_path
 from csvcubed.definitions import APP_ROOT_DIR_PATH
+from csvcubed.utils.createlocalcopyresponse import map_url_to_file_path
+from csvcubed.utils.log import start_logging
 
 _user_log_dir = Path(appdirs.AppDirs("csvcubed_testing", "csvcubed").user_log_dir)
 

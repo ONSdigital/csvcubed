@@ -2,10 +2,8 @@ import pytest
 from csvcubedmodels.rdf import CSVW
 from rdflib import Graph, Literal, URIRef
 
-from csvcubed.utils.csvw import (
-    get_dependent_local_files,
-    load_table_schema_file_to_graph,
-)
+from csvcubed.utils.csvw import (get_dependent_local_files,
+                                 load_table_schema_file_to_graph)
 from tests.unit.test_baseunit import get_test_cases_dir
 
 csvw_utils_test_cases = get_test_cases_dir() / "utils" / "csvw"

@@ -7,14 +7,14 @@ Defines a mixin permitting arbitrary RDF to be added to a qb component.
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from enum import Enum
-from typing import Set, Dict, Union, List
+from typing import Dict, List, Set, Union
 
-from csvcubedmodels.rdf import NewResource, InversePredicate
-from rdflib.term import Identifier, URIRef, Literal
+from csvcubedmodels.rdf import InversePredicate, NewResource
+from rdflib.term import Identifier, Literal, URIRef
 
 from csvcubed.models.pydanticmodel import PydanticModel
-from csvcubed.utils.uri import looks_like_uri
 from csvcubed.models.validationerror import ValidateModelProperiesError
+from csvcubed.utils.uri import looks_like_uri
 
 
 class RdfSerialisationHint(Enum):

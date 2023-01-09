@@ -6,16 +6,15 @@ Represent units in an RDF Data Cube.
 """
 from abc import ABC
 from dataclasses import dataclass, field
-from typing import Optional, List, Set
+from typing import List, Optional, Set
 
 from csvcubed.models.uriidentifiable import UriIdentifiable
-from csvcubed.utils.validators.attributes import enforce_optional_attribute_dependencies
+from csvcubed.utils.validators.attributes import \
+    enforce_optional_attribute_dependencies
 from csvcubed.utils.validators.uri import validate_uri
-from .arbitraryrdf import (
-    ArbitraryRdf,
-    TripleFragmentBase,
-    RdfSerialisationHint,
-)
+
+from .arbitraryrdf import (ArbitraryRdf, RdfSerialisationHint,
+                           TripleFragmentBase)
 from .datastructuredefinition import SecondaryQbStructuralDefinition
 
 

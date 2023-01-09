@@ -6,43 +6,31 @@ from csvcubed.models.cube.cube import Cube, QbCube
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.cube.qb.columns import QbColumn
 from csvcubed.models.cube.qb.components.attribute import (
-    ExistingQbAttribute,
-    ExistingQbAttributeLiteral,
-    NewQbAttribute,
-    NewQbAttributeLiteral,
-)
-from csvcubed.models.cube.qb.components.attributevalue import NewQbAttributeValue
+    ExistingQbAttribute, ExistingQbAttributeLiteral, NewQbAttribute,
+    NewQbAttributeLiteral)
+from csvcubed.models.cube.qb.components.attributevalue import \
+    NewQbAttributeValue
 from csvcubed.models.cube.qb.components.codelist import NewQbCodeList
-from csvcubed.models.cube.qb.components.dimension import (
-    ExistingQbDimension,
-    NewQbDimension,
-    QbDimension,
-)
-from csvcubed.models.cube.qb.components.measure import ExistingQbMeasure, NewQbMeasure
-from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureDimension
+from csvcubed.models.cube.qb.components.dimension import (ExistingQbDimension,
+                                                          NewQbDimension,
+                                                          QbDimension)
+from csvcubed.models.cube.qb.components.measure import (ExistingQbMeasure,
+                                                        NewQbMeasure)
+from csvcubed.models.cube.qb.components.measuresdimension import \
+    QbMultiMeasureDimension
 from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
 from csvcubed.models.cube.qb.components.unit import ExistingQbUnit, NewQbUnit
 from csvcubed.models.cube.qb.components.unitscolumn import QbMultiUnits
 from csvcubed.models.cube.qb.components.validationerrors import (
-    ConflictingUriSafeValuesError,
-    ReservedUriValueError,
-)
+    ConflictingUriSafeValuesError, ReservedUriValueError)
 from csvcubed.models.cube.qb.validationerrors import (
-    BothMeasureTypesDefinedError,
-    CsvColumnUriTemplateMissingError,
-    MinNumComponentsNotSatisfiedError,
-    NoMeasuresDefinedError,
-    NoUnitsDefinedError,
-    BothUnitTypesDefinedError,
-    MaxNumComponentsExceededError,
-    PivotedShapeMeasureColumnsExistError,
-    DuplicateMeasureError,
-    AttributeNotLinkedError,
-    LinkedObsColumnDoesntExistError,
-    LinkedToNonObsColumnError,
-    HybridShapeError,
-    PivotedObsValColWithoutMeasureError,
-)
+    AttributeNotLinkedError, BothMeasureTypesDefinedError,
+    BothUnitTypesDefinedError, CsvColumnUriTemplateMissingError,
+    DuplicateMeasureError, HybridShapeError, LinkedObsColumnDoesntExistError,
+    LinkedToNonObsColumnError, MaxNumComponentsExceededError,
+    MinNumComponentsNotSatisfiedError, NoMeasuresDefinedError,
+    NoUnitsDefinedError, PivotedObsValColWithoutMeasureError,
+    PivotedShapeMeasureColumnsExistError)
 from csvcubed.utils.qb.validation.cube import validate_qb_component_constraints
 from tests.unit.test_baseunit import *
 

@@ -6,14 +6,12 @@ Represent values for Attributes in an RDF Data Cube.
 """
 
 from dataclasses import dataclass, field
-from typing import Optional, List, Set
+from typing import List, Optional, Set
 
 from csvcubed.models.uriidentifiable import UriIdentifiable
-from .arbitraryrdf import (
-    ArbitraryRdf,
-    TripleFragmentBase,
-    RdfSerialisationHint,
-)
+
+from .arbitraryrdf import (ArbitraryRdf, RdfSerialisationHint,
+                           TripleFragmentBase)
 from .datastructuredefinition import SecondaryQbStructuralDefinition
 
 

@@ -7,14 +7,15 @@ Contains models holding information on JSON Schema Validation errors
 """
 import os
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, asdict, fields
+from dataclasses import asdict, dataclass, fields
 from textwrap import indent
-from typing import List, Tuple, Any, Optional
+from typing import Any, List, Optional, Tuple
 
 from jsonschema import RefResolver
 
 from csvcubed.utils.text import truncate
 from csvcubed.utils.uri import looks_like_uri
+
 from .validationerror import ValidationError
 
 _indent = "    "
