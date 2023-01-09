@@ -9,6 +9,7 @@ from csvcubed.models.sparqlresults import (
     ObservationValueColumnTitleAboutUrlResult,
     UnitColumnAboutValueUrlResult,
 )
+from csvcubed.utils.dict import get_from_dict_ensure_exists
 from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
@@ -161,10 +162,12 @@ def test_exception_is_thrown_for_invalid_csv_url():
 
     input_dict = {"a": 1, "b": 2}
 
-    with pytest.raises(KeyError) as exception:
-        assert data_cube_state._get_value_for_key("c", input_dict)
+    with pytest.raises(Exception) as exception:
+        # assert data_cube_state._get_value_for_key("c", input_dict)
+        assert get_from_dict_ensure_exists(input_dict, "c")
 
-    assert "Could not find the definition for key 'c'" in str(exception.value)
+    # assert "Could not find the definition for key 'c'" in str(exception.value)
+    assert "Couldn't find value for key 'c'" in str(exception.value)
 
 
 def test_get_data_set_dsd_csv_url_for_csv_url():

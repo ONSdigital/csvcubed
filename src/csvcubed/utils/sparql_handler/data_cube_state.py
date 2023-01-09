@@ -206,4 +206,4 @@ class DataCubeState:
         return QubeComponentsResult(components, len(components))
 
     def get_shape_for_csv(self, csv_url: str) -> CubeShape:
-        return self._get_value_for_key(csv_url, self._cube_shapes)
+        return get_from_dict_ensure_exists(self._cube_shapes, csv_url)
