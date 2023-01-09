@@ -608,9 +608,7 @@ def map_csv_url_result(
     return result
 
 
-def map_units(
-    sparql_results: List[ResultRow]
-) -> List[UnitResult]:
+def map_units(sparql_results: List[ResultRow]) -> List[UnitResult]:
     """
     Maps sparql query result to `UnitResult`
 
@@ -620,10 +618,10 @@ def map_units(
     """
 
     def map_row(row_result: Dict[str, Any]) -> ColTitlesAndNamesResult:
-        return UnitResult(
-            unit_uri=str(row_result["unit"]),
-            unit_label=str(row_result["unitLabel"])
+        return ColTitlesAndNamesResult(
+            unit_uri=str(row_result["unit"]), unit_label=str(row_result["unitLabel"])
         )
+
     return [map_row(row.asdict()) for row in sparql_results]
 
 
