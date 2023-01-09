@@ -1,6 +1,5 @@
 import numpy as np
 import pandas as pd
-from pandas.util.testing import assert_frame_equal
 import pytest
 from csvcubed.cli.inspect.metadataprinter import to_absolute_rdflib_file_path
 from csvcubed.models.csvcubedexception import (
@@ -15,7 +14,19 @@ from csvcubed.models.sparqlresults import (
     QubeComponentResult,
     UnitColumnAboutValueUrlResult,
 )
+from pandas.util.testing import assert_frame_equal
 
+from csvcubed.models.csvcubedexception import (
+    InvalidNumOfDSDComponentsForObsValColTitleException,
+    InvalidNumOfUnitColsForObsValColTitleException,
+    InvalidNumOfValUrlsForAboutUrlException,
+)
+from csvcubed.models.sparqlresults import (
+    ColTitlesAndNamesResult,
+    ObservationValueColumnTitleAboutUrlResult,
+    QubeComponentResult,
+    UnitColumnAboutValueUrlResult,
+)
 from csvcubed.utils.csvdataset import (
     _create_measure_col_in_melted_data_set_for_pivoted_shape,
     _create_unit_col_in_melted_data_set_for_pivoted_shape,
@@ -24,14 +35,12 @@ from csvcubed.utils.csvdataset import (
 )
 from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
-from csvcubed.utils.sparql_handler.sparqlmanager import (
+from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_csvw_catalog_metadata,
     select_qb_csv_url,
 )
 from csvcubed.utils.tableschema import CsvwRdfManager
-
 from tests.unit.cli.inspect.test_inspectdatasetmanager import get_arguments_qb_dataset
-
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
@@ -313,6 +322,8 @@ _expected_melted_dataset_with_measure_col_for_pivoted_shape = pd.DataFrame(
 
 _measure_components_for_multi_measure_pivoted_shape = [
     QubeComponentResult(
+        "",
+        "",
         "qb-id-10003.csv#measure/some-measure",
         "Some Measure",
         "Measure",
@@ -321,6 +332,8 @@ _measure_components_for_multi_measure_pivoted_shape = [
         True,
     ),
     QubeComponentResult(
+        "",
+        "",
         "qb-id-10003.csv#measure/some-other-measure",
         "Some Other Measure",
         "Measure",
@@ -471,6 +484,8 @@ _col_names_col_titles_invalid = [
 
 _measure_components_for_multi_measure_pivoted_shape_same_measure = [
     QubeComponentResult(
+        "",
+        "",
         "qb-id-10003.csv#measure/some-measure",
         "Some Measure",
         "Measure",
@@ -479,6 +494,8 @@ _measure_components_for_multi_measure_pivoted_shape_same_measure = [
         True,
     ),
     QubeComponentResult(
+        "",
+        "",
         "qb-id-10003.csv#measure/some-other-measure",
         "Some Other Measure",
         "Measure",
@@ -500,22 +517,18 @@ def test_transform_to_canonical_shape_for_standard_shape_data_set():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
+    data_cube_state = DataCubeState(csvw_metadata_rdf_graph, csvw_metadata_json_path)
 
-    (dataset, qube_components, dsd_uri, _) = get_arguments_qb_dataset(
-        CubeShape.Standard, csvw_metadata_rdf_graph, csvw_metadata_json_path
-    )
+    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
     (
         canonical_shape_dataset,
         measure_col,
         unit_col,
     ) = transform_dataset_to_canonical_shape(
         data_cube_state,
-        CubeShape.Standard,
         dataset,
         qube_components,
-        None,
-        dsd_uri,
+        csv_url,
         csvw_metadata_rdf_graph,
         csvw_metadata_json_path,
     )
@@ -538,16 +551,9 @@ def test_transform_to_canonical_shape_for_pivoted_single_measure_shape_data_set(
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
+    data_cube_state = DataCubeState(csvw_metadata_rdf_graph, csvw_metadata_json_path)
 
-    (dataset, qube_components, dsd_uri, _) = get_arguments_qb_dataset(
-        CubeShape.Pivoted, csvw_metadata_rdf_graph, csvw_metadata_json_path
-    )
-    dataset_uri = to_absolute_rdflib_file_path(
-        select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri,
-        csvw_metadata_json_path,
-    )
-    data_set_url = select_qb_csv_url(csvw_metadata_rdf_graph, dataset_uri).csv_url
+    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
 
     (
         canonical_shape_dataset,
@@ -555,11 +561,9 @@ def test_transform_to_canonical_shape_for_pivoted_single_measure_shape_data_set(
         unit_col,
     ) = transform_dataset_to_canonical_shape(
         data_cube_state,
-        CubeShape.Pivoted,
         dataset,
         qube_components,
-        data_set_url,
-        dsd_uri,
+        csv_url,
         csvw_metadata_rdf_graph,
         csvw_metadata_json_path,
     )
@@ -593,20 +597,9 @@ def test_transform_to_canonical_shape_for_pivoted_multi_measure_shape_data_set()
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
+    data_cube_state = DataCubeState(csvw_metadata_rdf_graph, csvw_metadata_json_path)
 
-    (dataset, qube_components, dsd_uri, _) = get_arguments_qb_dataset(
-        CubeShape.Pivoted, csvw_metadata_rdf_graph, csvw_metadata_json_path
-    )
-    data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
-
-    (dataset, qube_components, dsd_uri, _) = get_arguments_qb_dataset(
-        CubeShape.Pivoted, csvw_metadata_rdf_graph, csvw_metadata_json_path
-    )
-    dataset_uri = to_absolute_rdflib_file_path(
-        select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri,
-        csvw_metadata_json_path,
-    )
-    csv_url = select_qb_csv_url(csvw_metadata_rdf_graph, dataset_uri).csv_url
+    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
 
     (
         canonical_shape_dataset,
@@ -614,11 +607,9 @@ def test_transform_to_canonical_shape_for_pivoted_multi_measure_shape_data_set()
         unit_col,
     ) = transform_dataset_to_canonical_shape(
         data_cube_state,
-        CubeShape.Pivoted,
         dataset,
         qube_components,
         csv_url,
-        dsd_uri,
         csvw_metadata_rdf_graph,
         csvw_metadata_json_path,
     )

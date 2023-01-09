@@ -8,24 +8,28 @@ Utilities for CSV Datasets
 from pathlib import Path
 from typing import List, Optional, Tuple, Dict, Any
 from uuid import uuid1
-import uritemplate
-from uritemplate.orderedset import OrderedSet
 
 import pandas as pd
 import rdflib
+import uritemplate
+from uritemplate.orderedset import OrderedSet
 
-from csvcubed.utils.iterables import first
+from csvcubed.cli.inspect.inspectdatasetmanager import (
+    filter_components_from_dsd,
+    get_single_measure_from_dsd,
+    get_standard_shape_measure_col_name_from_dsd,
+    get_standard_shape_unit_col_name_from_dsd,
+)
 from csvcubed.models.csvcubedexception import (
     InvalidNumOfDSDComponentsForObsValColTitleException,
     InvalidNumOfUnitColsForObsValColTitleException,
     InvalidNumOfValUrlsForAboutUrlException,
     InvalidNumberOfRecordsException,
 )
-from csvcubed.utils.qb.components import ComponentField, ComponentPropertyType
+from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import (
     ColTitlesAndNamesResult,
     ObservationValueColumnTitleAboutUrlResult,
-    QubeComponentResult,
     UnitColumnAboutValueUrlResult,
 )
 from csvcubed.cli.inspect.inspectdatasetmanager import (
@@ -34,8 +38,14 @@ from csvcubed.cli.inspect.inspectdatasetmanager import (
     get_standard_shape_measure_col_name_from_dsd,
     get_standard_shape_unit_col_name_from_dsd,
 )
+from csvcubed.models.sparqlresults import QubeComponentResult
+from csvcubed.utils.iterables import first
+from csvcubed.utils.qb.components import ComponentField, ComponentPropertyType
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
-from csvcubed.utils.sparql_handler.sparqlmanager import CubeShape
+from csvcubed.utils.sparql_handler.sparqlquerymanager import (
+    select_single_unit_from_dsd,
+    CubeShape,
+)
 
 
 def _materialise_unit_uri_for_row(
@@ -76,22 +86,13 @@ def _create_unit_col_in_melted_data_set_for_pivoted_shape(
     melted_df[col_name] = ""
 
     for idx, row in melted_df.iterrows():
-        obs_val_col_title = str(row["Observation Value"])
-
-        # Use the observation value col title to get the unit col's about url.
-        obs_val_col_title_about_url = first(
-            obs_val_col_titles_about_urls,
-            lambda o: o.observation_value_col_title == obs_val_col_title,
+        observation_uri = _get_observation_uri_for_melted_df_row(
+            obs_val_col_titles_about_urls, row
         )
-        if obs_val_col_title_about_url is None:
-            raise InvalidNumOfUnitColsForObsValColTitleException(
-                obs_val_col_title=obs_val_col_title,
-                num_of_unit_cols=0,
-            )
-        observation_uri = obs_val_col_title_about_url.observation_value_col_about_url
 
         # Use the unit col's about url to get the unit col's value url.
-        # N.B., for a old-style single measure pivoted shape, the following filter still works as the about url and observation uri are both None (i.e. equal).
+        # N.B., for an old-style single measure pivoted shape, the following filter still works as the
+        # about url and observation uri are both None (i.e. equal).
         unit_col_about_url_value_url = first(
             unit_col_about_urls_value_urls, lambda u: u.about_url == observation_uri
         )
@@ -129,6 +130,24 @@ def _get_unit_uri_for_maybe_template(
             template_url,
             row,
         )
+
+
+def _get_observation_uri_for_melted_df_row(
+    obs_val_col_titles_about_urls: List[ObservationValueColumnTitleAboutUrlResult],
+    row: pd.Series,
+) -> Optional[str]:
+    obs_val_col_title = str(row["Observation Value"])
+    # Use the observation value col title to get the unit col's about url.
+    obs_val_col_title_about_url = first(
+        obs_val_col_titles_about_urls,
+        lambda o: o.observation_value_col_title == obs_val_col_title,
+    )
+    if obs_val_col_title_about_url is None:
+        raise InvalidNumOfUnitColsForObsValColTitleException(
+            obs_val_col_title=obs_val_col_title,
+            num_of_unit_cols=0,
+        )
+    return obs_val_col_title_about_url.observation_value_col_about_url
 
 
 def _create_measure_col_in_melted_data_set_for_pivoted_shape(
@@ -187,11 +206,9 @@ def _melt_data_set(
 
 def transform_dataset_to_canonical_shape(
     data_cube_state: DataCubeState,
-    cube_shape: CubeShape,
     dataset: pd.DataFrame,
     qube_components: List[QubeComponentResult],
-    csv_url: Optional[str],
-    dataset_uri: str,
+    csv_url: str,
     csvw_metadata_rdf_graph: rdflib.ConjunctiveGraph,
     csvw_metadata_json_path: Path,
 ) -> Tuple[pd.DataFrame, str, str]:
@@ -206,6 +223,9 @@ def transform_dataset_to_canonical_shape(
     unit_col: str
     measure_col: str
 
+    cube_identifiers = data_cube_state.get_cube_identifiers_for_csv(csv_url)
+    cube_shape = data_cube_state.get_shape_for_csv(csv_url)
+
     if cube_shape == CubeShape.Standard:
         unit_col_retrived = get_standard_shape_unit_col_name_from_dsd(qube_components)
         if unit_col_retrived is None:
@@ -219,6 +239,7 @@ def transform_dataset_to_canonical_shape(
                 )
             unit = units[0]
             canonical_shape_dataset[unit_col] = unit.unit_label
+            """TODO add a test to check if the label is None"""
         else:
             unit_col = unit_col_retrived
 

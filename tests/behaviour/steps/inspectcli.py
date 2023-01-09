@@ -4,7 +4,7 @@ from pathlib import Path
 import pandas as pd
 from behave import *
 from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
-from pandas.util.testing import assert_frame_equal
+from pandas.testing import assert_frame_equal
 
 from csvcubed.cli.inspect.metadatainputvalidator import MetadataValidator
 from csvcubed.cli.inspect.metadataprinter import MetadataPrinter
@@ -23,10 +23,7 @@ from csvcubed.utils.iterables import first
 from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.sparql_handler.code_list_state import CodeListState
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
-from csvcubed.utils.sparql_handler.sparqlmanager import (
-    select_is_pivoted_shape_for_measures_in_data_set,
-)
-from csvcubed.utils.sparql_handler.sparqlmanager import (
+from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_is_pivoted_shape_for_measures_in_data_set,
 )
 from csvcubed.utils.tableschema import CsvwRdfManager
@@ -34,7 +31,7 @@ from tests.unit.cli.inspect.test_inspectdatasetmanager import (
     expected_dataframe_pivoted_single_measure,
     expected_dataframe_pivoted_multi_measure,
 )
-from tests.unit.utils.sparqlhandler.test_sparqlmanager import (
+from tests.unit.utils.sparqlhandler.test_sparqlquerymanager import (
     assert_dsd_component_equal,
     get_dsd_component_by_property_url,
 )
@@ -78,25 +75,20 @@ def step_impl(context):
     csvw_metadata_rdf_validator = MetadataValidator(
         context.csvw_metadata_rdf_graph, context.csvw_metadata_json_path
     )
-    is_pivoted_measures = select_is_pivoted_shape_for_measures_in_data_set(
-        context.csvw_metadata_rdf_graph
-    )
-    (
-        context.csvw_type,
-        context.cube_shape,
-    ) = csvw_metadata_rdf_validator.detect_type_and_shape(is_pivoted_measures)
+    context.csvw_type = csvw_metadata_rdf_validator.detect_csvw_type()
 
     assert context.csvw_type is not None
 
 
 @When("the Printables for data cube are generated")
 def step_impl(context):
-    data_cube_state = DataCubeState(context.csvw_metadata_rdf_graph)
+    data_cube_state = DataCubeState(
+        context.csvw_metadata_rdf_graph, context.csvw_metadata_json_path
+    )
     metadata_printer = MetadataPrinter(
         data_cube_state,
         None,
         context.csvw_type,
-        context.cube_shape,
         context.csvw_metadata_rdf_graph,
         context.csvw_metadata_json_path,
     )
@@ -142,7 +134,6 @@ def step_impl(context):
         None,
         code_list_state,
         context.csvw_type,
-        None,
         context.csvw_metadata_rdf_graph,
         context.csvw_metadata_json_path,
     )
@@ -198,7 +189,9 @@ def step_impl(context):
 def step_impl(context):
     assert _unformat_multiline_string(
         context.dataset_observations_info_printable
-    ) == _unformat_multiline_string(context.text.strip())
+    ) == _unformat_multiline_string(
+        context.text.strip()
+    ), context.dataset_observations_info_printable
 
 
 @Then("the Dataset Value Counts Printable should be")
@@ -214,7 +207,9 @@ def step_impl(context):
 def step_impl(context):
     assert _unformat_multiline_string(
         context.codelist_hierachy_info_printable
-    ) == _unformat_multiline_string(context.text.strip())
+    ) == _unformat_multiline_string(
+        context.text.strip()
+    ), context.codelist_hierachy_info_printable
 
 
 @Given('a none existing test-case file "{csvw_metadata_file}"')
@@ -289,6 +284,7 @@ def step_impl(context):
         "Some Dimension",
         "Some Dimension",
         "Some Obs Val",
+        "qb-id-10004.csv#structure",
         True,
     )
 
@@ -302,6 +298,7 @@ def step_impl(context):
         "Some Attribute",
         "Some Attribute",
         "Some Obs Val",
+        "qb-id-10004.csv#structure",
         False,
     )
 
@@ -315,6 +312,7 @@ def step_impl(context):
         "",
         "",
         "",
+        "qb-id-10004.csv#structure",
         True,
     )
 
@@ -328,6 +326,7 @@ def step_impl(context):
         "",
         "",
         "Some Obs Val",
+        "qb-id-10004.csv#structure",
         True,
     )
 
@@ -341,6 +340,7 @@ def step_impl(context):
         "Some Measure",
         "Some Obs Val",
         "Some Obs Val",
+        "qb-id-10004.csv#structure",
         True,
     )
 
@@ -460,6 +460,7 @@ def step_impl(context):
         "Some Dimension",
         "Some Dimension",
         "Some Obs Val, Some Other Obs Val",
+        "qb-id-10003.csv#structure",
         True,
     )
 
@@ -473,6 +474,7 @@ def step_impl(context):
         "Some Attribute",
         "Some Attribute",
         "Some Obs Val",
+        "qb-id-10003.csv#structure",
         False,
     )
 
@@ -486,6 +488,7 @@ def step_impl(context):
         "",
         "",
         "",
+        "qb-id-10003.csv#structure",
         True,
     )
 
@@ -499,6 +502,7 @@ def step_impl(context):
         "",
         "Some Unit",
         "Some Other Obs Val, Some Obs Val",
+        "qb-id-10003.csv#structure",
         True,
     )
 
@@ -512,6 +516,7 @@ def step_impl(context):
         "Some Measure",
         "Some Obs Val",
         "Some Obs Val",
+        "qb-id-10003.csv#structure",
         True,
     )
 
@@ -525,6 +530,7 @@ def step_impl(context):
         "Some Other Measure",
         "Some Other Obs Val",
         "Some Other Obs Val",
+        "qb-id-10003.csv#structure",
         True,
     )
 

@@ -58,15 +58,14 @@ class CsvcubedExceptionMsges(Enum):
         "The column associated with the primary key does not contain the title."
     )
 
-    UnsupportedNumberOfPrimaryKeyColNames = (
-        "Only 1 primary key column name is supported but found {num_of_primary_key_col_names} primary key column names for the table with url {table_url}."
-    )
+    UnsupportedNumberOfPrimaryKeyColNames = "Only 1 primary key column name is supported but found {num_of_primary_key_col_names} primary key column names for the table with url {table_url}."
 
     InvalidNumOfUnitColsForObsValColTitle = "There should be 1 unit column for the observation value column title '{obs_val_col_title}', but found {num_of_unit_cols} unit columns."
 
     InvalidNumOfValUrlsForAboutUrl = "There should be only 1 value url for the about url '{about_url}', but found {num_of_value_urls}."
 
     InvalidNumOfDSDComponentsForObsValColTitle = "There should be only 1 component for the observation value column with title '{obs_val_col_title}', but found {num_of_components}."
+
 
 class CsvcubedExceptionUrls(Enum):
     """
@@ -112,14 +111,21 @@ class CsvcubedExceptionUrls(Enum):
     )
 
     UnsupportedNumberOfPrimaryKeyColNames = (
-         "http://purl.org/csv-cubed/err/unsupported-num-of-primary-keys"
+        "http://purl.org/csv-cubed/err/unsupported-num-of-primary-keys"
     )
 
-    InvalidNumOfUnitColsForObsValColTitle = "http://purl.org/csv-cubed/err/invalid-num-of-unit-cols-for-obs-val-col-title"
+    InvalidNumOfUnitColsForObsValColTitle = (
+        "http://purl.org/csv-cubed/err/invalid-num-of-unit-cols-for-obs-val-col-title"
+    )
 
-    InvalidNumOfValUrlsForAboutUrl = "http://purl.org/csv-cubed/err/invalid-num-of-value-urls-for-about-url"
-    
-    InvalidNumOfDSDComponentsForObsValColTitle = "http://purl.org/csv-cubed/err/invalid-num-of-dsd-comps-for-obs-val-col"
+    InvalidNumOfValUrlsForAboutUrl = (
+        "http://purl.org/csv-cubed/err/invalid-num-of-value-urls-for-about-url"
+    )
+
+    InvalidNumOfDSDComponentsForObsValColTitle = (
+        "http://purl.org/csv-cubed/err/invalid-num-of-dsd-comps-for-obs-val-col"
+    )
+
 
 class CsvcubedException(Exception, HasErrorUrl, ABC):
     """Abstract class representing csvcubed exception model."""
@@ -350,14 +356,15 @@ class PrimaryKeyColumnTitleCannotBeNoneException(CsvcubedException):
     def get_error_url(cls) -> str:
         return CsvcubedExceptionUrls.PrimaryKeyColumnTitleCannotBeNone.value
 
+
 class UnsupportedNumOfPrimaryKeyColNamesException(CsvcubedException):
     """Class representing the UnsupportedNumOfPrimaryKeyColNamesException model."""
 
-    def __init__(self, num_of_primary_key_col_names: int, table_url:str):
+    def __init__(self, num_of_primary_key_col_names: int, table_url: str):
         super().__init__(
             CsvcubedExceptionMsges.UnsupportedNumberOfPrimaryKeyColNames.value.format(
                 num_of_primary_key_col_names=num_of_primary_key_col_names,
-                table_url=table_url
+                table_url=table_url,
             )
         )
 
@@ -365,14 +372,14 @@ class UnsupportedNumOfPrimaryKeyColNamesException(CsvcubedException):
     def get_error_url(cls) -> str:
         return CsvcubedExceptionUrls.UnsupportedNumberOfPrimaryKeyColNames.value
 
+
 class InvalidNumOfUnitColsForObsValColTitleException(CsvcubedException):
     """Class representing the InvalidNumOfUnitColsForObsValColTitleException model."""
 
-    def __init__(self, obs_val_col_title: str, num_of_unit_cols:int):
+    def __init__(self, obs_val_col_title: str, num_of_unit_cols: int):
         super().__init__(
             CsvcubedExceptionMsges.InvalidNumOfUnitColsForObsValColTitle.value.format(
-                obs_val_col_title=obs_val_col_title,
-                num_of_unit_cols=num_of_unit_cols
+                obs_val_col_title=obs_val_col_title, num_of_unit_cols=num_of_unit_cols
             )
         )
 
@@ -380,20 +387,21 @@ class InvalidNumOfUnitColsForObsValColTitleException(CsvcubedException):
     def get_error_url(cls) -> str:
         return CsvcubedExceptionUrls.InvalidNumOfUnitColsForObsValColTitle.value
 
+
 class InvalidNumOfValUrlsForAboutUrlException(CsvcubedException):
     """Class representing the InvalidNumOfValUrlsForAboutUrlException model."""
 
     def __init__(self, about_url: str, num_of_value_urls: int):
         super().__init__(
             CsvcubedExceptionMsges.InvalidNumOfValUrlsForAboutUrl.value.format(
-                about_url=about_url,
-                num_of_value_urls=num_of_value_urls
-            ) 
+                about_url=about_url, num_of_value_urls=num_of_value_urls
+            )
         )
 
     @classmethod
     def get_error_url(cls) -> str:
         return CsvcubedExceptionUrls.InvalidNumOfValUrlsForAboutUrl.value
+
 
 class InvalidNumOfDSDComponentsForObsValColTitleException(CsvcubedException):
     """Class representing the InvalidNumOfDSDComponentsForObsValColTitleException model."""
@@ -401,9 +409,8 @@ class InvalidNumOfDSDComponentsForObsValColTitleException(CsvcubedException):
     def __init__(self, obs_val_col_title: str, num_of_components: int):
         super().__init__(
             CsvcubedExceptionMsges.InvalidNumOfDSDComponentsForObsValColTitle.value.format(
-                obs_val_col_title=obs_val_col_title,
-                num_of_components=num_of_components
-            ) 
+                obs_val_col_title=obs_val_col_title, num_of_components=num_of_components
+            )
         )
 
     @classmethod

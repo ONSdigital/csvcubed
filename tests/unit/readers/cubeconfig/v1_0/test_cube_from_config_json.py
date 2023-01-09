@@ -25,7 +25,7 @@ from csvcubed.models.cube.qb.components import (
 from csvcubed.models.cube.qb.components.attribute import (
     ExistingQbAttribute,
     ExistingQbAttributeLiteral,
-    NewQbAttributeLiteral
+    NewQbAttributeLiteral,
 )
 from csvcubed.models.cube.qb.components.attributevalue import (
     NewQbAttributeValue,

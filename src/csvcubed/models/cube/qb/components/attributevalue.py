@@ -30,7 +30,7 @@ class NewQbAttributeValue(
 
     def _get_arbitrary_rdf(self) -> List[TripleFragmentBase]:
         return self.arbitrary_rdf
-        
+
     def get_default_node_serialisation_hint(self) -> RdfSerialisationHint:
         return RdfSerialisationHint.AttributeValue
 

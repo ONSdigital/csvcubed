@@ -24,7 +24,6 @@ from .unit import (
 from .validationerrors import UndefinedUnitUrisError, EmptyQbMultiUnitsError
 
 
-
 @dataclass
 class QbMultiUnits(QbColumnStructuralDefinition):
 
