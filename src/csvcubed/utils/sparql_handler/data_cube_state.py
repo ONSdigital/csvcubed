@@ -15,6 +15,9 @@ from csvcubed.models.sparqlresults import (
     UnitColumnAboutValueUrlResult,
     IsPivotedShapeMeasureResult,
 )
+from csvcubed.utils.dict import (
+    get_from_dict_ensure_exists,
+)  # Use this instead of _get_value_for_key
 from csvcubed.utils.iterables import group_by, first
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_col_titles_and_names,
@@ -34,7 +37,7 @@ class DataCubeState:
     """
     Private utility functions.
     """
-
+    # Use existing function from csvcubed.utils.dict
     def _get_value_for_key(self, key: str, dict: Dict) -> Any:
         maybe_value = dict.get(key)
         if maybe_value is None:
@@ -150,10 +153,7 @@ class DataCubeState:
         """
         Getter for _unit_col_about_value_urls cached property.
         """
-        result: List[UnitColumnAboutValueUrlResult] = self._get_value_for_key(
-            csv_url, self._unit_col_about_value_urls
-        )
-        return result
+        return get_from_dict_ensure_exists(self._unit_col_about_value_urls, csv_url)
 
     def get_obs_val_col_titles_about_urls_for_csv(
         self, csv_url: str
@@ -161,10 +161,7 @@ class DataCubeState:
         """
         Getter for _obs_val_col_titles_about_urls cached property.
         """
-        result: List[
-            ObservationValueColumnTitleAboutUrlResult
-        ] = self._get_value_for_key(csv_url, self._obs_val_col_titles_about_urls)
-        return result
+        return get_from_dict_ensure_exists(self._obs_val_col_titles_about_urls, csv_url)
 
     def get_col_name_col_title_for_csv(
         self, csv_url: str
@@ -172,19 +169,17 @@ class DataCubeState:
         """
         Getter for _col_names_col_titles cached property.
         """
-        result: List[ColTitlesAndNamesResult] = self._get_value_for_key(
-            csv_url, self._col_names_col_titles
-        )
-        return result
+        # result: List[ColTitlesAndNamesResult] = self._get_value_for_key(
+        #     csv_url, self._col_names_col_titles
+        # )
+        # return result
+        return get_from_dict_ensure_exists(self._col_names_col_titles, csv_url)
 
     def get_cube_identifiers_for_csv(self, csv_url: str) -> CubeTableIdentifiers:
         """
         Getter for data_set_dsd_and_csv_url_for_csv_url cached property.
         """
-        result: CubeTableIdentifiers = self._get_value_for_key(
-            csv_url, self._cube_table_identifiers
-        )
-        return result
+        return get_from_dict_ensure_exists(self._cube_table_identifiers, csv_url)
 
     def get_cube_identifiers_for_data_set(
         self, data_set_uri: str
@@ -205,8 +200,8 @@ class DataCubeState:
         """
         Getter for DSD Qube Components cached property.
         """
-        components: List[QubeComponentResult] = self._get_value_for_key(
-            csv_url, self._dsd_qube_components
+        components: List[QubeComponentResult] = get_from_dict_ensure_exists(
+            self._dsd_qube_components, csv_url
         )
         return QubeComponentsResult(components, len(components))
 

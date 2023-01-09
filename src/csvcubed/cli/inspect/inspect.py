@@ -19,7 +19,9 @@ from csvcubed.cli.inspect.metadataprinter import MetadataPrinter
 from csvcubed.models.csvcubedexception import FailedToLoadRDFGraphException
 from csvcubed.models.csvwtype import CSVWType
 from csvcubed.utils.sparql_handler.code_list_state import CodeListState
+from csvcubed.utils.sparql_handler.csvw_state import CsvWState
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
+from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.utils.tableschema import CsvwRdfManager
 
 _logger = logging.getLogger(__name__)
@@ -84,6 +86,9 @@ def _generate_printables(
     """
     metadata_printer: MetadataPrinter
 
+    primary_graph_identifier = path_to_file_uri_for_rdflib(csvw_metadata_json_path)
+    csvw_state = CsvWState(csvw_metadata_rdf_graph, primary_graph_identifier)
+
     if csvw_type == CSVWType.QbDataSet:
         data_cube_state = DataCubeState(
             csvw_metadata_rdf_graph, csvw_metadata_json_path
@@ -96,7 +101,7 @@ def _generate_printables(
             csvw_metadata_json_path=csvw_metadata_json_path,
         )
     else:
-        code_list_state = CodeListState(csvw_metadata_rdf_graph)
+        code_list_state = CodeListState(csvw_state)
         metadata_printer = MetadataPrinter(
             data_cube_state=None,
             code_list_state=code_list_state,

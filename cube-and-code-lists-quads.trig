@@ -1,0 +1,442 @@
+@prefix csvw: <http://www.w3.org/ns/csvw#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix ns1: <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/multi-unit_multi-measure/> .
+@prefix qb: <http://purl.org/linked-data/cube#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ns1:clearance-origin.table.json {
+    <clearance-origin.table.json> csvw:aboutUrl "clearance-origin.csv#{+notation}"^^csvw:uriTemplate ;
+        csvw:column ( [ csvw:name "label" ;
+                    csvw:propertyUrl "rdfs:label"^^csvw:uriTemplate ;
+                    csvw:required true ;
+                    csvw:title "Label" ] [ csvw:name "notation" ;
+                    csvw:propertyUrl "skos:notation"^^csvw:uriTemplate ;
+                    csvw:required true ;
+                    csvw:title "Notation" ] [ csvw:name "parent_notation" ;
+                    csvw:propertyUrl "skos:broader"^^csvw:uriTemplate ;
+                    csvw:required false ;
+                    csvw:title "Parent Notation" ;
+                    csvw:valueUrl "clearance-origin.csv#{+parent_notation}"^^csvw:uriTemplate ] [ csvw:datatype xsd:integer ;
+                    csvw:name "sort_priority" ;
+                    csvw:propertyUrl "http://www.w3.org/ns/ui#sortPriority"^^csvw:uriTemplate ;
+                    csvw:required false ;
+                    csvw:title "Sort Priority" ] [ csvw:name "description" ;
+                    csvw:propertyUrl "rdfs:comment"^^csvw:uriTemplate ;
+                    csvw:required false ;
+                    csvw:title "Description" ] [ csvw:name "virt_inScheme" ;
+                    csvw:propertyUrl "skos:inScheme"^^csvw:uriTemplate ;
+                    csvw:required true ;
+                    csvw:valueUrl "clearance-origin.csv#code-list"^^csvw:uriTemplate ;
+                    csvw:virtual true ] [ csvw:name "virt_type" ;
+                    csvw:propertyUrl "rdf:type"^^csvw:uriTemplate ;
+                    csvw:required true ;
+                    csvw:valueUrl "skos:Concept"^^csvw:uriTemplate ;
+                    csvw:virtual true ] ) ;
+        csvw:primaryKey "notation" .
+}
+
+ns1:alcohol-content.table.json {
+    <alcohol-content.table.json> csvw:aboutUrl "alcohol-content.csv#{+notation}"^^csvw:uriTemplate ;
+        csvw:column ( [ csvw:name "label" ;
+                    csvw:propertyUrl "rdfs:label"^^csvw:uriTemplate ;
+                    csvw:required true ;
+                    csvw:title "Label" ] [ csvw:name "notation" ;
+                    csvw:propertyUrl "skos:notation"^^csvw:uriTemplate ;
+                    csvw:required true ;
+                    csvw:title "Notation" ] [ csvw:name "parent_notation" ;
+                    csvw:propertyUrl "skos:broader"^^csvw:uriTemplate ;
+                    csvw:required false ;
+                    csvw:title "Parent Notation" ;
+                    csvw:valueUrl "alcohol-content.csv#{+parent_notation}"^^csvw:uriTemplate ] [ csvw:datatype xsd:integer ;
+                    csvw:name "sort_priority" ;
+                    csvw:propertyUrl "http://www.w3.org/ns/ui#sortPriority"^^csvw:uriTemplate ;
+                    csvw:required false ;
+                    csvw:title "Sort Priority" ] [ csvw:name "description" ;
+                    csvw:propertyUrl "rdfs:comment"^^csvw:uriTemplate ;
+                    csvw:required false ;
+                    csvw:title "Description" ] [ csvw:name "virt_inScheme" ;
+                    csvw:propertyUrl "skos:inScheme"^^csvw:uriTemplate ;
+                    csvw:required true ;
+                    csvw:valueUrl "alcohol-content.csv#code-list"^^csvw:uriTemplate ;
+                    csvw:virtual true ] [ csvw:name "virt_type" ;
+                    csvw:propertyUrl "rdf:type"^^csvw:uriTemplate ;
+                    csvw:required true ;
+                    csvw:valueUrl "skos:Concept"^^csvw:uriTemplate ;
+                    csvw:virtual true ] ) ;
+        csvw:primaryKey "notation" .
+}
+
+ns1:alcohol-bulletin.csv-metadata.json {
+    <alcohol-bulletin.csv#class/alcohol-content> a rdfs:Class,
+            rdfs:Resource .
+
+    <alcohol-bulletin.csv#class/alcohol-sub-type> a rdfs:Class,
+            rdfs:Resource .
+
+    <alcohol-bulletin.csv#class/clearance-origin> a rdfs:Class,
+            rdfs:Resource .
+
+    <alcohol-bulletin.csv#dataset> a qb:Attachable,
+            qb:DataSet,
+            rdfs:Resource,
+            dcat:Dataset,
+            dcat:Resource ;
+        rdfs:label "Alcohol Bulletin"@en ;
+        dcterms:creator <https://www.gov.uk/government/organisations/hm-revenue-customs> ;
+        dcterms:description """The Alcohol Bulletin National Statistics present statistics from the 4
+different alcohol duties administered by HM Revenue and Customs (HMRC): [Wine
+Duty](https://www.gov.uk/government/collections/wine-duty) (wine and made-
+wine), [Spirits Duty](https://www.gov.uk/guidance/spirits-duty), [Beer
+Duty](https://www.gov.uk/guidance/beer-duty) and [Cider
+Duty](https://www.gov.uk/government/collections/cider-duty).
+
+The Alcohol Bulletin is updated quarterly and includes statistics on duty
+receipts up to the latest full month before its release, and statistics
+relating to clearances and production that are one month behind that of duty
+receipts.
+
+[Archive versions of the Alcohol Bulletin published on GOV.UK after August
+2019](https://webarchive.nationalarchives.gov.uk/ukgwa/*/https://www.gov.uk/government/statistics/alcohol-
+bulletin) are no longer hosted on this page and are instead available via the
+UK Government Web Archive, from the National Archives.
+
+[Archive versions of the Alcohol Bulletin published between 2008 and August
+2019](https://www.uktradeinfo.com/trade-data/tax-and-duty-bulletins/) are
+found on the UK Trade Info website.
+
+## Quality report
+
+Further details for this statistical release, including data suitability and
+coverage, are included within the [Alcohol Bulletin quality
+report](https://www.gov.uk/government/statistics/quality-report-alcohol-
+duties-publications-bulletin-and-factsheet).
+
+  *[HMRC]: HM Revenue and Customs
+  *[UK]: United Kingdom
+
+"""@en ;
+        dcterms:identifier "Alcohol Bulletin" ;
+        dcterms:issued "2016-02-26T09:30:00+00:00"^^xsd:dateTime ;
+        dcterms:modified "2022-02-11T21:00:09.286102+00:00"^^xsd:dateTime ;
+        dcterms:publisher <https://www.gov.uk/government/organisations/hm-revenue-customs> ;
+        dcterms:title "Alcohol Bulletin"@en ;
+        qb:structure <alcohol-bulletin.csv#structure> ;
+        rdfs:comment "Quarterly statistics from the 4 different alcohol duty regimes administered by HM Revenue and Customs."@en ;
+        rdfs:seeAlso <alcohol-bulletin.csv#class/alcohol-content>,
+            <alcohol-bulletin.csv#class/alcohol-sub-type>,
+            <alcohol-bulletin.csv#class/clearance-origin>,
+            <alcohol-bulletin.csv#component/alcohol-content>,
+            <alcohol-bulletin.csv#component/alcohol-duty-receipts>,
+            <alcohol-bulletin.csv#component/alcohol-sub-type>,
+            <alcohol-bulletin.csv#component/alcohol-type>,
+            <alcohol-bulletin.csv#component/beer-duty-receipts>,
+            <alcohol-bulletin.csv#component/cider-duty-receipts>,
+            <alcohol-bulletin.csv#component/clearance-origin>,
+            <alcohol-bulletin.csv#component/clearances>,
+            <alcohol-bulletin.csv#component/clearances-of-alcohol>,
+            <alcohol-bulletin.csv#component/marker>,
+            <alcohol-bulletin.csv#component/measure-type>,
+            <alcohol-bulletin.csv#component/period>,
+            <alcohol-bulletin.csv#component/production-volume>,
+            <alcohol-bulletin.csv#component/production-volume-alcohol>,
+            <alcohol-bulletin.csv#component/spirits-duty-receipts>,
+            <alcohol-bulletin.csv#component/unit>,
+            <alcohol-bulletin.csv#component/wine-duty-receipts>,
+            <alcohol-bulletin.csv#dataset>,
+            <alcohol-bulletin.csv#dimension/alcohol-content>,
+            <alcohol-bulletin.csv#dimension/alcohol-sub-type>,
+            <alcohol-bulletin.csv#dimension/clearance-origin>,
+            <alcohol-bulletin.csv#structure> ;
+        csvw:table [ csvw:suppressOutput true ;
+                csvw:tableSchema <clearance-origin.table.json> ;
+                csvw:url "clearance-origin.csv"^^xsd:anyURI ],
+            [ csvw:tableSchema [ csvw:aboutUrl "alcohol-bulletin.csv#obs/{+period}/{+alcohol_type}/{+alcohol_sub_type}/{+alcohol_content}/{+clearance_origin}/{+measure_type}"^^csvw:uriTemplate ;
+                        csvw:column ( [ csvw:name "period" ;
+                                    csvw:propertyUrl "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod"^^csvw:uriTemplate ;
+                                    csvw:required true ;
+                                    csvw:title "Period" ;
+                                    csvw:valueUrl "http://reference.data.gov.uk/id/{+period}"^^csvw:uriTemplate ] [ csvw:name "alcohol_type" ;
+                                    csvw:propertyUrl "http://gss-data.org.uk/def/trade/property/dimension/alcohol-type"^^csvw:uriTemplate ;
+                                    csvw:required true ;
+                                    csvw:title "Alcohol Type" ;
+                                    csvw:valueUrl "http://gss-data.org.uk/def/trade/concept/alcohol-type/{alcohol_type}"^^csvw:uriTemplate ] [ csvw:name "alcohol_sub_type" ;
+                                    csvw:propertyUrl "alcohol-bulletin.csv#dimension/alcohol-sub-type"^^csvw:uriTemplate ;
+                                    csvw:required true ;
+                                    csvw:title "Alcohol Sub Type" ;
+                                    csvw:valueUrl "alcohol-sub-type.csv#concept/alcohol-sub-type/{+alcohol_sub_type}"^^csvw:uriTemplate ] [ csvw:name "alcohol_content" ;
+                                    csvw:propertyUrl "alcohol-bulletin.csv#dimension/alcohol-content"^^csvw:uriTemplate ;
+                                    csvw:required true ;
+                                    csvw:title "Alcohol Content" ;
+                                    csvw:valueUrl "alcohol-content.csv#concept/alcohol-content/{+alcohol_content}"^^csvw:uriTemplate ] [ csvw:name "clearance_origin" ;
+                                    csvw:propertyUrl "alcohol-bulletin.csv#dimension/clearance-origin"^^csvw:uriTemplate ;
+                                    csvw:required true ;
+                                    csvw:title "Clearance Origin" ;
+                                    csvw:valueUrl "clearance-origin.csv#concept/clearance-origin/{+clearance_origin}"^^csvw:uriTemplate ] [ csvw:datatype xsd:double ;
+                                    csvw:name "value" ;
+                                    csvw:propertyUrl "http://gss-data.org.uk/def/measure/{+measure_type}"^^csvw:uriTemplate ;
+                                    csvw:required false ;
+                                    csvw:title "Value" ] [ csvw:name "measure_type" ;
+                                    csvw:propertyUrl "http://purl.org/linked-data/cube#measureType"^^csvw:uriTemplate ;
+                                    csvw:required true ;
+                                    csvw:title "Measure Type" ;
+                                    csvw:valueUrl "http://gss-data.org.uk/def/measure/{+measure_type}"^^csvw:uriTemplate ] [ csvw:name "unit" ;
+                                    csvw:propertyUrl "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"^^csvw:uriTemplate ;
+                                    csvw:required true ;
+                                    csvw:title "Unit" ;
+                                    csvw:valueUrl "http://gss-data.org.uk/def/concept/measurement-units/{+unit}"^^csvw:uriTemplate ] [ csvw:name "marker" ;
+                                    csvw:propertyUrl "http://purl.org/linked-data/sdmx/2009/attribute#obsStatus"^^csvw:uriTemplate ;
+                                    csvw:required false ;
+                                    csvw:title "Marker" ;
+                                    csvw:valueUrl "http://gss-data.org.uk/def/concept/trade/markers/{+marker}"^^csvw:uriTemplate ] [ csvw:name "virt_type" ;
+                                    csvw:propertyUrl "rdf:type"^^csvw:uriTemplate ;
+                                    csvw:valueUrl "http://purl.org/linked-data/cube#Observation"^^csvw:uriTemplate ;
+                                    csvw:virtual true ] [ csvw:name "virt_dataset" ;
+                                    csvw:propertyUrl "http://purl.org/linked-data/cube#dataSet"^^csvw:uriTemplate ;
+                                    csvw:valueUrl "alcohol-bulletin.csv#dataset"^^csvw:uriTemplate ;
+                                    csvw:virtual true ] ) ;
+                        csvw:foreignKey [ csvw:columnReference ( "alcohol_sub_type" ) ;
+                                csvw:reference [ csvw:columnReference ( "notation" ) ;
+                                        csvw:resource "alcohol-sub-type.csv"^^xsd:anyURI ] ],
+                            [ csvw:columnReference ( "clearance_origin" ) ;
+                                csvw:reference [ csvw:columnReference ( "notation" ) ;
+                                        csvw:resource "clearance-origin.csv"^^xsd:anyURI ] ],
+                            [ csvw:columnReference ( "alcohol_content" ) ;
+                                csvw:reference [ csvw:columnReference ( "notation" ) ;
+                                        csvw:resource "alcohol-content.csv"^^xsd:anyURI ] ] ;
+                        csvw:primaryKey "alcohol_content",
+                            "alcohol_sub_type",
+                            "alcohol_type",
+                            "clearance_origin",
+                            "measure_type",
+                            "period" ] ;
+                csvw:url "alcohol-bulletin.csv"^^xsd:anyURI ],
+            [ csvw:suppressOutput true ;
+                csvw:tableSchema <alcohol-sub-type.table.json> ;
+                csvw:url "alcohol-sub-type.csv"^^xsd:anyURI ],
+            [ csvw:suppressOutput true ;
+                csvw:tableSchema <alcohol-content.table.json> ;
+                csvw:url "alcohol-content.csv"^^xsd:anyURI ] ;
+        dcat:landingPage <https://www.gov.uk/government/statistics/alcohol-bulletin> ;
+        dcat:theme <http://gss-data.org.uk/def/gdp#trade> .
+
+    <alcohol-bulletin.csv#component/alcohol-content> a qb:ComponentSet,
+            qb:ComponentSpecification,
+            rdfs:Resource ;
+        qb:componentProperty <alcohol-bulletin.csv#dimension/alcohol-content> ;
+        qb:dimension <alcohol-bulletin.csv#dimension/alcohol-content> ;
+        qb:order 4 .
+
+    <alcohol-bulletin.csv#component/alcohol-duty-receipts> a qb:ComponentSet,
+            qb:ComponentSpecification,
+            rdfs:Resource ;
+        qb:componentProperty <http://gss-data.org.uk/def/measure/alcohol-duty-receipts> ;
+        qb:measure <http://gss-data.org.uk/def/measure/alcohol-duty-receipts> ;
+        qb:order 7 .
+
+    <alcohol-bulletin.csv#component/alcohol-sub-type> a qb:ComponentSet,
+            qb:ComponentSpecification,
+            rdfs:Resource ;
+        qb:componentProperty <alcohol-bulletin.csv#dimension/alcohol-sub-type> ;
+        qb:dimension <alcohol-bulletin.csv#dimension/alcohol-sub-type> ;
+        qb:order 3 .
+
+    <alcohol-bulletin.csv#component/alcohol-type> a qb:ComponentSet,
+            qb:ComponentSpecification,
+            rdfs:Resource ;
+        qb:componentProperty <http://gss-data.org.uk/def/trade/property/dimension/alcohol-type> ;
+        qb:dimension <http://gss-data.org.uk/def/trade/property/dimension/alcohol-type> ;
+        qb:order 2 .
+
+    <alcohol-bulletin.csv#component/beer-duty-receipts> a qb:ComponentSet,
+            qb:ComponentSpecification,
+            rdfs:Resource ;
+        qb:componentProperty <http://gss-data.org.uk/def/measure/beer-duty-receipts> ;
+        qb:measure <http://gss-data.org.uk/def/measure/beer-duty-receipts> ;
+        qb:order 8 .
+
+    <alcohol-bulletin.csv#component/cider-duty-receipts> a qb:ComponentSet,
+            qb:ComponentSpecification,
+            rdfs:Resource ;
+        qb:componentProperty <http://gss-data.org.uk/def/measure/cider-duty-receipts> ;
+        qb:measure <http://gss-data.org.uk/def/measure/cider-duty-receipts> ;
+        qb:order 9 .
+
+    <alcohol-bulletin.csv#component/clearance-origin> a qb:ComponentSet,
+            qb:ComponentSpecification,
+            rdfs:Resource ;
+        qb:componentProperty <alcohol-bulletin.csv#dimension/clearance-origin> ;
+        qb:dimension <alcohol-bulletin.csv#dimension/clearance-origin> ;
+        qb:order 5 .
+
+    <alcohol-bulletin.csv#component/clearances> a qb:ComponentSet,
+            qb:ComponentSpecification,
+            rdfs:Resource ;
+        qb:componentProperty <http://gss-data.org.uk/def/measure/clearances> ;
+        qb:measure <http://gss-data.org.uk/def/measure/clearances> ;
+        qb:order 10 .
+
+    <alcohol-bulletin.csv#component/clearances-of-alcohol> a qb:ComponentSet,
+            qb:ComponentSpecification,
+            rdfs:Resource ;
+        qb:componentProperty <http://gss-data.org.uk/def/measure/clearances-of-alcohol> ;
+        qb:measure <http://gss-data.org.uk/def/measure/clearances-of-alcohol> ;
+        qb:order 11 .
+
+    <alcohol-bulletin.csv#component/marker> a qb:ComponentSet,
+            qb:ComponentSpecification,
+            rdfs:Resource ;
+        qb:attribute <http://purl.org/linked-data/sdmx/2009/attribute#obsStatus> ;
+        qb:componentProperty <http://purl.org/linked-data/sdmx/2009/attribute#obsStatus> ;
+        qb:componentRequired false ;
+        qb:order 17 .
+
+    <alcohol-bulletin.csv#component/measure-type> a qb:ComponentSet,
+            qb:ComponentSpecification,
+            rdfs:Resource ;
+        qb:componentProperty qb:measureType ;
+        qb:dimension qb:measureType ;
+        qb:order 6 .
+
+    <alcohol-bulletin.csv#component/period> a qb:ComponentSet,
+            qb:ComponentSpecification,
+            rdfs:Resource ;
+        qb:componentProperty <http://purl.org/linked-data/sdmx/2009/dimension#refPeriod> ;
+        qb:dimension <http://purl.org/linked-data/sdmx/2009/dimension#refPeriod> ;
+        qb:order 1 .
+
+    <alcohol-bulletin.csv#component/production-volume> a qb:ComponentSet,
+            qb:ComponentSpecification,
+            rdfs:Resource ;
+        qb:componentProperty <http://gss-data.org.uk/def/measure/production-volume> ;
+        qb:measure <http://gss-data.org.uk/def/measure/production-volume> ;
+        qb:order 12 .
+
+    <alcohol-bulletin.csv#component/production-volume-alcohol> a qb:ComponentSet,
+            qb:ComponentSpecification,
+            rdfs:Resource ;
+        qb:componentProperty <http://gss-data.org.uk/def/measure/production-volume-alcohol> ;
+        qb:measure <http://gss-data.org.uk/def/measure/production-volume-alcohol> ;
+        qb:order 13 .
+
+    <alcohol-bulletin.csv#component/spirits-duty-receipts> a qb:ComponentSet,
+            qb:ComponentSpecification,
+            rdfs:Resource ;
+        qb:componentProperty <http://gss-data.org.uk/def/measure/spirits-duty-receipts> ;
+        qb:measure <http://gss-data.org.uk/def/measure/spirits-duty-receipts> ;
+        qb:order 14 .
+
+    <alcohol-bulletin.csv#component/unit> a qb:ComponentSet,
+            qb:ComponentSpecification,
+            rdfs:Resource ;
+        qb:attribute <http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure> ;
+        qb:componentProperty <http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure> ;
+        qb:componentRequired true ;
+        qb:order 16 .
+
+    <alcohol-bulletin.csv#component/wine-duty-receipts> a qb:ComponentSet,
+            qb:ComponentSpecification,
+            rdfs:Resource ;
+        qb:componentProperty <http://gss-data.org.uk/def/measure/wine-duty-receipts> ;
+        qb:measure <http://gss-data.org.uk/def/measure/wine-duty-receipts> ;
+        qb:order 15 .
+
+    <alcohol-bulletin.csv#structure> a qb:ComponentSet,
+            qb:DataStructureDefinition,
+            rdfs:Resource ;
+        qb:component <alcohol-bulletin.csv#component/alcohol-content>,
+            <alcohol-bulletin.csv#component/alcohol-duty-receipts>,
+            <alcohol-bulletin.csv#component/alcohol-sub-type>,
+            <alcohol-bulletin.csv#component/alcohol-type>,
+            <alcohol-bulletin.csv#component/beer-duty-receipts>,
+            <alcohol-bulletin.csv#component/cider-duty-receipts>,
+            <alcohol-bulletin.csv#component/clearance-origin>,
+            <alcohol-bulletin.csv#component/clearances>,
+            <alcohol-bulletin.csv#component/clearances-of-alcohol>,
+            <alcohol-bulletin.csv#component/marker>,
+            <alcohol-bulletin.csv#component/measure-type>,
+            <alcohol-bulletin.csv#component/period>,
+            <alcohol-bulletin.csv#component/production-volume>,
+            <alcohol-bulletin.csv#component/production-volume-alcohol>,
+            <alcohol-bulletin.csv#component/spirits-duty-receipts>,
+            <alcohol-bulletin.csv#component/unit>,
+            <alcohol-bulletin.csv#component/wine-duty-receipts> ;
+        qb:componentProperty <alcohol-bulletin.csv#dimension/alcohol-content>,
+            <alcohol-bulletin.csv#dimension/alcohol-sub-type>,
+            <alcohol-bulletin.csv#dimension/clearance-origin>,
+            <http://gss-data.org.uk/def/measure/alcohol-duty-receipts>,
+            <http://gss-data.org.uk/def/measure/beer-duty-receipts>,
+            <http://gss-data.org.uk/def/measure/cider-duty-receipts>,
+            <http://gss-data.org.uk/def/measure/clearances>,
+            <http://gss-data.org.uk/def/measure/clearances-of-alcohol>,
+            <http://gss-data.org.uk/def/measure/production-volume>,
+            <http://gss-data.org.uk/def/measure/production-volume-alcohol>,
+            <http://gss-data.org.uk/def/measure/spirits-duty-receipts>,
+            <http://gss-data.org.uk/def/measure/wine-duty-receipts>,
+            <http://gss-data.org.uk/def/trade/property/dimension/alcohol-type>,
+            qb:measureType,
+            <http://purl.org/linked-data/sdmx/2009/attribute#obsStatus>,
+            <http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure>,
+            <http://purl.org/linked-data/sdmx/2009/dimension#refPeriod> .
+
+    <alcohol-bulletin.csv#dimension/alcohol-content> a qb:CodedProperty,
+            qb:ComponentProperty,
+            qb:DimensionProperty,
+            rdf:Property,
+            rdfs:Resource ;
+        rdfs:label "Alcohol Content"@en ;
+        qb:codeList <alcohol-content.csv#scheme/alcohol-content> ;
+        rdfs:range <alcohol-bulletin.csv#class/alcohol-content> .
+
+    <alcohol-bulletin.csv#dimension/alcohol-sub-type> a qb:CodedProperty,
+            qb:ComponentProperty,
+            qb:DimensionProperty,
+            rdf:Property,
+            rdfs:Resource ;
+        rdfs:label "Alcohol Sub Type"@en ;
+        qb:codeList <alcohol-sub-type.csv#scheme/alcohol-sub-type> ;
+        rdfs:range <alcohol-bulletin.csv#class/alcohol-sub-type> .
+
+    <alcohol-bulletin.csv#dimension/clearance-origin> a qb:CodedProperty,
+            qb:ComponentProperty,
+            qb:DimensionProperty,
+            rdf:Property,
+            rdfs:Resource ;
+        rdfs:label "Clearance Origin"@en ;
+        qb:codeList <clearance-origin.csv#scheme/clearance-origin> ;
+        rdfs:range <alcohol-bulletin.csv#class/clearance-origin> .
+}
+
+ns1:alcohol-sub-type.table.json {
+    <alcohol-sub-type.table.json> csvw:aboutUrl "alcohol-sub-type.csv#{+notation}"^^csvw:uriTemplate ;
+        csvw:column ( [ csvw:name "label" ;
+                    csvw:propertyUrl "rdfs:label"^^csvw:uriTemplate ;
+                    csvw:required true ;
+                    csvw:title "Label" ] [ csvw:name "notation" ;
+                    csvw:propertyUrl "skos:notation"^^csvw:uriTemplate ;
+                    csvw:required true ;
+                    csvw:title "Notation" ] [ csvw:name "parent_notation" ;
+                    csvw:propertyUrl "skos:broader"^^csvw:uriTemplate ;
+                    csvw:required false ;
+                    csvw:title "Parent Notation" ;
+                    csvw:valueUrl "alcohol-sub-type.csv#{+parent_notation}"^^csvw:uriTemplate ] [ csvw:datatype xsd:integer ;
+                    csvw:name "sort_priority" ;
+                    csvw:propertyUrl "http://www.w3.org/ns/ui#sortPriority"^^csvw:uriTemplate ;
+                    csvw:required false ;
+                    csvw:title "Sort Priority" ] [ csvw:name "description" ;
+                    csvw:propertyUrl "rdfs:comment"^^csvw:uriTemplate ;
+                    csvw:required false ;
+                    csvw:title "Description" ] [ csvw:name "virt_inScheme" ;
+                    csvw:propertyUrl "skos:inScheme"^^csvw:uriTemplate ;
+                    csvw:required true ;
+                    csvw:valueUrl "alcohol-sub-type.csv#code-list"^^csvw:uriTemplate ;
+                    csvw:virtual true ] [ csvw:name "virt_type" ;
+                    csvw:propertyUrl "rdf:type"^^csvw:uriTemplate ;
+                    csvw:required true ;
+                    csvw:valueUrl "skos:Concept"^^csvw:uriTemplate ;
+                    csvw:virtual true ] ) ;
+        csvw:primaryKey "notation" .
+}
+

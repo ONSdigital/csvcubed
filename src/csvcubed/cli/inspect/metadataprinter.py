@@ -48,6 +48,7 @@ from csvcubed.utils.skos.codelist import (
     get_codelist_col_title_from_col_name,
 )
 from csvcubed.utils.sparql_handler.code_list_state import CodeListState
+from csvcubed.utils.sparql_handler.csvw_state import CsvWState
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
@@ -142,6 +143,7 @@ class MetadataPrinter:
         Member of :class:`./MetadataPrinter`.
         """
         self.csvw_type_str = self.get_csvw_type_str(self.csvw_type)
+        # TODO: Need to call get_primary_catalog_metadata on the CsvWState class here.
         self.result_catalog_metadata = select_csvw_catalog_metadata(
             self.csvw_metadata_rdf_graph
         )
