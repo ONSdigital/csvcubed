@@ -36,6 +36,8 @@ nav:
         - Units: guides/linked-data/units.md
       - Raise an issue: guides/raise-issue.md
       - Shape your data: guides/shape-data.md
+      - Standard shape: guides/standard-shape.md
+      - Pivoted shape: guides/pivoted-shape.md
       - Working with URIs: guides/uris.md
       - Build with GitHub: guides/csv-to-csvw-github-action.md
   - Glossary:
