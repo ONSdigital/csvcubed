@@ -1,11 +1,11 @@
-FROM gsscogs/pythonversiontesting:v1.0.3
+FROM gsscogs/pythonversiontesting:v1.0.5
 
 ARG VENV_PATH=/csvcubed-venv
 ARG VENV_PIP=${VENV_PATH}/bin/pip
 ARG VENV_POETRY=${VENV_PATH}/bin/poetry
 
 
-RUN pyenv global 3.10.0
+RUN pyenv global 3.11.0
 
 RUN mkdir -p /workspace
 
