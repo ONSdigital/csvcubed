@@ -1,4 +1,4 @@
-name: Trigger a workflow at gssutils that updates csvcubed package
+name: Trigger csvcubed update in gss-utils
 on:
   workflow_call:
 
