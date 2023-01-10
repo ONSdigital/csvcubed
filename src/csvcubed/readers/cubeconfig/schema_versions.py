@@ -32,12 +32,12 @@ In order to update the MINOR version of qube config, please follow the below ste
     Step 6: Add a new behaviour test to cube.feature file for validating the cube generation using new version of the schema (e.g. "Successfully outputs a cube using schema v1.3" behave scenario).
 """
 
-_v1_0_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.0"
-_v1_1_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.1"
-_v1_2_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.2"
-_v1_3_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.3"
-_v1_4_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.4"
-V1_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1"  # v1 defaults to the latest minor version of v1.*.
+_v1_0_SCHEMA_URL = "http://purl.org/csv-cubed/qube-config/v1.0"
+_v1_1_SCHEMA_URL = "http://purl.org/csv-cubed/qube-config/v1.1"
+_v1_2_SCHEMA_URL = "http://purl.org/csv-cubed/qube-config/v1.2"
+_v1_3_SCHEMA_URL = "http://purl.org/csv-cubed/qube-config/v1.3"
+_v1_4_SCHEMA_URL = "http://purl.org/csv-cubed/qube-config/v1.4"
+V1_SCHEMA_URL = "http://purl.org/csv-cubed/qube-config/v1"  # v1 defaults to the latest minor version of v1.*.
 
 _LATEST_V1_SCHEMA_URL = _v1_4_SCHEMA_URL
 """

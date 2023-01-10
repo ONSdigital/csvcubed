@@ -49,15 +49,15 @@ Note that this shape doesn't require that you add any additional columns to the 
 
 Incorporating multiple measures into the pivoted shape can be achieved by defining [unit](../glossary/index.md#unit) and [measure](../glossary/index.md#measure) information for **each** `observation` column. This can be configured in two ways:
 
-1. By specifying a `unit` property within the `observation` column definition (as with the "Number of Arthur's Bakes" [observation](../glossary/index.md#observation) column).
-2. By associating a separate `unit` column with the relevant `observation` column using the `describes_observations` property (as with the "Revenue Units" [unit](../glossary/index.md#unit) column).
+1. By specifying a `unit` property within the `observation` column definition (as with the "Number of Arthur's Bakes" [observation](../glossary/index.md#observation-observed-value) column).
+2. By associating a separate `unit` column with the relevant `observation` column using the `describes_observations` property (as with the "Revenue Units" [unit](../glossary/index.md#unit) column). See the [Measure and Unit Columns Configuration](./configuration/qube-config.md/##measure-and-unit-columns-configuration) section for more information on the `describes_observation` property.
 
-Similarly, the `describes_observation` property can be used to associate _attributes_ with the relevant _observation_ values, as with the "Number of Stores Status" and "Revenue Status" [attribute](../glossary/index.md#attribute) columns below.
+Similarly, the `describes_observation` property can be used to associate _attributes_ with the relevant _observation_ values, as with the "Number of Stores Status" and "Revenue Status" [attribute](../glossary/index.md#attribute) columns below. See the [Attributes configuration](./configuration/qube-config.md/#attributes-configuration) section for more information on the `describes_observation` property.
 
-| Year | Location   | Number of 'Arthur's Bakes' | Number of Stores Status | Revenue | Revenue Units  | Revenue Status | 
-|:-----|:-----------|---------------------------:|:------------------------|--------:|:---------------|:---------------|
-| 2022 | London     |                         35 | Provisional             |      25 | GBP (Sterling) | Provisional    |
-| 2021 | Cardiff    |                         26 | Final                   |      18 | GBP (Sterling) | Final          |
+| Year | Location | Number of 'Arthur's Bakes' | Number of Stores Status | Revenue | Revenue Units  | Revenue Status |
+|:-----|:---------|---------------------------:|:------------------------|--------:|:---------------|:---------------|
+| 2022 | London   |                         35 | Provisional             |      25 | GBP (Sterling) | Provisional    |
+| 2021 | Cardiff  |                         26 | Final                   |      18 | GBP (Sterling) | Final          |
 
 ```json
 {

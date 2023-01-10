@@ -94,6 +94,6 @@ The data set is now in the standard shape:
 | 2022 | London   |                    Revenue |    25 | GBP Sterling, Millions |
 | 2021 | Cardiff  |                    Revenue |    18 | GBP Sterling, Millions |
 
-## Converting to the pivoted shape
+<!-- ## Converting to the pivoted shape
 
-TODO
+TODO -->
