@@ -642,7 +642,7 @@ def test_select_single_unit_from_dsd():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    data_cube_state = DataCubeState(csvw_metadata_rdf_graph)
+    data_cube_state = DataCubeState(csvw_metadata_rdf_graph, csvw_metadata_json_path)
 
     result: UnitResult = data_cube_state.get_unit_for_uri(
         "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#unit/mtco2e"
