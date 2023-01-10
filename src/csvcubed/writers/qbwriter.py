@@ -1208,7 +1208,7 @@ class QbWriter(WriterBase):
         return about_url_template
 
     def _get_primary_key_columns(self) -> List[str]:
-        dimension_columns: Iterable[QbColumn] = itertools.chain(
+        dimension_columns: Iterable[QbColumn[Any]] = itertools.chain(
             get_columns_of_dsd_type(self.cube, QbDimension),
             get_columns_of_dsd_type(self.cube, QbMultiMeasureDimension),
         )
