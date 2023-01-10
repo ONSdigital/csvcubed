@@ -10,6 +10,7 @@ from csvcubed.models.jsonvalidationerrors import (
     AnyOneOfJsonSchemaValidationError,
 )
 from csvcubed.utils.json import to_json_path
+from csvcubed.utils.log import debug_log_exception
 
 log = logging.getLogger(__name__)
 
@@ -37,7 +38,15 @@ def validate_dict_against_schema(
             f"The schema provided for validation of the config cube was not a valid schema: {repr(err)}"
         )
         raise err
-
+    except jsonschema.exceptions.RefResolutionError as err:
+        debug_log_exception(log, err)
+        log.error(
+            "Could not resolve schema dependency. You may have internet connectivity problems."
+        )
+        log.warning(
+            "Unable to perform JSON Schema Validation. There may be undiscovered errors. Attempting to continue."
+        )
+        return []
     except Exception as err:
         log.error(f"Unexpected Error: {repr(err)}")
         raise err

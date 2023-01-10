@@ -1,4 +1,10 @@
-# Error - multiple observations columns defined
+# Error - multiple observations columns defined (Deprecated)
+
+## Deprecation warning
+
+This validation error will no longer be raised from csvcubed v0.1.18. This is because from v0.1.18, csvcubed supports pivoted multi-measure data sets which have more than one observations columns defined.
+
+Please update your csvcubed version using `pip install csvcubed -u` (for PyPI) or `conda update csvcubed` (for Anaconda). 
 
 ## When it occurs
 

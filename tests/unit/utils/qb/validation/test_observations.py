@@ -1,6 +1,6 @@
 import pytest
 
-from csvcubed.models.cube.cube import Cube, QbCube
+from csvcubed.models.cube.cube import Cube
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.cube.qb.columns import QbColumn
 from csvcubed.models.cube.qb.components.attribute import (
@@ -16,7 +16,6 @@ from csvcubed.models.cube.qb.validationerrors import CsvColumnUriTemplateMissing
 from csvcubed.utils.qb.validation.observations import (
     get_observation_status_columns,
 )
-
 from csvcubed.utils.qb.validation.observations import validate_observations
 
 

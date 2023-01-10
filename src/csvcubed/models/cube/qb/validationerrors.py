@@ -5,10 +5,10 @@ Qb-Cube Validation Errors
 :obj:`ValidationError <csvcubed.models.validationerror.ValidationError>` models specific to :mod:`qb`.
 """
 
+import os
+from abc import ABC
 from dataclasses import dataclass, field
 from typing import List, Optional, Type, Union
-from abc import ABC
-import os
 
 from csvcubed.models.validationerror import SpecificValidationError
 from ..qb import (
@@ -17,7 +17,6 @@ from ..qb import (
     QbObservationValue,
     QbMultiUnits,
     QbStructuralDefinition,
-    QbColumn,
 )
 
 ComponentTypeDescription = Union[str, Type[QbStructuralDefinition]]
@@ -127,21 +126,6 @@ class MoreThanOneUnitsColumnError(MaxNumComponentsExceededError):
     @classmethod
     def get_error_url(cls) -> str:
         return "http://purl.org/csv-cubed/err/multi-unit-col"
-
-
-@dataclass
-class MoreThanOneObservationsColumnError(MaxNumComponentsExceededError):
-    """
-    An error where more than one observations column has been defined in a cube.
-    """
-
-    maximum_number: int = 1
-    component_type: ComponentTypeDescription = QbObservationValue
-
-    @classmethod
-    def get_error_url(cls) -> str:
-        return "http://purl.org/csv-cubed/err/multi-obsv-col"
-
 
 @dataclass
 class MinNumComponentsNotSatisfiedError(SpecificValidationError, ABC):
@@ -363,7 +347,7 @@ class DuplicateMeasureError(SpecificValidationError):
         return "http://purl.org/csv-cubed/err/dup-measure"
 
     def __post_init__(self):
-        self.column_names_concatenated = ", ".join(self.column_names)
+        self.column_names_concatenated = ", ".join(sorted(self.column_names))
         self.message = f"In the pivoted shape, two or more observation value columns cannot be represented by identical measures. {self.column_names_concatenated}"
 
 

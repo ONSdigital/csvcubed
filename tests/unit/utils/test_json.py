@@ -1,8 +1,8 @@
 import pytest
 import requests_mock
 
-from tests.unit.test_baseunit import get_test_cases_dir
 from csvcubed.utils.json import load_json_document
+from tests.unit.test_baseunit import get_test_cases_dir
 
 _json_test_cases_dir = get_test_cases_dir() / "utils" / "json"
 

@@ -14,7 +14,6 @@ from csvcubed.models.cube.qb import (
     NoObservedValuesColumnDefinedError,
     NoMeasuresDefinedError,
     NoUnitsDefinedError,
-    MoreThanOneObservationsColumnError,
     MoreThanOneMeasureColumnError,
     MoreThanOneUnitsColumnError,
     BothMeasureTypesDefinedError,
@@ -23,14 +22,13 @@ from csvcubed.models.cube.qb import (
     QbStructuralDefinition,
     EmptyQbMultiMeasureDimensionError,
 )
-
-from csvcubed.models.cube.validationerrors import (
-    ObservationValuesMissing,
-    MissingColumnDefinitionError,
-    DuplicateColumnTitleError,
-    ColumnValidationError,
-    ColumnNotFoundInDataError,
-    UriTemplateNameError,
+from csvcubed.models.cube.qb.components.validationerrors import (
+    UndefinedMeasureUrisError,
+    UndefinedUnitUrisError,
+    UndefinedAttributeValueUrisError,
+    ReservedUriValueError,
+    ConflictingUriSafeValuesError,
+    EmptyQbMultiUnitsError,
 )
 from csvcubed.models.cube.qb.validationerrors import (
     DuplicateMeasureError,
@@ -40,15 +38,6 @@ from csvcubed.models.cube.qb.validationerrors import (
     HybridShapeError,
     PivotedShapeMeasureColumnsExistError,
     PivotedObsValColWithoutMeasureError,
-)
-
-from csvcubed.models.cube.qb.components.validationerrors import (
-    UndefinedMeasureUrisError,
-    UndefinedUnitUrisError,
-    UndefinedAttributeValueUrisError,
-    ReservedUriValueError,
-    ConflictingUriSafeValuesError,
-    EmptyQbMultiUnitsError,
 )
 from csvcubed.models.cube.validationerrors import (
     ObservationValuesMissing,
@@ -90,7 +79,6 @@ def friendly_error_mapping(error: ValidationError) -> str:
         HybridShapeError: "Mutliple observation value columns have been at the same time as a standard shape measure column defined.",
         LinkedObsColumnDoesntExistError: "The '{error.attribute_column_title}' column has `describes_observations` set to '{error.alleged_obs_val_column_title}'. The column does not appear to exist.",
         LinkedToNonObsColumnError: "The '{error.attribute_column_title}' column has `describes_observations` set to '{error.alleged_obs_val_column_title}'. This column does not represent observed values.",
-        MoreThanOneObservationsColumnError: "Found {error.actual_number} observed values columns. Only 1 is permitted.",
         MoreThanOneMeasureColumnError: "Found {error.actual_number} measures columns. Only 1 is permitted.",
         MoreThanOneUnitsColumnError: "Found {error.actual_number} units columns. Only 1 is permitted.",
         MissingColumnDefinitionError: "Column '{error.csv_column_title}' is present in CSV but no configuration could be found.",
@@ -137,7 +125,7 @@ def friendly_error_mapping(error: ValidationError) -> str:
     # map of conflicting uris and labels
     if isinstance(error, ConflictingUriSafeValuesError):
         for (key, values) in error.map_uri_safe_values_to_conflicting_labels.items():
-            vals = ", ".join([f"'{v}'" for v in values])
+            vals = ", ".join([f"'{v}'" for v in sorted(values)])
             message += f"{linesep}    The values {vals} map to the same URI-safe identifier '{key}'"
 
     if hasattr(error, "additional_explanation"):

@@ -14,7 +14,7 @@ class DuplicateColumnTitleError(SpecificValidationError):
     """
     An error to inform the user that they have defined two instances of the same column.
     """
-    
+
     csv_column_title: str
 
     @classmethod
@@ -112,7 +112,7 @@ class UriTemplateNameError(SpecificValidationError):
 
     def __post_init__(self):
         self.column_names_concatenated = ", ".join(self.column_names)
-        self.message = (f'Uri template: {self.csv_column_uri_template} is referencing an unknown variable. '
-        'Known variables are: {self.column_names_concatenated}'
+        self.message = (
+            f"Uri template: {self.csv_column_uri_template} is referencing an unknown variable. "
+            "Known variables are: {self.column_names_concatenated}"
         )
-

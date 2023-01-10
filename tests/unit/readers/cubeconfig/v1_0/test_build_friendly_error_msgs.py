@@ -25,11 +25,15 @@ from csvcubed.models.cube.qb.validationerrors import (
     BothUnitTypesDefinedError,
     EmptyQbMultiMeasureDimensionError,
     MoreThanOneMeasureColumnError,
-    MoreThanOneObservationsColumnError,
     NoDimensionsDefinedError,
     NoMeasuresDefinedError,
     NoObservedValuesColumnDefinedError,
     NoUnitsDefinedError,
+    DuplicateMeasureError,
+    AttributeNotLinkedError,
+    LinkedObsColumnDoesntExistError,
+    LinkedToNonObsColumnError,
+    HybridShapeError,
 )
 from csvcubed.models.cube.validationerrors import ObservationValuesMissing
 from tests.unit.test_baseunit import assert_num_validation_errors, get_test_cases_dir
@@ -41,13 +45,10 @@ _user_log_dir = Path(appdirs.AppDirs("csvcubed_testing", "csvcubed").user_log_di
 _log_file_path = _user_log_dir / "out.log"
 
 
-def _check_log(text: str) -> bool:
+def _assert_in_log(text: str) -> None:
     with open(_log_file_path) as log_file:
-        lines = log_file.readlines()
-    for line in lines[::-1]:
-        if text in line:
-            return True
-    return False
+        contents = log_file.read()
+    assert text in contents, contents
 
 
 def test_val_errors_no_observation():
@@ -71,11 +72,11 @@ def test_val_errors_no_observation():
     assert isinstance(validation_errors, list)
     assert isinstance(validation_errors[0], NoObservedValuesColumnDefinedError)
 
-    assert _check_log(
+    _assert_in_log(
         "csvcubed.cli.build - ERROR - Validation Error: The cube does not contain an observed values "
         "column."
     )
-    assert _check_log(
+    _assert_in_log(
         "csvcubed.cli.build - ERROR - More information: http://purl.org/csv-cubed/err/no-obsv-col"
     )
 
@@ -106,18 +107,11 @@ def test_val_errors_no_measure():
     assert isinstance(validation_errors[0], NoUnitsDefinedError)
     assert isinstance(validation_errors[1], NoMeasuresDefinedError)
 
-    assert _check_log(
+    _assert_in_log(
         "csvcubed.cli.build - ERROR - Validation Error: At least one unit must be defined in a cube."
     )
-    assert _check_log(
+    _assert_in_log(
         "csvcubed.cli.build - ERROR - More information: http://purl.org/csv-cubed/err/no-unit"
-    )
-
-    assert _check_log(
-        "csvcubed.cli.build - ERROR - Validation Error: At least one measure must be defined in a cube."
-    )
-    assert _check_log(
-        "csvcubed.cli.build - ERROR - More information: http://purl.org/csv-cubed/err/no-meas"
     )
 
 
@@ -141,11 +135,11 @@ def test_val_errors_col_not_in_data():
         assert err.message in err_msgs
 
     assert isinstance(validation_errors[0], ColumnNotFoundInDataError)
-    assert _check_log(
+    _assert_in_log(
         "csvcubed.cli.build - ERROR - Validation Error: Configuration found for column 'Dim-1' but no "
         "corresponding column found in CSV."
     )
-    assert _check_log(
+    _assert_in_log(
         "ERROR - More information: http://purl.org/csv-cubed/err/col-not-found-in-dat"
     )
 
@@ -168,11 +162,11 @@ def test_val_errors_duplicate_col():
     assert validation_errors[0].message == "Duplicate column title 'Dim-2'"
 
     assert isinstance(validation_errors[0], DuplicateColumnTitleError)
-    assert _check_log(
+    _assert_in_log(
         "csvcubed.cli.build - ERROR - Validation Error: There are multiple CSV columns with the title: "
         "'Dim-2'."
     )
-    assert _check_log(
+    _assert_in_log(
         "csvcubed.cli.build - ERROR - More information: http://purl.org/csv-cubed/err/dupe-col"
     )
 
@@ -199,44 +193,44 @@ def test_val_errors_missing_obs_vals():
 
     assert isinstance(validation_errors[0], ObservationValuesMissing)
 
-    assert _check_log(
+    _assert_in_log(
         "csvcubed.cli.build - ERROR - Validation Error: Observed values missing in 'Amount' on rows: "
         "{2, 3}"
     )
-    assert _check_log(
+    _assert_in_log(
         "csvcubed.cli.build - ERROR - More information: http://purl.org/csv-cubed/err/obsv-val-mis"
     )
 
 
-# Todo: re-implement this test when we have the ability to construct multimeasure pivoted cubes
-#       from config.json files (see ticket #636)
-# def test_val_errors_both_measure_types():
-#     """
-#     Test for:-
-#         BothMeasureTypesDefinedError
-#     """
-#     config = Path(_test_case_dir, "both_measure_types_defined.json")
-#     csv = Path(_test_case_dir, "both_measure_types_defined.csv")
-#     cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
-#         config, csv
-#     )
-#     _write_errors_to_log(json_schema_validation_errors, validation_errors)
+def test_val_errors_both_measure_types():
+    """
+    Test for:-
+        BothMeasureTypesDefinedError
+    """
+    config = Path(_test_case_dir, "both_measure_types_defined.json")
+    csv = Path(_test_case_dir, "both_measure_types_defined.csv")
 
-#     assert isinstance(cube, Cube)
-#     assert isinstance(validation_errors, list)
-#     assert_num_validation_errors(validation_errors, 1)
+    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
+        config, csv
+    )
 
-#     assert isinstance(validation_errors[0], BothMeasureTypesDefinedError)
-#     assert _check_log(
-#         "csvcubed.cli.build - ERROR - Validation Error: Measures defined in multiple locations. Measures "
-#         "may only be defined in one location."
-#     )
-#     assert _check_log(
-#         "Further details: A pivoted shape cube cannot have a measure dimension."
-#     )
-#     assert _check_log(
-#         "csvcubed.cli.build - ERROR - More information: http://purl.org/csv-cubed/err/both-meas-typ-def"
-#     )
+    _write_errors_to_log(json_schema_validation_errors, validation_errors)
+
+    assert isinstance(cube, Cube)
+    assert isinstance(validation_errors, list)
+    assert_num_validation_errors(validation_errors, 1)
+
+    assert isinstance(validation_errors[0], BothMeasureTypesDefinedError)
+    _assert_in_log(
+        "csvcubed.cli.build - ERROR - Validation Error: Measures defined in multiple locations. Measures "
+        "may only be defined in one location."
+    )
+    _assert_in_log(
+        "Further details: A pivoted shape cube cannot have a measure dimension."
+    )
+    _assert_in_log(
+        "csvcubed.cli.build - ERROR - More information: http://purl.org/csv-cubed/err/both-meas-typ-def"
+    )
 
 
 def test_val_errors_both_unit_types():
@@ -261,11 +255,11 @@ def test_val_errors_both_unit_types():
         == "Both QbObservationValue.unit and QbMultiUnits have been defined. These "
         "components cannot be used together."
     )
-    assert _check_log(
+    _assert_in_log(
         "csvcubed.cli.build - ERROR - Validation Error: Units defined in multiple locations. Units may "
         "only be defined in one location."
     )
-    assert _check_log(
+    _assert_in_log(
         "csvcubed.cli.build - ERROR - More information: http://purl.org/csv-cubed/err/both-unit-typ-def"
     )
 
@@ -288,41 +282,12 @@ def test_val_errors_invalid_uri_template():
 
     assert isinstance(validation_errors[0], UriTemplateNameError)
 
-    assert _check_log(
+    _assert_in_log(
         "csvcubed.cli.build - ERROR - Validation Error: Uri template: http://example.com/dimensions/{+not_a_column_name} is referencing a column that is not defined in the config. Currently defined columns are: dim_1, dim_2, amount, measure, units."
     )
 
-    assert _check_log(
+    _assert_in_log(
         "csvcubed.cli.build - ERROR - More information: http://purl.org/csv-cubed/err/missing-uri-template-name-error"
-    )
-
-
-def test_val_errors_more_than_one_observation():
-    """
-    Test for:-
-        MoreThanOneObservationsColumnError
-    """
-    config = Path(_test_case_dir, "more_than_one_observations_col.json")
-    csv = Path(_test_case_dir, "more_than_one_observations_col.csv")
-    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
-        config, csv
-    )
-    _write_errors_to_log(json_schema_validation_errors, validation_errors)
-
-    assert isinstance(cube, Cube)
-    assert isinstance(validation_errors, list)
-    assert_num_validation_errors(validation_errors, 1)
-    assert isinstance(validation_errors[0], MoreThanOneObservationsColumnError)
-    assert (
-        validation_errors[0].message
-        == "Found 2 of QbObservationValues. Expected a maximum of 1."
-    )
-    assert _check_log(
-        "csvcubed.cli.build - ERROR - Validation Error: Found 2 observed values columns. Only 1 is "
-        "permitted."
-    )
-    assert _check_log(
-        "csvcubed.cli.build - ERROR - More information: http://purl.org/csv-cubed/err/multi-obsv-col"
     )
 
 
@@ -346,10 +311,10 @@ def test_val_errors_more_than_one_measure():
         validation_errors[0].message
         == "Found 2 of QbMultiMeasureDimensions. Expected a maximum of 1."
     )
-    assert _check_log(
+    _assert_in_log(
         "csvcubed.cli.build - ERROR - Validation Error: Found 2 measures columns. Only 1 is permitted."
     )
-    assert _check_log(
+    _assert_in_log(
         "csvcubed.cli.build - ERROR - More information: http://purl.org/csv-cubed/err/multi-meas-col"
     )
 
@@ -371,12 +336,12 @@ def test_val_errors_undefined_attr_uri():
     assert_num_validation_errors(validation_errors, 1)
     assert isinstance(validation_errors[0], UndefinedAttributeValueUrisError)
 
-    assert _check_log(
+    _assert_in_log(
         "csvcubed.cli.build - ERROR - Validation Error: The Attribute URI(s) {'beach-ware'} in the "
         "NewQbAttribute(label='My best attribute') attribute column have not been defined in the list of "
         "valid attribute values."
     )
-    assert _check_log(
+    _assert_in_log(
         "csvcubed.cli.build - ERROR - More information: http://purl.org/csv-cubed/err/undef-attrib"
     )
 
@@ -401,11 +366,11 @@ def test_val_errors_empty_multi_units():
     assert_num_validation_errors(validation_errors, 1)
     assert isinstance(validation_errors[0], EmptyQbMultiUnitsError)
 
-    assert _check_log(
+    _assert_in_log(
         "csvcubed.cli.build - ERROR - Validation Error: A Unit column has been defined but no units have been defined within it"
     )
 
-    assert _check_log(
+    _assert_in_log(
         "csvcubed.cli.build - ERROR - More information: http://purl.org/csv-cubed/err/empty-multi-units"
     )
 
@@ -430,11 +395,11 @@ def test_val_errors_empty_multi_measure_dimension():
     assert_num_validation_errors(validation_errors, 1)
     assert isinstance(validation_errors[0], EmptyQbMultiMeasureDimensionError)
 
-    assert _check_log(
+    _assert_in_log(
         "csvcubed.cli.build - ERROR - Validation Error: A Measure column has been defined but no measures have been defined within it"
     )
 
-    assert _check_log(
+    _assert_in_log(
         "csvcubed.cli.build - ERROR - More information: http://purl.org/csv-cubed/err/empty-multi-meas-dimension"
     )
 
@@ -458,11 +423,11 @@ def test_val_errors_undefined_measure_uri():
     assert_num_validation_errors(validation_errors, 1)
     assert isinstance(validation_errors[0], UndefinedMeasureUrisError)
 
-    assert _check_log(
+    _assert_in_log(
         "csvcubed.cli.build - ERROR - Validation Error: The Measure URI(s) {'Wage'} found in the data was not defined in the cube config."
     )
 
-    assert _check_log(
+    _assert_in_log(
         "csvcubed.cli.build - ERROR - More information: http://purl.org/csv-cubed/err/undef-meas"
     )
 
@@ -486,11 +451,11 @@ def test_val_errors_undefined_unit_uri():
     assert_num_validation_errors(validation_errors, 1)
     assert isinstance(validation_errors[0], UndefinedUnitUrisError)
 
-    assert _check_log(
+    _assert_in_log(
         "csvcubed.cli.build - ERROR - Validation Error: The Unit URI(s) {'Dollars'} found in the data was not defined in the cube config."
     )
 
-    assert _check_log(
+    _assert_in_log(
         "csvcubed.cli.build - ERROR - More information: http://purl.org/csv-cubed/err/undef-unit"
     )
 
@@ -511,15 +476,13 @@ def test_val_errors_uri_conflict():
     assert isinstance(validation_errors, list)
     assert_num_validation_errors(validation_errors, 1)
     assert isinstance(validation_errors[0], ConflictingUriSafeValuesError)
-    assert _check_log(
+    _assert_in_log(
         "csvcubed.cli.build - ERROR - Validation Error: A URI collision has been detected in an attribute column."
     )
-    assert _check_log(
+    _assert_in_log(
         "The values 'Software Sales', 'software-sales' map to the same URI-safe identifier 'software-sales'"
-    ) or _check_log(
-        "The values 'software-sales', 'Software Sales' map to the same URI-safe identifier 'software-sales'"
     )
-    assert _check_log(
+    _assert_in_log(
         "csvcubed.cli.build - ERROR - More information: https://purl.org/csv-cubed/err/conflict-uri"
     )
 
@@ -547,12 +510,12 @@ def test_val_errors_reserved_uri():
         "be used in code-lists."
     )
 
-    assert _check_log(
+    _assert_in_log(
         "csvcubed.cli.build - ERROR - Validation Error: The URI value(s) ['Code List'] conflict with the reserved "
         "value: code-list'."
     )
 
-    assert _check_log(
+    _assert_in_log(
         "csvcubed.cli.build - ERROR - More information: https://purl.org/csv-cubed/err/resrv-uri-val"
     )
 
@@ -579,11 +542,131 @@ def test_val_errors_no_dimensions():
         == "At least 1 QbDimensions must be defined. Found 0."
     )
 
-    assert _check_log(
+    _assert_in_log(
         "csvcubed.cli.build - ERROR - Validation Error: The cube does not contain any dimensions, "
         "at least 1 dimension is required."
     )
 
-    assert _check_log(
+    _assert_in_log(
         "csvcubed.cli.build - ERROR - More information: http://purl.org/csv-cubed/err/no-dim"
+    )
+
+
+def test_duplicate_measure_error():
+    """
+    Test for:-
+        DuplicateMeasureError
+    """
+    config = Path(_test_case_dir, "duplicate_measure_types_error.json")
+    csv = Path(_test_case_dir, "duplicate_measure_types_error.csv")
+
+    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
+        config, csv
+    )
+
+    _write_errors_to_log(json_schema_validation_errors, validation_errors)
+
+    assert isinstance(cube, Cube)
+    assert isinstance(validation_errors, list)
+    assert_num_validation_errors(validation_errors, 1)
+
+    assert isinstance(validation_errors[0], DuplicateMeasureError)
+    _assert_in_log(
+        "In the pivoted shape, each observation value column must use a unique measure. Affected columns: Average Income, GDP"
+    )
+
+
+def test_attribute_not_linked_error():
+    """
+    Test for:-
+        AttributeNotLinkedError
+    """
+    config = Path(_test_case_dir, "attribute_not_linked_error.json")
+    csv = Path(_test_case_dir, "attribute_not_linked_error.csv")
+
+    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
+        config, csv
+    )
+
+    _write_errors_to_log(json_schema_validation_errors, validation_errors)
+
+    assert isinstance(cube, Cube)
+    assert isinstance(validation_errors, list)
+    assert_num_validation_errors(validation_errors, 1)
+
+    assert isinstance(validation_errors[0], AttributeNotLinkedError)
+    _assert_in_log(
+        "Unable to tell which observed values column 'Attribute' describes. Please set the `describes_observations` property in this column's configuration."
+    )
+
+
+def test_linked_obs_column_doesnt_exist_error():
+    """
+    Test for:-
+        LinkedObsColumnDoesntExistError
+    """
+    config = Path(_test_case_dir, "linked_obs_column_doesnt_exist_error.json")
+    csv = Path(_test_case_dir, "linked_obs_column_doesnt_exist_error.csv")
+
+    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
+        config, csv
+    )
+
+    _write_errors_to_log(json_schema_validation_errors, validation_errors)
+
+    assert isinstance(cube, Cube)
+    assert isinstance(validation_errors, list)
+    assert_num_validation_errors(validation_errors, 1)
+
+    assert isinstance(validation_errors[0], LinkedObsColumnDoesntExistError)
+    _assert_in_log(
+        "The 'Attribute' column has `describes_observations` set to 'Doesn't Exist'. The column does not appear to exist."
+    )
+
+
+def test_linked_to_non_obs_colums_error():
+    """
+    Test for:-
+        LinkedToNonObsColumnError
+    """
+    config = Path(_test_case_dir, "linked_to_non_obs_column_error.json")
+    csv = Path(_test_case_dir, "linked_to_non_obs_column_error.csv")
+
+    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
+        config, csv
+    )
+
+    _write_errors_to_log(json_schema_validation_errors, validation_errors)
+
+    assert isinstance(cube, Cube)
+    assert isinstance(validation_errors, list)
+    assert_num_validation_errors(validation_errors, 1)
+
+    assert isinstance(validation_errors[0], LinkedToNonObsColumnError)
+    _assert_in_log(
+        "The 'Attribute' column has `describes_observations` set to 'Location'. This column does not represent observed values."
+    )
+
+
+def test_hybrid_shape_error():
+    """
+    Test for:-
+        HybridShapeError
+    """
+    config = Path(_test_case_dir, "hybrid_shape_error.json")
+    csv = Path(_test_case_dir, "hybrid_shape_error.csv")
+
+    cube, json_schema_validation_errors, validation_errors = _extract_and_validate_cube(
+        config, csv
+    )
+
+    _write_errors_to_log(json_schema_validation_errors, validation_errors)
+
+    assert isinstance(cube, Cube)
+    assert isinstance(validation_errors, list)
+    assert_num_validation_errors(validation_errors, 1)
+
+    assert isinstance(validation_errors[0], HybridShapeError)
+    _assert_in_log(
+        "Mutliple observation value columns have been at the same time as a standard shape measure column defined.",
     )
