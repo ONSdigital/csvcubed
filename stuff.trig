@@ -1,0 +1,259 @@
+@prefix csvw: <http://www.w3.org/ns/csvw#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix ns1: <file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-single-measure-dataset/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix qb: <http://purl.org/linked-data/cube#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix void: <http://rdfs.org/ns/void#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ns1:qb-id-10004.csv-metadata.json {
+    <qb-id-10004.csv#class/some-dimension> a rdfs:Class,
+            rdfs:Resource .
+
+    <qb-id-10004.csv#attribute/some-attribute/attr-a> a rdfs:Resource ;
+        rdfs:label "attr-a"@en .
+
+    <qb-id-10004.csv#attribute/some-attribute/attr-b> a rdfs:Resource ;
+        rdfs:label "attr-b"@en .
+
+    <qb-id-10004.csv#attribute/some-attribute/attr-c> a rdfs:Resource ;
+        rdfs:label "attr-c"@en .
+
+    <qb-id-10004.csv#dataset> a qb:Attachable,
+            qb:DataSet,
+            rdfs:Resource,
+            dcat:Dataset,
+            dcat:Resource ;
+        rdfs:label "Pivoted Shape Cube"@en ;
+        dcterms:identifier "qb-id-10004" ;
+        dcterms:issued "2022-10-28T13:35:50.699296"^^xsd:dateTime ;
+        dcterms:modified "2022-10-28T13:35:50.699296"^^xsd:dateTime ;
+        dcterms:title "Pivoted Shape Cube"@en ;
+        qb:structure <qb-id-10004.csv#structure> ;
+        rdfs:seeAlso <qb-id-10004.csv#attribute/some-attribute>,
+            <qb-id-10004.csv#attribute/some-attribute/attr-a>,
+            <qb-id-10004.csv#attribute/some-attribute/attr-b>,
+            <qb-id-10004.csv#attribute/some-attribute/attr-c>,
+            <qb-id-10004.csv#class/some-dimension>,
+            <qb-id-10004.csv#component/measure-type>,
+            <qb-id-10004.csv#component/some-attribute>,
+            <qb-id-10004.csv#component/some-dimension>,
+            <qb-id-10004.csv#component/some-measure>,
+            <qb-id-10004.csv#component/unit>,
+            <qb-id-10004.csv#csvcubed-build-activity>,
+            <qb-id-10004.csv#dataset>,
+            <qb-id-10004.csv#dependency/some-dimension>,
+            <qb-id-10004.csv#dimension/some-dimension>,
+            <qb-id-10004.csv#measure/some-measure>,
+            <qb-id-10004.csv#slice/cross-measures>,
+            <qb-id-10004.csv#structure>,
+            <qb-id-10004.csv#unit/some-unit> ;
+        csvw:table [ csvw:suppressOutput true ;
+                csvw:tableSchema <some-dimension.table.json> ;
+                csvw:url "some-dimension.csv"^^xsd:anyURI ],
+            [ csvw:tableSchema [ csvw:aboutUrl "qb-id-10004.csv#slice/{some_dimension}"^^csvw:uriTemplate ;
+                        csvw:column ( [ csvw:name "some_dimension" ;
+                                    csvw:propertyUrl "qb-id-10004.csv#dimension/some-dimension"^^csvw:uriTemplate ;
+                                    csvw:required true ;
+                                    csvw:title "Some Dimension" ;
+                                    csvw:valueUrl "some-dimension.csv#{+some_dimension}"^^csvw:uriTemplate ] [ csvw:aboutUrl "qb-id-10004.csv#obs/{some_dimension}@some-measure"^^csvw:uriTemplate ;
+                                    csvw:name "some_attribute" ;
+                                    csvw:propertyUrl "qb-id-10004.csv#attribute/some-attribute"^^csvw:uriTemplate ;
+                                    csvw:required false ;
+                                    csvw:title "Some Attribute" ;
+                                    csvw:valueUrl "qb-id-10004.csv#attribute/some-attribute/{+some_attribute}"^^csvw:uriTemplate ] [ csvw:aboutUrl "qb-id-10004.csv#obs/{some_dimension}@some-measure"^^csvw:uriTemplate ;
+                                    csvw:datatype xsd:decimal ;
+                                    csvw:name "some_obs_val" ;
+                                    csvw:propertyUrl "qb-id-10004.csv#measure/some-measure"^^csvw:uriTemplate ;
+                                    csvw:required true ;
+                                    csvw:title "Some Obs Val" ] [ csvw:name "virt_slice" ;
+                                    csvw:propertyUrl "rdf:type"^^csvw:uriTemplate ;
+                                    csvw:valueUrl "qb:Slice"^^csvw:uriTemplate ;
+                                    csvw:virtual true ] [ csvw:name "virt_slice_structure" ;
+                                    csvw:propertyUrl "qb:sliceStructure"^^csvw:uriTemplate ;
+                                    csvw:valueUrl "qb-id-10004.csv#slice/cross-measures"^^csvw:uriTemplate ;
+                                    csvw:virtual true ] [ csvw:name "virt_obs_some_obs_val" ;
+                                    csvw:propertyUrl "qb:Observation"^^csvw:uriTemplate ;
+                                    csvw:valueUrl "qb-id-10004.csv#obs/{some_dimension}@some-measure"^^csvw:uriTemplate ;
+                                    csvw:virtual true ] [ csvw:aboutUrl "qb-id-10004.csv#obs/{some_dimension}@some-measure"^^csvw:uriTemplate ;
+                                    csvw:name "virt_obs_some_obs_val_meas" ;
+                                    csvw:propertyUrl "qb:measureType"^^csvw:uriTemplate ;
+                                    csvw:valueUrl "qb-id-10004.csv#measure/some-measure"^^csvw:uriTemplate ;
+                                    csvw:virtual true ] [ csvw:aboutUrl "qb-id-10004.csv#obs/{some_dimension}@some-measure"^^csvw:uriTemplate ;
+                                    csvw:name "virt_obs_some_obs_val_unit" ;
+                                    csvw:propertyUrl "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"^^csvw:uriTemplate ;
+                                    csvw:valueUrl "qb-id-10004.csv#unit/some-unit"^^csvw:uriTemplate ;
+                                    csvw:virtual true ] [ csvw:aboutUrl "qb-id-10004.csv#obs/{some_dimension}@some-measure"^^csvw:uriTemplate ;
+                                    csvw:name "virt_dim_some_obs_val_some_dimension" ;
+                                    csvw:propertyUrl "qb-id-10004.csv#dimension/some-dimension"^^csvw:uriTemplate ;
+                                    csvw:valueUrl "some-dimension.csv#{+some_dimension}"^^csvw:uriTemplate ;
+                                    csvw:virtual true ] [ csvw:aboutUrl "qb-id-10004.csv#obs/{some_dimension}@some-measure"^^csvw:uriTemplate ;
+                                    csvw:name "virt_obs_some_obs_val_type" ;
+                                    csvw:propertyUrl "rdf:type"^^csvw:uriTemplate ;
+                                    csvw:valueUrl "qb:Observation"^^csvw:uriTemplate ;
+                                    csvw:virtual true ] [ csvw:aboutUrl "qb-id-10004.csv#obs/{some_dimension}@some-measure"^^csvw:uriTemplate ;
+                                    csvw:name "virt_dataSet_some_obs_val" ;
+                                    csvw:propertyUrl "qb:dataSet"^^csvw:uriTemplate ;
+                                    csvw:valueUrl "qb-id-10004.csv#dataset"^^csvw:uriTemplate ;
+                                    csvw:virtual true ] ) ;
+                        csvw:foreignKey [ csvw:columnReference ( "some_dimension" ) ;
+                                csvw:reference [ csvw:columnReference ( "uri_identifier" ) ;
+                                        csvw:resource "some-dimension.csv"^^xsd:anyURI ] ] ;
+                        csvw:primaryKey "some_dimension" ] ;
+                csvw:url "qb-id-10004.csv"^^xsd:anyURI ] ;
+        prov:wasGeneratedBy <qb-id-10004.csv#csvcubed-build-activity> .
+
+    <qb-id-10004.csv#dependency/some-dimension> a void:Dataset,
+            rdfs:Resource ;
+        void:dataDump <some-dimension.csv-metadata.json> ;
+        void:uriSpace "some-dimension.csv#" .
+
+    <qb-id-10004.csv#unit/some-unit> a <http://qudt.org/schema/qudt/Unit>,
+            <http://www.ontology-of-units-of-measure.org/resource/om-2/Unit>,
+            rdfs:Resource ;
+        rdfs:label "Some Unit"@en .
+
+    <qb-id-10004.csv#component/measure-type> a qb:ComponentSet,
+            qb:ComponentSpecification,
+            rdfs:Resource ;
+        qb:componentProperty qb:measureType ;
+        qb:dimension qb:measureType ;
+        qb:order 3 .
+
+    <qb-id-10004.csv#component/some-attribute> a qb:ComponentSet,
+            qb:ComponentSpecification,
+            rdfs:Resource ;
+        qb:attribute <qb-id-10004.csv#attribute/some-attribute> ;
+        qb:componentProperty <qb-id-10004.csv#attribute/some-attribute> ;
+        qb:componentRequired false ;
+        qb:order 2 .
+
+    <qb-id-10004.csv#component/some-dimension> a qb:ComponentSet,
+            qb:ComponentSpecification,
+            rdfs:Resource ;
+        qb:componentProperty <qb-id-10004.csv#dimension/some-dimension> ;
+        qb:dimension <qb-id-10004.csv#dimension/some-dimension> ;
+        qb:order 1 .
+
+    <qb-id-10004.csv#component/some-measure> a qb:ComponentSet,
+            qb:ComponentSpecification,
+            rdfs:Resource ;
+        qb:componentProperty <qb-id-10004.csv#measure/some-measure> ;
+        qb:measure <qb-id-10004.csv#measure/some-measure> ;
+        qb:order 5 .
+
+    <qb-id-10004.csv#component/unit> a qb:ComponentSet,
+            qb:ComponentSpecification,
+            rdfs:Resource ;
+        qb:attribute <http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure> ;
+        qb:componentProperty <http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure> ;
+        qb:componentRequired true ;
+        qb:order 4 .
+
+    <qb-id-10004.csv#csvcubed-build-activity> a rdfs:Resource,
+            prov:Activity ;
+        prov:used <https://github.com/GSS-Cogs/csvcubed/releases/tag/v0.1.0.dev0> .
+
+    <qb-id-10004.csv#slice/cross-measures> a qb:ComponentSet,
+            qb:SliceKey,
+            rdfs:Resource ;
+        qb:componentProperty <qb-id-10004.csv#dimension/some-dimension> .
+
+    <qb-id-10004.csv#structure> a qb:ComponentSet,
+            qb:DataStructureDefinition,
+            rdfs:Resource ;
+        qb:component <qb-id-10004.csv#component/measure-type>,
+            <qb-id-10004.csv#component/some-attribute>,
+            <qb-id-10004.csv#component/some-dimension>,
+            <qb-id-10004.csv#component/some-measure>,
+            <qb-id-10004.csv#component/unit> ;
+        qb:componentProperty qb:measureType,
+            <http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure>,
+            <qb-id-10004.csv#attribute/some-attribute>,
+            <qb-id-10004.csv#dimension/some-dimension>,
+            <qb-id-10004.csv#measure/some-measure> ;
+        qb:sliceKey <qb-id-10004.csv#slice/cross-measures> .
+
+    <qb-id-10004.csv#attribute/some-attribute> a qb:AttributeProperty,
+            qb:ComponentProperty,
+            rdf:Property,
+            rdfs:Resource ;
+        rdfs:label "Some Attribute"@en .
+
+    <qb-id-10004.csv#measure/some-measure> a qb:ComponentProperty,
+            qb:MeasureProperty,
+            rdf:Property,
+            rdfs:Resource ;
+        rdfs:label "Some Measure"@en ;
+        rdfs:range xsd:decimal .
+
+    <qb-id-10004.csv#dimension/some-dimension> a qb:CodedProperty,
+            qb:ComponentProperty,
+            qb:DimensionProperty,
+            rdf:Property,
+            rdfs:Resource ;
+        rdfs:label "Some Dimension"@en ;
+        qb:codeList <some-dimension.csv#code-list> ;
+        rdfs:range <qb-id-10004.csv#class/some-dimension> .
+}
+
+ns1:some-dimension.table.json {
+    <some-dimension.table.json> csvw:aboutUrl "some-dimension.csv#{+uri_identifier}"^^csvw:uriTemplate ;
+        csvw:column ( [ csvw:name "uri_identifier" ;
+                    csvw:required true ;
+                    csvw:suppressOutput true ;
+                    csvw:title "Uri Identifier" ] [ csvw:name "label" ;
+                    csvw:propertyUrl "rdfs:label"^^csvw:uriTemplate ;
+                    csvw:required true ;
+                    csvw:title "Label" ] [ csvw:name "notation" ;
+                    csvw:propertyUrl "skos:notation"^^csvw:uriTemplate ;
+                    csvw:required true ;
+                    csvw:title "Notation" ] [ csvw:name "parent_uri_identifier" ;
+                    csvw:propertyUrl "skos:broader"^^csvw:uriTemplate ;
+                    csvw:required false ;
+                    csvw:title "Parent Uri Identifier" ;
+                    csvw:valueUrl "some-dimension.csv#{+parent_uri_identifier}"^^csvw:uriTemplate ] [ csvw:datatype xsd:integer ;
+                    csvw:name "sort_priority" ;
+                    csvw:propertyUrl "http://www.w3.org/ns/ui#sortPriority"^^csvw:uriTemplate ;
+                    csvw:required false ;
+                    csvw:title "Sort Priority" ] [ csvw:name "description" ;
+                    csvw:propertyUrl "rdfs:comment"^^csvw:uriTemplate ;
+                    csvw:required false ;
+                    csvw:title "Description" ] [ csvw:name "virt_inScheme" ;
+                    csvw:propertyUrl "skos:inScheme"^^csvw:uriTemplate ;
+                    csvw:required true ;
+                    csvw:valueUrl "some-dimension.csv#code-list"^^csvw:uriTemplate ;
+                    csvw:virtual true ] [ csvw:name "virt_type" ;
+                    csvw:propertyUrl "rdf:type"^^csvw:uriTemplate ;
+                    csvw:required true ;
+                    csvw:valueUrl "skos:Concept"^^csvw:uriTemplate ;
+                    csvw:virtual true ] ) ;
+        csvw:primaryKey "uri_identifier" .
+}
+
+ns1:some-dimension.csv-metadata.json {
+    <some-dimension.csv#code-list> a rdfs:Resource,
+            skos:ConceptScheme,
+            dcat:Dataset,
+            dcat:Resource,
+            prov:Entity ;
+        rdfs:label "Some Dimension"@en ;
+        dcterms:identifier "Some Dimension" ;
+        dcterms:issued "2022-10-28T13:35:50.689337"^^xsd:dateTime ;
+        dcterms:modified "2022-10-28T13:35:50.689337"^^xsd:dateTime ;
+        dcterms:title "Some Dimension"@en ;
+        rdfs:seeAlso <some-dimension.csv#code-list>,
+            <some-dimension.csv#csvcubed-build-activity> ;
+        csvw:tableSchema <some-dimension.table.json> ;
+        csvw:url "some-dimension.csv"^^xsd:anyURI ;
+        prov:wasGeneratedBy <some-dimension.csv#csvcubed-build-activity> .
+
+    <some-dimension.csv#csvcubed-build-activity> a rdfs:Resource,
+            prov:Activity ;
+        prov:used <https://github.com/GSS-Cogs/csvcubed/releases/tag/v0.1.0.dev0> .
+}
+
