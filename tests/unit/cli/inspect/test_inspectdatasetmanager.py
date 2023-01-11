@@ -542,7 +542,6 @@ def test_get_val_counts_info_multi_unit_multi_measure_dataset():
         dataset,
         qube_components,
         csv_url,
-        csvw_rdf_manager.rdf_graph,
         csvw_metadata_json_path,
     )
 
@@ -589,7 +588,6 @@ def test_get_val_counts_info_multi_unit_single_measure_dataset():
         dataset,
         qube_components,
         csv_url,
-        csvw_metadata_rdf_graph,
         csvw_metadata_json_path,
     )
 
@@ -636,7 +634,6 @@ def test_get_val_counts_info_single_unit_multi_measure_dataset():
         dataset,
         qube_components,
         csv_url,
-        csvw_metadata_rdf_graph,
         csvw_metadata_json_path,
     )
 
@@ -683,7 +680,6 @@ def test_get_val_counts_info_single_unit_single_measure_dataset():
         dataset,
         qube_components,
         csv_url,
-        csvw_metadata_rdf_graph,
         csvw_metadata_json_path,
     )
 
@@ -730,7 +726,6 @@ def test_get_val_counts_info_pivoted_single_measure_dataset():
         dataset,
         qube_components,
         csv_url,
-        csvw_metadata_rdf_graph,
         csvw_metadata_json_path,
     )
 
@@ -777,7 +772,6 @@ def test_get_val_counts_info_pivoted_multi_measure_dataset():
         dataset,
         qube_components,
         csv_url,
-        csvw_metadata_rdf_graph,
         csvw_metadata_json_path,
     )
 
