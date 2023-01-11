@@ -193,7 +193,6 @@ class MetadataPrinter:
             self.dataset,
             self.result_qube_components.qube_components,
             self.primary_csv_url,
-            self.csvw_metadata_rdf_graph,
             self.csvw_metadata_json_path,
         )
         self.result_dataset_value_counts = get_dataset_val_counts_info(

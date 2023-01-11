@@ -291,7 +291,6 @@ def transform_dataset_to_canonical_shape(
     unit_col: str
     measure_col: str
 
-    cube_identifiers = data_cube_state.get_cube_identifiers_for_csv(csv_url)
     cube_shape = data_cube_state.get_shape_for_csv(csv_url)
 
     if cube_shape == CubeShape.Standard:
