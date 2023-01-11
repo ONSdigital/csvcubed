@@ -6,25 +6,22 @@ from csvcubed.models.cube.cube import Cube
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.cube.qb.columns import QbColumn
 from csvcubed.models.cube.qb.components.attribute import (
-    NewQbAttribute,
     ExistingQbAttribute,
+    NewQbAttribute,
 )
 from csvcubed.models.cube.qb.components.attributevalue import NewQbAttributeValue
 from csvcubed.models.cube.qb.components.codelist import (
-    NewQbCodeList,
     ExistingQbCodeList,
+    NewQbCodeList,
 )
 from csvcubed.models.cube.qb.components.dimension import (
-    NewQbDimension,
     ExistingQbDimension,
+    NewQbDimension,
 )
-from csvcubed.models.cube.qb.components.measure import (
-    NewQbMeasure,
-    ExistingQbMeasure,
-)
+from csvcubed.models.cube.qb.components.measure import ExistingQbMeasure, NewQbMeasure
 from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureDimension
 from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
-from csvcubed.models.cube.qb.components.unit import NewQbUnit, ExistingQbUnit
+from csvcubed.models.cube.qb.components.unit import ExistingQbUnit, NewQbUnit
 from csvcubed.models.cube.qb.components.unitscolumn import QbMultiUnits
 from csvcubed.models.cube.uristyle import URIStyle
 from csvcubed.writers.helpers.qbwriter.urihelper import UriHelper

@@ -1,11 +1,8 @@
 # This script contain a set of function that can be used to validate specific class attributes/ member variables
-from typing import Optional
+from typing import Callable, List, Optional, Type, TypeVar
+
 from csvcubed.models.validationerror import ValidateModelProperiesError
-
-from typing import List, TypeVar, Type, Callable
-
 from csvcubed.utils.uri import looks_like_uri
-
 
 T = TypeVar("T")
 
@@ -15,8 +12,9 @@ def validate_list(
 ) -> Callable[[List[T], str], List[ValidateModelProperiesError]]:
     """
     This function will validate if the argument provided is in fact a list and,
-    in a loop will check each member of the list and returns any errors returned by the item validation function. 
+    in a loop will check each member of the list and returns any errors returned by the item validation function.
     """
+
     def _validate(
         list_items: List[T], property_name: str
     ) -> List[ValidateModelProperiesError]:
@@ -37,14 +35,12 @@ def validate_list(
     return _validate
 
 
-
-
 def validate_str_type(
     value: str, property_name: str
 ) -> List[ValidateModelProperiesError]:
     """
     This function will validate if the argument provided is in fact a string type and,
-    returns any errors returned by the item validation function. 
+    returns any errors returned by the item validation function.
     """
     if not isinstance(value, str):
         return [
@@ -57,12 +53,10 @@ def validate_str_type(
     return []
 
 
-
-
 def validate_uri(value: str, property_name: str) -> List[ValidateModelProperiesError]:
     """
     This function will validate if the argument provided is in fact a string type and,
-    check is the string contains a uri. Either checks fail it returns any errors returned by the item validation function. 
+    check is the string contains a uri. Either checks fail it returns any errors returned by the item validation function.
     """
     errors = validate_str_type(value, property_name)
     if any(errors):
@@ -78,14 +72,12 @@ def validate_uri(value: str, property_name: str) -> List[ValidateModelProperiesE
     return []
 
 
-
-
 def validate_int_type(
     value: int, property_name: str
 ) -> List[ValidateModelProperiesError]:
     """
     This function will validate if the argument provided is in fact a integer type and,
-    returns any errors returned by the item validation function. 
+    returns any errors returned by the item validation function.
     """
     if not isinstance(value, int):
         return [
@@ -98,15 +90,14 @@ def validate_int_type(
     return []
 
 
-
-
 def validate_optional(
     validate_item: Callable[[T, str], List[ValidateModelProperiesError]]
 ) -> Callable[[Optional[T], str], List[ValidateModelProperiesError]]:
     """
     This function will validate if the Optional argument provided is a None value it will return an empty list,
-    else it returns any errors returned by the item validation function . 
+    else it returns any errors returned by the item validation function .
     """
+
     def _validate(
         maybe_item: Optional[T], property_name: str
     ) -> List[ValidateModelProperiesError]:

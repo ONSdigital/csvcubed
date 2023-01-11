@@ -2,7 +2,7 @@
 Pandas Inputs
 -------------
 """
-from typing import Union, Iterable, Optional, Any, List
+from typing import Any, Iterable, List, Optional, Union
 
 import pandas as pd
 

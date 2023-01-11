@@ -9,7 +9,6 @@ import shutil
 from pathlib import Path
 from typing import Iterable
 
-
 log = logging.getLogger(__name__)
 
 

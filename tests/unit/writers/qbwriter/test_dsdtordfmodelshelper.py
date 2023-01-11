@@ -1,31 +1,31 @@
 import pandas as pd
 import pytest
 from csvcubedmodels import rdf
-from rdflib import URIRef, Graph, RDFS, Literal
+from rdflib import RDFS, Graph, Literal, URIRef
 
 from csvcubed.models.cube.cube import Cube
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.cube.qb.columns import QbColumn
-from csvcubed.models.cube.qb.components.arbitraryrdf import RdfSerialisationHint
-from csvcubed.models.cube.qb.components.arbitraryrdf import TripleFragment
+from csvcubed.models.cube.qb.components.arbitraryrdf import (
+    RdfSerialisationHint,
+    TripleFragment,
+)
 from csvcubed.models.cube.qb.components.attribute import (
-    NewQbAttribute,
     ExistingQbAttribute,
+    NewQbAttribute,
 )
 from csvcubed.models.cube.qb.components.dimension import (
-    NewQbDimension,
     ExistingQbDimension,
+    NewQbDimension,
 )
-from csvcubed.models.cube.qb.components.measure import NewQbMeasure, ExistingQbMeasure
+from csvcubed.models.cube.qb.components.measure import ExistingQbMeasure, NewQbMeasure
 from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
-from csvcubed.models.cube.qb.components.unitscolumn import NewQbUnit, ExistingQbUnit
+from csvcubed.models.cube.qb.components.unitscolumn import ExistingQbUnit, NewQbUnit
 from csvcubed.models.cube.uristyle import URIStyle
 from csvcubed.writers.helpers.qbwriter.dsdtordfmodelshelper import DsdToRdfModelsHelper
 from csvcubed.writers.helpers.qbwriter.urihelper import UriHelper
-from .testhelpers import (
-    assert_component_defined,
-    get_standard_cube_for_columns,
-)
+
+from .testhelpers import assert_component_defined, get_standard_cube_for_columns
 
 
 def test_structure_defined():

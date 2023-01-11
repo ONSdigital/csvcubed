@@ -3,19 +3,19 @@ Test adding Arbitrary RDF relations to a model.
 """
 
 from dataclasses import dataclass, field
-from typing import Set, List
+from typing import List, Set
 
 import pytest
-from csvcubedmodels.rdf import NewResource, InversePredicate
-from rdflib import RDFS, FOAF
-from rdflib.term import URIRef, Literal
+from csvcubedmodels.rdf import InversePredicate, NewResource
+from rdflib import FOAF, RDFS
+from rdflib.term import Literal, URIRef
 
 from csvcubed.models.cube.qb.components.arbitraryrdf import (
     ArbitraryRdf,
-    TripleFragmentBase,
+    InverseTripleFragment,
     RdfSerialisationHint,
     TripleFragment,
-    InverseTripleFragment,
+    TripleFragmentBase,
 )
 
 

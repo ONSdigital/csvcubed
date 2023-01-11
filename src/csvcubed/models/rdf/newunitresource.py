@@ -5,13 +5,13 @@ New Unit
 from typing import Annotated, Optional
 
 from csvcubedmodels.rdf import (
-    NewMetadataResource,
-    Triple,
-    PropertyStatus,
-    map_resource_to_uri,
-    map_to_literal_with_datatype,
     ExistingResource,
     MaybeResource,
+    NewMetadataResource,
+    PropertyStatus,
+    Triple,
+    map_resource_to_uri,
+    map_to_literal_with_datatype,
 )
 from csvcubedmodels.rdf.namespaces import OM2, QUDT, RDFS, XSD
 

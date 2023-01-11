@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Tuple
 
 from appdirs import AppDirs
-from behave import when, then
+from behave import then, when
 from csvcubeddevtools.behaviour.temporarydirectory import get_context_temp_dir_path
 
 

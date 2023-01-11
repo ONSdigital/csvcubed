@@ -15,12 +15,9 @@ from pydantic import validator
 from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_str
 from csvcubed.models.validationerror import ValidationError
 from csvcubed.utils.qb.validation.uri_safe import ensure_no_uri_safe_conflicts
+
 from .datastructuredefinition import QbColumnStructuralDefinition
-from .measure import (
-    QbMeasure,
-    NewQbMeasure,
-    ExistingQbMeasure,
-)
+from .measure import ExistingQbMeasure, NewQbMeasure, QbMeasure
 from .validationerrors import UndefinedMeasureUrisError
 
 

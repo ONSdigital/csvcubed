@@ -6,7 +6,7 @@ Utilities to help when running SPARQL queries.
 """
 import os.path
 from pathlib import Path, PosixPath
-from typing import List, Optional, Any, Callable, Dict, Union
+from typing import Any, Callable, Dict, List, Optional, Union
 
 import rdflib.term
 from rdflib import Graph, Literal

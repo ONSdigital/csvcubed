@@ -28,7 +28,7 @@
 	"mounts": [
 		"source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
 	],
-	"postCreateCommand": "/csvcubed-venv/bin/poetry install",
+	"postCreateCommand": "./.devcontainer/post-create-command.sh",
 	"waitFor": "postCreateCommand"
 	// Uncomment to connect as a non-root user if you've added one. See https://aka.ms/vscode-remote/containers/non-root.
 	// "remoteUser": "vscode"

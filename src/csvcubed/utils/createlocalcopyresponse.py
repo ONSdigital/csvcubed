@@ -1,14 +1,14 @@
 import copy
 import logging
-import requests
 from io import BytesIO
-from typing import Dict, Optional
 from pathlib import Path
+from typing import Dict, Optional
 
+import requests
 from requests.adapters import BaseAdapter, HTTPAdapter
 
-from csvcubed.utils.log import debug_log_exception
 from csvcubed.definitions import APP_ROOT_DIR_PATH
+from csvcubed.utils.log import debug_log_exception
 
 _logger = logging.getLogger(__name__)
 

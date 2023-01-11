@@ -15,8 +15,8 @@ from csvcubed.models.cube.qb.components.unit import NewQbUnit
 from csvcubed.models.cube.qb.validationerrors import CsvColumnUriTemplateMissingError
 from csvcubed.utils.qb.validation.observations import (
     get_observation_status_columns,
+    validate_observations,
 )
-from csvcubed.utils.qb.validation.observations import validate_observations
 
 
 def test_find_sdmxa_obs_status_columns():

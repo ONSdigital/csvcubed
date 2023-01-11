@@ -2,7 +2,7 @@
 URI Safe Validations
 --------------------
 """
-from typing import Tuple, List, Dict, Set, Type, Union
+from typing import Dict, List, Set, Tuple, Type, Union
 
 from csvcubed.models.cube.qb.components.validationerrors import (
     ConflictingUriSafeValuesError,

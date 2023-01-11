@@ -15,17 +15,15 @@ from csvcubed.models.cube.cube import Cube
 from csvcubed.models.cube.qb import QbColumn
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.cube.qb.components import (
+    NewQbCodeList,
+    NewQbConcept,
+    NewQbDimension,
     NewQbMeasure,
     NewQbUnit,
-    NewQbDimension,
-    NewQbCodeList,
     QbMultiMeasureDimension,
     QbMultiUnits,
-    NewQbConcept,
 )
-from csvcubed.models.cube.qb.components.observedvalue import (
-    QbObservationValue,
-)
+from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
 from csvcubed.readers.cubeconfig.v1.configdeserialiser import get_deserialiser
 from csvcubed.utils.iterables import first
 from tests.unit.test_baseunit import get_test_cases_dir

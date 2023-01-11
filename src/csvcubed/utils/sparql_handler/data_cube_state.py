@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from functools import cached_property
 from pathlib import Path
-from typing import Dict, List, Any
+from typing import Any, Dict, List, Optional, TypeVar
 
 import rdflib
 
@@ -10,25 +10,26 @@ from csvcubed.models.sparqlresults import (
     ColTitlesAndNamesResult,
     CsvUrlResult,
     CubeTableIdentifiers,
+    IsPivotedShapeMeasureResult,
     ObservationValueColumnTitleAboutUrlResult,
     QubeComponentResult,
     QubeComponentsResult,
     UnitColumnAboutValueUrlResult,
-    IsPivotedShapeMeasureResult,
+    UnitResult,
 )
-from csvcubed.utils.dict import (
-    get_from_dict_ensure_exists,
-)  # Use this instead of _get_value_for_key
-from csvcubed.utils.iterables import group_by, first
+from csvcubed.utils.iterables import first, group_by
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_col_titles_and_names,
     select_csvw_dsd_qube_components,
     select_data_set_dsd_and_csv_url,
+    select_is_pivoted_shape_for_measures_in_data_set,
     select_observation_value_column_title_and_about_url,
     select_qb_csv_url,
     select_unit_col_about_value_urls,
-    select_is_pivoted_shape_for_measures_in_data_set,
+    select_units,
 )
+
+T = TypeVar("T")
 
 
 @dataclass
@@ -39,8 +40,8 @@ class DataCubeState:
     """
     Private utility functions.
     """
-    # Use existing function from csvcubed.utils.dict
-    def _get_value_for_key(self, key: str, dict: Dict) -> Any:
+
+    def _get_value_for_key(self, key: str, dict: Dict[str, T]) -> T:
         maybe_value = dict.get(key)
         if maybe_value is None:
             raise KeyError(f"Could not find the definition for key '{key}'")
@@ -79,10 +80,10 @@ class DataCubeState:
         return group_by(results, lambda r: r.csv_url)
 
     @cached_property
-    def _select_qb_csv_url(self) -> Dict[str, List[CsvUrlResult]]:
+    def _units(self) -> Dict[str, UnitResult]:
         """ """
-        results = select_qb_csv_url(self.rdf_graph)
-        return group_by(results, lambda r: r.csv_url)
+        results = select_units(self.rdf_graph)
+        return {result.unit_uri: result for result in results}
 
     @cached_property
     def _cube_table_identifiers(self) -> Dict[str, CubeTableIdentifiers]:
@@ -186,6 +187,14 @@ class DataCubeState:
     def get_qb_csv_url(self, csv_url: str) -> List[CsvUrlResult]:
         """ """
         return get_from_dict_ensure_exists(self._select_qb_csv_url, csv_url)
+
+    def get_unit_for_uri(self, uri: str) -> Optional[UnitResult]:
+        """ """
+        return self._units.get(uri)
+
+    def get_units(self) -> List[UnitResult]:
+        """ """
+        return list(self._units.values())
 
     def get_cube_identifiers_for_csv(self, csv_url: str) -> CubeTableIdentifiers:
         """

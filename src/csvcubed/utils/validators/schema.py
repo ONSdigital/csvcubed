@@ -1,13 +1,13 @@
 import logging
-from typing import Iterable, Dict, List, Tuple
+from typing import Dict, Iterable, List, Tuple
 
 import jsonschema
 import jsonschema.exceptions
 
 from csvcubed.models.jsonvalidationerrors import (
-    JsonSchemaValidationError,
-    GenericJsonSchemaValidationError,
     AnyOneOfJsonSchemaValidationError,
+    GenericJsonSchemaValidationError,
+    JsonSchemaValidationError,
 )
 from csvcubed.utils.json import to_json_path
 from csvcubed.utils.log import debug_log_exception

@@ -3,22 +3,18 @@ from typing import List
 from csvcubed.models.cube.cube import Cube
 from csvcubed.models.cube.qb.columns import QbColumn
 from csvcubed.models.cube.qb.components import (
-    QbDimension,
     ExistingQbDimension,
     QbAttribute,
     QbAttributeLiteral,
+    QbDimension,
 )
 from csvcubed.models.cube.qb.validationerrors import (
     CsvColumnLiteralWithUriTemplate,
-)
-from csvcubed.models.cube.qb.validationerrors import (
-    NoDimensionsDefinedError,
     CsvColumnUriTemplateMissingError,
+    NoDimensionsDefinedError,
 )
 from csvcubed.models.validationerror import ValidationError
-from csvcubed.utils.qb.validation.observations import (
-    validate_observations,
-)
+from csvcubed.utils.qb.validation.observations import validate_observations
 
 
 def validate_qb_component_constraints(cube: Cube) -> List[ValidationError]:

@@ -2,11 +2,11 @@ import csv
 from dataclasses import dataclass, field
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from typing import Optional, List, Set
+from typing import List, Optional, Set
 
 import pandas as pd
 import pytest
-from rdflib import XSD, Graph, URIRef, Literal
+from rdflib import XSD, Graph, Literal, URIRef
 
 from csvcubed.models.cube.columns import SuppressedCsvColumn
 from csvcubed.models.cube.cube import Cube
@@ -17,15 +17,15 @@ from csvcubed.models.cube.qb.components.arbitraryrdf import (
     TripleFragmentBase,
 )
 from csvcubed.models.cube.qb.components.attribute import (
-    NewQbAttribute,
     ExistingQbAttribute,
+    NewQbAttribute,
     QbAttribute,
 )
 from csvcubed.models.cube.qb.components.dimension import (
-    NewQbDimension,
     ExistingQbDimension,
+    NewQbDimension,
 )
-from csvcubed.models.cube.qb.components.measure import QbMeasure, NewQbMeasure
+from csvcubed.models.cube.qb.components.measure import NewQbMeasure, QbMeasure
 from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureDimension
 from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
 from csvcubed.models.cube.qb.components.unit import NewQbUnit

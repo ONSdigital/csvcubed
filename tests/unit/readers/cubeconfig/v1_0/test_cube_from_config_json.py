@@ -13,23 +13,21 @@ from csvcubed.models.cube.cube import Cube
 from csvcubed.models.cube.qb import QbColumn
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.cube.qb.components import (
+    NewQbAttribute,
+    NewQbCodeList,
+    NewQbConcept,
+    NewQbDimension,
     NewQbMeasure,
     NewQbUnit,
-    NewQbDimension,
-    NewQbCodeList,
     QbMultiMeasureDimension,
     QbMultiUnits,
-    NewQbAttribute,
-    NewQbConcept,
 )
 from csvcubed.models.cube.qb.components.attribute import (
     ExistingQbAttribute,
     ExistingQbAttributeLiteral,
     NewQbAttributeLiteral,
 )
-from csvcubed.models.cube.qb.components.attributevalue import (
-    NewQbAttributeValue,
-)
+from csvcubed.models.cube.qb.components.attributevalue import NewQbAttributeValue
 from csvcubed.models.cube.qb.components.codelist import (
     CompositeQbCodeList,
     ExistingQbCodeList,
@@ -47,7 +45,8 @@ from csvcubed.readers.cubeconfig.v1.mapcolumntocomponent import (
     map_column_to_qb_component,
 )
 from csvcubed.utils.uri import uri_safe
-from tests.unit.test_baseunit import get_test_cases_dir, assert_num_validation_errors
+from tests.unit.test_baseunit import assert_num_validation_errors, get_test_cases_dir
+
 from .virtualconfigs import VirtualConfigurations as vc
 
 TEST_CASE_DIR = get_test_cases_dir().absolute() / "readers" / "cube-config" / "v1.0"

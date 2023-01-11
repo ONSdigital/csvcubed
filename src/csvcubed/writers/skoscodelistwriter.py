@@ -14,10 +14,10 @@ import pandas as pd
 from csvcubedmodels.rdf import ExistingResource
 
 from csvcubed.models.cube.qb.components import (
-    RdfSerialisationHint,
-    NewQbCodeList,
     CompositeQbCodeList,
     DuplicatedQbConcept,
+    NewQbCodeList,
+    RdfSerialisationHint,
 )
 from csvcubed.models.cube.qb.components.concept import NewQbConcept
 from csvcubed.models.cube.uristyle import URIStyle

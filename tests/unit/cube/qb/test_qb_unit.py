@@ -7,16 +7,13 @@ import pytest
 
 from csvcubed.definitions import APP_ROOT_DIR_PATH
 from csvcubed.models.cube.qb import QbColumn
-from csvcubed.models.cube.qb.components.observedvalue import (
-    QbObservationValue,
-)
+from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
 from csvcubed.models.cube.qb.components.unit import ExistingQbUnit, NewQbUnit
 from csvcubed.readers.cubeconfig.v1.columnschema import (
     EXISTING_UNIT_DEFAULT_SCALING_FACTOR,
 )
 from csvcubed.readers.cubeconfig.v1.configdeserialiser import get_deserialiser
-from tests.unit.test_baseunit import assert_num_validation_errors
-from tests.unit.test_baseunit import get_test_cases_dir
+from tests.unit.test_baseunit import assert_num_validation_errors, get_test_cases_dir
 
 TEST_CASE_DIR = get_test_cases_dir().absolute() / "readers" / "cube-config" / "v1.0"
 SCHEMA_PATH_FILE = APP_ROOT_DIR_PATH / "schema" / "cube-config" / "v1_0" / "schema.json"
