@@ -278,7 +278,6 @@ def transform_dataset_to_canonical_shape(
     dataset: pd.DataFrame,
     qube_components: List[QubeComponentResult],
     csv_url: str,
-    csvw_metadata_rdf_graph: rdflib.ConjunctiveGraph,
     csvw_metadata_json_path: Path,
 ) -> Tuple[pd.DataFrame, str, str]:
     """
