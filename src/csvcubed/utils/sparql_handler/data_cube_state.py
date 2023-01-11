@@ -10,10 +10,7 @@ from csvcubed.models.sparqlresults import (
     ColumnDefinition,
     CubeTableIdentifiers,
     IsPivotedShapeMeasureResult,
-    ObservationValueColumnTitleAboutUrlResult,
-    QubeComponentResult,
     QubeComponentsResult,
-    UnitColumnAboutValueUrlResult,
     UnitResult,
 )
 from csvcubed.utils.iterables import first, group_by
@@ -22,8 +19,6 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_csvw_dsd_qube_components,
     select_data_set_dsd_and_csv_url,
     select_is_pivoted_shape_for_measures_in_data_set,
-    select_observation_value_column_title_and_about_url,
-    select_unit_col_about_value_urls,
     select_units,
 )
 
@@ -48,26 +43,6 @@ class DataCubeState:
     """
     Private cached properties.
     """
-
-    @cached_property
-    def _unit_col_about_value_urls(
-        self,
-    ) -> Dict[str, List[UnitColumnAboutValueUrlResult]]:
-        """
-        Queries and caches unit column about and value urls.
-        """
-        results = select_unit_col_about_value_urls(self.rdf_graph)
-        return group_by(results, lambda r: r.csv_url)
-
-    @cached_property
-    def _obs_val_col_titles_about_urls(
-        self,
-    ) -> Dict[str, List[ObservationValueColumnTitleAboutUrlResult]]:
-        """
-        Queries and caches observation value column titles and about urls.
-        """
-        results = select_observation_value_column_title_and_about_url(self.rdf_graph)
-        return group_by(results, lambda r: r.csv_url)
 
     @cached_property
     def _column_definitions(self) -> Dict[str, List[ColumnDefinition]]:
@@ -156,28 +131,6 @@ class DataCubeState:
     """
     Public getters for the cached properties.
     """
-
-    def get_unit_col_about_value_urls_for_csv(
-        self, csv_url: str
-    ) -> List[UnitColumnAboutValueUrlResult]:
-        """
-        Getter for _unit_col_about_value_urls cached property.
-        """
-        result: List[UnitColumnAboutValueUrlResult] = self._get_value_for_key(
-            csv_url, self._unit_col_about_value_urls
-        )
-        return result
-
-    def get_obs_val_col_titles_about_urls_for_csv(
-        self, csv_url: str
-    ) -> List[ObservationValueColumnTitleAboutUrlResult]:
-        """
-        Getter for _obs_val_col_titles_about_urls cached property.
-        """
-        result: List[
-            ObservationValueColumnTitleAboutUrlResult
-        ] = self._get_value_for_key(csv_url, self._obs_val_col_titles_about_urls)
-        return result
 
     def get_column_definitions_for_csv(self, csv_url: str) -> List[ColumnDefinition]:
         """

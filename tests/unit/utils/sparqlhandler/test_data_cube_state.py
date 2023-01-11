@@ -4,11 +4,7 @@ import pytest
 
 from csvcubed.cli.inspect.metadataprinter import to_absolute_rdflib_file_path
 from csvcubed.models.cube.cube_shape import CubeShape
-from csvcubed.models.sparqlresults import (
-    ColumnDefinition,
-    ObservationValueColumnTitleAboutUrlResult,
-    UnitColumnAboutValueUrlResult,
-)
+from csvcubed.models.sparqlresults import ColumnDefinition
 from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
@@ -23,87 +19,6 @@ from tests.unit.utils.sparqlhandler.test_sparqlquerymanager import (
 )
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
-
-
-def _get_unit_col_about_value_urls_result_by_about_url(
-    about_url: str, results: List[UnitColumnAboutValueUrlResult]
-) -> UnitColumnAboutValueUrlResult:
-    results = [result for result in results if result.about_url == about_url]
-    assert len(results) == 1
-    return results[0]
-
-
-def _get_obs_val_col_title_about_url_result_by_about_url(
-    about_url: str, results: List[ObservationValueColumnTitleAboutUrlResult]
-) -> ObservationValueColumnTitleAboutUrlResult:
-    results = [
-        result
-        for result in results
-        if result.observation_value_col_about_url == about_url
-    ]
-    assert len(results) == 1
-    return results[0]
-
-
-def test_get_unit_col_about_value_urls_for_csv():
-    """
-    Ensures that the valid unit_col_about_value property is returned for the given csv.
-    """
-    csvw_metadata_json_path = (
-        _test_case_base_dir
-        / "pivoted-single-measure-dataset"
-        / "qb-id-10004.csv-metadata.json"
-    )
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    data_cube_state = DataCubeState(csvw_metadata_rdf_graph, csvw_metadata_json_path)
-
-    data_set_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
-    data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
-    csv_url = select_qb_csv_url(csvw_metadata_rdf_graph, data_set_uri).csv_url
-
-    results = data_cube_state.get_unit_col_about_value_urls_for_csv(csv_url)
-
-    assert len(results) == 1
-
-    result = _get_unit_col_about_value_urls_result_by_about_url(
-        "qb-id-10004.csv#obs/{some_dimension}@some-measure", results
-    )
-    print(type(result))
-    assert result.csv_url == "qb-id-10004.csv"
-    assert result.about_url == "qb-id-10004.csv#obs/{some_dimension}@some-measure"
-    assert result.value_url == "qb-id-10004.csv#unit/some-unit"
-
-
-def test_get_obs_val_col_title_about_url_for_csv():
-    """
-    Ensures that the valid obs_val_col_title_about_url_for_csv property is returned for the given csv.
-    """
-    csvw_metadata_json_path = (
-        _test_case_base_dir
-        / "pivoted-single-measure-dataset"
-        / "qb-id-10004.csv-metadata.json"
-    )
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    data_cube_state = DataCubeState(csvw_metadata_rdf_graph, csvw_metadata_json_path)
-
-    data_set_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
-    data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
-    csv_url = select_qb_csv_url(csvw_metadata_rdf_graph, data_set_uri).csv_url
-
-    results = data_cube_state.get_obs_val_col_titles_about_urls_for_csv(csv_url)
-
-    result = _get_obs_val_col_title_about_url_result_by_about_url(
-        "qb-id-10004.csv#obs/{some_dimension}@some-measure", results
-    )
-
-    assert result.csv_url == "qb-id-10004.csv"
-    assert result.observation_value_col_title == "Some Obs Val"
-    assert (
-        result.observation_value_col_about_url
-        == "qb-id-10004.csv#obs/{some_dimension}@some-measure"
-    )
 
 
 def test_get_column_definitions_for_csv():

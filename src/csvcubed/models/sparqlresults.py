@@ -250,28 +250,6 @@ class IsPivotedShapeMeasureResult:
     is_pivoted_shape: bool
 
 
-@dataclass
-class UnitColumnAboutValueUrlResult:
-    """
-    Model representing the About URL and Value URL of the unit column
-    """
-
-    csv_url: str
-    about_url: Optional[str]
-    value_url: str
-
-
-@dataclass
-class ObservationValueColumnTitleAboutUrlResult:
-    """
-    Model representing the Column Title and About URL of an observation value
-    """
-
-    csv_url: str
-    observation_value_col_title: str
-    observation_value_col_about_url: Optional[str]
-
-
 @dataclass(unsafe_hash=True)
 class ColumnDefinition:
     """
@@ -778,44 +756,6 @@ def map_is_pivoted_shape_for_measures_in_data_set(
             csv_url=str(row_result["csvUrl"]),
             measure=str(row_result["measure"]),
             is_pivoted_shape=bool(row_result["isPivotedShape"]),
-        )
-
-    return [map_row(row.asdict()) for row in sparql_results]
-
-
-def map_unit_col_about_value_urls_result(
-    sparql_results: List[ResultRow],
-) -> List[UnitColumnAboutValueUrlResult]:
-    """
-    Maps SPARQL query results to 'UnitColumnAboutValueUrlResult'
-    """
-
-    def map_row(row_result: Dict[str, Any]) -> UnitColumnAboutValueUrlResult:
-        return UnitColumnAboutValueUrlResult(
-            csv_url=str(row_result["csvUrl"]),
-            about_url=none_or_map(row_result.get("aboutUrl"), str),
-            value_url=str(row_result["valueUrl"]),
-        )
-
-    return [map_row(row.asdict()) for row in sparql_results]
-
-
-def map_observation_value_col_title_and_about_url_result(
-    sparql_results: List[ResultRow],
-) -> List[ObservationValueColumnTitleAboutUrlResult]:
-    """
-    Maps SPARQL query results to 'ObservationValueColumnTitleAboutUrlResult'
-    """
-
-    def map_row(
-        row_result: Dict[str, Any]
-    ) -> ObservationValueColumnTitleAboutUrlResult:
-        return ObservationValueColumnTitleAboutUrlResult(
-            csv_url=str(row_result["csvUrl"]),
-            observation_value_col_title=str(row_result["observationValueColumnTitle"]),
-            observation_value_col_about_url=none_or_map(
-                row_result.get("observationValueColumnAboutUrl"), str
-            ),
         )
 
     return [map_row(row.asdict()) for row in sparql_results]

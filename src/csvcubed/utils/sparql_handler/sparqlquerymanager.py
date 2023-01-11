@@ -30,11 +30,9 @@ from csvcubed.models.sparqlresults import (
     DSDLabelURIResult,
     IsPivotedShapeMeasureResult,
     MetadataDependenciesResult,
-    ObservationValueColumnTitleAboutUrlResult,
     PrimaryKeyColNamesByDatasetUrlResult,
     QubeComponentsResult,
     TableSchemaPropertiesResult,
-    UnitColumnAboutValueUrlResult,
     UnitResult,
     map_catalog_metadata_result,
     map_codelist_cols_by_csv_url_result,
@@ -47,11 +45,9 @@ from csvcubed.models.sparqlresults import (
     map_dataset_label_dsd_uri_sparql_result,
     map_is_pivoted_shape_for_measures_in_data_set,
     map_metadata_dependency_results,
-    map_observation_value_col_title_and_about_url_result,
     map_primary_key_col_names_by_csv_url_result,
     map_qube_components_sparql_result,
     map_table_schema_properties_result,
-    map_unit_col_about_value_urls_result,
     map_units,
 )
 from csvcubed.utils.sparql_handler.sparql import ask, select
@@ -103,12 +99,6 @@ class SPARQLQueryName(Enum):
 
     SELECT_IS_PIVOTED_SHAPE_FOR_MEASURES_IN_DATA_SET = (
         "select_is_pivoted_shape_for_measures_in_data_set"
-    )
-
-    SELECT_UNIT_COL_ABOUT_AND_VALUE_URLS = "select_unit_col_about_and_value_urls"
-
-    SELECT_UNIT_COL_OBSERVED_COL_TITLE_AND_ABOUT_URL = (
-        "select_unit_col_observed_col_title_and_about_url"
     )
 
     SELECT_COLUMN_DEFINITIONS = "select_column_definitions"
@@ -506,38 +496,6 @@ def select_table_schema_properties(
         )
 
     return map_table_schema_properties_result(results[0])
-
-
-def select_unit_col_about_value_urls(
-    rdf_graph: rdflib.Graph,
-) -> List[UnitColumnAboutValueUrlResult]:
-    """
-    Queries a CSV-W and extracts the unit column's about and value urls.
-    """
-    results: List[ResultRow] = select(
-        _get_query_string_from_file(
-            SPARQLQueryName.SELECT_UNIT_COL_ABOUT_AND_VALUE_URLS
-        ),
-        rdf_graph,
-    )
-
-    return map_unit_col_about_value_urls_result(results)
-
-
-def select_observation_value_column_title_and_about_url(
-    rdf_graph: rdflib.Graph,
-) -> List[ObservationValueColumnTitleAboutUrlResult]:
-    """
-    Queries a CSV-W and extracts the observation value column title and about url.
-    """
-    results: List[ResultRow] = select(
-        _get_query_string_from_file(
-            SPARQLQueryName.SELECT_UNIT_COL_OBSERVED_COL_TITLE_AND_ABOUT_URL
-        ),
-        rdf_graph,
-    )
-
-    return map_observation_value_col_title_and_about_url_result(results)
 
 
 def select_column_definitions(

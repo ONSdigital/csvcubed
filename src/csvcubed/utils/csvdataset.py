@@ -6,13 +6,13 @@ Utilities for CSV Datasets
 """
 
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Tuple, Set
 from uuid import uuid1
 
 import pandas as pd
-import rdflib
 import uritemplate
 from uritemplate.orderedset import OrderedSet
+from csvcubedmodels.rdf.namespaces import SDMX_Attribute
 
 from csvcubed.cli.inspect.inspectdatasetmanager import (
     filter_components_from_dsd,
@@ -23,15 +23,13 @@ from csvcubed.cli.inspect.inspectdatasetmanager import (
 from csvcubed.models.csvcubedexception import (
     InvalidNumberOfRecordsException,
     InvalidNumOfDSDComponentsForObsValColTitleException,
-    InvalidNumOfUnitColsForObsValColTitleException,
-    InvalidNumOfValUrlsForAboutUrlException,
+    InvalidObservationColumnTitle,
+    InvalidUnitColumnDefinition,
 )
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import (
     ColumnDefinition,
-    ObservationValueColumnTitleAboutUrlResult,
     QubeComponentResult,
-    UnitColumnAboutValueUrlResult,
 )
 from csvcubed.utils.iterables import first
 from csvcubed.utils.qb.components import ComponentField, ComponentPropertyType
@@ -64,10 +62,9 @@ def _materialise_unit_uri_for_row(
 def _create_unit_col_in_melted_data_set_for_pivoted_shape(
     col_name: str,
     melted_df: pd.DataFrame,
-    unit_col_about_urls_value_urls: List[UnitColumnAboutValueUrlResult],
-    obs_val_col_titles_about_urls: List[ObservationValueColumnTitleAboutUrlResult],
     column_definitions: List[ColumnDefinition],
     data_cube_state: DataCubeState,
+    measure_uris: Set[str],
 ):
     """
     Adds the unit column to the melted data set for the pivoted shape data set input.
@@ -75,25 +72,40 @@ def _create_unit_col_in_melted_data_set_for_pivoted_shape(
     # Creating a new column in pandas dataframe with empty values.
     melted_df[col_name] = ""
 
+    observed_value_columns = [
+        c
+        for c in column_definitions
+        if c.property_url in measure_uris and c.data_type is not None
+    ]
+
+    unit_columns = [
+        c
+        for c in column_definitions
+        if c.property_url == str(SDMX_Attribute.unitMeasure)
+    ]
+
     for idx, row in melted_df.iterrows():
-        observation_uri = _get_observation_uri_for_melted_df_row(
-            obs_val_col_titles_about_urls, row
+        observed_value_column = _get_observed_value_col_for_melted_df_row(
+            observed_value_columns,
+            row,
         )
 
         # Use the unit col's about url to get the unit col's value url.
         # N.B., for an old-style single measure pivoted shape, the following filter still works as the
         # about url and observation uri are both None (i.e. equal).
-        unit_col_about_url_value_url = first(
-            unit_col_about_urls_value_urls, lambda u: u.about_url == observation_uri
+
+        unit_column = first(
+            unit_columns, lambda u: u.about_url == observed_value_column.about_url
         )
-        if unit_col_about_url_value_url is None:
-            raise InvalidNumOfValUrlsForAboutUrlException(
-                about_url=observation_uri or "None",
+
+        if unit_column is None or unit_column.value_url is None:
+            raise InvalidUnitColumnDefinition(
+                about_url=observed_value_column.about_url or "None",
                 num_of_value_urls=0,
             )
 
         unit_uri = _get_unit_uri_for_maybe_template(
-            unit_col_about_url_value_url.value_url, column_definitions, row
+            unit_column.value_url, column_definitions, row
         )
         maybe_unit = data_cube_state.get_unit_for_uri(unit_uri)
         if maybe_unit is None:
@@ -122,22 +134,17 @@ def _get_unit_uri_for_maybe_template(
         )
 
 
-def _get_observation_uri_for_melted_df_row(
-    obs_val_col_titles_about_urls: List[ObservationValueColumnTitleAboutUrlResult],
+def _get_observed_value_col_for_melted_df_row(
+    observation_value_columns: List[ColumnDefinition],
     row: pd.Series,
-) -> Optional[str]:
+) -> ColumnDefinition:
     obs_val_col_title = str(row["Observation Value"])
-    # Use the observation value col title to get the unit col's about url.
-    obs_val_col_title_about_url = first(
-        obs_val_col_titles_about_urls,
-        lambda o: o.observation_value_col_title == obs_val_col_title,
+    obs_val_column = first(
+        observation_value_columns, lambda c: c.title == obs_val_col_title
     )
-    if obs_val_col_title_about_url is None:
-        raise InvalidNumOfUnitColsForObsValColTitleException(
-            obs_val_col_title=obs_val_col_title,
-            num_of_unit_cols=0,
-        )
-    return obs_val_col_title_about_url.observation_value_col_about_url
+    if obs_val_column is None:
+        raise InvalidObservationColumnTitle(obs_val_col_title=obs_val_col_title)
+    return obs_val_column
 
 
 def _create_measure_col_in_melted_data_set_for_pivoted_shape(
@@ -243,14 +250,6 @@ def _melt_pivoted_shape(
     if csv_url is None:
         raise ValueError("csv_url cannot be None.")
 
-    unit_col_about_urls_value_urls = (
-        data_cube_state.get_unit_col_about_value_urls_for_csv(csv_url)
-    )
-
-    # todo: Remove this and use the existing columns query.
-    obs_val_col_titles_about_urls = (
-        data_cube_state.get_obs_val_col_titles_about_urls_for_csv(csv_url)
-    )
     column_definitions = data_cube_state.get_column_definitions_for_csv(csv_url)
 
     measure_components = filter_components_from_dsd(
@@ -258,6 +257,12 @@ def _melt_pivoted_shape(
         ComponentField.PropertyType,
         ComponentPropertyType.Measure.value,
     )
+    measure_uris = {
+        c.property
+        for c in measure_components
+        if c.property_type == str(ComponentPropertyType.Measure.value)
+    }
+
     melted_df = _melt_data_set(canonical_shape_dataset, measure_components)
 
     measure_col = f"Measure_{str(uuid1())}"
@@ -266,12 +271,7 @@ def _melt_pivoted_shape(
         measure_col, melted_df, measure_components
     )
     _create_unit_col_in_melted_data_set_for_pivoted_shape(
-        unit_col,
-        melted_df,
-        unit_col_about_urls_value_urls,
-        obs_val_col_titles_about_urls,
-        column_definitions,
-        data_cube_state,
+        unit_col, melted_df, column_definitions, data_cube_state, measure_uris
     )
 
     canonical_shape_dataset = melted_df.drop("Observation Value", axis=1)
