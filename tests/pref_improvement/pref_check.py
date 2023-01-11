@@ -9,7 +9,6 @@ from dataclasses import fields, is_dataclass
 from pathlib import Path
 from typing import Iterable, Optional
 
-import csvcubed
 from csvcubed.definitions import APP_ROOT_DIR_PATH
 from csvcubed.models.validatedmodel import ValidatedModel
 

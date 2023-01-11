@@ -53,7 +53,9 @@ def get_deserialiser(
     [Path, Optional[Path]],
     Tuple[QbCube, List[JsonSchemaValidationError], List[ValidationError]],
 ]:
-    """Generates a deserialiser function which validates the JSON file against the schema at :obj:`schema_path`"""
+    """
+    Generates a deserialiser function which validates the JSON file against the schema at :obj:`schema_path`
+    """
 
     def get_cube_from_config_json(
         csv_path: Path,

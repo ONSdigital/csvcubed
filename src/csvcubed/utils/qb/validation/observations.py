@@ -1,5 +1,3 @@
-import os
-from distutils.util import strtobool
 from typing import Dict, List, Union
 
 from csvcubedmodels.rdf.namespaces import SDMX_Attribute

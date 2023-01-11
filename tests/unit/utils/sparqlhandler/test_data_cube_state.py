@@ -1,5 +1,3 @@
-from typing import List
-
 import pytest
 
 from csvcubed.cli.inspect.metadataprinter import to_absolute_rdflib_file_path

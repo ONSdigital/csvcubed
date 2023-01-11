@@ -4,13 +4,11 @@ import pytest
 from csvcubedmodels.rdf import XSD, SDMX_Attribute
 from pandas.util.testing import assert_frame_equal
 
-from csvcubed.cli.inspect.metadataprinter import to_absolute_rdflib_file_path
 from csvcubed.models.csvcubedexception import (
     InvalidNumOfDSDComponentsForObsValColTitleException,
     InvalidObservationColumnTitle,
     InvalidUnitColumnDefinition,
 )
-from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import (
     ColumnDefinition,
     QubeComponentResult,
@@ -21,12 +19,7 @@ from csvcubed.utils.csvdataset import (
     _melt_data_set,
     transform_dataset_to_canonical_shape,
 )
-from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
-from csvcubed.utils.sparql_handler.sparqlquerymanager import (
-    select_csvw_catalog_metadata,
-    select_qb_csv_url,
-)
 from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.unit.cli.inspect.test_inspectdatasetmanager import get_arguments_qb_dataset
 from tests.unit.test_baseunit import get_test_cases_dir

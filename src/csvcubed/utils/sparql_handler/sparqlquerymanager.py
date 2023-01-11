@@ -11,6 +11,10 @@ from pathlib import Path
 from typing import Dict, List
 
 import rdflib
+from csvcubedmodels.rdf.namespaces import XSD
+from rdflib import Literal, URIRef
+from rdflib.query import ResultRow
+
 from csvcubed.definitions import APP_ROOT_DIR_PATH
 from csvcubed.models.csvcubedexception import (
     FailedToReadSparqlQueryException,
@@ -51,9 +55,6 @@ from csvcubed.models.sparqlresults import (
     map_units,
 )
 from csvcubed.utils.sparql_handler.sparql import ask, select
-from csvcubedmodels.rdf.namespaces import XSD
-from rdflib import Literal, URIRef
-from rdflib.query import ResultRow
 
 _logger = logging.getLogger(__name__)
 

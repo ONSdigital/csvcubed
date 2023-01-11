@@ -10,7 +10,6 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from csvcubedmodels.dataclassbase import DataClassBase
-from csvcubedmodels.rdf import QB
 from rdflib.query import ResultRow
 
 from csvcubed.utils.iterables import group_by
@@ -20,9 +19,9 @@ from csvcubed.utils.printable import (
     get_printable_tabular_str_from_list,
 )
 from csvcubed.utils.qb.components import (
+    ComponentPropertyType,
     get_component_property_as_relative_path,
     get_component_property_type,
-    ComponentPropertyType,
 )
 from csvcubed.utils.sparql_handler.sparql import none_or_map
 

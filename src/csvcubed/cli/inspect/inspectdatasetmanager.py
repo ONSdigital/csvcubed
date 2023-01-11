@@ -25,8 +25,8 @@ from csvcubed.models.inspectdataframeresults import (
     DatasetObservationsInfoResult,
     DatasetSingleMeasureResult,
 )
-from csvcubed.utils.iterables import first
 from csvcubed.models.sparqlresults import QubeComponentResult
+from csvcubed.utils.iterables import first
 from csvcubed.utils.pandas import read_csv
 from csvcubed.utils.qb.components import (
     ComponentField,

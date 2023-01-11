@@ -6,13 +6,13 @@ Utilities for CSV Datasets
 """
 
 from pathlib import Path
-from typing import Any, Dict, List, Tuple, Set
+from typing import Any, Dict, List, Set, Tuple
 from uuid import uuid1
 
 import pandas as pd
 import uritemplate
-from uritemplate.orderedset import OrderedSet
 from csvcubedmodels.rdf.namespaces import SDMX_Attribute
+from uritemplate.orderedset import OrderedSet
 
 from csvcubed.cli.inspect.inspectdatasetmanager import (
     filter_components_from_dsd,
@@ -27,10 +27,7 @@ from csvcubed.models.csvcubedexception import (
     InvalidUnitColumnDefinition,
 )
 from csvcubed.models.cube.cube_shape import CubeShape
-from csvcubed.models.sparqlresults import (
-    ColumnDefinition,
-    QubeComponentResult,
-)
+from csvcubed.models.sparqlresults import ColumnDefinition, QubeComponentResult
 from csvcubed.utils.iterables import first
 from csvcubed.utils.qb.components import ComponentField, ComponentPropertyType
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
