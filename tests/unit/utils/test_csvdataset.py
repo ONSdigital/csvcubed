@@ -863,7 +863,6 @@ def test_unit_not_defined_locally():
         dataset,
         qube_components,
         csv_url,
-        csvw_rdf_manager.rdf_graph,
         csvw_metadata_json_path,
     )
 
