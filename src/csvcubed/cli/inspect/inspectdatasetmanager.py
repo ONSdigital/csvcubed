@@ -105,9 +105,9 @@ def get_standard_shape_measure_col_name_from_dsd(
 
     if (
         first_measure_component is not None
-        and len(first_measure_component.used_in_columns) == 1
+        and len(first_measure_component.real_columns_used_in) == 1
     ):
-        csv_measure_column = first_measure_component.used_in_columns[0]
+        csv_measure_column = first_measure_component.real_columns_used_in[0]
         return csv_measure_column.title
     else:
         _logger.warning(
@@ -136,9 +136,9 @@ def get_standard_shape_unit_col_name_from_dsd(
 
     if (
         first_unit_component is not None
-        and len(first_unit_component.used_in_columns) == 1
+        and len(first_unit_component.real_columns_used_in) == 1
     ):
-        csv_units_column = first(first_unit_component.used_in_columns)
+        csv_units_column = first_unit_component.real_columns_used_in[0]
         return csv_units_column.title
     else:
         _logger.warning(

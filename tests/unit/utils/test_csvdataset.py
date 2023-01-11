@@ -14,6 +14,84 @@ from csvcubed.models.sparqlresults import (
     QubeComponentResult,
     UnitColumnAboutValueUrlResult,
 )
+
+_SOME_OTHER_DIMENSION_COL = ColumnDefinition(
+    csv_url="qb-id-10004.csv",
+    about_url=None,
+    data_type=None,
+    name="some_other_dimension",
+    property_url=None,
+    required=True,
+    suppress_output=False,
+    title="Some Other Dimension",
+    value_url=None,
+    virtual=False,
+)
+
+_SOME_DIMENSION_COL = ColumnDefinition(
+    csv_url="qb-id-10004.csv",
+    about_url=None,
+    data_type=None,
+    name="some_dimension",
+    property_url=None,
+    required=True,
+    suppress_output=False,
+    title="Some Dimension",
+    value_url=None,
+    virtual=False,
+)
+
+_SOME_ATTRIBUTE_COL = ColumnDefinition(
+    csv_url="qb-id-10004.csv",
+    about_url=None,
+    data_type=None,
+    name="some_attribute",
+    property_url=None,
+    required=False,
+    suppress_output=False,
+    title="Some Attribute",
+    value_url=None,
+    virtual=False,
+)
+
+_SOME_UNIT_COL = ColumnDefinition(
+    csv_url="qb-id-10004.csv",
+    about_url=None,
+    data_type=None,
+    name="some_unit",
+    property_url=None,
+    required=True,
+    suppress_output=False,
+    title="Some Unit",
+    value_url=None,
+    virtual=False,
+)
+
+_SOME_OTHER_OBS_VAL_COL = ColumnDefinition(
+    csv_url="qb-id-10004.csv",
+    about_url=None,
+    data_type=None,
+    name="some_other_obs_val",
+    property_url=None,
+    required=True,
+    suppress_output=False,
+    title="Some Other Obs Val",
+    value_url=None,
+    virtual=False,
+)
+
+_SOME_OBS_VAL_COL = ColumnDefinition(
+    csv_url="qb-id-10004.csv",
+    about_url=None,
+    data_type=None,
+    name="some_obs_val",
+    property_url=None,
+    required=True,
+    suppress_output=False,
+    title="Some Obs Val",
+    value_url=None,
+    virtual=False,
+)
 from csvcubed.utils.csvdataset import (
     _create_measure_col_in_melted_data_set_for_pivoted_shape,
     _create_unit_col_in_melted_data_set_for_pivoted_shape,
@@ -310,8 +388,8 @@ _measure_components_for_multi_measure_pivoted_shape = [
         "qb-id-10003.csv#measure/some-measure",
         "Some Measure",
         "Measure",
-        "Some Obs Val",
-        ComponentPropertyType.Measure.value,
+        [_SOME_OBS_VAL_COL],
+        [],
         True,
     ),
     QubeComponentResult(
@@ -320,8 +398,8 @@ _measure_components_for_multi_measure_pivoted_shape = [
         "qb-id-10003.csv#measure/some-other-measure",
         "Some Other Measure",
         "Measure",
-        "Some Other Obs Val",
-        ComponentPropertyType.Measure.value,
+        [_SOME_OTHER_OBS_VAL_COL],
+        [],
         True,
     ),
 ]
@@ -419,13 +497,11 @@ _obs_val_col_titles_about_urls = [
 ]
 
 _col_names_col_titles = [
-    ColumnDefinition("qb-id-10004.csv", "some_dimension", "Some Dimension"),
-    ColumnDefinition("qb-id-10004.csv", "some_attribute", "Some Attribute"),
-    ColumnDefinition("qb-id-10004.csv", "some_obs_val", "Some Obs Val"),
-    ColumnDefinition(
-        "qb-id-10004.csv", "some_other_obs_val", "Some Other Obs Val"
-    ),
-    ColumnDefinition("qb-id-10004.csv", "some_unit", "Some Unit"),
+    _SOME_DIMENSION_COL,
+    _SOME_ATTRIBUTE_COL,
+    _SOME_OBS_VAL_COL,
+    _SOME_OTHER_OBS_VAL_COL,
+    _SOME_UNIT_COL,
 ]
 
 _obs_val_col_titles_about_urls_invalid = [
@@ -455,14 +531,12 @@ _unit_col_about_urls_value_urls_invalid = [
 ]
 
 _col_names_col_titles_invalid = [
-    ColumnDefinition("qb-id-10004.csv", "some_dimension", "Some Dimension"),
-    ColumnDefinition(
-        "qb-id-10004.csv", "some_dimension", "Some Other Dimension"
-    ),
-    ColumnDefinition("qb-id-10004.csv", "some_attribute", "Some Attribute"),
-    ColumnDefinition("qb-id-10004.csv", "some_obs_val", "Some Obs Val"),
-    ColumnDefinition("qb-id-10004.csv", "some_unit", "Some Other Obs Val"),
-    ColumnDefinition("qb-id-10004.csv", "some_unit", "Some Unit"),
+    _SOME_DIMENSION_COL,
+    _SOME_OTHER_DIMENSION_COL,
+    _SOME_ATTRIBUTE_COL,
+    _SOME_OBS_VAL_COL,
+    _SOME_OTHER_OBS_VAL_COL,
+    _SOME_UNIT_COL,
 ]
 
 _measure_components_for_multi_measure_pivoted_shape_same_measure = [
@@ -472,8 +546,8 @@ _measure_components_for_multi_measure_pivoted_shape_same_measure = [
         "qb-id-10003.csv#measure/some-measure",
         "Some Measure",
         "Measure",
-        "Some Obs Val",
-        ComponentPropertyType.Measure.value,
+        [_SOME_OBS_VAL_COL],
+        [],
         True,
     ),
     QubeComponentResult(
@@ -482,8 +556,8 @@ _measure_components_for_multi_measure_pivoted_shape_same_measure = [
         "qb-id-10003.csv#measure/some-other-measure",
         "Some Other Measure",
         "Measure",
-        "Some Obs Val",
-        ComponentPropertyType.Measure.value,
+        [_SOME_OBS_VAL_COL],
+        [],
         True,
     ),
 ]

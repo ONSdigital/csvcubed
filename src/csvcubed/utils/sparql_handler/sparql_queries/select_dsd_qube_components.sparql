@@ -38,7 +38,7 @@ WHERE {
         BIND (qb:AttributeProperty as ?componentPropertyType).
 
         {
-            ?component qb:componentRequired ?componentRequired.
+            ?component qb:componentRequired ?required.
         } UNION {
             BIND (false as ?required)
             FILTER NOT EXISTS {

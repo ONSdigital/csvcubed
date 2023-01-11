@@ -143,7 +143,7 @@ def _create_measure_col_in_melted_data_set_for_pivoted_shape(
         filtered_measure_components = [
             comp
             for comp in measure_components
-            if obs_val_col_title in {col.title for col in comp.used_in_columns}
+            if obs_val_col_title in {col.title for col in comp.real_columns_used_in}
         ]
 
         if len(filtered_measure_components) != 1:
@@ -152,12 +152,12 @@ def _create_measure_col_in_melted_data_set_for_pivoted_shape(
                 num_of_components=len(filtered_measure_components),
             )
 
-        measure_component = first(filtered_measure_components)
+        measure_component = filtered_measure_components[0]
         # Using the measure label if it exists as it is more user-friendly. Otherwise, we use the measure uri.
         melted_df.loc[idx, col_name] = (
-            measure_component.property_label
-            if measure_component.property_label
-            else measure_component.property
+            measure_component.property
+            if measure_component.property_label is None
+            else measure_component.property_label
         )
 
 
@@ -171,7 +171,7 @@ def _melt_data_set(
     value_cols = [
         c.title
         for measure_component in measure_components
-        for c in measure_component.used_in_columns
+        for c in measure_component.real_columns_used_in
     ]
     id_cols = list(set(data_set.columns) - set(value_cols))
 

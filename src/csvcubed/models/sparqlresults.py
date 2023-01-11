@@ -22,6 +22,7 @@ from csvcubed.utils.printable import (
 from csvcubed.utils.qb.components import (
     get_component_property_as_relative_path,
     get_component_property_type,
+    ComponentPropertyType,
 )
 from csvcubed.utils.sparql_handler.sparql import none_or_map
 
@@ -307,7 +308,7 @@ class QubeComponentResult(DataClassBase):
     property: str
     property_label: Optional[str]
     property_type: str
-    used_in_columns: List[ColumnDefinition]
+    real_columns_used_in: List[ColumnDefinition]
     """The CSV columns this component is used in."""
     used_by_observed_value_columns: List[ColumnDefinition]
     """The Observed Value CSV Columns this component describes."""
@@ -333,10 +334,18 @@ class QubeComponentsResult:
                     "Property Label": component.property_label,
                     "Property Type": component.property_type,
                     "Column Title": ", ".join(
-                        c.title for c in component.used_in_columns
+                        [
+                            c.title
+                            for c in component.real_columns_used_in
+                            if c.title is not None
+                        ]
                     ),
                     "Observation Value Column Titles": ", ".join(
-                        c.title for c in component.used_by_observed_value_columns
+                        [
+                            c.title
+                            for c in component.used_by_observed_value_columns
+                            if c.title is not None
+                        ]
                     ),
                     "Required": component.required,
                 }
@@ -451,7 +460,7 @@ def _map_qube_component_sparql_result(
         ),
         required=none_or_map(result_dict.get("required"), bool) or False,
         # The following two properties are populated later using the results from the CSV-W columns query.
-        used_in_columns=[],
+        real_columns_used_in=[],
         used_by_observed_value_columns=[],
     )
     return result
@@ -482,7 +491,9 @@ def map_qube_components_sparql_result(
         csv_column_definitions = map_csv_url_to_column_definitions[csv_url]
 
         measure_uris = {
-            c.property for c in components if c.property_type == str(QB.MeasureProperty)
+            c.property
+            for c in components
+            if c.property_type == str(ComponentPropertyType.Measure.value)
         }
 
         observed_value_columns = [
@@ -492,16 +503,22 @@ def map_qube_components_sparql_result(
         ]
 
         for component in components:
-            component.used_in_columns = [
+            all_columns_used_in = [
                 c
                 for c in csv_column_definitions
-                if (not c.virtual) and c.property_url == component.property
+                if c.property_url == component.property
             ]
 
+            component.real_columns_used_in = [
+                c for c in all_columns_used_in if (not c.virtual)
+            ]
+
+            component.required = component.required or any(
+                c.required for c in component.real_columns_used_in
+            )
+
             columns_using_this_component_about_urls = {
-                c.about_url
-                for c in component.used_in_columns
-                if c.about_url is not None
+                c.about_url for c in all_columns_used_in
             }
 
             component.used_by_observed_value_columns = [
