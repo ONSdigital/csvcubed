@@ -193,14 +193,15 @@ def select_csvw_catalog_metadata(rdf_graph: rdflib.Graph) -> CatalogMetadataResu
         rdf_graph,
     )
 
-    if len(results) != 1:
-        raise InvalidNumberOfRecordsException(
-            record_description=f"result for the {SPARQLQueryName.SELECT_CATALOG_METADATA.value} sparql query",
-            excepted_num_of_records=1,
-            num_of_records=len(results),
-        )
+    # if len(results) != 1:
+    #     raise InvalidNumberOfRecordsException(
+    #         record_description=f"result for the {SPARQLQueryName.SELECT_CATALOG_METADATA.value} sparql query",
+    #         excepted_num_of_records=1,
+    #         num_of_records=len(results),
+    #     )
 
     return map_catalog_metadata_result(results[0])
+    #return map_catalog_metadata_result(results)
 
 
 def select_csvw_dsd_dataset_label_and_dsd_def_uri(

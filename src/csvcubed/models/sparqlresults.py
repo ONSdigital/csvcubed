@@ -34,7 +34,7 @@ class CatalogMetadataResult:
 
     dataset_uri: str
     """Data set here doesn't necessarily mean the qb:DataSet. It means eiither the qb:DataSet or the skos:ConceptScheme."""
-    
+    graph_uri: str
     title: str
     label: str
     issued: str
@@ -360,11 +360,14 @@ def map_catalog_metadata_result(sparql_result: ResultRow) -> CatalogMetadataResu
     result_dict = sparql_result.asdict()
 
     result = CatalogMetadataResult(
+        graph_uri=str(result_dict["graph"]),
         dataset_uri=str(result_dict["dataset"]),
         title=str(result_dict["title"]),
         label=str(result_dict["label"]),
         issued=str(result_dict["issued"]),
         modified=str(result_dict["modified"]),
+        comment=none_or_map(result_dict.get("comment"), str) or "None",
+        description=none_or_map(result_dict.get("description"), str) or "None",
         license=none_or_map(result_dict.get("license"), str) or "None",
         creator=none_or_map(result_dict.get("creator"), str) or "None",
         publisher=none_or_map(result_dict.get("publisher"), str) or "None",
@@ -372,9 +375,7 @@ def map_catalog_metadata_result(sparql_result: ResultRow) -> CatalogMetadataResu
         themes=str(result_dict["themes"]).split("|"),
         keywords=str(result_dict["keywords"]).split("|"),
         contact_point=none_or_map(result_dict.get("contactPoint"), str) or "None",
-        identifier=none_or_map(result_dict.get("identifier"), str) or "None",
-        comment=none_or_map(result_dict.get("comment"), str) or "None",
-        description=none_or_map(result_dict.get("description"), str) or "None",
+        identifier=none_or_map(result_dict.get("identifier"), str) or "None",   
     )
     return result
 
