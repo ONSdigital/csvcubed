@@ -518,7 +518,6 @@ def test_transform_to_canonical_shape_for_standard_shape_data_set():
         dataset,
         qube_components,
         csv_url,
-        csvw_metadata_rdf_graph,
         csvw_metadata_json_path,
     )
 
@@ -553,7 +552,6 @@ def test_transform_to_canonical_shape_for_pivoted_single_measure_shape_data_set(
         dataset,
         qube_components,
         csv_url,
-        csvw_metadata_rdf_graph,
         csvw_metadata_json_path,
     )
 
@@ -599,7 +597,6 @@ def test_transform_to_canonical_shape_for_pivoted_multi_measure_shape_data_set()
         dataset,
         qube_components,
         csv_url,
-        csvw_metadata_rdf_graph,
         csvw_metadata_json_path,
     )
 
