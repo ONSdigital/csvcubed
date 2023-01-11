@@ -7,12 +7,12 @@ This module holds some models in the prov-o ontology.
 from typing import Annotated
 
 from csvcubedmodels.rdf import (
+    ExistingResource,
     NewResource,
+    PropertyStatus,
     Resource,
     Triple,
-    PropertyStatus,
     map_resource_to_uri,
-    ExistingResource,
 )
 from csvcubedmodels.rdf.namespaces import PROV
 

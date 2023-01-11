@@ -7,12 +7,13 @@ Component Validation Errors
 import os
 from abc import ABC
 from dataclasses import dataclass
-from typing import Set, List, Dict, Type, ClassVar, Union
+from typing import ClassVar, Dict, List, Set, Type, Union
 
 from csvcubed.models.validationerror import (
-    SpecificValidationError,
     PydanticThrowableSpecificValidationError,
+    SpecificValidationError,
 )
+
 from .datastructuredefinition import QbStructuralDefinition
 
 

@@ -3,7 +3,7 @@ from typing import List, Optional
 
 import dateutil.parser
 import pytest
-from rdflib import Graph, RDF, DCAT, URIRef, RDFS, Literal, ConjunctiveGraph
+from rdflib import DCAT, RDF, RDFS, ConjunctiveGraph, Graph, Literal, URIRef
 
 from csvcubed.cli.inspect.metadataprinter import to_absolute_rdflib_file_path
 from csvcubed.models.sparqlresults import (
@@ -12,13 +12,13 @@ from csvcubed.models.sparqlresults import (
     CodelistColumnResult,
     CodelistsResult,
     ColsWithSuppressOutputTrueResult,
-    DSDLabelURIResult,
-    DSDSingleUnitResult,
     CsvUrlResult,
-    IsPivotedShapeMeasureResult,
-    QubeComponentResult,
-    MetadataDependenciesResult,
     CubeTableIdentifiers,
+    DSDLabelURIResult,
+    IsPivotedShapeMeasureResult,
+    MetadataDependenciesResult,
+    QubeComponentResult,
+    UnitResult,
 )
 from csvcubed.utils.iterables import first
 from csvcubed.utils.qb.components import ComponentPropertyType
@@ -32,18 +32,15 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_cols_where_suppress_output_is_true,
     select_csvw_catalog_metadata,
     select_csvw_dsd_dataset_label_and_dsd_def_uri,
+    select_csvw_table_schema_file_dependencies,
     select_dsd_code_list_and_cols,
     select_is_pivoted_shape_for_measures_in_data_set,
-    select_qb_csv_url,
-    select_csvw_table_schema_file_dependencies,
-    select_single_unit_from_dsd,
     select_metadata_dependencies,
+    select_qb_csv_url,
     select_table_schema_properties,
+    select_units,
 )
-from csvcubed.utils.tableschema import (
-    CsvwRdfManager,
-    add_triples_for_file_dependencies,
-)
+from csvcubed.utils.tableschema import CsvwRdfManager, add_triples_for_file_dependencies
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
@@ -630,7 +627,7 @@ def test_select_qb_csv_url():
 
 def test_select_single_unit_from_dsd():
     """
-    Should return expected `DSDSingleUnitResult`.
+    Should return expected `UnitResult`.
     """
     csvw_metadata_json_path = (
         _test_case_base_dir
@@ -639,11 +636,12 @@ def test_select_single_unit_from_dsd():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    dataset_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
+    data_cube_state = DataCubeState(csvw_metadata_rdf_graph, csvw_metadata_json_path)
 
-    result: DSDSingleUnitResult = select_single_unit_from_dsd(
-        csvw_metadata_rdf_graph, dataset_uri, csvw_metadata_json_path
+    result: UnitResult = data_cube_state.get_unit_for_uri(
+        "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#unit/mtco2e"
     )
+
     assert result.unit_label == "MtCO2e"
     assert (
         result.unit_uri

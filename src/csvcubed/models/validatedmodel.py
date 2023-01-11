@@ -1,17 +1,17 @@
 """this class will be class attributes and returns an array of errors"""
 
+import logging
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-import logging
 from typing import Any, Callable, Dict, List
 
 from csvcubedmodels.dataclassbase import DataClassBase
+
 from csvcubed.models.validationerror import ValidateModelProperiesError
-from csvcubed.utils.validations import (
-    validate_str_type,
-)
+from csvcubed.utils.validations import validate_str_type
 
 ValidationFunction = Callable[[Any, str], List[ValidateModelProperiesError]]
+
 
 class ValidatedModel(DataClassBase):
     """This abrstract class that will act as a parent class for class attribute validations.

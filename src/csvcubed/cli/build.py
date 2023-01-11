@@ -7,7 +7,7 @@ import dataclasses
 import json
 import logging
 from pathlib import Path
-from typing import Optional, Tuple, List
+from typing import List, Optional, Tuple
 
 from csvcubedmodels.dataclassbase import DataClassBase
 

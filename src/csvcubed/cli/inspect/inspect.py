@@ -12,9 +12,7 @@ from typing import Tuple
 
 import rdflib
 
-from csvcubed.cli.inspect.metadatainputvalidator import (
-    MetadataValidator,
-)
+from csvcubed.cli.inspect.metadatainputvalidator import MetadataValidator
 from csvcubed.cli.inspect.metadataprinter import MetadataPrinter
 from csvcubed.models.csvcubedexception import FailedToLoadRDFGraphException
 from csvcubed.models.csvwtype import CSVWType

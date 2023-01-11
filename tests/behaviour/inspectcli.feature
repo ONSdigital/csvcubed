@@ -147,7 +147,7 @@ Feature: Behaviour testing of csvcubed inspect.
             spirits-duty-receipts            gbp-million    314
                wine-duty-receipts            gbp-million    314
         """
-
+    
     # Below test also validates the csvcubed against old-style single-measure pivoted shape data sets.
     Scenario: inspect should produce the expected printable for data cube metadata json-ld input of type multi-unit single-measure.
         Given the existing test-case file "cli/inspect/multi-unit_single-measure/final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
@@ -319,8 +319,8 @@ Feature: Behaviour testing of csvcubed inspect.
         """
         - The data cube has the following value counts:
             - Value counts broken-down by measure and unit (of measure):
-                       Measure                                          Unit  Count
-        gas emissions(gwp-ar4) final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#unit/millions-of-tonnes-of-carbon-dioxide-mt-co2  19
+                            Measure                                          Unit  Count
+            gas emissions(gwp-ar4) millions of tonnes of carbon dioxide (mt co2)  19
         """
 
     Scenario: inspect should produce the expected printable for data cube metadata json-ld input of type single-unit multi-measure.

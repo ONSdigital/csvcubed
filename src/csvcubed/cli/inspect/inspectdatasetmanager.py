@@ -25,10 +25,8 @@ from csvcubed.models.inspectdataframeresults import (
     DatasetObservationsInfoResult,
     DatasetSingleMeasureResult,
 )
-from csvcubed.models.sparqlresults import (
-    QubeComponentResult,
-)
 from csvcubed.utils.iterables import first
+from csvcubed.models.sparqlresults import QubeComponentResult
 from csvcubed.utils.pandas import read_csv
 from csvcubed.utils.qb.components import (
     ComponentField,
@@ -37,7 +35,6 @@ from csvcubed.utils.qb.components import (
     get_component_property_as_relative_path,
 )
 from csvcubed.utils.skos.codelist import build_concepts_hierarchy_tree
-from csvcubed.utils.sparql_handler.sparql import none_or_map
 
 _logger = logging.getLogger(__name__)
 

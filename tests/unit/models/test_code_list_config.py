@@ -11,9 +11,7 @@ from csvcubed.models.codelistconfig.code_list_config import (
     CodeListConfigConcept,
 )
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
-from csvcubed.models.cube.qb.components.codelist import (
-    NewQbCodeList,
-)
+from csvcubed.models.cube.qb.components.codelist import NewQbCodeList
 from csvcubed.models.cube.qb.components.concept import DuplicatedQbConcept, NewQbConcept
 from csvcubed.utils.datetime import parse_iso_8601_date_time
 from csvcubed.utils.dict import get_with_func_or_none

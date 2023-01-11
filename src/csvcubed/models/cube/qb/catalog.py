@@ -4,7 +4,7 @@ Catalog Metadata (DCAT)
 """
 import json
 from dataclasses import dataclass, field
-from datetime import datetime, date, time
+from datetime import date, datetime, time
 from pathlib import Path
 from typing import Optional, Union
 

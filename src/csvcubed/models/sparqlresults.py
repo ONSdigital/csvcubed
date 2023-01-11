@@ -7,7 +7,7 @@ import logging
 from dataclasses import dataclass
 from os import linesep
 from pathlib import Path
-from typing import List, Optional, Dict, Any
+from typing import Any, Dict, List, Optional
 
 from csvcubedmodels.dataclassbase import DataClassBase
 from csvcubedmodels.rdf import QB
@@ -168,13 +168,13 @@ class CsvUrlResult:
 
 
 @dataclass
-class DSDSingleUnitResult:
+class UnitResult:
     """
     Model to represent select single unit from dsd.
     """
 
     unit_uri: str
-    unit_label: Optional[str]
+    unit_label: str
 
 
 @dataclass
@@ -416,7 +416,7 @@ def map_dataset_label_dsd_uri_sparql_result(
     return result
 
 
-def _map_data_set_dsd_csv_url_result(
+def map_data_set_dsd_csv_url_result(
     sparql_results: List[ResultRow],
 ) -> List[CubeTableIdentifiers]:
     """
@@ -634,26 +634,21 @@ def map_csv_url_result(
     return result
 
 
-def map_single_unit_from_dsd_result(
-    sparql_result: ResultRow, json_path: Path
-) -> DSDSingleUnitResult:
+def map_units(sparql_results: List[ResultRow]) -> List[UnitResult]:
     """
-    Maps sparql query result to `DSDSingleUnitResult`
+    Maps sparql query result to `UnitResult`
 
     Member of :file:`./models/sparqlresults.py`
 
-    :return: `DSDSingleUnitResult`
+    :return: `UnitResult`
     """
-    result_dict = sparql_result.asdict()
-    unit_label = none_or_map(result_dict.get("unitLabel"), str)
 
-    result = DSDSingleUnitResult(
-        unit_uri=get_component_property_as_relative_path(
-            json_path, str(result_dict["unitUri"])
-        ),
-        unit_label=unit_label,
-    )
-    return result
+    def map_row(row_result: Dict[str, Any]) -> UnitResult:
+        return UnitResult(
+            unit_uri=str(row_result["unit"]), unit_label=str(row_result["unitLabel"])
+        )
+
+    return [map_row(row.asdict()) for row in sparql_results]
 
 
 def _map_codelist_column_sparql_result(

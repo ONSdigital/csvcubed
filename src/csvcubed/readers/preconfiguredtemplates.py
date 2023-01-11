@@ -6,9 +6,9 @@ Functionality to help augment JSON files with configuration from some pre-config
 """
 import logging
 from os import linesep
-from typing import Dict, Any
+from typing import Any, Dict
 
-from requests.exceptions import JSONDecodeError, HTTPError
+from requests.exceptions import HTTPError, JSONDecodeError
 
 from csvcubed.utils.cache import session
 from csvcubed.utils.uri import csvw_column_name_safe

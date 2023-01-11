@@ -4,7 +4,7 @@ CSV Column Definitions
 """
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Optional, List
+from typing import List, Optional
 
 from csvcubed.inputs import PandasDataTypes
 from csvcubed.models.pydanticmodel import PydanticModel

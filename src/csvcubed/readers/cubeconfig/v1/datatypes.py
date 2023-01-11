@@ -12,6 +12,7 @@ from csvcubed.readers.cubeconfig.v1.mapcolumntocomponent import (
 from csvcubed.readers.preconfiguredtemplates import (
     apply_preconfigured_values_from_template,
 )
+
 from .constants import CONVENTION_NAMES
 
 

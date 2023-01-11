@@ -18,9 +18,9 @@ from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
 from csvcubed.models.cube.qb.components.unit import NewQbUnit
 from csvcubed.models.cube.qb.components.unitscolumn import QbMultiUnits
 from csvcubed.utils.qb.standardise import (
-    ensure_qbcube_data_is_categorical,
     convert_data_values_to_uri_safe_values,
     ensure_int_columns_are_ints,
+    ensure_qbcube_data_is_categorical,
 )
 
 
