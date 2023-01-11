@@ -3,48 +3,32 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX csvw: <http://www.w3.org/ns/csvw#>
 
-SELECT ?dsdUri ?component ?componentProperty ?componentPropertyLabel ?componentOrder ?componentPropertyType ?required
+SELECT ?dsdUri ?component ?componentProperty ?componentPropertyLabel ?componentOrder ?componentPropertyType (COALESCE(?componentRequired, false) as ?required)
 WHERE {
 
-    {
-        SELECT DISTINCT ?dsdUri ?component ?componentProperty
-        WHERE {
-            ?dsdUri qb:component ?component.
-
-            ?component qb:componentProperty|qb:dimension|qb:measureDimension|qb:measure|qb:attribute ?componentProperty.
-        }
-    }
-
+    ?dsdUri qb:component ?component.
     ?component qb:order ?componentOrder
 
-    OPTIONAL { ?componentProperty rdfs:label ?componentPropertyLabel. }
-
-    # https://www.w3.org/TR/vocab-data-cube/#h3_reference-compspec
     {
-        ?component qb:dimension ?dimension.
+        ?component qb:dimension ?componentProperty.
         BIND (qb:DimensionProperty as ?componentPropertyType).
-        BIND (true as ?required)
+        BIND (true as ?componentRequired)
     } UNION {
         # https://www.w3.org/TR/vocab-data-cube/#dfn-qb-measuredimension
-        ?component qb:measureDimension ?dimension.
+        ?component qb:measureDimension ?componentProperty.
         BIND (qb:MeasureProperty as ?componentPropertyType).
-        BIND (true as ?required)
+        BIND (true as ?componentRequired)
     } UNION {
-        ?component qb:measure ?measure.
+        ?component qb:measure ?componentProperty.
         BIND (qb:MeasureProperty as ?componentPropertyType).
-        BIND (true as ?required)
+        BIND (true as ?componentRequired)
     } UNION {
-        ?component qb:attribute ?attribute.
+        ?component qb:attribute ?componentProperty.
         BIND (qb:AttributeProperty as ?componentPropertyType).
 
-        {
-            ?component qb:componentRequired ?required.
-        } UNION {
-            BIND (false as ?required)
-            FILTER NOT EXISTS {
-                ?component qb:componentRequired [].
-            }
-        }
+        OPTIONAL { ?component qb:componentRequired ?componentRequired. }
     }
-}    
+
+    OPTIONAL { ?componentProperty rdfs:label ?componentPropertyLabel. }
+}
 ORDER BY ASC(?componentOrder)
