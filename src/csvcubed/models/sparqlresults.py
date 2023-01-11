@@ -349,7 +349,7 @@ class ColTitlesAndNamesResult:
     column_title: Optional[str]
 
 
-def map_catalog_metadata_result(sparql_result: ResultRow) -> CatalogMetadataResult:
+def map_catalog_metadata_result(sparql_result: List[ResultRow]) -> List[CatalogMetadataResult]:
     """
     Maps sparql query result to `CatalogMetadataResult`
 
@@ -357,27 +357,31 @@ def map_catalog_metadata_result(sparql_result: ResultRow) -> CatalogMetadataResu
 
     :return: `CatalogMetadataResult`
     """
-    result_dict = sparql_result.asdict()
+    results: List[CatalogMetadataResult] = []
+    for row in sparql_result:
+        result_dict = row.asdict()
 
-    result = CatalogMetadataResult(
-        graph_uri=str(result_dict["graph"]),
-        dataset_uri=str(result_dict["dataset"]),
-        title=str(result_dict["title"]),
-        label=str(result_dict["label"]),
-        issued=str(result_dict["issued"]),
-        modified=str(result_dict["modified"]),
-        comment=none_or_map(result_dict.get("comment"), str) or "None",
-        description=none_or_map(result_dict.get("description"), str) or "None",
-        license=none_or_map(result_dict.get("license"), str) or "None",
-        creator=none_or_map(result_dict.get("creator"), str) or "None",
-        publisher=none_or_map(result_dict.get("publisher"), str) or "None",
-        landing_pages=str(result_dict["landingPages"]).split("|"),
-        themes=str(result_dict["themes"]).split("|"),
-        keywords=str(result_dict["keywords"]).split("|"),
-        contact_point=none_or_map(result_dict.get("contactPoint"), str) or "None",
-        identifier=none_or_map(result_dict.get("identifier"), str) or "None",   
-    )
-    return result
+        result = CatalogMetadataResult(
+            graph_uri=str(result_dict["graph"]),
+            dataset_uri=str(result_dict["dataset"]),
+            title=str(result_dict["title"]),
+            label=str(result_dict["label"]),
+            issued=str(result_dict["issued"]),
+            modified=str(result_dict["modified"]),
+            comment=none_or_map(result_dict.get("comment"), str) or "None",
+            description=none_or_map(result_dict.get("description"), str) or "None",
+            license=none_or_map(result_dict.get("license"), str) or "None",
+            creator=none_or_map(result_dict.get("creator"), str) or "None",
+            publisher=none_or_map(result_dict.get("publisher"), str) or "None",
+            landing_pages=str(result_dict["landingPages"]).split("|"),
+            themes=str(result_dict["themes"]).split("|"),
+            keywords=str(result_dict["keywords"]).split("|"),
+            contact_point=none_or_map(result_dict.get("contactPoint"), str) or "None",
+            identifier=none_or_map(result_dict.get("identifier"), str) or "None",   
+        )
+        results.append(result)
+
+    return results
 
 
 def map_dataset_label_dsd_uri_sparql_result(
