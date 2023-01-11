@@ -61,7 +61,7 @@ When errors are encountered, please refer to the [errors guide](../../guides/err
 
 Building a cube without providing a [configuration/index.md](../configuration/qube-config.md) configuration file relies upon the [configuration by convention approach](../configuration/convention.md).
 
-To build a cube using only a csv data file. For guidance on the correct data structure refer to the [Shaping your data](../shape-data.md) guide, the 'standard approach' is recommended as a good starting point.
+To build a cube using only a csv data file. For guidance on the correct data structure refer to the [Shaping your data](../shape-data/index.md) guide, the 'standard approach' is recommended as a good starting point.
 
 ```bash
 csvcubed build ./source/cube_data.csv

@@ -1,4 +1,4 @@
-# Error - multiple observations columns defined (Deprecated)
+++++++++++++++++++++++# Error - multiple observations columns defined (Deprecated)
 
 ## Deprecation warning
 
@@ -12,4 +12,4 @@ Multiple observed value columns are defined in the same cube.
 
 ## How to fix
 
-Ensure that only one column represents observed values in your cube. See [shaping your data](../../shape-data.md) for more information on the shapes of data accepted by csvcubed.
+Ensure that only one column represents observed values in your cube. See [shaping your data](../../shape-data/index.md) for more information on the shapes of data accepted by csvcubed.

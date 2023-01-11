@@ -10,11 +10,11 @@ csvcubed must be installed in order to proceed, please go back to [installation]
 
 ## How csvcubed interprets a CSV
 
-csvcubed needs to understand how your statistical data is structured in order to make it more machine readable. There are two ways that you can do this with csvcubed, we are covering the [configuration by convention approach](../guides/configuration/convention.md) in this quick-start. Configuration by convention requires a [standard CSV data shape](../guides/shape-data.md#standard-shape) with conventional column titles and fill it out with your data which is explained briefly below.
+csvcubed needs to understand how your statistical data is structured in order to make it more machine readable. There are two ways that you can do this with csvcubed, we are covering the [configuration by convention approach](../guides/configuration/convention.md) in this quick-start. Configuration by convention requires a [standard CSV data shape](../guides/shape-data/index.md#standard-shape) with conventional column titles and fill it out with your data which is explained briefly below.
 
 ## Structuring your data
 
-The [standard shape](../guides/shape-data.md#standard-shape) of data is the recommended way to shape your data for csvcubed. It requires that your CSV has the following columns:
+The [standard shape](../guides/shape-data/index.md#standard-shape) of data is the recommended way to shape your data for csvcubed. It requires that your CSV has the following columns:
 
 | ...Identifying characteristics... | Value | Measure | Unit |
 | :-------------------------------: | ----: | ------: | ---: |
@@ -24,7 +24,7 @@ The [standard shape](../guides/shape-data.md#standard-shape) of data is the reco
 In the above table:
 
 * *identifying characteristics* are one or more columns which identify the sub-set of the population that has been observed in a given row. These are called [dimensions](../glossary/index.md#dimensionhttpswwww3orgtrvocab-data-cubecubes-model) elsewhere in documentation.
-* the `Value` column contains the value which has been observed or measured; there is only ever one observed value per row in the [standard shape](../guides/shape-data.md#standard-shape).
+* the `Value` column contains the value which has been observed or measured; there is only ever one observed value per row in the [standard shape](../guides/shape-data/index.md#standard-shape).
 * the `Measure` column describes what has been observed or measured; note that the measure should not include any information about the units of measure.
 * the `Unit` column describes the unit of measure in which the `Value` has been recorded.
 

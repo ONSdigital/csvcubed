@@ -4,7 +4,7 @@ This guide discusses how to reuse units which have been defined elsewhere within
 
 ## Defining a new unit
 
-csvcubed automatically defines new units using the unique values in your [standard shape](../shape-data.md#standard-shape) cube's units column. If desired, you can gain more control over how the units are defined by providing configuration in a [qube-config.json](./qube-config.md) file.
+csvcubed automatically defines new units using the unique values in your [standard shape](../shape-data/standard-shape.md) cube's units column. If desired, you can gain more control over how the units are defined by providing configuration in a [qube-config.json](./qube-config.md) file.
 
 A data set like the one defined below can be paired with a JSON configuration allowing you to provide additional information about the units you are creating:
 
@@ -41,7 +41,7 @@ Our dataset could of course be expressed directly in [PoundSterling](http://qudt
 
 We've done some checking on the [QUDT Units vocabulary](http://www.qudt.org/doc/DOC_VOCAB-UNITS.html#Instances) to make sure that our new unit doesn't duplicating an existing unit so we decide that it is helpful to link `Pounds Sterling (£), Millions` back to [PoundSterling](http://qudt.org/vocab/unit/PoundSterling). This will ensure that software can automatically figure out how to compare our data with other data sets that use units related to [PoundSterling](http://qudt.org/vocab/unit/PoundSterling).
 
-In the following example, we'll show how to define new units for `Pounds Sterling (£), Millions` and `Barrels of petrol per day (,000)` with a [standard shaped](../shape-data.md#standard-shape) cube:
+In the following example, we'll show how to define new units for `Pounds Sterling (£), Millions` and `Barrels of petrol per day (,000)` with a [standard shaped](../shape-data/standard-shape.md) cube:
 
 **1. Ensure that your units column contains the new units' labels**
 

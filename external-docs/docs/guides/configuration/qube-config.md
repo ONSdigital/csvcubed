@@ -149,7 +149,7 @@ The `from_existing` value when set provides the basis of linked data; it allows 
 | `data_type`              | The [xml data type](https://www.w3.org/TR/xmlschema-2/#built-in-datatypes) of the contents of the column, if this is provided it becomes a Literal Attribute column (Optional) | *none*                                                                           |
 | `required`               | If this boolean value is true csvcubed will flag to the user if there are blank values in this column                                                                          | *none*                                                                           |
 | `from_template`          | Use a [column template](templates.md)                                                                                                                                          | *none*                                                                           |
-| `describes_observations` | Associates observation values with the relevant attribute                                                                                                                      | *none*                                                                           |
+| `describes_observations` | Associates observation values with the relevant attribute. This is only necessary for [pivoted shape data sets](../shape-data/pivoted-shape.md) with multiple observation value columns.                                                                                                                      | *none*                                                                           |
 
 ## Observations Configuration
 
@@ -170,7 +170,7 @@ Measure and unit columns are treated slightly differently to dimension, attribut
 |--------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------|
 | `type`                   | The type of the column, provide `"measure column"` for the measure column type or `"unit column"` for the unit column (Required)                                                                                                                                                     | *dimension*       |
 | `values`                 | If basic units/measures are desired, a boolean value of `true` is used to signify to csvcubed to create units/measures from values of this column; otherwise values is a dictionary which defines the units/measures using the notion from [Measures and Units](#Measures and Units) | `true`            |
-| `describes_observations` | (Unit column only) Associates observation values with the relevant unit                                                                                                                                                                                                              | *none*            |
+| `describes_observations` | (Unit column only) Associates observation values with the relevant unit. This is only necessary for [pivoted shape data sets](../shape-data/pivoted-shape.md) with multiple observation value columns.                                                                                                                 | *none*            |
 
 ## Measures and Units
 
