@@ -2,6 +2,8 @@
 
 > This page describes how to build and configure a pivoted shape data cube. For more information about the data shapes supported by csvcubed, see [Shaping your data](./index.md). The instructions below assume a basic understanding of writing a [qube-config.json file](../configuration/qube-config.md).
 
+See [Converting to pivoted shape](./shape-conversion.md#converting-to-the-pivoted-shape) for instructions on how to convert the shape of your data in Python and R.
+
 ## Single Measure
 
 The [standard shape](./standard-shape.md) is flexible but has a lot of redundancy which can often be removed by using the more concise pivoted form. Our data set on the distribution of the number of Arthur's Bakes stores can be expressed in the pivoted shape as follows:

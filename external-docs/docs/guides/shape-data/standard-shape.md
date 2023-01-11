@@ -4,7 +4,7 @@
 
 The standard shape extends the [common structure](./index.md#common-structure) by requiring that **each row** has a _measures_ column and a _units_ column; these columns define the measure and unit (of measure) for each row.
 
-The standard shape is most appropriate where you have a [sparse](../../glossary/index.md#sparse-data) data cube, i.e. there are a large number of possible combinations of dimension values, but very few of them have observed values recorded. If your data cube is [dense](../../glossary/index.md#dense-data), then consider using the [pivoted shape](./pivoted-shape.md).
+The standard shape is most appropriate where you have a [sparse](../../glossary/index.md#sparse-data) data cube, i.e. there are a large number of possible combinations of dimension values, but very few of them have observed values recorded. If your data cube is [dense](../../glossary/index.md#dense-data), then consider using the [pivoted shape](./pivoted-shape.md). See [Converting to standard shape](./shape-conversion.md#converting-to-the-standard-shape) for instructions on how to convert the shape of your data in Python and R.
 
 ## Single Measure
 

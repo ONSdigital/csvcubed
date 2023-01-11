@@ -7,7 +7,7 @@ csvcubed requires that all CSV data inputs are provided in one of two specialise
 * the [standard approach](./standard-shape.md) - the recommended shape for [sparse](../../glossary/index.md#sparse-data) multi-measure data cubes.
 * the [pivoted approach](./pivoted-shape.md) - the recommended shape for [dense](../../glossary/index.md#dense-data) data cubes.
 
-These two shapes share a number of similarities in how they require data to be structured; this is explored in the [common structure](#common-structure) section. Examples of [standard shape](#standard-shape) and [pivoted shape](#pivoted-shape) data sets are also presented below. 
+These two shapes share a number of similarities in how they require data to be structured; this is explored in the [common structure](#common-structure) section. Examples of [standard shape](#standard-shape) and [pivoted shape](#pivoted-shape) data sets are also presented below.
 
 ## Common Structure
 
@@ -36,7 +36,7 @@ csvcubed requires that data is structured as per the following example, regardle
 
 ## Standard Shape
 
-Examples of single measure and multiple measure **standard** shape data sets are below. More detailed configuration instructions can be found in the [standard shape](./standard-shape.md) section.
+Examples of single measure and multiple measure **standard** shape data sets are below. More detailed configuration instructions can be found in the [standard shape](./standard-shape.md) section. See [Converting to standard shape](./shape-conversion.md#converting-to-the-standard-shape) for instructions on how to convert the shape of your data in Python and R.
 
 ### Single Measure
 
@@ -62,7 +62,7 @@ In this example, there are two measures recorded - `Number of Arthur's Bakes` an
 
 ## Pivoted Shape
 
-Examples of single measure and multiple measure **pivoted** shape data sets are below. More detailed configuration instructions can be found in the [pivoted shape](./pivoted-shape.md) section.
+Examples of single measure and multiple measure **pivoted** shape data sets are below. More detailed configuration instructions can be found in the [pivoted shape](./pivoted-shape.md) section. See [Converting to pivoted shape](./shape-conversion.md#converting-to-the-pivoted-shape) for instructions on how to convert the shape of your data in Python and R.
 
 ### Single Measure
 
