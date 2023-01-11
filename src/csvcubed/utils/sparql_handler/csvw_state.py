@@ -20,6 +20,7 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
 # )
 # return group_by(results, lambda r: r.dataset_uri)
 
+
 @dataclass
 class CsvWState:
     rdf_graph: rdflib.Graph
@@ -34,7 +35,6 @@ class CsvWState:
         results = select_csvw_catalog_metadata(self.rdf_graph)
         return results
 
-
     def get_primary_catalog_metadata(self) -> CatalogMetadataResult:
         """
         TODO: Get **just** the catalog metadata defined in the primary graph
@@ -42,10 +42,10 @@ class CsvWState:
 
         all_catalog_metadata = self.catalog_metadata
         for graph in all_catalog_metadata:
-          if graph.graph_uri == self.primary_graph_uri:
-            #primary_catalog_metadata == graph
-            return graph
+            if graph.graph_uri == self.primary_graph_uri:
+                # primary_catalog_metadata == graph
+                return graph
 
         return graph
 
-        #return primary_catalog_metadata
+        # return primary_catalog_metadata

@@ -18,6 +18,7 @@ from csvcubed.models.sparqlresults import (
     UnitResult,
 )
 from csvcubed.utils.iterables import first, group_by
+from csvcubed.utils.dict import get_from_dict_ensure_exists
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_col_titles_and_names,
     select_csvw_dsd_qube_components,

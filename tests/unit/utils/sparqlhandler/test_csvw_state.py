@@ -4,11 +4,12 @@ from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
 
+
 def test_get_primary_catalog_metadata():
     """
     1 [X]) Starting from 'the_thing':
         the CsvWState object calls the function which retrives the catalog metadata from the primary graph.
-    
+
     2 [X]) In the object, we call the cached property to get the catalog meta data result[s]
 
     3 [X]) In the cached property, select_csvw_catalog_metadata obtains the results from the sparql query.
@@ -16,7 +17,7 @@ def test_get_primary_catalog_metadata():
         Then we call the map function providing it with this list.
 
     4 [X]) In the map function, we want to:
-        a) Iterate over each of the resultrow objects (performing an as_dict per result) 
+        a) Iterate over each of the resultrow objects (performing an as_dict per result)
         b) Create a catalogmetadataresult object containing the metadata properties for each resultrow objects
         b) Add this catalogmetadataresult to a list and return this list
 
@@ -35,10 +36,12 @@ def test_get_primary_catalog_metadata():
 
     the_thing = csvw_state.get_primary_catalog_metadata()
 
-    #assert the_thing.graph_uri == "file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-single-measure-dataset/qb-id-10004.csv-metadata.json"
-    assert the_thing.graph_uri == csvw_metadata_json_path
-    
-    # sparql_results = { 
+    # assert the_thing.graph_uri == "file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-single-measure-dataset/qb-id-10004.csv-metadata.json"
+    path_to_string = str(csvw_metadata_json_path)
+    assert the_thing.graph_uri.removeprefix("file://") == path_to_string
+    # assert the_thing.graph_uri == csvw_metadata_json_path
+
+    # sparql_results = {
     #     "graph": { "type": "uri" , "value": "file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-single-measure-dataset/qb-id-10004.csv-metadata.json" } ,
     #     "dataset": { "type": "uri" , "value": "file:///Users/charlesrendle/git/csvcubed/csvcubed/qb-id-10004.csv#dataset" } ,
     #     "title": { "type": "literal" , "xml:lang": "en" , "value": "Pivoted Shape Cube" } ,
@@ -49,12 +52,12 @@ def test_get_primary_catalog_metadata():
     #   }
 
     # expected = (
-    #     dataset_uri='qb-id-10004.csv#dataset', 
-    #     graph_uri='file:///workspaces/csvcubed/tests/test-cases/c...s=[''], 
-    #     themes=[''], 
-    #     keywords=[''], 
-    #     contact_point='None', 
-    #     identifier='qb-id-10004', 
-    #     comment='None', 
+    #     dataset_uri='qb-id-10004.csv#dataset',
+    #     graph_uri='file:///workspaces/csvcubed/tests/test-cases/c...s=[''],
+    #     themes=[''],
+    #     keywords=[''],
+    #     contact_point='None',
+    #     identifier='qb-id-10004',
+    #     comment='None',
     #     description='None'
     # )
