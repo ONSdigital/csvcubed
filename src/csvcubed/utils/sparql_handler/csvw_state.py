@@ -8,7 +8,9 @@ import rdflib
 
 from csvcubed.models.sparqlresults import CatalogMetadataResult
 from csvcubed.utils.iterables import group_by
-from csvcubed.utils.sparql_handler.sparqlquerymanager import select_csvw_catalog_metadata
+from csvcubed.utils.sparql_handler.sparqlquerymanager import (
+    select_csvw_catalog_metadata,
+)
 
 
 @dataclass
@@ -19,7 +21,7 @@ class CsvWState:
     @cached_property
     def catalog_metadata(self) -> List[CatalogMetadataResult]:
         """
-        TODO: Need to refactor select_csvw_catalog_metadata so it now supports returning a list of results 
+        TODO: Need to refactor select_csvw_catalog_metadata so it now supports returning a list of results
           where each result has the graph_uri that the dcat:Dataset was defined in with it.
         """
         results = select_csvw_catalog_metadata(self.rdf_graph)
@@ -29,11 +31,10 @@ class CsvWState:
         # return groupby(
         #     result.qube_components, lambda c: map_dsd_uri_to_csv_url[c.dsd_uri]
         # )
-        #return group_by(results, lambda r: r.dataset_uri)
-
+        # return group_by(results, lambda r: r.dataset_uri)
 
     def get_primary_catalog_metadata(self) -> CatalogMetadataResult:
         """
-        TODO: Get **just** the catalog metadata defined in the primary graph        
+        TODO: Get **just** the catalog metadata defined in the primary graph
         """
         pass

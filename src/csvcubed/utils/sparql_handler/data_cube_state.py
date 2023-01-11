@@ -8,6 +8,7 @@ import rdflib
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import (
     ColTitlesAndNamesResult,
+    CsvUrlResult,
     CubeTableIdentifiers,
     ObservationValueColumnTitleAboutUrlResult,
     QubeComponentResult,
@@ -24,6 +25,7 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_csvw_dsd_qube_components,
     select_data_set_dsd_and_csv_url,
     select_observation_value_column_title_and_about_url,
+    select_qb_csv_url,
     select_unit_col_about_value_urls,
     select_is_pivoted_shape_for_measures_in_data_set,
 )
@@ -74,6 +76,12 @@ class DataCubeState:
         Queries and caches column names and titles.
         """
         results = select_col_titles_and_names(self.rdf_graph)
+        return group_by(results, lambda r: r.csv_url)
+
+    @cached_property
+    def _select_qb_csv_url(self) -> Dict[str, List[CsvUrlResult]]:
+        """ """
+        results = select_qb_csv_url(self.rdf_graph)
         return group_by(results, lambda r: r.csv_url)
 
     @cached_property
@@ -174,6 +182,10 @@ class DataCubeState:
         # )
         # return result
         return get_from_dict_ensure_exists(self._col_names_col_titles, csv_url)
+
+    def get_qb_csv_url(self, csv_url: str) -> List[CsvUrlResult]:
+        """ """
+        return get_from_dict_ensure_exists(self._select_qb_csv_url, csv_url)
 
     def get_cube_identifiers_for_csv(self, csv_url: str) -> CubeTableIdentifiers:
         """
