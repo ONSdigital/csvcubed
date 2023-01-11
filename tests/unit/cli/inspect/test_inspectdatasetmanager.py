@@ -189,7 +189,7 @@ _expected_by_measure_and_unit_val_counts_df_multi_unit_single_measure = DataFram
     [
         {
             "Measure": "gas emissions(gwp-ar4)",
-            "Unit": "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#unit/millions-of-tonnes-of-carbon-dioxide-mt-co2",
+            "Unit": "millions of tonnes of carbon dioxide (mt co2)",
             0: 19,
         }
     ]
@@ -233,7 +233,7 @@ _expected_by_measure_and_unit_val_counts_df_pivoted_single_measure = DataFrame(
     [
         {
             "Measure": "Some Measure",
-            "Unit": "qb-id-10004.csv#unit/some-unit",
+            "Unit": "Some Unit",
             0: 3,
         }
     ]
@@ -243,12 +243,12 @@ _expected_by_measure_and_unit_val_counts_df_pivoted_multi_measure = DataFrame(
     [
         {
             "Measure": "Some Measure",
-            "Unit": "qb-id-10003.csv#unit/some-unit",
+            "Unit": "Some Unit",
             0: 3,
         },
         {
             "Measure": "Some Other Measure",
-            "Unit": "qb-id-10003.csv#unit/percent",
+            "Unit": "Percent",
             0: 3,
         },
     ]
@@ -542,7 +542,6 @@ def test_get_val_counts_info_multi_unit_multi_measure_dataset():
         dataset,
         qube_components,
         csv_url,
-        csvw_rdf_manager.rdf_graph,
         csvw_metadata_json_path,
     )
 
@@ -589,7 +588,6 @@ def test_get_val_counts_info_multi_unit_single_measure_dataset():
         dataset,
         qube_components,
         csv_url,
-        csvw_metadata_rdf_graph,
         csvw_metadata_json_path,
     )
 
@@ -636,7 +634,6 @@ def test_get_val_counts_info_single_unit_multi_measure_dataset():
         dataset,
         qube_components,
         csv_url,
-        csvw_metadata_rdf_graph,
         csvw_metadata_json_path,
     )
 
@@ -683,7 +680,6 @@ def test_get_val_counts_info_single_unit_single_measure_dataset():
         dataset,
         qube_components,
         csv_url,
-        csvw_metadata_rdf_graph,
         csvw_metadata_json_path,
     )
 
@@ -730,7 +726,6 @@ def test_get_val_counts_info_pivoted_single_measure_dataset():
         dataset,
         qube_components,
         csv_url,
-        csvw_metadata_rdf_graph,
         csvw_metadata_json_path,
     )
 
@@ -777,7 +772,6 @@ def test_get_val_counts_info_pivoted_multi_measure_dataset():
         dataset,
         qube_components,
         csv_url,
-        csvw_metadata_rdf_graph,
         csvw_metadata_json_path,
     )
 

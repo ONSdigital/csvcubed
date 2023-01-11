@@ -18,8 +18,8 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
 from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.unit.test_baseunit import get_test_cases_dir
 from tests.unit.utils.sparqlhandler.test_sparqlquerymanager import (
-    get_dsd_component_by_property_url,
     assert_dsd_component_equal,
+    get_dsd_component_by_property_url,
 )
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"

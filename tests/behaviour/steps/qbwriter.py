@@ -4,7 +4,7 @@ from typing import List, Optional
 from urllib.parse import urlparse
 
 import pandas as pd
-from behave import Given, When, Then, Step
+from behave import Given, Step, Then, When
 from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
 from csvcubeddevtools.helpers.file import get_test_cases_dir
 from rdflib import Graph

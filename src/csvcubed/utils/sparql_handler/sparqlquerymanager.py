@@ -23,40 +23,40 @@ from csvcubed.models.csvcubedexception import (
 )
 from csvcubed.models.sparql.valuesbinding import ValuesBinding
 from csvcubed.models.sparqlresults import (
-    CSVWTableSchemaFileDependenciesResult,
     CatalogMetadataResult,
     CodeListColsByDatasetUrlResult,
-    ColTitlesAndNamesResult,
-    CubeTableIdentifiers,
-    IsPivotedShapeMeasureResult,
-    ObservationValueColumnTitleAboutUrlResult,
-    PrimaryKeyColNamesByDatasetUrlResult,
     CodelistsResult,
     ColsWithSuppressOutputTrueResult,
-    DSDLabelURIResult,
-    DSDSingleUnitResult,
+    ColTitlesAndNamesResult,
     CsvUrlResult,
-    QubeComponentsResult,
+    CSVWTableSchemaFileDependenciesResult,
+    CubeTableIdentifiers,
+    DSDLabelURIResult,
+    IsPivotedShapeMeasureResult,
     MetadataDependenciesResult,
+    ObservationValueColumnTitleAboutUrlResult,
+    PrimaryKeyColNamesByDatasetUrlResult,
+    QubeComponentsResult,
     TableSchemaPropertiesResult,
     UnitColumnAboutValueUrlResult,
+    UnitResult,
     _map_data_set_dsd_csv_url_result,
     map_catalog_metadata_result,
     map_codelist_cols_by_csv_url_result,
-    map_col_tiles_and_names_result,
-    map_is_pivoted_shape_for_measures_in_data_set,
-    map_observation_value_col_title_and_about_url_result,
-    map_primary_key_col_names_by_csv_url_result,
     map_codelists_sparql_result,
+    map_col_tiles_and_names_result,
     map_cols_with_supress_output_true_sparql_result,
+    map_csv_url_result,
     map_csvw_table_schemas_file_dependencies_result,
     map_dataset_label_dsd_uri_sparql_result,
-    map_csv_url_result,
-    map_qube_components_sparql_result,
-    map_single_unit_from_dsd_result,
+    map_is_pivoted_shape_for_measures_in_data_set,
     map_metadata_dependency_results,
+    map_observation_value_col_title_and_about_url_result,
+    map_primary_key_col_names_by_csv_url_result,
+    map_qube_components_sparql_result,
     map_table_schema_properties_result,
     map_unit_col_about_value_urls_result,
+    map_units,
 )
 from csvcubed.utils.sparql_handler.sparql import ask, select
 
@@ -92,7 +92,7 @@ class SPARQLQueryName(Enum):
 
     SELECT_CODELIST_CSV_URL = "select_codelist_csv_url"
 
-    SELECT_SINGLE_UNIT_FROM_DSD = "select_single_unit_from_dsd"
+    SELECT_UNITS = "select_units"
 
     SELECT_CSVW_TABLE_SCHEMA_FILE_DEPENDENCIES = (
         "select_csvw_table_schema_file_dependencies"
@@ -416,29 +416,20 @@ def select_codelist_csv_url(rdf_graph: rdflib.ConjunctiveGraph) -> CsvUrlResult:
     return map_csv_url_result(results[0])
 
 
-def select_single_unit_from_dsd(
-    rdf_graph: rdflib.ConjunctiveGraph, dataset_uri: str, json_path: Path
-) -> DSDSingleUnitResult:
+def select_units(rdf_graph: rdflib.ConjunctiveGraph) -> List[UnitResult]:
     """
-    Queries the single unit uri and label from the data structure definition.
+    Queries the units from data set.
 
     Member of :file:`./sparqlquerymanager.py`
 
-    :return: `DSDSingleUnitResult`
+    :return: `List[UnitResult]`
     """
     results: List[ResultRow] = select(
-        _get_query_string_from_file(SPARQLQueryName.SELECT_SINGLE_UNIT_FROM_DSD),
+        _get_query_string_from_file(SPARQLQueryName.SELECT_UNITS),
         rdf_graph,
-        init_bindings={"dataset_uri": Literal(dataset_uri)},
     )
 
-    if len(results) != 1:
-        raise InvalidNumberOfRecordsException(
-            record_description=f"result for the {SPARQLQueryName.SELECT_SINGLE_UNIT_FROM_DSD.value} sparql query",
-            excepted_num_of_records=1,
-            num_of_records=len(results),
-        )
-    return map_single_unit_from_dsd_result(results[0], json_path)
+    return map_units(results)
 
 
 def select_codelist_cols_by_csv_url(

@@ -7,7 +7,7 @@ Read some information from a CSV-W `skos:ConceptScheme`.
 import logging
 import re
 from pathlib import Path
-from typing import Tuple, Set
+from typing import Set, Tuple
 
 from uritemplate import variables
 

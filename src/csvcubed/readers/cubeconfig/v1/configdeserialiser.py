@@ -7,18 +7,17 @@ A loader for the v1.* config.json.
 import logging
 from json import JSONDecodeError
 from pathlib import Path
-from typing import Dict, Optional, Tuple, List, Callable
+from typing import Callable, Dict, List, Optional, Tuple
 
 import pandas as pd
 
 from csvcubed.models.cube.columns import CsvColumn, SuppressedCsvColumn
-from csvcubed.models.cube.cube import Cube
-from csvcubed.models.cube.cube import QbCube
+from csvcubed.models.cube.cube import Cube, QbCube
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.cube.qb.columns import QbColumn
 from csvcubed.models.jsonvalidationerrors import (
-    JsonSchemaValidationError,
     GenericJsonSchemaValidationError,
+    JsonSchemaValidationError,
 )
 from csvcubed.models.validationerror import ValidationError
 from csvcubed.readers.catalogmetadata.v1.catalog_metadata_reader import (
@@ -35,12 +34,14 @@ from csvcubed.readers.cubeconfig.v1.mapcolumntocomponent import (
 )
 from csvcubed.utils.iterables import first
 from csvcubed.utils.json import to_json_path
-from csvcubed.utils.validators.schema import map_to_internal_validation_errors
-from csvcubed.utils.validators.schema import validate_dict_against_schema
-from .constants import CONVENTION_NAMES
+from csvcubed.utils.validators.schema import (
+    map_to_internal_validation_errors,
+    validate_dict_against_schema,
+)
 
 # Used to determine whether a column name matches accepted conventions
 from ...preconfiguredtemplates import apply_preconfigured_values_from_template
+from .constants import CONVENTION_NAMES
 
 _logger = logging.getLogger(__name__)
 

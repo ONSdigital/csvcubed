@@ -1,5 +1,4 @@
 Feature: Test the csvcubed Command Line Interface.
-
   Scenario: The csvcubed build command should output validation errors file
     Given the existing test-case file "configloaders/data_validation_error.csv"
     And the existing test-case file "configloaders/qube_validation_error.json"

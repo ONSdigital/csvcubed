@@ -11,11 +11,12 @@ from dataclasses import dataclass, field
 from typing import List, Optional, Type, Union
 
 from csvcubed.models.validationerror import SpecificValidationError
+
 from ..qb import (
-    QbMultiMeasureDimension,
     QbDimension,
-    QbObservationValue,
+    QbMultiMeasureDimension,
     QbMultiUnits,
+    QbObservationValue,
     QbStructuralDefinition,
 )
 
@@ -126,6 +127,7 @@ class MoreThanOneUnitsColumnError(MaxNumComponentsExceededError):
     @classmethod
     def get_error_url(cls) -> str:
         return "http://purl.org/csv-cubed/err/multi-unit-col"
+
 
 @dataclass
 class MinNumComponentsNotSatisfiedError(SpecificValidationError, ABC):

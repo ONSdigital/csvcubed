@@ -39,9 +39,7 @@ from csvcubed.models.sparqlresults import (
     PrimaryKeyColNamesByDatasetUrlResult,
     QubeComponentsResult,
 )
-from csvcubed.utils.csvdataset import (
-    transform_dataset_to_canonical_shape,
-)
+from csvcubed.utils.csvdataset import transform_dataset_to_canonical_shape
 from csvcubed.utils.skos.codelist import (
     CodelistPropertyUrl,
     get_codelist_col_title_by_property_url,
@@ -53,11 +51,11 @@ from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_codelist_cols_by_csv_url,
     select_codelist_csv_url,
-    select_primary_key_col_names_by_csv_url,
     select_cols_where_suppress_output_is_true,
     select_csvw_catalog_metadata,
     select_csvw_dsd_dataset_label_and_dsd_def_uri,
     select_dsd_code_list_and_cols,
+    select_primary_key_col_names_by_csv_url,
     select_qb_csv_url,
 )
 from csvcubed.utils.uri import looks_like_uri
@@ -195,7 +193,6 @@ class MetadataPrinter:
             self.dataset,
             self.result_qube_components.qube_components,
             self.primary_csv_url,
-            self.csvw_metadata_rdf_graph,
             self.csvw_metadata_json_path,
         )
         self.result_dataset_value_counts = get_dataset_val_counts_info(

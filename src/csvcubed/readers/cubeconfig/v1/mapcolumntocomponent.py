@@ -7,7 +7,7 @@ Map info.json v1.* definitions to QB column components
 import copy
 import logging
 from pathlib import Path
-from typing import Union, Optional, Tuple, List
+from typing import List, Optional, Tuple, Union
 
 import csvcubed.readers.cubeconfig.v1.columnschema as schema
 from csvcubed.inputs import PandasDataTypes

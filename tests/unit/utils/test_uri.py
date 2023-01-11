@@ -1,11 +1,11 @@
 import pytest
 
 from csvcubed.utils.uri import (
-    get_last_uri_part,
     csvw_column_name_safe,
-    looks_like_uri,
     ensure_looks_like_uri,
     ensure_values_in_lists_looks_like_uris,
+    get_last_uri_part,
+    looks_like_uri,
 )
 
 

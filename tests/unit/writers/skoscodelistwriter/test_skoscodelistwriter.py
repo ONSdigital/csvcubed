@@ -1,7 +1,7 @@
-from typing import Dict, Any
+from typing import Any, Dict
 
 import pytest
-from rdflib import RDFS, Literal, URIRef, Graph
+from rdflib import RDFS, Graph, Literal, URIRef
 
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.cube.qb.components.arbitraryrdf import (

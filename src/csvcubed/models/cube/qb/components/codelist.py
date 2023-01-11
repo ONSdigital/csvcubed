@@ -7,30 +7,24 @@ Represent code lists in an RDF Data Cube.
 from abc import ABC
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import List, Optional, Set, Generic, TypeVar, Callable
+from typing import Callable, Generic, List, Optional, Set, TypeVar
 
 from pydantic import root_validator, validator
 
 from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_str
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
-from csvcubed.models.validationerror import ValidationError
+from csvcubed.models.validationerror import ValidateModelProperiesError, ValidationError
 from csvcubed.readers.skoscodelistreader import extract_code_list_concept_scheme_info
 from csvcubed.utils.qb.validation.uri_safe import ensure_no_uri_safe_conflicts
 from csvcubed.utils.validators.file import validate_file_exists
 from csvcubed.utils.validators.uri import validate_uri
 from csvcubed.writers.helpers.skoscodelistwriter.constants import SCHEMA_URI_IDENTIFIER
-from .arbitraryrdf import (
-    ArbitraryRdf,
-    RdfSerialisationHint,
-    TripleFragmentBase,
-)
-from csvcubed.models.validationerror import ValidateModelProperiesError
-from .concept import NewQbConcept, DuplicatedQbConcept
-from .datastructuredefinition import (
-    SecondaryQbStructuralDefinition,
-)
-from .validationerrors import ReservedUriValueError
+
 from ...uristyle import URIStyle
+from .arbitraryrdf import ArbitraryRdf, RdfSerialisationHint, TripleFragmentBase
+from .concept import DuplicatedQbConcept, NewQbConcept
+from .datastructuredefinition import SecondaryQbStructuralDefinition
+from .validationerrors import ReservedUriValueError
 
 
 @dataclass
@@ -200,5 +194,3 @@ def validate_codelist(
     test.validate()
     """
     return []
-
-

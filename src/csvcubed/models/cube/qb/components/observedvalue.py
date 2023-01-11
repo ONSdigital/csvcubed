@@ -5,11 +5,12 @@ Observed Values
 Represent observed values in an RDF Data Cube.
 """
 from dataclasses import dataclass, field
-from typing import Optional, List
+from typing import List, Optional
 
 import pandas as pd
 
 from csvcubed.models.validationerror import ValidationError
+
 from .datastructuredefinition import QbColumnStructuralDefinition
 from .measure import QbMeasure
 from .unit import QbUnit

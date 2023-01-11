@@ -1,10 +1,6 @@
 import pytest
 
-from csvcubed.models.cube.cube import (
-    QbColumn,
-    CatalogMetadata,
-    Cube,
-)
+from csvcubed.models.cube.cube import CatalogMetadata, Cube, QbColumn
 from csvcubed.models.cube.qb.components.attribute import NewQbAttributeLiteral
 from csvcubed.models.cube.qb.components.dimension import NewQbDimension
 from csvcubed.models.cube.qb.components.measure import NewQbMeasure

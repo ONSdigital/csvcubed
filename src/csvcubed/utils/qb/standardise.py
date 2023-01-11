@@ -4,25 +4,26 @@ Standardise
 
 Utilities for standardising cubes and their corresponding data values.
 """
-from typing import List, Dict
+from typing import Dict, List
 
 import pandas as pd
 from pandas.core.arrays.categorical import Categorical
 
-from csvcubed.models.cube.cube import QbCube, QbColumn
+from csvcubed.models.cube.cube import QbColumn, QbCube
 from csvcubed.models.cube.qb.components import (
+    NewQbCodeList,
+    NewQbDimension,
     NewQbMeasure,
     NewQbUnit,
     QbAttribute,
+    QbAttributeLiteral,
     QbDimension,
-    NewQbDimension,
-    NewQbCodeList,
     QbMultiMeasureDimension,
     QbMultiUnits,
-    QbAttributeLiteral,
     QbObservationValue,
 )
-from .cube import get_all_units, get_all_measures
+
+from .cube import get_all_measures, get_all_units
 
 _unsigned_integer_data_types = {
     "unsignedLong",

@@ -23,10 +23,13 @@ from csvcubed.utils.iterables import first
 from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.sparql_handler.code_list_state import CodeListState
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
+from csvcubed.utils.sparql_handler.sparqlquerymanager import (
+    select_is_pivoted_shape_for_measures_in_data_set,
+)
 from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.unit.cli.inspect.test_inspectdatasetmanager import (
-    expected_dataframe_pivoted_single_measure,
     expected_dataframe_pivoted_multi_measure,
+    expected_dataframe_pivoted_single_measure,
 )
 from tests.unit.utils.sparqlhandler.test_sparqlquerymanager import (
     assert_dsd_component_equal,
@@ -388,7 +391,7 @@ def step_impl(context):
         [
             {
                 "Measure": "Some Measure",
-                "Unit": "qb-id-10004.csv#unit/some-unit",
+                "Unit": "Some Unit",
                 "Count": 3,
             }
         ]
@@ -577,12 +580,12 @@ def step_impl(context):
         [
             {
                 "Measure": "Some Measure",
-                "Unit": "qb-id-10003.csv#unit/some-unit",
+                "Unit": "Some Unit",
                 "Count": 3,
             },
             {
                 "Measure": "Some Other Measure",
-                "Unit": "qb-id-10003.csv#unit/percent",
+                "Unit": "Percent",
                 "Count": 3,
             },
         ]

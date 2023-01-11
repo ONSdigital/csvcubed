@@ -97,6 +97,7 @@ def _get_logging_level(selected_logging_level: Union[int, str, None]) -> int:
 def log_exception(logger: logging.Logger, error: Exception) -> None:
     logger.critical(_get_stack_trace_for_exception(error))
 
+
 def _get_stack_trace_for_exception(error: Exception) -> str:
     file_stream = io.StringIO()
     traceback.print_exception(
@@ -109,6 +110,7 @@ def _get_stack_trace_for_exception(error: Exception) -> str:
     )
     file_stream.seek(0)
     return file_stream.read()
+
 
 def debug_log_exception(logger: logging.Logger, error: Exception) -> None:
     logger.debug(_get_stack_trace_for_exception(error))

@@ -1,6 +1,6 @@
+import json
 from copy import deepcopy
 
-import json
 import pytest
 
 from csvcubed.definitions import APP_ROOT_DIR_PATH

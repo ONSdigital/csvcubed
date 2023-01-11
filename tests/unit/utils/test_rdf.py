@@ -1,6 +1,6 @@
 import pytest
 import rdflib
-from rdflib import URIRef, RDFS, Literal
+from rdflib import RDFS, Literal, URIRef
 
 from csvcubed.utils.rdf import parse_graph_retain_relative
 from tests.unit.test_baseunit import get_test_cases_dir

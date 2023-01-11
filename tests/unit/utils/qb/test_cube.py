@@ -8,7 +8,7 @@ from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureD
 from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
 from csvcubed.models.cube.qb.components.unit import NewQbUnit
 from csvcubed.models.cube.qb.components.unitscolumn import QbMultiUnits
-from csvcubed.utils.qb.cube import get_all_units, get_all_measures
+from csvcubed.utils.qb.cube import get_all_measures, get_all_units
 
 
 def test_get_all_units():

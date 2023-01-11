@@ -16,22 +16,22 @@ from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureD
 from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
 from csvcubed.models.cube.qb.components.unitscolumn import QbMultiUnits
 from csvcubed.models.cube.qb.validationerrors import (
+    AttributeNotLinkedError,
     BothMeasureTypesDefinedError,
     BothUnitTypesDefinedError,
     CsvColumnUriTemplateMissingError,
+    DuplicateMeasureError,
     EmptyQbMultiMeasureDimensionError,
+    HybridShapeError,
+    LinkedObsColumnDoesntExistError,
+    LinkedToNonObsColumnError,
     MoreThanOneMeasureColumnError,
     MoreThanOneUnitsColumnError,
     NoMeasuresDefinedError,
     NoObservedValuesColumnDefinedError,
     NoUnitsDefinedError,
-    PivotedShapeMeasureColumnsExistError,
-    DuplicateMeasureError,
-    AttributeNotLinkedError,
-    LinkedObsColumnDoesntExistError,
-    LinkedToNonObsColumnError,
-    HybridShapeError,
     PivotedObsValColWithoutMeasureError,
+    PivotedShapeMeasureColumnsExistError,
 )
 from csvcubed.models.cube.validationerrors import ObservationValuesMissing
 from csvcubed.models.validationerror import ValidationError

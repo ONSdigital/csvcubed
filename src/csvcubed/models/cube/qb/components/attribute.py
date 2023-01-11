@@ -7,7 +7,7 @@ Represent Attributes in an RDF Data Cube.
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import List, Set, Optional
+from typing import List, Optional, Set
 
 import pandas as pd
 from pydantic import validator
@@ -19,15 +19,10 @@ from csvcubed.models.validationerror import ValidationError
 from csvcubed.utils.qb.validation.uri_safe import ensure_no_uri_safe_conflicts
 from csvcubed.utils.uri import uri_safe
 from csvcubed.utils.validators.uri import validate_uri
-from .arbitraryrdf import (
-    ArbitraryRdf,
-    TripleFragmentBase,
-    RdfSerialisationHint,
-)
+
+from .arbitraryrdf import ArbitraryRdf, RdfSerialisationHint, TripleFragmentBase
 from .attributevalue import NewQbAttributeValue
-from .datastructuredefinition import (
-    QbColumnStructuralDefinition,
-)
+from .datastructuredefinition import QbColumnStructuralDefinition
 from .validationerrors import UndefinedAttributeValueUrisError
 
 
