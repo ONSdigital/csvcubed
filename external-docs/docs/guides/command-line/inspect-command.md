@@ -267,24 +267,24 @@ Options:
         - Dataset Label: Alcohol Bulletin
         - Number of Components: 17
         - Components:
-                                                        Property   Property Label Property Type     Column Title  Required
-       http://purl.org/linked-data/sdmx/2009/dimension#refPeriod                      Dimension           Period      True
-http://gss-data.org.uk/def/trade/property/dimension/alcohol-type                      Dimension     Alcohol Type      True
-                 alcohol-bulletin.csv#dimension/alcohol-sub-type Alcohol Sub Type     Dimension Alcohol Sub Type      True
-                  alcohol-bulletin.csv#dimension/alcohol-content  Alcohol Content     Dimension  Alcohol Content      True
-                 alcohol-bulletin.csv#dimension/clearance-origin Clearance Origin     Dimension Clearance Origin      True
-                    http://purl.org/linked-data/cube#measureType                      Dimension     Measure Type      True
-        http://gss-data.org.uk/def/measure/alcohol-duty-receipts                        Measure                       True
-           http://gss-data.org.uk/def/measure/beer-duty-receipts                        Measure                       True
-          http://gss-data.org.uk/def/measure/cider-duty-receipts                        Measure                       True
-                   http://gss-data.org.uk/def/measure/clearances                        Measure                       True
-        http://gss-data.org.uk/def/measure/clearances-of-alcohol                        Measure                       True
-            http://gss-data.org.uk/def/measure/production-volume                        Measure                       True
-    http://gss-data.org.uk/def/measure/production-volume-alcohol                        Measure                       True
-        http://gss-data.org.uk/def/measure/spirits-duty-receipts                        Measure                       True
-           http://gss-data.org.uk/def/measure/wine-duty-receipts                        Measure                       True
-     http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure                      Attribute             Unit      True
-       http://purl.org/linked-data/sdmx/2009/attribute#obsStatus                      Attribute           Marker     False
+                                                        Property   Property Label Property Type     Column Title  Observation Value Column Titles   Required
+       http://purl.org/linked-data/sdmx/2009/dimension#refPeriod                      Dimension           Period                            Value       True
+http://gss-data.org.uk/def/trade/property/dimension/alcohol-type                      Dimension     Alcohol Type                            Value       True
+                 alcohol-bulletin.csv#dimension/alcohol-sub-type Alcohol Sub Type     Dimension Alcohol Sub Type                            Value       True
+                  alcohol-bulletin.csv#dimension/alcohol-content  Alcohol Content     Dimension  Alcohol Content                            Value       True
+                 alcohol-bulletin.csv#dimension/clearance-origin Clearance Origin     Dimension Clearance Origin                            Value       True
+                    http://purl.org/linked-data/cube#measureType                      Dimension     Measure Type                            Value       True
+        http://gss-data.org.uk/def/measure/alcohol-duty-receipts                        Measure                                             Value       True
+           http://gss-data.org.uk/def/measure/beer-duty-receipts                        Measure                                             Value       True
+          http://gss-data.org.uk/def/measure/cider-duty-receipts                        Measure                                             Value       True
+                   http://gss-data.org.uk/def/measure/clearances                        Measure                                             Value       True
+        http://gss-data.org.uk/def/measure/clearances-of-alcohol                        Measure                                             Value       True
+            http://gss-data.org.uk/def/measure/production-volume                        Measure                                             Value       True
+    http://gss-data.org.uk/def/measure/production-volume-alcohol                        Measure                                             Value       True
+        http://gss-data.org.uk/def/measure/spirits-duty-receipts                        Measure                                             Value       True
+           http://gss-data.org.uk/def/measure/wine-duty-receipts                        Measure                                             Value       True
+     http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure                      Attribute             Unit                            Value       True
+       http://purl.org/linked-data/sdmx/2009/attribute#obsStatus                      Attribute           Marker                            Value      False
         - Columns where suppress output is true: None
 
 - The data cube has the following code list information:

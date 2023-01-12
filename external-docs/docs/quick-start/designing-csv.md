@@ -14,7 +14,9 @@ csvcubed needs to understand how your statistical data is structured in order to
 
 ## Structuring your data
 
-The [standard shape](../guides/shape-data/index.md#standard-shape) of data is the recommended way to shape your data for csvcubed. It requires that your CSV has the following columns:
+### Standard shape
+
+The [standard shape](../guides/shape-data/index.md#standard-shape) of data is the recommended way to start using csvcubed. It requires that your CSV has the following columns:
 
 | ...Identifying characteristics... | Value | Measure | Unit |
 | :-------------------------------: | ----: | ------: | ---: |
@@ -29,6 +31,10 @@ In the above table:
 * the `Unit` column describes the unit of measure in which the `Value` has been recorded.
 
 The names of the columns is how csvcubed interprets what each column contains in the [configuration by convention approach](../guides/configuration/convention.md). Using the column titles `Value`, `Measure` and `Unit` or one of their [synonyms](../guides/configuration/index.md#conventional-column-names) in your CSV will work. All other columns are assumed to be *identifying characteristics* ([dimensions](../glossary/index.md#dimensionhttpswwww3orgtrvocab-data-cubecubes-model)).
+
+### Pivoted shape
+
+Once you have gained some familiarity with using csvcubed, you may find that the [pivoted shape](../guides/shape-data/pivoted-shape.md) is a better way to represent your data. See the [Shaping your data](../guides/shape-data/index.md) section for more information on the pivoted shape.
 
 ## Adding your data
 

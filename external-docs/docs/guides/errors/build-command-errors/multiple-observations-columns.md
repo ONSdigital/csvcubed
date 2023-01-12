@@ -1,4 +1,4 @@
-++++++++++++++++++++++# Error - multiple observations columns defined (Deprecated)
+# Error - multiple observations columns defined (Deprecated)
 
 ## Deprecation warning
 

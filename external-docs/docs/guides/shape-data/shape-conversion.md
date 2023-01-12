@@ -129,6 +129,32 @@ To convert data from the [standard shape](./standard-shape.md) into the [pivoted
     # Output the data to CSV for input to csvcubed.
     pivoted_data.to_csv("my-data.csv", index=False)
     ```
+=== "R"
+    ```r
+    library(tidyverse)
+
+    standard_shape_data <- tibble(
+        Year = c(2022, 2021, 2022, 2021),
+        Location = c("London", "Cardiff", "London", "Cardiff"),
+        Measure = c("Number of 'Arthur's Bakes'", "Number of 'Arthur's Bakes'", "Revenue", "Revenue"),
+        Value = c(35, 26, 25, 18),
+        Unit = c("Count", "Count", "GBP Sterling, Millions", "GBP Sterling, Millions")
+    )
+
+    pivoted_shape_data <- standard_shape_data %>%
+        # Identify the columns to be included in the output
+        select(Year, Location, Measure, Value) %>%
+        # Pivot the data
+        pivot_wider(
+            names_from = Measure,
+            values_from = Value
+        ) %>%
+        # Rename the "Revenue" column to include the unit information
+        rename("Revenue (GBP Sterling, Millions)" = "Revenue")
+
+    # Output the data to CSV for input to csvcubed.
+    pivoted_shape_data %>% write.csv(file="my-data.csv", row.names = FALSE)
+    ```
 
 The data set is now in the pivoted shape:
 

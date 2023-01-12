@@ -31,8 +31,8 @@ csvcubed requires that data is structured as per the following example, regardle
 3. Every row has an _observed values_ column containing the measured value of some property.
     * the `Value` column holds the observed values here.
 4. Each piece of information describing the _observed value_ has its own _attribute_ column.
-    * the `Status` _attribute_ column contains information describing the state of the observed value itself.
-    * Note that _attributes_ should only describe the observed value and must not identify any subset of the population.  
+    * the `Status` _attribute_ column contains information describing the status of the observed value itself.
+    * Note that _attributes_ should only describe the observed value and must not be used to identify any subset of the population.  
 
 ## Standard Shape
 
