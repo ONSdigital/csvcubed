@@ -1,0 +1,28 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX csvw: <http://www.w3.org/ns/csvw#>
+
+SELECT
+        ?csvUrl
+        ?aboutUrl
+        ?dataType
+        ?name
+        ?propertyUrl
+        (COALESCE(?requiredO, false) as ?required)
+        (COALESCE(?suppressOutputO, false) as ?suppressOutput)
+        ?title
+        ?valueUrl
+        (COALESCE(?virtualO, false) as ?virtual)
+WHERE {
+    [] csvw:tableSchema/csvw:column/rdf:rest*/rdf:first ?column;
+       csvw:url ?csvUrl.
+
+    OPTIONAL { ?column csvw:aboutUrl ?aboutUrl. }
+    OPTIONAL { ?column csvw:datatype ?dataType. }
+    ?column csvw:name ?name.
+    OPTIONAL { ?column csvw:propertyUrl ?propertyUrl. }
+    OPTIONAL { ?column csvw:required ?requiredO. }
+    OPTIONAL { ?column csvw:suppressOutput ?suppressOutputO. }
+    OPTIONAL { ?column csvw:title ?title. }
+    OPTIONAL { ?column csvw:valueUrl ?valueUrl. }
+    OPTIONAL { ?column csvw:virtual ?virtualO. }
+}

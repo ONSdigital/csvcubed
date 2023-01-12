@@ -43,16 +43,16 @@ All being well we get the below output. A detailed explanation of this output is
         - Dataset Label: Sweden At Eurovision No Missing
         - Number of Components: 9
         - Components:
-                                                   Property  Property Label Property Type Column Title  Required
-         sweden-at-eurovision-no-missing.csv#dimension/year            Year     Dimension         Year      True
-      sweden-at-eurovision-no-missing.csv#dimension/entrant         Entrant     Dimension      Entrant      True
-         sweden-at-eurovision-no-missing.csv#dimension/song            Song     Dimension         Song      True
-     sweden-at-eurovision-no-missing.csv#dimension/language        Language     Dimension     Language      True
-               http://purl.org/linked-data/cube#measureType                     Dimension      Measure      True
-   sweden-at-eurovision-no-missing.csv#measure/final-points    Final Points       Measure                   True
-     sweden-at-eurovision-no-missing.csv#measure/final-rank      Final Rank       Measure                   True
-sweden-at-eurovision-no-missing.csv#measure/people-on-stage People on Stage       Measure                   True
-http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure                     Attribute         Unit      True
+                                                   Property  Property Label Property Type Column Title  Observation Value Column Titles  Required
+         sweden-at-eurovision-no-missing.csv#dimension/year            Year     Dimension         Year                                       True
+      sweden-at-eurovision-no-missing.csv#dimension/entrant         Entrant     Dimension      Entrant                                       True
+         sweden-at-eurovision-no-missing.csv#dimension/song            Song     Dimension         Song                                       True
+     sweden-at-eurovision-no-missing.csv#dimension/language        Language     Dimension     Language                                       True
+               http://purl.org/linked-data/cube#measureType                     Dimension      Measure                                       True
+   sweden-at-eurovision-no-missing.csv#measure/final-points    Final Points       Measure                                                    True
+     sweden-at-eurovision-no-missing.csv#measure/final-rank      Final Rank       Measure                                                    True
+sweden-at-eurovision-no-missing.csv#measure/people-on-stage People on Stage       Measure                                                    True
+http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure                     Attribute         Unit                                       True
         - Columns where suppress output is true: None
 
 - The data cube has the following code list information:

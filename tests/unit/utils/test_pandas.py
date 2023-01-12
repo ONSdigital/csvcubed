@@ -1,6 +1,6 @@
 import pytest
 
-from csvcubed.models.cube import DuplicateColumnTitleError
+from csvcubed.models.cube.cube import DuplicateColumnTitleError
 from csvcubed.utils.pandas import read_csv
 from tests.unit.test_baseunit import get_test_cases_dir
 

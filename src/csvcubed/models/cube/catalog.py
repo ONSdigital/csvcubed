@@ -2,10 +2,10 @@
 Catalog Metadata (base)
 -----------------------
 """
-from dataclasses import dataclass
-from datetime import datetime, date
-from typing import Optional, Union
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
+from datetime import date, datetime
+from typing import Optional, Union
 
 from csvcubed.models.pydanticmodel import PydanticModel
 

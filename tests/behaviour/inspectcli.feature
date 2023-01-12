@@ -5,15 +5,13 @@ Feature: Behaviour testing of csvcubed inspect.
         And the existing test-case file "cli/inspect/multi-unit_multi-measure/alcohol-bulletin.csv"
         And the existing test-case file "cli/inspect/multi-unit_multi-measure/alcohol-content.table.json"
         And the existing test-case file "cli/inspect/multi-unit_multi-measure/alcohol-sub-type.table.json"
-        And the existing test-case file "cli/inspect/multi-unit_multi-measure/clearance-origin.table.json"
-        
+        And the existing test-case file "cli/inspect/multi-unit_multi-measure/clearance-origin.table.json"        
         When the Metadata file path is detected and validated "cli/inspect/multi-unit_multi-measure/alcohol-bulletin.csv-metadata.json"
         And the csv file path is detected and validated "cli/inspect/multi-unit_multi-measure/alcohol-bulletin.csv"
         And the Metadata File json-ld is loaded to a rdf graph
         And the Metadata File is validated
         And the Printables for data cube are generated
         Then the Type Printable should be "- This file is a data cube."
-        
         And the Catalog Metadata Printable should be
         """
           - The data cube has the following catalog metadata:
@@ -69,24 +67,24 @@ Feature: Behaviour testing of csvcubed inspect.
         - Dataset Label: Alcohol Bulletin
         - Number of Components: 17
         - Components:
-                                                                Property   Property Label Property Type     Column Title  Required
-               http://purl.org/linked-data/sdmx/2009/dimension#refPeriod                      Dimension           Period      True
-        http://gss-data.org.uk/def/trade/property/dimension/alcohol-type                      Dimension     Alcohol Type      True
-                         alcohol-bulletin.csv#dimension/alcohol-sub-type Alcohol Sub Type     Dimension Alcohol Sub Type      True
-                          alcohol-bulletin.csv#dimension/alcohol-content  Alcohol Content     Dimension  Alcohol Content      True
-                         alcohol-bulletin.csv#dimension/clearance-origin Clearance Origin     Dimension Clearance Origin      True
-                            http://purl.org/linked-data/cube#measureType                      Dimension     Measure Type      True
-                http://gss-data.org.uk/def/measure/alcohol-duty-receipts                        Measure                       True
-                   http://gss-data.org.uk/def/measure/beer-duty-receipts                        Measure                       True
-                  http://gss-data.org.uk/def/measure/cider-duty-receipts                        Measure                       True
-                           http://gss-data.org.uk/def/measure/clearances                        Measure                       True
-                http://gss-data.org.uk/def/measure/clearances-of-alcohol                        Measure                       True
-                    http://gss-data.org.uk/def/measure/production-volume                        Measure                       True
-            http://gss-data.org.uk/def/measure/production-volume-alcohol                        Measure                       True
-                http://gss-data.org.uk/def/measure/spirits-duty-receipts                        Measure                       True
-                   http://gss-data.org.uk/def/measure/wine-duty-receipts                        Measure                       True
-             http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure                      Attribute             Unit      True
-               http://purl.org/linked-data/sdmx/2009/attribute#obsStatus                      Attribute           Marker     False
+                                                                 Property   Property Label Property Type     Column Title Observation Value Column Titles  Required
+                http://purl.org/linked-data/sdmx/2009/dimension#refPeriod                      Dimension           Period                                      True
+         http://gss-data.org.uk/def/trade/property/dimension/alcohol-type                      Dimension     Alcohol Type                                      True
+                          alcohol-bulletin.csv#dimension/alcohol-sub-type Alcohol Sub Type     Dimension Alcohol Sub Type                                      True
+                           alcohol-bulletin.csv#dimension/alcohol-content  Alcohol Content     Dimension  Alcohol Content                                      True
+                          alcohol-bulletin.csv#dimension/clearance-origin Clearance Origin     Dimension Clearance Origin                                      True
+                             http://purl.org/linked-data/cube#measureType                      Dimension     Measure Type                                      True
+                 http://gss-data.org.uk/def/measure/alcohol-duty-receipts                        Measure                                                       True
+                    http://gss-data.org.uk/def/measure/beer-duty-receipts                        Measure                                                       True
+                   http://gss-data.org.uk/def/measure/cider-duty-receipts                        Measure                                                       True
+                            http://gss-data.org.uk/def/measure/clearances                        Measure                                                       True
+                 http://gss-data.org.uk/def/measure/clearances-of-alcohol                        Measure                                                       True
+                     http://gss-data.org.uk/def/measure/production-volume                        Measure                                                       True
+             http://gss-data.org.uk/def/measure/production-volume-alcohol                        Measure                                                       True
+                 http://gss-data.org.uk/def/measure/spirits-duty-receipts                        Measure                                                       True
+                    http://gss-data.org.uk/def/measure/wine-duty-receipts                        Measure                                                       True
+              http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure                      Attribute             Unit                                      True
+                http://purl.org/linked-data/sdmx/2009/attribute#obsStatus                      Attribute           Marker                                     False
         - Columns where suppress output is true: None
         """
         And the Code List Printable should be
@@ -149,7 +147,8 @@ Feature: Behaviour testing of csvcubed inspect.
             spirits-duty-receipts            gbp-million    314
                wine-duty-receipts            gbp-million    314
         """
-
+    
+    # Below test also validates the csvcubed against old-style single-measure pivoted shape data sets.
     Scenario: inspect should produce the expected printable for data cube metadata json-ld input of type multi-unit single-measure.
         Given the existing test-case file "cli/inspect/multi-unit_single-measure/final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
         And the existing test-case file "cli/inspect/multi-unit_single-measure/final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv"
@@ -163,14 +162,12 @@ Feature: Behaviour testing of csvcubed inspect.
         And the existing test-case file "cli/inspect/multi-unit_single-measure/source.table.json"
         And the existing test-case file "cli/inspect/multi-unit_single-measure/national-communication-fuel-group.table.json"
         And the existing test-case file "cli/inspect/multi-unit_single-measure/national-communication-fuel.table.json"
-        And the existing test-case file "cli/inspect/multi-unit_single-measure/activity-name.table.json"
-        
+        And the existing test-case file "cli/inspect/multi-unit_single-measure/activity-name.table.json"        
         When the Metadata file path is detected and validated "cli/inspect/multi-unit_single-measure/final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
         And the Metadata File json-ld is loaded to a rdf graph
         And the Metadata File is validated
         And the Printables for data cube are generated
-        Then the Type Printable should be "- This file is a data cube."
-        
+        Then the Type Printable should be "- This file is a data cube."        
         And the Catalog Metadata Printable should be
         """
         - The data cube has the following catalog metadata:
@@ -252,21 +249,21 @@ Feature: Behaviour testing of csvcubed inspect.
                 - Dataset Label: Final UK greenhouse gas emissions national statistics: 1990 to 2019
                 - Number of Components: 14
                 - Components:
-                                                                                                                  Property                    Property Label Property Type                      Column Title  Required
-                                      final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/ghg                               GHG     Dimension                               GHG      True
-                              final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/ghg-grouped                       GHG Grouped     Dimension                       GHG Grouped      True
-                                final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/ipcc-code                         IPCC Code     Dimension                         IPCC Code      True
-                                     final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/year                              Year     Dimension                              Year      True
-            final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-sector     National Communication Sector     Dimension     National Communication Sector      True
-        final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-sub-sector National Communication Sub-sector     Dimension National Communication Sub-sector      True
-          final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-category   National Communication Category     Dimension   National Communication Category      True
-                                   final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/source                            Source     Dimension                            Source      True
-        final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-fuel-group National Communication Fuel Group     Dimension National Communication Fuel Group      True
-              final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-fuel       National Communication Fuel     Dimension       National Communication Fuel      True
-                            final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/activity-name                     Activity Name     Dimension                     Activity Name      True
-                                                                              http://purl.org/linked-data/cube#measureType                                       Dimension                                        True
-                                                               http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure                                       Attribute                                        True
-                      final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#measure/gas-emissions-gwp-ar4            gas emissions(gwp-ar4)       Measure                             Value      True
+                                                                                                                  Property                    Property Label Property Type                      Column Title  Observation Value Column Titles   Required
+                                      final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/ghg                               GHG     Dimension                               GHG                            Value   True
+                              final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/ghg-grouped                       GHG Grouped     Dimension                       GHG Grouped                            Value   True
+                                final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/ipcc-code                         IPCC Code     Dimension                         IPCC Code                            Value   True
+                                     final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/year                              Year     Dimension                              Year                            Value   True
+            final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-sector     National Communication Sector     Dimension     National Communication Sector                            Value   True
+        final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-sub-sector National Communication Sub-sector     Dimension National Communication Sub-sector                            Value   True
+          final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-category   National Communication Category     Dimension   National Communication Category                            Value   True
+                                   final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/source                            Source     Dimension                            Source                            Value   True
+        final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-fuel-group National Communication Fuel Group     Dimension National Communication Fuel Group                            Value   True
+              final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-fuel       National Communication Fuel     Dimension       National Communication Fuel                            Value   True
+                            final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/activity-name                     Activity Name     Dimension                     Activity Name                            Value   True
+                                                                              http://purl.org/linked-data/cube#measureType                                       Dimension                                                              Value   True
+                                                               http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure                                       Attribute                                                              Value   True
+                      final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#measure/gas-emissions-gwp-ar4            gas emissions(gwp-ar4)       Measure                             Value                            Value   True
         - Columns where suppress output is true: None
         """
         And the Code List Printable should be
@@ -290,9 +287,9 @@ Feature: Behaviour testing of csvcubed inspect.
         And the Dataset Information Printable should be
         """
         - The data cube has the following dataset information:
-                - Number of Observations: 41508
+                - Number of Rows: 19
                 - Number of Duplicates: 0
-                - First 10 Observations:
+                - First 10 Rows:
         GHG GHG Grouped IPCC Code  Year National Communication Sector National Communication Sub-sector National Communication Category                          Source National Communication Fuel Group National Communication Fuel       Activity Name  Value
         c2f6        pfcs     2b9b3  1990          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.001
         c2f6        pfcs     2b9b3  1991          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.001
@@ -305,25 +302,25 @@ Feature: Behaviour testing of csvcubed inspect.
         c2f6        pfcs     2b9b3  1998          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.005
         c2f6        pfcs     2b9b3  1999          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.002
 
-                - Last 10 Observations:
-        GHG GHG Grouped IPCC Code  Year National Communication Sector National Communication Sub-sector                                                                National Communication Category     Source National Communication Fuel Group National Communication Fuel      Activity Name  Value
-        sf6         sf6      2g2e  2010                      business                    not-applicable electronics-electrical-insulation-scientific-research-military-applications-and-sporting-goods tracer-gas                   other-emissions             other-emissions halocarbon-use-sf6  0.001
-        sf6         sf6      2g2e  2011                      business                    not-applicable electronics-electrical-insulation-scientific-research-military-applications-and-sporting-goods tracer-gas                   other-emissions             other-emissions halocarbon-use-sf6  0.029
-        sf6         sf6      2g2e  2012                      business                    not-applicable electronics-electrical-insulation-scientific-research-military-applications-and-sporting-goods tracer-gas                   other-emissions             other-emissions halocarbon-use-sf6  0.033
-        sf6         sf6      2g2e  2013                      business                    not-applicable electronics-electrical-insulation-scientific-research-military-applications-and-sporting-goods tracer-gas                   other-emissions             other-emissions halocarbon-use-sf6  0.007
-        sf6         sf6      2g2e  2014                      business                    not-applicable electronics-electrical-insulation-scientific-research-military-applications-and-sporting-goods tracer-gas                   other-emissions             other-emissions halocarbon-use-sf6  0.007
-        sf6         sf6      2g2e  2015                      business                    not-applicable electronics-electrical-insulation-scientific-research-military-applications-and-sporting-goods tracer-gas                   other-emissions             other-emissions halocarbon-use-sf6  0.001
-        sf6         sf6      2g2e  2016                      business                    not-applicable electronics-electrical-insulation-scientific-research-military-applications-and-sporting-goods tracer-gas                   other-emissions             other-emissions halocarbon-use-sf6  0.001
-        sf6         sf6      2g2e  2017                      business                    not-applicable electronics-electrical-insulation-scientific-research-military-applications-and-sporting-goods tracer-gas                   other-emissions             other-emissions halocarbon-use-sf6  0.001
-        sf6         sf6      2g2e  2018                      business                    not-applicable electronics-electrical-insulation-scientific-research-military-applications-and-sporting-goods tracer-gas                   other-emissions             other-emissions halocarbon-use-sf6  0.001
-        sf6         sf6      2g2e  2019                      business                    not-applicable electronics-electrical-insulation-scientific-research-military-applications-and-sporting-goods tracer-gas                   other-emissions             other-emissions halocarbon-use-sf6  0.001        
-        """
+                - Last 10 Rows:
+        GHG GHG Grouped IPCC Code  Year National Communication Sector National Communication Sub-sector National Communication Category                          Source National Communication Fuel Group National Communication Fuel       Activity Name  Value
+        c2f6        pfcs     2b9b3  1999          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.002
+        c2f6        pfcs     2b9b3  2000          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.003
+        c2f6        pfcs     2b9b3  2001          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.007
+        c2f6        pfcs     2b9b3  2002          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.007
+        c2f6        pfcs     2b9b3  2003          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.008
+        c2f6        pfcs     2b9b3  2004          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.013
+        c2f6        pfcs     2b9b3  2005          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.016
+        c2f6        pfcs     2b9b3  2006          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.013
+        c2f6        pfcs     2b9b3  2007          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.008
+        c2f6        pfcs     2b9b3  2008          industrial-processes                    not-applicable           halocarbon-production halocarbons-production-fugitive                   other-emissions             other-emissions non-fuel-combustion  0.002
+           """
         And the Dataset Value Counts Printable should be
         """
         - The data cube has the following value counts:
             - Value counts broken-down by measure and unit (of measure):
-                       Measure                                          Unit  Count
-        gas emissions(gwp-ar4) millions of tonnes of carbon dioxide (mt co2)  41508
+                            Measure                                          Unit  Count
+            gas emissions(gwp-ar4) millions of tonnes of carbon dioxide (mt co2)  19
         """
 
     Scenario: inspect should produce the expected printable for data cube metadata json-ld input of type single-unit multi-measure.
@@ -340,7 +337,6 @@ Feature: Behaviour testing of csvcubed inspect.
         And the existing test-case file "cli/inspect/single-unit_multi-measure/national-communication-fuel-group.table.json"
         And the existing test-case file "cli/inspect/single-unit_multi-measure/national-communication-fuel.table.json"
         And the existing test-case file "cli/inspect/single-unit_multi-measure/activity-name.table.json"
-
         When the Metadata file path is detected and validated "cli/inspect/single-unit_multi-measure/final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv-metadata.json"
         And the Metadata File json-ld is loaded to a rdf graph
         And the Metadata File is validated
@@ -419,22 +415,22 @@ Feature: Behaviour testing of csvcubed inspect.
             - Dataset Label: Final UK greenhouse gas emissions national statistics: 1990 to 2020
             - Number of Components: 15
             - Components:
-                                                                                                                      Property                    Property Label Property Type                      Column Title  Required
-                                          final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/ghg                               GHG     Dimension                               GHG      True
-                                  final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/ghg-grouped                       GHG Grouped     Dimension                       GHG Grouped      True
-                                    final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/ipcc-code                         IPCC Code     Dimension                         IPCC Code      True
-                                         final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/year                              Year     Dimension                              Year      True
-                final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/national-communication-sector     National Communication Sector     Dimension     National Communication Sector      True
-            final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/national-communication-sub-sector National Communication Sub-sector     Dimension National Communication Sub-sector      True
-              final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/national-communication-category   National Communication Category     Dimension   National Communication Category      True
-                                       final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/source                            Source     Dimension                            Source      True
-            final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/national-communication-fuel-group National Communication Fuel Group     Dimension National Communication Fuel Group      True
-                  final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/national-communication-fuel       National Communication Fuel     Dimension       National Communication Fuel      True
-                                final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/activity-name                     Activity Name     Dimension                     Activity Name      True
-                             final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#measure/emissions-ar4-gwps              Emissions (AR4 GWPs)       Measure                                        True
-                             final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#measure/emissions-ar5-gwps              Emissions (AR5 GWPs)       Measure                                        True
-                                                                                  http://purl.org/linked-data/cube#measureType                                       Dimension                           Measure      True
-                                                                   http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure                                       Attribute                                        True
+                                                                                                                      Property                    Property Label Property Type                      Column Title  Observation Value Column Titles   Required
+                                          final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/ghg                               GHG     Dimension                               GHG                                    True
+                                  final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/ghg-grouped                       GHG Grouped     Dimension                       GHG Grouped                                    True
+                                    final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/ipcc-code                         IPCC Code     Dimension                         IPCC Code                                    True
+                                         final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/year                              Year     Dimension                              Year                                    True
+                final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/national-communication-sector     National Communication Sector     Dimension     National Communication Sector                                    True
+            final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/national-communication-sub-sector National Communication Sub-sector     Dimension National Communication Sub-sector                                    True
+              final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/national-communication-category   National Communication Category     Dimension   National Communication Category                                    True
+                                       final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/source                            Source     Dimension                            Source                                    True
+            final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/national-communication-fuel-group National Communication Fuel Group     Dimension National Communication Fuel Group                                    True
+                  final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/national-communication-fuel       National Communication Fuel     Dimension       National Communication Fuel                                    True
+                                final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/activity-name                     Activity Name     Dimension                     Activity Name                                    True
+                             final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#measure/emissions-ar4-gwps              Emissions (AR4 GWPs)       Measure                                                                      True
+                             final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#measure/emissions-ar5-gwps              Emissions (AR5 GWPs)       Measure                                                                      True
+                                                                                  http://purl.org/linked-data/cube#measureType                                       Dimension                           Measure                                    True
+                                                                   http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure                                       Attribute                                                                      True
             - Columns where suppress output is true: None
         """
         And the Code List Printable should be
@@ -498,10 +494,8 @@ Feature: Behaviour testing of csvcubed inspect.
     Scenario: inspect should produce the expected printable for data cube metadata json-ld input of type single-unit single-measure.
         Given the existing test-case file "cli/inspect/single-unit_single-measure/energy-trends-uk-total-energy.csv-metadata.json"
         And the existing test-case file "cli/inspect/single-unit_single-measure/energy-trends-uk-total-energy.csv"
-        
         When the Metadata file path is detected and validated "cli/inspect/single-unit_single-measure/energy-trends-uk-total-energy.csv-metadata.json"
         And the csv file path is detected and validated "cli/inspect/single-unit_single-measure/energy-trends-uk-total-energy.csv"
-        
         And the Metadata File json-ld is loaded to a rdf graph
         And the Metadata File is validated
         And the Printables for data cube are generated
@@ -575,13 +569,13 @@ Feature: Behaviour testing of csvcubed inspect.
                 - Dataset Label: Energy Trends: UK total energy
                 - Number of Components: 6
                 - Components:
-                                                                                Property     Property Label Property Type Column Title  Required
-                              http://purl.org/linked-data/sdmx/2009/dimension#refPeriod                        Dimension       Period      True
-                                http://purl.org/linked-data/sdmx/2009/dimension#refArea                        Dimension       Region      True
-                              http://gss-data.org.uk/def/energy/property/dimension/fuel                        Dimension         Fuel      True
-                           energy-trends-uk-total-energy.csv#measure/energy-consumption energy-consumption       Measure                   True
-                            http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure                        Attribute         Unit      True
-                                           http://purl.org/linked-data/cube#measureType                        Dimension Measure Type      True
+                                                                                Property     Property Label Property Type Column Title  Observation Value Column Titles  Required
+                              http://purl.org/linked-data/sdmx/2009/dimension#refPeriod                        Dimension       Period                                    True
+                                http://purl.org/linked-data/sdmx/2009/dimension#refArea                        Dimension       Region                                    True
+                              http://gss-data.org.uk/def/energy/property/dimension/fuel                        Dimension         Fuel                                    True
+                           energy-trends-uk-total-energy.csv#measure/energy-consumption energy-consumption       Measure                                                 True
+                            http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure                        Attribute         Unit                                    True
+                                           http://purl.org/linked-data/cube#measureType                        Dimension Measure Type                                    True
         - Columns where suppress output is true: None
         """
         And the Code List Printable should be
@@ -755,8 +749,7 @@ Feature: Behaviour testing of csvcubed inspect.
     Scenario: An older CSV-W generated by csvcubed build that uses the notation column as the identifier should produce the correct concepts hierarchy.
         Given the existing test-case file "cli/inspect/code-list-with-notation-as-identifier/attr-1.csv-metadata.json"
         And the existing test-case file "cli/inspect/code-list-with-notation-as-identifier/attr-1.table.json"
-        And the existing test-case file "cli/inspect/code-list-with-notation-as-identifier/attr-1.csv"
-        
+        And the existing test-case file "cli/inspect/code-list-with-notation-as-identifier/attr-1.csv"        
         When the Metadata file path is detected and validated "cli/inspect/code-list-with-notation-as-identifier/attr-1.csv-metadata.json"
         And the csv file path is detected and validated "cli/inspect/code-list-with-notation-as-identifier/attr-1.csv"
         And the Metadata File json-ld is loaded to a rdf graph
@@ -775,8 +768,7 @@ Feature: Behaviour testing of csvcubed inspect.
     Scenario: A newer CSV-W generated by csvcubed build that uses the uri identifier column as the identifier should produce the correct concepts hierarchy.
         Given the existing test-case file "cli/inspect/code-list-with-uri-identifier-as-identifier/attr-1.csv-metadata.json"
         And the existing test-case file "cli/inspect/code-list-with-uri-identifier-as-identifier/attr-1.table.json"
-        And the existing test-case file "cli/inspect/code-list-with-uri-identifier-as-identifier/attr-1.csv"
-        
+        And the existing test-case file "cli/inspect/code-list-with-uri-identifier-as-identifier/attr-1.csv"        
         When the Metadata file path is detected and validated "cli/inspect/code-list-with-uri-identifier-as-identifier/attr-1.csv-metadata.json"
         And the csv file path is detected and validated "cli/inspect/code-list-with-uri-identifier-as-identifier/attr-1.csv"
         And the Metadata File json-ld is loaded to a rdf graph
@@ -791,3 +783,40 @@ Feature: Behaviour testing of csvcubed inspect.
                     ├── goods
                     ├── services
         """
+
+    
+    Scenario: inspect command should accurately inspect a pivoted single-measure cube
+        Given the existing test-case file "cli/inspect/pivoted-single-measure-dataset/qb-id-10004.csv-metadata.json"
+        And the existing test-case file "cli/inspect/pivoted-single-measure-dataset/qb-id-10004.csv"
+        And the existing test-case file "cli/inspect/pivoted-single-measure-dataset/some-dimension.csv-metadata.json"
+        And the existing test-case file "cli/inspect/pivoted-single-measure-dataset/some-dimension.table.json"
+        And the existing test-case file "cli/inspect/pivoted-single-measure-dataset/some-dimension.csv"
+        When the Metadata file path is detected and validated "cli/inspect/pivoted-single-measure-dataset/qb-id-10004.csv-metadata.json"
+        And the csv file path is detected and validated "cli/inspect/pivoted-single-measure-dataset/qb-id-10004.csv"
+        And the Metadata File json-ld is loaded to a rdf graph
+        And the Metadata File is validated
+        And the Printables for data cube are generated            
+        Then the Type printable is validated for single-measure pivoted data set
+        And the Catalog Metadata printable is validated for single-measure pivoted data set with identifier qb-id-10004
+        And the Data Structure Definition printable is validated for single-measure pivoted data set
+        And the Code List printable is validated for single-measure pivoted data set
+        And the Data Set Information printable is validated for single-measure pivoted data set
+        And the Value Counts printable is validated for single-measure pivoted data set
+
+    Scenario: inspect command should accurately inspect a pivoted multi-measure cube
+        Given the existing test-case file "cli/inspect/pivoted-multi-measure-dataset/qb-id-10003.csv-metadata.json"
+        And the existing test-case file "cli/inspect/pivoted-multi-measure-dataset/qb-id-10003.csv"
+        And the existing test-case file "cli/inspect/pivoted-multi-measure-dataset/some-dimension.csv-metadata.json"
+        And the existing test-case file "cli/inspect/pivoted-multi-measure-dataset/some-dimension.table.json"
+        And the existing test-case file "cli/inspect/pivoted-multi-measure-dataset/some-dimension.csv"
+        When the Metadata file path is detected and validated "cli/inspect/pivoted-multi-measure-dataset/qb-id-10003.csv-metadata.json"
+        And the csv file path is detected and validated "cli/inspect/pivoted-multi-measure-dataset/qb-id-10003.csv"
+        And the Metadata File json-ld is loaded to a rdf graph
+        And the Metadata File is validated
+        And the Printables for data cube are generated            
+        Then the Type printable is validated for multi-measure pivoted data set
+        And the Catalog Metadata printable is validated for multi-measure pivoted data set with identifier qb-id-10003
+        And the Data Structure Definition printable is validated for multi-measure pivoted data set
+        And the Code List printable is validated for multi-measure pivoted data set
+        And the Data Set Information printable is validated for multi-measure pivoted data set
+        And the Value Counts printable is validated for multi-measure pivoted data set

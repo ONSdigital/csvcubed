@@ -13,6 +13,22 @@ from urllib.parse import urljoin
 import rdflib
 from pandas import DataFrame
 
+from csvcubed.cli.inspect.inspectdatasetmanager import (
+    get_concepts_hierarchy_info,
+    get_dataset_observations_info,
+    get_dataset_val_counts_info,
+    load_csv_to_dataframe,
+)
+from csvcubed.models.csvcubedexception import (
+    InputNotSupportedException,
+    UnsupportedNumOfPrimaryKeyColNamesException,
+)
+from csvcubed.models.csvwtype import CSVWType
+from csvcubed.models.inspectdataframeresults import (
+    CodelistHierarchyInfoResult,
+    DatasetObservationsByMeasureUnitInfoResult,
+    DatasetObservationsInfoResult,
+)
 from csvcubed.models.sparqlresults import (
     CatalogMetadataResult,
     CodeListColsByDatasetUrlResult,
@@ -23,41 +39,24 @@ from csvcubed.models.sparqlresults import (
     PrimaryKeyColNamesByDatasetUrlResult,
     QubeComponentsResult,
 )
-from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
-from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
-from csvcubed.utils.sparql_handler.sparqlmanager import (
-    select_codelist_cols_by_dataset_url,
-    select_codelist_dataset_url,
-    select_primary_key_col_names_by_dataset_url,
-    select_cols_where_suppress_output_is_true,
-    select_csvw_catalog_metadata,
-    select_csvw_dsd_dataset_label_and_dsd_def_uri,
-    select_csvw_dsd_qube_components,
-    select_dsd_code_list_and_cols,
-    select_qb_dataset_url,
-)
-from csvcubed.cli.inspect.inspectdatasetmanager import (
-    get_concepts_hierarchy_info,
-    get_dataset_observations_info,
-    get_dataset_val_counts_info,
-    load_csv_to_dataframe,
-)
-from csvcubed.models.inspectdataframeresults import (
-    CodelistHierarchyInfoResult,
-    DatasetObservationsByMeasureUnitInfoResult,
-    DatasetObservationsInfoResult,
-)
-from csvcubed.utils.csvdataset import (
-    transform_dataset_to_canonical_shape,
-)
-from csvcubed.models.csvcubedexception import (
-    InputNotSupportedException,
-    UnsupportedNumOfPrimaryKeyColNamesException,
-)
+from csvcubed.utils.csvdataset import transform_dataset_to_canonical_shape
 from csvcubed.utils.skos.codelist import (
     CodelistPropertyUrl,
     get_codelist_col_title_by_property_url,
     get_codelist_col_title_from_col_name,
+)
+from csvcubed.utils.sparql_handler.code_list_state import CodeListState
+from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
+from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
+from csvcubed.utils.sparql_handler.sparqlquerymanager import (
+    select_codelist_cols_by_csv_url,
+    select_codelist_csv_url,
+    select_cols_where_suppress_output_is_true,
+    select_csvw_catalog_metadata,
+    select_csvw_dsd_dataset_label_and_dsd_def_uri,
+    select_dsd_code_list_and_cols,
+    select_primary_key_col_names_by_csv_url,
+    select_qb_csv_url,
 )
 from csvcubed.utils.uri import looks_like_uri
 
@@ -68,12 +67,14 @@ class MetadataPrinter:
     This class produces the printables necessary for producing outputs to the CLI.
     """
 
+    data_cube_state: Optional[DataCubeState]
+    code_list_state: Optional[CodeListState]
     csvw_type: CSVWType
     csvw_metadata_rdf_graph: rdflib.ConjunctiveGraph
     csvw_metadata_json_path: Path
 
     csvw_type_str: str = field(init=False)
-    dataset_url: str = field(init=False)
+    primary_csv_url: str = field(init=False)
     dataset: DataFrame = field(init=False)
 
     result_catalog_metadata: CatalogMetadataResult = field(init=False)
@@ -100,17 +101,19 @@ class MetadataPrinter:
             raise InputNotSupportedException()
 
     @staticmethod
-    def get_dataset_url(
+    def get_primary_csv_url(
         csvw_metadata_rdf_graph: rdflib.ConjunctiveGraph,
         csvw_type: CSVWType,
-        dataset_uri: str,
+        catalogue_data_set_uri: str,
     ) -> str:
+        """Return the csv_url for the primary table in the graph."""
+
         if csvw_type == CSVWType.QbDataSet:
-            return select_qb_dataset_url(
-                csvw_metadata_rdf_graph, dataset_uri
-            ).dataset_url
+            return select_qb_csv_url(
+                csvw_metadata_rdf_graph, catalogue_data_set_uri
+            ).csv_url
         elif csvw_type == CSVWType.CodeList:
-            return select_codelist_dataset_url(csvw_metadata_rdf_graph).dataset_url
+            return select_codelist_csv_url(csvw_metadata_rdf_graph).csv_url
         else:
             raise InputNotSupportedException()
 
@@ -140,7 +143,7 @@ class MetadataPrinter:
         self.result_catalog_metadata = select_csvw_catalog_metadata(
             self.csvw_metadata_rdf_graph
         )
-        self.dataset_url = self.get_dataset_url(
+        self.primary_csv_url = self.get_primary_csv_url(
             self.csvw_metadata_rdf_graph,
             self.csvw_type,
             to_absolute_rdflib_file_path(
@@ -148,10 +151,14 @@ class MetadataPrinter:
             ),
         )
         self.dataset = load_csv_to_dataframe(
-            self.csvw_metadata_json_path, Path(self.dataset_url)
+            self.csvw_metadata_json_path, Path(self.primary_csv_url)
         )
         self.result_dataset_observations_info = get_dataset_observations_info(
-            self.dataset, self.csvw_type
+            self.dataset,
+            self.csvw_type,
+            self.data_cube_state.get_shape_for_csv(self.primary_csv_url)
+            if self.csvw_type == CSVWType.QbDataSet and self.data_cube_state is not None
+            else None,
         )
 
     def get_datacube_results(self):
@@ -160,13 +167,13 @@ class MetadataPrinter:
 
         Member of :class:`./MetadataPrinter`.
         """
+        assert self.data_cube_state is not None  # Make pyright happier
+
         self.result_dataset_label_dsd_uri = (
             select_csvw_dsd_dataset_label_and_dsd_def_uri(self.csvw_metadata_rdf_graph)
         )
-        self.result_qube_components = select_csvw_dsd_qube_components(
-            self.csvw_metadata_rdf_graph,
-            self.result_dataset_label_dsd_uri.dsd_uri,
-            self.csvw_metadata_json_path,
+        self.result_qube_components = (
+            self.data_cube_state.get_dsd_qube_components_for_csv(self.primary_csv_url)
         )
         self.result_cols_with_suppress_output_true = (
             select_cols_where_suppress_output_is_true(self.csvw_metadata_rdf_graph)
@@ -176,15 +183,16 @@ class MetadataPrinter:
             self.result_dataset_label_dsd_uri.dsd_uri,
             self.csvw_metadata_json_path,
         )
+
         (
             canonical_shape_dataset,
             measure_col,
             unit_col,
         ) = transform_dataset_to_canonical_shape(
+            self.data_cube_state,
             self.dataset,
             self.result_qube_components.qube_components,
-            self.result_dataset_label_dsd_uri.dsd_uri,
-            self.csvw_metadata_rdf_graph,
+            self.primary_csv_url,
             self.csvw_metadata_json_path,
         )
         self.result_dataset_value_counts = get_dataset_val_counts_info(
@@ -197,23 +205,23 @@ class MetadataPrinter:
 
         Member of :class:`./MetadataPrinter`.
         """
-        self.result_code_list_cols = select_codelist_cols_by_dataset_url(
-            self.csvw_metadata_rdf_graph, self.dataset_url
+        self.result_code_list_cols = select_codelist_cols_by_csv_url(
+            self.csvw_metadata_rdf_graph, self.primary_csv_url
         )
         # Retrieving the primary key column names of the code list to identify the unique identifier
-        result_primary_key_col_names_by_dataset_url: PrimaryKeyColNamesByDatasetUrlResult = (
-            select_primary_key_col_names_by_dataset_url(
-                self.csvw_metadata_rdf_graph, self.dataset_url
-            )
+        result_primary_key_col_names_by_csv_url: PrimaryKeyColNamesByDatasetUrlResult = select_primary_key_col_names_by_csv_url(
+            self.csvw_metadata_rdf_graph, self.primary_csv_url
         )
-        primary_key_col_names = result_primary_key_col_names_by_dataset_url.primary_key_col_names
-        
+        primary_key_col_names = (
+            result_primary_key_col_names_by_csv_url.primary_key_col_names
+        )
+
         # Currently, we do not support composite primary keys.
         if len(primary_key_col_names) != 1:
             raise UnsupportedNumOfPrimaryKeyColNamesException(
                 num_of_primary_key_col_names=len(primary_key_col_names),
-                table_url=self.dataset_url
-            )        
+                table_url=self.primary_csv_url,
+            )
         (
             parent_col_title,
             label_col_title,
@@ -227,7 +235,6 @@ class MetadataPrinter:
 
     def __post_init__(self):
         self.generate_general_results()
-
         if self.csvw_type == CSVWType.QbDataSet:
             self.get_datacube_results()
         elif self.csvw_type == CSVWType.CodeList:

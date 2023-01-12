@@ -4,7 +4,7 @@ from tempfile import TemporaryDirectory
 import pytest
 
 from csvcubed.cli.build import build as cli_build
-from csvcubed.models.cube import Cube
+from csvcubed.models.cube.cube import Cube
 from tests.unit.test_baseunit import get_test_cases_dir
 
 TEST_CASE_DIR = get_test_cases_dir().absolute() / "readers" / "cube-config" / "v1.0"
@@ -23,8 +23,9 @@ def test_build_with_fail():
                 output_directory=output,
                 csv_path=csv,
                 fail_when_validation_error_occurs=True,
-                validation_errors_file_name= "validation_errors.json",
+                validation_errors_file_name="validation_errors.json",
             )
+
 
 @pytest.mark.vcr
 def test_build_without_fail():
@@ -38,7 +39,7 @@ def test_build_without_fail():
             output_directory=output,
             csv_path=csv,
             fail_when_validation_error_occurs=False,
-            validation_errors_file_name= "validation_errors.json",
+            validation_errors_file_name="validation_errors.json",
         )
         assert isinstance(cube, Cube)
         assert isinstance(errors, list)

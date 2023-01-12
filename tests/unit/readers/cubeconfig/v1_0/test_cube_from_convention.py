@@ -1,34 +1,30 @@
-from pathlib import Path
 import json
 import os
-import pandas as pd
+from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import List
 
+import pandas as pd
 import pytest
 
-from csvcubed.models.cube.columns import SuppressedCsvColumn
-from csvcubed.readers.cubeconfig.v1.configdeserialiser import get_deserialiser
-from csvcubed.models.csvcubedexception import UnsupportedColumnDefinitionException
-
-
-from csvcubed.models.cube.cube import Cube
-from csvcubed.models.cube.qb.catalog import CatalogMetadata
-from csvcubed.models.cube.qb.components.observedvalue import (
-    QbObservationValue,
-)
 from csvcubed.cli.build import build as cli_build
 from csvcubed.definitions import APP_ROOT_DIR_PATH
+from csvcubed.models.csvcubedexception import UnsupportedColumnDefinitionException
+from csvcubed.models.cube.columns import SuppressedCsvColumn
+from csvcubed.models.cube.cube import Cube
 from csvcubed.models.cube.qb import QbColumn
+from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.cube.qb.components import (
+    NewQbCodeList,
+    NewQbConcept,
+    NewQbDimension,
     NewQbMeasure,
     NewQbUnit,
-    NewQbDimension,
-    NewQbCodeList,
     QbMultiMeasureDimension,
     QbMultiUnits,
-    NewQbConcept,
 )
+from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
+from csvcubed.readers.cubeconfig.v1.configdeserialiser import get_deserialiser
 from csvcubed.utils.iterables import first
 from tests.unit.test_baseunit import get_test_cases_dir
 
@@ -84,9 +80,7 @@ def test_01_build_convention_ok():
     )
 
     col_observation = cube.columns[2]
-    assert isinstance(
-        col_observation.structural_definition, QbObservationValue
-    )
+    assert isinstance(col_observation.structural_definition, QbObservationValue)
     assert col_observation.structural_definition.measure is None
     assert col_observation.structural_definition.unit is None
     assert col_observation.structural_definition.data_type == "decimal"

@@ -4,7 +4,7 @@ CSV Column Definitions
 """
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Optional, List
+from typing import List, Optional
 
 from csvcubed.inputs import PandasDataTypes
 from csvcubed.models.pydanticmodel import PydanticModel
@@ -29,6 +29,7 @@ class SuppressedCsvColumn(CsvColumn):
     """
     A column which is only defined in the CSV and should not be propagated.
     """
+
     uri_safe_identifier_override: Optional[str] = field(default=None, repr=False)
 
     def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:

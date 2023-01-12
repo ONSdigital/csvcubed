@@ -1,0 +1,288 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.28.1
+    method: GET
+    uri: http://purl.org/csv-cubed/resources/code-lists.json
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      location:
+      - https://purl.org/csv-cubed/resources/code-lists.json
+    status:
+      code: 301
+      message: Moved Permanently
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.28.1
+    method: GET
+    uri: https://purl.org/csv-cubed/resources/code-lists.json
+  response:
+    body:
+      string: '<!DOCTYPE HTML>
+
+        <html>
+
+        <head>
+
+        <title>302 Found</title>
+
+        </head>
+
+        <body>
+
+        <h1>Found</h1>
+
+        <p>The resource requested is available <a href="https://raw.githubusercontent.com/GSS-Cogs/reusable-rdf-resources/main/code-lists.json">here</a>.<p>
+
+        </body>
+
+        </html>'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '249'
+      content-type:
+      - text/html; charset=utf-8
+      date:
+      - Tue, 22 Nov 2022 14:42:31 GMT
+      location:
+      - https://raw.githubusercontent.com/GSS-Cogs/reusable-rdf-resources/main/code-lists.json
+      server:
+      - gunicorn
+    status:
+      code: 302
+      message: FOUND
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.28.1
+    method: GET
+    uri: https://raw.githubusercontent.com/GSS-Cogs/reusable-rdf-resources/main/code-lists.json
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA6WQywrCMBBF9/2KEl3aJioo9lfERWimD20e5gGV0n83SUvpRhCdTWbunXMZMiSp
+        L7Q1ZQOcoiJFjbWqwPhupMgmNZe6xkzTymbkjOfN3QQ63RpPDXGKin0pCDnG6lbU8150Kqk5tcHz
+        1NoA4biXr4sS1fkQRi3NwWmpwoOFs2a6AfCB7E+rnO+p408U+UApp7v4R10rHsCykIIN472HyAWX
+        ksHGQP8HXWl4ooW+xW5MxjfRG/G5vQEAAA==
+    headers:
+      Accept-Ranges:
+      - bytes
+      Access-Control-Allow-Origin:
+      - '*'
+      Cache-Control:
+      - max-age=300
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '196'
+      Content-Security-Policy:
+      - default-src 'none'; style-src 'unsafe-inline'; sandbox
+      Content-Type:
+      - text/plain; charset=utf-8
+      Date:
+      - Tue, 22 Nov 2022 14:42:31 GMT
+      ETag:
+      - W/"5d98e347bb4b48a18824aaaf31821122285847cddc22718361989a187f963577"
+      Expires:
+      - Tue, 22 Nov 2022 14:47:31 GMT
+      Source-Age:
+      - '289'
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Authorization,Accept-Encoding,Origin
+      Via:
+      - 1.1 varnish
+      X-Cache:
+      - HIT
+      X-Cache-Hits:
+      - '1'
+      X-Content-Type-Options:
+      - nosniff
+      X-Fastly-Request-ID:
+      - bf007cba0392801fe3098c0d5454875ca98153f5
+      X-Frame-Options:
+      - deny
+      X-GitHub-Request-Id:
+      - 3A1E:74B9:62FFFC:68A9A3:637CDEB5
+      X-Served-By:
+      - cache-lcy-eglc8600053-LCY
+      X-Timer:
+      - S1669128151.206055,VS0,VE1
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.28.1
+    method: GET
+    uri: https://purl.org/csv-cubed/code-list-config/v1.1
+  response:
+    body:
+      string: '<!DOCTYPE HTML>
+
+        <html>
+
+        <head>
+
+        <title>302 Found</title>
+
+        </head>
+
+        <body>
+
+        <h1>Found</h1>
+
+        <p>The resource requested is available <a href="https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/src/csvcubed/schema/codelist-config/v1_1/schema.json">here</a>.<p>
+
+        </body>
+
+        </html>'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '272'
+      content-type:
+      - text/html; charset=utf-8
+      date:
+      - Tue, 22 Nov 2022 14:42:31 GMT
+      location:
+      - https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/src/csvcubed/schema/codelist-config/v1_1/schema.json
+      server:
+      - gunicorn
+    status:
+      code: 302
+      message: FOUND
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.28.1
+    method: GET
+    uri: https://raw.githubusercontent.com/GSS-Cogs/csvcubed/main/src/csvcubed/schema/codelist-config/v1_1/schema.json
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA8VYS2/bOBC+51cQaQ8tEFt2srstcgvQS4DFdtGkly4Mg5ZGFruSqJJUDCPwf1++
+        REsy9XLSrQ9BRM3MNzOcp54vkPxdvuVhAhm+vEWXiRAFvw2C75zmM3M8p2wbRAzHYrb4EFjSK8NJ
+        ojpTUbJUU4f8aRaWG4iCkEYwSwkXs5DmMdkGT8v5suIWRKSgBDxooSimDGGkWBTHvCKLgIeMFILQ
+        XBHfoRx2mgopMiQo2gDCnNOQYAER2hGRSDkRySDnkskJEvtCw9HNdwhFdcrgR0kYKEv+0Sc13fTz
+        yhIWjBbABAEuSZ+PpEf3HQ8beFwwkm8tnnsbQYzLVJzlQCfpcBRqLuO5DdLyXZmTHyUgEmlviwSO
+        npy3NWzp7wWt7nAIV9O9EmZT+BBySvMtqp0iGr+CDrzMMsz2I/B5QplAlv51wEMGWFA2CP6okAzt
+        CTB6VzLy/gT+LYO4Ckl/RDLgtGQh8ECe45xwrOD4XJWMN4EUyv1KF+VG4iYwTm1H/esVj7DAHMSa
+        cF7CcI59kkVIhnsm/yRYtHTfYY5ITgTBabp3RkbyDN0/fEYf/1gsVZJkWFwhmG/n6HpxfT1b3Mxu
+        lkhe4vHpcXl9+/tvtzeLb+elkLUpoxGJyWtYlWL5TyXuF1qWklCW/eGS9PXLvTGFQSEjA3LBrVXF
+        npFtIpCVhHBRpHuJpzqNSAjvSd4pQWjFD8ef1Cpr9ZwG2JtAthIdVDKaVX9YBJrlUXqrQ+S/sN9R
+        Fk0Tapl6xHJZ6QYd/6DLoWAyoLb7WkfIQygE77zzRtN2b73N273d7Fv0+jQDkdDosvFi1ZLb0evr
+        kn3nPntTvIEUvbPt/r0K9pwKXXs82jVs9g4OjgryMvPa7Sg0dAe7JnCKeElWHcC1ycUgnJAdut0+
+        1m2Yy/SIVNo1XKeozPnPdh4eAHJKW6pzXYi7JRwu/E+NWcAmzqRUdkwXTeEHN3I7huasq7hPkTp1
+        cD6qXeyfqmPIpl4xqQ7ROxJpIdWtYsawN6vNYHsvIFNqCFaCh4jY1x0hOOyxwTu68npmlGPuKpdM
+        84i3MGqK3uKoKfoKRE9x8ET1UMWswXW91iTtYNHF042A2j0+bzj+rhGh/vNUJw/2eCU/+ZaLn6uq
+        u5spev5lmf4vJTnOYI2748Gn4xeIgYHUS01b2GWEzkc5TULKYSe3ApiidA+lmUgVrZy/Jlon55i1
+        nIc8C02fgXr80WznXAPJ5dQkESdpGiYkjaRT+/Wc1C7GwEqPrjmOYU0iOV2rvYCt6RMwJp8nuewr
+        I0gJQkdB7bnx5TE8sbDXJuxxtV0zqAkmtf3PjPVmBzHUG9AmxTQs+eCHAo2Co0jfE07/HlF+aQ6f
+        496hp/tOtIC+jUO5wuwdfgd7nDgBWQtWk0Nv4Djy049ADaf3RcsRcmDiOGHoHy5OyF/qzOp3Grnj
+        3vrfrCbmQWMpHJcJlqWeC9U+KpfxFJ5wLsyuPRT+/QF9Xq0zvrcKTSp4PXhjY2lkDL1Qf23DyCq4
+        6r190X3tJnrHbnt3SH2PsWVQLX3YpGpXpk760mKT3vedpcMwDVH5cLwNpsE0zbBSOg0Zak6dO6BZ
+        2C4O/wF42rn+xRkAAA==
+    headers:
+      Accept-Ranges:
+      - bytes
+      Access-Control-Allow-Origin:
+      - '*'
+      Cache-Control:
+      - max-age=300
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1210'
+      Content-Security-Policy:
+      - default-src 'none'; style-src 'unsafe-inline'; sandbox
+      Content-Type:
+      - text/plain; charset=utf-8
+      Date:
+      - Tue, 22 Nov 2022 14:42:32 GMT
+      ETag:
+      - W/"f58600e567f59e279a956de20b9455d9b890b4bf43861015943b6928eb8990fe"
+      Expires:
+      - Tue, 22 Nov 2022 14:47:32 GMT
+      Source-Age:
+      - '289'
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Authorization,Accept-Encoding,Origin
+      Via:
+      - 1.1 varnish
+      X-Cache:
+      - HIT
+      X-Cache-Hits:
+      - '1'
+      X-Content-Type-Options:
+      - nosniff
+      X-Fastly-Request-ID:
+      - 23b5285074534f8aefc26d3cd87761a73eddc39f
+      X-Frame-Options:
+      - deny
+      X-GitHub-Request-Id:
+      - 31A6:B52C:662297:6BDC43:637CDEB6
+      X-Served-By:
+      - cache-lcy-eglc8600058-LCY
+      X-Timer:
+      - S1669128152.150286,VS0,VE0
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+version: 1

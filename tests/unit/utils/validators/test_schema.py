@@ -1,9 +1,21 @@
+from pathlib import Path
+
+import appdirs
 import pytest
 
 from csvcubed.utils.validators.schema import (
-    validate_dict_against_schema,
     map_to_internal_validation_errors,
+    validate_dict_against_schema,
 )
+
+_user_log_dir = Path(appdirs.AppDirs("csvcubed_testing", "csvcubed").user_log_dir)
+_log_file_path = _user_log_dir / "out.log"
+
+
+def _assert_in_log(text: str) -> None:
+    with open(_log_file_path) as log_file:
+        contents = log_file.read()
+    assert text in contents, contents
 
 
 def test_truncate_long_validation_error_message():
@@ -149,6 +161,34 @@ def test_json_path_quote_escape():
     error = map_to_internal_validation_errors(schema, json_validation_errors)[0]
 
     assert error.json_path == r"$.'an\'Enum\'Value'", error.json_path
+
+
+def test_schema_validation_when_offline():
+    """
+    Ensures that a schema can be validated successfully when encountering connection errors,
+    in this case the error is forced by giving a bad input url as the $ref.
+    """
+    schema = {
+        "type": "object",
+        "properties": {
+            "publisher": {
+                "description": "The publisher of the data set (uri)",
+                "$ref": "http://thisisaurltoadocument/that/does/not/exist.json",
+            },
+        },
+    }
+    data = {
+        "publisher": "https://www.gov.uk/government/organisations/youth-justice-board-for-england-and-wales"
+    }
+
+    json_validation_errors = validate_dict_against_schema(data, schema)
+    _assert_in_log(
+        "Could not resolve schema dependency. You may have internet connectivity problems."
+    )
+    _assert_in_log(
+        "Unable to perform JSON Schema Validation. There may be undiscovered errors. Attempting to continue."
+    )
+    assert len(json_validation_errors) == 0
 
 
 if __name__ == "__main__":

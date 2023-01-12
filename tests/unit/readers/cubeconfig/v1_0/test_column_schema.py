@@ -1,4 +1,3 @@
-from csvcubed.models.cube import NewQbUnit, ExistingQbUnit
 from csvcubed.readers.cubeconfig.v1.columnschema import (
     EXISTING_UNIT_DEFAULT_SCALING_FACTOR,
     Unit,

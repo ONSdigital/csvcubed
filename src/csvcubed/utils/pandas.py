@@ -5,16 +5,13 @@ Pandas Utils
 This file provides additional utilities for pandas typoe commands
 """
 import logging
+from pathlib import Path
 from typing import List, Tuple
 
 import pandas as pd
 
-from pathlib import Path
-
-from csvcubed.models.validationerror import ValidationError
-
 from csvcubed.models.cube.validationerrors import DuplicateColumnTitleError
-
+from csvcubed.models.validationerror import ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -24,14 +21,18 @@ SPECIFIED_NA_VALUES = {
 }
 
 
-def read_csv(csv_path: Path, keep_default_na=False, na_values=SPECIFIED_NA_VALUES, dtype=None) -> Tuple[pd.DataFrame, List[ValidationError]]:
+def read_csv(
+    csv_path: Path, keep_default_na=False, na_values=SPECIFIED_NA_VALUES, dtype=None
+) -> Tuple[pd.DataFrame, List[ValidationError]]:
     """
     :returns: a tuple of
         pd.DataFrame without the default na values being changes into NaN
         list of ValidationExceptions
     """
 
-    df = pd.read_csv(csv_path, keep_default_na=keep_default_na, na_values=na_values, dtype=dtype)
+    df = pd.read_csv(
+        csv_path, keep_default_na=keep_default_na, na_values=na_values, dtype=dtype
+    )
     if not isinstance(df, pd.DataFrame):
         _logger.debug(
             "Expected a pandas dataframe when reading from CSV, value was %s", df

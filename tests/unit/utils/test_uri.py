@@ -1,12 +1,11 @@
-from dataclasses import dataclass
 import pytest
 
 from csvcubed.utils.uri import (
-    get_last_uri_part,
     csvw_column_name_safe,
-    looks_like_uri,
     ensure_looks_like_uri,
-    ensure_values_in_lists_looks_like_uris
+    ensure_values_in_lists_looks_like_uris,
+    get_last_uri_part,
+    looks_like_uri,
 )
 
 
@@ -52,6 +51,7 @@ def test_ensure_all_look_like_uri():
     ensure_values_in_lists_looks_like_uris(
         ["http://some-domain.org/", "http://some-other-domain.org/"]
     )
+
 
 if __name__ == "__main__":
     pytest.main()

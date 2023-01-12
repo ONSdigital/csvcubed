@@ -2,9 +2,9 @@
 Pandas Inputs
 -------------
 """
-from typing import Union, Iterable, Optional, Any, List
-import pandas as pd
+from typing import Any, Iterable, List, Optional, Union
 
+import pandas as pd
 
 PandasDataTypes = Union[pd.DataFrame, pd.Series, None]
 

@@ -122,12 +122,12 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should contain
       """
-      <{{rdf_input_directory}}/qube-with-string-literals.csv#obs/uss-cerritos> <{{rdf_input_directory}}/qube-with-string-literals.csv#attribute/first-captain>
+      <{{rdf_input_directory}}/qube-with-string-literals.csv#obs/uss-cerritos@some-measure> <{{rdf_input_directory}}/qube-with-string-literals.csv#attribute/first-captain>
       "William Riker".
       """
     And the RDF should contain
       """
-      <{{rdf_input_directory}}/qube-with-string-literals.csv#obs/uss-titan> <{{rdf_input_directory}}/qube-with-string-literals.csv#attribute/first-captain>
+      <{{rdf_input_directory}}/qube-with-string-literals.csv#obs/uss-titan@some-measure> <{{rdf_input_directory}}/qube-with-string-literals.csv#attribute/first-captain>
       "Carol Freeman".
       """
 
@@ -139,12 +139,12 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should contain
       """
-      <{{rdf_input_directory}}/qube-with-int-literals.csv#obs/uss-cerritos> <{{rdf_input_directory}}/qube-with-int-literals.csv#attribute/reg>
+      <{{rdf_input_directory}}/qube-with-int-literals.csv#obs/uss-cerritos@some-measure> <{{rdf_input_directory}}/qube-with-int-literals.csv#attribute/reg>
       "75567"^^<http://www.w3.org/2001/XMLSchema#int>.
       """
     And the RDF should contain
       """
-      <{{rdf_input_directory}}/qube-with-int-literals.csv#obs/uss-titan> <{{rdf_input_directory}}/qube-with-int-literals.csv#attribute/reg>
+      <{{rdf_input_directory}}/qube-with-int-literals.csv#obs/uss-titan@some-measure> <{{rdf_input_directory}}/qube-with-int-literals.csv#attribute/reg>
       "80102"^^<http://www.w3.org/2001/XMLSchema#int>.
       """
 
@@ -156,12 +156,12 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should contain
       """
-      <{{rdf_input_directory}}/qube-with-date-literals.csv#obs/uss-cerritos> <{{rdf_input_directory}}/qube-with-date-literals.csv#attribute/appeared>
+      <{{rdf_input_directory}}/qube-with-date-literals.csv#obs/uss-cerritos@some-measure> <{{rdf_input_directory}}/qube-with-date-literals.csv#attribute/appeared>
       "2020-08-06"^^<http://www.w3.org/2001/XMLSchema#date>.
       """
     And the RDF should contain
       """
-      <{{rdf_input_directory}}/qube-with-date-literals.csv#obs/uss-titan> <{{rdf_input_directory}}/qube-with-date-literals.csv#attribute/appeared>
+      <{{rdf_input_directory}}/qube-with-date-literals.csv#obs/uss-titan@some-measure> <{{rdf_input_directory}}/qube-with-date-literals.csv#attribute/appeared>
       "2020-10-08"^^<http://www.w3.org/2001/XMLSchema#date>.
       """
 
@@ -173,11 +173,11 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should contain
       """
-      <{{rdf_input_directory}}/qube-with-string-literals.csv#obs/uss-cerritos> <http://some-uri> "William Riker".
+      <{{rdf_input_directory}}/qube-with-string-literals.csv#obs/uss-cerritos@some-measure> <http://some-uri> "William Riker".
       """
     And the RDF should contain
       """
-      <{{rdf_input_directory}}/qube-with-string-literals.csv#obs/uss-titan> <http://some-uri> "Carol Freeman".
+      <{{rdf_input_directory}}/qube-with-string-literals.csv#obs/uss-titan@some-measure> <http://some-uri> "Carol Freeman".
       """
 
   Scenario: A QbCube with numeric literal existing attributes should validate successfully
@@ -188,11 +188,11 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should contain
       """
-      <{{rdf_input_directory}}/qube-with-int-literals.csv#obs/uss-cerritos> <http://some-uri> "75567"^^<http://www.w3.org/2001/XMLSchema#int>.
+      <{{rdf_input_directory}}/qube-with-int-literals.csv#obs/uss-cerritos@some-measure> <http://some-uri> "75567"^^<http://www.w3.org/2001/XMLSchema#int>.
       """
     And the RDF should contain
       """
-      <{{rdf_input_directory}}/qube-with-int-literals.csv#obs/uss-titan> <http://some-uri> "80102"^^<http://www.w3.org/2001/XMLSchema#int>.
+      <{{rdf_input_directory}}/qube-with-int-literals.csv#obs/uss-titan@some-measure> <http://some-uri> "80102"^^<http://www.w3.org/2001/XMLSchema#int>.
       """
 
   Scenario: A QbCube with date literal existing attributes should validate successfully
@@ -203,11 +203,11 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should contain
       """
-      <{{rdf_input_directory}}/qube-with-date-literals.csv#obs/uss-cerritos> <http://some-uri> "2020-08-06"^^<http://www.w3.org/2001/XMLSchema#date>.
+      <{{rdf_input_directory}}/qube-with-date-literals.csv#obs/uss-cerritos@some-measure> <http://some-uri> "2020-08-06"^^<http://www.w3.org/2001/XMLSchema#date>.
       """
     And the RDF should contain
       """
-      <{{rdf_input_directory}}/qube-with-date-literals.csv#obs/uss-titan> <http://some-uri> "2020-10-08"^^<http://www.w3.org/2001/XMLSchema#date>.
+      <{{rdf_input_directory}}/qube-with-date-literals.csv#obs/uss-titan@some-measure> <http://some-uri> "2020-10-08"^^<http://www.w3.org/2001/XMLSchema#date>.
       """
 
   Scenario: A QbCube, by default, should include file endings in URIs
@@ -424,7 +424,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
       <{{rdf_input_directory}}/some-qube.csv#component/d-code-list> <http://purl.org/linked-data/cube#dimension> <{{rdf_input_directory}}/some-qube.csv#dimension/d-code-list>.
       <{{rdf_input_directory}}/some-qube.csv#dimension/d-code-list> <http://purl.org/linked-data/cube#codeList> <http://gss-data.org.uk/def/trade/concept-scheme/age-of-business>.
 
-      <{{rdf_input_directory}}/some-qube.csv#obs/a,10-20> <{{rdf_input_directory}}/some-qube.csv#dimension/d-code-list> <http://gss-data.org.uk/def/trade/concept/age-of-business/10-20>.
+      <{{rdf_input_directory}}/some-qube.csv#obs/a,10-20@some-measure> <{{rdf_input_directory}}/some-qube.csv#dimension/d-code-list> <http://gss-data.org.uk/def/trade/concept/age-of-business/10-20>.
 
       <http://gss-data.org.uk/def/trade/concept-scheme/age-of-business> a <http://www.w3.org/2004/02/skos/core#ConceptScheme>.
       <http://gss-data.org.uk/def/trade/concept/age-of-business/10-20> a <http://www.w3.org/2004/02/skos/core#Concept>;
@@ -446,11 +446,11 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     """
        @prefix qb: <http://purl.org/linked-data/cube#>.
 
-       <{{rdf_input_directory}}/some-qube.csv#obs/a,e> a qb:Observation;
+       <{{rdf_input_directory}}/some-qube.csv#obs/a,e@some-measure> a qb:Observation;
                                          qb:dataSet <{{rdf_input_directory}}/some-qube.csv#dataset>.
-       <{{rdf_input_directory}}/some-qube.csv#obs/b,f> a qb:Observation;
+       <{{rdf_input_directory}}/some-qube.csv#obs/b,f@some-measure> a qb:Observation;
                                          qb:dataSet <{{rdf_input_directory}}/some-qube.csv#dataset>.
-       <{{rdf_input_directory}}/some-qube.csv#obs/c,g> a qb:Observation;
+       <{{rdf_input_directory}}/some-qube.csv#obs/c,g@some-measure> a qb:Observation;
                                          qb:dataSet <{{rdf_input_directory}}/some-qube.csv#dataset>.
     """
 
@@ -511,7 +511,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
 
   Scenario: A QbCube with complex datatypes should validate successfully and contain the expected types
     Given The config json file "v1.0/cube_datatypes.json" and the existing tidy data csv file "v1.0/cube_datatypes.csv"
-    When the cube is created
+    When a valid cube is built and serialised to CSV-W
     Then csvlint validation of all CSV-Ws should succeed
     And csv2rdf on all CSV-Ws should succeed
     # The following checks for the expected datatypes as defined in models.cube.qb.components.constants
@@ -622,7 +622,7 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
 
   Scenario: A QbCube configured by convention should contain appropriate datatypes
     Given the existing tidy data csv file "v1.0/cube_data_convention_ok.csv"
-    When the cube is created
+    When a valid cube is built and serialised to CSV-W
     Then csvlint validation of all CSV-Ws should succeed
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should contain
@@ -648,4 +648,137 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     
     <{{rdf_input_directory}}/qb-id-10002.csv#csvcubed-build-activity> a prov:Activity;
       prov:used <{{csvcubed_version_identifier}}>.
+    """
+
+Scenario: A multi-measure pivoted shape cube should be produced as the output for the multi-measure pivoted shape inputs
+  Given a multi-measure pivoted shape cube with identifier "qb-id-10003" named "Pivoted Shape Cube"
+  Then the CSVqb should pass all validations
+  When the cube is serialised to CSV-W
+  Then the file at "qb-id-10003.csv" should exist
+  And the file at "qb-id-10003.csv-metadata.json" should exist
+  And csvlint validation of all CSV-Ws should succeed
+  And csv2rdf on all CSV-Ws should succeed
+  And the RDF should pass "qb, skos" SPARQL tests
+  And the RDF should contain
+  """
+  @prefix cube: <http://purl.org/linked-data/cube#> .
+  @prefix measure: <{{rdf_input_directory}}/qb-id-10003.csv#measure/> .
+  @prefix dimension: <{{rdf_input_directory}}/qb-id-10003.csv#dimension/> .
+  @prefix attribute: <{{rdf_input_directory}}/qb-id-10003.csv#attribute/> .
+  @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+  @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+  @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+  
+  <{{rdf_input_directory}}/qb-id-10003.csv#obs/a@some-other-measure> a cube:Observation ;
+      dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#a> ;
+      measure:some-other-measure 2.0 ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#dataset> ;
+      cube:measureType measure:some-other-measure .
+  
+  <{{rdf_input_directory}}/qb-id-10003.csv#obs/b@some-other-measure> a cube:Observation ;
+      dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#b> ;
+      measure:some-other-measure 4.0 ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#dataset> ;
+      cube:measureType measure:some-other-measure .
+  
+  <{{rdf_input_directory}}/qb-id-10003.csv#obs/c@some-other-measure> a cube:Observation ;
+      dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#c> ;
+      measure:some-other-measure 6.0 ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#dataset> ;
+      cube:measureType measure:some-other-measure .
+  
+  <{{rdf_input_directory}}/qb-id-10003.csv#slice/a> cube:Observation <{{rdf_input_directory}}/qb-id-10003.csv#obs/a@some-measure> .
+  
+  <{{rdf_input_directory}}/qb-id-10003.csv#slice/b> cube:Observation <{{rdf_input_directory}}/qb-id-10003.csv#obs/b@some-measure> .
+  
+  <{{rdf_input_directory}}/qb-id-10003.csv#slice/c> cube:Observation <{{rdf_input_directory}}/qb-id-10003.csv#obs/c@some-measure> .
+  
+  <{{rdf_input_directory}}/qb-id-10003.csv#obs/a@some-measure> a cube:Observation ;
+      attribute:some-attribute <{{rdf_input_directory}}/qb-id-10003.csv#attribute/some-attribute/attr-a> ;
+      dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#a> ;
+      measure:some-measure 1.0 ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#dataset> ;
+      cube:measureType measure:some-measure .
+  
+  <{{rdf_input_directory}}/qb-id-10003.csv#obs/b@some-measure> a cube:Observation ;
+      attribute:some-attribute <{{rdf_input_directory}}/qb-id-10003.csv#attribute/some-attribute/attr-b> ;
+      dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#b> ;
+      measure:some-measure 2.0 ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#dataset> ;
+      cube:measureType measure:some-measure .
+  
+  <{{rdf_input_directory}}/qb-id-10003.csv#obs/c@some-measure> a cube:Observation ;
+      attribute:some-attribute <{{rdf_input_directory}}/qb-id-10003.csv#attribute/some-attribute/attr-c> ;
+      dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#c> ;
+      measure:some-measure 3.0 ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#dataset> ;
+      cube:measureType measure:some-measure .
+  
+  measure:some-measure a cube:ComponentProperty,
+          cube:MeasureProperty,
+          rdf:Property,
+          rdfs:Resource ;
+      rdfs:label "Some Measure"@en ;
+      rdfs:range xsd:decimal .
+  
+  measure:some-other-measure a cube:ComponentProperty,
+          cube:MeasureProperty,
+          rdf:Property,
+          rdfs:Resource ;
+      rdfs:label "Some Other Measure"@en ;
+      rdfs:range xsd:decimal .
+  """
+
+  Scenario: A single-measure pivoted shape cube should be produced as the output for the single-measure pivoted shape inputs
+    Given a single-measure pivoted shape cube with identifier "qb-id-10004" named "Pivoted Shape Cube"
+    Then the CSVqb should pass all validations
+    When the cube is serialised to CSV-W
+    Then the file at "qb-id-10004.csv" should exist
+    And the file at "qb-id-10004.csv-metadata.json" should exist
+    And csvlint validation of all CSV-Ws should succeed
+    And csv2rdf on all CSV-Ws should succeed
+    And the RDF should pass "qb, skos" SPARQL tests
+    And the RDF should contain
+    """
+    @prefix cube: <http://purl.org/linked-data/cube#> .
+    @prefix measure: <{{rdf_input_directory}}/qb-id-10004.csv#measure/> .
+    @prefix dimension: <{{rdf_input_directory}}/qb-id-10004.csv#dimension/> .
+    @prefix attribute: <{{rdf_input_directory}}/qb-id-10004.csv#attribute/> .
+    @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+    @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+    
+    <{{rdf_input_directory}}/qb-id-10004.csv#slice/a> cube:Observation <{{rdf_input_directory}}/qb-id-10004.csv#obs/a@some-measure> .
+    
+    <{{rdf_input_directory}}/qb-id-10004.csv#slice/b> cube:Observation <{{rdf_input_directory}}/qb-id-10004.csv#obs/b@some-measure> .
+    
+    <{{rdf_input_directory}}/qb-id-10004.csv#slice/c> cube:Observation <{{rdf_input_directory}}/qb-id-10004.csv#obs/c@some-measure> .
+    
+    <{{rdf_input_directory}}/qb-id-10004.csv#obs/a@some-measure> a cube:Observation ;
+        attribute:some-attribute <{{rdf_input_directory}}/qb-id-10004.csv#attribute/some-attribute/attr-a> ;
+        dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#a> ;
+        measure:some-measure 1.0 ;
+        cube:dataSet <{{rdf_input_directory}}/qb-id-10004.csv#dataset> ;
+        cube:measureType measure:some-measure .
+    
+    <{{rdf_input_directory}}/qb-id-10004.csv#obs/b@some-measure> a cube:Observation ;
+        attribute:some-attribute <{{rdf_input_directory}}/qb-id-10004.csv#attribute/some-attribute/attr-b> ;
+        dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#b> ;
+        measure:some-measure 2.0 ;
+        cube:dataSet <{{rdf_input_directory}}/qb-id-10004.csv#dataset> ;
+        cube:measureType measure:some-measure .
+    
+    <{{rdf_input_directory}}/qb-id-10004.csv#obs/c@some-measure> a cube:Observation ;
+        attribute:some-attribute <{{rdf_input_directory}}/qb-id-10004.csv#attribute/some-attribute/attr-c> ;
+        dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#c> ;
+        measure:some-measure 3.0 ;
+        cube:dataSet <{{rdf_input_directory}}/qb-id-10004.csv#dataset> ;
+        cube:measureType measure:some-measure .
+    
+    measure:some-measure a cube:ComponentProperty,
+            cube:MeasureProperty,
+            rdf:Property,
+            rdfs:Resource ;
+        rdfs:label "Some Measure"@en ;
+        rdfs:range xsd:decimal .
     """

@@ -1,0 +1,38 @@
+PREFIX qb: <http://purl.org/linked-data/cube#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX csvw: <http://www.w3.org/ns/csvw#>
+
+SELECT ?dataSet ?dsd ?csvUrl
+WHERE {
+    {
+        SELECT DISTINCT ?csvUrl ?dataSet
+        WHERE {
+            ?dataSet a qb:DataSet.
+
+            [] csvw:url ?csvUrl;
+               csvw:tableSchema/csvw:column/rdf:rest*/rdf:first ?column.
+
+            ?column csvw:propertyUrl ?columnPropertyUrl;
+                    csvw:valueUrl ?columnValueUrl.
+
+            FILTER (str(?columnPropertyUrl) IN (str(qb:dataSet), "qb:dataSet")).
+
+            BIND(
+                IF(strstarts(str(?columnValueUrl), "./"), 
+                    strafter(str(?columnValueUrl), "./"), # Remove preceding `./` from URL if it is present.
+                    str(?columnValueUrl)
+                ) as ?columnDatasetUrl
+            ).
+
+            FILTER (
+                strends(?columnDatasetUrl, str(?dataSet)) || 
+                strends(str(?dataSet), ?columnDatasetUrl)
+            ).
+        }
+    }
+
+    ?dataSet a qb:DataSet;
+            qb:structure ?dsd.
+
+    ?dsd a qb:DataStructureDefinition.
+}

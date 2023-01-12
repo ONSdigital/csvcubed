@@ -1,6 +1,7 @@
 from os import linesep
-from pandas import DataFrame
 from typing import Dict, List
+
+from pandas import DataFrame
 
 from csvcubed.models.csvcubedexception import FailedToConvertDataFrameToStringException
 
@@ -51,22 +52,6 @@ def get_printable_tabular_str_from_list(items: List[Dict], column_names=None) ->
         return "None"
 
     df = DataFrame(items)
-    if column_names:
-        df.columns = column_names
-    output_str = df.to_string(index=False)
-    if output_str:
-        return output_str
-    raise FailedToConvertDataFrameToStringException()
-
-
-def get_printable_tabuler_str_from_dataframe(df: DataFrame, column_names=None) -> str:
-    """
-    Converts the given dataframe into a printable tabular.
-
-    Member of :file:`./utils/printable`.
-
-    :return: `str` - string representation of the given dataframe
-    """
     if column_names:
         df.columns = column_names
     output_str = df.to_string(index=False)

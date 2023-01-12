@@ -5,11 +5,10 @@ File
 pydantic validators for files.
 """
 import logging
+from pathlib import Path
 from typing import Optional
 
 from pydantic import validator
-from pathlib import Path
-
 
 _logger = logging.getLogger(__name__)
 

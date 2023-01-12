@@ -1,8 +1,8 @@
 import datetime
+from pathlib import Path
+from tempfile import TemporaryDirectory
 
 import pytest
-from tempfile import TemporaryDirectory
-from pathlib import Path
 
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 
