@@ -7,7 +7,7 @@ These guides cover the contents of the [quick-start](../quick-start/index.md) to
 | [Installation](../quick-start/installation.md)            |                                                    |
 | [Building a CSV-W](../quick-start/build.md)               | [build command](command-line/build-command.md)     |
 |                                                           | [inspect command](command-line/inspect-command.md) |
-| [Designing a CSV](../quick-start/designing-csv.md)        | [Shaping your data](./shape-data.md)               |
+| [Designing a CSV](../quick-start/designing-csv.md)        | [Shaping your data](./shape-data/index.md)               |
 | [Describing your CSV-W](../quick-start/describing-csv.md) | [Qube Config](./configuration/index.md)            |
 | [Linking data](../quick-start/linking-data.md)            | [Templates](./configuration/templates.md)          |
 

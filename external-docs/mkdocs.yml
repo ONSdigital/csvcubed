@@ -25,17 +25,21 @@ nav:
           - Templates: guides/configuration/templates.md
           - Units: guides/configuration/units.md
           - Code Lists: guides/configuration/code-list-config.md
+      - Shape your data:
+        - guides/shape-data/index.md
+        - Standard shape: guides/shape-data/standard-shape.md
+        - Pivoted shape: guides/shape-data/pivoted-shape.md
+        - Shape conversion: guides/shape-data/shape-conversion.md
+      - Handling missing observed values: guides/missing-observed-values.md
       - Errors:
         - guides/errors/index.md 
         - build command errors: guides/errors/build-command-errors/index.md
         - inspect command errors: guides/errors/inspect-command-errors/index.md
-      - Handling missing observed values: guides/missing-observed-values.md
       - Linked Data:
         - Licenses: guides/linked-data/licenses.md
         - Organisations: guides/linked-data/organisations.md
         - Units: guides/linked-data/units.md
       - Raise an issue: guides/raise-issue.md
-      - Shape your data: guides/shape-data.md
       - Working with URIs: guides/uris.md
       - Build with GitHub: guides/csv-to-csvw-github-action.md
   - Glossary:

@@ -8,4 +8,4 @@ In a multi-measure pivoted shaped cube, two or more observation value columns ca
 
 Ensure that each observation value column is linked to a unique measure.
 
-For further guidance, please refer to the [shaping your data documentation](../../shape-data.md).
+For further guidance, please refer to the [shaping your data documentation](../../shape-data/index.md).

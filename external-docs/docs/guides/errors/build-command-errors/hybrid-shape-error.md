@@ -15,4 +15,4 @@ An example cube structre which would result in this error looks like this:
 
 The dataset **must** adhere to a single supported data shape: either the standard shape **or** the pivoted shape.
 
-For further guidance, please refer to the [shaping your data documentation](../../shape-data.md).
+For further guidance, please refer to the [shaping your data documentation](../../shape-data/index.md).
