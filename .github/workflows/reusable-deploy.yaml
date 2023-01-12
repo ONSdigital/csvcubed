@@ -22,17 +22,20 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           password: ${{ secrets.PYPI_API_TOKEN }}
+          
+      - id: is-final-release 
+        if: startsWith(github.ref, 'refs/tags/v') 
+        run: | 
+          [[ ! "${{github.ref_name}}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+-rc[0-9]+$ ]]
+        continue-on-error: true
 
       - name: Publish Docs
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: steps.is-final-release.outcome == 'success' && startsWith(github.ref, 'refs/tags/v')
         run: |
           git config --global user.email "csvcubed@gsscogs.uk" && git config --global user.name "csvcubed"
 
-          git clone 'https://csvcubed:${{ secrets.CSVCUBED_GIT_COMMIT_TOKEN }}@github.com/GSS-Cogs/csvcubed-docs.git' --depth 1
+          git clone 'https://csvcubed:${{ secrets.CSVCUBED_GIT_COMMIT_TOKEN }}@github.com/GSS-Cogs/csvcubed-docs.git' --depth 1 --branch gh-pages
           cd csvcubed-docs
-
-          git checkout -b test-pages # gh-pages
-          git push --set-upstream origin test-pages
 
           git rm -rf external --ignore-unmatch
 

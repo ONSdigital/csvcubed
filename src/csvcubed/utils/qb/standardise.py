@@ -219,4 +219,6 @@ def _overwrite_labels_for_columns(
             else:
                 new_category_labels.append(new_category_label)
 
-        column_values.categories = new_category_labels
+        cube.data[column.csv_column_title] = column_values.rename_categories(
+            new_category_labels
+        )
