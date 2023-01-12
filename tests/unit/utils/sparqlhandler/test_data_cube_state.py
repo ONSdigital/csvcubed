@@ -67,7 +67,7 @@ def test_get_unit_col_about_value_urls_for_csv():
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     data_cube_state = DataCubeState(csvw_metadata_rdf_graph, csvw_metadata_json_path)
 
-    data_set_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
+    data_set_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph)[0].dataset_uri
     data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
     csv_url = select_qb_csv_url(csvw_metadata_rdf_graph, data_set_uri).csv_url
 

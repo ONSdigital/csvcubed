@@ -37,9 +37,8 @@ def test_get_primary_catalog_metadata():
     the_thing = csvw_state.get_primary_catalog_metadata()
 
     # assert the_thing.graph_uri == "file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-single-measure-dataset/qb-id-10004.csv-metadata.json"
-    path_to_string = str(csvw_metadata_json_path)
-    assert the_thing.graph_uri.removeprefix("file://") == path_to_string
-    # assert the_thing.graph_uri == csvw_metadata_json_path
+    assert the_thing.graph_uri == "file:///" + str(csvw_metadata_json_path)[1:]
+    # change this(^) to use premoveprefix
 
     # sparql_results = {
     #     "graph": { "type": "uri" , "value": "file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-single-measure-dataset/qb-id-10004.csv-metadata.json" } ,

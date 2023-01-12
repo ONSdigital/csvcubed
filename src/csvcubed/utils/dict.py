@@ -6,7 +6,7 @@ Functions to help when working with dictionaries.
 """
 import json
 import logging
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional, TypeVar
 
 import rdflib
 from csvcubedmodels.rdf.resource import NewResource
