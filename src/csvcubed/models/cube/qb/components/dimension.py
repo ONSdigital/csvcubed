@@ -6,7 +6,7 @@ Represent dimensions inside an RDF Data Cube.
 """
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, List, Optional, Set, TypeVar
+from typing import Dict, List, Optional, Set
 
 import pandas as pd
 
@@ -24,9 +24,8 @@ from csvcubed.models.cube.qb.components.datastructuredefinition import (
 from csvcubed.models.cube.uristyle import URIStyle
 from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.models.validatedmodel import ValidatedModel, ValidationFunction
-from csvcubed.models.validationerror import ValidateModelProperiesError, ValidationError
+from csvcubed.models.validationerror import ValidationError
 from csvcubed.utils.validations import (
-    validate_int_type,
     validate_list,
     validate_optional,
     validate_str_type,

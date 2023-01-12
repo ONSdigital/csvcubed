@@ -32,15 +32,3 @@ def group_by(xs: Iterable[T], get_key: Callable[[T], str]) -> Dict[str, List[T]]
         groups[key].append(x)
 
     return groups
-
-# xs = [
-#     {"csv_url": "some.csv", "value": 5},
-#     {"csv_url": "some-other.csv", "value": 1},
-#     {"csv_url": "some.csv": "value": 6}
-# ]
-# get_key = lambda r: r["csv_url"]
-
-# groups = {
-#     "some.csv": [{"csv_url": "some.csv", "value": 5},  {"csv_url": "some.csv": "value": 6}],
-#     "some-other.csv": [{"csv_url": "some-other.csv", "value": 1}],
-# }

@@ -52,32 +52,26 @@ def assert_dsd_component_equal(
     property: str,
     property_type: ComponentPropertyType,
     property_label: str,
-    csv_col_title: str,
-    observation_value_column_titles: Optional[str],
+    csv_col_titles: List[str],
+    observation_value_column_titles: List[str],
     dsd_uri: str,
     required: bool,
 ):
     assert component.property == property
     assert component.property_type == property_type.value
     assert component.property_label == property_label
-    assert component.csv_col_title == csv_col_title
+    assert {c.title for c in component.real_columns_used_in} == set(csv_col_titles)
     assert component.dsd_uri == dsd_uri
     assert component.required == required
 
-    if (
-        observation_value_column_titles is not None
-        and len(observation_value_column_titles) > 0
-    ):
-        expected_obs_val_col_titles = [
-            title.strip() for title in observation_value_column_titles.split(",")
-        ]
-        actual_obs_val_col_titles = [
-            title.strip()
-            for title in component.observation_value_column_titles.split(",")
-        ]
-        assert len(expected_obs_val_col_titles) == len(
-            actual_obs_val_col_titles
-        ) and sorted(expected_obs_val_col_titles) == sorted(actual_obs_val_col_titles)
+    if any(observation_value_column_titles):
+        expected_obs_val_col_titles = {
+            title.strip() for title in observation_value_column_titles
+        }
+        actual_obs_val_col_titles = {
+            c.title.strip() for c in component.used_by_observed_value_columns
+        }
+        assert expected_obs_val_col_titles == actual_obs_val_col_titles
 
 
 def _assert_code_list_column_equal(
@@ -288,8 +282,8 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
         "qb-id-10004.csv#dimension/some-dimension",
         ComponentPropertyType.Dimension,
         "Some Dimension",
-        "Some Dimension",
-        "Some Obs Val",
+        ["Some Dimension"],
+        ["Some Obs Val"],
         "qb-id-10004.csv#structure",
         True,
     )
@@ -302,8 +296,8 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
         "qb-id-10004.csv#attribute/some-attribute",
         ComponentPropertyType.Attribute,
         "Some Attribute",
-        "Some Attribute",
-        "Some Obs Val",
+        ["Some Attribute"],
+        ["Some Obs Val"],
         "qb-id-10004.csv#structure",
         False,
     )
@@ -316,8 +310,8 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
         "http://purl.org/linked-data/cube#measureType",
         ComponentPropertyType.Dimension,
         "",
-        "",
-        "",
+        [],
+        [],
         "qb-id-10004.csv#structure",
         True,
     )
@@ -330,8 +324,8 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
         "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
         ComponentPropertyType.Attribute,
         "",
-        "",
-        "Some Obs Val",
+        [],
+        ["Some Obs Val"],
         "qb-id-10004.csv#structure",
         True,
     )
@@ -344,8 +338,8 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
         "qb-id-10004.csv#measure/some-measure",
         ComponentPropertyType.Measure,
         "Some Measure",
-        "Some Obs Val",
-        "Some Obs Val",
+        ["Some Obs Val"],
+        ["Some Obs Val"],
         "qb-id-10004.csv#structure",
         True,
     )
@@ -386,8 +380,8 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
         "qb-id-10003.csv#dimension/some-dimension",
         ComponentPropertyType.Dimension,
         "Some Dimension",
-        "Some Dimension",
-        "Some Other Obs Val,Some Obs Val",
+        ["Some Dimension"],
+        ["Some Other Obs Val", "Some Obs Val"],
         "qb-id-10003.csv#structure",
         True,
     )
@@ -400,8 +394,8 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
         "qb-id-10003.csv#attribute/some-attribute",
         ComponentPropertyType.Attribute,
         "Some Attribute",
-        "Some Attribute",
-        "Some Obs Val",
+        ["Some Attribute"],
+        ["Some Obs Val"],
         "qb-id-10003.csv#structure",
         False,
     )
@@ -414,8 +408,8 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
         "http://purl.org/linked-data/cube#measureType",
         ComponentPropertyType.Dimension,
         "",
-        "",
-        "",
+        [],
+        [],
         "qb-id-10003.csv#structure",
         True,
     )
@@ -428,8 +422,8 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
         "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
         ComponentPropertyType.Attribute,
         "",
-        "Some Unit",
-        "Some Other Obs Val, Some Obs Val",
+        ["Some Unit"],
+        ["Some Other Obs Val", "Some Obs Val"],
         "qb-id-10003.csv#structure",
         True,
     )
@@ -442,8 +436,8 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
         "qb-id-10003.csv#measure/some-measure",
         ComponentPropertyType.Measure,
         "Some Measure",
-        "Some Obs Val",
-        "Some Obs Val",
+        ["Some Obs Val"],
+        ["Some Obs Val"],
         "qb-id-10003.csv#structure",
         True,
     )
@@ -456,8 +450,8 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
         "qb-id-10003.csv#measure/some-other-measure",
         ComponentPropertyType.Measure,
         "Some Other Measure",
-        "Some Other Obs Val",
-        "Some Other Obs Val",
+        ["Some Other Obs Val"],
+        ["Some Other Obs Val"],
         "qb-id-10003.csv#structure",
         True,
     )
@@ -499,8 +493,8 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
         "qb-id-10004.csv#dimension/some-dimension",
         ComponentPropertyType.Dimension,
         "Some Dimension",
-        "Some Dimension",
-        "Some Obs Val",
+        ["Some Dimension"],
+        ["Some Obs Val"],
         "qb-id-10004.csv#structure",
         True,
     )
@@ -513,8 +507,8 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
         "qb-id-10004.csv#attribute/some-attribute",
         ComponentPropertyType.Attribute,
         "Some Attribute",
-        "Some Attribute",
-        "Some Obs Val",
+        ["Some Attribute"],
+        ["Some Obs Val"],
         "qb-id-10004.csv#structure",
         False,
     )
@@ -527,8 +521,8 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
         "http://purl.org/linked-data/cube#measureType",
         ComponentPropertyType.Dimension,
         "",
-        "",
-        "",
+        [],
+        [],
         "qb-id-10004.csv#structure",
         True,
     )
@@ -541,8 +535,8 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
         "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
         ComponentPropertyType.Attribute,
         "",
-        "",
-        "Some Obs Val",
+        [],
+        ["Some Obs Val"],
         "qb-id-10004.csv#structure",
         True,
     )
@@ -555,8 +549,8 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
         "qb-id-10004.csv#measure/some-measure",
         ComponentPropertyType.Measure,
         "Some Measure",
-        "Some Obs Val",
-        "Some Obs Val",
+        ["Some Obs Val"],
+        ["Some Obs Val"],
         "qb-id-10004.csv#structure",
         True,
     )

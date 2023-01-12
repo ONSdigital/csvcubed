@@ -1,5 +1,5 @@
 # This script contain a set of function that can be used to validate specific class attributes/ member variables
-from typing import Callable, List, Optional, Type, TypeVar
+from typing import Callable, List, Optional, TypeVar
 
 from csvcubed.models.validationerror import ValidateModelProperiesError
 from csvcubed.utils.uri import looks_like_uri

@@ -1,20 +1,17 @@
 import numpy as np
 import pandas as pd
 import pytest
+from csvcubedmodels.rdf import XSD, SDMX_Attribute
 from pandas.util.testing import assert_frame_equal
 
-from csvcubed.cli.inspect.metadataprinter import to_absolute_rdflib_file_path
 from csvcubed.models.csvcubedexception import (
     InvalidNumOfDSDComponentsForObsValColTitleException,
-    InvalidNumOfUnitColsForObsValColTitleException,
-    InvalidNumOfValUrlsForAboutUrlException,
+    InvalidObservationColumnTitle,
+    InvalidUnitColumnDefinition,
 )
-from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import (
-    ColTitlesAndNamesResult,
-    ObservationValueColumnTitleAboutUrlResult,
+    ColumnDefinition,
     QubeComponentResult,
-    UnitColumnAboutValueUrlResult,
 )
 from csvcubed.utils.csvdataset import (
     _create_measure_col_in_melted_data_set_for_pivoted_shape,
@@ -22,17 +19,38 @@ from csvcubed.utils.csvdataset import (
     _melt_data_set,
     transform_dataset_to_canonical_shape,
 )
-from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
-from csvcubed.utils.sparql_handler.sparqlquerymanager import (
-    select_csvw_catalog_metadata,
-    select_qb_csv_url,
-)
 from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.unit.cli.inspect.test_inspectdatasetmanager import get_arguments_qb_dataset
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
+
+_SOME_OTHER_OBS_VAL_COL = ColumnDefinition(
+    csv_url="qb-id-10004.csv",
+    about_url="qb-id-10004.csv#obs{some_dimension},{some_other_dimension}@some-other-measure",
+    data_type=str(XSD.decimal),
+    name="some_other_obs_val",
+    property_url="qb-id-10004.csv#measure/some-other-measure",
+    required=True,
+    suppress_output=False,
+    title="Some Other Obs Val",
+    value_url=None,
+    virtual=False,
+)
+
+_SOME_OBS_VAL_COL = ColumnDefinition(
+    csv_url="qb-id-10004.csv",
+    about_url="qb-id-10004.csv#obs{some_dimension},{some_other_dimension}@some-measure",
+    data_type=str(XSD.decimal),
+    name="some_obs_val",
+    property_url="qb-id-10004.csv#measure/some-measure",
+    required=True,
+    suppress_output=False,
+    title="Some Obs Val",
+    value_url=None,
+    virtual=False,
+)
 
 _expected_dataset_standard_shape_cube = pd.DataFrame(
     [
@@ -316,8 +334,8 @@ _measure_components_for_multi_measure_pivoted_shape = [
         "qb-id-10003.csv#measure/some-measure",
         "Some Measure",
         "Measure",
-        "Some Obs Val",
-        ComponentPropertyType.Measure.value,
+        [_SOME_OBS_VAL_COL],
+        [],
         True,
     ),
     QubeComponentResult(
@@ -326,8 +344,8 @@ _measure_components_for_multi_measure_pivoted_shape = [
         "qb-id-10003.csv#measure/some-other-measure",
         "Some Other Measure",
         "Measure",
-        "Some Other Obs Val",
-        ComponentPropertyType.Measure.value,
+        [_SOME_OTHER_OBS_VAL_COL],
+        [],
         True,
     ),
 ]
@@ -398,79 +416,6 @@ _expected_dataset_pivoted_multi_measure_with_unit = (
     )
 )
 
-_unit_col_about_urls_value_urls = [
-    UnitColumnAboutValueUrlResult(
-        "qb-id-10004.csv",
-        "qb-id-10003.csv#obs/some-dimension@some-measure",
-        "qb-id-10003.csv#unit/some-unit",
-    ),
-    UnitColumnAboutValueUrlResult(
-        "qb-id-10004.csv",
-        "qb-id-10003.csv#obs/some-dimension@some-other-measure",
-        "qb-id-10003.csv#unit/percent",
-    ),
-]
-
-_obs_val_col_titles_about_urls = [
-    ObservationValueColumnTitleAboutUrlResult(
-        "qb-id-10004.csv",
-        "Some Obs Val",
-        "qb-id-10003.csv#obs/some-dimension@some-measure",
-    ),
-    ObservationValueColumnTitleAboutUrlResult(
-        "qb-id-10004.csv",
-        "Some Other Obs Val",
-        "qb-id-10003.csv#obs/some-dimension@some-other-measure",
-    ),
-]
-
-_col_names_col_titles = [
-    ColTitlesAndNamesResult("qb-id-10004.csv", "some_dimension", "Some Dimension"),
-    ColTitlesAndNamesResult("qb-id-10004.csv", "some_attribute", "Some Attribute"),
-    ColTitlesAndNamesResult("qb-id-10004.csv", "some_obs_val", "Some Obs Val"),
-    ColTitlesAndNamesResult(
-        "qb-id-10004.csv", "some_other_obs_val", "Some Other Obs Val"
-    ),
-    ColTitlesAndNamesResult("qb-id-10004.csv", "some_unit", "Some Unit"),
-]
-
-_obs_val_col_titles_about_urls_invalid = [
-    ObservationValueColumnTitleAboutUrlResult(
-        "qb-id-10004.csv",
-        "Some Obs Val",
-        "qb-id-10003.csv#obs/some-dimension@some-measure",
-    ),
-    ObservationValueColumnTitleAboutUrlResult(
-        "qb-id-10004.csv",
-        "Some Obs Val",
-        "qb-id-10003.csv#obs/some-dimension@some-other-measure",
-    ),
-]
-
-_unit_col_about_urls_value_urls_invalid = [
-    UnitColumnAboutValueUrlResult(
-        "qb-id-10004.csv",
-        "qb-id-10003.csv#obs/some-dimension@some-measure",
-        "qb-id-10003.csv#unit/some-unit",
-    ),
-    UnitColumnAboutValueUrlResult(
-        "qb-id-10004.csv",
-        "qb-id-10003.csv#obs/some-dimension@some-measure",
-        "qb-id-10003.csv#unit/percent",
-    ),
-]
-
-_col_names_col_titles_invalid = [
-    ColTitlesAndNamesResult("qb-id-10004.csv", "some_dimension", "Some Dimension"),
-    ColTitlesAndNamesResult(
-        "qb-id-10004.csv", "some_dimension", "Some Other Dimension"
-    ),
-    ColTitlesAndNamesResult("qb-id-10004.csv", "some_attribute", "Some Attribute"),
-    ColTitlesAndNamesResult("qb-id-10004.csv", "some_obs_val", "Some Obs Val"),
-    ColTitlesAndNamesResult("qb-id-10004.csv", "some_unit", "Some Other Obs Val"),
-    ColTitlesAndNamesResult("qb-id-10004.csv", "some_unit", "Some Unit"),
-]
-
 _measure_components_for_multi_measure_pivoted_shape_same_measure = [
     QubeComponentResult(
         "",
@@ -478,8 +423,8 @@ _measure_components_for_multi_measure_pivoted_shape_same_measure = [
         "qb-id-10003.csv#measure/some-measure",
         "Some Measure",
         "Measure",
-        "Some Obs Val",
-        ComponentPropertyType.Measure.value,
+        [_SOME_OBS_VAL_COL],
+        [],
         True,
     ),
     QubeComponentResult(
@@ -488,8 +433,8 @@ _measure_components_for_multi_measure_pivoted_shape_same_measure = [
         "qb-id-10003.csv#measure/some-other-measure",
         "Some Other Measure",
         "Measure",
-        "Some Obs Val",
-        ComponentPropertyType.Measure.value,
+        [_SOME_OBS_VAL_COL],
+        [],
         True,
     ),
 ]
@@ -731,13 +676,15 @@ def test_create_unit_col_in_melted_data_set_for_pivoted_shape():
 
     data_cube_state = DataCubeState(csvw_metadata_rdf_graph, csvw_metadata_json_path)
 
+    measure_uris = {
+        c.property for c in _measure_components_for_multi_measure_pivoted_shape
+    }
+
+    column_definitions = data_cube_state.get_column_definitions_for_csv(
+        "qb-id-10003.csv"
+    )
     _create_unit_col_in_melted_data_set_for_pivoted_shape(
-        "Unit",
-        melted_df,
-        _unit_col_about_urls_value_urls,
-        _obs_val_col_titles_about_urls,
-        _col_names_col_titles,
-        data_cube_state,
+        "Unit", melted_df, column_definitions, data_cube_state, measure_uris
     )
 
     assert melted_df is not None
@@ -782,19 +729,29 @@ def test_create_unit_col_in_melted_data_set_for_pivoted_shape_should_throw_inval
 
     data_cube_state = DataCubeState(csvw_metadata_rdf_graph, csvw_metadata_json_path)
 
-    with pytest.raises(InvalidNumOfUnitColsForObsValColTitleException) as exception:
+    measure_uris = {
+        c.property for c in _measure_components_for_multi_measure_pivoted_shape
+    }
+
+    column_definitions = data_cube_state.get_column_definitions_for_csv(
+        "qb-id-10003.csv"
+    )
+    column_definitions_without_obs_vals = [
+        c for c in column_definitions if c.property_url not in measure_uris
+    ]
+
+    with pytest.raises(InvalidObservationColumnTitle) as exception:
         _create_unit_col_in_melted_data_set_for_pivoted_shape(
             "Unit",
             melted_df,
-            _unit_col_about_urls_value_urls,
-            _obs_val_col_titles_about_urls_invalid,
-            _col_names_col_titles,
+            column_definitions_without_obs_vals,
             data_cube_state,
+            measure_uris,
         )
 
     assert (
         str(exception.value)
-        == "There should be 1 unit column for the observation value column title 'Some Other Obs Val', but found 0 unit columns."
+        == "Could not find observed value column representing 'Some Obs Val'"
     )
 
 
@@ -809,6 +766,9 @@ def test_create_unit_col_in_melted_data_set_for_pivoted_shape_should_throw_inval
     melted_df = _melt_data_set(
         pivoted_df, _measure_components_for_multi_measure_pivoted_shape
     )
+    measure_uris = {
+        c.property for c in _measure_components_for_multi_measure_pivoted_shape
+    }
 
     csvw_metadata_json_path = (
         _test_case_base_dir
@@ -819,20 +779,27 @@ def test_create_unit_col_in_melted_data_set_for_pivoted_shape_should_throw_inval
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
     data_cube_state = DataCubeState(csvw_metadata_rdf_graph, csvw_metadata_json_path)
+    column_definitions = data_cube_state.get_column_definitions_for_csv(
+        "qb-id-10003.csv"
+    )
+    column_definitions_without_units = [
+        c
+        for c in column_definitions
+        if c.property_url != str(SDMX_Attribute.unitMeasure)
+    ]
 
-    with pytest.raises(InvalidNumOfValUrlsForAboutUrlException) as exception:
+    with pytest.raises(InvalidUnitColumnDefinition) as exception:
         _create_unit_col_in_melted_data_set_for_pivoted_shape(
             "Unit",
             melted_df,
-            _unit_col_about_urls_value_urls_invalid,
-            _obs_val_col_titles_about_urls,
-            _col_names_col_titles,
+            column_definitions_without_units,
             data_cube_state,
+            measure_uris,
         )
 
     assert (
         str(exception.value)
-        == "There should be only 1 value url for the about url 'qb-id-10003.csv#obs/some-dimension@some-other-measure', but found 0."
+        == "There should be only 1 value url for the about url 'qb-id-10003.csv#obs/{some_dimension}@some-measure', but found 0."
     )
 
 

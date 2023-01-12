@@ -12,8 +12,8 @@ from csvcubed.cli.inspect.inspectdatasetmanager import (
     get_concepts_hierarchy_info,
     get_dataset_observations_info,
     get_dataset_val_counts_info,
-    get_standard_shape_measure_col_name_from_dsd,
     get_single_measure_from_dsd,
+    get_standard_shape_measure_col_name_from_dsd,
     get_standard_shape_unit_col_name_from_dsd,
     load_csv_to_dataframe,
 )
@@ -35,8 +35,8 @@ from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_codelist_cols_by_csv_url,
     select_codelist_csv_url,
-    select_primary_key_col_names_by_csv_url,
     select_csvw_catalog_metadata,
+    select_primary_key_col_names_by_csv_url,
     select_qb_csv_url,
 )
 from csvcubed.utils.tableschema import CsvwRdfManager
@@ -549,18 +549,19 @@ def test_get_val_counts_info_multi_unit_multi_measure_dataset():
         canonical_shape_dataset, measure_col, unit_col
     )
 
-    _expected_by_measure_and_unit_val_counts_df_multi_unit_multi_measure.rename(
-        columns={
-            "Measure": measure_col,
-            "Unit": unit_col,
-        },
-        inplace=True,
+    expected_by_measure_and_unit_val_counts_df_multi_unit_multi_measure = (
+        _expected_by_measure_and_unit_val_counts_df_multi_unit_multi_measure.rename(
+            columns={
+                "Measure": measure_col,
+                "Unit": unit_col,
+            },
+        )
     )
 
     assert result is not None
     assert_frame_equal(
         result.by_measure_and_unit_val_counts_df,
-        _expected_by_measure_and_unit_val_counts_df_multi_unit_multi_measure,
+        expected_by_measure_and_unit_val_counts_df_multi_unit_multi_measure,
     )
 
 
@@ -595,18 +596,19 @@ def test_get_val_counts_info_multi_unit_single_measure_dataset():
         canonical_shape_dataset, measure_col, unit_col
     )
 
-    _expected_by_measure_and_unit_val_counts_df_multi_unit_single_measure.rename(
-        columns={
-            "Measure": measure_col,
-            "Unit": unit_col,
-        },
-        inplace=True,
+    expected_by_measure_and_unit_val_counts_df_multi_unit_single_measure = (
+        _expected_by_measure_and_unit_val_counts_df_multi_unit_single_measure.rename(
+            columns={
+                "Measure": measure_col,
+                "Unit": unit_col,
+            }
+        )
     )
 
     assert result is not None
     assert_frame_equal(
         result.by_measure_and_unit_val_counts_df,
-        _expected_by_measure_and_unit_val_counts_df_multi_unit_single_measure,
+        expected_by_measure_and_unit_val_counts_df_multi_unit_single_measure,
     )
 
 
@@ -641,18 +643,19 @@ def test_get_val_counts_info_single_unit_multi_measure_dataset():
         canonical_shape_dataset, measure_col, unit_col
     )
 
-    _expected_by_measure_and_unit_val_counts_df_single_unit_multi_measure.rename(
-        columns={
-            "Measure": measure_col,
-            "Unit": unit_col,
-        },
-        inplace=True,
+    expected_by_measure_and_unit_val_counts_df_single_unit_multi_measure = (
+        _expected_by_measure_and_unit_val_counts_df_single_unit_multi_measure.rename(
+            columns={
+                "Measure": measure_col,
+                "Unit": unit_col,
+            },
+        )
     )
 
     assert result is not None
     assert_frame_equal(
         result.by_measure_and_unit_val_counts_df,
-        _expected_by_measure_and_unit_val_counts_df_single_unit_multi_measure,
+        expected_by_measure_and_unit_val_counts_df_single_unit_multi_measure,
     )
 
 
@@ -687,7 +690,54 @@ def test_get_val_counts_info_single_unit_single_measure_dataset():
         canonical_shape_dataset, measure_col, unit_col
     )
 
-    _expected_by_measure_and_unit_val_counts_df_single_unit_single_measure.rename(
+    expected_by_measure_and_unit_val_counts_df_single_unit_single_measure = (
+        _expected_by_measure_and_unit_val_counts_df_single_unit_single_measure.rename(
+            columns={
+                "Measure": measure_col,
+                "Unit": unit_col,
+            },
+        )
+    )
+
+    assert result is not None
+    assert_frame_equal(
+        result.by_measure_and_unit_val_counts_df,
+        expected_by_measure_and_unit_val_counts_df_single_unit_single_measure,
+    )
+
+
+def test_get_val_counts_info_pivoted_single_measure_dataset():
+    """
+    Should produce expected `DatasetObservationsByMeasureUnitInfoResult` for pivoted single measure dataset.
+    """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-single-measure-dataset"
+        / "qb-id-10004.csv-metadata.json"
+    )
+    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
+    data_cube_state = DataCubeState(csvw_metadata_rdf_graph, csvw_metadata_json_path)
+
+    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
+
+    (
+        canonical_shape_dataset,
+        measure_col,
+        unit_col,
+    ) = transform_dataset_to_canonical_shape(
+        data_cube_state,
+        dataset,
+        qube_components,
+        csv_url,
+        csvw_metadata_json_path,
+    )
+
+    result: DatasetObservationsByMeasureUnitInfoResult = get_dataset_val_counts_info(
+        canonical_shape_dataset, measure_col, unit_col
+    )
+
+    _expected_by_measure_and_unit_val_counts_df_pivoted_single_measure.rename(
         columns={
             "Measure": measure_col,
             "Unit": unit_col,
@@ -698,7 +748,53 @@ def test_get_val_counts_info_single_unit_single_measure_dataset():
     assert result is not None
     assert_frame_equal(
         result.by_measure_and_unit_val_counts_df,
-        _expected_by_measure_and_unit_val_counts_df_single_unit_single_measure,
+        _expected_by_measure_and_unit_val_counts_df_pivoted_single_measure,
+    )
+
+
+def test_get_val_counts_info_pivoted_multi_measure_dataset():
+    """
+    Should produce expected `DatasetObservationsByMeasureUnitInfoResult` for pivoted multi measure dataset.
+    """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-multi-measure-dataset"
+        / "qb-id-10003.csv-metadata.json"
+    )
+    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
+    data_cube_state = DataCubeState(csvw_metadata_rdf_graph, csvw_metadata_json_path)
+
+    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
+
+    (
+        canonical_shape_dataset,
+        measure_col,
+        unit_col,
+    ) = transform_dataset_to_canonical_shape(
+        data_cube_state,
+        dataset,
+        qube_components,
+        csv_url,
+        csvw_metadata_json_path,
+    )
+
+    result: DatasetObservationsByMeasureUnitInfoResult = get_dataset_val_counts_info(
+        canonical_shape_dataset, measure_col, unit_col
+    )
+
+    _expected_by_measure_and_unit_val_counts_df_pivoted_multi_measure.rename(
+        columns={
+            "Measure": measure_col,
+            "Unit": unit_col,
+        },
+        inplace=True,
+    )
+
+    assert result is not None
+    assert_frame_equal(
+        result.by_measure_and_unit_val_counts_df,
+        _expected_by_measure_and_unit_val_counts_df_pivoted_multi_measure,
     )
 
 

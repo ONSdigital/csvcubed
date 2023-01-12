@@ -24,7 +24,6 @@ from csvcubed.models.cube.qb.components.unitscolumn import ExistingQbUnit, NewQb
 from csvcubed.models.cube.uristyle import URIStyle
 from csvcubed.writers.helpers.qbwriter.dsdtordfmodelshelper import DsdToRdfModelsHelper
 from csvcubed.writers.helpers.qbwriter.urihelper import UriHelper
-
 from .testhelpers import assert_component_defined, get_standard_cube_for_columns
 
 

@@ -10,6 +10,7 @@ import logging
 from pathlib import Path
 from typing import List, Optional
 
+
 import pandas as pd
 
 from csvcubed.cli.error_mapping import friendly_error_mapping
@@ -26,6 +27,21 @@ from csvcubed.models.inspectdataframeresults import (
     DatasetSingleMeasureResult,
 )
 from csvcubed.models.sparqlresults import QubeComponentResult
+from csvcubed.cli.error_mapping import friendly_error_mapping
+from csvcubed.models.csvcubedexception import (
+    CsvToDataFrameLoadFailedException,
+    InvalidNumberOfRecordsException,
+)
+from csvcubed.models.csvwtype import CSVWType
+from csvcubed.models.cube.cube_shape import CubeShape
+from csvcubed.models.inspectdataframeresults import (
+    CodelistHierarchyInfoResult,
+    DatasetObservationsByMeasureUnitInfoResult,
+    DatasetObservationsInfoResult,
+    DatasetSingleMeasureResult,
+)
+from csvcubed.models.sparqlresults import QubeComponentResult
+from csvcubed.utils.iterables import first
 from csvcubed.utils.pandas import read_csv
 from csvcubed.utils.qb.components import (
     ComponentField,
@@ -85,50 +101,62 @@ def get_standard_shape_measure_col_name_from_dsd(
     components: List[QubeComponentResult],
 ) -> Optional[str]:
     """
-    Identifies the name of measure column.
+    Identifies the name of the measure column in a standard shape data set.
 
     Member of :file:`./inspectdatasetmanager.py`
 
     :return: `Optional[str]`
     """
-    filtered_components = filter_components_from_dsd(
+    measure_components = filter_components_from_dsd(
         components,
         ComponentField.Property,
         ComponentPropertyAttributeURI.MeasureType.value,
     )
 
-    if len(filtered_components) == 0 or filtered_components[0].csv_col_title == "":
-        _logger.warn(
+    first_measure_component = first(measure_components)
+
+    if (
+        first_measure_component is not None
+        and len(first_measure_component.real_columns_used_in) == 1
+    ):
+        csv_measure_column = first_measure_component.real_columns_used_in[0]
+        return csv_measure_column.title
+    else:
+        _logger.warning(
             "Could not find measure column name from the DSD, hence returning None"
         )
         return None
-    else:
-        return filtered_components[0].csv_col_title
 
 
 def get_standard_shape_unit_col_name_from_dsd(
     components: List[QubeComponentResult],
 ) -> Optional[str]:
     """
-    Identifies the name of unit column.
+    Identifies the name of unit column in a standard shaped data set.
 
     Member of :file:`./inspectdatasetmanager.py`
 
     :return: `Optional[str]`
     """
-    filtered_components = filter_components_from_dsd(
+    unit_components = filter_components_from_dsd(
         components,
         ComponentField.Property,
         ComponentPropertyAttributeURI.UnitMeasure.value,
     )
 
-    if len(filtered_components) == 0 or filtered_components[0].csv_col_title == "":
-        _logger.warn(
+    first_unit_component = first(unit_components)
+
+    if (
+        first_unit_component is not None
+        and len(first_unit_component.real_columns_used_in) == 1
+    ):
+        csv_units_column = first_unit_component.real_columns_used_in[0]
+        return csv_units_column.title
+    else:
+        _logger.warning(
             "Could not find unit column name from the DSD, hence returning None"
         )
         return None
-    else:
-        return filtered_components[0].csv_col_title
 
 
 def get_single_measure_from_dsd(

@@ -54,4 +54,4 @@ Specify the observed values colummn which the units or attribute column describe
 }
 ```
 
-For further guidance, please refer to the [shaping your data documentation](../../shape-data.md).
+For further guidance, please refer to the [shaping your data documentation](../../shape-data/index.md).

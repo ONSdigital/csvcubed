@@ -81,6 +81,14 @@
                         "aboutUrl": "qb-id-10004.csv#obs/{some_dimension}@some-measure",
                         "propertyUrl": "qb:dataSet",
                         "valueUrl": "qb-id-10004.csv#dataset"
+                    },
+                    {
+                        "name": "virt_suppressed_test",
+                        "virtual": true,
+                        "suppressOutput": true,
+                        "aboutUrl": "http://example.com/about",
+                        "propertyUrl": "http://example.com/property",
+                        "valueUrl": "http://example.com/value"
                     }
                 ],
                 "foreignKeys": [

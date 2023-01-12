@@ -29,4 +29,4 @@ In this cube, the `Location` column represents a [dimension](../../../glossary/i
 
 Ensure that the linked column is a column containing [observed values](../../../glossary/index.md#observation--observed-value).
 
-For further guidance, please refer to the [shaping your data documentation](../../shape-data.md).
+For further guidance, please refer to the [shaping your data documentation](../../shape-data/index.md).
