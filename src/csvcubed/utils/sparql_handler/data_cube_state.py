@@ -1,29 +1,24 @@
 from dataclasses import dataclass
 from functools import cached_property
 from pathlib import Path
-from typing import Any, Dict, List, Optional, TypeVar
+from typing import Dict, List, Optional, TypeVar
 
 import rdflib
 
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import (
-    ColTitlesAndNamesResult,
+    ColumnDefinition,
     CubeTableIdentifiers,
     IsPivotedShapeMeasureResult,
-    ObservationValueColumnTitleAboutUrlResult,
-    QubeComponentResult,
     QubeComponentsResult,
-    UnitColumnAboutValueUrlResult,
     UnitResult,
 )
 from csvcubed.utils.iterables import first, group_by
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
-    select_col_titles_and_names,
+    select_column_definitions,
     select_csvw_dsd_qube_components,
     select_data_set_dsd_and_csv_url,
     select_is_pivoted_shape_for_measures_in_data_set,
-    select_observation_value_column_title_and_about_url,
-    select_unit_col_about_value_urls,
     select_units,
 )
 
@@ -50,31 +45,11 @@ class DataCubeState:
     """
 
     @cached_property
-    def _unit_col_about_value_urls(
-        self,
-    ) -> Dict[str, List[UnitColumnAboutValueUrlResult]]:
+    def _column_definitions(self) -> Dict[str, List[ColumnDefinition]]:
         """
-        Queries and caches unit column about and value urls.
+        Map of csv_url to the list of column definitions for the given CSV file.
         """
-        results = select_unit_col_about_value_urls(self.rdf_graph)
-        return group_by(results, lambda r: r.csv_url)
-
-    @cached_property
-    def _obs_val_col_titles_about_urls(
-        self,
-    ) -> Dict[str, List[ObservationValueColumnTitleAboutUrlResult]]:
-        """
-        Queries and caches observation value column titles and about urls.
-        """
-        results = select_observation_value_column_title_and_about_url(self.rdf_graph)
-        return group_by(results, lambda r: r.csv_url)
-
-    @cached_property
-    def _col_names_col_titles(self) -> Dict[str, List[ColTitlesAndNamesResult]]:
-        """
-        Queries and caches column names and titles.
-        """
-        results = select_col_titles_and_names(self.rdf_graph)
+        results = select_column_definitions(self.rdf_graph)
         return group_by(results, lambda r: r.csv_url)
 
     @cached_property
@@ -97,16 +72,19 @@ class DataCubeState:
         return results_dict
 
     @cached_property
-    def _dsd_qube_components(self) -> Dict[str, List[QubeComponentResult]]:
+    def _dsd_qube_components(self) -> Dict[str, QubeComponentsResult]:
         """
-        Queries and caches qube components
+        Maps csv_url to the qb:DataStructureDefinition components associated with it.
         """
-        result = select_csvw_dsd_qube_components(self.rdf_graph, self.csvw_json_path)
         map_dsd_uri_to_csv_url = {
             i.dsd_uri: i.csv_url for i in self._cube_table_identifiers.values()
         }
-        return group_by(
-            result.qube_components, lambda c: map_dsd_uri_to_csv_url[c.dsd_uri]
+
+        return select_csvw_dsd_qube_components(
+            self.rdf_graph,
+            self.csvw_json_path,
+            map_dsd_uri_to_csv_url,
+            self._column_definitions,
         )
 
     @cached_property
@@ -154,36 +132,12 @@ class DataCubeState:
     Public getters for the cached properties.
     """
 
-    def get_unit_col_about_value_urls_for_csv(
-        self, csv_url: str
-    ) -> List[UnitColumnAboutValueUrlResult]:
-        """
-        Getter for _unit_col_about_value_urls cached property.
-        """
-        result: List[UnitColumnAboutValueUrlResult] = self._get_value_for_key(
-            csv_url, self._unit_col_about_value_urls
-        )
-        return result
-
-    def get_obs_val_col_titles_about_urls_for_csv(
-        self, csv_url: str
-    ) -> List[ObservationValueColumnTitleAboutUrlResult]:
-        """
-        Getter for _obs_val_col_titles_about_urls cached property.
-        """
-        result: List[
-            ObservationValueColumnTitleAboutUrlResult
-        ] = self._get_value_for_key(csv_url, self._obs_val_col_titles_about_urls)
-        return result
-
-    def get_col_name_col_title_for_csv(
-        self, csv_url: str
-    ) -> List[ColTitlesAndNamesResult]:
+    def get_column_definitions_for_csv(self, csv_url: str) -> List[ColumnDefinition]:
         """
         Getter for _col_names_col_titles cached property.
         """
-        result: List[ColTitlesAndNamesResult] = self._get_value_for_key(
-            csv_url, self._col_names_col_titles
+        result: List[ColumnDefinition] = self._get_value_for_key(
+            csv_url, self._column_definitions
         )
         return result
 
@@ -223,10 +177,7 @@ class DataCubeState:
         """
         Getter for DSD Qube Components cached property.
         """
-        components: List[QubeComponentResult] = self._get_value_for_key(
-            csv_url, self._dsd_qube_components
-        )
-        return QubeComponentsResult(components, len(components))
+        return self._get_value_for_key(csv_url, self._dsd_qube_components)
 
     def get_shape_for_csv(self, csv_url: str) -> CubeShape:
         return self._get_value_for_key(csv_url, self._cube_shapes)

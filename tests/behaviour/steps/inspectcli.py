@@ -23,9 +23,6 @@ from csvcubed.utils.iterables import first
 from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.sparql_handler.code_list_state import CodeListState
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
-from csvcubed.utils.sparql_handler.sparqlquerymanager import (
-    select_is_pivoted_shape_for_measures_in_data_set,
-)
 from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.unit.cli.inspect.test_inspectdatasetmanager import (
     expected_dataframe_pivoted_multi_measure,
@@ -170,7 +167,7 @@ def step_impl(context):
 def step_impl(context):
     assert _unformat_multiline_string(
         context.dsd_info_printable
-    ) == _unformat_multiline_string(context.text.strip())
+    ) == _unformat_multiline_string(context.text.strip()), context.dsd_info_printable
 
 
 @Then("the Code List Printable should be")
@@ -282,8 +279,8 @@ def step_impl(context):
         "qb-id-10004.csv#dimension/some-dimension",
         ComponentPropertyType.Dimension,
         "Some Dimension",
-        "Some Dimension",
-        "Some Obs Val",
+        ["Some Dimension"],
+        ["Some Obs Val"],
         "qb-id-10004.csv#structure",
         True,
     )
@@ -296,8 +293,8 @@ def step_impl(context):
         "qb-id-10004.csv#attribute/some-attribute",
         ComponentPropertyType.Attribute,
         "Some Attribute",
-        "Some Attribute",
-        "Some Obs Val",
+        ["Some Attribute"],
+        ["Some Obs Val"],
         "qb-id-10004.csv#structure",
         False,
     )
@@ -310,8 +307,8 @@ def step_impl(context):
         "http://purl.org/linked-data/cube#measureType",
         ComponentPropertyType.Dimension,
         "",
-        "",
-        "",
+        [],
+        [],
         "qb-id-10004.csv#structure",
         True,
     )
@@ -324,8 +321,8 @@ def step_impl(context):
         "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
         ComponentPropertyType.Attribute,
         "",
-        "",
-        "Some Obs Val",
+        [],
+        ["Some Obs Val"],
         "qb-id-10004.csv#structure",
         True,
     )
@@ -338,8 +335,8 @@ def step_impl(context):
         "qb-id-10004.csv#measure/some-measure",
         ComponentPropertyType.Measure,
         "Some Measure",
-        "Some Obs Val",
-        "Some Obs Val",
+        ["Some Obs Val"],
+        ["Some Obs Val"],
         "qb-id-10004.csv#structure",
         True,
     )
@@ -458,8 +455,8 @@ def step_impl(context):
         "qb-id-10003.csv#dimension/some-dimension",
         ComponentPropertyType.Dimension,
         "Some Dimension",
-        "Some Dimension",
-        "Some Obs Val, Some Other Obs Val",
+        ["Some Dimension"],
+        ["Some Obs Val", "Some Other Obs Val"],
         "qb-id-10003.csv#structure",
         True,
     )
@@ -472,8 +469,8 @@ def step_impl(context):
         "qb-id-10003.csv#attribute/some-attribute",
         ComponentPropertyType.Attribute,
         "Some Attribute",
-        "Some Attribute",
-        "Some Obs Val",
+        ["Some Attribute"],
+        ["Some Obs Val"],
         "qb-id-10003.csv#structure",
         False,
     )
@@ -486,8 +483,8 @@ def step_impl(context):
         "http://purl.org/linked-data/cube#measureType",
         ComponentPropertyType.Dimension,
         "",
-        "",
-        "",
+        [],
+        [],
         "qb-id-10003.csv#structure",
         True,
     )
@@ -500,8 +497,8 @@ def step_impl(context):
         "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
         ComponentPropertyType.Attribute,
         "",
-        "Some Unit",
-        "Some Other Obs Val, Some Obs Val",
+        ["Some Unit"],
+        ["Some Other Obs Val", "Some Obs Val"],
         "qb-id-10003.csv#structure",
         True,
     )
@@ -514,8 +511,8 @@ def step_impl(context):
         "qb-id-10003.csv#measure/some-measure",
         ComponentPropertyType.Measure,
         "Some Measure",
-        "Some Obs Val",
-        "Some Obs Val",
+        ["Some Obs Val"],
+        ["Some Obs Val"],
         "qb-id-10003.csv#structure",
         True,
     )
@@ -528,8 +525,8 @@ def step_impl(context):
         "qb-id-10003.csv#measure/some-other-measure",
         ComponentPropertyType.Measure,
         "Some Other Measure",
-        "Some Other Obs Val",
-        "Some Other Obs Val",
+        ["Some Other Obs Val"],
+        ["Some Other Obs Val"],
         "qb-id-10003.csv#structure",
         True,
     )

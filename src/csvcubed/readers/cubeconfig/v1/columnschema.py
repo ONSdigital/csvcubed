@@ -64,8 +64,10 @@ class SchemaBaseClass(DataClassBase, ABC):
 
 @dataclass
 class NewDimension(SchemaBaseClass):
-    # Schema property - but removed for json to dataclass mapping
-    # type: # str = "dimension"
+    """
+    Schema property - but removed for json to dataclass mapping
+      type: # str = "dimension"
+    """
 
     label: Optional[str] = None
     description: Optional[str] = None

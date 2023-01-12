@@ -1,11 +1,10 @@
 # this script will test the validationmodel features
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, List, Optional
+from typing import Dict, List, Optional
 
 import pytest
 
 from csvcubed.models.validatedmodel import ValidatedModel, ValidationFunction
-from csvcubed.models.validationerror import ValidateModelProperiesError
 from csvcubed.utils.validations import (
     validate_int_type,
     validate_list,

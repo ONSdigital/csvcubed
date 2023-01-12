@@ -8,7 +8,7 @@ Collection of SPARQL queries.
 import logging
 from enum import Enum
 from pathlib import Path
-from typing import List
+from typing import Dict, List
 
 import rdflib
 from csvcubedmodels.rdf.namespaces import XSD
@@ -27,35 +27,31 @@ from csvcubed.models.sparqlresults import (
     CodeListColsByDatasetUrlResult,
     CodelistsResult,
     ColsWithSuppressOutputTrueResult,
-    ColTitlesAndNamesResult,
+    ColumnDefinition,
     CsvUrlResult,
     CSVWTableSchemaFileDependenciesResult,
     CubeTableIdentifiers,
     DSDLabelURIResult,
     IsPivotedShapeMeasureResult,
     MetadataDependenciesResult,
-    ObservationValueColumnTitleAboutUrlResult,
     PrimaryKeyColNamesByDatasetUrlResult,
     QubeComponentsResult,
     TableSchemaPropertiesResult,
-    UnitColumnAboutValueUrlResult,
     UnitResult,
-    _map_data_set_dsd_csv_url_result,
     map_catalog_metadata_result,
     map_codelist_cols_by_csv_url_result,
     map_codelists_sparql_result,
-    map_col_tiles_and_names_result,
     map_cols_with_supress_output_true_sparql_result,
+    map_column_definition_results,
     map_csv_url_result,
     map_csvw_table_schemas_file_dependencies_result,
+    map_data_set_dsd_csv_url_result,
     map_dataset_label_dsd_uri_sparql_result,
     map_is_pivoted_shape_for_measures_in_data_set,
     map_metadata_dependency_results,
-    map_observation_value_col_title_and_about_url_result,
     map_primary_key_col_names_by_csv_url_result,
     map_qube_components_sparql_result,
     map_table_schema_properties_result,
-    map_unit_col_about_value_urls_result,
     map_units,
 )
 from csvcubed.utils.sparql_handler.sparql import ask, select
@@ -79,10 +75,6 @@ class SPARQLQueryName(Enum):
     SELECT_DATA_SET_DSD_CSV_URL = "select_data_set_dsd_csv_url"
 
     SELECT_DSD_QUBE_COMPONENTS = "select_dsd_qube_components"
-
-    SELECT_OBS_VAL_FOR_DSD_COMPONENT_PROPERTIES = (
-        "select_obs_val_for_dsd_component_properties"
-    )
 
     SELECT_COLS_W_SUPPRESS_OUTPUT = "select_cols_w_suppress_output"
 
@@ -110,13 +102,7 @@ class SPARQLQueryName(Enum):
         "select_is_pivoted_shape_for_measures_in_data_set"
     )
 
-    SELECT_UNIT_COL_ABOUT_AND_VALUE_URLS = "select_unit_col_about_and_value_urls"
-
-    SELECT_UNIT_COL_OBSERVED_COL_TITLE_AND_ABOUT_URL = (
-        "select_unit_col_observed_col_title_and_about_url"
-    )
-
-    SELECT_COL_TITLES_AND_NAMES = "select_col_titles_and_names"
+    SELECT_COLUMN_DEFINITIONS = "select_column_definitions"
 
 
 def _get_query_string_from_file(query_type: SPARQLQueryName) -> str:
@@ -244,34 +230,34 @@ def select_data_set_dsd_and_csv_url(
             excepted_num_of_records=1,
             num_of_records=len(results),
         )
-    return _map_data_set_dsd_csv_url_result(results)
+    return map_data_set_dsd_csv_url_result(results)
 
 
 def select_csvw_dsd_qube_components(
     rdf_graph: rdflib.ConjunctiveGraph,
     json_path: Path,
-) -> QubeComponentsResult:
+    map_dsd_uri_to_csv_url: Dict[str, str],
+    map_csv_url_to_column_definitions: Dict[str, List[ColumnDefinition]],
+) -> Dict[str, QubeComponentsResult]:
     """
     Queries the list of qube components.
 
+    Returns a map of csv_url to the `QubeComponentsResult`.
+
     Member of :file:`./sparqlquerymanager.py`
 
-    :return: `QubeComponentsResult`
+    :return: `Dict[str, QubeComponentsResult]`
     """
     result_dsd_components: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryName.SELECT_DSD_QUBE_COMPONENTS),
         rdf_graph,
     )
 
-    result_observation_val_col_titles: List[ResultRow] = select(
-        _get_query_string_from_file(
-            SPARQLQueryName.SELECT_OBS_VAL_FOR_DSD_COMPONENT_PROPERTIES
-        ),
-        rdf_graph,
-    )
-
     return map_qube_components_sparql_result(
-        result_dsd_components, result_observation_val_col_titles, json_path
+        result_dsd_components,
+        json_path,
+        map_dsd_uri_to_csv_url,
+        map_csv_url_to_column_definitions,
     )
 
 
@@ -513,47 +499,15 @@ def select_table_schema_properties(
     return map_table_schema_properties_result(results[0])
 
 
-def select_unit_col_about_value_urls(
+def select_column_definitions(
     rdf_graph: rdflib.Graph,
-) -> List[UnitColumnAboutValueUrlResult]:
-    """
-    Queries a CSV-W and extracts the unit column's about and value urls.
-    """
-    results: List[ResultRow] = select(
-        _get_query_string_from_file(
-            SPARQLQueryName.SELECT_UNIT_COL_ABOUT_AND_VALUE_URLS
-        ),
-        rdf_graph,
-    )
-
-    return map_unit_col_about_value_urls_result(results)
-
-
-def select_observation_value_column_title_and_about_url(
-    rdf_graph: rdflib.Graph,
-) -> List[ObservationValueColumnTitleAboutUrlResult]:
-    """
-    Queries a CSV-W and extracts the observation value column title and about url.
-    """
-    results: List[ResultRow] = select(
-        _get_query_string_from_file(
-            SPARQLQueryName.SELECT_UNIT_COL_OBSERVED_COL_TITLE_AND_ABOUT_URL
-        ),
-        rdf_graph,
-    )
-
-    return map_observation_value_col_title_and_about_url_result(results)
-
-
-def select_col_titles_and_names(
-    rdf_graph: rdflib.Graph,
-) -> List[ColTitlesAndNamesResult]:
+) -> List[ColumnDefinition]:
     """
     Selects the column names and corresponding column titles.
     """
     results: List[ResultRow] = select(
-        _get_query_string_from_file(SPARQLQueryName.SELECT_COL_TITLES_AND_NAMES),
+        _get_query_string_from_file(SPARQLQueryName.SELECT_COLUMN_DEFINITIONS),
         rdf_graph,
     )
 
-    return map_col_tiles_and_names_result(results)
+    return map_column_definition_results(results)

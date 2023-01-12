@@ -3,67 +3,32 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX csvw: <http://www.w3.org/ns/csvw#>
 
-SELECT DISTINCT 
-    ?dsdUri ?component ?componentProperty ?componentPropertyLabel ?componentOrder ?componentPropertyType ?csvColumnTitle
-    (COALESCE(?csvColumnRequired, false) || ?componentRequired as ?required) 
-WHERE {   
-    
-    { 
-        SELECT DISTINCT ?dsdUri ?csvColumnTitle (COALESCE(?required, false) as ?csvColumnRequired) ?component ?componentProperty ?componentOrder 
-        WHERE {
-            ?dsdUri qb:component ?component.
-        
-            ?component qb:componentProperty|qb:dimension|qb:measureDimension|qb:measure|qb:attribute ?componentProperty;
-                    qb:order ?componentOrder.
-        
-            OPTIONAL {
-                ?csvColumn csvw:propertyUrl ?csvColumnPropertyUrl.
+SELECT ?dsdUri ?component ?componentProperty ?componentPropertyLabel ?componentOrder ?componentPropertyType (COALESCE(?componentRequired, false) as ?required)
+WHERE {
 
-                FILTER NOT EXISTS {
-                    ?csvColumn csvw:virtual true.
-                }
+    ?dsdUri qb:component ?component.
+    ?component qb:order ?componentOrder
 
-                FILTER(STRENDS(str(?componentProperty), str(?csvColumnPropertyUrl))).
+    {
+        ?component qb:dimension ?componentProperty.
+        BIND (qb:DimensionProperty as ?componentPropertyType).
+        BIND (true as ?componentRequired)
+    } UNION {
+        # https://www.w3.org/TR/vocab-data-cube/#dfn-qb-measuredimension
+        ?component qb:measureDimension ?componentProperty.
+        BIND (qb:MeasureProperty as ?componentPropertyType).
+        BIND (true as ?componentRequired)
+    } UNION {
+        ?component qb:measure ?componentProperty.
+        BIND (qb:MeasureProperty as ?componentPropertyType).
+        BIND (true as ?componentRequired)
+    } UNION {
+        ?component qb:attribute ?componentProperty.
+        BIND (qb:AttributeProperty as ?componentPropertyType).
 
-                OPTIONAL { ?csvColumn csvw:title ?csvColumnTitle. }
-
-                OPTIONAL { ?csvColumn csvw:required ?required. }
-            } 
-        }
+        OPTIONAL { ?component qb:componentRequired ?componentRequired. }
     }
 
-    OPTIONAL {
-        ?componentProperty rdfs:label ?componentPropertyLabel.
-    }
-
-    OPTIONAL {
-        # https://www.w3.org/TR/vocab-data-cube/#h3_reference-compspec
-        {
-            ?component qb:dimension ?dimension.
-            BIND (qb:DimensionProperty as ?componentPropertyType).
-            BIND (true as ?componentRequired)
-        } UNION {
-            # https://www.w3.org/TR/vocab-data-cube/#dfn-qb-measuredimension
-            ?component qb:measureDimension ?dimension.
-            BIND (qb:MeasureProperty as ?componentPropertyType).
-            BIND (true as ?componentRequired)
-        } UNION {
-            ?component qb:measure ?measure.
-            BIND (qb:MeasureProperty as ?componentPropertyType).
-            BIND (true as ?componentRequired)
-        } UNION {
-            ?component qb:attribute ?attribute.
-            BIND (qb:AttributeProperty as ?componentPropertyType).
-
-            {
-                ?component qb:componentRequired ?componentRequired.
-            } UNION {
-                BIND (false as ?componentRequired)
-                FILTER NOT EXISTS {
-                    ?component qb:componentRequired [].
-                }
-            }
-        } 
-    }
-}    
+    OPTIONAL { ?componentProperty rdfs:label ?componentPropertyLabel. }
+}
 ORDER BY ASC(?componentOrder)

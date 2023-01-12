@@ -1,7 +1,7 @@
 """this class will be class attributes and returns an array of errors"""
 
 import logging
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from dataclasses import dataclass
 from typing import Any, Callable, Dict, List
 
