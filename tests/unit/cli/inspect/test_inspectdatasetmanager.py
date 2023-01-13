@@ -257,12 +257,32 @@ _expected_by_measure_and_unit_val_counts_df_pivoted_multi_measure = DataFrame(
 ).replace("", np.NAN)
 
 
+def get_arguments_qb_dataset_TEST(
+    data_cube_state: DataCubeState, csv_url: str
+) -> Tuple[DataFrame, List[QubeComponentResult], str, str]:
+    """
+    THIS IS A TEST FUNCTION TO PLAY ABOUT WITH HOW WE CAN ACCESS DIFFERENT
+    PROPERTIES OF THE STATE CLASSES.
+    """
+
+    dataset: DataFrame = load_csv_to_dataframe(
+        data_cube_state.csvw_json_path, Path(csv_url)
+    )
+
+    qube_components = data_cube_state.get_dsd_qube_components_for_csv(
+        csv_url
+    ).qube_components
+
+    return (dataset, qube_components)
+
+
 def get_arguments_qb_dataset(
     data_cube_state: DataCubeState,
 ) -> Tuple[DataFrame, List[QubeComponentResult], str, str]:
     """
     Produces the dataset, qube components and dsd uri arguments for qb:dataset.
     """
+
     dataset_uri = select_csvw_catalog_metadata(data_cube_state.rdf_graph).dataset_uri
 
     csv_url = data_cube_state.get_cube_identifiers_for_data_set(dataset_uri).csv_url
@@ -478,8 +498,11 @@ def test_get_unit_col_name_from_dsd_unit_col_not_present():
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     data_cube_state = DataCubeState(csvw_metadata_rdf_graph, csvw_metadata_json_path)
+    primary_catalog_metadata = (
+        csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
+    )
 
-    data_set_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
+    data_set_uri = primary_catalog_metadata.dataset_uri
     data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
     csv_url = select_qb_csv_url(csvw_metadata_rdf_graph, data_set_uri).csv_url
 
@@ -504,10 +527,12 @@ def test_get_single_measure_label_from_dsd():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-
     data_cube_state = DataCubeState(csvw_metadata_rdf_graph, csvw_metadata_json_path)
+    primary_catalog_metadata = (
+        csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
+    )
 
-    data_set_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
+    data_set_uri = primary_catalog_metadata.dataset_uri
     data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
     csv_url = select_qb_csv_url(csvw_metadata_rdf_graph, data_set_uri).csv_url
 
@@ -538,9 +563,20 @@ def test_get_val_counts_info_multi_unit_multi_measure_dataset():
         / "alcohol-bulletin.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     data_cube_state = DataCubeState(csvw_rdf_manager.rdf_graph, csvw_metadata_json_path)
 
-    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
+    data_cube_state = DataCubeState(csvw_metadata_rdf_graph, csvw_metadata_json_path)
+    primary_catalog_metadata = (
+        csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
+    )
+
+    data_set_uri = primary_catalog_metadata.dataset_uri
+    data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
+    csv_url = select_qb_csv_url(csvw_metadata_rdf_graph, data_set_uri).csv_url
+
+    (dataset, qube_components) = get_arguments_qb_dataset_TEST(data_cube_state, csv_url)
+    # Todo: ask aboutthe change to ^ this function -> no longer returns csv_url
 
     (
         canonical_shape_dataset,
