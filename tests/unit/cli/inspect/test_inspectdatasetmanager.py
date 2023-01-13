@@ -31,7 +31,9 @@ from csvcubed.utils.skos.codelist import (
     get_codelist_col_title_by_property_url,
     get_codelist_col_title_from_col_name,
 )
+from csvcubed.utils.sparql_handler.csvw_state import CsvWState
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
+from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_codelist_cols_by_csv_url,
     select_codelist_csv_url,
@@ -386,11 +388,12 @@ def test_get_measure_col_name_from_dsd_measure_col_present():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
+
     data_cube_state = DataCubeState(csvw_metadata_rdf_graph, csvw_metadata_json_path)
 
-    result_data_set_uri = select_csvw_catalog_metadata(
-        csvw_metadata_rdf_graph
-    ).dataset_uri
+    result_data_set_uri = (
+        csvw_rdf_manager.csvw_state.get_primary_catalog_metadata().dataset_uri
+    )
     data_set_uri = to_absolute_rdflib_file_path(
         result_data_set_uri, csvw_metadata_json_path
     )
@@ -417,8 +420,11 @@ def test_get_measure_col_name_from_dsd_measure_col_not_present():
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     data_cube_state = DataCubeState(csvw_metadata_rdf_graph, csvw_metadata_json_path)
+    primary_catalog_metadata = (
+        csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
+    )
 
-    data_set_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
+    data_set_uri = primary_catalog_metadata.dataset_uri
     data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
     csv_url = select_qb_csv_url(csvw_metadata_rdf_graph, data_set_uri).csv_url
 
@@ -443,8 +449,11 @@ def test_get_unit_col_name_from_dsd_unit_col_present():
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     data_cube_state = DataCubeState(csvw_metadata_rdf_graph, csvw_metadata_json_path)
+    primary_catalog_metadata = (
+        csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
+    )
 
-    data_set_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
+    data_set_uri = primary_catalog_metadata.dataset_uri
     data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
     csv_url = select_qb_csv_url(csvw_metadata_rdf_graph, data_set_uri).csv_url
 

@@ -1,4 +1,5 @@
 from csvcubed.utils.sparql_handler.csvw_state import CsvWState
+from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.unit.test_baseunit import get_test_cases_dir
 
@@ -32,12 +33,14 @@ def test_get_primary_catalog_metadata():
         / "qb-id-10004.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_state = CsvWState(csvw_rdf_manager.rdf_graph, csvw_metadata_json_path)
+    primary_graph_identifier = path_to_file_uri_for_rdflib(csvw_metadata_json_path)
+
+    csvw_state = CsvWState(csvw_rdf_manager.rdf_graph, primary_graph_identifier)
 
     the_thing = csvw_state.get_primary_catalog_metadata()
 
     # assert the_thing.graph_uri == "file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-single-measure-dataset/qb-id-10004.csv-metadata.json"
-    assert the_thing.graph_uri == "file:///" + str(csvw_metadata_json_path)[1:]
+    assert the_thing.graph_uri == primary_graph_identifier
     # change this(^) to use premoveprefix
 
     # sparql_results = {

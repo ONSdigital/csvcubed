@@ -357,16 +357,18 @@ class QubeComponentsResult:
         - Components:{linesep}{formatted_components}"""
 
 
-def map_catalog_metadata_result(sparql_result: ResultRow) -> CatalogMetadataResult:
+def map_catalog_metadata_results(
+    sparql_results: List[ResultRow],
+) -> List[CatalogMetadataResult]:
     """
-    Maps sparql query result to `CatalogMetadataResult`
+    Maps the sparql query results to a list of `CatalogMetadataResult`
 
     Member of :file:`./models/sparqlresults.py`
 
-    :return: `CatalogMetadataResult`
+    :return: `List[CatalogMetadataResult]`
     """
     results: List[CatalogMetadataResult] = []
-    for row in sparql_result:
+    for row in sparql_results:
         result_dict = row.asdict()
 
         result = CatalogMetadataResult(
@@ -385,7 +387,7 @@ def map_catalog_metadata_result(sparql_result: ResultRow) -> CatalogMetadataResu
             themes=str(result_dict["themes"]).split("|"),
             keywords=str(result_dict["keywords"]).split("|"),
             contact_point=none_or_map(result_dict.get("contactPoint"), str) or "None",
-            identifier=none_or_map(result_dict.get("identifier"), str) or "None",   
+            identifier=none_or_map(result_dict.get("identifier"), str) or "None",
         )
         results.append(result)
 

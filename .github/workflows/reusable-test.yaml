@@ -55,16 +55,12 @@ jobs:
 
       - name: Run pyright
         run: poetry run pyright . --lib
-      
-      - name: Ensure ValidatedModel properties have validations provided
-        run: poetry run python tests/pref_improvement/pref_check.py
 
       - name: Ensure ValidatedModel properties have validations provided
         run: poetry run python tests/pref_improvement/pref_check.py
 
       - name: Run unittests
         run: poetry run pytest --junitxml=pytest_results.xml
-      
 
 
       - name: Run behaviour tests (Windows)

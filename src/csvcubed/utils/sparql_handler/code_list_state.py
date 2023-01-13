@@ -2,14 +2,16 @@ from dataclasses import dataclass
 from functools import cached_property
 from itertools import groupby
 from pathlib import Path
-from typing import Dict, List, Any
+from typing import Any, Dict, List
 
 import rdflib
 
 from csvcubed.models.sparqlresults import CatalogMetadataResult
 from csvcubed.utils.iterables import group_by
 from csvcubed.utils.sparql_handler.csvw_state import CsvWState
-from csvcubed.utils.sparql_handler.sparqlquerymanager import select_csvw_catalog_metadata
+from csvcubed.utils.sparql_handler.sparqlquerymanager import (
+    select_csvw_catalog_metadata,
+)
 
 
 @dataclass
@@ -24,4 +26,3 @@ class CodeListState:
         Filter catalog metadata results so they represent the one associated with the csv_url. (dataset url = concept scheme url)
         """
         pass
-

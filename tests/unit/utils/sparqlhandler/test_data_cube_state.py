@@ -21,7 +21,7 @@ _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
 
 def test_get_column_definitions_for_csv():
     """
-    Ensures that the valid obs_val_col_title_about_url_for_csv property is returned for the given csv.
+    Ensures that the `ColumnDefinition`s with different property values can be correctly loaded from as CSV-W file.
     """
     csvw_metadata_json_path = (
         _test_case_base_dir

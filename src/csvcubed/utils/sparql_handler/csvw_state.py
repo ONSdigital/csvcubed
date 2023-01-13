@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from functools import cached_property
 from itertools import groupby
 from pathlib import Path
-from typing import Dict, List, Any
+from typing import Any, Dict, List
 
 import rdflib
 
@@ -39,13 +39,10 @@ class CsvWState:
         """
         TODO: Get **just** the catalog metadata defined in the primary graph
         """
-        primary_catalog_metadata: CatalogMetadataResult = CatalogMetadataResult
-        primary_graph_uri_str = "file:///" + str(self.primary_graph_uri)[1:]
-        # change ^ to use removeprefix
-        all_catalog_metadata = self.catalog_metadata
-        for graph in all_catalog_metadata:
-            if graph.graph_uri == primary_graph_uri_str:
-                primary_catalog_metadata = graph
-                return primary_catalog_metadata
+        for catalog_metadata_result in self.catalog_metadata:
+            if catalog_metadata_result.graph_uri == self.primary_graph_uri:
+                return catalog_metadata_result
 
-        raise KeyError
+        raise KeyError(
+            f"Could not find catalog metadata in primary graph '{self.primary_graph_uri}'."
+        )

@@ -38,7 +38,7 @@ from csvcubed.models.sparqlresults import (
     QubeComponentsResult,
     TableSchemaPropertiesResult,
     UnitResult,
-    map_catalog_metadata_result,
+    map_catalog_metadata_results,
     map_codelist_cols_by_csv_url_result,
     map_codelists_sparql_result,
     map_cols_with_supress_output_true_sparql_result,
@@ -170,7 +170,9 @@ def ask_is_csvw_qb_dataset(rdf_graph: rdflib.Graph) -> bool:
     )
 
 
-def select_csvw_catalog_metadata(rdf_graph: rdflib.Graph) -> List[CatalogMetadataResult]:
+def select_csvw_catalog_metadata(
+    rdf_graph: rdflib.Graph,
+) -> List[CatalogMetadataResult]:
     """
     Queries catalog metadata such as title, label, issued date/time, modified data/time, etc.
 
@@ -190,8 +192,8 @@ def select_csvw_catalog_metadata(rdf_graph: rdflib.Graph) -> List[CatalogMetadat
     #         num_of_records=len(results),
     #     )
 
-    #return map_catalog_metadata_result(results[0])
-    return map_catalog_metadata_result(results)
+    # return map_catalog_metadata_result(results[0])
+    return map_catalog_metadata_results(results)
 
 
 def select_csvw_dsd_dataset_label_and_dsd_def_uri(

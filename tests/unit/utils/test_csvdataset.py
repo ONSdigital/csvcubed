@@ -9,10 +9,7 @@ from csvcubed.models.csvcubedexception import (
     InvalidObservationColumnTitle,
     InvalidUnitColumnDefinition,
 )
-from csvcubed.models.sparqlresults import (
-    ColumnDefinition,
-    QubeComponentResult,
-)
+from csvcubed.models.sparqlresults import ColumnDefinition, QubeComponentResult
 from csvcubed.utils.csvdataset import (
     _create_measure_col_in_melted_data_set_for_pivoted_shape,
     _create_unit_col_in_melted_data_set_for_pivoted_shape,

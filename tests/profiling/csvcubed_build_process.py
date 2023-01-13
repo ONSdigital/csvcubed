@@ -1,8 +1,10 @@
 # This script will run the build command and generate a csvw file, while monitoring CPU and Ram usage across the application.
-from tempfile import TemporaryDirectory
 from pathlib import Path
-from memory_profiler import profile
+from tempfile import TemporaryDirectory
+
 from csvcubeddevtools.helpers.file import get_test_cases_dir
+from memory_profiler import profile
+
 from tests.stress.buildpreprocess import generate_maximally_complex_csv
 
 
