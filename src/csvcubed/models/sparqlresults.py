@@ -103,17 +103,6 @@ class CubeTableIdentifiers(DataClassBase):
 
 
 @dataclass
-class ObsValDsdComponentResult(DataClassBase):
-    """
-    Model to represent a observation value result.
-    """
-
-    csv_column_property_url: Optional[str]
-    observation_value_column_titles: Optional[str]
-    dsd_uri: str
-
-
-@dataclass
 class ColsWithSuppressOutputTrueResult:
     """
     Model to represent select cols where the suppress output is true sparql query result.
@@ -461,23 +450,6 @@ def _map_qube_component_sparql_result(
         used_by_observed_value_columns=[],
     )
     return result
-
-
-def _map_obs_val_for_dsd_component_properties_results(
-    sparql_results: List[ResultRow],
-) -> List[ObsValDsdComponentResult]:
-    def map_row(row_result: Dict[str, Any]) -> ObsValDsdComponentResult:
-        return ObsValDsdComponentResult(
-            csv_column_property_url=none_or_map(
-                row_result.get("csvColumnPropertyUrl"), str
-            ),
-            observation_value_column_titles=none_or_map(
-                row_result.get("observationValueColumnTitles"), str
-            ),
-            dsd_uri=str(row_result["dsd_uri"]),
-        )
-
-    return [map_row(row.asdict()) for row in sparql_results]
 
 
 def map_qube_components_sparql_result(

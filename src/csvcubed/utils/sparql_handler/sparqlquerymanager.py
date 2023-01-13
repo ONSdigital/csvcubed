@@ -76,10 +76,6 @@ class SPARQLQueryName(Enum):
 
     SELECT_DSD_QUBE_COMPONENTS = "select_dsd_qube_components"
 
-    SELECT_OBS_VAL_FOR_DSD_COMPONENT_PROPERTIES = (
-        "select_obs_val_for_dsd_component_properties"
-    )
-
     SELECT_COLS_W_SUPPRESS_OUTPUT = "select_cols_w_suppress_output"
 
     SELECT_CODELISTS_AND_COLS = "select_codelists_and_cols"
