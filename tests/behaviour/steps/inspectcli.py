@@ -134,9 +134,14 @@ def step_impl(context):
 @When("the Printables for code list are generated")
 def step_impl(context):
     code_list_state = CodeListState(context.csvw_metadata_rdf_graph)
+    csvw_state = CsvWState(
+        context.csvw_metadata_rdf_graph,
+        path_to_file_uri_for_rdflib(context.csvw_metadata_json_path),
+    )
     metadata_printer = MetadataPrinter(
         None,
         code_list_state,
+        csvw_state,
         context.csvw_type,
         context.csvw_metadata_rdf_graph,
         context.csvw_metadata_json_path,

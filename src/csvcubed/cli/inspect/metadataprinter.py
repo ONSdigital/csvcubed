@@ -71,6 +71,7 @@ class MetadataPrinter:
     data_cube_state: Optional[DataCubeState]
     code_list_state: Optional[CodeListState]
     csvw_state: Optional[CsvWState]
+    # Note - Should this ^ be optional?
     csvw_type: CSVWType
     csvw_metadata_rdf_graph: rdflib.ConjunctiveGraph
     csvw_metadata_json_path: Path
