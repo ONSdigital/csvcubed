@@ -81,21 +81,14 @@ def step_impl(context):
 
 @When("the Printables for data cube are generated")
 def step_impl(context):
-    data_cube_state = DataCubeState(
-        context.csvw_metadata_rdf_graph, context.csvw_metadata_json_path
-    )
     csvw_state = CsvWState(
         context.csvw_metadata_rdf_graph,
         path_to_file_uri_for_rdflib(context.csvw_metadata_json_path),
-    )
-    metadata_printer = MetadataPrinter(
-        data_cube_state,
-        None,
-        csvw_state,
-        context.csvw_type,
-        context.csvw_metadata_rdf_graph,
         context.csvw_metadata_json_path,
     )
+    data_cube_state = DataCubeState(csvw_state)
+
+    metadata_printer = MetadataPrinter(data_cube_state)
     # TODO: Remove below once all the tests are updated to not match strings
     context.type_printable = metadata_printer.type_info_printable
     context.catalog_metadata_printable = metadata_printer.catalog_metadata_printable
@@ -133,19 +126,14 @@ def step_impl(context):
 
 @When("the Printables for code list are generated")
 def step_impl(context):
-    code_list_state = CodeListState(context.csvw_metadata_rdf_graph)
     csvw_state = CsvWState(
         context.csvw_metadata_rdf_graph,
         path_to_file_uri_for_rdflib(context.csvw_metadata_json_path),
-    )
-    metadata_printer = MetadataPrinter(
-        None,
-        code_list_state,
-        csvw_state,
-        context.csvw_type,
-        context.csvw_metadata_rdf_graph,
         context.csvw_metadata_json_path,
     )
+    code_list_state = CodeListState(csvw_state)
+
+    metadata_printer = MetadataPrinter(code_list_state)
     context.type_printable = metadata_printer.type_info_printable
     context.catalog_metadata_printable = metadata_printer.catalog_metadata_printable
     context.dataset_observations_info_printable = (

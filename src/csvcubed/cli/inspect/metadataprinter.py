@@ -6,8 +6,9 @@ Provides functionality for validating and detecting input metadata.json file.
 """
 
 from dataclasses import dataclass, field
+from functools import cached_property
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Union
 from urllib.parse import urljoin
 
 import rdflib
@@ -68,13 +69,7 @@ class MetadataPrinter:
     This class produces the printables necessary for producing outputs to the CLI.
     """
 
-    data_cube_state: Optional[DataCubeState]
-    code_list_state: Optional[CodeListState]
-    csvw_state: Optional[CsvWState]
-    # Note - Should this ^ be optional?
-    csvw_type: CSVWType
-    csvw_metadata_rdf_graph: rdflib.ConjunctiveGraph
-    csvw_metadata_json_path: Path
+    state: Union[DataCubeState, CodeListState]
 
     csvw_type_str: str = field(init=False)
     primary_csv_url: str = field(init=False)
@@ -93,6 +88,15 @@ class MetadataPrinter:
     )
     result_code_list_cols: CodeListColsByDatasetUrlResult = field(init=False)
     result_concepts_hierachy_info: CodelistHierarchyInfoResult = field(init=False)
+
+    @cached_property
+    def csvw_type(self) -> CSVWType:
+        if isinstance(self.state, DataCubeState):
+            return CSVWType.QbDataSet
+        elif isinstance(self.state, CodeListState):
+            return CSVWType.CodeList
+        else:
+            return CSVWType.Other
 
     @staticmethod
     def get_csvw_type_str(csvw_type: CSVWType) -> str:
@@ -142,27 +146,26 @@ class MetadataPrinter:
 
         Member of :class:`./MetadataPrinter`.
         """
-        self.csvw_type_str = self.get_csvw_type_str(self.csvw_type)
-        # TODO: Need to call get_primary_catalog_metadata on the CsvWState class here.
-        self.result_catalog_metadata = self.csvw_state.get_primary_catalog_metadata()
-        # self.result_catalog_metadata = select_csvw_catalog_metadata(
-        #    self.csvw_metadata_rdf_graph
-        # )
+        csvw_state = self.state.csvw_state
+        csvw_type = self.csvw_type()
+
+        self.csvw_type_str = self.get_csvw_type_str(csvw_type)
+        self.result_catalog_metadata = csvw_state.get_primary_catalog_metadata()
         self.primary_csv_url = self.get_primary_csv_url(
-            self.csvw_metadata_rdf_graph,
-            self.csvw_type,
+            csvw_state.csvw_json_path,
+            csvw_type,
             to_absolute_rdflib_file_path(
-                self.result_catalog_metadata.dataset_uri, self.csvw_metadata_json_path
+                self.result_catalog_metadata.dataset_uri, csvw_state.csvw_json_path
             ),
         )
         self.dataset = load_csv_to_dataframe(
-            self.csvw_metadata_json_path, Path(self.primary_csv_url)
+            csvw_state.csvw_json_path, Path(self.primary_csv_url)
         )
         self.result_dataset_observations_info = get_dataset_observations_info(
             self.dataset,
-            self.csvw_type,
-            self.data_cube_state.get_shape_for_csv(self.primary_csv_url)
-            if self.csvw_type == CSVWType.QbDataSet and self.data_cube_state is not None
+            csvw_type,
+            self.state.get_shape_for_csv(self.primary_csv_url)
+            if isinstance(self.state, DataCubeState)
             else None,
         )
 
@@ -172,21 +175,23 @@ class MetadataPrinter:
 
         Member of :class:`./MetadataPrinter`.
         """
-        assert self.data_cube_state is not None  # Make pyright happier
+        assert isinstance(self.state, DataCubeState)  # Make pyright happier
+
+        csvw_state = self.state.csvw_state
 
         self.result_dataset_label_dsd_uri = (
-            select_csvw_dsd_dataset_label_and_dsd_def_uri(self.csvw_metadata_rdf_graph)
+            select_csvw_dsd_dataset_label_and_dsd_def_uri(csvw_state.rdf_graph)
         )
-        self.result_qube_components = (
-            self.data_cube_state.get_dsd_qube_components_for_csv(self.primary_csv_url)
+        self.result_qube_components = self.state.get_dsd_qube_components_for_csv(
+            self.primary_csv_url
         )
         self.result_cols_with_suppress_output_true = (
-            select_cols_where_suppress_output_is_true(self.csvw_metadata_rdf_graph)
+            select_cols_where_suppress_output_is_true(csvw_state.rdf_graph)
         )
         self.result_code_lists = select_dsd_code_list_and_cols(
-            self.csvw_metadata_rdf_graph,
+            csvw_state.rdf_graph,
             self.result_dataset_label_dsd_uri.dsd_uri,
-            self.csvw_metadata_json_path,
+            csvw_state.csvw_json_path,
         )
 
         (
@@ -194,11 +199,11 @@ class MetadataPrinter:
             measure_col,
             unit_col,
         ) = transform_dataset_to_canonical_shape(
-            self.data_cube_state,
+            self.state,
             self.dataset,
             self.result_qube_components.qube_components,
             self.primary_csv_url,
-            self.csvw_metadata_json_path,
+            csvw_state.csvw_json_path,
         )
         self.result_dataset_value_counts = get_dataset_val_counts_info(
             canonical_shape_dataset, measure_col, unit_col
@@ -210,12 +215,13 @@ class MetadataPrinter:
 
         Member of :class:`./MetadataPrinter`.
         """
+        csvw_state = self.state.csvw_state
         self.result_code_list_cols = select_codelist_cols_by_csv_url(
-            self.csvw_metadata_rdf_graph, self.primary_csv_url
+            csvw_state.rdf_graph, self.primary_csv_url
         )
         # Retrieving the primary key column names of the code list to identify the unique identifier
         result_primary_key_col_names_by_csv_url: PrimaryKeyColNamesByDatasetUrlResult = select_primary_key_col_names_by_csv_url(
-            self.csvw_metadata_rdf_graph, self.primary_csv_url
+            csvw_state.rdf_graph, self.primary_csv_url
         )
         primary_key_col_names = (
             result_primary_key_col_names_by_csv_url.primary_key_col_names

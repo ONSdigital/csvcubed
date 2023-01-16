@@ -6,9 +6,12 @@ from typing import Any, Dict, List
 
 import rdflib
 
+from csvcubed.models.csvwtype import CSVWType
 from csvcubed.models.sparqlresults import CatalogMetadataResult
 from csvcubed.utils.iterables import group_by
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
+    ask_is_csvw_code_list,
+    ask_is_csvw_qb_dataset,
     select_csvw_catalog_metadata,
 )
 
@@ -23,8 +26,9 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
 
 @dataclass
 class CsvWState:
-    rdf_graph: rdflib.Graph
+    rdf_graph: rdflib.ConjunctiveGraph
     primary_graph_uri: str
+    csvw_json_path: Path
 
     @cached_property
     def catalog_metadata(self) -> List[CatalogMetadataResult]:
@@ -34,6 +38,20 @@ class CsvWState:
         """
         results = select_csvw_catalog_metadata(self.rdf_graph)
         return results
+
+    @cached_property
+    def csvw_type(self) -> CSVWType:
+        # Need to get the primary graph
+        # We currently have the primary graph uri + rdf_graph
+        primary_graph = self.rdf_graph.get_context(self.primary_graph_uri)
+        if ask_is_csvw_code_list(primary_graph):
+            return CSVWType.CodeList
+        elif ask_is_csvw_qb_dataset(primary_graph):
+            return CSVWType.QbDataSet
+        else:
+            raise TypeError(
+                "The input metadata is invalid as it is not a data cube or a code list."
+            )
 
     def get_primary_catalog_metadata(self) -> CatalogMetadataResult:
         """

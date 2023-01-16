@@ -85,28 +85,16 @@ def _generate_printables(
     metadata_printer: MetadataPrinter
 
     primary_graph_identifier = path_to_file_uri_for_rdflib(csvw_metadata_json_path)
-    csvw_state = CsvWState(csvw_metadata_rdf_graph, primary_graph_identifier)
+    csvw_state = CsvWState(
+        csvw_metadata_rdf_graph, primary_graph_identifier, csvw_metadata_json_path
+    )
 
     if csvw_type == CSVWType.QbDataSet:
-        data_cube_state = DataCubeState(
-            csvw_metadata_rdf_graph, csvw_metadata_json_path
-        )
-        metadata_printer = MetadataPrinter(
-            data_cube_state=data_cube_state,
-            code_list_state=None,
-            csvw_type=csvw_type,
-            csvw_metadata_rdf_graph=csvw_metadata_rdf_graph,
-            csvw_metadata_json_path=csvw_metadata_json_path,
-        )
+        data_cube_state = DataCubeState(csvw_state)
+        metadata_printer = MetadataPrinter(data_cube_state)
     else:
         code_list_state = CodeListState(csvw_state)
-        metadata_printer = MetadataPrinter(
-            data_cube_state=None,
-            code_list_state=code_list_state,
-            csvw_type=csvw_type,
-            csvw_metadata_rdf_graph=csvw_metadata_rdf_graph,
-            csvw_metadata_json_path=csvw_metadata_json_path,
-        )
+        metadata_printer = MetadataPrinter(code_list_state)
 
     type_info_printable: str = metadata_printer.type_info_printable
     catalog_metadata_printable: str = metadata_printer.catalog_metadata_printable

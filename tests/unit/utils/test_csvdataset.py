@@ -447,8 +447,7 @@ def test_transform_to_canonical_shape_for_standard_shape_data_set():
         / "energy-trends-uk-total-energy.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    data_cube_state = DataCubeState(csvw_metadata_rdf_graph, csvw_metadata_json_path)
+    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
 
     (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
     (
@@ -480,8 +479,7 @@ def test_transform_to_canonical_shape_for_pivoted_single_measure_shape_data_set(
         / "qb-id-10004.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    data_cube_state = DataCubeState(csvw_metadata_rdf_graph, csvw_metadata_json_path)
+    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
 
     (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
 
@@ -525,8 +523,7 @@ def test_transform_to_canonical_shape_for_pivoted_multi_measure_shape_data_set()
         / "qb-id-10003.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    data_cube_state = DataCubeState(csvw_metadata_rdf_graph, csvw_metadata_json_path)
+    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
 
     (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
 
@@ -669,9 +666,7 @@ def test_create_unit_col_in_melted_data_set_for_pivoted_shape():
         / "qb-id-10003.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-
-    data_cube_state = DataCubeState(csvw_metadata_rdf_graph, csvw_metadata_json_path)
+    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
 
     measure_uris = {
         c.property for c in _measure_components_for_multi_measure_pivoted_shape
@@ -722,9 +717,7 @@ def test_create_unit_col_in_melted_data_set_for_pivoted_shape_should_throw_inval
         / "qb-id-10003.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-
-    data_cube_state = DataCubeState(csvw_metadata_rdf_graph, csvw_metadata_json_path)
+    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
 
     measure_uris = {
         c.property for c in _measure_components_for_multi_measure_pivoted_shape
@@ -773,9 +766,7 @@ def test_create_unit_col_in_melted_data_set_for_pivoted_shape_should_throw_inval
         / "qb-id-10003.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-
-    data_cube_state = DataCubeState(csvw_metadata_rdf_graph, csvw_metadata_json_path)
+    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
     column_definitions = data_cube_state.get_column_definitions_for_csv(
         "qb-id-10003.csv"
     )
@@ -811,7 +802,7 @@ def test_unit_not_defined_locally():
         / "unit_not_locally_defined.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    data_cube_state = DataCubeState(csvw_rdf_manager.rdf_graph, csvw_metadata_json_path)
+    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
 
     (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
 

@@ -47,7 +47,9 @@ class CsvwRdfManager:
         primary_graph_identifier = path_to_file_uri_for_rdflib(
             self.csvw_metadata_file_path
         )
-        return CsvWState(self.rdf_graph, primary_graph_identifier)
+        return CsvWState(
+            self.rdf_graph, primary_graph_identifier, self.csvw_metadata_file_path
+        )
 
     def __post_init__(self):
         self.rdf_graph = self._load_json_ld_to_rdflib_graph()

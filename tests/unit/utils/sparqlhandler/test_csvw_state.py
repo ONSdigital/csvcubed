@@ -1,3 +1,4 @@
+from csvcubed.models.csvwtype import CSVWType
 from csvcubed.utils.sparql_handler.csvw_state import CsvWState
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.utils.tableschema import CsvwRdfManager
@@ -35,9 +36,7 @@ def test_get_primary_catalog_metadata():
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     primary_graph_identifier = path_to_file_uri_for_rdflib(csvw_metadata_json_path)
 
-    csvw_state = CsvWState(csvw_rdf_manager.rdf_graph, primary_graph_identifier)
-
-    the_thing = csvw_state.get_primary_catalog_metadata()
+    the_thing = csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
 
     # assert the_thing.graph_uri == "file:///workspaces/csvcubed/tests/test-cases/cli/inspect/pivoted-single-measure-dataset/qb-id-10004.csv-metadata.json"
     assert the_thing.graph_uri == primary_graph_identifier
@@ -63,3 +62,26 @@ def test_get_primary_catalog_metadata():
     #     comment='None',
     #     description='None'
     # )
+
+
+def test_detect_csvw_type_qb_dataset():
+    """
+    1 []) Using the primary graph the cached property is called by the API function
+
+    2 []) The cached property then detertines the type of csvw (primary graph) by if/elif-ing using the ask_is... sparql queries
+
+    3 []) The API function returns the result (boolean)
+
+    4 []) *** We could also do this by having the logic take place in the API function instead of the cached property ***
+            Going with one cached property function because then the logic will not have to be repeated every time
+            the API fuction is called - not sure if the performance gain here is so negligible this is correct
+    """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-single-measure-dataset"
+        / "qb-id-10004.csv-metadata.json"
+    )
+    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+
+    csvw_type = csvw_rdf_manager.csvw_state.get_csvw_type()
+    assert csvw_type == CSVWType.QbDataSet
