@@ -22,7 +22,9 @@ from csvcubed.models.sparqlresults import (
 from csvcubed.utils.iterables import first
 from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.sparql_handler.code_list_state import CodeListState
+from csvcubed.utils.sparql_handler.csvw_state import CsvWState
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
+from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.unit.cli.inspect.test_inspectdatasetmanager import (
     expected_dataframe_pivoted_multi_measure,
@@ -82,9 +84,14 @@ def step_impl(context):
     data_cube_state = DataCubeState(
         context.csvw_metadata_rdf_graph, context.csvw_metadata_json_path
     )
+    csvw_state = CsvWState(
+        context.csvw_metadata_rdf_graph,
+        path_to_file_uri_for_rdflib(context.csvw_metadata_json_path),
+    )
     metadata_printer = MetadataPrinter(
         data_cube_state,
         None,
+        csvw_state,
         context.csvw_type,
         context.csvw_metadata_rdf_graph,
         context.csvw_metadata_json_path,

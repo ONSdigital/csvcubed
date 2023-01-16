@@ -70,6 +70,7 @@ class MetadataPrinter:
 
     data_cube_state: Optional[DataCubeState]
     code_list_state: Optional[CodeListState]
+    csvw_state: Optional[CsvWState]
     csvw_type: CSVWType
     csvw_metadata_rdf_graph: rdflib.ConjunctiveGraph
     csvw_metadata_json_path: Path
@@ -142,9 +143,10 @@ class MetadataPrinter:
         """
         self.csvw_type_str = self.get_csvw_type_str(self.csvw_type)
         # TODO: Need to call get_primary_catalog_metadata on the CsvWState class here.
-        self.result_catalog_metadata = select_csvw_catalog_metadata(
-            self.csvw_metadata_rdf_graph
-        )
+        self.result_catalog_metadata = self.csvw_state.get_primary_catalog_metadata()
+        # self.result_catalog_metadata = select_csvw_catalog_metadata(
+        #    self.csvw_metadata_rdf_graph
+        # )
         self.primary_csv_url = self.get_primary_csv_url(
             self.csvw_metadata_rdf_graph,
             self.csvw_type,

@@ -163,11 +163,15 @@ def test_select_csvw_catalog_metadata_for_dataset():
     """
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
+    # csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
-    result: CatalogMetadataResult = select_csvw_catalog_metadata(
-        csvw_metadata_rdf_graph
-    )
+    result = csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
+
+    # data_set_uri = primary_catalog_metadata.dataset_uri
+
+    # result: CatalogMetadataResult = select_csvw_catalog_metadata(
+    #    csvw_metadata_rdf_graph
+    # )
 
     assert result.dataset_uri == "alcohol-bulletin.csv#dataset"
     assert result.title == "Alcohol Bulletin"
@@ -217,11 +221,13 @@ def test_select_csvw_catalog_metadata_for_codelist():
     """
     csvw_metadata_json_path = _test_case_base_dir / "codelist.csv-metadata.json"
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
+    # csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
-    result: CatalogMetadataResult = select_csvw_catalog_metadata(
-        csvw_metadata_rdf_graph
-    )
+    result = csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
+
+    # result: CatalogMetadataResult = select_csvw_catalog_metadata(
+    #    csvw_metadata_rdf_graph
+    # )
 
     assert result.title == "Alcohol Content"
     assert result.label == "Alcohol Content"
@@ -361,7 +367,11 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
     result: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
         csvw_metadata_rdf_graph
     )
-    data_set_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
+    primary_catalog_metadata = (
+        csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
+    )
+
+    data_set_uri = primary_catalog_metadata.dataset_uri
     data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
     csv_url = select_qb_csv_url(csvw_metadata_rdf_graph, data_set_uri).csv_url
 
@@ -474,7 +484,11 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
     result: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
         csvw_metadata_rdf_graph
     )
-    data_set_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
+    primary_catalog_metadata = (
+        csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
+    )
+
+    data_set_uri = primary_catalog_metadata.dataset_uri
     data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
     csv_url = select_qb_csv_url(csvw_metadata_rdf_graph, data_set_uri).csv_url
 
@@ -919,7 +933,7 @@ def test_rdf_load_url_dependency() -> None:
     graph.get_context("Dynamic input").parse(
         data="""
         @prefix void: <http://rdfs.org/ns/void#>.
-    
+
         <http://example.com/dependency> a void:Dataset;
              void:dataDump <https://raw.githubusercontent.com/GSS-Cogs/csvcubed/dc1b8df2cd306346e17778cb951417935c91e78b/tests/test-cases/cli/inspect/dependencies/transitive.1.json>;
              void:uriSpace "http://example.com/some-uri-prefix".
