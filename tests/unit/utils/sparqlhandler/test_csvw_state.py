@@ -65,17 +65,7 @@ def test_get_primary_catalog_metadata():
 
 
 def test_detect_csvw_type_qb_dataset():
-    """
-    1 []) Using the primary graph the cached property is called by the API function
-
-    2 []) The cached property then detertines the type of csvw (primary graph) by if/elif-ing using the ask_is... sparql queries
-
-    3 []) The API function returns the result (boolean)
-
-    4 []) *** We could also do this by having the logic take place in the API function instead of the cached property ***
-            Going with one cached property function because then the logic will not have to be repeated every time
-            the API fuction is called - not sure if the performance gain here is so negligible this is correct
-    """
+    """ """
     csvw_metadata_json_path = (
         _test_case_base_dir
         / "pivoted-single-measure-dataset"
@@ -83,5 +73,18 @@ def test_detect_csvw_type_qb_dataset():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
 
-    csvw_type = csvw_rdf_manager.csvw_state.get_csvw_type()
+    csvw_type = csvw_rdf_manager.csvw_state.csvw_type
     assert csvw_type == CSVWType.QbDataSet
+
+
+def test_detect_csvw_type_code_list():
+    """ """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-single-measure-dataset"
+        / "some-dimension.csv-metadata.json"
+    )
+    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+
+    csvw_type = csvw_rdf_manager.csvw_state.csvw_type
+    assert csvw_type == CSVWType.CodeList
