@@ -220,7 +220,7 @@ def select_data_set_dsd_and_csv_url(
     rdf_graph: rdflib.ConjunctiveGraph,
 ) -> List[CubeTableIdentifiers]:
     """
-    TODO: Add description
+    Selects the dataset's DSD and CSV URL. Returns a list of cube table identifiers containing the results.
     """
     results: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryName.SELECT_DATA_SET_DSD_CSV_URL),

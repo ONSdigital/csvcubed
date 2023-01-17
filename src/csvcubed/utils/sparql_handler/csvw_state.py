@@ -33,8 +33,8 @@ class CsvWState:
     @cached_property
     def catalog_metadata(self) -> List[CatalogMetadataResult]:
         """
-        TODO: Need to refactor select_csvw_catalog_metadata so it now supports returning a list of results
-          where each result has the graph_uri that the dcat:Dataset was defined in with it.
+        Returns a list of catalog metadata results such as title, label, issue/modification date and time etc.
+        This supports each result also having the graph_uri that the dcat:Dataset was defined in with it.
         """
         results = select_csvw_catalog_metadata(self.rdf_graph)
         return results
@@ -55,7 +55,7 @@ class CsvWState:
 
     def get_primary_catalog_metadata(self) -> CatalogMetadataResult:
         """
-        TODO: Get **just** the catalog metadata defined in the primary graph
+        Retrieves the catalog metadata that is specifically only defined in the primary graph.
         """
         for catalog_metadata_result in self.catalog_metadata:
             if catalog_metadata_result.graph_uri == self.primary_graph_uri:
