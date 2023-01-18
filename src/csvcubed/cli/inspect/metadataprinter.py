@@ -71,7 +71,6 @@ class MetadataPrinter:
 
     state: Union[DataCubeState, CodeListState]
 
-    # csvw_type: CSVWType = state
     csvw_type_str: str = field(init=False)
     primary_csv_url: str = field(init=False)
     dataset: DataFrame = field(init=False)
@@ -89,10 +88,6 @@ class MetadataPrinter:
     )
     result_code_list_cols: CodeListColsByDatasetUrlResult = field(init=False)
     result_concepts_hierachy_info: CodelistHierarchyInfoResult = field(init=False)
-
-    def get_csvw_type(self) -> CSVWType:
-        csvw_type = self.state.csvw_state.csvw_type
-        return csvw_type
 
     @staticmethod
     def get_csvw_type_str(csvw_type: CSVWType) -> str:
@@ -143,12 +138,11 @@ class MetadataPrinter:
         Member of :class:`./MetadataPrinter`.
         """
         csvw_state = self.state.csvw_state
-        csvw_type = self.get_csvw_type()
+        csvw_type = csvw_state.csvw_type
 
         self.csvw_type_str = self.get_csvw_type_str(csvw_type)
         self.result_catalog_metadata = csvw_state.get_primary_catalog_metadata()
         self.primary_csv_url = self.get_primary_csv_url(
-            # csvw_state.csvw_json_path,
             csvw_state.rdf_graph,
             csvw_type,
             to_absolute_rdflib_file_path(
