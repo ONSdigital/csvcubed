@@ -16,8 +16,8 @@ jobs:
     # gsscogs/csvcubed-windows-build:latest
     # runs-on: ${{ inputs.os }}
     runs-on: windows-latest
-    container:
-      image: gsscogs/csvcubed-windows-build:latest
+    # container:
+    #   image: gsscogs/csvcubed-windows-build:latest
 
     steps:
       # - uses: actions/checkout@v3
