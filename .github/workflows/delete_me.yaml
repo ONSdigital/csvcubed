@@ -14,12 +14,16 @@ jobs:
 
       - uses: actions/cache@v3
         with:
-          path: C:\ProgramData\Docker\image
+          path: |
+            C:\ProgramData\Docker\image
+            C:\ProgramData\Docker\containers
+            C:\ProgramData\Docker\content
           key: docker-containers
 
       - name: Run a docker container
         run: |
           docker pull gsscogs/csvcubed-windows-build:latest
+          tree -L 5 C:\ProgramData\Docker
         shell: pwsh
 
           # Write-Output "Finished pulling container"
