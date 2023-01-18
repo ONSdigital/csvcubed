@@ -1,0 +1,72 @@
+name: Test csvcubed on pull request
+on:
+  pull_request:
+
+jobs:
+  test_in_windows:
+    # gsscogs/csvcubed-windows-build:latest
+    # runs-on: ${{ inputs.os }}
+    runs-on: windows-latest
+    steps:
+      # - uses: actions/checkout@v3
+      #   with:
+      #     fetch-depth: 0
+
+      - uses: actions/cache@v3
+        with:
+          path: C:\ProgramData\Docker
+          key: docker-containers
+
+      - name: Run a docker container
+        run: |
+          docker pull gsscogs/csvcubed-windows-build:latest
+        shell: pwsh
+
+          # Write-Output "Finished pulling container"
+          # $containerId = docker run --name windows-build-container -d gsscogs/csvcubed-windows-build:latest
+          # Write-Output "Started cnontainer: $containerId"
+          # Write-Output "Trying to run ython"
+          # docker exec windows-build-container python --version
+          # Write-Output "Stopping container"
+          # docker stop windows-build-container
+
+      # - uses: actions/cache@v3
+      #   with:
+      #     path: |
+      #       ~/.cache/pypoetry/virtualenvs
+      #       C:\Users\runneradmin\AppData\Local\pypoetry\Cache\virtualenvs
+      #     key: ${{ inputs.os }}-${{ inputs.python-version }}-poetry-${{ hashFiles('poetry.lock') }}
+
+      # - name: Install python packages
+      #   run: poetry install
+
+      # - name: Run pyright
+      #   run: poetry run pyright . --lib
+
+      # - name: Ensure ValidatedModel properties have validations provided
+      #   run: poetry run python tests/pref_improvement/pref_check.py
+
+      # - name: Run unittests
+      #   run: poetry run pytest --junitxml=pytest_results.xml
+
+      #   # TODO - update csv2rdfLocation and sparqlTestsDir
+      # - name: Run behaviour tests (Windows)
+      #   run: |
+      #     $csv2rdfLocation = "${{ steps.windows-install.outputs.CSV2RDF_LOCATION }}"
+      #     $sparqlTestsDir = "${{ steps.windows-install.outputs.SPARQL_TESTS_LOCATION }}"
+
+      #     $env:NO_DOCKER="true"; $env:CSV2RDF="$csv2rdfLocation"; $env:SPARQL_TESTS_DIR="$sparqlTestsDir"; poetry run behave tests/behaviour --tags=-skip --junit --format progress
+      #   shell: pwsh
+
+      # # - name: Run behaviour tests (Ubuntu)
+      # #   if: inputs.os == 'ubuntu-latest'
+      # #   run: poetry run behave tests/behaviour --tags=-skip --junit --format progress
+
+      # - name: Archive unit & behave test results from xml files
+      #   if: always()
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: ${{ inputs.os }}-python${{ inputs.python-version }} behave test results
+      #     path: |
+      #       pytest_results.xml
+      #       reports/*.xml
