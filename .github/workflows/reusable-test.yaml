@@ -43,11 +43,14 @@ jobs:
       - name: Run a docker container
         run: |
           docker pull gsscogs/csvcubed-windows-build:latest
+          Write-Output "Finished pulling container"
           $containerId = docker run --name windows-build-container -d gsscogs/csvcubed-windows-build:latest
+          Write-Output "Started cnontainer: $containerId"
+          Write-Output "Trying to run ython"
           docker exec windows-build-container python --version
+          Write-Output "Stopping container"
           docker stop windows-build-container
         shell: pwsh
-
 
       # - uses: actions/setup-node@v3
       #   with:
