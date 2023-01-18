@@ -19,6 +19,7 @@ jobs:
 
       - name: Run a docker container
         run: |
+          tree C:\ProgramData\Docker
           docker pull gsscogs/csvcubed-windows-build:latest
         shell: pwsh
 
