@@ -111,7 +111,7 @@ def step_impl(context):
     )
     # TODO: Remove above once all the tests are updated to not match strings
 
-    context.result_type_info = metadata_printer.csvw_type
+    context.result_type_info = metadata_printer.state.csvw_state.csvw_type
     context.result_catalog_metadata = metadata_printer.result_catalog_metadata
     context.result_qube_components = metadata_printer.result_qube_components
     context.result_dataset_observations_info = (

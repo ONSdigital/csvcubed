@@ -90,8 +90,9 @@ class MetadataPrinter:
     result_code_list_cols: CodeListColsByDatasetUrlResult = field(init=False)
     result_concepts_hierachy_info: CodelistHierarchyInfoResult = field(init=False)
 
-    def csvw_type(self) -> CSVWType:
-        return self.state.csvw_state.csvw_type
+    def get_csvw_type(self) -> CSVWType:
+        csvw_type = self.state.csvw_state.csvw_type
+        return csvw_type
 
     @staticmethod
     def get_csvw_type_str(csvw_type: CSVWType) -> str:
@@ -142,12 +143,13 @@ class MetadataPrinter:
         Member of :class:`./MetadataPrinter`.
         """
         csvw_state = self.state.csvw_state
-        csvw_type = self.csvw_type
+        csvw_type = self.get_csvw_type()
 
         self.csvw_type_str = self.get_csvw_type_str(csvw_type)
         self.result_catalog_metadata = csvw_state.get_primary_catalog_metadata()
         self.primary_csv_url = self.get_primary_csv_url(
-            csvw_state.csvw_json_path,
+            # csvw_state.csvw_json_path,
+            csvw_state.rdf_graph,
             csvw_type,
             to_absolute_rdflib_file_path(
                 self.result_catalog_metadata.dataset_uri, csvw_state.csvw_json_path
@@ -241,9 +243,9 @@ class MetadataPrinter:
 
     def __post_init__(self):
         self.generate_general_results()
-        if self.csvw_type == CSVWType.QbDataSet:
+        if self.state.csvw_state.csvw_type == CSVWType.QbDataSet:
             self.get_datacube_results()
-        elif self.csvw_type == CSVWType.CodeList:
+        elif self.state.csvw_state.csvw_type == CSVWType.CodeList:
             self.generate_codelist_results()
 
     @property
@@ -255,7 +257,7 @@ class MetadataPrinter:
 
         :return: `str` - user-friendly string which will be output to CLI.
         """
-        if self.csvw_type == CSVWType.QbDataSet:
+        if self.state.csvw_state.csvw_type == CSVWType.QbDataSet:
             return "- This file is a data cube."
         else:
             return "- This file is a code list."
