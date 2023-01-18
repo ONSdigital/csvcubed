@@ -14,7 +14,7 @@ jobs:
 
       - uses: actions/cache@v3
         with:
-          path: C:\ProgramData\Docker
+          path: C:\ProgramData\Docker\containers
           key: docker-containers
 
       - name: Run a docker container
