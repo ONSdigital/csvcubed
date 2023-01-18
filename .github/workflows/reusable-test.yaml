@@ -97,25 +97,25 @@ jobs:
             pytest_results.xml
             reports/*.xml
 
-  publish_test_results:
-    needs: [test_in_environments]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/download-artifact@v3
-        with:
-          name: ${{ inputs.os }}-python${{ inputs.python-version }} behave test results
+  # publish_test_results:
+  #   needs: [test_in_environments]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/download-artifact@v3
+  #       with:
+  #         name: ${{ inputs.os }}-python${{ inputs.python-version }} behave test results
 
-      - name: Remove broken characters from xml test files
-        # By removing broken characters from the xml unit/behave test files, we can then publish the tests results stored
-        # in those files in a user friendly way on github actions using 'EnricoMi/publish-unit-test-result-action@v1'.
-        if: always()
-        run: sed -i -e "s/[\\x0A\\x1B]//g" reports/TESTS-*.xml
+  #     - name: Remove broken characters from xml test files
+  #       # By removing broken characters from the xml unit/behave test files, we can then publish the tests results stored
+  #       # in those files in a user friendly way on github actions using 'EnricoMi/publish-unit-test-result-action@v1'.
+  #       if: always()
+  #       run: sed -i -e "s/[\\x0A\\x1B]//g" reports/TESTS-*.xml
 
-      - name: Publish Unit & Behave Test Results
-        if: always()
-        uses: EnricoMi/publish-unit-test-result-action@v2
-        with:
-          check_name: ${{ inputs.os }}-python${{ inputs.python-version }} test results
-          junit_files: |
-            reports/*.xml
-            pytest_results.xml
+  #     - name: Publish Unit & Behave Test Results
+  #       if: always()
+  #       uses: EnricoMi/publish-unit-test-result-action@v2
+  #       with:
+  #         check_name: ${{ inputs.os }}-python${{ inputs.python-version }} test results
+  #         junit_files: |
+  #           reports/*.xml
+  #           pytest_results.xml
