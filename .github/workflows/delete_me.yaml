@@ -14,16 +14,16 @@ jobs:
 
       - uses: actions/cache@v3
         with:
-          path: |
-            C:\ProgramData\Docker\image
-            C:\ProgramData\Docker\containers
-            C:\ProgramData\Docker\content
+          path: img.tar
           key: docker-containers
 
       - name: Run a docker container
         run: |
+          If (Test-Path -Path img.tar ) {
+            docker load -i img.tar
+          }
           docker pull gsscogs/csvcubed-windows-build:latest
-          tree -L 5 C:\ProgramData\Docker
+          docker save gsscogs/csvcubed-windows-build:latest -o img.tar
         shell: pwsh
 
           # Write-Output "Finished pulling container"
