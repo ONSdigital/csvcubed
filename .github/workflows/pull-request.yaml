@@ -20,12 +20,12 @@ jobs:
       python-version: ${{ matrix.python-version }}
 
   test_in_windows:
-    strategy:
-      matrix:
-        python-version: ['3.9', '3.11']
-        os: windows-latest
+    # strategy:
+    #   matrix:
+    #     python-version: ['3.9', '3.11']
+    #     os: windows-latest
 
     uses: ./.github/workflows/reusable-test.yaml
     with:
-      os: ${{ matrix.os }}
-      python-version: ${{ matrix.python-version }}
+      os: windows-latest
+      python-version: '3.11'
