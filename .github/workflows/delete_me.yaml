@@ -22,8 +22,12 @@ jobs:
           If (Test-Path -Path img.tar ) {
             docker load -i img.tar
           }
+
           docker pull gsscogs/csvcubed-windows-build:latest
-          docker save gsscogs/csvcubed-windows-build:latest -o img.tar
+
+          If (-Not (Test-Path -Path img.tar)) {
+            docker save gsscogs/csvcubed-windows-build:latest -o img.tar
+          }
         shell: pwsh
 
           # Write-Output "Finished pulling container"
