@@ -12,7 +12,7 @@ on:
 # TODO
 jobs:
   # test_in_environments:
-  if: inputs.os == 'windows-latest'
+  # if: inputs.os == 'windows-latest'
   test_in_windows:
     # gsscogs/csvcubed-windows-build:latest
     # runs-on: ${{ inputs.os }}
