@@ -43,7 +43,11 @@ jobs:
       - name: Run a docker container
         run: |
           docker pull gsscogs/csvcubed-windows-build:latest
-          docker run gsscogs/csvcubed-windows-build:latest python --version
+          $containerId = docker run --name windows-build-container -d gsscogs/csvcubed-windows-build:latest
+          docker exec windows-build-container python --version
+          docker stop windows-build-container
+        shell: pwsh
+
 
       # - uses: actions/setup-node@v3
       #   with:
