@@ -6,7 +6,6 @@ Provides functionality for validating and detecting input metadata.json file.
 """
 
 from dataclasses import dataclass, field
-from functools import cached_property
 from pathlib import Path
 from typing import List, Optional, Tuple, Union
 from urllib.parse import urljoin
@@ -47,14 +46,12 @@ from csvcubed.utils.skos.codelist import (
     get_codelist_col_title_from_col_name,
 )
 from csvcubed.utils.sparql_handler.code_list_state import CodeListState
-from csvcubed.utils.sparql_handler.csvw_state import CsvWState
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_codelist_cols_by_csv_url,
     select_codelist_csv_url,
     select_cols_where_suppress_output_is_true,
-    select_csvw_catalog_metadata,
     select_csvw_dsd_dataset_label_and_dsd_def_uri,
     select_dsd_code_list_and_cols,
     select_primary_key_col_names_by_csv_url,

@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from functools import cached_property
-from itertools import groupby
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -8,20 +7,11 @@ import rdflib
 
 from csvcubed.models.csvwtype import CSVWType
 from csvcubed.models.sparqlresults import CatalogMetadataResult
-from csvcubed.utils.iterables import group_by
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     ask_is_csvw_code_list,
     ask_is_csvw_qb_dataset,
     select_csvw_catalog_metadata,
 )
-
-# map_dsd_uri_to_csv_url = {
-#     i.dsd_uri: i.csv_url for i in self._cube_table_identifiers.values()
-# }
-# return groupby(
-#     result.qube_components, lambda c: map_dsd_uri_to_csv_url[c.dsd_uri]
-# )
-# return group_by(results, lambda r: r.dataset_uri)
 
 
 @dataclass
