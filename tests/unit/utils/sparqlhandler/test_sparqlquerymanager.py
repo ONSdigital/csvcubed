@@ -7,7 +7,6 @@ from rdflib import DCAT, RDF, RDFS, ConjunctiveGraph, Graph, Literal, URIRef
 
 from csvcubed.cli.inspect.metadataprinter import to_absolute_rdflib_file_path
 from csvcubed.models.sparqlresults import (
-    CatalogMetadataResult,
     CodeListColsByDatasetUrlResult,
     CodelistColumnResult,
     CodelistsResult,
@@ -162,15 +161,8 @@ def test_select_csvw_catalog_metadata_for_dataset():
     """
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    # csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
     result = csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
-
-    # data_set_uri = primary_catalog_metadata.dataset_uri
-
-    # result: CatalogMetadataResult = select_csvw_catalog_metadata(
-    #    csvw_metadata_rdf_graph
-    # )
 
     assert result.dataset_uri == "alcohol-bulletin.csv#dataset"
     assert result.title == "Alcohol Bulletin"
@@ -220,13 +212,8 @@ def test_select_csvw_catalog_metadata_for_codelist():
     """
     csvw_metadata_json_path = _test_case_base_dir / "codelist.csv-metadata.json"
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    # csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
     result = csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
-
-    # result: CatalogMetadataResult = select_csvw_catalog_metadata(
-    #    csvw_metadata_rdf_graph
-    # )
 
     assert result.title == "Alcohol Content"
     assert result.label == "Alcohol Content"

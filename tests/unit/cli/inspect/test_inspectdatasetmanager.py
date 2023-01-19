@@ -31,13 +31,10 @@ from csvcubed.utils.skos.codelist import (
     get_codelist_col_title_by_property_url,
     get_codelist_col_title_from_col_name,
 )
-from csvcubed.utils.sparql_handler.csvw_state import CsvWState
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
-from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_codelist_cols_by_csv_url,
     select_codelist_csv_url,
-    select_csvw_catalog_metadata,
     select_primary_key_col_names_by_csv_url,
     select_qb_csv_url,
 )

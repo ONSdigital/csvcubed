@@ -1,5 +1,4 @@
 from csvcubed.models.csvwtype import CSVWType
-from csvcubed.utils.sparql_handler.csvw_state import CsvWState
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.unit.test_baseunit import get_test_cases_dir

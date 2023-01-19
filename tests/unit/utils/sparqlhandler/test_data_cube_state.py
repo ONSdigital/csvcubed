@@ -5,10 +5,7 @@ from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import ColumnDefinition
 from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
-from csvcubed.utils.sparql_handler.sparqlquerymanager import (
-    select_csvw_catalog_metadata,
-    select_qb_csv_url,
-)
+from csvcubed.utils.sparql_handler.sparqlquerymanager import select_qb_csv_url
 from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.unit.test_baseunit import get_test_cases_dir
 from tests.unit.utils.sparqlhandler.test_sparqlquerymanager import (
@@ -164,8 +161,6 @@ def test_get_dsd_qube_components_for_csv():
         / "qb-id-10004.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    # csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    # data_cube_state = DataCubeState(csvw_metadata_rdf_graph, csvw_metadata_json_path)
     data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
     primary_catalog_metadata = (
         csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
