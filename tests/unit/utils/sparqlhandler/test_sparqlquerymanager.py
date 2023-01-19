@@ -38,7 +38,6 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_metadata_dependencies,
     select_qb_csv_url,
     select_table_schema_properties,
-    select_units,
 )
 from csvcubed.utils.tableschema import CsvwRdfManager, add_triples_for_file_dependencies
 from tests.unit.test_baseunit import get_test_cases_dir
