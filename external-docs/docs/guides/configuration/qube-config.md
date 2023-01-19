@@ -121,7 +121,7 @@ There are several configuration options available across column types except obs
 | `from_existing`  | The uri of the resource for reuse/extension (Optional)                                                                    | *none*                                                                           |
 | `definition_uri` | A uri of a resource to show how the column is created/managed (i.e. a uri of a PDF explaining a list of units) (Optional) | *none*                                                                           |
 
-The `from_existing` value when set provides the basis of linked data; it allows csvcubed to generate additional RDF-hints to allow users to discover how the `tidy_data.csv` links to other data semanticly.
+The `from_existing` value when set provides the basis of linked data; it allows csvcubed to generate additional RDF-hints to allow users to discover how the `tidy_data.csv` links to other data semantically.
 
 ## Dimension configuration
 
