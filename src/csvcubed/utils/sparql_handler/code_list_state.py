@@ -1,17 +1,6 @@
 from dataclasses import dataclass
-from functools import cached_property
-from itertools import groupby
-from pathlib import Path
-from typing import Any, Dict, List
 
-import rdflib
-
-from csvcubed.models.sparqlresults import CatalogMetadataResult
-from csvcubed.utils.iterables import group_by
 from csvcubed.utils.sparql_handler.csvw_state import CsvWState
-from csvcubed.utils.sparql_handler.sparqlquerymanager import (
-    select_csvw_catalog_metadata,
-)
 
 
 @dataclass

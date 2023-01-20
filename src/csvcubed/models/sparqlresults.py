@@ -37,6 +37,7 @@ class CatalogMetadataResult:
     dataset_uri: str
     """Data set here doesn't necessarily mean the qb:DataSet. It means eiither the qb:DataSet or the skos:ConceptScheme."""
     graph_uri: str
+    """URI representing the grapgh in which the Catalog Metadata was found."""
     title: str
     label: str
     issued: str

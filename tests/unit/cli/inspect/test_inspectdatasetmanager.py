@@ -267,11 +267,7 @@ def get_arguments_qb_dataset(
 
     dataset: DataFrame = load_csv_to_dataframe(csvw_state.csvw_json_path, Path(csv_url))
 
-    qube_components = data_cube_state.get_dsd_qube_components_for_csv(
-        csv_url
-    ).qube_components
-
-    return (dataset, qube_components, csv_url)
+    return (dataset, csv_url)
 
 
 def _get_arguments_skos_codelist(
@@ -536,7 +532,7 @@ def test_get_val_counts_info_multi_unit_multi_measure_dataset():
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
 
-    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
+    (dataset, csv_url) = get_arguments_qb_dataset(data_cube_state)
 
     (
         canonical_shape_dataset,
@@ -545,9 +541,7 @@ def test_get_val_counts_info_multi_unit_multi_measure_dataset():
     ) = transform_dataset_to_canonical_shape(
         data_cube_state,
         dataset,
-        qube_components,
         csv_url,
-        csvw_metadata_json_path,
     )
 
     result: DatasetObservationsByMeasureUnitInfoResult = get_dataset_val_counts_info(
@@ -582,7 +576,7 @@ def test_get_val_counts_info_multi_unit_single_measure_dataset():
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
 
-    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
+    (dataset, csv_url) = get_arguments_qb_dataset(data_cube_state)
 
     (
         canonical_shape_dataset,
@@ -591,9 +585,7 @@ def test_get_val_counts_info_multi_unit_single_measure_dataset():
     ) = transform_dataset_to_canonical_shape(
         data_cube_state,
         dataset,
-        qube_components,
         csv_url,
-        csvw_metadata_json_path,
     )
 
     result: DatasetObservationsByMeasureUnitInfoResult = get_dataset_val_counts_info(
@@ -628,7 +620,7 @@ def test_get_val_counts_info_single_unit_multi_measure_dataset():
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
 
-    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
+    (dataset, csv_url) = get_arguments_qb_dataset(data_cube_state)
 
     (
         canonical_shape_dataset,
@@ -637,9 +629,7 @@ def test_get_val_counts_info_single_unit_multi_measure_dataset():
     ) = transform_dataset_to_canonical_shape(
         data_cube_state,
         dataset,
-        qube_components,
         csv_url,
-        csvw_metadata_json_path,
     )
 
     result: DatasetObservationsByMeasureUnitInfoResult = get_dataset_val_counts_info(
@@ -674,7 +664,7 @@ def test_get_val_counts_info_single_unit_single_measure_dataset():
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
 
-    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
+    (dataset, csv_url) = get_arguments_qb_dataset(data_cube_state)
 
     (
         canonical_shape_dataset,
@@ -683,9 +673,7 @@ def test_get_val_counts_info_single_unit_single_measure_dataset():
     ) = transform_dataset_to_canonical_shape(
         data_cube_state,
         dataset,
-        qube_components,
         csv_url,
-        csvw_metadata_json_path,
     )
 
     result: DatasetObservationsByMeasureUnitInfoResult = get_dataset_val_counts_info(
@@ -720,7 +708,7 @@ def test_get_val_counts_info_pivoted_single_measure_dataset():
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
 
-    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
+    (dataset, csv_url) = get_arguments_qb_dataset(data_cube_state)
 
     (
         canonical_shape_dataset,
@@ -729,9 +717,7 @@ def test_get_val_counts_info_pivoted_single_measure_dataset():
     ) = transform_dataset_to_canonical_shape(
         data_cube_state,
         dataset,
-        qube_components,
         csv_url,
-        csvw_metadata_json_path,
     )
 
     result: DatasetObservationsByMeasureUnitInfoResult = get_dataset_val_counts_info(
@@ -765,7 +751,7 @@ def test_get_val_counts_info_pivoted_multi_measure_dataset():
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
 
-    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
+    (dataset, csv_url) = get_arguments_qb_dataset(data_cube_state)
 
     (
         canonical_shape_dataset,
@@ -774,9 +760,7 @@ def test_get_val_counts_info_pivoted_multi_measure_dataset():
     ) = transform_dataset_to_canonical_shape(
         data_cube_state,
         dataset,
-        qube_components,
         csv_url,
-        csvw_metadata_json_path,
     )
 
     result: DatasetObservationsByMeasureUnitInfoResult = get_dataset_val_counts_info(

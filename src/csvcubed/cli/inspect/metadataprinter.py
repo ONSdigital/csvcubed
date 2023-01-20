@@ -170,9 +170,9 @@ class MetadataPrinter:
         self.result_dataset_label_dsd_uri = (
             select_csvw_dsd_dataset_label_and_dsd_def_uri(csvw_state.rdf_graph)
         )
-        self.result_qube_components = self.state.get_dsd_qube_components_for_csv(
-            self.primary_csv_url
-        )
+        # self.result_qube_components = self.state.get_dsd_qube_components_for_csv(
+        #     self.primary_csv_url
+        # )
         self.result_cols_with_suppress_output_true = (
             select_cols_where_suppress_output_is_true(csvw_state.rdf_graph)
         )
@@ -189,9 +189,7 @@ class MetadataPrinter:
         ) = transform_dataset_to_canonical_shape(
             self.state,
             self.dataset,
-            self.result_qube_components.qube_components,
             self.primary_csv_url,
-            csvw_state.csvw_json_path,
         )
         self.result_dataset_value_counts = get_dataset_val_counts_info(
             canonical_shape_dataset, measure_col, unit_col

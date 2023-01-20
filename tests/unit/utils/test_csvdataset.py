@@ -449,7 +449,7 @@ def test_transform_to_canonical_shape_for_standard_shape_data_set():
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
 
-    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
+    (dataset, csv_url) = get_arguments_qb_dataset(data_cube_state)
     (
         canonical_shape_dataset,
         measure_col,
@@ -457,9 +457,7 @@ def test_transform_to_canonical_shape_for_standard_shape_data_set():
     ) = transform_dataset_to_canonical_shape(
         data_cube_state,
         dataset,
-        qube_components,
         csv_url,
-        csvw_metadata_json_path,
     )
 
     generated_dataset = canonical_shape_dataset.head(n=10)
@@ -481,7 +479,7 @@ def test_transform_to_canonical_shape_for_pivoted_single_measure_shape_data_set(
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
 
-    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
+    (dataset, csv_url) = get_arguments_qb_dataset(data_cube_state)
 
     (
         canonical_shape_dataset,
@@ -490,9 +488,7 @@ def test_transform_to_canonical_shape_for_pivoted_single_measure_shape_data_set(
     ) = transform_dataset_to_canonical_shape(
         data_cube_state,
         dataset,
-        qube_components,
         csv_url,
-        csvw_metadata_json_path,
     )
 
     assert "Measure" in measure_col
@@ -525,7 +521,7 @@ def test_transform_to_canonical_shape_for_pivoted_multi_measure_shape_data_set()
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
 
-    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
+    (dataset, csv_url) = get_arguments_qb_dataset(data_cube_state)
 
     (
         canonical_shape_dataset,
@@ -534,9 +530,7 @@ def test_transform_to_canonical_shape_for_pivoted_multi_measure_shape_data_set()
     ) = transform_dataset_to_canonical_shape(
         data_cube_state,
         dataset,
-        qube_components,
         csv_url,
-        csvw_metadata_json_path,
     )
 
     assert "Measure" in measure_col
@@ -804,18 +798,12 @@ def test_unit_not_defined_locally():
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
 
-    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
+    (dataset, csv_url) = get_arguments_qb_dataset(data_cube_state)
 
-    (
-        canonical_shape_dataset,
-        measure_col,
-        unit_col,
-    ) = transform_dataset_to_canonical_shape(
+    (canonical_shape_dataset, _, unit_col,) = transform_dataset_to_canonical_shape(
         data_cube_state,
         dataset,
-        qube_components,
         csv_url,
-        csvw_metadata_json_path,
     )
 
     unit_values = [

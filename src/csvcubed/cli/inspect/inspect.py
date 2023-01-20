@@ -55,7 +55,7 @@ def inspect(csvw_metadata_json_path: Path) -> None:
         val_counts_by_measure_unit_printable,
         codelist_hierarchy_info_printable,
     ) = _generate_printables(
-        csvw_type, csvw_metadata_rdf_graph, csvw_metadata_json_path
+        csvw_rdf_manager.csvw_state,
     )
 
     print(f"{linesep}{type_printable}")
@@ -71,9 +71,7 @@ def inspect(csvw_metadata_json_path: Path) -> None:
 
 
 def _generate_printables(
-    csvw_type: CSVWType,
-    csvw_metadata_rdf_graph: rdflib.ConjunctiveGraph,
-    csvw_metadata_json_path: Path,
+    csvw_state: CsvWState,
 ) -> Tuple[str, str, str, str, str, str, str]:
     """
     Generates printables of type, metadata, dsd, code list, head/tail and value count information.
@@ -84,10 +82,7 @@ def _generate_printables(
     """
     metadata_printer: MetadataPrinter
 
-    primary_graph_identifier = path_to_file_uri_for_rdflib(csvw_metadata_json_path)
-    csvw_state = CsvWState(
-        csvw_metadata_rdf_graph, primary_graph_identifier, csvw_metadata_json_path
-    )
+    csvw_type = csvw_state.csvw_type
 
     if csvw_type == CSVWType.QbDataSet:
         data_cube_state = DataCubeState(csvw_state)

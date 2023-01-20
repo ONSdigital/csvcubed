@@ -7,6 +7,7 @@ import rdflib
 
 from csvcubed.models.csvwtype import CSVWType
 from csvcubed.models.sparqlresults import CatalogMetadataResult
+from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     ask_is_csvw_code_list,
     ask_is_csvw_qb_dataset,
@@ -17,8 +18,10 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
 @dataclass
 class CsvWState:
     rdf_graph: rdflib.ConjunctiveGraph
-    primary_graph_uri: str
     csvw_json_path: Path
+
+    def __post_init__(self):
+        self.primary_graph_uri = path_to_file_uri_for_rdflib(self.csvw_json_path)
 
     @cached_property
     def catalog_metadata(self) -> List[CatalogMetadataResult]:

@@ -2,8 +2,6 @@ from dataclasses import dataclass
 from functools import cached_property
 from typing import Dict, List, Optional, TypeVar
 
-import rdflib
-
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import (
     ColumnDefinition,

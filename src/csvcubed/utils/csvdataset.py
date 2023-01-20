@@ -279,9 +279,7 @@ def _melt_pivoted_shape(
 def transform_dataset_to_canonical_shape(
     data_cube_state: DataCubeState,
     dataset: pd.DataFrame,
-    qube_components: List[QubeComponentResult],
     csv_url: str,
-    csvw_metadata_json_path: Path,
 ) -> Tuple[pd.DataFrame, str, str]:
     """
     Transforms the given dataset into canonical shape if it is not in the canonical shape already.
@@ -291,8 +289,9 @@ def transform_dataset_to_canonical_shape(
     :return: `Tuple[pd.DataFrame, str, str]` - canonical dataframe, measure column name, unit column name.
     """
     canonical_shape_dataset = dataset.copy()
-    unit_col: str
-    measure_col: str
+    qube_components = data_cube_state.get_dsd_qube_components_for_csv(
+        csv_url
+    ).qube_components
 
     cube_shape = data_cube_state.get_shape_for_csv(csv_url)
 
@@ -301,7 +300,7 @@ def transform_dataset_to_canonical_shape(
             qube_components,
             data_cube_state,
             canonical_shape_dataset,
-            csvw_metadata_json_path,
+            data_cube_state.csvw_state.csvw_json_path,
         )
     else:
         # In pivoted shape
