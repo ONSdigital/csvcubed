@@ -83,7 +83,6 @@ def step_impl(context):
 def step_impl(context):
     csvw_state = CsvWState(
         context.csvw_metadata_rdf_graph,
-        path_to_file_uri_for_rdflib(context.csvw_metadata_json_path),
         context.csvw_metadata_json_path,
     )
     data_cube_state = DataCubeState(csvw_state)
@@ -128,7 +127,6 @@ def step_impl(context):
 def step_impl(context):
     csvw_state = CsvWState(
         context.csvw_metadata_rdf_graph,
-        path_to_file_uri_for_rdflib(context.csvw_metadata_json_path),
         context.csvw_metadata_json_path,
     )
     code_list_state = CodeListState(csvw_state)

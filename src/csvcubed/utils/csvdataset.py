@@ -280,6 +280,7 @@ def transform_dataset_to_canonical_shape(
     data_cube_state: DataCubeState,
     dataset: pd.DataFrame,
     csv_url: str,
+    qube_components: List[QubeComponentResult],
 ) -> Tuple[pd.DataFrame, str, str]:
     """
     Transforms the given dataset into canonical shape if it is not in the canonical shape already.
@@ -289,9 +290,6 @@ def transform_dataset_to_canonical_shape(
     :return: `Tuple[pd.DataFrame, str, str]` - canonical dataframe, measure column name, unit column name.
     """
     canonical_shape_dataset = dataset.copy()
-    qube_components = data_cube_state.get_dsd_qube_components_for_csv(
-        csv_url
-    ).qube_components
 
     cube_shape = data_cube_state.get_shape_for_csv(csv_url)
 
