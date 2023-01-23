@@ -6,6 +6,7 @@ Provides functionality for handling table schema related features.
 """
 import logging
 from dataclasses import dataclass, field
+from functools import cached_property
 from pathlib import Path
 from typing import Union
 from urllib.parse import urljoin
@@ -21,6 +22,7 @@ from csvcubed.models.csvcubedexception import (
 )
 from csvcubed.utils.csvw import load_table_schema_file_to_graph
 from csvcubed.utils.rdf import parse_graph_retain_relative
+from csvcubed.utils.sparql_handler.csvw_state import CsvWState
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_csvw_table_schema_file_dependencies,
@@ -39,6 +41,10 @@ class CsvwRdfManager:
 
     csvw_metadata_file_path: Path
     rdf_graph: rdflib.ConjunctiveGraph = field(init=False)
+
+    @cached_property
+    def csvw_state(self) -> CsvWState:
+        return CsvWState(self.rdf_graph, self.csvw_metadata_file_path)
 
     def __post_init__(self):
         self.rdf_graph = self._load_json_ld_to_rdflib_graph()
@@ -102,11 +108,11 @@ class CsvwRdfManager:
 
         """
         Note: in below, we are loading the content of the csvw file into a variable before calling the RDFLib's parse() function.
-        This is an alternative to passing in the path of the csvw file directly to the RDFlib's parse() function. 
-        
+        This is an alternative to passing in the path of the csvw file directly to the RDFlib's parse() function.
+
         The reason for doing this is because when concurrent builds are running in Git or Jenkins pipelines, suffixes such as
         @2, @3 and so on (e.g. "path/to/file/dir_@2", "path/to/file/dir_@3") will be appended to the directory path.
-        Since RDFLib uses the Path lib which it then url encodes, these graphs will end up with relative URIs turned into absolute URIs 
+        Since RDFLib uses the Path lib which it then url encodes, these graphs will end up with relative URIs turned into absolute URIs
         containing parts such as "path/to/file/dir_%40"; this makes it hard to identify the correct location of the underlying file when reading results from RDFlib.
         """
 

@@ -46,6 +46,7 @@ from csvcubed.readers.cubeconfig.v1.mapcolumntocomponent import (
 )
 from csvcubed.utils.uri import uri_safe
 from tests.unit.test_baseunit import assert_num_validation_errors, get_test_cases_dir
+
 from .virtualconfigs import VirtualConfigurations as vc
 
 TEST_CASE_DIR = get_test_cases_dir().absolute() / "readers" / "cube-config" / "v1.0"

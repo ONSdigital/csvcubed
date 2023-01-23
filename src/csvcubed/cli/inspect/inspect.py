@@ -17,7 +17,9 @@ from csvcubed.cli.inspect.metadataprinter import MetadataPrinter
 from csvcubed.models.csvcubedexception import FailedToLoadRDFGraphException
 from csvcubed.models.csvwtype import CSVWType
 from csvcubed.utils.sparql_handler.code_list_state import CodeListState
+from csvcubed.utils.sparql_handler.csvw_state import CsvWState
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
+from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.utils.tableschema import CsvwRdfManager
 
 _logger = logging.getLogger(__name__)
@@ -53,7 +55,7 @@ def inspect(csvw_metadata_json_path: Path) -> None:
         val_counts_by_measure_unit_printable,
         codelist_hierarchy_info_printable,
     ) = _generate_printables(
-        csvw_type, csvw_metadata_rdf_graph, csvw_metadata_json_path
+        csvw_rdf_manager.csvw_state,
     )
 
     print(f"{linesep}{type_printable}")
@@ -69,9 +71,7 @@ def inspect(csvw_metadata_json_path: Path) -> None:
 
 
 def _generate_printables(
-    csvw_type: CSVWType,
-    csvw_metadata_rdf_graph: rdflib.ConjunctiveGraph,
-    csvw_metadata_json_path: Path,
+    csvw_state: CsvWState,
 ) -> Tuple[str, str, str, str, str, str, str]:
     """
     Generates printables of type, metadata, dsd, code list, head/tail and value count information.
@@ -82,26 +82,14 @@ def _generate_printables(
     """
     metadata_printer: MetadataPrinter
 
+    csvw_type = csvw_state.csvw_type
+
     if csvw_type == CSVWType.QbDataSet:
-        data_cube_state = DataCubeState(
-            csvw_metadata_rdf_graph, csvw_metadata_json_path
-        )
-        metadata_printer = MetadataPrinter(
-            data_cube_state=data_cube_state,
-            code_list_state=None,
-            csvw_type=csvw_type,
-            csvw_metadata_rdf_graph=csvw_metadata_rdf_graph,
-            csvw_metadata_json_path=csvw_metadata_json_path,
-        )
+        data_cube_state = DataCubeState(csvw_state)
+        metadata_printer = MetadataPrinter(data_cube_state)
     else:
-        code_list_state = CodeListState(csvw_metadata_rdf_graph)
-        metadata_printer = MetadataPrinter(
-            data_cube_state=None,
-            code_list_state=code_list_state,
-            csvw_type=csvw_type,
-            csvw_metadata_rdf_graph=csvw_metadata_rdf_graph,
-            csvw_metadata_json_path=csvw_metadata_json_path,
-        )
+        code_list_state = CodeListState(csvw_state)
+        metadata_printer = MetadataPrinter(code_list_state)
 
     type_info_printable: str = metadata_printer.type_info_printable
     catalog_metadata_printable: str = metadata_printer.catalog_metadata_printable

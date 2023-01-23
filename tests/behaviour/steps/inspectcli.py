@@ -22,7 +22,9 @@ from csvcubed.models.sparqlresults import (
 from csvcubed.utils.iterables import first
 from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.sparql_handler.code_list_state import CodeListState
+from csvcubed.utils.sparql_handler.csvw_state import CsvWState
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
+from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.unit.cli.inspect.test_inspectdatasetmanager import (
     expected_dataframe_pivoted_multi_measure,
@@ -79,16 +81,13 @@ def step_impl(context):
 
 @When("the Printables for data cube are generated")
 def step_impl(context):
-    data_cube_state = DataCubeState(
-        context.csvw_metadata_rdf_graph, context.csvw_metadata_json_path
-    )
-    metadata_printer = MetadataPrinter(
-        data_cube_state,
-        None,
-        context.csvw_type,
+    csvw_state = CsvWState(
         context.csvw_metadata_rdf_graph,
         context.csvw_metadata_json_path,
     )
+    data_cube_state = DataCubeState(csvw_state)
+
+    metadata_printer = MetadataPrinter(data_cube_state)
     # TODO: Remove below once all the tests are updated to not match strings
     context.type_printable = metadata_printer.type_info_printable
     context.catalog_metadata_printable = metadata_printer.catalog_metadata_printable
@@ -111,7 +110,7 @@ def step_impl(context):
     )
     # TODO: Remove above once all the tests are updated to not match strings
 
-    context.result_type_info = metadata_printer.csvw_type
+    context.result_type_info = metadata_printer.state.csvw_state.csvw_type
     context.result_catalog_metadata = metadata_printer.result_catalog_metadata
     context.result_qube_components = metadata_printer.result_qube_components
     context.result_dataset_observations_info = (
@@ -126,14 +125,13 @@ def step_impl(context):
 
 @When("the Printables for code list are generated")
 def step_impl(context):
-    code_list_state = CodeListState(context.csvw_metadata_rdf_graph)
-    metadata_printer = MetadataPrinter(
-        None,
-        code_list_state,
-        context.csvw_type,
+    csvw_state = CsvWState(
         context.csvw_metadata_rdf_graph,
         context.csvw_metadata_json_path,
     )
+    code_list_state = CodeListState(csvw_state)
+
+    metadata_printer = MetadataPrinter(code_list_state)
     context.type_printable = metadata_printer.type_info_printable
     context.catalog_metadata_printable = metadata_printer.catalog_metadata_printable
     context.dataset_observations_info_printable = (

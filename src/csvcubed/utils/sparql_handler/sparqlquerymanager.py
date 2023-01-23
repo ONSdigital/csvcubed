@@ -38,7 +38,7 @@ from csvcubed.models.sparqlresults import (
     QubeComponentsResult,
     TableSchemaPropertiesResult,
     UnitResult,
-    map_catalog_metadata_result,
+    map_catalog_metadata_results,
     map_codelist_cols_by_csv_url_result,
     map_codelists_sparql_result,
     map_cols_with_supress_output_true_sparql_result,
@@ -166,7 +166,9 @@ def ask_is_csvw_qb_dataset(rdf_graph: rdflib.Graph) -> bool:
     )
 
 
-def select_csvw_catalog_metadata(rdf_graph: rdflib.Graph) -> CatalogMetadataResult:
+def select_csvw_catalog_metadata(
+    rdf_graph: rdflib.Graph,
+) -> List[CatalogMetadataResult]:
     """
     Queries catalog metadata such as title, label, issued date/time, modified data/time, etc.
 
@@ -179,14 +181,7 @@ def select_csvw_catalog_metadata(rdf_graph: rdflib.Graph) -> CatalogMetadataResu
         rdf_graph,
     )
 
-    if len(results) != 1:
-        raise InvalidNumberOfRecordsException(
-            record_description=f"result for the {SPARQLQueryName.SELECT_CATALOG_METADATA.value} sparql query",
-            excepted_num_of_records=1,
-            num_of_records=len(results),
-        )
-
-    return map_catalog_metadata_result(results[0])
+    return map_catalog_metadata_results(results)
 
 
 def select_csvw_dsd_dataset_label_and_dsd_def_uri(
@@ -217,7 +212,7 @@ def select_data_set_dsd_and_csv_url(
     rdf_graph: rdflib.ConjunctiveGraph,
 ) -> List[CubeTableIdentifiers]:
     """
-    TODO: Add description
+    Selects the dataset's DSD and CSV URL. Returns a list of cube table identifiers containing the results.
     """
     results: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryName.SELECT_DATA_SET_DSD_CSV_URL),

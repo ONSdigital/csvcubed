@@ -2,10 +2,11 @@
 # To measure CPU and Memory usage and show which part of the application takes up most of the resources.
 from pathlib import Path
 from tempfile import TemporaryDirectory
+
 from csvcubeddevtools.helpers.file import get_test_cases_dir
-from csvcubed.cli.build import build
 from memory_profiler import profile
 
+from csvcubed.cli.build import build
 from tests.stress.buildpreprocess import generate_maximally_complex_csv
 
 # import the generate_maximaly_complex_scvfile function the create a csv file after that wun the build command in a temp directory(feed that directory to the inpect command bellow) then the inspect command will function.
