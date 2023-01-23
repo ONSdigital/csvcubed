@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from functools import cached_property
 from pathlib import Path
 from typing import Any, Dict, List
@@ -19,6 +19,8 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
 class CsvWState:
     rdf_graph: rdflib.ConjunctiveGraph
     csvw_json_path: Path
+
+    primary_graph_uri: str = field(init=False)
 
     def __post_init__(self):
         self.primary_graph_uri = path_to_file_uri_for_rdflib(self.csvw_json_path)
