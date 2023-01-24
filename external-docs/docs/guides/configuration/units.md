@@ -31,7 +31,7 @@ A data set like the one defined below can be paired with a JSON configuration al
 
 **N.B. you must ensure that your units column definition contains defintions for *all* of the units contained within your dataset; the `label` property must match the value found in the cell.**
 
-We can see in the above that we've defined a new unit called `Pounds Sterling (£), Millions` and been able to configure its description; this will give extra context to help people really understand your data. But we can still improve our data by describing how this new unit relates to standardised units defined by other organisations so users can compare your data with other data cubes with confidence.  
+We can see in the above that we've defined a new unit called `Pounds Sterling (£), Millions` and been able to configure its description; this will give extra context to help people really understand your data. But we can still improve our data by describing how this new unit relates to standardised units defined by other organisations so users can compare your data with other data cubes with confidence.
 
 ### Linking a new unit to an existing unit
 
@@ -79,7 +79,7 @@ In the following example, we'll show how to define new units for `Pounds Sterlin
 }
 ```
 
-**N.B. you must ensure that your units column definition contains defintions for *all* of the units contained within your dataset.**
+**N.B. you must ensure that your units column definition contains definitions for *all* of the units contained within your dataset.**
 
 Taking a closer look at the new `Pounds Sterling (£), Millions` unit:
 
@@ -112,11 +112,11 @@ Taking a closer look at the new `Barrels of petrol per day (,000)` unit:
     // Just like `BBL_UK_PET-PER-DAY`, our new unit is also a kind of volume per unit time.
     "quantity_kind": "http://qudt.org/vocab/quantitykind/VolumePerUnitTime",
 
-    // We state that to convert a value from this unit back to the `BBL_UK_PET-PER-DAY` unit you must multily values by 1,000. 
+    // We state that to convert a value from this unit back to the `BBL_UK_PET-PER-DAY` unit you must multily values by 1,000.
     "scaling_factor": 1000,
 
     // The SI unit for the `VolumePerUnitTime` is cubic meters per second.
-    // According to the webpage at http://qudt.org/vocab/unit/BBL_UK_PET-PER-DAY, 
+    // According to the webpage at http://qudt.org/vocab/unit/BBL_UK_PET-PER-DAY,
     // `BBL_UK_PET-PER-DAY` has an SI scaling factor of `0.000001841587`
     //
     // Since our new unit is 1000 times larger than this, our scaling factor is:
