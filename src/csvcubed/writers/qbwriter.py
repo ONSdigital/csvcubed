@@ -272,7 +272,7 @@ class QbWriter(WriterBase):
             {
                 "name": f"virt_obs_{csvw_safe_obs_column_name}",
                 "virtual": True,
-                "propertyUrl": "qb:Observation",
+                "propertyUrl": "qb:observation",
                 "valueUrl": observation_uri,
             }
         )
