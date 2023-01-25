@@ -279,3 +279,23 @@ def test_detect_csvw_shape_standard():
     cube_shape = data_cube_state.get_shape_for_csv("energy-trends-uk-total-energy.csv")
 
     assert cube_shape == CubeShape.Standard
+
+
+def test_get_cube_identifiers_for_data_set():
+
+    csv_path = (
+        _test_case_base_dir
+        / "single-unit_single-measure"
+        / "energy-trends-uk-total-energy.csv-metadata.json"
+    )
+
+    csvw_rdf_manager = CsvwRdfManager(csv_path)
+    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    cube_identifiers = data_cube_state.get_cube_identifiers_for_data_set(
+        data_cube_state.csvw_state.get_primary_catalog_metadata().dataset_uri
+    )
+
+    assert cube_identifiers is not None
+    assert cube_identifiers.csv_url == "energy-trends-uk-total-energy.csv"
+    assert cube_identifiers.data_set_url == "energy-trends-uk-total-energy.csv#dataset"
+    assert cube_identifiers.dsd_uri == "energy-trends-uk-total-energy.csv#structure"
