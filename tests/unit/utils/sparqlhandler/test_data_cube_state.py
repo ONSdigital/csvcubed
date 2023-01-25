@@ -282,6 +282,9 @@ def test_detect_csvw_shape_standard():
 
 
 def test_get_cube_identifiers_for_data_set():
+    """
+    Ensures we can return cube identifiers from a given dataset_uri
+    """
 
     csv_path = (
         _test_case_base_dir
@@ -299,3 +302,28 @@ def test_get_cube_identifiers_for_data_set():
     assert cube_identifiers.csv_url == "energy-trends-uk-total-energy.csv"
     assert cube_identifiers.data_set_url == "energy-trends-uk-total-energy.csv#dataset"
     assert cube_identifiers.dsd_uri == "energy-trends-uk-total-energy.csv#structure"
+
+
+def test_get_cube_identifiers_for_data_set_error():
+    """
+    Ensures we can return cube identifiers from a given data[set_uri
+    """
+
+    csv_path = (
+        _test_case_base_dir
+        / "single-unit_single-measure"
+        / "energy-trends-uk-total-energy.csv-metadata.json"
+    )
+
+    csvw_rdf_manager = CsvwRdfManager(csv_path)
+    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+
+    with pytest.raises(KeyError) as exception:
+        cube_identifers = data_cube_state.get_cube_identifiers_for_data_set(
+            data_set_uri=csv_path
+        )
+
+    # assert cube_identifers is None
+    assert (f"Could not find the data_set with URI '{csv_path}'.") in str(
+        exception.value
+    )
