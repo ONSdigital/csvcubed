@@ -1,4 +1,8 @@
+import pytest
+from rdflib import ConjunctiveGraph
+
 from csvcubed.models.csvwtype import CSVWType
+from csvcubed.utils.sparql_handler.csvw_state import CsvWState
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.unit.test_baseunit import get_test_cases_dir
@@ -57,3 +61,24 @@ def test_detect_csvw_type_code_list():
 
     csvw_type = csvw_rdf_manager.csvw_state.csvw_type
     assert csvw_type == CSVWType.CodeList
+
+
+def test_csvw_type_key_error():
+
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-single-measure-dataset"
+        / "qb-id-10004.csv-metadata.json"
+    )
+
+    rdf_graph = ConjunctiveGraph()
+
+    fornow = CsvWState(rdf_graph, csvw_metadata_json_path)
+
+    with pytest.raises(TypeError) as exception:
+        assert fornow.csvw_type()
+
+    assert (
+        "The input metadata is invalid as it is not a data cube or a code list."
+        in str(exception.value)
+    )
