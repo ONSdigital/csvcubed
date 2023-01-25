@@ -126,6 +126,7 @@ class CodelistResult(DataClassBase):
     code_list: str
     code_list_label: str
     cols_used_in: str
+    dsd_uri: str
 
 
 @dataclass
@@ -562,6 +563,7 @@ def _map_codelist_sparql_result(
         cols_used_in=get_printable_tabular_list_str(
             str(result_dict["csvColumnsUsedIn"]).split("|")
         ),
+        dsd_uri=str(result_dict["dsd_uri"]),
     )
     return result
 
@@ -581,6 +583,11 @@ def map_codelists_sparql_result(
             lambda result: _map_codelist_sparql_result(result, json_path),
             sparql_results,
         )
+        # dsd_uri = list(
+        #     map(
+        #         lambda result: _map_codelist_sparql_result((result))
+        #     )
+        # )
     )
     result = CodelistsResult(codelists=codelists, num_codelists=len(codelists))
     return result

@@ -4,6 +4,8 @@ from typing import Dict, List, Optional, TypeVar
 
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import (
+    CodelistResult,
+    CodelistsResult,
     ColumnDefinition,
     CubeTableIdentifiers,
     IsPivotedShapeMeasureResult,
@@ -16,6 +18,7 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_column_definitions,
     select_csvw_dsd_qube_components,
     select_data_set_dsd_and_csv_url,
+    select_dsd_code_list_and_cols,
     select_is_pivoted_shape_for_measures_in_data_set,
     select_units,
 )
@@ -124,6 +127,17 @@ class DataCubeState:
             csv_url: _detect_shape_for_cube(measures_with_shape)
             for (csv_url, measures_with_shape) in map_csv_url_to_measure_shape.items()
         }
+
+    @cached_property
+    def _codelists_and_cols(self) -> Dict[str, CodelistResult]:
+
+        dsd_uri, csv_url = select_data_set_dsd_and_csv_url(self.csvw_state.rdf_graph)
+        results = select_dsd_code_list_and_cols(
+            self.csvw_state.rdf_graph, dsd_uri, self.csvw_state.csvw_json_path
+        )
+        results_dict: Dict[str, CodelistResult] = {}
+        for result in results:
+            results_dict[result]
 
     """
     Public getters for the cached properties.
