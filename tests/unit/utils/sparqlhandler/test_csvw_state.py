@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import pytest
 from rdflib import ConjunctiveGraph
 
@@ -8,6 +10,17 @@ from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
+
+
+def get_path_to_file(folder_name: str, file_name: str) -> Path:
+
+    csvw_metadata_json_path = _test_case_base_dir / folder_name / file_name
+    return csvw_metadata_json_path
+
+
+csvw_rdf_manager = CsvwRdfManager(
+    get_path_to_file("pivoted-single-measure-dataset", "qb-id-10004.csv-metadata.json")
+)
 
 
 def test_get_primary_catalog_metadata():
@@ -21,7 +34,7 @@ def test_get_primary_catalog_metadata():
         / "pivoted-single-measure-dataset"
         / "qb-id-10004.csv-metadata.json"
     )
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    # csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     primary_graph_identifier = path_to_file_uri_for_rdflib(csvw_metadata_json_path)
 
     test_catalog_metadata_result = (
@@ -60,31 +73,15 @@ def test_detect_csvw_type_qb_dataset():
     Tests the detection of the csvw_type of an input metadata json file that has a CsvwRdfManager
     object created from it, in this case to correctly detect a QbDataset csvw type from its csvw_state.
     """
-    csvw_metadata_json_path = (
-        _test_case_base_dir
-        / "pivoted-single-measure-dataset"
-        / "qb-id-10004.csv-metadata.json"
-    )
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    # csvw_metadata_json_path = (
+    #    _test_case_base_dir
+    #    / "pivoted-single-measure-dataset"
+    #    / "qb-id-10004.csv-metadata.json"
+    # )
+    # csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
 
     csvw_type = csvw_rdf_manager.csvw_state.csvw_type
     assert csvw_type == CSVWType.QbDataSet
-
-
-def test_detect_csvw_type_code_list():
-    """
-    Tests the detection of the csvw_type of an input metadata json file that has a CsvwRdfManager
-    object created from it, in this case to correctly detect a CodeList csvw type from its csvw_state.
-    """
-    csvw_metadata_json_path = (
-        _test_case_base_dir
-        / "pivoted-single-measure-dataset"
-        / "some-dimension.csv-metadata.json"
-    )
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-
-    csvw_type = csvw_rdf_manager.csvw_state.csvw_type
-    assert csvw_type == CSVWType.CodeList
 
 
 def test_csvw_type_key_error():
@@ -109,3 +106,19 @@ def test_csvw_type_key_error():
         "The input metadata is invalid as it is not a data cube or a code list."
         in str(exception.value)
     )
+
+
+def test_detect_csvw_type_code_list():
+    """
+    Tests the detection of the csvw_type of an input metadata json file that has a CsvwRdfManager
+    object created from it, in this case to correctly detect a CodeList csvw type from its csvw_state.
+    """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-single-measure-dataset"
+        / "some-dimension.csv-metadata.json"
+    )
+    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+
+    csvw_type = csvw_rdf_manager.csvw_state.csvw_type
+    assert csvw_type == CSVWType.CodeList
