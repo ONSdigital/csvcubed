@@ -322,8 +322,8 @@ def test_get_cube_identifiers_for_data_set_error():
         cube_identifers = data_cube_state.get_cube_identifiers_for_data_set(
             data_set_uri=csv_path
         )
+        assert cube_identifers is None
 
-    # assert cube_identifers is None
     assert (f"Could not find the data_set with URI '{csv_path}'.") in str(
         exception.value
     )

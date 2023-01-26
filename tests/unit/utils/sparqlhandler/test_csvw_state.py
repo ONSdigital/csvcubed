@@ -31,6 +31,30 @@ def test_get_primary_catalog_metadata():
     assert test_catalog_metadata_result.graph_uri == primary_graph_identifier
 
 
+def test_get_primary_catalog_metadata_key_error():
+    """
+    Test to ensure that when primary catalog metadata cannot be returned for a
+    particular graph, the API function returns a KeyError instead.
+    """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-single-measure-dataset"
+        / "qb-id-10004.csv-metadata.json"
+    )
+
+    rdf_graph = ConjunctiveGraph()
+
+    csvw_inspector = CsvWState(rdf_graph, csvw_metadata_json_path)
+
+    with pytest.raises(KeyError) as exception:
+        assert csvw_inspector.get_primary_catalog_metadata()
+
+    assert (
+        f"Could not find catalog metadata in primary graph '{csvw_inspector.primary_graph_uri}'."
+        in str(exception.value)
+    )
+
+
 def test_detect_csvw_type_qb_dataset():
     """
     Tests the detection of the csvw_type of an input metadata json file that has a CsvwRdfManager
@@ -64,7 +88,10 @@ def test_detect_csvw_type_code_list():
 
 
 def test_csvw_type_key_error():
-
+    """
+    Test to ensure that when a conjunctive graph that is not recognised by the
+    csvw_type() function as a code list or a qb data set returns a type error.
+    """
     csvw_metadata_json_path = (
         _test_case_base_dir
         / "pivoted-single-measure-dataset"
@@ -73,10 +100,10 @@ def test_csvw_type_key_error():
 
     rdf_graph = ConjunctiveGraph()
 
-    fornow = CsvWState(rdf_graph, csvw_metadata_json_path)
+    csvw_inspector = CsvWState(rdf_graph, csvw_metadata_json_path)
 
     with pytest.raises(TypeError) as exception:
-        assert fornow.csvw_type()
+        assert csvw_inspector.csvw_type()
 
     assert (
         "The input metadata is invalid as it is not a data cube or a code list."
