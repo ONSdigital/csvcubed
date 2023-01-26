@@ -126,7 +126,7 @@ class CodelistResult(DataClassBase):
     code_list: str
     code_list_label: str
     cols_used_in: str
-    dsd_uri: str
+    # dsd_uri: str
 
 
 @dataclass
@@ -563,7 +563,6 @@ def _map_codelist_sparql_result(
         cols_used_in=get_printable_tabular_list_str(
             str(result_dict["csvColumnsUsedIn"]).split("|")
         ),
-        dsd_uri=str(result_dict["dsd_uri"]),
     )
     return result
 

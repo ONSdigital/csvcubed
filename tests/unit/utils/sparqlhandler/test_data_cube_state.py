@@ -279,3 +279,25 @@ def test_detect_csvw_shape_standard():
     cube_shape = data_cube_state.get_shape_for_csv("energy-trends-uk-total-energy.csv")
 
     assert cube_shape == CubeShape.Standard
+
+
+def test_get_codelists_and_cols():
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-single-measure-dataset"
+        / "qb-id-10004.csv-metadata.json"
+    )
+    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    primary_catalog_metadata = (
+        csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
+    )
+
+    data_set_uri = primary_catalog_metadata.dataset_uri
+    data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
+    csv_url = select_qb_csv_url(
+        data_cube_state.csvw_state.rdf_graph, data_set_uri
+    ).csv_url
+
+    result = data_cube_state.get_code_lists_and_cols(csv_url)
+    print(result)

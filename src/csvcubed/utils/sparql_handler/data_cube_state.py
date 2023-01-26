@@ -16,6 +16,7 @@ from csvcubed.utils.iterables import first, group_by
 from csvcubed.utils.sparql_handler.csvw_state import CsvWState
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_column_definitions,
+    select_csvw_dsd_dataset_label_and_dsd_def_uri,
     select_csvw_dsd_qube_components,
     select_data_set_dsd_and_csv_url,
     select_dsd_code_list_and_cols,
@@ -129,15 +130,17 @@ class DataCubeState:
         }
 
     @cached_property
-    def _codelists_and_cols(self) -> Dict[str, CodelistResult]:
+    def _codelists_and_cols(self) -> Dict[str, CodelistsResult]:
 
-        dsd_uri, csv_url = select_data_set_dsd_and_csv_url(self.csvw_state.rdf_graph)
+        dsd_info = self._cube_table_identifiers
+        # dsd_uri = self._cube_table_identifiers.dsd_uri
         results = select_dsd_code_list_and_cols(
-            self.csvw_state.rdf_graph, dsd_uri, self.csvw_state.csvw_json_path
+            self.csvw_state.rdf_graph,
+            dsd_info["qb-id-10004.csv"].dsd_uri,
+            self.csvw_state.csvw_json_path,
         )
-        results_dict: Dict[str, CodelistResult] = {}
-        for result in results:
-            results_dict[result]
+        results_dict: Dict[str, CodelistsResult] = {}
+        return results
 
     """
     Public getters for the cached properties.
@@ -192,3 +195,8 @@ class DataCubeState:
 
     def get_shape_for_csv(self, csv_url: str) -> CubeShape:
         return self._get_value_for_key(csv_url, self._cube_shapes)
+
+    def get_code_lists_and_cols(self, csv_url: str) -> List[CodelistResult]:
+        # results = self._codelists_and_cols()
+        # return results
+        return self._get_value_for_key(csv_url, self._codelists_and_cols)
