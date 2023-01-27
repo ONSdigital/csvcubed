@@ -310,8 +310,10 @@ def select_cols_where_suppress_output_is_true(
 
 
 def select_dsd_code_list_and_cols(
-    rdf_graph: rdflib.ConjunctiveGraph, dsd_uri: str, json_path: Path
-) -> CodelistsResult:
+    rdf_graph: rdflib.ConjunctiveGraph,
+    map_dsd_uri_to_csv_url: Dict[str, str],
+    json_path: Path,
+) -> Dict[str, CodelistsResult]:
     """
     Queries code lists and columns in the data cube.
 
@@ -322,9 +324,9 @@ def select_dsd_code_list_and_cols(
     results: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryName.SELECT_CODELISTS_AND_COLS),
         rdf_graph,
-        init_bindings={"dsd_uri": URIRef(dsd_uri)},
+        # init_bindings={"dsd_uri": URIRef(dsd_uri)},
     )
-    return map_codelists_sparql_result(results, json_path)
+    return map_codelists_sparql_result(results, map_dsd_uri_to_csv_url, json_path)
 
 
 def select_csvw_table_schema_file_dependencies(

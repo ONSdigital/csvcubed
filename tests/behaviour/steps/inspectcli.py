@@ -23,7 +23,7 @@ from csvcubed.utils.iterables import first
 from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.sparql_handler.code_list_state import CodeListState
 from csvcubed.utils.sparql_handler.csvw_state import CsvWState
-from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
+from csvcubed.utils.sparql_handler.data_cube_inspector import DataCubeInspector
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.unit.cli.inspect.test_inspectdatasetmanager import (
@@ -85,9 +85,9 @@ def step_impl(context):
         context.csvw_metadata_rdf_graph,
         context.csvw_metadata_json_path,
     )
-    data_cube_state = DataCubeState(csvw_state)
+    data_cube_inspector = DataCubeInspector(csvw_state)
 
-    metadata_printer = MetadataPrinter(data_cube_state)
+    metadata_printer = MetadataPrinter(data_cube_inspector)
     # TODO: Remove below once all the tests are updated to not match strings
     context.type_printable = metadata_printer.type_info_printable
     context.catalog_metadata_printable = metadata_printer.catalog_metadata_printable

@@ -22,7 +22,7 @@ from csvcubed.models.sparqlresults import (
 from csvcubed.utils.iterables import first
 from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.rdf import parse_graph_retain_relative
-from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
+from csvcubed.utils.sparql_handler.data_cube_inspector import DataCubeInspector
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     ask_is_csvw_code_list,
     ask_is_csvw_qb_dataset,
@@ -250,7 +250,9 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
-    data_cube_state = DataCubeState(csvw_metadata_rdf_graph, csvw_metadata_json_path)
+    data_cube_inspector = DataCubeInspector(
+        csvw_metadata_rdf_graph, csvw_metadata_json_path
+    )
 
     result: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
         csvw_metadata_rdf_graph
@@ -259,7 +261,9 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
     data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
     csv_url = select_qb_csv_url(csvw_metadata_rdf_graph, data_set_uri).csv_url
 
-    result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(csv_url)
+    result_qube_components = data_cube_inspector.get_dsd_qube_components_for_csv(
+        csv_url
+    )
     components = result_qube_components.qube_components
 
     assert result.dataset_label == "Pivoted Shape Cube"
@@ -348,7 +352,7 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    data_cube_inspector = DataCubeInspector(csvw_rdf_manager.csvw_state)
 
     result: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
         csvw_metadata_rdf_graph
@@ -361,7 +365,9 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
     data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
     csv_url = select_qb_csv_url(csvw_metadata_rdf_graph, data_set_uri).csv_url
 
-    result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(csv_url)
+    result_qube_components = data_cube_inspector.get_dsd_qube_components_for_csv(
+        csv_url
+    )
     components = result_qube_components.qube_components
 
     assert result.dataset_label == "Pivoted Shape Cube"
@@ -465,7 +471,7 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    data_cube_inspector = DataCubeInspector(csvw_rdf_manager.csvw_state)
 
     result: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
         csvw_metadata_rdf_graph
@@ -478,7 +484,9 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
     data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
     csv_url = select_qb_csv_url(csvw_metadata_rdf_graph, data_set_uri).csv_url
 
-    result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(csv_url)
+    result_qube_components = data_cube_inspector.get_dsd_qube_components_for_csv(
+        csv_url
+    )
     components = result_qube_components.qube_components
 
     assert result.dataset_label == "Pivoted Shape Cube"
@@ -635,9 +643,9 @@ def test_select_single_unit_from_dsd():
         / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    data_cube_inspector = DataCubeInspector(csvw_rdf_manager.csvw_state)
 
-    result: UnitResult = data_cube_state.get_unit_for_uri(
+    result: UnitResult = data_cube_inspector.get_unit_for_uri(
         "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#unit/mtco2e"
     )
 

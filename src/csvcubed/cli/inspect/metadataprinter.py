@@ -46,7 +46,7 @@ from csvcubed.utils.skos.codelist import (
     get_codelist_col_title_from_col_name,
 )
 from csvcubed.utils.sparql_handler.code_list_state import CodeListState
-from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
+from csvcubed.utils.sparql_handler.data_cube_inspector import DataCubeInspector
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_codelist_cols_by_csv_url,
@@ -66,7 +66,7 @@ class MetadataPrinter:
     This class produces the printables necessary for producing outputs to the CLI.
     """
 
-    state: Union[DataCubeState, CodeListState]
+    state: Union[DataCubeInspector, CodeListState]
 
     csvw_type_str: str = field(init=False)
     primary_csv_url: str = field(init=False)
@@ -153,7 +153,7 @@ class MetadataPrinter:
             self.dataset,
             csvw_type,
             self.state.get_shape_for_csv(self.primary_csv_url)
-            if isinstance(self.state, DataCubeState)
+            if isinstance(self.state, DataCubeInspector)
             else None,
         )
 
@@ -163,7 +163,7 @@ class MetadataPrinter:
 
         Member of :class:`./MetadataPrinter`.
         """
-        assert isinstance(self.state, DataCubeState)  # Make pyright happier
+        assert isinstance(self.state, DataCubeInspector)  # Make pyright happier
 
         csvw_state = self.state.csvw_state
 

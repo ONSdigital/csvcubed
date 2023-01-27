@@ -21,4 +21,4 @@ WHERE {
 
     OPTIONAL { ?codeList rdfs:label ?codeListLabel }
 }
-GROUP BY ?codeList ?codeListLabel ?dsd_uri
+GROUP BY ?codeList ?codeListLabel

@@ -30,7 +30,7 @@ from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import ColumnDefinition, QubeComponentResult
 from csvcubed.utils.iterables import first
 from csvcubed.utils.qb.components import ComponentField, ComponentPropertyType
-from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
+from csvcubed.utils.sparql_handler.data_cube_inspector import DataCubeInspector
 
 
 def _materialise_unit_uri_for_row(
@@ -60,7 +60,7 @@ def _create_unit_col_in_melted_data_set_for_pivoted_shape(
     col_name: str,
     melted_df: pd.DataFrame,
     column_definitions: List[ColumnDefinition],
-    data_cube_state: DataCubeState,
+    data_cube_inspector: DataCubeInspector,
     measure_uris: Set[str],
 ):
     """
@@ -104,7 +104,7 @@ def _create_unit_col_in_melted_data_set_for_pivoted_shape(
         unit_uri = _get_unit_uri_for_maybe_template(
             unit_column.value_url, column_definitions, row
         )
-        maybe_unit = data_cube_state.get_unit_for_uri(unit_uri)
+        maybe_unit = data_cube_inspector.get_unit_for_uri(unit_uri)
         if maybe_unit is None:
             melted_df.loc[idx, col_name] = unit_uri
         else:
@@ -204,14 +204,14 @@ def _melt_data_set(
 
 def _get_unit_measure_col_for_standard_shape_cube(
     qube_components: List[QubeComponentResult],
-    data_cube_state: DataCubeState,
+    data_cube_inspector: DataCubeInspector,
     canonical_shape_dataset: pd.DataFrame,
     csvw_metadata_json_path: Path,
 ) -> Tuple[pd.DataFrame, str, str]:
     unit_col_retrived = get_standard_shape_unit_col_name_from_dsd(qube_components)
     if unit_col_retrived is None:
         unit_col = f"Unit_{str(uuid1())}"
-        units = data_cube_state.get_units()
+        units = data_cube_inspector.get_units()
         if len(units) != 1:
             raise InvalidNumberOfRecordsException(
                 record_description=f"result for the `get_units()` function call",
@@ -240,14 +240,14 @@ def _get_unit_measure_col_for_standard_shape_cube(
 
 def _melt_pivoted_shape(
     csv_url: str,
-    data_cube_state: DataCubeState,
+    data_cube_inspector: DataCubeInspector,
     qube_components: List[QubeComponentResult],
     canonical_shape_dataset: pd.DataFrame,
 ) -> Tuple[pd.DataFrame, str, str]:
     if csv_url is None:
         raise ValueError("csv_url cannot be None.")
 
-    column_definitions = data_cube_state.get_column_definitions_for_csv(csv_url)
+    column_definitions = data_cube_inspector.get_column_definitions_for_csv(csv_url)
 
     measure_components = filter_components_from_dsd(
         qube_components,
@@ -268,7 +268,7 @@ def _melt_pivoted_shape(
         measure_col, melted_df, measure_components
     )
     _create_unit_col_in_melted_data_set_for_pivoted_shape(
-        unit_col, melted_df, column_definitions, data_cube_state, measure_uris
+        unit_col, melted_df, column_definitions, data_cube_inspector, measure_uris
     )
 
     canonical_shape_dataset = melted_df.drop("Observation Value", axis=1)
@@ -277,7 +277,7 @@ def _melt_pivoted_shape(
 
 
 def transform_dataset_to_canonical_shape(
-    data_cube_state: DataCubeState,
+    data_cube_inspector: DataCubeInspector,
     dataset: pd.DataFrame,
     csv_url: str,
     qube_components: List[QubeComponentResult],
@@ -291,17 +291,17 @@ def transform_dataset_to_canonical_shape(
     """
     canonical_shape_dataset = dataset.copy()
 
-    cube_shape = data_cube_state.get_shape_for_csv(csv_url)
+    cube_shape = data_cube_inspector.get_shape_for_csv(csv_url)
 
     if cube_shape == CubeShape.Standard:
         return _get_unit_measure_col_for_standard_shape_cube(
             qube_components,
-            data_cube_state,
+            data_cube_inspector,
             canonical_shape_dataset,
-            data_cube_state.csvw_state.csvw_json_path,
+            data_cube_inspector.csvw_state.csvw_json_path,
         )
     else:
         # In pivoted shape
         return _melt_pivoted_shape(
-            csv_url, data_cube_state, qube_components, canonical_shape_dataset
+            csv_url, data_cube_inspector, qube_components, canonical_shape_dataset
         )

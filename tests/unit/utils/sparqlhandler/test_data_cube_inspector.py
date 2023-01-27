@@ -4,7 +4,7 @@ from csvcubed.cli.inspect.metadataprinter import to_absolute_rdflib_file_path
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import ColumnDefinition
 from csvcubed.utils.qb.components import ComponentPropertyType
-from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
+from csvcubed.utils.sparql_handler.data_cube_inspector import DataCubeInspector
 from csvcubed.utils.sparql_handler.sparqlquerymanager import select_qb_csv_url
 from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.unit.test_baseunit import get_test_cases_dir
@@ -26,11 +26,11 @@ def test_get_column_definitions_for_csv():
         / "qb-id-10004.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    data_cube_inspector = DataCubeInspector(csvw_rdf_manager.csvw_state)
 
     results = {
         c.name: c
-        for c in data_cube_state.get_column_definitions_for_csv("qb-id-10004.csv")
+        for c in data_cube_inspector.get_column_definitions_for_csv("qb-id-10004.csv")
     }
 
     assert len(results) == 12
@@ -112,12 +112,12 @@ def test_exception_is_thrown_for_invalid_csv_url():
         / "qb-id-10004.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    data_cube_inspector = DataCubeInspector(csvw_rdf_manager.csvw_state)
 
     input_dict = {"a": 1, "b": 2}
 
     with pytest.raises(KeyError) as exception:
-        assert data_cube_state._get_value_for_key("c", input_dict)
+        assert data_cube_inspector._get_value_for_key("c", input_dict)
 
     assert "Could not find the definition for key 'c'" in str(exception.value)
 
@@ -132,7 +132,7 @@ def test_get_data_set_dsd_csv_url_for_csv_url():
         / "qb-id-10004.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    data_cube_inspector = DataCubeInspector(csvw_rdf_manager.csvw_state)
     primary_catalog_metadata = (
         csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
     )
@@ -140,10 +140,12 @@ def test_get_data_set_dsd_csv_url_for_csv_url():
     data_set_uri = primary_catalog_metadata.dataset_uri
     data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
     csv_url = select_qb_csv_url(
-        data_cube_state.csvw_state.rdf_graph, data_set_uri
+        data_cube_inspector.csvw_state.rdf_graph, data_set_uri
     ).csv_url
 
-    data_set_dsd_csv_url_result = data_cube_state.get_cube_identifiers_for_csv(csv_url)
+    data_set_dsd_csv_url_result = data_cube_inspector.get_cube_identifiers_for_csv(
+        csv_url
+    )
 
     assert data_set_dsd_csv_url_result is not None
     assert data_set_dsd_csv_url_result.csv_url == "qb-id-10004.csv"
@@ -161,7 +163,7 @@ def test_get_dsd_qube_components_for_csv():
         / "qb-id-10004.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    data_cube_inspector = DataCubeInspector(csvw_rdf_manager.csvw_state)
     primary_catalog_metadata = (
         csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
     )
@@ -169,10 +171,12 @@ def test_get_dsd_qube_components_for_csv():
     data_set_uri = primary_catalog_metadata.dataset_uri
     data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
     csv_url = select_qb_csv_url(
-        data_cube_state.csvw_state.rdf_graph, data_set_uri
+        data_cube_inspector.csvw_state.rdf_graph, data_set_uri
     ).csv_url
 
-    result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(csv_url)
+    result_qube_components = data_cube_inspector.get_dsd_qube_components_for_csv(
+        csv_url
+    )
 
     components = result_qube_components.qube_components
     assert len(components) == 5
@@ -258,9 +262,9 @@ def test_detect_csvw_shape_pivoted():
         / "qb-id-10003.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    data_cube_inspector = DataCubeInspector(csvw_rdf_manager.csvw_state)
 
-    cube_shape = data_cube_state.get_shape_for_csv("qb-id-10003.csv")
+    cube_shape = data_cube_inspector.get_shape_for_csv("qb-id-10003.csv")
     assert cube_shape == CubeShape.Pivoted
 
 
@@ -274,9 +278,11 @@ def test_detect_csvw_shape_standard():
         / "energy-trends-uk-total-energy.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    data_cube_inspector = DataCubeInspector(csvw_rdf_manager.csvw_state)
 
-    cube_shape = data_cube_state.get_shape_for_csv("energy-trends-uk-total-energy.csv")
+    cube_shape = data_cube_inspector.get_shape_for_csv(
+        "energy-trends-uk-total-energy.csv"
+    )
 
     assert cube_shape == CubeShape.Standard
 
@@ -288,7 +294,7 @@ def test_get_codelists_and_cols():
         / "qb-id-10004.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    data_cube_inspector = DataCubeInspector(csvw_rdf_manager.csvw_state)
     primary_catalog_metadata = (
         csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
     )
@@ -296,8 +302,8 @@ def test_get_codelists_and_cols():
     data_set_uri = primary_catalog_metadata.dataset_uri
     data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
     csv_url = select_qb_csv_url(
-        data_cube_state.csvw_state.rdf_graph, data_set_uri
+        data_cube_inspector.csvw_state.rdf_graph, data_set_uri
     ).csv_url
 
-    result = data_cube_state.get_code_lists_and_cols(csv_url)
+    result = data_cube_inspector.get_code_lists_and_cols(csv_url)
     print(result)

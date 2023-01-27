@@ -568,7 +568,9 @@ def _map_codelist_sparql_result(
 
 
 def map_codelists_sparql_result(
-    sparql_results: List[ResultRow], json_path: Path
+    sparql_results: List[ResultRow],
+    map_dsd_uri_to_csv_url: Dict[str, str],
+    json_path: Path,
 ) -> CodelistsResult:
     """
     Maps sparql query result to `CodelistsModel`

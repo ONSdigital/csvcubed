@@ -16,7 +16,7 @@ from csvcubed.utils.csvdataset import (
     _melt_data_set,
     transform_dataset_to_canonical_shape,
 )
-from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
+from csvcubed.utils.sparql_handler.data_cube_inspector import DataCubeInspector
 from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.unit.cli.inspect.test_inspectdatasetmanager import get_arguments_qb_dataset
 from tests.unit.test_baseunit import get_test_cases_dir
@@ -447,15 +447,15 @@ def test_transform_to_canonical_shape_for_standard_shape_data_set():
         / "energy-trends-uk-total-energy.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    data_cube_inspector = DataCubeInspector(csvw_rdf_manager.csvw_state)
 
-    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
+    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
     (
         canonical_shape_dataset,
         measure_col,
         unit_col,
     ) = transform_dataset_to_canonical_shape(
-        data_cube_state,
+        data_cube_inspector,
         dataset,
         csv_url,
         qube_components,
@@ -478,16 +478,16 @@ def test_transform_to_canonical_shape_for_pivoted_single_measure_shape_data_set(
         / "qb-id-10004.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    data_cube_inspector = DataCubeInspector(csvw_rdf_manager.csvw_state)
 
-    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
+    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
 
     (
         canonical_shape_dataset,
         measure_col,
         unit_col,
     ) = transform_dataset_to_canonical_shape(
-        data_cube_state,
+        data_cube_inspector,
         dataset,
         csv_url,
         qube_components,
@@ -521,16 +521,16 @@ def test_transform_to_canonical_shape_for_pivoted_multi_measure_shape_data_set()
         / "qb-id-10003.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    data_cube_inspector = DataCubeInspector(csvw_rdf_manager.csvw_state)
 
-    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
+    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
 
     (
         canonical_shape_dataset,
         measure_col,
         unit_col,
     ) = transform_dataset_to_canonical_shape(
-        data_cube_state,
+        data_cube_inspector,
         dataset,
         csv_url,
         qube_components,
@@ -663,17 +663,17 @@ def test_create_unit_col_in_melted_data_set_for_pivoted_shape():
         / "qb-id-10003.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    data_cube_inspector = DataCubeInspector(csvw_rdf_manager.csvw_state)
 
     measure_uris = {
         c.property for c in _measure_components_for_multi_measure_pivoted_shape
     }
 
-    column_definitions = data_cube_state.get_column_definitions_for_csv(
+    column_definitions = data_cube_inspector.get_column_definitions_for_csv(
         "qb-id-10003.csv"
     )
     _create_unit_col_in_melted_data_set_for_pivoted_shape(
-        "Unit", melted_df, column_definitions, data_cube_state, measure_uris
+        "Unit", melted_df, column_definitions, data_cube_inspector, measure_uris
     )
 
     assert melted_df is not None
@@ -714,13 +714,13 @@ def test_create_unit_col_in_melted_data_set_for_pivoted_shape_should_throw_inval
         / "qb-id-10003.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    data_cube_inspector = DataCubeInspector(csvw_rdf_manager.csvw_state)
 
     measure_uris = {
         c.property for c in _measure_components_for_multi_measure_pivoted_shape
     }
 
-    column_definitions = data_cube_state.get_column_definitions_for_csv(
+    column_definitions = data_cube_inspector.get_column_definitions_for_csv(
         "qb-id-10003.csv"
     )
     column_definitions_without_obs_vals = [
@@ -732,7 +732,7 @@ def test_create_unit_col_in_melted_data_set_for_pivoted_shape_should_throw_inval
             "Unit",
             melted_df,
             column_definitions_without_obs_vals,
-            data_cube_state,
+            data_cube_inspector,
             measure_uris,
         )
 
@@ -763,8 +763,8 @@ def test_create_unit_col_in_melted_data_set_for_pivoted_shape_should_throw_inval
         / "qb-id-10003.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
-    column_definitions = data_cube_state.get_column_definitions_for_csv(
+    data_cube_inspector = DataCubeInspector(csvw_rdf_manager.csvw_state)
+    column_definitions = data_cube_inspector.get_column_definitions_for_csv(
         "qb-id-10003.csv"
     )
     column_definitions_without_units = [
@@ -778,7 +778,7 @@ def test_create_unit_col_in_melted_data_set_for_pivoted_shape_should_throw_inval
             "Unit",
             melted_df,
             column_definitions_without_units,
-            data_cube_state,
+            data_cube_inspector,
             measure_uris,
         )
 
@@ -799,12 +799,12 @@ def test_unit_not_defined_locally():
         / "unit_not_locally_defined.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    data_cube_inspector = DataCubeInspector(csvw_rdf_manager.csvw_state)
 
-    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
+    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
 
     (canonical_shape_dataset, _, unit_col,) = transform_dataset_to_canonical_shape(
-        data_cube_state,
+        data_cube_inspector,
         dataset,
         csv_url,
         qube_components,
