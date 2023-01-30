@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 
 import pytest
+from pandas.testing import assert_frame_equal
 
 from csvcubed.cli.inspect.metadatainputvalidator import MetadataValidator
 from csvcubed.models.csvwtype import CSVWType

@@ -73,12 +73,6 @@ def test_detect_csvw_type_qb_dataset():
     Tests the detection of the csvw_type of an input metadata json file that has a CsvwRdfManager
     object created from it, in this case to correctly detect a QbDataset csvw type from its csvw_state.
     """
-    # csvw_metadata_json_path = (
-    #    _test_case_base_dir
-    #    / "pivoted-single-measure-dataset"
-    #    / "qb-id-10004.csv-metadata.json"
-    # )
-    # csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
 
     csvw_type = csvw_rdf_manager.csvw_state.csvw_type
     assert csvw_type == CSVWType.QbDataSet

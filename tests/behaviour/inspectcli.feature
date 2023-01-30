@@ -5,7 +5,7 @@ Feature: Behaviour testing of csvcubed inspect.
         And the existing test-case file "cli/inspect/multi-unit_multi-measure/alcohol-bulletin.csv"
         And the existing test-case file "cli/inspect/multi-unit_multi-measure/alcohol-content.table.json"
         And the existing test-case file "cli/inspect/multi-unit_multi-measure/alcohol-sub-type.table.json"
-        And the existing test-case file "cli/inspect/multi-unit_multi-measure/clearance-origin.table.json"        
+        And the existing test-case file "cli/inspect/multi-unit_multi-measure/clearance-origin.table.json"
         When the Metadata file path is detected and validated "cli/inspect/multi-unit_multi-measure/alcohol-bulletin.csv-metadata.json"
         And the csv file path is detected and validated "cli/inspect/multi-unit_multi-measure/alcohol-bulletin.csv"
         And the Metadata File json-ld is loaded to a rdf graph
@@ -22,9 +22,9 @@ Feature: Behaviour testing of csvcubed inspect.
               - License: None
               - Creator: https://www.gov.uk/government/organisations/hm-revenue-customs
               - Publisher: https://www.gov.uk/government/organisations/hm-revenue-customs
-              - Landing Pages: 
+              - Landing Pages:
                       -- https://www.gov.uk/government/statistics/alcohol-bulletin
-              - Themes: 
+              - Themes:
                       -- http://gss-data.org.uk/def/gdp#trade
               - Keywords: None
               - Contact Point: None
@@ -36,28 +36,28 @@ Feature: Behaviour testing of csvcubed inspect.
                       wine), [Spirits Duty](https://www.gov.uk/guidance/spirits-duty), [Beer
                       Duty](https://www.gov.uk/guidance/beer-duty) and [Cider
                       Duty](https://www.gov.uk/government/collections/cider-duty).
-          
+
                       The Alcohol Bulletin is updated quarterly and includes statistics on duty
                       receipts up to the latest full month before its release, and statistics
                       relating to clearances and production that are one month behind that of duty
                       receipts.
-          
+
                       [Archive versions of the Alcohol Bulletin published on GOV.UK after August
                       2019](https://webarchive.nationalarchives.gov.uk/ukgwa/*/https://www.gov.uk/government/statistics/alcohol-
                       bulletin) are no longer hosted on this page and are instead available via the
                       UK Government Web Archive, from the National Archives.
-          
+
                       [Archive versions of the Alcohol Bulletin published between 2008 and August
                       2019](https://www.uktradeinfo.com/trade-data/tax-and-duty-bulletins/) are
                       found on the UK Trade Info website.
-          
+
                       ## Quality report
-          
+
                       Further details for this statistical release, including data suitability and
                       coverage, are included within the [Alcohol Bulletin quality
                       report](https://www.gov.uk/government/statistics/quality-report-alcohol-
                       duties-publications-bulletin-and-factsheet).
-          
+
                       *[HMRC]: HM Revenue and Customs
                       *[UK]: United Kingdom
         """
@@ -147,7 +147,7 @@ Feature: Behaviour testing of csvcubed inspect.
             spirits-duty-receipts            gbp-million    314
                wine-duty-receipts            gbp-million    314
         """
-    
+
     # Below test also validates the csvcubed against old-style single-measure pivoted shape data sets.
     Scenario: inspect should produce the expected printable for data cube metadata json-ld input of type multi-unit single-measure.
         Given the existing test-case file "cli/inspect/multi-unit_single-measure/final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
@@ -162,12 +162,12 @@ Feature: Behaviour testing of csvcubed inspect.
         And the existing test-case file "cli/inspect/multi-unit_single-measure/source.table.json"
         And the existing test-case file "cli/inspect/multi-unit_single-measure/national-communication-fuel-group.table.json"
         And the existing test-case file "cli/inspect/multi-unit_single-measure/national-communication-fuel.table.json"
-        And the existing test-case file "cli/inspect/multi-unit_single-measure/activity-name.table.json"        
+        And the existing test-case file "cli/inspect/multi-unit_single-measure/activity-name.table.json"
         When the Metadata file path is detected and validated "cli/inspect/multi-unit_single-measure/final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
         And the Metadata File json-ld is loaded to a rdf graph
         And the Metadata File is validated
         And the Printables for data cube are generated
-        Then the Type Printable should be "- This file is a data cube."        
+        Then the Type Printable should be "- This file is a data cube."
         And the Catalog Metadata Printable should be
         """
         - The data cube has the following catalog metadata:
@@ -178,9 +178,9 @@ Feature: Behaviour testing of csvcubed inspect.
             - License: None
             - Creator: https://www.gov.uk/government/organisations/department-for-business-energy-and-industrial-strategy
             - Publisher: https://www.gov.uk/government/organisations/department-for-business-energy-and-industrial-strategy
-            - Landing Pages: 
+            - Landing Pages:
                     -- https://www.gov.uk/government/statistics/final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019
-            - Themes: 
+            - Themes:
                     -- http://gss-data.org.uk/def/gdp#climate-change
             - Keywords: None
             - Contact Point: None
@@ -352,9 +352,9 @@ Feature: Behaviour testing of csvcubed inspect.
             - License: None
             - Creator: https://www.gov.uk/government/organisations/department-for-business-energy-and-industrial-strategy
             - Publisher: https://www.gov.uk/government/organisations/department-for-business-energy-and-industrial-strategy
-            - Landing Pages: 
+            - Landing Pages:
                     -- https://www.gov.uk/government/statistics/final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020
-            - Themes: 
+            - Themes:
                     -- http://gss-data.org.uk/def/gdp#climate-change
             - Keywords: None
             - Contact Point: None
@@ -510,9 +510,9 @@ Feature: Behaviour testing of csvcubed inspect.
             - License: None
             - Creator: https://www.gov.uk/government/organisations/department-for-business-energy-and-industrial-strategy
             - Publisher: https://www.gov.uk/government/organisations/department-for-business-energy-and-industrial-strategy
-            - Landing Pages: 
+            - Landing Pages:
                     -- https://www.gov.uk/government/statistics/total-energy-section-1-energy-trends
-            - Themes: 
+            - Themes:
                     -- http://gss-data.org.uk/def/gdp#climate-change
             - Keywords: None
             - Contact Point: None
@@ -583,7 +583,7 @@ Feature: Behaviour testing of csvcubed inspect.
         - The data cube has the following code list information:
             - Number of Code Lists: 0
             - Code Lists:
-                None  
+                None
         """
         And the Dataset Information Printable should be
         """
@@ -628,7 +628,7 @@ Feature: Behaviour testing of csvcubed inspect.
         Given the existing test-case file "cli/inspect/alcohol-content.csv-metadata.json"
         And the existing test-case file "cli/inspect/alcohol-content.table.json"
         And the existing test-case file "cli/inspect/alcohol-content.csv"
-        
+
         When the Metadata file path is detected and validated "cli/inspect/alcohol-content.csv-metadata.json"
         And the csv file path is detected and validated "cli/inspect/alcohol-content.csv"
         And the Metadata File json-ld is loaded to a rdf graph
@@ -749,7 +749,7 @@ Feature: Behaviour testing of csvcubed inspect.
     Scenario: An older CSV-W generated by csvcubed build that uses the notation column as the identifier should produce the correct concepts hierarchy.
         Given the existing test-case file "cli/inspect/code-list-with-notation-as-identifier/attr-1.csv-metadata.json"
         And the existing test-case file "cli/inspect/code-list-with-notation-as-identifier/attr-1.table.json"
-        And the existing test-case file "cli/inspect/code-list-with-notation-as-identifier/attr-1.csv"        
+        And the existing test-case file "cli/inspect/code-list-with-notation-as-identifier/attr-1.csv"
         When the Metadata file path is detected and validated "cli/inspect/code-list-with-notation-as-identifier/attr-1.csv-metadata.json"
         And the csv file path is detected and validated "cli/inspect/code-list-with-notation-as-identifier/attr-1.csv"
         And the Metadata File json-ld is loaded to a rdf graph
@@ -768,7 +768,7 @@ Feature: Behaviour testing of csvcubed inspect.
     Scenario: A newer CSV-W generated by csvcubed build that uses the uri identifier column as the identifier should produce the correct concepts hierarchy.
         Given the existing test-case file "cli/inspect/code-list-with-uri-identifier-as-identifier/attr-1.csv-metadata.json"
         And the existing test-case file "cli/inspect/code-list-with-uri-identifier-as-identifier/attr-1.table.json"
-        And the existing test-case file "cli/inspect/code-list-with-uri-identifier-as-identifier/attr-1.csv"        
+        And the existing test-case file "cli/inspect/code-list-with-uri-identifier-as-identifier/attr-1.csv"
         When the Metadata file path is detected and validated "cli/inspect/code-list-with-uri-identifier-as-identifier/attr-1.csv-metadata.json"
         And the csv file path is detected and validated "cli/inspect/code-list-with-uri-identifier-as-identifier/attr-1.csv"
         And the Metadata File json-ld is loaded to a rdf graph
@@ -783,40 +783,3 @@ Feature: Behaviour testing of csvcubed inspect.
                     ├── goods
                     ├── services
         """
-
-    
-    Scenario: inspect command should accurately inspect a pivoted single-measure cube
-        Given the existing test-case file "cli/inspect/pivoted-single-measure-dataset/qb-id-10004.csv-metadata.json"
-        And the existing test-case file "cli/inspect/pivoted-single-measure-dataset/qb-id-10004.csv"
-        And the existing test-case file "cli/inspect/pivoted-single-measure-dataset/some-dimension.csv-metadata.json"
-        And the existing test-case file "cli/inspect/pivoted-single-measure-dataset/some-dimension.table.json"
-        And the existing test-case file "cli/inspect/pivoted-single-measure-dataset/some-dimension.csv"
-        When the Metadata file path is detected and validated "cli/inspect/pivoted-single-measure-dataset/qb-id-10004.csv-metadata.json"
-        And the csv file path is detected and validated "cli/inspect/pivoted-single-measure-dataset/qb-id-10004.csv"
-        And the Metadata File json-ld is loaded to a rdf graph
-        And the Metadata File is validated
-        And the Printables for data cube are generated            
-        Then the Type printable is validated for single-measure pivoted data set
-        And the Catalog Metadata printable is validated for single-measure pivoted data set with identifier qb-id-10004
-        And the Data Structure Definition printable is validated for single-measure pivoted data set
-        And the Code List printable is validated for single-measure pivoted data set
-        And the Data Set Information printable is validated for single-measure pivoted data set
-        And the Value Counts printable is validated for single-measure pivoted data set
-
-    Scenario: inspect command should accurately inspect a pivoted multi-measure cube
-        Given the existing test-case file "cli/inspect/pivoted-multi-measure-dataset/qb-id-10003.csv-metadata.json"
-        And the existing test-case file "cli/inspect/pivoted-multi-measure-dataset/qb-id-10003.csv"
-        And the existing test-case file "cli/inspect/pivoted-multi-measure-dataset/some-dimension.csv-metadata.json"
-        And the existing test-case file "cli/inspect/pivoted-multi-measure-dataset/some-dimension.table.json"
-        And the existing test-case file "cli/inspect/pivoted-multi-measure-dataset/some-dimension.csv"
-        When the Metadata file path is detected and validated "cli/inspect/pivoted-multi-measure-dataset/qb-id-10003.csv-metadata.json"
-        And the csv file path is detected and validated "cli/inspect/pivoted-multi-measure-dataset/qb-id-10003.csv"
-        And the Metadata File json-ld is loaded to a rdf graph
-        And the Metadata File is validated
-        And the Printables for data cube are generated            
-        Then the Type printable is validated for multi-measure pivoted data set
-        And the Catalog Metadata printable is validated for multi-measure pivoted data set with identifier qb-id-10003
-        And the Data Structure Definition printable is validated for multi-measure pivoted data set
-        And the Code List printable is validated for multi-measure pivoted data set
-        And the Data Set Information printable is validated for multi-measure pivoted data set
-        And the Value Counts printable is validated for multi-measure pivoted data set
