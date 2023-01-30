@@ -131,20 +131,9 @@ class DataCubeInspector:
 
     @cached_property
     def _codelists_and_cols(self) -> Dict[str, CodelistsResult]:
-        # Tried to access dsd_uri using _cube_table_identifiers - Attribute Error (dict_items has no attribute dsd_uri)
-        # dsd_info = list(self._cube_table_identifiers.values())
 
-        # return select_dsd_code_list_and_cols(
-        #     self.csvw_state.rdf_graph,
-        #     dsd_info[0].dsd_uri,
-        #     self.csvw_state.csvw_json_path,
-        # )
-        map_dsd_uri_to_csv_url = {
-            i.dsd_uri: i.csv_url for i in self._cube_table_identifiers.values()
-        }
         return select_dsd_code_list_and_cols(
             self.csvw_state.rdf_graph,
-            map_dsd_uri_to_csv_url,
             self.csvw_state.csvw_json_path,
         )
 
@@ -202,9 +191,5 @@ class DataCubeInspector:
     def get_shape_for_csv(self, csv_url: str) -> CubeShape:
         return self._get_value_for_key(csv_url, self._cube_shapes)
 
-    def get_code_lists_and_cols(self, csv_url: str) -> List[CodelistResult]:
-        # Failed: [undefined]TypeError: 'CodelistsResult' object is not callable
-        # results = self._codelists_and_cols()
-        results = self._codelists_and_cols
-        return results
-        # return self._get_value_for_key(csv_url, self._codelists_and_cols)
+    def get_code_lists_and_cols(self, csv_url: str) -> CodelistsResult:
+        return self._get_value_for_key(csv_url, self._codelists_and_cols)

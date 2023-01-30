@@ -15,7 +15,6 @@ from rdflib.query import ResultRow
 from csvcubed.utils.iterables import group_by
 from csvcubed.utils.printable import (
     get_printable_list_str,
-    get_printable_tabular_list_str,
     get_printable_tabular_str_from_list,
 )
 from csvcubed.utils.qb.components import (
@@ -124,9 +123,9 @@ class CodelistResult(DataClassBase):
     """
 
     code_list: str
-    code_list_label: str
-    cols_used_in: str
-    # dsd_uri: str
+    code_list_label: Optional[str]
+    cols_used_in: List[str]
+    csv_url: str
 
 
 @dataclass
@@ -559,39 +558,34 @@ def _map_codelist_sparql_result(
         code_list=get_component_property_as_relative_path(
             json_path, str(result_dict["codeList"])
         ),
-        code_list_label=none_or_map(result_dict.get("codeListLabel"), str) or "",
-        cols_used_in=get_printable_tabular_list_str(
-            str(result_dict["csvColumnsUsedIn"]).split("|")
-        ),
+        code_list_label=none_or_map(result_dict.get("codeListLabel"), str),
+        cols_used_in=str(result_dict["csvColumnsUsedIn"]).split("|"),
+        csv_url=str(result_dict["csvUrl"]),
     )
     return result
 
 
 def map_codelists_sparql_result(
     sparql_results: List[ResultRow],
-    map_dsd_uri_to_csv_url: Dict[str, str],
     json_path: Path,
-) -> CodelistsResult:
+) -> Dict[str, CodelistsResult]:
     """
     Maps sparql query result to `CodelistsModel`
 
     Member of :file:`./models/sparqlresults.py`
 
-    :return: `CodelistsModel`
+    :return: `Dict[str, CodelistsResult]`
     """
-    codelists = list(
-        map(
-            lambda result: _map_codelist_sparql_result(result, json_path),
-            sparql_results,
-        )
-        # dsd_uri = list(
-        #     map(
-        #         lambda result: _map_codelist_sparql_result((result))
-        #     )
-        # )
+    codelists = map(
+        lambda result: _map_codelist_sparql_result(result, json_path),
+        sparql_results,
     )
-    result = CodelistsResult(codelists=codelists, num_codelists=len(codelists))
-    return result
+
+    map_csv_url_to_codelists = group_by(codelists, lambda c: c.csv_url)
+    return {
+        csv_url: CodelistsResult(codelists=code_lists, num_codelists=len(code_lists))
+        for (csv_url, code_lists) in map_csv_url_to_codelists.items()
+    }
 
 
 def map_csvw_table_schemas_file_dependencies_result(

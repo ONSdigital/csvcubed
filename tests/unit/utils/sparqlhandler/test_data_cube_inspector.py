@@ -2,7 +2,7 @@ import pytest
 
 from csvcubed.cli.inspect.metadataprinter import to_absolute_rdflib_file_path
 from csvcubed.models.cube.cube_shape import CubeShape
-from csvcubed.models.sparqlresults import ColumnDefinition
+from csvcubed.models.sparqlresults import CodelistResult, ColumnDefinition
 from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.sparql_handler.data_cube_inspector import DataCubeInspector
 from csvcubed.utils.sparql_handler.sparqlquerymanager import select_qb_csv_url
@@ -300,10 +300,13 @@ def test_get_codelists_and_cols():
     )
 
     data_set_uri = primary_catalog_metadata.dataset_uri
-    data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
-    csv_url = select_qb_csv_url(
-        data_cube_inspector.csvw_state.rdf_graph, data_set_uri
-    ).csv_url
+    identifiers = data_cube_inspector.get_cube_identifiers_for_data_set(data_set_uri)
 
-    result = data_cube_inspector.get_code_lists_and_cols(csv_url)
-    print(result)
+    result = data_cube_inspector.get_code_lists_and_cols(identifiers.csv_url)
+    codelists = result.codelists
+    num_codelists = result.num_codelists
+    assert codelists[0].code_list == "some-dimension.csv#code-list"
+    assert codelists[0].code_list_label == "Some Dimension"
+    assert codelists[0].cols_used_in == ["Some Dimension"]
+    assert codelists[0].csv_url == "qb-id-10004.csv"
+    assert num_codelists == 1

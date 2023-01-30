@@ -601,19 +601,27 @@ def test_select_dsd_code_list_and_cols_without_codelist_labels():
     """
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-
-    result_dsd: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
-        csvw_metadata_rdf_graph
+    # csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
+    data_cube_inspector = DataCubeInspector(csvw_rdf_manager.csvw_state)
+    primary_catalog_metadata = (
+        csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
     )
 
-    result: CodelistsResult = select_dsd_code_list_and_cols(
-        csvw_metadata_rdf_graph, result_dsd.dsd_uri, csvw_metadata_json_path
-    )
+    data_set_uri = primary_catalog_metadata.dataset_uri
+    identifiers = data_cube_inspector.get_cube_identifiers_for_data_set(data_set_uri)
+
+    result = data_cube_inspector.get_code_lists_and_cols(identifiers.csv_url)
+    # result_dsd: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
+    #     csvw_metadata_rdf_graph
+    # )
+
+    # result: CodelistsResult = select_dsd_code_list_and_cols(
+    #     csvw_metadata_rdf_graph, csvw_metadata_json_path
+    # )
 
     assert len(result.codelists) == 3
     assert (
-        first(result.codelists, lambda c: c.cols_used_in == "Alcohol Sub Type")
+        first(result.codelists, lambda c: c.cols_used_in == ["Alcohol Sub Type"])
         is not None
     )
 
