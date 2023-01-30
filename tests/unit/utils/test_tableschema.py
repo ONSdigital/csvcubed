@@ -2,6 +2,7 @@ from csvcubedmodels.rdf.namespaces import CSVW
 from rdflib import Literal, URIRef
 
 from csvcubed.utils.tableschema import CsvwRdfManager
+from tests.helpers.data_cube_state_cache import get_csvw_rdf_manager
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
@@ -13,7 +14,7 @@ def test_metadata_dataset_json_ld_to_rdf_loading():
     Metadata dataset RDF graph should not be None.
     """
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
     assert csvw_metadata_rdf_graph is not None
@@ -27,7 +28,7 @@ def test_metadata_dataset_json_ld_to_rdf_loading_when_path_contains_url_encodabl
     dir_path = _test_case_base_dir / "url_enc@dable_char_@2path"
     csvw_metadata_json_path = dir_path / "alcohol-bulletin.csv-metadata.json"
 
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
     assert csvw_metadata_rdf_graph is not None
@@ -45,7 +46,7 @@ def test_metadata_codelist_json_ld_to_rdf_loading_with_table_schema():
     Metadata codelist RDF graph should not be None.
     """
     csvw_metadata_json_path = _test_case_base_dir / "codelist.csv-metadata.json"
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
     assert csvw_metadata_rdf_graph is not None
@@ -62,7 +63,7 @@ def test_load_table_schema_file_dependencies_to_graph():
         / "table-schema-dependencies"
         / "sectors-economic-estimates-2018-trade-in-services.csv-metadata.json"
     )
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
     # This triple is defined in subsector.table.json

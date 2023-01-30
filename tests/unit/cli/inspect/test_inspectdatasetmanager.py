@@ -39,6 +39,10 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_qb_csv_url,
 )
 from csvcubed.utils.tableschema import CsvwRdfManager
+from tests.helpers.data_cube_state_cache import (
+    get_csvw_rdf_manager,
+    get_data_cube_state,
+)
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
@@ -381,9 +385,8 @@ def test_get_measure_col_name_from_dsd_measure_col_present():
         / "multi-unit_multi-measure"
         / "alcohol-bulletin.csv-metadata.json"
     )
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-
-    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
+    data_cube_state = get_data_cube_state(csvw_metadata_json_path)
 
     result_data_set_uri = (
         csvw_rdf_manager.csvw_state.get_primary_catalog_metadata().dataset_uri
@@ -411,8 +414,8 @@ def test_get_measure_col_name_from_dsd_measure_col_not_present():
         / "multi-unit_single-measure"
         / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
     )
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
+    data_cube_state = get_data_cube_state(csvw_metadata_json_path)
     primary_catalog_metadata = (
         csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
     )
@@ -439,8 +442,8 @@ def test_get_unit_col_name_from_dsd_unit_col_present():
         / "multi-unit_multi-measure"
         / "alcohol-bulletin.csv-metadata.json"
     )
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
+    data_cube_state = get_data_cube_state(csvw_metadata_json_path)
     primary_catalog_metadata = (
         csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
     )
@@ -467,8 +470,8 @@ def test_get_unit_col_name_from_dsd_unit_col_not_present():
         / "multi-unit_single-measure"
         / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
     )
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
+    data_cube_state = get_data_cube_state(csvw_metadata_json_path)
     primary_catalog_metadata = (
         csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
     )
@@ -496,8 +499,8 @@ def test_get_single_measure_label_from_dsd():
         / "multi-unit_single-measure"
         / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
     )
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
+    data_cube_state = get_data_cube_state(csvw_metadata_json_path)
     primary_catalog_metadata = (
         csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
     )
@@ -532,8 +535,7 @@ def test_get_val_counts_info_multi_unit_multi_measure_dataset():
         / "multi-unit_multi-measure"
         / "alcohol-bulletin.csv-metadata.json"
     )
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    data_cube_state = get_data_cube_state(csvw_metadata_json_path)
 
     (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
 
@@ -577,8 +579,7 @@ def test_get_val_counts_info_multi_unit_single_measure_dataset():
         / "multi-unit_single-measure"
         / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
     )
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    data_cube_state = get_data_cube_state(csvw_metadata_json_path)
 
     (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
 
@@ -622,8 +623,7 @@ def test_get_val_counts_info_single_unit_multi_measure_dataset():
         / "single-unit_multi-measure"
         / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv-metadata.json"
     )
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    data_cube_state = get_data_cube_state(csvw_metadata_json_path)
 
     (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
 
@@ -667,8 +667,7 @@ def test_get_val_counts_info_single_unit_single_measure_dataset():
         / "single-unit_single-measure"
         / "energy-trends-uk-total-energy.csv-metadata.json"
     )
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    data_cube_state = get_data_cube_state(csvw_metadata_json_path)
 
     (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
 
@@ -712,8 +711,7 @@ def test_get_val_counts_info_pivoted_single_measure_dataset():
         / "pivoted-single-measure-dataset"
         / "qb-id-10004.csv-metadata.json"
     )
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    data_cube_state = get_data_cube_state(csvw_metadata_json_path)
 
     (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
 
@@ -756,8 +754,7 @@ def test_get_val_counts_info_pivoted_multi_measure_dataset():
         / "pivoted-multi-measure-dataset"
         / "qb-id-10003.csv-metadata.json"
     )
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    data_cube_state = get_data_cube_state(csvw_metadata_json_path)
 
     (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
 
@@ -800,7 +797,7 @@ def test_get_concepts_hierarchy_info_hierarchy_with_depth_of_one():
         / "multi-unit_multi-measure"
         / "alcohol-content.csv-metadata.json"
     )
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
 
     (dataset, csv_url) = _get_arguments_skos_codelist(
         csvw_rdf_manager.rdf_graph, csvw_metadata_json_path
@@ -838,7 +835,7 @@ def test_get_concepts_hierarchy_info_hierarchy_with_depth_more_than_one():
     Should produce the expected tree structure for the given codelist.
     """
     csvw_metadata_json_path = _test_case_base_dir / "itis-industry.csv-metadata.json"
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
 
     (dataset, csv_url) = _get_arguments_skos_codelist(
         csvw_rdf_manager.rdf_graph, csvw_metadata_json_path
