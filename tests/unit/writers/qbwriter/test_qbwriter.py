@@ -342,7 +342,7 @@ def test_virtual_columns_generated_for_single_obs_val():
     virt_col = first(virtual_columns, lambda x: x["name"] == "virt_obs_some_obs_val")
     assert virt_col is not None
     assert virt_col["virtual"] == True
-    assert virt_col["propertyUrl"] == "qb:Observation"
+    assert virt_col["propertyUrl"] == "qb:observation"
     assert virt_col["valueUrl"] == "cube.csv#obs/{some_dimension}@some-measure"
 
     virt_col = first(
