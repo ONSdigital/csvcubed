@@ -46,7 +46,7 @@ Set-Content -Path csv2rdf.bat -Value "@REM Forwarder script`n@echo off`necho Att
 
 $csv2rdfLocation = (Get-Item csv2rdf.bat | Resolve-Path).Path.Substring(38)
 echo "CSV2RDF_LOCATION=$csv2rdfLocation" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
-Write-Output = "csv2rdf location: $csv2rdfLocation"
+Write-Output "csv2rdf location: $csv2rdfLocation"
 
 $path += ";$pwd"
 
@@ -54,12 +54,13 @@ Write-Output "=== Installing sparql-test-runner ==="
 
 # Temporarily trying the GitHub CLI API to 
 Write-Output "Attempting to download sparql-test-runner.zip"
-gh api -H "Accept: application/octet-stream" /repos/GSS-Cogs/sparql-test-runner/releases/assets/81819962 > sparql-test-runner.zip
+# gh api -H "Accept: application/octet-stream" /repos/GSS-Cogs/sparql-test-runner/releases/assets/81819962 > sparql-test-runner.zip
+&"$curlExe" "https://github.com/GSS-Cogs/sparql-test-runner/releases/download/v0.0.1/sparql-test-runner-1.4.zip" -o "sparql-test-runner2.zip"
 Write-Output "Downloaded sparql-test-runner.zip"
 # Invoke-WebRequest -SkipHttpErrorCheck -MaximumRetryCount 10 -RetryIntervalSec 1 -SkipCertificateCheck -AllowUnencryptedAuthentication -SkipHeaderValidation -Uri "https://github.com/GSS-Cogs/sparql-test-runner/releases/download/v0.0.1/sparql-test-runner-1.4.zip" -OutFile "sparql-test-runner.zip"
 # This is what it was originally, but it doesn't necessarily always work:
 # Invoke-WebRequest -Uri "https://github.com/GSS-Cogs/sparql-test-runner/releases/download/v0.0.1/sparql-test-runner-1.4.zip" -OutFile "sparql-test-runner.zip"
-Expand-Archive -LiteralPath sparql-test-runner.zip -DestinationPath .
+Expand-Archive -LiteralPath sparql-test-runner2.zip -DestinationPath .
 Write-Output "Expanded sparql-test-runner.zip"
 
 $sparqlTestRunnerBinDir = (Get-Item sparql-test-runner-1.4/bin | Resolve-Path).Path.Substring(38)
