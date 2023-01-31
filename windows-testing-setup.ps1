@@ -52,8 +52,10 @@ $path += ";$pwd"
 
 Write-Output "=== Installing sparql-test-runner ==="
 
-# &"$curlExe" -s 'https://github.com/GSS-Cogs/sparql-test-runner/releases/download/v0.0.1/sparql-test-runner-1.4.zip' -o 'sparql-test-runner.zip'
+# At some point stop ignoring all of the problems when invoking this web request. 
 Invoke-WebRequest -SkipHttpErrorCheck -MaximumRetryCount 10 -RetryIntervalSec 1 -SkipCertificateCheck -AllowUnencryptedAuthentication -SkipHeaderValidation -Uri "https://github.com/GSS-Cogs/sparql-test-runner/releases/download/v0.0.1/sparql-test-runner-1.4.zip" -OutFile "sparql-test-runner.zip"
+# This is what it was originally, but it doesn't necessarily always work:
+# Invoke-WebRequest -Uri "https://github.com/GSS-Cogs/sparql-test-runner/releases/download/v0.0.1/sparql-test-runner-1.4.zip" -OutFile "sparql-test-runner.zip"
 Expand-Archive -LiteralPath sparql-test-runner.zip -DestinationPath .
 
 $sparqlTestRunnerBinDir = (Get-Item sparql-test-runner-1.4/bin | Resolve-Path).Path.Substring(38)
