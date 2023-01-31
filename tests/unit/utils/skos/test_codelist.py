@@ -16,7 +16,7 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_primary_key_col_names_by_csv_url,
 )
 from csvcubed.utils.tableschema import CsvwRdfManager
-from tests.helpers.data_cube_state_cache import get_csvw_rdf_manager
+from tests.helpers.inspectors_cache import get_csvw_rdf_manager
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"

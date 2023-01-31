@@ -18,10 +18,7 @@ from csvcubed.utils.csvdataset import (
 )
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
 from csvcubed.utils.tableschema import CsvwRdfManager
-from tests.helpers.data_cube_state_cache import (
-    get_csvw_rdf_manager,
-    get_data_cube_state,
-)
+from tests.helpers.inspectors_cache import get_data_cube_state
 from tests.unit.cli.inspect.test_inspectdatasetmanager import get_arguments_qb_dataset
 from tests.unit.test_baseunit import get_test_cases_dir
 

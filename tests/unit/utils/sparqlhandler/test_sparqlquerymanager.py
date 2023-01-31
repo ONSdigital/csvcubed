@@ -39,10 +39,7 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_table_schema_properties,
 )
 from csvcubed.utils.tableschema import CsvwRdfManager, add_triples_for_file_dependencies
-from tests.helpers.data_cube_state_cache import (
-    get_csvw_rdf_manager,
-    get_data_cube_state,
-)
+from tests.helpers.inspectors_cache import get_csvw_rdf_manager, get_data_cube_state
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"

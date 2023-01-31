@@ -10,7 +10,7 @@ from csvcubed.utils.sparql_handler.csvw_state import CsvWState
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
 from csvcubed.utils.sparql_handler.sparqlquerymanager import select_qb_csv_url
 from csvcubed.utils.tableschema import CsvwRdfManager
-from tests.helpers.data_cube_state_cache import get_data_cube_state
+from tests.helpers.inspectors_cache import get_data_cube_state
 from tests.unit.test_baseunit import get_test_cases_dir
 from tests.unit.utils.sparqlhandler.test_sparqlquerymanager import (
     assert_dsd_component_equal,
@@ -318,7 +318,8 @@ def test_get_cube_identifiers_for_data_set_error():
 
 def test_dsd_compomnents_multi_measure_pivoted_shape():
     """
-    This function should replace behaviour tests
+    Test that dsd components from a pivoted multi measure dataset are
+    correctly returned by the inspector function get_dsd_qube_components_for_csv
     """
     path_to_json_file = (
         _test_case_base_dir
@@ -421,7 +422,10 @@ def test_dsd_compomnents_multi_measure_pivoted_shape():
 
 
 def test_dsd_single_measure_pivoted_shape():
-
+    """
+    Test that dsd components from a pivoted single measure dataset are
+    correctly returned by the inspector function get_dsd_qube_components_for_csv
+    """
     path_to_json_file = (
         _test_case_base_dir
         / "pivoted-single-measure-dataset"

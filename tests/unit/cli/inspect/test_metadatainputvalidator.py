@@ -7,10 +7,7 @@ from pandas.testing import assert_frame_equal
 from csvcubed.cli.inspect.metadatainputvalidator import MetadataValidator
 from csvcubed.models.csvwtype import CSVWType
 from csvcubed.utils.tableschema import CsvwRdfManager
-from tests.helpers.data_cube_state_cache import (
-    get_csvw_rdf_manager,
-    get_data_cube_state,
-)
+from tests.helpers.inspectors_cache import get_csvw_rdf_manager, get_data_cube_state
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
