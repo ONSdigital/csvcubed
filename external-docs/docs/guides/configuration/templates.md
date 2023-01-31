@@ -31,17 +31,17 @@ In the above example, we have reused the `year` template, but given the dimensio
 
 ## Available templates
 
-The templates are currently in version 1.0; with future development planned. You can see the entire list of the templates inline below or on [csvcubed github](https://github.com/GSS-Cogs/csvcubed/tree/main/csvcubed/csvcubed/readers/cubeconfig/v1_0/templates). The `from_template` funcitonality fetches the most recent version of our templates from the web.
+The templates are currently in version 1.0; with future development planned. You can see the entire list of the templates inline below or on [csvcubed github](https://github.com/GSS-Cogs/csvcubed/tree/main/src/csvcubed/readers/cubeconfig/v1_0/templates). The `from_template` funcitonality fetches the most recent version of our templates from the web.
 
 ### Date/Time period template
 
-| Template                                                                                                                                             | Description                                                                                                                  | Example             |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ------------------- |
+| Template                                                                                           | Description                                                                                                                  | Example             |
+|----------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------|---------------------|
 | [year](https://purl.org/csv-cubed/qube-config/templates/calendar-year.json)                        | The calendar period of year                                                                                                  | 2017                |
-| [half-year](https://purl.org/csv-cubed/qube-config/templates/calendar-half-year.json)              | The calendar period of half-year (Jaunary-June, July-December)                                                               | 2017-H2             |
+| [half-year](https://purl.org/csv-cubed/qube-config/templates/calendar-half-year.json)              | The calendar period of half-year (January-June, July-December)                                                               | 2017-H2             |
 | [quarter](https://purl.org/csv-cubed/qube-config/templates/calendar-quarter.json)                  | The calendar period of quarter (January-March, April-June, July-September, October-December)                                 | 2019-Q3             |
 | [month](https://purl.org/csv-cubed/qube-config/templates/calendar-month.json)                      | The calendar period of month                                                                                                 | 1995-11             |
-| [week](https://purl.org/csv-cubed/qube-config/templates/calendar-week.json)                        | The ISO-8601 definition of calendar week                                                                                     | 2014-25             |
+| [week](https://purl.org/csv-cubed/qube-config/templates/calendar-week.json)                        | The ISO-8601 definition of calendar week                                                                                     | 2014-W25             |
 | [day](https://purl.org/csv-cubed/qube-config/templates/calendar-day.json)                          | The calendar period of day                                                                                                   | 1999-12-31          |
 | [hour](https://purl.org/csv-cubed/qube-config/templates/calendar-hour.json)                        | The calendar period of hour                                                                                                  | 2015-11-18T06       |
 | [minute](https://purl.org/csv-cubed/qube-config/templates/calendar-minute.json)                    | The calendar period of minute                                                                                                | 2015-11-18T06:42    |
@@ -49,24 +49,24 @@ The templates are currently in version 1.0; with future development planned. You
 | [government-year](https://purl.org/csv-cubed/qube-config/templates/government-year.json)           | The UK Government calendar period of year starting in April                                                                  | 2017-2018           |
 | [government-half-year](https://purl.org/csv-cubed/qube-config/templates/government-half-year.json) | The UK Government calendar period of half-year starting in April (April-September, October-March)                            | 2010-2011/H1        |
 | [government-quarter](https://purl.org/csv-cubed/qube-config/templates/government-quarter.json)     | The UK Government calendar period of quarter starting in April (April-June, July-September, October-December, January-March) | 2014-2015/Q2        |
-| [government-week](https://purl.org/csv-cubed/qube-config/templates/government-week.json)           | The UK Government calendar period of week as defined at reference.data.gov.uk.                                               | 2019-2020/7         |
+| [government-week](https://purl.org/csv-cubed/qube-config/templates/government-week.json)           | The UK Government calendar period of week as defined at reference.data.gov.uk.                                               | 2019-2020/W7         |
 
 ### Date/Time instant templates
 
-| Template                                                                                                                                       | Description                                        | Example             |
-| ---------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- | ------------------- |
+| Template                                                                                     | Description                                        | Example             |
+|----------------------------------------------------------------------------------------------|----------------------------------------------------|---------------------|
 | [gregorian-instant](https://purl.org/csv-cubed/qube-config/templates/gregorian-instant.json) | The gregorian-instant expressed in ISO-8601 format | 1970-01-01T00:00:00 |
 
 ### Attribute templates
 
-| Template                                                                                                                                         | Description                                                 | Example    |
-| ------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------- | ---------- |
+| Template                                                                                       | Description                                                 | Example    |
+|------------------------------------------------------------------------------------------------|-------------------------------------------------------------|------------|
 | [observation-status](https://purl.org/csv-cubed/qube-config/templates/observation-status.json) | A template which describes the status of the observed value | Suppressed |
 
 ### Unit templates
 
 Units used, have to match the terminal part of the URI exactly including case sensitivity.
 
-| Template                                                                                                                                         | Description                                                 | Example    |
-| ------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------- | ---------- |
+| Template                                                                       | Description                                    | Example                                                                              |
+|--------------------------------------------------------------------------------|------------------------------------------------|--------------------------------------------------------------------------------------|
 | [qudt-units](https://purl.org/csv-cubed/qube-config/templates/qudt-units.json) | A template which contains units of measurement | [http://qudt.org/vocab/unit/PoundSterling](http://qudt.org/vocab/unit/PoundSterling) |
