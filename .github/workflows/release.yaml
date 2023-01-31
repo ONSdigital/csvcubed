@@ -14,6 +14,8 @@ jobs:
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
+    secrets: 
+      ACCESS_REPOS_GH: ${{ secrets.ACCESS_REPOS_GH }}
   
   build_package_and_documentation:
     if: needs.test_in_environments.result == 'success'

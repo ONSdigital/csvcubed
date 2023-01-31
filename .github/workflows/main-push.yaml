@@ -12,6 +12,8 @@ jobs:
         python-version: ['3.9', '3.11']
         os: [ubuntu-latest, windows-latest]
     uses: ./.github/workflows/reusable-test.yaml
+    secrets: 
+      ACCESS_REPOS_GH: ${{ secrets.ACCESS_REPOS_GH }}
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
