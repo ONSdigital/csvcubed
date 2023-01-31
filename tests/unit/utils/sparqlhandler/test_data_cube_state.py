@@ -307,29 +307,13 @@ def test_get_cube_identifiers_for_data_set_error():
     """
     Ensures we can return cube identifiers from a given dataset_uri
     """
-
-    csv_path = (
-        _test_case_base_dir
-        / "single-unit_single-measure"
-        / "energy-trends-uk-total-energy.csv-metadata.json"
-    )
-
     with pytest.raises(KeyError) as exception:
         cube_identifers = data_cube_state3.get_cube_identifiers_for_data_set(
-            data_set_uri=csv_path
+            data_set_uri=""
         )
         assert cube_identifers is None
 
-    testable_csv_path = to_absolute_rdflib_file_path(
-        csv_path,
-        get_path_to_file(
-            "single-unit_single-measure",
-            "energy-trends-uk-total-energy.csv-metadata.json",
-        ),
-    )
-    assert (f"Could not find the data_set with URI '{testable_csv_path}'.") in str(
-        exception.value
-    )
+    assert (f"Could not find the data_set with URI ''.") in str(exception.value)
 
 
 def test_dsd_compomnents_multi_measure_pivoted_shape():
