@@ -320,9 +320,16 @@ def test_get_cube_identifiers_for_data_set_error():
         )
         assert cube_identifers is None
 
-    assert (
-        f"Could not find the data_set with URI '{to_absolute_rdflib_file_path(csv_path)}'."
-    ) in str(exception.value)
+    testable_csv_path = to_absolute_rdflib_file_path(
+        csv_path,
+        get_path_to_file(
+            "single-unit_single-measure",
+            "energy-trends-uk-total-energy.csv-metadata.json",
+        ),
+    )
+    assert (f"Could not find the data_set with URI '{testable_csv_path}'.") in str(
+        exception.value
+    )
 
 
 def test_dsd_compomnents_multi_measure_pivoted_shape():
