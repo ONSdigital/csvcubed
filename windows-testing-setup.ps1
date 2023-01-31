@@ -16,6 +16,9 @@ Expand-Archive -LiteralPath curl.zip -DestinationPath .
 cp curl-7.86.0-win64-mingw\bin\libcurl-x64.dll curl-7.86.0-win64-mingw\bin\libcurl.dll 
 cp curl-7.86.0-win64-mingw\bin\* C:\hostedtoolcache\windows\Ruby\2.4.10\x64\bin
 
+$curlExe = (Get-Item curl-7.86.0-win64-mingw\bin\curl.exe | Resolve-Path).Path.Substring(38)
+
+
 gem install bundle
 bundle init
 bundle add i18n --version "~>1.12.0"
@@ -49,7 +52,7 @@ $path += ";$pwd"
 
 Write-Output "=== Installing sparql-test-runner ==="
 
-.\curl-7.86.0-win64-mingw\bin\curl.exe "https://github.com/GSS-Cogs/sparql-test-runner/releases/download/v0.0.1/sparql-test-runner-1.4.zip" -o "sparql-test-runner.zip"
+&"$curlExe" "https://github.com/GSS-Cogs/sparql-test-runner/releases/download/v0.0.1/sparql-test-runner-1.4.zip" -o "sparql-test-runner.zip"
 # Invoke-WebRequest -Uri "https://github.com/GSS-Cogs/sparql-test-runner/releases/download/v0.0.1/sparql-test-runner-1.4.zip" -OutFile "sparql-test-runner.zip"
 Expand-Archive -LiteralPath sparql-test-runner.zip -DestinationPath .
 
