@@ -305,7 +305,7 @@ def test_get_cube_identifiers_for_data_set():
 
 def test_get_cube_identifiers_for_data_set_error():
     """
-    Ensures we can return cube identifiers from a given data[set_uri
+    Ensures we can return cube identifiers from a given dataset_uri
     """
 
     csv_path = (
@@ -320,9 +320,9 @@ def test_get_cube_identifiers_for_data_set_error():
         )
         assert cube_identifers is None
 
-    assert (f"Could not find the data_set with URI '{csv_path}'.") in str(
-        exception.value
-    )
+    assert (
+        f"Could not find the data_set with URI '{to_absolute_rdflib_file_path(csv_path)}'."
+    ) in str(exception.value)
 
 
 def test_dsd_compomnents_multi_measure_pivoted_shape():
