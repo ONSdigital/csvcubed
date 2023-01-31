@@ -31,7 +31,6 @@ from csvcubed.models.sparqlresults import (
     CsvUrlResult,
     CSVWTableSchemaFileDependenciesResult,
     CubeTableIdentifiers,
-    DSDLabelURIResult,
     IsPivotedShapeMeasureResult,
     MetadataDependenciesResult,
     PrimaryKeyColNamesByDatasetUrlResult,
@@ -46,7 +45,6 @@ from csvcubed.models.sparqlresults import (
     map_csv_url_result,
     map_csvw_table_schemas_file_dependencies_result,
     map_data_set_dsd_csv_url_result,
-    map_dataset_label_dsd_uri_sparql_result,
     map_is_pivoted_shape_for_measures_in_data_set,
     map_metadata_dependency_results,
     map_primary_key_col_names_by_csv_url_result,
@@ -184,28 +182,28 @@ def select_csvw_catalog_metadata(
     return map_catalog_metadata_results(results)
 
 
-def select_csvw_dsd_dataset_label_and_dsd_def_uri(
-    rdf_graph: rdflib.ConjunctiveGraph,
-) -> DSDLabelURIResult:
-    """
-    Queries data structure definition dataset label and uri.
+# def select_csvw_dsd_dataset_label_and_dsd_def_uri(
+#     rdf_graph: rdflib.ConjunctiveGraph,
+# ) -> DSDLabelURIResult:
+#     """
+#     Queries data structure definition dataset label and uri.
 
-    Member of :file:`./sparqlquerymanager.py`
+#     Member of :file:`./sparqlquerymanager.py`
 
-    :return: `DSDLabelURIResult`
-    """
-    results: List[ResultRow] = select(
-        _get_query_string_from_file(SPARQLQueryName.SELECT_DSD_DATASETLABEL_AND_URI),
-        rdf_graph,
-    )
+#     :return: `DSDLabelURIResult`
+#     """
+#     results: List[ResultRow] = select(
+#         _get_query_string_from_file(SPARQLQueryName.SELECT_DSD_DATASETLABEL_AND_URI),
+#         rdf_graph,
+#     )
 
-    if len(results) != 1:
-        raise InvalidNumberOfRecordsException(
-            record_description=f"result for the {SPARQLQueryName.SELECT_DSD_DATASETLABEL_AND_URI.value} sparql query",
-            excepted_num_of_records=1,
-            num_of_records=len(results),
-        )
-    return map_dataset_label_dsd_uri_sparql_result(results[0])
+#     if len(results) != 1:
+#         raise InvalidNumberOfRecordsException(
+#             record_description=f"result for the {SPARQLQueryName.SELECT_DSD_DATASETLABEL_AND_URI.value} sparql query",
+#             excepted_num_of_records=1,
+#             num_of_records=len(results),
+#         )
+#     return map_dataset_label_dsd_uri_sparql_result(results[0])
 
 
 def select_data_set_dsd_and_csv_url(

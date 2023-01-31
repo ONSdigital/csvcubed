@@ -2,7 +2,7 @@ import pytest
 
 from csvcubed.cli.inspect.metadataprinter import to_absolute_rdflib_file_path
 from csvcubed.models.cube.cube_shape import CubeShape
-from csvcubed.models.sparqlresults import CodelistResult, ColumnDefinition
+from csvcubed.models.sparqlresults import ColumnDefinition
 from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.sparql_handler.data_cube_inspector import DataCubeInspector
 from csvcubed.utils.sparql_handler.sparqlquerymanager import select_qb_csv_url
@@ -149,6 +149,7 @@ def test_get_data_set_dsd_csv_url_for_csv_url():
 
     assert data_set_dsd_csv_url_result is not None
     assert data_set_dsd_csv_url_result.csv_url == "qb-id-10004.csv"
+    assert data_set_dsd_csv_url_result.data_set_label == "Pivoted Shape Cube"
     assert data_set_dsd_csv_url_result.data_set_url == "qb-id-10004.csv#dataset"
     assert data_set_dsd_csv_url_result.dsd_uri == "qb-id-10004.csv#structure"
 

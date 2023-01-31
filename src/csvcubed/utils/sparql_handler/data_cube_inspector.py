@@ -4,7 +4,6 @@ from typing import Dict, List, Optional, TypeVar
 
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import (
-    CodelistResult,
     CodelistsResult,
     ColumnDefinition,
     CubeTableIdentifiers,
@@ -16,7 +15,6 @@ from csvcubed.utils.iterables import first, group_by
 from csvcubed.utils.sparql_handler.csvw_state import CsvWState
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_column_definitions,
-    select_csvw_dsd_dataset_label_and_dsd_def_uri,
     select_csvw_dsd_qube_components,
     select_data_set_dsd_and_csv_url,
     select_dsd_code_list_and_cols,

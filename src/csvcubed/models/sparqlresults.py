@@ -99,6 +99,7 @@ class CubeTableIdentifiers(DataClassBase):
 
     csv_url: str
     data_set_url: str
+    data_set_label: str
     dsd_uri: str
 
 
@@ -384,23 +385,23 @@ def map_catalog_metadata_results(
     return results
 
 
-def map_dataset_label_dsd_uri_sparql_result(
-    sparql_result: ResultRow,
-) -> DSDLabelURIResult:
-    """
-    Maps sparql query result to `DSDLabelURIResult`
+# def map_dataset_label_dsd_uri_sparql_result(
+#     sparql_result: ResultRow,
+# ) -> DSDLabelURIResult:
+#     """
+#     Maps sparql query result to `DSDLabelURIResult`
 
-    Member of :file:`./models/sparqlresults.py`
+#     Member of :file:`./models/sparqlresults.py`
 
-    :return: `DSDLabelURIResult`
-    """
-    result_dict = sparql_result.asdict()
+#     :return: `DSDLabelURIResult`
+#     """
+#     result_dict = sparql_result.asdict()
 
-    result = DSDLabelURIResult(
-        dataset_label=str(result_dict["dataSetLabel"]),
-        dsd_uri=str(result_dict["dataStructureDefinition"]),
-    )
-    return result
+#     result = DSDLabelURIResult(
+#         dataset_label=str(result_dict["dataSetLabel"]),
+#         dsd_uri=str(result_dict["dataStructureDefinition"]),
+#     )
+#     return result
 
 
 def map_data_set_dsd_csv_url_result(
@@ -414,6 +415,7 @@ def map_data_set_dsd_csv_url_result(
         return CubeTableIdentifiers(
             csv_url=str(row_result["csvUrl"]),
             data_set_url=str(row_result["dataSet"]),
+            data_set_label=str(row_result["dataSetLabel"]),
             dsd_uri=str(row_result["dsd"]),
         )
 

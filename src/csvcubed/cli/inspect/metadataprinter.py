@@ -52,7 +52,6 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_codelist_cols_by_csv_url,
     select_codelist_csv_url,
     select_cols_where_suppress_output_is_true,
-    select_csvw_dsd_dataset_label_and_dsd_def_uri,
     select_dsd_code_list_and_cols,
     select_primary_key_col_names_by_csv_url,
     select_qb_csv_url,
@@ -171,15 +170,15 @@ class MetadataPrinter:
             self.primary_csv_url
         )
 
-        self.result_dataset_label_dsd_uri = (
-            select_csvw_dsd_dataset_label_and_dsd_def_uri(csvw_state.rdf_graph)
-        )
+        # self.result_dataset_label_dsd_uri = (
+        #     select_csvw_dsd_dataset_label_and_dsd_def_uri(csvw_state.rdf_graph)
+        # )
+        # self.result_dataset_label_dsd_uri = (self.state.get_cube_identifiers_for_csv(self.primary_csv_url))
         self.result_cols_with_suppress_output_true = (
             select_cols_where_suppress_output_is_true(csvw_state.rdf_graph)
         )
         self.result_code_lists = select_dsd_code_list_and_cols(
             csvw_state.rdf_graph,
-            self.result_dataset_label_dsd_uri.dsd_uri,
             csvw_state.csvw_json_path,
         )
 

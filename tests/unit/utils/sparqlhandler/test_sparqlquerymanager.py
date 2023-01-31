@@ -9,7 +9,6 @@ from csvcubed.cli.inspect.metadataprinter import to_absolute_rdflib_file_path
 from csvcubed.models.sparqlresults import (
     CodeListColsByDatasetUrlResult,
     CodelistColumnResult,
-    CodelistsResult,
     ColsWithSuppressOutputTrueResult,
     CsvUrlResult,
     CubeTableIdentifiers,
@@ -30,9 +29,7 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_codelist_csv_url,
     select_cols_where_suppress_output_is_true,
     select_csvw_catalog_metadata,
-    select_csvw_dsd_dataset_label_and_dsd_def_uri,
     select_csvw_table_schema_file_dependencies,
-    select_dsd_code_list_and_cols,
     select_is_pivoted_shape_for_measures_in_data_set,
     select_metadata_dependencies,
     select_qb_csv_url,
@@ -354,11 +351,13 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     data_cube_inspector = DataCubeInspector(csvw_rdf_manager.csvw_state)
 
-    result: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
-        csvw_metadata_rdf_graph
-    )
     primary_catalog_metadata = (
         csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
+    )
+    result: CubeTableIdentifiers = (
+        data_cube_inspector.get_cube_identifiers_for_data_set(
+            primary_catalog_metadata.dataset_uri
+        )
     )
 
     data_set_uri = primary_catalog_metadata.dataset_uri
@@ -370,7 +369,7 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
     )
     components = result_qube_components.qube_components
 
-    assert result.dataset_label == "Pivoted Shape Cube"
+    assert result.data_set_label == "Pivoted Shape Cube"
     assert result.dsd_uri == "qb-id-10003.csv#structure"
     assert len(components) == 7
 
@@ -473,11 +472,14 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     data_cube_inspector = DataCubeInspector(csvw_rdf_manager.csvw_state)
 
-    result: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
-        csvw_metadata_rdf_graph
-    )
     primary_catalog_metadata = (
         csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
+    )
+
+    result: CubeTableIdentifiers = (
+        data_cube_inspector.get_cube_identifiers_for_data_set(
+            primary_catalog_metadata.dataset_uri
+        )
     )
 
     data_set_uri = primary_catalog_metadata.dataset_uri
@@ -489,7 +491,7 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
     )
     components = result_qube_components.qube_components
 
-    assert result.dataset_label == "Pivoted Shape Cube"
+    assert result.data_set_label == "Pivoted Shape Cube"
     assert result.dsd_uri == "qb-id-10004.csv#structure"
     assert len(components) == 5
 
@@ -800,6 +802,7 @@ def test_select_is_pivoted_shape_for_measures_in_pivoted_shape_data_set():
             CubeTableIdentifiers(
                 "qb-id-10003.csv",
                 "qb-id-10003.csv#dataset",
+                "Pivoted Shape Cube",
                 "qb-id-10003.csv#structure",
             )
         ],
@@ -838,6 +841,7 @@ def test_select_is_pivoted_shape_for_measures_in_standard_shape_data_set():
             CubeTableIdentifiers(
                 "energy-trends-uk-total-energy.csv",
                 "energy-trends-uk-total-energy.csv#dataset",
+                "Energy Trends: UK total energy",
                 "energy-trends-uk-total-energy.csv#structure",
             )
         ],
