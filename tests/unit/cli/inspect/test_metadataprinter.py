@@ -19,9 +19,9 @@ from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
 
-
-# TODO put this in the metadataprinter file thing
+# TODO - change test name + give description
 def test_multi_measure_pivoted_something_like_that():
+    """ """
     path_to_json_file = (
         _test_case_base_dir
         / "pivoted-multi-measure-dataset"
@@ -85,7 +85,9 @@ def test_multi_measure_pivoted_something_like_that():
     )
 
 
+# TODO - change test name + give description
 def test_single_measure_pivoted_something_like_that():
+    """ """
     path_to_json_file = (
         _test_case_base_dir
         / "pivoted-single-measure-dataset"

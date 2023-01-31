@@ -7,6 +7,7 @@ from csvcubed.models.csvwtype import CSVWType
 from csvcubed.utils.sparql_handler.csvw_state import CsvWState
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.utils.tableschema import CsvwRdfManager
+from tests.helpers.data_cube_state_cache import get_csvw_rdf_manager
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
@@ -18,7 +19,7 @@ def get_path_to_file(folder_name: str, file_name: str) -> Path:
     return csvw_metadata_json_path
 
 
-csvw_rdf_manager = CsvwRdfManager(
+csvw_rdf_manager = get_csvw_rdf_manager(
     get_path_to_file("pivoted-single-measure-dataset", "qb-id-10004.csv-metadata.json")
 )
 
@@ -34,7 +35,6 @@ def test_get_primary_catalog_metadata():
         / "pivoted-single-measure-dataset"
         / "qb-id-10004.csv-metadata.json"
     )
-    # csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     primary_graph_identifier = path_to_file_uri_for_rdflib(csvw_metadata_json_path)
 
     test_catalog_metadata_result = (
@@ -112,7 +112,7 @@ def test_detect_csvw_type_code_list():
         / "pivoted-single-measure-dataset"
         / "some-dimension.csv-metadata.json"
     )
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
 
     csvw_type = csvw_rdf_manager.csvw_state.csvw_type
     assert csvw_type == CSVWType.CodeList
