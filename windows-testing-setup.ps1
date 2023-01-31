@@ -52,8 +52,8 @@ $path += ";$pwd"
 
 Write-Output "=== Installing sparql-test-runner ==="
 
-&"$curlExe" -s 'https://github.com/GSS-Cogs/sparql-test-runner/releases/download/v0.0.1/sparql-test-runner-1.4.zip' -o 'sparql-test-runner.zip'
-# Invoke-WebRequest -Uri "https://github.com/GSS-Cogs/sparql-test-runner/releases/download/v0.0.1/sparql-test-runner-1.4.zip" -OutFile "sparql-test-runner.zip"
+# &"$curlExe" -s 'https://github.com/GSS-Cogs/sparql-test-runner/releases/download/v0.0.1/sparql-test-runner-1.4.zip' -o 'sparql-test-runner.zip'
+Invoke-WebRequest -Authentication None -Uri "https://github.com/GSS-Cogs/sparql-test-runner/releases/download/v0.0.1/sparql-test-runner-1.4.zip" -OutFile "sparql-test-runner.zip"
 Expand-Archive -LiteralPath sparql-test-runner.zip -DestinationPath .
 
 $sparqlTestRunnerBinDir = (Get-Item sparql-test-runner-1.4/bin | Resolve-Path).Path.Substring(38)
