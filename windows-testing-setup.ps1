@@ -63,6 +63,7 @@ Write-Output "Downloaded sparql-test-runner.zip"
 7z e sparql-test-runner.zip
 # Expand-Archive -LiteralPath sparql-test-runner.zip -DestinationPath .
 Write-Output "Expanded sparql-test-runner.zip"
+ls
 
 $sparqlTestRunnerBinDir = (Get-Item sparql-test-runner-1.4/bin | Resolve-Path).Path.Substring(38)
 $path += ";$sparqlTestRunnerBinDir"
