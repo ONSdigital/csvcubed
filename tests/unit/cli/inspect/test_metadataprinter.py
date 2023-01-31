@@ -19,9 +19,9 @@ from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
 
-# TODO - change test name + give description
-def test_multi_measure_pivoted_something_like_that():
-    """ """
+
+def test_multi_measure_pivoted_shape_observation_info():
+    """Testing the multi measure pivoted shape observation information return data and format"""
     path_to_json_file = (
         _test_case_base_dir
         / "pivoted-multi-measure-dataset"
@@ -85,9 +85,8 @@ def test_multi_measure_pivoted_something_like_that():
     )
 
 
-# TODO - change test name + give description
-def test_single_measure_pivoted_something_like_that():
-    """ """
+def test_single_measure_pivoted_shape_observation_info():
+    """Testing the single measure pivoted shape observation information return data and format"""
     path_to_json_file = (
         _test_case_base_dir
         / "pivoted-single-measure-dataset"
