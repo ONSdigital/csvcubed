@@ -26,8 +26,6 @@ jobs:
       - name: Install csvlint, csv2rdf and sparql-test-runner (Windows)
         id: windows-install
         if: inputs.os == 'windows-latest'
-        env: 
-          GITHUB_TOKEN: ${{ secrets.ACCESS_REPOS_GH }}
 
         run: .\windows-testing-setup.ps1 -verbose
         shell: pwsh
