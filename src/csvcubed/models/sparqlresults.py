@@ -154,7 +154,7 @@ class CodelistsResult:
                 codelist.as_dict()
                 for codelist in sorted(self.codelists, key=lambda c: c.code_list)
             ],
-            column_names=["Code List", "Code List Label", "Columns Used In"],
+            column_names=["Code List", "Code List Label", "Columns Used In", "CSV URL"],
         )
         return f"""
         - Number of Code Lists: {self.num_codelists}
