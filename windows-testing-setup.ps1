@@ -59,7 +59,7 @@ Write-Output "Attempting to download sparql-test-runner.zip"
 Write-Output "Downloaded sparql-test-runner.zip"
 # Invoke-WebRequest -SkipHttpErrorCheck -MaximumRetryCount 10 -RetryIntervalSec 1 -SkipCertificateCheck -AllowUnencryptedAuthentication -SkipHeaderValidation -Uri "https://github.com/GSS-Cogs/sparql-test-runner/releases/download/v0.0.1/sparql-test-runner-1.4.zip" -OutFile "sparql-test-runner.zip"
 # This is what it was originally, but it doesn't necessarily always work:
-Invoke-WebRequest -Uri "https://ci.ukstats.dev/job/GSS_data/job/sparql-test-runner-temporary-hosting/lastSuccessfulBuild/artifact/sparql-test-runner-1.4.zip" -OutFile "sparql-test-runner.zip"
+Invoke-WebRequest -Uri "http://storage.googleapis.com/gsscogs-linkeddata-public/sparql-test-runner-1.4.zip" -OutFile "sparql-test-runner.zip"
 # Invoke-WebRequest -Uri "https://github.com/GSS-Cogs/sparql-test-runner/releases/download/v0.0.1/sparql-test-runner-1.4.zip" -OutFile "sparql-test-runner.zip"
 # &'C:\Program Files\7-Zip\7z.exe' x .\sparql-test-runner.zip -aoa
 Expand-Archive -LiteralPath sparql-test-runner.zip -DestinationPath .
