@@ -51,63 +51,77 @@
         <qb-id-10004.csv#structure>,
         <qb-id-10004.csv#unit/some-unit> ;
     csvw:table [ csvw:suppressOutput true ;
-            csvw:tableSchema <some-dimension.table.json> ;
-            csvw:url "some-dimension.csv"^^xsd:anyURI ],
-        [ csvw:tableSchema [ csvw:aboutUrl "qb-id-10004.csv#slice/{some_dimension}"^^csvw:uriTemplate ;
-                    csvw:column ( [ csvw:name "some_dimension" ;
-                                csvw:propertyUrl "qb-id-10004.csv#dimension/some-dimension"^^csvw:uriTemplate ;
-                                csvw:required true ;
-                                csvw:title "Some Dimension" ;
-                                csvw:valueUrl "some-dimension.csv#{+some_dimension}"^^csvw:uriTemplate ] [ csvw:aboutUrl "qb-id-10004.csv#obs/{some_dimension}@some-measure"^^csvw:uriTemplate ;
-                                csvw:name "some_attribute" ;
-                                csvw:propertyUrl "qb-id-10004.csv#attribute/some-attribute"^^csvw:uriTemplate ;
-                                csvw:required false ;
-                                csvw:title "Some Attribute" ;
-                                csvw:valueUrl "qb-id-10004.csv#attribute/some-attribute/{+some_attribute}"^^csvw:uriTemplate ] [ csvw:aboutUrl "qb-id-10004.csv#obs/{some_dimension}@some-measure"^^csvw:uriTemplate ;
-                                csvw:datatype xsd:decimal ;
-                                csvw:name "some_obs_val" ;
-                                csvw:propertyUrl "qb-id-10004.csv#measure/some-measure"^^csvw:uriTemplate ;
-                                csvw:required true ;
-                                csvw:title "Some Obs Val" ] [ csvw:name "virt_slice" ;
-                                csvw:propertyUrl "rdf:type"^^csvw:uriTemplate ;
-                                csvw:valueUrl "qb:Slice"^^csvw:uriTemplate ;
-                                csvw:virtual true ] [ csvw:name "virt_slice_structure" ;
-                                csvw:propertyUrl "qb:sliceStructure"^^csvw:uriTemplate ;
-                                csvw:valueUrl "qb-id-10004.csv#slice/cross-measures"^^csvw:uriTemplate ;
-                                csvw:virtual true ] [ csvw:name "virt_obs_some_obs_val" ;
-                                csvw:propertyUrl "qb:Observation"^^csvw:uriTemplate ;
-                                csvw:valueUrl "qb-id-10004.csv#obs/{some_dimension}@some-measure"^^csvw:uriTemplate ;
-                                csvw:virtual true ] [ csvw:aboutUrl "qb-id-10004.csv#obs/{some_dimension}@some-measure"^^csvw:uriTemplate ;
-                                csvw:name "virt_obs_some_obs_val_meas" ;
-                                csvw:propertyUrl "qb:measureType"^^csvw:uriTemplate ;
-                                csvw:valueUrl "qb-id-10004.csv#measure/some-measure"^^csvw:uriTemplate ;
-                                csvw:virtual true ] [ csvw:aboutUrl "qb-id-10004.csv#obs/{some_dimension}@some-measure"^^csvw:uriTemplate ;
-                                csvw:name "virt_obs_some_obs_val_unit" ;
-                                csvw:propertyUrl "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"^^csvw:uriTemplate ;
-                                csvw:valueUrl "qb-id-10004.csv#unit/some-unit"^^csvw:uriTemplate ;
-                                csvw:virtual true ] [ csvw:aboutUrl "qb-id-10004.csv#obs/{some_dimension}@some-measure"^^csvw:uriTemplate ;
-                                csvw:name "virt_dim_some_obs_val_some_dimension" ;
-                                csvw:propertyUrl "qb-id-10004.csv#dimension/some-dimension"^^csvw:uriTemplate ;
-                                csvw:valueUrl "some-dimension.csv#{+some_dimension}"^^csvw:uriTemplate ;
-                                csvw:virtual true ] [ csvw:aboutUrl "qb-id-10004.csv#obs/{some_dimension}@some-measure"^^csvw:uriTemplate ;
-                                csvw:name "virt_obs_some_obs_val_type" ;
-                                csvw:propertyUrl "rdf:type"^^csvw:uriTemplate ;
-                                csvw:valueUrl "qb:Observation"^^csvw:uriTemplate ;
-                                csvw:virtual true ] [ csvw:aboutUrl "qb-id-10004.csv#obs/{some_dimension}@some-measure"^^csvw:uriTemplate ;
-                                csvw:name "virt_dataSet_some_obs_val" ;
-                                csvw:propertyUrl "qb:dataSet"^^csvw:uriTemplate ;
-                                csvw:valueUrl "qb-id-10004.csv#dataset"^^csvw:uriTemplate ;
-                                csvw:virtual true ] [ csvw:aboutUrl "http://example.com/about"^^csvw:uriTemplate ;
-                                csvw:name "virt_suppressed_test" ;
-                                csvw:propertyUrl "http://example.com/property"^^csvw:uriTemplate ;
-                                csvw:suppressOutput true ;
-                                csvw:valueUrl "http://example.com/value"^^csvw:uriTemplate ;
-                                csvw:virtual true ] ) ;
-                    csvw:foreignKey [ csvw:columnReference ( "some_dimension" ) ;
-                            csvw:reference [ csvw:columnReference ( "uri_identifier" ) ;
-                                    csvw:resource "some-dimension.csv"^^xsd:anyURI ] ] ;
-                    csvw:primaryKey "some_dimension" ] ;
-            csvw:url "qb-id-10004.csv"^^xsd:anyURI ] ;
+                 csvw:tableSchema <some-dimension.table.json> ;
+                 csvw:url "some-dimension.csv"^^xsd:anyURI ],
+               [ csvw:tableSchema [
+                    csvw:aboutUrl "qb-id-10004.csv#slice/{some_dimension}"^^csvw:uriTemplate ;
+                    csvw:column (
+                        [ csvw:name "some_dimension" ;
+                        csvw:propertyUrl "qb-id-10004.csv#dimension/some-dimension"^^csvw:uriTemplate ;
+                        csvw:required true ;
+                        csvw:title "Some Dimension" ;
+                        csvw:valueUrl "some-dimension.csv#{+some_dimension}"^^csvw:uriTemplate ]
+                        [ csvw:aboutUrl "qb-id-10004.csv#obs/{some_dimension}@some-measure"^^csvw:uriTemplate ;
+                        csvw:name "some_attribute" ;
+                        csvw:propertyUrl "qb-id-10004.csv#attribute/some-attribute"^^csvw:uriTemplate ;
+                        csvw:required false ;
+                        csvw:title "Some Attribute" ;
+                        csvw:valueUrl "qb-id-10004.csv#attribute/some-attribute/{+some_attribute}"^^csvw:uriTemplate ]
+                        [ csvw:aboutUrl "qb-id-10004.csv#obs/{some_dimension}@some-measure"^^csvw:uriTemplate ;
+                        csvw:datatype xsd:decimal ;
+                        csvw:name "some_obs_val" ;
+                        csvw:propertyUrl "qb-id-10004.csv#measure/some-measure"^^csvw:uriTemplate ;
+                        csvw:required true ;
+                        csvw:title "Some Obs Val" ]
+                        [ csvw:name "virt_slice" ;
+                        csvw:propertyUrl "rdf:type"^^csvw:uriTemplate ;
+                        csvw:valueUrl "qb:Slice"^^csvw:uriTemplate ;
+                        csvw:virtual true ]
+                        [ csvw:name "virt_slice_structure" ;
+                        csvw:propertyUrl "qb:sliceStructure"^^csvw:uriTemplate ;
+                        csvw:valueUrl "qb-id-10004.csv#slice/cross-measures"^^csvw:uriTemplate ;
+                        csvw:virtual true ]
+                        [ csvw:name "virt_obs_some_obs_val" ;
+                        csvw:propertyUrl "qb:Observation"^^csvw:uriTemplate ;
+                        csvw:valueUrl "qb-id-10004.csv#obs/{some_dimension}@some-measure"^^csvw:uriTemplate ;
+                        csvw:virtual true ]
+                        [ csvw:aboutUrl "qb-id-10004.csv#obs/{some_dimension}@some-measure"^^csvw:uriTemplate ;
+                        csvw:name "virt_obs_some_obs_val_meas" ;
+                        csvw:propertyUrl "qb:measureType"^^csvw:uriTemplate ;
+                        csvw:valueUrl "qb-id-10004.csv#measure/some-measure"^^csvw:uriTemplate ;
+                        csvw:virtual true ]
+                        [ csvw:aboutUrl "qb-id-10004.csv#obs/{some_dimension}@some-measure"^^csvw:uriTemplate ;
+                        csvw:name "virt_obs_some_obs_val_unit" ;
+                        csvw:propertyUrl "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"^^csvw:uriTemplate ;
+                        csvw:valueUrl "qb-id-10004.csv#unit/some-unit"^^csvw:uriTemplate ;
+                        csvw:virtual true ]
+                        [ csvw:aboutUrl "qb-id-10004.csv#obs/{some_dimension}@some-measure"^^csvw:uriTemplate ;
+                        csvw:name "virt_dim_some_obs_val_some_dimension" ;
+                        csvw:propertyUrl "qb-id-10004.csv#dimension/some-dimension"^^csvw:uriTemplate ;
+                        csvw:valueUrl "some-dimension.csv#{+some_dimension}"^^csvw:uriTemplate ;
+                        csvw:virtual true ]
+                        [ csvw:aboutUrl "qb-id-10004.csv#obs/{some_dimension}@some-measure"^^csvw:uriTemplate ;
+                        csvw:name "virt_obs_some_obs_val_type" ;
+                        csvw:propertyUrl "rdf:type"^^csvw:uriTemplate ;
+                        csvw:valueUrl "qb:Observation"^^csvw:uriTemplate ;
+                        csvw:virtual true ]
+                        [ csvw:aboutUrl "qb-id-10004.csv#obs/{some_dimension}@some-measure"^^csvw:uriTemplate ;
+                        csvw:name "virt_dataSet_some_obs_val" ;
+                        csvw:propertyUrl "qb:dataSet"^^csvw:uriTemplate ;
+                        csvw:valueUrl "qb-id-10004.csv#dataset"^^csvw:uriTemplate ;
+                        csvw:virtual true ]
+                        [ csvw:aboutUrl "http://example.com/about"^^csvw:uriTemplate ;
+                        csvw:name "virt_suppressed_test" ;
+                        csvw:propertyUrl "http://example.com/property"^^csvw:uriTemplate ;
+                        csvw:suppressOutput true ;
+                        csvw:valueUrl "http://example.com/value"^^csvw:uriTemplate ;
+                        csvw:virtual true ] ) ;
+                    csvw:foreignKey [
+                        csvw:columnReference ( "some_dimension" ) ;
+                        csvw:reference [ csvw:columnReference ( "uri_identifier" ) ;
+                        csvw:resource "some-dimension.csv"^^xsd:anyURI ] ] ;
+                        csvw:primaryKey "some_dimension" ] ;
+                csvw:url "qb-id-10004.csv"^^xsd:anyURI ] ;
     prov:wasGeneratedBy <qb-id-10004.csv#csvcubed-build-activity> .
 
 <qb-id-10004.csv#dependency/some-dimension> a void:Dataset,
