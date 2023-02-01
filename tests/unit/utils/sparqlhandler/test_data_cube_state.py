@@ -6,11 +6,8 @@ from csvcubed.cli.inspect.metadataprinter import to_absolute_rdflib_file_path
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import ColumnDefinition, QubeComponentsResult
 from csvcubed.utils.qb.components import ComponentPropertyType
-from csvcubed.utils.sparql_handler.csvw_state import CsvWState
-from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
 from csvcubed.utils.sparql_handler.sparqlquerymanager import select_qb_csv_url
-from csvcubed.utils.tableschema import CsvwRdfManager
-from tests.helpers.inspectors_cache import get_data_cube_state
+from tests.helpers.inspectors_cache import get_csvw_rdf_manager, get_data_cube_state
 from tests.unit.test_baseunit import get_test_cases_dir
 from tests.unit.utils.sparqlhandler.test_sparqlquerymanager import (
     assert_dsd_component_equal,
@@ -20,27 +17,17 @@ from tests.unit.utils.sparqlhandler.test_sparqlquerymanager import (
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
 
 
-def get_path_to_file(folder_name: str, file_name: str) -> Path:
-
-    csvw_metadata_json_path = _test_case_base_dir / folder_name / file_name
-    return csvw_metadata_json_path
-
-
-def get_csv_rdf_manager(path_to_file: Path) -> CsvwRdfManager:
-
-    return CsvwRdfManager(path_to_file)
-
-
-csvw_rdf_manager = get_csv_rdf_manager(
-    get_path_to_file("pivoted-single-measure-dataset", "qb-id-10004.csv-metadata.json")
-)
-data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
-
-
 def test_get_column_definitions_for_csv():
     """
     Ensures that the `ColumnDefinition`s with different property values can be correctly loaded from as CSV-W file.
     """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-single-measure-dataset"
+        / "qb-id-10004.csv-metadata.json"
+    )
+
+    data_cube_state = get_data_cube_state(csvw_metadata_json_path)
 
     results = {
         c.name: c
@@ -120,6 +107,13 @@ def test_exception_is_thrown_for_invalid_csv_url():
     """
     Ensures that an exception is thrown when a getter is provided an invalid csv url.
     """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-single-measure-dataset"
+        / "qb-id-10004.csv-metadata.json"
+    )
+
+    data_cube_state = get_data_cube_state(csvw_metadata_json_path)
 
     input_dict = {"a": 1, "b": 2}
 
@@ -134,6 +128,16 @@ def test_get_data_set_dsd_csv_url_for_csv_url():
     Ensures that the valid data_set_dsd_and_csv_url_for_csv_url property is returned.
     """
 
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-single-measure-dataset"
+        / "qb-id-10004.csv-metadata.json"
+    )
+
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
+
+    data_cube_state = get_data_cube_state(csvw_metadata_json_path)
+
     primary_catalog_metadata = (
         csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
     )
@@ -141,9 +145,7 @@ def test_get_data_set_dsd_csv_url_for_csv_url():
     data_set_uri = primary_catalog_metadata.dataset_uri
     data_set_uri = to_absolute_rdflib_file_path(
         data_set_uri,
-        get_path_to_file(
-            "pivoted-single-measure-dataset", "qb-id-10004.csv-metadata.json"
-        ),
+        csvw_metadata_json_path,
     )
     csv_url = select_qb_csv_url(
         data_cube_state.csvw_state.rdf_graph, data_set_uri
@@ -162,6 +164,16 @@ def test_get_dsd_qube_components_for_csv():
     Ensures that the valid dsd_qube_components_for_csv property is returned.
     """
 
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-single-measure-dataset"
+        / "qb-id-10004.csv-metadata.json"
+    )
+
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
+
+    data_cube_state = get_data_cube_state(csvw_metadata_json_path)
+
     primary_catalog_metadata = (
         csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
     )
@@ -169,9 +181,7 @@ def test_get_dsd_qube_components_for_csv():
     data_set_uri = primary_catalog_metadata.dataset_uri
     data_set_uri = to_absolute_rdflib_file_path(
         data_set_uri,
-        get_path_to_file(
-            "pivoted-single-measure-dataset", "qb-id-10004.csv-metadata.json"
-        ),
+        csvw_metadata_json_path,
     )
     csv_url = select_qb_csv_url(
         data_cube_state.csvw_state.rdf_graph, data_set_uri
@@ -253,29 +263,20 @@ def test_get_dsd_qube_components_for_csv():
     )
 
 
-# 1003 csv from here on
-
-csvw_rdf_manager2 = get_csv_rdf_manager(
-    get_path_to_file("pivoted-multi-measure-dataset", "qb-id-10003.csv-metadata.json")
-)
-data_cube_state2 = DataCubeState(csvw_rdf_manager2.csvw_state)
-
-
 def test_detect_csvw_shape_pivoted():
     """
     Ensures that the shape of the cube represented by the input metadata is correctly returned as Pivoted.
     """
 
-    cube_shape = data_cube_state2.get_shape_for_csv("qb-id-10003.csv")
-    assert cube_shape == CubeShape.Pivoted
-
-
-csvw_rdf_manager3 = get_csv_rdf_manager(
-    get_path_to_file(
-        "single-unit_single-measure", "energy-trends-uk-total-energy.csv-metadata.json"
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-multi-measure-dataset"
+        / "qb-id-10003.csv-metadata.json"
     )
-)
-data_cube_state3 = DataCubeState(csvw_rdf_manager3.csvw_state)
+    data_cube_state = get_data_cube_state(csvw_metadata_json_path)
+
+    cube_shape = data_cube_state.get_shape_for_csv("qb-id-10003.csv")
+    assert cube_shape == CubeShape.Pivoted
 
 
 def test_detect_csvw_shape_standard():
@@ -283,7 +284,15 @@ def test_detect_csvw_shape_standard():
     Ensures that the shape of the cube represented by the input metadata is correctly returned as Standard.
     """
 
-    cube_shape = data_cube_state3.get_shape_for_csv("energy-trends-uk-total-energy.csv")
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "single-unit_single-measure"
+        / "energy-trends-uk-total-energy.csv-metadata.json"
+    )
+
+    data_cube_state = get_data_cube_state(csvw_metadata_json_path)
+
+    cube_shape = data_cube_state.get_shape_for_csv("energy-trends-uk-total-energy.csv")
 
     assert cube_shape == CubeShape.Standard
 
@@ -293,8 +302,16 @@ def test_get_cube_identifiers_for_data_set():
     Ensures we can return cube identifiers from a given dataset_uri
     """
 
-    cube_identifiers = data_cube_state3.get_cube_identifiers_for_data_set(
-        data_cube_state3.csvw_state.get_primary_catalog_metadata().dataset_uri
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "single-unit_single-measure"
+        / "energy-trends-uk-total-energy.csv-metadata.json"
+    )
+
+    data_cube_state = get_data_cube_state(csvw_metadata_json_path)
+
+    cube_identifiers = data_cube_state.get_cube_identifiers_for_data_set(
+        data_cube_state.csvw_state.get_primary_catalog_metadata().dataset_uri
     )
 
     assert cube_identifiers is not None
@@ -307,8 +324,17 @@ def test_get_cube_identifiers_for_data_set_error():
     """
     Ensures we can return cube identifiers from a given dataset_uri
     """
+
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "single-unit_single-measure"
+        / "energy-trends-uk-total-energy.csv-metadata.json"
+    )
+
+    data_cube_state = get_data_cube_state(csvw_metadata_json_path)
+
     with pytest.raises(KeyError) as exception:
-        cube_identifers = data_cube_state3.get_cube_identifiers_for_data_set(
+        cube_identifers = data_cube_state.get_cube_identifiers_for_data_set(
             data_set_uri=""
         )
         assert cube_identifers is None
