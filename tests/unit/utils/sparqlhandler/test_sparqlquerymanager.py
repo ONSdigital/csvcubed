@@ -635,7 +635,6 @@ def test_select_single_unit_from_dsd():
         / "single-unit_multi-measure"
         / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv-metadata.json"
     )
-    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
     data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
 
     result: UnitResult = data_cube_state.get_unit_for_uri(
