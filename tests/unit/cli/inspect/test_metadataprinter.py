@@ -10,7 +10,7 @@ from csvcubed.models.inspectdataframeresults import (
 )
 from csvcubed.models.sparqlresults import CodelistsResult
 from csvcubed.utils.iterables import first
-from tests.helpers.inspectors_cache import get_data_cube_state
+from tests.helpers.inspectors_cache import get_data_cube_inspector
 from tests.unit.cli.inspect.test_inspectdatasetmanager import (
     expected_dataframe_pivoted_multi_measure,
     expected_dataframe_pivoted_single_measure,
@@ -28,7 +28,7 @@ def test_multi_measure_pivoted_shape_observation_info():
         / "qb-id-10003.csv-metadata.json"
     )
 
-    data_cube_state = get_data_cube_state(path_to_json_file)
+    data_cube_state = get_data_cube_inspector(path_to_json_file)
     metadata_printer = MetadataPrinter(data_cube_state)
 
     result_code_lists: CodelistsResult = metadata_printer.result_code_lists
@@ -93,7 +93,7 @@ def test_single_measure_pivoted_shape_observation_info():
         / "qb-id-10004.csv-metadata.json"
     )
 
-    data_cube_state = get_data_cube_state(path_to_json_file)
+    data_cube_state = get_data_cube_inspector(path_to_json_file)
     metadata_printer = MetadataPrinter(data_cube_state)
 
     result_code_lists: CodelistsResult = metadata_printer.result_code_lists

@@ -39,7 +39,7 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_table_schema_properties,
 )
 from csvcubed.utils.tableschema import CsvwRdfManager, add_triples_for_file_dependencies
-from tests.helpers.inspectors_cache import get_csvw_rdf_manager, get_data_cube_state
+from tests.helpers.inspectors_cache import get_csvw_rdf_manager, get_data_cube_inspector
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
@@ -251,7 +251,7 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
     csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
-    data_cube_state = get_data_cube_state(csvw_metadata_json_path)
+    data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
 
     result: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
         csvw_metadata_rdf_graph
@@ -349,7 +349,7 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
     )
     csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    data_cube_state = get_data_cube_state(csvw_metadata_json_path)
+    data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
 
     result: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
         csvw_metadata_rdf_graph
@@ -466,7 +466,7 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
     )
     csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    data_cube_state = get_data_cube_state(csvw_metadata_json_path)
+    data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
 
     result: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
         csvw_metadata_rdf_graph
@@ -636,7 +636,7 @@ def test_select_single_unit_from_dsd():
         / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv-metadata.json"
     )
     csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
-    data_cube_state = get_data_cube_state(csvw_metadata_json_path)
+    data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
 
     result: UnitResult = data_cube_state.get_unit_for_uri(
         "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#unit/mtco2e"

@@ -7,7 +7,7 @@ from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import ColumnDefinition, QubeComponentsResult
 from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.sparql_handler.sparqlquerymanager import select_qb_csv_url
-from tests.helpers.inspectors_cache import get_csvw_rdf_manager, get_data_cube_state
+from tests.helpers.inspectors_cache import get_csvw_rdf_manager, get_data_cube_inspector
 from tests.unit.test_baseunit import get_test_cases_dir
 from tests.unit.utils.sparqlhandler.test_sparqlquerymanager import (
     assert_dsd_component_equal,
@@ -27,7 +27,7 @@ def test_get_column_definitions_for_csv():
         / "qb-id-10004.csv-metadata.json"
     )
 
-    data_cube_state = get_data_cube_state(csvw_metadata_json_path)
+    data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
 
     results = {
         c.name: c
@@ -113,7 +113,7 @@ def test_exception_is_thrown_for_invalid_csv_url():
         / "qb-id-10004.csv-metadata.json"
     )
 
-    data_cube_state = get_data_cube_state(csvw_metadata_json_path)
+    data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
 
     input_dict = {"a": 1, "b": 2}
 
@@ -136,7 +136,7 @@ def test_get_data_set_dsd_csv_url_for_csv_url():
 
     csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
 
-    data_cube_state = get_data_cube_state(csvw_metadata_json_path)
+    data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
 
     primary_catalog_metadata = (
         csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
@@ -172,7 +172,7 @@ def test_get_dsd_qube_components_for_csv():
 
     csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
 
-    data_cube_state = get_data_cube_state(csvw_metadata_json_path)
+    data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
 
     primary_catalog_metadata = (
         csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
@@ -273,7 +273,7 @@ def test_detect_csvw_shape_pivoted():
         / "pivoted-multi-measure-dataset"
         / "qb-id-10003.csv-metadata.json"
     )
-    data_cube_state = get_data_cube_state(csvw_metadata_json_path)
+    data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
 
     cube_shape = data_cube_state.get_shape_for_csv("qb-id-10003.csv")
     assert cube_shape == CubeShape.Pivoted
@@ -290,7 +290,7 @@ def test_detect_csvw_shape_standard():
         / "energy-trends-uk-total-energy.csv-metadata.json"
     )
 
-    data_cube_state = get_data_cube_state(csvw_metadata_json_path)
+    data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
 
     cube_shape = data_cube_state.get_shape_for_csv("energy-trends-uk-total-energy.csv")
 
@@ -308,7 +308,7 @@ def test_get_cube_identifiers_for_data_set():
         / "energy-trends-uk-total-energy.csv-metadata.json"
     )
 
-    data_cube_state = get_data_cube_state(csvw_metadata_json_path)
+    data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
 
     cube_identifiers = data_cube_state.get_cube_identifiers_for_data_set(
         data_cube_state.csvw_state.get_primary_catalog_metadata().dataset_uri
@@ -331,7 +331,7 @@ def test_get_cube_identifiers_for_data_set_error():
         / "energy-trends-uk-total-energy.csv-metadata.json"
     )
 
-    data_cube_state = get_data_cube_state(csvw_metadata_json_path)
+    data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
 
     with pytest.raises(KeyError) as exception:
         cube_identifers = data_cube_state.get_cube_identifiers_for_data_set(
@@ -353,7 +353,7 @@ def test_dsd_compomnents_multi_measure_pivoted_shape():
         / "qb-id-10003.csv-metadata.json"
     )
 
-    data_cube_state = get_data_cube_state(path_to_json_file)
+    data_cube_state = get_data_cube_inspector(path_to_json_file)
 
     result_qube_components: QubeComponentsResult = (
         data_cube_state.get_dsd_qube_components_for_csv("qb-id-10003.csv")
@@ -458,7 +458,7 @@ def test_dsd_single_measure_pivoted_shape():
         / "qb-id-10004.csv-metadata.json"
     )
 
-    data_cube_state = get_data_cube_state(path_to_json_file)
+    data_cube_state = get_data_cube_inspector(path_to_json_file)
 
     result_qube_components: QubeComponentsResult = (
         data_cube_state.get_dsd_qube_components_for_csv("qb-id-10004.csv")

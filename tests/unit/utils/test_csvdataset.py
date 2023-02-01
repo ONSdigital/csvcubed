@@ -18,7 +18,7 @@ from csvcubed.utils.csvdataset import (
 )
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
 from csvcubed.utils.tableschema import CsvwRdfManager
-from tests.helpers.inspectors_cache import get_data_cube_state
+from tests.helpers.inspectors_cache import get_data_cube_inspector
 from tests.unit.cli.inspect.test_inspectdatasetmanager import get_arguments_qb_dataset
 from tests.unit.test_baseunit import get_test_cases_dir
 
@@ -447,7 +447,7 @@ def test_transform_to_canonical_shape_for_standard_shape_data_set():
         / "single-unit_single-measure"
         / "energy-trends-uk-total-energy.csv-metadata.json"
     )
-    data_cube_state = get_data_cube_state(csvw_metadata_json_path)
+    data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
 
     (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
     (
@@ -477,7 +477,7 @@ def test_transform_to_canonical_shape_for_pivoted_single_measure_shape_data_set(
         / "pivoted-single-measure-dataset"
         / "qb-id-10004.csv-metadata.json"
     )
-    data_cube_state = get_data_cube_state(csvw_metadata_json_path)
+    data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
 
     (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
 
@@ -519,7 +519,7 @@ def test_transform_to_canonical_shape_for_pivoted_multi_measure_shape_data_set()
         / "pivoted-multi-measure-dataset"
         / "qb-id-10003.csv-metadata.json"
     )
-    data_cube_state = get_data_cube_state(csvw_metadata_json_path)
+    data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
 
     (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
 
@@ -660,7 +660,7 @@ def test_create_unit_col_in_melted_data_set_for_pivoted_shape():
         / "pivoted-multi-measure-dataset"
         / "qb-id-10003.csv-metadata.json"
     )
-    data_cube_state = get_data_cube_state(csvw_metadata_json_path)
+    data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
 
     measure_uris = {
         c.property for c in _measure_components_for_multi_measure_pivoted_shape
@@ -710,7 +710,7 @@ def test_create_unit_col_in_melted_data_set_for_pivoted_shape_should_throw_inval
         / "pivoted-multi-measure-dataset"
         / "qb-id-10003.csv-metadata.json"
     )
-    data_cube_state = get_data_cube_state(csvw_metadata_json_path)
+    data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
 
     measure_uris = {
         c.property for c in _measure_components_for_multi_measure_pivoted_shape
@@ -758,7 +758,7 @@ def test_create_unit_col_in_melted_data_set_for_pivoted_shape_should_throw_inval
         / "pivoted-multi-measure-dataset"
         / "qb-id-10003.csv-metadata.json"
     )
-    data_cube_state = get_data_cube_state(csvw_metadata_json_path)
+    data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
     column_definitions = data_cube_state.get_column_definitions_for_csv(
         "qb-id-10003.csv"
     )
@@ -793,7 +793,7 @@ def test_unit_not_defined_locally():
         / "pivoted-multi-measure-dataset"
         / "unit_not_locally_defined.csv-metadata.json"
     )
-    data_cube_state = get_data_cube_state(csvw_metadata_json_path)
+    data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
 
     (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
 
