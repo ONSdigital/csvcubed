@@ -17,7 +17,6 @@ from csvcubed.cli.inspect.inspectdatasetmanager import (
     get_standard_shape_unit_col_name_from_dsd,
     load_csv_to_dataframe,
 )
-from csvcubed.cli.inspect.metadataprinter import to_absolute_rdflib_file_path
 from csvcubed.models.csvwtype import CSVWType
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.inspectdataframeresults import (
@@ -37,7 +36,6 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_codelist_csv_url,
     select_primary_key_col_names_by_csv_url,
 )
-from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.helpers.inspectors_cache import get_csvw_rdf_manager, get_data_cube_inspector
 from tests.unit.test_baseunit import get_test_cases_dir
 

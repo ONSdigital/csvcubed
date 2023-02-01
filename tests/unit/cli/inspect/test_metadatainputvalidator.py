@@ -2,12 +2,10 @@ import os
 from pathlib import Path
 
 import pytest
-from pandas.testing import assert_frame_equal
 
 from csvcubed.cli.inspect.metadatainputvalidator import MetadataValidator
 from csvcubed.models.csvwtype import CSVWType
-from csvcubed.utils.tableschema import CsvwRdfManager
-from tests.helpers.inspectors_cache import get_csvw_rdf_manager, get_data_cube_inspector
+from tests.helpers.inspectors_cache import get_csvw_rdf_manager
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
