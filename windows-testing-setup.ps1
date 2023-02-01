@@ -16,6 +16,9 @@ Expand-Archive -LiteralPath curl.zip -DestinationPath .
 cp curl-7.86.0-win64-mingw\bin\libcurl-x64.dll curl-7.86.0-win64-mingw\bin\libcurl.dll 
 cp curl-7.86.0-win64-mingw\bin\* C:\hostedtoolcache\windows\Ruby\2.4.10\x64\bin
 
+$curlExe = (Get-Item curl-7.86.0-win64-mingw\bin\curl.exe | Resolve-Path).Path.Substring(38)
+
+
 gem install bundle
 bundle init
 bundle add i18n --version "~>1.12.0"
@@ -43,14 +46,21 @@ Set-Content -Path csv2rdf.bat -Value "@REM Forwarder script`n@echo off`necho Att
 
 $csv2rdfLocation = (Get-Item csv2rdf.bat | Resolve-Path).Path.Substring(38)
 echo "CSV2RDF_LOCATION=$csv2rdfLocation" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
-Write-Output = "csv2rdf location: $csv2rdfLocation"
+Write-Output "csv2rdf location: $csv2rdfLocation"
 
 $path += ";$pwd"
 
 Write-Output "=== Installing sparql-test-runner ==="
 
-Invoke-WebRequest -Uri "https://github.com/GSS-Cogs/sparql-test-runner/releases/download/v0.0.1/sparql-test-runner-1.4.zip" -OutFile "sparql-test-runner.zip"
+Write-Output "Attempting to download sparql-test-runner.zip"
+# Temporary URL to download sparql-test-runner-1.4.zip from. 
+Invoke-WebRequest -Uri "http://storage.googleapis.com/gsscogs-linkeddata-public/sparql-test-runner-1.4.zip" -OutFile "sparql-test-runner.zip"
+# This is what it was originally, but it doesn't necessarily always work:
+# Invoke-WebRequest -Uri "https://github.com/GSS-Cogs/sparql-test-runner/releases/download/v0.0.1/sparql-test-runner-1.4.zip" -OutFile "sparql-test-runner.zip"
+Write-Output "Downloaded sparql-test-runner.zip"
+# &'C:\Program Files\7-Zip\7z.exe' x .\sparql-test-runner.zip -aoa
 Expand-Archive -LiteralPath sparql-test-runner.zip -DestinationPath .
+Write-Output "Expanded sparql-test-runner.zip"
 
 $sparqlTestRunnerBinDir = (Get-Item sparql-test-runner-1.4/bin | Resolve-Path).Path.Substring(38)
 $path += ";$sparqlTestRunnerBinDir"
