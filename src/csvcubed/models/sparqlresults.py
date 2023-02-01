@@ -277,6 +277,11 @@ class ColumnDefinition:
     value_url: Optional[str]
     virtual: bool
 
+    @property
+    def output_str_suppressed_columns(self) -> str:
+        return f"""
+        - Columns where suppress output is true: {get_printable_list_str(self.suppress_output)}"""
+
 
 @dataclass
 class QubeComponentResult(DataClassBase):
@@ -524,7 +529,7 @@ def map_qube_components_sparql_result(
     }
 
 
-def map_cols_with_supress_output_true_sparql_result(
+def map_cols_with_suppress_output_true_sparql_result(
     sparql_results: List[ResultRow],
 ) -> ColsWithSuppressOutputTrueResult:
     """

@@ -40,7 +40,7 @@ from csvcubed.models.sparqlresults import (
     map_catalog_metadata_results,
     map_codelist_cols_by_csv_url_result,
     map_codelists_sparql_result,
-    map_cols_with_supress_output_true_sparql_result,
+    map_cols_with_suppress_output_true_sparql_result,
     map_column_definition_results,
     map_csv_url_result,
     map_csvw_table_schemas_file_dependencies_result,
@@ -304,7 +304,7 @@ def select_cols_where_suppress_output_is_true(
         _get_query_string_from_file(SPARQLQueryName.SELECT_COLS_W_SUPPRESS_OUTPUT),
         rdf_graph,
     )
-    return map_cols_with_supress_output_true_sparql_result(results)
+    return map_cols_with_suppress_output_true_sparql_result(results)
 
 
 def select_dsd_code_list_and_cols(

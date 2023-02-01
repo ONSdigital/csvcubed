@@ -40,6 +40,7 @@ from csvcubed.models.sparqlresults import (
     QubeComponentsResult,
 )
 from csvcubed.utils.csvdataset import transform_dataset_to_canonical_shape
+from csvcubed.utils.printable import get_printable_list_str
 from csvcubed.utils.skos.codelist import (
     CodelistPropertyUrl,
     get_codelist_col_title_by_property_url,
@@ -174,6 +175,18 @@ class MetadataPrinter:
         #     select_csvw_dsd_dataset_label_and_dsd_def_uri(csvw_state.rdf_graph)
         # )
         # self.result_dataset_label_dsd_uri = (self.state.get_cube_identifiers_for_csv(self.primary_csv_url))
+        column_definitions = self.state.get_column_definitions_for_csv(
+            self.primary_csv_url
+        )
+        self.suppressed_columns = [
+            column_definition.name
+            for column_definition in column_definitions
+            if column_definition.suppress_output == True
+        ]
+        # Need to decide if we want to add the string output property to the column definitions class (only for suppressed columns) or display it some new way
+
+        self.result_cols_with_suppress_output_true = []
+
         self.result_cols_with_suppress_output_true = (
             select_cols_where_suppress_output_is_true(csvw_state.rdf_graph)
         )
@@ -272,7 +285,8 @@ class MetadataPrinter:
 
         :return: `str` - user-friendly string which will be output to CLI.
         """
-        return f"- The {self.csvw_type_str} has the following data structure definition:{self.result_dataset_label_dsd_uri.output_str}{self.result_qube_components.output_str}{self.result_cols_with_suppress_output_true.output_str}"
+        # get_printable_list_str called directly here for suppressed columns - see comment above re alternative approaches.
+        return f"- The {self.csvw_type_str} has the following data structure definition:{self.result_dataset_label_dsd_uri.output_str}{self.result_qube_components.output_str}{self.result_cols_with_suppress_output_true.output_str}{get_printable_list_str(self.suppressed_columns)}"
 
     @property
     def codelist_info_printable(self) -> str:
