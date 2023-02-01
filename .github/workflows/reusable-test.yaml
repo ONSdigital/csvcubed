@@ -8,10 +8,6 @@ on:
       python-version:
         required: true
         type: string
-    secrets:
-      ACCESS_REPOS_GH:
-        required: true
-
 
 jobs:
   test_in_environments:
