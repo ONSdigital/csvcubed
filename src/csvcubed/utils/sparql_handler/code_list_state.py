@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from functools import cached_property
 from typing import List
 
-from csvcubed.models.sparqlresults import ColumnDefinition
+from csvcubed.models.sparqlresults import ColumnDefinition, CsvUrlResult
 from csvcubed.utils.sparql_handler.csvw_state import CsvWState
 from csvcubed.utils.sparql_handler.sparqlquerymanager import select_codelist_csv_url
 
@@ -11,14 +11,19 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import select_codelist_csv
 class CodeListState:
     csvw_state: CsvWState
 
-    @cached_property
-    def _concept_scheme(self):
-        data_set_uri = self.csvw_state.get_primary_catalog_metadata().dataset_uri
-        result = select_codelist_csv_url()
+    # @cached_property
+    def _code_list_table_identifiers(self) -> CsvUrlResult:
+        # data_set_uri = self.csvw_state.get_primary_catalog_metadata().dataset_uri
+        results = select_codelist_csv_url(self.csvw_state.rdf_graph)
 
-    def get_link_for_thing(self) -> List[ColumnDefinition]:
+        return results
 
-        return self.csvw_state.get_column_definitions_for_csv
+    def link_csv_url_to_concept_scheme_url(self) -> str:
+        identifiers = self._code_list_table_identifiers()
+        csv_url = identifiers[0].csv_url
+        concept_scheme_url = identifiers[1].concept_scheme_url
+
+        return concept_scheme_url
 
     # def get_csvw_catalog_metadata(self, csv_url: str) -> CatalogMetadataResult:
     #     """

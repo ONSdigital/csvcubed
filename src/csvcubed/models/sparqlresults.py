@@ -605,9 +605,25 @@ def map_csvw_table_schemas_file_dependencies_result(
     return result
 
 
+# def map_csv_url_result(
+#     sparql_result: ResultRow,
+# ) -> CsvUrlResult:
+#     """
+#     Maps sparql query result to `CsvUrlResult`
+
+#     Member of :file:`./models/sparqlresults.py`
+
+#     :return: `CsvUrlResult`
+#     """
+#     result_dict = sparql_result.asdict()
+
+#     result = CsvUrlResult(csv_url=str(result_dict["tableUrl"]))
+#     return result
+
+
 def map_csv_url_result(
     sparql_result: ResultRow,
-) -> CsvUrlResult:
+) -> List[CsvUrlResult]:
     """
     Maps sparql query result to `CsvUrlResult`
 
@@ -616,9 +632,13 @@ def map_csv_url_result(
     :return: `CsvUrlResult`
     """
     result_dict = sparql_result.asdict()
+    results: List[CsvUrlResult]
+    results = [CsvUrlResult(csv_url=str(result_dict["tableUrl"]))]
+    results.append(
+        CsvUrlResult(concept_scheme_url=str(result_dict["conceptSchemeUrlStr"]))
+    )
 
-    result = CsvUrlResult(csv_url=str(result_dict["tableUrl"]))
-    return result
+    return results
 
 
 def map_units(sparql_results: List[ResultRow]) -> List[UnitResult]:

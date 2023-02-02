@@ -7,6 +7,7 @@ import rdflib
 
 from csvcubed.models.csvwtype import CSVWType
 from csvcubed.models.sparqlresults import CatalogMetadataResult, ColumnDefinition
+from csvcubed.utils.dict import get_from_dict_ensure_exists
 from csvcubed.utils.iterables import group_by
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
@@ -30,12 +31,6 @@ class CsvWState:
         self.primary_graph_uri = path_to_file_uri_for_rdflib(self.csvw_json_path)
 
     """Private Functions"""
-
-    def _get_value_for_key(self, key: str, dict: Dict[str, T]) -> T:
-        maybe_value = dict.get(key)
-        if maybe_value is None:
-            raise KeyError(f"Could not find the definition for key '{key}'")
-        return maybe_value
 
     @cached_property
     def _column_definitions(self) -> Dict[str, List[ColumnDefinition]]:
@@ -86,7 +81,7 @@ class CsvWState:
         """
         Getter for _col_names_col_titles cached property.
         """
-        result: List[ColumnDefinition] = self._get_value_for_key(
-            csv_url, self._column_definitions
+        result: List[ColumnDefinition] = get_from_dict_ensure_exists(
+            self._column_definitions, csv_url
         )
         return result
