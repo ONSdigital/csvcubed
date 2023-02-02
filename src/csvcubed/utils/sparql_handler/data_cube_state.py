@@ -4,7 +4,6 @@ from typing import Dict, List, Optional, TypeVar
 
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import (
-    ColumnDefinition,
     CubeTableIdentifiers,
     IsPivotedShapeMeasureResult,
     QubeComponentsResult,
@@ -13,7 +12,6 @@ from csvcubed.models.sparqlresults import (
 from csvcubed.utils.iterables import first, group_by
 from csvcubed.utils.sparql_handler.csvw_state import CsvWState
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
-    select_column_definitions,
     select_csvw_dsd_qube_components,
     select_data_set_dsd_and_csv_url,
     select_is_pivoted_shape_for_measures_in_data_set,
@@ -40,14 +38,6 @@ class DataCubeState:
     """
     Private cached properties.
     """
-
-    @cached_property
-    def _column_definitions(self) -> Dict[str, List[ColumnDefinition]]:
-        """
-        Map of csv_url to the list of column definitions for the given CSV file.
-        """
-        results = select_column_definitions(self.csvw_state.rdf_graph)
-        return group_by(results, lambda r: r.csv_url)
 
     @cached_property
     def _units(self) -> Dict[str, UnitResult]:
@@ -81,7 +71,7 @@ class DataCubeState:
             self.csvw_state.rdf_graph,
             self.csvw_state.csvw_json_path,
             map_dsd_uri_to_csv_url,
-            self._column_definitions,
+            self.csvw_state.get_column_definitions_for_csv,
         )
 
     @cached_property
@@ -128,15 +118,6 @@ class DataCubeState:
     """
     Public getters for the cached properties.
     """
-
-    def get_column_definitions_for_csv(self, csv_url: str) -> List[ColumnDefinition]:
-        """
-        Getter for _col_names_col_titles cached property.
-        """
-        result: List[ColumnDefinition] = self._get_value_for_key(
-            csv_url, self._column_definitions
-        )
-        return result
 
     def get_unit_for_uri(self, uri: str) -> Optional[UnitResult]:
         """ """

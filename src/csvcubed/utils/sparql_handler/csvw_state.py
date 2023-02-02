@@ -1,18 +1,22 @@
 from dataclasses import dataclass, field
 from functools import cached_property
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Dict, List, TypeVar
 
 import rdflib
 
 from csvcubed.models.csvwtype import CSVWType
-from csvcubed.models.sparqlresults import CatalogMetadataResult
+from csvcubed.models.sparqlresults import CatalogMetadataResult, ColumnDefinition
+from csvcubed.utils.iterables import group_by
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     ask_is_csvw_code_list,
     ask_is_csvw_qb_dataset,
+    select_column_definitions,
     select_csvw_catalog_metadata,
 )
+
+T = TypeVar("T")
 
 
 @dataclass
@@ -24,6 +28,24 @@ class CsvWState:
 
     def __post_init__(self):
         self.primary_graph_uri = path_to_file_uri_for_rdflib(self.csvw_json_path)
+
+    """Private Functions"""
+
+    def _get_value_for_key(self, key: str, dict: Dict[str, T]) -> T:
+        maybe_value = dict.get(key)
+        if maybe_value is None:
+            raise KeyError(f"Could not find the definition for key '{key}'")
+        return maybe_value
+
+    @cached_property
+    def _column_definitions(self) -> Dict[str, List[ColumnDefinition]]:
+        """
+        Map of csv_url to the list of column definitions for the given CSV file.
+        """
+        results = select_column_definitions(self.rdf_graph)
+        return group_by(results, lambda r: r.csv_url)
+
+    """Public Functions"""
 
     @cached_property
     def catalog_metadata(self) -> List[CatalogMetadataResult]:
@@ -59,3 +81,12 @@ class CsvWState:
         raise KeyError(
             f"Could not find catalog metadata in primary graph '{self.primary_graph_uri}'."
         )
+
+    def get_column_definitions_for_csv(self, csv_url: str) -> List[ColumnDefinition]:
+        """
+        Getter for _col_names_col_titles cached property.
+        """
+        result: List[ColumnDefinition] = self._get_value_for_key(
+            csv_url, self._column_definitions
+        )
+        return result
