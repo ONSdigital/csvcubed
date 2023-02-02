@@ -9,7 +9,6 @@ from csvcubed.cli.inspect.metadataprinter import to_absolute_rdflib_file_path
 from csvcubed.models.sparqlresults import (
     CodeListColsByDatasetUrlResult,
     CodelistColumnResult,
-    ColsWithSuppressOutputTrueResult,
     CsvUrlResult,
     CubeTableIdentifiers,
     DSDLabelURIResult,
@@ -21,13 +20,13 @@ from csvcubed.models.sparqlresults import (
 from csvcubed.utils.iterables import first
 from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.rdf import parse_graph_retain_relative
+from csvcubed.utils.sparql_handler.csvw_state import CsvWState
 from csvcubed.utils.sparql_handler.data_cube_inspector import DataCubeInspector
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     ask_is_csvw_code_list,
     ask_is_csvw_qb_dataset,
     select_codelist_cols_by_csv_url,
     select_codelist_csv_url,
-    select_cols_where_suppress_output_is_true,
     select_csvw_catalog_metadata,
     select_csvw_table_schema_file_dependencies,
     select_is_pivoted_shape_for_measures_in_data_set,
@@ -251,11 +250,12 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
         csvw_metadata_rdf_graph, csvw_metadata_json_path
     )
 
-    result: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
-        csvw_metadata_rdf_graph
-    )
     data_set_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
     data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
+    result: DSDLabelURIResult = data_cube_inspector.get_cube_identifiers_for_data_set(
+        data_set_uri
+    )
+
     csv_url = select_qb_csv_url(csvw_metadata_rdf_graph, data_set_uri).csv_url
 
     result_qube_components = data_cube_inspector.get_dsd_qube_components_for_csv(
@@ -263,7 +263,7 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
     )
     components = result_qube_components.qube_components
 
-    assert result.dataset_label == "Pivoted Shape Cube"
+    assert result.data_set_label == "Pivoted Shape Cube"
     assert result.dsd_uri == "qb-id-10004.csv#structure"
     assert len(components) == 5
 
@@ -572,12 +572,19 @@ def test_select_cols_when_supress_output_cols_not_present():
     """
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
-    result: ColsWithSuppressOutputTrueResult = (
-        select_cols_where_suppress_output_is_true(csvw_metadata_rdf_graph)
+    data_cube_inspector = DataCubeInspector(csvw_rdf_manager.csvw_state)
+    data_set_uri = (
+        data_cube_inspector.csvw_state.get_primary_catalog_metadata().dataset_uri
     )
-    assert len(result.columns) == 0
+    csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
+        data_set_uri
+    ).csv_url
+    column_definitions = data_cube_inspector.get_column_definitions_for_csv(csv_url)
+
+    result = data_cube_inspector.get_suppressed_columns(csv_url)
+
+    assert len(result) == 0
 
 
 def test_select_cols_when_supress_output_cols_present():
@@ -588,13 +595,19 @@ def test_select_cols_when_supress_output_cols_present():
         _test_case_base_dir / "datacube_with_suppress_output_cols.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
-    result: ColsWithSuppressOutputTrueResult = (
-        select_cols_where_suppress_output_is_true(csvw_metadata_rdf_graph)
+    data_cube_inspector = DataCubeInspector(csvw_rdf_manager.csvw_state)
+    data_set_uri = (
+        data_cube_inspector.csvw_state.get_primary_catalog_metadata().dataset_uri
     )
-    assert len(result.columns) == 2
-    assert set(result.columns) == {"Col1WithSuppressOutput", "Col2WithSuppressOutput"}
+    csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
+        data_set_uri
+    ).csv_url
+
+    result = data_cube_inspector.get_suppressed_columns(csv_url)
+
+    assert len(result) == 2
+    assert set(result) == {"Col1WithSuppressOutput", "Col2WithSuppressOutput"}
 
 
 def test_select_dsd_code_list_and_cols_without_codelist_labels():

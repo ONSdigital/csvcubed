@@ -191,3 +191,14 @@ class DataCubeInspector:
 
     def get_code_lists_and_cols(self, csv_url: str) -> CodelistsResult:
         return self._get_value_for_key(csv_url, self._codelists_and_cols)
+
+    def get_suppressed_columns(self, csv_url: str) -> List[str]:
+        column_definitions = self.get_column_definitions_for_csv(csv_url)
+
+        result = [
+            column_definition.title
+            for column_definition in column_definitions
+            if column_definition.suppress_output and column_definition.title is not None
+        ]
+
+        return result

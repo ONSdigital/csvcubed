@@ -34,9 +34,8 @@ from csvcubed.models.sparqlresults import (
     CodeListColsByDatasetUrlResult,
     CodelistColumnResult,
     CodelistsResult,
-    ColsWithSuppressOutputTrueResult,
+    ColumnDefinition,
     CubeTableIdentifiers,
-    DSDLabelURIResult,
     PrimaryKeyColNamesByDatasetUrlResult,
     QubeComponentsResult,
 )
@@ -53,8 +52,6 @@ from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_codelist_cols_by_csv_url,
     select_codelist_csv_url,
-    select_cols_where_suppress_output_is_true,
-    select_dsd_code_list_and_cols,
     select_primary_key_col_names_by_csv_url,
     select_qb_csv_url,
 )
@@ -76,9 +73,7 @@ class MetadataPrinter:
     result_catalog_metadata: CatalogMetadataResult = field(init=False)
     result_dataset_label_dsd_uri: CubeTableIdentifiers = field(init=False)
     result_qube_components: QubeComponentsResult = field(init=False)
-    result_cols_with_suppress_output_true: ColsWithSuppressOutputTrueResult = field(
-        init=False
-    )
+    result_column_definitions: ColumnDefinition = field(init=False)
     result_code_lists: CodelistsResult = field(init=False)
     result_dataset_observations_info: DatasetObservationsInfoResult = field(init=False)
     result_dataset_value_counts: DatasetObservationsByMeasureUnitInfoResult = field(
@@ -172,27 +167,17 @@ class MetadataPrinter:
             self.primary_csv_url
         )
 
-        # self.result_dataset_label_dsd_uri = (
-        #     select_csvw_dsd_dataset_label_and_dsd_def_uri(csvw_state.rdf_graph)
-        # )
         self.result_dataset_label_dsd_uri = self.state.get_cube_identifiers_for_csv(
             self.primary_csv_url
         )
-        column_definitions = self.state.get_column_definitions_for_csv(
+        self.result_column_definitions = self.state.get_column_definitions_for_csv(
             self.primary_csv_url
         )
-        self.suppressed_columns = [
-            column_definition.title
-            for column_definition in column_definitions
-            if column_definition.suppress_output == True
-        ]
-        # # Need to decide if we want to add the string output property to the column definitions class (only for suppressed columns) or display it some new way
 
-        # self.result_cols_with_suppress_output_true = []
+        self.suppressed_columns = self.state.get_suppressed_columns(
+            self.primary_csv_url
+        )
 
-        # self.result_cols_with_suppress_output_true = (
-        #     select_cols_where_suppress_output_is_true(csvw_state.rdf_graph)
-        # )
         self.result_code_lists = self.state.get_code_lists_and_cols(
             self.primary_csv_url
         )

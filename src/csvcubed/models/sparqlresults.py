@@ -104,20 +104,6 @@ class CubeTableIdentifiers(DataClassBase):
 
 
 @dataclass
-class ColsWithSuppressOutputTrueResult:
-    """
-    Model to represent select cols where the suppress output is true sparql query result.
-    """
-
-    columns: list[str]
-
-    @property
-    def output_str(self) -> str:
-        return f"""
-        - Columns where suppress output is true: {get_printable_list_str(self.columns)}"""
-
-
-@dataclass
 class CodelistResult(DataClassBase):
     """
     Model to represent a codelist.
@@ -276,11 +262,6 @@ class ColumnDefinition:
     """This should technically be a list according to the W3C spec."""
     value_url: Optional[str]
     virtual: bool
-
-    @property
-    def output_str_suppressed_columns(self) -> str:
-        return f"""
-        - Columns where suppress output is true: {get_printable_list_str(self.suppress_output)}"""
 
 
 @dataclass
@@ -527,26 +508,6 @@ def map_qube_components_sparql_result(
         )
         for (dsd_uri, components) in map_dsd_uri_to_components.items()
     }
-
-
-def map_cols_with_suppress_output_true_sparql_result(
-    sparql_results: List[ResultRow],
-) -> ColsWithSuppressOutputTrueResult:
-    """
-    Maps sparql query result to `ColsWithSuppressOutputTrueResult`
-
-    Member of :file:`./models/sparqlresults.py`
-
-    :return: `ColsWithSuppressOutputTrueResult`
-    """
-    columns = list(
-        map(
-            lambda result: str(result["csvColumnTitle"]),
-            sparql_results,
-        )
-    )
-    result = ColsWithSuppressOutputTrueResult(columns=columns)
-    return result
 
 
 def _map_codelist_sparql_result(

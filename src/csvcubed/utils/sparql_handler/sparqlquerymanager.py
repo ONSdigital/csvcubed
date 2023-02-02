@@ -26,7 +26,6 @@ from csvcubed.models.sparqlresults import (
     CatalogMetadataResult,
     CodeListColsByDatasetUrlResult,
     CodelistsResult,
-    ColsWithSuppressOutputTrueResult,
     ColumnDefinition,
     CsvUrlResult,
     CSVWTableSchemaFileDependenciesResult,
@@ -40,7 +39,6 @@ from csvcubed.models.sparqlresults import (
     map_catalog_metadata_results,
     map_codelist_cols_by_csv_url_result,
     map_codelists_sparql_result,
-    map_cols_with_suppress_output_true_sparql_result,
     map_column_definition_results,
     map_csv_url_result,
     map_csvw_table_schemas_file_dependencies_result,
@@ -288,23 +286,6 @@ def _cube_table_identifiers_to_values_binding(
             for uris in csv_dsd_dataset_uris
         ],
     )
-
-
-def select_cols_where_suppress_output_is_true(
-    rdf_graph: rdflib.ConjunctiveGraph,
-) -> ColsWithSuppressOutputTrueResult:
-    """
-    Queries the columns where suppress output is true.
-
-    Member of :file:`./sparqlquerymanager.py`
-
-    :return: `ColsWithSupressOutputTrueSparlqlResult`
-    """
-    results: List[ResultRow] = select(
-        _get_query_string_from_file(SPARQLQueryName.SELECT_COLS_W_SUPPRESS_OUTPUT),
-        rdf_graph,
-    )
-    return map_cols_with_suppress_output_true_sparql_result(results)
 
 
 def select_dsd_code_list_and_cols(
