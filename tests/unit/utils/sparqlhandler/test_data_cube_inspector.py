@@ -342,3 +342,42 @@ def test_get_column_definitions_for_csv():
     assert result[0].title == "Some Dimension"
     assert result[0].value_url == "some-dimension.csv#{+some_dimension}"
     assert result[0].virtual == False
+
+
+def test_get_units():
+    """ """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-multi-measure-dataset"
+        / "qb-id-10003.csv-metadata.json"
+    )
+    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    data_cube_inspector = DataCubeInspector(csvw_rdf_manager.csvw_state)
+
+    results = data_cube_inspector.get_units()
+
+    unit_uris = {"qb-id-10003.csv#unit/percent", "qb-id-10003.csv#unit/some-unit"}
+    results_unit_uris = {result.unit_uri for result in results}
+
+    unit_labels = {"Percent", "Some Unit"}
+    results_unit_labels = {result.unit_label for result in results}
+
+    assert len(results) == 2
+    assert unit_uris == results_unit_uris
+    assert unit_labels == results_unit_labels
+
+
+# Check if this unit test is wanted at all.
+def test_get_unit_for_uri():
+    """ """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-multi-measure-dataset"
+        / "qb-id-10003.csv-metadata.json"
+    )
+    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    data_cube_inspector = DataCubeInspector(csvw_rdf_manager.csvw_state)
+
+    result = data_cube_inspector.get_unit_for_uri("qb-id-10003.csv#unit/percent")
+
+    assert result.unit_label == "Percent"

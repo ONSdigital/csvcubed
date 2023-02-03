@@ -156,7 +156,7 @@ class CsvUrlResult:
     csv_url: str
 
 
-@dataclass
+@dataclass(unsafe_hash=True)
 class UnitResult:
     """
     Model to represent select single unit from dsd.

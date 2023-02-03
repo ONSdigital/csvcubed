@@ -8,6 +8,7 @@ from csvcubed.models.sparqlresults import (
     ColumnDefinition,
     CubeTableIdentifiers,
     IsPivotedShapeMeasureResult,
+    QubeComponentResult,
     QubeComponentsResult,
     UnitResult,
 )
@@ -202,3 +203,13 @@ class DataCubeInspector:
         ]
 
         return result
+
+    def get_single_unit(self, csv_url) -> QubeComponentResult:
+        # Check if this is a single unit dataset
+        components = self.get_dsd_qube_components_for_csv(csv_url)
+        for component in components.qube_components:
+            if (
+                component.property
+                == "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
+            ):
+                return self.get_unit_for_uri(component.component)
