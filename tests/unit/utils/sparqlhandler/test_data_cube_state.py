@@ -1,11 +1,9 @@
 import pytest
 
-from csvcubed.cli.inspect.metadataprinter import to_absolute_rdflib_file_path
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import ColumnDefinition
 from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
-from csvcubed.utils.sparql_handler.sparqlquerymanager import select_qb_csv_url
 from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.unit.test_baseunit import get_test_cases_dir
 from tests.unit.utils.sparqlhandler.test_sparqlquerymanager import (
@@ -26,11 +24,12 @@ def test_get_column_definitions_for_csv():
         / "qb-id-10004.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
 
     results = {
         c.name: c
-        for c in data_cube_state.get_column_definitions_for_csv("qb-id-10004.csv")
+        for c in csvw_rdf_manager.csvw_state.get_column_definitions_for_csv(
+            "qb-id-10004.csv"
+        )
     }
 
     assert len(results) == 12
@@ -114,12 +113,10 @@ def test_exception_is_thrown_for_invalid_csv_url():
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
 
-    input_dict = {"a": 1, "b": 2}
-
     with pytest.raises(KeyError) as exception:
-        assert data_cube_state._get_value_for_key("c", input_dict)
+        assert data_cube_state.get_cube_identifiers_for_csv("c")
 
-    assert "Could not find the definition for key 'c'" in str(exception.value)
+    assert "Couldn't find value for key" in str(exception.value)
 
 
 def test_get_data_set_dsd_csv_url_for_csv_url():
@@ -138,10 +135,7 @@ def test_get_data_set_dsd_csv_url_for_csv_url():
     )
 
     data_set_uri = primary_catalog_metadata.dataset_uri
-    data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
-    csv_url = select_qb_csv_url(
-        data_cube_state.csvw_state.rdf_graph, data_set_uri
-    ).csv_url
+    csv_url = data_cube_state.get_cube_identifiers_for_data_set(data_set_uri).csv_url
 
     data_set_dsd_csv_url_result = data_cube_state.get_cube_identifiers_for_csv(csv_url)
 
@@ -167,10 +161,7 @@ def test_get_dsd_qube_components_for_csv():
     )
 
     data_set_uri = primary_catalog_metadata.dataset_uri
-    data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
-    csv_url = select_qb_csv_url(
-        data_cube_state.csvw_state.rdf_graph, data_set_uri
-    ).csv_url
+    csv_url = data_cube_state.get_cube_identifiers_for_data_set(data_set_uri).csv_url
 
     result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(csv_url)
 

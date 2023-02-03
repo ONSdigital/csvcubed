@@ -5,13 +5,11 @@ import dateutil.parser
 import pytest
 from rdflib import DCAT, RDF, RDFS, ConjunctiveGraph, Graph, Literal, URIRef
 
-from csvcubed.cli.inspect.metadataprinter import to_absolute_rdflib_file_path
 from csvcubed.models.sparqlresults import (
-    CodeListColsByDatasetUrlResult,
     CodelistColumnResult,
     CodelistsResult,
-    CodeListTableIdentifers,
     ColsWithSuppressOutputTrueResult,
+    ColumnDefinition,
     CubeTableIdentifiers,
     DSDLabelURIResult,
     IsPivotedShapeMeasureResult,
@@ -22,20 +20,17 @@ from csvcubed.models.sparqlresults import (
 from csvcubed.utils.iterables import first
 from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.rdf import parse_graph_retain_relative
+from csvcubed.utils.sparql_handler.code_list_state import CodeListState
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     ask_is_csvw_code_list,
     ask_is_csvw_qb_dataset,
-    select_codelist_cols_by_csv_url,
-    select_codelist_csv_url,
     select_cols_where_suppress_output_is_true,
-    select_csvw_catalog_metadata,
     select_csvw_dsd_dataset_label_and_dsd_def_uri,
     select_csvw_table_schema_file_dependencies,
     select_dsd_code_list_and_cols,
     select_is_pivoted_shape_for_measures_in_data_set,
     select_metadata_dependencies,
-    select_qb_csv_url,
     select_table_schema_properties,
 )
 from csvcubed.utils.tableschema import CsvwRdfManager, add_triples_for_file_dependencies
@@ -73,21 +68,21 @@ def assert_dsd_component_equal(
 
 
 def _assert_code_list_column_equal(
-    column: CodelistColumnResult,
+    column: ColumnDefinition,
     column_title: Optional[str],
     column_property_url: str,
     column_value_url: Optional[str],
 ):
     assert (
-        column.column_title == column_title
+        column.title == column_title
         if column_title is not None
-        else column.column_title is None
+        else column.title is None
     )
-    assert column.column_property_url == column_property_url
+    assert column.property_url == column_property_url
     assert (
-        column.column_value_url == column_value_url
+        column.value_url == column_value_url
         if column_value_url is not None
-        else column.column_value_url is None
+        else column.value_url is None
     )
 
 
@@ -116,13 +111,13 @@ def _get_measure_by_measure_uri(
 
 
 def _get_code_list_column_by_property_url(
-    columns: List[CodelistColumnResult], property_url: str
-) -> CodelistColumnResult:
+    columns: List[ColumnDefinition], property_url: str
+) -> ColumnDefinition:
     """
     Filters code list columns by column property url.
     """
     filtered_results = [
-        result for result in columns if result.column_property_url == property_url
+        result for result in columns if result.property_url == property_url
     ]
     assert len(filtered_results) == 1
 
@@ -250,14 +245,15 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
-    data_cube_state = DataCubeState(csvw_metadata_rdf_graph, csvw_metadata_json_path)
+    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
 
     result: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
         csvw_metadata_rdf_graph
     )
-    data_set_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
-    data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
-    csv_url = select_qb_csv_url(csvw_metadata_rdf_graph, data_set_uri).csv_url
+    data_set_uri = (
+        csvw_rdf_manager.csvw_state.get_primary_catalog_metadata().dataset_uri
+    )
+    csv_url = data_cube_state.get_cube_identifiers_for_data_set(data_set_uri).csv_url
 
     result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(csv_url)
     components = result_qube_components.qube_components
@@ -358,8 +354,7 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
     )
 
     data_set_uri = primary_catalog_metadata.dataset_uri
-    data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
-    csv_url = select_qb_csv_url(csvw_metadata_rdf_graph, data_set_uri).csv_url
+    csv_url = data_cube_state.get_cube_identifiers_for_data_set(data_set_uri).csv_url
 
     result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(csv_url)
     components = result_qube_components.qube_components
@@ -475,8 +470,7 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
     )
 
     data_set_uri = primary_catalog_metadata.dataset_uri
-    data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
-    csv_url = select_qb_csv_url(csvw_metadata_rdf_graph, data_set_uri).csv_url
+    csv_url = data_cube_state.get_cube_identifiers_for_data_set(data_set_uri).csv_url
 
     result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(csv_url)
     components = result_qube_components.qube_components
@@ -610,21 +604,6 @@ def test_select_dsd_code_list_and_cols_without_codelist_labels():
     )
 
 
-def test_select_qb_csv_url():
-    """
-    Should return expected `CodeListTableIdentifers`.
-    """
-    csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-
-    result: CodeListTableIdentifers = select_qb_csv_url(
-        csvw_metadata_rdf_graph,
-        f"file://{str(_test_case_base_dir)}/alcohol-bulletin.csv#dataset",
-    )
-    assert result.csv_url == "alcohol-bulletin.csv"
-
-
 def test_select_single_unit_from_dsd():
     """
     Should return expected `UnitResult`.
@@ -679,21 +658,25 @@ def test_select_codelist_cols_by_csv_url():
     """
     csvw_metadata_json_path = _test_case_base_dir / "alcohol-content.csv-metadata.json"
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    csv_url = select_codelist_csv_url(csvw_metadata_rdf_graph).csv_url
-
-    result: CodeListColsByDatasetUrlResult = select_codelist_cols_by_csv_url(
-        csvw_metadata_rdf_graph, csv_url
+    primary_catalogue_metadata = (
+        csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
     )
-    assert len(result.columns) == 7
+    code_list_inspector = CodeListState(csvw_rdf_manager.csvw_state)
+    csv_url = code_list_inspector.get_table_identifiers_for_concept_scheme(
+        primary_catalogue_metadata.dataset_uri
+    ).csv_url
 
-    column = _get_code_list_column_by_property_url(result.columns, "rdfs:label")
+    result = code_list_inspector.csvw_state.get_column_definitions_for_csv(csv_url)
+
+    assert len(result) == 7
+
+    column = _get_code_list_column_by_property_url(result, "rdfs:label")
     _assert_code_list_column_equal(column, "Label", "rdfs:label", None)
 
-    column = _get_code_list_column_by_property_url(result.columns, "skos:notation")
+    column = _get_code_list_column_by_property_url(result, "skos:notation")
     _assert_code_list_column_equal(column, "Notation", "skos:notation", None)
 
-    column = _get_code_list_column_by_property_url(result.columns, "skos:broader")
+    column = _get_code_list_column_by_property_url(result, "skos:broader")
     _assert_code_list_column_equal(
         column,
         "Parent Notation",
@@ -702,21 +685,21 @@ def test_select_codelist_cols_by_csv_url():
     )
 
     column = _get_code_list_column_by_property_url(
-        result.columns, "http://www.w3.org/ns/ui#sortPriority"
+        result, "http://www.w3.org/ns/ui#sortPriority"
     )
     _assert_code_list_column_equal(
         column, "Sort Priority", "http://www.w3.org/ns/ui#sortPriority", None
     )
 
-    column = _get_code_list_column_by_property_url(result.columns, "rdfs:comment")
+    column = _get_code_list_column_by_property_url(result, "rdfs:comment")
     _assert_code_list_column_equal(column, "Description", "rdfs:comment", None)
 
-    column = _get_code_list_column_by_property_url(result.columns, "skos:inScheme")
+    column = _get_code_list_column_by_property_url(result, "skos:inScheme")
     _assert_code_list_column_equal(
         column, None, "skos:inScheme", "alcohol-content.csv#code-list"
     )
 
-    column = _get_code_list_column_by_property_url(result.columns, "rdf:type")
+    column = _get_code_list_column_by_property_url(result, "rdf:type")
     _assert_code_list_column_equal(column, None, "rdf:type", "skos:Concept")
 
 

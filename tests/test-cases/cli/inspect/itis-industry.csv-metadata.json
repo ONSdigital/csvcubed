@@ -71,7 +71,7 @@
     },
     "rdfs:seeAlso": [
         {
-            "@id": "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services#scheme/itis-industry/dataset",
+            "@id": "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services#scheme/itis-industry",
             "@type": [
                 "dcat:Dataset",
                 "http://publishmydata.com/pmdcat#Dataset"

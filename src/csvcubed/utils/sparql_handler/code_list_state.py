@@ -5,6 +5,7 @@ from typing import List, Optional
 from csvcubedmodels.rdf.namespaces import SKOS
 
 from csvcubed.models.sparqlresults import CodeListTableIdentifers, ColumnDefinition
+from csvcubed.utils.iterables import first
 from csvcubed.utils.sparql_handler.csvw_state import CsvWState
 
 
@@ -39,12 +40,20 @@ class CodeListState:
 
         return [i for i in table_identifiers if i is not None]
 
-    def link_csv_url_to_concept_scheme_url(self) -> str:
-        identifiers = self._code_list_table_identifiers
-        csv_url = identifiers[0].csv_url
-        concept_scheme_url = identifiers[1].concept_scheme_url
+    def get_table_identifiers_for_concept_scheme(
+        self, concept_scheme_url: str
+    ) -> CodeListTableIdentifers:
+        identifiers = first(
+            self._code_list_table_identifiers,
+            lambda i: i.concept_scheme_url == concept_scheme_url,
+        )
 
-        return concept_scheme_url
+        if identifiers is None:
+            raise KeyError(
+                f"Could not find code list table identifiers for ConceptSchem URL: '{concept_scheme_url}'"
+            )
+
+        return identifiers
 
     # def get_csvw_catalog_metadata(self, csv_url: str) -> CatalogMetadataResult:
     #     """

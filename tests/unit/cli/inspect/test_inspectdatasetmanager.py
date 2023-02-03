@@ -5,7 +5,6 @@ import numpy as np
 import pytest
 from pandas import DataFrame
 from pandas.testing import assert_frame_equal
-from rdflib import Graph
 from treelib import Tree
 
 from csvcubed.cli.inspect.inspectdatasetmanager import (
@@ -17,7 +16,6 @@ from csvcubed.cli.inspect.inspectdatasetmanager import (
     get_standard_shape_unit_col_name_from_dsd,
     load_csv_to_dataframe,
 )
-from csvcubed.cli.inspect.metadataprinter import to_absolute_rdflib_file_path
 from csvcubed.models.csvwtype import CSVWType
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.inspectdataframeresults import (
@@ -31,12 +29,10 @@ from csvcubed.utils.skos.codelist import (
     get_codelist_col_title_by_property_url,
     get_codelist_col_title_from_col_name,
 )
+from csvcubed.utils.sparql_handler.code_list_state import CodeListState
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
-    select_codelist_cols_by_csv_url,
-    select_codelist_csv_url,
     select_primary_key_col_names_by_csv_url,
-    select_qb_csv_url,
 )
 from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.unit.test_baseunit import get_test_cases_dir
@@ -262,8 +258,7 @@ def get_arguments_qb_dataset(
     """
     csvw_state = data_cube_state.csvw_state
     data_set_uri = csvw_state.get_primary_catalog_metadata().dataset_uri
-    data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_state.csvw_json_path)
-    csv_url = select_qb_csv_url(csvw_state.rdf_graph, data_set_uri).csv_url
+    csv_url = data_cube_state.get_cube_identifiers_for_data_set(data_set_uri).csv_url
 
     dataset: DataFrame = load_csv_to_dataframe(csvw_state.csvw_json_path, Path(csv_url))
     qube_components = data_cube_state.get_dsd_qube_components_for_csv(
@@ -274,14 +269,21 @@ def get_arguments_qb_dataset(
 
 
 def _get_arguments_skos_codelist(
-    csvw_metadata_rdf_graph: Graph, csvw_metadata_json_path: Path
+    code_list_inspector: CodeListState,
 ) -> Tuple[DataFrame, str]:
     """
-    Produces the dataset, qube components and dsd uri arguments for skos:codelist.
+    Produces the ConceptScheme for skos:codelist.
     """
-    csv_url = select_codelist_csv_url(csvw_metadata_rdf_graph).csv_url
+    primary_catalogue_metadata = (
+        code_list_inspector.csvw_state.get_primary_catalog_metadata()
+    )
+    csv_url = code_list_inspector.get_table_identifiers_for_concept_scheme(
+        primary_catalogue_metadata.dataset_uri
+    ).csv_url
 
-    dataset: DataFrame = load_csv_to_dataframe(csvw_metadata_json_path, Path(csv_url))
+    dataset: DataFrame = load_csv_to_dataframe(
+        code_list_inspector.csvw_state.csvw_json_path, Path(csv_url)
+    )
     return (dataset, csv_url)
 
 
@@ -385,13 +387,10 @@ def test_get_measure_col_name_from_dsd_measure_col_present():
 
     data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
 
-    result_data_set_uri = (
+    data_set_uri = (
         csvw_rdf_manager.csvw_state.get_primary_catalog_metadata().dataset_uri
     )
-    data_set_uri = to_absolute_rdflib_file_path(
-        result_data_set_uri, csvw_metadata_json_path
-    )
-    csv_url = select_qb_csv_url(csvw_rdf_manager.rdf_graph, data_set_uri).csv_url
+    csv_url = data_cube_state.get_cube_identifiers_for_data_set(data_set_uri).csv_url
 
     result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(csv_url)
 
@@ -418,8 +417,7 @@ def test_get_measure_col_name_from_dsd_measure_col_not_present():
     )
 
     data_set_uri = primary_catalog_metadata.dataset_uri
-    data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
-    csv_url = select_qb_csv_url(csvw_rdf_manager.rdf_graph, data_set_uri).csv_url
+    csv_url = data_cube_state.get_cube_identifiers_for_data_set(data_set_uri).csv_url
 
     result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(csv_url)
 
@@ -446,8 +444,7 @@ def test_get_unit_col_name_from_dsd_unit_col_present():
     )
 
     data_set_uri = primary_catalog_metadata.dataset_uri
-    data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
-    csv_url = select_qb_csv_url(csvw_rdf_manager.rdf_graph, data_set_uri).csv_url
+    csv_url = data_cube_state.get_cube_identifiers_for_data_set(data_set_uri).csv_url
 
     result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(csv_url)
 
@@ -474,8 +471,7 @@ def test_get_unit_col_name_from_dsd_unit_col_not_present():
     )
 
     data_set_uri = primary_catalog_metadata.dataset_uri
-    data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
-    csv_url = select_qb_csv_url(csvw_rdf_manager.rdf_graph, data_set_uri).csv_url
+    csv_url = data_cube_state.get_cube_identifiers_for_data_set(data_set_uri).csv_url
 
     result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(csv_url)
 
@@ -503,8 +499,7 @@ def test_get_single_measure_label_from_dsd():
     )
 
     data_set_uri = primary_catalog_metadata.dataset_uri
-    data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
-    csv_url = select_qb_csv_url(csvw_rdf_manager.rdf_graph, data_set_uri).csv_url
+    csv_url = data_cube_state.get_cube_identifiers_for_data_set(data_set_uri).csv_url
 
     result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(csv_url)
 
@@ -801,26 +796,25 @@ def test_get_concepts_hierarchy_info_hierarchy_with_depth_of_one():
         / "alcohol-content.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    code_list_inspector = CodeListState(csvw_rdf_manager.csvw_state)
 
-    (dataset, csv_url) = _get_arguments_skos_codelist(
-        csvw_rdf_manager.rdf_graph, csvw_metadata_json_path
-    )
+    (dataset, csv_url) = _get_arguments_skos_codelist(code_list_inspector)
 
-    result_code_list_cols = select_codelist_cols_by_csv_url(
-        csvw_rdf_manager.rdf_graph, csv_url
+    result_code_list_cols = csvw_rdf_manager.csvw_state.get_column_definitions_for_csv(
+        csv_url
     )
     result_primary_key_col_names_by_csv_url = select_primary_key_col_names_by_csv_url(
         csvw_rdf_manager.rdf_graph, csv_url
     )
 
     parent_notation_col_name = get_codelist_col_title_by_property_url(
-        result_code_list_cols.columns, CodelistPropertyUrl.SkosBroader
+        result_code_list_cols, CodelistPropertyUrl.SkosBroader
     )
     label_col_name = get_codelist_col_title_by_property_url(
-        result_code_list_cols.columns, CodelistPropertyUrl.RDFLabel
+        result_code_list_cols, CodelistPropertyUrl.RDFLabel
     )
     unique_identifier = get_codelist_col_title_from_col_name(
-        result_code_list_cols.columns,
+        result_code_list_cols,
         result_primary_key_col_names_by_csv_url.primary_key_col_names[0].value,
     )
 
@@ -839,26 +833,25 @@ def test_get_concepts_hierarchy_info_hierarchy_with_depth_more_than_one():
     """
     csvw_metadata_json_path = _test_case_base_dir / "itis-industry.csv-metadata.json"
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    code_list_inspector = CodeListState(csvw_rdf_manager.csvw_state)
 
-    (dataset, csv_url) = _get_arguments_skos_codelist(
-        csvw_rdf_manager.rdf_graph, csvw_metadata_json_path
-    )
+    (dataset, csv_url) = _get_arguments_skos_codelist(code_list_inspector)
 
-    result_code_list_cols = select_codelist_cols_by_csv_url(
-        csvw_rdf_manager.rdf_graph, csv_url
+    result_code_list_cols = csvw_rdf_manager.csvw_state.get_column_definitions_for_csv(
+        csv_url
     )
     result_primary_key_col_names_by_csv_url = select_primary_key_col_names_by_csv_url(
         csvw_rdf_manager.rdf_graph, csv_url
     )
 
     parent_notation_col_name = get_codelist_col_title_by_property_url(
-        result_code_list_cols.columns, CodelistPropertyUrl.SkosBroader
+        result_code_list_cols, CodelistPropertyUrl.SkosBroader
     )
     label_col_name = get_codelist_col_title_by_property_url(
-        result_code_list_cols.columns, CodelistPropertyUrl.RDFLabel
+        result_code_list_cols, CodelistPropertyUrl.RDFLabel
     )
     unique_identifier = get_codelist_col_title_from_col_name(
-        result_code_list_cols.columns,
+        result_code_list_cols,
         result_primary_key_col_names_by_csv_url.primary_key_col_names[0].value,
     )
 

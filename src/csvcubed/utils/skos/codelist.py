@@ -17,7 +17,7 @@ from csvcubed.models.csvcubedexception import (
     InvalidNumberOfRecordsException,
     PrimaryKeyColumnTitleCannotBeNoneException,
 )
-from csvcubed.models.sparqlresults import CodelistColumnResult
+from csvcubed.models.sparqlresults import CodelistColumnResult, ColumnDefinition
 
 
 class CodelistPropertyUrl(Enum):
@@ -41,9 +41,9 @@ class CodelistPropertyUrl(Enum):
 
 
 def get_codelist_col_title_by_property_url(
-    columns: List[CodelistColumnResult], property_url: CodelistPropertyUrl
+    columns: List[ColumnDefinition], property_url: CodelistPropertyUrl
 ) -> Optional[str]:
-    """
+    """n
     Returns dataset column title for the given property url.
 
     Member of :class:`./codelist`.
@@ -52,7 +52,7 @@ def get_codelist_col_title_by_property_url(
     """
 
     results = [
-        column for column in columns if column.column_property_url == property_url.value
+        column for column in columns if column.property_url == property_url.value
     ]
 
     if len(results) != 1:
@@ -62,11 +62,11 @@ def get_codelist_col_title_by_property_url(
             num_of_records=len(results),
         )
 
-    return results[0].column_title
+    return results[0].title
 
 
 def get_codelist_col_title_from_col_name(
-    columns: List[CodelistColumnResult], col_name: str
+    columns: List[ColumnDefinition], col_name: str
 ) -> str:
     """
     Returns the column title for the column name.
@@ -76,7 +76,7 @@ def get_codelist_col_title_from_col_name(
     :return: `str` - dataset column title.
     """
 
-    results = [column for column in columns if column.column_name == col_name]
+    results = [column for column in columns if column.name == col_name]
 
     if len(results) != 1:
         raise InvalidNumberOfRecordsException(
@@ -85,10 +85,10 @@ def get_codelist_col_title_from_col_name(
             num_of_records=len(results),
         )
 
-    if results[0].column_title is None:
+    if results[0].title is None:
         raise PrimaryKeyColumnTitleCannotBeNoneException()
 
-    return results[0].column_title
+    return results[0].title
 
 
 def build_concepts_hierarchy_tree(

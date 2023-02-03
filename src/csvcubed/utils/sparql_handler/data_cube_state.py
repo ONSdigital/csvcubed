@@ -8,7 +8,9 @@ one of more data cubes.
 
 from dataclasses import dataclass
 from functools import cached_property
+from pathlib import Path
 from typing import Dict, List, Optional, TypeVar
+from urllib.parse import urljoin
 
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import (
@@ -20,12 +22,14 @@ from csvcubed.models.sparqlresults import (
 from csvcubed.utils.dict import get_from_dict_ensure_exists
 from csvcubed.utils.iterables import first, group_by
 from csvcubed.utils.sparql_handler.csvw_state import CsvWState
+from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_csvw_dsd_qube_components,
     select_data_set_dsd_and_csv_url,
     select_is_pivoted_shape_for_measures_in_data_set,
     select_units,
 )
+from csvcubed.utils.uri import looks_like_uri
 
 T = TypeVar("T")
 
@@ -70,7 +74,7 @@ class DataCubeState:
             self.csvw_state.rdf_graph,
             self.csvw_state.csvw_json_path,
             map_dsd_uri_to_csv_url,
-            self.csvw_state.get_column_definitions_for_csv,
+            self.csvw_state.column_definitions,
         )
 
     @cached_property
@@ -140,6 +144,10 @@ class DataCubeState:
         """
         Getter for data_set_dsd_and_csv_url_for_csv_url cached property.
         """
+        # data_set_uri = _to_absolute_rdflib_file_path(
+        #     data_set_uri, self.csvw_state.csvw_json_path
+        # )
+
         result = first(
             self._cube_table_identifiers.values(),
             lambda i: i.data_set_url == data_set_uri,
@@ -157,3 +165,10 @@ class DataCubeState:
 
     def get_shape_for_csv(self, csv_url: str) -> CubeShape:
         return get_from_dict_ensure_exists(self._cube_shapes, csv_url)
+
+
+def _to_absolute_rdflib_file_path(path: str, parent_document_path: Path) -> str:
+    if looks_like_uri(path):
+        return path
+    else:
+        return urljoin(path_to_file_uri_for_rdflib(parent_document_path), path)
