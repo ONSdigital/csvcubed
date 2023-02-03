@@ -121,6 +121,7 @@ class CSVWTableSchemaFileDependenciesResult:
     Model to represent select csvw table schema file dependencies result.
     """
 
+    csv_url: List[str]
     table_schema_file_dependencies: List[str]
 
 
@@ -568,9 +569,10 @@ def map_csvw_table_schemas_file_dependencies_result(
     """
 
     result = CSVWTableSchemaFileDependenciesResult(
+        csv_url=[str(sparql_result["csvUrl"]) for sparql_result in sparql_results],
         table_schema_file_dependencies=[
             str(sparql_result["tableSchema"]) for sparql_result in sparql_results
-        ]
+        ],
     )
     return result
 

@@ -6,6 +6,7 @@ from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import (
     CodelistsResult,
     ColumnDefinition,
+    CSVWTableSchemaFileDependenciesResult,
     CubeTableIdentifiers,
     IsPivotedShapeMeasureResult,
     QubeComponentResult,
@@ -17,6 +18,7 @@ from csvcubed.utils.sparql_handler.csvw_state import CsvWState
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_column_definitions,
     select_csvw_dsd_qube_components,
+    select_csvw_table_schema_file_dependencies,
     select_data_set_dsd_and_csv_url,
     select_dsd_code_list_and_cols,
     select_is_pivoted_shape_for_measures_in_data_set,
@@ -136,6 +138,30 @@ class DataCubeInspector:
             self.csvw_state.csvw_json_path,
         )
 
+    @cached_property
+    def _csvw_table_schema_file_dependencies(
+        self,
+    ) -> Dict[str, CSVWTableSchemaFileDependenciesResult]:
+
+        # data_set_uri: str = self.csvw_state.primary_graph_uri
+        # csv_url: str = self.get_cube_identifiers_for_data_set(data_set_uri).csv_url
+        # return {
+        #     csv_url: select_csvw_table_schema_file_dependencies(
+        #         self.csvw_state.rdf_graph
+        #     )
+        # }
+        results = select_csvw_table_schema_file_dependencies(self.csvw_state.rdf_graph)
+        map_csv_url_to_table_schema_file_dependencies = group_by(
+            results, lambda r: r.csv_url
+        )
+        return {
+            csv_url: results.table_schema_file_dependencies
+            for (
+                csv_url,
+                results.table_schema_file_dependencies,
+            ) in map_csv_url_to_table_schema_file_dependencies.items()
+        }
+
     """
     Public getters for the cached properties.
     """
@@ -204,12 +230,9 @@ class DataCubeInspector:
 
         return result
 
-    def get_single_unit(self, csv_url) -> QubeComponentResult:
-        # Check if this is a single unit dataset
-        components = self.get_dsd_qube_components_for_csv(csv_url)
-        for component in components.qube_components:
-            if (
-                component.property
-                == "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
-            ):
-                return self.get_unit_for_uri(component.component)
+    def get_csvw_table_schema_file_dependencies(
+        self, csv_url: str
+    ) -> CSVWTableSchemaFileDependenciesResult:
+        return self._get_value_for_key(
+            csv_url, self._csvw_table_schema_file_dependencies
+        )

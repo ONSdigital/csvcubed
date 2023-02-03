@@ -47,6 +47,7 @@ from csvcubed.utils.skos.codelist import (
     get_codelist_col_title_from_col_name,
 )
 from csvcubed.utils.sparql_handler.code_list_state import CodeListState
+from csvcubed.utils.sparql_handler.csvw_state import CsvWState
 from csvcubed.utils.sparql_handler.data_cube_inspector import DataCubeInspector
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
@@ -94,15 +95,21 @@ class MetadataPrinter:
     @staticmethod
     def get_primary_csv_url(
         csvw_metadata_rdf_graph: rdflib.ConjunctiveGraph,
+        csvw_state: CsvWState,
         csvw_type: CSVWType,
         catalogue_data_set_uri: str,
     ) -> str:
         """Return the csv_url for the primary table in the graph."""
 
         if csvw_type == CSVWType.QbDataSet:
-            return select_qb_csv_url(
-                csvw_metadata_rdf_graph, catalogue_data_set_uri
-            ).csv_url
+            return (
+                DataCubeInspector(csvw_state)
+                .get_cube_identifiers_for_data_set(catalogue_data_set_uri)
+                .csv_url
+            )
+            # return select_qb_csv_url(
+            #     csvw_metadata_rdf_graph, catalogue_data_set_uri
+            # ).csv_url
         elif csvw_type == CSVWType.CodeList:
             return select_codelist_csv_url(csvw_metadata_rdf_graph).csv_url
         else:
@@ -134,7 +141,10 @@ class MetadataPrinter:
         csvw_type = csvw_state.csvw_type
 
         self.csvw_type_str = self.get_csvw_type_str(csvw_type)
-        self.result_catalog_metadata = csvw_state.get_primary_catalog_metadata()
+        # self.result_catalog_metadata = csvw_state.get_primary_catalog_metadata()
+        self.dataset_uri = csvw_state.get_primary_catalog_metadata().dataset_uri
+        # self.primary_csv_url = DataCubeInspector(csvw_state).get_cube_identifiers_for_data_set(self.dataset_uri)
+
         self.primary_csv_url = self.get_primary_csv_url(
             csvw_state.rdf_graph,
             csvw_type,
