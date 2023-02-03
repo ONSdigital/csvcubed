@@ -10,8 +10,8 @@ from csvcubed.models.sparqlresults import (
     CodeListColsByDatasetUrlResult,
     CodelistColumnResult,
     CodelistsResult,
+    CodeListTableIdentifers,
     ColsWithSuppressOutputTrueResult,
-    CsvUrlResult,
     CubeTableIdentifiers,
     DSDLabelURIResult,
     IsPivotedShapeMeasureResult,
@@ -612,13 +612,13 @@ def test_select_dsd_code_list_and_cols_without_codelist_labels():
 
 def test_select_qb_csv_url():
     """
-    Should return expected `CsvUrlResult`.
+    Should return expected `CodeListTableIdentifers`.
     """
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
-    result: CsvUrlResult = select_qb_csv_url(
+    result: CodeListTableIdentifers = select_qb_csv_url(
         csvw_metadata_rdf_graph,
         f"file://{str(_test_case_base_dir)}/alcohol-bulletin.csv#dataset",
     )

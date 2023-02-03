@@ -161,12 +161,13 @@ class CodelistsResult:
 
 
 @dataclass
-class CsvUrlResult:
+class CodeListTableIdentifers:
     """
-    Model to represent select csv url result.
+    Table identifiers to support mapping between csv_url and concept_scheme_url
     """
 
     csv_url: str
+    concept_scheme_url: str
 
 
 @dataclass
@@ -623,7 +624,7 @@ def map_csvw_table_schemas_file_dependencies_result(
 
 def map_csv_url_result(
     sparql_result: ResultRow,
-) -> List[CsvUrlResult]:
+) -> List[CodeListTableIdentifers]:
     """
     Maps sparql query result to `CsvUrlResult`
 
@@ -632,10 +633,12 @@ def map_csv_url_result(
     :return: `CsvUrlResult`
     """
     result_dict = sparql_result.asdict()
-    results: List[CsvUrlResult]
-    results = [CsvUrlResult(csv_url=str(result_dict["tableUrl"]))]
+    results: List[CodeListTableIdentifers]
+    results = [CodeListTableIdentifers(csv_url=str(result_dict["tableUrl"]))]
     results.append(
-        CsvUrlResult(concept_scheme_url=str(result_dict["conceptSchemeUrlStr"]))
+        CodeListTableIdentifers(
+            concept_scheme_url=str(result_dict["conceptSchemeUrlStr"])
+        )
     )
 
     return results

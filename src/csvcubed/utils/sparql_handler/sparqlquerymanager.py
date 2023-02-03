@@ -26,9 +26,9 @@ from csvcubed.models.sparqlresults import (
     CatalogMetadataResult,
     CodeListColsByDatasetUrlResult,
     CodelistsResult,
+    CodeListTableIdentifers,
     ColsWithSuppressOutputTrueResult,
     ColumnDefinition,
-    CsvUrlResult,
     CSVWTableSchemaFileDependenciesResult,
     CubeTableIdentifiers,
     DSDLabelURIResult,
@@ -349,7 +349,7 @@ def select_csvw_table_schema_file_dependencies(
 
 def select_qb_csv_url(
     rdf_graph: rdflib.ConjunctiveGraph, dataset_uri: str
-) -> CsvUrlResult:
+) -> CodeListTableIdentifers:
     """
     Queries the url of the given qb:dataset.
 
@@ -376,7 +376,9 @@ def select_qb_csv_url(
     return map_csv_url_result(results[0])
 
 
-def select_codelist_csv_url(rdf_graph: rdflib.ConjunctiveGraph) -> CsvUrlResult:
+def select_codelist_csv_url(
+    rdf_graph: rdflib.ConjunctiveGraph,
+) -> CodeListTableIdentifers:
     """
     Queries the url of the given skos:conceptScheme.
 

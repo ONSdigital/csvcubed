@@ -33,7 +33,7 @@ class CsvWState:
     """Private Functions"""
 
     @cached_property
-    def _column_definitions(self) -> Dict[str, List[ColumnDefinition]]:
+    def column_definitions(self) -> Dict[str, List[ColumnDefinition]]:
         """
         Map of csv_url to the list of column definitions for the given CSV file.
         """
@@ -82,6 +82,6 @@ class CsvWState:
         Getter for _col_names_col_titles cached property.
         """
         result: List[ColumnDefinition] = get_from_dict_ensure_exists(
-            self._column_definitions, csv_url
+            self.column_definitions, csv_url
         )
         return result
