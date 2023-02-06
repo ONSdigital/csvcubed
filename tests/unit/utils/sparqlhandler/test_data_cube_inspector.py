@@ -5,7 +5,6 @@ from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import ColumnDefinition
 from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.sparql_handler.data_cube_inspector import DataCubeInspector
-from csvcubed.utils.sparql_handler.sparqlquerymanager import select_qb_csv_url
 from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.unit.test_baseunit import get_test_cases_dir
 from tests.unit.utils.sparqlhandler.test_sparqlquerymanager import (
@@ -138,9 +137,8 @@ def test_get_data_set_dsd_csv_url_for_csv_url():
     )
 
     data_set_uri = primary_catalog_metadata.dataset_uri
-    data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
-    csv_url = select_qb_csv_url(
-        data_cube_inspector.csvw_state.rdf_graph, data_set_uri
+    csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
+        data_set_uri
     ).csv_url
 
     data_set_dsd_csv_url_result = data_cube_inspector.get_cube_identifiers_for_csv(
@@ -170,9 +168,8 @@ def test_get_dsd_qube_components_for_csv():
     )
 
     data_set_uri = primary_catalog_metadata.dataset_uri
-    data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
-    csv_url = select_qb_csv_url(
-        data_cube_inspector.csvw_state.rdf_graph, data_set_uri
+    csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
+        data_set_uri
     ).csv_url
 
     result_qube_components = data_cube_inspector.get_dsd_qube_components_for_csv(
@@ -400,6 +397,6 @@ def test_get_csvw_table_schema_file_dependencies():
     data_set_uri = primary_catalog_metadata.dataset_uri
     identifiers = data_cube_inspector.get_cube_identifiers_for_data_set(data_set_uri)
     result = data_cube_inspector.get_csvw_table_schema_file_dependencies(
-        identifiers.csv_url
-    )
+        identifiers
+    ).csv_url
     pass

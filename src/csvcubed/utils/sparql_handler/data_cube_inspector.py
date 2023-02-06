@@ -56,7 +56,9 @@ class DataCubeInspector:
 
     @cached_property
     def _units(self) -> Dict[str, UnitResult]:
-        """ """
+        """
+        Maps the csv url to the unit results of the given CSV.
+        """
         results = select_units(self.csvw_state.rdf_graph)
         return {result.unit_uri: result for result in results}
 
@@ -132,7 +134,9 @@ class DataCubeInspector:
 
     @cached_property
     def _codelists_and_cols(self) -> Dict[str, CodelistsResult]:
-
+        """
+        Maps the csv url to the code lists/columns featured in the CSV.
+        """
         return select_dsd_code_list_and_cols(
             self.csvw_state.rdf_graph,
             self.csvw_state.csvw_json_path,
@@ -142,14 +146,10 @@ class DataCubeInspector:
     def _csvw_table_schema_file_dependencies(
         self,
     ) -> Dict[str, CSVWTableSchemaFileDependenciesResult]:
+        """
+        Stores the csv url and results of the CSVW's table schema file dependencies.
+        """
 
-        # data_set_uri: str = self.csvw_state.primary_graph_uri
-        # csv_url: str = self.get_cube_identifiers_for_data_set(data_set_uri).csv_url
-        # return {
-        #     csv_url: select_csvw_table_schema_file_dependencies(
-        #         self.csvw_state.rdf_graph
-        #     )
-        # }
         results = select_csvw_table_schema_file_dependencies(self.csvw_state.rdf_graph)
         map_csv_url_to_table_schema_file_dependencies = group_by(
             results, lambda r: r.csv_url
@@ -176,11 +176,15 @@ class DataCubeInspector:
         return result
 
     def get_unit_for_uri(self, uri: str) -> Optional[UnitResult]:
-        """ """
+        """
+        Get a specific unit, by its uri.
+        """
         return self._units.get(uri)
 
     def get_units(self) -> List[UnitResult]:
-        """ """
+        """
+        Get all units in the data cube.
+        """
         return list(self._units.values())
 
     def get_cube_identifiers_for_csv(self, csv_url: str) -> CubeTableIdentifiers:
@@ -214,12 +218,21 @@ class DataCubeInspector:
         return self._get_value_for_key(csv_url, self._dsd_qube_components)
 
     def get_shape_for_csv(self, csv_url: str) -> CubeShape:
+        """
+        Getter for the cube shape cached property.
+        """
         return self._get_value_for_key(csv_url, self._cube_shapes)
 
     def get_code_lists_and_cols(self, csv_url: str) -> CodelistsResult:
+        """
+        Getter for the codelists and columns cached property.
+        """
         return self._get_value_for_key(csv_url, self._codelists_and_cols)
 
     def get_suppressed_columns(self, csv_url: str) -> List[str]:
+        """
+        Gets the suppressed columns from the input csv url's column definitions.
+        """
         column_definitions = self.get_column_definitions_for_csv(csv_url)
 
         result = [
@@ -233,6 +246,9 @@ class DataCubeInspector:
     def get_csvw_table_schema_file_dependencies(
         self, csv_url: str
     ) -> CSVWTableSchemaFileDependenciesResult:
+        """
+        Getter for the csvw table schema file dependencies cached property.
+        """
         return self._get_value_for_key(
             csv_url, self._csvw_table_schema_file_dependencies
         )

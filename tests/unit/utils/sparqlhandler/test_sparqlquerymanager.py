@@ -29,7 +29,6 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_codelist_csv_url,
     select_csvw_catalog_metadata,
     select_csvw_table_schema_file_dependencies,
-    select_is_pivoted_shape_for_measures_in_data_set,
     select_metadata_dependencies,
     select_qb_csv_url,
     select_table_schema_properties,
@@ -251,12 +250,13 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
     )
 
     data_set_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
-    data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
     result: DSDLabelURIResult = data_cube_inspector.get_cube_identifiers_for_data_set(
         data_set_uri
     )
 
-    csv_url = select_qb_csv_url(csvw_metadata_rdf_graph, data_set_uri).csv_url
+    csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
+        data_set_uri
+    ).csv_url
 
     result_qube_components = data_cube_inspector.get_dsd_qube_components_for_csv(
         csv_url
@@ -361,8 +361,9 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
     )
 
     data_set_uri = primary_catalog_metadata.dataset_uri
-    data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
-    csv_url = select_qb_csv_url(csvw_metadata_rdf_graph, data_set_uri).csv_url
+    csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
+        data_set_uri
+    ).csv_url
 
     result_qube_components = data_cube_inspector.get_dsd_qube_components_for_csv(
         csv_url
@@ -483,8 +484,9 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
     )
 
     data_set_uri = primary_catalog_metadata.dataset_uri
-    data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
-    csv_url = select_qb_csv_url(csvw_metadata_rdf_graph, data_set_uri).csv_url
+    csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
+        data_set_uri
+    ).csv_url
 
     result_qube_components = data_cube_inspector.get_dsd_qube_components_for_csv(
         csv_url
@@ -568,7 +570,7 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
 
 def test_select_cols_when_supress_output_cols_not_present():
     """
-    Should return expected `ColsWithSuppressOutputTrueResult`.
+    Tests if the get_suppressed_columns function successfully detects no suppressed columns when none are present.
     """
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
@@ -580,7 +582,6 @@ def test_select_cols_when_supress_output_cols_not_present():
     csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
         data_set_uri
     ).csv_url
-    column_definitions = data_cube_inspector.get_column_definitions_for_csv(csv_url)
 
     result = data_cube_inspector.get_suppressed_columns(csv_url)
 
@@ -589,7 +590,7 @@ def test_select_cols_when_supress_output_cols_not_present():
 
 def test_select_cols_when_supress_output_cols_present():
     """
-    Should return expected `ColsWithSuppressOutputTrueResult`.
+    Tests whether a list of suppressed columns is successfully returned from a given csv url.
     """
     csvw_metadata_json_path = (
         _test_case_base_dir / "datacube_with_suppress_output_cols.csv-metadata.json"
@@ -626,13 +627,6 @@ def test_select_dsd_code_list_and_cols_without_codelist_labels():
     identifiers = data_cube_inspector.get_cube_identifiers_for_data_set(data_set_uri)
 
     result = data_cube_inspector.get_code_lists_and_cols(identifiers.csv_url)
-    # result_dsd: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
-    #     csvw_metadata_rdf_graph
-    # )
-
-    # result: CodelistsResult = select_dsd_code_list_and_cols(
-    #     csvw_metadata_rdf_graph, csvw_metadata_json_path
-    # )
 
     assert len(result.codelists) == 3
     assert (
@@ -796,84 +790,6 @@ def test_select_table_schema_properties():
         result.value_url
         == "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services-by-subnational-areas-of-the-uk#scheme/industry-grouping"
     )
-
-
-# We think these tests may be safe to remove now? They are calling the query code directly, which is otherwise only being used in
-# the data_cube_inspector cached property (which is being tested itself)
-
-# def test_select_is_pivoted_shape_for_measures_in_pivoted_shape_data_set():
-#     """
-#     Checks that the measures retrieved from a metadata file that represents a pivoted shape cube are as expected.
-#     """
-#     csvw_metadata_json_path = (
-#         _test_case_base_dir
-#         / "pivoted-multi-measure-dataset"
-#         / "qb-id-10003.csv-metadata.json"
-#     )
-#     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-#     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-#     results = select_is_pivoted_shape_for_measures_in_data_set(
-#         csvw_metadata_rdf_graph,
-#         [
-#             CubeTableIdentifiers(
-#                 "qb-id-10003.csv",
-#                 "qb-id-10003.csv#dataset",
-#                 "Pivoted Shape Cube",
-#                 "qb-id-10003.csv#structure",
-#             )
-#         ],
-#     )
-
-#     assert results is not None
-#     assert len(results) == 2
-
-#     result = _get_measure_by_measure_uri(
-#         results, "qb-id-10003.csv#measure/some-measure"
-#     )
-#     assert result.measure == "qb-id-10003.csv#measure/some-measure"
-#     assert result.is_pivoted_shape == True
-
-#     result = _get_measure_by_measure_uri(
-#         results, "qb-id-10003.csv#measure/some-other-measure"
-#     )
-#     assert result.measure == "qb-id-10003.csv#measure/some-other-measure"
-#     assert result.is_pivoted_shape == True
-
-
-# Same as above test
-# def test_select_is_pivoted_shape_for_measures_in_standard_shape_data_set():
-#     """
-#     Checks that the measures retrieved from a metadata file that represents a standard shape cube are as expected.
-#     """
-#     csvw_metadata_json_path = (
-#         _test_case_base_dir
-#         / "single-unit_single-measure"
-#         / "energy-trends-uk-total-energy.csv-metadata.json"
-#     )
-#     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-#     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-#     results = select_is_pivoted_shape_for_measures_in_data_set(
-#         csvw_metadata_rdf_graph,
-#         [
-#             CubeTableIdentifiers(
-#                 "energy-trends-uk-total-energy.csv",
-#                 "energy-trends-uk-total-energy.csv#dataset",
-#                 "Energy Trends: UK total energy",
-#                 "energy-trends-uk-total-energy.csv#structure",
-#             )
-#         ],
-#     )
-
-#     assert results is not None
-#     assert len(results) == 1
-
-#     result = _get_measure_by_measure_uri(
-#         results, "energy-trends-uk-total-energy.csv#measure/energy-consumption"
-#     )
-#     assert (
-#         result.measure == "energy-trends-uk-total-energy.csv#measure/energy-consumption"
-#     )
-#     assert result.is_pivoted_shape == False
 
 
 def test_rdf_dependency_loaded() -> None:

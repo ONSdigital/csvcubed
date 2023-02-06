@@ -70,8 +70,6 @@ class SPARQLQueryName(Enum):
 
     SELECT_DSD_QUBE_COMPONENTS = "select_dsd_qube_components"
 
-    SELECT_COLS_W_SUPPRESS_OUTPUT = "select_cols_w_suppress_output"
-
     SELECT_CODELISTS_AND_COLS = "select_codelists_and_cols"
 
     SELECT_QB_CSV_URL = "select_qb_csv_url"
@@ -300,6 +298,7 @@ def select_csvw_table_schema_file_dependencies(
     return map_csvw_table_schemas_file_dependencies_result(results)
 
 
+# TO DO: Determine whether this query is needed anymore.
 def select_qb_csv_url(
     rdf_graph: rdflib.ConjunctiveGraph, dataset_uri: str
 ) -> CsvUrlResult:

@@ -54,7 +54,6 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_codelist_cols_by_csv_url,
     select_codelist_csv_url,
     select_primary_key_col_names_by_csv_url,
-    select_qb_csv_url,
 )
 from csvcubed.utils.uri import looks_like_uri
 
@@ -107,9 +106,7 @@ class MetadataPrinter:
                 .get_cube_identifiers_for_data_set(catalogue_data_set_uri)
                 .csv_url
             )
-            # return select_qb_csv_url(
-            #     csvw_metadata_rdf_graph, catalogue_data_set_uri
-            # ).csv_url
+
         elif csvw_type == CSVWType.CodeList:
             return select_codelist_csv_url(csvw_metadata_rdf_graph).csv_url
         else:
@@ -331,6 +328,7 @@ class MetadataPrinter:
         return f"- The {self.csvw_type_str} has the following concepts information:{self.result_concepts_hierachy_info.output_str}"
 
 
+# TODO: Determine whether this function is still needed.
 def to_absolute_rdflib_file_path(path: str, parent_document_path: Path) -> str:
     if looks_like_uri(path):
         return path

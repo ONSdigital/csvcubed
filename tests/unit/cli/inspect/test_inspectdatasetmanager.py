@@ -17,7 +17,6 @@ from csvcubed.cli.inspect.inspectdatasetmanager import (
     get_standard_shape_unit_col_name_from_dsd,
     load_csv_to_dataframe,
 )
-from csvcubed.cli.inspect.metadataprinter import to_absolute_rdflib_file_path
 from csvcubed.models.csvwtype import CSVWType
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.inspectdataframeresults import (
@@ -36,7 +35,6 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_codelist_cols_by_csv_url,
     select_codelist_csv_url,
     select_primary_key_col_names_by_csv_url,
-    select_qb_csv_url,
 )
 from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.unit.test_baseunit import get_test_cases_dir
@@ -262,8 +260,9 @@ def get_arguments_qb_dataset(
     """
     csvw_state = data_cube_inspector.csvw_state
     data_set_uri = csvw_state.get_primary_catalog_metadata().dataset_uri
-    data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_state.csvw_json_path)
-    csv_url = select_qb_csv_url(csvw_state.rdf_graph, data_set_uri).csv_url
+    csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
+        data_set_uri
+    ).csv_url
 
     dataset: DataFrame = load_csv_to_dataframe(csvw_state.csvw_json_path, Path(csv_url))
     qube_components = data_cube_inspector.get_dsd_qube_components_for_csv(
@@ -388,10 +387,9 @@ def test_get_measure_col_name_from_dsd_measure_col_present():
     result_data_set_uri = (
         csvw_rdf_manager.csvw_state.get_primary_catalog_metadata().dataset_uri
     )
-    data_set_uri = to_absolute_rdflib_file_path(
-        result_data_set_uri, csvw_metadata_json_path
-    )
-    csv_url = select_qb_csv_url(csvw_rdf_manager.rdf_graph, data_set_uri).csv_url
+    csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
+        result_data_set_uri
+    ).csv_url
 
     result_qube_components = data_cube_inspector.get_dsd_qube_components_for_csv(
         csv_url
@@ -420,8 +418,9 @@ def test_get_measure_col_name_from_dsd_measure_col_not_present():
     )
 
     data_set_uri = primary_catalog_metadata.dataset_uri
-    data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
-    csv_url = select_qb_csv_url(csvw_rdf_manager.rdf_graph, data_set_uri).csv_url
+    csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
+        data_set_uri
+    ).csv_url
 
     result_qube_components = data_cube_inspector.get_dsd_qube_components_for_csv(
         csv_url
@@ -450,8 +449,9 @@ def test_get_unit_col_name_from_dsd_unit_col_present():
     )
 
     data_set_uri = primary_catalog_metadata.dataset_uri
-    data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
-    csv_url = select_qb_csv_url(csvw_rdf_manager.rdf_graph, data_set_uri).csv_url
+    csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
+        data_set_uri
+    ).csv_url
 
     result_qube_components = data_cube_inspector.get_dsd_qube_components_for_csv(
         csv_url
@@ -480,8 +480,9 @@ def test_get_unit_col_name_from_dsd_unit_col_not_present():
     )
 
     data_set_uri = primary_catalog_metadata.dataset_uri
-    data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
-    csv_url = select_qb_csv_url(csvw_rdf_manager.rdf_graph, data_set_uri).csv_url
+    csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
+        data_set_uri
+    ).csv_url
 
     result_qube_components = data_cube_inspector.get_dsd_qube_components_for_csv(
         csv_url
@@ -511,8 +512,9 @@ def test_get_single_measure_label_from_dsd():
     )
 
     data_set_uri = primary_catalog_metadata.dataset_uri
-    data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
-    csv_url = select_qb_csv_url(csvw_rdf_manager.rdf_graph, data_set_uri).csv_url
+    csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
+        data_set_uri
+    ).csv_url
 
     result_qube_components = data_cube_inspector.get_dsd_qube_components_for_csv(
         csv_url
