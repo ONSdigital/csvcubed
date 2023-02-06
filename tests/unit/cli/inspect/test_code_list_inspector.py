@@ -1,3 +1,5 @@
+import pytest
+
 from csvcubed.models.sparqlresults import CatalogMetadataResult, CodeListTableIdentifers
 from csvcubed.utils.sparql_handler.code_list_inspector import CodeListInspector
 from csvcubed.utils.tableschema import CsvwRdfManager
@@ -27,6 +29,26 @@ def test_code_list_table_identifiers():
 
 
 # make a fail test for the one above
+def test_code_list_table_identifiers_error():
+    """the test checks for the codelist idetifiers are available but
+    in the mean time the cube doesn't have a record in the codelist identifiers"""
+
+    path_to_cube = (
+        get_test_cases_dir()
+        / "cli"
+        / "inspect"
+        / "single-unit_multi-measure"
+        / "national-communication-category.table2.json"
+    )
+
+    rdf_manager = CsvwRdfManager(path_to_cube)
+
+    code_list_inspector = CodeListInspector(rdf_manager.csvw_state)
+
+    with pytest.raises(KeyError) as exception:
+        _ = code_list_inspector._code_list_table_identifiers
+
+    assert (f"Found multiple skos:inScheme columns in '()'.") in str(exception.value)
 
 
 def test_get_csvw_catalog_metadata():
