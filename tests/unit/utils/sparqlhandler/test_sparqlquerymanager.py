@@ -11,7 +11,6 @@ from csvcubed.models.sparqlresults import (
     CodelistColumnResult,
     CsvUrlResult,
     CubeTableIdentifiers,
-    DSDLabelURIResult,
     IsPivotedShapeMeasureResult,
     MetadataDependenciesResult,
     QubeComponentResult,
@@ -250,8 +249,8 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
     )
 
     data_set_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
-    result: DSDLabelURIResult = data_cube_inspector.get_cube_identifiers_for_data_set(
-        data_set_uri
+    result: CubeTableIdentifiers = (
+        data_cube_inspector.get_cube_identifiers_for_data_set(data_set_uri)
     )
 
     csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(

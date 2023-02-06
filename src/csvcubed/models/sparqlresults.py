@@ -77,24 +77,9 @@ class CatalogMetadataResult:
 
 
 @dataclass
-class DSDLabelURIResult:
-    """
-    Model to represent select dsd dataset label and uri sparql query result.
-    """
-
-    dataset_label: str
-    dsd_uri: str
-
-    @property
-    def output_str(self) -> str:
-        return f"""
-        - Dataset Label: {self.dataset_label}"""
-
-
-@dataclass
 class CubeTableIdentifiers(DataClassBase):
     """
-    Links the CSV, DataSet and DataStructureDefinition URIs for a given cube.
+    Links the CSV URL, DataSet URL, DataSet Label and DataStructureDefinition URI for a given cube.
     """
 
     csv_url: str
@@ -370,25 +355,6 @@ def map_catalog_metadata_results(
         results.append(result)
 
     return results
-
-
-# def map_dataset_label_dsd_uri_sparql_result(
-#     sparql_result: ResultRow,
-# ) -> DSDLabelURIResult:
-#     """
-#     Maps sparql query result to `DSDLabelURIResult`
-
-#     Member of :file:`./models/sparqlresults.py`
-
-#     :return: `DSDLabelURIResult`
-#     """
-#     result_dict = sparql_result.asdict()
-
-#     result = DSDLabelURIResult(
-#         dataset_label=str(result_dict["dataSetLabel"]),
-#         dsd_uri=str(result_dict["dataStructureDefinition"]),
-#     )
-#     return result
 
 
 def map_data_set_dsd_csv_url_result(
