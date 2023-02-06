@@ -29,7 +29,7 @@ from csvcubed.utils.skos.codelist import (
     get_codelist_col_title_by_property_url,
     get_codelist_col_title_from_col_name,
 )
-from csvcubed.utils.sparql_handler.code_list_state import CodeListState
+from csvcubed.utils.sparql_handler.code_list_inspector import CodeListInspector
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_primary_key_col_names_by_csv_url,
@@ -269,7 +269,7 @@ def get_arguments_qb_dataset(
 
 
 def _get_arguments_skos_codelist(
-    code_list_inspector: CodeListState,
+    code_list_inspector: CodeListInspector,
 ) -> Tuple[DataFrame, str]:
     """
     Produces the ConceptScheme for skos:codelist.
@@ -796,7 +796,7 @@ def test_get_concepts_hierarchy_info_hierarchy_with_depth_of_one():
         / "alcohol-content.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    code_list_inspector = CodeListState(csvw_rdf_manager.csvw_state)
+    code_list_inspector = CodeListInspector(csvw_rdf_manager.csvw_state)
 
     (dataset, csv_url) = _get_arguments_skos_codelist(code_list_inspector)
 
@@ -833,7 +833,7 @@ def test_get_concepts_hierarchy_info_hierarchy_with_depth_more_than_one():
     """
     csvw_metadata_json_path = _test_case_base_dir / "itis-industry.csv-metadata.json"
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    code_list_inspector = CodeListState(csvw_rdf_manager.csvw_state)
+    code_list_inspector = CodeListInspector(csvw_rdf_manager.csvw_state)
 
     (dataset, csv_url) = _get_arguments_skos_codelist(code_list_inspector)
 

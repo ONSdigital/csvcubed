@@ -1,5 +1,5 @@
-from csvcubed.models.sparqlresults import CodeListTableIdentifers
-from csvcubed.utils.sparql_handler.code_list_state import CodeListState
+from csvcubed.models.sparqlresults import CatalogMetadataResult, CodeListTableIdentifers
+from csvcubed.utils.sparql_handler.code_list_inspector import CodeListInspector
 from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.unit.test_baseunit import get_test_cases_dir
 
@@ -16,7 +16,7 @@ def test_code_list_table_identifiers():
 
     rdf_manager = CsvwRdfManager(path_to_cube)
 
-    code_list_inspector = CodeListState(rdf_manager.csvw_state)
+    code_list_inspector = CodeListInspector(rdf_manager.csvw_state)
     code_list_identifiers = code_list_inspector._code_list_table_identifiers
 
     assert len(code_list_identifiers) == 1
@@ -24,3 +24,26 @@ def test_code_list_table_identifiers():
         csv_url="some-dimension.csv", concept_scheme_url="some-dimension.csv#code-list"
     )
     # it should have one value returned
+
+
+# make a fail test for the one above
+
+
+def test_get_csvw_catalog_metadata():
+
+    path_to_cube = _test_case_base_dir / "qb-id-10003.csv-metadata.json"
+
+    rdf_manager = CsvwRdfManager(path_to_cube)
+
+    code_list_inspector = CodeListInspector(rdf_manager.csvw_state)
+
+    the_result = code_list_inspector.get_csvw_catalog_metadata()
+
+    assert isinstance(the_result, CatalogMetadataResult)
+    assert the_result.dataset_uri == "some-dimension.csv#code-list"
+
+
+# make a fail test for the one above
+
+
+# test for keyerror for the get_table_identifiers_for_concept_scheme

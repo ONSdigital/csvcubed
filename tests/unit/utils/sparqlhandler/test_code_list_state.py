@@ -1,4 +1,4 @@
-from csvcubed.utils.sparql_handler.code_list_state import CodeListState
+from csvcubed.utils.sparql_handler.code_list_inspector import CodeListInspector
 from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.unit.test_baseunit import get_test_cases_dir
 
@@ -12,7 +12,7 @@ _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
 #     some_path = _test_case_base_dir / "clearance-origin.csv-metadata.json"
 
 #     csvw_rdf_manager = CsvwRdfManager(some_path)
-#     code_list_state = CodeListState(csvw_rdf_manager.csvw_state)
+#     code_list_state = CodeListInspector(csvw_rdf_manager.csvw_state)
 
 #     something = code_list_state._code_list_table_identifiers
 
@@ -24,7 +24,7 @@ _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
 #     some_path = _test_case_base_dir / "clearance-origin.csv-metadata.json"
 
 #     csvw_rdf_manager = CsvwRdfManager(some_path)
-#     code_list_state = CodeListState(csvw_rdf_manager.csvw_state)
+#     code_list_state = CodeListInspector(csvw_rdf_manager.csvw_state)
 
 #     something = code_list_state.link_csv_url_to_concept_scheme_url
 

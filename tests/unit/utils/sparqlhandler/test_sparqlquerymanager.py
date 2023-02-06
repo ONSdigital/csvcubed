@@ -6,7 +6,6 @@ import pytest
 from rdflib import DCAT, RDF, RDFS, ConjunctiveGraph, Graph, Literal, URIRef
 
 from csvcubed.models.sparqlresults import (
-    CodelistColumnResult,
     CodelistsResult,
     ColsWithSuppressOutputTrueResult,
     ColumnDefinition,
@@ -20,7 +19,7 @@ from csvcubed.models.sparqlresults import (
 from csvcubed.utils.iterables import first
 from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.rdf import parse_graph_retain_relative
-from csvcubed.utils.sparql_handler.code_list_state import CodeListState
+from csvcubed.utils.sparql_handler.code_list_inspector import CodeListInspector
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     ask_is_csvw_code_list,
@@ -661,7 +660,7 @@ def test_select_codelist_cols_by_csv_url():
     primary_catalogue_metadata = (
         csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
     )
-    code_list_inspector = CodeListState(csvw_rdf_manager.csvw_state)
+    code_list_inspector = CodeListInspector(csvw_rdf_manager.csvw_state)
     csv_url = code_list_inspector.get_table_identifiers_for_concept_scheme(
         primary_catalogue_metadata.dataset_uri
     ).csv_url

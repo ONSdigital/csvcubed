@@ -10,7 +10,7 @@ from csvcubed.utils.skos.codelist import (
     get_codelist_col_title_by_property_url,
     get_codelist_col_title_from_col_name,
 )
-from csvcubed.utils.sparql_handler.code_list_state import CodeListState
+from csvcubed.utils.sparql_handler.code_list_inspector import CodeListInspector
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_primary_key_col_names_by_csv_url,
 )
@@ -33,7 +33,7 @@ def test_get_codelist_col_title_by_property_url_label():
     primary_catalogue_metadata = (
         csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
     )
-    code_list_inspector = CodeListState(csvw_rdf_manager.csvw_state)
+    code_list_inspector = CodeListInspector(csvw_rdf_manager.csvw_state)
     csv_url = code_list_inspector.get_table_identifiers_for_concept_scheme(
         primary_catalogue_metadata.dataset_uri
     ).csv_url
@@ -61,7 +61,7 @@ def test_get_codelist_col_title_by_property_url_notation():
     primary_catalogue_metadata = (
         csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
     )
-    code_list_inspector = CodeListState(csvw_rdf_manager.csvw_state)
+    code_list_inspector = CodeListInspector(csvw_rdf_manager.csvw_state)
     csv_url = code_list_inspector.get_table_identifiers_for_concept_scheme(
         primary_catalogue_metadata.dataset_uri
     ).csv_url
@@ -95,7 +95,7 @@ def test_get_codelist_col_title_by_property_url_parent_notation():
     primary_catalogue_metadata = (
         csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
     )
-    code_list_inspector = CodeListState(csvw_rdf_manager.csvw_state)
+    code_list_inspector = CodeListInspector(csvw_rdf_manager.csvw_state)
     csv_url = code_list_inspector.get_table_identifiers_for_concept_scheme(
         primary_catalogue_metadata.dataset_uri
     ).csv_url
@@ -124,7 +124,7 @@ def test_get_codelist_col_title_by_property_url_sort_priority():
     primary_catalogue_metadata = (
         csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
     )
-    code_list_inspector = CodeListState(csvw_rdf_manager.csvw_state)
+    code_list_inspector = CodeListInspector(csvw_rdf_manager.csvw_state)
     csv_url = code_list_inspector.get_table_identifiers_for_concept_scheme(
         primary_catalogue_metadata.dataset_uri
     ).csv_url
@@ -153,7 +153,7 @@ def test_get_codelist_col_title_by_property_url_rdfs_comment():
     primary_catalogue_metadata = (
         csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
     )
-    code_list_inspector = CodeListState(csvw_rdf_manager.csvw_state)
+    code_list_inspector = CodeListInspector(csvw_rdf_manager.csvw_state)
     csv_url = code_list_inspector.get_table_identifiers_for_concept_scheme(
         primary_catalogue_metadata.dataset_uri
     ).csv_url
@@ -181,7 +181,7 @@ def test_get_codelist_col_title_by_property_url_rdfs_type():
     primary_catalogue_metadata = (
         csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
     )
-    code_list_inspector = CodeListState(csvw_rdf_manager.csvw_state)
+    code_list_inspector = CodeListInspector(csvw_rdf_manager.csvw_state)
     csv_url = code_list_inspector.get_table_identifiers_for_concept_scheme(
         primary_catalogue_metadata.dataset_uri
     ).csv_url
@@ -210,7 +210,7 @@ def test_build_concepts_hierarchy_tree_of_depth_one():
     primary_catalogue_metadata = (
         csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
     )
-    code_list_inspector = CodeListState(csvw_rdf_manager.csvw_state)
+    code_list_inspector = CodeListInspector(csvw_rdf_manager.csvw_state)
     csv_url = code_list_inspector.get_table_identifiers_for_concept_scheme(
         primary_catalogue_metadata.dataset_uri
     ).csv_url
@@ -247,7 +247,7 @@ def test_build_concepts_hierarchy_tree_of_depth_more_than_one():
     primary_catalogue_metadata = (
         csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
     )
-    code_list_inspector = CodeListState(csvw_rdf_manager.csvw_state)
+    code_list_inspector = CodeListInspector(csvw_rdf_manager.csvw_state)
     csv_url = code_list_inspector.get_table_identifiers_for_concept_scheme(
         primary_catalogue_metadata.dataset_uri
     ).csv_url

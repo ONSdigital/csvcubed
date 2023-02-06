@@ -4,13 +4,17 @@ from typing import List, Optional
 
 from csvcubedmodels.rdf.namespaces import SKOS
 
-from csvcubed.models.sparqlresults import CodeListTableIdentifers, ColumnDefinition
+from csvcubed.models.sparqlresults import (
+    CatalogMetadataResult,
+    CodeListTableIdentifers,
+    ColumnDefinition,
+)
 from csvcubed.utils.iterables import first
 from csvcubed.utils.sparql_handler.csvw_state import CsvWState
 
 
 @dataclass
-class CodeListState:
+class CodeListInspector:
     csvw_state: CsvWState
 
     @cached_property
@@ -55,11 +59,20 @@ class CodeListState:
 
         return identifiers
 
-    # def get_csvw_catalog_metadata(self, csv_url: str) -> CatalogMetadataResult:
-    #     """
-    #     todo: Access the stuff from `self.csvw_state.catalog_metadata` and return the relevant value.
+    def get_csvw_catalog_metadata(self) -> CatalogMetadataResult:
+        """Fill this in"""
+        # todo: Access the stuff from `self.csvw_state.catalog_metadata` and return the relevant value.
+        the_list = self.csvw_state.catalog_metadata
 
-    #     When in code_list_state, need a way to link between csv_url and concept scheme (this needs a new query).
-    #     Filter catalog metadata results so they represent the one associated with the csv_url. (dataset url = concept scheme url)
-    #     """
-    #     pass
+        concept_scheme_url = self._code_list_table_identifiers[0].concept_scheme_url
+
+        for x in the_list:
+            if x.dataset_uri == concept_scheme_url:
+                return x
+
+        raise ValueError(
+            f"None of the results can be associated with the {concept_scheme_url}"
+        )
+
+        # When in code_list_state, need a way to link between csv_url and concept scheme (this needs a new query).
+        # Filter catalog metadata results so they represent the one associated with the csv_url. (dataset url = concept scheme url)
