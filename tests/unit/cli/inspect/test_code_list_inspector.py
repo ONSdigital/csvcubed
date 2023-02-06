@@ -37,8 +37,7 @@ def test_code_list_table_identifiers_error():
         get_test_cases_dir()
         / "cli"
         / "inspect"
-        / "single-unit_multi-measure"
-        / "national-communication-category.table2.json"
+        / "itis-industry-multiple-skos-inscheme.csv-metadata.json"
     )
 
     rdf_manager = CsvwRdfManager(path_to_cube)
@@ -48,7 +47,9 @@ def test_code_list_table_identifiers_error():
     with pytest.raises(KeyError) as exception:
         _ = code_list_inspector._code_list_table_identifiers
 
-    assert (f"Found multiple skos:inScheme columns in '()'.") in str(exception.value)
+    assert (
+        "Found multiple skos:inScheme columns in 'itis-industry-multiple-skos-inscheme.csv'."
+    ) in str(exception.value)
 
 
 def test_get_csvw_catalog_metadata():
