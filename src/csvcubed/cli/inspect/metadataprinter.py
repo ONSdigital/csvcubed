@@ -71,7 +71,7 @@ class MetadataPrinter:
     dataset: DataFrame = field(init=False)
 
     result_catalog_metadata: CatalogMetadataResult = field(init=False)
-    result_dataset_label_dsd_uri: CubeTableIdentifiers = field(init=False)
+    result_cube_table_identifiers: CubeTableIdentifiers = field(init=False)
     result_qube_components: QubeComponentsResult = field(init=False)
     result_column_definitions: ColumnDefinition = field(init=False)
     result_code_lists: CodelistsResult = field(init=False)
@@ -168,13 +168,11 @@ class MetadataPrinter:
         """
         assert isinstance(self.state, DataCubeInspector)  # Make pyright happier
 
-        csvw_state = self.state.csvw_state
-
         self.result_qube_components = self.state.get_dsd_qube_components_for_csv(
             self.primary_csv_url
         )
 
-        self.result_dataset_label_dsd_uri = self.state.get_cube_identifiers_for_csv(
+        self.result_cube_table_identifiers = self.state.get_cube_identifiers_for_csv(
             self.primary_csv_url
         )
         self.result_column_definitions = self.state.get_column_definitions_for_csv(
@@ -281,7 +279,7 @@ class MetadataPrinter:
         """
         # get_printable_list_str called directly here for suppressed columns - see comment above re alternative approaches.
         # {get_printable_list_str(self.suppressed_columns)} OR {self.result_cols_with_suppress_output_true.output_str}
-        return f"- The {self.csvw_type_str} has the following data structure definition:{self.result_dataset_label_dsd_uri.data_set_label}{self.result_qube_components.output_str}\n- Columns where suppress output is true: {get_printable_list_str(self.suppressed_columns)}"
+        return f"- The {self.csvw_type_str} has the following data structure definition:{self.result_cube_table_identifiers.data_set_label}{self.result_qube_components.output_str}\n- Columns where suppress output is true: {get_printable_list_str(self.suppressed_columns)}"
 
     @property
     def codelist_info_printable(self) -> str:

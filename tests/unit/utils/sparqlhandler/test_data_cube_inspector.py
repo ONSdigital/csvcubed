@@ -2,7 +2,7 @@ import pytest
 
 from csvcubed.cli.inspect.metadataprinter import to_absolute_rdflib_file_path
 from csvcubed.models.cube.cube_shape import CubeShape
-from csvcubed.models.sparqlresults import ColumnDefinition
+from csvcubed.models.sparqlresults import CodelistResult, ColumnDefinition
 from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.sparql_handler.data_cube_inspector import DataCubeInspector
 from csvcubed.utils.tableschema import CsvwRdfManager
@@ -54,7 +54,6 @@ def test_get_column_definitions_for_csv():
     """
     Testing: about_url, required=False
     """
-    # Testing about_url + required: false
     assert results["some_attribute"] == ColumnDefinition(
         csv_url="qb-id-10004.csv",
         about_url="qb-id-10004.csv#obs/{some_dimension}@some-measure",
@@ -121,7 +120,7 @@ def test_exception_is_thrown_for_invalid_csv_url():
     assert "Could not find the definition for key 'c'" in str(exception.value)
 
 
-def test_get_data_set_dsd_csv_url_for_csv_url():
+def test_get_cube_identifiers_for_csv():
     """
     Ensures that the valid data_set_dsd_and_csv_url_for_csv_url property is returned.
     """
@@ -141,15 +140,18 @@ def test_get_data_set_dsd_csv_url_for_csv_url():
         data_set_uri
     ).csv_url
 
-    data_set_dsd_csv_url_result = data_cube_inspector.get_cube_identifiers_for_csv(
-        csv_url
-    )
+    result = data_cube_inspector.get_cube_identifiers_for_csv(csv_url)
 
-    assert data_set_dsd_csv_url_result is not None
-    assert data_set_dsd_csv_url_result.csv_url == "qb-id-10004.csv"
-    assert data_set_dsd_csv_url_result.data_set_label == "Pivoted Shape Cube"
-    assert data_set_dsd_csv_url_result.data_set_url == "qb-id-10004.csv#dataset"
-    assert data_set_dsd_csv_url_result.dsd_uri == "qb-id-10004.csv#structure"
+    assert result is not None
+    assert result.csv_url == "qb-id-10004.csv"
+    assert result.data_set_label == "Pivoted Shape Cube"
+    assert result.data_set_url == "qb-id-10004.csv#dataset"
+    assert result.dsd_uri == "qb-id-10004.csv#structure"
+
+
+# TODO
+def test_get_cube_identifiers_for_data_set():
+    pass
 
 
 def test_get_dsd_qube_components_for_csv():
@@ -286,6 +288,9 @@ def test_detect_csvw_shape_standard():
 
 
 def test_get_codelists_and_cols():
+    """
+    Ensures that the correct codelists and associated columns represented by the input metadata are returned
+    """
     csvw_metadata_json_path = (
         _test_case_base_dir
         / "pivoted-single-measure-dataset"
@@ -296,23 +301,27 @@ def test_get_codelists_and_cols():
     primary_catalog_metadata = (
         csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
     )
+    csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
+        primary_catalog_metadata.dataset_uri
+    ).csv_url
 
-    data_set_uri = primary_catalog_metadata.dataset_uri
-    identifiers = data_cube_inspector.get_cube_identifiers_for_data_set(data_set_uri)
+    results = {
+        c.csv_url: c
+        for c in data_cube_inspector.get_code_lists_and_cols(csv_url).codelists
+    }
 
-    result = data_cube_inspector.get_code_lists_and_cols(identifiers.csv_url)
-    codelists = result.codelists
-    num_codelists = result.num_codelists
-    assert codelists[0].code_list == "some-dimension.csv#code-list"
-    assert codelists[0].code_list_label == "Some Dimension"
-    assert codelists[0].cols_used_in == ["Some Dimension"]
-    assert codelists[0].csv_url == "qb-id-10004.csv"
-    assert num_codelists == 1
+    assert len(results) == 1
+    assert results["qb-id-10004.csv"] == CodelistResult(
+        code_list="some-dimension.csv#code-list",
+        code_list_label="Some Dimension",
+        cols_used_in=["Some Dimension"],
+        csv_url=csv_url,
+    )
 
 
+# TODO Duplicate test - remove?
 def test_get_column_definitions_for_csv():
     """ """
-
     csvw_metadata_json_path = (
         _test_case_base_dir
         / "pivoted-single-measure-dataset"
@@ -342,7 +351,9 @@ def test_get_column_definitions_for_csv():
 
 
 def test_get_units():
-    """ """
+    """
+    Ensures that the correct unit uris and labels for the input metadata are returned
+    """
     csvw_metadata_json_path = (
         _test_case_base_dir
         / "pivoted-multi-measure-dataset"
@@ -364,9 +375,11 @@ def test_get_units():
     assert unit_labels == results_unit_labels
 
 
-# Check if this unit test is wanted at all.
+# TODO Check if this unit test is wanted at all.
 def test_get_unit_for_uri():
-    """ """
+    """
+    Ensures that the correct unit label is returned for the input metadata unit uri
+    """
     csvw_metadata_json_path = (
         _test_case_base_dir
         / "pivoted-multi-measure-dataset"
@@ -381,7 +394,9 @@ def test_get_unit_for_uri():
 
 
 def test_get_csvw_table_schema_file_dependencies():
-    """ """
+    """
+    TODO Add comment
+    """
     csvw_metadata_json_path = (
         _test_case_base_dir
         / "pivoted-single-measure-dataset"

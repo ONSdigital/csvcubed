@@ -189,7 +189,7 @@ class DataCubeInspector:
 
     def get_cube_identifiers_for_csv(self, csv_url: str) -> CubeTableIdentifiers:
         """
-        Getter for data_set_dsd_and_csv_url_for_csv_url cached property.
+        Get csv url, data set uri, data set label and DSD uri for the given csv url.
         """
         result: CubeTableIdentifiers = self._get_value_for_key(
             csv_url, self._cube_table_identifiers
@@ -200,7 +200,7 @@ class DataCubeInspector:
         self, data_set_uri: str
     ) -> CubeTableIdentifiers:
         """
-        Getter for data_set_dsd_and_csv_url_for_csv_url cached property.
+        Get csv url, data set uri, data set label and DSD uri for the given data set uri.
         """
         result = first(
             self._cube_table_identifiers.values(),
@@ -213,25 +213,25 @@ class DataCubeInspector:
 
     def get_dsd_qube_components_for_csv(self, csv_url: str) -> QubeComponentsResult:
         """
-        Getter for DSD Qube Components cached property.
+        Get DSD Qube Components for the given csv url.
         """
         return self._get_value_for_key(csv_url, self._dsd_qube_components)
 
     def get_shape_for_csv(self, csv_url: str) -> CubeShape:
         """
-        Getter for the cube shape cached property.
+        Get the cube shape.
         """
         return self._get_value_for_key(csv_url, self._cube_shapes)
 
     def get_code_lists_and_cols(self, csv_url: str) -> CodelistsResult:
         """
-        Getter for the codelists and columns cached property.
+        Get the codelists and columns associated with the given csv url.
         """
         return self._get_value_for_key(csv_url, self._codelists_and_cols)
 
     def get_suppressed_columns(self, csv_url: str) -> List[str]:
         """
-        Gets the suppressed columns from the input csv url's column definitions.
+        Get the suppressed columns from the input csv url's column definitions.
         """
         column_definitions = self.get_column_definitions_for_csv(csv_url)
 
