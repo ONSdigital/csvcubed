@@ -33,7 +33,9 @@ class CodeListInspector:
                 return None
 
             if len(in_scheme_columns) == 1:
-                return CodeListTableIdentifers(csv_url, in_scheme_columns[0].value_url)
+                return CodeListTableIdentifers(
+                    csv_url, str(in_scheme_columns[0].value_url)
+                )
 
             raise KeyError(f"Found multiple skos:inScheme columns in '{csv_url}'.")
 
