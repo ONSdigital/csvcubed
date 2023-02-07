@@ -1,3 +1,4 @@
+"""This is the CodeListInspector class script"""
 from dataclasses import dataclass
 from functools import cached_property
 from typing import List, Optional
@@ -15,6 +16,8 @@ from csvcubed.utils.sparql_handler.csvw_state import CsvWState
 
 @dataclass
 class CodeListInspector:
+    """Fills this in"""
+
     csvw_state: CsvWState
 
     @cached_property
@@ -62,8 +65,7 @@ class CodeListInspector:
         return identifiers
 
     def get_csvw_catalog_metadata(self) -> CatalogMetadataResult:
-        """Fill this in"""
-        # todo: Access the stuff from `self.csvw_state.catalog_metadata` and return the relevant value.
+        """This function will access the catalogmetadataResult and compares the concept_sceme_url and returns the relevant value"""
         the_list = self.csvw_state.catalog_metadata
 
         concept_scheme_url = self._code_list_table_identifiers[0].concept_scheme_url
@@ -75,6 +77,3 @@ class CodeListInspector:
         raise ValueError(
             f"None of the results can be associated with the {concept_scheme_url}"
         )
-
-        # When in code_list_state, need a way to link between csv_url and concept scheme (this needs a new query).
-        # Filter catalog metadata results so they represent the one associated with the csv_url. (dataset url = concept scheme url)

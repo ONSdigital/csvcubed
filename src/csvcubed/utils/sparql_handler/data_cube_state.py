@@ -144,9 +144,6 @@ class DataCubeState:
         """
         Getter for data_set_dsd_and_csv_url_for_csv_url cached property.
         """
-        # data_set_uri = _to_absolute_rdflib_file_path(
-        #     data_set_uri, self.csvw_state.csvw_json_path
-        # )
 
         result = first(
             self._cube_table_identifiers.values(),
