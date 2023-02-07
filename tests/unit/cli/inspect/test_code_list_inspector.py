@@ -66,7 +66,46 @@ def test_get_csvw_catalog_metadata():
     assert the_result.dataset_uri == "some-dimension.csv#code-list"
 
 
-# make a fail test for the one above
+def test_get_csvw_catalog_metadata_error():
+
+    path_to_cube = (
+        get_test_cases_dir()
+        / "cli"
+        / "inspect"
+        / "itis-industry-multiple-skos-inscheme.csv-metadata2.json"
+    )
+
+    rdf_manager = CsvwRdfManager(path_to_cube)
+
+    code_list_inspector = CodeListInspector(rdf_manager.csvw_state)
+
+    with pytest.raises(ValueError) as exception:
+        _ = code_list_inspector.get_csvw_catalog_metadata()
+
+    assert (
+        "None of the results can be associated with the http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services#scheme/it-industry"
+    ) in str(exception.value)
 
 
-# test for keyerror for the get_table_identifiers_for_concept_scheme
+def test_get_table_identifiers_for_concept_scheme_error():
+
+    path_to_cube = (
+        get_test_cases_dir()
+        / "cli"
+        / "inspect"
+        / "itis-industry-multiple-skos-inscheme.csv-metadata2.json"
+    )
+
+    rdf_manager = CsvwRdfManager(path_to_cube)
+
+    code_list_inspector = CodeListInspector(rdf_manager.csvw_state)
+
+    concept_scheme_url = "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services#scheme/itis-industry"
+
+    with pytest.raises(KeyError) as exception:
+        _ = code_list_inspector.get_table_identifiers_for_concept_scheme(
+            concept_scheme_url
+        )
+    assert (
+        "Could not find code list table identifiers for ConceptSchem URL: 'http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services#scheme/itis-industry'"
+    ) in str(exception.value)
