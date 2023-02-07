@@ -1,10 +1,11 @@
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX csvw: <http://www.w3.org/ns/csvw#>
 
-SELECT DISTINCT ?tableSchema ?csvUrl
+SELECT DISTINCT ?csvUrl ?tableSchema ?schemaUrl
 WHERE {
     [] csvw:tableSchema ?tableSchema;
-       csvw:url ?csvUrl.
+       csvw:url ?schemaUrl.
+    ?csvUrl csvw:table [].
     # Only return the tableSchemas which are defined elsewhere.
     # In this case they are IRIs, whereas tableSchemas defined in-line are BNODES.
     FILTER (isIRI(?tableSchema)).

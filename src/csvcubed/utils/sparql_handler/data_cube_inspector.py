@@ -149,18 +149,7 @@ class DataCubeInspector:
         """
         Stores the csv url and results of the CSVW's table schema file dependencies.
         """
-
-        results = select_csvw_table_schema_file_dependencies(self.csvw_state.rdf_graph)
-        map_csv_url_to_table_schema_file_dependencies = group_by(
-            results, lambda r: r.csv_url
-        )
-        return {
-            csv_url: results.table_schema_file_dependencies
-            for (
-                csv_url,
-                results.table_schema_file_dependencies,
-            ) in map_csv_url_to_table_schema_file_dependencies.items()
-        }
+        return select_csvw_table_schema_file_dependencies(self.csvw_state.rdf_graph)
 
     """
     Public getters for the cached properties.

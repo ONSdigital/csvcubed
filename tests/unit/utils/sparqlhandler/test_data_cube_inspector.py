@@ -395,7 +395,7 @@ def test_get_unit_for_uri():
 
 def test_get_csvw_table_schema_file_dependencies():
     """
-    TODO Add comment
+    # TODO Add comment
     """
     csvw_metadata_json_path = (
         _test_case_base_dir
@@ -412,6 +412,6 @@ def test_get_csvw_table_schema_file_dependencies():
     data_set_uri = primary_catalog_metadata.dataset_uri
     identifiers = data_cube_inspector.get_cube_identifiers_for_data_set(data_set_uri)
     result = data_cube_inspector.get_csvw_table_schema_file_dependencies(
-        identifiers
-    ).csv_url
+        identifiers.csv_url
+    )
     pass

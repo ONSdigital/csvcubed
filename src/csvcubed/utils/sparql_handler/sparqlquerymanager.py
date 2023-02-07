@@ -280,7 +280,7 @@ def select_dsd_code_list_and_cols(
 
 def select_csvw_table_schema_file_dependencies(
     rdf_graph: rdflib.ConjunctiveGraph,
-) -> CSVWTableSchemaFileDependenciesResult:
+) -> Dict[str, CSVWTableSchemaFileDependenciesResult]:
     """
     Queries the table schemas of the given csvw json-ld.
 
