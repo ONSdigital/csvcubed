@@ -319,37 +319,6 @@ def test_get_codelists_and_cols():
     )
 
 
-# TODO Duplicate test - remove?
-def test_get_column_definitions_for_csv():
-    """ """
-    csvw_metadata_json_path = (
-        _test_case_base_dir
-        / "pivoted-single-measure-dataset"
-        / "qb-id-10004.csv-metadata.json"
-    )
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    data_cube_inspector = DataCubeInspector(csvw_rdf_manager.csvw_state)
-    primary_catalog_metadata = (
-        csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
-    )
-
-    data_set_uri = primary_catalog_metadata.dataset_uri
-    identifiers = data_cube_inspector.get_cube_identifiers_for_data_set(data_set_uri)
-
-    result = data_cube_inspector.get_column_definitions_for_csv(identifiers.csv_url)
-    assert len(result) == 12
-    assert result[0].about_url == None
-    assert result[0].csv_url == "qb-id-10004.csv"
-    assert result[0].data_type == None
-    assert result[0].name == "some_dimension"
-    assert result[0].property_url == "qb-id-10004.csv#dimension/some-dimension"
-    assert result[0].required == True
-    assert result[0].suppress_output == False
-    assert result[0].title == "Some Dimension"
-    assert result[0].value_url == "some-dimension.csv#{+some_dimension}"
-    assert result[0].virtual == False
-
-
 def test_get_units():
     """
     Ensures that the correct unit uris and labels for the input metadata are returned
