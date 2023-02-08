@@ -6,12 +6,16 @@ from typing import Any, Dict, List
 import rdflib
 
 from csvcubed.models.csvwtype import CSVWType
-from csvcubed.models.sparqlresults import CatalogMetadataResult
+from csvcubed.models.sparqlresults import (
+    CatalogMetadataResult,
+    TableSchemaPropertiesResult,
+)
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     ask_is_csvw_code_list,
     ask_is_csvw_qb_dataset,
     select_csvw_catalog_metadata,
+    select_table_schema_properties,
 )
 
 
@@ -48,6 +52,12 @@ class CsvWState:
                 "The input metadata is invalid as it is not a data cube or a code list."
             )
 
+    @cached_property
+    def _table_schema_properties(self) -> TableSchemaPropertiesResult:
+        """ """
+        result = select_table_schema_properties(self.rdf_graph)
+        return result
+
     def get_primary_catalog_metadata(self) -> CatalogMetadataResult:
         """
         Retrieves the catalog metadata that is specifically only defined in the primary graph.
@@ -59,3 +69,7 @@ class CsvWState:
         raise KeyError(
             f"Could not find catalog metadata in primary graph '{self.primary_graph_uri}'."
         )
+
+    def get_table_schema_properties(self) -> TableSchemaPropertiesResult:
+        """ """
+        return self._table_schema_properties
