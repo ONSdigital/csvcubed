@@ -3,7 +3,7 @@ PREFIX csvw: <http://www.w3.org/ns/csvw#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 
-SELECT DISTINCT ?conceptScheme ?tableUrl ?conceptSchemeUrlStr
+SELECT DISTINCT ?conceptScheme ?tableUrl
 WHERE {
     {
         SELECT DISTINCT ?conceptScheme
