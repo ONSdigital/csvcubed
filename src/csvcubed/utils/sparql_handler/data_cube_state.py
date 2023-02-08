@@ -122,11 +122,11 @@ class DataCubeState:
     # Public getters for the cached properties.
 
     def get_unit_for_uri(self, uri: str) -> Optional[UnitResult]:
-        """todo: Need to fill this in."""
+        """The function returns a single unit from the uri if there is any."""
         return self._units.get(uri)
 
     def get_units(self) -> List[UnitResult]:
-        """todo: Need to fill this in."""
+        """This function gets the value of the unit and returns it as a list."""
         return list(self._units.values())
 
     def get_cube_identifiers_for_csv(self, csv_url: str) -> CubeTableIdentifiers:

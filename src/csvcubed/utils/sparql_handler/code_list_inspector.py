@@ -70,9 +70,9 @@ class CodeListInspector:
 
         concept_scheme_url = self._code_list_table_identifiers[0].concept_scheme_url
 
-        for x in the_list:
-            if x.dataset_uri == concept_scheme_url:
-                return x
+        for catalog_m_result in the_list:
+            if catalog_m_result.dataset_uri == concept_scheme_url:
+                return catalog_m_result
 
         raise ValueError(
             f"None of the results can be associated with the {concept_scheme_url}"

@@ -11,8 +11,8 @@ _test_case_base_dir = (
 
 
 def test_code_list_table_identifiers():
-    """the test checks for the codelist idetifiers are available but
-    in the mean time the cube doesn't have a record in the codelist identifiers"""
+    """the test checks for the codelist idetifiers and returns the table identifier that
+    property_url contains the skos:inScheme."""
 
     path_to_cube = _test_case_base_dir / "qb-id-10003.csv-metadata.json"
 
@@ -25,13 +25,11 @@ def test_code_list_table_identifiers():
     assert code_list_identifiers[0] == CodeListTableIdentifers(
         csv_url="some-dimension.csv", concept_scheme_url="some-dimension.csv#code-list"
     )
-    # it should have one value returned
 
 
-# make a fail test for the one above
 def test_code_list_table_identifiers_error():
-    """the test checks for the codelist idetifiers are available but
-    in the mean time the cube doesn't have a record in the codelist identifiers"""
+    """the test checks when multiple table identifiers property_url contains the
+    skos:inScheme a KeyError is thrown with the correct error message."""
 
     path_to_cube = (
         get_test_cases_dir()
@@ -53,6 +51,8 @@ def test_code_list_table_identifiers_error():
 
 
 def test_get_csvw_catalog_metadata():
+    """This test ensures when the get_csvw_catalog_metadata() check passes and returns
+    the CatalogMetadataResult the objects dataset_uri does match with the expected concept_scheme_url."""
 
     path_to_cube = _test_case_base_dir / "qb-id-10003.csv-metadata.json"
 
@@ -67,6 +67,8 @@ def test_get_csvw_catalog_metadata():
 
 
 def test_get_csvw_catalog_metadata_error():
+    """This test ensures when the get_csvw_catalog_metadata() check fails(concept_scheme_url
+    doesn't match) the relevant ValueError is thrown with the correct error message."""
 
     path_to_cube = (
         get_test_cases_dir()
@@ -88,6 +90,8 @@ def test_get_csvw_catalog_metadata_error():
 
 
 def test_get_table_identifiers_for_concept_scheme_error():
+    """This functions ensures when the given concept_scheme_url doent mach any of the
+    CodeListTableIdentifiers concept_scheme_url KeyError is thrown with the correct rror message."""
 
     path_to_cube = (
         get_test_cases_dir()
