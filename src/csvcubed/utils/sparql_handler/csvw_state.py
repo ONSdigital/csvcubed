@@ -8,6 +8,7 @@ import rdflib
 from csvcubed.models.csvwtype import CSVWType
 from csvcubed.models.sparqlresults import (
     CatalogMetadataResult,
+    PrimaryKeyColNamesByDatasetUrlResult,
     TableSchemaPropertiesResult,
 )
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
@@ -15,6 +16,7 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     ask_is_csvw_code_list,
     ask_is_csvw_qb_dataset,
     select_csvw_catalog_metadata,
+    select_primary_key_col_names_by_csv_url,
     select_table_schema_properties,
 )
 
@@ -54,8 +56,22 @@ class CsvWState:
 
     @cached_property
     def _table_schema_properties(self) -> TableSchemaPropertiesResult:
-        """ """
+        """
+        TODO: Add description
+        """
         result = select_table_schema_properties(self.rdf_graph)
+        return result
+
+    @cached_property
+    def _codelist_primary_key_by_csv_url(self) -> PrimaryKeyColNamesByDatasetUrlResult:
+        """
+        TODO: Add description
+        """
+        csv_url: str
+        result = select_primary_key_col_names_by_csv_url(
+            self.rdf_graph, self.get_table_schema_properties().table_url
+        )
+
         return result
 
     def get_primary_catalog_metadata(self) -> CatalogMetadataResult:
@@ -71,5 +87,15 @@ class CsvWState:
         )
 
     def get_table_schema_properties(self) -> TableSchemaPropertiesResult:
-        """ """
+        """
+        TODO: Add description.
+        """
         return self._table_schema_properties
+
+    def get_codelist_primary_key_by_csv_url(
+        self,
+    ) -> PrimaryKeyColNamesByDatasetUrlResult:
+        """
+        TODO: Add description.
+        """
+        return self._codelist_primary_key_by_csv_url

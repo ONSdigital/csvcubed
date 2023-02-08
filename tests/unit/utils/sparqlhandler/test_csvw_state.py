@@ -1,4 +1,5 @@
 from csvcubed.models.csvwtype import CSVWType
+from csvcubed.utils.sparql_handler.csvw_state import CsvWState
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.unit.test_baseunit import get_test_cases_dir
@@ -57,3 +58,46 @@ def test_detect_csvw_type_code_list():
 
     csvw_type = csvw_rdf_manager.csvw_state.csvw_type
     assert csvw_type == CSVWType.CodeList
+
+
+def test_get_table_schema_properties():
+    """
+    TODO: Add description.
+    """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-single-measure-dataset"
+        / "some-dimension.csv-metadata.json"
+    )
+    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+
+    csvw_state: CsvWState = CsvWState(
+        csvw_rdf_manager.rdf_graph, csvw_metadata_json_path
+    )
+
+    result = csvw_state.get_table_schema_properties()
+
+    assert result.about_url == "some-dimension.csv#{+uri_identifier}"
+    assert result.table_url == "some-dimension.csv"
+    assert result.value_url == "some-dimension.csv#code-list"
+
+
+def test_get_codelist_primary_key_by_csv_url():
+    """
+    TODO: Add description.
+    """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-single-measure-dataset"
+        / "some-dimension.csv-metadata.json"
+    )
+    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+
+    csvw_state: CsvWState = CsvWState(
+        csvw_rdf_manager.rdf_graph, csvw_metadata_json_path
+    )
+
+    result = csvw_state.get_codelist_primary_key_by_csv_url()
+
+    assert len(result.primary_key_col_names) == 1
+    assert result.primary_key_col_names[0].value == "uri_identifier"

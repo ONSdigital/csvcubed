@@ -208,8 +208,11 @@ class MetadataPrinter:
             csvw_state.rdf_graph, self.primary_csv_url
         )
         # Retrieving the primary key column names of the code list to identify the unique identifier
-        result_primary_key_col_names_by_csv_url: PrimaryKeyColNamesByDatasetUrlResult = select_primary_key_col_names_by_csv_url(
-            csvw_state.rdf_graph, self.primary_csv_url
+        # result_primary_key_col_names_by_csv_url: PrimaryKeyColNamesByDatasetUrlResult = select_primary_key_col_names_by_csv_url(
+        #     csvw_state.rdf_graph, self.primary_csv_url
+        # )
+        result_primary_key_col_names_by_csv_url: PrimaryKeyColNamesByDatasetUrlResult = (
+            self.state.csvw_state.get_codelist_primary_key_by_csv_url()
         )
         primary_key_col_names = (
             result_primary_key_col_names_by_csv_url.primary_key_col_names
