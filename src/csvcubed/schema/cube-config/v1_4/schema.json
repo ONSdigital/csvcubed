@@ -677,7 +677,9 @@
                         "government-half-year",
                         "government-quarter",
                         "government-week",
-                        "gregorian-instant"
+                        "gregorian-instant",
+                        "gregorian-interval",
+                        "statistical-geography"
                     ]
                 },
                 "attribute_resource": {

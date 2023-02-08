@@ -13,6 +13,8 @@
     "government-quarter": "government-quarter.json",
     "government-week": "government-week.json",
     "gregorian-instant": "gregorian-instant.json",
+    "gregorian-interval": "gregorian-interval.json",
     "observation-status": "observation-status.json",
-    "qudt": "qudt-units.json"
+    "qudt": "qudt-units.json",
+    "statistical-geography": "statistical-geography.json"
 }
