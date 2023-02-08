@@ -16,7 +16,7 @@ from csvcubed.utils.sparql_handler.csvw_state import CsvWState
 
 @dataclass
 class CodeListInspector:
-    """Fills this in"""
+    """The API interface for the codelist information, allowing to access information."""
 
     csvw_state: CsvWState
 
@@ -52,6 +52,7 @@ class CodeListInspector:
     def get_table_identifiers_for_concept_scheme(
         self, concept_scheme_url: str
     ) -> CodeListTableIdentifers:
+        """This functions check the CodeListTableIdentifers and returns the value thats concept_scheme_url mathces with the given argument."""
         identifiers = first(
             self._code_list_table_identifiers,
             lambda i: i.concept_scheme_url == concept_scheme_url,

@@ -11,7 +11,7 @@ _test_case_base_dir = (
 
 
 def test_code_list_table_identifiers():
-    """the test checks for the codelist idetifiers and returns the table identifier that
+    """The test checks for the codelist idetifiers and returns the table identifier thats
     property_url contains the skos:inScheme."""
 
     path_to_cube = _test_case_base_dir / "qb-id-10003.csv-metadata.json"
@@ -74,7 +74,7 @@ def test_get_csvw_catalog_metadata_error():
         get_test_cases_dir()
         / "cli"
         / "inspect"
-        / "itis-industry-multiple-skos-inscheme.csv-metadata2.json"
+        / "itis-industry-no-skos-inscheme.csv-metadata.json"
     )
 
     rdf_manager = CsvwRdfManager(path_to_cube)
@@ -97,7 +97,7 @@ def test_get_table_identifiers_for_concept_scheme_error():
         get_test_cases_dir()
         / "cli"
         / "inspect"
-        / "itis-industry-multiple-skos-inscheme.csv-metadata2.json"
+        / "itis-industry-no-skos-inscheme.csv-metadata.json"
     )
 
     rdf_manager = CsvwRdfManager(path_to_cube)
