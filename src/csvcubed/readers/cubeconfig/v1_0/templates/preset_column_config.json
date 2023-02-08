@@ -12,6 +12,7 @@
     "government-half-year": "government-half-year.json",
     "government-quarter": "government-quarter.json",
     "government-week": "government-week.json",
+    "mixed-period": "mixed-period.json",
     "gregorian-instant": "gregorian-instant.json",
     "gregorian-interval": "gregorian-interval.json",
     "observation-status": "observation-status.json",
