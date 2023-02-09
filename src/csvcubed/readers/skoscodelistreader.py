@@ -34,7 +34,6 @@ def extract_code_list_concept_scheme_info(
 
     csvw_rdf_manager = CsvwRdfManager(code_list_csvw_path)
     csvw_inspector = CsvWInspector(csvw_rdf_manager.rdf_graph, code_list_csvw_path)
-    # result = select_table_schema_properties(csvw_rdf_manager.rdf_graph)
     result = csvw_inspector.get_table_schema_properties()
 
     about_url = result.about_url
