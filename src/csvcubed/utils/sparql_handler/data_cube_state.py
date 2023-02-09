@@ -11,7 +11,7 @@ from csvcubed.models.sparqlresults import (
     UnitResult,
 )
 from csvcubed.utils.iterables import first, group_by
-from csvcubed.utils.sparql_handler.csvw_state import CsvWState
+from csvcubed.utils.sparql_handler.csvw_inspector import CsvWInspector
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_column_definitions,
     select_csvw_dsd_qube_components,
@@ -25,7 +25,7 @@ T = TypeVar("T")
 
 @dataclass
 class DataCubeState:
-    csvw_state: CsvWState
+    csvw_inspector: CsvWInspector
 
     """
     Private utility functions.
@@ -46,13 +46,13 @@ class DataCubeState:
         """
         Map of csv_url to the list of column definitions for the given CSV file.
         """
-        results = select_column_definitions(self.csvw_state.rdf_graph)
+        results = select_column_definitions(self.csvw_inspector.rdf_graph)
         return group_by(results, lambda r: r.csv_url)
 
     @cached_property
     def _units(self) -> Dict[str, UnitResult]:
         """ """
-        results = select_units(self.csvw_state.rdf_graph)
+        results = select_units(self.csvw_inspector.rdf_graph)
         return {result.unit_uri: result for result in results}
 
     @cached_property
@@ -62,7 +62,7 @@ class DataCubeState:
 
         Maps from csv_url to the identifiers.
         """
-        results = select_data_set_dsd_and_csv_url(self.csvw_state.rdf_graph)
+        results = select_data_set_dsd_and_csv_url(self.csvw_inspector.rdf_graph)
         results_dict: Dict[str, CubeTableIdentifiers] = {}
         for result in results:
             results_dict[result.csv_url] = result
@@ -78,8 +78,8 @@ class DataCubeState:
         }
 
         return select_csvw_dsd_qube_components(
-            self.csvw_state.rdf_graph,
-            self.csvw_state.csvw_json_path,
+            self.csvw_inspector.rdf_graph,
+            self.csvw_inspector.csvw_json_path,
             map_dsd_uri_to_csv_url,
             self._column_definitions,
         )
@@ -115,7 +115,7 @@ class DataCubeState:
                 )
 
         results = select_is_pivoted_shape_for_measures_in_data_set(
-            self.csvw_state.rdf_graph, list(self._cube_table_identifiers.values())
+            self.csvw_inspector.rdf_graph, list(self._cube_table_identifiers.values())
         )
 
         map_csv_url_to_measure_shape = group_by(results, lambda r: r.csv_url)

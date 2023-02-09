@@ -22,7 +22,7 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
 
 
 @dataclass
-class CsvWState:
+class CsvWInspector:
     rdf_graph: rdflib.ConjunctiveGraph
     csvw_json_path: Path
 
@@ -57,7 +57,7 @@ class CsvWState:
     @cached_property
     def _table_schema_properties(self) -> TableSchemaPropertiesResult:
         """
-        TODO: Add description
+        Cached property for the select_table_schema_properties query that stores the query's results.
         """
         result = select_table_schema_properties(self.rdf_graph)
         return result
@@ -65,7 +65,7 @@ class CsvWState:
     @cached_property
     def _codelist_primary_key_by_csv_url(self) -> PrimaryKeyColNamesByDatasetUrlResult:
         """
-        TODO: Add description
+        Cached property for the select_primary_key_col_names_by_csv_url query that stores the query's results.
         """
         csv_url: str
         result = select_primary_key_col_names_by_csv_url(
@@ -88,7 +88,7 @@ class CsvWState:
 
     def get_table_schema_properties(self) -> TableSchemaPropertiesResult:
         """
-        TODO: Add description.
+        Retrieves the stored result of the table schema properties cached property.
         """
         return self._table_schema_properties
 
@@ -96,6 +96,6 @@ class CsvWState:
         self,
     ) -> PrimaryKeyColNamesByDatasetUrlResult:
         """
-        TODO: Add description.
+        Retrieves the stored result from the codelist priary key by csv url cached property.
         """
         return self._codelist_primary_key_by_csv_url

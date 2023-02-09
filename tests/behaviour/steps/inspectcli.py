@@ -22,7 +22,7 @@ from csvcubed.models.sparqlresults import (
 from csvcubed.utils.iterables import first
 from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.sparql_handler.code_list_state import CodeListState
-from csvcubed.utils.sparql_handler.csvw_state import CsvWState
+from csvcubed.utils.sparql_handler.csvw_inspector import CsvWInspector
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.utils.tableschema import CsvwRdfManager
@@ -81,11 +81,11 @@ def step_impl(context):
 
 @When("the Printables for data cube are generated")
 def step_impl(context):
-    csvw_state = CsvWState(
+    csvw_inspector = CsvWInspector(
         context.csvw_metadata_rdf_graph,
         context.csvw_metadata_json_path,
     )
-    data_cube_state = DataCubeState(csvw_state)
+    data_cube_state = DataCubeState(csvw_inspector)
 
     metadata_printer = MetadataPrinter(data_cube_state)
     # TODO: Remove below once all the tests are updated to not match strings
@@ -110,7 +110,7 @@ def step_impl(context):
     )
     # TODO: Remove above once all the tests are updated to not match strings
 
-    context.result_type_info = metadata_printer.state.csvw_state.csvw_type
+    context.result_type_info = metadata_printer.state.csvw_inspector.csvw_type
     context.result_catalog_metadata = metadata_printer.result_catalog_metadata
     context.result_qube_components = metadata_printer.result_qube_components
     context.result_dataset_observations_info = (
@@ -125,11 +125,11 @@ def step_impl(context):
 
 @When("the Printables for code list are generated")
 def step_impl(context):
-    csvw_state = CsvWState(
+    csvw_inspector = CsvWInspector(
         context.csvw_metadata_rdf_graph,
         context.csvw_metadata_json_path,
     )
-    code_list_state = CodeListState(csvw_state)
+    code_list_state = CodeListState(csvw_inspector)
 
     metadata_printer = MetadataPrinter(code_list_state)
     context.type_printable = metadata_printer.type_info_printable

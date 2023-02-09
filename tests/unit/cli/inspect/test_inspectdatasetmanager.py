@@ -260,12 +260,16 @@ def get_arguments_qb_dataset(
     """
     Produces the dataset, qube components and dsd uri arguments for qb:dataset.
     """
-    csvw_state = data_cube_state.csvw_state
-    data_set_uri = csvw_state.get_primary_catalog_metadata().dataset_uri
-    data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_state.csvw_json_path)
-    csv_url = select_qb_csv_url(csvw_state.rdf_graph, data_set_uri).csv_url
+    csvw_inspector = data_cube_state.csvw_inspector
+    data_set_uri = csvw_inspector.get_primary_catalog_metadata().dataset_uri
+    data_set_uri = to_absolute_rdflib_file_path(
+        data_set_uri, csvw_inspector.csvw_json_path
+    )
+    csv_url = select_qb_csv_url(csvw_inspector.rdf_graph, data_set_uri).csv_url
 
-    dataset: DataFrame = load_csv_to_dataframe(csvw_state.csvw_json_path, Path(csv_url))
+    dataset: DataFrame = load_csv_to_dataframe(
+        csvw_inspector.csvw_json_path, Path(csv_url)
+    )
     qube_components = data_cube_state.get_dsd_qube_components_for_csv(
         csv_url
     ).qube_components
@@ -383,10 +387,10 @@ def test_get_measure_col_name_from_dsd_measure_col_present():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
 
-    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_inspector)
 
     result_data_set_uri = (
-        csvw_rdf_manager.csvw_state.get_primary_catalog_metadata().dataset_uri
+        csvw_rdf_manager.csvw_inspector.get_primary_catalog_metadata().dataset_uri
     )
     data_set_uri = to_absolute_rdflib_file_path(
         result_data_set_uri, csvw_metadata_json_path
@@ -412,9 +416,9 @@ def test_get_measure_col_name_from_dsd_measure_col_not_present():
         / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_inspector)
     primary_catalog_metadata = (
-        csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
+        csvw_rdf_manager.csvw_inspector.get_primary_catalog_metadata()
     )
 
     data_set_uri = primary_catalog_metadata.dataset_uri
@@ -440,9 +444,9 @@ def test_get_unit_col_name_from_dsd_unit_col_present():
         / "alcohol-bulletin.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_inspector)
     primary_catalog_metadata = (
-        csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
+        csvw_rdf_manager.csvw_inspector.get_primary_catalog_metadata()
     )
 
     data_set_uri = primary_catalog_metadata.dataset_uri
@@ -468,9 +472,9 @@ def test_get_unit_col_name_from_dsd_unit_col_not_present():
         / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_inspector)
     primary_catalog_metadata = (
-        csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
+        csvw_rdf_manager.csvw_inspector.get_primary_catalog_metadata()
     )
 
     data_set_uri = primary_catalog_metadata.dataset_uri
@@ -497,9 +501,9 @@ def test_get_single_measure_label_from_dsd():
         / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_inspector)
     primary_catalog_metadata = (
-        csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
+        csvw_rdf_manager.csvw_inspector.get_primary_catalog_metadata()
     )
 
     data_set_uri = primary_catalog_metadata.dataset_uri
@@ -533,7 +537,7 @@ def test_get_val_counts_info_multi_unit_multi_measure_dataset():
         / "alcohol-bulletin.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_inspector)
 
     (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
 
@@ -578,7 +582,7 @@ def test_get_val_counts_info_multi_unit_single_measure_dataset():
         / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_inspector)
 
     (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
 
@@ -623,7 +627,7 @@ def test_get_val_counts_info_single_unit_multi_measure_dataset():
         / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_inspector)
 
     (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
 
@@ -668,7 +672,7 @@ def test_get_val_counts_info_single_unit_single_measure_dataset():
         / "energy-trends-uk-total-energy.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_inspector)
 
     (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
 
@@ -713,7 +717,7 @@ def test_get_val_counts_info_pivoted_single_measure_dataset():
         / "qb-id-10004.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_inspector)
 
     (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
 
@@ -757,7 +761,7 @@ def test_get_val_counts_info_pivoted_multi_measure_dataset():
         / "qb-id-10003.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_inspector)
 
     (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
 

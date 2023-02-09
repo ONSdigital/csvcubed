@@ -12,7 +12,7 @@ from typing import Set, Tuple
 from uritemplate import variables
 
 from csvcubed.utils.iterables import first
-from csvcubed.utils.sparql_handler.csvw_state import CsvWState
+from csvcubed.utils.sparql_handler.csvw_inspector import CsvWInspector
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_table_schema_properties,
 )
@@ -33,9 +33,9 @@ def extract_code_list_concept_scheme_info(
     """
 
     csvw_rdf_manager = CsvwRdfManager(code_list_csvw_path)
-    csvw_state = CsvWState(csvw_rdf_manager.rdf_graph, code_list_csvw_path)
+    csvw_inspector = CsvWInspector(csvw_rdf_manager.rdf_graph, code_list_csvw_path)
     # result = select_table_schema_properties(csvw_rdf_manager.rdf_graph)
-    result = csvw_state.get_table_schema_properties()
+    result = csvw_inspector.get_table_schema_properties()
 
     about_url = result.about_url
     concept_scheme_uri = result.value_url

@@ -134,20 +134,20 @@ class MetadataPrinter:
 
         Member of :class:`./MetadataPrinter`.
         """
-        csvw_state = self.state.csvw_state
-        csvw_type = csvw_state.csvw_type
+        csvw_inspector = self.state.csvw_inspector
+        csvw_type = csvw_inspector.csvw_type
 
         self.csvw_type_str = self.get_csvw_type_str(csvw_type)
-        self.result_catalog_metadata = csvw_state.get_primary_catalog_metadata()
+        self.result_catalog_metadata = csvw_inspector.get_primary_catalog_metadata()
         self.primary_csv_url = self.get_primary_csv_url(
-            csvw_state.rdf_graph,
+            csvw_inspector.rdf_graph,
             csvw_type,
             to_absolute_rdflib_file_path(
-                self.result_catalog_metadata.dataset_uri, csvw_state.csvw_json_path
+                self.result_catalog_metadata.dataset_uri, csvw_inspector.csvw_json_path
             ),
         )
         self.dataset = load_csv_to_dataframe(
-            csvw_state.csvw_json_path, Path(self.primary_csv_url)
+            csvw_inspector.csvw_json_path, Path(self.primary_csv_url)
         )
         self.result_dataset_observations_info = get_dataset_observations_info(
             self.dataset,
@@ -165,22 +165,22 @@ class MetadataPrinter:
         """
         assert isinstance(self.state, DataCubeState)  # Make pyright happier
 
-        csvw_state = self.state.csvw_state
+        csvw_inspector = self.state.csvw_inspector
 
         self.result_qube_components = self.state.get_dsd_qube_components_for_csv(
             self.primary_csv_url
         )
 
         self.result_dataset_label_dsd_uri = (
-            select_csvw_dsd_dataset_label_and_dsd_def_uri(csvw_state.rdf_graph)
+            select_csvw_dsd_dataset_label_and_dsd_def_uri(csvw_inspector.rdf_graph)
         )
         self.result_cols_with_suppress_output_true = (
-            select_cols_where_suppress_output_is_true(csvw_state.rdf_graph)
+            select_cols_where_suppress_output_is_true(csvw_inspector.rdf_graph)
         )
         self.result_code_lists = select_dsd_code_list_and_cols(
-            csvw_state.rdf_graph,
+            csvw_inspector.rdf_graph,
             self.result_dataset_label_dsd_uri.dsd_uri,
-            csvw_state.csvw_json_path,
+            csvw_inspector.csvw_json_path,
         )
 
         (
@@ -203,16 +203,16 @@ class MetadataPrinter:
 
         Member of :class:`./MetadataPrinter`.
         """
-        csvw_state = self.state.csvw_state
+        csvw_inspector = self.state.csvw_inspector
         self.result_code_list_cols = select_codelist_cols_by_csv_url(
-            csvw_state.rdf_graph, self.primary_csv_url
+            csvw_inspector.rdf_graph, self.primary_csv_url
         )
         # Retrieving the primary key column names of the code list to identify the unique identifier
         # result_primary_key_col_names_by_csv_url: PrimaryKeyColNamesByDatasetUrlResult = select_primary_key_col_names_by_csv_url(
-        #     csvw_state.rdf_graph, self.primary_csv_url
+        #     csvw_inspector.rdf_graph, self.primary_csv_url
         # )
         result_primary_key_col_names_by_csv_url: PrimaryKeyColNamesByDatasetUrlResult = (
-            self.state.csvw_state.get_codelist_primary_key_by_csv_url()
+            self.state.csvw_inspector.get_codelist_primary_key_by_csv_url()
         )
         primary_key_col_names = (
             result_primary_key_col_names_by_csv_url.primary_key_col_names
@@ -237,9 +237,9 @@ class MetadataPrinter:
 
     def __post_init__(self):
         self.generate_general_results()
-        if self.state.csvw_state.csvw_type == CSVWType.QbDataSet:
+        if self.state.csvw_inspector.csvw_type == CSVWType.QbDataSet:
             self.get_datacube_results()
-        elif self.state.csvw_state.csvw_type == CSVWType.CodeList:
+        elif self.state.csvw_inspector.csvw_type == CSVWType.CodeList:
             self.generate_codelist_results()
 
     @property
@@ -251,7 +251,7 @@ class MetadataPrinter:
 
         :return: `str` - user-friendly string which will be output to CLI.
         """
-        if self.state.csvw_state.csvw_type == CSVWType.QbDataSet:
+        if self.state.csvw_inspector.csvw_type == CSVWType.QbDataSet:
             return "- This file is a data cube."
         else:
             return "- This file is a code list."

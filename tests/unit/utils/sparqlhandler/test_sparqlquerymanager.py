@@ -162,7 +162,7 @@ def test_select_csvw_catalog_metadata_for_dataset():
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
 
-    result = csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
+    result = csvw_rdf_manager.csvw_inspector.get_primary_catalog_metadata()
 
     assert result.dataset_uri == "alcohol-bulletin.csv#dataset"
     assert result.title == "Alcohol Bulletin"
@@ -213,7 +213,7 @@ def test_select_csvw_catalog_metadata_for_codelist():
     csvw_metadata_json_path = _test_case_base_dir / "codelist.csv-metadata.json"
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
 
-    result = csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
+    result = csvw_rdf_manager.csvw_inspector.get_primary_catalog_metadata()
 
     assert result.title == "Alcohol Content"
     assert result.label == "Alcohol Content"
@@ -348,13 +348,13 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_inspector)
 
     result: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
         csvw_metadata_rdf_graph
     )
     primary_catalog_metadata = (
-        csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
+        csvw_rdf_manager.csvw_inspector.get_primary_catalog_metadata()
     )
 
     data_set_uri = primary_catalog_metadata.dataset_uri
@@ -465,13 +465,13 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_inspector)
 
     result: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
         csvw_metadata_rdf_graph
     )
     primary_catalog_metadata = (
-        csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
+        csvw_rdf_manager.csvw_inspector.get_primary_catalog_metadata()
     )
 
     data_set_uri = primary_catalog_metadata.dataset_uri
@@ -635,7 +635,7 @@ def test_select_single_unit_from_dsd():
         / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_inspector)
 
     result: UnitResult = data_cube_state.get_unit_for_uri(
         "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#unit/mtco2e"
