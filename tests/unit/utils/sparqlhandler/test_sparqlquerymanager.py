@@ -582,12 +582,12 @@ def test_select_cols_when_supress_output_cols_not_present():
         data_set_uri
     ).csv_url
 
-    result = data_cube_inspector.get_suppressed_columns(csv_url)
+    result = data_cube_inspector.get_suppressed_columns_for_csv(csv_url)
 
     assert len(result) == 0
 
 
-def test_select_cols_when_supress_output_cols_present():
+def test_select_cols_when_suppress_output_cols_present():
     """
     Tests whether a list of suppressed columns is successfully returned from a given csv url.
     """
@@ -604,7 +604,7 @@ def test_select_cols_when_supress_output_cols_present():
         data_set_uri
     ).csv_url
 
-    result = data_cube_inspector.get_suppressed_columns(csv_url)
+    result = data_cube_inspector.get_suppressed_columns_for_csv(csv_url)
 
     assert len(result) == 2
     assert set(result) == {"Col1WithSuppressOutput", "Col2WithSuppressOutput"}
