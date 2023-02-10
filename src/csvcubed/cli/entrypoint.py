@@ -11,6 +11,7 @@ import click
 
 from csvcubed import __version__
 from csvcubed.cli.build import build
+from csvcubed.cli.build_code_list import build_code_list
 from csvcubed.cli.inspect.inspect import inspect
 from csvcubed.models.errorurl import HasErrorUrl
 from csvcubed.utils.log import log_exception, start_logging
@@ -124,4 +125,40 @@ def inspect_command(log_level: str, csvw_metadata_json_path: Path) -> None:
         log_exception(_logger, e)
         if isinstance(e, HasErrorUrl):
             _logger.error(f"More information available at {e.get_error_url()}")
+        sys.exit(1)
+
+
+###########################
+# NEW COMMAND TEST AREA
+###########################
+@entry_point.command("code-list-build")
+@click.option(
+    "--out",
+    "-o",
+    help="Location of the CSV-W outputs.",
+    default="./out",
+    show_default=True,
+    type=click.Path(path_type=Path, file_okay=False, dir_okay=True),
+    metavar="OUT_DIR",
+)
+@click.argument(
+    "config",
+    type=click.Path(exists=True, path_type=Path),
+    metavar="CODE_LIST_CONFIG_PATH",
+)
+def code_list_build_command(
+    config: Path,
+    out: Path,
+):
+    """Build a qb-flavoured CSV-W from a tidy CSV."""
+
+    out.mkdir(parents=True, exist_ok=True)
+    try:
+        build_code_list(
+            config_path=config,
+            output_directory=out,
+        )
+
+    except Exception as e:
+        log_exception(_logger, e)
         sys.exit(1)

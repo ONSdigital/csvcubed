@@ -36,12 +36,11 @@ def command(code_list_config_path: Path):
     )
 
 
-def write_the_file():
+def write_the_file(path_to_out: Path):
 
     code_list_config_path = _test_case_base_dir / "code_list_config_hierarchical.json"
 
     the_data = command(code_list_config_path)
     the_writer = SkosCodeListWriter(the_data[0])
-    path_to_out = getcwd() + "/out"
 
-    the_writer.write(Path(path_to_out))
+    the_writer.write(path_to_out)

@@ -27,10 +27,8 @@ _logger = logging.getLogger(__name__)
 # csvcubed code-list build <some-config-file.json>
 
 
-def command():
-
-    code_list_config_path = _test_case_base_dir / "code_list_config_hierarchical.json"
-
+def command(code_list_config_path: Path):
+    """Fill this in"""
     code_list_config, code_list_config_dict = CodeListConfig.from_json_file(
         code_list_config_path
     )
@@ -50,16 +48,19 @@ def command():
     )
 
 
+"code_list_config_hierarchical.json"
+
+
 def build_code_list(
-    config_path: Optional[Path] = None,
-    output_directory: Path = Path(".", "out").resolve(),
+    config_path: Path,
+    output_directory: Path,
 ):
 
     if not output_directory.exists():
         _logger.debug("Creating output directory %s", output_directory.absolute())
         output_directory.mkdir(parents=True)
 
-    the_data = command()
+    the_data = command(config_path)
     try:
         writer = SkosCodeListWriter(the_data[0])
         writer.write(output_directory)
