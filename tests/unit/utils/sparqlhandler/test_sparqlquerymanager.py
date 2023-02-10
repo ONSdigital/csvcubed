@@ -701,10 +701,7 @@ def test_select_codelist_cols_by_csv_url():
     """
     Should return expected `CodeListColsByDatasetUrlResult`.
     """
-    # csvw_metadata_json_path = _test_case_base_dir / "alcohol-content.csv-metadata.json"
-    csvw_metadata_json_path = (
-        _csvw_test_cases_dir / "industry-grouping.csv-metadata.json"
-    )
+    csvw_metadata_json_path = _test_case_base_dir / "alcohol-content.csv-metadata.json"
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     csv_url = select_codelist_csv_url(csvw_metadata_rdf_graph).csv_url
@@ -725,7 +722,7 @@ def test_select_codelist_cols_by_csv_url():
         column,
         "Parent Notation",
         "skos:broader",
-        "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services-by-subnational-areas-of-the-uk#concept/industry-grouping/{+parent_notation}",
+        "alcohol-content.csv#{+parent_notation}",
     )
 
     column = _get_code_list_column_by_property_url(
@@ -743,7 +740,7 @@ def test_select_codelist_cols_by_csv_url():
         column,
         None,
         "skos:inScheme",
-        "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services-by-subnational-areas-of-the-uk#scheme/industry-grouping",
+        "alcohol-content.csv#code-list",
     )
 
     column = _get_code_list_column_by_property_url(result.columns, "rdf:type")

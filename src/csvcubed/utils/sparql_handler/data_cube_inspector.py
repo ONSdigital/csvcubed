@@ -156,7 +156,7 @@ class DataCubeInspector:
 
     def get_column_definitions_for_csv(self, csv_url: str) -> List[ColumnDefinition]:
         """
-        Getter for _col_names_col_titles cached property.
+        Get column definitions for the given csv url
         """
         result: List[ColumnDefinition] = self._get_value_for_key(
             csv_url, self._column_definitions

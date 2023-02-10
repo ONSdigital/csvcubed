@@ -524,20 +524,6 @@ def map_codelists_sparql_result(
     }
 
 
-# def _map_csvw_table_schemas_file_dependencies_result(
-#     sparql_result: ResultRow,
-# ) -> CSVWTableSchemaFileDependenciesResult:
-#     result_dict = sparql_result.asdict()
-
-#     result = CSVWTableSchemaFileDependenciesResult(
-#         csv_url=str(result_dict["csvUrl"]),
-#         schema_urls=str(result_dict["schemaUrl"]),
-#         table_schema_file_dependencies=str(result_dict["tableSchema"]),
-#     )
-
-#     return result
-
-
 def map_csvw_table_schemas_file_dependencies_result(
     sparql_results: List[ResultRow],
 ) -> CSVWTableSchemaFileDependenciesResult:
@@ -548,20 +534,6 @@ def map_csvw_table_schemas_file_dependencies_result(
 
     :return: `CSVWTableSchemaFileDependenciesResult`
     """
-    # dependencies = map(
-    #     lambda result: _map_csvw_table_schemas_file_dependencies_result(result),
-    #     sparql_results,
-    # )
-
-    # map_csv_url_to_dependencies = group_by(dependencies, lambda c: c.csv_url)
-    # results_dict = {}
-    # for csv_url, dependency in map_csv_url_to_dependencies.items():
-    #     results_dict[csv_url] = dependency
-
-    # return {
-    #     csv_url: dependencies
-    #     for (csv_url, dependencies) in map_csv_url_to_dependencies.items()
-    # }
     results = CSVWTableSchemaFileDependenciesResult(
         table_schema_file_dependencies=[
             str(sparql_result["tableSchema"]) for sparql_result in sparql_results
