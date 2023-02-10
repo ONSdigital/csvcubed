@@ -9,7 +9,6 @@ from csvcubed.models.sparqlresults import (
     CSVWTableSchemaFileDependenciesResult,
     CubeTableIdentifiers,
     IsPivotedShapeMeasureResult,
-    QubeComponentResult,
     QubeComponentsResult,
     UnitResult,
 )
@@ -142,14 +141,14 @@ class DataCubeInspector:
             self.csvw_state.csvw_json_path,
         )
 
-    @cached_property
-    def _csvw_table_schema_file_dependencies(
-        self,
-    ) -> Dict[str, CSVWTableSchemaFileDependenciesResult]:
-        """
-        Stores the csv url and results of the CSVW's table schema file dependencies.
-        """
-        return select_csvw_table_schema_file_dependencies(self.csvw_state.rdf_graph)
+    # @cached_property
+    # def _csvw_table_schema_file_dependencies(
+    #     self,
+    # ) -> Dict[str, CSVWTableSchemaFileDependenciesResult]:
+    #     """
+    #     Stores the csv url and results of the CSVW's table schema file dependencies.
+    #     """
+    #     return select_csvw_table_schema_file_dependencies(self.csvw_state.rdf_graph)
 
     """
     Public getters for the cached properties.
@@ -218,7 +217,7 @@ class DataCubeInspector:
         """
         return self._get_value_for_key(csv_url, self._codelists_and_cols)
 
-    def get_suppressed_columns(self, csv_url: str) -> List[str]:
+    def get_suppressed_columns_for_csv(self, csv_url: str) -> List[str]:
         """
         Get the suppressed columns from the input csv url's column definitions.
         """

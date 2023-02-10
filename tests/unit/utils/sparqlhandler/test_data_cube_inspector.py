@@ -1,6 +1,5 @@
 import pytest
 
-from csvcubed.cli.inspect.metadataprinter import to_absolute_rdflib_file_path
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import CodelistResult, ColumnDefinition
 from csvcubed.utils.qb.components import ComponentPropertyType
@@ -134,10 +133,8 @@ def test_get_cube_identifiers_for_csv():
     primary_catalog_metadata = (
         csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
     )
-
-    data_set_uri = primary_catalog_metadata.dataset_uri
     csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
-        data_set_uri
+        primary_catalog_metadata.dataset_uri
     ).csv_url
 
     result = data_cube_inspector.get_cube_identifiers_for_csv(csv_url)
@@ -149,9 +146,28 @@ def test_get_cube_identifiers_for_csv():
     assert result.dsd_uri == "qb-id-10004.csv#structure"
 
 
-# TODO
 def test_get_cube_identifiers_for_data_set():
-    pass
+    """
+    Ensures that the valid data_set_dsd_and_csv_url_for_data_set property is returned.
+    """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-single-measure-dataset"
+        / "qb-id-10004.csv-metadata.json"
+    )
+    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    data_cube_inspector = DataCubeInspector(csvw_rdf_manager.csvw_state)
+    primary_catalog_metadata = (
+        csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
+    )
+    data_set_uri = primary_catalog_metadata.dataset_uri
+
+    result = data_cube_inspector.get_cube_identifiers_for_data_set(data_set_uri)
+
+    assert result.csv_url == "qb-id-10004.csv"
+    assert result.data_set_label == "Pivoted Shape Cube"
+    assert result.data_set_url == "qb-id-10004.csv#dataset"
+    assert result.dsd_uri == "qb-id-10004.csv#structure"
 
 
 def test_get_dsd_qube_components_for_csv():
@@ -168,10 +184,8 @@ def test_get_dsd_qube_components_for_csv():
     primary_catalog_metadata = (
         csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
     )
-
-    data_set_uri = primary_catalog_metadata.dataset_uri
     csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
-        data_set_uri
+        primary_catalog_metadata.dataset_uri
     ).csv_url
 
     result_qube_components = data_cube_inspector.get_dsd_qube_components_for_csv(
@@ -287,7 +301,7 @@ def test_detect_csvw_shape_standard():
     assert cube_shape == CubeShape.Standard
 
 
-def test_get_codelists_and_cols():
+def test_get_code_lists_and_cols():
     """
     Ensures that the correct codelists and associated columns represented by the input metadata are returned
     """
@@ -360,6 +374,26 @@ def test_get_unit_for_uri():
     result = data_cube_inspector.get_unit_for_uri("qb-id-10003.csv#unit/percent")
 
     assert result.unit_label == "Percent"
+
+
+def test_get_suppressed_columns_for_csv():
+    """
+    Ensures that suppressed columns are correctly identified for the given csv_url
+    """
+    csvw_metadata_json_path = (
+        _test_case_base_dir / "datacube_with_suppress_output_cols.csv-metadata.json"
+    )
+    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    data_cube_inspector = DataCubeInspector(csvw_rdf_manager.csvw_state)
+
+    results = set(
+        data_cube_inspector.get_suppressed_columns_for_csv(
+            "multi-unit_multi-measure/alcohol-bulletin.csv"
+        )
+    )
+
+    suppressed_columns = {"Col1WithSuppressOutput", "Col2WithSuppressOutput"}
+    assert results == suppressed_columns
 
 
 # def test_get_csvw_table_schema_file_dependencies():
