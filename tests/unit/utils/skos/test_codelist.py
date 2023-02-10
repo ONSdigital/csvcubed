@@ -19,16 +19,20 @@ from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
+_test_case_utils_dir = get_test_cases_dir() / "utils"
 
 
 def test_get_codelist_col_title_by_property_url_label():
     """
     Should return the correct column title for the property URI of type rdfs:label.
     """
+    # csvw_metadata_json_path = (
+    #     _test_case_base_dir
+    #     / "multi-unit_multi-measure"
+    #     / "alcohol-content.csv-metadata.json"
+    # )
     csvw_metadata_json_path = (
-        _test_case_base_dir
-        / "multi-unit_multi-measure"
-        / "alcohol-content.csv-metadata.json"
+        _test_case_utils_dir / "csvw" / "industry-grouping.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
@@ -48,10 +52,13 @@ def test_get_codelist_col_title_by_property_url_notation():
     """
     Should return the correct column title for the property URI of type skos:notation.
     """
+    # csvw_metadata_json_path = (
+    #     _test_case_base_dir
+    #     / "multi-unit_multi-measure"
+    #     / "alcohol-content.csv-metadata.json"
+    # )
     csvw_metadata_json_path = (
-        _test_case_base_dir
-        / "multi-unit_multi-measure"
-        / "alcohol-content.csv-metadata.json"
+        _test_case_utils_dir / "csvw" / "industry-grouping.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
@@ -76,10 +83,13 @@ def test_get_codelist_col_title_by_property_url_parent_notation():
     """
     Should return the correct column title for the property URI of type skos:broader.
     """
+    # csvw_metadata_json_path = (
+    #     _test_case_base_dir
+    #     / "multi-unit_multi-measure"
+    #     / "alcohol-content.csv-metadata.json"
+    # )
     csvw_metadata_json_path = (
-        _test_case_base_dir
-        / "multi-unit_multi-measure"
-        / "alcohol-content.csv-metadata.json"
+        _test_case_utils_dir / "csvw" / "industry-grouping.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
@@ -100,10 +110,13 @@ def test_get_codelist_col_title_by_property_url_sort_priority():
     """
     Should return the correct column title for the property URI of type rdfs:label.
     """
+    # csvw_metadata_json_path = (
+    #     _test_case_base_dir
+    #     / "multi-unit_multi-measure"
+    #     / "alcohol-content.csv-metadata.json"
+    # )
     csvw_metadata_json_path = (
-        _test_case_base_dir
-        / "multi-unit_multi-measure"
-        / "alcohol-content.csv-metadata.json"
+        _test_case_utils_dir / "csvw" / "industry-grouping.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
@@ -123,10 +136,13 @@ def test_get_codelist_col_title_by_property_url_rdfs_comment():
     """
     Should return the correct column title for the property URI of type rdfs:label.
     """
+    # csvw_metadata_json_path = (
+    #     _test_case_base_dir
+    #     / "multi-unit_multi-measure"
+    #     / "alcohol-content.csv-metadata.json"
+    # )
     csvw_metadata_json_path = (
-        _test_case_base_dir
-        / "multi-unit_multi-measure"
-        / "alcohol-content.csv-metadata.json"
+        _test_case_utils_dir / "csvw" / "industry-grouping.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
@@ -146,10 +162,13 @@ def test_get_codelist_col_title_by_property_url_rdfs_type():
     """
     Should return the correct column title for the property URI of type rdfs:label.
     """
+    # csvw_metadata_json_path = (
+    #     _test_case_base_dir
+    #     / "multi-unit_multi-measure"
+    #     / "alcohol-content.csv-metadata.json"
+    # )
     csvw_metadata_json_path = (
-        _test_case_base_dir
-        / "multi-unit_multi-measure"
-        / "alcohol-content.csv-metadata.json"
+        _test_case_utils_dir / "csvw" / "industry-grouping.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
@@ -174,6 +193,10 @@ def test_build_concepts_hierarchy_tree_of_depth_one():
         / "multi-unit_multi-measure"
         / "alcohol-content.csv-metadata.json"
     )
+    # csvw_metadata_json_path = (
+    #     _test_case_utils_dir
+    #     / "csvw" / "industry-grouping.csv-metadata.json"
+    # )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     csv_url = select_codelist_csv_url(csvw_metadata_rdf_graph).csv_url

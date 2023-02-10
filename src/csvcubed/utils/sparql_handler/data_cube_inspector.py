@@ -232,12 +232,12 @@ class DataCubeInspector:
 
         return result
 
-    def get_csvw_table_schema_file_dependencies(
-        self, csv_url: str
-    ) -> CSVWTableSchemaFileDependenciesResult:
-        """
-        Getter for the csvw table schema file dependencies cached property.
-        """
-        return self._get_value_for_key(
-            csv_url, self._csvw_table_schema_file_dependencies
-        )
+    # def get_csvw_table_schema_file_dependencies(
+    #     self, csv_url: str
+    # ) -> CSVWTableSchemaFileDependenciesResult:
+    #     """
+    #     Getter for the csvw table schema file dependencies cached property.
+    #     """
+    #     return self._get_value_for_key(
+    #         csv_url, self._csvw_table_schema_file_dependencies
+    #     )

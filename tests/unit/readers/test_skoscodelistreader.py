@@ -37,18 +37,25 @@ def test_skos_concept_scheme_csvw():
     """
     Ensure that we can successfully extract the concept scheme URI and concept URI template from a roughly standard codelist CSV-W.
     """
+    # TODO Test was failing with original file "code-list.csv-metadata.json"
+    # code_list_csvw = (
+    #     _test_case_base_dir / "utils" / "csvw" / "code-list.csv-metadata.json"
+    # )
     code_list_csvw = (
-        _test_case_base_dir / "utils" / "csvw" / "code-list.csv-metadata.json"
+        _test_case_base_dir / "utils" / "csvw" / "industry-grouping.csv-metadata.json"
     )
     csv_path, cs_uri, concept_uri_template = extract_code_list_concept_scheme_info(
         code_list_csvw
     )
 
-    assert csv_path == "code-list.csv"
-    assert cs_uri == "http://gss-data.org.uk/def/trade/concept-scheme/age-of-business"
+    assert csv_path == "industry-grouping.csv"
+    assert (
+        cs_uri
+        == "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services-by-subnational-areas-of-the-uk#scheme/industry-grouping"
+    )
     assert (
         concept_uri_template
-        == "http://gss-data.org.uk/def/trade/concept/age-of-business/{+notation}"
+        == "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services-by-subnational-areas-of-the-uk#concept/industry-grouping/{+notation}"
     )
 
 

@@ -362,25 +362,25 @@ def test_get_unit_for_uri():
     assert result.unit_label == "Percent"
 
 
-def test_get_csvw_table_schema_file_dependencies():
-    """
-    # TODO Add comment
-    """
-    csvw_metadata_json_path = (
-        _test_case_base_dir
-        / "pivoted-single-measure-dataset"
-        / "qb-id-10004.csv-metadata.json"
-    )
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    data_cube_inspector = DataCubeInspector(csvw_rdf_manager.csvw_state)
-    graph = data_cube_inspector.csvw_state.rdf_graph
-    primary_catalog_metadata = (
-        csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
-    )
+# def test_get_csvw_table_schema_file_dependencies():
+#     """
+#     # TODO Add comment
+#     """
+#     csvw_metadata_json_path = (
+#         _test_case_base_dir
+#         / "pivoted-single-measure-dataset"
+#         / "qb-id-10004.csv-metadata.json"
+#     )
+#     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+#     data_cube_inspector = DataCubeInspector(csvw_rdf_manager.csvw_state)
+#     graph = data_cube_inspector.csvw_state.rdf_graph
+#     primary_catalog_metadata = (
+#         csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
+#     )
 
-    data_set_uri = primary_catalog_metadata.dataset_uri
-    identifiers = data_cube_inspector.get_cube_identifiers_for_data_set(data_set_uri)
-    result = data_cube_inspector.get_csvw_table_schema_file_dependencies(
-        identifiers.csv_url
-    )
-    pass
+#     data_set_uri = primary_catalog_metadata.dataset_uri
+#     identifiers = data_cube_inspector.get_cube_identifiers_for_data_set(data_set_uri)
+#     result = data_cube_inspector.get_csvw_table_schema_file_dependencies(
+#         identifiers.csv_url
+#     )
+#     pass
