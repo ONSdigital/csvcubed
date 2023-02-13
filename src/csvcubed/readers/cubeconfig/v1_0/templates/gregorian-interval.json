@@ -1,0 +1,6 @@
+{
+    "type": "dimension",
+    "from_existing": "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod",
+    "label": "Gregorian Time Interval",
+    "cell_uri_template": "http://reference.data.gov.uk/id/gregorian-interval/{+<column_name>}"
+}
