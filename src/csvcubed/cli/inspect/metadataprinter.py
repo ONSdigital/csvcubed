@@ -73,7 +73,7 @@ class MetadataPrinter:
     result_catalog_metadata: CatalogMetadataResult = field(init=False)
     result_cube_table_identifiers: CubeTableIdentifiers = field(init=False)
     result_qube_components: QubeComponentsResult = field(init=False)
-    result_column_definitions: ColumnDefinition = field(init=False)
+    result_column_definitions: List[ColumnDefinition] = field(init=False)
     result_code_lists: CodelistsResult = field(init=False)
     result_dataset_observations_info: DatasetObservationsInfoResult = field(init=False)
     result_dataset_value_counts: DatasetObservationsByMeasureUnitInfoResult = field(
@@ -144,6 +144,7 @@ class MetadataPrinter:
 
         self.primary_csv_url = self.get_primary_csv_url(
             csvw_state.rdf_graph,
+            csvw_state,
             csvw_type,
             to_absolute_rdflib_file_path(
                 self.result_catalog_metadata.dataset_uri, csvw_state.csvw_json_path
@@ -179,7 +180,7 @@ class MetadataPrinter:
             self.primary_csv_url
         )
 
-        self.suppressed_columns = self.state.get_suppressed_columns(
+        self.suppressed_columns = self.state.get_suppressed_columns_for_csv(
             self.primary_csv_url
         )
 
