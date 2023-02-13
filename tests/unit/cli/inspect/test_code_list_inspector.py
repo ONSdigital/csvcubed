@@ -5,16 +5,18 @@ from csvcubed.utils.sparql_handler.code_list_inspector import CodeListInspector
 from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.unit.test_baseunit import get_test_cases_dir
 
-_test_case_base_dir = (
-    get_test_cases_dir() / "cli" / "inspect" / "pivoted-multi-measure-dataset"
-)
+_test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
 
 
 def test_code_list_table_identifiers():
     """The test checks for the codelist idetifiers and returns the table identifier thats
     property_url contains the skos:inScheme."""
 
-    path_to_cube = _test_case_base_dir / "qb-id-10003.csv-metadata.json"
+    path_to_cube = (
+        _test_case_base_dir
+        / "pivoted-multi-measure-dataset"
+        / "qb-id-10003.csv-metadata.json"
+    )
 
     rdf_manager = CsvwRdfManager(path_to_cube)
 
@@ -32,10 +34,7 @@ def test_code_list_table_identifiers_error():
     skos:inScheme a KeyError is thrown with the correct error message."""
 
     path_to_cube = (
-        get_test_cases_dir()
-        / "cli"
-        / "inspect"
-        / "itis-industry-multiple-skos-inscheme.csv-metadata.json"
+        _test_case_base_dir / "itis-industry-multiple-skos-inscheme.csv-metadata.json"
     )
 
     rdf_manager = CsvwRdfManager(path_to_cube)
@@ -54,7 +53,11 @@ def test_get_csvw_catalog_metadata():
     """This test ensures when the get_csvw_catalog_metadata() check passes and returns
     the CatalogMetadataResult the objects dataset_uri does match with the expected concept_scheme_url."""
 
-    path_to_cube = _test_case_base_dir / "qb-id-10003.csv-metadata.json"
+    path_to_cube = (
+        _test_case_base_dir
+        / "pivoted-multi-measure-dataset"
+        / "qb-id-10003.csv-metadata.json"
+    )
 
     rdf_manager = CsvwRdfManager(path_to_cube)
 
@@ -71,10 +74,7 @@ def test_get_csvw_catalog_metadata_error():
     doesn't match) the relevant ValueError is thrown with the correct error message."""
 
     path_to_cube = (
-        get_test_cases_dir()
-        / "cli"
-        / "inspect"
-        / "itis-industry-no-skos-inscheme.csv-metadata.json"
+        _test_case_base_dir / "itis-industry-no-skos-inscheme.csv-metadata.json"
     )
 
     rdf_manager = CsvwRdfManager(path_to_cube)
@@ -94,10 +94,7 @@ def test_get_table_identifiers_for_concept_scheme_error():
     CodeListTableIdentifiers concept_scheme_url KeyError is thrown with the correct rror message."""
 
     path_to_cube = (
-        get_test_cases_dir()
-        / "cli"
-        / "inspect"
-        / "itis-industry-no-skos-inscheme.csv-metadata.json"
+        _test_case_base_dir / "itis-industry-no-skos-inscheme.csv-metadata.json"
     )
 
     rdf_manager = CsvwRdfManager(path_to_cube)
@@ -111,5 +108,5 @@ def test_get_table_identifiers_for_concept_scheme_error():
             concept_scheme_url
         )
     assert (
-        "Could not find code list table identifiers for s/ConceptSchem/ConceptScheme/ URL: 'http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services#scheme/itis-industry'"
+        "Could not find code list table identifiers for ConceptSchem URL: 'http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services#scheme/itis-industry'"
     ) in str(exception.value)
