@@ -111,5 +111,5 @@ def test_get_table_identifiers_for_concept_scheme_error():
             concept_scheme_url
         )
     assert (
-        "Could not find code list table identifiers for ConceptSchem URL: 'http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services#scheme/itis-industry'"
+        "Could not find code list table identifiers for s/ConceptSchem/ConceptScheme/ URL: 'http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services#scheme/itis-industry'"
     ) in str(exception.value)

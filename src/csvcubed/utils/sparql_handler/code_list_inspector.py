@@ -1,4 +1,9 @@
-"""This is the CodeListInspector class script"""
+"""
+Code List Inspector
+-------------------
+
+This is the CodeListInspector class script, which is an API class that allows to access information.
+"""
 from dataclasses import dataclass
 from functools import cached_property
 from typing import List, Optional
@@ -22,10 +27,15 @@ class CodeListInspector:
 
     @cached_property
     def _code_list_table_identifiers(self) -> List[CodeListTableIdentifers]:
+        """This funciton gets the csv_url and columndefinition and calls get_table_identifiers which returns the CodeListTableIdentifers thats property_url is
+        (skos:inScheme)."""
+
         def get_table_identifiers(
             csv_url: str,
             column_definitions: List[ColumnDefinition],
         ) -> Optional[CodeListTableIdentifers]:
+            """This function checks the column definitions for (skos:inScheme) and return the revelevant CodeListTableIdentifers.
+            In case of more then one a KeyError is returned."""
             in_scheme_columns = [
                 c
                 for c in column_definitions
@@ -52,7 +62,7 @@ class CodeListInspector:
     def get_table_identifiers_for_concept_scheme(
         self, concept_scheme_url: str
     ) -> CodeListTableIdentifers:
-        """This functions check the CodeListTableIdentifers and returns the value thats concept_scheme_url mathces with the given argument."""
+        """This function check the CodeListTableIdentifers and returns the value thats concept_scheme_url mathces with the given argument."""
         identifiers = first(
             self._code_list_table_identifiers,
             lambda i: i.concept_scheme_url == concept_scheme_url,
@@ -67,13 +77,13 @@ class CodeListInspector:
 
     def get_csvw_catalog_metadata(self) -> CatalogMetadataResult:
         """This function will access the catalogmetadataResult and compares the concept_sceme_url and returns the relevant value"""
-        the_list = self.csvw_state.catalog_metadata
+        catalog_mdata_results = self.csvw_state.catalog_metadata
 
         concept_scheme_url = self._code_list_table_identifiers[0].concept_scheme_url
 
-        for catalog_m_result in the_list:
-            if catalog_m_result.dataset_uri == concept_scheme_url:
-                return catalog_m_result
+        for result in catalog_mdata_results:
+            if result.dataset_uri == concept_scheme_url:
+                return result
 
         raise ValueError(
             f"None of the results can be associated with the {concept_scheme_url}"
