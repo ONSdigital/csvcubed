@@ -43,7 +43,7 @@ def build(
         _logger.debug("Creating output directory %s", output_directory.absolute())
         output_directory.mkdir(parents=True)
 
-    if len(validation_errors) > 0 or len(json_schema_validation_errors) > 0:
+    if any(validation_errors) or any(json_schema_validation_errors):
         _write_errors_to_log(json_schema_validation_errors, validation_errors)
 
         if validation_errors_file_name is not None:
@@ -57,7 +57,7 @@ def build(
             with open(output_directory / validation_errors_file_name, "w+") as f:
                 json.dump(all_errors_dict, f, indent=4, default=serialize_sets)
 
-        if len(validation_errors) > 0:
+        if any(validation_errors):
             if fail_when_validation_error_occurs:
                 exit(1)
             else:
