@@ -30,8 +30,6 @@ class CsvWState:
     def __post_init__(self):
         self.primary_graph_uri = path_to_file_uri_for_rdflib(self.csvw_json_path)
 
-    """Private Functions"""
-
     @cached_property
     def column_definitions(self) -> Dict[str, List[ColumnDefinition]]:
         """
@@ -39,8 +37,6 @@ class CsvWState:
         """
         results = select_column_definitions(self.rdf_graph)
         return group_by(results, lambda r: r.csv_url)
-
-    """Public Functions"""
 
     @cached_property
     def catalog_metadata(self) -> List[CatalogMetadataResult]:
@@ -79,7 +75,7 @@ class CsvWState:
 
     def get_column_definitions_for_csv(self, csv_url: str) -> List[ColumnDefinition]:
         """
-        Getter for _col_names_col_titles cached property.
+        Returns the `ColumnDefinition`s for a given csv file.
         """
         result: List[ColumnDefinition] = get_from_dict_ensure_exists(
             self.column_definitions, csv_url

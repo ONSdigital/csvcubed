@@ -52,11 +52,6 @@
                 "virtual": true,
                 "propertyUrl": "rdf:type",
                 "valueUrl": "skos:Concept"
-            },
-            {
-                "virtual": true,
-                "propertyUrl": "skos:inScheme",
-                "valueUrl": "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services#scheme/it-industry"
             }
         ],
         "primaryKey": "notation",

@@ -36,7 +36,7 @@ T = TypeVar("T")
 
 @dataclass
 class DataCubeState:
-    """todo: Describe the class"""
+    """Provides access to inspect the data cubes contained in an rdflib graph."""
 
     csvw_state: CsvWState
 
@@ -161,11 +161,7 @@ class DataCubeState:
         return get_from_dict_ensure_exists(self._dsd_qube_components, csv_url)
 
     def get_shape_for_csv(self, csv_url: str) -> CubeShape:
+        """
+        Getter for CubeShape.
+        """
         return get_from_dict_ensure_exists(self._cube_shapes, csv_url)
-
-
-def _to_absolute_rdflib_file_path(path: str, parent_document_path: Path) -> str:
-    if looks_like_uri(path):
-        return path
-    else:
-        return urljoin(path_to_file_uri_for_rdflib(parent_document_path), path)

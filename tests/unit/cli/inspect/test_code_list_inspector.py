@@ -49,8 +49,8 @@ def test_code_list_table_identifiers_error():
     ) in str(exception.value)
 
 
-def test_get_csvw_catalog_metadata():
-    """This test ensures when the get_csvw_catalog_metadata() check passes and returns
+def test_get_catalog_metadata_for_concept_scheme():
+    """This test ensures when the get_catalog_metadata_for_concept_scheme() check passes and returns
     the CatalogMetadataResult the objects dataset_uri does match with the expected concept_scheme_url."""
 
     path_to_cube = (
@@ -63,14 +63,16 @@ def test_get_csvw_catalog_metadata():
 
     code_list_inspector = CodeListInspector(rdf_manager.csvw_state)
 
-    the_result = code_list_inspector.get_csvw_catalog_metadata()
+    the_result = code_list_inspector.get_catalog_metadata_for_concept_scheme(
+        "some-dimension.csv#code-list"
+    )
 
     assert isinstance(the_result, CatalogMetadataResult)
     assert the_result.dataset_uri == "some-dimension.csv#code-list"
 
 
-def test_get_csvw_catalog_metadata_error():
-    """This test ensures when the get_csvw_catalog_metadata() check fails(concept_scheme_url
+def test_get_catalog_metadata_for_concept_scheme_error():
+    """This test ensures when the get_catalog_metadata_for_concept_scheme() check fails(concept_scheme_url
     doesn't match) the relevant ValueError is thrown with the correct error message."""
 
     path_to_cube = (
@@ -82,7 +84,9 @@ def test_get_csvw_catalog_metadata_error():
     code_list_inspector = CodeListInspector(rdf_manager.csvw_state)
 
     with pytest.raises(ValueError) as exception:
-        _ = code_list_inspector.get_csvw_catalog_metadata()
+        _ = code_list_inspector.get_catalog_metadata_for_concept_scheme(
+            "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services#scheme/it-industry"
+        )
 
     assert (
         "None of the results can be associated with the http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services#scheme/it-industry"

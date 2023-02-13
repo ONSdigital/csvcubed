@@ -2,7 +2,8 @@
 Code List Inspector
 -------------------
 
-This is the CodeListInspector class script, which is an API class that allows to access information.
+This module contains the `CodeListInspector` class which allows API-style access to information
+about code lists contained within an RDF graph.
 """
 from dataclasses import dataclass
 from functools import cached_property
@@ -21,21 +22,26 @@ from csvcubed.utils.sparql_handler.csvw_state import CsvWState
 
 @dataclass
 class CodeListInspector:
-    """The API interface for the codelist information, allowing to access information."""
+    """
+    Allows API-style access to information about code lists contained within an RDF graph.
+    """
 
     csvw_state: CsvWState
 
     @cached_property
     def _code_list_table_identifiers(self) -> List[CodeListTableIdentifers]:
-        """This funciton gets the csv_url and columndefinition and calls get_table_identifiers which returns the CodeListTableIdentifers thats property_url is
-        (skos:inScheme)."""
+        """This holds the identifiers mapping between csv_url and the concept_scheme_url."""
 
         def get_table_identifiers(
             csv_url: str,
             column_definitions: List[ColumnDefinition],
         ) -> Optional[CodeListTableIdentifers]:
-            """This function checks the column definitions for (skos:inScheme) and return the revelevant CodeListTableIdentifers.
-            In case of more then one a KeyError is returned."""
+            """
+            This function checks the column definitions to find columns which place a concept into a scheme (propertyUrl = skos:inScheme)
+            and return the revelevant CodeListTableIdentifers.
+
+            In case of more then one a KeyError is returned.
+            """
             in_scheme_columns = [
                 c
                 for c in column_definitions
@@ -52,11 +58,13 @@ class CodeListInspector:
 
             raise KeyError(f"Found multiple skos:inScheme columns in '{csv_url}'.")
 
+        # Get the csv_url -> column_scheme_url identifiers for all csv files.
         table_identifiers = [
             get_table_identifiers(csv_url, columns)
             for (csv_url, columns) in self.csvw_state.column_definitions.items()
         ]
 
+        # If the csv file doesn't have a code list in it, don't include it in the code list identifiers returned.
         return [i for i in table_identifiers if i is not None]
 
     def get_table_identifiers_for_concept_scheme(
@@ -75,16 +83,19 @@ class CodeListInspector:
 
         return identifiers
 
-    def get_csvw_catalog_metadata(self) -> CatalogMetadataResult:
+    def get_catalog_metadata_for_concept_scheme(
+        self, concept_scheme_url: str
+    ) -> CatalogMetadataResult:
         """This function will access the catalogmetadataResult and compares the concept_sceme_url and returns the relevant value"""
         catalog_mdata_results = self.csvw_state.catalog_metadata
 
-        concept_scheme_url = self._code_list_table_identifiers[0].concept_scheme_url
-
-        for result in catalog_mdata_results:
-            if result.dataset_uri == concept_scheme_url:
-                return result
-
-        raise ValueError(
-            f"None of the results can be associated with the {concept_scheme_url}"
+        result = first(
+            catalog_mdata_results, lambda i: i.dataset_uri == concept_scheme_url
         )
+
+        if result is None:
+            raise ValueError(
+                f"None of the results can be associated with the {concept_scheme_url}"
+            )
+
+        return result
