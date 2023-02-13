@@ -70,7 +70,7 @@ class CodeListInspector:
 
         if identifiers is None:
             raise KeyError(
-                f"Could not find code list table identifiers for ConceptSchem URL: '{concept_scheme_url}'"
+                f"Could not find code list table identifiers for ConceptScheme URL: '{concept_scheme_url}'"
             )
 
         return identifiers
