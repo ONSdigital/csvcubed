@@ -50,15 +50,7 @@ A column is assumed to be a dimension unless otherwise configured using the `typ
 }
 ```
 
-**If a column mapping is not defined in the `qube-config.json` file for a given CSV column, the column is [configured by convention](./convention.md).**  To ignore a column and to not configure it by convention, the column's definition to `false`. This will ensure the column will not be present in the CSV-W when built by csvcubed.
-
-```json
-{ ...
- "columns": {
-  "Suppressed column": false
- }
-}
-```
+**If a column mapping is not defined in the `qube-config.json` file for a given CSV column, the column is [configured by convention](./convention.md).**
 
 ### Dimensions
 
