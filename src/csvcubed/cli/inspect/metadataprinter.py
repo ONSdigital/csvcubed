@@ -6,8 +6,9 @@ Provides functionality for validating and detecting input metadata.json file.
 """
 
 from dataclasses import dataclass, field
+from os import linesep
 from pathlib import Path
-from typing import List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 from urllib.parse import urljoin
 
 import rdflib
@@ -33,6 +34,7 @@ from csvcubed.models.sparqlresults import (
     CatalogMetadataResult,
     CodeListColsByDatasetUrlResult,
     CodelistColumnResult,
+    CodelistResult,
     CodelistsResult,
     ColumnDefinition,
     CubeTableIdentifiers,
@@ -40,7 +42,10 @@ from csvcubed.models.sparqlresults import (
     QubeComponentsResult,
 )
 from csvcubed.utils.csvdataset import transform_dataset_to_canonical_shape
-from csvcubed.utils.printable import get_printable_list_str
+from csvcubed.utils.printable import (
+    get_printable_list_str,
+    get_printable_tabular_str_from_list,
+)
 from csvcubed.utils.skos.codelist import (
     CodelistPropertyUrl,
     get_codelist_col_title_by_property_url,
@@ -138,17 +143,13 @@ class MetadataPrinter:
         csvw_type = csvw_state.csvw_type
 
         self.csvw_type_str = self.get_csvw_type_str(csvw_type)
-        # self.result_catalog_metadata = csvw_state.get_primary_catalog_metadata()
-        self.dataset_uri = csvw_state.get_primary_catalog_metadata().dataset_uri
-        # self.primary_csv_url = DataCubeInspector(csvw_state).get_cube_identifiers_for_data_set(self.dataset_uri)
+        self.result_catalog_metadata = csvw_state.get_primary_catalog_metadata()
 
         self.primary_csv_url = self.get_primary_csv_url(
             csvw_state.rdf_graph,
             csvw_state,
             csvw_type,
-            to_absolute_rdflib_file_path(
-                self.result_catalog_metadata.dataset_uri, csvw_state.csvw_json_path
-            ),
+            csvw_state.get_primary_catalog_metadata().dataset_uri,
         )
         self.dataset = load_csv_to_dataframe(
             csvw_state.csvw_json_path, Path(self.primary_csv_url)
@@ -280,7 +281,7 @@ class MetadataPrinter:
         """
         # get_printable_list_str called directly here for suppressed columns - see comment above re alternative approaches.
         # {get_printable_list_str(self.suppressed_columns)} OR {self.result_cols_with_suppress_output_true.output_str}
-        return f"- The {self.csvw_type_str} has the following data structure definition:{self.result_cube_table_identifiers.data_set_label}{self.result_qube_components.output_str}\n- Columns where suppress output is true: {get_printable_list_str(self.suppressed_columns)}"
+        return f"- The {self.csvw_type_str} has the following data structure definition:\n- Dataset Label: {self.result_cube_table_identifiers.data_set_label}{self.result_qube_components.output_str}\n- Columns where suppress output is true: {get_printable_list_str(self.suppressed_columns)}"
 
     @property
     def codelist_info_printable(self) -> str:
@@ -291,7 +292,29 @@ class MetadataPrinter:
 
         :return: `str` - user-friendly string which will be output to CLI.
         """
-        return f"- The {self.csvw_type_str} has the following code list information:{self.result_code_lists.output_str}"
+
+        def alter_code_list_for_text_representation(code_list: CodelistResult) -> Dict:
+            dict_repr = code_list.as_dict()
+            dict_repr["code_list_label"] = code_list.code_list_label or ""
+            dict_repr["cols_used_in"] = ", ".join(code_list.cols_used_in)
+            del dict_repr["csv_url"]
+            return dict_repr
+
+        formatted_codelists = get_printable_tabular_str_from_list(
+            [
+                alter_code_list_for_text_representation(codelist)
+                for codelist in sorted(
+                    self.result_code_lists.codelists, key=lambda c: c.code_list
+                )
+            ],
+            column_names=["Code List", "Code List Label", "Columns Used In"],
+        )
+        output_string = f"""
+        - Number of Code Lists: {self.result_code_lists.num_codelists}
+        - Code Lists:{linesep}{formatted_codelists}"""
+
+        # return f"- The {self.csvw_type_str} has the following code list information:{self.result_code_lists.output_str}"
+        return f"- The {self.csvw_type_str} has the following code list information:{output_string}"
 
     @property
     def dataset_observations_info_printable(self) -> str:
