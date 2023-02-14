@@ -33,6 +33,7 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_table_schema_properties,
 )
 from csvcubed.utils.tableschema import CsvwRdfManager, add_triples_for_file_dependencies
+from tests.helpers.inspectors_cache import get_csvw_rdf_manager, get_data_cube_inspector
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
@@ -128,7 +129,7 @@ def test_ask_is_csvw_code_list():
     Should return true if the input rdf graph is a code list.
     """
     csvw_metadata_json_path = _test_case_base_dir / "codelist.csv-metadata.json"
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
     is_code_list = ask_is_csvw_code_list(csvw_metadata_rdf_graph)
@@ -141,7 +142,7 @@ def test_ask_is_csvw_qb_dataset():
     Should return true if the input rdf graph is a qb dataset.
     """
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
     is_qb_dataset = ask_is_csvw_qb_dataset(csvw_metadata_rdf_graph)
@@ -154,7 +155,7 @@ def test_select_csvw_catalog_metadata_for_dataset():
     Should return expected `CatalogMetadataResult`.
     """
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
 
     result = csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
 
@@ -205,7 +206,7 @@ def test_select_csvw_catalog_metadata_for_codelist():
     Should return expected `CatalogMetadataResult`.
     """
     csvw_metadata_json_path = _test_case_base_dir / "codelist.csv-metadata.json"
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
 
     result = csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
 
@@ -241,12 +242,10 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
         / "pivoted-single-measure-dataset"
         / "qb-id-10004.csv-metadata.json"
     )
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
-    data_cube_inspector = DataCubeInspector(
-        csvw_metadata_rdf_graph, csvw_metadata_json_path
-    )
+    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
 
     data_set_uri = select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri
     result: CubeTableIdentifiers = (
@@ -346,9 +345,9 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
         / "pivoted-multi-measure-dataset"
         / "qb-id-10003.csv-metadata.json"
     )
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    data_cube_inspector = DataCubeInspector(csvw_rdf_manager.csvw_state)
+    data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
 
     primary_catalog_metadata = (
         csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
@@ -458,121 +457,13 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
     )
 
 
-def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
-    """
-    Ensures that the cube components in a pivoted single-measure dataset correctly link to observation value columns.
-    """
-
-    csvw_metadata_json_path = (
-        _test_case_base_dir
-        / "pivoted-single-measure-dataset"
-        / "qb-id-10004.csv-metadata.json"
-    )
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    data_cube_inspector = DataCubeInspector(csvw_rdf_manager.csvw_state)
-
-    primary_catalog_metadata = (
-        csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
-    )
-
-    result: CubeTableIdentifiers = (
-        data_cube_inspector.get_cube_identifiers_for_data_set(
-            primary_catalog_metadata.dataset_uri
-        )
-    )
-
-    data_set_uri = primary_catalog_metadata.dataset_uri
-    csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
-        data_set_uri
-    ).csv_url
-
-    result_qube_components = data_cube_inspector.get_dsd_qube_components_for_csv(
-        csv_url
-    )
-    components = result_qube_components.qube_components
-
-    assert result.data_set_label == "Pivoted Shape Cube"
-    assert result.dsd_uri == "qb-id-10004.csv#structure"
-    assert len(components) == 5
-
-    component = get_dsd_component_by_property_url(
-        components, "qb-id-10004.csv#dimension/some-dimension"
-    )
-    assert_dsd_component_equal(
-        component,
-        "qb-id-10004.csv#dimension/some-dimension",
-        ComponentPropertyType.Dimension,
-        "Some Dimension",
-        ["Some Dimension"],
-        ["Some Obs Val"],
-        "qb-id-10004.csv#structure",
-        True,
-    )
-
-    component = get_dsd_component_by_property_url(
-        components, "qb-id-10004.csv#attribute/some-attribute"
-    )
-    assert_dsd_component_equal(
-        component,
-        "qb-id-10004.csv#attribute/some-attribute",
-        ComponentPropertyType.Attribute,
-        "Some Attribute",
-        ["Some Attribute"],
-        ["Some Obs Val"],
-        "qb-id-10004.csv#structure",
-        False,
-    )
-
-    component = get_dsd_component_by_property_url(
-        components, "http://purl.org/linked-data/cube#measureType"
-    )
-    assert_dsd_component_equal(
-        component,
-        "http://purl.org/linked-data/cube#measureType",
-        ComponentPropertyType.Dimension,
-        "",
-        [],
-        [],
-        "qb-id-10004.csv#structure",
-        True,
-    )
-
-    component = get_dsd_component_by_property_url(
-        components, "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
-    )
-    assert_dsd_component_equal(
-        component,
-        "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
-        ComponentPropertyType.Attribute,
-        "",
-        [],
-        ["Some Obs Val"],
-        "qb-id-10004.csv#structure",
-        True,
-    )
-
-    component = get_dsd_component_by_property_url(
-        components, "qb-id-10004.csv#measure/some-measure"
-    )
-    assert_dsd_component_equal(
-        component,
-        "qb-id-10004.csv#measure/some-measure",
-        ComponentPropertyType.Measure,
-        "Some Measure",
-        ["Some Obs Val"],
-        ["Some Obs Val"],
-        "qb-id-10004.csv#structure",
-        True,
-    )
-
-
 def test_select_cols_when_supress_output_cols_not_present():
     """
     Tests if the get_suppressed_columns function successfully detects no suppressed columns when none are present.
     """
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
     data_cube_inspector = DataCubeInspector(csvw_rdf_manager.csvw_state)
     data_set_uri = (
@@ -594,7 +485,8 @@ def test_select_cols_when_suppress_output_cols_present():
     csvw_metadata_json_path = (
         _test_case_base_dir / "datacube_with_suppress_output_cols.csv-metadata.json"
     )
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
     data_cube_inspector = DataCubeInspector(csvw_rdf_manager.csvw_state)
     data_set_uri = (
@@ -615,9 +507,8 @@ def test_select_dsd_code_list_and_cols_without_codelist_labels():
     Should return expected `DSDLabelURIResult`.
     """
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    # csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    data_cube_inspector = DataCubeInspector(csvw_rdf_manager.csvw_state)
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
+    data_cube_inspector = get_data_cube_inspector(csvw_rdf_manager.csvw_state)
     primary_catalog_metadata = (
         csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
     )
@@ -639,7 +530,7 @@ def test_select_qb_csv_url():
     Should return expected `CsvUrlResult`.
     """
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
     result: CsvUrlResult = select_qb_csv_url(
@@ -658,8 +549,7 @@ def test_select_single_unit_from_dsd():
         / "single-unit_multi-measure"
         / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv-metadata.json"
     )
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    data_cube_inspector = DataCubeInspector(csvw_rdf_manager.csvw_state)
+    data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
 
     result: UnitResult = data_cube_inspector.get_unit_for_uri(
         "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#unit/mtco2e"
@@ -684,7 +574,7 @@ def test_select_table_schema_dependencies():
         / "sectors-economic-estimates-2018-trade-in-services.csv-metadata.json"
     )
 
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
     table_schema_results = select_csvw_table_schema_file_dependencies(
@@ -702,7 +592,7 @@ def test_select_codelist_cols_by_csv_url():
     Should return expected `CodeListColsByDatasetUrlResult`.
     """
     csvw_metadata_json_path = _test_case_base_dir / "alcohol-content.csv-metadata.json"
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     csv_url = select_codelist_csv_url(csvw_metadata_rdf_graph).csv_url
 
@@ -779,7 +669,7 @@ def test_select_table_schema_properties():
     csvw_metadata_json_path = (
         _csvw_test_cases_dir / "industry-grouping.csv-metadata.json"
     )
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     result = select_table_schema_properties(csvw_metadata_rdf_graph)
 
@@ -794,6 +684,78 @@ def test_select_table_schema_properties():
     )
 
 
+def test_select_is_pivoted_shape_for_measures_in_pivoted_shape_data_set():
+    """
+    Checks that the measures retrieved from a metadata file that represents a pivoted shape cube are as expected.
+    """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-multi-measure-dataset"
+        / "qb-id-10003.csv-metadata.json"
+    )
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
+    results = select_is_pivoted_shape_for_measures_in_data_set(
+        csvw_metadata_rdf_graph,
+        [
+            CubeTableIdentifiers(
+                "qb-id-10003.csv",
+                "qb-id-10003.csv#dataset",
+                "qb-id-10003.csv#structure",
+            )
+        ],
+    )
+
+    assert results is not None
+    assert len(results) == 2
+
+    result = _get_measure_by_measure_uri(
+        results, "qb-id-10003.csv#measure/some-measure"
+    )
+    assert result.measure == "qb-id-10003.csv#measure/some-measure"
+    assert result.is_pivoted_shape == True
+
+    result = _get_measure_by_measure_uri(
+        results, "qb-id-10003.csv#measure/some-other-measure"
+    )
+    assert result.measure == "qb-id-10003.csv#measure/some-other-measure"
+    assert result.is_pivoted_shape == True
+
+
+def test_select_is_pivoted_shape_for_measures_in_standard_shape_data_set():
+    """
+    Checks that the measures retrieved from a metadata file that represents a standard shape cube are as expected.
+    """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "single-unit_single-measure"
+        / "energy-trends-uk-total-energy.csv-metadata.json"
+    )
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
+    results = select_is_pivoted_shape_for_measures_in_data_set(
+        csvw_metadata_rdf_graph,
+        [
+            CubeTableIdentifiers(
+                "energy-trends-uk-total-energy.csv",
+                "energy-trends-uk-total-energy.csv#dataset",
+                "energy-trends-uk-total-energy.csv#structure",
+            )
+        ],
+    )
+
+    assert results is not None
+    assert len(results) == 1
+
+    result = _get_measure_by_measure_uri(
+        results, "energy-trends-uk-total-energy.csv#measure/energy-consumption"
+    )
+    assert (
+        result.measure == "energy-trends-uk-total-energy.csv#measure/energy-consumption"
+    )
+    assert result.is_pivoted_shape == False
+
+
 def test_rdf_dependency_loaded() -> None:
     """
     Ensure that the CsvwRdfManager loads dependent RDF graphs to get a complete picture of the cube's metadata.
@@ -801,7 +763,7 @@ def test_rdf_dependency_loaded() -> None:
     dimension_data_file = _test_case_base_dir / "dependencies" / "dimension.csv"
     metadata_file = _test_case_base_dir / "dependencies" / "data.csv-metadata.json"
 
-    csvw_rdf_manager = CsvwRdfManager(metadata_file)
+    csvw_rdf_manager = get_csvw_rdf_manager(metadata_file)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
     # assert that the `<dimension.csv#code-list> a dcat:Dataset` triple has been loaded.
@@ -820,7 +782,7 @@ def test_cyclic_rdf_dependencies_loaded() -> None:
     """
     metadata_file = _test_case_base_dir / "dependencies" / "cyclic.csv-metadata.json"
 
-    csvw_rdf_manager = CsvwRdfManager(metadata_file)
+    csvw_rdf_manager = get_csvw_rdf_manager(metadata_file)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
     # Assert that some RDF has been loaded.
@@ -836,7 +798,7 @@ def test_transitive_rdf_dependency_loaded() -> None:
         _test_case_base_dir / "dependencies" / "transitive.csv-metadata.json"
     )
 
-    csvw_rdf_manager = CsvwRdfManager(metadata_file)
+    csvw_rdf_manager = get_csvw_rdf_manager(metadata_file)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
     # Assert that some RDF has been loaded.
@@ -853,7 +815,7 @@ def test_rdf_load_ttl_dependency() -> None:
     """
     metadata_file = _test_case_base_dir / "dependencies" / "turtle.csv-metadata.json"
 
-    csvw_rdf_manager = CsvwRdfManager(metadata_file)
+    csvw_rdf_manager = get_csvw_rdf_manager(metadata_file)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
     # Assert that some RDF has been loaded.

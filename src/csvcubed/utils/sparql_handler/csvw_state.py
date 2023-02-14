@@ -36,8 +36,6 @@ class CsvWState:
 
     @cached_property
     def csvw_type(self) -> CSVWType:
-        # Need to get the primary graph
-        # We currently have the primary graph uri + rdf_graph
         primary_graph = self.rdf_graph.get_context(self.primary_graph_uri)
         if ask_is_csvw_code_list(primary_graph):
             return CSVWType.CodeList
