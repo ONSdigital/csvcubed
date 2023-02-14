@@ -36,7 +36,6 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
 )
 from tests.helpers.inspectors_cache import (
     get_code_list_inspector,
-    get_csvw_rdf_manager,
     get_data_cube_inspector,
 )
 from tests.unit.test_baseunit import get_test_cases_dir

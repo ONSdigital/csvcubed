@@ -16,8 +16,6 @@ from csvcubed.utils.csvdataset import (
     _melt_data_set,
     transform_dataset_to_canonical_shape,
 )
-from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
-from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.helpers.inspectors_cache import get_data_cube_inspector
 from tests.unit.cli.inspect.test_inspectdatasetmanager import get_arguments_qb_dataset
 from tests.unit.test_baseunit import get_test_cases_dir

@@ -1,8 +1,6 @@
 import pytest
 
 from csvcubed.models.sparqlresults import CatalogMetadataResult, CodeListTableIdentifers
-from csvcubed.utils.sparql_handler.code_list_inspector import CodeListInspector
-from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.helpers.inspectors_cache import get_code_list_inspector, get_csvw_rdf_manager
 from tests.unit.test_baseunit import get_test_cases_dir
 

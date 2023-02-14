@@ -19,8 +19,6 @@ from csvcubed.models.sparqlresults import (
 from csvcubed.utils.iterables import first
 from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.rdf import parse_graph_retain_relative
-from csvcubed.utils.sparql_handler.code_list_inspector import CodeListInspector
-from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     ask_is_csvw_code_list,
     ask_is_csvw_qb_dataset,
@@ -32,7 +30,7 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_metadata_dependencies,
     select_table_schema_properties,
 )
-from csvcubed.utils.tableschema import CsvwRdfManager, add_triples_for_file_dependencies
+from csvcubed.utils.tableschema import add_triples_for_file_dependencies
 from tests.helpers.inspectors_cache import (
     get_code_list_inspector,
     get_csvw_rdf_manager,
