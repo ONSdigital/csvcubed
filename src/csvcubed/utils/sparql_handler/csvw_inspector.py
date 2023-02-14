@@ -11,6 +11,7 @@ from csvcubed.models.sparqlresults import (
     PrimaryKeyColNamesByDatasetUrlResult,
     TableSchemaPropertiesResult,
 )
+from csvcubed.utils.dict import get_from_dict_ensure_exists
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     ask_is_csvw_code_list,
@@ -55,15 +56,19 @@ class CsvWInspector:
             )
 
     @cached_property
-    def _table_schema_properties(self) -> TableSchemaPropertiesResult:
+    def _table_schema_properties(self) -> Dict[str, TableSchemaPropertiesResult]:
         """
         Cached property for the select_table_schema_properties query that stores the query's results.
         """
-        result = select_table_schema_properties(self.rdf_graph)
-        return result
+        results = select_table_schema_properties(self.rdf_graph)
+        results_dict: Dict[str, TableSchemaPropertiesResult] = {}
+        for result in results:
+            results_dict[result.csv_url] = result
+
+        return results_dict
 
     @cached_property
-    def _codelist_primary_key_by_csv_url(self) -> PrimaryKeyColNamesByDatasetUrlResult:
+    def _primary_key_by_csv_url(self) -> PrimaryKeyColNamesByDatasetUrlResult:
         """
         Cached property for the select_primary_key_col_names_by_csv_url query that stores the query's results.
         """
@@ -86,16 +91,19 @@ class CsvWInspector:
             f"Could not find catalog metadata in primary graph '{self.primary_graph_uri}'."
         )
 
-    def get_table_schema_properties(self) -> TableSchemaPropertiesResult:
+    def get_table_schema_properties(self, csv_url: str) -> TableSchemaPropertiesResult:
         """
         Retrieves the stored result of the table schema properties cached property.
         """
-        return self._table_schema_properties
+        result: TableSchemaPropertiesResult = get_from_dict_ensure_exists(
+            self._table_schema_properties, csv_url
+        )
+        return result
 
-    def get_codelist_primary_key_by_csv_url(
+    def get_primary_key_by_csv_url(
         self,
     ) -> PrimaryKeyColNamesByDatasetUrlResult:
         """
         Retrieves the stored result from the codelist priary key by csv url cached property.
         """
-        return self._codelist_primary_key_by_csv_url
+        return self._primary_key_by_csv_url
