@@ -23,7 +23,7 @@ from csvcubed.models.inspectdataframeresults import (
     DatasetObservationsByMeasureUnitInfoResult,
     DatasetObservationsInfoResult,
 )
-from csvcubed.models.sparqlresults import QubeComponentResult
+from csvcubed.models.sparqlresults import QubeComponentResult, QubeComponentsResult
 from csvcubed.utils.csvdataset import transform_dataset_to_canonical_shape
 from csvcubed.utils.skos.codelist import (
     CodelistPropertyUrl,
@@ -253,19 +253,21 @@ _expected_by_measure_and_unit_val_counts_df_pivoted_multi_measure = DataFrame(
 
 
 def get_arguments_qb_dataset(
-    data_cube_state: DataCubeState,
+    data_cube_inspector: DataCubeInspector,
 ) -> Tuple[DataFrame, List[QubeComponentResult], str]:
     """
     Produces the dataset, qube components and dsd uri arguments for qb:dataset.
     """
-    csvw_state = data_cube_state.csvw_state
+    csvw_state = data_cube_inspector.csvw_state
 
     result_data_set_uri = (
-        data_cube_state.csvw_state.get_primary_catalog_metadata().dataset_uri
+        data_cube_inspector.csvw_state.get_primary_catalog_metadata().dataset_uri
     )
-    identifiers = data_cube_state.get_cube_identifiers_for_data_set(result_data_set_uri)
+    identifiers = data_cube_inspector.get_cube_identifiers_for_data_set(
+        result_data_set_uri
+    )
 
-    result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(
+    result: QubeComponentsResult = data_cube_inspector.get_dsd_qube_components_for_csv(
         identifiers.csv_url
     )
 
@@ -273,7 +275,7 @@ def get_arguments_qb_dataset(
         csvw_state.csvw_json_path, Path(identifiers.csv_url)
     )
 
-    return (dataset, result_qube_components.qube_components, identifiers.csv_url)
+    return (dataset, result.qube_components, identifiers.csv_url)
 
 
 def _get_arguments_skos_codelist(
@@ -384,20 +386,20 @@ def test_get_measure_col_name_from_dsd_measure_col_present():
         / "multi-unit_multi-measure"
         / "alcohol-bulletin.csv-metadata.json"
     )
-    data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
+    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
 
     result_data_set_uri = (
-        data_cube_state.csvw_state.get_primary_catalog_metadata().dataset_uri
+        data_cube_inspector.csvw_state.get_primary_catalog_metadata().dataset_uri
     )
-    identifiers = data_cube_state.get_cube_identifiers_for_data_set(result_data_set_uri)
+    identifiers = data_cube_inspector.get_cube_identifiers_for_data_set(
+        result_data_set_uri
+    )
 
-    result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(
+    result: QubeComponentsResult = data_cube_inspector.get_dsd_qube_components_for_csv(
         identifiers.csv_url
     )
 
-    measure_col = get_standard_shape_measure_col_name_from_dsd(
-        result_qube_components.qube_components
-    )
+    measure_col = get_standard_shape_measure_col_name_from_dsd(result.qube_components)
 
     assert measure_col == "Measure Type"
 
@@ -412,20 +414,20 @@ def test_get_measure_col_name_from_dsd_measure_col_not_present():
         / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
     )
 
-    data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
-    primary_catalog_metadata = data_cube_state.csvw_state.get_primary_catalog_metadata()
+    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    primary_catalog_metadata = (
+        data_cube_inspector.csvw_state.get_primary_catalog_metadata()
+    )
 
-    identifiers = data_cube_state.get_cube_identifiers_for_data_set(
+    identifiers = data_cube_inspector.get_cube_identifiers_for_data_set(
         primary_catalog_metadata.dataset_uri
     )
 
-    result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(
+    result: QubeComponentsResult = data_cube_inspector.get_dsd_qube_components_for_csv(
         identifiers.csv_url
     )
 
-    measure_col = get_standard_shape_measure_col_name_from_dsd(
-        result_qube_components.qube_components
-    )
+    measure_col = get_standard_shape_measure_col_name_from_dsd(result.qube_components)
 
     assert measure_col is None
 
@@ -440,20 +442,20 @@ def test_get_unit_col_name_from_dsd_unit_col_present():
         / "alcohol-bulletin.csv-metadata.json"
     )
 
-    data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
-    primary_catalog_metadata = data_cube_state.csvw_state.get_primary_catalog_metadata()
+    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    primary_catalog_metadata = (
+        data_cube_inspector.csvw_state.get_primary_catalog_metadata()
+    )
 
-    identifiers = data_cube_state.get_cube_identifiers_for_data_set(
+    identifiers = data_cube_inspector.get_cube_identifiers_for_data_set(
         primary_catalog_metadata.dataset_uri
     )
 
-    result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(
+    result: QubeComponentsResult = data_cube_inspector.get_dsd_qube_components_for_csv(
         identifiers.csv_url
     )
 
-    unit_col = get_standard_shape_unit_col_name_from_dsd(
-        result_qube_components.qube_components
-    )
+    unit_col = get_standard_shape_unit_col_name_from_dsd(result.qube_components)
 
     assert unit_col == "Unit"
 
@@ -468,20 +470,20 @@ def test_get_unit_col_name_from_dsd_unit_col_not_present():
         / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
     )
 
-    data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
-    primary_catalog_metadata = data_cube_state.csvw_state.get_primary_catalog_metadata()
+    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    primary_catalog_metadata = (
+        data_cube_inspector.csvw_state.get_primary_catalog_metadata()
+    )
 
-    identifiers = data_cube_state.get_cube_identifiers_for_data_set(
+    identifiers = data_cube_inspector.get_cube_identifiers_for_data_set(
         primary_catalog_metadata.dataset_uri
     )
 
-    result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(
+    result: QubeComponentsResult = data_cube_inspector.get_dsd_qube_components_for_csv(
         identifiers.csv_url
     )
 
-    unit_col = get_standard_shape_unit_col_name_from_dsd(
-        result_qube_components.qube_components
-    )
+    unit_col = get_standard_shape_unit_col_name_from_dsd(result.qube_components)
 
     assert unit_col is None
 
@@ -497,24 +499,24 @@ def test_get_single_measure_label_from_dsd():
         / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
     )
 
-    data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
-    primary_catalog_metadata = data_cube_state.csvw_state.get_primary_catalog_metadata()
+    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    primary_catalog_metadata = (
+        data_cube_inspector.csvw_state.get_primary_catalog_metadata()
+    )
 
-    identifiers = data_cube_state.get_cube_identifiers_for_data_set(
+    identifiers = data_cube_inspector.get_cube_identifiers_for_data_set(
         primary_catalog_metadata.dataset_uri
     )
 
-    result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(
+    result: QubeComponentsResult = data_cube_inspector.get_dsd_qube_components_for_csv(
         identifiers.csv_url
     )
 
-    measure_col = get_standard_shape_measure_col_name_from_dsd(
-        result_qube_components.qube_components
-    )
+    measure_col = get_standard_shape_measure_col_name_from_dsd(result.qube_components)
     assert measure_col is None
 
     result_measure = get_single_measure_from_dsd(
-        result_qube_components.qube_components, csvw_metadata_json_path
+        result.qube_components, csvw_metadata_json_path
     )
     assert (
         result_measure.measure_uri
@@ -532,7 +534,7 @@ def test_get_val_counts_info_multi_unit_multi_measure_dataset():
         / "multi-unit_multi-measure"
         / "alcohol-bulletin.csv-metadata.json"
     )
-    data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
+    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
 
     (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
 
@@ -567,7 +569,7 @@ def test_get_val_counts_info_multi_unit_single_measure_dataset():
         / "multi-unit_single-measure"
         / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
     )
-    data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
+    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
 
     (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
 
@@ -602,7 +604,7 @@ def test_get_val_counts_info_single_unit_multi_measure_dataset():
         / "single-unit_multi-measure"
         / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv-metadata.json"
     )
-    data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
+    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
 
     (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
 
@@ -637,7 +639,7 @@ def test_get_val_counts_info_single_unit_single_measure_dataset():
         / "single-unit_single-measure"
         / "energy-trends-uk-total-energy.csv-metadata.json"
     )
-    data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
+    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
 
     (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
 
@@ -672,7 +674,7 @@ def test_get_val_counts_info_pivoted_single_measure_dataset():
         / "pivoted-single-measure-dataset"
         / "qb-id-10004.csv-metadata.json"
     )
-    data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
+    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
 
     (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
 
@@ -707,7 +709,7 @@ def test_get_val_counts_info_pivoted_multi_measure_dataset():
         / "pivoted-multi-measure-dataset"
         / "qb-id-10003.csv-metadata.json"
     )
-    data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
+    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
 
     (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
 
