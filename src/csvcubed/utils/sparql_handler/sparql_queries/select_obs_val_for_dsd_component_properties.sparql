@@ -1,0 +1,37 @@
+PREFIX qb: <http://purl.org/linked-data/cube#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX csvw: <http://www.w3.org/ns/csvw#>
+
+SELECT ?csvColumnPropertyUrl ?dsd_uri (GROUP_CONCAT(?observationValueColumnTitle; separator=', ') as ?observationValueColumnTitles)
+WHERE 
+{
+    # Get each observattion column title in a given table (multiple in pivoted multi-measure)
+    {
+        SELECT DISTINCT ?tableSchema ?dsd_uri ?observationUri ?observationValueColumnTitle
+        WHERE {
+            ?tableSchema csvw:column/rdf:rest*/rdf:first ?observedValueColumn.
+            FILTER NOT EXISTS {
+                ?observedValueColumn csvw:virtual true.
+            }
+
+            # The obs val column for this column is the one matching on the aboutUrl with a 
+            # valid measureUri in the propertyUrl field.
+            ?observedValueColumn csvw:aboutUrl ?observationUri;
+                                csvw:propertyUrl ?observedValueColPropertyUrl;
+                                csvw:title ?observationValueColumnTitle.
+
+            ?dsd_uri a qb:DataStructureDefinition;
+                    # Get list of possible measures in this DSD
+                    qb:component/qb:measure ?measureUri.
+            FILTER (strends(str(?observedValueColPropertyUrl), str(?measureUri)) || strends(str(?measureUri), str(?observedValueColPropertyUrl))).
+        }
+    }
+
+    # Pull out all of the csvw columns with property URLs and join onto the obs val column. 
+    ?tableSchema csvw:column/rdf:rest*/rdf:first ?csvColumn.
+
+    ?csvColumn csvw:aboutUrl ?observationUri;
+                csvw:propertyUrl ?csvColumnPropertyUrl.
+}
+GROUP BY ?csvColumnPropertyUrl ?dsd_uri

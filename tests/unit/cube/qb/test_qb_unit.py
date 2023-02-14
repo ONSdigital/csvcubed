@@ -1,21 +1,19 @@
-import pytest
-from pathlib import Path
-import pandas as pd
 import json
+from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from csvcubed.models.cube import NewQbUnit, ExistingQbUnit
-from csvcubed.models.cube.qb.components.observedvalue import (
-    QbObservationValue,
-)
+import pandas as pd
+import pytest
+
+from csvcubed.definitions import APP_ROOT_DIR_PATH
 from csvcubed.models.cube.qb import QbColumn
+from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
+from csvcubed.models.cube.qb.components.unit import ExistingQbUnit, NewQbUnit
 from csvcubed.readers.cubeconfig.v1.columnschema import (
     EXISTING_UNIT_DEFAULT_SCALING_FACTOR,
 )
 from csvcubed.readers.cubeconfig.v1.configdeserialiser import get_deserialiser
-from csvcubed.definitions import APP_ROOT_DIR_PATH
-from tests.unit.test_baseunit import assert_num_validation_errors
-from tests.unit.test_baseunit import get_test_cases_dir
+from tests.unit.test_baseunit import assert_num_validation_errors, get_test_cases_dir
 
 TEST_CASE_DIR = get_test_cases_dir().absolute() / "readers" / "cube-config" / "v1.0"
 SCHEMA_PATH_FILE = APP_ROOT_DIR_PATH / "schema" / "cube-config" / "v1_0" / "schema.json"
@@ -85,9 +83,7 @@ def test_scaling_factor_defined():
         assert_num_validation_errors(amount_col.pydantic_validation(), 0)
 
         assert isinstance(amount_col, QbColumn)
-        assert isinstance(
-            amount_col.structural_definition, QbObservationValue
-        )
+        assert isinstance(amount_col.structural_definition, QbObservationValue)
         assert amount_col.structural_definition.measure is None
         unit = amount_col.structural_definition.unit
         assert isinstance(unit, NewQbUnit)
@@ -128,9 +124,7 @@ def test_scaling_factor_not_defined():
         assert_num_validation_errors(amount_col.pydantic_validation(), 0)
 
         assert isinstance(amount_col, QbColumn)
-        assert isinstance(
-            amount_col.structural_definition, QbObservationValue
-        )
+        assert isinstance(amount_col.structural_definition, QbObservationValue)
         assert amount_col.structural_definition.measure is None
         unit = amount_col.structural_definition.unit
         assert isinstance(unit, NewQbUnit)

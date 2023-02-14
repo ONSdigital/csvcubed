@@ -1,5 +1,5 @@
 {
-    "$schema": "https://purl.org/csv-cubed/qube-config/v1.2",
+    "$schema": "https://purl.org/csv-cubed/qube-config/v1.3",
     "columns": {
         "Units": {
             "from_template": "qudt"

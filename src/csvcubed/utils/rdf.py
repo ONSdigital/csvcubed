@@ -4,7 +4,7 @@ RDF
 
 Utilities to help loading and processing RDF.
 """
-from typing import Optional, Union, Tuple
+from typing import Optional, Tuple, Union
 
 import rdflib
 from rdflib.term import Identifier

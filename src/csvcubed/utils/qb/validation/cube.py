@@ -1,21 +1,20 @@
 from typing import List
 
-from csvcubed.models.cube import (
-    Cube,
-    QbDimension,
+from csvcubed.models.cube.cube import Cube
+from csvcubed.models.cube.qb.columns import QbColumn
+from csvcubed.models.cube.qb.components import (
     ExistingQbDimension,
-    QbColumn,
-    CsvColumnUriTemplateMissingError,
-    QbAttributeLiteral,
-    CsvColumnLiteralWithUriTemplate,
     QbAttribute,
+    QbAttributeLiteral,
+    QbDimension,
+)
+from csvcubed.models.cube.qb.validationerrors import (
+    CsvColumnLiteralWithUriTemplate,
+    CsvColumnUriTemplateMissingError,
     NoDimensionsDefinedError,
 )
 from csvcubed.models.validationerror import ValidationError
-from csvcubed.utils.qb.cube import get_columns_of_dsd_type
-from csvcubed.utils.qb.validation.observations import (
-    validate_observations,
-)
+from csvcubed.utils.qb.validation.observations import validate_observations
 
 
 def validate_qb_component_constraints(cube: Cube) -> List[ValidationError]:
@@ -34,7 +33,7 @@ def validate_qb_component_constraints(cube: Cube) -> List[ValidationError]:
 
 def _validate_dimensions(cube: Cube) -> List[ValidationError]:
     errors: List[ValidationError] = []
-    dimension_columns = get_columns_of_dsd_type(cube, QbDimension)
+    dimension_columns = cube.get_columns_of_dsd_type(QbDimension)
 
     for c in cube.columns:
         if isinstance(c, QbColumn) and isinstance(

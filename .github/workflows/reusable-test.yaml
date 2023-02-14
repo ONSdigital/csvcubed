@@ -1,7 +1,7 @@
 name: Test csvcubed
 on:
   workflow_call:
-    inputs: 
+    inputs:
       os:
         required: true
         type: string
@@ -26,6 +26,7 @@ jobs:
       - name: Install csvlint, csv2rdf and sparql-test-runner (Windows)
         id: windows-install
         if: inputs.os == 'windows-latest'
+
         run: .\windows-testing-setup.ps1 -verbose
         shell: pwsh
 
@@ -43,12 +44,12 @@ jobs:
       - name: Install poetry
         run: pip install poetry
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: |
             ~/.cache/pypoetry/virtualenvs
             C:\Users\runneradmin\AppData\Local\pypoetry\Cache\virtualenvs
-          key: ${{ inputs.os }}-poetry-${{ hashFiles('poetry.lock') }}
+          key: ${{ inputs.os }}-${{ inputs.python-version }}-poetry-${{ hashFiles('poetry.lock') }}
 
       - name: Install python packages
         run: poetry install
@@ -56,8 +57,12 @@ jobs:
       - name: Run pyright
         run: poetry run pyright . --lib
 
+      - name: Ensure ValidatedModel properties have validations provided
+        run: poetry run python tests/pref_improvement/pref_check.py
+
       - name: Run unittests
         run: poetry run pytest --junitxml=pytest_results.xml
+
 
       - name: Run behaviour tests (Windows)
         if: inputs.os == 'windows-latest'
@@ -90,7 +95,7 @@ jobs:
           name: ${{ inputs.os }}-python${{ inputs.python-version }} behave test results
 
       - name: Remove broken characters from xml test files
-        # By removing broken characters from the xml unit/behave test files, we can then publish the tests results stored 
+        # By removing broken characters from the xml unit/behave test files, we can then publish the tests results stored
         # in those files in a user friendly way on github actions using 'EnricoMi/publish-unit-test-result-action@v1'.
         if: always()
         run: sed -i -e "s/[\\x0A\\x1B]//g" reports/TESTS-*.xml

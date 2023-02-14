@@ -1,23 +1,22 @@
-from csvcubed.models.cube.qb.components.measure import ExistingQbMeasure
-from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureDimension
-from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
-from csvcubed.models.cube.qb.validationerrors import CsvColumnUriTemplateMissingError
 import pytest
 
-
-from csvcubed.models.cube import (
+from csvcubed.models.cube.cube import Cube
+from csvcubed.models.cube.qb.catalog import CatalogMetadata
+from csvcubed.models.cube.qb.columns import QbColumn
+from csvcubed.models.cube.qb.components.attribute import (
     ExistingQbAttribute,
-    QbColumn,
     NewQbAttribute,
-    NewQbUnit,
-    NewQbMeasure,
-    QbObservationValue,
-    NewQbDimension,
-    CatalogMetadata,
-    Cube,
 )
-
-from csvcubed.utils.qb.validation.observations import get_observation_status_columns, _validate_standard_shape_cube
+from csvcubed.models.cube.qb.components.dimension import NewQbDimension
+from csvcubed.models.cube.qb.components.measure import ExistingQbMeasure, NewQbMeasure
+from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureDimension
+from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
+from csvcubed.models.cube.qb.components.unit import NewQbUnit
+from csvcubed.models.cube.qb.validationerrors import CsvColumnUriTemplateMissingError
+from csvcubed.utils.qb.validation.observations import (
+    get_observation_status_columns,
+    validate_observations,
+)
 
 
 def test_find_sdmxa_obs_status_columns():
@@ -80,15 +79,13 @@ def test_value_uri_template_is_present_in_existing_measure_dimention():
                 ),
             ),
             QbColumn(
-                "Measure", 
-                QbMultiMeasureDimension([
-                    ExistingQbMeasure("http://some-measure")
-                ]),
-                csv_column_uri_template="http://some-uri/{+measure}"
-            )
+                "Measure",
+                QbMultiMeasureDimension([ExistingQbMeasure("http://some-measure")]),
+                csv_column_uri_template="http://some-uri/{+measure}",
+            ),
         ],
     )
-    errors = _validate_standard_shape_cube(qube)
+    errors = validate_observations(qube)
     assert len(errors) == 0, [e.message for e in errors]
 
 
@@ -109,18 +106,17 @@ def test_value_uri_template_is_missing_in_existing_measure_dimention():
                 ),
             ),
             QbColumn(
-                "Measure", 
-                QbMultiMeasureDimension([
-                    ExistingQbMeasure("http://some-measure")
-                ]),
-            )
+                "Measure",
+                QbMultiMeasureDimension([ExistingQbMeasure("http://some-measure")]),
+            ),
         ],
     )
-    errors = _validate_standard_shape_cube(qube)
+    errors = validate_observations(qube)
     assert len(errors) == 1, [e.message for e in errors]
     error = errors[0]
     assert isinstance(error, CsvColumnUriTemplateMissingError)
     assert error.component_type == ExistingQbMeasure
-    
+
+
 if __name__ == "__main__":
     pytest.main()

@@ -1,12 +1,9 @@
 import pandas as pd
 import pytest
 
-from csvcubed.models.cube import (
-    QbMultiMeasureDimension,
-    NewQbMeasure,
-    QbColumn,
-    ExistingQbMeasure,
-)
+from csvcubed.models.cube.qb.columns import QbColumn
+from csvcubed.models.cube.qb.components.measure import ExistingQbMeasure, NewQbMeasure
+from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureDimension
 from csvcubed.models.cube.qb.components.validationerrors import (
     UndefinedMeasureUrisError,
 )
@@ -83,9 +80,9 @@ def test_known_existing_measures_defined_non_standard_uris():
                 ExistingQbMeasure("http://example.org/measures/B"),
             ]
         ),
-        csv_column_uri_template="http://example.org/measures/{+measure}"
+        csv_column_uri_template="http://example.org/measures/{+measure}",
     )
-    
+
     errors = measure_column.validate_data(data["Measure"])
 
     assert_num_validation_errors(errors, 0)

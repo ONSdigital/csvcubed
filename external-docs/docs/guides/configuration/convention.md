@@ -6,7 +6,7 @@ This page details the approach that csvcubed takes to configuring cubes by conve
 
 The configuration by conventional approach in csvcubed requires that:
 
-* Your data set must be in the [standard data shape](../shape-data.md#standard-shape).
+* Your data set must be in the [standard shape](../shape-data/standard-shape.md). If your data set is in the [pivoted shape](../shape-data/pivoted-shape.md), you **must** provide a [qube-config.json](./qube-config.md).
 * The data CSV's column titles use [conventional column names](#conventional-column-names) for [measure](../../glossary/index.md#measure) columns, [unit](../../glossary/index.md#unit) columns and [observed value](../../glossary/index.md#observation-observed-value) columns.
 
 Adhering to the [conventional column names](#conventional-column-names) is important since csvcubed uses those to understand what each column in your data set contains.

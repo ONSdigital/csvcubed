@@ -4,19 +4,16 @@ Units
 
 Represent units in an RDF Data Cube.
 """
-from dataclasses import dataclass, field
-from typing import Optional, List, Set
 from abc import ABC
+from dataclasses import dataclass, field
+from typing import List, Optional, Set
 
 from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.utils.validators.attributes import enforce_optional_attribute_dependencies
-from .arbitraryrdf import (
-    ArbitraryRdf,
-    TripleFragmentBase,
-    RdfSerialisationHint,
-)
-from .datastructuredefinition import SecondaryQbStructuralDefinition
 from csvcubed.utils.validators.uri import validate_uri
+
+from .arbitraryrdf import ArbitraryRdf, RdfSerialisationHint, TripleFragmentBase
+from .datastructuredefinition import SecondaryQbStructuralDefinition
 
 
 @dataclass(unsafe_hash=True)

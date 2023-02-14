@@ -13,7 +13,7 @@ Run a poetry install to make sure the shell is up to date (for the py-spy packag
 
 
 ```
-python py-spy record --rate [add number to record samples per second(recommended 200)] --full-filenames[display full s
+sudo py-spy record --rate [add number to record samples per second(recommended 200)] --full-filenames[display full s
 file path] --function[record by function call] --subprocesses[record sub calls] -- python [insert script name to measured]
 ```
  
@@ -23,7 +23,7 @@ The command does not function within the devcontainer.
 
 example:
 ```
-sudo python py-spy record --rate 200 --full-filenames --function --subprocesses -- python csvcubed_build_process.py
+sudo py-spy record --rate 200 --full-filenames --function --subprocesses -- python csvcubed_build_process.py
 ```
 
 ### step 3
@@ -41,7 +41,7 @@ open file with :
 The inspect command can be ran with the `csvcubed_inspect_process.py`. This command also requires the sudo command and can be ran from local terminal.
 
 example:
-`sudo python py-spy record --rate 200 --full-filenames --function --subprocesses -- python csvcubed_inspect_process.py`
+`sudo py-spy record --rate 200 --full-filenames --function --subprocesses -- python csvcubed_inspect_process.py`
 
 ## Memory Profiling
 

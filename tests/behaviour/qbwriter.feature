@@ -66,27 +66,27 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     And csvlint validation of all CSV-Ws should succeed
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should contain
-    """
+      """
       @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
       @prefix qudt: <http://qudt.org/schema/qudt/>.
       @prefix om2: <http://www.ontology-of-units-of-measure.org/resource/om-2/>.
 
       <{{rdf_input_directory}}/some-qube.csv#attribute/new-attribute/pending>
-        a rdfs:Resource;
-        rdfs:label "pending"@en.
+      a rdfs:Resource;
+      rdfs:label "pending"@en.
 
       <{{rdf_input_directory}}/some-qube.csv#attribute/new-attribute/final>
-        a rdfs:Resource;
-        rdfs:label "final"@en.
+      a rdfs:Resource;
+      rdfs:label "final"@en.
 
       <{{rdf_input_directory}}/some-qube.csv#attribute/new-attribute/in-review>
-        a rdfs:Resource;
-        rdfs:label "in-review"@en.
+      a rdfs:Resource;
+      rdfs:label "in-review"@en.
 
       <{{rdf_input_directory}}/some-qube.csv#unit/some-unit>
-        a qudt:Unit, om2:Unit;
-        rdfs:label "Some Unit"@en.
-    """
+      a qudt:Unit, om2:Unit;
+      rdfs:label "Some Unit"@en.
+      """
 
   Scenario: QbCube extended units (and new base units) should be serialised correctly.
     Given a single-measure QbCube named "Some Qube" with one new unit extending another new unit
@@ -94,25 +94,25 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     Then csvlint validation of all CSV-Ws should succeed
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should contain
-    """
+      """
       @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
       @prefix qudt: <http://qudt.org/schema/qudt/>.
       @prefix om2: <http://www.ontology-of-units-of-measure.org/resource/om-2/>.
       @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
 
       <{{rdf_input_directory}}/some-qube.csv#unit/some-base-unit>
-        a qudt:Unit, om2:Unit;
-        rdfs:label "Some Base Unit"@en.
+      a qudt:Unit, om2:Unit;
+      rdfs:label "Some Base Unit"@en.
 
       <{{rdf_input_directory}}/some-qube.csv#unit/some-extending-unit>
-        a qudt:Unit, om2:Unit;
-        qudt:isScalingOf <{{rdf_input_directory}}/some-qube.csv#unit/some-base-unit>;
-        qudt:hasQuantityKind <http://some-quantity-kind>;
-        qudt:conversionMultiplier "25.123123"^^xsd:float;
-        om2:hasUnit <{{rdf_input_directory}}/some-qube.csv#unit/some-base-unit>;
-        om2:hasFactor "1000.0"^^xsd:float;
-        rdfs:label "Some Extending Unit"@en.
-    """
+      a qudt:Unit, om2:Unit;
+      qudt:isScalingOf <{{rdf_input_directory}}/some-qube.csv#unit/some-base-unit>;
+      qudt:hasQuantityKind <http://some-quantity-kind>;
+      qudt:conversionMultiplier "25.123123"^^xsd:float;
+      om2:hasUnit <{{rdf_input_directory}}/some-qube.csv#unit/some-base-unit>;
+      om2:hasFactor "1000.0"^^xsd:float;
+      rdfs:label "Some Extending Unit"@en.
+      """
 
   Scenario: A QbCube with string literal new attributes should validate successfully
     Given a single-measure QbCube named "Qube with string literals" with "new" "string" attribute
@@ -122,12 +122,12 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should contain
       """
-      <{{rdf_input_directory}}/qube-with-string-literals.csv#obs/uss-cerritos> <{{rdf_input_directory}}/qube-with-string-literals.csv#attribute/first-captain>
+      <{{rdf_input_directory}}/qube-with-string-literals.csv#obs/uss-cerritos@some-measure> <{{rdf_input_directory}}/qube-with-string-literals.csv#attribute/first-captain>
       "William Riker".
       """
     And the RDF should contain
       """
-      <{{rdf_input_directory}}/qube-with-string-literals.csv#obs/uss-titan> <{{rdf_input_directory}}/qube-with-string-literals.csv#attribute/first-captain>
+      <{{rdf_input_directory}}/qube-with-string-literals.csv#obs/uss-titan@some-measure> <{{rdf_input_directory}}/qube-with-string-literals.csv#attribute/first-captain>
       "Carol Freeman".
       """
 
@@ -139,12 +139,12 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should contain
       """
-      <{{rdf_input_directory}}/qube-with-int-literals.csv#obs/uss-cerritos> <{{rdf_input_directory}}/qube-with-int-literals.csv#attribute/reg>
+      <{{rdf_input_directory}}/qube-with-int-literals.csv#obs/uss-cerritos@some-measure> <{{rdf_input_directory}}/qube-with-int-literals.csv#attribute/reg>
       "75567"^^<http://www.w3.org/2001/XMLSchema#int>.
       """
     And the RDF should contain
       """
-      <{{rdf_input_directory}}/qube-with-int-literals.csv#obs/uss-titan> <{{rdf_input_directory}}/qube-with-int-literals.csv#attribute/reg>
+      <{{rdf_input_directory}}/qube-with-int-literals.csv#obs/uss-titan@some-measure> <{{rdf_input_directory}}/qube-with-int-literals.csv#attribute/reg>
       "80102"^^<http://www.w3.org/2001/XMLSchema#int>.
       """
 
@@ -156,12 +156,12 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should contain
       """
-      <{{rdf_input_directory}}/qube-with-date-literals.csv#obs/uss-cerritos> <{{rdf_input_directory}}/qube-with-date-literals.csv#attribute/appeared>
+      <{{rdf_input_directory}}/qube-with-date-literals.csv#obs/uss-cerritos@some-measure> <{{rdf_input_directory}}/qube-with-date-literals.csv#attribute/appeared>
       "2020-08-06"^^<http://www.w3.org/2001/XMLSchema#date>.
       """
     And the RDF should contain
       """
-      <{{rdf_input_directory}}/qube-with-date-literals.csv#obs/uss-titan> <{{rdf_input_directory}}/qube-with-date-literals.csv#attribute/appeared>
+      <{{rdf_input_directory}}/qube-with-date-literals.csv#obs/uss-titan@some-measure> <{{rdf_input_directory}}/qube-with-date-literals.csv#attribute/appeared>
       "2020-10-08"^^<http://www.w3.org/2001/XMLSchema#date>.
       """
 
@@ -173,11 +173,11 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should contain
       """
-      <{{rdf_input_directory}}/qube-with-string-literals.csv#obs/uss-cerritos> <http://some-uri> "William Riker".
+      <{{rdf_input_directory}}/qube-with-string-literals.csv#obs/uss-cerritos@some-measure> <http://some-uri> "William Riker".
       """
     And the RDF should contain
       """
-      <{{rdf_input_directory}}/qube-with-string-literals.csv#obs/uss-titan> <http://some-uri> "Carol Freeman".
+      <{{rdf_input_directory}}/qube-with-string-literals.csv#obs/uss-titan@some-measure> <http://some-uri> "Carol Freeman".
       """
 
   Scenario: A QbCube with numeric literal existing attributes should validate successfully
@@ -188,11 +188,11 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should contain
       """
-      <{{rdf_input_directory}}/qube-with-int-literals.csv#obs/uss-cerritos> <http://some-uri> "75567"^^<http://www.w3.org/2001/XMLSchema#int>.
+      <{{rdf_input_directory}}/qube-with-int-literals.csv#obs/uss-cerritos@some-measure> <http://some-uri> "75567"^^<http://www.w3.org/2001/XMLSchema#int>.
       """
     And the RDF should contain
       """
-      <{{rdf_input_directory}}/qube-with-int-literals.csv#obs/uss-titan> <http://some-uri> "80102"^^<http://www.w3.org/2001/XMLSchema#int>.
+      <{{rdf_input_directory}}/qube-with-int-literals.csv#obs/uss-titan@some-measure> <http://some-uri> "80102"^^<http://www.w3.org/2001/XMLSchema#int>.
       """
 
   Scenario: A QbCube with date literal existing attributes should validate successfully
@@ -203,11 +203,11 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should contain
       """
-      <{{rdf_input_directory}}/qube-with-date-literals.csv#obs/uss-cerritos> <http://some-uri> "2020-08-06"^^<http://www.w3.org/2001/XMLSchema#date>.
+      <{{rdf_input_directory}}/qube-with-date-literals.csv#obs/uss-cerritos@some-measure> <http://some-uri> "2020-08-06"^^<http://www.w3.org/2001/XMLSchema#date>.
       """
     And the RDF should contain
       """
-      <{{rdf_input_directory}}/qube-with-date-literals.csv#obs/uss-titan> <http://some-uri> "2020-10-08"^^<http://www.w3.org/2001/XMLSchema#date>.
+      <{{rdf_input_directory}}/qube-with-date-literals.csv#obs/uss-titan@some-measure> <http://some-uri> "2020-10-08"^^<http://www.w3.org/2001/XMLSchema#date>.
       """
 
   Scenario: A QbCube, by default, should include file endings in URIs
@@ -234,8 +234,8 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     Then csvlint validation of all CSV-Ws should succeed
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should pass "skos, qb" SPARQL tests
-    # PMD test constraints won't pass because the CSV-W we're outputting needs to pass
-    # through Jenkins to pick up PMD-specific augmentation.
+  # PMD test constraints won't pass because the CSV-W we're outputting needs to pass
+  # through Jenkins to pick up PMD-specific augmentation.
 
   Scenario: A multi-measure QbCube should pass skos+qb SPARQL test constraints
     Given a multi-measure QbCube named "Some Qube"
@@ -243,8 +243,8 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     Then csvlint validation of all CSV-Ws should succeed
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should pass "skos, qb" SPARQL tests
-    # PMD test constraints won't pass because the CSV-W we're outputting needs to pass
-    # through Jenkins to pick up PMD-specific augmentation.
+  # PMD test constraints won't pass because the CSV-W we're outputting needs to pass
+  # through Jenkins to pick up PMD-specific augmentation.
 
   Scenario: A locally defined single-measure dataset (with code-lists) can be serialised to a standard CSV-qb
     Given a single-measure QbCube named "single-measure qube with new definitions" with all new units/measures/dimensions/attributes/codelists
@@ -260,16 +260,16 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should pass "skos, qb" SPARQL tests
     And the RDF should contain
-    """
+      """
       <{{rdf_input_directory}}/multi-measure-qube-with-new-definitions.csv#structure> <http://purl.org/linked-data/cube#component> <{{rdf_input_directory}}/multi-measure-qube-with-new-definitions.csv#component/new-dimension>.
       <{{rdf_input_directory}}/multi-measure-qube-with-new-definitions.csv#dimension/new-dimension> <http://purl.org/linked-data/cube#codeList> <{{rdf_input_directory}}/a-new-codelist.csv#code-list>.
 
       <{{rdf_input_directory}}/multi-measure-qube-with-new-definitions.csv#obs/a@part-time> a <http://purl.org/linked-data/cube#Observation>;
-        <{{rdf_input_directory}}/multi-measure-qube-with-new-definitions.csv#dimension/new-dimension> <{{rdf_input_directory}}/a-new-codelist.csv#a>.
+      <{{rdf_input_directory}}/multi-measure-qube-with-new-definitions.csv#dimension/new-dimension> <{{rdf_input_directory}}/a-new-codelist.csv#a>.
 
       <{{rdf_input_directory}}/a-new-codelist.csv#code-list> a <http://www.w3.org/2004/02/skos/core#ConceptScheme>.
       <{{rdf_input_directory}}/a-new-codelist.csv#a> a <http://www.w3.org/2004/02/skos/core#Concept>.
-    """
+      """
 
   Scenario: A single-measure dataset (with code-list) having existing resources can be serialised to a standard CSV-qb
     Given a single measure QbCube named "single-measure qube with existing resources" with existing units/measure/dimensions/attribute/codelists
@@ -277,49 +277,49 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     Then csvlint validation of "single-measure-qube-with-existing-resources.csv-metadata.json" should succeed
     And csv2rdf on all CSV-Ws should succeed
     And some additional turtle is appended to the resulting RDF
-    """
+      """
       @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
       @prefix qb: <http://purl.org/linked-data/cube#>.
       @prefix skos: <http://www.w3.org/2004/02/skos/core#>.
       @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
 
       <http://existing/dimension>
-          rdfs:label "Some Existing Dimension"@en;
-          a qb:DimensionProperty;
-          qb:codeList <http://existing/dimension/code-list>;
-          rdfs:range <http://some/range/thingy>.
+      rdfs:label "Some Existing Dimension"@en;
+      a qb:DimensionProperty;
+      qb:codeList <http://existing/dimension/code-list>;
+      rdfs:range <http://some/range/thingy>.
 
       <http://existing/dimension/code-list> a skos:ConceptScheme;
-        skos:hasTopConcept <http://existing/dimension/code-list/all>.
+      skos:hasTopConcept <http://existing/dimension/code-list/all>.
 
       <http://existing/dimension/code-list/all> a skos:Concept;
-        rdfs:label "All possible things"@en;
-        skos:inScheme <http://existing/dimension/code-list>.
+      rdfs:label "All possible things"@en;
+      skos:inScheme <http://existing/dimension/code-list>.
 
       <http://existing/dimension/code-list/a> a skos:Concept;
-        rdfs:label "A"@en;
-        skos:inScheme <http://existing/dimension/code-list>;
-        skos:broader <http://existing/dimension/code-list/all>.
+      rdfs:label "A"@en;
+      skos:inScheme <http://existing/dimension/code-list>;
+      skos:broader <http://existing/dimension/code-list/all>.
 
       <http://existing/dimension/code-list/b> a skos:Concept;
-        rdfs:label "B"@en;
-        skos:inScheme <http://existing/dimension/code-list>;
-        skos:broader <http://existing/dimension/code-list/all>.
+      rdfs:label "B"@en;
+      skos:inScheme <http://existing/dimension/code-list>;
+      skos:broader <http://existing/dimension/code-list/all>.
 
       <http://existing/dimension/code-list/c> a skos:Concept;
-        rdfs:label "C"@en;
-        skos:inScheme <http://existing/dimension/code-list>;
-        skos:broader <http://existing/dimension/code-list/all>.
+      rdfs:label "C"@en;
+      skos:inScheme <http://existing/dimension/code-list>;
+      skos:broader <http://existing/dimension/code-list/all>.
 
       <http://existing/attribute> a qb:AttributeProperty;
-          rdfs:label "Some existing attribute property"@en.
+      rdfs:label "Some existing attribute property"@en.
 
       <http://existing/measure> a qb:MeasureProperty;
-          rdfs:label "Some existing measure property"@en;
-          rdfs:range xsd:decimal.
+      rdfs:label "Some existing measure property"@en;
+      rdfs:range xsd:decimal.
 
       <http://existing/unit> rdfs:label "Some Existing Unit"@en.
-    """
+      """
     And the RDF should pass "skos, qb" SPARQL tests
 
   Scenario: A multi-measure dataset (with code-list) having existing resources can be serialised to a standard CSV-qb
@@ -328,80 +328,80 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     Then csvlint validation of "multi-measure-qube-with-existing-resources.csv-metadata.json" should succeed
     And csv2rdf on all CSV-Ws should succeed
     And some additional turtle is appended to the resulting RDF
-    """
+      """
       @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
       @prefix qb: <http://purl.org/linked-data/cube#>.
       @prefix skos: <http://www.w3.org/2004/02/skos/core#>.
       @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
 
       <http://existing/dimension>
-          rdfs:label "Some Existing Dimension"@en;
-          a qb:DimensionProperty;
-          qb:codeList <http://existing/dimension/code-list>;
-          rdfs:range <http://some/range/thingy>.
+      rdfs:label "Some Existing Dimension"@en;
+      a qb:DimensionProperty;
+      qb:codeList <http://existing/dimension/code-list>;
+      rdfs:range <http://some/range/thingy>.
 
-    <http://gss-data.org.uk/def/concept-scheme/some-existing-codelist> a skos:ConceptScheme;
-        skos:hasTopConcept <http://gss-data.org.uk/def/concept-scheme/some-existing-codelist/all>.
+      <http://gss-data.org.uk/def/concept-scheme/some-existing-codelist> a skos:ConceptScheme;
+      skos:hasTopConcept <http://gss-data.org.uk/def/concept-scheme/some-existing-codelist/all>.
 
       <http://gss-data.org.uk/def/concept-scheme/some-existing-codelist/all> a skos:Concept;
-        rdfs:label "All possible things"@en;
-        skos:inScheme <http://gss-data.org.uk/def/concept-scheme/some-existing-codelist>.
+      rdfs:label "All possible things"@en;
+      skos:inScheme <http://gss-data.org.uk/def/concept-scheme/some-existing-codelist>.
 
       <http://gss-data.org.uk/def/concept-scheme/some-existing-codelist/d> a skos:Concept;
-        rdfs:label "D"@en;
-        skos:inScheme <http://gss-data.org.uk/def/concept-scheme/some-existing-codelist>;
-        skos:broader <http://gss-data.org.uk/def/concept-scheme/some-existing-codelist/all>.
+      rdfs:label "D"@en;
+      skos:inScheme <http://gss-data.org.uk/def/concept-scheme/some-existing-codelist>;
+      skos:broader <http://gss-data.org.uk/def/concept-scheme/some-existing-codelist/all>.
 
       <http://gss-data.org.uk/def/concept-scheme/some-existing-codelist/e> a skos:Concept;
-        rdfs:label "E"@en;
-        skos:inScheme <http://gss-data.org.uk/def/concept-scheme/some-existing-codelist>;
-        skos:broader <http://gss-data.org.uk/def/concept-scheme/some-existing-codelist/all>.
+      rdfs:label "E"@en;
+      skos:inScheme <http://gss-data.org.uk/def/concept-scheme/some-existing-codelist>;
+      skos:broader <http://gss-data.org.uk/def/concept-scheme/some-existing-codelist/all>.
 
       <http://gss-data.org.uk/def/concept-scheme/some-existing-codelist/f> a skos:Concept;
-        rdfs:label "F"@en;
-        skos:inScheme <http://gss-data.org.uk/def/concept-scheme/some-existing-codelist>;
-        skos:broader <http://gss-data.org.uk/def/concept-scheme/some-existing-codelist/all>.
+      rdfs:label "F"@en;
+      skos:inScheme <http://gss-data.org.uk/def/concept-scheme/some-existing-codelist>;
+      skos:broader <http://gss-data.org.uk/def/concept-scheme/some-existing-codelist/all>.
 
       <http://existing/dimension/code-list> a skos:ConceptScheme;
-        skos:hasTopConcept <http://existing/dimension/code-list/all>.
+      skos:hasTopConcept <http://existing/dimension/code-list/all>.
 
       <http://existing/dimension/code-list/all> a skos:Concept;
-        rdfs:label "All possible things"@en;
-        skos:inScheme <http://existing/dimension/code-list>.
+      rdfs:label "All possible things"@en;
+      skos:inScheme <http://existing/dimension/code-list>.
 
       <http://existing/dimension/code-list/a> a skos:Concept;
-        rdfs:label "A"@en;
-        skos:inScheme <http://existing/dimension/code-list>;
-        skos:broader <http://existing/dimension/code-list/all>.
+      rdfs:label "A"@en;
+      skos:inScheme <http://existing/dimension/code-list>;
+      skos:broader <http://existing/dimension/code-list/all>.
 
       <http://existing/dimension/code-list/b> a skos:Concept;
-        rdfs:label "B"@en;
-        skos:inScheme <http://existing/dimension/code-list>;
-        skos:broader <http://existing/dimension/code-list/all>.
+      rdfs:label "B"@en;
+      skos:inScheme <http://existing/dimension/code-list>;
+      skos:broader <http://existing/dimension/code-list/all>.
 
       <http://existing/dimension/code-list/c> a skos:Concept;
-        rdfs:label "C"@en;
-        skos:inScheme <http://existing/dimension/code-list>;
-        skos:broader <http://existing/dimension/code-list/all>.
+      rdfs:label "C"@en;
+      skos:inScheme <http://existing/dimension/code-list>;
+      skos:broader <http://existing/dimension/code-list/all>.
 
       <http://existing/attribute> a qb:AttributeProperty;
-          rdfs:label "Some existing attribute property"@en.
+      rdfs:label "Some existing attribute property"@en.
 
       <http://existing/measure/part-time> a qb:MeasureProperty;
-          rdfs:label "Part-time"@en;
-          rdfs:range xsd:decimal.
+      rdfs:label "Part-time"@en;
+      rdfs:range xsd:decimal.
 
       <http://existing/measure/full-time> a qb:MeasureProperty;
-          rdfs:label "Full-time"@en;
-          rdfs:range xsd:decimal.
+      rdfs:label "Full-time"@en;
+      rdfs:range xsd:decimal.
 
       <http://existing/measure/flex-time> a qb:MeasureProperty;
-          rdfs:label "Flex-time"@en;
-          rdfs:range xsd:decimal.
+      rdfs:label "Flex-time"@en;
+      rdfs:range xsd:decimal.
 
       <http://existing/unit/gbp> rdfs:label "Pounds Sterling"@en.
       <http://existing/unit/count> rdfs:label "Count"@en.
-    """
+      """
     And the RDF should pass "skos, qb" SPARQL tests
 
   Scenario: A codelist defined in a CSV-W should be copied to the output directory
@@ -419,17 +419,17 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     Then csv2rdf on all CSV-Ws should succeed
     And the RDF should pass "skos, qb" SPARQL tests
     And the RDF should contain
-    """
+      """
       <{{rdf_input_directory}}/some-qube.csv#structure> <http://purl.org/linked-data/cube#component> <{{rdf_input_directory}}/some-qube.csv#component/d-code-list>.
       <{{rdf_input_directory}}/some-qube.csv#component/d-code-list> <http://purl.org/linked-data/cube#dimension> <{{rdf_input_directory}}/some-qube.csv#dimension/d-code-list>.
       <{{rdf_input_directory}}/some-qube.csv#dimension/d-code-list> <http://purl.org/linked-data/cube#codeList> <http://gss-data.org.uk/def/trade/concept-scheme/age-of-business>.
 
-      <{{rdf_input_directory}}/some-qube.csv#obs/a,10-20> <{{rdf_input_directory}}/some-qube.csv#dimension/d-code-list> <http://gss-data.org.uk/def/trade/concept/age-of-business/10-20>.
+      <{{rdf_input_directory}}/some-qube.csv#obs/a,10-20@some-measure> <{{rdf_input_directory}}/some-qube.csv#dimension/d-code-list> <http://gss-data.org.uk/def/trade/concept/age-of-business/10-20>.
 
       <http://gss-data.org.uk/def/trade/concept-scheme/age-of-business> a <http://www.w3.org/2004/02/skos/core#ConceptScheme>.
       <http://gss-data.org.uk/def/trade/concept/age-of-business/10-20> a <http://www.w3.org/2004/02/skos/core#Concept>;
-        <http://www.w3.org/2004/02/skos/core#inScheme> <http://gss-data.org.uk/def/trade/concept-scheme/age-of-business>.
-    """
+      <http://www.w3.org/2004/02/skos/core#inScheme> <http://gss-data.org.uk/def/trade/concept-scheme/age-of-business>.
+      """
 
   Scenario: A cube with an option attribute which has missing data values should validate successfully
     Given a single-measure QbCube named "Some Qube" with optional attribute values missing
@@ -443,16 +443,16 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     When the cube is serialised to CSV-W
     Then csv2rdf on "some-qube.csv-metadata.json" should succeed
     And the RDF should contain
-    """
-       @prefix qb: <http://purl.org/linked-data/cube#>.
+      """
+      @prefix qb: <http://purl.org/linked-data/cube#>.
 
-       <{{rdf_input_directory}}/some-qube.csv#obs/a,e> a qb:Observation;
-                                         qb:dataSet <{{rdf_input_directory}}/some-qube.csv#dataset>.
-       <{{rdf_input_directory}}/some-qube.csv#obs/b,f> a qb:Observation;
-                                         qb:dataSet <{{rdf_input_directory}}/some-qube.csv#dataset>.
-       <{{rdf_input_directory}}/some-qube.csv#obs/c,g> a qb:Observation;
-                                         qb:dataSet <{{rdf_input_directory}}/some-qube.csv#dataset>.
-    """
+      <{{rdf_input_directory}}/some-qube.csv#obs/a,e@some-measure> a qb:Observation;
+      qb:dataSet <{{rdf_input_directory}}/some-qube.csv#dataset>.
+      <{{rdf_input_directory}}/some-qube.csv#obs/b,f@some-measure> a qb:Observation;
+      qb:dataSet <{{rdf_input_directory}}/some-qube.csv#dataset>.
+      <{{rdf_input_directory}}/some-qube.csv#obs/c,g@some-measure> a qb:Observation;
+      qb:dataSet <{{rdf_input_directory}}/some-qube.csv#dataset>.
+      """
 
   Scenario: Observation Values are Required where no `sdmxa:ObsStatus` Attribute Column is Present
     Given a single-measure QbCube named "Bad Qube" with missing observation values
@@ -497,106 +497,106 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     And csvlint validation of all CSV-Ws should succeed
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should contain
-    """
+      """
       @prefix void: <http://rdfs.org/ns/void#>.
 
       <{{rdf_input_directory}}/a-qube-with-dependencies.csv#dependency/a-code-list> a void:Dataset;
-        void:dataDump <{{rdf_input_directory}}/a-code-list.csv-metadata.json>;
-        void:uriSpace "a-code-list.csv#".
+      void:dataDump <{{rdf_input_directory}}/a-code-list.csv-metadata.json>;
+      void:uriSpace "a-code-list.csv#".
 
       <{{rdf_input_directory}}/a-qube-with-dependencies.csv#dependency/d-code-list> a void:Dataset;
-        void:dataDump <{{rdf_input_directory}}/d-code-list.csv-metadata.json>;
-        void:uriSpace "d-code-list.csv#".
-    """
+      void:dataDump <{{rdf_input_directory}}/d-code-list.csv-metadata.json>;
+      void:uriSpace "d-code-list.csv#".
+      """
 
   Scenario: A QbCube with complex datatypes should validate successfully and contain the expected types
     Given The config json file "v1.0/cube_datatypes.json" and the existing tidy data csv file "v1.0/cube_datatypes.csv"
-    When the cube is created
+    When a valid cube is built and serialised to CSV-W
     Then csvlint validation of all CSV-Ws should succeed
     And csv2rdf on all CSV-Ws should succeed
     # The following checks for the expected datatypes as defined in models.cube.qb.components.constants
     # and declared via v1.0/cube_datatypes.json.
     # There is one one check per datatype and they follow the order of declaration.
     And the RDF should contain
-    """
-    <{{rdf_input_directory}}/cube-datatypes.csv#attribute/anyuri-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "anyURI attribute"@en;
+      """
+      <{{rdf_input_directory}}/cube-datatypes.csv#attribute/anyuri-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "anyURI attribute"@en;
       <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#anyURI> .
 
-    <{{rdf_input_directory}}/cube-datatypes.csv#attribute/boolean-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "boolean attribute"@en;
+      <{{rdf_input_directory}}/cube-datatypes.csv#attribute/boolean-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "boolean attribute"@en;
       <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#boolean> .
 
-    <{{rdf_input_directory}}/cube-datatypes.csv#attribute/decimal-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "decimal attribute"@en;
+      <{{rdf_input_directory}}/cube-datatypes.csv#attribute/decimal-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "decimal attribute"@en;
       <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#decimal> .
 
-    <{{rdf_input_directory}}/cube-datatypes.csv#attribute/int-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "int attribute"@en;
+      <{{rdf_input_directory}}/cube-datatypes.csv#attribute/int-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "int attribute"@en;
       <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#int> .
 
-    <{{rdf_input_directory}}/cube-datatypes.csv#attribute/long-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "long attribute"@en;
+      <{{rdf_input_directory}}/cube-datatypes.csv#attribute/long-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "long attribute"@en;
       <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#long> .
 
-    <{{rdf_input_directory}}/cube-datatypes.csv#attribute/integer-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "integer attribute"@en;
+      <{{rdf_input_directory}}/cube-datatypes.csv#attribute/integer-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "integer attribute"@en;
       <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#integer> .
 
-    <{{rdf_input_directory}}/cube-datatypes.csv#attribute/short-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "short attribute"@en;
+      <{{rdf_input_directory}}/cube-datatypes.csv#attribute/short-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "short attribute"@en;
       <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#short> .
 
-    <{{rdf_input_directory}}/cube-datatypes.csv#attribute/nonnegativeinteger-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "nonNegativeInteger attribute"@en;
+      <{{rdf_input_directory}}/cube-datatypes.csv#attribute/nonnegativeinteger-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "nonNegativeInteger attribute"@en;
       <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#nonNegativeInteger> .
 
-    <{{rdf_input_directory}}/cube-datatypes.csv#attribute/positiveinteger-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "positiveInteger attribute"@en;
+      <{{rdf_input_directory}}/cube-datatypes.csv#attribute/positiveinteger-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "positiveInteger attribute"@en;
       <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#positiveInteger> .
 
-    <{{rdf_input_directory}}/cube-datatypes.csv#attribute/unsignedlong-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "unsignedLong attribute"@en;
+      <{{rdf_input_directory}}/cube-datatypes.csv#attribute/unsignedlong-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "unsignedLong attribute"@en;
       <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#unsignedLong> .
- 
-    <{{rdf_input_directory}}/cube-datatypes.csv#attribute/unsignedint-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "unsignedInt attribute"@en;
+
+      <{{rdf_input_directory}}/cube-datatypes.csv#attribute/unsignedint-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "unsignedInt attribute"@en;
       <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#unsignedInt> .
- 
-    <{{rdf_input_directory}}/cube-datatypes.csv#attribute/unsignedshort-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "unsignedShort attribute"@en;
+
+      <{{rdf_input_directory}}/cube-datatypes.csv#attribute/unsignedshort-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "unsignedShort attribute"@en;
       <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#unsignedShort> .
 
-    <{{rdf_input_directory}}/cube-datatypes.csv#attribute/nonpositiveinteger-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "nonPositiveInteger attribute"@en;
+      <{{rdf_input_directory}}/cube-datatypes.csv#attribute/nonpositiveinteger-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "nonPositiveInteger attribute"@en;
       <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#nonPositiveInteger> .
 
-    <{{rdf_input_directory}}/cube-datatypes.csv#attribute/negativeinteger-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "negativeInteger attribute"@en;
+      <{{rdf_input_directory}}/cube-datatypes.csv#attribute/negativeinteger-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "negativeInteger attribute"@en;
       <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#negativeInteger> .
 
-    <{{rdf_input_directory}}/cube-datatypes.csv#attribute/double-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "double attribute"@en;
+      <{{rdf_input_directory}}/cube-datatypes.csv#attribute/double-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "double attribute"@en;
       <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#double> .
 
-    <{{rdf_input_directory}}/cube-datatypes.csv#attribute/float-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "float attribute"@en;
+      <{{rdf_input_directory}}/cube-datatypes.csv#attribute/float-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "float attribute"@en;
       <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#float> .
 
-    <{{rdf_input_directory}}/cube-datatypes.csv#attribute/string-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "string attribute"@en;
+      <{{rdf_input_directory}}/cube-datatypes.csv#attribute/string-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "string attribute"@en;
       <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#string> .
 
-    <{{rdf_input_directory}}/cube-datatypes.csv#attribute/language-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "language attribute"@en;
+      <{{rdf_input_directory}}/cube-datatypes.csv#attribute/language-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "language attribute"@en;
       <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#language> .
 
-    <{{rdf_input_directory}}/cube-datatypes.csv#attribute/date-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "date attribute"@en;
+      <{{rdf_input_directory}}/cube-datatypes.csv#attribute/date-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "date attribute"@en;
       <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#date> .
 
-    <{{rdf_input_directory}}/cube-datatypes.csv#attribute/datetime-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "dateTime attribute"@en;
+      <{{rdf_input_directory}}/cube-datatypes.csv#attribute/datetime-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "dateTime attribute"@en;
       <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#dateTime> .
 
-    <{{rdf_input_directory}}/cube-datatypes.csv#attribute/datetimestamp-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "dateTimeStamp attribute"@en;
+      <{{rdf_input_directory}}/cube-datatypes.csv#attribute/datetimestamp-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "dateTimeStamp attribute"@en;
       <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#dateTimeStamp> .
 
-    <{{rdf_input_directory}}/cube-datatypes.csv#attribute/time-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "time attribute"@en;
+      <{{rdf_input_directory}}/cube-datatypes.csv#attribute/time-attribute> <http://www.w3.org/2000/01/rdf-schema#label> "time attribute"@en;
       <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#time> .
-    """
+      """
     # The datatype of the measure, we've set this to a non default datatype
     And the RDF should contain
-    """
-    <{{rdf_input_directory}}/cube-datatypes.csv#measure/count> <http://www.w3.org/2000/01/rdf-schema#label> "count"@en;
+      """
+      <{{rdf_input_directory}}/cube-datatypes.csv#measure/count> <http://www.w3.org/2000/01/rdf-schema#label> "count"@en;
       <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#integer> .
-    """
+      """
     # The attribute values output should be formatted as expected
     And the RDF should contain
-    """
-    @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+      """
+      @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-    <{{rdf_input_directory}}/cube-datatypes.csv#obs/foo,bar,baz@count> <{{rdf_input_directory}}/cube-datatypes.csv#attribute/anyuri-attribute> "http://www.foo.com"^^xsd:anyURI ;
+      <{{rdf_input_directory}}/cube-datatypes.csv#obs/foo,bar,baz@count> <{{rdf_input_directory}}/cube-datatypes.csv#attribute/anyuri-attribute> "http://www.foo.com"^^xsd:anyURI ;
       <{{rdf_input_directory}}/cube-datatypes.csv#attribute/boolean-attribute> true ;
       <{{rdf_input_directory}}/cube-datatypes.csv#attribute/date-attribute> "2019-09-07"^^xsd:date ;
       <{{rdf_input_directory}}/cube-datatypes.csv#attribute/datetime-attribute> "2019-09-07T15:50:00"^^xsd:dateTime ;
@@ -618,18 +618,18 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
       <{{rdf_input_directory}}/cube-datatypes.csv#attribute/unsignedint-attribute> "1"^^xsd:unsignedInt ;
       <{{rdf_input_directory}}/cube-datatypes.csv#attribute/unsignedlong-attribute> "2147483646"^^xsd:unsignedLong ;
       <{{rdf_input_directory}}/cube-datatypes.csv#attribute/unsignedshort-attribute> "32768"^^xsd:unsignedShort .
-    """
+      """
 
   Scenario: A QbCube configured by convention should contain appropriate datatypes
     Given the existing tidy data csv file "v1.0/cube_data_convention_ok.csv"
-    When the cube is created
+    When a valid cube is built and serialised to CSV-W
     Then csvlint validation of all CSV-Ws should succeed
     And csv2rdf on all CSV-Ws should succeed
     And the RDF should contain
-    """
-    <{{rdf_input_directory}}/cube-data-convention-ok.csv#measure/cost-of-living-index> <http://www.w3.org/2000/01/rdf-schema#label> "Cost of living index"@en;
+      """
+      <{{rdf_input_directory}}/cube-data-convention-ok.csv#measure/cost-of-living-index> <http://www.w3.org/2000/01/rdf-schema#label> "Cost of living index"@en;
       <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#decimal> .
-    """
+      """
 
   Scenario: A QbCube should generate csvcubed version specific rdf
     Given a single-measure QbCube with identifier "qb-id-10002" named "Some Qube"
@@ -640,12 +640,145 @@ Feature: Test outputting CSV-Ws with Qb flavouring.
     And csv2rdf on all CSV-Ws should succeed
     Given the version identifier
     Then the RDF should contain
-    """
-    @prefix prov: <http://www.w3.org/ns/prov#>. 
-    
-    <{{rdf_input_directory}}/a-code-list.csv#code-list> a prov:Entity;
+      """
+      @prefix prov: <http://www.w3.org/ns/prov#>.
+
+      <{{rdf_input_directory}}/a-code-list.csv#code-list> a prov:Entity;
       prov:wasGeneratedBy <{{rdf_input_directory}}/a-code-list.csv#csvcubed-build-activity>.
-    
-    <{{rdf_input_directory}}/qb-id-10002.csv#csvcubed-build-activity> a prov:Activity;
+
+      <{{rdf_input_directory}}/qb-id-10002.csv#csvcubed-build-activity> a prov:Activity;
       prov:used <{{csvcubed_version_identifier}}>.
-    """
+      """
+
+  Scenario: A multi-measure pivoted shape cube should be produced as the output for the multi-measure pivoted shape inputs
+    Given a multi-measure pivoted shape cube with identifier "qb-id-10003" named "Pivoted Shape Cube"
+    Then the CSVqb should pass all validations
+    When the cube is serialised to CSV-W
+    Then the file at "qb-id-10003.csv" should exist
+    And the file at "qb-id-10003.csv-metadata.json" should exist
+    And csvlint validation of all CSV-Ws should succeed
+    And csv2rdf on all CSV-Ws should succeed
+    And the RDF should pass "qb, skos" SPARQL tests
+    And the RDF should contain
+      """
+      @prefix cube: <http://purl.org/linked-data/cube#> .
+      @prefix measure: <{{rdf_input_directory}}/qb-id-10003.csv#measure/> .
+      @prefix dimension: <{{rdf_input_directory}}/qb-id-10003.csv#dimension/> .
+      @prefix attribute: <{{rdf_input_directory}}/qb-id-10003.csv#attribute/> .
+      @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+      @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+      @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+      <{{rdf_input_directory}}/qb-id-10003.csv#obs/a@some-other-measure> a cube:Observation ;
+      dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#a> ;
+      measure:some-other-measure 2.0 ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#dataset> ;
+      cube:measureType measure:some-other-measure .
+
+      <{{rdf_input_directory}}/qb-id-10003.csv#obs/b@some-other-measure> a cube:Observation ;
+      dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#b> ;
+      measure:some-other-measure 4.0 ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#dataset> ;
+      cube:measureType measure:some-other-measure .
+
+      <{{rdf_input_directory}}/qb-id-10003.csv#obs/c@some-other-measure> a cube:Observation ;
+      dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#c> ;
+      measure:some-other-measure 6.0 ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#dataset> ;
+      cube:measureType measure:some-other-measure .
+
+      <{{rdf_input_directory}}/qb-id-10003.csv#slice/a> cube:observation <{{rdf_input_directory}}/qb-id-10003.csv#obs/a@some-measure> .
+
+      <{{rdf_input_directory}}/qb-id-10003.csv#slice/b> cube:observation <{{rdf_input_directory}}/qb-id-10003.csv#obs/b@some-measure> .
+
+      <{{rdf_input_directory}}/qb-id-10003.csv#slice/c> cube:observation <{{rdf_input_directory}}/qb-id-10003.csv#obs/c@some-measure> .
+
+      <{{rdf_input_directory}}/qb-id-10003.csv#obs/a@some-measure> a cube:Observation ;
+      attribute:some-attribute <{{rdf_input_directory}}/qb-id-10003.csv#attribute/some-attribute/attr-a> ;
+      dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#a> ;
+      measure:some-measure 1.0 ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#dataset> ;
+      cube:measureType measure:some-measure .
+
+      <{{rdf_input_directory}}/qb-id-10003.csv#obs/b@some-measure> a cube:Observation ;
+      attribute:some-attribute <{{rdf_input_directory}}/qb-id-10003.csv#attribute/some-attribute/attr-b> ;
+      dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#b> ;
+      measure:some-measure 2.0 ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#dataset> ;
+      cube:measureType measure:some-measure .
+
+      <{{rdf_input_directory}}/qb-id-10003.csv#obs/c@some-measure> a cube:Observation ;
+      attribute:some-attribute <{{rdf_input_directory}}/qb-id-10003.csv#attribute/some-attribute/attr-c> ;
+      dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#c> ;
+      measure:some-measure 3.0 ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10003.csv#dataset> ;
+      cube:measureType measure:some-measure .
+
+      measure:some-measure a cube:ComponentProperty,
+      cube:MeasureProperty,
+      rdf:Property,
+      rdfs:Resource ;
+      rdfs:label "Some Measure"@en ;
+      rdfs:range xsd:decimal .
+
+      measure:some-other-measure a cube:ComponentProperty,
+      cube:MeasureProperty,
+      rdf:Property,
+      rdfs:Resource ;
+      rdfs:label "Some Other Measure"@en ;
+      rdfs:range xsd:decimal .
+      """
+
+  Scenario: A single-measure pivoted shape cube should be produced as the output for the single-measure pivoted shape inputs
+    Given a single-measure pivoted shape cube with identifier "qb-id-10004" named "Pivoted Shape Cube"
+    Then the CSVqb should pass all validations
+    When the cube is serialised to CSV-W
+    Then the file at "qb-id-10004.csv" should exist
+    And the file at "qb-id-10004.csv-metadata.json" should exist
+    And csvlint validation of all CSV-Ws should succeed
+    And csv2rdf on all CSV-Ws should succeed
+    And the RDF should pass "qb, skos" SPARQL tests
+    And the RDF should contain
+      """
+      @prefix cube: <http://purl.org/linked-data/cube#> .
+      @prefix measure: <{{rdf_input_directory}}/qb-id-10004.csv#measure/> .
+      @prefix dimension: <{{rdf_input_directory}}/qb-id-10004.csv#dimension/> .
+      @prefix attribute: <{{rdf_input_directory}}/qb-id-10004.csv#attribute/> .
+      @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+      @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+      @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+      <{{rdf_input_directory}}/qb-id-10004.csv#slice/a> cube:observation <{{rdf_input_directory}}/qb-id-10004.csv#obs/a@some-measure> .
+
+      <{{rdf_input_directory}}/qb-id-10004.csv#slice/b> cube:observation <{{rdf_input_directory}}/qb-id-10004.csv#obs/b@some-measure> .
+
+      <{{rdf_input_directory}}/qb-id-10004.csv#slice/c> cube:observation <{{rdf_input_directory}}/qb-id-10004.csv#obs/c@some-measure> .
+
+      <{{rdf_input_directory}}/qb-id-10004.csv#obs/a@some-measure> a cube:Observation ;
+      attribute:some-attribute <{{rdf_input_directory}}/qb-id-10004.csv#attribute/some-attribute/attr-a> ;
+      dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#a> ;
+      measure:some-measure 1.0 ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10004.csv#dataset> ;
+      cube:measureType measure:some-measure .
+
+      <{{rdf_input_directory}}/qb-id-10004.csv#obs/b@some-measure> a cube:Observation ;
+      attribute:some-attribute <{{rdf_input_directory}}/qb-id-10004.csv#attribute/some-attribute/attr-b> ;
+      dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#b> ;
+      measure:some-measure 2.0 ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10004.csv#dataset> ;
+      cube:measureType measure:some-measure .
+
+      <{{rdf_input_directory}}/qb-id-10004.csv#obs/c@some-measure> a cube:Observation ;
+      attribute:some-attribute <{{rdf_input_directory}}/qb-id-10004.csv#attribute/some-attribute/attr-c> ;
+      dimension:some-dimension <{{rdf_input_directory}}/some-dimension.csv#c> ;
+      measure:some-measure 3.0 ;
+      cube:dataSet <{{rdf_input_directory}}/qb-id-10004.csv#dataset> ;
+      cube:measureType measure:some-measure .
+
+      measure:some-measure a cube:ComponentProperty,
+      cube:MeasureProperty,
+      rdf:Property,
+      rdfs:Resource ;
+      rdfs:label "Some Measure"@en ;
+      rdfs:range xsd:decimal .
+      """

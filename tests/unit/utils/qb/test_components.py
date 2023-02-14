@@ -1,5 +1,5 @@
 from pathlib import Path
-from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
+
 import pytest
 
 from csvcubed.utils.qb.components import (
@@ -7,6 +7,7 @@ from csvcubed.utils.qb.components import (
     get_component_property_as_relative_path,
     get_component_property_type,
 )
+from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 
 
 def test_printable_component_property_url():
@@ -47,8 +48,12 @@ def test_printable_component_property_root_file_path():
     Should return component property as relative path, if it is `file://`.
     """
     input_file_path = Path("folder", "sub-folder", "file.csv")
-    other_file_path = Path("other-folder", "sub-folder", "sub-sub-folder", "other-file.csv")
-    component_property = f"{path_to_file_uri_for_rdflib(other_file_path)}#property-type/type"
+    other_file_path = Path(
+        "other-folder", "sub-folder", "sub-sub-folder", "other-file.csv"
+    )
+    component_property = (
+        f"{path_to_file_uri_for_rdflib(other_file_path)}#property-type/type"
+    )
     printable_component_property = get_component_property_as_relative_path(
         input_file_path, component_property
     )

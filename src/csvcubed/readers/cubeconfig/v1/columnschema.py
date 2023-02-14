@@ -11,47 +11,44 @@ import logging
 from abc import ABC
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Union, Optional, TypeVar, Tuple
+from typing import List, Optional, Tuple, TypeVar, Union
 
 import uritemplate
-
 from csvcubedmodels.dataclassbase import DataClassBase
 
-from csvcubed.utils.validators.schema import validate_dict_against_schema
-from csvcubed.inputs import pandas_input_to_columnar_optional_str
-from csvcubed.models.jsonvalidationerrors import JsonSchemaValidationError
-from csvcubed.models.cube import CatalogMetadata, NewQbConcept
+from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_optional_str
+from csvcubed.models.codelistconfig.code_list_config import CodeListConfig
+from csvcubed.models.cube.cube import CatalogMetadata
 from csvcubed.models.cube.qb.components import (
-    NewQbDimension,
-    ExistingQbDimension,
-    NewQbAttribute,
-    NewQbAttributeValue,
-    ExistingQbAttribute,
-    NewQbUnit,
-    ExistingQbUnit,
-    QbMultiUnits,
-    QbMultiMeasureDimension,
-    QbObservationValue,
-    ExistingQbMeasure,
-    NewQbMeasure,
-    QbObservationValue,
     CompositeQbCodeList,
     DuplicatedQbConcept,
+    ExistingQbAttribute,
     ExistingQbAttributeLiteral,
     ExistingQbCodeList,
+    ExistingQbDimension,
+    ExistingQbMeasure,
+    ExistingQbUnit,
+    NewQbAttribute,
     NewQbAttributeLiteral,
+    NewQbAttributeValue,
     NewQbCodeList,
+    NewQbDimension,
+    NewQbMeasure,
+    NewQbUnit,
     QbCodeList,
+    QbMultiMeasureDimension,
+    QbMultiUnits,
+    QbObservationValue,
 )
-from csvcubed.inputs import PandasDataTypes
-from csvcubed.utils.uri import (
-    csvw_column_name_safe,
-    looks_like_uri,
-)
-from csvcubed.models.codelistconfig.code_list_config import CodeListConfig
-from csvcubed.utils.file import code_list_config_json_exists
+from csvcubed.models.cube.qb.components.concept import NewQbConcept
+from csvcubed.models.jsonvalidationerrors import JsonSchemaValidationError
 from csvcubed.readers.cubeconfig.utils import load_resource
-from csvcubed.utils.validators.schema import map_to_internal_validation_errors
+from csvcubed.utils.file import code_list_config_json_exists
+from csvcubed.utils.uri import csvw_column_name_safe, looks_like_uri
+from csvcubed.utils.validators.schema import (
+    map_to_internal_validation_errors,
+    validate_dict_against_schema,
+)
 
 _logger = logging.getLogger(__name__)
 
@@ -67,8 +64,10 @@ class SchemaBaseClass(DataClassBase, ABC):
 
 @dataclass
 class NewDimension(SchemaBaseClass):
-    # Schema property - but removed for json to dataclass mapping
-    # type: # str = "dimension"
+    """
+    Schema property - but removed for json to dataclass mapping
+      type: # str = "dimension"
+    """
 
     label: Optional[str] = None
     description: Optional[str] = None
@@ -249,6 +248,7 @@ class ExistingAttributeLiteral(SchemaBaseClass):
     from_existing: str
     data_type: str
     required: bool = False
+    describes_observations: Optional[str] = None
 
     def map_to_existing_qb_attribute(self) -> ExistingQbAttributeLiteral:
 
@@ -256,6 +256,7 @@ class ExistingAttributeLiteral(SchemaBaseClass):
             attribute_uri=self.from_existing,
             is_required=self.required,
             data_type=self.data_type,
+            observed_value_col_title=self.describes_observations,
         )
 
 
@@ -265,6 +266,7 @@ class ExistingAttributeResource(SchemaBaseClass):
     values: Union[bool, List[AttributeValue]] = True
     required: bool = False
     cell_uri_template: Optional[str] = None
+    describes_observations: Optional[str] = None
 
     def map_to_existing_qb_attribute(
         self, data: PandasDataTypes
@@ -274,6 +276,7 @@ class ExistingAttributeResource(SchemaBaseClass):
             self.from_existing,
             new_attribute_values=_get_new_attribute_values(data, self.values),
             is_required=self.required,
+            observed_value_col_title=self.describes_observations,
         )
 
 
@@ -285,6 +288,7 @@ class NewAttributeLiteral(SchemaBaseClass):
     from_existing: Optional[str] = None
     definition_uri: Optional[str] = None
     required: bool = False
+    describes_observations: Optional[str] = None
 
     def map_to_new_qb_attribute(self, column_title: str) -> NewQbAttributeLiteral:
         label = self.label or column_title
@@ -296,6 +300,7 @@ class NewAttributeLiteral(SchemaBaseClass):
             parent_attribute_uri=self.from_existing,
             source_uri=self.definition_uri,
             is_required=self.required,
+            observed_value_col_title=self.describes_observations,
         )
 
 
@@ -308,6 +313,7 @@ class NewAttributeResource(SchemaBaseClass):
     required: bool = False
     values: Union[bool, List[AttributeValue]] = True
     cell_uri_template: Optional[str] = None
+    describes_observations: Optional[str] = None
 
     def map_to_new_qb_attribute(
         self, column_title: str, data: PandasDataTypes
@@ -321,6 +327,7 @@ class NewAttributeResource(SchemaBaseClass):
             parent_attribute_uri=self.from_existing,
             source_uri=self.definition_uri,
             is_required=self.required,
+            observed_value_col_title=self.describes_observations,
         )
 
 
@@ -338,22 +345,29 @@ class Unit(SchemaBaseClass):
 @dataclass
 class ExistingUnits(SchemaBaseClass):
     cell_uri_template: str
+    describes_observations: Optional[str] = None
 
     def map_to_existing_qb_multi_units(
         self, data: PandasDataTypes, column_title: str
     ) -> QbMultiUnits:
         return QbMultiUnits.existing_units_from_data(
-            data, csvw_column_name_safe(column_title), self.cell_uri_template
+            data,
+            csvw_column_name_safe(column_title),
+            self.cell_uri_template,
+            observed_value_col_title=self.describes_observations,
         )
 
 
 @dataclass
 class NewUnits(SchemaBaseClass):
     values: Union[bool, List[Unit]] = True
+    describes_observations: Optional[str] = None
 
     def map_to_new_qb_multi_units(self, data: PandasDataTypes) -> QbMultiUnits:
         if isinstance(self.values, bool) and self.values is True:
-            return QbMultiUnits.new_units_from_data(data)
+            return QbMultiUnits.new_units_from_data(
+                data, observed_value_col_title=self.describes_observations
+            )
 
         elif isinstance(self.values, list):
 

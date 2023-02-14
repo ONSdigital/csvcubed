@@ -5,17 +5,17 @@ JSON Validation Errors
 Contains models holding information on JSON Schema Validation errors
 
 """
-from dataclasses import dataclass, field, asdict, fields
-from textwrap import indent
-from typing import List, Dict, Iterable, Tuple, Any, Optional
 import os
 from abc import ABC, abstractmethod
+from dataclasses import asdict, dataclass, fields
+from textwrap import indent
+from typing import Any, List, Optional, Tuple
 
-import jsonschema.exceptions
 from jsonschema import RefResolver
 
 from csvcubed.utils.text import truncate
 from csvcubed.utils.uri import looks_like_uri
+
 from .validationerror import ValidationError
 
 _indent = "    "

@@ -1,28 +1,45 @@
-from urllib.parse import urlparse
-import re
-import pandas as pd
+import os
 from pathlib import Path
-from behave import Given, When, Then, Step
+from typing import List, Optional
+from urllib.parse import urlparse
+
+import pandas as pd
+from behave import Given, Step, Then, When
 from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
 from csvcubeddevtools.helpers.file import get_test_cases_dir
-from csvcubeddevtools.behaviour.rdf import test_graph_diff
 from rdflib import Graph
 
-from csvcubed.models.cube import *
-from csvcubed.models.cube import (
+from csvcubed.models.cube.columns import SuppressedCsvColumn
+from csvcubed.models.cube.cube import Cube, QbCube
+from csvcubed.models.cube.qb.catalog import CatalogMetadata
+from csvcubed.models.cube.qb.columns import QbColumn
+from csvcubed.models.cube.qb.components.attribute import (
     ExistingQbAttribute,
+    ExistingQbAttributeLiteral,
     NewQbAttribute,
-    NewQbConcept,
-    QbMultiMeasureDimension,
-    QbMultiUnits,
+    NewQbAttributeLiteral,
 )
-
-from csvcubed.models.validationerror import ValidationError
+from csvcubed.models.cube.qb.components.codelist import (
+    ExistingQbCodeList,
+    NewQbCodeList,
+    NewQbCodeListInCsvW,
+)
+from csvcubed.models.cube.qb.components.concept import NewQbConcept
+from csvcubed.models.cube.qb.components.dimension import (
+    ExistingQbDimension,
+    NewQbDimension,
+)
+from csvcubed.models.cube.qb.components.measure import ExistingQbMeasure, NewQbMeasure
+from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureDimension
+from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
+from csvcubed.models.cube.qb.components.unit import ExistingQbUnit, NewQbUnit
+from csvcubed.models.cube.qb.components.unitscolumn import QbMultiUnits
 from csvcubed.models.cube.uristyle import URIStyle
+from csvcubed.models.validationerror import ValidationError
 from csvcubed.readers.skoscodelistreader import extract_code_list_concept_scheme_info
-from csvcubed.writers.qbwriter import QbWriter
-from csvcubed.utils.qb.validation.cube import validate_qb_component_constraints
 from csvcubed.utils.pandas import read_csv
+from csvcubed.utils.qb.validation.cube import validate_qb_component_constraints
+from csvcubed.writers.qbwriter import QbWriter
 
 _test_case_dir = get_test_cases_dir()
 
@@ -87,9 +104,7 @@ def step_impl(context, cube_name: str):
         ),
         QbColumn(
             "Value",
-            QbObservationValue(
-                NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
-            ),
+            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
 
@@ -123,9 +138,7 @@ def step_impl(context, cube_name: str):
         ),
         QbColumn(
             "Value",
-            QbObservationValue(
-                NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
-            ),
+            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
 
@@ -148,9 +161,7 @@ def step_impl(context, cube_name: str, csvw_file_path: str):
         ),
         QbColumn(
             "Value",
-            QbObservationValue(
-                NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
-            ),
+            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
 
@@ -179,9 +190,7 @@ def _get_single_measure_cube_with_name_and_id(
         QbColumn("D", NewQbDimension.from_data("D code list", _standard_data["D"])),
         QbColumn(
             "Value",
-            QbObservationValue(
-                NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
-            ),
+            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
 
@@ -208,9 +217,7 @@ def step_impl(context, cube_name: str):
         ),
         QbColumn(
             "Value",
-            QbObservationValue(
-                NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
-            ),
+            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
 
@@ -226,9 +233,7 @@ def step_impl(context, cube_name: str):
         QbColumn("A", NewQbDimension.from_data("A Dimension", data["A"])),
         QbColumn(
             "Value",
-            QbObservationValue(
-                NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
-            ),
+            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
 
@@ -255,9 +260,7 @@ def step_impl(context, cube_name: str):
         QbColumn("D", NewQbDimension.from_data("D code list", _standard_data["D"])),
         QbColumn(
             "Value",
-            QbObservationValue(
-                NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
-            ),
+            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
 
@@ -288,9 +291,7 @@ def step_impl(context, cube_name: str):
         ),
         QbColumn(
             "Value",
-            QbObservationValue(
-                NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
-            ),
+            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
 
@@ -370,9 +371,7 @@ def step_impl(context, cube_name: str):
         ),
         QbColumn(
             "Value",
-            QbObservationValue(
-                NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
-            ),
+            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
 
@@ -480,9 +479,7 @@ def step_impl(context, cube_name: str, type: str, data_type: str):
     dim = QbColumn("A", NewQbDimension.from_data("A Dimension", data["A"]))
     val = QbColumn(
         "Value",
-        QbObservationValue(
-            NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
-        ),
+        QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
     )
     if data_type == "int":
         if type == "new":
@@ -566,9 +563,7 @@ def step_impl(context, cube_name: str):
         ),
         QbColumn(
             "Observed Value",
-            QbObservationValue(
-                NewQbMeasure("Part-time"), NewQbUnit("Num of Students")
-            ),
+            QbObservationValue(NewQbMeasure("Part-time"), NewQbUnit("Num of Students")),
         ),
     ]
 
@@ -890,3 +885,97 @@ def assert_uri_style_for_uri(uri_style: URIStyle, uri: str, node):
         assert path.endswith(".csv") or path.endswith(
             ".json"
         ), f"expected {node} to end with .csv or .json"
+
+
+@Given(
+    'a multi-measure pivoted shape cube with identifier "{identifier}" named "{cube_name}"'
+)
+def step_impl(context, identifier: str, cube_name: str):
+    metadata = CatalogMetadata(title=cube_name, identifier=identifier)
+    data = pd.DataFrame(
+        {
+            "Some Dimension": ["a", "b", "c"],
+            "Some Attribute": ["attr-a", "attr-b", "attr-c"],
+            "Some Obs Val": [1, 2, 3],
+            "Some Other Obs Val": [2, 4, 6],
+            "Some Unit": ["Percent", "Percent", "Percent"],
+        }
+    )
+    columns = [
+        QbColumn(
+            "Some Dimension",
+            NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
+        ),
+        QbColumn(
+            "Some Attribute",
+            NewQbAttribute.from_data(
+                "Some Attribute",
+                data["Some Attribute"],
+                observed_value_col_title="Some Obs Val",
+            ),
+        ),
+        QbColumn(
+            "Some Obs Val",
+            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
+        ),
+        QbColumn(
+            "Some Other Obs Val",
+            QbObservationValue(
+                NewQbMeasure("Some Other Measure"),
+            ),
+        ),
+        QbColumn(
+            "Some Unit",
+            QbMultiUnits(
+                [NewQbUnit("Percent")], observed_value_col_title="Some Other Obs Val"
+            ),
+        ),
+    ]
+
+    cube = Cube(metadata=metadata, data=data, columns=columns)
+    context.cube = cube
+
+
+@Given(
+    'a single-measure pivoted shape cube with identifier "{identifier}" named "{cube_name}"'
+)
+def step_impl(context, identifier: str, cube_name: str):
+    metadata = CatalogMetadata(title=cube_name, identifier=identifier)
+    data = pd.DataFrame(
+        {
+            "Some Dimension": ["a", "b", "c"],
+            "Some Attribute": ["attr-a", "attr-b", "attr-c"],
+            "Some Obs Val": [1, 2, 3],
+        }
+    )
+    columns = [
+        QbColumn(
+            "Some Dimension",
+            NewQbDimension.from_data("Some Dimension", data["Some Dimension"]),
+        ),
+        QbColumn(
+            "Some Attribute",
+            NewQbAttribute.from_data(
+                "Some Attribute",
+                data["Some Attribute"],
+                observed_value_col_title="Some Obs Val",
+            ),
+        ),
+        QbColumn(
+            "Some Obs Val",
+            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
+        ),
+    ]
+
+    cube = Cube(metadata=metadata, data=data, columns=columns)
+    context.cube = cube
+
+
+@Given('the environment variable "{env_var_name}" is "{env_var_value}"')
+def step_impl(context, env_var_name: str, env_var_value: str):
+    os.environ[env_var_name] = env_var_value
+
+    def _delete_env_var():
+        del os.environ[env_var_name]
+
+    context.add_cleanup(_delete_env_var)

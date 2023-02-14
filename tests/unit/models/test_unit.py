@@ -1,12 +1,9 @@
 import pandas as pd
 import pytest
 
-from csvcubed.models.cube import (
-    NewQbUnit,
-    QbColumn,
-    ExistingQbUnit,
-    QbMultiUnits,
-)
+from csvcubed.models.cube.qb.columns import QbColumn
+from csvcubed.models.cube.qb.components.unit import ExistingQbUnit, NewQbUnit
+from csvcubed.models.cube.qb.components.unitscolumn import QbMultiUnits
 from csvcubed.models.cube.qb.components.validationerrors import UndefinedUnitUrisError
 from tests.unit.test_baseunit import assert_num_validation_errors
 
@@ -77,9 +74,9 @@ def test_known_existing_units_defined_non_standard_uris():
                 ExistingQbUnit("http://example.org/units/PERCENT"),
             ]
         ),
-        csv_column_uri_template="http://example.org/units/{+unit}"
+        csv_column_uri_template="http://example.org/units/{+unit}",
     )
-    
+
     errors = unit_column.validate_data(data["Unit"])
 
     assert_num_validation_errors(errors, 0)

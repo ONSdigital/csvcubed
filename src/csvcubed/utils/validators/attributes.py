@@ -6,8 +6,8 @@ pydantic validators for class attributes.
 """
 import logging
 from typing import Any, Dict, List
-from pydantic import root_validator
 
+from pydantic import root_validator
 
 _logger = logging.getLogger(__name__)
 

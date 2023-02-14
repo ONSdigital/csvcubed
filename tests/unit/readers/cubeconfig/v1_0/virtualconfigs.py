@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+
 @dataclass
 class VirtualConfigurations:
     """
@@ -11,7 +12,7 @@ class VirtualConfigurations:
     # It's counter intuitive but if you put a docstring AFTER the
     # constant then said doctring will be shown against the constant
     # where its in use (i.e when working on tests you can mouseover
-    # to see the input without following the code back to here). 
+    # to see the input without following the code back to here).
 
     LABEL_ONLY = {
         "label": "A component with just a label",
@@ -29,7 +30,7 @@ class VirtualConfigurations:
         "label": "The New Dimension",
         "description": "A description of the dimension",
         "from_existing": "http://gss-cogs/dimesions/#period",
-        "definition_uri": "http://wikipedia.com/#periods"
+        "definition_uri": "http://wikipedia.com/#periods",
     }
     """
     A fairly commonplace populated dimension config.
@@ -169,7 +170,7 @@ class VirtualConfigurations:
     ATTRIBUTE_EXISTING_RESOURCE = {
         "type": "attribute",
         "from_existing": "http://gss-cogs/dimesions/#period",
-        "required": False
+        "required": False,
     }
     """
     Configuration for an attribute resource from existing.

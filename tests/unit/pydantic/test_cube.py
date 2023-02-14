@@ -1,8 +1,15 @@
 import pandas as pd
 import pytest
 
-from csvcubed.models.cube import *
-from csvcubed.models.cube import ExistingQbAttribute
+from csvcubed.models.cube.cube import Cube
+from csvcubed.models.cube.qb.catalog import CatalogMetadata
+from csvcubed.models.cube.qb.columns import QbColumn
+from csvcubed.models.cube.qb.components.attribute import ExistingQbAttribute
+from csvcubed.models.cube.qb.components.codelist import NewQbCodeList
+from csvcubed.models.cube.qb.components.dimension import NewQbDimension
+from csvcubed.models.cube.qb.components.measure import NewQbMeasure
+from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
+from csvcubed.models.cube.qb.components.unit import NewQbUnit
 from csvcubed.models.validationerror import PydanticValidationError
 from tests.unit.test_baseunit import assert_num_validation_errors
 
@@ -25,9 +32,7 @@ def test_attribute_property_validation():
         ),
         QbColumn(
             "Value",
-            QbObservationValue(
-                NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
-            ),
+            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
 
@@ -95,9 +100,7 @@ def test_deep_custom_validator():
         ),
         QbColumn(
             "Value",
-            QbObservationValue(
-                NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
-            ),
+            QbObservationValue(NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")),
         ),
     ]
 

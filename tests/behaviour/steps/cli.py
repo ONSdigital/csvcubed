@@ -1,11 +1,11 @@
 import json
 import shutil
-from pathlib import Path
-
-from behave import when, then
 import subprocess
-from appdirs import AppDirs
+from pathlib import Path
 from typing import Tuple
+
+from appdirs import AppDirs
+from behave import then, when
 from csvcubeddevtools.behaviour.temporarydirectory import get_context_temp_dir_path
 
 
@@ -43,7 +43,7 @@ def step_impl(context, printed_text: str):
     assert printed_text not in response, response
 
 
-@then('the validation-errors.json file should contain')
+@then("the validation-errors.json file should contain")
 def step_impl(context):
     tmp_dir_path = get_context_temp_dir_path(context)
     expected_text_contents: str = context.text.strip()
@@ -89,7 +89,7 @@ def run_command_in_temp_dir(context, command: str) -> Tuple[int, str]:
     tmp_dir_path = get_context_temp_dir_path(context)
 
     # Use temp files not a PIPE, a PIPE has a tiny buffer than
-    # can deadlock or result in eroneous resource exhaustion behaviour 
+    # can deadlock or result in eroneous resource exhaustion behaviour
     # where encountering some of our larger outputs (jsonSchemaErrors result
     # in large writes to stdout)
     Path(tmp_dir_path / "buffer").mkdir()

@@ -3,7 +3,14 @@ from typing import List
 import pandas as pd
 import pytest
 
-from csvcubed.models.cube import *
+from csvcubed.models.cube.columns import CsvColumn, SuppressedCsvColumn
+from csvcubed.models.cube.cube import Cube
+from csvcubed.models.cube.qb.catalog import CatalogMetadata
+from csvcubed.models.cube.validationerrors import (
+    ColumnNotFoundInDataError,
+    DuplicateColumnTitleError,
+    MissingColumnDefinitionError,
+)
 
 
 def test_column_not_configured_error():

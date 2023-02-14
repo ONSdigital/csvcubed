@@ -6,15 +6,15 @@ Component Validation Errors
 """
 import os
 from abc import ABC
-from dataclasses import dataclass, field
-from typing import Set, List, Dict, Type, ClassVar, Optional, Union
+from dataclasses import dataclass
+from typing import ClassVar, Dict, List, Set, Type, Union
+
+from csvcubed.models.validationerror import (
+    PydanticThrowableSpecificValidationError,
+    SpecificValidationError,
+)
 
 from .datastructuredefinition import QbStructuralDefinition
-from csvcubed.models.validationerror import (
-    SpecificValidationError,
-    PydanticValidationError,
-    PydanticThrowableSpecificValidationError,
-)
 
 
 @dataclass
@@ -57,7 +57,6 @@ class UndefinedMeasureUrisError(UndefinedValuesError):
     @classmethod
     def get_error_url(cls) -> str:
         return "http://purl.org/csv-cubed/err/undef-meas"
-        
 
 
 @dataclass
@@ -153,7 +152,7 @@ class ConflictingUriSafeValuesError(PydanticThrowableSpecificValidationError):
         uri_val: str, conflicting_labels: Set[str]
     ) -> str:
         return f"{uri_val}: " + ", ".join(
-            [f"'{label}'" for label in conflicting_labels]
+            [f"'{label}'" for label in sorted(conflicting_labels)]
         )
 
     def __post_init__(self):
@@ -164,7 +163,7 @@ class ConflictingUriSafeValuesError(PydanticThrowableSpecificValidationError):
 
         self.message = (
             f"Conflicting URIs: {self._indented_line_sep}"
-            + self._indented_line_sep.join(conflicting_values_lines)
+            + self._indented_line_sep.join(sorted(conflicting_values_lines))
         )
 
     @classmethod
@@ -181,7 +180,7 @@ class EmptyQbMultiUnitsError(SpecificValidationError):
 
     @classmethod
     def get_error_url(cls) -> str:
-        return 'http://purl.org/csv-cubed/err/empty-multi-units'
+        return "http://purl.org/csv-cubed/err/empty-multi-units"
 
     def __post_init__(self):
-        self.message = 'The units attribute of a QbMultiUnits must be populated'
+        self.message = "The units attribute of a QbMultiUnits must be populated"

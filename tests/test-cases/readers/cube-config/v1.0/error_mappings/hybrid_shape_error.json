@@ -1,0 +1,29 @@
+{
+  "$schema": "https://purl.org/csv-cubed/qube-config/v1.4",
+  "id": "schema-id",
+  "title": "Tests/test-cases/config/schema-cube-data-config-ok",
+  "description": "Schema for testing",
+  "columns": {
+    "Location": {
+      "type": "dimension"
+    },
+    "Average Income": {
+      "type": "observations",
+      "unit": {
+        "label": "Pound"
+      }
+    },
+    "Value": {
+      "type": "observations",
+      "unit": {
+        "label": "Billions of POUNDS"
+      }
+    },
+    "GDP": {
+      "type": "measures"
+    },
+    "Currency": {
+      "type": "measures"
+    }
+  }
+}

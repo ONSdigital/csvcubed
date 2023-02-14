@@ -5,19 +5,19 @@ Code List Config
 Models for representing code list config.
 """
 
-from typing import Optional, List, Tuple, Dict, Set
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Dict, List, Optional, Set, Tuple
 
 from csvcubedmodels.dataclassbase import DataClassBase
 
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
-from csvcubed.models.cube.qb.components.concept import DuplicatedQbConcept
-from csvcubed.utils.json import load_json_document
 from csvcubed.models.cube.qb.components import NewQbConcept
+from csvcubed.models.cube.qb.components.concept import DuplicatedQbConcept
 from csvcubed.readers.catalogmetadata.v1.catalog_metadata_reader import (
     metadata_from_dict,
 )
+from csvcubed.utils.json import load_json_document
 
 CODE_LIST_CONFIG_DEFAULT_URL = "https://purl.org/csv-cubed/code-list-config/v1"
 

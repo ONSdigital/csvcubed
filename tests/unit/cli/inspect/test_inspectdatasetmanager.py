@@ -1,34 +1,13 @@
-from csvcubed.cli.inspect.metadatainputvalidator import CSVWType
-from csvcubed.cli.inspect.metadataprinter import to_absolute_rdflib_file_path
-from csvcubed.utils.skos.codelist import (
-    CodelistPropertyUrl,
-    get_codelist_col_title_by_property_url,
-    get_codelist_col_title_from_col_name,
-)
-import pytest
-import numpy as np
-from pandas import DataFrame
-from pandas.util.testing import assert_frame_equal
+from pathlib import Path
 from typing import List, Tuple
 
-from pathlib import Path
+import numpy as np
+import pytest
+from pandas import DataFrame
+from pandas.testing import assert_frame_equal
 from rdflib import Graph
 from treelib import Tree
 
-from csvcubed.utils.sparql_handler.sparqlmanager import (
-    select_codelist_cols_by_dataset_url,
-    select_codelist_dataset_url,
-    select_primary_key_col_names_by_dataset_url,
-    select_csvw_catalog_metadata,
-    select_csvw_dsd_dataset_label_and_dsd_def_uri,
-    select_csvw_dsd_qube_components,
-    select_qb_dataset_url,
-)
-from csvcubed.models.sparqlresults import (
-    DSDLabelURIResult,
-    QubeComponentResult,
-    QubeComponentsResult,
-)
 from csvcubed.cli.inspect.inspectdatasetmanager import (
     get_concepts_hierarchy_info,
     get_dataset_observations_info,
@@ -40,14 +19,28 @@ from csvcubed.utils.csvdataset import(
     get_unit_col_name_from_dsd,
     get_measure_col_name_from_dsd,
 )
-from csvcubed.utils.tableschema import CsvwRdfManager
+from csvcubed.cli.inspect.metadataprinter import to_absolute_rdflib_file_path
+from csvcubed.models.csvwtype import CSVWType
+from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.inspectdataframeresults import (
     DatasetObservationsByMeasureUnitInfoResult,
     DatasetObservationsInfoResult,
 )
-from csvcubed.utils.csvdataset import (
-    transform_dataset_to_canonical_shape,
+from csvcubed.models.sparqlresults import QubeComponentResult
+from csvcubed.utils.csvdataset import transform_dataset_to_canonical_shape
+from csvcubed.utils.skos.codelist import (
+    CodelistPropertyUrl,
+    get_codelist_col_title_by_property_url,
+    get_codelist_col_title_from_col_name,
 )
+from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
+from csvcubed.utils.sparql_handler.sparqlquerymanager import (
+    select_codelist_cols_by_csv_url,
+    select_codelist_csv_url,
+    select_primary_key_col_names_by_csv_url,
+    select_qb_csv_url,
+)
+from csvcubed.utils.tableschema import CsvwRdfManager
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
@@ -134,6 +127,40 @@ _expected_dataframe = DataFrame(
     ]
 ).replace("", np.NAN)
 
+expected_dataframe_pivoted_single_measure = DataFrame(
+    [
+        {"Some Dimension": "a", "Some Attribute": "attr-a", "Some Obs Val": 1},
+        {"Some Dimension": "b", "Some Attribute": "attr-b", "Some Obs Val": 2},
+        {"Some Dimension": "c", "Some Attribute": "attr-c", "Some Obs Val": 3},
+    ]
+).replace("", np.NAN)
+
+expected_dataframe_pivoted_multi_measure = DataFrame(
+    [
+        {
+            "Some Dimension": "a",
+            "Some Attribute": "attr-a",
+            "Some Obs Val": 1,
+            "Some Other Obs Val": 2,
+            "Some Unit": "percent",
+        },
+        {
+            "Some Dimension": "b",
+            "Some Attribute": "attr-b",
+            "Some Obs Val": 2,
+            "Some Other Obs Val": 4,
+            "Some Unit": "percent",
+        },
+        {
+            "Some Dimension": "c",
+            "Some Attribute": "attr-c",
+            "Some Obs Val": 3,
+            "Some Other Obs Val": 6,
+            "Some Unit": "percent",
+        },
+    ]
+).replace("", np.NAN)
+
 _expected_by_measure_and_unit_val_counts_df_single_unit_single_measure = DataFrame(
     [
         {
@@ -164,7 +191,7 @@ _expected_by_measure_and_unit_val_counts_df_multi_unit_single_measure = DataFram
         {
             "Measure": "gas emissions(gwp-ar4)",
             "Unit": "millions of tonnes of carbon dioxide (mt co2)",
-            0: 41508,
+            0: 19,
         }
     ]
 ).replace("", np.NAN)
@@ -203,34 +230,49 @@ _expected_by_measure_and_unit_val_counts_df_multi_unit_multi_measure = DataFrame
     ]
 ).replace("", np.NAN)
 
+_expected_by_measure_and_unit_val_counts_df_pivoted_single_measure = DataFrame(
+    [
+        {
+            "Measure": "Some Measure",
+            "Unit": "Some Unit",
+            0: 3,
+        }
+    ]
+).replace("", np.NAN)
 
-def _get_arguments_qb_dataset(
-    csvw_metadata_rdf_graph: Graph, csvw_metadata_json_path: Path
+_expected_by_measure_and_unit_val_counts_df_pivoted_multi_measure = DataFrame(
+    [
+        {
+            "Measure": "Some Measure",
+            "Unit": "Some Unit",
+            0: 3,
+        },
+        {
+            "Measure": "Some Other Measure",
+            "Unit": "Percent",
+            0: 3,
+        },
+    ]
+).replace("", np.NAN)
+
+
+def get_arguments_qb_dataset(
+    data_cube_state: DataCubeState,
 ) -> Tuple[DataFrame, List[QubeComponentResult], str, str]:
     """
     Produces the dataset, qube components and dsd uri arguments for qb:dataset.
     """
-    dataset_uri = to_absolute_rdflib_file_path(
-        select_csvw_catalog_metadata(csvw_metadata_rdf_graph).dataset_uri,
-        csvw_metadata_json_path,
-    )
-    dataset_url = select_qb_dataset_url(
-        csvw_metadata_rdf_graph, dataset_uri
-    ).dataset_url
+    csvw_state = data_cube_state.csvw_state
+    data_set_uri = csvw_state.get_primary_catalog_metadata().dataset_uri
+    data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_state.csvw_json_path)
+    csv_url = select_qb_csv_url(csvw_state.rdf_graph, data_set_uri).csv_url
 
-    dataset: DataFrame = load_csv_to_dataframe(
-        csvw_metadata_json_path, Path(dataset_url)
-    )
-
-    dsd_uri = select_csvw_dsd_dataset_label_and_dsd_def_uri(
-        csvw_metadata_rdf_graph
-    ).dsd_uri
-
-    qube_components = select_csvw_dsd_qube_components(
-        csvw_metadata_rdf_graph, dsd_uri, csvw_metadata_json_path
+    dataset: DataFrame = load_csv_to_dataframe(csvw_state.csvw_json_path, Path(csv_url))
+    qube_components = data_cube_state.get_dsd_qube_components_for_csv(
+        csv_url
     ).qube_components
 
-    return (dataset, qube_components, dsd_uri, dataset_url)
+    return (dataset, qube_components, csv_url)
 
 
 def _get_arguments_skos_codelist(
@@ -239,12 +281,10 @@ def _get_arguments_skos_codelist(
     """
     Produces the dataset, qube components and dsd uri arguments for skos:codelist.
     """
-    dataset_url = select_codelist_dataset_url(csvw_metadata_rdf_graph).dataset_url
+    csv_url = select_codelist_csv_url(csvw_metadata_rdf_graph).csv_url
 
-    dataset: DataFrame = load_csv_to_dataframe(
-        csvw_metadata_json_path, Path(dataset_url)
-    )
-    return (dataset, dataset_url)
+    dataset: DataFrame = load_csv_to_dataframe(csvw_metadata_json_path, Path(csv_url))
+    return (dataset, csv_url)
 
 
 def test_load_csv_to_dataframe_success():
@@ -277,13 +317,61 @@ def test_get_dataset_observations_info():
     dataset = load_csv_to_dataframe(csvw_metadata_json_path, "csv_file.csv")
 
     result: DatasetObservationsInfoResult = get_dataset_observations_info(
-        dataset, CSVWType.QbDataSet
+        dataset, CSVWType.QbDataSet, CubeShape.Pivoted
     )
 
     assert result.num_of_observations == 11
     assert result.num_of_duplicates == 2
     assert_frame_equal(result.dataset_head, _expected_dataframe.head(n=10))
     assert_frame_equal(result.dataset_tail, _expected_dataframe.tail(n=10))
+
+
+def test_get_dataset_observations_info_for_pivoted_single_measure_shape_dataset():
+    """
+    Ensures the expected 'DatasetObservationsInfoResult' object is returned from a pivoted single measure shape input.
+    """
+    _test_case_dir = (
+        get_test_cases_dir() / "cli" / "inspect" / "pivoted-single-measure-dataset"
+    )
+    csvw_metadata_json_path = _test_case_dir / "qb-id-10004.csv-metadata.json"
+    dataset = load_csv_to_dataframe(csvw_metadata_json_path, "qb-id-10004.csv")
+
+    result: DatasetObservationsInfoResult = get_dataset_observations_info(
+        dataset, CSVWType.QbDataSet, CubeShape.Pivoted
+    )
+
+    assert result.num_of_observations == 3
+    assert result.num_of_duplicates == 0
+    assert_frame_equal(
+        result.dataset_head, expected_dataframe_pivoted_single_measure.head(n=3)
+    )
+    assert_frame_equal(
+        result.dataset_tail, expected_dataframe_pivoted_single_measure.tail(n=3)
+    )
+
+
+def test_get_dataset_observations_info_for_pivoted_multi_measure_shape_dataset():
+    """
+    Ensures the expected 'DatasetObservationsInfoResult' object is returned from a pivoted single measure shape input.
+    """
+    _test_case_dir = (
+        get_test_cases_dir() / "cli" / "inspect" / "pivoted-multi-measure-dataset"
+    )
+    csvw_metadata_json_path = _test_case_dir / "qb-id-10003.csv-metadata.json"
+    dataset = load_csv_to_dataframe(csvw_metadata_json_path, "qb-id-10003.csv")
+
+    result: DatasetObservationsInfoResult = get_dataset_observations_info(
+        dataset, CSVWType.QbDataSet, CubeShape.Pivoted
+    )
+
+    assert result.num_of_observations == 3
+    assert result.num_of_duplicates == 0
+    assert_frame_equal(
+        result.dataset_head, expected_dataframe_pivoted_multi_measure.head(n=3)
+    )
+    assert_frame_equal(
+        result.dataset_tail, expected_dataframe_pivoted_multi_measure.tail(n=3)
+    )
 
 
 def test_get_measure_col_name_from_dsd_measure_col_present():
@@ -296,16 +384,22 @@ def test_get_measure_col_name_from_dsd_measure_col_present():
         / "alcohol-bulletin.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
-    result: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
-        csvw_metadata_rdf_graph
-    )
-    result_qube_components: QubeComponentsResult = select_csvw_dsd_qube_components(
-        csvw_metadata_rdf_graph, result.dsd_uri, csvw_metadata_json_path
-    )
+    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
 
-    measure_col = get_measure_col_name_from_dsd(result_qube_components.qube_components)
+    result_data_set_uri = (
+        csvw_rdf_manager.csvw_state.get_primary_catalog_metadata().dataset_uri
+    )
+    data_set_uri = to_absolute_rdflib_file_path(
+        result_data_set_uri, csvw_metadata_json_path
+    )
+    csv_url = select_qb_csv_url(csvw_rdf_manager.rdf_graph, data_set_uri).csv_url
+
+    result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(csv_url)
+
+    measure_col = get_measure_col_name_from_dsd(
+        result_qube_components.qube_components
+    )
 
     assert measure_col == "Measure Type"
 
@@ -320,16 +414,20 @@ def test_get_measure_col_name_from_dsd_measure_col_not_present():
         / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-
-    result: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
-        csvw_metadata_rdf_graph
-    )
-    result_qube_components: QubeComponentsResult = select_csvw_dsd_qube_components(
-        csvw_metadata_rdf_graph, result.dsd_uri, csvw_metadata_json_path
+    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    primary_catalog_metadata = (
+        csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
     )
 
-    measure_col = get_measure_col_name_from_dsd(result_qube_components.qube_components)
+    data_set_uri = primary_catalog_metadata.dataset_uri
+    data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
+    csv_url = select_qb_csv_url(csvw_rdf_manager.rdf_graph, data_set_uri).csv_url
+
+    result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(csv_url)
+
+    measure_col = get_measure_col_name_from_dsd(
+        result_qube_components.qube_components
+    )
 
     assert measure_col is None
 
@@ -344,16 +442,20 @@ def test_get_unit_col_name_from_dsd_unit_col_present():
         / "alcohol-bulletin.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-
-    result: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
-        csvw_metadata_rdf_graph
-    )
-    result_qube_components: QubeComponentsResult = select_csvw_dsd_qube_components(
-        csvw_metadata_rdf_graph, result.dsd_uri, csvw_metadata_json_path
+    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    primary_catalog_metadata = (
+        csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
     )
 
-    unit_col = get_unit_col_name_from_dsd(result_qube_components.qube_components)
+    data_set_uri = primary_catalog_metadata.dataset_uri
+    data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
+    csv_url = select_qb_csv_url(csvw_rdf_manager.rdf_graph, data_set_uri).csv_url
+
+    result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(csv_url)
+
+    unit_col = get_unit_col_name_from_dsd(
+        result_qube_components.qube_components
+    )
 
     assert unit_col == "Unit"
 
@@ -368,20 +470,25 @@ def test_get_unit_col_name_from_dsd_unit_col_not_present():
         / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-
-    result: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
-        csvw_metadata_rdf_graph
-    )
-    result_qube_components: QubeComponentsResult = select_csvw_dsd_qube_components(
-        csvw_metadata_rdf_graph, result.dsd_uri, csvw_metadata_json_path
+    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    primary_catalog_metadata = (
+        csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
     )
 
-    unit_col = get_unit_col_name_from_dsd(result_qube_components.qube_components)
+    data_set_uri = primary_catalog_metadata.dataset_uri
+    data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
+    csv_url = select_qb_csv_url(csvw_rdf_manager.rdf_graph, data_set_uri).csv_url
+
+    result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(csv_url)
+
+    unit_col = get_unit_col_name_from_dsd(
+        result_qube_components.qube_components
+    )
 
     assert unit_col is None
 
 
+@pytest.mark.vcr
 def test_get_single_measure_label_from_dsd():
     """
     Should return the correct measure label.
@@ -392,16 +499,20 @@ def test_get_single_measure_label_from_dsd():
         / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-
-    result: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
-        csvw_metadata_rdf_graph
-    )
-    result_qube_components: QubeComponentsResult = select_csvw_dsd_qube_components(
-        csvw_metadata_rdf_graph, result.dsd_uri, csvw_metadata_json_path
+    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+    primary_catalog_metadata = (
+        csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
     )
 
-    measure_col = get_measure_col_name_from_dsd(result_qube_components.qube_components)
+    data_set_uri = primary_catalog_metadata.dataset_uri
+    data_set_uri = to_absolute_rdflib_file_path(data_set_uri, csvw_metadata_json_path)
+    csv_url = select_qb_csv_url(csvw_rdf_manager.rdf_graph, data_set_uri).csv_url
+
+    result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(csv_url)
+
+    measure_col = get_measure_col_name_from_dsd(
+        result_qube_components.qube_components
+    )
     assert measure_col is None
 
     result_measure = get_single_measure_from_dsd(
@@ -424,21 +535,19 @@ def test_get_val_counts_info_multi_unit_multi_measure_dataset():
         / "alcohol-bulletin.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
+    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
 
-    (dataset, qube_components, dsd_uri, _) = _get_arguments_qb_dataset(
-        csvw_metadata_rdf_graph, csvw_metadata_json_path
-    )
+    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
+
     (
         canonical_shape_dataset,
         measure_col,
         unit_col,
     ) = transform_dataset_to_canonical_shape(
+        data_cube_state,
         dataset,
+        csv_url,
         qube_components,
-        dsd_uri,
-        csvw_metadata_rdf_graph,
-        csvw_metadata_json_path,
     )
 
     result: DatasetObservationsByMeasureUnitInfoResult = get_dataset_val_counts_info(
@@ -471,21 +580,19 @@ def test_get_val_counts_info_multi_unit_single_measure_dataset():
         / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
+    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
 
-    (dataset, qube_components, dsd_uri, _) = _get_arguments_qb_dataset(
-        csvw_metadata_rdf_graph, csvw_metadata_json_path
-    )
+    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
+
     (
         canonical_shape_dataset,
         measure_col,
         unit_col,
     ) = transform_dataset_to_canonical_shape(
+        data_cube_state,
         dataset,
+        csv_url,
         qube_components,
-        dsd_uri,
-        csvw_metadata_rdf_graph,
-        csvw_metadata_json_path,
     )
 
     result: DatasetObservationsByMeasureUnitInfoResult = get_dataset_val_counts_info(
@@ -518,21 +625,19 @@ def test_get_val_counts_info_single_unit_multi_measure_dataset():
         / "final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
+    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
 
-    (dataset, qube_components, dsd_uri, _) = _get_arguments_qb_dataset(
-        csvw_metadata_rdf_graph, csvw_metadata_json_path
-    )
+    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
+
     (
         canonical_shape_dataset,
         measure_col,
         unit_col,
     ) = transform_dataset_to_canonical_shape(
+        data_cube_state,
         dataset,
+        csv_url,
         qube_components,
-        dsd_uri,
-        csvw_metadata_rdf_graph,
-        csvw_metadata_json_path,
     )
 
     result: DatasetObservationsByMeasureUnitInfoResult = get_dataset_val_counts_info(
@@ -565,21 +670,19 @@ def test_get_val_counts_info_single_unit_single_measure_dataset():
         / "energy-trends-uk-total-energy.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
+    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
 
-    (dataset, qube_components, dsd_uri, _) = _get_arguments_qb_dataset(
-        csvw_metadata_rdf_graph, csvw_metadata_json_path
-    )
+    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
+
     (
         canonical_shape_dataset,
         measure_col,
         unit_col,
     ) = transform_dataset_to_canonical_shape(
+        data_cube_state,
         dataset,
+        csv_url,
         qube_components,
-        dsd_uri,
-        csvw_metadata_rdf_graph,
-        csvw_metadata_json_path,
     )
 
     result: DatasetObservationsByMeasureUnitInfoResult = get_dataset_val_counts_info(
@@ -602,6 +705,94 @@ def test_get_val_counts_info_single_unit_single_measure_dataset():
     )
 
 
+def test_get_val_counts_info_pivoted_single_measure_dataset():
+    """
+    Should produce expected `DatasetObservationsByMeasureUnitInfoResult` for pivoted single measure dataset.
+    """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-single-measure-dataset"
+        / "qb-id-10004.csv-metadata.json"
+    )
+    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+
+    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
+
+    (
+        canonical_shape_dataset,
+        measure_col,
+        unit_col,
+    ) = transform_dataset_to_canonical_shape(
+        data_cube_state,
+        dataset,
+        csv_url,
+        qube_components,
+    )
+
+    result: DatasetObservationsByMeasureUnitInfoResult = get_dataset_val_counts_info(
+        canonical_shape_dataset, measure_col, unit_col
+    )
+
+    _expected_by_measure_and_unit_val_counts_df_pivoted_single_measure.rename(
+        columns={
+            "Measure": measure_col,
+            "Unit": unit_col,
+        },
+        inplace=True,
+    )
+
+    assert result is not None
+    assert_frame_equal(
+        result.by_measure_and_unit_val_counts_df,
+        _expected_by_measure_and_unit_val_counts_df_pivoted_single_measure,
+    )
+
+
+def test_get_val_counts_info_pivoted_multi_measure_dataset():
+    """
+    Should produce expected `DatasetObservationsByMeasureUnitInfoResult` for pivoted multi measure dataset.
+    """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-multi-measure-dataset"
+        / "qb-id-10003.csv-metadata.json"
+    )
+    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    data_cube_state = DataCubeState(csvw_rdf_manager.csvw_state)
+
+    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_state)
+
+    (
+        canonical_shape_dataset,
+        measure_col,
+        unit_col,
+    ) = transform_dataset_to_canonical_shape(
+        data_cube_state,
+        dataset,
+        csv_url,
+        qube_components,
+    )
+
+    result: DatasetObservationsByMeasureUnitInfoResult = get_dataset_val_counts_info(
+        canonical_shape_dataset, measure_col, unit_col
+    )
+
+    _expected_by_measure_and_unit_val_counts_df_pivoted_multi_measure.rename(
+        columns={
+            "Measure": measure_col,
+            "Unit": unit_col,
+        },
+        inplace=True,
+    )
+
+    assert result is not None
+    assert_frame_equal(
+        result.by_measure_and_unit_val_counts_df,
+        _expected_by_measure_and_unit_val_counts_df_pivoted_multi_measure,
+    )
+
+
 def test_get_concepts_hierarchy_info_hierarchy_with_depth_of_one():
     """
     Should produce the expected tree structure for the given codelist.
@@ -612,19 +803,16 @@ def test_get_concepts_hierarchy_info_hierarchy_with_depth_of_one():
         / "alcohol-content.csv-metadata.json"
     )
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
-    (dataset, dataset_url) = _get_arguments_skos_codelist(
-        csvw_metadata_rdf_graph, csvw_metadata_json_path
+    (dataset, csv_url) = _get_arguments_skos_codelist(
+        csvw_rdf_manager.rdf_graph, csvw_metadata_json_path
     )
 
-    result_code_list_cols = select_codelist_cols_by_dataset_url(
-        csvw_metadata_rdf_graph, dataset_url
+    result_code_list_cols = select_codelist_cols_by_csv_url(
+        csvw_rdf_manager.rdf_graph, csv_url
     )
-    result_primary_key_col_names_by_dataset_url = (
-        select_primary_key_col_names_by_dataset_url(
-            csvw_metadata_rdf_graph, dataset_url
-        )
+    result_primary_key_col_names_by_csv_url = select_primary_key_col_names_by_csv_url(
+        csvw_rdf_manager.rdf_graph, csv_url
     )
 
     parent_notation_col_name = get_codelist_col_title_by_property_url(
@@ -635,7 +823,7 @@ def test_get_concepts_hierarchy_info_hierarchy_with_depth_of_one():
     )
     unique_identifier = get_codelist_col_title_from_col_name(
         result_code_list_cols.columns,
-        result_primary_key_col_names_by_dataset_url.primary_key_col_names[0].value,
+        result_primary_key_col_names_by_csv_url.primary_key_col_names[0].value,
     )
 
     result = get_concepts_hierarchy_info(
@@ -653,19 +841,16 @@ def test_get_concepts_hierarchy_info_hierarchy_with_depth_more_than_one():
     """
     csvw_metadata_json_path = _test_case_base_dir / "itis-industry.csv-metadata.json"
     csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
-    (dataset, dataset_url) = _get_arguments_skos_codelist(
-        csvw_metadata_rdf_graph, csvw_metadata_json_path
+    (dataset, csv_url) = _get_arguments_skos_codelist(
+        csvw_rdf_manager.rdf_graph, csvw_metadata_json_path
     )
 
-    result_code_list_cols = select_codelist_cols_by_dataset_url(
-        csvw_metadata_rdf_graph, dataset_url
+    result_code_list_cols = select_codelist_cols_by_csv_url(
+        csvw_rdf_manager.rdf_graph, csv_url
     )
-    result_primary_key_col_names_by_dataset_url = (
-        select_primary_key_col_names_by_dataset_url(
-            csvw_metadata_rdf_graph, dataset_url
-        )
+    result_primary_key_col_names_by_csv_url = select_primary_key_col_names_by_csv_url(
+        csvw_rdf_manager.rdf_graph, csv_url
     )
 
     parent_notation_col_name = get_codelist_col_title_by_property_url(
@@ -676,7 +861,7 @@ def test_get_concepts_hierarchy_info_hierarchy_with_depth_more_than_one():
     )
     unique_identifier = get_codelist_col_title_from_col_name(
         result_code_list_cols.columns,
-        result_primary_key_col_names_by_dataset_url.primary_key_col_names[0].value,
+        result_primary_key_col_names_by_csv_url.primary_key_col_names[0].value,
     )
 
     result = get_concepts_hierarchy_info(

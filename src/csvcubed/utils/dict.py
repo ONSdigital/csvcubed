@@ -4,18 +4,20 @@ Dictionary
 
 Functions to help when working with dictionaries.
 """
-import logging
-from typing import Any, Optional, Callable, List, Dict
-import rdflib
 import json
+import logging
+from typing import Any, Callable, Dict, List, Optional, TypeVar
 
+import rdflib
 from csvcubedmodels.rdf.resource import NewResource
-
 
 _logger = logging.getLogger(__name__)
 
 
-def get_from_dict_ensure_exists(config: dict, key: str) -> Any:
+T = TypeVar("T")
+
+
+def get_from_dict_ensure_exists(config: Dict[str, T], key: str) -> T:
     """
     Provides a more user-friendly error message when it cannot find the :obj:`key` in :obj:`config`.
 

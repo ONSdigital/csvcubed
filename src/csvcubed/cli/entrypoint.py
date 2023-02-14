@@ -10,11 +10,10 @@ from pathlib import Path
 import click
 
 from csvcubed import __version__
-from csvcubed.utils.log import log_exception, start_logging
-from csvcubed.cli.inspect.inspect import inspect
 from csvcubed.cli.build import build
+from csvcubed.cli.inspect.inspect import inspect
 from csvcubed.models.errorurl import HasErrorUrl
-
+from csvcubed.utils.log import log_exception, start_logging
 
 _logger = logging.getLogger(__name__)
 

@@ -4,7 +4,7 @@ This guide discusses how to reuse units which have been defined elsewhere within
 
 ## Defining a new unit
 
-csvcubed automatically defines new units using the unique values in your [standard shape](../shape-data.md#standard-shape) cube's units column. If desired, you can gain more control over how the units are defined by providing configuration in a [qube-config.json](./qube-config.md) file.
+csvcubed automatically defines new units using the unique values in your [standard shape](../shape-data/standard-shape.md) cube's units column. If desired, you can gain more control over how the units are defined by providing configuration in a [qube-config.json](./qube-config.md) file.
 
 A data set like the one defined below can be paired with a JSON configuration allowing you to provide additional information about the units you are creating:
 
@@ -14,7 +14,7 @@ A data set like the one defined below can be paired with a JSON configuration al
 
 ```json
 {
-    "$schema": "https://purl.org/csv-cubed/qube-config/v1.0",
+    "$schema": "https://purl.org/csv-cubed/qube-config/v1",
     "columns": {
         "Unit": {
             "type": "units",
@@ -31,7 +31,7 @@ A data set like the one defined below can be paired with a JSON configuration al
 
 **N.B. you must ensure that your units column definition contains defintions for *all* of the units contained within your dataset; the `label` property must match the value found in the cell.**
 
-We can see in the above that we've defined a new unit called `Pounds Sterling (£), Millions` and been able to configure its description; this will give extra context to help people really understand your data. But we can still improve our data by describing how this new unit relates to standardised units defined by other organisations so users can compare your data with other data cubes with confidence.  
+We can see in the above that we've defined a new unit called `Pounds Sterling (£), Millions` and been able to configure its description; this will give extra context to help people really understand your data. But we can still improve our data by describing how this new unit relates to standardised units defined by other organisations so users can compare your data with other data cubes with confidence.
 
 ### Linking a new unit to an existing unit
 
@@ -41,7 +41,7 @@ Our dataset could of course be expressed directly in [PoundSterling](http://qudt
 
 We've done some checking on the [QUDT Units vocabulary](http://www.qudt.org/doc/DOC_VOCAB-UNITS.html#Instances) to make sure that our new unit doesn't duplicating an existing unit so we decide that it is helpful to link `Pounds Sterling (£), Millions` back to [PoundSterling](http://qudt.org/vocab/unit/PoundSterling). This will ensure that software can automatically figure out how to compare our data with other data sets that use units related to [PoundSterling](http://qudt.org/vocab/unit/PoundSterling).
 
-In the following example, we'll show how to define new units for `Pounds Sterling (£), Millions` and `Barrels of petrol per day (,000)` with a [standard shaped](../shape-data.md#standard-shape) cube:
+In the following example, we'll show how to define new units for `Pounds Sterling (£), Millions` and `Barrels of petrol per day (,000)` with a [standard shaped](../shape-data/standard-shape.md) cube:
 
 **1. Ensure that your units column contains the new units' labels**
 
@@ -54,7 +54,7 @@ In the following example, we'll show how to define new units for `Pounds Sterlin
 
 ```json
 {
-    "$schema": "https://purl.org/csv-cubed/qube-config/v1.0",
+    "$schema": "https://purl.org/csv-cubed/qube-config/v1",
     "columns": {
         "Unit": {
             "type": "units",
@@ -79,7 +79,7 @@ In the following example, we'll show how to define new units for `Pounds Sterlin
 }
 ```
 
-**N.B. you must ensure that your units column definition contains defintions for *all* of the units contained within your dataset.**
+**N.B. you must ensure that your units column definition contains definitions for *all* of the units contained within your dataset.**
 
 Taking a closer look at the new `Pounds Sterling (£), Millions` unit:
 
@@ -112,11 +112,11 @@ Taking a closer look at the new `Barrels of petrol per day (,000)` unit:
     // Just like `BBL_UK_PET-PER-DAY`, our new unit is also a kind of volume per unit time.
     "quantity_kind": "http://qudt.org/vocab/quantitykind/VolumePerUnitTime",
 
-    // We state that to convert a value from this unit back to the `BBL_UK_PET-PER-DAY` unit you must multily values by 1,000. 
+    // We state that to convert a value from this unit back to the `BBL_UK_PET-PER-DAY` unit you must multily values by 1,000.
     "scaling_factor": 1000,
 
     // The SI unit for the `VolumePerUnitTime` is cubic meters per second.
-    // According to the webpage at http://qudt.org/vocab/unit/BBL_UK_PET-PER-DAY, 
+    // According to the webpage at http://qudt.org/vocab/unit/BBL_UK_PET-PER-DAY,
     // `BBL_UK_PET-PER-DAY` has an SI scaling factor of `0.000001841587`
     //
     // Since our new unit is 1000 times larger than this, our scaling factor is:

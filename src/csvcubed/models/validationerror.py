@@ -2,11 +2,12 @@
 ValidationError
 ---------------
 """
-from dataclasses import dataclass, field
 from abc import ABC
+from dataclasses import dataclass, field
 from typing import List, Optional
 
 from csvcubedmodels.dataclassbase import DataClassBase
+
 from csvcubed.models.errorurl import HasErrorUrl
 
 
@@ -59,3 +60,13 @@ class PydanticThrowableSpecificValidationError(
     """
 
     pass
+
+
+@dataclass
+class ValidateModelProperiesError(ValidationError):
+
+    """
+    This error will be returned with the name of the variable that has not been validated.
+    """
+
+    property_name: str

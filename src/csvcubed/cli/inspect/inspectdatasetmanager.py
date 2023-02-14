@@ -1,7 +1,6 @@
 """
 Inspect Dataset Manager
 -----------------------
-
 Collection of functions handling csv-related operations used in the inspect cli.
 """
 
@@ -29,9 +28,7 @@ _logger = logging.getLogger(__name__)
 def load_csv_to_dataframe(json_path: Path, csv_path: Path) -> pd.DataFrame:
     """
     Loads the csv in given path to a Panda Dataframe.
-
     Member of :file:`./inspectdatasetmanager.py`
-
     :return: `DataFrame` - Dataframe of the csv.
     """
 
@@ -54,9 +51,7 @@ def get_dataset_observations_info(
 ) -> DatasetObservationsInfoResult:
     """
     Generates the `DatasetObservationsInfoResult` from the dataset.
-
     Member of :file:`./inspectdatasetmanager.py`
-
     :return: `DatasetObservationsInfoResult`
     """
     return DatasetObservationsInfoResult(
@@ -73,9 +68,7 @@ def get_dataset_val_counts_info(
 ) -> DatasetObservationsByMeasureUnitInfoResult:
     """
     Generates the `DatasetObservationsByMeasureUnitInfoResult` from the dataset.
-
     Member of :file:`./inspectdatasetmanager.py`
-
     :return: `DatasetObservationsByMeasureUnitInfoResult`
     """
     _logger.debug(f"Dataset measure column name: {measure_col}")
@@ -95,9 +88,7 @@ def get_concepts_hierarchy_info(
 ) -> CodelistHierarchyInfoResult:
     """
     Generates the `CodelistHierarchyInfoResult` from the codelist.
-
     Member of :file:`./inspectdatasetmanager.py`
-
     :return: `CodelistHierarchyInfoResult`
     """
     concepts_tree = build_concepts_hierarchy_tree(

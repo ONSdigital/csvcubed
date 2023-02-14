@@ -3,14 +3,14 @@ Log
 ---
 Utilities to help with logging.
 """
+import io
 import logging
 import logging.handlers
 import sys
-import io
 import traceback
-
-from typing import Union
 from pathlib import Path
+from typing import Union
+
 from appdirs import AppDirs
 
 
@@ -95,6 +95,10 @@ def _get_logging_level(selected_logging_level: Union[int, str, None]) -> int:
 
 
 def log_exception(logger: logging.Logger, error: Exception) -> None:
+    logger.critical(_get_stack_trace_for_exception(error))
+
+
+def _get_stack_trace_for_exception(error: Exception) -> str:
     file_stream = io.StringIO()
     traceback.print_exception(
         type(error),
@@ -105,5 +109,8 @@ def log_exception(logger: logging.Logger, error: Exception) -> None:
         file=file_stream,
     )
     file_stream.seek(0)
-    stack_trace: str = file_stream.read()
-    logger.critical(stack_trace)
+    return file_stream.read()
+
+
+def debug_log_exception(logger: logging.Logger, error: Exception) -> None:
+    logger.debug(_get_stack_trace_for_exception(error))

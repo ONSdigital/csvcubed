@@ -8,11 +8,11 @@ Contains an enum listing the qube-config.json schema versions recognised by csvc
 import logging
 from enum import Enum
 from pathlib import Path
-from typing import Optional, Callable, Tuple, List
+from typing import Callable, List, Optional, Tuple
 
-from csvcubed.models.cube import QbCube
-from csvcubed.models.validationerror import ValidationError
+from csvcubed.models.cube.cube import QbCube
 from csvcubed.models.jsonvalidationerrors import JsonSchemaValidationError
+from csvcubed.models.validationerror import ValidationError
 from csvcubed.readers.cubeconfig.v1 import configdeserialiser as v1_configdeserialiser
 
 _logger = logging.getLogger(__name__)
@@ -28,7 +28,7 @@ In order to update the MINOR version of qube config, please follow the below ste
     Step 2: Update the _LATEST_V1_SCHEMA_URL and _LATEST_SCHEMA_URL so that they are assigned to the constant defined in Step 1.
     Step 3: Add a new enum to the QubeConfigJsonSchemaMinorVersion to represent the new version.
     Step 4: Add a new elif to the _get_schema_version() to represent the new version.
-    Step 5: Update the schema URLs  to mock for the new version in tests.helpers.schema_mocking
+    Step 5: Add the new URL and file path to _hard_coded_map_url_to_file_path in /utils/cache.py and update the value of the default path (denoted with a comment in the map).
     Step 6: Add a new behaviour test to cube.feature file for validating the cube generation using new version of the schema (e.g. "Successfully outputs a cube using schema v1.3" behave scenario).
 """
 
@@ -36,16 +36,17 @@ _v1_0_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.0"
 _v1_1_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.1"
 _v1_2_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.2"
 _v1_3_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.3"
+_v1_4_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.4"
 V1_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1"  # v1 defaults to the latest minor version of v1.*.
 
-_LATEST_V1_SCHEMA_URL = _v1_3_SCHEMA_URL
+_LATEST_V1_SCHEMA_URL = _v1_4_SCHEMA_URL
 """
     This holds the URL identifying the latest minor version of the V1 schema.
 
     When adding a new minor version to the V1 schema, you must update this variable.
 """
 
-_LATEST_SCHEMA_URL = _v1_3_SCHEMA_URL
+_LATEST_SCHEMA_URL = _v1_4_SCHEMA_URL
 """
     This holds the URL identifying the latest version of the schema.
 
@@ -70,6 +71,7 @@ class QubeConfigJsonSchemaMinorVersion(Enum):
     v1 = 1
     v2 = 2
     v3 = 3
+    v4 = 4
 
 
 def get_deserialiser_for_schema(
@@ -120,6 +122,11 @@ def _get_schema_version(
         return (
             QubeConfigJsonSchemaMajorVersion.v1,
             QubeConfigJsonSchemaMinorVersion.v3,
+        )
+    elif schema_path == _v1_4_SCHEMA_URL:
+        return (
+            QubeConfigJsonSchemaMajorVersion.v1,
+            QubeConfigJsonSchemaMinorVersion.v4,
         )
     else:
         raise ValueError(

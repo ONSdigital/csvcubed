@@ -4,26 +4,26 @@ Standardise
 
 Utilities for standardising cubes and their corresponding data values.
 """
-from typing import List, Dict
+from typing import Dict, List
 
 import pandas as pd
 from pandas.core.arrays.categorical import Categorical
 
-from .cube import get_all_units, get_all_measures, get_columns_of_dsd_type
-from csvcubed.models.cube import QbCube, QbColumn
+from csvcubed.models.cube.cube import QbColumn, QbCube
 from csvcubed.models.cube.qb.components import (
+    NewQbCodeList,
+    NewQbDimension,
     NewQbMeasure,
     NewQbUnit,
     QbAttribute,
+    QbAttributeLiteral,
     QbDimension,
-    NewQbDimension,
-    NewQbCodeList,
     QbMultiMeasureDimension,
     QbMultiUnits,
-    QbAttributeLiteral,
     QbObservationValue,
 )
 
+from .cube import get_all_measures, get_all_units
 
 _unsigned_integer_data_types = {
     "unsignedLong",
@@ -91,13 +91,13 @@ def ensure_int_columns_are_ints(cube: QbCube) -> None:
                 f"Column {column_title} failing,csvw  data type was {data_type}, pandas data type was {cube.data[column_title].dtype}"
             ) from err
 
-    for obs_val_col in get_columns_of_dsd_type(cube, QbObservationValue):
+    for obs_val_col in cube.get_columns_of_dsd_type(QbObservationValue):
         _coerce_to_int_values_if_int(
             obs_val_col.csv_column_title,
             obs_val_col.structural_definition.data_type,
         )
 
-    for attribute_literal_col in get_columns_of_dsd_type(cube, QbAttributeLiteral):
+    for attribute_literal_col in cube.get_columns_of_dsd_type(QbAttributeLiteral):
         _coerce_to_int_values_if_int(
             attribute_literal_col.csv_column_title,
             attribute_literal_col.structural_definition.data_type,
@@ -123,7 +123,7 @@ def convert_data_values_to_uri_safe_values(
     }
     multi_units_columns_with_new_units = [
         c
-        for c in get_columns_of_dsd_type(cube, QbMultiUnits)
+        for c in cube.get_columns_of_dsd_type(QbMultiUnits)
         if all([isinstance(u, NewQbUnit) for u in c.structural_definition.units])
     ]
     _overwrite_labels_for_columns(
@@ -139,7 +139,7 @@ def convert_data_values_to_uri_safe_values(
     }
     multi_measure_dimension_columns_defining_new_measures = [
         meas
-        for meas in get_columns_of_dsd_type(cube, QbMultiMeasureDimension)
+        for meas in cube.get_columns_of_dsd_type(QbMultiMeasureDimension)
         if all(
             [isinstance(m, NewQbMeasure) for m in meas.structural_definition.measures]
         )
@@ -151,7 +151,7 @@ def convert_data_values_to_uri_safe_values(
         raise_missing_value_exceptions,
     )
 
-    for dimension_column in get_columns_of_dsd_type(cube, NewQbDimension):
+    for dimension_column in cube.get_columns_of_dsd_type(NewQbDimension):
         if isinstance(dimension_column.structural_definition.code_list, NewQbCodeList):
             new_code_list = dimension_column.structural_definition.code_list
             map_dim_val_labels_to_uri_identifiers = dict(
@@ -168,7 +168,7 @@ def convert_data_values_to_uri_safe_values(
                 raise_missing_value_exceptions,
             )
 
-    for attribute_column in get_columns_of_dsd_type(cube, QbAttribute):
+    for attribute_column in cube.get_columns_of_dsd_type(QbAttribute):
         attribute = attribute_column.structural_definition
         new_attribute_values: List[NewQbAttributeValue] = attribute.new_attribute_values  # type: ignore
         if (

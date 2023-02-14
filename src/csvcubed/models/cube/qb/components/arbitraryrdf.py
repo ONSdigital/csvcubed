@@ -4,14 +4,16 @@ Arbitrary RDF Container
 
 Defines a mixin permitting arbitrary RDF to be added to a qb component.
 """
-from abc import ABC, abstractmethod, abstractproperty
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from enum import Enum
-from typing import Set, Dict, Union, List, Tuple
-from rdflib.term import Identifier, URIRef, Literal
-from csvcubedmodels.rdf import NewResource, InversePredicate
+from typing import Dict, List, Set, Union
+
+from csvcubedmodels.rdf import InversePredicate, NewResource
+from rdflib.term import Identifier, Literal, URIRef
 
 from csvcubed.models.pydanticmodel import PydanticModel
+from csvcubed.models.validationerror import ValidateModelProperiesError
 from csvcubed.utils.uri import looks_like_uri
 
 
@@ -98,7 +100,7 @@ class ArbitraryRdf(ABC):
         ...
 
     def get_arbitrary_rdf_fragments(self) -> Set[TripleFragmentBase]:
-        return set(self._get_arbitrary_rdf()) 
+        return set(self._get_arbitrary_rdf())
 
     def copy_arbitrary_triple_fragments_to_resources(
         self,
@@ -164,3 +166,17 @@ class ArbitraryRdf(ABC):
                     )
             else:
                 raise Exception(f"Unmatched TripleFragment type {type(fragment)}")
+
+
+def validate_triple_fragment(
+    fragment: TripleFragmentBase, property_name: str
+) -> List[ValidateModelProperiesError]:
+    if not isinstance(fragment, TripleFragmentBase):
+        return [
+            ValidateModelProperiesError(
+                f"I was expecting this to be a {TripleFragmentBase.__name__}, but it isn't.",
+                property_name,
+            )
+        ]
+
+    return []
