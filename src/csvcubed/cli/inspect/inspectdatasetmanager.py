@@ -212,7 +212,7 @@ def get_dataset_val_counts_info(
     return DatasetObservationsByMeasureUnitInfoResult(
         by_measure_and_unit_val_counts_df=pd.DataFrame(
             by_measure_and_unit_grouped.size().reset_index()
-        )
+        ).rename(columns={measure_col: "Measure", unit_col: "Unit", 0: "Count"})
     )
 
 
