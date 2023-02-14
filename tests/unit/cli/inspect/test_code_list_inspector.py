@@ -3,6 +3,7 @@ import pytest
 from csvcubed.models.sparqlresults import CatalogMetadataResult, CodeListTableIdentifers
 from csvcubed.utils.sparql_handler.code_list_inspector import CodeListInspector
 from csvcubed.utils.tableschema import CsvwRdfManager
+from tests.helpers.inspectors_cache import get_code_list_inspector, get_csvw_rdf_manager
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
@@ -17,10 +18,7 @@ def test_code_list_table_identifiers():
         / "pivoted-multi-measure-dataset"
         / "qb-id-10003.csv-metadata.json"
     )
-
-    rdf_manager = CsvwRdfManager(path_to_cube)
-
-    code_list_inspector = CodeListInspector(rdf_manager.csvw_state)
+    code_list_inspector = get_code_list_inspector(path_to_cube)
     code_list_identifiers = code_list_inspector._code_list_table_identifiers
 
     assert len(code_list_identifiers) == 1
@@ -36,10 +34,7 @@ def test_code_list_table_identifiers_error():
     path_to_cube = (
         _test_case_base_dir / "itis-industry-multiple-skos-inscheme.csv-metadata.json"
     )
-
-    rdf_manager = CsvwRdfManager(path_to_cube)
-
-    code_list_inspector = CodeListInspector(rdf_manager.csvw_state)
+    code_list_inspector = get_code_list_inspector(path_to_cube)
 
     with pytest.raises(KeyError) as exception:
         _ = code_list_inspector._code_list_table_identifiers
@@ -58,10 +53,7 @@ def test_get_catalog_metadata_for_concept_scheme():
         / "pivoted-multi-measure-dataset"
         / "qb-id-10003.csv-metadata.json"
     )
-
-    rdf_manager = CsvwRdfManager(path_to_cube)
-
-    code_list_inspector = CodeListInspector(rdf_manager.csvw_state)
+    code_list_inspector = get_code_list_inspector(path_to_cube)
 
     the_result = code_list_inspector.get_catalog_metadata_for_concept_scheme(
         "some-dimension.csv#code-list"
@@ -78,10 +70,7 @@ def test_get_catalog_metadata_for_concept_scheme_error():
     path_to_cube = (
         _test_case_base_dir / "itis-industry-no-skos-inscheme.csv-metadata.json"
     )
-
-    rdf_manager = CsvwRdfManager(path_to_cube)
-
-    code_list_inspector = CodeListInspector(rdf_manager.csvw_state)
+    code_list_inspector = get_code_list_inspector(path_to_cube)
 
     with pytest.raises(ValueError) as exception:
         _ = code_list_inspector.get_catalog_metadata_for_concept_scheme(
@@ -100,10 +89,7 @@ def test_get_table_identifiers_for_concept_scheme_error():
     path_to_cube = (
         _test_case_base_dir / "itis-industry-no-skos-inscheme.csv-metadata.json"
     )
-
-    rdf_manager = CsvwRdfManager(path_to_cube)
-
-    code_list_inspector = CodeListInspector(rdf_manager.csvw_state)
+    code_list_inspector = get_code_list_inspector(path_to_cube)
 
     concept_scheme_url = "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services#scheme/itis-industry"
 

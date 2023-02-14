@@ -33,7 +33,11 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_table_schema_properties,
 )
 from csvcubed.utils.tableschema import CsvwRdfManager, add_triples_for_file_dependencies
-from tests.helpers.inspectors_cache import get_csvw_rdf_manager, get_data_cube_inspector
+from tests.helpers.inspectors_cache import (
+    get_code_list_inspector,
+    get_csvw_rdf_manager,
+    get_data_cube_inspector,
+)
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
@@ -242,17 +246,13 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
         / "pivoted-single-measure-dataset"
         / "qb-id-10004.csv-metadata.json"
     )
-    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-
     data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = data_cube_state.csvw_state.rdf_graph
 
     result: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
         csvw_metadata_rdf_graph
     )
-    data_set_uri = (
-        csvw_rdf_manager.csvw_state.get_primary_catalog_metadata().dataset_uri
-    )
+    data_set_uri = data_cube_state.csvw_state.get_primary_catalog_metadata().dataset_uri
     csv_url = data_cube_state.get_cube_identifiers_for_data_set(data_set_uri).csv_url
 
     result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(csv_url)
@@ -342,16 +342,13 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
         / "pivoted-multi-measure-dataset"
         / "qb-id-10003.csv-metadata.json"
     )
-    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = data_cube_state.csvw_state.rdf_graph
 
     result: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
         csvw_metadata_rdf_graph
     )
-    primary_catalog_metadata = (
-        csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
-    )
+    primary_catalog_metadata = data_cube_state.csvw_state.get_primary_catalog_metadata()
 
     data_set_uri = primary_catalog_metadata.dataset_uri
     csv_url = data_cube_state.get_cube_identifiers_for_data_set(data_set_uri).csv_url
@@ -458,16 +455,13 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
         / "pivoted-single-measure-dataset"
         / "qb-id-10004.csv-metadata.json"
     )
-    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
+    csvw_metadata_rdf_graph = data_cube_state.csvw_state.rdf_graph
 
     result: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
         csvw_metadata_rdf_graph
     )
-    primary_catalog_metadata = (
-        csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
-    )
+    primary_catalog_metadata = data_cube_state.csvw_state.get_primary_catalog_metadata()
 
     data_set_uri = primary_catalog_metadata.dataset_uri
     csv_url = data_cube_state.get_cube_identifiers_for_data_set(data_set_uri).csv_url
@@ -656,11 +650,10 @@ def test_select_codelist_cols_by_csv_url():
     Should return expected `CodeListColsByDatasetUrlResult`.
     """
     csvw_metadata_json_path = _test_case_base_dir / "alcohol-content.csv-metadata.json"
-    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
+    code_list_inspector = get_code_list_inspector(csvw_metadata_json_path)
     primary_catalogue_metadata = (
-        csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
+        code_list_inspector.csvw_state.get_primary_catalog_metadata()
     )
-    code_list_inspector = CodeListInspector(csvw_rdf_manager.csvw_state)
     csv_url = code_list_inspector.get_table_identifiers_for_concept_scheme(
         primary_catalogue_metadata.dataset_uri
     ).csv_url

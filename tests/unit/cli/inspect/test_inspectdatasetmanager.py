@@ -34,7 +34,11 @@ from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_primary_key_col_names_by_csv_url,
 )
-from tests.helpers.inspectors_cache import get_csvw_rdf_manager, get_data_cube_inspector
+from tests.helpers.inspectors_cache import (
+    get_code_list_inspector,
+    get_csvw_rdf_manager,
+    get_data_cube_inspector,
+)
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
@@ -747,16 +751,15 @@ def test_get_concepts_hierarchy_info_hierarchy_with_depth_of_one():
         / "multi-unit_multi-measure"
         / "alcohol-content.csv-metadata.json"
     )
-    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
-    code_list_inspector = CodeListInspector(csvw_rdf_manager.csvw_state)
+    code_list_inspector = get_code_list_inspector(csvw_metadata_json_path)
 
     (dataset, csv_url) = _get_arguments_skos_codelist(code_list_inspector)
 
-    result_code_list_cols = csvw_rdf_manager.csvw_state.get_column_definitions_for_csv(
-        csv_url
+    result_code_list_cols = (
+        code_list_inspector.csvw_state.get_column_definitions_for_csv(csv_url)
     )
     result_primary_key_col_names_by_csv_url = select_primary_key_col_names_by_csv_url(
-        csvw_rdf_manager.rdf_graph, csv_url
+        code_list_inspector.csvw_state.rdf_graph, csv_url
     )
 
     parent_notation_col_name = get_codelist_col_title_by_property_url(
@@ -784,16 +787,15 @@ def test_get_concepts_hierarchy_info_hierarchy_with_depth_more_than_one():
     Should produce the expected tree structure for the given codelist.
     """
     csvw_metadata_json_path = _test_case_base_dir / "itis-industry.csv-metadata.json"
-    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
-    code_list_inspector = CodeListInspector(csvw_rdf_manager.csvw_state)
+    code_list_inspector = get_code_list_inspector(csvw_metadata_json_path)
 
     (dataset, csv_url) = _get_arguments_skos_codelist(code_list_inspector)
 
-    result_code_list_cols = csvw_rdf_manager.csvw_state.get_column_definitions_for_csv(
-        csv_url
+    result_code_list_cols = (
+        code_list_inspector.csvw_state.get_column_definitions_for_csv(csv_url)
     )
     result_primary_key_col_names_by_csv_url = select_primary_key_col_names_by_csv_url(
-        csvw_rdf_manager.rdf_graph, csv_url
+        code_list_inspector.csvw_state.rdf_graph, csv_url
     )
 
     parent_notation_col_name = get_codelist_col_title_by_property_url(
