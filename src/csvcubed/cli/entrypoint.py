@@ -34,8 +34,7 @@ def version():
     print(f"v{__version__}")
 
 
-@entry_point.command("build")
-@click.option(
+config_option = click.option(
     "--config",
     "-c",
     help="Location of the json file containing the qube-config file.",
@@ -43,7 +42,7 @@ def version():
     required=False,
     metavar="CONFIG_PATH",
 )
-@click.option(
+out_option = click.option(
     "--out",
     "-o",
     help="Location of the CSV-W outputs.",
@@ -52,13 +51,13 @@ def version():
     type=click.Path(path_type=Path, file_okay=False, dir_okay=True),
     metavar="OUT_DIR",
 )
-@click.option(
+fail_option = click.option(
     "--fail-when-validation-error/--ignore-validation-errors",
     help="Fail when validation errors occur or ignore validation errors and continue generating a CSV-W.",
     default=True,
     show_default=True,
 )
-@click.option(
+validation_option = click.option(
     "--validation-errors-to-file",
     "validation_errors_to_file",
     help="Save validation errors to a `validation-errors.json` file in the output directory.",
@@ -66,12 +65,20 @@ def version():
     default=False,
     show_default=True,
 )
-@click.option(
+log_option = click.option(
     "--log-level",
     help="select a logging level out of: 'warn', 'err', 'crit', 'info' or 'debug'.",
     type=click.Choice(["warn", "err", "crit", "info", "debug"], case_sensitive=False),
     default="warn",
 )
+
+
+@entry_point.command("build")
+@config_option
+@out_option
+@fail_option
+@validation_option
+@log_option
 @click.argument(
     "csv", type=click.Path(exists=True, path_type=Path), metavar="TIDY_CSV_PATH"
 )
@@ -105,12 +112,7 @@ def build_command(
 
 
 @entry_point.command("inspect")
-@click.option(
-    "--log-level",
-    help="select a logging level out of: 'warn', 'err', 'crit', 'info' or 'debug'.",
-    type=click.Choice(["warn", "err", "crit", "info", "debug"], case_sensitive=False),
-    default="warn",
-)
+@log_option
 @click.argument(
     "csvw_metadata_json_path",
     type=click.Path(exists=True, path_type=Path),
@@ -132,15 +134,10 @@ def inspect_command(log_level: str, csvw_metadata_json_path: Path) -> None:
 # NEW COMMAND TEST AREA
 ###########################
 @entry_point.command("code-list-build")
-@click.option(
-    "--out",
-    "-o",
-    help="Location of the CSV-W outputs.",
-    default="./out",
-    show_default=True,
-    type=click.Path(path_type=Path, file_okay=False, dir_okay=True),
-    metavar="OUT_DIR",
-)
+@out_option
+@fail_option
+@validation_option
+@log_option
 @click.argument(
     "config",
     type=click.Path(exists=True, path_type=Path),
@@ -149,6 +146,8 @@ def inspect_command(log_level: str, csvw_metadata_json_path: Path) -> None:
 def code_list_build_command(
     config: Path,
     out: Path,
+    fail_when_validation_error_occurs: bool,
+    validation_errors_file_name: str,
 ):
     """Build a qb-flavoured CSV-W from a tidy CSV."""
 
@@ -157,6 +156,8 @@ def code_list_build_command(
         build_code_list(
             config_path=config,
             output_directory=out,
+            fail_when_validation_error_occurs=fail_when_validation_error_occurs,
+            validation_errors_file_name=validation_errors_file_name,
         )
 
     except Exception as e:
