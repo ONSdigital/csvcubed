@@ -3,7 +3,6 @@ Build Command
 -------------
 Build a qb-flavoured CSV-W from a config.json and a tidy CSV.
 """
-
 import logging
 from pathlib import Path
 from typing import List, Optional, Tuple
