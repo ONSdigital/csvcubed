@@ -347,7 +347,9 @@ def step_impl(context):
 
     assert len(result_code_lists.codelists) == 1
     assert (
-        first(result_code_lists.codelists, lambda c: c.cols_used_in == "Some Dimension")
+        first(
+            result_code_lists.codelists, lambda c: c.cols_used_in[0] == "Some Dimension"
+        )
         is not None
     )
 
@@ -537,7 +539,9 @@ def step_impl(context):
 
     assert len(result_code_lists.codelists) == 1
     assert (
-        first(result_code_lists.codelists, lambda c: c.cols_used_in == "Some Dimension")
+        first(
+            result_code_lists.codelists, lambda c: c.cols_used_in[0] == "Some Dimension"
+        )
         is not None
     )
 

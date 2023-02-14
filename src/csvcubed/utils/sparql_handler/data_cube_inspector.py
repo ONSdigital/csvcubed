@@ -215,7 +215,8 @@ class DataCubeInspector:
         """
         Get the codelists and columns associated with the given csv url.
         """
-        return self._get_value_for_key(csv_url, self._codelists_and_cols)
+
+        return self._codelists_and_cols.get(csv_url, CodelistsResult([], 0))
 
     def get_suppressed_columns_for_csv(self, csv_url: str) -> List[str]:
         """
