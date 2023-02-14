@@ -36,10 +36,7 @@ def test_multi_measure_pivoted_shape_cube_observation_and_count_info():
     assert result_code_lists is not None
 
     assert len(result_code_lists.codelists) == 1
-    assert (
-        first(result_code_lists.codelists, lambda c: c.cols_used_in == "Some Dimension")
-        is not None
-    )
+    assert result_code_lists.codelists[0].cols_used_in == "Some Dimension"
 
     result_dataset_observations_info: DatasetObservationsInfoResult = (
         metadata_printer.result_dataset_observations_info
@@ -78,9 +75,6 @@ def test_multi_measure_pivoted_shape_cube_observation_and_count_info():
         ]
     )
     assert result_dataset_value_counts.by_measure_and_unit_val_counts_df.empty == False
-    assert type(expected_df.columns[0]) == type(
-        result_dataset_value_counts.by_measure_and_unit_val_counts_df.columns[0]
-    )
     assert_frame_equal(
         result_dataset_value_counts.by_measure_and_unit_val_counts_df, expected_df
     )
@@ -102,10 +96,7 @@ def test_single_measure_pivoted_shape_cube_observation_and_count_info():
     assert result_code_lists is not None
 
     assert len(result_code_lists.codelists) == 1
-    assert (
-        first(result_code_lists.codelists, lambda c: c.cols_used_in == "Some Dimension")
-        is not None
-    )
+    assert result_code_lists.codelists[0].cols_used_in == "Some Dimension"
 
     result_dataset_observations_info: DatasetObservationsInfoResult = (
         metadata_printer.result_dataset_observations_info
