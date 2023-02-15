@@ -77,9 +77,13 @@ def test_get_table_schema_properties():
 
     result = csvw_inspector.get_table_schema_properties()
 
-    assert result.about_url == "some-dimension.csv#{+uri_identifier}"
-    assert result.table_url == "some-dimension.csv"
-    assert result.value_url == "some-dimension.csv#code-list"
+    assert (
+        result.table_schema_properties[0].about_url
+        == "some-dimension.csv#{+uri_identifier}"
+    )
+    assert result.table_schema_properties[0].table_url == "some-dimension.csv"
+    assert result.table_schema_properties[0].value_url == "some-dimension.csv#code-list"
+    assert result.table_schema_properties[0].primary_key_col_names == "uri_identifier"
 
 
 def test_get_codelist_primary_key_by_csv_url():

@@ -92,12 +92,14 @@ class CsvWInspector:
             f"Could not find catalog metadata in primary graph '{self.primary_graph_uri}'."
         )
 
-    def get_table_schema_properties(self, csv_url: str) -> TableSchemaPropertiesResult:
+    def get_table_schema_properties(self) -> TableSchemaPropertiesResults:
         """
         Retrieves the stored result of the table schema properties cached property.
         """
-        result: TableSchemaPropertiesResult = get_from_dict_ensure_exists(
-            self._table_schema_properties, csv_url
+        str_for_input = self._table_schema_properties.keys()
+        keys = list(str_for_input)
+        result: TableSchemaPropertiesResults = get_from_dict_ensure_exists(
+            self._table_schema_properties, keys[0]
         )
         return result
 
