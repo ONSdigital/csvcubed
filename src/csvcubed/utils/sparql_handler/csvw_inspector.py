@@ -10,6 +10,7 @@ from csvcubed.models.sparqlresults import (
     CatalogMetadataResult,
     PrimaryKeyColNamesByDatasetUrlResult,
     TableSchemaPropertiesResult,
+    TableSchemaPropertiesResults,
 )
 from csvcubed.utils.dict import get_from_dict_ensure_exists
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
@@ -56,16 +57,16 @@ class CsvWInspector:
             )
 
     @cached_property
-    def _table_schema_properties(self) -> Dict[str, TableSchemaPropertiesResult]:
+    def _table_schema_properties(self) -> Dict[str, TableSchemaPropertiesResults]:
         """
         Cached property for the select_table_schema_properties query that stores the query's results.
         """
         results = select_table_schema_properties(self.rdf_graph)
-        results_dict: Dict[str, TableSchemaPropertiesResult] = {}
-        for result in results:
-            results_dict[result.csv_url] = result
+        # results_dict: Dict[str, TableSchemaPropertiesResult] = {}
+        # for result in results:
+        #     results_dict[result.csv_url] = result
 
-        return results_dict
+        return results
 
     @cached_property
     def _primary_key_by_csv_url(self) -> PrimaryKeyColNamesByDatasetUrlResult:

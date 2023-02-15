@@ -238,6 +238,14 @@ class TableSchemaPropertiesResult:
     about_url: str
     value_url: str
     table_url: str
+    primary_key_col_names: List[PrimaryKeyColNameByDatasetUrlResult]
+
+
+@dataclass
+class TableSchemaPropertiesResults:
+    """ """
+
+    table_schema_properties: List[TableSchemaPropertiesResult]
 
 
 @dataclass
@@ -733,7 +741,7 @@ def map_metadata_dependency_results(
     return [map_row(row.asdict()) for row in sparql_results]
 
 
-def map_table_schema_properties_result(
+def _map_table_schema_properties_result(
     sparql_result: ResultRow,
 ) -> TableSchemaPropertiesResult:
     """
@@ -749,6 +757,35 @@ def map_table_schema_properties_result(
         about_url=str(result_dict["tableAboutUrl"]),
         value_url=str(result_dict["columnValueUrl"]),
         table_url=str(result_dict["csvUrl"]),
+        primary_key_col_names=str(result_dict["tablePrimaryKey"]),
+    )
+    return result
+
+
+def map_table_schema_properties_results(
+    sparql_results: List[ResultRow],
+) -> Dict[str, TableSchemaPropertiesResults]:
+    """ """
+    table_schema_properties = map(
+        lambda result: _map_table_schema_properties_result(result),
+        sparql_results,
+    )
+
+    map_csv_url_to_table_schema_properties = group_by(
+        table_schema_properties, lambda c: c.table_url
+    )
+
+    return {
+        table_url: TableSchemaPropertiesResults(
+            table_schema_properties=table_schema_properties
+        )
+        for (
+            table_url,
+            table_schema_properties,
+        ) in map_csv_url_to_table_schema_properties.items()
+    }
+    result = TableSchemaPropertiesResults(
+        table_schema_properties=table_schema_properties
     )
     return result
 
