@@ -2,15 +2,13 @@
 Data Cube State
 ---------------
 
-Provides access to inspect the contents of an rdflib.ConjunctiveGraph containing
+Provides access to inspect the contents of an rdflib graph containing
 one of more data cubes.
 """
 
 from dataclasses import dataclass
 from functools import cached_property
-from pathlib import Path
-from typing import Dict, List, Optional, TypeVar
-from urllib.parse import urljoin
+from typing import Dict, List, Optional
 
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import (
@@ -22,16 +20,12 @@ from csvcubed.models.sparqlresults import (
 from csvcubed.utils.dict import get_from_dict_ensure_exists
 from csvcubed.utils.iterables import first, group_by
 from csvcubed.utils.sparql_handler.csvw_state import CsvWState
-from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_csvw_dsd_qube_components,
     select_data_set_dsd_and_csv_url,
     select_is_pivoted_shape_for_measures_in_data_set,
     select_units,
 )
-from csvcubed.utils.uri import looks_like_uri
-
-T = TypeVar("T")
 
 
 @dataclass
@@ -44,7 +38,7 @@ class DataCubeState:
 
     @cached_property
     def _units(self) -> Dict[str, UnitResult]:
-        """todo: Fill me in"""
+        """Gets the unit_uri for each UnitResult"""
         results = select_units(self.csvw_state.rdf_graph)
         return {result.unit_uri: result for result in results}
 
@@ -131,7 +125,8 @@ class DataCubeState:
 
     def get_cube_identifiers_for_csv(self, csv_url: str) -> CubeTableIdentifiers:
         """
-        Getter for data_set_dsd_and_csv_url_for_csv_url cached property.
+        Getter for data_set_dsd_and_csv_url_for_csv_url cached property, Raises a KeyError if the csv_url
+        is not associated with a CubeTableIdentifiers.
         """
         result: CubeTableIdentifiers = get_from_dict_ensure_exists(
             self._cube_table_identifiers, csv_url
@@ -156,12 +151,14 @@ class DataCubeState:
 
     def get_dsd_qube_components_for_csv(self, csv_url: str) -> QubeComponentsResult:
         """
-        Getter for DSD Qube Components cached property.
+        Getter for DSD Qube Components cached property, Raises a KeyError if the csv_url
+        is not associated with a CubeComponentResult.
         """
         return get_from_dict_ensure_exists(self._dsd_qube_components, csv_url)
 
     def get_shape_for_csv(self, csv_url: str) -> CubeShape:
         """
-        Getter for CubeShape.
+        Returns the shape of the cube stored in a given CSV file,
+         Raises a KeyError if the csv_url is not associated with a cube.
         """
         return get_from_dict_ensure_exists(self._cube_shapes, csv_url)

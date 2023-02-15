@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from functools import cached_property
 from pathlib import Path
-from typing import Dict, List, TypeVar
+from typing import Dict, List
 
 import rdflib
 
@@ -16,8 +16,6 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_column_definitions,
     select_csvw_catalog_metadata,
 )
-
-T = TypeVar("T")
 
 
 @dataclass
@@ -73,7 +71,8 @@ class CsvWState:
 
     def get_column_definitions_for_csv(self, csv_url: str) -> List[ColumnDefinition]:
         """
-        Returns the `ColumnDefinition`s for a given csv file.
+        Returns the `ColumnDefinition`s for a given csv file, raises a KeyError if the csv_url
+        is not associated with a ColumnDefinition.
         """
         result: List[ColumnDefinition] = get_from_dict_ensure_exists(
             self.column_definitions, csv_url

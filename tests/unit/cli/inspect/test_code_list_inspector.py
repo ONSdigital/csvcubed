@@ -70,13 +70,13 @@ def test_get_catalog_metadata_for_concept_scheme_error():
     )
     code_list_inspector = get_code_list_inspector(path_to_cube)
 
-    with pytest.raises(ValueError) as exception:
+    with pytest.raises(KeyError) as exception:
         _ = code_list_inspector.get_catalog_metadata_for_concept_scheme(
             "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services#scheme/it-industry"
         )
 
     assert (
-        "None of the results can be associated with the http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services#scheme/it-industry"
+        "Can not find Catalogue Meatadata associated with the concept scheme URL 'http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services#scheme/it-industry'"
     ) in str(exception.value)
 
 

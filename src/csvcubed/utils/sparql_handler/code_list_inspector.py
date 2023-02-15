@@ -70,7 +70,8 @@ class CodeListInspector:
     def get_table_identifiers_for_concept_scheme(
         self, concept_scheme_url: str
     ) -> CodeListTableIdentifers:
-        """This function check the CodeListTableIdentifers and returns the value thats concept_scheme_url mathces with the given argument."""
+        """Returns the table identifiers (csv URL & concept scheme URL) for a given concept scheme URL.
+        Raises a KeyError if it cannot be found."""
         identifiers = first(
             self._code_list_table_identifiers,
             lambda i: i.concept_scheme_url == concept_scheme_url,
@@ -86,7 +87,7 @@ class CodeListInspector:
     def get_catalog_metadata_for_concept_scheme(
         self, concept_scheme_url: str
     ) -> CatalogMetadataResult:
-        """This function will access the catalogmetadataResult and compares the concept_sceme_url and returns the relevant value"""
+        """Returns the Catalogue Metadata for a given ConceptScheme. Raises a KeyError if it cannot be found."""
         catalog_mdata_results = self.csvw_state.catalog_metadata
 
         result = first(
@@ -94,8 +95,8 @@ class CodeListInspector:
         )
 
         if result is None:
-            raise ValueError(
-                f"None of the results can be associated with the {concept_scheme_url}"
+            raise KeyError(
+                f"Can not find Catalogue Meatadata associated with the concept scheme URL '{concept_scheme_url}'."
             )
 
         return result
