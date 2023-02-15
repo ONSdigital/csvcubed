@@ -5,12 +5,13 @@ Build a qb-flavoured CSV-W from a config.json and a tidy CSV.
 """
 import logging
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Union
 
 from csvcubed.models.cube.cube import QbCube
 from csvcubed.models.jsonvalidationerrors import JsonSchemaValidationError
 from csvcubed.models.validationerror import ValidationError
 from csvcubed.readers.cubeconfig.schema_versions import (
+    CodeListConfigDeserialiser,
     QubeConfigDeserialiser,
     get_deserialiser_for_schema,
 )
@@ -60,7 +61,7 @@ def _extract_and_validate_cube(
         config_path.absolute() if config_path is not None else "",
     )
 
-    deserialiser = _get_versioned_deserialiser(config_path)
+    deserialiser = get_versioned_deserialiser(config_path)
 
     cube, json_schema_validation_errors, validation_errors = deserialiser(
         csv_path, config_path
@@ -72,9 +73,9 @@ def _extract_and_validate_cube(
     return cube, json_schema_validation_errors, validation_errors
 
 
-def _get_versioned_deserialiser(
+def get_versioned_deserialiser(
     json_config_path: Optional[Path],
-) -> QubeConfigDeserialiser:
+) -> Union[QubeConfigDeserialiser, CodeListConfigDeserialiser]:
     """
     Return the correct version of the config deserialiser based on the schema in the cube config file
     """

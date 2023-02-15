@@ -8,6 +8,7 @@ import logging
 from pathlib import Path
 from typing import List, Optional, Tuple
 
+from csvcubed.cli.build import get_versioned_deserialiser
 from csvcubed.models.codelistconfig.code_list_config import CodeListConfig
 from csvcubed.models.cube.qb.components import NewQbCodeList
 from csvcubed.models.jsonvalidationerrors import JsonSchemaValidationError
@@ -33,6 +34,14 @@ def _extract_and_validate_code_list(
         code_list_config_path
     )
     schema = load_resource(code_list_config.schema)
+
+    code_list_deserialiser = get_versioned_deserialiser(code_list_config_path)
+
+    (
+        something_else,
+        json_schema_validation_errors,
+        validation_errors,
+    ) = code_list_deserialiser(code_list_config_path)
 
     unmapped_schema_validation_errors = validate_dict_against_schema(
         value=code_list_config_dict, schema=schema
