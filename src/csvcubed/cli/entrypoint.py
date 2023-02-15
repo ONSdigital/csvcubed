@@ -133,7 +133,12 @@ def inspect_command(log_level: str, csvw_metadata_json_path: Path) -> None:
 ###########################
 # NEW COMMAND TEST AREA
 ###########################
-@entry_point.command("code-list-build")
+@entry_point.group("code-list", help="Something something something.")
+def code_list():
+    ...
+
+
+@code_list.command("build")
 @out_option
 @fail_option
 @validation_option
@@ -146,17 +151,22 @@ def inspect_command(log_level: str, csvw_metadata_json_path: Path) -> None:
 def code_list_build_command(
     config: Path,
     out: Path,
-    fail_when_validation_error_occurs: bool,
-    validation_errors_file_name: str,
+    log_level: str,
+    fail_when_validation_error: bool,
+    validation_errors_to_file: str,
 ):
-    """Build a qb-flavoured CSV-W from a tidy CSV."""
+    """Build a skos-flavoured code list CSV-W from a tidy code list JSON file."""
+    validation_errors_file_name = (
+        "validation-errors.json" if validation_errors_to_file else None
+    )
 
     out.mkdir(parents=True, exist_ok=True)
+    start_logging(log_dir_name="csvcubed-cli", selected_logging_level=log_level)
     try:
         build_code_list(
             config_path=config,
             output_directory=out,
-            fail_when_validation_error_occurs=fail_when_validation_error_occurs,
+            fail_when_validation_error_occurs=fail_when_validation_error,
             validation_errors_file_name=validation_errors_file_name,
         )
 
