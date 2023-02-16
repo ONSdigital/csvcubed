@@ -66,7 +66,7 @@ def test_get_codelist_col_title_by_property_url_notation():
         csvw_metadata_rdf_graph, csv_url
     )
     result_primary_key_col_names_by_csv_url = (
-        csvw_inspector.get_table_schema_properties().table_schema_properties
+        csvw_inspector.get_table_schema_properties(csv_url).table_schema_properties
     )
 
     unique_identifier = get_codelist_col_title_from_col_name(

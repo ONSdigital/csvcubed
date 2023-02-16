@@ -112,7 +112,7 @@ class CsvWInspector:
         """
         Retrieves the stored result of the table schema properties cached property.
         """
-        all_table_schemas = self._table_schema_properties()
+        all_table_schemas = self._table_schema_properties
         table_schema_dict_keys = self._table_schema_properties.keys()
         keys_list = list(table_schema_dict_keys)
 
