@@ -12,6 +12,7 @@ from typing import Set, Tuple
 from uritemplate import variables
 
 from csvcubed.utils.iterables import first
+from csvcubed.utils.sparql_handler.code_list_inspector import CodeListInspector
 from csvcubed.utils.sparql_handler.csvw_inspector import CsvWInspector
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_table_schema_properties,
@@ -35,9 +36,13 @@ def extract_code_list_concept_scheme_info(
     csvw_rdf_manager = CsvwRdfManager(code_list_csvw_path)
     csvw_inspector = csvw_rdf_manager.csvw_inspector
     concept_scheme_uri = csvw_inspector.get_primary_catalog_metadata().dataset_uri
-    code_list_inspector = CodeListInspector(csvw_inspector)
+    csv_url = (
+        CodeListInspector(csvw_inspector)
+        .get_table_identifiers_for_concept_scheme(concept_scheme_uri)
+        .csv_url
+    )
     # csvw_inspector.identifiers
-    result = csvw_inspector.get_table_schema_properties()
+    result = csvw_inspector.get_table_schema_properties(csv_url)
 
     about_url = result.table_schema_properties[0].about_url
     concept_scheme_uri = result.table_schema_properties[0].value_url

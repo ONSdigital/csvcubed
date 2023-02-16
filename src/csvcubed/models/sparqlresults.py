@@ -161,6 +161,16 @@ class CodelistsResult:
 
 
 @dataclass
+class CodeListTableIdentifers:
+    """
+    Table identifiers to support mapping between csv_url and concept_scheme_url
+    """
+
+    csv_url: str
+    concept_scheme_url: str
+
+
+@dataclass
 class CsvUrlResult:
     """
     Model to represent select csv url result.

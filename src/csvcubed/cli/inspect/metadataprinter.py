@@ -45,7 +45,7 @@ from csvcubed.utils.skos.codelist import (
     get_codelist_col_title_by_property_url,
     get_codelist_col_title_from_col_name,
 )
-from csvcubed.utils.sparql_handler.code_list_state import CodeListState
+from csvcubed.utils.sparql_handler.code_list_inspector import CodeListState
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
