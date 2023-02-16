@@ -12,6 +12,10 @@ from csvcubed.models.codelistconfig.code_list_config import CodeListConfig
 from csvcubed.models.cube.qb.components import NewQbCodeList
 from csvcubed.models.jsonvalidationerrors import JsonSchemaValidationError
 from csvcubed.models.validationerror import ValidationError
+from csvcubed.readers.codelistconfig.codelist_schema_versions import (
+    CodeListConfigDeserialiser,
+    get_deserialiser_for_code_list_schema,
+)
 from csvcubed.readers.cubeconfig.utils import load_resource
 from csvcubed.utils.cli import log_validation_and_json_schema_errors
 from csvcubed.utils.validators.schema import (
@@ -58,11 +62,17 @@ def build_code_list(
     fail_when_validation_error_occurs: bool = False,
     validation_errors_file_name: Optional[str] = None,
 ):
-    (
-        code_list,
-        json_schema_validation_errors,
-        validation_errors,
-    ) = _extract_and_validate_code_list(config_path)
+    # (
+    #     code_list,
+    #     json_schema_validation_errors,
+    #     validation_errors,
+    # ) = _extract_and_validate_code_list(config_path)
+
+    code_list_deserialiser = get_code_list_versioned_deserialiser(config_path)
+
+    code_list, json_schema_validation_errors, validation_errors = sort_out(
+        code_list_deserialiser, config_path
+    )
 
     log_validation_and_json_schema_errors(
         output_directory,
@@ -81,3 +91,27 @@ def build_code_list(
 
     print(f"Build Complete @ {output_directory.resolve()}")
     return
+
+
+def get_code_list_versioned_deserialiser(
+    json_config_path: Optional[Path],
+) -> CodeListConfigDeserialiser:
+    """
+    Return the correct version of the config deserialiser based on the schema in the code list config file
+    """
+    if json_config_path:
+        config = load_resource(json_config_path)
+        return get_deserialiser_for_code_list_schema(config.get("$schema"))
+    else:
+        return get_deserialiser_for_code_list_schema(None)
+
+
+def sort_out(
+    the_data_we_need_now: CodeListConfigDeserialiser, config_path: Path
+) -> Tuple[NewQbCodeList, List[JsonSchemaValidationError], List[ValidationError]]:
+
+    code_list, json_schema_validation_errors, validation_errors = the_data_we_need_now(
+        config_path
+    )
+
+    return code_list, json_schema_validation_errors, validation_errors
