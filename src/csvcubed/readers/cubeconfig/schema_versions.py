@@ -8,25 +8,21 @@ Contains an enum listing the qube-config.json schema versions recognised by csvc
 import logging
 from enum import Enum
 from pathlib import Path
-from typing import Callable, List, Optional, Tuple, Union
+from typing import Callable, List, Optional, Tuple
 
 from csvcubed.models.cube.cube import QbCube
-from csvcubed.models.cube.qb.components import NewQbCodeList
 from csvcubed.models.jsonvalidationerrors import JsonSchemaValidationError
 from csvcubed.models.validationerror import ValidationError
 from csvcubed.readers.cubeconfig.v1 import configdeserialiser as v1_configdeserialiser
 
 _logger = logging.getLogger(__name__)
 
+
 QubeConfigDeserialiser = Callable[
     [Path, Optional[Path]],
     Tuple[QbCube, List[JsonSchemaValidationError], List[ValidationError]],
 ]
 
-CodeListConfigDeserialiser = Callable[
-    [Path],
-    Tuple[NewQbCodeList, List[JsonSchemaValidationError], List[ValidationError]],
-]
 """
 In order to update the MINOR version of qube config, please follow the below steps.
     Step 1: Define a new constant to hold the PURL of the new schema (e.g. _v1_3_SCHEMA_URL).
@@ -80,34 +76,9 @@ class QubeConfigJsonSchemaMinorVersion(Enum):
     v4 = 4
 
 
-_v1_0_CODELIST_SCHEMA_URL = "https://purl.org/purl/csv-cubed/code-list-config/v1.0"
-_v1_1_CODELIST_SCHEMA_URL = "https://purl.org/purl/csv-cubed/code-list-config/v1.1"
-V1_CODELIST_SCHEMA_URL = "https://purl.org/purl/csv-cubed/code-list-config/v1"  # v1 defaults to the latest minor version of v1.*.
-
-_LATEST_V1_CODELIST_SCHEMA_URL = _v1_1_CODELIST_SCHEMA_URL
-_LATEST_CODELIST_SCHEMA_URL = _v1_1_CODELIST_SCHEMA_URL
-
-
-class CodeListConfigJsonSchemaMajorVersion(Enum):
-    """
-    Major versions of the code list config schema.
-    """
-
-    v1 = 1
-
-
-class CodeListConfigJsonSchemaMinorVersion(Enum):
-    """
-    Minor versions of the code list config schema.
-    """
-
-    v0 = 0
-    v1 = 1
-
-
 def get_deserialiser_for_schema(
     maybe_schema_path: Optional[str],
-) -> Union[QubeConfigDeserialiser, CodeListConfigDeserialiser]:
+) -> QubeConfigDeserialiser:
     """
     Provides a versioned deserialiser function appropriate to the referenced schema.
     """
@@ -132,9 +103,6 @@ def _get_schema_version(
 ) -> Tuple[QubeConfigJsonSchemaMajorVersion, QubeConfigJsonSchemaMinorVersion]:
     if schema_path == V1_SCHEMA_URL:
         schema_path = _LATEST_V1_SCHEMA_URL
-
-    if schema_path == V1_CODELIST_SCHEMA_URL:
-        schema_path = _LATEST_CODELIST_SCHEMA_URL
 
     if schema_path == _v1_0_SCHEMA_URL:
         return (
@@ -161,16 +129,6 @@ def _get_schema_version(
         return (
             QubeConfigJsonSchemaMajorVersion.v1,
             QubeConfigJsonSchemaMinorVersion.v4,
-        )
-    elif schema_path == _v1_0_CODELIST_SCHEMA_URL:
-        return (
-            CodeListConfigJsonSchemaMajorVersion.v1,
-            CodeListConfigJsonSchemaMinorVersion.v1,
-        )
-    elif schema_path == _v1_1_CODELIST_SCHEMA_URL:
-        return (
-            CodeListConfigJsonSchemaMajorVersion.v1,
-            CodeListConfigJsonSchemaMinorVersion.v1,
         )
     else:
         raise ValueError(

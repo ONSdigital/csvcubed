@@ -11,7 +11,6 @@ from csvcubed.models.cube.cube import QbCube
 from csvcubed.models.jsonvalidationerrors import JsonSchemaValidationError
 from csvcubed.models.validationerror import ValidationError
 from csvcubed.readers.cubeconfig.schema_versions import (
-    CodeListConfigDeserialiser,
     QubeConfigDeserialiser,
     get_deserialiser_for_schema,
 )
@@ -75,7 +74,7 @@ def _extract_and_validate_cube(
 
 def get_versioned_deserialiser(
     json_config_path: Optional[Path],
-) -> Union[QubeConfigDeserialiser, CodeListConfigDeserialiser]:
+) -> QubeConfigDeserialiser:
     """
     Return the correct version of the config deserialiser based on the schema in the cube config file
     """
