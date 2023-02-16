@@ -21,7 +21,7 @@ from csvcubed.models.sparqlresults import (
 )
 from csvcubed.utils.iterables import first
 from csvcubed.utils.qb.components import ComponentPropertyType
-from csvcubed.utils.sparql_handler.code_list_state import CodeListState
+from csvcubed.utils.sparql_handler.code_list_inspector import CodeListInspector
 from csvcubed.utils.sparql_handler.csvw_state import CsvWState
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
@@ -129,9 +129,9 @@ def step_impl(context):
         context.csvw_metadata_rdf_graph,
         context.csvw_metadata_json_path,
     )
-    code_list_state = CodeListState(csvw_state)
+    code_list_inspector = CodeListInspector(csvw_state)
 
-    metadata_printer = MetadataPrinter(code_list_state)
+    metadata_printer = MetadataPrinter(code_list_inspector)
     context.type_printable = metadata_printer.type_info_printable
     context.catalog_metadata_printable = metadata_printer.catalog_metadata_printable
     context.dataset_observations_info_printable = (

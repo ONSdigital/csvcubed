@@ -161,12 +161,13 @@ class CodelistsResult:
 
 
 @dataclass
-class CsvUrlResult:
+class CodeListTableIdentifers:
     """
-    Model to represent select csv url result.
+    Table identifiers to support mapping between csv_url and concept_scheme_url
     """
 
     csv_url: str
+    concept_scheme_url: str
 
 
 @dataclass
@@ -267,7 +268,7 @@ class ColumnDefinition:
     """CSV that this column is defined against."""
     about_url: Optional[str]
     data_type: Optional[str]
-    name: str
+    name: Optional[str]
     property_url: Optional[str]
     required: bool
     suppress_output: bool
@@ -605,22 +606,6 @@ def map_csvw_table_schemas_file_dependencies_result(
     return result
 
 
-def map_csv_url_result(
-    sparql_result: ResultRow,
-) -> CsvUrlResult:
-    """
-    Maps sparql query result to `CsvUrlResult`
-
-    Member of :file:`./models/sparqlresults.py`
-
-    :return: `CsvUrlResult`
-    """
-    result_dict = sparql_result.asdict()
-
-    result = CsvUrlResult(csv_url=str(result_dict["tableUrl"]))
-    return result
-
-
 def map_units(sparql_results: List[ResultRow]) -> List[UnitResult]:
     """
     Maps sparql query result to `UnitResult`
@@ -636,48 +621,6 @@ def map_units(sparql_results: List[ResultRow]) -> List[UnitResult]:
         )
 
     return [map_row(row.asdict()) for row in sparql_results]
-
-
-def _map_codelist_column_sparql_result(
-    sparql_result: ResultRow,
-) -> CodelistColumnResult:
-    """
-    Maps sparql query result to `CodelistColumnResult`
-
-    Member of :file:`./models/sparqlresults.py`
-
-    :return: `CodelistColumnResult`
-    """
-    result_dict = sparql_result.asdict()
-
-    result = CodelistColumnResult(
-        column_property_url=none_or_map(result_dict.get("columnPropertyUrl"), str),
-        column_value_url=none_or_map(result_dict.get("columnValueUrl"), str),
-        column_title=none_or_map(result_dict.get("columnTitle"), str),
-        column_name=none_or_map(result_dict.get("columnName"), str),
-    )
-    return result
-
-
-def map_codelist_cols_by_csv_url_result(
-    sparql_results: List[ResultRow],
-) -> CodeListColsByDatasetUrlResult:
-    """
-    Maps sparql query result to `CodeListColsByDatasetUrlResult`
-
-    Member of :file:`./models/sparqlresults.py`
-
-    :return: `CodeListColsByDatasetUrlResult`
-    """
-
-    columns = list(
-        map(
-            lambda result: _map_codelist_column_sparql_result(result),
-            sparql_results,
-        )
-    )
-    result = CodeListColsByDatasetUrlResult(columns=columns)
-    return result
 
 
 def _map_primary_key_col_name_by_csv_url_result(
@@ -782,7 +725,7 @@ def map_column_definition_results(
             csv_url=str(row_result["csvUrl"]),
             about_url=none_or_map(row_result.get("aboutUrl"), str),
             data_type=none_or_map(row_result.get("dataType"), str),
-            name=str(row_result["name"]),
+            name=none_or_map(row_result.get("name"), str),
             property_url=none_or_map(row_result.get("propertyUrl"), str),
             required=bool(row_result["required"]),
             suppress_output=bool(row_result["suppressOutput"]),

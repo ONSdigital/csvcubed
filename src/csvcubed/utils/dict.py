@@ -27,7 +27,7 @@ def get_from_dict_ensure_exists(config: Dict[str, T], key: str) -> T:
     """
     val = config.get(key)
     if val is None:
-        raise Exception(f"Couldn't find value for key '{key}'")
+        raise KeyError(f"Couldn't find value for key '{key}'")
     return val
 
 

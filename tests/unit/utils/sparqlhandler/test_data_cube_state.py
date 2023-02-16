@@ -3,7 +3,7 @@ import pytest
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import ColumnDefinition, QubeComponentsResult
 from csvcubed.utils.qb.components import ComponentPropertyType
-from tests.helpers.inspectors_cache import get_csvw_rdf_manager, get_data_cube_inspector
+from tests.helpers.inspectors_cache import get_data_cube_inspector
 from tests.unit.test_baseunit import get_test_cases_dir
 from tests.unit.utils.sparqlhandler.test_sparqlquerymanager import (
     assert_dsd_component_equal,
@@ -27,7 +27,9 @@ def test_get_column_definitions_for_csv():
 
     results = {
         c.name: c
-        for c in data_cube_state.get_column_definitions_for_csv("qb-id-10004.csv")
+        for c in data_cube_state.csvw_state.get_column_definitions_for_csv(
+            "qb-id-10004.csv"
+        )
     }
 
     assert len(results) == 12
@@ -111,12 +113,10 @@ def test_exception_is_thrown_for_invalid_csv_url():
 
     data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
 
-    input_dict = {"a": 1, "b": 2}
-
     with pytest.raises(KeyError) as exception:
-        assert data_cube_state._get_value_for_key("c", input_dict)
+        assert data_cube_state.get_cube_identifiers_for_csv("c")
 
-    assert "Could not find the definition for key 'c'" in str(exception.value)
+    assert "Couldn't find value for key" in str(exception.value)
 
 
 def test_get_data_set_dsd_csv_url_for_csv_url():
@@ -129,17 +129,11 @@ def test_get_data_set_dsd_csv_url_for_csv_url():
         / "pivoted-single-measure-dataset"
         / "qb-id-10004.csv-metadata.json"
     )
-
-    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
-
     data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
 
-    primary_catalog_metadata = (
-        csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
-    )
+    primary_catalog_metadata = data_cube_state.csvw_state.get_primary_catalog_metadata()
 
     data_set_uri = primary_catalog_metadata.dataset_uri
-
     csv_url = data_cube_state.get_cube_identifiers_for_data_set(data_set_uri).csv_url
 
     data_set_dsd_csv_url_result = data_cube_state.get_cube_identifiers_for_csv(csv_url)
@@ -160,17 +154,11 @@ def test_get_dsd_qube_components_for_csv():
         / "pivoted-single-measure-dataset"
         / "qb-id-10004.csv-metadata.json"
     )
-
-    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
-
     data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
 
-    primary_catalog_metadata = (
-        csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
-    )
+    primary_catalog_metadata = data_cube_state.csvw_state.get_primary_catalog_metadata()
 
     data_set_uri = primary_catalog_metadata.dataset_uri
-
     csv_url = data_cube_state.get_cube_identifiers_for_data_set(data_set_uri).csv_url
 
     result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(csv_url)
