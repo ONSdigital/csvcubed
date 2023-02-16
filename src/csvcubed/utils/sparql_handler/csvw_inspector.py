@@ -60,9 +60,6 @@ class CsvWInspector:
         Cached property for the select_table_schema_properties query that stores the query's results.
         """
         results = select_table_schema_properties(self.rdf_graph)
-        # results_dict: Dict[str, TableSchemaPropertiesResult] = {}
-        # for result in results:
-        #     results_dict[result.csv_url] = result
 
         return results
 
@@ -90,14 +87,16 @@ class CsvWInspector:
             f"Could not find catalog metadata in primary graph '{self.primary_graph_uri}'."
         )
 
-    def get_table_schema_properties(self) -> TableSchemaPropertiesResults:
+    def get_table_schema_properties(self, csv_url: str) -> TableSchemaPropertiesResults:
         """
         Retrieves the stored result of the table schema properties cached property.
         """
-        str_for_input = self._table_schema_properties.keys()
-        keys = list(str_for_input)
+        all_table_schemas = self._table_schema_properties()
+        table_schema_dict_keys = self._table_schema_properties.keys()
+        keys_list = list(table_schema_dict_keys)
+
         result: TableSchemaPropertiesResults = get_from_dict_ensure_exists(
-            self._table_schema_properties, keys[0]
+            all_table_schemas, csv_url
         )
         return result
 

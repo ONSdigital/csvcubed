@@ -26,6 +26,6 @@ def get_data_cube_inspector(csvw_json_path: Path) -> DataCubeState:
     path_str = csvw_json_path.resolve().as_uri()
     if path_str not in _data_cube_state_cache:
         rdf_manager = get_csvw_rdf_manager(csvw_json_path)
-        _data_cube_state_cache[path_str] = DataCubeState(rdf_manager.csvw_state)
+        _data_cube_state_cache[path_str] = DataCubeState(rdf_manager.csvw_inspector)
 
     return _data_cube_state_cache[path_str]

@@ -34,11 +34,14 @@ def extract_code_list_concept_scheme_info(
 
     csvw_rdf_manager = CsvwRdfManager(code_list_csvw_path)
     csvw_inspector = csvw_rdf_manager.csvw_inspector
+    concept_scheme_uri = csvw_inspector.get_primary_catalog_metadata().dataset_uri
+    code_list_inspector = CodeListInspector(csvw_inspector)
+    # csvw_inspector.identifiers
     result = csvw_inspector.get_table_schema_properties()
 
-    about_url = result.about_url
-    concept_scheme_uri = result.value_url
-    table_url = result.table_url
+    about_url = result.table_schema_properties[0].about_url
+    concept_scheme_uri = result.table_schema_properties[0].value_url
+    table_url = result.table_schema_properties[0].table_url
 
     variables_in_about_url: Set[str] = {v for v in variables(about_url)}
     if len(variables_in_about_url) != 1:

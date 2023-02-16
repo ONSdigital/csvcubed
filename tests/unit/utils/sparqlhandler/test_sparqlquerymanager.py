@@ -745,6 +745,7 @@ def test_select_metadata_dependencies():
     )
 
 
+# TODO: Delete this test?
 def test_select_table_schema_properties():
     """
     Test that we can extract correct table about url, value url and table url from csvw.

@@ -1,3 +1,8 @@
+from pathlib import Path
+
+import pytest
+from rdflib import ConjunctiveGraph
+
 from csvcubed.models.csvwtype import CSVWType
 from csvcubed.utils.sparql_handler.csvw_inspector import CsvWInspector
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
@@ -26,6 +31,24 @@ def test_get_primary_catalog_metadata():
     )
 
     assert test_catalog_metadata_result.graph_uri == primary_graph_identifier
+
+
+def test_get_primary_catalog_metadata_key_error():
+    """
+    Test to ensure that when primary catalog metadata cannot be returned for a
+    particular graph, the API function returns a KeyError instead.
+    """
+    rdf_graph = ConjunctiveGraph()
+
+    csvw_inspector = CsvWInspector(rdf_graph, Path("does-not-exist.csv-metadata.json"))
+
+    with pytest.raises(KeyError) as exception:
+        assert csvw_inspector.get_primary_catalog_metadata()
+
+    assert (
+        f"Could not find catalog metadata in primary graph '{csvw_inspector.primary_graph_uri}'."
+        in str(exception.value)
+    )
 
 
 def test_detect_csvw_type_qb_dataset():
@@ -75,8 +98,8 @@ def test_get_table_schema_properties():
         csvw_rdf_manager.rdf_graph, csvw_metadata_json_path
     )
 
-    result = csvw_inspector.get_table_schema_properties()
-
+    result = csvw_inspector.get_table_schema_properties("some-dimension.csv")
+    pass
     assert (
         result.table_schema_properties[0].about_url
         == "some-dimension.csv#{+uri_identifier}"
@@ -84,24 +107,3 @@ def test_get_table_schema_properties():
     assert result.table_schema_properties[0].table_url == "some-dimension.csv"
     assert result.table_schema_properties[0].value_url == "some-dimension.csv#code-list"
     assert result.table_schema_properties[0].primary_key_col_names == "uri_identifier"
-
-
-def test_get_codelist_primary_key_by_csv_url():
-    """
-    Ensures that the correct primary key column name is returned given the input csv url.
-    """
-    csvw_metadata_json_path = (
-        _test_case_base_dir
-        / "pivoted-single-measure-dataset"
-        / "some-dimension.csv-metadata.json"
-    )
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
-
-    csvw_inspector: CsvWInspector = CsvWInspector(
-        csvw_rdf_manager.rdf_graph, csvw_metadata_json_path
-    )
-
-    result = csvw_inspector.get_codelist_primary_key_by_csv_url()
-
-    assert len(result.primary_key_col_names) == 1
-    assert result.primary_key_col_names[0].value == "uri_identifier"

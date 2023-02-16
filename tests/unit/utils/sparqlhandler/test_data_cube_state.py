@@ -297,7 +297,7 @@ def test_get_cube_identifiers_for_data_set():
     data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
 
     cube_identifiers = data_cube_state.get_cube_identifiers_for_data_set(
-        data_cube_state.csvw_state.get_primary_catalog_metadata().dataset_uri
+        data_cube_state.csvw_inspector.get_primary_catalog_metadata().dataset_uri
     )
 
     assert cube_identifiers is not None
