@@ -17,6 +17,7 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_primary_key_col_names_by_csv_url,
 )
 from csvcubed.utils.tableschema import CsvwRdfManager
+from tests.helpers.inspectors_cache import get_csvw_rdf_manager
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
@@ -31,7 +32,7 @@ def test_get_codelist_col_title_by_property_url_label():
         / "multi-unit_multi-measure"
         / "alcohol-content.csv-metadata.json"
     )
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     csv_url = select_codelist_csv_url(csvw_metadata_rdf_graph).csv_url
 
@@ -54,7 +55,7 @@ def test_get_codelist_col_title_by_property_url_notation():
         / "multi-unit_multi-measure"
         / "alcohol-content.csv-metadata.json"
     )
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     csvw_inspector: CsvWInspector = CsvWInspector(
         csvw_rdf_manager.rdf_graph, csvw_metadata_json_path
@@ -85,7 +86,7 @@ def test_get_codelist_col_title_by_property_url_parent_notation():
         / "multi-unit_multi-measure"
         / "alcohol-content.csv-metadata.json"
     )
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     csv_url = select_codelist_csv_url(csvw_metadata_rdf_graph).csv_url
 
@@ -109,7 +110,7 @@ def test_get_codelist_col_title_by_property_url_sort_priority():
         / "multi-unit_multi-measure"
         / "alcohol-content.csv-metadata.json"
     )
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     csv_url = select_codelist_csv_url(csvw_metadata_rdf_graph).csv_url
 
@@ -132,7 +133,7 @@ def test_get_codelist_col_title_by_property_url_rdfs_comment():
         / "multi-unit_multi-measure"
         / "alcohol-content.csv-metadata.json"
     )
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     csv_url = select_codelist_csv_url(csvw_metadata_rdf_graph).csv_url
 
@@ -155,7 +156,7 @@ def test_get_codelist_col_title_by_property_url_rdfs_type():
         / "multi-unit_multi-measure"
         / "alcohol-content.csv-metadata.json"
     )
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     csv_url = select_codelist_csv_url(csvw_metadata_rdf_graph).csv_url
 
@@ -178,7 +179,7 @@ def test_build_concepts_hierarchy_tree_of_depth_one():
         / "multi-unit_multi-measure"
         / "alcohol-content.csv-metadata.json"
     )
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     csv_url = select_codelist_csv_url(csvw_metadata_rdf_graph).csv_url
     dataset: DataFrame = load_csv_to_dataframe(csvw_metadata_json_path, Path(csv_url))
@@ -209,7 +210,7 @@ def test_build_concepts_hierarchy_tree_of_depth_more_than_one():
     Should return the expected Tree for the concepts with hierarchical depth of more than one.
     """
     csvw_metadata_json_path = _test_case_base_dir / "itis-industry.csv-metadata.json"
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     csv_url = select_codelist_csv_url(csvw_metadata_rdf_graph).csv_url
     dataset: DataFrame = load_csv_to_dataframe(csvw_metadata_json_path, Path(csv_url))
