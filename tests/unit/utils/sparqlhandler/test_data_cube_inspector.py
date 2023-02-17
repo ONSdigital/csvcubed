@@ -11,7 +11,7 @@ from csvcubed.models.sparqlresults import (
 )
 from csvcubed.utils.iterables import first
 from csvcubed.utils.qb.components import ComponentPropertyType
-from tests.helpers.inspectors_cache import get_csvw_rdf_manager, get_data_cube_inspector
+from tests.helpers.inspectors_cache import get_data_cube_inspector
 from tests.unit.test_baseunit import get_test_cases_dir
 from tests.unit.utils.sparqlhandler.test_sparqlquerymanager import (
     assert_dsd_component_equal,
@@ -123,12 +123,10 @@ def test_exception_is_thrown_for_invalid_csv_url():
 
     data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
 
-    input_dict = {"a": 1, "b": 2}
-
     with pytest.raises(KeyError) as exception:
-        assert data_cube_inspector._get_value_for_key("c", input_dict)
+        assert data_cube_inspector.get_cube_identifiers_for_csv("c")
 
-    assert "Could not find the definition for key 'c'" in str(exception.value)
+    assert "Couldn't find value for key" in str(exception.value)
 
 
 # Duplicate test
@@ -195,22 +193,37 @@ def test_get_cube_identifiers_for_data_set():
         / "pivoted-single-measure-dataset"
         / "qb-id-10004.csv-metadata.json"
     )
-    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
     data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+
     primary_catalog_metadata = (
-        csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
+        data_cube_inspector.csvw_state.get_primary_catalog_metadata()
     )
 
-    result: CubeTableIdentifiers = (
-        data_cube_inspector.get_cube_identifiers_for_data_set(
-            primary_catalog_metadata.dataset_uri
-        )
+    data_set_uri = primary_catalog_metadata.dataset_uri
+    csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
+        data_set_uri
+    ).csv_url
+
+    result_qube_components = data_cube_inspector.get_dsd_qube_components_for_csv(
+        csv_url
     )
 
-    assert result.csv_url == "qb-id-10004.csv"
-    assert result.data_set_label == "Pivoted Shape Cube"
-    assert result.data_set_url == "qb-id-10004.csv#dataset"
-    assert result.dsd_uri == "qb-id-10004.csv#structure"
+    components = result_qube_components.qube_components
+    assert len(components) == 5
+
+    component = get_dsd_component_by_property_url(
+        components, "qb-id-10004.csv#dimension/some-dimension"
+    )
+    assert_dsd_component_equal(
+        component,
+        "qb-id-10004.csv#dimension/some-dimension",
+        ComponentPropertyType.Dimension,
+        "Some Dimension",
+        ["Some Dimension"],
+        ["Some Obs Val"],
+        "qb-id-10004.csv#structure",
+        True,
+    )
 
 
 def test_detect_csvw_shape_pivoted():

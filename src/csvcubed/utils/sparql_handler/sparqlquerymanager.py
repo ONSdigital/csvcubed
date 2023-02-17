@@ -18,16 +18,13 @@ from rdflib.query import ResultRow
 from csvcubed.definitions import APP_ROOT_DIR_PATH
 from csvcubed.models.csvcubedexception import (
     FailedToReadSparqlQueryException,
-    FeatureNotSupportedException,
     InvalidNumberOfRecordsException,
 )
 from csvcubed.models.sparql.valuesbinding import ValuesBinding
 from csvcubed.models.sparqlresults import (
     CatalogMetadataResult,
-    CodeListColsByDatasetUrlResult,
     CodelistsResult,
     ColumnDefinition,
-    CsvUrlResult,
     CSVWTableSchemaFileDependenciesResult,
     CubeTableIdentifiers,
     IsPivotedShapeMeasureResult,
@@ -37,10 +34,8 @@ from csvcubed.models.sparqlresults import (
     TableSchemaPropertiesResult,
     UnitResult,
     map_catalog_metadata_results,
-    map_codelist_cols_by_csv_url_result,
     map_codelists_sparql_result,
     map_column_definition_results,
-    map_csv_url_result,
     map_csvw_table_schemas_file_dependencies_result,
     map_data_set_dsd_csv_url_result,
     map_is_pivoted_shape_for_measures_in_data_set,
@@ -71,10 +66,6 @@ class SPARQLQueryName(Enum):
     SELECT_DSD_QUBE_COMPONENTS = "select_dsd_qube_components"
 
     SELECT_CODELISTS_AND_COLS = "select_codelists_and_cols"
-
-    SELECT_QB_CSV_URL = "select_qb_csv_url"
-
-    SELECT_CODELIST_CSV_URL = "select_codelist_csv_url"
 
     SELECT_UNITS = "select_units"
 
@@ -298,57 +289,6 @@ def select_csvw_table_schema_file_dependencies(
     return map_csvw_table_schemas_file_dependencies_result(results)
 
 
-# TO DO: Determine whether this query is needed anymore.
-def select_qb_csv_url(
-    rdf_graph: rdflib.ConjunctiveGraph, dataset_uri: str
-) -> CsvUrlResult:
-    """
-    Queries the url of the given qb:dataset.
-
-    Member of :file:`./sparqlquerymanager.py`
-
-    :return: `CsvUrlResult`
-    """
-    if not dataset_uri.startswith("file://"):
-        raise FeatureNotSupportedException(
-            explanation="This query is used by the inspect command. Currently, the inspect command only supports reading the csv when the url is a file path. In the future, it will support reading the csv when the url is a web address"
-        )
-
-    results: List[ResultRow] = select(
-        _get_query_string_from_file(SPARQLQueryName.SELECT_QB_CSV_URL),
-        rdf_graph,
-        init_bindings={"dataset_uri": Literal(dataset_uri)},
-    )
-    if len(results) != 1:
-        raise InvalidNumberOfRecordsException(
-            record_description=f"result for the {SPARQLQueryName.SELECT_QB_CSV_URL.value} sparql query",
-            excepted_num_of_records=1,
-            num_of_records=len(results),
-        )
-    return map_csv_url_result(results[0])
-
-
-def select_codelist_csv_url(rdf_graph: rdflib.ConjunctiveGraph) -> CsvUrlResult:
-    """
-    Queries the url of the given skos:conceptScheme.
-
-    Member of :file:`./sparqlquerymanager.py`
-
-    :return: `CsvUrlResult`
-    """
-    results: List[ResultRow] = select(
-        _get_query_string_from_file(SPARQLQueryName.SELECT_CODELIST_CSV_URL),
-        rdf_graph,
-    )
-    if len(results) != 1:
-        raise InvalidNumberOfRecordsException(
-            record_description=f"result for the {SPARQLQueryName.SELECT_CODELIST_CSV_URL.value} sparql query",
-            excepted_num_of_records=1,
-            num_of_records=len(results),
-        )
-    return map_csv_url_result(results[0])
-
-
 def select_units(rdf_graph: rdflib.ConjunctiveGraph) -> List[UnitResult]:
     """
     Queries the units from data set.
@@ -363,31 +303,6 @@ def select_units(rdf_graph: rdflib.ConjunctiveGraph) -> List[UnitResult]:
     )
 
     return map_units(results)
-
-
-def select_codelist_cols_by_csv_url(
-    rdf_graph: rdflib.ConjunctiveGraph, table_url: str
-) -> CodeListColsByDatasetUrlResult:
-    """
-    Queries the code list column property and value urls for the given table url.
-
-    Member of :file:`./sparqlquerymanager.py`
-
-    :return: `CodeListColsByDatasetUrlResult`
-    """
-    results: List[ResultRow] = select(
-        _get_query_string_from_file(SPARQLQueryName.SELECT_CODELIST_COLS_BY_CSV_URL),
-        rdf_graph,
-        init_bindings={"table_url": Literal(table_url)},
-    )
-
-    if len(results) < 1:
-        raise InvalidNumberOfRecordsException(
-            record_description=f"result for the {SPARQLQueryName.SELECT_CODELIST_COLS_BY_CSV_URL.value} sparql query",
-            excepted_num_of_records=1,
-            num_of_records=len(results),
-        )
-    return map_codelist_cols_by_csv_url_result(results)
 
 
 def select_primary_key_col_names_by_csv_url(

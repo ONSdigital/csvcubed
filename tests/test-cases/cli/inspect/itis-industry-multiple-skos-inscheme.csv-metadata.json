@@ -1,7 +1,7 @@
 {
     "@context": "http://www.w3.org/ns/csvw",
     "@id": "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services#scheme/itis-industry",
-    "url": "itis-industry.csv",
+    "url": "itis-industry-multiple-skos-inscheme.csv",
     "rdfs:label": "Itis Industry",
     "dc:title": "Itis Industry",
     "tableSchema": {
@@ -57,6 +57,11 @@
                 "virtual": true,
                 "propertyUrl": "skos:inScheme",
                 "valueUrl": "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services#scheme/itis-industry"
+            },
+            {
+                "virtual": true,
+                "propertyUrl": "skos:inScheme",
+                "valueUrl": "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services#scheme/itis-industry"
             }
         ],
         "primaryKey": "notation",
@@ -71,7 +76,7 @@
     },
     "rdfs:seeAlso": [
         {
-            "@id": "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services#scheme/itis-industry",
+            "@id": "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services#scheme/itis-industry/dataset",
             "@type": [
                 "dcat:Dataset",
                 "http://publishmydata.com/pmdcat#Dataset"

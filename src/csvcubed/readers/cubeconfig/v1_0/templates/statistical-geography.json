@@ -1,0 +1,7 @@
+{
+    "type": "dimension",
+    "from_existing": "http://purl.org/linked-data/sdmx/2009/dimension#refArea",
+    "label": "Statistical Geography",
+    "code_list": false,
+    "cell_uri_template": "http://statistics.data.gov.uk/id/statistical-geography/{+<column_name>}"
+}

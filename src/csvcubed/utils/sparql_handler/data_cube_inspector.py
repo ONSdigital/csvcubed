@@ -1,6 +1,14 @@
+"""
+Data Cube State
+---------------
+
+Provides access to inspect the contents of an rdflib graph containing
+one of more data cubes.
+"""
+
 from dataclasses import dataclass
 from functools import cached_property
-from typing import Dict, List, Optional, TypeVar
+from typing import Dict, List, Optional
 
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import (
@@ -11,10 +19,10 @@ from csvcubed.models.sparqlresults import (
     QubeComponentsResult,
     UnitResult,
 )
+from csvcubed.utils.dict import get_from_dict_ensure_exists
 from csvcubed.utils.iterables import first, group_by
 from csvcubed.utils.sparql_handler.csvw_state import CsvWState
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
-    select_column_definitions,
     select_csvw_dsd_qube_components,
     select_data_set_dsd_and_csv_url,
     select_dsd_code_list_and_cols,
@@ -22,40 +30,16 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_units,
 )
 
-T = TypeVar("T")
-
 
 @dataclass
 class DataCubeInspector:
     csvw_state: CsvWState
 
-    """
-    Private utility functions.
-    """
-
-    def _get_value_for_key(self, key: str, dict: Dict[str, T]) -> T:
-        maybe_value = dict.get(key)
-        if maybe_value is None:
-            raise KeyError(f"Could not find the definition for key '{key}'")
-        return maybe_value
-
-    """
-    Private cached properties.
-    """
-
-    @cached_property
-    def _column_definitions(self) -> Dict[str, List[ColumnDefinition]]:
-        """
-        Map of csv_url to the list of column definitions for the given CSV file.
-        """
-        results = select_column_definitions(self.csvw_state.rdf_graph)
-        return group_by(results, lambda r: r.csv_url)
+    # Private cached properties.
 
     @cached_property
     def _units(self) -> Dict[str, UnitResult]:
-        """
-        Maps the csv url to the unit results of the given CSV.
-        """
+        """Gets the unit_uri for each UnitResult"""
         results = select_units(self.csvw_state.rdf_graph)
         return {result.unit_uri: result for result in results}
 
@@ -85,21 +69,22 @@ class DataCubeInspector:
             self.csvw_state.rdf_graph,
             self.csvw_state.csvw_json_path,
             map_dsd_uri_to_csv_url,
-            self._column_definitions,
+            self.csvw_state.column_definitions,
         )
 
     @cached_property
     def _cube_shapes(self) -> Dict[str, CubeShape]:
         """
-        A mapping of csvUrl to the given CubeShape. CSV tables which aren't cubes are not present here.
+        A mapping of csvUrl to the given CubeShape. CSV tables which aren't cubes
+         are not present here.
         """
 
         def _detect_shape_for_cube(
             measures_with_shape: List[IsPivotedShapeMeasureResult],
         ) -> CubeShape:
             """
-            Given a metadata validator as input, returns the shape of the cube that metadata describes (Pivoted or
-            Standard).
+            Given a metadata validator as input, returns the shape of the cube that
+             metadata describes (Pivoted or Standard).
             """
             all_pivoted = True
             all_standard_shape = True
@@ -113,9 +98,9 @@ class DataCubeInspector:
                 return CubeShape.Standard
             else:
                 raise TypeError(
-                    "The input metadata is invalid as the shape of the cube it represents is not supported. More "
-                    "specifically, the input contains some observation values that are pivoted and some are not "
-                    "pivoted."
+                    "The input metadata is invalid as the shape of the cube it represents is "
+                    "not supported. More specifically, the input contains some observation values "
+                    "that are pivoted and some are not pivoted."
                 )
 
         results = select_is_pivoted_shape_for_measures_in_data_set(
@@ -177,8 +162,8 @@ class DataCubeInspector:
         """
         Get csv url, data set uri, data set label and DSD uri for the given csv url.
         """
-        result: CubeTableIdentifiers = self._get_value_for_key(
-            csv_url, self._cube_table_identifiers
+        result: CubeTableIdentifiers = get_from_dict_ensure_exists(
+            self._cube_table_identifiers, csv_url
         )
         return result
 
@@ -188,6 +173,7 @@ class DataCubeInspector:
         """
         Get csv url, data set uri, data set label and DSD uri for the given data set uri.
         """
+
         result = first(
             self._cube_table_identifiers.values(),
             lambda i: i.data_set_url == data_set_uri,
@@ -201,7 +187,7 @@ class DataCubeInspector:
         """
         Get DSD Qube Components for the given csv url.
         """
-        return self._get_value_for_key(csv_url, self._dsd_qube_components)
+        return get_from_dict_ensure_exists(self._dsd_qube_components, csv_url)
 
     def get_shape_for_csv(self, csv_url: str) -> CubeShape:
         """

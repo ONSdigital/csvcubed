@@ -32,12 +32,10 @@ from csvcubed.models.inspectdataframeresults import (
 )
 from csvcubed.models.sparqlresults import (
     CatalogMetadataResult,
-    CodeListColsByDatasetUrlResult,
-    CodelistColumnResult,
-    CodelistResult,
     CodelistsResult,
+    ColsWithSuppressOutputTrueResult,
     ColumnDefinition,
-    CubeTableIdentifiers,
+    DSDLabelURIResult,
     PrimaryKeyColNamesByDatasetUrlResult,
     QubeComponentsResult,
 )
@@ -69,7 +67,7 @@ class MetadataPrinter:
     This class produces the printables necessary for producing outputs to the CLI.
     """
 
-    state: Union[DataCubeInspector, CodeListState]
+    state: Union[DataCubeInspector, CodeListInspector]
 
     csvw_type_str: str = field(init=False)
     primary_csv_url: str = field(init=False)
@@ -84,7 +82,7 @@ class MetadataPrinter:
     result_dataset_value_counts: DatasetObservationsByMeasureUnitInfoResult = field(
         init=False
     )
-    result_code_list_cols: CodeListColsByDatasetUrlResult = field(init=False)
+    result_code_list_cols: List[ColumnDefinition] = field(init=False)
     result_concepts_hierachy_info: CodelistHierarchyInfoResult = field(init=False)
 
     @staticmethod
@@ -96,30 +94,23 @@ class MetadataPrinter:
         else:
             raise InputNotSupportedException()
 
-    @staticmethod
-    def get_primary_csv_url(
-        csvw_metadata_rdf_graph: rdflib.ConjunctiveGraph,
-        csvw_state: CsvWState,
-        csvw_type: CSVWType,
-        catalogue_data_set_uri: str,
-    ) -> str:
+    def get_primary_csv_url(self) -> str:
         """Return the csv_url for the primary table in the graph."""
-
-        if csvw_type == CSVWType.QbDataSet:
-            return (
-                DataCubeInspector(csvw_state)
-                .get_cube_identifiers_for_data_set(catalogue_data_set_uri)
-                .csv_url
-            )
-
-        elif csvw_type == CSVWType.CodeList:
-            return select_codelist_csv_url(csvw_metadata_rdf_graph).csv_url
+        primary_metadata = self.state.csvw_state.get_primary_catalog_metadata()
+        if isinstance(self.state, DataCubeInspector):
+            return self.state.get_cube_identifiers_for_data_set(
+                primary_metadata.dataset_uri
+            ).csv_url
+        elif isinstance(self.state, CodeListInspector):
+            return self.state.get_table_identifiers_for_concept_scheme(
+                primary_metadata.dataset_uri
+            ).csv_url
         else:
             raise InputNotSupportedException()
 
     @staticmethod
     def get_parent_label_unique_id_col_titles(
-        columns: List[CodelistColumnResult], primary_key_col: str
+        columns: List[ColumnDefinition], primary_key_col: str
     ) -> Tuple[Optional[str], Optional[str], Optional[str]]:
         parent_notation_col_title = get_codelist_col_title_by_property_url(
             columns, CodelistPropertyUrl.SkosBroader
@@ -144,13 +135,7 @@ class MetadataPrinter:
 
         self.csvw_type_str = self.get_csvw_type_str(csvw_type)
         self.result_catalog_metadata = csvw_state.get_primary_catalog_metadata()
-
-        self.primary_csv_url = self.get_primary_csv_url(
-            csvw_state.rdf_graph,
-            csvw_state,
-            csvw_type,
-            csvw_state.get_primary_catalog_metadata().dataset_uri,
-        )
+        self.primary_csv_url = self.get_primary_csv_url()
         self.dataset = load_csv_to_dataframe(
             csvw_state.csvw_json_path, Path(self.primary_csv_url)
         )
@@ -210,8 +195,8 @@ class MetadataPrinter:
         Member of :class:`./MetadataPrinter`.
         """
         csvw_state = self.state.csvw_state
-        self.result_code_list_cols = select_codelist_cols_by_csv_url(
-            csvw_state.rdf_graph, self.primary_csv_url
+        self.result_code_list_cols = csvw_state.get_column_definitions_for_csv(
+            self.primary_csv_url
         )
         # Retrieving the primary key column names of the code list to identify the unique identifier
         result_primary_key_col_names_by_csv_url: PrimaryKeyColNamesByDatasetUrlResult = select_primary_key_col_names_by_csv_url(
@@ -232,7 +217,7 @@ class MetadataPrinter:
             label_col_title,
             unique_identifier,
         ) = self.get_parent_label_unique_id_col_titles(
-            self.result_code_list_cols.columns, primary_key_col_names[0].value
+            self.result_code_list_cols, primary_key_col_names[0].value
         )
         self.result_concepts_hierachy_info = get_concepts_hierarchy_info(
             self.dataset, parent_col_title, label_col_title, unique_identifier
@@ -348,11 +333,3 @@ class MetadataPrinter:
         :return: `str` - user-friendly string which will be output to CLI.
         """
         return f"- The {self.csvw_type_str} has the following concepts information:{self.result_concepts_hierachy_info.output_str}"
-
-
-# TODO: Determine whether this function is still needed.
-def to_absolute_rdflib_file_path(path: str, parent_document_path: Path) -> str:
-    if looks_like_uri(path):
-        return path
-    else:
-        return urljoin(path_to_file_uri_for_rdflib(parent_document_path), path)

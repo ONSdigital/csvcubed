@@ -765,15 +765,17 @@ def test_create_unit_col_in_melted_data_set_for_pivoted_shape_should_throw_inval
         / "pivoted-multi-measure-dataset"
         / "qb-id-10003.csv-metadata.json"
     )
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
 
     csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
     primary_catalog_metadata = (
         csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
     )
+    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+
     csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
         primary_catalog_metadata.dataset_uri
     ).csv_url
+
     column_definitions = data_cube_inspector.get_column_definitions_for_csv(csv_url)
     column_definitions_without_units = [
         c
