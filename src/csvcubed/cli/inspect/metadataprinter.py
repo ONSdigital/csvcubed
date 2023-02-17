@@ -208,12 +208,14 @@ class MetadataPrinter:
             csvw_inspector.rdf_graph, self.primary_csv_url
         )
         # Retrieving the primary key column names of the code list to identify the unique identifier
-        result_primary_key_col_names_by_csv_url: PrimaryKeyColNamesByDatasetUrlResult = (
-            self.state.csvw_inspector.get_primary_key_by_csv_url()
+        result_table_schema_properties = csvw_inspector.get_table_info_for_csv_url(
+            self.primary_csv_url
         )
-        primary_key_col_names = (
-            result_primary_key_col_names_by_csv_url.primary_key_col_names
-        )
+
+        # result_primary_key_col_names_by_csv_url: PrimaryKeyColNamesByDatasetUrlResult = (
+        #     self.state.csvw_inspector.get_primary_key_by_csv_url()
+        # )
+        primary_key_col_names = result_table_schema_properties.primary_key_col_names
 
         # Currently, we do not support composite primary keys.
         if len(primary_key_col_names) != 1:
@@ -226,7 +228,7 @@ class MetadataPrinter:
             label_col_title,
             unique_identifier,
         ) = self.get_parent_label_unique_id_col_titles(
-            self.result_code_list_cols.columns, primary_key_col_names[0].value
+            self.result_code_list_cols.columns, primary_key_col_names[0]
         )
         self.result_concepts_hierachy_info = get_concepts_hierarchy_info(
             self.dataset, parent_col_title, label_col_title, unique_identifier

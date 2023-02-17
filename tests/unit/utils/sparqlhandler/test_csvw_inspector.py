@@ -83,7 +83,7 @@ def test_detect_csvw_type_code_list():
     assert csvw_type == CSVWType.CodeList
 
 
-def test_get_table_schema_properties():
+def test_get_table_info_for_csv_url():
     """
     Ensures that the correct table schema properties are returned for the given code list.
     """
@@ -98,12 +98,8 @@ def test_get_table_schema_properties():
         csvw_rdf_manager.rdf_graph, csvw_metadata_json_path
     )
 
-    result = csvw_inspector.get_table_schema_properties("some-dimension.csv")
-    pass
-    assert (
-        result.table_schema_properties[0].about_url
-        == "some-dimension.csv#{+uri_identifier}"
-    )
-    assert result.table_schema_properties[0].table_url == "some-dimension.csv"
-    assert result.table_schema_properties[0].value_url == "some-dimension.csv#code-list"
-    assert result.table_schema_properties[0].primary_key_col_names == "uri_identifier"
+    result = csvw_inspector.get_table_info_for_csv_url("some-dimension.csv")
+
+    assert result.about_url == "some-dimension.csv#{+uri_identifier}"
+    assert result.csv_url == "some-dimension.csv"
+    assert result.primary_key_col_names == ["uri_identifier"]

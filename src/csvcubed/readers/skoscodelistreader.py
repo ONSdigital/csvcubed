@@ -13,10 +13,6 @@ from uritemplate import variables
 
 from csvcubed.utils.iterables import first
 from csvcubed.utils.sparql_handler.code_list_inspector import CodeListInspector
-from csvcubed.utils.sparql_handler.csvw_inspector import CsvWInspector
-from csvcubed.utils.sparql_handler.sparqlquerymanager import (
-    select_table_schema_properties,
-)
 from csvcubed.utils.tableschema import CsvwRdfManager
 
 _logger = logging.getLogger(__name__)
@@ -42,11 +38,10 @@ def extract_code_list_concept_scheme_info(
         .csv_url
     )
     # csvw_inspector.identifiers
-    result = csvw_inspector.get_table_schema_properties(csv_url)
+    result = csvw_inspector.get_table_info_for_csv_url(csv_url)
 
-    about_url = result.table_schema_properties[0].about_url
-    concept_scheme_uri = result.table_schema_properties[0].value_url
-    table_url = result.table_schema_properties[0].table_url
+    about_url = result.about_url
+    table_url = result.csv_url
 
     variables_in_about_url: Set[str] = {v for v in variables(about_url)}
     if len(variables_in_about_url) != 1:

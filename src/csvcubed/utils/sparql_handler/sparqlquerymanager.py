@@ -476,8 +476,9 @@ def select_metadata_dependencies(
 
 def select_table_schema_properties(
     rdf_graph: rdflib.Graph,
-) -> TableSchemaPropertiesResults:
+) -> List[TableSchemaPropertiesResult]:
     """
+    TODO: Change description
     Queries a CSV-W and extracts table url, about url and value url from the table with skos:inScheme property url.
     """
     results: List[ResultRow] = select(

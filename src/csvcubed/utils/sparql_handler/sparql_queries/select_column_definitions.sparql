@@ -18,7 +18,7 @@ WHERE {
 
     OPTIONAL { ?column csvw:aboutUrl ?aboutUrl. }
     OPTIONAL { ?column csvw:datatype ?dataType. }
-    ?column csvw:name ?name.
+    OPTIONAL { ?column csvw:name ?name. }
     OPTIONAL { ?column csvw:propertyUrl ?propertyUrl. }
     OPTIONAL { ?column csvw:required ?requiredO. }
     OPTIONAL { ?column csvw:suppressOutput ?suppressOutputO. }

@@ -246,9 +246,8 @@ class TableSchemaPropertiesResult:
     """
 
     about_url: str
-    value_url: str
-    table_url: str
-    primary_key_col_names: List[PrimaryKeyColNameByDatasetUrlResult]
+    csv_url: str
+    primary_key_col_names: List[str]
 
 
 @dataclass
@@ -285,7 +284,7 @@ class ColumnDefinition:
     """CSV that this column is defined against."""
     about_url: Optional[str]
     data_type: Optional[str]
-    name: str
+    name: Optional[str]
     property_url: Optional[str]
     required: bool
     suppress_output: bool
@@ -751,53 +750,19 @@ def map_metadata_dependency_results(
     return [map_row(row.asdict()) for row in sparql_results]
 
 
-def _map_table_schema_properties_result(
-    sparql_result: ResultRow,
-) -> TableSchemaPropertiesResult:
-    """
-    Maps sparql query result to `TableSchemaPropertiesResult`
-
-    Member of :file:`./models/sparqlresults.py`
-
-    :return: `TableSchemaPropertiesResult`
-    """
-    result_dict = sparql_result.asdict()
-
-    result = TableSchemaPropertiesResult(
-        about_url=str(result_dict["tableAboutUrl"]),
-        value_url=str(result_dict["columnValueUrl"]),
-        table_url=str(result_dict["csvUrl"]),
-        primary_key_col_names=str(result_dict["tablePrimaryKey"]),
-    )
-    return result
-
-
 def map_table_schema_properties_results(
     sparql_results: List[ResultRow],
-) -> Dict[str, TableSchemaPropertiesResults]:
+) -> List[TableSchemaPropertiesResult]:
     """ """
-    table_schema_properties = map(
-        lambda result: _map_table_schema_properties_result(result),
-        sparql_results,
-    )
 
-    map_csv_url_to_table_schema_properties = group_by(
-        table_schema_properties, lambda c: c.table_url
-    )
-
-    return {
-        table_url: TableSchemaPropertiesResults(
-            table_schema_properties=table_schema_properties
+    def map_row(row_result: Dict[str, Any]) -> TableSchemaPropertiesResult:
+        return TableSchemaPropertiesResult(
+            about_url=str(row_result["tableAboutUrl"]),
+            csv_url=str(row_result["csvUrl"]),
+            primary_key_col_names=str(row_result["tablePrimaryKeys"]).split("|"),
         )
-        for (
-            table_url,
-            table_schema_properties,
-        ) in map_csv_url_to_table_schema_properties.items()
-    }
-    result = TableSchemaPropertiesResults(
-        table_schema_properties=table_schema_properties
-    )
-    return result
+
+    return [map_row(row.asdict()) for row in sparql_results]
 
 
 def map_is_pivoted_shape_for_measures_in_data_set(
@@ -829,7 +794,7 @@ def map_column_definition_results(
             csv_url=str(row_result["csvUrl"]),
             about_url=none_or_map(row_result.get("aboutUrl"), str),
             data_type=none_or_map(row_result.get("dataType"), str),
-            name=str(row_result["name"]),
+            name=none_or_map(row_result.get("name"), str),
             property_url=none_or_map(row_result.get("propertyUrl"), str),
             required=bool(row_result["required"]),
             suppress_output=bool(row_result["suppressOutput"]),

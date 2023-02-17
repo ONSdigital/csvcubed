@@ -745,29 +745,6 @@ def test_select_metadata_dependencies():
     )
 
 
-# TODO: Delete this test?
-def test_select_table_schema_properties():
-    """
-    Test that we can extract correct table about url, value url and table url from csvw.
-    """
-    csvw_metadata_json_path = (
-        _csvw_test_cases_dir / "industry-grouping.csv-metadata.json"
-    )
-    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    result = select_table_schema_properties(csvw_metadata_rdf_graph)
-
-    assert (
-        result.about_url
-        == "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services-by-subnational-areas-of-the-uk#concept/industry-grouping/{+notation}"
-    )
-    assert result.table_url == "industry-grouping.csv"
-    assert (
-        result.value_url
-        == "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services-by-subnational-areas-of-the-uk#scheme/industry-grouping"
-    )
-
-
 def test_select_is_pivoted_shape_for_measures_in_pivoted_shape_data_set():
     """
     Checks that the measures retrieved from a metadata file that represents a pivoted shape cube are as expected.

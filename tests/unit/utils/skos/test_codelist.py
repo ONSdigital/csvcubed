@@ -65,13 +65,13 @@ def test_get_codelist_col_title_by_property_url_notation():
     result_code_list_cols = select_codelist_cols_by_csv_url(
         csvw_metadata_rdf_graph, csv_url
     )
-    result_primary_key_col_names_by_csv_url = (
-        csvw_inspector.get_table_schema_properties(csv_url).table_schema_properties
+    result_table_schema_properties_for_csv_url = (
+        csvw_inspector.get_table_info_for_csv_url(csv_url)
     )
 
     unique_identifier = get_codelist_col_title_from_col_name(
         result_code_list_cols.columns,
-        result_primary_key_col_names_by_csv_url[0].primary_key_col_names,
+        result_table_schema_properties_for_csv_url.primary_key_col_names[0],
     )
 
     assert unique_identifier == "Notation"
