@@ -23,6 +23,7 @@ from csvcubed.utils.dict import get_from_dict_ensure_exists
 from csvcubed.utils.iterables import first, group_by
 from csvcubed.utils.sparql_handler.csvw_state import CsvWState
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
+    select_column_definitions,
     select_csvw_dsd_qube_components,
     select_data_set_dsd_and_csv_url,
     select_dsd_code_list_and_cols,
@@ -36,6 +37,14 @@ class DataCubeInspector:
     csvw_state: CsvWState
 
     # Private cached properties.
+
+    @cached_property
+    def _column_definitions(self) -> Dict[str, List[ColumnDefinition]]:
+        """
+        Map of csv_url to the list of column definitions for the given CSV file.
+        """
+        results = select_column_definitions(self.csvw_state.rdf_graph)
+        return group_by(results, lambda r: r.csv_url)
 
     @cached_property
     def _units(self) -> Dict[str, UnitResult]:
@@ -141,8 +150,8 @@ class DataCubeInspector:
         """
         Get column definitions for the given csv url
         """
-        result: List[ColumnDefinition] = self._get_value_for_key(
-            csv_url, self._column_definitions
+        result: List[ColumnDefinition] = get_from_dict_ensure_exists(
+            self._column_definitions, csv_url
         )
         return result
 
@@ -193,7 +202,7 @@ class DataCubeInspector:
         """
         Get the cube shape.
         """
-        return self._get_value_for_key(csv_url, self._cube_shapes)
+        return get_from_dict_ensure_exists(self._cube_shapes, csv_url)
 
     def get_code_lists_and_cols(self, csv_url: str) -> CodelistsResult:
         """
