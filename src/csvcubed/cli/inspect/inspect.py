@@ -16,7 +16,7 @@ from csvcubed.cli.inspect.metadatainputvalidator import MetadataValidator
 from csvcubed.cli.inspect.metadataprinter import MetadataPrinter
 from csvcubed.models.csvcubedexception import FailedToLoadRDFGraphException
 from csvcubed.models.csvwtype import CSVWType
-from csvcubed.utils.sparql_handler.code_list_inspector import CodeListState
+from csvcubed.utils.sparql_handler.code_list_inspector import CodeListInspector
 from csvcubed.utils.sparql_handler.csvw_inspector import CsvWInspector
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
@@ -88,7 +88,7 @@ def _generate_printables(
         data_cube_state = DataCubeState(csvw_inspector)
         metadata_printer = MetadataPrinter(data_cube_state)
     else:
-        code_list_state = CodeListState(csvw_inspector)
+        code_list_state = CodeListInspector(csvw_inspector)
         metadata_printer = MetadataPrinter(code_list_state)
 
     type_info_printable: str = metadata_printer.type_info_printable

@@ -13,8 +13,22 @@ SELECT
         ?valueUrl
         (COALESCE(?virtualO, false) as ?virtual)
 WHERE {
-    [] csvw:tableSchema/csvw:column/rdf:rest*/rdf:first ?column;
-       csvw:url ?csvUrl.
+
+    {
+        # Code List CSV-W tableSchemas are referenced from two locations:
+        #  * the cube they're part of
+        #  * the `.csv-metadata.json` file which defines the Code List independently.
+        # We load both of these into the rdf_graph so we end up with two triples saying:
+        #   []  csvw:tableSchema ?tableSchema.
+        # This introduces duplicates to the query which we can remove with this DISTINCT sub-query.
+        SELECT DISTINCT ?csvUrl ?tableSchema
+        WHERE {
+            [] csvw:tableSchema ?tableSchema;
+               csvw:url ?csvUrl.
+        }
+    }
+
+    ?tableSchema csvw:column/rdf:rest*/rdf:first ?column
 
     OPTIONAL { ?column csvw:aboutUrl ?aboutUrl. }
     OPTIONAL { ?column csvw:datatype ?dataType. }

@@ -129,9 +129,9 @@ def step_impl(context):
         context.csvw_metadata_rdf_graph,
         context.csvw_metadata_json_path,
     )
-    code_list_state = CodeListInspector(csvw_inspector)
+    code_list_inspector = CodeListInspector(csvw_inspector)
 
-    metadata_printer = MetadataPrinter(code_list_state)
+    metadata_printer = MetadataPrinter(code_list_inspector)
     context.type_printable = metadata_printer.type_info_printable
     context.catalog_metadata_printable = metadata_printer.catalog_metadata_printable
     context.dataset_observations_info_printable = (

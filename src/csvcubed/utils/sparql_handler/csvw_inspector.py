@@ -11,7 +11,6 @@ from csvcubed.models.sparqlresults import (
     ColumnDefinition,
     PrimaryKeyColNamesByDatasetUrlResult,
     TableSchemaPropertiesResult,
-    TableSchemaPropertiesResults,
 )
 from csvcubed.utils.dict import get_from_dict_ensure_exists
 from csvcubed.utils.iterables import group_by

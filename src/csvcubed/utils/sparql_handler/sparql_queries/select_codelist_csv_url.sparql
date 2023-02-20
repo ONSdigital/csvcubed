@@ -4,7 +4,7 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 
 SELECT DISTINCT ?conceptScheme ?tableUrl
-WHERE {   
+WHERE {
     {
         SELECT DISTINCT ?conceptScheme
         WHERE {
@@ -23,7 +23,7 @@ WHERE {
     FILTER (str(?columnPropertyUrl) IN (str(skos:inScheme), "skos:inScheme")).
 
     BIND(
-        IF(strstarts(str(?columnValueUrl), "./"), 
+        IF(strstarts(str(?columnValueUrl), "./"),
            strafter(str(?columnValueUrl), "./"), # Remove preceding `./` from URL if it is present.
            str(?columnValueUrl)
         ) as ?columnSchemeUrl
