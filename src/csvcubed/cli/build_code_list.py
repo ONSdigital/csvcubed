@@ -6,11 +6,8 @@ Build a qb-flavoured CSV-W from a code list config.json
 
 import logging
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import Optional
 
-from csvcubed.models.cube.qb.components import NewQbCodeList
-from csvcubed.models.jsonvalidationerrors import JsonSchemaValidationError
-from csvcubed.models.validationerror import ValidationError
 from csvcubed.readers.codelistconfig.codelist_schema_versions import (
     CodeListConfigDeserialiser,
     get_deserialiser_for_code_list_schema,

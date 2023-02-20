@@ -11,7 +11,7 @@ Feature: Test the csvcubed Command Line Interface.
 
   Scenario: The csvcubed code-list-build command should output a code-list CSVW without the need to provide a CSV
     Given the existing test-case file "readers/code-list-config/v1.0/code_list_config_hierarchical.json"
-    When the csvcubed CLI is run with "code-list-build"
+    When the csvcubed CLI is run with "code-list build readers/code-list-config/v1.0/code_list_config_hierarchical.json"
     Then the file at "out/title-of-the-code-list.csv" should exist
     And the file at "out/title-of-the-code-list.csv-metadata.json" should exist
     And the file at "out/title-of-the-code-list.table.json" should exist
