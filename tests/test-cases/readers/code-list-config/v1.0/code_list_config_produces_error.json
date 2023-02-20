@@ -18,6 +18,10 @@
     "by": "label",
     "method": "ascending"
   },
+  "sorts": {
+    "by": "notation",
+    "method": "ascending"
+  },
   "concepts": [
     {
       "label": "A",
@@ -47,7 +51,8 @@
               "description": "E data record",
               "notation": "e"
             }
-          ]
+          ],
+          "same_as": "This will produce an error"
         }
       ]
     }

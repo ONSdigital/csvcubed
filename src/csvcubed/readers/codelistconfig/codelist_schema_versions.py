@@ -109,7 +109,7 @@ def get_deserialiser_for_code_list_schema(
         schema_path
     )
     _logger.info(
-        "Using schema version %s %s",
+        "Using schema version %s.%s",
         schema_version_major.value,
         schema_version_minor.value,
     )
