@@ -27,9 +27,8 @@
       "from_existing": "http://example.com/dimensions/trade-direction"
     },
     "Dim-1": {
-      "type": "dimension",
       "label": "Period Dimension",
-      "code_list": true
+      "from_existing": "http://example.com/dimensions/trade-direction"
     },
     "Dim-2": {
       "type": "dimension",
