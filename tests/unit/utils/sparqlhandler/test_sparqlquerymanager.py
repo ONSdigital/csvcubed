@@ -798,7 +798,7 @@ def test_select_is_pivoted_shape_for_measures_in_standard_shape_data_set():
 
 def test_rdf_dependency_loaded() -> None:
     """
-    Ensure that the CsvwRdfManager loads dependent RDF graphs to get a complete picture of the cube's metadata.
+    Ensure that the CsvWRdfManager loads dependent RDF graphs to get a complete picture of the cube's metadata.
     """
     dimension_data_file = _test_case_base_dir / "dependencies" / "dimension.csv"
     metadata_file = _test_case_base_dir / "dependencies" / "data.csv-metadata.json"
@@ -818,7 +818,7 @@ def test_rdf_dependency_loaded() -> None:
 @pytest.mark.timeout(30)
 def test_cyclic_rdf_dependencies_loaded() -> None:
     """
-    Ensure that the CsvwRdfManager loads dependent RDF graphs even when there is a cyclic dependency
+    Ensure that the CsvWRdfManager loads dependent RDF graphs even when there is a cyclic dependency
     """
     metadata_file = _test_case_base_dir / "dependencies" / "cyclic.csv-metadata.json"
 
@@ -831,7 +831,7 @@ def test_cyclic_rdf_dependencies_loaded() -> None:
 
 def test_transitive_rdf_dependency_loaded() -> None:
     """
-    Ensure that the CsvwRdfManager loads a transitive dependency.
+    Ensure that the CsvWRdfManager loads a transitive dependency.
      transitive.csv-metadata.json -> transitive.1.json -> transitive.2.json
     """
     metadata_file = (

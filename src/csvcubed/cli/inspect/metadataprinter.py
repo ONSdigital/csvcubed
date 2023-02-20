@@ -199,9 +199,6 @@ class MetadataPrinter:
             self.primary_csv_url
         )
 
-        # result_primary_key_col_names_by_csv_url: PrimaryKeyColNamesByDatasetUrlResult = (
-        #     self.state.csvw_inspector.get_primary_key_by_csv_url()
-        # )
         primary_key_col_names = result_table_schema_properties.primary_key_col_names
 
         # Currently, we do not support composite primary keys.

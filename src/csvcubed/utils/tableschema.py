@@ -34,7 +34,7 @@ _logger = logging.getLogger(__name__)
 
 
 @dataclass
-class CsvwRdfManager:
+class CsvWRdfManager:
     """
     This class handles the loading of metadata jsons to RDFLib Graphs.
     """
@@ -59,7 +59,7 @@ class CsvwRdfManager:
         """
         Loads the table schemas into rdf graph.
 
-        Member of :class:`./CsvwRdfManager`.
+        Member of :class:`./CsvWRdfManager`.
 
         :return: `Graph` - RDFLib Graph of CSV-W metadata json.
         """
@@ -98,7 +98,7 @@ class CsvwRdfManager:
         """
         Loads CSV-W metadata json-ld to rdflib graph
 
-        Member of :class:`./CsvwRdfManager`.
+        Member of :class:`./CsvWRdfManager`.
 
         :return: `Graph` - RDFLib Graph of CSV-W metadata json.
         """

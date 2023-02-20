@@ -9,17 +9,17 @@ from typing import Dict
 
 from csvcubed.utils.sparql_handler.code_list_inspector import CodeListInspector
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
-from csvcubed.utils.tableschema import CsvwRdfManager
+from csvcubed.utils.tableschema import CsvWRdfManager
 
-_csvw_rdf_manager_cache: Dict[str, CsvwRdfManager] = {}
+_csvw_rdf_manager_cache: Dict[str, CsvWRdfManager] = {}
 _data_cube_state_cache: Dict[str, DataCubeState] = {}
 _code_list_inspector_cache: Dict[str, CodeListInspector] = {}
 
 
-def get_csvw_rdf_manager(csvw_json_path: Path) -> CsvwRdfManager:
+def get_csvw_rdf_manager(csvw_json_path: Path) -> CsvWRdfManager:
     path_str = csvw_json_path.resolve().as_uri()
     if path_str not in _csvw_rdf_manager_cache:
-        _csvw_rdf_manager_cache[path_str] = CsvwRdfManager(csvw_json_path)
+        _csvw_rdf_manager_cache[path_str] = CsvWRdfManager(csvw_json_path)
 
     return _csvw_rdf_manager_cache[path_str]
 

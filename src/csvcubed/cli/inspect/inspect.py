@@ -20,7 +20,7 @@ from csvcubed.utils.sparql_handler.code_list_inspector import CodeListInspector
 from csvcubed.utils.sparql_handler.csvw_inspector import CsvWInspector
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
-from csvcubed.utils.tableschema import CsvwRdfManager
+from csvcubed.utils.tableschema import CsvWRdfManager
 
 _logger = logging.getLogger(__name__)
 
@@ -35,7 +35,7 @@ def inspect(csvw_metadata_json_path: Path) -> None:
     """
     _logger.debug(f"Metadata json-ld path: {csvw_metadata_json_path.absolute()}")
 
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_rdf_manager = CsvWRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
     if csvw_metadata_rdf_graph is None:

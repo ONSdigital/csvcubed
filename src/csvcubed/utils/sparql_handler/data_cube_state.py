@@ -29,22 +29,10 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_units,
 )
 
-T = TypeVar("T")
-
 
 @dataclass
 class DataCubeState:
     csvw_inspector: CsvWInspector
-
-    """
-    Private utility functions.
-    """
-
-    def _get_value_for_key(self, key: str, dict: Dict[str, T]) -> T:
-        maybe_value = dict.get(key)
-        if maybe_value is None:
-            raise KeyError(f"Could not find the definition for key '{key}'")
-        return maybe_value
 
     """
     Private cached properties.
@@ -60,7 +48,9 @@ class DataCubeState:
 
     @cached_property
     def _units(self) -> Dict[str, UnitResult]:
-        """ """
+        """
+        Gets the unit_uri for each UnitResult
+        """
         results = select_units(self.csvw_inspector.rdf_graph)
         return {result.unit_uri: result for result in results}
 

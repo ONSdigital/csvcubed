@@ -34,7 +34,6 @@ from csvcubed.models.sparqlresults import (
     PrimaryKeyColNamesByDatasetUrlResult,
     QubeComponentsResult,
     TableSchemaPropertiesResult,
-    TableSchemaPropertiesResults,
     UnitResult,
     map_catalog_metadata_results,
     map_codelists_sparql_result,
@@ -395,7 +394,7 @@ def select_table_schema_properties(
 ) -> List[TableSchemaPropertiesResult]:
     """
     TODO: Change description
-    Queries a CSV-W and extracts table url, about url and value url from the table with skos:inScheme property url.
+    Queries a CSV-W and extracts about_url, csv_url and a list of the primary key column names for all tables in the CSV-W.
     """
     results: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryName.SELECT_TABLE_SCHEMA_PROPERTIES),

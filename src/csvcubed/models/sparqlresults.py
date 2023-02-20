@@ -233,19 +233,12 @@ class MetadataDependenciesResult:
 @dataclass
 class TableSchemaPropertiesResult:
     """
-    Model representing the table schema value url and about url.
+    Model representing the about_url, csv_url and a list of primary key column names.
     """
 
     about_url: str
     csv_url: str
     primary_key_col_names: List[str]
-
-
-@dataclass
-class TableSchemaPropertiesResults:
-    """ """
-
-    table_schema_properties: List[TableSchemaPropertiesResult]
 
 
 @dataclass
@@ -686,7 +679,13 @@ def map_metadata_dependency_results(
 def map_table_schema_properties_results(
     sparql_results: List[ResultRow],
 ) -> List[TableSchemaPropertiesResult]:
-    """ """
+    """
+    Maps sparql query result to `List[TableSchemaPropertiesResult]`
+
+    Member of :file:`./models/sparqlresults.py`
+
+    :return: `List[TableSchemaPropertiesResult]`
+    """
 
     def map_row(row_result: Dict[str, Any]) -> TableSchemaPropertiesResult:
         return TableSchemaPropertiesResult(
