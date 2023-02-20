@@ -1,6 +1,7 @@
 {
     "type": "dimension",
     "from_existing": "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod",
+    "code_list": false,
     "label": "Hour",
     "cell_uri_template": "http://reference.data.gov.uk/id/hour/{+<column_name>}"
 }
