@@ -651,7 +651,7 @@ Feature: cube-config.json
     <#obs/2021,services@imports-monetary-value> a qb:Observation;
         <#attribute/imports-status> <#attribute/imports-status/final>;
         <#dimension/sector> sector:services;
-        <#dimension/year> year:2021;
+        <#dimension/year> <http://reference.data.gov.uk/id/year/2021>;
         <#measure/imports-monetary-value> 150.0;
         qb:dataSet <#dataset>;
         qb:measureType <#measure/imports-monetary-value>;
@@ -660,7 +660,7 @@ Feature: cube-config.json
     <#obs/2021,services@exports-monetary-value> a qb:Observation;
         <#attribute/exports-status> <#attribute/exports-status/final>;
         <#dimension/sector> sector:services;
-        <#dimension/year> year:2021;
+        <#dimension/year> <http://reference.data.gov.uk/id/year/2021>;
         <#measure/exports-monetary-value> 80.0;
         qb:dataSet <#dataset>;
         qb:measureType <#measure/exports-monetary-value>;
