@@ -80,6 +80,13 @@ def step_impl(context):
     assert log_file.exists(), f"Files in log directory: {list(log_dir.rglob('**/*'))}"
 
 
+@then("the command line output should display the log messages")
+def step_impl(context):
+    log_message = context.csvcubed_cli_result
+    expected_log_message = context.text
+    assert expected_log_message in log_message[1]
+
+
 @then("remove test log files")
 def step_impl(context):
     shutil.rmtree(context.csvcubed_log_location)
