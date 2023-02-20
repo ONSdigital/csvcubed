@@ -167,6 +167,7 @@ class AnyOneOfJsonSchemaValidationError(JsonSchemaValidationError):
                     ),
                     _indent,
                 )
+                + os.linesep
             )
 
         return indent(child_error_messages, _indent)
