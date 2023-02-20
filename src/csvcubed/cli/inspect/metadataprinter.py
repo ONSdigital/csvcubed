@@ -295,7 +295,6 @@ class MetadataPrinter:
         - Number of Code Lists: {self.result_code_lists.num_codelists}
         - Code Lists:{linesep}{formatted_codelists}"""
 
-        # return f"- The {self.csvw_type_str} has the following code list information:{self.result_code_lists.output_str}"
         return f"- The {self.csvw_type_str} has the following code list information:{output_string}"
 
     @property
