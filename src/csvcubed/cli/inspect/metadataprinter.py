@@ -263,7 +263,6 @@ class MetadataPrinter:
         :return: `str` - user-friendly string which will be output to CLI.
         """
         # get_printable_list_str called directly here for suppressed columns - see comment above re alternative approaches.
-        # {get_printable_list_str(self.suppressed_columns)} OR {self.result_cols_with_suppress_output_true.output_str}
         return f"- The {self.csvw_type_str} has the following data structure definition:\n- Dataset Label: {self.result_cube_table_identifiers.data_set_label}{self.result_qube_components.output_str}\n- Columns where suppress output is true: {get_printable_list_str(self.suppressed_columns)}"
 
     @property

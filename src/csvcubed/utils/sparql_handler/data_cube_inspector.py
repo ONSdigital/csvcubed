@@ -133,15 +133,6 @@ class DataCubeInspector:
             self.csvw_state.csvw_json_path,
         )
 
-    # @cached_property
-    # def _csvw_table_schema_file_dependencies(
-    #     self,
-    # ) -> Dict[str, CSVWTableSchemaFileDependenciesResult]:
-    #     """
-    #     Stores the csv url and results of the CSVW's table schema file dependencies.
-    #     """
-    #     return select_csvw_table_schema_file_dependencies(self.csvw_state.rdf_graph)
-
     """
     Public getters for the cached properties.
     """

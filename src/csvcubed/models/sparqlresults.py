@@ -106,8 +106,6 @@ class CSVWTableSchemaFileDependenciesResult:
     Model to represent select csvw table schema file dependencies result.
     """
 
-    # csv_url: str
-    # schema_urls: str
     table_schema_file_dependencies: List[str]
 
 

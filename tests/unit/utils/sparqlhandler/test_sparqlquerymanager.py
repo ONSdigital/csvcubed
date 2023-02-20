@@ -401,7 +401,6 @@ def test_select_is_pivoted_shape_for_measures_in_standard_shape_data_set():
         / "energy-trends-uk-total-energy.csv-metadata.json"
     )
     csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
-    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     results = select_is_pivoted_shape_for_measures_in_data_set(
         csvw_metadata_rdf_graph,
