@@ -37,6 +37,8 @@ def get_code_list_inspector(csvw_json_path: Path) -> CodeListInspector:
     path_str = csvw_json_path.resolve().as_uri()
     if path_str not in _code_list_inspector_cache:
         rdf_manager = get_csvw_rdf_manager(csvw_json_path)
-        _code_list_inspector_cache[path_str] = CodeListInspector(rdf_manager.csvw_state)
+        _code_list_inspector_cache[path_str] = CodeListInspector(
+            rdf_manager.csvw_inspector
+        )
 
     return _code_list_inspector_cache[path_str]

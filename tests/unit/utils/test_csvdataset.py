@@ -664,7 +664,7 @@ def test_create_unit_col_in_melted_data_set_for_pivoted_shape():
         c.property for c in _measure_components_for_multi_measure_pivoted_shape
     }
 
-    column_definitions = data_cube_state.csvw_state.get_column_definitions_for_csv(
+    column_definitions = data_cube_state.csvw_inspector.get_column_definitions_for_csv(
         "qb-id-10003.csv"
     )
     _create_unit_col_in_melted_data_set_for_pivoted_shape(
@@ -714,7 +714,7 @@ def test_create_unit_col_in_melted_data_set_for_pivoted_shape_should_throw_inval
         c.property for c in _measure_components_for_multi_measure_pivoted_shape
     }
 
-    column_definitions = data_cube_state.csvw_state.get_column_definitions_for_csv(
+    column_definitions = data_cube_state.csvw_inspector.get_column_definitions_for_csv(
         "qb-id-10003.csv"
     )
     column_definitions_without_obs_vals = [
@@ -757,7 +757,7 @@ def test_create_unit_col_in_melted_data_set_for_pivoted_shape_should_throw_inval
         / "qb-id-10003.csv-metadata.json"
     )
     data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
-    column_definitions = data_cube_state.csvw_state.get_column_definitions_for_csv(
+    column_definitions = data_cube_state.csvw_inspector.get_column_definitions_for_csv(
         "qb-id-10003.csv"
     )
     column_definitions_without_units = [

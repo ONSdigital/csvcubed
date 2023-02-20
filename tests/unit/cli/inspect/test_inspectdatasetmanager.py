@@ -284,14 +284,14 @@ def _get_arguments_skos_codelist(
     Produces the ConceptScheme for skos:codelist.
     """
     primary_catalogue_metadata = (
-        code_list_inspector.csvw_state.get_primary_catalog_metadata()
+        code_list_inspector.csvw_inspector.get_primary_catalog_metadata()
     )
     csv_url = code_list_inspector.get_table_identifiers_for_concept_scheme(
         primary_catalogue_metadata.dataset_uri
     ).csv_url
 
     dataset: DataFrame = load_csv_to_dataframe(
-        code_list_inspector.csvw_state.csvw_json_path, Path(csv_url)
+        code_list_inspector.csvw_inspector.csvw_json_path, Path(csv_url)
     )
     return (dataset, csv_url)
 
@@ -763,10 +763,10 @@ def test_get_concepts_hierarchy_info_hierarchy_with_depth_of_one():
     (dataset, csv_url) = _get_arguments_skos_codelist(code_list_inspector)
 
     result_code_list_cols = (
-        code_list_inspector.csvw_state.get_column_definitions_for_csv(csv_url)
+        code_list_inspector.csvw_inspector.get_column_definitions_for_csv(csv_url)
     )
     result_primary_key_col_names_by_csv_url = select_primary_key_col_names_by_csv_url(
-        code_list_inspector.csvw_state.rdf_graph, csv_url
+        code_list_inspector.csvw_inspector.rdf_graph, csv_url
     )
 
     parent_notation_col_name = get_codelist_col_title_by_property_url(
@@ -799,10 +799,10 @@ def test_get_concepts_hierarchy_info_hierarchy_with_depth_more_than_one():
     (dataset, csv_url) = _get_arguments_skos_codelist(code_list_inspector)
 
     result_code_list_cols = (
-        code_list_inspector.csvw_state.get_column_definitions_for_csv(csv_url)
+        code_list_inspector.csvw_inspector.get_column_definitions_for_csv(csv_url)
     )
     result_primary_key_col_names_by_csv_url = select_primary_key_col_names_by_csv_url(
-        code_list_inspector.csvw_state.rdf_graph, csv_url
+        code_list_inspector.csvw_inspector.rdf_graph, csv_url
     )
 
     parent_notation_col_name = get_codelist_col_title_by_property_url(

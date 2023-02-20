@@ -1,7 +1,7 @@
 {
     "@context": "http://www.w3.org/ns/csvw",
     "@id": "http://gss-data.org.uk/def/trade/concept-scheme/age-of-business",
-    "url": "about-url-wrong-variable.csv",
+    "url": "about-url-invalid-variable.csv",
     "tableSchema": {
         "columns": [
             {

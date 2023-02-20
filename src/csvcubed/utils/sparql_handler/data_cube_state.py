@@ -8,10 +8,11 @@ one of more data cubes.
 
 from dataclasses import dataclass
 from functools import cached_property
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, TypeVar
 
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import (
+    ColumnDefinition,
     CubeTableIdentifiers,
     IsPivotedShapeMeasureResult,
     QubeComponentsResult,
@@ -21,11 +22,14 @@ from csvcubed.utils.dict import get_from_dict_ensure_exists
 from csvcubed.utils.iterables import first, group_by
 from csvcubed.utils.sparql_handler.csvw_inspector import CsvWInspector
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
+    select_column_definitions,
     select_csvw_dsd_qube_components,
     select_data_set_dsd_and_csv_url,
     select_is_pivoted_shape_for_measures_in_data_set,
     select_units,
 )
+
+T = TypeVar("T")
 
 
 @dataclass

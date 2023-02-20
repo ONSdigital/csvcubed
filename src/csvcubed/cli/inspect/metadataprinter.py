@@ -132,13 +132,7 @@ class MetadataPrinter:
 
         self.csvw_type_str = self.get_csvw_type_str(csvw_type)
         self.result_catalog_metadata = csvw_inspector.get_primary_catalog_metadata()
-        self.primary_csv_url = self.get_primary_csv_url(
-            csvw_inspector.rdf_graph,
-            csvw_type,
-            to_absolute_rdflib_file_path(
-                self.result_catalog_metadata.dataset_uri, csvw_inspector.csvw_json_path
-            ),
-        )
+        self.primary_csv_url = self.get_primary_csv_url()
         self.dataset = load_csv_to_dataframe(
             csvw_inspector.csvw_json_path, Path(self.primary_csv_url)
         )
@@ -221,7 +215,7 @@ class MetadataPrinter:
             label_col_title,
             unique_identifier,
         ) = self.get_parent_label_unique_id_col_titles(
-            self.result_code_list_cols.columns, primary_key_col_names[0]
+            self.result_code_list_cols, primary_key_col_names[0]
         )
         self.result_concepts_hierachy_info = get_concepts_hierarchy_info(
             self.dataset, parent_col_title, label_col_title, unique_identifier

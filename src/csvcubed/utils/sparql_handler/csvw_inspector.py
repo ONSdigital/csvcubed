@@ -73,20 +73,7 @@ class CsvWInspector:
         results_dict: Dict[str, TableSchemaPropertiesResult] = {}
         for result in results:
             results_dict[result.csv_url] = result
-        # grouping = group_by(results, lambda r: r.csv_url)
         return results_dict
-
-    @cached_property
-    def _primary_key_by_csv_url(self) -> PrimaryKeyColNamesByDatasetUrlResult:
-        """
-        Cached property for the select_primary_key_col_names_by_csv_url query that stores the query's results.
-        """
-        csv_url: str
-        result = select_primary_key_col_names_by_csv_url(
-            self.rdf_graph, self.get_table_info_for_csv_url().table_url
-        )
-
-        return result
 
     def get_column_definitions_for_csv(self, csv_url: str) -> List[ColumnDefinition]:
         """
@@ -118,11 +105,3 @@ class CsvWInspector:
             self._table_schema_properties, csv_url
         )
         return result
-
-    def get_primary_key_by_csv_url(
-        self,
-    ) -> PrimaryKeyColNamesByDatasetUrlResult:
-        """
-        Retrieves the stored result from the codelist priary key by csv url cached property.
-        """
-        return self._primary_key_by_csv_url
