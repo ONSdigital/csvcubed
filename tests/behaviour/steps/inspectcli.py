@@ -10,26 +10,12 @@ from csvcubed.cli.inspect.metadatainputvalidator import MetadataValidator
 from csvcubed.cli.inspect.metadataprinter import MetadataPrinter
 from csvcubed.models.csvwtype import CSVWType
 from csvcubed.models.cube.cube_shape import CubeShape
-from csvcubed.models.inspectdataframeresults import (
-    DatasetObservationsByMeasureUnitInfoResult,
-    DatasetObservationsInfoResult,
-)
-from csvcubed.models.sparqlresults import (
-    CatalogMetadataResult,
-    CodelistsResult,
-    QubeComponentsResult,
-)
 from csvcubed.utils.iterables import first
-from csvcubed.utils.qb.components import ComponentPropertyType
 from csvcubed.utils.sparql_handler.code_list_inspector import CodeListInspector
 from csvcubed.utils.sparql_handler.csvw_inspector import CsvWInspector
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
-from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.utils.tableschema import CsvWRdfManager
-from tests.unit.cli.inspect.test_inspectdatasetmanager import (
-    expected_dataframe_pivoted_multi_measure,
-    expected_dataframe_pivoted_single_measure,
-)
+from tests.helpers.inspectors_cache import get_csvw_rdf_manager
 from tests.unit.utils.sparqlhandler.test_sparqlquerymanager import (
     assert_dsd_component_equal,
     get_dsd_component_by_property_url,
@@ -63,7 +49,7 @@ def step_impl(context, csv_file: str):
 
 @When("the Metadata File json-ld is loaded to a rdf graph")
 def step_impl(context):
-    csvw_rdf_manager = CsvWRdfManager(context.csvw_metadata_json_path)
+    csvw_rdf_manager = get_csvw_rdf_manager(context.csvw_metadata_json_path)
     context.csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
     assert context.csvw_metadata_rdf_graph is not None
 

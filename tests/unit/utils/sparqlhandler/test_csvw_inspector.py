@@ -7,6 +7,7 @@ from csvcubed.models.csvwtype import CSVWType
 from csvcubed.utils.sparql_handler.csvw_inspector import CsvWInspector
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.utils.tableschema import CsvWRdfManager
+from tests.helpers.inspectors_cache import get_csvw_rdf_manager
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
@@ -23,7 +24,7 @@ def test_get_primary_catalog_metadata():
         / "pivoted-single-measure-dataset"
         / "qb-id-10004.csv-metadata.json"
     )
-    csvw_rdf_manager = CsvWRdfManager(csvw_metadata_json_path)
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
     primary_graph_identifier = path_to_file_uri_for_rdflib(csvw_metadata_json_path)
 
     test_catalog_metadata_result = (
@@ -61,7 +62,7 @@ def test_detect_csvw_type_qb_dataset():
         / "pivoted-single-measure-dataset"
         / "qb-id-10004.csv-metadata.json"
     )
-    csvw_rdf_manager = CsvWRdfManager(csvw_metadata_json_path)
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
 
     csvw_type = csvw_rdf_manager.csvw_inspector.csvw_type
     assert csvw_type == CSVWType.QbDataSet
@@ -96,7 +97,7 @@ def test_detect_csvw_type_code_list():
         / "pivoted-single-measure-dataset"
         / "some-dimension.csv-metadata.json"
     )
-    csvw_rdf_manager = CsvWRdfManager(csvw_metadata_json_path)
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
 
     csvw_type = csvw_rdf_manager.csvw_inspector.csvw_type
     assert csvw_type == CSVWType.CodeList
@@ -111,7 +112,7 @@ def test_get_table_info_for_csv_url():
         / "pivoted-single-measure-dataset"
         / "some-dimension.csv-metadata.json"
     )
-    csvw_rdf_manager = CsvWRdfManager(csvw_metadata_json_path)
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
 
     csvw_inspector: CsvWInspector = CsvWInspector(
         csvw_rdf_manager.rdf_graph, csvw_metadata_json_path
@@ -124,9 +125,18 @@ def test_get_table_info_for_csv_url():
     assert result.primary_key_col_names == ["uri_identifier"]
 
 
-def test_get_table_info_multi_tables():
+def test_get_table_info_multi_keys():
+    """
+    Ensures that primary keys can be retrieved successfully from a table that contains multiple primary keys.
+
+    Whilst we are not using the primary keys as an index at the moment, we might want to do it in the future to
+    assert that we are getting information in the order that we find it in the json document.
+
+    Placing the result primary keys into a list so we can index it presents the issue of them appearing
+    in a different (random) order each time the function is used.
+    """
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
-    csvw_rdf_manager = CsvWRdfManager(csvw_metadata_json_path)
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
 
     csvw_inspector: CsvWInspector = CsvWInspector(
         csvw_rdf_manager.rdf_graph, csvw_metadata_json_path
@@ -141,5 +151,25 @@ def test_get_table_info_multi_tables():
         "clearance_origin",
         "measure_type",
     }
-    actual_primary_keys = set(result.primary_key_col_names)
+    actual_primary_keys = list(result.primary_key_col_names)
     assert expected_primary_keys == actual_primary_keys
+
+
+def test_table_schema_properties_primary_keys_multi_tables():
+    """
+    Tests retrieval of primary keys from a data cube with locally defined code lists that contains multiple tables.
+    """
+    csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
+
+    csvw_inspector: CsvWInspector = CsvWInspector(
+        csvw_rdf_manager.rdf_graph, csvw_metadata_json_path
+    )
+
+    result = csvw_inspector._table_schema_properties
+
+    assert result is not None
+    # assert result["alcohol-bulletin.csv"].primary_key_col_names == []
+    assert result["alcohol-content.csv"].primary_key_col_names == ["notation"]
+    assert result["clearance-origin.csv"].primary_key_col_names == ["notation"]
+    assert result["alcohol-sub-type.csv"].primary_key_col_names == ["notation"]

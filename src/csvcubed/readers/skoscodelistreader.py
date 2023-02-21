@@ -14,6 +14,7 @@ from uritemplate import variables
 from csvcubed.utils.iterables import first
 from csvcubed.utils.sparql_handler.code_list_inspector import CodeListInspector
 from csvcubed.utils.tableschema import CsvWRdfManager
+from tests.helpers.inspectors_cache import get_csvw_rdf_manager
 
 _logger = logging.getLogger(__name__)
 
@@ -29,7 +30,7 @@ def extract_code_list_concept_scheme_info(
        different column name.
     """
 
-    csvw_rdf_manager = CsvWRdfManager(code_list_csvw_path)
+    csvw_rdf_manager = get_csvw_rdf_manager(code_list_csvw_path)
     csvw_inspector = csvw_rdf_manager.csvw_inspector
     concept_scheme_uri = csvw_inspector.get_primary_catalog_metadata().dataset_uri
     csv_url = (

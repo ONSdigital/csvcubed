@@ -28,7 +28,6 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_dsd_code_list_and_cols,
     select_is_pivoted_shape_for_measures_in_data_set,
     select_metadata_dependencies,
-    select_table_schema_properties,
 )
 from csvcubed.utils.tableschema import add_triples_for_file_dependencies
 from tests.helpers.inspectors_cache import (
