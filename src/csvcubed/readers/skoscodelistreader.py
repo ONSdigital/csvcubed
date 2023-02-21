@@ -13,7 +13,6 @@ from uritemplate import variables
 
 from csvcubed.utils.iterables import first
 from csvcubed.utils.sparql_handler.code_list_inspector import CodeListInspector
-from csvcubed.utils.tableschema import CsvWRdfManager
 from tests.helpers.inspectors_cache import get_csvw_rdf_manager
 
 _logger = logging.getLogger(__name__)

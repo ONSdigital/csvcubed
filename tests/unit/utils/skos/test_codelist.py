@@ -10,10 +10,6 @@ from csvcubed.utils.skos.codelist import (
     get_codelist_col_title_by_property_url,
     get_codelist_col_title_from_col_name,
 )
-from csvcubed.utils.sparql_handler.csvw_inspector import CsvWInspector
-from csvcubed.utils.sparql_handler.sparqlquerymanager import (
-    select_primary_key_col_names_by_csv_url,
-)
 from tests.helpers.inspectors_cache import get_code_list_inspector
 from tests.unit.test_baseunit import get_test_cases_dir
 

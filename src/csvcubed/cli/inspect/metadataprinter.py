@@ -8,9 +8,7 @@ Provides functionality for validating and detecting input metadata.json file.
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import List, Optional, Tuple, Union
-from urllib.parse import urljoin
 
-import rdflib
 from pandas import DataFrame
 
 from csvcubed.cli.inspect.inspectdatasetmanager import (
@@ -35,7 +33,6 @@ from csvcubed.models.sparqlresults import (
     ColsWithSuppressOutputTrueResult,
     ColumnDefinition,
     DSDLabelURIResult,
-    PrimaryKeyColNamesByDatasetUrlResult,
     QubeComponentsResult,
 )
 from csvcubed.utils.csvdataset import transform_dataset_to_canonical_shape
@@ -46,14 +43,11 @@ from csvcubed.utils.skos.codelist import (
 )
 from csvcubed.utils.sparql_handler.code_list_inspector import CodeListInspector
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
-from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_cols_where_suppress_output_is_true,
     select_csvw_dsd_dataset_label_and_dsd_def_uri,
     select_dsd_code_list_and_cols,
-    select_primary_key_col_names_by_csv_url,
 )
-from csvcubed.utils.uri import looks_like_uri
 
 
 @dataclass

@@ -9,7 +9,6 @@ from csvcubed.models.csvwtype import CSVWType
 from csvcubed.models.sparqlresults import (
     CatalogMetadataResult,
     ColumnDefinition,
-    PrimaryKeyColNamesByDatasetUrlResult,
     TableSchemaPropertiesResult,
 )
 from csvcubed.utils.dict import get_from_dict_ensure_exists
@@ -20,7 +19,6 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     ask_is_csvw_qb_dataset,
     select_column_definitions,
     select_csvw_catalog_metadata,
-    select_primary_key_col_names_by_csv_url,
     select_table_schema_properties,
 )
 
