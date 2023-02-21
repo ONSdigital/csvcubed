@@ -1,0 +1,7 @@
+{
+    "type": "dimension",
+    "from_existing": "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod",
+    "label": "Mixed Time Period",
+    "description": "Dimension consisting of mixed time periods, e.g. 2020-Q4 (quarter), 2021-06 (month), 2019-08-06 (day)",
+    "cell_uri_template": "http://reference.data.gov.uk/id/{+<column_name>}"
+}
