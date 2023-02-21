@@ -52,7 +52,6 @@ def build_code_list(
         raise
 
     print(f"Build Complete @ {output_directory.resolve()}")
-    return
 
 
 def get_code_list_versioned_deserialiser(
