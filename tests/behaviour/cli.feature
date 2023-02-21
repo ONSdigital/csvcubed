@@ -52,10 +52,10 @@ Feature: Test the csvcubed Command Line Interface.
 
   Scenario: The csvcubed code-list build command will continue when there is a validation error and build a code list csvw in a given out directory.
     Given the existing test-case file "readers/code-list-config/v1.0/code_list_config_produces_error.json"
-    When the csvcubed CLI is run with "code-list build readers/code-list-config/v1.0/code_list_config_produces_error.json --ignore-validation-errors --out 'temp/test/out/'"
-    Then the file at "temp/test/out/title-of-the-code-list.csv" should exist
-    And the file at "temp/test/out/title-of-the-code-list.csv-metadata.json" should exist
-    And the file at "temp/test/out/title-of-the-code-list.table.json" should exist
+    When the csvcubed CLI is run with "code-list build readers/code-list-config/v1.0/code_list_config_produces_error.json --ignore-validation-errors --out 'test-out'"
+    Then the file at "test-out/title-of-the-code-list.csv" should exist
+    And the file at "test-out/title-of-the-code-list.csv-metadata.json" should exist
+    And the file at "test-out/title-of-the-code-list.table.json" should exist
     And the command line output should display the log message
     """
     Build Complete @
