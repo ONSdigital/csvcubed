@@ -27,19 +27,19 @@ Feature: Test the csvcubed Command Line Interface.
     When the csvcubed CLI is run with "code-list build readers/code-list-config/v1.0/code_list_config_produces_error.json --log-level debug"
     Then the command line output should display the log message
     """
-    csvcubed.utils.cli - WARNING - Schema Validation Error: $.creator - 'http://purl.org/dc/aboutdcmi#DCMI' is not one of ['http://dbpedia.org/resource/Open_Knowledge_Foundation', 'http://statistics.data.gov.uk', 'https:/… (cli.py:65)
+    csvcubed.utils.cli - WARNING - Schema Validation Error: $.creator - 'http://purl.org/dc/aboutdcmi#DCMI' is not one of ['http://dbpedia.org/resource/Open_Knowledge_Foundation', 'http://statistics.data.gov.uk', 'https:/
     """
     And the command line output should display the log message
     """
-    csvcubed.utils.cli - ERROR - Validation Error: An error was encountered when validating the cube. The error occurred in '["('concepts', 3)", 'existing_concept_uri']' and was reported as ''This will produce an error' does not look like a URI.' (cli.py:60)
+    csvcubed.utils.cli - ERROR - Validation Error: An error was encountered when validating the cube. The error occurred in '["('concepts', 3)", 'existing_concept_uri']' and was reported as ''This will produce an error' does not look like a URI.'
     """
     And the command line output should display the log message
     """
-    csvcubed.readers.codelistconfig.codelist_schema_versions - INFO - Using schema version 1.0 (codelist_schema_versions.py:111)
+    csvcubed.readers.codelistconfig.codelist_schema_versions - INFO - Using schema version 1.0
     """
     And the command line output should display the log message
     """
-    csvcubed.utils.json - DEBUG - Loading JSON from URL https://purl.org/csv-cubed/code-list-config/v1.0 (json.py:47)
+    csvcubed.utils.json - DEBUG - Loading JSON from URL https://purl.org/csv-cubed/code-list-config/v1.0
     """
 
   Scenario: The csvcubed code-list build command should display the logging in accordance with the log level set at critical.
