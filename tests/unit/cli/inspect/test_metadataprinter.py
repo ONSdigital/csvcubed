@@ -31,7 +31,7 @@ def test_multi_measure_pivoted_shape_cube_observation_and_count_info():
     data_cube_inspector = get_data_cube_inspector(path_to_json_file)
     metadata_printer = MetadataPrinter(data_cube_inspector)
 
-    result_code_lists: CodelistsResult = metadata_printer.result_code_lists
+    result_code_lists: CodelistsResult = metadata_printer.result_primary_csv_code_lists
     assert result_code_lists is not None
 
     assert len(result_code_lists.codelists) == 1
@@ -91,7 +91,7 @@ def test_single_measure_pivoted_shape_cube_observation_and_count_info():
     data_cube_inspector = get_data_cube_inspector(path_to_json_file)
     metadata_printer = MetadataPrinter(data_cube_inspector)
 
-    result_code_lists: CodelistsResult = metadata_printer.result_code_lists
+    result_code_lists: CodelistsResult = metadata_printer.result_primary_csv_code_lists
     assert result_code_lists is not None
 
     assert len(result_code_lists.codelists) == 1

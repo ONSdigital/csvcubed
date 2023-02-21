@@ -72,10 +72,10 @@ class MetadataPrinter:
     dataset: DataFrame = field(init=False)
 
     result_catalog_metadata: CatalogMetadataResult = field(init=False)
-    result_cube_table_identifiers: CubeTableIdentifiers = field(init=False)
+    primary_cube_table_identifiers: CubeTableIdentifiers = field(init=False)
     result_qube_components: QubeComponentsResult = field(init=False)
-    result_column_definitions: List[ColumnDefinition] = field(init=False)
-    result_code_lists: CodelistsResult = field(init=False)
+    primary_csv_column_definitions: List[ColumnDefinition] = field(init=False)
+    result_primary_csv_code_lists: CodelistsResult = field(init=False)
     result_dataset_observations_info: DatasetObservationsInfoResult = field(init=False)
     result_dataset_value_counts: DatasetObservationsByMeasureUnitInfoResult = field(
         init=False
@@ -157,18 +157,18 @@ class MetadataPrinter:
             self.primary_csv_url
         )
 
-        self.result_cube_table_identifiers = self.state.get_cube_identifiers_for_csv(
+        self.primary_cube_table_identifiers = self.state.get_cube_identifiers_for_csv(
             self.primary_csv_url
         )
-        self.result_column_definitions = self.state.get_column_definitions_for_csv(
-            self.primary_csv_url
-        )
-
-        self.suppressed_columns = self.state.get_suppressed_columns_for_csv(
+        self.primary_csv_column_definitions = self.state.get_column_definitions_for_csv(
             self.primary_csv_url
         )
 
-        self.result_code_lists = self.state.get_code_lists_and_cols(
+        self.primary_csv_suppressed_columns = self.state.get_suppressed_columns_for_csv(
+            self.primary_csv_url
+        )
+
+        self.result_primary_csv_code_lists = self.state.get_code_lists_and_cols(
             self.primary_csv_url
         )
 
@@ -262,8 +262,7 @@ class MetadataPrinter:
 
         :return: `str` - user-friendly string which will be output to CLI.
         """
-        # get_printable_list_str called directly here for suppressed columns - see comment above re alternative approaches.
-        return f"- The {self.csvw_type_str} has the following data structure definition:\n- Dataset Label: {self.result_cube_table_identifiers.data_set_label}{self.result_qube_components.output_str}\n- Columns where suppress output is true: {get_printable_list_str(self.suppressed_columns)}"
+        return f"- The {self.csvw_type_str} has the following data structure definition:\n- Dataset Label: {self.primary_cube_table_identifiers.data_set_label}{self.result_qube_components.output_str}\n- Columns where suppress output is true: {get_printable_list_str(self.primary_csv_suppressed_columns)}"
 
     @property
     def codelist_info_printable(self) -> str:
@@ -286,13 +285,14 @@ class MetadataPrinter:
             [
                 alter_code_list_for_text_representation(codelist)
                 for codelist in sorted(
-                    self.result_code_lists.codelists, key=lambda c: c.code_list
+                    self.result_primary_csv_code_lists.codelists,
+                    key=lambda c: c.code_list,
                 )
             ],
             column_names=["Code List", "Code List Label", "Columns Used In"],
         )
         output_string = f"""
-        - Number of Code Lists: {self.result_code_lists.num_codelists}
+        - Number of Code Lists: {self.result_primary_csv_code_lists.num_codelists}
         - Code Lists:{linesep}{formatted_codelists}"""
 
         return f"- The {self.csvw_type_str} has the following code list information:{output_string}"

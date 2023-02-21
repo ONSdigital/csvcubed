@@ -154,7 +154,7 @@ class DataCubeInspector:
 
     def get_units(self) -> List[UnitResult]:
         """
-        Get all units in the data cube.
+        his function gets the value of the unit and returns it as a list.
         """
         return list(self._units.values())
 

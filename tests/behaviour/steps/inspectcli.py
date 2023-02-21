@@ -116,7 +116,9 @@ def step_impl(context):
     context.result_dataset_observations_info = (
         metadata_printer.result_dataset_observations_info
     )
-    context.result_code_lists = metadata_printer.result_code_lists
+    context.result_primary_csv_code_lists = (
+        metadata_printer.result_primary_csv_code_lists
+    )
     context.result_dataset_observations_info = (
         metadata_printer.result_dataset_observations_info
     )
