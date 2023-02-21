@@ -82,16 +82,16 @@ def step_impl(context):
 
 @then("the command line output should display the log message")
 def step_impl(context):
-    log_message = context.csvcubed_cli_result
-    expected_log_message = context.text
-    assert expected_log_message in log_message[1], log_message[1]
+    (status_code, log_message) = context.csvcubed_cli_result
+    expected_log_message = context.text.strip()
+    assert expected_log_message in log_message, log_message
 
 
 @then("the command line output should not display the log message")
 def step_impl(context):
-    log_message = context.csvcubed_cli_result
-    expected_log_message = context.text
-    assert expected_log_message not in log_message[1], log_message[1]
+    (status_code, log_message) = context.csvcubed_cli_result
+    expected_log_message = context.text.strip()
+    assert expected_log_message not in log_message, log_message
 
 
 @then("remove test log files")
