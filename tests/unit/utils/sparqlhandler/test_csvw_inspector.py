@@ -125,7 +125,7 @@ def test_get_table_info_for_csv_url():
     assert result.primary_key_col_names == ["uri_identifier"]
 
 
-def test_get_table_info_multi_keys():
+def test_get_table_info_multiple_primary_keys():
     """
     Ensures that primary keys can be retrieved successfully from a table that contains multiple primary keys.
 
@@ -143,21 +143,20 @@ def test_get_table_info_multi_keys():
     )
 
     result = csvw_inspector.get_table_info_for_csv_url("alcohol-bulletin.csv")
-    expected_primary_keys = {
-        "alcohol_type",
-        "alcohol_sub_type",
-        "period",
+
+    assert set(result.primary_key_col_names) == {
         "alcohol_content",
+        "alcohol_sub_type",
+        "alcohol_type",
         "clearance_origin",
         "measure_type",
+        "period",
     }
-    actual_primary_keys = list(result.primary_key_col_names)
-    assert expected_primary_keys == actual_primary_keys
 
 
-def test_table_schema_properties_primary_keys_multi_tables():
+def test_get_table_info_multiple_tables():
     """
-    Tests retrieval of primary keys from a data cube with locally defined code lists that contains multiple tables.
+    Tests retrieval of all tables from a data cube that contains multiple tables.
     """
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
     csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
@@ -168,8 +167,28 @@ def test_table_schema_properties_primary_keys_multi_tables():
 
     result = csvw_inspector._table_schema_properties
 
-    assert result is not None
-    # assert result["alcohol-bulletin.csv"].primary_key_col_names == []
+    assert len(result) == 4
+
+    assert (
+        result["alcohol-bulletin.csv"].about_url
+        == "alcohol-bulletin.csv#obs/{+period}/{+alcohol_type}/{+alcohol_sub_type}/{+alcohol_content}/{+clearance_origin}/{+measure_type}"
+    )
+    assert result["alcohol-content.csv"].about_url == "alcohol-content.csv#{+notation}"
+    assert (
+        result["alcohol-sub-type.csv"].about_url == "alcohol-sub-type.csv#{+notation}"
+    )
+    assert (
+        result["clearance-origin.csv"].about_url == "clearance-origin.csv#{+notation}"
+    )
+
+    assert set(result["alcohol-bulletin.csv"].primary_key_col_names) == {
+        "alcohol_content",
+        "alcohol_sub_type",
+        "alcohol_type",
+        "clearance_origin",
+        "measure_type",
+        "period",
+    }
     assert result["alcohol-content.csv"].primary_key_col_names == ["notation"]
     assert result["clearance-origin.csv"].primary_key_col_names == ["notation"]
     assert result["alcohol-sub-type.csv"].primary_key_col_names == ["notation"]
