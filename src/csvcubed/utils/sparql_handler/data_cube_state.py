@@ -32,6 +32,8 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
 
 @dataclass
 class DataCubeState:
+    """Provides access to inspect the data cubes contained in an rdflib graph."""
+
     csvw_inspector: CsvWInspector
 
     """

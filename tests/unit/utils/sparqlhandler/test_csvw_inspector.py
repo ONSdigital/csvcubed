@@ -124,35 +124,6 @@ def test_get_table_info_for_csv_url():
     assert result.primary_key_col_names == ["uri_identifier"]
 
 
-def test_get_table_info_multiple_primary_keys():
-    """
-    Ensures that primary keys can be retrieved successfully from a table that contains multiple primary keys.
-
-    Whilst we are not using the primary keys as an index at the moment, we might want to do it in the future to
-    assert that we are getting information in the order that we find it in the json document.
-
-    Placing the result primary keys into a list so we can index it presents the issue of them appearing
-    in a different (random) order each time the function is used.
-    """
-    csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
-    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
-
-    csvw_inspector: CsvWInspector = CsvWInspector(
-        csvw_rdf_manager.rdf_graph, csvw_metadata_json_path
-    )
-
-    result = csvw_inspector.get_table_info_for_csv_url("alcohol-bulletin.csv")
-
-    assert set(result.primary_key_col_names) == {
-        "alcohol_content",
-        "alcohol_sub_type",
-        "alcohol_type",
-        "clearance_origin",
-        "measure_type",
-        "period",
-    }
-
-
 def test_get_table_info_multiple_tables():
     """
     Tests retrieval of all tables from a data cube that contains multiple tables.

@@ -393,7 +393,6 @@ def select_table_schema_properties(
     rdf_graph: rdflib.Graph,
 ) -> List[TableSchemaPropertiesResult]:
     """
-    TODO: Change description
     Queries a CSV-W and extracts about_url, csv_url and a list of the primary key column names for all tables in the CSV-W.
     """
     results: List[ResultRow] = select(
