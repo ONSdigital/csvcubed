@@ -44,7 +44,10 @@ def build(
         writer = QbWriter(cube)
         writer.write(output_directory)
     except:
-        _logger.fatal("Failed to generate CSV-W.")
+        _logger.critical(
+            "Failed to generate CSV-W. Did not update outputs in %s",
+            output_directory,
+        )
         raise
 
     print(f"Build Complete @ {output_directory.resolve()}")
