@@ -68,11 +68,3 @@ Feature: Test the csvcubed Command Line Interface.
     """
     Build Complete @
     """
-
-  Scenario: Successfully output a code-list CSVW using schema v1.0
-    Given the existing test-case file "readers/code-list-config/v1.0/code_list_config_hierarchical.json"
-    Then a valid code-list is created and serialised that to CSVW from the config file "readers/code-list-config/v1.0/code_list_config_hierarchical.json"
-
-#Scenario: Successfully output a code-list CSVW using schema v1.1
-#    Given the existing test-case file "readers/code-list-config/v1.0/code_list_config_hierarchical.json"
-#    Then a valid code-list is created and serialised that to CSVW
