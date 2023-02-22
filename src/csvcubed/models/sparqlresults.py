@@ -118,26 +118,6 @@ class CodelistsResult:
     codelists: List[CodelistResult]
     num_codelists: int
 
-    @property
-    def output_str(self) -> str:
-        def alter_code_list_for_text_representation(code_list: CodelistResult) -> Dict:
-            dict_repr = code_list.as_dict()
-            dict_repr["code_list_label"] = code_list.code_list_label or ""
-            dict_repr["cols_used_in"] = ", ".join(code_list.cols_used_in)
-            del dict_repr["csv_url"]
-            return dict_repr
-
-        formatted_codelists = get_printable_tabular_str_from_list(
-            [
-                alter_code_list_for_text_representation(codelist)
-                for codelist in sorted(self.codelists, key=lambda c: c.code_list)
-            ],
-            column_names=["Code List", "Code List Label", "Columns Used In"],
-        )
-        return f"""
-        - Number of Code Lists: {self.num_codelists}
-        - Code Lists:{linesep}{formatted_codelists}"""
-
 
 @dataclass
 class CodeListTableIdentifers:
