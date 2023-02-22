@@ -298,7 +298,7 @@ def transform_dataset_to_canonical_shape(
             qube_components,
             data_cube_inspector,
             canonical_shape_dataset,
-            data_cube_inspector.csvw_state.csvw_json_path,
+            data_cube_inspector.csvw_inspector.csvw_json_path,
         )
     else:
         # In pivoted shape

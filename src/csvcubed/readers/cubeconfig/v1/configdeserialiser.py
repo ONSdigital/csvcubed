@@ -7,7 +7,7 @@ A loader for the v1.* config.json.
 import logging
 from json import JSONDecodeError
 from pathlib import Path
-from typing import Callable, Dict, List, Optional, Tuple
+from typing import Callable, Dict, List, Optional, Tuple, Set
 
 import pandas as pd
 
@@ -18,6 +18,7 @@ from csvcubed.models.cube.qb.columns import QbColumn
 from csvcubed.models.jsonvalidationerrors import (
     GenericJsonSchemaValidationError,
     JsonSchemaValidationError,
+    AnyOneOfJsonSchemaValidationError,
 )
 from csvcubed.models.validationerror import ValidationError
 from csvcubed.readers.catalogmetadata.v1.catalog_metadata_reader import (
@@ -44,6 +45,32 @@ from ...preconfiguredtemplates import apply_preconfigured_values_from_template
 from .constants import CONVENTION_NAMES
 
 _logger = logging.getLogger(__name__)
+
+_map_column_type_to_schema_type_refs: Dict[str, Set[str]] = {
+    "attribute": {
+        "#/definitions/v1.0/columnTypes/Attribute_Resource_New",
+        "#/definitions/v1.0/columnTypes/Attribute_Resource_Existing",
+        "#/definitions/v1.0/columnTypes/Attribute_Literal",
+    },
+    "dimension": {"#/definitions/v1.0/columnTypes/Dimension"},
+    "units": {
+        "#/definitions/v1.0/columnTypes/Units_New",
+        "#/definitions/v1.0/columnTypes/Units_Existing",
+    },
+    "measures": {
+        "#/definitions/v1.0/columnTypes/Measures_New",
+        "#/definitions/v1.0/columnTypes/Measures_Existing",
+    },
+    "observations": {"#/definitions/v1.0/columnTypes/Observations"},
+}
+"""
+Maps $.column.* `type` properties to the list of qube-config.json schema types valid for that `type`.
+
+This helps us filter down the typically long list of column schema validation errors to just the ones which are 
+relevant for the `type` they specified.  
+
+See Issue #715. 
+"""
 
 
 def get_deserialiser(
@@ -99,7 +126,40 @@ def _get_config_json_with_validation_errors(
         # Create a default config, setting title from csv data file path.
         config = {"title": generate_title_from_file_name(csv_path)}
         schema_validation_errors = []
+
+    _filter_column_validation_errors_by_type(schema_validation_errors)
+
     return config, schema_validation_errors
+
+
+def _filter_column_validation_errors_by_type(schema_validation_errors):
+    """
+    Filters down the typically long list of column schema validation errors to just the ones which are relevant for
+    the `type` they specified.
+
+    See Issue #715.
+    """
+    for err in schema_validation_errors:
+        json_path_parts = err.json_path.split(".")
+        if (
+            isinstance(err, AnyOneOfJsonSchemaValidationError)
+            and len(json_path_parts) == 3
+            and json_path_parts[0:2] == ["$", "columns"]
+            and isinstance(err.offending_value, dict)
+            and err.offending_value.get("type") in _map_column_type_to_schema_type_refs
+        ):
+            # Given that we know the type of the column, only include error messages associated with the known matching
+            #   schema types.
+            desired_column_type = err.offending_value["type"]
+            matching_schema_type_refs = _map_column_type_to_schema_type_refs[
+                desired_column_type
+            ]
+            err.possible_types_with_grouped_errors = [
+                (schema_type, errors)
+                for (schema_type, errors) in err.possible_types_with_grouped_errors
+                if isinstance(schema_type, dict)
+                and schema_type.get("$ref") in matching_schema_type_refs
+            ]
 
 
 def _override_qube_config_schema_validation_errors(

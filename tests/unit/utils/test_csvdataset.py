@@ -661,7 +661,7 @@ def test_create_unit_col_in_melted_data_set_for_pivoted_shape():
     data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
     csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
     primary_catalog_metadata = (
-        csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
+        csvw_rdf_manager.csvw_inspector.get_primary_catalog_metadata()
     )
     csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
         primary_catalog_metadata.dataset_uri
@@ -716,7 +716,7 @@ def test_create_unit_col_in_melted_data_set_for_pivoted_shape_should_throw_inval
     data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
     csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
     primary_catalog_metadata = (
-        csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
+        csvw_rdf_manager.csvw_inspector.get_primary_catalog_metadata()
     )
     csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
         primary_catalog_metadata.dataset_uri
@@ -768,7 +768,7 @@ def test_create_unit_col_in_melted_data_set_for_pivoted_shape_should_throw_inval
 
     csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
     primary_catalog_metadata = (
-        csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
+        csvw_rdf_manager.csvw_inspector.get_primary_catalog_metadata()
     )
     data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
 

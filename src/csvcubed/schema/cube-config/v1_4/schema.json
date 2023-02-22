@@ -63,6 +63,7 @@
             "description": "Map of CSV column titles to definitions of what the column represents (a dimension, an attribute, observations, units or measures). If a column needs to be suppressed (i.e. skipped), the following notation can be used: {'column_name': false}",
             "additionalProperties": {
                 "description": "Column's meaning in the data cube",
+                "$comment": "ATTENTION: If you ADD any column types below, you MUST UPDATE csvcubed.readers.cubeconfig.v1.configdeserialiser._map_column_type_to_schema_type_refs to reflect your changes.",
                 "anyOf": [
                     {
                         "$ref": "#/definitions/v1.0/columnTypes/Dimension"

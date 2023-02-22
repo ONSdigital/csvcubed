@@ -192,12 +192,12 @@ class MetadataDependenciesResult:
 @dataclass
 class TableSchemaPropertiesResult:
     """
-    Model representing the table schema value url and about url.
+    Model representing the about_url, csv_url and a list of primary key column names.
     """
 
     about_url: str
-    value_url: str
-    table_url: str
+    csv_url: str
+    primary_key_col_names: List[str]
 
 
 @dataclass
@@ -598,24 +598,25 @@ def map_metadata_dependency_results(
     return [map_row(row.asdict()) for row in sparql_results]
 
 
-def map_table_schema_properties_result(
-    sparql_result: ResultRow,
-) -> TableSchemaPropertiesResult:
+def map_table_schema_properties_results(
+    sparql_results: List[ResultRow],
+) -> List[TableSchemaPropertiesResult]:
     """
-    Maps sparql query result to `TableSchemaPropertiesResult`
+    Maps sparql query result to `List[TableSchemaPropertiesResult]`
 
     Member of :file:`./models/sparqlresults.py`
 
-    :return: `TableSchemaPropertiesResult`
+    :return: `List[TableSchemaPropertiesResult]`
     """
-    result_dict = sparql_result.asdict()
 
-    result = TableSchemaPropertiesResult(
-        about_url=str(result_dict["tableAboutUrl"]),
-        value_url=str(result_dict["columnValueUrl"]),
-        table_url=str(result_dict["csvUrl"]),
-    )
-    return result
+    def map_row(row_result: Dict[str, Any]) -> TableSchemaPropertiesResult:
+        return TableSchemaPropertiesResult(
+            about_url=str(row_result["tableAboutUrl"]),
+            csv_url=str(row_result["csvUrl"]),
+            primary_key_col_names=str(row_result["tablePrimaryKeys"]).split("|"),
+        )
+
+    return [map_row(row.asdict()) for row in sparql_results]
 
 
 def map_is_pivoted_shape_for_measures_in_data_set(

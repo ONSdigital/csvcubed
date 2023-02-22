@@ -9,9 +9,7 @@ from dataclasses import dataclass, field
 from os import linesep
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Union
-from urllib.parse import urljoin
 
-import rdflib
 from pandas import DataFrame
 
 from csvcubed.cli.inspect.inspectdatasetmanager import (
@@ -36,7 +34,6 @@ from csvcubed.models.sparqlresults import (
     CodelistsResult,
     ColumnDefinition,
     CubeTableIdentifiers,
-    PrimaryKeyColNamesByDatasetUrlResult,
     QubeComponentsResult,
 )
 from csvcubed.utils.csvdataset import transform_dataset_to_canonical_shape
@@ -50,13 +47,8 @@ from csvcubed.utils.skos.codelist import (
     get_codelist_col_title_from_col_name,
 )
 from csvcubed.utils.sparql_handler.code_list_inspector import CodeListInspector
-from csvcubed.utils.sparql_handler.csvw_state import CsvWState
+from csvcubed.utils.sparql_handler.csvw_inspector import CsvWInspector
 from csvcubed.utils.sparql_handler.data_cube_inspector import DataCubeInspector
-from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
-from csvcubed.utils.sparql_handler.sparqlquerymanager import (
-    select_primary_key_col_names_by_csv_url,
-)
-from csvcubed.utils.uri import looks_like_uri
 
 
 @dataclass
@@ -94,7 +86,7 @@ class MetadataPrinter:
 
     def get_primary_csv_url(self) -> str:
         """Return the csv_url for the primary table in the graph."""
-        primary_metadata = self.state.csvw_state.get_primary_catalog_metadata()
+        primary_metadata = self.state.csvw_inspector.get_primary_catalog_metadata()
         if isinstance(self.state, DataCubeInspector):
             return self.state.get_cube_identifiers_for_data_set(
                 primary_metadata.dataset_uri
@@ -128,14 +120,14 @@ class MetadataPrinter:
 
         Member of :class:`./MetadataPrinter`.
         """
-        csvw_state = self.state.csvw_state
-        csvw_type = csvw_state.csvw_type
+        csvw_inspector = self.state.csvw_inspector
+        csvw_type = csvw_inspector.csvw_type
 
         self.csvw_type_str = self.get_csvw_type_str(csvw_type)
-        self.result_catalog_metadata = csvw_state.get_primary_catalog_metadata()
+        self.result_catalog_metadata = csvw_inspector.get_primary_catalog_metadata()
         self.primary_csv_url = self.get_primary_csv_url()
         self.dataset = load_csv_to_dataframe(
-            csvw_state.csvw_json_path, Path(self.primary_csv_url)
+            csvw_inspector.csvw_json_path, Path(self.primary_csv_url)
         )
         self.result_dataset_observations_info = get_dataset_observations_info(
             self.dataset,
@@ -152,6 +144,8 @@ class MetadataPrinter:
         Member of :class:`./MetadataPrinter`.
         """
         assert isinstance(self.state, DataCubeInspector)  # Make pyright happier
+
+        csvw_inspector = self.state.csvw_inspector
 
         self.result_qube_components = self.state.get_dsd_qube_components_for_csv(
             self.primary_csv_url
@@ -192,17 +186,16 @@ class MetadataPrinter:
 
         Member of :class:`./MetadataPrinter`.
         """
-        csvw_state = self.state.csvw_state
-        self.result_code_list_cols = csvw_state.get_column_definitions_for_csv(
+        csvw_inspector = self.state.csvw_inspector
+        self.result_code_list_cols = csvw_inspector.get_column_definitions_for_csv(
             self.primary_csv_url
         )
         # Retrieving the primary key column names of the code list to identify the unique identifier
-        result_primary_key_col_names_by_csv_url: PrimaryKeyColNamesByDatasetUrlResult = select_primary_key_col_names_by_csv_url(
-            csvw_state.rdf_graph, self.primary_csv_url
+        result_table_schema_properties = csvw_inspector.get_table_info_for_csv_url(
+            self.primary_csv_url
         )
-        primary_key_col_names = (
-            result_primary_key_col_names_by_csv_url.primary_key_col_names
-        )
+
+        primary_key_col_names = result_table_schema_properties.primary_key_col_names
 
         # Currently, we do not support composite primary keys.
         if len(primary_key_col_names) != 1:
@@ -215,7 +208,7 @@ class MetadataPrinter:
             label_col_title,
             unique_identifier,
         ) = self.get_parent_label_unique_id_col_titles(
-            self.result_code_list_cols, primary_key_col_names[0].value
+            self.result_code_list_cols, primary_key_col_names[0]
         )
         self.result_concepts_hierachy_info = get_concepts_hierarchy_info(
             self.dataset, parent_col_title, label_col_title, unique_identifier
@@ -223,9 +216,9 @@ class MetadataPrinter:
 
     def __post_init__(self):
         self.generate_general_results()
-        if self.state.csvw_state.csvw_type == CSVWType.QbDataSet:
+        if self.state.csvw_inspector.csvw_type == CSVWType.QbDataSet:
             self.get_datacube_results()
-        elif self.state.csvw_state.csvw_type == CSVWType.CodeList:
+        elif self.state.csvw_inspector.csvw_type == CSVWType.CodeList:
             self.generate_codelist_results()
 
     @property
@@ -237,7 +230,7 @@ class MetadataPrinter:
 
         :return: `str` - user-friendly string which will be output to CLI.
         """
-        if self.state.csvw_state.csvw_type == CSVWType.QbDataSet:
+        if self.state.csvw_inspector.csvw_type == CSVWType.QbDataSet:
             return "- This file is a data cube."
         else:
             return "- This file is a code list."

@@ -259,10 +259,10 @@ def get_arguments_qb_dataset(
     """
     Produces the dataset, qube components and dsd uri arguments for qb:dataset.
     """
-    csvw_state = data_cube_inspector.csvw_state
+    csvw_inspector = data_cube_inspector.csvw_inspector
 
     result_data_set_uri = (
-        data_cube_inspector.csvw_state.get_primary_catalog_metadata().dataset_uri
+        data_cube_inspector.csvw_inspector.get_primary_catalog_metadata().dataset_uri
     )
     identifiers = data_cube_inspector.get_cube_identifiers_for_data_set(
         result_data_set_uri
@@ -273,7 +273,7 @@ def get_arguments_qb_dataset(
     )
 
     dataset: DataFrame = load_csv_to_dataframe(
-        csvw_state.csvw_json_path, Path(identifiers.csv_url)
+        csvw_inspector.csvw_json_path, Path(identifiers.csv_url)
     )
 
     return (dataset, result.qube_components, identifiers.csv_url)
@@ -286,14 +286,14 @@ def _get_arguments_skos_codelist(
     Produces the ConceptScheme for skos:codelist.
     """
     primary_catalogue_metadata = (
-        code_list_inspector.csvw_state.get_primary_catalog_metadata()
+        code_list_inspector.csvw_inspector.get_primary_catalog_metadata()
     )
     csv_url = code_list_inspector.get_table_identifiers_for_concept_scheme(
         primary_catalogue_metadata.dataset_uri
     ).csv_url
 
     dataset: DataFrame = load_csv_to_dataframe(
-        code_list_inspector.csvw_state.csvw_json_path, Path(csv_url)
+        code_list_inspector.csvw_inspector.csvw_json_path, Path(csv_url)
     )
     return (dataset, csv_url)
 
@@ -397,7 +397,7 @@ def test_get_measure_col_name_from_dsd_measure_col_present():
     data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
 
     result_data_set_uri = (
-        data_cube_inspector.csvw_state.get_primary_catalog_metadata().dataset_uri
+        data_cube_inspector.csvw_inspector.get_primary_catalog_metadata().dataset_uri
     )
     identifiers = data_cube_inspector.get_cube_identifiers_for_data_set(
         result_data_set_uri
@@ -424,7 +424,7 @@ def test_get_measure_col_name_from_dsd_measure_col_not_present():
 
     data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
     primary_catalog_metadata = (
-        data_cube_inspector.csvw_state.get_primary_catalog_metadata()
+        data_cube_inspector.csvw_inspector.get_primary_catalog_metadata()
     )
 
     identifiers = data_cube_inspector.get_cube_identifiers_for_data_set(
@@ -452,7 +452,7 @@ def test_get_unit_col_name_from_dsd_unit_col_present():
 
     data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
     primary_catalog_metadata = (
-        data_cube_inspector.csvw_state.get_primary_catalog_metadata()
+        data_cube_inspector.csvw_inspector.get_primary_catalog_metadata()
     )
 
     identifiers = data_cube_inspector.get_cube_identifiers_for_data_set(
@@ -480,7 +480,7 @@ def test_get_unit_col_name_from_dsd_unit_col_not_present():
 
     data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
     primary_catalog_metadata = (
-        data_cube_inspector.csvw_state.get_primary_catalog_metadata()
+        data_cube_inspector.csvw_inspector.get_primary_catalog_metadata()
     )
 
     identifiers = data_cube_inspector.get_cube_identifiers_for_data_set(
@@ -509,7 +509,7 @@ def test_get_single_measure_label_from_dsd():
 
     data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
     primary_catalog_metadata = (
-        data_cube_inspector.csvw_state.get_primary_catalog_metadata()
+        data_cube_inspector.csvw_inspector.get_primary_catalog_metadata()
     )
 
     identifiers = data_cube_inspector.get_cube_identifiers_for_data_set(
@@ -757,10 +757,10 @@ def test_get_concepts_hierarchy_info_hierarchy_with_depth_of_one():
     (dataset, csv_url) = _get_arguments_skos_codelist(code_list_inspector)
 
     result_code_list_cols = (
-        code_list_inspector.csvw_state.get_column_definitions_for_csv(csv_url)
+        code_list_inspector.csvw_inspector.get_column_definitions_for_csv(csv_url)
     )
     result_primary_key_col_names_by_csv_url = select_primary_key_col_names_by_csv_url(
-        code_list_inspector.csvw_state.rdf_graph, csv_url
+        code_list_inspector.csvw_inspector.rdf_graph, csv_url
     )
 
     parent_notation_col_name = get_codelist_col_title_by_property_url(
@@ -793,10 +793,10 @@ def test_get_concepts_hierarchy_info_hierarchy_with_depth_more_than_one():
     (dataset, csv_url) = _get_arguments_skos_codelist(code_list_inspector)
 
     result_code_list_cols = (
-        code_list_inspector.csvw_state.get_column_definitions_for_csv(csv_url)
+        code_list_inspector.csvw_inspector.get_column_definitions_for_csv(csv_url)
     )
     result_primary_key_col_names_by_csv_url = select_primary_key_col_names_by_csv_url(
-        code_list_inspector.csvw_state.rdf_graph, csv_url
+        code_list_inspector.csvw_inspector.rdf_graph, csv_url
     )
 
     parent_notation_col_name = get_codelist_col_title_by_property_url(

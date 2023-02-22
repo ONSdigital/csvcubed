@@ -42,7 +42,7 @@ from csvcubed.models.sparqlresults import (
     map_metadata_dependency_results,
     map_primary_key_col_names_by_csv_url_result,
     map_qube_components_sparql_result,
-    map_table_schema_properties_result,
+    map_table_schema_properties_results,
     map_units,
 )
 from csvcubed.utils.sparql_handler.sparql import ask, select
@@ -342,23 +342,16 @@ def select_metadata_dependencies(
 
 def select_table_schema_properties(
     rdf_graph: rdflib.Graph,
-) -> TableSchemaPropertiesResult:
+) -> List[TableSchemaPropertiesResult]:
     """
-    Queries a CSV-W and extracts table url, about url and value url from the table with skos:inScheme property url.
+    Queries a CSV-W and extracts about_url, csv_url and a list of the primary key column names for all tables in the CSV-W.
     """
     results: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryName.SELECT_TABLE_SCHEMA_PROPERTIES),
         rdf_graph,
     )
 
-    if len(results) != 1:
-        raise InvalidNumberOfRecordsException(
-            record_description=f"result for the {SPARQLQueryName.SELECT_TABLE_SCHEMA_PROPERTIES.value} sparql query",
-            excepted_num_of_records=1,
-            num_of_records=len(results),
-        )
-
-    return map_table_schema_properties_result(results[0])
+    return map_table_schema_properties_results(results)
 
 
 def select_column_definitions(

@@ -23,7 +23,6 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_csvw_table_schema_file_dependencies,
     select_is_pivoted_shape_for_measures_in_data_set,
     select_metadata_dependencies,
-    select_table_schema_properties,
 )
 from csvcubed.utils.tableschema import add_triples_for_file_dependencies
 from tests.helpers.inspectors_cache import (
@@ -155,7 +154,7 @@ def test_get_primary_catalog_metadata_for_dataset():
     csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
 
     result: CatalogMetadataResult = (
-        csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
+        csvw_rdf_manager.csvw_inspector.get_primary_catalog_metadata()
     )
 
     assert result.dataset_uri == "alcohol-bulletin.csv#dataset"
@@ -255,13 +254,13 @@ def test_select_codelist_cols_by_csv_url():
     csvw_metadata_json_path = _test_case_base_dir / "alcohol-content.csv-metadata.json"
     code_list_inspector = get_code_list_inspector(csvw_metadata_json_path)
     primary_catalogue_metadata = (
-        code_list_inspector.csvw_state.get_primary_catalog_metadata()
+        code_list_inspector.csvw_inspector.get_primary_catalog_metadata()
     )
     csv_url = code_list_inspector.get_table_identifiers_for_concept_scheme(
         primary_catalogue_metadata.dataset_uri
     ).csv_url
 
-    result = code_list_inspector.csvw_state.get_column_definitions_for_csv(csv_url)
+    result = code_list_inspector.csvw_inspector.get_column_definitions_for_csv(csv_url)
 
     assert len(result) == 7
 
@@ -327,30 +326,6 @@ def test_select_metadata_dependencies():
     )
 
 
-# Calling SPARQL query directly
-def test_select_table_schema_properties():
-    """
-    Test that we can extract correct table about url, value url and table url from csvw.
-    """
-    csvw_metadata_json_path = (
-        _csvw_test_cases_dir / "industry-grouping.csv-metadata.json"
-    )
-    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    result = select_table_schema_properties(csvw_metadata_rdf_graph)
-
-    assert (
-        result.about_url
-        == "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services-by-subnational-areas-of-the-uk#concept/industry-grouping/{+notation}"
-    )
-    assert result.table_url == "industry-grouping.csv"
-    assert (
-        result.value_url
-        == "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services-by-subnational-areas-of-the-uk#scheme/industry-grouping"
-    )
-
-
-# Calling SPARQL query directly
 def test_select_is_pivoted_shape_for_measures_in_pivoted_shape_data_set():
     """
     Checks that the measures retrieved from a metadata file that represents a pivoted shape cube are as expected.
@@ -428,7 +403,7 @@ def test_select_is_pivoted_shape_for_measures_in_standard_shape_data_set():
 
 def test_rdf_dependency_loaded() -> None:
     """
-    Ensure that the CsvwRdfManager loads dependent RDF graphs to get a complete picture of the cube's metadata.
+    Ensure that the CsvWRdfManager loads dependent RDF graphs to get a complete picture of the cube's metadata.
     """
     dimension_data_file = _test_case_base_dir / "dependencies" / "dimension.csv"
     metadata_file = _test_case_base_dir / "dependencies" / "data.csv-metadata.json"
@@ -448,7 +423,7 @@ def test_rdf_dependency_loaded() -> None:
 @pytest.mark.timeout(30)
 def test_cyclic_rdf_dependencies_loaded() -> None:
     """
-    Ensure that the CsvwRdfManager loads dependent RDF graphs even when there is a cyclic dependency
+    Ensure that the CsvWRdfManager loads dependent RDF graphs even when there is a cyclic dependency
     """
     metadata_file = _test_case_base_dir / "dependencies" / "cyclic.csv-metadata.json"
 
@@ -461,7 +436,7 @@ def test_cyclic_rdf_dependencies_loaded() -> None:
 
 def test_transitive_rdf_dependency_loaded() -> None:
     """
-    Ensure that the CsvwRdfManager loads a transitive dependency.
+    Ensure that the CsvWRdfManager loads a transitive dependency.
      transitive.csv-metadata.json -> transitive.1.json -> transitive.2.json
     """
     metadata_file = (
