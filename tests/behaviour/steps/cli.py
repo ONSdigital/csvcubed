@@ -101,18 +101,14 @@ def step_impl(context):
 
 
 @then(
-    'a valid code-list is created and serialised that to CSVW from the config file "{config_file}"'
+    'a valid code-list is created and serialised to CSVW from the config file "{config_file}"'
 )
 def step_imp(context, config_file: Path):
-    context.config_file_path = _test_case_dir / config_file
-    _build_valid_code_list(context)
-
-
-def _build_valid_code_list(context):
     _temp_test_cases_dir = get_context_temp_dir_path(context)
+    config_file_path = _test_case_dir / config_file
 
     _build_code_list(
-        config_path=context.config_file_path,
+        config_path=config_file_path,
         output_directory=_temp_test_cases_dir / "out",
         fail_when_validation_error_occurs=True,
         validation_errors_file_name=None,
