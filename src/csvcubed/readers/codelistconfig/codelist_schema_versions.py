@@ -29,13 +29,25 @@ CodeListConfigDeserialiser = Callable[
     Tuple[NewQbCodeList, List[JsonSchemaValidationError], List[ValidationError]],
 ]
 
+
+"""
+In order to update the MINOR version of code-list config, please follow the below steps.
+    Step 1: Define a new constant to hold the PURL of the new schema (e.g. _v1_3_SCHEMA_URL).
+    Step 2: Update the _LATEST_V1_CODELIST_SCHEMA_URL and _LATEST_CODELIST_SCHEMA_URL so that they are assigned to the constant defined in Step 1.
+    Step 3: Add a new enum to the CodeListConfigJsonSchemaMinorVersion to represent the new version.
+    Step 4: Add a new elif to the _get_schema_version() to represent the new version.
+    Step 5: Add the new URL and file path to _hard_coded_map_url_to_file_path in /utils/cache.py and update the value of the default path (denoted with a comment in the map).
+    Step 6: Add a new behaviour test to cube.feature file for validating the code-list generation using new version of the schema (e.g. "Successfully outputs a code-list using schema v1.3" behave scenario).
+    Step 7: Update the `test_get_schema_code_list_version_1_latest()` unit test in the test_codelist.py.
+"""
+
 _v1_0_CODELIST_SCHEMA_URL = "https://purl.org/csv-cubed/code-list-config/v1.0"
 _v1_1_CODELIST_SCHEMA_URL = "https://purl.org/csv-cubed/code-list-config/v1.1"
 
 V1_CODELIST_SCHEMA_URL = "https://purl.org/csv-cubed/code-list-config/v1"  # v1 defaults to the latest minor version of v1.*.
 
 
-_LATEST_V1_CODELSIT_SCHEMA_URL = _v1_1_CODELIST_SCHEMA_URL
+_LATEST_V1_CODELIST_SCHEMA_URL = _v1_1_CODELIST_SCHEMA_URL
 """
     This holds the URL identifying the latest minor version of the V1 schema.
 
@@ -124,7 +136,7 @@ def _get_schema_code_list_version(
     schema_path: str,
 ) -> Tuple[CodeListConfigJsonSchemaMajorVersion, CodeListConfigJsonSchemaMinorVersion]:
     if schema_path == V1_CODELIST_SCHEMA_URL:
-        schema_path = _LATEST_V1_CODELSIT_SCHEMA_URL
+        schema_path = _LATEST_V1_CODELIST_SCHEMA_URL
 
     if schema_path == _v1_0_CODELIST_SCHEMA_URL:
         return (

@@ -1,12 +1,18 @@
 import json
 import shutil
 import subprocess
+from os import getcwd
 from pathlib import Path
 from typing import Tuple
 
 from appdirs import AppDirs
 from behave import then, when
 from csvcubeddevtools.behaviour.temporarydirectory import get_context_temp_dir_path
+from csvcubeddevtools.helpers.file import get_test_cases_dir
+
+from csvcubed.cli.build_code_list import build_code_list as _build_code_list
+
+_test_case_dir = get_test_cases_dir()
 
 
 @when('the csvcubed CLI is run with "{arguments}"')
@@ -92,6 +98,25 @@ def step_impl(context):
     (status_code, log_message) = context.csvcubed_cli_result
     expected_log_message = context.text.strip()
     assert expected_log_message not in log_message, log_message
+
+
+@then(
+    'a valid code-list is created and serialised that to CSVW from the config file "{config_file}"'
+)
+def step_imp(context, config_file: Path):
+    context.config_file_path = _test_case_dir / config_file
+    _build_valid_code_list(context)
+
+
+def _build_valid_code_list(context):
+    _temp_test_cases_dir = get_context_temp_dir_path(context)
+
+    _build_code_list(
+        config_path=context.config_file_path,
+        output_directory=_temp_test_cases_dir / "out",
+        fail_when_validation_error_occurs=True,
+        validation_errors_file_name=None,
+    )
 
 
 @then("remove test log files")
