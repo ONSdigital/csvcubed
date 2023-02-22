@@ -12,10 +12,8 @@ from typing import Set, Tuple
 from uritemplate import variables
 
 from csvcubed.utils.iterables import first
-from csvcubed.utils.sparql_handler.sparqlquerymanager import (
-    select_table_schema_properties,
-)
-from csvcubed.utils.tableschema import CsvwRdfManager
+from csvcubed.utils.sparql_handler.code_list_inspector import CodeListInspector
+from csvcubed.utils.tableschema import CsvWRdfManager
 
 _logger = logging.getLogger(__name__)
 
@@ -30,12 +28,20 @@ def extract_code_list_concept_scheme_info(
       `concept_uri_template` uses the standard `notation` uri template variable even if the underlying file uses a
        different column name.
     """
-    csvw_rdf_manager = CsvwRdfManager(code_list_csvw_path)
-    result = select_table_schema_properties(csvw_rdf_manager.rdf_graph)
+
+    csvw_rdf_manager = CsvWRdfManager(code_list_csvw_path)
+    csvw_inspector = csvw_rdf_manager.csvw_inspector
+    concept_scheme_uri = csvw_inspector.get_primary_catalog_metadata().dataset_uri
+    csv_url = (
+        CodeListInspector(csvw_inspector)
+        .get_table_identifiers_for_concept_scheme(concept_scheme_uri)
+        .csv_url
+    )
+    # csvw_inspector.identifiers
+    result = csvw_inspector.get_table_info_for_csv_url(csv_url)
 
     about_url = result.about_url
-    concept_scheme_uri = result.value_url
-    table_url = result.table_url
+    table_url = result.csv_url
 
     variables_in_about_url: Set[str] = {v for v in variables(about_url)}
     if len(variables_in_about_url) != 1:

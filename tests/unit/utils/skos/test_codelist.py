@@ -10,9 +10,6 @@ from csvcubed.utils.skos.codelist import (
     get_codelist_col_title_by_property_url,
     get_codelist_col_title_from_col_name,
 )
-from csvcubed.utils.sparql_handler.sparqlquerymanager import (
-    select_primary_key_col_names_by_csv_url,
-)
 from tests.helpers.inspectors_cache import get_code_list_inspector
 from tests.unit.test_baseunit import get_test_cases_dir
 
@@ -30,14 +27,14 @@ def test_get_codelist_col_title_by_property_url_label():
     )
     code_list_inspector = get_code_list_inspector(csvw_metadata_json_path)
     primary_catalogue_metadata = (
-        code_list_inspector.csvw_state.get_primary_catalog_metadata()
+        code_list_inspector.csvw_inspector.get_primary_catalog_metadata()
     )
     csv_url = code_list_inspector.get_table_identifiers_for_concept_scheme(
         primary_catalogue_metadata.dataset_uri
     ).csv_url
 
     result_code_list_cols = (
-        code_list_inspector.csvw_state.get_column_definitions_for_csv(csv_url)
+        code_list_inspector.csvw_inspector.get_column_definitions_for_csv(csv_url)
     )
     label_col_name = get_codelist_col_title_by_property_url(
         result_code_list_cols, CodelistPropertyUrl.RDFLabel
@@ -57,23 +54,23 @@ def test_get_codelist_col_title_by_property_url_notation():
     )
     code_list_inspector = get_code_list_inspector(csvw_metadata_json_path)
     primary_catalogue_metadata = (
-        code_list_inspector.csvw_state.get_primary_catalog_metadata()
+        code_list_inspector.csvw_inspector.get_primary_catalog_metadata()
     )
     csv_url = code_list_inspector.get_table_identifiers_for_concept_scheme(
         primary_catalogue_metadata.dataset_uri
     ).csv_url
 
     result_code_list_cols = (
-        code_list_inspector.csvw_state.get_column_definitions_for_csv(csv_url)
+        code_list_inspector.csvw_inspector.get_column_definitions_for_csv(csv_url)
     )
 
-    result_primary_key_col_names_by_csv_url = select_primary_key_col_names_by_csv_url(
-        code_list_inspector.csvw_state.rdf_graph, csv_url
+    result_table_schema_properties_for_csv_url = (
+        code_list_inspector.csvw_inspector.get_table_info_for_csv_url(csv_url)
     )
 
     unique_identifier = get_codelist_col_title_from_col_name(
         result_code_list_cols,
-        result_primary_key_col_names_by_csv_url.primary_key_col_names[0].value,
+        result_table_schema_properties_for_csv_url.primary_key_col_names[0],
     )
 
     assert unique_identifier == "Notation"
@@ -90,14 +87,14 @@ def test_get_codelist_col_title_by_property_url_parent_notation():
     )
     code_list_inspector = get_code_list_inspector(csvw_metadata_json_path)
     primary_catalogue_metadata = (
-        code_list_inspector.csvw_state.get_primary_catalog_metadata()
+        code_list_inspector.csvw_inspector.get_primary_catalog_metadata()
     )
     csv_url = code_list_inspector.get_table_identifiers_for_concept_scheme(
         primary_catalogue_metadata.dataset_uri
     ).csv_url
 
     result_code_list_cols = (
-        code_list_inspector.csvw_state.get_column_definitions_for_csv(csv_url)
+        code_list_inspector.csvw_inspector.get_column_definitions_for_csv(csv_url)
     )
 
     parent_notation_col_name = get_codelist_col_title_by_property_url(
@@ -118,14 +115,14 @@ def test_get_codelist_col_title_by_property_url_sort_priority():
     )
     code_list_inspector = get_code_list_inspector(csvw_metadata_json_path)
     primary_catalogue_metadata = (
-        code_list_inspector.csvw_state.get_primary_catalog_metadata()
+        code_list_inspector.csvw_inspector.get_primary_catalog_metadata()
     )
     csv_url = code_list_inspector.get_table_identifiers_for_concept_scheme(
         primary_catalogue_metadata.dataset_uri
     ).csv_url
 
     result_code_list_cols = (
-        code_list_inspector.csvw_state.get_column_definitions_for_csv(csv_url)
+        code_list_inspector.csvw_inspector.get_column_definitions_for_csv(csv_url)
     )
 
     sort_priority_col_name = get_codelist_col_title_by_property_url(
@@ -146,14 +143,14 @@ def test_get_codelist_col_title_by_property_url_rdfs_comment():
     )
     code_list_inspector = get_code_list_inspector(csvw_metadata_json_path)
     primary_catalogue_metadata = (
-        code_list_inspector.csvw_state.get_primary_catalog_metadata()
+        code_list_inspector.csvw_inspector.get_primary_catalog_metadata()
     )
     csv_url = code_list_inspector.get_table_identifiers_for_concept_scheme(
         primary_catalogue_metadata.dataset_uri
     ).csv_url
 
     result_code_list_cols = (
-        code_list_inspector.csvw_state.get_column_definitions_for_csv(csv_url)
+        code_list_inspector.csvw_inspector.get_column_definitions_for_csv(csv_url)
     )
     comment_col_name = get_codelist_col_title_by_property_url(
         result_code_list_cols, CodelistPropertyUrl.RDFsComment
@@ -173,14 +170,14 @@ def test_get_codelist_col_title_by_property_url_rdfs_type():
     )
     code_list_inspector = get_code_list_inspector(csvw_metadata_json_path)
     primary_catalogue_metadata = (
-        code_list_inspector.csvw_state.get_primary_catalog_metadata()
+        code_list_inspector.csvw_inspector.get_primary_catalog_metadata()
     )
     csv_url = code_list_inspector.get_table_identifiers_for_concept_scheme(
         primary_catalogue_metadata.dataset_uri
     ).csv_url
 
     result_code_list_cols = (
-        code_list_inspector.csvw_state.get_column_definitions_for_csv(csv_url)
+        code_list_inspector.csvw_inspector.get_column_definitions_for_csv(csv_url)
     )
 
     type_col_name = get_codelist_col_title_by_property_url(
@@ -201,14 +198,14 @@ def test_build_concepts_hierarchy_tree_of_depth_one():
     )
     code_list_inspector = get_code_list_inspector(csvw_metadata_json_path)
     primary_catalogue_metadata = (
-        code_list_inspector.csvw_state.get_primary_catalog_metadata()
+        code_list_inspector.csvw_inspector.get_primary_catalog_metadata()
     )
     csv_url = code_list_inspector.get_table_identifiers_for_concept_scheme(
         primary_catalogue_metadata.dataset_uri
     ).csv_url
 
     result_code_list_cols = (
-        code_list_inspector.csvw_state.get_column_definitions_for_csv(csv_url)
+        code_list_inspector.csvw_inspector.get_column_definitions_for_csv(csv_url)
     )
     dataset: DataFrame = load_csv_to_dataframe(csvw_metadata_json_path, Path(csv_url))
 
@@ -237,14 +234,14 @@ def test_build_concepts_hierarchy_tree_of_depth_more_than_one():
     csvw_metadata_json_path = _test_case_base_dir / "itis-industry.csv-metadata.json"
     code_list_inspector = get_code_list_inspector(csvw_metadata_json_path)
     primary_catalogue_metadata = (
-        code_list_inspector.csvw_state.get_primary_catalog_metadata()
+        code_list_inspector.csvw_inspector.get_primary_catalog_metadata()
     )
     csv_url = code_list_inspector.get_table_identifiers_for_concept_scheme(
         primary_catalogue_metadata.dataset_uri
     ).csv_url
 
     result_code_list_cols = (
-        code_list_inspector.csvw_state.get_column_definitions_for_csv(csv_url)
+        code_list_inspector.csvw_inspector.get_column_definitions_for_csv(csv_url)
     )
     dataset: DataFrame = load_csv_to_dataframe(csvw_metadata_json_path, Path(csv_url))
 

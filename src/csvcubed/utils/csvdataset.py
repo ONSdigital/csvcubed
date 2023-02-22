@@ -247,7 +247,7 @@ def _melt_pivoted_shape(
     if csv_url is None:
         raise ValueError("csv_url cannot be None.")
 
-    column_definitions = data_cube_state.csvw_state.get_column_definitions_for_csv(
+    column_definitions = data_cube_state.csvw_inspector.get_column_definitions_for_csv(
         csv_url
     )
 
@@ -300,7 +300,7 @@ def transform_dataset_to_canonical_shape(
             qube_components,
             data_cube_state,
             canonical_shape_dataset,
-            data_cube_state.csvw_state.csvw_json_path,
+            data_cube_state.csvw_inspector.csvw_json_path,
         )
     else:
         # In pivoted shape

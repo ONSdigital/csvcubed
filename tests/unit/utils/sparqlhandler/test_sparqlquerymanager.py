@@ -28,7 +28,6 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_dsd_code_list_and_cols,
     select_is_pivoted_shape_for_measures_in_data_set,
     select_metadata_dependencies,
-    select_table_schema_properties,
 )
 from csvcubed.utils.tableschema import add_triples_for_file_dependencies
 from tests.helpers.inspectors_cache import (
@@ -159,7 +158,7 @@ def test_select_csvw_catalog_metadata_for_dataset():
     csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
     csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
 
-    result = csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
+    result = csvw_rdf_manager.csvw_inspector.get_primary_catalog_metadata()
 
     assert result.dataset_uri == "alcohol-bulletin.csv#dataset"
     assert result.title == "Alcohol Bulletin"
@@ -210,7 +209,7 @@ def test_select_csvw_catalog_metadata_for_codelist():
     csvw_metadata_json_path = _test_case_base_dir / "codelist.csv-metadata.json"
     csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
 
-    result = csvw_rdf_manager.csvw_state.get_primary_catalog_metadata()
+    result = csvw_rdf_manager.csvw_inspector.get_primary_catalog_metadata()
 
     assert result.title == "Alcohol Content"
     assert result.label == "Alcohol Content"
@@ -245,12 +244,14 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
         / "qb-id-10004.csv-metadata.json"
     )
     data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = data_cube_state.csvw_state.rdf_graph
+    csvw_metadata_rdf_graph = data_cube_state.csvw_inspector.rdf_graph
 
     result: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
         csvw_metadata_rdf_graph
     )
-    data_set_uri = data_cube_state.csvw_state.get_primary_catalog_metadata().dataset_uri
+    data_set_uri = (
+        data_cube_state.csvw_inspector.get_primary_catalog_metadata().dataset_uri
+    )
     csv_url = data_cube_state.get_cube_identifiers_for_data_set(data_set_uri).csv_url
 
     result_qube_components = data_cube_state.get_dsd_qube_components_for_csv(csv_url)
@@ -341,12 +342,14 @@ def test_select_csvw_dsd_dataset_for_pivoted_multi_measure_data_set():
         / "qb-id-10003.csv-metadata.json"
     )
     data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = data_cube_state.csvw_state.rdf_graph
+    csvw_metadata_rdf_graph = data_cube_state.csvw_inspector.rdf_graph
 
     result: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
         csvw_metadata_rdf_graph
     )
-    primary_catalog_metadata = data_cube_state.csvw_state.get_primary_catalog_metadata()
+    primary_catalog_metadata = (
+        data_cube_state.csvw_inspector.get_primary_catalog_metadata()
+    )
 
     data_set_uri = primary_catalog_metadata.dataset_uri
     csv_url = data_cube_state.get_cube_identifiers_for_data_set(data_set_uri).csv_url
@@ -454,12 +457,14 @@ def test_select_csvw_dsd_dataset_for_pivoted_single_measure_data_set():
         / "qb-id-10004.csv-metadata.json"
     )
     data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = data_cube_state.csvw_state.rdf_graph
+    csvw_metadata_rdf_graph = data_cube_state.csvw_inspector.rdf_graph
 
     result: DSDLabelURIResult = select_csvw_dsd_dataset_label_and_dsd_def_uri(
         csvw_metadata_rdf_graph
     )
-    primary_catalog_metadata = data_cube_state.csvw_state.get_primary_catalog_metadata()
+    primary_catalog_metadata = (
+        data_cube_state.csvw_inspector.get_primary_catalog_metadata()
+    )
 
     data_set_uri = primary_catalog_metadata.dataset_uri
     csv_url = data_cube_state.get_cube_identifiers_for_data_set(data_set_uri).csv_url
@@ -650,13 +655,13 @@ def test_select_codelist_cols_by_csv_url():
     csvw_metadata_json_path = _test_case_base_dir / "alcohol-content.csv-metadata.json"
     code_list_inspector = get_code_list_inspector(csvw_metadata_json_path)
     primary_catalogue_metadata = (
-        code_list_inspector.csvw_state.get_primary_catalog_metadata()
+        code_list_inspector.csvw_inspector.get_primary_catalog_metadata()
     )
     csv_url = code_list_inspector.get_table_identifiers_for_concept_scheme(
         primary_catalogue_metadata.dataset_uri
     ).csv_url
 
-    result = code_list_inspector.csvw_state.get_column_definitions_for_csv(csv_url)
+    result = code_list_inspector.csvw_inspector.get_column_definitions_for_csv(csv_url)
 
     assert len(result) == 7
 
@@ -715,28 +720,6 @@ def test_select_metadata_dependencies():
         data_set=f"{data_file.as_uri()}#dependency/dimension",
         data_dump=expected_dependency_file.absolute().as_uri(),
         uri_space="dimension.csv#",
-    )
-
-
-def test_select_table_schema_properties():
-    """
-    Test that we can extract correct table about url, value url and table url from csvw.
-    """
-    csvw_metadata_json_path = (
-        _csvw_test_cases_dir / "industry-grouping.csv-metadata.json"
-    )
-    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
-    csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
-    result = select_table_schema_properties(csvw_metadata_rdf_graph)
-
-    assert (
-        result.about_url
-        == "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services-by-subnational-areas-of-the-uk#concept/industry-grouping/{+notation}"
-    )
-    assert result.table_url == "industry-grouping.csv"
-    assert (
-        result.value_url
-        == "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services-by-subnational-areas-of-the-uk#scheme/industry-grouping"
     )
 
 
@@ -814,7 +797,7 @@ def test_select_is_pivoted_shape_for_measures_in_standard_shape_data_set():
 
 def test_rdf_dependency_loaded() -> None:
     """
-    Ensure that the CsvwRdfManager loads dependent RDF graphs to get a complete picture of the cube's metadata.
+    Ensure that the CsvWRdfManager loads dependent RDF graphs to get a complete picture of the cube's metadata.
     """
     dimension_data_file = _test_case_base_dir / "dependencies" / "dimension.csv"
     metadata_file = _test_case_base_dir / "dependencies" / "data.csv-metadata.json"
@@ -834,7 +817,7 @@ def test_rdf_dependency_loaded() -> None:
 @pytest.mark.timeout(30)
 def test_cyclic_rdf_dependencies_loaded() -> None:
     """
-    Ensure that the CsvwRdfManager loads dependent RDF graphs even when there is a cyclic dependency
+    Ensure that the CsvWRdfManager loads dependent RDF graphs even when there is a cyclic dependency
     """
     metadata_file = _test_case_base_dir / "dependencies" / "cyclic.csv-metadata.json"
 
@@ -847,7 +830,7 @@ def test_cyclic_rdf_dependencies_loaded() -> None:
 
 def test_transitive_rdf_dependency_loaded() -> None:
     """
-    Ensure that the CsvwRdfManager loads a transitive dependency.
+    Ensure that the CsvWRdfManager loads a transitive dependency.
      transitive.csv-metadata.json -> transitive.1.json -> transitive.2.json
     """
     metadata_file = (

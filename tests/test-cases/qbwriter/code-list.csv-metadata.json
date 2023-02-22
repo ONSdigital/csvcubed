@@ -14,7 +14,7 @@
     "dc:title": "Age Of Business",
     "rdfs:seeAlso": [
         {
-            "@id": "http://gss-data.org.uk/def/trade/concept-scheme/age-of-business/dataset",
+            "@id": "http://gss-data.org.uk/def/trade/concept-scheme/age-of-business",
             "@type": [
                 "dcat:Dataset",
                 "http://publishmydata.com/pmdcat#Dataset"
@@ -57,7 +57,7 @@
                 "@value": "2020-12-23T11:58:58.163998"
             },
             "foaf:primaryTopic": {
-                "@id": "http://gss-data.org.uk/def/trade/concept-scheme/age-of-business/dataset"
+                "@id": "http://gss-data.org.uk/def/trade/concept-scheme/age-of-business"
             },
             "http://publishmydata.com/pmdcat#metadataGraph": {
                 "@id": "http://gss-data.org.uk/def/trade/concept-scheme/age-of-business"
