@@ -6,21 +6,33 @@ Represent measures inside an RDF Data Cube.
 """
 from abc import ABC
 from dataclasses import dataclass, field
-from typing import List, Optional, Set
+from typing import Dict, List, Optional, Set
+
+import pandas as pd
 
 from csvcubed.models.cube.qb.components.arbitraryrdf import (
     ArbitraryRdf,
     RdfSerialisationHint,
     TripleFragmentBase,
+    validate_triple_fragment,
 )
+from csvcubed.models.cube.qb.components.codelist import NewQbCodeList
 from csvcubed.models.uriidentifiable import UriIdentifiable
-from csvcubed.utils.validators.uri import validate_uri
+from csvcubed.models.validatedmodel import ValidatedModel, ValidationFunction
+from csvcubed.models.validationerror import ValidationError
+from csvcubed.utils.validations import (
+    validate_list,
+    validate_optional,
+    validate_str_type,
+    validate_uri,
+)
+from csvcubed.utils.validators.uri import validate_uri as pydantic_validate_uri
 
 from .datastructuredefinition import SecondaryQbStructuralDefinition
 
 
 @dataclass(unsafe_hash=True)
-class QbMeasure(SecondaryQbStructuralDefinition, ArbitraryRdf, ABC):
+class QbMeasure(SecondaryQbStructuralDefinition, ValidatedModel, ArbitraryRdf, ABC):
     pass
 
 
@@ -47,7 +59,23 @@ class ExistingQbMeasure(QbMeasure):
     def get_default_node_serialisation_hint(self) -> RdfSerialisationHint:
         return RdfSerialisationHint.Component
 
-    _measure_uri_validator = validate_uri("measure_uri")
+    _measure_uri_validator = pydantic_validate_uri("measure_uri")
+
+    def validate_data(
+        self,
+        data: pd.Series,
+        column_csvw_name: str,
+        csv_column_uri_template: str,
+        column_csv_title: str,
+    ) -> List[ValidationError]:
+        return []
+
+    def _get_validations(self) -> Dict[str, ValidationFunction]:
+
+        return {
+            "measure_uri": validate_uri,
+            "arbitrary_rdf": validate_list(validate_triple_fragment),
+        }
 
 
 @dataclass
@@ -87,3 +115,27 @@ class NewQbMeasure(QbMeasure, UriIdentifiable):
 
     def get_identifier(self) -> str:
         return self.label
+
+    def validate_data(
+        self,
+        data: pd.Series,
+        column_csvw_name: str,
+        csv_column_uri_template: str,
+        column_csv_title: str,
+    ) -> List[ValidationError]:
+        # Leave csv-lint to do the validation here. It will enforce Foreign Key constraints on code lists.
+        if isinstance(self.code_list, NewQbCodeList):
+            return self.code_list.validate_data(data, column_csv_title)
+
+        return []
+
+    def _get_validations(self) -> Dict[str, ValidationFunction]:
+
+        return {
+            "label": validate_str_type,
+            "description": validate_optional(validate_str_type),
+            "parent_measure_uri": validate_optional(validate_uri),
+            "source_uri": validate_optional(validate_uri),
+            **UriIdentifiable._get_validations(self),
+            "arbitrary_rdf": validate_list(validate_triple_fragment),
+        }
