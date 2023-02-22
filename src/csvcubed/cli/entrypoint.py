@@ -130,9 +130,6 @@ def inspect_command(log_level: str, csvw_metadata_json_path: Path) -> None:
         sys.exit(1)
 
 
-###########################
-# NEW COMMAND TEST AREA
-###########################
 @entry_point.group("code-list", help="Something something something.")
 def code_list():
     ...

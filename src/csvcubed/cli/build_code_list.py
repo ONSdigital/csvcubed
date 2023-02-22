@@ -18,8 +18,6 @@ from csvcubed.writers.skoscodelistwriter import SkosCodeListWriter
 
 _logger = logging.getLogger(__name__)
 
-# csvcubed code-list build <some-config-file.json>
-
 
 def build_code_list(
     config_path: Path,

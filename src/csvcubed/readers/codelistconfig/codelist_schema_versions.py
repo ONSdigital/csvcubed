@@ -15,7 +15,6 @@ from csvcubed.models.cube.qb.components.codelist import NewQbCodeList
 from csvcubed.models.jsonvalidationerrors import JsonSchemaValidationError
 from csvcubed.models.validationerror import ValidationError
 from csvcubed.readers.cubeconfig.utils import load_resource
-from csvcubed.readers.cubeconfig.v1 import configdeserialiser as v1_configdeserialiser
 from csvcubed.utils.validators.schema import (
     map_to_internal_validation_errors,
     validate_dict_against_schema,
@@ -32,12 +31,12 @@ CodeListConfigDeserialiser = Callable[
 
 """
 In order to update the MINOR version of code-list config, please follow the below steps.
-    Step 1: Define a new constant to hold the PURL of the new schema (e.g. _v1_3_SCHEMA_URL).
+    Step 1: Define a new constant to hold the PURL of the new schema (e.g. _v1_3_CODELIST_SCHEMA_URL).
     Step 2: Update the _LATEST_V1_CODELIST_SCHEMA_URL and _LATEST_CODELIST_SCHEMA_URL so that they are assigned to the constant defined in Step 1.
     Step 3: Add a new enum to the CodeListConfigJsonSchemaMinorVersion to represent the new version.
-    Step 4: Add a new elif to the _get_schema_version() to represent the new version.
-    Step 5: Add the new URL and file path to _hard_coded_map_url_to_file_path in /utils/cache.py and update the value of the default path (denoted with a comment in the map).
-    Step 6: Add a new behaviour test to cube.feature file for validating the code-list generation using new version of the schema (e.g. "Successfully outputs a code-list using schema v1.3" behave scenario).
+    Step 4: Add a new elif to the _get__code_list_schema_version() to represent the new version.
+    Step 5: Add the new URL and file path to _hard_coded_map_url_to_file_path in /utils/createlocalcopyresponse.py and update the value of the default path (denoted with a comment in the map).
+    Step 6: Add a new behaviour test to code-list-config.feature file for validating the code-list generation using new version of the schema (e.g. "Successfully output a code-list CSVW using schema v1.3" behave scenario).
     Step 7: Update the `test_get_schema_code_list_version_1_latest()` unit test in the test_codelist.py.
 """
 
@@ -117,7 +116,7 @@ def get_deserialiser_for_code_list_schema(
         _LATEST_CODELIST_SCHEMA_URL if maybe_schema_path is None else maybe_schema_path
     )
 
-    schema_version_major, schema_version_minor = _get_schema_code_list_version(
+    schema_version_major, schema_version_minor = _get_code_list_schema_version(
         schema_path
     )
     _logger.info(
@@ -132,7 +131,7 @@ def get_deserialiser_for_code_list_schema(
         raise ValueError(f"Unhandled major schema version {schema_version_major}")
 
 
-def _get_schema_code_list_version(
+def _get_code_list_schema_version(
     schema_path: str,
 ) -> Tuple[CodeListConfigJsonSchemaMajorVersion, CodeListConfigJsonSchemaMinorVersion]:
     if schema_path == V1_CODELIST_SCHEMA_URL:

@@ -5,7 +5,7 @@ Build a qb-flavoured CSV-W from a config.json and a tidy CSV.
 """
 import logging
 from pathlib import Path
-from typing import List, Optional, Tuple, Union
+from typing import List, Optional, Tuple
 
 from csvcubed.models.cube.cube import QbCube
 from csvcubed.models.jsonvalidationerrors import JsonSchemaValidationError
