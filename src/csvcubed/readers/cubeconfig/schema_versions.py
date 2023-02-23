@@ -17,19 +17,20 @@ from csvcubed.readers.cubeconfig.v1 import configdeserialiser as v1_configdeseri
 
 _logger = logging.getLogger(__name__)
 
+
 QubeConfigDeserialiser = Callable[
     [Path, Optional[Path]],
     Tuple[QbCube, List[JsonSchemaValidationError], List[ValidationError]],
 ]
 
-""" 
+"""
 In order to update the MINOR version of qube config, please follow the below steps.
     Step 1: Define a new constant to hold the PURL of the new schema (e.g. _v1_3_SCHEMA_URL).
     Step 2: Update the _LATEST_V1_SCHEMA_URL and _LATEST_SCHEMA_URL so that they are assigned to the constant defined in Step 1.
     Step 3: Add a new enum to the QubeConfigJsonSchemaMinorVersion to represent the new version.
     Step 4: Add a new elif to the _get_schema_version() to represent the new version.
-    Step 5: Add the new URL and file path to _hard_coded_map_url_to_file_path in /utils/cache.py and update the value of the default path (denoted with a comment in the map).
-    Step 6: Add a new behaviour test to cube.feature file for validating the cube generation using new version of the schema (e.g. "Successfully outputs a cube using schema v1.3" behave scenario).
+    Step 5: Add the new URL and file path to _hard_coded_map_url_to_file_path in /utils/createlocalcopyresponse.py and update the value of the default path (denoted with a comment in the map).
+    Step 6: Add a new behaviour test to cube-config.feature file for validating the cube generation using new version of the schema (e.g. "Successfully outputs a cube using schema v1.3" behave scenario).
 """
 
 _v1_0_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.0"
@@ -38,6 +39,7 @@ _v1_2_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.2"
 _v1_3_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.3"
 _v1_4_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1.4"
 V1_SCHEMA_URL = "https://purl.org/csv-cubed/qube-config/v1"  # v1 defaults to the latest minor version of v1.*.
+
 
 _LATEST_V1_SCHEMA_URL = _v1_4_SCHEMA_URL
 """

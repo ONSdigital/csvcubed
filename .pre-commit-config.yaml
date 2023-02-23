@@ -5,6 +5,11 @@ repos:
     -   id: debug-statements
     -   id: check-toml
     -   id: check-yaml
+        # Excluding the mkdocs.yml file due to it containing the following:
+        #     !!python/name:pymdownx.superfences.fence_div_format
+        # The YAML validator attempts to load this 'code' and fails, so we will
+        # exclude the file from YAML checks.
+        exclude: external-docs/mkdocs.yml
     -   id: end-of-file-fixer
     -   id: trailing-whitespace
     -   id: detect-private-key

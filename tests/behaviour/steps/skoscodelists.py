@@ -1,6 +1,11 @@
-from behave import Given, When
-from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
+import shutil
+from pathlib import Path
 
+from behave import Given, When, then
+from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
+from csvcubeddevtools.helpers.file import get_test_cases_dir
+
+from csvcubed.cli.build_code_list import build_code_list as _build_code_list
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.cube.qb.components.codelist import (
     CompositeQbCodeList,
@@ -8,6 +13,8 @@ from csvcubed.models.cube.qb.components.codelist import (
 )
 from csvcubed.models.cube.qb.components.concept import DuplicatedQbConcept, NewQbConcept
 from csvcubed.writers.skoscodelistwriter import SkosCodeListWriter
+
+_test_case_dir = get_test_cases_dir()
 
 
 def get_standard_catalog_metadata_for_name(name: str) -> CatalogMetadata:
@@ -98,3 +105,21 @@ def step_impl(context):
     writer = SkosCodeListWriter(context.code_list)
     temp_dir = get_context_temp_dir_path(context)
     writer.write(temp_dir)
+
+
+@then(
+    'a valid code-list is created and serialised to CSVW from the config file "{config_file}"'
+)
+def step_imp(context, config_file: Path):
+    _temp_test_cases_dir = get_context_temp_dir_path(context)
+
+    shutil.copy((_test_case_dir / config_file), _temp_test_cases_dir)
+
+    config_file_path = _temp_test_cases_dir / config_file
+
+    _build_code_list(
+        config_path=config_file_path,
+        output_directory=_temp_test_cases_dir / "out",
+        fail_when_validation_error_occurs=True,
+        validation_errors_file_name=None,
+    )
