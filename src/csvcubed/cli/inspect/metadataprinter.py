@@ -158,12 +158,6 @@ class MetadataPrinter:
             )
         )
 
-        self.primary_csv_suppressed_columns = [
-            column_definition.title
-            for column_definition in self.primary_csv_column_definitions
-            if column_definition.suppress_output and column_definition.title is not None
-        ]
-
         self.result_primary_csv_code_lists = self.state.get_code_lists_and_cols(
             self.primary_csv_url
         )
@@ -257,7 +251,13 @@ class MetadataPrinter:
 
         :return: `str` - user-friendly string which will be output to CLI.
         """
-        return f"- The {self.csvw_type_str} has the following data structure definition:\n- Dataset Label: {self.primary_cube_table_identifiers.data_set_label}{self.result_qube_components.output_str}\n- Columns where suppress output is true: {get_printable_list_str(self.primary_csv_suppressed_columns)}"
+        primary_csv_suppressed_columns = [
+            column_definition.title
+            for column_definition in self.primary_csv_column_definitions
+            if column_definition.suppress_output and column_definition.title is not None
+        ]
+
+        return f"- The {self.csvw_type_str} has the following data structure definition:\n- Dataset Label: {self.primary_cube_table_identifiers.data_set_label}{self.result_qube_components.output_str}\n- Columns where suppress output is true: {get_printable_list_str(primary_csv_suppressed_columns)}"
 
     @property
     def codelist_info_printable(self) -> str:
