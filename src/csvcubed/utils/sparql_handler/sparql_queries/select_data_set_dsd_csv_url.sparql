@@ -3,13 +3,12 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX csvw: <http://www.w3.org/ns/csvw#>
 
-SELECT ?dataSet ?dsd ?dataSetLabel ?csvUrl
+SELECT ?dataSet ?dsd ?csvUrl
 WHERE {
     {
-        SELECT DISTINCT ?csvUrl ?dataSet ?dataSetLabel
+        SELECT DISTINCT ?csvUrl ?dataSet
         WHERE {
-            ?dataSet a qb:DataSet;
-                     rdfs:label ?dataSetLabel.
+            ?dataSet a qb:DataSet.
 
             [] csvw:url ?csvUrl;
                csvw:tableSchema/csvw:column/rdf:rest*/rdf:first ?column.

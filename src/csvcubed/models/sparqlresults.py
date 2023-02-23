@@ -84,7 +84,6 @@ class CubeTableIdentifiers(DataClassBase):
 
     csv_url: str
     data_set_url: str
-    data_set_label: str
     dsd_uri: str
 
 
@@ -348,14 +347,13 @@ def map_data_set_dsd_csv_url_result(
     sparql_results: List[ResultRow],
 ) -> List[CubeTableIdentifiers]:
     """
-    TODO: Add description
+    Maps the SPARQL results of `select_data_set_dsd_csv_url.sparql` into `CubeTableIdentifiers`.
     """
 
     def map_row(row_result: Dict[str, Any]) -> CubeTableIdentifiers:
         return CubeTableIdentifiers(
             csv_url=str(row_result["csvUrl"]),
             data_set_url=str(row_result["dataSet"]),
-            data_set_label=str(row_result["dataSetLabel"]),
             dsd_uri=str(row_result["dsd"]),
         )
 
