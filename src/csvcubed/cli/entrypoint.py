@@ -18,6 +18,8 @@ from csvcubed.utils.log import log_exception, start_logging
 
 _logger = logging.getLogger(__name__)
 
+_VALIDATION_FILE_NAME = "validation-errors.json"
+
 
 @click.group(context_settings=dict(help_option_names=["-h", "--help"]))
 def entry_point():
@@ -34,14 +36,6 @@ def version():
     print(f"v{__version__}")
 
 
-config_option = click.option(
-    "--config",
-    "-c",
-    help="Location of the json file containing the qube-config file.",
-    type=click.Path(exists=True, path_type=Path, file_okay=True, dir_okay=False),
-    required=False,
-    metavar="CONFIG_PATH",
-)
 out_option = click.option(
     "--out",
     "-o",
@@ -74,7 +68,14 @@ log_option = click.option(
 
 
 @entry_point.command("build")
-@config_option
+@click.option(
+    "--config",
+    "-c",
+    help="Location of the json file containing the qube-config file.",
+    type=click.Path(exists=True, path_type=Path, file_okay=True, dir_okay=False),
+    required=False,
+    metavar="CONFIG_PATH",
+)
 @out_option
 @fail_option
 @validation_option
@@ -92,7 +93,7 @@ def build_command(
 ):
     """Build a qb-flavoured CSV-W from a tidy CSV."""
     validation_errors_file_name = (
-        "validation-errors.json" if validation_errors_to_file else None
+        _VALIDATION_FILE_NAME if validation_errors_to_file else None
     )
     out.mkdir(parents=True, exist_ok=True)
 
@@ -154,7 +155,7 @@ def code_list_build_command(
 ):
     """Build a skos-flavoured code list CSV-W from a tidy code list JSON file."""
     validation_errors_file_name = (
-        "validation-errors.json" if validation_errors_to_file else None
+        _VALIDATION_FILE_NAME if validation_errors_to_file else None
     )
 
     out.mkdir(parents=True, exist_ok=True)

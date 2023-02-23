@@ -80,8 +80,12 @@ class CodeListConfigJsonSchemaMinorVersion(Enum):
 
 def _extract_and_validate_code_list_v1(
     code_list_config_path: Path,
+    schema_version_minor: CodeListConfigJsonSchemaMinorVersion,
 ) -> Tuple[NewQbCodeList, List[JsonSchemaValidationError], List[ValidationError]]:
     """Extract a code list form a JSON file and validate"""
+
+    _logger.debug("Using schema minor version %s", schema_version_minor.value)
+
     code_list_config, code_list_config_dict = CodeListConfig.from_json_file(
         code_list_config_path
     )
@@ -126,7 +130,9 @@ def get_deserialiser_for_code_list_schema(
     )
 
     if schema_version_major == CodeListConfigJsonSchemaMajorVersion.v1:
-        return _extract_and_validate_code_list_v1
+        return _extract_and_validate_code_list_v1(
+            schema_version_minor=schema_version_minor
+        )
     else:
         raise ValueError(f"Unhandled major schema version {schema_version_major}")
 

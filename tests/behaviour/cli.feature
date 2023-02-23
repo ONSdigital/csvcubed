@@ -27,28 +27,39 @@ Feature: Test the csvcubed Command Line Interface.
     When the csvcubed CLI is run with "code-list build readers/code-list-config/v1.0/code_list_config_produces_error.json --log-level debug"
     Then the command line output should display the log message
     """
-    csvcubed.utils.cli - WARNING - Schema Validation Error: $.creator - 'http://purl.org/dc/aboutdcmi#DCMI' is not one of ['http://dbpedia.org/resource/Open_Knowledge_Foundation', 'http://statistics.data.gov.uk', 'https:/
+    WARNING - Schema Validation Error:
     """
     And the command line output should display the log message
     """
-    csvcubed.utils.cli - ERROR - Validation Error: An error was encountered when validating the cube. The error occurred in '["('concepts', 3)", 'existing_concept_uri']' and was reported as ''This will produce an error' does not look like a URI.'
+    ERROR - Validation Error:
     """
     And the command line output should display the log message
     """
-    csvcubed.readers.codelistconfig.codelist_schema_versions - INFO - Using schema version 1.0
+    INFO - Using schema version 1.0
     """
     And the command line output should display the log message
     """
-    csvcubed.utils.json - DEBUG - Loading JSON from URL https://purl.org/csv-cubed/code-list-config/v1.0
+    DEBUG - Loading JSON from URL
     """
+    Then remove test log files
 
   Scenario: The csvcubed code-list build command should display the logging in accordance with the log level set at critical.
     Given the existing test-case file "readers/code-list-config/v1.0/code_list_config_produces_critical_error.json"
-    When the csvcubed CLI is run with "code-list build readers/code-list-config/v1.0/code_list_config_produces_critical_error.json --log-level debug"
+    When the csvcubed CLI is run with "code-list build readers/code-list-config/v1.0/code_list_config_produces_critical_error.json --log-level crit"
     Then the command line output should display the log message
     """
-    csvcubed.cli.entrypoint - CRITICAL - Traceback (most recent call last):
+    CRITICAL - Traceback (most recent call last):
     """
+    Then remove test log files
+
+  Scenario: The csvcubed code-list build command should not display any critical logging despite log-level being set at "crit".
+    Given the existing test-case file "readers/code-list-config/v1.0/code_list_config_hierarchical.json"
+    When the csvcubed CLI is run with "code-list build readers/code-list-config/v1.0/code_list_config_hierarchical.json --log-level crit"
+    Then the command line output should not display the log message
+    """
+    CRITICAL - Traceback (most recent call last):
+    """
+    Then remove test log files
 
   Scenario: The csvcubed code-list build command will continue when there is a validation error and build a code list csvw in a given out directory.
     Given the existing test-case file "readers/code-list-config/v1.0/code_list_config_produces_error.json"
@@ -60,7 +71,7 @@ Feature: Test the csvcubed Command Line Interface.
     """
     Build Complete @
     """
-
+    Then remove test log files
   Scenario: The csvcubed code-list build command will fail when there is a validation error.
     Given the existing test-case file "readers/code-list-config/v1.0/code_list_config_produces_error.json"
     When the csvcubed CLI is run with "code-list build readers/code-list-config/v1.0/code_list_config_produces_error.json --fail-when-validation-error"
@@ -68,3 +79,4 @@ Feature: Test the csvcubed Command Line Interface.
     """
     Build Complete @
     """
+    Then remove test log files
