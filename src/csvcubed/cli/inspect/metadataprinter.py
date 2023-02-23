@@ -257,7 +257,7 @@ class MetadataPrinter:
             if column_definition.suppress_output and column_definition.title is not None
         ]
 
-        return f"- The {self.csvw_type_str} has the following data structure definition:\n- Dataset Label: {self.primary_cube_table_identifiers.data_set_label}{self.result_qube_components.output_str}\n- Columns where suppress output is true: {get_printable_list_str(primary_csv_suppressed_columns)}"
+        return f"- The {self.csvw_type_str} has the following data structure definition:\n- Dataset Label: {self.result_catalog_metadata.title}{self.result_qube_components.output_str}\n- Columns where suppress output is true: {get_printable_list_str(primary_csv_suppressed_columns)}"
 
     @property
     def codelist_info_printable(self) -> str:

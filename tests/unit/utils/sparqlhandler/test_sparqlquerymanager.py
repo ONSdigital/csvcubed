@@ -343,7 +343,6 @@ def test_select_is_pivoted_shape_for_measures_in_pivoted_shape_data_set():
             CubeTableIdentifiers(
                 "qb-id-10003.csv",
                 "qb-id-10003.csv#dataset",
-                "Pivoted Shape Cube",
                 "qb-id-10003.csv#structure",
             )
         ],
@@ -383,7 +382,6 @@ def test_select_is_pivoted_shape_for_measures_in_standard_shape_data_set():
             CubeTableIdentifiers(
                 "energy-trends-uk-total-energy.csv",
                 "energy-trends-uk-total-energy.csv#dataset",
-                "Energy Trends: UK total energy",
                 "energy-trends-uk-total-energy.csv#structure",
             )
         ],
