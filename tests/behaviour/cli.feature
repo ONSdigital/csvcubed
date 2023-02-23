@@ -27,7 +27,7 @@ Feature: Test the csvcubed Command Line Interface.
   Scenario: The csvcubed code-list build command should display the logging in accordance with the log level set at debug.
     Given the existing test-case file "readers/code-list-config/v1.0/code_list_config_produces_error.json"
     When the csvcubed CLI is run with "code-list build readers/code-list-config/v1.0/code_list_config_produces_error.json --log-level debug"
-    Then the csvcubed CLI should succeed
+    Then the csvcubed CLI should fail with status code 1
     And the command line output should display the log message
     """
     DEBUG - Loading JSON from URL
@@ -37,7 +37,7 @@ Feature: Test the csvcubed Command Line Interface.
   Scenario: The csvcubed code-list build command should display the logging in accordance with the log level set at critical.
     Given the existing test-case file "readers/code-list-config/v1.0/code_list_config_produces_critical_error.json"
     When the csvcubed CLI is run with "code-list build readers/code-list-config/v1.0/code_list_config_produces_critical_error.json --log-level crit"
-    Then the csvcubed CLI should succeed
+    Then the csvcubed CLI should fail with status code 1
     And the command line output should display the log message
     """
     CRITICAL - Traceback (most recent call last):
