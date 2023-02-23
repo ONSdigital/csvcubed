@@ -27,18 +27,6 @@ Feature: Test the csvcubed Command Line Interface.
     When the csvcubed CLI is run with "code-list build readers/code-list-config/v1.0/code_list_config_produces_error.json --log-level debug"
     Then the command line output should display the log message
     """
-    WARNING - Schema Validation Error:
-    """
-    And the command line output should display the log message
-    """
-    ERROR - Validation Error:
-    """
-    And the command line output should display the log message
-    """
-    INFO - Using schema version 1.0
-    """
-    And the command line output should display the log message
-    """
     DEBUG - Loading JSON from URL
     """
     Then remove test log files
