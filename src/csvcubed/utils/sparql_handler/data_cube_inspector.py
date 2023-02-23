@@ -188,17 +188,3 @@ class DataCubeInspector:
         """
 
         return self._codelists_and_cols.get(csv_url, CodelistsResult([], 0))
-
-    def get_suppressed_columns_for_csv(self, csv_url: str) -> List[str]:
-        """
-        Get the suppressed columns from the input csv url's column definitions.
-        """
-        column_definitions = self.csvw_inspector.get_column_definitions_for_csv(csv_url)
-
-        result = [
-            column_definition.title
-            for column_definition in column_definitions
-            if column_definition.suppress_output and column_definition.title is not None
-        ]
-
-        return result
