@@ -247,7 +247,9 @@ def _melt_pivoted_shape(
     if csv_url is None:
         raise ValueError("csv_url cannot be None.")
 
-    column_definitions = data_cube_inspector.get_column_definitions_for_csv(csv_url)
+    column_definitions = (
+        data_cube_inspector.csvw_inspector.get_column_definitions_for_csv(csv_url)
+    )
 
     measure_components = filter_components_from_dsd(
         qube_components,

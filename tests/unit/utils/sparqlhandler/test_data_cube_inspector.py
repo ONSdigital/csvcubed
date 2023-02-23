@@ -40,7 +40,10 @@ def test_get_column_definitions_for_csv():
     ).csv_url
 
     results = {
-        c.name: c for c in data_cube_inspector.get_column_definitions_for_csv(csv_url)
+        c.name: c
+        for c in data_cube_inspector.csvw_inspector.get_column_definitions_for_csv(
+            csv_url
+        )
     }
 
     assert len(results) == 12

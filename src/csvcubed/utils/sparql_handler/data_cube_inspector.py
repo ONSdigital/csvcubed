@@ -41,22 +41,6 @@ class DataCubeInspector:
     """
 
     @cached_property
-    def _column_definitions(self) -> Dict[str, List[ColumnDefinition]]:
-        """
-        Map of csv_url to the list of column definitions for the given CSV file.
-        """
-        results = select_column_definitions(self.csvw_inspector.rdf_graph)
-        return group_by(results, lambda r: r.csv_url)
-
-    @cached_property
-    def _column_definitions(self) -> Dict[str, List[ColumnDefinition]]:
-        """
-        Map of csv_url to the list of column definitions for the given CSV file.
-        """
-        results = select_column_definitions(self.csvw_inspector.rdf_graph)
-        return group_by(results, lambda r: r.csv_url)
-
-    @cached_property
     def _units(self) -> Dict[str, UnitResult]:
         """
         Gets the unit_uri for each UnitResult
@@ -149,15 +133,6 @@ class DataCubeInspector:
     Public getters for the cached properties.
     """
 
-    def get_column_definitions_for_csv(self, csv_url: str) -> List[ColumnDefinition]:
-        """
-        Get column definitions for the given csv url
-        """
-        result: List[ColumnDefinition] = get_from_dict_ensure_exists(
-            self._column_definitions, csv_url
-        )
-        return result
-
     def get_unit_for_uri(self, uri: str) -> Optional[UnitResult]:
         """
         Get a specific unit, by its uri.
@@ -218,7 +193,7 @@ class DataCubeInspector:
         """
         Get the suppressed columns from the input csv url's column definitions.
         """
-        column_definitions = self.get_column_definitions_for_csv(csv_url)
+        column_definitions = self.csvw_inspector.get_column_definitions_for_csv(csv_url)
 
         result = [
             column_definition.title

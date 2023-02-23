@@ -671,7 +671,9 @@ def test_create_unit_col_in_melted_data_set_for_pivoted_shape():
         c.property for c in _measure_components_for_multi_measure_pivoted_shape
     }
 
-    column_definitions = data_cube_inspector.get_column_definitions_for_csv(csv_url)
+    column_definitions = (
+        data_cube_inspector.csvw_inspector.get_column_definitions_for_csv(csv_url)
+    )
     _create_unit_col_in_melted_data_set_for_pivoted_shape(
         "Unit", melted_df, column_definitions, data_cube_inspector, measure_uris
     )
@@ -725,7 +727,9 @@ def test_create_unit_col_in_melted_data_set_for_pivoted_shape_should_throw_inval
         c.property for c in _measure_components_for_multi_measure_pivoted_shape
     }
 
-    column_definitions = data_cube_inspector.get_column_definitions_for_csv(csv_url)
+    column_definitions = (
+        data_cube_inspector.csvw_inspector.get_column_definitions_for_csv(csv_url)
+    )
     column_definitions_without_obs_vals = [
         c for c in column_definitions if c.property_url not in measure_uris
     ]
@@ -776,7 +780,9 @@ def test_create_unit_col_in_melted_data_set_for_pivoted_shape_should_throw_inval
         primary_catalog_metadata.dataset_uri
     ).csv_url
 
-    column_definitions = data_cube_inspector.get_column_definitions_for_csv(csv_url)
+    column_definitions = (
+        data_cube_inspector.csvw_inspector.get_column_definitions_for_csv(csv_url)
+    )
     column_definitions_without_units = [
         c
         for c in column_definitions

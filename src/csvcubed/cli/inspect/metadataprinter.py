@@ -154,8 +154,10 @@ class MetadataPrinter:
         self.primary_cube_table_identifiers = self.state.get_cube_identifiers_for_csv(
             self.primary_csv_url
         )
-        self.primary_csv_column_definitions = self.state.get_column_definitions_for_csv(
-            self.primary_csv_url
+        self.primary_csv_column_definitions = (
+            self.state.csvw_inspector.get_column_definitions_for_csv(
+                self.primary_csv_url
+            )
         )
 
         self.primary_csv_suppressed_columns = self.state.get_suppressed_columns_for_csv(
