@@ -72,6 +72,7 @@ Feature: Test the csvcubed Command Line Interface.
     Build Complete @
     """
     Then remove test log files
+
   Scenario: The csvcubed code-list build command will fail when there is a validation error.
     Given the existing test-case file "readers/code-list-config/v1.0/code_list_config_produces_error.json"
     When the csvcubed CLI is run with "code-list build readers/code-list-config/v1.0/code_list_config_produces_error.json --fail-when-validation-error"
