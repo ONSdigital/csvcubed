@@ -18,6 +18,7 @@ from csvcubed.cli.inspect.inspectdatasetmanager import (
 )
 from csvcubed.models.csvwtype import CSVWType
 from csvcubed.models.cube.cube_shape import CubeShape
+from csvcubed.models.cube.qb.validationerrors import BothMeasureTypesDefinedError
 from csvcubed.models.inspectdataframeresults import (
     DatasetObservationsByMeasureUnitInfoResult,
     DatasetObservationsInfoResult,

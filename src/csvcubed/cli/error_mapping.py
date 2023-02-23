@@ -3,25 +3,15 @@ import logging
 from os import linesep
 from typing import Type, Union
 
-from csvcubed.models.cube.qb import (
-    BothMeasureTypesDefinedError,
-    BothUnitTypesDefinedError,
-    CsvColumnUriTemplateMissingError,
-    EmptyQbMultiMeasureDimensionError,
-    MoreThanOneMeasureColumnError,
-    MoreThanOneUnitsColumnError,
-    NoDimensionsDefinedError,
-    NoMeasuresDefinedError,
-    NoObservedValuesColumnDefinedError,
-    NoUnitsDefinedError,
-    QbAttribute,
-    QbCodeList,
-    QbDimension,
-    QbMultiMeasureDimension,
-    QbMultiUnits,
-    QbObservationValue,
+from csvcubed.models.cube.qb.components.attribute import QbAttribute
+from csvcubed.models.cube.qb.components.codelist import QbCodeList
+from csvcubed.models.cube.qb.components.datastructuredefinition import (
     QbStructuralDefinition,
 )
+from csvcubed.models.cube.qb.components.dimension import QbDimension
+from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureDimension
+from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
+from csvcubed.models.cube.qb.components.unitscolumn import QbMultiUnits
 from csvcubed.models.cube.qb.components.validationerrors import (
     ConflictingUriSafeValuesError,
     EmptyQbMultiUnitsError,
@@ -32,10 +22,20 @@ from csvcubed.models.cube.qb.components.validationerrors import (
 )
 from csvcubed.models.cube.qb.validationerrors import (
     AttributeNotLinkedError,
+    BothMeasureTypesDefinedError,
+    BothUnitTypesDefinedError,
+    CsvColumnUriTemplateMissingError,
     DuplicateMeasureError,
+    EmptyQbMultiMeasureDimensionError,
     HybridShapeError,
     LinkedObsColumnDoesntExistError,
     LinkedToNonObsColumnError,
+    MoreThanOneMeasureColumnError,
+    MoreThanOneUnitsColumnError,
+    NoDimensionsDefinedError,
+    NoMeasuresDefinedError,
+    NoObservedValuesColumnDefinedError,
+    NoUnitsDefinedError,
     PivotedObsValColWithoutMeasureError,
     PivotedShapeMeasureColumnsExistError,
 )
