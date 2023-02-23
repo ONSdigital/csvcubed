@@ -15,7 +15,7 @@ nav:
       - guides/index.md
       - Commands:
         - build: guides/command-line/build-command.md
-        - code list build: guides/command-line/code-list-build-command.md
+        - code-list build: guides/command-line/code-list-build-command.md
         - inspect: guides/command-line/inspect-command.md
         - Logging: guides/command-line/logging.md
       - Configuration:
