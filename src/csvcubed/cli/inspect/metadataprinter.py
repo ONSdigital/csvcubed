@@ -164,10 +164,6 @@ class MetadataPrinter:
             if column_definition.suppress_output and column_definition.title is not None
         ]
 
-        # self.primary_csv_suppressed_columns = self.state.get_suppressed_columns_for_csv(
-        #     self.primary_csv_url
-        # )
-
         self.result_primary_csv_code_lists = self.state.get_code_lists_and_cols(
             self.primary_csv_url
         )
