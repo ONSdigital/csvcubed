@@ -12,9 +12,6 @@ from typing import Tuple
 from appdirs import AppDirs
 from behave import then, when
 from csvcubeddevtools.behaviour.temporarydirectory import get_context_temp_dir_path
-from csvcubeddevtools.helpers.file import get_test_cases_dir
-
-_test_case_dir = get_test_cases_dir()
 
 
 @when('the csvcubed CLI is run with "{arguments}"')
