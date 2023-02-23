@@ -1,3 +1,5 @@
+import inspect
+
 import pytest
 
 from csvcubed.readers.codelistconfig.codelist_schema_versions import (
@@ -63,4 +65,8 @@ def test_get_deserialiser_for_code_list_schema():
     code_list_config_deserialiser = get_deserialiser_for_code_list_schema(
         "https://purl.org/csv-cubed/code-list-config/v1.1"
     )
-    assert code_list_config_deserialiser == _extract_and_validate_code_list_v1
+
+    # Let's check that it ends up calling the v1 deserialiser function, dodgy code ahead:
+    assert _extract_and_validate_code_list_v1.__name__ in inspect.getsource(
+        code_list_config_deserialiser
+    )
