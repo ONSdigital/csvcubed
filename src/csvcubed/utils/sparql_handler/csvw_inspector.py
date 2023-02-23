@@ -1,7 +1,15 @@
+"""
+Code List Inspector
+-------------------
+
+Provides access to inspect the contents of an rdflib graph containing
+one of more code lists.
+"""
+
 from dataclasses import dataclass, field
 from functools import cached_property
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Dict, List
 
 import rdflib
 
@@ -25,6 +33,10 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
 
 @dataclass
 class CsvWInspector:
+    """
+    Provides access to inspect the contents of an rdflib graph containing one of more code lists.
+    """
+
     rdf_graph: rdflib.ConjunctiveGraph
     csvw_json_path: Path
 

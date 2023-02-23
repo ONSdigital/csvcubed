@@ -1,6 +1,6 @@
 """
-Data Cube State
----------------
+Data Cube Inspector
+-------------------
 
 Provides access to inspect the contents of an rdflib graph containing
 one of more data cubes.
@@ -8,12 +8,11 @@ one of more data cubes.
 
 from dataclasses import dataclass
 from functools import cached_property
-from typing import Dict, List, Optional, TypeVar
+from typing import Dict, List, Optional
 
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import (
     CodelistsResult,
-    ColumnDefinition,
     CubeTableIdentifiers,
     IsPivotedShapeMeasureResult,
     QubeComponentsResult,
@@ -23,7 +22,6 @@ from csvcubed.utils.dict import get_from_dict_ensure_exists
 from csvcubed.utils.iterables import first, group_by
 from csvcubed.utils.sparql_handler.csvw_inspector import CsvWInspector
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
-    select_column_definitions,
     select_csvw_dsd_qube_components,
     select_data_set_dsd_and_csv_url,
     select_dsd_code_list_and_cols,
@@ -34,6 +32,8 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
 
 @dataclass
 class DataCubeInspector:
+    """Provides access to inspect the data cubes contained in an rdflib graph."""
+
     csvw_inspector: CsvWInspector
 
     """
