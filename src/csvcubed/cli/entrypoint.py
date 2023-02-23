@@ -133,7 +133,7 @@ def inspect_command(log_level: str, csvw_metadata_json_path: Path) -> None:
 ###########################
 # NEW COMMAND TEST AREA
 ###########################
-@entry_point.group("code-list", help="Something something something.")
+@entry_point.group("code-list", help="Create a SKOS code list from a JSON file")
 def code_list():
     ...
 
