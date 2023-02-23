@@ -1,3 +1,10 @@
+"""
+CLI
+---
+
+Contains methods to log validation and JSON schema errors to file.
+"""
+
 import dataclasses
 import json
 import logging
@@ -22,7 +29,7 @@ def log_validation_and_json_schema_errors(
     validation_errors_file_name: Optional[str] = None,
     fail_when_validation_error_occurs: bool = False,
 ):
-
+    """Log and write validation and JSON schema errors to a specified file loaction"""
     if not output_directory.exists():
         _logger.debug("Creating output directory %s", output_directory.absolute())
         output_directory.mkdir(parents=True)

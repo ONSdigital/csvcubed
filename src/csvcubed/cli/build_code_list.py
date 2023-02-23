@@ -1,6 +1,6 @@
 """
 Build Code List Command
--------------
+-----------------------
 Build a qb-flavoured CSV-W from a code list config.json
 """
 

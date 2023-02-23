@@ -1,6 +1,6 @@
 """
 Code List Schema Versions
----------------
+-------------------------
 
 Contains an enum listing the code-list-config.json schema versions recognised by csvcubed.
 """
@@ -53,7 +53,7 @@ _LATEST_V1_CODELIST_SCHEMA_URL = _v1_1_CODELIST_SCHEMA_URL
     When adding a new minor version to the V1 schema, you must update this variable.
 """
 
-_LATEST_CODELIST_SCHEMA_URL = _v1_1_CODELIST_SCHEMA_URL
+_LATEST_CODELIST_SCHEMA_URL = _LATEST_V1_CODELIST_SCHEMA_URL
 """
     This holds the URL identifying the latest version of the schema.
 
@@ -81,7 +81,7 @@ class CodeListConfigJsonSchemaMinorVersion(Enum):
 def _extract_and_validate_code_list_v1(
     code_list_config_path: Path,
 ) -> Tuple[NewQbCodeList, List[JsonSchemaValidationError], List[ValidationError]]:
-    """Fill this in"""
+    """Extract a code list form a JSON file and validate"""
     code_list_config, code_list_config_dict = CodeListConfig.from_json_file(
         code_list_config_path
     )
@@ -142,7 +142,6 @@ def _get_code_list_schema_version(
             CodeListConfigJsonSchemaMajorVersion.v1,
             CodeListConfigJsonSchemaMinorVersion.v0,
         )
-    # The second condition in the following makes v1 defaults to the latest minor version of v1.*.
     elif schema_path == _v1_1_CODELIST_SCHEMA_URL:
         return (
             CodeListConfigJsonSchemaMajorVersion.v1,

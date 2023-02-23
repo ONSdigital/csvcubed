@@ -13,7 +13,7 @@ Refer to the [code-list-config guide](../configuration/code-list-config.md) for 
 
 | Argument      | Description                                                     |
 |---------------|-----------------------------------------------------------------|
-| CODE-LIST-CONFIG-JSON-FILE | The file path to the code list config json |
+| CODE-LIST-CONFIG-JSON-FILE | The file path to the code list config JSON |
 
 
 **Options:**
@@ -48,11 +48,11 @@ When the code list is built the default output path is `./out`. This may be chan
 
 ### Building a code-list
 
-To build a code list you must only provide a code-list config json file.
+To build a code list you must only provide a code-list config JSON file.
 
-The code-list config json file must adhere to the structures defined in the [code list config schema](https://purl.org/csv-cubed/code-list-config/v1.1).
+The code list config JSON file must adhere to the structures defined in the [code list config schema](https://purl.org/csv-cubed/code-list-config/v1.1).
 
-For help on constructing the code-list config json refer to the [code-list-config guide](../configuration/code-list-config.md)
+For help on constructing the code-list config JSON refer to the [code-list-config guide](../configuration/code-list-config.md)
 
 To build a code list, the command is shown below.
 
