@@ -63,7 +63,7 @@ def _extract_and_validate_cube(
         config_path.absolute() if config_path is not None else "",
     )
 
-    deserialiser = get_versioned_deserialiser(config_path)
+    deserialiser = _get_versioned_deserialiser(config_path)
 
     cube, json_schema_validation_errors, validation_errors = deserialiser(
         csv_path, config_path
@@ -75,7 +75,7 @@ def _extract_and_validate_cube(
     return cube, json_schema_validation_errors, validation_errors
 
 
-def get_versioned_deserialiser(
+def _get_versioned_deserialiser(
     json_config_path: Optional[Path],
 ) -> QubeConfigDeserialiser:
     """
