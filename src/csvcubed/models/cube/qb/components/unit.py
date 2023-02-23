@@ -6,18 +6,34 @@ Represent units in an RDF Data Cube.
 """
 from abc import ABC
 from dataclasses import dataclass, field
-from typing import List, Optional, Set
+from typing import Dict, List, Optional, Set
 
 from csvcubed.models.uriidentifiable import UriIdentifiable
+from csvcubed.models.validatedmodel import ValidatedModel, ValidationFunction
+from csvcubed.utils.validations import (
+    validate_float_type,
+    validate_int_type,
+    validate_list,
+    validate_optional,
+    validate_str_type,
+    validate_uri,
+)
 from csvcubed.utils.validators.attributes import enforce_optional_attribute_dependencies
-from csvcubed.utils.validators.uri import validate_uri
+from csvcubed.utils.validators.uri import validate_uri as pydantic_validate_uri
 
-from .arbitraryrdf import ArbitraryRdf, RdfSerialisationHint, TripleFragmentBase
+from .arbitraryrdf import (
+    ArbitraryRdf,
+    RdfSerialisationHint,
+    TripleFragmentBase,
+    validate_triple_fragment,
+)
 from .datastructuredefinition import SecondaryQbStructuralDefinition
 
 
 @dataclass(unsafe_hash=True)
-class QbUnit(SecondaryQbStructuralDefinition, ABC):
+class QbUnit(SecondaryQbStructuralDefinition, ValidatedModel, ABC):
+    # def _get_validations(self) -> Dict[str, ValidationFunction]:
+    #     return None
     pass
 
 
@@ -25,13 +41,16 @@ class QbUnit(SecondaryQbStructuralDefinition, ABC):
 class ExistingQbUnit(QbUnit):
     unit_uri: str
 
-    _unit_uri_validator = validate_uri("unit_uri")
+    _unit_uri_validator = pydantic_validate_uri("unit_uri")
 
     def __eq__(self, other):
         return isinstance(other, ExistingQbUnit) and other.unit_uri == self.unit_uri
 
     def __hash__(self):
         return self.unit_uri.__hash__()
+
+    def _get_validations(self) -> Dict[str, ValidationFunction]:
+        return {"unit_uri": validate_uri}
 
 
 @dataclass
@@ -41,28 +60,26 @@ class NewQbUnit(QbUnit, UriIdentifiable, ArbitraryRdf):
     source_uri: Optional[str] = field(default=None, repr=False)
     uri_safe_identifier_override: Optional[str] = field(default=None, repr=False)
     arbitrary_rdf: List[TripleFragmentBase] = field(default_factory=list, repr=False)
-
     base_unit: Optional[QbUnit] = field(default=None, repr=False)
     """
     The unit that this new unit is based on.
-    
+
     Codependent with :attr:`base_unit_scaling_factor`.
     """
     base_unit_scaling_factor: Optional[float] = field(default=None, repr=False)
     """
     How to scale the value associated with this unit to map back to the base unit.
-    
-    Codependent with :attr:`base_unit`.
-    
-    e.g. if the base unit is *meters* and this unit (*kilometers*) has a scaling factor of **1,000**, then you multiply 
-    the value in *kilometers* by **1,000** to get the value in *meters*.    
-    """
 
+    Codependent with :attr:`base_unit`.
+
+    e.g. if the base unit is *meters* and this unit (*kilometers*) has a scaling factor of **1,000**, then you multiply
+    the value in *kilometers* by **1,000** to get the value in *meters*.
+    """
     qudt_quantity_kind_uri: Optional[str] = field(default=None, repr=False)
     """
     The URI of the `qudt:QuantityKind` family to which this unit belongs.
-    
-    Codependent with :attr:`si_base_unit_conversion_multiplier`. 
+
+    Codependent with :attr:`si_base_unit_conversion_multiplier`.
     """
     si_base_unit_conversion_multiplier: Optional[float] = field(
         default=None, repr=False
@@ -70,13 +87,28 @@ class NewQbUnit(QbUnit, UriIdentifiable, ArbitraryRdf):
     """
     Multiply a value by this number to convert between this unit and its corresponding **SI unit**.
 
-    Codependent with :attr:`qudt_quantity_kind_uri`. 
-       
+    Codependent with :attr:`qudt_quantity_kind_uri`.
+
     See https://github.com/qudt/qudt-public-repo/wiki/User-Guide-for-QUDT#4-conversion-multipliers-in-qudt to understand
     the role of `qudt:conversionMultiplier` before using this. *It may not represent what you think it does.*
-    
-    SI - https://en.wikipedia.org/wiki/International_System_of_Units 
+
+    SI - https://en.wikipedia.org/wiki/International_System_of_Units
     """
+
+    def _get_validations(self) -> Dict[str, ValidationFunction]:
+        return {
+            "label": validate_str_type,
+            "description": validate_optional(validate_str_type),
+            "source_uri": validate_optional(validate_uri),
+            **UriIdentifiable._get_validations(self),
+            "arbitrary_rdf": validate_list(validate_triple_fragment),
+            "base_unit": "",
+            "base_unit_scaling_factor": validate_optional(validate_float_type),
+            "qudt_quantity_kind_uri": validate_optional(validate_str_type),
+            "si_base_unit_conversion_multiplier": validate_optional(
+                validate_float_type
+            ),
+        }
 
     optional_attribute_dependencies = enforce_optional_attribute_dependencies(
         {
@@ -85,7 +117,7 @@ class NewQbUnit(QbUnit, UriIdentifiable, ArbitraryRdf):
         }
     )
 
-    _qudt_quantity_kind_uri_validation = validate_uri(
+    _qudt_quantity_kind_uri_validation = pydantic_validate_uri(
         "qudt_quantity_kind_uri", is_optional=True
     )
 

@@ -107,3 +107,21 @@ def validate_optional(
         return validate_item(maybe_item, property_name)
 
     return _validate
+
+
+def validate_float_type(
+    value: float, property_name: str
+) -> List[ValidateModelProperiesError]:
+    """
+    This function will validate if the argument provided is in fact a float type and,
+    returns any errors returned by the item validation function.
+    """
+    if not isinstance(value, float):
+        return [
+            ValidateModelProperiesError(
+                "This variable should be a float value, check the following variable:",
+                property_name,
+            )
+        ]
+
+    return []
