@@ -8,7 +8,6 @@ from typing import Any, Callable, Dict, List
 from csvcubedmodels.dataclassbase import DataClassBase
 
 from csvcubed.models.validationerror import ValidateModelProperiesError
-from csvcubed.utils.validations import validate_str_type
 
 ValidationFunction = Callable[[Any, str], List[ValidateModelProperiesError]]
 
@@ -40,16 +39,3 @@ class ValidatedModel(DataClassBase):
     @abstractmethod
     def _get_validations(self) -> Dict[str, ValidationFunction]:
         pass
-
-
-@dataclass
-class ValidationTester(ValidatedModel):
-    """
-    As the example class below shows the implementation is required for each class varibale (including optional ones as well),
-    in the _get_validations function the class variable name has to present paired with the correct validation fucntion in a dictionary format.
-    """
-
-    string_variable: str
-
-    def _get_validations(self) -> Dict[str, ValidationFunction]:
-        return {"string_variable": validate_str_type}
