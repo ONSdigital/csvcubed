@@ -6,18 +6,24 @@ Define a units column in an RDF Data Cube.
 """
 
 from dataclasses import dataclass, field
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 import pandas as pd
 import uritemplate
 from pydantic import validator
 
 from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_str
+from csvcubed.models.validatedmodel import ValidationFunction
 from csvcubed.models.validationerror import ValidationError
 from csvcubed.utils.qb.validation.uri_safe import ensure_no_uri_safe_conflicts
+from csvcubed.utils.validations import (
+    validate_list,
+    validate_optional,
+    validate_str_type,
+)
 
 from .datastructuredefinition import QbColumnStructuralDefinition
-from .unit import ExistingQbUnit, NewQbUnit, QbUnit
+from .unit import ExistingQbUnit, NewQbUnit, QbUnit, validate_unit
 from .validationerrors import EmptyQbMultiUnitsError, UndefinedUnitUrisError
 
 
@@ -125,3 +131,9 @@ class QbMultiUnits(QbColumnStructuralDefinition):
                 return [UndefinedUnitUrisError(self, undefined_uris)]
 
         return []
+
+    def _get_validations(self) -> Dict[str, ValidationFunction]:
+        return {
+            "units": validate_list(validate_unit),
+            "observed_value_col_title": validate_optional(validate_str_type),
+        }

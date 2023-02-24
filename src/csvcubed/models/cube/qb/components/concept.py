@@ -6,11 +6,20 @@ Represent individual concepts inside a `skos:ConceptScheme`.
 """
 
 from dataclasses import dataclass, field
-from typing import Optional
+from typing import Dict, List, Optional
+
+import pandas as pd
 
 from csvcubed.models.uriidentifiable import UriIdentifiable
+from csvcubed.models.validatedmodel import ValidationFunction
+from csvcubed.models.validationerror import ValidationError
 from csvcubed.utils.uri import uri_safe
-from csvcubed.utils.validators.uri import validate_uri
+from csvcubed.utils.validations import (
+    validate_optional,
+    validate_str_type,
+    validate_uri,
+)
+from csvcubed.utils.validators.uri import validate_uri as pydantic_validate_uri
 
 from .datastructuredefinition import SecondaryQbStructuralDefinition
 
@@ -38,6 +47,26 @@ class NewQbConcept(SecondaryQbStructuralDefinition, UriIdentifiable):
     def __hash__(self):
         return self.code.__hash__()
 
+    def validate_data(
+        self,
+        data: pd.Series,
+        column_csvw_name: str,
+        csv_column_uri_template: str,
+        column_csv_title: str,
+    ) -> List[ValidationError]:
+        return []
+
+    def _get_validations(self) -> Dict[str, ValidationFunction]:
+
+        return {
+            "label": validate_str_type,
+            "code": validate_str_type,
+            "parent_code": validate_optional(validate_str_type),
+            "sort_order": validate_optional(validate_str_type),
+            "description": validate_optional(validate_str_type),
+            **UriIdentifiable._get_validations(self),
+        }
+
 
 @dataclass
 class ExistingQbConcept(SecondaryQbStructuralDefinition):
@@ -45,7 +74,23 @@ class ExistingQbConcept(SecondaryQbStructuralDefinition):
 
     existing_concept_uri: str
 
-    _existing_concept_uri_validator = validate_uri("existing_concept_uri")
+    # TODO: Remove this pydantic validator if you are sure the new one is correct.
+    _existing_concept_uri_validator = pydantic_validate_uri("existing_concept_uri")
+
+    def validate_data(
+        self,
+        data: pd.Series,
+        column_csvw_name: str,
+        csv_column_uri_template: str,
+        column_csv_title: str,
+    ) -> List[ValidationError]:
+        return []
+
+    def _get_validations(self) -> Dict[str, ValidationFunction]:
+
+        return {
+            "existing_concept_uri": validate_uri,
+        }
 
 
 @dataclass(unsafe_hash=True)
@@ -55,5 +100,28 @@ class DuplicatedQbConcept(NewQbConcept, ExistingQbConcept):
 
     To be used in a :class:`CompositeQbCodeList`.
     """
+
+    # Should the validations for NewQbConcept and ExistingQbConcept go here? Existing concept validation fails otherwise..
+    # TODO figure out which state to leave this one in. Currently works but not very happy with it.
+    def validate_data(
+        self,
+        data: pd.Series,
+        column_csvw_name: str,
+        csv_column_uri_template: str,
+        column_csv_title: str,
+    ) -> List[ValidationError]:
+        return []
+
+    def _get_validations(self) -> Dict[str, ValidationFunction]:
+
+        return {
+            "label": validate_str_type,
+            "code": validate_str_type,
+            "parent_code": validate_optional(validate_str_type),
+            "sort_order": validate_optional(validate_str_type),
+            "description": validate_optional(validate_str_type),
+            **UriIdentifiable._get_validations(self),
+            "existing_concept_uri": validate_uri,
+        }
 
     pass

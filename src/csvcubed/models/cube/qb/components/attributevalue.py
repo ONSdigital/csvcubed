@@ -6,11 +6,26 @@ Represent values for Attributes in an RDF Data Cube.
 """
 
 from dataclasses import dataclass, field
-from typing import List, Optional, Set
+from typing import Dict, List, Optional, Set
+
+import pandas as pd
 
 from csvcubed.models.uriidentifiable import UriIdentifiable
+from csvcubed.models.validatedmodel import ValidationFunction
+from csvcubed.models.validationerror import ValidationError
+from csvcubed.utils.validations import (
+    validate_list,
+    validate_optional,
+    validate_str_type,
+    validate_uri,
+)
 
-from .arbitraryrdf import ArbitraryRdf, RdfSerialisationHint, TripleFragmentBase
+from .arbitraryrdf import (
+    ArbitraryRdf,
+    RdfSerialisationHint,
+    TripleFragmentBase,
+    validate_triple_fragment,
+)
 from .datastructuredefinition import SecondaryQbStructuralDefinition
 
 
@@ -36,3 +51,23 @@ class NewQbAttributeValue(
 
     def get_identifier(self) -> str:
         return self.label
+
+    def validate_data(
+        self,
+        data: pd.Series,
+        column_csvw_name: str,
+        csv_column_uri_template: str,
+        column_csv_title: str,
+    ) -> List[ValidationError]:
+        return []
+
+    def _get_validations(self) -> Dict[str, ValidationFunction]:
+
+        return {
+            "label": validate_str_type,
+            "description": validate_optional(validate_str_type),
+            **UriIdentifiable._get_validations(self),
+            "source_uri": validate_optional(validate_uri),
+            "parent_attribute_value_uri": validate_optional(validate_uri),
+            "arbitrary_rdf": validate_list(validate_triple_fragment),
+        }

@@ -4,6 +4,7 @@ Measures
 
 Represent measures inside an RDF Data Cube.
 """
+import logging
 from abc import ABC
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Set
@@ -19,7 +20,7 @@ from csvcubed.models.cube.qb.components.arbitraryrdf import (
 from csvcubed.models.cube.qb.components.codelist import NewQbCodeList
 from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.models.validatedmodel import ValidatedModel, ValidationFunction
-from csvcubed.models.validationerror import ValidationError
+from csvcubed.models.validationerror import ValidateModelProperiesError, ValidationError
 from csvcubed.utils.validations import (
     validate_list,
     validate_optional,
@@ -29,6 +30,8 @@ from csvcubed.utils.validations import (
 from csvcubed.utils.validators.uri import validate_uri as pydantic_validate_uri
 
 from .datastructuredefinition import SecondaryQbStructuralDefinition
+
+_logger = logging.getLogger(__name__)
 
 
 @dataclass(unsafe_hash=True)
@@ -139,3 +142,10 @@ class NewQbMeasure(QbMeasure, UriIdentifiable):
             **UriIdentifiable._get_validations(self),
             "arbitrary_rdf": validate_list(validate_triple_fragment),
         }
+
+
+def validate_measure(
+    value: QbMeasure, property_name: str
+) -> List[ValidateModelProperiesError]:
+    _logger.debug("Validating a measure %s at property '%s'", value, property_name)
+    return value.validate()
