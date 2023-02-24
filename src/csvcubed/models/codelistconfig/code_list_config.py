@@ -12,8 +12,7 @@ from typing import Dict, List, Optional, Set, Tuple
 from csvcubedmodels.dataclassbase import DataClassBase
 
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
-from csvcubed.models.cube.qb.components import NewQbConcept
-from csvcubed.models.cube.qb.components.concept import DuplicatedQbConcept
+from csvcubed.models.cube.qb.components.concept import DuplicatedQbConcept, NewQbConcept
 from csvcubed.readers.catalogmetadata.v1.catalog_metadata_reader import (
     metadata_from_dict,
 )

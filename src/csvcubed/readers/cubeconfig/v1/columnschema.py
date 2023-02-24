@@ -19,28 +19,30 @@ from csvcubedmodels.dataclassbase import DataClassBase
 from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_optional_str
 from csvcubed.models.codelistconfig.code_list_config import CodeListConfig
 from csvcubed.models.cube.cube import CatalogMetadata
-from csvcubed.models.cube.qb.components import (
-    CompositeQbCodeList,
-    DuplicatedQbConcept,
+from csvcubed.models.cube.qb.components.attribute import (
     ExistingQbAttribute,
     ExistingQbAttributeLiteral,
-    ExistingQbCodeList,
-    ExistingQbDimension,
-    ExistingQbMeasure,
-    ExistingQbUnit,
     NewQbAttribute,
     NewQbAttributeLiteral,
     NewQbAttributeValue,
+)
+from csvcubed.models.cube.qb.components.codelist import (
+    CompositeQbCodeList,
+    DuplicatedQbConcept,
+    ExistingQbCodeList,
     NewQbCodeList,
-    NewQbDimension,
-    NewQbMeasure,
-    NewQbUnit,
     QbCodeList,
-    QbMultiMeasureDimension,
-    QbMultiUnits,
-    QbObservationValue,
 )
 from csvcubed.models.cube.qb.components.concept import NewQbConcept
+from csvcubed.models.cube.qb.components.dimension import (
+    ExistingQbDimension,
+    NewQbDimension,
+)
+from csvcubed.models.cube.qb.components.measure import ExistingQbMeasure, NewQbMeasure
+from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureDimension
+from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
+from csvcubed.models.cube.qb.components.unit import ExistingQbUnit, NewQbUnit
+from csvcubed.models.cube.qb.components.unitscolumn import QbMultiUnits
 from csvcubed.models.jsonvalidationerrors import JsonSchemaValidationError
 from csvcubed.readers.cubeconfig.utils import load_resource
 from csvcubed.utils.file import code_list_config_json_exists
