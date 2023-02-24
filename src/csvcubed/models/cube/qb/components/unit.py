@@ -4,12 +4,14 @@ Units
 
 Represent units in an RDF Data Cube.
 """
+import logging
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Set
 
 from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.models.validatedmodel import ValidatedModel, ValidationFunction
+from csvcubed.models.validationerror import ValidateModelProperiesError
 from csvcubed.utils.validations import (
     validate_float_type,
     validate_list,
@@ -30,21 +32,12 @@ from .arbitraryrdf import (
 )
 from .datastructuredefinition import SecondaryQbStructuralDefinition
 
+_logger = logging.getLogger(__name__)
+
 
 @dataclass(unsafe_hash=True)
 class QbUnit(SecondaryQbStructuralDefinition, ValidatedModel, ABC):
-    @property
-    @abstractmethod
-    def unit_uri(self) -> str:
-        pass
-
-    @unit_uri.setter
-    @abstractmethod
-    def unit_uri(self, value: str):
-        pass
-
-    def _get_validations(self) -> Dict[str, ValidationFunction]:
-        return {"unit_uri": validate_uri}
+    pass
 
 
 @dataclass
@@ -60,7 +53,7 @@ class ExistingQbUnit(QbUnit):
         return self.unit_uri.__hash__()
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
-        return {**QbUnit._get_validations(self)}
+        return {"unit_uri": validate_uri}
 
 
 @dataclass
@@ -112,7 +105,7 @@ class NewQbUnit(QbUnit, UriIdentifiable, ArbitraryRdf):
             "source_uri": validate_optional(validate_uri),
             **UriIdentifiable._get_validations(self),
             "arbitrary_rdf": validate_list(validate_triple_fragment),
-            **QbUnit._get_validations(self),
+            "base_unit": validate_optional(validate_unit),
             "base_unit_scaling_factor": validate_optional(validate_float_type),
             "qudt_quantity_kind_uri": validate_optional(validate_str_type),
             "si_base_unit_conversion_multiplier": validate_optional(
@@ -164,3 +157,10 @@ class NewQbUnit(QbUnit, UriIdentifiable, ArbitraryRdf):
 
     def get_identifier(self) -> str:
         return self.label
+
+
+def validate_unit(
+    value: QbUnit, property_name: str
+) -> List[ValidateModelProperiesError]:
+    _logger.debug("Validating a unit %s at property '%s'", value, property_name)
+    return value.validate()

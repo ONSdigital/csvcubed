@@ -131,4 +131,9 @@ def validate_float_type(
 def validate_file_path(
     value: Path, property_name: str
 ) -> List[ValidateModelProperiesError]:
-    pass
+    # TODO check isinstance
+    if not value.exists():
+        return [
+            ValidateModelProperiesError("This file path does not exist:", property_name)
+        ]
+    return []
