@@ -16,6 +16,7 @@ from typing import List, Optional, Tuple, TypeVar, Union
 import uritemplate
 from csvcubedmodels.dataclassbase import DataClassBase
 
+from csvcubed.cli.build_code_list import get_code_list_versioned_deserialiser
 from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_optional_str
 from csvcubed.models.codelistconfig.code_list_config import CodeListConfig
 from csvcubed.models.cube.cube import CatalogMetadata
@@ -42,6 +43,10 @@ from csvcubed.models.cube.qb.components import (
 )
 from csvcubed.models.cube.qb.components.concept import NewQbConcept
 from csvcubed.models.jsonvalidationerrors import JsonSchemaValidationError
+from csvcubed.models.validationerror import ValidationError
+from csvcubed.readers.codelistconfig.codelist_schema_versions import (
+    LATEST_V1_CODELIST_SCHEMA_URL,
+)
 from csvcubed.readers.cubeconfig.utils import load_resource
 from csvcubed.utils.file import code_list_config_json_exists
 from csvcubed.utils.uri import csvw_column_name_safe, looks_like_uri
@@ -133,25 +138,18 @@ class NewDimension(SchemaBaseClass):
                     f"Loading code list from local file path: {code_list_config_path}"
                 )
 
-                code_list_config, code_list_config_dict = CodeListConfig.from_json_file(
-                    code_list_config_path
-                )
-                schema = load_resource(code_list_config.schema)
-
-                unmapped_schema_validation_errors = validate_dict_against_schema(
-                    value=code_list_config_dict, schema=schema
+                deserialiser = get_code_list_versioned_deserialiser(
+                    code_list_config_path,
+                    default_schema_uri=LATEST_V1_CODELIST_SCHEMA_URL,
                 )
 
-                code_list_schema_validation_errors = map_to_internal_validation_errors(
-                    schema, unmapped_schema_validation_errors
-                )
+                (
+                    new_code_list,
+                    json_schema_validation_errors,
+                    _,
+                ) = deserialiser(code_list_config_path)
 
-                return (
-                    NewQbCodeList(
-                        code_list_config.metadata, code_list_config.new_qb_concepts
-                    ),
-                    code_list_schema_validation_errors,
-                )
+                return (new_code_list, json_schema_validation_errors)
             else:
                 raise ValueError(
                     "Code List contains a string that cannot be recognised as a URI or a valid File Path"
@@ -184,21 +182,17 @@ class NewDimension(SchemaBaseClass):
             and cube_config_minor_version >= 1
             and isinstance(self.code_list, dict)
         ):
-            code_list_config = CodeListConfig.from_dict(self.code_list)
-            schema = load_resource(code_list_config.schema)
-
-            code_list_schema_validation_errors = validate_dict_against_schema(
-                value=code_list_config.as_dict(), schema=schema
+            deserialiser = get_code_list_versioned_deserialiser(
+                self.code_list, default_schema_uri=LATEST_V1_CODELIST_SCHEMA_URL
             )
 
-            return (
-                NewQbCodeList(
-                    code_list_config.metadata, code_list_config.new_qb_concepts
-                ),
-                map_to_internal_validation_errors(
-                    schema, code_list_schema_validation_errors
-                ),
-            )
+            (
+                new_code_list,
+                json_schema_validation_errors,
+                _,
+            ) = deserialiser(self.code_list)
+
+            return (new_code_list, json_schema_validation_errors)
         else:
             raise ValueError(f"Unmatched code_list value {self.code_list}")
 

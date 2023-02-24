@@ -9,10 +9,8 @@ from pathlib import Path
 from typing import Optional
 
 from csvcubed.readers.codelistconfig.codelist_schema_versions import (
-    CodeListConfigDeserialiser,
-    get_deserialiser_for_code_list_schema,
+    get_code_list_versioned_deserialiser,
 )
-from csvcubed.readers.cubeconfig.utils import load_resource
 from csvcubed.utils.cli import log_validation_and_json_schema_errors
 from csvcubed.writers.skoscodelistwriter import SkosCodeListWriter
 
@@ -53,16 +51,3 @@ def build_code_list(
         raise
 
     print(f"Build Complete @ {output_directory.resolve()}")
-
-
-def get_code_list_versioned_deserialiser(
-    json_config_path: Optional[Path],
-) -> CodeListConfigDeserialiser:
-    """
-    Return the correct version of the config deserialiser based on the schema in the code list config file
-    """
-    if json_config_path:
-        config = load_resource(json_config_path)
-        return get_deserialiser_for_code_list_schema(config.get("$schema"))
-    else:
-        return get_deserialiser_for_code_list_schema(None)

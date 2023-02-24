@@ -3,10 +3,12 @@ import inspect
 import pytest
 
 from csvcubed.readers.codelistconfig.codelist_schema_versions import (
+    LATEST_CODELIST_SCHEMA_URL,
     CodeListConfigJsonSchemaMajorVersion,
     CodeListConfigJsonSchemaMinorVersion,
     _extract_and_validate_code_list_v1,
     _get_code_list_schema_version,
+    get_code_list_versioned_deserialiser,
     get_deserialiser_for_code_list_schema,
 )
 from tests.unit.test_baseunit import get_test_cases_dir
@@ -58,12 +60,30 @@ def test_get_code_list_schema_version_error():
 
 
 def test_get_deserialiser_for_code_list_schema():
-    """Testsing when the correct Schema version is passed in it will call the correct function and return
+    """Testing when the correct Schema version is passed in it will call the correct function and return
     a CodeListConfigDeserialiser(Tuple[NewQbCodeList, List[JsonSchemaValidationError], List[ValidationError]]).
     Note: The function assertion cannot be triggered. The _get_code_list_schema_version assertion will flag the error before.
     """
     code_list_config_deserialiser = get_deserialiser_for_code_list_schema(
-        "https://purl.org/csv-cubed/code-list-config/v1.1"
+        "https://purl.org/csv-cubed/code-list-config/v1.1",
+        default_schema_uri=LATEST_CODELIST_SCHEMA_URL,
+    )
+
+    # Let's check that it ends up calling the v1 deserialiser function, dodgy code ahead:
+    assert _extract_and_validate_code_list_v1.__name__ in inspect.getsource(
+        code_list_config_deserialiser
+    )
+
+
+def test_get_deserialiser_for_code_list_schema_dict():
+    """Testing get_code_list_versioned_deserialiser does get the correct deserialiser
+    when it is provided with a dict and not a PATH.
+    """
+    code_list = {"$schema": "https://purl.org/csv-cubed/code-list-config/v1.1"}
+
+    code_list_config_deserialiser = get_code_list_versioned_deserialiser(
+        code_list,
+        default_schema_uri=LATEST_CODELIST_SCHEMA_URL,
     )
 
     # Let's check that it ends up calling the v1 deserialiser function, dodgy code ahead:

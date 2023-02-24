@@ -8,7 +8,7 @@ Contains an enum listing the code-list-config.json schema versions recognised by
 import logging
 from enum import Enum
 from pathlib import Path
-from typing import Callable, List, Optional, Tuple
+from typing import Callable, List, Optional, Tuple, Union
 
 from csvcubed.models.codelistconfig.code_list_config import CodeListConfig
 from csvcubed.models.cube.qb.components.codelist import NewQbCodeList
@@ -24,7 +24,7 @@ _logger = logging.getLogger(__name__)
 
 
 CodeListConfigDeserialiser = Callable[
-    [Path],
+    [Union[Path, dict]],
     Tuple[NewQbCodeList, List[JsonSchemaValidationError], List[ValidationError]],
 ]
 
@@ -46,14 +46,14 @@ _v1_1_CODELIST_SCHEMA_URL = "https://purl.org/csv-cubed/code-list-config/v1.1"
 V1_CODELIST_SCHEMA_URL = "https://purl.org/csv-cubed/code-list-config/v1"  # v1 defaults to the latest minor version of v1.*.
 
 
-_LATEST_V1_CODELIST_SCHEMA_URL = _v1_1_CODELIST_SCHEMA_URL
+LATEST_V1_CODELIST_SCHEMA_URL = _v1_1_CODELIST_SCHEMA_URL
 """
     This holds the URL identifying the latest minor version of the V1 schema.
 
     When adding a new minor version to the V1 schema, you must update this variable.
 """
 
-_LATEST_CODELIST_SCHEMA_URL = _LATEST_V1_CODELIST_SCHEMA_URL
+LATEST_CODELIST_SCHEMA_URL = LATEST_V1_CODELIST_SCHEMA_URL
 """
     This holds the URL identifying the latest version of the schema.
 
@@ -79,16 +79,21 @@ class CodeListConfigJsonSchemaMinorVersion(Enum):
 
 
 def _extract_and_validate_code_list_v1(
-    code_list_config_path: Path,
+    code_list_config_path_or_dict: Union[Path, dict],
     schema_version_minor: int,
 ) -> Tuple[NewQbCodeList, List[JsonSchemaValidationError], List[ValidationError]]:
     """Extract a code list form a JSON file and validate"""
 
     _logger.debug("Using schema minor version %s", schema_version_minor)
 
-    code_list_config, code_list_config_dict = CodeListConfig.from_json_file(
-        code_list_config_path
-    )
+    if isinstance(code_list_config_path_or_dict, Path):
+        code_list_config, code_list_config_dict = CodeListConfig.from_json_file(
+            code_list_config_path_or_dict
+        )
+    else:
+        code_list_config = CodeListConfig.from_dict(code_list_config_path_or_dict)
+        code_list_config_dict = code_list_config_path_or_dict
+
     schema = load_resource(code_list_config.schema)
 
     unmapped_schema_validation_errors = validate_dict_against_schema(
@@ -110,15 +115,13 @@ def _extract_and_validate_code_list_v1(
 
 
 def get_deserialiser_for_code_list_schema(
-    maybe_schema_path: Optional[str],
+    maybe_schema_path: Optional[str], default_schema_uri: str
 ) -> CodeListConfigDeserialiser:
     """
     Provides a versioned deserialiser function appropriate to the referenced schema.
     """
     # Default to the latest version of the schema.
-    schema_path = (
-        _LATEST_CODELIST_SCHEMA_URL if maybe_schema_path is None else maybe_schema_path
-    )
+    schema_path = default_schema_uri if maybe_schema_path is None else maybe_schema_path
 
     schema_version_major, schema_version_minor = _get_code_list_schema_version(
         schema_path
@@ -130,8 +133,8 @@ def get_deserialiser_for_code_list_schema(
     )
 
     if schema_version_major == CodeListConfigJsonSchemaMajorVersion.v1:
-        return lambda config_path: _extract_and_validate_code_list_v1(
-            config_path, schema_version_minor.value
+        return lambda config_path_or_dict: _extract_and_validate_code_list_v1(
+            config_path_or_dict, schema_version_minor.value
         )
     else:
         raise ValueError(f"Unhandled major schema version {schema_version_major}")
@@ -141,7 +144,7 @@ def _get_code_list_schema_version(
     schema_path: str,
 ) -> Tuple[CodeListConfigJsonSchemaMajorVersion, CodeListConfigJsonSchemaMinorVersion]:
     if schema_path == V1_CODELIST_SCHEMA_URL:
-        schema_path = _LATEST_V1_CODELIST_SCHEMA_URL
+        schema_path = LATEST_V1_CODELIST_SCHEMA_URL
 
     if schema_path == _v1_0_CODELIST_SCHEMA_URL:
         return (
@@ -157,3 +160,22 @@ def _get_code_list_schema_version(
         raise ValueError(
             f"The $schema '{schema_path}' referenced in the code list config file is not recognised. Please check for any updates to your csvcubed installation."
         )
+
+
+def get_code_list_versioned_deserialiser(
+    json_config_path_or_dict: Optional[Union[Path, dict]],
+    default_schema_uri: str = LATEST_CODELIST_SCHEMA_URL,
+) -> CodeListConfigDeserialiser:
+    """
+    Return the correct version of the config deserialiser based on the schema in the code list config file
+    """
+    if json_config_path_or_dict:
+        if isinstance(json_config_path_or_dict, Path):
+            config = load_resource(json_config_path_or_dict)
+        else:
+            config = json_config_path_or_dict
+        return get_deserialiser_for_code_list_schema(
+            config.get("$schema"), default_schema_uri
+        )
+    else:
+        return get_deserialiser_for_code_list_schema(None, default_schema_uri)
