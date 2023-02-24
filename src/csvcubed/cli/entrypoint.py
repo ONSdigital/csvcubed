@@ -5,11 +5,13 @@ The *Command Line Interface* for :mod:`~csvcubed.cli`.
 """
 import logging
 import sys
+from importlib.metadata import version
 from pathlib import Path
 
 import click
 
-from csvcubed import __version__
+__version__ = version("csvcubed")
+
 from csvcubed.cli.build import build
 from csvcubed.cli.inspect.inspect import inspect
 from csvcubed.models.errorurl import HasErrorUrl
@@ -26,7 +28,7 @@ def entry_point():
 
 
 @entry_point.command("version")
-def version():
+def get_version():
     """
     Output the current version of csvcubed
     """
