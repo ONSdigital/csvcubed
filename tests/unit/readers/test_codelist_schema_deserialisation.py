@@ -3,6 +3,7 @@ import inspect
 import pytest
 
 from csvcubed.readers.codelistconfig.codelist_schema_versions import (
+    LATEST_CODELIST_SCHEMA_URL,
     CodeListConfigJsonSchemaMajorVersion,
     CodeListConfigJsonSchemaMinorVersion,
     _extract_and_validate_code_list_v1,
@@ -63,7 +64,8 @@ def test_get_deserialiser_for_code_list_schema():
     Note: The function assertion cannot be triggered. The _get_code_list_schema_version assertion will flag the error before.
     """
     code_list_config_deserialiser = get_deserialiser_for_code_list_schema(
-        "https://purl.org/csv-cubed/code-list-config/v1.1"
+        "https://purl.org/csv-cubed/code-list-config/v1.1",
+        default_schema_uri=LATEST_CODELIST_SCHEMA_URL,
     )
 
     # Let's check that it ends up calling the v1 deserialiser function, dodgy code ahead:
