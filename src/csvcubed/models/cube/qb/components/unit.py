@@ -4,7 +4,7 @@ Units
 
 Represent units in an RDF Data Cube.
 """
-from abc import ABC
+from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Set
 
@@ -12,13 +12,14 @@ from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.models.validatedmodel import ValidatedModel, ValidationFunction
 from csvcubed.utils.validations import (
     validate_float_type,
-    validate_int_type,
     validate_list,
     validate_optional,
     validate_str_type,
     validate_uri,
 )
-from csvcubed.utils.validators.attributes import enforce_optional_attribute_dependencies
+from csvcubed.utils.validators.attributes import (
+    enforce_optional_attribute_dependencies as pydantic_enforce_optional_attribute_dependencies,
+)
 from csvcubed.utils.validators.uri import validate_uri as pydantic_validate_uri
 
 from .arbitraryrdf import (
@@ -32,9 +33,18 @@ from .datastructuredefinition import SecondaryQbStructuralDefinition
 
 @dataclass(unsafe_hash=True)
 class QbUnit(SecondaryQbStructuralDefinition, ValidatedModel, ABC):
-    # def _get_validations(self) -> Dict[str, ValidationFunction]:
-    #     return None
-    pass
+    @property
+    @abstractmethod
+    def unit_uri(self) -> str:
+        pass
+
+    @unit_uri.setter
+    @abstractmethod
+    def unit_uri(self, value: str):
+        pass
+
+    def _get_validations(self) -> Dict[str, ValidationFunction]:
+        return {"unit_uri": validate_uri}
 
 
 @dataclass
@@ -50,7 +60,7 @@ class ExistingQbUnit(QbUnit):
         return self.unit_uri.__hash__()
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
-        return {"unit_uri": validate_uri}
+        return {**QbUnit._get_validations(self)}
 
 
 @dataclass
@@ -102,7 +112,7 @@ class NewQbUnit(QbUnit, UriIdentifiable, ArbitraryRdf):
             "source_uri": validate_optional(validate_uri),
             **UriIdentifiable._get_validations(self),
             "arbitrary_rdf": validate_list(validate_triple_fragment),
-            "base_unit": "",
+            **QbUnit._get_validations(self),
             "base_unit_scaling_factor": validate_optional(validate_float_type),
             "qudt_quantity_kind_uri": validate_optional(validate_str_type),
             "si_base_unit_conversion_multiplier": validate_optional(
@@ -110,7 +120,7 @@ class NewQbUnit(QbUnit, UriIdentifiable, ArbitraryRdf):
             ),
         }
 
-    optional_attribute_dependencies = enforce_optional_attribute_dependencies(
+    optional_attribute_dependencies = pydantic_enforce_optional_attribute_dependencies(
         {
             "base_unit_scaling_factor": ["base_unit"],
             "si_base_unit_conversion_multiplier": ["qudt_quantity_kind_uri"],

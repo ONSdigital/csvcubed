@@ -1,4 +1,5 @@
 # This script contain a set of function that can be used to validate specific class attributes/ member variables
+from pathlib import Path
 from typing import Callable, List, Optional, TypeVar
 
 from csvcubed.models.validationerror import ValidateModelProperiesError
@@ -125,3 +126,9 @@ def validate_float_type(
         ]
 
     return []
+
+
+def validate_file_path(
+    value: Path, property_name: str
+) -> List[ValidateModelProperiesError]:
+    pass
