@@ -4,9 +4,7 @@ Version
 
 Utility to return csvcubed version specific infomation.
 """
-from importlib.metadata import version
-
-__version__ = version("csvcubed")
+from csvcubed.__init__ import __version__
 
 
 def get_csvcubed_version_uri():
