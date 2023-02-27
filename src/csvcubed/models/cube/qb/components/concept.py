@@ -101,8 +101,6 @@ class DuplicatedQbConcept(NewQbConcept, ExistingQbConcept):
     To be used in a :class:`CompositeQbCodeList`.
     """
 
-    # Should the validations for NewQbConcept and ExistingQbConcept go here? Existing concept validation fails otherwise..
-    # TODO figure out which state to leave this one in. Currently works but not very happy with it.
     def validate_data(
         self,
         data: pd.Series,
@@ -115,13 +113,8 @@ class DuplicatedQbConcept(NewQbConcept, ExistingQbConcept):
     def _get_validations(self) -> Dict[str, ValidationFunction]:
 
         return {
-            "label": validate_str_type,
-            "code": validate_str_type,
-            "parent_code": validate_optional(validate_str_type),
-            "sort_order": validate_optional(validate_str_type),
-            "description": validate_optional(validate_str_type),
-            **UriIdentifiable._get_validations(self),
-            "existing_concept_uri": validate_uri,
+            **ExistingQbConcept._get_validations(),
+            **NewQbConcept._get_validations(),
         }
 
     pass
