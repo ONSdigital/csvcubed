@@ -34,7 +34,7 @@ from csvcubed.utils.validations import (
 )
 from csvcubed.utils.validators.uri import validate_uri as pydantic_validate_uri
 
-from .codelist import NewQbCodeList, QbCodeList, validate_codelist
+from .codelist import NewQbCodeList, QbCodeList
 
 
 @dataclass

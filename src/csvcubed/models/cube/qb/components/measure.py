@@ -21,6 +21,7 @@ from csvcubed.models.cube.qb.components.codelist import NewQbCodeList
 from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.models.validatedmodel import ValidatedModel, ValidationFunction
 from csvcubed.models.validationerror import ValidateModelProperiesError, ValidationError
+from csvcubed.utils import validations as v
 from csvcubed.utils.validations import (
     validate_list,
     validate_optional,
@@ -142,10 +143,3 @@ class NewQbMeasure(QbMeasure, UriIdentifiable):
             **UriIdentifiable._get_validations(self),
             "arbitrary_rdf": validate_list(validate_triple_fragment),
         }
-
-
-def validate_measure(
-    value: QbMeasure, property_name: str
-) -> List[ValidateModelProperiesError]:
-    _logger.debug("Validating a measure %s at property '%s'", value, property_name)
-    return value.validate()

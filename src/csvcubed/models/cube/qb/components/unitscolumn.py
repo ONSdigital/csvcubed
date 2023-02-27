@@ -15,6 +15,7 @@ from pydantic import validator
 from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_str
 from csvcubed.models.validatedmodel import ValidationFunction
 from csvcubed.models.validationerror import ValidationError
+from csvcubed.utils import validations as v
 from csvcubed.utils.qb.validation.uri_safe import ensure_no_uri_safe_conflicts
 from csvcubed.utils.validations import (
     validate_list,
@@ -23,7 +24,7 @@ from csvcubed.utils.validations import (
 )
 
 from .datastructuredefinition import QbColumnStructuralDefinition
-from .unit import ExistingQbUnit, NewQbUnit, QbUnit, validate_unit
+from .unit import ExistingQbUnit, NewQbUnit, QbUnit
 from .validationerrors import EmptyQbMultiUnitsError, UndefinedUnitUrisError
 
 
@@ -134,6 +135,6 @@ class QbMultiUnits(QbColumnStructuralDefinition):
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
         return {
-            "units": validate_list(validate_unit),
+            "units": validate_list(v.validated_model(QbUnit)),
             "observed_value_col_title": validate_optional(validate_str_type),
         }

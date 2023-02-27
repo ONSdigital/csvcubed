@@ -26,7 +26,7 @@ class QbStructuralDefinition(PydanticModel, ABC):
 
 
 @dataclass
-class QbColumnStructuralDefinition(QbStructuralDefinition, ValidatedModel, ABC):
+class QbColumnStructuralDefinition(QbStructuralDefinition, ABC):
     """
     Base class representing Qb Data Structure Definitions which can be directly attached to a `pd.DataFrame` column.
     """

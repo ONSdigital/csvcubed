@@ -12,6 +12,7 @@ from typing import Dict, List, Optional, Set
 from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.models.validatedmodel import ValidatedModel, ValidationFunction
 from csvcubed.models.validationerror import ValidateModelProperiesError
+from csvcubed.utils import validations as v
 from csvcubed.utils.validations import (
     validate_float_type,
     validate_list,
@@ -105,7 +106,7 @@ class NewQbUnit(QbUnit, UriIdentifiable, ArbitraryRdf):
             "source_uri": validate_optional(validate_uri),
             **UriIdentifiable._get_validations(self),
             "arbitrary_rdf": validate_list(validate_triple_fragment),
-            "base_unit": validate_optional(validate_unit),
+            "base_unit": validate_optional(v.validated_model(QbUnit)),
             "base_unit_scaling_factor": validate_optional(validate_float_type),
             "qudt_quantity_kind_uri": validate_optional(validate_str_type),
             "si_base_unit_conversion_multiplier": validate_optional(
@@ -157,10 +158,3 @@ class NewQbUnit(QbUnit, UriIdentifiable, ArbitraryRdf):
 
     def get_identifier(self) -> str:
         return self.label
-
-
-def validate_unit(
-    value: QbUnit, property_name: str
-) -> List[ValidateModelProperiesError]:
-    _logger.debug("Validating a unit %s at property '%s'", value, property_name)
-    return value.validate()
