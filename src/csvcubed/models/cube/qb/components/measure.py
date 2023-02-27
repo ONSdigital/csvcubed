@@ -127,9 +127,6 @@ class NewQbMeasure(QbMeasure, UriIdentifiable):
         csv_column_uri_template: str,
         column_csv_title: str,
     ) -> List[ValidationError]:
-        # Leave csv-lint to do the validation here. It will enforce Foreign Key constraints on code lists.
-        if isinstance(self.code_list, NewQbCodeList):
-            return self.code_list.validate_data(data, column_csv_title)
 
         return []
 

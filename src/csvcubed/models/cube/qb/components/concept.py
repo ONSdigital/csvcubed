@@ -113,8 +113,8 @@ class DuplicatedQbConcept(NewQbConcept, ExistingQbConcept):
     def _get_validations(self) -> Dict[str, ValidationFunction]:
 
         return {
-            **ExistingQbConcept._get_validations(),
-            **NewQbConcept._get_validations(),
+            **ExistingQbConcept._get_validations(self),
+            **NewQbConcept._get_validations(self),
         }
 
     pass
