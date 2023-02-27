@@ -1,7 +1,11 @@
 # This script contain a set of function that can be used to validate specific class attributes/ member variables
+import datetime as dt
+from enum import Enum
+from math import isinf, isnan
 from pathlib import Path
-from typing import Callable, List, Optional, TypeVar
+from typing import Any, Callable, List, Optional, Type, TypeVar, Union
 
+from csvcubed.models.validatedmodel import ValidatedModel, ValidationFunction
 from csvcubed.models.validationerror import ValidateModelProperiesError
 from csvcubed.utils.uri import looks_like_uri
 
@@ -124,16 +128,132 @@ def validate_float_type(
                 property_name,
             )
         ]
+    elif isnan(value):
+        return [
+            ValidateModelProperiesError(
+                "This variable should be a float value but is Not a Number (NaN), check the following variable:",
+                property_name,
+            )
+        ]
+    elif isinf(value):
+        return [
+            ValidateModelProperiesError(
+                "This variable should be a float value but is +-infinity, check the following variable:",
+                property_name,
+            )
+        ]
 
     return []
 
 
-def validate_file_path(
-    value: Path, property_name: str
-) -> List[ValidateModelProperiesError]:
-    # TODO check isinstance
-    if not value.exists():
+def validate_file(value: Path, property_name: str) -> List[ValidateModelProperiesError]:
+    if isinstance(value, Path):
+        if not value.exists():
+            return [
+                ValidateModelProperiesError(
+                    "This file does not exist, check the following variable:",
+                    property_name,
+                )
+            ]
+        else:
+            return []
+    else:
         return [
-            ValidateModelProperiesError("This file path does not exist:", property_name)
+            ValidateModelProperiesError(
+                "This is not a valid file path, check the following variable:",
+                property_name,
+            )
+        ]
+
+
+# TODO change to date_datetime
+def date(value: dt.date, property_name: str) -> List[ValidateModelProperiesError]:
+    if not isinstance(value, dt.date):
+        return [
+            ValidateModelProperiesError(
+                "This is not a valid date format, check the following variable:",
+                property_name,
+            )
         ]
     return []
+
+
+def datetime(
+    value: dt.datetime, property_name: str
+) -> List[ValidateModelProperiesError]:
+    if not isinstance(value, dt.datetime):
+        return [
+            ValidateModelProperiesError(
+                "This is not a valid date format, check the following variable:",
+                property_name,
+            )
+        ]
+    return []
+
+
+def any_of(*conditions: ValidationFunction) -> ValidationFunction:
+    def validate(value: Any, property_name: str) -> List[ValidateModelProperiesError]:
+        all_errors = []
+        for condition in conditions:
+            errs = condition(value, property_name)
+            if not any(errs):
+                return []
+            all_errors += errs
+
+        return [
+            ValidateModelProperiesError(
+                "Could not validate any single condition for property with name:",
+                property_name,
+            ),
+            *all_errors,
+        ]
+
+    return validate
+
+
+def enum(enum_type: Type[Enum]) -> ValidationFunction:
+    def validate(value: Any, property_name: str) -> List[ValidateModelProperiesError]:
+        for enum_value in enum_type:
+            if value == enum_value:
+                return []
+
+        return [
+            ValidateModelProperiesError(
+                f"Could not find matching enum value for '{value}' in {enum_type.__name__} at property:",
+                property_name,
+            )
+        ]
+
+    return validate
+
+
+def validated_model(validated_model_type: Type[ValidatedModel]):
+    """
+    Performs the standard validation of any object which inherits from ValidatedModel.
+
+    This saves us from having to write a validation function for each class which
+    implements/inherits from ValidatedModel.
+    """
+
+    if not issubclass(validated_model_type, ValidatedModel):
+        # This error is really for developers when running tests.
+        raise TypeError(
+            f"Type '{validated_model_type}' is not an instance of {ValidatedModel.__name__}."
+            f"This function is only designed to work with types which extend {ValidatedModel.__name__}."
+        )
+
+    def validate(
+        value: ValidatedModel, property_name: str
+    ) -> List[ValidateModelProperiesError]:
+        if not isinstance(value, validated_model_type):
+            # This error occurs when runtime validation occurs.
+            return [
+                ValidateModelProperiesError(
+                    f"Value '{value}' was not an instance of the expected type '{validated_model_type.__name__}'.",
+                    property_name,
+                )
+            ]
+
+        return value.validate()
+
+    return validate

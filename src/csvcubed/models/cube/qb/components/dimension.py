@@ -25,6 +25,7 @@ from csvcubed.models.cube.uristyle import URIStyle
 from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.models.validatedmodel import ValidatedModel, ValidationFunction
 from csvcubed.models.validationerror import ValidationError
+from csvcubed.utils import validations as v
 from csvcubed.utils.validations import (
     validate_list,
     validate_optional,
@@ -160,7 +161,7 @@ class NewQbDimension(QbDimension, UriIdentifiable):
             **QbDimension._get_validations(self),
             "label": validate_str_type,
             "description": validate_optional(validate_str_type),
-            "code_list": validate_optional(validate_codelist),
+            "code_list": validate_optional(v.validated_model(QbCodeList)),
             "parent_dimension_uri": validate_optional(validate_uri),
             "source_uri": validate_optional(validate_uri),
             **UriIdentifiable._get_validations(self),

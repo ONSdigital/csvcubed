@@ -16,8 +16,10 @@ from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.validatedmodel import ValidatedModel, ValidationFunction
 from csvcubed.models.validationerror import ValidateModelProperiesError, ValidationError
 from csvcubed.readers.skoscodelistreader import extract_code_list_concept_scheme_info
+from csvcubed.utils import validations as v
 from csvcubed.utils.qb.validation.uri_safe import ensure_no_uri_safe_conflicts
 from csvcubed.utils.validations import (
+    validate_file,
     validate_float_type,
     validate_int_type,
     validate_list,
@@ -32,7 +34,12 @@ from csvcubed.utils.validators.uri import validate_uri as pydantic_validate_uri
 from csvcubed.writers.helpers.skoscodelistwriter.constants import SCHEMA_URI_IDENTIFIER
 
 from ...uristyle import URIStyle
-from .arbitraryrdf import ArbitraryRdf, RdfSerialisationHint, TripleFragmentBase
+from .arbitraryrdf import (
+    ArbitraryRdf,
+    RdfSerialisationHint,
+    TripleFragmentBase,
+    validate_triple_fragment,
+)
 from .concept import DuplicatedQbConcept, NewQbConcept
 from .datastructuredefinition import SecondaryQbStructuralDefinition
 from .validationerrors import ReservedUriValueError
@@ -107,7 +114,7 @@ class NewQbCodeListInCsvW(QbCodeList):
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
         return {
-            "schema_metadata_file_path": "",
+            "schema_metadata_file_path": validate_file,
             "csv_file_relative_path_or_uri": validate_uri,
             "concept_scheme_uri": validate_uri,
             "concept_template_uri": validate_uri,
@@ -129,7 +136,7 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
     uri_style: Optional[URIStyle] = None
 
     @validator("concepts")
-    def _ensure_no_use_of_reserved_keywords(
+    def pydantic_ensure_no_use_of_reserved_keywords(
         cls, concepts: List[TNewQbConcept]
     ) -> List[TNewQbConcept]:
         conflicting_values: List[str] = []
@@ -147,7 +154,7 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
         return concepts
 
     @validator("concepts")
-    def _validate_concepts_non_conflicting(
+    def pydantic_validate_concepts_non_conflicting(
         cls, concepts: List[TNewQbConcept]
     ) -> List[TNewQbConcept]:
         """
@@ -159,6 +166,14 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
         )
 
         return concepts
+
+    def _get_validations(self) -> Dict[str, ValidationFunction]:
+        return {
+            "metadata": v.validated_model(CatalogMetadata),
+            "concepts": validate_list(v.validated_model(TNewQbConcept)),
+            "arbitrary_rdf": validate_list(validate_triple_fragment),
+            "uri_style": validate_optional(v.enum(URIStyle)),
+        }
 
     def _get_arbitrary_rdf(self) -> List[TripleFragmentBase]:
         return self.arbitrary_rdf
@@ -196,23 +211,3 @@ class CompositeQbCodeList(NewQbCodeList[DuplicatedQbConcept]):
     """Represents a :class:`NewQbCodeList` made from a set of :class:`DuplicatedQbConcept` instances."""
 
     variant_of_uris: List[str] = field(default_factory=list)
-
-
-def validate_codelist(
-    item: QbCodeList, property_name: str
-) -> List[ValidateModelProperiesError]:
-    if not isinstance(item, QbCodeList):
-        return [
-            ValidateModelProperiesError(
-                f"This variable should be a QbCodeList, check the following variable:",
-                property_name,
-            )
-        ]
-
-    """
-    TODO: when the class is inctanciated for the validations the function has to be called.
-    example:
-    test = Myclass(argument1, argument2, argument3)
-    test.validate()
-    """
-    return []
