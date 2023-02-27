@@ -5,7 +5,7 @@ from math import isinf, isnan
 from pathlib import Path
 from typing import Any, Callable, List, Optional, Type, TypeVar, Union
 
-from csvcubed.models.validatedmodel import ValidationFunction
+from csvcubed.models.validatedmodel import ValidatedModel, ValidationFunction
 from csvcubed.models.validationerror import ValidateModelProperiesError
 from csvcubed.utils.uri import looks_like_uri
 
@@ -223,5 +223,37 @@ def enum(enum_type: Type[Enum]) -> ValidationFunction:
                 property_name,
             )
         ]
+
+    return validate
+
+
+def validated_model(validated_model_type: Type[ValidatedModel]):
+    """
+    Performs the standard validation of any object which inherits from ValidatedModel.
+
+    This saves us from having to write a validation function for each class which
+    implements/inherits from ValidatedModel.
+    """
+
+    if not issubclass(validated_model_type, ValidatedModel):
+        # This error is really for developers when running tests.
+        raise TypeError(
+            f"Type '{validated_model_type}' is not an instance of {ValidatedModel.__name__}."
+            f"This function is only designed to work with types which extend {ValidatedModel.__name__}."
+        )
+
+    def validate(
+        value: ValidatedModel, property_name: str
+    ) -> List[ValidateModelProperiesError]:
+        if not isinstance(value, validated_model_type):
+            # This error occurs when runtime validation occurs.
+            return [
+                ValidateModelProperiesError(
+                    f"Value '{value}' was not an instance of the expected type '{validated_model_type.__name__}'.",
+                    property_name,
+                )
+            ]
+
+        return value.validate()
 
     return validate

@@ -32,6 +32,14 @@ class OtherTestEnum(Enum):
 
 
 @dataclass
+class OtherTestClass(ValidatedModel):
+    str_test_variable_2: str
+
+    def _get_validations(self) -> Dict[str, ValidationFunction]:
+        return {"str_test_variable_2": validate_str_type}
+
+
+@dataclass
 class TestClass(ValidatedModel):
     """This the test class that will be used in the tests below"""
 
@@ -45,6 +53,7 @@ class TestClass(ValidatedModel):
     test_uri: Optional[str] = None
     test_enum_value: Optional[TestEnum] = None
     test_any_of_value: Union[str, int, None] = None
+    test_validated_model_class: Optional[OtherTestClass] = None
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
         return {
@@ -59,6 +68,9 @@ class TestClass(ValidatedModel):
             "test_enum_value": validate_optional(v.enum(TestEnum)),
             "test_any_of_value": validate_optional(
                 v.any_of(validate_str_type, validate_int_type)
+            ),
+            "test_validated_model_class": validate_optional(
+                v.validated_model(OtherTestClass)
             ),
         }
 
@@ -446,6 +458,36 @@ def test_validate_any_of_correct():
 
 def test_validate_any_of_incorrect():
     test_instance = TestClass(test_any_of_value=3.65)
+
+    errors = test_instance.validate()
+
+    assert any(errors)
+
+
+def test_validated_model_validation_correct():
+    test_instance = TestClass(
+        test_validated_model_class=OtherTestClass(str_test_variable_2="This is valid")
+    )
+
+    errors = test_instance.validate()
+
+    assert not any(errors)
+
+
+def test_validated_model_validation_incorrect():
+    test_instance = TestClass(
+        test_validated_model_class=OtherTestClass(str_test_variable_2=3.14)
+    )
+
+    errors = test_instance.validate()
+
+    assert any(errors)
+
+
+def test_validated_model_validation_incorrect_2():
+    test_instance = TestClass(
+        test_validated_model_class="This is not an instance of the right class."
+    )
 
     errors = test_instance.validate()
 

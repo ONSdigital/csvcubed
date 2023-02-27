@@ -123,12 +123,3 @@ def _convert_date_to_date_time(dt: Union[datetime, date]) -> datetime:
         return datetime.combine(dt, time.min)
 
     return dt
-
-
-def validate_metadata(
-    value: CatalogMetadata, property_name: str
-) -> List[ValidateModelProperiesError]:
-    _logger.debug(
-        "Validating catalog metadata %s at property '%s'", value, property_name
-    )
-    return value.validate()

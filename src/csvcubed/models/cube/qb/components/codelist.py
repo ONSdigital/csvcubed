@@ -12,7 +12,7 @@ from typing import Dict, Generic, List, Optional, Set, TypeVar
 from pydantic import root_validator, validator
 
 from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_str
-from csvcubed.models.cube.qb.catalog import CatalogMetadata, validate_metadata
+from csvcubed.models.cube.qb.catalog import CatalogMetadata
 from csvcubed.models.validatedmodel import ValidatedModel, ValidationFunction
 from csvcubed.models.validationerror import ValidateModelProperiesError, ValidationError
 from csvcubed.readers.skoscodelistreader import extract_code_list_concept_scheme_info
@@ -169,8 +169,8 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
         return {
-            "metadata": validate_metadata,
-            "concepts": "",
+            "metadata": v.validated_model(CatalogMetadata),
+            "concepts": validate_list(v.validated_model(TNewQbConcept)),
             "arbitrary_rdf": validate_list(validate_triple_fragment),
             "uri_style": validate_optional(v.enum(URIStyle)),
         }
@@ -211,23 +211,3 @@ class CompositeQbCodeList(NewQbCodeList[DuplicatedQbConcept]):
     """Represents a :class:`NewQbCodeList` made from a set of :class:`DuplicatedQbConcept` instances."""
 
     variant_of_uris: List[str] = field(default_factory=list)
-
-
-def validate_codelist(
-    item: QbCodeList, property_name: str
-) -> List[ValidateModelProperiesError]:
-    if not isinstance(item, QbCodeList):
-        return [
-            ValidateModelProperiesError(
-                f"This variable should be a QbCodeList, check the following variable:",
-                property_name,
-            )
-        ]
-
-    """
-    TODO: when the class is inctanciated for the validations the function has to be called.
-    example:
-    test = Myclass(argument1, argument2, argument3)
-    test.validate()
-    """
-    return []
