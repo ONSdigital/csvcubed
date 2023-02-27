@@ -22,7 +22,7 @@ from csvcubed.models.csvcubedexception import (
 )
 from csvcubed.utils.csvw import load_table_schema_file_to_graph
 from csvcubed.utils.rdf import parse_graph_retain_relative
-from csvcubed.utils.sparql_handler.csvw_state import CsvWState
+from csvcubed.utils.sparql_handler.csvw_inspector import CsvWInspector
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_csvw_table_schema_file_dependencies,
@@ -34,7 +34,7 @@ _logger = logging.getLogger(__name__)
 
 
 @dataclass
-class CsvwRdfManager:
+class CsvWRdfManager:
     """
     This class handles the loading of metadata jsons to RDFLib Graphs.
     """
@@ -43,8 +43,8 @@ class CsvwRdfManager:
     rdf_graph: rdflib.ConjunctiveGraph = field(init=False)
 
     @cached_property
-    def csvw_state(self) -> CsvWState:
-        return CsvWState(self.rdf_graph, self.csvw_metadata_file_path)
+    def csvw_inspector(self) -> CsvWInspector:
+        return CsvWInspector(self.rdf_graph, self.csvw_metadata_file_path)
 
     def __post_init__(self):
         self.rdf_graph = self._load_json_ld_to_rdflib_graph()
@@ -59,7 +59,7 @@ class CsvwRdfManager:
         """
         Loads the table schemas into rdf graph.
 
-        Member of :class:`./CsvwRdfManager`.
+        Member of :class:`./CsvWRdfManager`.
 
         :return: `Graph` - RDFLib Graph of CSV-W metadata json.
         """
@@ -98,7 +98,7 @@ class CsvwRdfManager:
         """
         Loads CSV-W metadata json-ld to rdflib graph
 
-        Member of :class:`./CsvwRdfManager`.
+        Member of :class:`./CsvWRdfManager`.
 
         :return: `Graph` - RDFLib Graph of CSV-W metadata json.
         """

@@ -3,7 +3,7 @@ site_url: https://gss-cogs.github.io/csvcubed-docs/external
 nav:
   - Home:
       - index.md
-  - Quick start: 
+  - Quick start:
       - quick-start/index.md
       - Installation: quick-start/installation.md
       - Designing a CSV: quick-start/designing-csv.md
@@ -13,14 +13,15 @@ nav:
       - Inspecting a CSV-W: quick-start/inspect.md
   - Guides:
       - guides/index.md
-      - Commands: 
+      - Commands:
         - build: guides/command-line/build-command.md
+        - code list build: guides/command-line/code-list-build-command.md
         - inspect: guides/command-line/inspect-command.md
         - Logging: guides/command-line/logging.md
       - Configuration:
         - guides/configuration/index.md
         - By convention: guides/configuration/convention.md
-        - Explicit configuration: 
+        - Explicit configuration:
           - guides/configuration/qube-config.md
           - Templates: guides/configuration/templates.md
           - Units: guides/configuration/units.md
@@ -32,7 +33,7 @@ nav:
         - Shape conversion: guides/shape-data/shape-conversion.md
       - Handling missing observed values: guides/missing-observed-values.md
       - Errors:
-        - guides/errors/index.md 
+        - guides/errors/index.md
         - build command errors: guides/errors/build-command-errors/index.md
         - inspect command errors: guides/errors/inspect-command-errors/index.md
       - Linked Data:
@@ -75,7 +76,7 @@ markdown_extensions:
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_div_format
   - pymdownx.tabbed:
-      alternate_style: true 
+      alternate_style: true
 plugins:
   - search
   - mermaid2

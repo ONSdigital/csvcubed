@@ -1,3 +1,8 @@
+"""
+CLI
+---
+The *Command Line Interface* containing the stepdefinitions for the behave tests.
+"""
 import json
 import shutil
 import subprocess
@@ -78,6 +83,20 @@ def step_impl(context):
     assert log_dir.exists(), str(log_dir)
     log_file = log_dir / "out.log"
     assert log_file.exists(), f"Files in log directory: {list(log_dir.rglob('**/*'))}"
+
+
+@then("the command line output should display the log message")
+def step_impl(context):
+    (status_code, log_message) = context.csvcubed_cli_result
+    expected_log_message = context.text.strip()
+    assert expected_log_message in log_message, log_message
+
+
+@then("the command line output should not display the log message")
+def step_impl(context):
+    (status_code, log_message) = context.csvcubed_cli_result
+    expected_log_message = context.text.strip()
+    assert expected_log_message not in log_message, log_message
 
 
 @then("remove test log files")

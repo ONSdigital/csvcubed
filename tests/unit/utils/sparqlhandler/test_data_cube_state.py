@@ -27,7 +27,7 @@ def test_get_column_definitions_for_csv():
 
     results = {
         c.name: c
-        for c in data_cube_state.csvw_state.get_column_definitions_for_csv(
+        for c in data_cube_state.csvw_inspector.get_column_definitions_for_csv(
             "qb-id-10004.csv"
         )
     }
@@ -131,7 +131,9 @@ def test_get_data_set_dsd_csv_url_for_csv_url():
     )
     data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
 
-    primary_catalog_metadata = data_cube_state.csvw_state.get_primary_catalog_metadata()
+    primary_catalog_metadata = (
+        data_cube_state.csvw_inspector.get_primary_catalog_metadata()
+    )
 
     data_set_uri = primary_catalog_metadata.dataset_uri
     csv_url = data_cube_state.get_cube_identifiers_for_data_set(data_set_uri).csv_url
@@ -156,7 +158,9 @@ def test_get_dsd_qube_components_for_csv():
     )
     data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
 
-    primary_catalog_metadata = data_cube_state.csvw_state.get_primary_catalog_metadata()
+    primary_catalog_metadata = (
+        data_cube_state.csvw_inspector.get_primary_catalog_metadata()
+    )
 
     data_set_uri = primary_catalog_metadata.dataset_uri
     csv_url = data_cube_state.get_cube_identifiers_for_data_set(data_set_uri).csv_url
@@ -285,7 +289,7 @@ def test_get_cube_identifiers_for_data_set():
     data_cube_state = get_data_cube_inspector(csvw_metadata_json_path)
 
     cube_identifiers = data_cube_state.get_cube_identifiers_for_data_set(
-        data_cube_state.csvw_state.get_primary_catalog_metadata().dataset_uri
+        data_cube_state.csvw_inspector.get_primary_catalog_metadata().dataset_uri
     )
 
     assert cube_identifiers is not None

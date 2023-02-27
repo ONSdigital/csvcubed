@@ -17,7 +17,7 @@ from csvcubed.models.csvcubedexception import (
     InvalidNumberOfRecordsException,
     PrimaryKeyColumnTitleCannotBeNoneException,
 )
-from csvcubed.models.sparqlresults import CodelistColumnResult, ColumnDefinition
+from csvcubed.models.sparqlresults import ColumnDefinition
 
 
 class CodelistPropertyUrl(Enum):

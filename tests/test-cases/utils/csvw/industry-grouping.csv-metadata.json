@@ -104,7 +104,7 @@
             "dc:title": "Industry Groupings",
             "rdfs:seeAlso": [
                 {
-                    "@id": "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services-by-subnational-areas-of-the-uk#scheme/industry-grouping/dataset",
+                    "@id": "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services-by-subnational-areas-of-the-uk#scheme/industry-grouping",
                     "@type": [
                         "dcat:Dataset",
                         "http://publishmydata.com/pmdcat#Dataset"
@@ -156,7 +156,7 @@
                     "@id": "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services-by-subnational-areas-of-the-uk#scheme/industry-grouping/catalog-record",
                     "@type": "dcat:CatalogRecord",
                     "foaf:primaryTopic": {
-                        "@id": "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services-by-subnational-areas-of-the-uk#scheme/industry-grouping/dataset"
+                        "@id": "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services-by-subnational-areas-of-the-uk#scheme/industry-grouping"
                     },
                     "http://publishmydata.com/pmdcat#metadataGraph": {
                         "@id": "http://gss-data.org.uk/data/gss_data/trade/ons-international-trade-in-services-by-subnational-areas-of-the-uk#scheme/industry-grouping"

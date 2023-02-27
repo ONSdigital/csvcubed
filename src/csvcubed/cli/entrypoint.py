@@ -11,11 +11,14 @@ import click
 
 from csvcubed import __version__
 from csvcubed.cli.build import build
+from csvcubed.cli.build_code_list import build_code_list
 from csvcubed.cli.inspect.inspect import inspect
 from csvcubed.models.errorurl import HasErrorUrl
 from csvcubed.utils.log import log_exception, start_logging
 
 _logger = logging.getLogger(__name__)
+
+_VALIDATION_FILE_NAME = "validation-errors.json"
 
 
 @click.group(context_settings=dict(help_option_names=["-h", "--help"]))
@@ -33,6 +36,37 @@ def version():
     print(f"v{__version__}")
 
 
+out_option = click.option(
+    "--out",
+    "-o",
+    help="Location of the CSV-W outputs.",
+    default="./out",
+    show_default=True,
+    type=click.Path(path_type=Path, file_okay=False, dir_okay=True),
+    metavar="OUT_DIR",
+)
+fail_option = click.option(
+    "--fail-when-validation-error/--ignore-validation-errors",
+    help="Fail when validation errors occur or ignore validation errors and continue generating a CSV-W.",
+    default=True,
+    show_default=True,
+)
+validation_option = click.option(
+    "--validation-errors-to-file",
+    "validation_errors_to_file",
+    help="Save validation errors to a `validation-errors.json` file in the output directory.",
+    flag_value=True,
+    default=False,
+    show_default=True,
+)
+log_option = click.option(
+    "--log-level",
+    help="select a logging level out of: 'warn', 'err', 'crit', 'info' or 'debug'.",
+    type=click.Choice(["warn", "err", "crit", "info", "debug"], case_sensitive=False),
+    default="warn",
+)
+
+
 @entry_point.command("build")
 @click.option(
     "--config",
@@ -42,35 +76,10 @@ def version():
     required=False,
     metavar="CONFIG_PATH",
 )
-@click.option(
-    "--out",
-    "-o",
-    help="Location of the CSV-W outputs.",
-    default="./out",
-    show_default=True,
-    type=click.Path(path_type=Path, file_okay=False, dir_okay=True),
-    metavar="OUT_DIR",
-)
-@click.option(
-    "--fail-when-validation-error/--ignore-validation-errors",
-    help="Fail when validation errors occur or ignore validation errors and continue generating a CSV-W.",
-    default=True,
-    show_default=True,
-)
-@click.option(
-    "--validation-errors-to-file",
-    "validation_errors_to_file",
-    help="Save validation errors to a `validation-errors.json` file in the output directory.",
-    flag_value=True,
-    default=False,
-    show_default=True,
-)
-@click.option(
-    "--log-level",
-    help="select a logging level out of: 'warn', 'err', 'crit', 'info' or 'debug'.",
-    type=click.Choice(["warn", "err", "crit", "info", "debug"], case_sensitive=False),
-    default="warn",
-)
+@out_option
+@fail_option
+@validation_option
+@log_option
 @click.argument(
     "csv", type=click.Path(exists=True, path_type=Path), metavar="TIDY_CSV_PATH"
 )
@@ -84,7 +93,7 @@ def build_command(
 ):
     """Build a qb-flavoured CSV-W from a tidy CSV."""
     validation_errors_file_name = (
-        "validation-errors.json" if validation_errors_to_file else None
+        _VALIDATION_FILE_NAME if validation_errors_to_file else None
     )
     out.mkdir(parents=True, exist_ok=True)
 
@@ -104,12 +113,7 @@ def build_command(
 
 
 @entry_point.command("inspect")
-@click.option(
-    "--log-level",
-    help="select a logging level out of: 'warn', 'err', 'crit', 'info' or 'debug'.",
-    type=click.Choice(["warn", "err", "crit", "info", "debug"], case_sensitive=False),
-    default="warn",
-)
+@log_option
 @click.argument(
     "csvw_metadata_json_path",
     type=click.Path(exists=True, path_type=Path),
@@ -124,4 +128,46 @@ def inspect_command(log_level: str, csvw_metadata_json_path: Path) -> None:
         log_exception(_logger, e)
         if isinstance(e, HasErrorUrl):
             _logger.error(f"More information available at {e.get_error_url()}")
+        sys.exit(1)
+
+
+@entry_point.group("code-list", help="Create a SKOS code list from a JSON file")
+def code_list():
+    ...
+
+
+@code_list.command("build")
+@out_option
+@fail_option
+@validation_option
+@log_option
+@click.argument(
+    "config",
+    type=click.Path(exists=True, path_type=Path),
+    metavar="CODE_LIST_CONFIG_PATH",
+)
+def code_list_build_command(
+    config: Path,
+    out: Path,
+    log_level: str,
+    fail_when_validation_error: bool,
+    validation_errors_to_file: str,
+):
+    """Build a skos-flavoured code list CSV-W from a tidy code list JSON file."""
+    validation_errors_file_name = (
+        _VALIDATION_FILE_NAME if validation_errors_to_file else None
+    )
+
+    out.mkdir(parents=True, exist_ok=True)
+    start_logging(log_dir_name="csvcubed-cli", selected_logging_level=log_level)
+    try:
+        build_code_list(
+            config_path=config,
+            output_directory=out,
+            fail_when_validation_error_occurs=fail_when_validation_error,
+            validation_errors_file_name=validation_errors_file_name,
+        )
+
+    except Exception as e:
+        log_exception(_logger, e)
         sys.exit(1)

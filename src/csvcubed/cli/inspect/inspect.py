@@ -17,10 +17,9 @@ from csvcubed.cli.inspect.metadataprinter import MetadataPrinter
 from csvcubed.models.csvcubedexception import FailedToLoadRDFGraphException
 from csvcubed.models.csvwtype import CSVWType
 from csvcubed.utils.sparql_handler.code_list_inspector import CodeListInspector
-from csvcubed.utils.sparql_handler.csvw_state import CsvWState
+from csvcubed.utils.sparql_handler.csvw_inspector import CsvWInspector
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
-from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
-from csvcubed.utils.tableschema import CsvwRdfManager
+from csvcubed.utils.tableschema import CsvWRdfManager
 
 _logger = logging.getLogger(__name__)
 
@@ -35,7 +34,7 @@ def inspect(csvw_metadata_json_path: Path) -> None:
     """
     _logger.debug(f"Metadata json-ld path: {csvw_metadata_json_path.absolute()}")
 
-    csvw_rdf_manager = CsvwRdfManager(csvw_metadata_json_path)
+    csvw_rdf_manager = CsvWRdfManager(csvw_metadata_json_path)
     csvw_metadata_rdf_graph = csvw_rdf_manager.rdf_graph
 
     if csvw_metadata_rdf_graph is None:
@@ -55,7 +54,7 @@ def inspect(csvw_metadata_json_path: Path) -> None:
         val_counts_by_measure_unit_printable,
         codelist_hierarchy_info_printable,
     ) = _generate_printables(
-        csvw_rdf_manager.csvw_state,
+        csvw_rdf_manager.csvw_inspector,
     )
 
     print(f"{linesep}{type_printable}")
@@ -71,7 +70,7 @@ def inspect(csvw_metadata_json_path: Path) -> None:
 
 
 def _generate_printables(
-    csvw_state: CsvWState,
+    csvw_inspector: CsvWInspector,
 ) -> Tuple[str, str, str, str, str, str, str]:
     """
     Generates printables of type, metadata, dsd, code list, head/tail and value count information.
@@ -82,13 +81,13 @@ def _generate_printables(
     """
     metadata_printer: MetadataPrinter
 
-    csvw_type = csvw_state.csvw_type
+    csvw_type = csvw_inspector.csvw_type
 
     if csvw_type == CSVWType.QbDataSet:
-        data_cube_state = DataCubeState(csvw_state)
+        data_cube_state = DataCubeState(csvw_inspector)
         metadata_printer = MetadataPrinter(data_cube_state)
     else:
-        code_list_state = CodeListInspector(csvw_state)
+        code_list_state = CodeListInspector(csvw_inspector)
         metadata_printer = MetadataPrinter(code_list_state)
 
     type_info_printable: str = metadata_printer.type_info_printable

@@ -17,7 +17,7 @@ from csvcubed.models.sparqlresults import (
     ColumnDefinition,
 )
 from csvcubed.utils.iterables import first
-from csvcubed.utils.sparql_handler.csvw_state import CsvWState
+from csvcubed.utils.sparql_handler.csvw_inspector import CsvWInspector
 
 
 @dataclass
@@ -26,7 +26,7 @@ class CodeListInspector:
     Allows API-style access to information about code lists contained within an RDF graph.
     """
 
-    csvw_state: CsvWState
+    csvw_inspector: CsvWInspector
 
     @cached_property
     def _code_list_table_identifiers(self) -> List[CodeListTableIdentifers]:
@@ -61,7 +61,7 @@ class CodeListInspector:
         # Get the csv_url -> column_scheme_url identifiers for all csv files.
         table_identifiers = [
             get_table_identifiers(csv_url, columns)
-            for (csv_url, columns) in self.csvw_state.column_definitions.items()
+            for (csv_url, columns) in self.csvw_inspector.column_definitions.items()
         ]
 
         # If the csv file doesn't have a code list in it, don't include it in the code list identifiers returned.
@@ -88,7 +88,7 @@ class CodeListInspector:
         self, concept_scheme_url: str
     ) -> CatalogMetadataResult:
         """Returns the Catalogue Metadata for a given ConceptScheme. Raises a KeyError if it cannot be found."""
-        catalog_mdata_results = self.csvw_state.catalog_metadata
+        catalog_mdata_results = self.csvw_inspector.catalog_metadata
 
         result = first(
             catalog_mdata_results, lambda i: i.dataset_uri == concept_scheme_url

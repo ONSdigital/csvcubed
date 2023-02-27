@@ -1,12 +1,16 @@
 from dataclasses import dataclass, field
 from functools import cached_property
 from pathlib import Path
-from typing import Dict, List
+from typing import Any, Dict, List
 
 import rdflib
 
 from csvcubed.models.csvwtype import CSVWType
-from csvcubed.models.sparqlresults import CatalogMetadataResult, ColumnDefinition
+from csvcubed.models.sparqlresults import (
+    CatalogMetadataResult,
+    ColumnDefinition,
+    TableSchemaPropertiesResult,
+)
 from csvcubed.utils.dict import get_from_dict_ensure_exists
 from csvcubed.utils.iterables import group_by
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
@@ -15,11 +19,12 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     ask_is_csvw_qb_dataset,
     select_column_definitions,
     select_csvw_catalog_metadata,
+    select_table_schema_properties,
 )
 
 
 @dataclass
-class CsvWState:
+class CsvWInspector:
     rdf_graph: rdflib.ConjunctiveGraph
     csvw_json_path: Path
 
@@ -57,6 +62,27 @@ class CsvWState:
                 "The input metadata is invalid as it is not a data cube or a code list."
             )
 
+    @cached_property
+    def _table_schema_properties(self) -> Dict[str, TableSchemaPropertiesResult]:
+        """
+        Cached property for the select_table_schema_properties query that stores the query's results.
+        """
+        results = select_table_schema_properties(self.rdf_graph)
+        results_dict: Dict[str, TableSchemaPropertiesResult] = {}
+        for result in results:
+            results_dict[result.csv_url] = result
+        return results_dict
+
+    def get_column_definitions_for_csv(self, csv_url: str) -> List[ColumnDefinition]:
+        """
+        Returns the `ColumnDefinition`s for a given csv file, raises a KeyError if the csv_url
+        is not associated with a ColumnDefinition.
+        """
+        result: List[ColumnDefinition] = get_from_dict_ensure_exists(
+            self.column_definitions, csv_url
+        )
+        return result
+
     def get_primary_catalog_metadata(self) -> CatalogMetadataResult:
         """
         Retrieves the catalog metadata that is specifically only defined in the primary graph.
@@ -69,12 +95,11 @@ class CsvWState:
             f"Could not find catalog metadata in primary graph '{self.primary_graph_uri}'."
         )
 
-    def get_column_definitions_for_csv(self, csv_url: str) -> List[ColumnDefinition]:
+    def get_table_info_for_csv_url(self, csv_url: str) -> TableSchemaPropertiesResult:
         """
-        Returns the `ColumnDefinition`s for a given csv file, raises a KeyError if the csv_url
-        is not associated with a ColumnDefinition.
+        Retrieves the stored result of the table schema properties cached property.
         """
-        result: List[ColumnDefinition] = get_from_dict_ensure_exists(
-            self.column_definitions, csv_url
+        result: TableSchemaPropertiesResult = get_from_dict_ensure_exists(
+            self._table_schema_properties, csv_url
         )
         return result

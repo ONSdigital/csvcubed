@@ -1,7 +1,7 @@
 from csvcubedmodels.rdf.namespaces import CSVW
 from rdflib import Literal, URIRef
 
-from csvcubed.utils.tableschema import CsvwRdfManager
+from csvcubed.utils.tableschema import CsvWRdfManager
 from tests.helpers.inspectors_cache import get_csvw_rdf_manager
 from tests.unit.test_baseunit import get_test_cases_dir
 
@@ -55,7 +55,7 @@ def test_metadata_codelist_json_ld_to_rdf_loading_with_table_schema():
 
 def test_load_table_schema_file_dependencies_to_graph():
     """
-    Test that the we can correctly load CSV-W tableSchema file dependencies with the CsvwRdfManager.
+    Test that the we can correctly load CSV-W tableSchema file dependencies with the CsvWRdfManager.
     """
 
     csvw_metadata_json_path = (
