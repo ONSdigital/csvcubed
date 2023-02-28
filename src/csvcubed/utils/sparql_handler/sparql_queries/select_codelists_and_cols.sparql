@@ -1,9 +1,10 @@
 PREFIX qb: <http://purl.org/linked-data/cube#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX csvw: <http://www.w3.org/ns/csvw#>
 
-SELECT ?codeList ?codeListLabel (GROUP_CONCAT(?csvColumnTitle; separator='|') as ?csvColumnsUsedIn)
-WHERE {   
+SELECT ?codeList ?codeListLabel ?csvUrl (GROUP_CONCAT(?csvColumnTitle; separator='|') as ?csvColumnsUsedIn)
+WHERE {
 
     {
         SELECT DISTINCT ?dimensionProperty ?codeList
@@ -14,11 +15,15 @@ WHERE {
         }
     }
 
-    ?csvColumn csvw:propertyUrl ?csvColumnPropertyUrl; 
+    # The table links the csvw:url to the columns.
+    [] csvw:url ?csvUrl;
+       csvw:tableSchema/csvw:column/rdf:rest*/rdf:first ?csvColumn.
+
+    ?csvColumn csvw:propertyUrl ?csvColumnPropertyUrl;
                csvw:title ?csvColumnTitle.
-    
+
     FILTER(STRENDS(str(?dimensionProperty), str(?csvColumnPropertyUrl))).
-    
+
     OPTIONAL { ?codeList rdfs:label ?codeListLabel }
-}    
-GROUP BY ?codeList ?codeListLabel
+}
+GROUP BY ?codeList ?codeListLabel ?csvUrl

@@ -8,11 +8,11 @@ from pathlib import Path
 from typing import Dict
 
 from csvcubed.utils.sparql_handler.code_list_inspector import CodeListInspector
-from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
+from csvcubed.utils.sparql_handler.data_cube_inspector import DataCubeInspector
 from csvcubed.utils.tableschema import CsvWRdfManager
 
 _csvw_rdf_manager_cache: Dict[str, CsvWRdfManager] = {}
-_data_cube_state_cache: Dict[str, DataCubeState] = {}
+_data_cube_inspector_cache: Dict[str, DataCubeInspector] = {}
 _code_list_inspector_cache: Dict[str, CodeListInspector] = {}
 
 
@@ -24,13 +24,15 @@ def get_csvw_rdf_manager(csvw_json_path: Path) -> CsvWRdfManager:
     return _csvw_rdf_manager_cache[path_str]
 
 
-def get_data_cube_inspector(csvw_json_path: Path) -> DataCubeState:
+def get_data_cube_inspector(csvw_json_path: Path) -> DataCubeInspector:
     path_str = csvw_json_path.resolve().as_uri()
-    if path_str not in _data_cube_state_cache:
+    if path_str not in _data_cube_inspector_cache:
         rdf_manager = get_csvw_rdf_manager(csvw_json_path)
-        _data_cube_state_cache[path_str] = DataCubeState(rdf_manager.csvw_inspector)
+        _data_cube_inspector_cache[path_str] = DataCubeInspector(
+            rdf_manager.csvw_inspector
+        )
 
-    return _data_cube_state_cache[path_str]
+    return _data_cube_inspector_cache[path_str]
 
 
 def get_code_list_inspector(csvw_json_path: Path) -> CodeListInspector:

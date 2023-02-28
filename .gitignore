@@ -118,6 +118,8 @@ venv.bak/
 .spyderproject
 .spyproject
 
+behave_debug.py
+
 # Rope project settings
 .ropeproject
 

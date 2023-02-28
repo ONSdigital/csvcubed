@@ -6,8 +6,9 @@ Provides functionality for validating and detecting input metadata.json file.
 """
 
 from dataclasses import dataclass, field
+from os import linesep
 from pathlib import Path
-from typing import List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 from pandas import DataFrame
 
@@ -29,25 +30,25 @@ from csvcubed.models.inspectdataframeresults import (
 )
 from csvcubed.models.sparqlresults import (
     CatalogMetadataResult,
+    CodelistResult,
     CodelistsResult,
-    ColsWithSuppressOutputTrueResult,
     ColumnDefinition,
-    DSDLabelURIResult,
+    CubeTableIdentifiers,
     QubeComponentsResult,
 )
 from csvcubed.utils.csvdataset import transform_dataset_to_canonical_shape
+from csvcubed.utils.printable import (
+    get_printable_list_str,
+    get_printable_tabular_str_from_list,
+)
 from csvcubed.utils.skos.codelist import (
     CodelistPropertyUrl,
     get_codelist_col_title_by_property_url,
     get_codelist_col_title_from_col_name,
 )
 from csvcubed.utils.sparql_handler.code_list_inspector import CodeListInspector
-from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
-from csvcubed.utils.sparql_handler.sparqlquerymanager import (
-    select_cols_where_suppress_output_is_true,
-    select_csvw_dsd_dataset_label_and_dsd_def_uri,
-    select_dsd_code_list_and_cols,
-)
+from csvcubed.utils.sparql_handler.csvw_inspector import CsvWInspector
+from csvcubed.utils.sparql_handler.data_cube_inspector import DataCubeInspector
 
 
 @dataclass
@@ -56,19 +57,17 @@ class MetadataPrinter:
     This class produces the printables necessary for producing outputs to the CLI.
     """
 
-    state: Union[DataCubeState, CodeListInspector]
+    state: Union[DataCubeInspector, CodeListInspector]
 
     csvw_type_str: str = field(init=False)
     primary_csv_url: str = field(init=False)
     dataset: DataFrame = field(init=False)
 
     result_catalog_metadata: CatalogMetadataResult = field(init=False)
-    result_dataset_label_dsd_uri: DSDLabelURIResult = field(init=False)
+    primary_cube_table_identifiers: CubeTableIdentifiers = field(init=False)
     result_qube_components: QubeComponentsResult = field(init=False)
-    result_cols_with_suppress_output_true: ColsWithSuppressOutputTrueResult = field(
-        init=False
-    )
-    result_code_lists: CodelistsResult = field(init=False)
+    primary_csv_column_definitions: List[ColumnDefinition] = field(init=False)
+    result_primary_csv_code_lists: CodelistsResult = field(init=False)
     result_dataset_observations_info: DatasetObservationsInfoResult = field(init=False)
     result_dataset_value_counts: DatasetObservationsByMeasureUnitInfoResult = field(
         init=False
@@ -88,7 +87,7 @@ class MetadataPrinter:
     def get_primary_csv_url(self) -> str:
         """Return the csv_url for the primary table in the graph."""
         primary_metadata = self.state.csvw_inspector.get_primary_catalog_metadata()
-        if isinstance(self.state, DataCubeState):
+        if isinstance(self.state, DataCubeInspector):
             return self.state.get_cube_identifiers_for_data_set(
                 primary_metadata.dataset_uri
             ).csv_url
@@ -134,7 +133,7 @@ class MetadataPrinter:
             self.dataset,
             csvw_type,
             self.state.get_shape_for_csv(self.primary_csv_url)
-            if isinstance(self.state, DataCubeState)
+            if isinstance(self.state, DataCubeInspector)
             else None,
         )
 
@@ -144,24 +143,23 @@ class MetadataPrinter:
 
         Member of :class:`./MetadataPrinter`.
         """
-        assert isinstance(self.state, DataCubeState)  # Make pyright happier
-
-        csvw_inspector = self.state.csvw_inspector
+        assert isinstance(self.state, DataCubeInspector)  # Make pyright happier
 
         self.result_qube_components = self.state.get_dsd_qube_components_for_csv(
             self.primary_csv_url
         )
 
-        self.result_dataset_label_dsd_uri = (
-            select_csvw_dsd_dataset_label_and_dsd_def_uri(csvw_inspector.rdf_graph)
+        self.primary_cube_table_identifiers = self.state.get_cube_identifiers_for_csv(
+            self.primary_csv_url
         )
-        self.result_cols_with_suppress_output_true = (
-            select_cols_where_suppress_output_is_true(csvw_inspector.rdf_graph)
+        self.primary_csv_column_definitions = (
+            self.state.csvw_inspector.get_column_definitions_for_csv(
+                self.primary_csv_url
+            )
         )
-        self.result_code_lists = select_dsd_code_list_and_cols(
-            csvw_inspector.rdf_graph,
-            self.result_dataset_label_dsd_uri.dsd_uri,
-            csvw_inspector.csvw_json_path,
+
+        self.result_primary_csv_code_lists = self.state.get_code_lists_and_cols(
+            self.primary_csv_url
         )
 
         (
@@ -253,7 +251,13 @@ class MetadataPrinter:
 
         :return: `str` - user-friendly string which will be output to CLI.
         """
-        return f"- The {self.csvw_type_str} has the following data structure definition:{self.result_dataset_label_dsd_uri.output_str}{self.result_qube_components.output_str}{self.result_cols_with_suppress_output_true.output_str}"
+        primary_csv_suppressed_columns = [
+            column_definition.title
+            for column_definition in self.primary_csv_column_definitions
+            if column_definition.suppress_output and column_definition.title is not None
+        ]
+
+        return f"- The {self.csvw_type_str} has the following data structure definition:\n- Dataset Label: {self.result_catalog_metadata.title}{self.result_qube_components.output_str}\n- Columns where suppress output is true: {get_printable_list_str(primary_csv_suppressed_columns)}"
 
     @property
     def codelist_info_printable(self) -> str:
@@ -264,7 +268,29 @@ class MetadataPrinter:
 
         :return: `str` - user-friendly string which will be output to CLI.
         """
-        return f"- The {self.csvw_type_str} has the following code list information:{self.result_code_lists.output_str}"
+
+        def alter_code_list_for_text_representation(code_list: CodelistResult) -> Dict:
+            dict_repr = code_list.as_dict()
+            dict_repr["code_list_label"] = code_list.code_list_label or ""
+            dict_repr["cols_used_in"] = ", ".join(code_list.cols_used_in)
+            del dict_repr["csv_url"]
+            return dict_repr
+
+        formatted_codelists = get_printable_tabular_str_from_list(
+            [
+                alter_code_list_for_text_representation(codelist)
+                for codelist in sorted(
+                    self.result_primary_csv_code_lists.codelists,
+                    key=lambda c: c.code_list,
+                )
+            ],
+            column_names=["Code List", "Code List Label", "Columns Used In"],
+        )
+        output_string = f"""
+        - Number of Code Lists: {self.result_primary_csv_code_lists.num_codelists}
+        - Code Lists:{linesep}{formatted_codelists}"""
+
+        return f"- The {self.csvw_type_str} has the following code list information:{output_string}"
 
     @property
     def dataset_observations_info_printable(self) -> str:

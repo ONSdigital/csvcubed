@@ -4,9 +4,10 @@ import pytest
 from rdflib import ConjunctiveGraph
 
 from csvcubed.models.csvwtype import CSVWType
+from csvcubed.models.sparqlresults import ColumnDefinition
 from csvcubed.utils.sparql_handler.csvw_inspector import CsvWInspector
 from csvcubed.utils.sparql_handler.sparql import path_to_file_uri_for_rdflib
-from tests.helpers.inspectors_cache import get_csvw_rdf_manager
+from tests.helpers.inspectors_cache import get_csvw_rdf_manager, get_data_cube_inspector
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
@@ -162,3 +163,96 @@ def test_get_table_info_multiple_tables():
     assert result["alcohol-content.csv"].primary_key_col_names == ["notation"]
     assert result["clearance-origin.csv"].primary_key_col_names == ["notation"]
     assert result["alcohol-sub-type.csv"].primary_key_col_names == ["notation"]
+
+
+def test_get_column_definitions_for_csv():
+    """
+    Ensures that the `ColumnDefinition`s with different property values can be correctly loaded from as CSV-W file.
+    """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-single-measure-dataset"
+        / "qb-id-10004.csv-metadata.json"
+    )
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
+    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    primary_catalog_metadata = (
+        csvw_rdf_manager.csvw_inspector.get_primary_catalog_metadata()
+    )
+    csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
+        primary_catalog_metadata.dataset_uri
+    ).csv_url
+
+    results = {
+        c.name: c
+        for c in data_cube_inspector.csvw_inspector.get_column_definitions_for_csv(
+            csv_url
+        )
+    }
+
+    assert len(results) == 12
+
+    """
+    Testing: csv_url, name, property_url, required=True, suppress_output=False,
+              title, value_url, virtual=False
+    """
+    assert results["some_dimension"] == ColumnDefinition(
+        csv_url="qb-id-10004.csv",
+        about_url=None,
+        data_type=None,
+        name="some_dimension",
+        property_url="qb-id-10004.csv#dimension/some-dimension",
+        required=True,
+        suppress_output=False,
+        title="Some Dimension",
+        value_url="some-dimension.csv#{+some_dimension}",
+        virtual=False,
+    )
+
+    """
+    Testing: about_url, required=False
+    """
+    assert results["some_attribute"] == ColumnDefinition(
+        csv_url="qb-id-10004.csv",
+        about_url="qb-id-10004.csv#obs/{some_dimension}@some-measure",
+        data_type=None,
+        name="some_attribute",
+        property_url="qb-id-10004.csv#attribute/some-attribute",
+        required=False,
+        suppress_output=False,
+        title="Some Attribute",
+        value_url="qb-id-10004.csv#attribute/some-attribute/{+some_attribute}",
+        virtual=False,
+    )
+
+    """
+    Testing: data_type
+    """
+    assert results["some_obs_val"] == ColumnDefinition(
+        csv_url="qb-id-10004.csv",
+        about_url="qb-id-10004.csv#obs/{some_dimension}@some-measure",
+        data_type="http://www.w3.org/2001/XMLSchema#decimal",
+        name="some_obs_val",
+        property_url="qb-id-10004.csv#measure/some-measure",
+        required=True,
+        suppress_output=False,
+        title="Some Obs Val",
+        value_url=None,
+        virtual=False,
+    )
+
+    """
+    Testing: virtual=True, suppress_output=True
+    """
+    assert results["virt_suppressed_test"] == ColumnDefinition(
+        csv_url="qb-id-10004.csv",
+        about_url="http://example.com/about",
+        data_type=None,
+        name="virt_suppressed_test",
+        property_url="http://example.com/property",
+        required=False,
+        suppress_output=True,
+        title=None,
+        value_url="http://example.com/value",
+        virtual=True,
+    )

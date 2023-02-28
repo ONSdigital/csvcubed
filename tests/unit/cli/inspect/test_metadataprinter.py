@@ -10,7 +10,6 @@ from csvcubed.models.inspectdataframeresults import (
     DatasetObservationsInfoResult,
 )
 from csvcubed.models.sparqlresults import CodelistsResult
-from csvcubed.utils.iterables import first
 from tests.helpers.inspectors_cache import get_data_cube_inspector
 from tests.unit.cli.inspect.test_inspectdatasetmanager import (
     expected_dataframe_pivoted_multi_measure,
@@ -30,14 +29,14 @@ def test_multi_measure_pivoted_shape_cube_observation_and_count_info():
         / "qb-id-10003.csv-metadata.json"
     )
 
-    data_cube_state = get_data_cube_inspector(path_to_json_file)
-    metadata_printer = MetadataPrinter(data_cube_state)
+    data_cube_inspector = get_data_cube_inspector(path_to_json_file)
+    metadata_printer = MetadataPrinter(data_cube_inspector)
 
-    result_code_lists: CodelistsResult = metadata_printer.result_code_lists
+    result_code_lists: CodelistsResult = metadata_printer.result_primary_csv_code_lists
     assert result_code_lists is not None
 
     assert len(result_code_lists.codelists) == 1
-    assert result_code_lists.codelists[0].cols_used_in == "Some Dimension"
+    assert result_code_lists.codelists[0].cols_used_in[0] == "Some Dimension"
 
     result_dataset_observations_info: DatasetObservationsInfoResult = (
         metadata_printer.result_dataset_observations_info
@@ -90,14 +89,14 @@ def test_single_measure_pivoted_shape_cube_observation_and_count_info():
         / "qb-id-10004.csv-metadata.json"
     )
 
-    data_cube_state = get_data_cube_inspector(path_to_json_file)
-    metadata_printer = MetadataPrinter(data_cube_state)
+    data_cube_inspector = get_data_cube_inspector(path_to_json_file)
+    metadata_printer = MetadataPrinter(data_cube_inspector)
 
-    result_code_lists: CodelistsResult = metadata_printer.result_code_lists
+    result_code_lists: CodelistsResult = metadata_printer.result_primary_csv_code_lists
     assert result_code_lists is not None
 
     assert len(result_code_lists.codelists) == 1
-    assert result_code_lists.codelists[0].cols_used_in == "Some Dimension"
+    assert result_code_lists.codelists[0].cols_used_in[0] == "Some Dimension"
 
     result_dataset_observations_info: DatasetObservationsInfoResult = (
         metadata_printer.result_dataset_observations_info
