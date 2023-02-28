@@ -10,18 +10,14 @@ import pandas as pd
 from pandas.core.arrays.categorical import Categorical
 
 from csvcubed.models.cube.cube import QbColumn, QbCube
-from csvcubed.models.cube.qb.components import (
-    NewQbCodeList,
-    NewQbDimension,
-    NewQbMeasure,
-    NewQbUnit,
-    QbAttribute,
-    QbAttributeLiteral,
-    QbDimension,
-    QbMultiMeasureDimension,
-    QbMultiUnits,
-    QbObservationValue,
-)
+from csvcubed.models.cube.qb.components.attribute import QbAttribute, QbAttributeLiteral
+from csvcubed.models.cube.qb.components.codelist import NewQbCodeList
+from csvcubed.models.cube.qb.components.dimension import NewQbDimension, QbDimension
+from csvcubed.models.cube.qb.components.measure import NewQbMeasure
+from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureDimension
+from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
+from csvcubed.models.cube.qb.components.unit import NewQbUnit
+from csvcubed.models.cube.qb.components.unitscolumn import QbMultiUnits
 
 from .cube import get_all_measures, get_all_units
 

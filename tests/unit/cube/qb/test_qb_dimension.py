@@ -1,6 +1,7 @@
 import pandas as pd
 
-from csvcubed.models.cube.qb.components import NewQbCodeList, NewQbDimension
+from csvcubed.models.cube.qb.components.codelist import NewQbCodeList
+from csvcubed.models.cube.qb.components.dimension import NewQbDimension
 
 
 def test_newqbdimension_extracts_newqbcodelist_newqbconcept():

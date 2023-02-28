@@ -6,7 +6,7 @@ import pandas as pd
 import pytest
 
 from csvcubed.definitions import APP_ROOT_DIR_PATH
-from csvcubed.models.cube.qb import QbColumn
+from csvcubed.models.cube.qb.columns import QbColumn
 from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
 from csvcubed.models.cube.qb.components.unit import ExistingQbUnit, NewQbUnit
 from csvcubed.readers.cubeconfig.v1.columnschema import (

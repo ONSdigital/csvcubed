@@ -4,6 +4,7 @@ from pandas.testing import assert_frame_equal
 from csvcubed.cli.inspect.metadataprinter import MetadataPrinter
 from csvcubed.models.csvwtype import CSVWType
 from csvcubed.models.cube.cube_shape import CubeShape
+from csvcubed.models.cube.qb.validationerrors import BothMeasureTypesDefinedError
 from csvcubed.models.inspectdataframeresults import (
     DatasetObservationsByMeasureUnitInfoResult,
     DatasetObservationsInfoResult,
