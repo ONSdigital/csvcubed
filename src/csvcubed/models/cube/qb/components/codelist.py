@@ -170,7 +170,7 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
     def _get_validations(self) -> Dict[str, ValidationFunction]:
         return {
             "metadata": v.validated_model(CatalogMetadata),
-            "concepts": validate_list(v.validated_model(TNewQbConcept)),
+            "concepts": validate_list(v.validated_model(NewQbConcept)),
             "arbitrary_rdf": validate_list(validate_triple_fragment),
             "uri_style": validate_optional(v.enum(URIStyle)),
         }
