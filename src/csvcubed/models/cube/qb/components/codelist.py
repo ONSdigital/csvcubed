@@ -46,7 +46,7 @@ from .validationerrors import ReservedUriValueError
 
 
 @dataclass
-class QbCodeList(SecondaryQbStructuralDefinition, ValidatedModel, ABC):
+class QbCodeList(SecondaryQbStructuralDefinition, ABC):
     pass
 
 
@@ -211,3 +211,9 @@ class CompositeQbCodeList(NewQbCodeList[DuplicatedQbConcept]):
     """Represents a :class:`NewQbCodeList` made from a set of :class:`DuplicatedQbConcept` instances."""
 
     variant_of_uris: List[str] = field(default_factory=list)
+
+    def _get_validations(self) -> Dict[str, ValidationFunction]:
+        return {
+            **NewQbCodeList._get_validations(self),
+            "variant_of_uris": validate_list(validate_str_type),
+        }

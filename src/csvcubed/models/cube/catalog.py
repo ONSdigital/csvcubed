@@ -5,13 +5,15 @@ Catalog Metadata (base)
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from datetime import date, datetime
-from typing import Optional, Union
+from typing import Dict, Optional, Union
 
 from csvcubed.models.pydanticmodel import PydanticModel
+from csvcubed.models.validatedmodel import ValidatedModel, ValidationFunction
+from csvcubed.utils.validations import validate_str_type
 
 
 @dataclass
-class CatalogMetadataBase(PydanticModel, ABC):
+class CatalogMetadataBase(PydanticModel, ValidatedModel, ABC):
     title: str
 
     @abstractmethod

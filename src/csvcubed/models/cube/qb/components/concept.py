@@ -11,7 +11,7 @@ from typing import Dict, List, Optional
 import pandas as pd
 
 from csvcubed.models.uriidentifiable import UriIdentifiable
-from csvcubed.models.validatedmodel import ValidationFunction
+from csvcubed.models.validatedmodel import ValidatedModel, ValidationFunction
 from csvcubed.models.validationerror import ValidationError
 from csvcubed.utils.uri import uri_safe
 from csvcubed.utils.validations import (
@@ -94,7 +94,7 @@ class ExistingQbConcept(SecondaryQbStructuralDefinition):
 
 
 @dataclass(unsafe_hash=True)
-class DuplicatedQbConcept(NewQbConcept, ExistingQbConcept):
+class DuplicatedQbConcept(NewQbConcept, ExistingQbConcept, ValidatedModel):
     """
     Represents a QbConcept which duplicates an :class:`ExistingQbConcept` with overriding label, notation, etc.
 
