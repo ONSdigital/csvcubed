@@ -11,10 +11,12 @@ from csvcubed.cli.inspect.inspectdatasetmanager import (
     get_concepts_hierarchy_info,
     get_dataset_observations_info,
     get_dataset_val_counts_info,
+    load_csv_to_dataframe,
+)
+from csvcubed.utils.csvdataset import(
     get_single_measure_from_dsd,
     get_standard_shape_measure_col_name_from_dsd,
     get_standard_shape_unit_col_name_from_dsd,
-    load_csv_to_dataframe,
 )
 from csvcubed.models.csvwtype import CSVWType
 from csvcubed.models.cube.cube_shape import CubeShape

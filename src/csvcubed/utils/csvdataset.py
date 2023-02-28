@@ -5,8 +5,9 @@ CSV Dataset
 Utilities for CSV Datasets
 """
 
+import logging
 from pathlib import Path
-from typing import Any, Dict, List, Set, Tuple
+from typing import Any, Dict, List, Set, Tuple, Optional
 from uuid import uuid1
 
 import pandas as pd
@@ -14,11 +15,15 @@ import uritemplate
 from csvcubedmodels.rdf.namespaces import SDMX_Attribute
 from uritemplate.orderedset import OrderedSet
 
-from csvcubed.cli.inspect.inspectdatasetmanager import (
-    filter_components_from_dsd,
-    get_single_measure_from_dsd,
-    get_standard_shape_measure_col_name_from_dsd,
-    get_standard_shape_unit_col_name_from_dsd,
+from csvcubed.models.csvcubedexception import InvalidNumberOfRecordsException
+from csvcubed.models.inspectdataframeresults import DatasetSingleMeasureResult
+from csvcubed.models.sparqlresults import QubeComponentResult
+from csvcubed.utils.iterables import first
+from csvcubed.utils.qb.components import (
+    ComponentField,
+    ComponentPropertyAttributeURI,
+    ComponentPropertyType,
+    get_component_property_as_relative_path,
 )
 from csvcubed.models.csvcubedexception import (
     InvalidNumberOfRecordsException,
@@ -31,6 +36,119 @@ from csvcubed.models.sparqlresults import ColumnDefinition, QubeComponentResult
 from csvcubed.utils.iterables import first
 from csvcubed.utils.qb.components import ComponentField, ComponentPropertyType
 from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
+
+_logger = logging.getLogger(__name__)
+
+
+def filter_components_from_dsd(
+    components: List[QubeComponentResult],
+    field: ComponentField,
+    filter: str,
+) -> List[QubeComponentResult]:
+    """
+    Filters the components for the given filter.
+
+    Member of :file:`./inspectdatasetmanager.py`
+
+    :return: `List[QubeComponentResult]` - filtered results.
+    """
+
+    return [
+        component
+        for component in components
+        if component.as_dict()[field.value] == filter
+    ]
+
+
+def get_standard_shape_measure_col_name_from_dsd(
+    components: List[QubeComponentResult],
+) -> Optional[str]:
+    """
+    Identifies the name of the measure column in a standard shape data set.
+
+    Member of :file:`./inspectdatasetmanager.py`
+
+    :return: `Optional[str]`
+    """
+    measure_components = filter_components_from_dsd(
+        components,
+        ComponentField.Property,
+        ComponentPropertyAttributeURI.MeasureType.value,
+    )
+
+    first_measure_component = first(measure_components)
+
+    if (
+        first_measure_component is not None
+        and len(first_measure_component.real_columns_used_in) == 1
+    ):
+        csv_measure_column = first_measure_component.real_columns_used_in[0]
+        return csv_measure_column.title
+    else:
+        _logger.warning(
+            "Could not find measure column name from the DSD, hence returning None"
+        )
+        return None
+
+
+def get_standard_shape_unit_col_name_from_dsd(
+    components: List[QubeComponentResult],
+) -> Optional[str]:
+    """
+    Identifies the name of unit column in a standard shaped data set.
+
+    Member of :file:`./inspectdatasetmanager.py`
+
+    :return: `Optional[str]`
+    """
+    unit_components = filter_components_from_dsd(
+        components,
+        ComponentField.Property,
+        ComponentPropertyAttributeURI.UnitMeasure.value,
+    )
+
+    first_unit_component = first(unit_components)
+
+    if (
+        first_unit_component is not None
+        and len(first_unit_component.real_columns_used_in) == 1
+    ):
+        csv_units_column = first_unit_component.real_columns_used_in[0]
+        return csv_units_column.title
+    else:
+        _logger.warning(
+            "Could not find unit column name from the DSD, hence returning None"
+        )
+        return None
+
+
+def get_single_measure_from_dsd(
+    components: List[QubeComponentResult], json_path: Path
+) -> DatasetSingleMeasureResult:
+    """
+    Identifies the measure uri and label for single-measure dataset.
+
+    Member of :file:`./inspectdatasetmanager.py`
+
+    :return: `DatasetSingleMeasureResult`
+    """
+    filtered_components = filter_components_from_dsd(
+        components, ComponentField.PropertyType, ComponentPropertyType.Measure.value
+    )
+
+    if len(filtered_components) != 1:
+        raise InvalidNumberOfRecordsException(
+            record_description="dsd components",
+            excepted_num_of_records=1,
+            num_of_records=len(filtered_components),
+        )
+
+    return DatasetSingleMeasureResult(
+        measure_uri=get_component_property_as_relative_path(
+            json_path, filtered_components[0].property
+        ),
+        measure_label=filtered_components[0].property_label,
+    )
 
 
 def _materialise_unit_uri_for_row(
