@@ -166,7 +166,6 @@ def validate_file(value: Path, property_name: str) -> List[ValidateModelProperie
         ]
 
 
-# TODO change to date_datetime
 def date(value: dt.date, property_name: str) -> List[ValidateModelProperiesError]:
     if not isinstance(value, dt.date):
         return [

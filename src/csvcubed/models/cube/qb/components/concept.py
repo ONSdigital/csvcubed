@@ -74,7 +74,6 @@ class ExistingQbConcept(SecondaryQbStructuralDefinition):
 
     existing_concept_uri: str
 
-    # TODO: Remove this pydantic validator if you are sure the new one is correct.
     _existing_concept_uri_validator = pydantic_validate_uri("existing_concept_uri")
 
     def validate_data(
@@ -116,5 +115,3 @@ class DuplicatedQbConcept(NewQbConcept, ExistingQbConcept, ValidatedModel):
             **ExistingQbConcept._get_validations(self),
             **NewQbConcept._get_validations(self),
         }
-
-    pass
