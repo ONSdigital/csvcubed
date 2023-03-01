@@ -270,11 +270,25 @@ def test_multi_theme_and_keyword():
     )
 
     csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
-    # data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
     primary_catalog_metadata = (
         csvw_rdf_manager.csvw_inspector.get_primary_catalog_metadata()
     )
 
+    expected_keywords = [
+        "education",
+        "employment",
+        "united-kingdom",
+        "levelling-up",
+        "qualifications",
+        "subnational",
+        "mission-6",
+    ]
     assert len(primary_catalog_metadata.themes) == 1
+    assert (
+        primary_catalog_metadata.themes[0]
+        == "https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork"
+    )
     assert len(primary_catalog_metadata.keywords) == 7
+    assert primary_catalog_metadata.keywords.sort() == expected_keywords.sort()
     assert len(primary_catalog_metadata.landing_pages) == 1
+    assert primary_catalog_metadata.landing_pages[0] == ""
