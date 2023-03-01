@@ -16,7 +16,6 @@ from csvcubed.models.cube.qb.components.arbitraryrdf import (
     ArbitraryRdf,
     RdfSerialisationHint,
     TripleFragmentBase,
-    validate_triple_fragment,
 )
 from csvcubed.models.cube.qb.components.datastructuredefinition import (
     QbColumnStructuralDefinition,
@@ -88,7 +87,7 @@ class ExistingQbDimension(QbDimension):
         return {
             **QbDimension._get_validations(self),
             "dimension_uri": validate_uri,
-            "arbitrary_rdf": validate_list(validate_triple_fragment),
+            "arbitrary_rdf": validate_list(v.validated_model(TripleFragmentBase)),
         }
 
 
@@ -165,5 +164,5 @@ class NewQbDimension(QbDimension, UriIdentifiable):
             "parent_dimension_uri": validate_optional(validate_uri),
             "source_uri": validate_optional(validate_uri),
             **UriIdentifiable._get_validations(self),
-            "arbitrary_rdf": validate_list(validate_triple_fragment),
+            "arbitrary_rdf": validate_list(v.validated_model(TripleFragmentBase)),
         }

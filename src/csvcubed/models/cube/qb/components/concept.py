@@ -6,15 +6,13 @@ Represent individual concepts inside a `skos:ConceptScheme`.
 """
 
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional
-
-import pandas as pd
+from typing import Dict, Optional
 
 from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.models.validatedmodel import ValidatedModel, ValidationFunction
-from csvcubed.models.validationerror import ValidationError
 from csvcubed.utils.uri import uri_safe
 from csvcubed.utils.validations import (
+    validate_int_type,
     validate_optional,
     validate_str_type,
     validate_uri,
@@ -47,22 +45,13 @@ class NewQbConcept(SecondaryQbStructuralDefinition, UriIdentifiable):
     def __hash__(self):
         return self.code.__hash__()
 
-    def validate_data(
-        self,
-        data: pd.Series,
-        column_csvw_name: str,
-        csv_column_uri_template: str,
-        column_csv_title: str,
-    ) -> List[ValidationError]:
-        return []
-
     def _get_validations(self) -> Dict[str, ValidationFunction]:
 
         return {
             "label": validate_str_type,
             "code": validate_str_type,
             "parent_code": validate_optional(validate_str_type),
-            "sort_order": validate_optional(validate_str_type),
+            "sort_order": validate_optional(validate_int_type),
             "description": validate_optional(validate_str_type),
             **UriIdentifiable._get_validations(self),
         }
@@ -75,15 +64,6 @@ class ExistingQbConcept(SecondaryQbStructuralDefinition):
     existing_concept_uri: str
 
     _existing_concept_uri_validator = pydantic_validate_uri("existing_concept_uri")
-
-    def validate_data(
-        self,
-        data: pd.Series,
-        column_csvw_name: str,
-        csv_column_uri_template: str,
-        column_csv_title: str,
-    ) -> List[ValidationError]:
-        return []
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
 
@@ -99,15 +79,6 @@ class DuplicatedQbConcept(NewQbConcept, ExistingQbConcept, ValidatedModel):
 
     To be used in a :class:`CompositeQbCodeList`.
     """
-
-    def validate_data(
-        self,
-        data: pd.Series,
-        column_csvw_name: str,
-        csv_column_uri_template: str,
-        column_csv_title: str,
-    ) -> List[ValidationError]:
-        return []
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
 

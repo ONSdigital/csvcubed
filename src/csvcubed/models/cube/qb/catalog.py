@@ -14,7 +14,7 @@ from csvcubedmodels.rdf import dcat
 from csvcubed.models.cube.catalog import CatalogMetadataBase
 from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.models.validatedmodel import ValidatedModel, ValidationFunction
-from csvcubed.models.validationerror import ValidateModelProperiesError
+from csvcubed.models.validationerror import ValidateModelPropertiesError
 from csvcubed.utils import validations as v
 from csvcubed.utils.validations import (
     validate_list,

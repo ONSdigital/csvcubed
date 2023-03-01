@@ -7,11 +7,15 @@ Represent units in an RDF Data Cube.
 import logging
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Set
+from typing import Dict, List, Optional, Set, Union
 
 from csvcubed.models.uriidentifiable import UriIdentifiable
-from csvcubed.models.validatedmodel import ValidatedModel, ValidationFunction
-from csvcubed.models.validationerror import ValidateModelProperiesError
+from csvcubed.models.validatedmodel import (
+    ValidatedModel,
+    ValidationFunction,
+    Validations,
+)
+from csvcubed.models.validationerror import ValidateModelPropertiesError
 from csvcubed.utils import validations as v
 from csvcubed.utils.validations import (
     validate_float_type,
@@ -25,12 +29,7 @@ from csvcubed.utils.validators.attributes import (
 )
 from csvcubed.utils.validators.uri import validate_uri as pydantic_validate_uri
 
-from .arbitraryrdf import (
-    ArbitraryRdf,
-    RdfSerialisationHint,
-    TripleFragmentBase,
-    validate_triple_fragment,
-)
+from .arbitraryrdf import ArbitraryRdf, RdfSerialisationHint, TripleFragmentBase
 from .datastructuredefinition import SecondaryQbStructuralDefinition
 
 _logger = logging.getLogger(__name__)
@@ -53,7 +52,7 @@ class ExistingQbUnit(QbUnit):
     def __hash__(self):
         return self.unit_uri.__hash__()
 
-    def _get_validations(self) -> Dict[str, ValidationFunction]:
+    def _get_validations(self) -> Union[Validations, Dict[str, ValidationFunction]]:
         return {"unit_uri": validate_uri}
 
 
@@ -99,20 +98,56 @@ class NewQbUnit(QbUnit, UriIdentifiable, ArbitraryRdf):
     SI - https://en.wikipedia.org/wiki/International_System_of_Units
     """
 
-    def _get_validations(self) -> Dict[str, ValidationFunction]:
-        return {
-            "label": validate_str_type,
-            "description": validate_optional(validate_str_type),
-            "source_uri": validate_optional(validate_uri),
-            **UriIdentifiable._get_validations(self),
-            "arbitrary_rdf": validate_list(validate_triple_fragment),
-            "base_unit": validate_optional(v.validated_model(QbUnit)),
-            "base_unit_scaling_factor": validate_optional(validate_float_type),
-            "qudt_quantity_kind_uri": validate_optional(validate_str_type),
-            "si_base_unit_conversion_multiplier": validate_optional(
-                validate_float_type
-            ),
-        }
+    def _get_validations(self) -> Union[Validations, Dict[str, ValidationFunction]]:
+        return Validations(
+            individual_property_validations={
+                "label": validate_str_type,
+                "description": validate_optional(validate_str_type),
+                "source_uri": validate_optional(validate_uri),
+                **UriIdentifiable._get_validations(self),
+                "arbitrary_rdf": validate_list(v.validated_model(TripleFragmentBase)),
+                "base_unit": validate_optional(v.validated_model(QbUnit)),
+                "base_unit_scaling_factor": validate_optional(validate_float_type),
+                "qudt_quantity_kind_uri": validate_optional(validate_str_type),
+                "si_base_unit_conversion_multiplier": validate_optional(
+                    validate_float_type
+                ),
+            },
+            whole_object_validations=[
+                self._validation_base_unit_scaling_factor_dependency
+            ],
+        )
+
+    @staticmethod
+    def _validation_base_unit_scaling_factor_dependency(
+        unit,
+    ) -> List[ValidateModelPropertiesError]:
+        errors: List[ValidateModelPropertiesError] = []
+
+        if unit.base_unit_scaling_factor is not None:
+            if unit.base_unit is None:
+                errors.append(
+                    ValidateModelPropertiesError(
+                        f"""
+                '{unit.base_unit_scaling_factor}' has been specified, but the following is missing and must be
+                        provided: '{unit.base_unit}'.
+                        """,
+                        "Whole Object",
+                    )
+                )
+
+        if unit.si_base_unit_conversion_multiplier is not None:
+            if unit.qudt_quantity_kind_uri is None:
+                errors.append(
+                    ValidateModelPropertiesError(
+                        f"""
+                '{unit.si_base_unit_conversion_multiplier}' has been specified, but the following is missing and must be
+                        provided: '{unit.qudt_quantity_kind_uri}'.
+                        """,
+                        "Whole Object",
+                    )
+                )
+        return errors
 
     optional_attribute_dependencies = pydantic_enforce_optional_attribute_dependencies(
         {

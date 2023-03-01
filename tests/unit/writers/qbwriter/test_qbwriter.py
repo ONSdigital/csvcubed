@@ -15,7 +15,6 @@ from csvcubed.models.cube.qb.columns import QbColumn
 from csvcubed.models.cube.qb.components.arbitraryrdf import (
     RdfSerialisationHint,
     TripleFragmentBase,
-    validate_triple_fragment,
 )
 from csvcubed.models.cube.qb.components.attribute import (
     ExistingQbAttribute,
@@ -34,14 +33,7 @@ from csvcubed.models.cube.qb.components.unitscolumn import QbMultiUnits
 from csvcubed.models.cube.uristyle import URIStyle
 from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.models.validatedmodel import ValidationFunction
-from csvcubed.models.validationerror import ValidationError
 from csvcubed.utils.iterables import first
-from csvcubed.utils.validations import (
-    validate_list,
-    validate_optional,
-    validate_str_type,
-    validate_uri,
-)
 from csvcubed.writers.qbwriter import QbWriter
 
 
@@ -60,15 +52,6 @@ class TestQbMeasure(QbMeasure, UriIdentifiable):
 
     def get_identifier(self) -> str:
         pass
-
-    def validate_data(
-        self,
-        data: pd.Series,
-        column_csvw_name: str,
-        csv_column_uri_template: str,
-        column_csv_title: str,
-    ) -> List[ValidationError]:
-        return []
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
 

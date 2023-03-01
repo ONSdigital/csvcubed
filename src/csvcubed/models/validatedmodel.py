@@ -2,28 +2,66 @@
 
 import logging
 from abc import abstractmethod
-from dataclasses import dataclass
-from typing import Any, Callable, Dict, List
+from dataclasses import dataclass, field
+from typing import Any, Callable, Dict, Generic, List, Type, TypeVar, Union
 
 from csvcubedmodels.dataclassbase import DataClassBase
 
-from csvcubed.models.validationerror import ValidateModelProperiesError
+from csvcubed.models.validationerror import ValidateModelPropertiesError
 
-ValidationFunction = Callable[[Any, str], List[ValidateModelProperiesError]]
+ValidationFunction = Callable[[Any, str], List[ValidateModelPropertiesError]]
+
+T = TypeVar("T", bound="ValidatedModel")
 
 
+@dataclass
+class Validations(Generic[T]):
+    """
+    This class holds the validations which should be executed against a given model.
+    """
+
+    individual_property_validations: Dict[str, ValidationFunction]
+    whole_object_validations: List[
+        Callable[[T], List[ValidateModelPropertiesError]]
+    ] = field(default_factory=list)
+
+
+@dataclass
 class ValidatedModel(DataClassBase):
     """This abrstract class that will act as a parent class for class attribute validations.
     The class will run a valdiation function for each attribute that is passed in and return either a list of errors or an emtpry list.
     """
 
-    def validate(self) -> List[ValidateModelProperiesError]:
+    def validate(self) -> List[ValidateModelPropertiesError]:
         """
         The validate function will go through each attribute and the corresponding validation function and
          collect the validation errors(if there is any) and return the variable names and the error messages.
         """
-        validation_errors: List[ValidateModelProperiesError] = []
-        for (property_name, validation_function) in self._get_validations().items():
+        validation_errors: List[ValidateModelPropertiesError] = []
+        validations = self._get_validations()
+        if isinstance(validations, Validations):
+            validation_errors += self._apply_individual_property_validations(
+                validations.individual_property_validations
+            )
+
+            for whole_obj_validator in validations.whole_object_validations:
+                validation_errors += whole_obj_validator(self)
+        else:
+            validation_errors += self._apply_individual_property_validations(
+                validations
+            )
+
+        return validation_errors
+
+    def _apply_individual_property_validations(
+        self, individual_property_validations: Dict[str, ValidationFunction]
+    ) -> List[ValidateModelPropertiesError]:
+        validation_errors: List[ValidateModelPropertiesError] = []
+
+        for (
+            property_name,
+            validation_function,
+        ) in individual_property_validations.items():
             logging.debug("Validating %s", property_name)
 
             property_value = getattr(self, property_name)
@@ -37,5 +75,5 @@ class ValidatedModel(DataClassBase):
         return validation_errors
 
     @abstractmethod
-    def _get_validations(self) -> Dict[str, ValidationFunction]:
+    def _get_validations(self) -> Union[Validations, Dict[str, ValidationFunction]]:
         pass

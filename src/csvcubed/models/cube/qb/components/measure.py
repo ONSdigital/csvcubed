@@ -15,12 +15,10 @@ from csvcubed.models.cube.qb.components.arbitraryrdf import (
     ArbitraryRdf,
     RdfSerialisationHint,
     TripleFragmentBase,
-    validate_triple_fragment,
 )
-from csvcubed.models.cube.qb.components.codelist import NewQbCodeList
 from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.models.validatedmodel import ValidatedModel, ValidationFunction
-from csvcubed.models.validationerror import ValidateModelProperiesError, ValidationError
+from csvcubed.models.validationerror import ValidationError
 from csvcubed.utils import validations as v
 from csvcubed.utils.validations import (
     validate_list,
@@ -65,20 +63,11 @@ class ExistingQbMeasure(QbMeasure):
 
     _measure_uri_validator = pydantic_validate_uri("measure_uri")
 
-    def validate_data(
-        self,
-        data: pd.Series,
-        column_csvw_name: str,
-        csv_column_uri_template: str,
-        column_csv_title: str,
-    ) -> List[ValidationError]:
-        return []
-
     def _get_validations(self) -> Dict[str, ValidationFunction]:
 
         return {
             "measure_uri": validate_uri,
-            "arbitrary_rdf": validate_list(validate_triple_fragment),
+            "arbitrary_rdf": validate_list(v.validated_model(TripleFragmentBase)),
         }
 
 
@@ -120,16 +109,6 @@ class NewQbMeasure(QbMeasure, UriIdentifiable):
     def get_identifier(self) -> str:
         return self.label
 
-    def validate_data(
-        self,
-        data: pd.Series,
-        column_csvw_name: str,
-        csv_column_uri_template: str,
-        column_csv_title: str,
-    ) -> List[ValidationError]:
-
-        return []
-
     def _get_validations(self) -> Dict[str, ValidationFunction]:
 
         return {
@@ -138,5 +117,5 @@ class NewQbMeasure(QbMeasure, UriIdentifiable):
             "parent_measure_uri": validate_optional(validate_uri),
             "source_uri": validate_optional(validate_uri),
             **UriIdentifiable._get_validations(self),
-            "arbitrary_rdf": validate_list(validate_triple_fragment),
+            "arbitrary_rdf": validate_list(v.validated_model(TripleFragmentBase)),
         }

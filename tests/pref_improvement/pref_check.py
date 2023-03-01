@@ -1,5 +1,5 @@
 """
-The inspect module helps to  get information about live objects such as modules, classes, methods, 
+The inspect module helps to  get information about live objects such as modules, classes, methods,
 functions, tracebacks, frame objects, and code objects.
 """
 import importlib
@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Iterable, Optional
 
 from csvcubed.definitions import APP_ROOT_DIR_PATH
-from csvcubed.models.validatedmodel import ValidatedModel
+from csvcubed.models.validatedmodel import ValidatedModel, Validations
 
 
 def list_classes_in_file(imported_module, file_name: Path) -> Iterable[type]:
@@ -91,20 +91,31 @@ def main():
     all_data_classes = check_for_dataclass(all_classes)
     failed = False
     for clazz in all_data_classes:
-        if issubclass(clazz, ValidatedModel) and not inspect.isabstract(clazz):
-            validated_model = clazz.__new__(clazz)
-            field_names_validated = set(validated_model._get_validations().keys())
-            field_names = {f.name for f in fields(validated_model)}
+        try:
+            if issubclass(clazz, ValidatedModel) and not inspect.isabstract(clazz):
+                validated_model = clazz.__new__(clazz)
 
-            if field_names_validated != field_names:
-
-                failed = True
-                not_validated = field_names - field_names_validated
-                print(
-                    f"In {clazz.__name__} ({inspect.getfile(clazz)}) you have not validated {', '.join(not_validated)}"
+                validations = validated_model._get_validations()
+                individual_property_validations = (
+                    validations.individual_property_validations
+                    if isinstance(validations, Validations)
+                    else validations
                 )
-                print(format(field_names))  # This returns empty
 
+                field_names_validated = set(individual_property_validations.keys())
+                field_names = {f.name for f in fields(validated_model)}
+
+                if field_names_validated != field_names:
+
+                    failed = True
+                    not_validated = field_names - field_names_validated
+                    print(
+                        f"In {clazz.__name__} ({inspect.getfile(clazz)}) you have not validated {', '.join(not_validated)}"
+                    )
+                    print(format(field_names))  # This returns empty
+        except:
+            print(f"Failed to consider class '{clazz.__name__}'")
+            raise
     if failed:
         exit(1)
 

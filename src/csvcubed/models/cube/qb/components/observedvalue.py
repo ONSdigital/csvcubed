@@ -53,3 +53,5 @@ class QbObservationValue(QbColumnStructuralDefinition):
             "unit": validate_optional(v.validated_model(QbUnit)),
             "data_type": validate_str_type,
         }
+
+    # def data_type_thing():

@@ -13,15 +13,13 @@ from pydantic import root_validator, validator
 
 from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_str
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
-from csvcubed.models.validatedmodel import ValidatedModel, ValidationFunction
-from csvcubed.models.validationerror import ValidateModelProperiesError, ValidationError
+from csvcubed.models.validatedmodel import ValidationFunction
+from csvcubed.models.validationerror import ValidationError
 from csvcubed.readers.skoscodelistreader import extract_code_list_concept_scheme_info
 from csvcubed.utils import validations as v
 from csvcubed.utils.qb.validation.uri_safe import ensure_no_uri_safe_conflicts
 from csvcubed.utils.validations import (
     validate_file,
-    validate_float_type,
-    validate_int_type,
     validate_list,
     validate_optional,
     validate_str_type,
@@ -34,12 +32,7 @@ from csvcubed.utils.validators.uri import validate_uri as pydantic_validate_uri
 from csvcubed.writers.helpers.skoscodelistwriter.constants import SCHEMA_URI_IDENTIFIER
 
 from ...uristyle import URIStyle
-from .arbitraryrdf import (
-    ArbitraryRdf,
-    RdfSerialisationHint,
-    TripleFragmentBase,
-    validate_triple_fragment,
-)
+from .arbitraryrdf import ArbitraryRdf, RdfSerialisationHint, TripleFragmentBase
 from .concept import DuplicatedQbConcept, NewQbConcept
 from .datastructuredefinition import SecondaryQbStructuralDefinition
 from .validationerrors import ReservedUriValueError
@@ -136,7 +129,7 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
     uri_style: Optional[URIStyle] = None
 
     @validator("concepts")
-    def pydantic_ensure_no_use_of_reserved_keywords(
+    def _pydantic_ensure_no_use_of_reserved_keywords(
         cls, concepts: List[TNewQbConcept]
     ) -> List[TNewQbConcept]:
         conflicting_values: List[str] = []
@@ -154,7 +147,7 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
         return concepts
 
     @validator("concepts")
-    def pydantic_validate_concepts_non_conflicting(
+    def _pydantic_validate_concepts_non_conflicting(
         cls, concepts: List[TNewQbConcept]
     ) -> List[TNewQbConcept]:
         """
@@ -171,7 +164,7 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
         return {
             "metadata": v.validated_model(CatalogMetadata),
             "concepts": validate_list(v.validated_model(NewQbConcept)),
-            "arbitrary_rdf": validate_list(validate_triple_fragment),
+            "arbitrary_rdf": validate_list(v.validated_model(TripleFragmentBase)),
             "uri_style": validate_optional(v.enum(URIStyle)),
         }
 
@@ -215,5 +208,5 @@ class CompositeQbCodeList(NewQbCodeList[DuplicatedQbConcept]):
     def _get_validations(self) -> Dict[str, ValidationFunction]:
         return {
             **NewQbCodeList._get_validations(self),
-            "variant_of_uris": validate_list(validate_str_type),
+            "variant_of_uris": validate_list(validate_uri),
         }

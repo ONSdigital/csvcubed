@@ -7,7 +7,12 @@ from typing import Dict, List, Optional, Union
 
 import pytest
 
-from csvcubed.models.validatedmodel import ValidatedModel, ValidationFunction
+from csvcubed.models.validatedmodel import (
+    ValidatedModel,
+    ValidationFunction,
+    Validations,
+)
+from csvcubed.models.validationerror import ValidateModelPropertiesError
 from csvcubed.utils import validations as v
 from csvcubed.utils.validations import (
     validate_file,
@@ -324,7 +329,10 @@ def test_validate_float_type_neg_infinity_incorrect():
 
 
 def test_validate_float_type_correct():
-    """This test will check if the class with the correct argument types will pass the validation"""
+    """
+    This test will check if the class given the correct arguments (in this case, a float) will be
+    validated without any errors being returned.
+    """
 
     test_instance = TestClass(
         str_test_variable="test", int_test_variable=5, float_test_variable=3.14
@@ -337,7 +345,8 @@ def test_validate_float_type_correct():
 
 def test_validate_file_exists():
     """
-    This test will check if the class with the correct argument types will pass the validation
+    This test will check if the test class given the correct arguments (in this case, a file path) will be
+    successfully validated without returning any errors.
     """
     test_instance = TestClass(
         str_test_variable="test",
@@ -389,7 +398,10 @@ def test_validate_file_not_a_path():
 
 
 def test_validate_datetime_correct():
-    """ """
+    """
+    This test checks whether the test class given the correct argument (in this case, a datetime object)
+    will be validated successfully without errors.
+    """
     test_instance = TestClass(
         date_test_variable=datetime.today(),
     )
@@ -400,7 +412,10 @@ def test_validate_datetime_correct():
 
 
 def test_validate_date_correct():
-    """ """
+    """
+    This test checks whether the test class given the correct argument (in this case, a date object)
+    will be validated successfully without errors.
+    """
     test_instance = TestClass(
         date_test_variable=date.today(),
     )
@@ -411,7 +426,10 @@ def test_validate_date_correct():
 
 
 def test_validate_date_incorrect():
-    """ """
+    """
+    This test checks whether the test class given an incorrect argument (in this case, a string object
+    when a date is expected) will be validated successfully and return the expected error.
+    """
     test_instance = TestClass(
         date_test_variable="test",
     )
@@ -427,6 +445,11 @@ def test_validate_date_incorrect():
 
 
 def test_validate_enum_correct():
+    """
+    This test checks whether a test class given the correct expected argument (in this case,
+    an object of type TestEnum defined specifically for these tests) is successfully
+    validated with no errors.
+    """
     test_instance = TestClass(test_enum_value=TestEnum.First_Value)
 
     errors = test_instance.validate()
@@ -435,6 +458,10 @@ def test_validate_enum_correct():
 
 
 def test_validate_enum_incorrect():
+    """
+    Checks whether a test class given an incorrect expected argument, when an argument of type TestEnum
+    is expected, is validated and returns errors.
+    """
     test_instance = TestClass(test_enum_value=OtherTestEnum.First_Value)
 
     errors = test_instance.validate()
@@ -443,6 +470,10 @@ def test_validate_enum_incorrect():
 
 
 def test_validate_any_of_correct():
+    """
+    Checks whether a class given correct arguments, when any objects of type string or int are
+    accepted, successfully validates and returns no errors.
+    """
     test_instance = TestClass(test_any_of_value="hi")
 
     errors = test_instance.validate()
@@ -457,6 +488,10 @@ def test_validate_any_of_correct():
 
 
 def test_validate_any_of_incorrect():
+    """
+    Checks whether a class given incorrect arguments (in this case a float) when any_of
+    only strings or ints are accepted, validates and returns errors.
+    """
     test_instance = TestClass(test_any_of_value=3.65)
 
     errors = test_instance.validate()
@@ -465,6 +500,10 @@ def test_validate_any_of_incorrect():
 
 
 def test_validated_model_validation_correct():
+    """
+    Tests whether a class using validated_model to validate an object of a type which inherits from the
+    ValidatedModel class works successfully without returning any errors.
+    """
     test_instance = TestClass(
         test_validated_model_class=OtherTestClass(str_test_variable_2="This is valid")
     )
@@ -474,7 +513,11 @@ def test_validated_model_validation_correct():
     assert not any(errors)
 
 
-def test_validated_model_validation_incorrect():
+def test_validated_model_validation_incorrect_type():
+    """
+    Tests whether a class using validated_model to validate an object of a type which inherits from the
+    ValidatedModel class returns errors when given an incorrect object type.
+    """
     test_instance = TestClass(
         test_validated_model_class=OtherTestClass(str_test_variable_2=3.14)
     )
@@ -484,13 +527,69 @@ def test_validated_model_validation_incorrect():
     assert any(errors)
 
 
-def test_validated_model_validation_incorrect_2():
+def test_validated_model_is_not_inherited():
+    """
+    Tests whether attempting to use validated_model validation on an object which does not inherit from
+    the VaidatedModel class returns errors as expected.
+    """
     test_instance = TestClass(
         test_validated_model_class="This is not an instance of the right class."
     )
 
     errors = test_instance.validate()
 
+    assert any(errors)
+
+
+# todo: Test that a model returning Dict[str, ValidationFuncion] from _get_validations works
+
+# todo: Test that a model returning Validations from _get_validations works
+
+
+@dataclass
+class ValidationsTestClass(ValidatedModel):
+    value_one: str
+    value_two: int
+
+    def _get_validations(self) -> Union[Validations, Dict[str, ValidationFunction]]:
+        return Validations(
+            individual_property_validations={
+                "value_one": validate_str_type,
+                "value_two": validate_int_type,
+            },
+            whole_object_validations=[self._whole_object_validation],
+        )
+
+    @staticmethod
+    def _whole_object_validation(the_instance) -> List[ValidateModelPropertiesError]:
+        errors: List[ValidateModelPropertiesError] = []
+        if the_instance.value_one.lower() == "positive":
+            if the_instance.value_two < 0:
+                errors.append(
+                    ValidateModelPropertiesError(
+                        "Expected a positive integer", "Whole Object"
+                    )
+                )
+        else:
+            # Negative
+            if the_instance.value_two > 0:
+                errors.append(
+                    ValidateModelPropertiesError(
+                        "Expected a negative integer", "Whole Object"
+                    )
+                )
+        return errors
+
+
+def test_whole_object_validation_correct():
+    test_instance = ValidationsTestClass(value_one="positive", value_two=2)
+    errors = test_instance.validate()
+    assert not any(errors)
+
+
+def test_whole_object_validation_incorrect():
+    test_instance = ValidationsTestClass(value_one="positive", value_two=-2)
+    errors = test_instance.validate()
     assert any(errors)
 
 
