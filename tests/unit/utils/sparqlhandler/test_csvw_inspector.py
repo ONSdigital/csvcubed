@@ -274,7 +274,10 @@ def test_multi_theme_and_keyword():
         csvw_rdf_manager.csvw_inspector.get_primary_catalog_metadata()
     )
 
-    expected_keywords = [
+    assert set(primary_catalog_metadata.themes) == {
+        "https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork"
+    }
+    assert set(primary_catalog_metadata.keywords) == {
         "education",
         "employment",
         "united-kingdom",
@@ -282,13 +285,5 @@ def test_multi_theme_and_keyword():
         "qualifications",
         "subnational",
         "mission-6",
-    ]
-    assert len(primary_catalog_metadata.themes) == 1
-    assert (
-        primary_catalog_metadata.themes[0]
-        == "https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork"
-    )
-    assert len(primary_catalog_metadata.keywords) == 7
-    assert primary_catalog_metadata.keywords.sort() == expected_keywords.sort()
-    assert len(primary_catalog_metadata.landing_pages) == 1
-    assert primary_catalog_metadata.landing_pages[0] == ""
+    }
+    assert set(primary_catalog_metadata.landing_pages) == {""}
