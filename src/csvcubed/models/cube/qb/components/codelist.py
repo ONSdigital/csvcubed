@@ -13,8 +13,11 @@ from pydantic import root_validator, validator
 
 from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_str
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
-from csvcubed.models.validatedmodel import ValidationFunction
-from csvcubed.models.validationerror import ValidationError
+from csvcubed.models.validatedmodel import ValidationFunction, Validations
+from csvcubed.models.validationerror import (
+    ValidateModelPropertiesError,
+    ValidationError,
+)
 from csvcubed.readers.skoscodelistreader import extract_code_list_concept_scheme_info
 from csvcubed.utils import validations as v
 from csvcubed.utils.qb.validation.uri_safe import ensure_no_uri_safe_conflicts
@@ -106,12 +109,33 @@ class NewQbCodeListInCsvW(QbCodeList):
             self.concept_template_uri = None  # type: ignore
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
-        return {
-            "schema_metadata_file_path": validate_file,
-            "csv_file_relative_path_or_uri": validate_uri,
-            "concept_scheme_uri": validate_uri,
-            "concept_template_uri": validate_uri,
-        }
+        return Validations(
+            individual_property_validations={
+                "schema_metadata_file_path": validate_file,
+                "csv_file_relative_path_or_uri": validate_uri,
+                "concept_scheme_uri": validate_uri,
+                "concept_template_uri": validate_uri,
+            },
+            whole_object_validations=self._validation_csvw_sufficient_information,
+        )
+
+    @staticmethod
+    def _validation_csvw_sufficient_information(
+        CodeListInCsvw,
+    ) -> List[ValidateModelPropertiesError]:
+        errors: List[ValidateModelPropertiesError] = []
+
+        csv_path = CodeListInCsvw.csv_file_relative_path_or_uri
+        cs_uri = CodeListInCsvw.concept_scheme_uri
+        c_template_uri = CodeListInCsvw.concept_template_uri
+        if csv_path is None or cs_uri is None or c_template_uri is None:
+            # Not sure if below is needed. May only need the exception message?
+            schema_metadata_file_path = CodeListInCsvw.schema_metadata_file_path
+            extract_code_list_concept_scheme_info(schema_metadata_file_path)
+
+            errors.append(ValidateModelPropertiesError("The message", "Whole Object"))
+
+        return errors
 
 
 TNewQbConcept = TypeVar("TNewQbConcept", bound=NewQbConcept, covariant=True)
