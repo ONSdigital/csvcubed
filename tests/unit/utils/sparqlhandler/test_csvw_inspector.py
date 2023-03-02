@@ -256,3 +256,39 @@ def test_get_column_definitions_for_csv():
         value_url="http://example.com/value",
         virtual=True,
     )
+
+
+def test_multi_theme_and_keyword():
+    """
+    This test ensures that the 'select_catalog_metadata.sparql' will return the correct amount of
+    themes, keywords and landing pages(unique values and no duplications)
+    URL to the issue description: 'https://app.zenhub.com/workspaces/features-squad-61b72275ac896c0010a1b00b/issues/gh/gss-cogs/csvcubed/739'
+    """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "multi-theme-and-keywords"
+        / "aged-16-to-64-years-level-3-or-above-qualifications.csv-metadata.json"
+    )
+
+    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path)
+    primary_catalog_metadata = (
+        csvw_rdf_manager.csvw_inspector.get_primary_catalog_metadata()
+    )
+
+    assert set(primary_catalog_metadata.themes) == {
+        "https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork",
+        "https://www.ons.gov.uk/employmentandlabourmarket/peopleonholidays",
+        "https://www.ons.gov.uk/employmentandlabourmarket/peopleoutofwork",
+    }
+    assert set(primary_catalog_metadata.keywords) == {
+        "education",
+        "employment",
+        "united-kingdom",
+        "levelling-up",
+        "qualifications",
+        "subnational",
+        "mission-6",
+    }
+    assert set(primary_catalog_metadata.landing_pages) == {
+        "https://www.gov.uk/government/statistics/alcohol-bulletin"
+    }

@@ -2,17 +2,15 @@ PREFIX dcat: <http://www.w3.org/ns/dcat#>
 PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?graph ?dataset ?title ?label ?issued ?modified ?comment ?description ?license ?creator ?publisher 
-    (GROUP_CONCAT(?landingPage ; separator='|') as ?landingPages) 
-    (GROUP_CONCAT(?theme; separator='|') as ?themes) 
-    (GROUP_CONCAT(?keyword; separator='|') as ?keywords) 
-    ?contactPoint ?identifier
+SELECT ?graph ?dataset ?title ?label ?issued ?modified ?comment ?description
+    ?license ?creator ?publisher ?landingPages ?themes ?keywords ?contactPoint
+    ?identifier
 WHERE {
     {
         SELECT DISTINCT ?dataset
         WHERE {
             GRAPH ?someGraph {
-                ?dataset a dcat:Dataset.        
+                ?dataset a dcat:Dataset.
             }
         }
     }
@@ -28,11 +26,44 @@ WHERE {
         OPTIONAL { ?dataset dcterms:license ?license }.
         OPTIONAL { ?dataset dcterms:creator ?creator }.
         OPTIONAL { ?dataset dcterms:publisher ?publisher }.
-        OPTIONAL { ?dataset dcat:landingPage ?landingPage }.
-        OPTIONAL { ?dataset dcat:theme ?theme }.
-        OPTIONAL { ?dataset dcat:keyword ?keyword }.
         OPTIONAL { ?dataset dcat:contactPoint ?contactPoint }.
-        OPTIONAL { ?dataset dcterms:identifier ?identifier }.   
+        OPTIONAL { ?dataset dcterms:identifier ?identifier }.
+    }
+
+    {
+        # Select the (potentially multiple) themes as a `|` delimited string.
+        SELECT ?graph ?dataset
+            (GROUP_CONCAT(?theme; separator='|') as ?themes)
+        WHERE {
+                GRAPH ?graph {
+                    ?dataset a dcat:Dataset.
+                    OPTIONAL { ?dataset dcat:theme ?theme. }
+                }
+        }
+        GROUP BY ?graph ?dataset
+    }
+    {
+        # Select the (potentially multiple) keywords as a `|` delimited string.
+        SELECT ?graph ?dataset
+            (GROUP_CONCAT(?keyword; separator='|') as ?keywords)
+        WHERE {
+                GRAPH ?graph {
+                    ?dataset a dcat:Dataset.
+                    OPTIONAL { ?dataset dcat:keyword ?keyword. }
+                }
+        }
+        GROUP BY ?graph ?dataset
+    }
+    {
+        # Select the (potentially multiple) landing pages as a `|` delimited string.
+        SELECT  ?graph ?dataset
+            (GROUP_CONCAT(?landingPage ; separator='|') as ?landingPages)
+        WHERE {
+                GRAPH ?graph {
+                    ?dataset a dcat:Dataset.
+                    OPTIONAL { ?dataset dcat:landingPage ?landingPage. }
+                }
+        }
+        GROUP BY ?graph ?dataset
     }
 }
-GROUP BY ?graph ?dataset ?title ?label ?issued ?modified ?comment ?description ?license ?creator ?publisher ?contactPoint ?identifier
