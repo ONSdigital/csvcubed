@@ -123,6 +123,9 @@ class NewQbCodeListInCsvW(QbCodeList):
     def _validation_csvw_sufficient_information(
         CodeListInCsvw,
     ) -> List[ValidateModelPropertiesError]:
+        """
+        WIP Attempting to implement ValidationModel version of _csvw_contains_sufficient_information_validator
+        """
         errors: List[ValidateModelPropertiesError] = []
 
         csv_path = CodeListInCsvw.csv_file_relative_path_or_uri

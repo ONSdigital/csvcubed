@@ -55,3 +55,16 @@ class QbObservationValue(QbColumnStructuralDefinition):
         }
 
     # def data_type_thing():
+    # # todo: use a combination of checking if the data_type belongs to the dict of accepted ones, in conjunction with looks_like_uri
+    # if data type is in dict of approved ones:
+    #     use validate_str_type
+
+    # elif looks_like_uri(data_type):
+    #     use validate_uri
+
+    # else
+    #     throw exception
+
+    # if not data_type in dict of approved ones:
+    #     if data_type not looks like uri:
+    #         Error

@@ -264,5 +264,20 @@ def validated_model(validated_model_type: Type[ValidatedModel]):
     return validate
 
 
-def anything(value: Any, property_name: str) -> List[ValidateModelPropertiesError]:
-    return []
+def validate_external(type_to_validate) -> ValidationFunction:
+    """
+    WIP early attempt at a function that can apply validations in a generic way without needing
+    to use validatedmodel/custom functions, by specifying what type to check for
+    """
+
+    def _validate(value: Any, property_name: str) -> List[ValidateModelPropertiesError]:
+        if not isinstance(value, type_to_validate):
+            return [
+                ValidateModelPropertiesError(
+                    f"Value '{value}' was not an instance of the expected type '{type_to_validate.__name__}'.",
+                    property_name,
+                ),
+            ]
+        return []
+
+    return _validate

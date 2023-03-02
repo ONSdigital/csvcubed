@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Union
 
 import pytest
+from rdflib.term import Identifier
 
 from csvcubed.models.validatedmodel import (
     ValidatedModel,
@@ -550,12 +551,16 @@ def test_validated_model_is_not_inherited():
 class ValidationsTestClass(ValidatedModel):
     value_one: str
     value_two: int
+    value_three: Union[str, Identifier]
 
     def _get_validations(self) -> Union[Validations, Dict[str, ValidationFunction]]:
         return Validations(
             individual_property_validations={
                 "value_one": validate_str_type,
                 "value_two": validate_int_type,
+                "value_three": v.any_of(
+                    validate_str_type, v.validate_external(Identifier)
+                ),
             },
             whole_object_validations=[self._whole_object_validation],
         )
@@ -582,15 +587,27 @@ class ValidationsTestClass(ValidatedModel):
 
 
 def test_whole_object_validation_correct():
-    test_instance = ValidationsTestClass(value_one="positive", value_two=2)
+    test_instance = ValidationsTestClass(
+        value_one="positive", value_two=2, value_three="three"
+    )
     errors = test_instance.validate()
     assert not any(errors)
 
 
 def test_whole_object_validation_incorrect():
-    test_instance = ValidationsTestClass(value_one="positive", value_two=-2)
+    test_instance = ValidationsTestClass(
+        value_one="positive", value_two=-2, value_three=3
+    )
     errors = test_instance.validate()
     assert any(errors)
+
+
+def test_validate_external():
+    test_instance = ValidationsTestClass(
+        value_one="positive", value_two=2, object=Identifier("anything")
+    )
+    errors = test_instance.validate()
+    assert not any(errors)
 
 
 if __name__ == "__main__":
