@@ -10,33 +10,31 @@ import pytest
 from csvcubed.cli.build import build as cli_build
 from csvcubed.definitions import APP_ROOT_DIR_PATH
 from csvcubed.models.cube.cube import Cube
-from csvcubed.models.cube.qb import QbColumn
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
-from csvcubed.models.cube.qb.components import (
-    NewQbAttribute,
-    NewQbCodeList,
-    NewQbConcept,
-    NewQbDimension,
-    NewQbMeasure,
-    NewQbUnit,
-    QbMultiMeasureDimension,
-    QbMultiUnits,
-)
+from csvcubed.models.cube.qb.columns import QbColumn
 from csvcubed.models.cube.qb.components.attribute import (
     ExistingQbAttribute,
     ExistingQbAttributeLiteral,
+    NewQbAttribute,
     NewQbAttributeLiteral,
 )
 from csvcubed.models.cube.qb.components.attributevalue import NewQbAttributeValue
 from csvcubed.models.cube.qb.components.codelist import (
     CompositeQbCodeList,
     ExistingQbCodeList,
+    NewQbCodeList,
+    NewQbConcept,
 )
 from csvcubed.models.cube.qb.components.concept import DuplicatedQbConcept
-from csvcubed.models.cube.qb.components.dimension import ExistingQbDimension
-from csvcubed.models.cube.qb.components.measure import ExistingQbMeasure
+from csvcubed.models.cube.qb.components.dimension import (
+    ExistingQbDimension,
+    NewQbDimension,
+)
+from csvcubed.models.cube.qb.components.measure import ExistingQbMeasure, NewQbMeasure
+from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureDimension
 from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
-from csvcubed.models.cube.qb.components.unit import ExistingQbUnit
+from csvcubed.models.cube.qb.components.unit import ExistingQbUnit, NewQbUnit
+from csvcubed.models.cube.qb.components.unitscolumn import QbMultiUnits
 from csvcubed.readers.catalogmetadata.v1.catalog_metadata_reader import (
     metadata_from_dict,
 )

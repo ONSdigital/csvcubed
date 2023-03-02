@@ -8,7 +8,10 @@ from csvcubed.models.cube.qb.components.arbitraryrdf import (
     RdfSerialisationHint,
     TripleFragment,
 )
-from csvcubed.models.cube.qb.components.codelist import NewQbCodeList
+from csvcubed.models.cube.qb.components.codelist import (
+    CompositeQbCodeList,
+    NewQbCodeList,
+)
 from csvcubed.models.cube.qb.components.concept import NewQbConcept
 from csvcubed.models.cube.uristyle import URIStyle
 from csvcubed.writers.skoscodelistwriter import SkosCodeListWriter

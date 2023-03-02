@@ -1,0 +1,65 @@
+{
+    "columns": [
+        {
+            "titles": "Uri Identifier",
+            "name": "uri_identifier",
+            "required": true,
+            "suppressOutput": true
+        },
+        {
+            "titles": "Label",
+            "name": "label",
+            "required": true,
+            "propertyUrl": "rdfs:label"
+        },
+        {
+            "titles": "Notation",
+            "name": "notation",
+            "required": true,
+            "propertyUrl": "skos:notation"
+        },
+        {
+            "titles": "Parent Uri Identifier",
+            "name": "parent_uri_identifier",
+            "required": false,
+            "propertyUrl": "skos:broader",
+            "valueUrl": "year.csv#{+parent_uri_identifier}"
+        },
+        {
+            "titles": "Sort Priority",
+            "name": "sort_priority",
+            "required": false,
+            "datatype": "integer",
+            "propertyUrl": "http://www.w3.org/ns/ui#sortPriority"
+        },
+        {
+            "titles": "Description",
+            "name": "description",
+            "required": false,
+            "propertyUrl": "rdfs:comment"
+        },
+        {
+            "titles": "Original Concept URI",
+            "name": "uri",
+            "required": true,
+            "propertyUrl": "owl:sameAs",
+            "valueUrl": "{+uri}"
+        },
+        {
+            "virtual": true,
+            "name": "virt_inScheme",
+            "required": true,
+            "propertyUrl": "skos:inScheme",
+            "valueUrl": "year.csv#code-list"
+        },
+        {
+            "virtual": true,
+            "name": "virt_type",
+            "required": true,
+            "propertyUrl": "rdf:type",
+            "valueUrl": "skos:Concept"
+        }
+    ],
+    "aboutUrl": "year.csv#{+uri_identifier}",
+    "primaryKey": "uri_identifier"
+}

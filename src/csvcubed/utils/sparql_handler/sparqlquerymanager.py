@@ -24,11 +24,9 @@ from csvcubed.models.sparql.valuesbinding import ValuesBinding
 from csvcubed.models.sparqlresults import (
     CatalogMetadataResult,
     CodelistsResult,
-    ColsWithSuppressOutputTrueResult,
     ColumnDefinition,
     CSVWTableSchemaFileDependenciesResult,
     CubeTableIdentifiers,
-    DSDLabelURIResult,
     IsPivotedShapeMeasureResult,
     MetadataDependenciesResult,
     PrimaryKeyColNamesByDatasetUrlResult,
@@ -37,11 +35,9 @@ from csvcubed.models.sparqlresults import (
     UnitResult,
     map_catalog_metadata_results,
     map_codelists_sparql_result,
-    map_cols_with_supress_output_true_sparql_result,
     map_column_definition_results,
     map_csvw_table_schemas_file_dependencies_result,
     map_data_set_dsd_csv_url_result,
-    map_dataset_label_dsd_uri_sparql_result,
     map_is_pivoted_shape_for_measures_in_data_set,
     map_metadata_dependency_results,
     map_primary_key_col_names_by_csv_url_result,
@@ -65,13 +61,9 @@ class SPARQLQueryName(Enum):
 
     SELECT_CATALOG_METADATA = "select_catalog_metadata"
 
-    SELECT_DSD_DATASETLABEL_AND_URI = "select_dsd_datasetlabel_and_uri"
-
     SELECT_DATA_SET_DSD_CSV_URL = "select_data_set_dsd_csv_url"
 
     SELECT_DSD_QUBE_COMPONENTS = "select_dsd_qube_components"
-
-    SELECT_COLS_W_SUPPRESS_OUTPUT = "select_cols_w_suppress_output"
 
     SELECT_CODELISTS_AND_COLS = "select_codelists_and_cols"
 
@@ -175,30 +167,6 @@ def select_csvw_catalog_metadata(
     return map_catalog_metadata_results(results)
 
 
-def select_csvw_dsd_dataset_label_and_dsd_def_uri(
-    rdf_graph: rdflib.ConjunctiveGraph,
-) -> DSDLabelURIResult:
-    """
-    Queries data structure definition dataset label and uri.
-
-    Member of :file:`./sparqlquerymanager.py`
-
-    :return: `DSDLabelURIResult`
-    """
-    results: List[ResultRow] = select(
-        _get_query_string_from_file(SPARQLQueryName.SELECT_DSD_DATASETLABEL_AND_URI),
-        rdf_graph,
-    )
-
-    if len(results) != 1:
-        raise InvalidNumberOfRecordsException(
-            record_description=f"result for the {SPARQLQueryName.SELECT_DSD_DATASETLABEL_AND_URI.value} sparql query",
-            excepted_num_of_records=1,
-            num_of_records=len(results),
-        )
-    return map_dataset_label_dsd_uri_sparql_result(results[0])
-
-
 def select_data_set_dsd_and_csv_url(
     rdf_graph: rdflib.ConjunctiveGraph,
 ) -> List[CubeTableIdentifiers]:
@@ -283,26 +251,10 @@ def _cube_table_identifiers_to_values_binding(
     )
 
 
-def select_cols_where_suppress_output_is_true(
-    rdf_graph: rdflib.ConjunctiveGraph,
-) -> ColsWithSuppressOutputTrueResult:
-    """
-    Queries the columns where suppress output is true.
-
-    Member of :file:`./sparqlquerymanager.py`
-
-    :return: `ColsWithSupressOutputTrueSparlqlResult`
-    """
-    results: List[ResultRow] = select(
-        _get_query_string_from_file(SPARQLQueryName.SELECT_COLS_W_SUPPRESS_OUTPUT),
-        rdf_graph,
-    )
-    return map_cols_with_supress_output_true_sparql_result(results)
-
-
 def select_dsd_code_list_and_cols(
-    rdf_graph: rdflib.ConjunctiveGraph, dsd_uri: str, json_path: Path
-) -> CodelistsResult:
+    rdf_graph: rdflib.ConjunctiveGraph,
+    json_path: Path,
+) -> Dict[str, CodelistsResult]:
     """
     Queries code lists and columns in the data cube.
 
@@ -313,7 +265,6 @@ def select_dsd_code_list_and_cols(
     results: List[ResultRow] = select(
         _get_query_string_from_file(SPARQLQueryName.SELECT_CODELISTS_AND_COLS),
         rdf_graph,
-        init_bindings={"dsd_uri": URIRef(dsd_uri)},
     )
     return map_codelists_sparql_result(results, json_path)
 

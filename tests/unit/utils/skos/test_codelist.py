@@ -14,6 +14,7 @@ from tests.helpers.inspectors_cache import get_code_list_inspector
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
+_test_case_utils_dir = get_test_cases_dir() / "utils"
 
 
 def test_get_codelist_col_title_by_property_url_label():

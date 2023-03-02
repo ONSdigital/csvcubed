@@ -18,7 +18,7 @@ from csvcubed.models.csvcubedexception import FailedToLoadRDFGraphException
 from csvcubed.models.csvwtype import CSVWType
 from csvcubed.utils.sparql_handler.code_list_inspector import CodeListInspector
 from csvcubed.utils.sparql_handler.csvw_inspector import CsvWInspector
-from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
+from csvcubed.utils.sparql_handler.data_cube_inspector import DataCubeInspector
 from csvcubed.utils.tableschema import CsvWRdfManager
 
 _logger = logging.getLogger(__name__)
@@ -84,8 +84,8 @@ def _generate_printables(
     csvw_type = csvw_inspector.csvw_type
 
     if csvw_type == CSVWType.QbDataSet:
-        data_cube_state = DataCubeState(csvw_inspector)
-        metadata_printer = MetadataPrinter(data_cube_state)
+        data_cube_inspector = DataCubeInspector(csvw_inspector)
+        metadata_printer = MetadataPrinter(data_cube_inspector)
     else:
         code_list_state = CodeListInspector(csvw_inspector)
         metadata_printer = MetadataPrinter(code_list_state)

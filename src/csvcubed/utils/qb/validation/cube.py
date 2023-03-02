@@ -2,10 +2,9 @@ from typing import List
 
 from csvcubed.models.cube.cube import Cube
 from csvcubed.models.cube.qb.columns import QbColumn
-from csvcubed.models.cube.qb.components import (
+from csvcubed.models.cube.qb.components.attribute import QbAttribute, QbAttributeLiteral
+from csvcubed.models.cube.qb.components.dimension import (
     ExistingQbDimension,
-    QbAttribute,
-    QbAttributeLiteral,
     QbDimension,
 )
 from csvcubed.models.cube.qb.validationerrors import (

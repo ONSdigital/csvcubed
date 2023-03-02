@@ -15,7 +15,6 @@ from rdflib.query import ResultRow
 from csvcubed.utils.iterables import group_by
 from csvcubed.utils.printable import (
     get_printable_list_str,
-    get_printable_tabular_list_str,
     get_printable_tabular_str_from_list,
 )
 from csvcubed.utils.qb.components import (
@@ -78,43 +77,14 @@ class CatalogMetadataResult:
 
 
 @dataclass
-class DSDLabelURIResult:
-    """
-    Model to represent select dsd dataset label and uri sparql query result.
-    """
-
-    dataset_label: str
-    dsd_uri: str
-
-    @property
-    def output_str(self) -> str:
-        return f"""
-        - Dataset Label: {self.dataset_label}"""
-
-
-@dataclass
 class CubeTableIdentifiers(DataClassBase):
     """
-    Links the CSV, DataSet and DataStructureDefinition URIs for a given cube.
+    Links the CSV URL, DataSet URL, DataSet Label and DataStructureDefinition URI for a given cube.
     """
 
     csv_url: str
     data_set_url: str
     dsd_uri: str
-
-
-@dataclass
-class ColsWithSuppressOutputTrueResult:
-    """
-    Model to represent select cols where the suppress output is true sparql query result.
-    """
-
-    columns: list[str]
-
-    @property
-    def output_str(self) -> str:
-        return f"""
-        - Columns where suppress output is true: {get_printable_list_str(self.columns)}"""
 
 
 @dataclass
@@ -124,8 +94,9 @@ class CodelistResult(DataClassBase):
     """
 
     code_list: str
-    code_list_label: str
-    cols_used_in: str
+    code_list_label: Optional[str]
+    cols_used_in: List[str]
+    csv_url: str
 
 
 @dataclass
@@ -143,21 +114,8 @@ class CodelistsResult:
     Model to represent select codelists sparql query result.
     """
 
-    codelists: list[CodelistResult]
+    codelists: List[CodelistResult]
     num_codelists: int
-
-    @property
-    def output_str(self) -> str:
-        formatted_codelists = get_printable_tabular_str_from_list(
-            [
-                codelist.as_dict()
-                for codelist in sorted(self.codelists, key=lambda c: c.code_list)
-            ],
-            column_names=["Code List", "Code List Label", "Columns Used In"],
-        )
-        return f"""
-        - Number of Code Lists: {self.num_codelists}
-        - Code Lists:{linesep}{formatted_codelists}"""
 
 
 @dataclass
@@ -170,7 +128,7 @@ class CodeListTableIdentifers:
     concept_scheme_url: str
 
 
-@dataclass
+@dataclass(unsafe_hash=True)
 class UnitResult:
     """
     Model to represent select single unit from dsd.
@@ -385,30 +343,11 @@ def map_catalog_metadata_results(
     return results
 
 
-def map_dataset_label_dsd_uri_sparql_result(
-    sparql_result: ResultRow,
-) -> DSDLabelURIResult:
-    """
-    Maps sparql query result to `DSDLabelURIResult`
-
-    Member of :file:`./models/sparqlresults.py`
-
-    :return: `DSDLabelURIResult`
-    """
-    result_dict = sparql_result.asdict()
-
-    result = DSDLabelURIResult(
-        dataset_label=str(result_dict["dataSetLabel"]),
-        dsd_uri=str(result_dict["dataStructureDefinition"]),
-    )
-    return result
-
-
 def map_data_set_dsd_csv_url_result(
     sparql_results: List[ResultRow],
 ) -> List[CubeTableIdentifiers]:
     """
-    TODO: Add description
+    Maps the SPARQL results of `select_data_set_dsd_csv_url.sparql` into `CubeTableIdentifiers`.
     """
 
     def map_row(row_result: Dict[str, Any]) -> CubeTableIdentifiers:
@@ -523,26 +462,6 @@ def map_qube_components_sparql_result(
     }
 
 
-def map_cols_with_supress_output_true_sparql_result(
-    sparql_results: List[ResultRow],
-) -> ColsWithSuppressOutputTrueResult:
-    """
-    Maps sparql query result to `ColsWithSuppressOutputTrueResult`
-
-    Member of :file:`./models/sparqlresults.py`
-
-    :return: `ColsWithSuppressOutputTrueResult`
-    """
-    columns = list(
-        map(
-            lambda result: str(result["csvColumnTitle"]),
-            sparql_results,
-        )
-    )
-    result = ColsWithSuppressOutputTrueResult(columns=columns)
-    return result
-
-
 def _map_codelist_sparql_result(
     sparql_result: ResultRow, json_path: Path
 ) -> CodelistResult:
@@ -559,32 +478,34 @@ def _map_codelist_sparql_result(
         code_list=get_component_property_as_relative_path(
             json_path, str(result_dict["codeList"])
         ),
-        code_list_label=none_or_map(result_dict.get("codeListLabel"), str) or "",
-        cols_used_in=get_printable_tabular_list_str(
-            str(result_dict["csvColumnsUsedIn"]).split("|")
-        ),
+        code_list_label=none_or_map(result_dict.get("codeListLabel"), str),
+        cols_used_in=str(result_dict["csvColumnsUsedIn"]).split("|"),
+        csv_url=str(result_dict["csvUrl"]),
     )
     return result
 
 
 def map_codelists_sparql_result(
-    sparql_results: List[ResultRow], json_path: Path
-) -> CodelistsResult:
+    sparql_results: List[ResultRow],
+    json_path: Path,
+) -> Dict[str, CodelistsResult]:
     """
     Maps sparql query result to `CodelistsModel`
 
     Member of :file:`./models/sparqlresults.py`
 
-    :return: `CodelistsModel`
+    :return: `Dict[str, CodelistsResult]`
     """
-    codelists = list(
-        map(
-            lambda result: _map_codelist_sparql_result(result, json_path),
-            sparql_results,
-        )
+    codelists = map(
+        lambda result: _map_codelist_sparql_result(result, json_path),
+        sparql_results,
     )
-    result = CodelistsResult(codelists=codelists, num_codelists=len(codelists))
-    return result
+
+    map_csv_url_to_codelists = group_by(codelists, lambda c: c.csv_url)
+    return {
+        csv_url: CodelistsResult(codelists=code_lists, num_codelists=len(code_lists))
+        for (csv_url, code_lists) in map_csv_url_to_codelists.items()
+    }
 
 
 def map_csvw_table_schemas_file_dependencies_result(
@@ -597,13 +518,12 @@ def map_csvw_table_schemas_file_dependencies_result(
 
     :return: `CSVWTableSchemaFileDependenciesResult`
     """
-
-    result = CSVWTableSchemaFileDependenciesResult(
+    results = CSVWTableSchemaFileDependenciesResult(
         table_schema_file_dependencies=[
             str(sparql_result["tableSchema"]) for sparql_result in sparql_results
-        ]
+        ],
     )
-    return result
+    return results
 
 
 def map_units(sparql_results: List[ResultRow]) -> List[UnitResult]:

@@ -1,6 +1,6 @@
 """
-Data Cube State
----------------
+Data Cube Inspector
+-------------------
 
 Provides access to inspect the contents of an rdflib graph containing
 one of more data cubes.
@@ -8,11 +8,11 @@ one of more data cubes.
 
 from dataclasses import dataclass
 from functools import cached_property
-from typing import Dict, List, Optional, TypeVar
+from typing import Dict, List, Optional
 
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import (
-    ColumnDefinition,
+    CodelistsResult,
     CubeTableIdentifiers,
     IsPivotedShapeMeasureResult,
     QubeComponentsResult,
@@ -22,16 +22,16 @@ from csvcubed.utils.dict import get_from_dict_ensure_exists
 from csvcubed.utils.iterables import first, group_by
 from csvcubed.utils.sparql_handler.csvw_inspector import CsvWInspector
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
-    select_column_definitions,
     select_csvw_dsd_qube_components,
     select_data_set_dsd_and_csv_url,
+    select_dsd_code_list_and_cols,
     select_is_pivoted_shape_for_measures_in_data_set,
     select_units,
 )
 
 
 @dataclass
-class DataCubeState:
+class DataCubeInspector:
     """Provides access to inspect the data cubes contained in an rdflib graph."""
 
     csvw_inspector: CsvWInspector
@@ -39,14 +39,6 @@ class DataCubeState:
     """
     Private cached properties.
     """
-
-    @cached_property
-    def _column_definitions(self) -> Dict[str, List[ColumnDefinition]]:
-        """
-        Map of csv_url to the list of column definitions for the given CSV file.
-        """
-        results = select_column_definitions(self.csvw_inspector.rdf_graph)
-        return group_by(results, lambda r: r.csv_url)
 
     @cached_property
     def _units(self) -> Dict[str, UnitResult]:
@@ -127,20 +119,35 @@ class DataCubeState:
             for (csv_url, measures_with_shape) in map_csv_url_to_measure_shape.items()
         }
 
-    # Public getters for the cached properties.
+    @cached_property
+    def _codelists_and_cols(self) -> Dict[str, CodelistsResult]:
+        """
+        Maps the csv url to the code lists/columns featured in the CSV.
+        """
+        return select_dsd_code_list_and_cols(
+            self.csvw_inspector.rdf_graph,
+            self.csvw_inspector.csvw_json_path,
+        )
+
+    """
+    Public getters for the cached properties.
+    """
 
     def get_unit_for_uri(self, uri: str) -> Optional[UnitResult]:
-        """The function returns a single unit from the uri if there is any."""
+        """
+        Get a specific unit, by its uri.
+        """
         return self._units.get(uri)
 
     def get_units(self) -> List[UnitResult]:
-        """This function gets the value of the unit and returns it as a list."""
+        """
+        Returns all units defined in the graph.
+        """
         return list(self._units.values())
 
     def get_cube_identifiers_for_csv(self, csv_url: str) -> CubeTableIdentifiers:
         """
-        Getter for data_set_dsd_and_csv_url_for_csv_url cached property, Raises a KeyError if the csv_url
-        is not associated with a CubeTableIdentifiers.
+        Get csv url, data set uri, data set label and DSD uri for the given csv url.
         """
         result: CubeTableIdentifiers = get_from_dict_ensure_exists(
             self._cube_table_identifiers, csv_url
@@ -151,7 +158,7 @@ class DataCubeState:
         self, data_set_uri: str
     ) -> CubeTableIdentifiers:
         """
-        Getter for data_set_dsd_and_csv_url_for_csv_url cached property.
+        Get csv url, data set uri, data set label and DSD uri for the given data set uri.
         """
 
         result = first(
@@ -165,14 +172,19 @@ class DataCubeState:
 
     def get_dsd_qube_components_for_csv(self, csv_url: str) -> QubeComponentsResult:
         """
-        Getter for DSD Qube Components cached property, Raises a KeyError if the csv_url
-        is not associated with a CubeComponentResult.
+        Get DSD Qube Components for the given csv url.
         """
         return get_from_dict_ensure_exists(self._dsd_qube_components, csv_url)
 
     def get_shape_for_csv(self, csv_url: str) -> CubeShape:
         """
-        Returns the shape of the cube stored in a given CSV file,
-         Raises a KeyError if the csv_url is not associated with a cube.
+        Get the cube shape.
         """
         return get_from_dict_ensure_exists(self._cube_shapes, csv_url)
+
+    def get_code_lists_and_cols(self, csv_url: str) -> CodelistsResult:
+        """
+        Get the codelists and columns associated with the given csv url.
+        """
+
+        return self._codelists_and_cols.get(csv_url, CodelistsResult([], 0))

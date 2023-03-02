@@ -13,7 +13,7 @@ from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.utils.iterables import first
 from csvcubed.utils.sparql_handler.code_list_inspector import CodeListInspector
 from csvcubed.utils.sparql_handler.csvw_inspector import CsvWInspector
-from csvcubed.utils.sparql_handler.data_cube_state import DataCubeState
+from csvcubed.utils.sparql_handler.data_cube_inspector import DataCubeInspector
 from csvcubed.utils.tableschema import CsvWRdfManager
 from tests.helpers.inspectors_cache import get_csvw_rdf_manager
 from tests.unit.utils.sparqlhandler.test_sparqlquerymanager import (
@@ -71,9 +71,9 @@ def step_impl(context):
         context.csvw_metadata_rdf_graph,
         context.csvw_metadata_json_path,
     )
-    data_cube_state = DataCubeState(csvw_inspector)
+    data_cube_inspector = DataCubeInspector(csvw_inspector)
 
-    metadata_printer = MetadataPrinter(data_cube_state)
+    metadata_printer = MetadataPrinter(data_cube_inspector)
     # TODO: Remove below once all the tests are updated to not match strings
     context.type_printable = metadata_printer.type_info_printable
     context.catalog_metadata_printable = metadata_printer.catalog_metadata_printable
@@ -102,7 +102,9 @@ def step_impl(context):
     context.result_dataset_observations_info = (
         metadata_printer.result_dataset_observations_info
     )
-    context.result_code_lists = metadata_printer.result_code_lists
+    context.result_primary_csv_code_lists = (
+        metadata_printer.result_primary_csv_code_lists
+    )
     context.result_dataset_observations_info = (
         metadata_printer.result_dataset_observations_info
     )

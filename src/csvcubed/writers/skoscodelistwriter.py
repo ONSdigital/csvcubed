@@ -13,7 +13,7 @@ from typing import List
 import pandas as pd
 from csvcubedmodels.rdf import ExistingResource
 
-from csvcubed.models.cube.qb.components import (
+from csvcubed.models.cube.qb.components.codelist import (
     CompositeQbCodeList,
     DuplicatedQbConcept,
     NewQbCodeList,

@@ -9,20 +9,19 @@ from typing import List, Set, TypeVar
 
 from csvcubed.models.cube.cube import Cube
 from csvcubed.models.cube.cube_shape import CubeShape
-from csvcubed.models.cube.qb.components import (
+from csvcubed.models.cube.qb.components.datastructuredefinition import (
     QbColumnStructuralDefinition,
-    QbMeasure,
-    QbMultiMeasureDimension,
-    QbMultiUnits,
-    QbObservationValue,
-    QbUnit,
 )
+from csvcubed.models.cube.qb.components.measure import QbMeasure
+from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureDimension
+from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
+from csvcubed.models.cube.qb.components.unitscolumn import QbMultiUnits, QbUnit
 
 _logger = logging.getLogger(__name__)
 
 
 QbColumnarDsdType = TypeVar("QbColumnarDsdType", bound=QbColumnStructuralDefinition)
-"""Anything which inherits from :class:`ColumnarQbDataStructureDefinition 
+"""Anything which inherits from :class:`ColumnarQbDataStructureDefinition
     <csvcubed.models.cube.qb.components.datastructuredefinition.ColumnarQbDataStructureDefinition>`."""
 
 

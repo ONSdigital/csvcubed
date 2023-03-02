@@ -10,15 +10,14 @@ from abc import ABC
 from dataclasses import dataclass, field
 from typing import List, Optional, Type, Union
 
-from csvcubed.models.validationerror import SpecificValidationError
-
-from ..qb import (
-    QbDimension,
-    QbMultiMeasureDimension,
-    QbMultiUnits,
-    QbObservationValue,
+from csvcubed.models.cube.qb.components.datastructuredefinition import (
     QbStructuralDefinition,
 )
+from csvcubed.models.cube.qb.components.dimension import QbDimension
+from csvcubed.models.cube.qb.components.measuresdimension import QbMultiMeasureDimension
+from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
+from csvcubed.models.cube.qb.components.unitscolumn import QbMultiUnits
+from csvcubed.models.validationerror import SpecificValidationError
 
 ComponentTypeDescription = Union[str, Type[QbStructuralDefinition]]
 

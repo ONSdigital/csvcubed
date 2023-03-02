@@ -3,7 +3,7 @@
     "@id": "alcohol-bulletin.csv#dataset",
     "tables": [
         {
-            "url": "alcohol-bulletin.csv",
+            "url": "multi-unit_multi-measure/alcohol-bulletin.csv",
             "tableSchema": {
                 "columns": [
                     {
