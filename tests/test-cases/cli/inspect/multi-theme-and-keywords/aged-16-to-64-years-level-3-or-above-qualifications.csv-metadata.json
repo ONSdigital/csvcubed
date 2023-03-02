@@ -593,6 +593,11 @@
                     "@value": "mission-6"
                 }
             ],
+            "http://www.w3.org/ns/dcat#landingPage": [
+                {
+                    "@id": "https://www.gov.uk/government/statistics/alcohol-bulletin"
+                }
+            ],
             "http://www.w3.org/ns/dcat#theme": [
                 {
                     "@id": "https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork"

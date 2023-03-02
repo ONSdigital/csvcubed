@@ -289,4 +289,6 @@ def test_multi_theme_and_keyword():
         "subnational",
         "mission-6",
     }
-    assert set(primary_catalog_metadata.landing_pages) == {""}
+    assert set(primary_catalog_metadata.landing_pages) == {
+        "https://www.gov.uk/government/statistics/alcohol-bulletin"
+    }
