@@ -114,7 +114,7 @@ class NewQbCodeListInCsvW(QbCodeList):
                 "schema_metadata_file_path": validate_file,
                 "csv_file_relative_path_or_uri": validate_uri,
                 "concept_scheme_uri": validate_uri,
-                "concept_template_uri": validate_uri,
+                "concept_template_uri": validate_str_type,
             },
             whole_object_validations=self._validation_csvw_sufficient_information,
         )

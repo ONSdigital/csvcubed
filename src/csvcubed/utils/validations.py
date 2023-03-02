@@ -5,6 +5,7 @@ from math import isinf, isnan
 from pathlib import Path
 from typing import Any, Callable, List, Optional, Type, TypeVar
 
+from csvcubed.models.cube.qb.components.constants import ACCEPTED_DATATYPE_MAPPING
 from csvcubed.models.validatedmodel import ValidatedModel, ValidationFunction
 from csvcubed.models.validationerror import ValidateModelPropertiesError
 from csvcubed.utils.uri import looks_like_uri
@@ -230,6 +231,17 @@ def enum(enum_type: Type[Enum]) -> ValidationFunction:
         ]
 
     return validate
+
+
+def data_type(data_type: str, property_name: str) -> List[ValidateModelPropertiesError]:
+    if data_type not in ACCEPTED_DATATYPE_MAPPING.keys():
+        return [
+            ValidateModelPropertiesError(
+                f"'{data_type}' is not recognised as a valid data type.",
+                property_name,
+            )
+        ]
+    return []
 
 
 def validated_model(validated_model_type: Type[ValidatedModel]):

@@ -60,6 +60,7 @@ class TestClass(ValidatedModel):
     test_enum_value: Optional[TestEnum] = None
     test_any_of_value: Union[str, int, None] = None
     test_validated_model_class: Optional[OtherTestClass] = None
+    test_data_type: Optional[str] = None
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
         return {
@@ -78,6 +79,7 @@ class TestClass(ValidatedModel):
             "test_validated_model_class": validate_optional(
                 v.validated_model(OtherTestClass)
             ),
+            "test_data_type": validate_optional(v.data_type),
         }
 
 
@@ -548,7 +550,7 @@ def test_validated_model_is_not_inherited():
 
 
 @dataclass
-class ValidationsTestClass(ValidatedModel):
+class WholeObjectValidationsTestClass(ValidatedModel):
     value_one: str
     value_two: int
     value_three: Union[str, Identifier]
@@ -587,7 +589,7 @@ class ValidationsTestClass(ValidatedModel):
 
 
 def test_whole_object_validation_correct():
-    test_instance = ValidationsTestClass(
+    test_instance = WholeObjectValidationsTestClass(
         value_one="positive", value_two=2, value_three="three"
     )
     errors = test_instance.validate()
@@ -595,7 +597,7 @@ def test_whole_object_validation_correct():
 
 
 def test_whole_object_validation_incorrect():
-    test_instance = ValidationsTestClass(
+    test_instance = WholeObjectValidationsTestClass(
         value_one="positive", value_two=-2, value_three=3
     )
     errors = test_instance.validate()
@@ -603,8 +605,19 @@ def test_whole_object_validation_incorrect():
 
 
 def test_validate_external():
-    test_instance = ValidationsTestClass(
-        value_one="positive", value_two=2, object=Identifier("anything")
+    test_instance = WholeObjectValidationsTestClass(
+        value_one="positive", value_two=2, value_three=Identifier("anything")
+    )
+    errors = test_instance.validate()
+    assert not any(errors)
+
+
+def test_validate_data_type():
+    """
+    TODO
+    """
+    test_instance = TestClass(
+        test_data_type="nonPositiveInteger",
     )
     errors = test_instance.validate()
     assert not any(errors)
