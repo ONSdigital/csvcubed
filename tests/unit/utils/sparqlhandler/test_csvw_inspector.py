@@ -262,6 +262,7 @@ def test_multi_theme_and_keyword():
     """
     This test ensures that the 'select_catalog_metadata.sparql' will return the correct amount of
     themes, keywords and landing pages(unique values and no duplications)
+    URL to the issue description: 'https://app.zenhub.com/workspaces/features-squad-61b72275ac896c0010a1b00b/issues/gh/gss-cogs/csvcubed/739'
     """
     csvw_metadata_json_path = (
         _test_case_base_dir
@@ -275,7 +276,9 @@ def test_multi_theme_and_keyword():
     )
 
     assert set(primary_catalog_metadata.themes) == {
-        "https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork"
+        "https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork",
+        "https://www.ons.gov.uk/employmentandlabourmarket/peopleonholidays",
+        "https://www.ons.gov.uk/employmentandlabourmarket/peopleoutofwork",
     }
     assert set(primary_catalog_metadata.keywords) == {
         "education",

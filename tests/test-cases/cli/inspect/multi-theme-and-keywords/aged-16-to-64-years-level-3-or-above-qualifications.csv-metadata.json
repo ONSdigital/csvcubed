@@ -596,6 +596,12 @@
             "http://www.w3.org/ns/dcat#theme": [
                 {
                     "@id": "https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork"
+                },
+                {
+                    "@id": "https://www.ons.gov.uk/employmentandlabourmarket/peopleoutofwork"
+                },
+                {
+                    "@id": "https://www.ons.gov.uk/employmentandlabourmarket/peopleonholidays"
                 }
             ],
             "http://www.w3.org/ns/prov#wasGeneratedBy": [
