@@ -124,29 +124,30 @@ class NewQbUnit(QbUnit, UriIdentifiable, ArbitraryRdf):
     ) -> List[ValidateModelPropertiesError]:
         errors: List[ValidateModelPropertiesError] = []
 
-        if unit.base_unit_scaling_factor is not None:
-            if unit.base_unit is None:
-                errors.append(
-                    ValidateModelPropertiesError(
-                        f"""
+        if unit.base_unit_scaling_factor is not None and unit.base_unit is None:
+            errors.append(
+                ValidateModelPropertiesError(
+                    f"""
                 '{unit.base_unit_scaling_factor}' has been specified, but the following is missing and must be
                         provided: '{unit.base_unit}'.
                         """,
-                        "Whole Object",
-                    )
+                    "Whole Object",
                 )
+            )
 
-        if unit.si_base_unit_conversion_multiplier is not None:
-            if unit.qudt_quantity_kind_uri is None:
-                errors.append(
-                    ValidateModelPropertiesError(
-                        f"""
+        if (
+            unit.si_base_unit_conversion_multiplier is not None
+            and unit.qudt_quantity_kind_uri is None
+        ):
+            errors.append(
+                ValidateModelPropertiesError(
+                    f"""
                 '{unit.si_base_unit_conversion_multiplier}' has been specified, but the following is missing and must be
                         provided: '{unit.qudt_quantity_kind_uri}'.
                         """,
-                        "Whole Object",
-                    )
+                    "Whole Object",
                 )
+            )
         return errors
 
     optional_attribute_dependencies = pydantic_enforce_optional_attribute_dependencies(

@@ -85,7 +85,7 @@ def validate_int_type(
     This function will validate if the argument provided is in fact a integer type and,
     returns any errors returned by the item validation function.
     """
-    if not isinstance(value, int):
+    if isinstance(value, bool) or not isinstance(value, int):
         return [
             ValidateModelPropertiesError(
                 "This variable should be a integer value, check the following variable:",
@@ -276,17 +276,17 @@ def validated_model(validated_model_type: Type[ValidatedModel]):
     return validate
 
 
-def validate_external(type_to_validate) -> ValidationFunction:
+def is_instance_of(expect_instance_type: Type[object]) -> ValidationFunction:
     """
     WIP early attempt at a function that can apply validations in a generic way without needing
     to use validatedmodel/custom functions, by specifying what type to check for
     """
 
     def _validate(value: Any, property_name: str) -> List[ValidateModelPropertiesError]:
-        if not isinstance(value, type_to_validate):
+        if not isinstance(value, expect_instance_type):
             return [
                 ValidateModelPropertiesError(
-                    f"Value '{value}' was not an instance of the expected type '{type_to_validate.__name__}'.",
+                    f"Value '{value}' was not an instance of the expected type '{expect_instance_type.__name__}'.",
                     property_name,
                 ),
             ]

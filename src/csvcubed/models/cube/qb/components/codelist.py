@@ -7,7 +7,7 @@ Represent code lists in an RDF Data Cube.
 from abc import ABC
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, Generic, List, Optional, Set, TypeVar
+from typing import Dict, Generic, List, Optional, Set, TypeVar, Union
 
 from pydantic import root_validator, validator
 
@@ -108,7 +108,7 @@ class NewQbCodeListInCsvW(QbCodeList):
             self.concept_scheme_uri = None  # type: ignore
             self.concept_template_uri = None  # type: ignore
 
-    def _get_validations(self) -> Dict[str, ValidationFunction]:
+    def _get_validations(self) -> Union[Validations, Dict[str, ValidationFunction]]:
         return Validations(
             individual_property_validations={
                 "schema_metadata_file_path": validate_file,
@@ -116,7 +116,7 @@ class NewQbCodeListInCsvW(QbCodeList):
                 "concept_scheme_uri": validate_uri,
                 "concept_template_uri": validate_str_type,
             },
-            whole_object_validations=self._validation_csvw_sufficient_information,
+            whole_object_validations=[self._validation_csvw_sufficient_information],
         )
 
     @staticmethod

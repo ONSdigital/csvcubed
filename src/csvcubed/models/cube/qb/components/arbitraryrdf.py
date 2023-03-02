@@ -59,7 +59,7 @@ class TripleFragmentBase(PydanticModel, ValidatedModel, ABC):
     predicate: Union[str, URIRef]
 
     def _get_validations(self) -> Union[Validations, Dict[str, ValidationFunction]]:
-        return {"predicate": v.any_of(v.validate_str_type, v.validate_external(URIRef))}
+        return {"predicate": v.any_of(v.validate_str_type, v.is_instance_of(URIRef))}
 
 
 @dataclass(unsafe_hash=True)
@@ -79,7 +79,7 @@ class TripleFragment(TripleFragmentBase):
         assert isinstance(triple_fragment_base_property_validations, dict)
 
         return {
-            "object": v.any_of(v.validate_str_type, v.validate_external(Identifier)),
+            "object": v.any_of(v.validate_str_type, v.is_instance_of(Identifier)),
             "subject_hint": v.enum(RdfSerialisationHint),
             **triple_fragment_base_property_validations,
         }
@@ -102,7 +102,7 @@ class InverseTripleFragment(TripleFragmentBase):
         assert isinstance(triple_fragment_base_property_validations, dict)
         return {
             "subject": v.any_of(
-                v.validate_str_type, v.validate_external(type_to_validate=Identifier)
+                v.validate_str_type, v.is_instance_of(expect_instance_type=Identifier)
             ),
             "object_hint": v.enum(RdfSerialisationHint),
             **triple_fragment_base_property_validations,

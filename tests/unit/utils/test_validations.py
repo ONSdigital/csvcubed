@@ -61,6 +61,7 @@ class TestClass(ValidatedModel):
     test_any_of_value: Union[str, int, None] = None
     test_validated_model_class: Optional[OtherTestClass] = None
     test_data_type: Optional[str] = None
+    test_validate_instance_of: Optional[Identifier] = None
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
         return {
@@ -79,7 +80,10 @@ class TestClass(ValidatedModel):
             "test_validated_model_class": validate_optional(
                 v.validated_model(OtherTestClass)
             ),
-            "test_data_type": validate_optional(v.data_type),
+            "test_data_type": validate_optional(v.any_of(v.data_type, validate_uri)),
+            "test_validate_instance_of": validate_optional(
+                v.is_instance_of(Identifier)
+            ),
         }
 
 
@@ -551,18 +555,14 @@ def test_validated_model_is_not_inherited():
 
 @dataclass
 class WholeObjectValidationsTestClass(ValidatedModel):
-    value_one: str
-    value_two: int
-    value_three: Union[str, Identifier]
+    test_validate_str: str
+    test_validate_int: int
 
     def _get_validations(self) -> Union[Validations, Dict[str, ValidationFunction]]:
         return Validations(
             individual_property_validations={
-                "value_one": validate_str_type,
-                "value_two": validate_int_type,
-                "value_three": v.any_of(
-                    validate_str_type, v.validate_external(Identifier)
-                ),
+                "test_validate_str": validate_str_type,
+                "test_validate_int": validate_int_type,
             },
             whole_object_validations=[self._whole_object_validation],
         )
@@ -570,8 +570,8 @@ class WholeObjectValidationsTestClass(ValidatedModel):
     @staticmethod
     def _whole_object_validation(the_instance) -> List[ValidateModelPropertiesError]:
         errors: List[ValidateModelPropertiesError] = []
-        if the_instance.value_one.lower() == "positive":
-            if the_instance.value_two < 0:
+        if the_instance.test_validate_str.lower() == "positive":
+            if the_instance.test_validate_int < 0:
                 errors.append(
                     ValidateModelPropertiesError(
                         "Expected a positive integer", "Whole Object"
@@ -579,7 +579,7 @@ class WholeObjectValidationsTestClass(ValidatedModel):
                 )
         else:
             # Negative
-            if the_instance.value_two > 0:
+            if the_instance.test_validate_int > 0:
                 errors.append(
                     ValidateModelPropertiesError(
                         "Expected a negative integer", "Whole Object"
@@ -590,7 +590,7 @@ class WholeObjectValidationsTestClass(ValidatedModel):
 
 def test_whole_object_validation_correct():
     test_instance = WholeObjectValidationsTestClass(
-        value_one="positive", value_two=2, value_three="three"
+        test_validate_str="positive", test_validate_int=2
     )
     errors = test_instance.validate()
     assert not any(errors)
@@ -598,21 +598,25 @@ def test_whole_object_validation_correct():
 
 def test_whole_object_validation_incorrect():
     test_instance = WholeObjectValidationsTestClass(
-        value_one="positive", value_two=-2, value_three=3
+        test_validate_str="positive", test_validate_int=-2
     )
     errors = test_instance.validate()
     assert any(errors)
 
 
-def test_validate_external():
-    test_instance = WholeObjectValidationsTestClass(
-        value_one="positive", value_two=2, value_three=Identifier("anything")
-    )
+def test_validate_is_instance_of_correct():
+    test_instance = TestClass(test_validate_instance_of=Identifier("hi"))
     errors = test_instance.validate()
     assert not any(errors)
 
 
-def test_validate_data_type():
+def test_validate_is_instance_of_incorrect():
+    test_instance = TestClass(test_validate_instance_of="Woof")
+    errors = test_instance.validate()
+    assert any(errors)
+
+
+def test_validate_data_type_correct():
     """
     TODO
     """
@@ -621,6 +625,38 @@ def test_validate_data_type():
     )
     errors = test_instance.validate()
     assert not any(errors)
+
+
+def test_validate_data_type_looks_like_uri():
+    """
+    TODO
+    """
+    test_instance = TestClass(
+        test_data_type="http://this/looks/like-a/uri",
+    )
+    errors = test_instance.validate()
+    assert not any(errors)
+
+
+def test_validate_data_type_incorrect():
+    """
+    TODO
+    """
+    test_instance = TestClass(
+        test_data_type="Definitely not a data type or URI",
+    )
+    errors = test_instance.validate()
+    assert any(errors)
+
+
+def test_validate_int_fails_when_bool():
+    """
+    Ensures validation of an integer correctly returns errors when a boolean is given as input.
+    This is checking that we are not treating booleans as integers (the way python usually does) when validating.
+    """
+    test_instance = TestClass(int_test_variable=True)
+    errors = test_instance.validate()
+    assert any(errors)
 
 
 if __name__ == "__main__":
