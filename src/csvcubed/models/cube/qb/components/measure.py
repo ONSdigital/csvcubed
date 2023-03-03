@@ -34,7 +34,7 @@ _logger = logging.getLogger(__name__)
 
 
 @dataclass(unsafe_hash=True)
-class QbMeasure(SecondaryQbStructuralDefinition, ValidatedModel, ArbitraryRdf, ABC):
+class QbMeasure(SecondaryQbStructuralDefinition, ArbitraryRdf, ABC):
     pass
 
 

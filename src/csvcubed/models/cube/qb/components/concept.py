@@ -73,7 +73,7 @@ class ExistingQbConcept(SecondaryQbStructuralDefinition):
 
 
 @dataclass(unsafe_hash=True)
-class DuplicatedQbConcept(NewQbConcept, ExistingQbConcept, ValidatedModel):
+class DuplicatedQbConcept(NewQbConcept, ExistingQbConcept):
     """
     Represents a QbConcept which duplicates an :class:`ExistingQbConcept` with overriding label, notation, etc.
 

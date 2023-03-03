@@ -8,6 +8,9 @@ from typing import Dict, List, Optional, Union
 import pytest
 from rdflib.term import Identifier
 
+from csvcubed.models.cube.qb.components.arbitraryrdf import TripleFragmentBase
+from csvcubed.models.cube.qb.components.unit import NewQbUnit, QbUnit
+from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.models.validatedmodel import (
     ValidatedModel,
     ValidationFunction,
@@ -70,8 +73,8 @@ class TestClass(ValidatedModel):
             "float_test_variable": validate_float_type,
             "list_test_variable": validate_list(validate_str_type),
             "path_test_variable": validate_optional(validate_file),
-            "date_test_variable": validate_optional(v.date),
-            "date_time_test_variable": validate_optional(v.datetime),
+            "date_test_variable": validate_optional(v.is_instance_of(date)),
+            "date_time_test_variable": validate_optional(v.is_instance_of(datetime)),
             "test_uri": validate_optional(validate_uri),
             "test_enum_value": validate_optional(v.enum(TestEnum)),
             "test_any_of_value": validate_optional(
@@ -446,7 +449,7 @@ def test_validate_date_incorrect():
     assert len(result) == 1
     assert (
         result[0].message
-        == "This is not a valid date format, check the following variable:"
+        == "Value 'test' was not an instance of the expected type 'date'."
     )
     assert result[0].property_name == "date_test_variable"
 
@@ -675,6 +678,56 @@ def test_validate_int_fails_when_bool():
     This is checking that we are not treating booleans as integers (the way python usually does) when validating.
     """
     test_instance = TestClass(int_test_variable=True)
+    errors = test_instance.validate()
+    assert any(errors)
+
+
+@dataclass
+class TestUnitClass(QbUnit):
+    base_unit: Optional[QbUnit] = field(default=None, repr=False)
+    base_unit_scaling_factor: Optional[float] = field(default=None, repr=False)
+    qudt_quantity_kind_uri: Optional[str] = field(default=None, repr=False)
+    si_base_unit_conversion_multiplier: Optional[float] = field(
+        default=None, repr=False
+    )
+
+    def _get_validations(self) -> Union[Validations, Dict[str, ValidationFunction]]:
+        return Validations(
+            individual_property_validations={
+                "base_unit": validate_optional(v.validated_model(QbUnit)),
+                "base_unit_scaling_factor": validate_optional(validate_float_type),
+                "qudt_quantity_kind_uri": validate_optional(validate_uri),
+                "si_base_unit_conversion_multiplier": validate_optional(
+                    validate_float_type
+                ),
+            },
+            whole_object_validations=[
+                NewQbUnit._validation_base_unit_scaling_factor_dependency
+            ],
+        )
+
+
+def test_validate_base_unit_scaling_factor_dependency_correct():
+    """
+    Ensures whole-object validation can be performed on a NewQbUnit and account for the
+    dependencies between base unit - base unit scaling factor, and also the dependency between
+    qudt_quantity_kind_uri - si_base_unit_conversion_multiplier.
+    (If one is none, then the other must be also.)
+    """
+    test_instance = TestUnitClass()
+    errors = test_instance.validate()
+    assert not any(errors)
+
+
+def test_validate_base_unit_scaling_factor_dependency_incorrect():
+    """
+    Ensures whole-object validation can be performed on a NewQbUnit and account for the
+    dependencies between base unit - base unit scaling factor and
+    qudt_quantity_kind_uri - si_base_unit_conversion_multiplier, and returning errors as expected.
+    """
+    test_instance = TestUnitClass(
+        base_unit_scaling_factor=1.5, si_base_unit_conversion_multiplier=2.0
+    )
     errors = test_instance.validate()
     assert any(errors)
 

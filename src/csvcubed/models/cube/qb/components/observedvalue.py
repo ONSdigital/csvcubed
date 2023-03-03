@@ -12,7 +12,11 @@ import pandas as pd
 from csvcubed.models.validatedmodel import ValidationFunction
 from csvcubed.models.validationerror import ValidationError
 from csvcubed.utils import validations as v
-from csvcubed.utils.validations import validate_optional, validate_str_type
+from csvcubed.utils.validations import (
+    validate_optional,
+    validate_str_type,
+    validate_uri,
+)
 
 from .datastructuredefinition import QbColumnStructuralDefinition
 from .measure import QbMeasure
@@ -51,20 +55,5 @@ class QbObservationValue(QbColumnStructuralDefinition):
         return {
             "measure": validate_optional(v.validated_model(QbMeasure)),
             "unit": validate_optional(v.validated_model(QbUnit)),
-            "data_type": validate_str_type,
+            "data_type": v.any_of(v.data_type, validate_uri),
         }
-
-    # def data_type_thing():
-    # # todo: use a combination of checking if the data_type belongs to the dict of accepted ones, in conjunction with looks_like_uri
-    # if data type is in dict of approved ones:
-    #     use validate_str_type
-
-    # elif looks_like_uri(data_type):
-    #     use validate_uri
-
-    # else
-    #     throw exception
-
-    # if not data_type in dict of approved ones:
-    #     if data_type not looks like uri:
-    #         Error

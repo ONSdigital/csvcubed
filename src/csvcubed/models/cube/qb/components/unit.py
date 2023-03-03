@@ -36,7 +36,7 @@ _logger = logging.getLogger(__name__)
 
 
 @dataclass(unsafe_hash=True)
-class QbUnit(SecondaryQbStructuralDefinition, ValidatedModel, ABC):
+class QbUnit(SecondaryQbStructuralDefinition, ABC):
     pass
 
 
@@ -108,7 +108,7 @@ class NewQbUnit(QbUnit, UriIdentifiable, ArbitraryRdf):
                 "arbitrary_rdf": validate_list(v.validated_model(TripleFragmentBase)),
                 "base_unit": validate_optional(v.validated_model(QbUnit)),
                 "base_unit_scaling_factor": validate_optional(validate_float_type),
-                "qudt_quantity_kind_uri": validate_optional(validate_str_type),
+                "qudt_quantity_kind_uri": validate_optional(validate_uri),
                 "si_base_unit_conversion_multiplier": validate_optional(
                     validate_float_type
                 ),
@@ -120,30 +120,30 @@ class NewQbUnit(QbUnit, UriIdentifiable, ArbitraryRdf):
 
     @staticmethod
     def _validation_base_unit_scaling_factor_dependency(
-        unit,
+        self,
     ) -> List[ValidateModelPropertiesError]:
         errors: List[ValidateModelPropertiesError] = []
 
-        if unit.base_unit_scaling_factor is not None and unit.base_unit is None:
+        if self.base_unit_scaling_factor is not None and self.base_unit is None:
             errors.append(
                 ValidateModelPropertiesError(
                     f"""
-                '{unit.base_unit_scaling_factor}' has been specified, but the following is missing and must be
-                        provided: '{unit.base_unit}'.
+                '{self.base_unit_scaling_factor}' has been specified, but the following is missing and must be
+                        provided: '{self.base_unit}'.
                         """,
                     "Whole Object",
                 )
             )
 
         if (
-            unit.si_base_unit_conversion_multiplier is not None
-            and unit.qudt_quantity_kind_uri is None
+            self.si_base_unit_conversion_multiplier is not None
+            and self.qudt_quantity_kind_uri is None
         ):
             errors.append(
                 ValidateModelPropertiesError(
                     f"""
-                '{unit.si_base_unit_conversion_multiplier}' has been specified, but the following is missing and must be
-                        provided: '{unit.qudt_quantity_kind_uri}'.
+                '{self.si_base_unit_conversion_multiplier}' has been specified, but the following is missing and must be
+                        provided: '{self.qudt_quantity_kind_uri}'.
                         """,
                     "Whole Object",
                 )

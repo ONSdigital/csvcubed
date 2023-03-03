@@ -112,7 +112,7 @@ class NewQbCodeListInCsvW(QbCodeList):
         return Validations(
             individual_property_validations={
                 "schema_metadata_file_path": validate_file,
-                "csv_file_relative_path_or_uri": validate_uri,
+                "csv_file_relative_path_or_uri": validate_str_type,
                 "concept_scheme_uri": validate_uri,
                 "concept_template_uri": validate_str_type,
             },
@@ -121,19 +121,23 @@ class NewQbCodeListInCsvW(QbCodeList):
 
     @staticmethod
     def _validation_csvw_sufficient_information(
-        CodeListInCsvw,
+        self,
     ) -> List[ValidateModelPropertiesError]:
         errors: List[ValidateModelPropertiesError] = []
 
-        csv_path = CodeListInCsvw.csv_file_relative_path_or_uri
-        cs_uri = CodeListInCsvw.concept_scheme_uri
-        c_template_uri = CodeListInCsvw.concept_template_uri
+        csv_path = self.csv_file_relative_path_or_uri
+        cs_uri = self.concept_scheme_uri
+        c_template_uri = self.concept_template_uri
         if csv_path is None or cs_uri is None or c_template_uri is None:
-            # Not sure if below is needed. May only need the exception message?
-            schema_metadata_file_path = CodeListInCsvw.schema_metadata_file_path
+            schema_metadata_file_path = self.schema_metadata_file_path
             extract_code_list_concept_scheme_info(schema_metadata_file_path)
 
-            errors.append(ValidateModelPropertiesError("The message", "Whole Object"))
+            errors.append(
+                ValidateModelPropertiesError(
+                    f"'csv_file_relative_path_or_uri', 'concept_scheme_uri' or 'concept_template_uri' values are missing.",
+                    "Whole Object",
+                )
+            )
 
         return errors
 

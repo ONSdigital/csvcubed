@@ -173,38 +173,6 @@ def validate_file(
         ]
 
 
-def date(value: dt.date, property_name: str) -> List[ValidateModelPropertiesError]:
-    """
-    This function will validate if the argument provided is in fact a date type and,
-    returns any errors returned by the item validation function.
-    """
-    if not isinstance(value, dt.date):
-        return [
-            ValidateModelPropertiesError(
-                "This is not a valid date format, check the following variable:",
-                property_name,
-            )
-        ]
-    return []
-
-
-def datetime(
-    value: dt.datetime, property_name: str
-) -> List[ValidateModelPropertiesError]:
-    """
-    This function will validate if the argument provided is in fact a datetime type and,
-    returns any errors returned by the item validation function.
-    """
-    if not isinstance(value, dt.datetime):
-        return [
-            ValidateModelPropertiesError(
-                "This is not a valid date format, check the following variable:",
-                property_name,
-            )
-        ]
-    return []
-
-
 def any_of(*conditions: ValidationFunction) -> ValidationFunction:
     """
     This function will validate if the argument provided is an instance of any of the types

@@ -31,7 +31,7 @@ _logger = logging.getLogger(__name__)
 
 
 @dataclass
-class CatalogMetadata(CatalogMetadataBase, ValidatedModel, UriIdentifiable):
+class CatalogMetadata(CatalogMetadataBase, UriIdentifiable):
     identifier: Optional[str] = None
     summary: Optional[str] = field(default=None, repr=False)
     description: Optional[str] = field(default=None, repr=False)
@@ -71,8 +71,12 @@ class CatalogMetadata(CatalogMetadataBase, ValidatedModel, UriIdentifiable):
             "landing_page_uris": validate_list(validate_uri),
             "theme_uris": validate_list(validate_uri),
             "keywords": validate_list(validate_str_type),
-            "dataset_issued": validate_optional(v.any_of(v.date, v.datetime)),
-            "dataset_modified": validate_optional(v.any_of(v.date, v.datetime)),
+            "dataset_issued": validate_optional(
+                v.any_of(v.is_instance_of(date), v.is_instance_of(datetime))
+            ),
+            "dataset_modified": validate_optional(
+                v.any_of(v.is_instance_of(date), v.is_instance_of(datetime))
+            ),
             "license_uri": validate_optional(validate_uri),
             "public_contact_point_uri": validate_optional(validate_uri),
             **UriIdentifiable._get_validations(self),
