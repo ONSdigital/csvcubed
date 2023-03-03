@@ -7,17 +7,31 @@ Represent code lists in an RDF Data Cube.
 from abc import ABC
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Generic, List, Optional, Set, TypeVar
+from typing import Dict, Generic, List, Optional, Set, TypeVar, Union
 
 from pydantic import root_validator, validator
 
 from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_str
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
-from csvcubed.models.validationerror import ValidateModelProperiesError, ValidationError
+from csvcubed.models.validatedmodel import ValidationFunction, Validations
+from csvcubed.models.validationerror import (
+    ValidateModelPropertiesError,
+    ValidationError,
+)
 from csvcubed.readers.skoscodelistreader import extract_code_list_concept_scheme_info
+from csvcubed.utils import validations as v
 from csvcubed.utils.qb.validation.uri_safe import ensure_no_uri_safe_conflicts
-from csvcubed.utils.validators.file import validate_file_exists
-from csvcubed.utils.validators.uri import validate_uri
+from csvcubed.utils.validations import (
+    validate_file,
+    validate_list,
+    validate_optional,
+    validate_str_type,
+    validate_uri,
+)
+from csvcubed.utils.validators.file import (
+    validate_file_exists as pydantic_validate_file_exists,
+)
+from csvcubed.utils.validators.uri import validate_uri as pydantic_validate_uri
 from csvcubed.writers.helpers.skoscodelistwriter.constants import SCHEMA_URI_IDENTIFIER
 
 from ...uristyle import URIStyle
@@ -40,7 +54,10 @@ class ExistingQbCodeList(QbCodeList):
 
     concept_scheme_uri: str
 
-    _concept_scheme_uri_validator = validate_uri("concept_scheme_uri")
+    _concept_scheme_uri_validator = pydantic_validate_uri("concept_scheme_uri")
+
+    def _get_validations(self) -> Dict[str, ValidationFunction]:
+        return {"concept_scheme_uri": validate_uri}
 
 
 @dataclass
@@ -54,7 +71,7 @@ class NewQbCodeListInCsvW(QbCodeList):
     concept_scheme_uri: str = field(init=False, repr=False)
     concept_template_uri: str = field(init=False, repr=False)
 
-    _schema_metadata_file_path_validator = validate_file_exists(
+    _schema_metadata_file_path_validator = pydantic_validate_file_exists(
         "schema_metadata_file_path"
     )
 
@@ -91,6 +108,39 @@ class NewQbCodeListInCsvW(QbCodeList):
             self.concept_scheme_uri = None  # type: ignore
             self.concept_template_uri = None  # type: ignore
 
+    def _get_validations(self) -> Union[Validations, Dict[str, ValidationFunction]]:
+        return Validations(
+            individual_property_validations={
+                "schema_metadata_file_path": validate_file,
+                "csv_file_relative_path_or_uri": validate_str_type,
+                "concept_scheme_uri": validate_uri,
+                "concept_template_uri": validate_str_type,
+            },
+            whole_object_validations=[self._validation_csvw_sufficient_information],
+        )
+
+    @staticmethod
+    def _validation_csvw_sufficient_information(
+        self,
+    ) -> List[ValidateModelPropertiesError]:
+        errors: List[ValidateModelPropertiesError] = []
+
+        csv_path = self.csv_file_relative_path_or_uri
+        cs_uri = self.concept_scheme_uri
+        c_template_uri = self.concept_template_uri
+        if csv_path is None or cs_uri is None or c_template_uri is None:
+            schema_metadata_file_path = self.schema_metadata_file_path
+            extract_code_list_concept_scheme_info(schema_metadata_file_path)
+
+            errors.append(
+                ValidateModelPropertiesError(
+                    "'csv_file_relative_path_or_uri', 'concept_scheme_uri' or 'concept_template_uri' values are missing.",
+                    "Whole Object",
+                )
+            )
+
+        return errors
+
 
 TNewQbConcept = TypeVar("TNewQbConcept", bound=NewQbConcept, covariant=True)
 
@@ -107,7 +157,7 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
     uri_style: Optional[URIStyle] = None
 
     @validator("concepts")
-    def _ensure_no_use_of_reserved_keywords(
+    def _pydantic_ensure_no_use_of_reserved_keywords(
         cls, concepts: List[TNewQbConcept]
     ) -> List[TNewQbConcept]:
         conflicting_values: List[str] = []
@@ -125,7 +175,7 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
         return concepts
 
     @validator("concepts")
-    def _validate_concepts_non_conflicting(
+    def _pydantic_validate_concepts_non_conflicting(
         cls, concepts: List[TNewQbConcept]
     ) -> List[TNewQbConcept]:
         """
@@ -137,6 +187,14 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
         )
 
         return concepts
+
+    def _get_validations(self) -> Dict[str, ValidationFunction]:
+        return {
+            "metadata": v.validated_model(CatalogMetadata),
+            "concepts": validate_list(v.validated_model(NewQbConcept)),
+            "arbitrary_rdf": validate_list(v.validated_model(TripleFragmentBase)),
+            "uri_style": validate_optional(v.enum(URIStyle)),
+        }
 
     def _get_arbitrary_rdf(self) -> List[TripleFragmentBase]:
         return self.arbitrary_rdf
@@ -175,22 +233,8 @@ class CompositeQbCodeList(NewQbCodeList[DuplicatedQbConcept]):
 
     variant_of_uris: List[str] = field(default_factory=list)
 
-
-def validate_codelist(
-    item: QbCodeList, property_name: str
-) -> List[ValidateModelProperiesError]:
-    if not isinstance(item, QbCodeList):
-        return [
-            ValidateModelProperiesError(
-                f"This variable should be a QbCodeList, check the following variable:",
-                property_name,
-            )
-        ]
-
-    """ 
-    TODO: when the class is inctanciated for the validations the function has to be called.
-    example: 
-    test = Myclass(argument1, argument2, argument3)
-    test.validate()
-    """
-    return []
+    def _get_validations(self) -> Dict[str, ValidationFunction]:
+        return {
+            **NewQbCodeList._get_validations(self),
+            "variant_of_uris": validate_list(validate_uri),
+        }

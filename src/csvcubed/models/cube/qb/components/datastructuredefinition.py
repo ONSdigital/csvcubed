@@ -11,6 +11,7 @@ from typing import List, Optional
 import pandas as pd
 
 from csvcubed.models.pydanticmodel import PydanticModel
+from csvcubed.models.validatedmodel import ValidatedModel
 from csvcubed.models.validationerror import ValidationError
 
 
@@ -43,7 +44,7 @@ class QbColumnStructuralDefinition(QbStructuralDefinition, ABC):
 
 
 @dataclass
-class SecondaryQbStructuralDefinition(QbStructuralDefinition, ABC):
+class SecondaryQbStructuralDefinition(QbStructuralDefinition, ValidatedModel, ABC):
     """
     Base class representing part of the qb Data Structure Definition which cannot in itself represent a column of data.
     """

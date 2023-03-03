@@ -3,16 +3,31 @@ Catalog Metadata (DCAT)
 -----------------------
 """
 import json
+import logging
 from dataclasses import dataclass, field
 from datetime import date, datetime, time
 from pathlib import Path
-from typing import Optional, Union
+from typing import Dict, List, Optional, Union
 
 from csvcubedmodels.rdf import dcat
 
 from csvcubed.models.cube.catalog import CatalogMetadataBase
 from csvcubed.models.uriidentifiable import UriIdentifiable
-from csvcubed.utils.validators.uri import validate_uri, validate_uris_in_list
+from csvcubed.models.validatedmodel import ValidatedModel, ValidationFunction
+from csvcubed.models.validationerror import ValidateModelPropertiesError
+from csvcubed.utils import validations as v
+from csvcubed.utils.validations import (
+    validate_list,
+    validate_optional,
+    validate_str_type,
+    validate_uri,
+)
+from csvcubed.utils.validators.uri import validate_uri as pydantic_validate_uri
+from csvcubed.utils.validators.uri import (
+    validate_uris_in_list as pydantic_validate_uris_in_list,
+)
+
+_logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -33,17 +48,39 @@ class CatalogMetadata(CatalogMetadataBase, UriIdentifiable):
     # spatial_bound_uri: Optional[str] = field(default=None, repr=False)
     # temporal_bound_uri: Optional[str] = field(default=None, repr=False)
 
-    _creator_uri_validator = validate_uri("creator_uri", is_optional=True)
-    _publisher_uri_validator = validate_uri("publisher_uri", is_optional=True)
-    _landing_page_uris_validator = validate_uris_in_list(
+    _creator_uri_validator = pydantic_validate_uri("creator_uri", is_optional=True)
+    _publisher_uri_validator = pydantic_validate_uri("publisher_uri", is_optional=True)
+    _landing_page_uris_validator = pydantic_validate_uris_in_list(
         "landing_page_uris", is_optional=True
     )
-    _license_uri_validator = validate_uri("license_uri", is_optional=True)
+    _license_uri_validator = pydantic_validate_uri("license_uri", is_optional=True)
     # _spatial_bound_uri_validator = validate_uri("spatial_bound_uri", is_optional=True)
     # _temporal_bound_uri_validator = validate_uri("temporal_bound_uri", is_optional=True)
-    _public_contact_point_uri_validator = validate_uri(
+    _public_contact_point_uri_validator = pydantic_validate_uri(
         "public_contact_point_uri", is_optional=True
     )
+
+    def _get_validations(self) -> Dict[str, ValidationFunction]:
+        return {
+            "title": validate_str_type,
+            "identifier": validate_optional(validate_str_type),
+            "summary": validate_optional(validate_str_type),
+            "description": validate_optional(validate_str_type),
+            "creator_uri": validate_optional(validate_uri),
+            "publisher_uri": validate_optional(validate_uri),
+            "landing_page_uris": validate_list(validate_uri),
+            "theme_uris": validate_list(validate_uri),
+            "keywords": validate_list(validate_str_type),
+            "dataset_issued": validate_optional(
+                v.any_of(v.is_instance_of(date), v.is_instance_of(datetime))
+            ),
+            "dataset_modified": validate_optional(
+                v.any_of(v.is_instance_of(date), v.is_instance_of(datetime))
+            ),
+            "license_uri": validate_optional(validate_uri),
+            "public_contact_point_uri": validate_optional(validate_uri),
+            **UriIdentifiable._get_validations(self),
+        }
 
     def to_json_file(self, file_path: Path) -> None:
         with open(file_path, "w+") as f:

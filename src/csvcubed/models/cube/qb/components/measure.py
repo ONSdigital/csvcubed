@@ -4,9 +4,12 @@ Measures
 
 Represent measures inside an RDF Data Cube.
 """
+import logging
 from abc import ABC
 from dataclasses import dataclass, field
-from typing import List, Optional, Set
+from typing import Dict, List, Optional, Set
+
+import pandas as pd
 
 from csvcubed.models.cube.qb.components.arbitraryrdf import (
     ArbitraryRdf,
@@ -14,9 +17,20 @@ from csvcubed.models.cube.qb.components.arbitraryrdf import (
     TripleFragmentBase,
 )
 from csvcubed.models.uriidentifiable import UriIdentifiable
-from csvcubed.utils.validators.uri import validate_uri
+from csvcubed.models.validatedmodel import ValidatedModel, ValidationFunction
+from csvcubed.models.validationerror import ValidationError
+from csvcubed.utils import validations as v
+from csvcubed.utils.validations import (
+    validate_list,
+    validate_optional,
+    validate_str_type,
+    validate_uri,
+)
+from csvcubed.utils.validators.uri import validate_uri as pydantic_validate_uri
 
 from .datastructuredefinition import SecondaryQbStructuralDefinition
+
+_logger = logging.getLogger(__name__)
 
 
 @dataclass(unsafe_hash=True)
@@ -47,7 +61,14 @@ class ExistingQbMeasure(QbMeasure):
     def get_default_node_serialisation_hint(self) -> RdfSerialisationHint:
         return RdfSerialisationHint.Component
 
-    _measure_uri_validator = validate_uri("measure_uri")
+    _measure_uri_validator = pydantic_validate_uri("measure_uri")
+
+    def _get_validations(self) -> Dict[str, ValidationFunction]:
+
+        return {
+            "measure_uri": validate_uri,
+            "arbitrary_rdf": validate_list(v.validated_model(TripleFragmentBase)),
+        }
 
 
 @dataclass
@@ -87,3 +108,14 @@ class NewQbMeasure(QbMeasure, UriIdentifiable):
 
     def get_identifier(self) -> str:
         return self.label
+
+    def _get_validations(self) -> Dict[str, ValidationFunction]:
+
+        return {
+            "label": validate_str_type,
+            "description": validate_optional(validate_str_type),
+            "parent_measure_uri": validate_optional(validate_uri),
+            "source_uri": validate_optional(validate_uri),
+            **UriIdentifiable._get_validations(self),
+            "arbitrary_rdf": validate_list(v.validated_model(TripleFragmentBase)),
+        }

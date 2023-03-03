@@ -13,7 +13,12 @@ from csvcubedmodels.rdf import InversePredicate, NewResource
 from rdflib.term import Identifier, Literal, URIRef
 
 from csvcubed.models.pydanticmodel import PydanticModel
-from csvcubed.models.validationerror import ValidateModelProperiesError
+from csvcubed.models.validatedmodel import (
+    ValidatedModel,
+    ValidationFunction,
+    Validations,
+)
+from csvcubed.utils import validations as v
 from csvcubed.utils.uri import looks_like_uri
 
 
@@ -45,12 +50,15 @@ class RdfSerialisationHint(Enum):
 
 
 @dataclass(unsafe_hash=True)
-class TripleFragmentBase(PydanticModel, ABC):
+class TripleFragmentBase(PydanticModel, ValidatedModel, ABC):
     """
     Represents part of an RDF triple.
     """
 
     predicate: Union[str, URIRef]
+
+    def _get_validations(self) -> Union[Validations, Dict[str, ValidationFunction]]:
+        return {"predicate": v.any_of(v.validate_str_type, v.is_instance_of(URIRef))}
 
 
 @dataclass(unsafe_hash=True)
@@ -63,6 +71,18 @@ class TripleFragment(TripleFragmentBase):
     object: Union[str, Identifier]
     subject_hint: RdfSerialisationHint = RdfSerialisationHint.DefaultNode
 
+    def _get_validations(self) -> Dict[str, ValidationFunction]:
+        triple_fragment_base_property_validations = TripleFragmentBase._get_validations(
+            self
+        )
+        assert isinstance(triple_fragment_base_property_validations, dict)
+
+        return {
+            "object": v.any_of(v.validate_str_type, v.is_instance_of(Identifier)),
+            "subject_hint": v.enum(RdfSerialisationHint),
+            **triple_fragment_base_property_validations,
+        }
+
 
 @dataclass(unsafe_hash=True)
 class InverseTripleFragment(TripleFragmentBase):
@@ -73,6 +93,19 @@ class InverseTripleFragment(TripleFragmentBase):
 
     subject: Union[str, Identifier]
     object_hint: RdfSerialisationHint = RdfSerialisationHint.DefaultNode
+
+    def _get_validations(self) -> Dict[str, ValidationFunction]:
+        triple_fragment_base_property_validations = TripleFragmentBase._get_validations(
+            self
+        )
+        assert isinstance(triple_fragment_base_property_validations, dict)
+        return {
+            "subject": v.any_of(
+                v.validate_str_type, v.is_instance_of(expect_instance_type=Identifier)
+            ),
+            "object_hint": v.enum(RdfSerialisationHint),
+            **triple_fragment_base_property_validations,
+        }
 
 
 @dataclass
@@ -166,17 +199,3 @@ class ArbitraryRdf(ABC):
                     )
             else:
                 raise Exception(f"Unmatched TripleFragment type {type(fragment)}")
-
-
-def validate_triple_fragment(
-    fragment: TripleFragmentBase, property_name: str
-) -> List[ValidateModelProperiesError]:
-    if not isinstance(fragment, TripleFragmentBase):
-        return [
-            ValidateModelProperiesError(
-                f"I was expecting this to be a {TripleFragmentBase.__name__}, but it isn't.",
-                property_name,
-            )
-        ]
-
-    return []

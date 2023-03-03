@@ -16,7 +16,6 @@ from csvcubed.models.cube.qb.components.arbitraryrdf import (
     ArbitraryRdf,
     RdfSerialisationHint,
     TripleFragmentBase,
-    validate_triple_fragment,
 )
 from csvcubed.models.cube.qb.components.datastructuredefinition import (
     QbColumnStructuralDefinition,
@@ -25,6 +24,7 @@ from csvcubed.models.cube.uristyle import URIStyle
 from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.models.validatedmodel import ValidatedModel, ValidationFunction
 from csvcubed.models.validationerror import ValidationError
+from csvcubed.utils import validations as v
 from csvcubed.utils.validations import (
     validate_list,
     validate_optional,
@@ -33,7 +33,7 @@ from csvcubed.utils.validations import (
 )
 from csvcubed.utils.validators.uri import validate_uri as pydantic_validate_uri
 
-from .codelist import NewQbCodeList, QbCodeList, validate_codelist
+from .codelist import NewQbCodeList, QbCodeList
 
 
 @dataclass
@@ -87,7 +87,7 @@ class ExistingQbDimension(QbDimension):
         return {
             **QbDimension._get_validations(self),
             "dimension_uri": validate_uri,
-            "arbitrary_rdf": validate_list(validate_triple_fragment),
+            "arbitrary_rdf": validate_list(v.validated_model(TripleFragmentBase)),
         }
 
 
@@ -160,9 +160,9 @@ class NewQbDimension(QbDimension, UriIdentifiable):
             **QbDimension._get_validations(self),
             "label": validate_str_type,
             "description": validate_optional(validate_str_type),
-            "code_list": validate_optional(validate_codelist),
+            "code_list": validate_optional(v.validated_model(QbCodeList)),
             "parent_dimension_uri": validate_optional(validate_uri),
             "source_uri": validate_optional(validate_uri),
             **UriIdentifiable._get_validations(self),
-            "arbitrary_rdf": validate_list(validate_triple_fragment),
+            "arbitrary_rdf": validate_list(v.validated_model(TripleFragmentBase)),
         }

@@ -6,11 +6,18 @@ Represent individual concepts inside a `skos:ConceptScheme`.
 """
 
 from dataclasses import dataclass, field
-from typing import Optional
+from typing import Dict, Optional
 
 from csvcubed.models.uriidentifiable import UriIdentifiable
+from csvcubed.models.validatedmodel import ValidatedModel, ValidationFunction
 from csvcubed.utils.uri import uri_safe
-from csvcubed.utils.validators.uri import validate_uri
+from csvcubed.utils.validations import (
+    validate_int_type,
+    validate_optional,
+    validate_str_type,
+    validate_uri,
+)
+from csvcubed.utils.validators.uri import validate_uri as pydantic_validate_uri
 
 from .datastructuredefinition import SecondaryQbStructuralDefinition
 
@@ -38,6 +45,17 @@ class NewQbConcept(SecondaryQbStructuralDefinition, UriIdentifiable):
     def __hash__(self):
         return self.code.__hash__()
 
+    def _get_validations(self) -> Dict[str, ValidationFunction]:
+
+        return {
+            "label": validate_str_type,
+            "code": validate_str_type,
+            "parent_code": validate_optional(validate_str_type),
+            "sort_order": validate_optional(validate_int_type),
+            "description": validate_optional(validate_str_type),
+            **UriIdentifiable._get_validations(self),
+        }
+
 
 @dataclass
 class ExistingQbConcept(SecondaryQbStructuralDefinition):
@@ -45,7 +63,13 @@ class ExistingQbConcept(SecondaryQbStructuralDefinition):
 
     existing_concept_uri: str
 
-    _existing_concept_uri_validator = validate_uri("existing_concept_uri")
+    _existing_concept_uri_validator = pydantic_validate_uri("existing_concept_uri")
+
+    def _get_validations(self) -> Dict[str, ValidationFunction]:
+
+        return {
+            "existing_concept_uri": validate_uri,
+        }
 
 
 @dataclass(unsafe_hash=True)
@@ -56,4 +80,9 @@ class DuplicatedQbConcept(NewQbConcept, ExistingQbConcept):
     To be used in a :class:`CompositeQbCodeList`.
     """
 
-    pass
+    def _get_validations(self) -> Dict[str, ValidationFunction]:
+
+        return {
+            **ExistingQbConcept._get_validations(self),
+            **NewQbConcept._get_validations(self),
+        }

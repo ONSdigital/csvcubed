@@ -2,7 +2,7 @@ import csv
 from dataclasses import dataclass, field
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from typing import List, Optional, Set
+from typing import Dict, List, Optional, Set
 
 import pandas as pd
 import pytest
@@ -32,6 +32,7 @@ from csvcubed.models.cube.qb.components.unit import NewQbUnit
 from csvcubed.models.cube.qb.components.unitscolumn import QbMultiUnits
 from csvcubed.models.cube.uristyle import URIStyle
 from csvcubed.models.uriidentifiable import UriIdentifiable
+from csvcubed.models.validatedmodel import ValidationFunction
 from csvcubed.utils.iterables import first
 from csvcubed.writers.qbwriter import QbWriter
 
@@ -51,6 +52,12 @@ class TestQbMeasure(QbMeasure, UriIdentifiable):
 
     def get_identifier(self) -> str:
         pass
+
+    def _get_validations(self) -> Dict[str, ValidationFunction]:
+
+        return {
+            **UriIdentifiable._get_validations(self),
+        }
 
 
 empty_cube = Cube(CatalogMetadata("Cube Name"), pd.DataFrame, [])

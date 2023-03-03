@@ -8,10 +8,11 @@ from datetime import date, datetime
 from typing import Optional, Union
 
 from csvcubed.models.pydanticmodel import PydanticModel
+from csvcubed.models.validatedmodel import ValidatedModel, ValidationFunction
 
 
 @dataclass
-class CatalogMetadataBase(PydanticModel, ABC):
+class CatalogMetadataBase(PydanticModel, ValidatedModel, ABC):
     title: str
 
     @abstractmethod
