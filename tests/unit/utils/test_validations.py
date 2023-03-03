@@ -548,11 +548,6 @@ def test_validated_model_is_not_inherited():
     assert any(errors)
 
 
-# todo: Test that a model returning Dict[str, ValidationFuncion] from _get_validations works
-
-# todo: Test that a model returning Validations from _get_validations works
-
-
 @dataclass
 class WholeObjectValidationsTestClass(ValidatedModel):
     """
