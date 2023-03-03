@@ -150,11 +150,11 @@ def validate_float_type(
 def validate_file(
     value: Path, property_name: str
 ) -> List[ValidateModelPropertiesError]:
+    """
+    This function validates whether the given argument is in fact of type Path, and if not,
+    returns any validation errors raised by the validation function.
+    """
     if isinstance(value, Path):
-        """
-        This function validates whether the given argument is in fact of type Path, and if not,
-        returns any validation errors raised by the validation function.
-        """
         if not value.exists():
             return [
                 ValidateModelPropertiesError(
