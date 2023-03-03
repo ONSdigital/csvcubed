@@ -593,6 +593,10 @@ class WholeObjectValidationsTestClass(ValidatedModel):
 
 
 def test_whole_object_validation_correct():
+    """
+    Ensures that whole-object validation applied to an object with correctly defined properties
+    succeeds and returns no errors.
+    """
     test_instance = WholeObjectValidationsTestClass(
         test_validate_str="positive", test_validate_int=2
     )
@@ -601,6 +605,10 @@ def test_whole_object_validation_correct():
 
 
 def test_whole_object_validation_incorrect():
+    """
+    Ensures that whole-object validation applied to an object with incorrectly defined property values
+    successfully returns errors as expected.
+    """
     test_instance = WholeObjectValidationsTestClass(
         test_validate_str="positive", test_validate_int=-2
     )
@@ -609,12 +617,20 @@ def test_whole_object_validation_incorrect():
 
 
 def test_validate_is_instance_of_correct():
+    """
+    Tests that the is_instance_of function successfully validates an object of a type that
+    does not inherit from ValidationModel and returns no errors.
+    """
     test_instance = TestClass(test_validate_instance_of=Identifier("hi"))
     errors = test_instance.validate()
     assert not any(errors)
 
 
 def test_validate_is_instance_of_incorrect():
+    """
+    Ensures the is_instance_of function validates an object of a type that does not inherit
+    from ValidationModel and returns errors correctly when expected. (Type is incorrect)
+    """
     test_instance = TestClass(test_validate_instance_of="Woof")
     errors = test_instance.validate()
     assert any(errors)
@@ -622,7 +638,8 @@ def test_validate_is_instance_of_incorrect():
 
 def test_validate_data_type_correct():
     """
-    TODO
+    Ensures a data_type property is successfully validated and returns no errors
+    when given an input that is part of the ACCEPTED_DATATYPE_MAPPING dictionary.
     """
     test_instance = TestClass(
         test_data_type="nonPositiveInteger",
@@ -633,7 +650,9 @@ def test_validate_data_type_correct():
 
 def test_validate_data_type_looks_like_uri():
     """
-    TODO
+    Ensures a data type property is successfully validated and returns no errors
+    when given an input that is not part of the ACCEPTED_DATATYPE_MAPPING dictionary,
+    but does look like a URI.
     """
     test_instance = TestClass(
         test_data_type="http://this/looks/like-a/uri",
@@ -644,7 +663,9 @@ def test_validate_data_type_looks_like_uri():
 
 def test_validate_data_type_incorrect():
     """
-    TODO
+    Ensures a data type property is validated and correctly returns errors when given
+    an input that is not part of the ACCEPTED_DATATYPE_MAPPING dictionary and does not
+    look like a URI.
     """
     test_instance = TestClass(
         test_data_type="Definitely not a data type or URI",
