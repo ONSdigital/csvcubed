@@ -722,12 +722,21 @@ def test_validate_base_unit_scaling_factor_dependency_correct():
 def test_validate_base_unit_scaling_factor_dependency_incorrect():
     """
     Ensures whole-object validation can be performed on a NewQbUnit and account for the
-    dependencies between base unit - base unit scaling factor and
-    qudt_quantity_kind_uri - si_base_unit_conversion_multiplier, and returning errors as expected.
+    dependencies between base unit - base unit scaling factor (base unit must exist if
+    scaling factor exists), and returning errors as expected.
     """
-    test_instance = TestUnitClass(
-        base_unit_scaling_factor=1.5, si_base_unit_conversion_multiplier=2.0
-    )
+    test_instance = TestUnitClass(base_unit_scaling_factor=1.5)
+    errors = test_instance.validate()
+    assert any(errors)
+
+
+def test_validate_base_unit_conversion_multiplier_dependency_incorrect():
+    """
+    Ensures whole-object validation can be performed on a NewQbUnit and account for the
+    dependencies between qudt_quantity_kind_uri - si_base_unit_conversion_multiplier,
+    and returning errors as expected.
+    """
+    test_instance = TestUnitClass(si_base_unit_conversion_multiplier=2.0)
     errors = test_instance.validate()
     assert any(errors)
 
