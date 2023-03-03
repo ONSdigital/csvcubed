@@ -134,7 +134,7 @@ class NewQbCodeListInCsvW(QbCodeList):
 
             errors.append(
                 ValidateModelPropertiesError(
-                    f"'csv_file_relative_path_or_uri', 'concept_scheme_uri' or 'concept_template_uri' values are missing.",
+                    "'csv_file_relative_path_or_uri', 'concept_scheme_uri' or 'concept_template_uri' values are missing.",
                     "Whole Object",
                 )
             )
