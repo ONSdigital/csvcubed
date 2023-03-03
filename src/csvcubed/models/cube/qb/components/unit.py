@@ -5,7 +5,7 @@ Units
 Represent units in an RDF Data Cube.
 """
 import logging
-from abc import ABC, abstractmethod
+from abc import ABC
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Set, Union
 

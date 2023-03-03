@@ -18,7 +18,6 @@ from csvcubed.models.validatedmodel import (
     ValidationFunction,
     Validations,
 )
-from csvcubed.models.validationerror import ValidateModelPropertiesError
 from csvcubed.utils import validations as v
 from csvcubed.utils.uri import looks_like_uri
 

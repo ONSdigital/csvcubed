@@ -3,7 +3,7 @@
 import logging
 from abc import abstractmethod
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, Generic, List, Type, TypeVar, Union
+from typing import Any, Callable, Dict, Generic, List, TypeVar, Union
 
 from csvcubedmodels.dataclassbase import DataClassBase
 

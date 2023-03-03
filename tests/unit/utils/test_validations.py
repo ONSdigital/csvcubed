@@ -555,6 +555,10 @@ def test_validated_model_is_not_inherited():
 
 @dataclass
 class WholeObjectValidationsTestClass(ValidatedModel):
+    """
+    This is the class that will be used to test whole-object validation.
+    """
+
     test_validate_str: str
     test_validate_int: int
 

@@ -174,6 +174,10 @@ def validate_file(
 
 
 def date(value: dt.date, property_name: str) -> List[ValidateModelPropertiesError]:
+    """
+    This function will validate if the argument provided is in fact a date type and,
+    returns any errors returned by the item validation function.
+    """
     if not isinstance(value, dt.date):
         return [
             ValidateModelPropertiesError(
@@ -187,6 +191,10 @@ def date(value: dt.date, property_name: str) -> List[ValidateModelPropertiesErro
 def datetime(
     value: dt.datetime, property_name: str
 ) -> List[ValidateModelPropertiesError]:
+    """
+    This function will validate if the argument provided is in fact a datetime type and,
+    returns any errors returned by the item validation function.
+    """
     if not isinstance(value, dt.datetime):
         return [
             ValidateModelPropertiesError(
@@ -198,6 +206,11 @@ def datetime(
 
 
 def any_of(*conditions: ValidationFunction) -> ValidationFunction:
+    """
+    This function will validate if the argument provided is an instance of any of the types
+    specified. (Useful for Unions.) Returns any errors returned by the validation function.
+    """
+
     def validate(value: Any, property_name: str) -> List[ValidateModelPropertiesError]:
         all_errors = []
         for condition in conditions:
@@ -218,6 +231,11 @@ def any_of(*conditions: ValidationFunction) -> ValidationFunction:
 
 
 def enum(enum_type: Type[Enum]) -> ValidationFunction:
+    """
+    This function will validate if the argument provided is in fact an enum type and,
+    returns any errors returned by the validation function.
+    """
+
     def validate(value: Any, property_name: str) -> List[ValidateModelPropertiesError]:
         for enum_value in enum_type:
             if value == enum_value:
@@ -234,6 +252,10 @@ def enum(enum_type: Type[Enum]) -> ValidationFunction:
 
 
 def data_type(data_type: str, property_name: str) -> List[ValidateModelPropertiesError]:
+    """
+    This function will validate if the argument provided is a member of the accepted data types,
+    and returns any errors that are raised.
+    """
     if data_type not in ACCEPTED_DATATYPE_MAPPING.keys():
         return [
             ValidateModelPropertiesError(
@@ -278,8 +300,9 @@ def validated_model(validated_model_type: Type[ValidatedModel]):
 
 def is_instance_of(expect_instance_type: Type[object]) -> ValidationFunction:
     """
-    WIP early attempt at a function that can apply validations in a generic way without needing
-    to use validatedmodel/custom functions, by specifying what type to check for
+    Validation function that can apply type validation to class properties in a generic manner,
+    by specifying what instance/type of object to expect. This saves effort from having to create
+    custom validation functions for specific types that do not inherit from ValidatedModel.
     """
 
     def _validate(value: Any, property_name: str) -> List[ValidateModelPropertiesError]:
