@@ -258,7 +258,7 @@ class QbAttributeLiteral(QbAttribute, ABC):
         return data_type
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
-        return {"data_type": validate_str_type}
+        return {"data_type": v.any_of(v.data_type, v.validate_uri)}
 
 
 @dataclass
