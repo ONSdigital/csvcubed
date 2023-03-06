@@ -42,5 +42,6 @@ class SuppressedCsvColumn(CsvColumn):
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
         return {
+            **CsvColumn._get_validations(self),
             **UriIdentifiable._get_validations(self),
         }
