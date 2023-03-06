@@ -17,8 +17,7 @@ from csvcubed.models.cube.qb.components.arbitraryrdf import (
     TripleFragmentBase,
 )
 from csvcubed.models.uriidentifiable import UriIdentifiable
-from csvcubed.models.validatedmodel import ValidatedModel, ValidationFunction
-from csvcubed.models.validationerror import ValidationError
+from csvcubed.models.validatedmodel import ValidationFunction
 from csvcubed.utils import validations as v
 from csvcubed.utils.validations import (
     validate_list,

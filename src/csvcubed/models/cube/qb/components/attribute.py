@@ -7,7 +7,7 @@ Represent Attributes in an RDF Data Cube.
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import List, Optional, Set
+from typing import Dict, List, Optional, Set
 
 import pandas as pd
 from pydantic import validator
@@ -15,10 +15,17 @@ from pydantic import validator
 from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_optional_str
 from csvcubed.models.cube.qb.components.constants import ACCEPTED_DATATYPE_MAPPING
 from csvcubed.models.uriidentifiable import UriIdentifiable
+from csvcubed.models.validatedmodel import ValidationFunction
 from csvcubed.models.validationerror import ValidationError
+from csvcubed.utils import validations as v
 from csvcubed.utils.qb.validation.uri_safe import ensure_no_uri_safe_conflicts
 from csvcubed.utils.uri import uri_safe
-from csvcubed.utils.validators.uri import validate_uri
+from csvcubed.utils.validations import (
+    validate_list,
+    validate_optional,
+    validate_str_type,
+)
+from csvcubed.utils.validators.uri import validate_uri as pydantic_validate_uri
 
 from .arbitraryrdf import ArbitraryRdf, RdfSerialisationHint, TripleFragmentBase
 from .attributevalue import NewQbAttributeValue
@@ -103,7 +110,7 @@ class ExistingQbAttribute(QbAttribute):
     def get_permitted_rdf_fragment_hints(self) -> Set[RdfSerialisationHint]:
         return {RdfSerialisationHint.Component}
 
-    _attribute_uri_validator = validate_uri("attribute_uri")
+    _attribute_uri_validator = pydantic_validate_uri("attribute_uri")
 
     def validate_data(
         self,
@@ -113,6 +120,17 @@ class ExistingQbAttribute(QbAttribute):
         column_csv_title: str,
     ) -> List[ValidationError]:
         return self._validate_data_new_attribute_values(data)
+
+    def _get_validations(self) -> Dict[str, ValidationFunction]:
+        return {
+            "attribute_uri": v.validate_uri,
+            "new_attribute_values": validate_list(
+                v.validated_model(NewQbAttributeValue)
+            ),
+            "is_required": v.boolean,
+            "arbitrary_rdf": validate_list(v.validated_model(TripleFragmentBase)),
+            "observed_value_col_title": validate_optional(validate_str_type),
+        }
 
 
 @dataclass
@@ -206,6 +224,21 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
     ) -> List[ValidationError]:
         return self._validate_data_new_attribute_values(data)
 
+    def _get_validations(self) -> Dict[str, ValidationFunction]:
+        return {
+            "label": validate_str_type,
+            "description": validate_optional(validate_str_type),
+            "new_attribute_values": validate_list(
+                v.validated_model(NewQbAttributeValue)
+            ),
+            "parent_attribute_uri": validate_optional(v.validate_uri),
+            "source_uri": validate_optional(v.validate_uri),
+            "is_required": v.boolean,
+            **UriIdentifiable._get_validations(self),
+            "arbitrary_rdf": validate_list(v.validated_model(TripleFragmentBase)),
+            "observed_value_col_title": validate_optional(validate_str_type),
+        }
+
 
 @dataclass
 class QbAttributeLiteral(QbAttribute, ABC):
@@ -220,6 +253,9 @@ class QbAttributeLiteral(QbAttribute, ABC):
         if data_type not in ACCEPTED_DATATYPE_MAPPING:
             raise ValueError(f"Literal type '{data_type}' not supported")
         return data_type
+
+    def _get_validations(self) -> Dict[str, ValidationFunction]:
+        return {"data_type": v.any_of(v.data_type, v.validate_uri)}
 
 
 @dataclass
@@ -242,6 +278,17 @@ class ExistingQbAttributeLiteral(ExistingQbAttribute, QbAttributeLiteral):
     ) -> List[ValidationError]:
         # csv-validation will check that all literals match the expected data type.
         return []
+
+    def _get_validations(self) -> Dict[str, ValidationFunction]:
+        return {
+            **QbAttributeLiteral._get_validations(self),
+            **ExistingQbAttribute._get_validations(self),
+            "new_attribute_values": validate_list(
+                v.validated_model(NewQbAttributeValue)
+            ),
+            "arbitrary_rdf": validate_list(v.validated_model(TripleFragmentBase)),
+            "observed_value_col_title": validate_optional(validate_str_type),
+        }
 
 
 @dataclass
@@ -267,3 +314,14 @@ class NewQbAttributeLiteral(NewQbAttribute, QbAttributeLiteral):
     ) -> List[ValidationError]:
         # csv-validation will check that all literals match the expected data type.
         return []
+
+    def _get_validations(self) -> Dict[str, ValidationFunction]:
+        return {
+            **QbAttributeLiteral._get_validations(self),
+            **NewQbAttribute._get_validations(self),
+            "new_attribute_values": validate_list(
+                v.validated_model(NewQbAttributeValue)
+            ),
+            "arbitrary_rdf": validate_list(v.validated_model(TripleFragmentBase)),
+            "observed_value_col_title": validate_optional(validate_str_type),
+        }
