@@ -25,7 +25,6 @@ from csvcubed.utils.validations import (
     validate_list,
     validate_optional,
     validate_str_type,
-    validate_uri,
 )
 from csvcubed.utils.validators.uri import validate_uri
 
@@ -128,7 +127,7 @@ class ExistingQbAttribute(QbAttribute):
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
         return {
-            "attribute_uri": validate_uri,
+            "attribute_uri": v.validate_uri,
             "new_attribute_values": validate_list(
                 v.validated_model(NewQbAttributeValue)
             ),
