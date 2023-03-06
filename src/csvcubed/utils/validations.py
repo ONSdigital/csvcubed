@@ -96,6 +96,24 @@ def validate_int_type(
     return []
 
 
+def validate_bool_type(
+    value: bool, property_name: str
+) -> List[ValidateModelPropertiesError]:
+    """
+    This function will validate if the argument provided is in fact a boolian type and,
+    returns any errors returned by the item validation function.
+    """
+    if not isinstance(value, bool):
+        return [
+            ValidateModelPropertiesError(
+                "This variable should be a boolian value, check the following variable:",
+                property_name,
+            )
+        ]
+
+    return []
+
+
 def validate_optional(
     validate_item: Callable[[T, str], List[ValidateModelPropertiesError]]
 ) -> Callable[[Optional[T], str], List[ValidateModelPropertiesError]]:
