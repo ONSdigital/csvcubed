@@ -98,13 +98,13 @@ def validate_int_type(
 
 def boolean(value: bool, property_name: str) -> List[ValidateModelPropertiesError]:
     """
-    This function will validate if the argument provided is in fact a boolian type and,
-    returns any errors returned by the item validation function.
+    This function will validate if the argument provided is in fact a boolean type and,
+    returns and error if it isn't.
     """
     if not isinstance(value, bool):
         return [
             ValidateModelPropertiesError(
-                "This variable should be a boolian value, check the following variable:",
+                "This variable should be a boolean value, check the following variable:",
                 property_name,
             )
         ]
