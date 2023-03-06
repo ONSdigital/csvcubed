@@ -4,12 +4,14 @@ CSV Column Definitions
 """
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from csvcubed.inputs import PandasDataTypes
 from csvcubed.models.pydanticmodel import PydanticModel
 from csvcubed.models.uriidentifiable import UriIdentifiable
+from csvcubed.models.validatedmodel import ValidationFunction
 from csvcubed.models.validationerror import ValidationError
+from csvcubed.utils.validations import validate_str_type
 
 
 @dataclass
@@ -23,6 +25,9 @@ class CsvColumn(PydanticModel, UriIdentifiable, ABC):
     def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
         pass
 
+    def _get_validations(self) -> Dict[str, ValidationFunction]:
+        return {"csv_column_title": validate_str_type}
+
 
 @dataclass
 class SuppressedCsvColumn(CsvColumn):
@@ -34,3 +39,8 @@ class SuppressedCsvColumn(CsvColumn):
 
     def validate_data(self, data: PandasDataTypes) -> List[ValidationError]:
         return []
+
+    def _get_validations(self) -> Dict[str, ValidationFunction]:
+        return {
+            **UriIdentifiable._get_validations(self),
+        }

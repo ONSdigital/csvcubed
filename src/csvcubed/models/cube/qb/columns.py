@@ -5,11 +5,19 @@ Columns with qb Components
 Represents csv columns as `qb:Components`
 """
 from dataclasses import dataclass, field
-from typing import Generic, List, Optional, TypeVar
+from typing import Dict, Generic, List, Optional, TypeVar
 
 from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar
 from csvcubed.models.cube.columns import CsvColumn
+from csvcubed.models.uriidentifiable import UriIdentifiable
+from csvcubed.models.validatedmodel import ValidationFunction
+from csvcubed.utils import validations as v
 from csvcubed.utils.uri import csvw_column_name_safe
+from csvcubed.utils.validations import (
+    validate_list,
+    validate_optional,
+    validate_str_type,
+)
 
 from ...validationerror import ValidationError
 from .components.datastructuredefinition import QbColumnStructuralDefinition
@@ -49,3 +57,15 @@ class QbColumn(CsvColumn, Generic[QbColumnStructuralDefinition]):
             csv_column_uri_template,
             self.csv_column_title,
         )
+
+    def _get_validations(self) -> Dict[str, ValidationFunction]:
+        return {
+            "csv_column_title": validate_str_type,
+            "structural_definition": validate_list(
+                v.validated_model(QbColumnStructuralDefinition)
+            ),
+            "csv_column_uri_template": validate_optional(
+                validate_str_type,
+            ),
+            **UriIdentifiable._get_validations(self),
+        }

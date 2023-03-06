@@ -16,7 +16,7 @@ from csvcubed.models.validationerror import ValidationError
 
 
 @dataclass
-class QbStructuralDefinition(PydanticModel, ABC):
+class QbStructuralDefinition(PydanticModel, ValidatedModel, ABC):
     """
     Base class for entities holding information necessary to generate one or many qb DataStructureDefinition (DSD)
     components.
