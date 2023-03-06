@@ -13,11 +13,7 @@ from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.models.validatedmodel import ValidationFunction
 from csvcubed.utils import validations as v
 from csvcubed.utils.uri import csvw_column_name_safe
-from csvcubed.utils.validations import (
-    validate_list,
-    validate_optional,
-    validate_str_type,
-)
+from csvcubed.utils.validations import validate_optional, validate_str_type
 
 from ...validationerror import ValidationError
 from .components.datastructuredefinition import QbColumnStructuralDefinition

@@ -7,7 +7,7 @@ Represent Attributes in an RDF Data Cube.
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Set, Union
+from typing import Dict, List, Optional, Set
 
 import pandas as pd
 from pydantic import validator
@@ -15,7 +15,7 @@ from pydantic import validator
 from csvcubed.inputs import PandasDataTypes, pandas_input_to_columnar_optional_str
 from csvcubed.models.cube.qb.components.constants import ACCEPTED_DATATYPE_MAPPING
 from csvcubed.models.uriidentifiable import UriIdentifiable
-from csvcubed.models.validatedmodel import ValidationFunction, Validations
+from csvcubed.models.validatedmodel import ValidationFunction
 from csvcubed.models.validationerror import ValidationError
 from csvcubed.utils import validations as v
 from csvcubed.utils.qb.validation.uri_safe import ensure_no_uri_safe_conflicts

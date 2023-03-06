@@ -19,6 +19,7 @@ from csvcubed.models.validatedmodel import (
 from csvcubed.models.validationerror import ValidateModelPropertiesError
 from csvcubed.utils import validations as v
 from csvcubed.utils.validations import (
+    boolean,
     validate_file,
     validate_float_type,
     validate_int_type,
@@ -65,11 +66,13 @@ class TestClass(ValidatedModel):
     test_validated_model_class: Optional[OtherTestClass] = None
     test_data_type: Optional[str] = None
     test_validate_instance_of: Optional[Identifier] = None
+    bool_test_variable: Optional[bool] = True
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
         return {
             "str_test_variable": validate_str_type,
             "int_test_variable": validate_int_type,
+            "bool_test_variable": boolean,
             "float_test_variable": validate_float_type,
             "list_test_variable": validate_list(validate_str_type),
             "path_test_variable": validate_optional(validate_file),
@@ -729,6 +732,31 @@ def test_validate_base_unit_scaling_factor_dependency_incorrect():
         base_unit_scaling_factor=1.5, si_base_unit_conversion_multiplier=2.0
     )
     errors = test_instance.validate()
+    assert any(errors)
+
+
+def test_boolean_correct():
+    """
+    This test will validate if the class has been instanciated with a variable that was expecting a boolean,
+    and was provided with the correct type variable.
+    """
+    test_instance = TestClass(bool_test_variable=False)
+
+    result = test_instance.validate()
+
+    assert len(result) == 0
+
+
+def test_boolean_incorrect():
+    """
+    This test will validate if the class has been instanciated with a variable that was expecting an boolean,
+    but it was provided with a non boolean type variable.
+    """
+
+    test_instance = TestClass(bool_test_variable=5)
+
+    errors = test_instance.validate()
+
     assert any(errors)
 
 
