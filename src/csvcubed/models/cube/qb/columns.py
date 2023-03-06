@@ -36,7 +36,6 @@ class QbColumn(CsvColumn, Generic[QbColumnStructuralDefinition]):
     A CSV column and the qb structural definition it relates to.
     """
 
-    csv_column_title: str
     structural_definition: QbColumnStructuralDefinition
     csv_column_uri_template: Optional[str] = field(default=None, repr=False)
     uri_safe_identifier_override: Optional[str] = field(default=None, repr=False)
@@ -60,10 +59,8 @@ class QbColumn(CsvColumn, Generic[QbColumnStructuralDefinition]):
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
         return {
-            "csv_column_title": validate_str_type,
-            "structural_definition": validate_list(
-                v.validated_model(QbColumnStructuralDefinition)
-            ),
+            **CsvColumn._get_validations(self),
+            "structural_definition": v.validated_model(QbColumnStructuralDefinition),
             "csv_column_uri_template": validate_optional(
                 validate_str_type,
             ),
