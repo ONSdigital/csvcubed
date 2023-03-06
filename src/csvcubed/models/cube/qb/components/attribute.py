@@ -67,9 +67,6 @@ class QbAttribute(QbColumnStructuralDefinition, ArbitraryRdf, ABC):
 
         return []
 
-    def _get_validations(self) -> Union[Validations, Dict[str, ValidationFunction]]:
-        return super()._get_validations()
-
 
 @dataclass
 class ExistingQbAttribute(QbAttribute):
@@ -234,8 +231,8 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
             "new_attribute_values": validate_list(
                 v.validated_model(NewQbAttributeValue)
             ),
-            "parent_attribute_uri": validate_optional(validate_str_type),
-            "source_uri": validate_optional(validate_str_type),
+            "parent_attribute_uri": validate_optional(v.validate_uri),
+            "source_uri": validate_optional(v.validate_uri),
             "is_required": v.boolean,
             **UriIdentifiable._get_validations(self),
             "arbitrary_rdf": validate_list(v.validated_model(TripleFragmentBase)),
@@ -284,8 +281,8 @@ class ExistingQbAttributeLiteral(ExistingQbAttribute, QbAttributeLiteral):
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
         return {
-            **ExistingQbAttribute._get_validations(self),
             **QbAttributeLiteral._get_validations(self),
+            **ExistingQbAttribute._get_validations(self),
             "new_attribute_values": validate_list(
                 v.validated_model(NewQbAttributeValue)
             ),
@@ -320,8 +317,8 @@ class NewQbAttributeLiteral(NewQbAttribute, QbAttributeLiteral):
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
         return {
-            **NewQbAttribute._get_validations(self),
             **QbAttributeLiteral._get_validations(self),
+            **NewQbAttribute._get_validations(self),
             "new_attribute_values": validate_list(
                 v.validated_model(NewQbAttributeValue)
             ),
