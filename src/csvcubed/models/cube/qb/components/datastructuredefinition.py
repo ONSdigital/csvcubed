@@ -44,7 +44,7 @@ class QbColumnStructuralDefinition(QbStructuralDefinition, ABC):
 
 
 @dataclass
-class SecondaryQbStructuralDefinition(QbStructuralDefinition, ValidatedModel, ABC):
+class SecondaryQbStructuralDefinition(QbStructuralDefinition, ABC):
     """
     Base class representing part of the qb Data Structure Definition which cannot in itself represent a column of data.
     """
