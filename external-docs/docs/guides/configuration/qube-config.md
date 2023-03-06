@@ -61,10 +61,12 @@ A column is assumed to be a dimension unless otherwise configured using the `typ
 ```
 
 ### Dimensions
-
-> The *dimension* [column] serves to identify the observations. A set of values for all the dimension components is sufficient to identify a single observation. Examples of dimensions include the time to which the observation applies, or a geographic region which the observation covers.
+<!-- Removed blockquote formatting -->
+The *dimension* columns serve to identify the observations in the data set. A combined set of values for all dimension components should identify a single observation value. Examples of dimensions include the time period to which the observation applies, or a geographic region which the observation covers.
 
 Think of the principle of [MECE](https://en.wikipedia.org/wiki/MECE_principle).
+
+See the [Dimension Configuration](#dimension-configuration) page for more information.
 
 ### Measures
 
@@ -137,17 +139,102 @@ The `from_existing` value when set provides the basis of linked data; it allows 
 
 ## Dimension Configuration
 
-| **field name**      | **description**                                                                                                                                                                                                      | **default value**                                                                |
-|---------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
-| `type`              | The type of the column (Required)                                                                                                                                                                                    | *dimension*                                                                      |
-| `from_template`     | Use a [column template](templates.md)                                                                                                                                                                                | *none*                                                                           |
-| `label`             | The title of the column (Optional)                                                                                                                                                                                   | The capital case of the header in the csv file with spaces replacing underscores |
-| `description`       | A description of the contents of the column (Optional)                                                                                                                                                               | *none*                                                                           |
-| `from_existing`     | The uri of the resource for reuse/extension (Optional)                                                                                                                                                               | *none*                                                                           |
-| `definition_uri`    | A uri of a resource to show how the column is created/managed (i.e. a uri of a PDF explaining a list of units) (Optional)                                                                                            | *none*                                                                           |
-| `uri_override`      | Override the uri created automatically for the column (Optional) (Advanced)                                                                                                                                          | `tidy_data.csv#uri_safe_column_header_from_csv`                                  |
-| `cell_uri_template` | Override the uri generated for values within the uri (Optional) (Advanced)                                                                                                                                           | *none*                                                                           |
-| `code_list`         | Link to an existing code list (uri), supress a code-list (false), file path to a [code-list-config.json](code-list-config.md) (uri), [in-line code list](code-list-config.md) (json), or generate a code-list (true) | true                                                                             |
+The following fields can be configured for each dimension in your data set. csvcubed will assume that a column represents a dimension if the `type` field is left blank, or explicitly specified as `dimension`.
+
+| **field name**      | **description**                                                                                                                                                                                                                                                                               | **default value**                                                                |
+|---------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+| `type`              | The type of the column (Required)                                                                                                                                                                                                                                                             | *dimension*                                                                      |
+| `from_template`     | Use a [column template](templates.md) (Optional)                                                                                                                                                                                                                                              | *none*                                                                           |
+| `label`             | The title of the column (Optional)                                                                                                                                                                                                                                                            | The capital case of the header in the csv file with spaces replacing underscores |
+| `description`       | A description of the contents of the column (Optional)                                                                                                                                                                                                                                        | *none*                                                                           |
+| `from_existing`     | The uri of the resource for reuse/extension (Optional)                                                                                                                                                                                                                                        | *none*                                                                           |
+| `definition_uri`    | A uri of a resource to show how the column is created/managed (i.e. a uri of a PDF explaining a list of units) (Optional)                                                                                                                                                                     | *none*                                                                           |
+| `cell_uri_template` | Override the uri generated for values within the uri (Optional) (Advanced)                                                                                                                                                                                                                    | *none*                                                                           |
+| `code_list`         | Link to an existing code list (uri), suppress a code-list (false), file path to a [code-list-config.json](code-list-config.md#defining-a-code-list-configuration-file) (uri), [in-line code list](code-list-config.md#defining-an-in-line-code-list) (json), or generate a code-list (true) | true                                                                             |
+<!-- uri_override not in schema? -->
+<!-- | `uri_override`      | Override the uri created automatically for the column (Optional) (Advanced)                                                                                                                                          | `tidy_data.csv#uri_safe_column_header_from_csv`                                  | -->
+
+### Examples of dimension configuration
+
+The Sweden at Eurovision data set consists of four dimensions - `Year`, `Entrant`, `Song` and `Language`. Examples of how these dimensions could be configured are as follows.
+
+```json
+"columns": {
+   "Year": {
+      "from_template": "year",
+      "label": "Competition year",
+      "code_list": "true"
+   },
+   "Entrant": {
+      "type": "dimension",
+      "description": "The act representing Sweden at Eurovision for the given year",
+      "code_list": "my_eurovision_code_list_config.json"
+   },
+   "Song": {
+      "cell_uri_template": "",
+      "code_list": "http://example.org/eurovision-song-code-list"
+   },
+   "Language": {
+      "from_existing": "http://example.org/list-of-languages",
+      "definition_uri": "",
+      "code_list": "false"
+   }
+}
+```
+
+Taking each of the dimensions one-by-one:
+
+```json
+"columns": {
+   "Year": {
+      "from_template": "year",
+      "label": "Competition year",
+      "code_list": "true"
+   }
+}
+```
+
+The `Year` column uses a [column template](templates.md#datetime-period-template) - doing so means that the `type`, `from_existing`, `label` and `cell_uri_template` fields will be automatically populated based on the [calendar-year.json](https://purl.org/csv-cubed/qube-config/templates/calendar-year.json) template. However, these fields can also be over-ridden, as is the case here, since the `label` has been defined as "Competition year".
+
+A code list will be automatically generated by csvcubed for the `Year` column, as the `code_list` field has been set to `true`.
+
+
+```json
+"columns": {
+   "Entrant": {
+      "type": "dimension",
+      "description": "The act representing Sweden at Eurovision for the given year",
+      "code_list": "my_eurovision_code_list_config.json"
+   }
+}
+```
+
+The `Entrant` column has been explicitly configured with a `type` of dimension, although strictly speaking this is unnecessary, as a column will be designated as a dimension by default if the `type` is not stated.
+
+The `description` field allows additional information to be associated with a column.
+
+<!-- TODO: Update code list config page? -->
+A code list will be generated by csvcubed for the `Entrant` column, based on the `my_eurovision_code_list_config.json` file provided. See the [code list configuration](code-list-config.md#defining-a-code-list-configuration-file) for further instructions.
+
+```json
+"columns": {
+   "Song": {
+      "cell_uri_template": "",
+      "code_list": "http://example.org/eurovision-song-code-list"
+   }
+}
+```
+
+```json
+"columns": {
+   "Language": {
+      "from_existing": "http://example.org/list-of-languages",
+      "definition_uri": "",
+      "code_list": "false"
+   }
+}
+```
+
 
 ## Attributes Configuration
 
