@@ -96,9 +96,7 @@ def validate_int_type(
     return []
 
 
-def validate_bool_type(
-    value: bool, property_name: str
-) -> List[ValidateModelPropertiesError]:
+def boolean(value: bool, property_name: str) -> List[ValidateModelPropertiesError]:
     """
     This function will validate if the argument provided is in fact a boolian type and,
     returns any errors returned by the item validation function.

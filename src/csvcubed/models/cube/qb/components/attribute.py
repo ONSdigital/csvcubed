@@ -21,12 +21,11 @@ from csvcubed.utils import validations as v
 from csvcubed.utils.qb.validation.uri_safe import ensure_no_uri_safe_conflicts
 from csvcubed.utils.uri import uri_safe
 from csvcubed.utils.validations import (
-    validate_bool_type,
     validate_list,
     validate_optional,
     validate_str_type,
 )
-from csvcubed.utils.validators.uri import validate_uri
+from csvcubed.utils.validators.uri import validate_uri as pydantic_validate_uri
 
 from .arbitraryrdf import ArbitraryRdf, RdfSerialisationHint, TripleFragmentBase
 from .attributevalue import NewQbAttributeValue
@@ -114,7 +113,7 @@ class ExistingQbAttribute(QbAttribute):
     def get_permitted_rdf_fragment_hints(self) -> Set[RdfSerialisationHint]:
         return {RdfSerialisationHint.Component}
 
-    _attribute_uri_validator = validate_uri("attribute_uri")
+    _attribute_uri_validator = pydantic_validate_uri("attribute_uri")
 
     def validate_data(
         self,
@@ -131,7 +130,7 @@ class ExistingQbAttribute(QbAttribute):
             "new_attribute_values": validate_list(
                 v.validated_model(NewQbAttributeValue)
             ),
-            "is_required": validate_bool_type,
+            "is_required": v.boolean,
             "arbitrary_rdf": validate_list(v.validated_model(TripleFragmentBase)),
             "observed_value_col_title": validate_optional(validate_str_type),
         }
@@ -237,7 +236,7 @@ class NewQbAttribute(QbAttribute, UriIdentifiable):
             ),
             "parent_attribute_uri": validate_optional(validate_str_type),
             "source_uri": validate_optional(validate_str_type),
-            "is_required": validate_bool_type,
+            "is_required": v.boolean,
             **UriIdentifiable._get_validations(self),
             "arbitrary_rdf": validate_list(v.validated_model(TripleFragmentBase)),
             "observed_value_col_title": validate_optional(validate_str_type),
