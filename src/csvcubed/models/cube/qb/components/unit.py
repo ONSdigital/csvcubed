@@ -120,30 +120,30 @@ class NewQbUnit(QbUnit, UriIdentifiable, ArbitraryRdf):
 
     @staticmethod
     def _validation_base_unit_scaling_factor_dependency(
-        self,
+        unit: "NewQbUnit",
     ) -> List[ValidateModelPropertiesError]:
         errors: List[ValidateModelPropertiesError] = []
 
-        if self.base_unit_scaling_factor is not None and self.base_unit is None:
+        if unit.base_unit_scaling_factor is not None and unit.base_unit is None:
             errors.append(
                 ValidateModelPropertiesError(
                     f"""
-                '{self.base_unit_scaling_factor}' has been specified, but the following is missing and must be
-                        provided: '{self.base_unit}'.
+                '{unit.base_unit_scaling_factor}' has been specified, but the following is missing and must be
+                        provided: '{unit.base_unit}'.
                         """,
                     "Whole Object",
                 )
             )
 
         if (
-            self.si_base_unit_conversion_multiplier is not None
-            and self.qudt_quantity_kind_uri is None
+            unit.si_base_unit_conversion_multiplier is not None
+            and unit.qudt_quantity_kind_uri is None
         ):
             errors.append(
                 ValidateModelPropertiesError(
                     f"""
-                '{self.si_base_unit_conversion_multiplier}' has been specified, but the following is missing and must be
-                        provided: '{self.qudt_quantity_kind_uri}'.
+                '{unit.si_base_unit_conversion_multiplier}' has been specified, but the following is missing and must be
+                        provided: '{unit.qudt_quantity_kind_uri}'.
                         """,
                     "Whole Object",
                 )
