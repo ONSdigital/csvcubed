@@ -62,7 +62,7 @@ class CatalogMetadata(CatalogMetadataBase, UriIdentifiable):
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
         return {
-            "title": validate_str_type,
+            **CatalogMetadataBase._get_validations(self),
             "identifier": validate_optional(validate_str_type),
             "summary": validate_optional(validate_str_type),
             "description": validate_optional(validate_str_type),
