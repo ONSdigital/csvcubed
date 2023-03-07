@@ -13,11 +13,6 @@ from csvcubed.cli.inspect.inspectdatasetmanager import (
     get_dataset_val_counts_info,
     load_csv_to_dataframe,
 )
-from csvcubed.utils.csvdataset import(
-    get_single_measure_from_dsd,
-    get_standard_shape_measure_col_name_from_dsd,
-    get_standard_shape_unit_col_name_from_dsd,
-)
 from csvcubed.models.csvwtype import CSVWType
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.cube.qb.validationerrors import BothMeasureTypesDefinedError
@@ -26,7 +21,12 @@ from csvcubed.models.inspectdataframeresults import (
     DatasetObservationsInfoResult,
 )
 from csvcubed.models.sparqlresults import QubeComponentResult, QubeComponentsResult
-from csvcubed.utils.csvdataset import transform_dataset_to_canonical_shape
+from csvcubed.utils.csvdataset import (
+    get_single_measure_from_dsd,
+    get_standard_shape_measure_col_name_from_dsd,
+    get_standard_shape_unit_col_name_from_dsd,
+    transform_dataset_to_canonical_shape,
+)
 from csvcubed.utils.skos.codelist import (
     CodelistPropertyUrl,
     get_codelist_col_title_by_property_url,
@@ -820,3 +820,20 @@ def test_get_concepts_hierarchy_info_hierarchy_with_depth_more_than_one():
     assert isinstance(result.tree, Tree)
     assert result.tree.depth() == 2
     assert len(result.tree.all_nodes_itr()) == 10
+
+
+def test_column_component_info():
+
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-multi-measure-dataset"
+        / "qb-id-10003.csv-metadata.json"
+    )
+
+    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+
+    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
+
+    the_list = data_cube_inspector.get_column_component_info(csv_url)
+
+    assert the_list is not None

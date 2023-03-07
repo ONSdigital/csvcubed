@@ -20,6 +20,8 @@ from csvcubed.models.sparqlresults import (
 )
 from csvcubed.utils.dict import get_from_dict_ensure_exists
 from csvcubed.utils.iterables import first, group_by
+from csvcubed.utils.qb.components import ComponentPropertyType
+from csvcubed.utils.sparql_handler.column_component_info import ColumnComponentInfo
 from csvcubed.utils.sparql_handler.csvw_inspector import CsvWInspector
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_csvw_dsd_qube_components,
@@ -188,3 +190,24 @@ class DataCubeInspector:
         """
 
         return self._codelists_and_cols.get(csv_url, CodelistsResult([], 0))
+
+    def get_column_component_info(self, csv_url: str) -> List[ColumnComponentInfo]:
+        """Fill this in"""
+
+        list_to_return = []
+        column_definitions = self.csvw_inspector.get_column_definitions_for_csv(csv_url)
+        column_definitions = [x for x in column_definitions if not x.virtual]
+        qube_components = self.get_dsd_qube_components_for_csv(csv_url).qube_components
+        # qube_type = [x.property_type for x in qube_type]
+
+        for value in column_definitions:
+            for qube_c in qube_components:
+                if value in qube_c.real_columns_used_in:
+                    list_to_return.append(
+                        ColumnComponentInfo(
+                            component_type=ComponentPropertyType(qube_c.property_type),
+                            column_definition=value,
+                        )
+                    )
+
+        return list_to_return
