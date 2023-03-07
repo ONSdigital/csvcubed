@@ -1,6 +1,6 @@
 # Writing a qube-config.json
 
-This page discusses how to configure your cube with the greatest control and flexibility by writing a `qube-config.json` file. If you are just starting out with csvcubed, you may wish to start with the [quick start](../../quick-start/index.md).
+This page discusses how to configure your cube with the greatest control and flexibility by writing a `qube-config.json` file. If you are new to using csvcubed, you may wish to begin with the [quick start](../../quick-start/index.md) approach.
 
 > **Experience of writing basic JSON documents is assumed throughout this document.**
 > See this [tutorial from DigitalOcean](https://www.digitalocean.com/community/tutorials/an-introduction-to-json) for an introduction to writing JSON.
@@ -14,7 +14,7 @@ The `qube-config.json` file has two sections:
 
 ## Metadata
 
-A CSV-W file contains metadata which improves discoverability of data publications. In csvcubed, we use a selection of metadata entries from established namespaces to enable users to contribute to the web of data faster. The metadata fields available, their description and defaults are as follows.
+A CSV-W file contains metadata which improves discoverability of data publications. In csvcubed, we use a selection of metadata entries from established namespaces to enable users to contribute to the web of data faster. The metadata fields available, their description and default values are as follows.
 
 | **field name**             | **description**                                                                                            | **default value**                           |
 |----------------------------|------------------------------------------------------------------------------------------------------------|---------------------------------------------|
@@ -34,11 +34,11 @@ See the [describing your CSV](../../quick-start/describing-csv.md) quick start f
 
 ## Column definitions
 
-A CSV-W file provides detailed information about the columns beyond their values. In csvcubed, we are targeting a level of detail which results in a data cube which can be be expressed using W3C's RDF Cube Vocabulary. A data cube must have a dimension, and observation columns along with at least one unit and measure defined to be valid. A cube may also have one or more attribute columns which provide clarification to observational data. Units and measures may be attached to the observation column (single measure cube), or appear in a column of their own (multi-measure cube).
+A CSV-W file provides detailed information about the columns beyond their values. In csvcubed, we are targeting a level of detail which results in a data cube which can be be expressed using W3C's [RDF Cube Vocabulary](https://www.w3.org/TR/vocab-data-cube/). In order to be valid, a data cube must have at least one dimension, at least one observation column, along with at least one defined unit and measure. A cube may also have one or more attribute columns which provide clarification to observational data. Units and measures may be attached to the observation column (single measure cube), or appear in a column of their own (multi-measure cube).
 
-To define a column in a `qube-config.json` file, provide the column header's value as a dictionary key, and create a new dictionary.
+To define a column in a `qube-config.json` file, provide the column header as a dictionary key, and create a new dictionary as the value to contain configuration properties.
 
-A column is assumed to be a dimension unless otherwise configured using the `type` key or the column being named one of the reserved names. A dimension can still have a `"type": "dimension"` key/value pair.
+A column is assumed to be a dimension unless otherwise configured using the `type` key or the column being named one of the [reserved names](../configuration/convention.md#conventional-column-names). A dimension can still have a `"type": "dimension"` key/value pair.
 
 ```json
 { ...
@@ -50,7 +50,7 @@ A column is assumed to be a dimension unless otherwise configured using the `typ
 }
 ```
 
-**If a column mapping is not defined in the `qube-config.json` file for a given CSV column, the column is [configured by convention](./convention.md).**  To ignore a column and to not configure it by convention, the column's definition to `false`. This will ensure the column will not be present in the CSV-W when built by csvcubed.
+**If a column mapping is not defined in the `qube-config.json` file for a given CSV column, the column is [configured by convention](./convention.md).**  To ignore a column and not configure it by convention, set the column's definition to `false`. This will ensure the column will not be present in the CSV-W when built by csvcubed.
 
 ```json
 { ...
@@ -62,7 +62,7 @@ A column is assumed to be a dimension unless otherwise configured using the `typ
 
 ### Dimensions
 <!-- Removed blockquote formatting -->
-The *dimension* columns serve to identify the observations in the data set. A combined set of values for all dimension components should identify a single observation value. Examples of dimensions include the time period to which the observation applies, or a geographic region which the observation covers.
+The *dimension* columns serve to identify observations in the data set. A combined set of values for all dimension components should uniquely identify a single observation value. Examples of dimensions include the time period to which the observation applies, or the geographic region which the observation covers.
 
 Think of the principle of [MECE](https://en.wikipedia.org/wiki/MECE_principle).
 
@@ -103,7 +103,7 @@ To use or extend an existing template, provide a `"from_template": "month"` key-
 
 ### Using existing columns
 
-To reuse or extend existing dimensions, attributes, units, or measures, provide a `"from_existing": "uri"` key-value pair linking to the RDF subject for the component specification. csvcubed determines whether the column is a reuse of an existing component (e.g. dimension) or requires the extension of an existing component through the configuration of the column.
+To reuse or extend existing dimensions, attributes, units, or measures, provide a `"from_existing": "uri"` key-value pair linking to the RDF subject for the component specification. csvcubed determines whether the column reuses an existing component (e.g. dimension) or requires the extension of an existing component through further configuration of the column.
 
 ```json
    "columns": {
@@ -119,7 +119,7 @@ To reuse or extend existing dimensions, attributes, units, or measures, provide 
    }
 ```
 
-In the example above there are two reused dimensions. For the first existing dimension, "reused column" takes the existing dimension "years" and reuses it without any changes. The second dimension is an example of the creation of a new dimension but showing that ice-cream flavours it is a child dimension of flavours.
+In the example above there are two reused dimensions. For the first existing dimension, "reused column" takes the existing dimension "years" and reuses it without any changes. The second dimension is an example of the creation of a new dimension but showing that ice-cream flavours is a child dimension of flavours.
 
 Unless the component being reused is a literal attribute and you're providing a `"data_type"` key-value pair, any other key-value pairs provided will change the column to a new component which will extend the linked parent component.
 
@@ -141,17 +141,17 @@ The `from_existing` value when set provides the basis of linked data; it allows 
 
 The following fields can be configured for each dimension in your data set. csvcubed will assume that a column represents a dimension if the `type` field is left blank, or explicitly specified as `dimension`.
 
-| **field name**      | **description**                                                                                                                                                                                                                                                                               | **default value**                                                                |
-|---------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
-| `type`              | The type of the column (Required)                                                                                                                                                                                                                                                             | *dimension*                                                                      |
-| `from_template`     | Use a [column template](templates.md) (Optional)                                                                                                                                                                                                                                              | *none*                                                                           |
-| `label`             | The title of the column (Optional)                                                                                                                                                                                                                                                            | The capital case of the header in the csv file with spaces replacing underscores |
-| `description`       | A description of the contents of the column (Optional)                                                                                                                                                                                                                                        | *none*                                                                           |
-| `from_existing`     | The uri of the resource for reuse/extension (Optional)                                                                                                                                                                                                                                        | *none*                                                                           |
-| `definition_uri`    | A uri of a resource to show how the column is created/managed (i.e. a uri of a PDF explaining a list of units) (Optional)                                                                                                                                                                     | *none*                                                                           |
-| `cell_uri_template` | Override the uri generated for values within the uri (Optional) (Advanced)                                                                                                                                                                                                                    | *none*                                                                           |
-| `code_list`         | Link to an existing code list (uri), suppress a code-list (false), file path to a [code-list-config.json](code-list-config.md#defining-a-code-list-configuration-file) (uri), [in-line code list](code-list-config.md#defining-an-in-line-code-list) (json), or generate a code-list (true) | true                                                                             |
-<!-- uri_override not in schema? -->
+| **field name**      | **description**                                                                                                                                                                                                                                                                                       | **default value**                                                                               |
+|---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------|
+| `type`              | The type of the column (Required)                                                                                                                                                                                                                                                                     | *dimension*                                                                                     |
+| `from_template`     | Use a [column template](templates.md) (Optional)                                                                                                                                                                                                                                                      | *none*                                                                                          |
+| `label`             | The title of the column (Optional)                                                                                                                                                                                                                                                                    | The capital case version of the column header in the csv file with spaces replacing underscores |
+| `description`       | A description of the contents of the column (Optional)                                                                                                                                                                                                                                                | *none*                                                                                          |
+| `from_existing`     | The uri of the resource for reuse/extension (Optional)                                                                                                                                                                                                                                                | *none*                                                                                          |
+| `definition_uri`    | A uri of a resource to show how the column is created/managed (i.e. a uri of a PDF explaining a list of units) (Optional)                                                                                                                                                                             | *none*                                                                                          |
+| `cell_uri_template` | **(Advanced)** Override the uri generated for values within the uri (Optional)                                                                                                                                                                                                                        | *none*                                                                                          |
+| `code_list`         | Generate a code-list (true), suppress a code-list (false), file path to a [code-list-config.json](code-list-config.md#defining-a-code-list-configuration-file) (uri), [in-line code list](code-list-config.md#defining-an-in-line-code-list) (json), or link to an externally-defined code list (uri) | true                                                                                            |
+<!-- TODO: uri_override not in schema -->
 <!-- | `uri_override`      | Override the uri created automatically for the column (Optional) (Advanced)                                                                                                                                          | `tidy_data.csv#uri_safe_column_header_from_csv`                                  | -->
 
 ### Examples of dimension configuration
@@ -171,18 +171,17 @@ The Sweden at Eurovision data set consists of four dimensions - `Year`, `Entrant
       "code_list": "my_eurovision_code_list_config.json"
    },
    "Song": {
-      "cell_uri_template": "",
-      "code_list": "http://example.org/eurovision-song-code-list"
+      "from_existing": "http://example.org/dimension/eurovision-songs",
+      "cell_uri_template": "http://example.org/code-lists/eurovision-songs/{+song}"
    },
    "Language": {
-      "from_existing": "http://example.org/list-of-languages",
-      "definition_uri": "",
-      "code_list": "false"
+      "code_list": "false",
+      "cell_uri_template": "http://example.org/code-lists/eurovision-languages/{+language}"
    }
 }
 ```
 
-Taking each of the dimensions one-by-one:
+Taking each of these dimensions one-by-one:
 
 ```json
 "columns": {
@@ -196,7 +195,7 @@ Taking each of the dimensions one-by-one:
 
 The `Year` column uses a [column template](templates.md#datetime-period-template) - doing so means that the `type`, `from_existing`, `label` and `cell_uri_template` fields will be automatically populated based on the [calendar-year.json](https://purl.org/csv-cubed/qube-config/templates/calendar-year.json) template. However, these fields can also be over-ridden, as is the case here, since the `label` has been defined as "Competition year".
 
-A code list will be automatically generated by csvcubed for the `Year` column, as the `code_list` field has been set to `true`.
+A code list will be automatically generated by csvcubed for the `Year` column, since the `code_list` field has been set to `true`.
 
 
 ```json
@@ -204,37 +203,48 @@ A code list will be automatically generated by csvcubed for the `Year` column, a
    "Entrant": {
       "type": "dimension",
       "description": "The act representing Sweden at Eurovision for the given year",
-      "code_list": "my_eurovision_code_list_config.json"
+      "code_list": "entrant_code_list_config.json"
    }
 }
 ```
 
-The `Entrant` column has been explicitly configured with a `type` of dimension, although strictly speaking this is unnecessary, as a column will be designated as a dimension by default if the `type` is not stated.
+The `Entrant` column has been explicitly configured with a `type` of dimension, although strictly speaking this is unnecessary, as a column will be designated as a dimension by default if `type` is not defined.
 
 The `description` field allows additional information to be associated with a column.
 
-<!-- TODO: Update code list config page? -->
-A code list will be generated by csvcubed for the `Entrant` column, based on the `my_eurovision_code_list_config.json` file provided. See the [code list configuration](code-list-config.md#defining-a-code-list-configuration-file) for further instructions.
+A code list will be generated by csvcubed for the `Entrant` column, based on the `entrant_code_list_config.json` file provided. See the [code list configuration](code-list-config.md#defining-a-code-list-configuration-file) page for further instructions. Alternatively, code lists can be [defined in-line](code-list-config.md#defining-an-in-line-code-list) within the `qube-config.json` itself.
+
 
 ```json
 "columns": {
    "Song": {
-      "cell_uri_template": "",
-      "code_list": "http://example.org/eurovision-song-code-list"
-   }
-}
-```
-
-```json
-"columns": {
+      "from_existing": "http://example.org/dimension/eurovision-songs",
+      "cell_uri_template": "http://example.org/code-lists/eurovision-songs/{+song}"
+   },
    "Language": {
-      "from_existing": "http://example.org/list-of-languages",
-      "definition_uri": "",
-      "code_list": "false"
+      "code_list": "false",
+      "cell_uri_template": "http://example.org/eurovision-languages/{+language}"
    }
 }
 ```
 
+The `Song` and `Language` columns have both been configured with a `cell_uri_template` property. It is important to note that this property should only be used where the concept scheme is defined externally at an existing URI, or there is no concept scheme, but you want to point to an existing resource.
+
+If `cell_uri_template` is specified:
+
+**Either**:
+
+- `from_existing` must also be defined, in which case `cell_uri_template` should refer to the concepts in the existing dimension's code list;
+
+**Or**:
+
+- `code_list` must be set as `false`, in which case `cell_uri_template` should refer to URIs which are existing RDF resources.
+
+**This is considered an advanced configuration option, and therefore care must be taken to ensure that the values generated are valid.**
+
+The format of the `cell_uri_template` value **must** follow [RFC6570](https://www.rfc-editor.org/rfc/rfc6570) guidance for URI Templates. In the case of any doubt, follow the pattern in the examples shown above (i.e. `http://example.org/some-uri/{+column_name}`), as this will ensure csvcubed safely [transforms the column header](../uris.md#csv-column-name-safe-transformation) to the CSV-W format.
+
+<!-- TODO: Add examples of `definition_uri`, `code_list` uri -->
 
 ## Attributes Configuration
 
