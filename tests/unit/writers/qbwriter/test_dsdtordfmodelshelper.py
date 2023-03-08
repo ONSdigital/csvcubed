@@ -1,6 +1,7 @@
 import pandas as pd
 import pytest
 from csvcubedmodels import rdf
+from csvcubedmodels.rdf import qb
 from rdflib import RDFS, Graph, Literal, URIRef
 
 from csvcubed.models.cube.cube import Cube
@@ -575,6 +576,70 @@ def test_qb_order_of_components():
         rdf.QB.order,
         Literal(4),
     ) in graph
+
+
+def test_units_component_duplication():
+    """This test checks if there are multiple observation value columns with units, only one unit component will be generated.
+    link to the issue: https://github.com/GSS-Cogs/csvcubed/issues/755
+    """
+
+    data = pd.DataFrame(
+        {
+            "Existing Dimension": ["A", "B", "C"],
+            "Value": [1, 2, 3],
+            "Existing Attribute": ["Provisional", "Final", "Provisional"],
+        }
+    )
+
+    cube = Cube(
+        CatalogMetadata("Some Dataset"),
+        data,
+        [
+            QbColumn(
+                "Existing Dimension",
+                ExistingQbDimension(
+                    "https://example.org/dimensions/existing_dimension",
+                    arbitrary_rdf=[
+                        TripleFragment(RDFS.label, "Existing Dimension Component")
+                    ],
+                ),
+            ),
+            QbColumn(
+                "Value",
+                QbObservationValue(
+                    NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
+                ),
+            ),
+            QbColumn(
+                "Other Value",
+                QbObservationValue(
+                    NewQbMeasure("Some Other Measure"), NewQbUnit("Some Other Unit")
+                ),
+            ),
+        ],
+    )
+
+    dsd_helper = DsdToRdfModelsHelper(cube, UriHelper(cube))
+    dataset = dsd_helper._generate_qb_dataset_dsd_definitions()
+    graph = dataset.to_graph(Graph())
+
+    assert (
+        URIRef("some-dataset.csv#component/unit"),
+        rdf.QB.order,
+        Literal(3),
+    ) in graph
+
+    list_of_units = [
+        component
+        for component in dataset.structure.components
+        if (
+            isinstance(component, qb.AttributeComponentSpecification)
+            and str(component.attribute.uri)
+            == "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
+        )
+    ]
+
+    assert len(list_of_units) == 1
 
 
 if __name__ == "__main__":

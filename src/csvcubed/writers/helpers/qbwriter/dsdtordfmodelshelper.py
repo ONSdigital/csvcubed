@@ -301,7 +301,7 @@ class DsdToRdfModelsHelper:
                 self._get_qb_attribute_specification(column_name_uri_safe, component)
             ]
         elif isinstance(component, QbMultiUnits):
-            return [self._get_qb_units_column_specification(column_name_uri_safe)]
+            return self._get_qb_units_column_specification(column_name_uri_safe)
         elif isinstance(component, QbMultiMeasureDimension):
             return self._get_qb_measure_dimension_specifications(component)
         elif isinstance(component, QbObservationValue):
@@ -309,9 +309,21 @@ class DsdToRdfModelsHelper:
         else:
             raise TypeError(f"Unhandled component type {type(component)}")
 
+    _units_component_already_defined: bool = False
+    """
+    Records whether or not a units component has already been defined in this cube.
+    If it has, don't define it again.
+    """
+
     def _get_qb_units_column_specification(
         self, column_name_uri_safe: str
-    ) -> rdf.qb.AttributeComponentSpecification:
+    ) -> List[rdf.qb.AttributeComponentSpecification]:
+        if self._units_component_already_defined:
+            # Don't define a second units component, the first one will work just fine.
+            return []
+
+        self._units_component_already_defined = True
+
         component = rdf.qb.AttributeComponentSpecification(
             self._uris.get_component_uri(column_name_uri_safe)
         )
@@ -326,7 +338,7 @@ class DsdToRdfModelsHelper:
             component.uri,
         )
 
-        return component
+        return [component]
 
     def _get_qb_obs_val_specifications(
         self, observation_value: QbObservationValue
@@ -339,7 +351,7 @@ class DsdToRdfModelsHelper:
 
         unit = observation_value.unit
         if unit is not None:
-            specs.append(self._get_qb_units_column_specification("unit"))
+            specs += self._get_qb_units_column_specification("unit")
 
         if observation_value.is_pivoted_shape_observation:
             assert observation_value.measure is not None
