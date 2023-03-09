@@ -834,7 +834,7 @@ def test_column_component_info():
 
     (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
 
-    the_list = data_cube_inspector.get_column_component_info(csv_url)
+    list_of_columns_definitions = data_cube_inspector.get_column_component_info(csv_url)
 
     # get the test to chech the properties and make sure the types match and the comlumns definitions match in the correct order
 
@@ -848,5 +848,7 @@ def test_column_component_info():
         "Units",
     ]
     # this test will compare the two list's values and order
-    actual_components_types = [item.component_type.value for item in the_list]
+    actual_components_types = [
+        item.component_type.value for item in list_of_columns_definitions
+    ]
     assert actual_components_types == expected_component_types
