@@ -405,8 +405,6 @@ Measure and unit columns share some fields in that they can be populated directl
 
 TODO: Find out if cell_uri_template in measures/units has any distinctions compared to when it is used as a field in other column definitions, to avoid overlap/writing stuff about this field that is explained elsewhere in the guide.
 
-When creating a units column, it is also possible to specify an observation value to associate the units with, by entering the observation value into the `describes_observations` field. This is (only) necessary to associate a unit to its relevant observation value when there are multiple measures and the data set is in the pivoted shape, and there are multiple observation values, as otherwise there would be no clear link between the two. For more information on the distinction between pivoted/standard shape data sets, as well as single/multiple measures, see the [Pivoted Shape](../shape-data/pivoted-shape) TODO: Fix this link to the pivoted shape page when the location of the new guide page is decided.
-
 ### Measures (for the guide)
 
 The *measure* column defines the phenomenon that is being observed, what is being quantified in this observation. In this way it is similar to a dimension. At least one measure is required to be defined in a data cube for it to be valid.
@@ -492,8 +490,10 @@ The way the unit is used in the data set, such as the amounts being displayed, c
 TODO: Improve si_scaling_factor description
 Another optional form of scaling that can be applied to units in column definitions is `si_scaling_factor`. The purpose of this field in the values dictionary is to relate scaled units to other units that are related, creating consistency within their scale. Most of the units that are related in this sense are already defined. Note that this is an advanced feature and can safely be ignored if not needed.
 
-The `quantity_kind` field can make use of the QUDT extensive number of various types of measurable quantities to help group and identify units. Provide a URI of a valid resource, adding it onto the prefix http://qudt.org/vocab/quantitykind/ to take advantage of QUDT's vast library of quantity kind resources.
+The `quantity_kind` field can make use of the QUDT extensive various types of measurable quantities to help group and identify units. Provide a URI of a valid resource, adding it onto the prefix http://qudt.org/vocab/quantitykind/ to take advantage of QUDT's vast library of quantity kind resources.
 For a dedicated page with more information on defining units, see [configuring units](./units.md).
+
+When creating a units column, it is also possible to specify an observation value to associate the units with, by entering the observation value into the `describes_observations` field. This is (only) necessary to associate a unit to its relevant observation value when there are multiple measures and the data set is in the pivoted shape, and there are multiple observation values, as otherwise there would be no clear link between the unit being used for different observations in columns. For more information on the distinction between pivoted/standard shape data sets, as well as single/multiple measures, see the [Pivoted Shape](../shape-data/pivoted-shape) TODO: Fix this link to the pivoted shape page when the location of the new guide page is decided.
 
 ### WIP Units examples
 
@@ -527,7 +527,7 @@ For a dedicated page with more information on defining units, see [configuring u
   }
 ```
 
-### Creating a units column using the `from_existing` field, also using scaling and specifying quantity kind.
+### Creating a units column using the `from_existing` field, also using scaling and specifying quantity kind for the existing unit being used.
 ```json
     "columns": {
         "Unit": {
@@ -545,7 +545,7 @@ For a dedicated page with more information on defining units, see [configuring u
         }
 ```
 
-### Perhaps an example for new units in a pivoted shape with multiple obs val columns, to show the "describes_observations" field?
+### Example of a units column being defined with the `describes_obserations` field used to link to an observation.
 
 Here is an observation that the unit will describe:
 ```json
