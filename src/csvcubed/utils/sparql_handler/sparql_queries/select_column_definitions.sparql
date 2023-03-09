@@ -12,6 +12,7 @@ SELECT
         ?title
         ?valueUrl
         (COALESCE(?virtualO, false) as ?virtual)
+        ?columnOrder
 WHERE {
 
     {
@@ -28,7 +29,18 @@ WHERE {
         }
     }
 
-    ?tableSchema csvw:column/rdf:rest*/rdf:first ?column
+    {
+        # Nasty approach to preserving the column order
+        SELECT ?tableSchema ?column (COUNT(?midListItem) as ?columnOrder)
+        WHERE {
+            ?tableSchema csvw:column/rdf:rest* ?midListItem.
+            # ?midListItems matches on all of the list items between the start of the list and the list item defining each column.
+            # We can use the number of ?midListItems between the beginning and the column to determine the column's order in the table.
+            ?midListItem rdf:rest* ?columnListItem.
+            ?columnListItem rdf:first ?column.
+        }
+        GROUP BY ?tableSchema ?column
+    }
 
     OPTIONAL { ?column csvw:aboutUrl ?aboutUrl. }
     OPTIONAL { ?column csvw:datatype ?dataType. }
@@ -40,3 +52,4 @@ WHERE {
     OPTIONAL { ?column csvw:valueUrl ?valueUrl. }
     OPTIONAL { ?column csvw:virtual ?virtualO. }
 }
+ORDER BY ASC(?csvUrl) ASC(?columnOrder)

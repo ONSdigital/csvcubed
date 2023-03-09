@@ -63,6 +63,25 @@ class ComponentPropertyType(Enum):
     """ The component is of type qb:Measure. """
 
 
+class EndUserColumnType(Enum):
+    """These are the column types tha a User is familiar form the qube-config.json"""
+
+    Dimension = "Dimension"
+    """ The column holds values for a Dimension """
+
+    Attribute = "Attribute"
+    """ The column holds values for an Attribute """
+
+    Measures = "Measures"
+    """ The column holds the measure for each Observation """
+
+    Units = "Units"
+    """ The column holds the unit for each Observation """
+
+    Observations = "Observations"
+    """ The column holds the Observed values """
+
+
 def get_component_property_type(property_type: str) -> str:
     """
     Produces the user-friendly name of component property type.

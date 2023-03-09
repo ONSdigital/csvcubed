@@ -10,17 +10,19 @@ from dataclasses import dataclass
 from functools import cached_property
 from typing import Dict, List, Optional
 
+from csvcubed.models.csvcubedexception import UnsupportedComponentPropertyTypeException
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import (
     CodelistsResult,
     CubeTableIdentifiers,
     IsPivotedShapeMeasureResult,
+    QubeComponentResult,
     QubeComponentsResult,
     UnitResult,
 )
 from csvcubed.utils.dict import get_from_dict_ensure_exists
 from csvcubed.utils.iterables import first, group_by
-from csvcubed.utils.qb.components import ComponentPropertyType
+from csvcubed.utils.qb.components import ComponentPropertyType, EndUserColumnType
 from csvcubed.utils.sparql_handler.column_component_info import ColumnComponentInfo
 from csvcubed.utils.sparql_handler.csvw_inspector import CsvWInspector
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
@@ -30,6 +32,29 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_is_pivoted_shape_for_measures_in_data_set,
     select_units,
 )
+
+
+def _figure_out_end_user_column_type(qube_c: QubeComponentResult) -> EndUserColumnType:
+    """This function will decide the columns type for the end user"""
+
+    component_type = ComponentPropertyType(qube_c.property_type)
+
+    if component_type == ComponentPropertyType.Dimension:
+        return EndUserColumnType.Dimension
+    elif (
+        component_type == ComponentPropertyType.Attribute
+        and qube_c.property
+        == "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
+    ):
+        return EndUserColumnType.Units
+    elif component_type == ComponentPropertyType.Measure:
+        return EndUserColumnType.Observations
+    elif component_type == ComponentPropertyType.Attribute:
+        return EndUserColumnType.Attribute
+    else:
+        raise UnsupportedComponentPropertyTypeException(
+            property_type=qube_c.property_type
+        )
 
 
 @dataclass
@@ -203,9 +228,10 @@ class DataCubeInspector:
         for value in column_definitions:
             for qube_c in qube_components:
                 if value in qube_c.real_columns_used_in:
+                    column_type = _figure_out_end_user_column_type(qube_c)
                     list_to_return.append(
                         ColumnComponentInfo(
-                            component_type=ComponentPropertyType(qube_c.property_type),
+                            component_type=column_type,
                             column_definition=value,
                         )
                     )

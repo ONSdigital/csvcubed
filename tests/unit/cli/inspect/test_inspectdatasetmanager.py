@@ -826,8 +826,8 @@ def test_column_component_info():
 
     csvw_metadata_json_path = (
         _test_case_base_dir
-        / "pivoted-multi-measure-dataset"
-        / "qb-id-10003.csv-metadata.json"
+        / "pivoted-multi-measure-single-unit-component"
+        / "multi-measure-pivoted-dataset-units-and-attributes.csv-metadata.json"
     )
 
     data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
@@ -836,4 +836,17 @@ def test_column_component_info():
 
     the_list = data_cube_inspector.get_column_component_info(csv_url)
 
-    assert the_list is not None
+    # get the test to chech the properties and make sure the types match and the comlumns definitions match in the correct order
+
+    expected_component_types = [
+        "Dimension",
+        "Dimension",
+        "Observations",
+        "Attribute",
+        "Observations",
+        "Attribute",
+        "Units",
+    ]
+    # this test will compare the two list's values and order
+    actual_components_types = [item.component_type.value for item in the_list]
+    assert actual_components_types == expected_component_types
