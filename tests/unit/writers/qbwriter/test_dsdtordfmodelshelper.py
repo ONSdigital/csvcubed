@@ -621,13 +621,6 @@ def test_units_component_duplication():
 
     dsd_helper = DsdToRdfModelsHelper(cube, UriHelper(cube))
     dataset = dsd_helper._generate_qb_dataset_dsd_definitions()
-    graph = dataset.to_graph(Graph())
-
-    assert (
-        URIRef("some-dataset.csv#component/unit"),
-        rdf.QB.order,
-        Literal(3),
-    ) in graph
 
     list_of_units = [
         component

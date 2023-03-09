@@ -5,7 +5,7 @@ QB DSD Helper
 Help Generate the DSD necessary for an RDF Data Cube.
 """
 import logging
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Iterable, List, Set
 
 from csvcubedmodels import rdf
@@ -73,6 +73,7 @@ _logger = logging.getLogger(__name__)
 class DsdToRdfModelsHelper:
     cube: QbCube
     _uris: UriHelper
+    _units_component_already_defined: bool = field(init=False, default=False)
 
     def generate_data_structure_definitions(self) -> List[dict]:
         """
@@ -309,7 +310,6 @@ class DsdToRdfModelsHelper:
         else:
             raise TypeError(f"Unhandled component type {type(component)}")
 
-    _units_component_already_defined: bool = False
     """
     Records whether or not a units component has already been defined in this cube.
     If it has, don't define it again.
@@ -319,7 +319,12 @@ class DsdToRdfModelsHelper:
         self, column_name_uri_safe: str
     ) -> List[rdf.qb.AttributeComponentSpecification]:
         if self._units_component_already_defined:
+            _logger.debug(
+                "The component type has already been serialised, %s.",
+                column_name_uri_safe,
+            )
             # Don't define a second units component, the first one will work just fine.
+
             return []
 
         self._units_component_already_defined = True
