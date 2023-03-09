@@ -503,6 +503,7 @@ In this example, a second observation value column, `Revenue`,  has been added, 
 
 Measures can either be attached to a Measure Column if there are multiple different measures in your data set, or to an Observation column's `measure` field if all observations in the cube have the same measure.
 Units can either be attached to a Unit Column if there are a mixture of units in your data set, or to an Observation column if all observations in the cube have the same unit.
+
 The definition of measures and units is similar in that it depends on the number of measures/units present in the data set. If only one measure/unit is present, then the measure/unit can be defined by being attached to the Observation column, by entering them into their own field in the Observation column's definition. When multiple measures/units are present in the data set, they can be defined in their own column so that the column may clearly show which of the possible measures is being counted, or which unit is being used to measure each value in observations.
 
 ## Measure and Unit Columns Configuration (for the guide)
@@ -519,24 +520,20 @@ The *measure* column defines the phenomenon that is being observed, what is bein
 
 ### Measures Configuration
 
-Before defining measures for the configuration, it is important to know if there are multiple measures in the data set, or if all observations in the data set use the same measure.
-If there is only one measure that is being applied to all observations in the data set, then the measure can be attached to the optional field of the Observation column’s configuration. A measure defined in this field can either be a URI linking to an existing dimension, or a dictionary to define a new measure (or extend an existing one).
-
 When creating a new measure column definition, the field details are entered into a `values` dictionary, which appears like so in the column definition:
+
 ```json
 "columns": {
   "Measure column": {
     "type": "measures",
-    "values": {
-
-    }
+    "values": true
   }
 }
 ```
 
 The following will describe the possible fields that can be entered into the `values` dictionary when defining a new measure.
 
-If basic measures are wanted, the `value` field can simply be set to True which will indicate to csvcubed to create a measures column from this definition.
+If basic measures are wanted, the `value` field can simply be set to True (as shown in the previous example) which will indicate to csvcubed to create a measures column from this definition.
 A basic, required field for all new measure column definitions is the `label` field, which serves as the title of the measure. Note that this is optional if the measure is reusing or extending an existing column definition. (If the `from_existing` field is populated.)
 
 An optional field that can be used to give more detail to the measure is `description`. This is not required in any scenario, but helps provide more information about the measure if wanted, in a longer free-text form that can go into more detail than a label.
@@ -587,7 +584,6 @@ The *units* column is how the measured quantity is being counted or incremented,
 ### Units Configuration
 
 In a config file, the unit column is a form of attribute column. This means it is similar to configure, sharing all of the attribute column’s configuration options, but with some additional options unique to units.
-Configuration of units columns shares a theme with measure columns, where if the data set only features one unit, then that unit can be defined in the observation column’s optional unit field. However, if the data set contains multiple different units, a units column is required to specify which unit applies to each observation.
 
 When defining a new unit, the details are specified in the `values` field as another dictionary, after the type of the column is declared as a unit. The contents entered within the values dictionary must at least be a label, acting as the title of the unit, and optionally a description.
 
