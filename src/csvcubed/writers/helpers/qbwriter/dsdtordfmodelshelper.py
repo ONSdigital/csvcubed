@@ -74,6 +74,10 @@ class DsdToRdfModelsHelper:
     cube: QbCube
     _uris: UriHelper
     _units_component_already_defined: bool = field(init=False, default=False)
+    """
+    Records whether or not a units component has already been defined in this cube.
+    If it has, don't define it again.
+    """
 
     def generate_data_structure_definitions(self) -> List[dict]:
         """
@@ -310,17 +314,12 @@ class DsdToRdfModelsHelper:
         else:
             raise TypeError(f"Unhandled component type {type(component)}")
 
-    """
-    Records whether or not a units component has already been defined in this cube.
-    If it has, don't define it again.
-    """
-
     def _get_qb_units_column_specification(
         self, column_name_uri_safe: str
     ) -> List[rdf.qb.AttributeComponentSpecification]:
         if self._units_component_already_defined:
             _logger.debug(
-                "The component type has already been serialised, %s.",
+                "Units component already generated. Not generating a second one, %s.",
                 column_name_uri_safe,
             )
             # Don't define a second units component, the first one will work just fine.
