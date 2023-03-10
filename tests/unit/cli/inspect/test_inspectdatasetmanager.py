@@ -857,7 +857,6 @@ def test_pivoted_column_component_info():
     assert actual_components_types == expected_component_types
 
 
-# make the same test with the standard shape file
 def test_standard_column_component_info():
     """This text checks 'get_column_component_info' returns a List of ColumnComponentInfo object in the correct order
     (that was defined in the corresponding CSV file), and contains the correct data, in satndard shape.
@@ -926,3 +925,28 @@ def test_supressed_column_info():
         item.component_type.value for item in list_of_columns_definitions
     ]
     assert actual_components_types == expected_component_types
+
+
+def test_standard_column_component_property():
+    """This text checks '_get_column_components_and_check_for_cube_shape'
+    returns the correct column based of the cube shape and the property_url.
+    """
+
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "single-unit_single-measure"
+        / "energy-trends-uk-total-energy.csv-metadata.json"
+    )
+
+    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+
+    (_, _, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
+
+    list_of_columns_definitions = data_cube_inspector.get_column_component_info(csv_url)
+
+    # this test will specificaly check a feature of the `_get_column_components_and_check_for_cube_shape`
+    # does the function return the correct value if the cube is in standard shape.
+    actual_components_types = [
+        item.column_definition.property_url for item in list_of_columns_definitions
+    ]
+    assert "http://purl.org/linked-data/cube#measureType" in actual_components_types
