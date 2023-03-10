@@ -596,8 +596,8 @@ def test_get_dsd_qube_components_for_csv_standard_shape():
         "energy-trends-uk-total-energy.csv#measure/energy-consumption",
         ComponentPropertyType.Measure,
         "energy-consumption",
-        [],
-        [],
+        ["Measure Type"],
+        ["Value"],
         "energy-trends-uk-total-energy.csv#structure",
         True,
     )
