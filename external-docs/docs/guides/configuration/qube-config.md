@@ -576,7 +576,7 @@ To reuse an existing measure definition, whether it is reused in its entirety as
 
 Like before, measure configuration using the `from_existing` field can be done either by attaching the measure to an observation column, or by defining a measures column.
 
-### Defining a measure in an observation column, using an existing column definition:
+### Defining a measure in an observation column, using an existing measure definition:
 ```json
    "Exports": {
       "type": "observations",
@@ -586,7 +586,7 @@ Like before, measure configuration using the `from_existing` field can be done e
    }
 ```
 
-### Defining a measure in an observation column, using an existing column definition and overwriting the label:
+### Defining a measure in an observation column, using an existing measure definition and overwriting the label:
 ```json
    "Exports": {
       "type": "observations",
@@ -603,9 +603,10 @@ Like before, measure configuration using the `from_existing` field can be done e
    "type": "measures",
    "from_existing": "http://purl.org/linked-data/sdmx/2009/measure#refPeriod"
 }
+```
 
 Another optional field that is used when defining a new measure is `definition_uri`. This is a URI that links to the definition of the resource being used.
-TODO: Ask if this is required when the from_existing field is being used.
+TODO: Ask if this is required when the from_existing field is being used. Add an example showing it in use for a measure.
 
 
 ### Units (for the guide)
