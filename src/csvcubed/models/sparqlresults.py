@@ -395,6 +395,60 @@ def _map_qube_component_sparql_result(
     return result
 
 
+def _get_column_components_and_check_for_cube_shape(
+    component: QubeComponentResult,
+    cube_shape: CubeShape,
+    csv_column_definitions: List[ColumnDefinition],
+    observed_value_columns: List[ColumnDefinition],
+):
+
+    if cube_shape == CubeShape.Standard and component.property_type == "Measure":
+        # todo: Need to add a unit test to ensure the standard shape qube components work properly.
+        measure_column = first(
+            csv_column_definitions,
+            lambda c: c.property_url == "http://purl.org/linked-data/cube#measureType",
+        )
+
+        if measure_column is None:
+            raise KeyError("Could not find standard shape measure column.")
+
+        component.real_columns_used_in = [measure_column]
+
+        obs_val_column = first(
+            csv_column_definitions,
+            lambda c: c.property_url is not None
+            and c.data_type is not None
+            and measure_column.name in uritemplate.variables(c.property_url),
+        )
+
+        if obs_val_column is None:
+            raise KeyError("Could not find standard shape observations column.")
+
+        component.used_by_observed_value_columns = [obs_val_column]
+    else:
+        all_columns_used_in = [
+            c for c in csv_column_definitions if c.property_url == component.property
+        ]
+
+        component.real_columns_used_in = [
+            c for c in all_columns_used_in if (not c.virtual)
+        ]
+
+        columns_using_this_component_about_urls = {
+            c.about_url for c in all_columns_used_in
+        }
+
+        component.used_by_observed_value_columns = [
+            c
+            for c in observed_value_columns
+            if c.about_url in columns_using_this_component_about_urls
+        ]
+
+    component.required = component.required or any(
+        c.required for c in component.real_columns_used_in
+    )
+
+
 def map_qube_components_sparql_result(
     sparql_results_dsd_components: List[ResultRow],
     json_path: Path,
@@ -434,57 +488,8 @@ def map_qube_components_sparql_result(
         ]
 
         for component in components:
-            # todo: Refactor the stuff inside this for loop into a separate function.
-            if (
-                cube_shape == CubeShape.Standard
-                and component.property_type == "Measure"
-            ):
-                # todo: Need to add a unit test to ensure the standard shape qube components work properly.
-                measure_column = first(
-                    csv_column_definitions,
-                    lambda c: c.property_url
-                    == "http://purl.org/linked-data/cube#measureType",
-                )
-
-                if measure_column is None:
-                    raise KeyError("Could not find standard shape measure column.")
-
-                component.real_columns_used_in = [measure_column]
-
-                obs_val_column = first(
-                    csv_column_definitions,
-                    lambda c: c.property_url is not None
-                    and c.data_type is not None
-                    and measure_column.name in uritemplate.variables(c.property_url),
-                )
-
-                if obs_val_column is None:
-                    raise KeyError("Could not find standard shape observations column.")
-
-                component.used_by_observed_value_columns = [obs_val_column]
-            else:
-                all_columns_used_in = [
-                    c
-                    for c in csv_column_definitions
-                    if c.property_url == component.property
-                ]
-
-                component.real_columns_used_in = [
-                    c for c in all_columns_used_in if (not c.virtual)
-                ]
-
-                columns_using_this_component_about_urls = {
-                    c.about_url for c in all_columns_used_in
-                }
-
-                component.used_by_observed_value_columns = [
-                    c
-                    for c in observed_value_columns
-                    if c.about_url in columns_using_this_component_about_urls
-                ]
-
-            component.required = component.required or any(
-                c.required for c in component.real_columns_used_in
+            _get_column_components_and_check_for_cube_shape(
+                component, cube_shape, csv_column_definitions, observed_value_columns
             )
 
     return {
