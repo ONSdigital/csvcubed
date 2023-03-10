@@ -81,6 +81,9 @@ class EndUserColumnType(Enum):
     Observations = "Observations"
     """ The column holds the Observed values """
 
+    Suppressed = "Suppressed"
+    """ The column holds values which are not part of the cube"""
+
 
 def get_component_property_type(property_type: str) -> str:
     """

@@ -822,8 +822,10 @@ def test_get_concepts_hierarchy_info_hierarchy_with_depth_more_than_one():
     assert len(result.tree.all_nodes_itr()) == 10
 
 
-def test_column_component_info():
-
+def test_pivoted_column_component_info():
+    """This text checks 'get_column_component_info' returns a List of ColumnComponentInfo object in the correct order
+    (that was defined in the corresponding CSV file), and contains the correct data.
+    """
     csvw_metadata_json_path = (
         _test_case_base_dir
         / "pivoted-multi-measure-single-unit-component"
@@ -832,7 +834,7 @@ def test_column_component_info():
 
     data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
 
-    (dataset, qube_components, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
+    (_, _, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
 
     list_of_columns_definitions = data_cube_inspector.get_column_component_info(csv_url)
 
@@ -847,6 +849,78 @@ def test_column_component_info():
         "Attribute",
         "Units",
     ]
+
+    # this test will compare the two list's values and order
+    actual_components_types = [
+        item.component_type.value for item in list_of_columns_definitions
+    ]
+    assert actual_components_types == expected_component_types
+
+
+# make the same test with the standard shape file
+def test_standard_column_component_info():
+    """This text checks 'get_column_component_info' returns a List of ColumnComponentInfo object in the correct order
+    (that was defined in the corresponding CSV file), and contains the correct data, in satndard shape.
+    """
+
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "single-unit_single-measure"
+        / "energy-trends-uk-total-energy.csv-metadata.json"
+    )
+
+    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+
+    (_, _, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
+
+    list_of_columns_definitions = data_cube_inspector.get_column_component_info(csv_url)
+
+    # get the test to chech the properties and make sure the types match and the comlumns definitions match in the correct order
+
+    expected_component_types = [
+        "Dimension",
+        "Dimension",
+        "Dimension",
+        "Measures",
+        "Units",
+        "Observations",
+    ]
+
+    # this test will compare the two list's values and order
+    actual_components_types = [
+        item.component_type.value for item in list_of_columns_definitions
+    ]
+    assert actual_components_types == expected_component_types
+
+
+# write a test to scheck if a column is supressed will it get the new type
+def test_supressed_column_info():
+    """
+    This text checks 'get_column_component_info' returns a List of ColumnComponentInfo object in the correct order
+    (that was defined in the corresponding CSV file),in this test emphasis on SUpressed columns, and contains
+    the correct data, in satndard shape.
+    """
+
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "suppressed-column-cube"
+        / "suppressed-data-example.csv-metadata.json"
+    )
+
+    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+
+    (_, _, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
+
+    list_of_columns_definitions = data_cube_inspector.get_column_component_info(csv_url)
+
+    # get the test to chech the properties and make sure the types match and the comlumns definitions match in the correct order
+
+    expected_component_types = [
+        "Dimension",
+        "Observations",
+        "Suppressed",
+    ]
+
     # this test will compare the two list's values and order
     actual_components_types = [
         item.component_type.value for item in list_of_columns_definitions

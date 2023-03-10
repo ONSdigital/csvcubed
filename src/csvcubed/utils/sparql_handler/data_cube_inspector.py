@@ -14,6 +14,7 @@ from csvcubed.models.csvcubedexception import UnsupportedComponentPropertyTypeEx
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import (
     CodelistsResult,
+    ColumnDefinition,
     CubeTableIdentifiers,
     IsPivotedShapeMeasureResult,
     QubeComponentResult,
@@ -34,22 +35,30 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
 )
 
 
-def _figure_out_end_user_column_type(qube_c: QubeComponentResult) -> EndUserColumnType:
+def _figure_out_end_user_column_type(
+    qube_c: QubeComponentResult, cube_shape: CubeShape
+) -> EndUserColumnType:
     """This function will decide the columns type for the end user"""
 
     component_type = ComponentPropertyType(qube_c.property_type)
 
     if component_type == ComponentPropertyType.Dimension:
+        if qube_c.property == "http://purl.org/linked-data/cube#measureType":
+            return EndUserColumnType.Measures
+
         return EndUserColumnType.Dimension
-    elif (
-        component_type == ComponentPropertyType.Attribute
-        and qube_c.property
-        == "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
-    ):
-        return EndUserColumnType.Units
     elif component_type == ComponentPropertyType.Measure:
-        return EndUserColumnType.Observations
+        if cube_shape == CubeShape.Pivoted:
+            return EndUserColumnType.Observations
+
+        return EndUserColumnType.Measures
     elif component_type == ComponentPropertyType.Attribute:
+        if (
+            qube_c.property
+            == "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
+        ):
+            return EndUserColumnType.Units
+
         return EndUserColumnType.Attribute
     else:
         raise UnsupportedComponentPropertyTypeException(
@@ -102,6 +111,7 @@ class DataCubeInspector:
             self.csvw_inspector.csvw_json_path,
             map_dsd_uri_to_csv_url,
             self.csvw_inspector.column_definitions,
+            self._cube_shapes,
         )
 
     @cached_property
@@ -217,23 +227,58 @@ class DataCubeInspector:
         return self._codelists_and_cols.get(csv_url, CodelistsResult([], 0))
 
     def get_column_component_info(self, csv_url: str) -> List[ColumnComponentInfo]:
-        """Fill this in"""
+        """
+        Get the ColumnComponentInfo which contains the EndUserColumnType
+        and the corresponding ColumnDefinition given a csv url
+        """
 
         list_to_return = []
         column_definitions = self.csvw_inspector.get_column_definitions_for_csv(csv_url)
         column_definitions = [x for x in column_definitions if not x.virtual]
         qube_components = self.get_dsd_qube_components_for_csv(csv_url).qube_components
+        cube_shape = self.get_shape_for_csv(csv_url)
         # qube_type = [x.property_type for x in qube_type]
 
-        for value in column_definitions:
-            for qube_c in qube_components:
-                if value in qube_c.real_columns_used_in:
-                    column_type = _figure_out_end_user_column_type(qube_c)
-                    list_to_return.append(
-                        ColumnComponentInfo(
-                            component_type=column_type,
-                            column_definition=value,
-                        )
+        observations_columns = {
+            col
+            for comp in qube_components
+            for col in comp.used_by_observed_value_columns
+        }
+
+        def _get_column_type(
+            column: ColumnDefinition,
+        ) -> EndUserColumnType:
+            component_definition = first(
+                qube_components, lambda q: column in q.real_columns_used_in
+            )
+
+            if component_definition is None:
+                if column.suppress_output:
+                    return EndUserColumnType.Suppressed
+                elif (
+                    cube_shape == CubeShape.Standard and column in observations_columns
+                ):
+                    return EndUserColumnType.Observations
+                else:
+                    raise KeyError(
+                        f"Could not find component associated with CSV column '{column.title}'"
                     )
 
+            return _figure_out_end_user_column_type(component_definition, cube_shape)
+
+        for column in column_definitions:
+            # todo: Need to consider suppressed columns
+            column_type = _get_column_type(column)
+            list_to_return.append(
+                ColumnComponentInfo(
+                    component_type=column_type,
+                    column_definition=column,
+                )
+            )
+
         return list_to_return
+
+    def get_columns_for_component_type(
+        self,
+    ) -> List[ColumnDefinition]:
+        pass

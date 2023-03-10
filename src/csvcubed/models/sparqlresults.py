@@ -9,10 +9,12 @@ from os import linesep
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+import uritemplate
 from csvcubedmodels.dataclassbase import DataClassBase
 from rdflib.query import ResultRow
 
-from csvcubed.utils.iterables import group_by
+from csvcubed.models.cube.cube_shape import CubeShape
+from csvcubed.utils.iterables import first, group_by
 from csvcubed.utils.printable import (
     get_printable_list_str,
     get_printable_tabular_str_from_list,
@@ -398,6 +400,7 @@ def map_qube_components_sparql_result(
     json_path: Path,
     map_dsd_uri_to_csv_url: Dict[str, str],
     map_csv_url_to_column_definitions: Dict[str, List[ColumnDefinition]],
+    map_csv_url_to_cube_shape: Dict[str, CubeShape],
 ) -> Dict[str, QubeComponentsResult]:
     """
     Returns a map of csv_url to `QubeComponentsResult`
@@ -415,6 +418,7 @@ def map_qube_components_sparql_result(
 
     for (dsd_uri, components) in map_dsd_uri_to_components.items():
         csv_url = map_dsd_uri_to_csv_url[dsd_uri]
+        cube_shape = map_csv_url_to_cube_shape[csv_url]
         csv_column_definitions = map_csv_url_to_column_definitions[csv_url]
 
         measure_uris = {
@@ -430,29 +434,58 @@ def map_qube_components_sparql_result(
         ]
 
         for component in components:
-            all_columns_used_in = [
-                c
-                for c in csv_column_definitions
-                if c.property_url == component.property
-            ]
+            # todo: Refactor the stuff inside this for loop into a separate function.
+            if (
+                cube_shape == CubeShape.Standard
+                and component.property_type == "Measure"
+            ):
+                # todo: Need to add a unit test to ensure the standard shape qube components work properly.
+                measure_column = first(
+                    csv_column_definitions,
+                    lambda c: c.property_url
+                    == "http://purl.org/linked-data/cube#measureType",
+                )
 
-            component.real_columns_used_in = [
-                c for c in all_columns_used_in if (not c.virtual)
-            ]
+                if measure_column is None:
+                    raise KeyError("Could not find standard shape measure column.")
+
+                component.real_columns_used_in = [measure_column]
+
+                obs_val_column = first(
+                    csv_column_definitions,
+                    lambda c: c.property_url is not None
+                    and c.data_type is not None
+                    and measure_column.name in uritemplate.variables(c.property_url),
+                )
+
+                if obs_val_column is None:
+                    raise KeyError("Could not find standard shape observations column.")
+
+                component.used_by_observed_value_columns = [obs_val_column]
+            else:
+                all_columns_used_in = [
+                    c
+                    for c in csv_column_definitions
+                    if c.property_url == component.property
+                ]
+
+                component.real_columns_used_in = [
+                    c for c in all_columns_used_in if (not c.virtual)
+                ]
+
+                columns_using_this_component_about_urls = {
+                    c.about_url for c in all_columns_used_in
+                }
+
+                component.used_by_observed_value_columns = [
+                    c
+                    for c in observed_value_columns
+                    if c.about_url in columns_using_this_component_about_urls
+                ]
 
             component.required = component.required or any(
                 c.required for c in component.real_columns_used_in
             )
-
-            columns_using_this_component_about_urls = {
-                c.about_url for c in all_columns_used_in
-            }
-
-            component.used_by_observed_value_columns = [
-                c
-                for c in observed_value_columns
-                if c.about_url in columns_using_this_component_about_urls
-            ]
 
     return {
         map_dsd_uri_to_csv_url[dsd_uri]: QubeComponentsResult(

@@ -1,0 +1,402 @@
+{
+    "@context": "http://www.w3.org/ns/csvw",
+    "@id": "suppressed-data-example.csv#dataset",
+    "tables": [
+        {
+            "url": "suppressed-data-example.csv",
+            "tableSchema": {
+                "columns": [
+                    {
+                        "titles": "Location",
+                        "name": "location",
+                        "propertyUrl": "suppressed-data-example.csv#dimension/location",
+                        "valueUrl": "location.csv#{+location}",
+                        "required": true
+                    },
+                    {
+                        "titles": "Number of Bins",
+                        "name": "number_of_bins",
+                        "aboutUrl": "suppressed-data-example.csv#obs/{location}@bin-inventory",
+                        "propertyUrl": "suppressed-data-example.csv#measure/bin-inventory",
+                        "datatype": "decimal",
+                        "required": true
+                    },
+                    {
+                        "titles": "Jo Likes?",
+                        "name": "jo_likes",
+                        "suppressOutput": true
+                    },
+                    {
+                        "name": "virt_slice",
+                        "virtual": true,
+                        "propertyUrl": "rdf:type",
+                        "valueUrl": "qb:Slice"
+                    },
+                    {
+                        "name": "virt_slice_structure",
+                        "virtual": true,
+                        "propertyUrl": "qb:sliceStructure",
+                        "valueUrl": "suppressed-data-example.csv#slice/cross-measures"
+                    },
+                    {
+                        "name": "virt_obs_number_of_bins",
+                        "virtual": true,
+                        "propertyUrl": "qb:observation",
+                        "valueUrl": "suppressed-data-example.csv#obs/{location}@bin-inventory"
+                    },
+                    {
+                        "name": "virt_obs_number_of_bins_meas",
+                        "virtual": true,
+                        "aboutUrl": "suppressed-data-example.csv#obs/{location}@bin-inventory",
+                        "propertyUrl": "qb:measureType",
+                        "valueUrl": "suppressed-data-example.csv#measure/bin-inventory"
+                    },
+                    {
+                        "name": "virt_obs_number_of_bins_unit",
+                        "virtual": true,
+                        "aboutUrl": "suppressed-data-example.csv#obs/{location}@bin-inventory",
+                        "propertyUrl": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
+                        "valueUrl": "suppressed-data-example.csv#unit/number-of-bins"
+                    },
+                    {
+                        "name": "virt_dim_number_of_bins_location",
+                        "virtual": true,
+                        "aboutUrl": "suppressed-data-example.csv#obs/{location}@bin-inventory",
+                        "propertyUrl": "suppressed-data-example.csv#dimension/location",
+                        "valueUrl": "location.csv#{+location}"
+                    },
+                    {
+                        "name": "virt_obs_number_of_bins_type",
+                        "virtual": true,
+                        "aboutUrl": "suppressed-data-example.csv#obs/{location}@bin-inventory",
+                        "propertyUrl": "rdf:type",
+                        "valueUrl": "qb:Observation"
+                    },
+                    {
+                        "name": "virt_dataSet_number_of_bins",
+                        "virtual": true,
+                        "aboutUrl": "suppressed-data-example.csv#obs/{location}@bin-inventory",
+                        "propertyUrl": "qb:dataSet",
+                        "valueUrl": "suppressed-data-example.csv#dataset"
+                    }
+                ],
+                "foreignKeys": [
+                    {
+                        "columnReference": "location",
+                        "reference": {
+                            "resource": "location.csv",
+                            "columnReference": "uri_identifier"
+                        }
+                    }
+                ],
+                "primaryKey": [
+                    "location"
+                ],
+                "aboutUrl": "suppressed-data-example.csv#slice/{location}"
+            }
+        },
+        {
+            "url": "location.csv",
+            "tableSchema": "location.table.json",
+            "suppressOutput": true
+        }
+    ],
+    "rdfs:seeAlso": [
+        {
+            "@id": "suppressed-data-example.csv#csvcubed-build-activity",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.w3.org/ns/prov#Activity"
+            ],
+            "http://www.w3.org/ns/prov#used": [
+                {
+                    "@id": "https://github.com/GSS-Cogs/csvcubed/releases/tag/v0.1.0.dev0"
+                }
+            ]
+        },
+        {
+            "@id": "suppressed-data-example.csv#measure/bin-inventory",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentProperty",
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://purl.org/linked-data/cube#MeasureProperty"
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Bin Inventory"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#range": [
+                {
+                    "@id": "http://www.w3.org/2001/XMLSchema#decimal"
+                }
+            ]
+        },
+        {
+            "@id": "suppressed-data-example.csv#slice/cross-measures",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#SliceKey",
+                "http://purl.org/linked-data/cube#ComponentSet"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "suppressed-data-example.csv#dimension/location"
+                }
+            ]
+        },
+        {
+            "@id": "suppressed-data-example.csv#dimension/location",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#CodedProperty",
+                "http://purl.org/linked-data/cube#DimensionProperty",
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://purl.org/linked-data/cube#ComponentProperty"
+            ],
+            "http://purl.org/linked-data/cube#codeList": [
+                {
+                    "@id": "location.csv#code-list"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Location"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#range": [
+                {
+                    "@id": "suppressed-data-example.csv#class/location"
+                }
+            ]
+        },
+        {
+            "@id": "suppressed-data-example.csv#component/location",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSpecification",
+                "http://purl.org/linked-data/cube#ComponentSet"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "suppressed-data-example.csv#dimension/location"
+                }
+            ],
+            "http://purl.org/linked-data/cube#dimension": [
+                {
+                    "@id": "suppressed-data-example.csv#dimension/location"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 1
+                }
+            ]
+        },
+        {
+            "@id": "suppressed-data-example.csv#dataset",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#Attachable",
+                "http://purl.org/linked-data/cube#DataSet",
+                "http://www.w3.org/ns/dcat#Dataset",
+                "http://www.w3.org/ns/dcat#Resource"
+            ],
+            "http://purl.org/dc/terms/identifier": [
+                {
+                    "@value": "Suppressed Data Example"
+                }
+            ],
+            "http://purl.org/dc/terms/issued": [
+                {
+                    "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "@value": "2023-03-10T11:21:07.714922"
+                }
+            ],
+            "http://purl.org/dc/terms/modified": [
+                {
+                    "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "@value": "2023-03-10T11:21:07.714922"
+                }
+            ],
+            "http://purl.org/dc/terms/title": [
+                {
+                    "@language": "en",
+                    "@value": "Suppressed Data Example"
+                }
+            ],
+            "http://purl.org/linked-data/cube#structure": [
+                {
+                    "@id": "suppressed-data-example.csv#structure"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Suppressed Data Example"
+                }
+            ],
+            "http://www.w3.org/ns/prov#wasGeneratedBy": [
+                {
+                    "@id": "suppressed-data-example.csv#csvcubed-build-activity"
+                }
+            ]
+        },
+        {
+            "@id": "suppressed-data-example.csv#component/bin-inventory",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSpecification",
+                "http://purl.org/linked-data/cube#ComponentSet"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "suppressed-data-example.csv#measure/bin-inventory"
+                }
+            ],
+            "http://purl.org/linked-data/cube#measure": [
+                {
+                    "@id": "suppressed-data-example.csv#measure/bin-inventory"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 4
+                }
+            ]
+        },
+        {
+            "@id": "suppressed-data-example.csv#class/location",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.w3.org/2000/01/rdf-schema#Class"
+            ]
+        },
+        {
+            "@id": "suppressed-data-example.csv#component/unit",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSpecification",
+                "http://purl.org/linked-data/cube#ComponentSet"
+            ],
+            "http://purl.org/linked-data/cube#attribute": [
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentRequired": [
+                {
+                    "@value": true
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 3
+                }
+            ]
+        },
+        {
+            "@id": "suppressed-data-example.csv#structure",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#DataStructureDefinition",
+                "http://purl.org/linked-data/cube#ComponentSet"
+            ],
+            "http://purl.org/linked-data/cube#component": [
+                {
+                    "@id": "suppressed-data-example.csv#component/location"
+                },
+                {
+                    "@id": "suppressed-data-example.csv#component/unit"
+                },
+                {
+                    "@id": "suppressed-data-example.csv#component/bin-inventory"
+                },
+                {
+                    "@id": "suppressed-data-example.csv#component/measure-type"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
+                },
+                {
+                    "@id": "suppressed-data-example.csv#measure/bin-inventory"
+                },
+                {
+                    "@id": "suppressed-data-example.csv#dimension/location"
+                },
+                {
+                    "@id": "http://purl.org/linked-data/cube#measureType"
+                }
+            ],
+            "http://purl.org/linked-data/cube#sliceKey": [
+                {
+                    "@id": "suppressed-data-example.csv#slice/cross-measures"
+                }
+            ]
+        },
+        {
+            "@id": "suppressed-data-example.csv#component/measure-type",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#ComponentSpecification",
+                "http://purl.org/linked-data/cube#ComponentSet"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "http://purl.org/linked-data/cube#measureType"
+                }
+            ],
+            "http://purl.org/linked-data/cube#dimension": [
+                {
+                    "@id": "http://purl.org/linked-data/cube#measureType"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 2
+                }
+            ]
+        },
+        {
+            "@id": "suppressed-data-example.csv#dependency/location",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://rdfs.org/ns/void#Dataset"
+            ],
+            "http://rdfs.org/ns/void#dataDump": [
+                {
+                    "@id": "./location.csv-metadata.json"
+                }
+            ],
+            "http://rdfs.org/ns/void#uriSpace": [
+                {
+                    "@value": "location.csv#"
+                }
+            ]
+        },
+        {
+            "@id": "suppressed-data-example.csv#unit/number-of-bins",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://qudt.org/schema/qudt/Unit",
+                "http://www.ontology-of-units-of-measure.org/resource/om-2/Unit"
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Number of bins"
+                }
+            ]
+        }
+    ]
+}
