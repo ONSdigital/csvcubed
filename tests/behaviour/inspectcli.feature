@@ -74,15 +74,15 @@ Feature: Behaviour testing of csvcubed inspect.
                            alcohol-bulletin.csv#dimension/alcohol-content  Alcohol Content     Dimension  Alcohol Content                                      True
                           alcohol-bulletin.csv#dimension/clearance-origin Clearance Origin     Dimension Clearance Origin                                      True
                              http://purl.org/linked-data/cube#measureType                      Dimension     Measure Type                                      True
-                 http://gss-data.org.uk/def/measure/alcohol-duty-receipts                        Measure                                                       True
-                    http://gss-data.org.uk/def/measure/beer-duty-receipts                        Measure                                                       True
-                   http://gss-data.org.uk/def/measure/cider-duty-receipts                        Measure                                                       True
-                            http://gss-data.org.uk/def/measure/clearances                        Measure                                                       True
-                 http://gss-data.org.uk/def/measure/clearances-of-alcohol                        Measure                                                       True
-                     http://gss-data.org.uk/def/measure/production-volume                        Measure                                                       True
-             http://gss-data.org.uk/def/measure/production-volume-alcohol                        Measure                                                       True
-                 http://gss-data.org.uk/def/measure/spirits-duty-receipts                        Measure                                                       True
-                    http://gss-data.org.uk/def/measure/wine-duty-receipts                        Measure                                                       True
+                 http://gss-data.org.uk/def/measure/alcohol-duty-receipts                        Measure     Measure Type                           Value      True
+                    http://gss-data.org.uk/def/measure/beer-duty-receipts                        Measure     Measure Type                           Value      True
+                   http://gss-data.org.uk/def/measure/cider-duty-receipts                        Measure     Measure Type                           Value      True
+                            http://gss-data.org.uk/def/measure/clearances                        Measure     Measure Type                           Value      True
+                 http://gss-data.org.uk/def/measure/clearances-of-alcohol                        Measure     Measure Type                           Value      True
+                     http://gss-data.org.uk/def/measure/production-volume                        Measure     Measure Type                           Value      True
+             http://gss-data.org.uk/def/measure/production-volume-alcohol                        Measure     Measure Type                           Value      True
+                 http://gss-data.org.uk/def/measure/spirits-duty-receipts                        Measure     Measure Type                           Value      True
+                    http://gss-data.org.uk/def/measure/wine-duty-receipts                        Measure     Measure Type                           Value      True
               http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure                      Attribute             Unit                                      True
                 http://purl.org/linked-data/sdmx/2009/attribute#obsStatus                      Attribute           Marker                                     False
         - Columns where suppress output is true: None
@@ -427,8 +427,8 @@ Feature: Behaviour testing of csvcubed inspect.
             final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/national-communication-fuel-group National Communication Fuel Group     Dimension National Communication Fuel Group                                    True
                   final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/national-communication-fuel       National Communication Fuel     Dimension       National Communication Fuel                                    True
                                 final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/activity-name                     Activity Name     Dimension                     Activity Name                                    True
-                             final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#measure/emissions-ar4-gwps              Emissions (AR4 GWPs)       Measure                                                                      True
-                             final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#measure/emissions-ar5-gwps              Emissions (AR5 GWPs)       Measure                                                                      True
+                             final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#measure/emissions-ar4-gwps              Emissions (AR4 GWPs)       Measure                           Measure                            Value   True
+                             final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#measure/emissions-ar5-gwps              Emissions (AR5 GWPs)       Measure                           Measure                            Value   True
                                                                                   http://purl.org/linked-data/cube#measureType                                       Dimension                           Measure                                    True
                                                                    http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure                                       Attribute                                                                      True
             - Columns where suppress output is true: None
@@ -573,7 +573,7 @@ Feature: Behaviour testing of csvcubed inspect.
                               http://purl.org/linked-data/sdmx/2009/dimension#refPeriod                        Dimension       Period                                    True
                                 http://purl.org/linked-data/sdmx/2009/dimension#refArea                        Dimension       Region                                    True
                               http://gss-data.org.uk/def/energy/property/dimension/fuel                        Dimension         Fuel                                    True
-                           energy-trends-uk-total-energy.csv#measure/energy-consumption energy-consumption       Measure                                                 True
+                           energy-trends-uk-total-energy.csv#measure/energy-consumption energy-consumption       Measure Measure Type                             Value  True
                             http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure                        Attribute         Unit                                    True
                                            http://purl.org/linked-data/cube#measureType                        Dimension Measure Type                                    True
         - Columns where suppress output is true: None
