@@ -504,13 +504,13 @@ In this example, a second observation value column, `Revenue`,  has been added, 
 Measures can either be attached to a Measure Column if there are multiple different measures in your data set, or to an Observation column's `measure` field if all observations in the cube have the same measure.
 Units can either be attached to a Unit Column if there are a mixture of units in your data set, or to an Observation column if all observations in the cube have the same unit.
 
-The definition of measures and units is similar in that it depends on the number of measures/units present in the data set. If only one measure/unit is present, then the measure/unit can be defined by being attached to the Observation column, by entering them into their own field in the Observation column's definition. When multiple measures/units are present in the data set, they can be defined in their own column so that the column may clearly show which of the possible measures is being counted, or which unit is being used to measure each value in observations.
+The definition of measures and units columns is similar in that it depends on the number of measures/units present in the data set. If only one measure/unit is present, then the measure/unit can be defined by being attached to the Observation column, by entering them into their own field in the Observation column's definition. When multiple measures/units are present in the data set, they can be defined in their own column so that the column may clearly show which of the possible measures is being counted, or which unit is being used to measure each value in observations.
 
 ## Measure and Unit Columns Configuration (for the guide)
 
 Measure and unit columns are treated slightly differently to dimension, attribute, and observation columns. Measure and unit columns contain references to discrete units and measures. In both cases by defining `"type": "measures"` or `"type": "units"` provides the same behaviour. Do not put measures in unit columns or units in measure columns.
 
-Measure and unit columns share some fields in that they can be populated directly in the column's definition with the `values` field, allowing a dictionary to be input that defines the units/measures. Existing column definitions can also be reused to quickly define measures and units, or serve as a "base" for a new column to be created on.
+Measure and unit columns share some fields in that they can be populated directly in the column's definition with the `values` field, allowing a dictionary to be input that defines the details of the unit/measure. Existing column definitions can also be reused to quickly define measures and units, or serve as a "base" for a new column to be created on.
 
 TODO: Find out if cell_uri_template in measures/units has any distinctions compared to when it is used as a field in other column definitions, to avoid overlap/writing stuff about this field that is explained elsewhere in the guide.
 
@@ -520,8 +520,31 @@ The *measure* column defines the phenomenon that is being observed, what is bein
 
 ### Measures Configuration
 
-When creating a new measure column definition, the field details are entered into a `values` dictionary, which appears like so in the column definition:
+A measure can be configured in two different ways: Either by attaching it inside an observation column's definition, or in a dedicated measures column of its own. When attaching a measure to an observation column, the measure can be defined after specifying that the type of the column is `observations`. The measure is entered as a dictionary attached to the observation column definition, like shown in the example below:
 
+### Measure configuration example in an Observation column field:
+
+This observation column definition is given a measure by creating a dictionary where the keys are the fields of the measure component, and the values are the field contents. This measure has the label "Median commute time" and the description of "The median amount of time taken to commute, in minutes".
+
+```json
+"columns": {
+  "Median commute time / mins": {
+    "type": "observations",
+    "measure": {
+      "label": "Median commute time",
+      "description": "The median amount of time taken to commute, in minutes"
+    }
+  }
+},
+```
+
+When creating a new measure column definition by specifying the `type` as "measures", the field details are entered into a `values` dictionary. Note this is different from how the measure details are given when giving the measure in an observation column.
+
+The following will describe the possible fields that can be entered into the `values` dictionary when defining a new measure, providing some examples of those fields being used to define a column.
+
+If basic measures are wanted, the `value` field can simply be set to True (as shown in the example below) which will indicate to csvcubed to create a measures column from this definition.
+
+TODO: Should we include a larger example with more columns and maybe some metadata when starting out? Then narrow down focus of examples later.
 ```json
 "columns": {
   "Measure column": {
@@ -531,34 +554,9 @@ When creating a new measure column definition, the field details are entered int
 }
 ```
 
-The following will describe the possible fields that can be entered into the `values` dictionary when defining a new measure.
-
-If basic measures are wanted, the `value` field can simply be set to True (as shown in the previous example) which will indicate to csvcubed to create a measures column from this definition.
-A basic, required field for all new measure column definitions is the `label` field, which serves as the title of the measure. Note that this is optional if the measure is reusing or extending an existing column definition. (If the `from_existing` field is populated.)
+A basic field for adding information when creating a `values` dictionary in new measure column definitions is the `label` field, which serves as the title of the measure. Note that this is optional if the measure is reusing or extending an existing column definition. (If the `from_existing` field is populated.)
 
 An optional field that can be used to give more detail to the measure is `description`. This is not required in any scenario, but helps provide more information about the measure if wanted, in a longer free-text form that can go into more detail than a label.
-
-To reuse an existing measure column definition, whether it is reused in its entirety as an exact copy of the existing definition, or if it is used as a base to create a new column definition upon, the `from_existing` field allows a URI to be given to apply an existing column's definition (and therefore all its details) to this column. When this is done, specifying any other fields in the values dictionary such as `label` or `description` will overwrite those fields of the existing column definition. This is how an existing column definition can be used as a base to create new measures.
-
-Another optional field that is used when defining a new measure is `definition_uri`. This is a URI that links to the definition of the resource being used.
-TODO: Ask if this is required when the from_existing field is being used.
-
-### WIP Measure examples
-
-### WIP Measure configuration example in an Observation column field(Single measure):
-
-note: making up these json column definitions for now when the Eurovision data set doesn't really match.
-
-```json
-"columns": {
-  "Median commute time / mins": {
-    "type": "observations",
-    "measure": {
-      "label": "Final Rank"
-    }
-  }
-},
-```
 
 ### Measure column configuration example for a new measure (improve this one):
 
@@ -574,7 +572,40 @@ note: making up these json column definitions for now when the Eurovision data s
 }
 ```
 
-### TODO Add any other example that is wanted here
+To reuse an existing measure definition, whether it is reused in its entirety as an exact copy of the existing definition, or if it is used as a base to create a new measure upon, the `from_existing` field allows a URI to be given to apply an existing measure's definition (and therefore all its details) to this column. When this is done, specifying any other fields in the values dictionary such as `label` or `description` will overwrite those fields of the existing column definition. This is how an existing definition can be used as a base to create new measures.
+
+Like before, measure configuration using the `from_existing` field can be done either by attaching the measure to an observation column, or by defining a measures column.
+
+### Defining a measure in an observation column, using an existing column definition:
+```json
+   "Exports": {
+      "type": "observations",
+      "measure": {
+            "from_existing": "http://example.com/measures/measure"
+      }
+   }
+```
+
+### Defining a measure in an observation column, using an existing column definition and overwriting the label:
+```json
+   "Exports": {
+      "type": "observations",
+      "measure": {
+            "label": "New measure",
+            "from_existing": "http://example.com/measures/measure"
+      }
+   }
+```
+
+### Example of a measure column definition created using the `from_existing` field:
+```json
+"columns": {
+   "type": "measures",
+   "from_existing": "http://purl.org/linked-data/sdmx/2009/measure#refPeriod"
+}
+
+Another optional field that is used when defining a new measure is `definition_uri`. This is a URI that links to the definition of the resource being used.
+TODO: Ask if this is required when the from_existing field is being used.
 
 
 ### Units (for the guide)
@@ -585,11 +616,11 @@ The *units* column is how the measured quantity is being counted or incremented,
 
 In a config file, the unit column is a form of attribute column. This means it is similar to configure, sharing all of the attribute column’s configuration options, but with some additional options unique to units.
 
-When defining a new unit, the details are specified in the `values` field as another dictionary, after the type of the column is declared as a unit. The contents entered within the values dictionary must at least be a label, acting as the title of the unit, and optionally a description.
+When defining a new unit, the details are specified in the `values` field as another dictionary, after the type of the column is declared as a unit. The contents entered within the values dictionary must at least be a label, acting as the title of the unit, and optionally a description. Note that this only applies if the new unit is being created without the use of the `from_existing` field. If that field is being used, then no label or description is required.
 
 When defining a column using an existing unit definition, the `from_existing` field is used within the values dictionary. Enter a URI of the resource being used as the value into the `from_existing` field to create the definition.
 
-The way the unit is used in the data set, such as the amounts being displayed, can determine whether a `scaling_factor` field should be used. Using the scaling factor means a new unit is being defined using the `from_existing` field's value as a base, and altering it so the measurements made are scaled as specified in a base 10 expression. For example, a unit defined with an existing base of Pounds Sterling, could be given a scaling factor of 1000000 to create the unit "Millions of Pounds Sterling" (where 1 would mean 1 million pounds.)
+The way the unit is used in the data set, such as the way amounts are being displayed, or how things are being counted, can determine whether a `scaling_factor` field should be used. Using the scaling factor means a new unit is being defined using the `from_existing` field's value as a base, and altering it so the measurements made are scaled as specified in a base 10 expression. For example, a unit defined with an existing base of Pounds Sterling, could be given a scaling factor of 1000000 to create the unit "Millions of Pounds Sterling" (where 1 would mean 1 million pounds.)
 
 TODO: Improve si_scaling_factor description
 Another optional form of scaling that can be applied to units in column definitions is `si_scaling_factor`. The purpose of this field in the values dictionary is to relate scaled units to other units that are related, creating consistency within their scale. Most of the units that are related in this sense are already defined. Note that this is an advanced feature and can safely be ignored if not needed.
