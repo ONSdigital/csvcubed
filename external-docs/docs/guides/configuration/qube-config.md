@@ -34,11 +34,11 @@ See the [describing your CSV](../../quick-start/describing-csv.md) quick start f
 
 ## Column definitions
 
-A CSV-W file provides detailed information about the columns beyond their values. In csvcubed, we are targeting a level of detail which results in a data cube which can be be expressed using W3C's [RDF Cube Vocabulary](https://www.w3.org/TR/vocab-data-cube/). In order to be valid, a data cube must have at least one dimension, at least one observation column, along with at least one defined unit and measure. A cube may also have one or more attribute columns which provide clarification to observational data. Units and measures may be attached to the observation column (single measure cube), or appear in a column of their own (multi-measure cube).
+A CSV-W file provides detailed information about the columns beyond their values. In csvcubed, we are targeting a level of detail which results in a data cube which can be be expressed using W3C's [RDF Cube Vocabulary](https://www.w3.org/TR/vocab-data-cube/). In order to be valid, a data cube must have at least one dimension, at least one observation column, along with at least one defined unit and measure per observation column. A cube may also have one or more attribute columns which provide clarification to observational data. Units and measures may be attached to the observation column, or appear in a column of their own.
 
-To define a column in a `qube-config.json` file, provide the column header as a dictionary key, and create a new dictionary as the value containing configuration details.
+To define a column in a `qube-config.json` file, provide the column title as a dictionary key, and create a new dictionary containing the column's configuration details.
 
-A column is assumed to be a dimension unless otherwise configured using the `type` key or the column being named with one of the [reserved names](../configuration/convention.md#conventional-column-names). A dimension can still have a `"type": "dimension"` key/value pair.
+A column is assumed to be a dimension unless otherwise configured using the `type` key or the column title being one of the [reserved names](../configuration/convention.md#conventional-column-names). A dimension can still have a `"type": "dimension"` key/value pair.
 
 ```json
 { ...
@@ -62,7 +62,7 @@ A column is assumed to be a dimension unless otherwise configured using the `typ
 
 ### Dimensions
 <!-- Removed blockquote formatting -->
-*Dimension* columns serve to identify observations in the data set. A combined set of values for all dimension components should uniquely identify a single observation value. Examples of dimensions include the time period to which the observation applies, or the geographic region which the observation covers.
+*Dimension* columns serve to identify observations in the data set. A combined set of values for all dimension components (including measures) should uniquely identify a single observation value. Examples of dimensions include the time period to which the observation applies, or the geographic region which the observation covers.
 
 Think of the principle of [MECE](https://en.wikipedia.org/wiki/MECE_principle).
 
@@ -138,9 +138,9 @@ The following fields can be configured for each dimension in your data set. csvc
 | `label`             | The title of the column (Optional)                                                                                                                                                                                                                                                              | The capital case version of the column header in the csv file with spaces replacing underscores |
 | `description`       | A description of the contents of the column (Optional)                                                                                                                                                                                                                                          | *none*                                                                                          |
 | `from_existing`     | The uri of the resource for reuse/extension (Optional)                                                                                                                                                                                                                                          | *none*                                                                                          |
+| `code_list`         | Generate a code-list (true), suppress a code-list (false), file path to a [code-list-config.json](code-list-config.md#defining-a-code-list-configuration-file), [in-line code list](code-list-config.md#defining-an-in-line-code-list) (json), or link to an externally-defined code list (uri) | true                                                                                            |
 | `definition_uri`    | A uri of a resource to show how the column is created/managed (e.g. a uri of a PDF explaining a list of units) (Optional)                                                                                                                                                                       | *none*                                                                                          |
 | `cell_uri_template` | **(Advanced)** Override the uri generated for values within the uri (Optional)                                                                                                                                                                                                                  | *none*                                                                                          |
-| `code_list`         | Generate a code-list (true), suppress a code-list (false), file path to a [code-list-config.json](code-list-config.md#defining-a-code-list-configuration-file), [in-line code list](code-list-config.md#defining-an-in-line-code-list) (json), or link to an externally-defined code list (uri) | true                                                                                            |
 <!-- TODO: uri_override not in schema -->
 <!-- | `uri_override`      | Override the uri created automatically for the column (Optional) (Advanced)                                                                                                                                          | `tidy_data.csv#uri_safe_column_header_from_csv`                                  | -->
 
@@ -154,7 +154,7 @@ The [Sweden at Eurovision data set](../../quick-start/designing-csv.md#adding-yo
       "Year": {
          "from_template": "year",
          "label": "Competition year",
-         "code_list": "true"
+         "code_list": true
       },
       "Entrant": {
          "type": "dimension",
@@ -182,15 +182,15 @@ Taking each of these dimensions one-by-one:
       "Year": {
          "from_template": "year",
          "label": "Competition year",
-         "code_list": "true"
+         "code_list": true
       }
    }
 }
 ```
 
-The `Year` column uses a [column template](templates.md#datetime-period-template) - doing so means that the `type`, `from_existing`, `label` and `cell_uri_template` fields will be automatically populated based on the [calendar-year.json](https://purl.org/csv-cubed/qube-config/templates/calendar-year.json) template. However, these fields can also be over-ridden, as is the case here, since the `label` has been defined as "Competition year".
+The `Year` column uses a [column template](templates.md#datetime-period-template) - doing so means that the `type`, `from_existing`, `label` and `cell_uri_template` fields will be automatically populated based on the [calendar-year.json](https://purl.org/csv-cubed/qube-config/templates/calendar-year.json) template. However, these fields can also be overridden, as is the case here, since the `label` has been defined as "Competition year".
 
-A code list will be automatically generated by csvcubed for the `Year` column, since the `code_list` field has been set to `true`.
+A code list will be automatically generated by csvcubed for the `Year` column, since the `code_list` field has been set to `true`. This is the default value for `code_list`, so can be omitted.
 
 Note that the `type` of this column has not been defined, meaning that csvcubed will interpret the `Year` column as a dimension by default.
 
@@ -209,7 +209,7 @@ Note that the `type` of this column has not been defined, meaning that csvcubed 
 
 The `Entrant` column has been explicitly configured with a `type` of dimension, although strictly speaking this is unnecessary, as a column will be designated as a dimension by default if `type` is not defined.
 
-The `description` field allows additional information to be associated with a column, and `definition_uri` allows you to point to a resource that further defines the column values.
+The `description` field allows additional information to be associated with a column, and `definition_uri` allows you to point to a human-readable resource that further defines the column values, such as a PDF document.
 
 A code list will be generated by csvcubed for the `Entrant` column, based on the `entrant_code_list_config.json` file provided. See the [code list configuration](code-list-config.md#defining-a-code-list-configuration-file) page for further instructions. Alternatively, code lists can be [defined in-line](code-list-config.md#defining-an-in-line-code-list) within the `qube-config.json` itself, or can point to a uri by setting `"code_list": "uri"`.
 
@@ -228,7 +228,7 @@ A code list will be generated by csvcubed for the `Entrant` column, based on the
 }
 ```
 
-The `Song` and `Language` columns have both been configured with a `cell_uri_template` field. It is important to note that this field should only be used where the concept scheme is defined externally at an existing URI, or there is no concept scheme, but you want to point to an existing resource to provide additional context about the dimension.
+The `Song` and `Language` columns have both been configured with a `cell_uri_template` field. It is important to note that this field should only be used where the concept scheme is defined externally at an existing URI, or there is no concept scheme, but you want to point to an existing resource to provide additional context about the dimension's value.
 
 **The use of the `cell_uri_template` field is considered an advanced configuration option, and therefore care must be taken to ensure that values generated are valid.**
 
@@ -242,28 +242,27 @@ If `cell_uri_template` is specified:
 
 - `code_list` must be set as `false`, in which case `cell_uri_template` should refer to URIs which are existing RDF resources.
 
-The format of the `cell_uri_template` value **must** follow [RFC6570](https://www.rfc-editor.org/rfc/rfc6570) guidance for URI Templates. In the case of any doubt, follow the pattern in the examples shown above (i.e. `http://example.org/some-uri/{+column_name}`), as this will ensure csvcubed safely [transforms the column header](../uris.md#csv-column-name-safe-transformation) to the CSV-W format.
+The format of the `cell_uri_template` value **must** follow [RFC6570](https://www.rfc-editor.org/rfc/rfc6570) guidance for URI Templates. In the case of any doubt, follow the pattern in the examples shown above (e.g. `http://example.org/some-uri/{+column_name}`), as this will ensure csvcubed safely [transforms the column header](../uris.md#csv-column-name-safe-transformation) to the CSV-W format.
 
 ## Attributes Configuration
 
 The following fields can be configured for each attribute in your data set.
 
-| **field name**           | **description**                                                                                                                                                                                                                                                                                                                                                                | **default value**                                                                |
-|--------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
-| `type`                   | The type of the column; to configure an attribute column use the value `attribute` (Required)                                                                                                                                                                                                                                                                                  | *dimension*                                                                      |
-| `from_template`          | Use a [column template](templates.md)                                                                                                                                                                                                                                                                                                                                          | *none*                                                                           |
-| `label`                  | The title of the column (Optional)                                                                                                                                                                                                                                                                                                                                             | The capital case of the header in the csv file with spaces replacing underscores |
-| `description`            | A description of the contents of the column (Optional)                                                                                                                                                                                                                                                                                                                         | *none*                                                                           |
-| `from_existing`          | The uri of the resource for reuse/extension (Optional)                                                                                                                                                                                                                                                                                                                         | *none*                                                                           |
-| `definition_uri`         | A uri of a resource to show how the column is created/managed (e.g. a uri of a PDF explaining a list of attribute values) (Optional)                                                                                                                                                                                                                                                      | *none*                                                                           |
-| `describes_observations` | Associates this attribute with the relevant observation values. This is only necessary for [pivoted shape data sets](../shape-data/pivoted-shape.md) with multiple observation value columns.                                                                                                                                                                                  | *none*                                                                           |
-| `required`               | If this boolean value is true csvcubed will flag to the user if there are blank values in this column                                                                                                                                                                                                                                                                          | *none*                                                                           |
-| `data_type`              | (Attribute Literals only) The [xml data type](https://www.w3.org/TR/xmlschema-2/#built-in-datatypes) of the contents of the column, if this is provided it becomes a Literal Attribute column (Optional)                                                                                                                                                                       | *none*                                                                           |
-| `values`                 | (New Resource Attributes only) If automatically-generated attributes are desired, a boolean value of `true` is used to signify to csvcubed to create attribute resources from values in this column; otherwise this should be a dictionary defining the attributes used in the column. See [Attribute values configuration](#attribute-values-configuration) for more details. | *none*                                                                           |
-| `cell_uri_template`      | (Existing Resource Attributes only) Used to define a template to map the cell values in this column to URIs                                                                                                                                                                                                                                                                    | *none*                                                                           |
+| **field name**           | **description**                                                                                                                                                                                                                                                                                                                                                                                     | **default value**                                                                |
+|--------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+| `type`                   | The type of the column; to configure an attribute column use the value `attribute` (Required)                                                                                                                                                                                                                                                                                                       | *dimension*                                                                      |
+| `from_template`          | (New/Existing Resource Attributes only) Use a [column template](templates.md)                                                                                                                                                                                                                                                                                                                       | *none*                                                                           |
+| `label`                  | The title of the column (Optional)                                                                                                                                                                                                                                                                                                                                                                  | The capital case of the header in the csv file with spaces replacing underscores |
+| `description`            | A description of the contents of the column (Optional)                                                                                                                                                                                                                                                                                                                                              | *none*                                                                           |
+| `from_existing`          | The uri of the resource for reuse/extension (Optional)                                                                                                                                                                                                                                                                                                                                              | *none*                                                                           |
+| `definition_uri`         | A uri of a resource to show how the column is created/managed (e.g. a uri of a PDF explaining a list of attribute values) (Optional)                                                                                                                                                                                                                                                                | *none*                                                                           |
+| `describes_observations` | Associates this attribute with the relevant observation values. This is only necessary for [pivoted shape data sets](../shape-data/pivoted-shape.md) with multiple observation value columns.                                                                                                                                                                                                       | *none*                                                                           |
+| `required`               | If this boolean value is true csvcubed will flag to the user if there are blank values in this column                                                                                                                                                                                                                                                                                               | false                                                                            |
+| `data_type`              | (Attribute Literals only) The [xml data type](https://www.w3.org/TR/xmlschema-2/#built-in-datatypes) of the contents of the column, if this is provided it becomes a Literal Attribute column (Optional)                                                                                                                                                                                            | *none*                                                                           |
+| `values`                 | (New Resource Attributes only) If automatically-generated attributes are desired, a boolean value of `true` is used to signify to csvcubed to create attribute resources from values in this column; otherwise this should be a list of attribute value objects defining the attributes used in the column. See [Attribute values configuration](#attribute-values-configuration) for more details. | *none*                                                                           |
+| `cell_uri_template`      | (Existing Resource Attributes only) Used to define a template to map the cell values in this column to URIs                                                                                                                                                                                                                                                                                         | *none*                                                                           |
 
 ### Examples of attributes configuration
-
 
 For the purposes of these instructions, we will be using the `Number of Arthur's Bakes` data set.
 
@@ -297,21 +296,25 @@ The `type` field indicates to csvcubed that this is an attribute column. The `la
 
 ##### Standard multi-measure data set
 
-| Year | Location | Value |      Status |                  Measure |                   Unit |
-|:-----|:---------|------:|------------:|-------------------------:|-----------------------:|
-| 2022 | London   |    35 | Provisional | Number of Arthur's Bakes |                  Count |
-| 2022 | London   |    25 | Provisional |                  Revenue | GBP Sterling, Millions |
-| 2021 | Cardiff  |    26 |       Final | Number of Arthur's Bakes |                  Count |
-| 2021 | Cardiff  |    18 |       Final |                  Revenue | GBP Sterling, Millions |
+| Year | Location | Value |      Status |                  Measure |                   Unit | 95% CI (lower bound) | 95% CI (upper bound) |
+|:-----|:---------|------:|------------:|-------------------------:|-----------------------:|---------------------:|---------------------:|
+| 2022 | London   |    35 | Provisional | Number of Arthur's Bakes |                  Count |                      |                      |
+| 2022 | London   |    25 | Provisional |                  Revenue | GBP Sterling, Millions |                      |                      |
+| 2022 | London   |  7.85 | Provisional |   Average customer spend |           GBP Sterling |                 6.54 |                 8.06 |
+| 2021 | Cardiff  |    26 |       Final | Number of Arthur's Bakes |                  Count |                      |                      |
+| 2021 | Cardiff  |    18 |       Final |                  Revenue | GBP Sterling, Millions |                      |                      |
+| 2021 | Cardiff  |  6.98 |       Final |   Average customer spend |           GBP Sterling |                 6.03 |                 7.52 |
 
-The same attribute can be used to qualify multiple measures, as is demonstrated in the example above, where both the `Number of Arthur's Bakes` and `Revenue` observed values can be designated as provisional or final. This can be configured as follows:
+The same attribute can be used to qualify multiple measures, as is demonstrated in the example above, where the `Number of Arthur's Bakes`, `Revenue` and `Average customer spend` observed values can be designated as provisional or final. This can be configured as follows:
 
 ```json
 { ...
    "columns": {
-      "type": "attribute",
-      "data_type": "string",
-      "definition_uri": "http://example.org/arthurs-bakes-store-status"
+      "Status": {
+         "type": "attribute",
+         "data_type": "string",
+         "definition_uri": "http://example.org/arthurs-bakes-store-status"
+      }
    }
 }
 ```
@@ -320,6 +323,7 @@ The `data_type` field indicates that `Status` values should be strings. Built-in
 <!-- TODO: add link to specific guidance for resource-type attributes -->
 The `definition_uri` fields allows you to specify a link to a resource describing the attribute and its permitted values.
 
+This data set has two additional attribute components defined for the 95% confidence interval for the `Average customer spend` values.
 #### Pivoted shape
 
 ##### Pivoted single-measure data set
