@@ -237,7 +237,6 @@ class DataCubeInspector:
         column_definitions = [x for x in column_definitions if not x.virtual]
         qube_components = self.get_dsd_qube_components_for_csv(csv_url).qube_components
         cube_shape = self.get_shape_for_csv(csv_url)
-        # qube_type = [x.property_type for x in qube_type]
 
         observations_columns = {
             col
@@ -279,6 +278,15 @@ class DataCubeInspector:
         return list_to_return
 
     def get_columns_for_component_type(
-        self,
+        self, csv_url: str, column_type: EndUserColumnType
     ) -> List[ColumnDefinition]:
-        return []
+
+        list_of_components = self.get_column_component_info(csv_url)
+
+        list_of_columns = [
+            x.column_definition
+            for x in list_of_components
+            if x.component_type == column_type
+        ]
+
+        return list_of_columns

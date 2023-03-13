@@ -15,7 +15,7 @@ from csvcubed.models.sparqlresults import (
     UnitResult,
 )
 from csvcubed.utils.iterables import first
-from csvcubed.utils.qb.components import ComponentPropertyType
+from csvcubed.utils.qb.components import ComponentPropertyType, EndUserColumnType
 from csvcubed.utils.sparql_handler.data_cube_inspector import DataCubeInspector
 from tests.helpers.inspectors_cache import get_csvw_rdf_manager, get_data_cube_inspector
 from tests.unit.test_baseunit import get_test_cases_dir
@@ -778,3 +778,162 @@ def test_standard_column_component_property_url():
     assert measure_component is not None
     assert measure_component.real_columns_used_in == [measure_column]
     assert measure_component.used_by_observed_value_columns == [observations_column]
+
+
+def test_get_columns_for_component_dimension():
+    """
+    This test check if the function returns a
+    list of ColumnDefinition with the correct values.
+    """
+
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "single-unit_single-measure"
+        / "energy-trends-uk-total-energy.csv-metadata.json"
+    )
+
+    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    (_, _, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
+
+    delivered_columns = data_cube_inspector.get_columns_for_component_type(
+        csv_url, EndUserColumnType.Dimension
+    )
+
+    # The title names has been checked in the csv
+    actual_titles = [x.title for x in delivered_columns]
+    expected_titles = ["Period", "Region", "Fuel"]
+
+    assert actual_titles == expected_titles
+
+
+def test_get_columns_for_component_unit():
+    """
+    This test check if the function returns a
+    list of ColumnDefinition with the correct values.
+    """
+
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "single-unit_single-measure"
+        / "energy-trends-uk-total-energy.csv-metadata.json"
+    )
+
+    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    (_, _, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
+
+    delivered_columns = data_cube_inspector.get_columns_for_component_type(
+        csv_url, EndUserColumnType.Units
+    )
+
+    # The title names has been checked in the csv
+    actual_titles = [x.title for x in delivered_columns]
+    expected_titles = ["Unit"]
+
+    assert actual_titles == expected_titles
+
+
+def test_get_columns_for_component_observation():
+    """
+    This test check if the function returns a
+    list of ColumnDefinition with the correct values.
+    """
+
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "single-unit_single-measure"
+        / "energy-trends-uk-total-energy.csv-metadata.json"
+    )
+
+    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    (_, _, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
+
+    delivered_columns = data_cube_inspector.get_columns_for_component_type(
+        csv_url, EndUserColumnType.Observations
+    )
+
+    # The title names has been checked in the csv
+    actual_titles = [x.title for x in delivered_columns]
+    expected_titles = ["Value"]
+
+    assert actual_titles == expected_titles
+
+
+def test_get_columns_for_component_measures():
+    """
+    This test check if the function returns a
+    list of ColumnDefinition with the correct values.
+    """
+
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "single-unit_single-measure"
+        / "energy-trends-uk-total-energy.csv-metadata.json"
+    )
+
+    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    (_, _, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
+
+    delivered_columns = data_cube_inspector.get_columns_for_component_type(
+        csv_url, EndUserColumnType.Measures
+    )
+
+    # The title names has been checked in the csv
+    actual_titles = [x.title for x in delivered_columns]
+    expected_titles = ["Measure Type"]
+
+    assert actual_titles == expected_titles
+
+
+def test_get_columns_for_component_attribute():
+    """
+    This test check if the function returns a
+    list of ColumnDefinition with the correct values.
+    """
+
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "single-unit_single-measure"
+        / "energy-trends-uk-total-energy.csv-metadata.json"
+    )
+
+    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    (_, _, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
+
+    delivered_columns = data_cube_inspector.get_columns_for_component_type(
+        csv_url, EndUserColumnType.Attribute
+    )
+
+    # The title names has been checked in the csv
+    actual_titles = [x.title for x in delivered_columns]
+    # this csv doens't contain attribute column so the expected return is an epmty list
+    expected_titles = []
+
+    assert actual_titles == expected_titles
+
+
+def test_get_columns_for_component_attribute_pivoted():
+    """
+    This test check if the function returns a
+    list of ColumnDefinition with the correct values.
+    (using a different dataset to demonstrate the function
+     does return attribut columns as well if there is any)
+    """
+
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-multi-measure-single-unit-component"
+        / "multi-measure-pivoted-dataset-units-and-attributes.csv-metadata.json"
+    )
+
+    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    (_, _, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
+
+    delivered_columns = data_cube_inspector.get_columns_for_component_type(
+        csv_url, EndUserColumnType.Attribute
+    )
+
+    # The title names has been checked in the csv
+    actual_titles = [x.title for x in delivered_columns]
+    expected_titles = ["Imports Status", "Exports Status"]
+
+    assert actual_titles == expected_titles
