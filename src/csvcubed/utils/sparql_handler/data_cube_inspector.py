@@ -281,4 +281,4 @@ class DataCubeInspector:
     def get_columns_for_component_type(
         self,
     ) -> List[ColumnDefinition]:
-        pass
+        return []

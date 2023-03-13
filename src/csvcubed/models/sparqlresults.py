@@ -418,6 +418,7 @@ def _get_column_components_and_check_for_cube_shape(
             csv_column_definitions,
             lambda c: c.property_url is not None
             and c.data_type is not None
+            and measure_column is not None  # Here to satisfy buggy pyright.
             and measure_column.name in uritemplate.variables(c.property_url),
         )
 
