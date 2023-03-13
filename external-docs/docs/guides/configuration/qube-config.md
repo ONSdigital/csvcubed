@@ -324,6 +324,8 @@ The `data_type` field indicates that `Status` values should be strings. Built-in
 The `definition_uri` fields allows you to specify a link to a resource describing the attribute and its permitted values.
 
 This data set has two additional attribute components defined for the 95% confidence interval for the `Average customer spend` values.
+
+This data set has two additional attribute components defined for the 95% confidence interval for the `Average customer spend` values.
 #### Pivoted shape
 
 ##### Pivoted single-measure data set
