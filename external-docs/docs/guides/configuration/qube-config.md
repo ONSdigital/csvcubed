@@ -1,4 +1,4 @@
-# Writing a qube-config.json
+# Overview
 <!-- TODO: Restructure page into two - Reference and Instructions/Guidance -->
 This page discusses how to configure your cube with the greatest control and flexibility by writing a `qube-config.json` file. If you are new to using csvcubed, you may wish to begin with the [quick start](../../quick-start/index.md) approach.
 
@@ -7,12 +7,12 @@ This page discusses how to configure your cube with the greatest control and fle
 
 The `qube-config.json` file has two sections:
 
-1. **Metadata**
+1. [**Metadata**](./metadata.md)
    This section is used to describe the data set's catalog information to aid discovery, provide provenance and publication information, and optionally define the scope of the data set.
-2. **Column Definitions**
+2. [**Column Definitions**](./column-definitions.md)
    This section is used to describe each column in the `.csv` file, classifying the column and defining how the column data is both represented and how it links semantically to other data.
 
-## Metadata
+<!-- ## Metadata
 
 A CSV-W file contains metadata which improves discoverability of data publications. In csvcubed, we use a selection of metadata entries from established namespaces to enable users to contribute to the web of data faster. The metadata fields available, their description and default values are as follows.
 
@@ -30,17 +30,17 @@ A CSV-W file contains metadata which improves discoverability of data publicatio
 | `license`                  | URI representing the copyright [license](../linked-data/licenses.md) that applies to this cube             | *none*                                      |
 | `public_contact_point_uri` | URI providing a public contact point for discussion of the data set, e.g. mailto:contact.point@example.com | *none*                                      |
 
-See the [describing your CSV](../../quick-start/describing-csv.md) quick start for a practical guide on configuring metadata.
+See the [describing your CSV](../../quick-start/describing-csv.md) quick start for a practical guide on configuring metadata. -->
 
-## Column definitions
+<!-- ## Column definitions
 
-A CSV-W file provides detailed information about the columns beyond their values. In csvcubed, we are targeting a level of detail which results in a data cube which can be be expressed using W3C's [RDF Cube Vocabulary](https://www.w3.org/TR/vocab-data-cube/). In order to be valid, a data cube must have at least one dimension, at least one observation column, along with at least one defined unit and measure per observation column. A cube may also have one or more attribute columns which provide clarification to observational data. Units and measures may be attached to the observation column, or appear in a column of their own.
+A CSV-W file provides detailed information about the columns beyond their values. In csvcubed, we are targeting a level of detail which results in a data cube which can be be expressed using W3C's [RDF Cube Vocabulary](https://www.w3.org/TR/vocab-data-cube/). In order to be valid, a data cube must have at least one dimension, at least one observation column, along with at least one defined unit and measure per observation column. A cube may also have one or more attribute columns which provide clarification to observational data. Units and measures may be attached to the [observation column](#observations-configuration), or appear in a [column of their own](#measure-and-unit-columns-configuration).
 
 To define a column in a `qube-config.json` file, provide the column title as a dictionary key, and create a new dictionary containing the column's configuration details.
 
-A column is assumed to be a dimension unless otherwise configured using the `type` key or the column title being one of the [reserved names](../configuration/convention.md#conventional-column-names). A dimension can still have a `"type": "dimension"` key/value pair.
+A column is assumed to be a dimension unless otherwise configured using the `type` key or the column title being one of the [reserved names](../configuration/convention.md#conventional-column-names). A dimension can still have a `"type": "dimension"` key/value pair. -->
 
-```json
+<!-- ```json
 { ...
  "columns": {
   "Example column": {
@@ -48,20 +48,20 @@ A column is assumed to be a dimension unless otherwise configured using the `typ
   }
  }
 }
-```
+``` -->
 
-**If a column mapping is not defined in the `qube-config.json` file for a given CSV column, the column is [configured by convention](./convention.md).**  To ignore a column and not configure it, set the column's value to `false`. This will ensure the column will not be present in the CSV-W when built by csvcubed.
+<!-- **If a column mapping is not defined in the `qube-config.json` file for a given CSV column, the column is [configured by convention](./convention.md).**  To ignore a column and not configure it, set the column's value to `false`. This will ensure the column will not be recognised as part of the cube by csvcubed. -->
 
-```json
+<!-- ```json
 { ...
  "columns": {
   "Suppressed column": false
  }
 }
-```
+``` -->
 
-### Dimensions
-<!-- Removed blockquote formatting -->
+<!-- ### Dimensions
+
 *Dimension* columns serve to identify observations in the data set. A combined set of values for all dimension components (including measures) should uniquely identify a single observation value. Examples of dimensions include the time period to which the observation applies, or the geographic region which the observation covers.
 
 Think of the principle of [MECE](https://en.wikipedia.org/wiki/MECE_principle).
@@ -86,7 +86,7 @@ The *unit* column is a type of attribute column which provides the units of the 
 
 ### Observations
 
-The *observation* column contains the numeric values of the observations recorded in the data set.
+The *observation* column contains the numeric values of the observations recorded in the data set. -->
 
 ### Using templates
 
@@ -127,7 +127,7 @@ In the example above there are two reused dimensions. For the first existing dim
 
 Unless the component being reused is a literal attribute and you're providing a `"data_type"` key-value pair, any other key-value pairs provided will change the column to a new component which will extend the linked parent component.
 
-## Dimension Configuration
+<!-- ## Dimension Configuration
 
 The following fields can be configured for each dimension in your data set. csvcubed will assume that a column represents a dimension if the `type` field is left blank, or explicitly specified as `dimension`.
 
@@ -140,21 +140,20 @@ The following fields can be configured for each dimension in your data set. csvc
 | `from_existing`     | The uri of the resource for reuse/extension (Optional)                                                                                                                                                                                                                                          | *none*                                                                                          |
 | `code_list`         | Generate a code-list (true), suppress a code-list (false), file path to a [code-list-config.json](code-list-config.md#defining-a-code-list-configuration-file), [in-line code list](code-list-config.md#defining-an-in-line-code-list) (json), or link to an externally-defined code list (uri) | true                                                                                            |
 | `definition_uri`    | A uri of a resource to show how the column is created/managed (e.g. a uri of a PDF explaining a list of units) (Optional)                                                                                                                                                                       | *none*                                                                                          |
-| `cell_uri_template` | **(Advanced)** Override the uri generated for values within the uri (Optional)                                                                                                                                                                                                                  | *none*                                                                                          |
+| `cell_uri_template` | **(Advanced)** Override the uri generated for values within the uri (Optional)                                                                                                                                                                                                                  | *none*                                                                                          | -->
 <!-- TODO: uri_override not in schema -->
 <!-- | `uri_override`      | Override the uri created automatically for the column (Optional) (Advanced)                                                                                                                                          | `tidy_data.csv#uri_safe_column_header_from_csv`                                  | -->
 
-### Examples of dimension configuration
+<!-- ### Examples of dimension configuration
 
-The [Sweden at Eurovision data set](../../quick-start/designing-csv.md#adding-your-data) consists of four dimensions - `Year`, `Entrant`, `Song` and `Language`. Examples of how these dimensions could be configured are as follows.
+The [Sweden at Eurovision data set](../../quick-start/designing-csv.md#adding-your-data) consists of four dimensions - `Year`, `Entrant`, `Song` and `Language`. Examples of how these dimensions could be configured are as follows. -->
 
-```json
+<!-- ```json
 { ...
    "columns": {
       "Year": {
          "from_template": "year",
-         "label": "Competition year",
-         "code_list": true
+         "label": "Competition year"
       },
       "Entrant": {
          "type": "dimension",
@@ -172,29 +171,26 @@ The [Sweden at Eurovision data set](../../quick-start/designing-csv.md#adding-yo
       }
    }
 }
-```
+``` -->
 
-Taking each of these dimensions one-by-one:
+<!-- Taking each of these dimensions one-by-one: -->
 
-```json
+<!-- ```json
 { ...
    "columns": {
       "Year": {
          "from_template": "year",
-         "label": "Competition year",
-         "code_list": true
+         "label": "Competition year"
       }
    }
 }
-```
+``` -->
 
-The `Year` column uses a [column template](templates.md#datetime-period-template) - doing so means that the `type`, `from_existing`, `label` and `cell_uri_template` fields will be automatically populated based on the [calendar-year.json](https://purl.org/csv-cubed/qube-config/templates/calendar-year.json) template. However, these fields can also be overridden, as is the case here, since the `label` has been defined as "Competition year".
+<!-- The `Year` column uses a [column template](templates.md#datetime-period-template) - doing so means that the `type`, `from_existing`, `label` and `cell_uri_template` fields will be automatically populated based on the [calendar-year.json](https://purl.org/csv-cubed/qube-config/templates/calendar-year.json) template. However, these fields can also be overridden, as is the case here, since the `label` has been defined as "Competition year".
 
-A code list will be automatically generated by csvcubed for the `Year` column, since the `code_list` field has been set to `true`. This is the default value for `code_list`, so can be omitted.
+A code list will be automatically generated by csvcubed for the `Year` column, since the default value for the `code_list` is `true`. Note that the `type` of this column has not been defined, meaning that csvcubed will interpret the `Year` column as a dimension by default. -->
 
-Note that the `type` of this column has not been defined, meaning that csvcubed will interpret the `Year` column as a dimension by default.
-
-```json
+<!-- ```json
 { ...
    "columns": {
       "Entrant": {
@@ -205,15 +201,15 @@ Note that the `type` of this column has not been defined, meaning that csvcubed 
       }
    }
 }
-```
+``` -->
 
-The `Entrant` column has been explicitly configured with a `type` of dimension, although strictly speaking this is unnecessary, as a column will be designated as a dimension by default if `type` is not defined.
+<!-- The `Entrant` column has been explicitly configured with a `type` of dimension, although strictly speaking this is unnecessary, as a column will be designated as a dimension by default if `type` is not defined.
 
 The `description` field allows additional information to be associated with a column, and `definition_uri` allows you to point to a human-readable resource that further defines the column values, such as a PDF document.
 
-A code list will be generated by csvcubed for the `Entrant` column, based on the `entrant_code_list_config.json` file provided. See the [code list configuration](code-list-config.md#defining-a-code-list-configuration-file) page for further instructions. Alternatively, code lists can be [defined in-line](code-list-config.md#defining-an-in-line-code-list) within the `qube-config.json` itself, or can point to a uri by setting `"code_list": "uri"`.
+A code list will be generated by csvcubed for the `Entrant` column, based on the `entrant_code_list_config.json` file provided. See the [code list configuration](code-list-config.md#defining-a-code-list-configuration-file) page for further instructions. Alternatively, code lists can be [defined in-line](code-list-config.md#defining-an-in-line-code-list) within the `qube-config.json` itself, or can point to a uri by setting `"code_list": "uri"`. -->
 
-```json
+<!-- ```json
 { ...
    "columns": {
       "Song": {
@@ -226,9 +222,9 @@ A code list will be generated by csvcubed for the `Entrant` column, based on the
       }
    }
 }
-```
+``` -->
 
-The `Song` and `Language` columns have both been configured with a `cell_uri_template` field. It is important to note that this field should only be used where the concept scheme is defined externally at an existing URI, or there is no concept scheme, but you want to point to an existing resource to provide additional context about the dimension's value.
+<!-- The `Song` and `Language` columns have both been configured with a `cell_uri_template` field. It is important to note that this field should only be used where the concept scheme is defined externally at an existing URI, or there is no concept scheme, but you want to point to an existing resource to provide additional context about the dimension's value.
 
 **The use of the `cell_uri_template` field is considered an advanced configuration option, and therefore care must be taken to ensure that values generated are valid.**
 
@@ -242,9 +238,9 @@ If `cell_uri_template` is specified:
 
 - `code_list` must be set as `false`, in which case `cell_uri_template` should refer to URIs which are existing RDF resources.
 
-The format of the `cell_uri_template` value **must** follow [RFC6570](https://www.rfc-editor.org/rfc/rfc6570) guidance for URI Templates. In the case of any doubt, follow the pattern in the examples shown above (e.g. `http://example.org/some-uri/{+column_name}`), as this will ensure csvcubed safely [transforms the column header](../uris.md#csv-column-name-safe-transformation) to the CSV-W format.
+The format of the `cell_uri_template` value **must** follow [RFC6570](https://www.rfc-editor.org/rfc/rfc6570) guidance for URI Templates. In the case of any doubt, follow the pattern in the examples shown above (e.g. `http://example.org/some-uri/{+column_name}`), as this will ensure csvcubed safely [transforms the column header](../uris.md#csv-column-name-safe-transformation) to the CSV-W format. -->
 
-## Attributes Configuration
+<!-- ## Attributes Configuration
 
 The following fields can be configured for each attribute in your data set.
 
@@ -277,9 +273,9 @@ For the purposes of these instructions, we will be using the `Number of Arthur's
 | 2020 | Edinburgh |    90 |       Final | Number of Arthur's Bakes | Count |
 | 2021 | Belfast   |     0 |       Final | Number of Arthur's Bakes | Count |
 
-For the standard single-measure version of the `Number of Arthur's Bakes` data set, there is a single attribute column, `Status`, indicating whether the `Number of Arthur's Bakes` count is a provisional or final value. This could be configured as follows:
+For the standard single-measure version of the `Number of Arthur's Bakes` data set, there is a single attribute column, `Status`, indicating whether the `Number of Arthur's Bakes` count is a provisional or final value. This could be configured as follows: -->
 
-```json
+<!-- ```json
 { ...
    "columns": {
       "Status": {
@@ -290,9 +286,9 @@ For the standard single-measure version of the `Number of Arthur's Bakes` data s
       }
    }
 }
-```
+``` -->
 
-The `type` field indicates to csvcubed that this is an attribute column. The `label` and `description` fields allow additional information to be recorded for the column. If the `label` field is omitted, this value will default to the capital case version of the CSV column header. The `required` field is set to `true`, which means that each row must contain a value in the `Status` column - if any rows are missing these values, this will be flagged to the user by csvcubed.
+<!-- The `type` field indicates to csvcubed that this is an attribute column. The `label` and `description` fields allow additional information to be recorded for the column. If the `label` field is omitted, this value will default to the capital case version of the CSV column header. The `required` field is set to `true`, which means that each row must contain a value in the `Status` column - if any rows are missing these values, this will be flagged to the user by csvcubed.
 
 ##### Standard multi-measure data set
 
@@ -305,9 +301,9 @@ The `type` field indicates to csvcubed that this is an attribute column. The `la
 | 2021 | Cardiff  |    18 |       Final |                  Revenue | GBP Sterling, Millions |                      |                      |
 | 2021 | Cardiff  |  6.98 |       Final |   Average customer spend |           GBP Sterling |                 6.03 |                 7.52 |
 
-The same attribute can be used to qualify multiple measures, as is demonstrated in the example above, where the `Number of Arthur's Bakes`, `Revenue` and `Average customer spend` observed values can be designated as provisional or final. This can be configured as follows:
+The same attribute can be used to qualify multiple measures, as is demonstrated in the example above, where the `Number of Arthur's Bakes`, `Revenue` and `Average customer spend` observed values can be designated as provisional or final. This can be configured as follows: -->
 
-```json
+<!-- ```json
 { ...
    "columns": {
       "Status": {
@@ -317,15 +313,14 @@ The same attribute can be used to qualify multiple measures, as is demonstrated 
       }
    }
 }
-```
+``` -->
 
-The `data_type` field indicates that `Status` values should be strings. Built-in data types are available in the [CSV-W standard](https://www.w3.org/TR/2015/REC-tabular-metadata-20151217/#h-built-in-datatypes) for a range of numeric, text, date/time and other values. This field should only be used for the creation of attribute literals - to refer to existing attributes or to repurpose existing attributes for the purposes of your data set, see the instructions below.
-<!-- TODO: add link to specific guidance for resource-type attributes -->
+<!-- The `data_type` field indicates that `Status` values should be strings. Built-in data types are available in the [CSV-W standard](https://www.w3.org/TR/2015/REC-tabular-metadata-20151217/#h-built-in-datatypes) for a range of numeric, text, date/time and other values. This field should only be used for the creation of attribute literals - to refer to existing attributes or to repurpose existing attributes for the purposes of your data set, see the instructions below.
+TODO: add link to specific guidance for resource-type attributes
 The `definition_uri` fields allows you to specify a link to a resource describing the attribute and its permitted values.
 
 This data set has two additional attribute components defined for the 95% confidence interval for the `Average customer spend` values.
 
-This data set has two additional attribute components defined for the 95% confidence interval for the `Average customer spend` values.
 #### Pivoted shape
 
 ##### Pivoted single-measure data set
@@ -342,19 +337,19 @@ This data set has two additional attribute components defined for the 95% confid
 | Year | Location | Number of Arthur's Bakes | Number of Stores Status | Revenue | Revenue Units  | Revenue Status |
 |:-----|:---------|-------------------------:|:------------------------|--------:|:---------------|:---------------|
 | 2022 | London   |                       35 | Provisional             |      25 | GBP (Sterling) | Provisional    |
-| 2021 | Cardiff  |                       26 | Final                   |      18 | GBP (Sterling) | Final          |
+| 2021 | Cardiff  |                       26 | Final                   |      18 | GBP (Sterling) | Final          | -->
 
 
 
-```json
+<!-- ```json
 { ...
    "columns": {
 
    }
 }
-```
+``` -->
 
-```json
+<!-- ```json
 { ...
    "columns": {
       "Marker": {
@@ -362,32 +357,31 @@ This data set has two additional attribute components defined for the 95% confid
       }
    }
 }
-```
+```  -->
 
-
-### Attribute Values Configuration
+<!-- ### Attribute Values Configuration
 
 | **field name**   | **description**                                                             | **default value** |
 |------------------|-----------------------------------------------------------------------------|-------------------|
 | `label`          | The title of the attribute (Required; Optional if `from_existing` defined)  | *none*            |
 | `description`    | A description of the contents of the attribute (Optional)                   | *none*            |
 | `from_existing`  | The uri of the resource for reuse/extension (Optional)                      | *none*            |
-| `definition_uri` | A uri of a resource to show how the attribute is created/managed (Optional) | *none*            |
+| `definition_uri` | A uri of a resource to show how the attribute is created/managed (Optional) | *none*            | -->
 
-## Observations Configuration
+<!-- ## Observations Configuration
 
 Observations are the most important component of a CSV-W data set. Observation columns can have measures and units defined against them to obviate the need for separate unit and measure columns in a single measure data set.
 
-| **field name** | **description**                                                                                                                                                                                                                                                                 | **default value** |
-|----------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------|
-| `type`         | The type of the column; to configure an observation column use the value `observations`. **NOTE** This field is required if the observation column isn't [conventionally named](./convention.md) or if either measure or unit columns are not part of the observation csv file. | *dimension*       |
-| `data_type`    | The data type of the observations. This should generally be a decimal or integer. (Optional)                                                                                                                                                                                    | *decimal*         |
-| `unit`         | The unit for this observation column; this can a uri to an existing unit, or a dictionary containing a new or extended existing unit. If there is a unit column this field **must not** be provided. (Optional)                                                                 | *none*            |
-| `measure`      | The measure for this observation column; this can be a uri to an existing dimension, or a dictionary containing a new or extended existing measure. If there is a measure column this field **must not** be provided. (Optional)                                                | *none*            |
+| **field name** | **description**                                                                                                                                                                                                                                                                                                                                                      | **default value** |
+|----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------|
+| `type`         | The type of the column; to configure an observation column use the value `observations`. (Required)                                                                                                                                                                                                                                                                  | *dimension*       |
+| `data_type`    | The [data type](https://www.w3.org/TR/2015/REC-tabular-metadata-20151217/#h-built-in-datatypes) of the observations. This should generally be a decimal or integer. (Optional)                                                                                                                                                                                       | *decimal*         |
+| `unit`         | The unit for this observation column; this can a uri to an existing unit, or a dictionary containing a new or extended existing unit. If there is a unit column this field **must not** be provided. (Optional)                                                                                                                                                      | *none*            |
+| `measure`      | The measure for this observation column; this can be a uri to an existing dimension, or a dictionary containing a new or extended existing measure. If your data set is in the [pivoted multi-measure shape](../shape-data/pivoted-shape.md#multiple-measures), this field is required. If there is a measure column this field **must not** be provided. (Optional) | *none*            |
 
 ### Examples of observations configuration
 
-The configuration of observation columns in your data set will primarily depend on the [shape of your data](../shape-data/index.md). For [standard shape](../shape-data/standard-shape.md) data, where units and measures are contained in their own columns, only the `type` and `data_type` fields can be populated. For [pivoted shape](../shape-data/pivoted-shape.md) data sets, the `unit` and `measure` fields can also be configured.
+The configuration of observation columns in your data set will primarily depend on the [shape of your data](../shape-data/index.md). For [standard shape](../shape-data/standard-shape.md) data sets, where units and measures are contained in their own columns, only the `type` and `data_type` fields can be populated. For [pivoted shape](../shape-data/pivoted-shape.md) data sets, the `unit` and `measure` fields can also be configured.
 
 
 For the purposes of these instructions, we will be using the `Number of Arthur's Bakes` data set.
@@ -403,9 +397,9 @@ For the purposes of these instructions, we will be using the `Number of Arthur's
 | 2020 | Edinburgh |    90 | Number of Arthur's Bakes | Count |
 | 2021 | Belfast   |     0 | Number of Arthur's Bakes | Count |
 
-This data set is in the standard shape, with `Measure` and `Unit` columns explicitly defined for `Number of Arthur's Bakes` and `Count` respectively; therefore the `Value` column can be configured as follows:
+This data set is in the standard shape, with `Measure` and `Unit` columns explicitly defined for `Number of Arthur's Bakes` and `Count` respectively; therefore the `Value` column can be configured as follows: -->
 
-```json
+<!-- ```json
 { ...
    "columns": {
       "Value": {
@@ -414,9 +408,9 @@ This data set is in the standard shape, with `Measure` and `Unit` columns explic
       }
    }
 }
-```
+``` -->
 
-##### Standard multi-measure data set
+<!-- ##### Standard multi-measure data set
 
 | Year | Location | Value |                  Measure |                   Unit |
 |:-----|:---------|------:|-------------------------:|-----------------------:|
@@ -425,9 +419,9 @@ This data set is in the standard shape, with `Measure` and `Unit` columns explic
 | 2021 | Cardiff  |    26 | Number of Arthur's Bakes |                  Count |
 | 2021 | Cardiff  |    18 |                  Revenue | GBP Sterling, Millions |
 
-A `Revenue` measure has now been included in the data set, with a corresponding unit of `GBP Sterling, Millions`; however, this doesn't necessitate any changes to the configuration of the `Value` column:
+A `Revenue` measure has now been included in the data set, with a corresponding unit of `GBP Sterling, Millions`; however, this doesn't necessitate any changes to the configuration of the `Value` column: -->
 
-```json
+<!-- ```json
 { ...
    "columns": {
       "Value": {
@@ -436,9 +430,9 @@ A `Revenue` measure has now been included in the data set, with a corresponding 
       }
    }
 }
-```
+``` -->
 
-#### Pivoted shape
+<!-- #### Pivoted shape
 
 ##### Pivoted single-measure data set
 
@@ -449,9 +443,9 @@ A `Revenue` measure has now been included in the data set, with a corresponding 
 | 2020 | Edinburgh |                       90 | Final       |
 | 2021 | Belfast   |                        0 | Final       |
 
-Notice that the observation value column title (`Number of Arthur's Bakes`) does not use one of the [reserved column names](../configuration/convention.md#conventional-column-names), and therefore the `type` field must be set to `observations` in order for csvcubed to recognise it as such. In the example below, the `label` field has been configured for both the `unit` and `measure` fields. Please refer to the [Measures Configuration](#measures-configuration) and [Units Configuration](#units-configuration) sections for details of further configuration options available:
+Notice that the observation value column title (`Number of Arthur's Bakes`) does not use one of the [reserved column names](../configuration/convention.md#conventional-column-names), and therefore the `type` field must be set to `observations` in order for csvcubed to recognise it as such. In the example below, the `label` field has been configured for both the `unit` and `measure` fields. Please refer to the [Measures Configuration](#measures-configuration) and [Units Configuration](#units-configuration) sections for details of further configuration options available: -->
 
-```json
+<!-- ```json
 { ...
    "columns": {
       "Number of Arthur's Bakes": {
@@ -466,18 +460,18 @@ Notice that the observation value column title (`Number of Arthur's Bakes`) does
       }
    }
 }
-```
+``` -->
 
-##### Pivoted multi-measure data set
+<!-- ##### Pivoted multi-measure data set
 
 | Year | Location | Number of Arthur's Bakes | Revenue | Revenue Units  |
 |:-----|:---------|-------------------------:|--------:|:---------------|
 | 2022 | London   |                       35 |      25 | GBP (Sterling) |
 | 2021 | Cardiff  |                       26 |      18 | GBP (Sterling) |
 
-In this example, a second observation value column, `Revenue`,  has been added, with the associated unit contained in the `Revenue Units` column. As you can see, the `Revenue Units` column has been linked to the `Revenue` column through the `describes_observations` field. This must be formatted in exactly the same way for csvcubed to recognise the link and generate the correct results. However, there is no measure information associated for either of the observation value columns; this can be configured as follows:
+In this example, a second observation value column, `Revenue`,  has been added, with the associated unit contained in the `Revenue Units` column. As you can see, the `Revenue Units` column has been linked to the `Revenue` column through the `describes_observations` field. This must be formatted in exactly the same way for csvcubed to recognise the link and generate the correct results. However, there is no measure information associated for either of the observation value columns; this can be configured as follows: -->
 
-```json
+<!-- ```json
 { ...
    "columns": {
       "Number of Arthur's Bakes": {
@@ -503,7 +497,7 @@ In this example, a second observation value column, `Revenue`,  has been added, 
       }
    }
 }
-```
+``` -->
 
 ## Measures and Units (for the guide)
 
@@ -701,7 +695,7 @@ TODO: Improve si_scaling_factor description
 Another optional form of scaling that can be applied to units in column definitions is `si_scaling_factor`. The purpose of this field in the values dictionary is to relate scaled units to other units that are relevant, creating consistency within their scale. Most of the units that are related in this sense are already defined. Note that this is an advanced feature and can safely be ignored if not needed.
 
 The `quantity_kind` field can make use of the QUDT extensive various types of measurable quantities to help group and identify units. Provide a URI of a valid resource, adding it onto the prefix http://qudt.org/vocab/quantitykind/ to take advantage of QUDT's vast library of quantity kind resources.
-For a dedicated page with more information on defining units, see [configuring units](./units.md).
+For a dedicated page with more information on defining units, see [configuring units](./configuring-units.md).
 
 When creating a units column, it is also possible to specify an observation value to associate the units with, by entering the observation value into the `describes_observations` field. This is (only) necessary to associate a unit to its relevant observation value when there are multiple measures and the data set is in the pivoted shape, and there are multiple observation values, as otherwise there would be no clear link between the unit being used for different observations in columns. For more information on the distinction between pivoted/standard shape data sets, as well as single/multiple measures, see the [Pivoted Shape](../shape-data/pivoted-shape) TODO: Fix this link to the pivoted shape page when the location of the new guide page is decided.
 
@@ -769,4 +763,4 @@ Units are effectively attributes with additional options.
 | `si_scaling_factor` | The si_scaling_factor helps relate common scaled units to source SI units, for example kilograms are 1000 grams. Most of these units are already defined. (Optional) (Advanced)                         | *none*            |
 | `quantity_kind`     | The [QUDT quantity kind](http://www.qudt.org/doc/DOC_VOCAB-QUANTITY-KINDS.html#Instances) helps group units                                                                                             | *none*            |
 
-For a more practical approach to defining units, see [configuring units](./units.md).
+For a more practical approach to defining units, see [configuring units](./configuring-units.md).

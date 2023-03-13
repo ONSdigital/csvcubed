@@ -23,9 +23,16 @@ nav:
         - By convention: guides/configuration/convention.md
         - Explicit configuration:
           - guides/configuration/qube-config.md
-          - Templates: guides/configuration/templates.md
-          - Units: guides/configuration/units.md
-          - Code Lists: guides/configuration/code-list-config.md
+          - Catalog metadata: guides/configuration/metadata.md
+          - Column definitions: guides/configuration/column-definitions.md
+          - Dimension configuration: guides/configuration/columns/dimensions.md
+          - Observation configuration: guides/configuration/columns/observations.md
+          - Measure configuration: guides/configuration/columns/measures.md
+          - Unit configuration: guides/configuration/columns/units.md
+          - Attribute configuration: guides/configuration/columns/attributes.md
+        - Templates: guides/configuration/templates.md
+        - Units: guides/configuration/configuring-units.md
+        - Code Lists: guides/configuration/code-list-config.md
       - Shape your data:
         - guides/shape-data/index.md
         - Standard shape: guides/shape-data/standard-shape.md
@@ -60,7 +67,7 @@ theme:
     - search.highlight
     - navigation.instant
     # - navigation.expand
-    - navigation.sections
+    # - navigation.sections
     - navigation.indexes
     - navigation.top
     - toc.integrate
