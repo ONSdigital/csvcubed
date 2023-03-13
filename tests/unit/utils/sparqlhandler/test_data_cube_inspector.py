@@ -1,16 +1,22 @@
-import pytest
+from pathlib import Path
+from typing import List, Tuple
 
+import pytest
+from pandas import DataFrame
+
+from csvcubed.cli.inspect.inspectdatasetmanager import load_csv_to_dataframe
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import (
     CodelistResult,
     CodelistsResult,
-    ColumnDefinition,
     CubeTableIdentifiers,
+    QubeComponentResult,
     QubeComponentsResult,
     UnitResult,
 )
 from csvcubed.utils.iterables import first
 from csvcubed.utils.qb.components import ComponentPropertyType
+from csvcubed.utils.sparql_handler.data_cube_inspector import DataCubeInspector
 from tests.helpers.inspectors_cache import get_csvw_rdf_manager, get_data_cube_inspector
 from tests.unit.test_baseunit import get_test_cases_dir
 from tests.unit.utils.sparqlhandler.test_sparqlquerymanager import (
@@ -19,6 +25,32 @@ from tests.unit.utils.sparqlhandler.test_sparqlquerymanager import (
 )
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
+
+
+def get_arguments_qb_dataset(
+    data_cube_inspector: DataCubeInspector,
+) -> Tuple[DataFrame, List[QubeComponentResult], str]:
+    """
+    Produces the dataset, qube components and dsd uri arguments for qb:dataset.
+    """
+    csvw_inspector = data_cube_inspector.csvw_inspector
+
+    result_data_set_uri = (
+        data_cube_inspector.csvw_inspector.get_primary_catalog_metadata().dataset_uri
+    )
+    identifiers = data_cube_inspector.get_cube_identifiers_for_data_set(
+        result_data_set_uri
+    )
+
+    result: QubeComponentsResult = data_cube_inspector.get_dsd_qube_components_for_csv(
+        identifiers.csv_url
+    )
+
+    dataset: DataFrame = load_csv_to_dataframe(
+        csvw_inspector.csvw_json_path, Path(identifiers.csv_url)
+    )
+
+    return (dataset, result.qube_components, identifiers.csv_url)
 
 
 def test_exception_is_thrown_for_invalid_csv_url():
@@ -601,3 +633,134 @@ def test_get_dsd_qube_components_for_csv_standard_shape():
         "energy-trends-uk-total-energy.csv#structure",
         True,
     )
+
+
+# new stuff
+def test_pivoted_column_component_info():
+    """This text checks 'get_column_component_info' returns a List of ColumnComponentInfo object in the correct order
+    (that was defined in the corresponding CSV file), and contains the correct data.
+    """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-multi-measure-single-unit-component"
+        / "multi-measure-pivoted-dataset-units-and-attributes.csv-metadata.json"
+    )
+
+    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+
+    (_, _, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
+
+    list_of_columns_definitions = data_cube_inspector.get_column_component_info(csv_url)
+
+    # get the test to chech the properties and make sure the types match and the comlumns definitions match in the correct order
+
+    expected_component_types = [
+        "Dimension",
+        "Dimension",
+        "Observations",
+        "Attribute",
+        "Observations",
+        "Attribute",
+        "Units",
+    ]
+
+    # this test will compare the two list's values and order
+    actual_components_types = [
+        item.component_type.value for item in list_of_columns_definitions
+    ]
+    assert actual_components_types == expected_component_types
+
+
+def test_standard_column_component_info():
+    """This text checks 'get_column_component_info' returns a List of ColumnComponentInfo object in the correct order
+    (that was defined in the corresponding CSV file), and contains the correct data, in satndard shape.
+    """
+
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "single-unit_single-measure"
+        / "energy-trends-uk-total-energy.csv-metadata.json"
+    )
+
+    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+
+    (_, _, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
+
+    list_of_columns_definitions = data_cube_inspector.get_column_component_info(csv_url)
+
+    # get the test to chech the properties and make sure the types match and the comlumns definitions match in the correct order
+
+    expected_component_types = [
+        "Dimension",
+        "Dimension",
+        "Dimension",
+        "Measures",
+        "Units",
+        "Observations",
+    ]
+
+    # this test will compare the two list's values and order
+    actual_components_types = [
+        item.component_type.value for item in list_of_columns_definitions
+    ]
+    assert actual_components_types == expected_component_types
+
+
+# write a test to scheck if a column is supressed will it get the new type
+def test_supressed_column_info():
+    """
+    This text checks 'get_column_component_info' returns a List of ColumnComponentInfo object in the correct order
+    (that was defined in the corresponding CSV file),in this test emphasis on SUpressed columns, and contains
+    the correct data, in satndard shape.
+    """
+
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "suppressed-column-cube"
+        / "suppressed-data-example.csv-metadata.json"
+    )
+
+    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+
+    (_, _, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
+
+    list_of_columns_definitions = data_cube_inspector.get_column_component_info(csv_url)
+
+    # get the test to chech the properties and make sure the types match and the comlumns definitions match in the correct order
+
+    expected_component_types = [
+        "Dimension",
+        "Observations",
+        "Suppressed",
+    ]
+
+    # this test will compare the two list's values and order
+    actual_components_types = [
+        item.component_type.value for item in list_of_columns_definitions
+    ]
+    assert actual_components_types == expected_component_types
+
+
+def test_standard_column_component_property_url():
+    """This text checks '_get_column_components_and_check_for_cube_shape'
+    returns the correct column based of the cube shape and the property_url.
+    """
+
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "single-unit_single-measure"
+        / "energy-trends-uk-total-energy.csv-metadata.json"
+    )
+
+    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+
+    (_, _, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
+
+    list_of_columns_definitions = data_cube_inspector.get_column_component_info(csv_url)
+
+    # get clomn.proprty_type to be `measure` and then the column_useb_by == that measure column
+    # and then the same with obs
+    actual_components_types = [
+        item.column_definition.property_url for item in list_of_columns_definitions
+    ]
+    assert "http://purl.org/linked-data/cube#measureType" in actual_components_types
