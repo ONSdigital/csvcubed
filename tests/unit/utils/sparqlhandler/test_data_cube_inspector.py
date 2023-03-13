@@ -756,11 +756,25 @@ def test_standard_column_component_property_url():
 
     (_, _, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
 
-    list_of_columns_definitions = data_cube_inspector.get_column_component_info(csv_url)
+    column_components = data_cube_inspector.get_dsd_qube_components_for_csv(csv_url)
 
-    # get clomn.proprty_type to be `measure` and then the column_useb_by == that measure column
-    # and then the same with obs
-    actual_components_types = [
-        item.column_definition.property_url for item in list_of_columns_definitions
-    ]
-    assert "http://purl.org/linked-data/cube#measureType" in actual_components_types
+    column_definitions = data_cube_inspector.get_column_component_info(csv_url)
+    column_definitions = [x.column_definition for x in column_definitions]
+
+    measure_column = first(
+        column_definitions,
+        lambda c: c.title == "Measure Type",
+    )
+    observations_column = first(
+        column_definitions,
+        lambda c: c.title == "Value",
+    )
+
+    measure_component = first(
+        column_components.qube_components,
+        lambda c: c.property_type == "Measure",
+    )
+    assert measure_column is not None
+    assert measure_component is not None
+    assert measure_component.real_columns_used_in == [measure_column]
+    assert measure_component.used_by_observed_value_columns == [observations_column]
