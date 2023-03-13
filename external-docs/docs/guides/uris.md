@@ -29,7 +29,7 @@ The CSV column name safe transformation converts a human-readable column name in
 | The entire column name is converted to lower case                                                | `USS Enterprise-D personnel` is transformed to `uss enterprise-d personnel` |
 | Any characters which are not letters, numbers or `_` (underscore) are replaced with a single `_` | `uss enterprise-d personnel` is transformed to `uss_enterprise_d_personnel` |
 
-The transformed column name can then be safely used by csvcubed in the generation of CSV-W metadata, such as column definitions:
+The transformed [column name](https://www.w3.org/TR/2015/REC-tabular-metadata-20151217/#column-name) can then be safely used by csvcubed in the generation of CSV-W metadata, such as column definitions:
 
 ```json
 {
