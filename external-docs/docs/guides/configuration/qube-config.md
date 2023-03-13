@@ -501,7 +501,7 @@ In this example, a second observation value column, `Revenue`,  has been added, 
 
 ## Measures and Units (for the guide)
 
-Measures can either be attached to a Measure Column if there are multiple different measures in your data set, or to an Observation column's `measure` field if all observations in the cube have the same measure.
+Measures can either be attached to a Measure Column if there are multiple different measures appearing in columns throughout your data set, or to an Observation column's `measure` field if all observations in this column of the data set use the same measure.
 Units can either be attached to a Unit Column if there are a mixture of units in your data set, or to an Observation column if all observations in the cube have the same unit.
 
 The definition of measures and units columns is similar in that it depends on the number of measures/units present in the data set. If only one measure/unit is present, then the measure/unit can be defined by being attached to the Observation column, by entering them into their own field in the Observation column's definition. When multiple measures/units are present in the data set, they can be defined in their own column so that the column may clearly show which of the possible measures is being counted, or which unit is being used to measure each value in observations.
@@ -509,9 +509,6 @@ The definition of measures and units columns is similar in that it depends on th
 ## Measure and Unit Columns Configuration (for the guide)
 
 Measure and unit columns are treated slightly differently to dimension, attribute, and observation columns. Measure and unit columns contain references to discrete units and measures. In both cases by defining `"type": "measures"` or `"type": "units"` provides the same behaviour. Do not put measures in unit columns or units in measure columns.
-
-Measure and unit columns share some fields in that they can be populated directly in the column's definition with the `values` field, allowing an object to be input that defines the details of the unit/measure. Existing column definitions can also be reused to quickly define measures and units, or serve as a "base" for a new column to be created on.
-
 TODO: Find out if cell_uri_template in measures/units has any distinctions compared to when it is used as a field in other column definitions, to avoid overlap/writing stuff about this field that is explained elsewhere in the guide.
 
 ### Measures (for the guide)
@@ -542,7 +539,7 @@ When creating a new measure column definition by specifying the `type` as "measu
 
 The following will describe the possible fields that can be entered into the `values` object when defining a new measure, providing some examples of those fields being used to define a column.
 
-If basic measures are wanted, the `value` field can simply be set to True (as shown in the example below) which will indicate to csvcubed to create a measures column from this definition.
+If basic measures are wanted, the `value` field can simply be set to True (as shown in the example below) which will indicate to csvcubed to create auto-configured measures unique to your data set.
 
 TODO: Should we include a larger example with more columns and maybe some metadata when starting out? Then narrow down focus of examples later.
 ```json
@@ -558,16 +555,18 @@ A basic field for adding information when creating a `values` objectin new measu
 
 An optional field that can be used to give more detail to the measure is `description`. This is not required in any scenario, but helps provide more information about the measure if wanted, in a longer free-text form that can go into more detail than a label.
 
-### Measure column configuration example for a new measure (improve this one):
+### Measure column configuration example for a new measure:
 
 ```json
 "columns": {
   "Measure column": {
     "type": "measures",
-    "values": {
+    "values": [
+      {
       "label": "Measure",
       "description": "This is a measure"
     }
+    ]
   }
 }
 ```
@@ -674,7 +673,7 @@ When defining a column using an existing unit definition, the `from_existing` fi
 
 The way the unit is used in the data set, such as the way amounts are being displayed, or how things are being counted, can determine whether a `scaling_factor` field should be used. Using the scaling factor means a new unit is being defined using the `from_existing` field's value as a base, and altering it so the measurements made are scaled as specified in a base 10 expression. For example, a unit defined with an existing base of Pounds Sterling, could be given a scaling factor of 1000000 to create the unit "Millions of Pounds Sterling" (where 1 would mean 1 million pounds.)
 
-### Creating a units column using the `from_existing` field, also using scaling and specifying quantity kind for the existing unit being used.
+### Creating a units column using the `from_existing` field, also using a scaling factor and specifying quantity kind for the existing unit being used.
 ```json
     "columns": {
         "Unit": {
@@ -693,7 +692,7 @@ The way the unit is used in the data set, such as the way amounts are being disp
 ```
 
 TODO: Improve si_scaling_factor description
-Another optional form of scaling that can be applied to units in column definitions is `si_scaling_factor`. The purpose of this field in the values dictionary is to relate scaled units to other units that are related, creating consistency within their scale. Most of the units that are related in this sense are already defined. Note that this is an advanced feature and can safely be ignored if not needed.
+Another optional form of scaling that can be applied to units in column definitions is `si_scaling_factor`. The purpose of this field in the values dictionary is to relate scaled units to other units that are relevant, creating consistency within their scale. Most of the units that are related in this sense are already defined. Note that this is an advanced feature and can safely be ignored if not needed.
 
 The `quantity_kind` field can make use of the QUDT extensive various types of measurable quantities to help group and identify units. Provide a URI of a valid resource, adding it onto the prefix http://qudt.org/vocab/quantitykind/ to take advantage of QUDT's vast library of quantity kind resources.
 For a dedicated page with more information on defining units, see [configuring units](./units.md).
