@@ -1,5 +1,5 @@
 # Overview
-<!-- TODO: Restructure page into two - Reference and Instructions/Guidance -->
+
 This page discusses how to configure your cube with the greatest control and flexibility by writing a `qube-config.json` file. If you are new to using csvcubed, you may wish to begin with the [quick start](../../quick-start/index.md) approach.
 
 > **Experience of writing basic JSON documents is assumed throughout this document.**

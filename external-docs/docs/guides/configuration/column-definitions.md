@@ -6,6 +6,8 @@ To define a column in a `qube-config.json` file, provide the column title as a d
 
 A column is assumed to be a dimension unless otherwise configured using the `type` key or the column title being one of the [reserved names](../configuration/convention.md#conventional-column-names). A dimension can still have a `"type": "dimension"` key/value pair.
 
+<!-- TODO Add some metadata to examples -->
+
 ```json
 { ...
  "columns": {
@@ -26,26 +28,24 @@ A column is assumed to be a dimension unless otherwise configured using the `typ
 }
 ```
 
+Brief descriptions of the five column types are given below. For more information on each type, and to see configuration examples, click on the section header.
+
 ## [Dimensions](./columns/dimensions.md#dimension-configuration)
 
-*Dimension* columns serve to identify observations in the data set. A combined set of values for all dimension components (including measures) should uniquely identify a single observation value. Examples of dimensions include the time period to which the observation applies, or the geographic region which the observation covers.
-
-Think of the principle of [MECE](https://en.wikipedia.org/wiki/MECE_principle).
+*Dimension* columns serve to identify observations in the data set. A combined set of values for all dimension components (including measures) should uniquely identify a single observation value. Examples of dimensions include the time period to which the observation applies, or the geographic region which the observation covers. Think of the principle of [MECE](https://en.wikipedia.org/wiki/MECE_principle).
 
 ## [Observations](./columns/observations.md#observation-configuration)
 
-The *observation* column contains the numerical values of observations recorded in the data set.
+*Observation* columns contain the numerical values of observations recorded in the data set.
 
 ## [Measures](./columns/measures.md#measure-configuration)
 
-The *measure* column represents the phenomenon being observed, and is effectively another form of dimension.
+*Measure* columns represent the phenomenon being observed, and are effectively another form of dimension.
 
 ## [Units](./columns/units.md#unit-configuration)
 
-The *unit* column is a type of attribute column which provides the units of the observation.
+*Unit* columns are a type of attribute column which provide the units of the observation.
 
 ## [Attributes](./columns/attributes.md#attribute-configuration)
 
-*Attribute* columns allow us to qualify and interpret observed values. This enables specification of units of measure, any scaling factors and metadata such as the status of the observation (e.g. *estimated*, *provisional*).
-
-Attribute columns can link to [resources](../../glossary/index.md#uri) or [literals](../../glossary/index.md#literal).
+*Attribute* columns allow us to qualify and interpret observed values. This enables specification of units of measure, any scaling factors and metadata such as the status of the observation (e.g. *estimated*, *provisional*). Attributes can either be [resources](../../glossary/index.md#uri) or [literals](../../glossary/index.md#literal).
