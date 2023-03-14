@@ -75,7 +75,7 @@ def test_qbcube_data_is_categorical():
     }
     expected_non_categorical_columns = {"Observed Value", "Some Literal Attribute"}
 
-    for (column_name, expected_categories) in map_col_to_expected_categories.items():
+    for column_name, expected_categories in map_col_to_expected_categories.items():
         values = cube.data[column_name].values
         assert isinstance(values, Categorical)
         assert set(values.categories) == expected_categories
@@ -131,9 +131,7 @@ def test_convert_data_values_to_uri_safe_values():
         "Unit": ["unit-a", "unit-b", "unit-c"],
     }
 
-    for (column_name, expected_values) in map_col_to_expected_values.items():
-        values = list(cube.data[column_name].values)
-        assert values == expected_values
+    _assert_values_in_column(cube, map_col_to_expected_values)
 
 
 def test_convert_data_values_to_uri_safe_values_missing_value_mapping():
@@ -213,7 +211,7 @@ def test_qbcube_catagorical_numeric():
     }
     expected_non_categorical_columns = {"Observed Value"}
 
-    for (column_name, expected_categories) in map_col_to_expected_categories.items():
+    for column_name, expected_categories in map_col_to_expected_categories.items():
         values = cube.data[column_name].values
         assert isinstance(values, Categorical)
         assert set(values.categories) == expected_categories
@@ -329,6 +327,107 @@ def test_coerce_attribute_value_with_missing_values():
     error_values_set = set(error_values.values)
     assert 11 in error_values_set
     assert 33 in error_values_set
+
+
+def test_match_code_lists_on_notation():
+    """
+    Ensure that dimensions with NewQbCodeLists values are matched on notation as well as the label.
+    """
+
+    data = pd.DataFrame({"New Dimension": ["A01", "B02", "C03"], "Value": [1, 2, 3]})
+
+    cube = Cube(
+        CatalogMetadata("Some Dataset"),
+        data,
+        [
+            QbColumn(
+                "New Dimension",
+                NewQbDimension(
+                    label="Some Dimension",
+                    code_list=NewQbCodeList(
+                        CatalogMetadata("Some Code List"),
+                        concepts=[
+                            NewQbConcept(label="A - The First Item", code="A01"),
+                            NewQbConcept(label="B - The Second Item", code="B02"),
+                            NewQbConcept(label="C - The Third Item", code="C03"),
+                        ],
+                    ),
+                ),
+            ),
+            QbColumn(
+                "Value",
+                QbObservationValue(
+                    NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
+                ),
+            ),
+        ],
+    )
+
+    convert_data_values_to_uri_safe_values(cube)
+
+    map_col_to_expected_values = {
+        "New Dimension": ["a01", "b02", "c03"],
+    }
+
+    _assert_values_in_column(cube, map_col_to_expected_values)
+
+
+def test_match_code_lists_on_label():
+    """
+    Ensure that dimensions with NewQbCodeLists values are matched on label as well as the notation.
+    """
+
+    data = pd.DataFrame(
+        {
+            "New Dimension": [
+                "A - The First Item",
+                "B - The Second Item",
+                "C - The Third Item",
+            ],
+            "Value": [1, 2, 3],
+        }
+    )
+
+    cube = Cube(
+        CatalogMetadata("Some Dataset"),
+        data,
+        [
+            QbColumn(
+                "New Dimension",
+                NewQbDimension(
+                    label="Some Dimension",
+                    code_list=NewQbCodeList(
+                        CatalogMetadata("Some Code List"),
+                        concepts=[
+                            NewQbConcept(label="A - The First Item", code="A01"),
+                            NewQbConcept(label="B - The Second Item", code="B02"),
+                            NewQbConcept(label="C - The Third Item", code="C03"),
+                        ],
+                    ),
+                ),
+            ),
+            QbColumn(
+                "Value",
+                QbObservationValue(
+                    NewQbMeasure("Some Measure"), NewQbUnit("Some Unit")
+                ),
+            ),
+        ],
+    )
+
+    convert_data_values_to_uri_safe_values(cube)
+
+    map_col_to_expected_values = {
+        "New Dimension": ["a01", "b02", "c03"],
+    }
+
+    _assert_values_in_column(cube, map_col_to_expected_values)
+
+
+def _assert_values_in_column(cube, map_col_to_expected_values):
+    for column_name, expected_values in map_col_to_expected_values.items():
+        values = list(cube.data[column_name].values)
+        assert values == expected_values, column_name
 
 
 if __name__ == "__main__":
