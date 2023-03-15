@@ -274,8 +274,7 @@ class MetadataPrinter:
         Member of :class:`./MetadataPrinter`.
 
         """
-        return self._get_formated_output(self.result_column_component_info)
-        # return f" The {self.result_column_component_info} column type has te title of {self.result_column_component_info.column_definition.title}."
+        return f" - The {self.csvw_type_str} has the following column component information: \n {self._get_formated_output(self.result_column_component_info)}"
 
     @property
     def catalog_metadata_printable(self) -> str:

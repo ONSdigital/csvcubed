@@ -48,7 +48,6 @@ def inspect(csvw_metadata_json_path: Path) -> None:
     (
         type_printable,
         catalog_metadata_printable,
-        dsd_info_printable,
         codelist_info_printable,
         dataset_observations_printable,
         val_counts_by_measure_unit_printable,
@@ -61,15 +60,13 @@ def inspect(csvw_metadata_json_path: Path) -> None:
     print(f"{linesep}{type_printable}")
     print(f"{linesep}{catalog_metadata_printable}")
     if csvw_type == CSVWType.QbDataSet:
-        print(f"{linesep}{dsd_info_printable}")
+        print(f"{linesep}{column_component_info_printabe}")
         print(f"{linesep}{codelist_info_printable}")
     print(f"{linesep}{dataset_observations_printable}")
     if csvw_type == CSVWType.QbDataSet:
         print(f"{linesep}{val_counts_by_measure_unit_printable}")
     if csvw_type == CSVWType.CodeList:
         print(f"{linesep}{codelist_hierarchy_info_printable}")
-    if csvw_type == CSVWType.QbDataSet:
-        print(f"{linesep}{column_component_info_printabe}")
 
 
 def _generate_printables(
@@ -123,7 +120,6 @@ def _generate_printables(
     return (
         type_info_printable,
         catalog_metadata_printable,
-        dsd_info_printable,
         codelist_info_printable,
         dataset_observations_info_printable,
         dataset_val_counts_by_measure_unit,
