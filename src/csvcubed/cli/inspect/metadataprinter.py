@@ -274,7 +274,7 @@ class MetadataPrinter:
         Member of :class:`./MetadataPrinter`.
 
         """
-        return f" - The {self.csvw_type_str} has the following column component information: \n {self._get_formated_output(self.result_column_component_info)}"
+        return f" - The {self.csvw_type_str} has the following column component information: \n - Dataset Label: {self.result_catalog_metadata.label} \n - Components: \n{self._get_formated_output(self.result_column_component_info)}"
 
     @property
     def catalog_metadata_printable(self) -> str:
