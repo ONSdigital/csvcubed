@@ -151,11 +151,11 @@ def test_formatted_output():
 
     (_, _, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
 
-    List_of_column_component_info = data_cube_inspector.get_column_component_info(
+    list_of_column_component_info = data_cube_inspector.get_column_component_info(
         csv_url
     )
 
-    formatted_data = MetadataPrinter._get_formated_output(List_of_column_component_info)
+    formatted_data = MetadataPrinter._get_formated_output(list_of_column_component_info)
 
     with open("Output.txt", "w") as text_file:
         text_file.write(formatted_data)

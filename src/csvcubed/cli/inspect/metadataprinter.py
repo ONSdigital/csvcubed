@@ -65,7 +65,6 @@ class MetadataPrinter:
     dataset: DataFrame = field(init=False)
 
     result_catalog_metadata: CatalogMetadataResult = field(init=False)
-    # new stuff
     result_column_component_info: List[ColumnComponentInfo] = field(init=False)
     primary_cube_table_identifiers: CubeTableIdentifiers = field(init=False)
     result_qube_components: QubeComponentsResult = field(init=False)

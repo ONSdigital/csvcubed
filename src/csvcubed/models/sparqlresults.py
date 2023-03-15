@@ -403,7 +403,6 @@ def _get_column_components_and_check_for_cube_shape(
 ):
 
     if cube_shape == CubeShape.Standard and component.property_type == "Measure":
-        # todo: Need to add a unit test to ensure the standard shape qube components work properly.
         measure_column = first(
             csv_column_definitions,
             lambda c: c.property_url == "http://purl.org/linked-data/cube#measureType",
