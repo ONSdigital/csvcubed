@@ -71,7 +71,7 @@ def inspect(csvw_metadata_json_path: Path) -> None:
 
 def _generate_printables(
     csvw_inspector: CsvWInspector,
-) -> Tuple[str, str, str, str, str, str, str, str]:
+) -> Tuple[str, str, str, str, str, str, str]:
     """
     Generates printables of type, metadata, dsd, code list, head/tail and value count information.
 
