@@ -16,6 +16,9 @@ from tests.unit.cli.inspect.test_inspectdatasetmanager import (
     expected_dataframe_pivoted_single_measure,
 )
 from tests.unit.test_baseunit import get_test_cases_dir
+from tests.unit.utils.sparqlhandler.test_data_cube_inspector import (
+    get_arguments_qb_dataset,
+)
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
 
@@ -133,3 +136,33 @@ def test_single_measure_pivoted_shape_cube_observation_and_count_info():
     assert_frame_equal(
         result_dataset_value_counts.by_measure_and_unit_val_counts_df, expected_df
     )
+
+
+def test_formatted_output():
+    """This test checks the `_get_formated_output` outputs all the information correctly"""
+
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-multi-measure-dataset"
+        / "qb-id-10003.csv-metadata.json"
+    )
+
+    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+
+    (_, _, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
+
+    List_of_column_component_info = data_cube_inspector.get_column_component_info(
+        csv_url
+    )
+
+    formatted_data = MetadataPrinter._get_formated_output(List_of_column_component_info)
+
+    with open("Output.txt", "w") as text_file:
+        text_file.write(formatted_data)
+    text_file.close()
+
+    with open("Output.txt", "r") as file:
+        expected_output = file.read()
+    file.close()
+
+    assert formatted_data == expected_output

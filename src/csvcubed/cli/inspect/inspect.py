@@ -53,6 +53,7 @@ def inspect(csvw_metadata_json_path: Path) -> None:
         dataset_observations_printable,
         val_counts_by_measure_unit_printable,
         codelist_hierarchy_info_printable,
+        column_component_info_printabe,
     ) = _generate_printables(
         csvw_rdf_manager.csvw_inspector,
     )
@@ -67,11 +68,13 @@ def inspect(csvw_metadata_json_path: Path) -> None:
         print(f"{linesep}{val_counts_by_measure_unit_printable}")
     if csvw_type == CSVWType.CodeList:
         print(f"{linesep}{codelist_hierarchy_info_printable}")
+    if csvw_type == CSVWType.QbDataSet:
+        print(f"{linesep}{column_component_info_printabe}")
 
 
 def _generate_printables(
     csvw_inspector: CsvWInspector,
-) -> Tuple[str, str, str, str, str, str, str]:
+) -> Tuple[str, str, str, str, str, str, str, str]:
     """
     Generates printables of type, metadata, dsd, code list, head/tail and value count information.
 
@@ -92,6 +95,9 @@ def _generate_printables(
 
     type_info_printable: str = metadata_printer.type_info_printable
     catalog_metadata_printable: str = metadata_printer.catalog_metadata_printable
+    column_component_info_printable: str = (
+        metadata_printer.column_component_info_printable
+    )
     dsd_info_printable: str = (
         metadata_printer.dsd_info_printable if csvw_type == CSVWType.QbDataSet else ""
     )
@@ -122,4 +128,5 @@ def _generate_printables(
         dataset_observations_info_printable,
         dataset_val_counts_by_measure_unit,
         codelist_hierarchy_info_printable,
+        column_component_info_printable,
     )

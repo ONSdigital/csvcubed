@@ -8,7 +8,7 @@ one of more data cubes.
 
 from dataclasses import dataclass
 from functools import cached_property
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 
 from csvcubed.models.csvcubedexception import UnsupportedComponentPropertyTypeException
 from csvcubed.models.cube.cube_shape import CubeShape
@@ -246,32 +246,35 @@ class DataCubeInspector:
 
         def _get_column_type(
             column: ColumnDefinition,
-        ) -> EndUserColumnType:
+        ) -> Tuple[EndUserColumnType, Optional[QubeComponentResult]]:
             component_definition = first(
                 qube_components, lambda q: column in q.real_columns_used_in
             )
 
             if component_definition is None:
                 if column.suppress_output:
-                    return EndUserColumnType.Suppressed
+                    return EndUserColumnType.Suppressed, None
                 elif (
                     cube_shape == CubeShape.Standard and column in observations_columns
                 ):
-                    return EndUserColumnType.Observations
+                    return EndUserColumnType.Observations, None
                 else:
                     raise KeyError(
                         f"Could not find component associated with CSV column '{column.title}'"
                     )
 
-            return _figure_out_end_user_column_type(component_definition, cube_shape)
+            return (
+                _figure_out_end_user_column_type(component_definition, cube_shape),
+                component_definition,
+            )
 
         for column in column_definitions:
-            # todo: Need to consider suppressed columns
-            column_type = _get_column_type(column)
+            (column_type, component) = _get_column_type(column)
             list_to_return.append(
                 ColumnComponentInfo(
                     component_type=column_type,
                     column_definition=column,
+                    component=component,
                 )
             )
 
