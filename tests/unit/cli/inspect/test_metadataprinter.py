@@ -146,6 +146,7 @@ def test_formatted_output():
         / "pivoted-multi-measure-dataset"
         / "qb-id-10003.csv-metadata.json"
     )
+    test_file = _test_case_base_dir / "test-file-for-formatted" / "output.txt"
 
     data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
 
@@ -157,13 +158,7 @@ def test_formatted_output():
 
     formatted_data = MetadataPrinter._get_formated_output(list_of_column_component_info)
 
-    # this test is not valid yet, just testing the the comparing
-
-    with open("Output.txt", "w") as text_file:
-        text_file.write(formatted_data)
-    text_file.close()
-
-    with open("Output.txt", "r") as file:
+    with open(test_file, "r") as file:
         expected_output = file.read()
     file.close()
 

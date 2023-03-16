@@ -1,0 +1,6 @@
+             Title         Type  Required                                                Property URL        Observations Column Title
+    Some Dimension    Dimension      True                    qb-id-10003.csv#dimension/some-dimension Some Obs Val, Some Other Obs Val
+    Some Attribute    Attribute     False                    qb-id-10003.csv#attribute/some-attribute                     Some Obs Val
+      Some Obs Val Observations      True                        qb-id-10003.csv#measure/some-measure                     Some Obs Val
+Some Other Obs Val Observations      True                  qb-id-10003.csv#measure/some-other-measure               Some Other Obs Val
+         Some Unit        Units      True http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure Some Obs Val, Some Other Obs Val
