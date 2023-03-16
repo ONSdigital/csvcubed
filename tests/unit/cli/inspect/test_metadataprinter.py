@@ -1,3 +1,5 @@
+from typing import Dict, List
+
 import pandas as pd
 from pandas.testing import assert_frame_equal
 
@@ -146,7 +148,6 @@ def test_formatted_output():
         / "pivoted-multi-measure-dataset"
         / "qb-id-10003.csv-metadata.json"
     )
-    test_file = _test_case_base_dir / "test-file-for-formatted" / "output.txt"
 
     data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
 
@@ -156,10 +157,16 @@ def test_formatted_output():
         csv_url
     )
 
-    formatted_data = MetadataPrinter._get_formated_output(list_of_column_component_info)
+    column_infos: List[
+        Dict[str, str]
+    ] = MetadataPrinter._get_column_component_info_for_output(
+        list_of_column_component_info
+    )
 
-    with open(test_file, "r") as file:
-        expected_output = file.read()
-    file.close()
-
-    assert formatted_data == expected_output
+    assert column_infos[0] == {
+        "Title": "Some Dimension",
+        "Type": "Dimension",
+        "Required": "True",
+        "Property URL": "qb-id-10003.csv#dimension/some-dimension",
+        "Observations Column Titles": "Some Obs Val, Some Other Obs Val",
+    }

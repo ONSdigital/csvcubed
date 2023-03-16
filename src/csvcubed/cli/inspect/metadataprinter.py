@@ -216,19 +216,20 @@ class MetadataPrinter:
         )
 
     @staticmethod
-    def _get_formated_output(list_of_info: List[ColumnComponentInfo]) -> str:
+    def _get_column_component_info_for_output(
+        list_of_info: List[ColumnComponentInfo],
+    ) -> List[Dict[str, str]]:
         """
-        Returns the column component and column definitions informaiton is
-        a formatted string output.
+        Returns the column component and column definitions informaiton ready for outputing into a table.
         """
 
-        the_list = [
+        return [
             {
                 "Title": x.column_definition.title,
                 "Type": x.component_type.name,
-                "Required": x.column_definition.required,
+                "Required": str(x.column_definition.required),
                 "Property URL": x.column_definition.property_url,
-                "Observations Column Title": ""
+                "Observations Column Titles": ""
                 if x.component is None
                 else ", ".join(
                     [
@@ -240,9 +241,6 @@ class MetadataPrinter:
             }
             for x in list_of_info
         ]
-        formatted = get_printable_tabular_str_from_list(the_list)
-
-        return formatted
 
     def __post_init__(self):
         self.generate_general_results()
@@ -273,7 +271,15 @@ class MetadataPrinter:
         Member of :class:`./MetadataPrinter`.
 
         """
-        return f" - The {self.csvw_type_str} has the following column component information: \n - Dataset Label: {self.result_catalog_metadata.label} \n - Components: \n{self._get_formated_output(self.result_column_component_info)}"
+        formatted_column_info = get_printable_tabular_str_from_list(
+            self._get_column_component_info_for_output(
+                self.result_column_component_info
+            )
+        )
+        return (
+            f" - The {self.csvw_type_str} has the following column component information: \n"
+            + f" - Dataset Label: {self.result_catalog_metadata.label} \n - Components: \n{formatted_column_info}"
+        )
 
     @property
     def catalog_metadata_printable(self) -> str:
