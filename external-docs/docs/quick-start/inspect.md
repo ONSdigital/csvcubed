@@ -1,6 +1,6 @@
 # Inspecting a CSV-W
 
-This page is designed to help you inspect an existing CSV-W. 
+This page is designed to help you inspect an existing CSV-W.
 
 ## A transcribed video walkthrough
 
@@ -38,22 +38,19 @@ All being well we get the below output. A detailed explanation of this output is
         - Identifier: Sweden At Eurovision No Missing
         - Comment: None
         - Description: None
-        
-- The data cube has the following data structure definition:
-        - Dataset Label: Sweden At Eurovision No Missing
-        - Number of Components: 9
-        - Components:
-                                                   Property  Property Label Property Type Column Title  Observation Value Column Titles  Required
-         sweden-at-eurovision-no-missing.csv#dimension/year            Year     Dimension         Year                                       True
-      sweden-at-eurovision-no-missing.csv#dimension/entrant         Entrant     Dimension      Entrant                                       True
-         sweden-at-eurovision-no-missing.csv#dimension/song            Song     Dimension         Song                                       True
-     sweden-at-eurovision-no-missing.csv#dimension/language        Language     Dimension     Language                                       True
-               http://purl.org/linked-data/cube#measureType                     Dimension      Measure                                       True
-   sweden-at-eurovision-no-missing.csv#measure/final-points    Final Points       Measure                                                    True
-     sweden-at-eurovision-no-missing.csv#measure/final-rank      Final Rank       Measure                                                    True
-sweden-at-eurovision-no-missing.csv#measure/people-on-stage People on Stage       Measure                                                    True
-http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure                     Attribute         Unit                                       True
-        - Columns where suppress output is true: None
+
+ - The data cube has the following column component information:
+ - Dataset Label: Sweden at Eurovision
+ - Components:
+           Title         Type  Required                                                Property URL Observations Column Titles
+            Year    Dimension      True                     sweden-at-eurovision.csv#dimension/year
+         Entrant    Dimension      True                  sweden-at-eurovision.csv#dimension/entrant
+            Song    Dimension      True                     sweden-at-eurovision.csv#dimension/song
+        Language    Dimension      True                 sweden-at-eurovision.csv#dimension/language
+           Value Observations      True                 sweden-at-eurovision.csv#measure/{+measure}
+         Measure     Measures      True                http://purl.org/linked-data/cube#measureType
+            Unit        Units      True http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure
+ - Columns where suppress output is true: None
 
 - The data cube has the following code list information:
         - Number of Code Lists: 4
@@ -67,7 +64,7 @@ language.csv#code-list                        Language
 - The data cube has the following dataset information:
         - Number of Observations: 178
         - Number of Duplicates: 0
-        - First 10 Observations: 
+        - First 10 Observations:
  Year       Entrant                  Song Language  Value         Measure    Unit
  1958    alice-babs         lilla-stjarna  swedish      4      final-rank ordinal
  1958    alice-babs         lilla-stjarna  swedish     10    final-points  points
@@ -79,7 +76,7 @@ language.csv#code-list                        Language
  1960 siw-malmkvist alla-andra-far-varann  swedish      4    final-points  points
  1960 siw-malmkvist alla-andra-far-varann  swedish      1 people-on-stage  people
  1961     lill-babs           april-april  swedish     14      final-rank ordinal
-        - Last 10 Observations: 
+        - Last 10 Observations:
  Year           Entrant              Song Language  Value         Measure    Unit
  2017   robin-bengtsson     i-can-t-go-on  english      6 people-on-stage  people
  2018 benjamin-ingrosso     dance-you-off  english      7      final-rank ordinal
@@ -91,7 +88,7 @@ language.csv#code-list                        Language
  2021             tusse            voices  english     14      final-rank ordinal
  2021             tusse            voices  english    109    final-points  points
  2021             tusse            voices  english      6 people-on-stage  people
-        
+
 
 - The data cube has the following value counts:
         - Value counts broken-down by measure and unit (of measure):
@@ -129,22 +126,22 @@ All being well we get the below output. A detailed explanation of this output is
         - Identifier: Language
         - Comment: None
         - Description: None
-        
+
 
 - The code list has the following dataset information:
         - Number of Concepts: 3
         - Number of Duplicates: 0
-        - First 10 Concepts: 
+        - First 10 Concepts:
    Label Notation  Parent Notation  Sort Priority  Description
  English  english              NaN              0          NaN
 Multiple multiple              NaN              1          NaN
  Swedish  swedish              NaN              2          NaN
-        - Last 10 Concepts: 
+        - Last 10 Concepts:
    Label Notation  Parent Notation  Sort Priority  Description
  English  english              NaN              0          NaN
 Multiple multiple              NaN              1          NaN
  Swedish  swedish              NaN              2          NaN
-        
+
 
 - The code list has the following concepts information:
         - Concepts hierarchy depth: 1
