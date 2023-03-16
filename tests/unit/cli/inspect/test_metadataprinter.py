@@ -157,6 +157,8 @@ def test_formatted_output():
 
     formatted_data = MetadataPrinter._get_formated_output(list_of_column_component_info)
 
+    # this test is not valid yet, just testing the the comparing
+
     with open("Output.txt", "w") as text_file:
         text_file.write(formatted_data)
     text_file.close()
