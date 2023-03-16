@@ -1,5 +1,6 @@
 Feature: Behaviour testing of csvcubed inspect.
 
+    @wip
     Scenario: inspect should produce the expected printable for data cube metadata json-ld input of type multi-unit multi-measure.
         Given the existing test-case file "cli/inspect/multi-unit_multi-measure/alcohol-bulletin.csv-metadata.json"
         And the existing test-case file "cli/inspect/multi-unit_multi-measure/alcohol-bulletin.csv"
@@ -63,29 +64,22 @@ Feature: Behaviour testing of csvcubed inspect.
         """
         And the Data Structure Definition Printable should be
         """
-        - The data cube has the following data structure definition:
+        - The data cube has the following column component information:
         - Dataset Label: Alcohol Bulletin
-        - Number of Components: 17
         - Components:
-                                                                 Property   Property Label Property Type     Column Title Observation Value Column Titles  Required
-                http://purl.org/linked-data/sdmx/2009/dimension#refPeriod                      Dimension           Period                                      True
-         http://gss-data.org.uk/def/trade/property/dimension/alcohol-type                      Dimension     Alcohol Type                                      True
-                          alcohol-bulletin.csv#dimension/alcohol-sub-type Alcohol Sub Type     Dimension Alcohol Sub Type                                      True
-                           alcohol-bulletin.csv#dimension/alcohol-content  Alcohol Content     Dimension  Alcohol Content                                      True
-                          alcohol-bulletin.csv#dimension/clearance-origin Clearance Origin     Dimension Clearance Origin                                      True
-                             http://purl.org/linked-data/cube#measureType                      Dimension     Measure Type                                      True
-                 http://gss-data.org.uk/def/measure/alcohol-duty-receipts                        Measure     Measure Type                           Value      True
-                    http://gss-data.org.uk/def/measure/beer-duty-receipts                        Measure     Measure Type                           Value      True
-                   http://gss-data.org.uk/def/measure/cider-duty-receipts                        Measure     Measure Type                           Value      True
-                            http://gss-data.org.uk/def/measure/clearances                        Measure     Measure Type                           Value      True
-                 http://gss-data.org.uk/def/measure/clearances-of-alcohol                        Measure     Measure Type                           Value      True
-                     http://gss-data.org.uk/def/measure/production-volume                        Measure     Measure Type                           Value      True
-             http://gss-data.org.uk/def/measure/production-volume-alcohol                        Measure     Measure Type                           Value      True
-                 http://gss-data.org.uk/def/measure/spirits-duty-receipts                        Measure     Measure Type                           Value      True
-                    http://gss-data.org.uk/def/measure/wine-duty-receipts                        Measure     Measure Type                           Value      True
-              http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure                      Attribute             Unit                                      True
-                http://purl.org/linked-data/sdmx/2009/attribute#obsStatus                      Attribute           Marker                                     False
+                  Title         Type Required                                                     Property URL Observations Column Titles
+                  Period    Dimension     True        http://purl.org/linked-data/sdmx/2009/dimension#refPeriod
+            Alcohol Type    Dimension     True http://gss-data.org.uk/def/trade/property/dimension/alcohol-type
+        Alcohol Sub Type    Dimension     True                  alcohol-bulletin.csv#dimension/alcohol-sub-type
+         Alcohol Content    Dimension     True                   alcohol-bulletin.csv#dimension/alcohol-content
+        Clearance Origin    Dimension     True                  alcohol-bulletin.csv#dimension/clearance-origin
+                   Value Observations    False               http://gss-data.org.uk/def/measure/{+measure_type}
+            Measure Type     Measures     True                     http://purl.org/linked-data/cube#measureType
+                    Unit        Units     True      http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure
+                  Marker    Attribute    False        http://purl.org/linked-data/sdmx/2009/attribute#obsStatus
+
         - Columns where suppress output is true: None
+
         """
         And the Code List Printable should be
         """
@@ -245,26 +239,25 @@ Feature: Behaviour testing of csvcubed inspect.
         """
         And the Data Structure Definition Printable should be
         """
-        - The data cube has the following data structure definition:
-                - Dataset Label: Final UK greenhouse gas emissions national statistics: 1990 to 2019
-                - Number of Components: 14
-                - Components:
-                                                                                                                  Property                    Property Label Property Type                      Column Title  Observation Value Column Titles   Required
-                                      final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/ghg                               GHG     Dimension                               GHG                            Value   True
-                              final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/ghg-grouped                       GHG Grouped     Dimension                       GHG Grouped                            Value   True
-                                final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/ipcc-code                         IPCC Code     Dimension                         IPCC Code                            Value   True
-                                     final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/year                              Year     Dimension                              Year                            Value   True
-            final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-sector     National Communication Sector     Dimension     National Communication Sector                            Value   True
-        final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-sub-sector National Communication Sub-sector     Dimension National Communication Sub-sector                            Value   True
-          final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-category   National Communication Category     Dimension   National Communication Category                            Value   True
-                                   final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/source                            Source     Dimension                            Source                            Value   True
-        final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-fuel-group National Communication Fuel Group     Dimension National Communication Fuel Group                            Value   True
-              final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-fuel       National Communication Fuel     Dimension       National Communication Fuel                            Value   True
-                            final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/activity-name                     Activity Name     Dimension                     Activity Name                            Value   True
-                                                                              http://purl.org/linked-data/cube#measureType                                       Dimension                                                              Value   True
-                                                               http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure                                       Attribute                                                              Value   True
-                      final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#measure/gas-emissions-gwp-ar4            gas emissions(gwp-ar4)       Measure                             Value                            Value   True
+        - The data cube has the following column component information:
+        - Dataset Label: Final UK greenhouse gas emissions national statistics: 1990 to 2019
+        - Components:
+                                   Title         Type Required                                                                                                       Property URL Observations Column Titles
+                                      GHG    Dimension     True                               final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/ghg                      Value
+                              GHG Grouped    Dimension     True                       final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/ghg-grouped                      Value
+                                IPCC Code    Dimension     True                         final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/ipcc-code                      Value
+                                     Year    Dimension     True                              final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/year                      Value
+            National Communication Sector    Dimension     True     final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-sector                      Value
+        National Communication Sub-sector    Dimension     True final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-sub-sector                      Value
+          National Communication Category    Dimension     True   final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-category                      Value
+                                   Source    Dimension     True                            final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/source                      Value
+        National Communication Fuel Group    Dimension     True final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-fuel-group                      Value
+              National Communication Fuel    Dimension     True       final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/national-communication-fuel                      Value
+                            Activity Name    Dimension     True                     final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/activity-name                      Value
+                                    Value Observations     True               final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#measure/gas-emissions-gwp-ar4                      Value
+
         - Columns where suppress output is true: None
+
         """
         And the Code List Printable should be
         """
@@ -411,27 +404,26 @@ Feature: Behaviour testing of csvcubed inspect.
         """
         And the Data Structure Definition Printable should be
         """
-        - The data cube has the following data structure definition:
-            - Dataset Label: Final UK greenhouse gas emissions national statistics: 1990 to 2020
-            - Number of Components: 15
-            - Components:
-                                                                                                                      Property                    Property Label Property Type                      Column Title  Observation Value Column Titles   Required
-                                          final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/ghg                               GHG     Dimension                               GHG                                    True
-                                  final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/ghg-grouped                       GHG Grouped     Dimension                       GHG Grouped                                    True
-                                    final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/ipcc-code                         IPCC Code     Dimension                         IPCC Code                                    True
-                                         final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/year                              Year     Dimension                              Year                                    True
-                final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/national-communication-sector     National Communication Sector     Dimension     National Communication Sector                                    True
-            final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/national-communication-sub-sector National Communication Sub-sector     Dimension National Communication Sub-sector                                    True
-              final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/national-communication-category   National Communication Category     Dimension   National Communication Category                                    True
-                                       final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/source                            Source     Dimension                            Source                                    True
-            final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/national-communication-fuel-group National Communication Fuel Group     Dimension National Communication Fuel Group                                    True
-                  final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/national-communication-fuel       National Communication Fuel     Dimension       National Communication Fuel                                    True
-                                final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/activity-name                     Activity Name     Dimension                     Activity Name                                    True
-                             final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#measure/emissions-ar4-gwps              Emissions (AR4 GWPs)       Measure                           Measure                            Value   True
-                             final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#measure/emissions-ar5-gwps              Emissions (AR5 GWPs)       Measure                           Measure                            Value   True
-                                                                                  http://purl.org/linked-data/cube#measureType                                       Dimension                           Measure                                    True
-                                                                   http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure                                       Attribute                                                                      True
-            - Columns where suppress output is true: None
+        - The data cube has the following column component information:
+        - Dataset Label: Final UK greenhouse gas emissions national statistics: 1990 to 2020
+        - Components:
+                                    Title         Type Required                                                                                                       Property URL Observations Column Titles
+                                      GHG    Dimension     True                               final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/ghg
+                              GHG Grouped    Dimension     True                       final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/ghg-grouped
+                                IPCC Code    Dimension     True                         final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/ipcc-code
+                                     Year    Dimension     True                              final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/year
+            National Communication Sector    Dimension     True     final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/national-communication-sector
+        National Communication Sub-sector    Dimension     True final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/national-communication-sub-sector
+          National Communication Category    Dimension     True   final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/national-communication-category
+                                   Source    Dimension     True                            final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/source
+        National Communication Fuel Group    Dimension     True final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/national-communication-fuel-group
+              National Communication Fuel    Dimension     True       final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/national-communication-fuel
+                            Activity Name    Dimension     True                     final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/activity-name
+                                  Measure     Measures     True                                                                       http://purl.org/linked-data/cube#measureType                      Value
+                                    Value Observations     True                          final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#measure/{+measure}
+
+        - Columns where suppress output is true: None
+
         """
         And the Code List Printable should be
         """
@@ -565,18 +557,19 @@ Feature: Behaviour testing of csvcubed inspect.
         """
         And the Data Structure Definition Printable should be
         """
-        - The data cube has the following data structure definition:
-                - Dataset Label: Energy Trends: UK total energy
-                - Number of Components: 6
-                - Components:
-                                                                                Property     Property Label Property Type Column Title  Observation Value Column Titles  Required
-                              http://purl.org/linked-data/sdmx/2009/dimension#refPeriod                        Dimension       Period                                    True
-                                http://purl.org/linked-data/sdmx/2009/dimension#refArea                        Dimension       Region                                    True
-                              http://gss-data.org.uk/def/energy/property/dimension/fuel                        Dimension         Fuel                                    True
-                           energy-trends-uk-total-energy.csv#measure/energy-consumption energy-consumption       Measure Measure Type                             Value  True
-                            http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure                        Attribute         Unit                                    True
-                                           http://purl.org/linked-data/cube#measureType                        Dimension Measure Type                                    True
+        - The data cube has the following column component information:
+        - Dataset Label: Energy Trends: UK total energy
+        - Components:
+              Title         Type Required                                                Property URL Observations Column Titles
+              Period    Dimension     True   http://purl.org/linked-data/sdmx/2009/dimension#refPeriod
+              Region    Dimension     True     http://purl.org/linked-data/sdmx/2009/dimension#refArea
+                Fuel    Dimension     True   http://gss-data.org.uk/def/energy/property/dimension/fuel
+        Measure Type     Measures     True                http://purl.org/linked-data/cube#measureType                      Value
+                Unit        Units     True http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure
+               Value Observations     True   energy-trends-uk-total-energy.csv#measure/{+measure_type}
+
         - Columns where suppress output is true: None
+
         """
         And the Code List Printable should be
         """

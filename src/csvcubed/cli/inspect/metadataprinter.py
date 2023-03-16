@@ -271,6 +271,11 @@ class MetadataPrinter:
         Member of :class:`./MetadataPrinter`.
 
         """
+        primary_csv_suppressed_columns = [
+            column_definition.title
+            for column_definition in self.primary_csv_column_definitions
+            if column_definition.suppress_output and column_definition.title is not None
+        ]
         formatted_column_info = get_printable_tabular_str_from_list(
             self._get_column_component_info_for_output(
                 self.result_column_component_info
@@ -279,6 +284,7 @@ class MetadataPrinter:
         return (
             f" - The {self.csvw_type_str} has the following column component information: \n"
             + f" - Dataset Label: {self.result_catalog_metadata.label} \n - Components: \n{formatted_column_info}"
+            + f"\n - Columns where suppress output is true: {get_printable_list_str(primary_csv_suppressed_columns)}"
         )
 
     @property
