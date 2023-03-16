@@ -218,7 +218,7 @@ class MetadataPrinter:
     @staticmethod
     def _get_column_component_info_for_output(
         list_of_info: List[ColumnComponentInfo],
-    ) -> List[Dict[str, str]]:
+    ) -> List[Dict[str, Union[str, bool, None]]]:
         """
         Returns the column component and column definitions informaiton ready for outputing into a table.
         """
@@ -227,7 +227,7 @@ class MetadataPrinter:
             {
                 "Title": x.column_definition.title,
                 "Type": x.component_type.name,
-                "Required": str(x.column_definition.required),
+                "Required": x.column_definition.required,
                 "Property URL": x.column_definition.property_url,
                 "Observations Column Titles": ""
                 if x.component is None

@@ -166,7 +166,7 @@ def test_formatted_output():
     assert column_infos[0] == {
         "Title": "Some Dimension",
         "Type": "Dimension",
-        "Required": "True",
+        "Required": True,
         "Property URL": "qb-id-10003.csv#dimension/some-dimension",
         "Observations Column Titles": "Some Obs Val, Some Other Obs Val",
     }
