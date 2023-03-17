@@ -635,10 +635,9 @@ def test_get_dsd_qube_components_for_csv_standard_shape():
     )
 
 
-# new stuff
 def test_pivoted_column_component_info():
     """This text checks 'get_column_component_info' returns a List of ColumnComponentInfo object in the correct order
-    (that was defined in the corresponding CSV file), and contains the correct data.
+    (that was defined in the corresponding CSV file), and contains the correct data in pivoted shape.
     """
     csvw_metadata_json_path = (
         _test_case_base_dir
@@ -673,7 +672,7 @@ def test_pivoted_column_component_info():
 
 def test_standard_column_component_info():
     """This text checks 'get_column_component_info' returns a List of ColumnComponentInfo object in the correct order
-    (that was defined in the corresponding CSV file), and contains the correct data, in satndard shape.
+    (that was defined in the corresponding CSV file), and contains the correct data, in standard shape.
     """
 
     csvw_metadata_json_path = (
@@ -783,7 +782,7 @@ def test_standard_column_component_property_url():
 def test_get_columns_for_component_dimension():
     """
     This test check if the function returns a
-    list of ColumnDefinition with the correct values.
+    list of ColumnDefinition with the correct values(for Dimension).
     """
 
     csvw_metadata_json_path = (
@@ -809,7 +808,7 @@ def test_get_columns_for_component_dimension():
 def test_get_columns_for_component_unit():
     """
     This test check if the function returns a
-    list of ColumnDefinition with the correct values.
+    list of ColumnDefinition with the correct values(for Units).
     """
 
     csvw_metadata_json_path = (
@@ -835,7 +834,7 @@ def test_get_columns_for_component_unit():
 def test_get_columns_for_component_observation():
     """
     This test check if the function returns a
-    list of ColumnDefinition with the correct values.
+    list of ColumnDefinition with the correct values(for Observations).
     """
 
     csvw_metadata_json_path = (
@@ -861,7 +860,7 @@ def test_get_columns_for_component_observation():
 def test_get_columns_for_component_measures():
     """
     This test check if the function returns a
-    list of ColumnDefinition with the correct values.
+    list of ColumnDefinition with the correct values(for Measures).
     """
 
     csvw_metadata_json_path = (
@@ -887,7 +886,7 @@ def test_get_columns_for_component_measures():
 def test_get_columns_for_component_attribute():
     """
     This test check if the function returns a
-    list of ColumnDefinition with the correct values.
+    list of ColumnDefinition with the correct values(for Attribute).
     """
 
     csvw_metadata_json_path = (

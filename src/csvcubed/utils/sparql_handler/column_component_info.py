@@ -2,7 +2,7 @@
 ColumnComponentInfo
 -------------------
 
-Will be filled out
+Provides access to mapping between CSV columns.
 """
 
 from dataclasses import dataclass
@@ -14,7 +14,7 @@ from csvcubed.utils.qb.components import EndUserColumnType
 
 @dataclass
 class ColumnComponentInfo:
-    """Needs to be filled in"""
+    """This class holds information for mapping between CSV columns"""
 
     component_type: EndUserColumnType
     component: Optional[QubeComponentResult]
