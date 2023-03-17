@@ -1,12 +1,14 @@
 # Measure configuration
 
-This section will cover how to define and configure measures in a cube configuration file. It will focus on the possible scenarios/ways a measure can be defined, as well as the fields that can be populated when doing so, providing examples for different fields and scenarios of creating measures. This section will not discuss how to define measure columns or a measure column's role in the context of a data cube's structure. For information on defining measure columns, see the [Measure column definition](Add link here when structure is implemented). For a simpler quick tabular look at what fields can be used to configure a measure, see the [measure fields table](TODO) at the bottom of this page.
+This section will cover how to define and configure measures in a cube configuration file. It will focus on the possible scenarios/ways a measure can be defined, as well as the fields that can be populated when doing so, providing examples for different fields and scenarios of creating measures. This section will not discuss how to define measure columns or a measure column's role in the context of a data cube's structure. For information on defining measure columns, see the [Measure column definition](Add link here when structure is implemented). For a simpler, quick look at what fields can be used to configure a measure, see the [measure fields table](TODO) at the bottom of this page.
 
-A measure can be defined and configured in two different ways: Either by attaching it inside an observation column's definition, or in a dedicated measures column of its own. When attaching a measure to an observation column, the measure can be defined after specifying that the type of the column is `observations`. The measure is entered as an object attached to the observation column definition, like shown in the example below:
+A measure can be defined and configured in two different ways: Either by attaching it inside an observation column's definition, or in a dedicated measures column of its own. The way a measure is defined and configured can highly depend on the shape of your data set, and whether there are multiple measures present or not.
 
-### Measure configuration example in an Observation column field:
+### Defining measures by attaching them to observation columns
 
-This observation column definition is given a measure by creating an object where the keys are the fields of the measure component, and the values are the field contents. This measure has the label "Median commute time" and the description of "The median amount of time taken to commute, in minutes".
+When there is only one measure present in the data set, or if an observation column only features one measure in its rows, then it is easiest to define the measure by attaching it to the observation column's definition. This is also how measures are to be defined in a pivoted shape data set, since each observation column naturally has their measures and units attached to them.
+
+When defining a measure by attaching it to an observation column, the measure can be defined after specifying that the type of the column is `observations`. The measure is entered as an object field of the observation column definition, like shown in the example below:
 
 ```json
 "columns": {
@@ -20,7 +22,13 @@ This observation column definition is given a measure by creating an object wher
 },
 ```
 
-When creating a new measure column definition by specifying the `type` as "measures", the measure's field details are entered into a `values` object. Note this is different from how the measure details are given when giving the measure in an observation column.
+This observation column definition is given a measure by creating an object where the keys are the fields of the measure component, and the values are the field contents. This measure has the label "Median commute time" and the description of "The median amount of time taken to commute, in minutes".
+
+For more information on defining observation columns, and how to configure their different possible fields along with measures, see the [Observations page](./observations.md).
+
+### Defining measures in a measure column
+
+When creating a new measure column definition by specifying the `type` as "measures", the measure's field details are entered into a `values` object. Note this is different from how the measure details are given when giving the measure in an observation column, as measure columns contain references to discrete measures.
 
 The following will describe the possible fields that can be entered into the `values` object when defining a new measure, providing some examples of those fields being used to define measures.
 
@@ -36,7 +44,7 @@ TODO: Should we include a larger example with more columns and maybe some metada
 }
 ```
 
-A basic field for adding information when creating a `values` object in new measure column definitions is the `label` field, which serves as the title of the measure. Note that this is optional if the measure is reusing or extending an existing column definition. (If the `from_existing` field is populated.)
+A basic field for adding information to measures when creating a `values` object in new measure column definitions is the `label` field, which serves as the title of the measure. Note that this is optional if the measure is reusing or extending an existing column definition. (If the `from_existing` field is populated.)
 
 An optional field that can be used to give more detail to the measure is `description`. This is not required in any scenario, but helps provide more information about the measure if wanted, in a longer free-text form that can go into more detail than a label.
 
@@ -58,9 +66,10 @@ An optional field that can be used to give more detail to the measure is `descri
 
 To reuse an existing measure definition, whether it is reused in its entirety as an exact copy of the existing definition, or if it is used as a base to create a new measure upon, the `from_existing` field allows a URI to be given to apply an existing measure's definition (and therefore all its details) to this column. When this is done, specifying any other fields in the values object such as `label` or `description` will overwrite those fields of the existing column definition. This is how an existing definition can be used as a base to create new measures.
 
-Measure configuration using the `from_existing` field can be done either by attaching the measure to an observation column, or by defining a measures column.
+Measure definition using the `from_existing` field can be done either by attaching the measure to an observation column, or by defining a measure within a measures column.
 
-### Defining a measure in an observation column, using an existing measure definition:
+Defining a measure in an observation column, using an existing measure definition:
+
 ```json
    "Exports": {
       "type": "observations",
@@ -70,7 +79,8 @@ Measure configuration using the `from_existing` field can be done either by atta
    }
 ```
 
-### Defining a measure in an observation column, using an existing measure definition and overwriting the label:
+Defining a measure in an observation column, using an existing measure definition and overwriting the label:
+
 ```json
    "Exports": {
       "type": "observations",
@@ -81,7 +91,8 @@ Measure configuration using the `from_existing` field can be done either by atta
    }
 ```
 
-### Example of a measure created using the `from_existing` field in a measure column definition:
+Example of a measure created using the `from_existing` field in a measure column definition:
+
 ```json
 "columns": {
    "type": "measures",

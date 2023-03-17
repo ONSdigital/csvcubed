@@ -8,7 +8,7 @@ Depending on how units are used (or how exactly observations are counted) in you
 
 Similarly to measures, units can be defined by attaching them to an observation column. After specifying the type of the column as "observations", a unit can be created as a field containing an object, where the keys are the fields of the unit itself, and the values are the contents of the fields. The example below shows an observation column definition with a measure labelled "People on stage" and a unit with the label "Number", label being the key, and "Number" being the value.
 
-### Unit configuration example in an observation column field (single unit).
+Unit configuration example in an observation column field (single unit).
 
 ```json
 "columns": {
@@ -28,7 +28,8 @@ A different scenario for creating units is when you want to display them in thei
 When defining a new unit in its own column, the details are specified in the `values` field as an object, after the type of the column is specified as "units". The contents that can be entered within the values object will be described with examples.
 
 This unit column definition has a label, "Pounds Sterling (£), Millions" and a description, "Millions of Pounds Sterling (GBP, £).". These fields add more detail to the unit, the label being a short form title for the unit, and the description being a more in-depth, long-form text description of the title.
-### New Units configuration example:
+
+New Units configuration example:
 
 ```json
   "columns": {
@@ -46,7 +47,7 @@ This unit column definition has a label, "Pounds Sterling (£), Millions" and a 
 
 When defining a column using an existing unit definition, the `from_existing` field is used within the values object. Enter a URI of the resource being used as the value into the `from_existing` field to create the definition.
 
-### Creating a units column definition using the `from_existing` field:
+Creating a units column definition using the `from_existing` field:
 
 ```json
     "columns": {
@@ -64,7 +65,8 @@ When defining a column using an existing unit definition, the `from_existing` fi
 
 The way the unit is used in the data set, such as the way amounts are being displayed, or how things are being counted, can determine whether a `scaling_factor` field should be used. Using the scaling factor means a new unit is being defined using the `from_existing` field's value as a base, and altering it so the measurements made are scaled as specified in a base 10 expression. For example, a unit defined with an existing base of Pounds Sterling, could be given a scaling factor of 1000000 to create the unit "Millions of Pounds Sterling" (where 1 would mean 1 million pounds.)
 
-### Creating a units column using the `from_existing` field, also using a scaling factor and specifying quantity kind for the existing unit being used.
+Creating a units column using the `from_existing` field, also using a scaling factor and specifying quantity kind for the existing unit being used.
+
 ```json
     "columns": {
         "Unit": {
@@ -90,7 +92,7 @@ For a dedicated page with more information on defining units, see [configuring u
 
 When creating a units column, it is also possible to specify an observation value to associate the units with, by entering the observation value into the `describes_observations` field. This is (only) necessary to associate a unit to its relevant observation value when there are multiple measures and the data set is in the pivoted shape, and there are multiple observation values, as otherwise there would be no clear link between the unit being used for different observations in columns. For more information on the distinction between pivoted/standard shape data sets, as well as single/multiple measures, see the [Pivoted Shape](../shape-data/pivoted-shape) TODO: Fix this link to the pivoted shape page when the location of the new guide page is decided.
 
-### Example of a units column being defined with the `describes_obserations` field used to link to an observation.
+Example of a units column being defined with the `describes_obserations` field used to link to an observation.
 
 Here is an observation that the unit will describe:
 ```json
