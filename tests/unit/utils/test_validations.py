@@ -113,7 +113,7 @@ def test_validate_int_type_incorrect():
         result[0].message
         == "This variable should be a integer value, check the following variable:"
     )
-    assert result[0].property_name == "int_test_variable"
+    assert result[0].property_path == "int_test_variable"
 
 
 def test_validate_int_type_correct():

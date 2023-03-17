@@ -69,4 +69,5 @@ class ValidateModelPropertiesError(ValidationError):
     This error will be returned with the name of the variable that has not been validated.
     """
 
-    property_name: str
+    # property_name: str
+    property_path: List[str]

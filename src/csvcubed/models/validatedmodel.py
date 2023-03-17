@@ -28,8 +28,8 @@ class Validations(Generic[T]):
 
 @dataclass
 class ValidatedModel(DataClassBase):
-    """This abrstract class that will act as a parent class for class attribute validations.
-    The class will run a valdiation function for each attribute that is passed in and return either a list of errors or an emtpry list.
+    """This abstract class that will act as a parent class for class attribute validations.
+    The class will run a valdiation function for each attribute that is passed in and return either a list of errors or an emtpy list.
     """
 
     def validate(self) -> List[ValidateModelPropertiesError]:
@@ -59,16 +59,17 @@ class ValidatedModel(DataClassBase):
         validation_errors: List[ValidateModelPropertiesError] = []
 
         for (
-            property_name,
+            property_path,
             validation_function,
         ) in individual_property_validations.items():
-            logging.debug("Validating %s", property_name)
+            logging.debug("Validating %s", property_path)
 
-            property_value = getattr(self, property_name)
-            errs = validation_function(property_value, property_name)
+            property_value = getattr(self, property_path)
+            errs = validation_function(property_value, property_path)
 
             if any(errs):
-                logging.debug("'%s' generated errors: %s", property_name, errs)
+                logging.debug("'%s' generated errors: %s", property_path, errs)
+                # I think this is where we add the message about offending value.
 
             validation_errors += errs
 
