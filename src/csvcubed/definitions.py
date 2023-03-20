@@ -23,3 +23,8 @@ URI_TEMPLATE_SPECIAL_PROPERTIES = [
     "_sourceRow",
     "_name",
 ]
+
+QB_MEASURE_TYPE_DIMENSION_URI: str = "http://purl.org/linked-data/cube#measureType"
+SDMX_ATTRIBUTE_UNIT_URI: str = (
+    "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
+)

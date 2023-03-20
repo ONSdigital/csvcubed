@@ -4,9 +4,9 @@ import pandas as pd
 from pandas.testing import assert_frame_equal
 
 from csvcubed.cli.inspect.metadataprinter import MetadataPrinter
+from csvcubed.definitions import SDMX_ATTRIBUTE_UNIT_URI
 from csvcubed.models.csvwtype import CSVWType
 from csvcubed.models.cube.cube_shape import CubeShape
-from csvcubed.models.cube.qb.validationerrors import BothMeasureTypesDefinedError
 from csvcubed.models.inspectdataframeresults import (
     DatasetObservationsByMeasureUnitInfoResult,
     DatasetObservationsInfoResult,
@@ -140,8 +140,8 @@ def test_single_measure_pivoted_shape_cube_observation_and_count_info():
     )
 
 
-def test_formatted_output():
-    """This test checks the `_get_formated_output` outputs all the information correctly"""
+def test_column_component_info_for_output():
+    """This test checks the `_get_column_component_info_for_output` structures the information for output correctly."""
 
     csvw_metadata_json_path = (
         _test_case_base_dir
@@ -163,10 +163,40 @@ def test_formatted_output():
         list_of_column_component_info
     )
 
-    assert column_infos[0] == {
-        "Title": "Some Dimension",
-        "Type": "Dimension",
-        "Required": True,
-        "Property URL": "qb-id-10003.csv#dimension/some-dimension",
-        "Observations Column Titles": "Some Obs Val, Some Other Obs Val",
-    }
+    assert column_infos == [
+        {
+            "Title": "Some Dimension",
+            "Type": "Dimension",
+            "Required": True,
+            "Property URL": "qb-id-10003.csv#dimension/some-dimension",
+            "Observations Column Titles": "Some Obs Val, Some Other Obs Val",
+        },
+        {
+            "Title": "Some Attribute",
+            "Type": "Attribute",
+            "Required": False,
+            "Property URL": "qb-id-10003.csv#attribute/some-attribute",
+            "Observations Column Titles": "Some Obs Val",
+        },
+        {
+            "Title": "Some Obs Val",
+            "Type": "Observations",
+            "Required": True,
+            "Property URL": "qb-id-10003.csv#measure/some-measure",
+            "Observations Column Titles": "Some Obs Val",
+        },
+        {
+            "Title": "Some Other Obs Val",
+            "Type": "Observations",
+            "Required": True,
+            "Property URL": "qb-id-10003.csv#measure/some-other-measure",
+            "Observations Column Titles": "Some Other Obs Val",
+        },
+        {
+            "Title": "Some Unit",
+            "Type": "Units",
+            "Required": True,
+            "Property URL": SDMX_ATTRIBUTE_UNIT_URI,
+            "Observations Column Titles": "Some Obs Val, Some Other Obs Val",
+        },
+    ]

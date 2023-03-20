@@ -1,6 +1,5 @@
 Feature: Behaviour testing of csvcubed inspect.
 
-    @wip
     Scenario: inspect should produce the expected printable for data cube metadata json-ld input of type multi-unit multi-measure.
         Given the existing test-case file "cli/inspect/multi-unit_multi-measure/alcohol-bulletin.csv-metadata.json"
         And the existing test-case file "cli/inspect/multi-unit_multi-measure/alcohol-bulletin.csv"
@@ -65,8 +64,8 @@ Feature: Behaviour testing of csvcubed inspect.
         And the Data Structure Definition Printable should be
         """
         - The data cube has the following column component information:
-        - Dataset Label: Alcohol Bulletin
-        - Components:
+            - Dataset Label: Alcohol Bulletin
+            - Columns:
                   Title         Type Required                                                     Property URL Observations Column Titles
                   Period    Dimension     True        http://purl.org/linked-data/sdmx/2009/dimension#refPeriod
             Alcohol Type    Dimension     True http://gss-data.org.uk/def/trade/property/dimension/alcohol-type
@@ -78,7 +77,7 @@ Feature: Behaviour testing of csvcubed inspect.
                     Unit        Units     True      http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure
                   Marker    Attribute    False        http://purl.org/linked-data/sdmx/2009/attribute#obsStatus
 
-        - Columns where suppress output is true: None
+            - Columns where suppress output is true: None
 
         """
         And the Code List Printable should be
@@ -240,8 +239,8 @@ Feature: Behaviour testing of csvcubed inspect.
         And the Data Structure Definition Printable should be
         """
         - The data cube has the following column component information:
-        - Dataset Label: Final UK greenhouse gas emissions national statistics: 1990 to 2019
-        - Components:
+            - Dataset Label: Final UK greenhouse gas emissions national statistics: 1990 to 2019
+            - Columns:
                                    Title         Type Required                                                                                                       Property URL Observations Column Titles
                                       GHG    Dimension     True                               final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/ghg                      Value
                               GHG Grouped    Dimension     True                       final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/ghg-grouped                      Value
@@ -256,8 +255,7 @@ Feature: Behaviour testing of csvcubed inspect.
                             Activity Name    Dimension     True                     final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#dimension/activity-name                      Value
                                     Value Observations     True               final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2019.csv#measure/gas-emissions-gwp-ar4                      Value
 
-        - Columns where suppress output is true: None
-
+            - Columns where suppress output is true: None
         """
         And the Code List Printable should be
         """
@@ -405,8 +403,8 @@ Feature: Behaviour testing of csvcubed inspect.
         And the Data Structure Definition Printable should be
         """
         - The data cube has the following column component information:
-        - Dataset Label: Final UK greenhouse gas emissions national statistics: 1990 to 2020
-        - Components:
+            - Dataset Label: Final UK greenhouse gas emissions national statistics: 1990 to 2020
+            - Columns:
                                     Title         Type Required                                                                                                       Property URL Observations Column Titles
                                       GHG    Dimension     True                               final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/ghg
                               GHG Grouped    Dimension     True                       final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#dimension/ghg-grouped
@@ -422,7 +420,7 @@ Feature: Behaviour testing of csvcubed inspect.
                                   Measure     Measures     True                                                                       http://purl.org/linked-data/cube#measureType                      Value
                                     Value Observations     True                          final-uk-greenhouse-gas-emissions-national-statistics-1990-to-2020.csv#measure/{+measure}
 
-        - Columns where suppress output is true: None
+            - Columns where suppress output is true: None
 
         """
         And the Code List Printable should be
@@ -558,8 +556,8 @@ Feature: Behaviour testing of csvcubed inspect.
         And the Data Structure Definition Printable should be
         """
         - The data cube has the following column component information:
-        - Dataset Label: Energy Trends: UK total energy
-        - Components:
+            - Dataset Label: Energy Trends: UK total energy
+            - Columns:
               Title         Type Required                                                Property URL Observations Column Titles
               Period    Dimension     True   http://purl.org/linked-data/sdmx/2009/dimension#refPeriod
               Region    Dimension     True     http://purl.org/linked-data/sdmx/2009/dimension#refArea

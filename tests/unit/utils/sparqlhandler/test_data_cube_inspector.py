@@ -1,23 +1,18 @@
-from pathlib import Path
-from typing import List, Tuple
-
 import pytest
-from pandas import DataFrame
 
-from csvcubed.cli.inspect.inspectdatasetmanager import load_csv_to_dataframe
+from csvcubed.definitions import QB_MEASURE_TYPE_DIMENSION_URI, SDMX_ATTRIBUTE_UNIT_URI
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import (
     CodelistResult,
     CodelistsResult,
     CubeTableIdentifiers,
-    QubeComponentResult,
     QubeComponentsResult,
     UnitResult,
 )
 from csvcubed.utils.iterables import first
 from csvcubed.utils.qb.components import ComponentPropertyType, EndUserColumnType
-from csvcubed.utils.sparql_handler.data_cube_inspector import DataCubeInspector
 from tests.helpers.inspectors_cache import get_csvw_rdf_manager, get_data_cube_inspector
+from tests.unit.cli.inspect.test_inspectdatasetmanager import get_arguments_qb_dataset
 from tests.unit.test_baseunit import get_test_cases_dir
 from tests.unit.utils.sparqlhandler.test_sparqlquerymanager import (
     assert_dsd_component_equal,
@@ -25,32 +20,6 @@ from tests.unit.utils.sparqlhandler.test_sparqlquerymanager import (
 )
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
-
-
-def get_arguments_qb_dataset(
-    data_cube_inspector: DataCubeInspector,
-) -> Tuple[DataFrame, List[QubeComponentResult], str]:
-    """
-    Produces the dataset, qube components and dsd uri arguments for qb:dataset.
-    """
-    csvw_inspector = data_cube_inspector.csvw_inspector
-
-    result_data_set_uri = (
-        data_cube_inspector.csvw_inspector.get_primary_catalog_metadata().dataset_uri
-    )
-    identifiers = data_cube_inspector.get_cube_identifiers_for_data_set(
-        result_data_set_uri
-    )
-
-    result: QubeComponentsResult = data_cube_inspector.get_dsd_qube_components_for_csv(
-        identifiers.csv_url
-    )
-
-    dataset: DataFrame = load_csv_to_dataframe(
-        csvw_inspector.csvw_json_path, Path(identifiers.csv_url)
-    )
-
-    return (dataset, result.qube_components, identifiers.csv_url)
 
 
 def test_exception_is_thrown_for_invalid_csv_url():
@@ -368,11 +337,11 @@ def test_get_dsd_qube_components_for_csv_multi_measure_pivoted():
     )
 
     component = get_dsd_component_by_property_url(
-        components, "http://purl.org/linked-data/cube#measureType"
+        components, QB_MEASURE_TYPE_DIMENSION_URI
     )
     assert_dsd_component_equal(
         component,
-        "http://purl.org/linked-data/cube#measureType",
+        QB_MEASURE_TYPE_DIMENSION_URI,
         ComponentPropertyType.Dimension,
         "",
         [],
@@ -381,12 +350,10 @@ def test_get_dsd_qube_components_for_csv_multi_measure_pivoted():
         True,
     )
 
-    component = get_dsd_component_by_property_url(
-        components, "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
-    )
+    component = get_dsd_component_by_property_url(components, SDMX_ATTRIBUTE_UNIT_URI)
     assert_dsd_component_equal(
         component,
-        "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
+        SDMX_ATTRIBUTE_UNIT_URI,
         ComponentPropertyType.Attribute,
         "",
         ["Some Unit"],
@@ -480,11 +447,11 @@ def test_get_dsd_qube_components_for_csv_single_measure_pivoted():
     )
 
     component = get_dsd_component_by_property_url(
-        components, "http://purl.org/linked-data/cube#measureType"
+        components, QB_MEASURE_TYPE_DIMENSION_URI
     )
     assert_dsd_component_equal(
         component,
-        "http://purl.org/linked-data/cube#measureType",
+        QB_MEASURE_TYPE_DIMENSION_URI,
         ComponentPropertyType.Dimension,
         "",
         [],
@@ -493,12 +460,10 @@ def test_get_dsd_qube_components_for_csv_single_measure_pivoted():
         True,
     )
 
-    component = get_dsd_component_by_property_url(
-        components, "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
-    )
+    component = get_dsd_component_by_property_url(components, SDMX_ATTRIBUTE_UNIT_URI)
     assert_dsd_component_equal(
         component,
-        "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
+        SDMX_ATTRIBUTE_UNIT_URI,
         ComponentPropertyType.Attribute,
         "",
         [],
@@ -593,11 +558,11 @@ def test_get_dsd_qube_components_for_csv_standard_shape():
     )
 
     component = get_dsd_component_by_property_url(
-        components, "http://purl.org/linked-data/cube#measureType"
+        components, QB_MEASURE_TYPE_DIMENSION_URI
     )
     assert_dsd_component_equal(
         component,
-        "http://purl.org/linked-data/cube#measureType",
+        QB_MEASURE_TYPE_DIMENSION_URI,
         ComponentPropertyType.Dimension,
         "",
         ["Measure Type"],
@@ -606,12 +571,10 @@ def test_get_dsd_qube_components_for_csv_standard_shape():
         True,
     )
 
-    component = get_dsd_component_by_property_url(
-        components, "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
-    )
+    component = get_dsd_component_by_property_url(components, SDMX_ATTRIBUTE_UNIT_URI)
     assert_dsd_component_equal(
         component,
-        "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
+        SDMX_ATTRIBUTE_UNIT_URI,
         ComponentPropertyType.Attribute,
         "",
         ["Unit"],
@@ -651,7 +614,8 @@ def test_pivoted_column_component_info():
 
     list_of_columns_definitions = data_cube_inspector.get_column_component_info(csv_url)
 
-    # get the test to chech the properties and make sure the types match and the comlumns definitions match in the correct order
+    # get the test to check the properties and make sure the types match and the columns definitions match in the
+    # correct order
 
     expected_component_types = [
         "Dimension",
@@ -665,7 +629,7 @@ def test_pivoted_column_component_info():
 
     # this test will compare the two list's values and order
     actual_components_types = [
-        item.component_type.value for item in list_of_columns_definitions
+        item.column_type.value for item in list_of_columns_definitions
     ]
     assert actual_components_types == expected_component_types
 
@@ -687,7 +651,8 @@ def test_standard_column_component_info():
 
     list_of_columns_definitions = data_cube_inspector.get_column_component_info(csv_url)
 
-    # get the test to chech the properties and make sure the types match and the comlumns definitions match in the correct order
+    # get the test to check the properties and make sure the types match and the columns definitions match in the
+    # correct order
 
     expected_component_types = [
         "Dimension",
@@ -700,7 +665,7 @@ def test_standard_column_component_info():
 
     # this test will compare the two list's values and order
     actual_components_types = [
-        item.component_type.value for item in list_of_columns_definitions
+        item.column_type.value for item in list_of_columns_definitions
     ]
     assert actual_components_types == expected_component_types
 
@@ -725,7 +690,8 @@ def test_supressed_column_info():
 
     list_of_columns_definitions = data_cube_inspector.get_column_component_info(csv_url)
 
-    # get the test to chech the properties and make sure the types match and the comlumns definitions match in the correct order
+    # get the test to check the properties and make sure the types match and the columns definitions match in the
+    # correct order
 
     expected_component_types = [
         "Dimension",
@@ -735,7 +701,7 @@ def test_supressed_column_info():
 
     # this test will compare the two list's values and order
     actual_components_types = [
-        item.component_type.value for item in list_of_columns_definitions
+        item.column_type.value for item in list_of_columns_definitions
     ]
     assert actual_components_types == expected_component_types
 
@@ -794,7 +760,7 @@ def test_get_columns_for_component_dimension():
     data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
     (_, _, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
 
-    delivered_columns = data_cube_inspector.get_columns_for_component_type(
+    delivered_columns = data_cube_inspector.get_columns_of_type(
         csv_url, EndUserColumnType.Dimension
     )
 
@@ -820,7 +786,7 @@ def test_get_columns_for_component_unit():
     data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
     (_, _, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
 
-    delivered_columns = data_cube_inspector.get_columns_for_component_type(
+    delivered_columns = data_cube_inspector.get_columns_of_type(
         csv_url, EndUserColumnType.Units
     )
 
@@ -846,7 +812,7 @@ def test_get_columns_for_component_observation():
     data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
     (_, _, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
 
-    delivered_columns = data_cube_inspector.get_columns_for_component_type(
+    delivered_columns = data_cube_inspector.get_columns_of_type(
         csv_url, EndUserColumnType.Observations
     )
 
@@ -872,7 +838,7 @@ def test_get_columns_for_component_measures():
     data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
     (_, _, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
 
-    delivered_columns = data_cube_inspector.get_columns_for_component_type(
+    delivered_columns = data_cube_inspector.get_columns_of_type(
         csv_url, EndUserColumnType.Measures
     )
 
@@ -898,7 +864,7 @@ def test_get_columns_for_component_attribute():
     data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
     (_, _, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
 
-    delivered_columns = data_cube_inspector.get_columns_for_component_type(
+    delivered_columns = data_cube_inspector.get_columns_of_type(
         csv_url, EndUserColumnType.Attribute
     )
 
@@ -927,7 +893,7 @@ def test_get_columns_for_component_attribute_pivoted():
     data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
     (_, _, csv_url) = get_arguments_qb_dataset(data_cube_inspector)
 
-    delivered_columns = data_cube_inspector.get_columns_for_component_type(
+    delivered_columns = data_cube_inspector.get_columns_of_type(
         csv_url, EndUserColumnType.Attribute
     )
 

@@ -2,7 +2,8 @@
 ColumnComponentInfo
 -------------------
 
-Provides access to mapping between CSV columns.
+Contains the `ColumnComponentInfo` class which relates CSV Columns back to their qube-config.json
+style column types and the underlying RDF Data Cube DataStructureDefinition Components.
 """
 
 from dataclasses import dataclass
@@ -14,9 +15,16 @@ from csvcubed.utils.qb.components import EndUserColumnType
 
 @dataclass
 class ColumnComponentInfo:
-    """This class holds information for mapping between CSV columns"""
+    """
+    Relates CSV Columns back to their qube-config.json style column types and the underlying RDF Data Cube
+      DataStructureDefinition Components.
+    """
 
-    component_type: EndUserColumnType
-    component: Optional[QubeComponentResult]
     column_definition: ColumnDefinition
-    # Either store the values in the class as a Dict or return them to the function it's calling
+    column_type: EndUserColumnType
+    component: Optional[QubeComponentResult]
+    """
+    The component may be None in situations such as:
+        * The column is marked as `suppressed`,
+        * The column is an observations column in a standard shape cube. 
+    """

@@ -45,6 +45,16 @@ class CsvWInspector:
     def __post_init__(self):
         self.primary_graph_uri = path_to_file_uri_for_rdflib(self.csvw_json_path)
 
+    def __hash__(self):
+        """
+        Since we don't want to evaluate all the cached properties to determine a hash, we can identify unique
+        instances of this class by the CSV-W JSON path we initially loaded.
+
+        Implementing a hash function for this class is necessary so we can use the `@cache` attribute above functions
+        within Inspector classes.
+        """
+        return hash(self.csvw_json_path)
+
     @cached_property
     def column_definitions(self) -> Dict[str, List[ColumnDefinition]]:
         """

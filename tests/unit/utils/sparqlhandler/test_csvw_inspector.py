@@ -302,8 +302,8 @@ def test_colums_return_order():
         / "multi-measure-pivoted-dataset-units-and-attributes.csv-metadata.json"
     )
 
-    csvw_rdf_manager = get_csvw_rdf_manager(csvw_metadata_json_path).csvw_inspector
-    column_definitions = csvw_rdf_manager.get_column_definitions_for_csv(
+    csvw_inspector = get_csvw_rdf_manager(csvw_metadata_json_path).csvw_inspector
+    column_definitions = csvw_inspector.get_column_definitions_for_csv(
         "multi-measure-pivoted-dataset-units-and-attributes.csv"
     )
 

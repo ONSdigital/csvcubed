@@ -8,6 +8,7 @@ Provides functionality for validating and detecting input metadata.json file.
 from dataclasses import dataclass, field
 from os import linesep
 from pathlib import Path
+from textwrap import indent
 from typing import Dict, List, Optional, Tuple, Union
 
 from pandas import DataFrame
@@ -65,9 +66,8 @@ class MetadataPrinter:
     dataset: DataFrame = field(init=False)
 
     result_catalog_metadata: CatalogMetadataResult = field(init=False)
-    result_column_component_info: List[ColumnComponentInfo] = field(init=False)
+    result_column_component_infos: List[ColumnComponentInfo] = field(init=False)
     primary_cube_table_identifiers: CubeTableIdentifiers = field(init=False)
-    result_qube_components: QubeComponentsResult = field(init=False)
     primary_csv_column_definitions: List[ColumnDefinition] = field(init=False)
     result_primary_csv_code_lists: CodelistsResult = field(init=False)
     result_dataset_observations_info: DatasetObservationsInfoResult = field(init=False)
@@ -76,6 +76,13 @@ class MetadataPrinter:
     )
     result_code_list_cols: List[ColumnDefinition] = field(init=False)
     result_concepts_hierachy_info: CodelistHierarchyInfoResult = field(init=False)
+
+    def __post_init__(self):
+        self.generate_general_results()
+        if self.state.csvw_inspector.csvw_type == CSVWType.QbDataSet:
+            self.get_datacube_results()
+        elif self.state.csvw_inspector.csvw_type == CSVWType.CodeList:
+            self.generate_codelist_results()
 
     @staticmethod
     def get_csvw_type_str(csvw_type: CSVWType) -> str:
@@ -147,10 +154,6 @@ class MetadataPrinter:
         """
         assert isinstance(self.state, DataCubeInspector)  # Make pyright happier
 
-        self.result_qube_components = self.state.get_dsd_qube_components_for_csv(
-            self.primary_csv_url
-        )
-
         self.primary_cube_table_identifiers = self.state.get_cube_identifiers_for_csv(
             self.primary_csv_url
         )
@@ -160,7 +163,7 @@ class MetadataPrinter:
                 self.primary_csv_url
             )
         )
-        self.result_column_component_info = self.state.get_column_component_info(
+        self.result_column_component_infos = self.state.get_column_component_info(
             self.primary_csv_url
         )
         self.result_primary_csv_code_lists = self.state.get_code_lists_and_cols(
@@ -175,7 +178,9 @@ class MetadataPrinter:
             self.state,
             self.dataset,
             self.primary_csv_url,
-            self.result_qube_components.qube_components,
+            self.state.get_dsd_qube_components_for_csv(
+                self.primary_csv_url
+            ).qube_components,
         )
         self.result_dataset_value_counts = get_dataset_val_counts_info(
             canonical_shape_dataset, measure_col, unit_col
@@ -217,37 +222,30 @@ class MetadataPrinter:
 
     @staticmethod
     def _get_column_component_info_for_output(
-        list_of_info: List[ColumnComponentInfo],
+        column_component_infos: List[ColumnComponentInfo],
     ) -> List[Dict[str, Union[str, bool, None]]]:
         """
-        Returns the column component and column definitions informaiton ready for outputing into a table.
+        Returns the column component and column definitions information ready for outputting into a table.
         """
 
         return [
             {
-                "Title": x.column_definition.title,
-                "Type": x.component_type.name,
-                "Required": x.column_definition.required,
-                "Property URL": x.column_definition.property_url,
+                "Title": c.column_definition.title,
+                "Type": c.column_type.name,
+                "Required": c.column_definition.required,
+                "Property URL": c.column_definition.property_url,
                 "Observations Column Titles": ""
-                if x.component is None
+                if c.component is None
                 else ", ".join(
                     [
                         c.title
-                        for c in x.component.used_by_observed_value_columns
+                        for c in c.component.used_by_observed_value_columns
                         if c.title is not None
                     ]
                 ),
             }
-            for x in list_of_info
+            for c in column_component_infos
         ]
-
-    def __post_init__(self):
-        self.generate_general_results()
-        if self.state.csvw_inspector.csvw_type == CSVWType.QbDataSet:
-            self.get_datacube_results()
-        elif self.state.csvw_inspector.csvw_type == CSVWType.CodeList:
-            self.generate_codelist_results()
 
     @property
     def type_info_printable(self) -> str:
@@ -278,13 +276,17 @@ class MetadataPrinter:
         ]
         formatted_column_info = get_printable_tabular_str_from_list(
             self._get_column_component_info_for_output(
-                self.result_column_component_info
+                self.result_column_component_infos
             )
         )
         return (
             f" - The {self.csvw_type_str} has the following column component information: \n"
-            + f" - Dataset Label: {self.result_catalog_metadata.label} \n - Components: \n{formatted_column_info}"
-            + f"\n - Columns where suppress output is true: {get_printable_list_str(primary_csv_suppressed_columns)}"
+            + indent(
+                f"- Dataset Label: {self.result_catalog_metadata.label}\n"
+                + f"- Columns: \n{formatted_column_info}\n"
+                + f"- Columns where suppress output is true: {get_printable_list_str(primary_csv_suppressed_columns)}",
+                prefix="    ",
+            )
         )
 
     @property
@@ -297,23 +299,6 @@ class MetadataPrinter:
         :return: `str` - user-friendly string which will be output to CLI.
         """
         return f"- The {self.csvw_type_str} has the following catalog metadata:{self.result_catalog_metadata.output_str}"
-
-    @property
-    def dsd_info_printable(self) -> str:
-        """
-        Returns a printable of data structure definition (DSD).
-
-        Member of :class:`./MetadataPrinter`.
-
-        :return: `str` - user-friendly string which will be output to CLI.
-        """
-        primary_csv_suppressed_columns = [
-            column_definition.title
-            for column_definition in self.primary_csv_column_definitions
-            if column_definition.suppress_output and column_definition.title is not None
-        ]
-
-        return f"- The {self.csvw_type_str} has the following data structure definition:\n- Dataset Label: {self.result_catalog_metadata.title}{self.result_qube_components.output_str}\n- Columns where suppress output is true: {get_printable_list_str(primary_csv_suppressed_columns)}"
 
     @property
     def codelist_info_printable(self) -> str:

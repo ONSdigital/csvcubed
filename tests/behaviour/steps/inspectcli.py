@@ -1,25 +1,15 @@
 from difflib import ndiff
 from pathlib import Path
 
-import pandas as pd
 from behave import *
 from csvcubeddevtools.behaviour.file import get_context_temp_dir_path
-from pandas.testing import assert_frame_equal
 
 from csvcubed.cli.inspect.metadatainputvalidator import MetadataValidator
 from csvcubed.cli.inspect.metadataprinter import MetadataPrinter
-from csvcubed.models.csvwtype import CSVWType
-from csvcubed.models.cube.cube_shape import CubeShape
-from csvcubed.utils.iterables import first
 from csvcubed.utils.sparql_handler.code_list_inspector import CodeListInspector
 from csvcubed.utils.sparql_handler.csvw_inspector import CsvWInspector
 from csvcubed.utils.sparql_handler.data_cube_inspector import DataCubeInspector
-from csvcubed.utils.tableschema import CsvWRdfManager
 from tests.helpers.inspectors_cache import get_csvw_rdf_manager
-from tests.unit.utils.sparqlhandler.test_sparqlquerymanager import (
-    assert_dsd_component_equal,
-    get_dsd_component_by_property_url,
-)
 
 
 def _unformat_multiline_string(string: str) -> str:
@@ -56,7 +46,6 @@ def step_impl(context):
 
 @When("the Metadata File is validated")
 def step_impl(context):
-
     csvw_metadata_rdf_validator = MetadataValidator(
         context.csvw_metadata_rdf_graph, context.csvw_metadata_json_path
     )
@@ -100,7 +89,6 @@ def step_impl(context):
 
     context.result_type_info = metadata_printer.state.csvw_inspector.csvw_type
     context.result_catalog_metadata = metadata_printer.result_catalog_metadata
-    context.result_qube_components = metadata_printer.result_qube_components
     context.result_dataset_observations_info = (
         metadata_printer.result_dataset_observations_info
     )

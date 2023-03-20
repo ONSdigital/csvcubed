@@ -10,8 +10,6 @@ from os import linesep
 from pathlib import Path
 from typing import Tuple
 
-import rdflib
-
 from csvcubed.cli.inspect.metadatainputvalidator import MetadataValidator
 from csvcubed.cli.inspect.metadataprinter import MetadataPrinter
 from csvcubed.models.csvcubedexception import FailedToLoadRDFGraphException
@@ -52,7 +50,7 @@ def inspect(csvw_metadata_json_path: Path) -> None:
         dataset_observations_printable,
         val_counts_by_measure_unit_printable,
         codelist_hierarchy_info_printable,
-        column_component_info_printabe,
+        column_component_info_printable,
     ) = _generate_printables(
         csvw_rdf_manager.csvw_inspector,
     )
@@ -60,7 +58,7 @@ def inspect(csvw_metadata_json_path: Path) -> None:
     print(f"{linesep}{type_printable}")
     print(f"{linesep}{catalog_metadata_printable}")
     if csvw_type == CSVWType.QbDataSet:
-        print(f"{linesep}{column_component_info_printabe}")
+        print(f"{linesep}{column_component_info_printable}")
         print(f"{linesep}{codelist_info_printable}")
     print(f"{linesep}{dataset_observations_printable}")
     if csvw_type == CSVWType.QbDataSet:

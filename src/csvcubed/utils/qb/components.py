@@ -10,6 +10,7 @@ from enum import Enum
 from pathlib import Path
 from urllib.parse import urlparse
 
+from csvcubed.definitions import QB_MEASURE_TYPE_DIMENSION_URI, SDMX_ATTRIBUTE_UNIT_URI
 from csvcubed.models.csvcubedexception import UnsupportedComponentPropertyTypeException
 
 
@@ -28,9 +29,9 @@ class ComponentPropertyAttributeURI(Enum):
     The uris of component attributes.
     """
 
-    UnitMeasure = "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
+    UnitMeasure = SDMX_ATTRIBUTE_UNIT_URI
 
-    MeasureType = "http://purl.org/linked-data/cube#measureType"
+    MeasureType = QB_MEASURE_TYPE_DIMENSION_URI
 
 
 class ComponentPropertyTypeURI(Enum):

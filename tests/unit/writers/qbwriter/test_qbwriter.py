@@ -8,6 +8,7 @@ import pandas as pd
 import pytest
 from rdflib import XSD, Graph, Literal, URIRef
 
+from csvcubed.definitions import SDMX_ATTRIBUTE_UNIT_URI
 from csvcubed.models.cube.columns import SuppressedCsvColumn
 from csvcubed.models.cube.cube import Cube
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
@@ -54,7 +55,6 @@ class TestQbMeasure(QbMeasure, UriIdentifiable):
         pass
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
-
         return {
             **UriIdentifiable._get_validations(self),
         }
@@ -135,10 +135,7 @@ def test_csv_col_definition_default_property_value_urls():
     """
     column = QbColumn("Some Column", QbMultiUnits([NewQbUnit("Some Unit")]))
     csv_col = empty_qbwriter._generate_csvw_column_definition(column)
-    assert (
-        "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
-        == csv_col["propertyUrl"]
-    )
+    assert SDMX_ATTRIBUTE_UNIT_URI == csv_col["propertyUrl"]
     assert "cube-name.csv#unit/{+some_column}" == csv_col["valueUrl"]
 
 
@@ -404,10 +401,7 @@ def test_virtual_columns_generated_for_multi_meas_obs_val():
     virt_unit = first(virtual_columns, lambda x: x["name"] == "virt_unit")
     assert virt_unit is not None
     assert virt_unit["virtual"]
-    assert (
-        "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
-        == virt_unit["propertyUrl"]
-    )
+    assert SDMX_ATTRIBUTE_UNIT_URI == virt_unit["propertyUrl"]
     assert "cube-name.csv#unit/some-unit" == virt_unit["valueUrl"]
 
 
