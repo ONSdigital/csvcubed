@@ -12,6 +12,8 @@ The `qube-config.json` file has two sections:
 2. [**Column Definitions**](./column-definitions.md)
    This section is used to describe each column in the `.csv` file, classifying the column and defining how the column data is both represented and how it links semantically to other data.
 
+<!-- TODO Add examples of json with links to json/csv files -->
+
 <!-- ## Metadata
 
 A CSV-W file contains metadata which improves discoverability of data publications. In csvcubed, we use a selection of metadata entries from established namespaces to enable users to contribute to the web of data faster. The metadata fields available, their description and default values are as follows.

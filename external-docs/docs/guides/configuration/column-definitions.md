@@ -1,20 +1,37 @@
 # Column definitions
 
-A CSV-W file provides detailed information about the columns beyond their values. In csvcubed, we are targeting a level of detail which results in a data cube which can be be expressed using W3C's [RDF Cube Vocabulary](https://www.w3.org/TR/vocab-data-cube/). In order to be valid, a data cube must have at least one dimension, at least one observation column, along with at least one defined unit and measure per observation column. A cube may also have one or more attribute columns which provide clarification to observational data. Units and measures may be attached to the [observation column](#observations), or appear in a [measure column](#measures) or [unit column](#units) of their own.
+A CSV-W file provides detailed information about the columns beyond their values. In csvcubed, we are targeting a level of detail which results in a data cube which can be expressed using W3C's [RDF Cube Vocabulary](https://www.w3.org/TR/vocab-data-cube/). In order to be valid, a data cube must have at least one dimension, at least one observation column, along with at least one defined unit and measure per observation column. A cube may also have one or more attribute columns which provide clarification to observational data. Units and measures may be attached to the [observation column](#observations), or appear in a [measure column](#measures) or [unit column](#units) of their own.
 
-To define a column in a `qube-config.json` file, provide the column title as a dictionary key, and create a new dictionary containing the column's configuration details.
-
-A column is assumed to be a dimension unless otherwise configured using the `type` key or the column title being one of the [reserved names](../configuration/convention.md#conventional-column-names). A dimension can still have a `"type": "dimension"` key/value pair.
-
-<!-- TODO Add some metadata to examples -->
+To define a column in a `qube-config.json` file, provide the column title as a JSON object key, and create a new JSON object containing the column's configuration details.
 
 ```json
 { ...
- "columns": {
-  "Example column": {
-    "type": "dimension"
+  "columns": {
+    "Column title": {
+      "Column configuration option 1": "Column configuration value 1",
+      "Column configuration option 2": "Column configuration value 2",
+      "Column configuration option 3": "Column configuration value 3"
+      ...
+    }
   }
- }
+}
+```
+
+A column is assumed to be a dimension unless otherwise configured using the `type` key or the column title is one of the [reserved names](../configuration/convention.md#conventional-column-names). A dimension can still have a `"type": "dimension"` key/value pair.
+
+<!-- TODO Add some metadata to examples and links to json/csv files -->
+
+```json
+{
+  "title": "Example qube-config.json",
+  "description": "This is an example of a qube-config.json file",
+  "publisher": "https://www.gov.uk/government/organisations/office-for-national-statistics",
+  "columns": {
+    "Example column": {
+      "type": "dimension",
+      ...
+    }
+  }
 }
 ```
 
@@ -22,9 +39,9 @@ A column is assumed to be a dimension unless otherwise configured using the `typ
 
 ```json
 { ...
- "columns": {
-  "Suppressed column": false
- }
+  "columns": {
+    "Suppressed column": false
+  }
 }
 ```
 

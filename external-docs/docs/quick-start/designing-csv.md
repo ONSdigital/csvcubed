@@ -40,7 +40,7 @@ Once you have gained some familiarity with using csvcubed, you may find that the
 
 First, we start by taking the above shape and adding columns for each of your *identifying characteristics* ([dimensions](../glossary/index.md#dimensionhttpswwww3orgtrvocab-data-cubecubes-model)).
 
-From hereonin we will be creating a data set to represent the competition winners in Eurovision. Our CSV will be structured as per the following extract where `Year`, `Entrant`, `Song` and `Language` are the cube's identifying [dimensions](../glossary/index.md#dimensionhttpswwww3orgtrvocab-data-cubecubes-model):
+From hereonin we will be creating a data set to represent the competition winners in Eurovision. Our CSV will be structured as per the following extract where `Year`, `Entrant`, `Song` and `Language` are the cube's identifying [dimensions](../glossary/index.md#dimensionhttpswwww3orgtrvocab-data-cubecubes-model). Note that we have included multiple measures in this dataset, as `Final Rank`, `Final Points` and `People on Stage` are recorded for each contestant:
 
 | Year | Entrant            | Song     | Language | Value |         Measure |     Unit |
 |:----:|:-------------------|:---------|:---------|------:|----------------:|---------:|
@@ -60,8 +60,6 @@ Year,Entrant,Song,Language,Value,Measure,Unit
 2008,Charlotte Perrelli,Hero,English,18,Final Rank,Unitless
 2008,Charlotte Perrelli,Hero,English,47,Final Points,Unitless
 ```
-
-Note that we have included multiple measures in this dataset, as `Final Rank`, `Final Points` and `People on Stage` are recorded for each contestant.
 
 You can [download the full CSV](https://raw.githubusercontent.com/GSS-Cogs/csvcubed-demo/v1.0/sweden_at_eurovision_no_missing.csv) from GitHub.
 
