@@ -13,11 +13,6 @@ from csvcubed.cli.inspect.inspectdatasetmanager import (
     get_dataset_val_counts_info,
     load_csv_to_dataframe,
 )
-from csvcubed.utils.csvdataset import(
-    get_single_measure_from_dsd,
-    get_standard_shape_measure_col_name_from_dsd,
-    get_standard_shape_unit_col_name_from_dsd,
-)
 from csvcubed.models.csvwtype import CSVWType
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.cube.qb.validationerrors import BothMeasureTypesDefinedError
@@ -26,7 +21,12 @@ from csvcubed.models.inspectdataframeresults import (
     DatasetObservationsInfoResult,
 )
 from csvcubed.models.sparqlresults import QubeComponentResult, QubeComponentsResult
-from csvcubed.utils.csvdataset import transform_dataset_to_canonical_shape
+from csvcubed.utils.csvdataset import (
+    get_single_measure_from_dsd,
+    get_standard_shape_measure_col_name_from_dsd,
+    get_standard_shape_unit_col_name_from_dsd,
+    transform_dataset_to_canonical_shape,
+)
 from csvcubed.utils.skos.codelist import (
     CodelistPropertyUrl,
     get_codelist_col_title_by_property_url,

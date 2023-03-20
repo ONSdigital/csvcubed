@@ -292,3 +292,32 @@ def test_multi_theme_and_keyword():
     assert set(primary_catalog_metadata.landing_pages) == {
         "https://www.gov.uk/government/statistics/alcohol-bulletin"
     }
+
+
+def test_colums_return_order():
+    """This test will check if the columns are returned in the correct order."""
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "pivoted-multi-measure-single-unit-component"
+        / "multi-measure-pivoted-dataset-units-and-attributes.csv-metadata.json"
+    )
+
+    csvw_inspector = get_csvw_rdf_manager(csvw_metadata_json_path).csvw_inspector
+    column_definitions = csvw_inspector.get_column_definitions_for_csv(
+        "multi-measure-pivoted-dataset-units-and-attributes.csv"
+    )
+
+    expected_column_titles = [
+        "Year",
+        "Sector",
+        "Imports",
+        "Imports Status",
+        "Exports",
+        "Exports Status",
+        "Exports Unit",
+    ]
+    actual_column_names = [
+        column.title for column in column_definitions if not column.virtual
+    ]
+
+    assert expected_column_titles == actual_column_names

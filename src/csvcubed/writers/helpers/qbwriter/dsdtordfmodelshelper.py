@@ -19,6 +19,7 @@ from csvcubedmodels.rdf import (
 )
 from csvcubedmodels.rdf.dependency import RdfGraphDependency
 
+from csvcubed.definitions import QB_MEASURE_TYPE_DIMENSION_URI, SDMX_ATTRIBUTE_UNIT_URI
 from csvcubed.models.cube.cube import QbCube
 from csvcubed.models.cube.qb.columns import QbColumn
 from csvcubed.models.cube.qb.components.arbitraryrdf import RdfSerialisationHint
@@ -332,9 +333,7 @@ class DsdToRdfModelsHelper:
             self._uris.get_component_uri(column_name_uri_safe)
         )
         component.componentRequired = True
-        component.attribute = ExistingResource(
-            "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
-        )
+        component.attribute = ExistingResource(SDMX_ATTRIBUTE_UNIT_URI)
         component.componentProperties.add(component.attribute)
 
         _logger.debug(
@@ -372,7 +371,7 @@ class DsdToRdfModelsHelper:
             self._uris.get_component_uri("measure-type")
         )
         measure_dimension_spec.dimension = ExistingResource(
-            "http://purl.org/linked-data/cube#measureType"
+            QB_MEASURE_TYPE_DIMENSION_URI
         )
         measure_dimension_spec.componentProperties.add(measure_dimension_spec.dimension)
         return measure_dimension_spec

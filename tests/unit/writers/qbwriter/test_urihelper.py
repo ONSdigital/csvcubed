@@ -1,6 +1,7 @@
 import pandas as pd
 import pytest
 
+from csvcubed.definitions import QB_MEASURE_TYPE_DIMENSION_URI, SDMX_ATTRIBUTE_UNIT_URI
 from csvcubed.models.cube.columns import SuppressedCsvColumn
 from csvcubed.models.cube.cube import Cube
 from csvcubed.models.cube.qb.catalog import CatalogMetadata
@@ -291,10 +292,7 @@ def test_default_property_value_uris_multi_units_all_new():
         default_property_uri,
         default_value_uri,
     ) = empty_cube_uri_helper.get_default_property_value_uris_for_column(column)
-    assert (
-        "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
-        == default_property_uri
-    )
+    assert SDMX_ATTRIBUTE_UNIT_URI == default_property_uri
     assert "cube-name.csv#unit/{+some_column}" == default_value_uri
 
 
@@ -311,10 +309,7 @@ def test_default_property_value_uris_multi_units_all_existing():
         default_property_uri,
         default_value_uri,
     ) = empty_cube_uri_helper.get_default_property_value_uris_for_column(column)
-    assert (
-        "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
-        == default_property_uri
-    )
+    assert SDMX_ATTRIBUTE_UNIT_URI == default_property_uri
     assert "{+some_column}" == default_value_uri
 
 
@@ -354,7 +349,7 @@ def test_default_property_value_uris_multi_measure_all_new():
         default_property_uri,
         default_value_uri,
     ) = empty_cube_uri_helper.get_default_property_value_uris_for_column(column)
-    assert "http://purl.org/linked-data/cube#measureType" == default_property_uri
+    assert QB_MEASURE_TYPE_DIMENSION_URI == default_property_uri
     assert "cube-name.csv#measure/{+some_column}" == default_value_uri
 
 
@@ -374,7 +369,7 @@ def test_default_property_value_uris_multi_measure_all_existing():
         default_property_uri,
         default_value_uri,
     ) = empty_cube_uri_helper.get_default_property_value_uris_for_column(column)
-    assert "http://purl.org/linked-data/cube#measureType" == default_property_uri
+    assert QB_MEASURE_TYPE_DIMENSION_URI == default_property_uri
     assert "http://base-uri/measures/{+some_column}" == default_value_uri
 
 

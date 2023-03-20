@@ -13,6 +13,7 @@ from typing import Any, Dict, Iterable, List
 
 import pandas as pd
 
+from csvcubed.definitions import SDMX_ATTRIBUTE_UNIT_URI
 from csvcubed.models.cube.columns import CsvColumn, SuppressedCsvColumn
 from csvcubed.models.cube.cube import QbCube
 from csvcubed.models.cube.qb.columns import QbColumn
@@ -293,7 +294,7 @@ class QbWriter(WriterBase):
                     "name": f"virt_obs_{csvw_safe_obs_column_name}_unit",
                     "virtual": True,
                     "aboutUrl": observation_uri,
-                    "propertyUrl": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
+                    "propertyUrl": SDMX_ATTRIBUTE_UNIT_URI,
                     "valueUrl": self._uris.get_unit_uri(
                         obs_column.structural_definition.unit
                     ),
@@ -431,7 +432,7 @@ class QbWriter(WriterBase):
                 {
                     "name": VIRT_UNIT_COLUMN_NAME,
                     "virtual": True,
-                    "propertyUrl": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
+                    "propertyUrl": SDMX_ATTRIBUTE_UNIT_URI,
                     "valueUrl": self._uris.get_unit_uri(unit),
                 }
             )
