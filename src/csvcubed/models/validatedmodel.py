@@ -9,7 +9,7 @@ from csvcubedmodels.dataclassbase import DataClassBase
 
 from csvcubed.models.validationerror import ValidateModelPropertiesError
 
-ValidationFunction = Callable[[Any, str], List[ValidateModelPropertiesError]]
+ValidationFunction = Callable[[Any, List[str]], List[ValidateModelPropertiesError]]
 
 T = TypeVar("T", bound="ValidatedModel")
 
@@ -43,14 +43,14 @@ class ValidatedModel(DataClassBase):
         validations = self._get_validations()
         if isinstance(validations, Validations):
             validation_errors += self._apply_individual_property_validations(
-                validations.individual_property_validations
+                validations.individual_property_validations, property_path
             )
 
             for whole_obj_validator in validations.whole_object_validations:
                 validation_errors += whole_obj_validator(self)
         else:
             validation_errors += self._apply_individual_property_validations(
-                validations
+                validations, property_path
             )
 
         return validation_errors
@@ -66,15 +66,14 @@ class ValidatedModel(DataClassBase):
             property_name,
             validation_function,
         ) in individual_property_validations.items():
-            new_property_path = [*property_path, property_name]
-            logging.debug("Validating %s", property_path)
+            property_path = [*property_path, property_name]
+            logging.debug("Validating %s", property_name)
 
             property_value = getattr(self, property_name)
-            errs = validation_function(property_value, new_property_path)
+            errs = validation_function(property_value, property_name, property_path)
 
             if any(errs):
-                logging.debug("'%s' generated errors: %s", property_path, errs)
-                # I think this is where we add the message about offending value.
+                logging.debug("'%s' generated errors: %s", property_name, errs)
 
             validation_errors += errs
 

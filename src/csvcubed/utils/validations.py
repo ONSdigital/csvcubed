@@ -42,7 +42,7 @@ def validate_list(
 
 
 def validate_str_type(
-    value: str, property_name: str
+    value: str, property_name: str, property_path: List[str]
 ) -> List[ValidateModelPropertiesError]:
     """
     This function will validate if the argument provided is in fact a string type and,
@@ -53,6 +53,7 @@ def validate_str_type(
             ValidateModelPropertiesError(
                 "This variable should be a string value, check the following variable:",
                 property_name,
+                property_path,
             )
         ]
 
@@ -121,12 +122,12 @@ def validate_optional(
     """
 
     def _validate(
-        maybe_item: Optional[T], property_name: str
+        maybe_item: Optional[T], property_name: str, property_path: List[str]
     ) -> List[ValidateModelPropertiesError]:
         if maybe_item is None:
             return []
 
-        return validate_item(maybe_item, property_name)
+        return validate_item(maybe_item, property_name, property_path)
 
     return _validate
 
@@ -266,7 +267,7 @@ def validated_model(validated_model_type: Type[ValidatedModel]):
         )
 
     def validate(
-        value: ValidatedModel, property_name: str
+        value: ValidatedModel, property_name: str, property_path: List[str]
     ) -> List[ValidateModelPropertiesError]:
         if not isinstance(value, validated_model_type):
             # This error occurs when runtime validation occurs.
@@ -277,7 +278,7 @@ def validated_model(validated_model_type: Type[ValidatedModel]):
                 )
             ]
 
-        return value.validate()
+        return value.validate(property_path=property_path)
 
     return validate
 

@@ -113,7 +113,7 @@ def test_validate_int_type_incorrect():
         result[0].message
         == "This variable should be a integer value, check the following variable:"
     )
-    assert result[0].property_path == "int_test_variable"
+    assert result[0].property_name == "int_test_variable"
 
 
 def test_validate_int_type_correct():
@@ -526,18 +526,34 @@ def test_validated_model_validation_correct():
     assert not any(errors)
 
 
+@dataclass
+class TestingTestClass(ValidatedModel):
+    test_validated_model_class: Optional[OtherTestClass] = None
+
+    def _get_validations(self) -> Dict[str, ValidationFunction]:
+        return {
+            "test_validated_model_class": validate_optional(
+                v.validated_model(OtherTestClass)
+            ),
+        }
+
+
 def test_validated_model_validation_incorrect_type():
     """
     Tests whether a class using validated_model to validate an object of a type which inherits from the
     ValidatedModel class returns errors when given an incorrect object type.
     """
-    test_instance = TestClass(
+    test_instance = TestingTestClass(
         test_validated_model_class=OtherTestClass(str_test_variable_2=3.14)
     )
 
     errors = test_instance.validate()
 
     assert any(errors)
+    assert errors[0].property_path == [
+        "test_validated_model_class",
+        "str_test_variable_2",
+    ]
 
 
 def test_validated_model_is_not_inherited():
@@ -767,24 +783,6 @@ def test_boolean_incorrect():
     errors = test_instance.validate()
 
     assert any(errors)
-
-
-@dataclass
-class SanityTestClass(ValidatedModel):
-    test_variable: str = "Hello, World"
-
-    def _get_validations(self) -> Dict[str, ValidationFunction]:
-        return {
-            "str_test_variable": validate_str_type,
-        }
-
-
-def test_new_ticket_understanding():
-    """ """
-    test_instance = SanityTestClass(test_variable=False)
-    errors = test_instance.validate()
-    assert any(errors)
-    assert errors[0].property_path == ["test_variable", "False"]
 
 
 if __name__ == "__main__":
