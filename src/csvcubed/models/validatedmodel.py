@@ -32,7 +32,9 @@ class ValidatedModel(DataClassBase):
     The class will run a valdiation function for each attribute that is passed in and return either a list of errors or an emtpy list.
     """
 
-    def validate(self) -> List[ValidateModelPropertiesError]:
+    def validate(
+        self, property_path: List[str] = []
+    ) -> List[ValidateModelPropertiesError]:
         """
         The validate function will go through each attribute and the corresponding validation function and
          collect the validation errors(if there is any) and return the variable names and the error messages.
@@ -54,18 +56,21 @@ class ValidatedModel(DataClassBase):
         return validation_errors
 
     def _apply_individual_property_validations(
-        self, individual_property_validations: Dict[str, ValidationFunction]
+        self,
+        individual_property_validations: Dict[str, ValidationFunction],
+        property_path: List[str],
     ) -> List[ValidateModelPropertiesError]:
         validation_errors: List[ValidateModelPropertiesError] = []
 
         for (
-            property_path,
+            property_name,
             validation_function,
         ) in individual_property_validations.items():
+            new_property_path = [*property_path, property_name]
             logging.debug("Validating %s", property_path)
 
-            property_value = getattr(self, property_path)
-            errs = validation_function(property_value, property_path)
+            property_value = getattr(self, property_name)
+            errs = validation_function(property_value, new_property_path)
 
             if any(errs):
                 logging.debug("'%s' generated errors: %s", property_path, errs)

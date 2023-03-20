@@ -769,5 +769,23 @@ def test_boolean_incorrect():
     assert any(errors)
 
 
+@dataclass
+class SanityTestClass(ValidatedModel):
+    test_variable: str = "Hello, World"
+
+    def _get_validations(self) -> Dict[str, ValidationFunction]:
+        return {
+            "str_test_variable": validate_str_type,
+        }
+
+
+def test_new_ticket_understanding():
+    """ """
+    test_instance = SanityTestClass(test_variable=False)
+    errors = test_instance.validate()
+    assert any(errors)
+    assert errors[0].property_path == ["test_variable", "False"]
+
+
 if __name__ == "__main__":
     pytest.main()
