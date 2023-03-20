@@ -8,7 +8,7 @@ csvcubed automatically defines new units using the unique values in your [standa
 
 Depending on how units are used (or how exactly observations are counted) in your data set, and on your data set's shape in general, there will be differences in the way your units could be defined.
 
-One scenario is where all observations in a column use the same unit to measure observations, then the unit can be defined by being attached to the observation column's definition. If different observations in your data set use different units, then units should be created in their own column definition. In a pivoted shape data set, units are naturally attached to their corresponding observations, and can therefore be defined in the observation column definition as a unit property (They can still be defined in their own column in this scenario as well). The examples below will go into further detail on the different ways to define and configure units, showing examples of different scenarios.
+One scenario is where all observations in a column use the same unit to measure observations, then the unit can be defined by being attached to the observation column's definition. If different observations in your data set use different units, then units should be created in their own column definition to clearly identify which unit is used to measure each observation. This applies to both standard shape and pivoted shape data sets. The examples below will go into further detail on the different ways to define and configure units, showing examples of different scenarios.
 
 ### Defining a unit in an observation column's definition
 
@@ -34,7 +34,8 @@ For more information on defining observation columns, and the resources that can
 
 ### Defining a unit in a units column
 
-A different scenario for creating units is when you want to display them in their own column. This should be done in a standard shape cube setting, especially when there are multiple units to be used throughout different measures/observations.
+A different scenario for creating units is when you want to display them in their own column. This should be done in a standard shape cube setting, especially when there are multiple units to be used throughout different measures/observations. It can also be done in the pivoted shape, but units in a pivoted shape data set can easily be attached to the observation column they appear in (along with the relevant measure). Placing the units in their own column is useful when different values in the same observation column are measured differently, e.g. one row measured in US Dollars and the next row measured in Pounds Sterling.
+
 For more information on defining units columns, see the [units column configuration](../configuration/columns/units.md) page.
 When defining a new unit in its own column, the details are specified in the `values` field as an object, after the type of the column is specified as "units". The contents that can be entered within the values object will be described with examples.
 
@@ -84,7 +85,7 @@ In the following examples, we'll show how to define new units re-using existing 
 
 ### Creating units using the from_existing field
 
-This first example shows the existing definition for Pound Sterling being used from its URI entered into the `from_existing` field. Normally, this would re-use the exact same unit definition. However, in our case, we want to alter its configuration to suit our data set. So the existing unit definition has the label "Pounds Sterling (£), Millions" given, and this means it is now a new unit created that is derived from the existing Pound Sterling unit definition.
+This first example shows the existing definition for Pound Sterling being used from its URI entered into the `from_existing` field. Normally, this would re-use the exact same unit definition. However, in our case, we want to alter its configuration to suit our data set. So the existing unit definition is given the label "Pounds Sterling (£), Millions", and this means it is now a new unit created that is derived from the existing Pound Sterling unit definition.
 
 ```json
 {
@@ -134,7 +135,7 @@ For more information on quantity kinds as well as several quantity kinds to make
 
 ### si_scaling_factor
 
-Another optional form of scaling that can be applied to units in column definitions is `si_scaling_factor`. The purpose of this field in the values dictionary is to relate scaled units to other units that are relevant, creating consistency within their scale. Most of the units that are related in this sense are already defined. Note that this is an advanced feature and can safely be ignored if not needed.
+Another optional form of scaling that can be applied to units in column definitions is `si_scaling_factor`. The purpose of this field in the values object is to relate scaled units to other units that are relevant, creating consistency within their scale. Most of the units that are related in this sense are already defined. Note that this is an advanced feature and can safely be ignored if not needed.
 
 For our example data set, we also want another unit to measure barrels of oil per day, by the thousands. This is where the `quantity_kind` and `si_scaling_factor` fields can be used to create a new unit that is grouped together with its relevant quantity kind, and also measures units in a way that is consistently scaled.
 
@@ -167,7 +168,7 @@ Units may be [submitted](https://github.com/qudt/qudt-public-repo/wiki/Unit-Voca
 
 ### Linking a unit to the observation it describes
 
-When creating a unit in a units column, it is also possible to specify an observation value to associate the units with, by entering the observation value into the `describes_observations` field. This is (only) necessary to associate a unit to its relevant observation value when there are multiple measures and the data set is in the pivoted shape, as otherwise there would be no clear link between the unit being used for different observations in columns. For more information on the distinction between pivoted/standard shape data sets, as well as single/multiple measures, see the [Pivoted Shape](../shape-data/pivoted-shape) TODO: Fix this link to the pivoted shape page when the location of the new guide page is decided.
+When creating a unit in a units column, it is also possible to specify an observation value to associate the units with, by entering the observation value into the `describes_observations` field. This is (only) necessary to associate a unit to its relevant observation value when there are multiple measures and the data set is in the pivoted shape, as otherwise there would be no clear link between the unit being used for different observations in columns. For more information on the distinction between pivoted/standard shape data sets, as well as single/multiple measures, see the [Pivoted Shape](../shape-data/pivoted-shape.md)
 
 Example of a units column being defined with the `describes_obserations` field used to link to an observation.
 
