@@ -40,8 +40,8 @@ All being well we get the below output. A detailed explanation of this output is
         - Description: None
 
  - The data cube has the following column component information:
- - Dataset Label: Sweden at Eurovision
- - Components:
+     - Dataset Label: Sweden at Eurovision
+     - Columns:
            Title         Type  Required                                                Property URL Observations Column Titles
             Year    Dimension      True                     sweden-at-eurovision.csv#dimension/year
          Entrant    Dimension      True                  sweden-at-eurovision.csv#dimension/entrant
@@ -50,7 +50,7 @@ All being well we get the below output. A detailed explanation of this output is
            Value Observations      True                 sweden-at-eurovision.csv#measure/{+measure}
          Measure     Measures      True                http://purl.org/linked-data/cube#measureType
             Unit        Units      True http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure
- - Columns where suppress output is true: None
+     - Columns where suppress output is true: None
 
 - The data cube has the following code list information:
         - Number of Code Lists: 4
