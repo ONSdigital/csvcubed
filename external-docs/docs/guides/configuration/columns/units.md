@@ -1,8 +1,8 @@
 ## Units columns
 
-This section will focus on the configuration of units columns, their presence in the structure of a cube config file, and how their application can vary depending on the shape of the data set, or the number of units. The configuration of units themselves will not be the primary focus of this section. For more information on defining and configuring units, with examples, see the [configuring units](./units.md) page.
+This section will focus on the configuration of units columns, their presence in the structure of a cube config file, and how their definition can vary depending on the shape of the data set, or the number of units. The configuration of units themselves will not be the primary focus of this section. For more information on defining and configuring units, with examples, see the [configuring units](./units.md) page.
 
-The *units* column represents how the measured quantity is being counted or incremented, defining what unit of measurement is being used to measure this observation. At least one unit is required to be defined in a data cube for it to be valid.
+The *units* column represents how the measured quantity is being counted or incremented in each row, defining what unit of measurement is being used to measure this observation. At least one unit is required to be defined in a data cube for it to be valid.
 
 In a configuration file, the unit column is a form of attribute column. This means they share similarities to configure, sharing all of the attribute column’s configuration options, but with some additional options unique to units.
 

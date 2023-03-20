@@ -8,7 +8,7 @@ csvcubed automatically defines new units using the unique values in your [standa
 
 Depending on how units are used (or how exactly observations are counted) in your data set, and on your data set's shape in general, there will be differences in the way your units could be defined.
 
-One scenario is where all observations in a column use the same unit to measure observations, then the unit can be defined by being attached to the observation column's definition. If different observations in your data set use different units, then units should be created in their own column definition. In a pivoted shape data set, units are naturally attached to their corresponding observations, and are therefore defined in the observation column definition. The examples below will go into further detail on the different ways to define and configure units, showing examples of different scenarios.
+One scenario is where all observations in a column use the same unit to measure observations, then the unit can be defined by being attached to the observation column's definition. If different observations in your data set use different units, then units should be created in their own column definition. In a pivoted shape data set, units are naturally attached to their corresponding observations, and can therefore be defined in the observation column definition as a unit property (They can still be defined in their own column in this scenario as well). The examples below will go into further detail on the different ways to define and configure units, showing examples of different scenarios.
 
 ### Defining a unit in an observation column's definition
 
