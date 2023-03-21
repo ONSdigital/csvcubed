@@ -76,6 +76,7 @@ class ValidatedModel(DataClassBase):
                 logging.debug("'%s' generated errors: %s", property_name, errs)
 
             validation_errors += errs
+            property_path = []
 
         return validation_errors
 

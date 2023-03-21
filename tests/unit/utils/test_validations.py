@@ -113,7 +113,7 @@ def test_validate_int_type_incorrect():
         result[0].message
         == "This variable should be a integer value, check the following variable:"
     )
-    assert result[0].property_name == "int_test_variable"
+    assert result[0].property_path == ["int_test_variable"]
 
 
 def test_validate_int_type_correct():
@@ -145,7 +145,7 @@ def test_validate_str_type_incorrect():
         result[0].message
         == "This variable should be a string value, check the following variable:"
     )
-    assert result[0].property_name == "str_test_variable"
+    assert result[0].property_path == ["str_test_variable"]
 
 
 def test_validate_str_type_correct():
@@ -180,7 +180,7 @@ def test_validate_list_type_incorrect():
         result[0].message
         == "This variable should be a list, check the following variable:"
     )
-    assert result[0].property_name == "list_test_variable"
+    assert result[0].property_path == ["list_test_variable"]
 
     my_list = ["Something", 8, "Something Else"]
 
@@ -193,7 +193,7 @@ def test_validate_list_type_incorrect():
         result[0].message
         == "This variable should be a string value, check the following variable:"
     )
-    assert result[0].property_name == "list_test_variable"
+    assert result[0].property_path == ["list_test_variable"]
 
 
 def test_validate_list_type_correct():
@@ -278,7 +278,7 @@ def test_validate_float_type_incorrect():
         result[0].message
         == "This variable should be a float value, check the following variable:"
     )
-    assert result[0].property_name == "float_test_variable"
+    assert result[0].property_path == ["float_test_variable"]
 
 
 def test_validate_float_type_nan_incorrect():
@@ -298,7 +298,7 @@ def test_validate_float_type_nan_incorrect():
         result[0].message
         == "This variable should be a float value but is Not a Number (NaN), check the following variable:"
     )
-    assert result[0].property_name == "float_test_variable"
+    assert result[0].property_path == ["float_test_variable"]
 
 
 def test_validate_float_type_infinity_incorrect():
@@ -318,7 +318,7 @@ def test_validate_float_type_infinity_incorrect():
         result[0].message
         == "This variable should be a float value but is +-infinity, check the following variable:"
     )
-    assert result[0].property_name == "float_test_variable"
+    assert result[0].property_path == ["float_test_variable"]
 
 
 def test_validate_float_type_neg_infinity_incorrect():
@@ -338,7 +338,7 @@ def test_validate_float_type_neg_infinity_incorrect():
         result[0].message
         == "This variable should be a float value but is +-infinity, check the following variable:"
     )
-    assert result[0].property_name == "float_test_variable"
+    assert result[0].property_path == ["float_test_variable"]
 
 
 def test_validate_float_type_correct():
@@ -388,7 +388,7 @@ def test_validate_file_not_exists():
     assert (
         result[0].message == "This file does not exist, check the following variable:"
     )
-    assert result[0].property_name == "path_test_variable"
+    assert result[0].property_path == ["path_test_variable"]
 
 
 def test_validate_file_not_a_path():
@@ -407,7 +407,7 @@ def test_validate_file_not_a_path():
         result[0].message
         == "This is not a valid file path, check the following variable:"
     )
-    assert result[0].property_name == "path_test_variable"
+    assert result[0].property_path == ["path_test_variable"]
 
 
 def test_validate_datetime_correct():
@@ -454,7 +454,7 @@ def test_validate_date_incorrect():
         result[0].message
         == "Value 'test' was not an instance of the expected type 'date'."
     )
-    assert result[0].property_name == "date_test_variable"
+    assert result[0].property_path == ["date_test_variable"]
 
 
 def test_validate_enum_correct():
@@ -526,16 +526,16 @@ def test_validated_model_validation_correct():
     assert not any(errors)
 
 
-@dataclass
-class TestingTestClass(ValidatedModel):
-    test_validated_model_class: Optional[OtherTestClass] = None
+# @dataclass
+# class TestingTestClass(ValidatedModel):
+#     test_validated_model_class: Optional[OtherTestClass] = None
 
-    def _get_validations(self) -> Dict[str, ValidationFunction]:
-        return {
-            "test_validated_model_class": validate_optional(
-                v.validated_model(OtherTestClass)
-            ),
-        }
+#     def _get_validations(self) -> Dict[str, ValidationFunction]:
+#         return {
+#             "test_validated_model_class": validate_optional(
+#                 v.validated_model(OtherTestClass)
+#             ),
+#         }
 
 
 def test_validated_model_validation_incorrect_type():
@@ -543,7 +543,7 @@ def test_validated_model_validation_incorrect_type():
     Tests whether a class using validated_model to validate an object of a type which inherits from the
     ValidatedModel class returns errors when given an incorrect object type.
     """
-    test_instance = TestingTestClass(
+    test_instance = TestClass(
         test_validated_model_class=OtherTestClass(str_test_variable_2=3.14)
     )
 
@@ -596,7 +596,9 @@ class WholeObjectValidationsTestClass(ValidatedModel):
             if the_instance.test_validate_int < 0:
                 errors.append(
                     ValidateModelPropertiesError(
-                        "Expected a positive integer", "Whole Object"
+                        "Expected a positive integer",
+                        "Whole Object",
+                        offending_value=the_instance,
                     )
                 )
         else:
