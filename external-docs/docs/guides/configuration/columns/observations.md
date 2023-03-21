@@ -1,4 +1,4 @@
-# Observation configuration
+# Observation columns
 
 This page discusses what an observation column is, where one should be used, and how one can be defined.
 
@@ -6,18 +6,18 @@ This page discusses what an observation column is, where one should be used, and
 
 ## What is an observation column?
 
-Observation columns contain the numerical values of observations recorded in the data set, and are the most important component of a CSV-W. In order to be valid, a data cube must include at least one observation column, each of which must have a unit and a measure associated with it. Measures and units can either be defined against the observation column, or can be contained in separate unit and measure columns.
+Observation columns contain the numerical values of observations recorded in the data set, and are the most important component of a CSV-W. In order to be valid, a data cube must include at least one observation column, each of which must have a unit and a measure associated with it. Measures and units can either be defined against the observation column, or can be contained in separate [unit](./units.md) and [measure](./measures.md) columns.
 
 ## When to use one
 
+Observation columns contain the observed values of your data, and as such your data set must always contain at least one observation column. The configuration of observation columns in your data set will primarily depend on the [shape of your data](../../shape-data/index.md). This is discussed in more detail below.
 
 ## Basic configuration
 
-The configuration of observation columns in your data set will primarily depend on the [shape of your data](../../shape-data/index.md). For [standard shape](../../shape-data/standard-shape.md) data sets, where units and measures are contained in their own columns, only the `type` and `data_type` fields can be populated. For [pivoted shape](../../shape-data/pivoted-shape.md) data sets, the `unit` and `measure` fields can also be configured.
+For [standard shape](../../shape-data/standard-shape.md) data sets, where units and measures are contained in their own columns, only the `type` and `data_type` fields can be populated. For [pivoted shape](../../shape-data/pivoted-shape.md) data sets, the `unit` and `measure` fields can also be configured.
 
-For the purposes of these instructions, we will be using the `Arthur's Bakes` data set.
-
-## Standard shape data sets
+<!-- For the purposes of these instructions, we will be using the `Arthur's Bakes` data set. -->
+### Standard shape data sets
 
 | Year | Location | Value |                  Measure |                   Unit |
 |:-----|:---------|------:|-------------------------:|-----------------------:|
@@ -39,12 +39,12 @@ For [standard shape](../../shape-data/standard-shape.md) data sets, where value,
 }
 ```
 
-## Pivoted shape data sets
+### Pivoted shape data sets
 
-| Year | Location | Number of Arthur's Bakes | Revenue | Revenue Units  |
-|:-----|:---------|-------------------------:|--------:|:---------------|
-| 2022 | London   |                       35 |      25 | GBP (Sterling) |
-| 2021 | Cardiff  |                       26 |      18 | GBP (Sterling) |
+| Year | Location | Number of Arthur's Bakes | Revenue |
+|:-----|:---------|-------------------------:|--------:|
+| 2022 | London   |                       35 |      25 |
+| 2021 | Cardiff  |                       26 |      18 |
 
 In this example of a [pivoted shape](../../shape-data/pivoted-shape.md) data set, there are two observation value columns: `Number of Arthur's Bakes` and `Revenue`. As you can see, measure and unit information has been configured within the `Number of Arthur's Bakes` column definition, but the separate `Revenue Units` column has been linked to the `Revenue` column through the `describes_observations` field. This must be formatted in exactly the same way for csvcubed to recognise the link and generate the correct results:
 
@@ -64,6 +64,9 @@ In this example of a [pivoted shape](../../shape-data/pivoted-shape.md) data set
       "Revenue": {
          "type": "observations",
          "data_type": "decimal",
+         "unit": {
+            "
+         }
          "measure": {
             "label": "Revenue"
          }
