@@ -31,7 +31,8 @@ dimension.
 should be taken when deciding whether a column represents a dimension or an attribute. Attributes describe the observed
 value and **should not** identify a sub-set of your cube's population.
 
-Referring to the table above, `Year` and `Region` are the dimensions that partition the population into sub-sets. That is, `Year` and `Region` respectively identify the time period and geographic area to which the observed `Value` relates.
+Referring to the table above, `Year` and `Region` are the dimensions that partition the population into sub-sets. That
+is, `Year` and `Region` respectively identify the time period and geographic area to which the observed `Value` relates.
 
 ## Basic configuration
 
@@ -78,9 +79,11 @@ This minimal definition results in:
 
 ## Label, description and definition
 
-Additional details can be associated with the dimensions in your data set through the `label`, `description` and `definition_uri` fields.
+Additional details can be associated with the dimensions in your data set through the `label`, `description` and
+`definition_uri` fields.
 
-As mentioned above, the `label` field will default to the column title unless explicitly configured in the `qube-config.json` file. In the example below, the `Region` label is amended to `Geographic region`:
+As mentioned above, the `label` field will default to the column title unless explicitly configured in the
+`qube-config.json` file. In the example below, the `Region` label is amended to `Geographic region`:
 
 ```json
 { ...
@@ -96,7 +99,9 @@ As mentioned above, the `label` field will default to the column title unless ex
 }
 ```
 
-The `description` field can be used to provide a longer description of your dimension. If you want to provide information about your methodology, the `description` field is the preferred place for this. It also supports the markdown format.
+The `description` field can be used to provide a longer description of your dimension. If you want to provide
+information about your methodology, the `description` field is the preferred place for this. It also supports the
+markdown format.
 
 ```json
 { ...
@@ -130,7 +135,11 @@ The `definition_uri` fields allows you to refer to external resources that furth
 
 ## Code list configuration
 
-One of the key principles of linked data is the ability to connect data sets via references to common concepts. These concepts can be formalised through the use of code lists. By default, csvcubed will generate code lists for each of the dimensions in your data set. However, there are several configuration options for refining how your code lists are generated and expressed. These are briefly described below - full details can be found on the [Code list configuration](../code-list-config.md) page.
+One of the key principles of linked data is the ability to connect data sets via references to common concepts. These
+concepts can be formalised through the use of code lists. By default, csvcubed will generate code lists for each of the
+dimensions in your data set. However, there are several configuration options for refining how your code lists are
+generated and expressed. These are briefly described below - full details can be found on the
+[Code list configuration](../code-list-config.md) page.
 
 * Link to an externally-defined code list (URI):
 <!-- TODO: Find an actual code list URI -->
@@ -213,7 +222,9 @@ One of the key principles of linked data is the ability to connect data sets via
    ```
 ## Dimension column templates
 
-The `Region` column could also be configured by using a [column template](../templates.md) - doing so means that the `type`, `from_existing`, `label` and `cell_uri_template` fields will be automatically populated based on the [statistical-geography.json](https://purl.org/csv-cubed/qube-config/templates/statistical-geography.json) template.
+The `Region` column could also be configured by using a [column template](../templates.md) - doing so means that the
+`type`, `from_existing`, `label` and `cell_uri_template` fields will be automatically populated based on the
+[statistical-geography.json](https://purl.org/csv-cubed/qube-config/templates/statistical-geography.json) template.
 
 ```json
 { ...
@@ -230,9 +241,11 @@ The `Region` column could also be configured by using a [column template](../tem
 
 ## Inheritance
 
-To reuse or extend an existing dimension, the `from_existing` field can be configured to link to a URI where the dimension to be reused or extended is defined.
+To reuse or extend an existing dimension, the `from_existing` field can be configured to link to a URI where the
+dimension to be reused or extended is defined.
 
-To reuse a parent dimension without making any changes to it, set the `from_existing` field to the URI defining the dimension to be reused:
+To reuse a parent dimension without making any changes to it, set the `from_existing` field to the URI defining the
+dimension to be reused:
 
 ```json
 { ...
@@ -245,7 +258,9 @@ To reuse a parent dimension without making any changes to it, set the `from_exis
 }
 ```
 
-To extend a parent dimension and create a new dimension from it, set the `from_existing` field to the URI defining the dimension to be reused, and set the `label` field to indicate that this is a new child dimension of `http://purl.org/linked-data/sdmx/2009/dimension#refArea`:
+To extend a parent dimension and create a new dimension from it, set the `from_existing` field to the URI defining the
+dimension to be reused, and set the `label` field to indicate that this is a new child dimension of
+`http://purl.org/linked-data/sdmx/2009/dimension#refArea`:
 
 ```json
 { ...
@@ -279,19 +294,26 @@ To extend a parent dimension and create a new dimension from it, set the `from_e
 }
 ```
 
-The `Song` and `Language` columns have both been configured with a `cell_uri_template` field. It is important to note that this field should only be used where the concept scheme is defined externally at an existing URI, or there is no concept scheme, but you want to point to an existing resource to provide additional context about the dimension's value.
+The `Song` and `Language` columns have both been configured with a `cell_uri_template` field. It is important to note
+that this field should only be used where the concept scheme is defined externally at an existing URI, or there is no
+concept scheme, but you want to point to an existing resource to provide additional context about the dimension's value.
 
 If `cell_uri_template` is specified:
 
 **Either**:
 
-- `from_existing` must also be defined, in which case `cell_uri_template` should refer to the concepts in the existing dimension's code list;
+- `from_existing` must also be defined, in which case `cell_uri_template` should refer to the concepts in the existing
+dimension's code list;
 
 **Or**:
 
-- `code_list` must be set as `false`, in which case `cell_uri_template` should refer to URIs which are existing RDF resources.
+- `code_list` must be set as `false`, in which case `cell_uri_template` should refer to URIs which are existing RDF
+resources.
 
-The format of the `cell_uri_template` value **must** follow [RFC6570](https://www.rfc-editor.org/rfc/rfc6570) guidance for URI Templates. In the case of any doubt, follow the pattern in the examples shown above (e.g. `http://example.org/some-uri/{+column_name}`), as this will ensure csvcubed safely [transforms the column header](../../uris.md#csv-column-name-safe-transformation) to the CSV-W format.
+The format of the `cell_uri_template` value **must** follow [RFC6570](https://www.rfc-editor.org/rfc/rfc6570) guidance
+for URI Templates. In the case of any doubt, follow the pattern in the examples shown above (e.g. `http://example.org/some-uri/{+column_name}`),
+as this will ensure csvcubed safely [transforms the column header](../../uris.md#csv-column-name-safe-transformation)
+to the CSV-W format.
 
 ## Reference
 
