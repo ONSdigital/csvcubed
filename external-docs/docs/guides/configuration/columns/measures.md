@@ -1,29 +1,71 @@
 ## Measures columns
 
- This section will focus on defining measure columns, the possible configurations with single and multiple measure data sets, and their presence in the structure of a cube configuration file. This page will avoid going into full detail on creating and configuring the measures themselves.
+This page discusses what a measures column is, where one should be used, and how one can be defined.
 
-The *measure* column defines the phenomenon that is being observed, what is being quantified in this observation. In this way it is similar to a dimension. At least one measure is required to be defined in a data cube for it to be valid. Measures can either be attached to a Measure Column if there are multiple different measures appearing in columns throughout your data set, or to an Observation column's `measure` field if all observations in this column of the data set use the same measure.
+The configuration of measure definitions themselves will not be the primary focus of this page; for help with this, see
+[configuring measures](./measures.md).
 
-For more information on defining measures, and populating a measure's fields in a cube configuration, please see the [Measures Configuration](#measures-configuration) TODO fix this link when the structure of the guide is determined and all the pages exist.
+> For a detailed look at a measure column's configuration options, see the [Reference table](#reference) at the bottom
+> of this page.
 
-An important point to remember about measure columns is that they are only supported in a standard shape data set. This is because measures in pivoted shape data sets are defined by being attached to the observation columns they appear in, whereas in the standard shape, each row can specify the measure and unit being used for that row's observation, meaning a measure column can be used. The table below shows a simple data set containing a measures column, which uses two different measures: Average Height, and Average Weight. This small data set shows how measures can be used in a column of their own to enable an associated observations column to measure different things. Also note how different units can be used for these measures, to enable further detail and variety in what is being observed and how it is measured.
+### What is a measures column?
 
-| Year | Location      | Value  | Measure        | Unit        |
-|:-----|:--------------|-------:|---------------:|------------:|
-| 2019 | England       |  175   | Average Height | Centimetres |
-| 2019 | England       |  85    | Average Weight | Kilograms   |
-| 2021 | France        |  175   | Average Height | Centimetres |
-| 2021 | France        |  82    | Average Weight | Kilograms   |
+A *measures* column defines the phenomenon that has been measured in your observed values. It is useful to help express
+the measure used in sparse data sets.
 
-Now we will show how a measure column like this could be defined in the cube configuration file, also providing some basic metadata to display how a measure column's definition fits into the structure of the config json.
-To define a measure column, specify the column's `type` field as "measures", then enter any measures being used in the column into a list of objects in the `values` field, like so:
+Consider the following data set containing a measures column; the measures column is the one with the title `Measure`.
+
+| Year | Location | Value |        Measure |        Unit |
+|:-----|:---------|------:|---------------:|------------:|
+| 2019 | England  |   175 | Average Height | Centimetres |
+| 2019 | England  |    85 | Average Weight |   Kilograms |
+| 2021 | France   |   175 | Average Height | Centimetres |
+
+The `Measure` column declares that the phenomenon measured in the first row is `Average Height`, the phenomenon measured
+in the second row is `Average Weight`, and so on. Note that there can only ever be one observed value per row when using
+a measures column.
+
+### When to use a measures column
+
+Every valid data cube requires **at least one measure**. If you choose to use the
+[Standard Shape](../../shape-data/standard-shape.md) to represent your data then you **must** include a measures column.
+
+If you choose to use the [Pivoted Shape](../../shape-data/pivoted-shape.md) to represent your data then all measures
+must be defined against [Observations Columns](./observations.md); in this case you cannot include a measures column.
+
+N.B. It is **not possible** to define multiple measures columns in the same data cube.
+
+### Basic configuration
+
+Now we will show how a measures column can be defined in a [qube configuration](../qube-config.md) file.
+
+A basic measures column definition can be seen below:
 
 ```json
 {
     "$schema": "https://purl.org/csv-cubed/qube-config/v1",
     "title": "Average Height and Weight for Men in different countries",
     "columns": {
-        "Units column": {
+        "Measure": {
+            "type": "measures"
+        },
+    }
+}
+```
+
+
+Note that the `type` has been set to `measures`.
+
+Note that if you use one of the [conventional column titles](TODO) for measures then the above configuration is
+equivalent to what csvcubed would do to your column by default.
+
+
+<!-- ```json
+{
+    "$schema": "https://purl.org/csv-cubed/qube-config/v1",
+    "title": "Average Height and Weight for Men in different countries",
+    "columns": {
+        "Measure": {
             "type": "measures",
             "values": [
               {
@@ -40,19 +82,62 @@ To define a measure column, specify the column's `type` field as "measures", the
         },
     }
 }
+``` -->
+
+One of the advantages of measure columns in standard shape data sets is that no changes are required in the cube
+configuration file if new measures are added. Using multiple measures in a measure column simply means
+adding new rows to the data set, and specifying measures (and units) to be used for the observation.
+
+To view more information on the difference between single measure and multi measure data sets, see the
+[Shape your data](../../shape-data/index.md) page (for both standard and pivoted shape).
+
+### Optional properties
+
+When defining a measures column, there are optional properties that can be entered, depending on how your measures are
+being defined within the column.
+
+If you are creating new measures within your measures column, the details of the new measures should be entered into a
+`values` field. The JSON below shows an example of the `values` field used in a measures column.
+
+```json
+{
+    "$schema": "https://purl.org/csv-cubed/qube-config/v1",
+    "title": "Average Height and Weight for Men in different countries",
+    "columns": {
+        "Measure": {
+            "type": "measures",
+            "values": true
+        },
+    }
+}
 ```
 
-When defining a measures column containing measure definitions, the measure details are specified in a list of objects which is passed into a field named `values`. The example above uses a small data set containing two measures, then shows the configuration, focusing only on the measure column's definiton with only basic configuration. For more information on defining and configuring measures, see the [measure configuration](../measure-configuration.md) page.
+By default, the `values` field is set to `true`. This indicates to csvcubed to automatically generate
+[measure definitions](../measure-configuration.md) unique to your data set. See the previous link for more information
+on configuring measures and the fields that can be provided to the `values` object list.
 
-One of the advantages of defining measure columns in this way in standard shape data sets is that no changes are required in the cube configuration file if new measures are added. Using multiple measures in a measure column simply means adding new rows to the data set, and specifying measures (and units) to be used for the observation. To view more information on the difference between single measure and multi measure data sets, see the [Shape your data](../../shape-data/index.md) page (for both standard and pivoted shape).
+If you are re-using existing measures in your measures column, then do not use the `values` field to define the
+measures. Instead, use the field `cell_uri_template`.
 
-## Measure definitions
+```json
+{
+    "$schema": "https://purl.org/csv-cubed/qube-config/v1",
+    "title": "Average Height and Weight for Men in different countries",
+    "columns": {
+        "Measure": {
+            "type": "measures",
+            "cell_uri_template": "http://example.org/measures/example-measure"
+        },
+    }
+}
+```
 
-This table shows a list of the possible fields that can be entered when configuring a measure.
+ Provide a URI of a measure resource to use in the definition.
 
-| **field name**   | **description**                                                                                                             | **default value** |
-|------------------|-----------------------------------------------------------------------------------------------------------------------------|-------------------|
-| `label`          | The title of the measure (Required; Optional if `from_existing` defined)                                                    | *none*            |
-| `description`    | A description of the contents of the measure (Optional)                                                                     | *none*            |
-| `from_existing`  | The uri of the resource for reuse/extension (Optional)                                                                      | *none*            |
-| `definition_uri` | A uri of a resource to show how the measure is created/managed (e.g. a uri of a PDF explaining the measure type) (Optional) | *none*            |
+## Reference
+
+| **field name**      | **description**                                                                                                                                                                                                                                                                                            | **default value** |
+|---------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------|
+| `type`              | The type of the column, provide `"measures"` for the measure column type.(Required)                                                                                                                                                                                                                        | *dimension*       |
+| `values`            | (New Measures only) If basic units/measures are desired, a boolean value of `true` is used to signify to csvcubed to create units/measures from values in this column; otherwise values is a dictionary which defines the units/measures using the notation from [Measures and Units](#measures-and-units) | `true`            |
+| `cell_uri_template` | (Existing Measures only) Used to define a template to map the cell values in this column to URIs                                                                                                                                                                                                           | *none*            |

@@ -1,60 +1,118 @@
 ## Units columns
 
-This section will focus on the configuration of units columns, their presence in the structure of a cube config file, and how their definition can vary depending on the shape of the data set, or the number of units. The configuration of units themselves will not be the primary focus of this section. For more information on defining and configuring units, with examples, see the [configuring units](./units.md) page.
+This page discusses what a units column is, where one should be used, and how one can be defined.
 
-The *units* column represents how the measured quantity is being counted or incremented in each row, defining what unit of measurement is being used to measure this observation. At least one unit is required to be defined in a data cube for it to be valid.
+The configuration of unit definitions themselves will not be the primary focus of this page; for help with this, see
+[configuring units](./units.md).
 
-In a configuration file, the unit column is a form of attribute column. This means they share similarities to configure, sharing all of the attribute column’s configuration options, but with some additional options unique to units.
+> For a detailed look at a unit column's configuration options, see the [Reference table](#reference) at the bottom of
+>this page.
 
-However, defining unit columns is also quite different to other components such as dimensions, observations and attributes, as unit column definitions contain references to discrete units. To define a unit column, specify the `type` field of the column definition as "units". An example of a cube configuration containing a unit column definition is shown below:
 
-| Year | Location      | Value | Measure                | Unit        |
-|:-----|:--------------|------:|-----------------------:|------------:|
-| 2019 | Canada        |  70   | Average Height for Men | Inches      |
-| 2020 | United States |  69   | Average Height for Men | Inches      |
-| 2021 | England       |  175  | Average Height for Men | Centimetres |
-| 2021 | Scotland      |  175  | Average Height for Men | Centimetres |
+### What is a units column?
+
+A *units* column describes which unit each observed value has been measured in.
+
+The following is an example of a small data set containing a units column:
+
+| Year | Location      | Average Height of Men |        Unit |
+|:-----|:--------------|----------------------:|------------:|
+| 2019 | Canada        |                    70 |      Inches |
+| 2020 | United States |                    69 |      Inches |
+| 2021 | England       |                   175 | Centimetres |
+
+The units column is titled `Unit` The first two rows of the data set use the unit `Inches` to measure height, and the
+third row uses a different unit, `Centimetres`. In this case, different units are being used to measure the same thing.
+
+### When to use a units column
+
+Every valid data cube needs at least one unit. Units columns can be used in both
+[standard](../../shape-data/standard-shape.md) and [pivoted shape](../../shape-data/pivoted-shape.md) cubes.
+
+If every value in a observations column has the same unit, then you should set the unit against the
+[observations column](./observations.md).
+
+If some values in your observations column use one unit and some other values in the same column use a different unit
+then you should use a units column. In the example table above, we see a clear example of this given that the first two
+rows use `Inches` and the third row uses `Centimetres` to measure the `Average Height of Men`.
+
+### Basic configuration
+
+The following JSON shows how a units column can be defined in a [qube configuration file](../qube-config.md):
 
 ```json
 {
     "$schema": "https://purl.org/csv-cubed/qube-config/v1",
-    "title": "Average Height for Men in different countries",
+    "title": "Average Height of Men in different countries",
     "columns": {
-        "Units column": {
-            "type": "units",
-            "values": [
-              {
-                "Unit 1": {
-                    "label": "Inches",
-                    "description": "Height measured in Inches"
-                },
-                "Unit 2": {
-                  "label": "Centimetres",
-                  "description": "Height measured in Centimetres, cm"
-                }
-              }
-          ]
+        "Unit": {
+            "type": "units"
         },
     }
 }
 ```
 
+To define a units column, specify the `type` of the column definition as `units`.
+
 <!-- TODO: At some point, add an example of a single measure pivoted data set with a units column (multiple units) -->
 
-The unit column definition should contain a "values" object. This object can be filled in with the fields that are used to populate a unit that will appear in the column. The example above uses a basic data set containing two units, showing the configuration, but only focusing on the units column's definition with basic unit details given.
+todo: write about default behaviour of units column configuration
 
-A point to remember about unit columns is that they are only required to be defined in a standard shape data set, where each row has to specify what unit is being used to measure that row's observation. This is in contrast to the pivoted shape, where units are attached to the observation column they are used in and unit columns are not necessary. For more information on the differences between standard and pivoted shape data sets, as well as some examples, see the [Standard shape](../shape-data/standard-shape.md) and [Pivoted shape](../shape-data/pivoted-shape.md) sections of the Shape your data documentation.
+### Optional properties
 
-## Unit definitions
+When defining a units column, there are optional properties that can be entered, depending on how your units are
+being defined within the column.
 
-This table shows the possible fields that can be provided when defining a unit. The use of many of these fields is optional and depends on how your unit is defined and used.
+If you are creating new units within your units column, the details of the new units should be entered into a
+`values` field. The JSON below shows an example of the `values` field used in a units column.
 
-| **field name**      | **description**                                                                                                                                                                                         | **default value** |
-|---------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------|
-| `label`             | The title of the unit (Required; Optional if `from_existing` defined)                                                                                                                                   | *none*            |
-| `description`       | A description of the contents of the unit (Optional)                                                                                                                                                    | *none*            |
-| `from_existing`     | The uri of the resource for reuse/extension (Optional)                                                                                                                                                  | *none*            |
-| `definition_uri`    | A uri of a resource to show how the unit is created/managed (e.g. a uri of a image which shows the formula on how the unit is derived) (Optional)                                                       | *none*            |
-| `scaling_factor`    | The scaling factor (expressed in base 10) is used to define a new unit from an existing base (i.e. "GBP millions" would have a form_existing unit of GBP, and a `"scaling_factor": 1000000`) (Optional) | *none*            |
-| `si_scaling_factor` | The si_scaling_factor helps relate common scaled units to source SI units, for example kilograms are 1000 grams. Most of these units are already defined. (Optional) (Advanced)                         | *none*            |
-| `quantity_kind`     | The [QUDT quantity kind](http://www.qudt.org/doc/DOC_VOCAB-QUANTITY-KINDS.html#Instances) helps group units                                                                                             | *none*            |
+```json
+{
+    "$schema": "https://purl.org/csv-cubed/qube-config/v1",
+    "title": "Average Height and Weight for Men in different countries",
+    "columns": {
+        "Unit": {
+            "type": "units",
+            "values": true
+        },
+    }
+}
+```
+
+By default, the `values` field is set to `true`. This indicates to csvcubed to automatically generate
+[unit definitions](../unit-configuration.md) unique to your data set.
+
+TODO: Example of from_template unit
+
+If you are re-using existing units in your measures column, then do not use the `values` field to define the
+unit details. Instead, use the field `cell_uri_template`.
+
+```json
+{
+    "$schema": "https://purl.org/csv-cubed/qube-config/v1",
+    "title": "Average Height and Weight for Men in different countries",
+    "columns": {
+        "Unit": {
+            "type": "units",
+            "cell_uri_template": "http://example.org/units/example-unit"
+        },
+    }
+}
+```
+
+ Provide a URI of a unit resource to use in the definition.
+
+ A field that is unique to units columns that can be passed into their definition is `describes_observations`. This
+ field associates the units column with the relevant observation values where the units are being used. Note that this
+ is only applicable to pivoted shape cubes with multiple measures and multiple observation value columns. The use of
+ this field is covered in the [configuring units](../unit-configuration.md) page.
+
+## Reference                                                                                          | *none*            |
+
+| **field name**           | **description**                                                                                                                                                                                                   | **default value** |
+|--------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------|
+| `type`                   | The type of the column, provide `"units"` for a units column.(Required)                                                                                                                                           | *dimension*       |
+| `values`                 | (New Units only) If basic units are desired, a boolean value of `true` is used to signify to csvcubed to create units from values in this column                                                                  | `true`            |
+| `from_template`          | (Existing Units only) Use a [column template](templates.md)                                                                                                                                                       | *none*            |
+| `cell_uri_template`      | (Existing Units only) Used to define a template to map the cell values in this column to URIs                                                                                                                     | *none*            |
+| `describes_observations` | (Unit column only) Associates the unit column with the relevant observation values. This is only necessary for [pivoted shape data sets](../shape-data/pivoted-shape.md) with multiple observation value columns. | *none*            |

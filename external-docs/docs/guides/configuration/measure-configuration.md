@@ -1,16 +1,27 @@
 # Measure configuration
 
-This section will cover how to define and configure measures in a cube configuration file. It will focus on the possible scenarios/ways a measure can be defined, as well as the fields that can be populated when doing so, providing examples for different fields and scenarios of creating measures. This section will not discuss how to define measure columns or a measure column's role in the context of a data cube's structure. For information on defining measure columns, see the [Measure column definition](Add link here when structure is implemented).
+This section will cover how to define and configure measures in a cube configuration file. It will focus on the possible
+scenarios/ways a measure can be defined, as well as the fields that can be populated when doing so, providing examples
+for different fields and scenarios of creating measures. This section will not discuss how to define measure columns or
+a measure column's role in the context of a data cube's structure. For information on defining measure columns, see the
+[Measure column definition](Add link here when structure is implemented).
 
-A measure can be defined and configured in two different ways: Either by attaching it inside an observation column's definition, or in a dedicated measures column of its own. The way a measure is defined and configured can highly depend on the shape of your data set, and whether there are multiple measures present or not.
+A measure can be defined and configured in two different ways: Either by attaching it inside an observation column's
+definition, or in a dedicated measures column of its own. The way a measure is defined and configured can highly depend
+on the shape of your data set, and whether there are multiple measures present or not.
 For more information on defining observation columns, see the [observations columns](./columns/observations.md) page.
 For more information on defining measures columns, see the [measures columns](./columns/measures.md) page.
 
 ### Defining measures by attaching them to observation columns
 
-When there is only one measure present in the data set, or if an observation column only features one measure in its rows, then it is easiest to define the measure by attaching it to the observation column's definition. This is also how measures are to be defined in a pivoted shape data set, since each observation column naturally has their measures and units attached to them.
+When there is only one measure present in the data set, or if an observation column only features one measure in its
+rows, then it is easiest to define the measure by attaching it to the observation column's definition. This is also how
+measures are to be defined in a pivoted shape data set, since each observation column naturally has their measures and
+units attached to them.
 
-When defining a measure by attaching it to an observation column, the measure can be defined after specifying that the type of the column is `observations`. The measure is entered as an object field of the observation column definition, like shown in the example below:
+When defining a measure by attaching it to an observation column, the measure can be defined after specifying that the
+type of the column is `observations`. The measure is entered as an object field of the observation column definition,
+like shown in the example below:
 
 ```json
 "columns": {
