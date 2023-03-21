@@ -554,6 +554,7 @@ def test_validated_model_validation_incorrect_type():
         "test_validated_model_class",
         "str_test_variable_2",
     ]
+    assert errors[0].offending_value == 3.14
 
 
 def test_validated_model_is_not_inherited():

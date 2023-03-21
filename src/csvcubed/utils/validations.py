@@ -42,7 +42,7 @@ def validate_list(
 
 
 def validate_str_type(
-    value: str, property_name: str, property_path: List[str]
+    value: str, property_path: List[str]
 ) -> List[ValidateModelPropertiesError]:
     """
     This function will validate if the argument provided is in fact a string type and,
@@ -52,8 +52,8 @@ def validate_str_type(
         return [
             ValidateModelPropertiesError(
                 "This variable should be a string value, check the following variable:",
-                property_name,
                 property_path,
+                value,
             )
         ]
 
@@ -80,7 +80,7 @@ def validate_uri(value: str, property_name: str) -> List[ValidateModelProperties
 
 
 def validate_int_type(
-    value: int, property_name: str
+    value: int, property_name: str, property_path: List[str]
 ) -> List[ValidateModelPropertiesError]:
     """
     This function will validate if the argument provided is in fact a integer type and,
@@ -91,6 +91,7 @@ def validate_int_type(
             ValidateModelPropertiesError(
                 "This variable should be a integer value, check the following variable:",
                 property_name,
+                property_path,
             )
         ]
 
@@ -122,12 +123,12 @@ def validate_optional(
     """
 
     def _validate(
-        maybe_item: Optional[T], property_name: str, property_path: List[str]
+        maybe_item: Optional[T], property_path: List[str]
     ) -> List[ValidateModelPropertiesError]:
         if maybe_item is None:
             return []
 
-        return validate_item(maybe_item, property_name, property_path)
+        return validate_item(maybe_item, property_path)
 
     return _validate
 
@@ -267,14 +268,15 @@ def validated_model(validated_model_type: Type[ValidatedModel]):
         )
 
     def validate(
-        value: ValidatedModel, property_name: str, property_path: List[str]
+        value: ValidatedModel, property_path: List[str]
     ) -> List[ValidateModelPropertiesError]:
         if not isinstance(value, validated_model_type):
             # This error occurs when runtime validation occurs.
             return [
                 ValidateModelPropertiesError(
                     f"Value '{value}' was not an instance of the expected type '{validated_model_type.__name__}'.",
-                    property_name,
+                    property_path,
+                    value,
                 )
             ]
 

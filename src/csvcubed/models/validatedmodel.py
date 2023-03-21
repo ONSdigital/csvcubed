@@ -70,7 +70,7 @@ class ValidatedModel(DataClassBase):
             logging.debug("Validating %s", property_name)
 
             property_value = getattr(self, property_name)
-            errs = validation_function(property_value, property_name, property_path)
+            errs = validation_function(property_value, property_path)
 
             if any(errs):
                 logging.debug("'%s' generated errors: %s", property_name, errs)

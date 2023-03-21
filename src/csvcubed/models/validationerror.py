@@ -4,7 +4,7 @@ ValidationError
 """
 from abc import ABC
 from dataclasses import dataclass, field
-from typing import List, Optional
+from typing import Any, List, Optional
 
 from csvcubedmodels.dataclassbase import DataClassBase
 
@@ -69,6 +69,5 @@ class ValidateModelPropertiesError(ValidationError):
     This error will be returned with the name of the variable that has not been validated.
     """
 
-    property_name: str
     property_path: List[str]
-    # offending_value: str
+    offending_value: Any
