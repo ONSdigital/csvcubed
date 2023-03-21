@@ -2,42 +2,62 @@
 
 This page discusses what a dimension column is, when one should be used, and how one can be defined.
 
-> For a detailed look at a dimension column's configuration options, see the [Reference table](#reference) at the bottom of this page.
+> For a detailed look at a dimension column's configuration options, see the [Reference table](#reference) at the bottom
+ of this page.
 
 ## What is a dimension column?
 
-A dimension column serves to identify the observations in a data set. In order to be valid, a data cube must include at least one dimension column; however, in practice, it is likely that your data set will contain more than one dimension. A combined set of dimension values (including measures) should uniquely identify each observation in the data set. Examples of dimensions include the time period to which the observation applies, or the geographic region which the observation covers.
+A dimension column identifies the observations in a data set. In order to be valid, a data cube must include at least 
+one dimension column; however, in practice, it is likely that your data set will contain more than one dimension.
+
+A combined set of dimension values (including the measure) uniquely identifies each observation in the data set. More 
+specifically, the combined dimension values identify the sub-set of the population to which the observed value applies.
+
+Examples of dimensions include the time period to which the observation applies, or the geographic region which the 
+observation covers.
+
+todo: Simple 2/3-line table showing time period and geographic regions.
 
 ## When to use one
 
-Dimensions are the fundamental building blocks of your data set, and as such your data set must always include at least one dimension. Given that the goal of the csvcubed project is to simplify the process of creating [5-star linked data](https://5stardata.info/en/) from CSV files, proper configuration of the dimensions in your data set is a good way to start publishing linked data.
+Dimensions are the fundamental building blocks of your data set, so your data set must always include at least one 
+dimension. 
+
+**If a column groups or identifies a sub-set of the population that your cube describes, then it is a dimension.** Care 
+should be taken when deciding whether a column represents a dimension or an attribute. Attributes describe the observed 
+value and **should not** identify a sub-set of your cube's population.  
+
+todo: Reference the table in the section above and describe how the dimension columns partition the population.
 
 ## Basic configuration
 
-By default, csvcubed will designate a column as a dimension if the `type` field is left blank. It is also possible to explicitly designate the column as a dimension by setting the column's `type` field as "dimension". The following examples are therefore equivalent:
+If you do not provide a column mapping in your qube-config.json file for a column, then 
+[Conventional Column Mapping](../convention.md#conventional-column-names) applies. This means that your column will be 
+treated as a dimension by default unless it has a reserved name. 
+
+If you do provide a column mapping for your column, and you don't specify the `type` field then csvcubed will 
+automatically assume that your column is a dimension. It is also possible to explicitly set the column as a dimension by
+ setting the column's `type` field to `dimension`. The following examples are therefore equivalent:
 
 ```json
 { ...
+   todo: Provide rest of document structure.
    "columns": {
       "Column title" {
-         "type": "dimension",
-         "label": "The title of the column",
-         "description": "A description of the contents of the column"
+         "type": "dimension"
       }
    }
 }
 ```
 
-```json
-{ ...
-   "columns": {
-      "Column title" {
-         "label": "The title of the column",
-         "description": "A description of the contents of the column"
-      }
-   }
-}
-```
+This minimal definition results in:
+
+* the `label` defaulting to the `Column Title`,
+* a `code_list` automatically being generated containing the column's unique values.
+
+## Label, description and definition
+
+todo: Provide simple JSON example of setting the label, description and definition URI and briefly explain what each of those is for. Also explain that a description field can contain markdown and is probably where you want to put your methodology
 
 ## Code list configuration
 
@@ -121,7 +141,12 @@ One of the key principles of linked data is the ability to connect data sets via
 
 The `Year` column defined above uses a [column template](../templates.md) - doing so means that the `type`, `from_existing`, `label` and `cell_uri_template` fields will be automatically populated based on the [calendar-year.json](https://purl.org/csv-cubed/qube-config/templates/calendar-year.json) template. However, these fields can also be overridden, as is the case here, since the `label` has been defined as "Competition year".
 
+## Inheritence
+
+todo: Describe briefly how to inherit from a parent dimension. Brush over what this means for the code list - is it inherited? We haven't decided yet.
+
 ## Advanced configuration
+
 ### Cell URI templates
 
 **The use of the `cell_uri_template` field is considered an advanced configuration option, and therefore care must be taken to ensure that the values generated are valid.**
