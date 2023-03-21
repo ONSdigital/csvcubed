@@ -1,38 +1,23 @@
 # Observation configuration
 
-This section will focus on defining observation columns, the possible configurations with single and multiple measure data sets, their presence in the structure of a cube configuration file, and how the [shape of your data set](../../shape-data/index.md) affects the configuration of its observations. Details of observation configuration options can be found in the [Reference table](#reference) at the bottom of this page.
+This page discusses what an observation column is, where one should be used, and how one can be defined.
 
-Observations are the most important component of a CSV-W data set. Observation columns can have measures and units defined against them to obviate the need for separate unit and measure columns in a single measure data set.
+> For a detailed look at an observation column's configuration options, see the [Reference table](#reference) at the bottom of this page.
+
+## What is an observation column?
+
+Observation columns contain the numerical values of observations recorded in the data set, and are the most important component of a CSV-W. In order to be valid, a data cube must include at least one observation column, each of which must have a unit and a measure associated with it. Measures and units can either be defined against the observation column, or can be contained in separate unit and measure columns.
+
+## When to use one
+
+
+## Basic configuration
 
 The configuration of observation columns in your data set will primarily depend on the [shape of your data](../../shape-data/index.md). For [standard shape](../../shape-data/standard-shape.md) data sets, where units and measures are contained in their own columns, only the `type` and `data_type` fields can be populated. For [pivoted shape](../../shape-data/pivoted-shape.md) data sets, the `unit` and `measure` fields can also be configured.
 
-For the purposes of these instructions, we will be using the `Arthur's Bakes` data set. Examples have been provided for data sets in both the [standard](../../shape-data/standard-shape.md) and [pivoted](../../shape-data/pivoted-shape.md) shape.
+For the purposes of these instructions, we will be using the `Arthur's Bakes` data set.
 
-## Standard shape
-
-### Standard single-measure data set
-
-| Year | Location  | Value |                  Measure |  Unit |
-|:-----|:----------|------:|-------------------------:|------:|
-| 2022 | London    |    35 | Number of Arthur's Bakes | Count |
-| 2021 | Cardiff   |    26 | Number of Arthur's Bakes | Count |
-| 2020 | Edinburgh |    90 | Number of Arthur's Bakes | Count |
-| 2021 | Belfast   |     0 | Number of Arthur's Bakes | Count |
-
-This data set is in the standard shape, with `Measure` and `Unit` columns explicitly defined for `Number of Arthur's Bakes` and `Count` respectively; therefore the `Value` column can be configured as follows:
-
-```json
-{ ...
-   "columns": {
-      "Value": {
-         "type": "observations",
-         "data_type": "integer"
-      }
-   }
-}
-```
-
-### Standard multi-measure data set
+## Standard shape data sets
 
 | Year | Location | Value |                  Measure |                   Unit |
 |:-----|:---------|------:|-------------------------:|-----------------------:|
@@ -41,7 +26,7 @@ This data set is in the standard shape, with `Measure` and `Unit` columns explic
 | 2021 | Cardiff  |    26 | Number of Arthur's Bakes |                  Count |
 | 2021 | Cardiff  |    18 |                  Revenue | GBP Sterling, Millions |
 
-A `Revenue` measure has now been included in the data set, with a corresponding unit of `GBP Sterling, Millions`; however, this doesn't necessitate any changes to the configuration of the `Value` column:
+For [standard shape](../../shape-data/standard-shape.md) data sets, where value, measure and unit details are contained in their own columns, the observation column can be configured as follows; note that this configuration applies to both single and multiple measure standard shape data sets:
 
 ```json
 { ...
@@ -54,44 +39,14 @@ A `Revenue` measure has now been included in the data set, with a corresponding 
 }
 ```
 
-## Pivoted shape
-
-### Pivoted single-measure data set
-
-| Year | Location  | Number of Arthur's Bakes | Status      |
-|:-----|:----------|-------------------------:|:------------|
-| 2022 | London    |                       35 | Provisional |
-| 2021 | Cardiff   |                       26 | Final       |
-| 2020 | Edinburgh |                       90 | Final       |
-| 2021 | Belfast   |                        0 | Final       |
-
-Notice that the observation value column title (`Number of Arthur's Bakes`) does not use one of the [reserved column names](../convention.md#conventional-column-names), and therefore the `type` field must be set to `observations` in order for csvcubed to recognise it as such. In the example below, the `label` field has been configured for both the `unit` and `measure` fields. Please refer to the [Measures Configuration](./measures.md) and [Units Configuration](./units.md) sections for details of further configuration options available:
-
-```json
-{ ...
-   "columns": {
-      "Number of Arthur's Bakes": {
-         "type": "observations",
-         "data_type": "integer",
-         "unit": {
-            "label": "Count"
-         },
-         "measure": {
-            "label": "Number of Stores"
-         }
-      }
-   }
-}
-```
-
-### Pivoted multi-measure data set
+## Pivoted shape data sets
 
 | Year | Location | Number of Arthur's Bakes | Revenue | Revenue Units  |
 |:-----|:---------|-------------------------:|--------:|:---------------|
 | 2022 | London   |                       35 |      25 | GBP (Sterling) |
 | 2021 | Cardiff  |                       26 |      18 | GBP (Sterling) |
 
-In this example, a second observation value column, `Revenue`,  has been added, with the associated unit contained in the `Revenue Units` column. As you can see, the `Revenue Units` column has been linked to the `Revenue` column through the `describes_observations` field. This must be formatted in exactly the same way for csvcubed to recognise the link and generate the correct results. However, there is no measure information associated for either of the observation value columns; this can be configured as follows:
+In this example of a [pivoted shape](../../shape-data/pivoted-shape.md) data set, there are two observation value columns: `Number of Arthur's Bakes` and `Revenue`. As you can see, measure and unit information has been configured within the `Number of Arthur's Bakes` column definition, but the separate `Revenue Units` column has been linked to the `Revenue` column through the `describes_observations` field. This must be formatted in exactly the same way for csvcubed to recognise the link and generate the correct results:
 
 ```json
 { ...
@@ -122,6 +77,8 @@ In this example, a second observation value column, `Revenue`,  has been added, 
 ```
 
 ## Reference
+
+The following fields can be configured for each observation column in your data set.
 
 | **field name** | **description**                                                                                                                                                                                                                                                                                                                                                      | **default value** |
 |----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------|

@@ -1,46 +1,42 @@
-# Attribute configuration
+# Attribute column
 
-This section will focus on defining attribute columns, the difference between [Literal](../../../glossary/index.md#literal) and [Resource](../../../glossary/index.md#uri) attributes, and their presence in the structure of a cube configuration file. Instructions on how to configure the `values` field to define New Resource attributes can be found on the [Attribute values](./attribute-values.md) page. Details of attribute configuration options can be found in the [Reference table](#reference) at the bottom of this page.
+This section will focus on defining attribute columns, the difference between [Resource](../../../glossary/index.md#uri) and [Literal](../../../glossary/index.md#literal) attributes, and their presence in the structure of a cube configuration file. Details of attribute configuration options can be found in the [Reference table](#reference) at the bottom of this page. Instructions on how to configure the `values` field to define New Resource attributes can be found on the [Attribute values configuration](./attribute-values.md) page.
 
-## Literal attributes
+## What is an attribute?
 
-For the purposes of these instructions, we will be using the `Arthur's Bakes` data set:
+todo: mention:
 
-| Year | Location | Value |      Status |                  Measure |                   Unit | 95% CI (lower bound) | 95% CI (upper bound) |
-|:-----|:---------|------:|------------:|-------------------------:|-----------------------:|---------------------:|---------------------:|
-| 2022 | London   |    35 | Provisional | Number of Arthur's Bakes |                  Count |                      |                      |
-| 2022 | London   |    25 | Provisional |                  Revenue | GBP Sterling, Millions |                      |                      |
-| 2022 | London   |  7.85 | Provisional |   Average customer spend |           GBP Sterling |                 6.54 |                 8.06 |
-| 2021 | Cardiff  |    26 |       Final | Number of Arthur's Bakes |                  Count |                      |                      |
-| 2021 | Cardiff  |    18 |       Final |                  Revenue | GBP Sterling, Millions |                      |                      |
-| 2021 | Cardiff  |  6.98 |       Final |   Average customer spend |           GBP Sterling |                 6.03 |                 7.52 |
+* An attribute describes/provides context to an observed value
+* Does *NOT* identify any sub-group of the statistical population (i.e. not a dimension)
 
-This data set has two attribute columns defined for the 95% confidence interval for the `Average customer spend` values:
+## When to use one
 
-```json
-{ ...
-   "columns": {
-      "95% CI (lower bound)": {
-         "type": "attribute",
-         "data_type": "decimal",
-         "description": "The lower bound of the 95% confidence interval for the observed value",
-         "definition_uri": "http://www.example.org/confidence-intervals"
-      },
-      "95% CI (upper bound)": {
-         "type": "attribute",
-         "data_type": "decimal",
-         "description": "The upper bound of the 95% confidence interval for the observed value",
-         "definition_uri": "http://www.example.org/confidence-intervals"
-      }
-   }
-}
-```
+* Provide simple examples, e.g.
+   * Observation status (provision vs final)
+   * Errors
+   * Confidence intervals
 
-The `data_type` field indicates that `95% CI (lower bound)` and `95% CI (upper bound)` values should be decimals. Built-in data types are available in the [CSV-W standard](https://www.w3.org/TR/2015/REC-tabular-metadata-20151217/#h-built-in-datatypes) for a range of numeric, text, date/time and other values. The `data_type` field should only be used for the creation of Literal attributes - to refer to Existing attributes, or to repurpose Existing attributes as New attributes for the purposes of your data set, see the instructions below on [configuring Resource attributes](#resource-attributes).
+## Literals vs resources
 
-The `definition_uri` field allows you to specify a link to a resource describing the attribute and its permitted values. The `description` field can be used to provide additional information about the attribute.
+todo: This is where we should link to the literal and resources definitions, but we should bring the important bits into this section.
+
+* Resources are categorical values which *can be reused as linked data*.
+  * So you should really be trying to represent your values as resources in the first instance.
+  * Observation status is the prime example of a resource attribute since there are a number of categories (e.g. Provisional/Final) which describe the observed value.
+* Literals are simple values and are *not linked data*. You should only use literals where your data is not categorical.
+  * Errors + Confidencens intervals are examples of where literal attributes are appropriate - since they range over a continuous scale and are unique to each observed value.
+
+## Basic Configuration
+
+todo: This should be inside each sub-section (resource/literals)
 
 ## Resource attributes
+
+According to the W3C's RDF Data Cube Vocabulary:
+
+> "[M]any attributes used in data sets represent coded values from some controlled term list rather than free text descriptions. In the Data Cube vocabulary such codes are represented by URI references in the usual RDF fashion." - [8.1 Coded values for components properties](https://www.w3.org/TR/vocab-data-cube/#schemes-intro)
+
+These are known as Resource attributes.
 
 Resource attributes can either be Existing Resources or New Resources. In either case, the configuration of these attributes should refer to URIs.
 
@@ -67,8 +63,51 @@ Setting the `required` field as `true` means that each row must contain a value 
 
 <!-- values -->
 
-## Pivoted multi-measure data sets
+## Literal attributes
 
+Literal attributes can be used to define
+
+For the purposes of these instructions, we will be using the `Arthur's Bakes` data set:
+
+| Year | Location | Value |      Status |                  Measure |                   Unit | 95% CI (lower bound) | 95% CI (upper bound) |
+|:-----|:---------|------:|------------:|-------------------------:|-----------------------:|---------------------:|---------------------:|
+| 2022 | London   |    35 | Provisional | Number of Arthur's Bakes |                  Count |                      |                      |
+| 2022 | London   |    25 | Provisional |                  Revenue | GBP Sterling, Millions |                      |                      |
+| 2022 | London   |  7.85 | Provisional |   Average customer spend |           GBP Sterling |                 6.54 |                 8.06 |
+| 2021 | Cardiff  |    26 |       Final | Number of Arthur's Bakes |                  Count |                      |                      |
+| 2021 | Cardiff  |    18 |       Final |                  Revenue | GBP Sterling, Millions |                      |                      |
+| 2021 | Cardiff  |  6.98 |       Final |   Average customer spend |           GBP Sterling |                 6.03 |                 7.52 |
+
+This data set has two attribute columns defined for the 95% confidence interval for the `Average customer spend` values:
+
+```json
+{ ...
+   "columns": {
+      "95% CI (lower bound)": {
+         "type": "attribute",
+         "data_type": "decimal",
+         "label": "95% confidence interval (lower bound)",
+         "description": "The lower bound of the 95% confidence interval for the observed value",
+         "definition_uri": "https://en.wikipedia.org/wiki/Confidence_interval"
+      },
+      "95% CI (upper bound)": {
+         "type": "attribute",
+         "data_type": "decimal",
+         "label": "95% confidence interval (upper bound)",
+         "description": "The upper bound of the 95% confidence interval for the observed value",
+         "definition_uri": "https://en.wikipedia.org/wiki/Confidence_interval"
+      }
+   }
+}
+```
+
+The `data_type` field indicates that `95% CI (lower bound)` and `95% CI (upper bound)` values should be decimals. Built-in data types are available in the [CSV-W standard](https://www.w3.org/TR/2015/REC-tabular-metadata-20151217/#h-built-in-datatypes) for a range of numeric, text, date/time and other values. The `data_type` field should only be used for the creation of Literal attributes - to refer to Existing attributes, or to repurpose Existing attributes as New attributes for the purposes of your data set, see the instructions below on [configuring Resource attributes](#resource-attributes).
+
+The `label` and `description` fields can be used to provide additional information about the attribute. The `definition_uri` field allows you to specify a link to a resource describing the attribute and its permitted values.
+
+
+## Pivoted multi-measure data sets
+<!-- TODO: Move to parent doc -->
 | Year | Location | Number of Arthur's Bakes | Number of Stores Status | Revenue | Revenue Units  | Revenue Status |
 |:-----|:---------|-------------------------:|:------------------------|--------:|:---------------|:---------------|
 | 2022 | London   |                       35 | Provisional             |      25 | GBP (Sterling) | Provisional    |
@@ -94,6 +133,8 @@ In this example, there are two attribute columns - `Number of Stores Status` and
 The `describes_observations` field has been used to associate each attribute with the observed values it qualifies. The formatting of the fields' values (in this case, `Number of Arthur's Bakes` and `Revenue`) must match the relevant column titles exactly in order for csvcubed to recognise the association.
 
 ## Reference
+
+The following fields can be configured for each attribute column in your data set.
 
 | **field name**           | **description**                                                                                                                                                                                                                                                                                                                                                                           | **default value**                                                                |
 |--------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
