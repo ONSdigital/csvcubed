@@ -50,9 +50,10 @@ by setting the column's `type` field to `dimension`. The following examples are 
    "description": "A description of the contents of the cube",
    "summary": "A summary of the data set",
    "columns": {
-      "Year" {
+      "Year": {
          "type": "dimension"
       }
+   }
 }
 ```
 
@@ -62,7 +63,7 @@ by setting the column's `type` field to `dimension`. The following examples are 
    "description": "A description of the contents of the cube",
    "summary": "A summary of the data set",
    "columns": {
-      "Year" {
+      "Year": {
          "type": "dimension"
       },
       "Region": {
@@ -88,8 +89,8 @@ As mentioned above, the `label` field will default to the column title unless ex
 ```json
 { ...
    "columns": {
-      "Year" {
-         "type": "dimension",
+      "Year": {
+         "type": "dimension"
       },
       "Region": {
          "type": "dimension",
@@ -106,8 +107,8 @@ markdown format.
 ```json
 { ...
    "columns": {
-      "Year" {
-         "type": "dimension",
+      "Year": {
+         "type": "dimension"
       },
       "Region": {
          "type": "dimension",
@@ -122,8 +123,8 @@ The `definition_uri` fields allows you to refer to external resources that furth
 ```json
 { ...
    "columns": {
-      "Year" {
-         "type": "dimension",
+      "Year": {
+         "type": "dimension"
       },
       "Region": {
          "type": "dimension",
@@ -146,8 +147,8 @@ are generated and expressed. These are briefly described below - full details ca
    ```json
    { ...
       "columns": {
-         "Year" {
-            "type": "dimension",
+         "Year": {
+            "type": "dimension"
          },
          "Region": {
             "type": "dimension",
@@ -162,8 +163,8 @@ are generated and expressed. These are briefly described below - full details ca
    ```json
    { ...
       "columns": {
-         "Year" {
-            "type": "dimension",
+         "Year": {
+            "type": "dimension"
          },
          "Region": {
             "type": "dimension",
@@ -178,8 +179,8 @@ are generated and expressed. These are briefly described below - full details ca
    ```json
    { ...
       "columns": {
-         "Year" {
-            "type": "dimension",
+         "Year": {
+            "type": "dimension"
          },
          "Region": {
             "type": "dimension",
@@ -210,8 +211,8 @@ are generated and expressed. These are briefly described below - full details ca
    ```json
    { ...
       "columns": {
-         "Year" {
-            "type": "dimension",
+         "Year": {
+            "type": "dimension"
          },
          "Region": {
             "type": "dimension",
@@ -220,6 +221,7 @@ are generated and expressed. These are briefly described below - full details ca
       }
    }
    ```
+
 ## Dimension column templates
 
 The `Region` column could also be configured by using a [column template](../templates.md) - doing so means that the
