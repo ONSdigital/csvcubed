@@ -16,7 +16,6 @@ Observation columns contain the observed values of your data, and as such your d
 
 For [standard shape](../../shape-data/standard-shape.md) data sets, where units and measures are contained in their own columns, only the `type` and `data_type` fields can be populated. For [pivoted shape](../../shape-data/pivoted-shape.md) data sets, the `unit` and `measure` fields can also be configured.
 
-<!-- For the purposes of these instructions, we will be using the `Arthur's Bakes` data set. -->
 ### Standard shape data sets
 
 | Year | Location | Value |                  Measure |                   Unit |
@@ -26,7 +25,7 @@ For [standard shape](../../shape-data/standard-shape.md) data sets, where units 
 | 2021 | Cardiff  |    26 | Number of Arthur's Bakes |                  Count |
 | 2021 | Cardiff  |    18 |                  Revenue | GBP Sterling, Millions |
 
-For [standard shape](../../shape-data/standard-shape.md) data sets, where value, measure and unit details are contained in their own columns, the observation column can be configured as follows; note that this configuration applies to both single and multiple measure standard shape data sets:
+In this data set the value, measure and unit details are contained in their own columns, so the observation column can be configured as follows; note that this configuration applies to both single and multiple measure standard shape data sets:
 
 ```json
 { ...
@@ -46,7 +45,7 @@ For [standard shape](../../shape-data/standard-shape.md) data sets, where value,
 | 2022 | London   |                       35 |      25 |
 | 2021 | Cardiff  |                       26 |      18 |
 
-In this example of a [pivoted shape](../../shape-data/pivoted-shape.md) data set, there are two observation value columns: `Number of Arthur's Bakes` and `Revenue`. As you can see, measure and unit information has been configured within the `Number of Arthur's Bakes` column definition, but the separate `Revenue Units` column has been linked to the `Revenue` column through the `describes_observations` field. This must be formatted in exactly the same way for csvcubed to recognise the link and generate the correct results:
+In this example of a pivoted shape data set, there are two observation value columns: `Number of Arthur's Bakes` and `Revenue`. As you can see, measure and unit information has been configured within the observation column definitions. For more information on the configuration options available, please refer to the [unit](./units.md) and [measure](./measures.md) pages:
 
 ```json
 { ...
@@ -65,15 +64,11 @@ In this example of a [pivoted shape](../../shape-data/pivoted-shape.md) data set
          "type": "observations",
          "data_type": "decimal",
          "unit": {
-            "
-         }
+            "label": "GBP Sterling (Millions)"
+         },
          "measure": {
             "label": "Revenue"
          }
-      },
-      "Revenue Units": {
-         "type": "units",
-         "describes_observations": "Revenue"
       }
    }
 }
@@ -81,7 +76,7 @@ In this example of a [pivoted shape](../../shape-data/pivoted-shape.md) data set
 
 ## Reference
 
-The following fields can be configured for each observation column in your data set.
+This table shows a list of the possible fields that can be entered when configuring an observation column.
 
 | **field name** | **description**                                                                                                                                                                                                                                                                                                                                                      | **default value** |
 |----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------|

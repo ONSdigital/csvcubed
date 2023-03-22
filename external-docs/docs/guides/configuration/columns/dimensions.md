@@ -28,11 +28,11 @@ Dimensions are the fundamental building blocks of your data set, so your data se
 dimension.
 
 **If a column groups or identifies a sub-set of the population that your cube describes, then it is a dimension.** Care
-should be taken when deciding whether a column represents a dimension or an attribute. Attributes describe the observed
+should be taken when deciding whether a column represents a dimension or an [attribute](./attributes.md). Attributes describe the observed
 value and **should not** identify a sub-set of your cube's population.
 
 Referring to the table above, `Year` and `Region` are the dimensions that partition the population into sub-sets. That
-is, `Year` and `Region` respectively identify the time period and geographic area to which the observed `Value` relates.
+is, `Year` and `Region` respectively identify the time period and geographic area to which the observed value relates.
 
 ## Basic configuration
 
@@ -136,9 +136,9 @@ The `definition_uri` fields allows you to refer to external resources that furth
 ## Code list configuration
 
 One of the key principles of linked data is the ability to connect data sets via references to common concepts. These
-concepts can be formalised through the use of code lists. By default, csvcubed will generate code lists for each of the
-dimensions in your data set. However, there are several configuration options for refining how your code lists are
-generated and expressed. These are briefly described below - full details can be found on the
+concepts can be formalised through the use of code lists. By default, csvcubed will generate code lists for each of
+the dimensions in your data set. However, there are several configuration options for refining how your code lists
+are generated and expressed. These are briefly described below - full details can be found on the
 [Code list configuration](../code-list-config.md) page.
 
 * Link to an externally-defined code list (URI):
@@ -317,7 +317,7 @@ to the CSV-W format.
 
 ## Reference
 
-This table shows a list of the possible fields that can be entered when configuring a dimension.
+This table shows a list of the possible fields that can be entered when configuring a dimension column.
 
 | **field name**      | **description**                                                                                                                                                                                                                                                                                       | **default value**                                                                               |
 |---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------|
