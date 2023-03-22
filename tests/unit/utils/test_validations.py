@@ -132,6 +132,7 @@ def test_validate_int_type_incorrect():
         == "This variable should be a integer value, check the following variable:"
     )
     assert result[0].property_path == ["int_test_variable"]
+    assert result[0].offending_value == "test"
 
 
 def test_validate_int_type_correct():
@@ -164,6 +165,7 @@ def test_validate_str_type_incorrect():
         == "This variable should be a string value, check the following variable:"
     )
     assert result[0].property_path == ["str_test_variable"]
+    assert result[0].offending_value == 5
 
 
 def test_validate_str_type_correct():
@@ -199,6 +201,7 @@ def test_validate_list_type_incorrect():
         == "This variable should be a list, check the following variable:"
     )
     assert result[0].property_path == ["list_test_variable"]
+    assert result[0].offending_value == "nope"
 
     my_list = ["Something", 8, "Something Else"]
 
@@ -212,6 +215,7 @@ def test_validate_list_type_incorrect():
         == "This variable should be a string value, check the following variable:"
     )
     assert result[0].property_path == ["list_test_variable"]
+    assert result[0].offending_value == 8
 
 
 def test_validate_list_type_correct():
@@ -246,6 +250,8 @@ def test_validate_uri_incorrect():
 
     assert len(result) == 1
     assert result[0].message == "This variable is not a valid uri."
+    assert result[0].property_path == ["test_uri"]
+    assert result[0].offending_value == "whatever"
 
 
 def test_validate_uri_none_correct():
@@ -297,6 +303,7 @@ def test_validate_float_type_incorrect():
         == "This variable should be a float value, check the following variable:"
     )
     assert result[0].property_path == ["float_test_variable"]
+    assert result[0].offending_value == "test"
 
 
 def test_validate_float_type_nan_incorrect():
@@ -317,6 +324,8 @@ def test_validate_float_type_nan_incorrect():
         == "This variable should be a float value but is Not a Number (NaN), check the following variable:"
     )
     assert result[0].property_path == ["float_test_variable"]
+    # assert result[0].offending_value == float("nan")
+    # TODO: ^ ?
 
 
 def test_validate_float_type_infinity_incorrect():
@@ -337,6 +346,7 @@ def test_validate_float_type_infinity_incorrect():
         == "This variable should be a float value but is +-infinity, check the following variable:"
     )
     assert result[0].property_path == ["float_test_variable"]
+    assert result[0].offending_value == float("inf")
 
 
 def test_validate_float_type_neg_infinity_incorrect():
@@ -357,6 +367,7 @@ def test_validate_float_type_neg_infinity_incorrect():
         == "This variable should be a float value but is +-infinity, check the following variable:"
     )
     assert result[0].property_path == ["float_test_variable"]
+    assert result[0].offending_value == float("-inf")
 
 
 def test_validate_float_type_correct():
@@ -407,6 +418,7 @@ def test_validate_file_not_exists():
         result[0].message == "This file does not exist, check the following variable:"
     )
     assert result[0].property_path == ["path_test_variable"]
+    assert result[0].offending_value == _test_case_base_dir / "not_a_csv_file.csv"
 
 
 def test_validate_file_not_a_path():
@@ -426,6 +438,7 @@ def test_validate_file_not_a_path():
         == "This is not a valid file path, check the following variable:"
     )
     assert result[0].property_path == ["path_test_variable"]
+    assert result[0].offending_value == "test"
 
 
 def test_validate_datetime_correct():
@@ -473,6 +486,7 @@ def test_validate_date_incorrect():
         == "Value 'test' was not an instance of the expected type 'date'."
     )
     assert result[0].property_path == ["date_test_variable"]
+    assert result[0].offending_value == "test"
 
 
 def test_validate_enum_correct():
@@ -544,19 +558,6 @@ def test_validated_model_validation_correct():
     assert not any(errors)
 
 
-# @dataclass
-# class TestingTestClass(ValidatedModel):
-#     test_validated_model_class: Optional[OtherTestClass] = None
-
-#     def _get_validations(self) -> Dict[str, ValidationFunction]:
-#         return {
-#             "test_validated_model_class": validate_optional(
-#                 v.validated_model(OtherTestClass)
-#             ),
-#         }
-# TODO: DELETE THIS
-
-
 def test_validated_model_validation_incorrect_type():
     """
     Tests whether a class using validated_model to validate an object of a type which inherits from the
@@ -616,8 +617,8 @@ class WholeObjectValidationsTestClass(ValidatedModel):
                 errors.append(
                     ValidateModelPropertiesError(
                         "Expected a positive integer",
-                        "Whole Object",
-                        offending_value=the_instance,
+                        ["Whole Object"],
+                        offending_value=the_instance.test_validate_int,
                     )
                 )
         else:
@@ -625,7 +626,9 @@ class WholeObjectValidationsTestClass(ValidatedModel):
             if the_instance.test_validate_int > 0:
                 errors.append(
                     ValidateModelPropertiesError(
-                        "Expected a negative integer", "Whole Object"
+                        "Expected a negative integer",
+                        ["Whole Object"],
+                        offending_value=the_instance.test_validate_int,
                     )
                 )
         return errors
@@ -653,6 +656,8 @@ def test_whole_object_validation_incorrect():
     )
     errors = test_instance.validate()
     assert any(errors)
+    assert errors[0].property_path == ["Whole Object"]
+    assert errors[0].offending_value == -2
 
 
 def test_validate_is_instance_of_correct():
@@ -673,6 +678,8 @@ def test_validate_is_instance_of_incorrect():
     test_instance = TestClass(test_validate_instance_of="Woof")
     errors = test_instance.validate()
     assert any(errors)
+    assert errors[0].property_path == ["test_validate_instance_of"]
+    assert errors[0].offending_value == "Woof"
 
 
 def test_validate_data_type_correct():
@@ -711,6 +718,8 @@ def test_validate_data_type_incorrect():
     )
     errors = test_instance.validate()
     assert any(errors)
+    assert errors[0].property_path == ["test_data_type"]
+    assert errors[0].offending_value == "Definitely not a data type or URI"
 
 
 def test_validate_int_fails_when_bool():
@@ -721,6 +730,8 @@ def test_validate_int_fails_when_bool():
     test_instance = TestClass(int_test_variable=True)
     errors = test_instance.validate()
     assert any(errors)
+    assert errors[0].property_path == ["int_test_variable"]
+    assert errors[0].offending_value == True
 
 
 @dataclass
@@ -769,6 +780,8 @@ def test_validate_base_unit_scaling_factor_dependency_incorrect():
     test_instance = TestUnitClass(base_unit_scaling_factor=1.5)
     errors = test_instance.validate()
     assert any(errors)
+    assert errors[0].property_path == ["Whole Object"]
+    assert errors[0].offending_value == None
 
 
 def test_validate_base_unit_conversion_multiplier_dependency_incorrect():
@@ -780,6 +793,8 @@ def test_validate_base_unit_conversion_multiplier_dependency_incorrect():
     test_instance = TestUnitClass(si_base_unit_conversion_multiplier=2.0)
     errors = test_instance.validate()
     assert any(errors)
+    assert errors[0].property_path == ["Whole Object"]
+    assert errors[0].offending_value == None
 
 
 def test_boolean_correct():
@@ -805,6 +820,8 @@ def test_boolean_incorrect():
     errors = test_instance.validate()
 
     assert any(errors)
+    assert errors[0].property_path == ["bool_test_variable"]
+    assert errors[0].offending_value == 5
 
 
 def test_primative_at_the_top_level():
