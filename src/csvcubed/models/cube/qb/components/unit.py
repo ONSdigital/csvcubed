@@ -127,10 +127,7 @@ class NewQbUnit(QbUnit, UriIdentifiable, ArbitraryRdf):
         if unit.base_unit_scaling_factor is not None and unit.base_unit is None:
             errors.append(
                 ValidateModelPropertiesError(
-                    f"""
-                '{unit.base_unit_scaling_factor}' has been specified, but the following is missing and must be
-                        provided: '{unit.base_unit}'.
-                        """,
+                    f"A value for base unit scaling factor has been specified: '{unit.base_unit_scaling_factor}' but no value for base unit has been specified and must be provided.",
                     property_path=["Whole Object"],
                     # TODO: what is the property path here?
                     offending_value=unit.base_unit,
@@ -143,10 +140,7 @@ class NewQbUnit(QbUnit, UriIdentifiable, ArbitraryRdf):
         ):
             errors.append(
                 ValidateModelPropertiesError(
-                    f"""
-                '{unit.si_base_unit_conversion_multiplier}' has been specified, but the following is missing and must be
-                        provided: '{unit.qudt_quantity_kind_uri}'.
-                        """,
+                    f"A value for si base unit conversion multiplier has been specified: '{unit.si_base_unit_conversion_multiplier}' but no value for qudt quantity kind url has been specified and must be provided.",
                     property_path=["Whole Object"],
                     # TODO: what is the property path here?
                     offending_value=unit.qudt_quantity_kind_uri,

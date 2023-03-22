@@ -129,7 +129,7 @@ def test_validate_int_type_incorrect():
     assert len(result) == 1
     assert (
         result[0].message
-        == "This variable should be a integer value, check the following variable:"
+        == "The value 'test' should be an integer. Check the following variable at the property path: '['int_test_variable']'"
     )
     assert result[0].property_path == ["int_test_variable"]
     assert result[0].offending_value == "test"
@@ -162,7 +162,7 @@ def test_validate_str_type_incorrect():
     assert len(result) == 1
     assert (
         result[0].message
-        == "This variable should be a string value, check the following variable:"
+        == "The value '5' should be a string. Check the following variable at the property path: '['str_test_variable']'"
     )
     assert result[0].property_path == ["str_test_variable"]
     assert result[0].offending_value == 5
@@ -198,7 +198,7 @@ def test_validate_list_type_incorrect():
     assert len(result) == 1
     assert (
         result[0].message
-        == "This variable should be a list, check the following variable:"
+        == "The value 'nope' should be a list. Check the following variable at the property path: '['list_test_variable']'"
     )
     assert result[0].property_path == ["list_test_variable"]
     assert result[0].offending_value == "nope"
@@ -212,7 +212,7 @@ def test_validate_list_type_incorrect():
     assert len(result) == 1
     assert (
         result[0].message
-        == "This variable should be a string value, check the following variable:"
+        == "The value '8' should be a string. Check the following variable at the property path: '['list_test_variable']'"
     )
     assert result[0].property_path == ["list_test_variable"]
     assert result[0].offending_value == 8
@@ -249,7 +249,10 @@ def test_validate_uri_incorrect():
     result = test_instance.validate()
 
     assert len(result) == 1
-    assert result[0].message == "This variable is not a valid uri."
+    assert (
+        result[0].message
+        == "The value 'whatever' should be a URI. Check the following variable at the property path: '['test_uri']'"
+    )
     assert result[0].property_path == ["test_uri"]
     assert result[0].offending_value == "whatever"
 
@@ -300,7 +303,7 @@ def test_validate_float_type_incorrect():
     assert len(result) == 1
     assert (
         result[0].message
-        == "This variable should be a float value, check the following variable:"
+        == "The value 'test' should be a float. Check the following variable at the property path: '['float_test_variable']'"
     )
     assert result[0].property_path == ["float_test_variable"]
     assert result[0].offending_value == "test"
@@ -321,7 +324,7 @@ def test_validate_float_type_nan_incorrect():
     assert len(result) == 1
     assert (
         result[0].message
-        == "This variable should be a float value but is Not a Number (NaN), check the following variable:"
+        == "The value 'nan' should be a float but is Not a Number (NaN). Check the following variable at the property path: '['float_test_variable']'"
     )
     assert result[0].property_path == ["float_test_variable"]
     # assert result[0].offending_value == float("nan")
@@ -343,7 +346,7 @@ def test_validate_float_type_infinity_incorrect():
     assert len(result) == 1
     assert (
         result[0].message
-        == "This variable should be a float value but is +-infinity, check the following variable:"
+        == "The value 'inf' should be a float but is +-infinity. Check the following variable at the property path: '['float_test_variable']'"
     )
     assert result[0].property_path == ["float_test_variable"]
     assert result[0].offending_value == float("inf")
@@ -364,7 +367,7 @@ def test_validate_float_type_neg_infinity_incorrect():
     assert len(result) == 1
     assert (
         result[0].message
-        == "This variable should be a float value but is +-infinity, check the following variable:"
+        == "The value '-inf' should be a float but is +-infinity. Check the following variable at the property path: '['float_test_variable']'"
     )
     assert result[0].property_path == ["float_test_variable"]
     assert result[0].offending_value == float("-inf")
@@ -415,7 +418,8 @@ def test_validate_file_not_exists():
 
     assert len(result) == 1
     assert (
-        result[0].message == "This file does not exist, check the following variable:"
+        result[0].message
+        == "The file '/workspaces/csvcubed/tests/test-cases/cli/inspect/not_a_csv_file.csv' does not exist. Check the following variable at the property path: '['path_test_variable']'"
     )
     assert result[0].property_path == ["path_test_variable"]
     assert result[0].offending_value == _test_case_base_dir / "not_a_csv_file.csv"
@@ -435,7 +439,7 @@ def test_validate_file_not_a_path():
     assert len(result) == 1
     assert (
         result[0].message
-        == "This is not a valid file path, check the following variable:"
+        == f"The file 'test' is not a valid file path. Check the following variable at the property path: '['path_test_variable']'"
     )
     assert result[0].property_path == ["path_test_variable"]
     assert result[0].offending_value == "test"
@@ -483,7 +487,7 @@ def test_validate_date_incorrect():
     assert len(result) == 1
     assert (
         result[0].message
-        == "Value 'test' was not an instance of the expected type 'date'."
+        == "Value 'test' was not an instance of the expected type 'date'. Check the following variable at the property path: '['date_test_variable']'"
     )
     assert result[0].property_path == ["date_test_variable"]
     assert result[0].offending_value == "test"
@@ -512,6 +516,12 @@ def test_validate_enum_incorrect():
     errors = test_instance.validate()
 
     assert any(errors)
+    assert (
+        errors[0].message
+        == "Could not find matching enum value for 'OtherTestEnum.First_Value' in TestEnum at property path: ['test_enum_value']"
+    )
+    assert errors[0].property_path == ["test_enum_value"]
+    assert errors[0].offending_value == OtherTestEnum.First_Value
 
 
 def test_validate_any_of_correct():
@@ -542,6 +552,12 @@ def test_validate_any_of_incorrect():
     errors = test_instance.validate()
 
     assert any(errors)
+    assert (
+        errors[0].message
+        == "The value '3.65' does not satisfy any single condition for variable at the property path: '['test_any_of_value']'"
+    )
+    assert errors[0].property_path == ["test_any_of_value"]
+    assert errors[0].offending_value == 3.65
 
 
 def test_validated_model_validation_correct():
@@ -570,6 +586,10 @@ def test_validated_model_validation_incorrect_type():
     errors = test_instance.validate()
 
     assert any(errors)
+    assert (
+        errors[0].message
+        == "The value '3.14' should be a string. Check the following variable at the property path: '['test_validated_model_class', 'str_test_variable_2']'"
+    )
     assert errors[0].property_path == [
         "test_validated_model_class",
         "str_test_variable_2",
@@ -589,6 +609,12 @@ def test_validated_model_is_not_inherited():
     errors = test_instance.validate()
 
     assert any(errors)
+    assert (
+        errors[0].message
+        == "Value 'This is not an instance of the right class.' was not an instance of the expected type 'OtherTestClass'. Check the following variable at the property path: '['test_validated_model_class']'"
+    )
+    assert errors[0].property_path == ["test_validated_model_class"]
+    assert errors[0].offending_value == "This is not an instance of the right class."
 
 
 @dataclass
@@ -656,6 +682,7 @@ def test_whole_object_validation_incorrect():
     )
     errors = test_instance.validate()
     assert any(errors)
+    assert errors[0].message == "Expected a positive integer"
     assert errors[0].property_path == ["Whole Object"]
     assert errors[0].offending_value == -2
 
@@ -678,6 +705,10 @@ def test_validate_is_instance_of_incorrect():
     test_instance = TestClass(test_validate_instance_of="Woof")
     errors = test_instance.validate()
     assert any(errors)
+    assert (
+        errors[0].message
+        == "Value 'Woof' was not an instance of the expected type 'Identifier'. Check the following variable at the property path: '['test_validate_instance_of']'"
+    )
     assert errors[0].property_path == ["test_validate_instance_of"]
     assert errors[0].offending_value == "Woof"
 
@@ -718,6 +749,11 @@ def test_validate_data_type_incorrect():
     )
     errors = test_instance.validate()
     assert any(errors)
+    assert (
+        errors[0].message
+        == "'Definitely not a data type or URI' is not recognised as a valid data type. Check the following variable at the property path: '['test_data_type']'"
+    )
+    # TODO: this is wrong because validate_any_of fails first
     assert errors[0].property_path == ["test_data_type"]
     assert errors[0].offending_value == "Definitely not a data type or URI"
 
@@ -730,6 +766,10 @@ def test_validate_int_fails_when_bool():
     test_instance = TestClass(int_test_variable=True)
     errors = test_instance.validate()
     assert any(errors)
+    assert (
+        errors[0].message
+        == "The value 'True' should be an integer. Check the following variable at the property path: '['int_test_variable']'"
+    )
     assert errors[0].property_path == ["int_test_variable"]
     assert errors[0].offending_value == True
 
@@ -780,6 +820,10 @@ def test_validate_base_unit_scaling_factor_dependency_incorrect():
     test_instance = TestUnitClass(base_unit_scaling_factor=1.5)
     errors = test_instance.validate()
     assert any(errors)
+    assert (
+        errors[0].message
+        == "A value for base unit scaling factor has been specified: '1.5' but no value for base unit has been specified and must be provided."
+    )
     assert errors[0].property_path == ["Whole Object"]
     assert errors[0].offending_value == None
 
@@ -793,6 +837,10 @@ def test_validate_base_unit_conversion_multiplier_dependency_incorrect():
     test_instance = TestUnitClass(si_base_unit_conversion_multiplier=2.0)
     errors = test_instance.validate()
     assert any(errors)
+    assert (
+        errors[0].message
+        == "A value for si base unit conversion multiplier has been specified: '2.0' but no value for qudt quantity kind url has been specified and must be provided."
+    )
     assert errors[0].property_path == ["Whole Object"]
     assert errors[0].offending_value == None
 
@@ -820,6 +868,10 @@ def test_boolean_incorrect():
     errors = test_instance.validate()
 
     assert any(errors)
+    assert (
+        errors[0].message
+        == "This value '5' should be a boolean value. Check the following variable at the property path: '['bool_test_variable']'"
+    )
     assert errors[0].property_path == ["bool_test_variable"]
     assert errors[0].offending_value == 5
 
@@ -876,6 +928,10 @@ def test_primative_inside_list_inside_object():
     errors = test_instance.validate()
 
     assert len(errors) == 1
+    assert (
+        errors[0].message
+        == "The value '8' should be a string. Check the following variable at the property path: '['test_something_else', 'list_test_variable_2']'"
+    )
     assert errors[0].property_path == [
         "test_something_else",
         "list_test_variable_2",
@@ -899,6 +955,10 @@ def test_primative_inside_object_inside_list():
     errors = test_instance.validate()
 
     assert len(errors) == 1
+    assert (
+        errors[0].message
+        == "The value '2.72' should be a string. Check the following variable at the property path: '['objects_list_test_variable', 'str_test_variable_2']'"
+    )
     assert errors[0].property_path == [
         "objects_list_test_variable",
         "str_test_variable_2",
@@ -920,11 +980,20 @@ def test_mutiple_incorrect_primatives():
 
     errors = test_instance.validate()
 
-    assert any(errors)
+    assert len(errors) == 2
+    assert (
+        errors[0].message
+        == "The value 'Not an int' should be an integer. Check the following variable at the property path: '['int_test_variable']'"
+    )
     assert errors[0].property_path == [
         "int_test_variable",
     ]
     assert errors[0].offending_value == "Not an int"
+
+    assert (
+        errors[1].message
+        == "The value '3.14' should be a string. Check the following variable at the property path: '['test_validated_model_class', 'str_test_variable_2']'"
+    )
     assert errors[1].property_path == [
         "test_validated_model_class",
         "str_test_variable_2",

@@ -27,7 +27,7 @@ def validate_list(
         if not isinstance(list_items, list):
             return [
                 ValidateModelPropertiesError(
-                    f"This variable should be a list, check the following variable:",
+                    f"The value '{list_items}' should be a list. Check the following variable at the property path: '{property_path}'",
                     property_path,
                     list_items,
                 )
@@ -52,7 +52,7 @@ def validate_str_type(
     if not isinstance(value, str):
         return [
             ValidateModelPropertiesError(
-                "This variable should be a string value, check the following variable:",
+                f"The value '{value}' should be a string. Check the following variable at the property path: '{property_path}'",
                 property_path,
                 value,
             )
@@ -75,7 +75,7 @@ def validate_uri(
     if not looks_like_uri(value):
         return [
             ValidateModelPropertiesError(
-                "This variable is not a valid uri.",
+                f"The value '{value}' should be a URI. Check the following variable at the property path: '{property_path}'",
                 property_path,
                 value,
             )
@@ -94,7 +94,7 @@ def validate_int_type(
     if isinstance(value, bool) or not isinstance(value, int):
         return [
             ValidateModelPropertiesError(
-                "This variable should be a integer value, check the following variable:",
+                f"The value '{value}' should be an integer. Check the following variable at the property path: '{property_path}'",
                 property_path,
                 value,
             )
@@ -113,7 +113,7 @@ def boolean(
     if not isinstance(value, bool):
         return [
             ValidateModelPropertiesError(
-                "This variable should be a boolean value, check the following variable:",
+                f"This value '{value}' should be a boolean value. Check the following variable at the property path: '{property_path}'",
                 property_path,
                 value,
             )
@@ -151,7 +151,7 @@ def validate_float_type(
     if not isinstance(value, float):
         return [
             ValidateModelPropertiesError(
-                "This variable should be a float value, check the following variable:",
+                f"The value '{value}' should be a float. Check the following variable at the property path: '{property_path}'",
                 property_path,
                 value,
             )
@@ -159,7 +159,7 @@ def validate_float_type(
     elif isnan(value):
         return [
             ValidateModelPropertiesError(
-                "This variable should be a float value but is Not a Number (NaN), check the following variable:",
+                f"The value '{value}' should be a float but is Not a Number (NaN). Check the following variable at the property path: '{property_path}'",
                 property_path,
                 value,
             )
@@ -167,7 +167,7 @@ def validate_float_type(
     elif isinf(value):
         return [
             ValidateModelPropertiesError(
-                "This variable should be a float value but is +-infinity, check the following variable:",
+                f"The value '{value}' should be a float but is +-infinity. Check the following variable at the property path: '{property_path}'",
                 property_path,
                 value,
             )
@@ -187,7 +187,7 @@ def validate_file(
         if not value.exists():
             return [
                 ValidateModelPropertiesError(
-                    "This file does not exist, check the following variable:",
+                    f"The file '{value}' does not exist. Check the following variable at the property path: '{property_path}'",
                     property_path,
                     value,
                 )
@@ -197,7 +197,7 @@ def validate_file(
     else:
         return [
             ValidateModelPropertiesError(
-                "This is not a valid file path, check the following variable:",
+                f"The file '{value}' is not a valid file path. Check the following variable at the property path: '{property_path}'",
                 property_path,
                 value,
             )
@@ -222,7 +222,7 @@ def any_of(*conditions: ValidationFunction) -> ValidationFunction:
 
         return [
             ValidateModelPropertiesError(
-                "Could not validate any single condition for property with name:",
+                f"The value '{value}' does not satisfy any single condition for variable at the property path: '{property_path}'",
                 property_path,
                 value,
             ),
@@ -247,7 +247,7 @@ def enum(enum_type: Type[Enum]) -> ValidationFunction:
 
         return [
             ValidateModelPropertiesError(
-                f"Could not find matching enum value for '{value}' in {enum_type.__name__} at property:",
+                f"Could not find matching enum value for '{value}' in {enum_type.__name__} at property path: {property_path}",
                 property_path,
                 value,
             )
@@ -266,7 +266,7 @@ def data_type(
     if data_type not in ACCEPTED_DATATYPE_MAPPING.keys():
         return [
             ValidateModelPropertiesError(
-                f"'{data_type}' is not recognised as a valid data type.",
+                f"'{data_type}' is not recognised as a valid data type. Check the following variable at the property path: '{property_path}'",
                 property_path,
                 data_type,
             )
@@ -296,7 +296,7 @@ def validated_model(validated_model_type: Type[ValidatedModel]):
             # This error occurs when runtime validation occurs.
             return [
                 ValidateModelPropertiesError(
-                    f"Value '{value}' was not an instance of the expected type '{validated_model_type.__name__}'.",
+                    f"Value '{value}' was not an instance of the expected type '{validated_model_type.__name__}'. Check the following variable at the property path: '{property_path}'",
                     property_path,
                     value,
                 )
@@ -320,7 +320,7 @@ def is_instance_of(expect_instance_type: Type[object]) -> ValidationFunction:
         if not isinstance(value, expect_instance_type):
             return [
                 ValidateModelPropertiesError(
-                    f"Value '{value}' was not an instance of the expected type '{expect_instance_type.__name__}'.",
+                    f"Value '{value}' was not an instance of the expected type '{expect_instance_type.__name__}'. Check the following variable at the property path: '{property_path}'",
                     property_path,
                     value,
                 ),
