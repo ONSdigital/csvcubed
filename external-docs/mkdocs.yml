@@ -29,8 +29,11 @@ nav:
           - Observation configuration: guides/configuration/columns/observations.md
           - Measure configuration: guides/configuration/columns/measures.md
           - Unit configuration: guides/configuration/columns/units.md
-          - Attribute configuration: guides/configuration/columns/attributes.md
-          - Attribute values configuration: guides/configuration/columns/attribute-values.md
+          - Attribute configuration:
+            - guides/configuration/columns/attributes.md
+            - Resource attributes: guides/configuration/columns/attribute-resources.md
+            - Literal attributes: guides/configuration/columns/attribute-literals.md
+            - Attribute values: guides/configuration/columns/attribute-values.md
         - Templates: guides/configuration/templates.md
         - Units: guides/configuration/configuring-units.md
         - Code Lists: guides/configuration/code-list-config.md

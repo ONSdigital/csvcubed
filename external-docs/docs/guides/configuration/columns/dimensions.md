@@ -28,8 +28,8 @@ Dimensions are the fundamental building blocks of your data set, so your data se
 dimension.
 
 **If a column groups or identifies a sub-set of the population that your cube describes, then it is a dimension.** Care
-should be taken when deciding whether a column represents a dimension or an [attribute](./attributes.md). Attributes describe the observed
-value and **should not** identify a sub-set of your cube's population.
+should be taken when deciding whether a column represents a dimension or an [attribute](./attributes.md). Attributes
+describe the observed value and **should not** identify a sub-set of your cube's population.
 
 Referring to the table above, `Year` and `Region` are the dimensions that partition the population into sub-sets. That
 is, `Year` and `Region` respectively identify the time period and geographic area to which the observed value relates.
@@ -313,9 +313,9 @@ dimension's code list;
 resources.
 
 The format of the `cell_uri_template` value **must** follow [RFC6570](https://www.rfc-editor.org/rfc/rfc6570) guidance
-for URI Templates. In the case of any doubt, follow the pattern in the examples shown above (e.g. `http://example.org/some-uri/{+column_name}`),
-as this will ensure csvcubed safely [transforms the column header](../../uris.md#csv-column-name-safe-transformation)
-to the CSV-W format.
+for URI Templates. In the case of any doubt, follow the pattern in the examples shown above (e.g.
+`http://example.org/some-uri/{+column_name}`), as this will ensure csvcubed safely
+[transforms the column header](../../uris.md#csv-column-name-safe-transformation) to the CSV-W format.
 
 ## Reference
 
