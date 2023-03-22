@@ -63,6 +63,8 @@ todo: write about default behaviour of units column configuration
 When defining a units column, there are optional properties that can be entered, depending on how your units are
 being defined within the column.
 
+### values
+
 If you are creating new units within your units column, the details of the new units should be entered into a
 `values` field. The JSON below shows an example of the `values` field used in a units column.
 
@@ -82,7 +84,29 @@ If you are creating new units within your units column, the details of the new u
 By default, the `values` field is set to `true`. This indicates to csvcubed to automatically generate
 [unit definitions](../unit-configuration.md) unique to your data set.
 
-TODO: Example of from_template unit
+### from_template
+
+Units columns can also make use of the `from_template` field. Templates are pre-configured column definitions that help
+speed up the creation of linked data columns. The use of this field in a units column is shown in the example below:
+
+```json
+{
+    "$schema": "https://purl.org/csv-cubed/qube-config/v1",
+    "title": "Average Height and Weight for Men in different countries",
+    "columns": {
+        "Unit": {
+            "from_template": "http://qudt.org/vocab/unit"
+        },
+    }
+}
+```
+
+Enter the URI of a template to be used as the units column. Note that you can override the configuration of used
+templates by specifying individual properties.
+
+For more information on templates, see the [Templates](../templates.md) page.
+
+### cell_uri_template
 
 If you are re-using existing units in your measures column, then do not use the `values` field to define the
 unit details. Instead, use the field `cell_uri_template`.

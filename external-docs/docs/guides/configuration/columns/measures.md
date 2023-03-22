@@ -117,7 +117,8 @@ By default, the `values` field is set to `true`. This indicates to csvcubed to a
 on configuring measures and the fields that can be provided to the `values` object list.
 
 If you are re-using existing measures in your measures column, then do not use the `values` field to define the
-measures. Instead, use the field `cell_uri_template`.
+measures. Instead, use the field `cell_uri_template` to define your existing measure. The JSON below shows an example
+of this field in use.
 
 ```json
 {
@@ -132,7 +133,8 @@ measures. Instead, use the field `cell_uri_template`.
 }
 ```
 
- Provide a URI of a measure resource to use in the definition.
+ After setting the `type` of the column as `measures`, provide the field `cell_uri_template` with a URI of a measure
+ resource to use in the definition.
 
 ## Reference
 
