@@ -28,7 +28,10 @@ For [standard shape](../../shape-data/standard-shape.md) data sets, where units 
 In this data set the value, measure and unit details are contained in their own columns, so the observation column can be configured as follows; note that this configuration applies to both single and multiple measure standard shape data sets:
 
 ```json
-{ ...
+{
+   "title": "Arthur's Bakes data set",
+   "description": "Arthur's Bakes - number of stores and annual revenue",
+   "summary": "Data on the number of Arthur's Bakes stores and annual revenues by year and location",
    "columns": {
       "Value": {
          "type": "observations",
@@ -45,10 +48,13 @@ In this data set the value, measure and unit details are contained in their own 
 | 2022 | London   |                       35 |      25 |
 | 2021 | Cardiff  |                       26 |      18 |
 
-In this example of a pivoted shape data set, there are two observation value columns: `Number of Arthur's Bakes` and `Revenue`. As you can see, measure and unit information has been configured within the observation column definitions. For more information on the configuration options available, please refer to the [unit](./units.md) and [measure](./measures.md) pages:
+In this example of a pivoted shape data set, there are two observation value columns: `Number of Arthur's Bakes` and `Revenue`. As you can see, measure and unit information has been configured within the observation column definitions. For more information on the configuration options available for units and measures, please refer to the [units](./units.md) and [measures](./measures.md) pages:
 
 ```json
-{ ...
+{
+   "title": "Arthur's Bakes data set",
+   "description": "Arthur's Bakes - number of stores and annual revenue",
+   "summary": "Data on the number of Arthur's Bakes stores and annual revenues by year and location",
    "columns": {
       "Number of Arthur's Bakes": {
          "type": "observations",
