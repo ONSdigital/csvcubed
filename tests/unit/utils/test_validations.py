@@ -419,7 +419,7 @@ def test_validate_file_not_exists():
     assert len(result) == 1
     assert (
         result[0].message
-        == "The file '/workspaces/csvcubed/tests/test-cases/cli/inspect/not_a_csv_file.csv' does not exist. Check the following variable at the property path: '['path_test_variable']'"
+        == "The file '/workspaces/csvcubed/tests/test-cases/cli/inspect/…' does not exist. Check the following variable at the property path: '['path_test_variable']'"
     )
     assert result[0].property_path == ["path_test_variable"]
     assert result[0].offending_value == _test_case_base_dir / "not_a_csv_file.csv"

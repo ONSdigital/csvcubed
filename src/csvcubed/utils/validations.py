@@ -8,6 +8,7 @@ from typing import Any, Callable, List, Optional, Type, TypeVar
 from csvcubed.models.cube.qb.components.constants import ACCEPTED_DATATYPE_MAPPING
 from csvcubed.models.validatedmodel import ValidatedModel, ValidationFunction
 from csvcubed.models.validationerror import ValidateModelPropertiesError
+from csvcubed.utils.text import truncate
 from csvcubed.utils.uri import looks_like_uri
 
 T = TypeVar("T")
@@ -27,7 +28,7 @@ def validate_list(
         if not isinstance(list_items, list):
             return [
                 ValidateModelPropertiesError(
-                    f"The value '{list_items}' should be a list. Check the following variable at the property path: '{property_path}'",
+                    f"The value '{truncate(str(list_items), 50)}' should be a list. Check the following variable at the property path: '{property_path}'",
                     property_path,
                     list_items,
                 )
@@ -52,7 +53,7 @@ def validate_str_type(
     if not isinstance(value, str):
         return [
             ValidateModelPropertiesError(
-                f"The value '{value}' should be a string. Check the following variable at the property path: '{property_path}'",
+                f"The value '{truncate(str(value), 50)}' should be a string. Check the following variable at the property path: '{property_path}'",
                 property_path,
                 value,
             )
@@ -75,7 +76,7 @@ def validate_uri(
     if not looks_like_uri(value):
         return [
             ValidateModelPropertiesError(
-                f"The value '{value}' should be a URI. Check the following variable at the property path: '{property_path}'",
+                f"The value '{truncate(str(value), 50)}' should be a URI. Check the following variable at the property path: '{property_path}'",
                 property_path,
                 value,
             )
@@ -94,7 +95,7 @@ def validate_int_type(
     if isinstance(value, bool) or not isinstance(value, int):
         return [
             ValidateModelPropertiesError(
-                f"The value '{value}' should be an integer. Check the following variable at the property path: '{property_path}'",
+                f"The value '{truncate(str(value), 50)}' should be an integer. Check the following variable at the property path: '{property_path}'",
                 property_path,
                 value,
             )
@@ -113,7 +114,7 @@ def boolean(
     if not isinstance(value, bool):
         return [
             ValidateModelPropertiesError(
-                f"This value '{value}' should be a boolean value. Check the following variable at the property path: '{property_path}'",
+                f"This value '{truncate(str(value), 50)}' should be a boolean value. Check the following variable at the property path: '{property_path}'",
                 property_path,
                 value,
             )
@@ -151,7 +152,7 @@ def validate_float_type(
     if not isinstance(value, float):
         return [
             ValidateModelPropertiesError(
-                f"The value '{value}' should be a float. Check the following variable at the property path: '{property_path}'",
+                f"The value '{truncate(str(value), 50)}' should be a float. Check the following variable at the property path: '{property_path}'",
                 property_path,
                 value,
             )
@@ -159,7 +160,7 @@ def validate_float_type(
     elif isnan(value):
         return [
             ValidateModelPropertiesError(
-                f"The value '{value}' should be a float but is Not a Number (NaN). Check the following variable at the property path: '{property_path}'",
+                f"The value '{truncate(str(value), 50)}' should be a float but is Not a Number (NaN). Check the following variable at the property path: '{property_path}'",
                 property_path,
                 value,
             )
@@ -167,7 +168,7 @@ def validate_float_type(
     elif isinf(value):
         return [
             ValidateModelPropertiesError(
-                f"The value '{value}' should be a float but is +-infinity. Check the following variable at the property path: '{property_path}'",
+                f"The value '{truncate(str(value), 50)}' should be a float but is +-infinity. Check the following variable at the property path: '{property_path}'",
                 property_path,
                 value,
             )
@@ -187,7 +188,7 @@ def validate_file(
         if not value.exists():
             return [
                 ValidateModelPropertiesError(
-                    f"The file '{value}' does not exist. Check the following variable at the property path: '{property_path}'",
+                    f"The file '{truncate(str(value), 50)}' does not exist. Check the following variable at the property path: '{property_path}'",
                     property_path,
                     value,
                 )
@@ -197,7 +198,7 @@ def validate_file(
     else:
         return [
             ValidateModelPropertiesError(
-                f"The file '{value}' is not a valid file path. Check the following variable at the property path: '{property_path}'",
+                f"The file '{truncate(str(value), 50)}' is not a valid file path. Check the following variable at the property path: '{property_path}'",
                 property_path,
                 value,
             )
@@ -222,7 +223,7 @@ def any_of(*conditions: ValidationFunction) -> ValidationFunction:
 
         return [
             ValidateModelPropertiesError(
-                f"The value '{value}' does not satisfy any single condition for variable at the property path: '{property_path}'",
+                f"The value '{truncate(str(value), 50)}' does not satisfy any single condition for variable at the property path: '{property_path}'",
                 property_path,
                 value,
             ),
@@ -247,7 +248,7 @@ def enum(enum_type: Type[Enum]) -> ValidationFunction:
 
         return [
             ValidateModelPropertiesError(
-                f"Could not find matching enum value for '{value}' in {enum_type.__name__} at property path: {property_path}",
+                f"Could not find matching enum value for '{truncate(str(value), 50)}' in {enum_type.__name__} at property path: {property_path}",
                 property_path,
                 value,
             )
@@ -266,7 +267,7 @@ def data_type(
     if data_type not in ACCEPTED_DATATYPE_MAPPING.keys():
         return [
             ValidateModelPropertiesError(
-                f"'{data_type}' is not recognised as a valid data type. Check the following variable at the property path: '{property_path}'",
+                f"'{truncate(str(data_type), 50)}' is not recognised as a valid data type. Check the following variable at the property path: '{property_path}'",
                 property_path,
                 data_type,
             )
@@ -296,7 +297,7 @@ def validated_model(validated_model_type: Type[ValidatedModel]):
             # This error occurs when runtime validation occurs.
             return [
                 ValidateModelPropertiesError(
-                    f"Value '{value}' was not an instance of the expected type '{validated_model_type.__name__}'. Check the following variable at the property path: '{property_path}'",
+                    f"Value '{truncate(str(value), 50)}' was not an instance of the expected type '{validated_model_type.__name__}'. Check the following variable at the property path: '{property_path}'",
                     property_path,
                     value,
                 )
@@ -320,7 +321,7 @@ def is_instance_of(expect_instance_type: Type[object]) -> ValidationFunction:
         if not isinstance(value, expect_instance_type):
             return [
                 ValidateModelPropertiesError(
-                    f"Value '{value}' was not an instance of the expected type '{expect_instance_type.__name__}'. Check the following variable at the property path: '{property_path}'",
+                    f"Value '{truncate(str(value), 50)}' was not an instance of the expected type '{expect_instance_type.__name__}'. Check the following variable at the property path: '{property_path}'",
                     property_path,
                     value,
                 ),
