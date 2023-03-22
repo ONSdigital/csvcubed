@@ -46,7 +46,17 @@ class OtherTestClass(ValidatedModel):
     str_test_variable_2: str
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
-        return {"str_test_variable_2": validate_str_type}
+        return {
+            "str_test_variable_2": validate_str_type,
+        }
+
+
+@dataclass
+class AnotherTestClass(ValidatedModel):
+    list_test_variable_2: List[str]
+
+    def _get_validations(self) -> Dict[str, ValidationFunction]:
+        return {"list_test_variable_2": validate_list(validate_str_type)}
 
 
 @dataclass
@@ -57,6 +67,7 @@ class TestClass(ValidatedModel):
     int_test_variable: int = 1
     float_test_variable: float = 1.0
     list_test_variable: List[str] = field(default_factory=list)
+    objects_list_test_variable: List[OtherTestClass] = field(default_factory=list)
     date_test_variable: Optional[date] = None
     date_time_test_variable: Optional[datetime] = None
     path_test_variable: Optional[Path] = None
@@ -64,6 +75,7 @@ class TestClass(ValidatedModel):
     test_enum_value: Optional[TestEnum] = None
     test_any_of_value: Union[str, int, None] = None
     test_validated_model_class: Optional[OtherTestClass] = None
+    test_something_else: Optional[AnotherTestClass] = None
     test_data_type: Optional[str] = None
     test_validate_instance_of: Optional[Identifier] = None
     bool_test_variable: Optional[bool] = True
@@ -75,6 +87,9 @@ class TestClass(ValidatedModel):
             "bool_test_variable": boolean,
             "float_test_variable": validate_float_type,
             "list_test_variable": validate_list(validate_str_type),
+            "objects_list_test_variable": validate_list(
+                validate_optional(v.validated_model(OtherTestClass))
+            ),
             "path_test_variable": validate_optional(validate_file),
             "date_test_variable": validate_optional(v.is_instance_of(date)),
             "date_time_test_variable": validate_optional(v.is_instance_of(datetime)),
@@ -85,6 +100,9 @@ class TestClass(ValidatedModel):
             ),
             "test_validated_model_class": validate_optional(
                 v.validated_model(OtherTestClass)
+            ),
+            "test_something_else": validate_optional(
+                v.validated_model(AnotherTestClass)
             ),
             "test_data_type": validate_optional(v.any_of(v.data_type, validate_uri)),
             "test_validate_instance_of": validate_optional(
@@ -536,6 +554,7 @@ def test_validated_model_validation_correct():
 #                 v.validated_model(OtherTestClass)
 #             ),
 #         }
+# TODO: DELETE THIS
 
 
 def test_validated_model_validation_incorrect_type():
@@ -786,6 +805,114 @@ def test_boolean_incorrect():
     errors = test_instance.validate()
 
     assert any(errors)
+
+
+def test_primative_at_the_top_level():
+    """
+    Test to ensure that when a primative at the top level of a class is incorrect
+    the returned property_path only contains a single element (name of the incorrect
+    property).
+    """
+    test_instance = TestClass(str_test_variable=5.5)
+
+    errors = test_instance.validate()
+
+    assert any(errors)
+    assert errors[0].property_path == ["str_test_variable"]
+    assert errors[0].offending_value == 5.5
+    # TODO: This test is the same as the test str one - probably will delete
+
+
+def test_primative_inside_nested_object():
+    """
+    Test to ensure that when a primative inside a nested object within a class is
+    incorrect the returned property_path contains elements corresponding to the
+    depth property in the nested object.
+    """
+    test_instance = TestClass(
+        test_validated_model_class=OtherTestClass(str_test_variable_2=3.14)
+    )
+
+    errors = test_instance.validate()
+
+    assert any(errors)
+    assert errors[0].property_path == [
+        "test_validated_model_class",
+        "str_test_variable_2",
+    ]
+    assert errors[0].offending_value == 3.14
+    # TODO: This test is the same as the validated model validation - probably will delete
+
+
+def test_primative_inside_list_inside_object():
+    """
+    Test to ensure that when a primative inside a list within a nested object is
+    incorrect the returned property_path contains elements corresponding to the
+    depth property in the nested object.
+    """
+    my_list = ["Something", 8, "Something Else"]
+
+    test_instance = TestClass(
+        test_something_else=AnotherTestClass(list_test_variable_2=my_list)
+    )
+
+    errors = test_instance.validate()
+
+    assert len(errors) == 1
+    assert errors[0].property_path == [
+        "test_something_else",
+        "list_test_variable_2",
+    ]
+    assert errors[0].offending_value == 8
+    # TODO: rename the test_something_else or do it as a union with the validated_test_model
+
+
+def test_primative_inside_object_inside_list():
+    """
+    Test to ensure that when a primative inside a nested object stored in a list is
+    incorrect the returned property_path contains elements corresponding to the
+    depth property in the nested object.
+    """
+    my_list = [
+        OtherTestClass(str_test_variable_2=2.72),
+    ]
+
+    test_instance = TestClass(objects_list_test_variable=my_list)
+
+    errors = test_instance.validate()
+
+    assert len(errors) == 1
+    assert errors[0].property_path == [
+        "objects_list_test_variable",
+        "str_test_variable_2",
+    ]
+    assert errors[0].offending_value == 2.72
+    # TODO: want to refactor objects_list_test_variable and clarify understanding of this test
+
+
+def test_mutiple_incorrect_primatives():
+    """
+    Test to ensure that when mutiple properties of a class are incorrect, the
+    property path for each validation error is correct.
+    """
+    test_instance = TestClass(
+        str_test_variable="Hello world",
+        int_test_variable="Not an int",
+        test_validated_model_class=OtherTestClass(str_test_variable_2=3.14),
+    )
+
+    errors = test_instance.validate()
+
+    assert any(errors)
+    assert errors[0].property_path == [
+        "int_test_variable",
+    ]
+    assert errors[0].offending_value == "Not an int"
+    assert errors[1].property_path == [
+        "test_validated_model_class",
+        "str_test_variable_2",
+    ]
+    assert errors[1].offending_value == 3.14
 
 
 if __name__ == "__main__":

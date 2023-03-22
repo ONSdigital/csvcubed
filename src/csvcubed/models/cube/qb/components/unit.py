@@ -131,7 +131,9 @@ class NewQbUnit(QbUnit, UriIdentifiable, ArbitraryRdf):
                 '{unit.base_unit_scaling_factor}' has been specified, but the following is missing and must be
                         provided: '{unit.base_unit}'.
                         """,
-                    "Whole Object",
+                    property_path=[],
+                    # TODO: what is the property path here?
+                    offending_value="Whole Object",
                 )
             )
 
@@ -145,7 +147,9 @@ class NewQbUnit(QbUnit, UriIdentifiable, ArbitraryRdf):
                 '{unit.si_base_unit_conversion_multiplier}' has been specified, but the following is missing and must be
                         provided: '{unit.qudt_quantity_kind_uri}'.
                         """,
-                    "Whole Object",
+                    property_path=[],
+                    # TODO: what is the property path here?
+                    offending_value="Whole Object",
                 )
             )
         return errors
