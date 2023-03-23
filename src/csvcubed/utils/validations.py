@@ -1,4 +1,5 @@
 # This script contain a set of function that can be used to validate specific class attributes/ member variables
+import builtins
 import datetime as dt
 from enum import Enum
 from math import isinf, isnan
@@ -14,7 +15,7 @@ from csvcubed.utils.uri import looks_like_uri
 T = TypeVar("T")
 
 
-def validate_list(
+def list(
     validate_list_item: Callable[[T, str], List[ValidateModelPropertiesError]],
 ) -> Callable[[List[T], str], List[ValidateModelPropertiesError]]:
     """
@@ -25,7 +26,7 @@ def validate_list(
     def _validate(
         list_items: List[T], property_path: List[str]
     ) -> List[ValidateModelPropertiesError]:
-        if not isinstance(list_items, list):
+        if not isinstance(list_items, builtins.list):
             return [
                 ValidateModelPropertiesError(
                     f"The value '{truncate(str(list_items), 50)}' should be a list. Check the following variable at the property path: '{property_path}'",
@@ -43,9 +44,7 @@ def validate_list(
     return _validate
 
 
-def validate_str_type(
-    value: str, property_path: List[str]
-) -> List[ValidateModelPropertiesError]:
+def string(value: str, property_path: List[str]) -> List[ValidateModelPropertiesError]:
     """
     This function will validate if the argument provided is in fact a string type and,
     returns any errors returned by the item validation function.
@@ -62,14 +61,12 @@ def validate_str_type(
     return []
 
 
-def validate_uri(
-    value: str, property_path: List[str]
-) -> List[ValidateModelPropertiesError]:
+def uri(value: str, property_path: List[str]) -> List[ValidateModelPropertiesError]:
     """
     This function will validate if the argument provided is in fact a string type and,
     check is the string contains a uri. Either checks fail it returns any errors returned by the item validation function.
     """
-    errors = validate_str_type(value, property_path)
+    errors = string(value, property_path)
     if any(errors):
         return errors
 
@@ -85,9 +82,7 @@ def validate_uri(
     return []
 
 
-def validate_int_type(
-    value: int, property_path: List[str]
-) -> List[ValidateModelPropertiesError]:
+def integer(value: int, property_path: List[str]) -> List[ValidateModelPropertiesError]:
     """
     This function will validate if the argument provided is in fact a integer type and,
     returns any errors returned by the item validation function.
@@ -123,7 +118,7 @@ def boolean(
     return []
 
 
-def validate_optional(
+def optional(
     validate_item: Callable[[T, str], List[ValidateModelPropertiesError]]
 ) -> Callable[[Optional[T], str], List[ValidateModelPropertiesError]]:
     """
@@ -142,14 +137,12 @@ def validate_optional(
     return _validate
 
 
-def validate_float_type(
-    value: float, property_path: List[str]
-) -> List[ValidateModelPropertiesError]:
+def float(value: float, property_path: List[str]) -> List[ValidateModelPropertiesError]:
     """
     This function will validate if the argument provided is in fact a float type and,
     returns any errors returned by the item validation function.
     """
-    if not isinstance(value, float):
+    if not isinstance(value, builtins.float):
         return [
             ValidateModelPropertiesError(
                 f"The value '{truncate(str(value), 50)}' should be a float. Check the following variable at the property path: '{property_path}'",
@@ -177,9 +170,7 @@ def validate_float_type(
     return []
 
 
-def validate_file(
-    value: Path, property_path: List[str]
-) -> List[ValidateModelPropertiesError]:
+def file(value: Path, property_path: List[str]) -> List[ValidateModelPropertiesError]:
     """
     This function validates whether the given argument is in fact of type Path, and if not,
     returns any validation errors raised by the validation function.

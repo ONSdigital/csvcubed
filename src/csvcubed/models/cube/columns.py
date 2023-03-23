@@ -11,7 +11,7 @@ from csvcubed.models.pydanticmodel import PydanticModel
 from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.models.validatedmodel import ValidationFunction
 from csvcubed.models.validationerror import ValidationError
-from csvcubed.utils.validations import validate_str_type
+from csvcubed.utils import validations as v
 
 
 @dataclass
@@ -26,7 +26,7 @@ class CsvColumn(PydanticModel, UriIdentifiable, ABC):
         pass
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
-        return {"csv_column_title": validate_str_type}
+        return {"csv_column_title": v.string}
 
 
 @dataclass

@@ -17,13 +17,6 @@ from csvcubed.models.validatedmodel import (
 )
 from csvcubed.models.validationerror import ValidateModelPropertiesError
 from csvcubed.utils import validations as v
-from csvcubed.utils.validations import (
-    validate_float_type,
-    validate_list,
-    validate_optional,
-    validate_str_type,
-    validate_uri,
-)
 from csvcubed.utils.validators.attributes import (
     enforce_optional_attribute_dependencies as pydantic_enforce_optional_attribute_dependencies,
 )
@@ -45,6 +38,7 @@ class ExistingQbUnit(QbUnit):
     unit_uri: str
 
     _unit_uri_validator = pydantic_validate_uri("unit_uri")
+    # TODO: ^ Does this need replacing in this ticket (676)?
 
     def __eq__(self, other):
         return isinstance(other, ExistingQbUnit) and other.unit_uri == self.unit_uri
@@ -53,7 +47,7 @@ class ExistingQbUnit(QbUnit):
         return self.unit_uri.__hash__()
 
     def _get_validations(self) -> Union[Validations, Dict[str, ValidationFunction]]:
-        return {"unit_uri": validate_uri}
+        return {"unit_uri": v.uri}
 
 
 @dataclass
@@ -101,17 +95,15 @@ class NewQbUnit(QbUnit, UriIdentifiable, ArbitraryRdf):
     def _get_validations(self) -> Union[Validations, Dict[str, ValidationFunction]]:
         return Validations(
             individual_property_validations={
-                "label": validate_str_type,
-                "description": validate_optional(validate_str_type),
-                "source_uri": validate_optional(validate_uri),
+                "label": v.string,
+                "description": v.optional(v.string),
+                "source_uri": v.optional(v.uri),
                 **UriIdentifiable._get_validations(self),
-                "arbitrary_rdf": validate_list(v.validated_model(TripleFragmentBase)),
-                "base_unit": validate_optional(v.validated_model(QbUnit)),
-                "base_unit_scaling_factor": validate_optional(validate_float_type),
-                "qudt_quantity_kind_uri": validate_optional(validate_uri),
-                "si_base_unit_conversion_multiplier": validate_optional(
-                    validate_float_type
-                ),
+                "arbitrary_rdf": v.list(v.validated_model(TripleFragmentBase)),
+                "base_unit": v.optional(v.validated_model(QbUnit)),
+                "base_unit_scaling_factor": v.optional(v.float),
+                "qudt_quantity_kind_uri": v.optional(v.uri),
+                "si_base_unit_conversion_multiplier": v.optional(v.float),
             },
             whole_object_validations=[
                 self._validation_base_unit_scaling_factor_dependency

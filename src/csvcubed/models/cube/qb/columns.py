@@ -13,7 +13,6 @@ from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.models.validatedmodel import ValidationFunction
 from csvcubed.utils import validations as v
 from csvcubed.utils.uri import csvw_column_name_safe
-from csvcubed.utils.validations import validate_optional, validate_str_type
 
 from ...validationerror import ValidationError
 from .components.datastructuredefinition import QbColumnStructuralDefinition
@@ -57,8 +56,8 @@ class QbColumn(CsvColumn, Generic[QbColumnStructuralDefinition]):
         return {
             **CsvColumn._get_validations(self),
             "structural_definition": v.validated_model(QbColumnStructuralDefinition),
-            "csv_column_uri_template": validate_optional(
-                validate_str_type,
+            "csv_column_uri_template": v.optional(
+                v.string,
             ),
             **UriIdentifiable._get_validations(self),
         }

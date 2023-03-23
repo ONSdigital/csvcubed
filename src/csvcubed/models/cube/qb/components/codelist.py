@@ -21,13 +21,6 @@ from csvcubed.models.validationerror import (
 from csvcubed.readers.skoscodelistreader import extract_code_list_concept_scheme_info
 from csvcubed.utils import validations as v
 from csvcubed.utils.qb.validation.uri_safe import ensure_no_uri_safe_conflicts
-from csvcubed.utils.validations import (
-    validate_file,
-    validate_list,
-    validate_optional,
-    validate_str_type,
-    validate_uri,
-)
 from csvcubed.utils.validators.file import (
     validate_file_exists as pydantic_validate_file_exists,
 )
@@ -57,7 +50,7 @@ class ExistingQbCodeList(QbCodeList):
     _concept_scheme_uri_validator = pydantic_validate_uri("concept_scheme_uri")
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
-        return {"concept_scheme_uri": validate_uri}
+        return {"concept_scheme_uri": v.uri}
 
 
 @dataclass
@@ -111,10 +104,10 @@ class NewQbCodeListInCsvW(QbCodeList):
     def _get_validations(self) -> Union[Validations, Dict[str, ValidationFunction]]:
         return Validations(
             individual_property_validations={
-                "schema_metadata_file_path": validate_file,
-                "csv_file_relative_path_or_uri": validate_str_type,
-                "concept_scheme_uri": validate_uri,
-                "concept_template_uri": validate_str_type,
+                "schema_metadata_file_path": v.file,
+                "csv_file_relative_path_or_uri": v.string,
+                "concept_scheme_uri": v.uri,
+                "concept_template_uri": v.string,
             },
             whole_object_validations=[self._validation_csvw_sufficient_information],
         )
@@ -191,9 +184,9 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
     def _get_validations(self) -> Dict[str, ValidationFunction]:
         return {
             "metadata": v.validated_model(CatalogMetadata),
-            "concepts": validate_list(v.validated_model(NewQbConcept)),
-            "arbitrary_rdf": validate_list(v.validated_model(TripleFragmentBase)),
-            "uri_style": validate_optional(v.enum(URIStyle)),
+            "concepts": v.list(v.validated_model(NewQbConcept)),
+            "arbitrary_rdf": v.list(v.validated_model(TripleFragmentBase)),
+            "uri_style": v.optional(v.enum(URIStyle)),
         }
 
     def _get_arbitrary_rdf(self) -> List[TripleFragmentBase]:
@@ -236,5 +229,5 @@ class CompositeQbCodeList(NewQbCodeList[DuplicatedQbConcept]):
     def _get_validations(self) -> Dict[str, ValidationFunction]:
         return {
             **NewQbCodeList._get_validations(self),
-            "variant_of_uris": validate_list(validate_uri),
+            "variant_of_uris": v.list(v.uri),
         }

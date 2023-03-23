@@ -11,12 +11,6 @@ from typing import Dict, List, Optional, Set
 from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.models.validatedmodel import ValidationFunction
 from csvcubed.utils import validations as v
-from csvcubed.utils.validations import (
-    validate_list,
-    validate_optional,
-    validate_str_type,
-    validate_uri,
-)
 
 from .arbitraryrdf import ArbitraryRdf, RdfSerialisationHint, TripleFragmentBase
 from .datastructuredefinition import SecondaryQbStructuralDefinition
@@ -48,10 +42,10 @@ class NewQbAttributeValue(
     def _get_validations(self) -> Dict[str, ValidationFunction]:
 
         return {
-            "label": validate_str_type,
-            "description": validate_optional(validate_str_type),
+            "label": v.string,
+            "description": v.optional(v.string),
             **UriIdentifiable._get_validations(self),
-            "source_uri": validate_optional(validate_uri),
-            "parent_attribute_value_uri": validate_optional(validate_uri),
-            "arbitrary_rdf": validate_list(v.validated_model(TripleFragmentBase)),
+            "source_uri": v.optional(v.uri),
+            "parent_attribute_value_uri": v.optional(v.uri),
+            "arbitrary_rdf": v.list(v.validated_model(TripleFragmentBase)),
         }

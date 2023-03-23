@@ -12,7 +12,6 @@ import pandas as pd
 from csvcubed.models.validatedmodel import ValidationFunction
 from csvcubed.models.validationerror import ValidationError
 from csvcubed.utils import validations as v
-from csvcubed.utils.validations import validate_optional, validate_uri
 
 from .datastructuredefinition import QbColumnStructuralDefinition
 from .measure import QbMeasure
@@ -49,7 +48,7 @@ class QbObservationValue(QbColumnStructuralDefinition):
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
         return {
-            "measure": validate_optional(v.validated_model(QbMeasure)),
-            "unit": validate_optional(v.validated_model(QbUnit)),
-            "data_type": v.any_of(v.data_type, validate_uri),
+            "measure": v.optional(v.validated_model(QbMeasure)),
+            "unit": v.optional(v.validated_model(QbUnit)),
+            "data_type": v.any_of(v.data_type, v.uri),
         }

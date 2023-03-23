@@ -18,16 +18,6 @@ from csvcubed.models.validatedmodel import (
 )
 from csvcubed.models.validationerror import ValidateModelPropertiesError
 from csvcubed.utils import validations as v
-from csvcubed.utils.validations import (
-    boolean,
-    validate_file,
-    validate_float_type,
-    validate_int_type,
-    validate_list,
-    validate_optional,
-    validate_str_type,
-    validate_uri,
-)
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
@@ -47,7 +37,7 @@ class OtherTestClass(ValidatedModel):
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
         return {
-            "str_test_variable_2": validate_str_type,
+            "str_test_variable_2": v.string,
         }
 
 
@@ -56,7 +46,7 @@ class AnotherTestClass(ValidatedModel):
     list_test_variable_2: List[str]
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
-        return {"list_test_variable_2": validate_list(validate_str_type)}
+        return {"list_test_variable_2": v.list(v.string)}
 
 
 @dataclass
@@ -82,32 +72,24 @@ class TestClass(ValidatedModel):
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
         return {
-            "str_test_variable": validate_str_type,
-            "int_test_variable": validate_int_type,
-            "bool_test_variable": boolean,
-            "float_test_variable": validate_float_type,
-            "list_test_variable": validate_list(validate_str_type),
-            "objects_list_test_variable": validate_list(
-                validate_optional(v.validated_model(OtherTestClass))
+            "str_test_variable": v.string,
+            "int_test_variable": v.integer,
+            "bool_test_variable": v.boolean,
+            "float_test_variable": v.float,
+            "list_test_variable": v.list(v.string),
+            "objects_list_test_variable": v.list(
+                v.optional(v.validated_model(OtherTestClass))
             ),
-            "path_test_variable": validate_optional(validate_file),
-            "date_test_variable": validate_optional(v.is_instance_of(date)),
-            "date_time_test_variable": validate_optional(v.is_instance_of(datetime)),
-            "test_uri": validate_optional(validate_uri),
-            "test_enum_value": validate_optional(v.enum(TestEnum)),
-            "test_any_of_value": validate_optional(
-                v.any_of(validate_str_type, validate_int_type)
-            ),
-            "test_validated_model_class": validate_optional(
-                v.validated_model(OtherTestClass)
-            ),
-            "test_something_else": validate_optional(
-                v.validated_model(AnotherTestClass)
-            ),
-            "test_data_type": validate_optional(v.any_of(v.data_type, validate_uri)),
-            "test_validate_instance_of": validate_optional(
-                v.is_instance_of(Identifier)
-            ),
+            "path_test_variable": v.optional(v.file),
+            "date_test_variable": v.optional(v.is_instance_of(date)),
+            "date_time_test_variable": v.optional(v.is_instance_of(datetime)),
+            "test_uri": v.optional(v.uri),
+            "test_enum_value": v.optional(v.enum(TestEnum)),
+            "test_any_of_value": v.optional(v.any_of(v.string, v.integer)),
+            "test_validated_model_class": v.optional(v.validated_model(OtherTestClass)),
+            "test_something_else": v.optional(v.validated_model(AnotherTestClass)),
+            "test_data_type": v.optional(v.any_of(v.data_type, v.uri)),
+            "test_validate_instance_of": v.optional(v.is_instance_of(Identifier)),
         }
 
 
@@ -629,8 +611,8 @@ class WholeObjectValidationsTestClass(ValidatedModel):
     def _get_validations(self) -> Union[Validations, Dict[str, ValidationFunction]]:
         return Validations(
             individual_property_validations={
-                "test_validate_str": validate_str_type,
-                "test_validate_int": validate_int_type,
+                "test_validate_str": v.string,
+                "test_validate_int": v.integer,
             },
             whole_object_validations=[self._whole_object_validation],
         )
@@ -753,7 +735,7 @@ def test_validate_data_type_incorrect():
         errors[0].message
         == "'Definitely not a data type or URI' is not recognised as a valid data type. Check the following variable at the property path: '['test_data_type']'"
     )
-    # TODO: this is wrong because validate_any_of fails first
+    # TODO: this (^) is wrong because validate_any_of fails first
     assert errors[0].property_path == ["test_data_type"]
     assert errors[0].offending_value == "Definitely not a data type or URI"
 
@@ -786,12 +768,10 @@ class TestUnitClass(QbUnit):
     def _get_validations(self) -> Union[Validations, Dict[str, ValidationFunction]]:
         return Validations(
             individual_property_validations={
-                "base_unit": validate_optional(v.validated_model(QbUnit)),
-                "base_unit_scaling_factor": validate_optional(validate_float_type),
-                "qudt_quantity_kind_uri": validate_optional(validate_uri),
-                "si_base_unit_conversion_multiplier": validate_optional(
-                    validate_float_type
-                ),
+                "base_unit": v.optional(v.validated_model(QbUnit)),
+                "base_unit_scaling_factor": v.optional(v.float),
+                "qudt_quantity_kind_uri": v.optional(v.uri),
+                "si_base_unit_conversion_multiplier": v.optional(v.float),
             },
             whole_object_validations=[
                 NewQbUnit._validation_base_unit_scaling_factor_dependency
