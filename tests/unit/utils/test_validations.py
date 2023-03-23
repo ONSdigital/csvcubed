@@ -421,7 +421,7 @@ def test_validate_file_not_a_path():
     assert len(result) == 1
     assert (
         result[0].message
-        == f"The file 'test' is not a valid file path. Check the following variable at the property path: '['path_test_variable']'"
+        == "The file 'test' is not a valid file path. Check the following variable at the property path: '['path_test_variable']'"
     )
     assert result[0].property_path == ["path_test_variable"]
     assert result[0].offending_value == "test"
@@ -854,43 +854,6 @@ def test_boolean_incorrect():
     )
     assert errors[0].property_path == ["bool_test_variable"]
     assert errors[0].offending_value == 5
-
-
-def test_primative_at_the_top_level():
-    """
-    Test to ensure that when a primative at the top level of a class is incorrect
-    the returned property_path only contains a single element (name of the incorrect
-    property).
-    """
-    test_instance = TestClass(str_test_variable=5.5)
-
-    errors = test_instance.validate()
-
-    assert any(errors)
-    assert errors[0].property_path == ["str_test_variable"]
-    assert errors[0].offending_value == 5.5
-    # TODO: This test is the same as the test str one - probably will delete
-
-
-def test_primative_inside_nested_object():
-    """
-    Test to ensure that when a primative inside a nested object within a class is
-    incorrect the returned property_path contains elements corresponding to the
-    depth property in the nested object.
-    """
-    test_instance = TestClass(
-        test_validated_model_class=OtherTestClass(str_test_variable_2=3.14)
-    )
-
-    errors = test_instance.validate()
-
-    assert any(errors)
-    assert errors[0].property_path == [
-        "test_validated_model_class",
-        "str_test_variable_2",
-    ]
-    assert errors[0].offending_value == 3.14
-    # TODO: This test is the same as the validated model validation - probably will delete
 
 
 def test_primative_inside_list_inside_object():
