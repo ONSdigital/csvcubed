@@ -16,8 +16,8 @@ T = TypeVar("T")
 
 
 def list(
-    validate_list_item: Callable[[T, str], List[ValidateModelPropertiesError]],
-) -> Callable[[List[T], str], List[ValidateModelPropertiesError]]:
+    validate_list_item: Callable[[T, List[str]], List[ValidateModelPropertiesError]],
+) -> Callable[[List[T], List[str]], List[ValidateModelPropertiesError]]:
     """
     This function will validate if the argument provided is in fact a list and,
     in a loop will check each member of the list and returns any errors returned by the item validation function.
@@ -37,8 +37,8 @@ def list(
 
         return [
             err
-            for list_item in list_items
-            for err in validate_list_item(list_item, property_path)
+            for i, list_item in enumerate(list_items)
+            for err in validate_list_item(list_item, [*property_path, str(i)])
         ]
 
     return _validate
@@ -119,8 +119,8 @@ def boolean(
 
 
 def optional(
-    validate_item: Callable[[T, str], List[ValidateModelPropertiesError]]
-) -> Callable[[Optional[T], str], List[ValidateModelPropertiesError]]:
+    validate_item: Callable[[T, List[str]], List[ValidateModelPropertiesError]]
+) -> Callable[[Optional[T], List[str]], List[ValidateModelPropertiesError]]:
     """
     This function will validate if the Optional argument provided is a None value it will return an empty list,
     else it returns any errors returned by the item validation function .
@@ -137,7 +137,9 @@ def optional(
     return _validate
 
 
-def float(value: float, property_path: List[str]) -> List[ValidateModelPropertiesError]:
+def float(
+    value: builtins.float, property_path: List[str]
+) -> List[ValidateModelPropertiesError]:
     """
     This function will validate if the argument provided is in fact a float type and,
     returns any errors returned by the item validation function.

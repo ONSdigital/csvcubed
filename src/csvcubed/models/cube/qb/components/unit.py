@@ -38,7 +38,6 @@ class ExistingQbUnit(QbUnit):
     unit_uri: str
 
     _unit_uri_validator = pydantic_validate_uri("unit_uri")
-    # TODO: ^ Does this need replacing in this ticket (676)?
 
     def __eq__(self, other):
         return isinstance(other, ExistingQbUnit) and other.unit_uri == self.unit_uri
@@ -112,7 +111,7 @@ class NewQbUnit(QbUnit, UriIdentifiable, ArbitraryRdf):
 
     @staticmethod
     def _validation_base_unit_scaling_factor_dependency(
-        unit: "NewQbUnit",
+        unit: "NewQbUnit", property_path: List[str]
     ) -> List[ValidateModelPropertiesError]:
         errors: List[ValidateModelPropertiesError] = []
 
@@ -120,9 +119,8 @@ class NewQbUnit(QbUnit, UriIdentifiable, ArbitraryRdf):
             errors.append(
                 ValidateModelPropertiesError(
                     f"A value for base unit scaling factor has been specified: '{unit.base_unit_scaling_factor}' but no value for base unit has been specified and must be provided.",
-                    property_path=["Whole Object"],
-                    # TODO: what is the property path here?
-                    offending_value=unit.base_unit,
+                    property_path,
+                    unit,
                 )
             )
 
@@ -132,10 +130,9 @@ class NewQbUnit(QbUnit, UriIdentifiable, ArbitraryRdf):
         ):
             errors.append(
                 ValidateModelPropertiesError(
-                    f"A value for si base unit conversion multiplier has been specified: '{unit.si_base_unit_conversion_multiplier}' but no value for qudt quantity kind url has been specified and must be provided.",
-                    property_path=["Whole Object"],
-                    # TODO: what is the property path here?
-                    offending_value=unit.qudt_quantity_kind_uri,
+                    f"A value for si base unit conversion multiplier has been specified: '{unit.si_base_unit_conversion_multiplier}' but no value for QUDT quantity kind URL has been specified and must be provided.",
+                    property_path,
+                    unit,
                 )
             )
         return errors

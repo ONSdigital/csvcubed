@@ -22,7 +22,7 @@ class Validations(Generic[T]):
 
     individual_property_validations: Dict[str, ValidationFunction]
     whole_object_validations: List[
-        Callable[[T], List[ValidateModelPropertiesError]]
+        Callable[[T, List[str]], List[ValidateModelPropertiesError]]
     ] = field(default_factory=list)
 
 
@@ -47,7 +47,7 @@ class ValidatedModel(DataClassBase):
             )
 
             for whole_obj_validator in validations.whole_object_validations:
-                validation_errors += whole_obj_validator(self)
+                validation_errors += whole_obj_validator(self, property_path)
         else:
             validation_errors += self._apply_individual_property_validations(
                 validations, property_path
@@ -66,17 +66,16 @@ class ValidatedModel(DataClassBase):
             property_name,
             validation_function,
         ) in individual_property_validations.items():
-            property_path = [*property_path, property_name]
+            new_property_path = [*property_path, property_name]
             logging.debug("Validating %s", property_name)
 
             property_value = getattr(self, property_name)
-            errs = validation_function(property_value, property_path)
+            errs = validation_function(property_value, new_property_path)
 
             if any(errs):
                 logging.debug("'%s' generated errors: %s", property_name, errs)
 
             validation_errors += errs
-            property_path = []
 
         return validation_errors
 

@@ -114,21 +114,22 @@ class NewQbCodeListInCsvW(QbCodeList):
 
     @staticmethod
     def _validation_csvw_sufficient_information(
-        self,
-    ) -> List[ValidateModelPropertiesError]:
+        value: "NewQbCodeListInCsvW", property_path: List[str]
+    ):
         errors: List[ValidateModelPropertiesError] = []
 
-        csv_path = self.csv_file_relative_path_or_uri
-        cs_uri = self.concept_scheme_uri
-        c_template_uri = self.concept_template_uri
+        csv_path = value.csv_file_relative_path_or_uri
+        cs_uri = value.concept_scheme_uri
+        c_template_uri = value.concept_template_uri
         if csv_path is None or cs_uri is None or c_template_uri is None:
-            schema_metadata_file_path = self.schema_metadata_file_path
+            schema_metadata_file_path = value.schema_metadata_file_path
             extract_code_list_concept_scheme_info(schema_metadata_file_path)
 
             errors.append(
                 ValidateModelPropertiesError(
                     "'csv_file_relative_path_or_uri', 'concept_scheme_uri' or 'concept_template_uri' values are missing.",
-                    "Whole Object",
+                    property_path,
+                    value,
                 )
             )
 
