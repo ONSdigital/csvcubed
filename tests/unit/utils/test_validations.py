@@ -19,6 +19,7 @@ from csvcubed.models.validatedmodel import (
 )
 from csvcubed.models.validationerror import ValidateModelPropertiesError
 from csvcubed.utils import validations as v
+from csvcubed.utils.text import truncate
 from tests.unit.test_baseunit import get_test_cases_dir
 
 _test_case_base_dir = get_test_cases_dir() / "cli" / "inspect"
@@ -418,7 +419,7 @@ def test_validate_file_not_exists():
 
     assert len(result) == 1
     assert (
-        "The file '/workspaces/csvcubed/tests/test-cases/cli/inspect/…' does not exist."
+        f"The file '{truncate(str(test_instance.path_test_variable), 50)}' does not exist."
         in result[0].message
     )
     assert result[0].property_path == ["path_test_variable"]
