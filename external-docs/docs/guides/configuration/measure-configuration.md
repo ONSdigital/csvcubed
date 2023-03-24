@@ -128,6 +128,18 @@ The following example shows a measure being created within a measures column, be
 }
 ```
 
+Another optional field that is used when defining a new measure is `definition_uri`. This is a URI that links to the
+definition of the resource being used.
+
+A point to remember about measures is that they must be accompanied by units, which represent in what intervals or
+units the observation is being measured in. Units can be defined by being attached to observations the same way that
+measures can when all observations in a column use the same measure/unit, or they can be defined in a dedicated units
+column. For more information on defining units, see the [configuring units](./units.md) page.
+
+ ## Inheritance
+
+ This section will show how to create measures by re-using existing definitions.
+
 To reuse an existing measure definition, whether it is reused in its entirety as an exact copy of the existing
 definition, or if it is used as a base to create a new measure upon, use the `from_existing` property.
 This allows a URI to be used to apply an existing measure's definition.
@@ -171,14 +183,6 @@ Example of a measure created using the `from_existing` field in a measures colum
    "from_existing": "http://purl.org/linked-data/sdmx/2009/measure#refPeriod"
 }
 ```
-
-Another optional field that is used when defining a new measure is `definition_uri`. This is a URI that links to the
-definition of the resource being used.
-
-A point to remember about measures is that they must be accompanied by units, which represent in what intervals or
-units the observation is being measured in. Units can be defined by being attached to observations the same way that
-measures can when all observations in a column use the same measure/unit, or they can be defined in a dedicated units
-column. For more information on defining units, see the [configuring units](./units.md) page.
 
 ## Reference
 
