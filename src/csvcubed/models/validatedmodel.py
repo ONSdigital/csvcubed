@@ -29,7 +29,7 @@ class Validations(Generic[T]):
 @dataclass
 class ValidatedModel(DataClassBase):
     """This abstract class that will act as a parent class for class attribute validations.
-    The class will run a valdiation function for each attribute that is passed in and return either a list of errors or an emtpy list.
+    The class will run a valdiation function for each attribute that is passed in and return either a list of errors or an empty list.
     """
 
     def validate(
