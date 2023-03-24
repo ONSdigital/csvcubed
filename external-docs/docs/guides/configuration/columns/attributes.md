@@ -12,12 +12,12 @@ a particular sub-set of the data set's population. If the column you are configu
 the population, then it is probably a [dimension](./dimensions.md).
 
 <!-- todo: mention:
-
 * An attribute describes/provides context to an observed value
 * Does *NOT* identify any sub-group of the statistical population (i.e. not a dimension) -->
 
 ## When to use one
-<!-- Clarify optionality -->
+<!-- TODO: Clarify optionality -->
+
 Unlike [dimensions](./dimensions.md), [observations](./observations.md), [measures](./measures.md) and
 [units](./units.md), attributes are optional components of a data cube. Their primary usage is to qualify
 observed values by providing additional context about individual data points. Two common examples of attributes are
@@ -46,12 +46,13 @@ confidence interval for the `Average customer spend` observed values.
    * Confidence intervals -->
 
 ## Resources vs literals
-<!-- Add Resource to glossary and update links -->
+<!-- TODO: Add Resource to glossary and update links -->
+
 The configuration of attribute columns in your data set will depend primarily on whether you choose to represent the
 attribute as a [resource](../../../glossary/index.md#uri) or a [literal value](../../../glossary/index.md#literal).
 
-**Resource attributes** are suitable for categorical values which **can be reused as linked data**. Given that the goal of the
-csvcubed project is to simplify the process of creating [5-star linked data](https://5stardata.info/en/) from CSV
+**Resource attributes** are suitable for categorical values which **can be reused as linked data**. Given that the goal
+of the csvcubed project is to simplify the process of creating [5-star linked data](https://5stardata.info/en/) from CSV
 files, using resource attributes in your data cube where appropriate is encouraged.
 
 Observation status is a good example of a resource attribute, since there are a number of categories (Provisional,
@@ -73,10 +74,11 @@ See the [Literal attributes](./attribute-literals.md) page for more information 
   * So you should really be trying to represent your values as resources in the first instance.
   * Observation status is the prime example of a resource attribute since there are a number of categories (e.g. Provisional/Final) which describe the observed value.
 * Literals are simple values and are *not linked data*. You should only use literals where your data is not categorical.
-  * Errors + Confidencens intervals are examples of where literal attributes are appropriate - since they range over a continuous scale and are unique to each observed value. -->
+  * Errors + Confidence intervals are examples of where literal attributes are appropriate - since they range over a continuous scale and are unique to each observed value. -->
 
 ## Basic configuration
 
+As mentioned above, the configuration of attribute columns will depend on whether you choose to represent them as resources or literals.
 
 ## Describing observations
 <!-- TODO: Move to parent doc -->
@@ -86,10 +88,10 @@ explicitly associated with the observed values they qualify. In the example belo
 `Number of Stores Status` and `Revenue Status`, which qualify the `Number of Arthur's Bakes` and `Revenue` columns
 respectively.
 
-| Year | Location | Number of Arthur's Bakes | Number of Stores Status | Revenue | Revenue Units  | Revenue Status |
-|:-----|:---------|-------------------------:|:------------------------|--------:|:---------------|:---------------|
-| 2022 | London   |                       35 | Provisional             |      25 | GBP (Sterling) | Provisional    |
-| 2021 | Cardiff  |                       26 | Final                   |      18 | GBP (Sterling) | Final          |
+| Year | Location | Number of Arthur's Bakes | Number of Stores Status | Revenue | Revenue Status |
+|:-----|:---------|-------------------------:|:------------------------|--------:|:---------------|
+| 2022 | London   |                       35 | Provisional             |      25 | Provisional    |
+| 2021 | Cardiff  |                       26 | Final                   |      18 | Final          |
 
 This can be configured as follows:
 

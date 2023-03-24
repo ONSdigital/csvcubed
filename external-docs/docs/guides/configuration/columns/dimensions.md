@@ -226,7 +226,7 @@ are generated and expressed. These are briefly described below - full details ca
 
 The `Region` column could also be configured by using a [column template](../templates.md) - doing so means that the
 `type`, `from_existing`, `label` and `cell_uri_template` fields will be automatically populated based on the
-[statistical-geography.json](https://purl.org/csv-cubed/qube-config/templates/statistical-geography.json) template.
+`statistical-geography` [template](https://purl.org/csv-cubed/qube-config/templates/statistical-geography.json).
 
 ```json
 { ...
