@@ -65,4 +65,4 @@ Brief descriptions of the five column types are given below. For more informatio
 
 ## [Attributes](./columns/attributes.md#attribute-configuration)
 
-*Attribute* columns allow us to qualify and interpret observed values. This enables specification of units of measure, any scaling factors and metadata such as the status of the observation (e.g. *estimated*, *provisional*). Attributes can either be [resources](../../glossary/index.md#uri) or [literals](../../glossary/index.md#literal).
+*Attribute* columns allow us to qualify and interpret observed values. This enables specification of units of measure, any scaling factors and metadata such as the status of the observation (e.g. *estimated*, *provisional*). Attributes can either be [resources](../../glossary/index.md#resource) or [literals](../../glossary/index.md#literal).

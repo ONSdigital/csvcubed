@@ -25,12 +25,12 @@ The [standard shape](../guides/shape-data/index.md#standard-shape) of data is th
 
 In the above table:
 
-* *identifying characteristics* are one or more columns which identify the sub-set of the population that has been observed in a given row. These are called [dimensions](../glossary/index.md#dimensionhttpswwww3orgtrvocab-data-cubecubes-model) elsewhere in documentation.
+* *identifying characteristics* are one or more columns which identify the sub-set of the population that has been observed in a given row. These are called [dimensions](../glossary/index.md#dimension) elsewhere in documentation.
 * the `Value` column contains the value which has been observed or measured; there is only ever one observed value per row in the [standard shape](../guides/shape-data/index.md#standard-shape).
 * the `Measure` column describes what has been observed or measured; note that the measure should not include any information about the units of measure.
 * the `Unit` column describes the unit of measure in which the `Value` has been recorded.
 
-The names of the columns is how csvcubed interprets what each column contains in the [configuration by convention approach](../guides/configuration/convention.md). Using the column titles `Value`, `Measure` and `Unit` or one of their [synonyms](../guides/configuration/index.md#conventional-column-names) in your CSV will work. All other columns are assumed to be *identifying characteristics* ([dimensions](../glossary/index.md#dimensionhttpswwww3orgtrvocab-data-cubecubes-model)).
+The names of the columns is how csvcubed interprets what each column contains in the [configuration by convention approach](../guides/configuration/convention.md). Using the column titles `Value`, `Measure` and `Unit` or one of their [synonyms](../guides/configuration/index.md#conventional-column-names) in your CSV will work. All other columns are assumed to be *identifying characteristics* ([dimensions](../glossary/index.md#dimensionl)).
 
 ### Pivoted shape
 
@@ -38,9 +38,9 @@ Once you have gained some familiarity with using csvcubed, you may find that the
 
 ## Adding your data
 
-First, we start by taking the above shape and adding columns for each of your *identifying characteristics* ([dimensions](../glossary/index.md#dimensionhttpswwww3orgtrvocab-data-cubecubes-model)).
+First, we start by taking the above shape and adding columns for each of your *identifying characteristics* ([dimensions](../glossary/index.md#dimension)).
 
-From hereonin we will be creating a data set to represent the competition winners in Eurovision. Our CSV will be structured as per the following extract where `Year`, `Entrant`, `Song` and `Language` are the cube's identifying [dimensions](../glossary/index.md#dimensionhttpswwww3orgtrvocab-data-cubecubes-model). Note that we have included multiple measures in this dataset, as `Final Rank`, `Final Points` and `People on Stage` are recorded for each contestant:
+From hereonin we will be creating a data set to represent the competition winners in Eurovision. Our CSV will be structured as per the following extract where `Year`, `Entrant`, `Song` and `Language` are the cube's identifying [dimensions](../glossary/index.md#dimension). Note that we have included multiple measures in this dataset, as `Final Rank`, `Final Points` and `People on Stage` are recorded for each contestant:
 
 | Year | Entrant            | Song     | Language | Value |         Measure |     Unit |
 |:----:|:-------------------|:---------|:---------|------:|----------------:|---------:|

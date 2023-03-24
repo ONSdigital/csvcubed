@@ -1,22 +1,13 @@
 # Resource attributes
 
-This page discusses how a resource attribute column can be defined.
+This page discusses how a Resource attribute column can be defined.
 
-See the [Attributes page](./attributes.md) for general information about attribute columns, including when to use one, and a discussion of the difference between resource attributes and [literal](./attribute-literals.md) attributes.
+See the [Attributes page](./attributes.md) for general information about attribute columns, including when to use one, and a discussion of the difference between Resource attributes and [Literal](./attribute-literals.md) attributes.
 
-> For a detailed look at a resource attribute column's configuration options, see the [Reference table](#reference) at
+> For a detailed look at a Resource attribute column's configuration options, see the [Reference table](#reference) at
 the bottom of this page.
 
-## New vs Existing Resource attributes
-<!-- TODO: Expand this section -->
-
-The configuration options you define in a `qube-config.json` file will determine whether csvcubed treats an attribute
-column as a New or an Existing resource.
-
-## New Resource attributes
-
-### Basic configuration
-<!-- todo: This should be inside each sub-section (resource/literals) -->
+## Basic configuration
 
 | Year | Location | Value |                  Measure |                   Unit |      **Status** |
 |:-----|:---------|------:|-------------------------:|-----------------------:|----------------:|
@@ -27,7 +18,7 @@ column as a New or an Existing resource.
 | 2021 | Cardiff  |    18 |                  Revenue | GBP Sterling, Millions |       **Final** |
 | 2021 | Cardiff  |  6.98 |   Average customer spend |           GBP Sterling |       **Final** |
 
-To configure a column as a resource attribute, specify the `type` field as `attribute`:
+To configure a column as a Resource attribute, specify the `type` field as `attribute`:
 
 ```json
 {
@@ -49,7 +40,7 @@ This minimal definition results in:
 `Status` column;
 * [attribute values](./attribute-values.md) automatically being generated from the unique cell values in the `Status` column (`Provisional` and `Final` in this example).
 
-If all cells in the `Status` column should be populated, set the `required` field to `true`. Doing so will prompt csvcubed to flag to the user if there are any blank cells in the `Status` column:
+If all cells in the `Status` column should be populated, set the `required` field to `true`. This will prompt csvcubed to flag to the user if there are any blank cells in the `Status` column:
 
 ```json
 {
@@ -65,7 +56,7 @@ If all cells in the `Status` column should be populated, set the `required` fiel
 }
 ```
 
-### Label, description and definition
+## Label, description and definition
 
 Additional details can be associated with the attributes in your data set through the `label`, `description` and
 `definition_uri` fields.
@@ -112,7 +103,7 @@ The `definition_uri` fields allows you to refer to external resources that furth
 }
 ```
 
-### Attribute values
+## Attribute values
 
 Rather than allowing csvcubed to automatically generate attribute values from the unique cell values in the `Status` column, the `values` field can be configured to specify a list of permitted cell values:
 
@@ -122,21 +113,27 @@ Rather than allowing csvcubed to automatically generate attribute values from th
       "Status": {
          "type": "attribute",
          "values": [
-            "Provisional",
-            "Final"
+            {
+               "label": "Provisional",
+               "description": "Attribute value indicating that the observed value is provisional",
+               "from_existing": "uri",
+               "definition_uri": "uri"
+            },
+            {
+               "label": "Final",
+               "description": "Attribute value indicating that the observed value is final",
+               "from_existing": "uri",
+               "definition_uri": "uri"
+            }
          ]
       }
    }
 }
 ```
 
-See [Attribute values configuration](./attribute-values.md) for more information on the configuration options available for the `values` field.
+See the [Attribute values](./attribute-values.md) page for more information on the configuration options available for the `values` field.
 
-## Existing Resource attributes
-
-### Basic configuration
-
-### Inheritance
+## Inheritance
 
 To reuse or extend an existing attribute, the `from_existing` field can be configured to link to a URI where the
 attribute to be reused or extended is defined.
@@ -194,17 +191,17 @@ The `Status` column could also be configured by using a [column template](../tem
 
 ## Reference
 
-This table shows a list of the possible fields that can be entered when configuring a resource attribute column.
+This table shows a list of the possible fields that can be entered when configuring a Resource attribute column.
 
-| **field name**           | **description**                                                                                                                                                                                                                                                                                                                                                                                      | **default value**                                                                |
-|--------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
-| `type`                   | The type of the column; to configure an attribute column use the value `attribute` (Required)                                                                                                                                                                                                                                                                                                        | *dimension*                                                                      |
-| `label`                  | The title of the column (Optional)                                                                                                                                                                                                                                                                                                                                                                   | The capital case of the header in the csv file with spaces replacing underscores |
-| `description`            | A description of the contents of the column (Optional)                                                                                                                                                                                                                                                                                                                                               | *none*                                                                           |
-| `definition_uri`         | A uri of a resource to show how the column is created/managed (e.g. a uri of a PDF explaining a list of attribute values) (Optional)                                                                                                                                                                                                                                                                 | *none*                                                                           |
-| `required`               | If this boolean value is true csvcubed will flag to the user if there are blank values in this column (Optional)                                                                                                                                                                                                                                                                                     | false                                                                            |
-| `values`                 | (New Resource Attributes only) If automatically-generated attributes are desired, a boolean value of `true` is used to signify to csvcubed to create attribute resources from values in this column; otherwise this should be a list of attribute value objects defining the attributes used in the column. See [Attribute values configuration](./attribute-values.md) for more details. (Optional) | *none*                                                                           |
-| `from_existing`          | The uri of the resource for reuse/extension (Optional)                                                                                                                                                                                                                                                                                                                                               | *none*                                                                           |
-| `from_template`          | Use a [column template](../templates.md) (Optional)                                                                                                                                                                                                                                                                                                                                                  | *none*                                                                           |
-| `describes_observations` | Associates this attribute with the relevant observation values. This is only necessary for [pivoted shape data sets](../../shape-data/pivoted-shape.md) with multiple observation value columns. (Optional)                                                                                                                                                                                          | *none*                                                                           |
-| `cell_uri_template`      | (Existing Resource Attributes only) Used to define a template to map the cell values in this column to URIs (Optional)                                                                                                                                                                                                                                                                               | *none*                                                                           |
+| **field name**           | **description**                                                                                                                                                                                                                                                                                                                                                                                 | **default value**                                                                |
+|--------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+| `type`                   | The type of the column; to configure an attribute column use the value `attribute` (Required)                                                                                                                                                                                                                                                                                                   | *dimension*                                                                      |
+| `label`                  | The title of the column (Optional)                                                                                                                                                                                                                                                                                                                                                              | The capital case of the header in the csv file with spaces replacing underscores |
+| `description`            | A description of the contents of the column (Optional)                                                                                                                                                                                                                                                                                                                                          | *none*                                                                           |
+| `definition_uri`         | A uri of a resource to show how the column is created/managed (e.g. a uri of a PDF explaining a list of attribute values) (Optional)                                                                                                                                                                                                                                                            | *none*                                                                           |
+| `required`               | If this boolean value is true csvcubed will flag to the user if there are blank values in this column (Optional)                                                                                                                                                                                                                                                                                | false                                                                            |
+| `values`                 | (New Resource Attributes only) If automatically-generated attributes are desired, a boolean value of `true` is used to signify to csvcubed to create Resource attributes from values in this column; otherwise this should be a list of attribute value objects defining the attributes used in the column. See the [Attribute values](./attribute-values.md) page for more details. (Optional) | *none*                                                                           |
+| `from_existing`          | The uri of the resource for reuse/extension (Optional)                                                                                                                                                                                                                                                                                                                                          | *none*                                                                           |
+| `from_template`          | Use a [column template](../templates.md) (Optional)                                                                                                                                                                                                                                                                                                                                             | *none*                                                                           |
+| `describes_observations` | Associates this attribute with the relevant observation values. This is only necessary for [pivoted shape data sets](../../shape-data/pivoted-shape.md) with multiple observation value columns. See the [Attributes](./attributes.md#describing-observations) page for details of how to configure this field. (Optional)                                                                      | *none*                                                                           |
+| `cell_uri_template`      | (Existing Resource Attributes only) Used to define a template to map the cell values in this column to URIs (Optional)                                                                                                                                                                                                                                                                          | *none*                                                                           |

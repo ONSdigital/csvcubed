@@ -5,9 +5,14 @@ This page discusses what attribute values are, where they should be used, and ho
 > For a detailed look at attribute values configuration options, see the [Reference table](#reference) at the
 bottom of this page.
 
-This section will focus on defining new Resource attributes through configuration of the attribute column's `values`
-field, and their presence in the structure of a cube configuration file. Details of attribute values configuration
-options can be found in the [Reference table](#reference) at the bottom of this page.
+## What are attribute values?
+
+
+## When to use them
+
+
+## Basic configuration
+
 
 ## Reference
 

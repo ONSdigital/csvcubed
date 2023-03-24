@@ -51,6 +51,10 @@ One of two data shapes that are accepted by csvcubed. The pivoted shape permits 
 
 A property of a population which can be measured or observed. For example, height in a population of people or income in a population of households.
 
+## Resource
+
+<!-- TODO: Add Resource definition -->
+
 ## [Semantic Web](https://www.w3.org/RDF/Metalog/docs/sw-easy)
 
 An extension to the world wide web in which information is given structured meaning using vocabularies such as [Simple Knowledge Organisation System (SKOS)](https://www.w3.org/2004/02/skos/intro) and the [RDF Data Cube vocabulary](https://www.w3.org/TR/vocab-data-cube/). The csvcubed tools help you build statistics which fit into the semantic web of linked data.
