@@ -6,6 +6,8 @@ This page aims to introduce column template functionality, show you how to make 
 
 Also see the quick start [introduction to linking data](../../quick-start/linking-data.md).
 
+Templates are currently configured for [dimensions](./columns/dimensions.md.md), [resource attributes](./columns/attribute-resources.md) and [units columns](./columns/units.md).
+
 ## How to use templates
 
 To use a column template in the [qube-config.json](qube-config.md) configuration file set the `from_template` property on the column definition to one the available templates, for example with a column representing year:

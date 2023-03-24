@@ -21,7 +21,7 @@ The following is an example of a small data set containing a units column:
 | 2020 | United States |                    69 |      Inches |
 | 2021 | England       |                   175 | Centimetres |
 
-The units column is titled `Unit` The first two rows of the data set use the unit `Inches` to measure height, and the
+The units column is titled `Unit`. The first two rows of the data set use the unit `Inches` to measure height, and the
 third row uses a different unit, `Centimetres`. In this case, different units are being used to measure the same thing.
 
 ### When to use a units column
@@ -92,10 +92,10 @@ speed up the creation of linked data columns. The use of this field in a units c
 ```json
 {
     "$schema": "https://purl.org/csv-cubed/qube-config/v1",
-    "title": "Average Height and Weight for Men in different countries",
+    "title": "Average Income in Pounds Sterling",
     "columns": {
         "Unit": {
-            "from_template": "http://qudt.org/vocab/unit"
+            "from_template": "http://qudt.org/vocab/unit/PoundSterling"
         },
     }
 }
@@ -104,7 +104,8 @@ speed up the creation of linked data columns. The use of this field in a units c
 Enter the URI of a template to be used as the units column. Note that you can override the configuration of used
 templates by specifying individual properties.
 
-For more information on templates, see the [Templates](../templates.md) page.
+For more information on templates, as well as a list of templates that can be used, see the
+[Templates](../templates.md) page.
 
 ### cell_uri_template
 

@@ -118,7 +118,8 @@ markdown format.
 }
 ```
 
-The `definition_uri` fields allows you to refer to external resources that further define a dimension's values:
+The `definition_uri` field allows you to refer to external human readable resources that further define a dimension's 
+values:
 
 ```json
 { ...
@@ -136,91 +137,96 @@ The `definition_uri` fields allows you to refer to external resources that furth
 
 ## Code list configuration
 
-One of the key principles of linked data is the ability to connect data sets via references to common concepts. These
-concepts can be formalised through the use of code lists. By default, csvcubed will generate code lists for each of
-the dimensions in your data set. However, there are several configuration options for refining how your code lists
-are generated and expressed. These are briefly described below - full details can be found on the
-[Code list configuration](../code-list-config.md) page.
+> [Code list](../../../glossary/index.md#code-list) - A predefined set of codified concepts which represent the distinct
+> values that a dimension can hold.
 
-* Link to an externally-defined code list (URI):
+One of the key principles of linked data is to connect data from different sources by reusing common definitions. Code 
+lists are an important part of your data set where using linked data can make comparability with other cubes easy.
+
+By default, csvcubed will generate code lists for each of the dimensions in your data set. However, there are several 
+configuration options for refining how your code lists are generated and expressed. These are briefly described below - 
+full details can be found on the [Code list configuration](../code-list-config.md) page.
+
+#### Link to an externally-defined code list (URI)
+
 <!-- TODO: Find an actual code list URI -->
-   ```json
-   { ...
-      "columns": {
-         "Year": {
-            "type": "dimension"
-         },
-         "Region": {
-            "type": "dimension",
-            "code_list": "http://statistics.data.gov.uk/data/statistical-geography/code-lists"
+```json
+{ ...
+   "columns": {
+      "Year": {
+         "type": "dimension"
+      },
+      "Region": {
+         "type": "dimension",
+         "code_list": "http://statistics.data.gov.uk/data/statistical-geography/code-lists"
+      }
+   }
+}
+```
+
+#### Use a locally-defined [code-list-config.json](../code-list-config.md#defining-a-code-list-configuration-file)
+
+```json
+{ ...
+   "columns": {
+      "Year": {
+         "type": "dimension"
+      },
+      "Region": {
+         "type": "dimension",
+         "code_list": "regions-code-list-config.json"
+      }
+   }
+}
+```
+
+#### Define an [in-line code list](../code-list-config.md#defining-an-in-line-code-list)
+
+```json
+{ ...
+   "columns": {
+      "Year": {
+         "type": "dimension"
+      },
+      "Region": {
+         "type": "dimension",
+         "code_list": {
+            "title": "Geographic regions",
+            "concepts": [
+               {
+                  "label": "E92000001",
+                  "description": "England"
+               },
+               {
+                  "label": "S92000003",
+                  "description": "Scotland"
+               },
+               {
+                  "label": "W92000004",
+                  "description": "Wales"
+               }
+            ]
          }
       }
    }
-   ```
+}
+```
 
-* Use a locally-defined [code-list-config.json](../code-list-config.md#defining-a-code-list-configuration-file):
+#### Suppress a code list
 
-   ```json
-   { ...
-      "columns": {
-         "Year": {
-            "type": "dimension"
-         },
-         "Region": {
-            "type": "dimension",
-            "code_list": "regions-code-list-config.json"
-         }
+```json
+{ ...
+   "columns": {
+      "Year": {
+         "type": "dimension"
+      },
+      "Region": {
+         "type": "dimension",
+         "code_list": false
       }
    }
-   ```
-
-* Define an [in-line code list](../code-list-config.md#defining-an-in-line-code-list):
-
-   ```json
-   { ...
-      "columns": {
-         "Year": {
-            "type": "dimension"
-         },
-         "Region": {
-            "type": "dimension",
-            "code_list": {
-               "title": "Geographic regions",
-               "concepts": [
-                  {
-                     "label": "E92000001",
-                     "description": "England"
-                  },
-                  {
-                     "label": "S92000003",
-                     "description": "Scotland"
-                  },
-                  {
-                     "label": "W92000004",
-                     "description": "Wales"
-                  }
-               ]
-            }
-         }
-      }
-   }
-   ```
-
-* Suppress a codelist:
-
-   ```json
-   { ...
-      "columns": {
-         "Year": {
-            "type": "dimension"
-         },
-         "Region": {
-            "type": "dimension",
-            "code_list": false
-         }
-      }
-   }
-   ```
+}
+```
 
 ## Dimension column templates
 
@@ -279,7 +285,8 @@ dimension to be reused, and set the `label` field to indicate that this is a new
 
 ### Cell URI templates
 
-**The use of the `cell_uri_template` field is considered an advanced configuration option, and therefore care must be taken to ensure that the values generated are valid.**
+!!! Warning 
+    The use of the `cell_uri_template` field is considered an advanced configuration option, and therefore care must be taken to ensure that the values generated are valid.
 
 ```json
 { ...
@@ -302,15 +309,12 @@ concept scheme, but you want to point to an existing resource to provide additio
 
 If `cell_uri_template` is specified:
 
-**Either**:
-
-- `from_existing` must also be defined, in which case `cell_uri_template` should refer to the concepts in the existing
-dimension's code list;
-
-**Or**:
-
-- `code_list` must be set as `false`, in which case `cell_uri_template` should refer to URIs which are existing RDF
-resources.
+**Either**
+:     `from_existing` must also be defined, in which case `cell_uri_template` should refer to the concepts in the existing
+      dimension's code list;
+**Or**
+:     `code_list` must be set as `false`, in which case `cell_uri_template` should refer to URIs which are existing RDF
+      resources.
 
 The format of the `cell_uri_template` value **must** follow [RFC6570](https://www.rfc-editor.org/rfc/rfc6570) guidance
 for URI Templates. In the case of any doubt, follow the pattern in the examples shown above (e.g.

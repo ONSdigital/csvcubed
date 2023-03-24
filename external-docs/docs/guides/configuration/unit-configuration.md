@@ -120,11 +120,11 @@ sure that our new unit doesn't duplicate an existing unit so we decide that it i
 that software can automatically figure out how to compare our data with other data sets that use units related to
 [PoundSterling](http://qudt.org/vocab/unit/PoundSterling).
 
-In the following examples, we'll show how to define new units re-using existing unit definitions, then the next section will show
- how to apply optional properties such as scaling to create the new units for `Pounds Sterling (£), Millions` and
- `Barrels of petrol per day (,000)` with a [standard shaped](../shape-data/standard-shape.md) cube, using the different
- fields available for re-using existing units. Here is the data set that we want to create units for in our json
- config file:
+In the following examples, we'll show how to define new units re-using existing unit definitions, then the next section
+will show how to apply optional properties such as scaling to create the new units for `Pounds Sterling (£), Millions`
+and `Barrels of petrol per day (,000)` with a [standard shaped](../shape-data/standard-shape.md) cube, using the
+different fields available for re-using existing units. Here is the data set that we want to create units for in our
+json config file:
 
 | Location     | Value |                           Measure |                             Unit |
 |:-------------|------:|----------------------------------:|---------------------------------:|
@@ -158,7 +158,7 @@ Pound Sterling unit definition.
 ## Optional properties
 
 This section will further explore the properties of units, showing examples of the possible fields that can be entered
-when configuring a unit.
+when configuring a unit, in both new units and re-used existing units.
 
 ### Description
 
@@ -246,7 +246,9 @@ Another optional property useful for scaling is `si_scaling_factor`. The purpose
 to relate scaled units to other units that are relevant, creating consistency within their scale. Most of the units
 that are related in this sense are already defined.
 
-**Note that this is an advanced feature and can safely be ignored if not needed.**
+!!! Warning
+    The use of `si_scaling_factor` is an advanced configuration option, and care should be taken to ensure it is used
+correctly.
 
 For our example data set, we also want another unit to measure barrels of oil per day, by the thousands.
 This is where the `quantity_kind` and `si_scaling_factor` fields can be used to create a new unit that is grouped
@@ -316,4 +318,16 @@ And here is the unit, showing the use of the `describes_observations` field:
         }
 ```
 
-## Inheritance
+## Reference
+
+This table shows the possible fields that can be provided when configuring a unit.
+
+| **field name**      | **description**                                                                                                                                                                                         | **default value** |
+|---------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------|
+| `label`             | The title of the unit (Required; Optional if `from_existing` defined)                                                                                                                                   | *none*            |
+| `description`       | A description of the contents of the unit (Optional)                                                                                                                                                    | *none*            |
+| `from_existing`     | The uri of the resource for reuse/extension (Optional)                                                                                                                                                  | *none*            |
+| `definition_uri`    | A uri of a resource to show how the unit is created/managed (e.g. a uri of a image which shows the formula on how the unit is derived) (Optional)                                                       | *none*            |
+| `scaling_factor`    | The scaling factor (expressed in base 10) is used to define a new unit from an existing base (i.e. "GBP millions" would have a form_existing unit of GBP, and a `"scaling_factor": 1000000`) (Optional) | *none*            |
+| `si_scaling_factor` | The si_scaling_factor helps relate common scaled units to source SI units, for example kilograms are 1000 grams. Most of these units are already defined. (Optional) (Advanced)                         | *none*            |
+| `quantity_kind`     | The [QUDT quantity kind](http://www.qudt.org/doc/DOC_VOCAB-QUANTITY-KINDS.html#Instances) helps group units                                                                                             | *none*            |
