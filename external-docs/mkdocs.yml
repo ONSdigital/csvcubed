@@ -1,5 +1,7 @@
 site_name: csvcubed
 site_url: https://gss-cogs.github.io/csvcubed-docs/external
+repo_url: https://github.com/GSS-Cogs/csvcubed
+repo_name: GSS-Cogs/csvcubed
 nav:
   - Home:
       - index.md
@@ -58,24 +60,18 @@ nav:
       - glossary/index.md
 theme:
   name: material
-  palette:
-    - scheme: default
-      toggle:
-        icon: material/toggle-switch-off-outline
-        name: Switch to dark mode
-    - scheme: slate
-      toggle:
-        icon: material/toggle-switch
-        name: Switch to light mode
   features:
     - search.highlight
     - navigation.instant
     # - navigation.expand
-    # - navigation.sections
+#    - toc.integrate
+    - navigation.sections
     - navigation.indexes
     - navigation.top
-    - toc.integrate
+    - navigation.tracking
 markdown_extensions:
+  - admonition
+  - def_list
   - pymdownx.highlight:
       anchor_linenums: true
       linenums: true
