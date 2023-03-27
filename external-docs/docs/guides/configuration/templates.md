@@ -6,7 +6,7 @@ This page aims to introduce column template functionality, show you how to make 
 
 Also see the quick start [introduction to linking data](../../quick-start/linking-data.md).
 
-Templates are currently configured for [dimensions](./columns/dimensions.md.md), [resource attributes](./columns/attribute-resources.md) and [units columns](./columns/units.md).
+Templates are currently configured for [dimensions](./columns/dimensions.md), [resource attributes](./columns/attribute-resources.md) and [units columns](./columns/units.md).
 
 ## How to use templates
 

@@ -29,7 +29,7 @@ using two units: `Inches` for the first two observed values, and `Centimetres` f
 
 A data cube must have at least one unit defined to be considered valid.
 
-Measures can be defined and configured in two different ways. The method you should use depends on how units are used
+Units can be defined and configured in two different ways. The method you should use depends on how units are used
 in your data set.
 
 If an observations column in your cube uses the same unit for all observation values, then the unit should be defined
@@ -44,6 +44,11 @@ the units are defined by providing configuration in a [qube-config.json](./qube-
 
 Note that the two scenarios described above apply to both standard and pivoted shape cubes. The shape of the data cube
 does not affect the representation of units.
+
+## Defining a new unit
+
+If you have decided on your preferred method of defining/representing units to suit your data cube, follow one of the
+two sections on defining a unit below:
 
 ### Defining a unit in an observation column's definition
 
@@ -104,6 +109,8 @@ for the unit, and the description being a more in-depth, long-form text descript
 
 ## Inheritance
 
+This section will focus on re-using existing units, whether in their entirety or as a base to create new units upon.
+
 ### Linking a new unit to an existing unit
 
 In the above example we defined a new unit called `Pounds Sterling (£), Millions`. Looking at the guide on
@@ -131,11 +138,11 @@ json config file:
 | Biscuitburgh |    31 | Annual Income (Gross Value Added) |    Pounds Sterling (£), Millions |
 | Biscuitburgh |   2.6 |  Average Daily Petrol Consumption | Barrels of petrol per day (,000) |
 
-### Creating units using the from_existing field
+### Re-using units with the from_existing field
 
-This first example shows the existing definition for Pound Sterling being used from its URI entered into the
-`from_existing` field. Normally, this would re-use the exact same unit definition. However, in our case, we want to
-alter its configuration to suit our data set. So the existing unit definition is given the label
+The example below shows the existing definition for the unit `Pounds Sterling` being used from its URI entered into
+the `from_existing` field. This is all that needs to be done to re-use an existing unit. However, in our case, we will
+also alter its configuration to suit our example data set above. So the existing unit definition is given the label
 "Pounds Sterling (£), Millions", and this means it is now a new unit created that is derived from the existing
 Pound Sterling unit definition.
 
@@ -221,7 +228,7 @@ Note that when the `scaling_factor` field is not specified in a unit that re-use
 ### Quantity kind
 
 The `quantity_kind` field can make use of the QUDT extensive various types of measurable quantities to help group and identify units. Provide a URI of a valid resource, adding it onto the prefix http://qudt.org/vocab/quantitykind/ to take advantage of QUDT's vast library of quantity kind resources. The previous example uses the `quantity_kind` field to specify that the unit is categorized as a currency unit.
-For more information on quantity kinds as well as several quantity kinds to make use of, see the [Linked data Units](../../linked-data/units.md) page.
+For more information on quantity kinds as well as several quantity kinds to make use of, see the [Linked data Units](../linked-data/units.md) page.
 
 ```json
 {

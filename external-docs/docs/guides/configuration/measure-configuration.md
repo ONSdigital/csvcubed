@@ -74,7 +74,7 @@ This observation column definition is given a measure by creating an object wher
 measure component, and the values are the field contents. This measure has the label "Average Height of Men".
 
 For more information on defining observation columns, and how to configure their different possible fields along with
-measures, see the [Observations page](./observations.md).
+measures, see the [Observations page](./columns/observations.md).
 
 ### Defining measures in a measures column
 
@@ -134,7 +134,7 @@ definition of the resource being used.
 A point to remember about measures is that they must be accompanied by units, which represent in what intervals or
 units the observation is being measured in. Units can be defined by being attached to observations the same way that
 measures can when all observations in a column use the same measure/unit, or they can be defined in a dedicated units
-column. For more information on defining units, see the [configuring units](./units.md) page.
+column. For more information on defining units, see the [unit configuration](./unit-configuration.md) page.
 
  ## Inheritance
 

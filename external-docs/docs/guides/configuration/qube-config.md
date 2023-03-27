@@ -12,9 +12,7 @@ The `qube-config.json` file has two sections:
 2. [**Column Definitions**](./column-definitions.md)
    This section is used to describe each column in the `.csv` file, classifying the column and defining how the column data is both represented and how it links semantically to other data.
 
-<!-- TODO Add examples of json with links to json/csv files -->
-
-<!-- ## Metadata
+## Metadata
 
 A CSV-W file contains metadata which improves discoverability of data publications. In csvcubed, we use a selection of metadata entries from established namespaces to enable users to contribute to the web of data faster. The metadata fields available, their description and default values are as follows.
 
@@ -88,7 +86,7 @@ The *unit* column is a type of attribute column which provides the units of the 
 
 ### Observations
 
-The *observation* column contains the numeric values of the observations recorded in the data set. -->
+The *observation* column contains the numeric values of the observations recorded in the data set.
 
 ### Using templates
 
@@ -133,16 +131,16 @@ Unless the component being reused is a literal attribute and you're providing a 
 
 The following fields can be configured for each dimension in your data set. csvcubed will assume that a column represents a dimension if the `type` field is left blank, or explicitly specified as `dimension`.
 
-| **field name**      | **description**                                                                                                                                                                                                                                                                                 | **default value**                                                                               |
-|---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------|
-| `type`              | The type of the column (Required)                                                                                                                                                                                                                                                               | *dimension*                                                                                     |
-| `from_template`     | Use a [column template](templates.md) (Optional)                                                                                                                                                                                                                                                | *none*                                                                                          |
-| `label`             | The title of the column (Optional)                                                                                                                                                                                                                                                              | The capital case version of the column header in the csv file with spaces replacing underscores |
-| `description`       | A description of the contents of the column (Optional)                                                                                                                                                                                                                                          | *none*                                                                                          |
-| `from_existing`     | The uri of the resource for reuse/extension (Optional)                                                                                                                                                                                                                                          | *none*                                                                                          |
-| `code_list`         | Generate a code-list (true), suppress a code-list (false), file path to a [code-list-config.json](code-list-config.md#defining-a-code-list-configuration-file), [in-line code list](code-list-config.md#defining-an-in-line-code-list) (json), or link to an externally-defined code list (uri) | true                                                                                            |
-| `definition_uri`    | A uri of a resource to show how the column is created/managed (e.g. a uri of a PDF explaining a list of units) (Optional)                                                                                                                                                                       | *none*                                                                                          |
-| `cell_uri_template` | **(Advanced)** Override the uri generated for values within the uri (Optional)                                                                                                                                                                                                                  | *none*                                                                                          | -->
+| **field name**      | **description**                                                                                                                                                                                                                                                                                 | **default value**                                                                               |     |
+|---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------|-----|
+| `type`              | The type of the column (Required)                                                                                                                                                                                                                                                               | *dimension*                                                                                     |     |
+| `from_template`     | Use a [column template](templates.md) (Optional)                                                                                                                                                                                                                                                | *none*                                                                                          |     |
+| `label`             | The title of the column (Optional)                                                                                                                                                                                                                                                              | The capital case version of the column header in the csv file with spaces replacing underscores |     |
+| `description`       | A description of the contents of the column (Optional)                                                                                                                                                                                                                                          | *none*                                                                                          |     |
+| `from_existing`     | The uri of the resource for reuse/extension (Optional)                                                                                                                                                                                                                                          | *none*                                                                                          |     |
+| `code_list`         | Generate a code-list (true), suppress a code-list (false), file path to a [code-list-config.json](code-list-config.md#defining-a-code-list-configuration-file), [in-line code list](code-list-config.md#defining-an-in-line-code-list) (json), or link to an externally-defined code list (uri) | true                                                                                            |     |
+| `definition_uri`    | A uri of a resource to show how the column is created/managed (e.g. a uri of a PDF explaining a list of units) (Optional)                                                                                                                                                                       | *none*                                                                                          |     |
+| `cell_uri_template` | **(Advanced)** Override the uri generated for values within the uri (Optional)                                                                                                                                                                                                                  | *none*                                                                                          | --> |
 <!-- TODO: uri_override not in schema -->
 <!-- | `uri_override`      | Override the uri created automatically for the column (Optional) (Advanced)                                                                                                                                          | `tidy_data.csv#uri_safe_column_header_from_csv`                                  | -->
 
@@ -336,10 +334,10 @@ This data set has two additional attribute components defined for the 95% confid
 
 ##### Pivoted multi-measure data set
 
-| Year | Location | Number of Arthur's Bakes | Number of Stores Status | Revenue | Revenue Units  | Revenue Status |
-|:-----|:---------|-------------------------:|:------------------------|--------:|:---------------|:---------------|
-| 2022 | London   |                       35 | Provisional             |      25 | GBP (Sterling) | Provisional    |
-| 2021 | Cardiff  |                       26 | Final                   |      18 | GBP (Sterling) | Final          | -->
+| Year | Location | Number of Arthur's Bakes | Number of Stores Status | Revenue | Revenue Units  | Revenue Status |     |
+|:-----|:---------|-------------------------:|:------------------------|--------:|:---------------|:---------------|-----|
+| 2022 | London   |                       35 | Provisional             |      25 | GBP (Sterling) | Provisional    |     |
+| 2021 | Cardiff  |                       26 | Final                   |      18 | GBP (Sterling) | Final          | --> |
 
 
 
@@ -363,12 +361,12 @@ This data set has two additional attribute components defined for the 95% confid
 
 <!-- ### Attribute Values Configuration
 
-| **field name**   | **description**                                                             | **default value** |
-|------------------|-----------------------------------------------------------------------------|-------------------|
-| `label`          | The title of the attribute (Required; Optional if `from_existing` defined)  | *none*            |
-| `description`    | A description of the contents of the attribute (Optional)                   | *none*            |
-| `from_existing`  | The uri of the resource for reuse/extension (Optional)                      | *none*            |
-| `definition_uri` | A uri of a resource to show how the attribute is created/managed (Optional) | *none*            | -->
+| **field name**   | **description**                                                             | **default value** |     |
+|------------------|-----------------------------------------------------------------------------|-------------------|-----|
+| `label`          | The title of the attribute (Required; Optional if `from_existing` defined)  | *none*            |     |
+| `description`    | A description of the contents of the attribute (Optional)                   | *none*            |     |
+| `from_existing`  | The uri of the resource for reuse/extension (Optional)                      | *none*            |     |
+| `definition_uri` | A uri of a resource to show how the attribute is created/managed (Optional) | *none*            | --> |
 
 <!-- ## Observations Configuration
 
@@ -697,7 +695,7 @@ TODO: Improve si_scaling_factor description
 Another optional form of scaling that can be applied to units in column definitions is `si_scaling_factor`. The purpose of this field in the values dictionary is to relate scaled units to other units that are relevant, creating consistency within their scale. Most of the units that are related in this sense are already defined. Note that this is an advanced feature and can safely be ignored if not needed.
 
 The `quantity_kind` field can make use of the QUDT extensive various types of measurable quantities to help group and identify units. Provide a URI of a valid resource, adding it onto the prefix http://qudt.org/vocab/quantitykind/ to take advantage of QUDT's vast library of quantity kind resources.
-For a dedicated page with more information on defining units, see [configuring units](./configuring-units.md).
+For a dedicated page with more information on defining units, see [configuring units](./unit-configuration.md).
 
 When creating a units column, it is also possible to specify an observation value to associate the units with, by entering the observation value into the `describes_observations` field. This is (only) necessary to associate a unit to its relevant observation value when there are multiple measures and the data set is in the pivoted shape, and there are multiple observation values, as otherwise there would be no clear link between the unit being used for different observations in columns. For more information on the distinction between pivoted/standard shape data sets, as well as single/multiple measures, see the [Pivoted Shape](../shape-data/pivoted-shape) TODO: Fix this link to the pivoted shape page when the location of the new guide page is decided.
 
@@ -765,4 +763,4 @@ Units are effectively attributes with additional options.
 | `si_scaling_factor` | The si_scaling_factor helps relate common scaled units to source SI units, for example kilograms are 1000 grams. Most of these units are already defined. (Optional) (Advanced)                         | *none*            |
 | `quantity_kind`     | The [QUDT quantity kind](http://www.qudt.org/doc/DOC_VOCAB-QUANTITY-KINDS.html#Instances) helps group units                                                                                             | *none*            |
 
-For a more practical approach to defining units, see [configuring units](./configuring-units.md).
+For a more practical approach to defining units, see [configuring units](./unit-configuration.md.
