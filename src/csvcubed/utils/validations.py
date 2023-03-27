@@ -155,7 +155,7 @@ def float(
     elif isnan(value):
         return [
             ValidateModelPropertiesError(
-                f"The value should be a float but is Not a Number (NaN).",
+                "The value should be a float but is Not a Number (NaN).",
                 property_path,
                 value,
             )
@@ -163,7 +163,7 @@ def float(
     elif isinf(value):
         return [
             ValidateModelPropertiesError(
-                f"The value should be a float but is +-infinity.",
+                "The value should be a float but is +-infinity.",
                 property_path,
                 value,
             )
