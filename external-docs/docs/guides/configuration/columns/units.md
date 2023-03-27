@@ -29,7 +29,7 @@ third row uses a different unit, `Centimetres`. In this case, different units ar
 Every valid data cube needs at least one unit. Units columns can be used in both
 [standard](../../shape-data/standard-shape.md) and [pivoted shape](../../shape-data/pivoted-shape.md) cubes.
 
-If every value in a observations column has the same unit, then you should set the unit against the
+If every value in an observations column has the same unit, then you should set the unit against the
 [observations column](./observations.md).
 
 If some values in your observations column use one unit and some other values in the same column use a different unit

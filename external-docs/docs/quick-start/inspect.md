@@ -6,7 +6,7 @@ This page is designed to help you inspect an existing CSV-W.
 
 <iframe src="https://share.descript.com/embed/Umk1wrKpSMV" width="640" height="360" frameborder="0" allowfullscreen></iframe>
 
-## Pre-requisites
+## Prerequisites
 
 You should have already [installed csvcubed](./installation.md), [designed your CSV input](./designing-csv.md) and [built your CSV-W](./build.md).
 

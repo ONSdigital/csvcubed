@@ -551,7 +551,7 @@ TODO: Should we include a larger example with more columns and maybe some metada
 }
 ```
 
-A basic field for adding information when creating a `values` objectin new measure column definitions is the `label` field, which serves as the title of the measure. Note that this is optional if the measure is reusing or extending an existing column definition. (If the `from_existing` field is populated.)
+A basic field for adding information when creating a `values` object in new measure column definitions is the `label` field, which serves as the title of the measure. Note that this is optional if the measure is reusing or extending an existing column definition. (If the `from_existing` field is populated.)
 
 An optional field that can be used to give more detail to the measure is `description`. This is not required in any scenario, but helps provide more information about the measure if wanted, in a longer free-text form that can go into more detail than a label.
 
@@ -746,8 +746,8 @@ Measures have no unique configuration options.
 |------------------|-----------------------------------------------------------------------------------------------------------------------------|-------------------|
 | `label`          | The title of the measure (Required; Optional if `from_existing` defined)                                                    | *none*            |
 | `description`    | A description of the contents of the measure (Optional)                                                                     | *none*            |
-| `from_existing`  | The uri of the resource for reuse/extension (Optional)                                                                      | *none*            |
-| `definition_uri` | A uri of a resource to show how the measure is created/managed (e.g. a uri of a PDF explaining the measure type) (Optional) | *none*            |
+| `from_existing`  | The URI of the resource for reuse/extension (Optional)                                                                      | *none*            |
+| `definition_uri` | A URI of a resource to show how the measure is created/managed (e.g. a URI of a PDF explaining the measure type) (Optional) | *none*            |
 
 ### Units Configuration
 
@@ -757,8 +757,8 @@ Units are effectively attributes with additional options.
 |---------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------|
 | `label`             | The title of the unit (Required; Optional if `from_existing` defined)                                                                                                                                   | *none*            |
 | `description`       | A description of the contents of the unit (Optional)                                                                                                                                                    | *none*            |
-| `from_existing`     | The uri of the resource for reuse/extension (Optional)                                                                                                                                                  | *none*            |
-| `definition_uri`    | A uri of a resource to show how the unit is created/managed (e.g. a uri of a image which shows the formula on how the unit is derived) (Optional)                                                       | *none*            |
+| `from_existing`     | The URI of the resource for reuse/extension (Optional)                                                                                                                                                  | *none*            |
+| `definition_uri`    | A URI of a resource to show how the unit is created/managed (e.g. a URI of an image which shows the formula on how the unit is derived) (Optional)                                                       | *none*            |
 | `scaling_factor`    | The scaling factor (expressed in base 10) is used to define a new unit from an existing base (i.e. "GBP millions" would have a form_existing unit of GBP, and a `"scaling_factor": 1000000`) (Optional) | *none*            |
 | `si_scaling_factor` | The si_scaling_factor helps relate common scaled units to source SI units, for example kilograms are 1000 grams. Most of these units are already defined. (Optional) (Advanced)                         | *none*            |
 | `quantity_kind`     | The [QUDT quantity kind](http://www.qudt.org/doc/DOC_VOCAB-QUANTITY-KINDS.html#Instances) helps group units                                                                                             | *none*            |

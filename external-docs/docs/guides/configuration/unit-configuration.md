@@ -227,8 +227,8 @@ Note that when the `scaling_factor` field is not specified in a unit that re-use
 
 ### Quantity kind
 
-The `quantity_kind` field can make use of the QUDT extensive various types of measurable quantities to help group and identify units. Provide a URI of a valid resource, adding it onto the prefix http://qudt.org/vocab/quantitykind/ to take advantage of QUDT's vast library of quantity kind resources. The previous example uses the `quantity_kind` field to specify that the unit is categorized as a currency unit.
-For more information on quantity kinds as well as several quantity kinds to make use of, see the [Linked data Units](../linked-data/units.md) page.
+The `quantity_kind` field can make use of the QUDT extensive various types of measurable quantities to help group and identify units. Provide a URI of a valid resource, adding it onto the prefix http://qudt.org/vocab/quantitykind/ to take advantage of QUDT's vast library of quantity kind resources. The previous example uses the `quantity_kind` field to specify that the unit is categorised as a currency unit.
+For more information on quantity kinds as well as several quantity kinds to make use of, see the [Linked data Units](../../linked-data/units.md) page.
 
 ```json
 {
@@ -333,8 +333,8 @@ This table shows the possible fields that can be provided when configuring a uni
 |---------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------|
 | `label`             | The title of the unit (Required; Optional if `from_existing` defined)                                                                                                                                   | *none*            |
 | `description`       | A description of the contents of the unit (Optional)                                                                                                                                                    | *none*            |
-| `from_existing`     | The uri of the resource for reuse/extension (Optional)                                                                                                                                                  | *none*            |
-| `definition_uri`    | A uri of a resource to show how the unit is created/managed (e.g. a uri of a image which shows the formula on how the unit is derived) (Optional)                                                       | *none*            |
+| `from_existing`     | The URI of the resource for reuse/extension (Optional)                                                                                                                                                  | *none*            |
+| `definition_uri`    | A URI of a resource to show how the unit is created/managed (e.g. a URI of an image which shows the formula on how the unit is derived) (Optional)                                                       | *none*            |
 | `scaling_factor`    | The scaling factor (expressed in base 10) is used to define a new unit from an existing base (i.e. "GBP millions" would have a form_existing unit of GBP, and a `"scaling_factor": 1000000`) (Optional) | *none*            |
 | `si_scaling_factor` | The si_scaling_factor helps relate common scaled units to source SI units, for example kilograms are 1000 grams. Most of these units are already defined. (Optional) (Advanced)                         | *none*            |
 | `quantity_kind`     | The [QUDT quantity kind](http://www.qudt.org/doc/DOC_VOCAB-QUANTITY-KINDS.html#Instances) helps group units                                                                                             | *none*            |

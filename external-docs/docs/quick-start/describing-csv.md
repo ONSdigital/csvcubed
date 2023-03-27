@@ -6,7 +6,7 @@ csvcubed makes it straightforward to describe your data. Important information t
 
 <iframe src="https://share.descript.com/embed/havTKRTeHVx" width="640" height="360" frameborder="0" allowfullscreen></iframe>
 
-## Pre-requisites
+## Prerequisites
 
 **Experience of writing basic JSON documents is assumed throughout this document.** See this [tutorial from DigitalOcean](https://www.digitalocean.com/community/tutorials/an-introduction-to-json) for an introduction to writing JSON.
 
