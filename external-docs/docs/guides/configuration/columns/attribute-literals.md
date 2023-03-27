@@ -10,10 +10,10 @@ the bottom of this page.
 
 ## Basic configuration
 
-| Year | Location | Value |                Measure |         Unit | **95% CI (lower bound)** | **95% CI (upper bound)** |
-|:-----|:---------|------:|-----------------------:|-------------:|-------------------------:|-------------------------:|
-| 2022 | London   |  7.85 | Average customer spend | GBP Sterling |                 **6.54** |                 **8.06** |
-| 2021 | Cardiff  |  6.98 | Average customer spend | GBP Sterling |                 **6.03** |                 **7.52** |
+| Year | Location | Value |                Measure |         Unit | 95% CI (lower bound) | 95% CI (upper bound) |
+|:-----|:---------|------:|-----------------------:|-------------:|---------------------:|---------------------:|
+| 2022 | London   |  7.85 | Average customer spend | GBP Sterling |             **6.54** |             **8.06** |
+| 2021 | Cardiff  |  6.98 | Average customer spend | GBP Sterling |             **6.03** |             **7.52** |
 
 To configure a column as a Literal attribute, specify the `type` field as `attribute` and include the `data_type` field
 in the column configuration details:

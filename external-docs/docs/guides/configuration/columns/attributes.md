@@ -23,9 +23,6 @@ observed values by providing additional context about individual data points. Tw
 | 2022 | London   |    35 | Number of Arthur's Bakes |                  Count | Provisional |                      |                      |
 | 2022 | London   |    25 |                  Revenue | GBP Sterling, Millions | Provisional |                      |                      |
 | 2022 | London   |  7.85 |   Average customer spend |           GBP Sterling | Provisional |                 6.54 |                 8.06 |
-| 2021 | Cardiff  |    26 | Number of Arthur's Bakes |                  Count |       Final |                      |                      |
-| 2021 | Cardiff  |    18 |                  Revenue | GBP Sterling, Millions |       Final |                      |                      |
-| 2021 | Cardiff  |  6.98 |   Average customer spend |           GBP Sterling |       Final |                 6.03 |                 7.52 |
 
 In the table above, there are three attribute columns: `Status`, `95% CI (lower bound)` and `95% CI (upper bound)`.
 
@@ -36,7 +33,6 @@ The `95% CI (lower bound)` and `95% CI (upper bound)` attribute columns contain 
 confidence interval for the `Average customer spend` observed values.
 
 ## Resources vs Literals
-<!-- TODO: Add Resource definition to glossary -->
 
 The configuration of attribute columns in your data set will depend primarily on whether you choose to represent the
 attribute as a [Resource](../../../glossary/index.md#resource) or a [Literal](../../../glossary/index.md#literal).

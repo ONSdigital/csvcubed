@@ -53,7 +53,9 @@ A property of a population which can be measured or observed. For example, heigh
 
 ## Resource
 
-<!-- TODO: Add Resource definition -->
+Resources are objects or concepts that exist in the real world that can be expressed in a machine-readable format by
+converting them to [URIs](#uniform-resource-indentifier). Resources form the basis of the Resource Description
+Framework (RDF), and are fundamental to the concept of [linked data](https://www.w3.org/TR/vocab-data-cube/#intro-rdf).
 
 ## [Semantic Web](https://www.w3.org/RDF/Metalog/docs/sw-easy)
 
@@ -75,9 +77,9 @@ A standard data shape/layout designed to ensure interoperability between data to
 
 A quantity or increment by which something is counted or described, such as kg, mm, °C, °F, monetary units such as Euro or US dollar, simple number counts or index numbers.
 
-## [URI](https://www.w3.org/TR/vocab-data-cube/#intro-rdf)
+## [Uniform Resource Indentifier](https://www.w3.org/TR/vocab-data-cube/#intro-rdf)
 
-Uniform Resource Identifier – URIs are identifiers which distinguish resources from one another. Note that a URL (Uniform Resource Locator) is a type of URI.
+Uniform Resource Identifiers (URIs) are identifiers which distinguish [resources](#resource) from one another. Note that a URL (Uniform Resource Locator) is a type of URI.
 Examples:
 
 * `http://some-uri`

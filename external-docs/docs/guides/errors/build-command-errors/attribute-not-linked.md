@@ -42,7 +42,7 @@ With the following [qube-config.json](../../configuration/qube-config.md) column
 
 ## How to fix
 
-Specify the observed values colummn which the units or attribute column describes, e.g.
+Specify the observed values column which the units or attribute column describes, e.g.
 
 ```json
 {
@@ -54,4 +54,4 @@ Specify the observed values colummn which the units or attribute column describe
 }
 ```
 
-For further guidance, please refer to the [shaping your data documentation](../../shape-data/index.md).
+For further guidance, please see the [shaping your data documentation](../../shape-data/pivoted-shape.md) and how to [link the attribute to the relevant observation](../../configuration/columns/attributes.md#describing-observations).

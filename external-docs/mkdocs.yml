@@ -37,7 +37,8 @@ nav:
             - Literal attributes: guides/configuration/columns/attribute-literals.md
             - Attribute values: guides/configuration/columns/attribute-values.md
         - Templates: guides/configuration/templates.md
-        - Units: guides/configuration/configuring-units.md
+        - Measures: guides/configuration/measure-configuration.md
+        - Units: guides/configuration/unit-configuration.md
         - Code Lists: guides/configuration/code-list-config.md
       - Shape your data:
         - guides/shape-data/index.md

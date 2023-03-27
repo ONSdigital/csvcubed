@@ -13,10 +13,8 @@ the bottom of this page.
 |:-----|:---------|------:|-------------------------:|-----------------------:|----------------:|
 | 2022 | London   |    35 | Number of Arthur's Bakes |                  Count | **Provisional** |
 | 2022 | London   |    25 |                  Revenue | GBP Sterling, Millions | **Provisional** |
-| 2022 | London   |  7.85 |   Average customer spend |           GBP Sterling | **Provisional** |
 | 2021 | Cardiff  |    26 | Number of Arthur's Bakes |                  Count |       **Final** |
 | 2021 | Cardiff  |    18 |                  Revenue | GBP Sterling, Millions |       **Final** |
-| 2021 | Cardiff  |  6.98 |   Average customer spend |           GBP Sterling |       **Final** |
 
 To configure a column as a Resource attribute, specify the `type` field as `attribute`:
 
@@ -114,16 +112,10 @@ Rather than allowing csvcubed to automatically generate attribute values from th
          "type": "attribute",
          "values": [
             {
-               "label": "Provisional",
-               "description": "Attribute value indicating that the observed value is provisional",
-               "from_existing": "uri",
-               "definition_uri": "uri"
+               "label": "Provisional"
             },
             {
-               "label": "Final",
-               "description": "Attribute value indicating that the observed value is final",
-               "from_existing": "uri",
-               "definition_uri": "uri"
+               "label": "Final"
             }
          ]
       }
@@ -184,10 +176,10 @@ The `Status` column could also be configured by using a [column template](../tem
 }
 ```
 
-## Advanced configuration
-
-### Cell URI templates
 <!-- TODO: Complete this section -->
+<!-- ## Advanced configuration
+
+### Cell URI templates -->
 
 ## Reference
 
@@ -204,4 +196,4 @@ This table shows a list of the possible fields that can be entered when configur
 | `from_existing`          | The uri of the resource for reuse/extension (Optional)                                                                                                                                                                                                                                                                                                                                          | *none*                                                                           |
 | `from_template`          | Use a [column template](../templates.md) (Optional)                                                                                                                                                                                                                                                                                                                                             | *none*                                                                           |
 | `describes_observations` | Associates this attribute with the relevant observation values. This is only necessary for [pivoted shape data sets](../../shape-data/pivoted-shape.md) with multiple observation value columns. See the [Attributes](./attributes.md#describing-observations) page for details of how to configure this field. (Optional)                                                                      | *none*                                                                           |
-| `cell_uri_template`      | (Existing Resource Attributes only) Used to define a template to map the cell values in this column to URIs (Optional)                                                                                                                                                                                                                                                                          | *none*                                                                           |
+| `cell_uri_template`      | **(Advanced)** (Existing Resource Attributes only) Used to define a template to map the cell values in this column to URIs (Optional)                                                                                                                                                                                                                                                           | *none*                                                                           |
