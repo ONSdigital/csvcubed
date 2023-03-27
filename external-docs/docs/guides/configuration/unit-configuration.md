@@ -228,7 +228,7 @@ Note that when the `scaling_factor` field is not specified in a unit that re-use
 ### Quantity kind
 
 The `quantity_kind` field can make use of the QUDT extensive various types of measurable quantities to help group and identify units. Provide a URI of a valid resource, adding it onto the prefix http://qudt.org/vocab/quantitykind/ to take advantage of QUDT's vast library of quantity kind resources. The previous example uses the `quantity_kind` field to specify that the unit is categorised as a currency unit.
-For more information on quantity kinds as well as several quantity kinds to make use of, see the [Linked data Units](../../linked-data/units.md) page.
+For more information on quantity kinds as well as several quantity kinds to make use of, see the [Linked data Units](../linked-data/units.md) page.
 
 ```json
 {
