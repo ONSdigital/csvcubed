@@ -2,7 +2,7 @@
 Pandas Utils
 ------------
 
-This file provides additional utilities for pandas typoe commands
+This file provides additional utilities for pandas type commands
 """
 import logging
 from pathlib import Path
