@@ -29,7 +29,7 @@ def list(
         if not isinstance(list_items, builtins.list):
             return [
                 ValidateModelPropertiesError(
-                    f"The value '{truncate(str(list_items), 50)}' should be a list. Check the following variable at the property path: '{property_path}'",
+                    f"The value '{truncate(str(list_items), 50)}' should be a list.",
                     property_path,
                     list_items,
                 )
@@ -52,7 +52,7 @@ def string(value: str, property_path: List[str]) -> List[ValidateModelProperties
     if not isinstance(value, str):
         return [
             ValidateModelPropertiesError(
-                f"The value '{truncate(str(value), 50)}' should be a string. Check the following variable at the property path: '{property_path}'",
+                f"The value '{truncate(str(value), 50)}' should be a string.",
                 property_path,
                 value,
             )
@@ -73,7 +73,7 @@ def uri(value: str, property_path: List[str]) -> List[ValidateModelPropertiesErr
     if not looks_like_uri(value):
         return [
             ValidateModelPropertiesError(
-                f"The value '{truncate(str(value), 50)}' should be a URI. Check the following variable at the property path: '{property_path}'",
+                f"The value '{truncate(str(value), 50)}' should be a URI.",
                 property_path,
                 value,
             )
@@ -90,7 +90,7 @@ def integer(value: int, property_path: List[str]) -> List[ValidateModelPropertie
     if isinstance(value, bool) or not isinstance(value, int):
         return [
             ValidateModelPropertiesError(
-                f"The value '{truncate(str(value), 50)}' should be an integer. Check the following variable at the property path: '{property_path}'",
+                f"The value '{truncate(str(value), 50)}' should be an integer.",
                 property_path,
                 value,
             )
@@ -109,7 +109,7 @@ def boolean(
     if not isinstance(value, bool):
         return [
             ValidateModelPropertiesError(
-                f"This value '{truncate(str(value), 50)}' should be a boolean value. Check the following variable at the property path: '{property_path}'",
+                f"This value '{truncate(str(value), 50)}' should be a boolean value.",
                 property_path,
                 value,
             )
@@ -147,7 +147,7 @@ def float(
     if not isinstance(value, builtins.float):
         return [
             ValidateModelPropertiesError(
-                f"The value '{truncate(str(value), 50)}' should be a float. Check the following variable at the property path: '{property_path}'",
+                f"The value '{truncate(str(value), 50)}' should be a float.",
                 property_path,
                 value,
             )
@@ -155,7 +155,7 @@ def float(
     elif isnan(value):
         return [
             ValidateModelPropertiesError(
-                f"The value '{truncate(str(value), 50)}' should be a float but is Not a Number (NaN). Check the following variable at the property path: '{property_path}'",
+                f"The value should be a float but is Not a Number (NaN).",
                 property_path,
                 value,
             )
@@ -163,7 +163,7 @@ def float(
     elif isinf(value):
         return [
             ValidateModelPropertiesError(
-                f"The value '{truncate(str(value), 50)}' should be a float but is +-infinity. Check the following variable at the property path: '{property_path}'",
+                f"The value should be a float but is +-infinity.",
                 property_path,
                 value,
             )
@@ -181,7 +181,7 @@ def file(value: Path, property_path: List[str]) -> List[ValidateModelPropertiesE
         if not value.exists():
             return [
                 ValidateModelPropertiesError(
-                    f"The file '{truncate(str(value), 50)}' does not exist. Check the following variable at the property path: '{property_path}'",
+                    f"The file '{truncate(str(value), 50)}' does not exist.",
                     property_path,
                     value,
                 )
@@ -191,7 +191,7 @@ def file(value: Path, property_path: List[str]) -> List[ValidateModelPropertiesE
     else:
         return [
             ValidateModelPropertiesError(
-                f"The file '{truncate(str(value), 50)}' is not a valid file path. Check the following variable at the property path: '{property_path}'",
+                f"The file '{truncate(str(value), 50)}' is not a valid file path.",
                 property_path,
                 value,
             )
@@ -216,7 +216,7 @@ def any_of(*conditions: ValidationFunction) -> ValidationFunction:
 
         return [
             ValidateModelPropertiesError(
-                f"The value '{truncate(str(value), 50)}' does not satisfy any single condition for variable at the property path: '{property_path}'",
+                f"The value '{truncate(str(value), 50)}' does not satisfy any single condition for the variable.",
                 property_path,
                 value,
             ),
@@ -241,7 +241,7 @@ def enum(enum_type: Type[Enum]) -> ValidationFunction:
 
         return [
             ValidateModelPropertiesError(
-                f"Could not find matching enum value for '{truncate(str(value), 50)}' in {enum_type.__name__} at property path: {property_path}",
+                f"Could not find matching enum value for '{truncate(str(value), 50)}' in {enum_type.__name__}.",
                 property_path,
                 value,
             )
@@ -260,7 +260,7 @@ def data_type(
     if data_type not in ACCEPTED_DATATYPE_MAPPING.keys():
         return [
             ValidateModelPropertiesError(
-                f"'{truncate(str(data_type), 50)}' is not recognised as a valid data type. Check the following variable at the property path: '{property_path}'",
+                f"'{truncate(str(data_type), 50)}' is not recognised as a valid data type.",
                 property_path,
                 data_type,
             )
@@ -290,7 +290,7 @@ def validated_model(validated_model_type: Type[ValidatedModel]):
             # This error occurs when runtime validation occurs.
             return [
                 ValidateModelPropertiesError(
-                    f"Value '{truncate(str(value), 50)}' was not an instance of the expected type '{validated_model_type.__name__}'. Check the following variable at the property path: '{property_path}'",
+                    f"Value '{truncate(str(value), 50)}' was not an instance of the expected type '{validated_model_type.__name__}'.",
                     property_path,
                     value,
                 )
@@ -314,7 +314,7 @@ def is_instance_of(expect_instance_type: Type[object]) -> ValidationFunction:
         if not isinstance(value, expect_instance_type):
             return [
                 ValidateModelPropertiesError(
-                    f"Value '{truncate(str(value), 50)}' was not an instance of the expected type '{expect_instance_type.__name__}'. Check the following variable at the property path: '{property_path}'",
+                    f"Value '{truncate(str(value), 50)}' was not an instance of the expected type '{expect_instance_type.__name__}'.",
                     property_path,
                     value,
                 ),

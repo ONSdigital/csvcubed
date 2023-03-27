@@ -324,7 +324,7 @@ def test_validate_float_type_nan_incorrect():
 
     assert len(result) == 1
     assert (
-        "The value 'nan' should be a float but is Not a Number (NaN). Check the following variable"
+        "The value should be a float but is Not a Number (NaN). Check the following variable"
         in result[0].message
     )
     assert result[0].property_path == ["float_test_variable"]
@@ -345,7 +345,7 @@ def test_validate_float_type_infinity_incorrect():
 
     assert len(result) == 1
     assert (
-        "The value 'inf' should be a float but is +-infinity. Check the following variable"
+        "The value should be a float but is +-infinity. Check the following variable"
         in result[0].message
     )
     assert result[0].property_path == ["float_test_variable"]
@@ -366,7 +366,7 @@ def test_validate_float_type_neg_infinity_incorrect():
 
     assert len(result) == 1
     assert (
-        "The value '-inf' should be a float but is +-infinity. Check the following variable"
+        "The value should be a float but is +-infinity. Check the following variable"
         in result[0].message
     )
     assert result[0].property_path == ["float_test_variable"]
@@ -554,7 +554,7 @@ def test_validate_any_of_incorrect():
 
     assert any(errors)
     assert (
-        "The value '3.65' does not satisfy any single condition for variable at the property path:"
+        "The value '3.65' does not satisfy any single condition for the variable."
         in errors[0].message
     )
     assert errors[0].property_path == ["test_any_of_value"]
@@ -685,7 +685,7 @@ def test_whole_object_validation_incorrect():
     )
     errors = test_instance.validate()
     assert any(errors)
-    assert errors[0].message == "Expected a positive integer"
+    assert "Expected a positive integer" in errors[0].message
     assert errors[0].property_path == []
     assert errors[0].offending_value == test_instance
 
@@ -837,7 +837,7 @@ def test_primative_inside_list_inside_object():
     """
     Test to ensure that when a primative inside a list within a nested object is
     incorrect the returned property_path contains elements corresponding to the
-    depth property in the nested object.
+    offending property's depth in the nested object.
     """
     test_instance = TestClass(
         test_validated_model_class=OtherTestClass(
@@ -864,7 +864,7 @@ def test_primative_inside_object_inside_list():
     """
     Test to ensure that when a primative inside a nested object stored in a list is
     incorrect the returned property_path contains elements corresponding to the
-    depth property in the nested object.
+    offending property's depth in the nested object.
     """
     test_instance = TestClass(
         objects_list_test_variable=[
@@ -918,7 +918,9 @@ def test_mutiple_incorrect_primatives():
 
 def test_whole_object_in_parent_class():
     """
-    Tests
+    Tests that when whole object validation of an object belonging to a parent class
+    fails, the property path for the offending property is the property name of the
+    whole object.
     """
     test_instance = TestClass(
         test_unit_whole_obj=TestUnitClass(si_base_unit_conversion_multiplier=5.9)
