@@ -18,7 +18,7 @@ A CSV-W file contains metadata which improves discoverability of data publicatio
 
 | **field name**             | **description**                                                                                            | **default value**                           |
 |----------------------------|------------------------------------------------------------------------------------------------------------|---------------------------------------------|
-| `title`                    | The title of the cube                                                                                      | A capital case version of the csv file name |
+| `title`                    | The title of the cube                                                                                      | A capital case version of the CSV file name |
 | `description`              | A description of the contents of the cube                                                                  | *none*                                      |
 | `summary`                  | A summary of the data set                                                                                  | *none*                                      |
 | `publisher`                | A link to the publisher of the cube                                                                        | *none*                                      |

@@ -2,7 +2,7 @@
 
 Linking data is what turns 4☆ data into [5☆ linked data](https://5stardata.info/en/). This guide will help users create their first linked data where your data reuses standard definitions.
 
-## A transcribed audio screencast convering the contents of this page
+## A transcribed audio screencast covering the contents of this page
 
 <iframe src="https://share.descript.com/embed/WJeFEHVvAom" width="640" height="360" frameborder="0" allowfullscreen></iframe>
 
