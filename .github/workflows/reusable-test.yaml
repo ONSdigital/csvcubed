@@ -45,9 +45,7 @@ jobs:
         run: npm install -g spellchecker-cli
 
       - name: Test spelling in external docs
-        run: | 
-          cd external-docs
-          bash spell-check.sh
+        run: cd external-docs && bash spell-check.sh
 
       - name: Install poetry
         run: pip install poetry
@@ -60,7 +58,7 @@ jobs:
           key: ${{ inputs.os }}-${{ inputs.python-version }}-poetry-${{ hashFiles('poetry.lock') }}
 
       - name: Install python packages
-        run: poetry install --sync
+        run: poetry install
 
       - name: Run pyright
         run: poetry run pyright . --lib
