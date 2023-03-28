@@ -902,3 +902,28 @@ def test_get_columns_for_component_attribute_pivoted():
     expected_titles = ["Imports Status", "Exports Status"]
 
     assert actual_titles == expected_titles
+
+
+def test_load_pandas_df_from_csv_url():
+    """
+    TODO: might even need to change test title too.
+    """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "single-unit_single-measure"
+        / "energy-trends-uk-total-energy.csv-metadata.json"
+    )
+    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    primary_catalog_metadata = (
+        data_cube_inspector.csvw_inspector.get_primary_catalog_metadata()
+    )
+    csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
+        primary_catalog_metadata.dataset_uri
+    ).csv_url
+
+    list_of_columns_definitions = data_cube_inspector.get_column_component_info(csv_url)
+    dataframe = data_cube_inspector.get_dataframe(
+        _test_case_base_dir / "single-unit_single-measure" / csv_url
+    )
+
+    # assert each column is the correct datatype

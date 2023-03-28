@@ -7,8 +7,10 @@ one of more data cubes.
 """
 
 from dataclasses import dataclass
-from functools import cached_property, cache
-from typing import Dict, List, Optional, Tuple, Set
+from functools import cache, cached_property
+from typing import Dict, List, Optional, Set, Tuple
+
+import pandas as pd
 
 from csvcubed.definitions import QB_MEASURE_TYPE_DIMENSION_URI, SDMX_ATTRIBUTE_UNIT_URI
 from csvcubed.models.csvcubedexception import UnsupportedComponentPropertyTypeException
@@ -24,6 +26,7 @@ from csvcubed.models.sparqlresults import (
 )
 from csvcubed.utils.dict import get_from_dict_ensure_exists
 from csvcubed.utils.iterables import first, group_by
+from csvcubed.utils.pandas import read_csv
 from csvcubed.utils.qb.components import ComponentPropertyType, EndUserColumnType
 from csvcubed.utils.sparql_handler.column_component_info import ColumnComponentInfo
 from csvcubed.utils.sparql_handler.csvw_inspector import CsvWInspector
@@ -147,6 +150,21 @@ class DataCubeInspector:
             self.csvw_inspector.csvw_json_path,
         )
 
+    @cached_property
+    def _load_dataframe(self) -> pd.DataFrame:
+        """
+        TODO: This
+        TODO: Do we even want this as a cached property?
+        """
+        # df = read_csv(self.csvw_inspector.get_primary_catalog_metadata().dataset_uri)
+        # df = read_csv(
+        #     self.get_cube_identifiers_for_csv(
+        #         self.csvw_inspector.get_primary_catalog_metadata().dataset_uri
+        #     ).csv_url
+        # )
+        # csv_url = csv_url
+        # return read_csv(csv_url)
+
     """
     Public getters for the cached properties.
     """
@@ -206,6 +224,18 @@ class DataCubeInspector:
         """
 
         return self._codelists_and_cols.get(csv_url, CodelistsResult([], 0))
+
+    def get_dataframe(self, csv_url: str) -> pd.DataFrame:
+        """
+        TODO: This and maybe change API function name.
+        """
+        # return self._load_dataframe(csv_url)
+        df: pd.DataFrame = read_csv(csv_url)
+
+        #
+
+        # df.astype({}).dtypes
+        return df
 
     @cache
     def get_column_component_info(self, csv_url: str) -> List[ColumnComponentInfo]:
