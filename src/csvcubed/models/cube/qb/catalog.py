@@ -16,12 +16,6 @@ from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.models.validatedmodel import ValidatedModel, ValidationFunction
 from csvcubed.models.validationerror import ValidateModelPropertiesError
 from csvcubed.utils import validations as v
-from csvcubed.utils.validations import (
-    validate_list,
-    validate_optional,
-    validate_str_type,
-    validate_uri,
-)
 from csvcubed.utils.validators.uri import validate_uri as pydantic_validate_uri
 from csvcubed.utils.validators.uri import (
     validate_uris_in_list as pydantic_validate_uris_in_list,
@@ -63,22 +57,22 @@ class CatalogMetadata(CatalogMetadataBase, UriIdentifiable):
     def _get_validations(self) -> Dict[str, ValidationFunction]:
         return {
             **CatalogMetadataBase._get_validations(self),
-            "identifier": validate_optional(validate_str_type),
-            "summary": validate_optional(validate_str_type),
-            "description": validate_optional(validate_str_type),
-            "creator_uri": validate_optional(validate_uri),
-            "publisher_uri": validate_optional(validate_uri),
-            "landing_page_uris": validate_list(validate_uri),
-            "theme_uris": validate_list(validate_uri),
-            "keywords": validate_list(validate_str_type),
-            "dataset_issued": validate_optional(
+            "identifier": v.optional(v.string),
+            "summary": v.optional(v.string),
+            "description": v.optional(v.string),
+            "creator_uri": v.optional(v.uri),
+            "publisher_uri": v.optional(v.uri),
+            "landing_page_uris": v.list(v.uri),
+            "theme_uris": v.list(v.uri),
+            "keywords": v.list(v.string),
+            "dataset_issued": v.optional(
                 v.any_of(v.is_instance_of(date), v.is_instance_of(datetime))
             ),
-            "dataset_modified": validate_optional(
+            "dataset_modified": v.optional(
                 v.any_of(v.is_instance_of(date), v.is_instance_of(datetime))
             ),
-            "license_uri": validate_optional(validate_uri),
-            "public_contact_point_uri": validate_optional(validate_uri),
+            "license_uri": v.optional(v.uri),
+            "public_contact_point_uri": v.optional(v.uri),
             **UriIdentifiable._get_validations(self),
         }
 

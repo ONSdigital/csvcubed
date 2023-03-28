@@ -1,4 +1,5 @@
 # This script contain a set of function that can be used to validate specific class attributes/ member variables
+import builtins
 import datetime as dt
 from enum import Enum
 from math import isinf, isnan
@@ -8,42 +9,42 @@ from typing import Any, Callable, List, Optional, Type, TypeVar
 from csvcubed.models.cube.qb.components.constants import ACCEPTED_DATATYPE_MAPPING
 from csvcubed.models.validatedmodel import ValidatedModel, ValidationFunction
 from csvcubed.models.validationerror import ValidateModelPropertiesError
+from csvcubed.utils.text import truncate
 from csvcubed.utils.uri import looks_like_uri
 
 T = TypeVar("T")
 
 
-def validate_list(
-    validate_list_item: Callable[[T, str], List[ValidateModelPropertiesError]],
-) -> Callable[[List[T], str], List[ValidateModelPropertiesError]]:
+def list(
+    validate_list_item: Callable[[T, List[str]], List[ValidateModelPropertiesError]],
+) -> Callable[[List[T], List[str]], List[ValidateModelPropertiesError]]:
     """
     This function will validate if the argument provided is in fact a list and,
     in a loop will check each member of the list and returns any errors returned by the item validation function.
     """
 
     def _validate(
-        list_items: List[T], property_name: str
+        list_items: List[T], property_path: List[str]
     ) -> List[ValidateModelPropertiesError]:
-        if not isinstance(list_items, list):
+        if not isinstance(list_items, builtins.list):
             return [
                 ValidateModelPropertiesError(
-                    f"This variable should be a list, check the following variable:",
-                    property_name,
+                    f"The value '{truncate(str(list_items), 50)}' should be a list.",
+                    property_path,
+                    list_items,
                 )
             ]
 
         return [
             err
-            for list_item in list_items
-            for err in validate_list_item(list_item, property_name)
+            for i, list_item in enumerate(list_items)
+            for err in validate_list_item(list_item, [*property_path, str(i)])
         ]
 
     return _validate
 
 
-def validate_str_type(
-    value: str, property_name: str
-) -> List[ValidateModelPropertiesError]:
+def string(value: str, property_path: List[str]) -> List[ValidateModelPropertiesError]:
     """
     This function will validate if the argument provided is in fact a string type and,
     returns any errors returned by the item validation function.
@@ -51,36 +52,37 @@ def validate_str_type(
     if not isinstance(value, str):
         return [
             ValidateModelPropertiesError(
-                "This variable should be a string value, check the following variable:",
-                property_name,
+                f"The value '{truncate(str(value), 50)}' should be a string.",
+                property_path,
+                value,
             )
         ]
 
     return []
 
 
-def validate_uri(value: str, property_name: str) -> List[ValidateModelPropertiesError]:
+def uri(value: str, property_path: List[str]) -> List[ValidateModelPropertiesError]:
     """
     This function will validate if the argument provided is in fact a string type and,
     check is the string contains a uri. Either checks fail it returns any errors returned by the item validation function.
     """
-    errors = validate_str_type(value, property_name)
+    errors = string(value, property_path)
     if any(errors):
         return errors
 
     if not looks_like_uri(value):
         return [
             ValidateModelPropertiesError(
-                "This variable is not a valid uri.", property_name
+                f"The value '{truncate(str(value), 50)}' should be a URI.",
+                property_path,
+                value,
             )
         ]
 
     return []
 
 
-def validate_int_type(
-    value: int, property_name: str
-) -> List[ValidateModelPropertiesError]:
+def integer(value: int, property_path: List[str]) -> List[ValidateModelPropertiesError]:
     """
     This function will validate if the argument provided is in fact a integer type and,
     returns any errors returned by the item validation function.
@@ -88,15 +90,18 @@ def validate_int_type(
     if isinstance(value, bool) or not isinstance(value, int):
         return [
             ValidateModelPropertiesError(
-                "This variable should be a integer value, check the following variable:",
-                property_name,
+                f"The value '{truncate(str(value), 50)}' should be an integer.",
+                property_path,
+                value,
             )
         ]
 
     return []
 
 
-def boolean(value: bool, property_name: str) -> List[ValidateModelPropertiesError]:
+def boolean(
+    value: bool, property_path: List[str]
+) -> List[ValidateModelPropertiesError]:
     """
     This function will validate if the argument provided is in fact a boolean type and,
     returns and error if it isn't.
@@ -104,68 +109,70 @@ def boolean(value: bool, property_name: str) -> List[ValidateModelPropertiesErro
     if not isinstance(value, bool):
         return [
             ValidateModelPropertiesError(
-                "This variable should be a boolean value, check the following variable:",
-                property_name,
+                f"This value '{truncate(str(value), 50)}' should be a boolean value.",
+                property_path,
+                value,
             )
         ]
 
     return []
 
 
-def validate_optional(
-    validate_item: Callable[[T, str], List[ValidateModelPropertiesError]]
-) -> Callable[[Optional[T], str], List[ValidateModelPropertiesError]]:
+def optional(
+    validate_item: Callable[[T, List[str]], List[ValidateModelPropertiesError]]
+) -> Callable[[Optional[T], List[str]], List[ValidateModelPropertiesError]]:
     """
     This function will validate if the Optional argument provided is a None value it will return an empty list,
     else it returns any errors returned by the item validation function .
     """
 
     def _validate(
-        maybe_item: Optional[T], property_name: str
+        maybe_item: Optional[T], property_path: List[str]
     ) -> List[ValidateModelPropertiesError]:
         if maybe_item is None:
             return []
 
-        return validate_item(maybe_item, property_name)
+        return validate_item(maybe_item, property_path)
 
     return _validate
 
 
-def validate_float_type(
-    value: float, property_name: str
+def float(
+    value: builtins.float, property_path: List[str]
 ) -> List[ValidateModelPropertiesError]:
     """
     This function will validate if the argument provided is in fact a float type and,
     returns any errors returned by the item validation function.
     """
-    if not isinstance(value, float):
+    if not isinstance(value, builtins.float):
         return [
             ValidateModelPropertiesError(
-                "This variable should be a float value, check the following variable:",
-                property_name,
+                f"The value '{truncate(str(value), 50)}' should be a float.",
+                property_path,
+                value,
             )
         ]
     elif isnan(value):
         return [
             ValidateModelPropertiesError(
-                "This variable should be a float value but is Not a Number (NaN), check the following variable:",
-                property_name,
+                "The value should be a float but is Not a Number (NaN).",
+                property_path,
+                value,
             )
         ]
     elif isinf(value):
         return [
             ValidateModelPropertiesError(
-                "This variable should be a float value but is +-infinity, check the following variable:",
-                property_name,
+                "The value should be a float but is ±infinity.",
+                property_path,
+                value,
             )
         ]
 
     return []
 
 
-def validate_file(
-    value: Path, property_name: str
-) -> List[ValidateModelPropertiesError]:
+def file(value: Path, property_path: List[str]) -> List[ValidateModelPropertiesError]:
     """
     This function validates whether the given argument is in fact of type Path, and if not,
     returns any validation errors raised by the validation function.
@@ -174,8 +181,9 @@ def validate_file(
         if not value.exists():
             return [
                 ValidateModelPropertiesError(
-                    "This file does not exist, check the following variable:",
-                    property_name,
+                    f"The file '{truncate(str(value), 50)}' does not exist.",
+                    property_path,
+                    value,
                 )
             ]
         else:
@@ -183,8 +191,9 @@ def validate_file(
     else:
         return [
             ValidateModelPropertiesError(
-                "This is not a valid file path, check the following variable:",
-                property_name,
+                f"The file '{truncate(str(value), 50)}' is not a valid file path.",
+                property_path,
+                value,
             )
         ]
 
@@ -195,18 +204,21 @@ def any_of(*conditions: ValidationFunction) -> ValidationFunction:
     specified. (Useful for Unions.) Returns any errors returned by the validation function.
     """
 
-    def validate(value: Any, property_name: str) -> List[ValidateModelPropertiesError]:
+    def validate(
+        value: Any, property_path: List[str]
+    ) -> List[ValidateModelPropertiesError]:
         all_errors = []
         for condition in conditions:
-            errs = condition(value, property_name)
+            errs = condition(value, property_path)
             if not any(errs):
                 return []
             all_errors += errs
 
         return [
             ValidateModelPropertiesError(
-                "Could not validate any single condition for property with name:",
-                property_name,
+                f"The value '{truncate(str(value), 50)}' does not satisfy any single condition for the variable.",
+                property_path,
+                value,
             ),
             *all_errors,
         ]
@@ -220,22 +232,27 @@ def enum(enum_type: Type[Enum]) -> ValidationFunction:
     returns any errors returned by the validation function.
     """
 
-    def validate(value: Any, property_name: str) -> List[ValidateModelPropertiesError]:
+    def validate(
+        value: Any, property_path: List[str]
+    ) -> List[ValidateModelPropertiesError]:
         for enum_value in enum_type:
             if value == enum_value:
                 return []
 
         return [
             ValidateModelPropertiesError(
-                f"Could not find matching enum value for '{value}' in {enum_type.__name__} at property:",
-                property_name,
+                f"Could not find matching enum value for '{truncate(str(value), 50)}' in {enum_type.__name__}.",
+                property_path,
+                value,
             )
         ]
 
     return validate
 
 
-def data_type(data_type: str, property_name: str) -> List[ValidateModelPropertiesError]:
+def data_type(
+    data_type: str, property_path: List[str]
+) -> List[ValidateModelPropertiesError]:
     """
     This function will validate if the argument provided is a member of the accepted data types,
     and returns any errors that are raised.
@@ -243,8 +260,9 @@ def data_type(data_type: str, property_name: str) -> List[ValidateModelPropertie
     if data_type not in ACCEPTED_DATATYPE_MAPPING.keys():
         return [
             ValidateModelPropertiesError(
-                f"'{data_type}' is not recognised as a valid data type.",
-                property_name,
+                f"'{truncate(str(data_type), 50)}' is not recognised as a valid data type.",
+                property_path,
+                data_type,
             )
         ]
     return []
@@ -266,18 +284,19 @@ def validated_model(validated_model_type: Type[ValidatedModel]):
         )
 
     def validate(
-        value: ValidatedModel, property_name: str
+        value: ValidatedModel, property_path: List[str]
     ) -> List[ValidateModelPropertiesError]:
         if not isinstance(value, validated_model_type):
             # This error occurs when runtime validation occurs.
             return [
                 ValidateModelPropertiesError(
-                    f"Value '{value}' was not an instance of the expected type '{validated_model_type.__name__}'.",
-                    property_name,
+                    f"Value '{truncate(str(value), 50)}' was not an instance of the expected type '{validated_model_type.__name__}'.",
+                    property_path,
+                    value,
                 )
             ]
 
-        return value.validate()
+        return value.validate(property_path=property_path)
 
     return validate
 
@@ -289,12 +308,15 @@ def is_instance_of(expect_instance_type: Type[object]) -> ValidationFunction:
     custom validation functions for specific types that do not inherit from ValidatedModel.
     """
 
-    def _validate(value: Any, property_name: str) -> List[ValidateModelPropertiesError]:
+    def _validate(
+        value: Any, property_path: List[str]
+    ) -> List[ValidateModelPropertiesError]:
         if not isinstance(value, expect_instance_type):
             return [
                 ValidateModelPropertiesError(
-                    f"Value '{value}' was not an instance of the expected type '{expect_instance_type.__name__}'.",
-                    property_name,
+                    f"Value '{truncate(str(value), 50)}' was not an instance of the expected type '{expect_instance_type.__name__}'.",
+                    property_path,
+                    value,
                 ),
             ]
         return []

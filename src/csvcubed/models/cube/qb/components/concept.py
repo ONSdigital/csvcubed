@@ -10,13 +10,8 @@ from typing import Dict, Optional
 
 from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.models.validatedmodel import ValidatedModel, ValidationFunction
+from csvcubed.utils import validations as v
 from csvcubed.utils.uri import uri_safe
-from csvcubed.utils.validations import (
-    validate_int_type,
-    validate_optional,
-    validate_str_type,
-    validate_uri,
-)
 from csvcubed.utils.validators.uri import validate_uri as pydantic_validate_uri
 
 from .datastructuredefinition import SecondaryQbStructuralDefinition
@@ -48,11 +43,11 @@ class NewQbConcept(SecondaryQbStructuralDefinition, UriIdentifiable):
     def _get_validations(self) -> Dict[str, ValidationFunction]:
 
         return {
-            "label": validate_str_type,
-            "code": validate_str_type,
-            "parent_code": validate_optional(validate_str_type),
-            "sort_order": validate_optional(validate_int_type),
-            "description": validate_optional(validate_str_type),
+            "label": v.string,
+            "code": v.string,
+            "parent_code": v.optional(v.string),
+            "sort_order": v.optional(v.integer),
+            "description": v.optional(v.string),
             **UriIdentifiable._get_validations(self),
         }
 
@@ -68,7 +63,7 @@ class ExistingQbConcept(SecondaryQbStructuralDefinition):
     def _get_validations(self) -> Dict[str, ValidationFunction]:
 
         return {
-            "existing_concept_uri": validate_uri,
+            "existing_concept_uri": v.uri,
         }
 
 
