@@ -278,8 +278,8 @@ class ExistingAttributeResource(SchemaBaseClass):
 
 @dataclass
 class NewAttributeLiteral(SchemaBaseClass):
-    label: str
     data_type: str
+    label: Optional[str] = None
     description: Optional[str] = None
     from_existing: Optional[str] = None
     definition_uri: Optional[str] = None
