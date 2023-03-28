@@ -147,7 +147,7 @@ By default, csvcubed will generate code lists for each of the dimensions in your
 configuration options for refining how your code lists are generated and expressed. These are briefly described below -
 full details can be found on the [Code list configuration](../code-list-config.md) page.
 
-#### Link to an externally-defined code list (URI)
+### Link to an externally-defined code list (URI)
 
 <!-- TODO: Find an actual code list URI -->
 ```json

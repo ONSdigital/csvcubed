@@ -1,7 +1,8 @@
 # Stress Testing
 
 ## Intro
-To stress test csvcubed, we use a tool called JMeter to run two separate test plans for the build command and inspect command respectively.  
+
+To stress test csvcubed, we use a tool called JMeter to run two separate test plans for the build command and inspect command respectively.
 The test plans are run sequentially (not in parallel) via a bash script and follow broadly the same structure:
 
 - Start running a performance monitor in the background
@@ -19,6 +20,7 @@ The test plans are run sequentially (not in parallel) via a bash script and foll
 ## Installation Guide
 
 ### From Bash Script
+
 *For OS X
 ```
   #!/bin/bash
@@ -53,15 +55,16 @@ The test plans are run sequentially (not in parallel) via a bash script and foll
 ```
 
 ### Manual Method
+
 - Install JMeter: https://jmeter.apache.org/download_jmeter.cgi
   1. Choose either of the binaries to download
   2. Once extracted in a location of your choosing, navigate to the `/bin` folder
       - Add this full path to the `/bin` folder to your system's path variables
       - Once added, reload your terminal for the changes to be recognised
-    
+
 - Install a Java DK: https://www.oracle.com/java/technologies/downloads/
   1. JMeter requires any JDK version 8+ but the latest is recommended
-  
+
 - Install the JMeter Plugins Manager: https://jmeter-plugins.org/wiki/PluginsManager/
   1 Place the downloaded file into JMeter's `lib/ext` directory
 
@@ -78,7 +81,7 @@ The test plans are run sequentially (not in parallel) via a bash script and foll
   5. In the new window, select the "Available" tab and look for `"PerfMon (Servers Performance Monitoring)"` in the list of plugins
   6. Tick the box for this plugin and select `Apply All Changes and Restart`
   7. Once restarted you can close the JMeter GUI window
-  
+
 ## Running the Tests
 - Open a terminal
 - Navigate to `csvcubed/tests/stress`
@@ -86,11 +89,11 @@ The test plans are run sequentially (not in parallel) via a bash script and foll
   1. Where `x` represents the number of rows you wish to use in stress testing. E.g. > `./stresstest.sh 10000`
 - When run, you should see:
   1. Some startup information from the PerfMon Server Agent
-  2. Information as the first test is running - this may take some time to complete depending on the number of rows used in the test 
+  2. Information as the first test is running - this may take some time to complete depending on the number of rows used in the test
       - This will repeat for the second test and take a very similar appearance directly underneath
   3. Finally, upon completion, some key metrics from each test are printed to the terminal
       - Your times may differ
-      - This will also repeat for the results of the inspect command test and prints directly below  
+      - This will also repeat for the results of the inspect command test and prints directly below
 
 **Note** - The tests can be run using the JMeter GUI, however this is not recommended when trying to record accurate stress testing results.
 if you wish to run the tests using the GUI (probably for debugging changes to the JMeter test plans):
@@ -113,6 +116,7 @@ When you are finished using JMeter in GUI mode, please make sure you remove any 
 performance during Non-GUI mode execution.
 
 ## Results
+
 As well as printing times, maximum and average values to the terminal, each run of the stress tests will generate a new folder in the csvcubed/tests/stress/metrics directory
 marked by the timestamp from when the test was initiated. Inside this folder there will be 4 files:
 
@@ -120,12 +124,9 @@ marked by the timestamp from when the test was initiated. Inside this folder the
 - Inspectmetrics-timestamp.csv
 - jmeter-Build.log
 - jmeter-Inspect.log
-    1. Where timestamp is replaced by the time at which the first metric was recorded for that particular test  
+    1. Where timestamp is replaced by the time at which the first metric was recorded for that particular test
 
-The two .CSV files contain metric values and the times at which they were recorded for each test and should be the starting point for deeper analysis.  
+The two .CSV files contain metric values and the times at which they were recorded for each test and should be the starting point for deeper analysis.
 
-The jmeter.log file contains the logs from the last test plan to be executed. This should be the inspectcommand.jmx script unless something went wrong during execution 
+The jmeter.log file contains the logs from the last test plan to be executed. This should be the inspectcommand.jmx script unless something went wrong during execution
 of the buildcommand.jmx script.
-
- 
-

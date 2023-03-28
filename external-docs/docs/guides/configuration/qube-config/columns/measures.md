@@ -1,4 +1,4 @@
-## Measures columns
+# Measures columns
 
 This page discusses what a measures column is, where one should be used, and how one can be defined.
 
@@ -8,7 +8,7 @@ The configuration of measure definitions themselves will not be the primary focu
 > For a detailed look at a measure column's configuration options, see the [Reference table](#reference) at the bottom
 > of this page.
 
-### What is a measures column?
+## What is a measures column?
 
 A *measures* column defines the phenomenon that has been measured in your observed values. It is useful to help express
 the measure used in sparse data sets.
@@ -25,7 +25,7 @@ The `Measure` column declares that the phenomenon measured in the first row is `
 in the second row is `Average Weight`, and so on. Note that there can only ever be one observed value per row when using
 a measures column.
 
-### When to use a measures column
+## When to use a measures column
 
 Every valid data cube requires **at least one measure**. If you choose to use the
 [Standard Shape](../../../shape-data/standard-shape.md) to represent your data then you **must** include a measures column.
@@ -35,7 +35,7 @@ must be defined against [Observations Columns](./observations.md); in this case 
 
 N.B. It is **not possible** to define multiple measures columns in the same data cube.
 
-### Basic configuration
+## Basic configuration
 
 Now we will show how a measures column can be defined in a [qube configuration](../index.md) file.
 
