@@ -28,16 +28,16 @@ a measures column.
 ### When to use a measures column
 
 Every valid data cube requires **at least one measure**. If you choose to use the
-[Standard Shape](../../shape-data/standard-shape.md) to represent your data then you **must** include a measures column.
+[Standard Shape](../../../shape-data/standard-shape.md) to represent your data then you **must** include a measures column.
 
-If you choose to use the [Pivoted Shape](../../shape-data/pivoted-shape.md) to represent your data then all measures
+If you choose to use the [Pivoted Shape](../../../shape-data/pivoted-shape.md) to represent your data then all measures
 must be defined against [Observations Columns](./observations.md); in this case you cannot include a measures column.
 
 N.B. It is **not possible** to define multiple measures columns in the same data cube.
 
 ### Basic configuration
 
-Now we will show how a measures column can be defined in a [qube configuration](../qube-config.md) file.
+Now we will show how a measures column can be defined in a [qube configuration](../index.md) file.
 
 A basic measures column definition can be seen below:
 
@@ -89,7 +89,7 @@ configuration file if new measures are added. Using multiple measures in a measu
 adding new rows to the data set, and specifying measures (and units) to be used for the observation.
 
 To view more information on the difference between single measure and multi measure data sets, see the
-[Shape your data](../../shape-data/index.md) page (for both standard and pivoted shape).
+[Shape your data](../../../shape-data/index.md) page (for both standard and pivoted shape).
 
 ### Optional properties
 
@@ -113,7 +113,7 @@ If you are creating new measures within your measures column, the details of the
 ```
 
 By default, the `values` field is set to `true`. This indicates to csvcubed to automatically generate
-[measure definitions](../measure-configuration.md) unique to your data set. See the previous link for more information
+[measure definitions](../measure-definitions.md) unique to your data set. See the previous link for more information
 on configuring measures and the fields that can be provided to the `values` object list.
 
 If you are re-using existing measures in your measures column, then do not use the `values` field to define the
@@ -143,3 +143,5 @@ of this field in use.
 | `type`              | The type of the column, provide `"measures"` for the measure column type.(Required)                                                                                                                                                                                                                        | *dimension*       |
 | `values`            | (New Measures only) If basic units/measures are desired, a boolean value of `true` is used to signify to csvcubed to create units/measures from values in this column; otherwise values is a dictionary which defines the units/measures using the notation from [Measures and Units](#measures-and-units) | `true`            |
 | `cell_uri_template` | (Existing Measures only) Used to define a template to map the cell values in this column to URIs                                                                                                                                                                                                           | *none*            |
+
+<!-- TODO: Link to `Measures and Units` in above table is broken. -->

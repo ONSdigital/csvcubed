@@ -2,7 +2,7 @@
 
 This page discusses what attribute values are, where they should be used, and how they can be defined.
 
-See the [Attributes page](./attributes.md) for general information about attribute columns, including when to use one,
+See the [Attributes page](./index.md) for general information about attribute columns, including when to use one,
 and a discussion of the difference between [Resource](./attribute-resources.md) attributes and
 [Literal](./attribute-literals.md) attributes.
 
@@ -21,6 +21,7 @@ You should only configure the `values` field when using [Resource](./attribute-r
 the `label` field format should match the format of the attribute cell value exactly.
 
 ## Basic configuration
+
 !!! Important
     The format of the `label` field should match the cell values in your CSV exactly.
 

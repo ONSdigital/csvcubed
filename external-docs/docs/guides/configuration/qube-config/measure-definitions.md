@@ -1,4 +1,4 @@
-# Measure configuration
+# Measure definitions
 
 This page discusses what a measure is, where one should be used, and how one can be defined and configured.
 
@@ -134,9 +134,9 @@ definition of the resource being used.
 A point to remember about measures is that they must be accompanied by units, which represent in what intervals or
 units the observation is being measured in. Units can be defined by being attached to observations the same way that
 measures can when all observations in a column use the same measure/unit, or they can be defined in a dedicated units
-column. For more information on defining units, see the [unit configuration](./unit-configuration.md) page.
+column. For more information on defining units, see the [unit definitions](./unit-definitions.md) page.
 
- ## Inheritance
+## Inheritance
 
  This section will show how to create measures by re-using existing definitions.
 

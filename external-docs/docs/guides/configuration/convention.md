@@ -1,12 +1,12 @@
 # Configuration by convention
 
-This page details the approach that csvcubed takes to configuring cubes by convention. This makes it possible to generate a valid CSV-W cube without writing a [qube-config.json](./qube-config.md) at all. For an introduction to this topic, see the [quick start on designing your CSV](../../quick-start/designing-csv.md).
+This page details the approach that csvcubed takes to configuring cubes by convention. This makes it possible to generate a valid CSV-W cube without writing a [qube-config.json](./qube-config/index.md) at all. For an introduction to this topic, see the [quick start on designing your CSV](../../quick-start/designing-csv.md).
 
 ## Minimum requirements
 
 The configuration by conventional approach in csvcubed requires that:
 
-* Your data set must be in the [standard shape](../shape-data/standard-shape.md). If your data set is in the [pivoted shape](../shape-data/pivoted-shape.md), you **must** provide a [qube-config.json](./qube-config.md).
+* Your data set must be in the [standard shape](../shape-data/standard-shape.md). If your data set is in the [pivoted shape](../shape-data/pivoted-shape.md), you **must** provide a [qube-config.json](./qube-config/index.md).
 * The data CSV's column titles use [conventional column names](#conventional-column-names) for [measure](../../glossary/index.md#measure) columns, [unit](../../glossary/index.md#unit) columns and [observed value](../../glossary/index.md#observation-observed-value) columns.
 
 Adhering to the [conventional column names](#conventional-column-names) is important since csvcubed uses those to understand what each column in your data set contains.
@@ -34,4 +34,4 @@ The following table defines the conventional column names understood by csvcubed
 | [Observation](../../glossary/index.md#observation-observed-value) Column | Observations, obs, values, value, val, vals                                     | A new observation column with the values in this column; the data type of this column must be numeric and is assumed to be of type [xsd:decimal](https://www.w3.org/TR/xmlschema11-2/#decimal). |
 | [Unit](../../glossary/index.md#unit) Column                              | Unit, units, units column, unit column, unit type, unit types                   | A new unit column with the values within the unit column as new units unless the values are URIs, when csvcubed will assume these are existing units                                            |
 
-A valid configuration by convention cube must have a column of each *component type* to be valid. It is possible to override the default configuration of a conventional column by [writing a column definition](qube-config.md#column-definitions) in a [qube-config.json](qube-config.md) file.
+A valid configuration by convention cube must have a column of each *component type* to be valid. It is possible to override the default configuration of a conventional column by [writing a column definition](qube-config/index.md#column-definitions) in a [qube-config.json](qube-config/index.md) file.

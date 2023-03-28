@@ -2,7 +2,7 @@
 
 The code-list build command is used to construct a new code list from a JSON configuration file without the need of a tidy-data.csv file
 
-The only source file necessary is a JSON configuration file. Refer to the [code-list-config guide](../configuration/code-list-config.md) for an overview of how to construct these files.
+The only source file necessary is a JSON configuration file. Refer to the [code-list-config guide](../configuration/qube-config/code-list-config.md) for an overview of how to construct these files.
 
 **Syntax:**
 `csvcubed code-list build [OPTIONS] CODE-LIST-CONFIG-JSON-FILE`
@@ -50,7 +50,7 @@ To build a code list you must only provide a code-list config JSON file.
 
 The code list config JSON file must adhere to the structures defined in the [code list config schema](https://purl.org/csv-cubed/code-list-config/v1.1).
 
-For help on constructing the code-list config JSON refer to the [code-list-config guide](../configuration/code-list-config.md)
+For help on constructing the code-list config JSON refer to the [code-list-config guide](../configuration/qube-config/code-list-config.md)
 
 To build a code list, the command is shown below.
 

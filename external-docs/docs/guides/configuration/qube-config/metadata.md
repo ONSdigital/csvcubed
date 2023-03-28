@@ -15,7 +15,7 @@ A CSV-W file contains metadata which improves discoverability of data publicatio
 | `keywords`                 | A list or a single string of the keywords(s) covered by the data (i.e. `["trade", "energy", "imports"]`)   | *none*                                      |
 | `dataset_issued`           | Date that the data set was initially published in ISO 8601 format, e.g. 2022-03-31 or 2022-03-31T12:54:30Z | *none*                                      |
 | `dataset_modified`         | Date that the data set was last modified in ISO 8601 format, e.g. 2022-03-31 or 2022-03-31T12:54:30Z       | *none*                                      |
-| `license`                  | URI representing the copyright [license](../linked-data/licenses.md) that applies to this cube             | *none*                                      |
+| `license`                  | URI representing the copyright [license](../../linked-data/licenses.md) that applies to this cube             | *none*                                      |
 | `public_contact_point_uri` | URI providing a public contact point for discussion of the data set, e.g. mailto:contact.point@example.com | *none*                                      |
 
-See the [describing your CSV](../../quick-start/describing-csv.md) quick start for a practical guide on configuring metadata.
+See the [describing your CSV](../../../quick-start/describing-csv.md) quick start for a practical guide on configuring metadata.

@@ -13,7 +13,7 @@ For details of these commands proceed to the following pages:
 
 ### `build`
 
-The `build` command is used to generate CSV-W from CSV files, you can use it with or without a configuration file to generate [configured](../guides/configuration/qube-config.md) or [conventional](../guides/configuration/convention.md) cubes respectively. To add a configuration file the `-c` argument is used to point to a `qube-config.json` file.
+The `build` command is used to generate CSV-W from CSV files, you can use it with or without a configuration file to generate [configured](../guides/configuration/qube-config/index.md) or [conventional](../guides/configuration/convention.md) cubes respectively. To add a configuration file the `-c` argument is used to point to a `qube-config.json` file.
 
 ```bash
 csvcubed build observations.csv [-c qube-config.json]

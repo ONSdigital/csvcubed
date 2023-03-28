@@ -28,7 +28,7 @@ Dimensions are the fundamental building blocks of your data set, so your data se
 dimension.
 
 **If a column groups or identifies a sub-set of the population that your cube describes, then it is a dimension.** Care
-should be taken when deciding whether a column represents a dimension or an [attribute](./attributes.md). Attributes
+should be taken when deciding whether a column represents a dimension or an [attribute](./attributes/index.md). Attributes
 describe the observed value and **should not** identify a sub-set of your cube's population.
 
 Referring to the table above, `Year` and `Region` are the dimensions that partition the population into sub-sets. That
@@ -37,8 +37,8 @@ is, `Year` and `Region` respectively identify the time period and geographic are
 ## Basic configuration
 
 If you do not provide a column configuration in your `qube-config.json` file for a column, then
-[Inferred configuration](../convention.md#inferred-configuration) applies. This means that your column will be
-treated as a dimension by default unless it has a [reserved name](../convention.md#conventional-column-names).
+[Inferred configuration](../../convention.md#inferred-configuration) applies. This means that your column will be
+treated as a dimension by default unless it has a [reserved name](../../convention.md#conventional-column-names).
 
 If you provide a column mapping for your column, but you do not specify the `type` field, then csvcubed will
 automatically assume that your column is a dimension. It is also possible to explicitly set the column as a dimension
@@ -137,7 +137,7 @@ values:
 
 ## Code list configuration
 
-> [Code list](../../../glossary/index.md#code-list) - A predefined set of codified concepts which represent the distinct
+> [Code list](../../../../glossary/index.md#code-list) - A predefined set of codified concepts which represent the distinct
 > values that a dimension can hold.
 
 One of the key principles of linked data is to connect data from different sources by reusing common definitions. Code
@@ -319,7 +319,7 @@ If `cell_uri_template` is specified:
 The format of the `cell_uri_template` value **must** follow [RFC6570](https://www.rfc-editor.org/rfc/rfc6570) guidance
 for URI Templates. In the case of any doubt, follow the pattern in the examples shown above (e.g.
 `http://example.org/some-uri/{+column_name}`), as this will ensure csvcubed safely
-[transforms the column header](../../uris.md#csv-column-name-safe-transformation) to the CSV-W format.
+[transforms the column header](../../../uris.md#csv-column-name-safe-transformation) to the CSV-W format.
 
 ## Reference
 

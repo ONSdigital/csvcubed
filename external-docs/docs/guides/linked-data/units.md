@@ -2,13 +2,13 @@
 
 This page introduces some of the *units of measure* that you can use to describe your data. It assumes that you have a rough understanding of what linked data is and where you might want to make use of it.
 
-If you already know which unit you want to reuse but want to find out how to use it, see the guide on [reusing units](../configuration/unit-configuration.md#re-using-units-with-the-from_existing-field).
+If you already know which unit you want to reuse but want to find out how to use it, see the guide on [reusing units](../configuration/qube-config/unit-definitions.md#re-using-units-with-the-from_existing-field).
 
 ## QUDT
 
 [QUDT's Units Vocabulary](http://www.qudt.org/doc/DOC_VOCAB-UNITS.html#Instances) is the preferred system of units recommended for use with csvcubed.
 
-Below we list a summary of some of the key units you may wish to use. Note that the units listed in this document **are not exhaustive**; if the unit that you want to represent has not been listed below then please refer to [QUDT's Units Vocabulary](http://www.qudt.org/doc/DOC_VOCAB-UNITS.html#Instances) to see if a suitable unit has already been published. If not, you may wish to [define a new unit](../configuration/unit-configuration.md#defining-a-new-unit).
+Below we list a summary of some of the key units you may wish to use. Note that the units listed in this document **are not exhaustive**; if the unit that you want to represent has not been listed below then please refer to [QUDT's Units Vocabulary](http://www.qudt.org/doc/DOC_VOCAB-UNITS.html#Instances) to see if a suitable unit has already been published. If not, you may wish to [define a new unit](../configuration/qube-config/unit-definitions.md#defining-a-new-unit).
 
 ## Currencies
 

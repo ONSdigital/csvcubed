@@ -1,6 +1,6 @@
 # Standard Shape
 
-> This page describes how to build and configure a standard shape data cube. For more information about the data shapes supported by csvcubed, see [Shaping your data](./index.md). The instructions below assume a basic understanding of writing a [qube-config.json file](../configuration/qube-config.md).
+> This page describes how to build and configure a standard shape data cube. For more information about the data shapes supported by csvcubed, see [Shaping your data](./index.md). The instructions below assume a basic understanding of writing a [qube-config.json file](../configuration/qube-config/index.md).
 
 The standard shape extends the [common structure](./index.md#common-structure) by requiring that **each row** has a _measures_ column and a _units_ column; these columns define the measure and unit (of measure) for each row.
 
@@ -17,7 +17,7 @@ In our example, the single measure observed is `Number of Arthur's Bakes` and th
 | 2020 | Edinburgh |    90 |       Final | Number of Arthur's Bakes | Count |
 | 2021 | Belfast   |     0 |       Final | Number of Arthur's Bakes | Count |
 
-The simplest [qube-config.json](../configuration/qube-config.md) we can define for this data set is:
+The simplest [qube-config.json](../configuration/qube-config/index.md) we can define for this data set is:
 
 ```json
 {
@@ -49,7 +49,7 @@ The simplest [qube-config.json](../configuration/qube-config.md) we can define f
 }
 ```
 
-It is possible to use the [configuration by convention approach](../configuration/convention.md) to generate a valid [standard shape](./standard-shape.md) cube without defining a [qube-config.json](../configuration/qube-config.md) at all. Just ensure that your columns use the [conventional column names](../configuration/convention.md#conventional-column-names) appropriate to their type.
+It is possible to use the [configuration by convention approach](../configuration/convention.md) to generate a valid [standard shape](./standard-shape.md) cube without defining a [qube-config.json](../configuration/qube-config/index.md) at all. Just ensure that your columns use the [conventional column names](../configuration/convention.md#conventional-column-names) appropriate to their type.
 
 ## Multiple Measures
 
@@ -64,7 +64,7 @@ We can extend our example data set so that it now includes revenue values for th
 | 2021 | Cardiff  |    26 |       Final | Number of Arthur's Bakes |                  Count |
 | 2021 | Cardiff  |    18 |       Final |                  Revenue | GBP Sterling, Millions |
 
-Note that extending the data set to include multiple measures does not require any changes to the [qube-config.json](../configuration/qube-config.md) column definitions.
+Note that extending the data set to include multiple measures does not require any changes to the [qube-config.json](../configuration/qube-config/index.md) column definitions.
 
 The same data could be represented in the [equivalent multi-measure pivoted shape](./pivoted-shape.md#multiple-measures) as follows:
 
