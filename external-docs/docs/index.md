@@ -23,4 +23,3 @@ We make use of the following ontologies to describe cubes, code lists and catalo
 ## Is this just about Open Data?
 
 No! This isn't *just* about open data. We love open data but it isn't right for everything. We understand that some data contains disclosive or private information which shouldn't be published as open data. Our tools are designed to use open standards to enable you to create CSV-Ws which you can choose to publish or keep private.
- 

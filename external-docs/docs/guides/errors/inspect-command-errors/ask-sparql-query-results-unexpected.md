@@ -1,4 +1,4 @@
-# Error - Unexpected number of results (`<num_of_results>`) for the `<query_name>` ASK SPARQL query.
+# Error - Unexpected number of results (`<num_of_results>`) for the `<query_name>` ASK SPARQL query
 
 ## When it occurs
 

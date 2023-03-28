@@ -51,9 +51,9 @@ The key files are:
 * `sweden_at_eurovision_no_missing.csv` - contains all of the observations.
 * `sweden_at_eurovision_no_missing.csv-metadata.json` - contains metadata describing the structure of your CSV-W cube.
 * For each dimension you will have:
-    * `<dimension_name>.csv` - a code list containing the unique values of that dimension.
-    * `<dimension_name>.table.json` - schema describing the code list CSV.
-    * `<dimension_name>.csv-metadata.json` - catalogue metadata describing the code list.
+  * `<dimension_name>.csv` - a code list containing the unique values of that dimension.
+  * `<dimension_name>.table.json` - schema describing the code list CSV.
+  * `<dimension_name>.csv-metadata.json` - catalogue metadata describing the code list.
 
 ## Passing configuration
 

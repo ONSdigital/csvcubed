@@ -22,7 +22,8 @@ The test plans are run sequentially (not in parallel) via a bash script and foll
 ### From Bash Script
 
 *For OS X
-```
+
+```bash
   #!/bin/bash
 
   #Script to install jmeter and associated tools necessary for running the stress test on OSX.
@@ -56,19 +57,19 @@ The test plans are run sequentially (not in parallel) via a bash script and foll
 
 ### Manual Method
 
-- Install JMeter: https://jmeter.apache.org/download_jmeter.cgi
+- Install JMeter: <https://jmeter.apache.org/download_jmeter.cgi>
   1. Choose either of the binaries to download
   2. Once extracted in a location of your choosing, navigate to the `/bin` folder
       - Add this full path to the `/bin` folder to your system's path variables
       - Once added, reload your terminal for the changes to be recognised
 
-- Install a Java DK: https://www.oracle.com/java/technologies/downloads/
+- Install a Java DK: <https://www.oracle.com/java/technologies/downloads/>
   1. JMeter requires any JDK version 8+ but the latest is recommended
 
-- Install the JMeter Plugins Manager: https://jmeter-plugins.org/wiki/PluginsManager/
+- Install the JMeter Plugins Manager: <https://jmeter-plugins.org/wiki/PluginsManager/>
   1 Place the downloaded file into JMeter's `lib/ext` directory
 
-- Install the PerfMon Server Agent: https://github.com/undera/perfmon-agent
+- Install the PerfMon Server Agent: <https://github.com/undera/perfmon-agent>
   1. Unzip to a location of your choosing
   2. Once extracted, add the path to the ServerAgent directory to your system's path variables
   3. Once added, reload your terminal for the changes to be recognised
@@ -83,6 +84,7 @@ The test plans are run sequentially (not in parallel) via a bash script and foll
   7. Once restarted you can close the JMeter GUI window
 
 ## Running the Tests
+
 - Open a terminal
 - Navigate to `csvcubed/tests/stress`
 - Run > `./stresstest.sh x`

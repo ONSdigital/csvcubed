@@ -70,7 +70,7 @@ File name: biscuit-varieties.json
 
 This code list configuration would generate a code list with the following structure:
 
-```
+```text
 root
 ├── Bourbon
 ├── Custard Cream

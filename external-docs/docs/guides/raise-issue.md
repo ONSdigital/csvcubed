@@ -22,7 +22,7 @@ In the event that your issue can only be reproduced using sensitive information,
 
 To obtain a detailed error log, please follow the following steps:
 
-1. Set the logging level to debug in the build or inspect command respectively command. `[build/inspect] --log-level debug` 
+1. Set the logging level to debug in the build or inspect command respectively command. `[build/inspect] --log-level debug`
 2. Rerun the issue causing lines.
 3. Copy and paste the resulting console output into the bug reporting form.
 

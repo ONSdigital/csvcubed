@@ -8,7 +8,7 @@
 
 csvcubed must be installed in order to proceed, please go back to [installation](installation.md).
 
-## How csvcubed interprets a CSV
+## How csvcubed interprets a CSV
 
 csvcubed needs to understand how your statistical data is structured in order to make it more machine readable. There are two ways that you can do this with csvcubed, we are covering the [configuration by convention approach](../guides/configuration/convention.md) in this quick-start. Configuration by convention requires a [standard CSV data shape](../guides/shape-data/index.md#standard-shape) with conventional column titles and fill it out with your data which is explained briefly below.
 

@@ -1,4 +1,4 @@
-# Error - Failed to read CSV-W content from file at `CSVW_METADATA_JSON_PATH`.
+# Error - Failed to read CSV-W content from file at `CSVW_METADATA_JSON_PATH`
 
 ## When it occurs
 

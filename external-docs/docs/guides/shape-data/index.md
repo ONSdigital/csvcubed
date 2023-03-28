@@ -1,6 +1,6 @@
 # Shaping your data
 
-> This page introduces the input data shapes supported by csvcubed with the aim of helping you understand which to use and how to generate data in the right shape.  
+> This page introduces the input data shapes supported by csvcubed with the aim of helping you understand which to use and how to generate data in the right shape.
 
 csvcubed requires that all CSV data inputs are provided in one of two specialised forms of [tidy data](../../glossary/index.md#tidy-data):
 
@@ -32,7 +32,7 @@ csvcubed requires that data is structured as per the following example, regardle
     * the `Value` column holds the observed values here.
 4. Each piece of information describing the _observed value_ has its own _attribute_ column.
     * the `Status` _attribute_ column contains information describing the status of the observed value itself.
-    * Note that _attributes_ should only describe the observed value and must not be used to identify any subset of the population.  
+    * Note that _attributes_ should only describe the observed value and must not be used to identify any subset of the population.
 
 ## Standard Shape
 

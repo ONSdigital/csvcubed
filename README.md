@@ -38,4 +38,3 @@ More detailed developer documentation for this project can be found [here](./doc
 ## How to report bugs
 
 We welcome and appreciate bug reports. As we are trying to make this tool useful for all levels of experience, any level of bug or improvement helps others. To contribute to making csvcubed better, check out our [bug reporting instructions](https://gss-cogs.github.io/csvcubed-docs/external/guides/raise-issue/).
-

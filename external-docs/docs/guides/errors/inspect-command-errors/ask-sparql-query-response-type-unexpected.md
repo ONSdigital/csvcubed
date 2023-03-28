@@ -1,4 +1,4 @@
-# Error - Unexpected ASK SPARQL query `<query_name>` response type: `<response_type>`.
+# Error - Unexpected ASK SPARQL query `<query_name>` response type: `<response_type>`
 
 ## When it occurs
 

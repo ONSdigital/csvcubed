@@ -61,13 +61,11 @@ The templates are currently in version 1.0; with future development planned. You
 | [gregorian-instant](https://purl.org/csv-cubed/qube-config/templates/gregorian-instant.json)   | The gregorian-instant expressed in ISO-8601 format  | 1970-01-01T00:00:00     |
 | [gregorian-interval](https://purl.org/csv-cubed/qube-config/templates/gregorian-interval.json) | The gregorian-interval expressed in ISO-8601 format | 1970-01-01T00:00:00/P3D |
 
-
 ### Geographical area templates
 
 | Template                                                                                             | Description                                     | Example   |
 |------------------------------------------------------------------------------------------------------|-------------------------------------------------|-----------|
 | [statistical-geography](https://purl.org/csv-cubed/qube-config/templates/statistical-geography.json) | ONS Geography codes for statistical geographies | K02000001 |
-
 
 ### Attribute templates
 

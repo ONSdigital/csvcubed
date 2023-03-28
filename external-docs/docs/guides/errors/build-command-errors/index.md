@@ -1,11 +1,11 @@
 # build command errors
 
-* [Missing Column Definition Error](./missing-column-definition.md) 
+* [Missing Column Definition Error](./missing-column-definition.md)
 * [Column Not Found In Data Error](./column-not-found-in-data.md)
 * [Duplicate Column Title Error](./duplicate-column-title.md)
 * [Empty Multi Measure Dimension Error](./empty-multi-measure-dimension)
 * [Empty Multi Units Error](./empty-multi-units)
-* [No Dimensions Defined Error](./no-dimensions-defined.md) 
+* [No Dimensions Defined Error](./no-dimensions-defined.md)
 * [No Measures Defined Error](./no-measures-defined.md)
 * [No Units Defined Error](./no-units-defined.md)
 * [No Observed Values Column Defined Error](./no-observations-columns.md)

@@ -1,4 +1,4 @@
-# Error - The column associated with the primary key must contain a title.
+# Error - The column associated with the primary key must contain a title
 
 ## When it occurs
 

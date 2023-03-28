@@ -13,7 +13,6 @@ The only source file necessary is a JSON configuration file. Refer to the [code-
 | -------------------------- | ------------------------------------------ |
 | CODE-LIST-CONFIG-JSON-FILE | The file path to the code list config JSON |
 
-
 **Options:**
 
 | Option                      | Description                                                                                                     |
@@ -23,7 +22,6 @@ The only source file necessary is a JSON configuration file. Refer to the [code-
 | --ignore-validation-errors  | Set this option to continue building the code list when errors are found.                                       |
 | --validation-errors-to-file | Save validation errors to `validation-errors.json` in the output directory.                                     |
 | --log-level                 | Set the desired logging level to one of 'crit', 'err', 'warn', 'info' and 'debug'.  <br/> The default is 'warn' |
-
 
 ## Saving Validation Errors
 
@@ -40,7 +38,6 @@ Please refer to the [Logging](./logging.md) section for information on how to co
 ### `--out` / `-o`
 
 When the code list is built the default output path is `./out`. This may be changed by setting output option to an alternative path.
-
 
 ## Examples
 

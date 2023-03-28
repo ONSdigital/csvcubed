@@ -17,7 +17,6 @@ Once this process is complete, the value is appended on to a URI base to make a 
 
 > `http://example.com/definitions/code-lists/enterprise-captains/picard-jean-luc`.
 
-
 ## CSV column name safe transformation
 
 The CSV column name safe transformation converts a human-readable column name into an identifier that is safe to use as the `name` property in a CSV-W column.

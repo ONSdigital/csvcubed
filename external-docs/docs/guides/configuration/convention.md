@@ -17,8 +17,8 @@ In order to generate a cube, csvcubed needs some additional metadata and makes a
 
 * The title of the cube is the name of the CSV file in [title case](https://en.wikipedia.org/wiki/Title_case) with underscores or dashes replaced by spaces.
 * Every column which does not use a conventional name is interpreted as a [dimension](../../glossary/index.md#dimension).
-    * The title of each dimension is the [title case](https://en.wikipedia.org/wiki/Title_case) version of the column header with any underscores or dashes replaced by spaces.
-    * A code list is generated for each dimension column. This code list is generated from the unique values present in the data CSV column.
+  * The title of each dimension is the [title case](https://en.wikipedia.org/wiki/Title_case) version of the column header with any underscores or dashes replaced by spaces.
+  * A code list is generated for each dimension column. This code list is generated from the unique values present in the data CSV column.
 * Observation values are decimal values.
 * New measures are created using the unique values in the measures column unless a URI is present, where that URI is assumed to point to an existing measure.
 * New units are created using the unique values in the units column unless a URI is present, where that URI is assumed to point to an existing unit.

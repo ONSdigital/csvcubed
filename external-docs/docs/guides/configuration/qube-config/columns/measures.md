@@ -53,12 +53,10 @@ A basic measures column definition can be seen below:
 }
 ```
 
-
 Note that the `type` has been set to `measures`.
 
 Note that if you use one of the [conventional column titles](TODO) for measures then the above configuration is
 equivalent to what csvcubed would do to your column by default.
-
 
 <!-- ```json
 {
@@ -138,10 +136,8 @@ of this field in use.
 
 ## Reference
 
-| **field name**      | **description**                                                                                                                                                                                                                                                                                            | **default value** |
-|---------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------|
-| `type`              | The type of the column, provide `"measures"` for the measure column type.(Required)                                                                                                                                                                                                                        | *dimension*       |
-| `values`            | (New Measures only) If basic units/measures are desired, a boolean value of `true` is used to signify to csvcubed to create units/measures from values in this column; otherwise values is a dictionary which defines the units/measures using the notation from [Measures and Units](#measures-and-units) | `true`            |
-| `cell_uri_template` | (Existing Measures only) Used to define a template to map the cell values in this column to URIs                                                                                                                                                                                                           | *none*            |
-
-<!-- TODO: Link to `Measures and Units` in above table is broken. -->
+| **field name**      | **description**                                                                                                                                                                                                                                                                                        | **default value** |
+|---------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------|
+| `type`              | The type of the column, provide `"measures"` for the measure column type.(Required)                                                                                                                                                                                                                    | *dimension*       |
+| `values`            | (New Measures only) If basic measures are desired, a boolean value of `true` is used to signify to csvcubed to create units/measures from values in this column; otherwise values is a dictionary which defines the measures using the notation from [Measures definitions](../measure-definitions.md) | `true`            |
+| `cell_uri_template` | (Existing Measures only) Used to define a template to map the cell values in this column to URIs                                                                                                                                                                                                       | *none*            |

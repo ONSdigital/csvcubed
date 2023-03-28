@@ -112,7 +112,8 @@ more detail than a label.
 
 The following example shows a measure being created within a measures column, being given the `label` "Measure" and the
 `description` "This is a measure".
-### Measure column configuration example for a new measure:
+
+### Measure column configuration example for a new measure
 
 ```json
 "columns": {
