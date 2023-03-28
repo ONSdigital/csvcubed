@@ -62,7 +62,7 @@ The column types that can be configured in a `qube-config.json` file are:
 
 2. Observations
 
-   See the [Observation Coluumns](./columns/observations.md) page for more information on configuring observation columns.
+   See the [Observation Columns](./columns/observations.md) page for more information on configuring observation columns.
 
 3. Measures
 
