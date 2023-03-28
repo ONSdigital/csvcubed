@@ -132,7 +132,7 @@ unit details. Instead, use the field `cell_uri_template`.
  is only applicable to pivoted shape cubes with multiple measures and multiple observation value columns. The use of
  this field is covered in the [configuring units](../unit-configuration.md) page.
 
-## Reference                                                                                          | *none*            |
+## Reference
 
 | **field name**           | **description**                                                                                                                                                                                                      | **default value** |
 |--------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------|
