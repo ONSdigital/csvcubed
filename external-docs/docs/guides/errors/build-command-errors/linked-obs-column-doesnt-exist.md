@@ -1,4 +1,4 @@
-# Error - Linked observation column doesn't exist error
+# Error - Linked observations column doesn't exist error
 
 ## When it occurs
 

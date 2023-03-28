@@ -4,7 +4,7 @@ It is sometimes the case that you cannot provide a value for a given [observatio
 
 csvcubed permits missing observation values as long as there is an _attribute_ column which explains why the value is missing. The _attribute_ column must be based on the `http://purl.org/linked-data/sdmx/2009/attribute#obsStatus` attribute. The observation which is missing must have the observation status filled in.
 
-Blank values are represented as a zero length string in an observation column in CSV format (i.e. `,,`).
+Blank values are represented as a zero length string in an observations column in CSV format (i.e. `,,`).
 
 ## A worked example: Sweden in Eurovision
 

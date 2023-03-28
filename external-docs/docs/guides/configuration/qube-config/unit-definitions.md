@@ -50,12 +50,12 @@ does not affect the representation of units.
 If you have decided on your preferred method of defining/representing units to suit your data cube, follow one of the
 two sections on defining a unit below:
 
-### Defining a unit in an observation column's definition
+### Defining a unit in an observations column's definition
 
 After specifying the `type` of the column as `observations`, a unit can be created as a property containing a list of
 objects, these objects being the fields that contain the unit's properties.
 
-The example below shows an observation column definition with a unit. The unit has been given the `label` "Count".
+The example below shows an observations column definition with a unit. The unit has been given the `label` "Count".
 
 ```json
 "columns": {
@@ -68,12 +68,12 @@ The example below shows an observation column definition with a unit. The unit h
 },
 ```
 
-For more information on defining observation columns, and the resources that can be configured in them along with units,
+For more information on defining observations columns, and the resources that can be configured in them along with units,
  see the [observations columns](../../configuration/qube-config/columns/observations.md) page.
 
 ### Defining a unit in a units column
 
-Placing the units in their own column should be done when different values in the same observation column are measured
+Placing the units in their own column should be done when different values in the same observations column are measured
 differently, e.g. one row measured in US Dollars and the next row measured in Pounds Sterling.
 
 When defining a new unit in its own column, the details are specified in the `values` field as an object, after the

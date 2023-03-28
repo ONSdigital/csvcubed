@@ -60,7 +60,7 @@ As mentioned above, the configuration of attribute columns will depend on whethe
 
 ## Describing observations
 
-In a [pivoted shape data set](../../../../shape-data/pivoted-shape.md) with multiple observation columns, attributes must be
+In a [pivoted shape data set](../../../../shape-data/pivoted-shape.md) with multiple observations columns, attributes must be
 explicitly associated with the observed values they qualify. In the example below, there are two attribute columns,
 `Number of Stores Status` and `Revenue Status`, which qualify the `Number of Arthur's Bakes` and `Revenue` columns
 respectively.

@@ -1,4 +1,4 @@
-# Error - Linked to non-observation column error
+# Error - Linked to non-observations column error
 
 ## When it occurs
 
