@@ -6,7 +6,7 @@ This page discusses what an observations column is, where one should be used, an
 
 ## What is an observations column?
 
-Observations columns contain the numerical values of observations recorded in the data set, and are the most important component of a CSV-W. In order to be valid, a data cube must include at least one observations column, each of which must have a unit and a measure associated with it. Measures and units can either be defined against the observations column, or can be contained in separate [unit](./units.md) and [measure](./measures.md) columns.
+Observations columns contain the numerical values of observations recorded in the data set, and are the most important component of a cube. In order to be valid, a data cube must include at least one observations column, each of which must have a unit and a measure associated with it. Measures and units can either be defined against the observations column, or can be contained in separate [units](./units.md) and [measures](./measures.md) columns.
 
 ## When to use one
 
