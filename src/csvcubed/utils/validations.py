@@ -163,7 +163,7 @@ def float(
     elif isinf(value):
         return [
             ValidateModelPropertiesError(
-                "The value should be a float but is +-infinity.",
+                "The value should be a float but is ±infinity.",
                 property_path,
                 value,
             )

@@ -73,7 +73,4 @@ class ValidateModelPropertiesError(ValidationError):
     offending_value: Any
 
     def __post_init__(self):
-        self.message = (
-            self.message
-            + f" Check the following variable at the property path: '{self.property_path}'"
-        )
+        self.message += f" Check the following variable at the property path: '{self.property_path}'"
