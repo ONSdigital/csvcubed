@@ -2,11 +2,11 @@
 
 ## When it occurs
 
-csvcubed is designed to help you create a valid self-contained cube of data as easily as possible. To help with this, it automatically creates new units, measures and code lists from the CSV that you provide. The way this works is that csvcubed extracts the distinct values from a column of the CSV input and treats these values as labels for the new code list concepts, units or measures; it then generates a URI from that label by applying the [URI-safe transformation](../../uris.md#uri-safe-transformation).
+csvcubed is designed to help you create a valid self-contained cube of data as easily as possible. To help with this, it automatically creates new units, measures and code lists from the CSV that you provide. The way this works is that csvcubed extracts the distinct values from a column of the CSV input and treats these values as labels for the new code list concepts, units or measures; it then generates a URI from that label by applying the [URI-Safe transformation](../../uris.md#uri-safe-transformation).
 
-Occasionally the [URI-safe transformation](../../uris.md#uri-safe-transformation) generates concepts/units/measures with the same URI but different labels. For instance if one of your columns contains the labels `Time Period` and `Time-period`, which both map to the same URI-safe value of `time-period`, then this error will be raised.
+Occasionally the [URI-Safe transformation](../../uris.md#uri-safe-transformation) generates concepts/units/measures with the same URI but different labels. For instance if one of your columns contains the labels `Time Period` and `Time-period`, which both map to the same URI-Safe value of `time-period`, then this error will be raised.
 
-> N.B. This error often arises due to differences in case, e.g. `Football` and `FootBall` are distinct and conflicting values which map to the same URI-safe value of `football`.
+> N.B. This error often arises due to differences in case, e.g. `Football` and `FootBall` are distinct and conflicting values which map to the same URI-Safe value of `football`.
 
 ## How to fix
 

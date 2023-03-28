@@ -12,7 +12,7 @@ Refer to the [qube-config guide](../configuration/index.md) for an overview of h
 
 | Argument      | Description                                                     |
 |---------------|-----------------------------------------------------------------|
-| TIDY_CSV_PATH | The file path to the cube data file, formatted as tidy data csv |
+| TIDY_CSV_PATH | The file path to the cube data file, formatted as tidy data CSV |
 
 **Options:**
 
@@ -61,7 +61,7 @@ When errors are encountered, please refer to the [errors guide](../../guides/err
 
 Building a cube without providing a [`qube-config.json`](../configuration/qube-config.md) configuration file relies upon the [configuration by convention approach](../configuration/convention.md).
 
-To build a cube using only a csv data file. For guidance on the correct data structure refer to the [Shaping your data](../shape-data/index.md) guide, the 'standard approach' is recommended as a good starting point.
+To build a cube using only a CSV data file. For guidance on the correct data structure refer to the [Shaping your data](../shape-data/index.md) guide, the 'standard approach' is recommended as a good starting point.
 
 ```bash
 csvcubed build ./source/cube_data.csv
@@ -77,7 +77,7 @@ This is referred to as the [explicit configuration](../configuration/convention.
 
 The cube config json file must adhere to the structures defined in the [cube config schema](https://purl.org/csv-cubed/qube-config/v1).
 
-For help on constructing the config json refer to the quick start guides on [designing a csv](../../quick-start/designing-csv.md) and [linking data](../../quick-start/linking-data.md) or the more detailed [Configuration Guide](../configuration/qube-config.md)
+For help on constructing the config json refer to the quick start guides on [designing a CSV](../../quick-start/designing-csv.md) and [linking data](../../quick-start/linking-data.md) or the more detailed [Configuration Guide](../configuration/qube-config.md)
 
 To build a cube using both configuration and data files the command is shown below.
 

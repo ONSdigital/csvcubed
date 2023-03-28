@@ -2,7 +2,7 @@
 
 ## When it occurs
 
-A dimension column contains a value which clashes with a identifier that is reserved by csvcubed.
+A dimension column contains a value which clashes with an identifier that is reserved by csvcubed.
 
 e.g. a *new dimension* column contains the term `Code List` which clashes with the reserved `code-list` identifier.
 

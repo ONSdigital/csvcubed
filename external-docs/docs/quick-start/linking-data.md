@@ -2,11 +2,11 @@
 
 Linking data is what turns 4☆ data into [5☆ linked data](https://5stardata.info/en/). This guide will help users create their first linked data where your data reuses standard definitions.
 
-## A transcribed audio screencast convering the contents of this page
+## A transcribed audio screencast covering the contents of this page
 
 <iframe src="https://share.descript.com/embed/WJeFEHVvAom" width="640" height="360" frameborder="0" allowfullscreen></iframe>
 
-## Pre-requisites
+## Prerequisites
 
 This page assumes that you have a well structured CSV with a corresponding JSON [qube-config.json](../guides/configuration/qube-config.md) as built in [describing your CSV](describing-csv.md). 
 
@@ -49,7 +49,7 @@ For example, in the `sweden_at_eurovision_no_missing.csv` data set we have been 
 
 ## Column Templates
 
-Column templates are pre-configured column definitions which speed up creating linked data. csvcubed has several templates for columns convering calendar and UK Government time periods, as well as observation-status.
+Column templates are pre-configured column definitions which speed up creating linked data. csvcubed has several templates for columns converting calendar and UK Government time periods, as well as observation-status.
 
 For more information see the [templates guide](../guides/configuration/templates.md).
 

@@ -29,9 +29,9 @@ as a list of objects defining the attributes used in the column:
 
 ```json
 {
+    "$schema": "https://purl.org/csv-cubed/qube-config/v1",
     "title": "The title of the cube",
     "description": "A description of the contents of the cube",
-    "summary": "A summary of the data set",
     "columns": {
         "Status": {
             "type": "attribute",
@@ -53,7 +53,7 @@ as a list of objects defining the attributes used in the column:
 
 This minimal definition results in:
 
-* the `label` being set as the specified value - remember, this must match the formatting of the call values exactly.
+* the `label` being set as the specified value - remember, this must match the formatting of the cell values exactly.
 
 ## Description and definition
 
@@ -180,5 +180,5 @@ that the formatting of the `label` exactly matches the values in the attribute c
 |------------------|-----------------------------------------------------------------------------|-------------------|
 | `label`          | The title of the attribute (Required)                                       | *none*            |
 | `description`    | A description of the contents of the attribute (Optional)                   | *none*            |
-| `from_existing`  | The uri of the resource for reuse/extension (Optional)                      | *none*            |
-| `definition_uri` | A uri of a resource to show how the attribute is created/managed (Optional) | *none*            |
+| `from_existing`  | The URI of the resource for reuse/extension (Optional)                      | *none*            |
+| `definition_uri` | A URI of a resource to show how the attribute is created/managed (Optional) | *none*            |

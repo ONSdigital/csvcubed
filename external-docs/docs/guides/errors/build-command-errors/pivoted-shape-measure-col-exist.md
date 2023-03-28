@@ -4,7 +4,7 @@
 
 There are measure columns defined in a pivoted shape cube.  
 
-An example cube structre which would result in this error looks like this:
+An example cube structure which would result in this error looks like this:
 
 | Location  | Median Commute Distance / miles | Another Observed Value | Measure             | Unit    |
 |-----------|---------------------------------|------------------------|---------------------|---------|

@@ -2,9 +2,9 @@
 
 ## When it occurs
 
-There are mutliple observation value columns defined and at least one measure column defined. This is an invalid hybrid between standard and pivoted shapes.
+There are multiple observation value columns defined and at least one measure column defined. This is an invalid hybrid between standard and pivoted shapes.
 
-An example cube structre which would result in this error looks like this:
+An example cube structure which would result in this error looks like this:
 
 | Location  | First Value | First Measure           | First Unit | Second Value | Second Measure      | Second Unit |
 |-----------|-------------|-------------------------|------------|--------------|---------------------|-------------|

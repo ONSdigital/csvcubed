@@ -20,7 +20,7 @@ The configuration of measures columns will not be the primary focus of this page
 | 2019 | England  |    85 | Average Weight |   Kilograms |
 | 2021 | France   |   175 | Average Height | Centimetres |
 
-This data set conains two different measures. The first observed value is measured using the measure `Average Height`,
+This data set contains two different measures. The first observed value is measured using the measure `Average Height`,
 and the second observed value uses the measure `Average Weight`. This is a common way measures are represented in a
 standard shape data set.
 
@@ -190,5 +190,5 @@ Example of a measure created using the `from_existing` field in a measures colum
 |------------------|-----------------------------------------------------------------------------------------------------------------------------|-------------------|
 | `label`          | The title of the measure (Required; Optional if `from_existing` defined)                                                    | *none*            |
 | `description`    | A description of the contents of the measure (Optional)                                                                     | *none*            |
-| `from_existing`  | The uri of the resource for reuse/extension (Optional)                                                                      | *none*            |
-| `definition_uri` | A uri of a resource to show how the measure is created/managed (e.g. a uri of a PDF explaining the measure type) (Optional) | *none*            |
+| `from_existing`  | The URI of the resource for reuse/extension (Optional)                                                                      | *none*            |
+| `definition_uri` | A URI of a resource to show how the measure is created/managed (e.g. a URI of a PDF explaining the measure type) (Optional) | *none*            |

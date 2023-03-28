@@ -1,4 +1,4 @@
-# Error - undefined attribiute values
+# Error - undefined attribute values
 
 ## When it occurs
 

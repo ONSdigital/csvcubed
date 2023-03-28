@@ -13,7 +13,7 @@ For details of these commands proceed to the following pages:
 
 ### `build`
 
-The `build` command is used to generate CSV-W from csv files, you can use it with or without a configuration file to generate [configured](../guides/configuration/qube-config.md) or [conventional](../guides/configuration/convention.md) cubes respectively. To add a configuration file the `-c` argument is used to point to a `qube-config.json` file.
+The `build` command is used to generate CSV-W from CSV files, you can use it with or without a configuration file to generate [configured](../guides/configuration/qube-config.md) or [conventional](../guides/configuration/convention.md) cubes respectively. To add a configuration file the `-c` argument is used to point to a `qube-config.json` file.
 
 ```bash
 csvcubed build observations.csv [-c qube-config.json]
@@ -23,7 +23,7 @@ For more information see the [detailed guide](../guides/command-line/build-comma
 
 ### `inspect`
 
-The `inspect` command is used to list the contents of csvcubed-generated CSV-W. Is it can be used against code-lists and CSV-Ws and is useful to visually check that the serialisation of CSV-W meets your expectations.
+The `inspect` command is used to list the contents of csvcubed generated CSV-W. Is it can be used against code-lists and CSV-Ws and is useful to visually check that the serialisation of CSV-W meets your expectations.
 
 ```bash
 csvcubed inspect out/observations.csv-metadata.json

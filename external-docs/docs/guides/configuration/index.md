@@ -1,6 +1,6 @@
 # Configuring a cube
 
-This document provides an overview of how csvcubed configures your cube. For an introduction to the topic take a look at the quick start guides on [designing a csv](../../quick-start/designing-csv.md) and [linking data](../../quick-start/linking-data.md).
+This document provides an overview of how csvcubed configures your cube. For an introduction to the topic take a look at the quick start guides on [designing a CSV](../../quick-start/designing-csv.md) and [linking data](../../quick-start/linking-data.md).
 
 There are two ways to use csvcubed to generate a valid statistical cube:
 

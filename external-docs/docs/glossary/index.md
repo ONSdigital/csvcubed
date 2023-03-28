@@ -27,7 +27,7 @@ Dimension components identify the subset of a population which has been observed
 ## Literal
 
 Basic values such as strings, dates, booleans, and numbers that can only be used in the object position of an RDF triple.
-Literals are values which can take the form of strings, numbers, dates and booleans. See the CSV-W [built-in datatypes](https://www.w3.org/TR/2015/REC-tabular-metadata-20151217/#h-built-in-datatypes).
+Literals are values which can take the form of strings, numbers, dates and booleans. See the CSV-W [built-in data types](https://www.w3.org/TR/2015/REC-tabular-metadata-20151217/#h-built-in-datatypes).
 
 ## [Measure](https://www.w3.org/TR/vocab-data-cube/#cubes-model)
 
@@ -77,7 +77,7 @@ A standard data shape/layout designed to ensure interoperability between data to
 
 A quantity or increment by which something is counted or described, such as kg, mm, °C, °F, monetary units such as Euro or US dollar, simple number counts or index numbers.
 
-## [Uniform Resource Indentifier](https://www.w3.org/TR/vocab-data-cube/#intro-rdf)
+## [Uniform Resource Identifier](https://www.w3.org/TR/vocab-data-cube/#intro-rdf)
 
 Uniform Resource Identifiers (URIs) are identifiers which distinguish [resources](#resource) from one another. Note that a URL (Uniform Resource Locator) is a type of URI.
 Examples:

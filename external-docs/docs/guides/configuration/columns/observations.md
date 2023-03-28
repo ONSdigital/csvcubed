@@ -29,9 +29,9 @@ In this data set the value, measure and unit details are contained in their own 
 
 ```json
 {
+   "$schema": "https://purl.org/csv-cubed/qube-config/v1",
    "title": "Arthur's Bakes data set",
    "description": "Arthur's Bakes - number of stores and annual revenue",
-   "summary": "Data on the number of Arthur's Bakes stores and annual revenues by year and location",
    "columns": {
       "Value": {
          "type": "observations",
@@ -52,9 +52,9 @@ In this example of a pivoted shape data set, there are two observation value col
 
 ```json
 {
+   "$schema": "https://purl.org/csv-cubed/qube-config/v1",
    "title": "Arthur's Bakes data set",
    "description": "Arthur's Bakes - number of stores and annual revenue",
-   "summary": "Data on the number of Arthur's Bakes stores and annual revenues by year and location",
    "columns": {
       "Number of Arthur's Bakes": {
          "type": "observations",
@@ -68,7 +68,7 @@ In this example of a pivoted shape data set, there are two observation value col
       },
       "Revenue": {
          "type": "observations",
-         "data_type": "decimal",
+         "data_type": "integer",
          "unit": {
             "label": "GBP Sterling (Millions)"
          },
@@ -88,5 +88,5 @@ This table shows a list of the possible fields that can be entered when configur
 |----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------|
 | `type`         | The type of the column; to configure an observation column use the value `observations`. (Required)                                                                                                                                                                                                                                                                  | *dimension*       |
 | `data_type`    | The [data type](https://www.w3.org/TR/2015/REC-tabular-metadata-20151217/#h-built-in-datatypes) of the observations. This should generally be a decimal or integer. (Optional)                                                                                                                                                                                       | *decimal*         |
-| `unit`         | The unit for this observation column; this can be a uri to an existing unit, or a JSON object containing a new or extended existing unit. If there is a unit column this field **must not** be provided. (Optional)                                                                                                                                                      | *none*            |
-| `measure`      | The measure for this observation column; this can be a uri to an existing dimension, or a JSON object containing a new or extended existing measure. If your data set is in the [pivoted multi-measure shape](../../shape-data/pivoted-shape.md#multiple-measures), this field is required. If there is a measure column this field **must not** be provided. (Optional) | *none*            |
+| `unit`         | The unit for this observation column; this can be a URI to an existing unit, or a JSON object containing a new or extended existing unit. If there is a unit column this field **must not** be provided. (Optional)                                                                                                                                                      | *none*            |
+| `measure`      | The measure for this observation column; this can be a URI to an existing dimension, or a JSON object containing a new or extended existing measure. If your data set is in the [pivoted multi-measure shape](../../shape-data/pivoted-shape.md#multiple-measures), this field is required. If there is a measure column this field **must not** be provided. (Optional) | *none*            |

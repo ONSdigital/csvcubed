@@ -14,7 +14,7 @@ A combined set of dimension values (including the measure) uniquely identifies e
 specifically, the combined dimension values identify the sub-set of the population to which the observed value applies.
 
 Examples of dimensions include the time period to which the observation applies, or the geographic region which the
-observation covers, as demonstrated in the table below:
+observation covers, as demonstrated with the `Year` and `Region` columns in the table below:
 
 | **Year** | **Region** | **Value** |
 |:---------|:-----------|:---------:|
@@ -46,9 +46,9 @@ by setting the column's `type` field to `dimension`. The following examples are 
 
 ```json
 {
+   "$schema": "https://purl.org/csv-cubed/qube-config/v1",
    "title": "The title of the cube",
    "description": "A description of the contents of the cube",
-   "summary": "A summary of the data set",
    "columns": {
       "Year": {
          "type": "dimension"
@@ -59,9 +59,9 @@ by setting the column's `type` field to `dimension`. The following examples are 
 
 ```json
 {
+   "$schema": "https://purl.org/csv-cubed/qube-config/v1",
    "title": "The title of the cube",
    "description": "A description of the contents of the cube",
-   "summary": "A summary of the data set",
    "columns": {
       "Year": {
          "type": "dimension"
@@ -118,7 +118,7 @@ markdown format.
 }
 ```
 
-The `definition_uri` field allows you to refer to external human readable resources that further define a dimension's 
+The `definition_uri` field allows you to refer to external human readable resources that further define a dimension's
 values:
 
 ```json
@@ -140,11 +140,11 @@ values:
 > [Code list](../../../glossary/index.md#code-list) - A predefined set of codified concepts which represent the distinct
 > values that a dimension can hold.
 
-One of the key principles of linked data is to connect data from different sources by reusing common definitions. Code 
+One of the key principles of linked data is to connect data from different sources by reusing common definitions. Code
 lists are an important part of your data set where using linked data can make comparability with other cubes easy.
 
-By default, csvcubed will generate code lists for each of the dimensions in your data set. However, there are several 
-configuration options for refining how your code lists are generated and expressed. These are briefly described below - 
+By default, csvcubed will generate code lists for each of the dimensions in your data set. However, there are several
+configuration options for refining how your code lists are generated and expressed. These are briefly described below -
 full details can be found on the [Code list configuration](../code-list-config.md) page.
 
 #### Link to an externally-defined code list (URI)
@@ -239,10 +239,10 @@ The `Region` column could also be configured by using a [column template](../tem
    "columns": {
       "Year": {
          "type": "dimension"
+      },
+      "Region": {
+         "from_template": "statistical-geography"
       }
-   },
-   "Region": {
-      "from_template": "statistical-geography"
    }
 }
 ```
@@ -285,7 +285,7 @@ dimension to be reused, and set the `label` field to indicate that this is a new
 
 ### Cell URI templates
 
-!!! Warning 
+!!! Warning
     The use of the `cell_uri_template` field is considered an advanced configuration option, and therefore care must be taken to ensure that the values generated are valid.
 
 ```json
@@ -328,10 +328,10 @@ This table shows a list of the possible fields that can be entered when configur
 | **field name**      | **description**                                                                                                                                                                                                                                                                                       | **default value**                                                                               |
 |---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------|
 | `type`              | The type of the column. This can be left blank to configure a column as a dimension by default.                                                                                                                                                                                                       | *dimension*                                                                                     |
-| `label`             | The title of the column (Optional)                                                                                                                                                                                                                                                                    | The capital case version of the column header in the csv file with spaces replacing underscores |
+| `label`             | The title of the column (Optional)                                                                                                                                                                                                                                                                    | The capital case version of the column header in the CSV file with spaces replacing underscores |
 | `description`       | A description of the contents of the column (Optional)                                                                                                                                                                                                                                                | *none*                                                                                          |
 | `from_template`     | Use a [column template](../templates.md) (Optional)                                                                                                                                                                                                                                                   | *none*                                                                                          |
-| `from_existing`     | The uri of the resource for reuse/extension (Optional)                                                                                                                                                                                                                                                | *none*                                                                                          |
-| `code_list`         | Generate a code-list (true), suppress a code-list (false), file path to a [code-list-config.json](../code-list-config.md#defining-a-code-list-configuration-file), [in-line code list](../code-list-config.md#defining-an-in-line-code-list) (json), or link to an externally-defined code list (uri) | true                                                                                            |
-| `definition_uri`    | A uri of a resource to show how the column is created/managed (e.g. a uri of a PDF explaining a list of units) (Optional)                                                                                                                                                                             | *none*                                                                                          |
-| `cell_uri_template` | **(Advanced)** Override the uri generated for values within the uri (Optional)                                                                                                                                                                                                                        | *none*                                                                                          |
+| `from_existing`     | The URI of the resource for reuse/extension (Optional)                                                                                                                                                                                                                                                | *none*                                                                                          |
+| `code_list`         | Generate a code-list (true), suppress a code-list (false), file path to a [code-list-config.json](../code-list-config.md#defining-a-code-list-configuration-file), [in-line code list](../code-list-config.md#defining-an-in-line-code-list) (JSON), or link to an externally-defined code list (URI) | true                                                                                            |
+| `definition_uri`    | A URI of a resource to show how the column is created/managed (e.g. a URI of a PDF explaining a list of units) (Optional)                                                                                                                                                                             | *none*                                                                                          |
+| `cell_uri_template` | **(Advanced)** Override the URI generated for values within the URI (Optional)                                                                                                                                                                                                                        | *none*                                                                                          |

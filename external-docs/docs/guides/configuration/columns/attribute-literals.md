@@ -20,9 +20,9 @@ in the column configuration details:
 
 ```json
 {
+   "$schema": "https://purl.org/csv-cubed/qube-config/v1",
    "title": "The title of the cube",
    "description": "A description of the contents of the cube",
-   "summary": "A summary of the data set",
    "columns": {
       "95% CI (lower bound)": {
          "type": "attribute",
@@ -50,9 +50,9 @@ If all cells in the `95% CI (lower bound)` and `95% CI (upper bound)` columns sh
 
 ```json
 {
+   "$schema": "https://purl.org/csv-cubed/qube-config/v1",
    "title": "The title of the cube",
    "description": "A description of the contents of the cube",
-   "summary": "A summary of the data set",
    "columns": {
       "95% CI (lower bound)": {
          "type": "attribute",
@@ -166,10 +166,10 @@ This table shows a list of the possible fields that can be entered when configur
 | **field name**           | **description**                                                                                                                                                                                                                                                                                                            | **default value**                                                                |
 |--------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
 | `type`                   | The type of the column; to configure an attribute column use the value `attribute` (Required)                                                                                                                                                                                                                              | *dimension*                                                                      |
-| `data_type`              | The [xml data type](https://www.w3.org/TR/xmlschema-2/#built-in-datatypes) of the contents of the column. If this is provided it becomes a Literal attribute column (Optional)                                                                                                                                             | *none*                                                                           |
-| `label`                  | The title of the column (Optional)                                                                                                                                                                                                                                                                                         | The capital case of the header in the csv file with spaces replacing underscores |
+| `data_type`              | The [XML data type](https://www.w3.org/TR/xmlschema-2/#built-in-datatypes) of the contents of the column. If this is provided it becomes a Literal attribute column (Optional)                                                                                                                                             | *none*                                                                           |
+| `label`                  | The title of the column (Optional)                                                                                                                                                                                                                                                                                         | The capital case of the header in the CSV file with spaces replacing underscores |
 | `description`            | A description of the contents of the column (Optional)                                                                                                                                                                                                                                                                     | *none*                                                                           |
-| `definition_uri`         | A uri of a resource to show how the column is created/managed (e.g. a uri of a PDF explaining a list of attribute values) (Optional)                                                                                                                                                                                       | *none*                                                                           |
+| `definition_uri`         | A URI of a resource to show how the column is created/managed (e.g. a URI of a PDF explaining a list of attribute values) (Optional)                                                                                                                                                                                       | *none*                                                                           |
 | `required`               | If this boolean value is true csvcubed will flag to the user if there are blank values in this column (Optional)                                                                                                                                                                                                           | false                                                                            |
-| `from_existing`          | The uri of the resource for reuse/extension (Optional)                                                                                                                                                                                                                                                                     | *none*                                                                           |
+| `from_existing`          | The URI of the resource for reuse/extension (Optional)                                                                                                                                                                                                                                                                     | *none*                                                                           |
 | `describes_observations` | Associates this attribute with the relevant observation values. This is only necessary for [pivoted shape data sets](../../shape-data/pivoted-shape.md) with multiple observation value columns. See the [Attributes](./attributes.md#describing-observations) page for details of how to configure this field. (Optional) | *none*                                                                           |

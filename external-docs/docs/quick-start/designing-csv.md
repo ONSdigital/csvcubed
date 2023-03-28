@@ -4,7 +4,7 @@
 
 <iframe src="https://share.descript.com/embed/SJiVPSziEkw" width="640" height="360" frameborder="0" allowfullscreen></iframe>
 
-## Pre-requisites to follow along
+## Prerequisites to follow along
 
 csvcubed must be installed in order to proceed, please go back to [installation](installation.md).
 
@@ -40,7 +40,7 @@ Once you have gained some familiarity with using csvcubed, you may find that the
 
 First, we start by taking the above shape and adding columns for each of your *identifying characteristics* ([dimensions](../glossary/index.md#dimension)).
 
-From hereonin we will be creating a data set to represent the competition winners in Eurovision. Our CSV will be structured as per the following extract where `Year`, `Entrant`, `Song` and `Language` are the cube's identifying [dimensions](../glossary/index.md#dimension). Note that we have included multiple measures in this dataset, as `Final Rank`, `Final Points` and `People on Stage` are recorded for each contestant:
+From hereon in we will be creating a data set to represent the competition winners in Eurovision. Our CSV will be structured as per the following extract where `Year`, `Entrant`, `Song` and `Language` are the cube's identifying [dimensions](../glossary/index.md#dimension). Note that we have included multiple measures in this dataset, as `Final Rank`, `Final Points` and `People on Stage` are recorded for each contestant:
 
 | Year | Entrant            | Song     | Language | Value |         Measure |     Unit |
 |:----:|:-------------------|:---------|:---------|------:|----------------:|---------:|
