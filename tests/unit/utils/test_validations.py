@@ -345,7 +345,7 @@ def test_validate_float_type_infinity_incorrect():
 
     assert len(result) == 1
     assert (
-        "The value should be a float but is +-infinity. Check the following variable"
+        "The value should be a float but is ±infinity. Check the following variable"
         in result[0].message
     )
     assert result[0].property_path == ["float_test_variable"]
@@ -366,7 +366,7 @@ def test_validate_float_type_neg_infinity_incorrect():
 
     assert len(result) == 1
     assert (
-        "The value should be a float but is +-infinity. Check the following variable"
+        "The value should be a float but is ±infinity. Check the following variable"
         in result[0].message
     )
     assert result[0].property_path == ["float_test_variable"]
