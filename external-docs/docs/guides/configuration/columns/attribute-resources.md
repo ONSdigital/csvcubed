@@ -20,9 +20,9 @@ To configure a column as a Resource attribute, specify the `type` field as `attr
 
 ```json
 {
+   "$schema": "https://purl.org/csv-cubed/qube-config/v1",
    "title": "The title of the cube",
    "description": "A description of the contents of the cube",
-   "summary": "A summary of the data set",
    "columns": {
       "Status": {
          "type": "attribute"
@@ -42,9 +42,9 @@ If all cells in the `Status` column should be populated, set the `required` fiel
 
 ```json
 {
+   "$schema": "https://purl.org/csv-cubed/qube-config/v1",
    "title": "The title of the cube",
    "description": "A description of the contents of the cube",
-   "summary": "A summary of the data set",
    "columns": {
       "Status": {
          "type": "attribute",

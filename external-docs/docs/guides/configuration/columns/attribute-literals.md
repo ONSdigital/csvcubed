@@ -20,9 +20,9 @@ in the column configuration details:
 
 ```json
 {
+   "$schema": "https://purl.org/csv-cubed/qube-config/v1",
    "title": "The title of the cube",
    "description": "A description of the contents of the cube",
-   "summary": "A summary of the data set",
    "columns": {
       "95% CI (lower bound)": {
          "type": "attribute",
@@ -50,9 +50,9 @@ If all cells in the `95% CI (lower bound)` and `95% CI (upper bound)` columns sh
 
 ```json
 {
+   "$schema": "https://purl.org/csv-cubed/qube-config/v1",
    "title": "The title of the cube",
    "description": "A description of the contents of the cube",
-   "summary": "A summary of the data set",
    "columns": {
       "95% CI (lower bound)": {
          "type": "attribute",

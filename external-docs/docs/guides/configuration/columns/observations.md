@@ -29,9 +29,9 @@ In this data set the value, measure and unit details are contained in their own 
 
 ```json
 {
+   "$schema": "https://purl.org/csv-cubed/qube-config/v1",
    "title": "Arthur's Bakes data set",
    "description": "Arthur's Bakes - number of stores and annual revenue",
-   "summary": "Data on the number of Arthur's Bakes stores and annual revenues by year and location",
    "columns": {
       "Value": {
          "type": "observations",
@@ -52,9 +52,9 @@ In this example of a pivoted shape data set, there are two observation value col
 
 ```json
 {
+   "$schema": "https://purl.org/csv-cubed/qube-config/v1",
    "title": "Arthur's Bakes data set",
    "description": "Arthur's Bakes - number of stores and annual revenue",
-   "summary": "Data on the number of Arthur's Bakes stores and annual revenues by year and location",
    "columns": {
       "Number of Arthur's Bakes": {
          "type": "observations",
@@ -68,7 +68,7 @@ In this example of a pivoted shape data set, there are two observation value col
       },
       "Revenue": {
          "type": "observations",
-         "data_type": "decimal",
+         "data_type": "integer",
          "unit": {
             "label": "GBP Sterling (Millions)"
          },

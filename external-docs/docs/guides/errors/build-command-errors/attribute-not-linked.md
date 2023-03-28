@@ -14,30 +14,32 @@ For example in the following cube:
 With the following [qube-config.json](../../configuration/qube-config.md) column mapping configuration:
 
 ```json
-"columns": {
-  "Median Commute Distance / miles": {
-    "type": "observations",
-    "measure": {
-      "label": "Median commute distance"
+{ ...
+  "columns": {
+    "Median Commute Distance / miles": {
+      "type": "observations",
+      "measure": {
+        "label": "Median commute distance"
+      },
+      "unit": {
+        "label": "Miles"
+      }
     },
-    "unit": {
-      "label": "Miles"
-    }
-  },
-  "Median commute time / mins": {
-    "type": "observations",
-    "measure": {
-      "label": "Median commute time"
+    "Median commute time / mins": {
+      "type": "observations",
+      "measure": {
+        "label": "Median commute time"
+      },
+      "unit": {
+        "label": "Minutes"
+      }
     },
-    "unit": {
-      "label": "Minutes"
+    "Commute Time Notes": {
+      "type": "attribute",
+      "data_type": "string"
     }
-  },
-  "Commute Time Notes": {
-    "type": "attribute",
-    "data_type": "string"
   }
-},
+}
 ```
 
 ## How to fix
@@ -45,11 +47,13 @@ With the following [qube-config.json](../../configuration/qube-config.md) column
 Specify the observed values column which the units or attribute column describes, e.g.
 
 ```json
-{
-  "Commute Time Notes": {
-    "type": "attribute",
-    "data_type": "string",
-    "describes_observations": "Median commute time / mins"
+{ ...
+  "columns": {
+    "Commute Time Notes": {
+      "type": "attribute",
+      "data_type": "string",
+      "describes_observations": "Median commute time / mins"
+    }
   }
 }
 ```
