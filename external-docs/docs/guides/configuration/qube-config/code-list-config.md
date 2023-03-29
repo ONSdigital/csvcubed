@@ -4,8 +4,10 @@ By default, csvcubed generates code lists with the unique values of each [dimens
 
 This guide details how to explicitly define a code list using csvcubed.
 
-> **Experience of writing basic JSON documents is assumed throughout this document.**
-> See this [tutorial from DigitalOcean](https://www.digitalocean.com/community/tutorials/an-introduction-to-json) for an introduction to writing JSON.
+!!! Tip
+    **Experience of writing basic JSON documents is assumed throughout this document.**
+    See this [tutorial from DigitalOcean](https://www.digitalocean.com/community/tutorials/an-introduction-to-json) for
+    an introduction to writing JSON.
 
 ## Defining a code list configuration file
 

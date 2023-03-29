@@ -64,7 +64,7 @@ Configuring the types of each of your columns is relatively straight-forwards. T
 configured with the JSON below it.
 
 | Location  | Year | Average Badger Weight / kg |
-|:----------|:-----|:---------------------------|
+|:----------|:-----|---------------------------:|
 | Sheffield | 1996 | 9.6                        |
 | Carlisle  | 1994 | 10.5                       |
 
