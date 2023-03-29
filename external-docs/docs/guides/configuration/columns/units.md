@@ -1,4 +1,4 @@
-## Units columns
+# Units columns
 
 This page discusses what a units column is, where one should be used, and how one can be defined.
 

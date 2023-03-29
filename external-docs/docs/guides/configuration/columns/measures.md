@@ -1,4 +1,4 @@
-## Measures columns
+# Measures columns
 
 This page discusses what a measures column is, where one should be used, and how one can be defined.
 
