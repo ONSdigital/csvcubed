@@ -55,7 +55,7 @@ A basic measures column definition can be seen below:
 
 Note that the `type` has been set to `measures`.
 
-If you use one of the [conventional column titles](TODO) for measures then the above configuration is
+If you use one of the conventional column titles for measures then the above configuration is
 equivalent to what csvcubed would do to your column by default.
 
 One of the advantages of measure columns in standard shape data sets is that no changes are required in the cube
@@ -119,7 +119,7 @@ of this field in use.
 The format of the `cell_uri_template` value **must** follow [RFC6570](https://www.rfc-editor.org/rfc/rfc6570) guidance
 for URI Templates. In the case of any doubt, follow the pattern in the examples shown above (e.g.
 `http://example.org/some-uri/{+column_name}`), as this will ensure csvcubed safely
-[transforms the column header](../../uris.md#csv-column-name-safe-transformation) to the CSV-W format.
+[transforms the column header](../../../uris.md#csv-column-name-safe-transformation) to the CSV-W format.
 
 ## Reference
 

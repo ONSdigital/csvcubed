@@ -27,7 +27,7 @@ third row uses a different unit, `Centimetres`. In this case, different units ar
 ### When to use a units column
 
 Every valid data cube needs at least one unit. Units columns can be used in both
-[standard](../../shape-data/standard-shape.md) and [pivoted shape](../../shape-data/pivoted-shape.md) cubes.
+[standard](../../../shape-data/standard-shape.md) and [pivoted shape](../../../shape-data/pivoted-shape.md) cubes.
 
 If every value in an observations column has the same unit, then you should set the unit against the
 [observations column](./observations.md).
@@ -38,7 +38,7 @@ rows use `Inches` and the third row uses `Centimetres` to measure the `Average H
 
 ### Basic configuration
 
-The following JSON shows how a units column can be defined in a [qube configuration file](../qube-config.md):
+The following JSON shows how a units column can be defined in a [qube configuration file](../../qube-config/index.md):
 
 ```json
 {
@@ -81,7 +81,7 @@ If you are creating new units within your units column, the details of the new u
 ```
 
 By default, the `values` field is set to `true`. This indicates to csvcubed to automatically generate
-[unit definitions](../unit-configuration.md) unique to your data set.
+[unit definitions](../unit-definitions.md) unique to your data set.
 
 ### From Template
 
@@ -125,12 +125,20 @@ unit details. Instead, use the field `cell_uri_template`.
 
  Provide a URI of a unit resource to use in the definition.
 
+!!! Warning
+    The use of the `cell_uri_template` field is considered an advanced configuration option, and therefore care must be taken to ensure that the values generated are valid.
+
+The format of the `cell_uri_template` value **must** follow [RFC6570](https://www.rfc-editor.org/rfc/rfc6570) guidance
+for URI Templates. In the case of any doubt, follow the pattern in the examples shown above (e.g.
+`http://example.org/some-uri/{+column_name}`), as this will ensure csvcubed safely
+[transforms the column header](../../../uris.md#csv-column-name-safe-transformation) to the CSV-W format.
+
  ### Describes Observations
 
  Another field that can be applied to units columns that can be passed into their definition is `describes_observations`.
  This field associates the units column with the relevant observation values where the units are being used. Note that
  this is only applicable to pivoted shape cubes with multiple measures and multiple observation value columns. The use of
- this field is covered in the [configuring units](../unit-configuration.md) page.
+ this field is covered in the [configuring units](../unit-definitions.md) page.
 
 ## Reference
 
