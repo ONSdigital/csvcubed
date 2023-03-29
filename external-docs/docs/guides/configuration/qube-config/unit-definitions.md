@@ -247,7 +247,7 @@ For more information on quantity kinds as well as several quantity kinds to make
 }
 ```
 
-### si_scaling_factor
+### SI Scaling Factor
 
 Another optional property useful for scaling is `si_scaling_factor`. The purpose of this field in the values object is
 to relate scaled units to other units that are relevant, creating consistency within their scale. Most of the units
@@ -335,7 +335,7 @@ This table shows the possible fields that can be provided when configuring a uni
 | `label`             | The title of the unit (Required; Optional if `from_existing` defined)                                                                                                                                   | *none*            |
 | `description`       | A description of the contents of the unit (Optional)                                                                                                                                                    | *none*            |
 | `from_existing`     | The URI of the resource for reuse/extension (Optional)                                                                                                                                                  | *none*            |
-| `definition_uri`    | A URI of a resource to show how the unit is created/managed (e.g. a URI of an image which shows the formula on how the unit is derived) (Optional)                                                       | *none*            |
+| `definition_uri`    | A URI of a resource to show how the unit is created/managed (e.g. a URI of an image which shows the formula on how the unit is derived) (Optional)                                                      | *none*            |
 | `scaling_factor`    | The scaling factor (expressed in base 10) is used to define a new unit from an existing base (i.e. "GBP millions" would have a form_existing unit of GBP, and a `"scaling_factor": 1000000`) (Optional) | *none*            |
 | `si_scaling_factor` | The si_scaling_factor helps relate common scaled units to source SI units, for example kilograms are 1000 grams. Most of these units are already defined. (Optional) (Advanced)                         | *none*            |
 | `quantity_kind`     | The [QUDT quantity kind](http://www.qudt.org/doc/DOC_VOCAB-QUANTITY-KINDS.html#Instances) helps group units                                                                                             | *none*            |

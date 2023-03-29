@@ -106,6 +106,8 @@ examples of each of these properties being configured.
 A basic field for adding information to measures when creating a `values` object in new measure column definitions is
 the `label` field, which serves as a short-form title of the measure.
 
+### Description
+
 An optional field that can be used to give more detail to the measure is `description`. This is not required in any
 scenario, but helps provide more information about the measure if wanted, in a longer free-text form that can go into
 more detail than a label.
@@ -128,6 +130,8 @@ The following example shows a measure being created within a measures column, be
   }
 }
 ```
+
+### Definition URI
 
 Another optional field that is used when defining a new measure is `definition_uri`. This is a URI that links to the
 definition of the resource being used.
