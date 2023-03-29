@@ -10,10 +10,10 @@ the bottom of this page.
 
 ## Basic configuration
 
-| Year | Location | Value |                Measure |         Unit | 95% CI (lower bound) | 95% CI (upper bound) |
-|:-----|:---------|------:|-----------------------:|-------------:|---------------------:|---------------------:|
-| 2022 | London   |  7.85 | Average customer spend | GBP Sterling |             **6.54** |             **8.06** |
-| 2021 | Cardiff  |  6.98 | Average customer spend | GBP Sterling |             **6.03** |             **7.52** |
+| Year | Location | Average customer spend | 95% CI (lower bound) | 95% CI (upper bound) |
+|:-----|:---------|-----------------------:|---------------------:|---------------------:|
+| 2022 | London   |                   7.85 |             **6.54** |             **8.06** |
+| 2021 | Cardiff  |                   6.98 |             **6.03** |             **7.52** |
 
 To configure a column as a Literal attribute, specify the `type` field as `attribute` and include the `data_type` field
 in the column configuration details:
@@ -120,16 +120,16 @@ The `definition_uri` fields allows you to refer to external resources that furth
 
 ## Inheritance
 
-To reuse or extend an existing attribute, the `from_existing` field can be configured to link to a URI where the
-attribute to be reused or extended is defined.
+To reuse or extend an existing attribute, the `from_existing` field can be configured to refer to a URI defining the
+attribute to be reused or extended.
 
 To reuse a parent attribute without making any changes to it, set the `from_existing` field to the URI defining the
 attribute to be reused. For example, suppose a new attribute column was added to the table above to record a comment against the `Average customer spend` value:
 
-| Year | Location | Value |                Measure |         Unit | 95% CI (lower bound) | 95% CI (upper bound) |                                                Comment |
-|:-----|:---------|------:|-----------------------:|-------------:|---------------------:|---------------------:|-------------------------------------------------------:|
-| 2022 | London   |  7.85 | Average customer spend | GBP Sterling |                 6.54 |                 8.06 | **Store closed for renovations 01/05/2022-14/05/2022** |
-| 2021 | Cardiff  |  6.98 | Average customer spend | GBP Sterling |                 6.03 |                 7.52 |                                                        |
+| Year | Location | Average customer spend | 95% CI (lower bound) | 95% CI (upper bound) |                                                Comment |
+|:-----|:---------|-----------------------:|---------------------:|---------------------:|-------------------------------------------------------:|
+| 2022 | London   |                   7.85 |                 6.54 |                 8.06 | **Store closed for renovations 01/05/2022-14/05/2022** |
+| 2021 | Cardiff  |                   6.98 |                 6.03 |                 7.52 |                                                        |
 
 ```json
 { ...
@@ -163,13 +163,13 @@ attribute to be reused, and set the `label` field to indicate that this is a new
 
 This table shows a list of the possible fields that can be entered when configuring a Literal attribute column.
 
-| **field name**           | **description**                                                                                                                                                                                                                                                                                                            | **default value**                                                                |
-|--------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
-| `type`                   | The type of the column; to configure an attribute column use the value `attribute` (Required)                                                                                                                                                                                                                              | *dimension*                                                                      |
-| `data_type`              | The [XML data type](https://www.w3.org/TR/xmlschema-2/#built-in-datatypes) of the contents of the column. If this is provided it becomes a Literal attribute column (Optional)                                                                                                                                             | *none*                                                                           |
-| `label`                  | The title of the column (Optional)                                                                                                                                                                                                                                                                                         | The capital case of the header in the CSV file with spaces replacing underscores |
-| `description`            | A description of the contents of the column (Optional)                                                                                                                                                                                                                                                                     | *none*                                                                           |
-| `definition_uri`         | A URI of a resource to show how the column is created/managed (e.g. a URI of a PDF explaining a list of attribute values) (Optional)                                                                                                                                                                                       | *none*                                                                           |
-| `required`               | If this boolean value is true csvcubed will flag to the user if there are blank values in this column (Optional)                                                                                                                                                                                                           | false                                                                            |
-| `from_existing`          | The URI of the resource for reuse/extension (Optional)                                                                                                                                                                                                                                                                     | *none*                                                                           |
+| **field name**           | **description**                                                                                                                                                                                                                                                                                                             | **default value**                                                                |
+|--------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+| `type`                   | The type of the column; to configure an attribute column use the value `attribute` (Required)                                                                                                                                                                                                                               | *dimension*                                                                      |
+| `data_type`              | The [XML data type](https://www.w3.org/TR/xmlschema-2/#built-in-datatypes) of the contents of the column. If this is provided it becomes a Literal attribute column (Optional)                                                                                                                                              | *none*                                                                           |
+| `label`                  | The title of the column (Optional)                                                                                                                                                                                                                                                                                          | The capital case of the header in the CSV file with spaces replacing underscores |
+| `description`            | A description of the contents of the column (Optional)                                                                                                                                                                                                                                                                      | *none*                                                                           |
+| `definition_uri`         | A URI of a resource to show how the column is created/managed (e.g. a URI of a PDF explaining a list of attribute values) (Optional)                                                                                                                                                                                        | *none*                                                                           |
+| `required`               | If this boolean value is true csvcubed will flag to the user if there are blank values in this column (Optional)                                                                                                                                                                                                            | false                                                                            |
+| `from_existing`          | The URI of the resource for reuse/extension (Optional)                                                                                                                                                                                                                                                                      | *none*                                                                           |
 | `describes_observations` | Associates this attribute with the relevant observation values. This is only necessary for [pivoted shape data sets](../../../../shape-data/pivoted-shape.md) with multiple observation value columns. See the [Attributes](./index.md#describing-observations) page for details of how to configure this field. (Optional) | *none*                                                                           |

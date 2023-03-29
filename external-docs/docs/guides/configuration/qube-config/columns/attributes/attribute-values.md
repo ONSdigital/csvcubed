@@ -12,7 +12,7 @@ bottom of this page.
 ## What are attribute values?
 
 Attribute values are the cell values in the attribute column of your CSV file. csvcubed will automatically generate
-these values from the cell values if you specify the `values` field as `true`. However, it is also possible to
+RDF resources from the cell values if you specify the `values` field as `true`. However, it is also possible to
 explicitly configure attribute values, as described below.
 
 ## When to use them
@@ -24,6 +24,12 @@ the `label` field format should match the format of the attribute cell value exa
 
 !!! Important
     The format of the `label` field should match the cell values in your CSV exactly.
+
+| **Year** | **Region** | **Value** |   **Status** |
+|:---------|:-----------|:---------:|-------------:|
+| 2020     | England    |   10.6    | confidential |
+| 2021     | Scotland   |   13.8    |    estimated |
+| 2022     | Wales      |   9.43    |     forecast |
 
 To configure the values in your attribute column, specify the `type` of the column as `attribute`, and specify `values`
 as a list of objects defining the attributes used in the column:

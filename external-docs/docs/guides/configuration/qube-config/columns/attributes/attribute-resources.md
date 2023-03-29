@@ -9,12 +9,10 @@ the bottom of this page.
 
 ## Basic configuration
 
-| Year | Location | Value |                  Measure |                   Unit |      **Status** |
-|:-----|:---------|------:|-------------------------:|-----------------------:|----------------:|
-| 2022 | London   |    35 | Number of Arthur's Bakes |                  Count | **Provisional** |
-| 2022 | London   |    25 |                  Revenue | GBP Sterling, Millions | **Provisional** |
-| 2021 | Cardiff  |    26 | Number of Arthur's Bakes |                  Count |       **Final** |
-| 2021 | Cardiff  |    18 |                  Revenue | GBP Sterling, Millions |       **Final** |
+| Year | Location | Number of Arthur's Bakes |      **Status** |
+|:-----|:---------|-------------------------:|----------------:|
+| 2022 | London   |                       35 | **Provisional** |
+| 2021 | Cardiff  |                       26 |       **Final** |
 
 To configure a column as a Resource attribute, specify the `type` field as `attribute`:
 
@@ -127,8 +125,8 @@ See the [Attribute values](./attribute-values.md) page for more information on t
 
 ## Inheritance
 
-To reuse or extend an existing attribute, the `from_existing` field can be configured to link to a URI where the
-attribute to be reused or extended is defined.
+To reuse or extend an existing attribute, the `from_existing` field can be configured to refer to a URI defining the
+attribute to be reused or extended.
 
 To reuse a parent attribute without making any changes to it, set the `from_existing` field to the URI defining the
 attribute to be reused:
@@ -194,6 +192,6 @@ This table shows a list of the possible fields that can be entered when configur
 | `required`               | If this boolean value is true csvcubed will flag to the user if there are blank values in this column (Optional)                                                                                                                                                                                                                                                                                | false                                                                            |
 | `values`                 | (New Resource Attributes only) If automatically-generated attributes are desired, a boolean value of `true` is used to signify to csvcubed to create Resource attributes from values in this column; otherwise this should be a list of attribute value objects defining the attributes used in the column. See the [Attribute values](./attribute-values.md) page for more details. (Optional) | *none*                                                                           |
 | `from_existing`          | The URI of the resource for reuse/extension (Optional)                                                                                                                                                                                                                                                                                                                                          | *none*                                                                           |
-| `from_template`          | Use a [column template](../../templates.md) (Optional)                                                                                                                                                                                                                                                                                                                                             | *none*                                                                           |
-| `describes_observations` | Associates this attribute with the relevant observation values. This is only necessary for [pivoted shape data sets](../../../../shape-data/pivoted-shape.md) with multiple observation value columns. See the [Attributes](./index.md#describing-observations) page for details of how to configure this field. (Optional)                                                                      | *none*                                                                           |
+| `from_template`          | Use a [column template](../../templates.md) (Optional)                                                                                                                                                                                                                                                                                                                                          | *none*                                                                           |
+| `describes_observations` | Associates this attribute with the relevant observation values. This is only necessary for [pivoted shape data sets](../../../../shape-data/pivoted-shape.md) with multiple observation value columns. See the [Attributes](./index.md#describing-observations) page for details of how to configure this field. (Optional)                                                                     | *none*                                                                           |
 | `cell_uri_template`      | **(Advanced)** (Existing Resource Attributes only) Used to define a template to map the cell values in this column to URIs (Optional)                                                                                                                                                                                                                                                           | *none*                                                                           |
