@@ -2,9 +2,6 @@
 
 This page discusses what a unit is, where one should be used, and how one can be defined and configured.
 
-The configuration of units columns will not be the primary focus of this page. For help with this, see the
-[Units columns](./columns/units.md) page.
-
 > For a detailed look at a unit's configuration options, see the [Reference table](#reference) at the bottom
 > of this page.
 
@@ -33,10 +30,10 @@ Units can be defined and configured in two different ways. The method you should
 in your data set.
 
 If an observations column in your cube uses the same unit for all observation values, then the unit should be defined
-and configured as part of that observations column's definition.
+and configured as part of that [observations column's](./columns/observations.md) definition.
 
 If multiple units appear in different observations within the same observations column, then units should be defined
-and configured in a dedicated units column.
+and configured in a dedicated [units column](./columns/units.md).
 
 csvcubed automatically defines new units using the unique values in your
 [standard shape](../../shape-data/standard-shape.md) cube's units column. If desired, you can gain more control over how

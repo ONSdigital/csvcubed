@@ -2,9 +2,6 @@
 
 This page discusses what a measure is, where one should be used, and how one can be defined and configured.
 
-The configuration of measures columns will not be the primary focus of this page. For help with this, see the
-[Measures columns](./columns/measures.md) page.
-
 > For a table showing a measure's configuration options, see the [Reference table](#reference) at the bottom
 > of this page.
 
