@@ -63,7 +63,7 @@ todo: write about default behaviour of units column configuration
 When defining a units column, there are optional properties that can be entered, depending on how your units are
 being defined within the column.
 
-### values
+### Values
 
 If you are creating new units within your units column, the details of the new units should be entered into a
 `values` field. The JSON below shows an example of the `values` field used in a units column.
@@ -84,7 +84,7 @@ If you are creating new units within your units column, the details of the new u
 By default, the `values` field is set to `true`. This indicates to csvcubed to automatically generate
 [unit definitions](../unit-configuration.md) unique to your data set.
 
-### from_template
+### From Template
 
 Units columns can also make use of the `from_template` field. Templates are pre-configured column definitions that help
 speed up the creation of linked data columns. The use of this field in a units column is shown in the example below:
@@ -107,7 +107,7 @@ templates by specifying individual properties.
 For more information on templates, as well as a list of templates that can be used, see the
 [Templates](../templates.md) page.
 
-### cell_uri_template
+### Cell URI Template
 
 If you are re-using existing units in your measures column, then do not use the `values` field to define the
 unit details. Instead, use the field `cell_uri_template`.
@@ -126,6 +126,16 @@ unit details. Instead, use the field `cell_uri_template`.
 ```
 
  Provide a URI of a unit resource to use in the definition.
+
+!!! Warning
+    The use of the `cell_uri_template` field is considered an advanced configuration option, and therefore care must be taken to ensure that the values generated are valid.
+
+The format of the `cell_uri_template` value **must** follow [RFC6570](https://www.rfc-editor.org/rfc/rfc6570) guidance
+for URI Templates. In the case of any doubt, follow the pattern in the examples shown above (e.g.
+`http://example.org/some-uri/{+column_name}`), as this will ensure csvcubed safely
+[transforms the column header](../../uris.md#csv-column-name-safe-transformation) to the CSV-W format.
+
+ ### Describes Observations
 
  A field that is unique to units columns that can be passed into their definition is `describes_observations`. This
  field associates the units column with the relevant observation values where the units are being used. Note that this

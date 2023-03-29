@@ -59,31 +59,6 @@ Note that the `type` has been set to `measures`.
 Note that if you use one of the [conventional column titles](TODO) for measures then the above configuration is
 equivalent to what csvcubed would do to your column by default.
 
-
-<!-- ```json
-{
-    "$schema": "https://purl.org/csv-cubed/qube-config/v1",
-    "title": "Average Height and Weight for Men in different countries",
-    "columns": {
-        "Measure": {
-            "type": "measures",
-            "values": [
-              {
-                "Measure 1": {
-                  "label": "Average Height",
-                  "description": "The average height for men in the observed country."
-                },
-                "Measure 2": {
-                  "label": "Average Weight",
-                  "description": "The average weight for men in the observed country."
-                }
-              }
-          ]
-        },
-    }
-}
-``` -->
-
 One of the advantages of measure columns in standard shape data sets is that no changes are required in the cube
 configuration file if new measures are added. Using multiple measures in a measure column simply means
 adding new rows to the data set, and specifying measures (and units) to be used for the observation.
@@ -95,6 +70,8 @@ To view more information on the difference between single measure and multi meas
 
 When defining a measures column, there are optional properties that can be entered, depending on how your measures are
 being defined within the column.
+
+### Values
 
 If you are creating new measures within your measures column, the details of the new measures should be entered into a
 `values` field. The JSON below shows an example of the `values` field used in a measures column.
@@ -116,6 +93,8 @@ By default, the `values` field is set to `true`. This indicates to csvcubed to a
 [measure definitions](../measure-configuration.md) unique to your data set. See the previous link for more information
 on configuring measures and the fields that can be provided to the `values` object list.
 
+### Cell URI Template
+
 If you are re-using existing measures in your measures column, then do not use the `values` field to define the
 measures. Instead, use the field `cell_uri_template` to define your existing measure. The JSON below shows an example
 of this field in use.
@@ -135,6 +114,14 @@ of this field in use.
 
  After setting the `type` of the column as `measures`, provide the field `cell_uri_template` with a URI of a measure
  resource to use in the definition.
+
+ !!! Warning
+    The use of the `cell_uri_template` field is considered an advanced configuration option, and therefore care must be taken to ensure that the values generated are valid.
+
+The format of the `cell_uri_template` value **must** follow [RFC6570](https://www.rfc-editor.org/rfc/rfc6570) guidance
+for URI Templates. In the case of any doubt, follow the pattern in the examples shown above (e.g.
+`http://example.org/some-uri/{+column_name}`), as this will ensure csvcubed safely
+[transforms the column header](../../uris.md#csv-column-name-safe-transformation) to the CSV-W format.
 
 ## Reference
 
