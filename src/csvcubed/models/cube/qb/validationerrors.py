@@ -51,6 +51,27 @@ class CsvColumnUriTemplateMissingError(SpecificValidationError):
 
 
 @dataclass
+class AttributeValuesMissingNoUriError(SpecificValidationError):
+    """
+    Represents an error where the user has defined a Resource attribute but there are no values in the column and no csv_column_uri_template has been specified.
+    """
+
+    csv_column_name: str
+    component_type: ComponentTypeDescription
+
+    @classmethod
+    def get_error_url(cls) -> str:
+        return "http://purl.org/csv-cubed/err/csv-col-uri-temp-mis"
+
+    def __post_init__(self):
+        self.message = (
+            f"'{self.csv_column_name}' - a {_get_description_for_component(self.component_type)} must either"
+            + "have a csv_column_uri_template defined, or column values from which the attribute values are "
+            + "generated."
+        )
+
+
+@dataclass
 class CsvColumnLiteralWithUriTemplate(SpecificValidationError):
     """
     Represents an error where the user has defined a literal with a csv_column_uri_template.

@@ -22,6 +22,7 @@ from csvcubed.models.cube.qb.components.validationerrors import (
 )
 from csvcubed.models.cube.qb.validationerrors import (
     AttributeNotLinkedError,
+    AttributeValuesMissingNoUriError,
     BothMeasureTypesDefinedError,
     BothUnitTypesDefinedError,
     CsvColumnUriTemplateMissingError,
@@ -63,6 +64,7 @@ def friendly_error_mapping(error: ValidationError) -> str:
 
     _map = {
         AttributeNotLinkedError: "Unable to tell which observed values column '{error.attribute_column_title}' describes. Please set the `describes_observations` property in this column's configuration.",
+        AttributeValuesMissingNoUriError: "The {error.csv_column_title} attribute column does not contain any values. Either add values to the column, or specify `cell_uri_template` in your `qube-config.json`.",
         BothMeasureTypesDefinedError: "Measures defined in multiple locations. Measures may only be defined in one location.",
         BothUnitTypesDefinedError: "Units defined in multiple locations. Units may only be defined in one location.",
         ColumnNotFoundInDataError: "Configuration found for column '{error.csv_column_title}' but no corresponding column found in CSV.",
