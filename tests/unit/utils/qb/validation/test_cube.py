@@ -10,8 +10,8 @@ from csvcubed.models.cube.qb.components.measure import NewQbMeasure
 from csvcubed.models.cube.qb.components.observedvalue import QbObservationValue
 from csvcubed.models.cube.qb.components.unit import NewQbUnit
 from csvcubed.models.cube.qb.validationerrors import (
-    AttributeValuesMissingNoUriError,
     CsvColumnLiteralWithUriTemplate,
+    NoUriTemplateOrAttrValuesError,
 )
 from csvcubed.utils.qb.validation.cube import validate_qb_component_constraints
 
@@ -68,7 +68,7 @@ def test_existing_qb_attribute_resource_no_values():
 
     assert len(qube.validate()) == 0
     assert isinstance(
-        validate_qb_component_constraints(qube)[0], AttributeValuesMissingNoUriError
+        validate_qb_component_constraints(qube)[0], NoUriTemplateOrAttrValuesError
     )
 
 

@@ -51,7 +51,7 @@ class CsvColumnUriTemplateMissingError(SpecificValidationError):
 
 
 @dataclass
-class AttributeValuesMissingNoUriError(SpecificValidationError):
+class NoUriTemplateOrAttrValuesError(SpecificValidationError):
     """
     Represents an error where the user has defined a Resource attribute but there are no values in the column and no csv_column_uri_template has been specified.
     """

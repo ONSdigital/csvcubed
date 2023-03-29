@@ -8,10 +8,10 @@ from csvcubed.models.cube.qb.components.dimension import (
     QbDimension,
 )
 from csvcubed.models.cube.qb.validationerrors import (
-    AttributeValuesMissingNoUriError,
     CsvColumnLiteralWithUriTemplate,
     CsvColumnUriTemplateMissingError,
     NoDimensionsDefinedError,
+    NoUriTemplateOrAttrValuesError,
 )
 from csvcubed.models.validationerror import ValidationError
 from csvcubed.utils.qb.validation.observations import validate_observations
@@ -72,7 +72,7 @@ def _validate_attributes(cube: Cube) -> List[ValidationError]:
                     and len(c.structural_definition.new_attribute_values) == 0  # type: ignore
                 ):
                     errors.append(
-                        AttributeValuesMissingNoUriError(
+                        NoUriTemplateOrAttrValuesError(
                             c.csv_column_title,
                             f"{c.structural_definition.__class__.__name__} using existing attribute values",
                         )

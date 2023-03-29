@@ -28,7 +28,6 @@ from csvcubed.models.cube.qb.components.validationerrors import (
 )
 from csvcubed.models.cube.qb.validationerrors import (
     AttributeNotLinkedError,
-    AttributeValuesMissingNoUriError,
     BothMeasureTypesDefinedError,
     BothUnitTypesDefinedError,
     CsvColumnUriTemplateMissingError,
@@ -40,6 +39,7 @@ from csvcubed.models.cube.qb.validationerrors import (
     MinNumComponentsNotSatisfiedError,
     NoMeasuresDefinedError,
     NoUnitsDefinedError,
+    NoUriTemplateOrAttrValuesError,
     PivotedObsValColWithoutMeasureError,
     PivotedShapeMeasureColumnsExistError,
 )
@@ -423,7 +423,7 @@ def test_existing_attribute_csv_column_uri_template_required():
     )
 
     error = _get_single_validation_error_for_qube(cube)
-    assert isinstance(error, AttributeValuesMissingNoUriError)
+    assert isinstance(error, NoUriTemplateOrAttrValuesError)
     assert error.csv_column_name == "Existing Attribute 1"
     assert error.component_type == "ExistingQbAttribute using existing attribute values"
 
@@ -479,7 +479,7 @@ def test_new_attribute_csv_column_uri_template_required():
     )
 
     error = _get_single_validation_error_for_qube(cube)
-    assert isinstance(error, AttributeValuesMissingNoUriError)
+    assert isinstance(error, NoUriTemplateOrAttrValuesError)
     assert error.csv_column_name == "New Attribute 1"
     assert error.component_type == "NewQbAttribute using existing attribute values"
 
