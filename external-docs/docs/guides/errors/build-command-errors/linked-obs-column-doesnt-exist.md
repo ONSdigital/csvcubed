@@ -1,4 +1,4 @@
-# Error - Linked observation column doesn't exist error
+# Error - Linked observations column doesn't exist error
 
 ## When it occurs
 
@@ -11,7 +11,7 @@ For example in the following cube:
 | Sheffield | 2.1                             | 15.3                       | Excludes individuals teleporting to work.                 |
 | Aberdeen  | 13.4                            | 22.9                       | Includes oil rig workers commuting to offshore platforms. |
 
-With the following [qube-config.json](../../configuration/qube-config.md) column mapping configuration:
+With the following [qube-config.json](../../configuration/qube-config/index.md) column mapping configuration:
 
 ```json
 {

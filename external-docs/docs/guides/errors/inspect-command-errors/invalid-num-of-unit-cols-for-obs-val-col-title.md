@@ -1,4 +1,4 @@
-# Error - Invalid number of unit columns found for the observation value column title.
+# Error - Invalid number of unit columns found for the observation value column title
 
 ## When it occurs
 

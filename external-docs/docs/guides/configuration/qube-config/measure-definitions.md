@@ -1,4 +1,4 @@
-# Measure configuration
+# Measure definitions
 
 This page discusses what a measure is, where one should be used, and how one can be defined and configured.
 
@@ -29,10 +29,10 @@ standard shape data set.
 A data cube must have at least one measure to be considered valid.
 
 The way a measure is defined and configured depends on the shape of your data set. A measure can be defined and
-configured in two different ways: Either by attaching it inside an observation column's configuration as a property, or
+configured in two different ways: Either by attaching it inside an observations column's configuration as a property, or
 in a dedicated measures column of its own.
 
-For more information on defining observation columns, see the [observations columns](./columns/observations.md) page.
+For more information on defining observations columns, see the [observations columns](./columns/observations.md) page.
 For more information on defining measures columns, see the [measures columns](./columns/measures.md) page.
 
 ## Basic configuration
@@ -42,8 +42,8 @@ that show the minimum required configuration to define a measure using each meth
 
 ### Defining measures by attaching them to observations columns
 
-Measures can be defined inside an observation column to directly define what phenomenon is being measured. This is how
-measures are to be defined in a pivoted shape data set, with each observation column having their measures attached to
+Measures can be defined inside an observations column to directly define what phenomenon is being measured. This is how
+measures are to be defined in a pivoted shape data set, with each observations column having their measures attached to
 them. Consider the following pivoted shape data set:
 
 | Year | Location      | Average Height of Men |        Unit |
@@ -52,11 +52,11 @@ them. Consider the following pivoted shape data set:
 | 2020 | United States |                    69 |      Inches |
 | 2021 | England       |                   175 | Centimetres |
 
-This data set does not contain a measures column. Instead, the measure is attached to the observation column, which in
+This data set does not contain a measures column. Instead, the measure is attached to the observations column, which in
 this case is titled `Average Height of Men`.
 
-When defining a measure by attaching it to an observation column, the measure can be defined after specifying that the
-`type` of the column is `observations`. The measure is entered as a property of the observation column definition,
+When defining a measure by attaching it to an observations column, the measure can be defined after specifying that the
+`type` of the column is `observations`. The measure is entered as a property of the observations column definition,
 like shown in the example below:
 
 ```json
@@ -70,17 +70,17 @@ like shown in the example below:
 },
 ```
 
-This observation column definition is given a measure by creating an object where the keys are the fields of the
+This observations column definition is given a measure by creating an object where the keys are the fields of the
 measure component, and the values are the field contents. This measure has the label "Average Height of Men".
 
-For more information on defining observation columns, and how to configure their different possible fields along with
+For more information on defining observations columns, and how to configure their different possible fields along with
 measures, see the [Observations page](./columns/observations.md).
 
 ### Defining measures in a measures column
 
 When creating a new measures column definition by specifying the `type` as "measures", the measure's details are
 entered into a field named `values`. Note this is different from how the measure details are given when giving the
-measure in an observation column, as measure columns contain references to discrete measures.
+measure in an observations column, as measure columns contain references to discrete measures.
 
 If basic measures are wanted without specifying measure properties in any fields, the `values` field of the column
 definition can simply be set to `true` (as shown in the example below) which will indicate to csvcubed to automatically
@@ -114,7 +114,8 @@ more detail than a label.
 
 The following example shows a measure being created within a measures column, being given the `label` "Measure" and the
 `description` "This is a measure".
-### Measure column configuration example for a new measure:
+
+### Measure column configuration example for a new measure
 
 ```json
 "columns": {
@@ -138,9 +139,9 @@ definition of the resource being used.
 A point to remember about measures is that they must be accompanied by units, which represent in what intervals or
 units the observation is being measured in. Units can be defined by being attached to observations the same way that
 measures can when all observations in a column use the same measure/unit, or they can be defined in a dedicated units
-column. For more information on defining units, see the [unit configuration](./unit-configuration.md) page.
+column. For more information on defining units, see the [unit definitions](./unit-definitions.md) page.
 
- ## Inheritance
+## Inheritance
 
  This section will show how to create measures by re-using existing definitions.
 
@@ -154,7 +155,7 @@ the re-used measure's definition. This is how an existing definition can be used
 Measure definition using the `from_existing` field can be done either when attaching the measure to an observation
 column, or when defining a measure within a measures column.
 
-Defining a measure in an observation column, using an existing measure definition:
+Defining a measure in an observations column, using an existing measure definition:
 
 ```json
    "Exports": {
@@ -165,7 +166,7 @@ Defining a measure in an observation column, using an existing measure definitio
    }
 ```
 
-Defining a measure in an observation column, using an existing measure definition and overwriting the label:
+Defining a measure in an observations column, using an existing measure definition and overwriting the label:
 
 ```json
    "Exports": {

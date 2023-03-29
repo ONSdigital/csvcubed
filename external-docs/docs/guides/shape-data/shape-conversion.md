@@ -51,20 +51,20 @@ Starting with a dataframe in the pivoted shape:
     ```r
     library(tidyverse)
 
-    pivoted_shape_data <- tibble( 
+    pivoted_shape_data <- tibble(
         Year = c(2022, 2021),
         Location = c("London", "Cardiff"),
         `Number of 'Arthur's Bakes'` = c(35, 26),
         `Revenue (GBP Sterling, Millions)` = c(25, 18)
     )
 
-    standard_shape_data <- pivoted_shape_data %>% 
+    standard_shape_data <- pivoted_shape_data %>%
         # Re-pivot the data frame - this reshapes the data so there are now 'Measure' and 'Value' columns.
         pivot_longer(
-            cols = c(`Number of 'Arthur's Bakes'`, "Revenue (GBP Sterling, Millions)"), 
-            names_to="Measure", 
+            cols = c(`Number of 'Arthur's Bakes'`, "Revenue (GBP Sterling, Millions)"),
+            names_to="Measure",
             values_to="Value"
-        ) %>% 
+        ) %>%
         # Create a units column based on the measure.
         add_column(
             `Unit` = recode(
@@ -102,7 +102,7 @@ To convert data from the [standard shape](./standard-shape.md) into the [pivoted
     ```python
     import pandas as pd
 
-    # Starting with a dataframe in the standard shape format 
+    # Starting with a dataframe in the standard shape format
     standard_shape_data = {
         "Year": [2022, 2021, 2022, 2021],
         "Location": ["London", "Cardiff", "London", "Cardiff"],

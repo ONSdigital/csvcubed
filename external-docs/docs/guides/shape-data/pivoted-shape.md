@@ -1,6 +1,6 @@
 # Pivoted Shape
 
-> This page describes how to build and configure a pivoted shape data cube. For more information about the data shapes supported by csvcubed, see [Shaping your data](./index.md). The instructions below assume a basic understanding of writing a [qube-config.json file](../configuration/qube-config.md).
+> This page describes how to build and configure a pivoted shape data cube. For more information about the data shapes supported by csvcubed, see [Shaping your data](./index.md). The instructions below assume a basic understanding of writing a [qube-config.json file](../configuration/qube-config/index.md).
 
 See [Converting to pivoted shape](./shape-conversion.md#converting-to-the-pivoted-shape) for instructions on how to convert the shape of your data in Python and R.
 
@@ -15,7 +15,7 @@ The [standard shape](./standard-shape.md) is flexible but has a lot of redundanc
 | 2020 | Edinburgh |                       90 | Final       |
 | 2021 | Belfast   |                        0 | Final       |
 
-Note that this shape doesn't require that you add any additional columns to the underlying [common structure](./index.md#common-structure); however it does require a different (and explicit) [qube-config.json](../configuration/qube-config.md) configuration, to ensure that the corresponding measure and unit are attached to the _observations_ column:
+Note that this shape doesn't require that you add any additional columns to the underlying [common structure](./index.md#common-structure); however it does require a different (and explicit) [qube-config.json](../configuration/qube-config/index.md) configuration, to ensure that the corresponding measure and unit are attached to the _observations_ column:
 
 ```json
 {
@@ -49,12 +49,12 @@ Note that this shape doesn't require that you add any additional columns to the 
 
 ## Multiple Measures
 
-Incorporating multiple measures into the pivoted shape can be achieved by defining [unit](../../glossary/index.md#unit) and [measure](../../glossary/index.md#measure) information for **each** `observation` column. Measures in the pivoted shape are always configured against the observed values column in the associated [qube-config.json file](../configuration/qube-config.md). Units can be configured in two ways:
+Incorporating multiple measures into the pivoted shape can be achieved by defining [unit](../../glossary/index.md#unit) and [measure](../../glossary/index.md#measure) information for **each** `observation` column. Measures in the pivoted shape are always configured against the observed values column in the associated [qube-config.json file](../configuration/qube-config/index.md). Units can be configured in two ways:
 
 1. By specifying a `unit` property within the `observation` column definition (as with the "Number of Arthur's Bakes" [observation](../../glossary/index.md#observation-observed-value) column).
-2. By associating a separate `unit` column with the relevant `observation` column using the `describes_observations` property (as with the "Revenue Units" [unit](../../glossary/index.md#unit) column). See the [Measure and Unit Columns Configuration](../configuration/qube-config.md#measure-and-unit-columns-configuration) section for more information on the `describes_observation` property.
+2. By associating a separate `unit` column with the relevant `observation` column using the `describes_observations` property (as with the "Revenue Units" [unit](../../glossary/index.md#unit) column). See the [Measure and Unit Columns Configuration](../configuration/qube-config/index.md#measure-and-unit-columns-configuration) section for more information on the `describes_observation` property.
 
-Similarly, the `describes_observation` property can be used to associate _attributes_ with the relevant _observation_ values, as with the "Number of Stores Status" and "Revenue Status" [attribute](../../glossary/index.md#attribute) columns below. See the [Attributes configuration](../configuration/qube-config.md#attributes-configuration) section for more information on the `describes_observation` property.
+Similarly, the `describes_observation` property can be used to associate _attributes_ with the relevant _observation_ values, as with the "Number of Stores Status" and "Revenue Status" [attribute](../../glossary/index.md#attribute) columns below. See the [Attributes configuration](../configuration/qube-config/index.md#attributes-configuration) section for more information on the `describes_observation` property.
 
 | Year | Location | Number of Arthur's Bakes | Number of Stores Status | Revenue | Revenue Units  | Revenue Status |
 |:-----|:---------|-------------------------:|:------------------------|--------:|:---------------|:---------------|

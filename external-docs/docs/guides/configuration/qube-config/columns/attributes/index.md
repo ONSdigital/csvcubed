@@ -9,12 +9,12 @@ bottom of this page.
 
 Attribute columns describe or provide additional context to the data set's observed values. They **do not** identify
 a particular sub-set of the data set's population. If the column you are configuring does identify such a sub-set of
-the population, then it is probably a [dimension](./dimensions.md).
+the population, then it is probably a [dimension](../dimensions.md).
 
 ## When to use one
 
-Unlike [dimensions](./dimensions.md), [observations](./observations.md), [measures](./measures.md) and
-[units](./units.md), attributes are optional components of a data cube. Their primary usage is to qualify
+Unlike [dimensions](../dimensions.md), [observations](../observations.md), [measures](../measures.md) and
+[units](../units.md), attributes are optional components of a data cube. Their primary usage is to qualify
 observed values by providing additional context about individual data points. Two common examples of attributes are
 **observation status** and **confidence intervals**.
 
@@ -35,7 +35,7 @@ confidence interval for the `Average customer spend` observed values.
 ## Resources vs Literals
 
 The configuration of attribute columns in your data set will depend primarily on whether you choose to represent the
-attribute as a [Resource](../../../glossary/index.md#resource) or a [Literal](../../../glossary/index.md#literal).
+attribute as a [Resource](../../../../../glossary/index.md#resource) or a [Literal](../../../../../glossary/index.md#literal).
 
 **Resource attributes** are suitable for categorical values which **can be reused as linked data**. Given that the goal
 of the csvcubed project is to simplify the process of creating [5-star linked data](https://5stardata.info/en/) from CSV
@@ -60,7 +60,7 @@ As mentioned above, the configuration of attribute columns will depend on whethe
 
 ## Describing observations
 
-In a [pivoted shape data set](../../shape-data/pivoted-shape.md) with multiple observation columns, attributes must be
+In a [pivoted shape data set](../../../../shape-data/pivoted-shape.md) with multiple observations columns, attributes must be
 explicitly associated with the observed values they qualify. In the example below, there are two attribute columns,
 `Number of Stores Status` and `Revenue Status`, which qualify the `Number of Arthur's Bakes` and `Revenue` columns
 respectively.
@@ -102,7 +102,7 @@ This table shows a list of the possible fields that can be entered when configur
 | `required`               | If this boolean value is true csvcubed will flag to the user if there are blank values in this column (Optional)                                                                                                                                                                                                                                                                                     | false                                                                            |
 | `data_type`              | (Literal attributes only) The [XML data type](https://www.w3.org/TR/xmlschema-2/#built-in-datatypes) of the contents of the column. If this is provided it becomes a Literal attribute column (Optional)                                                                                                                                                                                             | *none*                                                                           |
 | `values`                 | (New Resource Attributes only) If automatically-generated attributes are desired, a boolean value of `true` is used to signify to csvcubed to create Resource attributes from values in this column; otherwise this should be a list of attribute value objects defining the attributes used in the column. See [Attribute values configuration](./attribute-values.md) for more details. (Optional) | *none*                                                                           |
-| `from_template`          | (New/Existing Resource Attributes only) Use a [column template](../templates.md) (Optional)                                                                                                                                                                                                                                                                                                          | *none*                                                                           |
+| `from_template`          | (New/Existing Resource Attributes only) Use a [column template](../../templates.md) (Optional)                                                                                                                                                                                                                                                                                                          | *none*                                                                           |
 | `from_existing`          | The URI of the resource for reuse/extension (Optional)                                                                                                                                                                                                                                                                                                                                               | *none*                                                                           |
-| `describes_observations` | Associates this attribute with the relevant observation values. This is only necessary for [pivoted shape data sets](../../shape-data/pivoted-shape.md) with multiple observation value columns. (Optional)                                                                                                                                                                                          | *none*                                                                           |
+| `describes_observations` | Associates this attribute with the relevant observation values. This is only necessary for [pivoted shape data sets](../../../../shape-data/pivoted-shape.md) with multiple observation value columns. (Optional)                                                                                                                                                                                          | *none*                                                                           |
 | `cell_uri_template`      | (Existing Resource Attributes only) Used to define a template to map the cell values in this column to URIs (Optional)                                                                                                                                                                                                                                                                               | *none*                                                                           |

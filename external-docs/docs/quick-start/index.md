@@ -11,5 +11,4 @@ The suggested order for to navigate through the quick start pathway is as follow
 5. [Building 5* Linked Data](./linking-data.md) - use existing definitions to integrate into the linked data cloud.
 6. [Inspecting a CSV-W](./inspect.md) - inspect the contents of a CSV-W to display and validate its metadata.
 
-
 Take the first step and [install csvcubed](./installation.md).

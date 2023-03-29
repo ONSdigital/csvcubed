@@ -1,4 +1,4 @@
-# Error - DSD component property type `<property_type>` is not supported.
+# Error - DSD component property type `<property_type>` is not supported
 
 ## When it occurs
 

@@ -17,7 +17,6 @@ Once this process is complete, the value is appended on to a URI base to make a 
 
 > `http://example.com/definitions/code-lists/enterprise-captains/picard-jean-luc`.
 
-
 ## CSV column name safe transformation
 
 The CSV column name safe transformation converts a human-readable column name into an identifier that is safe to use as the `name` property in a CSV-W column.
@@ -26,8 +25,8 @@ The CSV column name safe transformation converts a human-readable column name in
 
 | Step                                                                                             | Example                                                                     |
 |:-------------------------------------------------------------------------------------------------|:----------------------------------------------------------------------------|
-| The entire column name is converted to lower case                                                | `USS Enterprise-D personnel` is transformed to `uss enterprise-d personnel` |
-| Any characters which are not letters, numbers or `_` (underscore) are replaced with a single `_` | `uss enterprise-d personnel` is transformed to `uss_enterprise_d_personnel` |
+| The entire column name is converted to lower case                                                | `Confidence interval - lower bound (95%)` is transformed to `confidence interval - lower bound (95%)` |
+| Any characters which are not letters, numbers or `_` (underscore) are replaced with a single `_` | `confidence interval - lower bound (95%)` is transformed to `confidence_interval_lower_bound_95_` |
 
 The transformed [column name](https://www.w3.org/TR/2015/REC-tabular-metadata-20151217/#column-name) can then be safely used by csvcubed in the generation of CSV-W metadata, such as column definitions:
 
@@ -41,9 +40,8 @@ The transformed [column name](https://www.w3.org/TR/2015/REC-tabular-metadata-20
             "tableSchema":{
                 "columns": [
                     {
-                        "titles": "USS Enterprise-D personnel",
-                        "name": "uss_enterprise_d_personnel",
-                        ...
+                        "titles": "Confidence interval - lower bound (95%)",
+                        "name": "confidence_interval_lower_bound_95_"
                     }
                 ]
             }

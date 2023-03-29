@@ -8,7 +8,7 @@
 
 csvcubed must be installed in order to proceed, please go back to [installation](installation.md).
 
-## How csvcubed interprets a CSV
+## How csvcubed interprets a CSV
 
 csvcubed needs to understand how your statistical data is structured in order to make it more machine readable. There are two ways that you can do this with csvcubed, we are covering the [configuration by convention approach](../guides/configuration/convention.md) in this quick-start. Configuration by convention requires a [standard CSV data shape](../guides/shape-data/index.md#standard-shape) with conventional column titles and fill it out with your data which is explained briefly below.
 
@@ -30,7 +30,7 @@ In the above table:
 * the `Measure` column describes what has been observed or measured; note that the measure should not include any information about the units of measure.
 * the `Unit` column describes the unit of measure in which the `Value` has been recorded.
 
-The names of the columns is how csvcubed interprets what each column contains in the [configuration by convention approach](../guides/configuration/convention.md). Using the column titles `Value`, `Measure` and `Unit` or one of their [synonyms](../guides/configuration/index.md#conventional-column-names) in your CSV will work. All other columns are assumed to be *identifying characteristics* ([dimensions](../glossary/index.md#dimensionl)).
+The names of the columns is how csvcubed interprets what each column contains in the [configuration by convention approach](../guides/configuration/convention.md). Using the column titles `Value`, `Measure` and `Unit` or one of their [synonyms](../guides/configuration/qube-config/index.md#conventional-column-names) in your CSV will work. All other columns are assumed to be *identifying characteristics* ([dimensions](../glossary/index.md#dimensionl)).
 
 ### Pivoted shape
 
@@ -69,4 +69,4 @@ The next step is to [build a CSV-W](./build.md).
 
 ## Optional: further reading
 
-The other way to configure a CSV-W cube is using the [explicit configuration approach](../guides/configuration/qube-config.md) - you write a JSON configuration file which tells csvcubed exactly how to interpret your data.
+The other way to configure a CSV-W cube is using the [explicit configuration approach](../guides/configuration/qube-config/index.md) - you write a JSON configuration file which tells csvcubed exactly how to interpret your data.

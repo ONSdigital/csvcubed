@@ -54,7 +54,7 @@ A property of a population which can be measured or observed. For example, heigh
 ## Resource
 
 Resources are objects or concepts that exist in the real world that can be expressed in a machine-readable format by
-converting them to [URIs](#uniform-resource-indentifier). Resources form the basis of the Resource Description
+converting them to [URIs](#uniform-resource-identifier). Resources form the basis of the Resource Description
 Framework (RDF), and are fundamental to the concept of [linked data](https://www.w3.org/TR/vocab-data-cube/#intro-rdf).
 
 ## [Semantic Web](https://www.w3.org/RDF/Metalog/docs/sw-easy)

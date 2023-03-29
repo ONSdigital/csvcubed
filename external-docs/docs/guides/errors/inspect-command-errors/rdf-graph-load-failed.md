@@ -1,4 +1,4 @@
-# Error - Failed to load the RDF graph from input.
+# Error - Failed to load the RDF graph from input
 
 ## When it occurs
 

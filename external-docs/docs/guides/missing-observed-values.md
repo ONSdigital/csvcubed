@@ -4,7 +4,7 @@ It is sometimes the case that you cannot provide a value for a given [observatio
 
 csvcubed permits missing observation values as long as there is an _attribute_ column which explains why the value is missing. The _attribute_ column must be based on the `http://purl.org/linked-data/sdmx/2009/attribute#obsStatus` attribute. The observation which is missing must have the observation status filled in.
 
-Blank values are represented as a zero length string in an observation column in CSV format (i.e. `,,`).
+Blank values are represented as a zero length string in an observations column in CSV format (i.e. `,,`).
 
 ## A worked example: Sweden in Eurovision
 
@@ -12,7 +12,7 @@ In the example below, which is an extract of a data set capturing Sweden's Eurov
 
 For example:
 
-* the number of People on the stage is known for Anna Bergendahl's entry into Eurovision as she competed in the second semi-final; however as she didn't make it to the final, her Final Points, and Final Rank are not applicable and therefore the observations are blank in the associated CSV. 
+* the number of People on the stage is known for Anna Bergendahl's entry into Eurovision as she competed in the second semi-final; however as she didn't make it to the final, her Final Points, and Final Rank are not applicable and therefore the observations are blank in the associated CSV.
 * in the case of The Mama's entry in 2020, the entire contest was cancelled so no values are provided however they were to represent Sweden at Eurovision that year.
 
 It is important to note that the `Marker` column is based on the existing `http://purl.org/linked-data/sdmx/2009/attribute#obsStatus` attribute; this is vital to ensure that csvcubed knows that the attribute describes the status of the observation. An observation status column can also be used to note where an observation is provisional, revised, suppressed, final, etc.
@@ -58,7 +58,7 @@ Year,Entrant,Song,Language,Marker,Measure,Observation,Units
 
 ## Configuration of observation status in `qube-config.json`
 
-Adding a `Marker` column to represent the observation status can be done in the column definitions section of the [qube-config](./configuration/index.md) file. In this example the Marker column has the following configuration:
+Adding a `Marker` column to represent the observation status can be done in the column definitions section of the [qube-config](./configuration/qube-config/index.md) file. In this example the Marker column has the following configuration:
 
 ```json
         "Marker": {

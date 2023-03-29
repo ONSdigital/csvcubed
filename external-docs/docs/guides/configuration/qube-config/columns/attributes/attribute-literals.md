@@ -2,7 +2,7 @@
 
 This page discusses how a Literal attribute column can be defined.
 
-See the [Attributes page](./attributes.md) for general information about attribute columns, including when to use one,
+See the [Attributes page](./index.md) for general information about attribute columns, including when to use one,
 and a discussion of the difference between [Resource](./attribute-resources.md) attributes and Literal attributes.
 
 > For a detailed look at a Literal attribute column's configuration options, see the [Reference table](#reference) at
@@ -172,4 +172,4 @@ This table shows a list of the possible fields that can be entered when configur
 | `definition_uri`         | A URI of a resource to show how the column is created/managed (e.g. a URI of a PDF explaining a list of attribute values) (Optional)                                                                                                                                                                                       | *none*                                                                           |
 | `required`               | If this boolean value is true csvcubed will flag to the user if there are blank values in this column (Optional)                                                                                                                                                                                                           | false                                                                            |
 | `from_existing`          | The URI of the resource for reuse/extension (Optional)                                                                                                                                                                                                                                                                     | *none*                                                                           |
-| `describes_observations` | Associates this attribute with the relevant observation values. This is only necessary for [pivoted shape data sets](../../shape-data/pivoted-shape.md) with multiple observation value columns. See the [Attributes](./attributes.md#describing-observations) page for details of how to configure this field. (Optional) | *none*                                                                           |
+| `describes_observations` | Associates this attribute with the relevant observation values. This is only necessary for [pivoted shape data sets](../../../../shape-data/pivoted-shape.md) with multiple observation value columns. See the [Attributes](./index.md#describing-observations) page for details of how to configure this field. (Optional) | *none*                                                                           |

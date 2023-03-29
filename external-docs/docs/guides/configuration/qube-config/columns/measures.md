@@ -3,15 +3,15 @@
 This page discusses what a measures column is, where one should be used, and how one can be defined.
 
 The configuration of measure definitions themselves will not be the primary focus of this page; for help with this, see
-[configuring measures](./measures.md).
+[Measure definitions](../measure-definitions.md).
 
 > For a detailed look at a measure column's configuration options, see the [Reference table](#reference) at the bottom
 > of this page.
 
-### What is a measures column?
+## What is a measures column?
 
 A *measures* column defines the phenomenon that has been measured in your observed values. It is useful to help express
-the measure used in sparse data sets.
+the measure used in [sparse data](../../../../glossary/index.md#sparse-data) sets.
 
 Consider the following data set containing a measures column; the measures column is the one with the title `Measure`.
 
@@ -25,19 +25,19 @@ The `Measure` column declares that the phenomenon measured in the first row is `
 in the second row is `Average Weight`, and so on. Note that there can only ever be one observed value per row when using
 a measures column.
 
-### When to use a measures column
+## When to use a measures column
 
 Every valid data cube requires **at least one measure**. If you choose to use the
-[Standard Shape](../../shape-data/standard-shape.md) to represent your data then you **must** include a measures column.
+[Standard Shape](../../../shape-data/standard-shape.md) to represent your data then you **must** include a measures column.
 
-If you choose to use the [Pivoted Shape](../../shape-data/pivoted-shape.md) to represent your data then all measures
+If you choose to use the [Pivoted Shape](../../../shape-data/pivoted-shape.md) to represent your data then all measures
 must be defined against [Observations Columns](./observations.md); in this case you cannot include a measures column.
 
 N.B. It is **not possible** to define multiple measures columns in the same data cube.
 
-### Basic configuration
+## Basic configuration
 
-Now we will show how a measures column can be defined in a [qube configuration](../qube-config.md) file.
+Now we will show how a measures column can be defined in a [qube configuration](../index.md) file.
 
 A basic measures column definition can be seen below:
 
@@ -53,10 +53,9 @@ A basic measures column definition can be seen below:
 }
 ```
 
-
 Note that the `type` has been set to `measures`.
 
-Note that if you use one of the [conventional column titles](TODO) for measures then the above configuration is
+If you use one of the [conventional column titles](TODO) for measures then the above configuration is
 equivalent to what csvcubed would do to your column by default.
 
 One of the advantages of measure columns in standard shape data sets is that no changes are required in the cube
@@ -64,7 +63,7 @@ configuration file if new measures are added. Using multiple measures in a measu
 adding new rows to the data set, and specifying measures (and units) to be used for the observation.
 
 To view more information on the difference between single measure and multi measure data sets, see the
-[Shape your data](../../shape-data/index.md) page (for both standard and pivoted shape).
+[Shape your data](../../../shape-data/index.md) page (for both standard and pivoted shape).
 
 ### Optional properties
 
@@ -78,8 +77,7 @@ If you are creating new measures within your measures column, the details of the
 
 ```json
 {
-    "$schema": "https://purl.org/csv-cubed/qube-config/v1",
-    "title": "Average Height and Weight for Men in different countries",
+    ...
     "columns": {
         "Measure": {
             "type": "measures",
@@ -90,7 +88,7 @@ If you are creating new measures within your measures column, the details of the
 ```
 
 By default, the `values` field is set to `true`. This indicates to csvcubed to automatically generate
-[measure definitions](../measure-configuration.md) unique to your data set. See the previous link for more information
+[measure definitions](../measure-definitions.md) unique to your data set. See the previous link for more information
 on configuring measures and the fields that can be provided to the `values` object list.
 
 ### Cell URI Template
@@ -101,12 +99,12 @@ of this field in use.
 
 ```json
 {
-    "$schema": "https://purl.org/csv-cubed/qube-config/v1",
-    "title": "Average Height and Weight for Men in different countries",
+    ...
     "columns": {
         "Measure": {
             "type": "measures",
-            "cell_uri_template": "http://example.org/measures/example-measure"
+            "from_existing": "http://example.org/measures/example-measure",
+            "cell_uri_template": "http://example.org/code-lists/example-measure/{+measure}"
         },
     }
 }
@@ -125,8 +123,8 @@ for URI Templates. In the case of any doubt, follow the pattern in the examples 
 
 ## Reference
 
-| **field name**      | **description**                                                                                                                                                                                                                                                                                            | **default value** |
-|---------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------|
-| `type`              | The type of the column, provide `"measures"` for the measure column type.(Required)                                                                                                                                                                                                                        | *dimension*       |
-| `values`            | (New Measures only) If basic units/measures are desired, a boolean value of `true` is used to signify to csvcubed to create units/measures from values in this column; otherwise values is a dictionary which defines the units/measures using the notation from [Measures and Units](#measures-and-units) | `true`            |
-| `cell_uri_template` | (Existing Measures only) Used to define a template to map the cell values in this column to URIs                                                                                                                                                                                                           | *none*            |
+| **field name**      | **description**                                                                                                                                                                                                                                                                                        | **default value** |
+|---------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------|
+| `type`              | The type of the column, provide `"measures"` for the measure column type.(Required)                                                                                                                                                                                                                    | *dimension*       |
+| `values`            | (New Measures only) If basic measures are desired, a boolean value of `true` is used to signify to csvcubed to create units/measures from values in this column; otherwise values is a dictionary which defines the measures using the notation from [Measures definitions](../measure-definitions.md) | `true`            |
+| `cell_uri_template` | (Existing Measures only) Used to define a template to map the cell values in this column to URIs                                                                                                                                                                                                       | *none*            |

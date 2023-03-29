@@ -2,15 +2,15 @@
 
 Column templates are pre-configured column definitions which speed up creating linked data.
 
-This page aims to introduce column template functionality, show you how to make use of it in a [qube-config.json](qube-config.md) configuration file and list common templates you might wish to use yourself.
+This page aims to introduce column template functionality, show you how to make use of it in a [qube-config.json](index.md) configuration file and list common templates you might wish to use yourself.
 
-Also see the quick start [introduction to linking data](../../quick-start/linking-data.md).
+Also see the quick start [introduction to linking data](../../../quick-start/linking-data.md).
 
-Templates are currently configured for [dimensions](./columns/dimensions.md), [resource attributes](./columns/attribute-resources.md) and [units columns](./columns/units.md).
+Templates are currently configured for [dimensions](./columns/dimensions.md), [resource attributes](./columns/attributes/attribute-resources.md) and [units columns](./columns/units.md).
 
 ## How to use templates
 
-To use a column template in the [qube-config.json](qube-config.md) configuration file set the `from_template` property on the column definition to one the available templates, for example with a column representing year:
+To use a column template in the [qube-config.json](index.md) configuration file set the `from_template` property on the column definition to one the available templates, for example with a column representing year:
 
 ```json
 "Year": {
@@ -61,13 +61,11 @@ The templates are currently in version 1.0; with future development planned. You
 | [gregorian-instant](https://purl.org/csv-cubed/qube-config/templates/gregorian-instant.json)   | The gregorian-instant expressed in ISO-8601 format  | 1970-01-01T00:00:00     |
 | [gregorian-interval](https://purl.org/csv-cubed/qube-config/templates/gregorian-interval.json) | The gregorian-interval expressed in ISO-8601 format | 1970-01-01T00:00:00/P3D |
 
-
 ### Geographical area templates
 
 | Template                                                                                             | Description                                     | Example   |
 |------------------------------------------------------------------------------------------------------|-------------------------------------------------|-----------|
 | [statistical-geography](https://purl.org/csv-cubed/qube-config/templates/statistical-geography.json) | ONS Geography codes for statistical geographies | K02000001 |
-
 
 ### Attribute templates
 

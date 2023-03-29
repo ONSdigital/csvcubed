@@ -1,9 +1,9 @@
-# Units columns
+## Units columns
 
 This page discusses what a units column is, where one should be used, and how one can be defined.
 
 The configuration of unit definitions themselves will not be the primary focus of this page; for help with this, see
-[configuring units](./units.md).
+[Unit definitions](../unit-definitions.md).
 
 > For a detailed look at a unit column's configuration options, see the [Reference table](#reference) at the bottom of
 >this page.
@@ -95,13 +95,13 @@ speed up the creation of linked data columns. The use of this field in a units c
     "title": "Average Income in Pounds Sterling",
     "columns": {
         "Unit": {
-            "from_template": "http://qudt.org/vocab/unit/PoundSterling"
+            "from_template": "qudt-units"
         },
     }
 }
 ```
 
-Enter the URI of a template to be used as the units column. Note that you can override the configuration of used
+Enter the identifier of a template to be used as the units column. Note that you can override the configuration of used
 templates by specifying individual properties.
 
 For more information on templates, as well as a list of templates that can be used, see the
@@ -114,12 +114,11 @@ unit details. Instead, use the field `cell_uri_template`.
 
 ```json
 {
-    "$schema": "https://purl.org/csv-cubed/qube-config/v1",
-    "title": "Average Height and Weight for Men in different countries",
+    ...
     "columns": {
         "Unit": {
-            "type": "units",
-            "cell_uri_template": "http://example.org/units/example-unit"
+            "from_existing": "http://example.org/units/example-unit",
+            "cell_uri_template": "http://example.org/code-lists/example-units/{+unit}"
         },
     }
 }
@@ -127,19 +126,11 @@ unit details. Instead, use the field `cell_uri_template`.
 
  Provide a URI of a unit resource to use in the definition.
 
-!!! Warning
-    The use of the `cell_uri_template` field is considered an advanced configuration option, and therefore care must be taken to ensure that the values generated are valid.
-
-The format of the `cell_uri_template` value **must** follow [RFC6570](https://www.rfc-editor.org/rfc/rfc6570) guidance
-for URI Templates. In the case of any doubt, follow the pattern in the examples shown above (e.g.
-`http://example.org/some-uri/{+column_name}`), as this will ensure csvcubed safely
-[transforms the column header](../../uris.md#csv-column-name-safe-transformation) to the CSV-W format.
-
  ### Describes Observations
 
- A field that is unique to units columns that can be passed into their definition is `describes_observations`. This
- field associates the units column with the relevant observation values where the units are being used. Note that this
- is only applicable to pivoted shape cubes with multiple measures and multiple observation value columns. The use of
+ Another field that can be applied to units columns that can be passed into their definition is `describes_observations`.
+ This field associates the units column with the relevant observation values where the units are being used. Note that
+ this is only applicable to pivoted shape cubes with multiple measures and multiple observation value columns. The use of
  this field is covered in the [configuring units](../unit-configuration.md) page.
 
 ## Reference

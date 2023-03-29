@@ -6,5 +6,5 @@ A cube does not have a column representing the observed values.
 
 ## How to fix
 
-Ensure that your cube has a single column represents observed values in your cube.   
+Ensure that your cube has a single column represents observed values in your cube.
 See [shaping your data](../../shape-data/index.md) for more information on the shapes of data accepted by csvcubed.

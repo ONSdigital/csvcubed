@@ -8,11 +8,11 @@ Linking data is what turns 4☆ data into [5☆ linked data](https://5stardata.i
 
 ## Prerequisites
 
-This page assumes that you have a well structured CSV with a corresponding JSON [qube-config.json](../guides/configuration/qube-config.md) as built in [describing your CSV](describing-csv.md). 
+This page assumes that you have a well structured CSV with a corresponding JSON [qube-config.json](../guides/configuration/qube-config/index.md) as built in [describing your CSV](describing-csv.md).
 
 ## Column Mappings
 
-We saw in the [describing your CSV](./describing-csv.md) section that we can provide a [qube-config.json](../guides/configuration/qube-config.md) configuration file to describe the data set. We can also use this file to describe columns.
+We saw in the [describing your CSV](./describing-csv.md) section that we can provide a [qube-config.json](../guides/configuration/qube-config/index.md) configuration file to describe the data set. We can also use this file to describe columns.
 
 ```json
 {
@@ -35,13 +35,13 @@ We saw in the [describing your CSV](./describing-csv.md) section that we can pro
 }
 ```
 
-Note the newly added `columns` property which takes a key-value mapping for each CSV column that you wish to describe. 
+Note the newly added `columns` property which takes a key-value mapping for each CSV column that you wish to describe.
 
 For example, in the `sweden_at_eurovision_no_missing.csv` data set we have been working with up to now, we could specify that the `Year` column should make use of the `year` [template](#column-templates):
 
 ```json
 "columns": {
-    "Year": { 
+    "Year": {
             "from_template": "year"
         }
 }
@@ -51,7 +51,7 @@ For example, in the `sweden_at_eurovision_no_missing.csv` data set we have been 
 
 Column templates are pre-configured column definitions which speed up creating linked data. csvcubed has several templates for columns converting calendar and UK Government time periods, as well as observation-status.
 
-For more information see the [templates guide](../guides/configuration/templates.md).
+For more information see the [templates guide](../guides/configuration/qube-config/templates.md).
 
 ## Next steps
 

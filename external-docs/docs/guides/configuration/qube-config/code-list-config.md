@@ -1,6 +1,6 @@
 # Configuring code lists
 
-By default, csvcubed generates code lists with the unique values of each [dimension](../../glossary/index.md#dimension) in a data set. This makes it as quick as possible to get from data to CSV-W cube, but it doesn't always leave you with the best representation of your code list's metadata, structure, hierarchy, or values. In order to provide more accurate representations of code lists, csvcubed allows users to explicitly configure code lists using JSON.
+By default, csvcubed generates code lists with the unique values of each [dimension](../../../glossary/index.md#dimension) in a data set. This makes it as quick as possible to get from data to CSV-W cube, but it doesn't always leave you with the best representation of your code list's metadata, structure, hierarchy, or values. In order to provide more accurate representations of code lists, csvcubed allows users to explicitly configure code lists using JSON.
 
 This guide details how to explicitly define a code list using csvcubed.
 
@@ -70,7 +70,7 @@ File name: biscuit-varieties.json
 
 This code list configuration would generate a code list with the following structure:
 
-```
+```text
 root
 ├── Bourbon
 ├── Custard Cream
@@ -136,7 +136,7 @@ The `same_as` field allows using a concept defined elsewhere in the internet (e.
 
 ### Referencing a code list configuration file
 
-This new code list can be referenced in a [qube-config.json](./qube-config.md) file using the `code_list` field in [dimension configuration](./qube-config.md#dimension-configuration), e.g.
+This new code list can be referenced in a [qube-config.json](./index.md) file using the `code_list` field in [dimension configuration](./index.md#dimension-configuration), e.g.
 
 ```json
 {
@@ -152,7 +152,7 @@ This new code list can be referenced in a [qube-config.json](./qube-config.md) f
 
 ## Defining an in-line code list
 
-It is also possible to define a code list configuration inside a [qube-config.json](./qube-config.md) file.
+It is also possible to define a code list configuration inside a [qube-config.json](./index.md) file.
 
 This approach is recommended for defining simple code lists (e.g. code lists with a small number of concepts or simple hierarchy).
 
@@ -217,4 +217,4 @@ As shown in the above example, an in-line code list is defined within the `qube-
 
 ## Code-list build command
 
-It is possible to generate a code list CSV-W without providing a tidy-data.csv file using the `code-list build` command. Please refer to the [code-list build command documentation](../command-line/code-list-build-command.md) page for a usage guide.
+It is possible to generate a code list CSV-W without providing a tidy-data.csv file using the `code-list build` command. Please refer to the [code-list build command documentation](../../command-line/code-list-build-command.md) page for a usage guide.

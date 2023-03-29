@@ -1,4 +1,4 @@
-# Unit configuration
+# Unit definitions
 
 This page discusses what a unit is, where one should be used, and how one can be defined and configured.
 
@@ -39,8 +39,8 @@ If multiple units appear in different observations within the same observations 
 and configured in a dedicated units column.
 
 csvcubed automatically defines new units using the unique values in your
-[standard shape](../shape-data/standard-shape.md) cube's units column. If desired, you can gain more control over how
-the units are defined by providing configuration in a [qube-config.json](./qube-config.md) file.
+[standard shape](../../shape-data/standard-shape.md) cube's units column. If desired, you can gain more control over how
+the units are defined by providing configuration in a [qube-config.json](./index.md) file.
 
 Note that the two scenarios described above apply to both standard and pivoted shape cubes. The shape of the data cube
 does not affect the representation of units.
@@ -50,12 +50,12 @@ does not affect the representation of units.
 If you have decided on your preferred method of defining/representing units to suit your data cube, follow one of the
 two sections on defining a unit below:
 
-### Defining a unit in an observation column's definition
+### Defining a unit in an observations column's definition
 
 After specifying the `type` of the column as `observations`, a unit can be created as a property containing a list of
 objects, these objects being the fields that contain the unit's properties.
 
-The example below shows an observation column definition with a unit. The unit has been given the `label` "Count".
+The example below shows an observations column definition with a unit. The unit has been given the `label` "Count".
 
 ```json
 "columns": {
@@ -68,12 +68,12 @@ The example below shows an observation column definition with a unit. The unit h
 },
 ```
 
-For more information on defining observation columns, and the resources that can be configured in them along with units,
- see the [observations columns](../configuration/columns/observations.md) page.
+For more information on defining observations columns, and the resources that can be configured in them along with units,
+ see the [observations columns](../../configuration/qube-config/columns/observations.md) page.
 
 ### Defining a unit in a units column
 
-Placing the units in their own column should be done when different values in the same observation column are measured
+Placing the units in their own column should be done when different values in the same observations column are measured
 differently, e.g. one row measured in US Dollars and the next row measured in Pounds Sterling.
 
 When defining a new unit in its own column, the details are specified in the `values` field as an object, after the
@@ -114,7 +114,7 @@ This section will focus on re-using existing units, whether in their entirety or
 ### Linking a new unit to an existing unit
 
 In the above example we defined a new unit called `Pounds Sterling (£), Millions`. Looking at the guide on
-[choosing units](../linked-data/units.md) we see that we could relate this unit back to a well established standard
+[choosing units](../../linked-data/units.md) we see that we could relate this unit back to a well established standard
 unit defined by QUDT: [PoundSterling](http://qudt.org/vocab/unit/PoundSterling).
 
 Our dataset could of course be expressed directly in [PoundSterling](http://qudt.org/vocab/unit/PoundSterling) but that
@@ -129,7 +129,7 @@ that software can automatically figure out how to compare our data with other da
 
 In the following examples, we'll show how to define new units re-using existing unit definitions, then the next section
 will show how to apply optional properties such as scaling to create the new units for `Pounds Sterling (£), Millions`
-and `Barrels of petrol per day (,000)` with a [standard shaped](../shape-data/standard-shape.md) cube, using the
+and `Barrels of petrol per day (,000)` with a [standard shaped](../../shape-data/standard-shape.md) cube, using the
 different fields available for re-using existing units. Here is the data set that we want to create units for in our
 json config file:
 
@@ -227,8 +227,8 @@ Note that when the `scaling_factor` field is not specified in a unit that re-use
 
 ### Quantity kind
 
-The `quantity_kind` field can make use of the QUDT extensive various types of measurable quantities to help group and identify units. Provide a URI of a valid resource, adding it onto the prefix http://qudt.org/vocab/quantitykind/ to take advantage of QUDT's vast library of quantity kind resources. The previous example uses the `quantity_kind` field to specify that the unit is categorised as a currency unit.
-For more information on quantity kinds as well as several quantity kinds to make use of, see the [Linked data Units](../linked-data/units.md) page.
+The `quantity_kind` field can make use of the QUDT extensive various types of measurable quantities to help group and identify units. Provide a URI of a valid resource, adding it onto the prefix `http://qudt.org/vocab/quantitykind/` to take advantage of QUDT's vast library of quantity kind resources. The previous example uses the `quantity_kind` field to specify that the unit is categorised as a currency unit.
+For more information on quantity kinds as well as several quantity kinds to make use of, see the [Linked data Units](../../linked-data/units.md) page.
 
 ```json
 {
@@ -301,11 +301,12 @@ When creating a unit in a units column, it is also possible to specify an observ
  unit to its relevant observation value when there are multiple measures and the data set is in the pivoted shape.
 
  For more information on the distinction between pivoted/standard shape data sets, as well as single/multiple measures,
- see the [Pivoted Shape](../shape-data/pivoted-shape.md)
+ see the [Pivoted Shape](../../shape-data/pivoted-shape.md)
 
 Example of a units column being defined with the `describes_obserations` field used to link to an observation.
 
 Here is an observation that the unit will describe:
+
 ```json
         "Exports": {
             "type": "observations",

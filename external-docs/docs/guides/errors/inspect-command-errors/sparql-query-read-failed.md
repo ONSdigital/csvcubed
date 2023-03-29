@@ -1,4 +1,4 @@
-# Error - Failed to read SPARQL query from file at `<sparql-query-file-path>`.
+# Error - Failed to read SPARQL query from file at `<sparql-query-file-path>`
 
 ## When it occurs
 

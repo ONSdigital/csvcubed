@@ -1,4 +1,4 @@
-# Error - The input CSV-W JSON-LD is not supported. The input should be a data cube or a code list.
+# Error - The input CSV-W JSON-LD is not supported. The input should be a data cube or a code list
 
 ## When it occurs
 
