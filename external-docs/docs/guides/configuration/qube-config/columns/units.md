@@ -1,4 +1,4 @@
-## Units columns
+# Units columns
 
 This page discusses what a units column is, where one should be used, and how one can be defined.
 
@@ -54,9 +54,8 @@ The following JSON shows how a units column can be defined in a [qube configurat
 
 To define a units column, specify the `type` of the column definition as `units`.
 
-<!-- TODO: At some point, add an example of a single measure pivoted data set with a units column (multiple units) -->
-
-todo: write about default behaviour of units column configuration
+In this scenario of a minimal definition, since we do not specify any other details or properties; the unit
+will auto-generate a `label` field by default that takes the column's title. Here, the label would be `Unit`.
 
 ### Optional properties
 
