@@ -10,11 +10,11 @@ Observations columns contain the numerical values of observations recorded in th
 
 ## When to use one
 
-Observations columns contain the observed values of your data, and as such your data set must always contain at least one observations column. The configuration of observations columns in your data set will primarily depend on the [shape of your data](../../../shape-data/index.md). This is discussed in more detail below.
+Observations columns contain the observed values of your data, and as such your data set must always contain at least one observations column. The configuration of these columns in your data set will primarily depend on the [shape of your data](../../../shape-data/index.md). This is discussed in more detail below.
 
 ## Basic configuration
 
-For [standard shape](../../../shape-data/standard-shape.md) data sets, where units and measures are contained in their own columns, only the `type` and `data_type` fields can be populated. For [pivoted shape](../../../shape-data/pivoted-shape.md) data sets, the `unit` and `measure` fields can also be configured.
+Recall that there are [reserved names](../../convention.md#conventional-column-names) for each column type in your CSV file when following the [configuration by convention](../../convention.md) approach. If your observations column title does not use one of these reserved names, you will need to provide a `qube-config.json` file specifying the column `type` as `observations`.
 
 ### Standard shape data sets
 
