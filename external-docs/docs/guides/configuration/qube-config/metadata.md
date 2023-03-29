@@ -1,4 +1,4 @@
-# Catalog Metadata
+# Metadata
 
 A CSV-W file contains metadata which improves discoverability of data publications. In csvcubed, we use a selection of metadata entries from established namespaces to enable users to contribute to the web of data faster. The metadata fields available, their description and default values are as follows.
 

@@ -1,68 +1,91 @@
 # Column definitions
 
-A CSV-W file provides detailed information about the columns beyond their values. In csvcubed, we are targeting a level of detail which results in a data cube which can be expressed using W3C's [RDF Cube Vocabulary](https://www.w3.org/TR/vocab-data-cube/). In order to be valid, a data cube must have at least one dimension, at least one observations column, along with at least one defined unit and measure per observations column. A cube may also have one or more attribute columns which provide clarification to observational data. Units and measures may be attached to the [observations column](#observations), or appear in a [measure column](#measures) or [unit column](#units) of their own.
+This page explores how to configure a cube's column definitions inside a [qube-config.json](../index.md) file. It
+discusses which columns are required for a valid cube, how to define what your columns mean and how to tell csvcubed
+to ignore data which isn't part of the cube.
 
-To define a column in a `qube-config.json` file, provide the column title as a JSON object key, and create a new JSON object containing the column's configuration details.
+## A valid cube
 
-```json
-{ ...
-  "columns": {
-    "Column title": {
-      "Column configuration option 1": "Column configuration value 1",
-      "Column configuration option 2": "Column configuration value 2",
-      "Column configuration option 3": "Column configuration value 3"
-      ...
-    }
-  }
-}
-```
+A CSV-W file provides detailed information about the columns beyond their values. In csvcubed, we create CSV-Ws which
+express data cubes using W3C's [RDF Data Cube Vocabulary](https://www.w3.org/TR/vocab-data-cube/). The column
+definitions in a [qube-config.json](../index.md) file are designed to map to components in the RDF Data Cube Vocabulary.
 
-A column is assumed to be a dimension unless otherwise configured using the `type` key or the column title is one of the [reserved names](../../../configuration/convention.md#conventional-column-names). A dimension can still have a `"type": "dimension"` key/value pair.
+In order to be valid, a cube in csvcubed must have:
 
-<!-- TODO Add some metadata to examples and links to json/csv files -->
+* at least one [Dimension](./dimensions.md),
+* at least one [Observations column](./observations.md),
+* at least one unit and measure defined; these may be attached either to the [Observations column](./observations.md),
+  or be defined in [Measures columns](./measures.md) or [Units columns](./units.md),
+
+And it may have:
+
+* one or more [Attribute columns](./attributes/index.md); which provide clarification to observational data.
+
+## Configuration
+
+Consider the follow data set about the weight of badgers:
+
+| Location  | Year | Average Badger Weight / kg |
+|:----------|:-----|---------------------------:|
+| Sheffield | 1996 |                        9.6 |
+| Carlisle  | 1994 |                       10.5 |
+
+For each of the columns that we need to configure, we write an entry in the `columns` section of the
+[qube-config.json](./index.md) document, using the column title as key, and create a new JSON object containing the
+column's configuration details.
+
+Below, you can see that we've provided definitions for two of the three columns:
 
 ```json
 {
-  "title": "Example qube-config.json",
-  "description": "This is an example of a qube-config.json file",
-  "publisher": "https://www.gov.uk/government/organisations/office-for-national-statistics",
-  "columns": {
-    "Example column": {
-      "type": "dimension",
-      ...
+    "$schema": "https://purl.org/csv-cubed/qube-config/v1",
+    "title": "Badger weight watch",
+    "columns": {
+      "Location": {
+         "type": "dimension"
+      },
+      "Average Badger Weight / kg": {
+         "type": "observations",
+         "measure": {
+            "label": "Average Badger Weight"
+         },
+         "unit": {
+            "label": "kg"
+         }
+      }
     }
-  }
 }
 ```
 
-**If a column mapping is not defined in the `qube-config.json` file for a given CSV column, the column is [configured by convention](../../convention.md).**  To ignore a column and not configure it, set the column's value to `false`. This will ensure the column will not be recognised as part of the cube by csvcubed.
+If we don't define a column mapping for a column in the CSV file then it is **assumed to be a dimension** unless it uses
+one of the configuration by convention [reserved names](../../../configuration/convention.md#conventional-column-names).
+
+In our example:
+
+* we didn't define a mapping for `Year` so it is assumed by csvcubed to be a dimension,
+* the `Locations` column has been defined as a [Dimension](./dimensions.md), and
+* the `Average Badger Weight / kg` column has been configured as an [Observations column](./observations.md) with
+  [unit](../unit-definitions.md) and [measure](../measure-definitions.md) definitions.
+
+## Supported Column Types
+
+|                                                  |              What it means to csvcubed              |
+|-------------------------------------------------:|:---------------------------------------------------:|
+|             [Dimension](./dimensions.md) |    Identifies what the observed value describes.    |
+| [Observations column](./observations.md) | Holds the statistical data which has been recorded. |
+|         [Measures column](./measures.md) |            Specifies what was measured.             |
+|               [Units column](./units.md) |           Specifies the unit of measure.            |
+|       [Attribute](./attributes/index.md) |        Further describes the observed value.        |
+
+## Ignoring columns
+
+To ignore a column and not configure it, set the column's value to `false`. This will ensure the column will not be
+recognised as part of the cube by csvcubed.
 
 ```json
 { ...
   "columns": {
-    "Suppressed column": false
+    "The Column's Title": false
   }
 }
 ```
-
-Brief descriptions of the five column types are given below. For more information on each type, and to see configuration examples, click on the section header.
-
-## [Dimensions](./dimensions.md#dimension-configuration)
-
-*Dimension* columns serve to identify observations in the data set. A combined set of values for all dimension components (including measures) should uniquely identify a single observation value. Examples of dimensions include the time period to which the observation applies, or the geographic region which the observation covers. Think of the principle of [MECE](https://en.wikipedia.org/wiki/MECE_principle).
-
-## [Observations](./observations.md#observation-configuration)
-
-*Observation* columns contain the numerical values of observations recorded in the data set.
-
-## [Measures](./measures.md#measure-configuration)
-
-*Measure* columns represent the phenomenon being observed, and are effectively another form of dimension.
-
-## [Units](./units.md#unit-configuration)
-
-*Unit* columns are a type of attribute column which provide the units of the observation.
-
-## [Attributes](./attributes/index.md#attribute-configuration)
-
-*Attribute* columns allow us to qualify and interpret observed values. This enables specification of units of measure, any scaling factors and metadata such as the status of the observation (e.g. *estimated*, *provisional*). Attributes can either be [resources](../../../../glossary/index.md#resource) or [literals](../../../../glossary/index.md#literal).
