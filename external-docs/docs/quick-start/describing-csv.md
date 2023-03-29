@@ -8,7 +8,10 @@ csvcubed makes it straightforward to describe your data. Important information t
 
 ## Prerequisites
 
-**Experience of writing basic JSON documents is assumed throughout this document.** See this [tutorial from DigitalOcean](https://www.digitalocean.com/community/tutorials/an-introduction-to-json) for an introduction to writing JSON.
+!!! Tip
+    **Experience of writing basic JSON documents is assumed throughout this document.** See this
+    [tutorial from DigitalOcean](https://www.digitalocean.com/community/tutorials/an-introduction-to-json) for an
+    introduction to writing JSON.
 
 This document assumes you have an existing CSV such as the `sweden_at_eurovision_no_missing.csv` data set created as in the [quick start build](./build.md) and have csvcubed installed.
 

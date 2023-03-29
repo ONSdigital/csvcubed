@@ -25,7 +25,7 @@ nav:
         - By convention: guides/configuration/convention.md
         - Explicit configuration:
           - guides/configuration/qube-config/index.md
-          - Catalog metadata: guides/configuration/qube-config/metadata.md
+          - Metadata: guides/configuration/qube-config/metadata.md
           - Column definitions:
             - guides/configuration/qube-config/columns/index.md
             - Dimension columns: guides/configuration/qube-config/columns/dimensions.md
