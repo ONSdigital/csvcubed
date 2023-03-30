@@ -72,8 +72,7 @@ As mentioned above, the `label` field will default to the column title unless ex
 ```
 
 The `description` field can be used to provide a longer description of your attribute. If you want to provide
-information about your methodology, the `description` field is the preferred place for this. It also supports the
-markdown format.
+information about your methodology, the `description` field is the preferred place for this.
 
 ```json
 { ...

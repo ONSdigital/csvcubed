@@ -46,10 +46,10 @@ from established vocabularies to enable you to contribute faster to the web of d
 }
 ```
 
-Remember that you don't have to set everything; many of the feels are optional, but you should **always include the
+Remember that you don't have to set everything; many of the fields are optional, but you should **always include the
 `$schema` property** so that csvcubed can recognise the file.
 
-More information on how to configure metadata can be found on  the [Metadata](./metadata.md) page
+More information on how to configure metadata can be found on the [Metadata](./metadata.md) page
 
 ## Column definitions
 
@@ -60,7 +60,7 @@ After the configuration file's metadata section, the column definitions section 
 columns defined in your CSV file. This helps csvcubed understand what type of columns you're using and whether there's
 anything missing.
 
-Configuring the types of each of your columns is relatively straight-forwards. The following data set can be correctly
+Configuring the types of each of your columns is relatively straightforward. The following data set can be correctly
 configured with the JSON below it.
 
 | Location  | Year | Average Badger Weight / kg |

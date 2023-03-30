@@ -93,19 +93,19 @@ As can be seen in the code list configuration example, the *code list configurat
 
 The following metadata can be defined in the metadata section of the *code list configuration file*:
 
-| **field name**     | **description**                                                                                | **default value**                  |
-| ------------------ | ---------------------------------------------------------------------------------------------- | ---------------------------------- |
-| `title`            | Title of the code list                                                                         | *none*                             |
-| `description`      | Description of the contents in code list                                                       | *none*                             |
-| `summary`          | Summary of the contents in code list                                                           | *none*                             |
-| `creator`          | Link to the creator of the code list                                                           | *none*                             |
-| `publisher`        | Link to the publisher of the code list                                                         | *none*                             |
-| `dataset_issued`   | Code list issued date/time                                                                     | *none*                             |
-| `dataset_modified` | Code list modified date/time                                                                   | *none*                             |
-| `license`          | Link to the license of the code list                                                           | *none*                             |
-| `themes`           | List or a single link of the theme(s) covered by the code list                                 | *none*                             |
-| `keywords`         | List or a single string of the keywords(s) covered by the Code list                            | *none*                             |
-| `sort`             | Sort by (`label` or `notation`) and sort method (`ascending` or `descending`) of the code list | by (`label`), method (`ascending`) |
+| **field name**     | **description**                                                                                                                     | **default value**                  |
+|--------------------|-------------------------------------------------------------------------------------------------------------------------------------|------------------------------------|
+| `title`            | Title of the code list                                                                                                              | *none*                             |
+| `description`      | Description of the contents in code list; this field supports the [markdown](https://www.markdownguide.org/getting-started/) format | *none*                             |
+| `summary`          | Summary of the contents in code list                                                                                                | *none*                             |
+| `creator`          | Link to the creator of the code list                                                                                                | *none*                             |
+| `publisher`        | Link to the publisher of the code list                                                                                              | *none*                             |
+| `dataset_issued`   | Code list issued date/time                                                                                                          | *none*                             |
+| `dataset_modified` | Code list modified date/time                                                                                                        | *none*                             |
+| `license`          | Link to the license of the code list                                                                                                | *none*                             |
+| `themes`           | List or a single link of the theme(s) covered by the code list                                                                      | *none*                             |
+| `keywords`         | List or a single string of the keywords(s) covered by the Code list                                                                 | *none*                             |
+| `sort`             | Sort by (`label` or `notation`) and sort method (`ascending` or `descending`) of the code list                                      | by (`label`), method (`ascending`) |
 
 #### Using `sort`
 
@@ -118,7 +118,7 @@ The `sort` field allows defining the sort `by` and sort `method` fields of the c
 The following fields can be defined for each of the concept defined in the concepts section:
 
 | **field name** | **description**                                        | **default value** |
-| -------------- | ------------------------------------------------------ | ----------------- |
+|----------------|--------------------------------------------------------|-------------------|
 | `label`        | Label of the concept                                   | *none*            |
 | `description`  | Description of the concept                             | *none*            |
 | `notation`     | Notation of the concept                                | *none*            |

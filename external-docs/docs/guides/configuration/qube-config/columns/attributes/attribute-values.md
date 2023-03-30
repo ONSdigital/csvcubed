@@ -68,8 +68,7 @@ Additional details can be associated with the attribute values in your data set 
 `definition_uri` fields.
 
 The `description` field can be used to provide a longer description of your attribute value. If you want to provide
-information about your methodology, the `description` field is the preferred place for this. It also supports the
-markdown format.
+information about your methodology, the `description` field is the preferred place for this.
 
 ```json
 { ...
