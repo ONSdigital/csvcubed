@@ -8,7 +8,9 @@ one of more data cubes.
 
 from dataclasses import dataclass
 from functools import cache, cached_property
+from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple
+from urllib.parse import urljoin
 
 import pandas as pd
 
@@ -24,6 +26,7 @@ from csvcubed.models.sparqlresults import (
     QubeComponentsResult,
     UnitResult,
 )
+from csvcubed.models.validationerror import ValidationError
 from csvcubed.utils.dict import get_from_dict_ensure_exists
 from csvcubed.utils.iterables import first, group_by
 from csvcubed.utils.pandas import read_csv
@@ -150,21 +153,6 @@ class DataCubeInspector:
             self.csvw_inspector.csvw_json_path,
         )
 
-    @cached_property
-    def _load_dataframe(self) -> pd.DataFrame:
-        """
-        TODO: This
-        TODO: Do we even want this as a cached property?
-        """
-        # df = read_csv(self.csvw_inspector.get_primary_catalog_metadata().dataset_uri)
-        # df = read_csv(
-        #     self.get_cube_identifiers_for_csv(
-        #         self.csvw_inspector.get_primary_catalog_metadata().dataset_uri
-        #     ).csv_url
-        # )
-        # csv_url = csv_url
-        # return read_csv(csv_url)
-
     """
     Public getters for the cached properties.
     """
@@ -229,13 +217,40 @@ class DataCubeInspector:
         """
         TODO: This and maybe change API function name.
         """
-        # return self._load_dataframe(csv_url)
-        df: pd.DataFrame = read_csv(csv_url)
+        from csvcubed.models.cube.qb.components.constants import (
+            ACCEPTED_DATATYPE_MAPPING,
+        )
 
-        #
+        cols = self.get_column_component_info(csv_url)
+        dict_of_types = {}
+        for col in cols:
+            if (
+                col.column_type.value == "Observations"
+                or col.column_type.value == "Attributes"
+            ):
+                col_data_type = col.column_definition.data_type.removeprefix(
+                    "http://www.w3.org/2001/XMLSchema#"
+                )
+                if col_data_type in ACCEPTED_DATATYPE_MAPPING.keys():
+                    dict_of_types[
+                        col.column_definition.title
+                    ] = ACCEPTED_DATATYPE_MAPPING[col_data_type]
+                else:
+                    # raise an error?
+                    pass
+            else:
+                dict_of_types[col.column_definition.title] = ACCEPTED_DATATYPE_MAPPING[
+                    "string"
+                ]
 
-        # df.astype({}).dtypes
-        return df
+        absolute_csv_url = Path(
+            urljoin(self.csvw_inspector.csvw_json_path.as_uri(), csv_url)
+            .removeprefix("file:\\")
+            .removeprefix("file:")
+        )
+        df: Tuple[pd.DataFrame, List[ValidationError]] = read_csv(absolute_csv_url)
+        df[0].astype(dict_of_types, copy=True).dtypes
+        return df[0]
 
     @cache
     def get_column_component_info(self, csv_url: str) -> List[ColumnComponentInfo]:
@@ -288,6 +303,15 @@ class DataCubeInspector:
             for c in self.get_column_component_info(csv_url)
             if c.column_type == column_type
         ]
+
+    def get_primary_csv_url(self) -> str:
+        """
+        Retrieves the csv_url for the primary CSV defined in the CSV-W.
+        """
+        primary_catalog_metadata = self.csvw_inspector.get_primary_catalog_metadata()
+        return self.get_cube_identifiers_for_data_set(
+            primary_catalog_metadata.dataset_uri
+        ).csv_url
 
 
 def _get_column_type_and_component(

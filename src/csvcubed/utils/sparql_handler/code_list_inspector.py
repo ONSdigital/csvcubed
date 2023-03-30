@@ -100,3 +100,12 @@ class CodeListInspector:
             )
 
         return result
+
+    def get_primary_csv_url(self) -> str:
+        """
+        Retrieves the csv_url for the primary CSV defined in the CSV-W.
+        """
+        primary_catalog_metadata = self.csvw_inspector.get_primary_catalog_metadata()
+        return self.get_table_identifiers_for_concept_scheme(
+            primary_catalog_metadata.dataset_uri
+        ).csv_url

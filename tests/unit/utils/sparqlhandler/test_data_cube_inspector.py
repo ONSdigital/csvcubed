@@ -1,4 +1,8 @@
+from urllib.parse import urljoin
+
+import pandas as pd
 import pytest
+from click import Path
 
 from csvcubed.definitions import QB_MEASURE_TYPE_DIMENSION_URI, SDMX_ATTRIBUTE_UNIT_URI
 from csvcubed.models.cube.cube_shape import CubeShape
@@ -904,6 +908,21 @@ def test_get_columns_for_component_attribute_pivoted():
     assert actual_titles == expected_titles
 
 
+def test_get_primary_csv_url():
+    """
+    TODO:
+    """
+    csvw_metadata_json_path = (
+        _test_case_base_dir
+        / "single-unit_single-measure"
+        / "energy-trends-uk-total-energy.csv-metadata.json"
+    )
+    data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
+    csv_url = data_cube_inspector.get_primary_csv_url()
+
+    assert csv_url == "energy-trends-uk-total-energy.csv"
+
+
 def test_load_pandas_df_from_csv_url():
     """
     TODO: might even need to change test title too.
@@ -913,17 +932,16 @@ def test_load_pandas_df_from_csv_url():
         / "single-unit_single-measure"
         / "energy-trends-uk-total-energy.csv-metadata.json"
     )
+
+    # csvw_metadata_json_path = _test_case_base_dir / "datacube.csv-metadata.json"
     data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
-    primary_catalog_metadata = (
-        data_cube_inspector.csvw_inspector.get_primary_catalog_metadata()
-    )
-    csv_url = data_cube_inspector.get_cube_identifiers_for_data_set(
-        primary_catalog_metadata.dataset_uri
-    ).csv_url
+    csv_url = data_cube_inspector.get_primary_csv_url()
 
-    list_of_columns_definitions = data_cube_inspector.get_column_component_info(csv_url)
-    dataframe = data_cube_inspector.get_dataframe(
-        _test_case_base_dir / "single-unit_single-measure" / csv_url
-    )
+    dataframe = data_cube_inspector.get_dataframe(csv_url)
 
-    # assert each column is the correct datatype
+    assert isinstance(dataframe, pd.DataFrame)
+    assert dataframe["Period"].dtype == "string"
+    # assert dataframe[0]["Region"].dtype == "string"
+    # assert dataframe[0]["Fuel"].dtype == "string"
+    # assert dataframe[0]["Measure Type"].dtype == "string"
+    assert dataframe["Value"].dtype == "float64"
