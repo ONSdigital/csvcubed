@@ -1,8 +1,36 @@
 # Metadata
 
-A CSV-W file contains metadata which improves discoverability of data publications. In csvcubed, we use a selection of metadata entries from established namespaces to enable users to contribute to the web of data faster. The metadata fields available, their description and default values are as follows.
+A CSV-W file contains metadata which improves discoverability of data publications. In csvcubed, we use a selection of metadata entries from established namespaces to enable users to contribute to the web of data faster. The metadata fields available, their description and default values are as shown in the [table](#metadata-fields) at the bottom of the page.
 
-<!-- TODO Add examples -->
+The following is an example of a metadata section from a `qube-config.json` about Eurovision performances by Sweden, that uses all of the possible fields.
+
+```json
+{
+    "$schema": "https://purl.org/csv-cubed/qube-config/v1",
+    "title": "Sweden at Eurovision",
+    "summary": "List of Swedish entries to the Eurovision Song Contest since 1958.",
+    "description": "Sweden has been competing in Eurovision since 1958, with an enviable track record of wins. This dataset covers all contests since 1958, their artists, the song names, language (if mono-lingual), and some observations covering points in final, rank in final, and number of artists on stage. Data originally sourced from https://en.wikipedia.org/w/index.php?title=Sweden_in_the_Eurovision_Song_Contest&oldid=1081060799 and https://sixonstage.com/",
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "public_contact_point_uri": "mailto:swedensongscontact@example.com",
+    "themes": ["http://example.com/themes/sweden-eurovision"],
+    "publisher": "https://www.gov.uk/government/organisations/office-for-national-statistics",
+    "creator": "https://www.gov.uk/government/organisations/office-for-national-statistics",
+    "dataset_issued": "2022-04-08T00:00:00Z",
+    "dataset_modified": "2022-04-08T00:00:00Z",
+    "keywords": [
+        "Eurovision",
+        "Song Contest",
+        "Sweden",
+        "European Broadcasting Union"
+    ]
+}
+```
+
+Note how some field contents must be given in square brackets [] as a list, such as `keywords` or `themes`.
+
+You do not have to provide all fields for the metadata to be valid, but you should provide a `$schema` so that csvcubed can recognise the file.
+
+## Metadata fields
 
 | **field name**             | **description**                                                                                                                      | **default value**                           |
 |----------------------------|--------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------|
