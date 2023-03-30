@@ -4,7 +4,7 @@
 
 <iframe src="https://share.descript.com/embed/3P2Rgfr1GJ1" width="640" height="360" frameborder="0" allowfullscreen></iframe>
 
-## Pre-requisites
+## Prerequisites
 
 csvcubed requires a modern version of python, for those who do not have a python environment or package manager, please see the [installing python guide](../guides/installing-python.md) before proceeding.
 
@@ -13,6 +13,7 @@ csvcubed requires a modern version of python, for those who do not have a python
 [csvcubed](https://pypi.org/project/csvcubed/) is on [pypi.org](https://pypi.org), Python's main package repository. Installation can be done with your favoured python package manager like [pip](https://pip.pypa.io/en/stable/).
 
 *run this command in your terminal*
+
 ```bash
 pip install csvcubed
 ```

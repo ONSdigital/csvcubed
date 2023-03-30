@@ -5,24 +5,25 @@ A profile is a set of statistics that describes how often and for how long vario
 ## Flamegraph Profiling
 
 Flamegraph allow to visualize relations between functions in a very compact and understandable manner
+
 ### step 1
 
-Run a poetry install to make sure the shell is up to date (for the py-spy package, memory_profiler and matplotlib) 
+Run a poetry install to make sure the shell is up to date (for the py-spy package, memory_profiler and matplotlib)
 
 ### step 2
 
-
-```
+```bash
 sudo py-spy record --rate [add number to record samples per second(recommended 200)] --full-filenames[display full s
 file path] --function[record by function call] --subprocesses[record sub calls] -- python [insert script name to measured]
 ```
- 
+
 The script will generate a new csv file and then execute the build command.
 The py-spy will reord the measures. This command has to be ran from local terminal with sudo.
-The command does not function within the devcontainer.  
+The command does not function within the devcontainer.
 
 example:
-```
+
+```bash
 sudo py-spy record --rate 200 --full-filenames --function --subprocesses -- python csvcubed_build_process.py
 ```
 
@@ -46,6 +47,7 @@ example:
 ## Memory Profiling
 
 Memory Profiling is when the amount of RAM usage is measured and displayed, for optimization porpouses(either line-by-line or by function).
+
 ### Step 1
 
 add `@profile` as a decorator, at the function you want to investigate.
@@ -54,7 +56,7 @@ add `@profile` as a decorator, at the function you want to investigate.
 
 run command `mprof run --python python [include script ]`
 
-example: 
+example:
 `mprof run --python python csvcubed_inspect_process.py`
 
 this will run the memory profiler and output the results to the terminal.
@@ -65,7 +67,5 @@ run command to create and save graph as a png file.
 
 `mprof plot --output [include filename]`
 
-example: 
+example:
 `mprof plot --output csvcubed_inpect_memory_profile.png`
-
-

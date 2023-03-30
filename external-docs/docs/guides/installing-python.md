@@ -23,7 +23,7 @@ If you are using miniconda, you must be inside your `csvcubed` environment befor
 
 ```bash
 # enter the csvcubed python 3.11 environment
-conda activate csvcubed 
+conda activate csvcubed
 ```
 
 ## Manual installation (advanced)

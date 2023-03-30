@@ -1,4 +1,4 @@
-# Error -  An error occurred when performing `<operation>` operation on dataframe.
+# Error -  An error occurred when performing `<operation>` operation on dataframe
 
 ## When it occurs
 

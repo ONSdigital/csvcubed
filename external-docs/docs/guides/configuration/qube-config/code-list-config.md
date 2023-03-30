@@ -1,15 +1,21 @@
 # Configuring code lists
 
-By default, csvcubed generates code lists with the unique values of each [dimension](../../glossary/index.md#dimension) in a data set. This makes it as quick as possible to get from data to CSV-W cube, but it doesn't always leave you with the best representation of your code list's metadata, structure, hierarchy, or values. In order to provide more accurate representations of code lists, csvcubed allows users to explicitly configure code lists using JSON.
+By default, csvcubed generates code lists with the unique values of each [dimension](../../../glossary/index.md#dimension)
+in a data set. This makes it as quick as possible to get from data to CSV-W cube, but it doesn't always leave you with
+the best representation of your code list's metadata, structure, hierarchy, or values. In order to provide more accurate
+ representations of code lists, csvcubed allows users to explicitly configure code lists using JSON.
 
 This guide details how to explicitly define a code list using csvcubed.
 
-> **Experience of writing basic JSON documents is assumed throughout this document.**
-> See this [tutorial from DigitalOcean](https://www.digitalocean.com/community/tutorials/an-introduction-to-json) for an introduction to writing JSON.
+!!! Tip
+    **Experience of writing basic JSON documents is assumed throughout this document.**
+    See this [tutorial from DigitalOcean](https://www.digitalocean.com/community/tutorials/an-introduction-to-json) for
+    an introduction to writing JSON.
 
 ## Defining a code list configuration file
 
-This approach allows defining a code list in a *code list configuration file*. The following example demonstrates the structure of a *code list configuration file*:
+This approach allows defining a code list in a *code list configuration file*. The following example demonstrates the
+structure of a *code list configuration file*:
 
 ```json
 {
@@ -70,7 +76,7 @@ File name: biscuit-varieties.json
 
 This code list configuration would generate a code list with the following structure:
 
-```
+```text
 root
 ├── Bourbon
 ├── Custard Cream
@@ -91,19 +97,19 @@ As can be seen in the code list configuration example, the *code list configurat
 
 The following metadata can be defined in the metadata section of the *code list configuration file*:
 
-| **field name**     | **description**                                                                                | **default value**                  |
-| ------------------ | ---------------------------------------------------------------------------------------------- | ---------------------------------- |
-| `title`            | Title of the code list                                                                         | *none*                             |
-| `description`      | Description of the contents in code list                                                       | *none*                             |
-| `summary`          | Summary of the contents in code list                                                           | *none*                             |
-| `creator`          | Link to the creator of the code list                                                           | *none*                             |
-| `publisher`        | Link to the publisher of the code list                                                         | *none*                             |
-| `dataset_issued`   | Code list issued date/time                                                                     | *none*                             |
-| `dataset_modified` | Code list modified date/time                                                                   | *none*                             |
-| `license`          | Link to the license of the code list                                                           | *none*                             |
-| `themes`           | List or a single link of the theme(s) covered by the code list                                 | *none*                             |
-| `keywords`         | List or a single string of the keywords(s) covered by the Code list                            | *none*                             |
-| `sort`             | Sort by (`label` or `notation`) and sort method (`ascending` or `descending`) of the code list | by (`label`), method (`ascending`) |
+| **field name**     | **description**                                                                                                                     | **default value**                  |
+|--------------------|-------------------------------------------------------------------------------------------------------------------------------------|------------------------------------|
+| `title`            | Title of the code list                                                                                                              | *none*                             |
+| `description`      | Description of the contents in code list; this field supports the [markdown](https://www.markdownguide.org/getting-started/) format | *none*                             |
+| `summary`          | Summary of the contents in code list                                                                                                | *none*                             |
+| `creator`          | Link to the creator of the code list                                                                                                | *none*                             |
+| `publisher`        | Link to the publisher of the code list                                                                                              | *none*                             |
+| `dataset_issued`   | Code list issued date/time                                                                                                          | *none*                             |
+| `dataset_modified` | Code list modified date/time                                                                                                        | *none*                             |
+| `license`          | Link to the license of the code list                                                                                                | *none*                             |
+| `themes`           | List or a single link of the theme(s) covered by the code list                                                                      | *none*                             |
+| `keywords`         | List or a single string of the keywords(s) covered by the Code list                                                                 | *none*                             |
+| `sort`             | Sort by (`label` or `notation`) and sort method (`ascending` or `descending`) of the code list                                      | by (`label`), method (`ascending`) |
 
 #### Using `sort`
 
@@ -116,7 +122,7 @@ The `sort` field allows defining the sort `by` and sort `method` fields of the c
 The following fields can be defined for each of the concept defined in the concepts section:
 
 | **field name** | **description**                                        | **default value** |
-| -------------- | ------------------------------------------------------ | ----------------- |
+|----------------|--------------------------------------------------------|-------------------|
 | `label`        | Label of the concept                                   | *none*            |
 | `description`  | Description of the concept                             | *none*            |
 | `notation`     | Notation of the concept                                | *none*            |
@@ -136,7 +142,7 @@ The `same_as` field allows using a concept defined elsewhere in the internet (e.
 
 ### Referencing a code list configuration file
 
-This new code list can be referenced in a [qube-config.json](./qube-config.md) file using the `code_list` field in [dimension configuration](./qube-config.md#dimension-configuration), e.g.
+This new code list can be referenced in a [qube-config.json](./index.md) file using the `code_list` field in [dimension configuration](./index.md#dimension-configuration), e.g.
 
 ```json
 {
@@ -152,7 +158,7 @@ This new code list can be referenced in a [qube-config.json](./qube-config.md) f
 
 ## Defining an in-line code list
 
-It is also possible to define a code list configuration inside a [qube-config.json](./qube-config.md) file.
+It is also possible to define a code list configuration inside a [qube-config.json](./index.md) file.
 
 This approach is recommended for defining simple code lists (e.g. code lists with a small number of concepts or simple hierarchy).
 
@@ -217,4 +223,4 @@ As shown in the above example, an in-line code list is defined within the `qube-
 
 ## Code-list build command
 
-It is possible to generate a code list CSV-W without providing a tidy-data.csv file using the `code-list build` command. Please refer to the [code-list build command documentation](../command-line/code-list-build-command.md) page for a usage guide.
+It is possible to generate a code list CSV-W without providing a tidy-data.csv file using the `code-list build` command. Please refer to the [code-list build command documentation](../../command-line/code-list-build-command.md) page for a usage guide.

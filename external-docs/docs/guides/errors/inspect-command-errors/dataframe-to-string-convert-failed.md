@@ -1,4 +1,4 @@
-# Error - Failed to convert panda dataframe to string.
+# Error - Failed to convert panda dataframe to string
 
 ## When it occurs
 

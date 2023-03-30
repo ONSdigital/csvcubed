@@ -1,0 +1,151 @@
+{
+    "$schema": "https://purl.org/csv-cubed/qube-config/v1",
+    "title": "Sweden at Eurovision",
+    "summary": "List of Swedish entries to the Eurovision Song Contest since 1958.",
+    "description": "Sweden has been competing in Eurovision since 1958, with an enviable track record of wins. This dataset covers all contests since 1958, their artists, the song names, language (if mono-lingual), and some observations covering points in final, rank in final, and number of artists on stage. Data originally sourced from https://en.wikipedia.org/w/index.php?title=Sweden_in_the_Eurovision_Song_Contest&oldid=1081060799 and https://sixonstage.com/",
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "publisher": "https://www.gov.uk/government/organisations/office-for-national-statistics",
+    "creator": "https://www.gov.uk/government/organisations/office-for-national-statistics",
+    "dataset_issued": "2022-04-08T00:00:00Z",
+    "dataset_modified": "2022-04-08T00:00:00Z",
+    "keywords": [
+        "Eurovision",
+        "Song Contest",
+        "Sweden",
+        "European Broadcasting Union"
+    ],
+    "columns": {
+        "Example column": {
+            "type": "dimension"
+        },
+        "Suppressed column": false,
+        "Marker": {
+            "from_template": "observation-status",
+            "label": "Data Marker"
+        },
+        "Reused column": {
+            "type": "dimension",
+            "from_existing": "https://example.org/dimension/years"
+        },
+        "Reused and renamed column": {
+            "type": "dimension",
+            "from_existing": "https://example.org/dimension/flavours",
+            "label": "ice cream flavours"
+        },
+        "Year": {
+            "from_template": "year",
+            "label": "Competition year",
+            "code_list": "true"
+        },
+        "Entrant": {
+            "type": "dimension",
+            "description": "The act representing Sweden at Eurovision for the given year",
+            "definition_uri": "http://example.org/swedish-eurovision-acts",
+            "code_list": "my_eurovision_code_list_config.json"
+        },
+        "Song": {
+            "from_existing": "http://example.org/dimension/eurovision-songs",
+            "cell_uri_template": "http://example.org/code-lists/eurovision-songs/{+song}"
+        },
+        "Language": {
+            "code_list": "false",
+            "cell_uri_template": "http://example.org/eurovision-languages/{+language}"
+        },
+        "Status1": {
+            "type": "attribute",
+            "label": "Observation Status",
+            "description": "Indicates whether the number of Arthur's Bakes stores is a provisional or final value",
+            "required": true
+        },
+        "Status2": {
+            "type": "attribute",
+            "data_type": "string",
+            "definition_uri": "http://example.org/arthurs-bakes-store-status"
+        },
+        "Value": {
+            "type": "observations",
+            "data_type": "integer"
+        },
+        "Number of Arthur's Bakes": {
+            "type": "observations",
+            "data_type": "integer",
+            "unit": {
+                "label": "Count"
+            },
+            "measure": {
+                "label": "Number of Stores"
+            }
+        },
+        "Revenue": {
+            "type": "observations",
+            "data_type": "decimal",
+            "measure": {
+                "label": "Revenue"
+            }
+        },
+        "Revenue Units": {
+            "type": "units",
+            "describes_observations": "Revenue"
+        },
+        "Measure column1": {
+            "type": "measures",
+            "values": true
+        },
+        "Measure column2": {
+            "type": "measures",
+            "values": [
+                {
+                    "label": "Measure",
+                    "description": "This is a measure"
+                }
+            ]
+        },
+        "Median commute time / mins1": {
+            "type": "observations",
+            "measure": {
+                "label": "Final Rank"
+            }
+        },
+        "Median commute time / mins2": {
+            "type": "observations",
+            "measure": {
+                "label": "People on Stage"
+            },
+            "unit": {
+                "label": "Number"
+            }
+        },
+        "Unit1": {
+            "type": "units",
+            "values": [
+                {
+                    "label": "Pounds Sterling (£), Millions",
+                    "description": "Millions of Pounds Sterling (GBP, £)."
+                }
+            ]
+        },
+        "Unit2": {
+            "type": "units",
+            "values": [
+                {
+                    "label": "Pounds Sterling (£), Millions",
+                    "from_existing": "http://qudt.org/vocab/unit/PoundSterling",
+                    "quantity_kind": "http://qudt.org/vocab/quantitykind/Currency",
+                    "scaling_factor": 1000000,
+                    "description": "Millions of Pounds Sterling (£)."
+                }
+            ]
+        },
+        "Exports": {
+            "type": "observations",
+            "measure": {
+                "label": "Exports Monetary Value",
+                "from_existing": "http://example.com/measures/monetary-value"
+            }
+        },
+        "Exports Unit": {
+            "type": "units",
+            "describes_observations": "Exports"
+        }
+    }
+}

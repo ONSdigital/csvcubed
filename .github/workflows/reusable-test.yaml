@@ -41,6 +41,12 @@ jobs:
       - name: Install pyright
         run: npm install -g pyright
 
+      - name: Install markdown spell-checker
+        run: npm install -g spellchecker-cli
+
+      - name: Test spelling in external docs
+        run: cd external-docs && bash spell-check.sh
+
       - name: Install poetry
         run: pip install poetry
 

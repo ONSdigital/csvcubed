@@ -6,4 +6,4 @@ When the columns in cube config is not defined as a json object (e.g. "COLUMN NA
 
 ## How to fix
 
-Ensure to define the cube columns in cube config as a json object of a boolean. See the guide on [qube configuration json](../../configuration/qube-config.md) for more information.
+Ensure to define the cube columns in cube config as a json object of a boolean. See the guide on [qube configuration json](../../configuration/qube-config/index.md) for more information.

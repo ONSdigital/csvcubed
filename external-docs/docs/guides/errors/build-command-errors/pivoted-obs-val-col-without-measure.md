@@ -11,7 +11,7 @@ For example in the following cube:
 | Sheffield | 2.1                             | 15.3                       |
 | Aberdeen  | 13.4                            | 22.9                       |
 
-With the following [qube-config.json](../../configuration/qube-config.md) column mapping configuration:
+With the following [qube-config.json](../../configuration/qube-config/index.md) column mapping configuration:
 
 ```json
 "columns": {

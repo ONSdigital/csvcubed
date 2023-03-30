@@ -1,4 +1,4 @@
-# Error - DSD component property type `<property_type>` is not supported.
+# Error - DSD component property type `<property_type>` is not supported
 
 ## When it occurs
 
@@ -6,4 +6,4 @@ The supported data structure definition (DSD) property types are `Dimension`,  `
 
 ## How to fix
 
-Make sure the input CSV-W json-ld is a valid data cube or a code list that is provided in one of two specialised forms of tidy data: [standard shape](../../shape-data/standard-shape.md) and [pivoted shape](../../shape-data/pivoted-shape.md).
+Make sure the input CSV-W JSON-LD is a valid data cube or a code list that is provided in one of two specialised forms of tidy data: [standard shape](../../shape-data/standard-shape.md) and [pivoted shape](../../shape-data/pivoted-shape.md).

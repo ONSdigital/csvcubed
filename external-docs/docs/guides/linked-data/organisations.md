@@ -4,7 +4,7 @@ Organisations can be listed as the `creator` or `publisher` of data cubes and ar
 
 The list of organisations currently supported by csvcubed is:
 
-| Organisation                                                                                            | URI (use this in your [qube-config.json metadata configuration](../configuration/qube-config.md#metadata)) |
+| Organisation                                                                                            | URI (use this in your [qube-config.json metadata configuration](../configuration/qube-config/index.md#metadata)) |
 |:--------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------|
 |[Home Office](https://www.gov.uk/government/organisations/home-office)|<https://www.gov.uk/government/organisations/home-office>|
 |[Welsh Government](https://www.gov.uk/government/organisations/welsh-government)|<https://www.gov.uk/government/organisations/welsh-government>|
