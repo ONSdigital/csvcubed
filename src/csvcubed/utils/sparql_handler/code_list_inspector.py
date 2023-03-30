@@ -104,6 +104,8 @@ class CodeListInspector:
     def get_primary_csv_url(self) -> str:
         """
         Retrieves the csv_url for the primary CSV defined in the CSV-W.
+        This will only work if the primary file loaded into the graph was a
+        code list.
         """
         primary_catalog_metadata = self.csvw_inspector.get_primary_catalog_metadata()
         return self.get_table_identifiers_for_concept_scheme(

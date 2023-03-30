@@ -13,6 +13,7 @@ from typing import Dict, List, Optional, Set, Tuple
 from urllib.parse import urljoin
 
 import pandas as pd
+from csvcubedmodels.rdf.namespaces import XSD
 
 from csvcubed.definitions import QB_MEASURE_TYPE_DIMENSION_URI, SDMX_ATTRIBUTE_UNIT_URI
 from csvcubed.models.csvcubedexception import UnsupportedComponentPropertyTypeException
@@ -40,6 +41,8 @@ from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_is_pivoted_shape_for_measures_in_data_set,
     select_units,
 )
+
+_XSD_BASE_URI: str = XSD[""].toPython()
 
 
 @dataclass
@@ -213,7 +216,7 @@ class DataCubeInspector:
 
         return self._codelists_and_cols.get(csv_url, CodelistsResult([], 0))
 
-    def get_dataframe(self, csv_url: str) -> pd.DataFrame:
+    def get_dataframe(self, csv_url: str) -> Tuple[pd.DataFrame, List[ValidationError]]:
         """
         TODO: This and maybe change API function name.
         """
@@ -224,33 +227,38 @@ class DataCubeInspector:
         cols = self.get_column_component_info(csv_url)
         dict_of_types = {}
         for col in cols:
+            is_attribute_literal = (
+                col.column_type == EndUserColumnType.Attribute
+                # Attribute Resources need to have the value_url set to point
+                # at the resource.
+                # http://example.com/my-attribute-values/{+column_name}
+                and col.column_definition.value_url is None
+            )
+
             if (
-                col.column_type.value == "Observations"
-                or col.column_type.value == "Attributes"
+                col.column_type == EndUserColumnType.Observations
+                or is_attribute_literal
             ):
                 col_data_type = col.column_definition.data_type.removeprefix(
-                    "http://www.w3.org/2001/XMLSchema#"
+                    _XSD_BASE_URI
                 )
                 if col_data_type in ACCEPTED_DATATYPE_MAPPING.keys():
                     dict_of_types[
                         col.column_definition.title
                     ] = ACCEPTED_DATATYPE_MAPPING[col_data_type]
                 else:
-                    # raise an error?
-                    pass
+                    raise ValueError(
+                        f"Unhandled data type '{col.column_definition.data_type}'."
+                    )
             else:
-                dict_of_types[col.column_definition.title] = ACCEPTED_DATATYPE_MAPPING[
-                    "string"
-                ]
+                dict_of_types[col.column_definition.title] = "string"
 
         absolute_csv_url = Path(
             urljoin(self.csvw_inspector.csvw_json_path.as_uri(), csv_url)
             .removeprefix("file:\\")
             .removeprefix("file:")
         )
-        df: Tuple[pd.DataFrame, List[ValidationError]] = read_csv(absolute_csv_url)
-        df[0].astype(dict_of_types, copy=True).dtypes
-        return df[0]
+        return read_csv(absolute_csv_url, dtype=dict_of_types)
 
     @cache
     def get_column_component_info(self, csv_url: str) -> List[ColumnComponentInfo]:
@@ -307,6 +315,8 @@ class DataCubeInspector:
     def get_primary_csv_url(self) -> str:
         """
         Retrieves the csv_url for the primary CSV defined in the CSV-W.
+        This will only work if the primary file loaded into the graph was a
+        data cube.
         """
         primary_catalog_metadata = self.csvw_inspector.get_primary_catalog_metadata()
         return self.get_cube_identifiers_for_data_set(

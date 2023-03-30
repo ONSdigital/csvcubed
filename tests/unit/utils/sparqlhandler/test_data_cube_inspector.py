@@ -937,11 +937,12 @@ def test_load_pandas_df_from_csv_url():
     data_cube_inspector = get_data_cube_inspector(csvw_metadata_json_path)
     csv_url = data_cube_inspector.get_primary_csv_url()
 
-    dataframe = data_cube_inspector.get_dataframe(csv_url)
+    dataframe, validation_errors = data_cube_inspector.get_dataframe(csv_url)
 
     assert isinstance(dataframe, pd.DataFrame)
     assert dataframe["Period"].dtype == "string"
-    # assert dataframe[0]["Region"].dtype == "string"
-    # assert dataframe[0]["Fuel"].dtype == "string"
-    # assert dataframe[0]["Measure Type"].dtype == "string"
+    assert dataframe["Region"].dtype == "string"
+    assert dataframe["Fuel"].dtype == "string"
+    assert dataframe["Measure Type"].dtype == "string"
     assert dataframe["Value"].dtype == "float64"
+    assert not any(validation_errors)

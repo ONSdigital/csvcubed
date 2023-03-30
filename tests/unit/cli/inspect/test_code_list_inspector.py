@@ -107,27 +107,7 @@ def test_get_primary_csv_url():
     path_to_cube = (
         _test_case_base_dir
         / "pivoted-multi-measure-dataset"
-        / "qb-id-10003.csv-metadata.json"
+        / "some-dimension.csv-metadata.json"
     )
-    # code_list_inspector = get_code_list_inspector(path_to_cube)
-    # #    primary_catalog_metadata = (
-    # #         code_list_inspector.csvw_inspector.get_primary_catalog_metadata()
-    # #     )
-    # #     x = code_list_inspector.get_table_identifiers_for_concept_scheme(
-    # #         primary_catalog_metadata.dataset_uri
-    # #     )
-    # code_list_identifiers = code_list_inspector._code_list_table_identifiers
-    # x = code_list_identifiers
-    # csv_url = code_list_inspector.get_primary_csv_url()
-
     code_list_inspector = get_code_list_inspector(path_to_cube)
-    # concept_scheme_url = code_list_inspector.get_table_identifiers_for_concept_scheme(
-    #    code_list_inspector.csvw_inspector.get_primary_catalog_metadata().dataset_uri
-    # )
-    x = [
-        key
-        for key in code_list_inspector.csvw_inspector._table_schema_properties.keys()
-    ]
-    csv_url = x[0]
-
-    assert csv_url == "qb-id-10003.csv"
+    assert code_list_inspector.get_primary_csv_url() == "some-dimension.csv"
