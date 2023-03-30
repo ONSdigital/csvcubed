@@ -20,11 +20,11 @@ Processing and validation messages are written to both console and a log file du
 
 The log path is dependant upon the operating system in-use, the following are typical paths, these may also be influenced by your system configuration.
 
-| Operating System | Typical Log Path                                                       |
-| ---------------- | ---------------------------------------------------------------------- |
-| **Windows**      | `C:\Users\[UserName]\AppData\Local\csvcubed\csvcubed-cli\Logs\out.log` |
-| **Linux**        | `/home/[UserName]/.cache/csvcubed/csvcubed-cli/Logs/out.log`           |
-| **MacOS**        | `/home/[UserName]/Library/Logs/csvcubed/csvcubed-cli/Logs/out.log`     |
+| Operating System | Typical Log Path                                                                                          |
+|------------------|-----------------------------------------------------------------------------------------------------------|
+| **Windows**      | `C:\Documents and Settings\<username>\Local Settings\Application Data\csvcubed\csvcubed-cli\Logs\out.log` |
+| **Linux**        | `~/.cache/csvcubed-cli/log/out.log`                                                                       |
+| **MacOS**        | `~/Library/Logs/csvcubed-cli/out.log`                                                                     |
 
 ## Log retention
 
