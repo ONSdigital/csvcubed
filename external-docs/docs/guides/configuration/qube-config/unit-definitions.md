@@ -166,10 +166,10 @@ when configuring a unit, in both new units and re-used existing units.
 
 ### Description
 
-The first section  of this page showed the use of a `label`, which serves as a short form title for the unit. Another
-way to add more detail to the unit's definition is the `description` field. This is a long form text description that
-can give further information about the unit. The JSON below shows a previously used example of a unit configuration in
-a units column, this time using a description:
+The first section of this page showed the use of the `label` field, which serves as a short form title for the unit.
+Another way to add more detail to the unit's definition is the `description` field. This is a long form text description
+that can give further information about the unit. The JSON below shows a previously used example of a unit configuration
+in a units column, this time using a description:
 
 ```json
 {
@@ -199,7 +199,7 @@ unit defined with an existing base of Pounds Sterling, could be given a scaling 
 "Millions of Pounds Sterling" (where 1 would mean 1 million pounds).
 
 This essentially means that to convert from this new unit to the original unit, you would multiply it by the scaling
-factor. The example defines the new unit further by specifying scaling.
+factor. The example below adds further configuration to the unit by specifying scaling.
 
 ```json
 {
