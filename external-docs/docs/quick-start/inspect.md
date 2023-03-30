@@ -39,21 +39,20 @@ All being well we get the below output. A detailed explanation of this output is
         - Comment: None
         - Description: None
 
-- The data cube has the following data structure definition:
-        - Dataset Label: Sweden At Eurovision No Missing
-        - Number of Components: 9
-        - Components:
-                                                   Property  Property Label Property Type Column Title  Observation Value Column Titles  Required
-         sweden-at-eurovision-no-missing.csv#dimension/year            Year     Dimension         Year                                       True
-      sweden-at-eurovision-no-missing.csv#dimension/entrant         Entrant     Dimension      Entrant                                       True
-         sweden-at-eurovision-no-missing.csv#dimension/song            Song     Dimension         Song                                       True
-     sweden-at-eurovision-no-missing.csv#dimension/language        Language     Dimension     Language                                       True
-               http://purl.org/linked-data/cube#measureType                     Dimension      Measure                                       True
-   sweden-at-eurovision-no-missing.csv#measure/final-points    Final Points       Measure                                                    True
-     sweden-at-eurovision-no-missing.csv#measure/final-rank      Final Rank       Measure                                                    True
-sweden-at-eurovision-no-missing.csv#measure/people-on-stage People on Stage       Measure                                                    True
-http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure                     Attribute         Unit                                       True
-        - Columns where suppress output is true: None
+
+ - The data cube has the following column component information:
+     - Dataset Label: Sweden at Eurovision
+     - Columns:
+           Title         Type  Required                                                Property URL Observations Column Titles
+            Year    Dimension      True                     sweden-at-eurovision.csv#dimension/year
+         Entrant    Dimension      True                  sweden-at-eurovision.csv#dimension/entrant
+            Song    Dimension      True                     sweden-at-eurovision.csv#dimension/song
+        Language    Dimension      True                 sweden-at-eurovision.csv#dimension/language
+           Value Observations      True                 sweden-at-eurovision.csv#measure/{+measure}
+         Measure     Measures      True                http://purl.org/linked-data/cube#measureType
+            Unit        Units      True http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure
+     - Columns where suppress output is true: None
+
 
 - The data cube has the following code list information:
         - Number of Code Lists: 4

@@ -151,8 +151,13 @@ def convert_data_values_to_uri_safe_values(
         if isinstance(dimension_column.structural_definition.code_list, NewQbCodeList):
             new_code_list = dimension_column.structural_definition.code_list
             map_dim_val_labels_to_uri_identifiers = dict(
+                # Allow replacements based on either label or the notation/code.
                 [
                     (concept.label, concept.uri_safe_identifier)
+                    for concept in new_code_list.concepts
+                ]
+                + [
+                    (concept.code, concept.uri_safe_identifier)
                     for concept in new_code_list.concepts
                 ]
             )

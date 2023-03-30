@@ -1,0 +1,768 @@
+{
+    "@context": "http://www.w3.org/ns/csvw",
+    "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#dataset",
+    "tables": [
+        {
+            "url": "multi-measure-pivoted-dataset-units-and-attributes.csv",
+            "tableSchema": {
+                "columns": [
+                    {
+                        "titles": "Year",
+                        "name": "year",
+                        "propertyUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#dimension/year",
+                        "valueUrl": "year.csv#{+year}",
+                        "required": true
+                    },
+                    {
+                        "titles": "Sector",
+                        "name": "sector",
+                        "propertyUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#dimension/sector",
+                        "valueUrl": "sector.csv#{+sector}",
+                        "required": true
+                    },
+                    {
+                        "titles": "Imports",
+                        "name": "imports",
+                        "aboutUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#obs/{year},{sector}@imports-monetary-value",
+                        "propertyUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#measure/imports-monetary-value",
+                        "datatype": "decimal",
+                        "required": true
+                    },
+                    {
+                        "titles": "Imports Status",
+                        "name": "imports_status",
+                        "aboutUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#obs/{year},{sector}@imports-monetary-value",
+                        "propertyUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#attribute/imports-status",
+                        "valueUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#attribute/imports-status/{+imports_status}",
+                        "required": false
+                    },
+                    {
+                        "titles": "Exports",
+                        "name": "exports",
+                        "aboutUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#obs/{year},{sector}@exports-monetary-value",
+                        "propertyUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#measure/exports-monetary-value",
+                        "datatype": "decimal",
+                        "required": true
+                    },
+                    {
+                        "titles": "Exports Status",
+                        "name": "exports_status",
+                        "aboutUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#obs/{year},{sector}@exports-monetary-value",
+                        "propertyUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#attribute/exports-status",
+                        "valueUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#attribute/exports-status/{+exports_status}",
+                        "required": false
+                    },
+                    {
+                        "titles": "Exports Unit",
+                        "name": "exports_unit",
+                        "aboutUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#obs/{year},{sector}@exports-monetary-value",
+                        "propertyUrl": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
+                        "valueUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#unit/{+exports_unit}",
+                        "required": true
+                    },
+                    {
+                        "name": "virt_slice",
+                        "virtual": true,
+                        "propertyUrl": "rdf:type",
+                        "valueUrl": "qb:Slice"
+                    },
+                    {
+                        "name": "virt_slice_structure",
+                        "virtual": true,
+                        "propertyUrl": "qb:sliceStructure",
+                        "valueUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#slice/cross-measures"
+                    },
+                    {
+                        "name": "virt_obs_imports",
+                        "virtual": true,
+                        "propertyUrl": "qb:observation",
+                        "valueUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#obs/{year},{sector}@imports-monetary-value"
+                    },
+                    {
+                        "name": "virt_obs_imports_meas",
+                        "virtual": true,
+                        "aboutUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#obs/{year},{sector}@imports-monetary-value",
+                        "propertyUrl": "qb:measureType",
+                        "valueUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#measure/imports-monetary-value"
+                    },
+                    {
+                        "name": "virt_obs_imports_unit",
+                        "virtual": true,
+                        "aboutUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#obs/{year},{sector}@imports-monetary-value",
+                        "propertyUrl": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
+                        "valueUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#unit/pounds-millions"
+                    },
+                    {
+                        "name": "virt_dim_imports_year",
+                        "virtual": true,
+                        "aboutUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#obs/{year},{sector}@imports-monetary-value",
+                        "propertyUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#dimension/year",
+                        "valueUrl": "year.csv#{+year}"
+                    },
+                    {
+                        "name": "virt_dim_imports_sector",
+                        "virtual": true,
+                        "aboutUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#obs/{year},{sector}@imports-monetary-value",
+                        "propertyUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#dimension/sector",
+                        "valueUrl": "sector.csv#{+sector}"
+                    },
+                    {
+                        "name": "virt_obs_imports_type",
+                        "virtual": true,
+                        "aboutUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#obs/{year},{sector}@imports-monetary-value",
+                        "propertyUrl": "rdf:type",
+                        "valueUrl": "qb:Observation"
+                    },
+                    {
+                        "name": "virt_dataSet_imports",
+                        "virtual": true,
+                        "aboutUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#obs/{year},{sector}@imports-monetary-value",
+                        "propertyUrl": "qb:dataSet",
+                        "valueUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#dataset"
+                    },
+                    {
+                        "name": "virt_obs_exports",
+                        "virtual": true,
+                        "propertyUrl": "qb:observation",
+                        "valueUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#obs/{year},{sector}@exports-monetary-value"
+                    },
+                    {
+                        "name": "virt_obs_exports_meas",
+                        "virtual": true,
+                        "aboutUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#obs/{year},{sector}@exports-monetary-value",
+                        "propertyUrl": "qb:measureType",
+                        "valueUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#measure/exports-monetary-value"
+                    },
+                    {
+                        "name": "virt_dim_exports_year",
+                        "virtual": true,
+                        "aboutUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#obs/{year},{sector}@exports-monetary-value",
+                        "propertyUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#dimension/year",
+                        "valueUrl": "year.csv#{+year}"
+                    },
+                    {
+                        "name": "virt_dim_exports_sector",
+                        "virtual": true,
+                        "aboutUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#obs/{year},{sector}@exports-monetary-value",
+                        "propertyUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#dimension/sector",
+                        "valueUrl": "sector.csv#{+sector}"
+                    },
+                    {
+                        "name": "virt_obs_exports_type",
+                        "virtual": true,
+                        "aboutUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#obs/{year},{sector}@exports-monetary-value",
+                        "propertyUrl": "rdf:type",
+                        "valueUrl": "qb:Observation"
+                    },
+                    {
+                        "name": "virt_dataSet_exports",
+                        "virtual": true,
+                        "aboutUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#obs/{year},{sector}@exports-monetary-value",
+                        "propertyUrl": "qb:dataSet",
+                        "valueUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#dataset"
+                    }
+                ],
+                "foreignKeys": [
+                    {
+                        "columnReference": "year",
+                        "reference": {
+                            "resource": "year.csv",
+                            "columnReference": "uri_identifier"
+                        }
+                    },
+                    {
+                        "columnReference": "sector",
+                        "reference": {
+                            "resource": "sector.csv",
+                            "columnReference": "uri_identifier"
+                        }
+                    }
+                ],
+                "primaryKey": [
+                    "year",
+                    "sector"
+                ],
+                "aboutUrl": "multi-measure-pivoted-dataset-units-and-attributes.csv#slice/{year},{sector}"
+            }
+        },
+        {
+            "url": "year.csv",
+            "tableSchema": "year.table.json",
+            "suppressOutput": true
+        },
+        {
+            "url": "sector.csv",
+            "tableSchema": "sector.table.json",
+            "suppressOutput": true
+        }
+    ],
+    "rdfs:seeAlso": [
+        {
+            "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#component/imports-monetary-value",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#measure/imports-monetary-value"
+                }
+            ],
+            "http://purl.org/linked-data/cube#measure": [
+                {
+                    "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#measure/imports-monetary-value"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 5
+                }
+            ]
+        },
+        {
+            "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#dataset",
+            "@type": [
+                "http://www.w3.org/ns/dcat#Dataset",
+                "http://purl.org/linked-data/cube#DataSet",
+                "http://purl.org/linked-data/cube#Attachable",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.w3.org/ns/dcat#Resource"
+            ],
+            "http://purl.org/dc/terms/identifier": [
+                {
+                    "@value": "Multi Measure Pivoted Dataset Units And Attributes"
+                }
+            ],
+            "http://purl.org/dc/terms/issued": [
+                {
+                    "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "@value": "2023-03-08T12:08:22.189729"
+                }
+            ],
+            "http://purl.org/dc/terms/modified": [
+                {
+                    "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "@value": "2023-03-08T12:08:22.189729"
+                }
+            ],
+            "http://purl.org/dc/terms/title": [
+                {
+                    "@language": "en",
+                    "@value": "Multi Measure Pivoted Dataset Units And Attributes"
+                }
+            ],
+            "http://purl.org/linked-data/cube#structure": [
+                {
+                    "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#structure"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Multi Measure Pivoted Dataset Units And Attributes"
+                }
+            ],
+            "http://www.w3.org/ns/prov#wasGeneratedBy": [
+                {
+                    "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#csvcubed-build-activity"
+                }
+            ]
+        },
+        {
+            "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#attribute/exports-status",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentProperty",
+                "http://purl.org/linked-data/cube#AttributeProperty",
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Exports Status"
+                }
+            ]
+        },
+        {
+            "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#class/sector",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Class",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ]
+        },
+        {
+            "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#component/measure-type",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "http://purl.org/linked-data/cube#measureType"
+                }
+            ],
+            "http://purl.org/linked-data/cube#dimension": [
+                {
+                    "@id": "http://purl.org/linked-data/cube#measureType"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 7
+                },
+                {
+                    "@value": 3
+                }
+            ]
+        },
+        {
+            "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#measure/exports-monetary-value",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentProperty",
+                "http://purl.org/linked-data/cube#MeasureProperty",
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Exports Monetary Value"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#range": [
+                {
+                    "@id": "http://www.w3.org/2001/XMLSchema#decimal"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#subPropertyOf": [
+                {
+                    "@id": "http://example.com/measures/monetary-value"
+                }
+            ]
+        },
+        {
+            "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#dimension/sector",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentProperty",
+                "http://purl.org/linked-data/cube#DimensionProperty",
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#CodedProperty"
+            ],
+            "http://purl.org/linked-data/cube#codeList": [
+                {
+                    "@id": "sector.csv#code-list"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Sector"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#range": [
+                {
+                    "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#class/sector"
+                }
+            ]
+        },
+        {
+            "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#csvcubed-build-activity",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.w3.org/ns/prov#Activity"
+            ],
+            "http://www.w3.org/ns/prov#used": [
+                {
+                    "@id": "https://github.com/GSS-Cogs/csvcubed/releases/tag/v0.1.0.dev0"
+                }
+            ]
+        },
+        {
+            "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#component/exports-status",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://purl.org/linked-data/cube#attribute": [
+                {
+                    "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#attribute/exports-status"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#attribute/exports-status"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentRequired": [
+                {
+                    "@value": false
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 9
+                }
+            ]
+        },
+        {
+            "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#component/exports-monetary-value",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#measure/exports-monetary-value"
+                }
+            ],
+            "http://purl.org/linked-data/cube#measure": [
+                {
+                    "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#measure/exports-monetary-value"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 8
+                }
+            ]
+        },
+        {
+            "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#component/imports-status",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://purl.org/linked-data/cube#attribute": [
+                {
+                    "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#attribute/imports-status"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#attribute/imports-status"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentRequired": [
+                {
+                    "@value": false
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 6
+                }
+            ]
+        },
+        {
+            "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#structure",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#DataStructureDefinition",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://purl.org/linked-data/cube#component": [
+                {
+                    "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#component/sector"
+                },
+                {
+                    "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#component/measure-type"
+                },
+                {
+                    "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#component/imports-status"
+                },
+                {
+                    "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#component/exports-status"
+                },
+                {
+                    "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#component/year"
+                },
+                {
+                    "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#component/imports-monetary-value"
+                },
+                {
+                    "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#component/unit"
+                },
+                {
+                    "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#component/exports-monetary-value"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#attribute/imports-status"
+                },
+                {
+                    "@id": "http://purl.org/linked-data/cube#measureType"
+                },
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
+                },
+                {
+                    "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#attribute/exports-status"
+                },
+                {
+                    "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#measure/imports-monetary-value"
+                },
+                {
+                    "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#dimension/sector"
+                },
+                {
+                    "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#dimension/year"
+                },
+                {
+                    "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#measure/exports-monetary-value"
+                }
+            ],
+            "http://purl.org/linked-data/cube#sliceKey": [
+                {
+                    "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#slice/cross-measures"
+                }
+            ]
+        },
+        {
+            "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#slice/cross-measures",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#SliceKey",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#dimension/sector"
+                },
+                {
+                    "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#dimension/year"
+                }
+            ]
+        },
+        {
+            "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#component/year",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#dimension/year"
+                }
+            ],
+            "http://purl.org/linked-data/cube#dimension": [
+                {
+                    "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#dimension/year"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 1
+                }
+            ]
+        },
+        {
+            "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#class/year",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Class",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ]
+        },
+        {
+            "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#component/unit",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://purl.org/linked-data/cube#attribute": [
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
+                }
+            ],
+            "http://purl.org/linked-data/cube#componentRequired": [
+                {
+                    "@value": true
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 4
+                }
+            ]
+        },
+        {
+            "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#attribute/imports-status",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentProperty",
+                "http://purl.org/linked-data/cube#AttributeProperty",
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Imports Status"
+                }
+            ]
+        },
+        {
+            "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#measure/imports-monetary-value",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentProperty",
+                "http://purl.org/linked-data/cube#MeasureProperty",
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Imports Monetary Value"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#range": [
+                {
+                    "@id": "http://www.w3.org/2001/XMLSchema#decimal"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#subPropertyOf": [
+                {
+                    "@id": "http://example.com/measures/monetary-value"
+                }
+            ]
+        },
+        {
+            "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#dimension/year",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentProperty",
+                "http://purl.org/linked-data/cube#DimensionProperty",
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://purl.org/linked-data/cube#CodedProperty"
+            ],
+            "http://purl.org/linked-data/cube#codeList": [
+                {
+                    "@id": "year.csv#code-list"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Year"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#range": [
+                {
+                    "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#class/year"
+                }
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#subPropertyOf": [
+                {
+                    "@id": "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod"
+                }
+            ]
+        },
+        {
+            "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#component/sector",
+            "@type": [
+                "http://purl.org/linked-data/cube#ComponentSet",
+                "http://purl.org/linked-data/cube#ComponentSpecification",
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://purl.org/linked-data/cube#componentProperty": [
+                {
+                    "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#dimension/sector"
+                }
+            ],
+            "http://purl.org/linked-data/cube#dimension": [
+                {
+                    "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#dimension/sector"
+                }
+            ],
+            "http://purl.org/linked-data/cube#order": [
+                {
+                    "@value": 2
+                }
+            ]
+        },
+        {
+            "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#dependency/year",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://rdfs.org/ns/void#Dataset"
+            ],
+            "http://rdfs.org/ns/void#dataDump": [
+                {
+                    "@id": "./year.csv-metadata.json"
+                }
+            ],
+            "http://rdfs.org/ns/void#uriSpace": [
+                {
+                    "@value": "year.csv#"
+                }
+            ]
+        },
+        {
+            "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#dependency/sector",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://rdfs.org/ns/void#Dataset"
+            ],
+            "http://rdfs.org/ns/void#dataDump": [
+                {
+                    "@id": "./sector.csv-metadata.json"
+                }
+            ],
+            "http://rdfs.org/ns/void#uriSpace": [
+                {
+                    "@value": "sector.csv#"
+                }
+            ]
+        },
+        {
+            "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#attribute/imports-status/final",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Final"
+                }
+            ]
+        },
+        {
+            "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#attribute/exports-status/final",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource"
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Final"
+                }
+            ]
+        },
+        {
+            "@id": "multi-measure-pivoted-dataset-units-and-attributes.csv#unit/pounds-millions",
+            "@type": [
+                "http://www.w3.org/2000/01/rdf-schema#Resource",
+                "http://www.ontology-of-units-of-measure.org/resource/om-2/Unit",
+                "http://qudt.org/schema/qudt/Unit"
+            ],
+            "http://www.w3.org/2000/01/rdf-schema#label": [
+                {
+                    "@language": "en",
+                    "@value": "Pounds (Millions)"
+                }
+            ]
+        }
+    ]
+}

@@ -7,19 +7,25 @@ one of more data cubes.
 """
 
 from dataclasses import dataclass
-from functools import cached_property
-from typing import Dict, List, Optional
+from functools import cached_property, cache
+from typing import Dict, List, Optional, Tuple, Set
 
+from csvcubed.definitions import QB_MEASURE_TYPE_DIMENSION_URI, SDMX_ATTRIBUTE_UNIT_URI
+from csvcubed.models.csvcubedexception import UnsupportedComponentPropertyTypeException
 from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparqlresults import (
     CodelistsResult,
+    ColumnDefinition,
     CubeTableIdentifiers,
     IsPivotedShapeMeasureResult,
+    QubeComponentResult,
     QubeComponentsResult,
     UnitResult,
 )
 from csvcubed.utils.dict import get_from_dict_ensure_exists
 from csvcubed.utils.iterables import first, group_by
+from csvcubed.utils.qb.components import ComponentPropertyType, EndUserColumnType
+from csvcubed.utils.sparql_handler.column_component_info import ColumnComponentInfo
 from csvcubed.utils.sparql_handler.csvw_inspector import CsvWInspector
 from csvcubed.utils.sparql_handler.sparqlquerymanager import (
     select_csvw_dsd_qube_components,
@@ -35,6 +41,17 @@ class DataCubeInspector:
     """Provides access to inspect the data cubes contained in an rdflib graph."""
 
     csvw_inspector: CsvWInspector
+
+    def __hash__(self):
+        """
+        Necessary for `@cache` attributes above function definitions within this class.
+
+        We *don't* want to make use of the dataclass hashing functionality, since it may end up evaluating all of
+        our cached properties which would mean they're no longer lazy-loading.
+
+        The csvw_inspector can uniquely identify us by the file we originally loaded.
+        """
+        return hash(self.csvw_inspector)
 
     """
     Private cached properties.
@@ -75,6 +92,7 @@ class DataCubeInspector:
             self.csvw_inspector.csvw_json_path,
             map_dsd_uri_to_csv_url,
             self.csvw_inspector.column_definitions,
+            self._cube_shapes,
         )
 
     @cached_property
@@ -188,3 +206,112 @@ class DataCubeInspector:
         """
 
         return self._codelists_and_cols.get(csv_url, CodelistsResult([], 0))
+
+    @cache
+    def get_column_component_info(self, csv_url: str) -> List[ColumnComponentInfo]:
+        """
+        Gets a list of columns in the requested CSV file, their types (in the nomenclature of the qube-config.json
+          format), and an RDF Data Cube DataStructureDefinition component directly associated with them.
+
+        Columns are defined in the same order as in the CSV file.
+        """
+
+        real_columns = [
+            c
+            for c in self.csvw_inspector.get_column_definitions_for_csv(csv_url)
+            if not c.virtual
+        ]
+        qube_components = self.get_dsd_qube_components_for_csv(csv_url).qube_components
+        cube_shape = self.get_shape_for_csv(csv_url)
+
+        observations_columns = {
+            col
+            for comp in qube_components
+            for col in comp.used_by_observed_value_columns
+        }
+
+        column_component_infos = []
+        for column in real_columns:
+            (column_type, component) = _get_column_type_and_component(
+                column, qube_components, cube_shape, observations_columns
+            )
+            column_component_infos.append(
+                ColumnComponentInfo(
+                    column_definition=column,
+                    column_type=column_type,
+                    component=component,
+                )
+            )
+
+        return column_component_infos
+
+    def get_columns_of_type(
+        self, csv_url: str, column_type: EndUserColumnType
+    ) -> List[ColumnDefinition]:
+        """
+        Gets a list of the columns in a CSV given the requested type (as defined in the qube-config.json format).
+
+        Columns are defined in the same order as in the CSV file.
+        """
+        return [
+            c.column_definition
+            for c in self.get_column_component_info(csv_url)
+            if c.column_type == column_type
+        ]
+
+
+def _get_column_type_and_component(
+    column: ColumnDefinition,
+    qube_components: List[QubeComponentResult],
+    cube_shape: CubeShape,
+    observations_columns: Set[ColumnDefinition],
+) -> Tuple[EndUserColumnType, Optional[QubeComponentResult]]:
+    # We *assume* that all components which claim to be 'used' in a column express the same information about the
+    # column. i.e. if two or more components claim to be 'used' in the column, it shouldn't matter whether we pick the
+    # first or the second component, we should draw the same conclusions about the type of the column.
+    component_definition = first(
+        qube_components, lambda q: column in q.real_columns_used_in
+    )
+
+    if component_definition is None:
+        if column.suppress_output:
+            return EndUserColumnType.Suppressed, None
+        elif cube_shape == CubeShape.Standard and column in observations_columns:
+            return EndUserColumnType.Observations, None
+        else:
+            raise KeyError(
+                f"Could not find component associated with CSV column '{column.title}'"
+            )
+
+    return (
+        _figure_out_end_user_column_type(component_definition, cube_shape),
+        component_definition,
+    )
+
+
+def _figure_out_end_user_column_type(
+    qube_c: QubeComponentResult, cube_shape: CubeShape
+) -> EndUserColumnType:
+    """This function will decide the columns type for the end user"""
+
+    component_type = ComponentPropertyType(qube_c.property_type)
+
+    if component_type == ComponentPropertyType.Dimension:
+        if qube_c.property == QB_MEASURE_TYPE_DIMENSION_URI:
+            return EndUserColumnType.Measures
+
+        return EndUserColumnType.Dimension
+    elif component_type == ComponentPropertyType.Measure:
+        if cube_shape == CubeShape.Pivoted:
+            return EndUserColumnType.Observations
+
+        return EndUserColumnType.Measures
+    elif component_type == ComponentPropertyType.Attribute:
+        if qube_c.property == SDMX_ATTRIBUTE_UNIT_URI:
+            return EndUserColumnType.Units
+
+        return EndUserColumnType.Attribute
+    else:
+        raise UnsupportedComponentPropertyTypeException(
+            property_type=qube_c.property_type
+        )

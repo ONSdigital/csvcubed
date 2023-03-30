@@ -10,6 +10,7 @@ from enum import Enum
 from pathlib import Path
 from urllib.parse import urlparse
 
+from csvcubed.definitions import QB_MEASURE_TYPE_DIMENSION_URI, SDMX_ATTRIBUTE_UNIT_URI
 from csvcubed.models.csvcubedexception import UnsupportedComponentPropertyTypeException
 
 
@@ -28,9 +29,9 @@ class ComponentPropertyAttributeURI(Enum):
     The uris of component attributes.
     """
 
-    UnitMeasure = "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
+    UnitMeasure = SDMX_ATTRIBUTE_UNIT_URI
 
-    MeasureType = "http://purl.org/linked-data/cube#measureType"
+    MeasureType = QB_MEASURE_TYPE_DIMENSION_URI
 
 
 class ComponentPropertyTypeURI(Enum):
@@ -61,6 +62,28 @@ class ComponentPropertyType(Enum):
 
     Measure = "Measure"
     """ The component is of type qb:Measure. """
+
+
+class EndUserColumnType(Enum):
+    """These are the column types tha a User is familiar form the qube-config.json"""
+
+    Dimension = "Dimension"
+    """ The column holds values for a Dimension """
+
+    Attribute = "Attribute"
+    """ The column holds values for an Attribute """
+
+    Measures = "Measures"
+    """ The column holds the measure for each Observation """
+
+    Units = "Units"
+    """ The column holds the unit for each Observation """
+
+    Observations = "Observations"
+    """ The column holds the Observed values """
+
+    Suppressed = "Suppressed"
+    """ The column holds values which are not part of the cube"""
 
 
 def get_component_property_type(property_type: str) -> str:

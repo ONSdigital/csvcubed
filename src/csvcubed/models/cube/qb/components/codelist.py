@@ -21,13 +21,6 @@ from csvcubed.models.validationerror import (
 from csvcubed.readers.skoscodelistreader import extract_code_list_concept_scheme_info
 from csvcubed.utils import validations as v
 from csvcubed.utils.qb.validation.uri_safe import ensure_no_uri_safe_conflicts
-from csvcubed.utils.validations import (
-    validate_file,
-    validate_list,
-    validate_optional,
-    validate_str_type,
-    validate_uri,
-)
 from csvcubed.utils.validators.file import (
     validate_file_exists as pydantic_validate_file_exists,
 )
@@ -57,7 +50,7 @@ class ExistingQbCodeList(QbCodeList):
     _concept_scheme_uri_validator = pydantic_validate_uri("concept_scheme_uri")
 
     def _get_validations(self) -> Dict[str, ValidationFunction]:
-        return {"concept_scheme_uri": validate_uri}
+        return {"concept_scheme_uri": v.uri}
 
 
 @dataclass
@@ -111,31 +104,32 @@ class NewQbCodeListInCsvW(QbCodeList):
     def _get_validations(self) -> Union[Validations, Dict[str, ValidationFunction]]:
         return Validations(
             individual_property_validations={
-                "schema_metadata_file_path": validate_file,
-                "csv_file_relative_path_or_uri": validate_str_type,
-                "concept_scheme_uri": validate_uri,
-                "concept_template_uri": validate_str_type,
+                "schema_metadata_file_path": v.file,
+                "csv_file_relative_path_or_uri": v.string,
+                "concept_scheme_uri": v.uri,
+                "concept_template_uri": v.string,
             },
             whole_object_validations=[self._validation_csvw_sufficient_information],
         )
 
     @staticmethod
     def _validation_csvw_sufficient_information(
-        self,
-    ) -> List[ValidateModelPropertiesError]:
+        value: "NewQbCodeListInCsvW", property_path: List[str]
+    ):
         errors: List[ValidateModelPropertiesError] = []
 
-        csv_path = self.csv_file_relative_path_or_uri
-        cs_uri = self.concept_scheme_uri
-        c_template_uri = self.concept_template_uri
+        csv_path = value.csv_file_relative_path_or_uri
+        cs_uri = value.concept_scheme_uri
+        c_template_uri = value.concept_template_uri
         if csv_path is None or cs_uri is None or c_template_uri is None:
-            schema_metadata_file_path = self.schema_metadata_file_path
+            schema_metadata_file_path = value.schema_metadata_file_path
             extract_code_list_concept_scheme_info(schema_metadata_file_path)
 
             errors.append(
                 ValidateModelPropertiesError(
                     "'csv_file_relative_path_or_uri', 'concept_scheme_uri' or 'concept_template_uri' values are missing.",
-                    "Whole Object",
+                    property_path,
+                    value,
                 )
             )
 
@@ -191,9 +185,9 @@ class NewQbCodeList(QbCodeList, ArbitraryRdf, Generic[TNewQbConcept]):
     def _get_validations(self) -> Dict[str, ValidationFunction]:
         return {
             "metadata": v.validated_model(CatalogMetadata),
-            "concepts": validate_list(v.validated_model(NewQbConcept)),
-            "arbitrary_rdf": validate_list(v.validated_model(TripleFragmentBase)),
-            "uri_style": validate_optional(v.enum(URIStyle)),
+            "concepts": v.list(v.validated_model(NewQbConcept)),
+            "arbitrary_rdf": v.list(v.validated_model(TripleFragmentBase)),
+            "uri_style": v.optional(v.enum(URIStyle)),
         }
 
     def _get_arbitrary_rdf(self) -> List[TripleFragmentBase]:
@@ -236,5 +230,5 @@ class CompositeQbCodeList(NewQbCodeList[DuplicatedQbConcept]):
     def _get_validations(self) -> Dict[str, ValidationFunction]:
         return {
             **NewQbCodeList._get_validations(self),
-            "variant_of_uris": validate_list(validate_uri),
+            "variant_of_uris": v.list(v.uri),
         }

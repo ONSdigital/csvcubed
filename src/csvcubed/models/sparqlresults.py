@@ -9,14 +9,14 @@ from os import linesep
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+import uritemplate
 from csvcubedmodels.dataclassbase import DataClassBase
 from rdflib.query import ResultRow
 
-from csvcubed.utils.iterables import group_by
-from csvcubed.utils.printable import (
-    get_printable_list_str,
-    get_printable_tabular_str_from_list,
-)
+from csvcubed.definitions import QB_MEASURE_TYPE_DIMENSION_URI
+from csvcubed.models.cube.cube_shape import CubeShape
+from csvcubed.utils.iterables import first, group_by, single
+from csvcubed.utils.printable import get_printable_list_str
 from csvcubed.utils.qb.components import (
     ComponentPropertyType,
     get_component_property_as_relative_path,
@@ -263,48 +263,6 @@ class QubeComponentsResult:
     qube_components: list[QubeComponentResult]
     num_components: int
 
-    @property
-    def output_str(self) -> str:
-        component_dicts: List[Dict] = []
-        for component in self.qube_components:
-            component_dicts.append(
-                {
-                    "Property": component.property,
-                    "Property Label": component.property_label,
-                    "Property Type": component.property_type,
-                    "Column Title": ", ".join(
-                        [
-                            c.title
-                            for c in component.real_columns_used_in
-                            if c.title is not None
-                        ]
-                    ),
-                    "Observation Value Column Titles": ", ".join(
-                        [
-                            c.title
-                            for c in component.used_by_observed_value_columns
-                            if c.title is not None
-                        ]
-                    ),
-                    "Required": component.required,
-                }
-            )
-
-        formatted_components = get_printable_tabular_str_from_list(
-            component_dicts,
-            column_names=[
-                "Property",
-                "Property Label",
-                "Property Type",
-                "Column Title",
-                "Observation Value Column Titles",
-                "Required",
-            ],
-        )
-        return f"""
-        - Number of Components: {self.num_components}
-        - Components:{linesep}{formatted_components}"""
-
 
 def map_catalog_metadata_results(
     sparql_results: List[ResultRow],
@@ -398,6 +356,7 @@ def map_qube_components_sparql_result(
     json_path: Path,
     map_dsd_uri_to_csv_url: Dict[str, str],
     map_csv_url_to_column_definitions: Dict[str, List[ColumnDefinition]],
+    map_csv_url_to_cube_shape: Dict[str, CubeShape],
 ) -> Dict[str, QubeComponentsResult]:
     """
     Returns a map of csv_url to `QubeComponentsResult`
@@ -413,8 +372,9 @@ def map_qube_components_sparql_result(
 
     map_dsd_uri_to_components = group_by(components, lambda c: c.dsd_uri)
 
-    for (dsd_uri, components) in map_dsd_uri_to_components.items():
+    for dsd_uri, components in map_dsd_uri_to_components.items():
         csv_url = map_dsd_uri_to_csv_url[dsd_uri]
+        cube_shape = map_csv_url_to_cube_shape[csv_url]
         csv_column_definitions = map_csv_url_to_column_definitions[csv_url]
 
         measure_uris = {
@@ -430,29 +390,12 @@ def map_qube_components_sparql_result(
         ]
 
         for component in components:
-            all_columns_used_in = [
-                c
-                for c in csv_column_definitions
-                if c.property_url == component.property
-            ]
-
-            component.real_columns_used_in = [
-                c for c in all_columns_used_in if (not c.virtual)
-            ]
-
+            _set_columns_on_component(
+                component, cube_shape, csv_column_definitions, observed_value_columns
+            )
             component.required = component.required or any(
                 c.required for c in component.real_columns_used_in
             )
-
-            columns_using_this_component_about_urls = {
-                c.about_url for c in all_columns_used_in
-            }
-
-            component.used_by_observed_value_columns = [
-                c
-                for c in observed_value_columns
-                if c.about_url in columns_using_this_component_about_urls
-            ]
 
     return {
         map_dsd_uri_to_csv_url[dsd_uri]: QubeComponentsResult(
@@ -460,6 +403,59 @@ def map_qube_components_sparql_result(
         )
         for (dsd_uri, components) in map_dsd_uri_to_components.items()
     }
+
+
+def _set_columns_on_component(
+    component: QubeComponentResult,
+    cube_shape: CubeShape,
+    csv_column_definitions: List[ColumnDefinition],
+    observed_value_columns: List[ColumnDefinition],
+) -> None:
+    if (
+        cube_shape == CubeShape.Standard
+        and component.property_type == ComponentPropertyType.Measure.value
+    ):
+        measure_column = first(
+            csv_column_definitions,
+            lambda c: c.property_url == QB_MEASURE_TYPE_DIMENSION_URI,
+        )
+
+        if measure_column is None:
+            raise KeyError("Could not find standard shape measure column.")
+
+        component.real_columns_used_in = [measure_column]
+
+        obs_val_column = single(
+            csv_column_definitions,
+            lambda c: c.property_url is not None
+            and c.data_type is not None
+            and measure_column is not None  # Here to satisfy buggy pyright.
+            # We *assume* that a column with a property_url template containing
+            # the measure column is the observed value column in the standard
+            # shape.
+            and measure_column.name in uritemplate.variables(c.property_url),
+            "standard shape observations column",
+        )
+
+        component.used_by_observed_value_columns = [obs_val_column]
+    else:
+        all_columns_used_in = [
+            c for c in csv_column_definitions if c.property_url == component.property
+        ]
+
+        component.real_columns_used_in = [
+            c for c in all_columns_used_in if (not c.virtual)
+        ]
+
+        columns_using_this_component_about_urls = {
+            c.about_url for c in all_columns_used_in
+        }
+
+        component.used_by_observed_value_columns = [
+            c
+            for c in observed_value_columns
+            if c.about_url in columns_using_this_component_about_urls
+        ]
 
 
 def _map_codelist_sparql_result(

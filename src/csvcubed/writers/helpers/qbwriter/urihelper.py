@@ -3,6 +3,7 @@ import re
 from dataclasses import dataclass, field
 from typing import List, Optional, Tuple, Type
 
+from csvcubed.definitions import QB_MEASURE_TYPE_DIMENSION_URI, SDMX_ATTRIBUTE_UNIT_URI
 from csvcubed.models.cube.columns import CsvColumn
 from csvcubed.models.cube.cube import QbColumnarDsdType, QbCube
 from csvcubed.models.cube.qb.columns import QbColumn
@@ -552,7 +553,7 @@ class UriHelper:
         unit_value_uri = self._get_unit_column_unit_template_uri(column)
 
         return (
-            "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
+            SDMX_ATTRIBUTE_UNIT_URI,
             unit_value_uri,
         )
 
@@ -563,7 +564,7 @@ class UriHelper:
             column
         )
 
-        return "http://purl.org/linked-data/cube#measureType", measure_value_uri
+        return QB_MEASURE_TYPE_DIMENSION_URI, measure_value_uri
 
     def _get_default_property_value_uris_for_observation_value(
         self,

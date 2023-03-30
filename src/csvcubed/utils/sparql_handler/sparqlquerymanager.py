@@ -20,6 +20,7 @@ from csvcubed.models.csvcubedexception import (
     FailedToReadSparqlQueryException,
     InvalidNumberOfRecordsException,
 )
+from csvcubed.models.cube.cube_shape import CubeShape
 from csvcubed.models.sparql.valuesbinding import ValuesBinding
 from csvcubed.models.sparqlresults import (
     CatalogMetadataResult,
@@ -192,6 +193,7 @@ def select_csvw_dsd_qube_components(
     json_path: Path,
     map_dsd_uri_to_csv_url: Dict[str, str],
     map_csv_url_to_column_definitions: Dict[str, List[ColumnDefinition]],
+    map_csv_url_to_cube_shape: Dict[str, CubeShape],
 ) -> Dict[str, QubeComponentsResult]:
     """
     Queries the list of qube components.
@@ -212,6 +214,7 @@ def select_csvw_dsd_qube_components(
         json_path,
         map_dsd_uri_to_csv_url,
         map_csv_url_to_column_definitions,
+        map_csv_url_to_cube_shape,
     )
 
 

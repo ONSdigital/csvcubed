@@ -5,7 +5,7 @@ QB DSD Helper
 Help Generate the DSD necessary for an RDF Data Cube.
 """
 import logging
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Iterable, List, Set
 
 from csvcubedmodels import rdf
@@ -19,6 +19,7 @@ from csvcubedmodels.rdf import (
 )
 from csvcubedmodels.rdf.dependency import RdfGraphDependency
 
+from csvcubed.definitions import QB_MEASURE_TYPE_DIMENSION_URI, SDMX_ATTRIBUTE_UNIT_URI
 from csvcubed.models.cube.cube import QbCube
 from csvcubed.models.cube.qb.columns import QbColumn
 from csvcubed.models.cube.qb.components.arbitraryrdf import RdfSerialisationHint
@@ -73,6 +74,11 @@ _logger = logging.getLogger(__name__)
 class DsdToRdfModelsHelper:
     cube: QbCube
     _uris: UriHelper
+    _units_component_already_defined: bool = field(init=False, default=False)
+    """
+    Records whether or not a units component has already been defined in this cube.
+    If it has, don't define it again.
+    """
 
     def generate_data_structure_definitions(self) -> List[dict]:
         """
@@ -301,7 +307,7 @@ class DsdToRdfModelsHelper:
                 self._get_qb_attribute_specification(column_name_uri_safe, component)
             ]
         elif isinstance(component, QbMultiUnits):
-            return [self._get_qb_units_column_specification(column_name_uri_safe)]
+            return self._get_qb_units_column_specification(column_name_uri_safe)
         elif isinstance(component, QbMultiMeasureDimension):
             return self._get_qb_measure_dimension_specifications(component)
         elif isinstance(component, QbObservationValue):
@@ -311,14 +317,23 @@ class DsdToRdfModelsHelper:
 
     def _get_qb_units_column_specification(
         self, column_name_uri_safe: str
-    ) -> rdf.qb.AttributeComponentSpecification:
+    ) -> List[rdf.qb.AttributeComponentSpecification]:
+        if self._units_component_already_defined:
+            _logger.debug(
+                "Units component already generated. Not generating a second one, %s.",
+                column_name_uri_safe,
+            )
+            # Don't define a second units component, the first one will work just fine.
+
+            return []
+
+        self._units_component_already_defined = True
+
         component = rdf.qb.AttributeComponentSpecification(
             self._uris.get_component_uri(column_name_uri_safe)
         )
         component.componentRequired = True
-        component.attribute = ExistingResource(
-            "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure"
-        )
+        component.attribute = ExistingResource(SDMX_ATTRIBUTE_UNIT_URI)
         component.componentProperties.add(component.attribute)
 
         _logger.debug(
@@ -326,7 +341,7 @@ class DsdToRdfModelsHelper:
             component.uri,
         )
 
-        return component
+        return [component]
 
     def _get_qb_obs_val_specifications(
         self, observation_value: QbObservationValue
@@ -339,7 +354,7 @@ class DsdToRdfModelsHelper:
 
         unit = observation_value.unit
         if unit is not None:
-            specs.append(self._get_qb_units_column_specification("unit"))
+            specs += self._get_qb_units_column_specification("unit")
 
         if observation_value.is_pivoted_shape_observation:
             assert observation_value.measure is not None
@@ -356,7 +371,7 @@ class DsdToRdfModelsHelper:
             self._uris.get_component_uri("measure-type")
         )
         measure_dimension_spec.dimension = ExistingResource(
-            "http://purl.org/linked-data/cube#measureType"
+            QB_MEASURE_TYPE_DIMENSION_URI
         )
         measure_dimension_spec.componentProperties.add(measure_dimension_spec.dimension)
         return measure_dimension_spec

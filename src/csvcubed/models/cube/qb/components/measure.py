@@ -19,12 +19,6 @@ from csvcubed.models.cube.qb.components.arbitraryrdf import (
 from csvcubed.models.uriidentifiable import UriIdentifiable
 from csvcubed.models.validatedmodel import ValidationFunction
 from csvcubed.utils import validations as v
-from csvcubed.utils.validations import (
-    validate_list,
-    validate_optional,
-    validate_str_type,
-    validate_uri,
-)
 from csvcubed.utils.validators.uri import validate_uri as pydantic_validate_uri
 
 from .datastructuredefinition import SecondaryQbStructuralDefinition
@@ -65,8 +59,8 @@ class ExistingQbMeasure(QbMeasure):
     def _get_validations(self) -> Dict[str, ValidationFunction]:
 
         return {
-            "measure_uri": validate_uri,
-            "arbitrary_rdf": validate_list(v.validated_model(TripleFragmentBase)),
+            "measure_uri": v.uri,
+            "arbitrary_rdf": v.list(v.validated_model(TripleFragmentBase)),
         }
 
 
@@ -111,10 +105,10 @@ class NewQbMeasure(QbMeasure, UriIdentifiable):
     def _get_validations(self) -> Dict[str, ValidationFunction]:
 
         return {
-            "label": validate_str_type,
-            "description": validate_optional(validate_str_type),
-            "parent_measure_uri": validate_optional(validate_uri),
-            "source_uri": validate_optional(validate_uri),
+            "label": v.string,
+            "description": v.optional(v.string),
+            "parent_measure_uri": v.optional(v.uri),
+            "source_uri": v.optional(v.uri),
             **UriIdentifiable._get_validations(self),
-            "arbitrary_rdf": validate_list(v.validated_model(TripleFragmentBase)),
+            "arbitrary_rdf": v.list(v.validated_model(TripleFragmentBase)),
         }
