@@ -10,8 +10,8 @@ The configuration of measure definitions themselves will not be the primary focu
 
 ## What is a measures column?
 
-A *measures* column defines the phenomenon that has been measured in your observed values. It is useful to help express
-the measure used in [sparse data](../../../../glossary/index.md#sparse-data) sets.
+A *measures* column defines the phenomenon that has been measured and recorded for each row of data in your CSV. It is
+useful to help express the measure used in [sparse data](../../../../glossary/index.md#sparse-data) sets.
 
 Consider the following data set containing a measures column; the measures column is the one with the title `Measure`.
 
@@ -113,13 +113,14 @@ of this field in use.
  After setting the `type` of the column as `measures`, provide the field `cell_uri_template` with a URI of a measure
  resource to use in the definition.
 
- !!! Warning
-    The use of the `cell_uri_template` field is considered an advanced configuration option, and therefore care must be taken to ensure that the values generated are valid.
+!!! Warning
+    The use of the `cell_uri_template` field is considered an advanced configuration option, and therefore care must be
+    taken to ensure that the values generated are valid.
 
 The format of the `cell_uri_template` value **must** follow [RFC6570](https://www.rfc-editor.org/rfc/rfc6570) guidance
-for URI Templates. In the case of any doubt, follow the pattern in the examples shown above (e.g.
-`http://example.org/some-uri/{+column_name}`), as this will ensure csvcubed safely
-[transforms the column header](../../../uris.md#csv-column-name-safe-transformation) to the CSV-W format.
+for URI Templates. Note that the only variable which can be used in a `cell_uri_template` references the column itself;
+the name of the variable can be calculated by applying the
+[CSV column name safe transformation](../../../uris.md#csv-column-name-safe-transformation) to the CSV column title.
 
 ## Reference
 

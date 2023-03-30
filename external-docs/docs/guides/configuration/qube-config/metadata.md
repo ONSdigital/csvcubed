@@ -1,8 +1,23 @@
 # Metadata
 
-A CSV-W file contains metadata which improves discoverability of data publications. In csvcubed, we use a selection of metadata entries from established namespaces to enable users to contribute to the web of data faster. The metadata fields available, their description and default values are as shown in the [table](#metadata-fields) at the bottom of the page.
+This page discusses how to configure metadata describing your data set as part of a [`qube-config.json`](./index.md)
+file.
 
-The following is an example of a metadata section from a `qube-config.json` about Eurovision performances by Sweden, that uses all of the possible fields.
+> For a detailed look at metadata configuration options, see the [Reference table](#reference) at the bottom of
+>this page.
+
+!!! Tip
+    **Experience of writing basic JSON documents is assumed throughout this document.**
+    See this [tutorial from DigitalOcean](https://www.digitalocean.com/community/tutorials/an-introduction-to-json) for
+    an introduction to writing JSON.
+
+## Configuration
+
+All csvcubed outputs contain metadata which makes it easier to discover data publications. We use definitions from
+established vocabularies to enable you to contribute faster to the web of data.
+
+The following is an example of a metadata section from a `qube-config.json` about Eurovision performances by Sweden,
+that uses all possible metadata fields.
 
 ```json
 {
@@ -28,9 +43,10 @@ The following is an example of a metadata section from a `qube-config.json` abou
 
 Note how some field contents must be given in square brackets [] as a list, such as `keywords` or `themes`.
 
-You do not have to provide all fields for the metadata to be valid, but you should provide a `$schema` so that csvcubed can recognise the file.
+You do not have to provide all fields for the metadata to be valid, but you should provide a `$schema` so that
+csvcubed can recognise the file.
 
-## Metadata fields
+## Reference
 
 | **field name**             | **description**                                                                                                                      | **default value**                           |
 |----------------------------|--------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------|

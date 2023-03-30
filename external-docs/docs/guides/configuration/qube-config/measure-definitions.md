@@ -7,7 +7,7 @@ This page discusses what a measure is, where one should be used, and how one can
 
 ## What is a measure?
 
- A *measure* describes the phenomenon that has been measured by the observed values of a data set.
+ A *measure* is the phenomenon that has been observed and measured in your data cube.
 
  Consider the following data set. This small table contains its measures within a measures column.
 
@@ -20,6 +20,10 @@ This page discusses what a measure is, where one should be used, and how one can
 This data set contains two different measures. The first observed value is measured using the measure `Average Height`,
 and the second observed value uses the measure `Average Weight`. This is a common way measures are represented in a
 standard shape data set.
+
+**N.B. It is important but often tricky to distinguish between a measure and the unit of measure when defining your data
+cube.** When deciding on the measure, try to make sure that it would be possible to recorded the same phenomenon in a
+different unit; this supports comparability of your data with other cubes.
 
 ## When to use measures
 
@@ -120,9 +124,9 @@ The following example shows a measure being created within a measures column, be
     "type": "measures",
     "values": [
       {
-      "label": "Measure",
-      "description": "This is a measure"
-    }
+        "label": "Measure",
+        "description": "This is a measure"
+      }
     ]
   }
 }
@@ -140,17 +144,14 @@ column. For more information on defining units, see the [unit definitions](./uni
 
 ## Inheritance
 
- This section will show how to create measures by re-using existing definitions.
+This section will show how to create measures by re-using existing definitions.
 
 To reuse an existing measure definition, whether it is reused in its entirety as an exact copy of the existing
-definition, or if it is used as a base to create a new measure upon, use the `from_existing` property.
-This allows a URI to be used to apply an existing measure's definition.
+definition, or if it is used as a base to create a new measure upon, use the `from_existing` property. This allows a
+URI to be used to apply an existing measure's definition.
 
 When the `from_existing` field is used, specifying any other fields in the values object will override those fields of
 the re-used measure's definition. This is how an existing definition can be used as a base to create new measures.
-
-Measure definition using the `from_existing` field can be done either when attaching the measure to an observation
-column, or when defining a measure within a measures column.
 
 Defining a measure in an observations column, using an existing measure definition:
 
@@ -176,15 +177,6 @@ Defining a measure in an observations column, using an existing measure definiti
 ```
 
 This effectively means a new measure is created, using the existing measure as a base.
-
-Example of a measure created using the `from_existing` field in a measures column definition:
-
-```json
-"columns": {
-   "type": "measures",
-   "from_existing": "http://purl.org/linked-data/sdmx/2009/measure#refPeriod"
-}
-```
 
 ## Reference
 

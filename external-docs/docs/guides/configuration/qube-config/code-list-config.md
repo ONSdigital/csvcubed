@@ -1,6 +1,9 @@
 # Configuring code lists
 
-By default, csvcubed generates code lists with the unique values of each [dimension](../../../glossary/index.md#dimension) in a data set. This makes it as quick as possible to get from data to CSV-W cube, but it doesn't always leave you with the best representation of your code list's metadata, structure, hierarchy, or values. In order to provide more accurate representations of code lists, csvcubed allows users to explicitly configure code lists using JSON.
+By default, csvcubed generates code lists with the unique values of each [dimension](../../../glossary/index.md#dimension)
+in a data set. This makes it as quick as possible to get from data to CSV-W cube, but it doesn't always leave you with
+the best representation of your code list's metadata, structure, hierarchy, or values. In order to provide more accurate
+ representations of code lists, csvcubed allows users to explicitly configure code lists using JSON.
 
 This guide details how to explicitly define a code list using csvcubed.
 
@@ -11,7 +14,8 @@ This guide details how to explicitly define a code list using csvcubed.
 
 ## Defining a code list configuration file
 
-This approach allows defining a code list in a *code list configuration file*. The following example demonstrates the structure of a *code list configuration file*:
+This approach allows defining a code list in a *code list configuration file*. The following example demonstrates the
+structure of a *code list configuration file*:
 
 ```json
 {

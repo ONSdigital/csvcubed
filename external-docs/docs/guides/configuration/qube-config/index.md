@@ -23,8 +23,8 @@ A `qube-config.json` file has two primary sections:
 
 ## Metadata
 
-A CSV-W file contains metadata which makes it easier to discover data publications. In csvcubed, we use definitions
-from established vocabularies to enable you to contribute faster to the web of data.
+All csvcubed outputs contain metadata which makes it easier to discover data publications. We use definitions from
+established vocabularies to enable you to contribute faster to the web of data.
 
 ```json
 {

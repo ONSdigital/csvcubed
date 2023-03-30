@@ -8,10 +8,9 @@ The configuration of unit definitions themselves will not be the primary focus o
 > For a detailed look at a unit column's configuration options, see the [Reference table](#reference) at the bottom of
 >this page.
 
+## What is a units column?
 
-### What is a units column?
-
-A *units* column describes which unit each observed value has been measured in.
+A *units* column describes the unit that each row in your CSV has been measured using.
 
 The following is an example of a small data set containing a units column:
 
@@ -24,19 +23,19 @@ The following is an example of a small data set containing a units column:
 The units column is titled `Unit`. The first two rows of the data set use the unit `Inches` to measure height, and the
 third row uses a different unit, `Centimetres`. In this case, different units are being used to measure the same thing.
 
-### When to use a units column
+## When to use a units column
 
 Every valid data cube needs at least one unit. Units columns can be used in both
 [standard](../../../shape-data/standard-shape.md) and [pivoted shape](../../../shape-data/pivoted-shape.md) cubes.
 
-If every value in an observations column has the same unit, then you should set the unit against the
-[observations column](./observations.md).
+If every value in an [observations column](./observations.md) has the same unit, then you should configure the unit
+against the [observations column](./observations.md).
 
 If some values in your observations column use one unit and some other values in the same column use a different unit
 then you should use a units column. In the example table above, we see a clear example of this given that the first two
 rows use `Inches` and the third row uses `Centimetres` to measure the `Average Height of Men`.
 
-### Basic configuration
+## Basic configuration
 
 The following JSON shows how a units column can be defined in a [qube configuration file](../../qube-config/index.md):
 
@@ -57,7 +56,7 @@ To define a units column, specify the `type` of the column definition as `units`
 In this scenario of a minimal definition, since we do not specify any other details or properties; the unit
 will auto-generate a `label` field by default that takes the column's title. Here, the label would be `Unit`.
 
-### Optional properties
+## Optional properties
 
 When defining a units column, there are optional properties that can be entered, depending on how your units are
 being defined within the column.
@@ -126,19 +125,20 @@ unit details. Instead, use the field `cell_uri_template`.
  Provide a URI of a unit resource to use in the definition.
 
 !!! Warning
-    The use of the `cell_uri_template` field is considered an advanced configuration option, and therefore care must be taken to ensure that the values generated are valid.
+    The use of the `cell_uri_template` field is considered an advanced configuration option, and therefore care must be
+    taken to ensure that the values generated are valid.
 
 The format of the `cell_uri_template` value **must** follow [RFC6570](https://www.rfc-editor.org/rfc/rfc6570) guidance
-for URI Templates. In the case of any doubt, follow the pattern in the examples shown above (e.g.
-`http://example.org/some-uri/{+column_name}`), as this will ensure csvcubed safely
-[transforms the column header](../../../uris.md#csv-column-name-safe-transformation) to the CSV-W format.
+for URI Templates. Note that the only variable which can be used in a `cell_uri_template` references the column itself;
+the name of the variable can be calculated by applying the
+[CSV column name safe transformation](../../../uris.md#csv-column-name-safe-transformation) to the CSV column title.
 
- ### Describes Observations
+### Describing Observations
 
- Another field that can be applied to units columns that can be passed into their definition is `describes_observations`.
- This field associates the units column with the relevant observation values where the units are being used. Note that
- this is only applicable to pivoted shape cubes with multiple measures and multiple observation value columns. The use of
- this field is covered in the [configuring units](../unit-definitions.md) page.
+Another field that can be applied to units columns that can be passed into their definition is `describes_observations`.
+This field associates the units column with the relevant observation values where the units are being used. Note that
+this is only applicable to pivoted shape cubes with multiple measures and multiple observation value columns. The use of
+this field is covered on the [Pivoted shape cube](../../../shape-data/pivoted-shape.md#multiple-measures) page.
 
 ## Reference
 
