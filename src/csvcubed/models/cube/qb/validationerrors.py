@@ -61,7 +61,7 @@ class NoUriTemplateOrAttrValuesError(SpecificValidationError):
 
     @classmethod
     def get_error_url(cls) -> str:
-        return "http://purl.org/csv-cubed/err/csv-col-uri-temp-mis"
+        return "http://purl.org/csv-cubed/err/no-uri-tmplt-or-attr-vals"
 
     def __post_init__(self):
         self.message = (

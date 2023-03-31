@@ -57,7 +57,7 @@ Either provide values in the `Observation Status` column, or specify an appropri
         "type": "attribute",
         "from_existing": "http://purl.org/linked-data/sdmx/2009/attribute#obsStatus",
         "label": "Observation Status",
-        "cell_uri_template": ""
+        "cell_uri_template": "http://example.com/obs_status/{+observation_status}"
     }
 }
 ```

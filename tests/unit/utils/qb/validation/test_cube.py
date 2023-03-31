@@ -44,6 +44,10 @@ def test_new_qb_attribute_literal_string_with_template():
 
 
 def test_existing_qb_attribute_resource_no_values():
+    """
+    Ensures an existing resource attribute column with no values inside and no cell_uri_template
+    defined successfully returns an error.
+    """
     qube = Cube(
         metadata=CatalogMetadata("Some Qube"),
         data=None,
