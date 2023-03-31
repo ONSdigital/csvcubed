@@ -321,6 +321,21 @@ def test_attribute_new_literal():
     _check_new_attribute_column(column, column_config, column_data, "New Attribute")
 
 
+def test_attribute_new_literal_no_label():
+    """
+    Ensure that a new literal attribute without a given label is created successfully,
+    with the column's title being used as the label instead.
+    """
+    column_data = ["1", "2", "3", "4"]
+    column_config = vc.ATTRIBUTE_NEW_LITERAL_NO_LABEL
+    data = pd.Series(column_data, name="Attribute Heading")
+
+    (column, _) = map_column_to_qb_component(
+        "New Attribute", column_config, data, cube_config_minor_version=0
+    )
+    _check_new_attribute_column(column, column_config, column_data, "New Attribute")
+
+
 @pytest.mark.vcr
 def test_attribute_new_resource_with_values():
     """

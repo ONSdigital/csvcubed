@@ -97,7 +97,7 @@ class VirtualConfigurations:
     }
     """
     A configuration for defining a new attribute resource
-    
+
     {
         "type": "attribute",
         "label": "The New Attribute",
@@ -112,6 +112,20 @@ class VirtualConfigurations:
     ATTRIBUTE_NEW_LITERAL = {
         "type": "attribute",
         "label": "I'm an attribute",
+        "data_type": "int",
+    }
+    """
+    A configuration for defining a new attribute literal.
+
+    {
+        "type": "attribute",
+        "label": "I'm an attribute",
+        "data_type": "int",
+    }
+    """
+
+    ATTRIBUTE_NEW_LITERAL_NO_LABEL = {
+        "type": "attribute",
         "data_type": "int",
     }
     """
